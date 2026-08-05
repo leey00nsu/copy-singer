@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ArrowRight, CircleAlert, Download, LoaderCircle, Mic2, RefreshCw, Sparkles, Square } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, CircleAlert, Download, LoaderCircle, Mic2, RefreshCw, Sparkles, Square, UserRoundSearch } from "lucide-react";
 import { toast } from "sonner";
 import { AdvancedSettings, DEFAULT_SETTINGS, type ConversionSettings } from "@/components/advanced-settings";
 import { AudioDropzone, MAX_AUDIO_UPLOAD_BYTES } from "@/components/audio-dropzone";
@@ -119,21 +120,24 @@ export function SingerWorkbench() {
           <div className="flex items-center gap-3">
             <span className="brand-mark"><Mic2 className="size-4" /></span>
             <div>
-              <p className="text-sm font-semibold tracking-tight">Vocal Loom</p>
+              <p className="text-sm font-semibold tracking-tight">Copy Singer</p>
               <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">SoulX Singer Lab</p>
             </div>
           </div>
-          <Badge
-            className={cn(
-              "gap-1.5",
-              apiStatus === "online" && "border-emerald-200 bg-emerald-50 text-emerald-700",
-              apiStatus === "offline" && "border-red-200 bg-red-50 text-red-700",
-            )}
-            variant="outline"
-          >
-            <span className={cn("size-1.5 rounded-full", apiStatus === "online" ? "bg-emerald-500" : apiStatus === "offline" ? "bg-red-500" : "animate-pulse bg-amber-500")} />
-            {apiStatus === "online" ? "Modal API connected" : apiStatus === "offline" ? "Modal API unavailable" : "Checking Modal API"}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Link className={buttonVariants({ size: "sm", variant: "ghost" })} href="/profile"><UserRoundSearch className="size-4" /> 내 보컬 프로필</Link>
+            <Badge
+              className={cn(
+                "gap-1.5",
+                apiStatus === "online" && "border-emerald-200 bg-emerald-50 text-emerald-700",
+                apiStatus === "offline" && "border-red-200 bg-red-50 text-red-700",
+              )}
+              variant="outline"
+            >
+              <span className={cn("size-1.5 rounded-full", apiStatus === "online" ? "bg-emerald-500" : apiStatus === "offline" ? "bg-red-500" : "animate-pulse bg-amber-500")} />
+              {apiStatus === "online" ? "Modal API connected" : apiStatus === "offline" ? "Modal API unavailable" : "Checking Modal API"}
+            </Badge>
+          </div>
         </div>
       </header>
 
