@@ -34,17 +34,17 @@
     - [x] serializer 및 단위·DB 통합 테스트 추가
     - [x] Prisma validate, TypeScript와 관련 테스트 통과
 
-- [TODO][PRD-FR-016][PRD-FR-018][PRD-FR-019][PRD-DATA-007] T-F006-02 임시 media와 Modal orchestration API 구현
+- [DONE][PRD-FR-016][PRD-FR-018][PRD-FR-019][PRD-DATA-007] T-F006-02 임시 media와 Modal orchestration API 구현
   - Date: 2026-08-06
   - Acceptance:
     - USER recording과 allowlist catalog target만 서버 간에 준비하며 target 임시 파일은 모든 종료 경로에서 삭제한다.
     - item start/status/audio/retry/delete가 기존 Modal API를 사용하고 고정 preset의 `auto_pitch_shift=false`, `pitch_shift=0`을 보장한다.
     - reference preflight 실패 시 target 다운로드와 Modal job을 시작하지 않는다.
   - Checklist:
-    - [ ] analyzer recording source 및 temporary target endpoint와 cleanup 테스트
-    - [ ] Next server synthesis service와 fixed multipart preset 구현
-    - [ ] item start/status/audio route 및 run cleanup 구현
-    - [ ] idempotency·partial failure·expiry·cleanup 통합 테스트 통과
+    - [x] analyzer recording source 및 temporary target endpoint와 cleanup 테스트
+    - [x] Next server synthesis service와 fixed multipart preset 구현
+    - [x] item start/status/audio route 및 run cleanup 구현
+    - [x] idempotency·partial failure·expiry·cleanup 통합 테스트 통과
 
 - [TODO][PRD-US-007][PRD-FR-017][PRD-FR-020] T-F006-03 추천 카드 자동 합성 UI와 개발 Workbench 분리
   - Date: 2026-08-06
@@ -83,11 +83,11 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `npx prisma validate` | `2026-08-06` | `PASS — schema valid, migration applied to local PostgreSQL` |
-| `npm run lint` | `-` | `-` |
+| `npm run lint` | `2026-08-06` | `PASS` |
 | `npx tsc --noEmit` | `2026-08-06` | `PASS` |
 | `npm test` | `-` | `-` |
-| `python -m pytest services/vocal-profile-api/tests` | `-` | `-` |
-| `npm run test:recommendation:db` | `2026-08-06` | `PASS — 1 integration test` |
+| `python -m pytest services/vocal-profile-api/tests` | `2026-08-06` | `PASS — 18 tests` |
+| `npm run test:recommendation:db` | `2026-08-06` | `PASS — 3 integration tests` |
 | `vocal1.wav -> current Modal smoke test` | `-` | `-` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T18:52:37.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T18:59:17.977Z -->

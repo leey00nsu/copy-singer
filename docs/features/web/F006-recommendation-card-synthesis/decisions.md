@@ -36,3 +36,21 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: PR 링크
   - **Test/Log**: `npm run test:recommendation` 14/14 PASS, `npm run test:recommendation:db` 1/1 PASS, `npx tsc --noEmit` PASS (2026-08-06)
 - **Consequences**: 결과 및 영향 (선택사항)
+
+---
+
+## D002: 기존 Modal multipart API 앞에 임시 media broker 배치 (2026-08-06)
+
+- **Context**: 자동 추천 흐름은 브라우저 파일 선택 없이 analyzer에 보존된 reference와 catalog URL의 target을 기존 Modal API에 전달해야 한다.
+- **Constraints**: 원곡을 프로젝트/DB에 저장할 수 없고 이번 feature에서 Modal 신규 배포는 하지 않는다. 현재 Modal create endpoint는 multipart 파일만 받는다.
+- **Options**: Next에서 `yt-dlp` 실행, Modal에 URL 입력 endpoint 추가 후 재배포, 기존 analyzer에 내부 media endpoint를 추가하는 방식을 검토한다.
+- **Decision**: `yt-dlp`가 이미 설치된 analyzer가 allowlist target을 임시 WAV로 내려받아 streaming response로 제공하고 `finally`에서 삭제한다. Next server orchestration은 reference/target을 받아 기존 Modal multipart API를 호출한다.
+- **Rationale**: 기존 배포 계약을 유지하면서 다운로드 정책과 임시 파일 cleanup을 F003의 검증된 Python 경계에 집중할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: analyzer의 UUID recording source와 allowlist target만 서버 간에 노출하고 브라우저 route는 만들지 않는다. 세 곡 준비는 메모리 peak를 줄이기 위해 순차 시작한다.
+  - **DONE 전 확정 시점**: analyzer streaming response의 `finally` cleanup, UUID recording source 조회, Next conditional claim과 기존 Modal create/status/audio/delete proxy를 구현했다. target은 reference preflight가 성공한 뒤에만 다운로드한다.
+  - **머지 후 확인**: 실제 결과/영향
+- **Evidence**:
+  - **Commit**: 구현 커밋에서 기록
+  - **PR**: 로컬-only, 생성하지 않음
+  - **Test/Log**: Python 18/18 PASS, orchestration DB integration 3/3 PASS, local analyzer health 및 두 media path OpenAPI 확인 (2026-08-06)
