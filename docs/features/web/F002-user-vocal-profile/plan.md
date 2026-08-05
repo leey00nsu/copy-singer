@@ -26,8 +26,8 @@
 | Numeric/audio | NumPy 2.3.5 + SoundFile 0.14.0 | librosa/numba 호환 범위 안에서 집계 통계와 WAV fixture 입출력 |
 | Web API | App Router route handlers | 브라우저에 analyzer/DB 주소를 노출하지 않고 기존 same-origin 패턴 유지 |
 | Persistence | Prisma 7.9.1 + PostgreSQL 16 | F001 schema의 Recording/VocalProfile을 재사용 |
-| Recording | MediaRecorder + Web Audio API | 브라우저 기본 기능으로 녹음하고 별도 클라이언트 오디오 라이브러리를 줄임 |
-| Guide melody | OmniVoice humming asset + librosa pitch correction + Web Audio fallback | 사람 목소리 timbre와 정확한 MIDI 기준을 결합하고 런타임 모델 의존을 제거 |
+| Recording | MediaRecorder | 브라우저 기본 기능으로 수동 정지와 30초 자동 종료를 제공하고 별도 오디오 라이브러리를 줄임 |
+| Capture prompt | 자유곡 한 소절, 10–30초 권장 | 별도 발성 훈련 없이 평소 노래 발성을 빠르게 수집 |
 | UI | React 19 + shadcn 기반 기존 컴포넌트 | 현재 시각 체계와 접근성 패턴 유지 |
 
 ---
@@ -38,8 +38,8 @@
 
 ```text
 Browser /profile
-  ├─ guide preview: static OmniVoice humming WAV (oscillator fallback)
-  ├─ MediaRecorder or local file
+  ├─ familiar song verse prompt
+  ├─ MediaRecorder (manual stop / 30s auto stop) or local file
   └─ POST multipart /api/vocal-profiles
                    │ raw body stream + X-Recording-ID
                    ▼
@@ -76,23 +76,13 @@ Browser /profile
 - 파일 확장자를 신뢰하지 않고 ffmpeg decode 성공 여부와 MIME allowlist를 함께 검사한다.
 - 처리된 source는 Git ignored bind mount `./work/vocal-profiles`에 저장하고 `expiresAt=createdAt+24h`를 DB에 기록한다.
 
-### 안내 녹음 타임라인
+### 자유 가창 녹음
 
-- preset: `low` C3–A3, `medium` G3–E4, `high` C4–A4
-- 상대 음정: `[0, 2, 4, 7, 9, 7, 4, 2, 0, 4, 7, 9, 7, 4, 2, 0]`
-- tempo: 80 BPM, 1 note = 750 ms, melody = 12,000 ms
-- record 전 4박자 count-in = 3,000 ms
-- record timeline: melody `0–12,000 ms`, transition `12,000–13,500 ms`, glissando `13,500–21,000 ms`
-- 녹음 중에는 시각 playhead만 사용하고 안내음 동시 재생은 이어폰 확인 옵션에서만 허용한다.
-- 업로드 파일에는 segment timestamp를 보내지 않고 `segmented=false`로 전체 통계를 계산한다.
-
-### 허밍 안내 음원 생성
-
-- 로컬 OmniVoice Studio `POST /v1/audio/speech`에 한국어 지속음 `음——`, 고정 seed, preset별 pitch instruct를 전달한다.
-- pYIN으로 450ms 이상의 voiced 구간을 찾고 pitch spread 1.5 semitone 이하인 seed만 사용한다. 실패하면 정해진 seed 후보 순서로 재시도한다.
-- 실제 source median MIDI를 기준으로 각 목표 note에 `librosa.effects.pitch_shift`를 적용하고 35ms attack/55ms release를 준다.
-- 사람 허밍 80%, 목표 주파수 sine 20%로 혼합한 24kHz PCM WAV를 preset별 12초 정적 자산으로 저장한다.
-- `manifest.json`에 생성기, voice, seed, source 안정도와 최종 측정 min/max를 기록하고 테스트에서 목표 MIDI 오차 0.5 이하를 검증한다.
+- 안내음, preset, count-in 없이 마이크 권한이 승인되면 즉시 녹음을 시작한다.
+- UI는 애국가·생일축하 노래 등 익숙한 한 소절, 반주 없는 10–30초, 편안한 키를 안내한다.
+- 사용자가 직접 멈추거나 30초에 자동 종료하며 8초 미만 입력은 기존 quality gate가 구체적으로 안내한다.
+- 브라우저는 audio만 제출하고 segment timestamp를 보내지 않아 `segmented=false` 전체 통계를 계산한다.
+- 곡 선택이 결과 범위에 영향을 주므로 UI는 전체 음역 대신 “이번 소절 음역”과 “관찰된 중심 구간”으로 표시한다.
 
 ### 분석 알고리즘
 
@@ -100,10 +90,9 @@ Browser /profile
 2. duration 8–60초, RMS ≥ -45 dBFS, clipping ratio ≤ 1%를 확인한다.
 3. `librosa.pyin`을 C2–C7, frame length 2048, hop length 256으로 실행한다.
 4. voiced ratio가 25% 미만이면 `LOW_VOICED_RATIO`로 거절한다.
-5. segmented 입력은 melody frame에서 p10/p50/p90과 stability를, glissando frame에서 p02/p98 min/max를 계산한다.
-6. upload 입력은 전체 voiced frame에서 p02/p10/p50/p90/p98을 계산한다.
-7. tessitura는 p10–p90, stability는 유효 frame의 국소 cents 변화량 median absolute deviation을 0–1로 변환한다.
-8. 원시 F0/voiced frame은 저장하지 않고 frame count와 설정만 descriptors JSON에 저장한다.
+5. 전체 voiced frame에서 p02/p10/p50/p90/p98을 계산한다.
+6. tessitura는 p10–p90, stability는 유효 frame의 국소 cents 변화량 median absolute deviation을 0–1로 변환한다.
+7. 원시 F0/voiced frame은 저장하지 않고 frame count와 설정만 descriptors JSON에 저장한다.
 
 ### API 계약
 
@@ -133,7 +122,7 @@ Browser /profile
 │   └── vocal-profile-workbench.tsx
 ├── lib/vocal-profile/
 │   ├── contract.ts
-│   ├── guide-melody.ts
+│   ├── pitch.ts
 │   └── server.ts
 ├── services/vocal-profile-api/
 │   ├── app/
@@ -148,12 +137,6 @@ Browser /profile
 │   ├── vocal-profile-contract.test.ts
 │   └── rendered-html.test.mjs
 ├── docker-compose.yml
-├── public/audio/guides/
-│   ├── humming-low.wav
-│   ├── humming-medium.wav
-│   ├── humming-high.wav
-│   └── manifest.json
-├── scripts/generate-humming-guides.py
 ├── .env.example
 └── README.md
 ```
@@ -165,14 +148,13 @@ Browser /profile
 - **Python 단위 테스트**: 고정음, sine sweep, 무음, clipping array로 quality gate와 통계 경계를 검증한다.
 - **Analyzer API 테스트**: 생성 WAV upload, size/MIME/segment validation, health 및 delete endpoint를 FastAPI TestClient로 검증한다.
 - **DB/API 통합 테스트**: 실제 Docker analyzer와 PostgreSQL에 profile 생성→조회→삭제 요청을 수행하고 DB/file 제거를 확인한다.
-- **Web 단위 테스트**: preset 음정·타임라인과 MIDI note label 변환을 Node test로 검증한다.
-- **UI 검증**: `/profile`에서 preset preview, 파일 선택, 분석 결과, 품질 오류 및 삭제 상태를 로컬 브라우저로 확인한다.
+- **Web 단위 테스트**: MIDI note label 변환과 자유곡 안내 SSR을 Node test로 검증한다.
+- **UI 검증**: `/profile`에서 자유곡 안내, 녹음·파일 선택, 분석 결과, 품질 오류 및 삭제 상태를 로컬 브라우저로 확인한다.
 - **회귀 검증**: `npx tsc --noEmit`, `npm run lint`, `npm run build`, `npm test`, `npm run db:validate`를 통과한다.
 
 ### 리스크와 대응
 
-- 스피커 guide bleed가 F0에 섞일 수 있으므로 기본 flow는 먼저 듣고 무음 visual guide를 따라 부르게 한다.
-- 사용자의 박자 오차로 고정 segment 경계가 어긋날 수 있어 p10/p90과 MAD 기반 robust 통계를 사용하고, 목표음 일치 점수는 MVP 결과에서 노출하지 않는다.
+- 한 소절이 사용자의 전체 음역을 포함하지 않을 수 있으므로 결과를 관찰 범위로 명시하고, 후속 추천에서는 여러 녹음 또는 곡별 신뢰도 보정 가능성을 둔다.
 - vinext Worker runtime에서 PostgreSQL TCP adapter 호환 문제가 발견되면 DB route만 Node 로컬 companion으로 분리하되 API 계약은 유지한다.
 - 첫 Docker build는 librosa/scipy wheel 다운로드로 시간이 걸릴 수 있으나 실행은 CPU만 사용하며 Modal 비용은 발생하지 않는다.
 

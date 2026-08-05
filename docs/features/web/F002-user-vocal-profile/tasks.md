@@ -124,14 +124,14 @@
     - [x] 세 preset의 음정·길이·crossfade와 sine 20% 혼합 자산 생성 스크립트를 구현한다.
     - [x] 브라우저 preview를 정적 WAV 우선, oscillator fallback으로 전환하고 음정·UI 회귀를 검증한다.
 
-- [TODO][PRD-FR-001] T-F002-user-vocal-profile-08 Major 5th 스케일 기반 24초 발성 프로토콜 구현
+- [DONE][PRD-FR-001] T-F002-user-vocal-profile-08 자유곡 한 소절 기반 간소화 녹음 구현
   - Date: 2026-08-05
   - Acceptance:
-    - 사용자가 자체 생성 건반음으로 3초 지속음과 90 BPM Major 5th 스케일 2회를 미리 듣고, 무음 visual guide를 따라 총 24초 아 발성과 glissando를 녹음하며 analyzer 구간 계약이 새 타임라인과 일치한다.
+    - 사용자가 안내음이나 preset 없이 익숙한 노래 한 소절을 10–30초 권장 범위에서 녹음하고, 결과가 전체 음역이 아닌 해당 녹음에서 관찰된 음역임을 확인할 수 있다.
   - Checklist:
-    - [ ] OmniVoice 허밍 자산과 생성 스크립트를 제거하고 자체 건반 preview 음색을 구현한다.
-    - [ ] 3초 sustain, Major 5th 2회, 1.5초 transition, 7.5초 glissando 타임라인과 시각 안내를 구현한다.
-    - [ ] analyzer segment 계약과 fixture/tests/docs를 24초 프로토콜로 갱신하고 브라우저 회귀를 검증한다.
+    - [x] OmniVoice 허밍 자산, 생성 스크립트와 guide/preset UI를 제거한다.
+    - [x] 자유곡 안내 문구, 수동 정지와 30초 자동 종료 녹음 UI를 구현한다.
+    - [x] unsegmented 분석 제출, 결과 해석 문구와 tests/docs/browser 회귀를 갱신한다.
 
 ## 완료 조건
 
@@ -152,9 +152,9 @@
 | `docker compose build vocal-profile-api` | `2026-08-05` | PASS — Python 3.12, ffmpeg, pinned analyzer image |
 | `docker compose run ... pytest -q` | `2026-08-05` | PASS — analyzer unit/API 8건, deprecation warning 4건 비차단 |
 | `curl -fsS http://localhost:8001/health` | `2026-08-05` | PASS — analyzer/storage healthy |
-| `npx tsc --noEmit` | `2026-08-05` | PASS — API/UI 및 guide contract 포함 |
+| `npx tsc --noEmit` | `2026-08-05` | PASS — 자유곡 녹음 UI와 API contract 포함 |
 | `npm run lint` | `2026-08-05` | PASS |
-| `npm test` | `2026-08-05` | PASS — build, guide/note contract 2건, SSR 회귀 2건 |
+| `npm test` | `2026-08-05` | PASS — build, 음이름 contract 1건, 자유곡 SSR 포함 회귀 2건 |
 | `curl POST/GET/DELETE http://localhost:3100/api/vocal-profiles...` | `2026-08-05` | PASS — 201→200→200→404, DB/file 삭제 확인 |
 | `browser http://localhost:3100/profile` | `2026-08-05` | PASS — 세 preset 선택, 12초 Web Audio preview 재생/복귀, 접근 가능한 녹음·업로드 UI 확인 |
 | `browser upload → POST /api/vocal-profiles` | `2026-08-05` | PASS — 실제 guided WAV 결과 카드와 4초 WAV `TOO_SHORT` 한국어 안내 확인 |
@@ -162,8 +162,6 @@
 | `npm run db:validate && npm run db:status && npm run db:verify` | `2026-08-05` | PASS — schema valid/up-to-date 및 seed relation 확인 |
 | `curl guided POST→GET→DELETE→GET` | `2026-08-05` | PASS — 201→200→200→404, DB 0 row 및 analyzer file 제거 확인 |
 | `npx lee-spec-kit workflow-audit --json` | `2026-08-05` | PASS — 최종 실행 결과로 갱신 |
-| `scripts/generate-humming-guides.py` | `2026-08-05` | PASS — OmniVoice 0.4.2 seed 검증 및 12초 low/medium/high WAV 생성 |
-| `ffprobe public/audio/guides/humming-*.wav` | `2026-08-05` | PASS — 세 자산 24kHz mono PCM, 각각 12.000초 |
-| `browser /profile 허밍 preview` | `2026-08-05` | PASS — 정적 안내음 재생 중 잠금 및 12초 후 UI 복귀, 세 asset HTTP 200 |
+| `browser /profile 자유곡 upload → analyze` | `2026-08-05` | PASS — 안내 문구, 10–30초 조건, unsegmented 결과 라벨과 DB/file 삭제 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T11:46:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T12:15:00.000Z -->

@@ -50,8 +50,8 @@
 
 **Acceptance Criteria:**
 
-- [x] UI가 세 가지 시작 키와 저작권 없는 안내 멜로디, glissando로 구성된 약 20–25초 녹음 순서를 안내한다.
-- [x] 사용자는 낮게(C3–A3), 보통(G3–E4), 높게(C4–A4) 예시를 들어보고 가장 편한 키를 선택할 수 있다.
+- [x] UI가 익숙한 노래 한 소절을 반주 없이 편안하게 부르도록 안내하고 애국가·생일축하 노래 예시를 제공한다.
+- [x] UI가 10–30초 권장 길이와 무리해서 최고음을 내지 말라는 안내를 제공한다.
 - [x] 사용자는 마이크 녹음을 시작·정지하고 결과를 미리 듣거나 지운 뒤 다시 녹음할 수 있다.
 - [x] 사용자는 녹음 대신 WAV, MP3, M4A 또는 WebM 오디오 파일을 선택할 수 있다.
 - [x] 분석 전 선택 파일명·크기와 미리 듣기를 확인할 수 있다.
@@ -77,7 +77,7 @@
 
 **Acceptance Criteria:**
 
-- [x] 결과가 glissando 기반 유효 최저·최고 MIDI, 멜로디 기반 p10·p50·p90 MIDI와 tessitura, voiced ratio, pitch stability, clipping ratio와 RMS dB를 포함한다.
+- [x] 결과가 전체 voiced frame 기반 유효 최저·최고 MIDI, p10·p50·p90 MIDI와 관찰된 중심 구간, voiced ratio, pitch stability, clipping ratio와 RMS dB를 포함한다.
 - [x] MIDI 값은 음이름과 octave 표기로 함께 표시한다.
 - [x] 결과에 분석기 이름·버전, 녹음 길이와 생성 시각을 표시한다.
 - [x] 동일한 profile ID를 조회하면 저장된 집계 결과가 반환된다.
@@ -107,14 +107,12 @@
 
 ### FR-2: 테스트 가창 프로토콜
 
-- 녹음 전체 길이는 약 20–25초이며 최소 decoded duration은 8초다.
-- 사용자는 같은 상대 멜로디를 낮게(C3–A3), 보통(G3–E4), 높게(C4–A4) 중 가장 편한 키로 선택한다.
-- 안내 멜로디는 80 BPM에서 `1–2–3–5 | 6–5–3–2 | 1–3–5–6 | 5–3–2–1`의 상대 음정 패턴을 사용한다. 미리 듣기는 OmniVoice 지속 허밍을 목표 MIDI로 보정한 음원 80%와 정확한 sine 기준음 20%를 혼합한다.
-- 멜로디는 녹음 전에 먼저 재생하고, 4박자 count-in 뒤에는 마이크 혼입을 막기 위해 소리 없이 시각 가이드만 표시한다. 안내음을 들으며 동시에 녹음하는 선택지는 이어폰 사용 시에만 제공한다.
-- 멜로디 다음에는 `아`로 편한 음→가능한 낮은 음→편한 음→가능한 높은 음→편한 음의 glissando를 약 6–8초 수행한다.
-- 반주가 없고 한 명의 목소리가 또렷한 입력을 권장한다.
-- 녹음 요청에는 선택 preset과 멜로디·glissando 구간의 상대 timestamp를 함께 전달한다.
-- 허밍 정적 자산을 불러오지 못하면 브라우저 Web Audio oscillator 안내음으로 자동 fallback한다.
+- 핵심 안내는 “가볍게 노래 한 소절을 불러주세요. 애국가, 생일축하 노래 등 상관없어요”로 유지한다.
+- 사용자는 preset이나 안내 멜로디 없이 자신의 편한 키로 익숙한 노래를 부른다.
+- 반주가 없고 한 명의 목소리가 또렷한 10–30초 입력을 권장하며 decoded duration 최소 gate는 8초다.
+- 사용자가 직접 녹음을 멈출 수 있고 30초에 도달하면 자동 종료한다.
+- 브라우저는 audio만 제출하며 guide segment timestamp를 보내지 않는다.
+- 결과는 사용자의 전체 절대 음역이 아니라 선택한 한 소절에서 관찰된 음정 범위임을 표시한다.
 
 ### FR-3: 프로필 생성 API
 
@@ -133,10 +131,10 @@
 ### FR-5: pitch 및 품질 통계
 
 - 유효 F0 frame을 MIDI로 변환한다.
-- 안내 녹음은 멜로디 구간의 p10, median, p90을 계산하고 tessitura를 해당 p10과 p90으로 정의한다.
-- 안내 녹음의 min과 max는 glissando 구간의 robust 최저·최고 분위값으로 계산해 단일 octave 오류와 순간 잡음을 제외한다.
-- pitch stability는 멜로디 구간 voiced frame의 목표 음정 주변 cents 오차와 프레임 변화량을 사용해 0–1 범위로 정규화한다.
-- 구간 정보가 없는 업로드 파일은 전체 voiced frame에서 통계를 계산하고 결과에 `segmented=false`를 기록한다.
+- 전체 voiced frame의 p10, median, p90을 계산하고 관찰된 중심 구간을 p10과 p90으로 정의한다.
+- min과 max는 전체 voiced frame의 robust p02/p98로 계산해 단일 octave 오류와 순간 잡음을 제외한다.
+- pitch stability는 voiced frame의 국소 cents 변화량을 사용해 0–1 범위로 정규화한다.
+- 결과에 `segmented=false`를 기록한다.
 - voiced ratio, clipping ratio, RMS dB와 분석에 사용한 frame 수를 함께 계산한다.
 - 원시 frame 배열은 DB에 저장하지 않는다.
 

@@ -122,7 +122,23 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **DOING 시작 시점**: 생성 자산과 재생용 manifest를 커밋하고 브라우저는 정적 WAV를 우선 사용하되 로드 실패 시 기존 oscillator로 fallback한다.
   - **DONE 전 확정 시점**: OmniVoice 0.4.2가 생성한 seed 중 450ms 구간 pitch spread가 각각 0.49/0.50/0.70 semitone인 입력만 채택했다. 최종 12초 자산은 low 47.8–57.1, medium 54.8–64.0, high 60.0–69.0 MIDI로 목표 오차 0.5 이내이며, 실제 브라우저에서 재생 중 잠금과 종료 후 복귀를 확인했다.
+  - **후속 변경**: T08의 자유곡 간소화 결정으로 허밍 자산, 생성 스크립트와 preview UI를 모두 제거했다.
 - **Evidence**:
   - **Commit**: 일곱 번째 태스크 커밋의 Git 이력
+  - **PR**: 로컬 워크플로우로 생성하지 않음
+  - **Test/Log**: [tasks.md 테스트 실행 기록](./tasks.md#테스트-실행-기록)
+
+## D008: 익숙한 노래 한 소절 기반의 간소화 측정 과제 (2026-08-05)
+
+- **Context**: 안내음·preset·발성 과제는 측정 통제력은 높지만 첫 사용자가 녹음을 시작하기 전에 이해해야 할 내용과 실패 가능성을 늘린다.
+- **Constraints**: 별도 훈련 없이 즉시 수행, 실제 노래 발성, 최소 8초 분석 gate, 반주 없는 단일 보컬, 전체 음역으로 과대 해석하지 않기
+- **Options**: Major 5th 고정 과제, 자유곡과 보조 glissando, 익숙한 노래 한 소절만 녹음
+- **Decision**: “가볍게 노래 한 소절을 불러주세요. 애국가, 생일축하 노래 등 상관없어요”를 핵심 안내로 사용하고 10–30초 권장, 수동 정지, 30초 자동 종료의 자유 가창을 unsegmented 분석한다.
+- **Rationale**: 사용자가 이미 아는 멜로디를 평소 발성으로 부르게 해 진입 장벽을 최소화하고, 결과 문구를 “이번 소절에서 관찰된 음역”으로 제한해 곡 선택에 따른 편향을 투명하게 드러낸다.
+- **Trace**:
+  - **DOING 시작 시점**: 모든 guide 자산과 preview를 제거하고 브라우저는 audio 파일만 전송해 analyzer의 전체 voiced frame 통계를 사용한다.
+  - **DONE 전 확정 시점**: `/profile`에서 핵심 문구, 10–30초·반주 없음·편안한 키 안내와 30초 자동 종료 설명을 확인했다. 24초 fixture를 segment field 없이 제출해 “이번 소절 음역” 결과가 생성됐고 테스트 profile의 DB row와 원본 파일을 삭제했다.
+- **Evidence**:
+  - **Commit**: 여덟 번째 태스크 커밋의 Git 이력
   - **PR**: 로컬 워크플로우로 생성하지 않음
   - **Test/Log**: [tasks.md 테스트 실행 기록](./tasks.md#테스트-실행-기록)
