@@ -48,6 +48,7 @@ Copy Singer는 사용자의 테스트 가창을 분석해 보컬 프로필을 �
 - **PRD-US-004**: 사용자는 노래방에서 적용할 추천 키 이동 값을 반음 단위로 확인할 수 있다.
 - **PRD-US-005**: 사용자는 추천 상위 3곡과 각 곡이 추천된 이유를 확인할 수 있다.
 - **PRD-US-006**: 사용자는 선택한 노래를 자신의 목소리로 변환한 데모를 재생할 수 있다.
+- **PRD-US-007**: 사용자는 추천 상위 3곡이 별도 파일 선택 없이 자신의 테스트 녹음으로 합성되는 진행 상태를 보고, 완료된 각 결과를 추천 카드에서 바로 재생할 수 있다.
 
 ## 기능 요구사항
 
@@ -77,6 +78,11 @@ Copy Singer는 사용자의 테스트 가창을 분석해 보컬 프로필을 �
 - **PRD-FR-013**: 웹 앱은 레퍼런스와 타겟 오디오, SVC advanced settings를 Modal API로 전달해야 한다.
 - **PRD-FR-014**: 변환 요청은 `queued → processing → succeeded | failed` 상태를 제공해야 한다.
 - **PRD-FR-015**: 사용자는 완료된 결과 WAV를 재생·다운로드하고 작업을 취소·삭제할 수 있어야 한다.
+- **PRD-FR-016**: 추천 실행은 사용자 보컬 프로필의 원본 테스트 녹음을 reference로 사용해 상위 3곡 각각의 합성 작업을 자동 시작해야 한다.
+- **PRD-FR-017**: 추천 카드에는 `preparing → queued → processing → succeeded | failed` 상태와 “믹싱 중이에요” 안내를 표시하고 성공 시 결과 오디오 재생·다운로드를 제공해야 한다.
+- **PRD-FR-018**: 추천 카드 합성은 `prompt_vocal_separation=false`, `target_vocal_separation=true`, `auto_pitch_shift=false`, `auto_mix_accompaniment=true`, `pitch_shift=0`의 고정 제품 preset을 사용해야 한다.
+- **PRD-FR-019**: 서버는 allowlist된 곡 URL의 원본 오디오를 작업 중에만 임시 다운로드해 target으로 사용하고 성공·실패·취소 후 원본과 중간 stem을 제거해야 한다.
+- **PRD-FR-020**: 기존 자유 reference/target과 advanced settings Workbench는 자동 추천 합성과 분리된 개발·진단용 화면으로 유지해야 한다.
 
 ## 데이터 요구사항
 
@@ -86,6 +92,7 @@ Copy Singer는 사용자의 테스트 가창을 분석해 보컬 프로필을 �
 - **PRD-DATA-004**: 오디오 바이너리는 PostgreSQL에 직접 넣지 않고 파일 참조와 메타데이터만 저장한다.
 - **PRD-DATA-005**: 분석 결과의 원시 frame 배열은 기본 저장하지 않고 집계 통계와 버전 정보를 저장한다.
 - **PRD-DATA-006**: 외부 카탈로그 음원과 분리 stem은 프로젝트 저장소나 영구 볼륨에 보관하지 않고 작업별 OS 임시 디렉터리에서만 처리하며, 성공·실패·취소와 관계없이 즉시 삭제한다. 출처 링크, 집계 분석값과 도구 버전은 배포 가능한 versioned JSON artifact에 저장하고 PostgreSQL에는 곡 분석 프로필을 저장하지 않는다.
+- **PRD-DATA-007**: PostgreSQL에는 추천 item별 합성 job ID·상태·오류·결과 만료 metadata만 저장하고 원곡·reference·결과 오디오 바이너리는 저장하지 않는다.
 
 ## 비기능 요구사항
 
@@ -96,6 +103,7 @@ Copy Singer는 사용자의 테스트 가창을 분석해 보컬 프로필을 �
 - **PRD-NFR-005 품질**: 변경 시 TypeScript 검사, ESLint, 프로덕션 빌드, Prisma validation과 관련 테스트를 통과해야 한다.
 - **PRD-NFR-006 책임 있는 사용**: 사용 권한이 있는 음성과 음악만 처리하도록 고지하고, 결과를 의료적 평가로 표현하지 않는다.
 - **PRD-NFR-007 설명 가능성**: 추천 이유는 음역 겹침, 고음/저음 부담, 키 이동 효과처럼 검증 가능한 항목에서 생성한다.
+- **PRD-NFR-008 비용·동시성**: 추천 1회당 합성 작업은 정확히 3개로 제한하고 중복 시작을 idempotent하게 차단하며, Modal 동시성 정책에 따라 대기 상태를 사용자에게 숨기지 않는다.
 
 ## 보컬 프로필 MVP 정의
 
