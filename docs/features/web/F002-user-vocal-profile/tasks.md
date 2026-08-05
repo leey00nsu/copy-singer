@@ -124,6 +124,15 @@
     - [x] 세 preset의 음정·길이·crossfade와 sine 20% 혼합 자산 생성 스크립트를 구현한다.
     - [x] 브라우저 preview를 정적 WAV 우선, oscillator fallback으로 전환하고 음정·UI 회귀를 검증한다.
 
+- [TODO][PRD-FR-001] T-F002-user-vocal-profile-08 Major 5th 스케일 기반 24초 발성 프로토콜 구현
+  - Date: 2026-08-05
+  - Acceptance:
+    - 사용자가 자체 생성 건반음으로 3초 지속음과 90 BPM Major 5th 스케일 2회를 미리 듣고, 무음 visual guide를 따라 총 24초 아 발성과 glissando를 녹음하며 analyzer 구간 계약이 새 타임라인과 일치한다.
+  - Checklist:
+    - [ ] OmniVoice 허밍 자산과 생성 스크립트를 제거하고 자체 건반 preview 음색을 구현한다.
+    - [ ] 3초 sustain, Major 5th 2회, 1.5초 transition, 7.5초 glissando 타임라인과 시각 안내를 구현한다.
+    - [ ] analyzer segment 계약과 fixture/tests/docs를 24초 프로토콜로 갱신하고 브라우저 회귀를 검증한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
