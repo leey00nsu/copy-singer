@@ -7,9 +7,9 @@
 - **Idea ID**: I004
 - **Idea Name**: key-fit-scoring
 - **Created**: 2026-08-05
-- **Status**: Active
+- **Status**: Featureized
   - 값: Active | Featureized | Dropped
-- **Feature**: -
+- **Feature**: F004-key-fit-scoring
 - **PRD Refs**: PRD-US-003, PRD-US-004, PRD-FR-008, PRD-FR-009, PRD-FR-010, PRD-NFR-004, PRD-NFR-007
 - **Component**: data
 
