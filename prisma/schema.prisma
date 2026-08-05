@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum RecordingKind {
+  USER_TEST
+  SONG_SOURCE
+  SVC_REFERENCE
+  SVC_TARGET
+}
+
+enum RecordingStatus {
+  PENDING
+  READY
+  FAILED
+  DELETED
+}
+
+enum VocalProfileSourceType {
+  USER
+  SONG
+}
+
+enum SongAnalysisStatus {
+  PENDING
+  READY
+  FAILED
+}
+
+model Recording {
+  id            String          @id @default(uuid()) @db.Uuid
+  kind          RecordingKind
+  storagePath   String
+  mimeType      String
+  durationMs    Int?
+  sizeBytes     BigInt?
+  sampleRate    Int?
+  status        RecordingStatus @default(PENDING)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  expiresAt     DateTime?
+  vocalProfiles VocalProfile[]
+
+  @@index([kind, status])
+  @@index([createdAt])
+  @@index([expiresAt])
+}
+
+model VocalProfile {
+  id                 String                 @id @default(uuid()) @db.Uuid
+  sourceType         VocalProfileSourceType
+  recordingId        String                 @db.Uuid
+  minMidi            Float?
+  maxMidi            Float?
+  p10Midi            Float?
+  medianMidi         Float?
+  p90Midi            Float?
+  tessituraLowMidi   Float?
+  tessituraHighMidi  Float?
+  voicedRatio        Float?
+  pitchStability     Float?
+  clippingRatio      Float?
+  rmsDb              Float?
+  descriptors        Json?
+  analyzer           String
+  analyzerVersion    String
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+  recording          Recording              @relation(fields: [recordingId], references: [id], onDelete: Restrict)
+  song               Song?
+  recommendationRuns RecommendationRun[]
+
+  @@unique([recordingId, analyzer, analyzerVersion])
+  @@index([sourceType, createdAt])
+}
+
+model Song {
+  id                  String               @id @default(uuid()) @db.Uuid
+  title               String
+  artist              String
+  originalKey         String?
+  catalogOrder        Int                  @unique
+  vocalProfileId      String?              @unique @db.Uuid
+  analysisStatus      SongAnalysisStatus   @default(PENDING)
+  metadata            Json?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  vocalProfile        VocalProfile?        @relation(fields: [vocalProfileId], references: [id], onDelete: SetNull)
+  recommendationItems RecommendationItem[]
+
+  @@unique([title, artist])
+  @@index([analysisStatus, catalogOrder])
+}
+
+model RecommendationRun {
+  id                 String               @id @default(uuid()) @db.Uuid
+  userVocalProfileId String               @db.Uuid
+  scoringVersion     String
+  createdAt          DateTime             @default(now())
+  userVocalProfile   VocalProfile         @relation(fields: [userVocalProfileId], references: [id], onDelete: Restrict)
+  items              RecommendationItem[]
+
+  @@index([userVocalProfileId, createdAt])
+}
+
+model RecommendationItem {
+  id               String            @id @default(uuid()) @db.Uuid
+  runId            String            @db.Uuid
+  songId           String            @db.Uuid
+  rank             Int
+  originalKeyScore Float
+  adjustedScore    Float
+  recommendedShift Int
+  reasonCodes      Json
+  metrics          Json
+  createdAt        DateTime          @default(now())
+  run              RecommendationRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  song             Song              @relation(fields: [songId], references: [id], onDelete: Restrict)
+
+  @@unique([runId, rank])
+  @@unique([runId, songId])
+  @@index([songId])
+}

@@ -38,6 +38,7 @@ yarn-error.log*
 /.wrangler/
 /outputs/
 /work/
+/generated/prisma/
 
 # local build/type-check artifacts
 *.tsbuildinfo
