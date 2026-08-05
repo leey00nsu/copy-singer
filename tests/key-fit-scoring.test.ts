@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 
+import type { SongProfileArtifact } from "../lib/song-catalog/artifact";
+import { scoreCatalogKeyFits } from "../lib/key-fit/catalog";
 import {
   KEY_FIT_SCORING_VERSION,
   KeyFitScoringError,
@@ -219,4 +222,50 @@ test("adds a low-confidence reason without changing deterministic serialization"
 
   assert.ok(first.reasonCodes.includes("LOW_PROFILE_CONFIDENCE"));
   assert.equal(JSON.stringify(first), JSON.stringify(second));
+});
+
+function loadRealSongArtifact(): SongProfileArtifact {
+  return JSON.parse(
+    readFileSync(new URL("../data/catalogs/tj-2607-song-profiles.json", import.meta.url), "utf8"),
+  ) as SongProfileArtifact;
+}
+
+test("scores all 100 ready artifact songs in catalog order within the CPU target", () => {
+  const artifact = loadRealSongArtifact();
+  const startedAt = performance.now();
+  const results = scoreCatalogKeyFits(USER_PROFILE_FIXTURE, artifact);
+  const elapsedMs = performance.now() - startedAt;
+
+  assert.equal(results.length, 100);
+  assert.deepEqual(
+    results.map((result) => result.catalogOrder),
+    Array.from({ length: 100 }, (_, index) => index + 1),
+  );
+  assert.ok(results.every((result) => result.scoringVersion === KEY_FIT_SCORING_VERSION));
+  assert.ok(elapsedMs < 100, `Expected 100-song scoring under 100ms, received ${elapsedMs.toFixed(2)}ms.`);
+});
+
+test("bulk scoring is deterministic for the real artifact", () => {
+  const artifact = loadRealSongArtifact();
+
+  assert.equal(
+    JSON.stringify(scoreCatalogKeyFits(USER_PROFILE_FIXTURE, artifact)),
+    JSON.stringify(scoreCatalogKeyFits(USER_PROFILE_FIXTURE, artifact)),
+  );
+});
+
+test("bulk scoring rejects a non-ready song instead of silently omitting it", () => {
+  const artifact = structuredClone(loadRealSongArtifact());
+  artifact.songs[0].status = "PENDING";
+  artifact.songs[0].profile = null;
+
+  assert.throws(
+    () => scoreCatalogKeyFits(USER_PROFILE_FIXTURE, artifact),
+    (error: unknown) => {
+      assert.ok(error instanceof KeyFitScoringError);
+      assert.equal(error.code, "SONG_PROFILE_NOT_READY");
+      assert.equal(error.details.catalogOrder, 1);
+      return true;
+    },
+  );
 });
