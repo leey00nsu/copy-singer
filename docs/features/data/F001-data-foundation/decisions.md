@@ -36,3 +36,19 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 워크플로우로 생성하지 않음
   - **Test/Log**: [tasks.md 테스트 실행 기록](./tasks.md#테스트-실행-기록)
 - **Consequences**: 결과 및 영향 (선택사항)
+
+## D002: 데이터 관계와 생성 Client 경계 (2026-08-05)
+
+- **Context**: 후속 Feature가 동일한 Recording, VocalProfile, Song, Recommendation 구조를 안전하게 조회해야 한다.
+- **Constraints**: 분석기는 재실행·버전 변경이 가능하고, 생성 Prisma Client와 Node `pg` adapter가 브라우저 번들에 포함되면 안 된다.
+- **Options**: 분석 결과를 JSON 한 모델에 통합, 핵심 엔터티를 정규화하고 확장 descriptor만 JSON 사용
+- **Decision**: 핵심 관계·순위·점수·버전은 정규화된 모델과 DB constraint로 표현하고, 확장 분석값과 이유 상세만 `Json`으로 둔다. Client는 `generated/prisma`에 생성하고 `lib/db/prisma.ts`에서만 adapter와 함께 초기화한다.
+- **Rationale**: 추천 재현성과 관계 무결성을 DB에서 보장하면서 후속 분석 알고리즘의 descriptor 확장은 migration 없이 수용할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: Prisma 7의 `prisma-client` generator와 명시적 output, `PrismaPg` 필수 adapter 계약을 기준으로 schema와 singleton 경계를 설계한다.
+  - **DONE 전 확정 시점**: 정규화된 다섯 모델과 DB 제약이 Prisma validation을 통과했고, 생성 Client를 사용하는 `PrismaPg` singleton이 TypeScript 및 대상 lint 검사를 통과했다.
+- **Evidence**:
+  - **Commit**: 두 번째 태스크 커밋의 Git 이력
+  - **PR**: 로컬 워크플로우로 생성하지 않음
+  - **Test/Log**: [tasks.md 테스트 실행 기록](./tasks.md#테스트-실행-기록)
+- **Consequences**: JSON 내부 구조 검증은 해당 값을 생성하는 후속 Feature에서 별도 타입과 validation으로 보완해야 한다.

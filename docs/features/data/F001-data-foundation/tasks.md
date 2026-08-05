@@ -70,14 +70,14 @@
     - [x] Prisma 7.9.1, PostgreSQL adapter, pg, tsx 의존성과 DB scripts를 추가한다.
     - [x] .env.example, .gitignore, prisma.config.ts를 로컬 보안 원칙에 맞게 갱신한다.
 
-- [TODO][PRD-DATA-002] T-F001-data-foundation-02 핵심 Prisma schema 및 서버 client 구현
+- [DONE][PRD-DATA-002] T-F001-data-foundation-02 핵심 Prisma schema 및 서버 client 구현
   - Date: 2026-08-05
   - Acceptance:
     - 다섯 핵심 모델과 enum, 관계, unique/index 제약이 Prisma schema에 정의되고 validate와 generate가 성공한다.
   - Checklist:
-    - [ ] Recording, VocalProfile, Song, RecommendationRun, RecommendationItem 및 enum을 정의한다.
-    - [ ] 관계, 삭제 정책, unique constraint와 조회 index를 정의한다.
-    - [ ] PrismaPg 기반 서버 전용 singleton client를 추가한다.
+    - [x] Recording, VocalProfile, Song, RecommendationRun, RecommendationItem 및 enum을 정의한다.
+    - [x] 관계, 삭제 정책, unique constraint와 조회 index를 정의한다.
+    - [x] PrismaPg 기반 서버 전용 singleton client를 추가한다.
 
 - [TODO][PRD-NFR-004] T-F001-data-foundation-03 초기 migration과 반복 가능한 seed 검증
   - Date: 2026-08-05
@@ -116,5 +116,9 @@
 | `DATABASE_URL=... npx prisma --version` | `2026-08-05` | PASS — Prisma CLI 및 Client 7.9.1 확인 |
 | `npm ls @prisma/client @prisma/adapter-pg prisma pg dotenv tsx @types/pg --depth=0` | `2026-08-05` | PASS — 고정 의존성 설치 확인 |
 | `npx tsc --noEmit` | `2026-08-05` | PASS |
+| `DATABASE_URL=... npm run db:validate` | `2026-08-05` | PASS — schema valid |
+| `DATABASE_URL=... npm run db:generate` | `2026-08-05` | PASS — Prisma Client 7.9.1 생성 |
+| `npx eslint lib/db/prisma.ts prisma.config.ts` | `2026-08-05` | PASS |
+| `npm run lint` | `2026-08-05` | FAIL — 기존 `.codex/hooks/*.mjs` unused-variable 3건, T04에서 범위 정리 예정 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T10:38:10.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T10:40:24.000Z -->
