@@ -61,14 +61,14 @@
     - [x] public contract와 `key-fit-v1` 상수 정의
     - [x] validation 및 invalid/incompatible fixture 테스트
 
-- [TODO][PRD-FR-008][PRD-NFR-007] T-F004-02 원키 score와 설명 가능한 breakdown 구현
+- [DONE][PRD-FR-008][PRD-NFR-007] T-F004-02 원키 score와 설명 가능한 breakdown 구현
   - Date: 2026-08-06
   - Acceptance:
     - 원키 점수가 0~100 범위에서 overlap, tessitura/extreme burden, confidence를 계획된 weight로 반영한다.
     - 각 정규화 metric과 weighted contribution을 결과에서 검증할 수 있다.
   - Checklist:
-    - [ ] interval·clamp·rounding 계산 구현
-    - [ ] 완전 겹침·고음·저음·저신뢰 경계 fixture 테스트
+    - [x] interval·clamp·rounding 계산 구현
+    - [x] 완전 겹침·고음·저음·저신뢰 경계 fixture 테스트
 
 - [TODO][PRD-FR-009][PRD-FR-010] T-F004-03 추천 shift 탐색과 결정적 reason code 구현
   - Date: 2026-08-06
@@ -108,4 +108,4 @@
 | `npm run test:key-fit` | `-` | 실행 전 |
 | `npx tsc --noEmit && npm run lint && npm test` | `-` | 실행 전 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T15:19:57.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T15:21:34.000Z -->
