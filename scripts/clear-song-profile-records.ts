@@ -10,7 +10,8 @@ const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString }) })
 
 function withoutPipeline(value: Prisma.JsonValue | null): Prisma.InputJsonValue | undefined {
   if (!value || typeof value !== "object" || Array.isArray(value)) return undefined;
-  const { pipeline: _, ...metadata } = value as Record<string, Prisma.JsonValue>;
+  const metadata = { ...(value as Record<string, Prisma.JsonValue>) };
+  delete metadata.pipeline;
   return metadata as Prisma.InputJsonValue;
 }
 

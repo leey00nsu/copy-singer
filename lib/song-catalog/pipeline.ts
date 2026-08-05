@@ -13,6 +13,19 @@ type AnalyzerResult = Omit<SongProfileMetrics, "cleanupConfirmed"> & {
   cleanupConfirmed: boolean;
 };
 
+type SongAnalysisRuntime = {
+  maxAttempts?: number;
+  sleep?: (milliseconds: number) => Promise<void>;
+};
+
+const RETRYABLE_REASON_CODES = new Set([
+  "SONG_ANALYZER_FAILED",
+  "SONG_ANALYSIS_FAILED",
+  "YT_DLP_FAILED",
+  "PIPELINE_TIMEOUT",
+  "SONG_PIPELINE_FAILED",
+]);
+
 function positiveInteger(value: string | undefined, option: string) {
   const parsed = Number(value);
   if (!Number.isSafeInteger(parsed) || parsed < 1) {
@@ -61,11 +74,44 @@ async function requestSongAnalysis(
   return { ...result, cleanupConfirmed: true };
 }
 
+function analysisFailure(error: unknown) {
+  const message = error instanceof Error ? error.message : "Unknown song analysis error.";
+  const separatorIndex = message.indexOf(":");
+  return {
+    message,
+    reasonCode: separatorIndex > 0 ? message.slice(0, separatorIndex) : "SONG_ANALYSIS_FAILED",
+    detail: separatorIndex > 0 ? message.slice(separatorIndex + 1).trim() : message,
+  };
+}
+
+async function requestSongAnalysisWithRetry(
+  analyzerUrl: string,
+  sourceUrl: string,
+  sourceVideoId: string,
+  runtime: SongAnalysisRuntime,
+) {
+  const maxAttempts = runtime.maxAttempts ?? 3;
+  const sleep = runtime.sleep ?? ((milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds)));
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      return await requestSongAnalysis(analyzerUrl, sourceUrl, sourceVideoId);
+    } catch (error) {
+      lastError = error;
+      const failure = analysisFailure(error);
+      if (attempt === maxAttempts || !RETRYABLE_REASON_CODES.has(failure.reasonCode)) throw error;
+      await sleep(5_000 * attempt);
+    }
+  }
+  throw lastError;
+}
+
 export async function analyzeSongProfileArtifact(
   artifact: SongProfileArtifact,
   analyzerUrl: string,
   options: SongBatchOptions,
   persist: (artifact: SongProfileArtifact) => Promise<void>,
+  runtime: SongAnalysisRuntime = {},
 ) {
   const candidates = artifact.songs.filter(
     (entry) =>
@@ -81,22 +127,22 @@ export async function analyzeSongProfileArtifact(
       continue;
     }
     try {
-      entry.profile = await requestSongAnalysis(
+      entry.profile = await requestSongAnalysisWithRetry(
         analyzerUrl,
         entry.sourceUrl,
         entry.sourceVideoId,
+        runtime,
       );
       entry.status = "READY";
       entry.error = null;
       summary.succeeded += 1;
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown song analysis error.";
-      const separatorIndex = message.indexOf(":");
+      const failure = analysisFailure(error);
       entry.status = "FAILED";
       entry.profile = null;
       entry.error = {
-        reasonCode: separatorIndex > 0 ? message.slice(0, separatorIndex) : "SONG_ANALYSIS_FAILED",
-        detail: separatorIndex > 0 ? message.slice(separatorIndex + 1).trim() : message,
+        reasonCode: failure.reasonCode,
+        detail: failure.detail,
         updatedAt: new Date().toISOString(),
       };
       summary.failed += 1;

@@ -123,3 +123,55 @@ test("stores analyzer metrics in the artifact without a database", async (t) => 
   assert.equal(artifact.songs[0]?.status, "READY");
   assert.equal(artifact.songs[0]?.profile?.cleanupConfirmed, true);
 });
+
+test("retries transient analyzer failures before marking a song failed", async (t) => {
+  const entries = parseSongCatalogMarkdown(await readFile(catalogPath, "utf8"));
+  const artifact = createSongProfileArtifact(entries);
+  let requests = 0;
+  t.mock.method(globalThis, "fetch", async () => {
+    requests += 1;
+    if (requests === 1) {
+      return new Response(
+        JSON.stringify({ reasonCode: "YT_DLP_FAILED", detail: "temporary extractor failure" }),
+        { status: 422, headers: { "Content-Type": "application/json" } },
+      );
+    }
+    return new Response(
+      JSON.stringify({
+        durationMs: 1,
+        sampleRate: 22050,
+        sourceSizeBytes: 1,
+        minMidi: 48,
+        maxMidi: 72,
+        p10Midi: 52,
+        medianMidi: 60,
+        p90Midi: 69,
+        tessituraLowMidi: 52,
+        tessituraHighMidi: 69,
+        voicedRatio: 0.5,
+        pitchStability: 0.8,
+        clippingRatio: 0,
+        rmsDb: -18,
+        analyzer: "librosa-pyin",
+        analyzerVersion: "fixture",
+        descriptors: {},
+        ytDlpVersion: "fixture",
+        separator: "demucs",
+        separatorVersion: "fixture",
+        separatorModel: "htdemucs",
+        cleanupConfirmed: true,
+      }),
+      { status: 200, headers: { "Content-Type": "application/json" } },
+    );
+  });
+  const summary = await analyzeSongProfileArtifact(
+    artifact,
+    "http://analyzer.test",
+    { limit: 1, rank: null, resume: true },
+    async () => undefined,
+    { sleep: async () => undefined },
+  );
+  assert.equal(requests, 2);
+  assert.equal(summary.succeeded, 1);
+  assert.equal(artifact.songs[0]?.status, "READY");
+});

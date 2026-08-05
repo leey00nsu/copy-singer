@@ -86,6 +86,23 @@ Use `--rank 49 --resume` to retry one catalog entry, or omit `--rank` and set `-
 
 `catalog:analyze` is a local-development-only build workflow. For each allowlisted catalog URL, the analyzer downloads audio with yt-dlp into an OS temporary directory, separates vocals with Demucs, computes aggregate pYIN metrics, and removes the source plus every stem before responding. It writes metrics, source links, status, and tool versions atomically to the JSON artifact after each song; it does not create `Recording` or `VocalProfile` rows. Song audio is never stored in the repository, database, artifact, or a persistent Docker volume.
 
+For an optional three-song Modal GPU benchmark, install and authenticate the Modal CLI, then run:
+
+```bash
+python -m pip install -r services/song-catalog-analyzer/requirements-local.txt
+python -m modal setup
+python -m modal run services/song-catalog-analyzer/modal_app.py --limit 3
+```
+
+The command defaults to a three-song benchmark and accepts an explicitly approved limit up to 100. It downloads on the local machine because YouTube blocks Modal data-center IPs, uploads WAV files to an anonymous `Volume.ephemeral()`, runs up to eight independent L4 functions, updates the local JSON artifact, and deletes the temporary local directory and ephemeral Volume when the run exits. Individual local download failures do not stop the remaining GPU inputs. It does not deploy an endpoint or create a named media Volume.
+
+For a large batch, point the job-scoped local temporary directory at a disk with enough free space:
+
+```bash
+COPY_SINGER_TEMP_ROOT=/Volumes/sn850x/copy-singer-temp \
+  python -m modal run services/song-catalog-analyzer/modal_app.py --limit 86
+```
+
 Before release, require all 100 profiles to be present:
 
 ```bash
@@ -150,6 +167,7 @@ lib/db/                      Server-only Prisma client
 prisma/                      Prisma schema, migrations, and development seed
 scripts/                     Local database verification scripts
 services/soulx-singer-svc/   Modal GPU API deployment
+services/song-catalog-analyzer/  Ephemeral Modal L4 catalog benchmark
 services/vocal-profile-api/  Local FastAPI/librosa CPU analyzer
 work/vocal-profiles/         Ignored local recording storage
 ```
