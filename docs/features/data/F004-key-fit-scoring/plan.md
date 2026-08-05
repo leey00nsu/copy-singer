@@ -103,6 +103,8 @@ lib/key-fit/scorer.ts         # validation, candidate score, tie-break, reasons
 lib/key-fit/catalog.ts        # F003 artifact 100곡 bulk adapter
 tests/key-fit-scoring.test.ts # 수식·경계·동점·오류·100곡 회귀 테스트
 package.json                  # test:key-fit 및 전체 test 연결
+services/vocal-profile-api/app/config.py # 사용자 분석 최소 5초 gate
+components/vocal-profile-workbench.tsx   # TOO_SHORT 재시도 안내
 ```
 
 ---
@@ -119,6 +121,7 @@ package.json                  # test:key-fit 및 전체 test 연결
   - 실제 F003 artifact 100곡이 모두 평가되고 catalogOrder 순서를 유지
   - 같은 입력을 두 번 평가한 JSON 직렬화 결과가 동일
   - bulk 평가가 테스트 환경에서 100ms 목표를 만족
+  - 5초 경계 fixture와 실제 `vocal1.wav` profile로 100곡을 평가
 - **회귀 테스트**:
   - `npx tsc --noEmit`
   - `npm run lint`

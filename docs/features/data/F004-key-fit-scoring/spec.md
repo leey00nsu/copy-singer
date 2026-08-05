@@ -30,6 +30,7 @@ F002에서 생성한 사용자 보컬 프로필과 F003의 곡 보컬 프로필�
 - 원키 점수, 조정 점수, 추천 shift와 항목별 score breakdown 반환
 - 결정적 tie-break와 versioned scoring 계약
 - 경계값·대칭 입력·동점·저신뢰 입력 fixture 회귀 테스트
+- 5초 이상 사용자 가창의 profile 생성부터 100곡 scoring까지 실제 파일 통합 검증
 
 ### 제외 범위
 
@@ -49,6 +50,7 @@ F002에서 생성한 사용자 보컬 프로필과 F003의 곡 보컬 프로필�
 - **robust 극단음**: analyzer가 단일 octave 오류와 순간 잡음을 줄여 계산한 `minMidi`와 `maxMidi`다.
 - **shift 적용**: 곡의 모든 MIDI 통계에 같은 정수 semitone 값을 더한다. 음수는 키를 내리고 양수는 키를 올린다.
 - **호환 profile**: 사용자와 곡 profile이 필수 MIDI·품질 필드를 가지며 같은 analyzer 이름과 analyzer version을 사용한다.
+- **사용자 입력 길이**: F002 analyzer는 decoded duration 5초 이상을 허용하고 10~30초 가창 권장은 유지한다.
 
 ---
 

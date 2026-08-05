@@ -20,7 +20,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-data
 - **브랜치**: `feat/key-fit-scoring`
-- **대기 중 변경 요청**: -
+- **대기 중 변경 요청**: 결정: changes_requested — 사용자 분석 최소 길이를 8초에서 5초로 낮추고 vocal1.wav 실제 scoring 결과 검증
   - 구현 중 새로 수용한 사용자 요청을 잠시 표시하는 sync marker입니다
   - 요청을 `tasks.md`와 관련 문서에 반영한 뒤 값을 비우세요
   - pre-PR 리뷰 handoff를 시작하면 `Running`, 리뷰 결과 기록까지 끝나면 `Done`으로 변경
@@ -88,14 +88,24 @@
     - [x] bulk adapter와 package script 추가
     - [x] 실제 artifact 통합·성능·전체 회귀 테스트
 
+- [TODO][PRD-FR-002][PRD-FR-008][PRD-FR-009] T-F004-05 5초 사용자 분석 gate와 실제 WAV scoring 검증
+  - Date: 2026-08-06
+  - Acceptance:
+    - decoded duration 5초 이상은 길이 gate를 통과하고 5초 미만은 `TOO_SHORT`로 거절한다.
+    - UI의 재시도 안내와 F002 계약 문서가 5초 최소 기준과 일치한다.
+    - `vocal1.wav`로 사용자 profile을 생성하고 F003 100곡에 대한 원키 점수와 추천 shift를 계산한다.
+  - Checklist:
+    - [ ] analyzer config·오류 문구·UI 안내 및 경계 테스트 수정
+    - [ ] F002/F004 문서 동기화와 실제 WAV 100곡 scoring 검증
+
 ---
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
