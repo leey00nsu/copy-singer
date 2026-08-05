@@ -7,9 +7,9 @@
 - **Idea ID**: I002
 - **Idea Name**: user-vocal-profile
 - **Created**: 2026-08-05
-- **Status**: Active
+- **Status**: Featureized
   - 값: Active | Featureized | Dropped
-- **Feature**: -
+- **Feature**: F002-user-vocal-profile
 - **PRD Refs**: PRD-US-001, PRD-US-002, PRD-FR-001, PRD-FR-002, PRD-FR-003, PRD-FR-004, PRD-NFR-002, PRD-NFR-003, PRD-NFR-004
 - **Component**: web
 
