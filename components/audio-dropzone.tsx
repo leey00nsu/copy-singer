@@ -6,6 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Waveform } from "@/components/waveform";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+
+export const MAX_AUDIO_UPLOAD_BYTES = {
+  reference: 128 * 1024 * 1024,
+  target: 256 * 1024 * 1024,
+} as const;
 
 function formatBytes(bytes: number) {
   if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
@@ -35,11 +41,18 @@ export function AudioDropzone({
 
   const acceptFile = useCallback(
     (candidate?: File) => {
-      if (candidate?.type.startsWith("audio/") || candidate?.name.match(/\.(wav|mp3|flac|m4a|ogg|aac|webm)$/i)) {
-        onFile(candidate);
+      if (!candidate) return;
+      if (!(candidate.type.startsWith("audio/") || candidate.name.match(/\.(wav|mp3|flac|m4a|ogg|aac|webm)$/i))) {
+        toast.error("Choose a supported audio file.");
+        return;
       }
+      if (candidate.size > MAX_AUDIO_UPLOAD_BYTES[kind]) {
+        toast.error(`${kind === "reference" ? "Reference" : "Target"} audio must be ${formatBytes(MAX_AUDIO_UPLOAD_BYTES[kind])} or smaller.`);
+        return;
+      }
+      onFile(candidate);
     },
-    [onFile],
+    [kind, onFile],
   );
 
   const isReference = kind === "reference";
@@ -57,7 +70,7 @@ export function AudioDropzone({
                 {isReference ? "Reference voice" : "Target performance"}
               </CardTitle>
               <CardDescription className="mt-1 text-xs">
-                {isReference ? "Clean singing voice · up to 30 seconds" : "Vocal or full mix · up to 120 seconds"}
+                {isReference ? "Clean singing voice · up to 30 seconds" : "Vocal or full mix · up to 5 minutes"}
               </CardDescription>
             </div>
           </div>
@@ -120,7 +133,9 @@ export function AudioDropzone({
           >
             <span className="dropzone-icon"><UploadCloud className="size-5" /></span>
             <span className="text-sm font-medium">Drop audio here or browse</span>
-            <span className="text-xs text-muted-foreground">WAV, MP3, FLAC, M4A</span>
+            <span className="text-xs text-muted-foreground">
+              WAV, MP3, FLAC, M4A · max {isReference ? "128 MB" : "256 MB"}
+            </span>
           </label>
         )}
         <input

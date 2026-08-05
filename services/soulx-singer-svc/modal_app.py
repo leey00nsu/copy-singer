@@ -21,7 +21,8 @@ SOULX_ROOT = Path("/opt/SoulX-Singer")
 GPU_TYPE = os.getenv("SOULX_GPU", "L4")
 MAX_CONTAINERS = int(os.getenv("SOULX_MAX_CONTAINERS", "1"))
 SCALEDOWN_WINDOW = int(os.getenv("SOULX_SCALEDOWN_WINDOW", "60"))
-MAX_UPLOAD_BYTES = 100 * 1024 * 1024
+PROMPT_MAX_UPLOAD_BYTES = 128 * 1024 * 1024
+TARGET_MAX_UPLOAD_BYTES = 256 * 1024 * 1024
 JOB_TTL_SECONDS = 24 * 60 * 60
 
 app = modal.App(APP_NAME)
@@ -112,8 +113,8 @@ class SoulXModel:
             soulx_root=SOULX_ROOT,
             runtime_dir=Path("/tmp/soulx-runtime"),
             prompt_max_seconds=30,
-            target_max_seconds=120,
-            max_upload_bytes=MAX_UPLOAD_BYTES,
+            target_max_seconds=300,
+            max_upload_bytes=TARGET_MAX_UPLOAD_BYTES,
             job_ttl_hours=24,
             queue_size=1,
             fp16=True,
@@ -164,17 +165,21 @@ def _safe_audio_filename(prefix: str, original: str | None) -> str:
     return f"{prefix}{suffix if suffix in allowed else '.audio'}"
 
 
-async def _save_upload(upload, destination: Path) -> None:
+async def _save_upload(upload, destination: Path, max_bytes: int) -> None:
     destination.parent.mkdir(parents=True, exist_ok=True)
     size = 0
     try:
         with destination.open("wb") as output:
             while chunk := await upload.read(1024 * 1024):
                 size += len(chunk)
-                if size > MAX_UPLOAD_BYTES:
+                if size > max_bytes:
                     from fastapi import HTTPException
 
-                    raise HTTPException(status_code=413, detail="Uploaded file is too large")
+                    max_mb = max_bytes // (1024 * 1024)
+                    raise HTTPException(
+                        status_code=413,
+                        detail=f"{upload.filename or 'Uploaded file'} exceeds the {max_mb} MB limit",
+                    )
                 output.write(chunk)
     finally:
         await upload.close()
@@ -266,8 +271,16 @@ def web():
         prompt_filename = _safe_audio_filename("prompt", prompt_audio.filename)
         target_filename = _safe_audio_filename("target", target_audio.filename)
         try:
-            await _save_upload(prompt_audio, job_dir / prompt_filename)
-            await _save_upload(target_audio, job_dir / target_filename)
+            await _save_upload(
+                prompt_audio,
+                job_dir / prompt_filename,
+                PROMPT_MAX_UPLOAD_BYTES,
+            )
+            await _save_upload(
+                target_audio,
+                job_dir / target_filename,
+                TARGET_MAX_UPLOAD_BYTES,
+            )
             await job_volume.commit.aio()
         except Exception:
             shutil.rmtree(job_dir, ignore_errors=True)

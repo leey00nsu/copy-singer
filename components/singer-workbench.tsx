@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ArrowRight, CircleAlert, Download, LoaderCircle, Mic2, RefreshCw, Sparkles, Square } from "lucide-react";
 import { toast } from "sonner";
 import { AdvancedSettings, DEFAULT_SETTINGS, type ConversionSettings } from "@/components/advanced-settings";
-import { AudioDropzone } from "@/components/audio-dropzone";
+import { AudioDropzone, MAX_AUDIO_UPLOAD_BYTES } from "@/components/audio-dropzone";
 import { Waveform } from "@/components/waveform";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -21,11 +21,12 @@ type JobState = {
 };
 
 async function readError(response: Response) {
+  const text = await response.text();
   try {
-    const body = (await response.json()) as { detail?: string; error?: string };
+    const body = JSON.parse(text) as { detail?: string; error?: string };
     return body.detail ?? body.error ?? `Request failed (${response.status})`;
   } catch {
-    return `Request failed (${response.status})`;
+    return text.trim() || `Request failed (${response.status})`;
   }
 }
 
@@ -67,6 +68,14 @@ export function SingerWorkbench() {
   const submit = async () => {
     if (!referenceFile || !targetFile) {
       toast.error("Add both a reference voice and target performance.");
+      return;
+    }
+    if (referenceFile.size > MAX_AUDIO_UPLOAD_BYTES.reference) {
+      toast.error("Reference audio must be 128 MB or smaller.");
+      return;
+    }
+    if (targetFile.size > MAX_AUDIO_UPLOAD_BYTES.target) {
+      toast.error("Target audio must be 256 MB or smaller.");
       return;
     }
 
