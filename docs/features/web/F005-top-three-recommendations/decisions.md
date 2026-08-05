@@ -30,7 +30,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **DOING 시작 시점**: JSON/DB 두 소스를 catalogOrder만으로 느슨하게 연결하면 오래된 데이터가 섞일 수 있으므로 제목·가수·상태까지 preflight하는 접근을 계획했다.
   - **DONE 전 확정 시점**: scorer 출력의 반올림된 공개 점수로 명세 순서대로 정렬하고 입력 배열을 복사한 뒤 상위 3개만 rank로 보강한다. artifact가 READY 100곡의 분석 SSOT이며 DB는 catalogOrder 1~100의 식별자·메타데이터를 제목/가수까지 대조한 뒤 사용자 실행만 저장한다.
-  - **머지 후 확인**: 미실행.
+  - **머지 후 확인**: 2026-08-06 로컬 `main` fast-forward 병합 완료.
 - **Evidence**:
   - **Commit**: 구현 태스크 커밋 후 기록.
   - **PR**: 로컬 workflow로 생성하지 않음.
@@ -47,7 +47,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **DOING 시작 시점**: handoff를 선택 context와 실제 변환 입력 사이의 명시적 경계로 설계했다.
   - **DONE 전 확정 시점**: 결과 카드는 `runId`와 `itemId`만 query로 전달하고 Workbench가 run GET 응답에서 item 포함 관계를 확인한다. 표시 배너와 추천 결과 복귀 링크만 추가하고 conversion FormData와 초기 settings는 변경하지 않았다.
-  - **머지 후 확인**: 미실행.
+  - **머지 후 확인**: 2026-08-06 로컬 `main` fast-forward 병합 완료.
 - **Evidence**:
   - **Commit**: handoff 태스크 커밋 후 기록.
   - **PR**: 로컬 workflow로 생성하지 않음.
@@ -64,7 +64,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **DOING 시작 시점**: 초기 RSC 직접 조회를 구현했다.
   - **DONE 전 확정 시점**: 개발 브라우저에서 WebAssembly client 유입 오류를 관찰해 API fetch 구조로 바꿨고 production 브라우저에서 정상 카드 렌더링을 확인했다.
-  - **머지 후 확인**: 미실행.
+  - **머지 후 확인**: 2026-08-06 로컬 `main` fast-forward 병합 완료.
 - **Evidence**:
   - **Commit**: UI 태스크 커밋 후 기록.
   - **PR**: 로컬 workflow로 생성하지 않음.
@@ -81,7 +81,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **DOING 시작 시점**: 자동 합성이 reference/target 두 입력과 Modal job 세 개를 새로 조율해야 함을 확인했다.
   - **DONE 전 확정 시점**: 사용자가 명시적으로 F005 완료 후 F006 진행을 선택했다.
-  - **머지 후 확인**: F005 local merge 후 기록 예정.
+  - **머지 후 확인**: 2026-08-06 로컬 `main` fast-forward 병합 후 F006 분리 진행.
 - **Evidence**:
   - **Commit**: F005 완료 문서 커밋 후 기록.
   - **PR**: 로컬 workflow로 생성하지 않음.

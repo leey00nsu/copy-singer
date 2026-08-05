@@ -119,4 +119,4 @@
 | `npm run db:validate` | `2026-08-06` | PASS — Prisma schema valid |
 | `production local recommendation → SVC handoff` | `2026-08-06` | PASS — 3 CTA, 저장 관계의 곡 context, pitch 0·빈 업로드·비활성 Convert 확인 후 fixture 제거 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T18:42:01.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T18:42:40.000Z -->
