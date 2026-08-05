@@ -8,6 +8,7 @@ import {
 } from "../lib/key-fit/contract";
 import {
   calculateProfileConfidence,
+  scoreKeyFit,
   scoreKeyFitCandidate,
   validateCompatibleKeyFitProfiles,
   validateKeyFitProfile,
@@ -143,4 +144,79 @@ test("candidate scoring rejects fractional shifts", () => {
     () => scoreKeyFitCandidate(USER_PROFILE_FIXTURE, SONG_PROFILE_FIXTURE, 0.5),
     (error: unknown) => error instanceof KeyFitScoringError && error.code === "INVALID_PROFILE",
   );
+});
+
+test("recommends lowering a song whose range is two semitones high", () => {
+  const result = scoreKeyFit(USER_PROFILE_FIXTURE, SONG_PROFILE_FIXTURE);
+
+  assert.equal(result.recommendedShift, -2);
+  assert.ok(result.adjustedScore > result.originalKeyScore);
+  assert.deepEqual(result.reasonCodes, [
+    "KEY_SHIFT_IMPROVES_FIT",
+    "HIGH_TESSITURA_OVERLAP",
+    "HIGH_NOTES_REDUCED",
+  ]);
+  assert.equal(result.recommended.tessituraOverlapRatio, 1);
+});
+
+test("recommends raising a song whose range is three semitones low", () => {
+  const lowSong: KeyFitProfile = {
+    ...USER_PROFILE_FIXTURE,
+    minMidi: 45,
+    maxMidi: 69,
+    p10Midi: 49,
+    medianMidi: 57,
+    p90Midi: 65,
+    tessituraLowMidi: 49,
+    tessituraHighMidi: 65,
+  };
+  const result = scoreKeyFit(USER_PROFILE_FIXTURE, lowSong);
+
+  assert.equal(result.recommendedShift, 3);
+  assert.ok(result.reasonCodes.includes("LOW_NOTES_REDUCED"));
+});
+
+test("keeps the original key when it is already the best candidate", () => {
+  const result = scoreKeyFit(USER_PROFILE_FIXTURE, USER_PROFILE_FIXTURE);
+
+  assert.equal(result.recommendedShift, 0);
+  assert.deepEqual(result.reasonCodes, ["ORIGINAL_KEY_BEST", "HIGH_TESSITURA_OVERLAP"]);
+});
+
+test("uses the smallest absolute shift for a flat tie plateau", () => {
+  const wideUser: KeyFitProfile = {
+    ...USER_PROFILE_FIXTURE,
+    minMidi: 24,
+    maxMidi: 96,
+    p10Midi: 30,
+    medianMidi: 60,
+    p90Midi: 90,
+    tessituraLowMidi: 30,
+    tessituraHighMidi: 90,
+  };
+  const narrowSong: KeyFitProfile = {
+    ...SONG_PROFILE_FIXTURE,
+    minMidi: 56,
+    maxMidi: 64,
+    p10Midi: 57,
+    medianMidi: 60,
+    p90Midi: 63,
+    tessituraLowMidi: 57,
+    tessituraHighMidi: 63,
+  };
+
+  assert.equal(scoreKeyFit(wideUser, narrowSong).recommendedShift, 0);
+});
+
+test("adds a low-confidence reason without changing deterministic serialization", () => {
+  const lowConfidenceUser = {
+    ...USER_PROFILE_FIXTURE,
+    voicedRatio: 0.25,
+    pitchStability: 0.2,
+  };
+  const first = scoreKeyFit(lowConfidenceUser, SONG_PROFILE_FIXTURE);
+  const second = scoreKeyFit(lowConfidenceUser, SONG_PROFILE_FIXTURE);
+
+  assert.ok(first.reasonCodes.includes("LOW_PROFILE_CONFIDENCE"));
+  assert.equal(JSON.stringify(first), JSON.stringify(second));
 });

@@ -1,7 +1,12 @@
 import {
+  KEY_FIT_SCORING_VERSION,
+  KEY_SHIFT_MAX,
+  KEY_SHIFT_MIN,
   KeyFitScoringError,
   type KeyFitProfile,
+  type KeyFitReasonCode,
   type KeyFitScoreBreakdown,
+  type KeyFitScoreResult,
 } from "./contract";
 
 const SCORE_WEIGHTS = {
@@ -12,6 +17,7 @@ const SCORE_WEIGHTS = {
 } as const;
 
 const EXCESS_PENALTY_CAP_SEMITONES = 12;
+const SCORE_TIE_EPSILON = 1e-9;
 
 const NUMERIC_FIELDS = [
   "minMidi",
@@ -197,5 +203,82 @@ export function scoreKeyFitCandidate(
     },
     rawScore,
     score: round(rawScore, 2),
+  };
+}
+
+function compareCandidates(first: KeyFitScoreBreakdown, second: KeyFitScoreBreakdown): number {
+  const scoreDifference = first.rawScore - second.rawScore;
+  if (Math.abs(scoreDifference) > SCORE_TIE_EPSILON) return scoreDifference;
+
+  const highBurdenDifference = second.highTessituraExcess - first.highTessituraExcess;
+  if (Math.abs(highBurdenDifference) > SCORE_TIE_EPSILON) return highBurdenDifference;
+
+  const firstExtremeBurden = first.highExtremeExcess + first.lowExtremeExcess;
+  const secondExtremeBurden = second.highExtremeExcess + second.lowExtremeExcess;
+  const extremeBurdenDifference = secondExtremeBurden - firstExtremeBurden;
+  if (Math.abs(extremeBurdenDifference) > SCORE_TIE_EPSILON) return extremeBurdenDifference;
+
+  const absoluteShiftDifference = Math.abs(second.shift) - Math.abs(first.shift);
+  if (absoluteShiftDifference !== 0) return absoluteShiftDifference;
+
+  return second.shift - first.shift;
+}
+
+function buildReasonCodes(
+  original: KeyFitScoreBreakdown,
+  recommended: KeyFitScoreBreakdown,
+): KeyFitReasonCode[] {
+  const codes: KeyFitReasonCode[] = [];
+  if (recommended.shift === 0) codes.push("ORIGINAL_KEY_BEST");
+  if (recommended.shift !== 0 && recommended.rawScore > original.rawScore + SCORE_TIE_EPSILON) {
+    codes.push("KEY_SHIFT_IMPROVES_FIT");
+  }
+  if (recommended.tessituraOverlapRatio >= 0.8) codes.push("HIGH_TESSITURA_OVERLAP");
+  if (recommended.highTessituraExcess > 0 || recommended.highExtremeExcess > 0) {
+    codes.push("HIGH_RANGE_BURDEN");
+  }
+  if (recommended.lowTessituraExcess > 0 || recommended.lowExtremeExcess > 0) {
+    codes.push("LOW_RANGE_BURDEN");
+  }
+  if (
+    recommended.highTessituraExcess + recommended.highExtremeExcess <
+    original.highTessituraExcess + original.highExtremeExcess - SCORE_TIE_EPSILON
+  ) {
+    codes.push("HIGH_NOTES_REDUCED");
+  }
+  if (
+    recommended.lowTessituraExcess + recommended.lowExtremeExcess <
+    original.lowTessituraExcess + original.lowExtremeExcess - SCORE_TIE_EPSILON
+  ) {
+    codes.push("LOW_NOTES_REDUCED");
+  }
+  if (recommended.confidence < 0.6) codes.push("LOW_PROFILE_CONFIDENCE");
+  return codes;
+}
+
+export function scoreKeyFit(user: KeyFitProfile, song: KeyFitProfile): KeyFitScoreResult {
+  validateCompatibleKeyFitProfiles(user, song);
+
+  const candidates: KeyFitScoreBreakdown[] = [];
+  for (let shift = KEY_SHIFT_MIN; shift <= KEY_SHIFT_MAX; shift += 1) {
+    candidates.push(scoreKeyFitCandidate(user, song, shift));
+  }
+
+  const original = candidates.find((candidate) => candidate.shift === 0);
+  if (!original) throw new Error("The configured key shift range must include zero.");
+
+  const recommended = candidates.reduce((best, candidate) =>
+    compareCandidates(candidate, best) > 0 ? candidate : best,
+  );
+
+  return {
+    scoringVersion: KEY_FIT_SCORING_VERSION,
+    originalKeyScore: original.score,
+    adjustedScore: recommended.score,
+    recommendedShift: recommended.shift,
+    confidence: recommended.confidence,
+    reasonCodes: buildReasonCodes(original, recommended),
+    original,
+    recommended,
   };
 }
