@@ -1,4 +1,6 @@
 from dataclasses import dataclass
+import os
+from pathlib import Path
 
 
 @dataclass(frozen=True)
@@ -24,3 +26,16 @@ GUIDE_START_MIDI = {
     "high": 60,
 }
 GUIDE_NOTE_DURATION_SECONDS = 0.75
+
+MAX_UPLOAD_BYTES = 25 * 1024 * 1024
+UPLOAD_CHUNK_BYTES = 1024 * 1024
+STORAGE_ROOT = Path(os.environ.get("VOCAL_PROFILE_STORAGE_ROOT", "work/vocal-profiles"))
+SOURCE_TTL_HOURS = 24
+ALLOWED_MIME_TYPES = {
+    "audio/wav": ".wav",
+    "audio/x-wav": ".wav",
+    "audio/mpeg": ".mp3",
+    "audio/mp4": ".m4a",
+    "audio/x-m4a": ".m4a",
+    "audio/webm": ".webm",
+}
