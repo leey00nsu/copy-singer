@@ -49,7 +49,7 @@
     - [x] Prisma transaction 및 metadata version 기록
     - [x] Python/TypeScript 회귀 테스트
 
-- [DOING][PRD-FR-005][PRD-FR-006][PRD-FR-007] T-F003-05 소규모 실행 스모크와 로컬 사용 문서화
+- [DONE][PRD-FR-005][PRD-FR-006][PRD-FR-007] T-F003-05 소규모 실행 스모크와 로컬 사용 문서화
   - Date: 2026-08-05
   - Acceptance:
     - 최소 1곡의 download→separate→analyze 흐름을 확인하거나 외부 제한 원인을 명시한다.
