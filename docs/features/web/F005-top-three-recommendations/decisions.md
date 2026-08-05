@@ -46,12 +46,12 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 추천 의미를 보존하고 조작된 query 표시값을 신뢰하지 않으며 기존 검증된 SVC 흐름을 그대로 유지한다.
 - **Trace**:
   - **DOING 시작 시점**: handoff를 선택 context와 실제 변환 입력 사이의 명시적 경계로 설계했다.
-  - **DONE 전 확정 시점**: 구현 후 보강 예정.
+  - **DONE 전 확정 시점**: 결과 카드는 `runId`와 `itemId`만 query로 전달하고 Workbench가 run GET 응답에서 item 포함 관계를 확인한다. 표시 배너와 추천 결과 복귀 링크만 추가하고 conversion FormData와 초기 settings는 변경하지 않았다.
   - **머지 후 확인**: 미실행.
 - **Evidence**:
   - **Commit**: handoff 태스크 커밋 후 기록.
   - **PR**: 로컬 workflow로 생성하지 않음.
-  - **Test/Log**: SSR 및 전체 회귀 결과를 태스크 완료 시 기록.
+  - **Test/Log**: production local handoff에서 저장 곡 context, SVC pitch `0`, 빈 reference/target, 비활성 Convert 확인. `npm test`와 handoff 단위/UI 테스트 PASS.
 - **Consequences**: 사용자는 target 파일과 advanced settings를 직접 확인해야 하며 자동 합성 데모는 후속 기능으로 남는다.
 
 ## D003: 결과 페이지의 DB 접근을 API 경계로 제한 (2026-08-06)

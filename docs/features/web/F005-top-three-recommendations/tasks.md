@@ -86,14 +86,14 @@
     - [x] profile CTA와 recommendation result page/component 구현
     - [x] loading/error/not-found/delete와 SSR 접근성 테스트
 
-- [TODO][PRD-FR-013][PRD-FR-014][PRD-FR-015] T-F005-04 선택 곡 SVC handoff와 전체 로컬 회귀 검증
+- [DONE][PRD-FR-013][PRD-FR-014][PRD-FR-015] T-F005-04 선택 곡 SVC handoff와 전체 로컬 회귀 검증
   - Date: 2026-08-06
   - Acceptance:
     - 선택한 run/item의 DB 관계로 검증된 곡명·가수·추천 키 context를 기존 Workbench에 표시한다.
     - 자동 다운로드·자동 변환·pitch 자동 적용 없이 기존 파일 업로드, advanced settings, 변환 상태와 결과 흐름이 유지된다.
   - Checklist:
-    - [ ] 식별자 query handoff와 Workbench context 구현
-    - [ ] TypeScript, lint, production build, Prisma, 전체 테스트 및 로컬 UI 검증
+    - [x] 식별자 query handoff와 Workbench context 구현
+    - [x] TypeScript, lint, production build, Prisma, 전체 테스트 및 로컬 UI 검증
 
 ---
 
@@ -101,8 +101,8 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -112,9 +112,10 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `npm run test:recommendation` | `2026-08-06` | PASS — 9 tests, ranking 7 + top3/low-confidence UI 2 |
+| `npm run test:recommendation` | `2026-08-06` | PASS — 11 tests, ranking/API mapping 8 + top3/low-confidence/handoff UI 3 |
 | `npm run test:recommendation:db` | `2026-08-06` | PASS — 실제 PostgreSQL run+3 items 생성·조회·cascade 삭제 및 fixture 정리 |
-| `npx tsc --noEmit && npm run lint && npm test` | `-` | 대기 |
+| `npx tsc --noEmit && npm run lint && npm test` | `2026-08-06` | PASS — TypeScript, ESLint, production build, 기존 profile/catalog/key-fit/UI/API 전체 회귀 |
 | `npm run db:validate` | `2026-08-06` | PASS — Prisma schema valid |
+| `production local recommendation → SVC handoff` | `2026-08-06` | PASS — 3 CTA, 저장 관계의 곡 context, pitch 0·빈 업로드·비활성 Convert 확인 후 fixture 제거 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T17:45:16.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T17:48:43.000Z -->

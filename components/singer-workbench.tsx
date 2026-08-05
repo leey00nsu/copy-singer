@@ -7,12 +7,15 @@ import { toast } from "sonner";
 import { AdvancedSettings, DEFAULT_SETTINGS, type ConversionSettings } from "@/components/advanced-settings";
 import { AudioDropzone, MAX_AUDIO_UPLOAD_BYTES } from "@/components/audio-dropzone";
 import { Waveform } from "@/components/waveform";
+import { RecommendationHandoffBanner } from "@/components/recommendation-handoff";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import type { RecommendationRunResponse } from "@/lib/recommendation/contract";
+import { selectRecommendationHandoff, type RecommendationHandoff } from "@/lib/recommendation/handoff";
 
 type JobState = {
   id: string;
@@ -38,12 +41,44 @@ export function SingerWorkbench() {
   const [job, setJob] = useState<JobState | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [apiStatus, setApiStatus] = useState<"checking" | "online" | "offline">("checking");
+  const [recommendation, setRecommendation] = useState<RecommendationHandoff | null>(null);
+  const [handoffError, setHandoffError] = useState(false);
   const busy = submitting || job?.status === "queued" || job?.status === "processing";
 
   useEffect(() => {
     void fetch("/api/health", { cache: "no-store" })
       .then((response) => setApiStatus(response.ok ? "online" : "offline"))
       .catch(() => setApiStatus("offline"));
+  }, []);
+
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+    const runId = query.get("runId");
+    const itemId = query.get("itemId");
+    if (!runId && !itemId) return;
+    if (!runId || !itemId) {
+      window.queueMicrotask(() => setHandoffError(true));
+      return;
+    }
+    const controller = new AbortController();
+    fetch(`/api/recommendations/${encodeURIComponent(runId)}`, {
+      cache: "no-store",
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          setHandoffError(true);
+          return;
+        }
+        const run = await response.json() as RecommendationRunResponse;
+        const selected = selectRecommendationHandoff(run, itemId);
+        if (!selected) setHandoffError(true);
+        else setRecommendation(selected);
+      })
+      .catch((error: unknown) => {
+        if (!(error instanceof DOMException && error.name === "AbortError")) setHandoffError(true);
+      });
+    return () => controller.abort();
   }, []);
 
   const refreshJob = useCallback(async (jobId: string) => {
@@ -147,6 +182,9 @@ export function SingerWorkbench() {
           <h1>Weave a new voice into<br className="hidden sm:block" /> the performance.</h1>
           <p>Choose a singing voice, add the performance to transform, then let SoulX-Singer preserve its melody and expression.</p>
         </section>
+
+        {recommendation ? <RecommendationHandoffBanner selection={recommendation} /> : null}
+        {handoffError ? <p className="mt-6 rounded-xl border border-amber-500/30 bg-amber-500/8 p-4 text-sm text-muted-foreground" role="status">추천 선택 정보를 확인할 수 없습니다. 추천 결과에서 곡을 다시 선택해주세요. 기존 수동 합성 기능은 그대로 사용할 수 있습니다.</p> : null}
 
         <div className="workbench-grid mt-9">
           <section className="space-y-4">

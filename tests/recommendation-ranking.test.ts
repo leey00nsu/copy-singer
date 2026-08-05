@@ -7,6 +7,7 @@ import type { SongProfileArtifact } from "../lib/song-catalog/artifact";
 import {
   RecommendationError,
   RECOMMENDATION_RESULT_COUNT,
+  type RecommendationRunResponse,
 } from "../lib/recommendation/contract";
 import {
   formatRecommendationReasons,
@@ -18,6 +19,7 @@ import {
   validateAndIndexSongRows,
   validateRecommendationArtifact,
 } from "../lib/recommendation/data";
+import { selectRecommendationHandoff } from "../lib/recommendation/handoff";
 import type { KeyFitProfile } from "../lib/key-fit/contract";
 
 const USER_PROFILE_FIXTURE: KeyFitProfile = {
@@ -153,4 +155,14 @@ test("rejects database metadata drift before scoring or persistence", () => {
     () => buildTopRecommendations(USER_PROFILE_FIXTURE, rows, artifact),
     (error: unknown) => error instanceof RecommendationError && error.code === "CATALOG_NOT_READY",
   );
+});
+
+test("selects a handoff only when the item belongs to the stored run", () => {
+  const scored = scoreCatalogKeyFits(USER_PROFILE_FIXTURE, artifact)[0]!;
+  const item = {
+    id: "item-1", rank: 1, songId: "song-1", catalogOrder: 1, title: "Song", artist: "Artist", sourceUrl: "https://www.youtube.com/watch?v=NbKH4iZqq1Y", originalKeyScore: 80, adjustedScore: 95, recommendedShift: -2, reasonCodes: [], reasons: [], metrics: { confidence: 0.8, original: scored.original, recommended: scored.recommended },
+  };
+  const run: RecommendationRunResponse = { id: "run-1", userVocalProfileId: "profile-1", scoringVersion: "key-fit-v1", createdAt: "2026-08-06T00:00:00.000Z", profileConfidence: 0.8, lowConfidence: false, profile: { analyzer: "librosa-pyin", analyzerVersion: "0.11.0", tessituraLowMidi: 52, tessituraHighMidi: 68, minMidi: 48, maxMidi: 72 }, items: [item] };
+  assert.deepEqual(selectRecommendationHandoff(run, "item-1"), { runId: "run-1", id: "item-1", title: "Song", artist: "Artist", recommendedShift: -2, originalKeyScore: 80, adjustedScore: 95 });
+  assert.equal(selectRecommendationHandoff(run, "item-from-another-run"), null);
 });

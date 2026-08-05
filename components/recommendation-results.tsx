@@ -10,6 +10,7 @@ import {
   Music2,
   Sparkles,
   Trash2,
+  WandSparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -121,6 +122,7 @@ export function RecommendationResults({
                 <ul className="space-y-2 text-xs leading-5 text-muted-foreground">
                   {item.reasons.slice(0, 3).map((reason) => <li className="flex gap-2" key={reason}><span aria-hidden="true" className="mt-2 size-1 shrink-0 rounded-full bg-primary" />{reason}</li>)}
                 </ul>
+                <a className={`${buttonVariants({ variant: item.rank === 1 ? "default" : "outline" })} w-full`} href={`/?runId=${encodeURIComponent(run.id)}&itemId=${encodeURIComponent(item.id)}`}><WandSparkles className="size-4" /> 합성 데모로</a>
               </CardContent>
             </Card>
           ))}

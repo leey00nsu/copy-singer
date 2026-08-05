@@ -3,6 +3,7 @@ import test from "node:test";
 import { renderToStaticMarkup } from "react-dom/server";
 
 import { RecommendationResults } from "../components/recommendation-results";
+import { RecommendationHandoffBanner } from "../components/recommendation-handoff";
 import type { RecommendationRunResponse } from "../lib/recommendation/contract";
 import { scoreCatalogKeyFits } from "../lib/key-fit/catalog";
 import type { SongProfileArtifact } from "../lib/song-catalog/artifact";
@@ -29,6 +30,15 @@ test("renders three ranked recommendation cards with responsible-use guidance", 
   assert.match(html, /추천 노래방 키/);
   assert.match(html, /이번 한 소절에서 관찰된 음역/);
   assert.match(html, /가창력이나 건강 상태를 평가하지 않습니다/);
+  assert.equal((html.match(/합성 데모로/g) ?? []).length, 3);
+});
+
+test("renders verified handoff context without implying automatic SVC settings", () => {
+  const html = renderToStaticMarkup(<RecommendationHandoffBanner selection={{ runId: run.id, id: run.items[0]!.id, title: run.items[0]!.title, artist: run.items[0]!.artist, recommendedShift: -2, originalKeyScore: 70, adjustedScore: 92 }} />);
+  assert.match(html, /추천 결과에서 선택한 곡/);
+  assert.match(html, /-2키/);
+  assert.match(html, /SVC pitch 설정에는 자동 적용되지 않으며/);
+  assert.match(html, /target 오디오도 직접 선택/);
 });
 
 test("keeps low-confidence ranking visible with a rerecording warning", () => {
