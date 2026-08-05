@@ -14,6 +14,7 @@ import {
 } from "./synthesis-state";
 
 const MODAL_RESULT_TTL_MS = 24 * 60 * 60 * 1_000;
+const PREPARING_STALE_MS = 15 * 60 * 1_000;
 
 type ModalJob = {
   id: string;
@@ -235,6 +236,22 @@ async function fetchModalJob(jobId: string) {
 }
 
 export async function reconcileRecommendationSyntheses(runId: string) {
+  const now = new Date();
+  await prisma.recommendationItem.updateMany({
+    where: {
+      runId,
+      synthesisStatus: "PREPARING",
+      synthesisUpdatedAt: { lt: new Date(now.getTime() - PREPARING_STALE_MS) },
+    },
+    data: {
+      synthesisStatus: "FAILED",
+      synthesisErrorCode: "SYNTHESIS_PREPARING_TIMEOUT",
+      synthesisErrorDetail: "오디오 준비 시간이 초과됐습니다. 이 곡을 다시 시도해주세요.",
+      synthesisRetryable: true,
+      synthesisUpdatedAt: now,
+      synthesisCompletedAt: now,
+    },
+  });
   const items = await prisma.recommendationItem.findMany({
     where: { runId, synthesisStatus: { in: ["QUEUED", "PROCESSING"] }, synthesisJobId: { not: null } },
   });

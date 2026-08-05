@@ -114,7 +114,7 @@ test("expired reference fails before target download or Modal creation", async (
   }
   const { prisma } = await import("../lib/db/prisma");
   const { createRecommendationRun } = await import("../lib/recommendation/server");
-  const { startRecommendationSynthesis } = await import("../lib/recommendation/synthesis");
+  const { reconcileRecommendationSyntheses, startRecommendationSynthesis } = await import("../lib/recommendation/synthesis");
   const recordingId = crypto.randomUUID();
   const profileId = crypto.randomUUID();
   const originalFetch = globalThis.fetch;
@@ -131,6 +131,15 @@ test("expired reference fails before target download or Modal creation", async (
     globalThis.fetch = async () => { fetchCount += 1; return new Response(); };
     await assert.rejects(() => startRecommendationSynthesis(run.id, run.items[0]!.id), /만료/);
     assert.equal(fetchCount, 0);
+    await prisma.recommendationItem.update({
+      where: { id: run.items[0]!.id },
+      data: { synthesisStatus: "PREPARING", synthesisUpdatedAt: new Date(Date.now() - 16 * 60_000) },
+    });
+    await reconcileRecommendationSyntheses(run.id);
+    const recovered = await prisma.recommendationItem.findUniqueOrThrow({ where: { id: run.items[0]!.id } });
+    assert.equal(recovered.synthesisStatus, "FAILED");
+    assert.equal(recovered.synthesisErrorCode, "SYNTHESIS_PREPARING_TIMEOUT");
+    assert.equal(recovered.synthesisRetryable, true);
   } finally {
     globalThis.fetch = originalFetch;
     await prisma.recommendationRun.deleteMany({ where: { userVocalProfileId: profileId } });
