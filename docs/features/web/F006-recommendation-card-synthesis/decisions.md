@@ -72,3 +72,22 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Commit**: 구현 커밋에서 기록
   - **PR**: 로컬-only, 생성하지 않음
   - **Test/Log**: Python 18/18 PASS, orchestration DB integration 3/3 PASS, local analyzer health 및 두 media path OpenAPI 확인 (2026-08-06)
+
+---
+
+## D004: 실제 Modal 검증은 최소 1건 후 즉시 cleanup (2026-08-06)
+
+- **Context**: mock 계약만으로는 대용량 target 전달, Modal L4 실행과 결과 audio proxy가 실제 배포에서 동작하는지 증명할 수 없다.
+- **Constraints**: 실제 호출은 Modal credit을 소비하고 프로젝트/DB에 원곡을 보존할 수 없으며 신규 배포는 범위 밖이다.
+- **Options**: mock만 검증, 실제 3건 실행, 실제 1건과 3-card mock lifecycle 결합을 비교했다.
+- **Decision**: 사용자 예시 `vocal1.wav`의 실제 추천 1위 한 건을 현재 배포에 제출하고 나머지 3-card 동시성/부분 상태는 integration/UI 테스트로 검증한다. 성공 확인 후 외부 job과 fixture를 즉시 삭제한다.
+- **Rationale**: 비용을 제한하면서도 analyzer → PostgreSQL → recommendation → allowlist download → Modal → status → audio → cleanup의 모든 실제 경계를 통과한다.
+- **Trace**:
+  - **DOING 시작 시점**: 먼저 health와 7.152초 입력 유효성을 확인한 뒤 profile/run을 생성했다.
+  - **DONE 전 확정 시점**: 추천 1위 `아크라포빅` job이 154.7초 만에 succeeded했다. 결과는 133.944초, 6,429,372-byte PCM s16le 24kHz mono WAV였고 SHA-256은 `166752404b9c0ac4511c7a55e6382f3566f91f7665b3ef5bded5a73513715c44`였다. analyzer temp dir 0, run/profile/recording DB 0, Modal status 404를 확인했다.
+  - **머지 후 확인**: 실제 결과/영향
+- **Evidence**:
+  - **Commit**: 구현 커밋에서 기록
+  - **PR**: 로컬-only, 생성하지 않음
+  - **Test/Log**: `/tmp/copy-singer-f006-result.wav`; final `npm test`, DB integration 3/3, Python 18/18, lint, TypeScript, Prisma validate PASS (2026-08-06)
+- **Consequences**: 실제 결과 샘플만 프로젝트 밖 `/tmp`에 남기고 원곡과 서버 측 fixture는 제거했다. 세 곡 전체 실호출은 사용자의 실제 UI 사용 시 자동 순차 제출된다.

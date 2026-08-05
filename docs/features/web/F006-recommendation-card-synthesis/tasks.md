@@ -58,25 +58,25 @@
     - [x] `/dev/svc` 경로와 일반 진입 경로 정리
     - [x] UI/SSR 테스트, lint, TypeScript와 production build 통과
 
-- [TODO][PRD-US-007][PRD-FR-016][PRD-NFR-002][PRD-NFR-003] T-F006-04 사용자 예시 보컬 실제 Modal 파이프라인 검증
+- [DONE][PRD-US-007][PRD-FR-016][PRD-NFR-002][PRD-NFR-003] T-F006-04 사용자 예시 보컬 실제 Modal 파이프라인 검증
   - Date: 2026-08-06
   - Acceptance:
     - `/Volumes/sn850x/ai/노래/vocal1.wav`로 로컬 profile/recommendation을 생성하고 추천 item이 현재 배포된 Modal에서 terminal 상태에 도달한다.
     - 결과 WAV가 재생 가능한 비어 있지 않은 audio 응답이며 원본·중간 임시 파일 cleanup과 DB metadata를 확인한다.
     - 신규 Next/Modal 배포 없이 실제 호출 결과, 소요 시간과 남은 제한을 문서화한다.
   - Checklist:
-    - [ ] local PostgreSQL/analyzer preflight와 테스트 fixture 생성
-    - [ ] 실제 recommendation-card synthesis 최소 1건 성공 확인
-    - [ ] 세 카드 lifecycle은 실제 또는 mock 통합 검증으로 확인
-    - [ ] 결과 audio·preset·cleanup·DB 상태 evidence 기록 및 테스트 데이터 정리
+    - [x] local PostgreSQL/analyzer preflight와 테스트 fixture 생성
+    - [x] 실제 recommendation-card synthesis 최소 1건 성공 확인
+    - [x] 세 카드 lifecycle은 실제 또는 mock 통합 검증으로 확인
+    - [x] 결과 audio·preset·cleanup·DB 상태 evidence 기록 및 테스트 데이터 정리
 
 ---
 
 ## 완료 조건
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 Acceptance 검증 및 Checklist 체크 완료
-- [ ] 테스트 실행 및 통과
-- [ ] 최종 결과를 공유했고 workflow checkpoint 결과를 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 Acceptance 검증 및 Checklist 체크 완료
+- [x] 테스트 실행 및 통과
+- [x] 최종 결과를 공유했고 workflow checkpoint 결과를 기록함
 
 ### 테스트 실행 기록
 
@@ -84,10 +84,10 @@
 | --- | --- | --- |
 | `npx prisma validate` | `2026-08-06` | `PASS — schema valid, migration applied to local PostgreSQL` |
 | `npm run lint` | `2026-08-06` | `PASS — UI 포함 전체 lint` |
-| `npx tsc --noEmit` | `2026-08-06` | `PASS` |
+| `npx tsc --noEmit` | `2026-08-06` | `PASS — final regression` |
 | `npm test` | `2026-08-06` | `PASS — build, SSR 3, catalog 7, key-fit 18, recommendation 15` |
 | `python -m pytest services/vocal-profile-api/tests` | `2026-08-06` | `PASS — 18 tests` |
-| `npm run test:recommendation:db` | `2026-08-06` | `PASS — 3 integration tests` |
-| `vocal1.wav -> current Modal smoke test` | `-` | `-` |
+| `npm run test:recommendation:db` | `2026-08-06` | `PASS — 3 integration tests including idempotency, reconcile, cleanup, stale recovery` |
+| `vocal1.wav -> current Modal smoke test` | `2026-08-06` | `PASS — rank 1 아크라포빅, L4 succeeded in 154.7s, WAV 133.944s / 6,429,372 bytes / PCM s16le 24kHz mono` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T19:05:10.501Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T19:11:51.103Z -->
