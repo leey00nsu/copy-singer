@@ -15,7 +15,8 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/recommendation-card-synthesis`
-- **대기 중 변경 요청**: 결정: approve — `vocal1.wav` 추천 3곡 모두 실제 Modal `succeeded`, 결과 WAV와 cleanup 확인
+- **대기 중 변경 요청**: -
+- **구현 승인**: 2026-08-06 사용자 승인 — `vocal1.wav` 추천 3곡 모두 실제 Modal `succeeded`, 결과 WAV와 cleanup 확인
 - **PR 리뷰**: -
 - **PR 리뷰 Evidence**: -
 
@@ -90,4 +91,4 @@
 | `npm run test:recommendation:db` | `2026-08-06` | `PASS — 3 integration tests including idempotency, reconcile, cleanup, stale recovery` |
 | `vocal1.wav -> current Modal 3-card test` | `2026-08-06` | `PASS — rank 1/2/3 all succeeded; WAV 133.944s / 210.721s / 242.629s; all PCM s16le 24kHz mono; three distinct SHA-256` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T19:23:16.618Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T19:31:17.300Z -->
