@@ -35,6 +35,16 @@ Feature로 발전하기 전의 아이디어 / To-do / 실험 기록을 모아두
    - `tasks.md` 태스크 라인의 PRD ID 태그(`[PRD-FR-001]`, `[PRD-SCOPE-V1-DESKTOP-EDITOR]` 등)
 5. 아이디어 문서는 삭제하지 말고 `Status: Featureized`, `Feature: F00X-...`로 남기는 것을 권장합니다
 
+## Copy Singer 구현 순서
+
+1. `I001-data-foundation`
+2. `I002-user-vocal-profile`
+3. `I003-song-catalog-profiles`
+4. `I004-key-fit-scoring`
+5. `I005-top-three-recommendations`
+
+앞 단계의 데이터 계약이 확정된 뒤 다음 Idea를 Feature로 승격합니다.
+
 > 💡 source idea 문서를 남겨두면 “왜 이 Feature가 생겼는지” 추적하기 쉽습니다.
 
 ---

@@ -1,4 +1,4 @@
-# Vocal Loom Constitution
+# Copy Singer Constitution
 
 프로젝트의 핵심 원칙과 기술 결정 가이드라인입니다.
 모든 개발 결정은 이 문서를 기준으로 합니다.
@@ -12,7 +12,7 @@
 
 ## 프로젝트 미션
 
-권한이 있는 가창 데이터를 이용한 singing voice conversion을 안전하고 비용 예측 가능한 로컬 워크벤치로 제공한다.
+사용자의 가창 특성을 설명 가능한 데이터로 분석하고, 맞는 노래와 키를 추천하며, 권한이 있는 데이터로 합성 데모까지 제공한다.
 
 ---
 
@@ -26,6 +26,9 @@
 | FastAPI | 0.116.1 | multipart API와 비동기 작업 엔드포인트 |
 | Modal | CLI 1.x | serverless L4 GPU, Volume, Dict, FunctionCall |
 | SoulX-Singer | pinned commit | 재현 가능한 SVC 추론 |
+| PostgreSQL | 16+ | 프로필·곡·추천 결과의 관계형 SSOT |
+| Prisma | 최신 고정 버전 | 타입 안전한 schema, migration, query client |
+| librosa | 고정 버전 | CPU 기반 보컬 pitch/descriptor MVP 분석 |
 
 ### Frontend
 
@@ -53,6 +56,8 @@
 - 브라우저는 Modal을 직접 호출하지 않고 Next.js API proxy만 호출한다.
 - Next.js proxy는 오디오를 재파싱·버퍼링하지 않고 multipart body를 스트리밍한다.
 - CPU web function은 접수와 상태 관리를, GPU worker는 모델 추론을 담당한다.
+- 보컬 프로필과 추천은 CPU에서 결정적으로 계산하고 분석 버전을 DB에 기록한다.
+- PostgreSQL schema는 Prisma migration으로만 변경한다.
 - 모델과 작업 파일은 서로 다른 Modal Volume 관심사로 분리한다.
 - 기능 작업의 SSOT는 활성 lee-spec-kit feature의 `spec.md`, `plan.md`, `tasks.md`, `decisions.md`다.
 

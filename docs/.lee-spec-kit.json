@@ -1,9 +1,10 @@
 {
-  "projectName": "vocal-loom",
+  "projectName": "copy-singer",
   "projectType": "multi",
   "components": [
     "web",
-    "modal-api"
+    "modal-api",
+    "data"
   ],
   "lang": "ko",
   "createdAt": "2026-08-05",

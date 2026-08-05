@@ -1,4 +1,4 @@
-# vocal-loom 문서 구조 가이드
+# copy-singer 문서 구조 가이드
 
 에이전트가 프로젝트 전반을 빠르게 파악할 수 있도록 문서를 기능별로 분리해 두었습니다.
 
@@ -131,7 +131,7 @@ npx lee-spec-kit docs get agents --json
 
 ```json
 {
-  "projectName": "vocal-loom",
+  "projectName": "copy-singer",
   "projectType": "multi",
   "lang": "ko",
   "createdAt": "2026-08-05",
@@ -149,13 +149,13 @@ npx lee-spec-kit docs get agents --json
 
 ```json
 {
-  "projectName": "vocal-loom",
+  "projectName": "copy-singer",
   "projectType": "multi",
   "lang": "ko",
   "createdAt": "2026-08-05",
   "docsRepo": "standalone",
   "pushDocs": true,
-  "docsRemote": "git@github.com:org/vocal-loom-docs.git",
+  "docsRemote": "git@github.com:org/copy-singer-docs.git",
   "approval": {
     "mode": "category",
     "default": "skip",

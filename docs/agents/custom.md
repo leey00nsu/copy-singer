@@ -23,9 +23,9 @@
 
 ## 커스텀 워크플로우
 
-- 요구사항은 `docs/prd/vocal-loom-prd.md`에 안정적인 `PRD-*` ID로 먼저 기록한다.
+- 요구사항은 `docs/prd/copy-singer-prd.md`에 안정적인 `PRD-*` ID로 먼저 기록한다.
 - 구현 전 필요하면 idea를 만들고, 확정된 작업만 component feature로 승격한다.
-- 웹 기능은 `web`, Modal/FastAPI/GPU 기능은 `modal-api` 컴포넌트에서 관리한다.
+- 웹 기능은 `web`, Modal/FastAPI/GPU 기능은 `modal-api`, PostgreSQL/Prisma 기능은 `data` 컴포넌트에서 관리한다.
 - 두 컴포넌트를 함께 변경하는 기능은 주 책임 컴포넌트에 feature를 두고 plan에 교차 변경 경로를 기록한다.
 
 ---

@@ -1,6 +1,6 @@
-# Vocal Loom
+# Copy Singer
 
-A minimal SoulX-Singer singing voice conversion workbench built with the latest Next-compatible App Router surface, React 19, Tailwind CSS 4, and shadcn/ui. The Modal service is kept in `services/soulx-singer-svc`.
+Copy Singer analyzes a user's test singing, compares the resulting vocal profile with song profiles, recommends suitable songs and karaoke keys, and provides a SoulX-Singer voice-conversion demo. The current implementation contains the SVC workbench; profiling and recommendations are tracked through lee-spec-kit docs.
 
 ## Local setup
 

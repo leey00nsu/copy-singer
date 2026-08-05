@@ -62,4 +62,4 @@ PRD의 “어느 요구사항이 구현됐는지”를 CLI가 집계할 수 있�
 
 ## 현재 PRD
 
-- [Vocal Loom PRD](vocal-loom-prd.md)
+- [Copy Singer PRD](copy-singer-prd.md)
