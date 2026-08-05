@@ -70,3 +70,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 workflow로 생성하지 않음.
   - **Test/Log**: `npm run test:recommendation` 9 tests PASS, `npm run build` PASS, production local DOM·full-page visual 확인.
 - **Consequences**: 첫 화면은 짧은 loading 상태를 거치지만 DB 코드가 client bundle/hydration 경계에 들어가지 않는다.
+
+## D004: 자동 3곡 합성을 F006으로 분리 (2026-08-06)
+
+- **Context**: F005 결과 검토에서 사용자는 자유 reference/target Workbench를 개발용으로 남기고, 추천 카드 자체가 세 곡을 자동 합성해 재생하기를 요청했다.
+- **Constraints**: 이 변경은 카드 UI를 넘어 사용자 녹음 reference 접근, 원곡 URL의 임시 다운로드, 세 개 GPU job orchestration·상태·결과 저장, 원본 정리 정책이 필요하다.
+- **Options**: F005 범위를 다시 열어 확장, F005를 현재 추천/수동 handoff로 완료하고 자동 합성을 F006으로 분리.
+- **Decision**: F005는 검증된 추천과 개발용 Workbench handoff까지로 완료하고, 사용자용 카드 내 자동 3곡 합성은 F006의 독립 feature로 구현한다.
+- **Rationale**: 이미 완료된 태스크 이력을 보존하고 비용·저작권·비동기 lifecycle을 별도 명세와 테스트 경계에서 다룰 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 자동 합성이 reference/target 두 입력과 Modal job 세 개를 새로 조율해야 함을 확인했다.
+  - **DONE 전 확정 시점**: 사용자가 명시적으로 F005 완료 후 F006 진행을 선택했다.
+  - **머지 후 확인**: F005 local merge 후 기록 예정.
+- **Evidence**:
+  - **Commit**: F005 완료 문서 커밋 후 기록.
+  - **PR**: 로컬 workflow로 생성하지 않음.
+  - **Test/Log**: F005 기존 전체 회귀 결과 유지.
+- **Consequences**: 현재 `합성 데모로`는 개발용 Workbench로 연결되며 F006 완료 시 사용자용 추천 카드가 자동 합성 상태와 결과 플레이어를 소유한다.
