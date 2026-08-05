@@ -115,6 +115,15 @@
     - [x] README와 환경 변수 예시에 analyzer 실행·분석 명령을 기록한다.
     - [x] Python tests, TypeScript, lint, build, npm test, Prisma validate와 workflow audit을 통과한다.
 
+- [TODO][PRD-FR-001] T-F002-user-vocal-profile-07 OmniVoice 허밍 기반 안내 멜로디 음원 구현
+  - Date: 2026-08-05
+  - Acceptance:
+    - OmniVoice가 생성한 지속 허밍을 기준 음정으로 보정하고 sine 20%를 혼합한 low/medium/high 안내 WAV가 기존 80 BPM 타임라인과 정확히 일치하며 브라우저 fallback을 유지한다.
+  - Checklist:
+    - [ ] 3900 OmniVoice API로 재현 가능한 dry humming seed를 생성하고 F0를 측정한다.
+    - [ ] 세 preset의 음정·길이·crossfade와 sine 20% 혼합 자산 생성 스크립트를 구현한다.
+    - [ ] 브라우저 preview를 정적 WAV 우선, oscillator fallback으로 전환하고 음정·UI 회귀를 검증한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
