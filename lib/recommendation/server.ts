@@ -11,6 +11,7 @@ import {
 } from "./contract";
 import { buildTopRecommendations } from "./data";
 import { formatRecommendationReasons } from "./ranking";
+import { parseSynthesisAttempts, toPublicSynthesisStatus } from "./synthesis-state";
 
 const runInclude = {
   userVocalProfile: true,
@@ -117,6 +118,26 @@ export function serializeRecommendationRun(run: StoredRun): RecommendationRunRes
         recommended: metrics.recommended,
       }),
       metrics,
+      synthesis: {
+        status: item.synthesisStatus ? toPublicSynthesisStatus(item.synthesisStatus) : "not_started" as const,
+        jobId: item.synthesisJobId,
+        error: item.synthesisErrorCode
+          ? {
+              code: item.synthesisErrorCode,
+              detail: item.synthesisErrorDetail ?? "합성 작업을 완료하지 못했습니다.",
+              retryable: item.synthesisRetryable ?? false,
+            }
+          : null,
+        startedAt: item.synthesisStartedAt?.toISOString() ?? null,
+        updatedAt: item.synthesisUpdatedAt?.toISOString() ?? null,
+        completedAt: item.synthesisCompletedAt?.toISOString() ?? null,
+        expiresAt: item.synthesisExpiresAt?.toISOString() ?? null,
+        attemptCount: parseSynthesisAttempts(item.synthesisAttempts).length + (item.synthesisStatus ? 1 : 0),
+        audioUrl:
+          item.synthesisStatus === "SUCCEEDED"
+            ? `/api/recommendations/${run.id}/items/${item.id}/synthesis/audio`
+            : null,
+      },
     };
   });
   const profileConfidence = items[0]?.metrics.confidence ?? 0;

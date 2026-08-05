@@ -20,7 +20,7 @@ const run: RecommendationRunResponse = {
   profileConfidence: ranked[0]!.confidence,
   lowConfidence: false,
   profile: { analyzer: profile.analyzer, analyzerVersion: profile.analyzerVersion, tessituraLowMidi: profile.tessituraLowMidi, tessituraHighMidi: profile.tessituraHighMidi, minMidi: profile.minMidi, maxMidi: profile.maxMidi },
-  items: ranked.map((item, index) => ({ id: `item-${index}`, rank: item.rank, songId: `song-${index}`, catalogOrder: item.catalogOrder, title: item.title, artist: item.artist, sourceUrl: item.sourceUrl, originalKeyScore: item.originalKeyScore, adjustedScore: item.adjustedScore, recommendedShift: item.recommendedShift, reasonCodes: item.reasonCodes, reasons: formatRecommendationReasons(item), metrics: { confidence: item.confidence, original: item.original, recommended: item.recommended } })),
+  items: ranked.map((item, index) => ({ id: `item-${index}`, rank: item.rank, songId: `song-${index}`, catalogOrder: item.catalogOrder, title: item.title, artist: item.artist, sourceUrl: item.sourceUrl, originalKeyScore: item.originalKeyScore, adjustedScore: item.adjustedScore, recommendedShift: item.recommendedShift, reasonCodes: item.reasonCodes, reasons: formatRecommendationReasons(item), metrics: { confidence: item.confidence, original: item.original, recommended: item.recommended }, synthesis: { status: "not_started", jobId: null, error: null, startedAt: null, updatedAt: null, completedAt: null, expiresAt: null, attemptCount: 0, audioUrl: null } })),
 };
 
 test("renders three ranked recommendation cards with responsible-use guidance", () => {

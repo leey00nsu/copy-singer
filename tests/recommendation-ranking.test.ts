@@ -160,7 +160,7 @@ test("rejects database metadata drift before scoring or persistence", () => {
 test("selects a handoff only when the item belongs to the stored run", () => {
   const scored = scoreCatalogKeyFits(USER_PROFILE_FIXTURE, artifact)[0]!;
   const item = {
-    id: "item-1", rank: 1, songId: "song-1", catalogOrder: 1, title: "Song", artist: "Artist", sourceUrl: "https://www.youtube.com/watch?v=NbKH4iZqq1Y", originalKeyScore: 80, adjustedScore: 95, recommendedShift: -2, reasonCodes: [], reasons: [], metrics: { confidence: 0.8, original: scored.original, recommended: scored.recommended },
+    id: "item-1", rank: 1, songId: "song-1", catalogOrder: 1, title: "Song", artist: "Artist", sourceUrl: "https://www.youtube.com/watch?v=NbKH4iZqq1Y", originalKeyScore: 80, adjustedScore: 95, recommendedShift: -2, reasonCodes: [], reasons: [], metrics: { confidence: 0.8, original: scored.original, recommended: scored.recommended }, synthesis: { status: "not_started" as const, jobId: null, error: null, startedAt: null, updatedAt: null, completedAt: null, expiresAt: null, attemptCount: 0, audioUrl: null },
   };
   const run: RecommendationRunResponse = { id: "run-1", userVocalProfileId: "profile-1", scoringVersion: "key-fit-v1", createdAt: "2026-08-06T00:00:00.000Z", profileConfidence: 0.8, lowConfidence: false, profile: { analyzer: "librosa-pyin", analyzerVersion: "0.11.0", tessituraLowMidi: 52, tessituraHighMidi: 68, minMidi: 48, maxMidi: 72 }, items: [item] };
   assert.deepEqual(selectRecommendationHandoff(run, "item-1"), { runId: "run-1", id: "item-1", title: "Song", artist: "Artist", recommendedShift: -2, originalKeyScore: 80, adjustedScore: 95 });

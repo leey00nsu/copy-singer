@@ -5,6 +5,32 @@ import type {
 
 export const RECOMMENDATION_RESULT_COUNT = 3;
 
+export const SYNTHESIS_STATUSES = [
+  "preparing",
+  "queued",
+  "processing",
+  "succeeded",
+  "failed",
+] as const;
+
+export type SynthesisStatus = (typeof SYNTHESIS_STATUSES)[number];
+
+export type RecommendationSynthesis = {
+  status: SynthesisStatus | "not_started";
+  jobId: string | null;
+  error: {
+    code: string;
+    detail: string;
+    retryable: boolean;
+  } | null;
+  startedAt: string | null;
+  updatedAt: string | null;
+  completedAt: string | null;
+  expiresAt: string | null;
+  attemptCount: number;
+  audioUrl: string | null;
+};
+
 export type RecommendationErrorCode =
   | "INVALID_REQUEST"
   | "INVALID_PROFILE"
@@ -57,6 +83,7 @@ export type RecommendationItemResponse = {
   reasonCodes: KeyFitReasonCode[];
   reasons: string[];
   metrics: RecommendationScoreMetrics;
+  synthesis: RecommendationSynthesis;
 };
 
 export type RecommendationRunResponse = {
