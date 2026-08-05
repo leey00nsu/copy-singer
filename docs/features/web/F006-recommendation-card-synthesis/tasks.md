@@ -77,7 +77,7 @@
 
 - [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 Acceptance 검증 및 Checklist 체크 완료
 - [x] 테스트 실행 및 통과
-- [x] 최종 결과를 공유했고 workflow checkpoint 결과를 기록함
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
