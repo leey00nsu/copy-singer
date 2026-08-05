@@ -9,11 +9,11 @@
 - **Rationale**: 검증된 출력 템플릿과 FFmpeg post-processing을 사용하면서 웹 공격면과 임의 URL 수집을 피한다.
 - **Trace**:
   - **DOING 시작 시점**: 제공 목록이 100행, 순위 연속, video ID 유일임을 확인했다.
-  - **DONE 전 확정 시점**: 구현·스모크 결과로 보강한다.
+  - **DONE 전 확정 시점**: 1위 곡을 실제 처리해 aggregate profile 저장과 임시 디렉터리 삭제를 확인했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: 구현 커밋 예정
-  - **Test/Log**: `tests/song-catalog.test.ts`
+  - **Commit**: `38999a3`, `a3902a5`
+  - **Test/Log**: `tests/song-catalog.test.ts`, `npm run catalog:verify` (`count=100`, `readyCount=1`)
 - **Consequences**: 실행자는 대상 콘텐츠를 다운로드·분석할 권리를 확인해야 하며 원본·stem은 프로젝트, DB, 영구 volume 어디에도 보관하지 않는다.
 
 ## D002: Demucs two-stem vocals를 분리 기준으로 사용 (2026-08-05)
@@ -25,11 +25,11 @@
 - **Rationale**: 공식 CLI가 vocals/no-vocals 계약을 제공하고 기존 GPU 합성 서비스와 결합하지 않아도 된다.
 - **Trace**:
   - **DOING 시작 시점**: Demucs 공식 저장소에서 two-stem CLI와 모델 계약을 확인했다.
-  - **DONE 전 확정 시점**: 실제 한 곡 분리 경로와 버전을 기록한다.
+  - **DONE 전 확정 시점**: CPU-only Demucs 4.0.1 `htdemucs`로 실제 한 곡 분리를 완료했다. 출력 stem은 분석 후 삭제됐다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: 구현 커밋 예정
-  - **Test/Log**: F003 실행 스모크 로그
+  - **Commit**: `a3902a5`
+  - **Test/Log**: `npm run catalog:analyze -- --rank 1 --resume` 성공 1건
 - **Consequences**: CPU 일괄 처리는 오래 걸리고 최초 실행에서 모델 weight 다운로드가 발생한다.
 
 ## D003: 곡과 사용자 프로필에 같은 분석기를 사용 (2026-08-05)
@@ -41,11 +41,11 @@
 - **Rationale**: metric drift와 큰 multipart proxy를 피하면서 모든 중간 파일의 삭제 경계를 한 프로세스가 책임질 수 있다.
 - **Trace**:
   - **DOING 시작 시점**: F002 분석 코어와 저장 계약을 검토했다.
-  - **DONE 전 확정 시점**: 동일 fixture 결과와 path traversal 거부 테스트로 보강한다.
+  - **DONE 전 확정 시점**: song endpoint contract, 잘못된 URL 거부, 같은 `librosa-pyin` 출력과 DB transaction을 확인했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: 구현 커밋 예정
-  - **Test/Log**: analyzer API test 예정
+  - **Commit**: `a3902a5`
+  - **Test/Log**: `services/vocal-profile-api/tests/test_api.py`, `tests/test_song_pipeline.py`
 
 ## D004: 곡 음원과 stem을 영구 저장하지 않음 (2026-08-05)
 
@@ -56,8 +56,8 @@
 - **Rationale**: 프로젝트와 영구 volume에 원본이 남지 않고 생명주기를 테스트할 수 있다.
 - **Trace**:
   - **DOING 시작 시점**: 실제 음원 다운로드 전에 요구사항을 변경했다.
-  - **DONE 전 확정 시점**: 성공·실패 삭제 테스트로 보강한다.
+  - **DONE 전 확정 시점**: 성공·Demucs 실패 모두 temp root가 비고, 실제 한 곡 이후 컨테이너 `/tmp`에 job prefix가 없음을 확인했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: 구현 커밋 예정
-  - **Test/Log**: F003 ephemeral cleanup test 예정
+  - **Commit**: `a3902a5`
+  - **Test/Log**: `services/vocal-profile-api/tests/test_song_pipeline.py` 4 cases PASS
