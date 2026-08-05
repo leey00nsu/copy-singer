@@ -5,6 +5,7 @@ import {
   appendSynthesisAttempt,
   canTransitionSynthesis,
   parseSynthesisAttempts,
+  SYNTHESIS_PRESET,
   toPublicSynthesisStatus,
 } from "../lib/recommendation/synthesis-state";
 
@@ -17,6 +18,13 @@ test("synthesis lifecycle only permits forward transitions and explicit retry", 
   assert.equal(canTransitionSynthesis("SUCCEEDED", "PROCESSING"), false);
   assert.equal(canTransitionSynthesis("FAILED", "PREPARING"), true);
   assert.equal(canTransitionSynthesis("FAILED", "QUEUED"), false);
+});
+
+test("automatic recommendation synthesis keeps the original target pitch", () => {
+  assert.equal(SYNTHESIS_PRESET.auto_pitch_shift, false);
+  assert.equal(SYNTHESIS_PRESET.pitch_shift, 0);
+  assert.equal(SYNTHESIS_PRESET.target_vocal_separation, true);
+  assert.equal(SYNTHESIS_PRESET.auto_mix_accompaniment, true);
 });
 
 test("stored statuses serialize to the public lowercase contract", () => {

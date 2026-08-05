@@ -26,7 +26,7 @@
     "test:catalog": "tsx --test tests/song-catalog.test.ts",
     "test:key-fit": "tsx --test tests/key-fit-scoring.test.ts",
     "test:recommendation": "tsx --test tests/recommendation-ranking.test.ts tests/recommendation-synthesis.test.ts tests/recommendation-ui.test.tsx",
-    "test:recommendation:db": "node --conditions react-server --import tsx --test tests/recommendation-persistence.integration.ts"
+    "test:recommendation:db": "node --conditions react-server --import tsx --test tests/recommendation-persistence.integration.ts tests/recommendation-synthesis.integration.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

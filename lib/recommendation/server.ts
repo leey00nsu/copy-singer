@@ -222,6 +222,8 @@ export async function deleteRecommendationRun(id: string) {
       status: 404,
     });
   }
+  const { cleanupRecommendationSyntheses } = await import("./synthesis");
+  await cleanupRecommendationSyntheses(id);
   await prisma.recommendationRun.delete({ where: { id } });
   return { status: "deleted" as const, id };
 }

@@ -62,6 +62,11 @@ def test_health_analyze_and_delete(tmp_path, monkeypatch) -> None:
         assert body["analyzer"] == "librosa-pyin"
         assert (main.STORAGE_ROOT / body["storagePath"]).exists()
 
+        source_response = client.get(f"/v1/recordings/{recording_id}/source")
+        assert source_response.status_code == 200
+        assert source_response.headers["content-type"].startswith("audio/wav")
+        assert len(source_response.content) > 0
+
         deleted = client.delete(f"/v1/recordings/{recording_id}")
         assert deleted.status_code == 200
         assert not (main.STORAGE_ROOT / recording_id).exists()
@@ -144,3 +149,30 @@ def test_song_url_endpoint_returns_metrics_only_after_cleanup(monkeypatch) -> No
     assert body["cleanupConfirmed"] is True
     assert "storagePath" not in body
     assert "sourceUrl" not in body
+
+
+def test_song_target_streams_then_removes_temporary_download(tmp_path, monkeypatch) -> None:
+    from app import main
+
+    job_path = tmp_path / "copy-singer-song-fixture"
+    job_path.mkdir()
+    target = job_path / "source.wav"
+    target.write_bytes(b"RIFF-fixture")
+
+    def fake_download(source_url: str, expected_video_id: str):
+        assert source_url.endswith("NbKH4iZqq1Y")
+        assert expected_video_id == "NbKH4iZqq1Y"
+        return job_path, target
+
+    monkeypatch.setattr(main, "download_song_target", fake_download)
+    with TestClient(app) as client:
+        response = client.post(
+            "/v1/song-target",
+            json={
+                "sourceUrl": "https://www.youtube.com/watch?v=NbKH4iZqq1Y",
+                "expectedVideoId": "NbKH4iZqq1Y",
+            },
+        )
+    assert response.status_code == 200
+    assert response.content == b"RIFF-fixture"
+    assert not job_path.exists()

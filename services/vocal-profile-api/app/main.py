@@ -9,7 +9,7 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import FastAPI, File, Form, Header, HTTPException, UploadFile
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 
 from .analysis import AnalysisRejectedError, SegmentBounds, analyze_wav
 from .config import (
@@ -32,6 +32,7 @@ from .song_pipeline import (
     analyze_song_url,
     cleanup_abandoned_jobs,
     dependency_status,
+    download_song_target,
 )
 
 
@@ -115,6 +116,54 @@ async def analyze_song(request: SongAnalysisRequest) -> SongAnalysisResponse:
         request.expectedVideoId,
     )
     return SongAnalysisResponse(**result)
+
+
+@app.get("/v1/recordings/{recording_id}/source")
+async def recording_source(recording_id: str) -> FileResponse:
+    directory = _recording_directory(recording_id)
+    sources = sorted(directory.glob("source.*")) if directory.is_dir() else []
+    if len(sources) != 1 or not sources[0].is_file():
+        raise HTTPException(status_code=404, detail="Recording source was not found.")
+    source = sources[0]
+    mime_types = {
+        ".wav": "audio/wav",
+        ".mp3": "audio/mpeg",
+        ".m4a": "audio/mp4",
+        ".webm": "audio/webm",
+    }
+    return FileResponse(
+        source,
+        media_type=mime_types.get(source.suffix, "application/octet-stream"),
+        filename=source.name,
+    )
+
+
+@app.post("/v1/song-target")
+async def song_target(request: SongAnalysisRequest) -> StreamingResponse:
+    job_path, source_path = await asyncio.to_thread(
+        download_song_target,
+        request.sourceUrl,
+        request.expectedVideoId,
+    )
+    size = source_path.stat().st_size
+
+    async def stream_and_cleanup():
+        try:
+            with source_path.open("rb") as source:
+                while chunk := source.read(1024 * 1024):
+                    yield chunk
+                    await asyncio.sleep(0)
+        finally:
+            shutil.rmtree(job_path, ignore_errors=True)
+
+    return StreamingResponse(
+        stream_and_cleanup(),
+        media_type="audio/wav",
+        headers={
+            "Content-Length": str(size),
+            "Content-Disposition": 'attachment; filename="target.wav"',
+        },
+    )
 
 
 @app.post(

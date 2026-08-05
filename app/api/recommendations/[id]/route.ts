@@ -1,5 +1,6 @@
 import { RecommendationError } from "@/lib/recommendation/contract";
 import { deleteRecommendationRun, getRecommendationRun } from "@/lib/recommendation/server";
+import { reconcileRecommendationSyntheses } from "@/lib/recommendation/synthesis";
 
 function errorResponse(error: unknown) {
   if (error instanceof RecommendationError) {
@@ -16,7 +17,9 @@ function errorResponse(error: unknown) {
 
 export async function GET(_: Request, context: { params: Promise<{ id: string }> }) {
   try {
-    return Response.json(await getRecommendationRun((await context.params).id));
+    const id = (await context.params).id;
+    await reconcileRecommendationSyntheses(id);
+    return Response.json(await getRecommendationRun(id));
   } catch (error) {
     return errorResponse(error);
   }

@@ -98,6 +98,49 @@ def _run_command(command: list[str], timeout_seconds: int) -> None:
         raise SongPipelineError(f"{tool.upper().replace('-', '_')}_FAILED", f"{tool} could not process this catalog item.")
 
 
+def download_song_target(
+    source_url: str,
+    expected_video_id: str,
+    *,
+    temp_root: str | Path | None = None,
+) -> tuple[Path, Path]:
+    """Download one allowlisted target; the caller owns and must delete the returned directory."""
+    _validate_source_url(source_url, expected_video_id)
+    job_path = Path(tempfile.mkdtemp(prefix=JOB_PREFIX, dir=temp_root))
+    try:
+        source_template = job_path / "source.%(ext)s"
+        _run_command(
+            [
+                sys.executable,
+                "-m",
+                "yt_dlp",
+                "--ignore-config",
+                "--no-playlist",
+                "--no-progress",
+                "--no-warnings",
+                "--force-overwrites",
+                "-f",
+                "bestaudio/best",
+                "-x",
+                "--audio-format",
+                "wav",
+                "--audio-quality",
+                "0",
+                "-o",
+                str(source_template),
+                source_url,
+            ],
+            timeout_seconds=600,
+        )
+        source_path = job_path / "source.wav"
+        if not source_path.is_file():
+            raise SongPipelineError("DOWNLOAD_OUTPUT_MISSING", "yt-dlp did not produce the expected audio file.")
+        return job_path, source_path
+    except Exception:
+        shutil.rmtree(job_path, ignore_errors=True)
+        raise
+
+
 def analyze_song_url(
     source_url: str,
     expected_video_id: str,
@@ -114,24 +157,9 @@ def analyze_song_url(
             source_template = job_path / "source.%(ext)s"
             _run_command(
                 [
-                    sys.executable,
-                    "-m",
-                    "yt_dlp",
-                    "--ignore-config",
-                    "--no-playlist",
-                    "--no-progress",
-                    "--no-warnings",
-                    "--force-overwrites",
-                    "-f",
-                    "bestaudio/best",
-                    "-x",
-                    "--audio-format",
-                    "wav",
-                    "--audio-quality",
-                    "0",
-                    "-o",
-                    str(source_template),
-                    source_url,
+                    sys.executable, "-m", "yt_dlp", "--ignore-config", "--no-playlist",
+                    "--no-progress", "--no-warnings", "--force-overwrites", "-f", "bestaudio/best",
+                    "-x", "--audio-format", "wav", "--audio-quality", "0", "-o", str(source_template), source_url,
                 ],
                 timeout_seconds=600,
             )

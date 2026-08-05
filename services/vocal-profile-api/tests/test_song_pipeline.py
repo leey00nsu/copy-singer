@@ -107,3 +107,28 @@ def test_cleanup_abandoned_jobs_only_removes_owned_prefix(tmp_path) -> None:
     assert song_pipeline.cleanup_abandoned_jobs(tmp_path) == 1
     assert not abandoned.exists()
     assert unrelated.exists()
+
+
+def test_download_song_target_returns_caller_owned_allowlisted_file(tmp_path, monkeypatch) -> None:
+    def fake_run(command: list[str], timeout_seconds: int) -> None:
+        assert timeout_seconds == 600
+        output = Path(command[command.index("-o") + 1].replace("%(ext)s", "wav"))
+        _write_singing_fixture(output)
+
+    monkeypatch.setattr(song_pipeline, "_run_command", fake_run)
+    job_path, source_path = song_pipeline.download_song_target(SOURCE_URL, VIDEO_ID, temp_root=tmp_path)
+    assert job_path.parent == tmp_path
+    assert source_path.is_file()
+    assert source_path.stat().st_size > 0
+    song_pipeline.shutil.rmtree(job_path)
+    assert list(tmp_path.iterdir()) == []
+
+
+def test_download_song_target_cleans_up_failed_download(tmp_path, monkeypatch) -> None:
+    def fake_run(command: list[str], timeout_seconds: int) -> None:
+        raise song_pipeline.SongPipelineError("YT_DLP_FAILED", "fixture failure")
+
+    monkeypatch.setattr(song_pipeline, "_run_command", fake_run)
+    with pytest.raises(song_pipeline.SongPipelineError, match="fixture failure"):
+        song_pipeline.download_song_target(SOURCE_URL, VIDEO_ID, temp_root=tmp_path)
+    assert list(tmp_path.iterdir()) == []

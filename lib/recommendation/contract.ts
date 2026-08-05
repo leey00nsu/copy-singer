@@ -37,7 +37,12 @@ export type RecommendationErrorCode =
   | "INCOMPATIBLE_ANALYZER"
   | "CATALOG_NOT_READY"
   | "RECOMMENDATION_NOT_FOUND"
-  | "RECOMMENDATION_SAVE_FAILED";
+  | "RECOMMENDATION_SAVE_FAILED"
+  | "SYNTHESIS_NOT_FOUND"
+  | "SYNTHESIS_PREFLIGHT_FAILED"
+  | "SYNTHESIS_MEDIA_FAILED"
+  | "SYNTHESIS_UPSTREAM_FAILED"
+  | "SYNTHESIS_CLEANUP_FAILED";
 
 export class RecommendationError extends Error {
   readonly code: RecommendationErrorCode;
