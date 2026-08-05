@@ -66,3 +66,18 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Commit**: 세 번째 태스크 커밋의 Git 이력
   - **PR**: 로컬 워크플로우로 생성하지 않음
   - **Test/Log**: [tasks.md 테스트 실행 기록](./tasks.md#테스트-실행-기록)
+
+## D004: 세 preset의 listen-then-repeat 녹음 UX (2026-08-05)
+
+- **Context**: 고정 절대 키는 사용자 음역에 따라 불리하고, 녹음 중 speaker guide는 pYIN 입력에 섞일 수 있다.
+- **Constraints**: 저작권 없는 패턴, 브라우저 기본 API, 비전문 사용자, segment timestamp 재현
+- **Options**: 유명곡 한 소절, 단일 절대 키, 세 시작 키의 동일 상대 패턴과 무음 visual guide
+- **Decision**: low/medium/high preview 중 편한 키를 고르고, 4박 count-in 뒤 guide 소리 없이 21초 visual timeline을 따라 녹음한다.
+- **Rationale**: 범위를 먼저 맞춘 뒤 동일한 과제를 제시하면서 안내음 혼입을 기본적으로 차단하고 segment 경계를 analyzer에 전달할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: Web Audio oscillator preview와 MediaRecorder lifecycle, MIME fallback, object URL cleanup을 분리한다.
+  - **DONE 전 확정 시점**: `/profile`에서 low/medium/high preset 선택과 12초 Web Audio preview의 재생 중 잠금·자동 복귀를 실제 브라우저로 확인했다. 녹음은 4박 준비, 12초 melody, 1.5초 전환, 7.5초 glissando로 자동 종료하며 파일 업로드와 재녹음 대안을 함께 제공한다.
+- **Evidence**:
+  - **Commit**: 네 번째 태스크 커밋의 Git 이력
+  - **PR**: 로컬 워크플로우로 생성하지 않음
+  - **Test/Log**: [tasks.md 테스트 실행 기록](./tasks.md#테스트-실행-기록)

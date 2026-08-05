@@ -88,14 +88,14 @@
     - [x] Prisma create/get/delete와 BigInt response 정규화를 구현한다.
     - [x] DB 저장 실패 고아 파일 정리와 analyzer/DB health 응답을 구현한다.
 
-- [TODO][PRD-FR-001] T-F002-user-vocal-profile-04 적응형 안내 멜로디와 브라우저 녹음 UI 구현
+- [DONE][PRD-FR-001] T-F002-user-vocal-profile-04 적응형 안내 멜로디와 브라우저 녹음 UI 구현
   - Date: 2026-08-05
   - Acceptance:
     - 사용자가 세 키를 미리 듣고 count-in 후 21초 visual guide를 따라 녹음하거나 파일을 선택해 미리 들을 수 있다.
   - Checklist:
-    - [ ] 80 BPM 상대 멜로디 preset과 Web Audio preview를 구현한다.
-    - [ ] MediaRecorder 권한, 자동 timeline, 재녹음과 업로드 대안을 구현한다.
-    - [ ] MIME, 25MB 제한, object URL lifecycle과 접근성 상태를 처리한다.
+    - [x] 80 BPM 상대 멜로디 preset과 Web Audio preview를 구현한다.
+    - [x] MediaRecorder 권한, 자동 timeline, 재녹음과 업로드 대안을 구현한다.
+    - [x] MIME, 25MB 제한, object URL lifecycle과 접근성 상태를 처리한다.
 
 - [TODO][PRD-FR-003] T-F002-user-vocal-profile-05 프로필 결과·품질 오류·삭제 UI 구현
   - Date: 2026-08-05
@@ -138,5 +138,6 @@
 | `npx eslint app/api/vocal-profiles lib/vocal-profile` | `2026-08-05` | PASS |
 | `npm run build` | `2026-08-05` | PASS — vocal-profile API route 3개 포함 |
 | `curl POST/GET/DELETE http://localhost:3100/api/vocal-profiles...` | `2026-08-05` | PASS — 201→200→200→404, DB/file 삭제 확인 |
+| `browser http://localhost:3100/profile` | `2026-08-05` | PASS — 세 preset 선택, 12초 Web Audio preview 재생/복귀, 접근 가능한 녹음·업로드 UI 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T11:11:38.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T11:20:00.000Z -->
