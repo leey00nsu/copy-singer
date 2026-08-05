@@ -1,24 +1,34 @@
 # Copy Singer
 
-Copy Singer analyzes a user's test singing, compares the resulting vocal profile with song profiles, recommends suitable songs and karaoke keys, and provides a SoulX-Singer voice-conversion demo. The current implementation contains the SVC workbench; profiling and recommendations are tracked through lee-spec-kit docs.
+Copy Singer analyzes a user's test singing, compares the resulting vocal profile with song profiles, recommends suitable songs and karaoke keys, and provides a SoulX-Singer voice-conversion demo. The current local implementation includes the SVC workbench and guided vocal-profile measurement.
 
 ## Local setup
 
 ```bash
 npm install
 cp .env.example .env.local
-# Set MODAL_API_KEY in .env.local
+# Set MODAL_API_KEY in .env.local when testing voice conversion.
+docker compose up -d --build
+npm run db:migrate:deploy
+npm run db:generate
 npm run dev
 ```
 
-Open `http://localhost:3000` and upload:
+Open:
+
+- `http://localhost:3000/` for SoulX-Singer voice conversion;
+- `http://localhost:3000/profile` for the guided vocal-range test.
+
+For voice conversion, upload:
 
 - a clean reference singing voice, ideally under 30 seconds;
 - a target vocal or full mix, up to 5 minutes.
 
 The browser calls same-origin Next.js API routes. The Modal API key stays on the server and is never sent to the browser.
 
-## Local PostgreSQL
+For a vocal profile, sing any familiar song verse for about 10–30 seconds without accompaniment—for example, the Korean national anthem or “Happy Birthday.” Recording stops when you press the button or automatically at 30 seconds. You can instead upload a WAV, MP3, M4A, or WebM file. The local analyzer accepts at most 25 MB and 60 seconds.
+
+## Local PostgreSQL and vocal analyzer
 
 PostgreSQL runs locally with Docker Compose. The default host port is `5433`; the container keeps PostgreSQL's standard `5432` port.
 
@@ -30,16 +40,20 @@ cp .env.example .env.local
 
 If `.env.local` already contains the Modal settings, add only the PostgreSQL variables from `.env.example` instead of overwriting it.
 
-Start the database and confirm that it is healthy:
+Start PostgreSQL and the CPU-only librosa/ffmpeg analyzer, then confirm both are healthy:
 
 ```bash
-docker compose up -d
+docker compose up -d --build
 docker compose ps
+curl -fsS http://localhost:8001/health
 ```
 
 Apply the committed migrations, generate Prisma Client, seed development fixtures, and verify the relation graph:
 
 ```bash
+set -a
+source .env.local
+set +a
 npm run db:migrate:deploy
 npm run db:generate
 npm run db:seed
@@ -53,7 +67,9 @@ Create a new migration after changing `prisma/schema.prisma`:
 npm run db:migrate -- --name describe_your_change
 ```
 
-Stop PostgreSQL without deleting its named volume:
+The analyzer stores uploaded source audio under `work/vocal-profiles/` and returns a 24-hour expiry timestamp. Deleting a profile through the UI removes both its database rows and analyzer recording. Automatic expiry cleanup is not included in this feature yet.
+
+Stop the local services without deleting PostgreSQL's named volume:
 
 ```bash
 docker compose down
@@ -86,6 +102,11 @@ npm run db:migrate:deploy
 npm run db:seed
 npm run db:verify
 npm run db:status
+docker compose run --rm --no-deps \
+  -v "$PWD/services/vocal-profile-api:/app" \
+  vocal-profile-api sh -lc \
+  'python -m pip install --disable-pip-version-check -q -r requirements-dev.txt && pytest -q'
+curl -fsS http://localhost:8001/health
 ```
 
 ## Layout
@@ -97,6 +118,8 @@ lib/db/                      Server-only Prisma client
 prisma/                      Prisma schema, migrations, and development seed
 scripts/                     Local database verification scripts
 services/soulx-singer-svc/   Modal GPU API deployment
+services/vocal-profile-api/  Local FastAPI/librosa CPU analyzer
+work/vocal-profiles/         Ignored local recording storage
 ```
 
 ## Documentation workflow

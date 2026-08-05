@@ -19,5 +19,26 @@ services:
       retries: 10
       start_period: 5s
 
+  vocal-profile-api:
+    build:
+      context: ./services/vocal-profile-api
+    restart: unless-stopped
+    environment:
+      VOCAL_PROFILE_STORAGE_ROOT: /data
+    ports:
+      - "${VOCAL_PROFILE_API_PORT:-8001}:8000"
+    volumes:
+      - ./work/vocal-profiles:/data
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=3)
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
 volumes:
   postgres_data:

@@ -23,18 +23,18 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase: new URL(origin),
-    title: "Vocal Loom — Singing Voice Conversion",
-    description: "Shape a target performance with a reference singing voice using SoulX-Singer SVC.",
+    title: "Copy Singer — 보컬 프로필과 음성 합성",
+    description: "내 음역을 측정하고 SoulX-Singer로 보컬 합성을 테스트하세요.",
     icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
     openGraph: {
-      title: "Vocal Loom",
-      description: "Weave a new voice into the performance.",
-      images: [{ url: `${origin}/og.png`, width: 1200, height: 630, alt: "Vocal Loom singing voice conversion waveform" }],
+      title: "Copy Singer",
+      description: "내 음역을 측정하고 어울리는 노래와 키를 찾아보세요.",
+      images: [{ url: `${origin}/og.png`, width: 1200, height: 630, alt: "Copy Singer singing voice conversion waveform" }],
     },
     twitter: {
       card: "summary_large_image",
-      title: "Vocal Loom",
-      description: "Weave a new voice into the performance.",
+      title: "Copy Singer",
+      description: "내 음역을 측정하고 어울리는 노래와 키를 찾아보세요.",
       images: [`${origin}/og.png`],
     },
   };
@@ -46,7 +46,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ko">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <TooltipProvider>{children}</TooltipProvider>
         <Toaster richColors position="bottom-right" />
