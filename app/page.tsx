@@ -1,6 +1,5 @@
-import { SingerWorkbench } from "@/components/singer-workbench";
+import { VocalProfileWorkbench } from "@/components/vocal-profile-workbench";
 
 export default function Home() {
-  return <SingerWorkbench />;
+  return <VocalProfileWorkbench />;
 }
-

@@ -30,7 +30,9 @@ test("renders three ranked recommendation cards with responsible-use guidance", 
   assert.match(html, /추천 노래방 키/);
   assert.match(html, /이번 한 소절에서 관찰된 음역/);
   assert.match(html, /가창력이나 건강 상태를 평가하지 않습니다/);
-  assert.equal((html.match(/합성 데모로/g) ?? []).length, 3);
+  assert.equal((html.match(/믹싱 중이에요/g) ?? []).length, 3);
+  assert.doesNotMatch(html, /합성 데모로/);
+  assert.match(html, /원곡의 음정을 그대로 따르며/);
 });
 
 test("renders verified handoff context without implying automatic SVC settings", () => {

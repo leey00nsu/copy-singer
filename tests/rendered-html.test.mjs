@@ -13,19 +13,28 @@ async function render(pathname = "/") {
   );
 }
 
-test("server-renders the Copy Singer workbench", async () => {
-  const response = await render();
+test("server-renders the developer Copy Singer workbench", async () => {
+  const response = await render("/dev/svc");
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>Copy Singer/);
+  assert.match(html, /<title>SVC 개발 Workbench/);
   assert.match(html, /Weave a new voice into/);
   assert.match(html, /Reference voice/);
   assert.match(html, /Target performance/);
   assert.match(html, /Advanced settings/);
   assert.match(html, /Generated vocal/);
+  assert.match(html, /개발용 SVC Workbench/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/);
+});
+
+test("uses the vocal profile flow as the product home", async () => {
+  const response = await render();
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.match(html, /내 음역 측정/);
+  assert.doesNotMatch(html, /Advanced settings/);
 });
 
 test("server-renders the free-singing vocal profile page", async () => {
