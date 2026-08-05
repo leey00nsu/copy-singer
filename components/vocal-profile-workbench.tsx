@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, FileAudio, Headphones, LoaderCircle, Mic, Play, RotateCcw, Square, Upload } from "lucide-react";
+import { Activity, AlertTriangle, ArrowLeft, CheckCircle2, FileAudio, Headphones, LoaderCircle, Mic, Play, RotateCcw, Square, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -17,13 +17,44 @@ import {
   GUIDE_RECORDING_DURATION_MS,
   GUIDE_TRANSITION_DURATION_MS,
   type GuidePreset,
+  guideFormFields,
   playGuideMelody,
 } from "@/lib/vocal-profile/guide-melody";
+import type { VocalProfileError, VocalProfileResponse } from "@/lib/vocal-profile/contract";
 
 const MAX_PROFILE_AUDIO_BYTES = 25 * 1024 * 1024;
 const ACCEPTED_AUDIO = ".wav,.mp3,.m4a,.webm,audio/wav,audio/mpeg,audio/mp4,audio/webm";
 
 type CapturePhase = "idle" | "count-in" | "melody" | "transition" | "glissando";
+type ServiceHealth = "checking" | "ok" | "unavailable";
+
+const ERROR_GUIDANCE: Record<string, { title: string; action: string }> = {
+  TOO_SHORT: { title: "녹음이 너무 짧아요", action: "8초 이상 노래하거나 안내 녹음을 끝까지 진행해주세요." },
+  TOO_LONG: { title: "녹음이 너무 길어요", action: "60초 이하 구간으로 잘라 다시 올려주세요." },
+  TOO_SILENT: { title: "목소리가 너무 작아요", action: "마이크에 조금 가까이 다가가 반주 없이 더 크게 불러주세요." },
+  EXCESSIVE_CLIPPING: { title: "소리가 찌그러졌어요", action: "마이크에서 조금 멀어지거나 입력 음량을 낮춰주세요." },
+  LOW_VOICED_RATIO: { title: "노래 음정을 충분히 찾지 못했어요", action: "말소리보다 모음 ‘아’로 길게, 반주 없이 다시 불러주세요." },
+  PAYLOAD_TOO_LARGE: { title: "파일이 너무 커요", action: "25MB 이하 파일을 사용해주세요." },
+  UNSUPPORTED_AUDIO: { title: "지원하지 않는 오디오예요", action: "WAV, MP3, M4A 또는 WebM 파일을 사용해주세요." },
+  INVALID_SEGMENTS: { title: "안내 녹음 구간이 올바르지 않아요", action: "새 안내 녹음을 만든 뒤 다시 분석해주세요." },
+  ANALYZER_UNAVAILABLE: { title: "로컬 분석기에 연결할 수 없어요", action: "Docker analyzer가 실행 중인지 확인한 뒤 다시 시도해주세요." },
+  ANALYZER_NOT_CONFIGURED: { title: "분석기 주소가 설정되지 않았어요", action: "VOCAL_PROFILE_API_URL 환경 변수를 확인해주세요." },
+  PROFILE_SAVE_FAILED: { title: "분석 결과를 저장하지 못했어요", action: "PostgreSQL 연결을 확인한 뒤 다시 시도해주세요." },
+};
+
+function midiToNoteName(midi: number) {
+  const rounded = Math.round(midi);
+  const notes = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
+  return `${notes[((rounded % 12) + 12) % 12]}${Math.floor(rounded / 12) - 1}`;
+}
+
+function profileError(value: unknown): VocalProfileError {
+  if (value && typeof value === "object" && "reasonCode" in value) {
+    const candidate = value as Partial<VocalProfileError>;
+    return { reasonCode: String(candidate.reasonCode), detail: String(candidate.detail ?? ""), retryable: candidate.retryable !== false };
+  }
+  return { reasonCode: "ANALYSIS_FAILED", detail: "Unknown analysis error.", retryable: true };
+}
 
 function chooseRecorderMimeType() {
   for (const type of ["audio/webm;codecs=opus", "audio/webm", "audio/mp4"]) {
@@ -43,6 +74,11 @@ export function VocalProfileWorkbench() {
   const [elapsedMs, setElapsedMs] = useState(0);
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [recordedWithGuide, setRecordedWithGuide] = useState(false);
+  const [health, setHealth] = useState<ServiceHealth>("checking");
+  const [analyzing, setAnalyzing] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [profile, setProfile] = useState<VocalProfileResponse | null>(null);
+  const [analysisError, setAnalysisError] = useState<VocalProfileError | null>(null);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -74,9 +110,20 @@ export function VocalProfileWorkbench() {
     };
   }, [clearTimers, closeStream]);
 
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/vocal-profiles/health", { cache: "no-store", signal: controller.signal })
+      .then((response) => setHealth(response.ok ? "ok" : "unavailable"))
+      .catch((error: unknown) => {
+        if (!(error instanceof DOMException && error.name === "AbortError")) setHealth("unavailable");
+      });
+    return () => controller.abort();
+  }, []);
+
   const resetAudio = () => {
     setAudioFile(null);
     setRecordedWithGuide(false);
+    setAnalysisError(null);
     setElapsedMs(0);
     setPhase("idle");
   };
@@ -170,6 +217,49 @@ export function VocalProfileWorkbench() {
     setAudioFile(file);
     setRecordedWithGuide(false);
     setPhase("idle");
+    setAnalysisError(null);
+  };
+
+  const analyzeAudio = async () => {
+    if (!audioFile || analyzing) return;
+    setAnalyzing(true);
+    setAnalysisError(null);
+    const body = new FormData();
+    body.append("audio", audioFile, audioFile.name);
+    if (recordedWithGuide) {
+      Object.entries(guideFormFields(preset)).forEach(([key, value]) => body.append(key, value));
+    }
+    try {
+      const response = await fetch("/api/vocal-profiles", { method: "POST", body });
+      const payload: unknown = await response.json().catch(() => null);
+      if (!response.ok) throw profileError(payload);
+      setProfile(payload as VocalProfileResponse);
+      setHealth("ok");
+      toast.success("보컬 프로필을 만들었습니다.");
+    } catch (error) {
+      setAnalysisError(profileError(error));
+    } finally {
+      setAnalyzing(false);
+    }
+  };
+
+  const deleteProfile = async () => {
+    if (!profile || deleting || !window.confirm("이 보컬 프로필과 원본 녹음을 삭제할까요?")) return;
+    setDeleting(true);
+    setAnalysisError(null);
+    try {
+      const response = await fetch(`/api/vocal-profiles/${profile.id}`, { method: "DELETE" });
+      const payload: unknown = await response.json().catch(() => null);
+      if (!response.ok) throw profileError(payload);
+      setProfile(null);
+      setAudioFile(null);
+      setRecordedWithGuide(false);
+      toast.success("프로필과 원본 녹음을 삭제했습니다.");
+    } catch (error) {
+      setAnalysisError(profileError(error));
+    } finally {
+      setDeleting(false);
+    }
   };
 
   const activeNote = phase === "melody" ? Math.min(Math.floor(elapsedMs / GUIDE_NOTE_DURATION_MS), GUIDE_PATTERN.length - 1) : -1;
@@ -201,7 +291,13 @@ export function VocalProfileWorkbench() {
 
       <div className="page-shell py-10 sm:py-14">
         <section className="max-w-2xl">
-          <Badge variant="secondary">Step 1 · 내 음역 측정</Badge>
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="secondary">Step 1 · 내 음역 측정</Badge>
+            <Badge className="gap-1.5" variant={health === "ok" ? "outline" : "secondary"}>
+              {health === "checking" ? <LoaderCircle className="size-3 animate-spin" /> : <Activity className="size-3" />}
+              {health === "checking" ? "분석기 확인 중" : health === "ok" ? "로컬 분석기 준비됨" : "분석기 연결 필요"}
+            </Badge>
+          </div>
           <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">짧게 따라 부르고,<br />내 목소리의 기준점을 만드세요.</h1>
           <p className="mt-4 text-sm leading-7 text-muted-foreground">가장 편한 키를 고른 뒤 안내 멜로디와 음역 슬라이드를 녹음합니다. 결과는 추천용 측정값이며 의료적 진단이 아닙니다.</p>
         </section>
@@ -242,7 +338,11 @@ export function VocalProfileWorkbench() {
                   {/* Audio-only user recording does not have a meaningful caption track. */}
                   {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
                   <audio className="mt-4 w-full" controls src={audioUrl} />
-                  <Button className="mt-3 w-full" onClick={resetAudio} variant="ghost"><RotateCcw className="size-4" /> 다시 선택</Button>
+                  <Button className="mt-3 w-full" disabled={analyzing} onClick={() => void analyzeAudio()}>
+                    {analyzing ? <LoaderCircle className="size-4 animate-spin" /> : <Activity className="size-4" />}
+                    {analyzing ? "음역을 분석하는 중…" : "내 보컬 프로필 만들기"}
+                  </Button>
+                  <Button className="mt-1 w-full" disabled={analyzing} onClick={resetAudio} variant="ghost"><RotateCcw className="size-4" /> 다시 선택</Button>
                 </div>
               ) : (
                 <div className="grid gap-3">
@@ -254,6 +354,55 @@ export function VocalProfileWorkbench() {
             </CardContent>
           </Card>
         </div>
+
+        {analysisError ? (
+          <section aria-live="assertive" className="mt-6 rounded-2xl border border-destructive/30 bg-destructive/5 p-5">
+            <div className="flex gap-3">
+              <AlertTriangle className="mt-0.5 size-5 shrink-0 text-destructive" />
+              <div>
+                <h2 className="font-semibold">{ERROR_GUIDANCE[analysisError.reasonCode]?.title ?? "분석을 완료하지 못했어요"}</h2>
+                <p className="mt-1 text-sm leading-6 text-muted-foreground">{ERROR_GUIDANCE[analysisError.reasonCode]?.action ?? "잠시 뒤 다시 시도해주세요."}</p>
+                <p className="mt-2 font-mono text-[11px] text-muted-foreground">{analysisError.reasonCode}</p>
+              </div>
+            </div>
+          </section>
+        ) : null}
+
+        {profile ? (
+          <section aria-live="polite" className="mt-8">
+            <Card>
+              <CardHeader className="flex-row items-start justify-between gap-4 space-y-0">
+                <div>
+                  <div className="flex items-center gap-2 text-emerald-600"><CheckCircle2 className="size-5" /><span className="text-sm font-semibold">분석 완료</span></div>
+                  <CardTitle className="mt-3 text-2xl">내 보컬 프로필</CardTitle>
+                  <CardDescription className="mt-2">노래 추천과 키 계산에 사용할 현재 측정값입니다.</CardDescription>
+                </div>
+                <Button aria-label="보컬 프로필 삭제" disabled={deleting} onClick={() => void deleteProfile()} size="icon" variant="ghost">
+                  {deleting ? <LoaderCircle className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
+                </Button>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                  {[
+                    ["측정 음역", `${midiToNoteName(profile.minMidi)} – ${midiToNoteName(profile.maxMidi)}`, `${profile.minMidi.toFixed(1)} – ${profile.maxMidi.toFixed(1)} MIDI`],
+                    ["편한 음역", `${midiToNoteName(profile.tessituraLowMidi)} – ${midiToNoteName(profile.tessituraHighMidi)}`, `${profile.tessituraLowMidi.toFixed(1)} – ${profile.tessituraHighMidi.toFixed(1)} MIDI`],
+                    ["중심 음", midiToNoteName(profile.medianMidi), `${profile.medianMidi.toFixed(1)} MIDI`],
+                    ["음정 안정도", `${Math.round(profile.pitchStability * 100)}%`, `유성 구간 ${Math.round(profile.voicedRatio * 100)}%`],
+                  ].map(([label, value, detail]) => (
+                    <div className="rounded-xl border bg-muted/25 p-4" key={label}>
+                      <p className="text-xs text-muted-foreground">{label}</p><p className="mt-2 text-lg font-semibold">{value}</p><p className="mt-1 font-mono text-[11px] text-muted-foreground">{detail}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="grid gap-2 text-xs text-muted-foreground sm:grid-cols-2">
+                  <p>입력 레벨 {profile.rmsDb.toFixed(1)} dB · clipping {(profile.clippingRatio * 100).toFixed(2)}%</p>
+                  <p className="sm:text-right">{profile.analyzer} {profile.analyzerVersion} · 원본 만료 {profile.recording.expiresAt ? new Date(profile.recording.expiresAt).toLocaleString("ko-KR") : "-"}</p>
+                </div>
+                <div className="rounded-xl bg-muted/55 p-4 text-xs leading-6 text-muted-foreground">이 결과는 노래 추천을 위한 참고 측정값이며, 발성 능력이나 건강 상태를 진단하지 않습니다. 환경과 컨디션에 따라 달라질 수 있습니다.</div>
+              </CardContent>
+            </Card>
+          </section>
+        ) : null}
       </div>
     </main>
   );
