@@ -71,17 +71,28 @@ The analyzer stores uploaded source audio under `work/vocal-profiles/` and retur
 
 ### Song catalog analysis
 
-The TJ 2026-07 Top 100 catalog is stored as metadata in `data/catalogs/tj-2607-top100.md`. Import it, then analyze pending songs sequentially:
+The TJ 2026-07 Top 100 source list is stored in `data/catalogs/tj-2607-top100.md`. PostgreSQL holds mutable application metadata, while the reproducible analysis results are committed in `data/catalogs/tj-2607-song-profiles.json` and shipped unchanged with each deployment.
+
+Import the metadata, initialize the artifact, then analyze pending songs sequentially:
 
 ```bash
 npm run catalog:import
+npm run catalog:init-profiles
 npm run catalog:analyze -- --limit 1 --resume
 npm run catalog:verify
 ```
 
 Use `--rank 49 --resume` to retry one catalog entry, or omit `--rank` and set `--limit` for a bounded sequential batch. READY songs are not downloaded again.
 
-`catalog:analyze` is a local-development-only workflow. For each allowlisted catalog URL, the analyzer downloads audio with yt-dlp into an OS temporary directory, separates vocals with Demucs, computes aggregate pYIN metrics, and removes the source plus every stem before responding. PostgreSQL stores the source URL, tool versions, aggregate metrics, and a `DELETED` recording status; song audio is not stored in the repository, database, or a persistent Docker volume.
+`catalog:analyze` is a local-development-only build workflow. For each allowlisted catalog URL, the analyzer downloads audio with yt-dlp into an OS temporary directory, separates vocals with Demucs, computes aggregate pYIN metrics, and removes the source plus every stem before responding. It writes metrics, source links, status, and tool versions atomically to the JSON artifact after each song; it does not create `Recording` or `VocalProfile` rows. Song audio is never stored in the repository, database, artifact, or a persistent Docker volume.
+
+Before release, require all 100 profiles to be present:
+
+```bash
+npm run catalog:verify -- --require-ready
+```
+
+`catalog:clear-db-profiles` is a one-time migration helper that removes legacy catalog analysis rows produced by the earlier DB-backed implementation. It is deliberately limited to catalog ranks 1–100 and refuses to delete referenced profiles.
 
 The `demucs_models` Docker volume contains reusable model weights only. Downloading and immediate deletion do not replace the requirement to have permission to process a source. A future recommendation-to-Convert integration must use the same job-scoped cleanup boundary and must never expose the original or separated stems.
 
@@ -119,8 +130,9 @@ npm run db:seed
 npm run db:verify
 npm run db:status
 npm run catalog:import
+npm run catalog:init-profiles
 npm run catalog:analyze -- --limit 1 --resume
-npm run catalog:verify
+npm run catalog:verify -- --require-ready
 docker compose run --rm --no-deps \
   -v "$PWD/services/vocal-profile-api:/app" \
   vocal-profile-api sh -lc \
@@ -133,7 +145,7 @@ curl -fsS http://localhost:8001/health
 ```text
 app/                         Next.js pages and API proxy routes
 components/                  Vocal workbench and shadcn/ui components
-data/catalogs/               Versioned song catalog metadata only
+data/catalogs/               Versioned song metadata and analysis artifact
 lib/db/                      Server-only Prisma client
 prisma/                      Prisma schema, migrations, and development seed
 scripts/                     Local database verification scripts

@@ -1,10 +1,20 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { mkdtemp, readFile, readdir, rm } from "node:fs/promises";
 import path from "node:path";
+import { tmpdir } from "node:os";
 import test from "node:test";
 
+import {
+  createSongProfileArtifact,
+  loadOrCreateSongProfileArtifact,
+  validateSongProfileArtifact,
+  writeSongProfileArtifact,
+} from "../lib/song-catalog/artifact";
 import { parseSongCatalogMarkdown } from "../lib/song-catalog/catalog";
-import { parseSongBatchOptions } from "../lib/song-catalog/pipeline";
+import {
+  analyzeSongProfileArtifact,
+  parseSongBatchOptions,
+} from "../lib/song-catalog/pipeline";
 
 const catalogPath = path.join(process.cwd(), "data/catalogs/tj-2607-top100.md");
 
@@ -50,4 +60,66 @@ test("parses bounded sequential batch options", () => {
   });
   assert.throws(() => parseSongBatchOptions(["--rank", "101"]), /between 1 and 100/);
   assert.throws(() => parseSongBatchOptions(["--download-only"]), /Unknown/);
+});
+
+test("writes and reloads a 100-song artifact atomically", async () => {
+  const entries = parseSongCatalogMarkdown(await readFile(catalogPath, "utf8"));
+  const directory = await mkdtemp(path.join(tmpdir(), "copy-singer-artifact-test-"));
+  const artifactPath = path.join(directory, "profiles.json");
+  try {
+    const artifact = createSongProfileArtifact(entries);
+    await writeSongProfileArtifact(artifactPath, artifact);
+    const loaded = await loadOrCreateSongProfileArtifact(artifactPath, entries);
+    assert.equal(validateSongProfileArtifact(loaded, entries).songs.length, 100);
+    assert.deepEqual(await readdir(directory), ["profiles.json"]);
+  } finally {
+    await rm(directory, { recursive: true });
+  }
+});
+
+test("stores analyzer metrics in the artifact without a database", async (t) => {
+  const entries = parseSongCatalogMarkdown(await readFile(catalogPath, "utf8"));
+  const artifact = createSongProfileArtifact(entries);
+  t.mock.method(globalThis, "fetch", async () =>
+    new Response(
+      JSON.stringify({
+        durationMs: 180000,
+        sampleRate: 22050,
+        sourceSizeBytes: 12345,
+        minMidi: 48,
+        maxMidi: 72,
+        p10Midi: 52,
+        medianMidi: 60,
+        p90Midi: 69,
+        tessituraLowMidi: 52,
+        tessituraHighMidi: 69,
+        voicedRatio: 0.5,
+        pitchStability: 0.8,
+        clippingRatio: 0,
+        rmsDb: -18,
+        analyzer: "librosa-pyin",
+        analyzerVersion: "fixture",
+        descriptors: { fixture: true },
+        ytDlpVersion: "fixture",
+        separator: "demucs",
+        separatorVersion: "fixture",
+        separatorModel: "htdemucs",
+        cleanupConfirmed: true,
+      }),
+      { status: 200, headers: { "Content-Type": "application/json" } },
+    ),
+  );
+  let persisted = 0;
+  const summary = await analyzeSongProfileArtifact(
+    artifact,
+    "http://analyzer.test",
+    { limit: 1, rank: null, resume: true },
+    async () => {
+      persisted += 1;
+    },
+  );
+  assert.deepEqual(summary, { selected: 1, succeeded: 1, failed: 0, skipped: 0 });
+  assert.equal(persisted, 1);
+  assert.equal(artifact.songs[0]?.status, "READY");
+  assert.equal(artifact.songs[0]?.profile?.cleanupConfirmed, true);
 });

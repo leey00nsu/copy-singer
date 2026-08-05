@@ -19,8 +19,10 @@
     "db:seed": "prisma db seed",
     "db:verify": "tsx scripts/verify-database.ts",
     "catalog:import": "tsx scripts/import-song-catalog.ts",
+    "catalog:init-profiles": "tsx scripts/init-song-profile-artifact.ts",
     "catalog:analyze": "tsx scripts/analyze-song-catalog.ts",
     "catalog:verify": "tsx scripts/verify-song-catalog.ts",
+    "catalog:clear-db-profiles": "tsx scripts/clear-song-profile-records.ts",
     "test:catalog": "tsx --test tests/song-catalog.test.ts"
   },
   "dependencies": {
