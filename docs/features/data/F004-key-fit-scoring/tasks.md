@@ -21,6 +21,7 @@
 - **레포**: copy-singer-data
 - **브랜치**: `feat/key-fit-scoring`
 - **대기 중 변경 요청**: -
+- **구현 승인**: 2026-08-06 사용자 승인
   - 구현 중 새로 수용한 사용자 요청을 잠시 표시하는 sync marker입니다
   - 요청을 `tasks.md`와 관련 문서에 반영한 뒤 값을 비우세요
   - pre-PR 리뷰 handoff를 시작하면 `Running`, 리뷰 결과 기록까지 끝나면 `Done`으로 변경
@@ -106,7 +107,7 @@
 
 - [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
 - [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -120,4 +121,4 @@
 | `services/vocal-profile-api/.venv/bin/python -m pytest tests` | `2026-08-06` | PASS — 15 tests, 5초 경계 허용·4초 거절 포함 |
 | `analyze_wav(vocal1.wav) → scoreCatalogKeyFits` | `2026-08-06` | PASS — 7.152초, confidence 0.9295, 100곡 평가, 최고 아크라포빅 원키 47.69/조정 98.85/-4 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T15:31:59.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T15:35:32.000Z -->
