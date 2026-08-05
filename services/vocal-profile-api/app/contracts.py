@@ -38,3 +38,33 @@ class AnalyzerResponse(BaseModel):
 class DeleteResponse(BaseModel):
     status: str
     recordingId: str
+
+
+class SongAnalysisRequest(BaseModel):
+    sourceUrl: str
+    expectedVideoId: str = Field(pattern=r"^[A-Za-z0-9_-]{11}$")
+
+
+class SongAnalysisResponse(BaseModel):
+    durationMs: int
+    sampleRate: int
+    sourceSizeBytes: int
+    minMidi: float
+    maxMidi: float
+    p10Midi: float
+    medianMidi: float
+    p90Midi: float
+    tessituraLowMidi: float
+    tessituraHighMidi: float
+    voicedRatio: float
+    pitchStability: float
+    clippingRatio: float
+    rmsDb: float
+    analyzer: str
+    analyzerVersion: str
+    descriptors: dict[str, Any] = Field(default_factory=dict)
+    ytDlpVersion: str
+    separator: str
+    separatorVersion: str
+    separatorModel: str
+    cleanupConfirmed: bool

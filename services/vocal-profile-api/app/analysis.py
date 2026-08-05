@@ -211,7 +211,9 @@ def analyze_audio(
 
 
 def analyze_wav(
-    path: str | Path, segments: SegmentBounds | None = None
+    path: str | Path,
+    segments: SegmentBounds | None = None,
+    config: AnalysisConfig = DEFAULT_ANALYSIS_CONFIG,
 ) -> AnalysisResult:
-    audio, sample_rate = librosa.load(path, sr=DEFAULT_ANALYSIS_CONFIG.sample_rate, mono=True)
-    return analyze_audio(audio, sample_rate, segments)
+    audio, sample_rate = librosa.load(path, sr=config.sample_rate, mono=True)
+    return analyze_audio(audio, sample_rate, segments, config)

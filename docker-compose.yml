@@ -21,14 +21,16 @@ services:
 
   vocal-profile-api:
     build:
-      context: ./services/vocal-profile-api
+      context: .
+      dockerfile: services/vocal-profile-api/Dockerfile
     restart: unless-stopped
     environment:
       VOCAL_PROFILE_STORAGE_ROOT: /data
     ports:
-      - "${VOCAL_PROFILE_API_PORT:-8001}:8000"
+      - "127.0.0.1:${VOCAL_PROFILE_API_PORT:-8001}:8000"
     volumes:
       - ./work/vocal-profiles:/data
+      - demucs_models:/root/.cache/torch/hub/checkpoints
     healthcheck:
       test:
         - CMD
@@ -42,3 +44,4 @@ services:
 
 volumes:
   postgres_data:
+  demucs_models:

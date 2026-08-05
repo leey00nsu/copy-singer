@@ -69,6 +69,20 @@ npm run db:migrate -- --name describe_your_change
 
 The analyzer stores uploaded source audio under `work/vocal-profiles/` and returns a 24-hour expiry timestamp. Deleting a profile through the UI removes both its database rows and analyzer recording. Automatic expiry cleanup is not included in this feature yet.
 
+### Song catalog analysis
+
+The TJ 2026-07 Top 100 catalog is stored as metadata in `data/catalogs/tj-2607-top100.md`. Import it, then analyze pending songs sequentially:
+
+```bash
+npm run catalog:import
+npm run catalog:analyze -- --limit 1 --resume
+npm run catalog:verify
+```
+
+`catalog:analyze` is a local-development-only workflow. For each allowlisted catalog URL, the analyzer downloads audio with yt-dlp into an OS temporary directory, separates vocals with Demucs, computes aggregate pYIN metrics, and removes the source plus every stem before responding. PostgreSQL stores the source URL, tool versions, aggregate metrics, and a `DELETED` recording status; song audio is not stored in the repository, database, or a persistent Docker volume.
+
+The `demucs_models` Docker volume contains reusable model weights only. Downloading and immediate deletion do not replace the requirement to have permission to process a source. A future recommendation-to-Convert integration must use the same job-scoped cleanup boundary and must never expose the original or separated stems.
+
 Stop the local services without deleting PostgreSQL's named volume:
 
 ```bash
@@ -102,6 +116,9 @@ npm run db:migrate:deploy
 npm run db:seed
 npm run db:verify
 npm run db:status
+npm run catalog:import
+npm run catalog:analyze -- --limit 1 --resume
+npm run catalog:verify
 docker compose run --rm --no-deps \
   -v "$PWD/services/vocal-profile-api:/app" \
   vocal-profile-api sh -lc \
@@ -114,6 +131,7 @@ curl -fsS http://localhost:8001/health
 ```text
 app/                         Next.js pages and API proxy routes
 components/                  Vocal workbench and shadcn/ui components
+data/catalogs/               Versioned song catalog metadata only
 lib/db/                      Server-only Prisma client
 prisma/                      Prisma schema, migrations, and development seed
 scripts/                     Local database verification scripts

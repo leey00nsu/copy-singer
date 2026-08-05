@@ -20,6 +20,7 @@ async function main() {
   const songs = await prisma.song.findMany({
     where: { catalogOrder: { gte: 1, lte: entries.length } },
     orderBy: { catalogOrder: "asc" },
+    include: { vocalProfile: { include: { recording: true } } },
   });
 
   if (songs.length !== entries.length) {
@@ -28,7 +29,10 @@ async function main() {
 
   for (const [index, entry] of entries.entries()) {
     const song = songs[index];
-    const metadata = song?.metadata as { catalog?: { sourceVideoId?: string } } | null;
+    const metadata = song?.metadata as {
+      catalog?: { sourceUrl?: string; sourceVideoId?: string };
+      pipeline?: { cleanupConfirmed?: boolean };
+    } | null;
     if (
       song?.catalogOrder !== entry.catalogOrder ||
       song.title !== entry.title ||
@@ -37,9 +41,27 @@ async function main() {
     ) {
       throw new Error(`Catalog mismatch at rank ${entry.catalogOrder}.`);
     }
+
+    if (song.analysisStatus === "READY") {
+      if (
+        song.vocalProfile?.sourceType !== "SONG" ||
+        song.vocalProfile.recording.kind !== "SONG_SOURCE" ||
+        song.vocalProfile.recording.status !== "DELETED" ||
+        song.vocalProfile.recording.storagePath !== entry.sourceUrl ||
+        metadata?.pipeline?.cleanupConfirmed !== true
+      ) {
+        throw new Error(`Ready song at rank ${entry.catalogOrder} retained an invalid source reference.`);
+      }
+    }
   }
 
-  console.info(JSON.stringify({ status: "ok", count: songs.length }));
+  console.info(
+    JSON.stringify({
+      status: "ok",
+      count: songs.length,
+      readyCount: songs.filter((song) => song.analysisStatus === "READY").length,
+    }),
+  );
 }
 
 main()

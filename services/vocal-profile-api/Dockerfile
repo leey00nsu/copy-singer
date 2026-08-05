@@ -2,7 +2,8 @@ FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    VOCAL_PROFILE_STORAGE_ROOT=/data
+    VOCAL_PROFILE_STORAGE_ROOT=/data \
+    SONG_CATALOG_PATH=/app/catalogs/tj-2607-top100.md
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ffmpeg \
@@ -10,10 +11,17 @@ RUN apt-get update \
 
 WORKDIR /app
 
-COPY requirements.txt ./
+COPY services/vocal-profile-api/requirements.txt ./
 RUN python -m pip install --no-cache-dir --disable-pip-version-check -r requirements.txt
 
-COPY app ./app
+COPY services/vocal-profile-api/requirements-song.txt ./
+RUN python -m pip install --no-cache-dir --disable-pip-version-check \
+    --index-url https://download.pytorch.org/whl/cpu \
+    torch==2.6.0 torchaudio==2.6.0
+RUN python -m pip install --no-cache-dir --disable-pip-version-check -r requirements-song.txt
+
+COPY services/vocal-profile-api/app ./app
+COPY data/catalogs/tj-2607-top100.md ./catalogs/tj-2607-top100.md
 
 EXPOSE 8000
 

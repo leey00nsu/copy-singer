@@ -96,3 +96,51 @@ def test_rejects_payload_over_limit(tmp_path, monkeypatch) -> None:
 
     assert response.status_code == 413
     assert response.json()["reasonCode"] == "PAYLOAD_TOO_LARGE"
+
+
+def test_song_url_endpoint_returns_metrics_only_after_cleanup(monkeypatch) -> None:
+    from app import main
+
+    def fake_analyze_song_url(source_url: str, expected_video_id: str):
+        assert source_url == "https://www.youtube.com/watch?v=NbKH4iZqq1Y"
+        assert expected_video_id == "NbKH4iZqq1Y"
+        return {
+            "durationMs": 180_000,
+            "sampleRate": 22_050,
+            "sourceSizeBytes": 12_345,
+            "minMidi": 48.0,
+            "maxMidi": 72.0,
+            "p10Midi": 52.0,
+            "medianMidi": 60.0,
+            "p90Midi": 69.0,
+            "tessituraLowMidi": 52.0,
+            "tessituraHighMidi": 69.0,
+            "voicedRatio": 0.5,
+            "pitchStability": 0.8,
+            "clippingRatio": 0.0,
+            "rmsDb": -18.0,
+            "analyzer": "librosa-pyin",
+            "analyzerVersion": "fixture",
+            "descriptors": {"fixture": True},
+            "ytDlpVersion": "fixture",
+            "separator": "demucs",
+            "separatorVersion": "fixture",
+            "separatorModel": "htdemucs",
+            "cleanupConfirmed": True,
+        }
+
+    monkeypatch.setattr(main, "analyze_song_url", fake_analyze_song_url)
+    with TestClient(app) as client:
+        response = client.post(
+            "/v1/analyze-song-url",
+            json={
+                "sourceUrl": "https://www.youtube.com/watch?v=NbKH4iZqq1Y",
+                "expectedVideoId": "NbKH4iZqq1Y",
+            },
+        )
+
+    assert response.status_code == 200, response.text
+    body = response.json()
+    assert body["cleanupConfirmed"] is True
+    assert "storagePath" not in body
+    assert "sourceUrl" not in body

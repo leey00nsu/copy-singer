@@ -1,0 +1,10 @@
+.git
+.next
+.vinext
+.wrangler
+node_modules
+work
+generated
+**/.venv
+**/__pycache__
+**/.pytest_cache

@@ -18,6 +18,10 @@ class AnalysisConfig:
 
 
 DEFAULT_ANALYSIS_CONFIG = AnalysisConfig()
+SONG_ANALYSIS_CONFIG = AnalysisConfig(
+    max_duration_seconds=900.0,
+    min_voiced_ratio=0.05,
+)
 
 GUIDE_PATTERN = (0, 2, 4, 7, 9, 7, 4, 2, 0, 4, 7, 9, 7, 4, 2, 0)
 GUIDE_START_MIDI = {

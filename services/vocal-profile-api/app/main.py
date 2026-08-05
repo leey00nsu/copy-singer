@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import shutil
+import asyncio
+from contextlib import asynccontextmanager
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Annotated
@@ -17,10 +19,29 @@ from .config import (
     STORAGE_ROOT,
     UPLOAD_CHUNK_BYTES,
 )
-from .contracts import AnalyzerResponse, DeleteResponse, ErrorResponse
+from .contracts import (
+    AnalyzerResponse,
+    DeleteResponse,
+    ErrorResponse,
+    SongAnalysisRequest,
+    SongAnalysisResponse,
+)
 from .media import standardize_audio
+from .song_pipeline import (
+    SongPipelineError,
+    analyze_song_url,
+    cleanup_abandoned_jobs,
+    dependency_status,
+)
 
-app = FastAPI(title="Copy Singer Vocal Profile Analyzer", version="1.0.0")
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    cleanup_abandoned_jobs()
+    yield
+
+
+app = FastAPI(title="Copy Singer Vocal Profile Analyzer", version="1.1.0", lifespan=lifespan)
 
 
 def _recording_directory(recording_id: str) -> Path:
@@ -51,10 +72,49 @@ async def analysis_rejected_handler(_, error: AnalysisRejectedError) -> JSONResp
     )
 
 
+@app.exception_handler(SongPipelineError)
+async def song_pipeline_error_handler(_, error: SongPipelineError) -> JSONResponse:
+    status = (
+        400
+        if error.reason_code in {"INVALID_SOURCE_URL", "SOURCE_ID_MISMATCH"}
+        or error.reason_code == "SOURCE_NOT_ALLOWLISTED"
+        else 504
+        if error.reason_code == "PIPELINE_TIMEOUT"
+        else 422
+    )
+    return JSONResponse(
+        status_code=status,
+        content=ErrorResponse(
+            reasonCode=error.reason_code,
+            detail=error.detail,
+            retryable=status != 400,
+        ).model_dump(),
+    )
+
+
 @app.get("/health")
 async def health() -> dict[str, object]:
     STORAGE_ROOT.mkdir(parents=True, exist_ok=True)
-    return {"status": "ok", "analyzer": "librosa-pyin", "storageWritable": STORAGE_ROOT.is_dir()}
+    return {
+        "status": "ok",
+        "analyzer": "librosa-pyin",
+        "storageWritable": STORAGE_ROOT.is_dir(),
+        "songPipeline": dependency_status(),
+    }
+
+
+@app.post(
+    "/v1/analyze-song-url",
+    response_model=SongAnalysisResponse,
+    responses={400: {"model": ErrorResponse}, 422: {"model": ErrorResponse}, 504: {"model": ErrorResponse}},
+)
+async def analyze_song(request: SongAnalysisRequest) -> SongAnalysisResponse:
+    result = await asyncio.to_thread(
+        analyze_song_url,
+        request.sourceUrl,
+        request.expectedVideoId,
+    )
+    return SongAnalysisResponse(**result)
 
 
 @app.post(

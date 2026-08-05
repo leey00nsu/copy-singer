@@ -4,6 +4,7 @@ import path from "node:path";
 import test from "node:test";
 
 import { parseSongCatalogMarkdown } from "../lib/song-catalog/catalog";
+import { parseSongBatchOptions } from "../lib/song-catalog/pipeline";
 
 const catalogPath = path.join(process.cwd(), "data/catalogs/tj-2607-top100.md");
 
@@ -39,4 +40,14 @@ test("rejects duplicate YouTube IDs", async () => {
   const duplicated = markdown.replace("fgvphH7z1qw", "NbKH4iZqq1Y");
 
   assert.throws(() => parseSongCatalogMarkdown(duplicated), /Duplicate YouTube video IDs/);
+});
+
+test("parses bounded sequential batch options", () => {
+  assert.deepEqual(parseSongBatchOptions(["--limit", "3", "--rank", "49", "--resume"]), {
+    limit: 3,
+    rank: 49,
+    resume: true,
+  });
+  assert.throws(() => parseSongBatchOptions(["--rank", "101"]), /between 1 and 100/);
+  assert.throws(() => parseSongBatchOptions(["--download-only"]), /Unknown/);
 });
