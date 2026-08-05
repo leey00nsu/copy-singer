@@ -106,22 +106,22 @@
     - [x] reason code별 재시도 안내와 책임 있는 사용 고지를 구현한다.
     - [x] DELETE 확인과 UI/DB/file 제거 상태를 구현한다.
 
-- [TODO][PRD-NFR-005] T-F002-user-vocal-profile-06 통합 검증과 로컬 운영 문서화
+- [DONE][PRD-NFR-005] T-F002-user-vocal-profile-06 통합 검증과 로컬 운영 문서화
   - Date: 2026-08-05
   - Acceptance:
     - 실제 Docker analyzer와 PostgreSQL에서 생성→조회→삭제가 통과하고 README 및 전체 회귀 검사가 재현 가능하다.
   - Checklist:
-    - [ ] 실제 API fixture 통합 테스트와 로컬 브라우저 흐름을 검증한다.
-    - [ ] README와 환경 변수 예시에 analyzer 실행·분석 명령을 기록한다.
-    - [ ] Python tests, TypeScript, lint, build, npm test, Prisma validate와 workflow audit을 통과한다.
+    - [x] 실제 API fixture 통합 테스트와 로컬 브라우저 흐름을 검증한다.
+    - [x] README와 환경 변수 예시에 analyzer 실행·분석 명령을 기록한다.
+    - [x] Python tests, TypeScript, lint, build, npm test, Prisma validate와 workflow audit을 통과한다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -134,12 +134,15 @@
 | `docker compose build vocal-profile-api` | `2026-08-05` | PASS — Python 3.12, ffmpeg, pinned analyzer image |
 | `docker compose run ... pytest -q` | `2026-08-05` | PASS — analyzer unit/API 8건, deprecation warning 4건 비차단 |
 | `curl -fsS http://localhost:8001/health` | `2026-08-05` | PASS — analyzer/storage healthy |
-| `npx tsc --noEmit` | `2026-08-05` | PASS — Next API/Prisma contract 포함 |
-| `npx eslint app/api/vocal-profiles lib/vocal-profile` | `2026-08-05` | PASS |
-| `npm run build` | `2026-08-05` | PASS — vocal-profile API route 3개 포함 |
+| `npx tsc --noEmit` | `2026-08-05` | PASS — API/UI 및 guide contract 포함 |
+| `npm run lint` | `2026-08-05` | PASS |
+| `npm test` | `2026-08-05` | PASS — build, guide/note contract 2건, SSR 회귀 2건 |
 | `curl POST/GET/DELETE http://localhost:3100/api/vocal-profiles...` | `2026-08-05` | PASS — 201→200→200→404, DB/file 삭제 확인 |
 | `browser http://localhost:3100/profile` | `2026-08-05` | PASS — 세 preset 선택, 12초 Web Audio preview 재생/복귀, 접근 가능한 녹음·업로드 UI 확인 |
 | `browser upload → POST /api/vocal-profiles` | `2026-08-05` | PASS — 실제 guided WAV 결과 카드와 4초 WAV `TOO_SHORT` 한국어 안내 확인 |
 | `curl DELETE /api/vocal-profiles/{id}` | `2026-08-05` | PASS — UI 검증 fixture의 DB row 및 analyzer 원본 제거 확인 |
+| `npm run db:validate && npm run db:status && npm run db:verify` | `2026-08-05` | PASS — schema valid/up-to-date 및 seed relation 확인 |
+| `curl guided POST→GET→DELETE→GET` | `2026-08-05` | PASS — 201→200→200→404, DB 0 row 및 analyzer file 제거 확인 |
+| `npx lee-spec-kit workflow-audit --json` | `2026-08-05` | PASS — 최종 실행 결과로 갱신 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T11:27:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T11:32:00.000Z -->

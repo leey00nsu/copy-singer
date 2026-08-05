@@ -96,3 +96,18 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Commit**: 다섯 번째 태스크 커밋의 Git 이력
   - **PR**: 로컬 워크플로우로 생성하지 않음
   - **Test/Log**: [tasks.md 테스트 실행 기록](./tasks.md#테스트-실행-기록)
+
+## D006: 재현 가능한 로컬 통합 경계 (2026-08-05)
+
+- **Context**: F002를 다음 곡 프로필·추천 기능의 안정적인 입력 기반으로 넘기려면 개발자가 동일한 DB/analyzer/API/UI 검증을 재현할 수 있어야 한다.
+- **Constraints**: 배포 없음, 로컬 Docker Compose, 기존 3000 개발 서버 유지, Modal GPU 비용 사용 금지
+- **Options**: 수동 UI 확인만 기록, mock 기반 테스트만 추가, 실제 Compose 서비스와 fixture를 함께 검증
+- **Decision**: README에 Compose·Prisma·analyzer test 절차를 고정하고, 합성 fixture의 실제 POST→GET→DELETE와 SSR/guide contract/browser 검증을 함께 통과시킨다.
+- **Rationale**: 분석 알고리즘, 저장 경계, 사용자 화면 중 하나만 검증해서는 추천 입력의 완결성을 보장할 수 없으며 모두 로컬에서 비용 없이 재현 가능하다.
+- **Trace**:
+  - **DOING 시작 시점**: 기존 3000 서버와 분리한 production 3100 서버에서 통합 검증하고 종료한다. 테스트 데이터는 검증 직후 API로 삭제한다.
+  - **DONE 전 확정 시점**: Python 8건, TypeScript/lint/build, guide/음이름 2건, SSR 2건, Prisma validate/status/verify, guided API 201→200→200→404와 브라우저 결과/오류 화면이 통과했다. vinext의 RSC prefetch console 오류는 직접 탐색·API·화면 갱신에 영향을 주지 않는 beta runtime 이슈로 남았다.
+- **Evidence**:
+  - **Commit**: 여섯 번째 태스크 커밋의 Git 이력
+  - **PR**: 로컬 워크플로우로 생성하지 않음
+  - **Test/Log**: [tasks.md 테스트 실행 기록](./tasks.md#테스트-실행-기록)

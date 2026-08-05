@@ -50,11 +50,11 @@
 
 **Acceptance Criteria:**
 
-- [ ] UI가 세 가지 시작 키와 저작권 없는 안내 멜로디, glissando로 구성된 약 20–25초 녹음 순서를 안내한다.
-- [ ] 사용자는 낮게(C3–A3), 보통(G3–E4), 높게(C4–A4) 예시를 들어보고 가장 편한 키를 선택할 수 있다.
-- [ ] 사용자는 마이크 녹음을 시작·정지하고 결과를 미리 듣거나 지운 뒤 다시 녹음할 수 있다.
-- [ ] 사용자는 녹음 대신 WAV, MP3, M4A 또는 WebM 오디오 파일을 선택할 수 있다.
-- [ ] 분석 전 선택 파일명·크기와 미리 듣기를 확인할 수 있다.
+- [x] UI가 세 가지 시작 키와 저작권 없는 안내 멜로디, glissando로 구성된 약 20–25초 녹음 순서를 안내한다.
+- [x] 사용자는 낮게(C3–A3), 보통(G3–E4), 높게(C4–A4) 예시를 들어보고 가장 편한 키를 선택할 수 있다.
+- [x] 사용자는 마이크 녹음을 시작·정지하고 결과를 미리 듣거나 지운 뒤 다시 녹음할 수 있다.
+- [x] 사용자는 녹음 대신 WAV, MP3, M4A 또는 WebM 오디오 파일을 선택할 수 있다.
+- [x] 분석 전 선택 파일명·크기와 미리 듣기를 확인할 수 있다.
 
 ### US-2: 입력 품질 확인
 
@@ -64,10 +64,10 @@
 
 **Acceptance Criteria:**
 
-- [ ] 디코딩 실패, 8초 미만 입력, 과도한 무음, 1% 초과 clipping ratio, 25% 미만 voiced ratio는 프로필 생성 전에 거절된다.
-- [ ] 품질 실패 응답은 안정적인 reason code와 한국어 안내를 포함한다.
-- [ ] 실패한 입력으로 VocalProfile을 생성하지 않는다.
-- [ ] 최대 60초 또는 25MB를 초과하는 입력은 분석 전에 거절된다.
+- [x] 디코딩 실패, 8초 미만 입력, 과도한 무음, 1% 초과 clipping ratio, 25% 미만 voiced ratio는 프로필 생성 전에 거절된다.
+- [x] 품질 실패 응답은 안정적인 reason code와 한국어 안내를 포함한다.
+- [x] 실패한 입력으로 VocalProfile을 생성하지 않는다.
+- [x] 최대 60초 또는 25MB를 초과하는 입력은 분석 전에 거절된다.
 
 ### US-3: 보컬 프로필 확인
 
@@ -77,10 +77,10 @@
 
 **Acceptance Criteria:**
 
-- [ ] 결과가 glissando 기반 유효 최저·최고 MIDI, 멜로디 기반 p10·p50·p90 MIDI와 tessitura, voiced ratio, pitch stability, clipping ratio와 RMS dB를 포함한다.
-- [ ] MIDI 값은 음이름과 octave 표기로 함께 표시한다.
-- [ ] 결과에 분석기 이름·버전, 녹음 길이와 생성 시각을 표시한다.
-- [ ] 동일한 profile ID를 조회하면 저장된 집계 결과가 반환된다.
+- [x] 결과가 glissando 기반 유효 최저·최고 MIDI, 멜로디 기반 p10·p50·p90 MIDI와 tessitura, voiced ratio, pitch stability, clipping ratio와 RMS dB를 포함한다.
+- [x] MIDI 값은 음이름과 octave 표기로 함께 표시한다.
+- [x] 결과에 분석기 이름·버전, 녹음 길이와 생성 시각을 표시한다.
+- [x] 동일한 profile ID를 조회하면 저장된 집계 결과가 반환된다.
 
 ### US-4: 데이터 삭제
 
@@ -90,9 +90,9 @@
 
 **Acceptance Criteria:**
 
-- [ ] 삭제 전 확인 UI가 제공된다.
-- [ ] 삭제가 완료되면 VocalProfile, Recording row와 저장된 원본 파일이 제거된다.
-- [ ] 삭제된 profile ID 조회는 찾을 수 없음 응답을 반환한다.
+- [x] 삭제 전 확인 UI가 제공된다.
+- [x] 삭제가 완료되면 VocalProfile, Recording row와 저장된 원본 파일이 제거된다.
+- [x] 삭제된 profile ID 조회는 찾을 수 없음 응답을 반환한다.
 
 ---
 
@@ -143,7 +143,7 @@
 
 - 분석 시작 시 `Recording(kind=USER_TEST)`을 생성하고 파일 참조, MIME, 크기, duration, sample rate와 상태를 기록한다.
 - 성공 시 `VocalProfile(sourceType=USER)`을 Recording에 연결하고 `analyzer=librosa-pyin` 및 정확한 analyzer version을 저장한다.
-- 품질 실패 시 VocalProfile은 생성하지 않고 Recording을 `FAILED`로 표시한 뒤 임시 입력 파일을 제거한다.
+- 품질 실패 시 VocalProfile과 Recording row를 생성하지 않고 임시 입력 파일을 제거해 불필요한 음성 흔적을 남기지 않는다.
 - 원본 입력은 Git에서 제외된 로컬 storage에 두며 기본 만료 시각은 생성 후 24시간이다.
 
 ### FR-7: 조회 및 삭제 API

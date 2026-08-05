@@ -126,7 +126,7 @@ Browser /profile
 ├── lib/vocal-profile/
 │   ├── contract.ts
 │   ├── guide-melody.ts
-│   └── response.ts
+│   └── server.ts
 ├── services/vocal-profile-api/
 │   ├── app/
 │   │   ├── main.py
@@ -137,7 +137,8 @@ Browser /profile
 │   ├── Dockerfile
 │   └── requirements.txt
 ├── tests/
-│   └── vocal-profile-contract.test.mjs
+│   ├── vocal-profile-contract.test.ts
+│   └── rendered-html.test.mjs
 ├── docker-compose.yml
 ├── .env.example
 └── README.md
