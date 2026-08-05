@@ -51,3 +51,18 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Commit**: 두 번째 태스크 커밋의 Git 이력
   - **PR**: 로컬 워크플로우로 생성하지 않음
   - **Test/Log**: [tasks.md 테스트 실행 기록](./tasks.md#테스트-실행-기록)
+
+## D003: Next streaming proxy와 Prisma 저장 소유권 (2026-08-05)
+
+- **Context**: 브라우저가 analyzer와 DB에 직접 접근하지 않으면서 분석 결과를 F001 schema에 저장해야 한다.
+- **Constraints**: 25 MiB multipart, 기존 413 회귀 방지, analyzer 고아 파일 정리, BigInt JSON 비호환
+- **Options**: 브라우저→analyzer 직접 호출, analyzer가 PostgreSQL 저장, Next same-origin proxy가 Prisma 저장
+- **Decision**: Next route가 multipart body를 그대로 analyzer에 stream하고 성공 aggregate만 Prisma transaction으로 저장한다.
+- **Rationale**: Secret과 내부 서비스 주소를 숨기고 DB schema 소유권을 TypeScript/Prisma에 유지하며 업로드 재버퍼링을 피한다.
+- **Trace**:
+  - **DOING 시작 시점**: Next가 recording UUID를 생성해 header로 전달하고, DB 실패 시 analyzer delete를 호출한다. API JSON의 BigInt는 number로 정규화한다.
+  - **DONE 전 확정 시점**: vinext production route에서 guided WAV를 streaming 분석해 profile `201`, 조회 `200`, 삭제 `200`, 재조회 `404`를 확인했다. 삭제 후 PostgreSQL Recording/VocalProfile row와 bind storage 파일이 모두 제거됐다.
+- **Evidence**:
+  - **Commit**: 세 번째 태스크 커밋의 Git 이력
+  - **PR**: 로컬 워크플로우로 생성하지 않음
+  - **Test/Log**: [tasks.md 테스트 실행 기록](./tasks.md#테스트-실행-기록)

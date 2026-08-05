@@ -79,14 +79,14 @@
     - [x] Python 3.12/ffmpeg Docker image와 bind volume을 Compose에 추가한다.
     - [x] API upload, 오류, 삭제 테스트와 container healthcheck를 통과한다.
 
-- [TODO][PRD-FR-004] T-F002-user-vocal-profile-03 Next 보컬 프로필 API와 Prisma 저장 구현
+- [DONE][PRD-FR-004] T-F002-user-vocal-profile-03 Next 보컬 프로필 API와 Prisma 저장 구현
   - Date: 2026-08-05
   - Acceptance:
     - same-origin API에서 body streaming 분석, Recording/VocalProfile transaction 저장, 단건 조회와 원본 포함 삭제가 동작한다.
   - Checklist:
-    - [ ] 공유 TypeScript contract와 analyzer proxy route를 구현한다.
-    - [ ] Prisma create/get/delete와 BigInt response 정규화를 구현한다.
-    - [ ] DB 저장 실패 고아 파일 정리와 analyzer/DB health 응답을 구현한다.
+    - [x] 공유 TypeScript contract와 analyzer proxy route를 구현한다.
+    - [x] Prisma create/get/delete와 BigInt response 정규화를 구현한다.
+    - [x] DB 저장 실패 고아 파일 정리와 analyzer/DB health 응답을 구현한다.
 
 - [TODO][PRD-FR-001] T-F002-user-vocal-profile-04 적응형 안내 멜로디와 브라우저 녹음 UI 구현
   - Date: 2026-08-05
@@ -134,5 +134,9 @@
 | `docker compose build vocal-profile-api` | `2026-08-05` | PASS — Python 3.12, ffmpeg, pinned analyzer image |
 | `docker compose run ... pytest -q` | `2026-08-05` | PASS — analyzer unit/API 8건, deprecation warning 4건 비차단 |
 | `curl -fsS http://localhost:8001/health` | `2026-08-05` | PASS — analyzer/storage healthy |
+| `npx tsc --noEmit` | `2026-08-05` | PASS — Next API/Prisma contract 포함 |
+| `npx eslint app/api/vocal-profiles lib/vocal-profile` | `2026-08-05` | PASS |
+| `npm run build` | `2026-08-05` | PASS — vocal-profile API route 3개 포함 |
+| `curl POST/GET/DELETE http://localhost:3100/api/vocal-profiles...` | `2026-08-05` | PASS — 201→200→200→404, DB/file 삭제 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T11:06:32.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T11:11:38.000Z -->
