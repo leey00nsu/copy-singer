@@ -70,14 +70,14 @@
     - [x] interval·clamp·rounding 계산 구현
     - [x] 완전 겹침·고음·저음·저신뢰 경계 fixture 테스트
 
-- [TODO][PRD-FR-009][PRD-FR-010] T-F004-03 추천 shift 탐색과 결정적 reason code 구현
+- [DONE][PRD-FR-009][PRD-FR-010] T-F004-03 추천 shift 탐색과 결정적 reason code 구현
   - Date: 2026-08-06
   - Acceptance:
     - -6~+6 정수 후보 중 최고 점수를 선택하고 동점은 문서화된 순서로 항상 동일하게 해소한다.
     - 원키/조정 점수, 추천 shift, 두 breakdown과 고정 순서 reason code를 반환한다.
   - Checklist:
-    - [ ] 후보 평가·tie-break·불변 입력 구현
-    - [ ] 키 내림·키 올림·원키·동점·반복 직렬화 테스트
+    - [x] 후보 평가·tie-break·불변 입력 구현
+    - [x] 키 내림·키 올림·원키·동점·반복 직렬화 테스트
 
 - [TODO][PRD-FR-010][PRD-NFR-004] T-F004-04 100곡 artifact bulk adapter와 회귀 검증
   - Date: 2026-08-06
@@ -108,4 +108,4 @@
 | `npm run test:key-fit` | `-` | 실행 전 |
 | `npx tsc --noEmit && npm run lint && npm test` | `-` | 실행 전 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T15:21:34.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T15:23:12.000Z -->
