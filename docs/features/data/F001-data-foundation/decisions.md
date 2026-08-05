@@ -30,6 +30,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **DOING 시작 시점**: npm registry에서 Prisma와 `@prisma/client` 최신 안정 버전이 7.9.1임을 확인했다. Prisma 7 공식 문서의 root config, custom client output, driver adapter 및 명시적 seed 방식을 계획에 반영했다.
   - **DONE 전 확정 시점**: Compose 정규화 결과와 설치된 고정 버전을 확인했고, Prisma config를 포함한 TypeScript 검사가 통과했다. Docker 컨테이너는 사용자 실행 경계에 따라 아직 기동하지 않았다.
+  - **후속 조정**: 사용자 요청에 따라 PostgreSQL 호스트 기본 포트를 `5433`으로 변경했다. 컨테이너 내부 표준 포트 `5432`는 유지한다.
   - **머지 후 확인**: 실제 결과/영향
 - **Evidence**:
   - **Commit**: 첫 태스크 커밋의 Git 이력
@@ -52,3 +53,18 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 워크플로우로 생성하지 않음
   - **Test/Log**: [tasks.md 테스트 실행 기록](./tasks.md#테스트-실행-기록)
 - **Consequences**: JSON 내부 구조 검증은 해당 값을 생성하는 후속 Feature에서 별도 타입과 validation으로 보완해야 한다.
+
+## D003: Idempotent seed와 실제 PostgreSQL 통합 검증 (2026-08-05)
+
+- **Context**: 후속 Feature 개발 전에 전체 관계를 갖춘 최소 데이터를 반복해서 준비하고 초기 migration의 실제 적용 가능성을 확인해야 한다.
+- **Constraints**: 실제 음원과 개인정보를 seed에 포함하지 않으며, Docker Compose 기동은 사용자가 직접 수행한다. Prisma 7은 migration/reset에서 seed를 자동 실행하지 않는다.
+- **Options**: 일회성 create seed, unique key 기반 upsert seed, SQL fixture
+- **Decision**: 고정 UUID와 unique key 기반 Prisma upsert seed를 사용하고 `prisma db seed`를 명시적으로 실행한다. 별도 verify script가 관계와 핵심 값을 조회·검증한다.
+- **Rationale**: 여러 번 실행해도 개발 DB를 깨뜨리지 않으며 Prisma Client가 실제 schema 관계를 올바르게 다루는지 함께 검증할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: DB 없이 seed와 verify 코드를 먼저 작성하고, 사용자의 Compose 기동 후 migrate/seed/verify를 실제 실행한다.
+  - **DONE 전 확정 시점**: PostgreSQL 16에 초기 migration을 적용하고 seed를 두 번 연속 실행했다. verify script가 Recording→VocalProfile→RecommendationRun→RecommendationItem→Song→곡 VocalProfile 관계와 추천 shift를 정상 조회했다.
+- **Evidence**:
+  - **Commit**: 세 번째 태스크 커밋의 Git 이력
+  - **PR**: 로컬 워크플로우로 생성하지 않음
+  - **Test/Log**: [tasks.md 테스트 실행 기록](./tasks.md#테스트-실행-기록)

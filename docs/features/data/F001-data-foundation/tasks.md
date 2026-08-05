@@ -79,14 +79,14 @@
     - [x] 관계, 삭제 정책, unique constraint와 조회 index를 정의한다.
     - [x] PrismaPg 기반 서버 전용 singleton client를 추가한다.
 
-- [TODO][PRD-NFR-004] T-F001-data-foundation-03 초기 migration과 반복 가능한 seed 검증
+- [DONE][PRD-NFR-004] T-F001-data-foundation-03 초기 migration과 반복 가능한 seed 검증
   - Date: 2026-08-05
   - Acceptance:
     - 사용자가 기동한 빈 PostgreSQL에 초기 migration을 적용하고 seed를 두 번 실행한 뒤 관계 조회 검증이 통과한다.
   - Checklist:
-    - [ ] 초기 migration SQL과 migration lock을 생성하고 적용 상태를 확인한다.
-    - [ ] 비민감성 고정 예제 데이터를 upsert하는 seed를 구현한다.
-    - [ ] seed 관계와 핵심 데이터를 조회하는 verify script를 구현하고 실행한다.
+    - [x] 초기 migration SQL과 migration lock을 생성하고 적용 상태를 확인한다.
+    - [x] 비민감성 고정 예제 데이터를 upsert하는 seed를 구현한다.
+    - [x] seed 관계와 핵심 데이터를 조회하는 verify script를 구현하고 실행한다.
 
 - [TODO][PRD-DATA-003] T-F001-data-foundation-04 로컬 사용 문서화 및 회귀 검증
   - Date: 2026-08-05
@@ -112,7 +112,7 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `docker compose config` | `2026-08-05` | PASS — PostgreSQL 16, healthcheck, port, named volume 구성 확인 |
+| `docker compose config` | `2026-08-05` | PASS — 호스트 `5433` → 컨테이너 `5432`, PostgreSQL 16, healthcheck, named volume 확인 |
 | `DATABASE_URL=... npx prisma --version` | `2026-08-05` | PASS — Prisma CLI 및 Client 7.9.1 확인 |
 | `npm ls @prisma/client @prisma/adapter-pg prisma pg dotenv tsx @types/pg --depth=0` | `2026-08-05` | PASS — 고정 의존성 설치 확인 |
 | `npx tsc --noEmit` | `2026-08-05` | PASS |
@@ -120,5 +120,12 @@
 | `DATABASE_URL=... npm run db:generate` | `2026-08-05` | PASS — Prisma Client 7.9.1 생성 |
 | `npx eslint lib/db/prisma.ts prisma.config.ts` | `2026-08-05` | PASS |
 | `npm run lint` | `2026-08-05` | FAIL — 기존 `.codex/hooks/*.mjs` unused-variable 3건, T04에서 범위 정리 예정 |
+| `npx eslint prisma/seed.ts scripts/verify-database.ts` | `2026-08-05` | PASS |
+| `docker compose ps` | `2026-08-05` | PASS — PostgreSQL healthy, 호스트 `5433` → 컨테이너 `5432` |
+| `docker compose exec -T postgres pg_isready -U copy_singer -d copy_singer` | `2026-08-05` | PASS — accepting connections |
+| `DATABASE_URL=... npm run db:migrate -- --name init_data_foundation` | `2026-08-05` | PASS — 초기 migration 생성 및 적용 |
+| `DATABASE_URL=... npm run db:seed` | `2026-08-05` | PASS — 2회 연속 실행, 중복 충돌 없음 |
+| `DATABASE_URL=... npm run db:verify` | `2026-08-05` | PASS — Recording→Profile→Run→Item→Song 관계와 추천 shift 조회 |
+| `DATABASE_URL=... npm run db:status` | `2026-08-05` | PASS — 1 migration, schema up to date |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T10:40:24.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T10:45:14.000Z -->
