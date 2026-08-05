@@ -7,10 +7,10 @@
 - **Idea ID**: I003
 - **Idea Name**: song-catalog-profiles
 - **Created**: 2026-08-05
-- **Status**: Active
+- **Status**: Featureized
   - 값: Active | Featureized | Dropped
-- **Feature**: -
-- **PRD Refs**: PRD-FR-005, PRD-FR-006, PRD-FR-007, PRD-DATA-004, PRD-DATA-005, PRD-NFR-004
+- **Feature**: F003-song-catalog-profiles
+- **PRD Refs**: PRD-FR-005, PRD-FR-006, PRD-FR-007, PRD-DATA-004, PRD-DATA-005, PRD-DATA-006, PRD-NFR-004, PRD-NFR-006
 - **Component**: data
 
 ---
@@ -25,13 +25,13 @@
 
 ## 대략 범위
 
-- In: 곡 metadata import 계약, idempotent seed/upsert, 분석 상태, vocal separation 연계, 같은 analyzer 버전의 곡 프로필 batch 생성
-- Out: 100곡 실제 목록과 음원 수집, 저작권 음원 배포, 자동 가사/MIDI 정렬
+- In: 실제 100곡 metadata import, idempotent upsert, 분석 상태, 로컬 개발 전용 yt-dlp 일시 처리, vocal separation, 같은 analyzer 버전의 곡 프로필 batch 생성, 원본·stem 무조건 삭제
+- Out: 음원 영구 보관·배포, 공개 서비스용 YouTube downloader, DRM/인증 우회, 자동 가사/MIDI 정렬
 
 ---
 
 ## 승격 메모
 
-- 목록 없이도 fixture 2~3곡으로 pipeline을 검증할 수 있어야 한다.
-- 실제 목록이 오면 필수 컬럼, 원키 표기와 음원 참조 방식을 확정한다.
+- 실제 목록은 `tj_2607_top100.md`의 순위·제목·가수·YouTube URL을 사용한다.
+- DB에는 링크와 집계 분석값만 남기며 다운로드 원본과 분리 stem은 작업 종료 시 삭제한다.
 - I001과 I002의 profile schema/analyzer가 안정된 후 승격한다.
