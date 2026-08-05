@@ -7,9 +7,9 @@
 - **Idea ID**: I001
 - **Idea Name**: data-foundation
 - **Created**: 2026-08-05
-- **Status**: Active
+- **Status**: Featureized
   - 값: Active | Featureized | Dropped
-- **Feature**: -
+- **Feature**: F001-data-foundation
 - **PRD Refs**: PRD-DATA-001, PRD-DATA-002, PRD-DATA-003, PRD-DATA-004, PRD-DATA-005, PRD-NFR-001, PRD-NFR-004
 - **Component**: data
 
