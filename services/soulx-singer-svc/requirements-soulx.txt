@@ -1,0 +1,23 @@
+# Runtime-only subset of upstream requirements. SageAttention is intentionally
+# omitted so T4 can use PyTorch SDPA instead of an unsupported custom kernel.
+accelerate==1.11.0
+beartype==0.22.9
+einops==0.8.2
+huggingface_hub>=0.20.0
+librosa==0.11.0
+loralib==0.1.2
+matplotlib==3.10.8
+ml_collections==1.1.0
+numpy<2.0.0
+omegaconf==2.3.0
+packaging==24.2
+pyyaml>=6.0.2
+rotary_embedding_torch==0.8.9
+scipy==1.15.3
+soundfile==0.13.1
+torch==2.2.0
+torchaudio==2.2.0
+tqdm==4.67.1
+transformers==4.41.2
+wandb==0.24.2
+
