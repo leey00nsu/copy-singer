@@ -46,17 +46,17 @@
     - [x] item start/status/audio route 및 run cleanup 구현
     - [x] idempotency·partial failure·expiry·cleanup 통합 테스트 통과
 
-- [TODO][PRD-US-007][PRD-FR-017][PRD-FR-020] T-F006-03 추천 카드 자동 합성 UI와 개발 Workbench 분리
+- [DONE][PRD-US-007][PRD-FR-017][PRD-FR-020] T-F006-03 추천 카드 자동 합성 UI와 개발 Workbench 분리
   - Date: 2026-08-06
   - Acceptance:
     - 추천 결과 진입 후 정확히 3개 카드가 자동 시작되고 카드별 “믹싱 중이에요”, 세부 상태, 실패 재시도, 성공 audio/download를 표시한다.
     - 점수·추천 이유·추천 노래방 키는 유지하고 일반 흐름의 Workbench CTA는 제거한다.
     - 기존 자유 입력 Workbench는 `/dev/svc`에 개발용 안내와 함께 유지된다.
   - Checklist:
-    - [ ] bounded polling과 item별 자동 start/retry state 구현
-    - [ ] 카드 loading/failed/succeeded player UI 구현
-    - [ ] `/dev/svc` 경로와 일반 진입 경로 정리
-    - [ ] UI/SSR 테스트, lint, TypeScript와 production build 통과
+    - [x] bounded polling과 item별 자동 start/retry state 구현
+    - [x] 카드 loading/failed/succeeded player UI 구현
+    - [x] `/dev/svc` 경로와 일반 진입 경로 정리
+    - [x] UI/SSR 테스트, lint, TypeScript와 production build 통과
 
 - [TODO][PRD-US-007][PRD-FR-016][PRD-NFR-002][PRD-NFR-003] T-F006-04 사용자 예시 보컬 실제 Modal 파이프라인 검증
   - Date: 2026-08-06
@@ -83,11 +83,11 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `npx prisma validate` | `2026-08-06` | `PASS — schema valid, migration applied to local PostgreSQL` |
-| `npm run lint` | `2026-08-06` | `PASS` |
+| `npm run lint` | `2026-08-06` | `PASS — UI 포함 전체 lint` |
 | `npx tsc --noEmit` | `2026-08-06` | `PASS` |
-| `npm test` | `-` | `-` |
+| `npm test` | `2026-08-06` | `PASS — build, SSR 3, catalog 7, key-fit 18, recommendation 15` |
 | `python -m pytest services/vocal-profile-api/tests` | `2026-08-06` | `PASS — 18 tests` |
 | `npm run test:recommendation:db` | `2026-08-06` | `PASS — 3 integration tests` |
 | `vocal1.wav -> current Modal smoke test` | `-` | `-` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T18:59:17.977Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T19:05:10.501Z -->

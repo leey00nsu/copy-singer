@@ -39,6 +39,24 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 
 ---
 
+## D003: 세 카드 순차 제출과 단일 run polling (2026-08-06)
+
+- **Context**: 세 곡 target WAV를 동시에 준비하면 로컬 메모리와 network peak가 커지며 Modal L4도 현재 한 작업씩 처리한다.
+- **Constraints**: 사용자는 결과 화면 진입 즉시 세 카드가 모두 진행 중임을 알아야 하고, 한 카드 실패가 나머지를 막으면 안 된다.
+- **Options**: 세 POST 병렬 실행, 사용자 클릭 실행, client 순차 POST와 run 단위 polling을 비교했다.
+- **Decision**: UI에는 세 카드를 즉시 “믹싱 중이에요”로 표시하되 start POST는 rank 순서로 제출한다. 이후 한 개의 run GET polling으로 세 상태를 조정하고 실패 retry만 item POST를 사용한다.
+- **Rationale**: 자동 흐름을 유지하면서 대용량 WAV buffering peak를 한 곡으로 제한하고 요청·polling 수를 줄인다.
+- **Trace**:
+  - **DOING 시작 시점**: client ref와 DB conditional claim을 함께 사용해 React effect 재실행에도 GPU job 중복을 막는다.
+  - **DONE 전 확정 시점**: 제품 홈을 profile로 변경하고 Workbench를 `/dev/svc`로 분리했다. loading/failed/succeeded 카드와 audio/download를 SSR 및 production build로 확인했다.
+  - **머지 후 확인**: 실제 결과/영향
+- **Evidence**:
+  - **Commit**: 구현 커밋에서 기록
+  - **PR**: 로컬-only, 생성하지 않음
+  - **Test/Log**: `npm test` PASS — SSR 3, catalog 7, key-fit 18, recommendation 15; production routes에 `/dev/svc`와 synthesis endpoints 포함 (2026-08-06)
+
+---
+
 ## D002: 기존 Modal multipart API 앞에 임시 media broker 배치 (2026-08-06)
 
 - **Context**: 자동 추천 흐름은 브라우저 파일 선택 없이 analyzer에 보존된 reference와 catalog URL의 target을 기존 Modal API에 전달해야 한다.
