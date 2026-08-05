@@ -9,7 +9,7 @@
     "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext dev",
     "build": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext build",
     "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
-    "test": "npm run build && tsx --test tests/vocal-profile-contract.test.ts && node --test tests/rendered-html.test.mjs && npm run test:catalog && npm run test:key-fit",
+    "test": "npm run build && tsx --test tests/vocal-profile-contract.test.ts && node --test tests/rendered-html.test.mjs && npm run test:catalog && npm run test:key-fit && npm run test:recommendation",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:validate": "prisma validate",
     "db:generate": "prisma generate",
@@ -24,7 +24,8 @@
     "catalog:verify": "tsx scripts/verify-song-catalog.ts",
     "catalog:clear-db-profiles": "tsx scripts/clear-song-profile-records.ts",
     "test:catalog": "tsx --test tests/song-catalog.test.ts",
-    "test:key-fit": "tsx --test tests/key-fit-scoring.test.ts"
+    "test:key-fit": "tsx --test tests/key-fit-scoring.test.ts",
+    "test:recommendation": "tsx --test tests/recommendation-ranking.test.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

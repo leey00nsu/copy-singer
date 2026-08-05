@@ -7,9 +7,9 @@
 - **Idea ID**: I005
 - **Idea Name**: top-three-recommendations
 - **Created**: 2026-08-05
-- **Status**: Active
+- **Status**: Featureized
   - 값: Active | Featureized | Dropped
-- **Feature**: -
+- **Feature**: F005-top-three-recommendations
 - **PRD Refs**: PRD-US-005, PRD-US-006, PRD-FR-011, PRD-FR-012, PRD-FR-013, PRD-FR-014, PRD-FR-015, PRD-NFR-006, PRD-NFR-007
 - **Component**: web
 
