@@ -124,7 +124,10 @@ def analyze_audio(
     duration_seconds = audio.size / sample_rate
     duration_ms = round(duration_seconds * 1_000)
     if duration_seconds < config.min_duration_seconds:
-        raise AnalysisRejectedError("TOO_SHORT", "Audio must be at least 8 seconds long.")
+        raise AnalysisRejectedError(
+            "TOO_SHORT",
+            f"Audio must be at least {config.min_duration_seconds:g} seconds long.",
+        )
     if duration_seconds > config.max_duration_seconds:
         raise AnalysisRejectedError("TOO_LONG", "Audio must be 60 seconds or shorter.")
 

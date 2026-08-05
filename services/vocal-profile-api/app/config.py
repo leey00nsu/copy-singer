@@ -10,7 +10,7 @@ class AnalysisConfig:
     hop_length: int = 256
     fmin_note: str = "C2"
     fmax_note: str = "C7"
-    min_duration_seconds: float = 8.0
+    min_duration_seconds: float = 5.0
     max_duration_seconds: float = 60.0
     min_rms_db: float = -45.0
     max_clipping_ratio: float = 0.01

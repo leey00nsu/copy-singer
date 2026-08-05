@@ -19,7 +19,7 @@ type ServiceHealth = "checking" | "ok" | "unavailable";
 const RECOMMENDED_RECORDING_MS = 30_000;
 
 const ERROR_GUIDANCE: Record<string, { title: string; action: string }> = {
-  TOO_SHORT: { title: "녹음이 너무 짧아요", action: "8초 이상 노래하거나 안내 녹음을 끝까지 진행해주세요." },
+  TOO_SHORT: { title: "녹음이 너무 짧아요", action: "5초 이상 노래한 뒤 다시 시도해주세요." },
   TOO_LONG: { title: "녹음이 너무 길어요", action: "60초 이하 구간으로 잘라 다시 올려주세요." },
   TOO_SILENT: { title: "목소리가 너무 작아요", action: "마이크에 조금 가까이 다가가 반주 없이 더 크게 불러주세요." },
   EXCESSIVE_CLIPPING: { title: "소리가 찌그러졌어요", action: "마이크에서 조금 멀어지거나 입력 음량을 낮춰주세요." },

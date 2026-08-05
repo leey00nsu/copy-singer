@@ -72,3 +72,10 @@ def test_unsegmented_upload_uses_whole_voiced_range() -> None:
     assert result.descriptors["segmented"] is False
     assert result.min_midi == pytest.approx(57, abs=1)
     assert result.max_midi == pytest.approx(69, abs=1)
+
+
+def test_five_second_boundary_is_accepted() -> None:
+    result = analyze_audio(_tone(220, 5).astype(np.float32), SAMPLE_RATE)
+
+    assert result.duration_ms == 5_000
+    assert result.voiced_ratio >= 0.25

@@ -269,3 +269,33 @@ test("bulk scoring rejects a non-ready song instead of silently omitting it", ()
     },
   );
 });
+
+test("scores the analyzed vocal1.wav profile against the real catalog", () => {
+  const vocal1Profile: KeyFitProfile = {
+    minMidi: 45.2,
+    maxMidi: 55.764,
+    p10Midi: 48.8,
+    medianMidi: 50.1,
+    p90Midi: 54.1,
+    tessituraLowMidi: 48.8,
+    tessituraHighMidi: 54.1,
+    voicedRatio: 0.8412,
+    pitchStability: 0.8825,
+    clippingRatio: 0,
+    analyzer: "librosa-pyin",
+    analyzerVersion: "0.11.0",
+  };
+  const results = scoreCatalogKeyFits(vocal1Profile, loadRealSongArtifact());
+  const sorted = [...results].sort(
+    (first, second) =>
+      second.adjustedScore - first.adjustedScore ||
+      second.originalKeyScore - first.originalKeyScore ||
+      first.catalogOrder - second.catalogOrder,
+  );
+
+  assert.equal(sorted[0].catalogOrder, 64);
+  assert.equal(sorted[0].recommendedShift, -4);
+  assert.equal(sorted[0].originalKeyScore, 47.69);
+  assert.equal(sorted[0].adjustedScore, 98.85);
+  assert.equal(results.filter((result) => result.recommendedShift === -6).length, 99);
+});
