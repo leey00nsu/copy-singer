@@ -70,14 +70,14 @@
     - [x] segmented melody/glissando 및 일반 upload 통계 계산을 구현한다.
     - [x] 합성 fixture 단위 테스트로 임계값과 analyzer version을 검증한다.
 
-- [TODO][PRD-DATA-004] T-F002-user-vocal-profile-02 로컬 analyzer API와 오디오 저장 경계 구현
+- [DONE][PRD-DATA-004] T-F002-user-vocal-profile-02 로컬 analyzer API와 오디오 저장 경계 구현
   - Date: 2026-08-05
   - Acceptance:
     - FastAPI analyzer가 25MB 제한 multipart를 streaming 저장·분석하고 health/delete 계약과 24시간 storage metadata를 제공한다.
   - Checklist:
-    - [ ] FastAPI analyze, health, delete endpoint와 구조화된 오류 계약을 구현한다.
-    - [ ] Python 3.12/ffmpeg Docker image와 bind volume을 Compose에 추가한다.
-    - [ ] API upload, 오류, 삭제 테스트와 container healthcheck를 통과한다.
+    - [x] FastAPI analyze, health, delete endpoint와 구조화된 오류 계약을 구현한다.
+    - [x] Python 3.12/ffmpeg Docker image와 bind volume을 Compose에 추가한다.
+    - [x] API upload, 오류, 삭제 테스트와 container healthcheck를 통과한다.
 
 - [TODO][PRD-FR-004] T-F002-user-vocal-profile-03 Next 보컬 프로필 API와 Prisma 저장 구현
   - Date: 2026-08-05
@@ -131,5 +131,8 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `docker run ... python:3.12-slim ... pytest -q` | `2026-08-05` | PASS — pYIN 합성 melody/glissando 및 quality gate 5건 |
+| `docker compose build vocal-profile-api` | `2026-08-05` | PASS — Python 3.12, ffmpeg, pinned analyzer image |
+| `docker compose run ... pytest -q` | `2026-08-05` | PASS — analyzer unit/API 8건, deprecation warning 4건 비차단 |
+| `curl -fsS http://localhost:8001/health` | `2026-08-05` | PASS — analyzer/storage healthy |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T11:02:11.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T11:06:32.000Z -->

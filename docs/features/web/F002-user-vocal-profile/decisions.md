@@ -36,3 +36,18 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 워크플로우로 생성하지 않음
   - **Test/Log**: [tasks.md 테스트 실행 기록](./tasks.md#테스트-실행-기록)
 - **Consequences**: pYIN 정확도가 실제 녹음에서 부족하면 동일 fixture에 torchcrepe를 추가해 analyzer version별 비교가 필요하다.
+
+## D002: 독립 로컬 CPU analyzer 서비스 (2026-08-05)
+
+- **Context**: librosa와 ffmpeg는 Python/OS 의존성이 있으며 기존 vinext Worker와 Modal GPU 경로에서 분리해야 한다.
+- **Constraints**: 로컬 전용, GPU 비용 없음, 25 MiB upload, 원본 24시간 보관, DB Secret 비노출
+- **Options**: Next child process, Modal CPU function, Docker Compose FastAPI 서비스
+- **Decision**: Python 3.12 + FastAPI analyzer를 Docker Compose의 독립 서비스로 실행하고 Next는 raw multipart stream만 전달한다.
+- **Rationale**: Python 분석 의존성을 재현 가능한 이미지로 격리하고, 기존 SVC endpoint와 DB 소유권을 변경하지 않으면서 큰 오디오의 중복 버퍼링을 피한다.
+- **Trace**:
+  - **DOING 시작 시점**: analyzer는 UUID 기반 디렉터리, 1 MiB chunk, ffmpeg mono 22,050 Hz 변환, health/analyze/delete endpoint를 제공한다.
+  - **DONE 전 확정 시점**: Python 3.12/ffmpeg image build, FastAPI unit/API 8건, Compose healthcheck와 writable bind storage가 통과했다. 첫 요청 직전 health starting 상태의 연결 reset은 6초 뒤 healthy 전환으로 해소됐다.
+- **Evidence**:
+  - **Commit**: 두 번째 태스크 커밋의 Git 이력
+  - **PR**: 로컬 워크플로우로 생성하지 않음
+  - **Test/Log**: [tasks.md 테스트 실행 기록](./tasks.md#테스트-실행-기록)
