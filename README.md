@@ -26,16 +26,7 @@ For voice conversion, upload:
 
 The browser calls same-origin Next.js API routes. The Modal API key stays on the server and is never sent to the browser.
 
-For a vocal profile, choose a comfortable preset, listen to the original 80 BPM guide, then record the 21-second visual exercise or upload a WAV, MP3, M4A, or WebM file. The local analyzer accepts at most 25 MB and 60 seconds.
-
-The three guide previews are committed WAV assets made from an OmniVoice sustained humming seed, pitch-corrected to the guide MIDI notes and mixed with a quiet sine reference at an 80:20 ratio. Regenerate them only when OmniVoice Studio is running on port 3900:
-
-```bash
-docker compose run --rm --no-deps \
-  -v "$PWD:/workspace" \
-  --entrypoint python vocal-profile-api \
-  /workspace/scripts/generate-humming-guides.py
-```
+For a vocal profile, sing any familiar song verse for about 10–30 seconds without accompaniment—for example, the Korean national anthem or “Happy Birthday.” Recording stops when you press the button or automatically at 30 seconds. You can instead upload a WAV, MP3, M4A, or WebM file. The local analyzer accepts at most 25 MB and 60 seconds.
 
 ## Local PostgreSQL and vocal analyzer
 

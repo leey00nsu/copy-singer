@@ -28,13 +28,14 @@ test("server-renders the Copy Singer workbench", async () => {
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/);
 });
 
-test("server-renders the guided vocal profile page", async () => {
+test("server-renders the free-singing vocal profile page", async () => {
   const response = await render("/profile");
   assert.equal(response.status, 200);
 
   const html = await response.text();
   assert.match(html, /내 음역 측정/);
-  assert.match(html, /편한 시작 키 선택/);
+  assert.match(html, /가볍게 노래 한 소절을 불러주세요/);
+  assert.match(html, /10–30초/);
   assert.match(html, /마이크로 녹음/);
   assert.match(html, /오디오 파일 업로드/);
 });
