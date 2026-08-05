@@ -30,7 +30,4 @@ Feature 문서에서 디자인을 참조할 때는 상대경로보다 **프로�
 
 ## 현재 문서
 
-- [시스템 아키텍처](system-architecture.md): Web, Next.js proxy, Modal API와 GPU worker의 책임 및 요청 흐름
-- [보컬 프로필 오픈소스 선정](vocal-profile-open-source.md): MVP 분석기와 대안 비교
-- [데이터 모델 초안](data-model.md): PostgreSQL/Prisma 엔터티와 보류 사항
-- [구현 로드맵](implementation-roadmap.md): 단계별 구현 순서와 완료 기준
+아직 등록된 UI 디자인 참고 자료가 없습니다. 녹음 화면, 추천 결과 화면, 디자인 시스템 자료가 생기면 이곳에 추가합니다.

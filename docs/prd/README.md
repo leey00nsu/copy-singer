@@ -63,3 +63,4 @@ PRD의 “어느 요구사항이 구현됐는지”를 CLI가 집계할 수 있�
 ## 현재 PRD
 
 - [Copy Singer PRD](copy-singer-prd.md)
+- [시스템 아키텍처 개요](system-architecture.md)

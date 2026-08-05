@@ -45,6 +45,8 @@ Feature로 발전하기 전의 아이디어 / To-do / 실험 기록을 모아두
 
 앞 단계의 데이터 계약이 확정된 뒤 다음 Idea를 Feature로 승격합니다.
 
+세부 구현 순서는 `docs/prd/copy-singer-prd.md`의 `구현 순서`를 상위 기준으로 사용합니다. 각 Idea의 조사·설계 초안은 Feature 승격 시 `spec.md`, `plan.md`, `decisions.md`, `tasks.md`로 분리해 이동합니다.
+
 > 💡 source idea 문서를 남겨두면 “왜 이 Feature가 생겼는지” 추적하기 쉽습니다.
 
 ---
