@@ -16,6 +16,7 @@
 | 보컬 분리 | Demucs v4 `htdemucs`, two stems | 검증된 오픈소스 모델과 단순한 vocals 출력 계약 |
 | 음정 분석 | 기존 FastAPI `librosa-pyin` | 사용자·곡 프로필의 비교 가능성 유지 |
 | 실행 | 로컬 CLI + 내부 FastAPI, concurrency 1 | 임시 파일 생명주기 집중 관리와 재시작 지원 |
+| 선택적 가속 batch | Modal L4 + Function.map, max containers 8 | 3곡 벤치마크 후 승인된 잔여 카탈로그의 Demucs CUDA 병렬 처리 |
 
 ## 아키텍처
 
@@ -31,6 +32,16 @@ data/catalogs/tj-2607-top100.md
             -> librosa-pyin
             -> finally: TemporaryDirectory 삭제
        -> atomic JSON artifact update after each song
+
+optional benchmark:
+  local Modal entrypoint -> local TemporaryDirectory + yt-dlp
+    -> anonymous Volume.ephemeral upload
+    -> up to 8 independent L4 functions
+    -> each function uses only remote /tmp
+    -> ephemeral WAV read -> Demucs CUDA -> same librosa-pYIN core
+    -> aggregate result returned to local entrypoint
+    -> ephemeral Volume context deletion
+  -> atomic local JSON artifact update
 ```
 
 다운로드·분리·분석은 기존 analyzer 컨테이너의 내부 endpoint 한 곳에서 수행한다. endpoint는 YouTube watch URL과 예상 video ID를 함께 받아 일치 여부를 확인하고, OS `TemporaryDirectory`만 사용한다. subprocess 인자는 배열로 전달해 shell interpolation을 사용하지 않는다. 해당 서비스에는 song job용 영구 volume을 연결하지 않는다.
@@ -56,6 +67,7 @@ lib/song-catalog/pipeline.ts
 scripts/import-song-catalog.ts
 scripts/analyze-song-catalog.ts
 services/vocal-profile-api/app/main.py
+services/song-catalog-analyzer/modal_app.py
 tests/song-catalog.test.ts
 ```
 
@@ -65,9 +77,10 @@ tests/song-catalog.test.ts
 npm run catalog:import
 npm run catalog:analyze -- --limit 1
 npm run catalog:analyze -- --resume
+python -m modal run services/song-catalog-analyzer/modal_app.py --limit 86
 ```
 
-`catalog:analyze`는 analyzer health에서 yt-dlp·FFmpeg·Demucs 준비 상태를 검사한다. artifact가 없으면 100개 PENDING 항목으로 만들고, 기본 실행은 PENDING/FAILED 항목을 순위순으로 처리하며 READY 항목은 건너뛴다. 각 갱신은 임시 JSON을 쓴 뒤 rename한다.
+`catalog:analyze`는 analyzer health에서 yt-dlp·FFmpeg·Demucs 준비 상태를 검사한다. artifact가 없으면 100개 PENDING 항목으로 만들고, 기본 실행은 PENDING/FAILED 항목을 순위순으로 처리하며 READY 항목은 건너뛴다. 일시적 분석기 연결·yt-dlp·timeout 오류는 최대 3회 간격을 두고 재시도하고, 검증 오류는 재시도하지 않는다. 각 갱신은 임시 JSON을 쓴 뒤 rename한다.
 
 ## 테스트 전략
 
@@ -83,6 +96,9 @@ npm run catalog:analyze -- --resume
 - CPU에서 100곡 분리는 장시간 걸릴 수 있으므로 순차·resume이 필수다.
 - 링크가 가사 영상이어도 오디오 트랙을 분석하므로 영상 프레임은 저장하지 않는다.
 - yt-dlp 경로는 로컬 개발 전용이며 공개 서비스 배포 범위에서 제외한다.
+- Modal 경로는 HTTP endpoint로 배포하지 않고 명시적 `modal run`으로만 실행한다. YouTube의 데이터센터 IP 차단을 피하기 위해 로컬에서 받은 WAV를 anonymous ephemeral Volume으로 전달하지만 named/persistent Volume은 사용하지 않고 실행 종료 시 삭제한다.
+- 로컬 다운로드는 제한된 동시성으로 수행하고 개별 실패를 artifact에 격리한다. 성공한 입력만 ephemeral Volume에 올려 GPU batch를 계속한다.
+- 대규모 실행의 로컬 `TemporaryDirectory` 부모는 `COPY_SINGER_TEMP_ROOT`로 지정할 수 있으며 이번 전체 batch는 외장 SSD 경로를 사용한다.
 
 ## 관련 문서
 

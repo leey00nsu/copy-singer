@@ -26,6 +26,7 @@ TJ 2026년 7월 Top 100 목록을 반복 가능하게 정규화하고, 로컬 �
 - 100곡 profile 상태와 집계값을 담는 versioned JSON artifact
 - 개별 곡 실패 격리, 재시도, 단계별 상태·오류 기록
 - `--limit`, `--rank`, `--resume` 실행 옵션
+- 별도 비배포형 Modal L4 함수에서 3곡을 벤치마크한 뒤 최대 8개 컨테이너로 남은 카탈로그를 병렬 분석
 
 ### 제외
 
@@ -99,17 +100,18 @@ Demucs `htdemucs` 모델과 `--two-stems=vocals`를 사용한다. 모델명과 �
 
 ### FR-5: 재시작과 관찰 가능성
 
-각 곡은 독립 transaction으로 처리한다. batch는 처리 순서와 성공·건너뜀·실패 수를 출력하고, 실패 원인과 마지막 처리 단계를 `Song.metadata`에 기록한다.
+각 곡은 독립 작업으로 처리한다. batch는 처리 순서와 성공·건너뜀·실패 수를 출력하고, 실패 원인과 마지막 처리 상태를 JSON artifact에 기록한다. 네트워크·yt-dlp·timeout처럼 일시적일 수 있는 오류는 제한된 횟수만 재시도하고 URL/allowlist 검증 오류는 즉시 실패 처리한다.
 
 ## 비기능 요구사항
 
 - **재현성**: 카탈로그 원본, yt-dlp, Demucs model/version, analyzer/version을 기록한다.
 - **배포성**: JSON artifact는 Git에 포함되며 DB migration이나 재분석 없이 동일한 곡 profile을 배포한다.
-- **비용**: 로컬 CPU 실행을 기본으로 하고 다운로드·분석 동시성은 1이다.
+- **비용**: 로컬 CPU 실행을 기본으로 유지한다. Modal 경로는 3곡 실측 후 사용자 승인 시에만 L4 최대 8개로 확장하며 실제 실행 시간과 예상 비용을 기록한다.
 - **저장소**: 미디어는 컨테이너의 OS 임시 디렉터리에서만 처리하고 영구 volume을 연결하지 않는다.
 - **안전성**: 다운로드는 명시적 batch 명령에서만 시작하며 웹 요청으로 임의 URL을 받지 않는다.
 - **권리**: 다운로드·분석 권한 확인은 실행자의 책임이며 결과 파일은 로컬 분석 목적으로만 다룬다.
 - **정리 보장**: 정상 응답, 분석 실패, timeout, 취소 경로 모두 `finally` 정리를 거친다.
+- **Modal 격리**: YouTube 다운로드는 로컬 OS 임시 디렉터리에서 수행한다. 입력 WAV는 이름 없는 `Volume.ephemeral()`로만 전달하고 GPU 함수는 `/tmp`에서 처리하며, batch 종료 시 임시 Volume 자체를 삭제한다. named Volume·Dict·DB는 만들지 않고 aggregate profile만 로컬 호출자에게 반환한다.
 
 ## 관련 문서
 

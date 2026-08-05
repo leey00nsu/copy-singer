@@ -59,22 +59,25 @@
     - [x] 스모크 로그와 알려진 제약 기록
     - [x] README 실행 절차
 
-- [DOING][PRD-FR-005][PRD-FR-006][PRD-DATA-006] T-F003-06 곡 profile 저장소를 versioned JSON artifact로 전환
+- [DONE][PRD-FR-005][PRD-FR-006][PRD-DATA-006] T-F003-06 곡 profile 저장소를 versioned JSON artifact로 전환
   - Date: 2026-08-05
   - Acceptance:
     - artifact는 100개 항목과 schema/tool version을 포함하고 곡별 READY/FAILED/PENDING 상태를 재개할 수 있다.
     - batch 분석은 PostgreSQL에 VocalProfile 또는 Recording을 생성하지 않는다.
     - 기존 로컬 F003 분석 DB 행을 제거하고 JSON artifact만으로 동일한 결과를 검증한다.
   - Checklist:
-    - [ ] artifact schema/parser/atomic writer와 테스트
-    - [ ] batch CLI의 Prisma 의존 제거
-    - [ ] 기존 F003 DB profile 안전 제거
-    - [ ] 실제 100곡 artifact 생성 및 검증
+    - [x] artifact schema/parser/atomic writer와 테스트
+    - [x] batch CLI의 Prisma 의존 제거
+    - [x] 기존 F003 DB profile 안전 제거
+    - [x] 일시적인 analyzer/yt-dlp 오류 제한 재시도와 회귀 테스트
+    - [x] Modal L4 비배포형 3곡 병렬 벤치마크와 로컬 artifact 반영
+    - [x] 사용자 승인에 따른 L4 최대 8개 잔여 86곡 batch와 실패 격리
+    - [x] 실제 100곡 artifact 생성 및 검증
 
 ## 완료 조건
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 Acceptance 검증 및 Checklist 체크 완료
-- [ ] 테스트 실행 및 통과
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 Acceptance 검증 및 Checklist 체크 완료
+- [x] 테스트 실행 및 통과
 - [ ] 최종 결과 공유 및 workflow audit 통과
 
 ### 테스트 실행 기록
@@ -87,3 +90,11 @@
 | `DATABASE_URL=... npm run catalog:verify` | `2026-08-05` | PASS — 100곡 일치, READY 1곡의 URL/DELETED/cleanupConfirmed 검증 |
 | `DATABASE_URL=... npm run catalog:analyze -- --rank 1 --resume` | `2026-08-05` | PASS — 실제 1곡 download→Demucs→pYIN, succeeded=1 |
 | `docker compose build vocal-profile-api && curl .../health` | `2026-08-05` | PASS — CPU image, yt-dlp 2026.7.4, Demucs 4.0.1, allowlist 100 |
+| `python -m modal run services/song-catalog-analyzer/modal_app.py --limit 3` | `2026-08-05` | PASS — rank 12~14, L4 3개, wall 199.051s, L4 추정 $0.1016, ephemeral Volume 삭제 |
+| `COPY_SINGER_TEMP_ROOT=/Volumes/sn850x/copy-singer-temp python -m modal run services/song-catalog-analyzer/modal_app.py --limit 86` | `2026-08-05` | PARTIAL — 75 성공/11 다운로드 실패, wall 1185.751s, L4 추정 $1.7401, 실패 격리 및 임시 파일 삭제 |
+| `COPY_SINGER_TEMP_ROOT=/Volumes/sn850x/copy-singer-temp python -m modal run services/song-catalog-analyzer/modal_app.py --limit 11` | `2026-08-05` | PASS — 대체 링크 11곡 전부 성공, wall 198.059s, L4 추정 $0.2093 |
+| `npm run catalog:verify -- --require-ready` | `2026-08-05` | PASS — 100곡, READY 100, FAILED/PENDING 0, 파일 경로 미포함 |
+| `python -m unittest discover -s services/song-catalog-analyzer -p 'test_*.py'` | `2026-08-05` | PASS — 3 tests, batch 제한·외장 temp root·atomic writer |
+| `npx tsc --noEmit && npm run lint && npm run test:catalog && git diff --check` | `2026-08-05` | PASS — TypeScript, ESLint, catalog 7 tests, whitespace 검증 |
+
+<!-- lee-spec-kit:workflow-sync 2026-08-05T14:59:24.000Z -->
