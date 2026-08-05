@@ -5,7 +5,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-data
 - **브랜치**: `feat/song-catalog-profiles`
-- **대기 중 변경 요청**: -
+- **대기 중 변경 요청**: 결정: changes_requested — 곡 분석 결과를 PostgreSQL이 아닌 배포 가능한 JSON artifact에 저장
 - **PR 리뷰**: -
 - **PR 리뷰 Evidence**: -
 
@@ -59,11 +59,23 @@
     - [x] 스모크 로그와 알려진 제약 기록
     - [x] README 실행 절차
 
+- [DOING][PRD-FR-005][PRD-FR-006][PRD-DATA-006] T-F003-06 곡 profile 저장소를 versioned JSON artifact로 전환
+  - Date: 2026-08-05
+  - Acceptance:
+    - artifact는 100개 항목과 schema/tool version을 포함하고 곡별 READY/FAILED/PENDING 상태를 재개할 수 있다.
+    - batch 분석은 PostgreSQL에 VocalProfile 또는 Recording을 생성하지 않는다.
+    - 기존 로컬 F003 분석 DB 행을 제거하고 JSON artifact만으로 동일한 결과를 검증한다.
+  - Checklist:
+    - [ ] artifact schema/parser/atomic writer와 테스트
+    - [ ] batch CLI의 Prisma 의존 제거
+    - [ ] 기존 F003 DB profile 안전 제거
+    - [ ] 실제 100곡 artifact 생성 및 검증
+
 ## 완료 조건
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 Acceptance 검증 및 Checklist 체크 완료
-- [x] 테스트 실행 및 통과
-- [x] 최종 결과 공유 및 workflow audit 통과
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 Acceptance 검증 및 Checklist 체크 완료
+- [ ] 테스트 실행 및 통과
+- [ ] 최종 결과 공유 및 workflow audit 통과
 
 ### 테스트 실행 기록
 

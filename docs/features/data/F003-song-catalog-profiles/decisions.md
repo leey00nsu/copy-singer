@@ -61,3 +61,18 @@
 - **Evidence**:
   - **Commit**: `a3902a5`
   - **Test/Log**: `services/vocal-profile-api/tests/test_song_pipeline.py` 4 cases PASS
+
+## D005: 곡 분석 profile의 SSOT를 JSON artifact로 전환 (2026-08-05)
+
+- **Context**: 배포 환경마다 동일한 100곡을 다시 분석하거나 개발 DB를 복제하지 않고 같은 추천 입력을 사용해야 한다.
+- **Constraints**: 곡 profile은 기준 데이터이며 사용자·추천 실행 같은 런타임 데이터와 생명주기가 다르다.
+- **Options**: 개발 PostgreSQL dump 배포, 배포 시 재분석, versioned JSON artifact.
+- **Decision**: `data/catalogs/tj-2607-song-profiles.json`을 곡 profile SSOT로 두고 Git/배포 artifact에 포함한다. PostgreSQL에는 곡 분석 VocalProfile/Recording을 저장하지 않는다.
+- **Rationale**: 분석 결과와 도구 버전을 코드 버전과 함께 검토·배포할 수 있고 환경별 DB 상태에 의존하지 않는다.
+- **Trace**:
+  - **DOING 시작 시점**: 사용자 피드백 시점에는 100곡 metadata와 DB profile 1건만 있었다.
+  - **DONE 전 확정 시점**: 100곡 artifact와 DB cleanup 검증으로 보강한다.
+  - **머지 후 확인**: -
+- **Evidence**:
+  - **Commit**: 구현 커밋 예정
+  - **Test/Log**: artifact validation 예정

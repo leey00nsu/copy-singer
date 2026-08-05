@@ -10,9 +10,9 @@
 
 ## 목적
 
-TJ 2026년 7월 Top 100 목록을 PostgreSQL에 반복 가능하게 등록하고, 로컬 개발 환경에서 각 YouTube URL의 오디오를 작업별 임시 공간에 내려받아 보컬을 분리한 뒤 F002와 동일한 분석 계약으로 곡별 보컬 프로필을 생성한다.
+TJ 2026년 7월 Top 100 목록을 반복 가능하게 정규화하고, 로컬 개발 환경에서 각 YouTube URL의 오디오를 작업별 임시 공간에 내려받아 보컬을 분리한 뒤 F002와 동일한 분석 계약으로 곡별 보컬 프로필 JSON artifact를 생성한다.
 
-곡 메타데이터 import와 실제 미디어 처리는 분리한다. 100곡은 음원이 없어도 먼저 카탈로그에 등록되며, 다운로드·분리·분석은 재시작 가능한 batch로 순차 처리한다. 원본·표준화 파일·분리 stem은 프로젝트나 영구 볼륨에 기록하지 않고 성공·실패와 관계없이 요청 종료 전에 삭제한다.
+곡 메타데이터 import와 실제 미디어 처리는 분리한다. 다운로드·분리·분석은 재시작 가능한 batch로 순차 처리하고 각 곡 완료 후 `data/catalogs/tj-2607-song-profiles.json`을 원자적으로 갱신한다. 원본·표준화 파일·분리 stem은 프로젝트나 영구 볼륨에 기록하지 않고 성공·실패와 관계없이 요청 종료 전에 삭제한다.
 
 ## 범위
 
@@ -22,7 +22,8 @@ TJ 2026년 7월 Top 100 목록을 PostgreSQL에 반복 가능하게 등록하고
 - `(title, artist)` 기준 idempotent upsert와 `catalogOrder` 갱신
 - 로컬 개발 전용 `yt-dlp` audio-only 일시 다운로드 및 출처 메타데이터 기록
 - Demucs `--two-stems=vocals` 기반 보컬 stem 생성
-- librosa-pYIN 기반 곡 보컬 프로필 생성 및 `Song` 연결
+- librosa-pYIN 기반 곡 보컬 프로필 생성 및 versioned JSON artifact 기록
+- 100곡 profile 상태와 집계값을 담는 versioned JSON artifact
 - 개별 곡 실패 격리, 재시도, 단계별 상태·오류 기록
 - `--limit`, `--rank`, `--resume` 실행 옵션
 
@@ -71,11 +72,12 @@ TJ 2026년 7월 Top 100 목록을 PostgreSQL에 반복 가능하게 등록하고
 **Acceptance Criteria:**
 
 - [ ] Demucs two-stem 결과 중 `vocals.wav`만 분석 입력으로 사용한다.
-- [ ] `VocalProfile.sourceType=SONG`, `Recording.kind=SONG_SOURCE`로 저장한다.
+- [ ] 곡별 profile과 분석 도구 버전을 JSON artifact에 저장한다.
 - [ ] analyzer·analyzerVersion과 separator·separatorVersion을 재현 가능한 메타데이터로 저장한다.
-- [ ] 성공 시 `Song.analysisStatus=READY`, 실패 시 `FAILED`가 된다.
-- [ ] 재실행 시 READY 곡은 건너뛰고 실패·미완료 곡을 재개할 수 있다.
-- [ ] DB에는 source URL과 분석 집계만 남고 원본 또는 stem 경로는 남지 않는다.
+- [ ] 성공 시 artifact 항목이 `READY`, 실패 시 `FAILED`가 된다.
+- [ ] 재실행 시 artifact의 READY 곡은 건너뛰고 실패·미완료 곡을 재개할 수 있다.
+- [ ] PostgreSQL에는 곡 `VocalProfile`/`Recording`을 생성하지 않는다.
+- [ ] artifact에는 source URL과 집계값·버전만 남고 원본 또는 stem 경로는 남지 않는다.
 
 ## 기능 요구사항
 
@@ -93,7 +95,7 @@ Demucs `htdemucs` 모델과 `--two-stems=vocals`를 사용한다. 모델명과 �
 
 ### FR-4: 분석 계약
 
-분리된 stem은 같은 프로세스에서 F002 분석 코어로 전달한다. 사용자 프로필과 같은 MIDI 통계·테시투라·품질 지표를 저장하되 전체 곡 길이용 설정을 사용한다. 응답 직전에 원본과 모든 stem을 삭제하며 응답에는 파일 경로를 포함하지 않는다.
+분리된 stem은 같은 프로세스에서 F002 분석 코어로 전달한다. 사용자 프로필과 같은 MIDI 통계·테시투라·품질 지표를 JSON artifact에 저장하되 전체 곡 길이용 설정을 사용한다. 응답 직전에 원본과 모든 stem을 삭제하며 응답에는 파일 경로를 포함하지 않는다.
 
 ### FR-5: 재시작과 관찰 가능성
 
@@ -102,6 +104,7 @@ Demucs `htdemucs` 모델과 `--two-stems=vocals`를 사용한다. 모델명과 �
 ## 비기능 요구사항
 
 - **재현성**: 카탈로그 원본, yt-dlp, Demucs model/version, analyzer/version을 기록한다.
+- **배포성**: JSON artifact는 Git에 포함되며 DB migration이나 재분석 없이 동일한 곡 profile을 배포한다.
 - **비용**: 로컬 CPU 실행을 기본으로 하고 다운로드·분석 동시성은 1이다.
 - **저장소**: 미디어는 컨테이너의 OS 임시 디렉터리에서만 처리하고 영구 volume을 연결하지 않는다.
 - **안전성**: 다운로드는 명시적 batch 명령에서만 시작하며 웹 요청으로 임의 URL을 받지 않는다.
