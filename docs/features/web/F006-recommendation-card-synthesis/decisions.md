@@ -30,7 +30,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **DOING 시작 시점**: `updateMany(where: { id, synthesisStatus: null })`의 affected row를 시작 소유권으로 사용하고 허용 transition을 별도 helper로 제한한다.
   - **DONE 전 확정 시점**: Prisma enum과 nullable 초기 상태를 적용했다. migration 적용 후 실제 PostgreSQL의 추천 run 생성·직렬화·cascade 삭제가 기존 동작과 함께 통과했다.
-  - **머지 후 확인**: 실제 결과/영향
+  - **머지 후 확인**: 2026-08-06 로컬 `main` fast-forward 병합 완료. RecommendationItem 기반 합성 상태와 멱등성 계약이 main에 반영됐다.
 - **Evidence**:
   - **Commit**: 커밋 해시 또는 링크
   - **PR**: PR 링크
@@ -49,7 +49,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **DOING 시작 시점**: client ref와 DB conditional claim을 함께 사용해 React effect 재실행에도 GPU job 중복을 막는다.
   - **DONE 전 확정 시점**: 제품 홈을 profile로 변경하고 Workbench를 `/dev/svc`로 분리했다. loading/failed/succeeded 카드와 audio/download를 SSR 및 production build로 확인했다.
-  - **머지 후 확인**: 실제 결과/영향
+  - **머지 후 확인**: 2026-08-06 로컬 `main` fast-forward 병합 완료. 추천 카드의 세 작업 순차 제출과 단일 run polling 흐름이 main에 반영됐다.
 - **Evidence**:
   - **Commit**: 구현 커밋에서 기록
   - **PR**: 로컬-only, 생성하지 않음
@@ -67,7 +67,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **DOING 시작 시점**: analyzer의 UUID recording source와 allowlist target만 서버 간에 노출하고 브라우저 route는 만들지 않는다. 세 곡 준비는 메모리 peak를 줄이기 위해 순차 시작한다.
   - **DONE 전 확정 시점**: analyzer streaming response의 `finally` cleanup, UUID recording source 조회, Next conditional claim과 기존 Modal create/status/audio/delete proxy를 구현했다. target은 reference preflight가 성공한 뒤에만 다운로드한다.
-  - **머지 후 확인**: 실제 결과/영향
+  - **머지 후 확인**: 2026-08-06 로컬 `main` fast-forward 병합 완료. analyzer 임시 media broker와 기존 Modal API orchestration이 main에 반영됐다.
 - **Evidence**:
   - **Commit**: 구현 커밋에서 기록
   - **PR**: 로컬-only, 생성하지 않음
@@ -85,7 +85,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **DOING 시작 시점**: 먼저 health와 7.152초 입력 유효성을 확인한 뒤 profile/run을 생성했다.
   - **DONE 전 확정 시점**: 최초 1건 smoke test 후 사용자 변경 요청으로 완료 판단을 철회하고 세 건을 다시 실행했다. `아크라포빅`, `모든 날, 모든 순간`, `바다의 왕자`가 모두 succeeded했다. 결과는 각각 133.944초/6,429,372 bytes, 210.721초/10,114,658 bytes, 242.629초/11,646,212 bytes였고 모두 PCM s16le 24kHz mono이며 서로 다른 SHA-256이었다. analyzer temp dir 0, run/profile/recording DB 0, 세 Modal job status 404를 확인했다.
-  - **머지 후 확인**: 실제 결과/영향
+  - **머지 후 확인**: 2026-08-06 로컬 `main` fast-forward 병합 완료. 실제 추천 3곡 성공 및 cleanup 검증 결과를 최종 기준으로 유지한다.
 - **Evidence**:
   - **Commit**: 구현 커밋에서 기록
   - **PR**: 로컬-only, 생성하지 않음

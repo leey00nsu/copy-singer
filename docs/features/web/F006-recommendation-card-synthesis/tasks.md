@@ -91,4 +91,4 @@
 | `npm run test:recommendation:db` | `2026-08-06` | `PASS — 3 integration tests including idempotency, reconcile, cleanup, stale recovery` |
 | `vocal1.wav -> current Modal 3-card test` | `2026-08-06` | `PASS — rank 1/2/3 all succeeded; WAV 133.944s / 210.721s / 242.629s; all PCM s16le 24kHz mono; three distinct SHA-256` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T19:31:17.300Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T19:36:36.983Z -->
