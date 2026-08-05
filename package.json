@@ -17,7 +17,10 @@
     "db:migrate:deploy": "prisma migrate deploy",
     "db:status": "prisma migrate status",
     "db:seed": "prisma db seed",
-    "db:verify": "tsx scripts/verify-database.ts"
+    "db:verify": "tsx scripts/verify-database.ts",
+    "catalog:import": "tsx scripts/import-song-catalog.ts",
+    "catalog:verify": "tsx scripts/verify-song-catalog.ts",
+    "test:catalog": "tsx --test tests/song-catalog.test.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
