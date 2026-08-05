@@ -33,7 +33,7 @@
 ```text
 Profile result
   -> POST /api/recommendations { userVocalProfileId }
-  -> USER profile + READY Song metadata 조회
+  -> USER profile + catalogOrder 1~100 Song metadata 조회
   -> F003 JSON 100곡과 catalogOrder로 strict 결합
   -> F004 scoreCatalogKeyFits
   -> adjusted/original/abs(shift)/catalogOrder 결정적 정렬

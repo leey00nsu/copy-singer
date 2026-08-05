@@ -29,12 +29,12 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 배포 간 정적 분석 데이터를 재현하면서도 사용자 실행의 삭제·재조회·version trace와 관계 무결성을 확보한다.
 - **Trace**:
   - **DOING 시작 시점**: JSON/DB 두 소스를 catalogOrder만으로 느슨하게 연결하면 오래된 데이터가 섞일 수 있으므로 제목·가수·상태까지 preflight하는 접근을 계획했다.
-  - **DONE 전 확정 시점**: scorer 출력의 반올림된 공개 점수로 명세 순서대로 정렬하고 입력 배열을 복사한 뒤 상위 3개만 rank로 보강하는 순수 함수로 확정했다.
+  - **DONE 전 확정 시점**: scorer 출력의 반올림된 공개 점수로 명세 순서대로 정렬하고 입력 배열을 복사한 뒤 상위 3개만 rank로 보강한다. artifact가 READY 100곡의 분석 SSOT이며 DB는 catalogOrder 1~100의 식별자·메타데이터를 제목/가수까지 대조한 뒤 사용자 실행만 저장한다.
   - **머지 후 확인**: 미실행.
 - **Evidence**:
   - **Commit**: 구현 태스크 커밋 후 기록.
   - **PR**: 로컬 workflow로 생성하지 않음.
-  - **Test/Log**: `npm run test:recommendation` PASS — 5 tests, 실제 READY 100곡 결정성 포함.
+  - **Test/Log**: `npm run test:recommendation` PASS — 7 tests, 실제 READY 100곡 결정성·DB metadata drift 포함. `npm run test:recommendation:db` PASS — PostgreSQL 생성·조회·cascade 삭제.
 - **Consequences**: DB 초기화 후에는 카탈로그 import가 필요하고 artifact와 DB가 불일치하면 추천 전체가 `CATALOG_NOT_READY`로 거절된다.
 
 ## D002: 추천 shift와 SVC pitch shift 분리 (2026-08-06)

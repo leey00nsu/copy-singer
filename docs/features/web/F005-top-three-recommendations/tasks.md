@@ -68,14 +68,14 @@
     - [x] 공개 contract, 오류와 formatter 정의
     - [x] tie-break·실제 100곡 artifact·reason 단위 테스트
 
-- [TODO][PRD-FR-011][PRD-NFR-007] T-F005-02 추천 생성·조회·삭제 API와 원자적 저장 구현
+- [DONE][PRD-FR-011][PRD-NFR-007] T-F005-02 추천 생성·조회·삭제 API와 원자적 저장 구현
   - Date: 2026-08-06
   - Acceptance:
     - USER profile과 READY 100곡 artifact/DB metadata를 strict 검증한 뒤 run과 item 3개를 한 transaction에 저장한다.
     - POST/GET/DELETE가 안정적인 성공 응답과 invalid/not-found/catalog/save 오류 계약을 제공한다.
   - Checklist:
-    - [ ] artifact/DB mapping, Prisma service와 serializer 구현
-    - [ ] Route Handler와 persistence/API 계약 테스트
+    - [x] artifact/DB mapping, Prisma service와 serializer 구현
+    - [x] Route Handler와 persistence/API 계약 테스트
 
 - [TODO][PRD-FR-011][PRD-FR-012][PRD-NFR-006] T-F005-03 프로필 진입과 상위 3곡 결과 UI 구현
   - Date: 2026-08-06
@@ -112,8 +112,9 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `npm run test:recommendation` | `2026-08-06` | PASS — 5 tests, 전체 tie-break·실제 100곡 결정성·reason 문구 포함 |
+| `npm run test:recommendation` | `2026-08-06` | PASS — 7 tests, 전체 tie-break·실제 100곡 결정성·metadata drift·reason 문구 포함 |
+| `npm run test:recommendation:db` | `2026-08-06` | PASS — 실제 PostgreSQL run+3 items 생성·조회·cascade 삭제 및 fixture 정리 |
 | `npx tsc --noEmit && npm run lint && npm test` | `-` | 대기 |
-| `npm run db:validate` | `-` | 대기 |
+| `npm run db:validate` | `2026-08-06` | PASS — Prisma schema valid |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T17:33:31.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T17:38:08.000Z -->

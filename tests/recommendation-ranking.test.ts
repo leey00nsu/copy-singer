@@ -13,6 +13,11 @@ import {
   formatRecommendedShift,
   rankTopRecommendations,
 } from "../lib/recommendation/ranking";
+import {
+  buildTopRecommendations,
+  validateAndIndexSongRows,
+  validateRecommendationArtifact,
+} from "../lib/recommendation/data";
 import type { KeyFitProfile } from "../lib/key-fit/contract";
 
 const USER_PROFILE_FIXTURE: KeyFitProfile = {
@@ -118,4 +123,34 @@ test("low-confidence explanations recommend a longer recording", () => {
   )[0];
   assert.ok(result.reasonCodes.includes("LOW_PROFILE_CONFIDENCE"));
   assert.ok(formatRecommendationReasons(result).some((reason) => reason.includes("더 긴 소절")));
+});
+
+test("strictly joins the READY artifact to 100 database song rows", () => {
+  const rows = artifact.songs.map((song, index) => ({
+    id: `00000000-0000-4000-8000-${String(index + 1).padStart(12, "0")}`,
+    catalogOrder: song.catalogOrder,
+    title: song.title,
+    artist: song.artist,
+    analysisStatus: "READY" as const,
+  }));
+  const validatedArtifact = validateRecommendationArtifact(artifact);
+  assert.equal(validateAndIndexSongRows(rows, validatedArtifact).size, 100);
+  const top = buildTopRecommendations(USER_PROFILE_FIXTURE, rows, artifact);
+  assert.equal(top.length, 3);
+  assert.ok(top.every((item) => item.songId.length === 36));
+});
+
+test("rejects database metadata drift before scoring or persistence", () => {
+  const rows = artifact.songs.map((song, index) => ({
+    id: `song-${index + 1}`,
+    catalogOrder: song.catalogOrder,
+    title: song.title,
+    artist: song.artist,
+    analysisStatus: "READY" as const,
+  }));
+  rows[8] = { ...rows[8]!, title: "Wrong title" };
+  assert.throws(
+    () => buildTopRecommendations(USER_PROFILE_FIXTURE, rows, artifact),
+    (error: unknown) => error instanceof RecommendationError && error.code === "CATALOG_NOT_READY",
+  );
 });

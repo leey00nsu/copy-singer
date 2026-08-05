@@ -66,6 +66,14 @@ export type RecommendationRunResponse = {
   createdAt: string;
   profileConfidence: number;
   lowConfidence: boolean;
+  profile: {
+    analyzer: string;
+    analyzerVersion: string;
+    tessituraLowMidi: number;
+    tessituraHighMidi: number;
+    minMidi: number;
+    maxMidi: number;
+  };
   items: RecommendationItemResponse[];
 };
 
