@@ -62,10 +62,10 @@ F002에서 생성한 사용자 보컬 프로필과 F003의 곡 보컬 프로필�
 
 **Acceptance Criteria:**
 
-- [ ] 원키 점수는 `0`~`100` 범위이며 테시투라 겹침, 고음·저음 초과, robust 극단음 초과와 사용자 profile 신뢰도를 반영한다.
-- [ ] 결과는 전체 점수뿐 아니라 각 요소의 입력 metric, 정규화 값, 가중 기여도를 포함한다.
-- [ ] 같은 곡이라도 사용자 편안한 음역 밖의 고음 또는 저음이 증가하면 점수가 증가하지 않는다.
-- [ ] 저신뢰 사용자 profile은 결과에 명시적인 confidence와 reason code를 남기며 확정적인 표현을 유도하지 않는다.
+- [x] 원키 점수는 `0`~`100` 범위이며 테시투라 겹침, 고음·저음 초과, robust 극단음 초과와 사용자 profile 신뢰도를 반영한다.
+- [x] 결과는 전체 점수뿐 아니라 각 요소의 입력 metric, 정규화 값, 가중 기여도를 포함한다.
+- [x] 같은 곡이라도 사용자 편안한 음역 밖의 고음 또는 저음이 증가하면 점수가 증가하지 않는다.
+- [x] 저신뢰 사용자 profile은 결과에 명시적인 confidence와 reason code를 남기며 확정적인 표현을 유도하지 않는다.
 
 ### US-2: 추천 노래방 키 확인
 
@@ -75,10 +75,10 @@ F002에서 생성한 사용자 보컬 프로필과 F003의 곡 보컬 프로필�
 
 **Acceptance Criteria:**
 
-- [ ] `-6`~`+6`의 모든 정수 shift 후보를 같은 scoring 함수로 평가한다.
-- [ ] 가장 높은 조정 점수의 shift를 추천하고 원키와 비교한 점수 변화 및 고음·저음 부담 변화를 반환한다.
-- [ ] 동점은 고음 초과량, 전체 극단음 초과량, 절대 shift 크기, 숫자상 작은 shift 순으로 비교해 항상 하나의 결과를 선택한다.
-- [ ] 원키가 최고 후보이면 추천 shift는 `0`이다.
+- [x] `-6`~`+6`의 모든 정수 shift 후보를 같은 scoring 함수로 평가한다.
+- [x] 가장 높은 조정 점수의 shift를 추천하고 원키와 비교한 점수 변화 및 고음·저음 부담 변화를 반환한다.
+- [x] 동점은 고음 초과량, 전체 극단음 초과량, 절대 shift 크기, 숫자상 작은 shift 순으로 비교해 항상 하나의 결과를 선택한다.
+- [x] 원키가 최고 후보이면 추천 shift는 `0`이다.
 
 ### US-3: 재현 가능한 계산 근거 제공
 
@@ -88,10 +88,10 @@ F002에서 생성한 사용자 보컬 프로필과 F003의 곡 보컬 프로필�
 
 **Acceptance Criteria:**
 
-- [ ] 출력은 `scoringVersion`, `originalKeyScore`, `adjustedScore`, `recommendedShift`, `confidence`, `reasonCodes`, `metrics`를 포함한다.
-- [ ] 모든 후보의 내부 계산은 결정적이며 출력 점수 반올림이 후보 선택 결과를 바꾸지 않는다.
-- [ ] 같은 입력과 scoring version을 반복 평가하면 byte-level 직렬화 기준으로 같은 결과를 얻는다.
-- [ ] scoring version 또는 입력 analyzer 계약이 다르면 caller가 구분 가능한 안정적인 validation error를 반환한다.
+- [x] 출력은 `scoringVersion`, `originalKeyScore`, `adjustedScore`, `recommendedShift`, `confidence`, `reasonCodes`와 breakdown metrics를 포함한다.
+- [x] 모든 후보의 내부 계산은 결정적이며 출력 점수 반올림이 후보 선택 결과를 바꾸지 않는다.
+- [x] 같은 입력과 scoring version을 반복 평가하면 byte-level 직렬화 기준으로 같은 결과를 얻는다.
+- [x] scoring version 또는 입력 analyzer 계약이 다르면 caller가 구분 가능한 안정적인 validation error를 반환한다.
 
 ---
 

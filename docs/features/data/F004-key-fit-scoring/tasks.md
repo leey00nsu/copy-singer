@@ -79,14 +79,14 @@
     - [x] 후보 평가·tie-break·불변 입력 구현
     - [x] 키 내림·키 올림·원키·동점·반복 직렬화 테스트
 
-- [TODO][PRD-FR-010][PRD-NFR-004] T-F004-04 100곡 artifact bulk adapter와 회귀 검증
+- [DONE][PRD-FR-010][PRD-NFR-004] T-F004-04 100곡 artifact bulk adapter와 회귀 검증
   - Date: 2026-08-06
   - Acceptance:
     - F003 READY artifact 100곡을 catalogOrder 순서로 평가하고 비정상 상태는 명시적으로 거절한다.
     - 100곡 평가가 테스트 환경에서 100ms 목표를 만족하며 전체 프로젝트 회귀 테스트가 통과한다.
   - Checklist:
-    - [ ] bulk adapter와 package script 추가
-    - [ ] 실제 artifact 통합·성능·전체 회귀 테스트
+    - [x] bulk adapter와 package script 추가
+    - [x] 실제 artifact 통합·성능·전체 회귀 테스트
 
 ---
 
@@ -94,8 +94,8 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -105,7 +105,7 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `npm run test:key-fit` | `-` | 실행 전 |
-| `npx tsc --noEmit && npm run lint && npm test` | `-` | 실행 전 |
+| `npm run test:key-fit` | `2026-08-06` | PASS — 17 tests, 실제 READY 100곡 7.3ms, 결정성·오류 격리 포함 |
+| `npx tsc --noEmit && npm run lint && npm test` | `2026-08-06` | PASS — TypeScript, ESLint, production build, UI/API·catalog·key-fit 전체 회귀 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T15:23:12.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T15:24:43.000Z -->
