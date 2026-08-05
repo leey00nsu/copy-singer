@@ -49,9 +49,9 @@
 
 **Acceptance Criteria:**
 
-- [ ] 사용자가 저장소 루트에서 `docker compose up -d`를 실행하면 PostgreSQL 컨테이너가 기동한다.
-- [ ] 컨테이너 healthcheck가 정상 상태를 보고한다.
-- [ ] 실제 비밀번호가 Git에 포함되지 않고 `.env.example`에 필요한 변수 이름과 로컬 예시만 제공된다.
+- [x] 사용자가 저장소 루트에서 `docker compose up -d`를 실행하면 PostgreSQL 컨테이너가 기동한다.
+- [x] 컨테이너 healthcheck가 정상 상태를 보고한다.
+- [x] 실제 비밀번호가 Git에 포함되지 않고 `.env.example`에 필요한 변수 이름과 로컬 예시만 제공된다.
 
 ### US-2: 버전 관리되는 데이터 구조
 
@@ -61,9 +61,9 @@
 
 **Acceptance Criteria:**
 
-- [ ] 빈 로컬 DB에 저장소의 Prisma migration을 적용할 수 있다.
-- [ ] Prisma schema validation과 client generation이 성공한다.
-- [ ] 초기 모델의 관계와 unique constraint가 schema 및 migration에 반영된다.
+- [x] 빈 로컬 DB에 저장소의 Prisma migration을 적용할 수 있다.
+- [x] Prisma schema validation과 client generation이 성공한다.
+- [x] 초기 모델의 관계와 unique constraint가 schema 및 migration에 반영된다.
 
 ### US-3: 후속 기능을 위한 최소 데이터 확인
 
@@ -73,9 +73,9 @@
 
 **Acceptance Criteria:**
 
-- [ ] seed 명령이 비어 있는 개발 DB에 비민감성 예제 데이터를 중복 충돌 없이 생성한다.
-- [ ] seed 결과에서 Recording과 VocalProfile의 연결, Song과 곡 프로필의 연결, RecommendationRun과 RecommendationItem의 연결을 확인할 수 있다.
-- [ ] README에 기동, migration, generate, seed, 종료 명령이 기록된다.
+- [x] seed 명령이 비어 있는 개발 DB에 비민감성 예제 데이터를 중복 충돌 없이 생성한다.
+- [x] seed 결과에서 Recording과 VocalProfile의 연결, Song과 곡 프로필의 연결, RecommendationRun과 RecommendationItem의 연결을 확인할 수 있다.
+- [x] README에 기동, migration, generate, seed, 종료 명령이 기록된다.
 
 ---
 

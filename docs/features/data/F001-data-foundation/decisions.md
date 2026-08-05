@@ -68,3 +68,18 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Commit**: 세 번째 태스크 커밋의 Git 이력
   - **PR**: 로컬 워크플로우로 생성하지 않음
   - **Test/Log**: [tasks.md 테스트 실행 기록](./tasks.md#테스트-실행-기록)
+
+## D004: 로컬 DB 명령과 lint 경계 (2026-08-05)
+
+- **Context**: 사용자가 저장소 문서만으로 DB 생명주기를 실행해야 하고 전체 품질 검사가 재현 가능해야 한다.
+- **Constraints**: 실제 Secret은 문서화하지 않으며, lee-spec-kit이 관리하는 `.codex/hooks`는 제품 코드가 아니다.
+- **Options**: 모든 숨김 도구 파일까지 제품 lint에 포함, 제품 코드와 생성 산출물·도구 hook의 lint 경계 분리
+- **Decision**: README에 Compose와 Prisma 명령을 명시하고, ESLint 전역 ignore에 `.codex/**`와 `generated/**`를 추가한다. npm package 이름은 제품명인 `copy-singer`로 통일한다.
+- **Rationale**: 사용자가 복사 가능한 명령을 제공하면서 제품 코드의 lint 실패 신호가 외부 생성 hook의 상태와 섞이지 않게 한다.
+- **Trace**:
+  - **DOING 시작 시점**: 전체 lint 실패 3건이 `.codex/hooks/*.mjs`의 기존 unused 변수에만 있음을 확인했다.
+  - **DONE 전 확정 시점**: README 명령을 실제 DB에 다시 적용했으며 Prisma 전체 검증, TypeScript, ESLint, vinext production build와 기존 HTML test가 모두 통과했다.
+- **Evidence**:
+  - **Commit**: 네 번째 태스크 커밋의 Git 이력
+  - **PR**: 로컬 워크플로우로 생성하지 않음
+  - **Test/Log**: [tasks.md 테스트 실행 기록](./tasks.md#테스트-실행-기록)

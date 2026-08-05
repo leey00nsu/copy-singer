@@ -88,22 +88,22 @@
     - [x] 비민감성 고정 예제 데이터를 upsert하는 seed를 구현한다.
     - [x] seed 관계와 핵심 데이터를 조회하는 verify script를 구현하고 실행한다.
 
-- [TODO][PRD-DATA-003] T-F001-data-foundation-04 로컬 사용 문서화 및 회귀 검증
+- [DONE][PRD-DATA-003] T-F001-data-foundation-04 로컬 사용 문서화 및 회귀 검증
   - Date: 2026-08-05
   - Acceptance:
     - 사용자가 README만 보고 DB 기동, migration, generate, seed, 검증과 종료를 수행할 수 있고 기존 앱 검사가 통과한다.
   - Checklist:
-    - [ ] README에 PostgreSQL과 Prisma 로컬 명령 및 사용자 실행 경계를 기록한다.
-    - [ ] Prisma, TypeScript, lint, build, test 검증 결과를 tasks.md에 기록한다.
-    - [ ] Feature 문서와 구현 결과를 동기화하고 workflow audit을 통과한다.
+    - [x] README에 PostgreSQL과 Prisma 로컬 명령 및 사용자 실행 경계를 기록한다.
+    - [x] Prisma, TypeScript, lint, build, test 검증 결과를 tasks.md에 기록한다.
+    - [x] Feature 문서와 구현 결과를 동기화하고 workflow audit을 통과한다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -119,7 +119,7 @@
 | `DATABASE_URL=... npm run db:validate` | `2026-08-05` | PASS — schema valid |
 | `DATABASE_URL=... npm run db:generate` | `2026-08-05` | PASS — Prisma Client 7.9.1 생성 |
 | `npx eslint lib/db/prisma.ts prisma.config.ts` | `2026-08-05` | PASS |
-| `npm run lint` | `2026-08-05` | FAIL — 기존 `.codex/hooks/*.mjs` unused-variable 3건, T04에서 범위 정리 예정 |
+| `npm run lint` | `2026-08-05` | PASS — 제품 코드와 생성 hook/client의 lint 경계 분리 |
 | `npx eslint prisma/seed.ts scripts/verify-database.ts` | `2026-08-05` | PASS |
 | `docker compose ps` | `2026-08-05` | PASS — PostgreSQL healthy, 호스트 `5433` → 컨테이너 `5432` |
 | `docker compose exec -T postgres pg_isready -U copy_singer -d copy_singer` | `2026-08-05` | PASS — accepting connections |
@@ -127,5 +127,8 @@
 | `DATABASE_URL=... npm run db:seed` | `2026-08-05` | PASS — 2회 연속 실행, 중복 충돌 없음 |
 | `DATABASE_URL=... npm run db:verify` | `2026-08-05` | PASS — Recording→Profile→Run→Item→Song 관계와 추천 shift 조회 |
 | `DATABASE_URL=... npm run db:status` | `2026-08-05` | PASS — 1 migration, schema up to date |
+| `DATABASE_URL=... npm run db:migrate:deploy` | `2026-08-05` | PASS — pending migration 없음 |
+| `npm run build` | `2026-08-05` | PASS — vinext production build, 기존 API route 포함 |
+| `npm test` | `2026-08-05` | PASS — production build 및 rendered HTML test 1건 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T10:45:14.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T10:47:09.000Z -->
