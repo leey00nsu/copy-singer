@@ -1,0 +1,49 @@
+{
+  "generator": "OmniVoice Studio API 0.4.2 + librosa pitch correction",
+  "voice": "c0aaab4f",
+  "seed_candidates": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ],
+  "mix": {
+    "humming": 0.8,
+    "sine": 0.2
+  },
+  "sample_rate": 24000,
+  "note_duration_ms": 750,
+  "presets": {
+    "low": {
+      "source_midi": 47.1,
+      "stable_spread_semitones": 0.49,
+      "source_duration_seconds": 0.92,
+      "seed": 42,
+      "asset": "/audio/guides/humming-low.wav",
+      "duration_seconds": 12.0,
+      "measured_min_midi": 47.8,
+      "measured_max_midi": 57.1
+    },
+    "medium": {
+      "source_midi": 48.0,
+      "stable_spread_semitones": 0.5,
+      "source_duration_seconds": 0.86,
+      "seed": 42,
+      "asset": "/audio/guides/humming-medium.wav",
+      "duration_seconds": 12.0,
+      "measured_min_midi": 54.8,
+      "measured_max_midi": 64.0
+    },
+    "high": {
+      "source_midi": 46.6,
+      "stable_spread_semitones": 0.7,
+      "source_duration_seconds": 1.59,
+      "seed": 42,
+      "asset": "/audio/guides/humming-high.wav",
+      "duration_seconds": 12.0,
+      "measured_min_midi": 60.0,
+      "measured_max_midi": 69.0
+    }
+  }
+}

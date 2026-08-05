@@ -40,7 +40,7 @@ export function guideFormFields(preset: GuidePreset) {
   };
 }
 
-export function playGuideMelody(preset: GuidePreset) {
+function playOscillatorGuide(preset: GuidePreset) {
   const context = new AudioContext();
   const notes = guideMidiNotes(preset);
   const startAt = context.currentTime + 0.08;
@@ -81,6 +81,35 @@ export function playGuideMelody(preset: GuidePreset) {
         }
       });
       void context.close();
+    },
+  };
+}
+
+export function playGuideMelody(preset: GuidePreset) {
+  const audio = new Audio(`/audio/guides/humming-${preset}.wav`);
+  let stopped = false;
+  let fallback: ReturnType<typeof playOscillatorGuide> | null = null;
+  const finished = (async () => {
+    try {
+      await audio.play();
+      await new Promise<void>((resolve, reject) => {
+        audio.addEventListener("ended", () => resolve(), { once: true });
+        audio.addEventListener("error", () => reject(new Error("Guide asset failed to load")), { once: true });
+      });
+    } catch {
+      if (stopped) return;
+      fallback = playOscillatorGuide(preset);
+      await fallback.finished;
+    }
+  })();
+
+  return {
+    finished,
+    stop: () => {
+      stopped = true;
+      audio.pause();
+      audio.currentTime = 0;
+      fallback?.stop();
     },
   };
 }

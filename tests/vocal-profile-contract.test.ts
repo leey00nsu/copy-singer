@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
   GUIDE_MELODY_DURATION_MS,
@@ -30,4 +31,22 @@ test("MIDI values are rounded to Korean UI note labels", () => {
   assert.equal(midiToNoteName(54.6), "G3");
   assert.equal(midiToNoteName(60), "C4");
   assert.equal(midiToNoteName(65.7), "F♯4");
+});
+
+test("OmniVoice humming assets preserve the deterministic guide contract", () => {
+  const manifest = JSON.parse(readFileSync(new URL("../public/audio/guides/manifest.json", import.meta.url), "utf8"));
+  assert.deepEqual(manifest.mix, { humming: 0.8, sine: 0.2 });
+  assert.equal(manifest.note_duration_ms, 750);
+
+  for (const [preset, expected] of Object.entries({ low: [48, 57], medium: [55, 64], high: [60, 69] })) {
+    const metrics = manifest.presets[preset];
+    assert.equal(metrics.duration_seconds, 12);
+    assert.ok(metrics.stable_spread_semitones <= 1.5);
+    assert.ok(Math.abs(metrics.measured_min_midi - expected[0]) <= 0.5);
+    assert.ok(Math.abs(metrics.measured_max_midi - expected[1]) <= 0.5);
+
+    const wav = readFileSync(new URL(`../public${metrics.asset}`, import.meta.url));
+    assert.equal(wav.subarray(0, 4).toString("ascii"), "RIFF");
+    assert.equal(wav.subarray(8, 12).toString("ascii"), "WAVE");
+  }
 });

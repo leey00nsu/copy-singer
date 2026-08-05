@@ -311,7 +311,7 @@ export function VocalProfileWorkbench() {
               <Button className="w-full" disabled={busy || previewing} onClick={() => void previewGuide()} variant="outline">
                 {previewing ? <LoaderCircle className="size-4 animate-spin" /> : <Play className="size-4" />}{previewing ? "멜로디 재생 중…" : `${GUIDE_PRESETS[preset].label} 예시 듣기`}
               </Button>
-              <div className="rounded-xl bg-muted/55 p-4 text-xs leading-6 text-muted-foreground"><Headphones className="mr-2 inline size-4" />예시를 먼저 들은 뒤 녹음에서는 화면만 따라갑니다. 안내음을 함께 들으려면 이어폰을 사용하세요.</div>
+              <div className="rounded-xl bg-muted/55 p-4 text-xs leading-6 text-muted-foreground"><Headphones className="mr-2 inline size-4" />사람 허밍과 정확한 기준음을 섞은 예시입니다. 먼저 들은 뒤 녹음에서는 화면만 따라갑니다.</div>
             </CardContent>
           </Card>
 

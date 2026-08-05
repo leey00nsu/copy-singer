@@ -28,6 +28,15 @@ The browser calls same-origin Next.js API routes. The Modal API key stays on the
 
 For a vocal profile, choose a comfortable preset, listen to the original 80 BPM guide, then record the 21-second visual exercise or upload a WAV, MP3, M4A, or WebM file. The local analyzer accepts at most 25 MB and 60 seconds.
 
+The three guide previews are committed WAV assets made from an OmniVoice sustained humming seed, pitch-corrected to the guide MIDI notes and mixed with a quiet sine reference at an 80:20 ratio. Regenerate them only when OmniVoice Studio is running on port 3900:
+
+```bash
+docker compose run --rm --no-deps \
+  -v "$PWD:/workspace" \
+  --entrypoint python vocal-profile-api \
+  /workspace/scripts/generate-humming-guides.py
+```
+
 ## Local PostgreSQL and vocal analyzer
 
 PostgreSQL runs locally with Docker Compose. The default host port is `5433`; the container keeps PostgreSQL's standard `5432` port.
