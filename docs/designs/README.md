@@ -27,3 +27,7 @@
 Feature 문서에서 디자인을 참조할 때는 상대경로보다 **프로젝트 루트 기준 경로**를 권장합니다.
 
 - 예: `docs/designs/auth-flow.md`
+
+## 현재 문서
+
+- [시스템 아키텍처](system-architecture.md): Web, Next.js proxy, Modal API와 GPU worker의 책임 및 요청 흐름

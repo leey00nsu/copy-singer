@@ -99,7 +99,8 @@ curl -L -H "X-API-Key: $MODAL_API_KEY" \
 ## 입력 기준
 
 - `prompt_audio`: 목표 가수의 깨끗한 노래 음성. 최대 30초 사용.
-- `target_audio`: 변환할 보컬 또는 반주 포함 노래. 최대 120초 사용.
+- `target_audio`: 변환할 보컬 또는 반주 포함 노래. 최대 300초 사용, 업로드 최대 256MB.
+- `prompt_audio` 업로드 크기는 최대 128MB입니다.
 - `prompt_vocal_separation`: prompt에 반주가 있을 때만 `true`.
 - `target_vocal_separation`: target에 반주가 있으면 `true`.
 - `auto_pitch_shift`: 두 음역 차이를 자동 보정.

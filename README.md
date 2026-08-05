@@ -14,7 +14,7 @@ npm run dev
 Open `http://localhost:3000` and upload:
 
 - a clean reference singing voice, ideally under 30 seconds;
-- a target vocal or full mix, up to 120 seconds.
+- a target vocal or full mix, up to 5 minutes.
 
 The browser calls same-origin Next.js API routes. The Modal API key stays on the server and is never sent to the browser.
 
@@ -42,3 +42,15 @@ components/                  Vocal workbench and shadcn/ui components
 services/soulx-singer-svc/   Modal GPU API deployment
 ```
 
+## Documentation workflow
+
+This repository uses lee-spec-kit in embedded, local-workflow mode.
+
+```bash
+npx lee-spec-kit detect --json
+npx lee-spec-kit idea <name>
+npx lee-spec-kit feature <name> --component web
+npx lee-spec-kit feature <name> --component modal-api
+```
+
+Product requirements live in `docs/prd/`, while active implementation work is tracked in component feature folders under `docs/features/`.

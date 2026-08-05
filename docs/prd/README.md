@@ -59,3 +59,7 @@ PRD의 “어느 요구사항이 구현됐는지”를 CLI가 집계할 수 있�
 - `{project-name}-prd.md` - 메인 PRD 문서
 - `backend-overview.md` - 백엔드 아키텍처 (선택)
 - `frontend-overview.md` - 프론트엔드 아키텍처 (선택)
+
+## 현재 PRD
+
+- [Vocal Loom PRD](vocal-loom-prd.md)
