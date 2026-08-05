@@ -79,6 +79,8 @@ npm run catalog:analyze -- --limit 1 --resume
 npm run catalog:verify
 ```
 
+Use `--rank 49 --resume` to retry one catalog entry, or omit `--rank` and set `--limit` for a bounded sequential batch. READY songs are not downloaded again.
+
 `catalog:analyze` is a local-development-only workflow. For each allowlisted catalog URL, the analyzer downloads audio with yt-dlp into an OS temporary directory, separates vocals with Demucs, computes aggregate pYIN metrics, and removes the source plus every stem before responding. PostgreSQL stores the source URL, tool versions, aggregate metrics, and a `DELETED` recording status; song audio is not stored in the repository, database, or a persistent Docker volume.
 
 The `demucs_models` Docker volume contains reusable model weights only. Downloading and immediate deletion do not replace the requirement to have permission to process a source. A future recommendation-to-Convert integration must use the same job-scoped cleanup boundary and must never expose the original or separated stems.
