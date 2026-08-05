@@ -142,3 +142,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Commit**: 여덟 번째 태스크 커밋의 Git 이력
   - **PR**: 로컬 워크플로우로 생성하지 않음
   - **Test/Log**: [tasks.md 테스트 실행 기록](./tasks.md#테스트-실행-기록)
+
+## D009: 최소 분석 길이를 5초로 완화 (2026-08-06)
+
+- **Context**: 실제 검증용 `vocal1.wav`가 7.152초로 기존 8초 gate에서 분석 전에 거절됐다.
+- **Constraints**: 짧은 입력도 최소 voiced frame과 기존 무음·clipping·voiced ratio 품질 gate를 통과해야 하며 10–30초 권장 안내는 유지한다.
+- **Options**: 8초 유지, 검증 파일을 인위적으로 늘림, 최소 gate를 5초로 낮춤.
+- **Decision**: decoded duration 최소값을 5초로 낮추고 `TOO_SHORT` 상세 문구와 UI 재시도 안내를 같은 기준으로 맞춘다.
+- **Rationale**: 5초 입력도 pYIN에 충분한 frame을 제공하며 다른 품질 gate가 신뢰하기 어려운 입력을 계속 차단한다.
+- **Trace**:
+  - **DOING 시작 시점**: 7.152초 파일이 오직 `TOO_SHORT`에서 거절됨을 확인했다.
+  - **DONE 전 확정 시점**: 5초 tone fixture가 분석되고 4초 fixture는 계속 거절되며 실제 파일은 voiced ratio 0.8412로 profile 생성에 성공했다.
+  - **머지 후 확인**: -
+- **Evidence**:
+  - **Commit**: F004 T-F004-05 후속 변경 커밋
+  - **PR**: 로컬 workflow로 생성하지 않음
+  - **Test/Log**: `.venv/bin/python -m pytest tests/test_analysis.py` 6 tests PASS
+- **Consequences**: 5~10초 입력은 선택한 한 소절에 더 민감하므로 UI의 10–30초 권장은 유지한다.

@@ -36,3 +36,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 workflow로 생성하지 않음
   - **Test/Log**: `npm run test:key-fit` 17 tests PASS, `npm test` 전체 PASS
 - **Consequences**: weight나 후보 정책 변경은 기존 결과를 덮어쓰지 않고 새 scoring version으로 추가해야 한다.
+
+## D002: 사용자 분석 최소 길이를 5초로 완화 (2026-08-06)
+
+- **Context**: 사용자가 지정한 7.152초 `vocal1.wav`로 실제 scoring 결과를 확인하려 했으나 F002의 8초 gate에서 거절됐다.
+- **Constraints**: 짧은 입력에서도 무음·clipping·voiced ratio 품질 gate는 유지하고 10~30초 권장 가이드는 바꾸지 않는다.
+- **Options**: 파일 반복/패딩, 8초 gate 유지, decoded duration 최소값을 5초로 완화.
+- **Decision**: 최소 길이를 5초로 낮추고 analyzer 오류 문구·UI 안내·F002 문서를 같은 값으로 동기화한다.
+- **Rationale**: 인위적 오디오 변형 없이 실제 입력을 평가하며 5초 tone 경계와 기존 품질 gate로 최소 분석 가능성을 검증할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 원본 파일이 7.152초 PCM WAV이며 기존 analyzer에서 `TOO_SHORT`만 발생했다.
+  - **DONE 전 확정 시점**: 파일은 voiced ratio 0.8412, stability 0.8825의 READY profile이 됐고 100곡을 평가했다. 15개 Python, 18개 key-fit 및 전체 회귀 테스트가 통과했다.
+  - **머지 후 확인**: -
+- **Evidence**:
+  - **Commit**: T-F004-05 task commit
+  - **PR**: 로컬 workflow로 생성하지 않음
+  - **Test/Log**: [tasks.md 테스트 실행 기록](./tasks.md#테스트-실행-기록)
+- **Consequences**: 5~10초 profile은 선택한 프레이즈의 편향이 더 크므로 낮은 결과 해석 신뢰도를 UI에서 숨기지 않아야 한다.

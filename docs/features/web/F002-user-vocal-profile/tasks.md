@@ -133,6 +133,14 @@
     - [x] 자유곡 안내 문구, 수동 정지와 30초 자동 종료 녹음 UI를 구현한다.
     - [x] unsegmented 분석 제출, 결과 해석 문구와 tests/docs/browser 회귀를 갱신한다.
 
+- [DONE][PRD-FR-002] T-F002-user-vocal-profile-09 최소 분석 길이 5초로 완화
+  - Date: 2026-08-06
+  - Acceptance:
+    - decoded duration 5초 이상은 길이 gate를 통과하고 5초 미만은 `TOO_SHORT`로 거절한다.
+  - Checklist:
+    - [x] analyzer 설정과 동적 오류 문구를 5초 기준으로 변경한다.
+    - [x] UI 재시도 안내와 5초 경계 Python 테스트를 갱신한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -163,5 +171,6 @@
 | `curl guided POST→GET→DELETE→GET` | `2026-08-05` | PASS — 201→200→200→404, DB 0 row 및 analyzer file 제거 확인 |
 | `npx lee-spec-kit workflow-audit --json` | `2026-08-05` | PASS — 최종 실행 결과로 갱신 |
 | `browser /profile 자유곡 upload → analyze` | `2026-08-05` | PASS — 안내 문구, 10–30초 조건, unsegmented 결과 라벨과 DB/file 삭제 확인 |
+| `.venv/bin/python -m pytest tests/test_analysis.py` | `2026-08-06` | PASS — 6 tests, 5초 경계 허용과 4초 `TOO_SHORT` 포함 |
 
 <!-- lee-spec-kit:workflow-sync 2026-08-05T12:15:00.000Z -->

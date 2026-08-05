@@ -64,7 +64,7 @@
 
 **Acceptance Criteria:**
 
-- [x] 디코딩 실패, 8초 미만 입력, 과도한 무음, 1% 초과 clipping ratio, 25% 미만 voiced ratio는 프로필 생성 전에 거절된다.
+- [x] 디코딩 실패, 5초 미만 입력, 과도한 무음, 1% 초과 clipping ratio, 25% 미만 voiced ratio는 프로필 생성 전에 거절된다.
 - [x] 품질 실패 응답은 안정적인 reason code와 한국어 안내를 포함한다.
 - [x] 실패한 입력으로 VocalProfile을 생성하지 않는다.
 - [x] 최대 60초 또는 25MB를 초과하는 입력은 분석 전에 거절된다.
@@ -109,7 +109,7 @@
 
 - 핵심 안내는 “가볍게 노래 한 소절을 불러주세요. 애국가, 생일축하 노래 등 상관없어요”로 유지한다.
 - 사용자는 preset이나 안내 멜로디 없이 자신의 편한 키로 익숙한 노래를 부른다.
-- 반주가 없고 한 명의 목소리가 또렷한 10–30초 입력을 권장하며 decoded duration 최소 gate는 8초다.
+- 반주가 없고 한 명의 목소리가 또렷한 10–30초 입력을 권장하며 decoded duration 최소 gate는 5초다.
 - 사용자가 직접 녹음을 멈출 수 있고 30초에 도달하면 자동 종료한다.
 - 브라우저는 audio만 제출하며 guide segment timestamp를 보내지 않는다.
 - 결과는 사용자의 전체 절대 음역이 아니라 선택한 한 소절에서 관찰된 음정 범위임을 표시한다.
@@ -124,7 +124,7 @@
 ### FR-4: 오디오 표준화와 품질 gate
 
 - 입력은 분석 전에 ffmpeg로 mono, 22,050Hz float PCM으로 표준화한다.
-- 디코딩 실패, duration 8초 미만 또는 60초 초과, clipping ratio 1% 초과를 거절한다.
+- 디코딩 실패, duration 5초 미만 또는 60초 초과, clipping ratio 1% 초과를 거절한다.
 - pYIN 분석 후 voiced ratio 25% 미만 또는 voiced frame이 유효 통계 계산에 부족하면 거절한다.
 - 실패는 `UNSUPPORTED_AUDIO`, `TOO_SHORT`, `TOO_LONG`, `TOO_SILENT`, `EXCESSIVE_CLIPPING`, `LOW_VOICED_RATIO`, `ANALYSIS_FAILED` 중 하나의 reason code를 사용한다.
 
