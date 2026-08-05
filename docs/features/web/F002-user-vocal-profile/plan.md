@@ -27,7 +27,7 @@
 | Web API | App Router route handlers | 브라우저에 analyzer/DB 주소를 노출하지 않고 기존 same-origin 패턴 유지 |
 | Persistence | Prisma 7.9.1 + PostgreSQL 16 | F001 schema의 Recording/VocalProfile을 재사용 |
 | Recording | MediaRecorder + Web Audio API | 브라우저 기본 기능으로 녹음하고 별도 클라이언트 오디오 라이브러리를 줄임 |
-| Guide melody | Web Audio oscillator + shared preset constants | 저작권 없는 상대 음정 패턴을 세 키로 즉시 미리 듣기 가능 |
+| Guide melody | OmniVoice humming asset + librosa pitch correction + Web Audio fallback | 사람 목소리 timbre와 정확한 MIDI 기준을 결합하고 런타임 모델 의존을 제거 |
 | UI | React 19 + shadcn 기반 기존 컴포넌트 | 현재 시각 체계와 접근성 패턴 유지 |
 
 ---
@@ -38,7 +38,7 @@
 
 ```text
 Browser /profile
-  ├─ guide preview: Web Audio oscillator (no network)
+  ├─ guide preview: static OmniVoice humming WAV (oscillator fallback)
   ├─ MediaRecorder or local file
   └─ POST multipart /api/vocal-profiles
                    │ raw body stream + X-Recording-ID
@@ -85,6 +85,14 @@ Browser /profile
 - record timeline: melody `0–12,000 ms`, transition `12,000–13,500 ms`, glissando `13,500–21,000 ms`
 - 녹음 중에는 시각 playhead만 사용하고 안내음 동시 재생은 이어폰 확인 옵션에서만 허용한다.
 - 업로드 파일에는 segment timestamp를 보내지 않고 `segmented=false`로 전체 통계를 계산한다.
+
+### 허밍 안내 음원 생성
+
+- 로컬 OmniVoice Studio `POST /v1/audio/speech`에 한국어 지속음 `음——`, 고정 seed, preset별 pitch instruct를 전달한다.
+- pYIN으로 450ms 이상의 voiced 구간을 찾고 pitch spread 1.5 semitone 이하인 seed만 사용한다. 실패하면 정해진 seed 후보 순서로 재시도한다.
+- 실제 source median MIDI를 기준으로 각 목표 note에 `librosa.effects.pitch_shift`를 적용하고 35ms attack/55ms release를 준다.
+- 사람 허밍 80%, 목표 주파수 sine 20%로 혼합한 24kHz PCM WAV를 preset별 12초 정적 자산으로 저장한다.
+- `manifest.json`에 생성기, voice, seed, source 안정도와 최종 측정 min/max를 기록하고 테스트에서 목표 MIDI 오차 0.5 이하를 검증한다.
 
 ### 분석 알고리즘
 
@@ -140,6 +148,12 @@ Browser /profile
 │   ├── vocal-profile-contract.test.ts
 │   └── rendered-html.test.mjs
 ├── docker-compose.yml
+├── public/audio/guides/
+│   ├── humming-low.wav
+│   ├── humming-medium.wav
+│   ├── humming-high.wav
+│   └── manifest.json
+├── scripts/generate-humming-guides.py
 ├── .env.example
 └── README.md
 ```

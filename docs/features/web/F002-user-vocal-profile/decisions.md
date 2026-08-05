@@ -111,3 +111,18 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Commit**: 여섯 번째 태스크 커밋의 Git 이력
   - **PR**: 로컬 워크플로우로 생성하지 않음
   - **Test/Log**: [tasks.md 테스트 실행 기록](./tasks.md#테스트-실행-기록)
+
+## D007: OmniVoice 허밍 timbre와 결정적 pitch guide의 혼합 (2026-08-05)
+
+- **Context**: oscillator 안내음은 음정은 정확하지만 사용자가 따라 부를 보컬 예시로는 기계적으로 들린다.
+- **Constraints**: OmniVoice API는 MIDI/F0 contour를 받지 않음, 80 BPM/12초 타임라인 고정, 세 preset 음정 정확도 유지, 런타임 모델 의존 금지
+- **Options**: 전체 멜로디를 TTS로 생성, oscillator 유지, 지속 허밍 seed를 DSP로 보정해 oscillator와 혼합
+- **Decision**: OmniVoice에서 고정 seed의 dry sustained humming을 생성하고 실제 F0를 측정한 뒤, preset별 목표 MIDI에 맞춘 허밍 80%와 sine 20% 정적 WAV를 생성한다.
+- **Rationale**: 사람 목소리의 자연스러운 timbre를 얻으면서 TTS가 보장하지 못하는 음정·박자 정확도를 DSP와 oscillator 기준음으로 보완한다.
+- **Trace**:
+  - **DOING 시작 시점**: 생성 자산과 재생용 manifest를 커밋하고 브라우저는 정적 WAV를 우선 사용하되 로드 실패 시 기존 oscillator로 fallback한다.
+  - **DONE 전 확정 시점**: OmniVoice 0.4.2가 생성한 seed 중 450ms 구간 pitch spread가 각각 0.49/0.50/0.70 semitone인 입력만 채택했다. 최종 12초 자산은 low 47.8–57.1, medium 54.8–64.0, high 60.0–69.0 MIDI로 목표 오차 0.5 이내이며, 실제 브라우저에서 재생 중 잠금과 종료 후 복귀를 확인했다.
+- **Evidence**:
+  - **Commit**: 일곱 번째 태스크 커밋의 Git 이력
+  - **PR**: 로컬 워크플로우로 생성하지 않음
+  - **Test/Log**: [tasks.md 테스트 실행 기록](./tasks.md#테스트-실행-기록)

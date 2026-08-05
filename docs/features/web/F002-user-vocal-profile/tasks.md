@@ -115,14 +115,14 @@
     - [x] README와 환경 변수 예시에 analyzer 실행·분석 명령을 기록한다.
     - [x] Python tests, TypeScript, lint, build, npm test, Prisma validate와 workflow audit을 통과한다.
 
-- [TODO][PRD-FR-001] T-F002-user-vocal-profile-07 OmniVoice 허밍 기반 안내 멜로디 음원 구현
+- [DONE][PRD-FR-001] T-F002-user-vocal-profile-07 OmniVoice 허밍 기반 안내 멜로디 음원 구현
   - Date: 2026-08-05
   - Acceptance:
     - OmniVoice가 생성한 지속 허밍을 기준 음정으로 보정하고 sine 20%를 혼합한 low/medium/high 안내 WAV가 기존 80 BPM 타임라인과 정확히 일치하며 브라우저 fallback을 유지한다.
   - Checklist:
-    - [ ] 3900 OmniVoice API로 재현 가능한 dry humming seed를 생성하고 F0를 측정한다.
-    - [ ] 세 preset의 음정·길이·crossfade와 sine 20% 혼합 자산 생성 스크립트를 구현한다.
-    - [ ] 브라우저 preview를 정적 WAV 우선, oscillator fallback으로 전환하고 음정·UI 회귀를 검증한다.
+    - [x] 3900 OmniVoice API로 재현 가능한 dry humming seed를 생성하고 F0를 측정한다.
+    - [x] 세 preset의 음정·길이·crossfade와 sine 20% 혼합 자산 생성 스크립트를 구현한다.
+    - [x] 브라우저 preview를 정적 WAV 우선, oscillator fallback으로 전환하고 음정·UI 회귀를 검증한다.
 
 ## 완료 조건
 
@@ -153,5 +153,8 @@
 | `npm run db:validate && npm run db:status && npm run db:verify` | `2026-08-05` | PASS — schema valid/up-to-date 및 seed relation 확인 |
 | `curl guided POST→GET→DELETE→GET` | `2026-08-05` | PASS — 201→200→200→404, DB 0 row 및 analyzer file 제거 확인 |
 | `npx lee-spec-kit workflow-audit --json` | `2026-08-05` | PASS — 최종 실행 결과로 갱신 |
+| `scripts/generate-humming-guides.py` | `2026-08-05` | PASS — OmniVoice 0.4.2 seed 검증 및 12초 low/medium/high WAV 생성 |
+| `ffprobe public/audio/guides/humming-*.wav` | `2026-08-05` | PASS — 세 자산 24kHz mono PCM, 각각 12.000초 |
+| `browser /profile 허밍 preview` | `2026-08-05` | PASS — 정적 안내음 재생 중 잠금 및 12초 후 UI 복귀, 세 asset HTTP 200 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T11:32:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T11:46:00.000Z -->
