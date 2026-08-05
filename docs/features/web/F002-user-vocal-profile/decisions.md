@@ -81,3 +81,18 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Commit**: 네 번째 태스크 커밋의 Git 이력
   - **PR**: 로컬 워크플로우로 생성하지 않음
   - **Test/Log**: [tasks.md 테스트 실행 기록](./tasks.md#테스트-실행-기록)
+
+## D005: 한 화면의 분석 상태와 설명 가능한 품질 피드백 (2026-08-05)
+
+- **Context**: 비전문 사용자가 분석 실패를 단순 서버 오류로 오해하지 않고 재녹음 방법과 추천에 쓰일 측정치를 이해해야 한다.
+- **Constraints**: analyzer reason code 유지, MIDI 숫자와 음이름 병기, 원본 24시간 보관, 삭제 전 사용자 확인
+- **Options**: 원시 JSON 출력, 별도 결과 페이지, 녹음 화면 안의 단계별 결과 패널
+- **Decision**: 녹음 화면에서 health·업로드·분석 상태를 이어서 보여주고, reason code별 한국어 행동 지침과 MIDI/음이름 결과 카드를 제공한다.
+- **Rationale**: 테스트 반복 흐름을 끊지 않으며 analyzer 계약을 감추지 않고 설명 가능한 추천 입력을 제시할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 선택한 Blob/File을 same-origin POST로 전송하고 성공 결과는 즉시 표시한다. 실패는 구조화된 code를 보존해 재시도 방법을 안내하며, 삭제는 확인 대화상자 후 API 성공 시에만 화면에서 제거한다.
+  - **DONE 전 확정 시점**: 실제 guided WAV로 측정 음역 D♯3–F♯4, 편한 음역 F3–E4, 중심 음 B3 및 quality metadata가 표시되는 것을 확인했다. 4초 WAV는 `TOO_SHORT`를 보존하면서 8초 이상 재녹음 안내를 보여줬고, 테스트 profile은 DELETE 후 DB/file 모두 제거됐다.
+- **Evidence**:
+  - **Commit**: 다섯 번째 태스크 커밋의 Git 이력
+  - **PR**: 로컬 워크플로우로 생성하지 않음
+  - **Test/Log**: [tasks.md 테스트 실행 기록](./tasks.md#테스트-실행-기록)

@@ -97,14 +97,14 @@
     - [x] MediaRecorder 권한, 자동 timeline, 재녹음과 업로드 대안을 구현한다.
     - [x] MIME, 25MB 제한, object URL lifecycle과 접근성 상태를 처리한다.
 
-- [TODO][PRD-FR-003] T-F002-user-vocal-profile-05 프로필 결과·품질 오류·삭제 UI 구현
+- [DONE][PRD-FR-003] T-F002-user-vocal-profile-05 프로필 결과·품질 오류·삭제 UI 구현
   - Date: 2026-08-05
   - Acceptance:
     - 사용자가 분석 진행, 구조화된 한국어 품질 오류, MIDI/음이름 결과와 analyzer metadata를 확인하고 확인 후 삭제할 수 있다.
   - Checklist:
-    - [ ] POST/GET 결과 상태와 MIDI note label을 시각화한다.
-    - [ ] reason code별 재시도 안내와 책임 있는 사용 고지를 구현한다.
-    - [ ] DELETE 확인과 UI/DB/file 제거 상태를 구현한다.
+    - [x] POST/GET 결과 상태와 MIDI note label을 시각화한다.
+    - [x] reason code별 재시도 안내와 책임 있는 사용 고지를 구현한다.
+    - [x] DELETE 확인과 UI/DB/file 제거 상태를 구현한다.
 
 - [TODO][PRD-NFR-005] T-F002-user-vocal-profile-06 통합 검증과 로컬 운영 문서화
   - Date: 2026-08-05
@@ -139,5 +139,7 @@
 | `npm run build` | `2026-08-05` | PASS — vocal-profile API route 3개 포함 |
 | `curl POST/GET/DELETE http://localhost:3100/api/vocal-profiles...` | `2026-08-05` | PASS — 201→200→200→404, DB/file 삭제 확인 |
 | `browser http://localhost:3100/profile` | `2026-08-05` | PASS — 세 preset 선택, 12초 Web Audio preview 재생/복귀, 접근 가능한 녹음·업로드 UI 확인 |
+| `browser upload → POST /api/vocal-profiles` | `2026-08-05` | PASS — 실제 guided WAV 결과 카드와 4초 WAV `TOO_SHORT` 한국어 안내 확인 |
+| `curl DELETE /api/vocal-profiles/{id}` | `2026-08-05` | PASS — UI 검증 fixture의 DB row 및 analyzer 원본 제거 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T11:20:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T11:27:00.000Z -->
