@@ -7,6 +7,8 @@ import {
   type KeyFitProfile,
 } from "../lib/key-fit/contract";
 import {
+  calculateProfileConfidence,
+  scoreKeyFitCandidate,
   validateCompatibleKeyFitProfiles,
   validateKeyFitProfile,
 } from "../lib/key-fit/scorer";
@@ -84,5 +86,61 @@ test("rejects incompatible analyzer contracts with stable details", () => {
       assert.equal(error.details.songAnalyzerVersion, "0.12.0");
       return true;
     },
+  );
+});
+
+test("scores a fully overlapping original key with an explainable breakdown", () => {
+  const result = scoreKeyFitCandidate(USER_PROFILE_FIXTURE, USER_PROFILE_FIXTURE, 0);
+
+  assert.equal(result.tessituraOverlapRatio, 1);
+  assert.equal(result.tessituraFit, 1);
+  assert.equal(result.extremeFit, 1);
+  assert.equal(result.confidence, 0.88);
+  assert.deepEqual(result.contributions, {
+    overlap: 55,
+    tessituraFit: 25,
+    extremeFit: 15,
+    confidence: 4.4,
+  });
+  assert.equal(result.score, 99.4);
+});
+
+test("high and low burden cannot improve a candidate score", () => {
+  const centered = scoreKeyFitCandidate(USER_PROFILE_FIXTURE, USER_PROFILE_FIXTURE, 0);
+  const raised = scoreKeyFitCandidate(USER_PROFILE_FIXTURE, USER_PROFILE_FIXTURE, 4);
+  const lowered = scoreKeyFitCandidate(USER_PROFILE_FIXTURE, USER_PROFILE_FIXTURE, -4);
+
+  assert.equal(raised.highTessituraExcess, 4);
+  assert.equal(raised.highExtremeExcess, 4);
+  assert.equal(lowered.lowTessituraExcess, 4);
+  assert.equal(lowered.lowExtremeExcess, 4);
+  assert.ok(raised.score < centered.score);
+  assert.ok(lowered.score < centered.score);
+});
+
+test("profile confidence combines stability and voiced ratio within the unit interval", () => {
+  assert.equal(calculateProfileConfidence(USER_PROFILE_FIXTURE), 0.88);
+  assert.equal(
+    calculateProfileConfidence({
+      ...USER_PROFILE_FIXTURE,
+      voicedRatio: 0.25,
+      pitchStability: 0,
+    }),
+    0,
+  );
+  assert.equal(
+    calculateProfileConfidence({
+      ...USER_PROFILE_FIXTURE,
+      voicedRatio: 1,
+      pitchStability: 1,
+    }),
+    1,
+  );
+});
+
+test("candidate scoring rejects fractional shifts", () => {
+  assert.throws(
+    () => scoreKeyFitCandidate(USER_PROFILE_FIXTURE, SONG_PROFILE_FIXTURE, 0.5),
+    (error: unknown) => error instanceof KeyFitScoringError && error.code === "INVALID_PROFILE",
   );
 });
