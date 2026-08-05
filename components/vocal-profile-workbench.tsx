@@ -18,6 +18,7 @@ import {
   GUIDE_TRANSITION_DURATION_MS,
   type GuidePreset,
   guideFormFields,
+  midiToNoteName,
   playGuideMelody,
 } from "@/lib/vocal-profile/guide-melody";
 import type { VocalProfileError, VocalProfileResponse } from "@/lib/vocal-profile/contract";
@@ -41,12 +42,6 @@ const ERROR_GUIDANCE: Record<string, { title: string; action: string }> = {
   ANALYZER_NOT_CONFIGURED: { title: "분석기 주소가 설정되지 않았어요", action: "VOCAL_PROFILE_API_URL 환경 변수를 확인해주세요." },
   PROFILE_SAVE_FAILED: { title: "분석 결과를 저장하지 못했어요", action: "PostgreSQL 연결을 확인한 뒤 다시 시도해주세요." },
 };
-
-function midiToNoteName(midi: number) {
-  const rounded = Math.round(midi);
-  const notes = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
-  return `${notes[((rounded % 12) + 12) % 12]}${Math.floor(rounded / 12) - 1}`;
-}
 
 function profileError(value: unknown): VocalProfileError {
   if (value && typeof value === "object" && "reasonCode" in value) {
@@ -396,9 +391,10 @@ export function VocalProfileWorkbench() {
                 </div>
                 <div className="grid gap-2 text-xs text-muted-foreground sm:grid-cols-2">
                   <p>입력 레벨 {profile.rmsDb.toFixed(1)} dB · clipping {(profile.clippingRatio * 100).toFixed(2)}%</p>
-                  <p className="sm:text-right">{profile.analyzer} {profile.analyzerVersion} · 원본 만료 {profile.recording.expiresAt ? new Date(profile.recording.expiresAt).toLocaleString("ko-KR") : "-"}</p>
+                  <p className="sm:text-right">{profile.analyzer} {profile.analyzerVersion} · 녹음 {profile.recording.durationMs ? `${(profile.recording.durationMs / 1000).toFixed(1)}초` : "-"}</p>
                 </div>
-                <div className="rounded-xl bg-muted/55 p-4 text-xs leading-6 text-muted-foreground">이 결과는 노래 추천을 위한 참고 측정값이며, 발성 능력이나 건강 상태를 진단하지 않습니다. 환경과 컨디션에 따라 달라질 수 있습니다.</div>
+                <p className="text-xs text-muted-foreground">생성 {new Date(profile.createdAt).toLocaleString("ko-KR")} · 원본 만료 {profile.recording.expiresAt ? new Date(profile.recording.expiresAt).toLocaleString("ko-KR") : "-"}</p>
+                <div className="rounded-xl bg-muted/55 p-4 text-xs leading-6 text-muted-foreground">사용 권한이 있는 본인의 음성만 업로드하세요. 이 결과는 노래 추천을 위한 참고 측정값이며, 발성 능력이나 건강 상태를 진단하지 않습니다. 환경과 컨디션에 따라 달라질 수 있습니다.</div>
               </CardContent>
             </Card>
           </section>
