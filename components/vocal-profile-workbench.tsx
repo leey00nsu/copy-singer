@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { Activity, AlertTriangle, ArrowLeft, CheckCircle2, FileAudio, LoaderCircle, Mic, RotateCcw, Square, Trash2, Upload } from "lucide-react";
+import { Activity, AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, FileAudio, LoaderCircle, Mic, RotateCcw, Sparkles, Square, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -58,6 +58,7 @@ export function VocalProfileWorkbench() {
   const [health, setHealth] = useState<ServiceHealth>("checking");
   const [analyzing, setAnalyzing] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [recommending, setRecommending] = useState(false);
   const [profile, setProfile] = useState<VocalProfileResponse | null>(null);
   const [analysisError, setAnalysisError] = useState<VocalProfileError | null>(null);
   const recorderRef = useRef<MediaRecorder | null>(null);
@@ -209,6 +210,35 @@ export function VocalProfileWorkbench() {
     }
   };
 
+  const createRecommendations = async () => {
+    if (!profile || recommending) return;
+    setRecommending(true);
+    setAnalysisError(null);
+    try {
+      const response = await fetch("/api/recommendations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userVocalProfileId: profile.id }),
+      });
+      const payload = (await response.json().catch(() => null)) as
+        | { id?: string; error?: { code?: string; message?: string; retryable?: boolean } }
+        | null;
+      if (!response.ok || !payload?.id) {
+        throw {
+          reasonCode: payload?.error?.code ?? "RECOMMENDATION_SAVE_FAILED",
+          detail: payload?.error?.message ?? "Recommendation failed.",
+          retryable: payload?.error?.retryable ?? true,
+        } satisfies VocalProfileError;
+      }
+      // vinext has no runtime `next` package for standalone component tests.
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+      window.location.href = `/recommendations/${payload.id}`;
+    } catch (error) {
+      setAnalysisError(profileError(error));
+      setRecommending(false);
+    }
+  };
+
   const busy = phase !== "idle";
   const progress = (elapsedMs / RECOMMENDED_RECORDING_MS) * 100;
 
@@ -328,6 +358,11 @@ export function VocalProfileWorkbench() {
                 </div>
                 <p className="text-xs text-muted-foreground">생성 {new Date(profile.createdAt).toLocaleString("ko-KR")} · 원본 만료 {profile.recording.expiresAt ? new Date(profile.recording.expiresAt).toLocaleString("ko-KR") : "-"}</p>
                 <div className="rounded-xl bg-muted/55 p-4 text-xs leading-6 text-muted-foreground">사용 권한이 있는 본인의 음성만 업로드하세요. 이 결과는 노래 추천을 위한 참고 측정값이며, 발성 능력이나 건강 상태를 진단하지 않습니다. 환경과 컨디션에 따라 달라질 수 있습니다.</div>
+                <Button className="w-full" disabled={recommending} onClick={() => void createRecommendations()} size="lg">
+                  {recommending ? <LoaderCircle className="size-4 animate-spin" /> : <Sparkles className="size-4" />}
+                  {recommending ? "100곡을 비교하는 중…" : "노래 추천 받기"}
+                  {!recommending ? <ArrowRight className="ml-auto size-4" /> : null}
+                </Button>
               </CardContent>
             </Card>
           </section>

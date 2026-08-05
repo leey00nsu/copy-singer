@@ -25,7 +25,7 @@
     "catalog:clear-db-profiles": "tsx scripts/clear-song-profile-records.ts",
     "test:catalog": "tsx --test tests/song-catalog.test.ts",
     "test:key-fit": "tsx --test tests/key-fit-scoring.test.ts",
-    "test:recommendation": "tsx --test tests/recommendation-ranking.test.ts",
+    "test:recommendation": "tsx --test tests/recommendation-ranking.test.ts tests/recommendation-ui.test.tsx",
     "test:recommendation:db": "node --conditions react-server --import tsx --test tests/recommendation-persistence.integration.ts"
   },
   "dependencies": {

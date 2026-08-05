@@ -53,3 +53,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 workflow로 생성하지 않음.
   - **Test/Log**: SSR 및 전체 회귀 결과를 태스크 완료 시 기록.
 - **Consequences**: 사용자는 target 파일과 advanced settings를 직접 확인해야 하며 자동 합성 데모는 후속 기능으로 남는다.
+
+## D003: 결과 페이지의 DB 접근을 API 경계로 제한 (2026-08-06)
+
+- **Context**: vinext 동적 RSC 페이지에서 Prisma 서버 모듈을 직접 import하면 개발 hydration 과정에서 Prisma query compiler WebAssembly가 client rendering 경로에 노출될 수 있었다.
+- **Constraints**: Prisma는 서버 전용이어야 하고 추천 결과는 loading/not-found/failed 상태를 명확히 보여야 한다.
+- **Options**: RSC에서 DB 직접 조회, client에 초기 JSON을 주입, client가 저장된 run을 GET API로 조회.
+- **Decision**: route page는 run ID만 client component에 전달하고, component가 `GET /api/recommendations/{id}`로 직렬화된 응답을 로드한다.
+- **Rationale**: Prisma와 artifact를 Route Handler 뒤에 확실히 격리하면서 로딩·재조회·404 상태를 한 경계에서 처리한다.
+- **Trace**:
+  - **DOING 시작 시점**: 초기 RSC 직접 조회를 구현했다.
+  - **DONE 전 확정 시점**: 개발 브라우저에서 WebAssembly client 유입 오류를 관찰해 API fetch 구조로 바꿨고 production 브라우저에서 정상 카드 렌더링을 확인했다.
+  - **머지 후 확인**: 미실행.
+- **Evidence**:
+  - **Commit**: UI 태스크 커밋 후 기록.
+  - **PR**: 로컬 workflow로 생성하지 않음.
+  - **Test/Log**: `npm run test:recommendation` 9 tests PASS, `npm run build` PASS, production local DOM·full-page visual 확인.
+- **Consequences**: 첫 화면은 짧은 loading 상태를 거치지만 DB 코드가 client bundle/hydration 경계에 들어가지 않는다.

@@ -77,14 +77,14 @@
     - [x] artifact/DB mapping, Prisma service와 serializer 구현
     - [x] Route Handler와 persistence/API 계약 테스트
 
-- [TODO][PRD-FR-011][PRD-FR-012][PRD-NFR-006] T-F005-03 프로필 진입과 상위 3곡 결과 UI 구현
+- [DONE][PRD-FR-011][PRD-FR-012][PRD-NFR-006] T-F005-03 프로필 진입과 상위 3곡 결과 UI 구현
   - Date: 2026-08-06
   - Acceptance:
     - 프로필 결과에서 중복 제출 없이 추천을 생성하고 저장된 run 결과 URL로 이동한다.
     - 결과 화면이 정확히 3곡의 점수·추천 키·이유와 이번 소절/신뢰도 고지, 오류·삭제 상태를 표시한다.
   - Checklist:
-    - [ ] profile CTA와 recommendation result page/component 구현
-    - [ ] loading/error/not-found/delete와 SSR 접근성 테스트
+    - [x] profile CTA와 recommendation result page/component 구현
+    - [x] loading/error/not-found/delete와 SSR 접근성 테스트
 
 - [TODO][PRD-FR-013][PRD-FR-014][PRD-FR-015] T-F005-04 선택 곡 SVC handoff와 전체 로컬 회귀 검증
   - Date: 2026-08-06
@@ -112,9 +112,9 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `npm run test:recommendation` | `2026-08-06` | PASS — 7 tests, 전체 tie-break·실제 100곡 결정성·metadata drift·reason 문구 포함 |
+| `npm run test:recommendation` | `2026-08-06` | PASS — 9 tests, ranking 7 + top3/low-confidence UI 2 |
 | `npm run test:recommendation:db` | `2026-08-06` | PASS — 실제 PostgreSQL run+3 items 생성·조회·cascade 삭제 및 fixture 정리 |
 | `npx tsc --noEmit && npm run lint && npm test` | `-` | 대기 |
 | `npm run db:validate` | `2026-08-06` | PASS — Prisma schema valid |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-05T17:38:08.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-05T17:45:16.000Z -->
