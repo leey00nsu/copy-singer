@@ -10,6 +10,7 @@ import {
   type RecommendationRunResponse,
 } from "../lib/recommendation/contract";
 import {
+  calculateRecommendationSelectionScore,
   formatRecommendationReasons,
   formatRecommendedShift,
   rankTopRecommendations,
@@ -69,10 +70,26 @@ test("ranks exactly three songs with every documented tie-break", () => {
 
   assert.equal(ranked.length, RECOMMENDATION_RESULT_COUNT);
   assert.deepEqual(ranked.map(({ catalogOrder, rank }) => [rank, catalogOrder]), [
-    [1, 2],
-    [2, 3],
-    [3, 4],
+    [1, 1],
+    [2, 2],
+    [3, 3],
   ]);
+  assert.deepEqual(ranked.map((item) => item.selectionScore), [95.5, 81.15, 81.15]);
+});
+
+test("selection score prioritizes original pitch and applies stepped shift penalties", () => {
+  assert.equal(
+    calculateRecommendationSelectionScore(candidate(1, 100, 50, 0)),
+    67.5,
+  );
+  assert.equal(
+    calculateRecommendationSelectionScore(candidate(1, 100, 50, 4)),
+    55.5,
+  );
+  assert.throws(
+    () => calculateRecommendationSelectionScore(candidate(1, 100, 50, 7)),
+    (error: unknown) => error instanceof RecommendationError && error.code === "CATALOG_NOT_READY",
+  );
 });
 
 test("does not mutate candidates and produces deterministic real-artifact top three", () => {
@@ -85,6 +102,51 @@ test("does not mutate candidates and produces deterministic real-artifact top th
   assert.equal(JSON.stringify(scored), before);
   assert.deepEqual(first, second);
   assert.deepEqual(first.map((item) => item.rank), [1, 2, 3]);
+});
+
+test("real stored profile fixtures no longer share Acrophobic as rank one", () => {
+  const highProfile: KeyFitProfile = {
+    minMidi: 54.6,
+    maxMidi: 70.7,
+    p10Midi: 55.2,
+    medianMidi: 60,
+    p90Midi: 67.2,
+    tessituraLowMidi: 55.2,
+    tessituraHighMidi: 67.2,
+    voicedRatio: 0.9501,
+    pitchStability: 1,
+    clippingRatio: 0,
+    analyzer: "librosa-pyin",
+    analyzerVersion: "0.11.0",
+  };
+  const broadProfile: KeyFitProfile = {
+    minMidi: 39.978,
+    maxMidi: 63.902,
+    p10Midi: 50.19,
+    medianMidi: 57,
+    p90Midi: 62.7,
+    tessituraLowMidi: 50.19,
+    tessituraHighMidi: 62.7,
+    voicedRatio: 0.4644,
+    pitchStability: 0.8825,
+    clippingRatio: 0,
+    analyzer: "librosa-pyin",
+    analyzerVersion: "0.11.0",
+  };
+
+  const highTop = rankTopRecommendations(scoreCatalogKeyFits(highProfile, artifact));
+  const broadTop = rankTopRecommendations(scoreCatalogKeyFits(broadProfile, artifact));
+  assert.deepEqual(highTop.map((item) => item.title), [
+    "잊었니(신들의만찬OST)",
+    "붉은 노을",
+    "천상연(웹툰 '선녀외전' X 이창섭)",
+  ]);
+  assert.deepEqual(broadTop.map((item) => item.title), [
+    "소녀(응답하라1988 OST)",
+    "Lemon",
+    "죽일 놈(Guilty)",
+  ]);
+  assert.ok([...highTop, ...broadTop].every((item) => item.title !== "아크라포빅"));
 });
 
 test("rejects partial and duplicate ranking inputs as an unready catalog", () => {
@@ -160,7 +222,7 @@ test("rejects database metadata drift before scoring or persistence", () => {
 test("selects a handoff only when the item belongs to the stored run", () => {
   const scored = scoreCatalogKeyFits(USER_PROFILE_FIXTURE, artifact)[0]!;
   const item = {
-    id: "item-1", rank: 1, songId: "song-1", catalogOrder: 1, title: "Song", artist: "Artist", sourceUrl: "https://www.youtube.com/watch?v=NbKH4iZqq1Y", originalKeyScore: 80, adjustedScore: 95, recommendedShift: -2, reasonCodes: [], reasons: [], metrics: { confidence: 0.8, original: scored.original, recommended: scored.recommended }, synthesis: { status: "not_started" as const, jobId: null, error: null, startedAt: null, updatedAt: null, completedAt: null, expiresAt: null, attemptCount: 0, audioUrl: null },
+    id: "item-1", rank: 1, songId: "song-1", catalogOrder: 1, title: "Song", artist: "Artist", sourceUrl: "https://www.youtube.com/watch?v=NbKH4iZqq1Y", originalKeyScore: 80, adjustedScore: 95, selectionScore: 82, recommendedShift: -2, reasonCodes: [], reasons: [], metrics: { confidence: 0.8, selectionScore: 82, original: scored.original, recommended: scored.recommended }, synthesis: { status: "not_started" as const, jobId: null, error: null, startedAt: null, updatedAt: null, completedAt: null, expiresAt: null, attemptCount: 0, audioUrl: null },
   };
   const run: RecommendationRunResponse = { id: "run-1", userVocalProfileId: "profile-1", scoringVersion: "key-fit-v1", createdAt: "2026-08-06T00:00:00.000Z", profileConfidence: 0.8, lowConfidence: false, profile: { analyzer: "librosa-pyin", analyzerVersion: "0.11.0", tessituraLowMidi: 52, tessituraHighMidi: 68, minMidi: 48, maxMidi: 72 }, items: [item] };
   assert.deepEqual(selectRecommendationHandoff(run, "item-1"), { runId: "run-1", id: "item-1", title: "Song", artist: "Artist", recommendedShift: -2, originalKeyScore: 80, adjustedScore: 95 });

@@ -20,7 +20,7 @@ const run: RecommendationRunResponse = {
   profileConfidence: ranked[0]!.confidence,
   lowConfidence: false,
   profile: { analyzer: profile.analyzer, analyzerVersion: profile.analyzerVersion, tessituraLowMidi: profile.tessituraLowMidi, tessituraHighMidi: profile.tessituraHighMidi, minMidi: profile.minMidi, maxMidi: profile.maxMidi },
-  items: ranked.map((item, index) => ({ id: `item-${index}`, rank: item.rank, songId: `song-${index}`, catalogOrder: item.catalogOrder, title: item.title, artist: item.artist, sourceUrl: item.sourceUrl, originalKeyScore: item.originalKeyScore, adjustedScore: item.adjustedScore, recommendedShift: item.recommendedShift, reasonCodes: item.reasonCodes, reasons: formatRecommendationReasons(item), metrics: { confidence: item.confidence, original: item.original, recommended: item.recommended }, synthesis: { status: "not_started", jobId: null, error: null, startedAt: null, updatedAt: null, completedAt: null, expiresAt: null, attemptCount: 0, audioUrl: null } })),
+  items: ranked.map((item, index) => ({ id: `item-${index}`, rank: item.rank, songId: `song-${index}`, catalogOrder: item.catalogOrder, title: item.title, artist: item.artist, sourceUrl: item.sourceUrl, originalKeyScore: item.originalKeyScore, adjustedScore: item.adjustedScore, selectionScore: item.selectionScore, recommendedShift: item.recommendedShift, reasonCodes: item.reasonCodes, reasons: formatRecommendationReasons(item), metrics: { confidence: item.confidence, selectionScore: item.selectionScore, original: item.original, recommended: item.recommended }, synthesis: { status: "not_started", jobId: null, error: null, startedAt: null, updatedAt: null, completedAt: null, expiresAt: null, attemptCount: 0, audioUrl: null } })),
 };
 
 test("renders three ranked recommendation cards with responsible-use guidance", () => {
@@ -33,6 +33,20 @@ test("renders three ranked recommendation cards with responsible-use guidance", 
   assert.equal((html.match(/믹싱 중이에요/g) ?? []).length, 3);
   assert.doesNotMatch(html, /합성 데모로/);
   assert.match(html, /원곡의 음정을 그대로 따르며/);
+  assert.match(html, /원키 음색 데모/);
+});
+
+test("labels a completed synthesis as an original-key timbre demo", () => {
+  const succeeded = {
+    ...run,
+    items: run.items.map((item, index) => index === 0 ? {
+      ...item,
+      synthesis: { ...item.synthesis, status: "succeeded" as const, audioUrl: "/result.wav" },
+    } : item),
+  };
+  const html = renderToStaticMarkup(<RecommendationResults initialRun={succeeded} />);
+  assert.match(html, /원키 음색 데모/);
+  assert.doesNotMatch(html, />내 목소리 데모</);
 });
 
 test("renders verified handoff context without implying automatic SVC settings", () => {

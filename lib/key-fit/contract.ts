@@ -1,4 +1,4 @@
-export const KEY_FIT_SCORING_VERSION = "key-fit-v1";
+export const KEY_FIT_SCORING_VERSION = "key-fit-v2";
 
 export const KEY_SHIFT_MIN = -6;
 export const KEY_SHIFT_MAX = 6;

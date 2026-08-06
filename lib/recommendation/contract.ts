@@ -70,6 +70,7 @@ export class RecommendationError extends Error {
 
 export type RecommendationScoreMetrics = {
   confidence: number;
+  selectionScore?: number;
   original: KeyFitScoreBreakdown;
   recommended: KeyFitScoreBreakdown;
 };
@@ -84,6 +85,7 @@ export type RecommendationItemResponse = {
   sourceUrl: string;
   originalKeyScore: number;
   adjustedScore: number;
+  selectionScore: number | null;
   recommendedShift: number;
   reasonCodes: KeyFitReasonCode[];
   reasons: string[];

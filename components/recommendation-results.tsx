@@ -219,7 +219,7 @@ export function RecommendationResults({
                     </div>
                   ) : item.synthesis.status === "succeeded" && item.synthesis.audioUrl ? (
                     <div>
-                      <p className="flex items-center gap-2 text-sm font-semibold text-emerald-700"><Headphones className="size-4" /> 내 목소리 데모</p>
+                      <p className="flex items-center gap-2 text-sm font-semibold text-emerald-700"><Headphones className="size-4" /> 원키 음색 데모</p>
                       {/* Audio-only generated result does not have a meaningful caption track. */}
                       {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
                       <audio className="mt-3 w-full" controls preload="none" src={item.synthesis.audioUrl} />
@@ -240,7 +240,7 @@ export function RecommendationResults({
         </section>
 
         <section className="mx-auto mt-8 max-w-3xl rounded-2xl border bg-card/75 p-5 text-xs leading-6 text-muted-foreground">
-          <div className="flex gap-3"><Mic2 className="mt-0.5 size-4 shrink-0" /><p>이 결과는 <strong className="text-foreground">{run.scoringVersion}</strong>으로 계산한 노래 선택 참고값이며 가창력이나 건강 상태를 평가하지 않습니다. 합성은 원곡의 음정을 그대로 따르며 추천 노래방 키는 직접 부를 때의 안내입니다.</p></div>
+          <div className="flex gap-3"><Mic2 className="mt-0.5 size-4 shrink-0" /><p>이 결과는 <strong className="text-foreground">{run.scoringVersion}</strong>으로 계산한 노래 선택 참고값이며 가창력이나 건강 상태를 평가하지 않습니다. 원키 음색 데모는 원곡의 음정을 그대로 따르며 추천 노래방 키는 직접 부를 때의 안내입니다.</p></div>
           <div className="mt-2 flex gap-3"><Clock3 className="mt-0.5 size-4 shrink-0" /><p>GPU가 한 곡씩 처리해 완료 시간이 서로 다를 수 있습니다. 결과와 입력은 최대 24시간 후 만료됩니다.</p></div>
         </section>
 

@@ -53,9 +53,12 @@ test("persists, reads, and cascade-deletes one recommendation run", async (conte
     });
 
     const created = await createRecommendationRun(profileId);
+    assert.equal(created.scoringVersion, "key-fit-v2");
     assert.equal(created.items.length, 3);
     assert.deepEqual(created.items.map((item) => item.rank), [1, 2, 3]);
     assert.ok(created.items.every((item) => item.sourceUrl.startsWith("https://www.youtube.com/")));
+    assert.ok(created.items.every((item) => Number.isFinite(item.selectionScore)));
+    assert.ok(created.items.every((item) => item.selectionScore === item.metrics.selectionScore));
 
     const stored = await getRecommendationRun(created.id);
     assert.deepEqual(stored, created);

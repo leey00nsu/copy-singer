@@ -44,7 +44,7 @@ export const SONG_PROFILE_FIXTURE: KeyFitProfile = {
 };
 
 test("exposes a stable key-fit scoring version", () => {
-  assert.equal(KEY_FIT_SCORING_VERSION, "key-fit-v1");
+  assert.equal(KEY_FIT_SCORING_VERSION, "key-fit-v2");
 });
 
 test("accepts ordered compatible user and song profiles", () => {
@@ -107,6 +107,26 @@ test("scores a fully overlapping original key with an explainable breakdown", ()
     confidence: 4.4,
   });
   assert.equal(result.score, 99.4);
+});
+
+test("uses symmetric tessitura overlap instead of rewarding narrow contained songs", () => {
+  const narrowSong: KeyFitProfile = {
+    ...USER_PROFILE_FIXTURE,
+    minMidi: 54,
+    maxMidi: 62,
+    p10Midi: 56,
+    medianMidi: 58,
+    p90Midi: 60,
+    tessituraLowMidi: 56,
+    tessituraHighMidi: 60,
+  };
+  const contained = scoreKeyFitCandidate(USER_PROFILE_FIXTURE, narrowSong, 0);
+  const identical = scoreKeyFitCandidate(USER_PROFILE_FIXTURE, USER_PROFILE_FIXTURE, 0);
+  const disjoint = scoreKeyFitCandidate(USER_PROFILE_FIXTURE, narrowSong, 20);
+
+  assert.equal(contained.tessituraOverlapRatio, 0.4);
+  assert.equal(identical.tessituraOverlapRatio, 1);
+  assert.equal(disjoint.tessituraOverlapRatio, 0);
 });
 
 test("high and low burden cannot improve a candidate score", () => {
@@ -295,7 +315,7 @@ test("scores the analyzed vocal1.wav profile against the real catalog", () => {
 
   assert.equal(sorted[0].catalogOrder, 64);
   assert.equal(sorted[0].recommendedShift, -4);
-  assert.equal(sorted[0].originalKeyScore, 47.69);
-  assert.equal(sorted[0].adjustedScore, 98.85);
+  assert.equal(sorted[0].originalKeyScore, 46.29);
+  assert.equal(sorted[0].adjustedScore, 93.75);
   assert.equal(results.filter((result) => result.recommendedShift === -6).length, 99);
 });

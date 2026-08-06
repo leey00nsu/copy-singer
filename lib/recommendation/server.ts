@@ -107,6 +107,7 @@ export function serializeRecommendationRun(run: StoredRun): RecommendationRunRes
           : "",
       originalKeyScore: item.originalKeyScore,
       adjustedScore: item.adjustedScore,
+      selectionScore: Number.isFinite(metrics.selectionScore) ? metrics.selectionScore! : null,
       recommendedShift: item.recommendedShift,
       reasonCodes,
       reasons: formatRecommendationReasons({
@@ -187,6 +188,7 @@ export async function createRecommendationRun(userVocalProfileId: string) {
             reasonCodes: item.reasonCodes as Prisma.InputJsonValue,
             metrics: {
               confidence: item.confidence,
+              selectionScore: item.selectionScore,
               original: item.original,
               recommended: item.recommended,
             } as Prisma.InputJsonValue,

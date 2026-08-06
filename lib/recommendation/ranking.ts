@@ -5,15 +5,43 @@ import {
   RecommendationError,
 } from "./contract";
 
-export type RankedRecommendation = CatalogKeyFitResult & { rank: number };
+export type RankedRecommendation = CatalogKeyFitResult & { rank: number; selectionScore: number };
+
+export const ORIGINAL_KEY_SELECTION_WEIGHT = 0.65;
+export const ADJUSTED_KEY_SELECTION_WEIGHT = 0.35;
+export const KEY_SHIFT_SELECTION_PENALTIES = [0, 1, 3, 7, 12, 20, 30] as const;
+
+function roundScore(value: number): number {
+  return Math.round((value + Number.EPSILON) * 100) / 100;
+}
+
+export function calculateRecommendationSelectionScore(
+  candidate: Pick<CatalogKeyFitResult, "originalKeyScore" | "adjustedScore" | "recommendedShift">,
+): number {
+  const shiftPenalty = KEY_SHIFT_SELECTION_PENALTIES[Math.abs(candidate.recommendedShift)];
+  if (shiftPenalty === undefined) {
+    throw new RecommendationError("CATALOG_NOT_READY", "Recommended shift is outside the selection policy.", {
+      status: 503,
+      retryable: true,
+      details: { recommendedShift: candidate.recommendedShift },
+    });
+  }
+  return Math.max(
+    0,
+    ORIGINAL_KEY_SELECTION_WEIGHT * candidate.originalKeyScore +
+      ADJUSTED_KEY_SELECTION_WEIGHT * candidate.adjustedScore -
+      shiftPenalty,
+  );
+}
 
 function compareRecommendations(
-  first: CatalogKeyFitResult,
-  second: CatalogKeyFitResult,
+  first: CatalogKeyFitResult & { selectionScore: number },
+  second: CatalogKeyFitResult & { selectionScore: number },
 ): number {
   return (
-    second.adjustedScore - first.adjustedScore ||
+    second.selectionScore - first.selectionScore ||
     second.originalKeyScore - first.originalKeyScore ||
+    second.adjustedScore - first.adjustedScore ||
     Math.abs(first.recommendedShift) - Math.abs(second.recommendedShift) ||
     first.catalogOrder - second.catalogOrder
   );
@@ -52,10 +80,18 @@ export function rankTopRecommendations(
     seenOrders.add(candidate.catalogOrder);
   }
 
-  return [...candidates]
+  return candidates
+    .map((candidate) => ({
+      ...candidate,
+      selectionScore: calculateRecommendationSelectionScore(candidate),
+    }))
     .sort(compareRecommendations)
     .slice(0, RECOMMENDATION_RESULT_COUNT)
-    .map((candidate, index) => ({ ...candidate, rank: index + 1 }));
+    .map((candidate, index) => ({
+      ...candidate,
+      selectionScore: roundScore(candidate.selectionScore),
+      rank: index + 1,
+    }));
 }
 
 export function formatRecommendedShift(shift: number): string {

@@ -116,14 +116,15 @@ function round(value: number, decimalPlaces: number): number {
   return Object.is(rounded, -0) ? 0 : rounded;
 }
 
-function intervalOverlapRatio(
+function symmetricIntervalOverlapRatio(
   firstLow: number,
   firstHigh: number,
   secondLow: number,
   secondHigh: number,
 ): number {
   const overlap = Math.max(0, Math.min(firstHigh, secondHigh) - Math.max(firstLow, secondLow));
-  return clamp(overlap / (secondHigh - secondLow), 0, 1);
+  const combinedWidth = firstHigh - firstLow + secondHigh - secondLow;
+  return clamp((2 * overlap) / combinedWidth, 0, 1);
 }
 
 export function calculateProfileConfidence(user: KeyFitProfile): number {
@@ -149,7 +150,7 @@ export function scoreKeyFitCandidate(
   const shiftedMinimum = song.minMidi + shift;
   const shiftedMaximum = song.maxMidi + shift;
 
-  const tessituraOverlapRatio = intervalOverlapRatio(
+  const tessituraOverlapRatio = symmetricIntervalOverlapRatio(
     user.tessituraLowMidi,
     user.tessituraHighMidi,
     shiftedTessituraLow,
