@@ -128,3 +128,57 @@ test("failed Leemage deletion leaves a retryable cleanup record", async (context
     await prisma.$disconnect();
   }
 });
+
+test("the worker removes a pending Leemage asset after a successful retry", async (context) => {
+  if (!process.env.DATABASE_URL) {
+    context.skip("DATABASE_URL is not configured");
+    return;
+  }
+  const previousEnv = {
+    baseUrl: process.env.LEEMAGE_BASE_URL,
+    apiKey: process.env.LEEMAGE_API_KEY,
+    projectId: process.env.LEEMAGE_PROJECT_ID,
+  };
+  process.env.LEEMAGE_BASE_URL = "https://leemage.example/api/v1";
+  process.env.LEEMAGE_API_KEY = "test-key";
+  process.env.LEEMAGE_PROJECT_ID = "project";
+  const { prisma } = await import("../lib/db/prisma");
+  const { processOneMediaCleanup } = await import("../lib/leemage/cleanup");
+  const userId = `cleanup-owner-${crypto.randomUUID()}`;
+  let assetId: string | null = null;
+  try {
+    await prisma.user.create({
+      data: { id: userId, name: "Cleanup owner", email: `${userId}@example.test`, emailVerified: true },
+    });
+    const asset = await prisma.mediaAsset.create({
+      data: {
+        userId,
+        kind: "REFERENCE",
+        externalProjectId: "project",
+        externalFileId: `file-${userId}`,
+        externalUrl: "https://objects.example/file.wav",
+        fileName: "reference.wav",
+        mimeType: "audio/wav",
+        sizeBytes: BigInt(3),
+        status: "DELETE_PENDING",
+        cleanupJobs: { create: { status: "PENDING" } },
+      },
+    });
+    assetId = asset.id;
+    const fetchImpl: typeof fetch = async () => Response.json({ message: "deleted" });
+    assert.equal(await processOneMediaCleanup(fetchImpl), true);
+    assert.equal(await prisma.mediaAsset.findUnique({ where: { id: asset.id } }), null);
+    assert.equal(await prisma.mediaCleanupJob.count({ where: { mediaAssetId: asset.id } }), 0);
+  } finally {
+    if (previousEnv.baseUrl === undefined) delete process.env.LEEMAGE_BASE_URL;
+    else process.env.LEEMAGE_BASE_URL = previousEnv.baseUrl;
+    if (previousEnv.apiKey === undefined) delete process.env.LEEMAGE_API_KEY;
+    else process.env.LEEMAGE_API_KEY = previousEnv.apiKey;
+    if (previousEnv.projectId === undefined) delete process.env.LEEMAGE_PROJECT_ID;
+    else process.env.LEEMAGE_PROJECT_ID = previousEnv.projectId;
+    if (assetId) await prisma.mediaCleanupJob.deleteMany({ where: { mediaAssetId: assetId } });
+    await prisma.mediaAsset.deleteMany({ where: { userId } });
+    await prisma.user.deleteMany({ where: { id: userId } });
+    await prisma.$disconnect();
+  }
+});

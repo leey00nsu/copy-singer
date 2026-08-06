@@ -1,5 +1,7 @@
 export const runtime = "nodejs";
 
+import { devSvcEnabled, devSvcUnavailable } from "@/lib/dev-svc";
+
 function modalConfig() {
   const url = process.env.MODAL_API_URL?.replace(/\/$/, "");
   const key = process.env.MODAL_API_KEY;
@@ -8,6 +10,7 @@ function modalConfig() {
 }
 
 export async function POST(request: Request) {
+  if (!devSvcEnabled()) return devSvcUnavailable();
   const config = modalConfig();
   if (!config) {
     return Response.json(

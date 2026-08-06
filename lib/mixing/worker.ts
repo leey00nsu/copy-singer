@@ -8,6 +8,7 @@ import { SYNTHESIS_PRESET } from "@/lib/recommendation/synthesis-state";
 import { mixingLeaseSeconds, mixingPollIntervalMs } from "@/lib/config/server-env";
 import { applyTicketChange } from "@/lib/tickets/service";
 import { discardMediaAsset, storeMixingResult } from "@/lib/leemage/media-service";
+import { processOneMediaCleanup } from "@/lib/leemage/cleanup";
 
 type ModalJob = {
   id: string;
@@ -258,6 +259,7 @@ export async function reconcileRequiredRefunds(limit = 10) {
 
 export async function runMixingWorkerOnce(owner: string, dependencies: WorkerDependencies = {}) {
   await reconcileRequiredRefunds();
+  await processOneMediaCleanup(dependencies.fetchImpl);
   const jobId = await claimNextMixingJob(owner);
   if (!jobId) return false;
   await processClaimedMixingJob(jobId, owner, dependencies);

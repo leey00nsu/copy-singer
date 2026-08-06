@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 import { SingerWorkbench } from "@/components/singer-workbench";
+import { devSvcEnabled } from "@/lib/dev-svc";
 
 export const metadata: Metadata = {
   title: "SVC 개발 Workbench — Copy Singer",
@@ -8,6 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default function SvcDevelopmentPage() {
+  if (!devSvcEnabled()) notFound();
   return (
     <div>
       <div className="border-b border-amber-500/25 bg-amber-500/8 px-4 py-2 text-center text-xs text-amber-800">

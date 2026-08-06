@@ -1,5 +1,7 @@
 export const runtime = "nodejs";
 
+import { devSvcEnabled, devSvcUnavailable } from "@/lib/dev-svc";
+
 function modalConfig() {
   const url = process.env.MODAL_API_URL?.replace(/\/$/, "");
   const key = process.env.MODAL_API_KEY;
@@ -8,6 +10,7 @@ function modalConfig() {
 }
 
 export async function GET(_: Request, context: { params: Promise<{ id: string }> }) {
+  if (!devSvcEnabled()) return devSvcUnavailable();
   const config = modalConfig();
   if (!config) return Response.json({ detail: "Modal API is not configured." }, { status: 503 });
   const { id } = await context.params;
@@ -22,6 +25,7 @@ export async function GET(_: Request, context: { params: Promise<{ id: string }>
 }
 
 export async function DELETE(_: Request, context: { params: Promise<{ id: string }> }) {
+  if (!devSvcEnabled()) return devSvcUnavailable();
   const config = modalConfig();
   if (!config) return Response.json({ detail: "Modal API is not configured." }, { status: 503 });
   const { id } = await context.params;

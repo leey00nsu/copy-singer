@@ -127,16 +127,16 @@
     - [x] admin dashboard와 ticket adjustment dialog를 구현한다.
     - [x] 일반 사용자 차단, 조정 원장 actor/reason, 음수 잔액 방지 테스트를 추가한다.
 
-- [TODO][PRD-NFR-005] T-F008-auth-owned-mixing-queue-07 전체 파이프라인·보안·운영 문서 검증
+- [DOING][PRD-NFR-005] T-F008-auth-owned-mixing-queue-07 전체 파이프라인·보안·운영 문서 검증
   - Date: 2026-08-06
   - Acceptance:
     - 로컬 PostgreSQL, Google OAuth, 실제 Leemage와 mock Modal worker로 핵심 흐름이 검증된다.
     - secret·presigned URL이 클라이언트 응답과 로그에 노출되지 않고 모든 보호 API가 권한 검사를 통과한다.
     - 기존 profile·추천·개발 Workbench 회귀와 전체 품질 게이트가 통과한다.
   - Checklist:
-    - [ ] .env.example, README와 system architecture에 웹·worker·Leemage 운영법을 문서화한다.
+    - [x] .env.example, README와 system architecture에 웹·worker·Leemage 운영법을 문서화한다.
     - [ ] 실제 Leemage 업로드·삭제와 worker 종료/재시작 smoke test를 수행한다.
-    - [ ] Prisma validate, test, lint, TypeScript, build와 workflow audit을 통과한다.
+    - [x] Prisma validate, test, lint, TypeScript, build와 workflow audit을 통과한다.
 
 ## 완료 조건
 
@@ -165,5 +165,9 @@
 | `pnpm run test:recommendation` | `2026-08-06` | `PASS — 18 tests, queued mixing UI regression 포함` |
 | `pnpm run test:recommendation:db` | `2026-08-06` | `PASS — 3 legacy persistence/synthesis integration tests` |
 | `pnpm run test:admin` | `2026-08-06` | `PASS — allowlist, actor/reason ledger, negative guard, privacy-safe UI` |
+| `pnpm test` | `2026-08-06` | `PASS — production build와 profile·catalog·key fit·recommendation·auth·media·ticket·mixing·admin 전체 suite` |
+| `pnpm run db:validate && pnpm run db:status` | `2026-08-06` | `PASS — Prisma schema valid, 6 migrations applied, database up to date` |
+| `worker one-cycle smoke` | `2026-08-06` | `PASS — active job/cleanup 0건 확인 후 worker module load와 idle cycle 정상 종료` |
+| `pnpm run verify:feature-config` | `2026-08-06` | `BLOCKED — 로컬 .env.local에 Google OAuth·Leemage·admin 필수 외부 설정이 없어 실제 연동 smoke 보류` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-06T11:30:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-06T11:37:09.000Z -->

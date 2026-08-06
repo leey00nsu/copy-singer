@@ -1,23 +1,28 @@
 # Copy Singer
 
-Copy Singer analyzes a user's test singing, compares the resulting vocal profile with song profiles, recommends suitable songs and karaoke keys, and provides a SoulX-Singer voice-conversion demo. The current local implementation includes the SVC workbench and guided vocal-profile measurement.
+Copy Singer analyzes a signed-in user's test singing, compares the resulting vocal profile with song profiles, recommends suitable songs and karaoke keys, and provides a ticket-based SoulX-Singer voice-conversion demo. Google OAuth identifies users, Leemage stores reference and result audio, and a PostgreSQL-backed worker keeps mixing jobs running after the browser closes.
 
 ## Local setup
 
 ```bash
 pnpm install --frozen-lockfile
 cp .env.example .env.local
-# Set MODAL_API_KEY in .env.local when testing voice conversion.
+# Fill Google OAuth, Leemage, Modal, and admin values in .env.local.
 docker compose up -d --build
 pnpm run db:migrate:deploy
 pnpm run db:generate
 pnpm run dev
+# In another terminal:
+pnpm run worker:mixing
 ```
 
 Open:
 
 - `http://localhost:3000/` or `/profile` for the vocal-profile and recommendation flow;
-- `http://localhost:3000/dev/svc` for the developer SoulX-Singer workbench.
+- `http://localhost:3000/account` for ticket balance and ledger;
+- `http://localhost:3000/mixing-history` for durable jobs and results;
+- `http://localhost:3000/admin` for allowlisted operators;
+- `http://localhost:3000/dev/svc` for the developer SoulX-Singer workbench when `ENABLE_DEV_SVC=true` in development.
 
 For voice conversion, upload:
 
@@ -67,7 +72,51 @@ Create a new migration after changing `prisma/schema.prisma`:
 pnpm run db:migrate -- --name describe_your_change
 ```
 
-The analyzer stores uploaded source audio under `work/vocal-profiles/` and returns a 24-hour expiry timestamp. Deleting a profile through the UI removes both its database rows and analyzer recording. Automatic expiry cleanup is not included in this feature yet.
+The analyzer uses `work/vocal-profiles/` only as a short-lived handoff. After analysis, Next.js uploads the standardized WAV to Leemage, stores only `MediaAsset` metadata in PostgreSQL, and deletes the analyzer copy. Deleting a profile removes the Leemage object; failed external deletion is recorded for the mixing worker to retry.
+
+## Google OAuth, Leemage, and background mixing
+
+Create a Google OAuth web client and register this local redirect URI:
+
+```text
+http://localhost:3000/api/auth/callback/google
+```
+
+Create one Leemage project and an API key with the minimum permissions required to presign/confirm uploads, read project files, and delete files. Keep the key server-side. Fill these variables in `.env.local`:
+
+```dotenv
+BETTER_AUTH_SECRET=at-least-32-random-characters
+BETTER_AUTH_URL=http://localhost:3000
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+ADMIN_EMAILS=operator@example.com
+
+LEEMAGE_BASE_URL=https://leemage.leey00nsu.com/api/v1
+LEEMAGE_API_KEY=...
+LEEMAGE_PROJECT_ID=...
+
+SIGNUP_TICKET_GRANT=1
+MIXING_TICKET_COST=1
+MIXING_WORKER_CONCURRENCY=1
+MIXING_MAX_ATTEMPTS=3
+MIXING_LEASE_SECONDS=120
+MIXING_POLL_INTERVAL_MS=5000
+```
+
+Check configuration without printing secrets, then optionally upload and immediately delete one Leemage smoke file:
+
+```bash
+pnpm run verify:feature-config
+pnpm run verify:feature-config -- --leemage
+```
+
+Run the durable worker separately from Next.js:
+
+```bash
+pnpm run worker:mixing
+```
+
+The web request atomically spends `MIXING_TICKET_COST` and creates a PostgreSQL job. The worker claims jobs with a lease, downloads the private reference through its stored Leemage metadata, asks the analyzer for an ephemeral allowlisted song target, submits Modal, and copies successful results back to Leemage. Failures before Modal acceptance are refunded; failures after acceptance are not. Restarting the worker lets another process reclaim an expired lease and continue polling the same Modal job.
 
 ### Song catalog analysis
 
@@ -126,6 +175,16 @@ Deleting the named volume also deletes the local database and is intentionally n
 ```dotenv
 MODAL_API_URL=https://dbstndla1212--soulx-singer-svc-web.modal.run
 MODAL_API_KEY=the-value-stored-in-the-soulx-api-secret
+BETTER_AUTH_SECRET=at-least-32-random-characters
+BETTER_AUTH_URL=http://localhost:3000
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+ADMIN_EMAILS=operator@example.com
+LEEMAGE_BASE_URL=https://leemage.leey00nsu.com/api/v1
+LEEMAGE_API_KEY=your-leemage-api-key
+LEEMAGE_PROJECT_ID=your-leemage-project-id
+SIGNUP_TICKET_GRANT=1
+MIXING_TICKET_COST=1
 POSTGRES_DB=copy_singer
 POSTGRES_USER=copy_singer
 POSTGRES_PASSWORD=copy_singer_dev
@@ -137,6 +196,8 @@ DATABASE_URL=postgresql://copy_singer:copy_singer_dev@localhost:5433/copy_singer
 
 ```bash
 pnpm run dev
+pnpm run worker:mixing
+pnpm run verify:feature-config
 pnpm run build
 pnpm test
 pnpm run lint
@@ -164,6 +225,10 @@ app/                         Next.js pages and API proxy routes
 components/                  Vocal workbench and shadcn/ui components
 data/catalogs/               Versioned song metadata and analysis artifact
 lib/db/                      Server-only Prisma client
+lib/auth/                    Better Auth session and admin authorization
+lib/leemage/                 Leemage upload, delete, and cleanup lifecycle
+lib/mixing/                  Durable queue, worker, history, and result access
+lib/tickets/                 Atomic balance and append-only ticket ledger
 prisma/                      Prisma schema, migrations, and development seed
 scripts/                     Local database verification scripts
 services/soulx-singer-svc/   Modal GPU API deployment
