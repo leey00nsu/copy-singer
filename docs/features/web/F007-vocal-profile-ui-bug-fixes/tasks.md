@@ -85,16 +85,16 @@
     - [x] 실제 next dev WebM→analyzer→Prisma HTTP 201 및 DB cleanup을 검증한다.
     - [x] pnpm frozen install, lint, TypeScript, Python, 전체 테스트와 production build를 통과한다.
 
-- [TODO][PRD-FR-003][PRD-FR-021][PRD-DATA-005] T-F007-vocal-profile-ui-bug-fixes-03 시각화용 음정 분포 및 피치 추적 descriptor 추가
+- [DONE][PRD-FR-003][PRD-FR-021][PRD-DATA-005] T-F007-vocal-profile-ui-bug-fixes-03 시각화용 음정 분포 및 피치 추적 descriptor 추가
   - Date: 2026-08-06
   - Acceptance:
     - analyzer가 기존 음역 통계를 유지하면서 반음별 상대 빈도와 무성 구간을 보존한 bounded pitch series를 반환한다.
     - descriptor는 JSON으로 저장·조회되고 전체 원시 frame 배열이나 720개를 넘는 pitch point를 보관하지 않는다.
   - Checklist:
-    - [ ] histogram과 bounded pitch track 생성 함수를 구현한다.
-    - [ ] analyzer/API/TypeScript 계약에 구조화된 descriptor 타입을 반영한다.
-    - [ ] 실제 분석, 무성 구간, 최대 길이와 기존 통계 회귀 테스트를 통과한다.
-    - [ ] Docker analyzer에서 새 descriptor가 PostgreSQL을 거쳐 조회되는지 검증한다.
+    - [x] histogram과 bounded pitch track 생성 함수를 구현한다.
+    - [x] analyzer/API/TypeScript 계약에 구조화된 descriptor 타입을 반영한다.
+    - [x] 실제 분석, 무성 구간, 최대 길이와 기존 통계 회귀 테스트를 통과한다.
+    - [x] Docker analyzer에서 새 descriptor가 PostgreSQL을 거쳐 조회되는지 검증한다.
 
 - [TODO][PRD-US-002][PRD-US-008][PRD-FR-021] T-F007-vocal-profile-ui-bug-fixes-04 보컬 프로필 결과 시각화 UI 구현
   - Date: 2026-08-06
@@ -123,7 +123,7 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `services/vocal-profile-api/.venv/bin/python -m pytest services/vocal-profile-api/tests` | `2026-08-06` | `PASS — 20 tests, 실제 WebM/Opus parameterized MIME 포함` |
+| `services/vocal-profile-api/.venv/bin/python -m pytest services/vocal-profile-api/tests` | `2026-08-06` | `PASS — 21 tests, histogram·bounded pitch track·WebM/Opus 포함` |
 | `pnpm install --frozen-lockfile` | `2026-08-06` | `PASS — pnpm 11.9.0 lockfile 고정 설치 및 Prisma/esbuild build scripts 완료` |
 | `pnpm test` | `2026-08-06` | `PASS — Next production build, SSR 3, catalog 7, key-fit 18, recommendation 15` |
 | `pnpm run lint` | `2026-08-06` | `PASS` |
@@ -132,5 +132,6 @@
 | `pnpm dev 실제 HTTP WebM 프로필 저장` | `2026-08-06` | `PASS — HTTP 201, PostgreSQL 저장 및 DELETE cleanup` |
 | `pnpm start /api/vocal-profiles/health` | `2026-08-06` | `PASS — HTTP 200, analyzer/database ok` |
 | `Docker analyzer audio/webm;codecs=opus smoke test` | `2026-08-06` | `PASS — HTTP 200, mimeType audio/webm, 8초 Opus 분석 후 fixture 삭제` |
+| `Next HTTP visualization descriptor 저장 smoke test` | `2026-08-06` | `PASS — 5.4초 WebM, histogram 10 bins, track 466/720 points, 무성 구간 보존, DB cleanup` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-06T15:45:00+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-06T15:45:05+09:00 -->

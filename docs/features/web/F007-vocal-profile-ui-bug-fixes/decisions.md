@@ -52,5 +52,5 @@
 - **Trace**:
   - **요청 시점**: 첨부 UI를 기준으로 분석 데이터를 시각화하고 F007 안에서 진행하도록 사용자 요청.
   - **구현 전 확정 시점**: `pitchHistogram`, `pitchTrack` 계약과 기존 descriptor fallback을 spec/plan/tasks에 반영.
-  - **DONE 전 확정 시점**: 구현·검증 후 기록 예정.
+  - **DONE 전 확정 시점**: pYIN frame에서 반음 histogram과 최대 720 bucket의 pitch track을 생성하고 descriptor JSON으로 저장했다. 기존 5.4초 WebM의 실제 Next HTTP 분석에서 histogram 10 bins, track 466 points와 무성 구간을 확인하고 생성된 DB/recording fixture를 삭제했다.
 - **Consequences**: 새로 분석한 프로필은 상세 그래프를 제공하고 기존 프로필은 집계값과 재분석 안내를 제공한다. 내보내기와 외부 공유는 실제 제품 계약이 없어 제외한다.
