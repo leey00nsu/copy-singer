@@ -1,0 +1,86 @@
+# Implementation Plan: vocal-profile-ui-bug-fixes
+
+> 승인된 spec.md를 구현 SSOT로 사용합니다.
+
+---
+
+## 개요
+
+- **기능 ID**: F007
+- **대상 레포**: copy-singer-web
+- **작성일**: 2026-08-06
+- **상태**: Approved
+  - 값: Draft | Review | Approved
+
+---
+
+## 기술 스택
+
+| 구분 | 선택 | 이유 |
+| --- | --- | --- |
+| MIME 정규화 | Python 문자열 media type canonicalization | 외부 의존성 없이 `Content-Type` parameter를 분리하고 기존 allowlist를 재사용 |
+| 컨테이너 검증 | 기존 FFmpeg `standardize_audio` | 클라이언트 MIME을 신뢰하지 않고 실제 WebM/Opus 디코딩 가능 여부를 검증 |
+| API 회귀 테스트 | FastAPI TestClient + FFmpeg 생성 fixture | 브라우저와 같은 multipart MIME 및 실제 Opus payload를 analyzer 경계에서 검증 |
+| 전체 회귀 | pytest, TypeScript, ESLint, production build | 기존 보컬 프로필·추천·합성 흐름에 영향이 없는지 확인 |
+
+---
+
+## 원인과 수정 경계
+
+```text
+MediaRecorder
+  -> File.type = audio/webm;codecs=opus
+  -> browser FormData multipart part Content-Type 유지
+  -> Next route body/content-type streaming proxy
+  -> FastAPI UploadFile.content_type
+  -> 현재: ALLOWED_MIME_TYPES.get(full string) => None => HTTP 415
+  -> 수정: base media type 정규화 => audio/webm => allowlist
+  -> FFmpeg 실제 디코딩
+  -> librosa 분석 및 recording metadata 저장
+```
+
+Next route는 multipart body를 그대로 analyzer에 전달하므로 브라우저 MIME 정보가 사라지는 문제가 아니다. 수정 책임은 지원 형식을 판별하는 analyzer 입구에 둔다. `UploadFile.content_type`을 소문자화한 뒤 첫 `;` 앞의 base media type을 trim해 allowlist와 비교하고, 응답/DB metadata에도 정규화된 값을 사용한다.
+
+확장자만으로 허용하지 않는다. MIME이 허용되더라도 `standardize_audio`의 FFmpeg 디코딩이 실패하면 기존 `UNSUPPORTED_AUDIO` 오류를 유지한다.
+
+---
+
+## 파일 구조
+
+```text
+services/vocal-profile-api/
+├── app/main.py              # upload MIME 정규화 후 allowlist/metadata 적용
+└── tests/test_api.py        # parameterized WebM/Opus 및 손상 payload 회귀 테스트
+docs/features/web/F007-vocal-profile-ui-bug-fixes/
+├── spec.md
+├── plan.md
+├── tasks.md
+└── decisions.md
+```
+
+---
+
+## 테스트 전략
+
+- **재현 테스트**: `audio/webm;codecs=opus` multipart가 수정 전 HTTP 415임을 확인한다.
+- **API 통합 테스트**: 기존 guided WAV fixture를 FFmpeg로 WebM/Opus로 변환하고 parameterized MIME으로 `/v1/analyze`에 제출해 200과 정규화된 `audio/webm` metadata를 확인한다.
+- **보안·오류 회귀**: `text/plain`은 415, 허용 MIME을 사용한 손상 payload는 성공하지 않는지 확인한다.
+- **전체 회귀**: `python -m pytest services/vocal-profile-api/tests`, `npx tsc --noEmit`, `npm run lint`, `npm test`를 실행한다.
+- **로컬 UI 확인**: Docker analyzer 재빌드 후 브라우저 MediaRecorder 파일로 보컬 프로필 생성이 성공하는지 확인한다. 자동 테스트가 통과해도 사용자 수동 확인이 필요한 경우 구현 완료 결과에 명시한다.
+
+---
+
+## 위험과 대응
+
+- Content-Type parameter를 무시하면 위장 파일도 allowlist를 통과할 수 있지만, 성공 여부는 기존 FFmpeg 디코딩이 다시 검증한다.
+- parameter 전체를 DB에 저장하지 않아 codec 정보는 사라지지만 현재 계약은 컨테이너 MIME만 사용하며 원본 파일은 그대로 보존한다.
+- 테스트 fixture 생성은 서비스의 필수 런타임인 FFmpeg를 사용하므로 테스트 환경에서 FFmpeg 부재 시 명확히 실패하게 한다.
+- 이번 feature에서는 로컬 Docker 코드만 변경하며 배포하지 않는다.
+
+---
+
+## 관련 문서
+
+- Spec: [spec.md](./spec.md)
+- Tasks: [tasks.md](./tasks.md)
+- Decisions: [decisions.md](./decisions.md)
