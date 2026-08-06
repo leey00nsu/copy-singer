@@ -1,11 +1,15 @@
 export const runtime = "nodejs";
 
 import { prisma } from "@/lib/db/prisma";
-import type { Prisma } from "@/generated/prisma/client";
+import { RecordingKind, RecordingStatus, type Prisma } from "@/generated/prisma/client";
 import type { AnalyzerProfile } from "@/lib/vocal-profile/contract";
 import { analyzerUrl, deleteAnalyzerRecording, serializeProfile } from "@/lib/vocal-profile/server";
+import { requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
 
 export async function POST(request: Request) {
+  const session = await requireApiSession(request);
+  if (!session) return unauthorizedResponse();
+
   const url = analyzerUrl();
   if (!url) {
     return Response.json(
@@ -63,6 +67,7 @@ export async function POST(request: Request) {
   try {
     await prisma.vocalProfile.create({
       data: {
+        user: { connect: { id: session.user.id } },
         sourceType: "USER",
         minMidi: analyzed.minMidi,
         maxMidi: analyzed.maxMidi,
@@ -81,20 +86,20 @@ export async function POST(request: Request) {
         recording: {
           create: {
             id: recordingId,
-            kind: "USER_TEST",
+            kind: RecordingKind.USER_TEST,
             storagePath: analyzed.storagePath,
             mimeType: analyzed.mimeType,
             durationMs: analyzed.durationMs,
             sizeBytes: BigInt(analyzed.sizeBytes),
             sampleRate: analyzed.sampleRate,
-            status: "READY",
+            status: RecordingStatus.READY,
             expiresAt: new Date(analyzed.expiresAt),
           },
         },
       },
     });
     const profile = await prisma.vocalProfile.findFirstOrThrow({
-      where: { recordingId },
+      where: { recordingId, userId: session.user.id },
       include: { recording: true },
     });
     return Response.json(serializeProfile(profile), { status: 201 });

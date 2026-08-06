@@ -2,10 +2,15 @@ export const runtime = "nodejs";
 
 import { RecommendationError } from "@/lib/recommendation/contract";
 import { recommendationSynthesisAudio } from "@/lib/recommendation/synthesis";
+import { getRecommendationRun } from "@/lib/recommendation/server";
+import { requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
 
 export async function GET(request: Request, context: { params: Promise<{ id: string; itemId: string }> }) {
+  const session = await requireApiSession(request);
+  if (!session) return unauthorizedResponse();
   const { id, itemId } = await context.params;
   try {
+    await getRecommendationRun(id, session.user.id);
     const upstream = await recommendationSynthesisAudio(id, itemId, request.headers.get("Range"));
     const headers = new Headers();
     for (const name of ["Content-Type", "Content-Length", "Content-Range", "Accept-Ranges", "Content-Disposition"]) {

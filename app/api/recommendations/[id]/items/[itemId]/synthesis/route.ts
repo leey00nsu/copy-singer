@@ -2,6 +2,8 @@ export const runtime = "nodejs";
 
 import { RecommendationError } from "@/lib/recommendation/contract";
 import { startRecommendationSynthesis } from "@/lib/recommendation/synthesis";
+import { getRecommendationRun } from "@/lib/recommendation/server";
+import { requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
 
 function errorResponse(error: unknown) {
   if (error instanceof RecommendationError) {
@@ -11,6 +13,8 @@ function errorResponse(error: unknown) {
 }
 
 export async function POST(request: Request, context: { params: Promise<{ id: string; itemId: string }> }) {
+  const session = await requireApiSession(request);
+  if (!session) return unauthorizedResponse();
   let retry = false;
   try {
     const body = await request.json().catch(() => ({})) as { retry?: unknown };
@@ -20,6 +24,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
   }
   const { id, itemId } = await context.params;
   try {
+    await getRecommendationRun(id, session.user.id);
     return Response.json(await startRecommendationSynthesis(id, itemId, retry), { status: 202 });
   } catch (error) {
     return errorResponse(error);

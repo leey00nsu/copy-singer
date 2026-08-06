@@ -61,6 +61,7 @@ model Recording {
 
 model VocalProfile {
   id                 String                 @id @default(uuid()) @db.Uuid
+  userId             String?
   sourceType         VocalProfileSourceType
   recordingId        String                 @db.Uuid
   minMidi            Float?
@@ -80,10 +81,12 @@ model VocalProfile {
   createdAt          DateTime               @default(now())
   updatedAt          DateTime               @updatedAt
   recording          Recording              @relation(fields: [recordingId], references: [id], onDelete: Restrict)
+  user               User?                  @relation(fields: [userId], references: [id], onDelete: SetNull)
   song               Song?
   recommendationRuns RecommendationRun[]
 
   @@unique([recordingId, analyzer, analyzerVersion])
+  @@index([userId, createdAt])
   @@index([sourceType, createdAt])
 }
 
@@ -107,19 +110,22 @@ model Song {
 
 model RecommendationRun {
   id                 String               @id @default(uuid()) @db.Uuid
+  userId             String?
   userVocalProfileId String               @db.Uuid
   scoringVersion     String
   createdAt          DateTime             @default(now())
   userVocalProfile   VocalProfile         @relation(fields: [userVocalProfileId], references: [id], onDelete: Restrict)
+  user               User?                @relation(fields: [userId], references: [id], onDelete: SetNull)
   items              RecommendationItem[]
 
+  @@index([userId, createdAt])
   @@index([userVocalProfileId, createdAt])
 }
 
 model RecommendationItem {
-  id                   String             @id @default(uuid()) @db.Uuid
-  runId                String             @db.Uuid
-  songId               String             @db.Uuid
+  id                   String            @id @default(uuid()) @db.Uuid
+  runId                String            @db.Uuid
+  songId               String            @db.Uuid
   rank                 Int
   originalKeyScore     Float
   adjustedScore        Float
@@ -131,17 +137,76 @@ model RecommendationItem {
   synthesisErrorCode   String?
   synthesisErrorDetail String?
   synthesisRetryable   Boolean?
-  synthesisAttempts    Json               @default("[]")
+  synthesisAttempts    Json              @default("[]")
   synthesisStartedAt   DateTime?
   synthesisUpdatedAt   DateTime?
   synthesisCompletedAt DateTime?
   synthesisExpiresAt   DateTime?
-  createdAt            DateTime           @default(now())
-  run                  RecommendationRun  @relation(fields: [runId], references: [id], onDelete: Cascade)
-  song                 Song               @relation(fields: [songId], references: [id], onDelete: Restrict)
+  createdAt            DateTime          @default(now())
+  run                  RecommendationRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  song                 Song              @relation(fields: [songId], references: [id], onDelete: Restrict)
 
   @@unique([runId, rank])
   @@unique([runId, songId])
   @@index([songId])
   @@index([synthesisStatus, synthesisUpdatedAt])
+}
+
+model User {
+  id                 String              @id
+  name               String
+  email              String              @unique
+  emailVerified      Boolean             @default(false)
+  image              String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  sessions           Session[]
+  accounts           Account[]
+  vocalProfiles      VocalProfile[]
+  recommendationRuns RecommendationRun[]
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
 }

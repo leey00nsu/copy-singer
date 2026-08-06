@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { RecommendationResults } from "@/components/recommendation-results";
+import { requirePageSession } from "@/lib/auth/session";
 
 export const metadata: Metadata = {
   title: "내 노래 추천 순위 — Copy Singer",
@@ -7,5 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RecommendationPage({ params }: { params: Promise<{ id: string }> }) {
-  return <RecommendationResults runId={(await params).id} />;
+  const { id } = await params;
+  await requirePageSession(`/recommendations/${id}`);
+  return <RecommendationResults runId={id} />;
 }

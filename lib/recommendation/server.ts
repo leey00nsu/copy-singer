@@ -161,8 +161,10 @@ export function serializeRecommendationRun(run: StoredRun): RecommendationRunRes
   };
 }
 
-export async function createRecommendationRun(userVocalProfileId: string) {
-  const profileRow = await prisma.vocalProfile.findUnique({ where: { id: userVocalProfileId } });
+export async function createRecommendationRun(userVocalProfileId: string, userId?: string) {
+  const profileRow = await prisma.vocalProfile.findFirst({
+    where: { id: userVocalProfileId, ...(userId ? { userId } : {}) },
+  });
   if (!profileRow) {
     throw new RecommendationError("INVALID_PROFILE", "Vocal profile was not found.", { status: 404 });
   }
@@ -176,6 +178,7 @@ export async function createRecommendationRun(userVocalProfileId: string) {
   try {
     const run = await prisma.recommendationRun.create({
       data: {
+        userId,
         userVocalProfileId,
         scoringVersion: ranked[0]!.scoringVersion,
         items: {
@@ -207,8 +210,11 @@ export async function createRecommendationRun(userVocalProfileId: string) {
   }
 }
 
-export async function getRecommendationRun(id: string) {
-  const run = await prisma.recommendationRun.findUnique({ where: { id }, include: runInclude });
+export async function getRecommendationRun(id: string, userId?: string) {
+  const run = await prisma.recommendationRun.findFirst({
+    where: { id, ...(userId ? { userId } : {}) },
+    include: runInclude,
+  });
   if (!run) {
     throw new RecommendationError("RECOMMENDATION_NOT_FOUND", "Recommendation was not found.", {
       status: 404,
@@ -217,8 +223,11 @@ export async function getRecommendationRun(id: string) {
   return serializeRecommendationRun(run);
 }
 
-export async function deleteRecommendationRun(id: string) {
-  const run = await prisma.recommendationRun.findUnique({ where: { id }, select: { id: true } });
+export async function deleteRecommendationRun(id: string, userId?: string) {
+  const run = await prisma.recommendationRun.findFirst({
+    where: { id, ...(userId ? { userId } : {}) },
+    select: { id: true },
+  });
   if (!run) {
     throw new RecommendationError("RECOMMENDATION_NOT_FOUND", "Recommendation was not found.", {
       status: 404,

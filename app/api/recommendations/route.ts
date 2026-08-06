@@ -2,6 +2,7 @@ export const runtime = "nodejs";
 
 import { RecommendationError } from "@/lib/recommendation/contract";
 import { createRecommendationRun } from "@/lib/recommendation/server";
+import { requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -27,6 +28,9 @@ function errorResponse(error: unknown) {
 }
 
 export async function POST(request: Request) {
+  const session = await requireApiSession(request);
+  if (!session) return unauthorizedResponse();
+
   let body: unknown;
   try {
     body = await request.json();
@@ -41,7 +45,7 @@ export async function POST(request: Request) {
     return errorResponse(new RecommendationError("INVALID_REQUEST", "A valid userVocalProfileId is required.", { status: 400 }));
   }
   try {
-    return Response.json(await createRecommendationRun(userVocalProfileId), { status: 201 });
+    return Response.json(await createRecommendationRun(userVocalProfileId, session.user.id), { status: 201 });
   } catch (error) {
     return errorResponse(error);
   }

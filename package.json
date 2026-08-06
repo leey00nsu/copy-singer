@@ -27,12 +27,14 @@
     "test:catalog": "tsx --test tests/song-catalog.test.ts",
     "test:key-fit": "tsx --test tests/key-fit-scoring.test.ts",
     "test:recommendation": "tsx --test tests/recommendation-ranking.test.ts tests/recommendation-synthesis.test.ts tests/recommendation-ui.test.tsx",
-    "test:recommendation:db": "node --conditions react-server --import tsx --test tests/recommendation-persistence.integration.ts tests/recommendation-synthesis.integration.ts"
+    "test:recommendation:db": "node --conditions react-server --import tsx --test tests/recommendation-persistence.integration.ts tests/recommendation-synthesis.integration.ts",
+    "test:auth:db": "node --conditions react-server --import tsx --test tests/auth-ownership.integration.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
     "@prisma/adapter-pg": "7.9.1",
     "@prisma/client": "7.9.1",
+    "better-auth": "^1.6.26",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "17.4.2",

@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { headers } from "next/headers";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { UserMenu } from "@/components/auth/user-menu";
+import { getRequestSession } from "@/lib/auth/session";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -40,15 +42,23 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getRequestSession();
   return (
     <html lang="ko">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <TooltipProvider>{children}</TooltipProvider>
+        <TooltipProvider>
+          {session ? (
+            <div className="fixed right-4 top-4 z-50">
+              <UserMenu name={session.user.name} image={session.user.image} />
+            </div>
+          ) : null}
+          {children}
+        </TooltipProvider>
         <Toaster richColors position="bottom-right" />
       </body>
     </html>
