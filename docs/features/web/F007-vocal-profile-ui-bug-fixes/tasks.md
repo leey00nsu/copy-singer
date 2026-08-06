@@ -120,24 +120,24 @@
     - [x] 동의/미동의 긴 오디오 API 회귀와 기존 분석 테스트를 통과한다.
     - [x] 실제 로컬 브라우저에서 대화상자와 두 선택 경로를 검증한다.
 
-- [TODO][PRD-US-003][PRD-US-004][PRD-US-005][PRD-US-006][PRD-FR-008][PRD-FR-009][PRD-FR-010][PRD-FR-011][PRD-FR-018] T-F007-vocal-profile-ui-bug-fixes-06 원키 음색 데모 중심 추천 scoring v2
+- [DONE][PRD-US-003][PRD-US-004][PRD-US-005][PRD-US-006][PRD-FR-008][PRD-FR-009][PRD-FR-010][PRD-FR-011][PRD-FR-018] T-F007-vocal-profile-ui-bug-fixes-06 원키 음색 데모 중심 추천 scoring v2
   - Date: 2026-08-06
   - Acceptance:
     - 대칭 테시투라 겹침과 원키 중심 selection score로 좁은 곡·큰 shift 편향을 줄이면서 추천 노래방 키 계산을 유지한다.
     - 새 추천 실행은 key-fit-v2와 selection score를 저장하고 추천 카드는 결과를 원키 음색 데모로 명확히 표시한다.
   - Checklist:
-    - [ ] key-fit-v2 Dice overlap과 경계 회귀 테스트를 구현한다.
-    - [ ] 원키 65%·조정 35%·단계형 shift 감점 selection score와 결정적 tie-break를 구현한다.
-    - [ ] selection score 저장·조회 호환성과 원키 음색 데모 UI 문구를 반영한다.
-    - [ ] 실제 저장 profile fixture와 100곡 artifact에서 반복 1위 편향 감소를 검증한다.
-    - [ ] 전체 Node·Python·DB 회귀와 production build를 통과한다.
+    - [x] key-fit-v2 Dice overlap과 경계 회귀 테스트를 구현한다.
+    - [x] 원키 65%·조정 35%·단계형 shift 감점 selection score와 결정적 tie-break를 구현한다.
+    - [x] selection score 저장·조회 호환성과 원키 음색 데모 UI 문구를 반영한다.
+    - [x] 실제 저장 profile fixture와 100곡 artifact에서 반복 1위 편향 감소를 검증한다.
+    - [x] 전체 Node·Python·DB 회귀와 production build를 통과한다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -149,7 +149,7 @@
 | --- | --- | --- |
 | `services/vocal-profile-api/.venv/bin/python -m pytest services/vocal-profile-api/tests` | `2026-08-06` | `PASS — 23 tests, 긴 파일 미동의 413·선행 무음 제거·60초 WAV 보관 포함` |
 | `pnpm install --frozen-lockfile` | `2026-08-06` | `PASS — pnpm 11.9.0 lockfile 고정 설치 및 Prisma/esbuild build scripts 완료` |
-| `pnpm test` | `2026-08-06` | `PASS — Next production build, profile/긴 파일 5, catalog 7, key-fit 18, recommendation 15` |
+| `pnpm test` | `2026-08-06` | `PASS — Next production build, profile/긴 파일 5, catalog 7, key-fit-v2 19, recommendation 18` |
 | `pnpm run lint` | `2026-08-06` | `PASS` |
 | `pnpm exec tsc --noEmit` | `2026-08-06` | `PASS` |
 | `pnpm run test:recommendation:db` | `2026-08-06` | `PASS — 3 tests` |
@@ -159,5 +159,6 @@
 | `Next HTTP visualization descriptor 저장 smoke test` | `2026-08-06` | `PASS — 5.4초 WebM, histogram 10 bins, track 466/720 points, 무성 구간 보존, DB cleanup` |
 | `Browser desktop/mobile vocal profile visualization` | `2026-08-06` | `PASS — 실제 분석값 렌더링, 375px 가로 overflow 없음, validation fixture cleanup` |
 | `Browser 70초 MP3 자동 자르기` | `2026-08-06` | `PASS — 확인 modal 예/아니오, 상태 카드, Next HTTP 201, 결과 60.0초·22,050Hz, DB/source cleanup` |
+| `Next HTTP key-fit-v2 추천 smoke test` | `2026-08-06` | `PASS — 고음 실제 profile Top 3 잊었니/붉은 노을/천상연, selection score 저장, synthesis not_started, run cleanup` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-06T17:11:13+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-06T17:17:43+09:00 -->

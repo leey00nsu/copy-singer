@@ -86,5 +86,9 @@
 - **Trace**:
   - **변경 요청 시점**: 사용자는 피치 보정 없는 원음 중심 합성과 현재 추천식의 불일치를 지적하고 수정을 요청했다.
   - **구현 전 확인**: `아크라포빅` 테시투라는 4.4반음으로 100곡 최협이며 현재 DB의 비-seed 추천 2건에서 모두 1위였다. 기존 고음 실제 profile은 v2 시뮬레이션에서 원키 적합 곡이 1위로 변경됐다.
-  - **DONE 전 확정 시점**: 구현·검증 후 기록 예정.
+  - **DONE 전 확정 시점**: `key-fit-v2` Dice overlap과 원키 65%·조정 35%·단계형 shift 감점 selection score를 구현했다. 실제 저장 고음 profile의 Top 3는 `잊었니` 원키, `붉은 노을` 원키, `천상연` +2키로, 중간·넓은 profile은 `소녀`, `Lemon`, `죽일 놈`으로 분산됐다. Next HTTP 새 실행에 scoring version과 selection score가 저장·조회됐고 합성은 시작하지 않은 채 fixture run을 삭제했다.
+- **Evidence**:
+  - **Commit**: T-F007-06 태스크 커밋.
+  - **PR**: 로컬 workflow로 생성하지 않음.
+  - **Test/Log**: key-fit 19, recommendation 18, DB integration 3, Python 23, production build, TypeScript와 lint 통과. 실제 Next HTTP `key-fit-v2` run 생성·조회·cleanup 확인 (2026-08-06).
 - **Consequences**: 새 추천 실행은 기존 결과와 다른 순위를 가질 수 있어 scoring version을 올린다. 기존 `key-fit-v1` 실행 조회는 유지한다.
