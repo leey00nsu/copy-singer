@@ -66,6 +66,22 @@ enum TicketLedgerType {
   ADMIN_ADJUSTMENT
 }
 
+enum MixingJobStatus {
+  PENDING
+  PREPARING
+  SUBMITTED
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  CANCELED
+}
+
+enum TicketRefundState {
+  NONE
+  REQUIRED
+  REFUNDED
+}
+
 model Recording {
   id            String          @id @default(uuid()) @db.Uuid
   kind          RecordingKind
@@ -112,6 +128,7 @@ model VocalProfile {
   user               User?                  @relation(fields: [userId], references: [id], onDelete: SetNull)
   song               Song?
   recommendationRuns RecommendationRun[]
+  mixingJobs         MixingJob[]
 
   @@unique([recordingId, analyzer, analyzerVersion])
   @@index([userId, createdAt])
@@ -131,6 +148,7 @@ model Song {
   updatedAt           DateTime             @updatedAt
   vocalProfile        VocalProfile?        @relation(fields: [vocalProfileId], references: [id], onDelete: SetNull)
   recommendationItems RecommendationItem[]
+  mixingJobs          MixingJob[]
 
   @@unique([title, artist])
   @@index([analysisStatus, catalogOrder])
@@ -173,6 +191,7 @@ model RecommendationItem {
   createdAt            DateTime          @default(now())
   run                  RecommendationRun @relation(fields: [runId], references: [id], onDelete: Cascade)
   song                 Song              @relation(fields: [songId], references: [id], onDelete: Restrict)
+  mixingJobs           MixingJob[]
 
   @@unique([runId, rank])
   @@unique([runId, songId])
@@ -196,6 +215,7 @@ model User {
   mediaAssets        MediaAsset[]
   ticketLedgers      TicketLedger[]      @relation("TicketOwner")
   ticketActions      TicketLedger[]      @relation("TicketActor")
+  mixingJobs         MixingJob[]
 }
 
 model Session {
@@ -244,24 +264,26 @@ model Verification {
 }
 
 model MediaAsset {
-  id                String            @id @default(uuid()) @db.Uuid
-  userId            String
-  kind              MediaAssetKind
-  provider          String            @default("LEEMAGE")
-  externalProjectId String
-  externalFileId    String
-  externalUrl       String
-  fileName          String
-  mimeType          String
-  sizeBytes         BigInt
-  status            MediaAssetStatus  @default(READY)
-  lastError         String?
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
-  deletedAt         DateTime?
-  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  recording         Recording?
-  cleanupJobs       MediaCleanupJob[]
+  id                  String            @id @default(uuid()) @db.Uuid
+  userId              String
+  kind                MediaAssetKind
+  provider            String            @default("LEEMAGE")
+  externalProjectId   String
+  externalFileId      String
+  externalUrl         String
+  fileName            String
+  mimeType            String
+  sizeBytes           BigInt
+  status              MediaAssetStatus  @default(READY)
+  lastError           String?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  deletedAt           DateTime?
+  user                User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recording           Recording?
+  cleanupJobs         MediaCleanupJob[]
+  referenceMixingJobs MixingJob[]       @relation("MixingReference")
+  resultMixingJobs    MixingJob[]       @relation("MixingResult")
 
   @@unique([externalProjectId, externalFileId])
   @@index([userId, kind, createdAt])
@@ -295,8 +317,49 @@ model TicketLedger {
   createdAt      DateTime         @default(now())
   user           User             @relation("TicketOwner", fields: [userId], references: [id], onDelete: Cascade)
   actorUser      User?            @relation("TicketActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+  mixingJob      MixingJob?       @relation(fields: [mixingJobId], references: [id], onDelete: SetNull)
 
   @@index([userId, createdAt])
   @@index([mixingJobId])
   @@index([actorUserId, createdAt])
+}
+
+model MixingJob {
+  id                   String              @id @default(uuid()) @db.Uuid
+  userId               String
+  vocalProfileId       String              @db.Uuid
+  songId               String              @db.Uuid
+  recommendationItemId String?             @db.Uuid
+  referenceAssetId     String              @db.Uuid
+  resultAssetId        String?             @db.Uuid
+  status               MixingJobStatus     @default(PENDING)
+  ticketCost           Int
+  refundState          TicketRefundState   @default(NONE)
+  idempotencyKey       String
+  modalJobId           String?
+  attempts             Int                 @default(0)
+  maxAttempts          Int                 @default(3)
+  leaseOwner           String?
+  leaseExpiresAt       DateTime?
+  heartbeatAt          DateTime?
+  errorCode            String?
+  errorDetail          String?
+  submittedAt          DateTime?
+  startedAt            DateTime?
+  completedAt          DateTime?
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  user                 User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vocalProfile         VocalProfile        @relation(fields: [vocalProfileId], references: [id], onDelete: Restrict)
+  song                 Song                @relation(fields: [songId], references: [id], onDelete: Restrict)
+  recommendationItem   RecommendationItem? @relation(fields: [recommendationItemId], references: [id], onDelete: SetNull)
+  referenceAsset       MediaAsset          @relation("MixingReference", fields: [referenceAssetId], references: [id], onDelete: Restrict)
+  resultAsset          MediaAsset?         @relation("MixingResult", fields: [resultAssetId], references: [id], onDelete: SetNull)
+  ticketEntries        TicketLedger[]
+
+  @@unique([userId, idempotencyKey])
+  @@index([status, leaseExpiresAt, createdAt])
+  @@index([userId, createdAt])
+  @@index([recommendationItemId, createdAt])
+  @@index([modalJobId])
 }

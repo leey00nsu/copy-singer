@@ -94,16 +94,16 @@
     - [x] account API와 UI를 구현한다.
     - [x] grant/debit/refund 동시성 및 account UI 테스트를 추가한다.
 
-- [TODO][PRD-FR-031] T-F008-auth-owned-mixing-queue-04 PostgreSQL 영속 믹싱 큐와 백그라운드 worker 구현
+- [DONE][PRD-FR-031] T-F008-auth-owned-mixing-queue-04 PostgreSQL 영속 믹싱 큐와 백그라운드 worker 구현
   - Date: 2026-08-06
   - Acceptance:
     - 믹싱 접수와 티켓 차감이 단일 트랜잭션이며 중복 요청은 기존 job을 반환한다.
     - 별도 worker가 SKIP LOCKED와 lease로 job을 한 번만 처리하고 재시작 후 복구한다.
     - Modal 접수 전 실패만 자동 환불되고 접수 이후 실패는 환불되지 않는다.
   - Checklist:
-    - [ ] MixingJob 상태·lease·refund schema와 접수 API를 구현한다.
-    - [ ] claim/heartbeat/resume/attempt를 갖는 worker와 실행 script를 구현한다.
-    - [ ] 동시 claim, lease recovery, 실패 경계, temp cleanup 통합 테스트를 추가한다.
+    - [x] MixingJob 상태·lease·refund schema와 접수 API를 구현한다.
+    - [x] claim/heartbeat/resume/attempt를 갖는 worker와 실행 script를 구현한다.
+    - [x] 동시 claim, lease recovery, 실패 경계, temp cleanup 통합 테스트를 추가한다.
 
 - [TODO][PRD-FR-028] T-F008-auth-owned-mixing-queue-05 Leemage 결과 저장과 독립 믹싱 히스토리 구현
   - Date: 2026-08-06
@@ -153,12 +153,13 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm run db:migrate:deploy && pnpm run db:status` | `2026-08-06` | `PASS — auth·Leemage media·ticket ledger migration 적용, schema up to date` |
+| `pnpm run db:migrate:deploy && pnpm run db:status` | `2026-08-06` | `PASS — auth·media·ticket·durable mixing queue migration 적용, schema up to date` |
 | `pnpm run test:auth:db` | `2026-08-06` | `PASS — owner 1건, cross-user 0건, fixture cleanup` |
 | `pnpm exec tsc --noEmit && pnpm run lint` | `2026-08-06` | `PASS` |
 | `pnpm run build` | `2026-08-06` | `PASS — Better Auth route와 보호 page 포함` |
 | `로컬 HTTP auth smoke test` | `2026-08-06` | `PASS — / 307→login, /login 200, 비로그인 recommendation POST 401` |
 | `pnpm run test:media` | `2026-08-06` | `PASS — 4 tests: presign/upload/confirm, 429 retry, user ownership, cleanup fallback` |
 | `pnpm run test:tickets` | `2026-08-06` | `PASS — UI 1 + PostgreSQL concurrency/idempotency 1` |
+| `pnpm run test:mixing:db` | `2026-08-06` | `PASS — idempotent enqueue, SKIP LOCKED claim, lease recovery, refund boundary` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-06T11:12:30.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-06T11:19:30.000Z -->

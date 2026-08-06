@@ -18,3 +18,19 @@ export function signupTicketGrant() {
 export function mixingTicketCost() {
   return integerEnv("MIXING_TICKET_COST", 1, { min: 0, max: 1_000 });
 }
+
+export function mixingWorkerConcurrency() {
+  return integerEnv("MIXING_WORKER_CONCURRENCY", 1, { min: 1, max: 32 });
+}
+
+export function mixingMaxAttempts() {
+  return integerEnv("MIXING_MAX_ATTEMPTS", 3, { min: 1, max: 20 });
+}
+
+export function mixingLeaseSeconds() {
+  return integerEnv("MIXING_LEASE_SECONDS", 120, { min: 30, max: 3_600 });
+}
+
+export function mixingPollIntervalMs() {
+  return integerEnv("MIXING_POLL_INTERVAL_MS", 5_000, { min: 100, max: 60_000 });
+}

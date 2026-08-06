@@ -10,6 +10,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "worker:mixing": "tsx scripts/mixing-worker.ts",
     "test": "pnpm run build && tsx --test tests/vocal-profile-contract.test.ts tests/vocal-profile-visualization.test.ts tests/long-audio-upload.test.ts && pnpm run test:catalog && pnpm run test:key-fit && pnpm run test:recommendation",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:validate": "prisma validate",
@@ -30,7 +31,8 @@
     "test:recommendation:db": "node --conditions react-server --import tsx --test tests/recommendation-persistence.integration.ts tests/recommendation-synthesis.integration.ts",
     "test:auth:db": "node --conditions react-server --import tsx --test tests/auth-ownership.integration.ts",
     "test:media": "node --conditions react-server --import tsx --test tests/leemage-client.test.ts tests/leemage-media.integration.ts",
-    "test:tickets": "tsx --test tests/ticket-ledger-ui.test.tsx && node --conditions react-server --import tsx --test tests/ticket-ledger.integration.ts"
+    "test:tickets": "tsx --test tests/ticket-ledger-ui.test.tsx && node --conditions react-server --import tsx --test tests/ticket-ledger.integration.ts",
+    "test:mixing:db": "node --conditions react-server --import tsx --test tests/mixing-queue.integration.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
