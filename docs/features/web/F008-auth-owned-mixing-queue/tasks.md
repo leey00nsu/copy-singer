@@ -83,16 +83,16 @@
     - [x] MediaAsset·cleanup 모델과 profile 생성/삭제 흐름을 migration한다.
     - [x] mock Leemage 계약·부분 실패·정리·소유권 테스트를 추가한다.
 
-- [TODO][PRD-FR-030] T-F008-auth-owned-mixing-queue-03 티켓 잔액·불변 원장·마이 페이지 구현
+- [DONE][PRD-FR-030] T-F008-auth-owned-mixing-queue-03 티켓 잔액·불변 원장·마이 페이지 구현
   - Date: 2026-08-06
   - Acceptance:
     - 신규 사용자는 env 지급량을 정확히 한 번 받고 모든 변동이 잔액과 원장에 원자적으로 반영된다.
     - 사용자는 account에서 현재 잔액과 페이지네이션된 지급·사용·환불·조정 내역을 확인한다.
     - 동시 차감과 중복 idempotency key에서도 음수 잔액·중복 원장이 발생하지 않는다.
   - Checklist:
-    - [ ] ticket balance/ledger schema, domain service와 signup grant 복구를 구현한다.
-    - [ ] account API와 UI를 구현한다.
-    - [ ] grant/debit/refund 동시성 및 account UI 테스트를 추가한다.
+    - [x] ticket balance/ledger schema, domain service와 signup grant 복구를 구현한다.
+    - [x] account API와 UI를 구현한다.
+    - [x] grant/debit/refund 동시성 및 account UI 테스트를 추가한다.
 
 - [TODO][PRD-FR-031] T-F008-auth-owned-mixing-queue-04 PostgreSQL 영속 믹싱 큐와 백그라운드 worker 구현
   - Date: 2026-08-06
@@ -153,11 +153,12 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm run db:migrate:deploy && pnpm run db:status` | `2026-08-06` | `PASS — auth ownership·Leemage media migration 적용, schema up to date` |
+| `pnpm run db:migrate:deploy && pnpm run db:status` | `2026-08-06` | `PASS — auth·Leemage media·ticket ledger migration 적용, schema up to date` |
 | `pnpm run test:auth:db` | `2026-08-06` | `PASS — owner 1건, cross-user 0건, fixture cleanup` |
 | `pnpm exec tsc --noEmit && pnpm run lint` | `2026-08-06` | `PASS` |
 | `pnpm run build` | `2026-08-06` | `PASS — Better Auth route와 보호 page 포함` |
 | `로컬 HTTP auth smoke test` | `2026-08-06` | `PASS — / 307→login, /login 200, 비로그인 recommendation POST 401` |
 | `pnpm run test:media` | `2026-08-06` | `PASS — 4 tests: presign/upload/confirm, 429 retry, user ownership, cleanup fallback` |
+| `pnpm run test:tickets` | `2026-08-06` | `PASS — UI 1 + PostgreSQL concurrency/idempotency 1` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-06T11:08:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-06T11:12:30.000Z -->

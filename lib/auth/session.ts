@@ -3,11 +3,14 @@ import "server-only";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth/auth";
+import { ensureSignupGrant } from "@/lib/tickets/service";
 
 export type AuthSession = typeof auth.$Infer.Session;
 
 export async function getRequestSession(request?: Request) {
-  return auth.api.getSession({ headers: request?.headers ?? (await headers()) });
+  const session = await auth.api.getSession({ headers: request?.headers ?? (await headers()) });
+  if (session) await ensureSignupGrant(session.user.id);
+  return session;
 }
 
 export async function requirePageSession(returnTo = "/") {
@@ -19,7 +22,9 @@ export async function requirePageSession(returnTo = "/") {
 }
 
 export async function requireApiSession(request: Request) {
-  return auth.api.getSession({ headers: request.headers });
+  const session = await auth.api.getSession({ headers: request.headers });
+  if (session) await ensureSignupGrant(session.user.id);
+  return session;
 }
 
 export function unauthorizedResponse() {

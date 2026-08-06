@@ -59,6 +59,13 @@ enum MediaCleanupStatus {
   FAILED
 }
 
+enum TicketLedgerType {
+  SIGNUP_GRANT
+  MIXING_DEBIT
+  MIXING_REFUND
+  ADMIN_ADJUSTMENT
+}
+
 model Recording {
   id            String          @id @default(uuid()) @db.Uuid
   kind          RecordingKind
@@ -181,11 +188,14 @@ model User {
   image              String?
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
+  ticketBalance      Int                 @default(0)
   sessions           Session[]
   accounts           Account[]
   vocalProfiles      VocalProfile[]
   recommendationRuns RecommendationRun[]
   mediaAssets        MediaAsset[]
+  ticketLedgers      TicketLedger[]      @relation("TicketOwner")
+  ticketActions      TicketLedger[]      @relation("TicketActor")
 }
 
 model Session {
@@ -270,4 +280,23 @@ model MediaCleanupJob {
   mediaAsset    MediaAsset         @relation(fields: [mediaAssetId], references: [id], onDelete: Cascade)
 
   @@index([status, nextAttemptAt])
+}
+
+model TicketLedger {
+  id             String           @id @default(uuid()) @db.Uuid
+  userId         String
+  type           TicketLedgerType
+  amount         Int
+  balanceAfter   Int
+  idempotencyKey String           @unique
+  mixingJobId    String?          @db.Uuid
+  actorUserId    String?
+  reason         String
+  createdAt      DateTime         @default(now())
+  user           User             @relation("TicketOwner", fields: [userId], references: [id], onDelete: Cascade)
+  actorUser      User?            @relation("TicketActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([mixingJobId])
+  @@index([actorUserId, createdAt])
 }

@@ -67,10 +67,10 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 티켓·소유권·작업 상태를 한 트랜잭션에서 처리하고 현재 로컬 인프라만으로 내구성과 경쟁 제어를 제공한다.
 - **Trace**:
   - **DOING 시작 시점**: 작업 상태와 결제 경계가 제품 도메인이라 범용 queue payload와 별도 상태 복제를 피하는 방향으로 계획했다.
-  - **DONE 전 확정 시점**: 구현 태스크 완료 시 갱신한다.
+  - **DONE 전 확정 시점**: `User.ticketBalance`와 `TicketLedger` migration, Serializable transaction 기반 `applyTicketChange`, Better Auth create hook과 session 복구 grant를 구현했다. 동시 transaction의 PostgreSQL serialization conflict는 최대 3회 재시도하고 idempotency unique 충돌은 기존 원장을 반환한다. account 화면은 서버 페이지네이션된 원장과 현재 잔액을 표시한다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
-  - **Commit**: 구현 커밋에서 갱신
+  - **Commit**: T03 task commit
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: 동시 claim·lease recovery 통합 테스트에서 갱신
 - **Consequences**: worker 프로세스를 웹과 별도로 실행해야 하고 raw SQL claim 경계를 집중 테스트해야 한다.
@@ -91,5 +91,5 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**:
   - **Commit**: 구현 커밋에서 갱신
   - **PR**: local workflow — 해당 없음
-  - **Test/Log**: 동시 debit·중복 request 통합 테스트에서 갱신
+  - **Test/Log**: `pnpm run test:tickets` — 동시 가입 grant 1건, 동시 duplicate debit 1건, 음수 잔액 차단, ledger UI
 - **Consequences**: 모든 잔액 변경은 서비스 계층을 통과해야 하며 정합성 검증 도구가 필요하다.
