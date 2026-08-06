@@ -60,7 +60,8 @@
     "default": "skip",
     "requireCheckCategories": [
       "spec_approve",
-      "implementation_approve"
+      "implementation_approve",
+      "local_merge"
     ]
   }
 }
