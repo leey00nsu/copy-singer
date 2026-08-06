@@ -7,8 +7,13 @@ from .analysis import AnalysisRejectedError
 from .config import DEFAULT_ANALYSIS_CONFIG
 
 
-async def standardize_audio(source_path: Path, output_path: Path) -> None:
-    process = await asyncio.create_subprocess_exec(
+async def standardize_audio(
+    source_path: Path,
+    output_path: Path,
+    *,
+    trim_to_max_duration: bool = False,
+) -> None:
+    command = [
         "ffmpeg",
         "-hide_banner",
         "-loglevel",
@@ -17,13 +22,32 @@ async def standardize_audio(source_path: Path, output_path: Path) -> None:
         "-y",
         "-i",
         str(source_path),
-        "-ac",
-        "1",
-        "-ar",
-        str(DEFAULT_ANALYSIS_CONFIG.sample_rate),
-        "-c:a",
-        "pcm_f32le",
-        str(output_path),
+    ]
+    if trim_to_max_duration:
+        command.extend(
+            [
+                "-af",
+                (
+                    "silenceremove=start_periods=1:start_duration=0.05:"
+                    f"start_threshold={DEFAULT_ANALYSIS_CONFIG.min_rms_db:g}dB"
+                ),
+                "-t",
+                str(DEFAULT_ANALYSIS_CONFIG.max_duration_seconds),
+            ]
+        )
+    command.extend(
+        [
+            "-ac",
+            "1",
+            "-ar",
+            str(DEFAULT_ANALYSIS_CONFIG.sample_rate),
+            "-c:a",
+            "pcm_f32le",
+            str(output_path),
+        ]
+    )
+    process = await asyncio.create_subprocess_exec(
+        *command,
         stdout=asyncio.subprocess.DEVNULL,
         stderr=asyncio.subprocess.PIPE,
     )

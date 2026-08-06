@@ -179,6 +179,7 @@ async def analyze(
     melody_end_ms: Annotated[int | None, Form()] = None,
     glissando_start_ms: Annotated[int | None, Form()] = None,
     glissando_end_ms: Annotated[int | None, Form()] = None,
+    trim_to_max_duration: Annotated[bool, Form()] = False,
 ) -> AnalyzerResponse:
     mime_type = (audio.content_type or "").partition(";")[0].strip().lower()
     suffix = ALLOWED_MIME_TYPES.get(mime_type)
@@ -189,19 +190,26 @@ async def analyze(
     if directory.exists():
         shutil.rmtree(directory)
     directory.mkdir(parents=True)
-    source_path = directory / f"source{suffix}"
-    analysis_path = directory / "analysis.wav"
+    upload_path = directory / (f"upload{suffix}" if trim_to_max_duration else f"source{suffix}")
+    source_path = directory / "source.wav" if trim_to_max_duration else upload_path
+    analysis_path = source_path if trim_to_max_duration else directory / "analysis.wav"
     size_bytes = 0
 
     try:
-        with source_path.open("wb") as output:
+        with upload_path.open("wb") as output:
             while chunk := await audio.read(UPLOAD_CHUNK_BYTES):
                 size_bytes += len(chunk)
                 if size_bytes > MAX_UPLOAD_BYTES:
                     raise AnalysisRejectedError("PAYLOAD_TOO_LARGE", "Audio must be 25 MB or smaller.")
                 output.write(chunk)
 
-        await standardize_audio(source_path, analysis_path)
+        await standardize_audio(
+            upload_path,
+            analysis_path,
+            trim_to_max_duration=trim_to_max_duration,
+        )
+        if trim_to_max_duration:
+            upload_path.unlink(missing_ok=True)
         segment_values = (
             melody_start_ms,
             melody_end_ms,
@@ -223,11 +231,19 @@ async def analyze(
         result = analyze_wav(analysis_path, segments)
         expires_at = datetime.now(UTC) + timedelta(hours=SOURCE_TTL_HOURS)
         data = result.to_dict()
+        if trim_to_max_duration:
+            data["descriptors"].update(
+                {
+                    "trimmedFromLongFile": True,
+                    "trimStartPolicy": "first-audible--45db",
+                    "trimMaxDurationMs": 60_000,
+                }
+            )
         return AnalyzerResponse(
             recordingId=recording_id,
             storagePath=f"{recording_id}/{source_path.name}",
-            mimeType=mime_type,
-            sizeBytes=size_bytes,
+            mimeType="audio/wav" if trim_to_max_duration else mime_type,
+            sizeBytes=source_path.stat().st_size,
             expiresAt=expires_at.isoformat(),
             durationMs=data.pop("duration_ms"),
             sampleRate=data.pop("sample_rate"),
@@ -251,7 +267,8 @@ async def analyze(
         raise
     finally:
         await audio.close()
-        analysis_path.unlink(missing_ok=True)
+        if analysis_path != source_path:
+            analysis_path.unlink(missing_ok=True)
 
 
 @app.delete("/v1/recordings/{recording_id}", response_model=DeleteResponse)

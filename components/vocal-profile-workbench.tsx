@@ -7,8 +7,10 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { LongAudioDialog } from "@/components/long-audio-dialog";
 import { Progress } from "@/components/ui/progress";
 import { VocalProfileResults } from "@/components/vocal-profile-results";
+import { isLongProfileAudio, readAudioDuration } from "@/lib/vocal-profile/audio-file";
 import type { VocalProfileError, VocalProfileResponse } from "@/lib/vocal-profile/contract";
 
 const MAX_PROFILE_AUDIO_BYTES = 25 * 1024 * 1024;
@@ -20,7 +22,7 @@ const RECOMMENDED_RECORDING_MS = 30_000;
 
 const ERROR_GUIDANCE: Record<string, { title: string; action: string }> = {
   TOO_SHORT: { title: "녹음이 너무 짧아요", action: "5초 이상 노래한 뒤 다시 시도해주세요." },
-  TOO_LONG: { title: "녹음이 너무 길어요", action: "60초 이하 구간으로 잘라 다시 올려주세요." },
+  TOO_LONG: { title: "녹음이 너무 길어요", action: "파일을 다시 선택한 뒤 자동 자르기에 동의해주세요." },
   TOO_SILENT: { title: "목소리가 너무 작아요", action: "마이크에 조금 가까이 다가가 반주 없이 더 크게 불러주세요." },
   EXCESSIVE_CLIPPING: { title: "소리가 찌그러졌어요", action: "마이크에서 조금 멀어지거나 입력 음량을 낮춰주세요." },
   LOW_VOICED_RATIO: { title: "노래 음정을 충분히 찾지 못했어요", action: "말소리보다 모음 ‘아’로 길게, 반주 없이 다시 불러주세요." },
@@ -55,6 +57,10 @@ export function VocalProfileWorkbench() {
   const [phase, setPhase] = useState<CapturePhase>("idle");
   const [elapsedMs, setElapsedMs] = useState(0);
   const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [audioDuration, setAudioDuration] = useState<number | null>(null);
+  const [pendingLongFile, setPendingLongFile] = useState<File | null>(null);
+  const [pendingLongDuration, setPendingLongDuration] = useState<number | null>(null);
+  const [trimToMaxDuration, setTrimToMaxDuration] = useState(false);
   const [health, setHealth] = useState<ServiceHealth>("checking");
   const [analyzing, setAnalyzing] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -102,6 +108,10 @@ export function VocalProfileWorkbench() {
 
   const resetAudio = () => {
     setAudioFile(null);
+    setAudioDuration(null);
+    setPendingLongFile(null);
+    setPendingLongDuration(null);
+    setTrimToMaxDuration(false);
     setAnalysisError(null);
     setElapsedMs(0);
     setPhase("idle");
@@ -137,6 +147,8 @@ export function VocalProfileWorkbench() {
         const blob = new Blob(chunksRef.current, { type: finalType });
         if (blob.size > 0) {
           setAudioFile(new File([blob], `song-verse-vocal-profile.${extensionForMimeType(finalType)}`, { type: finalType }));
+          setAudioDuration(null);
+          setTrimToMaxDuration(false);
           toast.success("테스트 녹음이 준비됐습니다.");
         }
         recorderRef.current = null;
@@ -161,13 +173,42 @@ export function VocalProfileWorkbench() {
     }
   };
 
-  const selectFile = (file: File | null) => {
+  const selectFile = async (file: File | null) => {
     if (!file) return;
     if (file.size > MAX_PROFILE_AUDIO_BYTES) {
       toast.error("테스트 오디오는 25MB 이하여야 합니다.");
       return;
     }
+    let duration: number | null = null;
+    try {
+      duration = await readAudioDuration(file);
+    } catch {
+      // The analyzer remains the source of truth when browser metadata is unavailable.
+    }
+    if (duration !== null && isLongProfileAudio(duration)) {
+      setPendingLongFile(file);
+      setPendingLongDuration(duration);
+      return;
+    }
     setAudioFile(file);
+    setAudioDuration(duration);
+    setTrimToMaxDuration(false);
+    setPhase("idle");
+    setAnalysisError(null);
+  };
+
+  const cancelLongAudio = useCallback(() => {
+    setPendingLongFile(null);
+    setPendingLongDuration(null);
+  }, []);
+
+  const confirmLongAudio = () => {
+    if (!pendingLongFile) return;
+    setAudioFile(pendingLongFile);
+    setAudioDuration(pendingLongDuration);
+    setTrimToMaxDuration(true);
+    setPendingLongFile(null);
+    setPendingLongDuration(null);
     setPhase("idle");
     setAnalysisError(null);
   };
@@ -178,6 +219,7 @@ export function VocalProfileWorkbench() {
     setAnalysisError(null);
     const body = new FormData();
     body.append("audio", audioFile, audioFile.name);
+    if (trimToMaxDuration) body.append("trim_to_max_duration", "true");
     try {
       const response = await fetch("/api/vocal-profiles", { method: "POST", body });
       const payload: unknown = await response.json().catch(() => null);
@@ -202,6 +244,8 @@ export function VocalProfileWorkbench() {
       if (!response.ok) throw profileError(payload);
       setProfile(null);
       setAudioFile(null);
+      setAudioDuration(null);
+      setTrimToMaxDuration(false);
       toast.success("프로필과 원본 녹음을 삭제했습니다.");
     } catch (error) {
       setAnalysisError(profileError(error));
@@ -244,6 +288,14 @@ export function VocalProfileWorkbench() {
 
   return (
     <main className="min-h-screen bg-background">
+      {pendingLongFile ? (
+        <LongAudioDialog
+          durationSeconds={pendingLongDuration}
+          fileName={pendingLongFile.name}
+          onCancel={cancelLongAudio}
+          onConfirm={confirmLongAudio}
+        />
+      ) : null}
       <header className="site-header">
         <div className="page-shell flex h-16 items-center justify-between">
           <div className="flex items-center gap-3">
@@ -292,7 +344,7 @@ export function VocalProfileWorkbench() {
                 </div>
               ) : audioFile && audioUrl ? (
                 <div className="rounded-2xl border p-4">
-                  <div className="flex items-center gap-3"><span className="flex size-10 items-center justify-center rounded-full bg-secondary"><FileAudio className="size-5" /></span><div className="min-w-0"><p className="truncate text-sm font-medium">{audioFile.name}</p><p className="text-xs text-muted-foreground">{(audioFile.size / 1024 / 1024).toFixed(1)} MB · 노래 한 소절</p></div></div>
+                  <div className="flex items-center gap-3"><span className="flex size-10 items-center justify-center rounded-full bg-secondary"><FileAudio className="size-5" /></span><div className="min-w-0"><p className="truncate text-sm font-medium">{audioFile.name}</p><p className="text-xs text-muted-foreground">{(audioFile.size / 1024 / 1024).toFixed(1)} MB{audioDuration !== null ? ` · 약 ${Math.ceil(audioDuration)}초` : ""}</p>{trimToMaxDuration ? <p className="mt-1 text-xs font-medium text-primary">첫 음부터 최대 60초 자동 자르기</p> : null}</div></div>
                   {/* Audio-only user recording does not have a meaningful caption track. */}
                   {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
                   <audio className="mt-4 w-full" controls src={audioUrl} />
@@ -305,7 +357,7 @@ export function VocalProfileWorkbench() {
               ) : (
                 <div className="grid gap-3">
                   <Button onClick={() => void beginRecording()} size="lg"><Mic className="size-4" /> 마이크로 녹음</Button>
-                  <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed px-4 py-3 text-sm font-medium hover:bg-muted/50"><Upload className="size-4" /> 오디오 파일 업로드<input accept={ACCEPTED_AUDIO} className="sr-only" onChange={(event) => selectFile(event.target.files?.[0] ?? null)} type="file" /></label>
+                  <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed px-4 py-3 text-sm font-medium hover:bg-muted/50"><Upload className="size-4" /> 오디오 파일 업로드<input accept={ACCEPTED_AUDIO} className="sr-only" onChange={(event) => { const file = event.target.files?.[0] ?? null; event.target.value = ""; void selectFile(file); }} type="file" /></label>
                   <p className="text-center text-xs text-muted-foreground">WAV, MP3, M4A, WebM · 최대 25MB / 60초</p>
                 </div>
               )}

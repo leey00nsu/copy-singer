@@ -10,7 +10,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "pnpm run build && tsx --test tests/vocal-profile-contract.test.ts tests/vocal-profile-visualization.test.ts && pnpm run test:catalog && pnpm run test:key-fit && pnpm run test:recommendation",
+    "test": "pnpm run build && tsx --test tests/vocal-profile-contract.test.ts tests/vocal-profile-visualization.test.ts tests/long-audio-upload.test.ts && pnpm run test:catalog && pnpm run test:key-fit && pnpm run test:recommendation",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:validate": "prisma validate",
     "db:generate": "prisma generate",

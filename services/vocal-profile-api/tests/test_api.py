@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from io import BytesIO
 import subprocess
 from uuid import uuid4
 
@@ -51,6 +52,13 @@ def _webm_opus(source, output) -> None:
         ],
         check=True,
     )
+
+
+def _long_wav(path) -> None:
+    silence = np.zeros(round(SAMPLE_RATE * 5))
+    time = np.arange(round(SAMPLE_RATE * 65)) / SAMPLE_RATE
+    voice = 0.25 * np.sin(2 * np.pi * 220 * time)
+    sf.write(path, np.concatenate([silence, voice]), SAMPLE_RATE)
 
 
 def test_health_analyze_and_delete(tmp_path, monkeypatch) -> None:
@@ -163,6 +171,62 @@ def test_rejects_payload_over_limit(tmp_path, monkeypatch) -> None:
 
     assert response.status_code == 413
     assert response.json()["reasonCode"] == "PAYLOAD_TOO_LARGE"
+
+
+def test_rejects_long_audio_without_trim_consent(tmp_path, monkeypatch) -> None:
+    from app import main
+
+    monkeypatch.setattr(main, "STORAGE_ROOT", tmp_path / "storage")
+    source = tmp_path / "long.wav"
+    _long_wav(source)
+    recording_id = str(uuid4())
+
+    with TestClient(app) as client, source.open("rb") as audio:
+        response = client.post(
+            "/v1/analyze",
+            headers={"X-Recording-ID": recording_id},
+            files={"audio": ("long.wav", audio, "audio/wav")},
+        )
+
+    assert response.status_code == 413
+    assert response.json()["reasonCode"] == "TOO_LONG"
+    assert not (main.STORAGE_ROOT / recording_id).exists()
+
+
+def test_trims_long_audio_from_first_audible_sound_and_retains_wav(tmp_path, monkeypatch) -> None:
+    from app import main
+
+    monkeypatch.setattr(main, "STORAGE_ROOT", tmp_path / "storage")
+    source = tmp_path / "long.wav"
+    _long_wav(source)
+    recording_id = str(uuid4())
+
+    with TestClient(app) as client, source.open("rb") as audio:
+        response = client.post(
+            "/v1/analyze",
+            headers={"X-Recording-ID": recording_id},
+            files={"audio": ("long.wav", audio, "audio/wav")},
+            data={"trim_to_max_duration": "true"},
+        )
+        assert response.status_code == 200, response.text
+        body = response.json()
+        retained = main.STORAGE_ROOT / body["storagePath"]
+        assert retained.name == "source.wav"
+        assert retained.exists()
+        assert not (retained.parent / "upload.wav").exists()
+        assert body["mimeType"] == "audio/wav"
+        assert body["sizeBytes"] == retained.stat().st_size
+        assert 59_900 <= body["durationMs"] <= 60_000
+        assert body["descriptors"]["trimmedFromLongFile"] is True
+        assert body["descriptors"]["trimStartPolicy"] == "first-audible--45db"
+        assert body["descriptors"]["trimMaxDurationMs"] == 60_000
+
+        source_response = client.get(f"/v1/recordings/{recording_id}/source")
+        assert source_response.status_code == 200
+        trimmed_audio, sample_rate = sf.read(BytesIO(source_response.content), dtype="float32")
+        assert sample_rate == SAMPLE_RATE
+        assert len(trimmed_audio) <= SAMPLE_RATE * 60
+        assert np.sqrt(np.mean(np.square(trimmed_audio[: SAMPLE_RATE // 4]))) > 0.1
 
 
 def test_song_url_endpoint_returns_metrics_only_after_cleanup(monkeypatch) -> None:
