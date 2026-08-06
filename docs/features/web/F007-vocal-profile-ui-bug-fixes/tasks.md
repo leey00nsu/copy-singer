@@ -96,17 +96,17 @@
     - [x] 실제 분석, 무성 구간, 최대 길이와 기존 통계 회귀 테스트를 통과한다.
     - [x] Docker analyzer에서 새 descriptor가 PostgreSQL을 거쳐 조회되는지 검증한다.
 
-- [TODO][PRD-US-002][PRD-US-008][PRD-FR-021] T-F007-vocal-profile-ui-bug-fixes-04 보컬 프로필 결과 시각화 UI 구현
+- [DONE][PRD-US-002][PRD-US-008][PRD-FR-021] T-F007-vocal-profile-ui-bug-fixes-04 보컬 프로필 결과 시각화 UI 구현
   - Date: 2026-08-06
   - Acceptance:
     - 첨부 레퍼런스처럼 음역 프로필, 음정 분포, 요약 카드, 품질 지표와 상세 피치 추적을 한 결과 화면에서 확인할 수 있다.
     - descriptor가 없는 기존 프로필과 모바일 화면에서도 오류나 가로 overflow 없이 핵심 집계값을 확인할 수 있다.
   - Checklist:
-    - [ ] descriptor parser와 MIDI/음이름/축 helper를 구현하고 단위 테스트를 추가한다.
-    - [ ] 범위·histogram·pitch trace SVG와 품질 카드 컴포넌트를 구현한다.
-    - [ ] 기존 결과 영역을 새 대시보드로 교체하고 추천·삭제 흐름을 유지한다.
-    - [ ] lint, TypeScript, production build와 전체 회귀 테스트를 통과한다.
-    - [ ] 실제 분석 결과를 데스크톱·모바일 브라우저에서 시각 검증한다.
+    - [x] descriptor parser와 MIDI/음이름/축 helper를 구현하고 단위 테스트를 추가한다.
+    - [x] 범위·histogram·pitch trace SVG와 품질 카드 컴포넌트를 구현한다.
+    - [x] 기존 결과 영역을 새 대시보드로 교체하고 추천·삭제 흐름을 유지한다.
+    - [x] lint, TypeScript, production build와 전체 회귀 테스트를 통과한다.
+    - [x] 실제 분석 결과를 데스크톱·모바일 브라우저에서 시각 검증한다.
 
 ## 완료 조건
 
@@ -125,7 +125,7 @@
 | --- | --- | --- |
 | `services/vocal-profile-api/.venv/bin/python -m pytest services/vocal-profile-api/tests` | `2026-08-06` | `PASS — 21 tests, histogram·bounded pitch track·WebM/Opus 포함` |
 | `pnpm install --frozen-lockfile` | `2026-08-06` | `PASS — pnpm 11.9.0 lockfile 고정 설치 및 Prisma/esbuild build scripts 완료` |
-| `pnpm test` | `2026-08-06` | `PASS — Next production build, SSR 3, catalog 7, key-fit 18, recommendation 15` |
+| `pnpm test` | `2026-08-06` | `PASS — Next production build, profile visualization 4, catalog 7, key-fit 18, recommendation 15` |
 | `pnpm run lint` | `2026-08-06` | `PASS` |
 | `pnpm exec tsc --noEmit` | `2026-08-06` | `PASS` |
 | `pnpm run test:recommendation:db` | `2026-08-06` | `PASS — 3 tests` |
@@ -133,5 +133,6 @@
 | `pnpm start /api/vocal-profiles/health` | `2026-08-06` | `PASS — HTTP 200, analyzer/database ok` |
 | `Docker analyzer audio/webm;codecs=opus smoke test` | `2026-08-06` | `PASS — HTTP 200, mimeType audio/webm, 8초 Opus 분석 후 fixture 삭제` |
 | `Next HTTP visualization descriptor 저장 smoke test` | `2026-08-06` | `PASS — 5.4초 WebM, histogram 10 bins, track 466/720 points, 무성 구간 보존, DB cleanup` |
+| `Browser desktop/mobile vocal profile visualization` | `2026-08-06` | `PASS — 실제 분석값 렌더링, 375px 가로 overflow 없음, validation fixture cleanup` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-06T15:45:05+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-06T15:56:18+09:00 -->
