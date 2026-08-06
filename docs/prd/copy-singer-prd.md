@@ -71,10 +71,10 @@ Copy Singer는 사용자의 테스트 가창을 분석해 보컬 프로필을 �
 
 ### 적합도와 추천
 
-- **PRD-FR-008**: 원키 적합도는 사용자의 편안한 음역과 곡 테시투라의 겹침, 극단음 초과량, 음정 안정도 신뢰도를 반영해야 한다.
+- **PRD-FR-008**: 원키 적합도는 사용자의 편안한 음역과 곡 테시투라의 대칭적 겹침, 극단음 초과량, 음정 안정도 신뢰도를 반영하며 음역이 좁다는 이유만으로 최대 겹침 점수를 주지 않아야 한다.
 - **PRD-FR-009**: 추천 키는 허용 범위 안의 정수 semitone 후보를 평가해 최고 점수의 이동 값을 선택해야 한다.
 - **PRD-FR-010**: 추천 결과는 동일 점수 입력에 대해 결정적이어야 하며 scoring algorithm version을 저장해야 한다.
-- **PRD-FR-011**: 추천 API는 상위 3곡, 원키 점수, 조정 후 점수, 추천 키, 구조화된 이유 코드를 반환해야 한다.
+- **PRD-FR-011**: 추천 API는 원키 점수를 우선하고 조정 후 점수와 키 이동 부담을 함께 반영해 상위 3곡을 선택하며, 원키 점수, 조정 후 점수, 추천 키, 선택 점수와 구조화된 이유 코드를 반환해야 한다.
 - **PRD-FR-012**: UI는 이유 코드를 자연어 설명으로 표시하고 과도한 정확성을 암시하지 않아야 한다.
 
 ### 합성 데모 — 구현 완료 기반
@@ -84,7 +84,7 @@ Copy Singer는 사용자의 테스트 가창을 분석해 보컬 프로필을 �
 - **PRD-FR-015**: 사용자는 완료된 결과 WAV를 재생·다운로드하고 작업을 취소·삭제할 수 있어야 한다.
 - **PRD-FR-016**: 추천 실행은 사용자 보컬 프로필의 원본 테스트 녹음을 reference로 사용해 상위 3곡 각각의 합성 작업을 자동 시작해야 한다.
 - **PRD-FR-017**: 추천 카드에는 `preparing → queued → processing → succeeded | failed` 상태와 “믹싱 중이에요” 안내를 표시하고 성공 시 결과 오디오 재생·다운로드를 제공해야 한다.
-- **PRD-FR-018**: 추천 카드 합성은 `prompt_vocal_separation=false`, `target_vocal_separation=true`, `auto_pitch_shift=false`, `auto_mix_accompaniment=true`, `pitch_shift=0`의 고정 제품 preset을 사용해야 한다.
+- **PRD-FR-018**: 추천 카드 합성은 `prompt_vocal_separation=false`, `target_vocal_separation=true`, `auto_pitch_shift=false`, `auto_mix_accompaniment=true`, `pitch_shift=0`의 고정 제품 preset을 사용하고 결과를 추천 키 시연이 아닌 `원키 음색 데모`로 명시해야 한다.
 - **PRD-FR-019**: 서버는 allowlist된 곡 URL의 원본 오디오를 작업 중에만 임시 다운로드해 target으로 사용하고 성공·실패·취소 후 원본과 중간 stem을 제거해야 한다.
 - **PRD-FR-020**: 기존 자유 reference/target과 advanced settings Workbench는 자동 추천 합성과 분리된 개발·진단용 화면으로 유지해야 한다.
 

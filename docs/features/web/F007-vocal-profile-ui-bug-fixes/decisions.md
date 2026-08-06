@@ -73,3 +73,18 @@
   - **PR**: 로컬 workflow로 생성하지 않음.
   - **Test/Log**: Python 23 tests, Next production build와 Node 전체 테스트, lint, TypeScript, DB integration 3 tests 통과. 로컬 브라우저에서 70초 MP3 modal 양쪽 경로와 실제 분석 201을 확인하고 검증 데이터를 삭제함 (2026-08-06).
 - **Consequences**: 동의한 긴 파일은 원본 컨테이너 대신 trim된 WAV가 보관되며, 거절하면 서버로 전송하지 않는다.
+
+---
+
+## D005: 원키 음색 데모에 맞춰 대칭 적합도와 원키 중심 순위를 사용 (2026-08-06)
+
+- **Context**: 추천 합성은 `auto_pitch_shift=false`, `pitch_shift=0`으로 원곡 피치를 따르지만 Top 3는 최대 조정 점수만으로 정렬했다. 곡 폭 기준 overlap 때문에 100곡 중 가장 좁은 `아크라포빅`이 서로 다른 실제 사용자 profile에서도 반복 1위였다.
+- **Constraints**: 현재 aggregate profile과 추천 키 계산, 결정성, 기존 DB 실행 조회를 유지해야 하며 100곡 전체 재분석이나 피치 히스토그램 추가는 이번 수정의 선행 조건으로 만들지 않는다.
+- **Options**: `originalKeyScore` 단독 정렬, `아크라포빅` 하드 제외, 대칭 overlap과 원키/조정/shift 복합 selection score를 비교했다.
+- **Decision**: `key-fit-v2`에서 Sørensen–Dice 테시투라 overlap을 사용한다. Top 3는 원키 65%, 조정 35%와 shift 0~6의 `0/1/3/7/12/20/30` 감점으로 선택하며 합성 결과를 `원키 음색 데모`로 표시한다.
+- **Rationale**: 특정 곡을 임의 차단하지 않고 좁은 구간 편향을 일반적으로 해소하며, 원키 데모와 순위를 정렬하면서 사용자가 노래방에서 활용할 추천 키도 보존한다.
+- **Trace**:
+  - **변경 요청 시점**: 사용자는 피치 보정 없는 원음 중심 합성과 현재 추천식의 불일치를 지적하고 수정을 요청했다.
+  - **구현 전 확인**: `아크라포빅` 테시투라는 4.4반음으로 100곡 최협이며 현재 DB의 비-seed 추천 2건에서 모두 1위였다. 기존 고음 실제 profile은 v2 시뮬레이션에서 원키 적합 곡이 1위로 변경됐다.
+  - **DONE 전 확정 시점**: 구현·검증 후 기록 예정.
+- **Consequences**: 새 추천 실행은 기존 결과와 다른 순위를 가질 수 있어 scoring version을 올린다. 기존 `key-fit-v1` 실행 조회는 유지한다.
