@@ -1,9 +1,6 @@
 import type { CatalogKeyFitResult } from "../key-fit/catalog";
 import type { KeyFitReasonCode, KeyFitScoreResult } from "../key-fit/contract";
-import {
-  RECOMMENDATION_RESULT_COUNT,
-  RecommendationError,
-} from "./contract";
+import { RecommendationError } from "./contract";
 
 export type RankedRecommendation = CatalogKeyFitResult & { rank: number; selectionScore: number };
 
@@ -47,13 +44,13 @@ function compareRecommendations(
   );
 }
 
-export function rankTopRecommendations(
+export function rankRecommendations(
   candidates: readonly CatalogKeyFitResult[],
 ): RankedRecommendation[] {
-  if (candidates.length < RECOMMENDATION_RESULT_COUNT) {
+  if (candidates.length === 0) {
     throw new RecommendationError(
       "CATALOG_NOT_READY",
-      `At least ${RECOMMENDATION_RESULT_COUNT} scored songs are required.`,
+      "At least one scored song is required.",
       { status: 503, retryable: true, details: { candidateCount: candidates.length } },
     );
   }
@@ -86,7 +83,6 @@ export function rankTopRecommendations(
       selectionScore: calculateRecommendationSelectionScore(candidate),
     }))
     .sort(compareRecommendations)
-    .slice(0, RECOMMENDATION_RESULT_COUNT)
     .map((candidate, index) => ({
       ...candidate,
       selectionScore: roundScore(candidate.selectionScore),

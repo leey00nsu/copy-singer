@@ -48,6 +48,9 @@ test("concurrent item starts create one Modal job with the fixed preset", async 
       },
     });
     const run = await createRecommendationRun(profileId);
+    assert.equal(run.items.length, 100);
+    assert.equal(modalCreates, 0);
+    assert.ok(run.items.every((candidate) => candidate.synthesis.status === "not_started"));
     const item = run.items[0]!;
     globalThis.fetch = async (input, init) => {
       const url = String(input);
@@ -56,7 +59,7 @@ test("concurrent item starts create one Modal job with the fixed preset", async 
       if (url.endsWith("/v1/conversions") && init?.method === "POST") {
         modalCreates += 1;
         const form = init.body as FormData;
-        assert.equal(form.get("auto_pitch_shift"), "false");
+        assert.equal(form.get("auto_pitch_shift"), "true");
         assert.equal(form.get("pitch_shift"), "0");
         assert.equal(form.get("target_vocal_separation"), "true");
         assert.equal(form.get("auto_mix_accompaniment"), "true");
@@ -74,6 +77,7 @@ test("concurrent item starts create one Modal job with the fixed preset", async 
     assert.equal(modalCreates, 1);
     assert.equal(stored.items[0]!.synthesis.status, "queued");
     assert.equal(stored.items[0]!.synthesis.jobId, "modal-job-1");
+    assert.ok(stored.items.slice(1).every((candidate) => candidate.synthesis.status === "not_started"));
 
     globalThis.fetch = async (input, init) => {
       const url = String(input);

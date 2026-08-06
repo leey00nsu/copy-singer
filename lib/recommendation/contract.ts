@@ -3,8 +3,6 @@ import type {
   KeyFitScoreBreakdown,
 } from "../key-fit/contract";
 
-export const RECOMMENDATION_RESULT_COUNT = 3;
-
 export const SYNTHESIS_STATUSES = [
   "preparing",
   "queued",

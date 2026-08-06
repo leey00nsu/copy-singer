@@ -33,7 +33,6 @@ export function RecommendationResults({
   const [run, setRun] = useState<RecommendationRunResponse | null>(initialRun ?? null);
   const [loadError, setLoadError] = useState<"not-found" | "failed" | null>(null);
   const [deleting, setDeleting] = useState(false);
-  const autoStartedRunRef = useRef<string | null>(null);
   const startingItemsRef = useRef(new Set<string>());
 
   const mergeRun = (next: RecommendationRunResponse) => {
@@ -65,42 +64,6 @@ export function RecommendationResults({
   }, [run, runId]);
 
   useEffect(() => {
-    if (!run || autoStartedRunRef.current === run.id) return;
-    autoStartedRunRef.current = run.id;
-    const pending = run.items.filter((item) => item.synthesis.status === "not_started");
-    if (pending.length === 0) return;
-    pending.forEach((item) => startingItemsRef.current.add(item.id));
-    let mounted = true;
-    void (async () => {
-      for (const item of pending) {
-        try {
-          const response = await fetch(`/api/recommendations/${run.id}/items/${item.id}/synthesis`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: "{}",
-          });
-          const payload = await response.json() as RecommendationRunResponse | { error?: { code?: string; message?: string; retryable?: boolean } };
-          startingItemsRef.current.delete(item.id);
-          if (!mounted) continue;
-          if (!response.ok || !("items" in payload)) {
-            const error = "error" in payload ? payload.error : null;
-            setRun((current) => current ? { ...current, items: current.items.map((candidate) => candidate.id === item.id ? {
-              ...candidate,
-              synthesis: { ...candidate.synthesis, status: "failed", error: { code: error?.code ?? "SYNTHESIS_UPSTREAM_FAILED", detail: error?.message ?? "합성 작업을 시작하지 못했습니다.", retryable: error?.retryable ?? true } },
-            } : candidate) } : current);
-          } else {
-            mergeRun(payload);
-          }
-        } catch {
-          startingItemsRef.current.delete(item.id);
-          if (mounted) setRun((current) => current ? { ...current, items: current.items.map((candidate) => candidate.id === item.id ? { ...candidate, synthesis: { ...candidate.synthesis, status: "failed", error: { code: "SYNTHESIS_UPSTREAM_FAILED", detail: "합성 서버에 연결하지 못했습니다.", retryable: true } } } : candidate) } : current);
-        }
-      }
-    })();
-    return () => { mounted = false; };
-  }, [run]);
-
-  useEffect(() => {
     if (!run?.items.some((item) => ["preparing", "queued", "processing"].includes(item.synthesis.status))) return;
     let cancelled = false;
     const timer = window.setTimeout(async () => {
@@ -114,7 +77,7 @@ export function RecommendationResults({
     return () => { cancelled = true; window.clearTimeout(timer); };
   }, [run]);
 
-  const retryItem = async (itemId: string) => {
+  const startItem = async (itemId: string, retry = false) => {
     if (!run || startingItemsRef.current.has(itemId)) return;
     startingItemsRef.current.add(itemId);
     setRun((current) => current ? { ...current, items: current.items.map((item) => item.id === itemId ? { ...item, synthesis: { ...item.synthesis, status: "preparing", error: null } } : item) } : current);
@@ -122,13 +85,32 @@ export function RecommendationResults({
       const response = await fetch(`/api/recommendations/${run.id}/items/${itemId}/synthesis`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ retry: true }),
+        body: JSON.stringify({ retry }),
       });
-      const payload = await response.json() as RecommendationRunResponse;
-      if (!response.ok) throw new Error("retry failed");
+      const payload = await response.json() as RecommendationRunResponse | { error?: { code?: string; message?: string; retryable?: boolean } };
+      if (!response.ok || !("items" in payload)) {
+        const error = "error" in payload ? payload.error : null;
+        setRun((current) => current ? { ...current, items: current.items.map((item) => item.id === itemId ? {
+          ...item,
+          synthesis: {
+            ...item.synthesis,
+            status: "failed",
+            error: {
+              code: error?.code ?? "SYNTHESIS_UPSTREAM_FAILED",
+              detail: error?.message ?? "합성 작업을 시작하지 못했습니다.",
+              retryable: error?.retryable ?? true,
+            },
+          },
+        } : item) } : current);
+        return;
+      }
       mergeRun(payload);
     } catch {
-      toast.error("이 곡의 합성을 다시 시작하지 못했습니다.");
+      setRun((current) => current ? { ...current, items: current.items.map((item) => item.id === itemId ? {
+        ...item,
+        synthesis: { ...item.synthesis, status: "failed", error: { code: "SYNTHESIS_UPSTREAM_FAILED", detail: "합성 서버에 연결하지 못했습니다.", retryable: true } },
+      } : item) } : current);
+      toast.error(retry ? "이 곡의 합성을 다시 시작하지 못했습니다." : "AI 믹싱을 시작하지 못했습니다.");
     } finally {
       startingItemsRef.current.delete(itemId);
     }
@@ -172,10 +154,10 @@ export function RecommendationResults({
       </header>
 
       <div className="page-shell py-10 sm:py-14">
-        <section className="mx-auto max-w-3xl text-center">
+        <section className="mx-auto max-w-4xl text-center">
           <Badge className="gap-1.5" variant="secondary"><Sparkles className="size-3" /> 100곡 비교 완료</Badge>
-          <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-5xl">지금 목소리에 잘 맞는<br />노래 3곡이에요.</h1>
-          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">이번 한 소절에서 관찰된 음역을 기준으로 계산했습니다. 추천과 함께 세 곡에 내 목소리를 입히고 있어요. 실제 노래방 음원과 당일 컨디션에 따라 알맞은 키는 달라질 수 있습니다.</p>
+          <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-5xl">내 목소리와 어울리는<br />노래 순위예요.</h1>
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">이번 한 소절에서 관찰된 음역을 기준으로 100곡 전체를 정렬했습니다. 듣고 싶은 곡의 AI 믹싱을 누르면 그 곡만 내 목소리로 변환합니다. 실제 노래방 음원과 당일 컨디션에 따라 알맞은 키는 달라질 수 있습니다.</p>
         </section>
 
         {run.lowConfidence ? (
@@ -185,31 +167,37 @@ export function RecommendationResults({
           </section>
         ) : null}
 
-        <section aria-label="추천 상위 3곡" className="mx-auto mt-8 grid max-w-5xl gap-4 lg:grid-cols-3">
+        <section aria-label="추천 노래 전체 순위" className="mx-auto mt-8 max-w-5xl space-y-3">
           {run.items.map((item) => (
-            <Card className={`flex flex-col ${item.rank === 1 ? "border-primary/45 shadow-lg shadow-primary/5" : ""}`} key={item.id}>
-              <CardHeader>
-                <div className="flex items-center justify-between gap-3">
-                  <Badge variant={item.rank === 1 ? "default" : "secondary"}>{item.rank}위</Badge>
-                  <span className="font-mono text-xs text-muted-foreground">TJ #{item.catalogOrder}</span>
+            <Card className={item.rank <= 3 ? "border-primary/35 bg-primary/[0.015]" : ""} key={item.id}>
+              <CardContent className="grid gap-5 p-5 sm:p-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-center">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge variant={item.rank <= 3 ? "default" : "secondary"}>{item.rank}위</Badge>
+                    <span className="font-mono text-xs text-muted-foreground">TJ #{item.catalogOrder}</span>
+                    <Badge className="ml-auto" variant="outline"><Gauge className="size-3" /> 추천 키 {formatRecommendedShift(item.recommendedShift)}</Badge>
+                  </div>
+                  <CardHeader className="px-0 pb-0 pt-4">
+                    <CardTitle className="truncate text-xl">{item.title}</CardTitle>
+                    <CardDescription>{item.artist}</CardDescription>
+                  </CardHeader>
+                  <div className="mt-4 grid grid-cols-2 gap-2 sm:max-w-md">
+                    <div className="rounded-xl bg-muted/55 p-3"><p className="text-[11px] text-muted-foreground">원키 적합도</p><p className="mt-1 text-lg font-semibold">{item.originalKeyScore.toFixed(1)}</p></div>
+                    <div className="rounded-xl bg-primary/8 p-3"><p className="text-[11px] text-muted-foreground">추천 키 적합도</p><p className="mt-1 text-lg font-semibold text-primary">{item.adjustedScore.toFixed(1)}</p></div>
+                  </div>
+                  <ul className="mt-4 space-y-1.5 text-xs leading-5 text-muted-foreground">
+                    {item.reasons.slice(0, 2).map((reason) => <li className="flex gap-2" key={reason}><span aria-hidden="true" className="mt-2 size-1 shrink-0 rounded-full bg-primary" />{reason}</li>)}
+                  </ul>
                 </div>
-                <CardTitle className="pt-2 text-xl">{item.title}</CardTitle>
-                <CardDescription>{item.artist}</CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-1 flex-col gap-5">
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="rounded-xl bg-muted/55 p-3"><p className="text-[11px] text-muted-foreground">원키 적합도</p><p className="mt-1 text-xl font-semibold">{item.originalKeyScore.toFixed(1)}</p></div>
-                  <div className="rounded-xl bg-primary/8 p-3"><p className="text-[11px] text-muted-foreground">추천 키 적합도</p><p className="mt-1 text-xl font-semibold text-primary">{item.adjustedScore.toFixed(1)}</p></div>
-                </div>
-                <div className="flex items-center justify-between rounded-xl border p-3">
-                  <span className="flex items-center gap-2 text-sm text-muted-foreground"><Gauge className="size-4" /> 추천 노래방 키</span>
-                  <strong>{formatRecommendedShift(item.recommendedShift)}</strong>
-                </div>
-                <ul className="space-y-2 text-xs leading-5 text-muted-foreground">
-                  {item.reasons.slice(0, 3).map((reason) => <li className="flex gap-2" key={reason}><span aria-hidden="true" className="mt-2 size-1 shrink-0 rounded-full bg-primary" />{reason}</li>)}
-                </ul>
-                <div className="mt-auto rounded-2xl border bg-muted/25 p-4">
-                  {["not_started", "preparing", "queued", "processing"].includes(item.synthesis.status) ? (
+                <div className="rounded-2xl border bg-muted/25 p-4">
+                  {item.synthesis.status === "not_started" ? (
+                    <div className="text-center">
+                      <span className="mx-auto flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary"><Sparkles className="size-5" /></span>
+                      <p className="mt-3 text-sm font-semibold">이 곡을 내 목소리로 들어보세요</p>
+                      <p className="mt-1 text-xs leading-5 text-muted-foreground">자동 피치 이동을 적용해 한 곡만 믹싱합니다.</p>
+                      <Button className="mt-3 w-full" onClick={() => void startItem(item.id)} size="sm"><Sparkles className="size-4" /> AI 믹싱</Button>
+                    </div>
+                  ) : ["preparing", "queued", "processing"].includes(item.synthesis.status) ? (
                     <div aria-live="polite" className="text-center">
                       <span className="mx-auto flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary"><LoaderCircle className="size-5 animate-spin" /></span>
                       <p className="mt-3 font-semibold">믹싱 중이에요</p>
@@ -219,7 +207,7 @@ export function RecommendationResults({
                     </div>
                   ) : item.synthesis.status === "succeeded" && item.synthesis.audioUrl ? (
                     <div>
-                      <p className="flex items-center gap-2 text-sm font-semibold text-emerald-700"><Headphones className="size-4" /> 원키 음색 데모</p>
+                      <p className="flex items-center gap-2 text-sm font-semibold text-emerald-700"><Headphones className="size-4" /> AI 믹싱 완료</p>
                       {/* Audio-only generated result does not have a meaningful caption track. */}
                       {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
                       <audio className="mt-3 w-full" controls preload="none" src={item.synthesis.audioUrl} />
@@ -230,7 +218,7 @@ export function RecommendationResults({
                       <AlertTriangle className="mx-auto size-6 text-destructive" />
                       <p className="mt-2 text-sm font-semibold">이 곡의 믹싱을 완료하지 못했어요</p>
                       <p className="mt-1 text-xs leading-5 text-muted-foreground">{item.synthesis.error?.detail ?? "잠시 뒤 다시 시도해주세요."}</p>
-                      {item.synthesis.error?.retryable ? <Button className="mt-3 w-full" onClick={() => void retryItem(item.id)} size="sm" variant="outline"><RefreshCw className="size-4" /> 이 곡 다시 시도</Button> : <a className={`${buttonVariants({ size: "sm", variant: "outline" })} mt-3 w-full`} href="/profile"><Mic2 className="size-4" /> 다시 녹음</a>}
+                      {item.synthesis.error?.retryable ? <Button className="mt-3 w-full" onClick={() => void startItem(item.id, true)} size="sm" variant="outline"><RefreshCw className="size-4" /> 이 곡 다시 시도</Button> : <a className={`${buttonVariants({ size: "sm", variant: "outline" })} mt-3 w-full`} href="/profile"><Mic2 className="size-4" /> 다시 녹음</a>}
                     </div>
                   )}
                 </div>
@@ -239,12 +227,12 @@ export function RecommendationResults({
           ))}
         </section>
 
-        <section className="mx-auto mt-8 max-w-3xl rounded-2xl border bg-card/75 p-5 text-xs leading-6 text-muted-foreground">
-          <div className="flex gap-3"><Mic2 className="mt-0.5 size-4 shrink-0" /><p>이 결과는 <strong className="text-foreground">{run.scoringVersion}</strong>으로 계산한 노래 선택 참고값이며 가창력이나 건강 상태를 평가하지 않습니다. 원키 음색 데모는 원곡의 음정을 그대로 따르며 추천 노래방 키는 직접 부를 때의 안내입니다.</p></div>
-          <div className="mt-2 flex gap-3"><Clock3 className="mt-0.5 size-4 shrink-0" /><p>GPU가 한 곡씩 처리해 완료 시간이 서로 다를 수 있습니다. 결과와 입력은 최대 24시간 후 만료됩니다.</p></div>
+        <section className="mx-auto mt-8 max-w-5xl rounded-2xl border bg-card/75 p-5 text-xs leading-6 text-muted-foreground">
+          <div className="flex gap-3"><Mic2 className="mt-0.5 size-4 shrink-0" /><p>이 결과는 <strong className="text-foreground">{run.scoringVersion}</strong>으로 계산한 노래 선택 참고값이며 가창력이나 건강 상태를 평가하지 않습니다. 추천 노래방 키는 직접 부를 때의 안내이며 AI 믹싱에는 SoulX-Singer의 자동 피치 이동이 적용됩니다.</p></div>
+          <div className="mt-2 flex gap-3"><Clock3 className="mt-0.5 size-4 shrink-0" /><p>목록을 보는 것만으로 GPU 작업이 시작되지 않습니다. 누른 곡만 처리하며 결과와 입력은 최대 24시간 후 만료됩니다.</p></div>
         </section>
 
-        <div className="mx-auto mt-6 flex max-w-3xl justify-between gap-3">
+        <div className="mx-auto mt-6 flex max-w-5xl justify-between gap-3">
           <p className="self-center font-mono text-[10px] text-muted-foreground">RUN {run.id.slice(0, 8)} · {new Date(run.createdAt).toLocaleString("ko-KR")}</p>
           <Button disabled={deleting} onClick={() => void deleteRun()} variant="ghost">
             {deleting ? <LoaderCircle className="size-4 animate-spin" /> : <Trash2 className="size-4" />}

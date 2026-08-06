@@ -10,7 +10,7 @@ import {
   type SongProfileArtifact,
 } from "../song-catalog/artifact";
 import { RecommendationError } from "./contract";
-import { rankTopRecommendations, type RankedRecommendation } from "./ranking";
+import { rankRecommendations, type RankedRecommendation } from "./ranking";
 
 export const RECOMMENDATION_CATALOG_SIZE = 100;
 
@@ -90,7 +90,7 @@ export function validateAndIndexSongRows(
   return byOrder;
 }
 
-export function buildTopRecommendations(
+export function buildRankedRecommendations(
   profile: KeyFitProfile,
   rows: readonly RecommendationSongRow[],
   artifactValue: unknown,
@@ -119,7 +119,7 @@ export function buildTopRecommendations(
     throw error;
   }
 
-  return rankTopRecommendations(scored).map((result) => ({
+  return rankRecommendations(scored).map((result) => ({
     ...result,
     songId: byOrder.get(result.catalogOrder)!.id,
   }));

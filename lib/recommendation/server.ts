@@ -9,7 +9,7 @@ import {
   type RecommendationRunResponse,
   type RecommendationScoreMetrics,
 } from "./contract";
-import { buildTopRecommendations } from "./data";
+import { buildRankedRecommendations } from "./data";
 import { formatRecommendationReasons } from "./ranking";
 import { parseSynthesisAttempts, toPublicSynthesisStatus } from "./synthesis-state";
 
@@ -171,15 +171,15 @@ export async function createRecommendationRun(userVocalProfileId: string) {
     where: { catalogOrder: { gte: 1, lte: 100 } },
     orderBy: { catalogOrder: "asc" },
   });
-  const top = buildTopRecommendations(profile, songs, artifactJson);
+  const ranked = buildRankedRecommendations(profile, songs, artifactJson);
 
   try {
     const run = await prisma.recommendationRun.create({
       data: {
         userVocalProfileId,
-        scoringVersion: top[0]!.scoringVersion,
+        scoringVersion: ranked[0]!.scoringVersion,
         items: {
-          create: top.map((item) => ({
+          create: ranked.map((item) => ({
             songId: item.songId,
             rank: item.rank,
             originalKeyScore: item.originalKeyScore,

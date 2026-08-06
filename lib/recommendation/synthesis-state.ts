@@ -5,7 +5,7 @@ export type StoredSynthesisStatus = Uppercase<SynthesisStatus>;
 export const SYNTHESIS_PRESET = Object.freeze({
   prompt_vocal_separation: false,
   target_vocal_separation: true,
-  auto_pitch_shift: false,
+  auto_pitch_shift: true,
   auto_mix_accompaniment: true,
   pitch_shift: 0,
   steps: 32,

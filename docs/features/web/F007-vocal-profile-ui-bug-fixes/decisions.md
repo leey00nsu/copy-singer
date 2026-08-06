@@ -103,4 +103,11 @@
 - **Decision**: 현재 고정 100곡을 selection score 순 단일 목록으로 제공한다. 추천 생성 시에는 합성을 시작하지 않고 각 `not_started` 항목의 `AI 믹싱` 버튼으로만 시작한다. 추천 제품 preset은 `auto_pitch_shift=true`로 변경한다.
 - **Rationale**: 모든 추천 정보를 즉시 비교할 수 있으면서 GPU 비용은 사용자 의도가 있는 곡에만 발생한다. SoulX-Singer의 자동 피치 이동을 사용해 reference/target 음역 차이가 큰 경우의 실패 가능성을 낮춘다.
 - **Compatibility**: 과거 RecommendationRun의 3개 item은 그대로 조회하며 새 실행만 100개 item을 만든다. 기존 상태 enum과 synthesis endpoint는 재사용한다.
+- **Trace**:
+  - **요청 시점**: 사용자는 3개 추천 카드 대신 상위부터 하위까지 전체 목록을 제공하고, 자동 합성을 없애며 항목별 `AI 믹싱`에서 auto pitch shift를 켜도록 요청했다.
+  - **DONE 전 확정 시점**: ranking slice와 mount-time 자동 POST를 제거했다. 실제 저장 profile의 Next HTTP 추천 실행은 rank 1~100과 `not_started` 100개를 반환했고 Modal 호출 없이 삭제했다. 브라우저에서 버튼 100개·100위·초기 진행 상태 0개를 확인했으며 mock DB 통합 테스트는 선택한 1개만 queued, 나머지 99개는 not_started이고 multipart `auto_pitch_shift=true`임을 확인했다.
+- **Evidence**:
+  - **Commit**: T-F007-07 태스크 커밋.
+  - **PR**: 로컬 workflow로 생성하지 않음.
+  - **Test/Log**: `pnpm test`, lint, TypeScript, recommendation DB 3 tests와 1280px 로컬 Browser smoke test 통과 (2026-08-06). 실제 Modal GPU 작업은 생성하지 않음.
 - **Consequences**: 초기 추천 화면에는 결과 오디오가 없고 사용자가 직접 믹싱을 시작해야 한다. 여러 서로 다른 항목을 누르는 행위는 각각 독립적인 GPU 작업을 생성한다.

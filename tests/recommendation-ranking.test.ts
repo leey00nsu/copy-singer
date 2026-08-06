@@ -6,17 +6,16 @@ import { scoreCatalogKeyFits, type CatalogKeyFitResult } from "../lib/key-fit/ca
 import type { SongProfileArtifact } from "../lib/song-catalog/artifact";
 import {
   RecommendationError,
-  RECOMMENDATION_RESULT_COUNT,
   type RecommendationRunResponse,
 } from "../lib/recommendation/contract";
 import {
   calculateRecommendationSelectionScore,
   formatRecommendationReasons,
   formatRecommendedShift,
-  rankTopRecommendations,
+  rankRecommendations,
 } from "../lib/recommendation/ranking";
 import {
-  buildTopRecommendations,
+  buildRankedRecommendations,
   validateAndIndexSongRows,
   validateRecommendationArtifact,
 } from "../lib/recommendation/data";
@@ -59,8 +58,8 @@ function candidate(
   };
 }
 
-test("ranks exactly three songs with every documented tie-break", () => {
-  const ranked = rankTopRecommendations([
+test("ranks every scored song with every documented tie-break", () => {
+  const ranked = rankRecommendations([
     candidate(5, 90, 80, -2),
     candidate(4, 90, 81, -4),
     candidate(3, 90, 81, 2),
@@ -68,13 +67,15 @@ test("ranks exactly three songs with every documented tie-break", () => {
     candidate(1, 89, 99, 0),
   ]);
 
-  assert.equal(ranked.length, RECOMMENDATION_RESULT_COUNT);
+  assert.equal(ranked.length, 5);
   assert.deepEqual(ranked.map(({ catalogOrder, rank }) => [rank, catalogOrder]), [
     [1, 1],
     [2, 2],
     [3, 3],
+    [4, 5],
+    [5, 4],
   ]);
-  assert.deepEqual(ranked.map((item) => item.selectionScore), [95.5, 81.15, 81.15]);
+  assert.deepEqual(ranked.map((item) => item.selectionScore), [95.5, 81.15, 81.15, 80.5, 72.15]);
 });
 
 test("selection score prioritizes original pitch and applies stepped shift penalties", () => {
@@ -92,16 +93,17 @@ test("selection score prioritizes original pitch and applies stepped shift penal
   );
 });
 
-test("does not mutate candidates and produces deterministic real-artifact top three", () => {
+test("does not mutate candidates and produces a deterministic full artifact ranking", () => {
   const scored = scoreCatalogKeyFits(USER_PROFILE_FIXTURE, artifact);
   const before = JSON.stringify(scored);
-  const first = rankTopRecommendations(scored);
-  const second = rankTopRecommendations(scored);
+  const first = rankRecommendations(scored);
+  const second = rankRecommendations(scored);
 
   assert.equal(scored.length, 100);
   assert.equal(JSON.stringify(scored), before);
   assert.deepEqual(first, second);
-  assert.deepEqual(first.map((item) => item.rank), [1, 2, 3]);
+  assert.equal(first.length, 100);
+  assert.deepEqual(first.map((item) => item.rank), Array.from({ length: 100 }, (_, index) => index + 1));
 });
 
 test("real stored profile fixtures no longer share Acrophobic as rank one", () => {
@@ -134,28 +136,29 @@ test("real stored profile fixtures no longer share Acrophobic as rank one", () =
     analyzerVersion: "0.11.0",
   };
 
-  const highTop = rankTopRecommendations(scoreCatalogKeyFits(highProfile, artifact));
-  const broadTop = rankTopRecommendations(scoreCatalogKeyFits(broadProfile, artifact));
-  assert.deepEqual(highTop.map((item) => item.title), [
+  const highRanked = rankRecommendations(scoreCatalogKeyFits(highProfile, artifact));
+  const broadRanked = rankRecommendations(scoreCatalogKeyFits(broadProfile, artifact));
+  assert.deepEqual(highRanked.slice(0, 3).map((item) => item.title), [
     "잊었니(신들의만찬OST)",
     "붉은 노을",
     "천상연(웹툰 '선녀외전' X 이창섭)",
   ]);
-  assert.deepEqual(broadTop.map((item) => item.title), [
+  assert.deepEqual(broadRanked.slice(0, 3).map((item) => item.title), [
     "소녀(응답하라1988 OST)",
     "Lemon",
     "죽일 놈(Guilty)",
   ]);
-  assert.ok([...highTop, ...broadTop].every((item) => item.title !== "아크라포빅"));
+  assert.notEqual(highRanked[0]!.title, "아크라포빅");
+  assert.notEqual(broadRanked[0]!.title, "아크라포빅");
 });
 
-test("rejects partial and duplicate ranking inputs as an unready catalog", () => {
+test("rejects empty and duplicate ranking inputs as an unready catalog", () => {
   assert.throws(
-    () => rankTopRecommendations([candidate(1, 90, 80, 0)]),
+    () => rankRecommendations([]),
     (error: unknown) => error instanceof RecommendationError && error.code === "CATALOG_NOT_READY",
   );
   assert.throws(
-    () => rankTopRecommendations([
+    () => rankRecommendations([
       candidate(1, 90, 80, 0),
       candidate(1, 89, 79, 0),
       candidate(3, 88, 78, 0),
@@ -199,9 +202,10 @@ test("strictly joins the READY artifact to 100 database song rows", () => {
   }));
   const validatedArtifact = validateRecommendationArtifact(artifact);
   assert.equal(validateAndIndexSongRows(rows, validatedArtifact).size, 100);
-  const top = buildTopRecommendations(USER_PROFILE_FIXTURE, rows, artifact);
-  assert.equal(top.length, 3);
-  assert.ok(top.every((item) => item.songId.length === 36));
+  const ranked = buildRankedRecommendations(USER_PROFILE_FIXTURE, rows, artifact);
+  assert.equal(ranked.length, 100);
+  assert.deepEqual(ranked.map((item) => item.rank), Array.from({ length: 100 }, (_, index) => index + 1));
+  assert.ok(ranked.every((item) => item.songId.length === 36));
 });
 
 test("rejects database metadata drift before scoring or persistence", () => {
@@ -214,7 +218,7 @@ test("rejects database metadata drift before scoring or persistence", () => {
   }));
   rows[8] = { ...rows[8]!, title: "Wrong title" };
   assert.throws(
-    () => buildTopRecommendations(USER_PROFILE_FIXTURE, rows, artifact),
+    () => buildRankedRecommendations(USER_PROFILE_FIXTURE, rows, artifact),
     (error: unknown) => error instanceof RecommendationError && error.code === "CATALOG_NOT_READY",
   );
 });

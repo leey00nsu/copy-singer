@@ -397,7 +397,7 @@ export function VocalProfileWorkbench() {
                 <div className="rounded-xl bg-muted/55 p-4 text-xs leading-6 text-muted-foreground">사용 권한이 있는 본인의 음성만 업로드하세요. 이 결과는 노래 추천을 위한 참고 측정값이며, 발성 능력이나 건강 상태를 진단하지 않습니다. 환경과 컨디션에 따라 달라질 수 있습니다.</div>
                 <Button className="w-full" disabled={recommending} onClick={() => void createRecommendations()} size="lg">
                   {recommending ? <LoaderCircle className="size-4 animate-spin" /> : <Sparkles className="size-4" />}
-                  {recommending ? "100곡을 비교하는 중…" : "3곡 추천과 목소리 데모 만들기"}
+                  {recommending ? "100곡을 비교하는 중…" : "100곡 추천 순위 보기"}
                   {!recommending ? <ArrowRight className="ml-auto size-4" /> : null}
                 </Button>
               </CardContent>
