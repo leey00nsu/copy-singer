@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import { prisma } from "@/lib/db/prisma";
 import { analyzerUrl } from "@/lib/vocal-profile/server";
 

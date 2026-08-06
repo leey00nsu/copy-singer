@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 function modalConfig() {
   const url = process.env.MODAL_API_URL?.replace(/\/$/, "");
   const key = process.env.MODAL_API_KEY;
@@ -30,4 +32,3 @@ export async function DELETE(_: Request, context: { params: Promise<{ id: string
   });
   return new Response(response.body, { status: response.status });
 }
-

@@ -142,7 +142,7 @@ export function RecommendationResults({
       const response = await fetch(`/api/recommendations/${run.id}`, { method: "DELETE" });
       if (!response.ok) throw new Error("delete failed");
       toast.success("추천 결과를 삭제했습니다.");
-      // vinext has no runtime `next` package for the Node-rendered component tests.
+      // Direct Node-rendered component tests do not provide a Next router context.
       // eslint-disable-next-line @next/next/no-location-assign-relative-destination
       window.location.href = "/profile";
     } catch {

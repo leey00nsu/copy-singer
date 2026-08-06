@@ -230,7 +230,7 @@ export function VocalProfileWorkbench() {
           retryable: payload?.error?.retryable ?? true,
         } satisfies VocalProfileError;
       }
-      // vinext has no runtime `next` package for standalone component tests.
+      // Direct component tests do not provide a Next router context.
       // eslint-disable-next-line @next/next/no-location-assign-relative-destination
       window.location.href = `/recommendations/${payload.id}`;
     } catch (error) {

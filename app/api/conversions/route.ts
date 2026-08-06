@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 function modalConfig() {
   const url = process.env.MODAL_API_URL?.replace(/\/$/, "");
   const key = process.env.MODAL_API_KEY;

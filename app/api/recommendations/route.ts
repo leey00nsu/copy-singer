@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import { RecommendationError } from "@/lib/recommendation/contract";
 import { createRecommendationRun } from "@/lib/recommendation/server";
 

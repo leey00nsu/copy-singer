@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import { prisma } from "@/lib/db/prisma";
 import { deleteAnalyzerRecording, serializeProfile } from "@/lib/vocal-profile/server";
 

@@ -7,7 +7,7 @@
 | 컴포넌트 | 경로 | 역할 |
 | --- | --- | --- |
 | Web UI | `app/`, `components/` | 오디오 선택, 설정, 상태 폴링, 결과 재생 |
-| Next.js API proxy | `app/api/` | 서버 전용 인증, 업로드 스트리밍, 응답 프록시 |
+| Next.js Node API proxy | `app/api/` | 서버 전용 인증, PostgreSQL 접근, 업로드 스트리밍, 응답 프록시 |
 | Modal web function | `services/soulx-singer-svc/modal_app.py` | FastAPI 계약, 파일 저장, 비동기 GPU 작업 관리 |
 | Modal GPU worker | `SoulXModel` | SoulX-Singer 모델 로드, 전처리, SVC 추론, 반주 재믹스 |
 | Modal storage | Volume + Dict | 모델·작업 파일과 작업 메타데이터 보관 |
@@ -43,7 +43,7 @@
 
 ## 운영 경계
 
-- 웹 앱은 현재 로컬 실행을 기준으로 하며 Sites에 프로덕션 배포하지 않는다.
+- 웹 앱은 공식 Next.js Node 런타임의 로컬 실행을 기준으로 하며 프로덕션 배포 대상은 아직 선택하지 않았다.
 - Modal 백엔드는 배포된 API를 사용한다.
 - API 키는 `.env.local`과 Modal Secret `soulx-api-secret`에 같은 값으로 설정한다.
 - 작업 파일은 24시간 TTL 정책으로 정리한다.

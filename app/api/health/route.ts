@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 export async function GET() {
   const url = process.env.MODAL_API_URL?.replace(/\/$/, "");
   if (!url) return Response.json({ status: "not_configured" }, { status: 503 });
@@ -12,4 +14,3 @@ export async function GET() {
     return Response.json({ status: "unavailable" }, { status: 502 });
   }
 }
-

@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 function modalConfig() {
   const url = process.env.MODAL_API_URL?.replace(/\/$/, "");
   const key = process.env.MODAL_API_KEY;
@@ -25,4 +27,3 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
   }
   return new Response(response.body, { status: response.status, headers });
 }
-

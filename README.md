@@ -5,19 +5,19 @@ Copy Singer analyzes a user's test singing, compares the resulting vocal profile
 ## Local setup
 
 ```bash
-npm install
+pnpm install --frozen-lockfile
 cp .env.example .env.local
 # Set MODAL_API_KEY in .env.local when testing voice conversion.
 docker compose up -d --build
-npm run db:migrate:deploy
-npm run db:generate
-npm run dev
+pnpm run db:migrate:deploy
+pnpm run db:generate
+pnpm run dev
 ```
 
 Open:
 
-- `http://localhost:3000/` for SoulX-Singer voice conversion;
-- `http://localhost:3000/profile` for the guided vocal-range test.
+- `http://localhost:3000/` or `/profile` for the vocal-profile and recommendation flow;
+- `http://localhost:3000/dev/svc` for the developer SoulX-Singer workbench.
 
 For voice conversion, upload:
 
@@ -54,17 +54,17 @@ Apply the committed migrations, generate Prisma Client, seed development fixture
 set -a
 source .env.local
 set +a
-npm run db:migrate:deploy
-npm run db:generate
-npm run db:seed
-npm run db:verify
-npm run db:status
+pnpm run db:migrate:deploy
+pnpm run db:generate
+pnpm run db:seed
+pnpm run db:verify
+pnpm run db:status
 ```
 
 Create a new migration after changing `prisma/schema.prisma`:
 
 ```bash
-npm run db:migrate -- --name describe_your_change
+pnpm run db:migrate -- --name describe_your_change
 ```
 
 The analyzer stores uploaded source audio under `work/vocal-profiles/` and returns a 24-hour expiry timestamp. Deleting a profile through the UI removes both its database rows and analyzer recording. Automatic expiry cleanup is not included in this feature yet.
@@ -76,10 +76,10 @@ The TJ 2026-07 Top 100 source list is stored in `data/catalogs/tj-2607-top100.md
 Import the metadata, initialize the artifact, then analyze pending songs sequentially:
 
 ```bash
-npm run catalog:import
-npm run catalog:init-profiles
-npm run catalog:analyze -- --limit 1 --resume
-npm run catalog:verify
+pnpm run catalog:import
+pnpm run catalog:init-profiles
+pnpm run catalog:analyze -- --limit 1 --resume
+pnpm run catalog:verify
 ```
 
 Use `--rank 49 --resume` to retry one catalog entry, or omit `--rank` and set `--limit` for a bounded sequential batch. READY songs are not downloaded again.
@@ -106,7 +106,7 @@ COPY_SINGER_TEMP_ROOT=/Volumes/sn850x/copy-singer-temp \
 Before release, require all 100 profiles to be present:
 
 ```bash
-npm run catalog:verify -- --require-ready
+pnpm run catalog:verify -- --require-ready
 ```
 
 `catalog:clear-db-profiles` is a one-time migration helper that removes legacy catalog analysis rows produced by the earlier DB-backed implementation. It is deliberately limited to catalog ranks 1–100 and refuses to delete referenced profiles.
@@ -136,20 +136,20 @@ DATABASE_URL=postgresql://copy_singer:copy_singer_dev@localhost:5433/copy_singer
 ## Commands
 
 ```bash
-npm run dev
-npm run build
-npm test
-npm run lint
-npm run db:validate
-npm run db:generate
-npm run db:migrate:deploy
-npm run db:seed
-npm run db:verify
-npm run db:status
-npm run catalog:import
-npm run catalog:init-profiles
-npm run catalog:analyze -- --limit 1 --resume
-npm run catalog:verify -- --require-ready
+pnpm run dev
+pnpm run build
+pnpm test
+pnpm run lint
+pnpm run db:validate
+pnpm run db:generate
+pnpm run db:migrate:deploy
+pnpm run db:seed
+pnpm run db:verify
+pnpm run db:status
+pnpm run catalog:import
+pnpm run catalog:init-profiles
+pnpm run catalog:analyze -- --limit 1 --resume
+pnpm run catalog:verify -- --require-ready
 docker compose run --rm --no-deps \
   -v "$PWD/services/vocal-profile-api:/app" \
   vocal-profile-api sh -lc \

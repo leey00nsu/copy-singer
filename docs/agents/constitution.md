@@ -35,8 +35,7 @@
 | 기술        | 버전   | 이유        |
 | ----------- | ------ | ----------- |
 | React | 19.2 | UI 런타임 |
-| Next-compatible App Router | 16.x surface | same-origin 서버 프록시와 UI 라우팅 |
-| vinext | 1.0 beta | 로컬 및 Cloudflare Worker 호환 빌드 |
+| Next.js | 16.3 | Node App Router, same-origin 서버 프록시와 UI 라우팅 |
 | Tailwind CSS | 4.x | 스타일 시스템 |
 | shadcn/ui | 4.x | 접근 가능한 UI 기반 컴포넌트 |
 
@@ -46,7 +45,7 @@
 | ----------------- | ------ | ----------- |
 | TypeScript        | strict | 타입 안전성 |
 | ESLint            | 9.x    | 코드 품질   |
-| npm               | lockfile | 의존성 재현성 |
+| pnpm              | 11.9 | 단일 lockfile 기반 의존성 재현성 |
 | lee-spec-kit      | 0.8.8  | PRD → idea → feature 문서 추적 |
 
 ---
@@ -65,7 +64,7 @@
 
 ## 코드 품질 기준
 
-- Web 변경은 `npx tsc --noEmit`, `npm run lint`, `npm run build`를 통과한다.
+- Web 변경은 `pnpm exec tsc --noEmit`, `pnpm run lint`, `pnpm run build`를 통과한다.
 - Modal 변경은 최소 Python compile 검사와 실제 health/작업 상태 검증을 수행한다.
 - 실제 완료되지 않은 작업을 문서에서 `[DONE]`으로 표시하지 않는다.
 - 요구사항 또는 사용자-visible 동작이 바뀌면 PRD 및 활성 feature 문서를 같은 변경에서 동기화한다.
