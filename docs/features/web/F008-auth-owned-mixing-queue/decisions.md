@@ -48,12 +48,12 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 재접속 후 합성과 결과 재생을 지원하면서 사용자가 지정한 단일 저장 API로 수명주기와 삭제를 통합한다.
 - **Trace**:
   - **DOING 시작 시점**: OpenAPI에서 일반 파일의 presign, confirm, URL 응답과 delete endpoint, Bearer 인증, 429 계약을 확인했다.
-  - **DONE 전 확정 시점**: 구현 태스크 완료 시 갱신한다.
+  - **DONE 전 확정 시점**: `MediaAsset`과 `MediaCleanupJob` migration, Leemage API client와 analyzer reference 이전 흐름을 구현했다. 표준 WAV를 메모리의 제한된 60초 payload로 읽어 presign/PUT/confirm하고 성공 후 analyzer 임시본을 삭제한다. 프로필 삭제 또는 DB 보상 삭제에서 외부 삭제가 실패하면 asset을 `DELETE_PENDING`으로 두고 cleanup job을 생성한다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
-  - **Commit**: 구현 커밋에서 갱신
+  - **Commit**: T02 task commit
   - **PR**: local workflow — 해당 없음
-  - **Test/Log**: https://leemage.leey00nsu.com/ko/api-docs/getting-started/introduction, https://leemage.leey00nsu.com/api/v1/openapi
+  - **Test/Log**: `pnpm run test:media` 4 tests, `pnpm run db:migrate:deploy`, `pnpm run build`; https://leemage.leey00nsu.com/ko/api-docs/getting-started/introduction, https://leemage.leey00nsu.com/api/v1/openapi
 - **Consequences**: Leemage와 DB 사이의 부분 실패를 보상 삭제 또는 cleanup queue로 정리해야 한다.
 
 ---

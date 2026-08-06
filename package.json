@@ -28,7 +28,8 @@
     "test:key-fit": "tsx --test tests/key-fit-scoring.test.ts",
     "test:recommendation": "tsx --test tests/recommendation-ranking.test.ts tests/recommendation-synthesis.test.ts tests/recommendation-ui.test.tsx",
     "test:recommendation:db": "node --conditions react-server --import tsx --test tests/recommendation-persistence.integration.ts tests/recommendation-synthesis.integration.ts",
-    "test:auth:db": "node --conditions react-server --import tsx --test tests/auth-ownership.integration.ts"
+    "test:auth:db": "node --conditions react-server --import tsx --test tests/auth-ownership.integration.ts",
+    "test:media": "node --conditions react-server --import tsx --test tests/leemage-client.test.ts tests/leemage-media.integration.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

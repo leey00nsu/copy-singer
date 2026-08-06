@@ -1,13 +1,17 @@
 "use client";
 
 import { LogOut, UserRound } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth/client";
 
 export function UserMenu({ name, image }: { name: string; image?: string | null }) {
+  const router = useRouter();
+
   async function signOut() {
     await authClient.signOut();
-    window.location.assign("/login");
+    router.push("/login");
+    router.refresh();
   }
 
   return (

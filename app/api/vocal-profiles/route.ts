@@ -5,6 +5,8 @@ import { RecordingKind, RecordingStatus, type Prisma } from "@/generated/prisma/
 import type { AnalyzerProfile } from "@/lib/vocal-profile/contract";
 import { analyzerUrl, deleteAnalyzerRecording, serializeProfile } from "@/lib/vocal-profile/server";
 import { requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
+import { discardMediaAsset, storeAnalyzerReference } from "@/lib/leemage/media-service";
+import { LeemageError } from "@/lib/leemage/client";
 
 export async function POST(request: Request) {
   const session = await requireApiSession(request);
@@ -64,6 +66,26 @@ export async function POST(request: Request) {
     );
   }
 
+  let mediaAsset: Awaited<ReturnType<typeof storeAnalyzerReference>>;
+  try {
+    mediaAsset = await storeAnalyzerReference({
+      userId: session.user.id,
+      recordingId,
+      mimeType: analyzed.mimeType,
+    });
+  } catch (error) {
+    await deleteAnalyzerRecording(recordingId);
+    const storageError = error instanceof LeemageError ? error : null;
+    return Response.json(
+      {
+        reasonCode: storageError?.status === null && !storageError.retryable ? "STORAGE_NOT_CONFIGURED" : "STORAGE_UPLOAD_FAILED",
+        detail: "Analysis finished but the reference audio could not be stored.",
+        retryable: storageError?.retryable ?? true,
+      },
+      { status: storageError?.status === null && !storageError.retryable ? 503 : 502 },
+    );
+  }
+
   try {
     await prisma.vocalProfile.create({
       data: {
@@ -87,13 +109,14 @@ export async function POST(request: Request) {
           create: {
             id: recordingId,
             kind: RecordingKind.USER_TEST,
-            storagePath: analyzed.storagePath,
+            storagePath: `leemage://${mediaAsset.externalProjectId}/${mediaAsset.externalFileId}`,
             mimeType: analyzed.mimeType,
             durationMs: analyzed.durationMs,
             sizeBytes: BigInt(analyzed.sizeBytes),
             sampleRate: analyzed.sampleRate,
             status: RecordingStatus.READY,
-            expiresAt: new Date(analyzed.expiresAt),
+            expiresAt: null,
+            mediaAsset: { connect: { id: mediaAsset.id } },
           },
         },
       },
@@ -102,10 +125,12 @@ export async function POST(request: Request) {
       where: { recordingId, userId: session.user.id },
       include: { recording: true },
     });
+    await deleteAnalyzerRecording(recordingId);
     return Response.json(serializeProfile(profile), { status: 201 });
   } catch (error) {
     console.error("Could not persist vocal profile", error instanceof Error ? error.message : "unknown error");
     await deleteAnalyzerRecording(recordingId);
+    await discardMediaAsset(mediaAsset.id);
     return Response.json(
       { reasonCode: "PROFILE_SAVE_FAILED", detail: "Analysis finished but the profile could not be saved.", retryable: true },
       { status: 500 },

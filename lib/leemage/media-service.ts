@@ -1,0 +1,71 @@
+import "server-only";
+
+import { prisma } from "@/lib/db/prisma";
+import { analyzerUrl } from "@/lib/vocal-profile/server";
+import { createLeemageClient, LeemageError } from "@/lib/leemage/client";
+
+export async function storeAnalyzerReference(input: {
+  userId: string;
+  recordingId: string;
+  mimeType: string;
+  fileName?: string;
+}) {
+  const baseUrl = analyzerUrl();
+  if (!baseUrl) throw new LeemageError("The vocal analyzer is not configured.", null, false);
+  const source = await fetch(`${baseUrl}/v1/recordings/${encodeURIComponent(input.recordingId)}/source`, {
+    cache: "no-store",
+  });
+  if (!source.ok) {
+    throw new LeemageError(`Analyzer reference download failed (${source.status}).`, source.status, source.status >= 500);
+  }
+  const bytes = new Uint8Array(await source.arrayBuffer());
+  const stored = await createLeemageClient().uploadFile({
+    fileName: input.fileName ?? `${input.recordingId}.wav`,
+    mimeType: input.mimeType,
+    bytes,
+  });
+  return prisma.mediaAsset.create({
+    data: {
+      userId: input.userId,
+      kind: "REFERENCE",
+      externalProjectId: stored.projectId,
+      externalFileId: stored.fileId,
+      externalUrl: stored.url,
+      fileName: stored.fileName,
+      mimeType: stored.mimeType,
+      sizeBytes: BigInt(stored.sizeBytes),
+      status: "READY",
+    },
+  });
+}
+
+export async function deleteOrScheduleMediaAsset(mediaAssetId: string) {
+  const asset = await prisma.mediaAsset.findUnique({ where: { id: mediaAssetId } });
+  if (!asset) return { deleted: true as const };
+  try {
+    await createLeemageClient().deleteFile(asset.externalProjectId, asset.externalFileId);
+    await prisma.mediaAsset.update({
+      where: { id: asset.id },
+      data: { status: "DELETED", deletedAt: new Date(), lastError: null },
+    });
+    return { deleted: true as const };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Leemage file deletion failed.";
+    await prisma.$transaction([
+      prisma.mediaAsset.update({
+        where: { id: asset.id },
+        data: { status: "DELETE_PENDING", lastError: message },
+      }),
+      prisma.mediaCleanupJob.create({
+        data: { mediaAssetId: asset.id, status: "PENDING", lastError: message },
+      }),
+    ]);
+    return { deleted: false as const, error: message };
+  }
+}
+
+export async function discardMediaAsset(mediaAssetId: string) {
+  const outcome = await deleteOrScheduleMediaAsset(mediaAssetId);
+  if (outcome.deleted) await prisma.mediaAsset.deleteMany({ where: { id: mediaAssetId } });
+  return outcome;
+}

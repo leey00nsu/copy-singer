@@ -72,16 +72,16 @@
     - [x] auth server/client, callback route, login/logout UI와 보호 라우트 helper를 구현한다.
     - [x] 세션·소유권·비로그인·cross-user 테스트를 추가한다.
 
-- [TODO][PRD-FR-027] T-F008-auth-owned-mixing-queue-02 Leemage 미디어 어댑터와 사용자 reference 영구 저장
+- [DONE][PRD-FR-027] T-F008-auth-owned-mixing-queue-02 Leemage 미디어 어댑터와 사용자 reference 영구 저장
   - Date: 2026-08-06
   - Acceptance:
     - 분석 성공 reference가 Leemage presign/upload/confirm을 거쳐 사용자 profile에 연결된다.
     - 로컬 임시 오디오는 제거되고 DB에는 MediaAsset 메타데이터만 저장된다.
     - profile 삭제가 Leemage 삭제와 실패 정리 상태를 일관되게 처리한다.
   - Checklist:
-    - [ ] server env validation과 Leemage HTTP client, retry/error contract를 구현한다.
-    - [ ] MediaAsset·cleanup 모델과 profile 생성/삭제 흐름을 migration한다.
-    - [ ] mock Leemage 계약·부분 실패·정리·소유권 테스트를 추가한다.
+    - [x] server env validation과 Leemage HTTP client, retry/error contract를 구현한다.
+    - [x] MediaAsset·cleanup 모델과 profile 생성/삭제 흐름을 migration한다.
+    - [x] mock Leemage 계약·부분 실패·정리·소유권 테스트를 추가한다.
 
 - [TODO][PRD-FR-030] T-F008-auth-owned-mixing-queue-03 티켓 잔액·불변 원장·마이 페이지 구현
   - Date: 2026-08-06
@@ -153,10 +153,11 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm run db:migrate:deploy && pnpm run db:status` | `2026-08-06` | `PASS — auth ownership migration 적용, schema up to date` |
+| `pnpm run db:migrate:deploy && pnpm run db:status` | `2026-08-06` | `PASS — auth ownership·Leemage media migration 적용, schema up to date` |
 | `pnpm run test:auth:db` | `2026-08-06` | `PASS — owner 1건, cross-user 0건, fixture cleanup` |
 | `pnpm exec tsc --noEmit && pnpm run lint` | `2026-08-06` | `PASS` |
 | `pnpm run build` | `2026-08-06` | `PASS — Better Auth route와 보호 page 포함` |
 | `로컬 HTTP auth smoke test` | `2026-08-06` | `PASS — / 307→login, /login 200, 비로그인 recommendation POST 401` |
+| `pnpm run test:media` | `2026-08-06` | `PASS — 4 tests: presign/upload/confirm, 429 retry, user ownership, cleanup fallback` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-06T11:03:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-06T11:08:00.000Z -->

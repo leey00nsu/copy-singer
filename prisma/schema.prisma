@@ -40,6 +40,25 @@ enum SynthesisStatus {
   FAILED
 }
 
+enum MediaAssetKind {
+  REFERENCE
+  MIX_RESULT
+}
+
+enum MediaAssetStatus {
+  READY
+  DELETE_PENDING
+  DELETED
+  FAILED
+}
+
+enum MediaCleanupStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED
+}
+
 model Recording {
   id            String          @id @default(uuid()) @db.Uuid
   kind          RecordingKind
@@ -52,7 +71,9 @@ model Recording {
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   expiresAt     DateTime?
+  mediaAssetId  String?         @unique @db.Uuid
   vocalProfiles VocalProfile[]
+  mediaAsset    MediaAsset?     @relation(fields: [mediaAssetId], references: [id], onDelete: SetNull)
 
   @@index([kind, status])
   @@index([createdAt])
@@ -164,6 +185,7 @@ model User {
   accounts           Account[]
   vocalProfiles      VocalProfile[]
   recommendationRuns RecommendationRun[]
+  mediaAssets        MediaAsset[]
 }
 
 model Session {
@@ -209,4 +231,43 @@ model Verification {
   updatedAt  DateTime @updatedAt
 
   @@index([identifier])
+}
+
+model MediaAsset {
+  id                String            @id @default(uuid()) @db.Uuid
+  userId            String
+  kind              MediaAssetKind
+  provider          String            @default("LEEMAGE")
+  externalProjectId String
+  externalFileId    String
+  externalUrl       String
+  fileName          String
+  mimeType          String
+  sizeBytes         BigInt
+  status            MediaAssetStatus  @default(READY)
+  lastError         String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  deletedAt         DateTime?
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recording         Recording?
+  cleanupJobs       MediaCleanupJob[]
+
+  @@unique([externalProjectId, externalFileId])
+  @@index([userId, kind, createdAt])
+  @@index([status, updatedAt])
+}
+
+model MediaCleanupJob {
+  id            String             @id @default(uuid()) @db.Uuid
+  mediaAssetId  String             @db.Uuid
+  status        MediaCleanupStatus @default(PENDING)
+  attempts      Int                @default(0)
+  nextAttemptAt DateTime           @default(now())
+  lastError     String?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  mediaAsset    MediaAsset         @relation(fields: [mediaAssetId], references: [id], onDelete: Cascade)
+
+  @@index([status, nextAttemptAt])
 }
