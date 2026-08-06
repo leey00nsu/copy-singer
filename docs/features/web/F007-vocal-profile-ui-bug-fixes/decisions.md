@@ -54,3 +54,18 @@
   - **구현 전 확정 시점**: `pitchHistogram`, `pitchTrack` 계약과 기존 descriptor fallback을 spec/plan/tasks에 반영.
   - **DONE 전 확정 시점**: pYIN frame에서 반음 histogram과 최대 720 bucket의 pitch track을 생성하고 descriptor JSON으로 저장했다. 기존 5.4초 WebM의 실제 Next HTTP 분석에서 histogram 10 bins, track 466 points와 무성 구간을 확인하고 생성된 DB/recording fixture를 삭제했다. React 결과 대시보드에 범위·histogram·pitch trace와 품질 카드를 구현하고 데스크톱 및 375px 모바일에서 실제 분석값과 가로 overflow 부재를 검증했다.
 - **Consequences**: 새로 분석한 프로필은 상세 그래프를 제공하고 기존 프로필은 집계값과 재분석 안내를 제공한다. 내보내기와 외부 공유는 실제 제품 계약이 없어 제외한다.
+
+---
+
+## D004: 긴 파일은 클라이언트 확인 후 서버에서 최초 유효 음성 기준으로 trim (2026-08-06)
+
+- **Context**: 60초 초과 파일이 곧바로 `TOO_LONG`으로 거부되어 사용자가 외부 편집기로 직접 잘라야 했다. 사용자는 확인 대화상자에서 동의하면 첫 음부터 60초로 자동 자르기를 요청했다.
+- **Constraints**: 브라우저에서 MP3·M4A·WebM·WAV를 공통 재인코딩하기 어렵고, 자동 자른 파일은 분석뿐 아니라 후속 합성 reference와도 일치해야 한다.
+- **Options**: 브라우저 Blob byte slice, 브라우저 FFmpeg 번들, 서버 FFmpeg trim을 비교했다.
+- **Decision**: 브라우저는 duration 안내와 동의만 담당하고, analyzer가 `-45 dB` 최초 유효 음성부터 최대 60초 mono 22,050Hz WAV를 생성해 분석·보관한다.
+- **Rationale**: 압축 포맷의 임의 byte 절단을 피하고 기존 FFmpeg 신뢰 경계에서 모든 형식을 동일하게 처리하며, 저장 reference와 분석 입력을 일치시킨다.
+- **Trace**:
+  - **요청 시점**: 긴 파일 선택 시 자동 자르기 예/아니오 대화상자와 첫 음부터 60초 처리 요청.
+  - **구현 전 확정 시점**: T05와 FR-8/FR-9에 UI·multipart·FFmpeg·storage 계약 반영.
+  - **DONE 전 확정 시점**: 구현·검증 후 기록 예정.
+- **Consequences**: 동의한 긴 파일은 원본 컨테이너 대신 trim된 WAV가 보관되며, 거절하면 서버로 전송하지 않는다.
