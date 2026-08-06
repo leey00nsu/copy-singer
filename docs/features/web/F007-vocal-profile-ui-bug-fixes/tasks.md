@@ -27,6 +27,7 @@
   - 형식: `결정: approve|changes_requested|blocked ...` (또는 `decision: ...`)
   - PR 생성 전 최종 통과 기준은 `approve`
   - 기본 베이스라인으로 `agents/skills/create-pr.md`(`Pre-PR 기본 체크리스트`) 기준을 따르세요
+- **구현 승인**: 2026-08-06 사용자 승인 — 전체 추천 순위와 선택형 자동 피치 AI 믹싱까지 F007 범위 마무리
 - **PR 리뷰**: -
   - PR 리뷰 handoff를 시작하면 `Running`, 팀에서 별도 완료 상태를 추적할 때만 `Done`으로 변경
 - **PR 리뷰 Evidence**: -
@@ -151,7 +152,7 @@
 
 - [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
 - [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -175,4 +176,4 @@
 | `Next HTTP key-fit-v2 추천 smoke test` | `2026-08-06` | `PASS — 고음 실제 profile Top 3 잊었니/붉은 노을/천상연, selection score 저장, synthesis not_started, run cleanup` |
 | `Browser 전체 추천 순위 smoke test` | `2026-08-06` | `PASS — 실제 저장 profile로 100개/100개 not_started, AI 믹싱 버튼 100개, 100위 표시, 초기 믹싱 중 0개, 1280px overflow 없음, 검증 run cleanup; 실제 Modal 호출 안 함` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-06T18:18:16+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-06T18:21:00+09:00 -->
