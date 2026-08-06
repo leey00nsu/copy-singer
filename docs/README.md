@@ -40,6 +40,22 @@ npx lee-spec-kit docs get agents --json
 
 ---
 
+## 문서 라우팅
+
+| 문서 내용                                    | 위치                          |
+| -------------------------------------------- | ----------------------------- |
+| 제품 요구사항·사용자 스토리·제품 로드맵      | `docs/prd/`                   |
+| 여러 Feature가 공유하는 시스템 아키텍처 개요 | `docs/prd/*-overview.md`      |
+| 변경하기 어려운 아키텍처 원칙                | `docs/agents/constitution.md` |
+| Feature 승격 전 기술 조사·후보 비교          | 해당 `docs/ideas/I###-*.md`   |
+| 활성 Feature의 구현 설계                     | 해당 Feature의 `plan.md`      |
+| 기술 선택·대안·트레이드오프                  | 해당 Feature의 `decisions.md` |
+| 화면, Figma, 디자인 시스템, UI 플로우        | `docs/designs/`               |
+
+제품 로드맵은 `prd/`에 두지만 구현 순서와 작업 계획은 활성 Feature의 `plan.md`와 `tasks.md`에서 관리합니다. `designs/`는 UX와 시각 디자인 전용이며 기술 설계 문서를 두지 않습니다.
+
+---
+
 ## SSOT 관계 (PRD / Ideas / Features)
 
 문서 간 관계가 모호해지지 않도록, 아래를 “SSOT(단일 기준)”로 사용합니다.
@@ -114,6 +130,15 @@ npx lee-spec-kit docs get agents --json
 - `docsRepo` ("embedded" | "standalone"): Docs 관리 방식
 - `pushDocs` (boolean, optional): `docsRepo: "standalone"`일 때만 생성 (원격 push 여부)
 - `docsRemote` (string, optional): `pushDocs: true`일 때만 생성 (원격 레포 URL)
+- `workflow.prePrReview.reviewer` (object): Pre-PR 읽기 전용 서브에이전트 실행 설정
+  - `type`: 현재 `"subagent"`만 지원
+  - `model`: `"inherit"` 또는 런타임이 지원하는 모델명
+  - `reasoningEffort`: `low | medium | high | xhigh | max | ultra`
+  - `onUnavailable`: 지정 모델을 사용할 수 없을 때 `inherit | error`
+- `workflow.baseBranch` (string): 완료된 local Feature를 통합할 기준 브랜치
+- `workflow.completionStrategy` (`"local-ff" | "none"`): `done` 전에 local Feature를 fast-forward 병합·검증할지 여부
+- `workflow.deleteFeatureBranchAfterMerge` (boolean): cleanup 후 통합된 local Feature 브랜치 삭제 여부
+- `workflow.postMergeChecks` (array): local 통합 뒤 기준 브랜치에서 실행할 구조화 명령
 - `approval` (object, optional): repo 정책/커스텀 validator용 승인 checkpoint 메타데이터
   - 기본 Codex-native 경로는 여전히 문서화된 checkpoint와 원격/파괴적 작업을 우선 기준으로 승인 요청합니다.
   - legacy runtime은 이 필드를 직접 소비했지만, 이제는 category 기반 checkpoint 메타데이터가 정말 필요할 때만 유지하세요.
@@ -121,6 +146,8 @@ npx lee-spec-kit docs get agents --json
     - `mode: "category"`
     - `default: "skip"`
     - `requireCheckCategories: ["spec_approve", "implementation_approve"]`
+  - `local-ff`에서는 `implementation_approve`가 fast-forward 통합, post-merge 검사와 설정된 local cleanup까지 승인합니다.
+  - 통합 직전 별도 승인이 필요하면 `requireCheckCategories`에 `local_merge`를 추가합니다.
   - 승인 토큰: `A`
   - 허용 응답: `A`, `A OK`
 - `allowedDocsEntries` (object, optional): 비표준 `docs/` top-level 엔트리를 unmanaged docs로 보지 않도록 허용 목록에 추가
@@ -136,6 +163,26 @@ npx lee-spec-kit docs get agents --json
   "lang": "ko",
   "createdAt": "2026-08-05",
   "docsRepo": "embedded",
+  "workflow": {
+    "mode": "local",
+    "baseBranch": "main",
+    "completionStrategy": "local-ff",
+    "deleteFeatureBranchAfterMerge": true,
+    "postMergeChecks": [
+      { "command": "pnpm", "args": ["test"] },
+      { "command": "pnpm", "args": ["run", "lint"] },
+      { "command": "pnpm", "args": ["exec", "tsc", "--noEmit"] }
+    ],
+    "prePrReview": {
+      "evidenceMode": "path_required",
+      "reviewer": {
+        "type": "subagent",
+        "model": "inherit",
+        "reasoningEffort": "high",
+        "onUnavailable": "inherit"
+      }
+    }
+  },
   "allowedDocsEntries": {
     "dirs": ["plans"]
   },
@@ -146,6 +193,8 @@ npx lee-spec-kit docs get agents --json
   }
 }
 ```
+
+새 local 프로젝트는 `local-ff`를 사용합니다. 기존 프로젝트는 `update` 시 안전을 위해 `completionStrategy: "none"`으로 마이그레이션될 수 있으므로, 자동 통합을 원하면 검증 후 `local-ff`로 명시적으로 전환합니다.
 
 ```json
 {
