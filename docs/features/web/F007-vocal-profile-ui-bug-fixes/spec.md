@@ -17,7 +17,7 @@
 
 ## 목적
 
-실제 브라우저 UI 검증 중 발견된 보컬 프로필 흐름의 결함을 태스크 단위로 수정한다. 첫 번째 범위는 브라우저 `MediaRecorder`가 생성한 WebM/Opus 테스트 녹음이 UI에서는 정상 재생되지만, 보컬 프로필 분석 요청에서 `UNSUPPORTED_AUDIO`로 거부되는 문제다.
+실제 브라우저 UI 검증 중 발견된 보컬 프로필 흐름의 결함을 태스크 단위로 수정한다. 첫 번째 범위는 브라우저 `MediaRecorder`가 생성한 WebM/Opus 테스트 녹음이 UI에서는 정상 재생되지만, 보컬 프로필 분석 요청에서 `UNSUPPORTED_AUDIO`로 거부되는 문제다. 두 번째 범위는 사용자가 요청하지 않은 Sites/vinext Cloudflare Worker scaffold 때문에 Prisma 저장이 WASM 제한으로 실패하는 문제를 제거하고, 프로젝트를 공식 Next.js Node 런타임과 pnpm으로 정규화하는 것이다.
 
 현재 브라우저는 녹음 파일의 multipart MIME을 `audio/webm;codecs=opus`로 전송할 수 있다. 분석기는 허용 목록의 `audio/webm`과 완전 일치하는 MIME만 받아들이므로, 유효한 WebM이 FFmpeg 디코딩 전에 HTTP 415로 거부된다.
 
@@ -30,6 +30,10 @@
 - 지원 MIME의 parameter 유무에 대한 API 회귀 테스트
 - 실제 디코딩 불가 파일과 허용하지 않은 media type의 기존 오류 유지
 - UI 녹음 → multipart proxy → analyzer 계약 회귀 검증
+- vinext/Cloudflare Worker/Sites 전용 scaffold 제거
+- 공식 최신 Next.js App Router의 Node 런타임으로 전환
+- npm lockfile을 pnpm lockfile로 교체하고 프로젝트 명령을 pnpm으로 통일
+- 실제 HTTP 보컬 프로필 저장 및 기존 추천·합성 API 회귀 검증
 
 ### 제외 범위
 
@@ -37,6 +41,7 @@
 - 분석 알고리즘·최소 녹음 길이·품질 판정 기준 변경
 - 녹음 UI 디자인 변경
 - 아직 보고되지 않은 다른 UI 결함의 선제 수정
+- Cloudflare/Sites 배포 및 다른 호스팅 제공자 배포
 
 ---
 
@@ -55,6 +60,20 @@
 - [ ] 저장되는 recording MIME은 지원 여부를 안정적으로 판별할 수 있는 정규화된 media type이다.
 - [ ] `text/plain` 등 허용하지 않은 MIME은 계속 `UNSUPPORTED_AUDIO`와 HTTP 415를 반환한다.
 - [ ] MIME만 허용 형식으로 위장한 손상 파일은 성공으로 처리하지 않고 안전한 분석 오류를 반환한다.
+
+### US-2: 표준 Next.js 로컬 앱에서 프로필 저장
+
+**As a** 로컬에서 Copy Singer를 실행하는 사용자  
+**I want** 공식 Next.js 서버가 PostgreSQL에 분석 결과를 저장하기를 원한다  
+**So that** 요청하지 않은 Cloudflare Worker 제약 없이 전체 추천 흐름을 테스트할 수 있다
+
+**Acceptance Criteria:**
+
+- [ ] `pnpm dev`가 공식 Next.js 개발 서버를 시작하고 vinext, Vite, Wrangler 또는 Miniflare를 실행하지 않는다.
+- [ ] 브라우저 녹음 분석 후 `VocalProfile`과 `Recording`이 로컬 PostgreSQL에 저장된다.
+- [ ] `pnpm build`와 `pnpm start`가 표준 Next.js Node 런타임으로 동작한다.
+- [ ] pnpm을 유일한 패키지 매니저로 사용하고 `pnpm-lock.yaml`을 저장소의 lockfile로 관리한다.
+- [ ] 기존 프로필·추천·자동 합성·개발 Workbench 경로와 API 계약이 유지된다.
 
 ---
 
@@ -79,6 +98,21 @@
 - 테스트는 MIME 검증 통과뿐 아니라 실제 WebM/Opus fixture가 표준 WAV로 변환되어 분석되는 경로를 포함한다.
 - 기존 unsupported MIME 테스트를 유지한다.
 
+### FR-4: 공식 Next.js Node 런타임
+
+- `next`, `react`, `react-dom`을 현재 공식 stable 버전으로 사용한다.
+- `dev`, `build`, `start` 스크립트는 각각 `next dev`, `next build`, `next start`를 사용한다.
+- PostgreSQL/Prisma와 대용량 multipart proxy를 사용하는 Route Handler는 Node 런타임을 명시한다.
+- `.openai/hosting.json`, Sites Vite plugin, Worker entry와 Cloudflare/Vite/vinext 전용 의존성을 제거한다.
+- Cloudflare 호환을 위해 Prisma schema/runtime를 변경하지 않는다.
+
+### FR-5: pnpm 단일 패키지 매니저
+
+- `packageManager`에 현재 pnpm 버전을 고정한다.
+- `package-lock.json`을 제거하고 `pnpm-lock.yaml`을 생성한다.
+- package script 내부의 재귀 실행도 pnpm을 사용한다.
+- clean install과 lockfile 고정 설치가 성공해야 한다.
+
 ---
 
 ## 비기능 요구사항
@@ -87,6 +121,7 @@
 - **보안**: 파일 확장자나 클라이언트 MIME만 신뢰해 성공 처리하지 않고 FFmpeg 디코딩 실패를 오류로 처리한다.
 - **검증**: Python API 테스트, TypeScript, ESLint와 production build를 통과해야 한다.
 - **배포 경계**: 로컬 코드와 Docker analyzer 검증까지만 수행하며 배포하지 않는다.
+- **런타임 일관성**: 테스트는 Route Handler 직접 호출뿐 아니라 실제 `next dev` HTTP 요청을 포함한다.
 
 ---
 

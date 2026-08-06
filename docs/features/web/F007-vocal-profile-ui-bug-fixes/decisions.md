@@ -20,3 +20,22 @@
   - **PR**: 로컬 workflow로 생성하지 않음.
   - **Test/Log**: 수정 전 `curl` 재현 415; 수정 후 Python 20/20 PASS, Docker analyzer parameterized WebM HTTP 200, Node 전체 테스트·lint·TypeScript PASS (2026-08-06).
 - **Consequences**: recording metadata에는 parameter를 제외한 정규화 media type을 저장한다.
+
+---
+
+## D002: Sites/vinext를 제거하고 공식 Next.js와 pnpm으로 복원 (2026-08-06)
+
+- **Context**: 사용자는 로컬 Next.js 앱을 요청했지만 최초 scaffold에 Sites/vinext가 포함되어 API가 Cloudflare Worker에서 실행됐다. 실제 HTTP 프로필 저장은 `WebAssembly.Module(): Wasm code generation disallowed by embedder`로 실패했고, 같은 route를 Node에서 호출하면 PostgreSQL 저장에 성공했다.
+- **Constraints**: Cloudflare 배포 요구가 없고 기존 App Router UI/API, Prisma PostgreSQL, Modal proxy를 유지해야 한다. 패키지 매니저는 사용자 요청에 따라 pnpm으로 통일한다.
+- **Options**: Prisma를 Cloudflare runtime에 맞추기, DB API를 별도 Node 서비스로 분리하기, vinext를 제거하고 공식 Next.js Node 런타임으로 복원하기를 비교했다.
+- **Decision**: Sites/vinext/Worker/Vite scaffold를 제거하고 Next.js 16.3.0 Node App Router로 전환한다. pnpm 11.9.0을 고정하고 npm lockfile을 교체한다.
+- **Rationale**: 사용자 요구와 기존 Prisma·PostgreSQL·multipart 서버 계약에 직접 맞으며 불필요한 edge 제약과 이중 런타임을 제거한다.
+- **Trace**:
+  - **DOING 시작 시점**: PostgreSQL/analyzer health는 정상, vinext HTTP는 500, 동일 route의 Node 직접 호출은 201임을 확인했다. 개발용 예외 계측으로 Worker WASM 제한을 특정하고 계측을 원복했다.
+  - **DONE 전 확정 시점**: 구현·검증 후 기록 예정.
+  - **머지 후 확인**: 병합 후 기록 예정.
+- **Evidence**:
+  - **Commit**: T-F007-02 태스크 커밋 후 기록.
+  - **PR**: 로컬 workflow로 생성하지 않음.
+  - **Test/Log**: 2026-08-06 vinext HTTP 500 대 Node route HTTP 201 비교 및 Worker 예외 캡처.
+- **Consequences**: Sites 배포 설정은 제거되며 추후 배포 대상은 별도 feature에서 명시적으로 선택한다.

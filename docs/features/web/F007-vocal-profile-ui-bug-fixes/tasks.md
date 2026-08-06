@@ -72,6 +72,19 @@
     - [x] 실제 WebM/Opus 성공, unsupported MIME, 손상 payload 회귀 테스트를 통과한다.
     - [x] TypeScript, ESLint, production build와 Python 전체 테스트를 통과한다.
 
+- [TODO][PRD-NFR-005] T-F007-vocal-profile-ui-bug-fixes-02 공식 Next.js Node 런타임 및 pnpm으로 전환
+  - Date: 2026-08-06
+  - Acceptance:
+    - vinext/Cloudflare/Sites 전용 실행 경로가 제거되고 pnpm dev/build/start가 공식 Next.js Node 런타임으로 동작한다.
+    - 실제 Next HTTP 요청에서 WebM 분석 결과가 PostgreSQL에 저장되고 기존 프로필·추천·합성 API 회귀 검사가 통과한다.
+    - pnpm-lock.yaml이 유일한 lockfile이며 frozen install이 성공한다.
+  - Checklist:
+    - [ ] Sites/vinext/Vite/Worker 파일과 전용 의존성을 제거하고 Next.js 16.3.0 scripts를 구성한다.
+    - [ ] packageManager를 pnpm 11.9.0으로 고정하고 package-lock.json을 pnpm-lock.yaml로 교체한다.
+    - [ ] Prisma 및 오디오 Route Handler의 Node runtime 계약과 Next TypeScript 설정을 정리한다.
+    - [ ] 실제 next dev WebM→analyzer→Prisma HTTP 201 및 DB cleanup을 검증한다.
+    - [ ] pnpm frozen install, lint, TypeScript, Python, 전체 테스트와 production build를 통과한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.

@@ -22,6 +22,8 @@
 | 컨테이너 검증 | 기존 FFmpeg `standardize_audio` | 클라이언트 MIME을 신뢰하지 않고 실제 WebM/Opus 디코딩 가능 여부를 검증 |
 | API 회귀 테스트 | FastAPI TestClient + FFmpeg 생성 fixture | 브라우저와 같은 multipart MIME 및 실제 Opus payload를 analyzer 경계에서 검증 |
 | 전체 회귀 | pytest, TypeScript, ESLint, production build | 기존 보컬 프로필·추천·합성 흐름에 영향이 없는지 확인 |
+| 웹 런타임 | Next.js 16.3.0 Node.js App Router | 사용자가 요청한 공식 Next.js로 복원하고 Prisma/PostgreSQL의 Node 계약 유지 |
+| 패키지 관리 | pnpm 11.9.0 | 단일 lockfile과 빠른 재현 가능한 설치 사용 |
 
 ---
 
@@ -43,6 +45,8 @@ Next route는 multipart body를 그대로 analyzer에 전달하므로 브라우�
 
 확장자만으로 허용하지 않는다. MIME이 허용되더라도 `standardize_audio`의 FFmpeg 디코딩이 실패하면 기존 `UNSUPPORTED_AUDIO` 오류를 유지한다.
 
+두 번째 결함은 UI/API 코드를 Next.js 규약으로 작성했지만 실행기는 Sites starter의 vinext와 Cloudflare Worker였던 런타임 불일치다. `package.json`을 공식 Next.js 명령으로 전환하고 Sites/Worker/Vite 파일을 제거한다. Prisma Client는 기존 Node용 generator와 PostgreSQL adapter를 유지하며, Prisma 및 대용량 오디오 Route Handler에 `runtime = "nodejs"`를 명시한다. pnpm을 유일한 package manager로 설정하고 npm lockfile을 pnpm lockfile로 대체한다.
+
 ---
 
 ## 파일 구조
@@ -56,7 +60,14 @@ docs/features/web/F007-vocal-profile-ui-bug-fixes/
 ├── plan.md
 ├── tasks.md
 └── decisions.md
+package.json                         # Next scripts/dependencies, pnpm packageManager
+pnpm-lock.yaml                       # dependency SSOT
+tsconfig.json                        # standard Next.js compiler settings
+next.config.ts                       # Node Next 설정과 upload ceiling
+app/api/**/route.ts                  # server-only route의 Node runtime 선언
 ```
+
+제거 대상은 `.openai/hosting.json`, `vite.config.ts`, `build/sites-vite-plugin.ts`, `worker/index.ts`, `package-lock.json`과 vinext/Cloudflare/Vite/Wrangler 전용 의존성이다.
 
 ---
 
@@ -67,6 +78,8 @@ docs/features/web/F007-vocal-profile-ui-bug-fixes/
 - **보안·오류 회귀**: `text/plain`은 415, 허용 MIME을 사용한 손상 payload는 성공하지 않는지 확인한다.
 - **전체 회귀**: `python -m pytest services/vocal-profile-api/tests`, `npx tsc --noEmit`, `npm run lint`, `npm test`를 실행한다.
 - **로컬 UI 확인**: Docker analyzer 재빌드 후 브라우저 MediaRecorder 파일로 보컬 프로필 생성이 성공하는지 확인한다. 자동 테스트가 통과해도 사용자 수동 확인이 필요한 경우 구현 완료 결과에 명시한다.
+- **런타임 E2E**: 실제 `next dev`를 빈 포트에서 시작하고 parameterized WebM을 `/api/vocal-profiles`로 제출해 HTTP 201, DB row와 삭제 cleanup을 확인한다.
+- **패키지 재현성**: `pnpm install --frozen-lockfile`, `pnpm build`, `pnpm lint`, `pnpm exec tsc --noEmit`을 검증한다.
 
 ---
 
@@ -76,6 +89,7 @@ docs/features/web/F007-vocal-profile-ui-bug-fixes/
 - parameter 전체를 DB에 저장하지 않아 codec 정보는 사라지지만 현재 계약은 컨테이너 MIME만 사용하며 원본 파일은 그대로 보존한다.
 - 테스트 fixture 생성은 서비스의 필수 런타임인 FFmpeg를 사용하므로 테스트 환경에서 FFmpeg 부재 시 명확히 실패하게 한다.
 - 이번 feature에서는 로컬 Docker 코드만 변경하며 배포하지 않는다.
+- Next.js 전환 중 기존 실행 서버는 종료하고 검증 서버는 테스트 종료 후 정리한다.
 
 ---
 
