@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import subprocess
 from uuid import uuid4
 
 import numpy as np
@@ -31,6 +32,25 @@ def _guided_wav(path, preset: str = "medium") -> None:
     frequency = 440.0 * 2 ** ((glissando_midi - 69) / 12)
     glissando = 0.25 * np.sin(np.cumsum(2 * np.pi * frequency / SAMPLE_RATE))
     sf.write(path, np.concatenate([*notes, transition, glissando]), SAMPLE_RATE)
+
+
+def _webm_opus(source, output) -> None:
+    subprocess.run(
+        [
+            "ffmpeg",
+            "-hide_banner",
+            "-loglevel",
+            "error",
+            "-nostdin",
+            "-y",
+            "-i",
+            str(source),
+            "-c:a",
+            "libopus",
+            str(output),
+        ],
+        check=True,
+    )
 
 
 def test_health_analyze_and_delete(tmp_path, monkeypatch) -> None:
@@ -81,6 +101,45 @@ def test_rejects_unsupported_mime(tmp_path, monkeypatch) -> None:
             "/v1/analyze",
             headers={"X-Recording-ID": str(uuid4())},
             files={"audio": ("voice.txt", b"not audio", "text/plain")},
+        )
+
+    assert response.status_code == 415
+    assert response.json()["reasonCode"] == "UNSUPPORTED_AUDIO"
+
+
+def test_accepts_parameterized_browser_webm_opus(tmp_path, monkeypatch) -> None:
+    from app import main
+
+    monkeypatch.setattr(main, "STORAGE_ROOT", tmp_path / "storage")
+    source = tmp_path / "voice.wav"
+    webm = tmp_path / "voice.webm"
+    _guided_wav(source)
+    _webm_opus(source, webm)
+    recording_id = str(uuid4())
+
+    with TestClient(app) as client, webm.open("rb") as audio:
+        response = client.post(
+            "/v1/analyze",
+            headers={"X-Recording-ID": recording_id},
+            files={"audio": ("voice.webm", audio, "audio/webm;codecs=opus")},
+        )
+
+    assert response.status_code == 200, response.text
+    body = response.json()
+    assert body["recordingId"] == recording_id
+    assert body["mimeType"] == "audio/webm"
+    assert (main.STORAGE_ROOT / body["storagePath"]).exists()
+
+
+def test_rejects_damaged_payload_with_supported_parameterized_mime(tmp_path, monkeypatch) -> None:
+    from app import main
+
+    monkeypatch.setattr(main, "STORAGE_ROOT", tmp_path / "storage")
+    with TestClient(app) as client:
+        response = client.post(
+            "/v1/analyze",
+            headers={"X-Recording-ID": str(uuid4())},
+            files={"audio": ("voice.webm", b"not webm audio", "audio/webm;codecs=opus")},
         )
 
     assert response.status_code == 415

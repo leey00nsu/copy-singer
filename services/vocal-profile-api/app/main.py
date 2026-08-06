@@ -180,7 +180,7 @@ async def analyze(
     glissando_start_ms: Annotated[int | None, Form()] = None,
     glissando_end_ms: Annotated[int | None, Form()] = None,
 ) -> AnalyzerResponse:
-    mime_type = (audio.content_type or "").lower()
+    mime_type = (audio.content_type or "").partition(";")[0].strip().lower()
     suffix = ALLOWED_MIME_TYPES.get(mime_type)
     if suffix is None:
         raise AnalysisRejectedError("UNSUPPORTED_AUDIO", "Use a WAV, MP3, M4A, or WebM audio file.")
