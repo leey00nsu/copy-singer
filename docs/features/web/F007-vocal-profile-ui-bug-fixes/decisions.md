@@ -92,3 +92,15 @@
   - **PR**: 로컬 workflow로 생성하지 않음.
   - **Test/Log**: key-fit 19, recommendation 18, DB integration 3, Python 23, production build, TypeScript와 lint 통과. 실제 Next HTTP `key-fit-v2` run 생성·조회·cleanup 확인 (2026-08-06).
 - **Consequences**: 새 추천 실행은 기존 결과와 다른 순위를 가질 수 있어 scoring version을 올린다. 기존 `key-fit-v1` 실행 조회는 유지한다.
+
+---
+
+## D006: 전체 순위는 즉시 제공하고 합성은 항목별 명시 요청으로 분리 (2026-08-06)
+
+- **Context**: 상위 3곡만 노출하면 사용자가 나머지 카탈로그의 적합도를 비교할 수 없고, 추천 화면 진입과 동시에 3곡을 합성하면 관심 없는 곡에도 Modal GPU 비용이 발생한다. 또한 여성 reference와 남성 target처럼 음역 차이가 큰 조합은 피치 이동을 끈 합성에서 변환 품질이 낮았다.
+- **Constraints**: 기존 점수·추천 키·이유·합성 상태 모델과 과거 3곡 실행 조회를 유지하고, 개발용 자유 입력 Workbench 설정에는 영향을 주지 않아야 한다.
+- **Options**: 상위 N 확대와 자동 합성 유지, 페이지네이션된 전체 목록, 100곡 단일 목록과 항목별 선택형 합성을 비교했다.
+- **Decision**: 현재 고정 100곡을 selection score 순 단일 목록으로 제공한다. 추천 생성 시에는 합성을 시작하지 않고 각 `not_started` 항목의 `AI 믹싱` 버튼으로만 시작한다. 추천 제품 preset은 `auto_pitch_shift=true`로 변경한다.
+- **Rationale**: 모든 추천 정보를 즉시 비교할 수 있으면서 GPU 비용은 사용자 의도가 있는 곡에만 발생한다. SoulX-Singer의 자동 피치 이동을 사용해 reference/target 음역 차이가 큰 경우의 실패 가능성을 낮춘다.
+- **Compatibility**: 과거 RecommendationRun의 3개 item은 그대로 조회하며 새 실행만 100개 item을 만든다. 기존 상태 enum과 synthesis endpoint는 재사용한다.
+- **Consequences**: 초기 추천 화면에는 결과 오디오가 없고 사용자가 직접 믹싱을 시작해야 한다. 여러 서로 다른 항목을 누르는 행위는 각각 독립적인 GPU 작업을 생성한다.

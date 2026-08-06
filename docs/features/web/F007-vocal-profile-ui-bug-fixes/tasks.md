@@ -132,12 +132,25 @@
     - [x] 실제 저장 profile fixture와 100곡 artifact에서 반복 1위 편향 감소를 검증한다.
     - [x] 전체 Node·Python·DB 회귀와 production build를 통과한다.
 
+- [TODO][PRD-US-005][PRD-US-006][PRD-US-007][PRD-FR-011][PRD-FR-016][PRD-FR-017][PRD-FR-018][PRD-NFR-008] T-F007-vocal-profile-ui-bug-fixes-07 전체 추천 순위와 선택형 자동 피치 AI 믹싱
+  - Date: 2026-08-06
+  - Acceptance:
+    - 새 추천 실행은 100곡 전체를 적합도 순 목록으로 저장·반환하고 기존 3곡 실행 조회 호환성을 유지한다.
+    - 추천 생성·조회만으로 합성을 시작하지 않으며 사용자가 `AI 믹싱`을 누른 항목 하나만 `auto_pitch_shift=true`로 합성한다.
+    - 목록 항목에서 초기 버튼, 진행 상태, 성공 결과, 실패 재시도를 확인할 수 있다.
+  - Checklist:
+    - [ ] ranking·persistence·API를 100곡 전체 결과 계약으로 확장한다.
+    - [ ] 3개 카드와 mount-time 자동 합성을 전체 목록과 항목별 `AI 믹싱` 동작으로 교체한다.
+    - [ ] 추천 합성 제품 preset을 `auto_pitch_shift=true`로 변경하고 Workbench 설정과 분리한다.
+    - [ ] ranking·DB·합성·UI 회귀 테스트와 production build를 통과한다.
+    - [ ] 로컬 브라우저에서 전체 목록과 선택한 단일 항목만 합성 시작되는지 검증한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -161,4 +174,4 @@
 | `Browser 70초 MP3 자동 자르기` | `2026-08-06` | `PASS — 확인 modal 예/아니오, 상태 카드, Next HTTP 201, 결과 60.0초·22,050Hz, DB/source cleanup` |
 | `Next HTTP key-fit-v2 추천 smoke test` | `2026-08-06` | `PASS — 고음 실제 profile Top 3 잊었니/붉은 노을/천상연, selection score 저장, synthesis not_started, run cleanup` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-06T17:17:43+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-06T18:10:00+09:00 -->

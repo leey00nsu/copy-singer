@@ -29,7 +29,9 @@
 | 긴 파일 감지 | HTMLMediaElement metadata | 파일 전체 디코딩 없이 브라우저에서 duration 확인 |
 | 자동 trim | FFmpeg `silenceremove` + 60초 limit | 서버에서 포맷 공통 처리하고 최초 유효 음성 기준을 재현 가능하게 유지 |
 | 적합도 v2 | Sørensen–Dice 테시투라 겹침 | 좁은 곡이 사용자 음역 안에 들어온다는 이유만으로 최대 겹침 점수를 받는 편향 제거 |
-| Top 3 선택 | 원키 65% + 조정 35% - 단계형 shift 감점 | 원키 피치 합성 데모와 추천 순위를 정렬하면서 노래방 추천 키 정보 유지 |
+| 전체 순위 선택 | 원키 65% + 조정 35% - 단계형 shift 감점 | 같은 선택 점수와 동점 규칙으로 100곡 전체를 비교 가능하게 제공 |
+| 선택형 AI 믹싱 | 항목별 명시적 mutation + 기존 상태 polling | 추천 조회와 GPU 비용을 분리하고 사용자가 관심 있는 곡만 합성 |
+| 추천 합성 preset | `auto_pitch_shift=true` | 성별·음역 차이가 큰 reference/target도 자동 피치 이동을 적용해 변환 성공 가능성을 높임 |
 
 ---
 
@@ -61,6 +63,8 @@ Next route는 multipart body를 그대로 analyzer에 전달하므로 브라우�
 
 추천은 기존 `key-fit-v1`의 곡 구간 기준 coverage가 카탈로그 최협 테시투라인 `아크라포빅`에 유리하고, `adjustedScore` 단독 정렬이 원키 피치 데모와 불일치하는 문제를 함께 수정한다. `key-fit-v2`는 테시투라 Dice overlap을 사용하고 각 곡의 원키·최적 shift 점수는 유지한다. F005 ranking 단계에서 원키 65%, 조정 35%, 절대 shift별 단계형 감점을 합친 `selectionScore`로 정렬하며 이 값을 기존 Prisma JSON metrics에 저장해 migration 없이 새 실행을 재현한다. 기존 실행은 metrics에 selection score가 없을 수 있으므로 조회 호환성을 유지한다.
 
+추천 결과 확장은 selection score 계산 자체를 바꾸지 않고 기존 3개 slice를 제거해 분석된 100곡 전체를 rank 1~100으로 저장한다. 기존 3곡 RecommendationRun은 조회 호환성을 유지한다. 클라이언트의 mount-time 자동 합성 effect를 제거하고 각 `not_started` 행에 `AI 믹싱` mutation을 연결한다. 진행 중인 항목이 있을 때만 기존 polling을 사용하며, 제품 추천 합성 preset은 `auto_pitch_shift=true`로 바꾼다. 이 preset 변경은 자유 입력 개발 Workbench에 영향을 주지 않는다.
+
 ---
 
 ## 파일 구조
@@ -83,8 +87,10 @@ components/vocal-profile-results.tsx # 반응형 결과 대시보드
 lib/vocal-profile/visualization.ts   # descriptor parsing, MIDI axis/chart helpers
 components/long-audio-dialog.tsx     # 긴 파일 자동 자르기 확인 대화상자
 lib/key-fit/scorer.ts                 # key-fit-v2 대칭 overlap
-lib/recommendation/ranking.ts         # 원키 중심 selection score와 Top 3
-components/recommendation-results.tsx # 원키 음색 데모 표시
+lib/recommendation/ranking.ts         # 원키 중심 selection score와 전체 순위
+lib/recommendation/server.ts          # 전체 순위 저장 및 조회
+lib/recommendation/synthesis-state.ts # 선택형 AI 믹싱 제품 preset
+components/recommendation-results.tsx # 전체 목록, 항목별 AI 믹싱과 상태 표시
 ```
 
 제거 대상은 `.openai/hosting.json`, `vite.config.ts`, `build/sites-vite-plugin.ts`, `worker/index.ts`, `package-lock.json`과 vinext/Cloudflare/Vite/Wrangler 전용 의존성이다.
@@ -108,7 +114,11 @@ Next.js 16.3이 실행 모드별 경로로 다시 생성하는 `next-env.d.ts`�
 - **긴 파일 브라우저 검증**: 60초 초과 파일의 대화상자, `아니오` 취소, `예` 제출 표시를 로컬 UI에서 확인한다.
 - **추천 회귀**: 좁은 곡 포함 관계, 동일 구간, 무겹침의 Dice 경계와 원키/조정/shift 선택 점수·tie-break를 단위 테스트한다.
 - **실제 artifact 검증**: 현재 저장된 저음·중간·고음 사용자 profile fixture에 100곡을 적용해 순위 분산과 scoring version을 확인한다.
-- **추천 UI 검증**: 카드에서 `원키 음색 데모`와 추천 키 비적용 안내가 렌더링되는지 확인한다.
+- **추천 점수 UI 회귀**: 목록에서 원키 적합도, 추천 키와 선택 점수 기반 이유가 유지되는지 확인한다.
+- **전체 순위 회귀**: 100곡 artifact가 rank 1~100으로 모두 반환·저장되고 기존 점수 및 결정적 정렬을 유지하는지 확인한다.
+- **선택형 합성 회귀**: 추천 실행 생성 후 모든 항목이 `not_started`이고 합성 endpoint 호출 전 Modal 요청이 없으며, 지정한 한 항목만 시작되는지 확인한다.
+- **추천 목록 UI 검증**: 100개 행, 초기 `AI 믹싱` 버튼, 활성 항목 상태, 성공 오디오와 실패 재시도를 확인한다.
+- **preset 통합 검증**: 추천 합성 multipart가 `auto_pitch_shift=true`를 전달하고 개발 Workbench 설정은 독립적인지 확인한다.
 
 ---
 
@@ -123,6 +133,8 @@ Next.js 16.3이 실행 모드별 경로로 다시 생성하는 `next-env.d.ts`�
 - 구간이 매우 좁을 때에도 MIDI 축에 최소 폭을 두어 범위와 histogram이 겹치지 않게 한다.
 - 클라이언트 duration은 안내용이며 신뢰 경계가 아니므로 서버는 최종 출력 길이와 분석 품질을 다시 검증한다.
 - 한 소절 사용자 profile은 실제 가창 가능 전체 음역이 아니므로 selection score는 확정적 능력 판정이 아니라 원키 데모와 상대 비교를 정렬하는 값으로만 사용한다.
+- 100개 항목 전체 렌더링은 3개 카드보다 DOM과 응답 크기가 커지지만 현재 고정 카탈로그 규모에서는 단일 목록으로 제공하고, 규모 확대 시 pagination/virtualization을 별도 검토한다.
+- 사용자가 여러 곡의 버튼을 빠르게 누르면 여러 GPU 작업이 생길 수 있으므로 항목별 idempotency와 명확한 진행 상태를 유지하되 이번 범위에서 전역 작업 수 제한은 추가하지 않는다.
 
 ---
 
