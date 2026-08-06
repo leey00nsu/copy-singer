@@ -24,6 +24,8 @@
 | 전체 회귀 | pytest, TypeScript, ESLint, production build | 기존 보컬 프로필·추천·합성 흐름에 영향이 없는지 확인 |
 | 웹 런타임 | Next.js 16.3.0 Node.js App Router | 사용자가 요청한 공식 Next.js로 복원하고 Prisma/PostgreSQL의 Node 계약 유지 |
 | 패키지 관리 | pnpm 11.9.0 | 단일 lockfile과 빠른 재현 가능한 설치 사용 |
+| 시각화 descriptor | pYIN MIDI histogram + bounded time series | 전체 원시 frame을 저장하지 않고 그래프 재현에 필요한 정보만 보존 |
+| 결과 그래프 | React + 반응형 SVG | 새 차트 의존성 없이 SSR·접근성·디자인 제어 유지 |
 
 ---
 
@@ -47,6 +49,10 @@ Next route는 multipart body를 그대로 analyzer에 전달하므로 브라우�
 
 두 번째 결함은 UI/API 코드를 Next.js 규약으로 작성했지만 실행기는 Sites starter의 vinext와 Cloudflare Worker였던 런타임 불일치다. `package.json`을 공식 Next.js 명령으로 전환하고 Sites/Worker/Vite 파일을 제거한다. Prisma Client는 기존 Node용 generator와 PostgreSQL adapter를 유지하며, Prisma 및 대용량 오디오 Route Handler에 `runtime = "nodejs"`를 명시한다. pnpm을 유일한 package manager로 설정하고 npm lockfile을 pnpm lockfile로 대체한다.
 
+시각화는 `analyze_audio`가 이미 계산한 pYIN frame을 재사용한다. 유효 MIDI를 가장 가까운 반음 bin으로 집계하고 전체 유효 frame 대비 비율을 저장한다. 시간별 series는 원본 길이와 관계없이 최대 720개 bucket으로 축약하며 각 bucket에서 유효 pitch 중앙값을 사용하고 무성 bucket은 `midi: null`로 남겨 그래프 단절을 보존한다. 이 descriptor는 기존 `VocalProfile.descriptors` JSON에 저장하므로 Prisma migration은 필요하지 않다.
+
+웹은 결과 영역을 별도 컴포넌트로 분리한다. 범위 그래프, histogram, 요약 카드, 품질 카드와 접이식 피치 trace를 순수 SVG로 렌더링하고 descriptor가 없는 기존 row에는 그래프 대신 재분석 안내를 표시한다.
+
 ---
 
 ## 파일 구조
@@ -65,6 +71,8 @@ pnpm-lock.yaml                       # dependency SSOT
 tsconfig.json                        # standard Next.js compiler settings
 next.config.ts                       # Node Next 설정과 upload ceiling
 app/api/**/route.ts                  # server-only route의 Node runtime 선언
+components/vocal-profile-results.tsx # 반응형 결과 대시보드
+lib/vocal-profile/visualization.ts   # descriptor parsing, MIDI axis/chart helpers
 ```
 
 제거 대상은 `.openai/hosting.json`, `vite.config.ts`, `build/sites-vite-plugin.ts`, `worker/index.ts`, `package-lock.json`과 vinext/Cloudflare/Vite/Wrangler 전용 의존성이다.
@@ -81,6 +89,9 @@ Next.js 16.3이 실행 모드별 경로로 다시 생성하는 `next-env.d.ts`�
 - **로컬 UI 확인**: Docker analyzer 재빌드 후 브라우저 MediaRecorder 파일로 보컬 프로필 생성이 성공하는지 확인한다. 자동 테스트가 통과해도 사용자 수동 확인이 필요한 경우 구현 완료 결과에 명시한다.
 - **런타임 E2E**: 실제 `next dev`를 빈 포트에서 시작하고 parameterized WebM을 `/api/vocal-profiles`로 제출해 HTTP 201, DB row와 삭제 cleanup을 확인한다.
 - **패키지 재현성**: `pnpm install --frozen-lockfile`, `pnpm build`, `pnpm lint`, `pnpm exec tsc --noEmit`을 검증한다.
+- **분석 단위 테스트**: histogram 합계, pitch track 최대 720개, 무성 bucket 보존과 기존 통계 불변을 Python 테스트로 검증한다.
+- **UI 단위 테스트**: descriptor parser와 MIDI axis helper를 Node 테스트로 검증하고 descriptor 누락 fallback을 확인한다.
+- **브라우저 시각 검증**: 실제 분석 fixture로 데스크톱·모바일 결과 화면을 캡처해 그래프 overflow, 레이블과 카드 재배치를 확인한다.
 
 ---
 
@@ -91,6 +102,8 @@ Next.js 16.3이 실행 모드별 경로로 다시 생성하는 `next-env.d.ts`�
 - 테스트 fixture 생성은 서비스의 필수 런타임인 FFmpeg를 사용하므로 테스트 환경에서 FFmpeg 부재 시 명확히 실패하게 한다.
 - 이번 feature에서는 로컬 Docker 코드만 변경하며 배포하지 않는다.
 - Next.js 전환 중 기존 실행 서버는 종료하고 검증 서버는 테스트 종료 후 정리한다.
+- 다운샘플링은 원본 frame을 그대로 재현하지 않으므로 UI에 상세 추적이 시각화용 요약임을 명시한다.
+- 구간이 매우 좁을 때에도 MIDI 축에 최소 폭을 두어 범위와 histogram이 겹치지 않게 한다.
 
 ---
 

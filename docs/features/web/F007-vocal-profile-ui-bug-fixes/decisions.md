@@ -39,3 +39,18 @@
   - **PR**: 로컬 workflow로 생성하지 않음.
   - **Test/Log**: 2026-08-06 vinext HTTP 500 대 Node route HTTP 201 비교 및 Worker 예외 캡처. 전환 후 frozen install, Next production build, lint, TypeScript, Python 20 tests, Node 전체 회귀, DB recommendation 3 tests가 통과했으며 `next start` health가 HTTP 200을 반환했다.
 - **Consequences**: Sites 배포 설정은 제거되며 추후 배포 대상은 별도 feature에서 명시적으로 선택한다.
+
+---
+
+## D003: F007을 버그 수정과 보컬 프로필 UI 개선 범위로 확장 (2026-08-06)
+
+- **Context**: 사용자는 집계 숫자 중심 결과 대신 첨부 레퍼런스처럼 음역, 분포, 품질과 상세 피치 흐름을 시각적으로 확인하고 F007 안에서 계속 작업하기를 요청했다.
+- **Constraints**: 현재 API는 집계 통계만 반환하며 전체 원시 pYIN frame 저장은 PRD에서 제외한다. 기존 프로필과 추천 흐름은 깨지지 않아야 한다.
+- **Options**: 집계값만으로 유사 그래프를 추정하기, 전체 raw frame을 저장하기, histogram과 bounded series만 descriptor로 저장하기를 비교했다.
+- **Decision**: F007을 버그 수정 및 UI 개선 feature로 유지하고 T03 데이터 계약, T04 UI 순으로 확장한다. 전체 raw frame 대신 반음 histogram과 최대 720개 bucket의 시각화 series를 저장한다.
+- **Rationale**: 그래프를 실제 관측 데이터로 표현하면서 개인정보·DB 크기와 응답 크기를 제한하고 별도 migration 없이 기존 JSON descriptor를 재사용한다.
+- **Trace**:
+  - **요청 시점**: 첨부 UI를 기준으로 분석 데이터를 시각화하고 F007 안에서 진행하도록 사용자 요청.
+  - **구현 전 확정 시점**: `pitchHistogram`, `pitchTrack` 계약과 기존 descriptor fallback을 spec/plan/tasks에 반영.
+  - **DONE 전 확정 시점**: 구현·검증 후 기록 예정.
+- **Consequences**: 새로 분석한 프로필은 상세 그래프를 제공하고 기존 프로필은 집계값과 재분석 안내를 제공한다. 내보내기와 외부 공유는 실제 제품 계약이 없어 제외한다.

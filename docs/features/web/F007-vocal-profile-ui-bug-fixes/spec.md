@@ -17,7 +17,7 @@
 
 ## 목적
 
-실제 브라우저 UI 검증 중 발견된 보컬 프로필 흐름의 결함을 태스크 단위로 수정한다. 첫 번째 범위는 브라우저 `MediaRecorder`가 생성한 WebM/Opus 테스트 녹음이 UI에서는 정상 재생되지만, 보컬 프로필 분석 요청에서 `UNSUPPORTED_AUDIO`로 거부되는 문제다. 두 번째 범위는 사용자가 요청하지 않은 Sites/vinext Cloudflare Worker scaffold 때문에 Prisma 저장이 WASM 제한으로 실패하는 문제를 제거하고, 프로젝트를 공식 Next.js Node 런타임과 pnpm으로 정규화하는 것이다.
+실제 브라우저 UI 검증 중 발견된 보컬 프로필 흐름의 결함을 태스크 단위로 수정하고, 분석 결과를 사용자가 이해할 수 있는 시각적 프로필로 개선한다. 첫 번째 범위는 브라우저 `MediaRecorder`가 생성한 WebM/Opus 테스트 녹음이 UI에서는 정상 재생되지만, 보컬 프로필 분석 요청에서 `UNSUPPORTED_AUDIO`로 거부되는 문제다. 두 번째 범위는 사용자가 요청하지 않은 Sites/vinext Cloudflare Worker scaffold 때문에 Prisma 저장이 WASM 제한으로 실패하는 문제를 제거하고, 프로젝트를 공식 Next.js Node 런타임과 pnpm으로 정규화하는 것이다. 세 번째 범위는 집계 숫자만 나열하던 결과를 음역·분포·시간별 피치·품질 대시보드로 확장하는 것이다.
 
 현재 브라우저는 녹음 파일의 multipart MIME을 `audio/webm;codecs=opus`로 전송할 수 있다. 분석기는 허용 목록의 `audio/webm`과 완전 일치하는 MIME만 받아들이므로, 유효한 WebM이 FFmpeg 디코딩 전에 HTTP 415로 거부된다.
 
@@ -34,14 +34,20 @@
 - 공식 최신 Next.js App Router의 Node 런타임으로 전환
 - npm lockfile을 pnpm lockfile로 교체하고 프로젝트 명령을 pnpm으로 통일
 - 실제 HTTP 보컬 프로필 저장 및 기존 추천·합성 API 회귀 검증
+- 시각화용 음정 histogram과 크기 제한 피치 series 분석 descriptor
+- 전체 관측 음역·실용 음역·중앙음 범위 시각화
+- 음정 분포 막대그래프와 상세 피치 추적 SVG
+- 품질 지표 카드와 짧은 녹음의 한계 안내
+- 기존 descriptor가 없는 프로필의 안전한 fallback
 
 ### 제외 범위
 
 - 브라우저에서 WebM을 WAV로 재인코딩
 - 분석 알고리즘·최소 녹음 길이·품질 판정 기준 변경
-- 녹음 UI 디자인 변경
+- 녹음 전 입력 UI 디자인 변경
 - 아직 보고되지 않은 다른 UI 결함의 선제 수정
 - Cloudflare/Sites 배포 및 다른 호스팅 제공자 배포
+- 결과 이미지·PDF 내보내기와 외부 공유 기능
 
 ---
 
@@ -74,6 +80,21 @@
 - [x] `pnpm build`와 `pnpm start`가 표준 Next.js Node 런타임으로 동작한다.
 - [x] pnpm을 유일한 패키지 매니저로 사용하고 `pnpm-lock.yaml`을 저장소의 lockfile로 관리한다.
 - [x] 기존 프로필·추천·자동 합성·개발 Workbench 경로와 API 계약이 유지된다.
+
+### US-3: 분석 결과를 시각적 보컬 프로필로 확인
+
+**As a** 테스트 가창 분석을 마친 사용자
+**I want** 숫자뿐 아니라 음역과 음정 분포를 그래프로 확인하고 싶다
+**So that** 내 목소리의 관찰 범위와 분석 품질을 빠르게 이해할 수 있다
+
+**Acceptance Criteria:**
+
+- [ ] 전체 관측 음역, 실용 음역과 중앙음이 동일 MIDI 축에서 음이름과 함께 표시된다.
+- [ ] 음정별 상대 빈도가 막대그래프로 표시되고 중앙음 위치를 구분할 수 있다.
+- [ ] 시간에 따른 유효 피치가 상세 추적 그래프로 표시되며 무성 구간은 선이 이어지지 않는다.
+- [ ] 유성 비율, 피치 안정성, 클리핑, 평균 음량, 녹음 길이, 샘플레이트와 분석기 버전이 표시된다.
+- [ ] 작은 화면에서는 카드와 그래프가 세로로 재배치되고 가로 넘침 없이 읽을 수 있다.
+- [ ] 시각화 descriptor가 없는 기존 프로필도 집계 카드와 안내 문구를 오류 없이 표시한다.
 
 ---
 
@@ -113,6 +134,20 @@
 - package script 내부의 재귀 실행도 pnpm을 사용한다.
 - clean install과 lockfile 고정 설치가 성공해야 한다.
 
+### FR-6: 크기 제한 시각화 descriptor
+
+- analyzer는 유효 pYIN frame을 반음 단위로 집계한 `pitchHistogram`을 반환한다.
+- analyzer는 시간·MIDI·voiced 상태를 보존하면서 최대 포인트 수가 제한된 `pitchTrack`을 반환한다.
+- 전체 원시 frame 배열은 저장하지 않고 descriptor의 JSON 호환 숫자만 PostgreSQL에 저장한다.
+- 기존 집계 통계와 분석 판정은 시각화 데이터 생성 때문에 달라지지 않는다.
+
+### FR-7: 보컬 프로필 결과 대시보드
+
+- 결과 UI는 별도 차트 런타임 없이 접근 가능한 SVG와 기존 shadcn 컴포넌트로 렌더링한다.
+- MIDI 값은 음이름으로 변환하되 세부 수치는 MIDI 소수점 한 자리로 함께 표시한다.
+- 상세 피치 추적은 접고 펼칠 수 있으며 그래프의 축과 요약 텍스트를 제공한다.
+- 내보내기·공유 버튼은 실제 동작 계약이 생기기 전까지 표시하지 않는다.
+
 ---
 
 ## 비기능 요구사항
@@ -122,6 +157,8 @@
 - **검증**: Python API 테스트, TypeScript, ESLint와 production build를 통과해야 한다.
 - **배포 경계**: 로컬 코드와 Docker analyzer 검증까지만 수행하며 배포하지 않는다.
 - **런타임 일관성**: 테스트는 Route Handler 직접 호출뿐 아니라 실제 `next dev` HTTP 요청을 포함한다.
+- **데이터 크기**: 사용자 60초·곡 15분 입력 모두에서 피치 series는 고정된 최대 포인트 수를 넘지 않는다.
+- **접근성**: 그래프만으로 의미를 전달하지 않고 동일 핵심 값을 텍스트로 제공한다.
 
 ---
 
@@ -138,5 +175,5 @@
 ## 관련 문서
 
 - PRD: `../../../prd/copy-singer-prd.md`
-- PRD Refs: `PRD-US-001`, `PRD-FR-001`, `PRD-FR-002`, `PRD-FR-004`, `PRD-NFR-005`
+- PRD Refs: `PRD-US-001`, `PRD-US-002`, `PRD-US-008`, `PRD-FR-001`, `PRD-FR-002`, `PRD-FR-003`, `PRD-FR-004`, `PRD-FR-021`, `PRD-DATA-005`, `PRD-NFR-005`
 - Predecessor: `../F002-user-vocal-profile/spec.md`
