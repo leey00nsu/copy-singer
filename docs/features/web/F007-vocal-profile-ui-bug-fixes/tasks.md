@@ -110,4 +110,4 @@
 | `pnpm start /api/vocal-profiles/health` | `2026-08-06` | `PASS — HTTP 200, analyzer/database ok` |
 | `Docker analyzer audio/webm;codecs=opus smoke test` | `2026-08-06` | `PASS — HTTP 200, mimeType audio/webm, 8초 Opus 분석 후 fixture 삭제` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-06T14:56:54+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-06T15:28:00+09:00 -->

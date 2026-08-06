@@ -32,7 +32,7 @@
 - **Rationale**: 사용자 요구와 기존 Prisma·PostgreSQL·multipart 서버 계약에 직접 맞으며 불필요한 edge 제약과 이중 런타임을 제거한다.
 - **Trace**:
   - **DOING 시작 시점**: PostgreSQL/analyzer health는 정상, vinext HTTP는 500, 동일 route의 Node 직접 호출은 201임을 확인했다. 개발용 예외 계측으로 Worker WASM 제한을 특정하고 계측을 원복했다.
-  - **DONE 전 확정 시점**: Sites/vinext/Vite/Worker 실행 파일과 전용 의존성을 제거하고 Next.js 16.3.0의 `next dev/build/start`로 교체했다. `pnpm@11.9.0`과 `pnpm-lock.yaml`을 패키지 설치 SSOT로 고정했으며 서버 Route Handler에는 Node runtime을 명시했다. 실제 `next dev` HTTP 요청에서 parameterized WebM 분석과 PostgreSQL 저장이 201로 성공했고 테스트 데이터를 삭제했다.
+  - **DONE 전 확정 시점**: Sites/vinext/Vite/Worker 실행 파일과 전용 의존성을 제거하고 Next.js 16.3.0의 `next dev/build/start`로 교체했다. `pnpm@11.9.0`과 `pnpm-lock.yaml`을 패키지 설치 SSOT로 고정했으며 서버 Route Handler에는 Node runtime을 명시했다. 실제 `next dev` HTTP 요청에서 parameterized WebM 분석과 PostgreSQL 저장이 201로 성공했고 테스트 데이터를 삭제했다. Next.js 16.3이 `dev`와 `build`에서 서로 다른 generated type 경로로 덮어쓰는 `next-env.d.ts`는 공식 지침대로 Git 추적에서 제외했다.
   - **머지 후 확인**: 병합 후 기록 예정.
 - **Evidence**:
   - **Commit**: T-F007-02 태스크 커밋.

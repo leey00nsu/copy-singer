@@ -68,6 +68,7 @@ app/api/**/route.ts                  # server-only route의 Node runtime 선언
 ```
 
 제거 대상은 `.openai/hosting.json`, `vite.config.ts`, `build/sites-vite-plugin.ts`, `worker/index.ts`, `package-lock.json`과 vinext/Cloudflare/Vite/Wrangler 전용 의존성이다.
+Next.js 16.3이 실행 모드별 경로로 다시 생성하는 `next-env.d.ts`는 공식 지침에 따라 Git 추적에서 제외하고 `.gitignore`로 관리한다.
 
 ---
 
