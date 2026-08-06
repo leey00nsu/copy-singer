@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { midiToNoteName } from "@/lib/vocal-profile/pitch";
+import { VocalProfileResults } from "@/components/vocal-profile-results";
 import type { VocalProfileError, VocalProfileResponse } from "@/lib/vocal-profile/contract";
 
 const MAX_PROFILE_AUDIO_BYTES = 25 * 1024 * 1024;
@@ -340,22 +340,7 @@ export function VocalProfileWorkbench() {
                 </Button>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                  {[
-                    ["이번 소절 음역", `${midiToNoteName(profile.minMidi)} – ${midiToNoteName(profile.maxMidi)}`, `${profile.minMidi.toFixed(1)} – ${profile.maxMidi.toFixed(1)} MIDI`],
-                    ["관찰된 중심 구간", `${midiToNoteName(profile.tessituraLowMidi)} – ${midiToNoteName(profile.tessituraHighMidi)}`, `${profile.tessituraLowMidi.toFixed(1)} – ${profile.tessituraHighMidi.toFixed(1)} MIDI`],
-                    ["중심 음", midiToNoteName(profile.medianMidi), `${profile.medianMidi.toFixed(1)} MIDI`],
-                    ["음정 안정도", `${Math.round(profile.pitchStability * 100)}%`, `유성 구간 ${Math.round(profile.voicedRatio * 100)}%`],
-                  ].map(([label, value, detail]) => (
-                    <div className="rounded-xl border bg-muted/25 p-4" key={label}>
-                      <p className="text-xs text-muted-foreground">{label}</p><p className="mt-2 text-lg font-semibold">{value}</p><p className="mt-1 font-mono text-[11px] text-muted-foreground">{detail}</p>
-                    </div>
-                  ))}
-                </div>
-                <div className="grid gap-2 text-xs text-muted-foreground sm:grid-cols-2">
-                  <p>입력 레벨 {profile.rmsDb.toFixed(1)} dB · clipping {(profile.clippingRatio * 100).toFixed(2)}%</p>
-                  <p className="sm:text-right">{profile.analyzer} {profile.analyzerVersion} · 녹음 {profile.recording.durationMs ? `${(profile.recording.durationMs / 1000).toFixed(1)}초` : "-"}</p>
-                </div>
+                <VocalProfileResults profile={profile} />
                 <p className="text-xs text-muted-foreground">생성 {new Date(profile.createdAt).toLocaleString("ko-KR")} · 원본 만료 {profile.recording.expiresAt ? new Date(profile.recording.expiresAt).toLocaleString("ko-KR") : "-"}</p>
                 <div className="rounded-xl bg-muted/55 p-4 text-xs leading-6 text-muted-foreground">사용 권한이 있는 본인의 음성만 업로드하세요. 이 결과는 노래 추천을 위한 참고 측정값이며, 발성 능력이나 건강 상태를 진단하지 않습니다. 환경과 컨디션에 따라 달라질 수 있습니다.</div>
                 <Button className="w-full" disabled={recommending} onClick={() => void createRecommendations()} size="lg">
