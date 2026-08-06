@@ -55,11 +55,11 @@
 
 **Acceptance Criteria:**
 
-- [ ] `MediaRecorder`가 만든 `audio/webm;codecs=opus` 파일을 제출하면 MIME 검증 단계에서 거부되지 않는다.
-- [ ] 정상 WebM/Opus 입력은 기존 FFmpeg 표준화와 보컬 분석을 거쳐 프로필 생성 흐름으로 이어진다.
-- [ ] 저장되는 recording MIME은 지원 여부를 안정적으로 판별할 수 있는 정규화된 media type이다.
-- [ ] `text/plain` 등 허용하지 않은 MIME은 계속 `UNSUPPORTED_AUDIO`와 HTTP 415를 반환한다.
-- [ ] MIME만 허용 형식으로 위장한 손상 파일은 성공으로 처리하지 않고 안전한 분석 오류를 반환한다.
+- [x] `MediaRecorder`가 만든 `audio/webm;codecs=opus` 파일을 제출하면 MIME 검증 단계에서 거부되지 않는다.
+- [x] 정상 WebM/Opus 입력은 기존 FFmpeg 표준화와 보컬 분석을 거쳐 프로필 생성 흐름으로 이어진다.
+- [x] 저장되는 recording MIME은 지원 여부를 안정적으로 판별할 수 있는 정규화된 media type이다.
+- [x] `text/plain` 등 허용하지 않은 MIME은 계속 `UNSUPPORTED_AUDIO`와 HTTP 415를 반환한다.
+- [x] MIME만 허용 형식으로 위장한 손상 파일은 성공으로 처리하지 않고 안전한 분석 오류를 반환한다.
 
 ### US-2: 표준 Next.js 로컬 앱에서 프로필 저장
 
@@ -69,11 +69,11 @@
 
 **Acceptance Criteria:**
 
-- [ ] `pnpm dev`가 공식 Next.js 개발 서버를 시작하고 vinext, Vite, Wrangler 또는 Miniflare를 실행하지 않는다.
-- [ ] 브라우저 녹음 분석 후 `VocalProfile`과 `Recording`이 로컬 PostgreSQL에 저장된다.
-- [ ] `pnpm build`와 `pnpm start`가 표준 Next.js Node 런타임으로 동작한다.
-- [ ] pnpm을 유일한 패키지 매니저로 사용하고 `pnpm-lock.yaml`을 저장소의 lockfile로 관리한다.
-- [ ] 기존 프로필·추천·자동 합성·개발 Workbench 경로와 API 계약이 유지된다.
+- [x] `pnpm dev`가 공식 Next.js 개발 서버를 시작하고 vinext, Vite, Wrangler 또는 Miniflare를 실행하지 않는다.
+- [x] 브라우저 녹음 분석 후 `VocalProfile`과 `Recording`이 로컬 PostgreSQL에 저장된다.
+- [x] `pnpm build`와 `pnpm start`가 표준 Next.js Node 런타임으로 동작한다.
+- [x] pnpm을 유일한 패키지 매니저로 사용하고 `pnpm-lock.yaml`을 저장소의 lockfile로 관리한다.
+- [x] 기존 프로필·추천·자동 합성·개발 Workbench 경로와 API 계약이 유지된다.
 
 ---
 

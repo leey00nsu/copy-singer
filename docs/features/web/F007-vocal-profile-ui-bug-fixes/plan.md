@@ -76,7 +76,7 @@ app/api/**/route.ts                  # server-only route의 Node runtime 선언
 - **재현 테스트**: `audio/webm;codecs=opus` multipart가 수정 전 HTTP 415임을 확인한다.
 - **API 통합 테스트**: 기존 guided WAV fixture를 FFmpeg로 WebM/Opus로 변환하고 parameterized MIME으로 `/v1/analyze`에 제출해 200과 정규화된 `audio/webm` metadata를 확인한다.
 - **보안·오류 회귀**: `text/plain`은 415, 허용 MIME을 사용한 손상 payload는 성공하지 않는지 확인한다.
-- **전체 회귀**: `python -m pytest services/vocal-profile-api/tests`, `npx tsc --noEmit`, `npm run lint`, `npm test`를 실행한다.
+- **전체 회귀**: `services/vocal-profile-api/.venv/bin/python -m pytest services/vocal-profile-api/tests`, `pnpm exec tsc --noEmit`, `pnpm run lint`, `pnpm test`를 실행한다.
 - **로컬 UI 확인**: Docker analyzer 재빌드 후 브라우저 MediaRecorder 파일로 보컬 프로필 생성이 성공하는지 확인한다. 자동 테스트가 통과해도 사용자 수동 확인이 필요한 경우 구현 완료 결과에 명시한다.
 - **런타임 E2E**: 실제 `next dev`를 빈 포트에서 시작하고 parameterized WebM을 `/api/vocal-profiles`로 제출해 HTTP 201, DB row와 삭제 cleanup을 확인한다.
 - **패키지 재현성**: `pnpm install --frozen-lockfile`, `pnpm build`, `pnpm lint`, `pnpm exec tsc --noEmit`을 검증한다.

@@ -72,18 +72,18 @@
     - [x] 실제 WebM/Opus 성공, unsupported MIME, 손상 payload 회귀 테스트를 통과한다.
     - [x] TypeScript, ESLint, production build와 Python 전체 테스트를 통과한다.
 
-- [TODO][PRD-NFR-005] T-F007-vocal-profile-ui-bug-fixes-02 공식 Next.js Node 런타임 및 pnpm으로 전환
+- [DONE][PRD-NFR-005] T-F007-vocal-profile-ui-bug-fixes-02 공식 Next.js Node 런타임 및 pnpm으로 전환
   - Date: 2026-08-06
   - Acceptance:
     - vinext/Cloudflare/Sites 전용 실행 경로가 제거되고 pnpm dev/build/start가 공식 Next.js Node 런타임으로 동작한다.
     - 실제 Next HTTP 요청에서 WebM 분석 결과가 PostgreSQL에 저장되고 기존 프로필·추천·합성 API 회귀 검사가 통과한다.
     - pnpm-lock.yaml이 유일한 lockfile이며 frozen install이 성공한다.
   - Checklist:
-    - [ ] Sites/vinext/Vite/Worker 파일과 전용 의존성을 제거하고 Next.js 16.3.0 scripts를 구성한다.
-    - [ ] packageManager를 pnpm 11.9.0으로 고정하고 package-lock.json을 pnpm-lock.yaml로 교체한다.
-    - [ ] Prisma 및 오디오 Route Handler의 Node runtime 계약과 Next TypeScript 설정을 정리한다.
-    - [ ] 실제 next dev WebM→analyzer→Prisma HTTP 201 및 DB cleanup을 검증한다.
-    - [ ] pnpm frozen install, lint, TypeScript, Python, 전체 테스트와 production build를 통과한다.
+    - [x] Sites/vinext/Vite/Worker 파일과 전용 의존성을 제거하고 Next.js 16.3.0 scripts를 구성한다.
+    - [x] packageManager를 pnpm 11.9.0으로 고정하고 package-lock.json을 pnpm-lock.yaml로 교체한다.
+    - [x] Prisma 및 오디오 Route Handler의 Node runtime 계약과 Next TypeScript 설정을 정리한다.
+    - [x] 실제 next dev WebM→analyzer→Prisma HTTP 201 및 DB cleanup을 검증한다.
+    - [x] pnpm frozen install, lint, TypeScript, Python, 전체 테스트와 production build를 통과한다.
 
 ## 완료 조건
 
@@ -101,9 +101,13 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `services/vocal-profile-api/.venv/bin/python -m pytest services/vocal-profile-api/tests` | `2026-08-06` | `PASS — 20 tests, 실제 WebM/Opus parameterized MIME 포함` |
-| `npm test` | `2026-08-06` | `PASS — production build 및 전체 Node 회귀 테스트` |
-| `npm run lint` | `2026-08-06` | `PASS` |
-| `npx tsc --noEmit` | `2026-08-06` | `PASS` |
+| `pnpm install --frozen-lockfile` | `2026-08-06` | `PASS — pnpm 11.9.0 lockfile 고정 설치 및 Prisma/esbuild build scripts 완료` |
+| `pnpm test` | `2026-08-06` | `PASS — Next production build, SSR 3, catalog 7, key-fit 18, recommendation 15` |
+| `pnpm run lint` | `2026-08-06` | `PASS` |
+| `pnpm exec tsc --noEmit` | `2026-08-06` | `PASS` |
+| `pnpm run test:recommendation:db` | `2026-08-06` | `PASS — 3 tests` |
+| `pnpm dev 실제 HTTP WebM 프로필 저장` | `2026-08-06` | `PASS — HTTP 201, PostgreSQL 저장 및 DELETE cleanup` |
+| `pnpm start /api/vocal-profiles/health` | `2026-08-06` | `PASS — HTTP 200, analyzer/database ok` |
 | `Docker analyzer audio/webm;codecs=opus smoke test` | `2026-08-06` | `PASS — HTTP 200, mimeType audio/webm, 8초 Opus 분석 후 fixture 삭제` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-06T05:36:01.573Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-06T14:56:54+09:00 -->
