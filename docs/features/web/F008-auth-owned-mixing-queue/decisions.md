@@ -93,3 +93,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `pnpm run test:tickets` — 동시 가입 grant 1건, 동시 duplicate debit 1건, 음수 잔액 차단, ledger UI
 - **Consequences**: 모든 잔액 변경은 서비스 계층을 통과해야 하며 정합성 검증 도구가 필요하다.
+
+## D005: 믹싱 완료는 Leemage 결과 확정 이후로 정의 (2026-08-06)
+
+- **Context**: Modal succeeded 직후 결과를 외부 job TTL에만 의존하면 장기 히스토리에서 재생할 수 없고 추천 item에 상태를 두면 추천 삭제와 함께 이력이 사라진다.
+- **Constraints**: Modal 결과 TTL과 무관하게 결과를 유지하고 DB에 바이너리를 저장하지 않으며, 다른 사용자에게 저장소 URL을 노출하지 않아야 한다.
+- **Options**: Modal URL을 그대로 장기 보관, 추천 item에 Leemage 참조 추가, 독립 MixingJob에 결과 asset 연결을 비교했다.
+- **Decision**: Modal 결과 WAV를 Leemage에 confirm하고 MediaAsset과 MixingJob.resultAssetId를 연결한 뒤에만 SUCCEEDED로 전환한다. 추천 UI는 MixingJob 최신 상태를 투영하고 믹싱 히스토리는 사용자 소유 job을 직접 조회한다.
+- **Rationale**: 외부 GPU 작업과 영구 결과 저장의 부분 성공을 구분하고 프로필·추천 화면과 무관한 장기 작업 이력을 보존한다.
+- **Trace**:
+  - **DOING 시작 시점**: Modal 성공 이후 영구 저장 실패를 별도 실패로 표현하고 추천 삭제와 믹싱 이력을 분리하는 것으로 결정했다.
+  - **DONE 전 확정 시점**: worker가 Modal result audio를 Leemage에 presign/PUT/confirm한 뒤 MediaAsset과 job을 연결하도록 구현했다. history API/page는 사용자 job을 최신순 페이지네이션하고 active job을 5초 간격으로 갱신한다. 결과 audio endpoint는 세션 소유권을 확인하고 외부 URL을 숨긴 채 Range 응답을 프록시한다. 추천 UI는 새 queue endpoint만 사용하며 구 synthesis 시작 endpoint는 410으로 막았다.
+  - **머지 후 확인**: 머지 후 갱신한다.
+- **Evidence**:
+  - **Commit**: T05 task commit
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: pnpm run test:mixing:db; pnpm run test:mixing:ui; pnpm run test:recommendation
+- **Consequences**: Modal 성공 후 Leemage 저장이 실패하면 job은 실패로 표시되지만 이미 GPU 비용이 발생했으므로 티켓은 환불하지 않는다.

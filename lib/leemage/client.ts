@@ -161,6 +161,6 @@ export class LeemageClient {
   }
 }
 
-export function createLeemageClient() {
-  return new LeemageClient(leemageConfigFromEnv());
+export function createLeemageClient(fetchImpl?: FetchLike) {
+  return new LeemageClient(leemageConfigFromEnv(), fetchImpl);
 }

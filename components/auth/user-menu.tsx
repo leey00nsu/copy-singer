@@ -26,6 +26,7 @@ export function UserMenu({ name, image }: { name: string; image?: string | null 
         </span>
       )}
       <span className="max-w-32 truncate text-xs font-medium">{name}</span>
+      <Button variant="ghost" size="sm" render={<Link href="/mixing-history" />}>믹싱 내역</Button>
       <Button variant="ghost" size="sm" render={<Link href="/account" />}>내 계정</Button>
       <Button variant="ghost" size="icon-sm" aria-label="로그아웃" onClick={signOut}>
         <LogOut aria-hidden="true" />

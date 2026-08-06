@@ -7,6 +7,7 @@ import { analyzerUrl } from "@/lib/vocal-profile/server";
 import { SYNTHESIS_PRESET } from "@/lib/recommendation/synthesis-state";
 import { mixingLeaseSeconds, mixingPollIntervalMs } from "@/lib/config/server-env";
 import { applyTicketChange } from "@/lib/tickets/service";
+import { discardMediaAsset, storeMixingResult } from "@/lib/leemage/media-service";
 
 type ModalJob = {
   id: string;
@@ -203,17 +204,38 @@ export async function processClaimedMixingJob(jobId: string, owner: string, depe
       const modalJob = await response.json() as ModalJob;
       if (modalJob.status === "failed") throw new Error(modalJob.error || "Modal 합성 작업이 실패했습니다.");
       if (modalJob.status === "succeeded") {
-        await prisma.mixingJob.update({
-          where: { id: job.id },
-          data: {
-            status: "SUCCEEDED",
-            completedAt: new Date(),
-            errorCode: null,
-            errorDetail: null,
-            leaseOwner: null,
-            leaseExpiresAt: null,
-          },
+        const audio = await mediaBytes(
+          await fetchImpl(`${modal.url}/v1/conversions/${encodeURIComponent(job.modalJobId!)}/audio`, {
+            headers: { "X-API-Key": modal.key },
+            cache: "no-store",
+            signal: AbortSignal.timeout(60_000),
+          }),
+          "Modal 합성 결과를 불러오지 못했습니다",
+        );
+        const resultAsset = await storeMixingResult({
+          userId: job.userId,
+          mixingJobId: job.id,
+          bytes: new Uint8Array(audio.bytes),
+          mimeType: audio.contentType,
+          fetchImpl,
         });
+        try {
+          await prisma.mixingJob.update({
+            where: { id: job.id },
+            data: {
+              status: "SUCCEEDED",
+              resultAssetId: resultAsset.id,
+              completedAt: new Date(),
+              errorCode: null,
+              errorDetail: null,
+              leaseOwner: null,
+              leaseExpiresAt: null,
+            },
+          });
+        } catch (error) {
+          await discardMediaAsset(resultAsset.id);
+          throw error;
+        }
         return;
       }
       await heartbeat(job.id, owner, modalJob.status === "processing" ? "PROCESSING" : "SUBMITTED");

@@ -82,14 +82,14 @@ export function RecommendationResults({
     startingItemsRef.current.add(itemId);
     setRun((current) => current ? { ...current, items: current.items.map((item) => item.id === itemId ? { ...item, synthesis: { ...item.synthesis, status: "preparing", error: null } } : item) } : current);
     try {
-      const response = await fetch(`/api/recommendations/${run.id}/items/${itemId}/synthesis`, {
+      const response = await fetch("/api/mixing-jobs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ retry }),
+        body: JSON.stringify({ recommendationItemId: itemId, idempotencyKey: crypto.randomUUID() }),
       });
-      const payload = await response.json() as RecommendationRunResponse | { error?: { code?: string; message?: string; retryable?: boolean } };
-      if (!response.ok || !("items" in payload)) {
-        const error = "error" in payload ? payload.error : null;
+      const payload = await response.json() as { id?: string; error?: { code?: string; message?: string; retryable?: boolean } };
+      if (!response.ok || !payload.id) {
+        const error = payload.error;
         setRun((current) => current ? { ...current, items: current.items.map((item) => item.id === itemId ? {
           ...item,
           synthesis: {
@@ -104,7 +104,10 @@ export function RecommendationResults({
         } : item) } : current);
         return;
       }
-      mergeRun(payload);
+      const refreshed = await fetch(`/api/recommendations/${run.id}`, { cache: "no-store" });
+      if (!refreshed.ok) throw new Error("recommendation refresh failed");
+      mergeRun(await refreshed.json() as RecommendationRunResponse);
+      toast.success("믹싱을 접수했어요. 페이지를 닫아도 계속 진행됩니다.");
     } catch {
       setRun((current) => current ? { ...current, items: current.items.map((item) => item.id === itemId ? {
         ...item,
@@ -229,7 +232,7 @@ export function RecommendationResults({
 
         <section className="mx-auto mt-8 max-w-5xl rounded-2xl border bg-card/75 p-5 text-xs leading-6 text-muted-foreground">
           <div className="flex gap-3"><Mic2 className="mt-0.5 size-4 shrink-0" /><p>이 결과는 <strong className="text-foreground">{run.scoringVersion}</strong>으로 계산한 노래 선택 참고값이며 가창력이나 건강 상태를 평가하지 않습니다. 추천 노래방 키는 직접 부를 때의 안내이며 AI 믹싱에는 SoulX-Singer의 자동 피치 이동이 적용됩니다.</p></div>
-          <div className="mt-2 flex gap-3"><Clock3 className="mt-0.5 size-4 shrink-0" /><p>목록을 보는 것만으로 GPU 작업이 시작되지 않습니다. 누른 곡만 처리하며 결과와 입력은 최대 24시간 후 만료됩니다.</p></div>
+          <div className="mt-2 flex gap-3"><Clock3 className="mt-0.5 size-4 shrink-0" /><p>목록을 보는 것만으로 GPU 작업이 시작되지 않습니다. 누른 곡만 처리하며 페이지를 닫아도 믹싱 히스토리에서 상태와 결과를 확인할 수 있습니다.</p></div>
         </section>
 
         <div className="mx-auto mt-6 flex max-w-5xl justify-between gap-3">

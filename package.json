@@ -32,7 +32,8 @@
     "test:auth:db": "node --conditions react-server --import tsx --test tests/auth-ownership.integration.ts",
     "test:media": "node --conditions react-server --import tsx --test tests/leemage-client.test.ts tests/leemage-media.integration.ts",
     "test:tickets": "tsx --test tests/ticket-ledger-ui.test.tsx && node --conditions react-server --import tsx --test tests/ticket-ledger.integration.ts",
-    "test:mixing:db": "node --conditions react-server --import tsx --test tests/mixing-queue.integration.ts"
+    "test:mixing:db": "node --conditions react-server --import tsx --test tests/mixing-queue.integration.ts",
+    "test:mixing:ui": "tsx --test tests/mixing-history-ui.test.tsx"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

@@ -105,16 +105,16 @@
     - [x] claim/heartbeat/resume/attempt를 갖는 worker와 실행 script를 구현한다.
     - [x] 동시 claim, lease recovery, 실패 경계, temp cleanup 통합 테스트를 추가한다.
 
-- [TODO][PRD-FR-028] T-F008-auth-owned-mixing-queue-05 Leemage 결과 저장과 독립 믹싱 히스토리 구현
+- [DONE][PRD-FR-028] T-F008-auth-owned-mixing-queue-05 Leemage 결과 저장과 독립 믹싱 히스토리 구현
   - Date: 2026-08-06
   - Acceptance:
     - Modal 성공 결과가 Leemage confirm된 뒤 job이 succeeded가 되고 소유권 검증 API로 재생·다운로드된다.
     - 사용자는 재접속 후 mixing-history에서 모든 작업 상태와 결과를 최신순으로 확인한다.
     - recommendation AI 믹싱 버튼이 새 queue job을 생성하고 현재 상태를 history와 일관되게 표시한다.
   - Checklist:
-    - [ ] worker 결과 업로드와 MediaAsset 연결, 결과 audio proxy를 구현한다.
-    - [ ] history API/page와 recommendation job handoff UI를 구현한다.
-    - [ ] 성공·재접속·cross-user·페이지네이션·기존 추천 회귀 테스트를 추가한다.
+    - [x] worker 결과 업로드와 MediaAsset 연결, 결과 audio proxy를 구현한다.
+    - [x] history API/page와 recommendation job handoff UI를 구현한다.
+    - [x] 성공·재접속·cross-user·페이지네이션·기존 추천 회귀 테스트를 추가한다.
 
 - [TODO][PRD-FR-026] T-F008-auth-owned-mixing-queue-06 관리자 운영 대시보드와 티켓 조정 구현
   - Date: 2026-08-06
@@ -160,6 +160,9 @@
 | `로컬 HTTP auth smoke test` | `2026-08-06` | `PASS — / 307→login, /login 200, 비로그인 recommendation POST 401` |
 | `pnpm run test:media` | `2026-08-06` | `PASS — 4 tests: presign/upload/confirm, 429 retry, user ownership, cleanup fallback` |
 | `pnpm run test:tickets` | `2026-08-06` | `PASS — UI 1 + PostgreSQL concurrency/idempotency 1` |
-| `pnpm run test:mixing:db` | `2026-08-06` | `PASS — idempotent enqueue, SKIP LOCKED claim, lease recovery, refund boundary` |
+| `pnpm run test:mixing:db` | `2026-08-06` | `PASS — enqueue/claim/recovery/refund + Modal result→Leemage→history/cross-user` |
+| `pnpm run test:mixing:ui` | `2026-08-06` | `PASS — active status, persisted result playback/download` |
+| `pnpm run test:recommendation` | `2026-08-06` | `PASS — 18 tests, queued mixing UI regression 포함` |
+| `pnpm run test:recommendation:db` | `2026-08-06` | `PASS — 3 legacy persistence/synthesis integration tests` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-06T11:19:30.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-06T11:25:30.000Z -->

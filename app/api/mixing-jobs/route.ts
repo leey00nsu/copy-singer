@@ -4,6 +4,14 @@ import { requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
 import { enqueueMixingJob } from "@/lib/mixing/queue";
 import { MixingError, serializeMixingJob } from "@/lib/mixing/contract";
 import { InsufficientTicketsError } from "@/lib/tickets/service";
+import { getMixingHistory } from "@/lib/mixing/history";
+
+export async function GET(request: Request) {
+  const session = await requireApiSession(request);
+  if (!session) return unauthorizedResponse();
+  const requestedPage = Number(new URL(request.url).searchParams.get("page") ?? "1");
+  return Response.json(await getMixingHistory(session.user.id, Number.isFinite(requestedPage) ? requestedPage : 1));
+}
 
 export async function POST(request: Request) {
   const session = await requireApiSession(request);

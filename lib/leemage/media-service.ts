@@ -69,3 +69,30 @@ export async function discardMediaAsset(mediaAssetId: string) {
   if (outcome.deleted) await prisma.mediaAsset.deleteMany({ where: { id: mediaAssetId } });
   return outcome;
 }
+
+export async function storeMixingResult(input: {
+  userId: string;
+  mixingJobId: string;
+  bytes: Uint8Array;
+  mimeType: string;
+  fetchImpl?: typeof fetch;
+}) {
+  const stored = await createLeemageClient(input.fetchImpl).uploadFile({
+    fileName: `copy-singer-${input.mixingJobId}.wav`,
+    mimeType: input.mimeType,
+    bytes: input.bytes,
+  });
+  return prisma.mediaAsset.create({
+    data: {
+      userId: input.userId,
+      kind: "MIX_RESULT",
+      externalProjectId: stored.projectId,
+      externalFileId: stored.fileId,
+      externalUrl: stored.url,
+      fileName: stored.fileName,
+      mimeType: stored.mimeType,
+      sizeBytes: BigInt(stored.sizeBytes),
+      status: "READY",
+    },
+  });
+}

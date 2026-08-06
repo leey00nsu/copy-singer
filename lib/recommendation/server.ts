@@ -16,7 +16,14 @@ import { parseSynthesisAttempts, toPublicSynthesisStatus } from "./synthesis-sta
 const runInclude = {
   userVocalProfile: true,
   items: {
-    include: { song: true },
+    include: {
+      song: true,
+      mixingJobs: {
+        include: { resultAsset: true },
+        orderBy: { createdAt: "desc" as const },
+        take: 1,
+      },
+    },
     orderBy: { rank: "asc" as const },
   },
 };
@@ -89,6 +96,18 @@ export function serializeRecommendationRun(run: StoredRun): RecommendationRunRes
   const items = run.items.map((item) => {
     const metrics = parseMetrics(item.metrics);
     const reasonCodes = parseReasonCodes(item.reasonCodes);
+    const mixing = item.mixingJobs[0];
+    const mixingStatus = mixing
+      ? ({
+          PENDING: "preparing",
+          PREPARING: "preparing",
+          SUBMITTED: "queued",
+          PROCESSING: "processing",
+          SUCCEEDED: "succeeded",
+          FAILED: "failed",
+          CANCELED: "failed",
+        } as const)[mixing.status]
+      : null;
     return {
       id: item.id,
       rank: item.rank,
@@ -120,22 +139,30 @@ export function serializeRecommendationRun(run: StoredRun): RecommendationRunRes
       }),
       metrics,
       synthesis: {
-        status: item.synthesisStatus ? toPublicSynthesisStatus(item.synthesisStatus) : "not_started" as const,
-        jobId: item.synthesisJobId,
-        error: item.synthesisErrorCode
+        status: mixingStatus ?? (item.synthesisStatus ? toPublicSynthesisStatus(item.synthesisStatus) : "not_started" as const),
+        jobId: mixing?.id ?? item.synthesisJobId,
+        error: mixing?.errorCode
+          ? {
+              code: mixing.errorCode,
+              detail: mixing.errorDetail ?? "합성 작업을 완료하지 못했습니다.",
+              retryable: true,
+            }
+          : item.synthesisErrorCode
           ? {
               code: item.synthesisErrorCode,
               detail: item.synthesisErrorDetail ?? "합성 작업을 완료하지 못했습니다.",
               retryable: item.synthesisRetryable ?? false,
             }
           : null,
-        startedAt: item.synthesisStartedAt?.toISOString() ?? null,
-        updatedAt: item.synthesisUpdatedAt?.toISOString() ?? null,
-        completedAt: item.synthesisCompletedAt?.toISOString() ?? null,
-        expiresAt: item.synthesisExpiresAt?.toISOString() ?? null,
-        attemptCount: parseSynthesisAttempts(item.synthesisAttempts).length + (item.synthesisStatus ? 1 : 0),
+        startedAt: mixing?.startedAt?.toISOString() ?? item.synthesisStartedAt?.toISOString() ?? null,
+        updatedAt: mixing?.updatedAt.toISOString() ?? item.synthesisUpdatedAt?.toISOString() ?? null,
+        completedAt: mixing?.completedAt?.toISOString() ?? item.synthesisCompletedAt?.toISOString() ?? null,
+        expiresAt: mixing ? null : item.synthesisExpiresAt?.toISOString() ?? null,
+        attemptCount: mixing?.attempts ?? parseSynthesisAttempts(item.synthesisAttempts).length + (item.synthesisStatus ? 1 : 0),
         audioUrl:
-          item.synthesisStatus === "SUCCEEDED"
+          mixing?.status === "SUCCEEDED" && mixing.resultAsset?.status === "READY"
+            ? `/api/mixing-jobs/${mixing.id}/audio`
+            : item.synthesisStatus === "SUCCEEDED"
             ? `/api/recommendations/${run.id}/items/${item.id}/synthesis/audio`
             : null,
       },
