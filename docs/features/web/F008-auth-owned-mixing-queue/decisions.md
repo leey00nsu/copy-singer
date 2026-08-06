@@ -30,6 +30,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **DOING 시작 시점**: Better Auth 공식 Next.js handler, Prisma adapter, Google callback과 database hook 지원을 확인했다.
   - **DONE 전 확정 시점**: Better Auth 1.6.26과 공식 Prisma adapter를 설치하고 User/Session/Account/Verification migration, Google 전용 auth handler, 로그인·로그아웃 UI를 구현했다. profile·recommendation API는 세션 user ID로 신규 row를 귀속하고 cross-user 조회를 not found로 처리한다. Google env가 없는 로컬에서는 버튼을 비활성화해 잘못된 OAuth 요청을 막는다.
+  - **운영 검증 시점**: 실제 Google OAuth callback이 로컬 앱으로 302 복귀하고 세션 사용자 생성, 가입 티켓 1건 지급, 현재 사용자 admin allowlist 접근을 확인했다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
   - **Commit**: T01 task commit
@@ -49,6 +50,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **DOING 시작 시점**: OpenAPI에서 일반 파일의 presign, confirm, URL 응답과 delete endpoint, Bearer 인증, 429 계약을 확인했다.
   - **DONE 전 확정 시점**: `MediaAsset`과 `MediaCleanupJob` migration, Leemage API client와 analyzer reference 이전 흐름을 구현했다. 표준 WAV를 메모리의 제한된 60초 payload로 읽어 presign/PUT/confirm하고 성공 후 analyzer 임시본을 삭제한다. 프로필 삭제 또는 DB 보상 삭제에서 외부 삭제가 실패하면 asset을 `DELETE_PENDING`으로 두고 cleanup job을 생성한다.
+  - **운영 검증 시점**: 실제 Leemage 프로젝트에서 smoke 파일의 presign/upload/confirm/delete를 완료하고 cleanup 재시도 테스트를 통과했다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
   - **Commit**: T02 task commit
@@ -68,6 +70,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **DOING 시작 시점**: 작업 상태와 결제 경계가 제품 도메인이라 범용 queue payload와 별도 상태 복제를 피하는 방향으로 계획했다.
   - **DONE 전 확정 시점**: `MixingJob` migration과 원자적 enqueue API, `FOR UPDATE SKIP LOCKED` claim, lease/heartbeat, Modal submit/poll resume을 구현했다. 웹 요청은 PENDING job 생성 후 즉시 끝나며 `pnpm worker:mixing`의 설정 가능한 lane이 처리한다. pre-submit failure는 `refundState=REQUIRED`를 거쳐 idempotent refund하고, submitted job 실패는 환불하지 않는다. reference와 target은 기존 원격 서비스에서 메모리로 전달해 worker 로컬 파일을 생성하지 않으며 target analyzer의 기존 임시 디렉터리 cleanup 계약을 유지한다.
+  - **운영 검증 시점**: 별도 worker 프로세스를 SIGINT로 정상 종료한 뒤 재시작·재종료했고, crash 후 lease 회수와 중복 방지 통합 테스트를 다시 통과했다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
   - **Commit**: T04 task commit
