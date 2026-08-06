@@ -67,5 +67,9 @@
 - **Trace**:
   - **요청 시점**: 긴 파일 선택 시 자동 자르기 예/아니오 대화상자와 첫 음부터 60초 처리 요청.
   - **구현 전 확정 시점**: T05와 FR-8/FR-9에 UI·multipart·FFmpeg·storage 계약 반영.
-  - **DONE 전 확정 시점**: 구현·검증 후 기록 예정.
+  - **DONE 전 확정 시점**: 브라우저가 HTML media metadata로 70초 MP3를 감지하고 접근 가능한 확인 대화상자를 표시하도록 구현했다. `아니오`는 파일을 반영하지 않았고 `예`는 multipart 동의 플래그와 상태 안내를 적용했다. analyzer는 `silenceremove`의 `-45 dB` 기준과 60초 출력 제한으로 mono 22,050Hz `source.wav`를 생성해 같은 파일을 분석·보관한다. 선행 무음 5초와 유효 음성 65초 fixture 및 실제 Next HTTP 분석에서 결과 길이 60.0초, 저장 WAV metadata와 cleanup을 확인했다.
+- **Evidence**:
+  - **Commit**: T-F007-05 태스크 커밋.
+  - **PR**: 로컬 workflow로 생성하지 않음.
+  - **Test/Log**: Python 23 tests, Next production build와 Node 전체 테스트, lint, TypeScript, DB integration 3 tests 통과. 로컬 브라우저에서 70초 MP3 modal 양쪽 경로와 실제 분석 201을 확인하고 검증 데이터를 삭제함 (2026-08-06).
 - **Consequences**: 동의한 긴 파일은 원본 컨테이너 대신 trim된 WAV가 보관되며, 거절하면 서버로 전송하지 않는다.

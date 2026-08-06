@@ -108,24 +108,24 @@
     - [x] lint, TypeScript, production build와 전체 회귀 테스트를 통과한다.
     - [x] 실제 분석 결과를 데스크톱·모바일 브라우저에서 시각 검증한다.
 
-- [TODO][PRD-US-009][PRD-FR-022] T-F007-vocal-profile-ui-bug-fixes-05 긴 파일 최초 음성 기준 60초 자동 자르기
+- [DONE][PRD-US-009][PRD-FR-022] T-F007-vocal-profile-ui-bug-fixes-05 긴 파일 최초 음성 기준 60초 자동 자르기
   - Date: 2026-08-06
   - Acceptance:
     - 60초 초과 파일 선택 시 확인 대화상자가 표시되고 거절하면 선택을 취소하며 동의하면 최초 유효 음성부터 최대 60초로 분석한다.
     - 자동 자른 WAV가 분석과 후속 합성 reference에 동일하게 사용되고 일반 파일의 기존 계약이 유지된다.
   - Checklist:
-    - [ ] 브라우저 파일 duration 확인과 접근 가능한 예/아니오 대화상자를 구현한다.
-    - [ ] trim 동의 multipart 계약과 파일 카드 상태 안내를 구현한다.
-    - [ ] analyzer FFmpeg 선행 무음 제거·60초 제한과 trimmed source 보관을 구현한다.
-    - [ ] 동의/미동의 긴 오디오 API 회귀와 기존 분석 테스트를 통과한다.
-    - [ ] 실제 로컬 브라우저에서 대화상자와 두 선택 경로를 검증한다.
+    - [x] 브라우저 파일 duration 확인과 접근 가능한 예/아니오 대화상자를 구현한다.
+    - [x] trim 동의 multipart 계약과 파일 카드 상태 안내를 구현한다.
+    - [x] analyzer FFmpeg 선행 무음 제거·60초 제한과 trimmed source 보관을 구현한다.
+    - [x] 동의/미동의 긴 오디오 API 회귀와 기존 분석 테스트를 통과한다.
+    - [x] 실제 로컬 브라우저에서 대화상자와 두 선택 경로를 검증한다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -135,9 +135,9 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `services/vocal-profile-api/.venv/bin/python -m pytest services/vocal-profile-api/tests` | `2026-08-06` | `PASS — 21 tests, histogram·bounded pitch track·WebM/Opus 포함` |
+| `services/vocal-profile-api/.venv/bin/python -m pytest services/vocal-profile-api/tests` | `2026-08-06` | `PASS — 23 tests, 긴 파일 미동의 413·선행 무음 제거·60초 WAV 보관 포함` |
 | `pnpm install --frozen-lockfile` | `2026-08-06` | `PASS — pnpm 11.9.0 lockfile 고정 설치 및 Prisma/esbuild build scripts 완료` |
-| `pnpm test` | `2026-08-06` | `PASS — Next production build, profile visualization 4, catalog 7, key-fit 18, recommendation 15` |
+| `pnpm test` | `2026-08-06` | `PASS — Next production build, profile/긴 파일 5, catalog 7, key-fit 18, recommendation 15` |
 | `pnpm run lint` | `2026-08-06` | `PASS` |
 | `pnpm exec tsc --noEmit` | `2026-08-06` | `PASS` |
 | `pnpm run test:recommendation:db` | `2026-08-06` | `PASS — 3 tests` |
@@ -146,5 +146,6 @@
 | `Docker analyzer audio/webm;codecs=opus smoke test` | `2026-08-06` | `PASS — HTTP 200, mimeType audio/webm, 8초 Opus 분석 후 fixture 삭제` |
 | `Next HTTP visualization descriptor 저장 smoke test` | `2026-08-06` | `PASS — 5.4초 WebM, histogram 10 bins, track 466/720 points, 무성 구간 보존, DB cleanup` |
 | `Browser desktop/mobile vocal profile visualization` | `2026-08-06` | `PASS — 실제 분석값 렌더링, 375px 가로 overflow 없음, validation fixture cleanup` |
+| `Browser 70초 MP3 자동 자르기` | `2026-08-06` | `PASS — 확인 modal 예/아니오, 상태 카드, Next HTTP 201, 결과 60.0초·22,050Hz, DB/source cleanup` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-06T16:18:00+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-06T16:54:05+09:00 -->
