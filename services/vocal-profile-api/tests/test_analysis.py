@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from app.analysis import AnalysisRejectedError, SegmentBounds, analyze_audio
-from app.config import GUIDE_PATTERN, GUIDE_START_MIDI
+from app.config import GUIDE_PATTERN, GUIDE_START_MIDI, MAX_PITCH_TRACK_POINTS
 
 SAMPLE_RATE = 22_050
 
@@ -72,6 +72,25 @@ def test_unsegmented_upload_uses_whole_voiced_range() -> None:
     assert result.descriptors["segmented"] is False
     assert result.min_midi == pytest.approx(57, abs=1)
     assert result.max_midi == pytest.approx(69, abs=1)
+
+    histogram = result.descriptors["pitchHistogram"]
+    assert isinstance(histogram, list)
+    assert sum(bin_["count"] for bin_ in histogram) == result.descriptors["voicedFrameCount"]
+    assert sum(bin_["ratio"] for bin_ in histogram) == pytest.approx(1, abs=0.001)
+    assert {bin_["midi"] for bin_ in histogram} >= {57, 69}
+
+
+def test_pitch_track_is_bounded_and_preserves_unvoiced_gaps() -> None:
+    audio = np.concatenate([_tone(220, 5), np.zeros(SAMPLE_RATE), _tone(330, 5)]).astype(np.float32)
+    result = analyze_audio(audio, SAMPLE_RATE)
+    track = result.descriptors["pitchTrack"]
+
+    assert isinstance(track, list)
+    assert len(track) <= MAX_PITCH_TRACK_POINTS
+    assert 0 <= track[0]["timeMs"] <= 10
+    assert any(point["midi"] is None for point in track)
+    assert any(point["midi"] == pytest.approx(57, abs=1) for point in track if point["midi"] is not None)
+    assert any(point["midi"] == pytest.approx(64, abs=1) for point in track if point["midi"] is not None)
 
 
 def test_five_second_boundary_is_accepted() -> None:

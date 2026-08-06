@@ -35,6 +35,7 @@ MAX_UPLOAD_BYTES = 25 * 1024 * 1024
 UPLOAD_CHUNK_BYTES = 1024 * 1024
 STORAGE_ROOT = Path(os.environ.get("VOCAL_PROFILE_STORAGE_ROOT", "work/vocal-profiles"))
 SOURCE_TTL_HOURS = 24
+MAX_PITCH_TRACK_POINTS = 720
 ALLOWED_MIME_TYPES = {
     "audio/wav": ".wav",
     "audio/x-wav": ".wav",

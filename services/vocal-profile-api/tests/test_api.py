@@ -80,6 +80,9 @@ def test_health_analyze_and_delete(tmp_path, monkeypatch) -> None:
         body = response.json()
         assert body["recordingId"] == recording_id
         assert body["analyzer"] == "librosa-pyin"
+        assert body["descriptors"]["pitchHistogram"]
+        assert body["descriptors"]["pitchTrack"]
+        assert len(body["descriptors"]["pitchTrack"]) <= 720
         assert (main.STORAGE_ROOT / body["storagePath"]).exists()
 
         source_response = client.get(f"/v1/recordings/{recording_id}/source")

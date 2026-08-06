@@ -1,3 +1,20 @@
+export type PitchHistogramBin = {
+  midi: number;
+  count: number;
+  ratio: number;
+};
+
+export type PitchTrackPoint = {
+  timeMs: number;
+  midi: number | null;
+};
+
+export type VocalProfileDescriptors = Record<string, unknown> & {
+  pitchHistogram?: PitchHistogramBin[];
+  pitchTrack?: PitchTrackPoint[];
+  pitchTrackMaxPoints?: number;
+};
+
 export type AnalyzerProfile = {
   recordingId: string;
   storagePath: string;
@@ -19,7 +36,7 @@ export type AnalyzerProfile = {
   rmsDb: number;
   analyzer: string;
   analyzerVersion: string;
-  descriptors: Record<string, unknown>;
+  descriptors: VocalProfileDescriptors;
 };
 
 export type VocalProfileResponse = {
@@ -38,7 +55,7 @@ export type VocalProfileResponse = {
   rmsDb: number;
   analyzer: string;
   analyzerVersion: string;
-  descriptors: Record<string, unknown> | null;
+  descriptors: VocalProfileDescriptors | null;
   createdAt: string;
   recording: {
     id: string;

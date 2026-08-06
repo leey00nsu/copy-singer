@@ -12,6 +12,7 @@ from .config import (
     GUIDE_NOTE_DURATION_SECONDS,
     GUIDE_PATTERN,
     GUIDE_START_MIDI,
+    MAX_PITCH_TRACK_POINTS,
     AnalysisConfig,
 )
 
@@ -112,6 +113,47 @@ def _stability_score(
     }
 
 
+def _pitch_histogram(midi: npt.NDArray[np.floating]) -> list[dict[str, float | int]]:
+    rounded = np.rint(midi).astype(np.int16)
+    notes, counts = np.unique(rounded, return_counts=True)
+    total = int(np.sum(counts))
+    return [
+        {
+            "midi": int(note),
+            "count": int(count),
+            "ratio": _round(count / total),
+        }
+        for note, count in zip(notes, counts, strict=True)
+    ]
+
+
+def _pitch_track(
+    f0: npt.NDArray[np.floating],
+    voiced_flag: npt.NDArray[np.bool_],
+    sample_rate: int,
+    hop_length: int,
+) -> list[dict[str, float | int | None]]:
+    frame_count = int(f0.size)
+    bucket_count = min(frame_count, MAX_PITCH_TRACK_POINTS)
+    if bucket_count == 0:
+        return []
+
+    points: list[dict[str, float | int | None]] = []
+    for indices in np.array_split(np.arange(frame_count), bucket_count):
+        center_frame = float(np.mean(indices))
+        valid = np.asarray(voiced_flag[indices], dtype=bool) & np.isfinite(f0[indices])
+        midi: float | None = None
+        if np.any(valid):
+            midi = _round(float(np.median(librosa.hz_to_midi(f0[indices][valid]))), 2)
+        points.append(
+            {
+                "timeMs": round(center_frame * hop_length / sample_rate * 1_000),
+                "midi": midi,
+            }
+        )
+    return points
+
+
 def analyze_audio(
     audio: npt.NDArray[np.floating],
     sample_rate: int,
@@ -208,6 +250,9 @@ def analyze_audio(
             "hopLength": config.hop_length,
             "fminNote": config.fmin_note,
             "fmaxNote": config.fmax_note,
+            "pitchHistogram": _pitch_histogram(all_midi),
+            "pitchTrack": _pitch_track(f0, np.asarray(voiced_flag, dtype=bool), sample_rate, config.hop_length),
+            "pitchTrackMaxPoints": MAX_PITCH_TRACK_POINTS,
             **stability_details,
         },
     )
