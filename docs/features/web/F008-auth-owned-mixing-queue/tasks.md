@@ -116,16 +116,16 @@
     - [x] history API/page와 recommendation job handoff UI를 구현한다.
     - [x] 성공·재접속·cross-user·페이지네이션·기존 추천 회귀 테스트를 추가한다.
 
-- [TODO][PRD-FR-026] T-F008-auth-owned-mixing-queue-06 관리자 운영 대시보드와 티켓 조정 구현
+- [DONE][PRD-FR-026] T-F008-auth-owned-mixing-queue-06 관리자 운영 대시보드와 티켓 조정 구현
   - Date: 2026-08-06
   - Acceptance:
     - ADMIN_EMAILS 사용자만 관리자 집계·검색·티켓 조정 API와 화면에 접근한다.
     - 관리자는 사용자와 믹싱 상태를 검색·필터하고 사유가 있는 티켓 증감을 수행한다.
     - 관리자도 사용자 reference 오디오를 재생·다운로드할 수 없다.
   - Checklist:
-    - [ ] admin allowlist guard, overview/users/jobs API를 구현한다.
-    - [ ] admin dashboard와 ticket adjustment dialog를 구현한다.
-    - [ ] 일반 사용자 차단, 조정 원장 actor/reason, 음수 잔액 방지 테스트를 추가한다.
+    - [x] admin allowlist guard, overview/users/jobs API를 구현한다.
+    - [x] admin dashboard와 ticket adjustment dialog를 구현한다.
+    - [x] 일반 사용자 차단, 조정 원장 actor/reason, 음수 잔액 방지 테스트를 추가한다.
 
 - [TODO][PRD-NFR-005] T-F008-auth-owned-mixing-queue-07 전체 파이프라인·보안·운영 문서 검증
   - Date: 2026-08-06
@@ -164,5 +164,6 @@
 | `pnpm run test:mixing:ui` | `2026-08-06` | `PASS — active status, persisted result playback/download` |
 | `pnpm run test:recommendation` | `2026-08-06` | `PASS — 18 tests, queued mixing UI regression 포함` |
 | `pnpm run test:recommendation:db` | `2026-08-06` | `PASS — 3 legacy persistence/synthesis integration tests` |
+| `pnpm run test:admin` | `2026-08-06` | `PASS — allowlist, actor/reason ledger, negative guard, privacy-safe UI` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-06T11:25:30.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-06T11:30:00.000Z -->

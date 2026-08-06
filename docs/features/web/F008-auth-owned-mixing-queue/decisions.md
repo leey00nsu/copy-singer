@@ -110,3 +110,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: pnpm run test:mixing:db; pnpm run test:mixing:ui; pnpm run test:recommendation
 - **Consequences**: Modal 성공 후 Leemage 저장이 실패하면 job은 실패로 표시되지만 이미 GPU 비용이 발생했으므로 티켓은 환불하지 않는다.
+
+## D006: 관리자는 env email allowlist와 서버 guard로 제한 (2026-08-06)
+
+- **Context**: MVP 관리자 페이지가 필요하지만 역할 편집·권한 위임 제품 요구는 없고 reference 음성에는 관리자도 접근하면 안 된다.
+- **Constraints**: 일반 사용자는 관리자 API를 호출할 수 없어야 하고 관리자도 reference audio URL·재생 기능을 받아서는 안 된다.
+- **Options**: User role column, 별도 Admin 테이블, env email allowlist를 비교했다.
+- **Decision**: ADMIN_EMAILS의 정규화 email allowlist를 모든 admin page/API에서 서버 검증하고, 관리자는 운영 집계·검색과 사유가 있는 티켓 조정만 수행한다.
+- **Rationale**: 별도 역할 관리 복잡도 없이 운영자를 명시적으로 제한하고 UI 숨김에 의존하지 않는 권한 경계를 만든다.
+- **Trace**:
+  - **DOING 시작 시점**: 역할 관리가 별도 제품 범위가 아니므로 배포 설정으로 운영자를 제한하는 것으로 결정했다.
+  - **DONE 전 확정 시점**: `requireAdminPage`와 `requireAdminApi`가 매 요청 세션 email을 정규화 allowlist와 비교한다. admin dashboard에는 사용자·job 집계/검색과 티켓 조정만 제공하고 reference asset을 select하지 않는다. 티켓 조정은 3자 이상 사유, actor user ID와 idempotency key를 원장에 저장하고 잔액 초과 회수를 거부한다.
+  - **머지 후 확인**: 머지 후 갱신한다.
+- **Evidence**:
+  - **Commit**: T06 task commit
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: pnpm run test:admin; pnpm run build
+- **Consequences**: 관리자 추가·삭제에는 `ADMIN_EMAILS` 변경과 서버 재시작이 필요하다.

@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { UserMenu } from "@/components/auth/user-menu";
 import { getRequestSession } from "@/lib/auth/session";
+import { isAdminEmail } from "@/lib/auth/admin-policy";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -54,7 +55,7 @@ export default async function RootLayout({
         <TooltipProvider>
           {session ? (
             <div className="fixed right-4 top-4 z-50">
-              <UserMenu name={session.user.name} image={session.user.image} />
+              <UserMenu name={session.user.name} image={session.user.image} admin={isAdminEmail(session.user.email)} />
             </div>
           ) : null}
           {children}

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth/client";
 
-export function UserMenu({ name, image }: { name: string; image?: string | null }) {
+export function UserMenu({ name, image, admin = false }: { name: string; image?: string | null; admin?: boolean }) {
   const router = useRouter();
 
   async function signOut() {
@@ -28,6 +28,7 @@ export function UserMenu({ name, image }: { name: string; image?: string | null 
       <span className="max-w-32 truncate text-xs font-medium">{name}</span>
       <Button variant="ghost" size="sm" render={<Link href="/mixing-history" />}>믹싱 내역</Button>
       <Button variant="ghost" size="sm" render={<Link href="/account" />}>내 계정</Button>
+      {admin ? <Button variant="ghost" size="sm" render={<Link href="/admin" />}>관리</Button> : null}
       <Button variant="ghost" size="icon-sm" aria-label="로그아웃" onClick={signOut}>
         <LogOut aria-hidden="true" />
       </Button>
