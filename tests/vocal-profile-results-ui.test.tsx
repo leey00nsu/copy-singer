@@ -27,3 +27,16 @@ test("renders low, mid, and high smart-reference playback controls", () => {
   assert.match(html, /중앙 영역/);
   assert.match(html, /고음 영역/);
 });
+
+test("explains why legacy profiles have no smart-reference region controls", () => {
+  const html = renderToStaticMarkup(<VocalProfileResults profile={{ ...profile, descriptors: {} }} sourceAudioSrc="/profile.webm" />);
+  assert.match(html, /최신 분석기로 새 보컬 프로필을 만들어주세요/);
+});
+
+test("explains when no quality smart-reference regions were found", () => {
+  const html = renderToStaticMarkup(<VocalProfileResults profile={{
+    ...profile,
+    descriptors: { synthesisReference: { version: "smart-reference-v1", status: "unavailable" } },
+  }} sourceAudioSrc="/profile.webm" />);
+  assert.match(html, /안정적인 저음·중앙·고음 구간을 충분히 찾지 못했어요/);
+});

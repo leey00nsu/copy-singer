@@ -9,6 +9,13 @@ export type ReferenceBandSegment = {
 
 const BAND_LABELS = { low: "저음 영역", mid: "중앙 영역", high: "고음 영역" } as const;
 
+export function referenceBandAvailability(descriptors: VocalProfileDescriptors | null) {
+  const reference = descriptors?.synthesisReference;
+  if (!reference || typeof reference !== "object" || Array.isArray(reference)) return "legacy" as const;
+  if ((reference as { status?: unknown }).status === "unavailable") return "unavailable" as const;
+  return referenceBandSegments(descriptors).length > 0 ? "ready" as const : "legacy" as const;
+}
+
 export function referenceBandSegments(descriptors: VocalProfileDescriptors | null): ReferenceBandSegment[] {
   if (!descriptors) return [];
   const reference = descriptors.synthesisReference;

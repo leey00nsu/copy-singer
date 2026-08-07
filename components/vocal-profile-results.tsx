@@ -40,7 +40,7 @@ import {
   rangeChartData,
   type VocalProfileVisualization,
 } from "@/lib/vocal-profile/visualization";
-import { referenceBandSegments } from "@/lib/vocal-profile/reference-segments";
+import { referenceBandAvailability, referenceBandSegments } from "@/lib/vocal-profile/reference-segments";
 
 const RANGE_CHART_CONFIG = {
   range: { label: "음역", color: "#059669" },
@@ -191,6 +191,7 @@ function MetricCard({ label, value, detail, icon: Icon }: { label: string; value
 export function VocalProfileResults({ profile, sourceAudioSrc }: { profile: VocalProfileResponse; sourceAudioSrc?: string }) {
   const visualization = useMemo(() => parseVocalProfileVisualization(profile.descriptors), [profile.descriptors]);
   const referenceSegments = useMemo(() => referenceBandSegments(profile.descriptors), [profile.descriptors]);
+  const referenceAvailability = useMemo(() => referenceBandAvailability(profile.descriptors), [profile.descriptors]);
   const quality = [
     ["유성 비율", `${(profile.voicedRatio * 100).toFixed(1)}%`, Activity],
     ["피치 안정성", `${(profile.pitchStability * 100).toFixed(1)}%`, Gauge],
@@ -203,10 +204,23 @@ export function VocalProfileResults({ profile, sourceAudioSrc }: { profile: Voca
 
   return (
     <div className="space-y-4">
-      {sourceAudioSrc && referenceSegments.length > 0 ? (
+      {sourceAudioSrc ? (
         <Card className="shadow-sm">
-          <CardHeader className="pb-3"><CardTitle className="text-lg">AI 합성에 선택된 음역 구간</CardTitle><p className="text-xs leading-5 text-muted-foreground">무음을 제외하고 선택된 저음·중앙·고음 구간입니다. 버튼을 누르면 제출한 60초 오디오에서 해당 구간만 이어서 재생합니다.</p></CardHeader>
-          <CardContent><AudioWaveformPlayer label="AI 합성 reference 구간" segments={referenceSegments} src={sourceAudioSrc} /></CardContent>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">AI 합성에 선택된 음역 구간</CardTitle>
+            <p className="text-xs leading-5 text-muted-foreground">무음을 제외하고 선택된 저음·중앙·고음 구간입니다. 버튼을 누르면 제출한 60초 오디오에서 해당 구간만 이어서 재생합니다.</p>
+          </CardHeader>
+          <CardContent>
+            {referenceAvailability === "ready" ? (
+              <AudioWaveformPlayer label="AI 합성 reference 구간" segments={referenceSegments} src={sourceAudioSrc} />
+            ) : (
+              <div className="rounded-xl border border-dashed bg-muted/25 p-5 text-sm leading-6 text-muted-foreground">
+                {referenceAvailability === "unavailable"
+                  ? "이 녹음에서는 안정적인 저음·중앙·고음 구간을 충분히 찾지 못했어요. 반주 없이 여러 음높이가 포함된 소절로 다시 분석해주세요."
+                  : "이 프로필은 음역 영역 분석을 지원하기 전에 만들어졌어요. 최신 분석기로 새 보컬 프로필을 만들어주세요."}
+              </div>
+            )}
+          </CardContent>
         </Card>
       ) : null}
       <div className="grid gap-4 lg:grid-cols-[1.08fr_.92fr]">

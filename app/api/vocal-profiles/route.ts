@@ -2,7 +2,7 @@ export const runtime = "nodejs";
 
 import { prisma } from "@/lib/db/prisma";
 import { RecordingKind, RecordingStatus, type Prisma } from "@/generated/prisma/client";
-import type { AnalyzerProfile } from "@/lib/vocal-profile/contract";
+import { hasSmartReferenceContract, type AnalyzerProfile } from "@/lib/vocal-profile/contract";
 import { analyzerUrl, deleteAnalyzerRecording, serializeProfile } from "@/lib/vocal-profile/server";
 import { requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
 import { discardMediaAsset, storeAnalyzerReference, storeAnalyzerSynthesisReference } from "@/lib/leemage/media-service";
@@ -73,6 +73,18 @@ export async function POST(request: Request) {
     await deleteAnalyzerRecording(recordingId);
     return Response.json(
       { reasonCode: "ANALYSIS_FAILED", detail: "Analyzer returned an invalid recording ID.", retryable: true },
+      { status: 502 },
+    );
+  }
+
+  if (!hasSmartReferenceContract(analyzed)) {
+    await deleteAnalyzerRecording(recordingId);
+    return Response.json(
+      {
+        reasonCode: "ANALYZER_UPDATE_REQUIRED",
+        detail: "The local vocal analyzer does not support smart reference regions. Rebuild the vocal-profile-api container and try again.",
+        retryable: false,
+      },
       { status: 502 },
     );
   }

@@ -87,3 +87,16 @@ export type VocalProfileError = {
   detail: string;
   retryable: boolean;
 };
+
+export function hasSmartReferenceContract(profile: AnalyzerProfile) {
+  if (!("synthesisReference" in profile)) return false;
+  const descriptor = profile.descriptors.synthesisReference;
+  if (!descriptor || typeof descriptor !== "object" || Array.isArray(descriptor)) return false;
+  const value = descriptor as Record<string, unknown>;
+  if (value.version !== "smart-reference-v1") return false;
+  if (profile.synthesisReference === null) return value.status === "unavailable";
+  if (!profile.synthesisReference) return false;
+  return profile.synthesisReference.version === "smart-reference-v1"
+    && Array.isArray(profile.synthesisReference.sourceRanges)
+    && Array.isArray(value.sourceRanges);
+}
