@@ -1,8 +1,16 @@
 import type { PitchHistogramBin, PitchTrackPoint, VocalProfileDescriptors } from "./contract";
+import { midiToNoteName } from "./pitch";
 
 export type VocalProfileVisualization = {
   histogram: PitchHistogramBin[];
   track: PitchTrackPoint[];
+};
+
+export type VocalRangeMetrics = {
+  minMidi: number;
+  maxMidi: number;
+  tessituraLowMidi: number;
+  tessituraHighMidi: number;
 };
 
 function finiteNumber(value: unknown): value is number {
@@ -63,4 +71,39 @@ export function axisTicks(low: number, high: number, maximum = 9) {
 export function midiPosition(midi: number, low: number, high: number) {
   if (high <= low) return 0;
   return Math.min(100, Math.max(0, ((midi - low) / (high - low)) * 100));
+}
+
+export function rangeChartData(profile: VocalRangeMetrics) {
+  return [
+    {
+      key: "observed",
+      label: "전체 관측 음역",
+      range: [profile.minMidi, profile.maxMidi] as [number, number],
+      lowNote: midiToNoteName(profile.minMidi),
+      highNote: midiToNoteName(profile.maxMidi),
+    },
+    {
+      key: "tessitura",
+      label: "실용 음역",
+      range: [profile.tessituraLowMidi, profile.tessituraHighMidi] as [number, number],
+      lowNote: midiToNoteName(profile.tessituraLowMidi),
+      highNote: midiToNoteName(profile.tessituraHighMidi),
+    },
+  ];
+}
+
+export function histogramChartData(visualization: VocalProfileVisualization) {
+  return visualization.histogram.map((bin) => ({
+    ...bin,
+    note: midiToNoteName(bin.midi),
+    ratioPercent: bin.ratio * 100,
+  }));
+}
+
+export function pitchChartData(visualization: VocalProfileVisualization) {
+  return visualization.track.map((point) => ({
+    ...point,
+    timeSeconds: point.timeMs / 1_000,
+    note: point.midi === null ? null : midiToNoteName(point.midi),
+  }));
 }

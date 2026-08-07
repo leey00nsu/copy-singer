@@ -14,28 +14,47 @@ import {
   Target,
   Volume2,
 } from "lucide-react";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Line,
+  LineChart,
+  ReferenceLine,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import type { VocalProfileResponse } from "@/lib/vocal-profile/contract";
 import { midiToNoteName } from "@/lib/vocal-profile/pitch";
 import {
   axisTicks,
+  histogramChartData,
   midiAxis,
-  midiPosition,
   parseVocalProfileVisualization,
+  pitchChartData,
+  rangeChartData,
   type VocalProfileVisualization,
 } from "@/lib/vocal-profile/visualization";
 
-const CHART_GREEN = "#079455";
+const RANGE_CHART_CONFIG = {
+  range: { label: "음역", color: "#059669" },
+} satisfies ChartConfig;
+
+const HISTOGRAM_CHART_CONFIG = {
+  ratioPercent: { label: "상대 빈도", color: "#059669" },
+} satisfies ChartConfig;
+
+const PITCH_CHART_CONFIG = {
+  midi: { label: "음높이", color: "#059669" },
+} satisfies ChartConfig;
 
 function RangeProfile({ profile }: { profile: VocalProfileResponse }) {
   const axis = midiAxis(profile.minMidi, profile.maxMidi);
-  const ticks = axisTicks(axis.low, axis.high);
-  const rangeStart = midiPosition(profile.minMidi, axis.low, axis.high);
-  const rangeEnd = midiPosition(profile.maxMidi, axis.low, axis.high);
-  const tessituraStart = midiPosition(profile.tessituraLowMidi, axis.low, axis.high);
-  const tessituraEnd = midiPosition(profile.tessituraHighMidi, axis.low, axis.high);
-  const median = midiPosition(profile.medianMidi, axis.low, axis.high);
+  const data = rangeChartData(profile);
 
   return (
     <Card className="overflow-hidden shadow-sm">
@@ -48,21 +67,33 @@ function RangeProfile({ profile }: { profile: VocalProfileResponse }) {
         </div>
       </CardHeader>
       <CardContent>
-        <div aria-label={`전체 관측 음역 ${midiToNoteName(profile.minMidi)}부터 ${midiToNoteName(profile.maxMidi)}, 실용 음역 ${midiToNoteName(profile.tessituraLowMidi)}부터 ${midiToNoteName(profile.tessituraHighMidi)}, 중앙음 ${midiToNoteName(profile.medianMidi)}`} className="relative h-40" role="img">
-          {ticks.map((tick) => (
-            <div className="absolute top-0 -translate-x-1/2 text-center" key={tick} style={{ left: `${midiPosition(tick, axis.low, axis.high)}%` }}>
-              <span className="text-xs font-medium">{midiToNoteName(tick)}</span>
-              <span className="mx-auto mt-2 block h-3 w-px bg-border" />
-            </div>
-          ))}
-          <div className="absolute left-0 right-0 top-14 h-px bg-border" />
-          <div className="absolute top-[52px] h-3 rounded-full bg-emerald-200" style={{ left: `${rangeStart}%`, width: `${Math.max(1, rangeEnd - rangeStart)}%` }} />
-          <div className="absolute top-[84px] h-4 rounded-full bg-emerald-600" style={{ left: `${tessituraStart}%`, width: `${Math.max(1, tessituraEnd - tessituraStart)}%` }} />
-          <div className="absolute top-[44px] h-16 border-l border-dashed border-emerald-500" style={{ left: `${median}%` }}><span className="absolute -left-1.5 -top-1 size-3 rounded-full bg-emerald-600" /></div>
-          <span className="absolute top-[116px] -translate-x-1/2 font-mono text-[10px] text-muted-foreground" style={{ left: `${rangeStart}%` }}>{profile.minMidi.toFixed(1)}</span>
-          <span className="absolute top-[116px] -translate-x-1/2 font-mono text-[10px] text-muted-foreground" style={{ left: `${median}%` }}>{profile.medianMidi.toFixed(1)}</span>
-          <span className="absolute top-[116px] -translate-x-1/2 font-mono text-[10px] text-muted-foreground" style={{ left: `${rangeEnd}%` }}>{profile.maxMidi.toFixed(1)}</span>
-        </div>
+        <ChartContainer
+          aria-label={`전체 관측 음역 ${midiToNoteName(profile.minMidi)}부터 ${midiToNoteName(profile.maxMidi)}, 실용 음역 ${midiToNoteName(profile.tessituraLowMidi)}부터 ${midiToNoteName(profile.tessituraHighMidi)}, 중앙음 ${midiToNoteName(profile.medianMidi)}`}
+          className="h-44 w-full aspect-auto"
+          config={RANGE_CHART_CONFIG}
+          role="img"
+        >
+          <BarChart accessibilityLayer data={data} layout="vertical" margin={{ left: 8, right: 18, top: 10, bottom: 8 }}>
+            <CartesianGrid horizontal={false} strokeDasharray="4 4" />
+            <XAxis dataKey="range" domain={[axis.low, axis.high]} tickFormatter={(value) => midiToNoteName(Number(value))} type="number" />
+            <YAxis dataKey="label" hide type="category" />
+            <ChartTooltip
+              content={
+                <ChartTooltipContent
+                  hideLabel
+                  formatter={(_, __, item) => {
+                    const row = item.payload as (typeof data)[number];
+                    return <div className="grid gap-1"><span className="font-medium">{row.label}</span><span className="font-mono text-muted-foreground">{row.lowNote} – {row.highNote} · {row.range[0].toFixed(1)}–{row.range[1].toFixed(1)} MIDI</span></div>;
+                  }}
+                />
+              }
+            />
+            <ReferenceLine label={{ value: `중앙음 ${midiToNoteName(profile.medianMidi)}`, position: "top", fontSize: 10 }} stroke="#047857" strokeDasharray="4 4" x={profile.medianMidi} />
+            <Bar dataKey="range" radius={8}>
+              {data.map((row) => <Cell fill={row.key === "observed" ? "#a7f3d0" : "var(--color-range)"} key={row.key} />)}
+            </Bar>
+          </BarChart>
+        </ChartContainer>
         <div className="grid overflow-hidden rounded-xl border sm:grid-cols-3">
           {[
             ["전체 관측 음역", `${midiToNoteName(profile.minMidi)} ~ ${midiToNoteName(profile.maxMidi)}`, `${profile.minMidi.toFixed(1)} – ${profile.maxMidi.toFixed(1)} MIDI`],
@@ -83,38 +114,25 @@ function RangeProfile({ profile }: { profile: VocalProfileResponse }) {
 
 function HistogramChart({ profile, visualization }: { profile: VocalProfileResponse; visualization: VocalProfileVisualization | null }) {
   if (!visualization) return <VisualizationUnavailable title="음정 분포" />;
-  const bins = visualization.histogram;
-  const maximum = Math.max(...bins.map((bin) => bin.ratio), 0.01);
-  const width = 720;
-  const height = 250;
-  const left = 42;
-  const right = 16;
-  const top = 22;
-  const bottom = 42;
-  const innerWidth = width - left - right;
-  const innerHeight = height - top - bottom;
-  const gap = 7;
-  const barWidth = Math.max(4, innerWidth / bins.length - gap);
-  const medianIndex = bins.reduce((best, bin, index) => Math.abs(bin.midi - profile.medianMidi) < Math.abs(bins[best]!.midi - profile.medianMidi) ? index : best, 0);
+  const bins = histogramChartData(visualization);
+  const medianBin = bins.reduce((best, bin) => Math.abs(bin.midi - profile.medianMidi) < Math.abs(best.midi - profile.medianMidi) ? bin : best, bins[0]!);
 
   return (
     <Card className="shadow-sm">
       <CardHeader className="pb-2"><CardTitle className="text-lg">음정 분포</CardTitle><p className="text-xs text-muted-foreground">오래 머문 음일수록 막대가 높습니다.</p></CardHeader>
       <CardContent>
-        <svg aria-label="음정별 상대 빈도 막대그래프" className="h-auto w-full overflow-visible" role="img" viewBox={`0 0 ${width} ${height}`}>
-          {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
-            const y = top + innerHeight * (1 - ratio);
-            return <g key={ratio}><line stroke="currentColor" className="text-border" strokeDasharray="4 4" x1={left} x2={width - right} y1={y} y2={y} /><text className="fill-muted-foreground text-[10px]" textAnchor="end" x={left - 8} y={y + 3}>{Math.round(maximum * ratio * 100)}</text></g>;
-          })}
-          {bins.map((bin, index) => {
-            const slot = innerWidth / bins.length;
-            const x = left + index * slot + (slot - barWidth) / 2;
-            const barHeight = (bin.ratio / maximum) * innerHeight;
-            return <g key={bin.midi}><rect fill={CHART_GREEN} opacity={index === medianIndex ? 1 : 0.82} rx="4" x={x} y={top + innerHeight - barHeight} width={barWidth} height={barHeight} /><text className="fill-foreground text-[10px]" textAnchor="middle" x={x + barWidth / 2} y={height - 20}>{midiToNoteName(bin.midi)}</text></g>;
-          })}
-          <line stroke={CHART_GREEN} strokeDasharray="4 4" opacity=".55" x1={left + (medianIndex + 0.5) * (innerWidth / bins.length)} x2={left + (medianIndex + 0.5) * (innerWidth / bins.length)} y1={top - 8} y2={top + innerHeight} />
-          <text className="fill-muted-foreground text-[9px]" x="2" y="12">상대 빈도 (%)</text>
-        </svg>
+        <ChartContainer aria-label="음정별 상대 빈도 막대그래프" className="h-[250px] w-full aspect-auto" config={HISTOGRAM_CHART_CONFIG} role="img">
+          <BarChart accessibilityLayer data={bins} margin={{ left: 0, right: 8, top: 12, bottom: 4 }}>
+            <CartesianGrid vertical={false} strokeDasharray="4 4" />
+            <XAxis dataKey="note" tickLine={false} />
+            <YAxis axisLine={false} tickFormatter={(value) => `${Number(value).toFixed(0)}%`} tickLine={false} width={38} />
+            <ChartTooltip
+              content={<ChartTooltipContent formatter={(value, _, item) => <div className="flex min-w-32 justify-between gap-4"><span>{item.payload.note} · {item.payload.midi.toFixed(1)} MIDI</span><span className="font-mono font-medium">{Number(value).toFixed(1)}%</span></div>} hideLabel />}
+            />
+            <ReferenceLine stroke="#047857" strokeDasharray="4 4" x={medianBin.note} />
+            <Bar dataKey="ratioPercent" fill="var(--color-ratioPercent)" radius={[5, 5, 0, 0]} />
+          </BarChart>
+        </ChartContainer>
       </CardContent>
     </Card>
   );
@@ -135,29 +153,7 @@ function PitchTrace({ visualization }: { visualization: VocalProfileVisualizatio
   const voiced = visualization.track.filter((point): point is { timeMs: number; midi: number } => point.midi !== null);
   if (voiced.length === 0) return null;
   const axis = midiAxis(Math.min(...voiced.map((point) => point.midi)), Math.max(...voiced.map((point) => point.midi)), 2);
-  const maxTime = Math.max(...visualization.track.map((point) => point.timeMs), 1);
-  const width = 780;
-  const height = 240;
-  const left = 44;
-  const right = 16;
-  const top = 18;
-  const bottom = 36;
-  const innerWidth = width - left - right;
-  const innerHeight = height - top - bottom;
-  const paths: string[] = [];
-  let current = "";
-  visualization.track.forEach((point) => {
-    if (point.midi === null) {
-      if (current) paths.push(current);
-      current = "";
-      return;
-    }
-    const x = left + (point.timeMs / maxTime) * innerWidth;
-    const y = top + (1 - (point.midi - axis.low) / (axis.high - axis.low)) * innerHeight;
-    current += `${current ? " L" : "M"}${x.toFixed(2)} ${y.toFixed(2)}`;
-  });
-  if (current) paths.push(current);
-  const yTicks = axisTicks(axis.low, axis.high, 5);
+  const data = pitchChartData(visualization);
 
   return (
     <Collapsible onOpenChange={setOpen} open={open}>
@@ -168,15 +164,17 @@ function PitchTrace({ visualization }: { visualization: VocalProfileVisualizatio
         </CollapsibleTrigger>
         <CollapsibleContent>
           <CardContent className="pt-0">
-            <svg aria-label="시간에 따른 보컬 피치 추적 그래프" className="h-auto w-full" role="img" viewBox={`0 0 ${width} ${height}`}>
-              {yTicks.map((tick) => {
-                const y = top + (1 - (tick - axis.low) / (axis.high - axis.low)) * innerHeight;
-                return <g key={tick}><line className="text-border" stroke="currentColor" strokeDasharray="4 4" x1={left} x2={width - right} y1={y} y2={y} /><text className="fill-muted-foreground text-[10px]" textAnchor="end" x={left - 8} y={y + 3}>{midiToNoteName(tick)}</text></g>;
-              })}
-              {paths.map((path, index) => <path d={path} fill="none" key={index} stroke={CHART_GREEN} strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" />)}
-              <line className="text-border" stroke="currentColor" x1={left} x2={width - right} y1={top + innerHeight} y2={top + innerHeight} />
-              {[0, 0.25, 0.5, 0.75, 1].map((ratio) => <text className="fill-muted-foreground text-[10px]" key={ratio} textAnchor="middle" x={left + innerWidth * ratio} y={height - 12}>{((maxTime * ratio) / 1000).toFixed(1)}s</text>)}
-            </svg>
+            <ChartContainer aria-label="시간에 따른 보컬 피치 추적 그래프" className="h-60 w-full aspect-auto" config={PITCH_CHART_CONFIG} role="img">
+              <LineChart accessibilityLayer data={data} margin={{ left: 2, right: 10, top: 10, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="4 4" />
+                <XAxis dataKey="timeSeconds" tickFormatter={(value) => `${Number(value).toFixed(1)}s`} tickLine={false} type="number" />
+                <YAxis domain={[axis.low, axis.high]} tickFormatter={(value) => midiToNoteName(Number(value))} ticks={axisTicks(axis.low, axis.high, 5)} width={36} />
+                <ChartTooltip
+                  content={<ChartTooltipContent formatter={(value, _, item) => <div className="grid min-w-36 grid-cols-2 gap-x-4"><span className="text-muted-foreground">시간</span><span className="text-right font-mono">{Number(item.payload.timeSeconds).toFixed(2)}초</span><span className="text-muted-foreground">음높이</span><span className="text-right font-mono">{item.payload.note} · {Number(value).toFixed(1)}</span></div>} hideLabel hideIndicator />}
+                />
+                <Line connectNulls={false} dataKey="midi" dot={false} isAnimationActive={false} stroke="var(--color-midi)" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} type="linear" />
+              </LineChart>
+            </ChartContainer>
           </CardContent>
         </CollapsibleContent>
       </Card>

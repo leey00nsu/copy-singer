@@ -1,6 +1,14 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { axisTicks, midiAxis, midiPosition, parseVocalProfileVisualization } from "../lib/vocal-profile/visualization";
+import {
+  axisTicks,
+  histogramChartData,
+  midiAxis,
+  midiPosition,
+  parseVocalProfileVisualization,
+  pitchChartData,
+  rangeChartData,
+} from "../lib/vocal-profile/visualization";
 
 test("parses and sorts bounded visualization descriptors", () => {
   const parsed = parseVocalProfileVisualization({
@@ -32,4 +40,28 @@ test("builds a padded MIDI axis with stable positions and ticks", () => {
   assert.equal(midiPosition(axis.low, axis.low, axis.high), 0);
   assert.equal(midiPosition(axis.high, axis.low, axis.high), 100);
   assert.deepEqual(axisTicks(48, 55), [48, 49, 50, 51, 52, 53, 54, 55]);
+});
+
+test("maps range and histogram values for shadcn Chart", () => {
+  assert.deepEqual(rangeChartData({ minMidi: 48, maxMidi: 67, tessituraLowMidi: 52, tessituraHighMidi: 64 }), [
+    { key: "observed", label: "전체 관측 음역", range: [48, 67], lowNote: "C3", highNote: "G4" },
+    { key: "tessitura", label: "실용 음역", range: [52, 64], lowNote: "E3", highNote: "E4" },
+  ]);
+  assert.deepEqual(histogramChartData({ histogram: [{ midi: 60, count: 4, ratio: 0.25 }], track: [] }), [
+    { midi: 60, count: 4, ratio: 0.25, note: "C4", ratioPercent: 25 },
+  ]);
+});
+
+test("keeps unvoiced null gaps in Recharts pitch data", () => {
+  const data = pitchChartData({
+    histogram: [],
+    track: [
+      { timeMs: 0, midi: 60 },
+      { timeMs: 100, midi: null },
+      { timeMs: 200, midi: 64 },
+    ],
+  });
+  assert.deepEqual(data.map((point) => point.midi), [60, null, 64]);
+  assert.deepEqual(data.map((point) => point.note), ["C4", null, "E4"]);
+  assert.deepEqual(data.map((point) => point.timeSeconds), [0, 0.1, 0.2]);
 });
