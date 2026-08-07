@@ -212,7 +212,17 @@ export function VocalProfileResults({ profile, sourceAudioSrc }: { profile: Voca
           </CardHeader>
           <CardContent>
             {referenceAvailability === "ready" ? (
-              <AudioWaveformPlayer label="AI 합성 reference 구간" segments={referenceSegments} src={sourceAudioSrc} />
+              <div className="grid gap-3 lg:grid-cols-3">
+                {referenceSegments.map((segment) => (
+                  <section className="space-y-2" key={segment.id}>
+                    <div>
+                      <h3 className="text-sm font-semibold">{segment.label}</h3>
+                      <p className="text-xs text-muted-foreground">채택된 구간 {segment.ranges.length}개 · 최대 10초 목표</p>
+                    </div>
+                    <AudioWaveformPlayer label={segment.label} primarySegment={segment} src={sourceAudioSrc} />
+                  </section>
+                ))}
+              </div>
             ) : (
               <div className="rounded-xl border border-dashed bg-muted/25 p-5 text-sm leading-6 text-muted-foreground">
                 {referenceAvailability === "unavailable"

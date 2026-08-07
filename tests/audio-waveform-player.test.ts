@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { formatPlaybackTime } from "../lib/audio/playback";
+import { formatPlaybackTime, playbackRangesDuration, playbackRangesElapsed } from "../lib/audio/playback";
 
 test("audio player formats finite media times", () => {
   assert.equal(formatPlaybackTime(0), "0:00");
@@ -12,4 +12,14 @@ test("audio player guards unavailable media times", () => {
   assert.equal(formatPlaybackTime(Number.NaN), "0:00");
   assert.equal(formatPlaybackTime(Number.POSITIVE_INFINITY), "0:00");
   assert.equal(formatPlaybackTime(-1), "0:00");
+});
+
+test("audio player reports combined time across disjoint reference ranges", () => {
+  const ranges = [
+    { startSeconds: 2, endSeconds: 5 },
+    { startSeconds: 8, endSeconds: 10.5 },
+  ];
+  assert.equal(playbackRangesDuration(ranges), 5.5);
+  assert.equal(playbackRangesElapsed(ranges, 0, 3.25), 1.25);
+  assert.equal(playbackRangesElapsed(ranges, 1, 9), 4);
 });

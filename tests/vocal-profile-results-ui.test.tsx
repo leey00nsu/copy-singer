@@ -26,6 +26,10 @@ test("renders low, mid, and high smart-reference playback controls", () => {
   assert.match(html, /저음 영역/);
   assert.match(html, /중앙 영역/);
   assert.match(html, /고음 영역/);
+  assert.equal((html.match(/채택된 구간/g) ?? []).length, 3);
+  assert.match(html, /저음 영역 파형/);
+  assert.match(html, /중앙 영역 파형/);
+  assert.match(html, /고음 영역 파형/);
 });
 
 test("explains why legacy profiles have no smart-reference region controls", () => {
