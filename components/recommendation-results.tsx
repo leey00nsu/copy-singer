@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -211,9 +212,7 @@ export function RecommendationResults({
                   ) : item.synthesis.status === "succeeded" && item.synthesis.audioUrl ? (
                     <div>
                       <p className="flex items-center gap-2 text-sm font-semibold text-emerald-700"><Headphones className="size-4" /> AI 믹싱 완료</p>
-                      {/* Audio-only generated result does not have a meaningful caption track. */}
-                      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-                      <audio className="mt-3 w-full" controls preload="none" src={item.synthesis.audioUrl} />
+                      <AudioWaveformPlayer className="mt-3" label={`${item.artist} ${item.title} AI 믹싱 결과`} src={item.synthesis.audioUrl} />
                       <a className={`${buttonVariants({ size: "sm", variant: "outline" })} mt-3 w-full`} download={`${item.artist}-${item.title}-copy-singer.wav`} href={item.synthesis.audioUrl}><Download className="size-4" /> 결과 저장</a>
                     </div>
                   ) : (

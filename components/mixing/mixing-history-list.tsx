@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AlertTriangle, CheckCircle2, Clock3, Download, LoaderCircle, Music2, Ticket } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
 import { buttonVariants } from "@/components/ui/button";
 
 export type MixingHistoryPayload = {
@@ -74,9 +75,7 @@ export function MixingHistoryList({ initial }: { initial: MixingHistoryPayload }
             </div>
             {job.audioUrl ? (
               <div className="mt-5 rounded-xl bg-muted/40 p-4">
-                {/* Audio-only generated result does not have a meaningful caption track. */}
-                {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-                <audio className="w-full" controls preload="none" src={job.audioUrl} />
+                <AudioWaveformPlayer label={`${job.song.artist} ${job.song.title} AI 믹싱 결과`} src={job.audioUrl} />
                 <a className={`${buttonVariants({ size: "sm", variant: "outline" })} mt-3`} download={`${job.song.artist}-${job.song.title}-copy-singer.wav`} href={job.audioUrl}>
                   <Download className="size-4" /> 결과 저장
                 </a>

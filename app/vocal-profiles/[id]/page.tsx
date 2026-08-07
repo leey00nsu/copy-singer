@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, AudioLines, CalendarDays, Music2, Sparkles } from "lucide-react";
 import { VocalProfileResults } from "@/components/vocal-profile-results";
+import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,9 +33,7 @@ export default async function VocalProfileDetailPage({ params }: { params: Promi
       <Card className="mt-8">
         <CardHeader><CardTitle className="text-lg">제출한 보컬</CardTitle><p className="text-sm text-muted-foreground">분석에 사용한 표준화 오디오입니다. 로그인한 본인에게만 스트리밍됩니다.</p></CardHeader>
         <CardContent>
-          {/* Audio-only user recording does not have a meaningful caption track. */}
-          {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-          <audio className="w-full" controls preload="metadata" src={detail.audioUrl} />
+          <AudioWaveformPlayer label="제출한 보컬" src={detail.audioUrl} />
         </CardContent>
       </Card>
 

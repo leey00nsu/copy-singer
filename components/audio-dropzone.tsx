@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import { FileAudio, Music2, RotateCcw, UploadCloud, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Waveform } from "@/components/waveform";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -90,16 +90,13 @@ export function AudioDropzone({
       <CardContent className="p-0">
         {file && audioUrl ? (
           <div className="px-5 py-5">
-            <Waveform file={file} />
+            <AudioWaveformPlayer label={isReference ? "Reference voice" : "Target performance"} src={audioUrl} />
             <div className="mt-4 flex items-center justify-between gap-3 border-t border-border/60 pt-4">
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium">{file.name}</p>
                 <p className="mt-0.5 text-xs text-muted-foreground">{formatBytes(file.size)}</p>
               </div>
               <div className="flex items-center gap-2">
-                {/* Audio-only singing samples do not have a meaningful caption track. */}
-                {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-                <audio className="h-9 max-w-[220px]" controls preload="metadata" src={audioUrl} />
                 <Button
                   aria-label={`Replace ${kind} audio`}
                   disabled={disabled}

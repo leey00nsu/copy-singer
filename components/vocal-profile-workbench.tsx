@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Activity, AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, FileAudio, LoaderCircle, Mic, RotateCcw, Sparkles, Trash2, Upload } from "lucide-react";
 import { VocalProfileRecorder } from "@/components/audio/vocal-profile-recorder";
+import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -252,9 +253,7 @@ export function VocalProfileWorkbench() {
               {audioFile && audioUrl ? (
                 <div className="rounded-2xl border p-4">
                   <div className="flex items-center gap-3"><span className="flex size-10 items-center justify-center rounded-full bg-secondary"><FileAudio className="size-5" /></span><div className="min-w-0"><p className="truncate text-sm font-medium">{audioFile.name}</p><p className="text-xs text-muted-foreground">{(audioFile.size / 1024 / 1024).toFixed(1)} MB{audioDuration !== null ? ` · 약 ${Math.ceil(audioDuration)}초` : ""}</p>{trimToMaxDuration ? <p className="mt-1 text-xs font-medium text-primary">첫 음부터 최대 60초 자동 자르기</p> : null}</div></div>
-                  {/* Audio-only user recording does not have a meaningful caption track. */}
-                  {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-                  <audio className="mt-4 w-full" controls src={audioUrl} />
+                  <AudioWaveformPlayer className="mt-4" label="제출할 보컬 녹음" src={audioUrl} />
                   <Button className="mt-3 w-full" disabled={analyzing} onClick={() => void analyzeAudio()}>
                     {analyzing ? <LoaderCircle className="size-4 animate-spin" /> : <Activity className="size-4" />}
                     {analyzing ? "음역을 분석하는 중…" : "내 보컬 프로필 만들기"}

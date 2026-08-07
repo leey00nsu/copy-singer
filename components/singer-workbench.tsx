@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, CircleAlert, Download, LoaderCircle, Mic2, RefreshCw, Sparkles, Square, UserRoundSearch } from "lucide-react";
 import { toast } from "sonner";
 import { AdvancedSettings, DEFAULT_SETTINGS, type ConversionSettings } from "@/components/advanced-settings";
+import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
 import { AudioDropzone, MAX_AUDIO_UPLOAD_BYTES } from "@/components/audio-dropzone";
 import { Waveform } from "@/components/waveform";
 import { RecommendationHandoffBanner } from "@/components/recommendation-handoff";
@@ -214,10 +215,7 @@ export function SingerWorkbench() {
                       </div>
                       <span className="success-orbit"><Sparkles className="size-5" /></span>
                     </div>
-                    <Waveform active />
-                    {/* Audio-only generated singing does not have a meaningful caption track. */}
-                    {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-                    <audio className="mt-6 w-full" controls preload="metadata" src={`/api/conversions/${job.id}/audio`} />
+                    <AudioWaveformPlayer className="mt-6" label="Generated vocal" src={`/api/conversions/${job.id}/audio`} />
                     <a
                       className={cn(buttonVariants({ variant: "outline" }), "mt-4 w-full")}
                       download={`vocal-loom-${job.id}.wav`}
