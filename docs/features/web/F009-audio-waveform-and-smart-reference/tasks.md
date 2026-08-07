@@ -170,6 +170,17 @@
     - [x] 임시 Blob URL lifecycle을 관리하는 영역 player group을 구현하고 프로필 결과에 적용한다.
     - [x] 관련 단위·UI·전체 회귀 및 workflow audit을 통과한다.
 
+- [DONE][PRD-FR-041] T-F009-audio-waveform-and-smart-reference-11 추천·개발 화면 effect cleanup AbortError 제거
+  - Date: 2026-08-07
+  - Acceptance:
+    - Next.js 개발 모드의 effect cleanup/remount에서 `RecommendationResults`가 이유 없는 Runtime AbortError를 발생시키지 않는다.
+    - 동일한 AbortController cleanup 패턴이 남은 개발용 `SingerWorkbench`도 같은 방식으로 수정한다.
+    - cleanup 이후 늦게 도착한 응답은 state를 변경하지 않는다.
+  - Checklist:
+    - [x] recommendation 초기 fetch를 active guard 방식으로 변경한다.
+    - [x] SingerWorkbench handoff fetch의 동일 패턴을 제거하고 회귀 검사를 추가한다.
+    - [x] 브라우저 remount/log 확인과 관련·전체 회귀 및 workflow audit을 통과한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -219,5 +230,7 @@
 | `pnpm exec tsx --test tests/audio-waveform-player.test.ts tests/vocal-profile-reference-bands.test.ts tests/vocal-profile-results-ui.test.tsx` | 2026-08-07 | PASS (구간 합산 시간과 low/mid/high 독립 player 8/8) |
 | `pnpm exec tsx --test tests/reference-preview.test.ts tests/audio-waveform-player.test.ts tests/vocal-profile-results-ui.test.tsx` | 2026-08-07 | PASS (range-only mono WAV preview와 영역 UI 8/8) |
 | 실제 smart profile in-app Browser (`/vocal-profiles/:id`) | 2026-08-07 | PASS (전체 source 대신 low 4초·mid 18초·high 8초 Blob waveform, low 독립 재생) |
+| `pnpm exec tsx --test tests/effect-cleanup.test.ts tests/recommendation-ui.test.tsx` | 2026-08-07 | PASS (active guard와 recommendation UI 5/5) |
+| 추천 결과·`/dev/svc` in-app Browser 진입/이탈/재진입 | 2026-08-07 | PASS (신규 `AbortError` 로그 0건) |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-07T10:43:58.300Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-07T10:54:19.300Z -->
