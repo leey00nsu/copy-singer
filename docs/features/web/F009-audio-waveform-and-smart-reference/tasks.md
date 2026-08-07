@@ -148,6 +148,17 @@
     - [x] 영역 정보 unavailable UI와 회귀 테스트를 추가한다.
     - [x] 로컬 analyzer 컨테이너를 최신 코드로 재빌드하고 실제 분석 응답·전체 회귀를 확인한다.
 
+- [DONE][PRD-FR-042] T-F009-audio-waveform-and-smart-reference-09 저음·중앙·고음 독립 플레이어 제공
+  - Date: 2026-08-07
+  - Acceptance:
+    - smart reference가 준비된 프로필은 저음·중앙·고음 영역을 각각 독립된 WaveSurfer 플레이어로 표시한다.
+    - 각 플레이어의 기본 재생 버튼은 전체 60초 source가 아니라 해당 영역에 채택된 복수 구간만 시간 순서대로 재생한다.
+    - 실제 합성에는 세 영역의 채택 구간을 결합한 기존 최대 30초 smart reference artifact가 계속 사용된다.
+  - Checklist:
+    - [x] 공통 플레이어에 영역 전용 기본 재생·재시작·구간 합산 시간 표시를 추가한다.
+    - [x] 프로필 결과를 독립 플레이어 3개 layout으로 변경하고 UI 회귀 테스트를 보강한다.
+    - [x] 관련 단위·UI·전체 회귀 및 workflow audit을 통과한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -194,5 +205,6 @@
 | 59.758초 WebM → local analyzer `/v1/analyze` | 2026-08-07 | PASS (HTTP 200, `durationMs=59750`, 테스트 recording 삭제) |
 | 최신 analyzer 실제 `vocals.m4a` 경계 분석 | 2026-08-07 | PASS (`smart-reference-v1`, source range 12개, low/mid/high 모두 포함, 테스트 recording 삭제) |
 | 기존 영역 누락 profile in-app Browser (`/vocal-profiles/:id`) | 2026-08-07 | PASS (legacy 재분석 안내 표시) |
+| `pnpm exec tsx --test tests/audio-waveform-player.test.ts tests/vocal-profile-reference-bands.test.ts tests/vocal-profile-results-ui.test.tsx` | 2026-08-07 | PASS (구간 합산 시간과 low/mid/high 독립 player 8/8) |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-07T10:15:04.300Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-07T10:34:44.300Z -->
