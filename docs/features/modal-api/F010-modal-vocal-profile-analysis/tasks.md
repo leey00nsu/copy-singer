@@ -43,18 +43,18 @@
     - [x] local FastAPI adapter를 shared service로 연결하고 기존 POST/artifact GET/DELETE 계약을 유지한다.
     - [x] analysis/reference contract와 quality rejection 회귀 테스트를 보강한다.
 
-- [TODO][PRD-FR-002][PRD-FR-022][PRD-FR-042][PRD-NFR-003][PRD-NFR-006] T-F010-modal-vocal-profile-analysis-02 별도 Modal CPU analyzer와 ephemeral artifact handoff 구현
+- [DONE][PRD-FR-002][PRD-FR-022][PRD-FR-042][PRD-NFR-003][PRD-NFR-006] T-F010-modal-vocal-profile-analysis-02 별도 Modal CPU analyzer와 ephemeral artifact handoff 구현
   - Date: 2026-08-08
   - Acceptance:
     - GPU를 요청하지 않는 별도 Modal app이 최대 60초 입력을 shared analyzer로 처리하고 `AnalyzerProfile` + source + optional smart reference를 한 분석 operation 안에서 반환한다.
     - 사용자 audio와 중간 파일은 persistent Modal storage에 남지 않고 성공/실패 경로에서 request temporary directory가 정리된다.
     - endpoint는 server-to-server credential 없이는 호출할 수 없다.
   - Checklist:
-    - [ ] FFmpeg와 analyzer dependency를 고정한 `services/vocal-profile-modal/modal_app.py` image/ASGI app을 추가한다.
-    - [ ] CPU 2 physical cores·4096 MiB·scale-to-zero baseline과 제한된 container 정책을 명시한다.
-    - [ ] profile/source/reference를 같은 응답으로 전달하는 transport codec을 구현하고 크기/serialization 검사를 추가한다.
-    - [ ] health/capability 응답에 analyzer/version과 `smart-reference-v1` 지원 정보를 노출한다.
-    - [ ] success, rejection, exception, reference unavailable 경로의 temporary cleanup 테스트를 추가한다.
+    - [x] FFmpeg와 analyzer dependency를 고정한 `services/vocal-profile-modal/modal_app.py` image/ASGI app을 추가한다.
+    - [x] CPU 2 physical cores·4096 MiB·scale-to-zero baseline과 제한된 container 정책을 명시한다.
+    - [x] profile/source/reference를 같은 응답으로 전달하는 transport codec을 구현하고 크기/serialization 검사를 추가한다.
+    - [x] health/capability 응답에 analyzer/version과 `smart-reference-v1` 지원 정보를 노출한다.
+    - [x] success, rejection, exception, reference unavailable 경로의 temporary cleanup 테스트를 추가한다.
 
 - [TODO][PRD-FR-004][PRD-FR-027][PRD-FR-042] T-F010-modal-vocal-profile-analysis-03 Next.js local/Modal analyzer adapter와 bytes 기반 Leemage 저장 경계 구현
   - Date: 2026-08-08
@@ -134,6 +134,7 @@
 | `pnpm exec tsc --noEmit` | `-` | `-` |
 | `pnpm run build` | `-` | `-` |
 | `services/vocal-profile-api/.venv/bin/pytest -q services/vocal-profile-api/tests` | `2026-08-08` | `PASS (28/28, deprecation warning 3건)` |
+| `cd services/vocal-profile-modal && ../vocal-profile-api/.venv/bin/pytest -q test_transport.py test_runtime.py test_modal_app_source.py` | `2026-08-08` | `PASS (9/9)` |
 | `npx lee-spec-kit workflow-audit --json` | `-` | `-` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-07T23:38:31.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-07T23:44:55.000Z -->

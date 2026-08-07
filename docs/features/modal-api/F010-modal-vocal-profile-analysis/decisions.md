@@ -36,3 +36,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `services/vocal-profile-api/.venv/bin/pytest -q services/vocal-profile-api/tests` → PASS (28/28), `git diff --check` → PASS
 - **Consequences**: 다음 Modal adapter는 shared service 결과를 persistent filesystem 없이 serialize할 수 있고, local adapter는 기존 TTL artifact lifecycle을 계속 제공할 수 있다.
+
+## D002: 별도 CPU App과 단일 요청 artifact handoff를 사용 (2026-08-08)
+
+- **Context**: local analyzer는 POST 후 같은 서버 filesystem의 `/source`와 `/synthesis-reference`를 후속 GET하는 3단계 계약이다. Modal Web Function에서는 후속 HTTP 요청이 같은 ephemeral container에 도착한다는 보장이 없고, 이를 보장하려 persistent Volume/Dict를 사용하면 사용자 audio를 Modal에 남기지 않는 I007 원칙과 충돌한다.
+- **Constraints**: GPU를 요청하지 않아야 하며, `AnalyzerProfile`/`smart-reference-v1` bytes를 Next.js가 Leemage에 저장할 수 있어야 한다. Modal에는 DB/Leemage credential을 주지 않고 request 종료 후 사용자 파일이 남지 않아야 한다.
+- **Options**: local 3단계 GET 계약을 persistent Volume으로 재현, Modal이 Leemage에 직접 업로드, 분석 JSON과 source/reference artifact를 한 HTTP response로 반환하는 방식을 비교한다.
+- **Decision**: SoulX mixer와 분리된 CPU analyzer App을 만들고, request `TemporaryDirectory`에서 shared service를 실행한 뒤 profile + source + optional reference를 한 ephemeral response envelope로 반환한다. 1차 codec은 제한된 60초/30초 payload에 단순한 base64 JSON을 사용한다.
+- **Rationale**: persistent Modal storage와 추가 secret 없이 container affinity 문제를 제거하고 Next.js의 기존 ownership/Leemage 보상 로직을 유지할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: `modal==1.5.3` 프로젝트 환경과 현재 공식 Modal Web Function/timeout/autoscaling 문서를 기준으로 별도 ASGI app, CPU 2.0·4096 MiB, scale-to-zero baseline을 구현한다. 실제 remote deploy는 T05 승인 전에는 하지 않는다.
+  - **DONE 전 확정 시점**: `services/vocal-profile-modal`에 CPU-only ASGI app, `requires_proxy_auth=True`, request `TemporaryDirectory`, `modal-analysis-envelope-v1` transport를 추가했다. source/reference는 base64+SHA-256으로 한 응답에 포함하고 persistent `modal.Volume`을 사용하지 않는다. health는 analyzer/version, `smart-reference-v1`, transport/resource 정보를 반환한다. transport/cleanup/static contract 9/9와 기존 analyzer suite 28/28이 통과했다.
+  - **머지 후 확인**: 머지 후 갱신한다.
+- **Evidence**:
+  - **Commit**: T02 task checkpoint commit에서 갱신
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: `cd services/vocal-profile-modal && ../vocal-profile-api/.venv/bin/pytest -q test_transport.py test_runtime.py test_modal_app_source.py` → PASS (9/9), `services/vocal-profile-api/.venv/bin/pytest -q services/vocal-profile-api/tests` → PASS (28/28), `git diff --check` → PASS
+- **Consequences**: base64 encoding은 약 33% 전송 overhead가 있으므로 T05 benchmark에서 payload/serialization cost를 측정하고 필요 시 binary multipart codec으로 교체한다.
