@@ -26,10 +26,10 @@ export function UserMenu({ name, image, admin = false }: { name: string; image?:
         </span>
       )}
       <span className="max-w-32 truncate text-xs font-medium">{name}</span>
-      <Button variant="ghost" size="sm" render={<Link href="/vocal-profiles" />}>보컬 프로필</Button>
-      <Button variant="ghost" size="sm" render={<Link href="/mixing-history" />}>믹싱 내역</Button>
-      <Button variant="ghost" size="sm" render={<Link href="/account" />}>내 계정</Button>
-      {admin ? <Button variant="ghost" size="sm" render={<Link href="/admin" />}>관리</Button> : null}
+      <Button nativeButton={false} variant="ghost" size="sm" render={<Link href="/vocal-profiles" />}>보컬 프로필</Button>
+      <Button nativeButton={false} variant="ghost" size="sm" render={<Link href="/mixing-history" />}>믹싱 내역</Button>
+      <Button nativeButton={false} variant="ghost" size="sm" render={<Link href="/account" />}>내 계정</Button>
+      {admin ? <Button nativeButton={false} variant="ghost" size="sm" render={<Link href="/admin" />}>관리</Button> : null}
       <Button variant="ghost" size="icon-sm" aria-label="로그아웃" onClick={signOut}>
         <LogOut aria-hidden="true" />
       </Button>

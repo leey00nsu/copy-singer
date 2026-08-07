@@ -16,9 +16,9 @@ export default async function MixingHistoryPage({ searchParams }: { searchParams
       <p className="mb-8 mt-3 text-sm leading-6 text-muted-foreground">페이지를 닫아도 작업은 서버에서 계속됩니다. 완료된 결과도 여기에서 다시 들을 수 있어요.</p>
       <MixingHistoryList initial={history} />
       <nav className="mt-6 flex items-center justify-center gap-2" aria-label="믹싱 히스토리 페이지">
-        <Button variant="outline" disabled={history.page <= 1} render={<Link href={`/mixing-history?page=${history.page - 1}`} />}><ChevronLeft /> 이전</Button>
+        <Button nativeButton={false} variant="outline" disabled={history.page <= 1} render={<Link href={`/mixing-history?page=${history.page - 1}`} />}><ChevronLeft /> 이전</Button>
         <span className="px-3 text-sm text-muted-foreground">{history.page} / {history.pageCount}</span>
-        <Button variant="outline" disabled={history.page >= history.pageCount} render={<Link href={`/mixing-history?page=${history.page + 1}`} />}>다음 <ChevronRight /></Button>
+        <Button nativeButton={false} variant="outline" disabled={history.page >= history.pageCount} render={<Link href={`/mixing-history?page=${history.page + 1}`} />}>다음 <ChevronRight /></Button>
       </nav>
     </main>
   );

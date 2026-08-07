@@ -22,9 +22,9 @@ export default async function VocalProfilesPage({ searchParams }: { searchParams
       </div>
       <div className="mt-8"><VocalProfileHistoryList history={history} /></div>
       <nav className="mt-6 flex items-center justify-center gap-2" aria-label="보컬 프로필 페이지">
-        <Button variant="outline" disabled={history.page <= 1} render={<Link href={`/vocal-profiles?page=${history.page - 1}`} />}><ChevronLeft /> 이전</Button>
+        <Button nativeButton={false} variant="outline" disabled={history.page <= 1} render={<Link href={`/vocal-profiles?page=${history.page - 1}`} />}><ChevronLeft /> 이전</Button>
         <span className="px-3 text-sm text-muted-foreground">{history.page} / {history.pageCount}</span>
-        <Button variant="outline" disabled={history.page >= history.pageCount} render={<Link href={`/vocal-profiles?page=${history.page + 1}`} />}>다음 <ChevronRight /></Button>
+        <Button nativeButton={false} variant="outline" disabled={history.page >= history.pageCount} render={<Link href={`/vocal-profiles?page=${history.page + 1}`} />}>다음 <ChevronRight /></Button>
       </nav>
     </main>
   );

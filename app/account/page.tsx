@@ -41,11 +41,11 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
       </div>
       <TicketLedger entries={account.entries} />
       <nav className="mt-5 flex items-center justify-center gap-2" aria-label="티켓 내역 페이지">
-        <Button variant="outline" disabled={account.page <= 1} render={<Link href={`/account?page=${account.page - 1}`} />}>
+        <Button nativeButton={false} variant="outline" disabled={account.page <= 1} render={<Link href={`/account?page=${account.page - 1}`} />}>
           <ChevronLeft aria-hidden="true" /> 이전
         </Button>
         <span className="px-3 text-sm text-muted-foreground">{account.page} / {account.pageCount}</span>
-        <Button variant="outline" disabled={account.page >= account.pageCount} render={<Link href={`/account?page=${account.page + 1}`} />}>
+        <Button nativeButton={false} variant="outline" disabled={account.page >= account.pageCount} render={<Link href={`/account?page=${account.page + 1}`} />}>
           다음 <ChevronRight aria-hidden="true" />
         </Button>
       </nav>
