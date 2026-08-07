@@ -149,6 +149,17 @@
     - [x] 목록·상세 페이지, 기존 시각화·audio player와 헤더/account 진입 링크를 구현한다.
     - [x] 페이지네이션·재접속·Range·비로그인·cross-user·저장소 URL 비노출 테스트와 전체 회귀 검증을 추가한다.
 
+- [DONE][PRD-NFR-010] T-F008-auth-owned-mixing-queue-09 단일 인스턴스 웹·worker 통합 실행 명령 구현
+  - Date: 2026-08-07
+  - Acceptance:
+    - `pnpm dev`와 `pnpm start`가 웹과 믹싱 worker를 함께 실행한다.
+    - 한 자식 프로세스가 비정상 종료되면 나머지도 종료되어 인스턴스 supervisor가 전체를 재시작할 수 있다.
+    - 진단을 위해 웹만 실행하는 `dev:web`과 `start:web` 명령을 제공한다.
+  - Checklist:
+    - [x] `concurrently` 기반 통합 script와 웹 단독 script를 추가한다.
+    - [x] README의 단일 인스턴스 실행 방법과 별도 worker 설명을 갱신한다.
+    - [x] script 계약과 종료 전파 동작을 검증하고 전체 정적 검사를 통과한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -177,11 +188,12 @@
 | `pnpm run test:recommendation:db` | `2026-08-06` | `PASS — 3 legacy persistence/synthesis integration tests` |
 | `pnpm run test:admin` | `2026-08-06` | `PASS — allowlist, actor/reason ledger, negative guard, privacy-safe UI` |
 | `pnpm run test:vocal-profile-history` | `2026-08-07` | `PASS — 목록·빈 상태 UI, user-scoped pagination/detail, Range 전달, private cache와 저장소 header 비노출` |
-| `pnpm test` | `2026-08-07` | `PASS — production build와 profile·catalog·key fit·recommendation·auth·media·ticket·mixing·admin·vocal profile history 전체 suite` |
+| `pnpm test` | `2026-08-07` | `PASS — production build와 process supervisor·profile·catalog·key fit·recommendation·auth·media·ticket·mixing·admin 전체 suite` |
 | `pnpm run db:validate && pnpm run db:status` | `2026-08-06` | `PASS — Prisma schema valid, 6 migrations applied, database up to date` |
 | `Google OAuth·account·admin 로컬 smoke` | `2026-08-07` | `PASS — callback 302, 로그인 세션, 신규 가입 티켓 +1 정확히 1건, 현재 사용자 allowlist admin 200` |
 | `worker process restart smoke` | `2026-08-07` | `PASS — idle worker SIGINT 정상 종료 후 재시작·재종료, lease recovery 통합 테스트 PASS` |
 | `pnpm run verify:feature-config -- --leemage` | `2026-08-07` | `PASS — 필수 설정 확인, 실제 Leemage 파일 upload/confirm/delete 성공` |
 | `저장된 reference Range smoke` | `2026-08-07` | `PASS — 실제 READY asset에 bytes=0-1023 요청, HTTP 206·audio/wav·Content-Range 확인` |
+| `pnpm run test:process-scripts` | `2026-08-07` | `PASS — dev/start 통합 계약, 자식 실패 시 sibling SIGTERM 종료` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-07T06:13:15.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-07T06:38:28.000Z -->

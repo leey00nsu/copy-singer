@@ -23,7 +23,7 @@
 | 인증 저장소 | 기존 PostgreSQL + Better Auth Prisma adapter | 별도 인증 DB 없이 사용자 소유 관계와 세션을 같은 트랜잭션 경계에서 조회한다. |
 | 파일 저장소 | Leemage REST API | 사용자가 지정한 프로젝트 공통 저장소이며 일반 오디오에 presign/confirm/delete 흐름을 제공한다. |
 | 파일 모델 | `MediaAsset` 메타데이터 + Leemage 외부 ID | PostgreSQL에 바이너리를 넣지 않고 소유권·정리 상태·외부 참조를 추적한다. |
-| 큐 | `MixingJob` PostgreSQL 테이블 + 별도 TypeScript worker | 추가 Redis 없이 현재 로컬 스택에서 작업·lease·재시작 복구를 영속화한다. |
+| 큐 | `MixingJob` PostgreSQL 테이블 + TypeScript worker | 추가 Redis 없이 현재 로컬 스택에서 작업·lease·재시작 복구를 영속화하고, 단일 인스턴스 기본 명령에서 웹과 worker를 함께 기동한다. |
 | claim | PostgreSQL `FOR UPDATE SKIP LOCKED` + lease | 여러 worker가 같은 작업을 중복 점유하지 않고 만료 작업을 회수할 수 있다. |
 | 티켓 | `User.ticketBalance` + append-only `TicketLedger` | 빠른 잔액 검사와 감사 가능한 변동 내역을 함께 제공한다. |
 | 관리자 | `ADMIN_EMAILS` env allowlist | MVP에서 별도 역할 관리 UI 없이 서버에서 명시적인 관리자 경계를 적용한다. |
@@ -61,7 +61,7 @@
 
 ### worker 및 결과 저장 흐름
 
-1. `pnpm worker:mixing`이 처리 가능한 `PENDING` 또는 lease 만료 작업을 `SKIP LOCKED`로 claim하고 lease owner/expiry를 저장한다.
+1. `pnpm dev` 또는 `pnpm start`가 웹과 `pnpm worker:mixing`을 함께 기동하고, worker가 처리 가능한 `PENDING` 또는 lease 만료 작업을 `SKIP LOCKED`로 claim해 lease owner/expiry를 저장한다. `dev:web`·`start:web`은 진단 목적의 웹 단독 실행에 사용한다.
 2. worker가 Leemage reference를 임시 디렉터리로 가져오고 allowlist된 곡 URL을 yt-dlp로 내려받는다.
 3. Modal에 고정 제품 preset으로 제출하기 전까지 실패하면 작업을 실패 처리하고 티켓을 idempotent하게 환불한다.
 4. Modal job ID를 `SUBMITTED` 상태와 함께 저장한 후 polling하여 `PROCESSING`을 반영한다. 이 시점 이후 실패에는 환불하지 않는다.

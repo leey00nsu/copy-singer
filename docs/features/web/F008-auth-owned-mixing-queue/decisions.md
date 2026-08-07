@@ -147,3 +147,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `pnpm run test:vocal-profile-history`; `pnpm run test:mixing:db`; `pnpm test`; 실제 READY reference에 Range smoke HTTP 206
 - **Consequences**: reference 트래픽이 웹 서버를 통과하므로 Range와 streaming을 보존하고 cache·로그에 외부 URL이 남지 않도록 해야 한다.
+
+## D008: 단일 인스턴스 기본 명령에서 웹과 worker를 함께 관리 (2026-08-07)
+
+- **Context**: 웹 서버만 실행된 상태에서 믹싱 요청이 정상 접수·차감됐지만 worker가 없어 Modal 요청 전 `PENDING`에 머물렀다.
+- **Constraints**: 현재 운영 대상은 단일 인스턴스이고, Ctrl-C와 자식 프로세스 실패 시 웹·worker가 서로 고아 프로세스로 남지 않아야 한다.
+- **Options**: 계속 별도 터미널에서 실행, shell background process, `concurrently`로 두 장기 프로세스를 관리하는 방식을 비교한다.
+- **Decision**: 기본 `dev`·`start`는 `concurrently --kill-others-on-fail`로 웹과 worker를 함께 실행하고, 웹 단독 명령은 `dev:web`·`start:web`으로 분리한다.
+- **Rationale**: 단일 명령 실행 누락으로 큐가 정지하는 운영 실수를 막으면서 각 프로세스의 구현과 로그 채널은 분리해 유지한다.
+- **Trace**:
+  - **DOING 시작 시점**: 실제 최신 job이 `PENDING`, attempts 0, modalJobId·lease 없음이고 worker 프로세스도 없음을 확인해 시작 누락을 원인으로 확정했다.
+  - **DONE 전 확정 시점**: `concurrently` 10.0.4를 추가하고 기본 `dev`·`start`가 각각 웹 전용 script와 `worker:mixing`을 함께 실행하도록 변경했다. `--kill-others-on-fail` 계약을 더미 장기 프로세스와 exit 7 프로세스로 검증해 sibling이 SIGTERM으로 정리됨을 확인했다. 전체 테스트 동안 실제 사용자 PENDING job은 attempts 0·lease 없음으로 유지해 검증이 Modal 요청을 만들지 않도록 했다.
+  - **머지 후 확인**: 머지 후 갱신한다.
+- **Evidence**:
+  - **Commit**: T09 task commit
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: `pnpm run test:process-scripts`; `pnpm exec tsc --noEmit`; `pnpm run lint`; `pnpm test`
+- **Consequences**: 단일 인스턴스에서는 한 프로세스 실패 시 전체 인스턴스를 재시작한다. 추후 수평 확장하면 웹과 worker를 별도 프로세스 타입으로 다시 분리한다.

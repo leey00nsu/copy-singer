@@ -172,7 +172,7 @@
 ### FR-7: 영속 큐와 worker
 
 - Next.js 요청 프로세스는 작업을 직접 완료할 때까지 점유하지 않고 접수 후 즉시 job ID를 반환한다.
-- 별도 `pnpm worker:mixing` 프로세스가 PostgreSQL에서 처리 가능한 작업을 원자적으로 claim한다.
+- worker 프로세스가 PostgreSQL에서 처리 가능한 작업을 원자적으로 claim한다. 단일 인스턴스의 기본 `pnpm dev`·`pnpm start`는 웹과 worker를 함께 시작하고, 진단 목적의 웹 단독 실행은 별도 script로 제공한다.
 - 작업 상태는 `pending`, `preparing`, `submitted`, `processing`, `succeeded`, `failed`, `canceled`를 사용한다.
 - lease/heartbeat와 제한된 attempt를 저장해 worker 종료 후 orphan 작업을 다시 처리한다.
 - 대상 원곡과 중간 파일은 작업별 OS 임시 디렉터리에서만 사용하고 `finally`에서 삭제한다.
