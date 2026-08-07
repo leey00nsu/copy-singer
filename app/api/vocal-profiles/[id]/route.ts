@@ -25,7 +25,11 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
   const { id } = await context.params;
   const profile = await prisma.vocalProfile.findFirst({
     where: { id, userId: session.user.id },
-    include: { recording: { include: { mediaAsset: true } }, recommendationRuns: { select: { id: true }, take: 1 } },
+    include: {
+      recording: { include: { mediaAsset: true } },
+      synthesisReferenceAsset: true,
+      recommendationRuns: { select: { id: true }, take: 1 },
+    },
   });
   if (!profile || profile.sourceType !== "USER") {
     return Response.json({ reasonCode: "PROFILE_NOT_FOUND", detail: "Vocal profile was not found.", retryable: false }, { status: 404 });
@@ -37,11 +41,12 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
     );
   }
 
-  const asset = profile.recording.mediaAsset;
-  const deletion = asset
-    ? await deleteOrScheduleMediaAsset(asset.id)
-    : { deleted: await deleteAnalyzerRecording(profile.recordingId) };
-  if (!asset && !deletion.deleted) {
+  const assets = [profile.recording.mediaAsset, profile.synthesisReferenceAsset].filter(
+    (asset): asset is NonNullable<typeof asset> => asset !== null,
+  );
+  const deletions = await Promise.all(assets.map((asset) => deleteOrScheduleMediaAsset(asset.id)));
+  const analyzerDeleted = profile.recording.mediaAsset ? true : await deleteAnalyzerRecording(profile.recordingId);
+  if (!analyzerDeleted) {
     return Response.json(
       { reasonCode: "ANALYZER_UNAVAILABLE", detail: "The stored recording could not be removed.", retryable: true },
       { status: 502 },
@@ -51,10 +56,13 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
   await prisma.$transaction([
     prisma.vocalProfile.delete({ where: { id: profile.id } }),
     prisma.recording.delete({ where: { id: profile.recordingId } }),
-    ...(asset && deletion.deleted ? [prisma.mediaAsset.delete({ where: { id: asset.id } })] : []),
+    prisma.mediaAsset.deleteMany({
+      where: { id: { in: assets.filter((_, index) => deletions[index].deleted).map((asset) => asset.id) } },
+    }),
   ]);
+  const cleanupPending = deletions.some((deletion) => !deletion.deleted);
   return Response.json(
-    { status: "deleted", id, mediaCleanupPending: asset ? !deletion.deleted : false },
-    { status: asset && !deletion.deleted ? 202 : 200 },
+    { status: "deleted", id, mediaCleanupPending: cleanupPending },
+    { status: cleanupPending ? 202 : 200 },
   );
 }

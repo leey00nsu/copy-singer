@@ -5,7 +5,7 @@ import { RecordingKind, RecordingStatus, type Prisma } from "@/generated/prisma/
 import type { AnalyzerProfile } from "@/lib/vocal-profile/contract";
 import { analyzerUrl, deleteAnalyzerRecording, serializeProfile } from "@/lib/vocal-profile/server";
 import { requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
-import { discardMediaAsset, storeAnalyzerReference } from "@/lib/leemage/media-service";
+import { discardMediaAsset, storeAnalyzerReference, storeAnalyzerSynthesisReference } from "@/lib/leemage/media-service";
 import { LeemageError } from "@/lib/leemage/client";
 import { getVocalProfileHistory } from "@/lib/vocal-profile/history";
 
@@ -97,6 +97,23 @@ export async function POST(request: Request) {
     );
   }
 
+  let synthesisReferenceAsset: Awaited<ReturnType<typeof storeAnalyzerSynthesisReference>> | null = null;
+  if (analyzed.synthesisReference) {
+    try {
+      synthesisReferenceAsset = await storeAnalyzerSynthesisReference({
+        userId: session.user.id,
+        recordingId,
+      });
+      analyzed.descriptors.synthesisReferenceStorage = { status: "ready", kind: "SYNTHESIS_REFERENCE" };
+    } catch (error) {
+      console.warn("Could not store smart synthesis reference; source fallback remains available", error instanceof Error ? error.message : "unknown error");
+      analyzed.descriptors.synthesisReferenceStorage = {
+        status: "failed",
+        fallback: "analysis-source",
+      };
+    }
+  }
+
   try {
     await prisma.vocalProfile.create({
       data: {
@@ -116,6 +133,9 @@ export async function POST(request: Request) {
         descriptors: analyzed.descriptors as Prisma.InputJsonValue,
         analyzer: analyzed.analyzer,
         analyzerVersion: analyzed.analyzerVersion,
+        ...(synthesisReferenceAsset
+          ? { synthesisReferenceAsset: { connect: { id: synthesisReferenceAsset.id } } }
+          : {}),
         recording: {
           create: {
             id: recordingId,
@@ -141,7 +161,10 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Could not persist vocal profile", error instanceof Error ? error.message : "unknown error");
     await deleteAnalyzerRecording(recordingId);
-    await discardMediaAsset(mediaAsset.id);
+    await Promise.all([
+      discardMediaAsset(mediaAsset.id),
+      ...(synthesisReferenceAsset ? [discardMediaAsset(synthesisReferenceAsset.id)] : []),
+    ]);
     return Response.json(
       { reasonCode: "PROFILE_SAVE_FAILED", detail: "Analysis finished but the profile could not be saved.", retryable: true },
       { status: 500 },

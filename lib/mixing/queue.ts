@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db/prisma";
 import { mixingMaxAttempts, mixingTicketCost } from "@/lib/config/server-env";
 import { InsufficientTicketsError } from "@/lib/tickets/service";
 import { MixingError } from "@/lib/mixing/contract";
+import { selectMixingReference } from "@/lib/mixing/reference";
 
 function prismaErrorCode(error: unknown) {
   return error && typeof error === "object" && "code" in error && typeof error.code === "string" ? error.code : null;
@@ -31,15 +32,26 @@ export async function enqueueMixingJob(input: {
           const item = await tx.recommendationItem.findFirst({
             where: { id: input.recommendationItemId, run: { userId: input.userId } },
             include: {
-              run: { include: { userVocalProfile: { include: { recording: { include: { mediaAsset: true } } } } } },
+              run: {
+                include: {
+                  userVocalProfile: {
+                    include: {
+                      synthesisReferenceAsset: true,
+                      recording: { include: { mediaAsset: true } },
+                    },
+                  },
+                },
+              },
             },
           });
           const profile = item?.run.userVocalProfile;
-          const reference = profile?.recording.mediaAsset;
           if (!item || !profile || profile.userId !== input.userId || profile.sourceType !== "USER") {
             throw new MixingError("MIXING_SOURCE_NOT_FOUND", "사용할 추천 또는 보컬 프로필을 찾을 수 없습니다.", 404);
           }
-          if (!reference || reference.userId !== input.userId || reference.kind !== "REFERENCE" || reference.status !== "READY") {
+          const smartReference = profile.synthesisReferenceAsset;
+          const sourceReference = profile.recording.mediaAsset;
+          const reference = selectMixingReference({ userId: input.userId, smart: smartReference, source: sourceReference });
+          if (!reference) {
             throw new MixingError("MIXING_REFERENCE_UNAVAILABLE", "저장된 레퍼런스 음성을 사용할 수 없습니다.", 422);
           }
 

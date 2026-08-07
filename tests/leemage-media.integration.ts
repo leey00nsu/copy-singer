@@ -20,27 +20,34 @@ test("an analyzer reference is persisted as user-owned Leemage metadata", async 
   process.env.LEEMAGE_BASE_URL = "https://leemage.example/api/v1";
   process.env.LEEMAGE_API_KEY = "test-key";
   process.env.LEEMAGE_PROJECT_ID = "project";
-  globalThis.fetch = async (input) => {
+  globalThis.fetch = async (input, init) => {
     const url = String(input);
     if (url.includes("/v1/recordings/") && url.endsWith("/source")) {
       return new Response(new Uint8Array([1, 2, 3]), { headers: { "Content-Type": "audio/wav" } });
     }
+    if (url.includes("/v1/recordings/") && url.endsWith("/synthesis-reference")) {
+      return new Response(new Uint8Array([4, 5, 6, 7]), { headers: { "Content-Type": "audio/wav" } });
+    }
     if (url.endsWith("/files/presign")) {
+      const body = JSON.parse(String(init?.body)) as { fileName: string };
+      const kind = body.fileName.includes("-synthesis") ? "synthesis" : "reference";
       return Response.json({
-        presignedUrl: "https://objects.example/upload",
-        objectName: "project/reference-source-wav.wav",
-        fileId: "reference-file",
+        presignedUrl: `https://objects.example/upload-${kind}`,
+        objectName: `project/${kind}.wav`,
+        fileId: `${kind}-file`,
       });
     }
-    if (url === "https://objects.example/upload") return new Response(null, { status: 200 });
+    if (url.startsWith("https://objects.example/upload-")) return new Response(null, { status: 200 });
     if (url.endsWith("/files/confirm")) {
-      return Response.json({ file: { id: "reference-file", url: "https://objects.example/reference.wav" } }, { status: 201 });
+      const body = JSON.parse(String(init?.body)) as { fileId: string };
+      const kind = body.fileId.startsWith("synthesis") ? "synthesis" : "reference";
+      return Response.json({ file: { id: body.fileId, url: `https://objects.example/${kind}.wav` } }, { status: 201 });
     }
     throw new Error(`Unexpected URL: ${url}`);
   };
 
   const { prisma } = await import("../lib/db/prisma");
-  const { storeAnalyzerReference } = await import("../lib/leemage/media-service");
+  const { storeAnalyzerReference, storeAnalyzerSynthesisReference } = await import("../lib/leemage/media-service");
   const userId = `reference-owner-${crypto.randomUUID()}`;
   try {
     await prisma.user.create({
@@ -56,6 +63,15 @@ test("an analyzer reference is persisted as user-owned Leemage metadata", async 
     assert.equal(asset.externalFileId, "reference-file");
     assert.equal(asset.externalUrl, "https://objects.example/reference.wav");
     assert.equal(asset.sizeBytes, BigInt(3));
+    const synthesis = await storeAnalyzerSynthesisReference({
+      userId,
+      recordingId: crypto.randomUUID(),
+    });
+    assert.equal(synthesis.userId, userId);
+    assert.equal(synthesis.kind, "SYNTHESIS_REFERENCE");
+    assert.equal(synthesis.externalFileId, "synthesis-file");
+    assert.equal(synthesis.externalUrl, "https://objects.example/synthesis.wav");
+    assert.equal(synthesis.sizeBytes, BigInt(4));
   } finally {
     globalThis.fetch = previousFetch;
     if (previousEnv.analyzerUrl === undefined) delete process.env.VOCAL_PROFILE_API_URL;

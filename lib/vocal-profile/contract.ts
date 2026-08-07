@@ -37,6 +37,20 @@ export type AnalyzerProfile = {
   analyzer: string;
   analyzerVersion: string;
   descriptors: VocalProfileDescriptors;
+  synthesisReference?: {
+    storagePath: string;
+    mimeType: string;
+    sizeBytes: number;
+    durationMs: number;
+    algorithm: string;
+    version: string;
+    sourceRanges: Array<Record<string, unknown>>;
+    bandSeconds: Record<string, number>;
+    voicedDensity: number;
+    pitchCoverageSemitones: number;
+    crossfadeMs: number;
+    fallbackReason: string | null;
+  } | null;
 };
 
 export type VocalProfileResponse = {

@@ -42,6 +42,7 @@ enum SynthesisStatus {
 
 enum MediaAssetKind {
   REFERENCE
+  SYNTHESIS_REFERENCE
   MIX_RESULT
 }
 
@@ -104,31 +105,33 @@ model Recording {
 }
 
 model VocalProfile {
-  id                 String                 @id @default(uuid()) @db.Uuid
-  userId             String?
-  sourceType         VocalProfileSourceType
-  recordingId        String                 @db.Uuid
-  minMidi            Float?
-  maxMidi            Float?
-  p10Midi            Float?
-  medianMidi         Float?
-  p90Midi            Float?
-  tessituraLowMidi   Float?
-  tessituraHighMidi  Float?
-  voicedRatio        Float?
-  pitchStability     Float?
-  clippingRatio      Float?
-  rmsDb              Float?
-  descriptors        Json?
-  analyzer           String
-  analyzerVersion    String
-  createdAt          DateTime               @default(now())
-  updatedAt          DateTime               @updatedAt
-  recording          Recording              @relation(fields: [recordingId], references: [id], onDelete: Restrict)
-  user               User?                  @relation(fields: [userId], references: [id], onDelete: SetNull)
-  song               Song?
-  recommendationRuns RecommendationRun[]
-  mixingJobs         MixingJob[]
+  id                        String                 @id @default(uuid()) @db.Uuid
+  userId                    String?
+  sourceType                VocalProfileSourceType
+  recordingId               String                 @db.Uuid
+  synthesisReferenceAssetId String?                @unique @db.Uuid
+  minMidi                   Float?
+  maxMidi                   Float?
+  p10Midi                   Float?
+  medianMidi                Float?
+  p90Midi                   Float?
+  tessituraLowMidi          Float?
+  tessituraHighMidi         Float?
+  voicedRatio               Float?
+  pitchStability            Float?
+  clippingRatio             Float?
+  rmsDb                     Float?
+  descriptors               Json?
+  analyzer                  String
+  analyzerVersion           String
+  createdAt                 DateTime               @default(now())
+  updatedAt                 DateTime               @updatedAt
+  recording                 Recording              @relation(fields: [recordingId], references: [id], onDelete: Restrict)
+  synthesisReferenceAsset   MediaAsset?            @relation("VocalProfileSynthesisReference", fields: [synthesisReferenceAssetId], references: [id], onDelete: SetNull)
+  user                      User?                  @relation(fields: [userId], references: [id], onDelete: SetNull)
+  song                      Song?
+  recommendationRuns        RecommendationRun[]
+  mixingJobs                MixingJob[]
 
   @@unique([recordingId, analyzer, analyzerVersion])
   @@index([userId, createdAt])
@@ -264,26 +267,27 @@ model Verification {
 }
 
 model MediaAsset {
-  id                  String            @id @default(uuid()) @db.Uuid
-  userId              String
-  kind                MediaAssetKind
-  provider            String            @default("LEEMAGE")
-  externalProjectId   String
-  externalFileId      String
-  externalUrl         String
-  fileName            String
-  mimeType            String
-  sizeBytes           BigInt
-  status              MediaAssetStatus  @default(READY)
-  lastError           String?
-  createdAt           DateTime          @default(now())
-  updatedAt           DateTime          @updatedAt
-  deletedAt           DateTime?
-  user                User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  recording           Recording?
-  cleanupJobs         MediaCleanupJob[]
-  referenceMixingJobs MixingJob[]       @relation("MixingReference")
-  resultMixingJobs    MixingJob[]       @relation("MixingResult")
+  id                    String            @id @default(uuid()) @db.Uuid
+  userId                String
+  kind                  MediaAssetKind
+  provider              String            @default("LEEMAGE")
+  externalProjectId     String
+  externalFileId        String
+  externalUrl           String
+  fileName              String
+  mimeType              String
+  sizeBytes             BigInt
+  status                MediaAssetStatus  @default(READY)
+  lastError             String?
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+  deletedAt             DateTime?
+  user                  User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recording             Recording?
+  synthesisVocalProfile VocalProfile?     @relation("VocalProfileSynthesisReference")
+  cleanupJobs           MediaCleanupJob[]
+  referenceMixingJobs   MixingJob[]       @relation("MixingReference")
+  resultMixingJobs      MixingJob[]       @relation("MixingResult")
 
   @@unique([externalProjectId, externalFileId])
   @@index([userId, kind, createdAt])

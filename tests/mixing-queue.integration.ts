@@ -41,6 +41,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
   const recordingId = crypto.randomUUID();
   const profileId = crypto.randomUUID();
   const assetId = crypto.randomUUID();
+  const smartAssetId = crypto.randomUUID();
   const runId = crypto.randomUUID();
   const itemId = crypto.randomUUID();
 
@@ -68,6 +69,19 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
         sizeBytes: BigInt(3),
       },
     });
+    await prisma.mediaAsset.create({
+      data: {
+        id: smartAssetId,
+        userId,
+        kind: "SYNTHESIS_REFERENCE",
+        externalProjectId: "project",
+        externalFileId: `smart-reference-${suffix}`,
+        externalUrl: "https://objects.example/smart-reference.wav",
+        fileName: "smart-reference.wav",
+        mimeType: "audio/wav",
+        sizeBytes: BigInt(3),
+      },
+    });
     await prisma.recording.create({
       data: {
         id: recordingId,
@@ -84,6 +98,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
         userId,
         sourceType: "USER",
         recordingId,
+        synthesisReferenceAssetId: smartAssetId,
         analyzer: "test",
         analyzerVersion: "1",
       },
@@ -108,6 +123,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     const input = { userId, recommendationItemId: itemId, idempotencyKey: `request-${suffix}` };
     const [first, duplicate] = await Promise.all([enqueueMixingJob(input), enqueueMixingJob(input)]);
     assert.equal(first.id, duplicate.id);
+    assert.equal(first.referenceAssetId, smartAssetId);
     assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 0);
     assert.equal(await prisma.ticketLedger.count({ where: { mixingJobId: first.id, type: "MIXING_DEBIT" } }), 1);
 
@@ -144,7 +160,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
 
     const workerFetch: typeof fetch = async (request, init) => {
       const url = String(request);
-      if (url === "https://objects.example/reference.wav") {
+      if (url === "https://objects.example/smart-reference.wav") {
         return new Response(new Uint8Array([1, 2, 3]), { headers: { "Content-Type": "audio/wav" } });
       }
       if (url === "https://analyzer.example/v1/song-target") {
@@ -185,7 +201,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     assert.equal(await claimNextMixingJob("result-worker", successful.id), successful.id);
     const successFetch: typeof fetch = async (request, init) => {
       const url = String(request);
-      if (url === "https://objects.example/reference.wav") {
+      if (url === "https://objects.example/smart-reference.wav") {
         return new Response(new Uint8Array([1, 2, 3]), { headers: { "Content-Type": "audio/wav" } });
       }
       if (url === "https://analyzer.example/v1/song-target") {
@@ -253,7 +269,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     await prisma.recommendationRun.deleteMany({ where: { id: runId } });
     await prisma.vocalProfile.deleteMany({ where: { id: profileId } });
     await prisma.recording.deleteMany({ where: { id: recordingId } });
-    await prisma.mediaAsset.deleteMany({ where: { id: assetId } });
+    await prisma.mediaAsset.deleteMany({ where: { id: { in: [assetId, smartAssetId] } } });
     await prisma.user.deleteMany({ where: { id: userId } });
     await prisma.$disconnect();
   }

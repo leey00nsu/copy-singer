@@ -11,6 +11,21 @@ class ErrorResponse(BaseModel):
     retryable: bool = True
 
 
+class SynthesisReferenceResponse(BaseModel):
+    storagePath: str
+    mimeType: str
+    sizeBytes: int
+    durationMs: int
+    algorithm: str
+    version: str
+    sourceRanges: list[dict[str, Any]] = Field(default_factory=list)
+    bandSeconds: dict[str, float] = Field(default_factory=dict)
+    voicedDensity: float
+    pitchCoverageSemitones: float
+    crossfadeMs: int
+    fallbackReason: str | None = None
+
+
 class AnalyzerResponse(BaseModel):
     recordingId: str
     storagePath: str
@@ -33,6 +48,7 @@ class AnalyzerResponse(BaseModel):
     analyzer: str
     analyzerVersion: str
     descriptors: dict[str, Any] = Field(default_factory=dict)
+    synthesisReference: SynthesisReferenceResponse | None = None
 
 
 class DeleteResponse(BaseModel):

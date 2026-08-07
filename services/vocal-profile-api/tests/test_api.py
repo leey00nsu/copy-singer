@@ -91,12 +91,20 @@ def test_health_analyze_and_delete(tmp_path, monkeypatch) -> None:
         assert body["descriptors"]["pitchHistogram"]
         assert body["descriptors"]["pitchTrack"]
         assert len(body["descriptors"]["pitchTrack"]) <= 720
+        assert body["synthesisReference"]["version"] == "smart-reference-v1"
+        assert body["synthesisReference"]["durationMs"] <= 30_000
+        assert body["descriptors"]["synthesisReference"]["sourceRanges"]
         assert (main.STORAGE_ROOT / body["storagePath"]).exists()
 
         source_response = client.get(f"/v1/recordings/{recording_id}/source")
         assert source_response.status_code == 200
         assert source_response.headers["content-type"].startswith("audio/wav")
         assert len(source_response.content) > 0
+
+        synthesis_response = client.get(f"/v1/recordings/{recording_id}/synthesis-reference")
+        assert synthesis_response.status_code == 200
+        assert synthesis_response.headers["content-type"].startswith("audio/wav")
+        assert len(synthesis_response.content) > 0
 
         deleted = client.delete(f"/v1/recordings/{recording_id}")
         assert deleted.status_code == 200

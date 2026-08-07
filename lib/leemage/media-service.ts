@@ -4,15 +4,17 @@ import { prisma } from "@/lib/db/prisma";
 import { analyzerUrl } from "@/lib/vocal-profile/server";
 import { createLeemageClient, LeemageError } from "@/lib/leemage/client";
 
-export async function storeAnalyzerReference(input: {
+async function storeAnalyzerAsset(input: {
   userId: string;
   recordingId: string;
   mimeType: string;
+  endpoint: "source" | "synthesis-reference";
+  kind: "REFERENCE" | "SYNTHESIS_REFERENCE";
   fileName?: string;
 }) {
   const baseUrl = analyzerUrl();
   if (!baseUrl) throw new LeemageError("The vocal analyzer is not configured.", null, false);
-  const source = await fetch(`${baseUrl}/v1/recordings/${encodeURIComponent(input.recordingId)}/source`, {
+  const source = await fetch(`${baseUrl}/v1/recordings/${encodeURIComponent(input.recordingId)}/${input.endpoint}`, {
     cache: "no-store",
   });
   if (!source.ok) {
@@ -20,14 +22,14 @@ export async function storeAnalyzerReference(input: {
   }
   const bytes = new Uint8Array(await source.arrayBuffer());
   const stored = await createLeemageClient().uploadFile({
-    fileName: input.fileName ?? `${input.recordingId}.wav`,
+    fileName: input.fileName ?? `${input.recordingId}${input.kind === "SYNTHESIS_REFERENCE" ? "-synthesis" : ""}.wav`,
     mimeType: input.mimeType,
     bytes,
   });
   return prisma.mediaAsset.create({
     data: {
       userId: input.userId,
-      kind: "REFERENCE",
+      kind: input.kind,
       externalProjectId: stored.projectId,
       externalFileId: stored.fileId,
       externalUrl: stored.url,
@@ -36,6 +38,28 @@ export async function storeAnalyzerReference(input: {
       sizeBytes: BigInt(stored.sizeBytes),
       status: "READY",
     },
+  });
+}
+
+export async function storeAnalyzerReference(input: {
+  userId: string;
+  recordingId: string;
+  mimeType: string;
+  fileName?: string;
+}) {
+  return storeAnalyzerAsset({ ...input, endpoint: "source", kind: "REFERENCE" });
+}
+
+export async function storeAnalyzerSynthesisReference(input: {
+  userId: string;
+  recordingId: string;
+  fileName?: string;
+}) {
+  return storeAnalyzerAsset({
+    ...input,
+    mimeType: "audio/wav",
+    endpoint: "synthesis-reference",
+    kind: "SYNTHESIS_REFERENCE",
   });
 }
 

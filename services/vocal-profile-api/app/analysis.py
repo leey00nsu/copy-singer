@@ -68,6 +68,13 @@ class AnalysisResult:
         return asdict(self)
 
 
+@dataclass(frozen=True)
+class PitchFrames:
+    f0: npt.NDArray[np.floating]
+    voiced_flag: npt.NDArray[np.bool_]
+    frame_times: npt.NDArray[np.floating]
+
+
 def _round(value: float, digits: int = 4) -> float:
     return round(float(value), digits)
 
@@ -154,12 +161,12 @@ def _pitch_track(
     return points
 
 
-def analyze_audio(
+def analyze_audio_with_frames(
     audio: npt.NDArray[np.floating],
     sample_rate: int,
     segments: SegmentBounds | None = None,
     config: AnalysisConfig = DEFAULT_ANALYSIS_CONFIG,
-) -> AnalysisResult:
+) -> tuple[AnalysisResult, PitchFrames]:
     if audio.ndim != 1 or audio.size == 0:
         raise AnalysisRejectedError("UNSUPPORTED_AUDIO", "Decoded audio must be mono and non-empty.")
 
@@ -225,7 +232,7 @@ def analyze_audio(
     min_midi, max_midi = np.percentile(range_midi, (2, 98))
     stability, stability_details = _stability_score(stats_midi, stability_times, segments)
 
-    return AnalysisResult(
+    result = AnalysisResult(
         duration_ms=duration_ms,
         sample_rate=sample_rate,
         min_midi=_round(min_midi),
@@ -256,6 +263,20 @@ def analyze_audio(
             **stability_details,
         },
     )
+    return result, PitchFrames(
+        f0=f0,
+        voiced_flag=np.asarray(voiced_flag, dtype=bool),
+        frame_times=frame_times,
+    )
+
+
+def analyze_audio(
+    audio: npt.NDArray[np.floating],
+    sample_rate: int,
+    segments: SegmentBounds | None = None,
+    config: AnalysisConfig = DEFAULT_ANALYSIS_CONFIG,
+) -> AnalysisResult:
+    return analyze_audio_with_frames(audio, sample_rate, segments, config)[0]
 
 
 def analyze_wav(
@@ -265,3 +286,12 @@ def analyze_wav(
 ) -> AnalysisResult:
     audio, sample_rate = librosa.load(path, sr=config.sample_rate, mono=True)
     return analyze_audio(audio, sample_rate, segments, config)
+
+
+def analyze_wav_with_frames(
+    path: str | Path,
+    segments: SegmentBounds | None = None,
+    config: AnalysisConfig = DEFAULT_ANALYSIS_CONFIG,
+) -> tuple[AnalysisResult, PitchFrames]:
+    audio, sample_rate = librosa.load(path, sr=config.sample_rate, mono=True)
+    return analyze_audio_with_frames(audio, sample_rate, segments, config)

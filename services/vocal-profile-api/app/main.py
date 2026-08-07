@@ -11,7 +11,7 @@ from uuid import UUID
 from fastapi import FastAPI, File, Form, Header, HTTPException, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 
-from .analysis import AnalysisRejectedError, SegmentBounds, analyze_wav
+from .analysis import AnalysisRejectedError, SegmentBounds, analyze_wav_with_frames
 from .config import (
     ALLOWED_MIME_TYPES,
     MAX_UPLOAD_BYTES,
@@ -25,8 +25,10 @@ from .contracts import (
     ErrorResponse,
     SongAnalysisRequest,
     SongAnalysisResponse,
+    SynthesisReferenceResponse,
 )
 from .media import standardize_audio
+from .reference import build_smart_reference
 from .song_pipeline import (
     SongPipelineError,
     analyze_song_url,
@@ -42,7 +44,7 @@ async def lifespan(_: FastAPI):
     yield
 
 
-app = FastAPI(title="Copy Singer Vocal Profile Analyzer", version="1.1.0", lifespan=lifespan)
+app = FastAPI(title="Copy Singer Vocal Profile Analyzer", version="1.2.0", lifespan=lifespan)
 
 
 def _recording_directory(recording_id: str) -> Path:
@@ -138,6 +140,14 @@ async def recording_source(recording_id: str) -> FileResponse:
     )
 
 
+@app.get("/v1/recordings/{recording_id}/synthesis-reference")
+async def recording_synthesis_reference(recording_id: str) -> FileResponse:
+    reference = _recording_directory(recording_id) / "synthesis-reference.wav"
+    if not reference.is_file():
+        raise HTTPException(status_code=404, detail="Synthesis reference was not found.")
+    return FileResponse(reference, media_type="audio/wav", filename=reference.name)
+
+
 @app.post("/v1/song-target")
 async def song_target(request: SongAnalysisRequest) -> StreamingResponse:
     job_path, source_path = await asyncio.to_thread(
@@ -228,9 +238,34 @@ async def analyze(
                 preset=preset,
             )
 
-        result = analyze_wav(analysis_path, segments)
+        result, pitch_frames = analyze_wav_with_frames(analysis_path, segments)
         expires_at = datetime.now(UTC) + timedelta(hours=SOURCE_TTL_HOURS)
         data = result.to_dict()
+        synthesis_path = directory / "synthesis-reference.wav"
+        synthesis_descriptor = build_smart_reference(
+            analysis_path,
+            synthesis_path,
+            p10_midi=float(data["p10_midi"]),
+            median_midi=float(data["median_midi"]),
+            p90_midi=float(data["p90_midi"]),
+            pitch_frames=pitch_frames,
+        )
+        synthesis_reference = None
+        if synthesis_descriptor is not None:
+            data["descriptors"]["synthesisReference"] = synthesis_descriptor
+            synthesis_reference = SynthesisReferenceResponse(
+                storagePath=f"{recording_id}/{synthesis_path.name}",
+                mimeType="audio/wav",
+                sizeBytes=synthesis_path.stat().st_size,
+                **synthesis_descriptor,
+            )
+        else:
+            data["descriptors"]["synthesisReference"] = {
+                "algorithm": "voiced-phrase-band-selection",
+                "version": "smart-reference-v1",
+                "status": "unavailable",
+                "fallbackReason": "no-quality-phrase",
+            }
         if trim_to_max_duration:
             data["descriptors"].update(
                 {
@@ -261,6 +296,7 @@ async def analyze(
             analyzer=data.pop("analyzer"),
             analyzerVersion=data.pop("analyzer_version"),
             descriptors=data.pop("descriptors"),
+            synthesisReference=synthesis_reference,
         )
     except Exception:
         shutil.rmtree(directory, ignore_errors=True)
