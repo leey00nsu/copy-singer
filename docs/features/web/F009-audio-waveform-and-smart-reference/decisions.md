@@ -88,6 +88,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **탐색 시점**: Mediabunny 공식 Conversion API가 trimming, bitrate, resampling과 mono downmix를 지원하고 client에서 MP4/WebM 출력이 가능함을 확인했다. 현재 analyzer는 long-file 동의 시 server에서 WAV로 변환해 저장하며, worker는 Modal의 WAV bytes를 그대로 Leemage에 올리는 경로임을 확인했다.
   - **T06 확정 시점**: Chromium에서 6.8MB·225초 `vocals.m4a`를 선택해 첫 유효 음성부터 60초인 0.5MB Opus/WebM fallback으로 변환되고 WaveSurfer가 1:00만 표시함을 확인했다. AAC encoder가 지원되는 브라우저는 M4A를 우선한다. 실제 저장된 10,512,044B WAV 믹싱 결과를 worker 압축 경로로 변환한 결과 4,440,004B AAC/M4A로 57.8% 감소했다. sourceRanges는 low/mid/high 순서와 원본 시간 순서를 보존하며 한 영역의 복수 range를 연속 재생한다. descriptor가 없는 legacy profile에는 controls를 표시하지 않는다.
   - **T07 확정 시점**: Mediabunny에 정확히 60초 end timestamp를 요청해도 codec/container packet padding 때문에 analyzer가 디코딩한 sample 수가 60초를 소폭 넘을 수 있어 `TOO_LONG`이 발생했다. 서버의 60초 제한을 완화하지 않고 client 출력에 0.25초 headroom을 적용했다. 실제 225초 `vocals.m4a`는 0.5MB·59.76초 WebM으로 변환됐고, 같은 59.758초 경계 파일은 local analyzer에서 HTTP 200과 `durationMs=59750`으로 통과했다.
+  - **T08 확정 시점**: 실행 중인 `vocal-profile-api` 컨테이너가 smart reference 구현 전 이미지여서 OpenAPI와 최근 DB profile 모두 `synthesisReference`가 없었다. web이 이를 legacy fallback으로 허용하면서 영역 없는 새 profile이 정상 저장됐다. 새 분석에는 `smart-reference-v1` descriptor 계약을 요구해 구버전이면 `ANALYZER_UPDATE_REQUIRED`로 저장 전에 중단하고, 기존/품질 미달 profile은 누락 이유와 재분석 안내를 표시한다. 로컬 컨테이너를 최신 코드로 재빌드한 뒤 실제 59.75초 입력에서 source range 12개와 low/mid/high 전 영역을 확인했다.
 - **Evidence**:
   - **Commit**: T06 task checkpoint commit에서 갱신
   - **PR**: local workflow — 해당 없음

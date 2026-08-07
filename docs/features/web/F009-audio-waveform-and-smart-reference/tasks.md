@@ -137,6 +137,17 @@
     - [x] client 변환 시간에 codec padding headroom을 적용하고 경계 단위 테스트를 추가한다.
     - [x] 실제 긴 파일 변환·분석과 전체 회귀 및 workflow audit을 통과한다.
 
+- [DONE][PRD-FR-042] T-F009-audio-waveform-and-smart-reference-08 구버전 analyzer의 음역 영역 데이터 누락 방지
+  - Date: 2026-08-07
+  - Acceptance:
+    - smart reference 계약을 지원하지 않는 analyzer가 연결되면 영역 없는 새 프로필을 조용히 저장하지 않는다.
+    - 과거 또는 품질 미달로 영역 정보가 없는 프로필에서도 누락 이유와 재분석 안내를 표시한다.
+    - 최신 analyzer로 만든 프로필에는 저음·중앙·고음 영역 재생 controls가 표시된다.
+  - Checklist:
+    - [x] analyzer 응답의 smart reference descriptor 계약을 검증하고 안정적인 오류를 반환한다.
+    - [x] 영역 정보 unavailable UI와 회귀 테스트를 추가한다.
+    - [x] 로컬 analyzer 컨테이너를 최신 코드로 재빌드하고 실제 분석 응답·전체 회귀를 확인한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -181,5 +192,7 @@
 | 실제 저장 믹싱 WAV 무저장 압축 비교 | 2026-08-07 | PASS (10,512,044B → 4,440,004B M4A, 57.8% 감소) |
 | `pnpm run test:mixing:db` | 2026-08-07 | PASS (압축 MIME·확장자 저장 포함 1/1) |
 | 59.758초 WebM → local analyzer `/v1/analyze` | 2026-08-07 | PASS (HTTP 200, `durationMs=59750`, 테스트 recording 삭제) |
+| 최신 analyzer 실제 `vocals.m4a` 경계 분석 | 2026-08-07 | PASS (`smart-reference-v1`, source range 12개, low/mid/high 모두 포함, 테스트 recording 삭제) |
+| 기존 영역 누락 profile in-app Browser (`/vocal-profiles/:id`) | 2026-08-07 | PASS (legacy 재분석 안내 표시) |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-07T10:02:51.300Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-07T10:15:04.300Z -->
