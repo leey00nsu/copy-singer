@@ -12,9 +12,9 @@ docker compose up -d --build
 pnpm run db:migrate:deploy
 pnpm run db:generate
 pnpm run dev
-# In another terminal:
-pnpm run worker:mixing
 ```
+
+`pnpm dev` starts the Next.js development server and durable mixing worker together. For production on the single instance, run `pnpm build` and then `pnpm start`; `start` also runs both processes. Use `pnpm dev:web` or `pnpm start:web` only when intentionally diagnosing the web process without a worker.
 
 Open:
 
@@ -110,11 +110,15 @@ pnpm run verify:feature-config
 pnpm run verify:feature-config -- --leemage
 ```
 
-Run the durable worker separately from Next.js:
+The default single-instance commands supervise the web process and durable worker together:
 
 ```bash
-pnpm run worker:mixing
+pnpm dev
+# or, after pnpm build
+pnpm start
 ```
+
+If either child process fails, the combined command terminates the other process so the instance supervisor can restart the complete service. `pnpm run worker:mixing` remains available for worker-only diagnostics.
 
 The web request atomically spends `MIXING_TICKET_COST` and creates a PostgreSQL job. The worker claims jobs with a lease, downloads the private reference through its stored Leemage metadata, asks the analyzer for an ephemeral allowlisted song target, submits Modal, and copies successful results back to Leemage. Failures before Modal acceptance are refunded; failures after acceptance are not. Restarting the worker lets another process reclaim an expired lease and continue polling the same Modal job.
 
@@ -196,6 +200,9 @@ DATABASE_URL=postgresql://copy_singer:copy_singer_dev@localhost:5433/copy_singer
 
 ```bash
 pnpm run dev
+pnpm run dev:web
+pnpm start
+pnpm run start:web
 pnpm run worker:mixing
 pnpm run verify:feature-config
 pnpm run build
