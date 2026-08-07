@@ -213,7 +213,7 @@ export function RecommendationResults({
                     <div>
                       <p className="flex items-center gap-2 text-sm font-semibold text-emerald-700"><Headphones className="size-4" /> AI 믹싱 완료</p>
                       <AudioWaveformPlayer className="mt-3" label={`${item.artist} ${item.title} AI 믹싱 결과`} src={item.synthesis.audioUrl} />
-                      <a className={`${buttonVariants({ size: "sm", variant: "outline" })} mt-3 w-full`} download={`${item.artist}-${item.title}-copy-singer.wav`} href={item.synthesis.audioUrl}><Download className="size-4" /> 결과 저장</a>
+                      <a className={`${buttonVariants({ size: "sm", variant: "outline" })} mt-3 w-full`} download href={item.synthesis.audioUrl}><Download className="size-4" /> 결과 저장</a>
                     </div>
                   ) : (
                     <div aria-live="polite" className="text-center">

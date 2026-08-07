@@ -37,7 +37,7 @@ export default async function VocalProfileDetailPage({ params }: { params: Promi
         </CardContent>
       </Card>
 
-      <section className="mt-8"><VocalProfileResults profile={detail.profile} /></section>
+      <section className="mt-8"><VocalProfileResults profile={detail.profile} sourceAudioSrc={detail.audioUrl} /></section>
 
       <div className="mt-8 flex flex-wrap gap-3">
         {detail.latestRecommendationId ? (

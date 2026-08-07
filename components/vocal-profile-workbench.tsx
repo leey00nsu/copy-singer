@@ -12,6 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { LongAudioDialog } from "@/components/long-audio-dialog";
 import { VocalProfileResults } from "@/components/vocal-profile-results";
 import { isLongProfileAudio, readAudioDuration } from "@/lib/vocal-profile/audio-file";
+import { prepareProfileAudio } from "@/lib/audio/profile-upload";
 import type { VocalProfileError, VocalProfileResponse } from "@/lib/vocal-profile/contract";
 
 const MAX_PROFILE_AUDIO_BYTES = 25 * 1024 * 1024;
@@ -46,7 +47,8 @@ export function VocalProfileWorkbench() {
   const [audioDuration, setAudioDuration] = useState<number | null>(null);
   const [pendingLongFile, setPendingLongFile] = useState<File | null>(null);
   const [pendingLongDuration, setPendingLongDuration] = useState<number | null>(null);
-  const [trimToMaxDuration, setTrimToMaxDuration] = useState(false);
+  const [preparingAudio, setPreparingAudio] = useState(false);
+  const [preparationProgress, setPreparationProgress] = useState(0);
   const [health, setHealth] = useState<ServiceHealth>("checking");
   const [analyzing, setAnalyzing] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -80,17 +82,29 @@ export function VocalProfileWorkbench() {
     setAudioDuration(null);
     setPendingLongFile(null);
     setPendingLongDuration(null);
-    setTrimToMaxDuration(false);
+    setPreparationProgress(0);
     setAnalysisError(null);
   };
 
-  const completeRecording = useCallback((file: File, durationMs: number) => {
-    setAudioFile(file);
-    setAudioDuration(durationMs / 1000);
-    setTrimToMaxDuration(false);
-    setAnalysisError(null);
-    toast.success("테스트 녹음이 준비됐습니다.");
+  const prepareSelectedAudio = useCallback(async (file: File) => {
+    setPreparingAudio(true);
+    setPreparationProgress(0);
+    try {
+      const prepared = await prepareProfileAudio(file, setPreparationProgress);
+      setAudioFile(prepared.file);
+      setAudioDuration(prepared.durationSeconds);
+      setAnalysisError(null);
+      toast.success(`최대 60초 압축 오디오가 준비됐습니다. (${(prepared.file.size / 1024 / 1024).toFixed(1)} MB)`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "오디오를 변환하지 못했습니다.");
+    } finally {
+      setPreparingAudio(false);
+    }
   }, []);
+
+  const completeRecording = useCallback((file: File) => {
+    void prepareSelectedAudio(file);
+  }, [prepareSelectedAudio]);
 
   const recordingError = useCallback((error: unknown) => {
     const denied = error instanceof DOMException && error.name === "NotAllowedError";
@@ -114,10 +128,7 @@ export function VocalProfileWorkbench() {
       setPendingLongDuration(duration);
       return;
     }
-    setAudioFile(file);
-    setAudioDuration(duration);
-    setTrimToMaxDuration(false);
-    setAnalysisError(null);
+    await prepareSelectedAudio(file);
   };
 
   const cancelLongAudio = useCallback(() => {
@@ -127,12 +138,10 @@ export function VocalProfileWorkbench() {
 
   const confirmLongAudio = () => {
     if (!pendingLongFile) return;
-    setAudioFile(pendingLongFile);
-    setAudioDuration(pendingLongDuration);
-    setTrimToMaxDuration(true);
+    const file = pendingLongFile;
     setPendingLongFile(null);
     setPendingLongDuration(null);
-    setAnalysisError(null);
+    void prepareSelectedAudio(file);
   };
 
   const analyzeAudio = async () => {
@@ -141,7 +150,6 @@ export function VocalProfileWorkbench() {
     setAnalysisError(null);
     const body = new FormData();
     body.append("audio", audioFile, audioFile.name);
-    if (trimToMaxDuration) body.append("trim_to_max_duration", "true");
     try {
       const response = await fetch("/api/vocal-profiles", { method: "POST", body });
       const payload: unknown = await response.json().catch(() => null);
@@ -167,7 +175,6 @@ export function VocalProfileWorkbench() {
       setProfile(null);
       setAudioFile(null);
       setAudioDuration(null);
-      setTrimToMaxDuration(false);
       toast.success("프로필과 원본 녹음을 삭제했습니다.");
     } catch (error) {
       setAnalysisError(profileError(error));
@@ -254,9 +261,15 @@ export function VocalProfileWorkbench() {
           <Card>
             <CardHeader><CardTitle>테스트 녹음</CardTitle><CardDescription>녹음 중인 파형을 확인할 수 있으며 60초가 되면 자동으로 종료됩니다.</CardDescription></CardHeader>
             <CardContent className="space-y-4">
-              {audioFile && audioUrl ? (
+              {preparingAudio ? (
+                <div className="rounded-2xl border p-6 text-center">
+                  <LoaderCircle className="mx-auto size-6 animate-spin text-primary" />
+                  <p className="mt-3 text-sm font-medium">첫 음부터 최대 60초를 압축하는 중…</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{Math.round(preparationProgress * 100)}%</p>
+                </div>
+              ) : audioFile && audioUrl ? (
                 <div className="rounded-2xl border p-4">
-                  <div className="flex items-center gap-3"><span className="flex size-10 items-center justify-center rounded-full bg-secondary"><FileAudio className="size-5" /></span><div className="min-w-0"><p className="truncate text-sm font-medium">{audioFile.name}</p><p className="text-xs text-muted-foreground">{(audioFile.size / 1024 / 1024).toFixed(1)} MB{audioDuration !== null ? ` · 약 ${Math.ceil(audioDuration)}초` : ""}</p>{trimToMaxDuration ? <p className="mt-1 text-xs font-medium text-primary">첫 음부터 최대 60초 자동 자르기</p> : null}</div></div>
+                  <div className="flex items-center gap-3"><span className="flex size-10 items-center justify-center rounded-full bg-secondary"><FileAudio className="size-5" /></span><div className="min-w-0"><p className="truncate text-sm font-medium">{audioFile.name}</p><p className="text-xs text-muted-foreground">{(audioFile.size / 1024 / 1024).toFixed(1)} MB{audioDuration !== null ? ` · 약 ${Math.ceil(audioDuration)}초` : ""}</p><p className="mt-1 text-xs font-medium text-primary">업로드할 60초 이하 압축 오디오</p></div></div>
                   <AudioWaveformPlayer className="mt-4" label="제출할 보컬 녹음" src={audioUrl} />
                   <Button className="mt-3 w-full" disabled={analyzing} onClick={() => void analyzeAudio()}>
                     {analyzing ? <LoaderCircle className="size-4 animate-spin" /> : <Activity className="size-4" />}
@@ -302,7 +315,7 @@ export function VocalProfileWorkbench() {
                 </Button>
               </CardHeader>
               <CardContent className="space-y-6">
-                <VocalProfileResults profile={profile} />
+                <VocalProfileResults profile={profile} sourceAudioSrc={audioUrl ?? undefined} />
                 <p className="text-xs text-muted-foreground">생성 {new Date(profile.createdAt).toLocaleString("ko-KR")} · 원본 만료 {profile.recording.expiresAt ? new Date(profile.recording.expiresAt).toLocaleString("ko-KR") : "-"}</p>
                 <div className="rounded-xl bg-muted/55 p-4 text-xs leading-6 text-muted-foreground">사용 권한이 있는 본인의 음성만 업로드하세요. 이 결과는 노래 추천을 위한 참고 측정값이며, 발성 능력이나 건강 상태를 진단하지 않습니다. 환경과 컨디션에 따라 달라질 수 있습니다.</div>
                 <Button className="w-full" disabled={recommending} onClick={() => void createRecommendations()} size="lg">

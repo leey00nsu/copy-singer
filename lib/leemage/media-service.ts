@@ -4,6 +4,13 @@ import { prisma } from "@/lib/db/prisma";
 import { analyzerUrl } from "@/lib/vocal-profile/server";
 import { createLeemageClient, LeemageError } from "@/lib/leemage/client";
 
+function audioExtension(mimeType: string) {
+  if (mimeType === "audio/mp4" || mimeType === "audio/aac") return "m4a";
+  if (mimeType === "audio/webm") return "webm";
+  if (mimeType === "audio/mpeg") return "mp3";
+  return "wav";
+}
+
 async function storeAnalyzerAsset(input: {
   userId: string;
   recordingId: string;
@@ -22,7 +29,7 @@ async function storeAnalyzerAsset(input: {
   }
   const bytes = new Uint8Array(await source.arrayBuffer());
   const stored = await createLeemageClient().uploadFile({
-    fileName: input.fileName ?? `${input.recordingId}${input.kind === "SYNTHESIS_REFERENCE" ? "-synthesis" : ""}.wav`,
+    fileName: input.fileName ?? `${input.recordingId}${input.kind === "SYNTHESIS_REFERENCE" ? "-synthesis" : ""}.${audioExtension(input.mimeType)}`,
     mimeType: input.mimeType,
     bytes,
   });
@@ -99,10 +106,11 @@ export async function storeMixingResult(input: {
   mixingJobId: string;
   bytes: Uint8Array;
   mimeType: string;
+  extension: string;
   fetchImpl?: typeof fetch;
 }) {
   const stored = await createLeemageClient(input.fetchImpl).uploadFile({
-    fileName: `copy-singer-${input.mixingJobId}.wav`,
+    fileName: `copy-singer-${input.mixingJobId}.${input.extension}`,
     mimeType: input.mimeType,
     bytes: input.bytes,
   });

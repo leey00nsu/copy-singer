@@ -219,7 +219,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       if (url.endsWith("/files/presign")) {
         return Response.json({
           presignedUrl: "https://objects.example/result-upload",
-          objectName: `project/result-${suffix}.wav`,
+          objectName: `project/result-${suffix}.m4a`,
           fileId: `result-${suffix}`,
         });
       }
@@ -235,6 +235,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       fetchImpl: successFetch,
       sleep: async () => {},
       pollIntervalMs: 0,
+      compressResult: async () => ({ bytes: new Uint8Array([10, 11]), mimeType: "audio/mp4", extension: "m4a" }),
     });
     const completed = await prisma.mixingJob.findUniqueOrThrow({
       where: { id: successful.id },
@@ -242,6 +243,8 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     });
     assert.equal(completed.status, "SUCCEEDED");
     assert.equal(completed.resultAsset?.kind, "MIX_RESULT");
+    assert.equal(completed.resultAsset?.mimeType, "audio/mp4");
+    assert.match(completed.resultAsset?.fileName ?? "", /\.m4a$/);
     assert.equal(completed.resultAsset?.externalUrl, "https://objects.example/result.wav");
     const history = await getMixingHistory(userId, 1, 20);
     assert.equal(history.jobs[0]?.id, successful.id);

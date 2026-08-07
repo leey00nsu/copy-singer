@@ -1,0 +1,29 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import { renderToStaticMarkup } from "react-dom/server";
+import { VocalProfileResults } from "../components/vocal-profile-results";
+import type { VocalProfileResponse } from "../lib/vocal-profile/contract";
+
+const profile: VocalProfileResponse = {
+  id: "profile", sourceType: "USER", minMidi: 60, maxMidi: 72, p10Midi: 64, medianMidi: 67, p90Midi: 70,
+  tessituraLowMidi: 64, tessituraHighMidi: 70, voicedRatio: 0.8, pitchStability: 0.9, clippingRatio: 0,
+  rmsDb: -20, analyzer: "test", analyzerVersion: "1", createdAt: "2026-08-07T00:00:00.000Z",
+  descriptors: {
+    pitchHistogram: [{ midi: 67, count: 1, ratio: 1 }],
+    pitchTrack: [{ timeMs: 0, midi: 67 }],
+    synthesisReference: { sourceRanges: [
+      { startMs: 1_000, endMs: 2_000, band: "low" },
+      { startMs: 3_000, endMs: 4_000, band: "mid" },
+      { startMs: 5_000, endMs: 6_000, band: "high" },
+    ] },
+  },
+  recording: { id: "recording", mimeType: "audio/webm", sizeBytes: 1, durationMs: 60_000, sampleRate: 16_000, expiresAt: null, createdAt: "2026-08-07T00:00:00.000Z" },
+};
+
+test("renders low, mid, and high smart-reference playback controls", () => {
+  const html = renderToStaticMarkup(<VocalProfileResults profile={profile} sourceAudioSrc="/profile.webm" />);
+  assert.match(html, /AI 합성에 선택된 음역 구간/);
+  assert.match(html, /저음 영역/);
+  assert.match(html, /중앙 영역/);
+  assert.match(html, /고음 영역/);
+});

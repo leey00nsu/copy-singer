@@ -6,11 +6,20 @@ import { Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatPlaybackTime } from "@/lib/audio/playback";
 import { cn } from "@/lib/utils";
+import type { AudioSourceRange } from "@/lib/vocal-profile/reference-segments";
+
+export type AudioPlaybackSegment = {
+  id: string;
+  label: string;
+  ranges: AudioSourceRange[];
+};
+const EMPTY_SEGMENTS: AudioPlaybackSegment[] = [];
 
 type AudioWaveformPlayerProps = {
   src: string;
   label?: string;
   className?: string;
+  segments?: AudioPlaybackSegment[];
 };
 
 export function AudioWaveformPlayer(props: AudioWaveformPlayerProps) {
@@ -21,12 +30,15 @@ function AudioWaveformPlayerInstance({
   src,
   label = "오디오",
   className,
+  segments = EMPTY_SEGMENTS,
 }: AudioWaveformPlayerProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [decodeFailed, setDecodeFailed] = useState(false);
   const [duration, setDuration] = useState(0);
   const [muted, setMuted] = useState(false);
   const [finished, setFinished] = useState(false);
+  const [activeSegmentId, setActiveSegmentId] = useState<string | null>(null);
+  const activeRangeRef = useRef<{ segmentId: string; rangeIndex: number } | null>(null);
   const { wavesurfer, isReady, isPlaying, currentTime } = useWavesurfer({
     container: containerRef,
     url: src,
@@ -46,20 +58,44 @@ function AudioWaveformPlayerInstance({
     if (!wavesurfer) return;
     const unsubscribeReady = wavesurfer.on("ready", (nextDuration) => setDuration(nextDuration));
     const unsubscribeFinish = wavesurfer.on("finish", () => setFinished(true));
-    const unsubscribeInteraction = wavesurfer.on("interaction", () => setFinished(false));
+    const unsubscribeInteraction = wavesurfer.on("interaction", () => {
+      activeRangeRef.current = null;
+      setActiveSegmentId(null);
+      setFinished(false);
+    });
     const unsubscribePlay = wavesurfer.on("play", () => setFinished(false));
     const unsubscribeError = wavesurfer.on("error", () => setDecodeFailed(true));
+    const unsubscribeTime = wavesurfer.on("timeupdate", (time) => {
+      const active = activeRangeRef.current;
+      if (!active) return;
+      const segment = segments.find((candidate) => candidate.id === active.segmentId);
+      const range = segment?.ranges[active.rangeIndex];
+      if (!segment || !range || time < range.endSeconds - 0.03) return;
+      const nextIndex = active.rangeIndex + 1;
+      const nextRange = segment.ranges[nextIndex];
+      if (nextRange) {
+        activeRangeRef.current = { ...active, rangeIndex: nextIndex };
+        wavesurfer.setTime(nextRange.startSeconds);
+      } else {
+        activeRangeRef.current = null;
+        setActiveSegmentId(null);
+        wavesurfer.pause();
+      }
+    });
     return () => {
       unsubscribeReady();
       unsubscribeFinish();
       unsubscribeInteraction();
       unsubscribePlay();
       unsubscribeError();
+      unsubscribeTime();
     };
-  }, [wavesurfer]);
+  }, [segments, wavesurfer]);
 
   const togglePlayback = useCallback(() => {
     if (!wavesurfer) return;
+    activeRangeRef.current = null;
+    setActiveSegmentId(null);
     if (finished) {
       wavesurfer.setTime(0);
       void wavesurfer.play();
@@ -80,6 +116,16 @@ function AudioWaveformPlayerInstance({
     wavesurfer.setMuted(next);
     setMuted(next);
   }, [muted, wavesurfer]);
+
+  const playSegment = useCallback((segment: AudioPlaybackSegment) => {
+    if (!wavesurfer || segment.ranges.length === 0) return;
+    const first = segment.ranges[0]!;
+    activeRangeRef.current = { segmentId: segment.id, rangeIndex: 0 };
+    setActiveSegmentId(segment.id);
+    setFinished(false);
+    wavesurfer.setTime(first.startSeconds);
+    void wavesurfer.play();
+  }, [wavesurfer]);
 
   return (
     <div className={cn("rounded-xl border bg-background p-3", className)}>
@@ -113,6 +159,15 @@ function AudioWaveformPlayerInstance({
               {muted ? <VolumeX className="size-3.5" /> : <Volume2 className="size-3.5" />}
             </Button>
           </div>
+          {segments.length > 0 ? (
+            <div className="mt-3 grid gap-2 sm:grid-cols-3">
+              {segments.map((segment) => (
+                <Button aria-pressed={activeSegmentId === segment.id} disabled={!isReady} key={segment.id} onClick={() => playSegment(segment)} size="sm" type="button" variant={activeSegmentId === segment.id ? "default" : "outline"}>
+                  <Play className="size-3.5" /> {segment.label}
+                </Button>
+              ))}
+            </div>
+          ) : null}
         </>
       )}
     </div>

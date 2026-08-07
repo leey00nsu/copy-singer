@@ -26,6 +26,7 @@ import {
   YAxis,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import type { VocalProfileResponse } from "@/lib/vocal-profile/contract";
@@ -39,6 +40,7 @@ import {
   rangeChartData,
   type VocalProfileVisualization,
 } from "@/lib/vocal-profile/visualization";
+import { referenceBandSegments } from "@/lib/vocal-profile/reference-segments";
 
 const RANGE_CHART_CONFIG = {
   range: { label: "음역", color: "#059669" },
@@ -73,7 +75,7 @@ function RangeProfile({ profile }: { profile: VocalProfileResponse }) {
           config={RANGE_CHART_CONFIG}
           role="img"
         >
-          <BarChart accessibilityLayer data={data} layout="vertical" margin={{ left: 8, right: 18, top: 10, bottom: 8 }}>
+          <BarChart accessibilityLayer data={data} layout="vertical" margin={{ left: 8, right: 18, top: 30, bottom: 8 }}>
             <CartesianGrid horizontal={false} strokeDasharray="4 4" />
             <XAxis dataKey="range" domain={[axis.low, axis.high]} tickFormatter={(value) => midiToNoteName(Number(value))} type="number" />
             <YAxis dataKey="label" hide type="category" />
@@ -186,8 +188,9 @@ function MetricCard({ label, value, detail, icon: Icon }: { label: string; value
   return <Card className="shadow-sm"><CardContent className="flex items-center justify-between p-5"><div><p className="text-xs text-muted-foreground">{label}</p><p className="mt-1 text-xl font-semibold tracking-tight">{value}</p><p className="mt-1 font-mono text-[10px] text-muted-foreground">{detail}</p></div><span className="flex size-11 items-center justify-center rounded-full bg-emerald-50 text-emerald-600"><Icon className="size-5" /></span></CardContent></Card>;
 }
 
-export function VocalProfileResults({ profile }: { profile: VocalProfileResponse }) {
+export function VocalProfileResults({ profile, sourceAudioSrc }: { profile: VocalProfileResponse; sourceAudioSrc?: string }) {
   const visualization = useMemo(() => parseVocalProfileVisualization(profile.descriptors), [profile.descriptors]);
+  const referenceSegments = useMemo(() => referenceBandSegments(profile.descriptors), [profile.descriptors]);
   const quality = [
     ["유성 비율", `${(profile.voicedRatio * 100).toFixed(1)}%`, Activity],
     ["피치 안정성", `${(profile.pitchStability * 100).toFixed(1)}%`, Gauge],
@@ -200,6 +203,12 @@ export function VocalProfileResults({ profile }: { profile: VocalProfileResponse
 
   return (
     <div className="space-y-4">
+      {sourceAudioSrc && referenceSegments.length > 0 ? (
+        <Card className="shadow-sm">
+          <CardHeader className="pb-3"><CardTitle className="text-lg">AI 합성에 선택된 음역 구간</CardTitle><p className="text-xs leading-5 text-muted-foreground">무음을 제외하고 선택된 저음·중앙·고음 구간입니다. 버튼을 누르면 제출한 60초 오디오에서 해당 구간만 이어서 재생합니다.</p></CardHeader>
+          <CardContent><AudioWaveformPlayer label="AI 합성 reference 구간" segments={referenceSegments} src={sourceAudioSrc} /></CardContent>
+        </Card>
+      ) : null}
       <div className="grid gap-4 lg:grid-cols-[1.08fr_.92fr]">
         <RangeProfile profile={profile} />
         <HistogramChart profile={profile} visualization={visualization} />

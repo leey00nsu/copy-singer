@@ -76,7 +76,7 @@ export function MixingHistoryList({ initial }: { initial: MixingHistoryPayload }
             {job.audioUrl ? (
               <div className="mt-5 rounded-xl bg-muted/40 p-4">
                 <AudioWaveformPlayer label={`${job.song.artist} ${job.song.title} AI 믹싱 결과`} src={job.audioUrl} />
-                <a className={`${buttonVariants({ size: "sm", variant: "outline" })} mt-3`} download={`${job.song.artist}-${job.song.title}-copy-singer.wav`} href={job.audioUrl}>
+                <a className={`${buttonVariants({ size: "sm", variant: "outline" })} mt-3`} download href={job.audioUrl}>
                   <Download className="size-4" /> 결과 저장
                 </a>
               </div>

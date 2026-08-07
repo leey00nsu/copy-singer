@@ -27,7 +27,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
     const value = upstream.headers.get(name);
     if (value) headers.set(name, value);
   }
-  headers.set("Content-Disposition", `inline; filename="copy-singer-${job.id}.wav"`);
+  headers.set("Content-Disposition", `inline; filename="${job.resultAsset.fileName}"`);
   headers.set("Cache-Control", "private, no-store");
   return new Response(upstream.body, { status: upstream.status, headers });
 }

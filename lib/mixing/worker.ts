@@ -9,6 +9,7 @@ import { mixingLeaseSeconds, mixingPollIntervalMs } from "@/lib/config/server-en
 import { applyTicketChange } from "@/lib/tickets/service";
 import { discardMediaAsset, storeMixingResult } from "@/lib/leemage/media-service";
 import { processOneMediaCleanup } from "@/lib/leemage/cleanup";
+import { compressMixingResult, type CompressedMixingAudio } from "@/lib/audio/compress-mixing-result";
 
 type ModalJob = {
   id: string;
@@ -20,6 +21,7 @@ type WorkerDependencies = {
   fetchImpl?: typeof fetch;
   sleep?: (milliseconds: number) => Promise<void>;
   pollIntervalMs?: number;
+  compressResult?: (bytes: Uint8Array) => Promise<CompressedMixingAudio>;
 };
 
 function defaultSleep(milliseconds: number) {
@@ -143,6 +145,7 @@ export async function processClaimedMixingJob(jobId: string, owner: string, depe
   const fetchImpl = dependencies.fetchImpl ?? fetch;
   const sleep = dependencies.sleep ?? defaultSleep;
   const pollInterval = dependencies.pollIntervalMs ?? mixingPollIntervalMs();
+  const compressResult = dependencies.compressResult ?? compressMixingResult;
   let submitted = false;
   try {
     let job = await prisma.mixingJob.findFirst({
@@ -214,11 +217,13 @@ export async function processClaimedMixingJob(jobId: string, owner: string, depe
           }),
           "Modal 합성 결과를 불러오지 못했습니다",
         );
+        const compressed = await compressResult(new Uint8Array(audio.bytes));
         const resultAsset = await storeMixingResult({
           userId: job.userId,
           mixingJobId: job.id,
-          bytes: new Uint8Array(audio.bytes),
-          mimeType: audio.contentType,
+          bytes: compressed.bytes,
+          mimeType: compressed.mimeType,
+          extension: compressed.extension,
           fetchImpl,
         });
         try {
