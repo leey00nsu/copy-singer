@@ -103,6 +103,7 @@ flowchart LR
 4. worker는 Modal WAV 결과를 Leemage에 저장하기 전 FFmpeg로 stereo AAC/M4A 160kbps로 변환한다. 이미 압축된 호환 결과는 그대로 유지하며 변환 실패 시 큰 WAV를 영구 저장하지 않고 job을 실패 처리한다.
 5. `AudioWaveformPlayer`에 여러 source range를 하나의 영역으로 재생하는 segment controls를 추가한다. smart descriptor의 low/mid/high ranges를 원본 시간 순으로 묶고, 현재 range가 끝나면 같은 영역의 다음 range로 이동한 뒤 종료한다.
 6. profile 생성 직후에는 변환본 Blob URL, 저장 profile에서는 소유권이 보호된 source proxy URL을 같은 segment player에 전달한다.
+7. WebM/Opus와 AAC encoder가 요청한 end timestamp보다 packet padding을 추가할 수 있으므로 client conversion duration에는 작은 고정 headroom을 둔다. analyzer 제한을 느슨하게 만들거나 장시간 원본을 허용하지 않고, 실제 디코딩 결과가 60초 이하가 되도록 출력 자체를 제한한다.
 
 ---
 

@@ -127,6 +127,16 @@
     - [x] smart reference sourceRanges 영역 controls와 연속 구간 재생을 구현한다.
     - [x] 관련 단위·통합·브라우저·전체 회귀 및 workflow audit을 통과한다.
 
+- [DONE][PRD-FR-041] T-F009-audio-waveform-and-smart-reference-07 브라우저 60초 인코딩 패딩 TOO_LONG 방지
+  - Date: 2026-08-07
+  - Acceptance:
+    - 자동 자르기로 만든 압축 파일이 codec/container 패딩과 무관하게 analyzer의 60초 제한을 통과한다.
+    - 60초 초과 원본을 조용히 허용하지 않으며 기존 동의 흐름과 최대 길이 정책을 유지한다.
+  - Checklist:
+    - [x] 실제 변환본의 browser·analyzer 디코딩 길이를 확인해 원인을 고정한다.
+    - [x] client 변환 시간에 codec padding headroom을 적용하고 경계 단위 테스트를 추가한다.
+    - [x] 실제 긴 파일 변환·분석과 전체 회귀 및 workflow audit을 통과한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -165,10 +175,11 @@
 | `pnpm test` | 2026-08-07 | PASS (build와 전체 TS/UI/DB 회귀) |
 | `services/vocal-profile-api/.venv/bin/pytest -q services/vocal-profile-api/tests` | 2026-08-07 | PASS (25/25, deprecation warning 3건) |
 | `pnpm run lint` | 2026-08-07 | PASS |
-| `vocals.m4a` client trim/compression browser 검증 | 2026-08-07 | PASS (6.8MB·225초 → 0.5MB·60초 WebM, WaveSurfer 1:00) |
+| `vocals.m4a` client trim/compression browser 검증 | 2026-08-07 | PASS (6.8MB·225초 → 0.5MB WebM, 실제 디코딩 59.76초, UI 1:00) |
 | range chart 중앙음 label browser bounds | 2026-08-07 | PASS (label이 SVG 상하좌우 경계 내부) |
 | `pnpm exec tsx --test tests/profile-audio-preparation.test.ts tests/vocal-profile-reference-bands.test.ts tests/vocal-profile-results-ui.test.tsx tests/compress-mixing-result.test.ts` | 2026-08-07 | PASS (first-audible, 3영역 UI, AAC 압축) |
 | 실제 저장 믹싱 WAV 무저장 압축 비교 | 2026-08-07 | PASS (10,512,044B → 4,440,004B M4A, 57.8% 감소) |
 | `pnpm run test:mixing:db` | 2026-08-07 | PASS (압축 MIME·확장자 저장 포함 1/1) |
+| 59.758초 WebM → local analyzer `/v1/analyze` | 2026-08-07 | PASS (HTTP 200, `durationMs=59750`, 테스트 recording 삭제) |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-07T09:52:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-07T10:02:51.300Z -->
