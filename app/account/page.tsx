@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Ticket, UserRound } from "lucide-react";
+import { AudioLines, ChevronLeft, ChevronRight, Ticket, UserRound } from "lucide-react";
 import { TicketLedger } from "@/components/account/ticket-ledger";
 import { Button } from "@/components/ui/button";
 import { requirePageSession } from "@/lib/auth/session";
@@ -26,6 +26,11 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           <p className="mt-1 text-4xl font-bold tabular-nums">{account.balance}</p>
         </div>
       </section>
+
+      <Link className="mt-5 flex items-center justify-between rounded-2xl border bg-background p-5 transition-colors hover:bg-muted/40" href="/vocal-profiles">
+        <span className="flex items-center gap-3"><AudioLines className="size-5 text-emerald-600" aria-hidden="true" /><span><span className="block font-semibold">내 보컬 프로필</span><span className="mt-1 block text-sm text-muted-foreground">저장된 분석과 제출한 보컬 다시 보기</span></span></span>
+        <ChevronRight className="size-5 text-muted-foreground" aria-hidden="true" />
+      </Link>
 
       <div className="mb-4 mt-10 flex items-end justify-between gap-4">
         <div>

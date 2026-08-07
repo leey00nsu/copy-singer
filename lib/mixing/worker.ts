@@ -58,7 +58,7 @@ async function mediaBytes(response: Response, message: string) {
   };
 }
 
-export async function claimNextMixingJob(owner: string) {
+export async function claimNextMixingJob(owner: string, candidateJobId: string | null = null) {
   const now = new Date();
   const leaseUntil = new Date(now.getTime() + mixingLeaseSeconds() * 1_000);
   const rows = await prisma.$queryRaw<Array<{ id: string }>>`
@@ -67,6 +67,7 @@ export async function claimNextMixingJob(owner: string) {
       FROM "MixingJob"
       WHERE
         "attempts" < "maxAttempts"
+        AND (${candidateJobId}::uuid IS NULL OR "id" = ${candidateJobId}::uuid)
         AND (
           "status" = 'PENDING'::"MixingJobStatus"
           OR (

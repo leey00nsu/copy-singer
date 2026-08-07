@@ -117,7 +117,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     );
 
     const owners = ["worker-a", "worker-b"];
-    const claims = await Promise.all(owners.map((owner) => claimNextMixingJob(owner)));
+    const claims = await Promise.all(owners.map((owner) => claimNextMixingJob(owner, first.id)));
     assert.equal(claims.filter(Boolean).length, 1);
     const winner = owners[claims.findIndex(Boolean)]!;
     await processClaimedMixingJob(first.id, winner, {
@@ -135,12 +135,12 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       recommendationItemId: itemId,
       idempotencyKey: `submitted-${suffix}`,
     });
-    assert.equal(await claimNextMixingJob("crashed-worker"), submittedFailure.id);
+    assert.equal(await claimNextMixingJob("crashed-worker", submittedFailure.id), submittedFailure.id);
     await prisma.mixingJob.update({
       where: { id: submittedFailure.id },
       data: { leaseExpiresAt: new Date(Date.now() - 1_000) },
     });
-    assert.equal(await claimNextMixingJob("recovery-worker"), submittedFailure.id);
+    assert.equal(await claimNextMixingJob("recovery-worker", submittedFailure.id), submittedFailure.id);
 
     const workerFetch: typeof fetch = async (request, init) => {
       const url = String(request);
@@ -182,7 +182,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       recommendationItemId: itemId,
       idempotencyKey: `successful-${suffix}`,
     });
-    assert.equal(await claimNextMixingJob("result-worker"), successful.id);
+    assert.equal(await claimNextMixingJob("result-worker", successful.id), successful.id);
     const successFetch: typeof fetch = async (request, init) => {
       const url = String(request);
       if (url === "https://objects.example/reference.wav") {
