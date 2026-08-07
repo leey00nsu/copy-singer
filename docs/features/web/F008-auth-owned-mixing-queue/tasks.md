@@ -160,6 +160,16 @@
     - [x] README의 단일 인스턴스 실행 방법과 별도 worker 설명을 갱신한다.
     - [x] script 계약과 종료 전파 동작을 검증하고 전체 정적 검사를 통과한다.
 
+- [DONE][PRD-NFR-005] T-F008-auth-owned-mixing-queue-10 Base UI 링크 버튼 native semantics 경고 수정
+  - Date: 2026-08-07
+  - Acceptance:
+    - Next.js Link를 render하는 Base UI Button이 native button을 요구하는 개발 경고를 출력하지 않는다.
+    - 계정·보컬 프로필·믹싱 히스토리 페이지네이션과 사용자 메뉴 링크 동작을 유지한다.
+    - 실제 button을 render하는 기존 Button 사용처의 native semantics는 변경하지 않는다.
+  - Checklist:
+    - [x] Link render를 사용하는 Button만 `nativeButton={false}`로 명시한다.
+    - [x] 관련 UI 회귀 테스트와 전체 정적 검사를 통과한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -178,7 +188,7 @@
 | `pnpm run db:migrate:deploy && pnpm run db:status` | `2026-08-06` | `PASS — auth·media·ticket·durable mixing queue migration 적용, schema up to date` |
 | `pnpm run test:auth:db` | `2026-08-06` | `PASS — owner 1건, cross-user 0건, fixture cleanup` |
 | `pnpm exec tsc --noEmit && pnpm run lint` | `2026-08-07` | `PASS` |
-| `pnpm run build` | `2026-08-06` | `PASS — Better Auth route와 보호 page 포함` |
+| `pnpm run build` | `2026-08-07` | `PASS — Base UI Link button 수정 포함 production build` |
 | `로컬 HTTP auth smoke test` | `2026-08-06` | `PASS — / 307→login, /login 200, 비로그인 recommendation POST 401` |
 | `pnpm run test:media` | `2026-08-07` | `PASS — 5 tests: presign/upload/confirm, 429 retry, user ownership, cleanup fallback/retry` |
 | `pnpm run test:tickets` | `2026-08-06` | `PASS — UI 1 + PostgreSQL concurrency/idempotency 1` |
@@ -195,5 +205,6 @@
 | `pnpm run verify:feature-config -- --leemage` | `2026-08-07` | `PASS — 필수 설정 확인, 실제 Leemage 파일 upload/confirm/delete 성공` |
 | `저장된 reference Range smoke` | `2026-08-07` | `PASS — 실제 READY asset에 bytes=0-1023 요청, HTTP 206·audio/wav·Content-Range 확인` |
 | `pnpm run test:process-scripts` | `2026-08-07` | `PASS — dev/start 통합 계약, 자식 실패 시 sibling SIGTERM 종료` |
+| `pnpm run test:base-ui` | `2026-08-07` | `PASS — Link render Button 10곳 모두 non-native semantics 명시` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-07T06:38:28.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-07T06:45:01.000Z -->

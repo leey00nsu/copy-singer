@@ -164,3 +164,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `pnpm run test:process-scripts`; `pnpm exec tsc --noEmit`; `pnpm run lint`; `pnpm test`
 - **Consequences**: 단일 인스턴스에서는 한 프로세스 실패 시 전체 인스턴스를 재시작한다. 추후 수평 확장하면 웹과 worker를 별도 프로세스 타입으로 다시 분리한다.
+
+## D009: Link를 render하는 Base UI Button은 non-native mode를 명시 (2026-08-07)
+
+- **Context**: Base UI Button의 기본 `nativeButton=true` 상태에서 Next.js Link(`<a>`)를 render해 account 페이지 SSR 중 native button semantics 경고가 발생했다.
+- **Constraints**: 실제 `<button>` 사용처는 기본 semantics를 유지하고, 링크 기반 탐색과 disabled 페이지네이션 동작을 바꾸지 않아야 한다.
+- **Options**: 모든 Button의 기본값 변경, Link를 button으로 변경, Link render 사용처만 `nativeButton={false}`로 지정하는 방식을 비교한다.
+- **Decision**: Next.js Link를 `render`하는 Button 인스턴스에만 `nativeButton={false}`를 명시한다.
+- **Rationale**: Base UI가 안내한 element contract를 정확히 표현하면서 실제 button과 Link의 HTML semantics를 각각 유지한다.
+- **Trace**:
+  - **DOING 시작 시점**: account 외에도 보컬 프로필·믹싱 히스토리 페이지네이션과 사용자 메뉴에서 같은 패턴을 확인해 전체 사용처를 함께 수정하기로 했다.
+  - **DONE 전 확정 시점**: account·vocal profiles·mixing history 페이지네이션 6곳과 user menu 링크 4곳에 `nativeButton={false}`를 추가했다. 실제 button 사용처와 공용 Button 기본값은 그대로 유지했다. 모든 Link render 사용처를 검사하는 회귀 테스트와 TypeScript·ESLint·production build를 통과했다.
+  - **머지 후 확인**: 머지 후 갱신한다.
+- **Evidence**:
+  - **Commit**: T10 task commit
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: `pnpm run test:base-ui`; `pnpm exec tsc --noEmit`; `pnpm run lint`; `pnpm run build`
+- **Consequences**: Link render를 새로 추가할 때 element가 `<a>`임을 Base UI에 명시해야 한다.
