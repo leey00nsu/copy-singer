@@ -11,9 +11,9 @@ from uuid import UUID
 from fastapi import FastAPI, File, Form, Header, HTTPException, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 
-from .analysis import AnalysisRejectedError, SegmentBounds, analyze_wav_with_frames
+from .analysis import AnalysisRejectedError
+from .analysis_service import analyze_recording_file, audio_suffix_for_mime_type
 from .config import (
-    ALLOWED_MIME_TYPES,
     MAX_UPLOAD_BYTES,
     SOURCE_TTL_HOURS,
     STORAGE_ROOT,
@@ -27,8 +27,6 @@ from .contracts import (
     SongAnalysisResponse,
     SynthesisReferenceResponse,
 )
-from .media import standardize_audio
-from .reference import build_smart_reference
 from .song_pipeline import (
     SongPipelineError,
     analyze_song_url,
@@ -191,18 +189,13 @@ async def analyze(
     glissando_end_ms: Annotated[int | None, Form()] = None,
     trim_to_max_duration: Annotated[bool, Form()] = False,
 ) -> AnalyzerResponse:
-    mime_type = (audio.content_type or "").partition(";")[0].strip().lower()
-    suffix = ALLOWED_MIME_TYPES.get(mime_type)
-    if suffix is None:
-        raise AnalysisRejectedError("UNSUPPORTED_AUDIO", "Use a WAV, MP3, M4A, or WebM audio file.")
+    mime_type, suffix = audio_suffix_for_mime_type(audio.content_type)
 
     directory = _recording_directory(recording_id)
     if directory.exists():
         shutil.rmtree(directory)
     directory.mkdir(parents=True)
     upload_path = directory / (f"upload{suffix}" if trim_to_max_duration else f"source{suffix}")
-    source_path = directory / "source.wav" if trim_to_max_duration else upload_path
-    analysis_path = source_path if trim_to_max_duration else directory / "analysis.wav"
     size_bytes = 0
 
     try:
@@ -213,89 +206,52 @@ async def analyze(
                     raise AnalysisRejectedError("PAYLOAD_TOO_LARGE", "Audio must be 25 MB or smaller.")
                 output.write(chunk)
 
-        await standardize_audio(
-            upload_path,
-            analysis_path,
+        analyzed = await analyze_recording_file(
+            upload_path=upload_path,
+            working_directory=directory,
+            mime_type=mime_type,
             trim_to_max_duration=trim_to_max_duration,
+            preset=preset,
+            melody_start_ms=melody_start_ms,
+            melody_end_ms=melody_end_ms,
+            glissando_start_ms=glissando_start_ms,
+            glissando_end_ms=glissando_end_ms,
         )
-        if trim_to_max_duration:
-            upload_path.unlink(missing_ok=True)
-        segment_values = (
-            melody_start_ms,
-            melody_end_ms,
-            glissando_start_ms,
-            glissando_end_ms,
-        )
-        segments = None
-        if any(value is not None for value in segment_values) or preset is not None:
-            if preset is None or any(value is None for value in segment_values):
-                raise AnalysisRejectedError("INVALID_SEGMENTS", "All guide segment fields are required together.")
-            segments = SegmentBounds(
-                melody_start_ms=melody_start_ms,
-                melody_end_ms=melody_end_ms,
-                glissando_start_ms=glissando_start_ms,
-                glissando_end_ms=glissando_end_ms,
-                preset=preset,
-            )
-
-        result, pitch_frames = analyze_wav_with_frames(analysis_path, segments)
+        result = analyzed.analysis
         expires_at = datetime.now(UTC) + timedelta(hours=SOURCE_TTL_HOURS)
-        data = result.to_dict()
-        synthesis_path = directory / "synthesis-reference.wav"
-        synthesis_descriptor = build_smart_reference(
-            analysis_path,
-            synthesis_path,
-            p10_midi=float(data["p10_midi"]),
-            median_midi=float(data["median_midi"]),
-            p90_midi=float(data["p90_midi"]),
-            pitch_frames=pitch_frames,
-        )
         synthesis_reference = None
-        if synthesis_descriptor is not None:
-            data["descriptors"]["synthesisReference"] = synthesis_descriptor
+        if analyzed.synthesis_reference_descriptor is not None:
+            synthesis_path = analyzed.synthesis_reference_path
+            assert synthesis_path is not None
             synthesis_reference = SynthesisReferenceResponse(
                 storagePath=f"{recording_id}/{synthesis_path.name}",
                 mimeType="audio/wav",
                 sizeBytes=synthesis_path.stat().st_size,
-                **synthesis_descriptor,
+                **analyzed.synthesis_reference_descriptor,
             )
-        else:
-            data["descriptors"]["synthesisReference"] = {
-                "algorithm": "voiced-phrase-band-selection",
-                "version": "smart-reference-v1",
-                "status": "unavailable",
-                "fallbackReason": "no-quality-phrase",
-            }
-        if trim_to_max_duration:
-            data["descriptors"].update(
-                {
-                    "trimmedFromLongFile": True,
-                    "trimStartPolicy": "first-audible--45db",
-                    "trimMaxDurationMs": 60_000,
-                }
-            )
+
         return AnalyzerResponse(
             recordingId=recording_id,
-            storagePath=f"{recording_id}/{source_path.name}",
-            mimeType="audio/wav" if trim_to_max_duration else mime_type,
-            sizeBytes=source_path.stat().st_size,
+            storagePath=f"{recording_id}/{analyzed.source_path.name}",
+            mimeType=analyzed.source_mime_type,
+            sizeBytes=analyzed.source_size_bytes,
             expiresAt=expires_at.isoformat(),
-            durationMs=data.pop("duration_ms"),
-            sampleRate=data.pop("sample_rate"),
-            minMidi=data.pop("min_midi"),
-            maxMidi=data.pop("max_midi"),
-            p10Midi=data.pop("p10_midi"),
-            medianMidi=data.pop("median_midi"),
-            p90Midi=data.pop("p90_midi"),
-            tessituraLowMidi=data.pop("tessitura_low_midi"),
-            tessituraHighMidi=data.pop("tessitura_high_midi"),
-            voicedRatio=data.pop("voiced_ratio"),
-            pitchStability=data.pop("pitch_stability"),
-            clippingRatio=data.pop("clipping_ratio"),
-            rmsDb=data.pop("rms_db"),
-            analyzer=data.pop("analyzer"),
-            analyzerVersion=data.pop("analyzer_version"),
-            descriptors=data.pop("descriptors"),
+            durationMs=result.duration_ms,
+            sampleRate=result.sample_rate,
+            minMidi=result.min_midi,
+            maxMidi=result.max_midi,
+            p10Midi=result.p10_midi,
+            medianMidi=result.median_midi,
+            p90Midi=result.p90_midi,
+            tessituraLowMidi=result.tessitura_low_midi,
+            tessituraHighMidi=result.tessitura_high_midi,
+            voicedRatio=result.voiced_ratio,
+            pitchStability=result.pitch_stability,
+            clippingRatio=result.clipping_ratio,
+            rmsDb=result.rms_db,
+            analyzer=result.analyzer,
+            analyzerVersion=result.analyzer_version,
+            descriptors=result.descriptors,
             synthesisReference=synthesis_reference,
         )
     except Exception:
@@ -303,8 +259,6 @@ async def analyze(
         raise
     finally:
         await audio.close()
-        if analysis_path != source_path:
-            analysis_path.unlink(missing_ok=True)
 
 
 @app.delete("/v1/recordings/{recording_id}", response_model=DeleteResponse)
