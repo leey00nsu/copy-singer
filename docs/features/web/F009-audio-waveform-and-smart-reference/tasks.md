@@ -71,15 +71,15 @@
     - [x] 기존 MediaRecorder 흐름을 60초 Record plugin event 계약으로 교체한다.
     - [x] 녹음 lifecycle·MIME·60초 종료 회귀 테스트를 추가한다.
 
-- [TODO][PRD-FR-041] T-F009-audio-waveform-and-smart-reference-02 프로젝트 공통 WaveSurfer 오디오 플레이어 적용
+- [DONE][PRD-FR-041] T-F009-audio-waveform-and-smart-reference-02 프로젝트 공통 WaveSurfer 오디오 플레이어 적용
   - Date: 2026-08-07
   - Acceptance:
     - 사용자 재생 오디오가 동일한 파형·재생·탐색·시간 UI를 제공한다.
     - Blob과 보호 Range URL이 동작하고 큰 파일 decode 오류에도 재생 fallback이 남는다.
   - Checklist:
-    - [ ] 재사용 AudioWaveformPlayer와 접근 가능한 controls·fallback을 구현한다.
-    - [ ] profile, recommendation, mixing history와 개발 Workbench의 native audio를 교체한다.
-    - [ ] event·URL cleanup·Range·error fallback 회귀 테스트를 추가한다.
+    - [x] 재사용 AudioWaveformPlayer와 접근 가능한 controls·fallback을 구현한다.
+    - [x] profile, recommendation, mixing history와 개발 Workbench의 native audio를 교체한다.
+    - [x] event·URL cleanup·Range·error fallback 회귀 테스트를 추가한다.
 
 - [TODO][PRD-FR-042] T-F009-audio-waveform-and-smart-reference-03 60초 분석 source와 smart 30초 합성 reference 분리
   - Date: 2026-08-07
@@ -131,5 +131,9 @@
 | `pnpm exec tsc --noEmit` | 2026-08-07 | PASS |
 | `pnpm run lint` | 2026-08-07 | PASS |
 | `pnpm run build` | 2026-08-07 | PASS (Next.js 16.3.0, 21 pages) |
+| `pnpm exec tsx --test tests/audio-waveform-player.test.ts` | 2026-08-07 | PASS (2/2) |
+| `pnpm run test:vocal-profile-history` | 2026-08-07 | PASS (UI 2/2, private Range proxy/history 3/3) |
+| `pnpm run test:recommendation` | 2026-08-07 | PASS (18/18) |
+| `pnpm run test:mixing:ui` | 2026-08-07 | PASS (1/1) |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-07T08:48:31.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-07T08:53:10.000Z -->
