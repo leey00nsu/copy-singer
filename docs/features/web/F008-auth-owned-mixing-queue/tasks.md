@@ -138,6 +138,17 @@
     - [x] 실제 Leemage 업로드·삭제와 worker 종료/재시작 smoke test를 수행한다.
     - [x] Prisma validate, test, lint, TypeScript, build와 workflow audit을 통과한다.
 
+- [DONE][PRD-FR-039] T-F008-auth-owned-mixing-queue-08 내 보컬 프로필 히스토리와 본인 reference 재생 구현
+  - Date: 2026-08-07
+  - Acceptance:
+    - 로그인 사용자는 재접속 후 자신의 보컬 프로필 목록과 기존 분석 시각화를 최신순으로 조회한다.
+    - 프로필 상세에서 제출한 reference 보컬을 재생할 수 있고 오디오 탐색을 위한 Range 요청이 동작한다.
+    - 비로그인·다른 사용자·관리자 권한만으로는 reference를 조회할 수 없고 Leemage URL·secret이 클라이언트에 노출되지 않는다.
+  - Checklist:
+    - [x] 사용자 소유 profile 목록·상세 서비스와 reference audio Range 프록시 API를 구현한다.
+    - [x] 목록·상세 페이지, 기존 시각화·audio player와 헤더/account 진입 링크를 구현한다.
+    - [x] 페이지네이션·재접속·Range·비로그인·cross-user·저장소 URL 비노출 테스트와 전체 회귀 검증을 추가한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -155,20 +166,22 @@
 | --- | --- | --- |
 | `pnpm run db:migrate:deploy && pnpm run db:status` | `2026-08-06` | `PASS — auth·media·ticket·durable mixing queue migration 적용, schema up to date` |
 | `pnpm run test:auth:db` | `2026-08-06` | `PASS — owner 1건, cross-user 0건, fixture cleanup` |
-| `pnpm exec tsc --noEmit && pnpm run lint` | `2026-08-06` | `PASS` |
+| `pnpm exec tsc --noEmit && pnpm run lint` | `2026-08-07` | `PASS` |
 | `pnpm run build` | `2026-08-06` | `PASS — Better Auth route와 보호 page 포함` |
 | `로컬 HTTP auth smoke test` | `2026-08-06` | `PASS — / 307→login, /login 200, 비로그인 recommendation POST 401` |
 | `pnpm run test:media` | `2026-08-07` | `PASS — 5 tests: presign/upload/confirm, 429 retry, user ownership, cleanup fallback/retry` |
 | `pnpm run test:tickets` | `2026-08-06` | `PASS — UI 1 + PostgreSQL concurrency/idempotency 1` |
-| `pnpm run test:mixing:db` | `2026-08-07` | `PASS — enqueue/claim/lease recovery/refund + mock Modal result→Leemage→history/cross-user` |
+| `pnpm run test:mixing:db` | `2026-08-07` | `PASS — fixture job ID로 claim 격리, enqueue/lease recovery/refund + mock Modal result→Leemage→history/cross-user` |
 | `pnpm run test:mixing:ui` | `2026-08-06` | `PASS — active status, persisted result playback/download` |
 | `pnpm run test:recommendation` | `2026-08-06` | `PASS — 18 tests, queued mixing UI regression 포함` |
 | `pnpm run test:recommendation:db` | `2026-08-06` | `PASS — 3 legacy persistence/synthesis integration tests` |
 | `pnpm run test:admin` | `2026-08-06` | `PASS — allowlist, actor/reason ledger, negative guard, privacy-safe UI` |
-| `pnpm test` | `2026-08-06` | `PASS — production build와 profile·catalog·key fit·recommendation·auth·media·ticket·mixing·admin 전체 suite` |
+| `pnpm run test:vocal-profile-history` | `2026-08-07` | `PASS — 목록·빈 상태 UI, user-scoped pagination/detail, Range 전달, private cache와 저장소 header 비노출` |
+| `pnpm test` | `2026-08-07` | `PASS — production build와 profile·catalog·key fit·recommendation·auth·media·ticket·mixing·admin·vocal profile history 전체 suite` |
 | `pnpm run db:validate && pnpm run db:status` | `2026-08-06` | `PASS — Prisma schema valid, 6 migrations applied, database up to date` |
 | `Google OAuth·account·admin 로컬 smoke` | `2026-08-07` | `PASS — callback 302, 로그인 세션, 신규 가입 티켓 +1 정확히 1건, 현재 사용자 allowlist admin 200` |
 | `worker process restart smoke` | `2026-08-07` | `PASS — idle worker SIGINT 정상 종료 후 재시작·재종료, lease recovery 통합 테스트 PASS` |
 | `pnpm run verify:feature-config -- --leemage` | `2026-08-07` | `PASS — 필수 설정 확인, 실제 Leemage 파일 upload/confirm/delete 성공` |
+| `저장된 reference Range smoke` | `2026-08-07` | `PASS — 실제 READY asset에 bytes=0-1023 요청, HTTP 206·audio/wav·Content-Range 확인` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-06T15:50:02.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-07T06:13:15.000Z -->

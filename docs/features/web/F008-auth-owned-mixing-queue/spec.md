@@ -27,6 +27,7 @@
 - 티켓 잔액과 불변 원장, 가입 지급, 믹싱 차감과 조건부 환불
 - PostgreSQL 영속 믹싱 큐와 별도 백그라운드 worker
 - 믹싱 히스토리, 마이 페이지 티켓 내역, 관리자 페이지
+- 재접속 가능한 내 보컬 프로필 목록·상세와 본인 reference 오디오 재생
 - 관련 env 예제와 로컬 실행 문서
 
 ### 제외 범위
@@ -64,6 +65,8 @@
 **Acceptance Criteria:**
 
 - [ ] 분석 성공 후 표준화된 reference 오디오가 Leemage에 저장되고 프로필에 귀속된다.
+- [ ] 사용자는 재접속 후 자신의 프로필 목록과 기존 분석 시각화를 다시 확인할 수 있다.
+- [ ] 사용자는 제출한 reference 보컬을 본인 전용 웹 API를 통해 재생할 수 있다.
 - [ ] PostgreSQL과 프로젝트 저장소에는 오디오 바이너리를 저장하지 않는다.
 - [ ] 프로필 삭제는 Leemage 파일 삭제를 함께 요청하고 실패 시 재시도 상태를 남긴다.
 
@@ -146,7 +149,8 @@
 
 ### FR-4: 오디오 접근과 생명주기
 
-- 일반 사용자의 reference 오디오는 믹싱 worker만 읽을 수 있고 UI 재생·다운로드 endpoint를 제공하지 않는다.
+- 일반 사용자의 reference 오디오는 믹싱 worker와 해당 프로필 소유자만 읽을 수 있다.
+- 사용자 reference 재생 endpoint는 세션과 `VocalProfile.userId`·`MediaAsset.userId`를 모두 검증하고 Range 요청을 프록시하되 Leemage URL을 응답에 노출하지 않는다.
 - 결과 재생·다운로드 요청은 세션 및 `MixingJob.userId` 소유권을 검증한 뒤 제공한다.
 - reference는 연결된 프로필 삭제 시, 결과는 믹싱 이력 삭제 시 Leemage에서 삭제한다.
 - 관리자 페이지는 reference 파일의 메타데이터와 정리 상태만 표시한다.
@@ -184,6 +188,7 @@
 ### FR-9: 마이 페이지와 관리자 페이지
 
 - `/account`는 Google 프로필, 티켓 잔액과 사용자 원장을 제공한다.
+- `/vocal-profiles`는 본인 프로필을 최신순 페이지네이션하고 `/vocal-profiles/[id]`는 기존 분석 시각화와 제출 음성 재생을 제공한다.
 - `/admin`은 사용자 수, 작업 상태, 최근 실패, 티켓 변동 집계와 검색 가능한 사용자·작업 목록을 제공한다.
 - 관리자 티켓 조정 API는 관리자 세션, 대상 사용자, signed integer amount, reason을 검증한다.
 - 관리자 권한은 대소문자를 정규화한 email을 `ADMIN_EMAILS`의 comma-separated allowlist와 비교한다.
@@ -204,7 +209,7 @@
 - **성능**: history·ledger·admin 목록은 서버 페이지네이션과 조회 인덱스를 사용한다. worker 동시성은 env로 제한한다.
 - **내구성**: 작업 접수와 티켓 원장은 트랜잭션으로 보존하며 worker 재시작 후 lease가 만료된 작업을 복구한다.
 - **보안**: OAuth, Modal, Leemage secret은 서버 전용이며 모든 사용자/관리자 API는 세션과 소유권을 검증한다.
-- **개인정보**: reference 오디오는 사용자 UI 및 관리자 UI에서 재생하지 않으며 삭제 요청과 외부 삭제 실패 재시도를 지원한다.
+- **개인정보**: reference 오디오는 소유자 UI에서만 재생하며 관리자·다른 사용자에게는 제공하지 않는다. 삭제 요청과 외부 삭제 실패 재시도를 지원한다.
 - **관측성**: 작업 attempt, last error, 외부 job/file ID, 상태 전이 시각을 보관하되 secret과 presigned URL은 로그에 남기지 않는다.
 - **품질**: Prisma validate, migration 검증, 단위·통합 테스트, TypeScript, ESLint와 production build를 통과한다.
 
@@ -213,4 +218,4 @@
 ## 관련 문서
 
 - PRD: `../../prd/`
-- PRD Refs: `PRD-US-010`, `PRD-US-011`, `PRD-US-012`, `PRD-US-013`, `PRD-US-014`, `PRD-FR-023`, `PRD-FR-024`, `PRD-FR-025`, `PRD-FR-026`, `PRD-FR-027`, `PRD-FR-028`, `PRD-FR-029`, `PRD-FR-030`, `PRD-FR-031`, `PRD-FR-032`, `PRD-FR-033`, `PRD-FR-034`, `PRD-FR-035`, `PRD-FR-036`, `PRD-FR-037`, `PRD-FR-038`, `PRD-DATA-008`, `PRD-DATA-009`, `PRD-DATA-010`, `PRD-NFR-009`, `PRD-NFR-010`, `PRD-NFR-011`
+- PRD Refs: `PRD-US-010`, `PRD-US-011`, `PRD-US-012`, `PRD-US-013`, `PRD-US-014`, `PRD-US-015`, `PRD-FR-023`, `PRD-FR-024`, `PRD-FR-025`, `PRD-FR-026`, `PRD-FR-027`, `PRD-FR-028`, `PRD-FR-029`, `PRD-FR-030`, `PRD-FR-031`, `PRD-FR-032`, `PRD-FR-033`, `PRD-FR-034`, `PRD-FR-035`, `PRD-FR-036`, `PRD-FR-037`, `PRD-FR-038`, `PRD-FR-039`, `PRD-DATA-008`, `PRD-DATA-009`, `PRD-DATA-010`, `PRD-NFR-009`, `PRD-NFR-010`, `PRD-NFR-011`

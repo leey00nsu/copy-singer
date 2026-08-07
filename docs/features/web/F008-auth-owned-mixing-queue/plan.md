@@ -48,6 +48,8 @@
 3. 하나의 DB 트랜잭션에서 사용자 소유 `MediaAsset(REFERENCE)`·`Recording`·`VocalProfile`을 연결한다.
 4. 트랜잭션 실패 시 이미 confirm된 파일을 즉시 삭제하고, 삭제 실패는 `MediaCleanupJob`에 기록한다.
 5. 로컬 임시 파일은 성공·실패와 무관하게 제거한다.
+6. `/vocal-profiles`와 `/vocal-profiles/[id]`는 세션 사용자 ID로 목록·상세를 조회하고 저장된 descriptor를 기존 시각화 컴포넌트에 전달한다.
+7. 상세 화면의 audio element는 `/api/vocal-profiles/{id}/audio`만 사용한다. 이 API가 프로필·asset 소유권을 검증하고 Range 헤더를 Leemage에 전달한 뒤 외부 URL 없이 오디오 바이트를 프록시한다.
 
 ### 티켓 및 믹싱 접수 흐름
 
@@ -98,6 +100,7 @@ stateDiagram-v2
 | --- | --- | --- | --- |
 | 로그인 | 허용 | 허용 | 허용 |
 | 본인 profile/recommendation | 차단 | 허용 | 본인만 일반 API로 허용 |
+| 본인 reference 재생 | 차단 | 허용 | 본인 프로필만 일반 API로 허용 |
 | 본인 account/history/result | 차단 | 허용 | 본인만 일반 API로 허용 |
 | 다른 사용자 reference 재생 | 차단 | 차단 | 차단 |
 | 관리자 집계·검색 | 차단 | 차단 | 허용 |
@@ -132,11 +135,13 @@ secret은 서버 모듈에서만 읽고 브라우저로 직렬화하지 않는�
 ```text
 app/
 ├── api/auth/[...all]/route.ts
+├── api/vocal-profiles/{route.ts,[id]/route.ts,[id]/audio/route.ts}
 ├── api/mixing-jobs/{route.ts,[id]/route.ts,[id]/audio/route.ts}
 ├── api/account/tickets/route.ts
 ├── api/admin/{overview,users,mixing-jobs,ticket-adjustments}/...
 ├── login/page.tsx
 ├── account/page.tsx
+├── vocal-profiles/{page.tsx,[id]/page.tsx}
 ├── mixing-history/page.tsx
 └── admin/page.tsx
 components/
@@ -172,6 +177,7 @@ tests/
 - **DB 통합 테스트**: signup grant idempotency, 동시 ticket debit, 중복 idempotency key, 잔액 부족, `SKIP LOCKED` claim, lease 회수, 조건부 환불, ownership query.
 - **worker 통합 테스트**: mock yt-dlp/Modal/Leemage로 pre-submit 실패 환불, post-submit 실패 무환불, 성공 결과 업로드와 temp cleanup, 재시작 resume.
 - **라우트/UI 테스트**: 비로그인 401/redirect, cross-user 404/403, account ledger, history paging, admin allowlist와 ticket adjustment validation.
+- **프로필 회귀 테스트**: 사용자별 목록·상세 페이지네이션, 기존 시각화 재사용, reference Range 프록시, 비로그인·cross-user·관리자 우회 차단을 검증한다.
 - **회귀 테스트**: 기존 프로필 분석, 추천 100곡 순위와 `/dev/svc` 개발 흐름.
 - **수동 로컬 검증**: Docker PostgreSQL에서 Google OAuth callback, 실제 Leemage reference/result 업로드·삭제, worker를 중간 종료/재시작한 뒤 동일 작업 완료를 확인한다.
 - **최종 게이트**: `pnpm test`, `pnpm run lint`, `pnpm exec tsc --noEmit`, `pnpm run db:validate`, `pnpm run build`.

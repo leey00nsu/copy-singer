@@ -130,3 +130,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: pnpm run test:admin; pnpm run build
 - **Consequences**: 관리자 추가·삭제에는 `ADMIN_EMAILS` 변경과 서버 재시작이 필요하다.
+
+## D007: reference 재생은 소유자 전용 웹 프록시로 제공 (2026-08-07)
+
+- **Context**: 사용자는 재접속 후 저장된 보컬 프로필 분석과 분석에 제출한 보컬을 다시 확인하고 싶다.
+- **Constraints**: Leemage API key·외부 URL은 브라우저에 노출하지 않고 관리자도 사용자 reference에 접근할 수 없어야 하며 오디오 탐색을 위해 Range 응답이 필요하다.
+- **Options**: Leemage URL 직접 제공, 단기 presigned URL 제공, Next.js 소유권 검증 프록시를 비교한다.
+- **Decision**: 프로필 목록·상세는 세션 user ID로 조회하고 reference는 프로필·asset의 이중 소유권을 확인하는 Next.js Range 프록시를 통해 본인에게만 제공한다.
+- **Rationale**: 결과 오디오와 같은 서버 권한 경계를 유지하고 저장소 구현과 URL을 클라이언트에서 숨기면서 브라우저 audio element의 탐색을 지원한다.
+- **Trace**:
+  - **DOING 시작 시점**: 완료된 T07은 수정하지 않고 사용자 변경 요청을 T08로 추가했다. 기존 “worker만 reference 접근” 결정을 “worker와 소유자만 접근”으로 좁게 확장한다.
+  - **DONE 전 확정 시점**: `/vocal-profiles` 목록과 사용자 소유 상세 페이지에 기존 분석 시각화와 제출 보컬 player를 연결했다. 오디오 API는 세션 user ID로 profile을 조회한 뒤 MediaAsset의 user ID·REFERENCE kind·READY 상태를 다시 검증하고 Range를 Leemage로 전달한다. 응답에는 재생에 필요한 content header와 `private, no-store`만 남겨 외부 URL·저장소 header를 노출하지 않는다. 전체 회귀 중 통합 테스트 worker가 실제 PENDING job을 claim할 수 있던 문제를 발견해 `claimNextMixingJob`에 테스트 candidate ID 제한을 추가했고, 영향받은 실제 job은 Modal 제출 전 원래 PENDING 상태로 복구했다.
+  - **머지 후 확인**: 머지 후 갱신한다.
+- **Evidence**:
+  - **Commit**: T08 task commit
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: `pnpm run test:vocal-profile-history`; `pnpm run test:mixing:db`; `pnpm test`; 실제 READY reference에 Range smoke HTTP 206
+- **Consequences**: reference 트래픽이 웹 서버를 통과하므로 Range와 streaming을 보존하고 cache·로그에 외부 URL이 남지 않도록 해야 한다.
