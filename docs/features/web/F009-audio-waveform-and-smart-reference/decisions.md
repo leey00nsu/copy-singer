@@ -76,3 +76,19 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `pnpm run test:auth:db`, cookie 없는 `/vocal-profiles`와 `/api/vocal-profiles` 검증
 - **Consequences**: 개발 DB에 우회 대상 사용자가 먼저 존재해야 하며 `.env.local`은 로컬에서만 관리한다.
+
+## D004: 브라우저 전송본과 영구 믹싱 결과는 압축 오디오로 분리 (2026-08-07)
+
+- **Context**: 긴 업로드는 현재 원본 전체가 analyzer에 도착한 뒤 60초로 잘리고, WaveSurfer도 원본 전체를 표시한다. Modal 믹싱 WAV는 곡당 10MB를 넘겨 영구 저장·재생 비용이 크다.
+- **Constraints**: analyzer 입력은 첫 유효 음성부터 최대 60초여야 하고, 피치 분석은 16kHz mono로 충분하지만 최종 믹싱은 음악 감상을 위해 stereo 품질을 유지해야 한다.
+- **Options**: 기존 server trim 유지, ffmpeg.wasm, WebCodecs 기반 Mediabunny의 client conversion을 비교했다. 믹싱 결과는 Modal 자체 변경과 local worker 저장 전 변환을 비교했다.
+- **Decision**: 업로드는 동적 로드한 Mediabunny로 client에서 first-audible 최대 60초를 mono 16kHz·64kbps M4A 우선/WebM fallback으로 변환한 파일만 전송한다. 믹싱 결과는 worker가 Leemage 저장 전에 FFmpeg로 stereo AAC/M4A 160kbps로 압축한다. smart reference 구간은 새 오디오를 추가 생성하지 않고 sourceRanges를 기존 source player의 영역 controls로 재생한다.
+- **Rationale**: ffmpeg.wasm core 다운로드 부담 없이 브라우저 native codec을 활용하고, 분석·합성에 필요한 품질과 영구 저장 크기를 용도별로 맞춘다. source range 재생은 추가 asset·중복 저장 없이 실제 선택 근거를 들려준다.
+- **Trace**:
+  - **탐색 시점**: Mediabunny 공식 Conversion API가 trimming, bitrate, resampling과 mono downmix를 지원하고 client에서 MP4/WebM 출력이 가능함을 확인했다. 현재 analyzer는 long-file 동의 시 server에서 WAV로 변환해 저장하며, worker는 Modal의 WAV bytes를 그대로 Leemage에 올리는 경로임을 확인했다.
+  - **T06 확정 시점**: Chromium에서 6.8MB·225초 `vocals.m4a`를 선택해 첫 유효 음성부터 60초인 0.5MB Opus/WebM fallback으로 변환되고 WaveSurfer가 1:00만 표시함을 확인했다. AAC encoder가 지원되는 브라우저는 M4A를 우선한다. 실제 저장된 10,512,044B WAV 믹싱 결과를 worker 압축 경로로 변환한 결과 4,440,004B AAC/M4A로 57.8% 감소했다. sourceRanges는 low/mid/high 순서와 원본 시간 순서를 보존하며 한 영역의 복수 range를 연속 재생한다. descriptor가 없는 legacy profile에는 controls를 표시하지 않는다.
+- **Evidence**:
+  - **Commit**: T06 task checkpoint commit에서 갱신
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: https://mediabunny.dev/guide/converting-media-files
+- **Consequences**: client codec 지원 검사가 필요하고, worker runtime에는 FFmpeg 실행 파일이 필요하다. 압축 실패는 큰 WAV 저장으로 조용히 fallback하지 않는다.

@@ -113,6 +113,20 @@
     - [x] 동일 source의 baseline/smart reference 정량 비교를 기록하고 실제 Modal A/B는 별도 비용 승인 전 실행하지 않는다.
     - [x] Python·Prisma·TypeScript·ESLint·build·전체 test와 workflow audit을 통과한다.
 
+- [DONE][PRD-FR-040][PRD-FR-041][PRD-FR-042][PRD-FR-043] T-F009-audio-waveform-and-smart-reference-06 차트 잘림 수정·60초 경량 업로드·영역 재생·믹싱 결과 압축
+  - Date: 2026-08-07
+  - Acceptance:
+    - 중앙음 차트 라벨이 데스크톱과 모바일에서 잘리지 않는다.
+    - 긴 파일 동의 후 실제 업로드·파형·표시 길이는 첫 유효 음성부터 최대 60초인 압축 변환본을 사용한다.
+    - 믹싱 결과는 WAV보다 작은 압축 오디오로 저장·재생·다운로드된다.
+    - 보컬 프로필에서 smart reference의 저음·중앙·고음 영역을 각각 선택해 원본 source의 채택 구간을 들을 수 있다.
+  - Checklist:
+    - [x] range chart 상단 여백과 중앙음 label 회귀 테스트를 보강한다.
+    - [x] client-side first-audible 60초 trim·mono 저비트레이트 변환과 Workbench 진행/오류 UI를 구현한다.
+    - [x] mixing worker 저장 전 압축과 실제 MIME·확장자 다운로드 계약을 구현한다.
+    - [x] smart reference sourceRanges 영역 controls와 연속 구간 재생을 구현한다.
+    - [x] 관련 단위·통합·브라우저·전체 회귀 및 workflow audit을 통과한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -151,5 +165,10 @@
 | `pnpm test` | 2026-08-07 | PASS (build와 전체 TS/UI/DB 회귀) |
 | `services/vocal-profile-api/.venv/bin/pytest -q services/vocal-profile-api/tests` | 2026-08-07 | PASS (25/25, deprecation warning 3건) |
 | `pnpm run lint` | 2026-08-07 | PASS |
+| `vocals.m4a` client trim/compression browser 검증 | 2026-08-07 | PASS (6.8MB·225초 → 0.5MB·60초 WebM, WaveSurfer 1:00) |
+| range chart 중앙음 label browser bounds | 2026-08-07 | PASS (label이 SVG 상하좌우 경계 내부) |
+| `pnpm exec tsx --test tests/profile-audio-preparation.test.ts tests/vocal-profile-reference-bands.test.ts tests/vocal-profile-results-ui.test.tsx tests/compress-mixing-result.test.ts` | 2026-08-07 | PASS (first-audible, 3영역 UI, AAC 압축) |
+| 실제 저장 믹싱 WAV 무저장 압축 비교 | 2026-08-07 | PASS (10,512,044B → 4,440,004B M4A, 57.8% 감소) |
+| `pnpm run test:mixing:db` | 2026-08-07 | PASS (압축 MIME·확장자 저장 포함 1/1) |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-07T09:28:20.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-07T09:52:00.000Z -->

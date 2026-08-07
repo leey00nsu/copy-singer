@@ -95,6 +95,15 @@ flowchart LR
 3. 지정 사용자가 DB에 없으면 익명 fallback이나 임의 사용자 생성을 하지 않고 명확한 설정 오류로 실패한다.
 4. page/API session helper가 동일한 우회 session을 사용해 향후 보호 화면의 로컬 자동 검증에 재사용한다.
 
+### 6. 전송 오디오와 믹싱 결과 경량화
+
+1. 업로드 파일은 긴 파일 동의 후 client-only media converter를 지연 로드한다. Web Audio로 첫 유효 음성 위치를 찾고, Mediabunny Conversion으로 해당 위치부터 최대 60초를 mono 16kHz·64kbps AAC/M4A 우선, Opus/WebM fallback으로 인코딩한다.
+2. Workbench의 `audioFile`, duration, 크기와 WaveSurfer source는 원본이 아니라 변환 결과만 가리킨다. 변환 실패 시 원본 업로드 fallback을 두지 않아 60초 초과 전송을 방지한다.
+3. analyzer는 변환된 최대 60초 파일을 받아 기존 16kHz 분석 WAV를 임시 생성하되, Leemage에는 작은 압축 source를 저장한다. server-side 60초 trim은 방어적 legacy 경로로 유지한다.
+4. worker는 Modal WAV 결과를 Leemage에 저장하기 전 FFmpeg로 stereo AAC/M4A 160kbps로 변환한다. 이미 압축된 호환 결과는 그대로 유지하며 변환 실패 시 큰 WAV를 영구 저장하지 않고 job을 실패 처리한다.
+5. `AudioWaveformPlayer`에 여러 source range를 하나의 영역으로 재생하는 segment controls를 추가한다. smart descriptor의 low/mid/high ranges를 원본 시간 순으로 묶고, 현재 range가 끝나면 같은 영역의 다음 range로 이동한 뒤 종료한다.
+6. profile 생성 직후에는 변환본 Blob URL, 저장 profile에서는 소유권이 보호된 source proxy URL을 같은 segment player에 전달한다.
+
 ---
 
 ## 파일 구조
@@ -129,7 +138,10 @@ tests/
 ├── vocal-profile-recorder.test.tsx
 ├── vocal-profile-charts.test.tsx
 ├── smart-reference.integration.ts
-└── mixing-queue.integration.ts
+├── mixing-queue.integration.ts
+├── profile-audio-preparation.test.ts
+├── compress-mixing-result.test.ts
+└── vocal-profile-reference-bands.test.ts
 services/vocal-profile-api/tests/
 └── test_reference.py
 ```
