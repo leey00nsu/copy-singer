@@ -1,14 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Activity, AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, FileAudio, LoaderCircle, Mic, RotateCcw, Sparkles, Square, Trash2, Upload } from "lucide-react";
+import { Activity, AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, FileAudio, LoaderCircle, Mic, RotateCcw, Sparkles, Trash2, Upload } from "lucide-react";
+import { VocalProfileRecorder } from "@/components/audio/vocal-profile-recorder";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LongAudioDialog } from "@/components/long-audio-dialog";
-import { Progress } from "@/components/ui/progress";
 import { VocalProfileResults } from "@/components/vocal-profile-results";
 import { isLongProfileAudio, readAudioDuration } from "@/lib/vocal-profile/audio-file";
 import type { VocalProfileError, VocalProfileResponse } from "@/lib/vocal-profile/contract";
@@ -16,9 +16,7 @@ import type { VocalProfileError, VocalProfileResponse } from "@/lib/vocal-profil
 const MAX_PROFILE_AUDIO_BYTES = 25 * 1024 * 1024;
 const ACCEPTED_AUDIO = ".wav,.mp3,.m4a,.webm,audio/wav,audio/mpeg,audio/mp4,audio/webm";
 
-type CapturePhase = "idle" | "recording";
 type ServiceHealth = "checking" | "ok" | "unavailable";
-const RECOMMENDED_RECORDING_MS = 30_000;
 
 const ERROR_GUIDANCE: Record<string, { title: string; action: string }> = {
   TOO_SHORT: { title: "녹음이 너무 짧아요", action: "5초 이상 노래한 뒤 다시 시도해주세요." },
@@ -42,20 +40,7 @@ function profileError(value: unknown): VocalProfileError {
   return { reasonCode: "ANALYSIS_FAILED", detail: "Unknown analysis error.", retryable: true };
 }
 
-function chooseRecorderMimeType() {
-  for (const type of ["audio/webm;codecs=opus", "audio/webm", "audio/mp4"]) {
-    if (MediaRecorder.isTypeSupported(type)) return type;
-  }
-  return "";
-}
-
-function extensionForMimeType(mimeType: string) {
-  return mimeType.includes("mp4") ? "m4a" : "webm";
-}
-
 export function VocalProfileWorkbench() {
-  const [phase, setPhase] = useState<CapturePhase>("idle");
-  const [elapsedMs, setElapsedMs] = useState(0);
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [audioDuration, setAudioDuration] = useState<number | null>(null);
   const [pendingLongFile, setPendingLongFile] = useState<File | null>(null);
@@ -67,34 +52,13 @@ export function VocalProfileWorkbench() {
   const [recommending, setRecommending] = useState(false);
   const [profile, setProfile] = useState<VocalProfileResponse | null>(null);
   const [analysisError, setAnalysisError] = useState<VocalProfileError | null>(null);
-  const recorderRef = useRef<MediaRecorder | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const chunksRef = useRef<Blob[]>([]);
-  const timersRef = useRef<number[]>([]);
   const audioUrl = useMemo(() => (audioFile ? URL.createObjectURL(audioFile) : null), [audioFile]);
-
-  const clearTimers = useCallback(() => {
-    timersRef.current.forEach((timer) => window.clearTimeout(timer));
-    timersRef.current = [];
-  }, []);
-
-  const closeStream = useCallback(() => {
-    streamRef.current?.getTracks().forEach((track) => track.stop());
-    streamRef.current = null;
-  }, []);
 
   useEffect(() => {
     return () => {
       if (audioUrl) URL.revokeObjectURL(audioUrl);
     };
   }, [audioUrl]);
-
-  useEffect(() => {
-    return () => {
-      clearTimers();
-      closeStream();
-    };
-  }, [clearTimers, closeStream]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -113,65 +77,20 @@ export function VocalProfileWorkbench() {
     setPendingLongDuration(null);
     setTrimToMaxDuration(false);
     setAnalysisError(null);
-    setElapsedMs(0);
-    setPhase("idle");
   };
 
-  const finishRecording = useCallback(() => {
-    clearTimers();
-    if (recorderRef.current?.state === "recording") recorderRef.current.stop();
-    setPhase("idle");
-    closeStream();
-  }, [clearTimers, closeStream]);
+  const completeRecording = useCallback((file: File, durationMs: number) => {
+    setAudioFile(file);
+    setAudioDuration(durationMs / 1000);
+    setTrimToMaxDuration(false);
+    setAnalysisError(null);
+    toast.success("테스트 녹음이 준비됐습니다.");
+  }, []);
 
-  const beginRecording = async () => {
-    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
-      toast.error("이 브라우저는 마이크 녹음을 지원하지 않습니다. 파일 업로드를 사용해주세요.");
-      return;
-    }
-    resetAudio();
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: true, noiseSuppression: false, autoGainControl: false },
-      });
-      streamRef.current = stream;
-      const mimeType = chooseRecorderMimeType();
-      const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
-      recorderRef.current = recorder;
-      chunksRef.current = [];
-      recorder.ondataavailable = (event) => {
-        if (event.data.size > 0) chunksRef.current.push(event.data);
-      };
-      recorder.onstop = () => {
-        const finalType = recorder.mimeType || mimeType || "audio/webm";
-        const blob = new Blob(chunksRef.current, { type: finalType });
-        if (blob.size > 0) {
-          setAudioFile(new File([blob], `song-verse-vocal-profile.${extensionForMimeType(finalType)}`, { type: finalType }));
-          setAudioDuration(null);
-          setTrimToMaxDuration(false);
-          toast.success("테스트 녹음이 준비됐습니다.");
-        }
-        recorderRef.current = null;
-      };
-
-      recorder.start(500);
-      setPhase("recording");
-      setElapsedMs(0);
-      const startedAt = performance.now();
-      const tick = () => {
-        const elapsed = Math.min(performance.now() - startedAt, RECOMMENDED_RECORDING_MS);
-        setElapsedMs(elapsed);
-        if (elapsed < RECOMMENDED_RECORDING_MS) timersRef.current.push(window.setTimeout(tick, 100));
-        else finishRecording();
-      };
-      tick();
-    } catch (error) {
-      closeStream();
-      setPhase("idle");
-      const denied = error instanceof DOMException && error.name === "NotAllowedError";
-      toast.error(denied ? "마이크 권한이 거부됐습니다. 권한을 허용하거나 파일을 업로드해주세요." : "마이크를 시작하지 못했습니다.");
-    }
-  };
+  const recordingError = useCallback((error: unknown) => {
+    const denied = error instanceof DOMException && error.name === "NotAllowedError";
+    toast.error(denied ? "마이크 권한이 거부됐습니다. 권한을 허용하거나 파일을 업로드해주세요." : "마이크를 시작하지 못했습니다.");
+  }, []);
 
   const selectFile = async (file: File | null) => {
     if (!file) return;
@@ -193,7 +112,6 @@ export function VocalProfileWorkbench() {
     setAudioFile(file);
     setAudioDuration(duration);
     setTrimToMaxDuration(false);
-    setPhase("idle");
     setAnalysisError(null);
   };
 
@@ -209,7 +127,6 @@ export function VocalProfileWorkbench() {
     setTrimToMaxDuration(true);
     setPendingLongFile(null);
     setPendingLongDuration(null);
-    setPhase("idle");
     setAnalysisError(null);
   };
 
@@ -283,9 +200,6 @@ export function VocalProfileWorkbench() {
     }
   };
 
-  const busy = phase !== "idle";
-  const progress = (elapsedMs / RECOMMENDED_RECORDING_MS) * 100;
-
   return (
     <main className="min-h-screen bg-background">
       {pendingLongFile ? (
@@ -325,7 +239,7 @@ export function VocalProfileWorkbench() {
             <CardContent className="space-y-5">
               <blockquote className="rounded-2xl bg-primary/5 p-5 text-xl font-semibold leading-9 tracking-tight">“가볍게 노래 한 소절을 불러주세요.<br />애국가, 생일축하 노래 등 상관없어요.”</blockquote>
               <div className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
-                <div className="rounded-xl border p-3"><strong className="block text-foreground">10–30초</strong>짧은 한 소절이면 충분해요.</div>
+                <div className="rounded-xl border p-3"><strong className="block text-foreground">10–60초</strong>짧은 한 소절이면 충분해요.</div>
                 <div className="rounded-xl border p-3"><strong className="block text-foreground">반주 없이</strong>목소리만 또렷하게 녹음해요.</div>
                 <div className="rounded-xl border p-3"><strong className="block text-foreground">편안하게</strong>최고음에 무리하지 마세요.</div>
               </div>
@@ -333,16 +247,9 @@ export function VocalProfileWorkbench() {
           </Card>
 
           <Card>
-            <CardHeader><CardTitle>테스트 녹음</CardTitle><CardDescription>직접 멈추거나 30초가 되면 자동으로 종료됩니다.</CardDescription></CardHeader>
+            <CardHeader><CardTitle>테스트 녹음</CardTitle><CardDescription>녹음 중인 파형을 확인할 수 있으며 60초가 되면 자동으로 종료됩니다.</CardDescription></CardHeader>
             <CardContent className="space-y-4">
-              {busy ? (
-                <div className="rounded-2xl border bg-muted/35 p-5 text-center">
-                  <p aria-live="polite" className="text-lg font-semibold">노래를 편안하게 이어가세요</p>
-                  <p className="mt-2 font-mono text-sm text-muted-foreground">{(elapsedMs / 1000).toFixed(1)} / 30.0초</p>
-                  <Progress className="mt-5" value={progress} />
-                  <Button className="mt-5" onClick={finishRecording} variant="outline"><Square className="size-4" /> 녹음 중지</Button>
-                </div>
-              ) : audioFile && audioUrl ? (
+              {audioFile && audioUrl ? (
                 <div className="rounded-2xl border p-4">
                   <div className="flex items-center gap-3"><span className="flex size-10 items-center justify-center rounded-full bg-secondary"><FileAudio className="size-5" /></span><div className="min-w-0"><p className="truncate text-sm font-medium">{audioFile.name}</p><p className="text-xs text-muted-foreground">{(audioFile.size / 1024 / 1024).toFixed(1)} MB{audioDuration !== null ? ` · 약 ${Math.ceil(audioDuration)}초` : ""}</p>{trimToMaxDuration ? <p className="mt-1 text-xs font-medium text-primary">첫 음부터 최대 60초 자동 자르기</p> : null}</div></div>
                   {/* Audio-only user recording does not have a meaningful caption track. */}
@@ -356,7 +263,7 @@ export function VocalProfileWorkbench() {
                 </div>
               ) : (
                 <div className="grid gap-3">
-                  <Button onClick={() => void beginRecording()} size="lg"><Mic className="size-4" /> 마이크로 녹음</Button>
+                  <VocalProfileRecorder disabled={analyzing} onComplete={completeRecording} onError={recordingError} />
                   <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed px-4 py-3 text-sm font-medium hover:bg-muted/50"><Upload className="size-4" /> 오디오 파일 업로드<input accept={ACCEPTED_AUDIO} className="sr-only" onChange={(event) => { const file = event.target.files?.[0] ?? null; event.target.value = ""; void selectFile(file); }} type="file" /></label>
                   <p className="text-center text-xs text-muted-foreground">WAV, MP3, M4A, WebM · 최대 25MB / 60초</p>
                 </div>
