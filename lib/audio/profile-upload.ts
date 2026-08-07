@@ -1,4 +1,5 @@
 export const PROFILE_UPLOAD_MAX_SECONDS = 60;
+export const PROFILE_UPLOAD_ENCODING_HEADROOM_SECONDS = 0.25;
 export const PROFILE_UPLOAD_SAMPLE_RATE = 16_000;
 export const PROFILE_UPLOAD_BITRATE = 64_000;
 export const PROFILE_AUDIBLE_THRESHOLD_DB = -45;
@@ -38,6 +39,13 @@ export function findFirstAudibleFrame(
   return 0;
 }
 
+export function boundedProfileUploadDuration(availableSeconds: number) {
+  return Math.min(
+    Math.max(0, availableSeconds),
+    PROFILE_UPLOAD_MAX_SECONDS - PROFILE_UPLOAD_ENCODING_HEADROOM_SECONDS,
+  );
+}
+
 function outputName(fileName: string, extension: "m4a" | "webm") {
   const stem = fileName.replace(/\.[^.]+$/, "") || "vocal-profile";
   return `${stem}-60s.${extension}`;
@@ -59,7 +67,7 @@ export async function prepareProfileAudio(
   const channels = Array.from({ length: decoded.numberOfChannels }, (_, index) => decoded.getChannelData(index));
   const firstFrame = findFirstAudibleFrame(channels, decoded.sampleRate);
   const trimStartSeconds = firstFrame / decoded.sampleRate;
-  const durationSeconds = Math.min(PROFILE_UPLOAD_MAX_SECONDS, Math.max(0, decoded.duration - trimStartSeconds));
+  const durationSeconds = boundedProfileUploadDuration(decoded.duration - trimStartSeconds);
   if (durationSeconds < 0.1) throw new Error("재생 가능한 음성을 찾지 못했습니다.");
 
   const media = await import("mediabunny");

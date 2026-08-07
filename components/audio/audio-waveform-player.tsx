@@ -149,7 +149,7 @@ function AudioWaveformPlayerInstance({
               {isPlaying ? <Pause className="size-3.5" /> : finished ? <RotateCcw className="size-3.5" /> : <Play className="size-3.5" />}
             </Button>
             <span aria-live="off" className="min-w-24 font-mono text-xs text-muted-foreground">
-              {formatPlaybackTime(currentTime)} / {formatPlaybackTime(duration)}
+              {formatPlaybackTime(currentTime)} / {formatPlaybackTime(Math.round(duration))}
             </span>
             <span className="h-px flex-1 bg-border" />
             {finished ? (
