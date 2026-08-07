@@ -49,19 +49,21 @@ export function RecommendationResults({
 
   useEffect(() => {
     if (run || !runId) return;
-    const controller = new AbortController();
-    fetch(`/api/recommendations/${runId}`, { cache: "no-store", signal: controller.signal })
+    let active = true;
+    fetch(`/api/recommendations/${runId}`, { cache: "no-store" })
       .then(async (response) => {
+        if (!active) return;
         if (!response.ok) {
           setLoadError(response.status === 404 ? "not-found" : "failed");
           return;
         }
-        setRun(await response.json() as RecommendationRunResponse);
+        const next = await response.json() as RecommendationRunResponse;
+        if (active) setRun(next);
       })
-      .catch((error: unknown) => {
-        if (!(error instanceof DOMException && error.name === "AbortError")) setLoadError("failed");
+      .catch(() => {
+        if (active) setLoadError("failed");
       });
-    return () => controller.abort();
+    return () => { active = false; };
   }, [run, runId]);
 
   useEffect(() => {

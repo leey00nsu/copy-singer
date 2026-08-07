@@ -47,9 +47,11 @@ export function SingerWorkbench() {
   const busy = submitting || job?.status === "queued" || job?.status === "processing";
 
   useEffect(() => {
+    let active = true;
     void fetch("/api/health", { cache: "no-store" })
-      .then((response) => setApiStatus(response.ok ? "online" : "offline"))
-      .catch(() => setApiStatus("offline"));
+      .then((response) => { if (active) setApiStatus(response.ok ? "online" : "offline"); })
+      .catch(() => { if (active) setApiStatus("offline"); });
+    return () => { active = false; };
   }, []);
 
   useEffect(() => {
@@ -61,25 +63,26 @@ export function SingerWorkbench() {
       window.queueMicrotask(() => setHandoffError(true));
       return;
     }
-    const controller = new AbortController();
+    let active = true;
     fetch(`/api/recommendations/${encodeURIComponent(runId)}`, {
       cache: "no-store",
-      signal: controller.signal,
     })
       .then(async (response) => {
+        if (!active) return;
         if (!response.ok) {
           setHandoffError(true);
           return;
         }
         const run = await response.json() as RecommendationRunResponse;
+        if (!active) return;
         const selected = selectRecommendationHandoff(run, itemId);
         if (!selected) setHandoffError(true);
         else setRecommendation(selected);
       })
-      .catch((error: unknown) => {
-        if (!(error instanceof DOMException && error.name === "AbortError")) setHandoffError(true);
+      .catch(() => {
+        if (active) setHandoffError(true);
       });
-    return () => controller.abort();
+    return () => { active = false; };
   }, []);
 
   const refreshJob = useCallback(async (jobId: string) => {
