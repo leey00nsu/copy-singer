@@ -15,12 +15,24 @@ export type VocalProfileDescriptors = Record<string, unknown> & {
   pitchTrackMaxPoints?: number;
 };
 
-export type AnalyzerProfile = {
-  recordingId: string;
-  storagePath: string;
+export type AnalyzerSynthesisReference = {
   mimeType: string;
   sizeBytes: number;
-  expiresAt: string;
+  durationMs: number;
+  algorithm: string;
+  version: string;
+  sourceRanges: Array<Record<string, unknown>>;
+  bandSeconds: Record<string, number>;
+  voicedDensity: number;
+  pitchCoverageSemitones: number;
+  crossfadeMs: number;
+  fallbackReason: string | null;
+};
+
+export type AnalyzerProfileData = {
+  recordingId: string;
+  mimeType: string;
+  sizeBytes: number;
   durationMs: number;
   sampleRate: number;
   minMidi: number;
@@ -37,20 +49,13 @@ export type AnalyzerProfile = {
   analyzer: string;
   analyzerVersion: string;
   descriptors: VocalProfileDescriptors;
-  synthesisReference?: {
-    storagePath: string;
-    mimeType: string;
-    sizeBytes: number;
-    durationMs: number;
-    algorithm: string;
-    version: string;
-    sourceRanges: Array<Record<string, unknown>>;
-    bandSeconds: Record<string, number>;
-    voicedDensity: number;
-    pitchCoverageSemitones: number;
-    crossfadeMs: number;
-    fallbackReason: string | null;
-  } | null;
+  synthesisReference?: AnalyzerSynthesisReference | null;
+};
+
+export type AnalyzerProfile = Omit<AnalyzerProfileData, "synthesisReference"> & {
+  storagePath: string;
+  expiresAt: string;
+  synthesisReference?: (AnalyzerSynthesisReference & { storagePath: string }) | null;
 };
 
 export type VocalProfileResponse = {
@@ -88,7 +93,7 @@ export type VocalProfileError = {
   retryable: boolean;
 };
 
-export function hasSmartReferenceContract(profile: AnalyzerProfile) {
+export function hasSmartReferenceContract(profile: AnalyzerProfileData) {
   if (!("synthesisReference" in profile)) return false;
   const descriptor = profile.descriptors.synthesisReference;
   if (!descriptor || typeof descriptor !== "object" || Array.isArray(descriptor)) return false;

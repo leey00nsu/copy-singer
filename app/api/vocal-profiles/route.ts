@@ -2,10 +2,15 @@ export const runtime = "nodejs";
 
 import { prisma } from "@/lib/db/prisma";
 import { RecordingKind, RecordingStatus, type Prisma } from "@/generated/prisma/client";
-import { hasSmartReferenceContract, type AnalyzerProfile } from "@/lib/vocal-profile/contract";
-import { analyzerUrl, deleteAnalyzerRecording, serializeProfile } from "@/lib/vocal-profile/server";
+import { hasSmartReferenceContract } from "@/lib/vocal-profile/contract";
+import { AnalyzerClientError, analyzeVocalProfile } from "@/lib/vocal-profile/analyzer";
+import { serializeProfile } from "@/lib/vocal-profile/server";
 import { requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
-import { discardMediaAsset, storeAnalyzerReference, storeAnalyzerSynthesisReference } from "@/lib/leemage/media-service";
+import {
+  discardMediaAsset,
+  storeAnalyzerReferenceBytes,
+  storeAnalyzerSynthesisReferenceBytes,
+} from "@/lib/leemage/media-service";
 import { LeemageError } from "@/lib/leemage/client";
 import { getVocalProfileHistory } from "@/lib/vocal-profile/history";
 
@@ -23,14 +28,6 @@ export async function POST(request: Request) {
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
 
-  const url = analyzerUrl();
-  if (!url) {
-    return Response.json(
-      { reasonCode: "ANALYZER_NOT_CONFIGURED", detail: "Local vocal analyzer is not configured.", retryable: false },
-      { status: 503 },
-    );
-  }
-
   const contentType = request.headers.get("content-type");
   if (!contentType?.startsWith("multipart/form-data") || !request.body) {
     return Response.json(
@@ -40,64 +37,55 @@ export async function POST(request: Request) {
   }
 
   const recordingId = crypto.randomUUID();
-  const upstreamRequest: RequestInit & { duplex: "half" } = {
-    method: "POST",
-    headers: {
-      "Content-Type": contentType,
-      "X-Recording-ID": recordingId,
-    },
-    body: request.body,
-    duplex: "half",
-    cache: "no-store",
-  };
-
-  let upstream: Response;
+  let analyzed: Awaited<ReturnType<typeof analyzeVocalProfile>>;
   try {
-    upstream = await fetch(`${url}/v1/analyze`, upstreamRequest);
-  } catch {
+    analyzed = await analyzeVocalProfile({
+      recordingId,
+      contentType,
+      body: request.body,
+    });
+  } catch (error) {
+    if (error instanceof AnalyzerClientError) {
+      return Response.json(
+        { reasonCode: error.reasonCode, detail: error.detail, retryable: error.retryable },
+        { status: error.status },
+      );
+    }
     return Response.json(
-      { reasonCode: "ANALYZER_UNAVAILABLE", detail: "Local vocal analyzer is unavailable.", retryable: true },
+      { reasonCode: "ANALYZER_UNAVAILABLE", detail: "Vocal analyzer is unavailable.", retryable: true },
       { status: 502 },
     );
   }
 
-  if (!upstream.ok) {
-    return new Response(upstream.body, {
-      status: upstream.status,
-      headers: { "Content-Type": upstream.headers.get("Content-Type") ?? "application/json" },
-    });
-  }
-
-  const analyzed = (await upstream.json()) as AnalyzerProfile;
-  if (analyzed.recordingId !== recordingId) {
-    await deleteAnalyzerRecording(recordingId);
+  const { profile, source, synthesisReference } = analyzed;
+  if (profile.recordingId !== recordingId) {
     return Response.json(
       { reasonCode: "ANALYSIS_FAILED", detail: "Analyzer returned an invalid recording ID.", retryable: true },
       { status: 502 },
     );
   }
 
-  if (!hasSmartReferenceContract(analyzed)) {
-    await deleteAnalyzerRecording(recordingId);
+  if (!hasSmartReferenceContract(profile)) {
     return Response.json(
       {
         reasonCode: "ANALYZER_UPDATE_REQUIRED",
-        detail: "The local vocal analyzer does not support smart reference regions. Rebuild the vocal-profile-api container and try again.",
+        detail: "The configured vocal analyzer does not support the required smart reference contract.",
         retryable: false,
       },
       { status: 502 },
     );
   }
 
-  let mediaAsset: Awaited<ReturnType<typeof storeAnalyzerReference>>;
+  let mediaAsset: Awaited<ReturnType<typeof storeAnalyzerReferenceBytes>>;
   try {
-    mediaAsset = await storeAnalyzerReference({
+    mediaAsset = await storeAnalyzerReferenceBytes({
       userId: session.user.id,
       recordingId,
-      mimeType: analyzed.mimeType,
+      mimeType: source.mimeType,
+      bytes: source.bytes,
+      fileName: source.fileName,
     });
   } catch (error) {
-    await deleteAnalyzerRecording(recordingId);
     const storageError = error instanceof LeemageError ? error : null;
     return Response.json(
       {
@@ -109,17 +97,31 @@ export async function POST(request: Request) {
     );
   }
 
-  let synthesisReferenceAsset: Awaited<ReturnType<typeof storeAnalyzerSynthesisReference>> | null = null;
-  if (analyzed.synthesisReference) {
+  let synthesisReferenceAsset: Awaited<ReturnType<typeof storeAnalyzerSynthesisReferenceBytes>> | null = null;
+  if (profile.synthesisReference) {
+    if (!synthesisReference) {
+      await discardMediaAsset(mediaAsset.id);
+      return Response.json(
+        {
+          reasonCode: "ANALYZER_INVALID_RESPONSE",
+          detail: "Analyzer response omitted the smart synthesis reference artifact.",
+          retryable: true,
+        },
+        { status: 502 },
+      );
+    }
     try {
-      synthesisReferenceAsset = await storeAnalyzerSynthesisReference({
+      synthesisReferenceAsset = await storeAnalyzerSynthesisReferenceBytes({
         userId: session.user.id,
         recordingId,
+        mimeType: synthesisReference.mimeType,
+        bytes: synthesisReference.bytes,
+        fileName: synthesisReference.fileName,
       });
-      analyzed.descriptors.synthesisReferenceStorage = { status: "ready", kind: "SYNTHESIS_REFERENCE" };
+      profile.descriptors.synthesisReferenceStorage = { status: "ready", kind: "SYNTHESIS_REFERENCE" };
     } catch (error) {
       console.warn("Could not store smart synthesis reference; source fallback remains available", error instanceof Error ? error.message : "unknown error");
-      analyzed.descriptors.synthesisReferenceStorage = {
+      profile.descriptors.synthesisReferenceStorage = {
         status: "failed",
         fallback: "analysis-source",
       };
@@ -131,20 +133,20 @@ export async function POST(request: Request) {
       data: {
         user: { connect: { id: session.user.id } },
         sourceType: "USER",
-        minMidi: analyzed.minMidi,
-        maxMidi: analyzed.maxMidi,
-        p10Midi: analyzed.p10Midi,
-        medianMidi: analyzed.medianMidi,
-        p90Midi: analyzed.p90Midi,
-        tessituraLowMidi: analyzed.tessituraLowMidi,
-        tessituraHighMidi: analyzed.tessituraHighMidi,
-        voicedRatio: analyzed.voicedRatio,
-        pitchStability: analyzed.pitchStability,
-        clippingRatio: analyzed.clippingRatio,
-        rmsDb: analyzed.rmsDb,
-        descriptors: analyzed.descriptors as Prisma.InputJsonValue,
-        analyzer: analyzed.analyzer,
-        analyzerVersion: analyzed.analyzerVersion,
+        minMidi: profile.minMidi,
+        maxMidi: profile.maxMidi,
+        p10Midi: profile.p10Midi,
+        medianMidi: profile.medianMidi,
+        p90Midi: profile.p90Midi,
+        tessituraLowMidi: profile.tessituraLowMidi,
+        tessituraHighMidi: profile.tessituraHighMidi,
+        voicedRatio: profile.voicedRatio,
+        pitchStability: profile.pitchStability,
+        clippingRatio: profile.clippingRatio,
+        rmsDb: profile.rmsDb,
+        descriptors: profile.descriptors as Prisma.InputJsonValue,
+        analyzer: profile.analyzer,
+        analyzerVersion: profile.analyzerVersion,
         ...(synthesisReferenceAsset
           ? { synthesisReferenceAsset: { connect: { id: synthesisReferenceAsset.id } } }
           : {}),
@@ -153,10 +155,10 @@ export async function POST(request: Request) {
             id: recordingId,
             kind: RecordingKind.USER_TEST,
             storagePath: `leemage://${mediaAsset.externalProjectId}/${mediaAsset.externalFileId}`,
-            mimeType: analyzed.mimeType,
-            durationMs: analyzed.durationMs,
-            sizeBytes: BigInt(analyzed.sizeBytes),
-            sampleRate: analyzed.sampleRate,
+            mimeType: profile.mimeType,
+            durationMs: profile.durationMs,
+            sizeBytes: BigInt(profile.sizeBytes),
+            sampleRate: profile.sampleRate,
             status: RecordingStatus.READY,
             expiresAt: null,
             mediaAsset: { connect: { id: mediaAsset.id } },
@@ -164,15 +166,13 @@ export async function POST(request: Request) {
         },
       },
     });
-    const profile = await prisma.vocalProfile.findFirstOrThrow({
+    const storedProfile = await prisma.vocalProfile.findFirstOrThrow({
       where: { recordingId, userId: session.user.id },
       include: { recording: true },
     });
-    await deleteAnalyzerRecording(recordingId);
-    return Response.json(serializeProfile(profile), { status: 201 });
+    return Response.json(serializeProfile(storedProfile), { status: 201 });
   } catch (error) {
     console.error("Could not persist vocal profile", error instanceof Error ? error.message : "unknown error");
-    await deleteAnalyzerRecording(recordingId);
     await Promise.all([
       discardMediaAsset(mediaAsset.id),
       ...(synthesisReferenceAsset ? [discardMediaAsset(synthesisReferenceAsset.id)] : []),

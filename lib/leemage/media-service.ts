@@ -11,6 +11,33 @@ function audioExtension(mimeType: string) {
   return "wav";
 }
 
+async function storeMediaAssetBytes(input: {
+  userId: string;
+  bytes: Uint8Array;
+  mimeType: string;
+  kind: "REFERENCE" | "SYNTHESIS_REFERENCE";
+  fileName: string;
+}) {
+  const stored = await createLeemageClient().uploadFile({
+    fileName: input.fileName,
+    mimeType: input.mimeType,
+    bytes: input.bytes,
+  });
+  return prisma.mediaAsset.create({
+    data: {
+      userId: input.userId,
+      kind: input.kind,
+      externalProjectId: stored.projectId,
+      externalFileId: stored.fileId,
+      externalUrl: stored.url,
+      fileName: stored.fileName,
+      mimeType: stored.mimeType,
+      sizeBytes: BigInt(stored.sizeBytes),
+      status: "READY",
+    },
+  });
+}
+
 async function storeAnalyzerAsset(input: {
   userId: string;
   recordingId: string;
@@ -28,23 +55,12 @@ async function storeAnalyzerAsset(input: {
     throw new LeemageError(`Analyzer reference download failed (${source.status}).`, source.status, source.status >= 500);
   }
   const bytes = new Uint8Array(await source.arrayBuffer());
-  const stored = await createLeemageClient().uploadFile({
-    fileName: input.fileName ?? `${input.recordingId}${input.kind === "SYNTHESIS_REFERENCE" ? "-synthesis" : ""}.${audioExtension(input.mimeType)}`,
-    mimeType: input.mimeType,
+  return storeMediaAssetBytes({
+    userId: input.userId,
     bytes,
-  });
-  return prisma.mediaAsset.create({
-    data: {
-      userId: input.userId,
-      kind: input.kind,
-      externalProjectId: stored.projectId,
-      externalFileId: stored.fileId,
-      externalUrl: stored.url,
-      fileName: stored.fileName,
-      mimeType: stored.mimeType,
-      sizeBytes: BigInt(stored.sizeBytes),
-      status: "READY",
-    },
+    mimeType: input.mimeType,
+    kind: input.kind,
+    fileName: input.fileName ?? `${input.recordingId}${input.kind === "SYNTHESIS_REFERENCE" ? "-synthesis" : ""}.${audioExtension(input.mimeType)}`,
   });
 }
 
@@ -67,6 +83,38 @@ export async function storeAnalyzerSynthesisReference(input: {
     mimeType: "audio/wav",
     endpoint: "synthesis-reference",
     kind: "SYNTHESIS_REFERENCE",
+  });
+}
+
+export async function storeAnalyzerReferenceBytes(input: {
+  userId: string;
+  recordingId: string;
+  mimeType: string;
+  bytes: Uint8Array;
+  fileName?: string;
+}) {
+  return storeMediaAssetBytes({
+    userId: input.userId,
+    bytes: input.bytes,
+    mimeType: input.mimeType,
+    kind: "REFERENCE",
+    fileName: input.fileName ?? `${input.recordingId}.${audioExtension(input.mimeType)}`,
+  });
+}
+
+export async function storeAnalyzerSynthesisReferenceBytes(input: {
+  userId: string;
+  recordingId: string;
+  mimeType: string;
+  bytes: Uint8Array;
+  fileName?: string;
+}) {
+  return storeMediaAssetBytes({
+    userId: input.userId,
+    bytes: input.bytes,
+    mimeType: input.mimeType,
+    kind: "SYNTHESIS_REFERENCE",
+    fileName: input.fileName ?? `${input.recordingId}-synthesis.${audioExtension(input.mimeType)}`,
   });
 }
 

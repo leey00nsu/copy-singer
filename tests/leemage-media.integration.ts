@@ -47,25 +47,28 @@ test("an analyzer reference is persisted as user-owned Leemage metadata", async 
   };
 
   const { prisma } = await import("../lib/db/prisma");
-  const { storeAnalyzerReference, storeAnalyzerSynthesisReference } = await import("../lib/leemage/media-service");
+  const { storeAnalyzerReferenceBytes, storeAnalyzerSynthesisReferenceBytes } = await import("../lib/leemage/media-service");
   const userId = `reference-owner-${crypto.randomUUID()}`;
   try {
     await prisma.user.create({
       data: { id: userId, name: "Reference owner", email: `${userId}@example.test`, emailVerified: true },
     });
-    const asset = await storeAnalyzerReference({
+    const asset = await storeAnalyzerReferenceBytes({
       userId,
       recordingId: crypto.randomUUID(),
       mimeType: "audio/wav",
+      bytes: Uint8Array.from([1, 2, 3]),
     });
     assert.equal(asset.userId, userId);
     assert.equal(asset.kind, "REFERENCE");
     assert.equal(asset.externalFileId, "reference-file");
     assert.equal(asset.externalUrl, "https://objects.example/reference.wav");
     assert.equal(asset.sizeBytes, BigInt(3));
-    const synthesis = await storeAnalyzerSynthesisReference({
+    const synthesis = await storeAnalyzerSynthesisReferenceBytes({
       userId,
       recordingId: crypto.randomUUID(),
+      mimeType: "audio/wav",
+      bytes: Uint8Array.from([4, 5, 6, 7]),
     });
     assert.equal(synthesis.userId, userId);
     assert.equal(synthesis.kind, "SYNTHESIS_REFERENCE");
