@@ -53,3 +53,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `cd services/vocal-profile-modal && ../vocal-profile-api/.venv/bin/pytest -q test_transport.py test_runtime.py test_modal_app_source.py` → PASS (9/9), `services/vocal-profile-api/.venv/bin/pytest -q services/vocal-profile-api/tests` → PASS (28/28), `git diff --check` → PASS
 - **Consequences**: base64 encoding은 약 33% 전송 overhead가 있으므로 T05 benchmark에서 payload/serialization cost를 측정하고 필요 시 binary multipart codec으로 교체한다.
+
+## D003: Next.js가 analyzer backend와 영구 저장 책임을 소유 (2026-08-08)
+
+- **Context**: 현재 `/api/vocal-profiles` route는 local analyzer URL, multipart proxy, 후속 artifact GET, Leemage upload와 Prisma persistence를 직접 결합한다. Modal backend를 추가하면서 이 분기를 route 안에 넣으면 backend별 file lifecycle과 error mapping이 사용자 API에 섞인다.
+- **Constraints**: local 개발 경로는 유지하고 production에서는 backend를 명시적으로 선택해야 한다. Modal 실패 시 local로 조용히 fallback하지 않으며 Leemage/DB credential은 Next.js server에만 둔다.
+- **Options**: route 내부 `if local/modal`, analyzer adapter interface + 공통 bytes persistence, Modal이 Leemage에 직접 저장하는 방식을 비교한다.
+- **Decision**: server-only analyzer adapter가 local/Modal transport 차이를 흡수하고 공통 `AnalyzedRecording` bytes 결과를 반환한다. `/api/vocal-profiles`는 이 결과를 Leemage/Prisma에 저장하는 책임만 가진다.
+- **Rationale**: F009의 ownership/cleanup semantics를 한 곳에 유지하고 backend 전환을 환경 설정으로 제한하며 transport 회귀를 독립 테스트할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 설치된 Next.js 16 Route Handler 문서를 먼저 확인하고 `VOCAL_PROFILE_ANALYZER_BACKEND=local|modal` fail-closed selector, local legacy adapter, Modal envelope decoder, bytes 기반 media primitive 순서로 구현한다.
+  - **DONE 전 확정 시점**: `lib/vocal-profile/analyzer`에 local/Modal adapter와 fail-closed backend selector를 추가했다. local adapter는 기존 POST/GET/DELETE 임시 lifecycle을 bytes로 흡수하고 즉시 cleanup하며, Modal adapter는 proxy auth와 envelope hash/size/cleanup contract를 검증한다. `/api/vocal-profiles`와 health route는 backend 세부사항을 제거했고 Leemage는 bytes 입력 primitive로 source/reference를 저장한다. production에서 backend 미설정은 `ANALYZER_NOT_CONFIGURED`로 실패한다. adapter 4/4, media 5/5, 관련 profile/mixing UI 8/8, TypeScript/lint/build가 통과했다.
+  - **머지 후 확인**: 머지 후 갱신한다.
+- **Evidence**:
+  - **Commit**: T03 task checkpoint commit에서 갱신
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: `pnpm run test:vocal-profile-analyzer` → PASS (4/4), `pnpm run test:media` → PASS (5/5), `pnpm exec tsc --noEmit`/`pnpm run lint`/`pnpm run build` → PASS
+- **Consequences**: `AnalyzerProfile`의 legacy storagePath/expiry는 local transport 내부 세부사항이 되고, route 이후의 persistence는 source/reference bytes와 profile metadata만 사용한다.

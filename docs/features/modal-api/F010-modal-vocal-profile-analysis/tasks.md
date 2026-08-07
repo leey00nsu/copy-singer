@@ -56,18 +56,18 @@
     - [x] health/capability 응답에 analyzer/version과 `smart-reference-v1` 지원 정보를 노출한다.
     - [x] success, rejection, exception, reference unavailable 경로의 temporary cleanup 테스트를 추가한다.
 
-- [TODO][PRD-FR-004][PRD-FR-027][PRD-FR-042] T-F010-modal-vocal-profile-analysis-03 Next.js local/Modal analyzer adapter와 bytes 기반 Leemage 저장 경계 구현
+- [DONE][PRD-FR-004][PRD-FR-027][PRD-FR-042] T-F010-modal-vocal-profile-analysis-03 Next.js local/Modal analyzer adapter와 bytes 기반 Leemage 저장 경계 구현
   - Date: 2026-08-08
   - Acceptance:
     - `/api/vocal-profiles`는 backend-specific 파일 lifecycle을 직접 알지 않고 공통 analyzer adapter 결과만 처리한다.
     - local과 Modal backend를 환경 설정으로 명시적으로 선택하며 Modal 실패 시 local로 조용히 fallback하지 않는다.
     - source/reference 영구 저장과 PostgreSQL 관계 생성·보상 cleanup은 기존 사용자 소유권 semantics를 유지한다.
   - Checklist:
-    - [ ] server-only analyzer interface와 `local-adapter`/`modal-adapter`를 추가한다.
-    - [ ] `VOCAL_PROFILE_ANALYZER_BACKEND=local|modal` 및 Modal URL/key/secret 설정을 `.env.example`에 문서화한다.
-    - [ ] Leemage media service에 URL fetch와 분리된 bytes 입력 저장 primitive를 추가한다.
-    - [ ] profile route를 공통 adapter + bytes persistence 흐름으로 정리한다.
-    - [ ] recording ID/capability mismatch와 transport error를 stable reason code로 매핑한다.
+    - [x] server-only analyzer interface와 `local-adapter`/`modal-adapter`를 추가한다.
+    - [x] `VOCAL_PROFILE_ANALYZER_BACKEND=local|modal` 및 Modal URL/key/secret 설정을 `.env.example`에 문서화한다.
+    - [x] Leemage media service에 URL fetch와 분리된 bytes 입력 저장 primitive를 추가한다.
+    - [x] profile route를 공통 adapter + bytes persistence 흐름으로 정리한다.
+    - [x] recording ID/capability mismatch와 transport error를 stable reason code로 매핑한다.
 
 - [TODO][PRD-FR-003][PRD-FR-004][PRD-FR-042][PRD-NFR-004][PRD-NFR-005] T-F010-modal-vocal-profile-analysis-04 local/Modal parity·retry·partial failure 계약 검증
   - Date: 2026-08-08
@@ -130,11 +130,14 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `pnpm test` | `-` | `-` |
-| `pnpm run lint` | `-` | `-` |
-| `pnpm exec tsc --noEmit` | `-` | `-` |
-| `pnpm run build` | `-` | `-` |
+| `pnpm run lint` | `2026-08-08` | `PASS` |
+| `pnpm exec tsc --noEmit` | `2026-08-08` | `PASS` |
+| `pnpm run build` | `2026-08-08` | `PASS (Next.js 16.3.0, 21 pages)` |
 | `services/vocal-profile-api/.venv/bin/pytest -q services/vocal-profile-api/tests` | `2026-08-08` | `PASS (28/28, deprecation warning 3건)` |
 | `cd services/vocal-profile-modal && ../vocal-profile-api/.venv/bin/pytest -q test_transport.py test_runtime.py test_modal_app_source.py` | `2026-08-08` | `PASS (9/9)` |
+| `pnpm run test:vocal-profile-analyzer` | `2026-08-08` | `PASS (4/4)` |
+| `pnpm run test:media` | `2026-08-08` | `PASS (5/5)` |
+| `pnpm exec tsx --test tests/vocal-profile-contract.test.ts tests/mixing-reference.test.ts tests/vocal-profile-results-ui.test.tsx` | `2026-08-08` | `PASS (8/8)` |
 | `npx lee-spec-kit workflow-audit --json` | `-` | `-` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-07T23:44:55.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-07T23:52:44.000Z -->
