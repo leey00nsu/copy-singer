@@ -159,6 +159,17 @@
     - [x] 프로필 결과를 독립 플레이어 3개 layout으로 변경하고 UI 회귀 테스트를 보강한다.
     - [x] 관련 단위·UI·전체 회귀 및 workflow audit을 통과한다.
 
+- [DONE][PRD-FR-042] T-F009-audio-waveform-and-smart-reference-10 영역별 채택 구간만 표시하는 파형 미리보기
+  - Date: 2026-08-07
+  - Acceptance:
+    - 저음·중앙·고음 플레이어의 파형과 총 길이는 원본 60초가 아니라 해당 영역에 채택된 구간만 이어 붙인 오디오를 표시한다.
+    - 영역 미리보기는 브라우저 메모리에서만 생성하고 Leemage·PostgreSQL·Modal에 추가 저장하거나 업로드하지 않는다.
+    - 미리보기 생성 실패 시 전체 source 파형으로 조용히 fallback하지 않고 명시적인 오류를 표시한다.
+  - Checklist:
+    - [x] source를 한 번 decode해 band별 range를 mono PCM으로 이어 붙이는 client helper와 단위 테스트를 추가한다.
+    - [x] 임시 Blob URL lifecycle을 관리하는 영역 player group을 구현하고 프로필 결과에 적용한다.
+    - [x] 관련 단위·UI·전체 회귀 및 workflow audit을 통과한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -206,5 +217,7 @@
 | 최신 analyzer 실제 `vocals.m4a` 경계 분석 | 2026-08-07 | PASS (`smart-reference-v1`, source range 12개, low/mid/high 모두 포함, 테스트 recording 삭제) |
 | 기존 영역 누락 profile in-app Browser (`/vocal-profiles/:id`) | 2026-08-07 | PASS (legacy 재분석 안내 표시) |
 | `pnpm exec tsx --test tests/audio-waveform-player.test.ts tests/vocal-profile-reference-bands.test.ts tests/vocal-profile-results-ui.test.tsx` | 2026-08-07 | PASS (구간 합산 시간과 low/mid/high 독립 player 8/8) |
+| `pnpm exec tsx --test tests/reference-preview.test.ts tests/audio-waveform-player.test.ts tests/vocal-profile-results-ui.test.tsx` | 2026-08-07 | PASS (range-only mono WAV preview와 영역 UI 8/8) |
+| 실제 smart profile in-app Browser (`/vocal-profiles/:id`) | 2026-08-07 | PASS (전체 source 대신 low 4초·mid 18초·high 8초 Blob waveform, low 독립 재생) |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-07T10:34:44.300Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-07T10:43:58.300Z -->
