@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useWavesurfer } from "@wavesurfer/react";
 import { Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { formatPlaybackTime, playbackRangesDuration, playbackRangesElapsed } from "@/lib/audio/playback";
+import { formatPlaybackTime } from "@/lib/audio/playback";
 import { cn } from "@/lib/utils";
 import type { AudioSourceRange } from "@/lib/vocal-profile/reference-segments";
 
@@ -20,11 +20,10 @@ type AudioWaveformPlayerProps = {
   label?: string;
   className?: string;
   segments?: AudioPlaybackSegment[];
-  primarySegment?: AudioPlaybackSegment;
 };
 
 export function AudioWaveformPlayer(props: AudioWaveformPlayerProps) {
-  return <AudioWaveformPlayerInstance key={`${props.src}:${props.primarySegment?.id ?? "full"}`} {...props} />;
+  return <AudioWaveformPlayerInstance key={props.src} {...props} />;
 }
 
 function AudioWaveformPlayerInstance({
@@ -32,7 +31,6 @@ function AudioWaveformPlayerInstance({
   label = "오디오",
   className,
   segments = EMPTY_SEGMENTS,
-  primarySegment,
 }: AudioWaveformPlayerProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [decodeFailed, setDecodeFailed] = useState(false);
@@ -70,7 +68,7 @@ function AudioWaveformPlayerInstance({
     const unsubscribeTime = wavesurfer.on("timeupdate", (time) => {
       const active = activeRangeRef.current;
       if (!active) return;
-      const segment = (primarySegment ? [primarySegment] : segments).find((candidate) => candidate.id === active.segmentId);
+      const segment = segments.find((candidate) => candidate.id === active.segmentId);
       const range = segment?.ranges[active.rangeIndex];
       if (!segment || !range || time < range.endSeconds - 0.03) return;
       const nextIndex = active.rangeIndex + 1;
@@ -93,29 +91,10 @@ function AudioWaveformPlayerInstance({
       unsubscribeError();
       unsubscribeTime();
     };
-  }, [primarySegment, segments, wavesurfer]);
+  }, [segments, wavesurfer]);
 
   const togglePlayback = useCallback(() => {
     if (!wavesurfer) return;
-    if (primarySegment) {
-      if (isPlaying) {
-        wavesurfer.pause();
-        return;
-      }
-      const active = activeRangeRef.current;
-      if (active?.segmentId === primarySegment.id) {
-        void wavesurfer.play();
-        return;
-      }
-      const first = primarySegment.ranges[0];
-      if (!first) return;
-      activeRangeRef.current = { segmentId: primarySegment.id, rangeIndex: 0 };
-      setActiveSegmentId(primarySegment.id);
-      setFinished(false);
-      wavesurfer.setTime(first.startSeconds);
-      void wavesurfer.play();
-      return;
-    }
     activeRangeRef.current = null;
     setActiveSegmentId(null);
     if (finished) {
@@ -124,23 +103,13 @@ function AudioWaveformPlayerInstance({
       return;
     }
     void wavesurfer.playPause();
-  }, [finished, isPlaying, primarySegment, wavesurfer]);
+  }, [finished, wavesurfer]);
 
   const restart = useCallback(() => {
     if (!wavesurfer) return;
-    if (primarySegment) {
-      const first = primarySegment.ranges[0];
-      if (!first) return;
-      activeRangeRef.current = { segmentId: primarySegment.id, rangeIndex: 0 };
-      setActiveSegmentId(primarySegment.id);
-      setFinished(false);
-      wavesurfer.setTime(first.startSeconds);
-      void wavesurfer.play();
-      return;
-    }
     wavesurfer.setTime(0);
     void wavesurfer.play();
-  }, [primarySegment, wavesurfer]);
+  }, [wavesurfer]);
 
   const toggleMuted = useCallback(() => {
     if (!wavesurfer) return;
@@ -158,19 +127,6 @@ function AudioWaveformPlayerInstance({
     wavesurfer.setTime(first.startSeconds);
     void wavesurfer.play();
   }, [wavesurfer]);
-
-  const primaryDuration = primarySegment ? playbackRangesDuration(primarySegment.ranges) : 0;
-  const primaryRangeIndex = primarySegment
-    ? primarySegment.ranges.findIndex((range) => currentTime >= range.startSeconds && currentTime <= range.endSeconds)
-    : -1;
-  const displayedCurrentTime = primarySegment
-    ? finished
-      ? primaryDuration
-      : primaryRangeIndex >= 0
-        ? playbackRangesElapsed(primarySegment.ranges, primaryRangeIndex, currentTime)
-        : 0
-    : currentTime;
-  const displayedDuration = primarySegment ? primaryDuration : Math.round(duration);
 
   return (
     <div className={cn("rounded-xl border bg-background p-3", className)}>
@@ -194,7 +150,7 @@ function AudioWaveformPlayerInstance({
               {isPlaying ? <Pause className="size-3.5" /> : finished ? <RotateCcw className="size-3.5" /> : <Play className="size-3.5" />}
             </Button>
             <span aria-live="off" className="min-w-24 font-mono text-xs text-muted-foreground">
-              {formatPlaybackTime(displayedCurrentTime)} / {formatPlaybackTime(displayedDuration)}
+              {formatPlaybackTime(currentTime)} / {formatPlaybackTime(Math.round(duration))}
             </span>
             <span className="h-px flex-1 bg-border" />
             {finished ? (
@@ -204,7 +160,7 @@ function AudioWaveformPlayerInstance({
               {muted ? <VolumeX className="size-3.5" /> : <Volume2 className="size-3.5" />}
             </Button>
           </div>
-          {!primarySegment && segments.length > 0 ? (
+          {segments.length > 0 ? (
             <div className="mt-3 grid gap-2 sm:grid-cols-3">
               {segments.map((segment) => (
                 <Button aria-pressed={activeSegmentId === segment.id} disabled={!isReady} key={segment.id} onClick={() => playSegment(segment)} size="sm" type="button" variant={activeSegmentId === segment.id ? "default" : "outline"}>
