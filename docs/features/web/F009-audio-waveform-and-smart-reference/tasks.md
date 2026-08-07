@@ -102,23 +102,24 @@
     - [x] range, histogram과 pitch trace의 CSS·수동 SVG 구현을 Recharts로 교체한다.
     - [x] data mapping·tooltip·null gap·legacy unavailable UI 테스트를 추가한다.
 
-- [TODO][PRD-NFR-005] T-F009-audio-waveform-and-smart-reference-05 전체 오디오·시각화 파이프라인과 품질 비교 검증
+- [DONE][PRD-NFR-005] T-F009-audio-waveform-and-smart-reference-05 전체 오디오·시각화 파이프라인과 품질 비교 검증
   - Date: 2026-08-07
   - Acceptance:
     - 녹음부터 profile 저장·추천·mixing reference 선택·결과 재생까지 전체 흐름이 회귀 없이 동작한다.
     - 기존 앞 30초와 smart reference의 voiced density·pitch coverage 비교 결과와 한계를 문서화한다.
   - Checklist:
-    - [ ] 브라우저에서 실시간 waveform, 모든 player와 responsive chart를 검증한다.
-    - [ ] 동일 source의 baseline/smart reference 정량 비교를 기록하고 실제 Modal A/B는 별도 비용 승인 전 실행하지 않는다.
-    - [ ] Python·Prisma·TypeScript·ESLint·build·전체 test와 workflow audit을 통과한다.
+    - [x] development/test 전용 환경변수 기반 로그인 우회를 구현하고 production 차단·DB 사용자 검증을 테스트한다.
+    - [x] 브라우저에서 실시간 waveform, 모든 player와 responsive chart를 검증한다.
+    - [x] 동일 source의 baseline/smart reference 정량 비교를 기록하고 실제 Modal A/B는 별도 비용 승인 전 실행하지 않는다.
+    - [x] Python·Prisma·TypeScript·ESLint·build·전체 test와 workflow audit을 통과한다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -142,5 +143,13 @@
 | `pnpm run db:validate && pnpm run db:status` | 2026-08-07 | PASS (migration 7개, up to date) |
 | `pnpm exec tsx --test tests/vocal-profile-visualization.test.ts` | 2026-08-07 | PASS (mapping·null gap 5/5) |
 | Chrome local browser (`/vocal-profiles/:id`) | 2026-08-07 | PASS (shadcn chart 3개, tooltip, 375px no overflow) |
+| `pnpm run test:auth:db` | 2026-08-07 | PASS (production 차단·existing DB user 3/3) |
+| cookie 없는 in-app Browser + `curl /api/vocal-profiles` | 2026-08-07 | PASS (보호 page/API 개발 우회, HTTP 200) |
+| 실제 마이크 녹음 waveform 사용자 확인 | 2026-08-07 | PASS (60초 녹음 UI와 실시간 파형 확인) |
+| `/profile` effect cleanup/remount 브라우저 검증 | 2026-08-07 | PASS (health 요청 AbortError 재발 없음) |
+| `/Volumes/sn850x/ai/노래/vocal1.wav` baseline/smart 비교 | 2026-08-07 | PASS (유성 밀도 84.12%→92.02%, pitch coverage 5.3→5.3 semitones) |
+| `pnpm test` | 2026-08-07 | PASS (build와 전체 TS/UI/DB 회귀) |
+| `services/vocal-profile-api/.venv/bin/pytest -q services/vocal-profile-api/tests` | 2026-08-07 | PASS (25/25, deprecation warning 3건) |
+| `pnpm run lint` | 2026-08-07 | PASS |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-07T09:13:57.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-07T09:28:20.000Z -->

@@ -30,6 +30,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **탐색 시점**: `DEFAULT_ANALYSIS_CONFIG.max_duration_seconds=60`, analyzer의 first-audible 60초 처리와 SoulX engine의 `audio[:30 * sample_rate]`를 확인했다. 사용자 검토로 마이크 녹음도 60초로 맞추고 합성 reference만 30초로 재구성하기로 범위를 확정했다.
   - **T03 확정 시점**: analyzer가 프로필 계산에 사용한 동일 pYIN frame을 재사용해 연속 유성 phrase를 만들고 저·중·고 각 10초 목표 budget, 품질순 재분배, 원래 시간순 연결과 30ms equal-power crossfade를 적용한다. 선택 descriptor와 별도 WAV endpoint를 추가했으며, PostgreSQL에는 nullable `synthesisReferenceAssetId`, Leemage에는 `SYNTHESIS_REFERENCE`를 저장한다. 저장 실패·legacy profile은 분석 source로 fallback하고 새 mixing job은 준비된 smart asset ID를 snapshot한다. synthetic 3-band reference, 두 Leemage asset, DB queue/worker 테스트가 통과했다.
+  - **T05 정량 비교**: 사용자가 기존 검증에 사용한 7.152초 `vocal1.wav`에서 first-30 baseline은 유성 밀도 0.8412, p10–p90 pitch coverage 5.3 semitone이었다. smart reference는 6.495초, 유성 밀도 0.9202, coverage 5.3 semitone으로 무성 구간을 제거하면서 관측 음역을 보존했다. 원본이 짧아 저·중·고 각 10초를 채울 수 없으며 descriptor에 `redistributed:low,mid,high`를 명시한다. 실제 Modal A/B는 비용 승인이 없어 실행하지 않았다.
   - **DONE 전 확정 시점**: 실제 source 정량 비교와 전체 회귀 후 갱신한다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
@@ -50,10 +51,28 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **T01 확정 시점**: `VocalProfileRecorder`가 WaveSurfer Record plugin의 `record-progress`와 `record-end`를 단일 lifecycle로 관리하고, 실제 경과 시간 60초에서 정지하며 cleanup 시 recorder·mic·plugin을 종료하도록 구현했다. MIME 확장자와 60초 경계 단위 테스트, TypeScript·ESLint·production build가 통과했다. 실제 마이크 권한을 수반하는 브라우저 검증은 T05에서 사용자 승인 하에 수행한다.
   - **T02 확정 시점**: Blob URL과 로그인 보호 API URL을 함께 받는 `AudioWaveformPlayer`로 profile 제출본·저장본, 추천 결과, 믹싱 히스토리와 개발 SVC 화면의 native player를 교체했다. 파형 seek·재생·음소거·시간 controls를 제공하고 WaveSurfer decode 오류에는 native media fallback을 유지한다. 기존 private audio proxy Range 전달 테스트와 관련 UI 회귀 테스트가 통과했다.
   - **T04 확정 시점**: 공식 shadcn CLI로 `components/ui/chart.tsx`와 Recharts 3.8.0을 추가했다. range bar, histogram과 `connectNulls=false` pitch line을 `ChartContainer`로 전환했으며 Chrome 로컬 화면에서 chart 3개, 실제 tooltip, 375px viewport의 가로 overflow 없음과 accessibility layer를 확인했다.
-  - **DONE 전 확정 시점**: 공통 player·recording 최종 브라우저 검증 후 갱신한다.
+  - **T05 확정 시점**: 사용자가 실제 마이크 녹음에서 실시간 파형을 확인했고, 공통 player와 반응형 차트 브라우저 검증을 완료했다. health 확인 effect는 Next.js 개발 모드의 cleanup/remount에서 이유 없는 AbortError를 노출하지 않도록 요청을 강제 중단하는 대신 cleanup 이후 응답을 무시하는 active guard로 변경했다. 화면 이탈과 재진입 후 브라우저 오류 로그가 없음을 확인했다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
   - **Commit**: T01 task checkpoint commit에서 갱신
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: https://wavesurfer.xyz/docs/, https://wavesurfer.xyz/docs/types/plugins_record.RecordPluginOptions, https://ui.shadcn.com/docs/components/radix/chart
 - **Consequences**: Recharts와 WaveSurfer client bundle이 추가되며 SSR 경계와 instance cleanup 테스트가 필요하다.
+
+## D003: 로컬 로그인 우회는 runtime과 DB 사용자로 이중 제한 (2026-08-07)
+
+- **Context**: 로그인 보호 화면의 반복 UI 검증이 Google OAuth browser session 유무에 의존한다.
+- **Constraints**: 테스트 편의 기능이 production 인증을 약화시키거나 임의 사용자를 생성해서는 안 된다.
+- **Options**: 보호 route별 예외, 고정 mock 사용자, 공통 session helper의 환경변수 기반 우회를 비교했다.
+- **Decision**: 공통 page/API session helper에서 `development|test` runtime, 명시적 enable flag, 기존 DB user ID를 모두 요구하는 우회 session을 제공한다. production에서는 flag를 무조건 무시한다.
+- **Rationale**: 실제 사용자 소유권과 DB 데이터를 그대로 검증하면서 OAuth 의존성만 제거하고, 배포 환경 오설정의 영향을 차단한다.
+- **Trace**:
+  - **탐색 시점**: 모든 보호 page/API가 `lib/auth/session.ts`를 경유하고 있어 단일 정책 적용이 가능함을 확인했다.
+  - **T05 확정 시점**: policy 단위 테스트에서 production·미지정 runtime 차단을 확인하고, DB 통합 테스트에서 missing user 실패와 existing user session 생성을 확인했다. `.env.local`의 현재 개발 사용자로 재시작한 뒤 cookie 없는 in-app Browser 보호 page와 무인 API GET이 모두 200으로 동작했다.
+  - **T05 확정 시점**: 실제 마이크 browser 검증과 전체 파이프라인 검증을 마쳤으며, 우회 설정은 production 차단 정책을 유지한다.
+  - **머지 후 확인**: 머지 후 갱신한다.
+- **Evidence**:
+  - **Commit**: T05 task checkpoint commit에서 갱신
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: `pnpm run test:auth:db`, cookie 없는 `/vocal-profiles`와 `/api/vocal-profiles` 검증
+- **Consequences**: 개발 DB에 우회 대상 사용자가 먼저 존재해야 하며 `.env.local`은 로컬에서만 관리한다.

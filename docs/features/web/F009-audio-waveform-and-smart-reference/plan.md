@@ -88,6 +88,13 @@ flowchart LR
 - synthesis asset 저장 실패: 생성된 외부 asset만 정리하고 profile은 source asset으로 저장한다.
 - client waveform 실패: 분석·재생 요청 자체를 실패시키지 않고 native player fallback으로 전환한다.
 
+### 5. 개발 환경 로그인 우회
+
+1. `DEV_AUTH_BYPASS_ENABLED=true`와 `DEV_AUTH_BYPASS_USER_ID`가 함께 설정된 경우에만 기존 PostgreSQL 사용자를 개발 session으로 해석한다.
+2. 우회는 `NODE_ENV=development|test`에서만 동작하며 production과 미지정 runtime에서는 환경변수가 있어도 비활성화한다.
+3. 지정 사용자가 DB에 없으면 익명 fallback이나 임의 사용자 생성을 하지 않고 명확한 설정 오류로 실패한다.
+4. page/API session helper가 동일한 우회 session을 사용해 향후 보호 화면의 로컬 자동 검증에 재사용한다.
+
 ---
 
 ## 파일 구조
