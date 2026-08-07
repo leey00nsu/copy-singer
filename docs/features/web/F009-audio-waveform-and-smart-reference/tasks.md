@@ -92,15 +92,15 @@
     - [x] Prisma synthesis reference relation과 Leemage 이중 asset 저장·삭제·부분 실패 보상을 구현한다.
     - [x] mixing enqueue asset 선택과 analyzer·DB·cleanup 통합 테스트를 추가한다.
 
-- [TODO][PRD-FR-043] T-F009-audio-waveform-and-smart-reference-04 shadcn Chart 기반 보컬 프로필 시각화 전환
+- [DONE][PRD-FR-043] T-F009-audio-waveform-and-smart-reference-04 shadcn Chart 기반 보컬 프로필 시각화 전환
   - Date: 2026-08-07
   - Acceptance:
     - 음역·histogram·pitch trace가 shadcn Chart/Recharts의 반응형 차트와 tooltip으로 표시된다.
     - 무성 pitch gap, MIDI 음이름, accessibility layer와 기존 텍스트 요약이 보존된다.
   - Checklist:
-    - [ ] shadcn Chart와 Recharts v3를 추가하고 공통 MIDI formatter·chart config를 만든다.
-    - [ ] range, histogram과 pitch trace의 CSS·수동 SVG 구현을 Recharts로 교체한다.
-    - [ ] data mapping·tooltip·null gap·legacy unavailable UI 테스트를 추가한다.
+    - [x] shadcn Chart와 Recharts v3를 추가하고 공통 MIDI formatter·chart config를 만든다.
+    - [x] range, histogram과 pitch trace의 CSS·수동 SVG 구현을 Recharts로 교체한다.
+    - [x] data mapping·tooltip·null gap·legacy unavailable UI 테스트를 추가한다.
 
 - [TODO][PRD-NFR-005] T-F009-audio-waveform-and-smart-reference-05 전체 오디오·시각화 파이프라인과 품질 비교 검증
   - Date: 2026-08-07
@@ -140,5 +140,7 @@
 | `pnpm run test:mixing:db` | 2026-08-07 | PASS (smart reference snapshot/worker 1/1) |
 | `pnpm exec tsx --test tests/mixing-reference.test.ts` | 2026-08-07 | PASS (smart 우선·legacy fallback·ownership 3/3) |
 | `pnpm run db:validate && pnpm run db:status` | 2026-08-07 | PASS (migration 7개, up to date) |
+| `pnpm exec tsx --test tests/vocal-profile-visualization.test.ts` | 2026-08-07 | PASS (mapping·null gap 5/5) |
+| Chrome local browser (`/vocal-profiles/:id`) | 2026-08-07 | PASS (shadcn chart 3개, tooltip, 375px no overflow) |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-07T09:06:23.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-07T09:13:57.000Z -->

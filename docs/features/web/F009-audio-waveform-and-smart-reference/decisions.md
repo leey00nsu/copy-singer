@@ -49,7 +49,8 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **탐색 시점**: WaveSurfer Record plugin의 continuous/scrolling waveform과 React wrapper, shadcn Chart가 Recharts v3 composition임을 공식 문서에서 확인했다.
   - **T01 확정 시점**: `VocalProfileRecorder`가 WaveSurfer Record plugin의 `record-progress`와 `record-end`를 단일 lifecycle로 관리하고, 실제 경과 시간 60초에서 정지하며 cleanup 시 recorder·mic·plugin을 종료하도록 구현했다. MIME 확장자와 60초 경계 단위 테스트, TypeScript·ESLint·production build가 통과했다. 실제 마이크 권한을 수반하는 브라우저 검증은 T05에서 사용자 승인 하에 수행한다.
   - **T02 확정 시점**: Blob URL과 로그인 보호 API URL을 함께 받는 `AudioWaveformPlayer`로 profile 제출본·저장본, 추천 결과, 믹싱 히스토리와 개발 SVC 화면의 native player를 교체했다. 파형 seek·재생·음소거·시간 controls를 제공하고 WaveSurfer decode 오류에는 native media fallback을 유지한다. 기존 private audio proxy Range 전달 테스트와 관련 UI 회귀 테스트가 통과했다.
-  - **DONE 전 확정 시점**: 공통 player·chart 구현과 브라우저 검증 후 갱신한다.
+  - **T04 확정 시점**: 공식 shadcn CLI로 `components/ui/chart.tsx`와 Recharts 3.8.0을 추가했다. range bar, histogram과 `connectNulls=false` pitch line을 `ChartContainer`로 전환했으며 Chrome 로컬 화면에서 chart 3개, 실제 tooltip, 375px viewport의 가로 overflow 없음과 accessibility layer를 확인했다.
+  - **DONE 전 확정 시점**: 공통 player·recording 최종 브라우저 검증 후 갱신한다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
   - **Commit**: T01 task checkpoint commit에서 갱신
