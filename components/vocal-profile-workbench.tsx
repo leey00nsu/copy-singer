@@ -62,13 +62,17 @@ export function VocalProfileWorkbench() {
   }, [audioUrl]);
 
   useEffect(() => {
-    const controller = new AbortController();
-    fetch("/api/vocal-profiles/health", { cache: "no-store", signal: controller.signal })
-      .then((response) => setHealth(response.ok ? "ok" : "unavailable"))
-      .catch((error: unknown) => {
-        if (!(error instanceof DOMException && error.name === "AbortError")) setHealth("unavailable");
+    let active = true;
+    void fetch("/api/vocal-profiles/health", { cache: "no-store" })
+      .then((response) => {
+        if (active) setHealth(response.ok ? "ok" : "unavailable");
+      })
+      .catch(() => {
+        if (active) setHealth("unavailable");
       });
-    return () => controller.abort();
+    return () => {
+      active = false;
+    };
   }, []);
 
   const resetAudio = () => {

@@ -35,7 +35,7 @@
     "test:process-scripts": "tsx --test tests/process-scripts.test.ts",
     "test:recommendation": "tsx --test tests/recommendation-ranking.test.ts tests/recommendation-synthesis.test.ts tests/recommendation-ui.test.tsx",
     "test:recommendation:db": "node --conditions react-server --import tsx --test tests/recommendation-persistence.integration.ts tests/recommendation-synthesis.integration.ts",
-    "test:auth:db": "node --conditions react-server --import tsx --test tests/auth-ownership.integration.ts",
+    "test:auth:db": "node --conditions react-server --import tsx --test tests/auth-ownership.integration.ts tests/dev-auth-bypass.integration.ts",
     "test:media": "node --conditions react-server --import tsx --test tests/leemage-client.test.ts tests/leemage-media.integration.ts",
     "test:tickets": "tsx --test tests/ticket-ledger-ui.test.tsx && node --conditions react-server --import tsx --test tests/ticket-ledger.integration.ts",
     "test:mixing:db": "node --conditions react-server --import tsx --test tests/mixing-queue.integration.ts",
