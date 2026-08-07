@@ -81,16 +81,16 @@
     - [x] profile, recommendation, mixing history와 개발 Workbench의 native audio를 교체한다.
     - [x] event·URL cleanup·Range·error fallback 회귀 테스트를 추가한다.
 
-- [TODO][PRD-FR-042] T-F009-audio-waveform-and-smart-reference-03 60초 분석 source와 smart 30초 합성 reference 분리
+- [DONE][PRD-FR-042] T-F009-audio-waveform-and-smart-reference-03 60초 분석 source와 smart 30초 합성 reference 분리
   - Date: 2026-08-07
   - Acceptance:
     - 프로필 통계는 최대 60초 source로 계산되고 합성 reference만 저·중·고 목표 각 10초의 최대 30초로 생성된다.
     - 품질 좋은 구간이 부족하면 budget을 재분배하며 반복·padding 없이 결정적 phrase 선택과 crossfade를 적용한다.
     - 새 mixing은 smart asset을 사용하고 과거 profile은 기존 source fallback으로 처리된다.
   - Checklist:
-    - [ ] analyzer phrase selection·reference WAV·descriptor와 download endpoint를 구현한다.
-    - [ ] Prisma synthesis reference relation과 Leemage 이중 asset 저장·삭제·부분 실패 보상을 구현한다.
-    - [ ] mixing enqueue asset 선택과 analyzer·DB·cleanup 통합 테스트를 추가한다.
+    - [x] analyzer phrase selection·reference WAV·descriptor와 download endpoint를 구현한다.
+    - [x] Prisma synthesis reference relation과 Leemage 이중 asset 저장·삭제·부분 실패 보상을 구현한다.
+    - [x] mixing enqueue asset 선택과 analyzer·DB·cleanup 통합 테스트를 추가한다.
 
 - [TODO][PRD-FR-043] T-F009-audio-waveform-and-smart-reference-04 shadcn Chart 기반 보컬 프로필 시각화 전환
   - Date: 2026-08-07
@@ -135,5 +135,10 @@
 | `pnpm run test:vocal-profile-history` | 2026-08-07 | PASS (UI 2/2, private Range proxy/history 3/3) |
 | `pnpm run test:recommendation` | 2026-08-07 | PASS (18/18) |
 | `pnpm run test:mixing:ui` | 2026-08-07 | PASS (1/1) |
+| `services/vocal-profile-api/.venv/bin/pytest -q services/vocal-profile-api/tests/test_analysis.py services/vocal-profile-api/tests/test_reference.py services/vocal-profile-api/tests/test_api.py::test_health_analyze_and_delete` | 2026-08-07 | PASS (10/10) |
+| `pnpm run test:media` | 2026-08-07 | PASS (5/5, source/synthesis Leemage assets 포함) |
+| `pnpm run test:mixing:db` | 2026-08-07 | PASS (smart reference snapshot/worker 1/1) |
+| `pnpm exec tsx --test tests/mixing-reference.test.ts` | 2026-08-07 | PASS (smart 우선·legacy fallback·ownership 3/3) |
+| `pnpm run db:validate && pnpm run db:status` | 2026-08-07 | PASS (migration 7개, up to date) |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-07T08:53:10.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-07T09:06:23.000Z -->

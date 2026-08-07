@@ -29,10 +29,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 추천 정확도에 필요한 자연 음정 분포를 보존하면서 SoulX-Singer가 실제 사용하는 prompt의 음역 다양성과 유성 밀도를 개선한다.
 - **Trace**:
   - **탐색 시점**: `DEFAULT_ANALYSIS_CONFIG.max_duration_seconds=60`, analyzer의 first-audible 60초 처리와 SoulX engine의 `audio[:30 * sample_rate]`를 확인했다. 사용자 검토로 마이크 녹음도 60초로 맞추고 합성 reference만 30초로 재구성하기로 범위를 확정했다.
-  - **DONE 전 확정 시점**: 구현·비교 검증 후 갱신한다.
+  - **T03 확정 시점**: analyzer가 프로필 계산에 사용한 동일 pYIN frame을 재사용해 연속 유성 phrase를 만들고 저·중·고 각 10초 목표 budget, 품질순 재분배, 원래 시간순 연결과 30ms equal-power crossfade를 적용한다. 선택 descriptor와 별도 WAV endpoint를 추가했으며, PostgreSQL에는 nullable `synthesisReferenceAssetId`, Leemage에는 `SYNTHESIS_REFERENCE`를 저장한다. 저장 실패·legacy profile은 분석 source로 fallback하고 새 mixing job은 준비된 smart asset ID를 snapshot한다. synthetic 3-band reference, 두 Leemage asset, DB queue/worker 테스트가 통과했다.
+  - **DONE 전 확정 시점**: 실제 source 정량 비교와 전체 회귀 후 갱신한다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
-  - **Commit**: 구현 후 갱신
+  - **Commit**: T03 task checkpoint commit에서 갱신
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `services/vocal-profile-api/app/config.py`, `services/vocal-profile-api/app/media.py`, `services/soulx-singer-svc/api/engine.py`
 - **Consequences**: profile당 제출/분석 source와 합성 reference 두 asset의 수명주기와 legacy fallback이 필요하다.
