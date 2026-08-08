@@ -1,14 +1,17 @@
 from __future__ import annotations
 
+import hmac
 import importlib.metadata
 import logging
+import os
 import sys
+import time
 from pathlib import Path
 from typing import Annotated, Any
-from uuid import UUID
+from uuid import UUID, uuid4
 
 import modal
-from fastapi import FastAPI, File, Form, Header, UploadFile
+from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 
 
@@ -31,9 +34,26 @@ from transport import TRANSPORT_VERSION, build_analysis_envelope, build_profile_
 
 
 LOGGER = logging.getLogger(__name__)
+CONTAINER_INSTANCE_ID = uuid4().hex
+CONTAINER_STARTED_AT_MS = round(time.time() * 1000)
 
 app = modal.App(APP_NAME)
-web_app = FastAPI(title="Copy Singer Modal Vocal Profile Analyzer", version="1.0.0")
+api_secret = modal.Secret.from_name("soulx-api-secret")
+
+
+def require_api_key(x_api_key: str | None = Header(default=None)) -> None:
+    expected = os.environ.get("SOULX_API_KEY", "")
+    if not expected:
+        raise HTTPException(status_code=503, detail="SOULX_API_KEY is not configured")
+    if x_api_key is None or not hmac.compare_digest(x_api_key, expected):
+        raise HTTPException(status_code=401, detail="Invalid API key")
+
+
+web_app = FastAPI(
+    title="Copy Singer Modal Vocal Profile Analyzer",
+    version="1.0.0",
+    dependencies=[Depends(require_api_key)],
+)
 
 analyzer_image = (
     modal.Image.debian_slim(python_version="3.12")
@@ -96,6 +116,8 @@ async def health() -> dict[str, Any]:
         "analyzerVersion": importlib.metadata.version("librosa"),
         "capabilities": ["smart-reference-v1"],
         "transportVersion": TRANSPORT_VERSION,
+        "containerInstanceId": CONTAINER_INSTANCE_ID,
+        "containerStartedAtMs": CONTAINER_STARTED_AT_MS,
         "compute": {
             "gpu": False,
             "cpuPhysicalCores": CPU_CORES,
@@ -131,13 +153,16 @@ async def analyze(
         )
 
     try:
+        handler_started = time.perf_counter()
         mime_type, suffix = audio_suffix_for_mime_type(audio.content_type)
         envelope: dict[str, Any]
+        analysis_seconds = 0.0
+        serialization_seconds = 0.0
+        size_bytes = 0
         with ephemeral_working_directory() as working_directory:
             upload_path = working_directory / (
                 f"upload{suffix}" if trim_to_max_duration else f"source{suffix}"
             )
-            size_bytes = 0
             with upload_path.open("wb") as output:
                 while chunk := await audio.read(UPLOAD_CHUNK_BYTES):
                     size_bytes += len(chunk)
@@ -148,6 +173,7 @@ async def analyze(
                         )
                     output.write(chunk)
 
+            analysis_started = time.perf_counter()
             analyzed = await analyze_recording_file(
                 upload_path=upload_path,
                 working_directory=working_directory,
@@ -159,6 +185,8 @@ async def analyze(
                 glissando_start_ms=glissando_start_ms,
                 glissando_end_ms=glissando_end_ms,
             )
+            analysis_seconds = time.perf_counter() - analysis_started
+            serialization_started = time.perf_counter()
             profile = build_profile_payload(normalized_recording_id, analyzed)
             envelope = build_analysis_envelope(
                 profile=profile,
@@ -166,8 +194,22 @@ async def analyze(
                 source_mime_type=analyzed.source_mime_type,
                 synthesis_reference_path=analyzed.synthesis_reference_path,
             )
+            serialization_seconds = time.perf_counter() - serialization_started
 
         envelope["cleanupConfirmed"] = True
+        envelope["containerInstanceId"] = CONTAINER_INSTANCE_ID
+        envelope["containerStartedAtMs"] = CONTAINER_STARTED_AT_MS
+        envelope["compute"] = {
+            "gpu": False,
+            "cpuPhysicalCores": CPU_CORES,
+            "memoryMiB": MEMORY_MIB,
+        }
+        envelope["metrics"] = {
+            "uploadBytes": size_bytes,
+            "analysisSeconds": round(analysis_seconds, 3),
+            "serializationSeconds": round(serialization_seconds, 3),
+            "handlerSeconds": round(time.perf_counter() - handler_started, 3),
+        }
         return JSONResponse(content=envelope)
     except AnalysisRejectedError as error:
         return _error_response(
@@ -199,7 +241,8 @@ async def analyze(
     timeout=FUNCTION_TIMEOUT_SECONDS,
     max_containers=MAX_CONTAINERS,
     scaledown_window=SCALEDOWN_WINDOW_SECONDS,
+    secrets=[api_secret],
 )
-@modal.asgi_app(requires_proxy_auth=True)
+@modal.asgi_app()
 def fastapi_app():
     return web_app

@@ -7,7 +7,7 @@ from pathlib import Path
 SOURCE = Path(__file__).with_name("modal_app.py")
 
 
-def test_modal_app_is_cpu_only_and_proxy_authenticated() -> None:
+def test_modal_app_is_cpu_only_and_server_key_authenticated() -> None:
     text = SOURCE.read_text(encoding="utf-8")
     ast.parse(text)
 
@@ -15,8 +15,10 @@ def test_modal_app_is_cpu_only_and_proxy_authenticated() -> None:
     assert "CPU_CORES = 2.0" in text
     assert "MEMORY_MIB = 4096" in text
     assert "SCALEDOWN_WINDOW_SECONDS = 60" in text
-    assert "requires_proxy_auth=True" in text
-    assert "@modal.asgi_app" in text
+    assert 'modal.Secret.from_name("soulx-api-secret")' in text
+    assert '"X-API-Key"' not in text
+    assert "hmac.compare_digest" in text
+    assert "@modal.asgi_app()" in text
     assert "modal.Volume" not in text
     assert "gpu=" not in text
 

@@ -67,22 +67,18 @@ function encodedArtifact(bytes: number[], fileName: string) {
 async function withModalEnvironment<T>(callback: () => Promise<T>) {
   const previous = {
     url: process.env.VOCAL_PROFILE_MODAL_URL,
-    key: process.env.VOCAL_PROFILE_MODAL_KEY,
-    secret: process.env.VOCAL_PROFILE_MODAL_SECRET,
+    apiKey: process.env.VOCAL_PROFILE_MODAL_API_KEY,
     backend: process.env.VOCAL_PROFILE_ANALYZER_BACKEND,
   };
   process.env.VOCAL_PROFILE_MODAL_URL = "https://modal-analyzer.example";
-  process.env.VOCAL_PROFILE_MODAL_KEY = "wk-test";
-  process.env.VOCAL_PROFILE_MODAL_SECRET = "ws-test";
+  process.env.VOCAL_PROFILE_MODAL_API_KEY = "modal-test-key";
   try {
     return await callback();
   } finally {
     if (previous.url === undefined) delete process.env.VOCAL_PROFILE_MODAL_URL;
     else process.env.VOCAL_PROFILE_MODAL_URL = previous.url;
-    if (previous.key === undefined) delete process.env.VOCAL_PROFILE_MODAL_KEY;
-    else process.env.VOCAL_PROFILE_MODAL_KEY = previous.key;
-    if (previous.secret === undefined) delete process.env.VOCAL_PROFILE_MODAL_SECRET;
-    else process.env.VOCAL_PROFILE_MODAL_SECRET = previous.secret;
+    if (previous.apiKey === undefined) delete process.env.VOCAL_PROFILE_MODAL_API_KEY;
+    else process.env.VOCAL_PROFILE_MODAL_API_KEY = previous.apiKey;
     if (previous.backend === undefined) delete process.env.VOCAL_PROFILE_ANALYZER_BACKEND;
     else process.env.VOCAL_PROFILE_ANALYZER_BACKEND = previous.backend;
   }
@@ -142,17 +138,14 @@ test("local adapter copies analyzer artifacts then removes local temporary recor
 test("modal adapter authenticates and validates the ephemeral envelope", async () => {
   const previous = {
     url: process.env.VOCAL_PROFILE_MODAL_URL,
-    key: process.env.VOCAL_PROFILE_MODAL_KEY,
-    secret: process.env.VOCAL_PROFILE_MODAL_SECRET,
+    apiKey: process.env.VOCAL_PROFILE_MODAL_API_KEY,
   };
   process.env.VOCAL_PROFILE_MODAL_URL = "https://modal-analyzer.example";
-  process.env.VOCAL_PROFILE_MODAL_KEY = "wk-test";
-  process.env.VOCAL_PROFILE_MODAL_SECRET = "ws-test";
+  process.env.VOCAL_PROFILE_MODAL_API_KEY = "modal-test-key";
   const recordingId = crypto.randomUUID();
   const fetchImpl = (async (_input: string | URL | Request, init?: RequestInit) => {
     const headers = new Headers(init?.headers);
-    assert.equal(headers.get("Modal-Key"), "wk-test");
-    assert.equal(headers.get("Modal-Secret"), "ws-test");
+    assert.equal(headers.get("X-API-Key"), "modal-test-key");
     return Response.json({
       transportVersion: "modal-analysis-envelope-v1",
       profile: profile(recordingId),
@@ -177,22 +170,18 @@ test("modal adapter authenticates and validates the ephemeral envelope", async (
   } finally {
     if (previous.url === undefined) delete process.env.VOCAL_PROFILE_MODAL_URL;
     else process.env.VOCAL_PROFILE_MODAL_URL = previous.url;
-    if (previous.key === undefined) delete process.env.VOCAL_PROFILE_MODAL_KEY;
-    else process.env.VOCAL_PROFILE_MODAL_KEY = previous.key;
-    if (previous.secret === undefined) delete process.env.VOCAL_PROFILE_MODAL_SECRET;
-    else process.env.VOCAL_PROFILE_MODAL_SECRET = previous.secret;
+    if (previous.apiKey === undefined) delete process.env.VOCAL_PROFILE_MODAL_API_KEY;
+    else process.env.VOCAL_PROFILE_MODAL_API_KEY = previous.apiKey;
   }
 });
 
-test("modal adapter maps proxy authentication failure without falling back", async () => {
+test("modal adapter maps API-key authentication failure without falling back", async () => {
   const previous = {
     url: process.env.VOCAL_PROFILE_MODAL_URL,
-    key: process.env.VOCAL_PROFILE_MODAL_KEY,
-    secret: process.env.VOCAL_PROFILE_MODAL_SECRET,
+    apiKey: process.env.VOCAL_PROFILE_MODAL_API_KEY,
   };
   process.env.VOCAL_PROFILE_MODAL_URL = "https://modal-analyzer.example";
-  process.env.VOCAL_PROFILE_MODAL_KEY = "wk-test";
-  process.env.VOCAL_PROFILE_MODAL_SECRET = "ws-test";
+  process.env.VOCAL_PROFILE_MODAL_API_KEY = "modal-test-key";
   const fetchImpl = (async () => new Response("unauthorized", { status: 401 })) as typeof fetch;
 
   try {
@@ -210,10 +199,8 @@ test("modal adapter maps proxy authentication failure without falling back", asy
   } finally {
     if (previous.url === undefined) delete process.env.VOCAL_PROFILE_MODAL_URL;
     else process.env.VOCAL_PROFILE_MODAL_URL = previous.url;
-    if (previous.key === undefined) delete process.env.VOCAL_PROFILE_MODAL_KEY;
-    else process.env.VOCAL_PROFILE_MODAL_KEY = previous.key;
-    if (previous.secret === undefined) delete process.env.VOCAL_PROFILE_MODAL_SECRET;
-    else process.env.VOCAL_PROFILE_MODAL_SECRET = previous.secret;
+    if (previous.apiKey === undefined) delete process.env.VOCAL_PROFILE_MODAL_API_KEY;
+    else process.env.VOCAL_PROFILE_MODAL_API_KEY = previous.apiKey;
   }
 });
 

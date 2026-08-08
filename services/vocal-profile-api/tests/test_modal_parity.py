@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import asyncio
+import os
 import shutil
 import sys
 from pathlib import Path
 from uuid import uuid4
 
+import httpx
 import numpy as np
 import pytest
 import soundfile as sf
@@ -103,6 +105,58 @@ def test_local_and_modal_entry_contracts_match_for_supported_durations(
 
     with TestClient(app) as client:
         assert client.delete(f"/v1/recordings/{recording_id}").status_code == 200
+
+
+@pytest.mark.parametrize("duration_seconds", [10.0, 30.0, 60.0])
+def test_deployed_modal_endpoint_matches_local_profile_and_artifact_bytes(
+    tmp_path: Path,
+    duration_seconds: float,
+) -> None:
+    base_url = os.environ.get("VOCAL_PROFILE_MODAL_URL", "").rstrip("/")
+    api_key = os.environ.get("MODAL_API_KEY", "")
+    if not base_url or not api_key:
+        pytest.skip("VOCAL_PROFILE_MODAL_URL and MODAL_API_KEY are required for remote parity")
+
+    source = tmp_path / f"remote-fixture-{duration_seconds:g}.wav"
+    _three_band_wav(source, duration_seconds)
+    recording_id = str(uuid4())
+
+    local_working = tmp_path / f"remote-local-{duration_seconds:g}"
+    local_working.mkdir()
+    local_source = local_working / "source.wav"
+    shutil.copyfile(source, local_source)
+    analyzed = asyncio.run(
+        analyze_recording_file(
+            upload_path=local_source,
+            working_directory=local_working,
+            mime_type="audio/wav",
+        )
+    )
+    local_profile = build_profile_payload(recording_id, analyzed)
+    local_envelope = build_analysis_envelope(
+        profile=local_profile,
+        source_path=analyzed.source_path,
+        source_mime_type=analyzed.source_mime_type,
+        synthesis_reference_path=analyzed.synthesis_reference_path,
+    )
+
+    with source.open("rb") as audio:
+        response = httpx.post(
+            f"{base_url}/v1/analyze",
+            headers={"X-API-Key": api_key, "X-Recording-ID": recording_id},
+            files={"audio": (source.name, audio, "audio/wav")},
+            timeout=120.0,
+        )
+    assert response.status_code == 200, response.text
+    remote = response.json()
+    assert remote["cleanupConfirmed"] is True
+    assert remote["profile"] == local_profile
+    assert decode_artifact(remote["artifacts"]["source"]) == decode_artifact(local_envelope["artifacts"]["source"])
+    assert remote["artifacts"]["synthesisReference"] is not None
+    assert local_envelope["artifacts"]["synthesisReference"] is not None
+    assert decode_artifact(remote["artifacts"]["synthesisReference"]) == decode_artifact(
+        local_envelope["artifacts"]["synthesisReference"]
+    )
 
 
 def test_local_and_modal_core_reject_silent_audio_with_the_same_reason(

@@ -33,17 +33,16 @@ type ModalAnalysisEnvelope = {
 
 function modalAnalyzerConfig() {
   const url = process.env.VOCAL_PROFILE_MODAL_URL?.trim().replace(/\/$/, "");
-  const key = process.env.VOCAL_PROFILE_MODAL_KEY?.trim();
-  const secret = process.env.VOCAL_PROFILE_MODAL_SECRET?.trim();
-  if (!url || !key || !secret) {
+  const apiKey = process.env.VOCAL_PROFILE_MODAL_API_KEY?.trim() || process.env.MODAL_API_KEY?.trim();
+  if (!url || !apiKey) {
     throw new AnalyzerClientError(
       "ANALYZER_NOT_CONFIGURED",
-      "Modal vocal analyzer URL and proxy credentials are required.",
+      "Modal vocal analyzer URL and server API key are required.",
       false,
       503,
     );
   }
-  return { url, key, secret };
+  return { url, apiKey };
 }
 
 function decodeArtifact(value: EncodedArtifact | undefined, label: string): AnalyzerArtifact {
@@ -185,8 +184,7 @@ export async function analyzeWithModalAdapter(input: AnalyzeVocalProfileInput): 
     headers: {
       "Content-Type": input.contentType,
       "X-Recording-ID": input.recordingId,
-      "Modal-Key": config.key,
-      "Modal-Secret": config.secret,
+      "X-API-Key": config.apiKey,
     },
     body: input.body,
     duplex: "half",
@@ -212,7 +210,7 @@ export async function modalAnalyzerHealth(fetchImpl: typeof fetch = fetch) {
   let response: Response;
   try {
     response = await fetchImpl(`${config.url}/health`, {
-      headers: { "Modal-Key": config.key, "Modal-Secret": config.secret },
+      headers: { "X-API-Key": config.apiKey },
       cache: "no-store",
       signal: AbortSignal.timeout(10_000),
     });
