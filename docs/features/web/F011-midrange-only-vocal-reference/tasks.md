@@ -101,16 +101,16 @@
     - [x] READY mid-v1 asset은 기존 `referenceAssetId` snapshot semantics로 고정되는 기존 worker flow를 유지했다.
     - [x] selector 4/4와 ticket/job side-effect를 포함한 mixing queue integration 1/1, TypeScript/lint를 통과했다.
 
-- [TODO][PRD-NFR-005] T-F011-midrange-only-vocal-reference-05 전체 로컬 회귀·문서·workflow 검증
+- [DONE][PRD-NFR-005] T-F011-midrange-only-vocal-reference-05 전체 로컬 회귀·문서·workflow 검증
   - Date: 2026-08-08
   - Acceptance:
     - 기존 F009 smart-reference-v1 profile/preview와 F010 queue/persistence가 회귀하지 않는다.
     - TypeScript, lint, build, Prisma, Python analyzer/Modal transport와 관련 UI/mixing 테스트가 모두 통과한다.
   - Checklist:
-    - [ ] `pnpm test`, lint, tsc, build, Prisma validate를 통과한다.
-    - [ ] Python analyzer suite와 Modal transport/parity local suite를 통과한다.
-    - [ ] PRD/spec/plan/decisions/system architecture가 최종 코드 계약과 동기화된다.
-    - [ ] `npx lee-spec-kit workflow-audit --json`가 `WORKFLOW_IN_SYNC`를 반환한다.
+    - [x] `pnpm test`, lint, tsc, build, Prisma validate를 통과했다.
+    - [x] Python analyzer suite와 Modal transport/parity local suite를 통과했다.
+    - [x] PRD/spec/plan/decisions/system architecture와 Modal README를 최종 mid-v1 생성 + v1 dual-read 계약에 동기화했다.
+    - [x] `npx lee-spec-kit workflow-audit --json`가 `WORKFLOW_IN_SYNC`를 반환했다.
 
 - [TODO][PRD-FR-042][PRD-NFR-005] T-F011-midrange-only-vocal-reference-06 Modal analyzer 재배포와 remote parity 확인
   - Date: 2026-08-08
@@ -140,6 +140,9 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
+| `pnpm test` | `2026-08-08` | `PASS (build + 전체 TS/UI/DB integration suite)` |
+| `pnpm run build` | `2026-08-08` | `PASS (Next.js 16.3.0, synthesis-reference audio route 포함)` |
+| `pnpm run db:validate` | `2026-08-08` | `PASS (Prisma schema valid)` |
 | `services/vocal-profile-api/.venv/bin/pytest -q services/vocal-profile-api/tests` | `2026-08-08` | `PASS (35 passed, remote-only 3 skipped)` |
 | `pnpm exec tsx --test tests/vocal-profile-contract.test.ts` | `2026-08-08` | `PASS (5/5 dual-version contract)` |
 | `cd services/vocal-profile-modal && ../vocal-profile-api/.venv/bin/pytest -q test_transport.py test_runtime.py test_modal_app_source.py` | `2026-08-08` | `PASS (9/9)` |
@@ -154,4 +157,4 @@
 | `pnpm exec tsx --test tests/mixing-reference.test.ts` | `2026-08-08` | `PASS (4/4: mid-v1 strict + legacy fallback)` |
 | `pnpm run test:mixing:db` | `2026-08-08` | `PASS (1/1: missing mid reference has no ticket/job side effect + snapshot flow)` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-08T02:02:39.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-08T02:10:53.000Z -->

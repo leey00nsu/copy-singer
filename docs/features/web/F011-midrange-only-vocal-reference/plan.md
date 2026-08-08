@@ -127,7 +127,7 @@ fallbackReason: "no-quality-mid-phrase"
 
 ### 4. TypeScript contract 호환
 
-현재 `hasSmartReferenceContract()`는 `smart-reference-v1`을 전제로 한다. 이를 지원 version 집합을 이해하도록 확장한다.
+F011 구현 전 `hasSmartReferenceContract()`는 `smart-reference-v1`만 전제로 했다. F011에서는 이를 지원 version 집합을 이해하는 dual-read 계약으로 확장한다.
 
 - `smart-reference-v1`: 기존 low/mid/high 계약
 - `smart-reference-mid-v1`: 새 mid-only 계약
