@@ -70,3 +70,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `pnpm run test:vocal-profile-analyzer` → PASS (4/4), `pnpm run test:media` → PASS (5/5), `pnpm exec tsc --noEmit`/`pnpm run lint`/`pnpm run build` → PASS
 - **Consequences**: `AnalyzerProfile`의 legacy storagePath/expiry는 local transport 내부 세부사항이 되고, route 이후의 persistence는 source/reference bytes와 profile metadata만 사용한다.
+
+## D004: retry는 외부 side effect 없는 분석 operation에만 허용 (2026-08-08)
+
+- **Context**: Modal 호출은 auth/429/5xx/network/timeout과 사용자 입력 rejection을 구분해야 한다. 분석 함수 자체는 ephemeral filesystem만 사용하지만, Next.js의 Leemage/DB persistence는 외부 side effect를 만든다.
+- **Constraints**: 입력/quality 4xx를 재시도해도 결과가 바뀌지 않으며 불필요한 compute만 발생한다. sync HTTP는 120초 client budget을 가지므로 timeout 뒤 동일 요청을 같은 HTTP request 안에서 자동 재실행하면 전체 budget을 초과할 수 있다.
+- **Options**: 모든 실패 자동 retry, Modal SDK/HTTP layer에서 1회 자동 retry, analyzer transport는 stable `retryable`만 반환하고 persistence 이전 operation만 사용자/상위 caller가 제한 재시도하는 정책을 비교한다.
+- **Decision**: expected analysis 4xx와 auth 실패는 `retryable=false`; 429/5xx/network/timeout은 stable infrastructure reason code와 `retryable=true`로 반환한다. T04에서는 동일 HTTP 요청 안의 자동 재실행은 하지 않는다. 재시도 시에는 새 HTTP request가 같은 source/recording semantics로 analyzer-only 단계를 다시 수행하며, Leemage/DB persistence가 시작된 뒤에는 기존 보상 cleanup을 사용한다.
+- **Rationale**: 150초 Modal HTTP 경계와 120초 client budget을 지키면서 중복 영구 asset을 만들지 않고 실패 종류를 명확히 분리한다.
+- **Trace**:
+  - **DOING 시작 시점**: 10/30/60초 parity와 error mapping을 테스트하고, source/reference/DB 부분 실패에서 영구 resource 정리가 유지되는지 검증한다.
+  - **DONE 전 확정 시점**: 10·30·60초 동일 WAV fixture에서 local FastAPI 응답과 Modal serializer profile/source/reference가 일치했고 무음 rejection도 동일 `TOO_SILENT`로 확인됐다. 이 parity test가 Modal serializer가 synthesisReference에 local Pydantic 계약에 없는 `sourceDurationMs`를 노출하던 drift를 발견해 allowlist serializer로 수정했다. auth/expected 4xx는 비재시도, 429/5xx/network/timeout은 stable `retryable=true` infrastructure error로 고정했고 같은 HTTP request 안에서 자동 재실행하지 않는다. 실제 DB 통합 테스트에서 source 저장 실패는 영구 resource 0개, smart-reference 저장 실패는 source profile + fallback 유지, DB 실패는 생성된 Leemage asset 2개 보상 삭제를 확인했다.
+  - **머지 후 확인**: 머지 후 갱신한다.
+- **Evidence**:
+  - **Commit**: T04 task checkpoint commit에서 갱신
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: Python analyzer suite → PASS (32/32; 10/30/60 parity + silent rejection 포함), Modal unit → PASS (9/9), `pnpm run test:vocal-profile-analyzer` → PASS (8/8), `pnpm run test:vocal-profile-persistence` → PASS (3/3), `pnpm run test:media` → PASS (5/5), tsc/lint/build → PASS
+- **Consequences**: 자동 retry 횟수/백오프는 실제 remote latency와 429 패턴을 본 뒤 필요하면 T06에서 추가한다.

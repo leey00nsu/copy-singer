@@ -69,17 +69,17 @@
     - [x] profile route를 공통 adapter + bytes persistence 흐름으로 정리한다.
     - [x] recording ID/capability mismatch와 transport error를 stable reason code로 매핑한다.
 
-- [TODO][PRD-FR-003][PRD-FR-004][PRD-FR-042][PRD-NFR-004][PRD-NFR-005] T-F010-modal-vocal-profile-analysis-04 local/Modal parity·retry·partial failure 계약 검증
+- [DONE][PRD-FR-003][PRD-FR-004][PRD-FR-042][PRD-NFR-004][PRD-NFR-005] T-F010-modal-vocal-profile-analysis-04 local/Modal parity·retry·partial failure 계약 검증
   - Date: 2026-08-08
   - Acceptance:
     - 동일 fixture의 local/shared와 Modal entry logic 결과가 analyzer version, profile schema, smart reference descriptor와 핵심 수치에서 허용 오차 내 일치한다.
     - expected 4xx 분석 rejection은 retry되지 않고 transient transport failure만 제한적으로 재시도 가능하며 중복 external asset/profile을 만들지 않는다.
     - Modal 성공 후 Leemage/DB failure의 보상 동작이 기존 정책과 동일하다.
   - Checklist:
-    - [ ] 10초·30초·60초 및 품질 rejection fixture parity test를 추가한다.
-    - [ ] Modal auth/429/5xx/timeout/network 오류 mapping과 retry policy를 테스트한다.
-    - [ ] source 저장 실패, smart reference 저장 실패, DB 저장 실패의 cleanup/legacy fallback 통합 테스트를 보강한다.
-    - [ ] incompatible analyzer/capability response가 persistence 전에 차단되는지 검증한다.
+    - [x] 10초·30초·60초 및 품질 rejection fixture parity test를 추가한다.
+    - [x] Modal auth/429/5xx/timeout/network 오류 mapping과 retry policy를 테스트한다.
+    - [x] source 저장 실패, smart reference 저장 실패, DB 저장 실패의 cleanup/legacy fallback 통합 테스트를 보강한다.
+    - [x] incompatible analyzer/capability response가 persistence 전에 차단되는지 검증한다.
 
 - [TODO][PRD-NFR-003][PRD-NFR-004][PRD-NFR-005] T-F010-modal-vocal-profile-analysis-05 실제 Modal CPU deploy·10/30/60초 cold/warm benchmark
   - Date: 2026-08-08
@@ -133,11 +133,12 @@
 | `pnpm run lint` | `2026-08-08` | `PASS` |
 | `pnpm exec tsc --noEmit` | `2026-08-08` | `PASS` |
 | `pnpm run build` | `2026-08-08` | `PASS (Next.js 16.3.0, 21 pages)` |
-| `services/vocal-profile-api/.venv/bin/pytest -q services/vocal-profile-api/tests` | `2026-08-08` | `PASS (28/28, deprecation warning 3건)` |
+| `services/vocal-profile-api/.venv/bin/pytest -q services/vocal-profile-api/tests` | `2026-08-08` | `PASS (32/32, deprecation warning 3건)` |
 | `cd services/vocal-profile-modal && ../vocal-profile-api/.venv/bin/pytest -q test_transport.py test_runtime.py test_modal_app_source.py` | `2026-08-08` | `PASS (9/9)` |
-| `pnpm run test:vocal-profile-analyzer` | `2026-08-08` | `PASS (4/4)` |
+| `pnpm run test:vocal-profile-analyzer` | `2026-08-08` | `PASS (8/8)` |
+| `pnpm run test:vocal-profile-persistence` | `2026-08-08` | `PASS (3/3, source/synthesis/DB failure compensation)` |
 | `pnpm run test:media` | `2026-08-08` | `PASS (5/5)` |
 | `pnpm exec tsx --test tests/vocal-profile-contract.test.ts tests/mixing-reference.test.ts tests/vocal-profile-results-ui.test.tsx` | `2026-08-08` | `PASS (8/8)` |
 | `npx lee-spec-kit workflow-audit --json` | `-` | `-` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-07T23:52:44.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-08T00:03:37.000Z -->
