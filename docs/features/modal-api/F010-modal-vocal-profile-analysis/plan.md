@@ -26,7 +26,7 @@
 | compute baseline | CPU 2 physical cores, memory 4096 MiB, GPU 없음 | librosa/pYIN/FFmpeg CPU workload의 첫 benchmark 기준. 최종 값은 10/30/60초 측정 후 조정한다. |
 | autoscaling baseline | `min_containers=0`, 기본 scale-to-zero, `scaledown_window=60`, 제한된 `max_containers` | 상시 warm 비용을 만들지 않고 Modal 기본 idle 정책에서 시작한다. warm 증가는 evidence가 있을 때만 적용한다. |
 | HTTP sync budget | sync 우선, 60초 cold end-to-end 목표 90초 이하 / client budget 120초 | Modal Web Function의 150초 HTTP 제한에 30초 이상 safety margin을 둔다. benchmark가 이를 만족하지 못하면 async submit/polling으로 전환한다. |
-| endpoint 인증 | Modal proxy token (`Modal-Key`, `Modal-Secret`) | 별도 API key 검증 코드를 analyzer에 추가하지 않고 platform server-to-server auth를 사용한다. credential은 Next.js server 전용이다. |
+| endpoint 인증 | 기존 SoulX와 동일한 Modal Secret `soulx-api-secret` + `X-API-Key` | 운영 중인 server-only 인증 경계를 재사용하고 credential은 Next.js server에만 둔다. 필요 시 추후 analyzer 전용 secret으로 분리할 수 있다. |
 | analyzer code | 기존 `services/vocal-profile-api/app` 코어 공유 | local/Modal의 분석·reference algorithm 분기를 막고 같은 versioned contract를 사용한다. |
 | artifact handoff | Modal 단일 분석 응답의 ephemeral artifact envelope → Next.js Leemage upload | Modal의 후속 GET이 다른 container로 라우팅되는 문제를 피하고 persistent Volume/Dict 없이 source/reference를 같은 요청에서 회수한다. |
 | 영구 저장 | Next.js → Leemage + PostgreSQL | 기존 ownership/보상 cleanup 로직과 secret 경계를 재사용하고 Modal에 Leemage/DB credential을 주지 않는다. |
@@ -70,7 +70,7 @@ local FastAPI는 기존 호환을 위해 현재 `POST /v1/analyze` + artifact GE
 ```mermaid
 flowchart LR
   B[Browser] --> N[Next.js /api/vocal-profiles]
-  N -->|multipart + Modal-Key/Secret| M[Modal CPU ASGI analyzer]
+  N -->|multipart + X-API-Key| M[Modal CPU ASGI analyzer]
   M --> T[request TemporaryDirectory]
   T --> C[shared analyzer core]
   C --> P[AnalyzerProfile]
@@ -142,7 +142,7 @@ backend 선택은 명시적 환경변수로 한다.
 
 - `VOCAL_PROFILE_ANALYZER_BACKEND=local|modal`
 - local: 기존 `VOCAL_PROFILE_API_URL`
-- modal: 별도 `VOCAL_PROFILE_MODAL_URL`, `VOCAL_PROFILE_MODAL_KEY`, `VOCAL_PROFILE_MODAL_SECRET`
+- modal: `VOCAL_PROFILE_MODAL_URL` + 기존 `MODAL_API_KEY` 재사용, 필요 시 `VOCAL_PROFILE_MODAL_API_KEY`로 override
 
 production에서 modal 호출이 실패해도 local로 자동 fallback하지 않는다. backend 전환은 config 변경으로만 수행한다.
 
@@ -295,7 +295,7 @@ services/vocal-profile-api/tests/
 
 - shared analysis service가 MIME/size/segments와 F009 profile/reference 결과를 기존과 동일하게 생성한다.
 - Modal transport codec이 source/reference bytes와 metadata를 loss 없이 encode/decode한다.
-- Modal adapter가 proxy auth header를 server-side로 추가하고 4xx/429/5xx/timeout을 stable error contract로 매핑한다.
+- Modal adapter가 server-only `X-API-Key` header를 추가하고 4xx/429/5xx/timeout을 stable error contract로 매핑한다.
 - backend selector가 `local|modal`을 명시적으로 선택하고 misconfiguration을 fail closed 한다.
 - bytes 기반 Leemage storage primitive와 DB failure compensation을 검증한다.
 

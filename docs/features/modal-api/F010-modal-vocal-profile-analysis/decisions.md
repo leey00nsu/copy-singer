@@ -46,7 +46,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: persistent Modal storage와 추가 secret 없이 container affinity 문제를 제거하고 Next.js의 기존 ownership/Leemage 보상 로직을 유지할 수 있다.
 - **Trace**:
   - **DOING 시작 시점**: `modal==1.5.3` 프로젝트 환경과 현재 공식 Modal Web Function/timeout/autoscaling 문서를 기준으로 별도 ASGI app, CPU 2.0·4096 MiB, scale-to-zero baseline을 구현한다. 실제 remote deploy는 T05 승인 전에는 하지 않는다.
-  - **DONE 전 확정 시점**: `services/vocal-profile-modal`에 CPU-only ASGI app, `requires_proxy_auth=True`, request `TemporaryDirectory`, `modal-analysis-envelope-v1` transport를 추가했다. source/reference는 base64+SHA-256으로 한 응답에 포함하고 persistent `modal.Volume`을 사용하지 않는다. health는 analyzer/version, `smart-reference-v1`, transport/resource 정보를 반환한다. transport/cleanup/static contract 9/9와 기존 analyzer suite 28/28이 통과했다.
+  - **DONE 전 확정 시점**: `services/vocal-profile-modal`에 CPU-only ASGI app, request `TemporaryDirectory`, `modal-analysis-envelope-v1` transport를 추가했다. source/reference는 base64+SHA-256으로 한 응답에 포함하고 persistent `modal.Volume`을 사용하지 않는다. 인증은 기존 SoulX API와 동일하게 Modal Secret `soulx-api-secret`의 `SOULX_API_KEY`를 주입하고 FastAPI에서 `X-API-Key`를 constant-time 비교한다. health는 analyzer/version, `smart-reference-v1`, transport/resource 정보를 반환한다. transport/cleanup/static contract 9/9와 기존 analyzer suite 28/28이 통과했다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
   - **Commit**: T02 task checkpoint commit에서 갱신
@@ -63,7 +63,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: F009의 ownership/cleanup semantics를 한 곳에 유지하고 backend 전환을 환경 설정으로 제한하며 transport 회귀를 독립 테스트할 수 있다.
 - **Trace**:
   - **DOING 시작 시점**: 설치된 Next.js 16 Route Handler 문서를 먼저 확인하고 `VOCAL_PROFILE_ANALYZER_BACKEND=local|modal` fail-closed selector, local legacy adapter, Modal envelope decoder, bytes 기반 media primitive 순서로 구현한다.
-  - **DONE 전 확정 시점**: `lib/vocal-profile/analyzer`에 local/Modal adapter와 fail-closed backend selector를 추가했다. local adapter는 기존 POST/GET/DELETE 임시 lifecycle을 bytes로 흡수하고 즉시 cleanup하며, Modal adapter는 proxy auth와 envelope hash/size/cleanup contract를 검증한다. `/api/vocal-profiles`와 health route는 backend 세부사항을 제거했고 Leemage는 bytes 입력 primitive로 source/reference를 저장한다. production에서 backend 미설정은 `ANALYZER_NOT_CONFIGURED`로 실패한다. adapter 4/4, media 5/5, 관련 profile/mixing UI 8/8, TypeScript/lint/build가 통과했다.
+  - **DONE 전 확정 시점**: `lib/vocal-profile/analyzer`에 local/Modal adapter와 fail-closed backend selector를 추가했다. local adapter는 기존 POST/GET/DELETE 임시 lifecycle을 bytes로 흡수하고 즉시 cleanup하며, Modal adapter는 server-only `X-API-Key` 인증과 envelope hash/size/cleanup contract를 검증한다. `/api/vocal-profiles`와 health route는 backend 세부사항을 제거했고 Leemage는 bytes 입력 primitive로 source/reference를 저장한다. production에서 backend 미설정은 `ANALYZER_NOT_CONFIGURED`로 실패한다. adapter 4/4, media 5/5, 관련 profile/mixing UI 8/8, TypeScript/lint/build가 통과했다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
   - **Commit**: T03 task checkpoint commit에서 갱신
@@ -87,3 +87,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: Python analyzer suite → PASS (32/32; 10/30/60 parity + silent rejection 포함), Modal unit → PASS (9/9), `pnpm run test:vocal-profile-analyzer` → PASS (8/8), `pnpm run test:vocal-profile-persistence` → PASS (3/3), `pnpm run test:media` → PASS (5/5), tsc/lint/build → PASS
 - **Consequences**: 자동 retry 횟수/백오프는 실제 remote latency와 429 패턴을 본 뒤 필요하면 T06에서 추가한다.
+
+## D005: 실제 remote benchmark는 고정 CLI와 container identity로 측정 (2026-08-08)
+
+- **Context**: T05는 실제 Modal CPU deployment와 10·30·60초 cold/warm 측정이 필요하며, 이 시점부터 원격 workspace 리소스와 compute usage가 발생한다. 로컬 전역 Modal CLI는 1.2.4이고 Feature에서 검증할 SDK/runtime 기준은 1.5.3이다.
+- **Constraints**: 원격 배포와 compute 실행 전 사용자 승인이 필요하다. cold/warm 판단은 단순 wall time 추정이 아니라 실제 container 재사용 여부를 확인해야 하며, 가격은 코드에 영구 상수로 고정하지 않는다. 기존 `soulx-singer-svc` 배포는 변경하지 않는다.
+- **Options**: 전역 CLI 사용, 프로젝트 전용 venv 생성, `requirements-local.txt`를 `uv run --with-requirements`로 격리 실행하는 방식을 비교했다. Web 인증은 새 Proxy Token과 기존 SoulX의 `soulx-api-secret`/`X-API-Key` 패턴을 비교했다.
+- **Decision**: 세 Modal 서비스의 repo SDK pin을 `modal==1.5.3`으로 통일하고, F010 deploy는 `uv run --with-requirements services/vocal-profile-modal/requirements-local.txt`로 실행한다. 기존 SoulX 배포는 재배포하지 않는다. Web 인증은 기존 SoulX와 동일한 `soulx-api-secret` + `X-API-Key`를 사용한다. analyzer response/health에는 process-level `containerInstanceId`, startup timestamp와 handler timing을 노출하고 benchmark script가 wall/handler/payload/container identity를 기록한다. 비용 단가는 실행 시점 공식 값을 environment input으로 넣는다.
+- **Rationale**: 전역 CLI drift를 피하면서 이미 운영 중인 server-only 인증 경계를 재사용하고, cold start와 warm reuse를 실제 container identity로 관찰할 수 있다. 별도 사용자 데이터 저장이나 GPU resource는 추가하지 않는다.
+- **Trace**:
+  - **DOING 시작 시점**: `modal --version`에서 전역 CLI 1.2.4를 확인했다. `modal:vocal-profile:deploy`, `modal:vocal-profile:benchmark` package script와 benchmark metrics를 로컬에서 준비했고 tsc/lint, Modal unit 9/9가 통과했다. 사용자는 기존 SoulX 배포를 건드리지 않고 Modal SDK 1.5.3으로 F010을 진행하는 원격 실행을 승인했다.
+  - **DONE 전 확정 시점**: `copy-singer-vocal-profile-analyzer`를 Modal 1.5.3 CLI 환경으로 배포했다. 잘못된 API key는 401, authenticated health는 `librosa-pyin 0.11.0`, `smart-reference-v1`, CPU 2 cores/4096 MiB/GPU false를 확인했다. 10초 wall 34.074/5.414초, 30초 10.797/39.248초, 60초 17.531/20.821초로 최대 39.248초였다. 60초 response는 약 4.33 MB였고 Modal 공식 문서상 Web Function response body는 unlimited이다. 공식 단가 CPU `$0.0000131/core/sec`, memory `$0.00000222/GiB/sec` 기준 6회 handler 추정 합계 `$0.003617`, wall upper-bound `$0.004486`였다. 별도 remote parity 3회에서 10/30/60초 profile JSON과 source/reference bytes가 local shared analyzer와 exact match했다.
+  - **머지 후 확인**: 머지 후 갱신한다.
+- **Evidence**:
+  - **Commit**: T05 task checkpoint commit에서 갱신
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: `pnpm run modal:vocal-profile:deploy` → deployed, `pnpm run modal:vocal-profile:benchmark` → PASS (wrong key 401 + 6 samples), deployed remote parity pytest → PASS (3/3 exact profile/artifact bytes)
+- **Consequences**: 실제 최악 wall 39.248초로 T06의 sync 승인 기준 90초보다 충분히 낮다. base64 60초 response 약 4.33 MB도 Modal Web Function response 제한에 걸리지 않으므로 binary transport 전환은 이번 Feature의 필수 조건이 아니다.

@@ -81,18 +81,18 @@
     - [x] source 저장 실패, smart reference 저장 실패, DB 저장 실패의 cleanup/legacy fallback 통합 테스트를 보강한다.
     - [x] incompatible analyzer/capability response가 persistence 전에 차단되는지 검증한다.
 
-- [TODO][PRD-NFR-003][PRD-NFR-004][PRD-NFR-005] T-F010-modal-vocal-profile-analysis-05 실제 Modal CPU deploy·10/30/60초 cold/warm benchmark
+- [DONE][PRD-NFR-003][PRD-NFR-004][PRD-NFR-005] T-F010-modal-vocal-profile-analysis-05 실제 Modal CPU deploy·10/30/60초 cold/warm benchmark
   - Date: 2026-08-08
   - Acceptance:
     - 사용자 승인 후 실제 Modal 환경에서 authenticated health/analyze와 10초·30초·60초 fixture cold/warm 실행 결과를 기록한다.
     - CPU/memory, wall latency, analyzer latency, payload size와 benchmark 시점 공식 CPU/memory 단가 기반 요청당 비용을 기록한다.
     - 실제 remote 결과가 local contract/hash/parity 조건을 만족하거나 차이를 명시적으로 문서화한다.
   - Checklist:
-    - [ ] 원격 배포/비용 발생 전 사용자에게 실행 artifact와 비용 범위를 공유하고 승인을 받는다.
-    - [ ] wrong credential rejection과 authenticated health/capability를 검증한다.
-    - [ ] 10/30/60초 cold/warm 표본을 실행하고 latency/resource/payload 결과를 기록한다.
-    - [ ] local/Modal 핵심 metric과 smart reference descriptor/bytes를 비교한다.
-    - [ ] 당시 Modal 공식 CPU/memory 가격과 월 credit 기준으로 예상 요청 비용을 계산한다.
+    - [x] 원격 배포/비용 발생 전 사용자에게 실행 artifact와 비용 범위를 공유하고 승인을 받았다.
+    - [x] 잘못된 `X-API-Key`가 401로 거부되고 authenticated health가 `librosa-pyin 0.11.0`, `smart-reference-v1`, CPU 2 cores/4096 MiB/GPU false를 반환함을 확인했다.
+    - [x] 10/30/60초 각각 두 표본을 실행했다. wall time은 34.074/5.414초, 10.797/39.248초, 17.531/20.821초였고 최대 39.248초였다. 60초 response payload는 약 4.33 MB였다.
+    - [x] 실제 배포 endpoint와 local shared analyzer를 10/30/60초 동일 fixture로 다시 비교해 profile JSON과 source/reference bytes exact parity 3/3을 확인했다.
+    - [x] Modal 공식 단가 CPU `$0.0000131/core/sec`, memory `$0.00000222/GiB/sec`를 사용했다. 6회 benchmark handler 기준 합계 약 `$0.003617`, wall upper-bound 합계 약 `$0.004486`이며 Starter는 월 `$30` compute credit을 제공한다.
 
 - [TODO][PRD-FR-004][PRD-NFR-003][PRD-NFR-004] T-F010-modal-vocal-profile-analysis-06 benchmark 기반 sync/async transport·resource·warm 정책 확정
   - Date: 2026-08-08
@@ -133,12 +133,15 @@
 | `pnpm run lint` | `2026-08-08` | `PASS` |
 | `pnpm exec tsc --noEmit` | `2026-08-08` | `PASS` |
 | `pnpm run build` | `2026-08-08` | `PASS (Next.js 16.3.0, 21 pages)` |
-| `services/vocal-profile-api/.venv/bin/pytest -q services/vocal-profile-api/tests` | `2026-08-08` | `PASS (32/32, deprecation warning 3건)` |
+| `services/vocal-profile-api/.venv/bin/pytest -q services/vocal-profile-api/tests` | `2026-08-08` | `PASS (32 passed, remote-only 3 skipped, deprecation warning 3건)` |
 | `cd services/vocal-profile-modal && ../vocal-profile-api/.venv/bin/pytest -q test_transport.py test_runtime.py test_modal_app_source.py` | `2026-08-08` | `PASS (9/9)` |
 | `pnpm run test:vocal-profile-analyzer` | `2026-08-08` | `PASS (8/8)` |
 | `pnpm run test:vocal-profile-persistence` | `2026-08-08` | `PASS (3/3, source/synthesis/DB failure compensation)` |
 | `pnpm run test:media` | `2026-08-08` | `PASS (5/5)` |
 | `pnpm exec tsx --test tests/vocal-profile-contract.test.ts tests/mixing-reference.test.ts tests/vocal-profile-results-ui.test.tsx` | `2026-08-08` | `PASS (8/8)` |
+| `pnpm run modal:vocal-profile:deploy` | `2026-08-08` | `PASS (copy-singer-vocal-profile-analyzer deployed with modal==1.5.3)` |
+| `VOCAL_PROFILE_MODAL_URL=... pnpm run modal:vocal-profile:benchmark` | `2026-08-08` | `PASS (wrong key 401, 10/30/60초 6 samples, max wall 39.248s)` |
+| `VOCAL_PROFILE_MODAL_URL=... pytest -q .../test_modal_parity.py -k deployed` | `2026-08-08` | `PASS (3/3 exact profile + source/reference bytes)` |
 | `npx lee-spec-kit workflow-audit --json` | `-` | `-` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-08T00:03:37.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-08T00:30:18.000Z -->
