@@ -5,7 +5,7 @@ F010의 사용자 보컬 프로필용 CPU-only Modal Web Function입니다.
 ## 역할
 
 - `services/vocal-profile-api/app`의 공유 분석 코어를 그대로 사용합니다.
-- 최대 60초 사용자 source를 분석하고 `smart-reference-v1` reference를 생성합니다.
+- 최대 60초 사용자 source의 프로필 통계는 그대로 분석하고, 무음·저품질을 제외한 중음 phrase만 이어 붙인 최대 30초(더 짧아도 정상) `smart-reference-mid-v1` synthesis reference를 생성합니다.
 - 사용자 오디오는 request-scoped `TemporaryDirectory`에서만 처리합니다.
 - Modal Volume/Dict, PostgreSQL, Leemage에 사용자 데이터를 저장하지 않습니다.
 - profile + source + optional synthesis reference를 하나의 ephemeral response envelope로 반환합니다.
@@ -60,7 +60,7 @@ pnpm run modal:vocal-profile:deploy
 ### `GET /health`
 
 - analyzer name/version
-- `smart-reference-v1` capability
+- `smart-reference-mid-v1` capability
 - transport version
 - CPU-only resource contract
 
