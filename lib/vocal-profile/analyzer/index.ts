@@ -55,6 +55,31 @@ export async function analyzeVocalProfile(input: AnalyzeVocalProfileInput) {
   return analyzed;
 }
 
+export async function analyzeVocalProfileBytes(input: {
+  recordingId: string;
+  bytes: Uint8Array;
+  mimeType: string;
+  fileName: string;
+  fetchImpl?: typeof fetch;
+}) {
+  const form = new FormData();
+  form.append("audio", new Blob([Uint8Array.from(input.bytes)], { type: input.mimeType }), input.fileName);
+  const request = new Request("http://copy-singer.internal/vocal-profile-analysis", {
+    method: "POST",
+    body: form,
+  });
+  const contentType = request.headers.get("content-type");
+  if (!contentType || !request.body) {
+    throw new AnalyzerClientError("ANALYSIS_FAILED", "Could not prepare analyzer upload.", true, 500);
+  }
+  return analyzeVocalProfile({
+    recordingId: input.recordingId,
+    contentType,
+    body: request.body,
+    fetchImpl: input.fetchImpl,
+  });
+}
+
 export async function vocalProfileAnalyzerHealth(fetchImpl: typeof fetch = fetch) {
   const backend = vocalProfileAnalyzerBackend();
   const health = backend === "modal"

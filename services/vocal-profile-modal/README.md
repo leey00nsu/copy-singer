@@ -53,7 +53,7 @@ pnpm run modal:vocal-profile:deploy
 - `min_containers`: 0 (scale-to-zero)
 - container concurrency: request 1개 (`@modal.concurrent(max_inputs=1)`)
 
-최종 resource와 sync/async transport는 10/30/60초 cold/warm benchmark 이후 확정합니다.
+10/30/60초 benchmark 결과 worker→Modal transport는 sync HTTP로 확정했습니다. 사용자-facing 요청은 Next.js/PostgreSQL durable queue에서 비동기로 처리하며 이 Modal endpoint 자체는 sync compute primitive로 유지합니다.
 
 ## API
 

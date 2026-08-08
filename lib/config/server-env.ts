@@ -34,3 +34,15 @@ export function mixingLeaseSeconds() {
 export function mixingPollIntervalMs() {
   return integerEnv("MIXING_POLL_INTERVAL_MS", 5_000, { min: 100, max: 60_000 });
 }
+
+export function vocalProfileAnalysisWorkerConcurrency() {
+  return integerEnv("VOCAL_PROFILE_ANALYSIS_WORKER_CONCURRENCY", 1, { min: 1, max: 16 });
+}
+
+export function vocalProfileAnalysisMaxAttempts() {
+  return integerEnv("VOCAL_PROFILE_ANALYSIS_MAX_ATTEMPTS", 3, { min: 1, max: 10 });
+}
+
+export function vocalProfileAnalysisLeaseSeconds() {
+  return integerEnv("VOCAL_PROFILE_ANALYSIS_LEASE_SECONDS", 300, { min: 180, max: 3_600 });
+}

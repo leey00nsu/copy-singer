@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { Activity, AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, FileAudio, LoaderCircle, Mic, RotateCcw, Sparkles, Trash2, Upload } from "lucide-react";
 import { VocalProfileRecorder } from "@/components/audio/vocal-profile-recorder";
@@ -13,10 +13,12 @@ import { LongAudioDialog } from "@/components/long-audio-dialog";
 import { VocalProfileResults } from "@/components/vocal-profile-results";
 import { isLongProfileAudio, readAudioDuration } from "@/lib/vocal-profile/audio-file";
 import { prepareProfileAudio } from "@/lib/audio/profile-upload";
-import type { VocalProfileError, VocalProfileResponse } from "@/lib/vocal-profile/contract";
+import type { VocalProfileAnalysisJobResponse, VocalProfileError, VocalProfileResponse } from "@/lib/vocal-profile/contract";
 
 const MAX_PROFILE_AUDIO_BYTES = 25 * 1024 * 1024;
 const ACCEPTED_AUDIO = ".wav,.mp3,.m4a,.webm,audio/wav,audio/mpeg,audio/mp4,audio/webm";
+const ANALYSIS_JOB_STORAGE_KEY = "copy-singer:vocal-profile-analysis-job";
+const ANALYSIS_POLL_INTERVAL_MS = 1_500;
 
 type ServiceHealth = "checking" | "ok" | "unavailable";
 
@@ -29,8 +31,10 @@ const ERROR_GUIDANCE: Record<string, { title: string; action: string }> = {
   PAYLOAD_TOO_LARGE: { title: "파일이 너무 커요", action: "25MB 이하 파일을 사용해주세요." },
   UNSUPPORTED_AUDIO: { title: "지원하지 않는 오디오예요", action: "WAV, MP3, M4A 또는 WebM 파일을 사용해주세요." },
   INVALID_SEGMENTS: { title: "안내 녹음 구간이 올바르지 않아요", action: "새 안내 녹음을 만든 뒤 다시 분석해주세요." },
-  ANALYZER_UNAVAILABLE: { title: "로컬 분석기에 연결할 수 없어요", action: "Docker analyzer가 실행 중인지 확인한 뒤 다시 시도해주세요." },
-  ANALYZER_NOT_CONFIGURED: { title: "분석기 주소가 설정되지 않았어요", action: "VOCAL_PROFILE_API_URL 환경 변수를 확인해주세요." },
+  ANALYZER_UNAVAILABLE: { title: "보컬 분석기에 연결할 수 없어요", action: "잠시 뒤 다시 시도해주세요." },
+  ANALYZER_NOT_CONFIGURED: { title: "분석기 설정이 필요해요", action: "서버의 보컬 분석기 환경 변수를 확인해주세요." },
+  ANALYSIS_ENQUEUE_FAILED: { title: "분석 대기열에 추가하지 못했어요", action: "잠시 뒤 다시 시도해주세요." },
+  ANALYSIS_SOURCE_UNAVAILABLE: { title: "분석용 음성을 불러오지 못했어요", action: "잠시 뒤 다시 시도해주세요." },
   PROFILE_SAVE_FAILED: { title: "분석 결과를 저장하지 못했어요", action: "PostgreSQL 연결을 확인한 뒤 다시 시도해주세요." },
 };
 
@@ -51,11 +55,15 @@ export function VocalProfileWorkbench() {
   const [preparationProgress, setPreparationProgress] = useState(0);
   const [health, setHealth] = useState<ServiceHealth>("checking");
   const [analyzing, setAnalyzing] = useState(false);
+  const [analysisJobId, setAnalysisJobId] = useState<string | null>(null);
+  const [analysisJobStatus, setAnalysisJobStatus] = useState<VocalProfileAnalysisJobResponse["status"] | null>(null);
+  const analysisIdempotencyKey = useRef<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [recommending, setRecommending] = useState(false);
   const [profile, setProfile] = useState<VocalProfileResponse | null>(null);
   const [analysisError, setAnalysisError] = useState<VocalProfileError | null>(null);
   const audioUrl = useMemo(() => (audioFile ? URL.createObjectURL(audioFile) : null), [audioFile]);
+  const analysisBusy = analyzing || analysisJobId !== null;
 
   useEffect(() => {
     return () => {
@@ -77,6 +85,64 @@ export function VocalProfileWorkbench() {
     };
   }, []);
 
+  useEffect(() => {
+    const storedJobId = window.localStorage.getItem(ANALYSIS_JOB_STORAGE_KEY);
+    if (storedJobId) queueMicrotask(() => setAnalysisJobId(storedJobId));
+  }, []);
+
+  useEffect(() => {
+    if (!analysisJobId) return;
+    let active = true;
+    window.localStorage.setItem(ANALYSIS_JOB_STORAGE_KEY, analysisJobId);
+
+    const poll = async () => {
+      while (active) {
+        try {
+          const response = await fetch(`/api/vocal-profile-analysis-jobs/${analysisJobId}`, { cache: "no-store" });
+          const payload = (await response.json().catch(() => null)) as VocalProfileAnalysisJobResponse | VocalProfileError | null;
+          if (!response.ok) {
+            if (active) {
+              setAnalysisError(profileError(payload));
+              setAnalyzing(false);
+              setAnalysisJobId(null);
+              setAnalysisJobStatus(null);
+              analysisIdempotencyKey.current = null;
+              window.localStorage.removeItem(ANALYSIS_JOB_STORAGE_KEY);
+            }
+            return;
+          }
+          const job = payload as VocalProfileAnalysisJobResponse;
+          if (!active) return;
+          setAnalysisJobStatus(job.status);
+          if (job.status === "succeeded" && job.profile) {
+            setProfile(job.profile);
+            setAnalyzing(false);
+            setAnalysisJobId(null);
+            analysisIdempotencyKey.current = null;
+            window.localStorage.removeItem(ANALYSIS_JOB_STORAGE_KEY);
+            setHealth("ok");
+            toast.success("보컬 프로필 분석이 완료됐습니다.");
+            return;
+          }
+          if (job.status === "failed") {
+            setAnalysisError(job.error ?? { reasonCode: "ANALYSIS_FAILED", detail: "Background analysis failed.", retryable: true });
+            setAnalyzing(false);
+            setAnalysisJobId(null);
+            analysisIdempotencyKey.current = null;
+            window.localStorage.removeItem(ANALYSIS_JOB_STORAGE_KEY);
+            return;
+          }
+        } catch {
+          // Keep the durable job id and retry polling after transient browser/network failures.
+        }
+        await new Promise((resolve) => setTimeout(resolve, ANALYSIS_POLL_INTERVAL_MS));
+      }
+    };
+
+    void poll();
+    return () => { active = false; };
+  }, [analysisJobId]);
+
   const resetAudio = () => {
     setAudioFile(null);
     setAudioDuration(null);
@@ -84,6 +150,7 @@ export function VocalProfileWorkbench() {
     setPendingLongDuration(null);
     setPreparationProgress(0);
     setAnalysisError(null);
+    analysisIdempotencyKey.current = null;
   };
 
   const prepareSelectedAudio = useCallback(async (file: File) => {
@@ -93,6 +160,7 @@ export function VocalProfileWorkbench() {
       const prepared = await prepareProfileAudio(file, setPreparationProgress);
       setAudioFile(prepared.file);
       setAudioDuration(prepared.durationSeconds);
+      analysisIdempotencyKey.current = null;
       setAnalysisError(null);
       toast.success(`최대 60초 압축 오디오가 준비됐습니다. (${(prepared.file.size / 1024 / 1024).toFixed(1)} MB)`);
     } catch (error) {
@@ -145,21 +213,30 @@ export function VocalProfileWorkbench() {
   };
 
   const analyzeAudio = async () => {
-    if (!audioFile || analyzing) return;
+    if (!audioFile || analysisBusy) return;
     setAnalyzing(true);
     setAnalysisError(null);
     const body = new FormData();
     body.append("audio", audioFile, audioFile.name);
+    const idempotencyKey = analysisIdempotencyKey.current ?? crypto.randomUUID();
+    analysisIdempotencyKey.current = idempotencyKey;
     try {
-      const response = await fetch("/api/vocal-profiles", { method: "POST", body });
+      const response = await fetch("/api/vocal-profile-analysis-jobs", {
+        method: "POST",
+        headers: { "Idempotency-Key": idempotencyKey },
+        body,
+      });
       const payload: unknown = await response.json().catch(() => null);
       if (!response.ok) throw profileError(payload);
-      setProfile(payload as VocalProfileResponse);
+      const job = payload as VocalProfileAnalysisJobResponse;
+      if (!job.id) throw profileError(payload);
+      window.localStorage.setItem(ANALYSIS_JOB_STORAGE_KEY, job.id);
+      setAnalysisJobStatus(job.status);
+      setAnalysisJobId(job.id);
       setHealth("ok");
-      toast.success("보컬 프로필을 만들었습니다.");
+      toast.success("보컬 분석을 대기열에 추가했습니다.");
     } catch (error) {
       setAnalysisError(profileError(error));
-    } finally {
       setAnalyzing(false);
     }
   };
@@ -238,7 +315,7 @@ export function VocalProfileWorkbench() {
             <Badge variant="secondary">Step 1 · 내 음역 측정</Badge>
             <Badge className="gap-1.5" variant={health === "ok" ? "outline" : "secondary"}>
               {health === "checking" ? <LoaderCircle className="size-3 animate-spin" /> : <Activity className="size-3" />}
-              {health === "checking" ? "분석기 확인 중" : health === "ok" ? "로컬 분석기 준비됨" : "분석기 연결 필요"}
+              {health === "checking" ? "분석기 확인 중" : health === "ok" ? "분석기 준비됨" : "분석기 연결 필요"}
             </Badge>
           </div>
           <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">노래 한 소절로,<br />내 목소리의 기준점을 만드세요.</h1>
@@ -271,15 +348,15 @@ export function VocalProfileWorkbench() {
                 <div className="rounded-2xl border p-4">
                   <div className="flex items-center gap-3"><span className="flex size-10 items-center justify-center rounded-full bg-secondary"><FileAudio className="size-5" /></span><div className="min-w-0"><p className="truncate text-sm font-medium">{audioFile.name}</p><p className="text-xs text-muted-foreground">{(audioFile.size / 1024 / 1024).toFixed(1)} MB{audioDuration !== null ? ` · 약 ${Math.ceil(audioDuration)}초` : ""}</p><p className="mt-1 text-xs font-medium text-primary">업로드할 60초 이하 압축 오디오</p></div></div>
                   <AudioWaveformPlayer className="mt-4" label="제출할 보컬 녹음" src={audioUrl} />
-                  <Button className="mt-3 w-full" disabled={analyzing} onClick={() => void analyzeAudio()}>
-                    {analyzing ? <LoaderCircle className="size-4 animate-spin" /> : <Activity className="size-4" />}
-                    {analyzing ? "음역을 분석하는 중…" : "내 보컬 프로필 만들기"}
+                  <Button className="mt-3 w-full" disabled={analysisBusy} onClick={() => void analyzeAudio()}>
+                    {analysisBusy ? <LoaderCircle className="size-4 animate-spin" /> : <Activity className="size-4" />}
+                    {analysisBusy ? (analysisJobStatus === "pending" ? "분석 대기 중…" : "백그라운드 분석 중…") : "내 보컬 프로필 만들기"}
                   </Button>
-                  <Button className="mt-1 w-full" disabled={analyzing} onClick={resetAudio} variant="ghost"><RotateCcw className="size-4" /> 다시 선택</Button>
+                  <Button className="mt-1 w-full" disabled={analysisBusy} onClick={resetAudio} variant="ghost"><RotateCcw className="size-4" /> 다시 선택</Button>
                 </div>
               ) : (
                 <div className="grid gap-3">
-                  <VocalProfileRecorder disabled={analyzing} onComplete={completeRecording} onError={recordingError} />
+                  <VocalProfileRecorder disabled={analysisBusy} onComplete={completeRecording} onError={recordingError} />
                   <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed px-4 py-3 text-sm font-medium hover:bg-muted/50"><Upload className="size-4" /> 오디오 파일 업로드<input accept={ACCEPTED_AUDIO} className="sr-only" onChange={(event) => { const file = event.target.files?.[0] ?? null; event.target.value = ""; void selectFile(file); }} type="file" /></label>
                   <p className="text-center text-xs text-muted-foreground">WAV, MP3, M4A, WebM · 최대 25MB / 60초</p>
                 </div>
@@ -287,6 +364,18 @@ export function VocalProfileWorkbench() {
             </CardContent>
           </Card>
         </div>
+
+        {analysisJobId ? (
+          <section aria-live="polite" className="mt-6 rounded-2xl border bg-muted/35 p-5">
+            <div className="flex items-center gap-3">
+              <LoaderCircle className="size-5 animate-spin text-primary" />
+              <div>
+                <h2 className="font-semibold">{analysisJobStatus === "pending" ? "보컬 분석 대기 중" : "보컬 프로필을 분석하는 중"}</h2>
+                <p className="mt-1 text-sm text-muted-foreground">페이지를 닫아도 서버에서 계속 진행되며, 다시 접속하면 이 작업을 이어서 확인합니다.</p>
+              </div>
+            </div>
+          </section>
+        ) : null}
 
         {analysisError ? (
           <section aria-live="assertive" className="mt-6 rounded-2xl border border-destructive/30 bg-destructive/5 p-5">
@@ -315,7 +404,7 @@ export function VocalProfileWorkbench() {
                 </Button>
               </CardHeader>
               <CardContent className="space-y-6">
-                <VocalProfileResults profile={profile} sourceAudioSrc={audioUrl ?? undefined} />
+                <VocalProfileResults profile={profile} sourceAudioSrc={audioUrl ?? `/api/vocal-profiles/${profile.id}/audio`} />
                 <p className="text-xs text-muted-foreground">생성 {new Date(profile.createdAt).toLocaleString("ko-KR")} · 원본 만료 {profile.recording.expiresAt ? new Date(profile.recording.expiresAt).toLocaleString("ko-KR") : "-"}</p>
                 <div className="rounded-xl bg-muted/55 p-4 text-xs leading-6 text-muted-foreground">사용 권한이 있는 본인의 음성만 업로드하세요. 이 결과는 노래 추천을 위한 참고 측정값이며, 발성 능력이나 건강 상태를 진단하지 않습니다. 환경과 컨디션에 따라 달라질 수 있습니다.</div>
                 <Button className="w-full" disabled={recommending} onClick={() => void createRecommendations()} size="lg">

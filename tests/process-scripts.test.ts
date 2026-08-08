@@ -5,7 +5,7 @@ import test from "node:test";
 
 type PackageJson = { scripts?: Record<string, string> };
 
-test("default dev and start commands supervise the web server and mixing worker", async () => {
+test("default dev and start commands supervise web, mixing, and vocal-profile analysis workers", async () => {
   const packageJson = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8")) as PackageJson;
   const scripts = packageJson.scripts ?? {};
 
@@ -15,7 +15,9 @@ test("default dev and start commands supervise the web server and mixing worker"
     assert.match(scripts[name] ?? "", /^concurrently --kill-others-on-fail /);
     assert.match(scripts[name] ?? "", new RegExp(`pnpm run ${name}:web`));
     assert.match(scripts[name] ?? "", /pnpm run worker:mixing/);
+    assert.match(scripts[name] ?? "", /pnpm run worker:vocal-profile-analysis/);
   }
+  assert.match(scripts["worker:vocal-profile-analysis"] ?? "", /scripts\/vocal-profile-analysis-worker\.ts/);
 });
 
 test("the process supervisor terminates the sibling when one child fails", async () => {

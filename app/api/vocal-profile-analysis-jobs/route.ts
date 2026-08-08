@@ -1,18 +1,7 @@
 export const runtime = "nodejs";
 
 import { requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
-import { getVocalProfileHistory } from "@/lib/vocal-profile/history";
 import { analysisJobPayload, enqueueVocalProfileAnalysis } from "@/lib/vocal-profile/analysis-queue";
-
-export async function GET(request: Request) {
-  const session = await requireApiSession(request);
-  if (!session) return unauthorizedResponse();
-  const requestedPage = Number(new URL(request.url).searchParams.get("page") ?? "1");
-  return Response.json(await getVocalProfileHistory(
-    session.user.id,
-    Number.isFinite(requestedPage) ? requestedPage : 1,
-  ));
-}
 
 function enqueueError(error: unknown) {
   const code = error instanceof Error ? error.message : "ANALYSIS_ENQUEUE_FAILED";

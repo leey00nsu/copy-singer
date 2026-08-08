@@ -93,6 +93,18 @@ export type VocalProfileError = {
   retryable: boolean;
 };
 
+export type VocalProfileAnalysisJobResponse = {
+  id: string;
+  status: "pending" | "processing" | "succeeded" | "failed";
+  vocalProfileId: string | null;
+  attempts: number;
+  maxAttempts: number;
+  error: VocalProfileError | null;
+  createdAt: string;
+  updatedAt: string;
+  profile?: VocalProfileResponse | null;
+};
+
 export function hasSmartReferenceContract(profile: AnalyzerProfileData) {
   if (!("synthesisReference" in profile)) return false;
   const descriptor = profile.descriptors.synthesisReference;

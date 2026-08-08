@@ -77,6 +77,13 @@ enum MixingJobStatus {
   CANCELED
 }
 
+enum VocalProfileAnalysisJobStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED
+}
+
 enum TicketRefundState {
   NONE
   REQUIRED
@@ -132,6 +139,7 @@ model VocalProfile {
   song                      Song?
   recommendationRuns        RecommendationRun[]
   mixingJobs                MixingJob[]
+  analysisJob               VocalProfileAnalysisJob?
 
   @@unique([recordingId, analyzer, analyzerVersion])
   @@index([userId, createdAt])
@@ -219,6 +227,7 @@ model User {
   ticketLedgers      TicketLedger[]      @relation("TicketOwner")
   ticketActions      TicketLedger[]      @relation("TicketActor")
   mixingJobs         MixingJob[]
+  vocalProfileAnalysisJobs VocalProfileAnalysisJob[]
 }
 
 model Session {
@@ -288,6 +297,7 @@ model MediaAsset {
   cleanupJobs           MediaCleanupJob[]
   referenceMixingJobs   MixingJob[]       @relation("MixingReference")
   resultMixingJobs      MixingJob[]       @relation("MixingResult")
+  vocalProfileAnalysisJobs VocalProfileAnalysisJob[] @relation("VocalProfileAnalysisSource")
 
   @@unique([externalProjectId, externalFileId])
   @@index([userId, kind, createdAt])
@@ -326,6 +336,36 @@ model TicketLedger {
   @@index([userId, createdAt])
   @@index([mixingJobId])
   @@index([actorUserId, createdAt])
+}
+
+model VocalProfileAnalysisJob {
+  id             String                        @id @default(uuid()) @db.Uuid
+  userId         String
+  recordingId    String                        @unique @db.Uuid
+  sourceAssetId  String?                       @db.Uuid
+  vocalProfileId String?                       @unique @db.Uuid
+  status         VocalProfileAnalysisJobStatus @default(PENDING)
+  idempotencyKey String
+  attempts       Int                           @default(0)
+  maxAttempts    Int                           @default(3)
+  nextAttemptAt  DateTime                      @default(now())
+  leaseOwner     String?
+  leaseExpiresAt DateTime?
+  heartbeatAt    DateTime?
+  errorCode      String?
+  errorDetail    String?
+  retryable      Boolean?
+  startedAt      DateTime?
+  completedAt    DateTime?
+  createdAt      DateTime                      @default(now())
+  updatedAt      DateTime                      @updatedAt
+  user           User                          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sourceAsset    MediaAsset?                   @relation("VocalProfileAnalysisSource", fields: [sourceAssetId], references: [id], onDelete: SetNull)
+  vocalProfile   VocalProfile?                 @relation(fields: [vocalProfileId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, idempotencyKey])
+  @@index([status, nextAttemptAt, leaseExpiresAt, createdAt])
+  @@index([userId, createdAt])
 }
 
 model MixingJob {
