@@ -66,16 +66,16 @@
     - [x] `algorithm=voiced-mid-phrase-selection`, `version=smart-reference-mid-v1`, mid-only `sourceRanges`, `bandSeconds(low=0, high=0)` 계약을 고정했다.
     - [x] 짧은 mid-only reference, 30초 cap, low/high-only unavailable, 결정성 Python 테스트를 추가했고 target 17/17 및 전체 analyzer 35 passed/3 skipped를 확인했다.
 
-- [TODO][PRD-FR-042] T-F011-midrange-only-vocal-reference-02 analyzer dual-version contract와 local/Modal transport parity
+- [DONE][PRD-FR-042] T-F011-midrange-only-vocal-reference-02 analyzer dual-version contract와 local/Modal transport parity
   - Date: 2026-08-08
   - Acceptance:
     - 새 분석 결과는 `smart-reference-mid-v1`을 정상 contract로 인정하고 기존 저장 `smart-reference-v1`은 계속 읽을 수 있다.
     - 기존 `modal-analysis-envelope-v1` transport가 새 descriptor와 synthesis reference bytes를 손실 없이 전달한다.
   - Checklist:
-    - [ ] TypeScript analyzer contract validator가 v1과 mid-v1을 모두 지원하도록 확장한다.
-    - [ ] mid-v1의 descriptor/artifact version mismatch와 low/high source range를 invalid response로 차단한다.
-    - [ ] local FastAPI/Modal serializer fixture가 새 version, unavailable reason, artifact metadata를 동일하게 직렬화하는지 검증한다.
-    - [ ] Python local↔Modal parity와 Modal transport unit test를 통과한다.
+    - [x] TypeScript analyzer contract validator가 v1과 mid-v1을 모두 지원하도록 확장하고 version 판별 helper를 추가했다.
+    - [x] mid-v1의 descriptor/artifact version mismatch, empty range와 low/high source range를 invalid response로 차단한다.
+    - [x] Modal profile/envelope fixture와 health capability를 `smart-reference-mid-v1` 생성 계약으로 갱신했다.
+    - [x] TS contract 5/5, Python local↔Modal parity 4/4, Modal transport 9/9, analyzer adapter 8/8, tsc를 통과했다.
 
 - [TODO][PRD-US-018][PRD-FR-042] T-F011-midrange-only-vocal-reference-03 실제 저장된 중음 reference 단일 플레이어
   - Date: 2026-08-08
@@ -141,5 +141,10 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `services/vocal-profile-api/.venv/bin/pytest -q services/vocal-profile-api/tests` | `2026-08-08` | `PASS (35 passed, remote-only 3 skipped)` |
+| `pnpm exec tsx --test tests/vocal-profile-contract.test.ts` | `2026-08-08` | `PASS (5/5 dual-version contract)` |
+| `cd services/vocal-profile-modal && ../vocal-profile-api/.venv/bin/pytest -q test_transport.py test_runtime.py test_modal_app_source.py` | `2026-08-08` | `PASS (9/9)` |
+| `services/vocal-profile-api/.venv/bin/pytest -q services/vocal-profile-api/tests/test_modal_parity.py -k 'not deployed'` | `2026-08-08` | `PASS (4/4 local parity, remote 3 deselected)` |
+| `pnpm run test:vocal-profile-analyzer` | `2026-08-08` | `PASS (8/8)` |
+| `pnpm exec tsc --noEmit` | `2026-08-08` | `PASS` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-08T01:50:31.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-08T01:55:31.000Z -->

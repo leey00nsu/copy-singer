@@ -36,3 +36,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: target 17/17 PASS; 전체 analyzer suite 35 passed, remote-only 3 skipped
 - **Consequences**: 새 reference는 30초보다 짧을 수 있으며, mid candidate가 전혀 없으면 profile은 저장되더라도 synthesis reference는 unavailable 상태가 된다.
+
+## D002: analyzer consumer는 v1을 읽고 mid-v1을 엄격 검증하는 dual-read 계약을 사용 (2026-08-08)
+
+- **Context**: 새 분석은 `smart-reference-mid-v1`을 생성하지만 DB에는 기존 `smart-reference-v1` profile이 남아 있고 F010 local/Modal adapter가 같은 TypeScript validator를 사용한다.
+- **Constraints**: 기존 profile migration 없이 읽어야 하며, 새 mid-v1에 low/high source range 또는 descriptor/artifact version mismatch가 섞이면 persistence 전에 차단해야 한다.
+- **Options**: 기존 validator를 mid-v1로 단순 교체, 모든 string version 허용, 명시적 v1+mid-v1 dual-read를 비교한다.
+- **Decision**: 지원 version을 `smart-reference-v1 | smart-reference-mid-v1`로 명시하고 descriptor와 artifact version 일치를 검증한다. mid-v1 success payload는 descriptor/artifact의 모든 source range가 `band: mid`여야 한다.
+- **Rationale**: 과거 데이터 호환을 유지하면서 새 policy drift를 transport 경계에서 즉시 발견할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 기존 `hasSmartReferenceContract` export는 유지하고 version 판별 helper를 추가해 이후 UI/mixing에서도 같은 판별을 재사용한다.
+  - **DONE 전 확정 시점**: `hasSmartReferenceContract`를 v1+mid-v1 dual-read로 확장하고 `synthesisReferenceContractVersion()` helper를 추가했다. mid-v1 success payload는 descriptor/artifact version 일치와 non-empty `band: mid` sourceRanges를 양쪽 모두 검증한다. Modal health capability도 실제 생성 계약인 `smart-reference-mid-v1`로 변경했다.
+  - **머지 후 확인**: 머지 후 갱신한다.
+- **Evidence**:
+  - **Commit**: task commit 후 갱신
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: TS contract 5/5, Modal transport 9/9, local↔Modal parity 4/4, analyzer adapter 8/8, tsc PASS
+- **Consequences**: 지원하지 않는 future version은 명시적으로 analyzer update/contract 오류가 되며 조용히 저장되지 않는다.
