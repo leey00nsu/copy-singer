@@ -26,15 +26,10 @@ import {
   YAxis,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
 import { ReferenceBandPlayers } from "@/components/audio/reference-band-players";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import {
-  SMART_REFERENCE_MID_VERSION,
-  synthesisReferenceContractVersion,
-  type VocalProfileResponse,
-} from "@/lib/vocal-profile/contract";
+import type { VocalProfileResponse } from "@/lib/vocal-profile/contract";
 import { midiToNoteName } from "@/lib/vocal-profile/pitch";
 import {
   axisTicks,
@@ -195,16 +190,8 @@ function MetricCard({ label, value, detail, icon: Icon }: { label: string; value
 
 export function VocalProfileResults({ profile, sourceAudioSrc }: { profile: VocalProfileResponse; sourceAudioSrc?: string }) {
   const visualization = useMemo(() => parseVocalProfileVisualization(profile.descriptors), [profile.descriptors]);
-  const referenceVersion = useMemo(() => synthesisReferenceContractVersion(profile.descriptors), [profile.descriptors]);
   const referenceSegments = useMemo(() => referenceBandSegments(profile.descriptors), [profile.descriptors]);
   const referenceAvailability = useMemo(() => referenceBandAvailability(profile.descriptors), [profile.descriptors]);
-  const referenceDescriptor = profile.descriptors?.synthesisReference;
-  const midReferenceUnavailable = referenceVersion === SMART_REFERENCE_MID_VERSION
-    && referenceDescriptor !== null
-    && typeof referenceDescriptor === "object"
-    && !Array.isArray(referenceDescriptor)
-    && (referenceDescriptor as Record<string, unknown>).status === "unavailable";
-  const midReferenceAudioSrc = `/api/vocal-profiles/${profile.id}/synthesis-reference/audio`;
   const quality = [
     ["유성 비율", `${(profile.voicedRatio * 100).toFixed(1)}%`, Activity],
     ["피치 안정성", `${(profile.pitchStability * 100).toFixed(1)}%`, Gauge],
@@ -217,27 +204,11 @@ export function VocalProfileResults({ profile, sourceAudioSrc }: { profile: Voca
 
   return (
     <div className="space-y-4">
-      {referenceVersion === SMART_REFERENCE_MID_VERSION ? (
+      {sourceAudioSrc ? (
         <Card className="shadow-sm">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg">AI 믹싱 중음 레퍼런스</CardTitle>
-            <p className="text-xs leading-5 text-muted-foreground">제출한 최대 60초 source에서 무음과 저품질 구간을 제외하고 안정적인 중음 phrase만 이어 붙인 실제 AI 믹싱용 레퍼런스입니다.</p>
-          </CardHeader>
-          <CardContent>
-            {midReferenceUnavailable ? (
-              <div className="rounded-xl border border-dashed bg-muted/25 p-5 text-sm leading-6 text-muted-foreground">
-                안정적으로 사용할 중음 구간을 찾지 못했어요. 반주 없이 편안한 중음이 포함된 소절로 새 프로필을 분석해주세요.
-              </div>
-            ) : (
-              <AudioWaveformPlayer label="AI 믹싱 중음 레퍼런스" src={midReferenceAudioSrc} />
-            )}
-          </CardContent>
-        </Card>
-      ) : sourceAudioSrc ? (
-        <Card className="shadow-sm">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg">AI 합성에 선택된 음역 구간</CardTitle>
-            <p className="text-xs leading-5 text-muted-foreground">무음을 제외하고 선택된 저음·중앙·고음 구간입니다. 버튼을 누르면 제출한 60초 오디오에서 해당 구간만 이어서 재생합니다.</p>
+            <CardTitle className="text-lg">분석된 대표 음역 구간</CardTitle>
+            <p className="text-xs leading-5 text-muted-foreground">무음을 제외하고 분석된 저음·중앙·고음 대표 구간입니다. 버튼을 누르면 제출한 최대 60초 오디오에서 해당 구간만 이어서 재생합니다. AI 믹싱에는 이 분석 표시와 별도로 안정적인 중음만 만든 레퍼런스를 사용합니다.</p>
           </CardHeader>
           <CardContent>
             {referenceAvailability === "ready" ? (

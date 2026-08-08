@@ -12,7 +12,9 @@ from .config import DEFAULT_ANALYSIS_CONFIG, AnalysisConfig
 from .analysis import PitchFrames
 
 REFERENCE_VERSION = "smart-reference-mid-v1"
+ANALYSIS_BANDS_VERSION = "analysis-reference-bands-v1"
 REFERENCE_MAX_SECONDS = 30.0
+BAND_TARGET_SECONDS = 10.0
 MAX_CANDIDATE_SECONDS = 4.0
 MIN_CANDIDATE_SECONDS = 0.5
 MAX_INTERNAL_GAP_SECONDS = 0.35
@@ -44,6 +46,12 @@ class ReferenceSelection:
     @property
     def duration_seconds(self) -> float:
         return self.end_seconds - self.start_seconds
+
+
+@dataclass(frozen=True)
+class ReferenceBuildResult:
+    synthesis_descriptor: dict[str, object] | None
+    analysis_bands_descriptor: dict[str, object]
 
 
 def _candidate_band(median_midi: float, low_boundary: float, high_boundary: float) -> str:
@@ -144,6 +152,57 @@ def _select_candidates(candidates: list[ReferenceCandidate]) -> tuple[list[Refer
     return selected, allocated
 
 
+def _select_analysis_candidates(candidates: list[ReferenceCandidate]) -> tuple[list[ReferenceSelection], dict[str, float]]:
+    selected: list[ReferenceSelection] = []
+    consumed = {candidate.index: 0.0 for candidate in candidates}
+    allocated = {"low": 0.0, "mid": 0.0, "high": 0.0}
+
+    def take(candidate: ReferenceCandidate, maximum: float) -> float:
+        available = candidate.duration_seconds - consumed[candidate.index]
+        duration = min(available, maximum)
+        if duration < MIN_CANDIDATE_SECONDS:
+            return 0.0
+        start = candidate.start_seconds + consumed[candidate.index]
+        selected.append(ReferenceSelection(candidate, start, start + duration))
+        consumed[candidate.index] += duration
+        allocated[candidate.band] += duration
+        return duration
+
+    for band in ("low", "mid", "high"):
+        remaining = BAND_TARGET_SECONDS
+        ranked = sorted(
+            (candidate for candidate in candidates if candidate.band == band),
+            key=lambda candidate: (-candidate.score, candidate.start_seconds, candidate.index),
+        )
+        for candidate in ranked:
+            if remaining < MIN_CANDIDATE_SECONDS:
+                break
+            remaining -= take(candidate, remaining)
+
+    remaining_total = REFERENCE_MAX_SECONDS - sum(selection.duration_seconds for selection in selected)
+    for candidate in sorted(candidates, key=lambda item: (-item.score, item.start_seconds, item.index)):
+        if remaining_total < MIN_CANDIDATE_SECONDS:
+            break
+        remaining_total -= take(candidate, remaining_total)
+
+    selected.sort(key=lambda item: item.start_seconds)
+    return selected, allocated
+
+
+def _selection_ranges(selections: list[ReferenceSelection]) -> list[dict[str, object]]:
+    return [
+        {
+            "startMs": round(selection.start_seconds * 1_000),
+            "endMs": round(selection.end_seconds * 1_000),
+            "band": selection.candidate.band,
+            "score": round(selection.candidate.score, 4),
+            "voicedDensity": round(selection.candidate.voiced_density, 4),
+            "medianMidi": round(selection.candidate.median_midi, 2),
+        }
+        for selection in selections
+    ]
+
+
 def _crossfade_segments(segments: list[npt.NDArray[np.float32]], sample_rate: int) -> npt.NDArray[np.float32]:
     if not segments:
         return np.asarray([], dtype=np.float32)
@@ -160,7 +219,7 @@ def _crossfade_segments(segments: list[npt.NDArray[np.float32]], sample_rate: in
     return np.asarray(output, dtype=np.float32)
 
 
-def build_smart_reference(
+def build_reference_outputs(
     source_path: str | Path,
     output_path: str | Path,
     *,
@@ -169,7 +228,7 @@ def build_smart_reference(
     p90_midi: float,
     pitch_frames: PitchFrames | None = None,
     config: AnalysisConfig = DEFAULT_ANALYSIS_CONFIG,
-) -> dict[str, object] | None:
+) -> ReferenceBuildResult:
     audio, sample_rate = librosa.load(source_path, sr=config.sample_rate, mono=True)
     audio = np.asarray(audio, dtype=np.float32)
     if pitch_frames is None:
@@ -188,11 +247,23 @@ def build_smart_reference(
         frame_times = pitch_frames.frame_times
     valid = np.asarray(voiced_flag, dtype=bool) & np.isfinite(f0)
     candidates = _build_candidates(audio, sample_rate, f0, valid, frame_times, p10_midi, median_midi, p90_midi)
+    analysis_selected, analysis_allocated = _select_analysis_candidates(candidates)
+    analysis_bands_descriptor: dict[str, object] = {
+        "algorithm": "voiced-phrase-band-selection",
+        "version": ANALYSIS_BANDS_VERSION,
+        "status": "ready" if analysis_selected else "unavailable",
+        "sourceRanges": _selection_ranges(analysis_selected),
+        "bandSeconds": {band: round(seconds, 3) for band, seconds in analysis_allocated.items()},
+    }
+
     selected, allocated = _select_candidates(candidates)
     if not selected:
-        return None
+        return ReferenceBuildResult(
+            synthesis_descriptor=None,
+            analysis_bands_descriptor=analysis_bands_descriptor,
+        )
 
-    source_ranges: list[dict[str, object]] = []
+    source_ranges = _selection_ranges(selected)
     segments: list[npt.NDArray[np.float32]] = []
     selected_frame_mask = np.zeros(valid.shape, dtype=bool)
     for selection in selected:
@@ -203,16 +274,6 @@ def build_smart_reference(
         end_sample = round(end * sample_rate)
         segments.append(audio[start_sample:end_sample])
         selected_frame_mask |= (frame_times >= start) & (frame_times < end)
-        source_ranges.append(
-            {
-                "startMs": round(start * 1_000),
-                "endMs": round(end * 1_000),
-                "band": candidate.band,
-                "score": round(candidate.score, 4),
-                "voicedDensity": round(candidate.voiced_density, 4),
-                "medianMidi": round(candidate.median_midi, 2),
-            }
-        )
 
     output = _crossfade_segments(segments, sample_rate)
     max_samples = round(REFERENCE_MAX_SECONDS * sample_rate)
@@ -222,7 +283,7 @@ def build_smart_reference(
     selected_valid = selected_frame_mask & valid
     selected_total = int(np.sum(selected_frame_mask))
     selected_midi = np.asarray(librosa.hz_to_midi(f0[selected_valid]), dtype=np.float64)
-    return {
+    synthesis_descriptor: dict[str, object] = {
         "algorithm": "voiced-mid-phrase-selection",
         "version": REFERENCE_VERSION,
         "durationMs": round(output.size / sample_rate * 1_000),
@@ -234,3 +295,28 @@ def build_smart_reference(
         "crossfadeMs": round(CROSSFADE_SECONDS * 1_000),
         "fallbackReason": None,
     }
+    return ReferenceBuildResult(
+        synthesis_descriptor=synthesis_descriptor,
+        analysis_bands_descriptor=analysis_bands_descriptor,
+    )
+
+
+def build_smart_reference(
+    source_path: str | Path,
+    output_path: str | Path,
+    *,
+    p10_midi: float,
+    median_midi: float,
+    p90_midi: float,
+    pitch_frames: PitchFrames | None = None,
+    config: AnalysisConfig = DEFAULT_ANALYSIS_CONFIG,
+) -> dict[str, object] | None:
+    return build_reference_outputs(
+        source_path,
+        output_path,
+        p10_midi=p10_midi,
+        median_midi=median_midi,
+        p90_midi=p90_midi,
+        pitch_frames=pitch_frames,
+        config=config,
+    ).synthesis_descriptor

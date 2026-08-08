@@ -3,7 +3,7 @@ from __future__ import annotations
 import numpy as np
 import soundfile as sf
 
-from app.reference import ReferenceCandidate, _select_candidates, build_smart_reference
+from app.reference import ReferenceCandidate, _select_candidates, build_reference_outputs, build_smart_reference
 
 SAMPLE_RATE = 22_050
 
@@ -21,15 +21,20 @@ def test_smart_reference_removes_silence_and_keeps_only_mid_band(tmp_path) -> No
     audio = np.concatenate([silence, _tone(52, 11), silence, _tone(60, 11), silence, _tone(67, 11)])
     sf.write(source, audio, SAMPLE_RATE)
 
-    descriptor = build_smart_reference(
+    built = build_reference_outputs(
         source,
         output,
         p10_midi=52,
         median_midi=60,
         p90_midi=67,
     )
+    descriptor = built.synthesis_descriptor
 
     assert descriptor is not None
+    analysis_ranges = built.analysis_bands_descriptor["sourceRanges"]
+    assert {item["band"] for item in analysis_ranges} == {"low", "mid", "high"}
+    assert built.analysis_bands_descriptor["version"] == "analysis-reference-bands-v1"
+    assert built.analysis_bands_descriptor["status"] == "ready"
     rendered, sample_rate = sf.read(output, dtype="float32")
     assert sample_rate == SAMPLE_RATE
     assert 10.0 <= len(rendered) / sample_rate < 11.5

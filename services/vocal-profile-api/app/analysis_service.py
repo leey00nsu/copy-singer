@@ -6,7 +6,7 @@ from pathlib import Path
 from .analysis import AnalysisRejectedError, AnalysisResult, SegmentBounds, analyze_wav_with_frames
 from .config import ALLOWED_MIME_TYPES
 from .media import standardize_audio
-from .reference import build_smart_reference
+from .reference import build_reference_outputs
 
 
 @dataclass(frozen=True)
@@ -115,7 +115,7 @@ async def analyze_recording_file(
         descriptors = dict(analysis.descriptors)
 
         synthesis_path = working_directory / "synthesis-reference.wav"
-        synthesis_descriptor = build_smart_reference(
+        reference_outputs = build_reference_outputs(
             analysis_path,
             synthesis_path,
             p10_midi=analysis.p10_midi,
@@ -123,6 +123,8 @@ async def analyze_recording_file(
             p90_midi=analysis.p90_midi,
             pitch_frames=pitch_frames,
         )
+        descriptors["analysisReferenceBands"] = reference_outputs.analysis_bands_descriptor
+        synthesis_descriptor = reference_outputs.synthesis_descriptor
         if synthesis_descriptor is None:
             synthesis_path.unlink(missing_ok=True)
             descriptors["synthesisReference"] = {

@@ -9,18 +9,26 @@ export type ReferenceBandSegment = {
 
 const BAND_LABELS = { low: "저음 영역", mid: "중앙 영역", high: "고음 영역" } as const;
 
+function analysisBandDescriptor(descriptors: VocalProfileDescriptors | null) {
+  if (!descriptors) return null;
+  const analysisBands = descriptors.analysisReferenceBands;
+  if (analysisBands && typeof analysisBands === "object" && !Array.isArray(analysisBands)) return analysisBands as Record<string, unknown>;
+  const synthesisReference = descriptors.synthesisReference;
+  if (synthesisReference && typeof synthesisReference === "object" && !Array.isArray(synthesisReference)) return synthesisReference as Record<string, unknown>;
+  return null;
+}
+
 export function referenceBandAvailability(descriptors: VocalProfileDescriptors | null) {
-  const reference = descriptors?.synthesisReference;
-  if (!reference || typeof reference !== "object" || Array.isArray(reference)) return "legacy" as const;
-  if ((reference as { status?: unknown }).status === "unavailable") return "unavailable" as const;
+  const reference = analysisBandDescriptor(descriptors);
+  if (!reference) return "legacy" as const;
+  if (reference.status === "unavailable") return "unavailable" as const;
   return referenceBandSegments(descriptors).length > 0 ? "ready" as const : "legacy" as const;
 }
 
 export function referenceBandSegments(descriptors: VocalProfileDescriptors | null): ReferenceBandSegment[] {
-  if (!descriptors) return [];
-  const reference = descriptors.synthesisReference;
-  if (!reference || typeof reference !== "object" || Array.isArray(reference)) return [];
-  const sourceRanges = (reference as { sourceRanges?: unknown }).sourceRanges;
+  const reference = analysisBandDescriptor(descriptors);
+  if (!reference) return [];
+  const sourceRanges = reference.sourceRanges;
   if (!Array.isArray(sourceRanges)) return [];
   const grouped: Record<ReferenceBandSegment["id"], AudioSourceRange[]> = { low: [], mid: [], high: [] };
   for (const value of sourceRanges) {
