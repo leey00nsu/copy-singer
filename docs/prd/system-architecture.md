@@ -24,7 +24,7 @@
 
 1. 브라우저가 로그인 세션으로 최대 60초 오디오와 `Idempotency-Key`를 `POST /api/vocal-profile-analysis-jobs`에 제출한다.
 2. Next.js가 source를 Leemage `REFERENCE` asset으로 먼저 저장하고 `VocalProfileAnalysisJob(PENDING)`을 만든 뒤 `202`를 즉시 반환한다.
-3. 별도 analysis worker가 PostgreSQL lease로 job을 claim하고 source asset을 읽는다. browser는 job 상태를 polling하며 진행 중 job ID를 localStorage에 보관해 재접속 시 이어서 확인한다.
+3. 별도 analysis worker가 PostgreSQL lease로 job을 claim하고 source asset을 읽는다. `/profile` workbench는 진행 중 job ID를 localStorage에 보관해 이어서 확인하고, `/vocal-profiles` 히스토리는 사용자 소유 job을 DB에서 다시 조회해 pending/processing/retry/failed 카드를 표시한다. 활성 히스토리 카드는 목록 API를 polling하고 성공 시 완료 VocalProfile 카드로 전환한다.
 4. worker는 `VOCAL_PROFILE_ANALYZER_BACKEND`로 local 또는 Modal adapter를 명시적으로 선택한다. production에서는 backend 미설정을 허용하지 않는다.
 5. Modal 경로에서는 worker가 sync multipart 요청과 server-only `X-API-Key`를 CPU analyzer에 전달한다. analyzer는 request-scoped 임시 디렉터리에서 shared analysis core와 `smart-reference-v1`을 실행하고, profile + source + optional synthesis reference bytes를 한 response envelope로 반환한 뒤 임시 파일을 제거한다.
 6. worker가 analyzer version/capability와 source size/hash를 검증하고 queued source asset을 Recording에 재사용한다. smart reference만 추가 Leemage asset으로 저장하고 VocalProfile을 생성한 뒤 job을 `SUCCEEDED`로 완료한다.

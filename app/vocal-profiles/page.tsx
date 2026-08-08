@@ -4,11 +4,17 @@ import { VocalProfileHistoryList } from "@/components/vocal-profile/vocal-profil
 import { Button, buttonVariants } from "@/components/ui/button";
 import { requirePageSession } from "@/lib/auth/session";
 import { getVocalProfileHistory } from "@/lib/vocal-profile/history";
+import { analysisJobPayload, listVisibleVocalProfileAnalysisJobs } from "@/lib/vocal-profile/analysis-queue";
 
 export default async function VocalProfilesPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const session = await requirePageSession("/vocal-profiles");
   const requestedPage = Number((await searchParams).page ?? "1");
-  const history = await getVocalProfileHistory(session.user.id, Number.isFinite(requestedPage) ? requestedPage : 1);
+  const page = Number.isFinite(requestedPage) ? requestedPage : 1;
+  const [history, analysisJobRows] = await Promise.all([
+    getVocalProfileHistory(session.user.id, page),
+    listVisibleVocalProfileAnalysisJobs(session.user.id),
+  ]);
+  const analysisJobs = analysisJobRows.map(analysisJobPayload);
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-6xl px-5 py-16 sm:px-8">
@@ -20,7 +26,7 @@ export default async function VocalProfilesPage({ searchParams }: { searchParams
         </div>
         <Link className={buttonVariants()} href="/profile"><Plus className="size-4" /> 새 프로필 만들기</Link>
       </div>
-      <div className="mt-8"><VocalProfileHistoryList history={history} /></div>
+      <div className="mt-8"><VocalProfileHistoryList history={history} analysisJobs={analysisJobs} /></div>
       <nav className="mt-6 flex items-center justify-center gap-2" aria-label="보컬 프로필 페이지">
         <Button nativeButton={false} variant="outline" disabled={history.page <= 1} render={<Link href={`/vocal-profiles?page=${history.page - 1}`} />}><ChevronLeft /> 이전</Button>
         <span className="px-3 text-sm text-muted-foreground">{history.page} / {history.pageCount}</span>

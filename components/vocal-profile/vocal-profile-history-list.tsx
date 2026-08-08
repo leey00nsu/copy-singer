@@ -3,6 +3,8 @@ import { AudioLines, CalendarDays, ChevronRight, Gauge, Music2, Sparkles } from 
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { midiToNoteName } from "@/lib/vocal-profile/pitch";
+import { VocalProfileAnalysisJobCards } from "@/components/vocal-profile/vocal-profile-analysis-job-cards";
+import type { VocalProfileAnalysisJobResponse } from "@/lib/vocal-profile/contract";
 
 export type VocalProfileHistoryPayload = {
   page: number;
@@ -29,8 +31,14 @@ export type VocalProfileHistoryPayload = {
   }>;
 };
 
-export function VocalProfileHistoryList({ history }: { history: VocalProfileHistoryPayload }) {
-  if (history.profiles.length === 0) {
+export function VocalProfileHistoryList({
+  history,
+  analysisJobs = [],
+}: {
+  history: VocalProfileHistoryPayload;
+  analysisJobs?: VocalProfileAnalysisJobResponse[];
+}) {
+  if (history.profiles.length === 0 && analysisJobs.length === 0) {
     return (
       <div className="rounded-3xl border border-dashed p-12 text-center">
         <AudioLines className="mx-auto size-9 text-muted-foreground" aria-hidden="true" />
@@ -43,6 +51,7 @@ export function VocalProfileHistoryList({ history }: { history: VocalProfileHist
 
   return (
     <div className="grid gap-4 lg:grid-cols-2">
+      <VocalProfileAnalysisJobCards jobs={analysisJobs} />
       {history.profiles.map((profile) => (
         <article className="rounded-2xl border bg-background p-5 shadow-sm" key={profile.id}>
           <div className="flex flex-wrap items-start justify-between gap-3">

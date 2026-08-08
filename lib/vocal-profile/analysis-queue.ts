@@ -111,6 +111,25 @@ export async function enqueueVocalProfileAnalysis(input: {
   }
 }
 
+export async function listVisibleVocalProfileAnalysisJobs(userId: string, failedLimit = 3) {
+  const [active, failed] = await Promise.all([
+    prisma.$queryRaw<VocalProfileAnalysisJobRow[]>`
+      SELECT * FROM "VocalProfileAnalysisJob"
+      WHERE "userId" = ${userId}
+        AND "status" IN ('PENDING'::"VocalProfileAnalysisJobStatus", 'PROCESSING'::"VocalProfileAnalysisJobStatus")
+      ORDER BY "createdAt" DESC, "id" DESC
+    `,
+    prisma.$queryRaw<VocalProfileAnalysisJobRow[]>`
+      SELECT * FROM "VocalProfileAnalysisJob"
+      WHERE "userId" = ${userId}
+        AND "status" = 'FAILED'::"VocalProfileAnalysisJobStatus"
+      ORDER BY COALESCE("completedAt", "updatedAt") DESC, "id" DESC
+      LIMIT ${Math.max(0, Math.trunc(failedLimit))}
+    `,
+  ]);
+  return [...active, ...failed].sort((left, right) => right.createdAt.getTime() - left.createdAt.getTime());
+}
+
 export async function getVocalProfileAnalysisJob(userId: string, id: string) {
   const rows = await prisma.$queryRaw<VocalProfileAnalysisJobRow[]>`
     SELECT * FROM "VocalProfileAnalysisJob"

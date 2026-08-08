@@ -1,7 +1,11 @@
 export const runtime = "nodejs";
 
 import { requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
-import { analysisJobPayload, enqueueVocalProfileAnalysis } from "@/lib/vocal-profile/analysis-queue";
+import {
+  analysisJobPayload,
+  enqueueVocalProfileAnalysis,
+  listVisibleVocalProfileAnalysisJobs,
+} from "@/lib/vocal-profile/analysis-queue";
 
 function enqueueError(error: unknown) {
   const code = error instanceof Error ? error.message : "ANALYSIS_ENQUEUE_FAILED";
@@ -18,6 +22,13 @@ function enqueueError(error: unknown) {
     { reasonCode: "ANALYSIS_ENQUEUE_FAILED", detail: "The analysis job could not be queued.", retryable: true },
     { status: 503 },
   );
+}
+
+export async function GET(request: Request) {
+  const session = await requireApiSession(request);
+  if (!session) return unauthorizedResponse();
+  const jobs = await listVisibleVocalProfileAnalysisJobs(session.user.id);
+  return Response.json({ jobs: jobs.map(analysisJobPayload) });
 }
 
 export async function POST(request: Request) {

@@ -160,7 +160,11 @@ test("enqueue is idempotent and job reads are owner-scoped", async (context) => 
 
   try {
     await prisma.user.create({ data: { id: otherId, name: "Other", email: `${otherId}@example.test`, emailVerified: true } });
-    const { enqueueVocalProfileAnalysis, getVocalProfileAnalysisJob } = await import("../lib/vocal-profile/analysis-queue");
+    const {
+      enqueueVocalProfileAnalysis,
+      getVocalProfileAnalysisJob,
+      listVisibleVocalProfileAnalysisJobs,
+    } = await import("../lib/vocal-profile/analysis-queue");
     const file = new File([Uint8Array.from([1, 2, 3, 4])], "voice.wav", { type: "audio/wav" });
     const first = await enqueueVocalProfileAnalysis({ userId, idempotencyKey: "same-request", file });
     const second = await enqueueVocalProfileAnalysis({ userId, idempotencyKey: "same-request", file });
@@ -169,6 +173,8 @@ test("enqueue is idempotent and job reads are owner-scoped", async (context) => 
     assert.equal((await prisma.mediaAsset.count({ where: { userId } })), 1);
     assert.equal((await getVocalProfileAnalysisJob(userId, first.id))?.job.id, first.id);
     assert.equal(await getVocalProfileAnalysisJob(otherId, first.id), null);
+    assert.deepEqual((await listVisibleVocalProfileAnalysisJobs(userId)).map((job) => job.id), [first.id]);
+    assert.deepEqual(await listVisibleVocalProfileAnalysisJobs(otherId), []);
   } finally {
     globalThis.fetch = previousFetch;
     if (previousEnv.baseUrl === undefined) delete process.env.LEEMAGE_BASE_URL; else process.env.LEEMAGE_BASE_URL = previousEnv.baseUrl;
