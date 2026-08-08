@@ -150,17 +150,19 @@
     - [x] active Modal profile/workspace `dbstndla1212`를 재확인해 analyzer를 재배포했고 Lemon(89, `SX_ViT4Ra7k`) target probe가 52,660,710-byte WAV를 13.264초에 반환함을 확인했다.
     - [x] 전체 `pnpm test`, lint, tsc, build, Prisma validate/status, Python analyzer 35 passed/3 skipped, Modal unit 9/9, `git diff --check`, workflow audit를 통과했다.
 
-- [TODO][PRD-NFR-005] T-F011-midrange-only-vocal-reference-09 카탈로그 target asset 사전 업로드와 Song 연결
+- [DONE][PRD-FR-019][PRD-DATA-006][PRD-DATA-010][PRD-NFR-005] T-F011-midrange-only-vocal-reference-09 카탈로그 target asset 사전 업로드와 Song 연결
   - Date: 2026-08-08
   - Acceptance:
-    - 권한 있는 카탈로그 원본 파일을 git 비추적 tmp/catalog-targets staging에 두고 Leemage target asset으로 업로드할 수 있다.
-    - Song row가 준비된 target MediaAsset을 소유권 없는 catalog asset으로 연결하고 mixing worker는 런타임 YouTube 다운로드 대신 이 asset을 사용한다.
-    - catalog target import는 파일 누락, catalog-order 불일치, 중복 업로드를 안전하게 처리하고 재실행 가능하다.
+    - 사용 권한을 확인한 카탈로그 원본 파일을 Git 비추적 `tmp/catalog-targets` staging에 두고 RIFF WAV로 정규화한 뒤 Leemage catalog target asset으로 업로드할 수 있다.
+    - Song row가 READY `CatalogTargetAsset`을 연결하고 새 MixingJob은 해당 `targetAssetId`를 snapshot하며 worker는 런타임 YouTube 다운로드 대신 이 asset을 사용한다.
+    - catalog target import는 파일 누락, catalog-order/sourceVideoId 불일치, 동일 SHA-256 중복 업로드를 안전하게 처리하고 재실행 가능하다.
   - Checklist:
-    - [ ] tmp/catalog-targets 경로를 gitignore하고 import/verify CLI를 추가한다.
-    - [ ] Song-target MediaAsset 관계와 migration을 추가한다.
-    - [ ] mixing worker를 cached target 우선/필수 정책으로 바꾸고 DB integration test를 추가한다.
-    - [ ] 운영 문서와 workflow audit를 동기화한다.
+    - [x] `/tmp/`를 gitignore하고 `catalog:targets:import`, `catalog:targets:verify` CLI와 local staging README를 추가했다.
+    - [x] `CatalogTargetAsset`, `Song.targetAssetId`, nullable legacy-compatible `MixingJob.targetAssetId`와 migration을 추가해 DB에 적용했다.
+    - [x] mixing enqueue는 target 미준비 시 티켓 차감 전에 `MIXING_TARGET_UNAVAILABLE`, worker는 cached target fetch + `CATALOG_TARGET_FETCH_FAILED` retry를 사용하도록 변경했다.
+    - [x] importer integration 1/1, mixing DB integration 1/1, 전체 `pnpm test`, lint, tsc, Prisma validate/status와 `git diff --check`를 통과했다.
+    - [x] `catalog:targets:verify`는 실제 catalog 100곡을 정확히 검사하며 현재 authorized staging 파일이 없어 `0/100 READY`임을 확인했다. `catalog:targets:import -- 34`는 필요한 `034-B_Xj5ddZDHE.*` 파일명을 안전하게 missing으로 보고한다.
+    - [x] PRD/spec/plan/ADR/system architecture/Modal README를 production cached-target 계약으로 동기화했다.
 
 ---
 
@@ -194,11 +196,14 @@
 | `pnpm run lint` | `2026-08-08` | `PASS` |
 
 | `pnpm exec tsx --test tests/mixing-reference.test.ts` | `2026-08-08` | `PASS (4/4: mid-v1 strict + legacy fallback)` |
-| `pnpm run test:mixing:db` | `2026-08-08` | `PASS (1/1: backend config + reference terminal + song-target retry/backoff/exhausted refund + submit ambiguity + snapshot/result flow)` |
+| `pnpm run test:mixing:db` | `2026-08-08` | `PASS (1/1: reference + catalog target preflight, target snapshot/fetch retry, submit ambiguity, result flow)` |
 | `pnpm run modal:vocal-profile:deploy` | `2026-08-08` | `PASS (active workspace dbstndla1212, Modal 1.5.3, analyzer redeployed)` |
 | `MODAL_BENCHMARK_COLD_WAIT_SECONDS=0 pnpm run modal:vocal-profile:benchmark -- 10` | `2026-08-08` | `PASS (wrong key 401, health smart-reference-mid-v1 + song-target-v1, 10s cold/warm 35.798s/7.766s)` |
 | `pnpm run modal:vocal-profile:song-target-probe -- 89` | `2026-08-08` | `PASS (Lemon, audio/wav RIFF, 52,660,710 bytes, 13.264s)` |
-| `pnpm run db:status` | `2026-08-08` | `PASS (9 migrations, database schema up to date)` |
+| `pnpm run db:status` | `2026-08-08` | `PASS (10 migrations, database schema up to date)` |
 | `pytest -q services/vocal-profile-api/tests/test_modal_parity.py -k deployed` | `2026-08-08` | `PASS (3/3: 10/30/60 exact profile + source/reference bytes)` |
+| `pnpm run test:catalog-targets` | `2026-08-08` | `PASS (1/1: Leemage upload mock + Song link + SHA-256 idempotency)` |
+| `pnpm run catalog:targets:verify` | `2026-08-08` | `PASS (catalog 100곡 정확히 검사, 현재 0/100 READY)` |
+| `pnpm run catalog:targets:import -- 34` | `2026-08-08` | `PASS (authorized staging 파일 없음, expected 034-B_Xj5ddZDHE.* missing 보고)` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-08T03:12:04.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-08T03:51:22.000Z -->

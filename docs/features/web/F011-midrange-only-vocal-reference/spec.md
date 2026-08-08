@@ -121,9 +121,10 @@ F011은 보컬 프로필 통계에 사용하는 최대 60초 분석 source와 �
 - 동일 fixture에 대해 local과 Modal의 profile descriptor와 synthesis reference bytes가 동일해야 한다.
 - F010 durable queue worker는 source asset을 그대로 재사용하고 새 synthesis reference만 추가 저장하는 현재 persistence 경계를 유지한다.
 - retry, terminal failure cleanup과 source ownership semantics를 변경하지 않는다.
-- `VOCAL_PROFILE_ANALYZER_BACKEND=modal`인 production mixing worker는 곡 target 준비도 같은 authenticated Modal analyzer의 `/v1/song-target`을 사용하며 로컬 `VOCAL_PROFILE_API_URL`에 의존하지 않는다.
-- `/v1/song-target`은 기존 catalog allowlist와 yt-dlp/FFmpeg WAV 생성·임시 cleanup 계약을 유지한다.
-- reference 다운로드, song-target 준비, SoulX Modal submit 단계의 네트워크 실패는 서로 구분되는 stable error code로 기록하고, Modal 접수 전 retryable failure는 bounded retry를 사용한다.
+- 운영자가 사용 권한을 확보한 카탈로그 target 파일은 Git 비추적 `tmp/catalog-targets` staging에서 catalog order + sourceVideoId로 검증되고 WAV로 정규화된 뒤 Leemage `CatalogTargetAsset`으로 사전 업로드된다.
+- Song은 READY catalog target asset 하나를 가리키며 새 MixingJob은 enqueue 시 해당 `targetAssetId`를 snapshot한다. target이 없거나 READY가 아니면 티켓 차감 전에 `MIXING_TARGET_UNAVAILABLE`로 거부한다.
+- production mixing worker는 런타임 `/v1/song-target` 또는 YouTube 다운로드를 사용하지 않고 snapshot된 Leemage target을 읽는다. target/reference Leemage fetch와 이미 생성된 SoulX job의 status/result GET은 retryable failure에서 bounded retry를 사용한다.
+- Modal analyzer의 `/v1/song-target`은 개발·진단용 capability로 남길 수 있으나 production mixing source-of-truth는 아니다.
 
 ---
 

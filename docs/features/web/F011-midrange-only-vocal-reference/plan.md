@@ -173,33 +173,35 @@ UI 문구도 이 3개 player가 모델 prompt 그 자체가 아니라 **사람�
 
 mixing job 생성 시 선택된 asset ID를 `referenceAssetId`로 snapshot하는 현재 semantics는 그대로 유지한다.
 
-### 7. persistence / queue / Modal 경계
+### 7. persistence / queue / catalog target 경계
 
-Prisma schema 변경은 필요 없다.
+F010 analysis queue와 보컬 reference persistence는 그대로 유지한다.
 
-- F010 analysis job queue 변경 없음
 - source `REFERENCE` asset 재사용 변경 없음
 - synthesis reference는 기존 `storeAnalyzerSynthesisReferenceBytes()`로 저장
 - `VocalProfile.synthesisReferenceAssetId` relation 재사용
 - Modal의 `modal-analysis-envelope-v1` base64/hash transport 재사용
-- local/Modal은 shared `reference.py`를 사용하므로 algorithm 분기를 만들지 않는다
+- local/Modal은 shared `reference.py`를 사용하므로 보컬 reference algorithm 분기를 만들지 않는다
+- T09는 사용자 소유 `MediaAsset`과 분리된 `CatalogTargetAsset`을 추가한다.
+- `Song.targetAssetId`는 현재 READY catalog target 하나를 가리킨다.
+- 새 `MixingJob.targetAssetId`는 enqueue 당시 target asset을 snapshot하며 기존 job 호환을 위해 nullable이다.
 
 synthesis reference 생성이 unavailable이어도 profile 저장 자체는 허용한다. 다만 새 mid-v1 profile은 mixing enqueue 단계에서 source fallback을 금지한다.
 
-### 8. mixing song-target도 analyzer backend 경계를 따른다
+### 8. catalog target 사전 업로드와 runtime YouTube 의존 제거
 
-현재 mixing worker는 `VOCAL_PROFILE_ANALYZER_BACKEND`와 무관하게 `VOCAL_PROFILE_API_URL/v1/song-target`을 직접 호출해, 보컬 분석을 Modal로 전환한 환경에서도 로컬 analyzer가 꺼져 있으면 preflight가 `fetch failed`로 종료된다.
+production mixing은 런타임 YouTube/yt-dlp 다운로드를 사용하지 않는다. 운영자가 사용 권한을 확보한 target 파일을 Git 비추적 `tmp/catalog-targets`에 배치하고 다음 contract로 import한다.
 
-이를 다음처럼 정리한다.
+- 파일명: `<3-digit catalogOrder>-<sourceVideoId>.<ext>`
+- 입력: WAV, MP3, M4A, AAC, WebM, FLAC
+- 비-WAV 입력은 같은 staging 디렉터리에 RIFF PCM WAV로 정규화한다.
+- catalog artifact의 order/title/artist/sourceVideoId와 DB Song을 검증한다.
+- WAV SHA-256이 현재 Song target과 같으면 Leemage 재업로드를 건너뛴다.
+- 새 파일이면 Leemage 업로드 → `CatalogTargetAsset` 생성 → `Song.targetAssetId` 교체 순서로 처리한다.
+- 교체된 옛 asset이 기존 MixingJob에 snapshot되어 있으면 보존하고, 참조가 없을 때만 외부 파일/DB row 정리를 시도한다.
+- `catalog:targets:verify`는 1~100 catalog의 READY/missing 상태와 필요한 staging 파일명을 출력한다.
 
-- backend=`modal`: `VOCAL_PROFILE_MODAL_URL/v1/song-target` + `VOCAL_PROFILE_MODAL_API_KEY` 또는 `MODAL_API_KEY`로 authenticated 호출
-- backend=`local`: 기존 `VOCAL_PROFILE_API_URL/v1/song-target` 유지
-- Modal image에는 pinned `yt-dlp`와 `data/catalogs/tj-2607-top100.md` allowlist를 포함한다.
-- Modal `/v1/song-target`은 shared `download_song_target()`을 사용하고 response streaming 종료 시 temporary directory를 제거한다.
-- mixing worker는 단계별 `MixingStageError`를 사용해 reference download, song-target, SoulX submit/poll/result 실패를 구분한다.
-- SoulX 접수 전 retryable network/5xx/429 failure는 job을 다시 `PENDING`으로 돌려 `attempts < maxAttempts` 동안 재시도하고, non-retryable 4xx/allowlist 실패 또는 attempts 소진 시에만 terminal fail + 기존 refund를 수행한다.
-
-이 변경으로 production `modal` backend에서는 `VOCAL_PROFILE_API_URL`이 필요 없고 local 개발 경로에서만 사용한다.
+믹싱 enqueue는 READY target이 없으면 `MIXING_TARGET_UNAVAILABLE`로 티켓 차감 전에 거부한다. worker는 `MixingJob.targetAssetId`로 snapshot된 Leemage URL을 읽고, target fetch transient failure는 `CATALOG_TARGET_FETCH_FAILED`로 bounded retry한다. `/v1/song-target`은 개발·진단용으로 남지만 production mixing 경로에서는 호출하지 않는다.
 
 ---
 
@@ -215,9 +217,16 @@ services/vocal-profile-api/tests/
 └── test_modal_parity.py                 # local ↔ Modal exact parity
 
 services/vocal-profile-modal/
-├── modal_app.py                         # analyze + authenticated song-target endpoint
+├── modal_app.py                         # analyze + 개발/진단용 authenticated song-target endpoint
 ├── test_transport.py                    # new version envelope compatibility
 └── test_modal_app_source.py             # CPU/auth/song-target source contract
+
+lib/song-catalog/
+└── target-assets.ts                     # staging 검증, WAV 정규화, Leemage import/link
+
+scripts/
+├── import-catalog-targets.ts            # authorized local target → Leemage + Song link
+└── verify-catalog-targets.ts            # catalog 1~100 target readiness
 
 lib/vocal-profile/
 ├── contract.ts                          # v1 + mid-v1 synthesis contract validation
@@ -228,8 +237,11 @@ components/
 
 lib/mixing/
 ├── reference.ts                         # version-aware strict/fallback policy
-├── queue.ts                             # profile descriptor policy 전달
-└── worker.ts                            # backend-aware song-target + stage errors/retry
+├── queue.ts                             # reference + READY catalog target snapshot
+└── worker.ts                            # Leemage target fetch + stage errors/retry
+
+prisma/migrations/
+└── 20260808123500_catalog_target_assets # CatalogTargetAsset + Song/MixingJob links
 
 tests/
 ├── vocal-profile-contract.test.ts
@@ -237,6 +249,7 @@ tests/
 ├── vocal-profile-results-ui.test.tsx
 ├── private-audio-proxy.test.ts
 ├── mixing-reference.test.ts
+├── catalog-target-assets.integration.ts
 └── mixing-queue.integration.ts
 ```
 
@@ -295,14 +308,15 @@ F011 배포 이후 analyzer가 새로 분석한 profile은 `smart-reference-mid-
 - legacy/v1은 기존 fallback 유지
 - UI helper가 `analysisReferenceBands`를 우선 읽고 기존 v1 sourceRanges fallback을 유지
 
-### mixing song-target / retry 테스트
+### catalog target import / mixing retry 테스트
 
-- modal backend에서 song-target URL과 `X-API-Key`가 Modal analyzer 설정을 사용
-- local backend에서 기존 local analyzer URL을 유지
-- reference fetch / song-target fetch / Modal submit network failure가 서로 다른 error code로 저장
-- retryable preflight failure는 attempts가 남으면 `PENDING`으로 돌아가고 티켓을 즉시 환불하지 않음
+- authorized staged WAV가 Leemage에 한 번 업로드되고 `Song.targetAssetId`가 READY asset을 가리킴
+- 같은 SHA-256 재import는 외부 업로드 없이 기존 asset을 재사용
+- target 미연결 상태의 mixing enqueue는 `MIXING_TARGET_UNAVAILABLE`로 티켓 차감/Job 생성 없음
+- READY target은 새 `MixingJob.targetAssetId`로 snapshot
+- reference fetch / catalog target fetch / Modal submit network failure가 서로 다른 error code로 저장
+- retryable Leemage target fetch failure는 attempts가 남으면 `PENDING`으로 돌아가고 티켓을 즉시 환불하지 않음
 - attempts 소진 시 terminal `FAILED` + 한 번만 refund
-- deployed `dbstndla1212` analyzer에서 Lemon allowlist target WAV가 200으로 반환
 
 ### 통합/UI 테스트
 
@@ -310,7 +324,7 @@ F011 배포 이후 analyzer가 새로 분석한 profile은 `smart-reference-mid-
 - synthesisReference sourceRanges가 mid-only여도 UI는 사람용 3-band descriptor를 사용
 - smart-reference-v1 fixture는 기존 synthesisReference sourceRanges로 3개 control 유지
 - mixing enqueue에서 mid-v1 reference missing 시 티켓 차감/ MixingJob 생성 없음
-- READY mid-v1 reference는 `referenceAssetId`로 snapshot
+- READY mid-v1 reference는 `referenceAssetId`, READY catalog target은 `targetAssetId`로 각각 snapshot
 
 ### 전체 회귀
 
@@ -336,7 +350,9 @@ F011 배포 이후 analyzer가 새로 분석한 profile은 `smart-reference-mid-
 7. queue/persistence/mixing/UI 통합 테스트와 전체 회귀
 8. mixing song-target을 backend-aware Modal/local 경로로 분리하고 preflight stage retry/error contract 강화
 9. `dbstndla1212` Modal analyzer 재배포 후 Lemon target remote probe
-10. docs/ADR/workflow audit 동기화
+10. `tmp/catalog-targets` authorized staging → Leemage `CatalogTargetAsset` import/link 추가
+11. mixing enqueue/worker를 cached target snapshot 경로로 전환해 runtime YouTube 의존 제거
+12. docs/ADR/workflow audit 동기화
 
 ---
 
