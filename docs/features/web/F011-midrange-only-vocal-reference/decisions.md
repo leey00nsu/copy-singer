@@ -131,10 +131,10 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 이미 배포·인증·scale-to-zero가 검증된 CPU analyzer를 재사용해 로컬 컨테이너 의존성을 제거하면서, 장애 위치와 retry 여부를 운영자가 바로 식별할 수 있다.
 - **Trace**:
   - **DOING 시작 시점**: T08에서 Modal song-target endpoint, backend-aware worker, stage error/retry, env/docs 정리를 구현한 뒤 `dbstndla1212` workspace에만 재배포한다.
-  - **DONE 전 확정 시점**: 구현 후 갱신한다.
+  - **DONE 전 확정 시점**: Modal analyzer에 `song-target-v1` capability와 shared `download_song_target()` streaming endpoint를 추가하고 `yt-dlp==2026.7.4`/catalog allowlist를 image에 포함했다. mixing worker는 backend-aware target config를 사용하고 `MixingJob.nextAttemptAt/retryable` 기반 exponential backoff를 도입했다. reference/song-target/status/result GET의 transient failure는 재시도하며 SoulX submit network 단절은 idempotency 부재로 terminal 처리한다. `dbstndla1212` 재배포 후 Lemon target이 52,660,710-byte RIFF WAV로 13.264초에 반환됐다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
   - **Commit**: task commit 후 갱신
   - **PR**: local workflow — 해당 없음
-  - **Test/Log**: 구현 후 갱신
+  - **Test/Log**: `pnpm test` PASS, mixing DB integration PASS, Prisma 9 migrations up to date, Python analyzer 35 passed/3 skipped, Modal unit 9/9, Lemon remote song-target probe PASS, 10초 analyzer benchmark PASS
 - **Consequences**: production modal backend에서 `VOCAL_PROFILE_API_URL`은 더 이상 mixing에 필요하지 않고 local 개발 backend에서만 사용한다.

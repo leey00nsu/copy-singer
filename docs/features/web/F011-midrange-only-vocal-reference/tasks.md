@@ -135,7 +135,7 @@
     - [x] wrong key 401과 authenticated health의 `smart-reference-mid-v1`, CPU 2 cores/4096 MiB/scale-to-zero 설정을 확인했다.
     - [x] 10/30/60초 fixture의 deployed local↔remote profile JSON + source/reference bytes exact parity 3/3을 확인했다.
 
-- [TODO][PRD-FR-042][PRD-NFR-005] T-F011-midrange-only-vocal-reference-08 믹싱 song-target Modal 이관과 preflight retry·진단 강화
+- [DONE][PRD-FR-042][PRD-NFR-005] T-F011-midrange-only-vocal-reference-08 믹싱 song-target Modal 이관과 preflight retry·진단 강화
   - Date: 2026-08-08
   - Acceptance:
     - `VOCAL_PROFILE_ANALYZER_BACKEND=modal`이면 mixing worker의 곡 target 준비도 `dbstndla1212`의 `copy-singer-vocal-profile-analyzer` `/v1/song-target`을 사용해 로컬 `localhost:8001` analyzer 없이 동작한다.
@@ -143,12 +143,12 @@
     - preflight 네트워크 오류는 reference/song-target/Modal-submit 단계별 stable error code로 기록되고, retryable preflight failure는 `maxAttempts` 범위에서 재큐잉된다.
     - Lemon 실제 target 준비가 Modal에서 성공하고 기존 실패 job의 티켓 환불 semantics는 유지된다.
   - Checklist:
-    - [ ] Modal image에 pinned `yt-dlp`와 catalog allowlist를 포함하고 `/v1/song-target`을 추가한다.
-    - [ ] mixing worker가 analyzer backend별 song-target endpoint/auth를 선택하되 production modal 경로는 localhost에 의존하지 않게 한다.
-    - [ ] `REFERENCE_FETCH_FAILED`, `SONG_TARGET_FETCH_FAILED`, `MODAL_SUBMIT_FAILED` 등 단계별 오류와 retryable preflight 재큐잉을 구현한다.
-    - [ ] `.env.example`/운영 문서에서 `VOCAL_PROFILE_API_URL`은 local backend 전용임을 명확히 하고 실제 `.env.local`의 중복 key를 정리한다.
-    - [ ] local 테스트 후 active Modal profile `dbstndla1212`를 확인해 analyzer를 재배포하고 Lemon song-target remote probe를 검증한다.
-    - [ ] 전체 test/lint/tsc/build/Prisma/Python/Modal/workflow audit를 통과한다.
+    - [x] Modal image에 `yt-dlp==2026.7.4`와 packaged catalog allowlist를 포함하고 authenticated `/v1/song-target` + stream cleanup을 추가했다.
+    - [x] mixing worker가 analyzer backend별 song-target endpoint/auth를 선택하며 `modal` backend에서는 `VOCAL_PROFILE_MODAL_URL`을 사용해 localhost 의존성을 제거했다.
+    - [x] `REFERENCE_FETCH_FAILED`, `SONG_TARGET_FETCH_FAILED`, `MODAL_SUBMIT_FAILED`, `MODAL_STATUS_FETCH_FAILED`, `MODAL_RESULT_FETCH_FAILED` 단계별 오류와 `nextAttemptAt` bounded retry를 구현했다. non-idempotent SoulX submit network 단절은 중복 방지를 위해 자동 재시도하지 않는다.
+    - [x] `.env.example`/운영 문서에서 `VOCAL_PROFILE_API_URL`을 local backend 전용으로 명시했고 `.env.local`의 중복 key를 1개로 정리했다.
+    - [x] active Modal profile/workspace `dbstndla1212`를 재확인해 analyzer를 재배포했고 Lemon(89, `SX_ViT4Ra7k`) target probe가 52,660,710-byte WAV를 13.264초에 반환함을 확인했다.
+    - [x] 전체 `pnpm test`, lint, tsc, build, Prisma validate/status, Python analyzer 35 passed/3 skipped, Modal unit 9/9, `git diff --check`, workflow audit를 통과했다.
 
 ---
 
@@ -156,8 +156,8 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -182,9 +182,11 @@
 | `pnpm run lint` | `2026-08-08` | `PASS` |
 
 | `pnpm exec tsx --test tests/mixing-reference.test.ts` | `2026-08-08` | `PASS (4/4: mid-v1 strict + legacy fallback)` |
-| `pnpm run test:mixing:db` | `2026-08-08` | `PASS (1/1: missing mid reference has no ticket/job side effect + snapshot flow)` |
+| `pnpm run test:mixing:db` | `2026-08-08` | `PASS (1/1: backend config + reference terminal + song-target retry/backoff/exhausted refund + submit ambiguity + snapshot/result flow)` |
 | `pnpm run modal:vocal-profile:deploy` | `2026-08-08` | `PASS (active workspace dbstndla1212, Modal 1.5.3, analyzer redeployed)` |
-| `MODAL_BENCHMARK_COLD_WAIT_SECONDS=0 pnpm run modal:vocal-profile:benchmark -- 10` | `2026-08-08` | `PASS (wrong key 401, health smart-reference-mid-v1, 10s cold/warm 38.680s/7.475s)` |
+| `MODAL_BENCHMARK_COLD_WAIT_SECONDS=0 pnpm run modal:vocal-profile:benchmark -- 10` | `2026-08-08` | `PASS (wrong key 401, health smart-reference-mid-v1 + song-target-v1, 10s cold/warm 35.798s/7.766s)` |
+| `pnpm run modal:vocal-profile:song-target-probe -- 89` | `2026-08-08` | `PASS (Lemon, audio/wav RIFF, 52,660,710 bytes, 13.264s)` |
+| `pnpm run db:status` | `2026-08-08` | `PASS (9 migrations, database schema up to date)` |
 | `pytest -q services/vocal-profile-api/tests/test_modal_parity.py -k deployed` | `2026-08-08` | `PASS (3/3: 10/30/60 exact profile + source/reference bytes)` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-08T02:34:57.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-08T03:12:04.000Z -->
