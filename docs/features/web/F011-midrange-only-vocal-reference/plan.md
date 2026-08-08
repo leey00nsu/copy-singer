@@ -194,10 +194,10 @@ production mixing은 런타임 YouTube/yt-dlp 다운로드를 사용하지 않�
 
 - 파일명: `<3-digit catalogOrder>-<sourceVideoId>.<ext>`
 - 입력: WAV, MP3, M4A, AAC, WebM, FLAC
-- 비-WAV 입력은 같은 staging 디렉터리에 RIFF PCM WAV로 정규화한다.
+- 지원 포맷의 원본 bytes와 MIME을 그대로 Leemage에 저장한다. 불필요한 사전 PCM WAV 변환은 하지 않는다.
 - catalog artifact의 order/title/artist/sourceVideoId와 DB Song을 검증한다.
-- WAV SHA-256이 현재 Song target과 같으면 Leemage 재업로드를 건너뛴다.
-- 새 파일이면 Leemage 업로드 → `CatalogTargetAsset` 생성 → `Song.targetAssetId` 교체 순서로 처리한다.
+- 저장 대상 원본 bytes의 SHA-256이 현재 Song target과 같으면 Leemage 재업로드를 건너뛴다.
+- 새 파일이면 원본 확장자/MIME 그대로 Leemage 업로드 → `CatalogTargetAsset` 생성 → `Song.targetAssetId` 교체 순서로 처리한다.
 - 교체된 옛 asset이 기존 MixingJob에 snapshot되어 있으면 보존하고, 참조가 없을 때만 외부 파일/DB row 정리를 시도한다.
 - `catalog:targets:verify`는 1~100 catalog의 READY/missing 상태와 필요한 staging 파일명을 출력한다.
 
@@ -222,7 +222,7 @@ services/vocal-profile-modal/
 └── test_modal_app_source.py             # CPU/auth/song-target source contract
 
 lib/song-catalog/
-└── target-assets.ts                     # staging 검증, WAV 정규화, Leemage import/link
+└── target-assets.ts                     # staging 검증, 원본 MIME 보존, Leemage import/link
 
 scripts/
 ├── import-catalog-targets.ts            # authorized local target → Leemage + Song link

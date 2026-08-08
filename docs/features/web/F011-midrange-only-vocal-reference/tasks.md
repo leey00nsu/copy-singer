@@ -153,7 +153,7 @@
 - [DONE][PRD-FR-019][PRD-DATA-006][PRD-DATA-010][PRD-NFR-005] T-F011-midrange-only-vocal-reference-09 카탈로그 target asset 사전 업로드와 Song 연결
   - Date: 2026-08-08
   - Acceptance:
-    - 사용 권한을 확인한 카탈로그 원본 파일을 Git 비추적 `tmp/catalog-targets` staging에 두고 RIFF WAV로 정규화한 뒤 Leemage catalog target asset으로 업로드할 수 있다.
+    - 사용 권한을 확인한 카탈로그 원본 파일을 Git 비추적 `tmp/catalog-targets` staging에 두고 catalog identity를 검증한 뒤 지원되는 원본 bytes/MIME 그대로 Leemage catalog target asset으로 업로드할 수 있다.
     - Song row가 READY `CatalogTargetAsset`을 연결하고 새 MixingJob은 해당 `targetAssetId`를 snapshot하며 worker는 런타임 YouTube 다운로드 대신 이 asset을 사용한다.
     - catalog target import는 파일 누락, catalog-order/sourceVideoId 불일치, 동일 SHA-256 중복 업로드를 안전하게 처리하고 재실행 가능하다.
   - Checklist:
@@ -164,14 +164,18 @@
     - [x] `catalog:targets:verify`는 실제 catalog 100곡을 정확히 검사하며 현재 authorized staging 파일이 없어 `0/100 READY`임을 확인했다. `catalog:targets:import -- 34`는 필요한 `034-B_Xj5ddZDHE.*` 파일명을 안전하게 missing으로 보고한다.
     - [x] PRD/spec/plan/ADR/system architecture/Modal README를 production cached-target 계약으로 동기화했다.
 
-- [TODO][PRD-NFR-005] T-F011-midrange-only-vocal-reference-10 yt-dlp staging filename 자동 매칭과 카탈로그 일괄 업로드
+- [DONE][PRD-NFR-005] T-F011-midrange-only-vocal-reference-10 yt-dlp staging filename 자동 매칭과 카탈로그 일괄 업로드
   - Date: 2026-08-08
   - Acceptance:
-    - tmp/catalog-targets의 yt-dlp 기본 파일명에서 catalog sourceVideoId를 안전하게 식별해 해당 Song과 매칭한다.
-    - 100개 staging 파일을 WAV로 정규화하고 Leemage에 업로드한 뒤 CatalogTargetAsset과 Song 연결을 완료할 수 있다.
+    - `tmp/catalog-targets`의 yt-dlp 기본 파일명에서 catalog sourceVideoId를 안전하게 식별해 해당 Song과 매칭한다.
+    - 100개 staging 파일의 압축 원본 bytes/MIME을 유지한 채 Leemage에 업로드하고 `CatalogTargetAsset`과 Song 연결을 완료한다.
+    - 기존 PCM WAV catalog asset은 새 압축 asset으로 교체하고 MixingJob 참조가 없는 superseded object/row와 로컬 파생 WAV를 정리한다.
   - Checklist:
-    - [ ] videoId 기반 staging 파일 탐색과 중복/모호성 검증을 추가한다.
-    - [ ] 100곡 import 후 catalog:targets:verify가 100/100 READY를 반환하는지 확인한다.
+    - [x] videoId 기반 staging 파일 탐색과 중복/모호성 검증을 추가했다. `[sourceVideoId]` yt-dlp 파일을 strict canonical 파일보다 우선해 원본 압축 source를 선택한다.
+    - [x] importer가 m4a/mp3/aac/webm/flac/wav의 원본 MIME과 확장자를 보존하고 SHA-256 idempotency를 저장 bytes 기준으로 적용하도록 변경했다.
+    - [x] mixing worker가 `CatalogTargetAsset.fileName`/`mimeType`을 SoulX multipart에 그대로 전달하고 SoulX 내부 44.1kHz mono 정규화 경계를 유지하도록 통합 테스트를 갱신했다.
+    - [x] 실제 100곡을 Leemage에 업로드·연결해 `catalog:targets:verify`가 100/100 READY, `audio/mp4` 100개, stored asset 100개, orphan 0개, 총 606,293,177 bytes를 반환함을 확인했다.
+    - [x] 전체 importer 재실행에서 100/100 `skipped=true`로 idempotency를 확인했고 로컬 파생 `<order>-<videoId>.wav` 파일이 0개임을 확인했다.
 
 ---
 
@@ -212,7 +216,7 @@
 | `pnpm run db:status` | `2026-08-08` | `PASS (10 migrations, database schema up to date)` |
 | `pytest -q services/vocal-profile-api/tests/test_modal_parity.py -k deployed` | `2026-08-08` | `PASS (3/3: 10/30/60 exact profile + source/reference bytes)` |
 | `pnpm run test:catalog-targets` | `2026-08-08` | `PASS (1/1: Leemage upload mock + Song link + SHA-256 idempotency)` |
-| `pnpm run catalog:targets:verify` | `2026-08-08` | `PASS (catalog 100곡 정확히 검사, 현재 0/100 READY)` |
-| `pnpm run catalog:targets:import -- 34` | `2026-08-08` | `PASS (authorized staging 파일 없음, expected 034-B_Xj5ddZDHE.* missing 보고)` |
+| `pnpm run catalog:targets:verify` | `2026-08-08` | `PASS (100/100 READY, audio/mp4 100, stored assets 100, orphan 0, 606,293,177 bytes)` |
+| `pnpm run catalog:targets:import` | `2026-08-08` | `PASS (100/100 idempotent skip, 기존 WAV asset 교체 완료, local derived WAV 0)` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-08T03:51:22.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-08T04:43:13.000Z -->

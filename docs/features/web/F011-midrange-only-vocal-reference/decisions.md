@@ -144,14 +144,14 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Context**: `죽일 놈(Guilty)` target 생성에서 YouTube가 Modal egress에 `Sign in to confirm you’re not a bot` challenge를 반환해 `/v1/song-target`이 502로 반복 실패했다. 런타임 yt-dlp 의존은 곡별 anti-bot/rate-limit 조건 때문에 사용자 믹싱 성공률을 안정적으로 보장하지 못한다.
 - **Constraints**: Git 저장소와 PostgreSQL에는 원곡 바이너리를 넣지 않는다. 장기 저장 대상은 운영자가 사용 권한을 확인한 catalog mixing target으로 제한한다. 이미 생성된 MixingJob은 enqueue 당시 입력 asset이 바뀌지 않아야 한다.
 - **Options**: YouTube cookie/proxy 우회, 매 요청 yt-dlp 재시도, 사용자가 매번 target 업로드, authorized catalog target을 사전 Leemage 업로드하는 방식을 비교한다.
-- **Decision**: 권한 있는 파일을 Git 비추적 `tmp/catalog-targets`에 `<catalogOrder>-<sourceVideoId>` 이름으로 staging하고 importer가 WAV 정규화 → SHA-256 계산 → Leemage 업로드 → `CatalogTargetAsset` 생성 → `Song.targetAssetId` 연결을 수행한다. 새 MixingJob은 `targetAssetId`를 snapshot하고 worker는 이 asset만 사용한다.
+- **Decision**: 권한 있는 파일을 Git 비추적 `tmp/catalog-targets`에 staging하고 importer가 catalog sourceVideoId를 검증한 뒤 원본 압축 bytes/MIME 그대로 SHA-256 계산 → Leemage 업로드 → `CatalogTargetAsset` 생성 → `Song.targetAssetId` 연결을 수행한다. SoulX는 합성 시 내부 44.1kHz mono 정규화를 수행한다. 새 MixingJob은 `targetAssetId`를 snapshot하고 worker는 이 asset만 사용한다.
 - **Rationale**: production mixing에서 YouTube availability와 anti-bot 판정의 변동성을 제거하면서 repo/DB 바이너리 저장을 피하고, 운영자가 사용 권한을 확인한 파일만 명시적으로 등록할 수 있다.
 - **Trace**:
   - **DOING 시작 시점**: T09에서 schema/migration, staging import/verify CLI, cached target enqueue/worker 경계를 구현한다. 현재 100곡 target 파일은 staging에 없으므로 실제 Leemage catalog upload는 파일 제공 후 importer로 수행한다.
-  - **DONE 전 확정 시점**: `CatalogTargetAsset`과 Song/MixingJob target snapshot schema를 추가하고 migration을 로컬 DB에 적용했다. importer는 `<catalogOrder>-<sourceVideoId>` staging 파일을 WAV로 정규화하고 SHA-256 동일 파일을 skip한 뒤 Leemage 업로드/연결한다. mixing enqueue는 READY target이 없으면 차감 전에 거부하고 worker는 snapshot된 Leemage target만 fetch한다. 전체 `pnpm test`, importer 1/1, mixing DB 1/1, lint/tsc/Prisma가 통과했으며 verify 기준 현재 authorized target population은 0/100이다.
+  - **DONE 전 확정 시점**: `CatalogTargetAsset`과 Song/MixingJob target snapshot schema를 추가하고 migration을 로컬 DB에 적용했다. importer는 strict `<catalogOrder>-<sourceVideoId>` 파일과 yt-dlp 기본 `[sourceVideoId]` 파일명을 모두 안전하게 매칭하고, 원본 압축 bytes/MIME의 SHA-256이 동일하면 skip한다. 2026-08-08 실제 staging 100곡을 `audio/mp4` 그대로 Leemage에 업로드·Song 연결했고 verify 기준 100/100 READY, stored asset 100개, orphan 0개, 총 606,293,177 bytes다. 기존 임시 WAV asset은 참조가 없어 교체 과정에서 외부/DB 모두 정리됐고 로컬 파생 WAV도 0개다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
   - **Commit**: task commit 후 갱신
   - **PR**: local workflow — 해당 없음
-  - **Test/Log**: `pnpm run test:catalog-targets` 1/1 PASS, `pnpm run test:mixing:db` 1/1 PASS, 전체 `pnpm test` PASS, Prisma 10 migrations up to date, `catalog:targets:verify` 100곡/0 READY, `catalog:targets:import -- 34` expected-file missing PASS
+  - **Test/Log**: `pnpm run test:catalog-targets` 1/1 PASS, `pnpm run test:mixing:db` 1/1 PASS, TypeScript PASS, `catalog:targets:import` idempotent 100/100 skip PASS, `catalog:targets:verify` 100/100 READY + `audio/mp4` 100 + orphan 0 PASS
 - **Consequences**: target이 준비되지 않은 곡은 티켓 차감 전에 `MIXING_TARGET_UNAVAILABLE`로 거부된다. `/v1/song-target`은 production mixing 경로에서 사용하지 않는다.
