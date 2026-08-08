@@ -69,19 +69,19 @@ local FastAPI는 기존 호환을 위해 현재 `POST /v1/analyze` + artifact GE
 
 ```mermaid
 flowchart LR
-  B[Browser] --> N[Next.js /api/vocal-profiles]
-  N -->|multipart + X-API-Key| M[Modal CPU ASGI analyzer]
+  B[Browser] -->|multipart + Idempotency-Key| N[Next.js enqueue API]
+  N --> L[Leemage source REFERENCE]
+  N --> J[PostgreSQL VocalProfileAnalysisJob]
+  J -->|lease claim| W[analysis worker]
+  L -->|source bytes| W
+  W -->|sync multipart + X-API-Key| M[Modal CPU ASGI analyzer]
   M --> T[request TemporaryDirectory]
   T --> C[shared analyzer core]
-  C --> P[AnalyzerProfile]
-  C --> S[source bytes]
-  C --> R[smart reference bytes]
-  P --> E[ephemeral response envelope]
-  S --> E
-  R --> E
-  E --> N
-  N --> L[Leemage]
-  N --> D[PostgreSQL]
+  C --> E[profile + source/reference envelope]
+  E --> W
+  W -->|smart reference| L
+  W --> P[VocalProfile + Recording]
+  B -->|poll job| J
 ```
 
 Modal image에는 다음을 고정한다.
@@ -146,19 +146,18 @@ backend 선택은 명시적 환경변수로 한다.
 
 production에서 modal 호출이 실패해도 local로 자동 fallback하지 않는다. backend 전환은 config 변경으로만 수행한다.
 
-### 5. Leemage persistence 재사용
+### 5. Durable enqueue와 Leemage persistence
 
-`app/api/vocal-profiles/route.ts`는 adapter에서 받은 bytes를 다음 순서로 처리한다.
+브라우저 요청은 분석 완료를 기다리지 않는다.
 
-1. analyzer response/recording ID/capability 검증
-2. source bytes를 Leemage `REFERENCE`로 저장
-3. smart reference가 있으면 `SYNTHESIS_REFERENCE`로 저장
-4. Prisma profile + recording relation 생성
-5. DB 실패 시 생성한 MediaAsset을 기존 `discardMediaAsset` 경로로 보상 정리
+1. enqueue API가 최대 60초 준비 오디오를 Leemage `REFERENCE`로 먼저 저장한다.
+2. 같은 request의 `Idempotency-Key`로 `VocalProfileAnalysisJob(PENDING)`을 생성하고 즉시 `202`를 반환한다.
+3. analysis worker가 PostgreSQL lease를 claim하고 source asset을 읽어 기존 analyzer adapter를 호출한다.
+4. analyzer가 반환한 source hash/size/MIME이 durable source와 동일한지 검증해 source를 다시 업로드하지 않는다.
+5. smart reference가 있으면 `SYNTHESIS_REFERENCE`로 저장하고 기존 source asset을 `Recording`에 연결해 `VocalProfile`을 생성한다.
+6. DB enqueue 실패는 방금 만든 source asset을 보상 삭제하고, terminal analysis failure도 source를 detach한 뒤 기존 cleanup 경로로 정리한다.
 
-`lib/leemage/media-service.ts`에는 analyzer URL에서 다운로드하는 함수와 별도로 **bytes 입력을 직접 저장하는 내부 primitive**를 만든다. local adapter도 장기적으로 이 common primitive를 사용하되 기존 동작을 깨지 않도록 단계적으로 전환한다.
-
-Modal에는 Leemage API key, DB URL, Better Auth secret을 전달하지 않는다.
+worker crash/일시 장애는 `leaseExpiresAt`, `attempts/maxAttempts`, `nextAttemptAt`으로 회수한다. expected analysis 4xx는 재시도하지 않고 429/5xx/network/timeout만 bounded retry한다. Modal에는 Leemage API key, DB URL, Better Auth secret을 전달하지 않는다.
 
 ### 6. 오류와 retry 계약
 
@@ -202,16 +201,16 @@ Modal auth, 429, 5xx, timeout, network error를 별도 stable reason code로 매
 - Modal 150초 HTTP 경계에 최소 30초 safety margin
 - retry 시 중복 external resource 없음
 
-2026-08-08 실측 결과 최대 wall time은 39.248초였고 60초 입력은 17.531/20.821초였다. deployed endpoint와 local shared analyzer의 10/30/60초 exact parity도 통과했으므로 **sync HTTP를 최종 채택**한다. async transport는 이번 Feature에서 구현하지 않는다.
+2026-08-08 실측 결과 최대 wall time은 39.248초였고 60초 입력은 17.531/20.821초였다. deployed endpoint와 local shared analyzer의 10/30/60초 exact parity도 통과했으므로 **Next.js worker → Modal transport는 sync HTTP를 최종 채택**한다.
 
-향후 위 조건을 만족하지 못하게 되면 별도 Feature에서 transport를 다음 async 형태로 바꾼다.
+T08에서 사용자-facing request lifecycle은 별도로 durable queue화한다. 즉 브라우저는 202 job을 받고 polling하지만, worker가 Modal을 호출할 때는 검증된 sync endpoint를 그대로 사용한다. 향후 Modal transport 자체가 아래 기준을 만족하지 못하게 되면 별도 Feature에서 Modal-side transport를 다음 async 형태로 바꾼다.
 
 ```text
 POST /v1/analyze-jobs -> server-owned operation ID / Modal FunctionCall id mapping
 GET  /v1/analyze-jobs/{id} -> pending | succeeded | failed
 ```
 
-이 경우 사용자에게 Modal raw call ID를 직접 노출하지 않고 Next.js server가 operation state를 소유한다. async 전환은 데이터 모델/UI scope를 늘리므로 benchmark evidence 없이 선제 도입하지 않는다.
+이 경우에도 사용자에게 Modal raw call ID를 직접 노출하지 않고 현재 `VocalProfileAnalysisJob`이 operation state를 소유한다. 현재 F010은 Modal-side async를 도입하지 않는다.
 
 ### 8. autoscaling / cost policy
 

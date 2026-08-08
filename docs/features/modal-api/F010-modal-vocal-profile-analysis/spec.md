@@ -81,6 +81,20 @@
 - [ ] 현재 Modal 공식 CPU·memory 가격을 기준으로 benchmark 시점의 요청당 예상 compute cost를 기록하고 가격 숫자를 코드 상수로 고정하지 않는다.
 - [ ] 기본 운영 정책은 scale-to-zero를 허용하며, `scaledown_window`나 warm container 증가는 실제 latency/cost evidence가 있을 때만 적용한다.
 
+### US-5: 분석 요청을 백그라운드에서 안전하게 완료
+
+**As a** 로그인 사용자
+**I want** 보컬 프로필 분석을 제출한 뒤 페이지를 닫거나 다시 접속해도 작업이 계속되길 원한다
+**So that** 외부 analyzer 지연이나 일시 장애가 브라우저 요청 수명에 묶이지 않는다
+
+**Acceptance Criteria:**
+
+- [ ] 오디오 제출은 durable analysis job을 만든 뒤 `202`로 즉시 반환하며 Modal 완료까지 browser HTTP request를 유지하지 않는다.
+- [ ] 분석 source는 worker가 재사용할 수 있는 Leemage asset으로 먼저 저장되고 enqueue 실패 시 보상 삭제된다.
+- [ ] worker는 PostgreSQL lease/attempt/backoff로 job을 claim하며 crash 후 expired lease를 다른 worker가 회수할 수 있다.
+- [ ] 브라우저는 server-owned job ID를 polling하고 진행 중 ID를 보관해 재접속 후 `pending/processing/succeeded/failed` 상태를 복구한다.
+- [ ] 성공 시 source asset을 중복 업로드하지 않고 Recording에 재사용하며, terminal 실패 시 orphan source를 cleanup한다.
+
 ---
 
 ## 기능 요구사항
@@ -105,8 +119,10 @@
 
 - Modal 분석은 요청 단위 임시 디렉터리를 사용하고 persistent Modal Volume에 사용자 source, 중간 WAV, synthesis reference를 저장하지 않는다.
 - analyzer 응답을 만들기 전에 요청 임시 디렉터리 정리가 완료되었음을 검증 가능한 방식으로 테스트한다.
-- Next.js는 분석 성공 후 source와 synthesis reference를 Leemage에 저장하고 PostgreSQL에 metadata와 relation만 기록한다.
-- 저장 실패 시 현재 `discardMediaAsset`/cleanup queue와 동등한 보상 semantics를 유지한다.
+- Next.js enqueue API는 분석 전에 source를 Leemage에 저장해 durable worker input으로 만들고, 성공 시 같은 source asset을 Recording에 재사용한다.
+- worker는 analyzer 반환 source의 MIME/size/hash가 queued source와 일치하는지 확인하며 source를 중복 업로드하지 않는다.
+- synthesis reference는 분석 성공 후 Leemage에 저장하고 PostgreSQL에는 metadata와 relation만 기록한다.
+- enqueue/저장/terminal failure 시 현재 `discardMediaAsset`/cleanup queue와 동등한 보상 semantics를 유지한다.
 
 ### FR-4: 인증과 secret 경계
 
@@ -121,13 +137,13 @@
 - 최소 10초·30초·60초 fixture 및 품질 rejection fixture에 대해 response schema, analyzer version, smart-reference descriptor와 핵심 수치 허용 오차를 비교한다.
 - local 전용 FastAPI는 개발·회귀 테스트 경로로 유지할 수 있지만 production fallback으로 조용히 사용하지 않는다.
 
-### FR-6: latency·retry·idempotency 정책
+### FR-6: latency·queue·retry·idempotency 정책
 
-- Modal expected 4xx analysis rejection은 자동 재시도하지 않는다.
-- transient infrastructure failure를 재시도하는 경우 분석 함수가 외부 영구 side effect를 갖지 않아 같은 입력을 안전하게 다시 실행할 수 있어야 한다.
-- HTTP sync와 async job/polling 중 최종 transport는 benchmark와 timeout 제약을 근거로 선택하고 decisions.md에 기록한다.
-- sync 방식이 선택되면 client/server timeout과 Modal HTTP timeout 사이에 명시적인 safety margin을 둔다.
-- async 방식이 필요하면 Modal call ID를 직접 사용자 식별자로 사용하지 않고 서버 소유 operation 상태와 연결한다.
+- browser → Next.js 분석 제출은 `Idempotency-Key`를 사용하는 durable PostgreSQL job enqueue이며 즉시 `202`를 반환한다.
+- worker는 lease, bounded attempts, backoff와 `FOR UPDATE SKIP LOCKED` claim semantics로 병렬 실행과 crash recovery를 처리한다.
+- Modal expected 4xx analysis rejection은 자동 재시도하지 않고, 429/5xx/network/timeout 같은 transient infrastructure failure만 같은 recording/source semantics로 재시도한다.
+- worker → Modal transport는 benchmark와 timeout 근거로 sync HTTP를 유지하며 client/server timeout과 Modal HTTP timeout 사이에 명시적인 safety margin을 둔다.
+- 향후 Modal-side async가 필요해도 Modal call ID를 직접 사용자 식별자로 사용하지 않고 `VocalProfileAnalysisJob` 상태와 연결한다.
 
 ### FR-7: 전환과 rollback 경계
 
