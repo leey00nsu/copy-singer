@@ -18,7 +18,9 @@ from fastapi.responses import JSONResponse
 APP_NAME = "copy-singer-vocal-profile-analyzer"
 REMOTE_ANALYZER_ROOT = Path("/opt/vocal_profile_api")
 REMOTE_SERVICE_ROOT = Path("/opt/vocal_profile_modal")
+MIN_CONTAINERS = 0
 MAX_CONTAINERS = 10
+MAX_INPUTS_PER_CONTAINER = 1
 CPU_CORES = 2.0
 MEMORY_MIB = 4096
 FUNCTION_TIMEOUT_SECONDS = 120
@@ -122,6 +124,12 @@ async def health() -> dict[str, Any]:
             "gpu": False,
             "cpuPhysicalCores": CPU_CORES,
             "memoryMiB": MEMORY_MIB,
+        },
+        "autoscaling": {
+            "minContainers": MIN_CONTAINERS,
+            "maxContainers": MAX_CONTAINERS,
+            "scaledownWindowSeconds": SCALEDOWN_WINDOW_SECONDS,
+            "maxInputsPerContainer": MAX_INPUTS_PER_CONTAINER,
         },
     }
 
@@ -239,10 +247,12 @@ async def analyze(
     cpu=CPU_CORES,
     memory=MEMORY_MIB,
     timeout=FUNCTION_TIMEOUT_SECONDS,
+    min_containers=MIN_CONTAINERS,
     max_containers=MAX_CONTAINERS,
     scaledown_window=SCALEDOWN_WINDOW_SECONDS,
     secrets=[api_secret],
 )
+@modal.concurrent(max_inputs=MAX_INPUTS_PER_CONTAINER)
 @modal.asgi_app()
 def fastapi_app():
     return web_app

@@ -14,10 +14,13 @@ def test_modal_app_is_cpu_only_and_server_key_authenticated() -> None:
     assert 'APP_NAME = "copy-singer-vocal-profile-analyzer"' in text
     assert "CPU_CORES = 2.0" in text
     assert "MEMORY_MIB = 4096" in text
+    assert "MIN_CONTAINERS = 0" in text
     assert "SCALEDOWN_WINDOW_SECONDS = 60" in text
+    assert "MAX_INPUTS_PER_CONTAINER = 1" in text
     assert 'modal.Secret.from_name("soulx-api-secret")' in text
     assert '"X-API-Key"' not in text
     assert "hmac.compare_digest" in text
+    assert "@modal.concurrent(max_inputs=MAX_INPUTS_PER_CONTAINER)" in text
     assert "@modal.asgi_app()" in text
     assert "modal.Volume" not in text
     assert "gpu=" not in text

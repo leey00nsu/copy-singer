@@ -22,7 +22,7 @@ function numberEnv(name: string) {
 }
 
 function parseDurations() {
-  const raw = process.argv[2]?.trim();
+  const raw = process.argv.slice(2).find((value) => value !== "--")?.trim();
   if (!raw) return DEFAULT_DURATIONS;
   const durations = raw.split(",").map((value) => Number(value));
   if (durations.some((value) => !Number.isFinite(value) || value <= 0 || value > 60)) {

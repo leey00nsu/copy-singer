@@ -50,7 +50,8 @@ pnpm run modal:vocal-profile:deploy
 - Function timeout: 120 seconds
 - `scaledown_window`: 60 seconds
 - `max_containers`: 10
-- `min_containers`: 0 (기본 scale-to-zero)
+- `min_containers`: 0 (scale-to-zero)
+- container concurrency: request 1개 (`@modal.concurrent(max_inputs=1)`)
 
 최종 resource와 sync/async transport는 10/30/60초 cold/warm benchmark 이후 확정합니다.
 
