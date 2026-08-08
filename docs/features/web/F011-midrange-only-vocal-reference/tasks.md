@@ -89,17 +89,17 @@
     - [x] v1/legacy UI 분기를 유지해 과거 프로필의 3-band preview를 보존했다.
     - [x] UI 5/5와 private Range proxy/DB ownership 3/3, TypeScript/lint를 통과했다.
 
-- [TODO][PRD-FR-042] T-F011-midrange-only-vocal-reference-04 mid-v1 mixing reference strict policy
+- [DONE][PRD-FR-042] T-F011-midrange-only-vocal-reference-04 mid-v1 mixing reference strict policy
   - Date: 2026-08-08
   - Acceptance:
     - mid-v1 profile의 새 AI 믹싱 job은 READY `SYNTHESIS_REFERENCE`가 있을 때만 생성된다.
     - mid-v1 reference가 없거나 READY가 아니면 source `REFERENCE`로 fallback하거나 티켓을 차감하지 않는다.
     - 기존 smart-reference-v1과 version 없는 legacy profile은 현재 fallback 정책을 유지한다.
   - Checklist:
-    - [ ] reference contract version을 mixing selection에 전달하는 version-aware policy를 구현한다.
-    - [ ] mid-v1 strict failure에 stable `MIXING_REFERENCE_UNAVAILABLE` 계열 오류를 사용한다.
-    - [ ] READY mid-v1 asset은 기존 `referenceAssetId` snapshot semantics로 고정한다.
-    - [ ] selector unit test와 ticket/job side-effect를 포함한 mixing queue integration test를 보강한다.
+    - [x] reference contract version을 mixing selection에 전달하는 version-aware policy를 구현했다.
+    - [x] mid-v1 strict failure는 기존 stable `MIXING_REFERENCE_UNAVAILABLE`로 티켓 차감 전에 거부한다.
+    - [x] READY mid-v1 asset은 기존 `referenceAssetId` snapshot semantics로 고정되는 기존 worker flow를 유지했다.
+    - [x] selector 4/4와 ticket/job side-effect를 포함한 mixing queue integration 1/1, TypeScript/lint를 통과했다.
 
 - [TODO][PRD-NFR-005] T-F011-midrange-only-vocal-reference-05 전체 로컬 회귀·문서·workflow 검증
   - Date: 2026-08-08
@@ -151,4 +151,7 @@
 | `node --conditions react-server --import tsx --test tests/private-audio-proxy.test.ts tests/vocal-profile-history.integration.ts` | `2026-08-08` | `PASS (3/3: Range + owner scope including synthesis reference)` |
 | `pnpm run lint` | `2026-08-08` | `PASS` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-08T01:59:52.000Z -->
+| `pnpm exec tsx --test tests/mixing-reference.test.ts` | `2026-08-08` | `PASS (4/4: mid-v1 strict + legacy fallback)` |
+| `pnpm run test:mixing:db` | `2026-08-08` | `PASS (1/1: missing mid reference has no ticket/job side effect + snapshot flow)` |
+
+<!-- lee-spec-kit:workflow-sync 2026-08-08T02:02:39.000Z -->

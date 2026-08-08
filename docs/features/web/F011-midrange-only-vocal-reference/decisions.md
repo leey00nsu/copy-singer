@@ -70,3 +70,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: vocal-profile-results UI 5/5, private audio + history ownership 3/3, tsc/lint PASS
 - **Consequences**: mid-v1 player는 source player와 별도 HTTP stream을 사용하지만 reference가 최대 30초라 browser decode 부담은 제한적이다.
+
+## D004: mid-v1 mixing은 synthesis reference를 강제하고 legacy만 source fallback 허용 (2026-08-08)
+
+- **Context**: 현재 mixing selector는 READY synthesis asset이 없으면 항상 source `REFERENCE`로 fallback한다. F011에서 이 fallback을 유지하면 mid-only 정책 실패가 사용자에게 보이지 않은 채 최대 60초 source가 SoulX prompt로 들어갈 수 있다.
+- **Constraints**: 새 profile은 strict해야 하지만 기존 `smart-reference-v1`/version 없는 profile의 과거 동작은 유지해야 한다. 티켓 차감 전에 reference availability를 확정해야 한다.
+- **Options**: 모든 profile strict, 모든 profile fallback 유지, contract-version-aware strict/fallback을 비교한다.
+- **Decision**: `smart-reference-mid-v1`은 owner-scoped READY `SYNTHESIS_REFERENCE`가 없으면 selection 실패로 반환하고 source fallback을 금지한다. v1/legacy는 기존 smart-first/source-fallback 정책을 유지한다.
+- **Rationale**: 새 품질 정책을 보장하면서 과거 profile의 사용 가능성을 깨지 않고, 현재 enqueue 트랜잭션의 reference 검증→티켓 차감 순서로 부작용도 막는다.
+- **Trace**:
+  - **DOING 시작 시점**: `synthesisReferenceContractVersion()` 결과를 mixing selector에 전달하고 기존 `referenceAssetId` snapshot은 유지한다.
+  - **DONE 전 확정 시점**: `selectMixingReference()`가 contract version을 받아 mid-v1에서는 READY synthesis asset이 없으면 즉시 null을 반환하도록 변경했다. queue는 profile descriptor version을 전달하고 기존 `MIXING_REFERENCE_UNAVAILABLE`를 티켓 차감 전에 발생시킨다. integration test에서 mid-v1 reference missing 시 ticketBalance 유지, MixingJob 0, debit ledger 0을 확인한 뒤 synthesis asset 연결 후 기존 snapshot/worker flow가 정상 동작함을 검증했다.
+  - **머지 후 확인**: 머지 후 갱신한다.
+- **Evidence**:
+  - **Commit**: task commit 후 갱신
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: mixing selector 4/4, mixing DB integration 1/1, tsc/lint PASS
+- **Consequences**: mid reference unavailable profile은 추천 결과를 볼 수 있어도 AI mixing enqueue는 명시적으로 거부된다.
