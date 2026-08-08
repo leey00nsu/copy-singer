@@ -106,33 +106,34 @@
     - [x] 기준을 충족했으므로 async job/polling은 구현하지 않고, 향후 p95/p99 또는 hosting timeout이 기준을 위협할 때 별도 Feature에서 도입하도록 문서화했다.
     - [x] CPU 2 cores, memory 4096 MiB, `min_containers=0`, `max_containers=10`, `scaledown_window=60`, container concurrency 1과 production automatic local fallback 금지를 D006에 확정했다.
 
-- [TODO][PRD-NFR-005][PRD-NFR-006] T-F010-modal-vocal-profile-analysis-07 전체 회귀·운영 문서·workflow 검증
+- [DONE][PRD-NFR-005][PRD-NFR-006] T-F010-modal-vocal-profile-analysis-07 전체 회귀·운영 문서·workflow 검증
   - Date: 2026-08-08
   - Acceptance:
     - local 개발 경로와 Modal production 후보 경로가 모두 문서화되고 기존 프로필·추천·믹싱 회귀가 없다.
     - TypeScript, lint, build, Python analyzer tests와 관련 통합 테스트가 통과하고 docs/code sync가 audit된다.
     - 실제 production backend 전환은 자동 수행하지 않고 검증된 설정과 rollback 절차만 준비한다.
   - Checklist:
-    - [ ] `services/vocal-profile-api`와 신규 Modal analyzer README/운영 명령을 갱신한다.
-    - [ ] system architecture와 필요한 PRD/환경변수 문서를 실제 최종 구조와 동기화한다.
-    - [ ] `pnpm test`, lint, TypeScript, build와 Python test suite를 통과한다.
-    - [ ] 관련 Prisma/DB 검증이 필요한 변경이면 validate/status를 통과한다.
-    - [ ] `npx lee-spec-kit workflow-audit --json`를 통과하고 최종 evidence를 기록한다.
+    - [x] `services/vocal-profile-api`와 신규 Modal analyzer README/운영 명령을 갱신했다.
+    - [x] system architecture와 `.env.example`을 local/Modal adapter, server-only key, explicit backend 전환 구조와 동기화했다.
+    - [x] `pnpm test`, lint, TypeScript, build와 Python test suite를 통과했다.
+    - [x] Prisma schema 변경은 없지만 `pnpm run db:validate`를 실행해 schema valid를 확인했다.
+    - [x] `npx lee-spec-kit workflow-audit --json`가 `WORKFLOW_IN_SYNC`를 반환했고 최종 evidence를 테스트 표에 기록했다.
 
 ## 완료 조건
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm test` | `-` | `-` |
+| `pnpm test` | `2026-08-08` | `PASS (build + 전체 TS/UI/DB integration suite)` |
 | `pnpm run lint` | `2026-08-08` | `PASS` |
 | `pnpm exec tsc --noEmit` | `2026-08-08` | `PASS` |
 | `pnpm run build` | `2026-08-08` | `PASS (Next.js 16.3.0, 21 pages)` |
+| `pnpm run db:validate` | `2026-08-08` | `PASS (Prisma schema valid)` |
 | `services/vocal-profile-api/.venv/bin/pytest -q services/vocal-profile-api/tests` | `2026-08-08` | `PASS (32 passed, remote-only 3 skipped, deprecation warning 3건)` |
 | `cd services/vocal-profile-modal && ../vocal-profile-api/.venv/bin/pytest -q test_transport.py test_runtime.py test_modal_app_source.py` | `2026-08-08` | `PASS (9/9)` |
 | `pnpm run test:vocal-profile-analyzer` | `2026-08-08` | `PASS (8/8)` |
@@ -143,6 +144,6 @@
 | `VOCAL_PROFILE_MODAL_URL=... pnpm run modal:vocal-profile:benchmark` | `2026-08-08` | `PASS (wrong key 401, 10/30/60초 6 samples, max wall 39.248s)` |
 | `VOCAL_PROFILE_MODAL_URL=... pnpm run modal:vocal-profile:benchmark -- 10` | `2026-08-08` | `PASS (final autoscaling health 확인, 28.462s / 4.963s, same container reuse)` |
 | `VOCAL_PROFILE_MODAL_URL=... pytest -q .../test_modal_parity.py -k deployed` | `2026-08-08` | `PASS (3/3 exact profile + source/reference bytes)` |
-| `npx lee-spec-kit workflow-audit --json` | `-` | `-` |
+| `npx lee-spec-kit workflow-audit --json` | `2026-08-08` | `PASS (WORKFLOW_IN_SYNC)` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-08T00:35:05.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-08T00:41:29.000Z -->
