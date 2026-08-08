@@ -13,6 +13,12 @@ import soundfile as sf
 import torch
 
 from api.config import Settings
+from api.mix_balance import (
+    ACCOMPANIMENT_GAIN_DB,
+    VOCAL_GAIN_DB,
+    db_to_linear_gain,
+    peak_protection_gain,
+)
 
 
 class SoulXEngine:
@@ -160,10 +166,11 @@ class SoulXEngine:
                     acc, sr=self.config.audio.sample_rate, n_steps=acc_shift
                 )
             length = min(len(vocal), len(acc))
-            mixed = vocal[:length] + acc[:length]
+            vocal_gain = db_to_linear_gain(VOCAL_GAIN_DB)
+            accompaniment_gain = db_to_linear_gain(ACCOMPANIMENT_GAIN_DB)
+            mixed = vocal[:length] * vocal_gain + acc[:length] * accompaniment_gain
             peak = float(np.max(np.abs(mixed))) if mixed.size else 1.0
-            if peak > 1.0:
-                mixed /= peak
+            mixed *= peak_protection_gain(peak)
             generated = generated_dir / "generated_mixed.wav"
             sf.write(generated, mixed, self.config.audio.sample_rate)
 
