@@ -1,5 +1,6 @@
 import "server-only";
 
+import { hasSmartReferenceContract } from "@/lib/vocal-profile/contract";
 import { analyzeWithLocalAdapter, localAnalyzerHealth } from "./local-adapter";
 import { analyzeWithModalAdapter, modalAnalyzerHealth } from "./modal-adapter";
 import { AnalyzerClientError, type AnalyzeVocalProfileInput } from "./types";
@@ -32,9 +33,26 @@ export function vocalProfileAnalyzerBackend(): VocalProfileAnalyzerBackend {
 }
 
 export async function analyzeVocalProfile(input: AnalyzeVocalProfileInput) {
-  return vocalProfileAnalyzerBackend() === "modal"
-    ? analyzeWithModalAdapter(input)
-    : analyzeWithLocalAdapter(input);
+  const analyzed = vocalProfileAnalyzerBackend() === "modal"
+    ? await analyzeWithModalAdapter(input)
+    : await analyzeWithLocalAdapter(input);
+  if (analyzed.profile.recordingId !== input.recordingId) {
+    throw new AnalyzerClientError(
+      "ANALYSIS_FAILED",
+      "Analyzer returned an invalid recording ID.",
+      true,
+      502,
+    );
+  }
+  if (!hasSmartReferenceContract(analyzed.profile)) {
+    throw new AnalyzerClientError(
+      "ANALYZER_UPDATE_REQUIRED",
+      "The configured vocal analyzer does not support the required smart reference contract.",
+      false,
+      502,
+    );
+  }
+  return analyzed;
 }
 
 export async function vocalProfileAnalyzerHealth(fetchImpl: typeof fetch = fetch) {

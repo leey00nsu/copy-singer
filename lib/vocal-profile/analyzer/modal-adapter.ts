@@ -166,6 +166,14 @@ function mapModalHttpError(response: Response) {
   if (response.status === 429) {
     return new AnalyzerClientError("ANALYZER_BUSY", "Modal vocal analyzer is busy. Try again shortly.", true, 503);
   }
+  if (response.status >= 500) {
+    return new AnalyzerClientError(
+      "ANALYZER_UNAVAILABLE",
+      "Modal vocal analyzer is unavailable.",
+      true,
+      502,
+    );
+  }
   return null;
 }
 

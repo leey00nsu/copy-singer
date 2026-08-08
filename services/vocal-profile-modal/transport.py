@@ -13,10 +13,19 @@ def build_profile_payload(recording_id: str, analyzed: Any) -> dict[str, Any]:
     result = analyzed.analysis
     synthesis_reference = None
     if analyzed.synthesis_reference_descriptor is not None:
+        descriptor = analyzed.synthesis_reference_descriptor
         synthesis_reference = {
             "mimeType": "audio/wav",
             "sizeBytes": analyzed.synthesis_reference_size_bytes,
-            **analyzed.synthesis_reference_descriptor,
+            "durationMs": descriptor["durationMs"],
+            "algorithm": descriptor["algorithm"],
+            "version": descriptor["version"],
+            "sourceRanges": descriptor.get("sourceRanges", []),
+            "bandSeconds": descriptor.get("bandSeconds", {}),
+            "voicedDensity": descriptor["voicedDensity"],
+            "pitchCoverageSemitones": descriptor["pitchCoverageSemitones"],
+            "crossfadeMs": descriptor["crossfadeMs"],
+            "fallbackReason": descriptor.get("fallbackReason"),
         }
     return {
         "recordingId": recording_id,

@@ -5,7 +5,7 @@ import test from "node:test";
 import { analyzeWithLocalAdapter } from "../lib/vocal-profile/analyzer/local-adapter";
 import { analyzeWithModalAdapter } from "../lib/vocal-profile/analyzer/modal-adapter";
 import { AnalyzerClientError } from "../lib/vocal-profile/analyzer/types";
-import { vocalProfileAnalyzerBackend } from "../lib/vocal-profile/analyzer";
+import { analyzeVocalProfile, vocalProfileAnalyzerBackend } from "../lib/vocal-profile/analyzer";
 
 function requestBody(bytes = [9, 8, 7]) {
   return new Blob([Uint8Array.from(bytes)]).stream() as ReadableStream<Uint8Array>;
@@ -62,6 +62,30 @@ function encodedArtifact(bytes: number[], fileName: string) {
     sha256: createHash("sha256").update(payload).digest("hex"),
     contentBase64: Buffer.from(payload).toString("base64"),
   };
+}
+
+async function withModalEnvironment<T>(callback: () => Promise<T>) {
+  const previous = {
+    url: process.env.VOCAL_PROFILE_MODAL_URL,
+    key: process.env.VOCAL_PROFILE_MODAL_KEY,
+    secret: process.env.VOCAL_PROFILE_MODAL_SECRET,
+    backend: process.env.VOCAL_PROFILE_ANALYZER_BACKEND,
+  };
+  process.env.VOCAL_PROFILE_MODAL_URL = "https://modal-analyzer.example";
+  process.env.VOCAL_PROFILE_MODAL_KEY = "wk-test";
+  process.env.VOCAL_PROFILE_MODAL_SECRET = "ws-test";
+  try {
+    return await callback();
+  } finally {
+    if (previous.url === undefined) delete process.env.VOCAL_PROFILE_MODAL_URL;
+    else process.env.VOCAL_PROFILE_MODAL_URL = previous.url;
+    if (previous.key === undefined) delete process.env.VOCAL_PROFILE_MODAL_KEY;
+    else process.env.VOCAL_PROFILE_MODAL_KEY = previous.key;
+    if (previous.secret === undefined) delete process.env.VOCAL_PROFILE_MODAL_SECRET;
+    else process.env.VOCAL_PROFILE_MODAL_SECRET = previous.secret;
+    if (previous.backend === undefined) delete process.env.VOCAL_PROFILE_ANALYZER_BACKEND;
+    else process.env.VOCAL_PROFILE_ANALYZER_BACKEND = previous.backend;
+  }
 }
 
 test("local adapter copies analyzer artifacts then removes local temporary recording", async () => {
@@ -191,6 +215,115 @@ test("modal adapter maps proxy authentication failure without falling back", asy
     if (previous.secret === undefined) delete process.env.VOCAL_PROFILE_MODAL_SECRET;
     else process.env.VOCAL_PROFILE_MODAL_SECRET = previous.secret;
   }
+});
+
+test("modal adapter preserves expected analysis rejection without retrying it", async () => {
+  await withModalEnvironment(async () => {
+    let calls = 0;
+    const fetchImpl = (async () => {
+      calls += 1;
+      return Response.json(
+        { reasonCode: "TOO_SILENT", detail: "Audio is too quiet.", retryable: false },
+        { status: 422 },
+      );
+    }) as typeof fetch;
+    await assert.rejects(
+      analyzeWithModalAdapter({
+        recordingId: crypto.randomUUID(),
+        contentType: "multipart/form-data; boundary=fixture",
+        body: requestBody(),
+        fetchImpl,
+      }),
+      (error: unknown) => error instanceof AnalyzerClientError
+        && error.reasonCode === "TOO_SILENT"
+        && error.retryable === false
+        && error.status === 422,
+    );
+    assert.equal(calls, 1);
+  });
+});
+
+test("modal adapter marks 429 and 5xx failures as retryable infrastructure errors", async () => {
+  await withModalEnvironment(async () => {
+    for (const [status, reasonCode] of [[429, "ANALYZER_BUSY"], [500, "ANALYZER_UNAVAILABLE"]] as const) {
+      let calls = 0;
+      const fetchImpl = (async () => {
+        calls += 1;
+        return new Response("failure", { status });
+      }) as typeof fetch;
+      await assert.rejects(
+        analyzeWithModalAdapter({
+          recordingId: crypto.randomUUID(),
+          contentType: "multipart/form-data; boundary=fixture",
+          body: requestBody(),
+          fetchImpl,
+        }),
+        (error: unknown) => error instanceof AnalyzerClientError
+          && error.reasonCode === reasonCode
+          && error.retryable === true,
+      );
+      assert.equal(calls, 1);
+    }
+  });
+});
+
+test("modal adapter maps network and timeout failures without retrying inside the request budget", async () => {
+  await withModalEnvironment(async () => {
+    for (const [thrown, reasonCode] of [
+      [new Error("network down"), "ANALYZER_UNAVAILABLE"],
+      [Object.assign(new Error("timed out"), { name: "TimeoutError" }), "ANALYZER_TIMEOUT"],
+    ] as const) {
+      let calls = 0;
+      const fetchImpl = (async () => {
+        calls += 1;
+        throw thrown;
+      }) as typeof fetch;
+      await assert.rejects(
+        analyzeWithModalAdapter({
+          recordingId: crypto.randomUUID(),
+          contentType: "multipart/form-data; boundary=fixture",
+          body: requestBody(),
+          fetchImpl,
+        }),
+        (error: unknown) => error instanceof AnalyzerClientError
+          && error.reasonCode === reasonCode
+          && error.retryable === true,
+      );
+      assert.equal(calls, 1);
+    }
+  });
+});
+
+test("incompatible Modal capability is rejected before persistence can start", async () => {
+  await withModalEnvironment(async () => {
+    process.env.VOCAL_PROFILE_ANALYZER_BACKEND = "modal";
+    const recordingId = crypto.randomUUID();
+    const fetchImpl = (async () => Response.json({
+      transportVersion: "modal-analysis-envelope-v1",
+      profile: {
+        ...profile(recordingId),
+        descriptors: {},
+        synthesisReference: null,
+      },
+      artifacts: {
+        source: encodedArtifact([1, 2, 3], "source.wav"),
+        synthesisReference: null,
+      },
+      cleanupConfirmed: true,
+    })) as typeof fetch;
+
+    await assert.rejects(
+      analyzeVocalProfile({
+        recordingId,
+        contentType: "multipart/form-data; boundary=fixture",
+        body: requestBody(),
+        fetchImpl,
+      }),
+      (error: unknown) => error instanceof AnalyzerClientError
+        && error.reasonCode === "ANALYZER_UPDATE_REQUIRED"
+        && error.retryable === false,
+    );
+  });
 });
 
 test("production analyzer backend must be explicit", () => {

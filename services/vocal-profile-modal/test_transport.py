@@ -53,6 +53,11 @@ def test_profile_payload_preserves_analyzer_and_smart_reference_contract() -> No
             "durationMs": 6_000,
             "algorithm": "voiced-phrase-band-selection",
             "sourceRanges": [],
+            "bandSeconds": {"low": 2.0, "mid": 2.0, "high": 2.0},
+            "voicedDensity": 0.9,
+            "pitchCoverageSemitones": 12.0,
+            "crossfadeMs": 30,
+            "fallbackReason": None,
         },
     )
 
