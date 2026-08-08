@@ -77,17 +77,17 @@
     - [x] Modal profile/envelope fixture와 health capability를 `smart-reference-mid-v1` 생성 계약으로 갱신했다.
     - [x] TS contract 5/5, Python local↔Modal parity 4/4, Modal transport 9/9, analyzer adapter 8/8, tsc를 통과했다.
 
-- [TODO][PRD-US-018][PRD-FR-042] T-F011-midrange-only-vocal-reference-03 실제 저장된 중음 reference 단일 플레이어
+- [DONE][PRD-US-018][PRD-FR-042] T-F011-midrange-only-vocal-reference-03 실제 저장된 중음 reference 단일 플레이어
   - Date: 2026-08-08
   - Acceptance:
     - 새 mid-v1 프로필 결과 화면은 low/mid/high source-range player 대신 실제 `SYNTHESIS_REFERENCE` asset을 재생하는 `AI 믹싱 중음 레퍼런스` player 하나를 보여준다.
     - 재생 API는 로그인 사용자 소유권과 READY 상태를 검증하고 Range를 지원하며 Leemage URL을 노출하지 않는다.
     - 기존 smart-reference-v1 프로필은 현재 3-band preview UI를 유지한다.
   - Checklist:
-    - [ ] owner-scoped synthesis reference 조회 helper와 same-origin audio proxy route를 추가한다.
-    - [ ] mid-v1 UI를 single stored-reference player로 분기하고 실제 짧은 길이를 그대로 표시한다.
-    - [ ] v1/legacy UI 분기를 유지해 과거 프로필 표시를 깨지 않는다.
-    - [ ] UI와 private audio ownership/Range 테스트를 추가한다.
+    - [x] owner-scoped synthesis reference 조회 helper와 same-origin audio proxy route를 추가했다.
+    - [x] mid-v1 UI를 single stored-reference player로 분기하고 unavailable profile에는 재녹음 안내를 표시했다.
+    - [x] v1/legacy UI 분기를 유지해 과거 프로필의 3-band preview를 보존했다.
+    - [x] UI 5/5와 private Range proxy/DB ownership 3/3, TypeScript/lint를 통과했다.
 
 - [TODO][PRD-FR-042] T-F011-midrange-only-vocal-reference-04 mid-v1 mixing reference strict policy
   - Date: 2026-08-08
@@ -147,4 +147,8 @@
 | `pnpm run test:vocal-profile-analyzer` | `2026-08-08` | `PASS (8/8)` |
 | `pnpm exec tsc --noEmit` | `2026-08-08` | `PASS` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-08T01:55:31.000Z -->
+| `pnpm exec tsx --test tests/vocal-profile-results-ui.test.tsx` | `2026-08-08` | `PASS (5/5: mid-v1 single player + legacy UI)` |
+| `node --conditions react-server --import tsx --test tests/private-audio-proxy.test.ts tests/vocal-profile-history.integration.ts` | `2026-08-08` | `PASS (3/3: Range + owner scope including synthesis reference)` |
+| `pnpm run lint` | `2026-08-08` | `PASS` |
+
+<!-- lee-spec-kit:workflow-sync 2026-08-08T01:59:52.000Z -->

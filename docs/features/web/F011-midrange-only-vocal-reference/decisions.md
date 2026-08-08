@@ -53,3 +53,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: TS contract 5/5, Modal transport 9/9, local↔Modal parity 4/4, analyzer adapter 8/8, tsc PASS
 - **Consequences**: 지원하지 않는 future version은 명시적으로 analyzer update/contract 오류가 되며 조용히 저장되지 않는다.
+
+## D003: mid-v1 UI는 source range 재조합 대신 저장된 synthesis reference를 직접 재생 (2026-08-08)
+
+- **Context**: F009 UI는 60초 source에서 low/mid/high sourceRanges를 브라우저에서 잘라 preview하지만 F011의 목표는 실제 SoulX prompt와 동일한 중음 artifact를 확인하는 것이다.
+- **Constraints**: Leemage URL을 client에 노출하지 않고 Range playback/owner scope를 유지해야 하며, 기존 v1 profile은 현재 3-band UI를 유지해야 한다.
+- **Options**: mid sourceRanges를 browser에서 다시 합성, synthesis asset URL 직접 전달, owner-scoped same-origin proxy로 저장 artifact 재생을 비교한다.
+- **Decision**: mid-v1 profile은 `/api/vocal-profiles/:id/synthesis-reference/audio`를 통해 READY `SYNTHESIS_REFERENCE`를 재생하는 단일 WaveSurfer player를 사용한다. v1은 기존 sourceRanges 3-band preview를 유지한다.
+- **Rationale**: 사용자가 듣는 내용과 실제 mixing prompt bytes를 일치시키면서 기존 private audio proxy 보안 경계를 재사용한다.
+- **Trace**:
+  - **DOING 시작 시점**: history owner lookup + audio proxy route를 추가하고 `synthesisReferenceContractVersion()`으로 UI를 분기한다.
+  - **DONE 전 확정 시점**: owner-scoped `getVocalProfileSynthesisReference()`와 `/api/vocal-profiles/:id/synthesis-reference/audio` proxy를 추가했다. `VocalProfileResults`는 mid-v1이면 저장된 synthesis reference용 `AudioWaveformPlayer` 하나를 표시하고 unavailable이면 재녹음 안내를 보여주며, v1/legacy는 기존 3-band source preview를 유지한다.
+  - **머지 후 확인**: 머지 후 갱신한다.
+- **Evidence**:
+  - **Commit**: task commit 후 갱신
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: vocal-profile-results UI 5/5, private audio + history ownership 3/3, tsc/lint PASS
+- **Consequences**: mid-v1 player는 source player와 별도 HTTP stream을 사용하지만 reference가 최대 30초라 browser decode 부담은 제한적이다.
