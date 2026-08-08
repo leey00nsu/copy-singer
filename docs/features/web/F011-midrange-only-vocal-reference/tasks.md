@@ -164,6 +164,15 @@
     - [x] `catalog:targets:verify`는 실제 catalog 100곡을 정확히 검사하며 현재 authorized staging 파일이 없어 `0/100 READY`임을 확인했다. `catalog:targets:import -- 34`는 필요한 `034-B_Xj5ddZDHE.*` 파일명을 안전하게 missing으로 보고한다.
     - [x] PRD/spec/plan/ADR/system architecture/Modal README를 production cached-target 계약으로 동기화했다.
 
+- [TODO][PRD-NFR-005] T-F011-midrange-only-vocal-reference-10 yt-dlp staging filename 자동 매칭과 카탈로그 일괄 업로드
+  - Date: 2026-08-08
+  - Acceptance:
+    - tmp/catalog-targets의 yt-dlp 기본 파일명에서 catalog sourceVideoId를 안전하게 식별해 해당 Song과 매칭한다.
+    - 100개 staging 파일을 WAV로 정규화하고 Leemage에 업로드한 뒤 CatalogTargetAsset과 Song 연결을 완료할 수 있다.
+  - Checklist:
+    - [ ] videoId 기반 staging 파일 탐색과 중복/모호성 검증을 추가한다.
+    - [ ] 100곡 import 후 catalog:targets:verify가 100/100 READY를 반환하는지 확인한다.
+
 ---
 
 ## 완료 조건
