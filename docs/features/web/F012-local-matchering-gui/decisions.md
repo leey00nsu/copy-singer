@@ -49,3 +49,19 @@
   - **Commit**: T-F012-01 task checkpoint에서 기록
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `node --conditions react-server --import tsx --test tests/mixing-queue.integration.ts` PASS (1/1), 전체 `pnpm test`에서도 동일 integration PASS
+
+## D003: SoulX 자동 반주 믹싱은 생성 보컬을 -4 dB 낮춘다 (2026-08-08)
+
+- **Context**: 실제 AI 믹싱 청취에서 반주가 작고 생성 보컬이 과도하게 앞으로 들렸다. 기존 SoulX 엔진은 생성 보컬과 분리 반주를 gain 보정 없이 1:1로 합산하고 peak 초과 시 전체만 normalize한다.
+- **Constraints**: 반주 separation artifact를 불필요하게 증폭하지 않고, 기존 accompaniment pitch shift와 peak protection을 유지해야 한다. 사용자별 mix knob나 DB 설정은 이번 범위에 포함하지 않는다.
+- **Options**: 반주 +3 dB, 보컬 -2 dB, 보컬 -4 dB, 보컬 -6 dB.
+- **Decision**: `vocal-balance-v1`로 생성 보컬 -4.0 dB, 반주 0.0 dB를 고정한다. `auto_mix_accompaniment=true` 경로에서만 적용하며 합산 후 기존 peak protection을 유지한다.
+- **Rationale**: 반주 자체를 증폭하지 않아 separation artifact 상승을 피하면서, 체감상 과도한 보컬 전경화를 직접 줄일 수 있다. 이후 Clarity finalization은 조정된 stereo mix 전체에 그대로 적용한다.
+- **Trace**:
+  - **DOING 시작 시점**: `engine.py`의 `mixed = vocal + acc` 1:1 합산을 확인했고 사용자가 -4 dB 조정을 요청했다.
+  - **DONE 전 확정 시점**: `api/mix_balance.py`에 `vocal-balance-v1`, vocal -4.0 dB, accompaniment 0.0 dB를 고정하고 `engine.py`의 auto accompaniment mix에서 선형 gain을 적용했다. 기존 pitch shift는 그대로 유지하고 합산 peak가 1.0을 넘을 때만 `1/peak` 보호 gain을 적용한다.
+  - **머지 후 확인**: 머지 후 갱신한다.
+- **Evidence**:
+  - **Commit**: T-F012-02 task checkpoint에서 기록
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: `python3 -m unittest services/soulx-singer-svc/tests/test_mix_balance.py` PASS (2/2), `python3 -m py_compile ...` PASS, 전체 `pnpm test`/lint/TypeScript/build/Prisma 회귀 PASS

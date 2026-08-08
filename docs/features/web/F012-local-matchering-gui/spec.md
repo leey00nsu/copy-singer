@@ -16,7 +16,7 @@
 
 ## 목적
 
-SoulX AI 믹싱이 성공한 뒤 사용자에게 저장·재생·다운로드되는 최종 음원에 로컬 A/B 테스트에서 선택한 **Clarity / Normal** 보정을 일관되게 적용한다.
+SoulX AI 믹싱이 성공한 뒤 사용자에게 저장·재생·다운로드되는 최종 음원에 로컬 A/B 테스트에서 선택한 **Clarity / Normal** 보정을 일관되게 적용한다. 또한 SoulX의 자동 반주 믹싱 단계에서 생성 보컬이 반주보다 과도하게 크게 들리는 문제를 줄이기 위해 고정된 보컬/반주 gain contract를 적용한다.
 
 현재 SoulX 결과는 곧바로 AAC/M4A로 압축해 Leemage에 저장한다. F012에서는 최종 압축 직전에 고정된 FFmpeg DSP 체인을 적용해 답답한 저중역을 줄이고 보컬 존재감과 공기감을 높인 뒤, -14 LUFS / -1 dBTP 기준으로 finalization하고 한 번만 AAC로 인코딩한다.
 
@@ -37,6 +37,7 @@ SoulX AI 믹싱이 성공한 뒤 사용자에게 저장·재생·다운로드되
 - [x] 후처리와 AAC 압축 사이에 불필요한 lossy 중간 인코딩을 추가하지 않는다.
 - [x] Clarity 보정 실패 시 원본 SoulX 결과를 조용히 저장하지 않고 안정적인 오류 코드로 실패/재시도 경계를 유지한다.
 - [x] 기존 catalog target, mid-only reference, 티켓, 소유권, 결과 asset lifecycle semantics를 변경하지 않는다.
+- [x] `auto_mix_accompaniment=true`인 SoulX 결과는 생성 보컬 -4.0 dB, 반주 0.0 dB로 합산한 뒤 기존 peak protection을 거친다.
 
 ---
 
@@ -59,11 +60,15 @@ production AI 믹싱 결과에는 다음 고정 파라미터를 적용한다.
 
 이 설정의 version은 `clarity-normal-v1`로 고정한다.
 
-### FR-2: 최종 저장 경계
+### FR-2: SoulX 보컬/반주 밸런스
+
+`auto_mix_accompaniment=true`일 때 생성 보컬에는 -4.0 dB gain을 적용하고 분리된 target 반주는 0.0 dB gain으로 유지한 뒤 합산한다. 반주 pitch shift와 합산 후 peak protection은 기존 동작을 유지한다. 이 설정은 `vocal-balance-v1`로 고정한다.
+
+### FR-3: 최종 저장 경계
 
 SoulX 결과 bytes는 `Clarity DSP → AAC/M4A encode → Leemage upload` 순서로 처리한다. Clarity와 AAC encode는 가능한 한 하나의 FFmpeg invocation에서 수행해 intermediate WAV 저장과 추가 인코딩을 피한다.
 
-### FR-3: 실패 및 재시도
+### FR-4: 실패 및 재시도
 
 후처리/인코딩 실패는 `MIXING_FINALIZATION_FAILED`로 식별한다. 이미 SoulX job이 접수된 뒤의 단계이므로 기존 Modal job을 재사용해 bounded retry하고, 성공하지 못한 경우 미보정 결과를 사용자에게 성공 결과로 노출하지 않는다.
 

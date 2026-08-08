@@ -36,6 +36,20 @@
     - [x] `pnpm test`, `pnpm run lint`, `pnpm exec tsc --noEmit`, `pnpm run build`, Prisma validate/status를 통과한다.
     - [x] feature docs/evidence/workflow-sync를 완료한다.
 
+- [DONE][PRD-FR-044] T-F012-02 SoulX 자동 반주 믹싱에 보컬 -4 dB 밸런스 적용
+  - Date: 2026-08-08
+  - Acceptance:
+    - `auto_mix_accompaniment=true`일 때 생성 보컬에 -4.0 dB gain을 적용하고 반주는 0.0 dB로 유지한 뒤 합산한다.
+    - 기존 pitch-shifted accompaniment 처리와 peak protection은 유지한다.
+    - 보컬 gain 계약은 테스트로 고정하고, auto accompaniment mix가 꺼진 경우에는 영향을 주지 않는다.
+    - F012 Clarity finalization은 조정된 SoulX mix 결과 뒤에서 기존대로 적용된다.
+  - Checklist:
+    - [x] SoulX engine에 versioned vocal/accompaniment gain 상수를 추가한다.
+    - [x] mixing 합산 시 vocal -4 dB / accompaniment 0 dB를 적용한다.
+    - [x] 단위 테스트로 gain 값과 peak protection을 검증한다.
+    - [x] 관련 SoulX 서비스/TypeScript 회귀 테스트를 통과한다.
+    - [x] feature docs/evidence/workflow-sync를 갱신한다.
+
 ---
 
 ## 완료 조건
@@ -48,6 +62,8 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
+| `python3 -m unittest services/soulx-singer-svc/tests/test_mix_balance.py` | `2026-08-08` | `PASS (2/2: vocal -4 dB / accompaniment 0 dB + peak protection)` |
+| `python3 -m py_compile services/soulx-singer-svc/api/mix_balance.py services/soulx-singer-svc/api/engine.py` | `2026-08-08` | `PASS` |
 | `pnpm exec tsx --test tests/compress-mixing-result.test.ts` | `2026-08-08` | `PASS (2/2: clarity-normal-v1 contract + AAC 44.1kHz stereo output)` |
 | `node --conditions react-server --import tsx --test tests/mixing-queue.integration.ts` | `2026-08-08` | `PASS (1/1: finalization retry/exhaustion/raw fallback 금지 포함)` |
 | `pnpm test` | `2026-08-08` | `PASS (build + 전체 TS/UI/DB integration suite)` |
@@ -56,4 +72,4 @@
 | `pnpm run build` | `2026-08-08` | `PASS (Next.js 16.3.0, 22 pages)` |
 | `pnpm run db:validate && pnpm run db:status` | `2026-08-08` | `PASS (schema valid, 10 migrations, database up to date)` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-08T06:23:36.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-08T09:18:31.000Z -->
