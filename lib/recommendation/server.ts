@@ -145,7 +145,7 @@ export function serializeRecommendationRun(run: StoredRun): RecommendationRunRes
           ? {
               code: mixing.errorCode,
               detail: mixing.errorDetail ?? "합성 작업을 완료하지 못했습니다.",
-              retryable: true,
+              retryable: mixing.retryable ?? false,
             }
           : item.synthesisErrorCode
           ? {

@@ -33,6 +33,7 @@ export async function enqueueMixingJob(input: {
           const item = await tx.recommendationItem.findFirst({
             where: { id: input.recommendationItemId, run: { userId: input.userId } },
             include: {
+              song: { include: { targetAsset: true } },
               run: {
                 include: {
                   userVocalProfile: {
@@ -61,6 +62,10 @@ export async function enqueueMixingJob(input: {
           if (!reference) {
             throw new MixingError("MIXING_REFERENCE_UNAVAILABLE", "저장된 레퍼런스 음성을 사용할 수 없습니다.", 422);
           }
+          const targetAsset = item.song.targetAsset;
+          if (!targetAsset || targetAsset.status !== "READY") {
+            throw new MixingError("MIXING_TARGET_UNAVAILABLE", "이 곡의 믹싱용 원곡 target이 아직 준비되지 않았습니다.", 422);
+          }
 
           const debited = await tx.user.updateMany({
             where: { id: input.userId, ticketBalance: { gte: cost } },
@@ -78,6 +83,7 @@ export async function enqueueMixingJob(input: {
               songId: item.songId,
               recommendationItemId: item.id,
               referenceAssetId: reference.id,
+              targetAssetId: targetAsset.id,
               ticketCost: cost,
               idempotencyKey: input.idempotencyKey,
               maxAttempts: mixingMaxAttempts(),

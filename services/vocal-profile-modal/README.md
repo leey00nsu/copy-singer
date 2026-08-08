@@ -9,7 +9,7 @@ F010의 사용자 보컬 프로필용 CPU-only Modal Web Function입니다.
 - 사용자 오디오는 request-scoped `TemporaryDirectory`에서만 처리합니다.
 - Modal Volume/Dict, PostgreSQL, Leemage에 사용자 데이터를 저장하지 않습니다.
 - profile + source + optional synthesis reference를 하나의 ephemeral response envelope로 반환합니다.
-- mixing worker가 필요로 하는 allowlist 곡 target도 `/v1/song-target`에서 yt-dlp + FFmpeg WAV로 request-scoped 생성합니다.
+- `/v1/song-target`은 allowlist 곡 target을 yt-dlp + FFmpeg WAV로 request-scoped 생성하는 개발·진단용 capability로 유지합니다. production mixing은 사전 등록된 Leemage `CatalogTargetAsset`을 사용합니다.
 - HTTP endpoint는 기존 SoulX Modal API와 동일한 `soulx-api-secret`의 `X-API-Key` 인증을 요구합니다.
 
 ## 로컬 CLI 환경
@@ -86,7 +86,7 @@ artifact bytes는 base64와 SHA-256을 함께 전달합니다. 이 encoding은 �
 
 ### `POST /v1/song-target`
 
-mixing worker가 catalog allowlist의 원곡 WAV를 임시로 준비할 때 사용합니다.
+catalog allowlist target WAV를 개발·진단할 때 사용합니다. production mixing worker의 source-of-truth는 아니며, 운영 믹싱은 `tmp/catalog-targets`에서 권한 확인 후 Leemage에 사전 업로드된 catalog target을 사용합니다.
 
 ```json
 {

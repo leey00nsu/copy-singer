@@ -153,11 +153,13 @@ model Song {
   originalKey         String?
   catalogOrder        Int                  @unique
   vocalProfileId      String?              @unique @db.Uuid
+  targetAssetId       String?              @unique @db.Uuid
   analysisStatus      SongAnalysisStatus   @default(PENDING)
   metadata            Json?
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
   vocalProfile        VocalProfile?        @relation(fields: [vocalProfileId], references: [id], onDelete: SetNull)
+  targetAsset         CatalogTargetAsset?  @relation(fields: [targetAssetId], references: [id], onDelete: SetNull)
   recommendationItems RecommendationItem[]
   mixingJobs          MixingJob[]
 
@@ -304,6 +306,30 @@ model MediaAsset {
   @@index([status, updatedAt])
 }
 
+model CatalogTargetAsset {
+  id                String           @id @default(uuid()) @db.Uuid
+  provider          String           @default("LEEMAGE")
+  externalProjectId String
+  externalFileId    String
+  externalUrl       String
+  fileName          String
+  mimeType          String
+  sizeBytes         BigInt
+  sha256            String
+  sourceVideoId     String
+  status            MediaAssetStatus @default(READY)
+  lastError         String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  deletedAt         DateTime?
+  song              Song?
+  mixingJobs        MixingJob[]      @relation("MixingTarget")
+
+  @@unique([externalProjectId, externalFileId])
+  @@index([status, updatedAt])
+  @@index([sourceVideoId])
+}
+
 model MediaCleanupJob {
   id            String             @id @default(uuid()) @db.Uuid
   mediaAssetId  String             @db.Uuid
@@ -375,6 +401,7 @@ model MixingJob {
   songId               String              @db.Uuid
   recommendationItemId String?             @db.Uuid
   referenceAssetId     String              @db.Uuid
+  targetAssetId        String?             @db.Uuid
   resultAssetId        String?             @db.Uuid
   status               MixingJobStatus     @default(PENDING)
   ticketCost           Int
@@ -400,6 +427,7 @@ model MixingJob {
   song                 Song                @relation(fields: [songId], references: [id], onDelete: Restrict)
   recommendationItem   RecommendationItem? @relation(fields: [recommendationItemId], references: [id], onDelete: SetNull)
   referenceAsset       MediaAsset          @relation("MixingReference", fields: [referenceAssetId], references: [id], onDelete: Restrict)
+  targetAsset          CatalogTargetAsset? @relation("MixingTarget", fields: [targetAssetId], references: [id], onDelete: Restrict)
   resultAsset          MediaAsset?         @relation("MixingResult", fields: [resultAssetId], references: [id], onDelete: SetNull)
   ticketEntries        TicketLedger[]
 
@@ -407,5 +435,6 @@ model MixingJob {
   @@index([status, nextAttemptAt, leaseExpiresAt, createdAt])
   @@index([userId, createdAt])
   @@index([recommendationItemId, createdAt])
+  @@index([targetAssetId])
   @@index([modalJobId])
 }

@@ -36,6 +36,7 @@ yarn-error.log*
 
 /outputs/
 /work/
+/tmp/
 /generated/prisma/
 
 # local build/type-check artifacts

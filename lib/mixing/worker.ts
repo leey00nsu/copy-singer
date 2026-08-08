@@ -1,10 +1,6 @@
 import "server-only";
 
-import artifactJson from "../../data/catalogs/tj-2607-song-profiles.json";
-import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/db/prisma";
-import { analyzerUrl } from "@/lib/vocal-profile/server";
-import { vocalProfileAnalyzerBackend } from "@/lib/vocal-profile/analyzer";
 import { SYNTHESIS_PRESET } from "@/lib/recommendation/synthesis-state";
 import { mixingLeaseSeconds, mixingPollIntervalMs } from "@/lib/config/server-env";
 import { applyTicketChange } from "@/lib/tickets/service";
@@ -82,53 +78,6 @@ function modalConfig() {
     throw new MixingStageError("MODAL_NOT_CONFIGURED", "SoulX Modal API is not configured.", false);
   }
   return { url, key };
-}
-
-export function mixingSongTargetConfig() {
-  const backend = vocalProfileAnalyzerBackend();
-  if (backend === "modal") {
-    const url = process.env.VOCAL_PROFILE_MODAL_URL?.trim().replace(/\/$/, "");
-    const key = process.env.VOCAL_PROFILE_MODAL_API_KEY?.trim() || process.env.MODAL_API_KEY?.trim();
-    if (!url || !key) {
-      throw new MixingStageError(
-        "SONG_TARGET_NOT_CONFIGURED",
-        "Modal vocal analyzer is not configured for song target preparation.",
-        false,
-      );
-    }
-    const headers: Record<string, string> = { "Content-Type": "application/json", "X-API-Key": key };
-    return { backend, url, headers };
-  }
-
-  const url = analyzerUrl();
-  if (!url) {
-    throw new MixingStageError(
-      "SONG_TARGET_NOT_CONFIGURED",
-      "Local vocal analyzer is not configured for song target preparation.",
-      false,
-    );
-  }
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  return { backend, url, headers };
-}
-
-function catalogMedia(song: { catalogOrder: number; title: string; artist: string; metadata: Prisma.JsonValue | null }) {
-  const artifact = artifactJson.songs[song.catalogOrder - 1];
-  const catalog = song.metadata && typeof song.metadata === "object" && !Array.isArray(song.metadata)
-    ? song.metadata.catalog
-    : null;
-  if (
-    !artifact || artifact.catalogOrder !== song.catalogOrder || artifact.title !== song.title ||
-    artifact.artist !== song.artist || !catalog || typeof catalog !== "object" || Array.isArray(catalog) ||
-    catalog.sourceUrl !== artifact.sourceUrl || catalog.sourceVideoId !== artifact.sourceVideoId
-  ) {
-    throw new MixingStageError(
-      "SONG_TARGET_NOT_ALLOWLISTED",
-      "추천 곡 정보가 allowlist와 일치하지 않습니다.",
-      false,
-    );
-  }
-  return { sourceUrl: artifact.sourceUrl, sourceVideoId: artifact.sourceVideoId };
 }
 
 async function mediaBytes(response: Response, code: string, message: string) {
@@ -296,7 +245,7 @@ export async function processClaimedMixingJob(jobId: string, owner: string, depe
   try {
     let job = await prisma.mixingJob.findFirst({
       where: { id: jobId, leaseOwner: owner },
-      include: { referenceAsset: true, song: true },
+      include: { referenceAsset: true, targetAsset: true, song: true },
     });
     if (!job) throw new Error("Claimed mixing job was not found.");
     submitted = Boolean(job.modalJobId);
@@ -317,28 +266,27 @@ export async function processClaimedMixingJob(jobId: string, owner: string, depe
         "REFERENCE_FETCH_FAILED",
         "저장된 레퍼런스 음성을 불러오지 못했습니다",
       );
-      const target = catalogMedia(job.song);
-      const targetConfig = mixingSongTargetConfig();
+      if (!job.targetAsset || job.targetAsset.status !== "READY") {
+        throw new MixingStageError(
+          "CATALOG_TARGET_UNAVAILABLE",
+          "이 곡의 믹싱용 target asset이 준비되지 않았습니다.",
+          false,
+        );
+      }
       const targetResponse = await stageFetch(
         fetchImpl,
-        `${targetConfig.url}/v1/song-target`,
+        job.targetAsset.externalUrl,
+        { cache: "no-store", signal: AbortSignal.timeout(60_000) },
         {
-          method: "POST",
-          headers: targetConfig.headers,
-          body: JSON.stringify({ sourceUrl: target.sourceUrl, expectedVideoId: target.sourceVideoId }),
-          cache: "no-store",
-          signal: AbortSignal.timeout(15 * 60_000),
-        },
-        {
-          code: "SONG_TARGET_FETCH_FAILED",
-          message: "추천 곡의 임시 오디오를 준비하지 못했습니다",
+          code: "CATALOG_TARGET_FETCH_FAILED",
+          message: "저장된 추천 곡 target을 불러오지 못했습니다",
           networkRetryable: true,
         },
       );
       const targetAudio = await mediaBytes(
         targetResponse,
-        "SONG_TARGET_FETCH_FAILED",
-        "추천 곡의 임시 오디오를 준비하지 못했습니다",
+        "CATALOG_TARGET_FETCH_FAILED",
+        "저장된 추천 곡 target을 불러오지 못했습니다",
       );
       const form = new FormData();
       form.append("prompt_audio", new Blob([reference.bytes], { type: reference.contentType }), "prompt.wav");
@@ -376,7 +324,7 @@ export async function processClaimedMixingJob(jobId: string, owner: string, depe
       job = await prisma.mixingJob.update({
         where: { id: job.id },
         data: { status: "SUBMITTED", modalJobId: modalJob.id, submittedAt: now, heartbeatAt: now },
-        include: { referenceAsset: true, song: true },
+        include: { referenceAsset: true, targetAsset: true, song: true },
       });
     }
 

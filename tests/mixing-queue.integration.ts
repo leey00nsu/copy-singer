@@ -13,10 +13,6 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     cost: process.env.MIXING_TICKET_COST,
     maxAttempts: process.env.MIXING_MAX_ATTEMPTS,
     lease: process.env.MIXING_LEASE_SECONDS,
-    analyzerBackend: process.env.VOCAL_PROFILE_ANALYZER_BACKEND,
-    analyzer: process.env.VOCAL_PROFILE_API_URL,
-    vocalModalUrl: process.env.VOCAL_PROFILE_MODAL_URL,
-    vocalModalKey: process.env.VOCAL_PROFILE_MODAL_API_KEY,
     modalUrl: process.env.MODAL_API_URL,
     modalKey: process.env.MODAL_API_KEY,
     leemageUrl: process.env.LEEMAGE_BASE_URL,
@@ -26,10 +22,6 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
   process.env.MIXING_TICKET_COST = "1";
   process.env.MIXING_MAX_ATTEMPTS = "3";
   process.env.MIXING_LEASE_SECONDS = "30";
-  process.env.VOCAL_PROFILE_ANALYZER_BACKEND = "local";
-  process.env.VOCAL_PROFILE_API_URL = "https://analyzer.example";
-  process.env.VOCAL_PROFILE_MODAL_URL = "https://vocal-modal.example";
-  process.env.VOCAL_PROFILE_MODAL_API_KEY = "vocal-modal-key";
   process.env.MODAL_API_URL = "https://modal.example";
   process.env.MODAL_API_KEY = "modal-key";
   process.env.LEEMAGE_BASE_URL = "https://leemage.example/api/v1";
@@ -38,7 +30,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
 
   const { prisma } = await import("../lib/db/prisma");
   const { enqueueMixingJob } = await import("../lib/mixing/queue");
-  const { claimNextMixingJob, mixingSongTargetConfig, processClaimedMixingJob } = await import("../lib/mixing/worker");
+  const { claimNextMixingJob, processClaimedMixingJob } = await import("../lib/mixing/worker");
   const { InsufficientTicketsError } = await import("../lib/tickets/service");
   const { MixingError } = await import("../lib/mixing/contract");
   const { applyTicketChange } = await import("../lib/tickets/service");
@@ -49,24 +41,18 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
   const profileId = crypto.randomUUID();
   const assetId = crypto.randomUUID();
   const smartAssetId = crypto.randomUUID();
+  const targetAssetId = crypto.randomUUID();
   const runId = crypto.randomUUID();
   const itemId = crypto.randomUUID();
 
-  try {
-    assert.deepEqual(mixingSongTargetConfig(), {
-      backend: "local",
-      url: "https://analyzer.example",
-      headers: { "Content-Type": "application/json" },
-    });
-    process.env.VOCAL_PROFILE_ANALYZER_BACKEND = "modal";
-    assert.deepEqual(mixingSongTargetConfig(), {
-      backend: "modal",
-      url: "https://vocal-modal.example",
-      headers: { "Content-Type": "application/json", "X-API-Key": "vocal-modal-key" },
-    });
-    process.env.VOCAL_PROFILE_ANALYZER_BACKEND = "local";
+  let originalTargetAssetId: string | null = null;
+  let songId: string | null = null;
 
+  try {
     const song = await prisma.song.findFirstOrThrow({ where: { catalogOrder: 1 } });
+    songId = song.id;
+    originalTargetAssetId = song.targetAssetId;
+    await prisma.song.update({ where: { id: song.id }, data: { targetAssetId: null } });
     await prisma.user.create({
       data: {
         id: userId,
@@ -154,10 +140,34 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       data: { synthesisReferenceAssetId: smartAssetId },
     });
 
+    const missingTargetKey = `missing-target-${suffix}`;
+    await assert.rejects(
+      () => enqueueMixingJob({ userId, recommendationItemId: itemId, idempotencyKey: missingTargetKey }),
+      (error) => error instanceof MixingError && error.code === "MIXING_TARGET_UNAVAILABLE",
+    );
+    assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 1);
+    assert.equal(await prisma.mixingJob.count({ where: { userId, idempotencyKey: missingTargetKey } }), 0);
+
+    await prisma.catalogTargetAsset.create({
+      data: {
+        id: targetAssetId,
+        externalProjectId: "project",
+        externalFileId: `catalog-target-${suffix}`,
+        externalUrl: "https://objects.example/catalog-target.wav",
+        fileName: "catalog-target.wav",
+        mimeType: "audio/wav",
+        sizeBytes: BigInt(3),
+        sha256: "test-target-sha256",
+        sourceVideoId: "dQw4w9WgXcQ",
+      },
+    });
+    await prisma.song.update({ where: { id: song.id }, data: { targetAssetId } });
+
     const input = { userId, recommendationItemId: itemId, idempotencyKey: `request-${suffix}` };
     const [first, duplicate] = await Promise.all([enqueueMixingJob(input), enqueueMixingJob(input)]);
     assert.equal(first.id, duplicate.id);
     assert.equal(first.referenceAssetId, smartAssetId);
+    assert.equal(first.targetAssetId, targetAssetId);
     assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 0);
     assert.equal(await prisma.ticketLedger.count({ where: { mixingJobId: first.id, type: "MIXING_DEBIT" } }), 1);
 
@@ -193,7 +203,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       if (url === "https://objects.example/smart-reference.wav") {
         return new Response(new Uint8Array([1, 2, 3]), { headers: { "Content-Type": "audio/wav" } });
       }
-      if (url === "https://analyzer.example/v1/song-target") throw new TypeError("fetch failed");
+      if (url === "https://objects.example/catalog-target.wav") throw new TypeError("fetch failed");
       throw new Error(`Unexpected transient URL: ${url}`);
     };
     await processClaimedMixingJob(retrying.id, "retry-worker-a", {
@@ -203,7 +213,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     });
     const retryPending = await prisma.mixingJob.findUniqueOrThrow({ where: { id: retrying.id } });
     assert.equal(retryPending.status, "PENDING");
-    assert.equal(retryPending.errorCode, "SONG_TARGET_FETCH_FAILED");
+    assert.equal(retryPending.errorCode, "CATALOG_TARGET_FETCH_FAILED");
     assert.equal(retryPending.refundState, "NONE");
     assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 0);
     assert.equal((await getMixingJobForUser(userId, retrying.id))?.error, null);
@@ -220,7 +230,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     });
     const retryExhausted = await prisma.mixingJob.findUniqueOrThrow({ where: { id: retrying.id } });
     assert.equal(retryExhausted.status, "FAILED");
-    assert.equal(retryExhausted.errorCode, "SONG_TARGET_FETCH_FAILED");
+    assert.equal(retryExhausted.errorCode, "CATALOG_TARGET_FETCH_FAILED");
     assert.equal(retryExhausted.refundState, "REFUNDED");
     assert.equal(retryExhausted.attempts, 2);
     assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 1);
@@ -237,7 +247,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       if (url === "https://objects.example/smart-reference.wav") {
         return new Response(new Uint8Array([1, 2, 3]), { headers: { "Content-Type": "audio/wav" } });
       }
-      if (url === "https://analyzer.example/v1/song-target") {
+      if (url === "https://objects.example/catalog-target.wav") {
         return new Response(new Uint8Array([4, 5, 6]), { headers: { "Content-Type": "audio/wav" } });
       }
       if (url === "https://modal.example/v1/conversions") throw new TypeError("fetch failed");
@@ -271,7 +281,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       if (url === "https://objects.example/smart-reference.wav") {
         return new Response(new Uint8Array([1, 2, 3]), { headers: { "Content-Type": "audio/wav" } });
       }
-      if (url === "https://analyzer.example/v1/song-target") {
+      if (url === "https://objects.example/catalog-target.wav") {
         return new Response(new Uint8Array([4, 5, 6]), { headers: { "Content-Type": "audio/wav" } });
       }
       if (url === "https://modal.example/v1/conversions" && init?.method === "POST") {
@@ -313,7 +323,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       if (url === "https://objects.example/smart-reference.wav") {
         return new Response(new Uint8Array([1, 2, 3]), { headers: { "Content-Type": "audio/wav" } });
       }
-      if (url === "https://analyzer.example/v1/song-target") {
+      if (url === "https://objects.example/catalog-target.wav") {
         return new Response(new Uint8Array([4, 5, 6]), { headers: { "Content-Type": "audio/wav" } });
       }
       if (url === "https://modal.example/v1/conversions" && init?.method === "POST") {
@@ -365,10 +375,6 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       MIXING_TICKET_COST: previousEnv.cost,
       MIXING_MAX_ATTEMPTS: previousEnv.maxAttempts,
       MIXING_LEASE_SECONDS: previousEnv.lease,
-      VOCAL_PROFILE_ANALYZER_BACKEND: previousEnv.analyzerBackend,
-      VOCAL_PROFILE_API_URL: previousEnv.analyzer,
-      VOCAL_PROFILE_MODAL_URL: previousEnv.vocalModalUrl,
-      VOCAL_PROFILE_MODAL_API_KEY: previousEnv.vocalModalKey,
       MODAL_API_URL: previousEnv.modalUrl,
       MODAL_API_KEY: previousEnv.modalKey,
       LEEMAGE_BASE_URL: previousEnv.leemageUrl,
@@ -380,6 +386,10 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     }
     await prisma.ticketLedger.deleteMany({ where: { userId } });
     await prisma.mixingJob.deleteMany({ where: { userId } });
+    if (songId) {
+      await prisma.song.update({ where: { id: songId }, data: { targetAssetId: originalTargetAssetId } });
+    }
+    await prisma.catalogTargetAsset.deleteMany({ where: { id: targetAssetId } });
     await prisma.recommendationItem.deleteMany({ where: { id: itemId } });
     await prisma.recommendationRun.deleteMany({ where: { id: runId } });
     await prisma.vocalProfile.deleteMany({ where: { id: profileId } });

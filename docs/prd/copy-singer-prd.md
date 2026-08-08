@@ -104,7 +104,7 @@ Google OAuth 로그인
 - **PRD-FR-016**: 추천 실행 생성만으로 합성 작업을 자동 시작하지 않아야 하며, 사용자가 목록 항목의 `AI 믹싱`을 누른 곡만 사용자 보컬 프로필의 원본 테스트 녹음을 reference로 합성해야 한다.
 - **PRD-FR-017**: 추천 목록 항목은 합성 전 `AI 믹싱` 버튼을 제공하고, 시작 후 `preparing → queued → processing → succeeded | failed` 상태와 “믹싱 중이에요” 안내를 표시하며 성공 시 결과 오디오 재생·다운로드를 제공해야 한다.
 - **PRD-FR-018**: 추천 목록 합성은 `prompt_vocal_separation=false`, `target_vocal_separation=true`, `auto_pitch_shift=true`, `auto_mix_accompaniment=true`, `pitch_shift=0`의 고정 제품 preset을 사용하고 자동 피치 이동이 적용되는 AI 믹싱임을 명시해야 한다.
-- **PRD-FR-019**: 서버는 allowlist된 곡 URL의 원본 오디오를 작업 중에만 임시 다운로드해 target으로 사용하고 성공·실패·취소 후 원본과 중간 stem을 제거해야 한다.
+- **PRD-FR-019**: 운영자가 사용 권한을 확보한 카탈로그 target 오디오는 Git 비추적 local staging에서 WAV로 정규화한 뒤 Leemage에 사전 업로드하고 Song에 연결해야 한다. AI 믹싱은 작업 시점의 외부 URL 다운로드 대신 해당 READY target asset을 snapshot해 사용하며, target이 준비되지 않은 곡은 티켓 차감 전에 믹싱을 거부해야 한다.
 - **PRD-FR-020**: 기존 자유 reference/target과 advanced settings Workbench는 자동 추천 합성과 분리된 개발·진단용 화면으로 유지해야 한다.
 
 ### 인증과 사용자 소유권
@@ -139,11 +139,11 @@ Google OAuth 로그인
 - **PRD-DATA-003**: 로컬 개발용 PostgreSQL은 사용자가 실행하는 `docker compose up`으로 시작할 수 있어야 한다.
 - **PRD-DATA-004**: 오디오 바이너리는 PostgreSQL에 직접 넣지 않고 파일 참조와 메타데이터만 저장한다.
 - **PRD-DATA-005**: 분석 결과의 전체 원시 frame 배열은 저장하지 않는다. UI 시각화에 필요한 음정 histogram과 크기가 제한된 다운샘플 피치 series만 집계 descriptor로 저장할 수 있다.
-- **PRD-DATA-006**: 외부 카탈로그 음원과 분리 stem은 프로젝트 저장소나 영구 볼륨에 보관하지 않고 작업별 OS 임시 디렉터리에서만 처리하며, 성공·실패·취소와 관계없이 즉시 삭제한다. 출처 링크, 집계 분석값과 도구 버전은 배포 가능한 versioned JSON artifact에 저장하고 PostgreSQL에는 곡 분석 프로필을 저장하지 않는다.
+- **PRD-DATA-006**: 카탈로그 분석용 임시 다운로드와 분리 stem은 프로젝트 저장소나 영구 볼륨에 보관하지 않고 작업별 OS 임시 디렉터리에서 처리한다. 별도로 사용 권한을 확보한 AI 믹싱 target만 Git 비추적 `tmp/catalog-targets` staging을 거쳐 Leemage에 장기 저장할 수 있으며, PostgreSQL에는 target asset의 외부 파일 참조·SHA-256·sourceVideoId와 Song 연결만 저장한다. 출처 링크, 집계 분석값과 도구 버전은 배포 가능한 versioned JSON artifact에 유지한다.
 - **PRD-DATA-007**: PostgreSQL에는 믹싱 작업의 외부 job ID·상태·오류와 Leemage 파일 참조만 저장하고 원곡·reference·결과 오디오 바이너리는 저장하지 않는다.
 - **PRD-DATA-008**: Better Auth 사용자·세션·계정·검증 스키마와 제품 사용자 소유 관계는 Prisma schema와 migration으로 관리한다.
 - **PRD-DATA-009**: 티켓 원장은 append-only로 유지하고 현재 잔액은 원장과 일치하도록 DB 제약 및 트랜잭션으로 보호한다.
-- **PRD-DATA-010**: 레퍼런스 오디오와 믹싱 결과는 Leemage에 저장하되 외부 카탈로그 원곡과 작업 중간 파일은 영구 저장하지 않는다.
+- **PRD-DATA-010**: 사용자 레퍼런스, 믹싱 결과와 사용 권한이 확인된 카탈로그 mixing target은 Leemage에 저장한다. 카탈로그 target의 local staging은 Git에서 제외하고, 그 외 분석용 다운로드·분리 stem·작업 중간 파일은 영구 저장하지 않는다.
 
 ## 비기능 요구사항
 
