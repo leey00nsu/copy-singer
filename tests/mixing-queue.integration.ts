@@ -34,6 +34,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
   const { enqueueMixingJob } = await import("../lib/mixing/queue");
   const { claimNextMixingJob, processClaimedMixingJob } = await import("../lib/mixing/worker");
   const { InsufficientTicketsError } = await import("../lib/tickets/service");
+  const { MixingError } = await import("../lib/mixing/contract");
   const { applyTicketChange } = await import("../lib/tickets/service");
   const { getMixingHistory, getMixingJobForUser } = await import("../lib/mixing/history");
   const suffix = crypto.randomUUID();
@@ -98,9 +99,9 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
         userId,
         sourceType: "USER",
         recordingId,
-        synthesisReferenceAssetId: smartAssetId,
         analyzer: "test",
         analyzerVersion: "1",
+        descriptors: { synthesisReference: { version: "smart-reference-mid-v1" } },
       },
     });
     await prisma.recommendationRun.create({
@@ -118,6 +119,20 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
         reasonCodes: [],
         metrics: {},
       },
+    });
+
+    const missingReferenceKey = `missing-reference-${suffix}`;
+    await assert.rejects(
+      () => enqueueMixingJob({ userId, recommendationItemId: itemId, idempotencyKey: missingReferenceKey }),
+      (error) => error instanceof MixingError && error.code === "MIXING_REFERENCE_UNAVAILABLE",
+    );
+    assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 1);
+    assert.equal(await prisma.mixingJob.count({ where: { userId, idempotencyKey: missingReferenceKey } }), 0);
+    assert.equal(await prisma.ticketLedger.count({ where: { userId, type: "MIXING_DEBIT" } }), 0);
+
+    await prisma.vocalProfile.update({
+      where: { id: profileId },
+      data: { synthesisReferenceAssetId: smartAssetId },
     });
 
     const input = { userId, recommendationItemId: itemId, idempotencyKey: `request-${suffix}` };

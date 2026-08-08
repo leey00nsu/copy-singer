@@ -5,6 +5,7 @@ import { mixingMaxAttempts, mixingTicketCost } from "@/lib/config/server-env";
 import { InsufficientTicketsError } from "@/lib/tickets/service";
 import { MixingError } from "@/lib/mixing/contract";
 import { selectMixingReference } from "@/lib/mixing/reference";
+import { synthesisReferenceContractVersion, type VocalProfileDescriptors } from "@/lib/vocal-profile/contract";
 
 function prismaErrorCode(error: unknown) {
   return error && typeof error === "object" && "code" in error && typeof error.code === "string" ? error.code : null;
@@ -50,7 +51,13 @@ export async function enqueueMixingJob(input: {
           }
           const smartReference = profile.synthesisReferenceAsset;
           const sourceReference = profile.recording.mediaAsset;
-          const reference = selectMixingReference({ userId: input.userId, smart: smartReference, source: sourceReference });
+          const contractVersion = synthesisReferenceContractVersion(profile.descriptors as VocalProfileDescriptors | null);
+          const reference = selectMixingReference({
+            userId: input.userId,
+            smart: smartReference,
+            source: sourceReference,
+            contractVersion,
+          });
           if (!reference) {
             throw new MixingError("MIXING_REFERENCE_UNAVAILABLE", "저장된 레퍼런스 음성을 사용할 수 없습니다.", 422);
           }
