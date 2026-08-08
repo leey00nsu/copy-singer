@@ -383,6 +383,8 @@ model MixingJob {
   modalJobId           String?
   attempts             Int                 @default(0)
   maxAttempts          Int                 @default(3)
+  nextAttemptAt        DateTime            @default(now())
+  retryable            Boolean?
   leaseOwner           String?
   leaseExpiresAt       DateTime?
   heartbeatAt          DateTime?
@@ -402,7 +404,7 @@ model MixingJob {
   ticketEntries        TicketLedger[]
 
   @@unique([userId, idempotencyKey])
-  @@index([status, leaseExpiresAt, createdAt])
+  @@index([status, nextAttemptAt, leaseExpiresAt, createdAt])
   @@index([userId, createdAt])
   @@index([recommendationItemId, createdAt])
   @@index([modalJobId])

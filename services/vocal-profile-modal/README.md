@@ -9,6 +9,7 @@ F010의 사용자 보컬 프로필용 CPU-only Modal Web Function입니다.
 - 사용자 오디오는 request-scoped `TemporaryDirectory`에서만 처리합니다.
 - Modal Volume/Dict, PostgreSQL, Leemage에 사용자 데이터를 저장하지 않습니다.
 - profile + source + optional synthesis reference를 하나의 ephemeral response envelope로 반환합니다.
+- mixing worker가 필요로 하는 allowlist 곡 target도 `/v1/song-target`에서 yt-dlp + FFmpeg WAV로 request-scoped 생성합니다.
 - HTTP endpoint는 기존 SoulX Modal API와 동일한 `soulx-api-secret`의 `X-API-Key` 인증을 요구합니다.
 
 ## 로컬 CLI 환경
@@ -60,7 +61,7 @@ pnpm run modal:vocal-profile:deploy
 ### `GET /health`
 
 - analyzer name/version
-- `smart-reference-mid-v1` capability
+- `smart-reference-mid-v1`, `song-target-v1` capability
 - transport version
 - CPU-only resource contract
 
@@ -82,6 +83,22 @@ cleanupConfirmed
 ```
 
 artifact bytes는 base64와 SHA-256을 함께 전달합니다. 이 encoding은 구현 단순성을 위한 1차 transport이며 실제 benchmark에서 serialization/memory overhead가 의미 있으면 binary multipart 방식으로 교체할 수 있습니다.
+
+### `POST /v1/song-target`
+
+mixing worker가 catalog allowlist의 원곡 WAV를 임시로 준비할 때 사용합니다.
+
+```json
+{
+  "sourceUrl": "https://www.youtube.com/watch?v=...",
+  "expectedVideoId": "..........."
+}
+```
+
+- packaged `data/catalogs/tj-2607-top100.md` allowlist를 검증합니다.
+- image에 고정된 `yt-dlp==2026.7.4`와 FFmpeg로 WAV를 생성합니다.
+- response는 `audio/wav` streaming이며 stream 종료 후 임시 directory를 삭제합니다.
+- production `VOCAL_PROFILE_ANALYZER_BACKEND=modal`에서는 mixing worker도 이 endpoint를 사용하므로 local `VOCAL_PROFILE_API_URL`이 필요하지 않습니다.
 
 ## 인증
 

@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import asyncio
 import hmac
 import importlib.metadata
 import logging
 import os
+import shutil
 import sys
 import time
 from pathlib import Path
@@ -12,7 +14,8 @@ from uuid import UUID, uuid4
 
 import modal
 from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, UploadFile
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
+from pydantic import BaseModel
 
 
 APP_NAME = "copy-singer-vocal-profile-analyzer"
@@ -67,6 +70,7 @@ analyzer_image = (
         "python-multipart==0.0.32",
         "soundfile==0.14.0",
         "uvicorn==0.52.1",
+        "yt-dlp==2026.7.4",
     )
     .add_local_dir(
         REPO_ROOT / "services" / "vocal-profile-api" / "app",
@@ -75,6 +79,10 @@ analyzer_image = (
     .add_local_dir(
         REPO_ROOT / "services" / "vocal-profile-modal",
         remote_path=str(REMOTE_SERVICE_ROOT),
+    )
+    .add_local_file(
+        REPO_ROOT / "data" / "catalogs" / "tj-2607-top100.md",
+        remote_path="/data/catalogs/tj-2607-top100.md",
     )
 )
 
@@ -103,6 +111,11 @@ def _error_response(reason_code: str, detail: str, *, retryable: bool) -> JSONRe
     )
 
 
+class SongTargetRequest(BaseModel):
+    sourceUrl: str
+    expectedVideoId: str
+
+
 def _normalize_recording_id(recording_id: str) -> str:
     try:
         return str(UUID(recording_id))
@@ -116,7 +129,7 @@ async def health() -> dict[str, Any]:
         "status": "ok",
         "analyzer": "librosa-pyin",
         "analyzerVersion": importlib.metadata.version("librosa"),
-        "capabilities": ["smart-reference-mid-v1"],
+        "capabilities": ["smart-reference-mid-v1", "song-target-v1"],
         "transportVersion": TRANSPORT_VERSION,
         "containerInstanceId": CONTAINER_INSTANCE_ID,
         "containerStartedAtMs": CONTAINER_STARTED_AT_MS,
@@ -132,6 +145,60 @@ async def health() -> dict[str, Any]:
             "maxInputsPerContainer": MAX_INPUTS_PER_CONTAINER,
         },
     }
+
+
+@web_app.post("/v1/song-target", response_model=None)
+async def song_target(request: SongTargetRequest) -> StreamingResponse | JSONResponse:
+    _prepare_analyzer_imports()
+    from app.song_pipeline import SongPipelineError, download_song_target
+
+    try:
+        job_path, source_path = await asyncio.to_thread(
+            download_song_target,
+            request.sourceUrl,
+            request.expectedVideoId,
+        )
+    except SongPipelineError as error:
+        retryable = error.reason_code not in {
+            "SOURCE_NOT_ALLOWLISTED",
+            "INVALID_SOURCE_URL",
+            "SOURCE_ID_MISMATCH",
+        }
+        status = 422 if not retryable else (504 if error.reason_code == "PIPELINE_TIMEOUT" else 502)
+        return JSONResponse(
+            status_code=status,
+            content={"reasonCode": error.reason_code, "detail": error.detail, "retryable": retryable},
+        )
+    except Exception:
+        LOGGER.exception("Modal song target preparation failed")
+        return JSONResponse(
+            status_code=500,
+            content={
+                "reasonCode": "SONG_TARGET_FAILED",
+                "detail": "The song target service failed unexpectedly.",
+                "retryable": True,
+            },
+        )
+
+    size = source_path.stat().st_size
+
+    async def stream_and_cleanup():
+        try:
+            with source_path.open("rb") as source:
+                while chunk := source.read(1024 * 1024):
+                    yield chunk
+                    await asyncio.sleep(0)
+        finally:
+            shutil.rmtree(job_path, ignore_errors=True)
+
+    return StreamingResponse(
+        stream_and_cleanup(),
+        media_type="audio/wav",
+        headers={
+            "Content-Length": str(size),
+            "Content-Disposition": 'attachment; filename="target.wav"',
+        },
+    )
 
 
 @web_app.post("/v1/analyze")

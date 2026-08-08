@@ -141,7 +141,7 @@ export function serializeRecommendationRun(run: StoredRun): RecommendationRunRes
       synthesis: {
         status: mixingStatus ?? (item.synthesisStatus ? toPublicSynthesisStatus(item.synthesisStatus) : "not_started" as const),
         jobId: mixing?.id ?? item.synthesisJobId,
-        error: mixing?.errorCode
+        error: mixing?.status === "FAILED" && mixing.errorCode
           ? {
               code: mixing.errorCode,
               detail: mixing.errorDetail ?? "합성 작업을 완료하지 못했습니다.",

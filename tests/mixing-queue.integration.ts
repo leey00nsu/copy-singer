@@ -13,7 +13,10 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     cost: process.env.MIXING_TICKET_COST,
     maxAttempts: process.env.MIXING_MAX_ATTEMPTS,
     lease: process.env.MIXING_LEASE_SECONDS,
+    analyzerBackend: process.env.VOCAL_PROFILE_ANALYZER_BACKEND,
     analyzer: process.env.VOCAL_PROFILE_API_URL,
+    vocalModalUrl: process.env.VOCAL_PROFILE_MODAL_URL,
+    vocalModalKey: process.env.VOCAL_PROFILE_MODAL_API_KEY,
     modalUrl: process.env.MODAL_API_URL,
     modalKey: process.env.MODAL_API_KEY,
     leemageUrl: process.env.LEEMAGE_BASE_URL,
@@ -23,7 +26,10 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
   process.env.MIXING_TICKET_COST = "1";
   process.env.MIXING_MAX_ATTEMPTS = "3";
   process.env.MIXING_LEASE_SECONDS = "30";
+  process.env.VOCAL_PROFILE_ANALYZER_BACKEND = "local";
   process.env.VOCAL_PROFILE_API_URL = "https://analyzer.example";
+  process.env.VOCAL_PROFILE_MODAL_URL = "https://vocal-modal.example";
+  process.env.VOCAL_PROFILE_MODAL_API_KEY = "vocal-modal-key";
   process.env.MODAL_API_URL = "https://modal.example";
   process.env.MODAL_API_KEY = "modal-key";
   process.env.LEEMAGE_BASE_URL = "https://leemage.example/api/v1";
@@ -32,7 +38,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
 
   const { prisma } = await import("../lib/db/prisma");
   const { enqueueMixingJob } = await import("../lib/mixing/queue");
-  const { claimNextMixingJob, processClaimedMixingJob } = await import("../lib/mixing/worker");
+  const { claimNextMixingJob, mixingSongTargetConfig, processClaimedMixingJob } = await import("../lib/mixing/worker");
   const { InsufficientTicketsError } = await import("../lib/tickets/service");
   const { MixingError } = await import("../lib/mixing/contract");
   const { applyTicketChange } = await import("../lib/tickets/service");
@@ -47,6 +53,19 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
   const itemId = crypto.randomUUID();
 
   try {
+    assert.deepEqual(mixingSongTargetConfig(), {
+      backend: "local",
+      url: "https://analyzer.example",
+      headers: { "Content-Type": "application/json" },
+    });
+    process.env.VOCAL_PROFILE_ANALYZER_BACKEND = "modal";
+    assert.deepEqual(mixingSongTargetConfig(), {
+      backend: "modal",
+      url: "https://vocal-modal.example",
+      headers: { "Content-Type": "application/json", "X-API-Key": "vocal-modal-key" },
+    });
+    process.env.VOCAL_PROFILE_ANALYZER_BACKEND = "local";
+
     const song = await prisma.song.findFirstOrThrow({ where: { catalogOrder: 1 } });
     await prisma.user.create({
       data: {
@@ -159,6 +178,80 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     const preflightFailed = await prisma.mixingJob.findUniqueOrThrow({ where: { id: first.id } });
     assert.equal(preflightFailed.status, "FAILED");
     assert.equal(preflightFailed.refundState, "REFUNDED");
+    assert.equal(preflightFailed.errorCode, "REFERENCE_FETCH_FAILED");
+    assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 1);
+
+    const retrying = await enqueueMixingJob({
+      userId,
+      recommendationItemId: itemId,
+      idempotencyKey: `retrying-${suffix}`,
+    });
+    await prisma.mixingJob.update({ where: { id: retrying.id }, data: { maxAttempts: 2 } });
+    assert.equal(await claimNextMixingJob("retry-worker-a", retrying.id), retrying.id);
+    const transientTargetFetch: typeof fetch = async (request) => {
+      const url = String(request);
+      if (url === "https://objects.example/smart-reference.wav") {
+        return new Response(new Uint8Array([1, 2, 3]), { headers: { "Content-Type": "audio/wav" } });
+      }
+      if (url === "https://analyzer.example/v1/song-target") throw new TypeError("fetch failed");
+      throw new Error(`Unexpected transient URL: ${url}`);
+    };
+    await processClaimedMixingJob(retrying.id, "retry-worker-a", {
+      fetchImpl: transientTargetFetch,
+      sleep: async () => {},
+      pollIntervalMs: 0,
+    });
+    const retryPending = await prisma.mixingJob.findUniqueOrThrow({ where: { id: retrying.id } });
+    assert.equal(retryPending.status, "PENDING");
+    assert.equal(retryPending.errorCode, "SONG_TARGET_FETCH_FAILED");
+    assert.equal(retryPending.refundState, "NONE");
+    assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 0);
+    assert.equal((await getMixingJobForUser(userId, retrying.id))?.error, null);
+    assert.equal(await claimNextMixingJob("too-early-worker", retrying.id), null);
+    await prisma.$executeRaw`
+      UPDATE "MixingJob" SET "nextAttemptAt" = ${new Date(Date.now() - 1_000)}
+      WHERE "id" = ${retrying.id}::uuid
+    `;
+    assert.equal(await claimNextMixingJob("retry-worker-b", retrying.id), retrying.id);
+    await processClaimedMixingJob(retrying.id, "retry-worker-b", {
+      fetchImpl: transientTargetFetch,
+      sleep: async () => {},
+      pollIntervalMs: 0,
+    });
+    const retryExhausted = await prisma.mixingJob.findUniqueOrThrow({ where: { id: retrying.id } });
+    assert.equal(retryExhausted.status, "FAILED");
+    assert.equal(retryExhausted.errorCode, "SONG_TARGET_FETCH_FAILED");
+    assert.equal(retryExhausted.refundState, "REFUNDED");
+    assert.equal(retryExhausted.attempts, 2);
+    assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 1);
+    assert.equal(await prisma.ticketLedger.count({ where: { mixingJobId: retrying.id, type: "MIXING_REFUND" } }), 1);
+
+    const submitNetworkFailure = await enqueueMixingJob({
+      userId,
+      recommendationItemId: itemId,
+      idempotencyKey: `submit-network-${suffix}`,
+    });
+    assert.equal(await claimNextMixingJob("submit-network-worker", submitNetworkFailure.id), submitNetworkFailure.id);
+    const submitNetworkFetch: typeof fetch = async (request) => {
+      const url = String(request);
+      if (url === "https://objects.example/smart-reference.wav") {
+        return new Response(new Uint8Array([1, 2, 3]), { headers: { "Content-Type": "audio/wav" } });
+      }
+      if (url === "https://analyzer.example/v1/song-target") {
+        return new Response(new Uint8Array([4, 5, 6]), { headers: { "Content-Type": "audio/wav" } });
+      }
+      if (url === "https://modal.example/v1/conversions") throw new TypeError("fetch failed");
+      throw new Error(`Unexpected submit URL: ${url}`);
+    };
+    await processClaimedMixingJob(submitNetworkFailure.id, "submit-network-worker", {
+      fetchImpl: submitNetworkFetch,
+      sleep: async () => {},
+      pollIntervalMs: 0,
+    });
+    const submitNetworkFailed = await prisma.mixingJob.findUniqueOrThrow({ where: { id: submitNetworkFailure.id } });
+    assert.equal(submitNetworkFailed.status, "FAILED");
+    assert.equal(submitNetworkFailed.errorCode, "MODAL_SUBMIT_FAILED");
+    assert.equal(submitNetworkFailed.refundState, "REFUNDED");
     assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 1);
 
     const submittedFailure = await enqueueMixingJob({
@@ -196,6 +289,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     });
     const postSubmitFailed = await prisma.mixingJob.findUniqueOrThrow({ where: { id: submittedFailure.id } });
     assert.equal(postSubmitFailed.status, "FAILED");
+    assert.equal(postSubmitFailed.errorCode, "MODAL_JOB_FAILED");
     assert.equal(postSubmitFailed.refundState, "NONE");
     assert.equal(postSubmitFailed.attempts, 2);
     assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 0);
@@ -271,7 +365,10 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       MIXING_TICKET_COST: previousEnv.cost,
       MIXING_MAX_ATTEMPTS: previousEnv.maxAttempts,
       MIXING_LEASE_SECONDS: previousEnv.lease,
+      VOCAL_PROFILE_ANALYZER_BACKEND: previousEnv.analyzerBackend,
       VOCAL_PROFILE_API_URL: previousEnv.analyzer,
+      VOCAL_PROFILE_MODAL_URL: previousEnv.vocalModalUrl,
+      VOCAL_PROFILE_MODAL_API_KEY: previousEnv.vocalModalKey,
       MODAL_API_URL: previousEnv.modalUrl,
       MODAL_API_KEY: previousEnv.modalKey,
       LEEMAGE_BASE_URL: previousEnv.leemageUrl,

@@ -31,6 +31,7 @@
     "catalog:clear-db-profiles": "tsx scripts/clear-song-profile-records.ts",
     "modal:vocal-profile:deploy": "uv run --with-requirements services/vocal-profile-modal/requirements-local.txt modal deploy services/vocal-profile-modal/modal_app.py",
     "modal:vocal-profile:benchmark": "tsx scripts/benchmark-vocal-profile-modal.ts",
+    "modal:vocal-profile:song-target-probe": "tsx scripts/probe-vocal-profile-song-target.ts",
     "test:catalog": "tsx --test tests/song-catalog.test.ts",
     "test:key-fit": "tsx --test tests/key-fit-scoring.test.ts",
     "test:vocal-profile-analyzer": "node --conditions react-server --import tsx --test tests/vocal-profile-analyzer-adapter.test.ts",

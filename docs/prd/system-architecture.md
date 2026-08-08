@@ -13,7 +13,7 @@
 | Vocal profile analysis worker | `scripts/vocal-profile-analysis-worker.ts`, `lib/vocal-profile/analysis-*` | durable profile-analysis job claim, Modal CPU 분석, retry/lease recovery, 결과 저장 |
 | Leemage | 외부 REST API | 사용자 reference와 성공한 믹싱 결과 영구 저장 |
 | Local vocal analyzer | `services/vocal-profile-api/` | local Docker 개발/회귀용 FastAPI와 Modal이 공유하는 librosa/pYIN 분석 코어 |
-| Modal CPU analyzer | `services/vocal-profile-modal/modal_app.py` | 배포용 CPU-only 보컬 프로필 분석, request-scoped 임시 파일과 profile/source/reference ephemeral handoff |
+| Modal CPU analyzer | `services/vocal-profile-modal/modal_app.py` | 배포용 CPU-only 보컬 프로필 분석과 mixing song-target 준비, request-scoped 임시 파일과 ephemeral handoff |
 | Modal SVC web function | `services/soulx-singer-svc/modal_app.py` | FastAPI 계약, 파일 저장, 비동기 GPU 작업 관리 |
 | Modal GPU worker | `SoulXModel` | SoulX-Singer 모델 로드, 전처리, SVC 추론, 반주 재믹스 |
 | Modal storage | Volume + Dict | 모델·작업 파일과 작업 메타데이터 보관 |
@@ -59,14 +59,15 @@
 4. PostgreSQL에는 사용자 소유 프로필, Leemage 파일 ID와 분석 버전만 저장한다.
 5. 같은 분석기로 미리 생성한 곡 프로필과 semitone 후보별 적합도를 계산하고 전체 순위를 반환한다.
 6. 사용자가 `AI 믹싱`을 누르면 티켓 차감과 PENDING job 생성을 한 DB 트랜잭션에서 수행한다.
-7. 별도 worker가 lease로 job을 claim하고 allowlist target을 임시 준비해 Modal에 제출한다.
-8. 성공 결과를 Leemage에 confirm한 뒤 job을 SUCCEEDED로 만들며 사용자는 재접속 후 히스토리에서 결과를 듣는다.
+7. 별도 worker가 lease로 job을 claim한다. reference asset은 Leemage에서 읽고, `VOCAL_PROFILE_ANALYZER_BACKEND=modal`이면 allowlist 원곡 target을 `VOCAL_PROFILE_MODAL_URL/v1/song-target`에서 yt-dlp/FFmpeg WAV로 준비한다. local backend에서만 `VOCAL_PROFILE_API_URL`을 사용한다.
+8. reference/song-target의 transient network·429·5xx와 이미 생성된 SoulX job의 status/result GET failure는 `nextAttemptAt` exponential backoff로 `maxAttempts` 안에서 재시도한다. 단계별 오류는 `REFERENCE_FETCH_FAILED`, `SONG_TARGET_FETCH_FAILED`, `MODAL_SUBMIT_FAILED`, `MODAL_STATUS_FETCH_FAILED`, `MODAL_RESULT_FETCH_FAILED` 등 stable code로 기록한다. SoulX submit의 네트워크 단절은 idempotency 부재로 중복 생성 가능성이 있어 자동 재시도하지 않는다.
+9. SoulX 접수 전 terminal failure에서만 티켓을 한 번 환불하고, 성공 결과를 Leemage에 confirm한 뒤 job을 SUCCEEDED로 만들며 사용자는 재접속 후 히스토리에서 결과를 듣는다.
 
 ## 운영 경계
 
 - 웹 앱은 공식 Next.js Node 런타임의 로컬 실행을 기준으로 하며 프로덕션 배포 대상은 아직 선택하지 않았다.
 - SoulX SVC와 보컬 프로필 Modal analyzer는 별도 Modal App으로 배포하며 repo의 Modal Python SDK는 `1.5.3`으로 고정한다.
-- 보컬 프로필 production backend는 `VOCAL_PROFILE_ANALYZER_BACKEND=modal`과 `VOCAL_PROFILE_MODAL_URL`을 명시적으로 설정해야 하며, 현재 로컬 환경은 자동 전환하지 않는다.
+- 보컬 프로필 production backend는 `VOCAL_PROFILE_ANALYZER_BACKEND=modal`과 `VOCAL_PROFILE_MODAL_URL`을 명시적으로 설정해야 한다. 이 경우 보컬 분석과 mixing song-target 준비가 모두 Modal analyzer를 사용하며 `VOCAL_PROFILE_API_URL`은 local backend 전용이다.
 - Better Auth, Google, Modal과 Leemage secret은 `.env.local`에만 두고 클라이언트로 전달하지 않는다. 보컬 프로필 analyzer는 기존 `MODAL_API_KEY`를 기본 server-only `X-API-Key`로 사용하고 필요 시 `VOCAL_PROFILE_MODAL_API_KEY`로 override한다.
 - reference와 결과는 사용자가 삭제할 때까지 Leemage에 저장한다. 원곡과 stem은 작업 임시 디렉터리에서 제거한다.
 - `/dev/svc`와 `/api/conversions/*`는 비프로덕션에서 `ENABLE_DEV_SVC=true`일 때만 제공한다.
