@@ -20,10 +20,10 @@ from api.mix_balance import (  # noqa: E402
 
 class MixBalanceTests(unittest.TestCase):
     def test_vocal_balance_contract(self) -> None:
-        self.assertEqual(VOCAL_BALANCE_VERSION, "vocal-balance-v1")
-        self.assertEqual(VOCAL_GAIN_DB, -4.0)
+        self.assertEqual(VOCAL_BALANCE_VERSION, "vocal-balance-v2")
+        self.assertEqual(VOCAL_GAIN_DB, -2.0)
         self.assertEqual(ACCOMPANIMENT_GAIN_DB, 0.0)
-        self.assertTrue(math.isclose(db_to_linear_gain(VOCAL_GAIN_DB), 0.6309573445, rel_tol=1e-9))
+        self.assertTrue(math.isclose(db_to_linear_gain(VOCAL_GAIN_DB), 0.7943282347, rel_tol=1e-9))
         self.assertEqual(db_to_linear_gain(ACCOMPANIMENT_GAIN_DB), 1.0)
 
     def test_peak_protection_only_attenuates_over_full_scale(self) -> None:

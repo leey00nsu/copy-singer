@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-VOCAL_BALANCE_VERSION = "vocal-balance-v1"
-VOCAL_GAIN_DB = -4.0
+VOCAL_BALANCE_VERSION = "vocal-balance-v2"
+VOCAL_GAIN_DB = -2.0
 ACCOMPANIMENT_GAIN_DB = 0.0
 
 
