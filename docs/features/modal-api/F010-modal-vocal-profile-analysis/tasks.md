@@ -134,6 +134,19 @@
     - [x] queue idempotency/ownership, expired lease recovery, Modal transient retry, source 재사용 성공, terminal cleanup 통합 테스트 5개를 추가했다.
     - [x] `pnpm test`, lint, TypeScript, build, Prisma validate/migrate status와 `npx lee-spec-kit workflow-audit --json`를 모두 통과했다.
 
+- [TODO][PRD-FR-004] T-F010-modal-vocal-profile-analysis-09 보컬 프로필 히스토리 백그라운드 분석 상태 카드
+  - Date: 2026-08-08
+  - Acceptance:
+    - 보컬 프로필 히스토리 페이지가 사용자 소유의 pending/processing/retryable/failed 분석 job을 완료 프로필과 함께 표시한다.
+    - 활성 job은 polling으로 상태가 갱신되고 succeeded가 되면 중복 job 카드 없이 완료된 VocalProfile 카드로 자연스럽게 전환된다.
+    - 완료 프로필이 없어도 분석 job이 존재하면 빈 상태 대신 job 카드를 표시하며 다른 탭/재접속에서도 DB 상태만으로 복구된다.
+  - Checklist:
+    - [ ] 사용자 소유 analysis job 목록 조회를 서버 경계에 추가한다.
+    - [ ] pending/processing/retrying/failed 상태 카드를 history grid에 추가한다.
+    - [ ] 활성 job이 있을 때만 polling하고 succeeded 시 history를 refresh한다.
+    - [ ] 빈 상태와 완료 job 중복 표시를 방지한다.
+    - [ ] UI/ownership/전체 회귀와 workflow audit를 통과한다.
+
 ## 완료 조건
 
 - [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
