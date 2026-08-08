@@ -91,7 +91,7 @@ def test_health_analyze_and_delete(tmp_path, monkeypatch) -> None:
         assert body["descriptors"]["pitchHistogram"]
         assert body["descriptors"]["pitchTrack"]
         assert len(body["descriptors"]["pitchTrack"]) <= 720
-        assert body["synthesisReference"]["version"] == "smart-reference-v1"
+        assert body["synthesisReference"]["version"] == "smart-reference-mid-v1"
         assert body["synthesisReference"]["durationMs"] <= 30_000
         assert body["descriptors"]["synthesisReference"]["sourceRanges"]
         assert (main.STORAGE_ROOT / body["storagePath"]).exists()

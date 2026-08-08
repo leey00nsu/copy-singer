@@ -41,7 +41,7 @@ def test_analysis_service_keeps_source_and_removes_intermediate_wav(tmp_path) ->
     assert analyzed.source_mime_type == "audio/wav"
     assert analyzed.source_size_bytes == source.stat().st_size
     assert analyzed.analysis.analyzer == "librosa-pyin"
-    assert analyzed.analysis.descriptors["synthesisReference"]["version"] == "smart-reference-v1"
+    assert analyzed.analysis.descriptors["synthesisReference"]["version"] == "smart-reference-mid-v1"
     assert not (working_directory / "analysis.wav").exists()
     assert analyzed.synthesis_reference_path is not None
     assert analyzed.synthesis_reference_path.exists()

@@ -126,10 +126,10 @@ async def analyze_recording_file(
         if synthesis_descriptor is None:
             synthesis_path.unlink(missing_ok=True)
             descriptors["synthesisReference"] = {
-                "algorithm": "voiced-phrase-band-selection",
-                "version": "smart-reference-v1",
+                "algorithm": "voiced-mid-phrase-selection",
+                "version": "smart-reference-mid-v1",
                 "status": "unavailable",
-                "fallbackReason": "no-quality-phrase",
+                "fallbackReason": "no-quality-mid-phrase",
             }
             synthesis_reference_path = None
         else:
