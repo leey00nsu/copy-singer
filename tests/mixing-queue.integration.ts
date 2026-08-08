@@ -153,9 +153,9 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
         id: targetAssetId,
         externalProjectId: "project",
         externalFileId: `catalog-target-${suffix}`,
-        externalUrl: "https://objects.example/catalog-target.wav",
-        fileName: "catalog-target.wav",
-        mimeType: "audio/wav",
+        externalUrl: "https://objects.example/catalog-target.m4a",
+        fileName: "catalog-target.m4a",
+        mimeType: "audio/mp4",
         sizeBytes: BigInt(3),
         sha256: "test-target-sha256",
         sourceVideoId: "dQw4w9WgXcQ",
@@ -203,7 +203,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       if (url === "https://objects.example/smart-reference.wav") {
         return new Response(new Uint8Array([1, 2, 3]), { headers: { "Content-Type": "audio/wav" } });
       }
-      if (url === "https://objects.example/catalog-target.wav") throw new TypeError("fetch failed");
+      if (url === "https://objects.example/catalog-target.m4a") throw new TypeError("fetch failed");
       throw new Error(`Unexpected transient URL: ${url}`);
     };
     await processClaimedMixingJob(retrying.id, "retry-worker-a", {
@@ -247,8 +247,8 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       if (url === "https://objects.example/smart-reference.wav") {
         return new Response(new Uint8Array([1, 2, 3]), { headers: { "Content-Type": "audio/wav" } });
       }
-      if (url === "https://objects.example/catalog-target.wav") {
-        return new Response(new Uint8Array([4, 5, 6]), { headers: { "Content-Type": "audio/wav" } });
+      if (url === "https://objects.example/catalog-target.m4a") {
+        return new Response(new Uint8Array([4, 5, 6]), { headers: { "Content-Type": "audio/mp4" } });
       }
       if (url === "https://modal.example/v1/conversions") throw new TypeError("fetch failed");
       throw new Error(`Unexpected submit URL: ${url}`);
@@ -281,8 +281,8 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       if (url === "https://objects.example/smart-reference.wav") {
         return new Response(new Uint8Array([1, 2, 3]), { headers: { "Content-Type": "audio/wav" } });
       }
-      if (url === "https://objects.example/catalog-target.wav") {
-        return new Response(new Uint8Array([4, 5, 6]), { headers: { "Content-Type": "audio/wav" } });
+      if (url === "https://objects.example/catalog-target.m4a") {
+        return new Response(new Uint8Array([4, 5, 6]), { headers: { "Content-Type": "audio/mp4" } });
       }
       if (url === "https://modal.example/v1/conversions" && init?.method === "POST") {
         return Response.json({ id: "modal-job", status: "queued" });
@@ -323,10 +323,13 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       if (url === "https://objects.example/smart-reference.wav") {
         return new Response(new Uint8Array([1, 2, 3]), { headers: { "Content-Type": "audio/wav" } });
       }
-      if (url === "https://objects.example/catalog-target.wav") {
-        return new Response(new Uint8Array([4, 5, 6]), { headers: { "Content-Type": "audio/wav" } });
+      if (url === "https://objects.example/catalog-target.m4a") {
+        return new Response(new Uint8Array([4, 5, 6]), { headers: { "Content-Type": "audio/mp4" } });
       }
       if (url === "https://modal.example/v1/conversions" && init?.method === "POST") {
+        const targetAudio = (init.body as FormData).get("target_audio") as File | null;
+        assert.equal(targetAudio?.name, "catalog-target.m4a");
+        assert.equal(targetAudio?.type, "audio/mp4");
         return Response.json({ id: "modal-success", status: "queued" });
       }
       if (url === "https://modal.example/v1/conversions/modal-success") {

@@ -290,7 +290,11 @@ export async function processClaimedMixingJob(jobId: string, owner: string, depe
       );
       const form = new FormData();
       form.append("prompt_audio", new Blob([reference.bytes], { type: reference.contentType }), "prompt.wav");
-      form.append("target_audio", new Blob([targetAudio.bytes], { type: targetAudio.contentType }), "target.wav");
+      form.append(
+        "target_audio",
+        new Blob([targetAudio.bytes], { type: job.targetAsset.mimeType }),
+        job.targetAsset.fileName,
+      );
       for (const [name, value] of Object.entries(SYNTHESIS_PRESET)) form.append(name, String(value));
 
       const modal = modalConfig();

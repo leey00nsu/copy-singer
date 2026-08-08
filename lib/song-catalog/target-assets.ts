@@ -1,17 +1,15 @@
 import "server-only";
 
 import { createHash } from "node:crypto";
-import { execFile } from "node:child_process";
-import { mkdir, readFile, readdir } from "node:fs/promises";
+import { mkdir, readFile, readdir, stat, unlink } from "node:fs/promises";
 import path from "node:path";
-import { promisify } from "node:util";
 
 import artifactJson from "../../data/catalogs/tj-2607-song-profiles.json";
 import { prisma } from "@/lib/db/prisma";
 import { createLeemageClient } from "@/lib/leemage/client";
 
-const execFileAsync = promisify(execFile);
 const SUPPORTED_SOURCE_EXTENSIONS = ["wav", "mp3", "m4a", "aac", "webm", "flac"] as const;
+const CATALOG_TARGET_MAX_UPLOAD_BYTES = 49_000_000;
 
 export const CATALOG_TARGET_STAGING_DIR = path.join(process.cwd(), "tmp", "catalog-targets");
 
@@ -21,7 +19,8 @@ export type CatalogTargetImportResult = {
   artist: string;
   sourceVideoId: string;
   sourcePath: string;
-  wavPath: string;
+  uploadPath: string;
+  mimeType: string;
   assetId: string;
   sizeBytes: number;
   sha256: string;
@@ -66,49 +65,67 @@ async function findStagedSource(catalogOrder: number, sourceVideoId: string, sta
   await ensureCatalogTargetStagingDir(stagingDir);
   const stem = catalogTargetStem(catalogOrder, sourceVideoId);
   const entries = await readdir(stagingDir, { withFileTypes: true });
-  const candidates = entries
+  const supported = entries
     .filter((entry) => entry.isFile())
     .map((entry) => entry.name)
-    .filter((name) => {
-      const parsed = path.parse(name);
-      return parsed.name === stem && SUPPORTED_SOURCE_EXTENSIONS.includes(parsed.ext.slice(1).toLowerCase() as typeof SUPPORTED_SOURCE_EXTENSIONS[number]);
-    })
-    .sort((left, right) => {
-      if (left.endsWith(".wav")) return -1;
-      if (right.endsWith(".wav")) return 1;
-      return left.localeCompare(right);
-    });
+    .filter((name) => SUPPORTED_SOURCE_EXTENSIONS.includes(path.extname(name).slice(1).toLowerCase() as typeof SUPPORTED_SOURCE_EXTENSIONS[number]));
 
-  if (candidates.length === 0) return null;
-  if (candidates.length > 1 && !candidates[0]?.endsWith(".wav")) {
+  const ytDlpSuffix = `[${sourceVideoId}]`;
+  const byVideoId = supported.filter((name) => path.parse(name).name.endsWith(ytDlpSuffix));
+  if (byVideoId.length > 1) {
+    throw new Error(`Multiple staged source files contain video ID ${sourceVideoId} for catalog order ${catalogOrder}. Keep only one source file.`);
+  }
+  if (byVideoId.length === 1) return path.join(stagingDir, byVideoId[0]!);
+
+  const exact = supported.filter((name) => path.parse(name).name === stem);
+  if (exact.length === 0) return null;
+  if (exact.length > 1) {
     throw new Error(`Multiple staged source files exist for catalog order ${catalogOrder}. Keep only one source file.`);
   }
-  return path.join(stagingDir, candidates[0]!);
+  return path.join(stagingDir, exact[0]!);
 }
 
-async function ensureWav(sourcePath: string, catalogOrder: number, sourceVideoId: string, stagingDir: string) {
-  const wavPath = expectedCatalogTargetPath(catalogOrder, sourceVideoId, stagingDir);
-  if (path.extname(sourcePath).toLowerCase() === ".wav") return sourcePath;
-  await execFileAsync("ffmpeg", [
-    "-hide_banner",
-    "-loglevel", "error",
-    "-y",
-    "-i", sourcePath,
-    "-vn",
-    "-c:a", "pcm_s16le",
-    wavPath,
-  ], { timeout: 10 * 60_000, maxBuffer: 1024 * 1024 });
-  return wavPath;
-}
-
-function assertWav(bytes: Uint8Array) {
-  if (bytes.byteLength < 44 || Buffer.from(bytes.subarray(0, 4)).toString("ascii") !== "RIFF") {
-    throw new Error("Catalog target must be a valid RIFF WAV after normalization.");
+function sourceMimeType(sourcePath: string) {
+  switch (path.extname(sourcePath).slice(1).toLowerCase()) {
+    case "wav": return "audio/wav";
+    case "mp3": return "audio/mpeg";
+    case "m4a": return "audio/mp4";
+    case "aac": return "audio/aac";
+    case "webm": return "audio/webm";
+    case "flac": return "audio/flac";
+    default: throw new Error(`Unsupported catalog target extension: ${path.extname(sourcePath)}`);
   }
+}
+
+async function validateUploadSource(sourcePath: string) {
+  const sourceStat = await stat(sourcePath);
+  if (sourceStat.size <= 0) throw new Error("Catalog target source file is empty.");
+  if (sourceStat.size > CATALOG_TARGET_MAX_UPLOAD_BYTES) {
+    throw new Error(`Catalog target source exceeds the Leemage upload limit (${sourceStat.size} bytes).`);
+  }
+  const mimeType = sourceMimeType(sourcePath);
+  const bytes = new Uint8Array(await readFile(sourcePath));
+  if (mimeType === "audio/wav" && (bytes.byteLength < 44 || Buffer.from(bytes.subarray(0, 4)).toString("ascii") !== "RIFF")) {
+    throw new Error("Catalog target WAV must have a valid RIFF header.");
+  }
+  return { bytes, mimeType };
 }
 
 function sha256(bytes: Uint8Array) {
   return createHash("sha256").update(bytes).digest("hex");
+}
+
+async function cleanupDerivedWav(
+  catalogOrder: number,
+  sourceVideoId: string,
+  stagingDir: string,
+  sourcePath: string,
+) {
+  const derivedWavPath = expectedCatalogTargetPath(catalogOrder, sourceVideoId, stagingDir);
+  if (path.resolve(derivedWavPath) === path.resolve(sourcePath)) return;
+  await unlink(derivedWavPath).catch((error: NodeJS.ErrnoException) => {
+    if (error.code !== "ENOENT") throw error;
+  });
 }
 
 async function cleanupSupersededAsset(asset: {
@@ -151,9 +168,8 @@ export async function importCatalogTargetAsset(input: {
   if (!sourcePath) {
     throw new Error(`Missing authorized source file: ${catalogTargetStem(input.catalogOrder, catalog.sourceVideoId)}.{wav,mp3,m4a,aac,webm,flac}`);
   }
-  const wavPath = await ensureWav(sourcePath, input.catalogOrder, catalog.sourceVideoId, stagingDir);
-  const bytes = new Uint8Array(await readFile(wavPath));
-  assertWav(bytes);
+  const { bytes, mimeType } = await validateUploadSource(sourcePath);
+  const uploadPath = sourcePath;
   const digest = sha256(bytes);
 
   if (
@@ -161,13 +177,15 @@ export async function importCatalogTargetAsset(input: {
     song.targetAsset.sha256 === digest &&
     song.targetAsset.sourceVideoId === catalog.sourceVideoId
   ) {
+    await cleanupDerivedWav(input.catalogOrder, catalog.sourceVideoId, stagingDir, sourcePath);
     return {
       catalogOrder: input.catalogOrder,
       title: catalog.title,
       artist: catalog.artist,
       sourceVideoId: catalog.sourceVideoId,
       sourcePath,
-      wavPath,
+      uploadPath,
+      mimeType,
       assetId: song.targetAsset.id,
       sizeBytes: Number(song.targetAsset.sizeBytes),
       sha256: digest,
@@ -175,9 +193,10 @@ export async function importCatalogTargetAsset(input: {
     };
   }
 
+  const extension = path.extname(sourcePath).toLowerCase();
   const stored = await createLeemageClient(input.fetchImpl).uploadFile({
-    fileName: `catalog-target-${catalogTargetStem(input.catalogOrder, catalog.sourceVideoId)}.wav`,
-    mimeType: "audio/wav",
+    fileName: `catalog-target-${catalogTargetStem(input.catalogOrder, catalog.sourceVideoId)}${extension}`,
+    mimeType,
     bytes,
   });
 
@@ -190,7 +209,7 @@ export async function importCatalogTargetAsset(input: {
           externalFileId: stored.fileId,
           externalUrl: stored.url,
           fileName: stored.fileName,
-          mimeType: "audio/wav",
+          mimeType,
           sizeBytes: BigInt(stored.sizeBytes),
           sha256: digest,
           sourceVideoId: catalog.sourceVideoId,
@@ -209,6 +228,7 @@ export async function importCatalogTargetAsset(input: {
   if (song.targetAsset && song.targetAsset.id !== assetId) {
     await cleanupSupersededAsset(song.targetAsset, input.fetchImpl);
   }
+  await cleanupDerivedWav(input.catalogOrder, catalog.sourceVideoId, stagingDir, sourcePath);
 
   return {
     catalogOrder: input.catalogOrder,
@@ -216,7 +236,8 @@ export async function importCatalogTargetAsset(input: {
     artist: catalog.artist,
     sourceVideoId: catalog.sourceVideoId,
     sourcePath,
-    wavPath,
+    uploadPath,
+    mimeType,
     assetId,
     sizeBytes: stored.sizeBytes,
     sha256: digest,
@@ -233,7 +254,7 @@ export async function catalogTargetStatus() {
       title: true,
       artist: true,
       targetAsset: {
-        select: { id: true, status: true, sizeBytes: true, sha256: true, sourceVideoId: true },
+        select: { id: true, status: true, sizeBytes: true, sha256: true, sourceVideoId: true, mimeType: true, fileName: true },
       },
     },
   });

@@ -104,7 +104,7 @@ Google OAuth 로그인
 - **PRD-FR-016**: 추천 실행 생성만으로 합성 작업을 자동 시작하지 않아야 하며, 사용자가 목록 항목의 `AI 믹싱`을 누른 곡만 사용자 보컬 프로필의 원본 테스트 녹음을 reference로 합성해야 한다.
 - **PRD-FR-017**: 추천 목록 항목은 합성 전 `AI 믹싱` 버튼을 제공하고, 시작 후 `preparing → queued → processing → succeeded | failed` 상태와 “믹싱 중이에요” 안내를 표시하며 성공 시 결과 오디오 재생·다운로드를 제공해야 한다.
 - **PRD-FR-018**: 추천 목록 합성은 `prompt_vocal_separation=false`, `target_vocal_separation=true`, `auto_pitch_shift=true`, `auto_mix_accompaniment=true`, `pitch_shift=0`의 고정 제품 preset을 사용하고 자동 피치 이동이 적용되는 AI 믹싱임을 명시해야 한다.
-- **PRD-FR-019**: 운영자가 사용 권한을 확보한 카탈로그 target 오디오는 Git 비추적 local staging에서 WAV로 정규화한 뒤 Leemage에 사전 업로드하고 Song에 연결해야 한다. AI 믹싱은 작업 시점의 외부 URL 다운로드 대신 해당 READY target asset을 snapshot해 사용하며, target이 준비되지 않은 곡은 티켓 차감 전에 믹싱을 거부해야 한다.
+- **PRD-FR-019**: 운영자가 사용 권한을 확보한 카탈로그 target 오디오는 Git 비추적 local staging에서 catalog identity를 검증한 뒤 지원되는 원본 오디오 bytes/MIME을 유지해 Leemage에 사전 업로드하고 Song에 연결해야 한다. AI 믹싱은 작업 시점의 외부 URL 다운로드 대신 해당 READY target asset을 snapshot해 사용하며, SoulX가 합성 시작 시 내부 정규화를 수행한다. target이 준비되지 않은 곡은 티켓 차감 전에 믹싱을 거부해야 한다.
 - **PRD-FR-020**: 기존 자유 reference/target과 advanced settings Workbench는 자동 추천 합성과 분리된 개발·진단용 화면으로 유지해야 한다.
 
 ### 인증과 사용자 소유권

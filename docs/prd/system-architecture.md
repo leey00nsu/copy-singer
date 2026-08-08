@@ -58,7 +58,7 @@
 3. CPU 분석기가 보컬 프로필을 계산하고 표준 reference를 Leemage에 옮긴 뒤 임시본을 제거한다.
 4. PostgreSQL에는 사용자 소유 프로필, Leemage 파일 ID와 분석 버전만 저장한다.
 5. 같은 분석기로 미리 생성한 곡 프로필과 semitone 후보별 적합도를 계산하고 전체 순위를 반환한다.
-6. 운영자는 사용 권한을 확인한 catalog target 파일을 Git 비추적 `tmp/catalog-targets`에 두고 `catalog:targets:import`로 WAV 정규화·SHA-256 검증 후 Leemage `CatalogTargetAsset`으로 등록해 Song에 연결한다.
+6. 운영자는 사용 권한을 확인한 catalog target 파일을 Git 비추적 `tmp/catalog-targets`에 두고 `catalog:targets:import`로 catalog identity·SHA-256을 검증한 뒤 원본 압축 bytes/MIME 그대로 Leemage `CatalogTargetAsset`으로 등록해 Song에 연결한다. SoulX는 합성 시작 시 입력을 내부 44.1kHz mono로 정규화한다.
 7. 사용자가 `AI 믹싱`을 누르면 READY mid-only reference와 READY catalog target을 확인하고 각각 `referenceAssetId`, `targetAssetId`로 snapshot한 뒤 티켓 차감과 PENDING job 생성을 한 DB 트랜잭션에서 수행한다. target이 없으면 티켓 차감 전에 거부한다.
 8. 별도 worker가 lease로 job을 claim하고 snapshot된 reference/target asset을 Leemage에서 읽어 SoulX Modal에 제출한다. production mixing은 런타임 YouTube/yt-dlp `/v1/song-target`을 호출하지 않는다.
 9. reference/catalog-target의 transient network·429·5xx와 이미 생성된 SoulX job의 status/result GET failure는 `nextAttemptAt` exponential backoff로 `maxAttempts` 안에서 재시도한다. 단계별 오류는 `REFERENCE_FETCH_FAILED`, `CATALOG_TARGET_FETCH_FAILED`, `MODAL_SUBMIT_FAILED`, `MODAL_STATUS_FETCH_FAILED`, `MODAL_RESULT_FETCH_FAILED` 등 stable code로 기록한다. SoulX submit의 네트워크 단절은 idempotency 부재로 중복 생성 가능성이 있어 자동 재시도하지 않는다.

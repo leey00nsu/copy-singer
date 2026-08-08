@@ -9,24 +9,6 @@ import artifactJson from "../data/catalogs/tj-2607-song-profiles.json";
 
 config({ path: [".env.local", ".env"], quiet: true });
 
-function tinyWav() {
-  const buffer = Buffer.alloc(44);
-  buffer.write("RIFF", 0, "ascii");
-  buffer.writeUInt32LE(36, 4);
-  buffer.write("WAVE", 8, "ascii");
-  buffer.write("fmt ", 12, "ascii");
-  buffer.writeUInt32LE(16, 16);
-  buffer.writeUInt16LE(1, 20);
-  buffer.writeUInt16LE(1, 22);
-  buffer.writeUInt32LE(16_000, 24);
-  buffer.writeUInt32LE(32_000, 28);
-  buffer.writeUInt16LE(2, 32);
-  buffer.writeUInt16LE(16, 34);
-  buffer.write("data", 36, "ascii");
-  buffer.writeUInt32LE(0, 40);
-  return buffer;
-}
-
 test("catalog target import uploads once, links Song, and is idempotent by SHA-256", async (context) => {
   if (!process.env.DATABASE_URL) {
     context.skip("DATABASE_URL is not configured");
@@ -43,18 +25,15 @@ test("catalog target import uploads once, links Song, and is idempotent by SHA-2
   process.env.LEEMAGE_PROJECT_ID = "catalog-target-project";
 
   const { prisma } = await import("../lib/db/prisma");
-  const {
-    catalogTargetStem,
-    expectedCatalogTargetPath,
-    importCatalogTargetAsset,
-  } = await import("../lib/song-catalog/target-assets");
+  const { importCatalogTargetAsset } = await import("../lib/song-catalog/target-assets");
 
   const catalogOrder = 100;
   const catalog = artifactJson.songs[catalogOrder - 1]!;
   const song = await prisma.song.findUniqueOrThrow({ where: { catalogOrder } });
   const originalTargetAssetId = song.targetAssetId;
   const stagingDir = await mkdtemp(path.join(os.tmpdir(), "copy-singer-catalog-targets-"));
-  const sourcePath = path.join(stagingDir, `${catalogTargetStem(catalogOrder, catalog.sourceVideoId)}.wav`);
+  const sourcePath = path.join(stagingDir, `Fixture Song [${catalog.sourceVideoId}].m4a`);
+  const sourceBytes = Buffer.from("fixture-compressed-audio");
   const fileId = `catalog-target-${crypto.randomUUID()}`;
   let presignCount = 0;
 
@@ -80,13 +59,14 @@ test("catalog target import uploads once, links Song, and is idempotent by SHA-2
   let importedAssetId: string | null = null;
   try {
     await prisma.song.update({ where: { id: song.id }, data: { targetAssetId: null } });
-    await writeFile(sourcePath, tinyWav());
-    assert.equal(expectedCatalogTargetPath(catalogOrder, catalog.sourceVideoId, stagingDir), sourcePath);
+    await writeFile(sourcePath, sourceBytes);
 
     const first = await importCatalogTargetAsset({ catalogOrder, stagingDir, fetchImpl });
     importedAssetId = first.assetId;
     assert.equal(first.skipped, false);
-    assert.equal(first.sizeBytes, 44);
+    assert.equal(first.sizeBytes, sourceBytes.byteLength);
+    assert.equal(first.mimeType, "audio/mp4");
+    assert.equal(first.uploadPath, sourcePath);
     assert.equal(first.sourceVideoId, catalog.sourceVideoId);
     assert.equal(presignCount, 1);
 
@@ -96,7 +76,8 @@ test("catalog target import uploads once, links Song, and is idempotent by SHA-2
     });
     assert.equal(linked.targetAssetId, first.assetId);
     assert.equal(linked.targetAsset?.status, "READY");
-    assert.equal(linked.targetAsset?.mimeType, "audio/wav");
+    assert.equal(linked.targetAsset?.mimeType, "audio/mp4");
+    assert.match(linked.targetAsset?.fileName ?? "", /\.m4a$/);
     assert.equal(linked.targetAsset?.sourceVideoId, catalog.sourceVideoId);
     assert.equal(linked.targetAsset?.sha256, first.sha256);
 
