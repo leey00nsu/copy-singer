@@ -110,3 +110,18 @@ export async function getVocalProfileReference(userId: string, id: string) {
   if (!row || !asset || asset.userId !== userId || asset.kind !== "REFERENCE" || asset.status !== "READY") return null;
   return { profileId: row.id, externalUrl: asset.externalUrl, mimeType: asset.mimeType };
 }
+
+export async function getVocalProfileSynthesisReference(userId: string, id: string) {
+  const row = await prisma.vocalProfile.findFirst({
+    where: { id, userId, sourceType: "USER" },
+    select: {
+      id: true,
+      synthesisReferenceAsset: {
+        select: { userId: true, kind: true, status: true, externalUrl: true, mimeType: true },
+      },
+    },
+  });
+  const asset = row?.synthesisReferenceAsset;
+  if (!row || !asset || asset.userId !== userId || asset.kind !== "SYNTHESIS_REFERENCE" || asset.status !== "READY") return null;
+  return { profileId: row.id, externalUrl: asset.externalUrl, mimeType: asset.mimeType };
+}

@@ -10,11 +10,12 @@ test("profile history, detail, and reference are scoped to the owning user", asy
     return;
   }
   const { prisma } = await import("../lib/db/prisma");
-  const { getVocalProfileDetail, getVocalProfileHistory, getVocalProfileReference } = await import("../lib/vocal-profile/history");
+  const { getVocalProfileDetail, getVocalProfileHistory, getVocalProfileReference, getVocalProfileSynthesisReference } = await import("../lib/vocal-profile/history");
   const suffix = crypto.randomUUID();
   const ownerId = `profile-history-owner-${suffix}`;
   const otherId = `profile-history-other-${suffix}`;
   const assetId = crypto.randomUUID();
+  const synthesisAssetId = crypto.randomUUID();
   const recordingId = crypto.randomUUID();
   const profileId = crypto.randomUUID();
 
@@ -23,17 +24,30 @@ test("profile history, detail, and reference are scoped to the owning user", asy
       { id: ownerId, name: "Owner", email: `${ownerId}@example.test`, emailVerified: true },
       { id: otherId, name: "Other", email: `${otherId}@example.test`, emailVerified: true },
     ] });
-    await prisma.mediaAsset.create({ data: {
-      id: assetId,
-      userId: ownerId,
-      kind: "REFERENCE",
-      externalProjectId: "project",
-      externalFileId: `file-${suffix}`,
-      externalUrl: "https://objects.example/private-reference.wav",
-      fileName: "reference.wav",
-      mimeType: "audio/wav",
-      sizeBytes: BigInt(3),
-    } });
+    await prisma.mediaAsset.createMany({ data: [
+      {
+        id: assetId,
+        userId: ownerId,
+        kind: "REFERENCE",
+        externalProjectId: "project",
+        externalFileId: `file-${suffix}`,
+        externalUrl: "https://objects.example/private-reference.wav",
+        fileName: "reference.wav",
+        mimeType: "audio/wav",
+        sizeBytes: BigInt(3),
+      },
+      {
+        id: synthesisAssetId,
+        userId: ownerId,
+        kind: "SYNTHESIS_REFERENCE",
+        externalProjectId: "project",
+        externalFileId: `synthesis-${suffix}`,
+        externalUrl: "https://objects.example/private-synthesis-reference.wav",
+        fileName: "synthesis-reference.wav",
+        mimeType: "audio/wav",
+        sizeBytes: BigInt(2),
+      },
+    ] });
     await prisma.recording.create({ data: {
       id: recordingId,
       kind: "USER_TEST",
@@ -64,6 +78,7 @@ test("profile history, detail, and reference are scoped to the owning user", asy
       analyzer: "test",
       analyzerVersion: "1",
       descriptors: {},
+      synthesisReferenceAssetId: synthesisAssetId,
     } });
 
     const ownerHistory = await getVocalProfileHistory(ownerId);
@@ -74,6 +89,8 @@ test("profile history, detail, and reference are scoped to the owning user", asy
     assert.equal(await getVocalProfileDetail(otherId, profileId), null);
     assert.equal((await getVocalProfileReference(ownerId, profileId))?.externalUrl, "https://objects.example/private-reference.wav");
     assert.equal(await getVocalProfileReference(otherId, profileId), null);
+    assert.equal((await getVocalProfileSynthesisReference(ownerId, profileId))?.externalUrl, "https://objects.example/private-synthesis-reference.wav");
+    assert.equal(await getVocalProfileSynthesisReference(otherId, profileId), null);
   } finally {
     await prisma.vocalProfile.deleteMany({ where: { id: profileId } });
     await prisma.recording.deleteMany({ where: { id: recordingId } });
