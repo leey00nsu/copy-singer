@@ -309,6 +309,77 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       userId,
       type: "ADMIN_ADJUSTMENT",
       amount: 1,
+      idempotencyKey: `test:finalization-topup:${suffix}`,
+      reason: "finalization retry test",
+    });
+    const finalizationFailure = await enqueueMixingJob({
+      userId,
+      recommendationItemId: itemId,
+      idempotencyKey: `finalization-${suffix}`,
+    });
+    await prisma.mixingJob.update({ where: { id: finalizationFailure.id }, data: { maxAttempts: 2 } });
+    assert.equal(await claimNextMixingJob("finalization-worker-a", finalizationFailure.id), finalizationFailure.id);
+    const finalizationFetch: typeof fetch = async (request, init) => {
+      const url = String(request);
+      if (url === "https://objects.example/smart-reference.wav") {
+        return new Response(new Uint8Array([1, 2, 3]), { headers: { "Content-Type": "audio/wav" } });
+      }
+      if (url === "https://objects.example/catalog-target.m4a") {
+        return new Response(new Uint8Array([4, 5, 6]), { headers: { "Content-Type": "audio/mp4" } });
+      }
+      if (url === "https://modal.example/v1/conversions" && init?.method === "POST") {
+        return Response.json({ id: "modal-finalization", status: "queued" });
+      }
+      if (url === "https://modal.example/v1/conversions/modal-finalization") {
+        return Response.json({ id: "modal-finalization", status: "succeeded" });
+      }
+      if (url === "https://modal.example/v1/conversions/modal-finalization/audio") {
+        return new Response(new Uint8Array([7, 8, 9]), { headers: { "Content-Type": "audio/wav" } });
+      }
+      throw new Error(`Unexpected finalization worker URL: ${url}`);
+    };
+    const failFinalization = async () => {
+      throw new Error("ffmpeg failed");
+    };
+    await processClaimedMixingJob(finalizationFailure.id, "finalization-worker-a", {
+      fetchImpl: finalizationFetch,
+      sleep: async () => {},
+      pollIntervalMs: 0,
+      compressResult: failFinalization,
+    });
+    const finalizationRetrying = await prisma.mixingJob.findUniqueOrThrow({ where: { id: finalizationFailure.id } });
+    assert.equal(finalizationRetrying.status, "SUBMITTED");
+    assert.equal(finalizationRetrying.errorCode, "MIXING_FINALIZATION_FAILED");
+    assert.equal(finalizationRetrying.refundState, "NONE");
+    assert.equal(finalizationRetrying.resultAssetId, null);
+    assert.equal(finalizationRetrying.attempts, 1);
+    assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 0);
+    assert.equal(await prisma.ticketLedger.count({ where: { mixingJobId: finalizationFailure.id, type: "MIXING_REFUND" } }), 0);
+
+    await prisma.$executeRaw`
+      UPDATE "MixingJob" SET "nextAttemptAt" = ${new Date(Date.now() - 1_000)}
+      WHERE "id" = ${finalizationFailure.id}::uuid
+    `;
+    assert.equal(await claimNextMixingJob("finalization-worker-b", finalizationFailure.id), finalizationFailure.id);
+    await processClaimedMixingJob(finalizationFailure.id, "finalization-worker-b", {
+      fetchImpl: finalizationFetch,
+      sleep: async () => {},
+      pollIntervalMs: 0,
+      compressResult: failFinalization,
+    });
+    const finalizationExhausted = await prisma.mixingJob.findUniqueOrThrow({ where: { id: finalizationFailure.id } });
+    assert.equal(finalizationExhausted.status, "FAILED");
+    assert.equal(finalizationExhausted.errorCode, "MIXING_FINALIZATION_FAILED");
+    assert.equal(finalizationExhausted.refundState, "NONE");
+    assert.equal(finalizationExhausted.resultAssetId, null);
+    assert.equal(finalizationExhausted.attempts, 2);
+    assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 0);
+    assert.equal(await prisma.ticketLedger.count({ where: { mixingJobId: finalizationFailure.id, type: "MIXING_REFUND" } }), 0);
+
+    await applyTicketChange({
+      userId,
+      type: "ADMIN_ADJUSTMENT",
+      amount: 1,
       idempotencyKey: `test:topup:${suffix}`,
       reason: "result storage test",
     });

@@ -106,6 +106,7 @@ Google OAuth 로그인
 - **PRD-FR-018**: 추천 목록 합성은 `prompt_vocal_separation=false`, `target_vocal_separation=true`, `auto_pitch_shift=true`, `auto_mix_accompaniment=true`, `pitch_shift=0`의 고정 제품 preset을 사용하고 자동 피치 이동이 적용되는 AI 믹싱임을 명시해야 한다.
 - **PRD-FR-019**: 운영자가 사용 권한을 확보한 카탈로그 target 오디오는 Git 비추적 local staging에서 catalog identity를 검증한 뒤 지원되는 원본 오디오 bytes/MIME을 유지해 Leemage에 사전 업로드하고 Song에 연결해야 한다. AI 믹싱은 작업 시점의 외부 URL 다운로드 대신 해당 READY target asset을 snapshot해 사용하며, SoulX가 합성 시작 시 내부 정규화를 수행한다. target이 준비되지 않은 곡은 티켓 차감 전에 믹싱을 거부해야 한다.
 - **PRD-FR-020**: 기존 자유 reference/target과 advanced settings Workbench는 자동 추천 합성과 분리된 개발·진단용 화면으로 유지해야 한다.
+- **PRD-FR-044**: 새 AI 믹싱 성공 결과는 사용자에게 저장·재생·다운로드되기 전에 고정된 `clarity-normal-v1` finalization을 거쳐야 한다. 이 단계는 저중역 정리, 보컬 presence/air 강조, 가벼운 stereo widening과 -14 LUFS / -1 dBTP loudness 정리를 포함하며 최종 44.1 kHz stereo AAC/M4A encode와 같은 FFmpeg 경계에서 처리해야 한다. finalization 실패 시 미보정 SoulX 결과를 성공 결과로 fallback하지 않고 기존 submitted job을 재사용하는 bounded retry를 적용해야 한다.
 
 ### 인증과 사용자 소유권
 

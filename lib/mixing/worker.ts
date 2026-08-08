@@ -376,7 +376,16 @@ export async function processClaimedMixingJob(jobId: string, owner: string, depe
           "MODAL_RESULT_FETCH_FAILED",
           "Modal 합성 결과를 불러오지 못했습니다",
         );
-        const compressed = await compressResult(new Uint8Array(audio.bytes));
+        let compressed: CompressedMixingAudio;
+        try {
+          compressed = await compressResult(new Uint8Array(audio.bytes));
+        } catch (error) {
+          throw new MixingStageError(
+            "MIXING_FINALIZATION_FAILED",
+            `최종 음원 보정에 실패했습니다: ${error instanceof Error ? error.message : "unknown error"}`,
+            true,
+          );
+        }
         const resultAsset = await storeMixingResult({
           userId: job.userId,
           mixingJobId: job.id,
