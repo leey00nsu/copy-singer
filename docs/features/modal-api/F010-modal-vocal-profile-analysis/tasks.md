@@ -119,6 +119,21 @@
     - [x] Prisma schema 변경은 없지만 `pnpm run db:validate`를 실행해 schema valid를 확인했다.
     - [x] `npx lee-spec-kit workflow-audit --json`가 `WORKFLOW_IN_SYNC`를 반환했고 최종 evidence를 테스트 표에 기록했다.
 
+- [TODO][PRD-FR-004] T-F010-modal-vocal-profile-analysis-08 durable queue 기반 백그라운드 보컬 프로필 분석
+  - Date: 2026-08-08
+  - Acceptance:
+    - 보컬 프로필 업로드 요청은 durable analysis job을 생성하고 202로 즉시 반환하며 브라우저 HTTP 요청이 Modal 분석 완료까지 열린 상태로 남지 않는다.
+    - worker가 PostgreSQL lease/attempt/idempotency 계약으로 job을 claim하고 기존 sync Modal analyzer를 호출해 source/reference와 VocalProfile persistence를 완료한다.
+    - 사용자는 job 상태를 polling하고 재접속 후에도 pending/processing/succeeded/failed 상태와 완료된 vocalProfileId를 복구할 수 있다.
+    - source upload, Modal failure, Leemage/DB partial failure에서 중복 profile/media를 만들지 않고 retryable 오류만 안전하게 재시도한다.
+  - Checklist:
+    - [ ] 분석 source를 worker가 재사용 가능한 Leemage asset으로 먼저 저장하고 DB enqueue 실패 시 보상 삭제한다.
+    - [ ] VocalProfileAnalysisJob schema/status/index/lease/attempt/error contract와 migration을 추가한다.
+    - [ ] analysis queue claim/worker와 별도 worker entrypoint를 추가하고 process supervisor에 연결한다.
+    - [ ] POST/GET analysis-job API와 기존 profile creation UI polling/reconnect 흐름을 연결한다.
+    - [ ] queue idempotency, lease recovery, Modal retry, success/failure persistence와 ownership 통합 테스트를 추가한다.
+    - [ ] 전체 회귀와 lee-spec-kit workflow audit를 통과한다.
+
 ## 완료 조건
 
 - [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
