@@ -124,16 +124,16 @@
     - [x] mid-v1 단일 synthesis-reference player 분기를 제거하고 기존 3-band UI를 새 profile에도 복원한다.
     - [x] Python target 8/8, UI/segment 8/8, 전체 `pnpm test`, analyzer 35 passed/3 skipped, Modal local 9/9, local parity 4/4, tsc/lint를 통과했다.
 
-- [TODO][PRD-FR-042][PRD-NFR-005] T-F011-midrange-only-vocal-reference-07 Modal analyzer 재배포와 remote parity 확인
+- [DONE][PRD-FR-042][PRD-NFR-005] T-F011-midrange-only-vocal-reference-07 Modal analyzer 재배포와 remote parity 확인
   - Date: 2026-08-08
   - Acceptance:
     - 사용자 승인 후 `dbstndla1212` Modal workspace에 배포된 `copy-singer-vocal-profile-analyzer`가 최종 mid-v1 shared code를 사용한다.
     - 실제 remote endpoint와 local analyzer가 동일 fixture에서 분석 descriptor와 synthesis reference bytes parity를 만족한다.
   - Checklist:
-    - [ ] 원격 deploy 전에 active Modal workspace가 `dbstndla1212`인지 확인한다.
-    - [ ] 기존 Modal SDK pin `1.5.3`으로 F011 analyzer를 재배포한다.
-    - [ ] authenticated health/analyze와 mid-v1 contract를 확인한다.
-    - [ ] 최소 대표 fixture의 deployed local↔remote exact parity를 확인하고 결과를 문서화한다.
+    - [x] 원격 deploy 전에 active Modal profile/workspace가 `dbstndla1212`이고 다른 profile이 `dbstndla1212yt`임을 확인했다.
+    - [x] 기존 Modal SDK pin `1.5.3`으로 `copy-singer-vocal-profile-analyzer`를 재배포했다.
+    - [x] wrong key 401과 authenticated health의 `smart-reference-mid-v1`, CPU 2 cores/4096 MiB/scale-to-zero 설정을 확인했다.
+    - [x] 10/30/60초 fixture의 deployed local↔remote profile JSON + source/reference bytes exact parity 3/3을 확인했다.
 
 ---
 
@@ -141,8 +141,8 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -168,5 +168,8 @@
 
 | `pnpm exec tsx --test tests/mixing-reference.test.ts` | `2026-08-08` | `PASS (4/4: mid-v1 strict + legacy fallback)` |
 | `pnpm run test:mixing:db` | `2026-08-08` | `PASS (1/1: missing mid reference has no ticket/job side effect + snapshot flow)` |
+| `pnpm run modal:vocal-profile:deploy` | `2026-08-08` | `PASS (active workspace dbstndla1212, Modal 1.5.3, analyzer redeployed)` |
+| `MODAL_BENCHMARK_COLD_WAIT_SECONDS=0 pnpm run modal:vocal-profile:benchmark -- 10` | `2026-08-08` | `PASS (wrong key 401, health smart-reference-mid-v1, 10s cold/warm 38.680s/7.475s)` |
+| `pytest -q services/vocal-profile-api/tests/test_modal_parity.py -k deployed` | `2026-08-08` | `PASS (3/3: 10/30/60 exact profile + source/reference bytes)` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-08T02:28:58.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-08T02:34:57.000Z -->

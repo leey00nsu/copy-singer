@@ -104,3 +104,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: target Python 8/8, UI/segment 8/8, 전체 `pnpm test` PASS, analyzer 35 passed/3 skipped, Modal local 9/9, local parity 4/4, tsc/lint PASS
 - **Consequences**: synthesis-reference audio proxy 코드는 당장 UI에서 사용되지 않을 수 있으나 모델 reference 저장/소유권 경계에는 영향을 주지 않는다.
+
+## D006: F011 원격 배포는 dbstndla1212 workspace에서만 수행 (2026-08-08)
+
+- **Context**: 로컬 Modal CLI에는 `dbstndla1212`, `dbstndla1212yt` 두 profile이 함께 존재한다.
+- **Constraints**: F011 analyzer는 기존 production 자원이 있는 `dbstndla1212` workspace에만 배포해야 하며 다른 workspace를 건드리면 안 된다.
+- **Options**: 현재 profile을 신뢰하고 바로 배포, profile/workspace를 확인한 뒤 배포를 비교한다.
+- **Decision**: Modal 1.5.3 CLI에서 `modal profile current`와 `modal profile list`로 active profile/workspace가 `dbstndla1212`임을 확인한 뒤에만 deploy를 실행한다.
+- **Rationale**: 로컬 다중 계정 환경에서 잘못된 workspace 배포를 방지한다.
+- **Trace**:
+  - **DOING 시작 시점**: active profile `dbstndla1212`, workspace `dbstndla1212`; inactive profile `dbstndla1212yt` 확인 후 배포 진행.
+  - **DONE 전 확정 시점**: `dbstndla1212` active profile에서 `copy-singer-vocal-profile-analyzer`를 Modal 1.5.3으로 재배포했다. authenticated health는 `smart-reference-mid-v1`, CPU 2 cores, memory 4096 MiB, scale-to-zero 설정을 확인했고 10/30/60초 deployed parity가 local profile JSON과 source/reference bytes exact match 3/3으로 통과했다.
+  - **머지 후 확인**: 머지 후 갱신한다.
+- **Evidence**:
+  - **Commit**: task commit 후 갱신
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: `modal profile current/list` 확인, deploy PASS, wrong key 401/authenticated health PASS, 10초 benchmark PASS, deployed local↔remote parity 3/3 PASS
+- **Consequences**: F011 remote 변경은 `dbstndla1212`의 `copy-singer-vocal-profile-analyzer`에만 적용한다.
