@@ -159,6 +159,8 @@ production에서 modal 호출이 실패해도 local로 자동 fallback하지 않
 
 worker crash/일시 장애는 `leaseExpiresAt`, `attempts/maxAttempts`, `nextAttemptAt`으로 회수한다. expected analysis 4xx는 재시도하지 않고 429/5xx/network/timeout만 bounded retry한다. Modal에는 Leemage API key, DB URL, Better Auth secret을 전달하지 않는다.
 
+`/vocal-profiles` 히스토리는 완료 프로필과 별도로 사용자 소유 `PENDING`/`PROCESSING` job 및 최근 terminal failure를 DB에서 조회한다. 활성 job 카드가 있을 때만 `/api/vocal-profile-analysis-jobs`를 polling해 상태를 갱신하고, 성공 job이 visible 목록에서 사라지면 한 번 reload하여 완료된 `VocalProfile` 카드로 교체한다. `SUCCEEDED` job 자체는 히스토리 job 목록에 포함하지 않아 완료 프로필과 중복 렌더링하지 않는다.
+
 ### 6. 오류와 retry 계약
 
 오류를 세 계층으로 나눈다.

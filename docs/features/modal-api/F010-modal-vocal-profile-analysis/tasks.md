@@ -134,18 +134,18 @@
     - [x] queue idempotency/ownership, expired lease recovery, Modal transient retry, source 재사용 성공, terminal cleanup 통합 테스트 5개를 추가했다.
     - [x] `pnpm test`, lint, TypeScript, build, Prisma validate/migrate status와 `npx lee-spec-kit workflow-audit --json`를 모두 통과했다.
 
-- [TODO][PRD-FR-004] T-F010-modal-vocal-profile-analysis-09 보컬 프로필 히스토리 백그라운드 분석 상태 카드
+- [DONE][PRD-FR-004] T-F010-modal-vocal-profile-analysis-09 보컬 프로필 히스토리 백그라운드 분석 상태 카드
   - Date: 2026-08-08
   - Acceptance:
     - 보컬 프로필 히스토리 페이지가 사용자 소유의 pending/processing/retryable/failed 분석 job을 완료 프로필과 함께 표시한다.
     - 활성 job은 polling으로 상태가 갱신되고 succeeded가 되면 중복 job 카드 없이 완료된 VocalProfile 카드로 자연스럽게 전환된다.
     - 완료 프로필이 없어도 분석 job이 존재하면 빈 상태 대신 job 카드를 표시하며 다른 탭/재접속에서도 DB 상태만으로 복구된다.
   - Checklist:
-    - [ ] 사용자 소유 analysis job 목록 조회를 서버 경계에 추가한다.
-    - [ ] pending/processing/retrying/failed 상태 카드를 history grid에 추가한다.
-    - [ ] 활성 job이 있을 때만 polling하고 succeeded 시 history를 refresh한다.
-    - [ ] 빈 상태와 완료 job 중복 표시를 방지한다.
-    - [ ] UI/ownership/전체 회귀와 workflow audit를 통과한다.
+    - [x] 사용자 소유 visible analysis job 목록 조회와 `GET /api/vocal-profile-analysis-jobs`를 추가하고 ownership을 queue integration test로 검증했다.
+    - [x] pending/processing/retrying/failed 상태 카드를 완료 프로필과 같은 history grid에 추가했다.
+    - [x] 활성 job이 있을 때만 3초 polling하고 success job이 visible 목록에서 사라지면 한 번 reload해 완료 프로필 카드로 전환한다.
+    - [x] 완료 프로필이 없어도 job 카드가 있으면 empty state를 숨기고, `SUCCEEDED` job은 visible 목록에서 제외해 중복 표시를 방지했다.
+    - [x] history UI 3/3, queue integration 5/5, TypeScript/lint, 전체 `pnpm test`를 통과했다.
 
 ## 완료 조건
 
@@ -163,7 +163,8 @@
 | `pnpm run build` | `2026-08-08` | `PASS (Next.js 16.3.0, 22 pages)` |
 | `pnpm run db:validate` | `2026-08-08` | `PASS (Prisma schema valid)` |
 | `pnpm run db:migrate:deploy && pnpm run db:status` | `2026-08-08` | `PASS (VocalProfileAnalysisJob migration applied, schema up to date)` |
-| `pnpm run test:vocal-profile-analysis-queue` | `2026-08-08` | `PASS (5/5: idempotency/ownership, lease recovery, source reuse, transient retry, terminal cleanup)` |
+| `pnpm run test:vocal-profile-analysis-queue` | `2026-08-08` | `PASS (5/5: idempotency/visible-list ownership, lease recovery, source reuse, transient retry, terminal cleanup)` |
+| `pnpm exec tsx --test tests/vocal-profile-history-ui.test.tsx` | `2026-08-08` | `PASS (3/3: 완료 profile, queued job card, true empty state)` |
 | `services/vocal-profile-api/.venv/bin/pytest -q services/vocal-profile-api/tests` | `2026-08-08` | `PASS (32 passed, remote-only 3 skipped, deprecation warning 3건)` |
 | `cd services/vocal-profile-modal && ../vocal-profile-api/.venv/bin/pytest -q test_transport.py test_runtime.py test_modal_app_source.py` | `2026-08-08` | `PASS (9/9)` |
 | `pnpm run test:vocal-profile-analyzer` | `2026-08-08` | `PASS (8/8)` |
@@ -176,4 +177,4 @@
 | `VOCAL_PROFILE_MODAL_URL=... pytest -q .../test_modal_parity.py -k deployed` | `2026-08-08` | `PASS (3/3 exact profile + source/reference bytes)` |
 | `npx lee-spec-kit workflow-audit --json` | `2026-08-08` | `PASS (WORKFLOW_IN_SYNC)` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-08T01:09:40.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-08T01:23:39.000Z -->
