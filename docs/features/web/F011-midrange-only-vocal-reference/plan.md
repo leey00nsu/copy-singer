@@ -186,6 +186,21 @@ Prisma schema 변경은 필요 없다.
 
 synthesis reference 생성이 unavailable이어도 profile 저장 자체는 허용한다. 다만 새 mid-v1 profile은 mixing enqueue 단계에서 source fallback을 금지한다.
 
+### 8. mixing song-target도 analyzer backend 경계를 따른다
+
+현재 mixing worker는 `VOCAL_PROFILE_ANALYZER_BACKEND`와 무관하게 `VOCAL_PROFILE_API_URL/v1/song-target`을 직접 호출해, 보컬 분석을 Modal로 전환한 환경에서도 로컬 analyzer가 꺼져 있으면 preflight가 `fetch failed`로 종료된다.
+
+이를 다음처럼 정리한다.
+
+- backend=`modal`: `VOCAL_PROFILE_MODAL_URL/v1/song-target` + `VOCAL_PROFILE_MODAL_API_KEY` 또는 `MODAL_API_KEY`로 authenticated 호출
+- backend=`local`: 기존 `VOCAL_PROFILE_API_URL/v1/song-target` 유지
+- Modal image에는 pinned `yt-dlp`와 `data/catalogs/tj-2607-top100.md` allowlist를 포함한다.
+- Modal `/v1/song-target`은 shared `download_song_target()`을 사용하고 response streaming 종료 시 temporary directory를 제거한다.
+- mixing worker는 단계별 `MixingStageError`를 사용해 reference download, song-target, SoulX submit/poll/result 실패를 구분한다.
+- SoulX 접수 전 retryable network/5xx/429 failure는 job을 다시 `PENDING`으로 돌려 `attempts < maxAttempts` 동안 재시도하고, non-retryable 4xx/allowlist 실패 또는 attempts 소진 시에만 terminal fail + 기존 refund를 수행한다.
+
+이 변경으로 production `modal` backend에서는 `VOCAL_PROFILE_API_URL`이 필요 없고 local 개발 경로에서만 사용한다.
+
 ---
 
 ## 파일 구조
@@ -200,7 +215,9 @@ services/vocal-profile-api/tests/
 └── test_modal_parity.py                 # local ↔ Modal exact parity
 
 services/vocal-profile-modal/
-└── test_transport.py                    # new version envelope compatibility
+├── modal_app.py                         # analyze + authenticated song-target endpoint
+├── test_transport.py                    # new version envelope compatibility
+└── test_modal_app_source.py             # CPU/auth/song-target source contract
 
 lib/vocal-profile/
 ├── contract.ts                          # v1 + mid-v1 synthesis contract validation
@@ -211,7 +228,8 @@ components/
 
 lib/mixing/
 ├── reference.ts                         # version-aware strict/fallback policy
-└── queue.ts                             # profile descriptor policy 전달
+├── queue.ts                             # profile descriptor policy 전달
+└── worker.ts                            # backend-aware song-target + stage errors/retry
 
 tests/
 ├── vocal-profile-contract.test.ts
@@ -242,8 +260,8 @@ tests/
 
 F011 배포 이후 analyzer가 새로 분석한 profile은 `smart-reference-mid-v1` descriptor를 가진다.
 
-- reference 생성 성공: READY `SYNTHESIS_REFERENCE`, single player, mixing 사용
-- reference 생성 실패: profile은 저장되지만 single reference unavailable 안내, mixing enqueue 거부
+- reference 생성 성공: READY `SYNTHESIS_REFERENCE`, 사람용 3-band 분석 UI 유지, mixing은 mid-only asset 사용
+- reference 생성 실패: profile은 저장되고 사람용 3-band 분석 UI는 유지하지만 mixing enqueue는 거부
 
 ---
 
@@ -277,6 +295,15 @@ F011 배포 이후 analyzer가 새로 분석한 profile은 `smart-reference-mid-
 - legacy/v1은 기존 fallback 유지
 - UI helper가 `analysisReferenceBands`를 우선 읽고 기존 v1 sourceRanges fallback을 유지
 
+### mixing song-target / retry 테스트
+
+- modal backend에서 song-target URL과 `X-API-Key`가 Modal analyzer 설정을 사용
+- local backend에서 기존 local analyzer URL을 유지
+- reference fetch / song-target fetch / Modal submit network failure가 서로 다른 error code로 저장
+- retryable preflight failure는 attempts가 남으면 `PENDING`으로 돌아가고 티켓을 즉시 환불하지 않음
+- attempts 소진 시 terminal `FAILED` + 한 번만 refund
+- deployed `dbstndla1212` analyzer에서 Lemon allowlist target WAV가 200으로 반환
+
 ### 통합/UI 테스트
 
 - 새 mid-v1 profile의 `analysisReferenceBands`가 low/mid/high 3개 control을 유지
@@ -307,7 +334,9 @@ F011 배포 이후 analyzer가 새로 분석한 profile은 `smart-reference-mid-
 5. 결과 UI가 새 descriptor를 우선 사용하고 모든 profile에서 기존 3-band 분석 경험을 유지
 6. mixing reference selection을 version-aware strict policy로 변경
 7. queue/persistence/mixing/UI 통합 테스트와 전체 회귀
-8. docs/ADR/workflow audit 동기화
+8. mixing song-target을 backend-aware Modal/local 경로로 분리하고 preflight stage retry/error contract 강화
+9. `dbstndla1212` Modal analyzer 재배포 후 Lemon target remote probe
+10. docs/ADR/workflow audit 동기화
 
 ---
 

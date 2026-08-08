@@ -121,6 +121,9 @@ F011은 보컬 프로필 통계에 사용하는 최대 60초 분석 source와 �
 - 동일 fixture에 대해 local과 Modal의 profile descriptor와 synthesis reference bytes가 동일해야 한다.
 - F010 durable queue worker는 source asset을 그대로 재사용하고 새 synthesis reference만 추가 저장하는 현재 persistence 경계를 유지한다.
 - retry, terminal failure cleanup과 source ownership semantics를 변경하지 않는다.
+- `VOCAL_PROFILE_ANALYZER_BACKEND=modal`인 production mixing worker는 곡 target 준비도 같은 authenticated Modal analyzer의 `/v1/song-target`을 사용하며 로컬 `VOCAL_PROFILE_API_URL`에 의존하지 않는다.
+- `/v1/song-target`은 기존 catalog allowlist와 yt-dlp/FFmpeg WAV 생성·임시 cleanup 계약을 유지한다.
+- reference 다운로드, song-target 준비, SoulX Modal submit 단계의 네트워크 실패는 서로 구분되는 stable error code로 기록하고, Modal 접수 전 retryable failure는 bounded retry를 사용한다.
 
 ---
 

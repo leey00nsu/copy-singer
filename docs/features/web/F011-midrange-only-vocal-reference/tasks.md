@@ -135,14 +135,29 @@
     - [x] wrong key 401과 authenticated health의 `smart-reference-mid-v1`, CPU 2 cores/4096 MiB/scale-to-zero 설정을 확인했다.
     - [x] 10/30/60초 fixture의 deployed local↔remote profile JSON + source/reference bytes exact parity 3/3을 확인했다.
 
+- [TODO][PRD-FR-042][PRD-NFR-005] T-F011-midrange-only-vocal-reference-08 믹싱 song-target Modal 이관과 preflight retry·진단 강화
+  - Date: 2026-08-08
+  - Acceptance:
+    - `VOCAL_PROFILE_ANALYZER_BACKEND=modal`이면 mixing worker의 곡 target 준비도 `dbstndla1212`의 `copy-singer-vocal-profile-analyzer` `/v1/song-target`을 사용해 로컬 `localhost:8001` analyzer 없이 동작한다.
+    - Modal song-target은 기존 catalog allowlist, yt-dlp/FFmpeg WAV 생성, request-scoped cleanup과 `X-API-Key` 인증을 유지한다.
+    - preflight 네트워크 오류는 reference/song-target/Modal-submit 단계별 stable error code로 기록되고, retryable preflight failure는 `maxAttempts` 범위에서 재큐잉된다.
+    - Lemon 실제 target 준비가 Modal에서 성공하고 기존 실패 job의 티켓 환불 semantics는 유지된다.
+  - Checklist:
+    - [ ] Modal image에 pinned `yt-dlp`와 catalog allowlist를 포함하고 `/v1/song-target`을 추가한다.
+    - [ ] mixing worker가 analyzer backend별 song-target endpoint/auth를 선택하되 production modal 경로는 localhost에 의존하지 않게 한다.
+    - [ ] `REFERENCE_FETCH_FAILED`, `SONG_TARGET_FETCH_FAILED`, `MODAL_SUBMIT_FAILED` 등 단계별 오류와 retryable preflight 재큐잉을 구현한다.
+    - [ ] `.env.example`/운영 문서에서 `VOCAL_PROFILE_API_URL`은 local backend 전용임을 명확히 하고 실제 `.env.local`의 중복 key를 정리한다.
+    - [ ] local 테스트 후 active Modal profile `dbstndla1212`를 확인해 analyzer를 재배포하고 Lemon song-target remote probe를 검증한다.
+    - [ ] 전체 test/lint/tsc/build/Prisma/Python/Modal/workflow audit를 통과한다.
+
 ---
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록

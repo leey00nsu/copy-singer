@@ -121,3 +121,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `modal profile current/list` 확인, deploy PASS, wrong key 401/authenticated health PASS, 10초 benchmark PASS, deployed local↔remote parity 3/3 PASS
 - **Consequences**: F011 remote 변경은 `dbstndla1212`의 `copy-singer-vocal-profile-analyzer`에만 적용한다.
+
+## D007: mixing song-target도 analyzer backend를 따르고 preflight 실패를 단계별 재시도 (2026-08-08)
+
+- **Context**: F011 실제 Lemon 믹싱에서 reference asset은 READY/200이었지만 최근 3개 job이 모두 `MIXING_PREFLIGHT_FAILED`, `modalJobId=null`, `fetch failed`로 종료됐다. probe 결과 `VOCAL_PROFILE_API_URL=http://localhost:8001`의 local analyzer만 연결 실패했고 `VOCAL_PROFILE_ANALYZER_BACKEND=modal` 설정은 mixing song-target 경로에 적용되지 않고 있었다.
+- **Constraints**: production modal backend에서는 로컬 analyzer 컨테이너 없이 믹싱해야 한다. 기존 catalog allowlist와 yt-dlp/FFmpeg target 생성 계약, SoulX 접수 전 실패 환불 semantics는 유지해야 한다. 네트워크성 일시 오류는 `maxAttempts`를 활용해야 한다.
+- **Options**: local analyzer를 항상 띄우기, song-target 전용 별도 서비스, 기존 `copy-singer-vocal-profile-analyzer`에 authenticated `/v1/song-target`을 추가하는 방식을 비교한다.
+- **Decision**: Modal analyzer image에 pinned yt-dlp와 catalog allowlist를 포함하고 shared `download_song_target()` 기반 `/v1/song-target`을 추가한다. mixing worker는 analyzer backend에 따라 local/Modal song-target endpoint를 선택하고, preflight 단계별 stable error code와 retryable terminal 판단을 도입한다.
+- **Rationale**: 이미 배포·인증·scale-to-zero가 검증된 CPU analyzer를 재사용해 로컬 컨테이너 의존성을 제거하면서, 장애 위치와 retry 여부를 운영자가 바로 식별할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: T08에서 Modal song-target endpoint, backend-aware worker, stage error/retry, env/docs 정리를 구현한 뒤 `dbstndla1212` workspace에만 재배포한다.
+  - **DONE 전 확정 시점**: 구현 후 갱신한다.
+  - **머지 후 확인**: 머지 후 갱신한다.
+- **Evidence**:
+  - **Commit**: task commit 후 갱신
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: 구현 후 갱신
+- **Consequences**: production modal backend에서 `VOCAL_PROFILE_API_URL`은 더 이상 mixing에 필요하지 않고 local 개발 backend에서만 사용한다.
