@@ -14,6 +14,7 @@
 - **레포**: copy-singer-web
 - **브랜치**: `feat/mixing-clarity-finalization`
 - **대기 중 변경 요청**: -
+- **구현 승인**: 2026-08-08 사용자 응답 `완료처리할게` — workflow 승인 옵션 `A`
 - **PR 리뷰**: -
 - **PR 리뷰 Evidence**: -
 
