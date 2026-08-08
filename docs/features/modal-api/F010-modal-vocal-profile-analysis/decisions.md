@@ -104,3 +104,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `pnpm run modal:vocal-profile:deploy` → deployed, `pnpm run modal:vocal-profile:benchmark` → PASS (wrong key 401 + 6 samples), deployed remote parity pytest → PASS (3/3 exact profile/artifact bytes)
 - **Consequences**: 실제 최악 wall 39.248초로 T06의 sync 승인 기준 90초보다 충분히 낮다. base64 60초 response 약 4.33 MB도 Modal Web Function response 제한에 걸리지 않으므로 binary transport 전환은 이번 Feature의 필수 조건이 아니다.
+
+## D006: sync HTTP와 scale-to-zero를 최종 운영 기준으로 채택 (2026-08-08)
+
+- **Context**: T05 실측에서 모든 10/30/60초 요청이 120초 client budget과 Modal Web Function 150초 HTTP 경계보다 크게 짧았고, 최대 wall time은 39.248초였다.
+- **Constraints**: 프로필 분석은 CPU-only이고 사용자 요청당 compute 비용이 매우 낮다. 별도 async job/polling 모델을 추가하면 DB 상태, 재접속 UX와 failure recovery 복잡도가 늘어난다. warm container는 idle resource 비용을 만든다.
+- **Options**: 현재 sync HTTP 유지, 처음부터 async submit/polling 전환, sync 유지 + min container warm pool 추가를 비교한다.
+- **Decision**: sync HTTP를 유지한다. Modal Function은 2 physical cores, 4096 MiB, timeout 120초, `min_containers=0`, `max_containers=10`, `scaledown_window=60`으로 고정하고 요청당 container concurrency는 1로 제한한다. Next.js client timeout은 120초를 유지한다. production에서 Modal 장애 시 local analyzer로 자동 fallback하지 않는다.
+- **Rationale**: 실측 최악값이 sync 승인 기준 90초보다 약 50초 낮고, 60초 입력도 20.821초 이하로 완료됐다. Modal은 기본적으로 scale-to-zero를 지원하며 warm pool은 비용과 cold-start의 trade-off이므로 현재 evidence에서는 `min_containers>0`가 필요하지 않다.
+- **Trace**:
+  - **DOING 시작 시점**: T05 결과를 plan 기준과 비교해 async 상태 모델 없이 sync를 유지하는 방향을 기본안으로 잡았다. 공식 Modal 문서에서 Web Function HTTP timeout 150초, 기본 scale-to-zero 및 `min_containers`/`scaledown_window` autoscaler semantics를 재확인했다.
+  - **DONE 전 확정 시점**: 최종 resource/autoscaling 설정을 코드에 명시해 재배포했고, health 응답과 로컬 회귀 테스트로 설정 적용을 확인했다.
+  - **머지 후 확인**: 머지 후 갱신한다.
+- **Evidence**:
+  - **Commit**: T06 task checkpoint commit에서 갱신
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: T05 benchmark max wall 39.248초; 60초 17.531/20.821초; remote parity 3/3 exact
+- **Consequences**: async polling 구현은 이번 Feature에서 만들지 않는다. 향후 실제 p95/p99 latency가 90초 기준에 접근하거나 hosting timeout이 더 짧은 환경으로 배포될 때 별도 Feature로 재평가한다.

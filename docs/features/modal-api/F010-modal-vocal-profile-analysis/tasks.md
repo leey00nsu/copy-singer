@@ -94,17 +94,17 @@
     - [x] 실제 배포 endpoint와 local shared analyzer를 10/30/60초 동일 fixture로 다시 비교해 profile JSON과 source/reference bytes exact parity 3/3을 확인했다.
     - [x] Modal 공식 단가 CPU `$0.0000131/core/sec`, memory `$0.00000222/GiB/sec`를 사용했다. 6회 benchmark handler 기준 합계 약 `$0.003617`, wall upper-bound 합계 약 `$0.004486`이며 Starter는 월 `$30` compute credit을 제공한다.
 
-- [TODO][PRD-FR-004][PRD-NFR-003][PRD-NFR-004] T-F010-modal-vocal-profile-analysis-06 benchmark 기반 sync/async transport·resource·warm 정책 확정
+- [DONE][PRD-FR-004][PRD-NFR-003][PRD-NFR-004] T-F010-modal-vocal-profile-analysis-06 benchmark 기반 sync/async transport·resource·warm 정책 확정
   - Date: 2026-08-08
   - Acceptance:
     - 60초 cold path가 90초 이하이고 120초 client budget과 Modal 150초 HTTP 경계에 충분한 여유가 있으면 sync transport를 확정한다.
     - sync 기준을 만족하지 못하면 server-owned operation 상태를 사용하는 submit/polling transport를 구현하고 raw Modal call ID를 사용자에게 노출하지 않는다.
     - 최종 CPU/memory, `scaledown_window`, warm container 정책은 benchmark evidence와 비용을 근거로 decisions.md에 확정한다.
   - Checklist:
-    - [ ] T05 결과를 plan의 sync 승인 기준과 비교한다.
-    - [ ] sync 유지 시 timeout/retry/config와 production backend switch 준비를 확정한다.
-    - [ ] 기준 미달 시 async job/polling adapter와 상태/error 계약을 구현하고 회귀 테스트를 추가한다.
-    - [ ] CPU/memory/autoscaling 최종값과 production fallback 금지 결정을 evidence와 함께 기록한다.
+    - [x] T05 최대 wall 39.248초, 60초 17.531/20.821초를 sync 승인 기준과 비교해 충분한 margin을 확인했다.
+    - [x] sync HTTP, Function/client timeout 120초, infra failure `retryable` 계약, explicit `VOCAL_PROFILE_ANALYZER_BACKEND=modal` 전환 준비를 확정했다.
+    - [x] 기준을 충족했으므로 async job/polling은 구현하지 않고, 향후 p95/p99 또는 hosting timeout이 기준을 위협할 때 별도 Feature에서 도입하도록 문서화했다.
+    - [x] CPU 2 cores, memory 4096 MiB, `min_containers=0`, `max_containers=10`, `scaledown_window=60`, container concurrency 1과 production automatic local fallback 금지를 D006에 확정했다.
 
 - [TODO][PRD-NFR-005][PRD-NFR-006] T-F010-modal-vocal-profile-analysis-07 전체 회귀·운영 문서·workflow 검증
   - Date: 2026-08-08
@@ -141,7 +141,8 @@
 | `pnpm exec tsx --test tests/vocal-profile-contract.test.ts tests/mixing-reference.test.ts tests/vocal-profile-results-ui.test.tsx` | `2026-08-08` | `PASS (8/8)` |
 | `pnpm run modal:vocal-profile:deploy` | `2026-08-08` | `PASS (copy-singer-vocal-profile-analyzer deployed with modal==1.5.3)` |
 | `VOCAL_PROFILE_MODAL_URL=... pnpm run modal:vocal-profile:benchmark` | `2026-08-08` | `PASS (wrong key 401, 10/30/60초 6 samples, max wall 39.248s)` |
+| `VOCAL_PROFILE_MODAL_URL=... pnpm run modal:vocal-profile:benchmark -- 10` | `2026-08-08` | `PASS (final autoscaling health 확인, 28.462s / 4.963s, same container reuse)` |
 | `VOCAL_PROFILE_MODAL_URL=... pytest -q .../test_modal_parity.py -k deployed` | `2026-08-08` | `PASS (3/3 exact profile + source/reference bytes)` |
 | `npx lee-spec-kit workflow-audit --json` | `-` | `-` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-08T00:30:18.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-08T00:35:05.000Z -->

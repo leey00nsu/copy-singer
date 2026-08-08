@@ -202,7 +202,9 @@ Modal auth, 429, 5xx, timeout, network error를 별도 stable reason code로 매
 - Modal 150초 HTTP 경계에 최소 30초 safety margin
 - retry 시 중복 external resource 없음
 
-위 조건을 만족하지 못하면 구현 중 transport를 다음 async 형태로 바꾼다.
+2026-08-08 실측 결과 최대 wall time은 39.248초였고 60초 입력은 17.531/20.821초였다. deployed endpoint와 local shared analyzer의 10/30/60초 exact parity도 통과했으므로 **sync HTTP를 최종 채택**한다. async transport는 이번 Feature에서 구현하지 않는다.
+
+향후 위 조건을 만족하지 못하게 되면 별도 Feature에서 transport를 다음 async 형태로 바꾼다.
 
 ```text
 POST /v1/analyze-jobs -> server-owned operation ID / Modal FunctionCall id mapping
@@ -216,9 +218,11 @@ GET  /v1/analyze-jobs/{id} -> pending | succeeded | failed
 baseline은 scale-to-zero다.
 
 - `min_containers=0`
-- `scaledown_window=60` baseline
-- CPU 2.0 / memory 4096 MiB baseline
-- 필요 시 `max_containers`로 비용 폭주 제한
+- `max_containers=10`
+- `scaledown_window=60`
+- CPU 2.0 / memory 4096 MiB
+- container concurrency 1 (`@modal.concurrent(max_inputs=1)`)
+- Next.js analyzer request timeout 120초
 
 benchmark에 다음을 기록한다.
 
