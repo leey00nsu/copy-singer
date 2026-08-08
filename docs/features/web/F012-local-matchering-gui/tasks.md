@@ -50,6 +50,20 @@
     - [x] 관련 SoulX 서비스/TypeScript 회귀 테스트를 통과한다.
     - [x] feature docs/evidence/workflow-sync를 갱신한다.
 
+- [DONE][PRD-FR-044] T-F012-03 SoulX 보컬 밸런스를 -2 dB로 재조정
+  - Date: 2026-08-08
+  - Acceptance:
+    - `vocal-balance-v2`는 생성 보컬 -2.0 dB, 반주 0.0 dB를 적용한다.
+    - 기존 pitch-shifted accompaniment 처리와 peak protection은 유지한다.
+    - gain contract 테스트가 -2.0 dB의 선형 gain을 고정한다.
+    - Clarity finalization과 기존 mixing queue semantics에는 영향이 없다.
+  - Checklist:
+    - [x] balance version과 vocal gain 상수를 `vocal-balance-v2` / -2.0 dB로 갱신한다.
+    - [x] 단위 테스트를 -2.0 dB 선형 gain 계약으로 갱신한다.
+    - [x] SoulX Python 및 F012 관련 회귀 테스트를 통과한다.
+    - [x] `dbstndla1212` Modal에 재배포하고 health를 확인한다.
+    - [x] feature docs/evidence/workflow-sync를 갱신한다.
+
 ---
 
 ## 완료 조건
@@ -62,7 +76,7 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `python3 -m unittest services/soulx-singer-svc/tests/test_mix_balance.py` | `2026-08-08` | `PASS (2/2: vocal -4 dB / accompaniment 0 dB + peak protection)` |
+| `python3 -m unittest services/soulx-singer-svc/tests/test_mix_balance.py` | `2026-08-08` | `PASS (2/2: vocal-balance-v2, vocal -2 dB / accompaniment 0 dB + peak protection)` |
 | `python3 -m py_compile services/soulx-singer-svc/api/mix_balance.py services/soulx-singer-svc/api/engine.py` | `2026-08-08` | `PASS` |
 | `pnpm exec tsx --test tests/compress-mixing-result.test.ts` | `2026-08-08` | `PASS (2/2: clarity-normal-v1 contract + AAC 44.1kHz stereo output)` |
 | `node --conditions react-server --import tsx --test tests/mixing-queue.integration.ts` | `2026-08-08` | `PASS (1/1: finalization retry/exhaustion/raw fallback 금지 포함)` |
@@ -72,4 +86,4 @@
 | `pnpm run build` | `2026-08-08` | `PASS (Next.js 16.3.0, 22 pages)` |
 | `pnpm run db:validate && pnpm run db:status` | `2026-08-08` | `PASS (schema valid, 10 migrations, database up to date)` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-08T09:18:31.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-08T09:36:23.000Z -->

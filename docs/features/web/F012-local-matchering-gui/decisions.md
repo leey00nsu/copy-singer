@@ -65,3 +65,19 @@
   - **Commit**: T-F012-02 task checkpoint에서 기록
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `python3 -m unittest services/soulx-singer-svc/tests/test_mix_balance.py` PASS (2/2), `python3 -m py_compile ...` PASS, 전체 `pnpm test`/lint/TypeScript/build/Prisma 회귀 PASS
+- **Superseded by**: D004 (`vocal-balance-v2`, vocal -2.0 dB)
+
+## D004: 실제 청취 후 SoulX 보컬 gain을 -2 dB로 재조정 (2026-08-08)
+
+- **Context**: `vocal-balance-v1`(-4 dB)을 Modal에 배포해 실제로 청취한 뒤 보컬이 필요 이상으로 뒤로 갈 수 있어 -2 dB로 재조정하기로 했다.
+- **Constraints**: 반주는 0 dB로 유지하고, accompaniment pitch shift 및 합산 후 peak protection은 변경하지 않는다. F012 Clarity finalization도 그대로 유지한다.
+- **Decision**: 최종 candidate를 `vocal-balance-v2`로 올리고 생성 보컬 -2.0 dB, 반주 0.0 dB를 적용한다.
+- **Rationale**: 기존 1:1 합산보다 보컬은 낮추되 -4 dB보다 덜 감쇠해 반주와 보컬의 존재감을 절충한다.
+- **Trace**:
+  - **DOING 시작 시점**: 사용자가 -4 dB 배포 결과를 확인한 뒤 -2 dB로 수정 요청했다.
+  - **DONE 전 확정 시점**: `vocal-balance-v2`로 version을 올리고 vocal -2.0 dB(선형 gain 약 0.7943), accompaniment 0.0 dB를 적용했다. gain/peak contract 테스트와 Clarity/queue 회귀가 통과했고 `dbstndla1212`의 `soulx-singer-svc`를 재배포한 뒤 health `ok` / L4를 확인했다.
+  - **머지 후 확인**: 머지 후 갱신한다.
+- **Evidence**:
+  - **Commit**: T-F012-03 task checkpoint에서 기록
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: `python3 -m unittest services/soulx-singer-svc/tests/test_mix_balance.py` PASS (2/2), `python3 -m py_compile ...` PASS, Clarity finalizer 2/2 PASS, mixing queue integration 1/1 PASS, Modal deploy + `/health` OK

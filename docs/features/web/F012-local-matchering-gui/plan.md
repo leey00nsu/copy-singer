@@ -37,7 +37,7 @@ F012:
 
 ```text
 SoulX generated vocal + separated accompaniment
-  -> vocal-balance-v1 (vocal -4 dB / accompaniment 0 dB)
+  -> vocal-balance-v2 (vocal -2 dB / accompaniment 0 dB)
   -> peak protection
   -> SoulX result audio
   -> finalizeMixingResult(clarity-normal-v1)
@@ -71,21 +71,21 @@ lib/mixing/
 └── worker.ts                       # finalization error code/retry 경계
 
 services/soulx-singer-svc/api/
-└── engine.py                       # vocal-balance-v1 (-4 dB vocal / 0 dB accompaniment)
+└── engine.py                       # vocal-balance-v2 (-2 dB vocal / 0 dB accompaniment)
 
 tests/
 ├── compress-mixing-result.test.ts  # 실제 FFmpeg output/Clarity contract
 └── mixing-queue.integration.ts     # worker 성공/후처리 실패 retry 회귀
 ```
 
-실제 구현 시 기존 파일 수와 public import를 최소화하고, 이름 변경이 불필요하면 `compress-mixing-result.ts` 안에 `clarity-normal-v1` contract를 유지한다. SoulX 엔진에는 `vocal-balance-v1`의 -4 dB vocal gain과 0 dB accompaniment gain을 상수로 고정해 auto accompaniment mix에만 적용한다.
+실제 구현 시 기존 파일 수와 public import를 최소화하고, 이름 변경이 불필요하면 `compress-mixing-result.ts` 안에 `clarity-normal-v1` contract를 유지한다. SoulX 엔진에는 `vocal-balance-v2`의 -2 dB vocal gain과 0 dB accompaniment gain을 상수로 고정해 auto accompaniment mix에만 적용한다.
 
 ---
 
 ## 테스트 전략
 
 - **단위/실행 테스트**:
-  - SoulX gain helper에서 -4.0 dB가 선형 gain으로 정확히 변환되고 peak protection이 유지되는지 검증한다.
+  - SoulX gain helper에서 -2.0 dB가 선형 gain으로 정확히 변환되고 peak protection이 유지되는지 검증한다.
   - 짧은 WAV fixture를 finalizer에 넣어 M4A가 생성되는지 검증한다.
   - 출력이 44.1 kHz stereo AAC이고 입력보다 정상적으로 압축되는지 확인한다.
   - filter version과 Clarity / Normal 파라미터가 의도치 않게 바뀌지 않도록 contract test를 둔다.

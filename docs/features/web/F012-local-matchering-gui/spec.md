@@ -37,7 +37,7 @@ SoulX AI 믹싱이 성공한 뒤 사용자에게 저장·재생·다운로드되
 - [x] 후처리와 AAC 압축 사이에 불필요한 lossy 중간 인코딩을 추가하지 않는다.
 - [x] Clarity 보정 실패 시 원본 SoulX 결과를 조용히 저장하지 않고 안정적인 오류 코드로 실패/재시도 경계를 유지한다.
 - [x] 기존 catalog target, mid-only reference, 티켓, 소유권, 결과 asset lifecycle semantics를 변경하지 않는다.
-- [x] `auto_mix_accompaniment=true`인 SoulX 결과는 생성 보컬 -4.0 dB, 반주 0.0 dB로 합산한 뒤 기존 peak protection을 거친다.
+- [x] `auto_mix_accompaniment=true`인 SoulX 결과는 생성 보컬 -2.0 dB, 반주 0.0 dB로 합산한 뒤 기존 peak protection을 거친다.
 
 ---
 
@@ -62,7 +62,7 @@ production AI 믹싱 결과에는 다음 고정 파라미터를 적용한다.
 
 ### FR-2: SoulX 보컬/반주 밸런스
 
-`auto_mix_accompaniment=true`일 때 생성 보컬에는 -4.0 dB gain을 적용하고 분리된 target 반주는 0.0 dB gain으로 유지한 뒤 합산한다. 반주 pitch shift와 합산 후 peak protection은 기존 동작을 유지한다. 이 설정은 `vocal-balance-v1`로 고정한다.
+`auto_mix_accompaniment=true`일 때 생성 보컬에는 -2.0 dB gain을 적용하고 분리된 target 반주는 0.0 dB gain으로 유지한 뒤 합산한다. 반주 pitch shift와 합산 후 peak protection은 기존 동작을 유지한다. 이 설정은 `vocal-balance-v2`로 고정한다.
 
 ### FR-3: 최종 저장 경계
 
