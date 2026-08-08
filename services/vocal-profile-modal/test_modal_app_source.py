@@ -31,7 +31,7 @@ def test_modal_app_exposes_health_and_analyze_contract() -> None:
 
     assert '@web_app.get("/health")' in text
     assert '@web_app.post("/v1/analyze")' in text
-    assert '"smart-reference-v1"' in text
+    assert '"smart-reference-mid-v1"' in text
     assert '"transportVersion"' in text
     assert "ephemeral_working_directory" in text
     assert "build_analysis_envelope" in text

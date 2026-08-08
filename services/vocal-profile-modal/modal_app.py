@@ -116,7 +116,7 @@ async def health() -> dict[str, Any]:
         "status": "ok",
         "analyzer": "librosa-pyin",
         "analyzerVersion": importlib.metadata.version("librosa"),
-        "capabilities": ["smart-reference-v1"],
+        "capabilities": ["smart-reference-mid-v1"],
         "transportVersion": TRANSPORT_VERSION,
         "containerInstanceId": CONTAINER_INSTANCE_ID,
         "containerStartedAtMs": CONTAINER_STARTED_AT_MS,

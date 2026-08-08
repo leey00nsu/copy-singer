@@ -43,17 +43,17 @@ def test_profile_payload_preserves_analyzer_and_smart_reference_contract() -> No
             rms_db=-18.0,
             analyzer="librosa-pyin",
             analyzer_version="fixture",
-            descriptors={"synthesisReference": {"version": "smart-reference-v1"}},
+            descriptors={"synthesisReference": {"version": "smart-reference-mid-v1"}},
         ),
         source_mime_type="audio/webm",
         source_size_bytes=512,
         synthesis_reference_size_bytes=256,
         synthesis_reference_descriptor={
-            "version": "smart-reference-v1",
+            "version": "smart-reference-mid-v1",
             "durationMs": 6_000,
-            "algorithm": "voiced-phrase-band-selection",
-            "sourceRanges": [],
-            "bandSeconds": {"low": 2.0, "mid": 2.0, "high": 2.0},
+            "algorithm": "voiced-mid-phrase-selection",
+            "sourceRanges": [{"startMs": 0, "endMs": 6_000, "band": "mid"}],
+            "bandSeconds": {"low": 0.0, "mid": 6.0, "high": 0.0},
             "voicedDensity": 0.9,
             "pitchCoverageSemitones": 12.0,
             "crossfadeMs": 30,
@@ -66,7 +66,7 @@ def test_profile_payload_preserves_analyzer_and_smart_reference_contract() -> No
     assert profile["recordingId"] == "recording-id"
     assert profile["mimeType"] == "audio/webm"
     assert profile["analyzerVersion"] == "fixture"
-    assert profile["synthesisReference"]["version"] == "smart-reference-v1"
+    assert profile["synthesisReference"]["version"] == "smart-reference-mid-v1"
     assert profile["synthesisReference"]["sizeBytes"] == 256
 
 
@@ -79,8 +79,9 @@ def test_analysis_envelope_supports_unavailable_smart_reference(tmp_path: Path) 
             "recordingId": "fixture",
             "descriptors": {
                 "synthesisReference": {
-                    "version": "smart-reference-v1",
+                    "version": "smart-reference-mid-v1",
                     "status": "unavailable",
+                    "fallbackReason": "no-quality-mid-phrase",
                 }
             },
             "synthesisReference": None,
