@@ -71,7 +71,7 @@
 
 - [x] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist 완료
 - [x] 테스트 실행 및 통과
-- [x] 구현 결과를 공유하고 workflow approval을 기록함
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 - 2026-08-08 구현 승인: 사용자 응답 `완료처리할게`를 workflow 승인 옵션 `A`로 기록함.
 
 ### 테스트 실행 기록
