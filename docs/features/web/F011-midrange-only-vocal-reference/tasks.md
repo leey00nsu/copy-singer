@@ -112,13 +112,25 @@
     - [x] PRD/spec/plan/decisions/system architecture와 Modal README를 최종 mid-v1 생성 + v1 dual-read 계약에 동기화했다.
     - [x] `npx lee-spec-kit workflow-audit --json`가 `WORKFLOW_IN_SYNC`를 반환했다.
 
-- [TODO][PRD-FR-042][PRD-NFR-005] T-F011-midrange-only-vocal-reference-06 Modal analyzer 재배포와 remote parity 확인
+- [DONE][PRD-US-018][PRD-FR-042] T-F011-midrange-only-vocal-reference-06 사람용 3-band 분석 표시와 mid-only synthesis reference 분리
   - Date: 2026-08-08
   - Acceptance:
-    - 사용자 승인 후 배포된 `copy-singer-vocal-profile-analyzer`가 새 mid-v1 shared code를 사용한다.
-    - 실제 remote endpoint와 local analyzer가 동일 fixture에서 새 descriptor와 synthesis reference bytes parity를 만족한다.
+    - 새 mid-v1 프로필도 기존처럼 제출 source의 low/mid/high 대표 분석 구간을 3개 player로 보여준다.
+    - 사람용 3-band sourceRanges와 모델용 mid-only synthesisReference sourceRanges가 서로 다른 descriptor 의미로 분리된다.
+    - 실제 mixing reference 선택은 계속 READY mid-only `SYNTHESIS_REFERENCE`만 사용한다.
   - Checklist:
-    - [ ] 원격 deploy/compute 실행 전 현재 배포 artifact와 실행 범위를 공유하고 승인을 받는다.
+    - [x] analyzer가 기존 band selection 결과를 `analysisReferenceBands` descriptor로 별도 생성한다.
+    - [x] `referenceBandSegments`가 새 descriptor를 우선 읽고 기존 smart-reference-v1은 기존 sourceRanges fallback을 유지한다.
+    - [x] mid-v1 단일 synthesis-reference player 분기를 제거하고 기존 3-band UI를 새 profile에도 복원한다.
+    - [x] Python target 8/8, UI/segment 8/8, 전체 `pnpm test`, analyzer 35 passed/3 skipped, Modal local 9/9, local parity 4/4, tsc/lint를 통과했다.
+
+- [TODO][PRD-FR-042][PRD-NFR-005] T-F011-midrange-only-vocal-reference-07 Modal analyzer 재배포와 remote parity 확인
+  - Date: 2026-08-08
+  - Acceptance:
+    - 사용자 승인 후 `dbstndla1212` Modal workspace에 배포된 `copy-singer-vocal-profile-analyzer`가 최종 mid-v1 shared code를 사용한다.
+    - 실제 remote endpoint와 local analyzer가 동일 fixture에서 분석 descriptor와 synthesis reference bytes parity를 만족한다.
+  - Checklist:
+    - [ ] 원격 deploy 전에 active Modal workspace가 `dbstndla1212`인지 확인한다.
     - [ ] 기존 Modal SDK pin `1.5.3`으로 F011 analyzer를 재배포한다.
     - [ ] authenticated health/analyze와 mid-v1 contract를 확인한다.
     - [ ] 최소 대표 fixture의 deployed local↔remote exact parity를 확인하고 결과를 문서화한다.
@@ -150,11 +162,11 @@
 | `pnpm run test:vocal-profile-analyzer` | `2026-08-08` | `PASS (8/8)` |
 | `pnpm exec tsc --noEmit` | `2026-08-08` | `PASS` |
 
-| `pnpm exec tsx --test tests/vocal-profile-results-ui.test.tsx` | `2026-08-08` | `PASS (5/5: mid-v1 single player + legacy UI)` |
+| `pnpm exec tsx --test tests/vocal-profile-reference-bands.test.ts tests/vocal-profile-results-ui.test.tsx` | `2026-08-08` | `PASS (8/8: 새 mid-v1도 사람용 low/mid/high 3-band 분석 UI 유지)` |
 | `node --conditions react-server --import tsx --test tests/private-audio-proxy.test.ts tests/vocal-profile-history.integration.ts` | `2026-08-08` | `PASS (3/3: Range + owner scope including synthesis reference)` |
 | `pnpm run lint` | `2026-08-08` | `PASS` |
 
 | `pnpm exec tsx --test tests/mixing-reference.test.ts` | `2026-08-08` | `PASS (4/4: mid-v1 strict + legacy fallback)` |
 | `pnpm run test:mixing:db` | `2026-08-08` | `PASS (1/1: missing mid reference has no ticket/job side effect + snapshot flow)` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-08T02:10:53.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-08T02:28:58.000Z -->

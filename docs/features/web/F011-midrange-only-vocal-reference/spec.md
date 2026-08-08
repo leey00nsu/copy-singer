@@ -41,18 +41,18 @@ F011은 보컬 프로필 통계에 사용하는 최대 60초 분석 source와 �
 - [ ] reference는 최대 30초지만 30초를 채우기 위해 저음·고음 phrase, 반복 또는 무음 padding을 추가하지 않는다.
 - [ ] 30초 미만의 정상 reference도 READY synthesis reference로 저장하고 AI 믹싱에 사용한다.
 
-### US-2: 실제 믹싱에 사용되는 reference 확인
+### US-2: 기존 보컬 분석 표현 유지
 
 **As a** 보컬 프로필 결과를 확인하는 사용자
-**I want** AI 믹싱에 실제로 전달되는 중음 reference를 한 개의 플레이어에서 듣고 싶다
-**So that** 어떤 음성이 합성 prompt로 사용되는지 정확히 확인할 수 있다
+**I want** reference 정책이 바뀌어도 기존 저음·중음·고음 분석 구간과 프로필 시각화를 그대로 보고 싶다
+**So that** 사람이 이해하는 보컬 분석 경험은 유지하면서 AI 믹싱 품질만 중음 reference로 개선할 수 있다
 
 **Acceptance Criteria:**
 
-- [ ] 새 reference 계약으로 생성된 프로필에는 저음·중음·고음 3개 player 대신 `AI 믹싱 중음 레퍼런스` player 하나를 표시한다.
-- [ ] 이 player는 제출 source를 브라우저에서 다시 조합한 preview가 아니라 실제 저장된 `SYNTHESIS_REFERENCE` asset을 재생한다.
-- [ ] synthesis reference 재생 API는 기존 오디오 API와 동일하게 로그인 사용자 소유권을 검증하고 저장소 URL을 브라우저에 노출하지 않는다.
-- [ ] reference 길이가 30초보다 짧아도 실제 길이를 그대로 표시하고 정상 상태로 취급한다.
+- [ ] 새 mid-v1 프로필도 기존처럼 제출 source 위의 저음·중음·고음 대표 분석 구간을 각각 재생할 수 있다.
+- [ ] 저음·중음·고음 표시용 구간은 synthesis reference의 mid-only `sourceRanges`와 별도 descriptor로 유지한다.
+- [ ] 음역·histogram·pitch track·품질 지표와 저음·중음·고음 플레이어의 사용자 경험은 F009 기준을 유지한다.
+- [ ] 실제 AI 믹싱에는 표시용 저·중·고 구간을 합친 파일이 아니라 별도 저장된 mid-only `SYNTHESIS_REFERENCE`만 사용한다.
 
 ### US-3: 기존 프로필 호환
 
@@ -106,13 +106,13 @@ F011은 보컬 프로필 통계에 사용하는 최대 60초 분석 source와 �
 - 기존 `smart-reference-v1` 및 synthesis reference가 없는 legacy profile은 현재 호환 fallback 정책을 유지한다.
 - 믹싱 job이 생성된 뒤에는 기존 snapshot semantics를 유지하여 profile asset이 나중에 바뀌어도 이미 생성된 job의 reference가 바뀌지 않는다.
 
-### FR-5: 실제 중음 reference 한 개 재생
+### FR-5: 사람용 저·중·고 분석 구간과 모델용 reference 분리
 
-- 새 계약 profile 결과 UI에는 low/mid/high 3개 구간 player 대신 실제 synthesis reference asset을 재생하는 player 하나만 표시한다.
-- label은 `AI 믹싱 중음 레퍼런스`처럼 실제 용도를 명확히 표현한다.
-- reference 재생용 same-origin API는 profile 소유권과 `SYNTHESIS_REFERENCE` READY 상태를 확인하고 Range 요청을 지원한다.
-- Leemage external URL은 client payload나 DOM에 직접 노출하지 않는다.
-- 기존 `smart-reference-v1` profile은 현재 low/mid/high source-range preview UI를 유지하여 과거 descriptor를 깨지 않는다.
+- 새 계약 profile 결과 UI도 기존과 동일하게 source 위의 low/mid/high 대표 구간 player 3개를 유지한다.
+- 표시용 구간은 `analysisReferenceBands`처럼 synthesis reference와 구분되는 versioned descriptor에 저장하고, 기존 F009 band selection 의미를 유지한다.
+- `smart-reference-mid-v1.synthesisReference.sourceRanges`는 실제 모델 prompt에 포함되는 mid-only 구간만 표현하며 UI의 3-band 표시 계약으로 재사용하지 않는다.
+- UI 문구는 저·중·고 플레이어가 사람에게 보여주는 분석 구간임을 명확히 하고, AI 믹싱에는 별도 중음 reference가 사용된다는 점을 오해 없이 설명한다.
+- 기존 `smart-reference-v1` profile은 현재 synthesisReference sourceRanges를 그대로 읽어 동일한 3-band UI를 유지한다.
 
 ### FR-6: local/Modal parity와 queue 호환
 

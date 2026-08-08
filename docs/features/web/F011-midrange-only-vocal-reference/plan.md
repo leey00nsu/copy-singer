@@ -27,9 +27,9 @@ F011은 F009의 최대 60초 분석 source와 F010의 durable queue/Modal CPU �
 | reference 후보 생성 | 기존 librosa/pYIN frame + VAD/quality candidate builder 재사용 | F009에서 검증한 phrase boundary, voiced density, RMS, clipping 판단을 유지한다. |
 | mid 경계 | 기존 `(p10 + median) / 2`, `(median + p90) / 2` 의미 유지 | 새 Feature가 음역 통계 정의까지 변경하지 않도록 한다. |
 | reference selection | `mid` candidate만 품질순으로 선택, 총 30초 cap, 최종 시간순 정렬 | 저·고음 재분배·반복·padding 없이 안정적인 중음만 prompt에 넣는다. |
-| reference version | `smart-reference-mid-v1` | 기존 `smart-reference-v1`과 소비 정책/UI를 명확히 구분한다. |
+| reference version | `smart-reference-mid-v1` | 기존 `smart-reference-v1`과 모델용 prompt 정책을 명확히 구분한다. |
 | artifact shape | 기존 `SYNTHESIS_REFERENCE` MediaAsset + descriptor shape 최대 재사용 | Prisma migration 없이 F009/F010 persistence와 mixing snapshot을 재사용한다. |
-| playback | owner-scoped same-origin synthesis-reference audio API + 공통 WaveSurfer player 1개 | 새 UI가 브라우저에서 source range를 재조합하지 않고 실제 믹싱 asset을 재생하게 한다. |
+| 사람용 분석 구간 | 기존 low/mid/high selection을 `analysis-reference-bands-v1` descriptor로 분리 | 사용자 분석 UI는 기존 3-band 경험을 유지하고 모델용 mid-only sourceRanges와 의미를 섞지 않는다. |
 | mixing policy | reference contract version에 따라 strict/fallback 선택 | 새 mid-only profile은 synthesis reference를 강제하고, 과거 profile의 fallback은 유지한다. |
 | Modal transport | 기존 `modal-analysis-envelope-v1` 유지 | descriptor/version과 WAV bytes만 바뀌므로 F010 transport 재설계가 필요 없다. |
 
@@ -136,29 +136,26 @@ F011 구현 전 `hasSmartReferenceContract()`는 `smart-reference-v1`만 전제�
 
 기존 export 이름을 유지할 수 있으면 유지해 F010 adapter call site 변화량을 줄이고, 필요하면 내부 helper만 분리한다.
 
-### 5. 실제 synthesis reference 재생
+### 5. 사람용 분석 구간과 모델용 reference 분리
 
-새 profile의 결과 UI는 source range 3개 preview를 만들지 않는다.
+새 profile도 결과 UI에서는 기존 source 기반 low/mid/high 3-band preview를 유지한다. 다만 그 구간을 더 이상 `synthesisReference.sourceRanges`에서 읽지 않는다.
 
 ```text
-/vocal-profiles/:id
-  ↓
-profile.descriptors.synthesisReference.version
-  ├─ smart-reference-mid-v1
-  │    ↓
-  │  GET /api/vocal-profiles/:id/synthesis-reference/audio
-  │    ↓ owner + READY SYNTHESIS_REFERENCE 검증
-  │  AudioWaveformPlayer 1개
-  │  "AI 믹싱 중음 레퍼런스"
+60초 analysis source + pitch/VAD candidates
+  ├─ 사람용 분석 selection
+  │    └─ analysisReferenceBands (analysis-reference-bands-v1)
+  │         └─ low / mid / high sourceRanges
+  │              └─ 기존 3개 WaveSurfer preview
   │
-  └─ smart-reference-v1 / legacy
-       ↓
-     기존 sourceRanges low/mid/high UI 유지
+  └─ 모델용 synthesis selection
+       └─ synthesisReference (smart-reference-mid-v1)
+            └─ mid sourceRanges only
+                 └─ Leemage SYNTHESIS_REFERENCE → mixing worker
 ```
 
-`lib/vocal-profile/history.ts`에 owner-scoped synthesis reference 조회를 추가하고, 새 API route는 기존 `proxyPrivateAudio()`를 재사용해 Range와 Leemage URL 은닉을 유지한다.
+`referenceBandSegments()`는 새 profile에서 `analysisReferenceBands.sourceRanges`를 우선 사용하고, 기존 `smart-reference-v1` profile에서는 `synthesisReference.sourceRanges`를 그대로 읽는다. 화면의 3-band preview는 제출 source를 계속 사용하므로 별도 synthesis-reference playback API는 사용자 UI에 필요하지 않다.
 
-새 mid-only player는 실제 저장 `SYNTHESIS_REFERENCE` bytes를 재생하므로 source range를 브라우저에서 재조합하지 않는다.
+UI 문구도 이 3개 player가 모델 prompt 그 자체가 아니라 **사람에게 보여주는 대표 분석 구간**임을 명확히 하고, AI 믹싱에는 별도 중음 reference가 사용됨을 설명한다.
 
 ### 6. mixing reference 정책
 
@@ -206,15 +203,11 @@ services/vocal-profile-modal/
 └── test_transport.py                    # new version envelope compatibility
 
 lib/vocal-profile/
-├── contract.ts                          # v1 + mid-v1 contract validation
-├── reference-segments.ts                # old low/mid/high UI compatibility
-└── history.ts                           # synthesis reference owner lookup
-
-app/api/vocal-profiles/[id]/
-└── synthesis-reference/audio/route.ts   # actual stored reference proxy
+├── contract.ts                          # v1 + mid-v1 synthesis contract validation
+└── reference-segments.ts                # analysisReferenceBands 우선 + v1 fallback
 
 components/
-└── vocal-profile-results.tsx            # mid-v1 single player / v1 legacy players
+└── vocal-profile-results.tsx            # 모든 profile의 low/mid/high 분석 preview 유지
 
 lib/mixing/
 ├── reference.ts                         # version-aware strict/fallback policy
@@ -282,15 +275,13 @@ F011 배포 이후 analyzer가 새로 분석한 profile은 `smart-reference-mid-
 - mid-v1의 low/high range 또는 descriptor/artifact version mismatch는 reject
 - mixing reference selector는 mid-v1에서 smart asset 없으면 fallback하지 않음
 - legacy/v1은 기존 fallback 유지
-- UI helper가 mid-v1을 single reference mode로 분기
+- UI helper가 `analysisReferenceBands`를 우선 읽고 기존 v1 sourceRanges fallback을 유지
 
 ### 통합/UI 테스트
 
-- synthesis reference audio API owner만 200/Range 재생 가능
-- 타 사용자/asset unavailable은 404
-- mid-v1 UI에 player 1개와 `AI 믹싱 중음 레퍼런스` label 표시
-- mid-v1 UI에 low/mid/high 3개 control 미표시
-- smart-reference-v1 fixture는 기존 3개 control 유지
+- 새 mid-v1 profile의 `analysisReferenceBands`가 low/mid/high 3개 control을 유지
+- synthesisReference sourceRanges가 mid-only여도 UI는 사람용 3-band descriptor를 사용
+- smart-reference-v1 fixture는 기존 synthesisReference sourceRanges로 3개 control 유지
 - mixing enqueue에서 mid-v1 reference missing 시 티켓 차감/ MixingJob 생성 없음
 - READY mid-v1 reference는 `referenceAssetId`로 snapshot
 
@@ -312,8 +303,8 @@ F011 배포 이후 analyzer가 새로 분석한 profile은 `smart-reference-mid-
 1. Python reference algorithm/version을 mid-only로 변경하고 단위 테스트 고정
 2. analysis service unavailable descriptor와 local/Modal transport parity 갱신
 3. TypeScript analyzer contract를 v1 + mid-v1 dual-read로 확장
-4. owner-scoped synthesis-reference audio proxy 추가
-5. 결과 UI를 mid-v1 single stored-reference player / v1 legacy 3-band player로 분기
+4. 사람용 low/mid/high selection을 `analysisReferenceBands` descriptor로 분리
+5. 결과 UI가 새 descriptor를 우선 사용하고 모든 profile에서 기존 3-band 분석 경험을 유지
 6. mixing reference selection을 version-aware strict policy로 변경
 7. queue/persistence/mixing/UI 통합 테스트와 전체 회귀
 8. docs/ADR/workflow audit 동기화

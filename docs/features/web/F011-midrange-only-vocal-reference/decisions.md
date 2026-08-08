@@ -87,3 +87,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: mixing selector 4/4, mixing DB integration 1/1, tsc/lint PASS
 - **Consequences**: mid reference unavailable profile은 추천 결과를 볼 수 있어도 AI mixing enqueue는 명시적으로 거부된다.
+
+## D005: 사람용 3-band 분석 표시와 모델용 mid-only reference를 분리 (2026-08-08)
+
+- **Context**: 원격 배포 직전 사용자 의도를 재확인한 결과, F011의 목표는 사람이 보는 기존 보컬 분석 UI를 바꾸는 것이 아니라 실제 믹싱 prompt만 중음 기반으로 바꾸는 것이다. T03의 mid-v1 단일 synthesis-reference player는 이 범위를 과도하게 확장했다.
+- **Constraints**: 기존 low/mid/high preview 경험을 새 profile에서도 유지하면서 `smart-reference-mid-v1.sourceRanges`는 모델용 mid-only 계약으로 엄격하게 남겨야 한다. 기존 smart-reference-v1 저장 profile도 계속 읽어야 한다.
+- **Options**: mid-only sourceRanges로 UI도 mid만 표시, synthesis descriptor에 low/high 표시 범위를 섞기, 사람용 분석 descriptor를 별도로 분리하는 방식을 비교한다.
+- **Decision**: 기존 band candidate selection을 사람용 `analysisReferenceBands` descriptor로 별도 저장하고 UI는 이를 우선 사용한다. `synthesisReference`는 mid-only 모델 prompt 의미만 유지한다. 기존 v1 profile은 synthesisReference sourceRanges를 3-band UI fallback으로 계속 사용한다.
+- **Rationale**: 분석 결과 표현과 모델 입력을 서로 독립적으로 버전 관리해 사용자가 보는 정보는 유지하면서 reference 품질 정책만 바꿀 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: T06에서 analyzer descriptor 분리와 UI 복원을 먼저 완료한 뒤 T07 원격 배포를 수행한다. 기존 T03 single-player 결정은 이 ADR로 supersede한다.
+  - **DONE 전 확정 시점**: shared analyzer가 한 번의 candidate 계산에서 `analysisReferenceBands`(low/mid/high)와 `synthesisReference`(mid-only)를 함께 만든다. UI helper는 새 analysis descriptor를 우선 읽고 기존 v1 profile은 synthesisReference sourceRanges fallback을 유지한다. 결과 화면은 다시 3-band source preview를 사용하며 mixing strict mid-only policy는 그대로 유지된다.
+  - **머지 후 확인**: 머지 후 갱신한다.
+- **Evidence**:
+  - **Commit**: task commit 후 갱신
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: target Python 8/8, UI/segment 8/8, 전체 `pnpm test` PASS, analyzer 35 passed/3 skipped, Modal local 9/9, local parity 4/4, tsc/lint PASS
+- **Consequences**: synthesis-reference audio proxy 코드는 당장 UI에서 사용되지 않을 수 있으나 모델 reference 저장/소유권 경계에는 영향을 주지 않는다.
