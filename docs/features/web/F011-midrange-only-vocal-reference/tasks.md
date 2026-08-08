@@ -150,6 +150,18 @@
     - [x] active Modal profile/workspace `dbstndla1212`를 재확인해 analyzer를 재배포했고 Lemon(89, `SX_ViT4Ra7k`) target probe가 52,660,710-byte WAV를 13.264초에 반환함을 확인했다.
     - [x] 전체 `pnpm test`, lint, tsc, build, Prisma validate/status, Python analyzer 35 passed/3 skipped, Modal unit 9/9, `git diff --check`, workflow audit를 통과했다.
 
+- [TODO][PRD-NFR-005] T-F011-midrange-only-vocal-reference-09 카탈로그 target asset 사전 업로드와 Song 연결
+  - Date: 2026-08-08
+  - Acceptance:
+    - 권한 있는 카탈로그 원본 파일을 git 비추적 tmp/catalog-targets staging에 두고 Leemage target asset으로 업로드할 수 있다.
+    - Song row가 준비된 target MediaAsset을 소유권 없는 catalog asset으로 연결하고 mixing worker는 런타임 YouTube 다운로드 대신 이 asset을 사용한다.
+    - catalog target import는 파일 누락, catalog-order 불일치, 중복 업로드를 안전하게 처리하고 재실행 가능하다.
+  - Checklist:
+    - [ ] tmp/catalog-targets 경로를 gitignore하고 import/verify CLI를 추가한다.
+    - [ ] Song-target MediaAsset 관계와 migration을 추가한다.
+    - [ ] mixing worker를 cached target 우선/필수 정책으로 바꾸고 DB integration test를 추가한다.
+    - [ ] 운영 문서와 workflow audit를 동기화한다.
+
 ---
 
 ## 완료 조건
