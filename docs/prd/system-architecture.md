@@ -11,11 +11,24 @@
 | Better Auth | `lib/auth/`, PostgreSQL | Google OAuth 세션, 사용자 소유권과 관리자 allowlist 검증 |
 | Mixing worker | `scripts/mixing-worker.ts`, `lib/mixing/` | 영속 작업 claim, target 준비, Modal 제출·추적, 결과 저장과 정리 재시도 |
 | Leemage | 외부 REST API | 사용자 reference와 성공한 믹싱 결과 영구 저장 |
-| Modal web function | `services/soulx-singer-svc/modal_app.py` | FastAPI 계약, 파일 저장, 비동기 GPU 작업 관리 |
+| Local vocal analyzer | `services/vocal-profile-api/` | local Docker 개발/회귀용 FastAPI와 Modal이 공유하는 librosa/pYIN 분석 코어 |
+| Modal CPU analyzer | `services/vocal-profile-modal/modal_app.py` | 배포용 CPU-only 보컬 프로필 분석, request-scoped 임시 파일과 profile/source/reference ephemeral handoff |
+| Modal SVC web function | `services/soulx-singer-svc/modal_app.py` | FastAPI 계약, 파일 저장, 비동기 GPU 작업 관리 |
 | Modal GPU worker | `SoulXModel` | SoulX-Singer 모델 로드, 전처리, SVC 추론, 반주 재믹스 |
 | Modal storage | Volume + Dict | 모델·작업 파일과 작업 메타데이터 보관 |
 | PostgreSQL | Docker Compose | 인증, 사용자 프로필, 추천, 믹싱 큐, 티켓 원장과 파일 메타데이터 영속 저장 |
 | Prisma | Next.js server | schema, migration, 타입 안전 DB 접근 |
+
+## 보컬 프로필 분석 요청 흐름
+
+1. 브라우저가 로그인 세션으로 최대 60초 오디오를 `POST /api/vocal-profiles`에 제출한다.
+2. Next.js가 `VOCAL_PROFILE_ANALYZER_BACKEND`로 local 또는 Modal adapter를 명시적으로 선택한다. production에서는 backend 미설정을 허용하지 않는다.
+3. Modal 경로에서는 Next.js가 multipart 요청과 server-only `X-API-Key`를 CPU analyzer에 전달한다. analyzer는 request-scoped 임시 디렉터리에서 shared analysis core와 `smart-reference-v1`을 실행하고, profile + source + optional synthesis reference bytes를 한 response envelope로 반환한 뒤 임시 파일을 제거한다.
+4. Next.js가 analyzer version/capability와 artifact size/hash를 검증한 뒤 source와 smart reference를 Leemage에 저장한다. Modal analyzer에는 Leemage/PostgreSQL credential을 제공하지 않는다.
+5. PostgreSQL에는 사용자 소유 보컬 프로필, analyzer version, Leemage asset relation만 저장한다. Leemage 또는 DB 저장 실패 시 생성된 외부 asset을 삭제하거나 cleanup queue에 남긴다.
+6. production Modal analyzer 장애 시 local analyzer로 자동 fallback하지 않는다. backend 전환은 운영 설정 변경으로만 수행한다.
+
+현재 Modal CPU baseline은 2 physical cores, 4096 MiB, `min_containers=0`, `max_containers=10`, `scaledown_window=60`, container concurrency 1의 sync HTTP 방식이다.
 
 ## SVC 요청 흐름
 
@@ -50,7 +63,8 @@
 ## 운영 경계
 
 - 웹 앱은 공식 Next.js Node 런타임의 로컬 실행을 기준으로 하며 프로덕션 배포 대상은 아직 선택하지 않았다.
-- Modal 백엔드는 배포된 API를 사용한다.
-- Better Auth, Google, Modal과 Leemage secret은 `.env.local`에만 두고 클라이언트로 전달하지 않는다.
+- SoulX SVC와 보컬 프로필 Modal analyzer는 별도 Modal App으로 배포하며 repo의 Modal Python SDK는 `1.5.3`으로 고정한다.
+- 보컬 프로필 production backend는 `VOCAL_PROFILE_ANALYZER_BACKEND=modal`과 `VOCAL_PROFILE_MODAL_URL`을 명시적으로 설정해야 하며, 현재 로컬 환경은 자동 전환하지 않는다.
+- Better Auth, Google, Modal과 Leemage secret은 `.env.local`에만 두고 클라이언트로 전달하지 않는다. 보컬 프로필 analyzer는 기존 `MODAL_API_KEY`를 기본 server-only `X-API-Key`로 사용하고 필요 시 `VOCAL_PROFILE_MODAL_API_KEY`로 override한다.
 - reference와 결과는 사용자가 삭제할 때까지 Leemage에 저장한다. 원곡과 stem은 작업 임시 디렉터리에서 제거한다.
 - `/dev/svc`와 `/api/conversions/*`는 비프로덕션에서 `ENABLE_DEV_SVC=true`일 때만 제공한다.
