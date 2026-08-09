@@ -108,7 +108,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: Next.js 비동기 `searchParams`에서 handoff ID를 전달하고 Query가 recommendation을 검증하도록 전환했다. conversion은 queued/processing에서만 2.5초 polling하며 terminal toast를 job/status당 한 번 표시한다. 64MB lazy stream의 동일 body reference가 upstream fetch로 전달되는 회귀 test와 MSW success/4xx/5xx/contract/sequence/cache test를 통과했다.
   - **머지 후 확인**: 로컬 통합 후 갱신 예정
 - **Evidence**:
-  - **Commit**: task commit 후 갱신 예정
+  - **Commit**: docs `c6dc098`, project `cdfec46`
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: `pnpm run test:query` PASS (20), `pnpm run test:tickets` PASS (2), `pnpm run test:admin` PASS (2), effect inventory PASS (1), `pnpm run check:biome`/`lint`/`typecheck`/`check:architecture` PASS, `pnpm run build` PASS (2026-08-09)
 - **Consequences**: 변환 본문은 client와 proxy에서 JSON 변환 없이 stream 경계를 유지하며 mock handler는 test teardown 때 reset된다.
