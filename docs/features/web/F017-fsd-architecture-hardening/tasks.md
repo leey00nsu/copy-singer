@@ -86,19 +86,19 @@
     - [x] Root Layout의 UserMenu/Admin policy import 분리
     - [x] 관련 Query/API/auth test와 정적 검사 통과
 
-- [TODO][NON-PRD] T-F017-03 Admin 조회 서비스를 Feature server API로 이동
+- [DONE][NON-PRD] T-F017-03 Admin 조회 서비스를 Feature server API로 이동
   - Date: 2026-08-09
   - Acceptance:
     - Admin 조회·집계 use case가 `inspect-admin-operations` Feature의 server 공개 API에서 제공된다.
     - Admin Page와 App API route가 Page 내부 API segment에 의존하지 않는다.
     - overview, users, mixing jobs query·serialization·권한 및 개인정보 제외 동작이 기존과 동일하다.
   - Checklist:
-    - [ ] `inspect-admin-operations/api/admin-service.ts`와 `index.server.ts` 생성
-    - [ ] Admin Page 및 세 Admin route import를 Feature public API로 전환
-    - [ ] Admin integration test import를 Feature public API로 전환
-    - [ ] 사용이 끝난 `_pages/admin/api` 파일 제거
-    - [ ] Steiger insignificant-slice narrow exception에 새 실제 consumer 근거 반영
-    - [ ] Admin test, typecheck와 Steiger 검사 통과
+    - [x] `inspect-admin-operations/api/admin-service.ts`와 `index.server.ts` 생성
+    - [x] Admin Page 및 세 Admin route import를 Feature public API로 전환
+    - [x] Admin integration test import를 Feature public API로 전환
+    - [x] 사용이 끝난 `_pages/admin/api` 파일 제거
+    - [x] Steiger insignificant-slice narrow exception에 새 실제 consumer 근거 반영
+    - [x] Admin test, typecheck와 Steiger 검사 통과
 
 - [TODO][NON-PRD] T-F017-04 FSD·server/client·App adapter 경계 검사 추가
   - Date: 2026-08-09
