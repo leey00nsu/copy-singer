@@ -93,3 +93,22 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: `pnpm run test:query` PASS (13), `pnpm run test:recommendation` PASS (18), `pnpm run test:mixing:ui` PASS, effect inventory PASS (2), `pnpm run lint`/`typecheck`/`check:architecture` PASS, `pnpm run build` PASS (2026-08-09)
 - **Consequences**: mutation 중 임시 상태는 Query cache에만 존재하고 성공 직후 server detail로 교체된다.
+
+---
+
+## D005: Conversion stream과 관찰 가능한 server state의 경계 (2026-08-09)
+
+- **Context**: 개발용 변환 화면은 추천 handoff, health, 변환 job과 티켓 조정을 component fetch/state/timer로 관리하지만 conversion Route Handler는 대용량 multipart body를 upstream으로 stream해야 한다.
+- **Constraints**: 변환 WAV 본문을 `formData()`나 JSON helper로 읽어 buffering하지 않고 기존 2.5초 polling, terminal toast, URL handoff 및 ticket UX를 유지해야 한다. MSW는 Node test에서만 사용해야 한다.
+- **Options**: 업로드 body까지 공통 JSON client로 통합, server state만 query/mutation으로 이동하고 FormData 전송은 typed endpoint client에서 유지, 기존 component fetch를 유지하는 방식을 검토한다.
+- **Decision**: 파일·설정·job ID는 component local state에 남기고 health, recommendation handoff와 conversion job은 Query cache에서 파생한다. FormData는 typed mutation client가 그대로 fetch body로 전달하고 성공 JSON만 Zod로 검증한다. ticket adjustment도 typed mutation으로 전환하며 MSW는 Node server와 test fixture에서만 시작한다.
+- **Rationale**: 원격 응답의 이중 state와 component timer를 제거하면서 browser multipart boundary와 Route Handler의 `request.body` stream 전달을 보존하고, production bundle에 mock runtime을 넣지 않기 위해서다.
+- **Trace**:
+  - **DOING 시작 시점**: browser가 만든 FormData는 그대로 fetch body로 전달하고 response JSON만 Zod parse한다. job ID와 파일/입력값은 local UI state로 남기며 health/handoff/job response는 Query cache에서 파생한다.
+  - **DONE 전 확정 시점**: Next.js 비동기 `searchParams`에서 handoff ID를 전달하고 Query가 recommendation을 검증하도록 전환했다. conversion은 queued/processing에서만 2.5초 polling하며 terminal toast를 job/status당 한 번 표시한다. 64MB lazy stream의 동일 body reference가 upstream fetch로 전달되는 회귀 test와 MSW success/4xx/5xx/contract/sequence/cache test를 통과했다.
+  - **머지 후 확인**: 로컬 통합 후 갱신 예정
+- **Evidence**:
+  - **Commit**: task commit 후 갱신 예정
+  - **PR**: 로컬 workflow (원격 PR 없음)
+  - **Test/Log**: `pnpm run test:query` PASS (20), `pnpm run test:tickets` PASS (2), `pnpm run test:admin` PASS (2), effect inventory PASS (1), `pnpm run check:biome`/`lint`/`typecheck`/`check:architecture` PASS, `pnpm run build` PASS (2026-08-09)
+- **Consequences**: 변환 본문은 client와 proxy에서 JSON 변환 없이 stream 경계를 유지하며 mock handler는 test teardown 때 reset된다.

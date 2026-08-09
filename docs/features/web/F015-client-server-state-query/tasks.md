@@ -107,19 +107,19 @@
     - [x] mixing history type을 entity Zod schema로 이동하고 initialData/pagination polling 전환
     - [x] recommendation/mixing UI 및 query cache 회귀 test 통과
 
-- [TODO][NON-PRD] T-F015-05 Development conversion·ticket mutation과 MSW fixture 완성
+- [DONE][NON-PRD] T-F015-05 Development conversion·ticket mutation과 MSW fixture 완성
   - Date: 2026-08-09
   - Acceptance:
     - Modal health/handoff/conversion job과 ticket adjustment가 typed query/mutation을 사용한다.
     - conversion upload body는 buffering하지 않고 queued/processing에서만 polling한다.
     - MSW Node fixture가 success, 4xx, retryable error, malformed response와 terminal polling sequence를 재현한다.
   - Checklist:
-    - [ ] development conversion client/key/options/mutations 및 terminal transition toast 구현
-    - [ ] recommendation handoff query와 기존 invalid URL 상태 처리 유지
-    - [ ] ticket adjustment form pending/success/error를 mutation state로 전환
-    - [ ] `tests/msw` fixture/handlers/server를 test 전용으로 구성하고 handler reset 구현
-    - [ ] no-retry/retry limit, malformed schema, polling stop와 mutation cache test 통과
-    - [ ] long audio upload 및 ticket/admin 기존 회귀 test 통과
+    - [x] development conversion client/key/options/mutations 및 terminal transition toast 구현
+    - [x] recommendation handoff query와 기존 invalid URL 상태 처리 유지
+    - [x] ticket adjustment form pending/success/error를 mutation state로 전환
+    - [x] `tests/msw` fixture/handlers/server를 test 전용으로 구성하고 handler reset 구현
+    - [x] no-retry/retry limit, malformed schema, polling stop와 mutation cache test 통과
+    - [x] long audio upload 및 ticket/admin 기존 회귀 test 통과
 
 - [TODO][NON-PRD] T-F015-06 대상 fetch inventory 정리와 전체 회귀 검증
   - Date: 2026-08-09
@@ -153,7 +153,7 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm run test:query` | `2026-08-09` | PASS (13 tests) |
+| `pnpm run test:query` | `2026-08-09` | PASS (20 tests: query/contracts/MSW 19 + 64MB streaming proxy 1) |
 | `pnpm run check` | `-` | 미실행 |
 | `pnpm run build` | `2026-08-09` | PASS (Next.js 16.3 production build, 22 pages) |
 | `pnpm test` | `-` | 미실행 |
