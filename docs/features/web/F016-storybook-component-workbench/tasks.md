@@ -73,7 +73,7 @@
     - [x] `storybook`, `build-storybook`, `test:storybook` script와 Chromium browser 설치
     - [x] Storybook smoke/static build, TypeScript와 FSD architecture 검사 통과
 
-- [TODO][NON-PRD] T-F016-02 Shared UI primitive story와 Controls·interaction 추가
+- [DOING][NON-PRD] T-F016-02 Shared UI primitive story와 Controls·interaction 추가
   - Date: 2026-08-09
   - Acceptance:
     - shared UI의 action/layout/input primitive를 Storybook에서 args와 Controls로 탐색할 수 있다.
