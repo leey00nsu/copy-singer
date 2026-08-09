@@ -1,4 +1,9 @@
 import {
+  ANALYSIS_AUDIO_MIME_TYPES,
+  analysisAudioFileSchema,
+  analysisIdempotencyKeySchema,
+} from "@/features/analyze-vocal-profile";
+import {
   analysisJobPayload,
   enqueueVocalProfileAnalysis,
   listVisibleVocalProfileAnalysisJobs,
@@ -58,8 +63,23 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   }
+  const idempotencyResult = analysisIdempotencyKeySchema.safeParse(idempotencyKey);
+  if (!idempotencyResult.success) return enqueueError(new Error("INVALID_IDEMPOTENCY_KEY"));
+
+  const audioResult = analysisAudioFileSchema.safeParse(audio);
+  if (!audioResult.success) {
+    const normalizedMimeType = audio.type.split(";", 1)[0]?.trim().toLowerCase();
+    if (!ANALYSIS_AUDIO_MIME_TYPES.some((mimeType) => mimeType === normalizedMimeType)) {
+      return enqueueError(new Error("UNSUPPORTED_AUDIO"));
+    }
+    return enqueueError(new Error("PAYLOAD_TOO_LARGE"));
+  }
   try {
-    const job = await enqueueVocalProfileAnalysis({ userId: session.user.id, idempotencyKey, file: audio });
+    const job = await enqueueVocalProfileAnalysis({
+      userId: session.user.id,
+      idempotencyKey: idempotencyResult.data,
+      file: audioResult.data,
+    });
     return Response.json(analysisJobPayload(job), { status: 202 });
   } catch (error) {
     return enqueueError(error);

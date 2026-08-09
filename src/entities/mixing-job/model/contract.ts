@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export const MIXING_JOB_STATUSES = [
   "pending",
   "preparing",
@@ -8,7 +10,64 @@ export const MIXING_JOB_STATUSES = [
   "canceled",
 ] as const;
 
-export type PublicMixingJobStatus = (typeof MIXING_JOB_STATUSES)[number];
+export const publicMixingJobStatusSchema = z.enum(MIXING_JOB_STATUSES);
+
+export type PublicMixingJobStatus = z.infer<typeof publicMixingJobStatusSchema>;
+
+export const mixingJobErrorSchema = z.object({
+  code: z.string(),
+  detail: z.string(),
+});
+
+export const mixingJobResponseSchema = z.object({
+  id: z.uuid(),
+  recommendationItemId: z.uuid().nullable(),
+  status: publicMixingJobStatusSchema,
+  ticketCost: z.number().int().nonnegative(),
+  error: mixingJobErrorSchema.nullable(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  completedAt: z.string().nullable(),
+});
+
+export type MixingJobResponse = z.infer<typeof mixingJobResponseSchema>;
+
+export const mixingHistoryRowSchema = z.object({
+  id: z.uuid(),
+  status: publicMixingJobStatusSchema,
+  ticketCost: z.number().int().nonnegative(),
+  error: mixingJobErrorSchema.nullable(),
+  song: z.object({
+    title: z.string(),
+    artist: z.string(),
+    catalogOrder: z.number().int().positive(),
+  }),
+  vocalProfile: z.object({ id: z.uuid(), createdAt: z.string() }),
+  resultReady: z.boolean(),
+  audioUrl: z.string().nullable(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  startedAt: z.string().nullable(),
+  completedAt: z.string().nullable(),
+});
+
+export type MixingHistoryRow = z.infer<typeof mixingHistoryRowSchema>;
+
+export const mixingHistoryPayloadSchema = z.object({
+  page: z.number().int().positive(),
+  pageSize: z.number().int().positive(),
+  total: z.number().int().nonnegative(),
+  pageCount: z.number().int().positive(),
+  jobs: z.array(mixingHistoryRowSchema),
+});
+
+export type MixingHistoryPayload = z.infer<typeof mixingHistoryPayloadSchema>;
+
+export const mixingDeleteResponseSchema = z
+  .object({
+    status: z.string(),
+  })
+  .passthrough();
 
 export class MixingError extends Error {
   constructor(

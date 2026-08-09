@@ -1,37 +1,47 @@
-import type { KeyFitReasonCode, KeyFitScoreBreakdown } from "./key-fit-contract";
+import { z } from "zod";
+import { keyFitReasonCodeSchema, keyFitScoreBreakdownSchema } from "./key-fit-contract";
 
 export const SYNTHESIS_STATUSES = ["preparing", "queued", "processing", "succeeded", "failed"] as const;
 
 export type SynthesisStatus = (typeof SYNTHESIS_STATUSES)[number];
 
-export type RecommendationSynthesis = {
-  status: SynthesisStatus | "not_started";
-  jobId: string | null;
-  error: {
-    code: string;
-    detail: string;
-    retryable: boolean;
-  } | null;
-  startedAt: string | null;
-  updatedAt: string | null;
-  completedAt: string | null;
-  expiresAt: string | null;
-  attemptCount: number;
-  audioUrl: string | null;
-};
+export const recommendationSynthesisSchema = z.object({
+  status: z.enum(["not_started", ...SYNTHESIS_STATUSES]),
+  jobId: z.uuid().nullable(),
+  error: z
+    .object({
+      code: z.string(),
+      detail: z.string(),
+      retryable: z.boolean(),
+    })
+    .nullable(),
+  startedAt: z.string().nullable(),
+  updatedAt: z.string().nullable(),
+  completedAt: z.string().nullable(),
+  expiresAt: z.string().nullable(),
+  attemptCount: z.number().int().nonnegative(),
+  audioUrl: z.string().nullable(),
+});
 
-export type RecommendationErrorCode =
-  | "INVALID_REQUEST"
-  | "INVALID_PROFILE"
-  | "INCOMPATIBLE_ANALYZER"
-  | "CATALOG_NOT_READY"
-  | "RECOMMENDATION_NOT_FOUND"
-  | "RECOMMENDATION_SAVE_FAILED"
-  | "SYNTHESIS_NOT_FOUND"
-  | "SYNTHESIS_PREFLIGHT_FAILED"
-  | "SYNTHESIS_MEDIA_FAILED"
-  | "SYNTHESIS_UPSTREAM_FAILED"
-  | "SYNTHESIS_CLEANUP_FAILED";
+export type RecommendationSynthesis = z.infer<typeof recommendationSynthesisSchema>;
+
+export const RECOMMENDATION_ERROR_CODES = [
+  "INVALID_REQUEST",
+  "INVALID_PROFILE",
+  "INCOMPATIBLE_ANALYZER",
+  "CATALOG_NOT_READY",
+  "RECOMMENDATION_NOT_FOUND",
+  "RECOMMENDATION_SAVE_FAILED",
+  "SYNTHESIS_NOT_FOUND",
+  "SYNTHESIS_PREFLIGHT_FAILED",
+  "SYNTHESIS_MEDIA_FAILED",
+  "SYNTHESIS_UPSTREAM_FAILED",
+  "SYNTHESIS_CLEANUP_FAILED",
+] as const;
+
+export const recommendationErrorCodeSchema = z.enum(RECOMMENDATION_ERROR_CODES);
+
+export type RecommendationErrorCode = z.infer<typeof recommendationErrorCodeSchema>;
 
 export class RecommendationError extends Error {
   readonly code: RecommendationErrorCode;
@@ -57,54 +67,69 @@ export class RecommendationError extends Error {
   }
 }
 
-export type RecommendationScoreMetrics = {
-  confidence: number;
-  selectionScore?: number;
-  original: KeyFitScoreBreakdown;
-  recommended: KeyFitScoreBreakdown;
-};
+export const recommendationScoreMetricsSchema = z.object({
+  confidence: z.number(),
+  selectionScore: z.number().optional(),
+  original: keyFitScoreBreakdownSchema,
+  recommended: keyFitScoreBreakdownSchema,
+});
 
-export type RecommendationItemResponse = {
-  id: string;
-  rank: number;
-  songId: string;
-  catalogOrder: number;
-  title: string;
-  artist: string;
-  sourceUrl: string;
-  originalKeyScore: number;
-  adjustedScore: number;
-  selectionScore: number | null;
-  recommendedShift: number;
-  reasonCodes: KeyFitReasonCode[];
-  reasons: string[];
-  metrics: RecommendationScoreMetrics;
-  synthesis: RecommendationSynthesis;
-};
+export type RecommendationScoreMetrics = z.infer<typeof recommendationScoreMetricsSchema>;
 
-export type RecommendationRunResponse = {
-  id: string;
-  userVocalProfileId: string;
-  scoringVersion: string;
-  createdAt: string;
-  profileConfidence: number;
-  lowConfidence: boolean;
-  profile: {
-    analyzer: string;
-    analyzerVersion: string;
-    tessituraLowMidi: number;
-    tessituraHighMidi: number;
-    minMidi: number;
-    maxMidi: number;
-  };
-  items: RecommendationItemResponse[];
-};
+export const recommendationItemResponseSchema = z.object({
+  id: z.uuid(),
+  rank: z.number().int().positive(),
+  songId: z.uuid(),
+  catalogOrder: z.number().int().positive(),
+  title: z.string(),
+  artist: z.string(),
+  sourceUrl: z.string(),
+  originalKeyScore: z.number(),
+  adjustedScore: z.number(),
+  selectionScore: z.number().nullable(),
+  recommendedShift: z.number(),
+  reasonCodes: z.array(keyFitReasonCodeSchema),
+  reasons: z.array(z.string()),
+  metrics: recommendationScoreMetricsSchema,
+  synthesis: recommendationSynthesisSchema,
+});
 
-export type RecommendationApiError = {
-  error: {
-    code: RecommendationErrorCode;
-    message: string;
-    retryable: boolean;
-    details?: Record<string, unknown>;
-  };
-};
+export type RecommendationItemResponse = z.infer<typeof recommendationItemResponseSchema>;
+
+export const recommendationRunResponseSchema = z.object({
+  id: z.uuid(),
+  userVocalProfileId: z.uuid(),
+  scoringVersion: z.string(),
+  createdAt: z.string(),
+  profileConfidence: z.number(),
+  lowConfidence: z.boolean(),
+  profile: z.object({
+    analyzer: z.string(),
+    analyzerVersion: z.string(),
+    tessituraLowMidi: z.number(),
+    tessituraHighMidi: z.number(),
+    minMidi: z.number(),
+    maxMidi: z.number(),
+  }),
+  items: z.array(recommendationItemResponseSchema),
+});
+
+export type RecommendationRunResponse = z.infer<typeof recommendationRunResponseSchema>;
+
+export const recommendationApiErrorSchema = z.object({
+  error: z.object({
+    code: recommendationErrorCodeSchema,
+    message: z.string(),
+    retryable: z.boolean(),
+    details: z.record(z.string(), z.unknown()).optional(),
+  }),
+});
+
+export type RecommendationApiError = z.infer<typeof recommendationApiErrorSchema>;
+
+export const recommendationDeleteResponseSchema = z.object({
+  status: z.literal("deleted"),
+  id: z.uuid(),
+});
+
+export type RecommendationDeleteResponse = z.infer<typeof recommendationDeleteResponseSchema>;

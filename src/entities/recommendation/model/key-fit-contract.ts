@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export const KEY_FIT_SCORING_VERSION = "key-fit-v2";
 
 export const KEY_SHIFT_MIN = -6;
@@ -18,37 +20,46 @@ export type KeyFitProfile = {
   analyzerVersion: string;
 };
 
-export type KeyFitReasonCode =
-  | "ORIGINAL_KEY_BEST"
-  | "KEY_SHIFT_IMPROVES_FIT"
-  | "HIGH_TESSITURA_OVERLAP"
-  | "HIGH_RANGE_BURDEN"
-  | "LOW_RANGE_BURDEN"
-  | "HIGH_NOTES_REDUCED"
-  | "LOW_NOTES_REDUCED"
-  | "LOW_PROFILE_CONFIDENCE";
+export const KEY_FIT_REASON_CODES = [
+  "ORIGINAL_KEY_BEST",
+  "KEY_SHIFT_IMPROVES_FIT",
+  "HIGH_TESSITURA_OVERLAP",
+  "HIGH_RANGE_BURDEN",
+  "LOW_RANGE_BURDEN",
+  "HIGH_NOTES_REDUCED",
+  "LOW_NOTES_REDUCED",
+  "LOW_PROFILE_CONFIDENCE",
+] as const;
 
-export type KeyFitContributions = {
-  overlap: number;
-  tessituraFit: number;
-  extremeFit: number;
-  confidence: number;
-};
+export const keyFitReasonCodeSchema = z.enum(KEY_FIT_REASON_CODES);
 
-export type KeyFitScoreBreakdown = {
-  shift: number;
-  tessituraOverlapRatio: number;
-  highTessituraExcess: number;
-  lowTessituraExcess: number;
-  highExtremeExcess: number;
-  lowExtremeExcess: number;
-  tessituraFit: number;
-  extremeFit: number;
-  confidence: number;
-  contributions: KeyFitContributions;
-  rawScore: number;
-  score: number;
-};
+export type KeyFitReasonCode = z.infer<typeof keyFitReasonCodeSchema>;
+
+export const keyFitContributionsSchema = z.object({
+  overlap: z.number(),
+  tessituraFit: z.number(),
+  extremeFit: z.number(),
+  confidence: z.number(),
+});
+
+export type KeyFitContributions = z.infer<typeof keyFitContributionsSchema>;
+
+export const keyFitScoreBreakdownSchema = z.object({
+  shift: z.number(),
+  tessituraOverlapRatio: z.number(),
+  highTessituraExcess: z.number(),
+  lowTessituraExcess: z.number(),
+  highExtremeExcess: z.number(),
+  lowExtremeExcess: z.number(),
+  tessituraFit: z.number(),
+  extremeFit: z.number(),
+  confidence: z.number(),
+  contributions: keyFitContributionsSchema,
+  rawScore: z.number(),
+  score: z.number(),
+});
+
+export type KeyFitScoreBreakdown = z.infer<typeof keyFitScoreBreakdownSchema>;
 
 export type KeyFitScoreResult = {
   scoringVersion: typeof KEY_FIT_SCORING_VERSION;

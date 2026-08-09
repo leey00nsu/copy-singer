@@ -2,28 +2,10 @@
 
 import { AlertTriangle, CheckCircle2, Clock3, Download, LoaderCircle, Music2, Ticket } from "lucide-react";
 import { useEffect, useState } from "react";
+import type { MixingHistoryPayload } from "@/entities/mixing-job";
 import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
 import { Badge } from "@/shared/ui/badge";
 import { buttonVariants } from "@/shared/ui/button";
-
-export type MixingHistoryPayload = {
-  page: number;
-  pageSize: number;
-  total: number;
-  pageCount: number;
-  jobs: Array<{
-    id: string;
-    status: string;
-    ticketCost: number;
-    error: { code: string; detail: string } | null;
-    song: { title: string; artist: string; catalogOrder: number };
-    resultReady: boolean;
-    audioUrl: string | null;
-    createdAt: string;
-    updatedAt: string;
-    completedAt: string | null;
-  }>;
-};
 
 const ACTIVE = new Set(["pending", "preparing", "submitted", "processing"]);
 const STATUS_LABELS: Record<string, string> = {

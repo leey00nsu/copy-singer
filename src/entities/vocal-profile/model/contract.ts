@@ -1,19 +1,29 @@
-export type PitchHistogramBin = {
-  midi: number;
-  count: number;
-  ratio: number;
-};
+import { z } from "zod";
 
-export type PitchTrackPoint = {
-  timeMs: number;
-  midi: number | null;
-};
+export const pitchHistogramBinSchema = z.object({
+  midi: z.number(),
+  count: z.number(),
+  ratio: z.number(),
+});
 
-export type VocalProfileDescriptors = Record<string, unknown> & {
-  pitchHistogram?: PitchHistogramBin[];
-  pitchTrack?: PitchTrackPoint[];
-  pitchTrackMaxPoints?: number;
-};
+export type PitchHistogramBin = z.infer<typeof pitchHistogramBinSchema>;
+
+export const pitchTrackPointSchema = z.object({
+  timeMs: z.number(),
+  midi: z.number().nullable(),
+});
+
+export type PitchTrackPoint = z.infer<typeof pitchTrackPointSchema>;
+
+export const vocalProfileDescriptorsSchema = z
+  .object({
+    pitchHistogram: z.array(pitchHistogramBinSchema).optional(),
+    pitchTrack: z.array(pitchTrackPointSchema).optional(),
+    pitchTrackMaxPoints: z.number().optional(),
+  })
+  .catchall(z.unknown());
+
+export type VocalProfileDescriptors = z.infer<typeof vocalProfileDescriptorsSchema>;
 
 export type AnalyzerSynthesisReference = {
   mimeType: string;
@@ -58,52 +68,83 @@ export type AnalyzerProfile = Omit<AnalyzerProfileData, "synthesisReference"> & 
   synthesisReference?: (AnalyzerSynthesisReference & { storagePath: string }) | null;
 };
 
-export type VocalProfileResponse = {
-  id: string;
-  sourceType: "USER";
-  minMidi: number;
-  maxMidi: number;
-  p10Midi: number;
-  medianMidi: number;
-  p90Midi: number;
-  tessituraLowMidi: number;
-  tessituraHighMidi: number;
-  voicedRatio: number;
-  pitchStability: number;
-  clippingRatio: number;
-  rmsDb: number;
-  analyzer: string;
-  analyzerVersion: string;
-  descriptors: VocalProfileDescriptors | null;
-  createdAt: string;
-  recording: {
-    id: string;
-    mimeType: string;
-    sizeBytes: number | null;
-    durationMs: number | null;
-    sampleRate: number | null;
-    expiresAt: string | null;
-    createdAt: string;
-  };
-};
+export const vocalProfileResponseSchema = z.object({
+  id: z.uuid(),
+  sourceType: z.literal("USER"),
+  minMidi: z.number(),
+  maxMidi: z.number(),
+  p10Midi: z.number(),
+  medianMidi: z.number(),
+  p90Midi: z.number(),
+  tessituraLowMidi: z.number(),
+  tessituraHighMidi: z.number(),
+  voicedRatio: z.number(),
+  pitchStability: z.number(),
+  clippingRatio: z.number(),
+  rmsDb: z.number(),
+  analyzer: z.string(),
+  analyzerVersion: z.string(),
+  descriptors: vocalProfileDescriptorsSchema.nullable(),
+  createdAt: z.string(),
+  recording: z.object({
+    id: z.uuid(),
+    mimeType: z.string(),
+    sizeBytes: z.number().nullable(),
+    durationMs: z.number().nullable(),
+    sampleRate: z.number().nullable(),
+    expiresAt: z.string().nullable(),
+    createdAt: z.string(),
+  }),
+});
 
-export type VocalProfileError = {
-  reasonCode: string;
-  detail: string;
-  retryable: boolean;
-};
+export type VocalProfileResponse = z.infer<typeof vocalProfileResponseSchema>;
 
-export type VocalProfileAnalysisJobResponse = {
-  id: string;
-  status: "pending" | "processing" | "succeeded" | "failed";
-  vocalProfileId: string | null;
-  attempts: number;
-  maxAttempts: number;
-  error: VocalProfileError | null;
-  createdAt: string;
-  updatedAt: string;
-  profile?: VocalProfileResponse | null;
-};
+export const vocalProfileErrorSchema = z.object({
+  reasonCode: z.string(),
+  detail: z.string(),
+  retryable: z.boolean(),
+});
+
+export type VocalProfileError = z.infer<typeof vocalProfileErrorSchema>;
+
+export const vocalProfileAnalysisJobStatusSchema = z.enum(["pending", "processing", "succeeded", "failed"]);
+
+export const vocalProfileAnalysisJobResponseSchema = z.object({
+  id: z.uuid(),
+  status: vocalProfileAnalysisJobStatusSchema,
+  vocalProfileId: z.uuid().nullable(),
+  attempts: z.number().int().nonnegative(),
+  maxAttempts: z.number().int().positive(),
+  error: vocalProfileErrorSchema.nullable(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  profile: vocalProfileResponseSchema.nullable().optional(),
+});
+
+export type VocalProfileAnalysisJobResponse = z.infer<typeof vocalProfileAnalysisJobResponseSchema>;
+
+export const vocalProfileAnalysisJobListSchema = z.object({
+  jobs: z.array(vocalProfileAnalysisJobResponseSchema),
+});
+
+export type VocalProfileAnalysisJobList = z.infer<typeof vocalProfileAnalysisJobListSchema>;
+
+export const vocalProfileHealthSchema = z.object({
+  status: z.enum(["ok", "unavailable"]),
+  analyzer: z.enum(["ok", "unavailable"]),
+  analyzerBackend: z.string().nullable(),
+  database: z.enum(["ok", "unavailable"]),
+});
+
+export type VocalProfileHealth = z.infer<typeof vocalProfileHealthSchema>;
+
+export const vocalProfileDeleteResponseSchema = z.object({
+  status: z.literal("deleted"),
+  id: z.uuid(),
+  mediaCleanupPending: z.boolean(),
+});
+
+export type VocalProfileDeleteResponse = z.infer<typeof vocalProfileDeleteResponseSchema>;
 
 export const SMART_REFERENCE_VERSION = "smart-reference-v1" as const;
 export const SMART_REFERENCE_MID_VERSION = "smart-reference-mid-v1" as const;

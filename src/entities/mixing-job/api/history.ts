@@ -1,6 +1,7 @@
 import "server-only";
 
 import { prisma } from "@/shared/db/index.server";
+import type { MixingHistoryPayload, MixingHistoryRow, PublicMixingJobStatus } from "../model/contract";
 
 const historySelect = {
   id: true,
@@ -17,12 +18,10 @@ const historySelect = {
   resultAsset: { select: { id: true, status: true } },
 } as const;
 
-export type MixingHistoryRow = Awaited<ReturnType<typeof getMixingHistory>>["jobs"][number];
-
-function serializeRow(row: Awaited<ReturnType<typeof findRows>>[number]) {
+function serializeRow(row: Awaited<ReturnType<typeof findRows>>[number]): MixingHistoryRow {
   return {
     id: row.id,
-    status: row.status.toLowerCase(),
+    status: row.status.toLowerCase() as PublicMixingJobStatus,
     ticketCost: row.ticketCost,
     error:
       row.status === "FAILED" && row.errorCode
@@ -50,7 +49,7 @@ async function findRows(userId: string, skip: number, take: number) {
   });
 }
 
-export async function getMixingHistory(userId: string, page = 1, pageSize = 20) {
+export async function getMixingHistory(userId: string, page = 1, pageSize = 20): Promise<MixingHistoryPayload> {
   const normalizedPage = Math.max(1, Math.trunc(page));
   const normalizedPageSize = Math.min(100, Math.max(1, Math.trunc(pageSize)));
   const [total, rows] = await Promise.all([

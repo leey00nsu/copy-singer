@@ -1,8 +1,7 @@
 import { RecommendationError } from "@/entities/recommendation";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
+import { createRecommendationRequestSchema } from "@/features/create-recommendation";
 import { createRecommendationRun } from "@/features/create-recommendation/index.server";
-
-const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 function errorResponse(error: unknown) {
   if (error instanceof RecommendationError) {
@@ -35,17 +34,16 @@ export async function POST(request: Request) {
   } catch {
     return errorResponse(new RecommendationError("INVALID_REQUEST", "A JSON body is required.", { status: 400 }));
   }
-  const userVocalProfileId =
-    body && typeof body === "object" && "userVocalProfileId" in body
-      ? (body as { userVocalProfileId?: unknown }).userVocalProfileId
-      : undefined;
-  if (typeof userVocalProfileId !== "string" || !UUID_PATTERN.test(userVocalProfileId)) {
+  const parsed = createRecommendationRequestSchema.safeParse(body);
+  if (!parsed.success) {
     return errorResponse(
       new RecommendationError("INVALID_REQUEST", "A valid userVocalProfileId is required.", { status: 400 }),
     );
   }
   try {
-    return Response.json(await createRecommendationRun(userVocalProfileId, session.user.id), { status: 201 });
+    return Response.json(await createRecommendationRun(parsed.data.userVocalProfileId, session.user.id), {
+      status: 201,
+    });
   } catch (error) {
     return errorResponse(error);
   }

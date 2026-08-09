@@ -5,6 +5,7 @@ import {
   getRecommendationRun,
   reconcileRecommendationSyntheses,
 } from "@/features/create-recommendation/index.server";
+import { resourceIdSchema } from "@/shared/api";
 
 function errorResponse(error: unknown) {
   if (error instanceof RecommendationError) {
@@ -23,7 +24,11 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
   try {
-    const id = (await context.params).id;
+    const parsedId = resourceIdSchema.safeParse((await context.params).id);
+    if (!parsedId.success) {
+      throw new RecommendationError("RECOMMENDATION_NOT_FOUND", "Recommendation was not found.", { status: 404 });
+    }
+    const id = parsedId.data;
     await getRecommendationRun(id, session.user.id);
     await reconcileRecommendationSyntheses(id);
     return Response.json(await getRecommendationRun(id, session.user.id));
@@ -36,7 +41,11 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
   try {
-    return Response.json(await deleteRecommendationRun((await context.params).id, session.user.id));
+    const parsedId = resourceIdSchema.safeParse((await context.params).id);
+    if (!parsedId.success) {
+      throw new RecommendationError("RECOMMENDATION_NOT_FOUND", "Recommendation was not found.", { status: 404 });
+    }
+    return Response.json(await deleteRecommendationRun(parsedId.data, session.user.id));
   } catch (error) {
     return errorResponse(error);
   }

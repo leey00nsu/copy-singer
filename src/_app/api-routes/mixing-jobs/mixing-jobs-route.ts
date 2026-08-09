@@ -2,23 +2,22 @@ import { MixingError, serializeMixingJob } from "@/entities/mixing-job";
 import { getMixingHistory } from "@/entities/mixing-job/index.server";
 import { InsufficientTicketsError } from "@/entities/ticket/index.server";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
+import { createMixingRequestSchema } from "@/features/create-mixing";
 import { enqueueMixingJob } from "@/features/create-mixing/index.server";
+import { pageSearchParamSchema } from "@/shared/api";
 
 export async function GET(request: Request) {
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
-  const requestedPage = Number(new URL(request.url).searchParams.get("page") ?? "1");
-  return Response.json(await getMixingHistory(session.user.id, Number.isFinite(requestedPage) ? requestedPage : 1));
+  const requestedPage = pageSearchParamSchema.parse(new URL(request.url).searchParams.get("page") ?? "1");
+  return Response.json(await getMixingHistory(session.user.id, requestedPage));
 }
 
 export async function POST(request: Request) {
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
-  const body = (await request.json().catch(() => null)) as {
-    recommendationItemId?: unknown;
-    idempotencyKey?: unknown;
-  } | null;
-  if (typeof body?.recommendationItemId !== "string" || typeof body.idempotencyKey !== "string") {
+  const body = createMixingRequestSchema.safeParse(await request.json().catch(() => null));
+  if (!body.success) {
     return Response.json(
       { error: { code: "INVALID_REQUEST", message: "추천 곡과 요청 키가 필요합니다." } },
       { status: 400 },
@@ -27,8 +26,8 @@ export async function POST(request: Request) {
   try {
     const job = await enqueueMixingJob({
       userId: session.user.id,
-      recommendationItemId: body.recommendationItemId,
-      idempotencyKey: body.idempotencyKey,
+      recommendationItemId: body.data.recommendationItemId,
+      idempotencyKey: body.data.idempotencyKey,
     });
     return Response.json(serializeMixingJob(job), { status: 202 });
   } catch (error) {
