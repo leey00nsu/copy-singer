@@ -67,14 +67,14 @@ canonical docs surface 밖의 unmanaged docs 산출물이 있더라도, 실제�
 - **Context**: F015의 Node query test는 typed fixture와 handler factory를 가지지만 Storybook browser worker에서 실제 Query UI 상태를 재현하지 않는다. polling cursor와 Query cache가 story 간 공유되면 실행 순서에 따라 결과가 달라질 수 있다.
 - **Constraints**: production Zod schema/type과 fixture를 복제하지 않고 `msw/node` import는 browser graph에서 제외해야 한다. 실제 API·DB 없이 success, 오류, active→terminal과 mutation 사용자 피드백을 결정적으로 검증해야 한다.
 - **Options**: story마다 inline 응답 작성, 전역 고정 handler 사용, runtime-neutral handler factory를 story `beforeEach`에서 새로 생성하는 방식을 검토한다.
-- **Decision**: 구현 후 확정 예정
-- **Rationale**: 구현 후 확정 예정
+- **Decision**: recommendation fixture와 GET/POST handler를 F015의 runtime-neutral `tests/msw/fixtures.ts`, `handlers.ts`에 typed factory로 추가하고, 각 Query story의 `beforeEach({ msw })`에서 새 instance를 등록한다. 실제 `RecommendationResults`를 story별 QueryClient로 렌더해 loading, success, 403, processing→succeeded, mixing mutation success와 permission error를 검증한다. `tests/msw/server.ts`는 Storybook에서 import하지 않는다.
+- **Rationale**: production response type·Zod parser·Query option과 사용자 UI를 그대로 통과하므로 inline mock이나 복제 display component보다 계약 drift를 빨리 찾는다. factory 내부 cursor와 story key별 QueryClient를 함께 사용하면 test 실행 순서와 이전 cache에 독립적이며 Node와 browser 양쪽에서 같은 fixture가 동작한다.
 - **Trace**:
   - **DOING 시작 시점**: `tests/msw/fixtures.ts`와 `handlers.ts`만 browser에서 재사용하고 `server.ts`는 Node 전용으로 유지한다. 각 story의 `beforeEach({ msw })`에서 handler/sequence factory를 생성하며 preview의 key 기반 QueryClient가 story별 cache를 소유한다.
-  - **DONE 전 확정 시점**: 구현 후 갱신 예정
+  - **DONE 전 확정 시점**: `RecommendationResults`에 6개 Query/mutation story를 추가하고 production endpoint와 Zod parsing을 통과시켰다. loading은 pending handler, 403은 실제 `ApiError` UI, polling은 5초 production interval 뒤 terminal audio 상태, mutation은 cache patch와 production Sonner toast를 각각 검증한다. sequence factory를 새로 만들면 cursor가 processing부터 다시 시작한다는 Node MSW test도 추가했다.
   - **머지 후 확인**: 로컬 통합 후 갱신 예정
 - **Evidence**:
-  - **Commit**: task commit 후 갱신 예정
+  - **Commit**: docs `b857bd6`, project `ec2b034`
   - **PR**: 로컬 workflow (원격 PR 없음)
-  - **Test/Log**: 구현 후 갱신 예정
-- **Consequences**: 구현 후 갱신 예정
+  - **Test/Log**: `pnpm run test:query` PASS (Query/API/MSW 20 + streaming 1), Storybook browser/a11y PASS (16 files, 34 stories), static build PASS (3,268 modules), lint/typecheck/Steiger/production boundary PASS (2026-08-09)
+- **Consequences**: Query 화면과 Sonner consumer를 실제 browser에서 backend 없이 반복 검증할 수 있다. fixture는 test graph에만 있고 MSW Node adapter·mock worker·private data는 production graph에 포함되지 않는다. production polling 5초를 그대로 쓰므로 해당 terminal story 한 건은 약 5초가 걸린다.

@@ -99,18 +99,18 @@
     - [x] LongAudioDialog 또는 Recorder의 대표 상태와 confirm/close interaction story 작성
     - [x] server-only import inventory와 domain story browser/a11y test 통과
 
-- [DOING][NON-PRD] T-F016-04 MSW 기반 Query success·error·polling story 연결
+- [DONE][NON-PRD] T-F016-04 MSW 기반 Query success·error·polling story 연결
   - Date: 2026-08-09
   - Acceptance:
     - F015 Zod type과 MSW fixture/handler를 Node 및 Storybook browser runtime에서 재사용한다.
     - 대표 Query UI가 success, 권한/계약 오류와 active→terminal 전이를 backend 없이 결정적으로 재현한다.
     - story 전환과 browser test 사이에 Query cache, handler와 sequence cursor가 누출되지 않는다.
   - Checklist:
-    - [ ] `tests/msw` fixture/handler와 Node server import를 runtime-neutral/server-only 경계로 재확인
-    - [ ] Storybook preview MSW 초기화 및 unhandled request 정책 구성
-    - [ ] 대표 Query UI의 active/success/error story와 endpoint handler override 작성
-    - [ ] polling sequence factory, terminal stop 및 mutation/cache UI interaction 검증
-    - [ ] `pnpm run test:query`, Storybook browser test와 static build 통과
+    - [x] `tests/msw` fixture/handler와 Node server import를 runtime-neutral/server-only 경계로 재확인
+    - [x] Storybook preview MSW 초기화 및 unhandled request 정책 구성
+    - [x] 대표 Query UI의 active/success/error story와 endpoint handler override 작성
+    - [x] polling sequence factory, terminal stop 및 mutation/cache UI interaction 검증
+    - [x] `pnpm run test:query`, Storybook browser test와 static build 통과
 
 - [TODO][NON-PRD] T-F016-05 접근성·browser test와 production 회귀 최종화
   - Date: 2026-08-09
@@ -145,9 +145,9 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `pnpm run storybook --ci --smoke-test` | `2026-08-09` | PASS (Storybook 10.5.7 smoke) |
-| `pnpm run build-storybook` | `2026-08-09` | PASS (3,246 modules, worker 포함) |
-| `pnpm run test:storybook --run` | `2026-08-09` | PASS (15 files, 28 stories) |
-| `pnpm run test:query` | `-` | 미실행 |
+| `pnpm run build-storybook` | `2026-08-09` | PASS (3,268 modules, worker 포함) |
+| `pnpm run test:storybook --run` | `2026-08-09` | PASS (16 files, 34 stories) |
+| `pnpm run test:query` | `2026-08-09` | PASS (Query/API/MSW 20 + streaming 1 tests) |
 | `pnpm run check` | `2026-08-09` | FAIL (기존 key-fit test fixture export Biome 2건, T-F016-05에서 정리) |
 | `pnpm run build` | `-` | 미실행 |
 | `pnpm test` | `-` | 미실행 |
