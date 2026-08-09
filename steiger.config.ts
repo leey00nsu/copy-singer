@@ -31,6 +31,7 @@ export default defineConfig([
       "./src/features/create-mixing/**",
       "./src/features/create-recommendation/**",
       "./src/features/development-conversion/**",
+      "./src/features/inspect-admin-operations/**",
       "./src/features/manage-tickets/**",
     ],
     rules: {

@@ -1,5 +1,5 @@
-import { listAdminMixingJobs } from "@/_pages/admin/api/index.server";
 import { requireAdminApi } from "@/features/authentication/index.server";
+import { listAdminMixingJobs } from "@/features/inspect-admin-operations/index.server";
 
 export async function GET(request: Request) {
   const access = await requireAdminApi(request);

@@ -18,8 +18,8 @@ test("admin allowlist and ticket adjustments preserve actor, reason, and nonnega
 
   const { prisma } = await import("../src/shared/db/index.server");
   const { isAdminEmail } = await import("../src/features/authentication/index.server");
+  const { listAdminUsers } = await import("../src/features/inspect-admin-operations/index.server");
   const { adjustUserTickets } = await import("../src/features/manage-tickets/index.server");
-  const { listAdminUsers } = await import("../src/_pages/admin/api/index.server");
   const { InsufficientTicketsError } = await import("../src/entities/ticket/index.server");
   try {
     await prisma.user.createMany({

@@ -1,5 +1,5 @@
-import { listAdminUsers } from "@/_pages/admin/api/index.server";
 import { requireAdminApi } from "@/features/authentication/index.server";
+import { listAdminUsers } from "@/features/inspect-admin-operations/index.server";
 
 export async function GET(request: Request) {
   const access = await requireAdminApi(request);
