@@ -33,10 +33,12 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **T-F017-02 완료 시점**: 설치된 Next.js 16.3 문서가 `use client` 아래 전체 import graph가 client bundle에 포함되고 `server-only`가 environment poisoning을 build time에 막는다고 명시함을 확인했다. 세 model entry를 추가하고 Root Layout의 UI/server import를 분리한 뒤 Query/API/auth 회귀를 통과했다.
   - **T-F017-03 시작 시점**: Admin Page와 `_app` API route가 함께 쓰는 조회·집계 use case를 `inspect-admin-operations` Feature의 `index.server.ts`로 이동한다. query/return 값은 바꾸지 않고 Page가 다른 App consumer에게 내부 API를 제공하는 역참조만 제거한다.
   - **T-F017-03 완료 시점**: 이동 전후 `admin-service.ts` diff가 없음을 확인하고 Page, 세 route, integration test를 새 Feature server API로 전환했다. 기존 Admin UI/DB 회귀와 Steiger를 통과했으며 `_pages/admin/api` 참조는 0건이다.
+  - **T-F017-04 시작 시점**: TypeScript AST와 실제 source graph를 사용해 cross-slice segment import, `use client`에서 server marker까지의 transitive 경로, 루트 App adapter top-level을 검사한다. 타입 전용 import는 client runtime graph에서 제외하고 위반 fixture와 저장소 전체를 같은 helper로 검증한다.
+  - **T-F017-04 완료 시점**: import/re-export/dynamic import를 해석하는 AST 검사와 세 규칙의 정상·위반 fixture, 실제 `app`·`src`·`scripts` compliance test를 추가했다. 신규 test를 `check:architecture`와 전체 `test`에 연결하고 전체 정적 check를 통과했다.
   - **DONE 전 확정 시점**: 실제 저장소 Layout과 공개 API 종류를 inventory하고 README에 adapter/layer/entry point 규칙 및 Steiger 0.6.0 narrow override 근거를 반영했다.
   - **머지 후 확인**: 실제 결과/영향
 - **Evidence**:
-  - **Commit**: `c411825` (Feature 문서), `4ab5709` (T-F017-01), `b34af7e` (T-F017-02), T-F017-03 task checkpoint commit
+  - **Commit**: `c411825` (Feature 문서), `4ab5709` (T-F017-01), `b34af7e` (T-F017-02), `0c55216` (T-F017-03), T-F017-04 task checkpoint commit
   - **PR**: PR 링크
-  - **Test/Log**: `git diff --check`, targeted Biome/ESLint, `pnpm run typecheck`, `pnpm run check:architecture`, `pnpm run test:query` (21), `pnpm run test:auth:db` (3), `pnpm run test:admin` (2), Admin service move diff PASS
+  - **Test/Log**: `git diff --check`, targeted Biome/ESLint, `pnpm run typecheck`, `pnpm run test:query` (21), `pnpm run test:auth:db` (3), `pnpm run test:admin` (2), Admin service move diff, `pnpm run test:architecture-boundaries` (4), `pnpm run check` PASS
 - **Consequences**: 개발자는 루트 `app/`과 FSD App/Pages 레이어를 구분할 수 있다. architecture package를 갱신할 때 override와 보완 검사를 함께 재평가해야 한다.

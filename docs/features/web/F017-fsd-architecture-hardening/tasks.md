@@ -100,19 +100,19 @@
     - [x] Steiger insignificant-slice narrow exception에 새 실제 consumer 근거 반영
     - [x] Admin test, typecheck와 Steiger 검사 통과
 
-- [TODO][NON-PRD] T-F017-04 FSD·server/client·App adapter 경계 검사 추가
+- [DONE][NON-PRD] T-F017-04 FSD·server/client·App adapter 경계 검사 추가
   - Date: 2026-08-09
   - Acceptance:
     - 자동 검사가 cross-slice segment deep import, Client Component의 server module graph 도달, 두꺼운 루트 App adapter를 탐지한다.
     - 정상 public API, client-safe graph와 Next.js route config는 허용하며 위반 메시지가 원인 경로를 식별한다.
     - 검사는 `check:architecture`와 전체 `test`에서 실행되고 새 dependency나 CI workflow를 추가하지 않는다.
   - Checklist:
-    - [ ] TypeScript AST 기반 source/import graph helper 구현
-    - [ ] public API, client-to-server, root App adapter 규칙 구현
-    - [ ] 정상·직접 위반·transitive 위반 fixture test 작성
-    - [ ] 실제 app/src/scripts tree compliance test 작성
-    - [ ] `test:architecture-boundaries`, `check:architecture`, `test` script 연결
-    - [ ] architecture test, Biome, ESLint, TypeScript와 Steiger 통과
+    - [x] TypeScript AST 기반 source/import graph helper 구현
+    - [x] public API, client-to-server, root App adapter 규칙 구현
+    - [x] 정상·직접 위반·transitive 위반 fixture test 작성
+    - [x] 실제 app/src/scripts tree compliance test 작성
+    - [x] `test:architecture-boundaries`, `check:architecture`, `test` script 연결
+    - [x] architecture test, Biome, ESLint, TypeScript와 Steiger 통과
 
 - [TODO][NON-PRD] T-F017-05 전체 회귀와 Feature 문서 최종화
   - Date: 2026-08-09
