@@ -1,5 +1,6 @@
 "use client";
 
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowRight,
   CircleAlert,
@@ -12,10 +13,21 @@ import {
   UserRoundSearch,
 } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import type { RecommendationRunResponse } from "@/entities/recommendation";
-import { type RecommendationHandoff, selectRecommendationHandoff } from "@/entities/recommendation";
+import {
+  type RecommendationHandoff,
+  recommendationDetailQueryOptions,
+  selectRecommendationHandoff,
+} from "@/entities/recommendation";
+import {
+  conversionDetailQueryOptions,
+  conversionHealthQueryOptions,
+  conversionKeys,
+  deleteConversionMutationOptions,
+  isActiveConversion,
+  submitConversionMutationOptions,
+} from "@/features/development-conversion";
 import { cn } from "@/shared/lib/cn";
 import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
 import { Badge } from "@/shared/ui/badge";
@@ -28,100 +40,63 @@ import { AudioDropzone, MAX_AUDIO_UPLOAD_BYTES } from "./audio-dropzone";
 import { RecommendationHandoffBanner } from "./recommendation-handoff";
 import { Waveform } from "./waveform";
 
-type JobState = {
-  id: string;
-  status: "queued" | "processing" | "succeeded" | "failed";
-  error?: string | null;
-  result_url?: string | null;
-};
-
-async function readError(response: Response) {
-  const text = await response.text();
-  try {
-    const body = JSON.parse(text) as { detail?: string; error?: string };
-    return body.detail ?? body.error ?? `Request failed (${response.status})`;
-  } catch {
-    return text.trim() || `Request failed (${response.status})`;
-  }
-}
-
-export function SingerWorkbench() {
+export function SingerWorkbench({
+  handoff,
+  handoffInvalid = false,
+}: {
+  handoff: { runId: string; itemId: string } | null;
+  handoffInvalid?: boolean;
+}) {
+  const queryClient = useQueryClient();
   const [referenceFile, setReferenceFile] = useState<File | null>(null);
   const [targetFile, setTargetFile] = useState<File | null>(null);
   const [settings, setSettings] = useState<ConversionSettings>(DEFAULT_SETTINGS);
-  const [job, setJob] = useState<JobState | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [apiStatus, setApiStatus] = useState<"checking" | "online" | "offline">("checking");
-  const [recommendation, setRecommendation] = useState<RecommendationHandoff | null>(null);
-  const [handoffError, setHandoffError] = useState(false);
-  const busy = submitting || job?.status === "queued" || job?.status === "processing";
+  const [jobId, setJobId] = useState<string | null>(null);
+  const healthQuery = useQuery(conversionHealthQueryOptions());
+  const handoffQuery = useQuery(recommendationDetailQueryOptions(handoff?.runId ?? null));
+  const jobQuery = useQuery(conversionDetailQueryOptions(jobId));
+  const submitMutation = useMutation({
+    ...submitConversionMutationOptions(),
+    onSuccess: (nextJob) => {
+      queryClient.setQueryData(conversionKeys.detail(nextJob.id), nextJob);
+      setJobId(nextJob.id);
+      toast.success("Conversion queued on the GPU.");
+    },
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : "Could not start conversion.");
+    },
+  });
+  const deleteMutation = useMutation(deleteConversionMutationOptions());
+  const job = jobQuery.data ?? null;
+  const recommendation: RecommendationHandoff | null =
+    handoff && handoffQuery.data ? selectRecommendationHandoff(handoffQuery.data, handoff.itemId) : null;
+  const handoffError =
+    handoffInvalid || handoffQuery.isError || (handoff !== null && handoffQuery.data !== undefined && !recommendation);
+  const apiStatus: "checking" | "online" | "offline" = healthQuery.isPending
+    ? "checking"
+    : healthQuery.data?.status === "ok"
+      ? "online"
+      : "offline";
+  const busy = submitMutation.isPending || isActiveConversion(job);
+  const terminalNoticeRef = useRef<string | null>(null);
+  const pollingErrorRef = useRef<string | null>(null);
 
   useEffect(() => {
-    let active = true;
-    void fetch("/api/health", { cache: "no-store" })
-      .then((response) => {
-        if (active) setApiStatus(response.ok ? "online" : "offline");
-      })
-      .catch(() => {
-        if (active) setApiStatus("offline");
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
+    if (!job || (job.status !== "succeeded" && job.status !== "failed")) return;
+    const noticeKey = `${job.id}:${job.status}`;
+    if (terminalNoticeRef.current === noticeKey) return;
+    terminalNoticeRef.current = noticeKey;
+    if (job.status === "succeeded") toast.success("Your converted vocal is ready.");
+    else toast.error(job.error ?? "Conversion failed.");
+  }, [job]);
 
   useEffect(() => {
-    const query = new URLSearchParams(window.location.search);
-    const runId = query.get("runId");
-    const itemId = query.get("itemId");
-    if (!runId && !itemId) return;
-    if (!runId || !itemId) {
-      window.queueMicrotask(() => setHandoffError(true));
-      return;
-    }
-    let active = true;
-    fetch(`/api/recommendations/${encodeURIComponent(runId)}`, {
-      cache: "no-store",
-    })
-      .then(async (response) => {
-        if (!active) return;
-        if (!response.ok) {
-          setHandoffError(true);
-          return;
-        }
-        const run = (await response.json()) as RecommendationRunResponse;
-        if (!active) return;
-        const selected = selectRecommendationHandoff(run, itemId);
-        if (!selected) setHandoffError(true);
-        else setRecommendation(selected);
-      })
-      .catch(() => {
-        if (active) setHandoffError(true);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  const refreshJob = useCallback(async (jobId: string) => {
-    const response = await fetch(`/api/conversions/${jobId}`, { cache: "no-store" });
-    if (!response.ok) throw new Error(await readError(response));
-    const next = (await response.json()) as JobState;
-    setJob(next);
-    if (next.status === "succeeded") toast.success("Your converted vocal is ready.");
-    if (next.status === "failed") toast.error(next.error ?? "Conversion failed.");
-  }, []);
-
-  useEffect(() => {
-    if (!job || !["queued", "processing"].includes(job.status)) return;
-    const timer = window.setInterval(() => {
-      void refreshJob(job.id).catch((error: Error) => {
-        window.clearInterval(timer);
-        toast.error(error.message);
-      });
-    }, 2500);
-    return () => window.clearInterval(timer);
-  }, [job, refreshJob]);
+    if (!jobId || !jobQuery.error) return;
+    const errorKey = `${jobId}:${jobQuery.error.message}`;
+    if (pollingErrorRef.current === errorKey) return;
+    pollingErrorRef.current = errorKey;
+    toast.error(jobQuery.error.message);
+  }, [jobId, jobQuery.error]);
 
   const submit = async () => {
     if (!referenceFile || !targetFile) {
@@ -149,25 +124,17 @@ export function SingerWorkbench() {
     data.append("cfg", String(settings.cfg));
     data.append("seed", String(settings.seed));
 
-    setSubmitting(true);
-    setJob(null);
-    try {
-      const response = await fetch("/api/conversions", { method: "POST", body: data });
-      if (!response.ok) throw new Error(await readError(response));
-      setJob((await response.json()) as JobState);
-      toast.success("Conversion queued on the GPU.");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Could not start conversion.");
-    } finally {
-      setSubmitting(false);
-    }
+    setJobId(null);
+    submitMutation.mutate(data);
   };
 
   const clearJob = async () => {
-    if (job) {
-      await fetch(`/api/conversions/${job.id}`, { method: "DELETE" }).catch(() => undefined);
+    const currentJobId = jobId;
+    if (currentJobId) {
+      await deleteMutation.mutateAsync(currentJobId).catch(() => undefined);
+      queryClient.removeQueries({ queryKey: conversionKeys.detail(currentJobId), exact: true });
     }
-    setJob(null);
+    setJobId(null);
   };
 
   return (
@@ -364,9 +331,13 @@ export function SingerWorkbench() {
               onClick={() => void submit()}
               size="lg"
             >
-              {submitting ? <LoaderCircle className="size-4 animate-spin" /> : <Sparkles className="size-4" />}
-              {submitting ? "Uploading…" : "Convert singing voice"}
-              {!submitting ? <ArrowRight className="ml-auto size-4" /> : null}
+              {submitMutation.isPending ? (
+                <LoaderCircle className="size-4 animate-spin" />
+              ) : (
+                <Sparkles className="size-4" />
+              )}
+              {submitMutation.isPending ? "Uploading…" : "Convert singing voice"}
+              {!submitMutation.isPending ? <ArrowRight className="ml-auto size-4" /> : null}
             </Button>
             <p className="px-4 text-center text-[11px] leading-5 text-muted-foreground">
               Only use voices and music you have permission to process. Files are removed after 24 hours.

@@ -1,10 +1,11 @@
 "use client";
 
+import { useMutation } from "@tanstack/react-query";
 import { LoaderCircle, Ticket } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/shared/ui/button";
+import { adjustTicketsMutationOptions } from "../api/client";
 
 export function TicketAdjustmentForm({
   users,
@@ -12,28 +13,21 @@ export function TicketAdjustmentForm({
   users: Array<{ id: string; name: string; email: string; ticketBalance: number }>;
 }) {
   const router = useRouter();
-  const [pending, setPending] = useState(false);
+  const adjustmentMutation = useMutation(adjustTicketsMutationOptions());
 
   async function submit(formData: FormData) {
-    setPending(true);
-    const response = await fetch("/api/admin/ticket-adjustments", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userId: formData.get("userId"),
+    try {
+      const payload = await adjustmentMutation.mutateAsync({
+        userId: String(formData.get("userId") ?? ""),
         amount: Number(formData.get("amount")),
-        reason: formData.get("reason"),
+        reason: String(formData.get("reason") ?? ""),
         idempotencyKey: crypto.randomUUID(),
-      }),
-    });
-    const payload = (await response.json()) as { balanceAfter?: number; error?: { message?: string } };
-    if (!response.ok) {
-      toast.error(payload.error?.message ?? "티켓을 조정하지 못했습니다.");
-    } else {
+      });
       toast.success(`티켓을 조정했습니다. 새 잔액 ${payload.balanceAfter}개`);
       router.refresh();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "티켓을 조정하지 못했습니다.");
     }
-    setPending(false);
   }
 
   return (
@@ -41,7 +35,7 @@ export function TicketAdjustmentForm({
       action={submit}
       className="grid gap-4 rounded-2xl border bg-background p-5 lg:grid-cols-[minmax(220px,1fr)_140px_minmax(260px,1.4fr)_auto] lg:items-end"
     >
-      <TicketAdjustmentFields users={users} pending={pending} />
+      <TicketAdjustmentFields users={users} pending={adjustmentMutation.isPending} />
     </form>
   );
 }
