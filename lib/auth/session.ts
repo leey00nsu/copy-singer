@@ -9,8 +9,9 @@ import { ensureSignupGrant } from "@/lib/tickets/service";
 export type AuthSession = typeof auth.$Infer.Session;
 
 export async function getRequestSession(request?: Request) {
-  const session = await getDevelopmentAuthBypassSession()
-    ?? await auth.api.getSession({ headers: request?.headers ?? (await headers()) });
+  const session =
+    (await getDevelopmentAuthBypassSession()) ??
+    (await auth.api.getSession({ headers: request?.headers ?? (await headers()) }));
   if (session) await ensureSignupGrant(session.user.id);
   return session;
 }

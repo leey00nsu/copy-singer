@@ -69,7 +69,9 @@ function analyzedRecording(recordingId: string) {
 
 async function runPersistenceFailureCase(mode: FailureMode) {
   const { prisma } = await import("../lib/db/prisma");
-  const { persistAnalyzedVocalProfile, VocalProfilePersistenceError } = await import("../lib/vocal-profile/persistence");
+  const { persistAnalyzedVocalProfile, VocalProfilePersistenceError } = await import(
+    "../lib/vocal-profile/persistence"
+  );
   const userId = `modal-persist-${mode}-${crypto.randomUUID()}`;
   const recordingId = crypto.randomUUID();
   const previousFetch = globalThis.fetch;
@@ -144,8 +146,8 @@ async function runPersistenceFailureCase(mode: FailureMode) {
     if (mode === "source-storage") {
       await assert.rejects(
         operation,
-        (error: unknown) => error instanceof VocalProfilePersistenceError
-          && error.reasonCode === "STORAGE_UPLOAD_FAILED",
+        (error: unknown) =>
+          error instanceof VocalProfilePersistenceError && error.reasonCode === "STORAGE_UPLOAD_FAILED",
       );
       assert.equal(await prisma.vocalProfile.count({ where: { userId } }), 0);
       assert.equal(await prisma.mediaAsset.count({ where: { userId } }), 0);
@@ -165,8 +167,7 @@ async function runPersistenceFailureCase(mode: FailureMode) {
     } else {
       await assert.rejects(
         operation,
-        (error: unknown) => error instanceof VocalProfilePersistenceError
-          && error.reasonCode === "PROFILE_SAVE_FAILED",
+        (error: unknown) => error instanceof VocalProfilePersistenceError && error.reasonCode === "PROFILE_SAVE_FAILED",
       );
       assert.equal(await prisma.vocalProfile.count({ where: { userId } }), 0);
       assert.equal(await prisma.mediaAsset.count({ where: { userId } }), 0);

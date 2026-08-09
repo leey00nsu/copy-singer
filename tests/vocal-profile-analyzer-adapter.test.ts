@@ -1,11 +1,10 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import test from "node:test";
-
+import { analyzeVocalProfile, vocalProfileAnalyzerBackend } from "../lib/vocal-profile/analyzer";
 import { analyzeWithLocalAdapter } from "../lib/vocal-profile/analyzer/local-adapter";
 import { analyzeWithModalAdapter } from "../lib/vocal-profile/analyzer/modal-adapter";
 import { AnalyzerClientError } from "../lib/vocal-profile/analyzer/types";
-import { analyzeVocalProfile, vocalProfileAnalyzerBackend } from "../lib/vocal-profile/analyzer";
 
 function requestBody(bytes = [9, 8, 7]) {
   return new Blob([Uint8Array.from(bytes)]).stream() as ReadableStream<Uint8Array>;
@@ -192,9 +191,10 @@ test("modal adapter maps API-key authentication failure without falling back", a
         body: requestBody(),
         fetchImpl,
       }),
-      (error: unknown) => error instanceof AnalyzerClientError
-        && error.reasonCode === "ANALYZER_AUTH_FAILED"
-        && error.retryable === false,
+      (error: unknown) =>
+        error instanceof AnalyzerClientError &&
+        error.reasonCode === "ANALYZER_AUTH_FAILED" &&
+        error.retryable === false,
     );
   } finally {
     if (previous.url === undefined) delete process.env.VOCAL_PROFILE_MODAL_URL;
@@ -221,10 +221,11 @@ test("modal adapter preserves expected analysis rejection without retrying it", 
         body: requestBody(),
         fetchImpl,
       }),
-      (error: unknown) => error instanceof AnalyzerClientError
-        && error.reasonCode === "TOO_SILENT"
-        && error.retryable === false
-        && error.status === 422,
+      (error: unknown) =>
+        error instanceof AnalyzerClientError &&
+        error.reasonCode === "TOO_SILENT" &&
+        error.retryable === false &&
+        error.status === 422,
     );
     assert.equal(calls, 1);
   });
@@ -232,7 +233,10 @@ test("modal adapter preserves expected analysis rejection without retrying it", 
 
 test("modal adapter marks 429 and 5xx failures as retryable infrastructure errors", async () => {
   await withModalEnvironment(async () => {
-    for (const [status, reasonCode] of [[429, "ANALYZER_BUSY"], [500, "ANALYZER_UNAVAILABLE"]] as const) {
+    for (const [status, reasonCode] of [
+      [429, "ANALYZER_BUSY"],
+      [500, "ANALYZER_UNAVAILABLE"],
+    ] as const) {
       let calls = 0;
       const fetchImpl = (async () => {
         calls += 1;
@@ -245,9 +249,8 @@ test("modal adapter marks 429 and 5xx failures as retryable infrastructure error
           body: requestBody(),
           fetchImpl,
         }),
-        (error: unknown) => error instanceof AnalyzerClientError
-          && error.reasonCode === reasonCode
-          && error.retryable === true,
+        (error: unknown) =>
+          error instanceof AnalyzerClientError && error.reasonCode === reasonCode && error.retryable === true,
       );
       assert.equal(calls, 1);
     }
@@ -272,9 +275,8 @@ test("modal adapter maps network and timeout failures without retrying inside th
           body: requestBody(),
           fetchImpl,
         }),
-        (error: unknown) => error instanceof AnalyzerClientError
-          && error.reasonCode === reasonCode
-          && error.retryable === true,
+        (error: unknown) =>
+          error instanceof AnalyzerClientError && error.reasonCode === reasonCode && error.retryable === true,
       );
       assert.equal(calls, 1);
     }
@@ -285,19 +287,20 @@ test("incompatible Modal capability is rejected before persistence can start", a
   await withModalEnvironment(async () => {
     process.env.VOCAL_PROFILE_ANALYZER_BACKEND = "modal";
     const recordingId = crypto.randomUUID();
-    const fetchImpl = (async () => Response.json({
-      transportVersion: "modal-analysis-envelope-v1",
-      profile: {
-        ...profile(recordingId),
-        descriptors: {},
-        synthesisReference: null,
-      },
-      artifacts: {
-        source: encodedArtifact([1, 2, 3], "source.wav"),
-        synthesisReference: null,
-      },
-      cleanupConfirmed: true,
-    })) as typeof fetch;
+    const fetchImpl = (async () =>
+      Response.json({
+        transportVersion: "modal-analysis-envelope-v1",
+        profile: {
+          ...profile(recordingId),
+          descriptors: {},
+          synthesisReference: null,
+        },
+        artifacts: {
+          source: encodedArtifact([1, 2, 3], "source.wav"),
+          synthesisReference: null,
+        },
+        cleanupConfirmed: true,
+      })) as typeof fetch;
 
     await assert.rejects(
       analyzeVocalProfile({
@@ -306,9 +309,10 @@ test("incompatible Modal capability is rejected before persistence can start", a
         body: requestBody(),
         fetchImpl,
       }),
-      (error: unknown) => error instanceof AnalyzerClientError
-        && error.reasonCode === "ANALYZER_UPDATE_REQUIRED"
-        && error.retryable === false,
+      (error: unknown) =>
+        error instanceof AnalyzerClientError &&
+        error.reasonCode === "ANALYZER_UPDATE_REQUIRED" &&
+        error.retryable === false,
     );
   });
 });
@@ -322,8 +326,7 @@ test("production analyzer backend must be explicit", () => {
   try {
     assert.throws(
       () => vocalProfileAnalyzerBackend(),
-      (error: unknown) => error instanceof AnalyzerClientError
-        && error.reasonCode === "ANALYZER_NOT_CONFIGURED",
+      (error: unknown) => error instanceof AnalyzerClientError && error.reasonCode === "ANALYZER_NOT_CONFIGURED",
     );
   } finally {
     if (previousBackend === undefined) delete mutableEnv.VOCAL_PROFILE_ANALYZER_BACKEND;

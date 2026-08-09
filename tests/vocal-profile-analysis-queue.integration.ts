@@ -89,12 +89,7 @@ async function createSourceAsset(userId: string, source: Uint8Array) {
   });
 }
 
-async function insertJob(input: {
-  userId: string;
-  sourceAssetId: string;
-  recordingId?: string;
-  maxAttempts?: number;
-}) {
+async function insertJob(input: { userId: string; sourceAssetId: string; recordingId?: string; maxAttempts?: number }) {
   const { prisma } = await import("../lib/db/prisma");
   const id = crypto.randomUUID();
   const recordingId = input.recordingId ?? crypto.randomUUID();
@@ -125,7 +120,8 @@ async function cleanupUser(userId: string) {
   await prisma.$executeRaw`DELETE FROM "VocalProfileAnalysisJob" WHERE "userId" = ${userId}`;
   const profiles = await prisma.vocalProfile.findMany({ where: { userId }, select: { recordingId: true } });
   await prisma.vocalProfile.deleteMany({ where: { userId } });
-  if (profiles.length) await prisma.recording.deleteMany({ where: { id: { in: profiles.map((profile) => profile.recordingId) } } });
+  if (profiles.length)
+    await prisma.recording.deleteMany({ where: { id: { in: profiles.map((profile) => profile.recordingId) } } });
   await prisma.mediaCleanupJob.deleteMany({ where: { mediaAsset: { userId } } });
   await prisma.mediaAsset.deleteMany({ where: { userId } });
   await prisma.user.deleteMany({ where: { id: userId } });
@@ -149,37 +145,49 @@ test("enqueue is idempotent and job reads are owner-scoped", async (context) => 
     const url = String(input);
     if (url.endsWith("/files/presign")) {
       presigns += 1;
-      return Response.json({ presignedUrl: "https://objects.example/upload", objectName: "project/source.wav", fileId: `file-${userId}` });
+      return Response.json({
+        presignedUrl: "https://objects.example/upload",
+        objectName: "project/source.wav",
+        fileId: `file-${userId}`,
+      });
     }
     if (url === "https://objects.example/upload") return new Response(null, { status: 200 });
     if (url.endsWith("/files/confirm")) {
-      return Response.json({ file: { id: `file-${userId}`, url: "https://objects.example/source.wav" } }, { status: 201 });
+      return Response.json(
+        { file: { id: `file-${userId}`, url: "https://objects.example/source.wav" } },
+        { status: 201 },
+      );
     }
     throw new Error(`Unexpected URL ${url} ${init?.method ?? "GET"}`);
   }) as typeof fetch;
 
   try {
-    await prisma.user.create({ data: { id: otherId, name: "Other", email: `${otherId}@example.test`, emailVerified: true } });
-    const {
-      enqueueVocalProfileAnalysis,
-      getVocalProfileAnalysisJob,
-      listVisibleVocalProfileAnalysisJobs,
-    } = await import("../lib/vocal-profile/analysis-queue");
+    await prisma.user.create({
+      data: { id: otherId, name: "Other", email: `${otherId}@example.test`, emailVerified: true },
+    });
+    const { enqueueVocalProfileAnalysis, getVocalProfileAnalysisJob, listVisibleVocalProfileAnalysisJobs } =
+      await import("../lib/vocal-profile/analysis-queue");
     const file = new File([Uint8Array.from([1, 2, 3, 4])], "voice.wav", { type: "audio/wav" });
     const first = await enqueueVocalProfileAnalysis({ userId, idempotencyKey: "same-request", file });
     const second = await enqueueVocalProfileAnalysis({ userId, idempotencyKey: "same-request", file });
     assert.equal(second.id, first.id);
     assert.equal(presigns, 1);
-    assert.equal((await prisma.mediaAsset.count({ where: { userId } })), 1);
+    assert.equal(await prisma.mediaAsset.count({ where: { userId } }), 1);
     assert.equal((await getVocalProfileAnalysisJob(userId, first.id))?.job.id, first.id);
     assert.equal(await getVocalProfileAnalysisJob(otherId, first.id), null);
-    assert.deepEqual((await listVisibleVocalProfileAnalysisJobs(userId)).map((job) => job.id), [first.id]);
+    assert.deepEqual(
+      (await listVisibleVocalProfileAnalysisJobs(userId)).map((job) => job.id),
+      [first.id],
+    );
     assert.deepEqual(await listVisibleVocalProfileAnalysisJobs(otherId), []);
   } finally {
     globalThis.fetch = previousFetch;
-    if (previousEnv.baseUrl === undefined) delete process.env.LEEMAGE_BASE_URL; else process.env.LEEMAGE_BASE_URL = previousEnv.baseUrl;
-    if (previousEnv.apiKey === undefined) delete process.env.LEEMAGE_API_KEY; else process.env.LEEMAGE_API_KEY = previousEnv.apiKey;
-    if (previousEnv.projectId === undefined) delete process.env.LEEMAGE_PROJECT_ID; else process.env.LEEMAGE_PROJECT_ID = previousEnv.projectId;
+    if (previousEnv.baseUrl === undefined) delete process.env.LEEMAGE_BASE_URL;
+    else process.env.LEEMAGE_BASE_URL = previousEnv.baseUrl;
+    if (previousEnv.apiKey === undefined) delete process.env.LEEMAGE_API_KEY;
+    else process.env.LEEMAGE_API_KEY = previousEnv.apiKey;
+    if (previousEnv.projectId === undefined) delete process.env.LEEMAGE_PROJECT_ID;
+    else process.env.LEEMAGE_PROJECT_ID = previousEnv.projectId;
     await cleanupUser(userId);
     await prisma.user.deleteMany({ where: { id: otherId } });
   }
@@ -228,7 +236,9 @@ test("worker persists a profile while reusing the durable source asset", async (
   }) as typeof fetch;
 
   try {
-    const { claimNextVocalProfileAnalysisJob, processClaimedVocalProfileAnalysisJob } = await import("../lib/vocal-profile/analysis-worker");
+    const { claimNextVocalProfileAnalysisJob, processClaimedVocalProfileAnalysisJob } = await import(
+      "../lib/vocal-profile/analysis-worker"
+    );
     assert.equal(await claimNextVocalProfileAnalysisJob("worker", job.id), job.id);
     await processClaimedVocalProfileAnalysisJob(job.id, "worker", { fetchImpl });
     const storedJob = await readJob(job.id);
@@ -242,9 +252,12 @@ test("worker persists a profile while reusing the durable source asset", async (
     assert.equal(profile.recordingId, job.recordingId);
     assert.equal(await prisma.mediaAsset.count({ where: { userId, kind: "REFERENCE" } }), 1);
   } finally {
-    if (previous.backend === undefined) delete process.env.VOCAL_PROFILE_ANALYZER_BACKEND; else process.env.VOCAL_PROFILE_ANALYZER_BACKEND = previous.backend;
-    if (previous.url === undefined) delete process.env.VOCAL_PROFILE_MODAL_URL; else process.env.VOCAL_PROFILE_MODAL_URL = previous.url;
-    if (previous.key === undefined) delete process.env.VOCAL_PROFILE_MODAL_API_KEY; else process.env.VOCAL_PROFILE_MODAL_API_KEY = previous.key;
+    if (previous.backend === undefined) delete process.env.VOCAL_PROFILE_ANALYZER_BACKEND;
+    else process.env.VOCAL_PROFILE_ANALYZER_BACKEND = previous.backend;
+    if (previous.url === undefined) delete process.env.VOCAL_PROFILE_MODAL_URL;
+    else process.env.VOCAL_PROFILE_MODAL_URL = previous.url;
+    if (previous.key === undefined) delete process.env.VOCAL_PROFILE_MODAL_API_KEY;
+    else process.env.VOCAL_PROFILE_MODAL_API_KEY = previous.key;
     await cleanupUser(userId);
   }
 });
@@ -255,15 +268,22 @@ test("transient Modal failure requeues without deleting the source", async (cont
   const bytes = Uint8Array.from([1, 2, 3]);
   const source = await createSourceAsset(userId, bytes);
   const job = await insertJob({ userId, sourceAssetId: source.id, maxAttempts: 3 });
-  const previous = { backend: process.env.VOCAL_PROFILE_ANALYZER_BACKEND, url: process.env.VOCAL_PROFILE_MODAL_URL, key: process.env.VOCAL_PROFILE_MODAL_API_KEY };
+  const previous = {
+    backend: process.env.VOCAL_PROFILE_ANALYZER_BACKEND,
+    url: process.env.VOCAL_PROFILE_MODAL_URL,
+    key: process.env.VOCAL_PROFILE_MODAL_API_KEY,
+  };
   process.env.VOCAL_PROFILE_ANALYZER_BACKEND = "modal";
   process.env.VOCAL_PROFILE_MODAL_URL = "https://modal.example";
   process.env.VOCAL_PROFILE_MODAL_API_KEY = "test-key";
-  const fetchImpl = (async (input) => String(input) === source.externalUrl
-    ? new Response(bytes)
-    : new Response("temporary", { status: 500 })) as typeof fetch;
+  const fetchImpl = (async (input) =>
+    String(input) === source.externalUrl
+      ? new Response(bytes)
+      : new Response("temporary", { status: 500 })) as typeof fetch;
   try {
-    const { claimNextVocalProfileAnalysisJob, processClaimedVocalProfileAnalysisJob } = await import("../lib/vocal-profile/analysis-worker");
+    const { claimNextVocalProfileAnalysisJob, processClaimedVocalProfileAnalysisJob } = await import(
+      "../lib/vocal-profile/analysis-worker"
+    );
     await claimNextVocalProfileAnalysisJob("worker", job.id);
     await processClaimedVocalProfileAnalysisJob(job.id, "worker", { fetchImpl });
     const stored = await readJob(job.id);
@@ -272,9 +292,12 @@ test("transient Modal failure requeues without deleting the source", async (cont
     assert.equal(stored.errorCode, "ANALYZER_UNAVAILABLE");
     assert.equal(stored.retryable, true);
   } finally {
-    if (previous.backend === undefined) delete process.env.VOCAL_PROFILE_ANALYZER_BACKEND; else process.env.VOCAL_PROFILE_ANALYZER_BACKEND = previous.backend;
-    if (previous.url === undefined) delete process.env.VOCAL_PROFILE_MODAL_URL; else process.env.VOCAL_PROFILE_MODAL_URL = previous.url;
-    if (previous.key === undefined) delete process.env.VOCAL_PROFILE_MODAL_API_KEY; else process.env.VOCAL_PROFILE_MODAL_API_KEY = previous.key;
+    if (previous.backend === undefined) delete process.env.VOCAL_PROFILE_ANALYZER_BACKEND;
+    else process.env.VOCAL_PROFILE_ANALYZER_BACKEND = previous.backend;
+    if (previous.url === undefined) delete process.env.VOCAL_PROFILE_MODAL_URL;
+    else process.env.VOCAL_PROFILE_MODAL_URL = previous.url;
+    if (previous.key === undefined) delete process.env.VOCAL_PROFILE_MODAL_API_KEY;
+    else process.env.VOCAL_PROFILE_MODAL_API_KEY = previous.key;
     await cleanupUser(userId);
   }
 });
@@ -303,11 +326,16 @@ test("terminal analysis failure detaches and deletes the queued source", async (
   globalThis.fetch = (async () => Response.json({ message: "deleted" })) as typeof fetch;
   const fetchImpl = (async (input) => {
     if (String(input) === source.externalUrl) return new Response(bytes);
-    return Response.json({ reasonCode: "TOO_SILENT", detail: "Audio is too quiet.", retryable: false }, { status: 422 });
+    return Response.json(
+      { reasonCode: "TOO_SILENT", detail: "Audio is too quiet.", retryable: false },
+      { status: 422 },
+    );
   }) as typeof fetch;
 
   try {
-    const { claimNextVocalProfileAnalysisJob, processClaimedVocalProfileAnalysisJob } = await import("../lib/vocal-profile/analysis-worker");
+    const { claimNextVocalProfileAnalysisJob, processClaimedVocalProfileAnalysisJob } = await import(
+      "../lib/vocal-profile/analysis-worker"
+    );
     await claimNextVocalProfileAnalysisJob("worker", job.id);
     await processClaimedVocalProfileAnalysisJob(job.id, "worker", { fetchImpl });
     const stored = await readJob(job.id);
@@ -318,12 +346,18 @@ test("terminal analysis failure detaches and deletes the queued source", async (
     assert.equal(await prisma.mediaAsset.findUnique({ where: { id: source.id } }), null);
   } finally {
     globalThis.fetch = previousFetch;
-    if (previous.backend === undefined) delete process.env.VOCAL_PROFILE_ANALYZER_BACKEND; else process.env.VOCAL_PROFILE_ANALYZER_BACKEND = previous.backend;
-    if (previous.url === undefined) delete process.env.VOCAL_PROFILE_MODAL_URL; else process.env.VOCAL_PROFILE_MODAL_URL = previous.url;
-    if (previous.key === undefined) delete process.env.VOCAL_PROFILE_MODAL_API_KEY; else process.env.VOCAL_PROFILE_MODAL_API_KEY = previous.key;
-    if (previous.baseUrl === undefined) delete process.env.LEEMAGE_BASE_URL; else process.env.LEEMAGE_BASE_URL = previous.baseUrl;
-    if (previous.leemageKey === undefined) delete process.env.LEEMAGE_API_KEY; else process.env.LEEMAGE_API_KEY = previous.leemageKey;
-    if (previous.projectId === undefined) delete process.env.LEEMAGE_PROJECT_ID; else process.env.LEEMAGE_PROJECT_ID = previous.projectId;
+    if (previous.backend === undefined) delete process.env.VOCAL_PROFILE_ANALYZER_BACKEND;
+    else process.env.VOCAL_PROFILE_ANALYZER_BACKEND = previous.backend;
+    if (previous.url === undefined) delete process.env.VOCAL_PROFILE_MODAL_URL;
+    else process.env.VOCAL_PROFILE_MODAL_URL = previous.url;
+    if (previous.key === undefined) delete process.env.VOCAL_PROFILE_MODAL_API_KEY;
+    else process.env.VOCAL_PROFILE_MODAL_API_KEY = previous.key;
+    if (previous.baseUrl === undefined) delete process.env.LEEMAGE_BASE_URL;
+    else process.env.LEEMAGE_BASE_URL = previous.baseUrl;
+    if (previous.leemageKey === undefined) delete process.env.LEEMAGE_API_KEY;
+    else process.env.LEEMAGE_API_KEY = previous.leemageKey;
+    if (previous.projectId === undefined) delete process.env.LEEMAGE_PROJECT_ID;
+    else process.env.LEEMAGE_PROJECT_ID = previous.projectId;
     await cleanupUser(userId);
   }
 });

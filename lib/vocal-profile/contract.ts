@@ -114,10 +114,14 @@ function supportedReferenceVersion(value: unknown): value is SynthesisReferenceC
 }
 
 function midOnlyRanges(value: unknown) {
-  return Array.isArray(value) && value.length > 0 && value.every((range) => {
-    if (!range || typeof range !== "object" || Array.isArray(range)) return false;
-    return (range as Record<string, unknown>).band === "mid";
-  });
+  return (
+    Array.isArray(value) &&
+    value.length > 0 &&
+    value.every((range) => {
+      if (!range || typeof range !== "object" || Array.isArray(range)) return false;
+      return (range as Record<string, unknown>).band === "mid";
+    })
+  );
 }
 
 export function synthesisReferenceContractVersion(descriptors: VocalProfileDescriptors | null | undefined) {

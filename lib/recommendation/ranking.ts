@@ -44,15 +44,13 @@ function compareRecommendations(
   );
 }
 
-export function rankRecommendations(
-  candidates: readonly CatalogKeyFitResult[],
-): RankedRecommendation[] {
+export function rankRecommendations(candidates: readonly CatalogKeyFitResult[]): RankedRecommendation[] {
   if (candidates.length === 0) {
-    throw new RecommendationError(
-      "CATALOG_NOT_READY",
-      "At least one scored song is required.",
-      { status: 503, retryable: true, details: { candidateCount: candidates.length } },
-    );
+    throw new RecommendationError("CATALOG_NOT_READY", "At least one scored song is required.", {
+      status: 503,
+      retryable: true,
+      details: { candidateCount: candidates.length },
+    });
   }
 
   const seenOrders = new Set<number>();
@@ -64,15 +62,11 @@ export function rankRecommendations(
       !Number.isInteger(candidate.recommendedShift) ||
       seenOrders.has(candidate.catalogOrder)
     ) {
-      throw new RecommendationError(
-        "CATALOG_NOT_READY",
-        "Scored catalog contains invalid or duplicate ranking data.",
-        {
-          status: 503,
-          retryable: true,
-          details: { catalogOrder: candidate.catalogOrder },
-        },
-      );
+      throw new RecommendationError("CATALOG_NOT_READY", "Scored catalog contains invalid or duplicate ranking data.", {
+        status: 503,
+        retryable: true,
+        details: { catalogOrder: candidate.catalogOrder },
+      });
     }
     seenOrders.add(candidate.catalogOrder);
   }

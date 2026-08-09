@@ -51,7 +51,10 @@ test("catalog target import uploads once, links Song, and is idempotent by SHA-2
       return new Response(null, { status: 200 });
     }
     if (url.endsWith("/files/confirm")) {
-      return Response.json({ file: { id: fileId, url: "https://objects.example/catalog-target.wav" } }, { status: 201 });
+      return Response.json(
+        { file: { id: fileId, url: "https://objects.example/catalog-target.wav" } },
+        { status: 201 },
+      );
     }
     throw new Error(`Unexpected Leemage URL: ${url}`);
   };

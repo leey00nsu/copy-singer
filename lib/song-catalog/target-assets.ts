@@ -1,12 +1,11 @@
 import "server-only";
 
 import { createHash } from "node:crypto";
-import { mkdir, readFile, readdir, stat, unlink } from "node:fs/promises";
+import { mkdir, readdir, readFile, stat, unlink } from "node:fs/promises";
 import path from "node:path";
-
-import artifactJson from "../../data/catalogs/tj-2607-song-profiles.json";
 import { prisma } from "@/lib/db/prisma";
 import { createLeemageClient } from "@/lib/leemage/client";
+import artifactJson from "../../data/catalogs/tj-2607-song-profiles.json";
 
 const SUPPORTED_SOURCE_EXTENSIONS = ["wav", "mp3", "m4a", "aac", "webm", "flac"] as const;
 const CATALOG_TARGET_MAX_UPLOAD_BYTES = 49_000_000;
@@ -52,7 +51,11 @@ export function catalogTargetStem(catalogOrder: number, sourceVideoId: string) {
   return `${String(catalogOrder).padStart(3, "0")}-${sourceVideoId}`;
 }
 
-export function expectedCatalogTargetPath(catalogOrder: number, sourceVideoId: string, stagingDir = CATALOG_TARGET_STAGING_DIR) {
+export function expectedCatalogTargetPath(
+  catalogOrder: number,
+  sourceVideoId: string,
+  stagingDir = CATALOG_TARGET_STAGING_DIR,
+) {
   return path.join(stagingDir, `${catalogTargetStem(catalogOrder, sourceVideoId)}.wav`);
 }
 
@@ -68,12 +71,18 @@ async function findStagedSource(catalogOrder: number, sourceVideoId: string, sta
   const supported = entries
     .filter((entry) => entry.isFile())
     .map((entry) => entry.name)
-    .filter((name) => SUPPORTED_SOURCE_EXTENSIONS.includes(path.extname(name).slice(1).toLowerCase() as typeof SUPPORTED_SOURCE_EXTENSIONS[number]));
+    .filter((name) =>
+      SUPPORTED_SOURCE_EXTENSIONS.includes(
+        path.extname(name).slice(1).toLowerCase() as (typeof SUPPORTED_SOURCE_EXTENSIONS)[number],
+      ),
+    );
 
   const ytDlpSuffix = `[${sourceVideoId}]`;
   const byVideoId = supported.filter((name) => path.parse(name).name.endsWith(ytDlpSuffix));
   if (byVideoId.length > 1) {
-    throw new Error(`Multiple staged source files contain video ID ${sourceVideoId} for catalog order ${catalogOrder}. Keep only one source file.`);
+    throw new Error(
+      `Multiple staged source files contain video ID ${sourceVideoId} for catalog order ${catalogOrder}. Keep only one source file.`,
+    );
   }
   if (byVideoId.length === 1) return path.join(stagingDir, byVideoId[0]!);
 
@@ -87,13 +96,20 @@ async function findStagedSource(catalogOrder: number, sourceVideoId: string, sta
 
 function sourceMimeType(sourcePath: string) {
   switch (path.extname(sourcePath).slice(1).toLowerCase()) {
-    case "wav": return "audio/wav";
-    case "mp3": return "audio/mpeg";
-    case "m4a": return "audio/mp4";
-    case "aac": return "audio/aac";
-    case "webm": return "audio/webm";
-    case "flac": return "audio/flac";
-    default: throw new Error(`Unsupported catalog target extension: ${path.extname(sourcePath)}`);
+    case "wav":
+      return "audio/wav";
+    case "mp3":
+      return "audio/mpeg";
+    case "m4a":
+      return "audio/mp4";
+    case "aac":
+      return "audio/aac";
+    case "webm":
+      return "audio/webm";
+    case "flac":
+      return "audio/flac";
+    default:
+      throw new Error(`Unsupported catalog target extension: ${path.extname(sourcePath)}`);
   }
 }
 
@@ -105,7 +121,10 @@ async function validateUploadSource(sourcePath: string) {
   }
   const mimeType = sourceMimeType(sourcePath);
   const bytes = new Uint8Array(await readFile(sourcePath));
-  if (mimeType === "audio/wav" && (bytes.byteLength < 44 || Buffer.from(bytes.subarray(0, 4)).toString("ascii") !== "RIFF")) {
+  if (
+    mimeType === "audio/wav" &&
+    (bytes.byteLength < 44 || Buffer.from(bytes.subarray(0, 4)).toString("ascii") !== "RIFF")
+  ) {
     throw new Error("Catalog target WAV must have a valid RIFF header.");
   }
   return { bytes, mimeType };
@@ -115,12 +134,7 @@ function sha256(bytes: Uint8Array) {
   return createHash("sha256").update(bytes).digest("hex");
 }
 
-async function cleanupDerivedWav(
-  catalogOrder: number,
-  sourceVideoId: string,
-  stagingDir: string,
-  sourcePath: string,
-) {
+async function cleanupDerivedWav(catalogOrder: number, sourceVideoId: string, stagingDir: string, sourcePath: string) {
   const derivedWavPath = expectedCatalogTargetPath(catalogOrder, sourceVideoId, stagingDir);
   if (path.resolve(derivedWavPath) === path.resolve(sourcePath)) return;
   await unlink(derivedWavPath).catch((error: NodeJS.ErrnoException) => {
@@ -128,24 +142,29 @@ async function cleanupDerivedWav(
   });
 }
 
-async function cleanupSupersededAsset(asset: {
-  id: string;
-  externalProjectId: string;
-  externalFileId: string;
-}, fetchImpl?: typeof fetch) {
+async function cleanupSupersededAsset(
+  asset: {
+    id: string;
+    externalProjectId: string;
+    externalFileId: string;
+  },
+  fetchImpl?: typeof fetch,
+) {
   const references = await prisma.mixingJob.count({ where: { targetAssetId: asset.id } });
   if (references > 0) return;
   try {
     await createLeemageClient(fetchImpl).deleteFile(asset.externalProjectId, asset.externalFileId);
     await prisma.catalogTargetAsset.delete({ where: { id: asset.id } });
   } catch (error) {
-    await prisma.catalogTargetAsset.update({
-      where: { id: asset.id },
-      data: {
-        status: "DELETE_PENDING",
-        lastError: error instanceof Error ? error.message.slice(0, 2_000) : "Catalog target cleanup failed.",
-      },
-    }).catch(() => undefined);
+    await prisma.catalogTargetAsset
+      .update({
+        where: { id: asset.id },
+        data: {
+          status: "DELETE_PENDING",
+          lastError: error instanceof Error ? error.message.slice(0, 2_000) : "Catalog target cleanup failed.",
+        },
+      })
+      .catch(() => undefined);
   }
 }
 
@@ -160,13 +179,17 @@ export async function importCatalogTargetAsset(input: {
     include: { targetAsset: true },
   });
   if (!song || song.title !== catalog.title || song.artist !== catalog.artist) {
-    throw new Error(`Database song does not match catalog order ${input.catalogOrder}. Run catalog import/verify first.`);
+    throw new Error(
+      `Database song does not match catalog order ${input.catalogOrder}. Run catalog import/verify first.`,
+    );
   }
 
   const stagingDir = input.stagingDir ?? CATALOG_TARGET_STAGING_DIR;
   const sourcePath = await findStagedSource(input.catalogOrder, catalog.sourceVideoId, stagingDir);
   if (!sourcePath) {
-    throw new Error(`Missing authorized source file: ${catalogTargetStem(input.catalogOrder, catalog.sourceVideoId)}.{wav,mp3,m4a,aac,webm,flac}`);
+    throw new Error(
+      `Missing authorized source file: ${catalogTargetStem(input.catalogOrder, catalog.sourceVideoId)}.{wav,mp3,m4a,aac,webm,flac}`,
+    );
   }
   const { bytes, mimeType } = await validateUploadSource(sourcePath);
   const uploadPath = sourcePath;
@@ -221,7 +244,9 @@ export async function importCatalogTargetAsset(input: {
     });
     assetId = created.id;
   } catch (error) {
-    await createLeemageClient(input.fetchImpl).deleteFile(stored.projectId, stored.fileId).catch(() => undefined);
+    await createLeemageClient(input.fetchImpl)
+      .deleteFile(stored.projectId, stored.fileId)
+      .catch(() => undefined);
     throw error;
   }
 
@@ -254,23 +279,33 @@ export async function catalogTargetStatus() {
       title: true,
       artist: true,
       targetAsset: {
-        select: { id: true, status: true, sizeBytes: true, sha256: true, sourceVideoId: true, mimeType: true, fileName: true },
+        select: {
+          id: true,
+          status: true,
+          sizeBytes: true,
+          sha256: true,
+          sourceVideoId: true,
+          mimeType: true,
+          fileName: true,
+        },
       },
     },
   });
   return {
     total: songs.length,
     ready: songs.filter((song) => song.targetAsset?.status === "READY").length,
-    missing: songs.filter((song) => !song.targetAsset || song.targetAsset.status !== "READY").map((song) => {
-      const catalog = artifactSong(song.catalogOrder);
-      return {
-        catalogOrder: song.catalogOrder,
-        title: song.title,
-        artist: song.artist,
-        sourceVideoId: catalog.sourceVideoId,
-        expectedFile: `${catalogTargetStem(song.catalogOrder, catalog.sourceVideoId)}.wav`,
-      };
-    }),
+    missing: songs
+      .filter((song) => !song.targetAsset || song.targetAsset.status !== "READY")
+      .map((song) => {
+        const catalog = artifactSong(song.catalogOrder);
+        return {
+          catalogOrder: song.catalogOrder,
+          title: song.title,
+          artist: song.artist,
+          sourceVideoId: catalog.sourceVideoId,
+          expectedFile: `${catalogTargetStem(song.catalogOrder, catalog.sourceVideoId)}.wav`,
+        };
+      }),
     songs,
   };
 }

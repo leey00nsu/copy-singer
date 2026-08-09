@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
 import { AlertTriangle, Clock3, LoaderCircle, RotateCcw } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import type { VocalProfileAnalysisJobResponse } from "@/lib/vocal-profile/contract";
@@ -53,7 +53,7 @@ export function VocalProfileAnalysisJobCards({ jobs }: { jobs: VocalProfileAnaly
       try {
         const response = await fetch("/api/vocal-profile-analysis-jobs", { cache: "no-store" });
         if (!response.ok) return;
-        const payload = await response.json() as { jobs?: VocalProfileAnalysisJobResponse[] };
+        const payload = (await response.json()) as { jobs?: VocalProfileAnalysisJobResponse[] };
         const updates = Array.isArray(payload.jobs) ? payload.jobs : [];
         if (!active) return;
         const visibleIds = new Set(updates.map((job) => job.id));
@@ -67,7 +67,9 @@ export function VocalProfileAnalysisJobCards({ jobs }: { jobs: VocalProfileAnaly
       }
     };
     void poll();
-    const timer = window.setInterval(() => { void poll(); }, POLL_INTERVAL_MS);
+    const timer = window.setInterval(() => {
+      void poll();
+    }, POLL_INTERVAL_MS);
     return () => {
       active = false;
       window.clearInterval(timer);
@@ -83,16 +85,23 @@ export function VocalProfileAnalysisJobCards({ jobs }: { jobs: VocalProfileAnaly
           <div>
             <Badge variant={failed ? "destructive" : "secondary"}>{copy.badge}</Badge>
             <div className="mt-3 flex items-center gap-2">
-              {failed
-                ? <AlertTriangle className="size-5 text-destructive" aria-hidden="true" />
-                : <LoaderCircle className="size-5 animate-spin text-emerald-600" aria-hidden="true" />}
+              {failed ? (
+                <AlertTriangle className="size-5 text-destructive" aria-hidden="true" />
+              ) : (
+                <LoaderCircle className="size-5 animate-spin text-emerald-600" aria-hidden="true" />
+              )}
               <h2 className="text-lg font-semibold">{copy.title}</h2>
             </div>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">{copy.detail}</p>
           </div>
           <div className="shrink-0 text-right text-xs text-muted-foreground">
-            <p className="flex items-center gap-1"><Clock3 className="size-3" aria-hidden="true" />{new Date(job.createdAt).toLocaleString("ko-KR")}</p>
-            <p className="mt-1">시도 {Math.min(job.attempts, job.maxAttempts)} / {job.maxAttempts}</p>
+            <p className="flex items-center gap-1">
+              <Clock3 className="size-3" aria-hidden="true" />
+              {new Date(job.createdAt).toLocaleString("ko-KR")}
+            </p>
+            <p className="mt-1">
+              시도 {Math.min(job.attempts, job.maxAttempts)} / {job.maxAttempts}
+            </p>
           </div>
         </div>
         {failed ? (

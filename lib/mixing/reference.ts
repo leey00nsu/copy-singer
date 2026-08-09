@@ -20,11 +20,7 @@ export function selectMixingReference<T extends ReferenceCandidate>(input: {
     return input.smart;
   }
   if (input.contractVersion === SMART_REFERENCE_MID_VERSION) return null;
-  if (
-    input.source?.userId === input.userId &&
-    input.source.kind === "REFERENCE" &&
-    input.source.status === "READY"
-  ) {
+  if (input.source?.userId === input.userId && input.source.kind === "REFERENCE" && input.source.status === "READY") {
     return input.source;
   }
   return null;

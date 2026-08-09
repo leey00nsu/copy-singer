@@ -1,12 +1,12 @@
 import "server-only";
 
 import { createHash } from "node:crypto";
-import { prisma } from "@/lib/db/prisma";
 import { vocalProfileAnalysisLeaseSeconds } from "@/lib/config/server-env";
+import { prisma } from "@/lib/db/prisma";
 import { discardMediaAsset } from "@/lib/leemage/media-service";
-import { AnalyzerClientError, analyzeVocalProfileBytes } from "@/lib/vocal-profile/analyzer";
-import { VocalProfilePersistenceError, persistQueuedAnalyzedVocalProfile } from "@/lib/vocal-profile/persistence";
 import type { VocalProfileAnalysisJobRow } from "@/lib/vocal-profile/analysis-queue";
+import { AnalyzerClientError, analyzeVocalProfileBytes } from "@/lib/vocal-profile/analyzer";
+import { persistQueuedAnalyzedVocalProfile, VocalProfilePersistenceError } from "@/lib/vocal-profile/persistence";
 
 export type VocalProfileAnalysisWorkerDependencies = {
   fetchImpl?: typeof fetch;
@@ -21,7 +21,11 @@ function workerError(error: unknown) {
     return { code: error.reasonCode, detail: error.detail, retryable: error.retryable };
   }
   if (error instanceof Error && error.message === "ANALYZER_SOURCE_MISMATCH") {
-    return { code: "ANALYZER_SOURCE_MISMATCH", detail: "Analyzer source bytes did not match the queued upload.", retryable: false };
+    return {
+      code: "ANALYZER_SOURCE_MISMATCH",
+      detail: "Analyzer source bytes did not match the queued upload.",
+      retryable: false,
+    };
   }
   return {
     code: "ANALYSIS_WORKER_FAILED",
@@ -154,21 +158,23 @@ export async function processClaimedVocalProfileAnalysisJob(
   }
 
   try {
-    if (!job.sourceAssetId) throw new VocalProfilePersistenceError(
-      "ANALYSIS_SOURCE_MISSING",
-      "The queued analysis source is no longer available.",
-      false,
-      410,
-    );
+    if (!job.sourceAssetId)
+      throw new VocalProfilePersistenceError(
+        "ANALYSIS_SOURCE_MISSING",
+        "The queued analysis source is no longer available.",
+        false,
+        410,
+      );
     const sourceAsset = await prisma.mediaAsset.findFirst({
       where: { id: job.sourceAssetId, userId: job.userId, kind: "REFERENCE", status: "READY" },
     });
-    if (!sourceAsset) throw new VocalProfilePersistenceError(
-      "ANALYSIS_SOURCE_MISSING",
-      "The queued analysis source is no longer available.",
-      false,
-      410,
-    );
+    if (!sourceAsset)
+      throw new VocalProfilePersistenceError(
+        "ANALYSIS_SOURCE_MISSING",
+        "The queued analysis source is no longer available.",
+        false,
+        410,
+      );
 
     const fetchImpl = dependencies.fetchImpl ?? fetch;
     const sourceResponse = await fetchImpl(sourceAsset.externalUrl, {
@@ -192,9 +198,9 @@ export async function processClaimedVocalProfileAnalysisJob(
       fetchImpl,
     });
     if (
-      analyzed.source.bytes.byteLength !== sourceBytes.byteLength
-      || analyzed.source.mimeType !== sourceAsset.mimeType
-      || sha256(analyzed.source.bytes) !== sha256(sourceBytes)
+      analyzed.source.bytes.byteLength !== sourceBytes.byteLength ||
+      analyzed.source.mimeType !== sourceAsset.mimeType ||
+      sha256(analyzed.source.bytes) !== sha256(sourceBytes)
     ) {
       throw new Error("ANALYZER_SOURCE_MISMATCH");
     }

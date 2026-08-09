@@ -47,7 +47,9 @@ test("an analyzer reference is persisted as user-owned Leemage metadata", async 
   };
 
   const { prisma } = await import("../lib/db/prisma");
-  const { storeAnalyzerReferenceBytes, storeAnalyzerSynthesisReferenceBytes } = await import("../lib/leemage/media-service");
+  const { storeAnalyzerReferenceBytes, storeAnalyzerSynthesisReferenceBytes } = await import(
+    "../lib/leemage/media-service"
+  );
   const userId = `reference-owner-${crypto.randomUUID()}`;
   try {
     await prisma.user.create({

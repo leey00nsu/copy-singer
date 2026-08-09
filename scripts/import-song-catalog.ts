@@ -2,8 +2,8 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../generated/prisma/client";
 import { config } from "dotenv";
+import { PrismaClient } from "../generated/prisma/client";
 
 import { parseSongCatalogMarkdown } from "../lib/song-catalog/catalog";
 import { importSongCatalog } from "../lib/song-catalog/import";

@@ -48,22 +48,10 @@ test("legacy rows remain unowned while new profiles and runs are user-scoped", a
       data: { id: runId, userId: firstUserId, userVocalProfileId: profileId, scoringVersion: "test" },
     });
 
-    assert.equal(
-      await prisma.vocalProfile.count({ where: { id: profileId, userId: firstUserId } }),
-      1,
-    );
-    assert.equal(
-      await prisma.vocalProfile.count({ where: { id: profileId, userId: secondUserId } }),
-      0,
-    );
-    assert.equal(
-      await prisma.recommendationRun.count({ where: { id: runId, userId: firstUserId } }),
-      1,
-    );
-    assert.equal(
-      await prisma.recommendationRun.count({ where: { id: runId, userId: secondUserId } }),
-      0,
-    );
+    assert.equal(await prisma.vocalProfile.count({ where: { id: profileId, userId: firstUserId } }), 1);
+    assert.equal(await prisma.vocalProfile.count({ where: { id: profileId, userId: secondUserId } }), 0);
+    assert.equal(await prisma.recommendationRun.count({ where: { id: runId, userId: firstUserId } }), 1);
+    assert.equal(await prisma.recommendationRun.count({ where: { id: runId, userId: secondUserId } }), 0);
   } finally {
     await prisma.recommendationRun.deleteMany({ where: { id: runId } });
     await prisma.vocalProfile.deleteMany({ where: { id: profileId } });

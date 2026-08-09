@@ -5,25 +5,29 @@ import test from "node:test";
 
 async function tsxFiles(directory: string): Promise<string[]> {
   const entries = await readdir(directory, { withFileTypes: true });
-  const nested = await Promise.all(entries.map(async (entry) => {
-    const target = path.join(directory, entry.name);
-    if (entry.isDirectory()) return tsxFiles(target);
-    return entry.isFile() && entry.name.endsWith(".tsx") ? [target] : [];
-  }));
+  const nested = await Promise.all(
+    entries.map(async (entry) => {
+      const target = path.join(directory, entry.name);
+      if (entry.isDirectory()) return tsxFiles(target);
+      return entry.isFile() && entry.name.endsWith(".tsx") ? [target] : [];
+    }),
+  );
   return nested.flat();
 }
 
 test("every Base UI Button that renders a Next.js Link declares non-native semantics", async () => {
   const root = path.resolve(import.meta.dirname, "..");
-  const files = [...await tsxFiles(path.join(root, "app")), ...await tsxFiles(path.join(root, "components"))];
+  const files = [...(await tsxFiles(path.join(root, "app"))), ...(await tsxFiles(path.join(root, "components")))];
   let linkButtonCount = 0;
 
   for (const file of files) {
     const source = await readFile(file, "utf8");
-    for (const [index, line] of source.split("\n").entries()) {
-      if (!line.includes("<Button") || !line.includes("render={<Link")) continue;
+    const linkButtons = source.matchAll(
+      /<Button\b(?:(?!<Button\b)[\s\S])*?render=\{<Link\b(?:(?!<Button\b)[\s\S])*?\/>\}(?:(?!<Button\b)[\s\S])*?>/g,
+    );
+    for (const match of linkButtons) {
       linkButtonCount += 1;
-      assert.match(line, /nativeButton=\{false\}/, `${path.relative(root, file)}:${index + 1} must set nativeButton={false}`);
+      assert.match(match[0], /nativeButton=\{false\}/, `${path.relative(root, file)} must set nativeButton={false}`);
     }
   }
 

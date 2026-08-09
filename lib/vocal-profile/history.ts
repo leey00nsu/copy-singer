@@ -122,6 +122,7 @@ export async function getVocalProfileSynthesisReference(userId: string, id: stri
     },
   });
   const asset = row?.synthesisReferenceAsset;
-  if (!row || !asset || asset.userId !== userId || asset.kind !== "SYNTHESIS_REFERENCE" || asset.status !== "READY") return null;
+  if (!row || !asset || asset.userId !== userId || asset.kind !== "SYNTHESIS_REFERENCE" || asset.status !== "READY")
+    return null;
   return { profileId: row.id, externalUrl: asset.externalUrl, mimeType: asset.mimeType };
 }

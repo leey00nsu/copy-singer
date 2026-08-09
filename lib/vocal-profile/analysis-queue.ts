@@ -1,8 +1,8 @@
 import "server-only";
 
+import { vocalProfileAnalysisMaxAttempts } from "@/lib/config/server-env";
 import { prisma } from "@/lib/db/prisma";
 import { discardMediaAsset, storeAnalyzerReferenceBytes } from "@/lib/leemage/media-service";
-import { vocalProfileAnalysisMaxAttempts } from "@/lib/config/server-env";
 import { serializeProfile } from "@/lib/vocal-profile/server";
 
 export type VocalProfileAnalysisJobStatus = "PENDING" | "PROCESSING" | "SUCCEEDED" | "FAILED";
@@ -61,11 +61,7 @@ async function findByIdempotency(userId: string, idempotencyKey: string) {
   return rows[0] ?? null;
 }
 
-export async function enqueueVocalProfileAnalysis(input: {
-  userId: string;
-  idempotencyKey: string;
-  file: File;
-}) {
+export async function enqueueVocalProfileAnalysis(input: { userId: string; idempotencyKey: string; file: File }) {
   const key = input.idempotencyKey.trim();
   if (!key || key.length > 200) throw new Error("INVALID_IDEMPOTENCY_KEY");
   const existing = await findByIdempotency(input.userId, key);

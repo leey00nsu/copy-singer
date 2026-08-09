@@ -3,11 +3,11 @@ import "server-only";
 import { createHash } from "node:crypto";
 import type { AnalyzerProfileData } from "@/lib/vocal-profile/contract";
 import {
-  AnalyzerClientError,
-  analyzerErrorFromResponse,
-  type AnalyzeVocalProfileInput,
-  type AnalyzerArtifact,
   type AnalyzedRecording,
+  type AnalyzerArtifact,
+  AnalyzerClientError,
+  type AnalyzeVocalProfileInput,
+  analyzerErrorFromResponse,
 } from "./types";
 
 const MODAL_TRANSPORT_VERSION = "modal-analysis-envelope-v1";
@@ -47,12 +47,12 @@ function modalAnalyzerConfig() {
 
 function decodeArtifact(value: EncodedArtifact | undefined, label: string): AnalyzerArtifact {
   if (
-    !value
-    || typeof value.fileName !== "string"
-    || typeof value.mimeType !== "string"
-    || typeof value.sizeBytes !== "number"
-    || typeof value.sha256 !== "string"
-    || typeof value.contentBase64 !== "string"
+    !value ||
+    typeof value.fileName !== "string" ||
+    typeof value.mimeType !== "string" ||
+    typeof value.sizeBytes !== "number" ||
+    typeof value.sha256 !== "string" ||
+    typeof value.contentBase64 !== "string"
   ) {
     throw new AnalyzerClientError(
       "ANALYZER_INVALID_RESPONSE",
@@ -87,7 +87,12 @@ function decodeArtifact(value: EncodedArtifact | undefined, label: string): Anal
 
 function parseEnvelope(payload: unknown, recordingId: string): AnalyzedRecording {
   if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
-    throw new AnalyzerClientError("ANALYZER_INVALID_RESPONSE", "Modal analyzer returned an invalid response.", true, 502);
+    throw new AnalyzerClientError(
+      "ANALYZER_INVALID_RESPONSE",
+      "Modal analyzer returned an invalid response.",
+      true,
+      502,
+    );
   }
   const envelope = payload as ModalAnalysisEnvelope;
   if (envelope.transportVersion !== MODAL_TRANSPORT_VERSION || envelope.cleanupConfirmed !== true) {
@@ -119,9 +124,9 @@ function parseEnvelope(payload: unknown, recordingId: string): AnalyzedRecording
   }
   if (profile.synthesisReference) {
     if (
-      !synthesisReference
-      || synthesisReference.mimeType !== profile.synthesisReference.mimeType
-      || synthesisReference.bytes.byteLength !== profile.synthesisReference.sizeBytes
+      !synthesisReference ||
+      synthesisReference.mimeType !== profile.synthesisReference.mimeType ||
+      synthesisReference.bytes.byteLength !== profile.synthesisReference.sizeBytes
     ) {
       throw new AnalyzerClientError(
         "ANALYZER_INVALID_RESPONSE",
@@ -155,23 +160,13 @@ function modalInfrastructureError(error: unknown) {
 
 function mapModalHttpError(response: Response) {
   if (response.status === 401 || response.status === 403) {
-    return new AnalyzerClientError(
-      "ANALYZER_AUTH_FAILED",
-      "Modal vocal analyzer authentication failed.",
-      false,
-      502,
-    );
+    return new AnalyzerClientError("ANALYZER_AUTH_FAILED", "Modal vocal analyzer authentication failed.", false, 502);
   }
   if (response.status === 429) {
     return new AnalyzerClientError("ANALYZER_BUSY", "Modal vocal analyzer is busy. Try again shortly.", true, 503);
   }
   if (response.status >= 500) {
-    return new AnalyzerClientError(
-      "ANALYZER_UNAVAILABLE",
-      "Modal vocal analyzer is unavailable.",
-      true,
-      502,
-    );
+    return new AnalyzerClientError("ANALYZER_UNAVAILABLE", "Modal vocal analyzer is unavailable.", true, 502);
   }
   return null;
 }

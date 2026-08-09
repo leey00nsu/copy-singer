@@ -5,19 +5,43 @@ import { VocalProfileResults } from "../components/vocal-profile-results";
 import type { VocalProfileResponse } from "../lib/vocal-profile/contract";
 
 const profile: VocalProfileResponse = {
-  id: "profile", sourceType: "USER", minMidi: 60, maxMidi: 72, p10Midi: 64, medianMidi: 67, p90Midi: 70,
-  tessituraLowMidi: 64, tessituraHighMidi: 70, voicedRatio: 0.8, pitchStability: 0.9, clippingRatio: 0,
-  rmsDb: -20, analyzer: "test", analyzerVersion: "1", createdAt: "2026-08-07T00:00:00.000Z",
+  id: "profile",
+  sourceType: "USER",
+  minMidi: 60,
+  maxMidi: 72,
+  p10Midi: 64,
+  medianMidi: 67,
+  p90Midi: 70,
+  tessituraLowMidi: 64,
+  tessituraHighMidi: 70,
+  voicedRatio: 0.8,
+  pitchStability: 0.9,
+  clippingRatio: 0,
+  rmsDb: -20,
+  analyzer: "test",
+  analyzerVersion: "1",
+  createdAt: "2026-08-07T00:00:00.000Z",
   descriptors: {
     pitchHistogram: [{ midi: 67, count: 1, ratio: 1 }],
     pitchTrack: [{ timeMs: 0, midi: 67 }],
-    synthesisReference: { version: "smart-reference-v1", sourceRanges: [
-      { startMs: 1_000, endMs: 2_000, band: "low" },
-      { startMs: 3_000, endMs: 4_000, band: "mid" },
-      { startMs: 5_000, endMs: 6_000, band: "high" },
-    ] },
+    synthesisReference: {
+      version: "smart-reference-v1",
+      sourceRanges: [
+        { startMs: 1_000, endMs: 2_000, band: "low" },
+        { startMs: 3_000, endMs: 4_000, band: "mid" },
+        { startMs: 5_000, endMs: 6_000, band: "high" },
+      ],
+    },
   },
-  recording: { id: "recording", mimeType: "audio/webm", sizeBytes: 1, durationMs: 60_000, sampleRate: 16_000, expiresAt: null, createdAt: "2026-08-07T00:00:00.000Z" },
+  recording: {
+    id: "recording",
+    mimeType: "audio/webm",
+    sizeBytes: 1,
+    durationMs: 60_000,
+    sampleRate: 16_000,
+    expiresAt: null,
+    createdAt: "2026-08-07T00:00:00.000Z",
+  },
 };
 
 test("renders low, mid, and high analysis playback controls", () => {
@@ -33,26 +57,31 @@ test("renders low, mid, and high analysis playback controls", () => {
 });
 
 test("keeps three analysis players while smart-reference-mid-v1 stays mid-only", () => {
-  const html = renderToStaticMarkup(<VocalProfileResults profile={{
-    ...profile,
-    id: "mid-profile",
-    descriptors: {
-      ...profile.descriptors,
-      analysisReferenceBands: {
-        version: "analysis-reference-bands-v1",
-        status: "ready",
-        sourceRanges: [
-          { startMs: 1_000, endMs: 2_000, band: "low" },
-          { startMs: 3_000, endMs: 4_000, band: "mid" },
-          { startMs: 5_000, endMs: 6_000, band: "high" },
-        ],
-      },
-      synthesisReference: {
-        version: "smart-reference-mid-v1",
-        sourceRanges: [{ startMs: 3_000, endMs: 4_000, band: "mid" }],
-      },
-    },
-  }} sourceAudioSrc="/profile.webm" />);
+  const html = renderToStaticMarkup(
+    <VocalProfileResults
+      profile={{
+        ...profile,
+        id: "mid-profile",
+        descriptors: {
+          ...profile.descriptors,
+          analysisReferenceBands: {
+            version: "analysis-reference-bands-v1",
+            status: "ready",
+            sourceRanges: [
+              { startMs: 1_000, endMs: 2_000, band: "low" },
+              { startMs: 3_000, endMs: 4_000, band: "mid" },
+              { startMs: 5_000, endMs: 6_000, band: "high" },
+            ],
+          },
+          synthesisReference: {
+            version: "smart-reference-mid-v1",
+            sourceRanges: [{ startMs: 3_000, endMs: 4_000, band: "mid" }],
+          },
+        },
+      }}
+      sourceAudioSrc="/profile.webm"
+    />,
+  );
   assert.match(html, /분석된 대표 음역 구간/);
   assert.match(html, /저음 영역/);
   assert.match(html, /중앙 영역/);
@@ -62,35 +91,51 @@ test("keeps three analysis players while smart-reference-mid-v1 stays mid-only",
 });
 
 test("keeps analysis players even when mid-only synthesis reference is unavailable", () => {
-  const html = renderToStaticMarkup(<VocalProfileResults profile={{
-    ...profile,
-    descriptors: {
-      analysisReferenceBands: {
-        version: "analysis-reference-bands-v1",
-        status: "ready",
-        sourceRanges: [
-          { startMs: 1_000, endMs: 2_000, band: "low" },
-          { startMs: 3_000, endMs: 4_000, band: "mid" },
-          { startMs: 5_000, endMs: 6_000, band: "high" },
-        ],
-      },
-      synthesisReference: { version: "smart-reference-mid-v1", status: "unavailable", fallbackReason: "no-quality-mid-phrase" },
-    },
-  }} sourceAudioSrc="/profile.webm" />);
+  const html = renderToStaticMarkup(
+    <VocalProfileResults
+      profile={{
+        ...profile,
+        descriptors: {
+          analysisReferenceBands: {
+            version: "analysis-reference-bands-v1",
+            status: "ready",
+            sourceRanges: [
+              { startMs: 1_000, endMs: 2_000, band: "low" },
+              { startMs: 3_000, endMs: 4_000, band: "mid" },
+              { startMs: 5_000, endMs: 6_000, band: "high" },
+            ],
+          },
+          synthesisReference: {
+            version: "smart-reference-mid-v1",
+            status: "unavailable",
+            fallbackReason: "no-quality-mid-phrase",
+          },
+        },
+      }}
+      sourceAudioSrc="/profile.webm"
+    />,
+  );
   assert.match(html, /저음 영역/);
   assert.match(html, /중앙 영역/);
   assert.match(html, /고음 영역/);
 });
 
 test("explains why legacy profiles have no smart-reference region controls", () => {
-  const html = renderToStaticMarkup(<VocalProfileResults profile={{ ...profile, descriptors: {} }} sourceAudioSrc="/profile.webm" />);
+  const html = renderToStaticMarkup(
+    <VocalProfileResults profile={{ ...profile, descriptors: {} }} sourceAudioSrc="/profile.webm" />,
+  );
   assert.match(html, /최신 분석기로 새 보컬 프로필을 만들어주세요/);
 });
 
 test("explains when no quality smart-reference regions were found", () => {
-  const html = renderToStaticMarkup(<VocalProfileResults profile={{
-    ...profile,
-    descriptors: { synthesisReference: { version: "smart-reference-v1", status: "unavailable" } },
-  }} sourceAudioSrc="/profile.webm" />);
+  const html = renderToStaticMarkup(
+    <VocalProfileResults
+      profile={{
+        ...profile,
+        descriptors: { synthesisReference: { version: "smart-reference-v1", status: "unavailable" } },
+      }}
+      sourceAudioSrc="/profile.webm"
+    />,
+  );
   assert.match(html, /안정적인 저음·중앙·고음 구간을 충분히 찾지 못했어요/);
 });

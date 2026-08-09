@@ -1,7 +1,7 @@
 export const runtime = "nodejs";
 
-import { prisma } from "@/lib/db/prisma";
 import { requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
+import { prisma } from "@/lib/db/prisma";
 
 export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
   const session = await requireApiSession(request);
@@ -11,7 +11,10 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
     include: { resultAsset: true },
   });
   if (!job?.resultAsset || job.resultAsset.status !== "READY") {
-    return Response.json({ error: { code: "MIXING_RESULT_NOT_FOUND", message: "완료된 믹싱 결과를 찾을 수 없습니다." } }, { status: 404 });
+    return Response.json(
+      { error: { code: "MIXING_RESULT_NOT_FOUND", message: "완료된 믹싱 결과를 찾을 수 없습니다." } },
+      { status: 404 },
+    );
   }
   const range = request.headers.get("Range");
   const upstream = await fetch(job.resultAsset.externalUrl, {
@@ -20,7 +23,10 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
     signal: AbortSignal.timeout(60_000),
   });
   if (!upstream.ok && upstream.status !== 206) {
-    return Response.json({ error: { code: "MIXING_RESULT_UNAVAILABLE", message: "결과 저장소에 연결하지 못했습니다." } }, { status: 502 });
+    return Response.json(
+      { error: { code: "MIXING_RESULT_UNAVAILABLE", message: "결과 저장소에 연결하지 못했습니다." } },
+      { status: 502 },
+    );
   }
   const headers = new Headers();
   for (const name of ["Content-Type", "Content-Length", "Content-Range", "Accept-Ranges"]) {

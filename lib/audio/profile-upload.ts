@@ -40,10 +40,7 @@ export function findFirstAudibleFrame(
 }
 
 export function boundedProfileUploadDuration(availableSeconds: number) {
-  return Math.min(
-    Math.max(0, availableSeconds),
-    PROFILE_UPLOAD_MAX_SECONDS - PROFILE_UPLOAD_ENCODING_HEADROOM_SECONDS,
-  );
+  return Math.min(Math.max(0, availableSeconds), PROFILE_UPLOAD_MAX_SECONDS - PROFILE_UPLOAD_ENCODING_HEADROOM_SECONDS);
 }
 
 function outputName(fileName: string, extension: "m4a" | "webm") {
@@ -79,11 +76,13 @@ export async function prepareProfileAudio(
     bitrate: PROFILE_UPLOAD_BITRATE,
   });
   const format = aac ? "m4a" : "webm";
-  const codec = aac ?? await media.getFirstEncodableAudioCodec(["opus"], {
-    numberOfChannels: 1,
-    sampleRate: PROFILE_UPLOAD_SAMPLE_RATE,
-    bitrate: PROFILE_UPLOAD_BITRATE,
-  });
+  const codec =
+    aac ??
+    (await media.getFirstEncodableAudioCodec(["opus"], {
+      numberOfChannels: 1,
+      sampleRate: PROFILE_UPLOAD_SAMPLE_RATE,
+      bitrate: PROFILE_UPLOAD_BITRATE,
+    }));
   if (!codec) {
     input.dispose();
     throw new Error("이 브라우저에서 AAC 또는 Opus 인코더를 사용할 수 없습니다.");

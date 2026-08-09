@@ -22,7 +22,10 @@ function numberEnv(name: string) {
 }
 
 function parseDurations() {
-  const raw = process.argv.slice(2).find((value) => value !== "--")?.trim();
+  const raw = process.argv
+    .slice(2)
+    .find((value) => value !== "--")
+    ?.trim();
   if (!raw) return DEFAULT_DURATIONS;
   const durations = raw.split(",").map((value) => Number(value));
   if (durations.some((value) => !Number.isFinite(value) || value <= 0 || value > 60)) {
@@ -83,16 +86,28 @@ async function requestAnalysis(input: {
   const responseText = await response.text();
   const wallSeconds = (performance.now() - started) / 1000;
   if (!response.ok) {
-    throw new Error(`${input.durationSeconds}s ${input.label} failed (${response.status}): ${responseText.slice(0, 500)}`);
+    throw new Error(
+      `${input.durationSeconds}s ${input.label} failed (${response.status}): ${responseText.slice(0, 500)}`,
+    );
   }
   const payload = JSON.parse(responseText) as {
     cleanupConfirmed?: boolean;
     containerInstanceId?: string;
     containerStartedAtMs?: number;
-    profile?: { durationMs?: number; analyzer?: string; analyzerVersion?: string; synthesisReference?: { durationMs?: number } | null };
+    profile?: {
+      durationMs?: number;
+      analyzer?: string;
+      analyzerVersion?: string;
+      synthesisReference?: { durationMs?: number } | null;
+    };
     artifacts?: { source?: { sizeBytes?: number }; synthesisReference?: { sizeBytes?: number } | null };
     compute?: { cpuPhysicalCores?: number; memoryMiB?: number; gpu?: boolean };
-    metrics?: { uploadBytes?: number; analysisSeconds?: number; serializationSeconds?: number; handlerSeconds?: number };
+    metrics?: {
+      uploadBytes?: number;
+      analysisSeconds?: number;
+      serializationSeconds?: number;
+      handlerSeconds?: number;
+    };
   };
   if (payload.cleanupConfirmed !== true) throw new Error("Modal analyzer did not confirm cleanup.");
   return {
@@ -141,9 +156,7 @@ async function main() {
       cold,
       warm,
       warmReusedContainer: Boolean(
-        cold.containerInstanceId
-        && warm.containerInstanceId
-        && cold.containerInstanceId === warm.containerInstanceId,
+        cold.containerInstanceId && warm.containerInstanceId && cold.containerInstanceId === warm.containerInstanceId,
       ),
     });
   }
@@ -156,36 +169,46 @@ async function main() {
 
   const cpuRate = numberEnv("MODAL_BENCHMARK_CPU_USD_PER_CORE_SECOND");
   const memoryRate = numberEnv("MODAL_BENCHMARK_MEMORY_USD_PER_GIB_SECOND");
-  const estimated = cpuRate !== null && memoryRate !== null
-    ? results.flatMap((entry) => [entry.cold, entry.warm]).map((sample) => {
-        const cpu = sample.compute?.cpuPhysicalCores ?? 0;
-        const memoryGiB = (sample.compute?.memoryMiB ?? 0) / 1024;
-        const usdPerSecond = cpu * cpuRate + memoryGiB * memoryRate;
-        return {
-          durationSeconds: sample.durationSeconds,
-          label: sample.label,
-          handlerEstimatedUsd: sample.metrics?.handlerSeconds === undefined
-            ? null
-            : Number((sample.metrics.handlerSeconds * usdPerSecond).toFixed(6)),
-          wallUpperBoundUsd: Number((sample.wallSeconds * usdPerSecond).toFixed(6)),
-        };
-      })
-    : null;
+  const estimated =
+    cpuRate !== null && memoryRate !== null
+      ? results
+          .flatMap((entry) => [entry.cold, entry.warm])
+          .map((sample) => {
+            const cpu = sample.compute?.cpuPhysicalCores ?? 0;
+            const memoryGiB = (sample.compute?.memoryMiB ?? 0) / 1024;
+            const usdPerSecond = cpu * cpuRate + memoryGiB * memoryRate;
+            return {
+              durationSeconds: sample.durationSeconds,
+              label: sample.label,
+              handlerEstimatedUsd:
+                sample.metrics?.handlerSeconds === undefined
+                  ? null
+                  : Number((sample.metrics.handlerSeconds * usdPerSecond).toFixed(6)),
+              wallUpperBoundUsd: Number((sample.wallSeconds * usdPerSecond).toFixed(6)),
+            };
+          })
+      : null;
 
-  console.log(JSON.stringify({
-    status: "ok",
-    generatedAt: new Date().toISOString(),
-    endpoint: baseUrl,
-    wrongCredentialStatus: wrongCredential.status,
-    coldWaitSeconds,
-    health,
-    pricingInputs: {
-      cpuUsdPerCoreSecond: cpuRate,
-      memoryUsdPerGiBSecond: memoryRate,
-    },
-    estimates: estimated,
-    results,
-  }, null, 2));
+  console.log(
+    JSON.stringify(
+      {
+        status: "ok",
+        generatedAt: new Date().toISOString(),
+        endpoint: baseUrl,
+        wrongCredentialStatus: wrongCredential.status,
+        coldWaitSeconds,
+        health,
+        pricingInputs: {
+          cpuUsdPerCoreSecond: cpuRate,
+          memoryUsdPerGiBSecond: memoryRate,
+        },
+        estimates: estimated,
+        results,
+      },
+      null,
+      2,
+    ),
+  );
 }
 
 main().catch((error) => {

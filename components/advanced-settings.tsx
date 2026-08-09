@@ -46,7 +46,9 @@ function SettingSwitch({
   return (
     <div className="setting-switch">
       <div className="pr-4">
-        <Label className="text-sm font-medium" htmlFor={id}>{label}</Label>
+        <Label className="text-sm font-medium" htmlFor={id}>
+          {label}
+        </Label>
         <p className="mt-1 text-xs leading-5 text-muted-foreground">{description}</p>
       </div>
       <Switch checked={checked} disabled={disabled} id={id} onCheckedChange={onCheckedChange} />
@@ -86,7 +88,8 @@ function SettingSlider({
         value={[value]}
       />
       <div className="mt-2 flex justify-between font-mono text-[10px] text-muted-foreground">
-        <span>{min}</span><span>{max}</span>
+        <span>{min}</span>
+        <span>{max}</span>
       </div>
     </div>
   );
@@ -118,12 +121,7 @@ export function AdvancedSettings({
           </span>
           <ChevronDown className="ml-auto size-4 text-muted-foreground transition-transform group-data-[panel-open]:rotate-180" />
         </CollapsibleTrigger>
-        <Button
-          disabled={disabled}
-          onClick={() => onChange(DEFAULT_SETTINGS)}
-          size="sm"
-          variant="ghost"
-        >
+        <Button disabled={disabled} onClick={() => onChange(DEFAULT_SETTINGS)} size="sm" variant="ghost">
           <RotateCcw className="size-3.5" /> Reset
         </Button>
       </div>
@@ -159,10 +157,42 @@ export function AdvancedSettings({
           />
         </div>
         <div className="grid gap-5 p-5 sm:grid-cols-2">
-          <SettingSlider disabled={disabled} label="Pitch shift · semitones" max={36} min={-36} onValueChange={(value) => update("pitchShift", value)} step={1} value={settings.pitchShift} />
-          <SettingSlider disabled={disabled} label="Diffusion steps" max={100} min={1} onValueChange={(value) => update("steps", value)} step={1} value={settings.steps} />
-          <SettingSlider disabled={disabled} label="CFG scale" max={10} min={0} onValueChange={(value) => update("cfg", value)} step={0.1} value={settings.cfg} />
-          <SettingSlider disabled={disabled} label="Seed" max={10000} min={0} onValueChange={(value) => update("seed", value)} step={1} value={settings.seed} />
+          <SettingSlider
+            disabled={disabled}
+            label="Pitch shift · semitones"
+            max={36}
+            min={-36}
+            onValueChange={(value) => update("pitchShift", value)}
+            step={1}
+            value={settings.pitchShift}
+          />
+          <SettingSlider
+            disabled={disabled}
+            label="Diffusion steps"
+            max={100}
+            min={1}
+            onValueChange={(value) => update("steps", value)}
+            step={1}
+            value={settings.steps}
+          />
+          <SettingSlider
+            disabled={disabled}
+            label="CFG scale"
+            max={10}
+            min={0}
+            onValueChange={(value) => update("cfg", value)}
+            step={0.1}
+            value={settings.cfg}
+          />
+          <SettingSlider
+            disabled={disabled}
+            label="Seed"
+            max={10000}
+            min={0}
+            onValueChange={(value) => update("seed", value)}
+            step={1}
+            value={settings.seed}
+          />
         </div>
       </CollapsibleContent>
     </Collapsible>

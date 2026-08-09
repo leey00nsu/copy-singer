@@ -1,6 +1,6 @@
 import "server-only";
 
-import { RecordingKind, RecordingStatus, type Prisma } from "@/generated/prisma/client";
+import { type Prisma, RecordingKind, RecordingStatus } from "@/generated/prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import { LeemageError } from "@/lib/leemage/client";
 import {

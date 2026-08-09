@@ -2,15 +2,9 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { config } from "dotenv";
 
-import {
-  loadOrCreateSongProfileArtifact,
-  writeSongProfileArtifact,
-} from "../lib/song-catalog/artifact";
+import { loadOrCreateSongProfileArtifact, writeSongProfileArtifact } from "../lib/song-catalog/artifact";
 import { parseSongCatalogMarkdown } from "../lib/song-catalog/catalog";
-import {
-  analyzeSongProfileArtifact,
-  parseSongBatchOptions,
-} from "../lib/song-catalog/pipeline";
+import { analyzeSongProfileArtifact, parseSongBatchOptions } from "../lib/song-catalog/pipeline";
 
 config({ path: [".env.local", ".env"], quiet: true });
 
@@ -39,11 +33,8 @@ async function main() {
     throw new Error("The analyzer is missing its catalog allowlist, yt-dlp, Demucs, or FFmpeg.");
   }
 
-  const summary = await analyzeSongProfileArtifact(
-    artifact,
-    analyzerUrl,
-    options,
-    (updated) => writeSongProfileArtifact(artifactPath, updated),
+  const summary = await analyzeSongProfileArtifact(artifact, analyzerUrl, options, (updated) =>
+    writeSongProfileArtifact(artifactPath, updated),
   );
   console.info(JSON.stringify({ status: summary.failed === 0 ? "ok" : "partial", ...summary }));
   if (summary.failed > 0) process.exitCode = 1;

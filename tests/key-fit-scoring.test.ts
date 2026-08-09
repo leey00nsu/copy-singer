@@ -1,14 +1,8 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-
-import type { SongProfileArtifact } from "../lib/song-catalog/artifact";
 import { scoreCatalogKeyFits } from "../lib/key-fit/catalog";
-import {
-  KEY_FIT_SCORING_VERSION,
-  KeyFitScoringError,
-  type KeyFitProfile,
-} from "../lib/key-fit/contract";
+import { KEY_FIT_SCORING_VERSION, type KeyFitProfile, KeyFitScoringError } from "../lib/key-fit/contract";
 import {
   calculateProfileConfidence,
   scoreKeyFit,
@@ -16,6 +10,7 @@ import {
   validateCompatibleKeyFitProfiles,
   validateKeyFitProfile,
 } from "../lib/key-fit/scorer";
+import type { SongProfileArtifact } from "../lib/song-catalog/artifact";
 
 export const USER_PROFILE_FIXTURE: KeyFitProfile = {
   minMidi: 48,
@@ -68,11 +63,7 @@ test("rejects reversed pitch and empty tessitura intervals", () => {
     (error: unknown) => error instanceof KeyFitScoringError && error.code === "INVALID_PROFILE",
   );
   assert.throws(
-    () =>
-      validateKeyFitProfile(
-        { ...USER_PROFILE_FIXTURE, tessituraLowMidi: 60, tessituraHighMidi: 60 },
-        "user",
-      ),
+    () => validateKeyFitProfile({ ...USER_PROFILE_FIXTURE, tessituraLowMidi: 60, tessituraHighMidi: 60 }, "user"),
     (error: unknown) => error instanceof KeyFitScoringError && error.code === "INVALID_PROFILE",
   );
 });
@@ -174,11 +165,7 @@ test("recommends lowering a song whose range is two semitones high", () => {
 
   assert.equal(result.recommendedShift, -2);
   assert.ok(result.adjustedScore > result.originalKeyScore);
-  assert.deepEqual(result.reasonCodes, [
-    "KEY_SHIFT_IMPROVES_FIT",
-    "HIGH_TESSITURA_OVERLAP",
-    "HIGH_NOTES_REDUCED",
-  ]);
+  assert.deepEqual(result.reasonCodes, ["KEY_SHIFT_IMPROVES_FIT", "HIGH_TESSITURA_OVERLAP", "HIGH_NOTES_REDUCED"]);
   assert.equal(result.recommended.tessituraOverlapRatio, 1);
 });
 

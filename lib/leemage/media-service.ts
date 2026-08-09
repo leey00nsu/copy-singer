@@ -1,8 +1,8 @@
 import "server-only";
 
 import { prisma } from "@/lib/db/prisma";
-import { analyzerUrl } from "@/lib/vocal-profile/server";
 import { createLeemageClient, LeemageError } from "@/lib/leemage/client";
+import { analyzerUrl } from "@/lib/vocal-profile/server";
 
 function audioExtension(mimeType: string) {
   if (mimeType === "audio/mp4" || mimeType === "audio/aac") return "m4a";
@@ -52,7 +52,11 @@ async function storeAnalyzerAsset(input: {
     cache: "no-store",
   });
   if (!source.ok) {
-    throw new LeemageError(`Analyzer reference download failed (${source.status}).`, source.status, source.status >= 500);
+    throw new LeemageError(
+      `Analyzer reference download failed (${source.status}).`,
+      source.status,
+      source.status >= 500,
+    );
   }
   const bytes = new Uint8Array(await source.arrayBuffer());
   return storeMediaAssetBytes({
@@ -60,7 +64,9 @@ async function storeAnalyzerAsset(input: {
     bytes,
     mimeType: input.mimeType,
     kind: input.kind,
-    fileName: input.fileName ?? `${input.recordingId}${input.kind === "SYNTHESIS_REFERENCE" ? "-synthesis" : ""}.${audioExtension(input.mimeType)}`,
+    fileName:
+      input.fileName ??
+      `${input.recordingId}${input.kind === "SYNTHESIS_REFERENCE" ? "-synthesis" : ""}.${audioExtension(input.mimeType)}`,
   });
 }
 

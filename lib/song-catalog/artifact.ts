@@ -2,10 +2,7 @@ import { randomUUID } from "node:crypto";
 import { mkdir, readFile, rename, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import {
-  TJ_2607_CATALOG_METADATA,
-  type SongCatalogEntry,
-} from "./catalog";
+import { type SongCatalogEntry, TJ_2607_CATALOG_METADATA } from "./catalog";
 
 export const SONG_PROFILE_ARTIFACT_SCHEMA_VERSION = 1;
 export const SONG_PROFILE_PIPELINE_CONTRACT = "yt-dlp-demucs-librosa-pyin-v1";
@@ -64,10 +61,7 @@ export function createSongProfileArtifact(entries: SongCatalogEntry[]): SongProf
   };
 }
 
-export function validateSongProfileArtifact(
-  value: unknown,
-  entries: SongCatalogEntry[],
-): SongProfileArtifact {
+export function validateSongProfileArtifact(value: unknown, entries: SongCatalogEntry[]): SongProfileArtifact {
   if (!value || typeof value !== "object") throw new Error("Song profile artifact must be an object.");
   const artifact = value as SongProfileArtifact;
   if (artifact.schemaVersion !== SONG_PROFILE_ARTIFACT_SCHEMA_VERSION) {
@@ -96,7 +90,9 @@ export function validateSongProfileArtifact(
       throw new Error(`Invalid artifact status at rank ${catalogEntry.catalogOrder}.`);
     }
     if (entry.status === "READY" && (!entry.profile || entry.profile.cleanupConfirmed !== true)) {
-      throw new Error(`Ready artifact entry is missing a cleanup-confirmed profile at rank ${catalogEntry.catalogOrder}.`);
+      throw new Error(
+        `Ready artifact entry is missing a cleanup-confirmed profile at rank ${catalogEntry.catalogOrder}.`,
+      );
     }
     if (entry.status !== "READY" && entry.profile !== null) {
       throw new Error(`Non-ready artifact entry contains a profile at rank ${catalogEntry.catalogOrder}.`);
@@ -105,10 +101,7 @@ export function validateSongProfileArtifact(
   return artifact;
 }
 
-export async function loadOrCreateSongProfileArtifact(
-  artifactPath: string,
-  entries: SongCatalogEntry[],
-) {
+export async function loadOrCreateSongProfileArtifact(artifactPath: string, entries: SongCatalogEntry[]) {
   try {
     return validateSongProfileArtifact(JSON.parse(await readFile(artifactPath, "utf8")), entries);
   } catch (error) {
@@ -117,10 +110,7 @@ export async function loadOrCreateSongProfileArtifact(
   }
 }
 
-export async function writeSongProfileArtifact(
-  artifactPath: string,
-  artifact: SongProfileArtifact,
-) {
+export async function writeSongProfileArtifact(artifactPath: string, artifact: SongProfileArtifact) {
   const directory = path.dirname(artifactPath);
   await mkdir(directory, { recursive: true });
   const temporaryPath = path.join(directory, `.${path.basename(artifactPath)}.${randomUUID()}.tmp`);

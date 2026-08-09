@@ -4,11 +4,7 @@ import artifactJson from "../../data/catalogs/tj-2607-song-profiles.json";
 import type { Prisma } from "../../generated/prisma/client";
 import { prisma } from "../db/prisma";
 import type { KeyFitProfile, KeyFitReasonCode } from "../key-fit/contract";
-import {
-  RecommendationError,
-  type RecommendationRunResponse,
-  type RecommendationScoreMetrics,
-} from "./contract";
+import { RecommendationError, type RecommendationRunResponse, type RecommendationScoreMetrics } from "./contract";
 import { buildRankedRecommendations } from "./data";
 import { formatRecommendationReasons } from "./ranking";
 import { parseSynthesisAttempts, toPublicSynthesisStatus } from "./synthesis-state";
@@ -98,15 +94,17 @@ export function serializeRecommendationRun(run: StoredRun): RecommendationRunRes
     const reasonCodes = parseReasonCodes(item.reasonCodes);
     const mixing = item.mixingJobs[0];
     const mixingStatus = mixing
-      ? ({
-          PENDING: "preparing",
-          PREPARING: "preparing",
-          SUBMITTED: "queued",
-          PROCESSING: "processing",
-          SUCCEEDED: "succeeded",
-          FAILED: "failed",
-          CANCELED: "failed",
-        } as const)[mixing.status]
+      ? (
+          {
+            PENDING: "preparing",
+            PREPARING: "preparing",
+            SUBMITTED: "queued",
+            PROCESSING: "processing",
+            SUCCEEDED: "succeeded",
+            FAILED: "failed",
+            CANCELED: "failed",
+          } as const
+        )[mixing.status]
       : null;
     return {
       id: item.id,
@@ -139,32 +137,36 @@ export function serializeRecommendationRun(run: StoredRun): RecommendationRunRes
       }),
       metrics,
       synthesis: {
-        status: mixingStatus ?? (item.synthesisStatus ? toPublicSynthesisStatus(item.synthesisStatus) : "not_started" as const),
+        status:
+          mixingStatus ??
+          (item.synthesisStatus ? toPublicSynthesisStatus(item.synthesisStatus) : ("not_started" as const)),
         jobId: mixing?.id ?? item.synthesisJobId,
-        error: mixing?.status === "FAILED" && mixing.errorCode
-          ? {
-              code: mixing.errorCode,
-              detail: mixing.errorDetail ?? "합성 작업을 완료하지 못했습니다.",
-              retryable: mixing.retryable ?? false,
-            }
-          : item.synthesisErrorCode
-          ? {
-              code: item.synthesisErrorCode,
-              detail: item.synthesisErrorDetail ?? "합성 작업을 완료하지 못했습니다.",
-              retryable: item.synthesisRetryable ?? false,
-            }
-          : null,
+        error:
+          mixing?.status === "FAILED" && mixing.errorCode
+            ? {
+                code: mixing.errorCode,
+                detail: mixing.errorDetail ?? "합성 작업을 완료하지 못했습니다.",
+                retryable: mixing.retryable ?? false,
+              }
+            : item.synthesisErrorCode
+              ? {
+                  code: item.synthesisErrorCode,
+                  detail: item.synthesisErrorDetail ?? "합성 작업을 완료하지 못했습니다.",
+                  retryable: item.synthesisRetryable ?? false,
+                }
+              : null,
         startedAt: mixing?.startedAt?.toISOString() ?? item.synthesisStartedAt?.toISOString() ?? null,
         updatedAt: mixing?.updatedAt.toISOString() ?? item.synthesisUpdatedAt?.toISOString() ?? null,
         completedAt: mixing?.completedAt?.toISOString() ?? item.synthesisCompletedAt?.toISOString() ?? null,
-        expiresAt: mixing ? null : item.synthesisExpiresAt?.toISOString() ?? null,
-        attemptCount: mixing?.attempts ?? parseSynthesisAttempts(item.synthesisAttempts).length + (item.synthesisStatus ? 1 : 0),
+        expiresAt: mixing ? null : (item.synthesisExpiresAt?.toISOString() ?? null),
+        attemptCount:
+          mixing?.attempts ?? parseSynthesisAttempts(item.synthesisAttempts).length + (item.synthesisStatus ? 1 : 0),
         audioUrl:
           mixing?.status === "SUCCEEDED" && mixing.resultAsset?.status === "READY"
             ? `/api/mixing-jobs/${mixing.id}/audio`
             : item.synthesisStatus === "SUCCEEDED"
-            ? `/api/recommendations/${run.id}/items/${item.id}/synthesis/audio`
-            : null,
+              ? `/api/recommendations/${run.id}/items/${item.id}/synthesis/audio`
+              : null,
       },
     };
   });

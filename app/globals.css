@@ -132,8 +132,14 @@
   html {
     @apply font-sans;
   }
-  button, label, a { -webkit-tap-highlight-color: transparent; }
-  audio { color-scheme: light; }
+  button,
+  label,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+  audio {
+    color-scheme: light;
+  }
 }
 
 @layer components {
@@ -196,7 +202,9 @@
   .settings-shell {
     border-color: color-mix(in oklab, var(--border) 86%, transparent);
     background: color-mix(in oklab, var(--card) 94%, transparent);
-    box-shadow: 0 1px 0 oklch(1 0 0 / 0.8), 0 20px 60px oklch(0.3 0.04 48 / 0.055);
+    box-shadow:
+      0 1px 0 oklch(1 0 0 / 0.8),
+      0 20px 60px oklch(0.3 0.04 48 / 0.055);
     backdrop-filter: blur(14px);
   }
 
@@ -222,7 +230,10 @@
     border: 1px dashed var(--border);
     border-radius: 0.8rem;
     background: color-mix(in oklab, var(--secondary) 48%, transparent);
-    transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+    transition:
+      border-color 160ms ease,
+      background 160ms ease,
+      transform 160ms ease;
   }
 
   .dropzone:hover,
@@ -349,24 +360,46 @@
   }
 
   @keyframes pulse-wave {
-    from { transform: scaleY(0.78); opacity: 0.82; }
-    to { transform: scaleY(1); opacity: 1; }
+    from {
+      transform: scaleY(0.78);
+      opacity: 0.82;
+    }
+    to {
+      transform: scaleY(1);
+      opacity: 1;
+    }
   }
 
   @media (max-width: 900px) {
-    .workbench-grid { grid-template-columns: 1fr; }
-    .result-column { position: static; }
+    .workbench-grid {
+      grid-template-columns: 1fr;
+    }
+    .result-column {
+      position: static;
+    }
   }
 
   @media (max-width: 600px) {
-    .page-shell { width: min(100% - 1.25rem, 1180px); }
-    .hero-copy h1 { font-size: 2.7rem; }
-    .setting-switch { min-height: 88px; }
-    .audio-card audio { max-width: 165px; }
+    .page-shell {
+      width: min(100% - 1.25rem, 1180px);
+    }
+    .hero-copy h1 {
+      font-size: 2.7rem;
+    }
+    .setting-switch {
+      min-height: 88px;
+    }
+    .audio-card audio {
+      max-width: 165px;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .waveform-bar-active { animation: none; }
-    * { scroll-behavior: auto !important; }
+    .waveform-bar-active {
+      animation: none;
+    }
+    * {
+      scroll-behavior: auto !important;
+    }
   }
 }

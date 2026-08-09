@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { headers } from "next/headers";
+import { UserMenu } from "@/components/auth/user-menu";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { UserMenu } from "@/components/auth/user-menu";
-import { getRequestSession } from "@/lib/auth/session";
 import { isAdminEmail } from "@/lib/auth/admin-policy";
+import { getRequestSession } from "@/lib/auth/session";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -32,7 +32,9 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: "Copy Singer",
       description: "내 음역을 측정하고 어울리는 노래와 키를 찾아보세요.",
-      images: [{ url: `${origin}/og.png`, width: 1200, height: 630, alt: "Copy Singer singing voice conversion waveform" }],
+      images: [
+        { url: `${origin}/og.png`, width: 1200, height: 630, alt: "Copy Singer singing voice conversion waveform" },
+      ],
     },
     twitter: {
       card: "summary_large_image",

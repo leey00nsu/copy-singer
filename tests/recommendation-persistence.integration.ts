@@ -12,11 +12,9 @@ test("persists, reads, and cascade-deletes one recommendation run", async (conte
   }
 
   const { prisma } = await import("../lib/db/prisma");
-  const {
-    createRecommendationRun,
-    deleteRecommendationRun,
-    getRecommendationRun,
-  } = await import("../lib/recommendation/server");
+  const { createRecommendationRun, deleteRecommendationRun, getRecommendationRun } = await import(
+    "../lib/recommendation/server"
+  );
   const recordingId = crypto.randomUUID();
   const profileId = crypto.randomUUID();
 
@@ -55,7 +53,10 @@ test("persists, reads, and cascade-deletes one recommendation run", async (conte
     const created = await createRecommendationRun(profileId);
     assert.equal(created.scoringVersion, "key-fit-v2");
     assert.equal(created.items.length, 100);
-    assert.deepEqual(created.items.map((item) => item.rank), Array.from({ length: 100 }, (_, index) => index + 1));
+    assert.deepEqual(
+      created.items.map((item) => item.rank),
+      Array.from({ length: 100 }, (_, index) => index + 1),
+    );
     assert.ok(created.items.every((item) => item.synthesis.status === "not_started"));
     assert.ok(created.items.every((item) => item.sourceUrl.startsWith("https://www.youtube.com/")));
     assert.ok(created.items.every((item) => Number.isFinite(item.selectionScore)));

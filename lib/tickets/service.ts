@@ -1,11 +1,14 @@
 import "server-only";
 
 import type { Prisma, TicketLedgerType } from "@/generated/prisma/client";
-import { prisma } from "@/lib/db/prisma";
 import { signupTicketGrant } from "@/lib/config/server-env";
+import { prisma } from "@/lib/db/prisma";
 
 export class InsufficientTicketsError extends Error {
-  constructor(readonly required: number, readonly balance: number) {
+  constructor(
+    readonly required: number,
+    readonly balance: number,
+  ) {
     super(`티켓이 부족합니다. 필요한 티켓 ${required}개, 현재 ${balance}개입니다.`);
     this.name = "InsufficientTicketsError";
   }
@@ -34,46 +37,49 @@ export async function applyTicketChange(input: TicketChange) {
     try {
       return await prisma.$transaction(
         async (tx) => {
-        const existing = await tx.ticketLedger.findUnique({ where: { idempotencyKey: input.idempotencyKey } });
-        if (existing) {
-          if (existing.userId !== input.userId || existing.type !== input.type || existing.amount !== input.amount) {
-            throw new Error("Ticket idempotency key was reused with different input.");
+          const existing = await tx.ticketLedger.findUnique({ where: { idempotencyKey: input.idempotencyKey } });
+          if (existing) {
+            if (existing.userId !== input.userId || existing.type !== input.type || existing.amount !== input.amount) {
+              throw new Error("Ticket idempotency key was reused with different input.");
+            }
+            return existing;
           }
-          return existing;
-        }
 
-        if (input.amount < 0) {
-          const updated = await tx.user.updateMany({
-            where: { id: input.userId, ticketBalance: { gte: Math.abs(input.amount) } },
-            data: { ticketBalance: { increment: input.amount } },
-          });
-          if (updated.count !== 1) {
-            const current = await tx.user.findUnique({ where: { id: input.userId }, select: { ticketBalance: true } });
-            if (!current) throw new Error("Ticket owner was not found.");
-            throw new InsufficientTicketsError(Math.abs(input.amount), current.ticketBalance);
+          if (input.amount < 0) {
+            const updated = await tx.user.updateMany({
+              where: { id: input.userId, ticketBalance: { gte: Math.abs(input.amount) } },
+              data: { ticketBalance: { increment: input.amount } },
+            });
+            if (updated.count !== 1) {
+              const current = await tx.user.findUnique({
+                where: { id: input.userId },
+                select: { ticketBalance: true },
+              });
+              if (!current) throw new Error("Ticket owner was not found.");
+              throw new InsufficientTicketsError(Math.abs(input.amount), current.ticketBalance);
+            }
+          } else {
+            await tx.user.update({
+              where: { id: input.userId },
+              data: { ticketBalance: { increment: input.amount } },
+            });
           }
-        } else {
-          await tx.user.update({
+          const owner = await tx.user.findUniqueOrThrow({
             where: { id: input.userId },
-            data: { ticketBalance: { increment: input.amount } },
+            select: { ticketBalance: true },
           });
-        }
-        const owner = await tx.user.findUniqueOrThrow({
-          where: { id: input.userId },
-          select: { ticketBalance: true },
-        });
-        return tx.ticketLedger.create({
-          data: {
-            userId: input.userId,
-            type: input.type,
-            amount: input.amount,
-            balanceAfter: owner.ticketBalance,
-            idempotencyKey: input.idempotencyKey,
-            reason: input.reason.trim(),
-            mixingJobId: input.mixingJobId ?? null,
-            actorUserId: input.actorUserId ?? null,
-          },
-        });
+          return tx.ticketLedger.create({
+            data: {
+              userId: input.userId,
+              type: input.type,
+              amount: input.amount,
+              balanceAfter: owner.ticketBalance,
+              idempotencyKey: input.idempotencyKey,
+              reason: input.reason.trim(),
+              mixingJobId: input.mixingJobId ?? null,
+              actorUserId: input.actorUserId ?? null,
+            },
+          });
         },
         { isolationLevel: "Serializable" },
       );
@@ -82,7 +88,12 @@ export async function applyTicketChange(input: TicketChange) {
       if (code === "P2034" && attempt < 2) continue;
       if (code === "P2002") {
         const existing = await prisma.ticketLedger.findUnique({ where: { idempotencyKey: input.idempotencyKey } });
-        if (existing && existing.userId === input.userId && existing.type === input.type && existing.amount === input.amount) {
+        if (
+          existing &&
+          existing.userId === input.userId &&
+          existing.type === input.type &&
+          existing.amount === input.amount
+        ) {
           return existing;
         }
       }

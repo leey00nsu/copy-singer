@@ -1,7 +1,4 @@
-import type {
-  RecommendationItemResponse,
-  RecommendationRunResponse,
-} from "./contract";
+import type { RecommendationItemResponse, RecommendationRunResponse } from "./contract";
 
 export type RecommendationHandoff = Pick<
   RecommendationItemResponse,

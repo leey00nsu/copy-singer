@@ -11,8 +11,14 @@ test("development auth bypass policy is fail-closed outside development and test
   assert.equal(developmentAuthBypassUserId({ ...enabled, NODE_ENV: undefined }), null);
   assert.equal(developmentAuthBypassUserId({ ...enabled, NODE_ENV: "development" }), "user-1");
   assert.equal(developmentAuthBypassUserId({ ...enabled, NODE_ENV: "test" }), "user-1");
-  assert.equal(developmentAuthBypassUserId({ ...enabled, NODE_ENV: "development", DEV_AUTH_BYPASS_ENABLED: "false" }), null);
-  assert.equal(developmentAuthBypassUserId({ ...enabled, NODE_ENV: "development", DEV_AUTH_BYPASS_USER_ID: " " }), null);
+  assert.equal(
+    developmentAuthBypassUserId({ ...enabled, NODE_ENV: "development", DEV_AUTH_BYPASS_ENABLED: "false" }),
+    null,
+  );
+  assert.equal(
+    developmentAuthBypassUserId({ ...enabled, NODE_ENV: "development", DEV_AUTH_BYPASS_USER_ID: " " }),
+    null,
+  );
 });
 
 test("development auth bypass resolves only an existing database user", async (context) => {

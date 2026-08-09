@@ -12,24 +12,26 @@ test("vocal profile history renders persisted analysis and detail navigation", (
         pageSize: 12,
         total: 1,
         pageCount: 1,
-        profiles: [{
-          id: "profile-id",
-          minMidi: 46,
-          maxMidi: 58,
-          medianMidi: 52,
-          tessituraLowMidi: 48,
-          tessituraHighMidi: 56,
-          voicedRatio: 0.82,
-          pitchStability: 0.91,
-          analyzer: "test",
-          analyzerVersion: "1",
-          durationMs: 12_300,
-          mimeType: "audio/wav",
-          recommendationCount: 2,
-          mixingCount: 1,
-          latestRecommendationId: "run-id",
-          createdAt: "2026-08-07T00:00:00.000Z",
-        }],
+        profiles: [
+          {
+            id: "profile-id",
+            minMidi: 46,
+            maxMidi: 58,
+            medianMidi: 52,
+            tessituraLowMidi: 48,
+            tessituraHighMidi: 56,
+            voicedRatio: 0.82,
+            pitchStability: 0.91,
+            analyzer: "test",
+            analyzerVersion: "1",
+            durationMs: 12_300,
+            mimeType: "audio/wav",
+            recommendationCount: 2,
+            mixingCount: 1,
+            latestRecommendationId: "run-id",
+            createdAt: "2026-08-07T00:00:00.000Z",
+          },
+        ],
       }}
     />,
   );
@@ -43,16 +45,18 @@ test("vocal profile history renders persisted analysis and detail navigation", (
 test("vocal profile history shows queued analysis instead of an empty state", () => {
   const markup = renderToStaticMarkup(
     <VocalProfileHistoryList
-      analysisJobs={[{
-        id: "job-id",
-        status: "pending",
-        vocalProfileId: null,
-        attempts: 0,
-        maxAttempts: 3,
-        error: null,
-        createdAt: "2026-08-08T01:00:00.000Z",
-        updatedAt: "2026-08-08T01:00:00.000Z",
-      }]}
+      analysisJobs={[
+        {
+          id: "job-id",
+          status: "pending",
+          vocalProfileId: null,
+          attempts: 0,
+          maxAttempts: 3,
+          error: null,
+          createdAt: "2026-08-08T01:00:00.000Z",
+          updatedAt: "2026-08-08T01:00:00.000Z",
+        },
+      ]}
       history={{ page: 1, pageSize: 12, total: 0, pageCount: 1, profiles: [] }}
     />,
   );

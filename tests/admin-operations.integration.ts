@@ -24,7 +24,13 @@ test("admin allowlist and ticket adjustments preserve actor, reason, and nonnega
     await prisma.user.createMany({
       data: [
         { id: adminId, name: "Admin", email: adminEmail, emailVerified: true },
-        { id: targetId, name: "Target singer", email: `${targetId}@example.test`, emailVerified: true, ticketBalance: 1 },
+        {
+          id: targetId,
+          name: "Target singer",
+          email: `${targetId}@example.test`,
+          emailVerified: true,
+          ticketBalance: 1,
+        },
       ],
     });
     assert.equal(isAdminEmail(adminEmail), true);
@@ -50,13 +56,14 @@ test("admin allowlist and ticket adjustments preserve actor, reason, and nonnega
     });
     assert.equal(removed.balanceAfter, 2);
     await assert.rejects(
-      () => adjustUserTickets({
-        actorUserId: adminId,
-        targetUserId: targetId,
-        amount: -3,
-        reason: "잔액 초과 회수",
-        idempotencyKey: `invalid-${suffix}`,
-      }),
+      () =>
+        adjustUserTickets({
+          actorUserId: adminId,
+          targetUserId: targetId,
+          amount: -3,
+          reason: "잔액 초과 회수",
+          idempotencyKey: `invalid-${suffix}`,
+        }),
       (error) => error instanceof InsufficientTicketsError,
     );
     assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: targetId } })).ticketBalance, 2);

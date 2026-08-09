@@ -5,7 +5,13 @@ import { prisma } from "@/lib/db/prisma";
 import { applyTicketChange } from "@/lib/tickets/service";
 
 const JOB_STATUSES = new Set<MixingJobStatus>([
-  "PENDING", "PREPARING", "SUBMITTED", "PROCESSING", "SUCCEEDED", "FAILED", "CANCELED",
+  "PENDING",
+  "PREPARING",
+  "SUBMITTED",
+  "PROCESSING",
+  "SUCCEEDED",
+  "FAILED",
+  "CANCELED",
 ]);
 
 export async function getAdminOverview() {
@@ -13,7 +19,9 @@ export async function getAdminOverview() {
     prisma.user.count(),
     prisma.mixingJob.groupBy({ by: ["status"], _count: { _all: true } }),
     prisma.ticketLedger.aggregate({ _sum: { amount: true }, _count: { _all: true } }),
-    prisma.mixingJob.count({ where: { status: "FAILED", completedAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1_000) } } }),
+    prisma.mixingJob.count({
+      where: { status: "FAILED", completedAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1_000) } },
+    }),
   ]);
   return {
     users,

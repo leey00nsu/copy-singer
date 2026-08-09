@@ -20,8 +20,11 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
     mimeType: reference.mimeType,
     fileName: `vocal-profile-${reference.profileId}.wav`,
   });
-  return response ?? Response.json(
-    { error: { code: "VOCAL_PROFILE_AUDIO_UNAVAILABLE", message: "보컬 프로필 저장소에 연결하지 못했습니다." } },
-    { status: 502 },
+  return (
+    response ??
+    Response.json(
+      { error: { code: "VOCAL_PROFILE_AUDIO_UNAVAILABLE", message: "보컬 프로필 저장소에 연결하지 못했습니다." } },
+      { status: 502 },
+    )
   );
 }

@@ -25,24 +25,30 @@ async function main() {
   const totalSizeBytes = assets.reduce((total, asset) => total + Number(asset.sizeBytes), 0);
   const orphanedUnreferenced = assets.filter((asset) => !asset.song && asset._count.mixingJobs === 0);
   const historicalReferenced = assets.filter((asset) => !asset.song && asset._count.mixingJobs > 0);
-  console.info(JSON.stringify({
-    status: status.ready === status.total ? "ready" : "incomplete",
-    stagingDir,
-    total: status.total,
-    ready: status.ready,
-    missingCount: status.missing.length,
-    missing: status.missing,
-    linkedMimeTypes: status.songs.reduce<Record<string, number>>((summary, song) => {
-      const mimeType = song.targetAsset?.mimeType ?? "missing";
-      summary[mimeType] = (summary[mimeType] ?? 0) + 1;
-      return summary;
-    }, {}),
-    storedAssetCount: assets.length,
-    storedMimeTypes: mimeTypes,
-    storedSizeBytes: totalSizeBytes,
-    orphanedUnreferencedCount: orphanedUnreferenced.length,
-    historicalReferencedCount: historicalReferenced.length,
-  }, null, 2));
+  console.info(
+    JSON.stringify(
+      {
+        status: status.ready === status.total ? "ready" : "incomplete",
+        stagingDir,
+        total: status.total,
+        ready: status.ready,
+        missingCount: status.missing.length,
+        missing: status.missing,
+        linkedMimeTypes: status.songs.reduce<Record<string, number>>((summary, song) => {
+          const mimeType = song.targetAsset?.mimeType ?? "missing";
+          summary[mimeType] = (summary[mimeType] ?? 0) + 1;
+          return summary;
+        }, {}),
+        storedAssetCount: assets.length,
+        storedMimeTypes: mimeTypes,
+        storedSizeBytes: totalSizeBytes,
+        orphanedUnreferencedCount: orphanedUnreferenced.length,
+        historicalReferencedCount: historicalReferenced.length,
+      },
+      null,
+      2,
+    ),
+  );
 }
 
 main()

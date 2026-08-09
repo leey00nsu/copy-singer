@@ -1,6 +1,6 @@
 import type { Prisma, PrismaClient } from "../../generated/prisma/client";
 
-import { TJ_2607_CATALOG_METADATA, type SongCatalogEntry } from "./catalog";
+import { type SongCatalogEntry, TJ_2607_CATALOG_METADATA } from "./catalog";
 
 type TransactionClient = Parameters<Parameters<PrismaClient["$transaction"]>[0]>[0];
 
@@ -32,8 +32,7 @@ export async function importSongCatalog(prisma: PrismaClient, entries: SongCatal
       });
     }
 
-    let fallbackOrder =
-      ((await tx.song.aggregate({ _max: { catalogOrder: true } }))._max.catalogOrder ?? 0) + 1_000;
+    let fallbackOrder = ((await tx.song.aggregate({ _max: { catalogOrder: true } }))._max.catalogOrder ?? 0) + 1_000;
 
     for (const song of occupiedRanks) {
       if (!targetKeys.has(songKey(song))) {

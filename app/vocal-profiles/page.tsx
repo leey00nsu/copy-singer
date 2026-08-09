@@ -1,10 +1,10 @@
-import Link from "next/link";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
-import { VocalProfileHistoryList } from "@/components/vocal-profile/vocal-profile-history-list";
+import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { VocalProfileHistoryList } from "@/components/vocal-profile/vocal-profile-history-list";
 import { requirePageSession } from "@/lib/auth/session";
-import { getVocalProfileHistory } from "@/lib/vocal-profile/history";
 import { analysisJobPayload, listVisibleVocalProfileAnalysisJobs } from "@/lib/vocal-profile/analysis-queue";
+import { getVocalProfileHistory } from "@/lib/vocal-profile/history";
 
 export default async function VocalProfilesPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const session = await requirePageSession("/vocal-profiles");
@@ -22,15 +22,37 @@ export default async function VocalProfilesPage({ searchParams }: { searchParams
         <div>
           <p className="text-sm font-semibold text-emerald-700">VOCAL PROFILES</p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">내 보컬 프로필</h1>
-          <p className="mt-3 text-sm leading-6 text-muted-foreground">저장된 분석을 다시 보고, 제출했던 보컬을 안전하게 들어보세요.</p>
+          <p className="mt-3 text-sm leading-6 text-muted-foreground">
+            저장된 분석을 다시 보고, 제출했던 보컬을 안전하게 들어보세요.
+          </p>
         </div>
-        <Link className={buttonVariants()} href="/profile"><Plus className="size-4" /> 새 프로필 만들기</Link>
+        <Link className={buttonVariants()} href="/profile">
+          <Plus className="size-4" /> 새 프로필 만들기
+        </Link>
       </div>
-      <div className="mt-8"><VocalProfileHistoryList history={history} analysisJobs={analysisJobs} /></div>
+      <div className="mt-8">
+        <VocalProfileHistoryList history={history} analysisJobs={analysisJobs} />
+      </div>
       <nav className="mt-6 flex items-center justify-center gap-2" aria-label="보컬 프로필 페이지">
-        <Button nativeButton={false} variant="outline" disabled={history.page <= 1} render={<Link href={`/vocal-profiles?page=${history.page - 1}`} />}><ChevronLeft /> 이전</Button>
-        <span className="px-3 text-sm text-muted-foreground">{history.page} / {history.pageCount}</span>
-        <Button nativeButton={false} variant="outline" disabled={history.page >= history.pageCount} render={<Link href={`/vocal-profiles?page=${history.page + 1}`} />}>다음 <ChevronRight /></Button>
+        <Button
+          nativeButton={false}
+          variant="outline"
+          disabled={history.page <= 1}
+          render={<Link href={`/vocal-profiles?page=${history.page - 1}`} />}
+        >
+          <ChevronLeft /> 이전
+        </Button>
+        <span className="px-3 text-sm text-muted-foreground">
+          {history.page} / {history.pageCount}
+        </span>
+        <Button
+          nativeButton={false}
+          variant="outline"
+          disabled={history.page >= history.pageCount}
+          render={<Link href={`/vocal-profiles?page=${history.page + 1}`} />}
+        >
+          다음 <ChevronRight />
+        </Button>
       </nav>
     </main>
   );

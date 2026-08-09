@@ -1,15 +1,6 @@
-import type {
-  KeyFitReasonCode,
-  KeyFitScoreBreakdown,
-} from "../key-fit/contract";
+import type { KeyFitReasonCode, KeyFitScoreBreakdown } from "../key-fit/contract";
 
-export const SYNTHESIS_STATUSES = [
-  "preparing",
-  "queued",
-  "processing",
-  "succeeded",
-  "failed",
-] as const;
+export const SYNTHESIS_STATUSES = ["preparing", "queued", "processing", "succeeded", "failed"] as const;
 
 export type SynthesisStatus = (typeof SYNTHESIS_STATUSES)[number];
 

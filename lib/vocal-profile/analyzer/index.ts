@@ -5,8 +5,8 @@ import { analyzeWithLocalAdapter, localAnalyzerHealth } from "./local-adapter";
 import { analyzeWithModalAdapter, modalAnalyzerHealth } from "./modal-adapter";
 import { AnalyzerClientError, type AnalyzeVocalProfileInput } from "./types";
 
-export { AnalyzerClientError } from "./types";
 export type { AnalyzedRecording, AnalyzerArtifact } from "./types";
+export { AnalyzerClientError } from "./types";
 
 export type VocalProfileAnalyzerBackend = "local" | "modal";
 
@@ -33,16 +33,12 @@ export function vocalProfileAnalyzerBackend(): VocalProfileAnalyzerBackend {
 }
 
 export async function analyzeVocalProfile(input: AnalyzeVocalProfileInput) {
-  const analyzed = vocalProfileAnalyzerBackend() === "modal"
-    ? await analyzeWithModalAdapter(input)
-    : await analyzeWithLocalAdapter(input);
+  const analyzed =
+    vocalProfileAnalyzerBackend() === "modal"
+      ? await analyzeWithModalAdapter(input)
+      : await analyzeWithLocalAdapter(input);
   if (analyzed.profile.recordingId !== input.recordingId) {
-    throw new AnalyzerClientError(
-      "ANALYSIS_FAILED",
-      "Analyzer returned an invalid recording ID.",
-      true,
-      502,
-    );
+    throw new AnalyzerClientError("ANALYSIS_FAILED", "Analyzer returned an invalid recording ID.", true, 502);
   }
   if (!hasSmartReferenceContract(analyzed.profile)) {
     throw new AnalyzerClientError(
@@ -82,8 +78,6 @@ export async function analyzeVocalProfileBytes(input: {
 
 export async function vocalProfileAnalyzerHealth(fetchImpl: typeof fetch = fetch) {
   const backend = vocalProfileAnalyzerBackend();
-  const health = backend === "modal"
-    ? await modalAnalyzerHealth(fetchImpl)
-    : await localAnalyzerHealth(fetchImpl);
+  const health = backend === "modal" ? await modalAnalyzerHealth(fetchImpl) : await localAnalyzerHealth(fetchImpl);
   return { backend, health };
 }

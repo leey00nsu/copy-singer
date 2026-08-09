@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { AudioLines, ChevronLeft, ChevronRight, Ticket, UserRound } from "lucide-react";
+import Link from "next/link";
 import { TicketLedger } from "@/components/account/ticket-ledger";
 import { Button } from "@/components/ui/button";
 import { requirePageSession } from "@/lib/auth/session";
@@ -27,25 +27,48 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         </div>
       </section>
 
-      <Link className="mt-5 flex items-center justify-between rounded-2xl border bg-background p-5 transition-colors hover:bg-muted/40" href="/vocal-profiles">
-        <span className="flex items-center gap-3"><AudioLines className="size-5 text-emerald-600" aria-hidden="true" /><span><span className="block font-semibold">내 보컬 프로필</span><span className="mt-1 block text-sm text-muted-foreground">저장된 분석과 제출한 보컬 다시 보기</span></span></span>
+      <Link
+        className="mt-5 flex items-center justify-between rounded-2xl border bg-background p-5 transition-colors hover:bg-muted/40"
+        href="/vocal-profiles"
+      >
+        <span className="flex items-center gap-3">
+          <AudioLines className="size-5 text-emerald-600" aria-hidden="true" />
+          <span>
+            <span className="block font-semibold">내 보컬 프로필</span>
+            <span className="mt-1 block text-sm text-muted-foreground">저장된 분석과 제출한 보컬 다시 보기</span>
+          </span>
+        </span>
         <ChevronRight className="size-5 text-muted-foreground" aria-hidden="true" />
       </Link>
 
       <div className="mb-4 mt-10 flex items-end justify-between gap-4">
         <div>
           <h2 className="text-xl font-semibold">티켓 사용 내역</h2>
-          <p className="mt-1 text-sm text-muted-foreground">지급, AI 믹싱, 환불과 관리자 조정을 모두 확인할 수 있어요.</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            지급, AI 믹싱, 환불과 관리자 조정을 모두 확인할 수 있어요.
+          </p>
         </div>
         <p className="text-xs text-muted-foreground">총 {account.total}건</p>
       </div>
       <TicketLedger entries={account.entries} />
       <nav className="mt-5 flex items-center justify-center gap-2" aria-label="티켓 내역 페이지">
-        <Button nativeButton={false} variant="outline" disabled={account.page <= 1} render={<Link href={`/account?page=${account.page - 1}`} />}>
+        <Button
+          nativeButton={false}
+          variant="outline"
+          disabled={account.page <= 1}
+          render={<Link href={`/account?page=${account.page - 1}`} />}
+        >
           <ChevronLeft aria-hidden="true" /> 이전
         </Button>
-        <span className="px-3 text-sm text-muted-foreground">{account.page} / {account.pageCount}</span>
-        <Button nativeButton={false} variant="outline" disabled={account.page >= account.pageCount} render={<Link href={`/account?page=${account.page + 1}`} />}>
+        <span className="px-3 text-sm text-muted-foreground">
+          {account.page} / {account.pageCount}
+        </span>
+        <Button
+          nativeButton={false}
+          variant="outline"
+          disabled={account.page >= account.pageCount}
+          render={<Link href={`/account?page=${account.page + 1}`} />}
+        >
           다음 <ChevronRight aria-hidden="true" />
         </Button>
       </nav>

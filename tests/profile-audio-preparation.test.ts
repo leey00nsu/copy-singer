@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { boundedProfileUploadDuration, findFirstAudibleFrame, PROFILE_UPLOAD_SAMPLE_RATE } from "../lib/audio/profile-upload";
+import {
+  boundedProfileUploadDuration,
+  findFirstAudibleFrame,
+  PROFILE_UPLOAD_SAMPLE_RATE,
+} from "../lib/audio/profile-upload";
 
 test("finds the first complete audible 50ms window", () => {
   const samples = new Float32Array(PROFILE_UPLOAD_SAMPLE_RATE);

@@ -1,16 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
 import { useWavesurfer } from "@wavesurfer/react";
 import { Mic, Square } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import RecordPlugin from "wavesurfer.js/dist/plugins/record.esm.js";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import {
-  MAX_VOCAL_PROFILE_RECORDING_MS,
-  recorderExtension,
-  shouldStopRecording,
-} from "@/lib/audio/recording";
+import { MAX_VOCAL_PROFILE_RECORDING_MS, recorderExtension, shouldStopRecording } from "@/lib/audio/recording";
 
 type RecorderState = "ready" | "starting" | "recording";
 
@@ -48,12 +44,14 @@ export function VocalProfileRecorder({
 
   useEffect(() => {
     if (!wavesurfer) return;
-    const plugin = wavesurfer.registerPlugin(RecordPlugin.create({
-      continuousWaveform: true,
-      continuousWaveformDuration: maxDurationMs / 1_000,
-      mediaRecorderTimeslice: 250,
-      renderRecordedAudio: true,
-    }));
+    const plugin = wavesurfer.registerPlugin(
+      RecordPlugin.create({
+        continuousWaveform: true,
+        continuousWaveformDuration: maxDurationMs / 1_000,
+        mediaRecorderTimeslice: 250,
+        renderRecordedAudio: true,
+      }),
+    );
     recordPluginRef.current = plugin;
     const unsubscribeProgress = plugin.on("record-progress", (duration) => {
       const bounded = Math.min(duration, maxDurationMs);
@@ -131,13 +129,21 @@ export function VocalProfileRecorder({
       />
       {active ? (
         <div className="mt-4 text-center">
-          <p aria-live="polite" className="font-medium">{state === "starting" ? "마이크를 시작하는 중…" : "노래를 편안하게 이어가세요"}</p>
-          <p className="mt-2 font-mono text-sm text-muted-foreground">{(elapsedMs / 1_000).toFixed(1)} / {(maxDurationMs / 1_000).toFixed(1)}초</p>
+          <p aria-live="polite" className="font-medium">
+            {state === "starting" ? "마이크를 시작하는 중…" : "노래를 편안하게 이어가세요"}
+          </p>
+          <p className="mt-2 font-mono text-sm text-muted-foreground">
+            {(elapsedMs / 1_000).toFixed(1)} / {(maxDurationMs / 1_000).toFixed(1)}초
+          </p>
           <Progress className="mt-4" value={(elapsedMs / maxDurationMs) * 100} />
-          <Button className="mt-4" disabled={state !== "recording"} onClick={stop} variant="outline"><Square className="size-4" /> 녹음 중지</Button>
+          <Button className="mt-4" disabled={state !== "recording"} onClick={stop} variant="outline">
+            <Square className="size-4" /> 녹음 중지
+          </Button>
         </div>
       ) : (
-        <Button className="mt-4 w-full" disabled={disabled || !wavesurfer} onClick={() => void start()} size="lg"><Mic className="size-4" /> 마이크로 녹음</Button>
+        <Button className="mt-4 w-full" disabled={disabled || !wavesurfer} onClick={() => void start()} size="lg">
+          <Mic className="size-4" /> 마이크로 녹음
+        </Button>
       )}
     </div>
   );

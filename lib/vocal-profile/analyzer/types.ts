@@ -34,10 +34,12 @@ export class AnalyzerClientError extends Error {
 }
 
 export async function analyzerErrorFromResponse(response: Response) {
-  const payload = await response.json().catch(() => null) as Partial<VocalProfileError> | null;
+  const payload = (await response.json().catch(() => null)) as Partial<VocalProfileError> | null;
   const reasonCode = typeof payload?.reasonCode === "string" ? payload.reasonCode : "ANALYZER_UNAVAILABLE";
-  const detail = typeof payload?.detail === "string" ? payload.detail : `Vocal analyzer request failed (${response.status}).`;
-  const retryable = typeof payload?.retryable === "boolean" ? payload.retryable : response.status === 429 || response.status >= 500;
+  const detail =
+    typeof payload?.detail === "string" ? payload.detail : `Vocal analyzer request failed (${response.status}).`;
+  const retryable =
+    typeof payload?.retryable === "boolean" ? payload.retryable : response.status === 429 || response.status >= 500;
   return new AnalyzerClientError(reasonCode, detail, retryable, response.status);
 }
 

@@ -1,10 +1,10 @@
 import "server-only";
 
-import { prisma } from "@/lib/db/prisma";
 import { mixingMaxAttempts, mixingTicketCost } from "@/lib/config/server-env";
-import { InsufficientTicketsError } from "@/lib/tickets/service";
+import { prisma } from "@/lib/db/prisma";
 import { MixingError } from "@/lib/mixing/contract";
 import { selectMixingReference } from "@/lib/mixing/reference";
+import { InsufficientTicketsError } from "@/lib/tickets/service";
 import { synthesisReferenceContractVersion, type VocalProfileDescriptors } from "@/lib/vocal-profile/contract";
 
 function prismaErrorCode(error: unknown) {
@@ -52,7 +52,9 @@ export async function enqueueMixingJob(input: {
           }
           const smartReference = profile.synthesisReferenceAsset;
           const sourceReference = profile.recording.mediaAsset;
-          const contractVersion = synthesisReferenceContractVersion(profile.descriptors as VocalProfileDescriptors | null);
+          const contractVersion = synthesisReferenceContractVersion(
+            profile.descriptors as VocalProfileDescriptors | null,
+          );
           const reference = selectMixingReference({
             userId: input.userId,
             smart: smartReference,
@@ -64,7 +66,11 @@ export async function enqueueMixingJob(input: {
           }
           const targetAsset = item.song.targetAsset;
           if (!targetAsset || targetAsset.status !== "READY") {
-            throw new MixingError("MIXING_TARGET_UNAVAILABLE", "이 곡의 믹싱용 원곡 target이 아직 준비되지 않았습니다.", 422);
+            throw new MixingError(
+              "MIXING_TARGET_UNAVAILABLE",
+              "이 곡의 믹싱용 원곡 target이 아직 준비되지 않았습니다.",
+              422,
+            );
           }
 
           const debited = await tx.user.updateMany({
@@ -72,10 +78,16 @@ export async function enqueueMixingJob(input: {
             data: { ticketBalance: { decrement: cost } },
           });
           if (debited.count !== 1) {
-            const owner = await tx.user.findUniqueOrThrow({ where: { id: input.userId }, select: { ticketBalance: true } });
+            const owner = await tx.user.findUniqueOrThrow({
+              where: { id: input.userId },
+              select: { ticketBalance: true },
+            });
             throw new InsufficientTicketsError(cost, owner.ticketBalance);
           }
-          const owner = await tx.user.findUniqueOrThrow({ where: { id: input.userId }, select: { ticketBalance: true } });
+          const owner = await tx.user.findUniqueOrThrow({
+            where: { id: input.userId },
+            select: { ticketBalance: true },
+          });
           const job = await tx.mixingJob.create({
             data: {
               userId: input.userId,

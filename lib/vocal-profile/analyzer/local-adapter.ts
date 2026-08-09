@@ -2,11 +2,11 @@ import "server-only";
 
 import type { AnalyzerProfile, AnalyzerProfileData } from "@/lib/vocal-profile/contract";
 import {
+  type AnalyzedRecording,
   AnalyzerClientError,
+  type AnalyzeVocalProfileInput,
   analyzerErrorFromResponse,
   audioExtension,
-  type AnalyzeVocalProfileInput,
-  type AnalyzedRecording,
 } from "./types";
 
 function localAnalyzerUrl() {
@@ -75,7 +75,7 @@ export async function analyzeWithLocalAdapter(input: AnalyzeVocalProfileInput): 
   try {
     const response = await fetchImpl(`${baseUrl}/v1/analyze`, upstreamRequest);
     if (!response.ok) throw await analyzerErrorFromResponse(response);
-    const profile = await response.json() as AnalyzerProfile;
+    const profile = (await response.json()) as AnalyzerProfile;
     const encodedId = encodeURIComponent(input.recordingId);
     const source = await fetchArtifact(
       `${baseUrl}/v1/recordings/${encodedId}/source`,
@@ -115,12 +115,7 @@ export async function analyzeWithLocalAdapter(input: AnalyzeVocalProfileInput): 
     };
   } catch (error) {
     if (error instanceof AnalyzerClientError) throw error;
-    throw new AnalyzerClientError(
-      "ANALYZER_UNAVAILABLE",
-      "Local vocal analyzer is unavailable.",
-      true,
-      502,
-    );
+    throw new AnalyzerClientError("ANALYZER_UNAVAILABLE", "Local vocal analyzer is unavailable.", true, 502);
   } finally {
     await deleteRecording(baseUrl, input.recordingId, fetchImpl);
   }

@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
 import { useWavesurfer } from "@wavesurfer/react";
 import { Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { formatPlaybackTime } from "@/lib/audio/playback";
 import { cn } from "@/lib/utils";
@@ -118,15 +118,18 @@ function AudioWaveformPlayerInstance({
     setMuted(next);
   }, [muted, wavesurfer]);
 
-  const playSegment = useCallback((segment: AudioPlaybackSegment) => {
-    if (!wavesurfer || segment.ranges.length === 0) return;
-    const first = segment.ranges[0]!;
-    activeRangeRef.current = { segmentId: segment.id, rangeIndex: 0 };
-    setActiveSegmentId(segment.id);
-    setFinished(false);
-    wavesurfer.setTime(first.startSeconds);
-    void wavesurfer.play();
-  }, [wavesurfer]);
+  const playSegment = useCallback(
+    (segment: AudioPlaybackSegment) => {
+      if (!wavesurfer || segment.ranges.length === 0) return;
+      const first = segment.ranges[0]!;
+      activeRangeRef.current = { segmentId: segment.id, rangeIndex: 0 };
+      setActiveSegmentId(segment.id);
+      setFinished(false);
+      wavesurfer.setTime(first.startSeconds);
+      void wavesurfer.play();
+    },
+    [wavesurfer],
+  );
 
   return (
     <div className={cn("rounded-xl border bg-background p-3", className)}>
@@ -146,24 +149,60 @@ function AudioWaveformPlayerInstance({
             role="img"
           />
           <div className="mt-3 flex items-center gap-2">
-            <Button aria-label={isPlaying ? `${label} 일시정지` : `${label} 재생`} disabled={!isReady} onClick={togglePlayback} size="icon-sm" type="button" variant="outline">
-              {isPlaying ? <Pause className="size-3.5" /> : finished ? <RotateCcw className="size-3.5" /> : <Play className="size-3.5" />}
+            <Button
+              aria-label={isPlaying ? `${label} 일시정지` : `${label} 재생`}
+              disabled={!isReady}
+              onClick={togglePlayback}
+              size="icon-sm"
+              type="button"
+              variant="outline"
+            >
+              {isPlaying ? (
+                <Pause className="size-3.5" />
+              ) : finished ? (
+                <RotateCcw className="size-3.5" />
+              ) : (
+                <Play className="size-3.5" />
+              )}
             </Button>
             <span aria-live="off" className="min-w-24 font-mono text-xs text-muted-foreground">
               {formatPlaybackTime(currentTime)} / {formatPlaybackTime(Math.round(duration))}
             </span>
             <span className="h-px flex-1 bg-border" />
             {finished ? (
-              <Button aria-label={`${label} 처음부터 재생`} onClick={restart} size="icon-sm" type="button" variant="ghost"><RotateCcw className="size-3.5" /></Button>
+              <Button
+                aria-label={`${label} 처음부터 재생`}
+                onClick={restart}
+                size="icon-sm"
+                type="button"
+                variant="ghost"
+              >
+                <RotateCcw className="size-3.5" />
+              </Button>
             ) : null}
-            <Button aria-label={muted ? `${label} 음소거 해제` : `${label} 음소거`} disabled={!isReady} onClick={toggleMuted} size="icon-sm" type="button" variant="ghost">
+            <Button
+              aria-label={muted ? `${label} 음소거 해제` : `${label} 음소거`}
+              disabled={!isReady}
+              onClick={toggleMuted}
+              size="icon-sm"
+              type="button"
+              variant="ghost"
+            >
               {muted ? <VolumeX className="size-3.5" /> : <Volume2 className="size-3.5" />}
             </Button>
           </div>
           {segments.length > 0 ? (
             <div className="mt-3 grid gap-2 sm:grid-cols-3">
               {segments.map((segment) => (
-                <Button aria-pressed={activeSegmentId === segment.id} disabled={!isReady} key={segment.id} onClick={() => playSegment(segment)} size="sm" type="button" variant={activeSegmentId === segment.id ? "default" : "outline"}>
+                <Button
+                  aria-pressed={activeSegmentId === segment.id}
+                  disabled={!isReady}
+                  key={segment.id}
+                  onClick={() => playSegment(segment)}
+                  size="sm"
+                  type="button"
+                  variant={activeSegmentId === segment.id ? "default" : "outline"}
+                >
                   <Play className="size-3.5" /> {segment.label}
                 </Button>
               ))}

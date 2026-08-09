@@ -1,7 +1,4 @@
-import type {
-  SongProfileArtifact,
-  SongProfileMetrics,
-} from "./artifact";
+import type { SongProfileArtifact, SongProfileMetrics } from "./artifact";
 
 export type SongBatchOptions = {
   limit: number | null;
@@ -64,9 +61,7 @@ async function requestSongAnalysis(
     signal: AbortSignal.timeout(45 * 60 * 1_000),
   });
   if (!response.ok) {
-    const error = (await response.json().catch(() => null)) as
-      | { reasonCode?: string; detail?: string }
-      | null;
+    const error = (await response.json().catch(() => null)) as { reasonCode?: string; detail?: string } | null;
     throw new Error(`${error?.reasonCode ?? "SONG_ANALYZER_FAILED"}: ${error?.detail ?? "Song analysis failed."}`);
   }
   const result = (await response.json()) as AnalyzerResult;
@@ -115,8 +110,7 @@ export async function analyzeSongProfileArtifact(
 ) {
   const candidates = artifact.songs.filter(
     (entry) =>
-      (options.rank === null || entry.catalogOrder === options.rank) &&
-      (!options.resume || entry.status !== "READY"),
+      (options.rank === null || entry.catalogOrder === options.rank) && (!options.resume || entry.status !== "READY"),
   );
   const selected = options.limit === null ? candidates : candidates.slice(0, options.limit);
   const summary = { selected: selected.length, succeeded: 0, failed: 0, skipped: 0 };
@@ -127,12 +121,7 @@ export async function analyzeSongProfileArtifact(
       continue;
     }
     try {
-      entry.profile = await requestSongAnalysisWithRetry(
-        analyzerUrl,
-        entry.sourceUrl,
-        entry.sourceVideoId,
-        runtime,
-      );
+      entry.profile = await requestSongAnalysisWithRetry(analyzerUrl, entry.sourceUrl, entry.sourceVideoId, runtime);
       entry.status = "READY";
       entry.error = null;
       summary.succeeded += 1;

@@ -13,7 +13,10 @@ test("groups smart reference source ranges into ordered low, mid, and high contr
       ],
     },
   });
-  assert.deepEqual(segments.map((segment) => segment.label), ["저음 영역", "중앙 영역", "고음 영역"]);
+  assert.deepEqual(
+    segments.map((segment) => segment.label),
+    ["저음 영역", "중앙 영역", "고음 영역"],
+  );
   assert.deepEqual(segments[0]?.ranges, [
     { startSeconds: 1, endSeconds: 3 },
     { startSeconds: 3.5, endSeconds: 4 },
@@ -36,7 +39,10 @@ test("prefers analysisReferenceBands over mid-only synthesis source ranges", () 
     },
   });
 
-  assert.deepEqual(segments.map((segment) => segment.id), ["low", "mid", "high"]);
+  assert.deepEqual(
+    segments.map((segment) => segment.id),
+    ["low", "mid", "high"],
+  );
 });
 
 test("hides controls for legacy or malformed descriptors", () => {

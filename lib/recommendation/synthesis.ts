@@ -8,9 +8,9 @@ import { RecommendationError } from "./contract";
 import { getRecommendationRun } from "./server";
 import {
   appendSynthesisAttempt,
+  type StoredSynthesisStatus,
   SYNTHESIS_PRESET,
   toPublicSynthesisStatus,
-  type StoredSynthesisStatus,
 } from "./synthesis-state";
 
 const MODAL_RESULT_TTL_MS = 24 * 60 * 60 * 1_000;
@@ -41,12 +41,16 @@ function safeDetail(error: unknown, fallback: string) {
 
 async function requireMedia(response: Response, code: "SYNTHESIS_PREFLIGHT_FAILED" | "SYNTHESIS_MEDIA_FAILED") {
   if (!response.ok) {
-    throw new RecommendationError(code, code === "SYNTHESIS_PREFLIGHT_FAILED"
-      ? "보컬 원본을 찾을 수 없습니다. 다시 녹음해주세요."
-      : "추천 곡의 임시 오디오를 준비하지 못했습니다.", {
-      status: response.status === 404 ? 422 : 502,
-      retryable: code === "SYNTHESIS_MEDIA_FAILED",
-    });
+    throw new RecommendationError(
+      code,
+      code === "SYNTHESIS_PREFLIGHT_FAILED"
+        ? "보컬 원본을 찾을 수 없습니다. 다시 녹음해주세요."
+        : "추천 곡의 임시 오디오를 준비하지 못했습니다.",
+      {
+        status: response.status === 404 ? 422 : 502,
+        retryable: code === "SYNTHESIS_MEDIA_FAILED",
+      },
+    );
   }
   const bytes = await response.arrayBuffer();
   if (bytes.byteLength === 0) {
@@ -61,15 +65,25 @@ async function requireMedia(response: Response, code: "SYNTHESIS_PREFLIGHT_FAILE
   };
 }
 
-function catalogMedia(song: { catalogOrder: number; title: string; artist: string; metadata: Prisma.JsonValue | null }) {
+function catalogMedia(song: {
+  catalogOrder: number;
+  title: string;
+  artist: string;
+  metadata: Prisma.JsonValue | null;
+}) {
   const artifact = artifactJson.songs[song.catalogOrder - 1];
-  const metadata = song.metadata && typeof song.metadata === "object" && !Array.isArray(song.metadata)
-    ? song.metadata.catalog
-    : null;
+  const metadata =
+    song.metadata && typeof song.metadata === "object" && !Array.isArray(song.metadata) ? song.metadata.catalog : null;
   if (
-    !artifact || artifact.catalogOrder !== song.catalogOrder || artifact.title !== song.title ||
-    artifact.artist !== song.artist || !metadata || typeof metadata !== "object" || Array.isArray(metadata) ||
-    metadata.sourceUrl !== artifact.sourceUrl || metadata.sourceVideoId !== artifact.sourceVideoId
+    !artifact ||
+    artifact.catalogOrder !== song.catalogOrder ||
+    artifact.title !== song.title ||
+    artifact.artist !== song.artist ||
+    !metadata ||
+    typeof metadata !== "object" ||
+    Array.isArray(metadata) ||
+    metadata.sourceUrl !== artifact.sourceUrl ||
+    metadata.sourceVideoId !== artifact.sourceVideoId
   ) {
     throw new RecommendationError("SYNTHESIS_PREFLIGHT_FAILED", "추천 곡 정보가 allowlist와 일치하지 않습니다.", {
       status: 422,
@@ -92,8 +106,11 @@ async function acquireStart(runId: string, itemId: string, retry: boolean) {
   }
   const recording = item.run.userVocalProfile.recording;
   if (
-    item.run.userVocalProfile.sourceType !== "USER" || recording.kind !== "USER_TEST" ||
-    recording.status !== "READY" || !recording.expiresAt || recording.expiresAt <= new Date()
+    item.run.userVocalProfile.sourceType !== "USER" ||
+    recording.kind !== "USER_TEST" ||
+    recording.status !== "READY" ||
+    !recording.expiresAt ||
+    recording.expiresAt <= new Date()
   ) {
     throw new RecommendationError("SYNTHESIS_PREFLIGHT_FAILED", "보컬 원본이 만료됐습니다. 다시 녹음해주세요.", {
       status: 422,
@@ -163,10 +180,10 @@ export async function startRecommendationSynthesis(runId: string, itemId: string
     const target = catalogMedia(acquired.item.song);
 
     // Reference preflight always completes before target download to avoid unnecessary work and cost.
-    const referenceResponse = await fetch(
-      `${analyzer}/v1/recordings/${encodeURIComponent(recording.id)}/source`,
-      { cache: "no-store", signal: AbortSignal.timeout(60_000) },
-    );
+    const referenceResponse = await fetch(`${analyzer}/v1/recordings/${encodeURIComponent(recording.id)}/source`, {
+      cache: "no-store",
+      signal: AbortSignal.timeout(60_000),
+    });
     const reference = await requireMedia(referenceResponse, "SYNTHESIS_PREFLIGHT_FAILED");
     const targetResponse = await fetch(`${analyzer}/v1/song-target`, {
       method: "POST",
@@ -178,7 +195,11 @@ export async function startRecommendationSynthesis(runId: string, itemId: string
     const targetAudio = await requireMedia(targetResponse, "SYNTHESIS_MEDIA_FAILED");
 
     const form = new FormData();
-    form.append("prompt_audio", new Blob([reference.bytes], { type: reference.contentType }), `prompt.${reference.contentType.includes("wav") ? "wav" : "audio"}`);
+    form.append(
+      "prompt_audio",
+      new Blob([reference.bytes], { type: reference.contentType }),
+      `prompt.${reference.contentType.includes("wav") ? "wav" : "audio"}`,
+    );
     form.append("target_audio", new Blob([targetAudio.bytes], { type: targetAudio.contentType }), "target.wav");
     for (const [name, value] of Object.entries(SYNTHESIS_PRESET)) form.append(name, String(value));
 
@@ -191,12 +212,16 @@ export async function startRecommendationSynthesis(runId: string, itemId: string
       signal: AbortSignal.timeout(15 * 60_000),
     });
     if (!response.ok) {
-      throw new RecommendationError("SYNTHESIS_UPSTREAM_FAILED", `Modal이 합성 요청을 거부했습니다. (${response.status})`, {
-        status: 502,
-        retryable: response.status >= 500 || response.status === 429,
-      });
+      throw new RecommendationError(
+        "SYNTHESIS_UPSTREAM_FAILED",
+        `Modal이 합성 요청을 거부했습니다. (${response.status})`,
+        {
+          status: 502,
+          retryable: response.status >= 500 || response.status === 429,
+        },
+      );
     }
-    const job = await response.json() as ModalJob;
+    const job = (await response.json()) as ModalJob;
     if (!job.id || job.status !== "queued") {
       throw new RecommendationError("SYNTHESIS_UPSTREAM_FAILED", "Modal이 올바른 job 정보를 반환하지 않았습니다.", {
         status: 502,
@@ -255,26 +280,38 @@ export async function reconcileRecommendationSyntheses(runId: string) {
   const items = await prisma.recommendationItem.findMany({
     where: { runId, synthesisStatus: { in: ["QUEUED", "PROCESSING"] }, synthesisJobId: { not: null } },
   });
-  await Promise.all(items.map(async (item) => {
-    try {
-      const job = await fetchModalJob(item.synthesisJobId!);
-      const next = storedModalStatus(job.status);
-      if (item.synthesisStatus === "PROCESSING" && next === "QUEUED") return;
-      await prisma.recommendationItem.update({
-        where: { id: item.id },
-        data: {
-          synthesisStatus: next,
-          synthesisErrorCode: next === "FAILED" ? (job.error === "RESULT_EXPIRED" ? "SYNTHESIS_EXPIRED" : "SYNTHESIS_UPSTREAM_FAILED") : null,
-          synthesisErrorDetail: next === "FAILED" ? (job.error === "RESULT_EXPIRED" ? "합성 결과가 만료됐습니다." : "Modal 합성 작업이 실패했습니다.") : null,
-          synthesisRetryable: next === "FAILED" ? true : null,
-          synthesisUpdatedAt: new Date(),
-          synthesisCompletedAt: ["SUCCEEDED", "FAILED"].includes(next) ? new Date() : null,
-        },
-      });
-    } catch {
-      // A transient status failure must not replace a live job with a terminal failure.
-    }
-  }));
+  await Promise.all(
+    items.map(async (item) => {
+      try {
+        const job = await fetchModalJob(item.synthesisJobId!);
+        const next = storedModalStatus(job.status);
+        if (item.synthesisStatus === "PROCESSING" && next === "QUEUED") return;
+        await prisma.recommendationItem.update({
+          where: { id: item.id },
+          data: {
+            synthesisStatus: next,
+            synthesisErrorCode:
+              next === "FAILED"
+                ? job.error === "RESULT_EXPIRED"
+                  ? "SYNTHESIS_EXPIRED"
+                  : "SYNTHESIS_UPSTREAM_FAILED"
+                : null,
+            synthesisErrorDetail:
+              next === "FAILED"
+                ? job.error === "RESULT_EXPIRED"
+                  ? "합성 결과가 만료됐습니다."
+                  : "Modal 합성 작업이 실패했습니다."
+                : null,
+            synthesisRetryable: next === "FAILED" ? true : null,
+            synthesisUpdatedAt: new Date(),
+            synthesisCompletedAt: ["SUCCEEDED", "FAILED"].includes(next) ? new Date() : null,
+          },
+        });
+      } catch {
+        // A transient status failure must not replace a live job with a terminal failure.
+      }
+    }),
+  );
 }
 
 export async function recommendationSynthesisAudio(runId: string, itemId: string, range: string | null) {

@@ -12,7 +12,8 @@ test("concurrent item starts create one Modal job with the fixed preset", async 
   }
   const { prisma } = await import("../lib/db/prisma");
   const { createRecommendationRun, getRecommendationRun } = await import("../lib/recommendation/server");
-  const { cleanupRecommendationSyntheses, reconcileRecommendationSyntheses, startRecommendationSynthesis } = await import("../lib/recommendation/synthesis");
+  const { cleanupRecommendationSyntheses, reconcileRecommendationSyntheses, startRecommendationSynthesis } =
+    await import("../lib/recommendation/synthesis");
   const recordingId = crypto.randomUUID();
   const profileId = crypto.randomUUID();
   const originalFetch = globalThis.fetch;
@@ -39,10 +40,20 @@ test("concurrent item starts create one Modal job with the fixed preset", async 
         expiresAt: new Date(Date.now() + 60 * 60_000),
         vocalProfiles: {
           create: {
-            id: profileId, sourceType: "USER", minMidi: 48, maxMidi: 72, p10Midi: 52,
-            medianMidi: 60, p90Midi: 68, tessituraLowMidi: 52, tessituraHighMidi: 68,
-            voicedRatio: 0.72, pitchStability: 0.84, clippingRatio: 0.001,
-            analyzer: "librosa-pyin", analyzerVersion: "0.11.0",
+            id: profileId,
+            sourceType: "USER",
+            minMidi: 48,
+            maxMidi: 72,
+            p10Midi: 52,
+            medianMidi: 60,
+            p90Midi: 68,
+            tessituraLowMidi: 52,
+            tessituraHighMidi: 68,
+            voicedRatio: 0.72,
+            pitchStability: 0.84,
+            clippingRatio: 0.001,
+            analyzer: "librosa-pyin",
+            analyzerVersion: "0.11.0",
           },
         },
       },
@@ -54,8 +65,10 @@ test("concurrent item starts create one Modal job with the fixed preset", async 
     const item = run.items[0]!;
     globalThis.fetch = async (input, init) => {
       const url = String(input);
-      if (url.includes("/v1/recordings/")) return new Response(new Uint8Array([1, 2, 3]), { headers: { "Content-Type": "audio/wav" } });
-      if (url.endsWith("/v1/song-target")) return new Response(new Uint8Array([4, 5, 6]), { headers: { "Content-Type": "audio/wav" } });
+      if (url.includes("/v1/recordings/"))
+        return new Response(new Uint8Array([1, 2, 3]), { headers: { "Content-Type": "audio/wav" } });
+      if (url.endsWith("/v1/song-target"))
+        return new Response(new Uint8Array([4, 5, 6]), { headers: { "Content-Type": "audio/wav" } });
       if (url.endsWith("/v1/conversions") && init?.method === "POST") {
         modalCreates += 1;
         const form = init.body as FormData;
@@ -69,10 +82,7 @@ test("concurrent item starts create one Modal job with the fixed preset", async 
       throw new Error(`Unexpected fetch: ${url}`);
     };
 
-    await Promise.all([
-      startRecommendationSynthesis(run.id, item.id),
-      startRecommendationSynthesis(run.id, item.id),
-    ]);
+    await Promise.all([startRecommendationSynthesis(run.id, item.id), startRecommendationSynthesis(run.id, item.id)]);
     const stored = await getRecommendationRun(run.id);
     assert.equal(modalCreates, 1);
     assert.equal(stored.items[0]!.synthesis.status, "queued");
@@ -118,7 +128,9 @@ test("expired reference fails before target download or Modal creation", async (
   }
   const { prisma } = await import("../lib/db/prisma");
   const { createRecommendationRun } = await import("../lib/recommendation/server");
-  const { reconcileRecommendationSyntheses, startRecommendationSynthesis } = await import("../lib/recommendation/synthesis");
+  const { reconcileRecommendationSyntheses, startRecommendationSynthesis } = await import(
+    "../lib/recommendation/synthesis"
+  );
   const recordingId = crypto.randomUUID();
   const profileId = crypto.randomUUID();
   const originalFetch = globalThis.fetch;
@@ -126,13 +138,37 @@ test("expired reference fails before target download or Modal creation", async (
   try {
     await prisma.recording.create({
       data: {
-        id: recordingId, kind: "USER_TEST", storagePath: `${recordingId}/source.wav`, mimeType: "audio/wav",
-        status: "READY", expiresAt: new Date(Date.now() - 1_000),
-        vocalProfiles: { create: { id: profileId, sourceType: "USER", minMidi: 48, maxMidi: 72, p10Midi: 52, medianMidi: 60, p90Midi: 68, tessituraLowMidi: 52, tessituraHighMidi: 68, voicedRatio: 0.72, pitchStability: 0.84, clippingRatio: 0.001, analyzer: "librosa-pyin", analyzerVersion: "0.11.0" } },
+        id: recordingId,
+        kind: "USER_TEST",
+        storagePath: `${recordingId}/source.wav`,
+        mimeType: "audio/wav",
+        status: "READY",
+        expiresAt: new Date(Date.now() - 1_000),
+        vocalProfiles: {
+          create: {
+            id: profileId,
+            sourceType: "USER",
+            minMidi: 48,
+            maxMidi: 72,
+            p10Midi: 52,
+            medianMidi: 60,
+            p90Midi: 68,
+            tessituraLowMidi: 52,
+            tessituraHighMidi: 68,
+            voicedRatio: 0.72,
+            pitchStability: 0.84,
+            clippingRatio: 0.001,
+            analyzer: "librosa-pyin",
+            analyzerVersion: "0.11.0",
+          },
+        },
       },
     });
     const run = await createRecommendationRun(profileId);
-    globalThis.fetch = async () => { fetchCount += 1; return new Response(); };
+    globalThis.fetch = async () => {
+      fetchCount += 1;
+      return new Response();
+    };
     await assert.rejects(() => startRecommendationSynthesis(run.id, run.items[0]!.id), /만료/);
     assert.equal(fetchCount, 0);
     await prisma.recommendationItem.update({

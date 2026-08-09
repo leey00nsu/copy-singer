@@ -1,10 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-import {
-  loadOrCreateSongProfileArtifact,
-  writeSongProfileArtifact,
-} from "../lib/song-catalog/artifact";
+import { loadOrCreateSongProfileArtifact, writeSongProfileArtifact } from "../lib/song-catalog/artifact";
 import { parseSongCatalogMarkdown } from "../lib/song-catalog/catalog";
 
 const catalogPath = path.join(process.cwd(), "data/catalogs/tj-2607-top100.md");

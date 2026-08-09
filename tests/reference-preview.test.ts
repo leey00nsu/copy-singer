@@ -5,16 +5,22 @@ import { concatenateMonoRanges, encodeMonoPcm16Wav } from "../lib/audio/referenc
 test("concatenates only the selected source ranges into one mono preview", () => {
   const left = Float32Array.from([0, 0.2, 0.4, 0.6, 0.8, 1]);
   const right = Float32Array.from([0, 0.4, 0.6, 0.8, 1, 1]);
-  const preview = concatenateMonoRanges({
-    sampleRate: 2,
-    numberOfChannels: 2,
-    length: left.length,
-    getChannelData: (channel) => channel === 0 ? left : right,
-  }, [
-    { startSeconds: 0.5, endSeconds: 1.5 },
-    { startSeconds: 2, endSeconds: 3 },
-  ]);
-  assert.deepEqual(Array.from(preview, (value) => Number(value.toFixed(2))), [0.3, 0.5, 0.9, 1]);
+  const preview = concatenateMonoRanges(
+    {
+      sampleRate: 2,
+      numberOfChannels: 2,
+      length: left.length,
+      getChannelData: (channel) => (channel === 0 ? left : right),
+    },
+    [
+      { startSeconds: 0.5, endSeconds: 1.5 },
+      { startSeconds: 2, endSeconds: 3 },
+    ],
+  );
+  assert.deepEqual(
+    Array.from(preview, (value) => Number(value.toFixed(2))),
+    [0.3, 0.5, 0.9, 1],
+  );
 });
 
 test("encodes the isolated preview as mono 16-bit PCM WAV", async () => {

@@ -1,18 +1,11 @@
 import type { SongProfileArtifact } from "../song-catalog/artifact";
 import type { SongCatalogEntry } from "../song-catalog/catalog";
-import {
-  KeyFitScoringError,
-  type KeyFitProfile,
-  type KeyFitScoreResult,
-} from "./contract";
+import { type KeyFitProfile, type KeyFitScoreResult, KeyFitScoringError } from "./contract";
 import { scoreKeyFit } from "./scorer";
 
 export type CatalogKeyFitResult = SongCatalogEntry & KeyFitScoreResult;
 
-export function scoreCatalogKeyFits(
-  user: KeyFitProfile,
-  artifact: SongProfileArtifact,
-): CatalogKeyFitResult[] {
+export function scoreCatalogKeyFits(user: KeyFitProfile, artifact: SongProfileArtifact): CatalogKeyFitResult[] {
   return artifact.songs.map((song) => {
     if (song.status !== "READY" || !song.profile) {
       throw new KeyFitScoringError(

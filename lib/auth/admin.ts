@@ -1,8 +1,8 @@
 import "server-only";
 
 import { notFound } from "next/navigation";
-import { getRequestSession, requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
 import { isAdminEmail } from "@/lib/auth/admin-policy";
+import { getRequestSession, requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
 
 export { adminEmails, isAdminEmail } from "@/lib/auth/admin-policy";
 

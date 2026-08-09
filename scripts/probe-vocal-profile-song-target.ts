@@ -25,7 +25,7 @@ async function main() {
 
   const healthResponse = await fetch(`${baseUrl}/health`, { headers, signal: AbortSignal.timeout(30_000) });
   if (!healthResponse.ok) throw new Error(`Health probe failed (${healthResponse.status}).`);
-  const health = await healthResponse.json() as { capabilities?: string[] };
+  const health = (await healthResponse.json()) as { capabilities?: string[] };
   if (!health.capabilities?.includes("song-target-v1")) {
     throw new Error("Deployed analyzer does not advertise song-target-v1.");
   }
@@ -45,19 +45,25 @@ async function main() {
   const riff = new TextDecoder("ascii").decode(bytes.slice(0, 4));
   if (riff !== "RIFF" || bytes.byteLength < 44) throw new Error("Song target response is not a valid WAV payload.");
 
-  console.log(JSON.stringify({
-    status: "ok",
-    catalogOrder: song.catalogOrder,
-    title: song.title,
-    artist: song.artist,
-    sourceVideoId: song.sourceVideoId,
-    endpoint: `${baseUrl}/v1/song-target`,
-    capabilities: health.capabilities,
-    contentType: response.headers.get("content-type"),
-    sizeBytes: bytes.byteLength,
-    wavMagic: riff,
-    wallSeconds: Number(((performance.now() - started) / 1000).toFixed(3)),
-  }, null, 2));
+  console.log(
+    JSON.stringify(
+      {
+        status: "ok",
+        catalogOrder: song.catalogOrder,
+        title: song.title,
+        artist: song.artist,
+        sourceVideoId: song.sourceVideoId,
+        endpoint: `${baseUrl}/v1/song-target`,
+        capabilities: health.capabilities,
+        contentType: response.headers.get("content-type"),
+        sizeBytes: bytes.byteLength,
+        wavMagic: riff,
+        wallSeconds: Number(((performance.now() - started) / 1000).toFixed(3)),
+      },
+      null,
+      2,
+    ),
+  );
 }
 
 main().catch((error) => {

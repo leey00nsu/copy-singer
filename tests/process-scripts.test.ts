@@ -35,8 +35,12 @@ test("the process supervisor terminates the sibling when one child fails", async
     { cwd: new URL("..", import.meta.url), stdio: ["ignore", "pipe", "pipe"] },
   );
   let output = "";
-  child.stdout.setEncoding("utf8").on("data", (chunk: string) => { output += chunk; });
-  child.stderr.setEncoding("utf8").on("data", (chunk: string) => { output += chunk; });
+  child.stdout.setEncoding("utf8").on("data", (chunk: string) => {
+    output += chunk;
+  });
+  child.stderr.setEncoding("utf8").on("data", (chunk: string) => {
+    output += chunk;
+  });
   const exitCode = await new Promise<number | null>((resolve, reject) => {
     const timeout = setTimeout(() => {
       child.kill("SIGKILL");

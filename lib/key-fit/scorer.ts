@@ -2,11 +2,11 @@ import {
   KEY_FIT_SCORING_VERSION,
   KEY_SHIFT_MAX,
   KEY_SHIFT_MIN,
-  KeyFitScoringError,
   type KeyFitProfile,
   type KeyFitReasonCode,
   type KeyFitScoreBreakdown,
   type KeyFitScoreResult,
+  KeyFitScoringError,
 } from "./contract";
 
 const SCORE_WEIGHTS = {
@@ -133,11 +133,7 @@ export function calculateProfileConfidence(user: KeyFitProfile): number {
   return clamp(0.6 * user.pitchStability + 0.4 * voicedConfidence, 0, 1);
 }
 
-export function scoreKeyFitCandidate(
-  user: KeyFitProfile,
-  song: KeyFitProfile,
-  shift: number,
-): KeyFitScoreBreakdown {
+export function scoreKeyFitCandidate(user: KeyFitProfile, song: KeyFitProfile, shift: number): KeyFitScoreBreakdown {
   validateCompatibleKeyFitProfiles(user, song);
   if (!Number.isInteger(shift)) {
     throw new KeyFitScoringError("INVALID_PROFILE", "Key shift must be an integer semitone value.", {
@@ -160,16 +156,8 @@ export function scoreKeyFitCandidate(
   const lowTessituraExcess = Math.max(0, user.tessituraLowMidi - shiftedTessituraLow);
   const highExtremeExcess = Math.max(0, shiftedMaximum - user.maxMidi);
   const lowExtremeExcess = Math.max(0, user.minMidi - shiftedMinimum);
-  const tessituraFit = 1 - clamp(
-    (highTessituraExcess + lowTessituraExcess) / EXCESS_PENALTY_CAP_SEMITONES,
-    0,
-    1,
-  );
-  const extremeFit = 1 - clamp(
-    (highExtremeExcess + lowExtremeExcess) / EXCESS_PENALTY_CAP_SEMITONES,
-    0,
-    1,
-  );
+  const tessituraFit = 1 - clamp((highTessituraExcess + lowTessituraExcess) / EXCESS_PENALTY_CAP_SEMITONES, 0, 1);
+  const extremeFit = 1 - clamp((highExtremeExcess + lowExtremeExcess) / EXCESS_PENALTY_CAP_SEMITONES, 0, 1);
   const confidence = calculateProfileConfidence(user);
   const rawContributions = {
     overlap: SCORE_WEIGHTS.overlap * tessituraOverlapRatio,
@@ -225,10 +213,7 @@ function compareCandidates(first: KeyFitScoreBreakdown, second: KeyFitScoreBreak
   return second.shift - first.shift;
 }
 
-function buildReasonCodes(
-  original: KeyFitScoreBreakdown,
-  recommended: KeyFitScoreBreakdown,
-): KeyFitReasonCode[] {
+function buildReasonCodes(original: KeyFitScoreBreakdown, recommended: KeyFitScoreBreakdown): KeyFitReasonCode[] {
   const codes: KeyFitReasonCode[] = [];
   if (recommended.shift === 0) codes.push("ORIGINAL_KEY_BEST");
   if (recommended.shift !== 0 && recommended.rawScore > original.rawScore + SCORE_TIE_EPSILON) {

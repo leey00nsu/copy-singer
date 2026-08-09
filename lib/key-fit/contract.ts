@@ -61,10 +61,7 @@ export type KeyFitScoreResult = {
   recommended: KeyFitScoreBreakdown;
 };
 
-export type KeyFitErrorCode =
-  | "INVALID_PROFILE"
-  | "INCOMPATIBLE_ANALYZER"
-  | "SONG_PROFILE_NOT_READY";
+export type KeyFitErrorCode = "INVALID_PROFILE" | "INCOMPATIBLE_ANALYZER" | "SONG_PROFILE_NOT_READY";
 
 export class KeyFitScoringError extends Error {
   readonly code: KeyFitErrorCode;

@@ -23,11 +23,13 @@ function run(command: string, args: string[]) {
     const child = spawn(command, args, { stdio: ["ignore", "ignore", "pipe"] });
     let stderr = "";
     child.stderr.setEncoding("utf8");
-    child.stderr.on("data", (chunk: string) => { stderr += chunk; });
+    child.stderr.on("data", (chunk: string) => {
+      stderr += chunk;
+    });
     child.once("error", reject);
-    child.once("close", (code) => code === 0
-      ? resolve()
-      : reject(new Error(`FFmpeg mixing finalization failed (${code}): ${stderr.slice(-800)}`)));
+    child.once("close", (code) =>
+      code === 0 ? resolve() : reject(new Error(`FFmpeg mixing finalization failed (${code}): ${stderr.slice(-800)}`)),
+    );
   });
 }
 
@@ -38,10 +40,29 @@ export async function compressMixingResult(bytes: Uint8Array): Promise<Compresse
   try {
     await writeFile(input, bytes);
     await run(process.env.FFMPEG_BIN || "ffmpeg", [
-      "-hide_banner", "-loglevel", "error", "-nostdin", "-y", "-i", input,
-      "-vn", "-af", CLARITY_NORMAL_FILTER_CHAIN,
-      "-map_metadata", "-1", "-ac", "2", "-ar", "44100",
-      "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart", output,
+      "-hide_banner",
+      "-loglevel",
+      "error",
+      "-nostdin",
+      "-y",
+      "-i",
+      input,
+      "-vn",
+      "-af",
+      CLARITY_NORMAL_FILTER_CHAIN,
+      "-map_metadata",
+      "-1",
+      "-ac",
+      "2",
+      "-ar",
+      "44100",
+      "-c:a",
+      "aac",
+      "-b:a",
+      "160k",
+      "-movflags",
+      "+faststart",
+      output,
     ]);
     return { bytes: new Uint8Array(await readFile(output)), mimeType: "audio/mp4", extension: "m4a" };
   } finally {

@@ -24,13 +24,15 @@ function serializeRow(row: Awaited<ReturnType<typeof findRows>>[number]) {
     id: row.id,
     status: row.status.toLowerCase(),
     ticketCost: row.ticketCost,
-    error: row.status === "FAILED" && row.errorCode
-      ? { code: row.errorCode, detail: row.errorDetail ?? "믹싱 작업이 실패했습니다." }
-      : null,
+    error:
+      row.status === "FAILED" && row.errorCode
+        ? { code: row.errorCode, detail: row.errorDetail ?? "믹싱 작업이 실패했습니다." }
+        : null,
     song: row.song,
     vocalProfile: { id: row.vocalProfile.id, createdAt: row.vocalProfile.createdAt.toISOString() },
     resultReady: row.status === "SUCCEEDED" && row.resultAsset?.status === "READY",
-    audioUrl: row.status === "SUCCEEDED" && row.resultAsset?.status === "READY" ? `/api/mixing-jobs/${row.id}/audio` : null,
+    audioUrl:
+      row.status === "SUCCEEDED" && row.resultAsset?.status === "READY" ? `/api/mixing-jobs/${row.id}/audio` : null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
     startedAt: row.startedAt?.toISOString() ?? null,

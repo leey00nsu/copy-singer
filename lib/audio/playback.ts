@@ -15,5 +15,8 @@ export function playbackRangesElapsed(ranges: PlaybackRange[], rangeIndex: numbe
   if (rangeIndex < 0 || rangeIndex >= ranges.length) return 0;
   const previous = playbackRangesDuration(ranges.slice(0, rangeIndex));
   const range = ranges[rangeIndex]!;
-  return previous + Math.min(Math.max(sourceTime - range.startSeconds, 0), Math.max(0, range.endSeconds - range.startSeconds));
+  return (
+    previous +
+    Math.min(Math.max(sourceTime - range.startSeconds, 0), Math.max(0, range.endSeconds - range.startSeconds))
+  );
 }

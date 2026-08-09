@@ -303,7 +303,10 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     assert.equal(postSubmitFailed.refundState, "NONE");
     assert.equal(postSubmitFailed.attempts, 2);
     assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 0);
-    assert.equal(await prisma.ticketLedger.count({ where: { mixingJobId: submittedFailure.id, type: "MIXING_REFUND" } }), 0);
+    assert.equal(
+      await prisma.ticketLedger.count({ where: { mixingJobId: submittedFailure.id, type: "MIXING_REFUND" } }),
+      0,
+    );
 
     await applyTicketChange({
       userId,
@@ -354,7 +357,10 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     assert.equal(finalizationRetrying.resultAssetId, null);
     assert.equal(finalizationRetrying.attempts, 1);
     assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 0);
-    assert.equal(await prisma.ticketLedger.count({ where: { mixingJobId: finalizationFailure.id, type: "MIXING_REFUND" } }), 0);
+    assert.equal(
+      await prisma.ticketLedger.count({ where: { mixingJobId: finalizationFailure.id, type: "MIXING_REFUND" } }),
+      0,
+    );
 
     await prisma.$executeRaw`
       UPDATE "MixingJob" SET "nextAttemptAt" = ${new Date(Date.now() - 1_000)}
@@ -374,7 +380,10 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     assert.equal(finalizationExhausted.resultAssetId, null);
     assert.equal(finalizationExhausted.attempts, 2);
     assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 0);
-    assert.equal(await prisma.ticketLedger.count({ where: { mixingJobId: finalizationFailure.id, type: "MIXING_REFUND" } }), 0);
+    assert.equal(
+      await prisma.ticketLedger.count({ where: { mixingJobId: finalizationFailure.id, type: "MIXING_REFUND" } }),
+      0,
+    );
 
     await applyTicketChange({
       userId,
@@ -418,9 +427,12 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       }
       if (url === "https://objects.example/result-upload") return new Response(null, { status: 200 });
       if (url.endsWith("/files/confirm")) {
-        return Response.json({
-          file: { id: `result-${suffix}`, url: "https://objects.example/result.wav" },
-        }, { status: 201 });
+        return Response.json(
+          {
+            file: { id: `result-${suffix}`, url: "https://objects.example/result.wav" },
+          },
+          { status: 201 },
+        );
       }
       throw new Error(`Unexpected successful worker URL: ${url}`);
     };

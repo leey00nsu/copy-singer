@@ -56,7 +56,7 @@ function sleep(milliseconds: number) {
 }
 
 async function responseMessage(response: Response) {
-  const payload = await response.json().catch(() => null) as { message?: unknown } | null;
+  const payload = (await response.json().catch(() => null)) as { message?: unknown } | null;
   return typeof payload?.message === "string" ? payload.message : `Leemage request failed (${response.status}).`;
 }
 
@@ -107,7 +107,7 @@ export class LeemageClient {
         fileSize: input.bytes.byteLength,
       }),
     });
-    const allocation = await presign.json() as {
+    const allocation = (await presign.json()) as {
       presignedUrl?: unknown;
       objectName?: unknown;
       fileId?: unknown;
@@ -126,7 +126,11 @@ export class LeemageClient {
       body: Uint8Array.from(input.bytes).buffer,
     });
     if (!uploaded.ok) {
-      throw new LeemageError(`Leemage object upload failed (${uploaded.status}).`, uploaded.status, uploaded.status >= 500);
+      throw new LeemageError(
+        `Leemage object upload failed (${uploaded.status}).`,
+        uploaded.status,
+        uploaded.status >= 500,
+      );
     }
 
     const confirmed = await this.apiRequest(`/projects/${encodeURIComponent(this.config.projectId)}/files/confirm`, {
@@ -139,7 +143,7 @@ export class LeemageClient {
         fileSize: input.bytes.byteLength,
       }),
     });
-    const confirmation = await confirmed.json() as { file?: { id?: unknown; url?: unknown } };
+    const confirmation = (await confirmed.json()) as { file?: { id?: unknown; url?: unknown } };
     if (typeof confirmation.file?.id !== "string" || typeof confirmation.file.url !== "string") {
       throw new LeemageError("Leemage returned an invalid confirm response.", 502, false);
     }
@@ -154,10 +158,9 @@ export class LeemageClient {
   }
 
   async deleteFile(projectId: string, fileId: string) {
-    await this.apiRequest(
-      `/projects/${encodeURIComponent(projectId)}/files/${encodeURIComponent(fileId)}`,
-      { method: "DELETE" },
-    );
+    await this.apiRequest(`/projects/${encodeURIComponent(projectId)}/files/${encodeURIComponent(fileId)}`, {
+      method: "DELETE",
+    });
   }
 }
 

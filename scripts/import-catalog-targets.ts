@@ -6,9 +6,16 @@ const { ensureCatalogTargetStagingDir, importCatalogTargetAsset } = await import
 const { prisma } = await import("../lib/db/prisma");
 
 function parseOrders() {
-  const raw = process.argv.slice(2).filter((value) => value !== "--").join(",").trim();
+  const raw = process.argv
+    .slice(2)
+    .filter((value) => value !== "--")
+    .join(",")
+    .trim();
   if (!raw) return Array.from({ length: 100 }, (_, index) => index + 1);
-  const orders = raw.split(",").map((value) => Number(value.trim())).filter((value) => Number.isFinite(value));
+  const orders = raw
+    .split(",")
+    .map((value) => Number(value.trim()))
+    .filter((value) => Number.isFinite(value));
   if (orders.length === 0 || orders.some((value) => !Number.isInteger(value) || value < 1 || value > 100)) {
     throw new Error("Catalog orders must be comma-separated integers between 1 and 100.");
   }

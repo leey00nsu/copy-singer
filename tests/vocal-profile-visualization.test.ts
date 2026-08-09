@@ -21,17 +21,26 @@ test("parses and sorts bounded visualization descriptors", () => {
       { timeMs: 0, midi: 58.2 },
     ],
   });
-  assert.deepEqual(parsed?.histogram.map((bin) => bin.midi), [58, 60]);
-  assert.deepEqual(parsed?.track.map((point) => point.timeMs), [0, 100]);
+  assert.deepEqual(
+    parsed?.histogram.map((bin) => bin.midi),
+    [58, 60],
+  );
+  assert.deepEqual(
+    parsed?.track.map((point) => point.timeMs),
+    [0, 100],
+  );
 });
 
 test("rejects missing or oversized visualization descriptors", () => {
   assert.equal(parseVocalProfileVisualization(null), null);
   assert.equal(parseVocalProfileVisualization({}), null);
-  assert.equal(parseVocalProfileVisualization({
-    pitchHistogram: [{ midi: 60, count: 1, ratio: 1 }],
-    pitchTrack: Array.from({ length: 721 }, (_, index) => ({ timeMs: index, midi: 60 })),
-  }), null);
+  assert.equal(
+    parseVocalProfileVisualization({
+      pitchHistogram: [{ midi: 60, count: 1, ratio: 1 }],
+      pitchTrack: Array.from({ length: 721 }, (_, index) => ({ timeMs: index, midi: 60 })),
+    }),
+    null,
+  );
 });
 
 test("builds a padded MIDI axis with stable positions and ticks", () => {
@@ -61,7 +70,16 @@ test("keeps unvoiced null gaps in Recharts pitch data", () => {
       { timeMs: 200, midi: 64 },
     ],
   });
-  assert.deepEqual(data.map((point) => point.midi), [60, null, 64]);
-  assert.deepEqual(data.map((point) => point.note), ["C4", null, "E4"]);
-  assert.deepEqual(data.map((point) => point.timeSeconds), [0, 0.1, 0.2]);
+  assert.deepEqual(
+    data.map((point) => point.midi),
+    [60, null, 64],
+  );
+  assert.deepEqual(
+    data.map((point) => point.note),
+    ["C4", null, "E4"],
+  );
+  assert.deepEqual(
+    data.map((point) => point.timeSeconds),
+    [0, 0.1, 0.2],
+  );
 });

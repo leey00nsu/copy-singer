@@ -6,8 +6,12 @@ const { mixingWorkerConcurrency } = await import("../lib/config/server-env");
 const { runMixingWorkerOnce } = await import("../lib/mixing/worker");
 
 let stopping = false;
-process.on("SIGINT", () => { stopping = true; });
-process.on("SIGTERM", () => { stopping = true; });
+process.on("SIGINT", () => {
+  stopping = true;
+});
+process.on("SIGTERM", () => {
+  stopping = true;
+});
 
 function sleep(milliseconds: number) {
   return new Promise<void>((resolve) => setTimeout(resolve, milliseconds));

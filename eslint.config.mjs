@@ -1,6 +1,6 @@
-import { defineConfig, globalIgnores } from "eslint/config";
 import eslint from "@eslint/js";
 import next from "@next/eslint-plugin-next";
+import { defineConfig, globalIgnores } from "eslint/config";
 import jsxA11y from "eslint-plugin-jsx-a11y";
 import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";

@@ -1,12 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import { FileAudio, Music2, RotateCcw, UploadCloud, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useCallback, useEffect, useId, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
 
 export const MAX_AUDIO_UPLOAD_BYTES = {
   reference: 128 * 1024 * 1024,
@@ -47,7 +47,9 @@ export function AudioDropzone({
         return;
       }
       if (candidate.size > MAX_AUDIO_UPLOAD_BYTES[kind]) {
-        toast.error(`${kind === "reference" ? "Reference" : "Target"} audio must be ${formatBytes(MAX_AUDIO_UPLOAD_BYTES[kind])} or smaller.`);
+        toast.error(
+          `${kind === "reference" ? "Reference" : "Target"} audio must be ${formatBytes(MAX_AUDIO_UPLOAD_BYTES[kind])} or smaller.`,
+        );
         return;
       }
       onFile(candidate);
@@ -62,13 +64,16 @@ export function AudioDropzone({
       <CardHeader className="border-b border-border/70 px-5 py-4">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-3">
-            <div className={cn("audio-card-icon", isReference ? "bg-violet-100 text-violet-700" : "bg-orange-100 text-orange-700")}>
+            <div
+              className={cn(
+                "audio-card-icon",
+                isReference ? "bg-violet-100 text-violet-700" : "bg-orange-100 text-orange-700",
+              )}
+            >
               {isReference ? <FileAudio className="size-4" /> : <Music2 className="size-4" />}
             </div>
             <div>
-              <CardTitle className="text-[15px]">
-                {isReference ? "Reference voice" : "Target performance"}
-              </CardTitle>
+              <CardTitle className="text-[15px]">{isReference ? "Reference voice" : "Target performance"}</CardTitle>
               <CardDescription className="mt-1 text-xs">
                 {isReference ? "Clean singing voice · up to 30 seconds" : "Vocal or full mix · up to 5 minutes"}
               </CardDescription>
@@ -128,7 +133,9 @@ export function AudioDropzone({
               acceptFile(event.dataTransfer.files[0]);
             }}
           >
-            <span className="dropzone-icon"><UploadCloud className="size-5" /></span>
+            <span className="dropzone-icon">
+              <UploadCloud className="size-5" />
+            </span>
             <span className="text-sm font-medium">Drop audio here or browse</span>
             <span className="text-xs text-muted-foreground">
               WAV, MP3, FLAC, M4A · max {isReference ? "128 MB" : "256 MB"}

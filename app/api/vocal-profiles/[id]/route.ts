@@ -1,9 +1,9 @@
 export const runtime = "nodejs";
 
-import { prisma } from "@/lib/db/prisma";
-import { deleteAnalyzerRecording, serializeProfile } from "@/lib/vocal-profile/server";
 import { requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
+import { prisma } from "@/lib/db/prisma";
 import { deleteOrScheduleMediaAsset } from "@/lib/leemage/media-service";
+import { deleteAnalyzerRecording, serializeProfile } from "@/lib/vocal-profile/server";
 
 export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
   const session = await requireApiSession(request);
@@ -14,7 +14,10 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
     include: { recording: true },
   });
   if (!profile || profile.sourceType !== "USER") {
-    return Response.json({ reasonCode: "PROFILE_NOT_FOUND", detail: "Vocal profile was not found.", retryable: false }, { status: 404 });
+    return Response.json(
+      { reasonCode: "PROFILE_NOT_FOUND", detail: "Vocal profile was not found.", retryable: false },
+      { status: 404 },
+    );
   }
   return Response.json(serializeProfile(profile));
 }
@@ -32,7 +35,10 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
     },
   });
   if (!profile || profile.sourceType !== "USER") {
-    return Response.json({ reasonCode: "PROFILE_NOT_FOUND", detail: "Vocal profile was not found.", retryable: false }, { status: 404 });
+    return Response.json(
+      { reasonCode: "PROFILE_NOT_FOUND", detail: "Vocal profile was not found.", retryable: false },
+      { status: 404 },
+    );
   }
   if (profile.recommendationRuns.length > 0) {
     return Response.json(

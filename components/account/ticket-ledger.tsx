@@ -18,13 +18,19 @@ const TYPE_LABELS: Record<TicketEntryView["type"], string> = {
 
 export function TicketLedger({ entries }: { entries: TicketEntryView[] }) {
   if (entries.length === 0) {
-    return <p className="rounded-2xl border border-dashed p-8 text-center text-sm text-muted-foreground">티켓 내역이 없습니다.</p>;
+    return (
+      <p className="rounded-2xl border border-dashed p-8 text-center text-sm text-muted-foreground">
+        티켓 내역이 없습니다.
+      </p>
+    );
   }
   return (
     <div className="divide-y rounded-2xl border bg-background">
       {entries.map((entry) => (
         <article key={entry.id} className="flex items-center gap-4 px-4 py-4 sm:px-5">
-          <span className={`flex size-10 shrink-0 items-center justify-center rounded-full ${entry.amount >= 0 ? "bg-emerald-50 text-emerald-700" : "bg-orange-50 text-orange-700"}`}>
+          <span
+            className={`flex size-10 shrink-0 items-center justify-center rounded-full ${entry.amount >= 0 ? "bg-emerald-50 text-emerald-700" : "bg-orange-50 text-orange-700"}`}
+          >
             {entry.amount >= 0 ? <ArrowUpRight aria-hidden="true" /> : <ArrowDownRight aria-hidden="true" />}
           </span>
           <div className="min-w-0 flex-1">
@@ -36,7 +42,8 @@ export function TicketLedger({ entries }: { entries: TicketEntryView[] }) {
           </div>
           <div className="text-right">
             <p className={`font-semibold tabular-nums ${entry.amount >= 0 ? "text-emerald-700" : "text-orange-700"}`}>
-              {entry.amount >= 0 ? "+" : ""}{entry.amount}
+              {entry.amount >= 0 ? "+" : ""}
+              {entry.amount}
             </p>
             <p className="flex items-center justify-end gap-1 text-xs text-muted-foreground">
               <Ticket className="size-3" aria-hidden="true" /> {entry.balanceAfter}

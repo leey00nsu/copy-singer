@@ -1,12 +1,12 @@
 import "server-only";
 
-import { prisma } from "@/lib/db/prisma";
-import { SYNTHESIS_PRESET } from "@/lib/recommendation/synthesis-state";
+import { type CompressedMixingAudio, compressMixingResult } from "@/lib/audio/compress-mixing-result";
 import { mixingLeaseSeconds, mixingPollIntervalMs } from "@/lib/config/server-env";
-import { applyTicketChange } from "@/lib/tickets/service";
-import { discardMediaAsset, storeMixingResult } from "@/lib/leemage/media-service";
+import { prisma } from "@/lib/db/prisma";
 import { processOneMediaCleanup } from "@/lib/leemage/cleanup";
-import { compressMixingResult, type CompressedMixingAudio } from "@/lib/audio/compress-mixing-result";
+import { discardMediaAsset, storeMixingResult } from "@/lib/leemage/media-service";
+import { SYNTHESIS_PRESET } from "@/lib/recommendation/synthesis-state";
+import { applyTicketChange } from "@/lib/tickets/service";
 
 type ModalJob = {
   id: string;
@@ -315,7 +315,7 @@ export async function processClaimedMixingJob(jobId: string, owner: string, depe
           retryableStatus: (status) => status === 429,
         },
       );
-      const modalJob = await response.json() as ModalJob;
+      const modalJob = (await response.json()) as ModalJob;
       if (!modalJob.id || modalJob.status !== "queued") {
         throw new MixingStageError(
           "MODAL_SUBMIT_INVALID_RESPONSE",
@@ -348,13 +348,9 @@ export async function processClaimedMixingJob(jobId: string, owner: string, depe
           networkRetryable: true,
         },
       );
-      const modalJob = await response.json() as ModalJob;
+      const modalJob = (await response.json()) as ModalJob;
       if (modalJob.status === "failed") {
-        throw new MixingStageError(
-          "MODAL_JOB_FAILED",
-          modalJob.error || "Modal 합성 작업이 실패했습니다.",
-          false,
-        );
+        throw new MixingStageError("MODAL_JOB_FAILED", modalJob.error || "Modal 합성 작업이 실패했습니다.", false);
       }
       if (modalJob.status === "succeeded") {
         const audioResponse = await stageFetch(

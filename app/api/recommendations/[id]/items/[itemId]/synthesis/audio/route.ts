@@ -1,9 +1,9 @@
 export const runtime = "nodejs";
 
-import { RecommendationError } from "@/lib/recommendation/contract";
-import { recommendationSynthesisAudio } from "@/lib/recommendation/synthesis";
-import { getRecommendationRun } from "@/lib/recommendation/server";
 import { requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
+import { RecommendationError } from "@/lib/recommendation/contract";
+import { getRecommendationRun } from "@/lib/recommendation/server";
+import { recommendationSynthesisAudio } from "@/lib/recommendation/synthesis";
 
 export async function GET(request: Request, context: { params: Promise<{ id: string; itemId: string }> }) {
   const session = await requireApiSession(request);
@@ -20,8 +20,14 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
     return new Response(upstream.body, { status: upstream.status, headers });
   } catch (error) {
     if (error instanceof RecommendationError) {
-      return Response.json({ error: { code: error.code, message: error.message, retryable: error.retryable } }, { status: error.status });
+      return Response.json(
+        { error: { code: error.code, message: error.message, retryable: error.retryable } },
+        { status: error.status },
+      );
     }
-    return Response.json({ error: { code: "SYNTHESIS_UPSTREAM_FAILED", message: "합성 결과를 불러오지 못했습니다.", retryable: true } }, { status: 502 });
+    return Response.json(
+      { error: { code: "SYNTHESIS_UPSTREAM_FAILED", message: "합성 결과를 불러오지 못했습니다.", retryable: true } },
+      { status: 502 },
+    );
   }
 }

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { Scissors } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 
 interface LongAudioDialogProps {
@@ -57,11 +57,17 @@ export function LongAudioDialog({ durationSeconds, fileName, onCancel, onConfirm
         </p>
         <div className="mt-4 rounded-xl bg-muted/60 px-4 py-3 text-sm">
           <p className="truncate font-medium">{fileName}</p>
-          {durationSeconds !== null ? <p className="mt-1 text-xs text-muted-foreground">약 {Math.ceil(durationSeconds)}초</p> : null}
+          {durationSeconds !== null ? (
+            <p className="mt-1 text-xs text-muted-foreground">약 {Math.ceil(durationSeconds)}초</p>
+          ) : null}
         </div>
         <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-          <Button onClick={onCancel} ref={cancelRef} variant="outline">아니오</Button>
-          <Button onClick={onConfirm} ref={confirmRef}><Scissors className="size-4" /> 예, 자동으로 자르기</Button>
+          <Button onClick={onCancel} ref={cancelRef} variant="outline">
+            아니오
+          </Button>
+          <Button onClick={onConfirm} ref={confirmRef}>
+            <Scissors className="size-4" /> 예, 자동으로 자르기
+          </Button>
         </div>
       </section>
     </div>

@@ -26,10 +26,7 @@ export function readAudioDuration(file: File): Promise<number> {
     const readDuration = () => {
       if (Number.isFinite(audio.duration)) finish(audio.duration);
     };
-    const timeout = window.setTimeout(
-      () => finish(undefined, new Error("Audio metadata timed out.")),
-      10_000,
-    );
+    const timeout = window.setTimeout(() => finish(undefined, new Error("Audio metadata timed out.")), 10_000);
 
     audio.preload = "metadata";
     audio.onloadedmetadata = readDuration;

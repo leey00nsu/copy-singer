@@ -34,10 +34,7 @@ export function toPublicSynthesisStatus(status: StoredSynthesisStatus): Synthesi
   return status.toLowerCase() as SynthesisStatus;
 }
 
-export function canTransitionSynthesis(
-  current: StoredSynthesisStatus | null,
-  next: StoredSynthesisStatus,
-): boolean {
+export function canTransitionSynthesis(current: StoredSynthesisStatus | null, next: StoredSynthesisStatus): boolean {
   if (current === null) return next === "PREPARING";
   if (current === next) return true;
   return FORWARD_TRANSITIONS[current].includes(next);
@@ -60,9 +57,6 @@ export function parseSynthesisAttempts(value: unknown): SynthesisAttempt[] {
   });
 }
 
-export function appendSynthesisAttempt(
-  history: unknown,
-  attempt: SynthesisAttempt,
-): SynthesisAttempt[] {
+export function appendSynthesisAttempt(history: unknown, attempt: SynthesisAttempt): SynthesisAttempt[] {
   return [...parseSynthesisAttempts(history), attempt];
 }

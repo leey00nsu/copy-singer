@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
 import { Music2, ShieldCheck } from "lucide-react";
+import { redirect } from "next/navigation";
 import { GoogleSignIn } from "@/components/auth/google-sign-in";
 import { googleAuthConfigured } from "@/lib/auth/auth";
 import { getRequestSession } from "@/lib/auth/session";

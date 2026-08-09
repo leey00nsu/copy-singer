@@ -1,22 +1,32 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import {
+  ArrowRight,
+  CircleAlert,
+  Download,
+  LoaderCircle,
+  Mic2,
+  RefreshCw,
+  Sparkles,
+  Square,
+  UserRoundSearch,
+} from "lucide-react";
 import Link from "next/link";
-import { ArrowRight, CircleAlert, Download, LoaderCircle, Mic2, RefreshCw, Sparkles, Square, UserRoundSearch } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { AdvancedSettings, DEFAULT_SETTINGS, type ConversionSettings } from "@/components/advanced-settings";
+import { AdvancedSettings, type ConversionSettings, DEFAULT_SETTINGS } from "@/components/advanced-settings";
 import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
 import { AudioDropzone, MAX_AUDIO_UPLOAD_BYTES } from "@/components/audio-dropzone";
-import { Waveform } from "@/components/waveform";
 import { RecommendationHandoffBanner } from "@/components/recommendation-handoff";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
+import { Waveform } from "@/components/waveform";
 import type { RecommendationRunResponse } from "@/lib/recommendation/contract";
-import { selectRecommendationHandoff, type RecommendationHandoff } from "@/lib/recommendation/handoff";
+import { type RecommendationHandoff, selectRecommendationHandoff } from "@/lib/recommendation/handoff";
+import { cn } from "@/lib/utils";
 
 type JobState = {
   id: string;
@@ -49,9 +59,15 @@ export function SingerWorkbench() {
   useEffect(() => {
     let active = true;
     void fetch("/api/health", { cache: "no-store" })
-      .then((response) => { if (active) setApiStatus(response.ok ? "online" : "offline"); })
-      .catch(() => { if (active) setApiStatus("offline"); });
-    return () => { active = false; };
+      .then((response) => {
+        if (active) setApiStatus(response.ok ? "online" : "offline");
+      })
+      .catch(() => {
+        if (active) setApiStatus("offline");
+      });
+    return () => {
+      active = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -73,7 +89,7 @@ export function SingerWorkbench() {
           setHandoffError(true);
           return;
         }
-        const run = await response.json() as RecommendationRunResponse;
+        const run = (await response.json()) as RecommendationRunResponse;
         if (!active) return;
         const selected = selectRecommendationHandoff(run, itemId);
         if (!selected) setHandoffError(true);
@@ -82,7 +98,9 @@ export function SingerWorkbench() {
       .catch(() => {
         if (active) setHandoffError(true);
       });
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, []);
 
   const refreshJob = useCallback(async (jobId: string) => {
@@ -157,14 +175,18 @@ export function SingerWorkbench() {
       <header className="site-header">
         <div className="page-shell flex h-16 items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="brand-mark"><Mic2 className="size-4" /></span>
+            <span className="brand-mark">
+              <Mic2 className="size-4" />
+            </span>
             <div>
               <p className="text-sm font-semibold tracking-tight">Copy Singer</p>
               <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">SoulX Singer Lab</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Link className={buttonVariants({ size: "sm", variant: "ghost" })} href="/profile"><UserRoundSearch className="size-4" /> 내 보컬 프로필</Link>
+            <Link className={buttonVariants({ size: "sm", variant: "ghost" })} href="/profile">
+              <UserRoundSearch className="size-4" /> 내 보컬 프로필
+            </Link>
             <Badge
               className={cn(
                 "gap-1.5",
@@ -173,8 +195,21 @@ export function SingerWorkbench() {
               )}
               variant="outline"
             >
-              <span className={cn("size-1.5 rounded-full", apiStatus === "online" ? "bg-emerald-500" : apiStatus === "offline" ? "bg-red-500" : "animate-pulse bg-amber-500")} />
-              {apiStatus === "online" ? "Modal API connected" : apiStatus === "offline" ? "Modal API unavailable" : "Checking Modal API"}
+              <span
+                className={cn(
+                  "size-1.5 rounded-full",
+                  apiStatus === "online"
+                    ? "bg-emerald-500"
+                    : apiStatus === "offline"
+                      ? "bg-red-500"
+                      : "animate-pulse bg-amber-500",
+                )}
+              />
+              {apiStatus === "online"
+                ? "Modal API connected"
+                : apiStatus === "offline"
+                  ? "Modal API unavailable"
+                  : "Checking Modal API"}
             </Badge>
           </div>
         </div>
@@ -182,13 +217,29 @@ export function SingerWorkbench() {
 
       <div className="page-shell py-10 sm:py-14">
         <section className="hero-copy">
-          <Badge className="mb-4 gap-1.5" variant="secondary"><Sparkles className="size-3" /> Zero-shot voice conversion</Badge>
-          <h1>Weave a new voice into<br className="hidden sm:block" /> the performance.</h1>
-          <p>Choose a singing voice, add the performance to transform, then let SoulX-Singer preserve its melody and expression.</p>
+          <Badge className="mb-4 gap-1.5" variant="secondary">
+            <Sparkles className="size-3" /> Zero-shot voice conversion
+          </Badge>
+          <h1>
+            Weave a new voice into
+            <br className="hidden sm:block" /> the performance.
+          </h1>
+          <p>
+            Choose a singing voice, add the performance to transform, then let SoulX-Singer preserve its melody and
+            expression.
+          </p>
         </section>
 
         {recommendation ? <RecommendationHandoffBanner selection={recommendation} /> : null}
-        {handoffError ? <p className="mt-6 rounded-xl border border-amber-500/30 bg-amber-500/8 p-4 text-sm text-muted-foreground" role="status">추천 선택 정보를 확인할 수 없습니다. 추천 결과에서 곡을 다시 선택해주세요. 기존 수동 합성 기능은 그대로 사용할 수 있습니다.</p> : null}
+        {handoffError ? (
+          <p
+            className="mt-6 rounded-xl border border-amber-500/30 bg-amber-500/8 p-4 text-sm text-muted-foreground"
+            role="status"
+          >
+            추천 선택 정보를 확인할 수 없습니다. 추천 결과에서 곡을 다시 선택해주세요. 기존 수동 합성 기능은 그대로
+            사용할 수 있습니다.
+          </p>
+        ) : null}
 
         <div className="workbench-grid mt-9">
           <section className="space-y-4">
@@ -205,7 +256,9 @@ export function SingerWorkbench() {
                     <CardTitle className="text-[15px]">Generated vocal</CardTitle>
                     <CardDescription className="mt-1 text-xs">Your converted result appears here.</CardDescription>
                   </div>
-                  {job ? <Badge variant={job.status === "succeeded" ? "default" : "secondary"}>{job.status}</Badge> : null}
+                  {job ? (
+                    <Badge variant={job.status === "succeeded" ? "default" : "secondary"}>{job.status}</Badge>
+                  ) : null}
                 </div>
               </CardHeader>
               <CardContent className="flex min-h-[322px] flex-col justify-between p-6">
@@ -216,9 +269,15 @@ export function SingerWorkbench() {
                         <p className="text-sm font-semibold">Conversion complete</p>
                         <p className="mt-1 text-xs text-muted-foreground">Listen, compare, or download the WAV file.</p>
                       </div>
-                      <span className="success-orbit"><Sparkles className="size-5" /></span>
+                      <span className="success-orbit">
+                        <Sparkles className="size-5" />
+                      </span>
                     </div>
-                    <AudioWaveformPlayer className="mt-6" label="Generated vocal" src={`/api/conversions/${job.id}/audio`} />
+                    <AudioWaveformPlayer
+                      className="mt-6"
+                      label="Generated vocal"
+                      src={`/api/conversions/${job.id}/audio`}
+                    />
                     <a
                       className={cn(buttonVariants({ variant: "outline" }), "mt-4 w-full")}
                       download={`vocal-loom-${job.id}.wav`}
@@ -229,18 +288,29 @@ export function SingerWorkbench() {
                   </div>
                 ) : busy ? (
                   <div className="flex flex-1 flex-col items-center justify-center text-center">
-                    <span className="processing-orbit"><LoaderCircle className="size-7 animate-spin" /></span>
+                    <span className="processing-orbit">
+                      <LoaderCircle className="size-7 animate-spin" />
+                    </span>
                     <p className="mt-6 text-base font-semibold">Shaping the new vocal</p>
                     <p className="mt-2 max-w-[280px] text-sm leading-6 text-muted-foreground">
-                      {job?.status === "queued" ? "Waiting for the Modal GPU to become available." : "Preserving phrasing, pitch and timing while transferring the voice."}
+                      {job?.status === "queued"
+                        ? "Waiting for the Modal GPU to become available."
+                        : "Preserving phrasing, pitch and timing while transferring the voice."}
                     </p>
-                    <Progress className="mt-6 h-1.5 w-full max-w-[280px]" value={job?.status === "processing" ? 66 : 24} />
+                    <Progress
+                      className="mt-6 h-1.5 w-full max-w-[280px]"
+                      value={job?.status === "processing" ? 66 : 24}
+                    />
                   </div>
                 ) : job?.status === "failed" ? (
                   <div className="flex flex-1 flex-col items-center justify-center text-center">
-                    <span className="error-orbit"><CircleAlert className="size-6" /></span>
+                    <span className="error-orbit">
+                      <CircleAlert className="size-6" />
+                    </span>
                     <p className="mt-5 font-semibold">Conversion stopped</p>
-                    <p className="mt-2 max-w-[300px] text-sm leading-6 text-muted-foreground">{job.error ?? "Check the source files and try again."}</p>
+                    <p className="mt-2 max-w-[300px] text-sm leading-6 text-muted-foreground">
+                      {job.error ?? "Check the source files and try again."}
+                    </p>
                   </div>
                 ) : (
                   <div className="empty-result flex flex-1 flex-col justify-center">
@@ -250,32 +320,57 @@ export function SingerWorkbench() {
                     </div>
                     <Separator className="my-7" />
                     <div className="flex items-start gap-3">
-                      <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-secondary font-mono text-xs">01</span>
-                      <div><p className="text-sm font-medium">Add two audio files</p><p className="mt-1 text-xs leading-5 text-muted-foreground">A clean reference voice and the performance you want to transform.</p></div>
+                      <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-secondary font-mono text-xs">
+                        01
+                      </span>
+                      <div>
+                        <p className="text-sm font-medium">Add two audio files</p>
+                        <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                          A clean reference voice and the performance you want to transform.
+                        </p>
+                      </div>
                     </div>
                     <div className="mt-4 flex items-start gap-3">
-                      <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-secondary font-mono text-xs">02</span>
-                      <div><p className="text-sm font-medium">Convert and listen</p><p className="mt-1 text-xs leading-5 text-muted-foreground">GPU jobs may take a few minutes on the first cold start.</p></div>
+                      <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-secondary font-mono text-xs">
+                        02
+                      </span>
+                      <div>
+                        <p className="text-sm font-medium">Convert and listen</p>
+                        <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                          GPU jobs may take a few minutes on the first cold start.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 )}
 
                 <div className="mt-6 flex gap-2">
                   {busy ? (
-                    <Button className="w-full" onClick={() => void clearJob()} variant="outline"><Square className="size-3.5" /> Cancel conversion</Button>
+                    <Button className="w-full" onClick={() => void clearJob()} variant="outline">
+                      <Square className="size-3.5" /> Cancel conversion
+                    </Button>
                   ) : job ? (
-                    <Button className="w-full" onClick={() => void clearJob()} variant="outline"><RefreshCw className="size-3.5" /> Start another</Button>
+                    <Button className="w-full" onClick={() => void clearJob()} variant="outline">
+                      <RefreshCw className="size-3.5" /> Start another
+                    </Button>
                   ) : null}
                 </div>
               </CardContent>
             </Card>
 
-            <Button className="convert-button" disabled={!referenceFile || !targetFile || busy} onClick={() => void submit()} size="lg">
+            <Button
+              className="convert-button"
+              disabled={!referenceFile || !targetFile || busy}
+              onClick={() => void submit()}
+              size="lg"
+            >
               {submitting ? <LoaderCircle className="size-4 animate-spin" /> : <Sparkles className="size-4" />}
               {submitting ? "Uploading…" : "Convert singing voice"}
               {!submitting ? <ArrowRight className="ml-auto size-4" /> : null}
             </Button>
-            <p className="px-4 text-center text-[11px] leading-5 text-muted-foreground">Only use voices and music you have permission to process. Files are removed after 24 hours.</p>
+            <p className="px-4 text-center text-[11px] leading-5 text-muted-foreground">
+              Only use voices and music you have permission to process. Files are removed after 24 hours.
+            </p>
           </aside>
         </div>
       </div>
