@@ -1,0 +1,51 @@
+# Implementation Plan: storybook-component-workbench
+
+> 스펙이 승인된 후 작성합니다.
+> canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `docs/superpowers/*`)이 있더라도, 아키텍처/파일/테스트 내용은 이 파일로 흡수하고 최종 SSOT는 여기로 유지합니다.
+
+---
+
+## 개요
+
+- **기능 ID**: F016
+- **대상 레포**: copy-singer-web
+- **작성일**: 2026-08-09
+- **상태**: -
+  - 값: Draft | Review | Approved
+
+---
+
+## 기술 스택
+
+| 구분 | 선택 | 이유 |
+| ---- | ---- | ---- |
+
+---
+
+## 아키텍처
+
+(컴포넌트 구조, 데이터 흐름)
+
+---
+
+## 파일 구조
+
+```
+src/
+├── ...
+```
+
+---
+
+## 테스트 전략
+
+- **단위 테스트**:
+- **통합 테스트**:
+- **E2E 테스트**:
+
+---
+
+## 관련 문서
+
+- Spec: [spec.md](./spec.md)
+- Decisions: [decisions.md](./decisions.md)
