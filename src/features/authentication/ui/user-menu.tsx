@@ -76,11 +76,11 @@ export function UserMenu({ name, email, image, admin = false, side = "bottom" }:
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56" side={side} sideOffset={8}>
           <DropdownMenuLabel>계정</DropdownMenuLabel>
-          <DropdownMenuItem render={<Link href="/account" />}>
+          <DropdownMenuItem nativeButton={false} render={<Link href="/account" />}>
             <UserRound aria-hidden="true" /> 내 계정
           </DropdownMenuItem>
           {admin ? (
-            <DropdownMenuItem render={<Link href="/admin" />}>
+            <DropdownMenuItem nativeButton={false} render={<Link href="/admin" />}>
               <ShieldCheck aria-hidden="true" /> 관리
             </DropdownMenuItem>
           ) : null}
