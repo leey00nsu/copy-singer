@@ -34,10 +34,10 @@ F014에서 도입한 Feature-Sliced Design 구조는 최신 `fsd.how` Next.js �
 
 **Acceptance Criteria:**
 
-- [ ] README가 현재 존재하는 디렉터리를 기준으로 루트 `app/`을 얇은 Next.js adapter, `src/_app`을 애플리케이션 조립 레이어, `src/_pages`를 FSD Pages 레이어로 설명한다.
-- [ ] README가 `_app → _pages → widgets → features → entities → shared` 의존 방향과 slice 공개 API 원칙을 설명한다.
-- [ ] README가 client-safe, server-only 등 용도별 공개 API entry point 규칙을 설명한다.
-- [ ] 문서가 `src/_app`, `src/_pages`의 이름을 최신 `fsd.how` Next.js 가이드와 일치하는 의도적 예외로 명시한다.
+- [x] README가 현재 존재하는 디렉터리를 기준으로 루트 `app/`을 얇은 Next.js adapter, `src/_app`을 애플리케이션 조립 레이어, `src/_pages`를 FSD Pages 레이어로 설명한다.
+- [x] README가 `_app → _pages → widgets → features → entities → shared` 의존 방향과 slice 공개 API 원칙을 설명한다.
+- [x] README가 client-safe, server-only 등 용도별 공개 API entry point 규칙을 설명한다.
+- [x] 문서가 `src/_app`, `src/_pages`의 이름을 최신 `fsd.how` Next.js 가이드와 일치하는 의도적 예외로 명시한다.
 
 ### US-2: 안전한 slice 경계를 사용하는 개발자
 
@@ -47,11 +47,11 @@ F014에서 도입한 Feature-Sliced Design 구조는 최신 `fsd.how` Next.js �
 
 **Acceptance Criteria:**
 
-- [ ] 다른 FSD slice에서 `ui`, `model`, `api`, `lib`, `config` 등의 내부 segment를 직접 import하는 기존 경로가 제거된다.
-- [ ] route handler가 필요한 Zod schema와 타입을 해당 Feature의 client-safe/model 공개 API에서 가져온다.
-- [ ] 서버 환경 변수나 server-only module에 의존하는 인증 정책은 server 전용 공개 API로만 노출된다.
-- [ ] UI와 서버 정책을 함께 사용하는 Server Component는 각 용도에 맞는 공개 API를 분리해 import한다.
-- [ ] 변경 후 browser/client module graph에서 server 전용 공개 API가 참조되지 않는다.
+- [x] 다른 FSD slice에서 `ui`, `model`, `api`, `lib`, `config` 등의 내부 segment를 직접 import하는 기존 경로가 제거된다.
+- [x] route handler가 필요한 Zod schema와 타입을 해당 Feature의 client-safe/model 공개 API에서 가져온다.
+- [x] 서버 환경 변수나 server-only module에 의존하는 인증 정책은 server 전용 공개 API로만 노출된다.
+- [x] UI와 서버 정책을 함께 사용하는 Server Component는 각 용도에 맞는 공개 API를 분리해 import한다.
+- [x] 변경 후 browser/client module graph에서 server 전용 공개 API가 참조되지 않는다.
 
 ### US-3: 올바른 레이어가 서비스를 소유하도록 유지하는 개발자
 
@@ -61,10 +61,10 @@ F014에서 도입한 Feature-Sliced Design 구조는 최신 `fsd.how` Next.js �
 
 **Acceptance Criteria:**
 
-- [ ] Admin Page와 Admin API route가 함께 사용하는 조회·집계 서비스는 적절한 Feature slice의 server 전용 공개 API가 소유한다.
-- [ ] `src/_app`의 Admin route가 `src/_pages/admin` 내부 segment를 직접 import하지 않는다.
-- [ ] Admin Page는 이동된 서비스의 server 공개 API를 사용하며 기존 렌더 결과와 권한 동작을 유지한다.
-- [ ] Admin overview, users, mixing jobs endpoint의 응답 형태와 오류 의미가 변경되지 않는다.
+- [x] Admin Page와 Admin API route가 함께 사용하는 조회·집계 서비스는 적절한 Feature slice의 server 전용 공개 API가 소유한다.
+- [x] `src/_app`의 Admin route가 `src/_pages/admin` 내부 segment를 직접 import하지 않는다.
+- [x] Admin Page는 이동된 서비스의 server 공개 API를 사용하며 기존 렌더 결과와 권한 동작을 유지한다.
+- [x] Admin overview, users, mixing jobs endpoint의 응답 형태와 오류 의미가 변경되지 않는다.
 
 ### US-4: 자동화된 아키텍처 회귀 검사를 실행하는 유지보수자
 
@@ -74,11 +74,11 @@ F014에서 도입한 Feature-Sliced Design 구조는 최신 `fsd.how` Next.js �
 
 **Acceptance Criteria:**
 
-- [ ] 저장소 검사가 FSD slice 외부에서 발생하는 segment deep import를 탐지한다.
-- [ ] 저장소 검사가 Client Component에서 server 전용 공개 API 또는 알려진 server-only module로 향하는 import를 탐지한다.
-- [ ] 저장소 검사가 루트 `app/` adapter가 허용된 FSD 공개 API를 통해 위임하는 구조인지 검증한다.
-- [ ] Steiger의 `_app`·`_pages` prefix 처리 한계 때문에 필요한 override는 최소 범위로 유지되고 이유가 설정 또는 문서에 기록된다.
-- [ ] 새 검사는 표준 로컬 quality/test 명령에 포함되고 위반 시 non-zero exit code를 반환한다.
+- [x] 저장소 검사가 FSD slice 외부에서 발생하는 segment deep import를 탐지한다.
+- [x] 저장소 검사가 Client Component에서 server 전용 공개 API 또는 알려진 server-only module로 향하는 import를 탐지한다.
+- [x] 저장소 검사가 루트 `app/` adapter가 허용된 FSD 공개 API를 통해 위임하는 구조인지 검증한다.
+- [x] Steiger의 `_app`·`_pages` prefix 처리 한계 때문에 필요한 override는 최소 범위로 유지되고 이유가 설정 또는 문서에 기록된다.
+- [x] 새 검사는 표준 로컬 quality/test 명령에 포함되고 위반 시 non-zero exit code를 반환한다.
 
 ---
 

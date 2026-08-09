@@ -114,19 +114,19 @@
     - [x] `test:architecture-boundaries`, `check:architecture`, `test` script 연결
     - [x] architecture test, Biome, ESLint, TypeScript와 Steiger 통과
 
-- [TODO][NON-PRD] T-F017-05 전체 회귀와 Feature 문서 최종화
+- [DONE][NON-PRD] T-F017-05 전체 회귀와 Feature 문서 최종화
   - Date: 2026-08-09
   - Acceptance:
     - 전체 정적 검사, architecture test, Admin 회귀, Next.js build, 전체 test와 Storybook build가 통과한다.
     - spec의 acceptance와 task checklist가 실제 증거에 맞춰 완료되고 Decisions에 최종 선택과 영향이 기록된다.
     - API/DB/Coolify/CI 범위가 변경되지 않았으며 최신 코드 이후 workflow-sync marker가 정확히 하나 존재한다.
   - Checklist:
-    - [ ] deep import, client/server graph, root App adapter와 Steiger exception 최종 inventory 확인
-    - [ ] `pnpm run test:architecture-boundaries`, `pnpm run check`, `pnpm run test:admin` 통과
-    - [ ] `pnpm test`, `pnpm run build-storybook` 통과
-    - [ ] spec acceptance, Decisions evidence와 테스트 실행 기록 갱신
-    - [ ] 최신 코드 변경 이후 workflow-sync marker 1개로 갱신
-    - [ ] workflow audit 및 최종 git diff 검토
+    - [x] deep import, client/server graph, root App adapter와 Steiger exception 최종 inventory 확인
+    - [x] `pnpm run test:architecture-boundaries`, `pnpm run check`, `pnpm run test:admin` 통과
+    - [x] `pnpm test`, `pnpm run build-storybook` 통과
+    - [x] spec acceptance, Decisions evidence와 테스트 실행 기록 갱신
+    - [x] 최신 코드 변경 이후 workflow-sync marker 1개로 갱신
+    - [x] workflow audit 및 최종 git diff 검토
 
 ---
 
@@ -134,9 +134,9 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -145,4 +145,10 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `{실행한 테스트 명령어}` | `-` | `{PASS/FAIL 요약}` |
+| `pnpm run test:architecture-boundaries` | `2026-08-09` | PASS — fixture와 실제 저장소 경계 검사 4/4 |
+| `pnpm run check` | `2026-08-09` | PASS — Biome(기존 warning 63), ESLint, TypeScript, Steiger, architecture test |
+| `pnpm run test:admin` | `2026-08-09` | PASS — Admin UI·DB integration 2/2 |
+| `pnpm test` | `2026-08-09` | PASS — Next.js production build와 전체 Node/DB/Query/Storybook browser 회귀 |
+| `pnpm run build-storybook` | `2026-08-09` | PASS — Storybook 10.5.7 정적 빌드 |
+
+<!-- lee-spec-kit:workflow-sync 2026-08-09T12:39:53.000Z -->
