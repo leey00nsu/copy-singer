@@ -185,3 +185,23 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 워크플로 — 해당 없음
   - **Test/Log**: `pnpm run test:mixing:ui` (3/3), `pnpm run test:mixing:db` (1/1, owner·title/artist/status·pagination 포함), `pnpm run test:vocal-profile-history` (UI 3/3 + private/ownership 3/3), `pnpm run test:query` (22/22 + streaming 1/1), `pnpm run test:auth-navigation` (4/4), `pnpm exec tsx --test tests/effect-cleanup.test.ts` (2/2), `pnpm run test:storybook --run` (32 files, 77 tests), `pnpm run check`, `pnpm run build`, `pnpm run build-storybook`, Storybook browser smoke (1280×800·360×800, horizontal overflow/clipping·console warning 없음)
 - **Consequences**: `/library`는 profile과 AI mix의 탐색 진입점이며 Project, favorite 또는 playlist 기능을 암시하지 않는다. 추후 dataset이나 profile metadata가 확장돼도 URL schema와 widget public API를 유지한 채 server query만 확장할 수 있다.
+
+## D026: terminal 상태와 실제 timestamp에 한정한 Mixing Detail (2026-08-10)
+
+- **Context**: Library 목록만으로는 AI 믹싱의 실제 서버 상태와 결과 파일 수명주기를 충분히 설명하거나 안전하게 삭제할 수 없다.
+- **Constraints**: worker가 소유한 active job cancellation은 범위에서 제외한다. DB에 없는 백분율·마스터링 세부 단계를 만들지 않고 기존 owner scope, private audio proxy, `MediaCleanupJob`과 `TicketLedger.onDelete: SetNull`을 유지한다. DB migration이나 Modal worker 알고리즘은 변경하지 않는다.
+- **Options**:
+  1. active/terminal 구분 없이 job과 결과 asset을 cascade 삭제한다.
+  2. Detail 전용 progress 모델과 백분율을 새로 저장한다.
+  3. 기존 job 상태·timestamp를 additive detail 계약으로 사용하고 terminal owner job만 조건부 삭제한 뒤 외부 결과 asset 수명주기를 분리한다.
+- **Decision**: Mixing Detail은 기존 owner-scoped job payload를 같은 detail Query key로 읽고 pending/preparing, submitted, processing, terminal 상태와 저장 timestamp만 표시한다. 삭제는 owner terminal job만 DB transaction에서 허용하고 ticket ledger는 SetNull로 보존하며 결과 asset은 Leemage 삭제 또는 cleanup queue로 넘긴다.
+- **Rationale**: 작업자가 갱신 중인 active job 삭제 경합을 차단하고, 존재하지 않는 진행률을 만들지 않으면서 결과 파일과 회계 기록의 수명주기를 분리할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: owner detail GET, audio proxy, `MixingJob` 상태/timestamp, `MediaAsset` cleanup과 `TicketLedger` FK를 조사했다. worker cancellation 의미가 별도로 없으므로 active delete는 명시적 409로 고정했다.
+  - **DONE 전 확정 시점**: `/library/mixes/[id]`는 active 상태에만 5초 polling하고 terminal에서 중지한다. timeline은 `submittedAt`·`startedAt`과 실제 status로 완료·도달·현재·건너뜀을 구분하며 백분율을 표시하지 않는다. 삭제 transaction은 owner와 terminal status를 함께 조건으로 사용하고 job 삭제 후 결과 asset을 Leemage 삭제 또는 cleanup queue로 이동한다. PostgreSQL에서 다른 사용자 404, active 409, terminal 삭제, result `DELETE_PENDING`, cleanup job 생성과 기존 debit ledger의 `mixingJobId=null`을 확인했다. 1280×800·360×800 Storybook에서 완료·진행·실패 화면의 horizontal overflow 없음과 error/warning console 0건을 확인했다.
+  - **머지 후 확인**: 로컬 통합 후 기록한다.
+- **Evidence**:
+  - **Commit**: T-F018-08 task checkpoint commit
+  - **PR**: 로컬 워크플로 — 해당 없음
+  - **Test/Log**: `pnpm run test:mixing:ui` (7/7), `pnpm run test:mixing:db` (1/1, active 409·owner 404·cleanup queue·ticket SetNull 포함), `pnpm run test:query` (23/23 + streaming 1/1), `pnpm run test:storybook --run` (33 files, 81 tests), `pnpm exec tsx --test tests/effect-cleanup.test.ts` (2/2), `pnpm run check`, `pnpm run build-storybook`, `pnpm run build`, Storybook browser smoke (1280×800·360×800)
+- **Consequences**: 믹싱 작업 기록은 terminal 상태에서만 사용자가 제거할 수 있고, 삭제 후에도 ticket 회계 기록은 유지된다. 외부 파일 삭제 장애는 사용자 요청을 되돌리지 않고 기존 cleanup worker가 재시도한다.

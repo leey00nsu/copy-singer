@@ -172,7 +172,7 @@
     - [x] legacy 두 history Page를 공유 widget으로 전환
     - [x] ownership, pagination, filter, polling과 Library UI test 추가
 
-- [TODO][PRD-FR-050] T-F018-08 Mixing Detail·실제 progress·terminal result 삭제 구현
+- [DONE][PRD-FR-050] T-F018-08 Mixing Detail·실제 progress·terminal result 삭제 구현
   - Date: 2026-08-09
   - Acceptance:
     - `/library/mixes/[id]`가 owner-scoped detail을 표시하고 active job만 polling하며 terminal state에서 중지한다.
@@ -180,13 +180,13 @@
     - 성공 결과는 waveform 재생·download를 제공하고 실패는 안전한 다음 action을 제공한다.
     - terminal owner job만 삭제할 수 있고 active delete는 409로 거부되며 result asset cleanup과 ticket ledger 보존이 검증된다.
   - Checklist:
-    - [ ] mixing detail Query key/options/schema와 status presentation helper 추가
-    - [ ] `mixing-detail` Page slice와 App adapter/loading/not-found 추가
-    - [ ] 실제 status timeline, audio result, download와 error state 구현
-    - [ ] terminal-only delete server service와 stable API envelope 구현
-    - [ ] result relation 해제, Leemage delete/scheduled cleanup과 ticket SetNull 검증
-    - [ ] delete mutation/confirmation/cache invalidate/navigation 구현
-    - [ ] active race, ownership, media cleanup, Query와 Storybook test 추가
+    - [x] mixing detail Query key/options/schema와 status presentation helper 추가
+    - [x] `mixing-detail` Page slice와 App adapter/loading/not-found 추가
+    - [x] 실제 status timeline, audio result, download와 error state 구현
+    - [x] terminal-only delete server service와 stable API envelope 구현
+    - [x] result relation 해제, Leemage delete/scheduled cleanup과 ticket SetNull 검증
+    - [x] delete mutation/confirmation/cache invalidate/navigation 구현
+    - [x] active race, ownership, media cleanup, Query와 Storybook test 추가
 
 - [TODO][PRD-FR-051] T-F018-09 Account·route 상태·반응형·Storybook 상태 행렬 완성
   - Date: 2026-08-09
@@ -240,23 +240,23 @@
 | `pnpm run check` | `2026-08-10` | 통과 — error 0, 기존 Biome warning 60건, Steiger 및 architecture 4/4 |
 | `pnpm run test:auth-navigation` | `2026-08-10` | 통과 — safe callback·Library navigation·route group 4/4 |
 | `pnpm exec tsx --test tests/effect-cleanup.test.ts tests/recommendation-ui.test.tsx` | `2026-08-09` | 통과 — cleanup·추천 UI 회귀 6/6 |
-| `pnpm exec tsx --test tests/effect-cleanup.test.ts` | `2026-08-10` | 통과 — Library Query polling 포함 component timer/fetch inventory 2/2 |
+| `pnpm exec tsx --test tests/effect-cleanup.test.ts` | `2026-08-10` | 통과 — Library·Mixing Detail Query polling 포함 component timer/fetch inventory 2/2 |
 | `pnpm run test:voice-scan` | `2026-08-09` | 통과 — 녹음 정책·오류·상태·cleanup 12/12 |
 | `pnpm run test:vocal-profile-analysis-queue` | `2026-08-09` | 통과 — idempotency·owner·lease·retry·cleanup 5/5 |
 | `pnpm run test:vocal-profile-history` | `2026-08-10` | 통과 — 공유 Library UI 3/3, private audio·ownership 3/3 |
 | `pnpm run test:recommendation` | `2026-08-10` | 통과 — ranking 10/10, presentation·synthesis·list·detail 17/17 |
 | `pnpm run test:recommendation:db` | `2026-08-10` | 통과 — persistence·synthesis 3/3 |
-| `pnpm run test:mixing:ui` | `2026-08-10` | 통과 — active/result/failed/filtered empty/URL tabs 3/3 |
-| `pnpm run test:mixing:db` | `2026-08-10` | 통과 — queue·owner·title/artist/status filter·pagination 1/1 |
-| `pnpm run test:query` | `2026-08-10` | 통과 — filter-aware Query/API/MSW 22/22, streaming proxy 1/1 |
+| `pnpm run test:mixing:ui` | `2026-08-10` | 통과 — history·실제 timeline·상세 adapter·active/terminal 상태 7/7 |
+| `pnpm run test:mixing:db` | `2026-08-10` | 통과 — queue·owner/filter/pagination·active 409·terminal 삭제·cleanup queue·ticket SetNull 1/1 |
+| `pnpm run test:query` | `2026-08-10` | 통과 — detail/history Query key·terminal polling·삭제 envelope 포함 23/23, streaming proxy 1/1 |
 | `pnpm run test:auth:db` | `-` | 미실행 — 구현 전 |
 | `pnpm run test:tickets` | `-` | 미실행 — 구현 전 |
 | `pnpm run test:architecture-boundaries` | `2026-08-10` | 통과 — `pnpm run check` 내부 FSD·Client/Server·App adapter 4/4 |
-| `pnpm run test:storybook --run` | `2026-08-10` | 통과 — 32 files, 77 tests, Library profile/mix 상태 포함 |
+| `pnpm run test:storybook --run` | `2026-08-10` | 통과 — 33 files, 81 tests, Mixing Detail 완료·진행·실패·삭제 확인 포함 |
 | `pnpm run build-storybook` | `2026-08-10` | 통과 — chunk size warning만 있음 |
-| `pnpm run build` | `2026-08-10` | 통과 — `/library`와 기존 public/product/Admin/dev/API URL 보존 |
+| `pnpm run build` | `2026-08-10` | 통과 — `/library/mixes/[id]`, DELETE API와 기존 public/product/Admin/dev URL 보존 |
 | `pnpm run test:base-ui` | `2026-08-09` | 통과 — 1/1 |
 | `pnpm run test:process-scripts` | `2026-08-09` | 통과 — 5/5 |
 | `pnpm test` | `-` | 미실행 — 구현 전 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T15:58:38.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T16:18:06.000Z -->
