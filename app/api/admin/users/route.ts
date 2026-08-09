@@ -1,7 +1,7 @@
 export const runtime = "nodejs";
 
+import { listAdminUsers } from "@/_pages/admin/index.server";
 import { requireAdminApi } from "@/features/authentication/index.server";
-import { listAdminUsers } from "@/lib/admin/service";
 
 export async function GET(request: Request) {
   const access = await requireAdminApi(request);

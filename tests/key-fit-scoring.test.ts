@@ -1,16 +1,18 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { scoreCatalogKeyFits } from "../lib/key-fit/catalog";
-import { KEY_FIT_SCORING_VERSION, type KeyFitProfile, KeyFitScoringError } from "../lib/key-fit/contract";
+import type { SongProfileArtifact } from "../src/entities/recommendation";
 import {
   calculateProfileConfidence,
+  KEY_FIT_SCORING_VERSION,
+  type KeyFitProfile,
+  KeyFitScoringError,
+  scoreCatalogKeyFits,
   scoreKeyFit,
   scoreKeyFitCandidate,
   validateCompatibleKeyFitProfiles,
   validateKeyFitProfile,
-} from "../lib/key-fit/scorer";
-import type { SongProfileArtifact } from "../lib/song-catalog/artifact";
+} from "../src/entities/recommendation";
 
 export const USER_PROFILE_FIXTURE: KeyFitProfile = {
   minMidi: 48,

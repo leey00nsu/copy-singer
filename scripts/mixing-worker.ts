@@ -3,7 +3,7 @@ import { config } from "dotenv";
 config({ path: [".env.local", ".env"], quiet: true });
 
 const { mixingWorkerConcurrency } = await import("../src/shared/config/index.server");
-const { runMixingWorkerOnce } = await import("../lib/mixing/worker");
+const { runMixingWorkerOnce } = await import("../src/_app/background-jobs/mixing/index.server");
 
 let stopping = false;
 process.on("SIGINT", () => {

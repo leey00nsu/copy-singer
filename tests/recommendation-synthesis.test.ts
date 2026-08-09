@@ -7,7 +7,7 @@ import {
   parseSynthesisAttempts,
   SYNTHESIS_PRESET,
   toPublicSynthesisStatus,
-} from "../lib/recommendation/synthesis-state";
+} from "../src/entities/recommendation";
 
 test("synthesis lifecycle only permits forward transitions and explicit retry", () => {
   assert.equal(canTransitionSynthesis(null, "PREPARING"), true);

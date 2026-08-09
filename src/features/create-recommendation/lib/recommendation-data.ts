@@ -1,13 +1,15 @@
-import type { CatalogKeyFitResult } from "../key-fit/catalog";
-import { scoreCatalogKeyFits } from "../key-fit/catalog";
-import { type KeyFitProfile, KeyFitScoringError } from "../key-fit/contract";
 import {
+  type CatalogKeyFitResult,
+  type KeyFitProfile,
+  KeyFitScoringError,
+  type RankedRecommendation,
+  RecommendationError,
+  rankRecommendations,
   SONG_PROFILE_ARTIFACT_SCHEMA_VERSION,
   SONG_PROFILE_PIPELINE_CONTRACT,
   type SongProfileArtifact,
-} from "../song-catalog/artifact";
-import { RecommendationError } from "./contract";
-import { type RankedRecommendation, rankRecommendations } from "./ranking";
+  scoreCatalogKeyFits,
+} from "@/entities/recommendation/index.server";
 
 export const RECOMMENDATION_CATALOG_SIZE = 100;
 

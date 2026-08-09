@@ -1,6 +1,6 @@
 export const runtime = "nodejs";
 
-import { devSvcEnabled, devSvcUnavailable } from "@/lib/dev-svc";
+import { devSvcEnabled, devSvcUnavailable } from "@/features/development-conversion/index.server";
 
 function modalConfig() {
   const url = process.env.MODAL_API_URL?.replace(/\/$/, "");

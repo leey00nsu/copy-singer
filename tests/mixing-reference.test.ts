@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { selectMixingReference } from "../lib/mixing/reference";
 import { SMART_REFERENCE_MID_VERSION, SMART_REFERENCE_VERSION } from "../src/entities/vocal-profile";
+import { selectMixingReference } from "../src/features/create-mixing";
 
 const source = { id: "source", userId: "owner", kind: "REFERENCE", status: "READY" };
 const smart = { id: "smart", userId: "owner", kind: "SYNTHESIS_REFERENCE", status: "READY" };

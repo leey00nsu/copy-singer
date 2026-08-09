@@ -1,7 +1,7 @@
 export const runtime = "nodejs";
 
+import { getMixingJobForUser } from "@/entities/mixing-job/index.server";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
-import { getMixingJobForUser } from "@/lib/mixing/history";
 
 export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
   const session = await requireApiSession(request);

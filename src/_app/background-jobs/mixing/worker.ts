@@ -1,7 +1,7 @@
 import "server-only";
 
+import { SYNTHESIS_PRESET } from "@/entities/recommendation";
 import { applyTicketChange } from "@/entities/ticket/index.server";
-import { SYNTHESIS_PRESET } from "@/lib/recommendation/synthesis-state";
 import { mixingLeaseSeconds, mixingPollIntervalMs } from "@/shared/config/index.server";
 import { prisma } from "@/shared/db/index.server";
 import { type CompressedMixingAudio, compressMixingResult } from "@/shared/lib/audio/index.server";

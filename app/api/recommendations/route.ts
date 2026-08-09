@@ -1,8 +1,8 @@
 export const runtime = "nodejs";
 
+import { RecommendationError } from "@/entities/recommendation";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
-import { RecommendationError } from "@/lib/recommendation/contract";
-import { createRecommendationRun } from "@/lib/recommendation/server";
+import { createRecommendationRun } from "@/features/create-recommendation/index.server";
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 

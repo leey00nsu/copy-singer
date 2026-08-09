@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { SingerWorkbench } from "@/components/singer-workbench";
-import { devSvcEnabled } from "@/lib/dev-svc";
+import { devSvcEnabled } from "@/features/development-conversion/index.server";
 
 export const metadata: Metadata = {
   title: "SVC 개발 Workbench — Copy Singer",

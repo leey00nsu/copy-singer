@@ -25,7 +25,7 @@ test("catalog target import uploads once, links Song, and is idempotent by SHA-2
   process.env.LEEMAGE_PROJECT_ID = "catalog-target-project";
 
   const { prisma } = await import("../src/shared/db/index.server");
-  const { importCatalogTargetAsset } = await import("../lib/song-catalog/target-assets");
+  const { importCatalogTargetAsset } = await import("../src/entities/recommendation/index.target-assets.server");
 
   const catalogOrder = 100;
   const catalog = artifactJson.songs[catalogOrder - 1]!;

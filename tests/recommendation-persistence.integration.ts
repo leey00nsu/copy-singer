@@ -13,7 +13,7 @@ test("persists, reads, and cascade-deletes one recommendation run", async (conte
 
   const { prisma } = await import("../src/shared/db/index.server");
   const { createRecommendationRun, deleteRecommendationRun, getRecommendationRun } = await import(
-    "../lib/recommendation/server"
+    "../src/features/create-recommendation/index.server"
   );
   const recordingId = crypto.randomUUID();
   const profileId = crypto.randomUUID();

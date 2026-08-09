@@ -4,9 +4,7 @@ import path from "node:path";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { config } from "dotenv";
 import { PrismaClient } from "../generated/prisma/client";
-
-import { parseSongCatalogMarkdown } from "../lib/song-catalog/catalog";
-import { importSongCatalog } from "../lib/song-catalog/import";
+import { importSongCatalog, parseSongCatalogMarkdown } from "../src/entities/recommendation/index.server";
 
 config({ path: [".env.local", ".env"], quiet: true });
 

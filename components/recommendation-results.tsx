@@ -18,8 +18,8 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
-import type { RecommendationRunResponse } from "@/lib/recommendation/contract";
-import { formatRecommendedShift } from "@/lib/recommendation/ranking";
+import type { RecommendationRunResponse } from "@/entities/recommendation";
+import { formatRecommendedShift } from "@/entities/recommendation";
 import { Badge } from "@/shared/ui/badge";
 import { Button, buttonVariants } from "@/shared/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";

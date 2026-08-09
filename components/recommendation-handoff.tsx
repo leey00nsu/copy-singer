@@ -1,6 +1,6 @@
 import { ArrowLeft, BadgeCheck, Gauge } from "lucide-react";
-import type { RecommendationHandoff } from "@/lib/recommendation/handoff";
-import { formatRecommendedShift } from "@/lib/recommendation/ranking";
+import type { RecommendationHandoff } from "@/entities/recommendation";
+import { formatRecommendedShift } from "@/entities/recommendation";
 import { Badge } from "@/shared/ui/badge";
 import { buttonVariants } from "@/shared/ui/button";
 

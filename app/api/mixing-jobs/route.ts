@@ -1,10 +1,10 @@
 export const runtime = "nodejs";
 
+import { MixingError, serializeMixingJob } from "@/entities/mixing-job";
+import { getMixingHistory } from "@/entities/mixing-job/index.server";
 import { InsufficientTicketsError } from "@/entities/ticket/index.server";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
-import { MixingError, serializeMixingJob } from "@/lib/mixing/contract";
-import { getMixingHistory } from "@/lib/mixing/history";
-import { enqueueMixingJob } from "@/lib/mixing/queue";
+import { enqueueMixingJob } from "@/features/create-mixing/index.server";
 
 export async function GET(request: Request) {
   const session = await requireApiSession(request);

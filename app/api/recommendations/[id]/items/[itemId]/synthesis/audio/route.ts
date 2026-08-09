@@ -1,9 +1,8 @@
 export const runtime = "nodejs";
 
+import { RecommendationError } from "@/entities/recommendation";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
-import { RecommendationError } from "@/lib/recommendation/contract";
-import { getRecommendationRun } from "@/lib/recommendation/server";
-import { recommendationSynthesisAudio } from "@/lib/recommendation/synthesis";
+import { getRecommendationRun, recommendationSynthesisAudio } from "@/features/create-recommendation/index.server";
 
 export async function GET(request: Request, context: { params: Promise<{ id: string; itemId: string }> }) {
   const session = await requireApiSession(request);

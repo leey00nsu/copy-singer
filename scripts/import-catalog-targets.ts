@@ -2,7 +2,9 @@ import { config } from "dotenv";
 
 config({ path: [".env.local", ".env"], quiet: true });
 
-const { ensureCatalogTargetStagingDir, importCatalogTargetAsset } = await import("../lib/song-catalog/target-assets");
+const { ensureCatalogTargetStagingDir, importCatalogTargetAsset } = await import(
+  "../src/entities/recommendation/index.target-assets.server"
+);
 const { prisma } = await import("../src/shared/db/index.server");
 
 function parseOrders() {

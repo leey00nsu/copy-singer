@@ -1,7 +1,8 @@
-import type { SongProfileArtifact } from "../song-catalog/artifact";
-import type { SongCatalogEntry } from "../song-catalog/catalog";
-import { type KeyFitProfile, type KeyFitScoreResult, KeyFitScoringError } from "./contract";
-import { scoreKeyFit } from "./scorer";
+import type { KeyFitProfile, KeyFitScoreResult } from "../model/key-fit-contract";
+import { KeyFitScoringError } from "../model/key-fit-contract";
+import { scoreKeyFit } from "./key-fit-scorer";
+import type { SongProfileArtifact } from "./song-catalog/artifact";
+import type { SongCatalogEntry } from "./song-catalog/catalog";
 
 export type CatalogKeyFitResult = SongCatalogEntry & KeyFitScoreResult;
 

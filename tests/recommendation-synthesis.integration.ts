@@ -11,9 +11,11 @@ test("concurrent item starts create one Modal job with the fixed preset", async 
     return;
   }
   const { prisma } = await import("../src/shared/db/index.server");
-  const { createRecommendationRun, getRecommendationRun } = await import("../lib/recommendation/server");
+  const { createRecommendationRun, getRecommendationRun } = await import(
+    "../src/features/create-recommendation/index.server"
+  );
   const { cleanupRecommendationSyntheses, reconcileRecommendationSyntheses, startRecommendationSynthesis } =
-    await import("../lib/recommendation/synthesis");
+    await import("../src/features/create-recommendation/index.server");
   const recordingId = crypto.randomUUID();
   const profileId = crypto.randomUUID();
   const originalFetch = globalThis.fetch;
@@ -127,9 +129,9 @@ test("expired reference fails before target download or Modal creation", async (
     return;
   }
   const { prisma } = await import("../src/shared/db/index.server");
-  const { createRecommendationRun } = await import("../lib/recommendation/server");
+  const { createRecommendationRun } = await import("../src/features/create-recommendation/index.server");
   const { reconcileRecommendationSyntheses, startRecommendationSynthesis } = await import(
-    "../lib/recommendation/synthesis"
+    "../src/features/create-recommendation/index.server"
   );
   const recordingId = crypto.randomUUID();
   const profileId = crypto.randomUUID();

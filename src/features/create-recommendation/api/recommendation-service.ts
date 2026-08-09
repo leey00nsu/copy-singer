@@ -1,13 +1,19 @@
 import "server-only";
 
+import {
+  formatRecommendationReasons,
+  type KeyFitProfile,
+  type KeyFitReasonCode,
+  parseSynthesisAttempts,
+  RecommendationError,
+  type RecommendationRunResponse,
+  type RecommendationScoreMetrics,
+  toPublicSynthesisStatus,
+} from "@/entities/recommendation";
 import { prisma } from "@/shared/db/index.server";
-import artifactJson from "../../data/catalogs/tj-2607-song-profiles.json";
-import type { Prisma } from "../../generated/prisma/client";
-import type { KeyFitProfile, KeyFitReasonCode } from "../key-fit/contract";
-import { RecommendationError, type RecommendationRunResponse, type RecommendationScoreMetrics } from "./contract";
-import { buildRankedRecommendations } from "./data";
-import { formatRecommendationReasons } from "./ranking";
-import { parseSynthesisAttempts, toPublicSynthesisStatus } from "./synthesis-state";
+import artifactJson from "../../../../data/catalogs/tj-2607-song-profiles.json";
+import type { Prisma } from "../../../../generated/prisma/client";
+import { buildRankedRecommendations } from "../lib/recommendation-data";
 
 const runInclude = {
   userVocalProfile: true,
@@ -262,7 +268,7 @@ export async function deleteRecommendationRun(id: string, userId?: string) {
       status: 404,
     });
   }
-  const { cleanupRecommendationSyntheses } = await import("./synthesis");
+  const { cleanupRecommendationSyntheses } = await import("./synthesis-service");
   await cleanupRecommendationSyntheses(id);
   await prisma.recommendationRun.delete({ where: { id } });
   return { status: "deleted" as const, id };

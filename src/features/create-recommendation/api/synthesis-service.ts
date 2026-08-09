@@ -1,17 +1,17 @@
 import "server-only";
 
-import { vocalProfileAnalyzerUrl } from "@/shared/config/index.server";
-import { prisma } from "@/shared/db/index.server";
-import artifactJson from "../../data/catalogs/tj-2607-song-profiles.json";
-import type { Prisma } from "../../generated/prisma/client";
-import { RecommendationError } from "./contract";
-import { getRecommendationRun } from "./server";
 import {
   appendSynthesisAttempt,
+  RecommendationError,
   type StoredSynthesisStatus,
   SYNTHESIS_PRESET,
   toPublicSynthesisStatus,
-} from "./synthesis-state";
+} from "@/entities/recommendation";
+import { vocalProfileAnalyzerUrl } from "@/shared/config/index.server";
+import { prisma } from "@/shared/db/index.server";
+import artifactJson from "../../../../data/catalogs/tj-2607-song-profiles.json";
+import type { Prisma } from "../../../../generated/prisma/client";
+import { getRecommendationRun } from "./recommendation-service";
 
 const MODAL_RESULT_TTL_MS = 24 * 60 * 60 * 1_000;
 const PREPARING_STALE_MS = 15 * 60 * 1_000;

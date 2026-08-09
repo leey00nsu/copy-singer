@@ -7,7 +7,7 @@ import {
   type KeyFitScoreBreakdown,
   type KeyFitScoreResult,
   KeyFitScoringError,
-} from "./contract";
+} from "../model/key-fit-contract";
 
 const SCORE_WEIGHTS = {
   overlap: 55,

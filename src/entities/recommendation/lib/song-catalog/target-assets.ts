@@ -5,7 +5,7 @@ import { mkdir, readdir, readFile, stat, unlink } from "node:fs/promises";
 import path from "node:path";
 import { prisma } from "@/shared/db/index.server";
 import { createLeemageClient } from "@/shared/media/index.server";
-import artifactJson from "../../data/catalogs/tj-2607-song-profiles.json";
+import artifactJson from "../../../../../data/catalogs/tj-2607-song-profiles.json";
 
 const SUPPORTED_SOURCE_EXTENSIONS = ["wav", "mp3", "m4a", "aac", "webm", "flac"] as const;
 const CATALOG_TARGET_MAX_UPLOAD_BYTES = 49_000_000;

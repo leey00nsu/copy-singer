@@ -3,15 +3,15 @@ import { mkdtemp, readdir, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
-
 import {
+  analyzeSongProfileArtifact,
   createSongProfileArtifact,
   loadOrCreateSongProfileArtifact,
+  parseSongBatchOptions,
+  parseSongCatalogMarkdown,
   validateSongProfileArtifact,
   writeSongProfileArtifact,
-} from "../lib/song-catalog/artifact";
-import { parseSongCatalogMarkdown } from "../lib/song-catalog/catalog";
-import { analyzeSongProfileArtifact, parseSongBatchOptions } from "../lib/song-catalog/pipeline";
+} from "../src/entities/recommendation/index.server";
 
 const catalogPath = path.join(process.cwd(), "data/catalogs/tj-2607-top100.md");
 

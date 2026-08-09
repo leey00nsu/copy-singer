@@ -1,11 +1,11 @@
 import "server-only";
 
+import { MixingError } from "@/entities/mixing-job";
 import { InsufficientTicketsError } from "@/entities/ticket/index.server";
 import { synthesisReferenceContractVersion, type VocalProfileDescriptors } from "@/entities/vocal-profile";
-import { MixingError } from "@/lib/mixing/contract";
-import { selectMixingReference } from "@/lib/mixing/reference";
 import { mixingMaxAttempts, mixingTicketCost } from "@/shared/config/index.server";
 import { prisma } from "@/shared/db/index.server";
+import { selectMixingReference } from "../model/reference";
 
 function prismaErrorCode(error: unknown) {
   return error && typeof error === "object" && "code" in error && typeof error.code === "string" ? error.code : null;

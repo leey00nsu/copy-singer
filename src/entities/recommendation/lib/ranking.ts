@@ -1,6 +1,6 @@
-import type { CatalogKeyFitResult } from "../key-fit/catalog";
-import type { KeyFitReasonCode, KeyFitScoreResult } from "../key-fit/contract";
-import { RecommendationError } from "./contract";
+import { RecommendationError } from "../model/contract";
+import type { KeyFitReasonCode, KeyFitScoreResult } from "../model/key-fit-contract";
+import type { CatalogKeyFitResult } from "./key-fit-catalog";
 
 export type RankedRecommendation = CatalogKeyFitResult & { rank: number; selectionScore: number };
 

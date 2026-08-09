@@ -4,10 +4,8 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { RecommendationHandoffBanner } from "../components/recommendation-handoff";
 import { RecommendationResults } from "../components/recommendation-results";
 import artifactJson from "../data/catalogs/tj-2607-song-profiles.json";
-import { scoreCatalogKeyFits } from "../lib/key-fit/catalog";
-import type { RecommendationRunResponse } from "../lib/recommendation/contract";
-import { formatRecommendationReasons, rankRecommendations } from "../lib/recommendation/ranking";
-import type { SongProfileArtifact } from "../lib/song-catalog/artifact";
+import type { RecommendationRunResponse, SongProfileArtifact } from "../src/entities/recommendation";
+import { formatRecommendationReasons, rankRecommendations, scoreCatalogKeyFits } from "../src/entities/recommendation";
 
 const profile = {
   minMidi: 48,

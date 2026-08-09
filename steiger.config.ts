@@ -13,11 +13,23 @@ export default defineConfig([
     },
   },
   {
+    files: ["./src/_pages/**"],
+    rules: {
+      // The same prefixed-layer normalization gap also affects `_pages`.
+      "fsd/typo-in-layer-name": "off",
+    },
+  },
+  {
     files: [
+      "./src/entities/mixing-job/**",
+      "./src/entities/recommendation/**",
       "./src/entities/ticket/**",
       "./src/entities/vocal-profile/**",
       "./src/features/analyze-vocal-profile/**",
       "./src/features/authentication/**",
+      "./src/features/create-mixing/**",
+      "./src/features/create-recommendation/**",
+      "./src/features/development-conversion/**",
       "./src/features/manage-tickets/**",
     ],
     rules: {

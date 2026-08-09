@@ -1,8 +1,8 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { MixingHistoryList } from "@/components/mixing/mixing-history-list";
+import { getMixingHistory } from "@/entities/mixing-job/index.server";
 import { requirePageSession } from "@/features/authentication/index.server";
-import { getMixingHistory } from "@/lib/mixing/history";
 import { Button } from "@/shared/ui/button";
 
 export default async function MixingHistoryPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {

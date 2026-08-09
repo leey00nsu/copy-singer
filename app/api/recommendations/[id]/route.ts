@@ -1,9 +1,12 @@
 export const runtime = "nodejs";
 
+import { RecommendationError } from "@/entities/recommendation";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
-import { RecommendationError } from "@/lib/recommendation/contract";
-import { deleteRecommendationRun, getRecommendationRun } from "@/lib/recommendation/server";
-import { reconcileRecommendationSyntheses } from "@/lib/recommendation/synthesis";
+import {
+  deleteRecommendationRun,
+  getRecommendationRun,
+  reconcileRecommendationSyntheses,
+} from "@/features/create-recommendation/index.server";
 
 function errorResponse(error: unknown) {
   if (error instanceof RecommendationError) {

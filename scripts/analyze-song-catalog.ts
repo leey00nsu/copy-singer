@@ -1,10 +1,13 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { config } from "dotenv";
-
-import { loadOrCreateSongProfileArtifact, writeSongProfileArtifact } from "../lib/song-catalog/artifact";
-import { parseSongCatalogMarkdown } from "../lib/song-catalog/catalog";
-import { analyzeSongProfileArtifact, parseSongBatchOptions } from "../lib/song-catalog/pipeline";
+import {
+  analyzeSongProfileArtifact,
+  loadOrCreateSongProfileArtifact,
+  parseSongBatchOptions,
+  parseSongCatalogMarkdown,
+  writeSongProfileArtifact,
+} from "../src/entities/recommendation/index.server";
 
 config({ path: [".env.local", ".env"], quiet: true });
 

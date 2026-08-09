@@ -1,23 +1,23 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-
-import { type CatalogKeyFitResult, scoreCatalogKeyFits } from "../lib/key-fit/catalog";
-import type { KeyFitProfile } from "../lib/key-fit/contract";
-import { RecommendationError, type RecommendationRunResponse } from "../lib/recommendation/contract";
+import type { KeyFitProfile, SongProfileArtifact } from "../src/entities/recommendation";
+import {
+  type CatalogKeyFitResult,
+  calculateRecommendationSelectionScore,
+  formatRecommendationReasons,
+  formatRecommendedShift,
+  RecommendationError,
+  type RecommendationRunResponse,
+  rankRecommendations,
+  scoreCatalogKeyFits,
+  selectRecommendationHandoff,
+} from "../src/entities/recommendation";
 import {
   buildRankedRecommendations,
   validateAndIndexSongRows,
   validateRecommendationArtifact,
-} from "../lib/recommendation/data";
-import { selectRecommendationHandoff } from "../lib/recommendation/handoff";
-import {
-  calculateRecommendationSelectionScore,
-  formatRecommendationReasons,
-  formatRecommendedShift,
-  rankRecommendations,
-} from "../lib/recommendation/ranking";
-import type { SongProfileArtifact } from "../lib/song-catalog/artifact";
+} from "../src/features/create-recommendation/index.data.server";
 
 const USER_PROFILE_FIXTURE: KeyFitProfile = {
   minMidi: 48,

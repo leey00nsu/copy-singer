@@ -1,8 +1,6 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-
-import { validateSongProfileArtifact } from "../lib/song-catalog/artifact";
-import { parseSongCatalogMarkdown } from "../lib/song-catalog/catalog";
+import { parseSongCatalogMarkdown, validateSongProfileArtifact } from "../src/entities/recommendation/index.server";
 
 const catalogPath = path.join(process.cwd(), "data/catalogs/tj-2607-top100.md");
 const artifactPath = path.join(process.cwd(), "data/catalogs/tj-2607-song-profiles.json");
