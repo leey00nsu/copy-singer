@@ -99,17 +99,17 @@
     - [x] 관련 app, component, route, script, worker, data 및 test import를 public API 기준으로 갱신한다.
     - [x] Steiger violation을 예외 없이 해소하고 정적 검사, build와 관련 테스트를 실행한다.
 
-- [TODO][NON-PRD] T-F014-fsd-architecture-migration-04 Widget·Page·Layout과 root page adapter 이전
+- [DONE][NON-PRD] T-F014-fsd-architecture-migration-04 Widget·Page·Layout과 root page adapter 이전
   - Date: 2026-08-09
   - Acceptance:
     - 10개 UI route 구현과 loading/error/not-found 경계가 _pages public API로 이전되고 URL과 렌더링 동작이 유지된다.
     - 공유 workbench만 Widget으로 유지되고 단일 화면 UI는 해당 Page slice에 배치된다.
     - root page/layout special file은 framework config와 FSD public API 조립만 담당하며 root components 디렉터리가 제거된다.
   - Checklist:
-    - [ ] page 전용 component와 10개 page 구현을 _pages slice로 이동한다.
-    - [ ] home/profile 공용 vocal-profile workbench를 Widget으로 이동하고 나머지 UI의 significant usage를 검증한다.
-    - [ ] root layout, provider와 global styles를 _app으로 옮기고 root page/layout/loading/error/not-found를 thin adapter로 전환한다.
-    - [ ] UI 테스트 import를 갱신하고 Steiger, 정적 검사, production build와 UI 회귀 테스트를 실행한다.
+    - [x] page 전용 component와 10개 page 구현을 _pages slice로 이동한다.
+    - [x] home/profile 공용 vocal-profile workbench를 Widget으로 이동하고 나머지 UI의 significant usage를 검증한다.
+    - [x] root layout, provider와 global styles를 _app으로 옮기고 root page/layout/loading/error/not-found를 thin adapter로 전환한다.
+    - [x] UI 테스트 import를 갱신하고 Steiger, 정적 검사, production build와 UI 회귀 테스트를 실행한다.
 
 - [TODO][NON-PRD] T-F014-fsd-architecture-migration-05 API·worker adapter 전환과 legacy 제거 및 최종 검증
   - Date: 2026-08-09
@@ -162,5 +162,7 @@
 | `pnpm run test:mixing:ui` | `2026-08-09` | `PASS (1 test)` |
 | `pnpm run test:process-scripts` | `2026-08-09` | `PASS (2 tests)` |
 | `pnpm run catalog:verify` | `2026-08-09` | `PASS (100곡 artifact READY 상태 확인)` |
+| `pnpm exec tsx --test tests/vocal-profile-results-ui.test.tsx tests/audio-waveform-player.test.ts tests/reference-preview.test.ts tests/effect-cleanup.test.ts` | `2026-08-09` | `PASS (11 tests, 이동된 Entity·Shared UI와 effect source 감사)` |
+| `pnpm exec tsx --test tests/base-ui-link-button.test.ts tests/profile-audio-preparation.test.ts tests/vocal-profile-recorder.test.ts tests/long-audio-upload.test.ts` | `2026-08-09` | `PASS (7 tests, Widget·Page 이전 후 UI 정적 감사와 녹음 경계)` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T07:59:50.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T08:10:20.000Z -->

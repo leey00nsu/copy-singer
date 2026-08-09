@@ -87,3 +87,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: F014 tasks.md의 catalog, key-fit, recommendation, mixing, admin 및 process script 관련 54개 테스트와 `pnpm run catalog:verify`, `pnpm run check`, `pnpm run build` 2026-08-09 PASS
 - **Consequences**: 추천과 믹싱의 재사용 계약은 browser-safe public API로, DB·외부 합성·worker·catalog tooling은 server public API로 분리됐다. song catalog와 key-fit은 독립 Entity를 늘리지 않고 실제 주 use case인 Recommendation slice 내부에 유지한다.
+
+## D005: Page 전용 UI와 재사용 Widget·표현 컴포넌트 분류 (2026-08-09)
+
+- **Context**: root `app`의 10개 page 구현과 root `components`의 화면 전용 UI, 공용 workbench, 도메인 표현 및 범용 audio player가 소비 범위와 무관하게 나뉘어 있다.
+- **Constraints**: Next.js special file과 URL·metadata·loading/error/not-found 동작을 유지하면서 Page slice 과분해를 피하고, Client Component가 server public API에 도달하지 않게 해야 한다.
+- **Options**: 모든 component를 Widget/Feature로 추출, 모든 component를 Page에 중복 배치, 실제 소비 관계에 따라 단일 화면 UI는 Page, 다중 page 조합은 Widget, 범용/도메인 표현은 Shared/Entity로 분류하는 방식을 검토한다.
+- **Decision**: home/profile에서 재사용하는 vocal-profile workbench만 Widget으로 유지한다. 개발 합성·추천 상세·믹싱 이력·보컬 프로필 이력처럼 한 화면에 종속된 UI는 해당 `_pages` slice, 범용 audio player는 Shared, 분석 결과와 reference band처럼 독립적인 보컬 프로필 표현은 VocalProfile Entity에 둔다. Admin Page의 화면 진입점과 Route Handler가 소비하는 server API 진입점은 분리한다.
+- **Rationale**: pages-first를 지키면서 실제 재사용 관계가 있는 코드만 하위 레이어로 내려 significant slice와 의존 방향을 함께 유지할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 2026-08-09 10개 page와 남은 root component의 실제 import 소비처를 기준으로 분류를 시작한다.
+  - **DONE 전 확정 시점**: 10개 page 구현과 metadata·loading·error·not-found 경계를 `_pages`, root layout과 global style을 `_app`으로 이전했다. root special file은 합계 17줄의 re-export adapter가 되었고 root `components` 파일은 0건이다. Admin의 UI/API server public API를 분리해 React Server 조건의 eager client dependency를 제거했으며, client-to-server 역참조 0건, Steiger 오류 0건, 정적 검사, production build와 관련 UI·통합 테스트 통과를 확인했다.
+  - **머지 후 확인**: 실제 결과/영향
+- **Evidence**:
+  - **Commit**: T-F014-04 task checkpoint에서 기록
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: F014 tasks.md의 vocal-profile history, recommendation, mixing UI, admin, 이동 UI·Widget 관련 테스트와 `pnpm run check`, `pnpm run build` 2026-08-09 PASS
+- **Consequences**: URL과 Next.js special file 계약은 root adapter에 유지되지만 화면 구현과 style 소유권은 FSD source로 이동했다. 테스트의 정적 source scan도 root `components` 대신 `src`를 기준으로 동작한다.
