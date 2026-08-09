@@ -14,7 +14,7 @@ import {
   validateKeyFitProfile,
 } from "../src/entities/recommendation";
 
-export const USER_PROFILE_FIXTURE: KeyFitProfile = {
+const USER_PROFILE_FIXTURE: KeyFitProfile = {
   minMidi: 48,
   maxMidi: 72,
   p10Midi: 52,
@@ -29,7 +29,7 @@ export const USER_PROFILE_FIXTURE: KeyFitProfile = {
   analyzerVersion: "0.11.0",
 };
 
-export const SONG_PROFILE_FIXTURE: KeyFitProfile = {
+const SONG_PROFILE_FIXTURE: KeyFitProfile = {
   ...USER_PROFILE_FIXTURE,
   minMidi: 50,
   maxMidi: 74,
