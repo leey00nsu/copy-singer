@@ -3,7 +3,7 @@
 import { AlertTriangle, Clock3, LoaderCircle, RotateCcw } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import type { VocalProfileAnalysisJobResponse } from "@/lib/vocal-profile/contract";
+import type { VocalProfileAnalysisJobResponse } from "@/entities/vocal-profile";
 import { Badge } from "@/shared/ui/badge";
 import { buttonVariants } from "@/shared/ui/button";
 

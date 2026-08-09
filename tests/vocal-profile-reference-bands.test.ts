@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { referenceBandSegments } from "../lib/vocal-profile/reference-segments";
+import { referenceBandSegments } from "../src/entities/vocal-profile";
 
 test("groups smart reference source ranges into ordered low, mid, and high controls", () => {
   const segments = referenceBandSegments({

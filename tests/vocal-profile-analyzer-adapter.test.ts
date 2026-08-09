@@ -1,10 +1,13 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import test from "node:test";
-import { analyzeVocalProfile, vocalProfileAnalyzerBackend } from "../lib/vocal-profile/analyzer";
-import { analyzeWithLocalAdapter } from "../lib/vocal-profile/analyzer/local-adapter";
-import { analyzeWithModalAdapter } from "../lib/vocal-profile/analyzer/modal-adapter";
-import { AnalyzerClientError } from "../lib/vocal-profile/analyzer/types";
+import {
+  AnalyzerClientError,
+  analyzeVocalProfile,
+  analyzeWithLocalAdapter,
+  analyzeWithModalAdapter,
+  vocalProfileAnalyzerBackend,
+} from "../src/entities/vocal-profile/index.analyzer.server";
 
 function requestBody(bytes = [9, 8, 7]) {
   return new Blob([Uint8Array.from(bytes)]).stream() as ReadableStream<Uint8Array>;

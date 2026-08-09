@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { renderToStaticMarkup } from "react-dom/server";
 import { VocalProfileResults } from "../components/vocal-profile-results";
-import type { VocalProfileResponse } from "../lib/vocal-profile/contract";
+import type { VocalProfileResponse } from "../src/entities/vocal-profile";
 
 const profile: VocalProfileResponse = {
   id: "profile",

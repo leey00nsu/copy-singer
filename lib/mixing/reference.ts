@@ -1,4 +1,4 @@
-import { SMART_REFERENCE_MID_VERSION, type SynthesisReferenceContractVersion } from "@/lib/vocal-profile/contract";
+import { SMART_REFERENCE_MID_VERSION, type SynthesisReferenceContractVersion } from "@/entities/vocal-profile";
 
 type ReferenceCandidate = {
   userId: string;

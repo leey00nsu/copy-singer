@@ -1,7 +1,7 @@
 import { Activity, AlertTriangle, Search, Ticket, Users } from "lucide-react";
-import { TicketAdjustmentForm } from "@/components/admin/ticket-adjustment-form";
+import { requireAdminPage } from "@/features/authentication/index.server";
+import { TicketAdjustmentForm } from "@/features/manage-tickets";
 import { getAdminOverview, listAdminMixingJobs, listAdminUsers } from "@/lib/admin/service";
-import { requireAdminPage } from "@/lib/auth/admin";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 

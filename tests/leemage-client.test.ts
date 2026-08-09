@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { LeemageClient } from "../lib/leemage/client";
+import { LeemageClient } from "../src/shared/media/index.leemage-client.server";
 
 test("LeemageClient uploads a non-image file through presign, PUT, and confirm", async () => {
   const calls: Array<{ url: string; init?: RequestInit }> = [];

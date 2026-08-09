@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { proxyPrivateAudio } from "../lib/leemage/audio-proxy";
+import { proxyPrivateAudio } from "../src/shared/media/index.audio-proxy.server";
 
 test("private audio proxy forwards Range without exposing the storage URL", async () => {
   let forwardedRange: string | null = null;

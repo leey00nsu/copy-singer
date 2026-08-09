@@ -1,7 +1,7 @@
 export const runtime = "nodejs";
 
-import { requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
-import { analysisJobPayload, getVocalProfileAnalysisJob } from "@/lib/vocal-profile/analysis-queue";
+import { analysisJobPayload, getVocalProfileAnalysisJob } from "@/features/analyze-vocal-profile/index.server";
+import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 
 export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
   const session = await requireApiSession(request);

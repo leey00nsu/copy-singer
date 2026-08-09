@@ -24,7 +24,7 @@ if (process.argv.includes("--leemage")) {
   if (missing.some((name) => name.startsWith("LEEMAGE_"))) {
     throw new Error("Configure Leemage variables before running the storage smoke test.");
   }
-  const { createLeemageClient } = await import("../lib/leemage/client");
+  const { createLeemageClient } = await import("../src/shared/media/index.server");
   const client = createLeemageClient();
   const stored = await client.uploadFile({
     fileName: `copy-singer-smoke-${crypto.randomUUID()}.txt`,

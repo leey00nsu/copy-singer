@@ -3,7 +3,9 @@ import { config } from "dotenv";
 config({ path: [".env.local", ".env"], quiet: true });
 
 const { vocalProfileAnalysisWorkerConcurrency } = await import("../src/shared/config/index.server");
-const { runVocalProfileAnalysisWorkerOnce } = await import("../lib/vocal-profile/analysis-worker");
+const { runVocalProfileAnalysisWorkerOnce } = await import(
+  "../src/_app/background-jobs/vocal-profile-analysis/index.server"
+);
 
 let stopping = false;
 process.on("SIGINT", () => {

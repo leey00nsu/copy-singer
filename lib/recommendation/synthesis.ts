@@ -1,9 +1,9 @@
 import "server-only";
 
+import { vocalProfileAnalyzerUrl } from "@/shared/config/index.server";
 import { prisma } from "@/shared/db/index.server";
 import artifactJson from "../../data/catalogs/tj-2607-song-profiles.json";
 import type { Prisma } from "../../generated/prisma/client";
-import { analyzerUrl } from "../vocal-profile/server";
 import { RecommendationError } from "./contract";
 import { getRecommendationRun } from "./server";
 import {
@@ -169,7 +169,7 @@ export async function startRecommendationSynthesis(runId: string, itemId: string
   if (!acquired.owned) return getRecommendationRun(runId);
 
   try {
-    const analyzer = analyzerUrl();
+    const analyzer = vocalProfileAnalyzerUrl();
     if (!analyzer) {
       throw new RecommendationError("SYNTHESIS_PREFLIGHT_FAILED", "Local vocal analyzer is not configured.", {
         status: 503,

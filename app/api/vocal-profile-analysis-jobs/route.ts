@@ -1,11 +1,11 @@
 export const runtime = "nodejs";
 
-import { requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
 import {
   analysisJobPayload,
   enqueueVocalProfileAnalysis,
   listVisibleVocalProfileAnalysisJobs,
-} from "@/lib/vocal-profile/analysis-queue";
+} from "@/features/analyze-vocal-profile/index.server";
+import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 
 function enqueueError(error: unknown) {
   const code = error instanceof Error ? error.message : "ANALYSIS_ENQUEUE_FAILED";

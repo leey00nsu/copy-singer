@@ -1,12 +1,11 @@
 import "server-only";
 
-import { processOneMediaCleanup } from "@/lib/leemage/cleanup";
-import { discardMediaAsset, storeMixingResult } from "@/lib/leemage/media-service";
+import { applyTicketChange } from "@/entities/ticket/index.server";
 import { SYNTHESIS_PRESET } from "@/lib/recommendation/synthesis-state";
-import { applyTicketChange } from "@/lib/tickets/service";
 import { mixingLeaseSeconds, mixingPollIntervalMs } from "@/shared/config/index.server";
 import { prisma } from "@/shared/db/index.server";
 import { type CompressedMixingAudio, compressMixingResult } from "@/shared/lib/audio/index.server";
+import { discardMediaAsset, processOneMediaCleanup, storeMixingResult } from "@/shared/media/index.server";
 
 type ModalJob = {
   id: string;

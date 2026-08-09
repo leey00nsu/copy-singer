@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { renderToStaticMarkup } from "react-dom/server";
 
-import { TicketAdjustmentFields } from "../components/admin/ticket-adjustment-form";
+import { TicketAdjustmentFields } from "../src/features/manage-tickets";
 
 test("admin adjustment form requires user, integer amount, and reason without audio controls", () => {
   const markup = renderToStaticMarkup(

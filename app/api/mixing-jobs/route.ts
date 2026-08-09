@@ -1,10 +1,10 @@
 export const runtime = "nodejs";
 
-import { requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
+import { InsufficientTicketsError } from "@/entities/ticket/index.server";
+import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 import { MixingError, serializeMixingJob } from "@/lib/mixing/contract";
 import { getMixingHistory } from "@/lib/mixing/history";
 import { enqueueMixingJob } from "@/lib/mixing/queue";
-import { InsufficientTicketsError } from "@/lib/tickets/service";
 
 export async function GET(request: Request) {
   const session = await requireApiSession(request);

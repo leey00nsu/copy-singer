@@ -70,7 +70,7 @@ function analyzedRecording(recordingId: string) {
 async function runPersistenceFailureCase(mode: FailureMode) {
   const { prisma } = await import("../src/shared/db/index.server");
   const { persistAnalyzedVocalProfile, VocalProfilePersistenceError } = await import(
-    "../lib/vocal-profile/persistence"
+    "../src/entities/vocal-profile/index.server"
   );
   const userId = `modal-persist-${mode}-${crypto.randomUUID()}`;
   const recordingId = crypto.randomUUID();

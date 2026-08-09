@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
-import { createReferencePreviewBlob } from "@/lib/audio/reference-preview";
-import type { ReferenceBandSegment } from "@/lib/vocal-profile/reference-segments";
+import type { ReferenceBandSegment } from "@/entities/vocal-profile";
+import { createReferencePreviewBlob } from "@/entities/vocal-profile";
 
 type ReferencePreview = { segment: ReferenceBandSegment; url: string };
 type PreviewState =

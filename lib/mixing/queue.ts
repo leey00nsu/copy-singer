@@ -1,9 +1,9 @@
 import "server-only";
 
+import { InsufficientTicketsError } from "@/entities/ticket/index.server";
+import { synthesisReferenceContractVersion, type VocalProfileDescriptors } from "@/entities/vocal-profile";
 import { MixingError } from "@/lib/mixing/contract";
 import { selectMixingReference } from "@/lib/mixing/reference";
-import { InsufficientTicketsError } from "@/lib/tickets/service";
-import { synthesisReferenceContractVersion, type VocalProfileDescriptors } from "@/lib/vocal-profile/contract";
 import { mixingMaxAttempts, mixingTicketCost } from "@/shared/config/index.server";
 import { prisma } from "@/shared/db/index.server";
 

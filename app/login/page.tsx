@@ -1,8 +1,7 @@
 import { Music2, ShieldCheck } from "lucide-react";
 import { redirect } from "next/navigation";
-import { GoogleSignIn } from "@/components/auth/google-sign-in";
-import { googleAuthConfigured } from "@/lib/auth/auth";
-import { getRequestSession } from "@/lib/auth/session";
+import { GoogleSignIn } from "@/features/authentication";
+import { getRequestSession, googleAuthConfigured } from "@/features/authentication/index.server";
 
 function safeCallbackURL(value: string | string[] | undefined) {
   const candidate = Array.isArray(value) ? value[0] : value;

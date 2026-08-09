@@ -31,9 +31,9 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
   const { prisma } = await import("../src/shared/db/index.server");
   const { enqueueMixingJob } = await import("../lib/mixing/queue");
   const { claimNextMixingJob, processClaimedMixingJob } = await import("../lib/mixing/worker");
-  const { InsufficientTicketsError } = await import("../lib/tickets/service");
+  const { InsufficientTicketsError } = await import("../src/entities/ticket/index.server");
   const { MixingError } = await import("../lib/mixing/contract");
-  const { applyTicketChange } = await import("../lib/tickets/service");
+  const { applyTicketChange } = await import("../src/entities/ticket/index.server");
   const { getMixingHistory, getMixingJobForUser } = await import("../lib/mixing/history");
   const suffix = crypto.randomUUID();
   const userId = `mixing-owner-${suffix}`;

@@ -46,3 +46,8 @@ export function vocalProfileAnalysisMaxAttempts() {
 export function vocalProfileAnalysisLeaseSeconds() {
   return integerEnv("VOCAL_PROFILE_ANALYSIS_LEASE_SECONDS", 300, { min: 180, max: 3_600 });
 }
+
+export function vocalProfileAnalyzerUrl() {
+  const url = process.env.VOCAL_PROFILE_API_URL?.replace(/\/$/, "");
+  return url || null;
+}

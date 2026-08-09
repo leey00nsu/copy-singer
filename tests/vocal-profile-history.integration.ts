@@ -11,7 +11,7 @@ test("profile history, detail, and reference are scoped to the owning user", asy
   }
   const { prisma } = await import("../src/shared/db/index.server");
   const { getVocalProfileDetail, getVocalProfileHistory, getVocalProfileReference, getVocalProfileSynthesisReference } =
-    await import("../lib/vocal-profile/history");
+    await import("../src/entities/vocal-profile/index.server");
   const suffix = crypto.randomUUID();
   const ownerId = `profile-history-owner-${suffix}`;
   const otherId = `profile-history-other-${suffix}`;

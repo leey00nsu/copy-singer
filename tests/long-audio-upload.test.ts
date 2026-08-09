@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { isLongProfileAudio, MAX_PROFILE_AUDIO_SECONDS } from "../lib/vocal-profile/audio-file";
+import { isLongProfileAudio, MAX_PROFILE_AUDIO_SECONDS } from "../src/entities/vocal-profile";
 
 test("only durations above 60 seconds require trim consent", () => {
   assert.equal(MAX_PROFILE_AUDIO_SECONDS, 60);

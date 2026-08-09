@@ -12,7 +12,9 @@ test("signup grants and ticket debits are idempotent and never create a negative
   const previousGrant = process.env.SIGNUP_TICKET_GRANT;
   process.env.SIGNUP_TICKET_GRANT = "1";
   const { prisma } = await import("../src/shared/db/index.server");
-  const { applyTicketChange, ensureSignupGrant, InsufficientTicketsError } = await import("../lib/tickets/service");
+  const { applyTicketChange, ensureSignupGrant, InsufficientTicketsError } = await import(
+    "../src/entities/ticket/index.server"
+  );
   const userId = `ticket-owner-${crypto.randomUUID()}`;
   try {
     await prisma.user.create({

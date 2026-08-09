@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { concatenateMonoRanges, encodeMonoPcm16Wav } from "../lib/audio/reference-preview";
+import { concatenateMonoRanges, encodeMonoPcm16Wav } from "../src/entities/vocal-profile";
 
 test("concatenates only the selected source ranges into one mono preview", () => {
   const left = Float32Array.from([0, 0.2, 0.4, 0.6, 0.8, 1]);

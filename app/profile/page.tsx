@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { VocalProfileWorkbench } from "@/components/vocal-profile-workbench";
-import { requirePageSession } from "@/lib/auth/session";
+import { requirePageSession } from "@/features/authentication/index.server";
 
 export const metadata: Metadata = {
   title: "보컬 프로필 만들기 — Copy Singer",

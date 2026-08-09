@@ -1,7 +1,7 @@
 export const runtime = "nodejs";
 
+import { requireAdminApi } from "@/features/authentication/index.server";
 import { listAdminMixingJobs } from "@/lib/admin/service";
-import { requireAdminApi } from "@/lib/auth/admin";
 
 export async function GET(request: Request) {
   const access = await requireAdminApi(request);

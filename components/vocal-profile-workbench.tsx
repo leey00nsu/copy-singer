@@ -21,12 +21,12 @@ import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
 import { VocalProfileRecorder } from "@/components/audio/vocal-profile-recorder";
 import { LongAudioDialog } from "@/components/long-audio-dialog";
 import { VocalProfileResults } from "@/components/vocal-profile-results";
-import { isLongProfileAudio, readAudioDuration } from "@/lib/vocal-profile/audio-file";
 import type {
   VocalProfileAnalysisJobResponse,
   VocalProfileError,
   VocalProfileResponse,
-} from "@/lib/vocal-profile/contract";
+} from "@/entities/vocal-profile";
+import { isLongProfileAudio, readAudioDuration } from "@/entities/vocal-profile";
 import { prepareProfileAudio } from "@/shared/lib/audio";
 import { Badge } from "@/shared/ui/badge";
 import { Button, buttonVariants } from "@/shared/ui/button";

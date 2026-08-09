@@ -8,7 +8,7 @@ import {
   parseVocalProfileVisualization,
   pitchChartData,
   rangeChartData,
-} from "../lib/vocal-profile/visualization";
+} from "../src/entities/vocal-profile";
 
 test("parses and sorts bounded visualization descriptors", () => {
   const parsed = parseVocalProfileVisualization({

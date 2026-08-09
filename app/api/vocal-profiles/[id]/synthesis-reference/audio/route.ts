@@ -1,8 +1,8 @@
 export const runtime = "nodejs";
 
-import { requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
-import { proxyPrivateAudio } from "@/lib/leemage/audio-proxy";
-import { getVocalProfileSynthesisReference } from "@/lib/vocal-profile/history";
+import { getVocalProfileSynthesisReference } from "@/entities/vocal-profile/index.server";
+import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
+import { proxyPrivateAudio } from "@/shared/media/index.server";
 
 export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
   const session = await requireApiSession(request);

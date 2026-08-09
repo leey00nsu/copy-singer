@@ -1,9 +1,9 @@
 export const runtime = "nodejs";
 
-import { requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
-import { deleteOrScheduleMediaAsset } from "@/lib/leemage/media-service";
-import { deleteAnalyzerRecording, serializeProfile } from "@/lib/vocal-profile/server";
+import { deleteAnalyzerRecording, serializeProfile } from "@/entities/vocal-profile/index.server";
+import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 import { prisma } from "@/shared/db/index.server";
+import { deleteOrScheduleMediaAsset } from "@/shared/media/index.server";
 
 export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
   const session = await requireApiSession(request);

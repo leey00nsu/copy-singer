@@ -1,9 +1,9 @@
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import Link from "next/link";
 import { VocalProfileHistoryList } from "@/components/vocal-profile/vocal-profile-history-list";
-import { requirePageSession } from "@/lib/auth/session";
-import { analysisJobPayload, listVisibleVocalProfileAnalysisJobs } from "@/lib/vocal-profile/analysis-queue";
-import { getVocalProfileHistory } from "@/lib/vocal-profile/history";
+import { getVocalProfileHistory } from "@/entities/vocal-profile/index.server";
+import { analysisJobPayload, listVisibleVocalProfileAnalysisJobs } from "@/features/analyze-vocal-profile/index.server";
+import { requirePageSession } from "@/features/authentication/index.server";
 import { Button, buttonVariants } from "@/shared/ui/button";
 
 export default async function VocalProfilesPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {

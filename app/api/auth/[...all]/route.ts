@@ -1,6 +1,3 @@
-import { toNextJsHandler } from "better-auth/next-js";
-import { auth } from "@/lib/auth/auth";
-
 export const runtime = "nodejs";
 
-export const { GET, POST } = toNextJsHandler(auth);
+export { GET, POST } from "@/_app/api-routes/auth/index.server";

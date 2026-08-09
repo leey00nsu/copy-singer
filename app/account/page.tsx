@@ -1,8 +1,8 @@
 import { AudioLines, ChevronLeft, ChevronRight, Ticket, UserRound } from "lucide-react";
 import Link from "next/link";
-import { TicketLedger } from "@/components/account/ticket-ledger";
-import { requirePageSession } from "@/lib/auth/session";
-import { getTicketAccount } from "@/lib/tickets/service";
+import { TicketLedger } from "@/entities/ticket";
+import { getTicketAccount } from "@/entities/ticket/index.server";
+import { requirePageSession } from "@/features/authentication/index.server";
 import { Button } from "@/shared/ui/button";
 
 export default async function AccountPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {

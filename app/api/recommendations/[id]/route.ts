@@ -1,6 +1,6 @@
 export const runtime = "nodejs";
 
-import { requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
+import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 import { RecommendationError } from "@/lib/recommendation/contract";
 import { deleteRecommendationRun, getRecommendationRun } from "@/lib/recommendation/server";
 import { reconcileRecommendationSyntheses } from "@/lib/recommendation/synthesis";

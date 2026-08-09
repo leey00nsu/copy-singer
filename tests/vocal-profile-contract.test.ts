@@ -3,11 +3,11 @@ import test from "node:test";
 import {
   type AnalyzerProfile,
   hasSmartReferenceContract,
+  midiToNoteName,
   SMART_REFERENCE_MID_VERSION,
   SMART_REFERENCE_VERSION,
   synthesisReferenceContractVersion,
-} from "../lib/vocal-profile/contract";
-import { midiToNoteName } from "../lib/vocal-profile/pitch";
+} from "../src/entities/vocal-profile";
 
 test("MIDI values are rounded to Korean UI note labels", () => {
   assert.equal(midiToNoteName(48), "C3");

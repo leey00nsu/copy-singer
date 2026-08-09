@@ -5,7 +5,7 @@ import { config } from "dotenv";
 config({ path: [".env.local", ".env"], quiet: true });
 
 test("development auth bypass policy is fail-closed outside development and test", async () => {
-  const { developmentAuthBypassUserId } = await import("../lib/auth/dev-bypass-policy");
+  const { developmentAuthBypassUserId } = await import("../src/features/authentication/index.server");
   const enabled = { DEV_AUTH_BYPASS_ENABLED: "true", DEV_AUTH_BYPASS_USER_ID: "user-1" };
   assert.equal(developmentAuthBypassUserId({ ...enabled, NODE_ENV: "production" }), null);
   assert.equal(developmentAuthBypassUserId({ ...enabled, NODE_ENV: undefined }), null);
@@ -27,7 +27,7 @@ test("development auth bypass resolves only an existing database user", async (c
     return;
   }
   const { prisma } = await import("../src/shared/db/index.server");
-  const { getDevelopmentAuthBypassSession } = await import("../lib/auth/dev-bypass");
+  const { getDevelopmentAuthBypassSession } = await import("../src/features/authentication/index.server");
   const userId = `dev-auth-${crypto.randomUUID()}`;
   const environment = { NODE_ENV: "test", DEV_AUTH_BYPASS_ENABLED: "true", DEV_AUTH_BYPASS_USER_ID: userId };
   try {

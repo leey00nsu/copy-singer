@@ -1,7 +1,7 @@
 export const runtime = "nodejs";
 
-import { requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
-import { getTicketAccount } from "@/lib/tickets/service";
+import { getTicketAccount } from "@/entities/ticket/index.server";
+import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 
 export async function GET(request: Request) {
   const session = await requireApiSession(request);

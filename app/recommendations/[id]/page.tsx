@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { RecommendationResults } from "@/components/recommendation-results";
-import { requirePageSession } from "@/lib/auth/session";
+import { requirePageSession } from "@/features/authentication/index.server";
 
 export const metadata: Metadata = {
   title: "내 노래 추천 순위 — Copy Singer",

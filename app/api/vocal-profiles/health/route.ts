@@ -1,6 +1,6 @@
 export const runtime = "nodejs";
 
-import { vocalProfileAnalyzerHealth } from "@/lib/vocal-profile/analyzer";
+import { vocalProfileAnalyzerHealth } from "@/entities/vocal-profile/index.server";
 import { prisma } from "@/shared/db/index.server";
 
 export async function GET() {

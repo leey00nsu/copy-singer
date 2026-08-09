@@ -166,7 +166,7 @@ test("enqueue is idempotent and job reads are owner-scoped", async (context) => 
       data: { id: otherId, name: "Other", email: `${otherId}@example.test`, emailVerified: true },
     });
     const { enqueueVocalProfileAnalysis, getVocalProfileAnalysisJob, listVisibleVocalProfileAnalysisJobs } =
-      await import("../lib/vocal-profile/analysis-queue");
+      await import("../src/features/analyze-vocal-profile/index.server");
     const file = new File([Uint8Array.from([1, 2, 3, 4])], "voice.wav", { type: "audio/wav" });
     const first = await enqueueVocalProfileAnalysis({ userId, idempotencyKey: "same-request", file });
     const second = await enqueueVocalProfileAnalysis({ userId, idempotencyKey: "same-request", file });
@@ -199,7 +199,9 @@ test("expired analysis leases are recoverable by another worker", async (context
   const source = await createSourceAsset(userId, Uint8Array.from([1, 2, 3]));
   const job = await insertJob({ userId, sourceAssetId: source.id });
   try {
-    const { claimNextVocalProfileAnalysisJob } = await import("../lib/vocal-profile/analysis-worker");
+    const { claimNextVocalProfileAnalysisJob } = await import(
+      "../src/_app/background-jobs/vocal-profile-analysis/index.server"
+    );
     assert.equal(await claimNextVocalProfileAnalysisJob("worker-a", job.id), job.id);
     assert.equal(await claimNextVocalProfileAnalysisJob("worker-b", job.id), null);
     await prisma.$executeRaw`
@@ -237,7 +239,7 @@ test("worker persists a profile while reusing the durable source asset", async (
 
   try {
     const { claimNextVocalProfileAnalysisJob, processClaimedVocalProfileAnalysisJob } = await import(
-      "../lib/vocal-profile/analysis-worker"
+      "../src/_app/background-jobs/vocal-profile-analysis/index.server"
     );
     assert.equal(await claimNextVocalProfileAnalysisJob("worker", job.id), job.id);
     await processClaimedVocalProfileAnalysisJob(job.id, "worker", { fetchImpl });
@@ -282,7 +284,7 @@ test("transient Modal failure requeues without deleting the source", async (cont
       : new Response("temporary", { status: 500 })) as typeof fetch;
   try {
     const { claimNextVocalProfileAnalysisJob, processClaimedVocalProfileAnalysisJob } = await import(
-      "../lib/vocal-profile/analysis-worker"
+      "../src/_app/background-jobs/vocal-profile-analysis/index.server"
     );
     await claimNextVocalProfileAnalysisJob("worker", job.id);
     await processClaimedVocalProfileAnalysisJob(job.id, "worker", { fetchImpl });
@@ -334,7 +336,7 @@ test("terminal analysis failure detaches and deletes the queued source", async (
 
   try {
     const { claimNextVocalProfileAnalysisJob, processClaimedVocalProfileAnalysisJob } = await import(
-      "../lib/vocal-profile/analysis-worker"
+      "../src/_app/background-jobs/vocal-profile-analysis/index.server"
     );
     await claimNextVocalProfileAnalysisJob("worker", job.id);
     await processClaimedVocalProfileAnalysisJob(job.id, "worker", { fetchImpl });

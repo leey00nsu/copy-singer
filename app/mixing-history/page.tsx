@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { MixingHistoryList } from "@/components/mixing/mixing-history-list";
-import { requirePageSession } from "@/lib/auth/session";
+import { requirePageSession } from "@/features/authentication/index.server";
 import { getMixingHistory } from "@/lib/mixing/history";
 import { Button } from "@/shared/ui/button";
 
