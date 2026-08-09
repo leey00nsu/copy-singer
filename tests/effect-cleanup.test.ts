@@ -19,8 +19,8 @@ test("query-managed server state has no component-owned fetch or polling timer",
   const paths = [
     "src/_pages/dev-svc/ui/singer-workbench.tsx",
     "src/_pages/recommendation-detail/ui/recommendation-results.tsx",
-    "src/_pages/mixing-history/ui/mixing-history-list.tsx",
-    "src/_pages/vocal-profiles/ui/vocal-profile-analysis-job-cards.tsx",
+    "src/widgets/library/ui/mixing-library.tsx",
+    "src/widgets/library/ui/vocal-profile-library.tsx",
     "src/features/manage-tickets/ui/ticket-adjustment-form.tsx",
     "src/_pages/profile/ui/vocal-profile-workbench.tsx",
   ];

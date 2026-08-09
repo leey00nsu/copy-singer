@@ -1,0 +1,203 @@
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
+import { AlertTriangle, AudioLines, CalendarDays, ChevronRight, Clock3, LoaderCircle, RotateCcw } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useRef } from "react";
+import {
+  presentVocalProfile,
+  type VocalProfileAnalysisJobResponse,
+  type VocalProfileHistoryPayload,
+} from "@/entities/vocal-profile";
+import { isActiveAnalysisJob, vocalProfileAnalysisJobsQueryOptions } from "@/features/analyze-vocal-profile";
+import { Badge } from "@/shared/ui/badge";
+import { buttonVariants } from "@/shared/ui/button";
+import { StatePanel } from "@/shared/ui/state-panel";
+import { LibraryPagination } from "./library-pagination";
+
+function analysisJobCopy(job: VocalProfileAnalysisJobResponse) {
+  if (job.status === "processing") {
+    return {
+      title: "보컬 프로필 분석 중",
+      detail: "음정 분포와 믹싱에 사용할 보컬 레퍼런스를 만들고 있어요.",
+      badge: "분석 중",
+    };
+  }
+  if (job.status === "pending" && job.attempts > 0 && job.error?.retryable) {
+    return {
+      title: "분석을 다시 시도하고 있어요",
+      detail: "일시적인 연결 문제로 작업이 자동 재시도 대기 중입니다.",
+      badge: `재시도 ${job.attempts}/${job.maxAttempts}`,
+    };
+  }
+  if (job.status === "pending") {
+    return {
+      title: "보컬 프로필 분석 대기 중",
+      detail: "업로드는 안전하게 저장됐고 백그라운드 작업 순서를 기다리고 있어요.",
+      badge: "대기 중",
+    };
+  }
+  return {
+    title: "보컬 프로필을 만들지 못했어요",
+    detail: job.error?.detail || "분석 작업이 완료되지 않았습니다.",
+    badge: "실패",
+  };
+}
+
+function VocalProfileAnalysisJobRows({ jobs }: { jobs: VocalProfileAnalysisJobResponse[] }) {
+  const jobsQuery = useQuery(vocalProfileAnalysisJobsQueryOptions(jobs));
+  const currentJobs = jobsQuery.data?.jobs ?? jobs;
+  const activeIds = useRef(jobs.filter(isActiveAnalysisJob).map((job) => job.id));
+
+  useEffect(() => {
+    if (!jobsQuery.data) return;
+    const visibleIds = new Set(jobsQuery.data.jobs.map((job) => job.id));
+    if (activeIds.current.some((id) => !visibleIds.has(id))) {
+      window.location.reload();
+      return;
+    }
+    activeIds.current = jobsQuery.data.jobs.filter(isActiveAnalysisJob).map((job) => job.id);
+  }, [jobsQuery.data]);
+
+  return (
+    <>
+      {jobsQuery.isError ? (
+        <p className="border-b py-3 text-sm text-destructive" role="status">
+          분석 상태를 새로 확인하지 못했어요. 마지막으로 확인한 상태를 표시합니다.
+        </p>
+      ) : null}
+      {currentJobs.map((job) => {
+        const copy = analysisJobCopy(job);
+        const failed = job.status === "failed";
+        return (
+          <article
+            className="grid gap-5 bg-background py-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-center"
+            key={job.id}
+          >
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant={failed ? "destructive" : "secondary"}>{copy.badge}</Badge>
+                <div className="flex items-center gap-2">
+                  {failed ? (
+                    <AlertTriangle aria-hidden="true" className="size-5 text-destructive" />
+                  ) : (
+                    <LoaderCircle
+                      aria-hidden="true"
+                      className="size-5 animate-spin text-data-accent-foreground motion-reduce:animate-none"
+                    />
+                  )}
+                  <h2 className="text-lg font-semibold">{copy.title}</h2>
+                </div>
+              </div>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">{copy.detail}</p>
+              {!failed ? (
+                <p className="mt-2 text-xs leading-5 text-muted-foreground">
+                  이 페이지를 닫아도 분석은 계속됩니다. 완료되면 저장된 보컬 프로필로 자동 전환됩니다.
+                </p>
+              ) : null}
+            </div>
+            <div className="flex flex-wrap items-center gap-3 md:justify-end">
+              <div className="text-xs text-muted-foreground md:text-right">
+                <p className="flex items-center gap-1">
+                  <Clock3 aria-hidden="true" className="size-3" />
+                  {new Date(job.createdAt).toLocaleString("ko-KR")}
+                </p>
+                <p className="mt-1">
+                  시도 {Math.min(job.attempts, job.maxAttempts)} / {job.maxAttempts}
+                </p>
+              </div>
+              {failed ? (
+                <Link className={buttonVariants({ variant: "outline" })} href="/profile">
+                  <RotateCcw aria-hidden="true" className="size-4" /> 다시 분석하기
+                </Link>
+              ) : null}
+            </div>
+          </article>
+        );
+      })}
+    </>
+  );
+}
+
+export function VocalProfileLibrary({
+  analysisJobs = [],
+  basePath = "/vocal-profiles",
+  history,
+}: {
+  analysisJobs?: VocalProfileAnalysisJobResponse[];
+  basePath?: "/library" | "/vocal-profiles";
+  history: VocalProfileHistoryPayload;
+}) {
+  if (history.profiles.length === 0 && analysisJobs.length === 0) {
+    return (
+      <StatePanel
+        action={
+          <Link className={buttonVariants()} href="/profile">
+            첫 프로필 만들기
+          </Link>
+        }
+        description="노래 한 소절을 분석하면 음역과 제출한 보컬을 여기에 보관합니다."
+        icon={<AudioLines />}
+        title="아직 저장된 보컬 프로필이 없어요."
+      />
+    );
+  }
+
+  return (
+    <section aria-label="보컬 프로필 목록">
+      <div className="divide-y border-y">
+        <VocalProfileAnalysisJobRows jobs={analysisJobs} />
+        {history.profiles.map((profile) => {
+          const presentation = presentVocalProfile(profile);
+          return (
+            <article
+              className="grid gap-5 bg-background py-6 md:grid-cols-[minmax(0,1.6fr)_repeat(3,minmax(5.5rem,.55fr))_auto] md:items-center"
+              key={profile.id}
+            >
+              <div className="min-w-0">
+                <p className="text-xs font-semibold tracking-[0.14em] text-data-accent-foreground">
+                  VOCAL PROFILE<span className="sr-only"> 보컬 프로필</span>
+                </p>
+                <h2 className="mt-2 truncate text-lg font-semibold">{presentation.label}</h2>
+                <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <CalendarDays aria-hidden="true" className="size-3" />
+                    {new Date(profile.createdAt).toLocaleDateString("ko-KR")}
+                  </span>
+                  <span>{profile.durationMs ? `${(profile.durationMs / 1000).toFixed(1)}초` : "길이 정보 없음"}</span>
+                </p>
+              </div>
+              <dl className="contents">
+                {[
+                  ["실용 음역", presentation.practicalRange.label],
+                  ["안정도", `${presentation.stability.percent}%`],
+                  ["추천 · 믹싱", `${profile.recommendationCount} · ${profile.mixingCount}`],
+                ].map(([label, value]) => (
+                  <div className="border-l pl-3" key={label}>
+                    <dt className="text-xs text-muted-foreground">{label}</dt>
+                    <dd className="mt-1 text-sm font-medium">{value}</dd>
+                  </div>
+                ))}
+              </dl>
+              <Link
+                aria-label={`${presentation.label} 분석과 제출 보컬 보기`}
+                className={buttonVariants({ variant: "outline" })}
+                href={`/vocal-profiles/${profile.id}`}
+              >
+                상세 보기 <ChevronRight aria-hidden="true" className="size-4" />
+              </Link>
+            </article>
+          );
+        })}
+      </div>
+      <LibraryPagination
+        getHref={(page) =>
+          basePath === "/library" ? `/library?tab=profiles&page=${page}` : `${basePath}?page=${page}`
+        }
+        label="보컬 프로필 페이지"
+        page={history.page}
+        pageCount={history.pageCount}
+      />
+    </section>
+  );
+}

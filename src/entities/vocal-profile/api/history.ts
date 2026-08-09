@@ -1,6 +1,7 @@
 import "server-only";
 
 import { prisma } from "@/shared/db/index.server";
+import type { VocalProfileHistoryPayload, VocalProfileHistoryRow } from "../model/contract";
 import { serializeProfile } from "./profile-service";
 
 const profileSummarySelect = {
@@ -27,7 +28,7 @@ function requiredMetric(value: number | null, name: string) {
   return value;
 }
 
-function serializeSummary(row: Awaited<ReturnType<typeof findProfileRows>>[number]) {
+function serializeSummary(row: Awaited<ReturnType<typeof findProfileRows>>[number]): VocalProfileHistoryRow {
   return {
     id: row.id,
     minMidi: requiredMetric(row.minMidi, "minMidi"),
@@ -60,7 +61,11 @@ async function findProfileRows(userId: string, skip: number, take: number) {
   });
 }
 
-export async function getVocalProfileHistory(userId: string, page = 1, pageSize = 12) {
+export async function getVocalProfileHistory(
+  userId: string,
+  page = 1,
+  pageSize = 12,
+): Promise<VocalProfileHistoryPayload> {
   const normalizedPage = Math.max(1, Math.trunc(page));
   const normalizedPageSize = Math.min(50, Math.max(1, Math.trunc(pageSize)));
   const where = { userId, sourceType: "USER" as const };

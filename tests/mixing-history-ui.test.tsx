@@ -5,6 +5,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 
 import { createQueryClient } from "@/_app/providers";
 import { MixingHistoryList } from "../src/_pages/mixing-history";
+import { LibraryTabs, MixingLibrary, mixingHistoryHref } from "../src/widgets/library";
 
 test("mixing history renders active state and persisted result controls", () => {
   const client = createQueryClient(true);
@@ -55,4 +56,71 @@ test("mixing history renders active state and persisted result controls", () => 
   assert.match(markup, /완료 곡/);
   assert.match(markup, /\/api\/mixing-jobs\/done\/audio/);
   assert.match(markup, /결과 저장/);
+  assert.match(markup, /AI 믹스 작업 목록/);
+  assert.match(markup, /name="q"/);
+  assert.match(markup, /name="status"/);
+});
+
+test("mixing library distinguishes failed and filtered empty states", () => {
+  const client = createQueryClient(true);
+  const failedMarkup = renderToStaticMarkup(
+    <QueryClientProvider client={client}>
+      <MixingLibrary
+        basePath="/library"
+        filters={{ page: 1, q: "없는 곡", status: "failed" }}
+        initial={{
+          page: 1,
+          pageSize: 20,
+          total: 1,
+          pageCount: 1,
+          jobs: [
+            {
+              id: "10000000-0000-4000-8000-000000000100",
+              status: "failed",
+              ticketCost: 1,
+              error: { code: "MIXING_FAILED", detail: "원곡을 준비하지 못했습니다." },
+              song: { title: "실패 곡", artist: "가수", catalogOrder: 3 },
+              vocalProfile: {
+                id: "10000000-0000-4000-8000-000000000101",
+                createdAt: "2026-08-06T00:00:00Z",
+              },
+              resultReady: false,
+              audioUrl: null,
+              createdAt: "2026-08-06T00:00:00Z",
+              updatedAt: "2026-08-06T00:01:00Z",
+              startedAt: "2026-08-06T00:00:30Z",
+              completedAt: "2026-08-06T00:01:00Z",
+            },
+          ],
+        }}
+      />
+    </QueryClientProvider>,
+  );
+  assert.match(failedMarkup, /원곡을 준비하지 못했습니다/);
+  assert.match(failedMarkup, /type="hidden" name="tab" value="mixes"/);
+  client.clear();
+
+  const emptyClient = createQueryClient(true);
+  const emptyMarkup = renderToStaticMarkup(
+    <QueryClientProvider client={emptyClient}>
+      <MixingLibrary
+        basePath="/library"
+        filters={{ page: 1, q: "없는 곡", status: "all" }}
+        initial={{ page: 1, pageSize: 20, total: 0, pageCount: 1, jobs: [] }}
+      />
+    </QueryClientProvider>,
+  );
+  emptyClient.clear();
+  assert.match(emptyMarkup, /조건에 맞는 AI 믹스가 없어요/);
+  assert.match(emptyMarkup, /모든 AI 믹스 보기/);
+});
+
+test("library tabs and pagination hrefs preserve canonical URL state", () => {
+  const markup = renderToStaticMarkup(<LibraryTabs tab="mixes" />);
+  assert.match(markup, /href="\/library\?tab=profiles&amp;page=1"/);
+  assert.match(markup, /href="\/library\?tab=mixes&amp;page=1"/);
+  assert.equal(
+    mixingHistoryHref("/library", { page: 3, q: "아이유", status: "succeeded" }),
+    "/library?page=3&tab=mixes&q=%EC%95%84%EC%9D%B4%EC%9C%A0&status=succeeded",
+  );
 });

@@ -9,7 +9,7 @@ const meta = {
     layout: "fullscreen",
     nextjs: {
       navigation: {
-        pathname: "/vocal-profiles",
+        pathname: "/library",
       },
     },
   },
@@ -17,8 +17,8 @@ const meta = {
     admin: true,
     children: (
       <div className="mx-auto max-w-4xl px-5 py-12 md:px-8">
-        <p className="text-xs font-medium text-muted-foreground">VOCAL PROFILES</p>
-        <h1 className="mt-3 text-4xl font-semibold tracking-tight">내 보컬 프로필</h1>
+        <p className="text-xs font-medium text-muted-foreground">LIBRARY</p>
+        <h1 className="mt-3 text-4xl font-semibold tracking-tight">내 라이브러리</h1>
         <p className="mt-3 text-sm text-muted-foreground">제품 화면은 같은 navigation과 content 영역을 공유합니다.</p>
       </div>
     ),

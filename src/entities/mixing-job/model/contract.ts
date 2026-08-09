@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { pageSearchParamSchema } from "@/shared/api";
 
 export const MIXING_JOB_STATUSES = [
   "pending",
@@ -13,6 +14,29 @@ export const MIXING_JOB_STATUSES = [
 export const publicMixingJobStatusSchema = z.enum(MIXING_JOB_STATUSES);
 
 export type PublicMixingJobStatus = z.infer<typeof publicMixingJobStatusSchema>;
+
+export const MIXING_HISTORY_FILTER_STATUSES = ["all", ...MIXING_JOB_STATUSES] as const;
+
+export const mixingHistoryFilterStatusSchema = z.enum(MIXING_HISTORY_FILTER_STATUSES);
+
+function firstSearchParam(value: unknown) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+export const mixingHistoryFiltersSchema = z.object({
+  page: z.preprocess(firstSearchParam, pageSearchParamSchema),
+  q: z.preprocess(
+    (value) => firstSearchParam(value) ?? "",
+    z
+      .string()
+      .trim()
+      .transform((value) => value.slice(0, 80)),
+  ),
+  status: z.preprocess((value) => firstSearchParam(value) ?? "all", mixingHistoryFilterStatusSchema.catch("all")),
+});
+
+export type MixingHistoryFilters = z.infer<typeof mixingHistoryFiltersSchema>;
+export type MixingHistoryFilterStatus = z.infer<typeof mixingHistoryFilterStatusSchema>;
 
 export const mixingJobErrorSchema = z.object({
   code: z.string(),

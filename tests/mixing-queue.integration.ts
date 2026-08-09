@@ -457,6 +457,18 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     assert.equal(history.jobs[0]?.id, successful.id);
     assert.equal(history.jobs[0]?.resultReady, true);
     assert.equal(history.jobs[0]?.audioUrl, `/api/mixing-jobs/${successful.id}/audio`);
+    const titleFiltered = await getMixingHistory(userId, { page: 1, q: song.title, status: "succeeded" }, 20);
+    assert.equal(titleFiltered.total, 1);
+    assert.equal(titleFiltered.jobs[0]?.id, successful.id);
+    const artistFiltered = await getMixingHistory(userId, { page: 1, q: song.artist, status: "failed" }, 20);
+    assert.ok(artistFiltered.total >= 1);
+    assert.ok(artistFiltered.jobs.every((job) => job.status === "failed"));
+    assert.equal((await getMixingHistory(userId, { page: 1, q: `missing-${suffix}`, status: "all" })).total, 0);
+    const firstHistoryPage = await getMixingHistory(userId, { page: 1, q: "", status: "all" }, 1);
+    const secondHistoryPage = await getMixingHistory(userId, { page: 2, q: "", status: "all" }, 1);
+    assert.ok(firstHistoryPage.pageCount > 1);
+    assert.notEqual(firstHistoryPage.jobs[0]?.id, secondHistoryPage.jobs[0]?.id);
+    assert.equal((await getMixingHistory("another-user", { page: 1, q: song.title, status: "all" })).total, 0);
     assert.equal(await getMixingJobForUser("another-user", successful.id), null);
   } finally {
     for (const [name, value] of Object.entries({

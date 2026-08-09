@@ -17,11 +17,13 @@ test("login callback rejects external and ambiguous destinations", () => {
   assert.equal(safeCallbackURL("/\\example.com"), "/profile");
 });
 
-test("product navigation keeps recommendation details under vocal profiles", () => {
+test("product navigation keeps saved resources and recommendation details under Library", () => {
   assert.equal(isProductPathActive("/profile", "/profile"), true);
-  assert.equal(isProductPathActive("/vocal-profiles/voice-1", "/vocal-profiles"), true);
-  assert.equal(isProductPathActive("/recommendations/run-1", "/vocal-profiles"), true);
-  assert.equal(isProductPathActive("/mixing-history", "/vocal-profiles"), false);
+  assert.equal(isProductPathActive("/library", "/library"), true);
+  assert.equal(isProductPathActive("/vocal-profiles/voice-1", "/library"), true);
+  assert.equal(isProductPathActive("/recommendations/run-1", "/library"), true);
+  assert.equal(isProductPathActive("/mixing-history", "/library"), true);
+  assert.equal(isProductPathActive("/profile", "/library"), false);
 });
 
 test("route groups preserve public URLs while the root layout stays shell-free", () => {
@@ -32,6 +34,7 @@ test("route groups preserve public URLs while the root layout stays shell-free",
     "app/(product)/profile/page.tsx",
     "app/(product)/vocal-profiles/page.tsx",
     "app/(product)/mixing-history/page.tsx",
+    "app/(product)/library/page.tsx",
     "app/(product)/account/page.tsx",
   ]) {
     assert.equal(existsSync(new URL(route, root)), true, `${route} should exist`);

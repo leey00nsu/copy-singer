@@ -99,6 +99,35 @@ export const vocalProfileResponseSchema = z.object({
 
 export type VocalProfileResponse = z.infer<typeof vocalProfileResponseSchema>;
 
+export type VocalProfileHistoryRow = {
+  id: string;
+  minMidi: number;
+  maxMidi: number;
+  medianMidi: number;
+  tessituraLowMidi: number;
+  tessituraHighMidi: number;
+  voicedRatio: number;
+  pitchStability: number;
+  clippingRatio: number;
+  rmsDb: number;
+  analyzer: string;
+  analyzerVersion: string;
+  durationMs: number | null;
+  mimeType: string;
+  recommendationCount: number;
+  mixingCount: number;
+  latestRecommendationId: string | null;
+  createdAt: string;
+};
+
+export type VocalProfileHistoryPayload = {
+  page: number;
+  pageSize: number;
+  total: number;
+  pageCount: number;
+  profiles: VocalProfileHistoryRow[];
+};
+
 export const vocalProfileErrorSchema = z.object({
   reasonCode: z.string(),
   detail: z.string(),

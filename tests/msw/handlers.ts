@@ -1,8 +1,10 @@
 import { delay, HttpResponse, http } from "msw";
+import type { MixingHistoryPayload } from "@/entities/mixing-job";
 import type { RecommendationRunResponse } from "@/entities/recommendation";
 import {
   activeRecommendationRunFixture,
   conversionHealthFixture,
+  mixingHistoryFixture,
   mixingJobFixture,
   queuedConversionFixture,
   recommendationRunFixture,
@@ -68,6 +70,10 @@ export function recommendationPollingSequenceHandler(
 
 export function mixingSubmissionHandler() {
   return http.post("*/api/mixing-jobs", () => HttpResponse.json(mixingJobFixture, { status: 201 }));
+}
+
+export function mixingHistoryHandler(payload: MixingHistoryPayload = mixingHistoryFixture) {
+  return http.get("*/api/mixing-jobs", () => HttpResponse.json(payload));
 }
 
 export function mixingForbiddenHandler() {

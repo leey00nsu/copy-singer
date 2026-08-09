@@ -1,1 +1,1 @@
-export * from "./ui/vocal-profile-history-list";
+export { VocalProfileLibrary as VocalProfileHistoryList } from "@/widgets/library";

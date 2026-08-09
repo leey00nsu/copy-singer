@@ -1,4 +1,4 @@
-import type { MixingJobResponse } from "@/entities/mixing-job";
+import type { MixingHistoryPayload, MixingJobResponse } from "@/entities/mixing-job";
 import type { RecommendationRunResponse } from "@/entities/recommendation";
 import type { ConversionHealth, ConversionJob } from "@/features/development-conversion";
 import type { TicketAdjustmentResponse } from "@/features/manage-tickets";
@@ -156,6 +156,57 @@ export const mixingJobFixture: MixingJobResponse = {
   createdAt: "2026-08-09T00:01:00.000Z",
   updatedAt: "2026-08-09T00:01:00.000Z",
   completedAt: null,
+};
+
+export const mixingHistoryFixture: MixingHistoryPayload = {
+  page: 1,
+  pageSize: 20,
+  total: 3,
+  pageCount: 1,
+  jobs: [
+    {
+      id: "30000000-0000-4000-8000-000000000001",
+      status: "processing",
+      ticketCost: 1,
+      error: null,
+      song: { title: "밤편지", artist: "아이유", catalogOrder: 101 },
+      vocalProfile: { id: "30000000-0000-4000-8000-000000000011", createdAt: "2026-08-09T00:00:00.000Z" },
+      resultReady: false,
+      audioUrl: null,
+      createdAt: "2026-08-09T03:00:00.000Z",
+      updatedAt: "2026-08-09T03:01:00.000Z",
+      startedAt: "2026-08-09T03:00:30.000Z",
+      completedAt: null,
+    },
+    {
+      id: "30000000-0000-4000-8000-000000000002",
+      status: "succeeded",
+      ticketCost: 1,
+      error: null,
+      song: { title: "서른 즈음에", artist: "김광석", catalogOrder: 102 },
+      vocalProfile: { id: "30000000-0000-4000-8000-000000000012", createdAt: "2026-08-08T00:00:00.000Z" },
+      resultReady: true,
+      audioUrl: "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=",
+      createdAt: "2026-08-08T03:00:00.000Z",
+      updatedAt: "2026-08-08T03:02:00.000Z",
+      startedAt: "2026-08-08T03:00:30.000Z",
+      completedAt: "2026-08-08T03:02:00.000Z",
+    },
+    {
+      id: "30000000-0000-4000-8000-000000000003",
+      status: "failed",
+      ticketCost: 1,
+      error: { code: "MIXING_TARGET_UNAVAILABLE", detail: "믹싱용 원곡을 준비하지 못했습니다." },
+      song: { title: "기억의 습작", artist: "전람회", catalogOrder: 103 },
+      vocalProfile: { id: "30000000-0000-4000-8000-000000000013", createdAt: "2026-08-07T00:00:00.000Z" },
+      resultReady: false,
+      audioUrl: null,
+      createdAt: "2026-08-07T03:00:00.000Z",
+      updatedAt: "2026-08-07T03:01:00.000Z",
+      startedAt: "2026-08-07T03:00:30.000Z",
+      completedAt: "2026-08-07T03:01:00.000Z",
+    },
+  ],
 };
 
 export const malformedConversionFixture = {

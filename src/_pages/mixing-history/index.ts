@@ -1,1 +1,1 @@
-export * from "./ui/mixing-history-list";
+export { MixingLibrary as MixingHistoryList } from "@/widgets/library";

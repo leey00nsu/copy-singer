@@ -1,15 +1,24 @@
-import { getMixingHistory, MixingError, serializeMixingJob } from "@/entities/mixing-job/index.server";
+import {
+  getMixingHistory,
+  MixingError,
+  mixingHistoryFiltersSchema,
+  serializeMixingJob,
+} from "@/entities/mixing-job/index.server";
 import { InsufficientTicketsError } from "@/entities/ticket/index.server";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 import { createMixingRequestSchema } from "@/features/create-mixing/index.model";
 import { enqueueMixingJob } from "@/features/create-mixing/index.server";
-import { pageSearchParamSchema } from "@/shared/api";
 
 export async function GET(request: Request) {
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
-  const requestedPage = pageSearchParamSchema.parse(new URL(request.url).searchParams.get("page") ?? "1");
-  return Response.json(await getMixingHistory(session.user.id, requestedPage));
+  const searchParams = new URL(request.url).searchParams;
+  const filters = mixingHistoryFiltersSchema.parse({
+    page: searchParams.get("page"),
+    q: searchParams.get("q"),
+    status: searchParams.get("status"),
+  });
+  return Response.json(await getMixingHistory(session.user.id, filters));
 }
 
 export async function POST(request: Request) {

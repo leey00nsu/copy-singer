@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { mixingHistoryPayloadSchema } from "@/entities/mixing-job";
+import { mixingHistoryFiltersSchema, mixingHistoryPayloadSchema } from "@/entities/mixing-job";
 import { recommendationRunResponseSchema } from "@/entities/recommendation";
 import { vocalProfileAnalysisJobResponseSchema } from "@/entities/vocal-profile";
 import {
@@ -41,6 +41,19 @@ test("owned request schemas validate UUID, idempotency, pagination, and ticket b
     ticketAdjustmentRequestSchema.safeParse({ userId: "user", amount: 1, reason: "no", idempotencyKey: "x" }).success,
     false,
   );
+});
+
+test("mixing history filters normalize URL values without inventing statuses", () => {
+  assert.deepEqual(
+    mixingHistoryFiltersSchema.parse({ page: ["2", "4"], q: ["  아이유  ", "ignored"], status: ["processing"] }),
+    { page: 2, q: "아이유", status: "processing" },
+  );
+  assert.deepEqual(mixingHistoryFiltersSchema.parse({ page: "invalid", q: " ", status: "unknown" }), {
+    page: 1,
+    q: "",
+    status: "all",
+  });
+  assert.equal(mixingHistoryFiltersSchema.parse({ page: "1", q: "x".repeat(100) }).q.length, 80);
 });
 
 test("analysis upload schema checks file metadata without reading file bytes", () => {

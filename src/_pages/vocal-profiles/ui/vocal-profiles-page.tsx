@@ -1,10 +1,10 @@
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import Link from "next/link";
 import { getVocalProfileHistory } from "@/entities/vocal-profile/index.server";
 import { analysisJobPayload, listVisibleVocalProfileAnalysisJobs } from "@/features/analyze-vocal-profile/index.server";
 import { requirePageSession } from "@/features/authentication/index.server";
-import { Button, buttonVariants } from "@/shared/ui/button";
-import { VocalProfileHistoryList } from "./vocal-profile-history-list";
+import { buttonVariants } from "@/shared/ui/button";
+import { VocalProfileLibrary } from "@/widgets/library";
 
 export default async function VocalProfilesPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const session = await requirePageSession("/vocal-profiles");
@@ -31,29 +31,8 @@ export default async function VocalProfilesPage({ searchParams }: { searchParams
         </Link>
       </div>
       <div className="mt-8">
-        <VocalProfileHistoryList history={history} analysisJobs={analysisJobs} />
+        <VocalProfileLibrary history={history} analysisJobs={analysisJobs} />
       </div>
-      <nav className="mt-6 flex items-center justify-center gap-2" aria-label="보컬 프로필 페이지">
-        <Button
-          nativeButton={false}
-          variant="outline"
-          disabled={history.page <= 1}
-          render={<Link href={`/vocal-profiles?page=${history.page - 1}`} />}
-        >
-          <ChevronLeft /> 이전
-        </Button>
-        <span className="px-3 text-sm text-muted-foreground">
-          {history.page} / {history.pageCount}
-        </span>
-        <Button
-          nativeButton={false}
-          variant="outline"
-          disabled={history.page >= history.pageCount}
-          render={<Link href={`/vocal-profiles?page=${history.page + 1}`} />}
-        >
-          다음 <ChevronRight />
-        </Button>
-      </nav>
     </div>
   );
 }
