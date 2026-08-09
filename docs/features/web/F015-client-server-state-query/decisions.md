@@ -127,7 +127,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 전체 `pnpm test`의 `react-server` 조건에서 create-mixing server barrel이 browser Query client를 재수출하는 회귀를 발견했다. model/server public API를 분리하고 Route Handler import와 integration test를 server-safe entry로 교정한 뒤 전체 suite를 재실행해 통과했다. 직접 Client Component fetch inventory는 binary audio preview 한 곳이며 JSON parse와 timer는 0건이다.
   - **머지 후 확인**: 로컬 통합 후 갱신 예정
 - **Evidence**:
-  - **Commit**: task commit 후 갱신 예정
+  - **Commit**: docs `807b650`, project `f95aa8d`
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: `pnpm run check` PASS, `pnpm run build` PASS (22 pages), `pnpm test` PASS, `pnpm run test:query` PASS (20), client fetch/timer inventory PASS (2), `pnpm audit --prod` PASS (known vulnerabilities 0) (2026-08-09)
 - **Consequences**: 이후 Client Component에 직접 JSON fetch 또는 timer가 추가되면 inventory test가 실패하며, GitHub Actions `quality.yml`은 사용자 요청대로 연기된 상태를 유지한다.
