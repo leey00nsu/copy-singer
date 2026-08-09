@@ -51,7 +51,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: Entity/Feature schema와 `safeParse` Route Handler 경계를 적용하고 legacy 대표 payload, invalid request, 25MB 제한, UUID/page와 stream source 회귀를 검증했다. Modal upload는 Zod 적용 후에도 body를 parse하지 않는다.
   - **머지 후 확인**: 로컬 통합 후 갱신 예정
 - **Evidence**:
-  - **Commit**: task commit 후 갱신 예정
+  - **Commit**: docs `5ad4ee7`, project `db7ade9`
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: `pnpm run test:query` PASS (10), 관련 기존 test PASS (12), `pnpm run typecheck`/`lint`/`check:biome`/`check:architecture` PASS, `pnpm run build` PASS (2026-08-09)
 - **Consequences**: client가 소비하는 success JSON은 runtime contract를 가지지만 binary/audio response와 server-to-server stream은 기존 전용 경계를 유지한다.
