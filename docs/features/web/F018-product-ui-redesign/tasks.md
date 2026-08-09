@@ -75,7 +75,7 @@
     - [x] StatePanel과 foundation Storybook/a11y test 추가
     - [x] legacy 전역 class 사용처 inventory와 제거 순서 기록
 
-- [TODO][PRD-FR-046] T-F018-02 Public Landing·Google Login과 ProductShell 구축
+- [DONE][PRD-FR-046] T-F018-02 Public Landing·Google Login과 ProductShell 구축
   - Date: 2026-08-09
   - Acceptance:
     - `/`가 실제 제품 가치를 설명하는 public Landing이며 session에 따라 `/login` 또는 `/profile` CTA를 제공한다.
@@ -83,13 +83,13 @@
     - 사용자 route가 persistent `(product)` layout 안에서 desktop sidebar와 mobile Sheet navigation을 공유한다.
     - Root Layout fixed `UserMenu` 제거 후에도 Account, Admin, logout과 dev SVC 접근·동작이 보존된다.
   - Checklist:
-    - [ ] Next.js `(public)`·`(product)` route group adapter 이동과 URL 목록 고정
-    - [ ] Root Layout provider/metadata와 Product Layout auth 책임 분리
-    - [ ] `widgets/product-shell` brand/navigation/user menu desktop·mobile 구현
-    - [ ] `_pages/home`을 public Landing 책임으로 전환 또는 `landing` slice로 정리
-    - [ ] Login visual hierarchy와 기본 callback 갱신
-    - [ ] Admin 복귀·logout navigation과 dev SVC 독립 layout 회귀 확인
-    - [ ] route/auth/architecture 및 ProductShell Storybook test 추가
+    - [x] Next.js `(public)`·`(product)` route group adapter 이동과 URL 목록 고정
+    - [x] Root Layout provider/metadata와 Product Layout auth 책임 분리
+    - [x] `widgets/product-shell` brand/navigation/user menu desktop·mobile 구현
+    - [x] `_pages/home`을 public Landing 책임으로 전환 또는 `landing` slice로 정리
+    - [x] Login visual hierarchy와 기본 callback 갱신
+    - [x] Admin 복귀·logout navigation과 dev SVC 독립 layout 회귀 확인
+    - [x] route/auth/architecture 및 ProductShell Storybook test 추가
 
 - [TODO][PRD-FR-047] T-F018-03 Voice Scan·마이크 권한·Analyzing 상태 재구성
   - Date: 2026-08-09
@@ -237,7 +237,9 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm run check` | `2026-08-09` | 통과 — error 0, Biome warning 62건 |
+| `pnpm run check` | `2026-08-09` | 통과 — error 0, Biome warning 61건, Steiger 및 architecture 4/4 |
+| `pnpm run test:auth-navigation` | `2026-08-09` | 통과 — safe callback·navigation·route group 4/4 |
+| `pnpm exec tsx --test tests/effect-cleanup.test.ts tests/recommendation-ui.test.tsx` | `2026-08-09` | 통과 — cleanup·추천 UI 회귀 6/6 |
 | `pnpm run test:vocal-profile-history` | `-` | 미실행 — 구현 전 |
 | `pnpm run test:recommendation` | `-` | 미실행 — 구현 전 |
 | `pnpm run test:recommendation:db` | `-` | 미실행 — 구현 전 |
@@ -247,10 +249,11 @@
 | `pnpm run test:auth:db` | `-` | 미실행 — 구현 전 |
 | `pnpm run test:tickets` | `-` | 미실행 — 구현 전 |
 | `pnpm run test:architecture-boundaries` | `2026-08-09` | 통과 — `pnpm run check` 내부 4/4 |
-| `pnpm run test:storybook --run` | `2026-08-09` | 통과 — 24 files, 47 tests |
+| `pnpm run test:storybook --run` | `2026-08-09` | 통과 — 26 files, 51 tests |
 | `pnpm run build-storybook` | `2026-08-09` | 통과 — chunk size warning만 있음 |
+| `pnpm run build` | `2026-08-09` | 통과 — 기존 public/product/Admin/dev/API URL 보존 |
 | `pnpm run test:base-ui` | `2026-08-09` | 통과 — 1/1 |
 | `pnpm run test:process-scripts` | `2026-08-09` | 통과 — 5/5 |
 | `pnpm test` | `-` | 미실행 — 구현 전 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T13:49:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T14:18:22.000Z -->

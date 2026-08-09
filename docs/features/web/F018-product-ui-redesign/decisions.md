@@ -49,8 +49,9 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   2. 전역 class를 영구적인 비공식 design system으로 유지한다.
   3. 사용처를 고정한 뒤 후속 화면 태스크에서 slice-local composition으로 옮기고 마지막 회귀 태스크에서 잔여 class를 제거한다.
 - **Decision**: 옵션 3을 채택한다.
-  - T-F018-02에서 `page-shell`, `site-header`, `brand-mark`의 사용자 route 사용을 `ProductShell`로 대체한다.
-  - T-F018-03에서 보컬 분석 화면의 전역 shell 사용을 제거하고 recording/waveform 상태는 해당 widget과 Shared audio UI로 이동한다.
+  - T-F018-02에서 `site-header`, `brand-mark`의 사용자 route 사용을 제거하고 navigation은 `ProductShell`로 대체한다.
+  - T-F018-03에서 보컬 분석 화면의 `page-shell` content rail을 slice-local layout으로 옮기고 recording/waveform 상태는 해당 Page slice와 Shared audio UI로 이동한다.
+  - T-F018-05에서 추천 화면의 `page-shell` content rail을 목록 전용 responsive layout으로 대체한다.
   - T-F018-09에서 `hero-copy`, `workbench-grid`, `audio-card*`, `result-card`, `settings-*`, `dropzone*`, `waveform*`, `*-orbit`, `result-column`, `convert-button` 등 dev SVC 전용 class를 slice-local style로 전환하거나 의도된 개발 도구 예외로 확정한다.
   - T-F018-10에서 `rg`로 사용처가 없는 전역 class를 삭제한다.
 - **Rationale**: 화면별 완료 시점에 회귀를 검증할 수 있고, foundation 태스크가 기능 화면 전체를 무리하게 다시 쓰는 것을 피하면서 전역 CSS의 장기 소유권도 명확히 할 수 있다.
@@ -63,3 +64,23 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 워크플로 — 해당 없음
   - **Test/Log**: `rg` selector inventory, `src/_app/styles/globals.css`
 - **Consequences**: F018 중간 단계에는 일부 legacy class가 남지만 새 사용자 화면이나 새 Shared UI에는 추가하지 않는다.
+
+## D020: URL을 보존하는 public/product route group과 인증 shell 분리 (2026-08-09)
+
+- **Context**: 현재 Root Layout이 모든 route에 provider와 고정 `UserMenu`를 함께 렌더링해 public Landing·Login, 사용자 제품 화면, Admin과 dev SVC가 같은 navigation 책임을 공유한다. 인증된 사용자 화면에는 일관된 navigation이 필요하지만 public 화면과 개발 도구에는 같은 shell이 적합하지 않다.
+- **Constraints**: 기존 URL, Google-only 인증, safe callback, Admin 권한, logout과 dev SVC 접근을 유지한다. Next.js 16 App Router의 root layout, route group과 Server/Client Component 경계를 따른다.
+- **Options**:
+  1. Root Layout의 전역 header를 시각적으로만 수정한다.
+  2. 사용자 URL 자체를 `/app/*` 아래로 이동한다.
+  3. URL에 영향을 주지 않는 `(public)`·`(product)` route group으로 adapter를 재배치하고 인증된 layout만 `ProductShell`을 렌더링한다.
+- **Decision**: 옵션 3을 채택한다. Root Layout은 HTML, metadata와 provider만 소유하고, `(product)` layout이 session을 확인해 인증된 화면에만 shell을 제공한다. 각 제품 Page의 기존 session guard는 정확한 callback URL을 보존하며, Admin과 dev SVC는 독립 adapter를 유지한다.
+- **Rationale**: URL 호환성을 지키면서 navigation과 인증 책임을 실제 화면 경계에 맞게 분리하고, 후속 Library·detail route가 같은 shell을 재사용할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 현재 App tree, Root Layout, auth service, login callback과 사용자 route별 session 처리 위치를 다시 확인한 뒤 route 이동 목록과 redirect 책임을 고정한다.
+  - **DONE 전 확정 시점**: 기존 URL을 유지한 채 public/product adapter를 route group으로 이동했다. 1280×720과 360×800 실제 브라우저에서 Landing·ProductShell·mobile Sheet를 확인했고, 검은 primary token 적용, 가로 overflow 없음, 현재 route 표시와 콘솔 오류 없음까지 검증했다. 사용자가 로그인하지 않은 경우에는 Page별 guard가 callback을 결정하도록 Product Layout이 children을 그대로 전달한다.
+  - **머지 후 확인**: 로컬 통합 후 기록한다.
+- **Evidence**:
+  - **Commit**: T-F018-02 task checkpoint commit
+  - **PR**: 로컬 워크플로 — 해당 없음
+  - **Test/Log**: `pnpm run test:auth-navigation` (4/4), `pnpm run check`, `pnpm run test:storybook --run` (26 files, 51 tests), `pnpm run build-storybook`, `pnpm run build`, local browser smoke (1280×720·360×800)
+- **Consequences**: 후속 사용자 route는 `(product)` layout 아래 adapter만 추가하면 동일 navigation·content rail·mobile Sheet를 사용한다.
