@@ -34,7 +34,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     "../src/_app/background-jobs/mixing/index.server"
   );
   const { InsufficientTicketsError } = await import("../src/entities/ticket/index.server");
-  const { MixingError } = await import("../src/entities/mixing-job");
+  const { MixingError } = await import("../src/entities/mixing-job/index.server");
   const { applyTicketChange } = await import("../src/entities/ticket/index.server");
   const { getMixingHistory, getMixingJobForUser } = await import("../src/entities/mixing-job/index.server");
   const suffix = crypto.randomUUID();

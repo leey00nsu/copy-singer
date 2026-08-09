@@ -1,7 +1,7 @@
 import { getMixingHistory, MixingError, serializeMixingJob } from "@/entities/mixing-job/index.server";
 import { InsufficientTicketsError } from "@/entities/ticket/index.server";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
-import { createMixingRequestSchema } from "@/features/create-mixing";
+import { createMixingRequestSchema } from "@/features/create-mixing/index.model";
 import { enqueueMixingJob } from "@/features/create-mixing/index.server";
 import { pageSearchParamSchema } from "@/shared/api";
 

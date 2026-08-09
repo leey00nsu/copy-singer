@@ -1,13 +1,13 @@
 import {
-  ANALYSIS_AUDIO_MIME_TYPES,
-  analysisAudioFileSchema,
-  analysisIdempotencyKeySchema,
-} from "@/features/analyze-vocal-profile";
-import {
   analysisJobPayload,
   enqueueVocalProfileAnalysis,
   listVisibleVocalProfileAnalysisJobs,
 } from "@/features/analyze-vocal-profile/index.server";
+import {
+  ANALYSIS_AUDIO_MIME_TYPES,
+  analysisAudioFileSchema,
+  analysisIdempotencyKeySchema,
+} from "@/features/analyze-vocal-profile/model/contract";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 
 function enqueueError(error: unknown) {
