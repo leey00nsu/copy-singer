@@ -94,18 +94,18 @@
     - [x] upload idempotency key, localStorage cleanup, toast 및 오류 안내 회귀 검증
     - [x] vocal profile 관련 기존 test와 신규 query polling test 통과
 
-- [TODO][NON-PRD] T-F015-04 Recommendation·mixing query와 cache 동기화 전환
+- [DONE][NON-PRD] T-F015-04 Recommendation·mixing query와 cache 동기화 전환
   - Date: 2026-08-09
   - Acceptance:
     - recommendation detail과 mixing history가 typed query 및 상태 기반 polling을 사용한다.
     - mixing 생성·추천 삭제 mutation의 pending/error UI와 cache patch/invalidation이 기존 동작을 보존한다.
     - paginated history initialData가 즉시 표시되고 active job이 없으면 polling하지 않는다.
   - Checklist:
-    - [ ] recommendation/mixing API 함수와 key/options factory 구현
-    - [ ] recommendation detail fetch/polling/delete를 query/mutation으로 교체
-    - [ ] mixing 시작 시 item preparing cache patch, 실패 rollback/error patch와 성공 invalidation 구현
-    - [ ] mixing history type을 entity Zod schema로 이동하고 initialData/pagination polling 전환
-    - [ ] recommendation/mixing UI 및 query cache 회귀 test 통과
+    - [x] recommendation/mixing API 함수와 key/options factory 구현
+    - [x] recommendation detail fetch/polling/delete를 query/mutation으로 교체
+    - [x] mixing 시작 시 item preparing cache patch, 실패 rollback/error patch와 성공 invalidation 구현
+    - [x] mixing history type을 entity Zod schema로 이동하고 initialData/pagination polling 전환
+    - [x] recommendation/mixing UI 및 query cache 회귀 test 통과
 
 - [TODO][NON-PRD] T-F015-05 Development conversion·ticket mutation과 MSW fixture 완성
   - Date: 2026-08-09
@@ -153,7 +153,7 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm run test:query` | `2026-08-09` | PASS (12 tests) |
+| `pnpm run test:query` | `2026-08-09` | PASS (13 tests) |
 | `pnpm run check` | `-` | 미실행 |
 | `pnpm run build` | `2026-08-09` | PASS (Next.js 16.3 production build, 22 pages) |
 | `pnpm test` | `-` | 미실행 |

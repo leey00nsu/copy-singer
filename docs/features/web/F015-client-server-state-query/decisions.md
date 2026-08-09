@@ -74,3 +74,22 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: `pnpm run test:query` PASS (12), `pnpm run test:vocal-profile-history` PASS (6), recorder/profile/effect test PASS (8), `pnpm run lint`/`typecheck`/`check:biome`/`check:architecture` PASS, `pnpm run build` PASS (2026-08-09)
 - **Consequences**: 완료된 profile은 terminal detail query cache에서 표시하며 cache 자체는 storage에 persist하지 않는다.
+
+---
+
+## D004: Recommendation item 단위 cache patch와 서버 재동기화 (2026-08-09)
+
+- **Context**: recommendation 화면은 run 전체를 local state로 복제해 합성 item 한 개의 준비/실패 상태를 수정하고, mixing history는 page payload를 별도 state와 timer로 갱신한다.
+- **Constraints**: 100개 item 중 요청한 항목만 즉시 반응해야 하며 idempotency, 5초 polling, 실패 상세, 삭제 navigation과 server truth를 보존해야 한다.
+- **Options**: run 전체 optimistic replacement, mutation 완료까지 UI를 그대로 유지, item synthesis만 cache patch하고 완료 후 detail/history invalidate하는 방식을 검토한다.
+- **Decision**: query key는 recommendation detail과 mixing history page를 분리한다. mixing mutation은 대상 item synthesis만 `preparing` 또는 `failed`로 patch하고 성공 시 recommendation detail과 모든 mixing history key를 invalidate한다.
+- **Rationale**: 즉시 사용자 피드백을 유지하면서 임시 client 상태의 범위를 최소화하고, 최종 상태는 기존 serializer가 제공하는 server response로 수렴시키기 위해서다.
+- **Trace**:
+  - **DOING 시작 시점**: active synthesis/history가 있는 동안만 5초 interval을 반환하고 initialData는 30초 stale 정책으로 mount 직후 중복 fetch를 막는다.
+  - **DONE 전 확정 시점**: detail/history initialData와 함수형 5초 polling을 적용하고 대상 item만 cache patch한 뒤 detail/history를 invalidate하도록 구현했다. `react-server` 조건 test에서 browser Query client 재수출을 발견해 Recommendation `index.model.ts` 및 Mixing server public API를 분리했다.
+  - **머지 후 확인**: 로컬 통합 후 갱신 예정
+- **Evidence**:
+  - **Commit**: task commit 후 갱신 예정
+  - **PR**: 로컬 workflow (원격 PR 없음)
+  - **Test/Log**: `pnpm run test:query` PASS (13), `pnpm run test:recommendation` PASS (18), `pnpm run test:mixing:ui` PASS, effect inventory PASS (2), `pnpm run lint`/`typecheck`/`check:architecture` PASS, `pnpm run build` PASS (2026-08-09)
+- **Consequences**: mutation 중 임시 상태는 Query cache에만 존재하고 성공 직후 server detail로 교체된다.
