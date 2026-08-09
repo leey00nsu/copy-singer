@@ -1,4 +1,5 @@
 allowBuilds:
   "@prisma/engines": true
   esbuild: true
+  msw: false
   prisma: true

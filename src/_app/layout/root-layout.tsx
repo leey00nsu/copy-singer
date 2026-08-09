@@ -5,6 +5,7 @@ import { isAdminEmail, UserMenu } from "@/features/authentication";
 import { getRequestSession } from "@/features/authentication/index.server";
 import { Toaster } from "@/shared/ui/sonner";
 import { TooltipProvider } from "@/shared/ui/tooltip";
+import { QueryProvider } from "../providers";
 import "../styles/globals.css";
 
 const geistSans = Geist({
@@ -53,14 +54,20 @@ export default async function RootLayout({
   return (
     <html lang="ko">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <TooltipProvider>
-          {session ? (
-            <div className="fixed right-4 top-4 z-50">
-              <UserMenu name={session.user.name} image={session.user.image} admin={isAdminEmail(session.user.email)} />
-            </div>
-          ) : null}
-          {children}
-        </TooltipProvider>
+        <QueryProvider>
+          <TooltipProvider>
+            {session ? (
+              <div className="fixed right-4 top-4 z-50">
+                <UserMenu
+                  name={session.user.name}
+                  image={session.user.image}
+                  admin={isAdminEmail(session.user.email)}
+                />
+              </div>
+            ) : null}
+            {children}
+          </TooltipProvider>
+        </QueryProvider>
         <Toaster richColors position="bottom-right" />
       </body>
     </html>
