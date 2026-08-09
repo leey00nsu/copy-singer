@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { after, afterEach, before, test } from "node:test";
 import { MutationObserver, QueryClient } from "@tanstack/react-query";
 import { HttpResponse, http } from "msw";
+import { recommendationRunResponseSchema } from "@/entities/recommendation";
 import { conversionJobSchema, conversionPollingInterval } from "@/features/development-conversion";
 import { ticketAdjustmentResponseSchema } from "@/features/manage-tickets";
 import { ApiError, requestJson, shouldRetryQuery } from "@/shared/api";
@@ -9,9 +10,11 @@ import {
   MSW_API_ORIGIN,
   malformedConversionFixture,
   queuedConversionFixture,
+  recommendationRunFixture,
   succeededConversionFixture,
+  succeededRecommendationRunFixture,
 } from "./msw/fixtures";
-import { conversionPollingSequenceHandler } from "./msw/handlers";
+import { conversionPollingSequenceHandler, recommendationPollingSequenceHandler } from "./msw/handlers";
 import { mswServer } from "./msw/server";
 
 function createTestQueryClient() {
@@ -134,6 +137,22 @@ test("the polling fixture transitions from active to terminal without leaking st
   assert.equal(succeeded.status, "succeeded");
   assert.equal(conversionPollingInterval(succeeded), false);
   client.clear();
+});
+
+test("recommendation polling factories own an isolated active-to-terminal cursor", async () => {
+  mswServer.use(recommendationPollingSequenceHandler());
+  const request = () =>
+    requestJson(`${MSW_API_ORIGIN}/api/recommendations/${recommendationRunFixture.id}`, {
+      schema: recommendationRunResponseSchema,
+    });
+
+  assert.equal((await request()).items[0]?.synthesis.status, "processing");
+  assert.equal((await request()).items[0]?.synthesis.status, "succeeded");
+
+  mswServer.resetHandlers();
+  mswServer.use(recommendationPollingSequenceHandler());
+  assert.equal((await request()).items[0]?.synthesis.status, "processing");
+  assert.equal(succeededRecommendationRunFixture.items[0]?.synthesis.status, "succeeded");
 });
 
 test("a successful MSW-backed mutation updates only its owned cache key", async () => {
