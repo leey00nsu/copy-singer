@@ -36,8 +36,8 @@
 
 - [x] `/`는 인증 없이 접근 가능한 landing을 제공하고 제품의 실제 세 단계인 음성 분석, 노래 추천과 선택형 AI 믹싱을 설명한다.
 - [x] primary CTA는 비로그인 사용자에게 `/login`, 로그인 사용자에게 음성 스캔으로 연결된다.
-- [ ] Hero의 waveform은 서로 다른 진폭으로 움직이고 microphone 중심의 복수 ring은 바깥으로 확산되는 물결 motion을 제공하되 `prefers-reduced-motion`에서는 의미를 잃지 않는 정적 표현으로 축소된다.
-- [ ] desktop에서는 제목과 audio visual이 균형을 이루고 360×800 첫 viewport 안에는 제목·CTA·microphone 핵심 interaction이 함께 노출된다.
+- [x] Hero의 waveform은 서로 다른 진폭으로 움직이고 microphone 중심의 복수 ring은 바깥으로 확산되는 물결 motion을 제공하되 `prefers-reduced-motion`에서는 의미를 잃지 않는 정적 표현으로 축소된다.
+- [x] desktop에서는 제목과 audio visual이 균형을 이루고 360×800 첫 viewport 안에는 제목·CTA·microphone 핵심 interaction이 함께 노출된다.
 - [x] 로그인 화면은 Google OAuth만 제공하며 이메일, Apple 또는 magic link가 사용 가능한 것처럼 표시하지 않는다.
 - [x] 로그인 실패, 진행 중과 disabled 상태가 현재 인증 동작을 보존하면서 명확히 표현된다.
 

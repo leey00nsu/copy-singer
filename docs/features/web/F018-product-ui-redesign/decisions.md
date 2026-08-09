@@ -259,10 +259,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 세 finding은 새로운 제품 기능이 아니라 승인된 visual source of truth와 기존 acceptance를 충족하기 위한 presentation 보완이며, 현재 feature branch에서 함께 검증하는 편이 디자인 회귀를 줄인다.
 - **Trace**:
   - **DOING 시작 시점**: Landing은 motion과 첫 viewport, Song Match는 100곡·tablet·mobile filter, Library는 raw error·density·action hierarchy를 각각 독립 검증 경계로 고정했다.
+  - **T-F018-11 확인**: Landing을 Server Component로 유지하면서 CSS Module에 서로 다른 duration·delay의 24개 waveform bar와 3개 ripple ring을 구현했다. microphone은 기존 `primaryHref` Link로 바꾸고 focus-visible과 reduced-motion 정적 fallback을 제공했다. 1280×800에서는 제목을 두 줄로 정리하고 360×800에서는 제목·두 CTA·microphone이 첫 viewport에 함께 노출됨을 실제 브라우저 screenshot과 서로 다른 animation frame으로 확인했다.
   - **DONE 전 확정 시점**: 구현과 검증 후 기록한다.
   - **머지 후 확인**: 로컬 통합 후 기록한다.
 - **Evidence**:
   - **Commit**: T-F018-11~14 task checkpoint commits
   - **PR**: 로컬 워크플로 — 해당 없음
-  - **Test/Log**: 구현 후 기록한다.
+  - **Test/Log**: Landing Storybook 2/2, auth-navigation 5/5, Biome targeted check, 실제 browser 1280×800·360×800와 animation frame 변화·console error 0건
 - **Consequences**: F018은 다시 implementation 단계로 돌아가며 네 보완 태스크와 최종 visual QA가 끝날 때까지 local merge를 진행하지 않는다.

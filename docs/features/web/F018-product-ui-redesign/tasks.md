@@ -220,17 +220,17 @@
     - [x] spec acceptance, Decisions evidence와 테스트 실행 기록 갱신
     - [x] 최신 코드 이후 workflow-sync marker 1개와 workflow audit 통과
 
-- [TODO][PRD-FR-046] T-F018-11 Landing Hero 파형·마이크·확산 링 모션과 첫 화면 위계 보완
+- [DONE][PRD-FR-046] T-F018-11 Landing Hero 파형·마이크·확산 링 모션과 첫 화면 위계 보완
   - Date: 2026-08-10
   - Acceptance:
     - 랜딩 우측 visual은 서로 다른 진폭의 파형이 연속 애니메이션되고 마이크 중심에서 복수의 원형 ring이 물결처럼 바깥으로 확산된다.
     - 마이크 visual은 인증 상태에 따른 기존 primary CTA 목적지로 이동하는 접근 가능한 실제 action이며 reduced-motion에서는 정적인 상태로 안전하게 축소된다.
     - 1280px에서 제목과 visual이 균형을 이루고 360x800 첫 viewport 안에 제목·CTA·마이크 핵심 interaction이 노출된다.
   - Checklist:
-    - [ ] Landing Hero title/grid/spacing을 레퍼런스 비율로 조정
-    - [ ] 재사용 가능한 waveform bar와 ripple ring CSS motion 구현
-    - [ ] 마이크 action의 Link semantics, focus, reduced-motion 처리
-    - [ ] Landing Storybook·접근성·responsive test와 실제 브라우저 검증
+    - [x] Landing Hero title/grid/spacing을 레퍼런스 비율로 조정
+    - [x] 재사용 가능한 waveform bar와 ripple ring CSS motion 구현
+    - [x] 마이크 action의 Link semantics, focus, reduced-motion 처리
+    - [x] Landing Storybook·접근성·responsive test와 실제 브라우저 검증
 
 - [TODO][PRD-FR-049] T-F018-12 Song Match 비교 밀도·필터·CTA 반응형 보완
   - Date: 2026-08-10
@@ -287,6 +287,7 @@
 | --- | --- | --- |
 | `pnpm run check` | `2026-08-10` | 통과 — error 0, 기존 Biome warning 60건, Steiger 및 architecture 4/4 |
 | `pnpm run test:auth-navigation` | `2026-08-10` | 통과 — safe callback·Library/Account navigation·route group·keyboard/touch label 5/5 |
+| `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-10` | 통과 — Landing signed-out/signed-in microphone Link와 visual semantics 2/2 |
 | `pnpm exec tsx --test tests/effect-cleanup.test.ts tests/recommendation-ui.test.tsx` | `2026-08-09` | 통과 — cleanup·추천 UI 회귀 6/6 |
 | `pnpm exec tsx --test tests/effect-cleanup.test.ts` | `2026-08-10` | 통과 — Library·Mixing Detail Query polling 포함 component timer/fetch inventory 2/2 |
 | `pnpm run test:voice-scan` | `2026-08-10` | 통과 — 녹음 정책·오류·상태·cleanup 12/12 |
@@ -307,4 +308,4 @@
 | `pnpm run test:process-scripts` | `2026-08-10` | 통과 — process supervisor·Storybook production boundary 5/5 |
 | `pnpm test` | `2026-08-10` | 통과 — production build, 전체 unit·integration·DB·Query·architecture와 Storybook 35 files/89 tests |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T16:44:16.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T17:50:38.000Z -->
