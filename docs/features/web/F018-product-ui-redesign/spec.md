@@ -105,7 +105,7 @@
 **Acceptance Criteria:**
 
 - [x] 인증 제품 화면은 Voice Scan, Library와 Account를 연결하는 responsive app shell을 공유하고 현재 route를 명확히 표시한다.
-- [x] 기존 warm beige/orange gradient와 과도한 rounded card를 white/warm gray/black token, 낮은 대비 border, 제한된 shadow와 의미 기반 accent로 교체한다.
+- [x] 기존 warm beige/orange gradient와 과도한 rounded card를 neutral white/gray/black token, 낮은 대비 border, 제한된 shadow와 의미 기반 accent로 교체한다.
 - [x] `docs/designs/design-system.md`가 color, typography, spacing, shape, component, 상태, responsive, 접근성과 변경 관리 규칙을 정의하고 실제 token·공통 UI·Storybook과 동기화된다.
 - [x] desktop, tablet, mobile에서 핵심 content와 CTA가 겹치거나 수평으로 잘리지 않으며 표는 mobile list로 전환된다.
 - [x] button label, focus-visible, keyboard interaction, semantic heading, live status와 reduced-motion을 포함한 접근성 기준을 만족한다.
@@ -119,7 +119,7 @@
 ### FR-1: 공통 시각 언어와 app shell
 
 - `docs/designs/product-ui-redesign.md`를 F018의 visual brief와 원본 reference로 사용하고 `docs/designs/design-system.md`를 전 제품의 규범적 시각·상호작용 기준으로 사용한다.
-- 현재 semantic token을 white/warm gray/black 중심으로 재정의하고 waveform·분석·success에만 제한적 accent를 사용한다.
+- 현재 semantic token을 neutral white/gray/black 중심으로 재정의하고 넓은 canvas의 beige/cream/yellow chroma를 금지하며 waveform·분석·success에만 제한적 accent를 사용한다.
 - 공통 brand, app navigation, page heading, state panel과 action layout을 재사용 가능한 FSD UI로 제공한다.
 - 디자인 시스템의 의미는 문서, 정확한 값은 `globals.css`, component 계약은 `src/shared/ui`, 주요 variant·상태는 Storybook에서 관리하고 같은 변경에서 동기화한다.
 - 루트 `app/` adapter는 얇게 유지하고 shell 조립은 `src/_app`, 화면 composition은 `src/_pages`에 둔다.
@@ -211,4 +211,5 @@
 - PRD: [copy-singer-prd.md](../../../prd/copy-singer-prd.md)
 - Design System: [design-system.md](../../../designs/design-system.md)
 - Design: [product-ui-redesign.md](../../../designs/product-ui-redesign.md)
+- Page concepts and gap analysis: [page-redesign-analysis.md](../../../designs/page-redesign-analysis.md)
 - PRD Refs: `PRD-US-019`, `PRD-US-020`, `PRD-US-021`, `PRD-US-022`, `PRD-US-023`, `PRD-US-024`, `PRD-FR-001`, `PRD-FR-002`, `PRD-FR-017`, `PRD-FR-021`, `PRD-FR-022`, `PRD-FR-023`, `PRD-FR-025`, `PRD-FR-036`, `PRD-FR-037`, `PRD-FR-039`, `PRD-FR-040`, `PRD-FR-041`, `PRD-FR-043`, `PRD-FR-045`, `PRD-FR-046`, `PRD-FR-047`, `PRD-FR-048`, `PRD-FR-049`, `PRD-FR-050`, `PRD-FR-051`

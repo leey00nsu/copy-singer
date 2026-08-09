@@ -82,7 +82,7 @@ docs/features/web/F018-*/decisions.md         예외와 변경 이유
 
 Global token 변경:
 
-- background/card를 white·warm gray의 낮은 chroma로 변경
+- background/card/sidebar를 neutral white·gray로 변경하고 넓은 canvas의 warm chroma를 제거
 - primary를 black 계열, focus ring을 고대비 neutral로 변경
 - lavender/blue data accent와 green success를 의미 기반으로 제한
 - body의 orange/purple radial gradient와 glass background 제거
@@ -396,6 +396,14 @@ src/
 
 Screenshot은 디자인 보드와 정보 위계·spacing·상태 구조를 비교하는 증거로 사용하되 픽셀 동일성을 acceptance로 삼지 않는다.
 
+### 페이지별 ImageGen 방향 시안
+
+- 13개 App Router page를 1280×800 current baseline으로 캡처한다.
+- 원본 보드를 직접 참조하고 Landing과 Library를 public/product master로 잠근 V2 ImageGen 시안을 route마다 한 장씩 저장한다.
+- V1처럼 페이지를 독립 prompt로 생성하지 않으며 `#FFFFFF` neutral canvas, 동일 product rail·wordmark·typography·density를 공통 제약으로 사용한다.
+- current-vs-concept 차이는 `docs/designs/page-redesign-analysis.md`에 페이지별 우선순위와 기능 보존 제약을 함께 기록한다.
+- 생성 이미지의 fixture와 작은 문구는 구현 요구사항으로 승격하지 않고 실제 API·Zod·Page 계약을 우선한다.
+
 ### 실행 명령
 
 ```bash
@@ -470,4 +478,5 @@ DB 또는 external service가 필요한 검사는 기존 skip/mock 정책을 유
 - Decisions: [decisions.md](./decisions.md)
 - Design System: [design-system.md](../../../designs/design-system.md)
 - Visual brief: [product-ui-redesign.md](../../../designs/product-ui-redesign.md)
+- Page concepts and gap analysis: [page-redesign-analysis.md](../../../designs/page-redesign-analysis.md)
 - PRD: [copy-singer-prd.md](../../../prd/copy-singer-prd.md)

@@ -269,3 +269,23 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 워크플로 — 해당 없음
   - **Test/Log**: `pnpm test` 전체 통과, Storybook 36 files/92 tests, `pnpm run build-storybook`, `pnpm run check` (error 0, 기존 warning 60건, architecture 4/4), 실제 browser Landing·Song Match·Library 360×800·768×1024·1024×800·1280×800, animation frame 변화·horizontal overflow 0·console error 0건
 - **Consequences**: F018의 네 visual review 보완 태스크가 구현·검증됐고 장기 Design System은 Hero motion과 긴 목록의 단일 action 위계를 0.2 규칙으로 고정한다. 기능은 다음 workflow checkpoint로 이동하며 로컬 통합 여부는 해당 승인 경계를 따른다.
+
+## D030: warm V1 폐기와 reference-conditioned neutral V2 (2026-08-10)
+
+- **Context**: 현재 구현 13개 route의 페이지별 방향 시안을 처음 생성했으나, V1 prompt의 `#FBFAF7` warm white와 페이지별 독립 생성 때문에 원본 보드보다 노란 canvas를 사용하고 wordmark, navigation, typography와 정보 밀도가 서로 달라졌다. 사용자는 현재 구현도 원본보다 누렇게 보이며 V1 시안은 통일성이 없다고 지적했다.
+- **Constraints**: 네 원본 보드를 visual source of truth로 유지한다. 생성 시안은 현재 API·Zod·Page에 없는 기능을 구현 요구사항처럼 만들지 않으며 이번 태스크는 이미지와 차이 분석을 소유하고 production UI 코드는 변경하지 않는다.
+- **Options**:
+  1. V1 prompt의 색상 문구만 수정해 13개를 다시 독립 생성한다.
+  2. 한 장의 대형 보드로 모든 페이지를 생성해 잘라 쓴다.
+  3. 원본 보드를 매번 직접 참조하고 Landing/Library를 public/product master로 잠근 뒤 neutral style lock으로 페이지별 생성·교정을 수행한다.
+- **Decision**: 옵션 3을 채택한다. V1은 폐기본으로 분리하고 V2는 `#FFFFFF`, `#FAFAFA/#F7F7F7`, `#E8E8E8`, `#111/#737`과 동일 product rail·wordmark·navigation을 고정한다. Admin과 dev SVC는 token을 공유하되 각각 operator rail과 top-header utility라는 구조적 예외만 허용한다.
+- **Rationale**: 관련 원본과 공통 master를 동시에 conditioning하면 페이지마다 생기는 브랜드·shell drift를 줄이면서 각 route의 정보 구조를 독립적으로 설계할 수 있다. 순백색 neutral scale은 현재 `globals.css` hue 75–80 warm chroma가 만드는 베이지 막을 명확히 드러낸다.
+- **Trace**:
+  - **DOING 시작 시점**: App Router의 13개 page를 inventory하고 실제 route 또는 대표 Storybook 상태를 1280×800으로 캡처했다. V1의 warm canvas와 독립 shell 문제를 current/reference contact sheet와 함께 확인했다.
+  - **DONE 전 확정 시점**: Landing/Library master와 관련 원본을 `referenced_image_paths`로 전달해 V2 13장을 생성했다. shell이 한국어 nav나 mark-only로 변형된 두 장은 master를 다시 참조하는 edit pass로 교정했다. V2 contact sheet에서 neutral canvas, 동일 product rail, sans typography, black CTA, lavender/blue data accent와 restrained green status가 한 계열로 유지됨을 시각 검수했다. 페이지별 gap과 current token 원인을 `docs/designs/page-redesign-analysis.md`에 기록했다.
+  - **머지 후 확인**: 로컬 통합 후 기록한다.
+- **Evidence**:
+  - **Commit**: T-F018-15 task checkpoint commit
+  - **PR**: 로컬 워크플로 — 해당 없음
+  - **Test/Log**: V2 최종 PNG 13개와 current baseline 13개 존재 확인, `file` PNG 검증, `git diff --check`, lee-spec-kit workflow audit
+- **Consequences**: `concepts-v2`만 후속 UI 구현의 방향 시안으로 사용한다. Light semantic token의 neutral 교정과 high-priority page 재배치는 별도 구현 작업으로 남으며, 생성 이미지의 unsupported action과 fixture 값은 구현하지 않는다.

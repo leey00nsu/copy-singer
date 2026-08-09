@@ -268,18 +268,18 @@
     - [x] 서브에이전트 finding별 반영 결과와 잔여 위험 기록
     - [x] workflow-audit 통과
 
-- [DOING][NON-PRD] T-F018-15 전체 구현 페이지별 ImageGen 리디자인 시안과 구현 차이 분석
+- [DONE][NON-PRD] T-F018-15 전체 구현 페이지별 ImageGen 리디자인 시안과 구현 차이 분석
   - Date: 2026-08-10
   - Acceptance:
     - 현재 App Router에 구현된 13개 page route 각각에 대해 네 reference board와 Design System을 따르는 독립 시안 이미지가 버전 관리된다.
     - 시안마다 현재 route의 실제 데이터·기능 계약을 보존하고 지원하지 않는 기능을 제공되는 것처럼 표시하지 않는다.
     - 현재 구현의 캡처 또는 검증 가능한 코드·Storybook 기준과 생성 시안을 페이지별로 대조한 차이·우선순위·구현 제약이 문서화된다.
   - Checklist:
-    - [ ] route·reference asset·current UI inventory 확정
-    - [ ] 현재 구현 desktop baseline capture와 기능 계약 기록
-    - [ ] 페이지별 built-in ImageGen 시안 생성·workspace 저장·시각 검수
-    - [ ] 페이지별 current-vs-concept gap analysis 문서 작성
-    - [ ] feature docs sync·workflow audit와 산출물 링크 검증
+    - [x] route·reference asset·current UI inventory 확정
+    - [x] 현재 구현 desktop baseline capture와 기능 계약 기록
+    - [x] 페이지별 built-in ImageGen 시안 생성·workspace 저장·시각 검수
+    - [x] 페이지별 current-vs-concept gap analysis 문서 작성
+    - [x] feature docs sync·workflow audit와 산출물 링크 검증
 
 ---
 
@@ -322,5 +322,7 @@
 | `pnpm run test:base-ui` | `2026-08-10` | 통과 — TSX AST 기반 Link/Base UI non-native semantics 1/1 |
 | `pnpm run test:process-scripts` | `2026-08-10` | 통과 — process supervisor·Storybook production boundary 5/5 |
 | `pnpm test` | `2026-08-10` | 통과 — production build, 전체 unit·integration·DB·Query·architecture와 Storybook 36 files/92 tests |
+| `find docs/designs/generated/page-redesigns/concepts-v2 -maxdepth 1 -type f -name '*.png'` | `2026-08-10` | 통과 — 채택 V2 시안 13개 확인; V1·중간 시안은 검수 후 폐기 |
+| `git diff --check` | `2026-08-10` | 통과 — ImageGen 자산·분석·Design System·Feature 문서 whitespace 오류 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T18:09:45.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T19:33:00.000Z -->
