@@ -38,6 +38,7 @@ yarn-error.log*
 /work/
 /tmp/
 /generated/prisma/
+/src/shared/db/generated/prisma/
 
 # local build/type-check artifacts
 *.tsbuildinfo

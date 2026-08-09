@@ -8,9 +8,9 @@ import {
   toPublicSynthesisStatus,
 } from "@/entities/recommendation";
 import { vocalProfileAnalyzerUrl } from "@/shared/config/index.server";
+import type { Prisma } from "@/shared/db/index.server";
 import { prisma } from "@/shared/db/index.server";
 import artifactJson from "../../../../data/catalogs/tj-2607-song-profiles.json";
-import type { Prisma } from "../../../../generated/prisma/client";
 import { getRecommendationRun } from "./recommendation-service";
 
 const MODAL_RESULT_TTL_MS = 24 * 60 * 60 * 1_000;

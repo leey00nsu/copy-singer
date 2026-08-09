@@ -5,7 +5,7 @@ import {
   RecordingStatus,
   SongAnalysisStatus,
   VocalProfileSourceType,
-} from "../generated/prisma/client";
+} from "../src/shared/db/generated/prisma/client";
 
 const ids = {
   userRecording: "00000000-0000-4000-8000-000000000001",

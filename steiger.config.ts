@@ -4,6 +4,11 @@ import { defineConfig } from "steiger";
 export default defineConfig([
   ...fsd.configs.recommended,
   {
+    // Prisma Client is generated under the Shared DB owner but is not
+    // hand-written FSD source.
+    ignores: ["./src/shared/db/generated/prisma/**"],
+  },
+  {
     files: ["./src/_app/**"],
     rules: {
       // @feature-sliced/filesystem recognizes `_app` as App while discovering
@@ -22,19 +27,18 @@ export default defineConfig([
   {
     files: [
       "./src/entities/mixing-job/**",
-      "./src/entities/recommendation/**",
-      "./src/entities/ticket/**",
-      "./src/entities/vocal-profile/**",
       "./src/features/analyze-vocal-profile/**",
-      "./src/features/authentication/**",
       "./src/features/create-mixing/**",
       "./src/features/create-recommendation/**",
       "./src/features/development-conversion/**",
       "./src/features/manage-tickets/**",
     ],
     rules: {
-      // During the incremental migration, most consumers remain in the root
-      // Next.js adapter outside Steiger's `./src` analysis root.
+      // Steiger does not count `_app` Route Handler and worker consumers as
+      // slice references. Each listed Feature is consumed by an App endpoint
+      // or worker, while some also have a Page consumer. Disabling the rule
+      // for Create Mixing also hides its MixingJob Entity reference, so that
+      // Entity is covered by the same narrow exception.
       "fsd/insignificant-slice": "off",
     },
   },

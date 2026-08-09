@@ -1,7 +1,7 @@
 import { PrismaPg } from "@prisma/adapter-pg";
 import { config } from "dotenv";
-import type { Prisma } from "../generated/prisma/client";
-import { PrismaClient } from "../generated/prisma/client";
+import type { Prisma } from "../src/shared/db/generated/prisma/client";
+import { PrismaClient } from "../src/shared/db/generated/prisma/client";
 
 config({ path: [".env.local", ".env"], quiet: true });
 const connectionString = process.env.DATABASE_URL;

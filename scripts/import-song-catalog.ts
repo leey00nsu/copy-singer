@@ -3,8 +3,8 @@ import path from "node:path";
 
 import { PrismaPg } from "@prisma/adapter-pg";
 import { config } from "dotenv";
-import { PrismaClient } from "../generated/prisma/client";
 import { importSongCatalog, parseSongCatalogMarkdown } from "../src/entities/recommendation/index.server";
+import { PrismaClient } from "../src/shared/db/generated/prisma/client";
 
 config({ path: [".env.local", ".env"], quiet: true });
 

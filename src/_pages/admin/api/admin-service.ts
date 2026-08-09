@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { MixingJobStatus, Prisma } from "@/generated/prisma/client";
+import type { MixingJobStatus, Prisma } from "@/shared/db/index.server";
 import { prisma } from "@/shared/db/index.server";
 
 const JOB_STATUSES = new Set<MixingJobStatus>([

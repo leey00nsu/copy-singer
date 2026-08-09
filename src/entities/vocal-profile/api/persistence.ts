@@ -1,7 +1,6 @@
 import "server-only";
 
-import { type Prisma, RecordingKind, RecordingStatus } from "@/generated/prisma/client";
-import { prisma } from "@/shared/db/index.server";
+import { type Prisma, prisma, RecordingKind, RecordingStatus } from "@/shared/db/index.server";
 import {
   discardMediaAsset,
   LeemageError,

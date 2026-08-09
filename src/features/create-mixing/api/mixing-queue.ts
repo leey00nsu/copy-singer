@@ -2,7 +2,7 @@ import "server-only";
 
 import { MixingError } from "@/entities/mixing-job";
 import { InsufficientTicketsError } from "@/entities/ticket/index.server";
-import { synthesisReferenceContractVersion, type VocalProfileDescriptors } from "@/entities/vocal-profile";
+import { synthesisReferenceContractVersion, type VocalProfileDescriptors } from "@/entities/vocal-profile/index.model";
 import { mixingMaxAttempts, mixingTicketCost } from "@/shared/config/index.server";
 import { prisma } from "@/shared/db/index.server";
 import { selectMixingReference } from "../model/reference";

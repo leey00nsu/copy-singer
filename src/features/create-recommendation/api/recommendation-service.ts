@@ -10,9 +10,9 @@ import {
   type RecommendationScoreMetrics,
   toPublicSynthesisStatus,
 } from "@/entities/recommendation";
+import type { Prisma } from "@/shared/db/index.server";
 import { prisma } from "@/shared/db/index.server";
 import artifactJson from "../../../../data/catalogs/tj-2607-song-profiles.json";
-import type { Prisma } from "../../../../generated/prisma/client";
 import { buildRankedRecommendations } from "../lib/recommendation-data";
 
 const runInclude = {
