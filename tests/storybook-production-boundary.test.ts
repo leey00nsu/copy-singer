@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import test from "node:test";
 
@@ -46,4 +46,29 @@ test("MSW worker is served only by Storybook", () => {
   assert.match(storybookMain, /staticDirs:\s*\["\.\/public"\]/);
   assert.equal(existsSync(path.join(root, ".storybook/public/mockServiceWorker.js")), true);
   assert.equal(existsSync(path.join(root, "public/mockServiceWorker.js")), false);
+});
+
+function findStoryFiles(directory: string): string[] {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const entryPath = path.join(directory, entry.name);
+    if (entry.isDirectory()) return findStoryFiles(entryPath);
+    return entry.name.includes(".stories.") ? [entryPath] : [];
+  });
+}
+
+test("Storybook sources do not import server-only application modules", () => {
+  const forbiddenImports = [
+    /from\s+["']server-only["']/,
+    /from\s+["']next\/(headers|server)["']/,
+    /from\s+["'][^"']*index\.server["']/,
+    /from\s+["']@\/shared\/db(?:\/|["'])/,
+    /from\s+["']@prisma\//,
+  ];
+
+  for (const storyFile of findStoryFiles(path.join(root, "src"))) {
+    const source = readFileSync(storyFile, "utf8");
+    for (const pattern of forbiddenImports) {
+      assert.doesNotMatch(source, pattern, `${path.relative(root, storyFile)} must remain browser-safe`);
+    }
+  }
 });

@@ -23,6 +23,7 @@ export default defineConfig({
       "lucide-react",
       "mediabunny",
       "next-themes",
+      "recharts",
       "sonner",
     ],
   },
