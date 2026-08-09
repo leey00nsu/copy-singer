@@ -156,7 +156,7 @@
     - [x] 외부 source link security label/rel 처리
     - [x] Song Detail desktop/mobile Storybook와 route 회귀 test 추가
 
-- [TODO][PRD-FR-050] T-F018-07 Profile·AI Mix 통합 Library와 실제 필터 구축
+- [DONE][PRD-FR-050] T-F018-07 Profile·AI Mix 통합 Library와 실제 필터 구축
   - Date: 2026-08-09
   - Acceptance:
     - `/library`가 보컬 프로필과 AI 믹싱을 명확한 tab으로 구분하고 새 Project model이 있는 것처럼 표시하지 않는다.
@@ -164,13 +164,13 @@
     - tab/query/status/page가 URL에 유지되며 loading, empty, active, failed와 result-ready row를 구분한다.
     - 기존 `/vocal-profiles`와 `/mixing-history` URL과 기능은 동일 widget을 재사용해 유지된다.
   - Checklist:
-    - [ ] `widgets/library` profile/mixing list 소유권과 Page 간 공유 구조 구현
-    - [ ] Library search param schema와 Page server query 구현
-    - [ ] `getMixingHistory` title/artist/status filter와 API query 확장
-    - [ ] filter-aware Query key/polling/Zod contract 갱신
-    - [ ] Library desktop table/mobile row/tab/filter/empty state 구현
-    - [ ] legacy 두 history Page를 공유 widget으로 전환
-    - [ ] ownership, pagination, filter, polling과 Library UI test 추가
+    - [x] `widgets/library` profile/mixing list 소유권과 Page 간 공유 구조 구현
+    - [x] Library search param schema와 Page server query 구현
+    - [x] `getMixingHistory` title/artist/status filter와 API query 확장
+    - [x] filter-aware Query key/polling/Zod contract 갱신
+    - [x] Library desktop table/mobile row/tab/filter/empty state 구현
+    - [x] legacy 두 history Page를 공유 widget으로 전환
+    - [x] ownership, pagination, filter, polling과 Library UI test 추가
 
 - [TODO][PRD-FR-050] T-F018-08 Mixing Detail·실제 progress·terminal result 삭제 구현
   - Date: 2026-08-09
@@ -237,25 +237,26 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm run check` | `2026-08-09` | 통과 — error 0, Biome warning 61건, Steiger 및 architecture 4/4 |
-| `pnpm run test:auth-navigation` | `2026-08-09` | 통과 — safe callback·navigation·route group 4/4 |
+| `pnpm run check` | `2026-08-10` | 통과 — error 0, 기존 Biome warning 60건, Steiger 및 architecture 4/4 |
+| `pnpm run test:auth-navigation` | `2026-08-10` | 통과 — safe callback·Library navigation·route group 4/4 |
 | `pnpm exec tsx --test tests/effect-cleanup.test.ts tests/recommendation-ui.test.tsx` | `2026-08-09` | 통과 — cleanup·추천 UI 회귀 6/6 |
+| `pnpm exec tsx --test tests/effect-cleanup.test.ts` | `2026-08-10` | 통과 — Library Query polling 포함 component timer/fetch inventory 2/2 |
 | `pnpm run test:voice-scan` | `2026-08-09` | 통과 — 녹음 정책·오류·상태·cleanup 12/12 |
 | `pnpm run test:vocal-profile-analysis-queue` | `2026-08-09` | 통과 — idempotency·owner·lease·retry·cleanup 5/5 |
-| `pnpm run test:vocal-profile-history` | `2026-08-09` | 통과 — UI 3/3, private audio·ownership 3/3 |
-| `pnpm run test:recommendation` | `-` | 미실행 — 구현 전 |
-| `pnpm run test:recommendation:db` | `-` | 미실행 — 구현 전 |
-| `pnpm run test:mixing:ui` | `-` | 미실행 — 구현 전 |
-| `pnpm run test:mixing:db` | `-` | 미실행 — 구현 전 |
-| `pnpm run test:query` | `2026-08-09` | 통과 — Query/API/MSW 20/20, streaming proxy 1/1 |
+| `pnpm run test:vocal-profile-history` | `2026-08-10` | 통과 — 공유 Library UI 3/3, private audio·ownership 3/3 |
+| `pnpm run test:recommendation` | `2026-08-10` | 통과 — ranking 10/10, presentation·synthesis·list·detail 17/17 |
+| `pnpm run test:recommendation:db` | `2026-08-10` | 통과 — persistence·synthesis 3/3 |
+| `pnpm run test:mixing:ui` | `2026-08-10` | 통과 — active/result/failed/filtered empty/URL tabs 3/3 |
+| `pnpm run test:mixing:db` | `2026-08-10` | 통과 — queue·owner·title/artist/status filter·pagination 1/1 |
+| `pnpm run test:query` | `2026-08-10` | 통과 — filter-aware Query/API/MSW 22/22, streaming proxy 1/1 |
 | `pnpm run test:auth:db` | `-` | 미실행 — 구현 전 |
 | `pnpm run test:tickets` | `-` | 미실행 — 구현 전 |
-| `pnpm run test:architecture-boundaries` | `2026-08-09` | 통과 — `pnpm run check` 내부 4/4 |
-| `pnpm run test:storybook --run` | `2026-08-09` | 통과 — 28 files, 61 tests |
-| `pnpm run build-storybook` | `2026-08-09` | 통과 — chunk size warning만 있음 |
-| `pnpm run build` | `2026-08-09` | 통과 — 기존 public/product/Admin/dev/API URL 보존 |
+| `pnpm run test:architecture-boundaries` | `2026-08-10` | 통과 — `pnpm run check` 내부 FSD·Client/Server·App adapter 4/4 |
+| `pnpm run test:storybook --run` | `2026-08-10` | 통과 — 32 files, 77 tests, Library profile/mix 상태 포함 |
+| `pnpm run build-storybook` | `2026-08-10` | 통과 — chunk size warning만 있음 |
+| `pnpm run build` | `2026-08-10` | 통과 — `/library`와 기존 public/product/Admin/dev/API URL 보존 |
 | `pnpm run test:base-ui` | `2026-08-09` | 통과 — 1/1 |
 | `pnpm run test:process-scripts` | `2026-08-09` | 통과 — 5/5 |
 | `pnpm test` | `-` | 미실행 — 구현 전 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T15:35:26.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T15:58:38.000Z -->

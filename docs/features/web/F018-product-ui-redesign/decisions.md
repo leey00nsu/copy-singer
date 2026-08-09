@@ -165,3 +165,23 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 워크플로 — 해당 없음
   - **Test/Log**: `pnpm run test:recommendation` (ranking 10/10 + presentation/synthesis/list/detail 17/17), `pnpm run test:recommendation:db` (3/3), `pnpm run test:query` (21/21 + streaming 1/1), `pnpm run test:storybook --run` (30 files, 71 tests), `pnpm run check`, `pnpm run build-storybook`, `pnpm run build`, Storybook browser smoke (1280×800·360×800, horizontal overflow/clipping 없음, 초기 waveform 0개)
 - **Consequences**: 상세는 저장된 run의 점수 snapshot과 현재 연결된 song profile을 함께 표시하며, 없는 album art·genre·difficulty·lyrics·preview를 추정하지 않는다. 추후 별도 song detail API가 필요해져도 현재 route와 nullable response field는 호환 경계로 유지할 수 있다.
+
+## D025: URL 정본과 server query를 사용하는 통합 Library (2026-08-10)
+
+- **Context**: 보컬 프로필은 server-side history와 durable analysis job polling을, AI 믹스는 paginated history API와 active job polling을 각각 제공하지만 서로 다른 Page slice가 목록 표현을 소유한다. 새 `/library`는 두 사용자 소유 resource를 한 진입점에서 탐색해야 하며, 디자인 보드의 Project 개념은 현재 데이터 모델에 없다.
+- **Constraints**: 기존 `/vocal-profiles`와 `/mixing-history` URL·기능을 유지한다. 믹싱 title/artist 검색과 실제 status filter는 현재 page에 내려온 결과가 아니라 전체 owner dataset에 pagination 전에 적용되어야 한다. filter마다 Query cache와 polling 결과가 섞이지 않아야 하며 DB migration은 하지 않는다.
+- **Options**:
+  1. Library 전용 Project aggregate/API를 새로 만든다.
+  2. 두 기존 Page를 client에서 합치고 현재 page 결과만 필터링한다.
+  3. `widgets/library`가 profile/mixing 목록을 공유하고 URL search param을 정본으로 삼아 mixing filter를 기존 history API와 Prisma query에 전달한다.
+- **Decision**: 옵션 3을 채택한다. `/library`는 `profiles | mixes` tab과 `page`, `q`, 실제 mixing status를 Zod로 정규화한다. `getMixingHistory`는 owner 조건과 title/artist/status 조건을 하나의 `where`에 결합해 count와 row query에 동일하게 적용하며, TanStack Query key에는 정규화한 filter 전체를 포함한다. 기존 두 history Page도 같은 widget list와 pagination을 사용한다.
+- **Rationale**: 저장 모델을 가장하지 않으면서 기존 resource 계약을 조합하고, 검색 결과의 total/pageCount와 표시 row가 일치한다. URL은 reload·back/forward에 안정적이고 filter별 cache 격리와 active row에 한정된 polling을 검증할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 기존 profile history, analysis job list polling, mixing history serializer/API/Query와 route adapter를 조사했다. profile은 검색 가능한 이름 필드가 없으므로 가짜 검색을 만들지 않고, mixing만 실제 song title/artist와 DB status를 필터 대상으로 확정했다.
+  - **DONE 전 확정 시점**: `/library` route와 loading boundary를 추가하고 ProductShell primary navigation을 Library로 통합했다. profile과 mixing 목록·pagination은 `widgets/library`로 이동해 기존 두 URL도 같은 UI를 사용한다. mixing filter는 Zod로 `page/q/status`를 정규화하고 API·Prisma count/findMany의 동일 owner-scoped `where`에 적용했으며 Query key에도 전체 filter를 포함했다. 1280×800과 360×800 Storybook에서 desktop table/mobile stacked row, tabs, search/status control, active/result-ready/failed 상태와 horizontal clipping 없음(0개)을 확인했고 Base UI Tabs link의 `nativeButton` 경고를 수정한 뒤 서버 콘솔 경고 0건을 재확인했다.
+  - **머지 후 확인**: 로컬 통합 후 기록한다.
+- **Evidence**:
+  - **Commit**: T-F018-07 task checkpoint commit
+  - **PR**: 로컬 워크플로 — 해당 없음
+  - **Test/Log**: `pnpm run test:mixing:ui` (3/3), `pnpm run test:mixing:db` (1/1, owner·title/artist/status·pagination 포함), `pnpm run test:vocal-profile-history` (UI 3/3 + private/ownership 3/3), `pnpm run test:query` (22/22 + streaming 1/1), `pnpm run test:auth-navigation` (4/4), `pnpm exec tsx --test tests/effect-cleanup.test.ts` (2/2), `pnpm run test:storybook --run` (32 files, 77 tests), `pnpm run check`, `pnpm run build`, `pnpm run build-storybook`, Storybook browser smoke (1280×800·360×800, horizontal overflow/clipping·console warning 없음)
+- **Consequences**: `/library`는 profile과 AI mix의 탐색 진입점이며 Project, favorite 또는 playlist 기능을 암시하지 않는다. 추후 dataset이나 profile metadata가 확장돼도 URL schema와 widget public API를 유지한 채 server query만 확장할 수 있다.
