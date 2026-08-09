@@ -3,15 +3,19 @@
 import { useWavesurfer } from "@wavesurfer/react";
 import { Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { AudioSourceRange } from "@/entities/vocal-profile";
 import { formatPlaybackTime } from "@/shared/lib/audio";
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/button";
 
+export type AudioPlaybackRange = {
+  startSeconds: number;
+  endSeconds: number;
+};
+
 export type AudioPlaybackSegment = {
   id: string;
   label: string;
-  ranges: AudioSourceRange[];
+  ranges: AudioPlaybackRange[];
 };
 const EMPTY_SEGMENTS: AudioPlaybackSegment[] = [];
 

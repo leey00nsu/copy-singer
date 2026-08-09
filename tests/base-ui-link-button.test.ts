@@ -17,7 +17,7 @@ async function tsxFiles(directory: string): Promise<string[]> {
 
 test("every Base UI Button that renders a Next.js Link declares non-native semantics", async () => {
   const root = path.resolve(import.meta.dirname, "..");
-  const files = [...(await tsxFiles(path.join(root, "app"))), ...(await tsxFiles(path.join(root, "components")))];
+  const files = [...(await tsxFiles(path.join(root, "app"))), ...(await tsxFiles(path.join(root, "src")))];
   let linkButtonCount = 0;
 
   for (const file of files) {

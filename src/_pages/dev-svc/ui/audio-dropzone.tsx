@@ -3,8 +3,8 @@
 import { FileAudio, Music2, RotateCcw, UploadCloud, X } from "lucide-react";
 import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
 import { cn } from "@/shared/lib/cn";
+import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
 

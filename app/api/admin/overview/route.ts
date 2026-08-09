@@ -1,6 +1,6 @@
 export const runtime = "nodejs";
 
-import { getAdminOverview } from "@/_pages/admin/index.server";
+import { getAdminOverview } from "@/_pages/admin/api/index.server";
 import { requireAdminApi } from "@/features/authentication/index.server";
 
 export async function GET(request: Request) {

@@ -17,20 +17,19 @@ import {
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
-import { VocalProfileRecorder } from "@/components/audio/vocal-profile-recorder";
-import { LongAudioDialog } from "@/components/long-audio-dialog";
-import { VocalProfileResults } from "@/components/vocal-profile-results";
 import type {
   VocalProfileAnalysisJobResponse,
   VocalProfileError,
   VocalProfileResponse,
 } from "@/entities/vocal-profile";
-import { isLongProfileAudio, readAudioDuration } from "@/entities/vocal-profile";
+import { isLongProfileAudio, readAudioDuration, VocalProfileResults } from "@/entities/vocal-profile";
 import { prepareProfileAudio } from "@/shared/lib/audio";
+import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
 import { Badge } from "@/shared/ui/badge";
 import { Button, buttonVariants } from "@/shared/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
+import { LongAudioDialog } from "./long-audio-dialog";
+import { VocalProfileRecorder } from "./vocal-profile-recorder";
 
 const MAX_PROFILE_AUDIO_BYTES = 25 * 1024 * 1024;
 const ACCEPTED_AUDIO = ".wav,.mp3,.m4a,.webm,audio/wav,audio/mpeg,audio/mp4,audio/webm";

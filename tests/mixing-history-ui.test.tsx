@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { renderToStaticMarkup } from "react-dom/server";
 
-import { MixingHistoryList } from "../components/mixing/mixing-history-list";
+import { MixingHistoryList } from "../src/_pages/mixing-history";
 
 test("mixing history renders active state and persisted result controls", () => {
   const markup = renderToStaticMarkup(

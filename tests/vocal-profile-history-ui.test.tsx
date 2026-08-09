@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { renderToStaticMarkup } from "react-dom/server";
 
-import { VocalProfileHistoryList } from "../components/vocal-profile/vocal-profile-history-list";
+import { VocalProfileHistoryList } from "../src/_pages/vocal-profiles";
 
 test("vocal profile history renders persisted analysis and detail navigation", () => {
   const markup = renderToStaticMarkup(

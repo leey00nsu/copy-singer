@@ -1,7 +1,1 @@
-import { VocalProfileWorkbench } from "@/components/vocal-profile-workbench";
-import { requirePageSession } from "@/features/authentication/index.server";
-
-export default async function Home() {
-  await requirePageSession("/");
-  return <VocalProfileWorkbench />;
-}
+export { HomePage as default } from "@/_pages/home/index.server";

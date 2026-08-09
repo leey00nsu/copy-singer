@@ -1,3 +1,3 @@
 import "server-only";
 
-export * from "./api/admin-service";
+export { default as AdminPage } from "./ui/admin-page";

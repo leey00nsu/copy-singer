@@ -2,7 +2,7 @@
 
 import { AlertTriangle, CheckCircle2, Clock3, Download, LoaderCircle, Music2, Ticket } from "lucide-react";
 import { useEffect, useState } from "react";
-import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
+import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
 import { Badge } from "@/shared/ui/badge";
 import { buttonVariants } from "@/shared/ui/button";
 

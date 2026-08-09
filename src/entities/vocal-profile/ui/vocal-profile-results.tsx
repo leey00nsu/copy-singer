@@ -15,23 +15,22 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Bar, BarChart, CartesianGrid, Cell, Line, LineChart, ReferenceLine, XAxis, YAxis } from "recharts";
-import { ReferenceBandPlayers } from "@/components/audio/reference-band-players";
-import type { VocalProfileResponse } from "@/entities/vocal-profile";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/shared/ui/chart";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/shared/ui/collapsible";
+import type { VocalProfileResponse } from "../model/contract";
+import { midiToNoteName } from "../model/pitch";
+import { referenceBandAvailability, referenceBandSegments } from "../model/reference-segments";
 import {
   axisTicks,
   histogramChartData,
   midiAxis,
-  midiToNoteName,
   parseVocalProfileVisualization,
   pitchChartData,
   rangeChartData,
-  referenceBandAvailability,
-  referenceBandSegments,
   type VocalProfileVisualization,
-} from "@/entities/vocal-profile";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
-import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/shared/ui/chart";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/shared/ui/collapsible";
+} from "../model/visualization";
+import { ReferenceBandPlayers } from "./reference-band-players";
 
 const RANGE_CHART_CONFIG = {
   range: { label: "음역", color: "#059669" },

@@ -88,7 +88,7 @@
       }
     },
     {
-      "includes": ["components/audio/audio-waveform-player.tsx"],
+      "includes": ["src/shared/ui/audio-waveform-player/audio-waveform-player.tsx"],
       "linter": {
         "rules": {
           "a11y": {

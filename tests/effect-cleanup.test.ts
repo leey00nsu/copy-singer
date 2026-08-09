@@ -3,7 +3,10 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 test("client fetch effects ignore late results without aborting during cleanup", async () => {
-  const paths = ["components/recommendation-results.tsx", "components/singer-workbench.tsx"];
+  const paths = [
+    "src/_pages/recommendation-detail/ui/recommendation-results.tsx",
+    "src/_pages/dev-svc/ui/singer-workbench.tsx",
+  ];
   for (const path of paths) {
     const source = await readFile(path, "utf8");
     assert.doesNotMatch(source, /new AbortController\(|controller\.abort\(\)/, path);

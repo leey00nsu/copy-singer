@@ -1,10 +1,10 @@
 import { AudioLines, CalendarDays, ChevronRight, Gauge, Music2, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { VocalProfileAnalysisJobCards } from "@/components/vocal-profile/vocal-profile-analysis-job-cards";
 import type { VocalProfileAnalysisJobResponse } from "@/entities/vocal-profile";
 import { midiToNoteName } from "@/entities/vocal-profile";
 import { Badge } from "@/shared/ui/badge";
 import { buttonVariants } from "@/shared/ui/button";
+import { VocalProfileAnalysisJobCards } from "./vocal-profile-analysis-job-cards";
 
 export type VocalProfileHistoryPayload = {
   page: number;

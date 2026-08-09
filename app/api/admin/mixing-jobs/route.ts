@@ -1,6 +1,6 @@
 export const runtime = "nodejs";
 
-import { listAdminMixingJobs } from "@/_pages/admin/index.server";
+import { listAdminMixingJobs } from "@/_pages/admin/api/index.server";
 import { requireAdminApi } from "@/features/authentication/index.server";
 
 export async function GET(request: Request) {

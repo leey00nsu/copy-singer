@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { renderToStaticMarkup } from "react-dom/server";
-import { RecommendationHandoffBanner } from "../components/recommendation-handoff";
-import { RecommendationResults } from "../components/recommendation-results";
 import artifactJson from "../data/catalogs/tj-2607-song-profiles.json";
+import { RecommendationHandoffBanner } from "../src/_pages/dev-svc";
+import { RecommendationResults } from "../src/_pages/recommendation-detail";
 import type { RecommendationRunResponse, SongProfileArtifact } from "../src/entities/recommendation";
 import { formatRecommendationReasons, rankRecommendations, scoreCatalogKeyFits } from "../src/entities/recommendation";
 

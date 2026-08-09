@@ -14,19 +14,19 @@ import {
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { AdvancedSettings, type ConversionSettings, DEFAULT_SETTINGS } from "@/components/advanced-settings";
-import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
-import { AudioDropzone, MAX_AUDIO_UPLOAD_BYTES } from "@/components/audio-dropzone";
-import { RecommendationHandoffBanner } from "@/components/recommendation-handoff";
-import { Waveform } from "@/components/waveform";
 import type { RecommendationRunResponse } from "@/entities/recommendation";
 import { type RecommendationHandoff, selectRecommendationHandoff } from "@/entities/recommendation";
 import { cn } from "@/shared/lib/cn";
+import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
 import { Badge } from "@/shared/ui/badge";
 import { Button, buttonVariants } from "@/shared/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Progress } from "@/shared/ui/progress";
 import { Separator } from "@/shared/ui/separator";
+import { AdvancedSettings, type ConversionSettings, DEFAULT_SETTINGS } from "./advanced-settings";
+import { AudioDropzone, MAX_AUDIO_UPLOAD_BYTES } from "./audio-dropzone";
+import { RecommendationHandoffBanner } from "./recommendation-handoff";
+import { Waveform } from "./waveform";
 
 type JobState = {
   id: string;

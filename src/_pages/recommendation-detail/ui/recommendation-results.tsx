@@ -17,9 +17,9 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
-import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
 import type { RecommendationRunResponse } from "@/entities/recommendation";
 import { formatRecommendedShift } from "@/entities/recommendation";
+import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
 import { Badge } from "@/shared/ui/badge";
 import { Button, buttonVariants } from "@/shared/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
