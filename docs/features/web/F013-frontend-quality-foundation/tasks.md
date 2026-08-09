@@ -103,7 +103,7 @@
     - [x] CI가 참조하는 모든 package script와 회귀 명령을 로컬에서 실행한다.
     - [x] workflow YAML, docs evidence, workflow-sync marker를 최종 상태와 동기화한다.
 
-- [DOING][NON-PRD] T-F013-frontend-quality-foundation-04 CI 도입 연기와 F013 범위 정리
+- [DONE][NON-PRD] T-F013-frontend-quality-foundation-04 CI 도입 연기와 F013 범위 정리
   - Date: 2026-08-09
   - Acceptance:
     - `.github/workflows/quality.yml`을 제거해 GitHub Actions 사용과 Coolify 배포를 분리한다.
@@ -120,8 +120,8 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
