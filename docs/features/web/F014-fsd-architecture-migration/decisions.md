@@ -35,7 +35,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Commit**: T-F014-01 task checkpoint에서 기록
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `pnpm run check:architecture`, `pnpm run check`, `pnpm run build`, Shared/audio 관련 13개 테스트 모두 2026-08-09 PASS
-- **Consequences**: migration 중에는 `@/*`가 `src/*`를 우선하고 root를 fallback으로 찾는다. 최종 태스크에서 root fallback과 legacy `components`/`lib`를 제거한다.
+- **Consequences**: 최종 구조에서 `@/*`는 `src/*`만 가리키고 legacy `components`/`lib`는 제거됐다. Prisma 생성물은 Shared DB 소유 경로에 두되 생성 코드이므로 Steiger와 Git 추적에서 제외한다.
 
 ## D002: 도메인 자체 책임과 교차 도메인 use case 분리 (2026-08-09)
 
@@ -64,12 +64,13 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **DOING 시작 시점**: T02 첫 Steiger 실행에서 8개 오류를 확인하고 설치된 plugin과 filesystem 구현 및 실제 소비 import를 대조했다.
   - **DONE 전 확정 시점**: 특정 경로·규칙 override 후 Steiger recommended rules 오류 0건을 확인했으며 T02·T03에서 client-to-server import와 legacy import도 별도 검색으로 0건임을 검증했다. `_pages`의 물리 prefix 진단도 같은 설치 버전 구현 불일치로 확인해 해당 규칙만 범위를 확장했다.
+  - **T05 최종 재평가**: Entity·Feature·App 소비가 모두 `src`로 이동한 뒤 broad override를 제거해 재검사했다. authentication, recommendation, ticket, vocal-profile 예외는 제거했고, `_app` 소비를 reference로 집계하지 않는 도구 한계가 실제로 재현된 5개 Feature와 그 영향으로 Create Mixing 소비가 숨겨지는 MixingJob Entity만 남겼다.
   - **머지 후 확인**: 실제 결과/영향
 - **Evidence**:
   - **Commit**: T-F014-02 task checkpoint에서 기록
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `pnpm run check:architecture`, `pnpm run check` 2026-08-09 PASS
-- **Consequences**: T04·T05에서 root adapter 소비자가 `_pages`·`_app`으로 이동할 때 `insignificant-slice` override를 다시 평가해 제거 가능한 항목을 제거한다. `_app` prefix 관련 두 override는 plugin이 물리 이름까지 일관되게 정규화할 때 제거한다.
+- **Consequences**: 최종 `insignificant-slice` 예외는 App endpoint/worker 소비를 Steiger가 집계하지 않는 6개 경로로 제한된다. `_app` prefix 관련 두 override와 `_pages` typo override는 plugin이 물리 이름까지 일관되게 정규화할 때 제거한다.
 
 ## D004: 추천·믹싱 계약과 생성 흐름의 소유 경계 (2026-08-09)
 
@@ -104,3 +105,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: F014 tasks.md의 vocal-profile history, recommendation, mixing UI, admin, 이동 UI·Widget 관련 테스트와 `pnpm run check`, `pnpm run build` 2026-08-09 PASS
 - **Consequences**: URL과 Next.js special file 계약은 root adapter에 유지되지만 화면 구현과 style 소유권은 FSD source로 이동했다. 테스트의 정적 source scan도 root `components` 대신 `src`를 기준으로 동작한다.
+
+## D006: Route Handler·worker framework adapter와 legacy 제거 경계 (2026-08-09)
+
+- **Context**: root `app/api`의 24개 Route Handler 구현, root worker script wrapper와 migration 중 남겨 둔 `lib` compatibility tree 및 `@/*` root fallback을 최종 FSD 경계로 전환해야 한다.
+- **Constraints**: HTTP method·runtime·status/response 계약, package worker 명령과 Coolify 실행 방식은 유지하고 전체 회귀 suite를 통과해야 한다.
+- **Options**: 구현을 root adapter에 유지, endpoint별 `_app/api-routes` public API로 이전, 모든 handler를 단일 barrel로 합치는 방식을 검토한다.
+- **Decision**: account, admin, auth, conversions, health, mixing-jobs, recommendations, vocal-profiles 책임별 `_app/api-routes` server public API를 두고 root `route.ts`에는 `runtime`과 method re-export만 남긴다. worker의 concurrency·signal loop는 `_app/background-jobs` runner가 소유하고 root script는 env 로드 후 server public API를 호출한다. Prisma Client 생성물은 `src/shared/db/generated/prisma`에 두고 Git·Steiger에서 제외하며, server가 UI barrel을 eager-load하지 않도록 VocalProfile의 순수 model public API를 분리한다.
+- **Rationale**: Next.js URL convention과 실제 request 처리 책임을 분리하면서 endpoint 단위 계약을 추적하고 legacy root source를 완전히 제거할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 2026-08-09 24개 root handler, 2개 worker entry command, 남은 root `lib` 및 alias fallback의 실제 소비 관계를 기준으로 이전을 시작한다.
+  - **DONE 전 확정 시점**: 24개 handler 구현 783줄을 `_app/api-routes`로 이전해 root adapter를 총 81줄로 축소했다. 두 worker entry command는 유지하면서 loop 구현을 App runner로 이동했고, `@/*` root fallback과 legacy `components`/`lib`를 제거했다. Prisma Client는 Shared DB 소유 경로로 재생성했으며 server model barrel 분리로 React Server eager UI import를 차단했다. UI 10개·API 24개 route inventory, client-to-server 및 legacy import 0건, kebab-case 위반 0건, Steiger 오류 0건, 전체 정적 검사·build·120개 테스트와 feature config·catalog·DB schema 검증 통과를 확인했다.
+  - **머지 후 확인**: 실제 결과/영향
+- **Evidence**:
+  - **Commit**: T-F014-05 task checkpoint에서 기록
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: `pnpm run check`, `pnpm run build`, `pnpm test`, `pnpm run verify:feature-config`, `pnpm run catalog:verify`, `pnpm run db:validate` 2026-08-09 PASS
+- **Consequences**: Coolify의 Next.js·PostgreSQL 실행 명령과 환경 변수는 바뀌지 않는다. Next.js adapter, App endpoint/worker, FSD public API와 generated DB client의 소유 경계가 분리되어 F015 Query·Zod 도입 시 API 계약 계층을 안정적으로 추가할 수 있다.

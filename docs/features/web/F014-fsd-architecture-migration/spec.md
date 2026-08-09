@@ -34,10 +34,10 @@ Next.js 루트 `app/`은 URL과 framework convention만 담당하는 얇은 어�
 
 **Acceptance Criteria:**
 
-- [ ] 애플리케이션 코드는 `src/_app`, `src/_pages`, `src/widgets`, `src/features`, `src/entities`, `src/shared` 중 실제 책임에 필요한 레이어에 배치된다.
-- [ ] FSD의 pages-first 원칙을 적용해 페이지 전용 코드는 우선 해당 `_pages` slice에 유지하고, 둘 이상의 소비처가 있는 명확한 사용자 기능·도메인·대형 UI 조합만 하위 레이어로 추출한다.
-- [ ] 기존 루트 `components/`와 `lib/`는 제거되고, 테스트·worker·script를 포함한 모든 내부 import가 새 소유 위치를 가리킨다.
-- [ ] 사람이 작성하는 새 TypeScript/TSX 파일은 kebab-case를 사용하며 Next.js special file과 dynamic route segment 명명은 유지된다.
+- [x] 애플리케이션 코드는 `src/_app`, `src/_pages`, `src/widgets`, `src/features`, `src/entities`, `src/shared` 중 실제 책임에 필요한 레이어에 배치된다.
+- [x] FSD의 pages-first 원칙을 적용해 페이지 전용 코드는 우선 해당 `_pages` slice에 유지하고, 둘 이상의 소비처가 있는 명확한 사용자 기능·도메인·대형 UI 조합만 하위 레이어로 추출한다.
+- [x] 기존 루트 `components/`와 `lib/`는 제거되고, 테스트·worker·script를 포함한 모든 내부 import가 새 소유 위치를 가리킨다.
+- [x] 사람이 작성하는 새 TypeScript/TSX 파일은 kebab-case를 사용하며 Next.js special file과 dynamic route segment 명명은 유지된다.
 
 ### US-2: 의존성 경계를 신뢰하는 유지보수자
 
@@ -47,11 +47,11 @@ Next.js 루트 `app/`은 URL과 framework convention만 담당하는 얇은 어�
 
 **Acceptance Criteria:**
 
-- [ ] 상위 레이어는 자신보다 아래 레이어만 import하며, 같은 레이어의 서로 다른 slice를 직접 import하지 않는다.
-- [ ] slice 외부 소비자는 해당 slice 또는 Shared segment의 public API를 통해서만 import한다.
-- [ ] Steiger 권장 FSD 검사가 `src/`를 대상으로 오류 없이 통과한다.
-- [ ] Steiger 검사는 기존 로컬 통합 품질 명령에 포함되며 한 건의 architecture error라도 있으면 명령이 실패한다.
-- [ ] architecture 검사 예외가 필요하면 파일별 임시 회피가 아니라 사유와 범위를 설정 및 `decisions.md`에 기록한다.
+- [x] 상위 레이어는 자신보다 아래 레이어만 import하며, 같은 레이어의 서로 다른 slice를 직접 import하지 않는다.
+- [x] slice 외부 소비자는 해당 slice 또는 Shared segment의 public API를 통해서만 import한다.
+- [x] Steiger 권장 FSD 검사가 `src/`를 대상으로 오류 없이 통과한다.
+- [x] Steiger 검사는 기존 로컬 통합 품질 명령에 포함되며 한 건의 architecture error라도 있으면 명령이 실패한다.
+- [x] architecture 검사 예외가 필요하면 파일별 임시 회피가 아니라 사유와 범위를 설정 및 `decisions.md`에 기록한다.
 
 ### US-3: client/server 경계를 안전하게 유지하는 개발자
 
@@ -61,10 +61,10 @@ Next.js 루트 `app/`은 URL과 framework convention만 담당하는 얇은 어�
 
 **Acceptance Criteria:**
 
-- [ ] browser에서 안전한 export는 기본 `index.ts`, server 전용 export는 `index.server.ts`로 분리한다.
-- [ ] DB, 인증 검증, 환경 변수, media storage, queue·worker 및 외부 server adapter 진입점은 `server-only` 경계를 유지하거나 추가한다.
-- [ ] `"use client"` 파일에서 server 전용 public API 또는 server 전용 내부 모듈로 이어지는 import 경로가 없다.
-- [ ] root `app/`의 page와 Route Handler는 FSD public API를 조립하거나 re-export하는 얇은 framework adapter가 된다.
+- [x] browser에서 안전한 export는 기본 `index.ts`, server 전용 export는 `index.server.ts`로 분리한다.
+- [x] DB, 인증 검증, 환경 변수, media storage, queue·worker 및 외부 server adapter 진입점은 `server-only` 경계를 유지하거나 추가한다.
+- [x] `"use client"` 파일에서 server 전용 public API 또는 server 전용 내부 모듈로 이어지는 import 경로가 없다.
+- [x] root `app/`의 page와 Route Handler는 FSD public API를 조립하거나 re-export하는 얇은 framework adapter가 된다.
 
 ### US-4: 리팩토링 전후 동작을 동일하게 사용하는 사용자와 운영자
 
@@ -74,11 +74,11 @@ Next.js 루트 `app/`은 URL과 framework convention만 담당하는 얇은 어�
 
 **Acceptance Criteria:**
 
-- [ ] 기존 10개 UI route의 URL, 인증·관리자 보호, loading/error/not-found 처리와 렌더링 동작이 유지된다.
-- [ ] 기존 24개 Route Handler의 URL, HTTP method, runtime 선언, status code 및 response shape가 유지된다.
-- [ ] mixing 및 vocal-profile analysis worker의 실행 명령과 처리 동작이 유지된다.
-- [ ] DB schema, migration, 환경 변수 이름, 외부 서비스 계약과 Coolify 배포 구성이 변경되지 않는다.
-- [ ] production build, 전체 기존 test suite, Biome, ESLint, TypeScript 검사가 통과한다.
+- [x] 기존 10개 UI route의 URL, 인증·관리자 보호, loading/error/not-found 처리와 렌더링 동작이 유지된다.
+- [x] 기존 24개 Route Handler의 URL, HTTP method, runtime 선언, status code 및 response shape가 유지된다.
+- [x] mixing 및 vocal-profile analysis worker의 실행 명령과 처리 동작이 유지된다.
+- [x] DB schema, migration, 환경 변수 이름, 외부 서비스 계약과 Coolify 배포 구성이 변경되지 않는다.
+- [x] production build, 전체 기존 test suite, Biome, ESLint, TypeScript 검사가 통과한다.
 
 ---
 

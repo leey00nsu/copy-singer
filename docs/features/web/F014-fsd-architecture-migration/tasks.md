@@ -111,25 +111,25 @@
     - [x] root layout, provider와 global styles를 _app으로 옮기고 root page/layout/loading/error/not-found를 thin adapter로 전환한다.
     - [x] UI 테스트 import를 갱신하고 Steiger, 정적 검사, production build와 UI 회귀 테스트를 실행한다.
 
-- [TODO][NON-PRD] T-F014-fsd-architecture-migration-05 API·worker adapter 전환과 legacy 제거 및 최종 검증
+- [DONE][NON-PRD] T-F014-fsd-architecture-migration-05 API·worker adapter 전환과 legacy 제거 및 최종 검증
   - Date: 2026-08-09
   - Acceptance:
     - 24개 Route Handler 구현이 _app/api-routes로 이전되고 root route.ts는 method export와 route config만 유지한다.
     - mixing 및 vocal-profile analysis worker entry command와 동작이 유지되고 server public API를 사용한다.
     - root lib과 compatibility re-export가 제거되고 @ alias가 src만 가리키며 전체 품질·build·test suite가 통과한다.
   - Checklist:
-    - [ ] 24개 handler를 endpoint public API로 이동하고 root route adapter의 URL, method, runtime, status/response 계약을 검증한다.
-    - [ ] background worker implementation과 root script wrapper import를 _app 및 server public API 기준으로 갱신한다.
-    - [ ] 모든 test와 script import를 갱신하고 root lib, 임시 alias fallback 및 compatibility export를 제거한다.
-    - [ ] route inventory, client-to-server import, Steiger, pnpm run check, pnpm test와 feature config 검증을 실행한다.
+    - [x] 24개 handler를 endpoint public API로 이동하고 root route adapter의 URL, method, runtime, status/response 계약을 검증한다.
+    - [x] background worker implementation과 root script wrapper import를 _app 및 server public API 기준으로 갱신한다.
+    - [x] 모든 test와 script import를 갱신하고 root lib, 임시 alias fallback 및 compatibility export를 제거한다.
+    - [x] route inventory, client-to-server import, Steiger, pnpm run check, pnpm test와 feature config 검증을 실행한다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -141,7 +141,7 @@
 | `pnpm run check:architecture` | `2026-08-09` | `PASS (Steiger recommended rules 오류 0건)` |
 | `pnpm run check` | `2026-08-09` | `PASS (Biome 경고 63건, ESLint·TypeScript·Steiger 오류 0건)` |
 | `pnpm run build` | `2026-08-09` | `PASS (Next.js production build 및 기존 route inventory 유지)` |
-| `pnpm test` | `-` | `대기` |
+| `pnpm test` | `2026-08-09` | `PASS (production build 포함 전체 120 tests)` |
 | `pnpm run verify:feature-config` | `2026-08-09` | `PASS (auth, admin, Leemage 환경 변수 검증)` |
 | `pnpm exec tsx --test tests/base-ui-link-button.test.ts tests/audio-waveform-player.test.ts tests/profile-audio-preparation.test.ts tests/vocal-profile-recorder.test.ts tests/compress-mixing-result.test.ts tests/process-scripts.test.ts` | `2026-08-09` | `PASS (13 tests)` |
 | `pnpm run test:auth:db` | `2026-08-09` | `PASS (3 tests)` |
@@ -164,5 +164,7 @@
 | `pnpm run catalog:verify` | `2026-08-09` | `PASS (100곡 artifact READY 상태 확인)` |
 | `pnpm exec tsx --test tests/vocal-profile-results-ui.test.tsx tests/audio-waveform-player.test.ts tests/reference-preview.test.ts tests/effect-cleanup.test.ts` | `2026-08-09` | `PASS (11 tests, 이동된 Entity·Shared UI와 effect source 감사)` |
 | `pnpm exec tsx --test tests/base-ui-link-button.test.ts tests/profile-audio-preparation.test.ts tests/vocal-profile-recorder.test.ts tests/long-audio-upload.test.ts` | `2026-08-09` | `PASS (7 tests, Widget·Page 이전 후 UI 정적 감사와 녹음 경계)` |
+| `pnpm run db:generate` | `2026-08-09` | `PASS (Prisma Client를 Shared DB generated 경로에 생성)` |
+| `pnpm run db:validate` | `2026-08-09` | `PASS (PostgreSQL schema 유효)` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T08:10:20.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T08:21:48.000Z -->
