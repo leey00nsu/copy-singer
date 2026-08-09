@@ -1,8 +1,8 @@
 import "server-only";
 
-import { prisma } from "@/lib/db/prisma";
 import { createLeemageClient, LeemageError } from "@/lib/leemage/client";
 import { analyzerUrl } from "@/lib/vocal-profile/server";
+import { prisma } from "@/shared/db/index.server";
 
 function audioExtension(mimeType: string) {
   if (mimeType === "audio/mp4" || mimeType === "audio/aac") return "m4a";

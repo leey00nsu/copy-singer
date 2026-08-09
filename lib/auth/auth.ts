@@ -2,8 +2,8 @@ import "server-only";
 
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { prisma } from "@/lib/db/prisma";
 import { ensureSignupGrant } from "@/lib/tickets/service";
+import { prisma } from "@/shared/db/index.server";
 
 const baseURL = process.env.BETTER_AUTH_URL ?? "http://localhost:3000";
 

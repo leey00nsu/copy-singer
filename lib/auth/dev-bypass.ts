@@ -2,7 +2,7 @@ import "server-only";
 
 import type { auth } from "@/lib/auth/auth";
 import { type AuthBypassEnvironment, developmentAuthBypassUserId } from "@/lib/auth/dev-bypass-policy";
-import { prisma } from "@/lib/db/prisma";
+import { prisma } from "@/shared/db/index.server";
 
 type AuthSession = typeof auth.$Infer.Session;
 

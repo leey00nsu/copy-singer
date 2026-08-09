@@ -26,7 +26,7 @@ test("development auth bypass resolves only an existing database user", async (c
     context.skip("DATABASE_URL is not configured");
     return;
   }
-  const { prisma } = await import("../lib/db/prisma");
+  const { prisma } = await import("../src/shared/db/index.server");
   const { getDevelopmentAuthBypassSession } = await import("../lib/auth/dev-bypass");
   const userId = `dev-auth-${crypto.randomUUID()}`;
   const environment = { NODE_ENV: "test", DEV_AUTH_BYPASS_ENABLED: "true", DEV_AUTH_BYPASS_USER_ID: userId };

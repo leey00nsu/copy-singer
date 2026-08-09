@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { headers } from "next/headers";
 import { UserMenu } from "@/components/auth/user-menu";
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { isAdminEmail } from "@/lib/auth/admin-policy";
 import { getRequestSession } from "@/lib/auth/session";
+import { Toaster } from "@/shared/ui/sonner";
+import { TooltipProvider } from "@/shared/ui/tooltip";
 import "./globals.css";
 
 const geistSans = Geist({

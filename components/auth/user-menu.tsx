@@ -3,8 +3,8 @@
 import { LogOut, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth/client";
+import { Button } from "@/shared/ui/button";
 
 export function UserMenu({ name, image, admin = false }: { name: string; image?: string | null; admin?: boolean }) {
   const router = useRouter();

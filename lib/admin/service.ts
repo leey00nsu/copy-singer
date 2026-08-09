@@ -1,8 +1,8 @@
 import "server-only";
 
 import type { MixingJobStatus, Prisma } from "@/generated/prisma/client";
-import { prisma } from "@/lib/db/prisma";
 import { applyTicketChange } from "@/lib/tickets/service";
+import { prisma } from "@/shared/db/index.server";
 
 const JOB_STATUSES = new Set<MixingJobStatus>([
   "PENDING",

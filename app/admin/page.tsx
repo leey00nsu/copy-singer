@@ -1,9 +1,9 @@
 import { Activity, AlertTriangle, Search, Ticket, Users } from "lucide-react";
 import { TicketAdjustmentForm } from "@/components/admin/ticket-adjustment-form";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { getAdminOverview, listAdminMixingJobs, listAdminUsers } from "@/lib/admin/service";
 import { requireAdminPage } from "@/lib/auth/admin";
+import { Badge } from "@/shared/ui/badge";
+import { Button } from "@/shared/ui/button";
 
 export default async function AdminPage({ searchParams }: { searchParams: Promise<{ q?: string; status?: string }> }) {
   await requireAdminPage();

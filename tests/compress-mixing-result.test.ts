@@ -8,7 +8,7 @@ import {
   CLARITY_NORMAL_FILTER_CHAIN,
   compressMixingResult,
   MIXING_FINALIZATION_VERSION,
-} from "../lib/audio/compress-mixing-result";
+} from "../src/shared/lib/audio/compress-mixing-result";
 
 function toneWav(seconds: number, sampleRate = 44_100) {
   const samples = seconds * sampleRate;

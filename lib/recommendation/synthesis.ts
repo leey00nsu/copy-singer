@@ -1,8 +1,8 @@
 import "server-only";
 
+import { prisma } from "@/shared/db/index.server";
 import artifactJson from "../../data/catalogs/tj-2607-song-profiles.json";
 import type { Prisma } from "../../generated/prisma/client";
-import { prisma } from "../db/prisma";
 import { analyzerUrl } from "../vocal-profile/server";
 import { RecommendationError } from "./contract";
 import { getRecommendationRun } from "./server";

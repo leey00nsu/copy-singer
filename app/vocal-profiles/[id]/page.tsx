@@ -2,12 +2,12 @@ import { ArrowLeft, AudioLines, CalendarDays, Music2, Sparkles } from "lucide-re
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
-import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { VocalProfileResults } from "@/components/vocal-profile-results";
 import { requirePageSession } from "@/lib/auth/session";
 import { getVocalProfileDetail } from "@/lib/vocal-profile/history";
+import { Badge } from "@/shared/ui/badge";
+import { buttonVariants } from "@/shared/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 
 export default async function VocalProfileDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

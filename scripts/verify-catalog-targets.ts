@@ -3,7 +3,7 @@ import { config } from "dotenv";
 config({ path: [".env.local", ".env"], quiet: true });
 
 const { catalogTargetStatus, ensureCatalogTargetStagingDir } = await import("../lib/song-catalog/target-assets");
-const { prisma } = await import("../lib/db/prisma");
+const { prisma } = await import("../src/shared/db/index.server");
 
 async function main() {
   const stagingDir = await ensureCatalogTargetStagingDir();

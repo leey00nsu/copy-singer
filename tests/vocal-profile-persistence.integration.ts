@@ -68,7 +68,7 @@ function analyzedRecording(recordingId: string) {
 }
 
 async function runPersistenceFailureCase(mode: FailureMode) {
-  const { prisma } = await import("../lib/db/prisma");
+  const { prisma } = await import("../src/shared/db/index.server");
   const { persistAnalyzedVocalProfile, VocalProfilePersistenceError } = await import(
     "../lib/vocal-profile/persistence"
   );

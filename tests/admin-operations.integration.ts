@@ -16,7 +16,7 @@ test("admin allowlist and ticket adjustments preserve actor, reason, and nonnega
   const adminEmail = `${adminId}@example.test`;
   process.env.ADMIN_EMAILS = `other@example.test, ${adminEmail.toUpperCase()} `;
 
-  const { prisma } = await import("../lib/db/prisma");
+  const { prisma } = await import("../src/shared/db/index.server");
   const { isAdminEmail } = await import("../lib/auth/admin-policy");
   const { adjustUserTickets, listAdminUsers } = await import("../lib/admin/service");
   const { InsufficientTicketsError } = await import("../lib/tickets/service");

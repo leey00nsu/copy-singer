@@ -1,10 +1,10 @@
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import Link from "next/link";
-import { Button, buttonVariants } from "@/components/ui/button";
 import { VocalProfileHistoryList } from "@/components/vocal-profile/vocal-profile-history-list";
 import { requirePageSession } from "@/lib/auth/session";
 import { analysisJobPayload, listVisibleVocalProfileAnalysisJobs } from "@/lib/vocal-profile/analysis-queue";
 import { getVocalProfileHistory } from "@/lib/vocal-profile/history";
+import { Button, buttonVariants } from "@/shared/ui/button";
 
 export default async function VocalProfilesPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const session = await requirePageSession("/vocal-profiles");

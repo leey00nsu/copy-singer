@@ -20,17 +20,17 @@ import { toast } from "sonner";
 import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
 import { VocalProfileRecorder } from "@/components/audio/vocal-profile-recorder";
 import { LongAudioDialog } from "@/components/long-audio-dialog";
-import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { VocalProfileResults } from "@/components/vocal-profile-results";
-import { prepareProfileAudio } from "@/lib/audio/profile-upload";
 import { isLongProfileAudio, readAudioDuration } from "@/lib/vocal-profile/audio-file";
 import type {
   VocalProfileAnalysisJobResponse,
   VocalProfileError,
   VocalProfileResponse,
 } from "@/lib/vocal-profile/contract";
+import { prepareProfileAudio } from "@/shared/lib/audio";
+import { Badge } from "@/shared/ui/badge";
+import { Button, buttonVariants } from "@/shared/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
 
 const MAX_PROFILE_AUDIO_BYTES = 25 * 1024 * 1024;
 const ACCEPTED_AUDIO = ".wav,.mp3,.m4a,.webm,audio/wav,audio/mpeg,audio/mp4,audio/webm";

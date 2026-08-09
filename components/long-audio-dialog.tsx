@@ -2,7 +2,7 @@
 
 import { Scissors } from "lucide-react";
 import { useEffect, useRef } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 
 interface LongAudioDialogProps {
   durationSeconds: number | null;

@@ -1,7 +1,6 @@
 import "server-only";
 
 import { type Prisma, RecordingKind, RecordingStatus } from "@/generated/prisma/client";
-import { prisma } from "@/lib/db/prisma";
 import { LeemageError } from "@/lib/leemage/client";
 import {
   discardMediaAsset,
@@ -9,6 +8,7 @@ import {
   storeAnalyzerSynthesisReferenceBytes,
 } from "@/lib/leemage/media-service";
 import type { AnalyzedRecording } from "@/lib/vocal-profile/analyzer";
+import { prisma } from "@/shared/db/index.server";
 
 export class VocalProfilePersistenceError extends Error {
   constructor(

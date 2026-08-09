@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { formatPlaybackTime, playbackRangesDuration, playbackRangesElapsed } from "../lib/audio/playback";
+import { formatPlaybackTime, playbackRangesDuration, playbackRangesElapsed } from "../src/shared/lib/audio";
 
 test("audio player formats finite media times", () => {
   assert.equal(formatPlaybackTime(0), "0:00");

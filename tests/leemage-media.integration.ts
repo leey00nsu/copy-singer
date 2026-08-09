@@ -46,7 +46,7 @@ test("an analyzer reference is persisted as user-owned Leemage metadata", async 
     throw new Error(`Unexpected URL: ${url}`);
   };
 
-  const { prisma } = await import("../lib/db/prisma");
+  const { prisma } = await import("../src/shared/db/index.server");
   const { storeAnalyzerReferenceBytes, storeAnalyzerSynthesisReferenceBytes } = await import(
     "../lib/leemage/media-service"
   );
@@ -109,7 +109,7 @@ test("failed Leemage deletion leaves a retryable cleanup record", async (context
   globalThis.fetch = async () =>
     Response.json({ message: "rate limited" }, { status: 429, headers: { "Retry-After": "0" } });
 
-  const { prisma } = await import("../lib/db/prisma");
+  const { prisma } = await import("../src/shared/db/index.server");
   const { deleteOrScheduleMediaAsset } = await import("../lib/leemage/media-service");
   const userId = `media-owner-${crypto.randomUUID()}`;
   let assetId: string | null = null;
@@ -163,7 +163,7 @@ test("the worker removes a pending Leemage asset after a successful retry", asyn
   process.env.LEEMAGE_BASE_URL = "https://leemage.example/api/v1";
   process.env.LEEMAGE_API_KEY = "test-key";
   process.env.LEEMAGE_PROJECT_ID = "project";
-  const { prisma } = await import("../lib/db/prisma");
+  const { prisma } = await import("../src/shared/db/index.server");
   const { processOneMediaCleanup } = await import("../lib/leemage/cleanup");
   const userId = `cleanup-owner-${crypto.randomUUID()}`;
   let assetId: string | null = null;

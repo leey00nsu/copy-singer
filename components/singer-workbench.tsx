@@ -18,15 +18,15 @@ import { AdvancedSettings, type ConversionSettings, DEFAULT_SETTINGS } from "@/c
 import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
 import { AudioDropzone, MAX_AUDIO_UPLOAD_BYTES } from "@/components/audio-dropzone";
 import { RecommendationHandoffBanner } from "@/components/recommendation-handoff";
-import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
 import { Waveform } from "@/components/waveform";
 import type { RecommendationRunResponse } from "@/lib/recommendation/contract";
 import { type RecommendationHandoff, selectRecommendationHandoff } from "@/lib/recommendation/handoff";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/cn";
+import { Badge } from "@/shared/ui/badge";
+import { Button, buttonVariants } from "@/shared/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Progress } from "@/shared/ui/progress";
+import { Separator } from "@/shared/ui/separator";
 
 type JobState = {
   id: string;

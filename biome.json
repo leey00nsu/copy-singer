@@ -78,7 +78,7 @@
       }
     },
     {
-      "includes": ["components/ui/chart.tsx"],
+      "includes": ["src/shared/ui/chart/chart.tsx"],
       "linter": {
         "rules": {
           "security": {

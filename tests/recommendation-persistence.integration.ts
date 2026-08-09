@@ -11,7 +11,7 @@ test("persists, reads, and cascade-deletes one recommendation run", async (conte
     return;
   }
 
-  const { prisma } = await import("../lib/db/prisma");
+  const { prisma } = await import("../src/shared/db/index.server");
   const { createRecommendationRun, deleteRecommendationRun, getRecommendationRun } = await import(
     "../lib/recommendation/server"
   );

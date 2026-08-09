@@ -28,7 +28,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
   process.env.LEEMAGE_API_KEY = "leemage-key";
   process.env.LEEMAGE_PROJECT_ID = "project";
 
-  const { prisma } = await import("../lib/db/prisma");
+  const { prisma } = await import("../src/shared/db/index.server");
   const { enqueueMixingJob } = await import("../lib/mixing/queue");
   const { claimNextMixingJob, processClaimedMixingJob } = await import("../lib/mixing/worker");
   const { InsufficientTicketsError } = await import("../lib/tickets/service");

@@ -1,7 +1,7 @@
 import "server-only";
 
-import { prisma } from "@/lib/db/prisma";
 import { serializeProfile } from "@/lib/vocal-profile/server";
+import { prisma } from "@/shared/db/index.server";
 
 const profileSummarySelect = {
   id: true,

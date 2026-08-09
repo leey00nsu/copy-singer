@@ -64,7 +64,7 @@ function modalEnvelope(recordingId: string, source: Uint8Array) {
 }
 
 async function withUser() {
-  const { prisma } = await import("../lib/db/prisma");
+  const { prisma } = await import("../src/shared/db/index.server");
   const userId = `analysis-queue-${crypto.randomUUID()}`;
   await prisma.user.create({
     data: { id: userId, name: "Analysis queue", email: `${userId}@example.test`, emailVerified: true },
@@ -73,7 +73,7 @@ async function withUser() {
 }
 
 async function createSourceAsset(userId: string, source: Uint8Array) {
-  const { prisma } = await import("../lib/db/prisma");
+  const { prisma } = await import("../src/shared/db/index.server");
   return prisma.mediaAsset.create({
     data: {
       userId,
@@ -90,7 +90,7 @@ async function createSourceAsset(userId: string, source: Uint8Array) {
 }
 
 async function insertJob(input: { userId: string; sourceAssetId: string; recordingId?: string; maxAttempts?: number }) {
-  const { prisma } = await import("../lib/db/prisma");
+  const { prisma } = await import("../src/shared/db/index.server");
   const id = crypto.randomUUID();
   const recordingId = input.recordingId ?? crypto.randomUUID();
   await prisma.$executeRaw`
@@ -107,7 +107,7 @@ async function insertJob(input: { userId: string; sourceAssetId: string; recordi
 }
 
 async function readJob(id: string) {
-  const { prisma } = await import("../lib/db/prisma");
+  const { prisma } = await import("../src/shared/db/index.server");
   const rows = await prisma.$queryRaw<JobRow[]>`
     SELECT "id", "status", "sourceAssetId", "vocalProfileId", "attempts", "maxAttempts", "errorCode", "retryable"
     FROM "VocalProfileAnalysisJob" WHERE "id" = ${id}::uuid
@@ -116,7 +116,7 @@ async function readJob(id: string) {
 }
 
 async function cleanupUser(userId: string) {
-  const { prisma } = await import("../lib/db/prisma");
+  const { prisma } = await import("../src/shared/db/index.server");
   await prisma.$executeRaw`DELETE FROM "VocalProfileAnalysisJob" WHERE "userId" = ${userId}`;
   const profiles = await prisma.vocalProfile.findMany({ where: { userId }, select: { recordingId: true } });
   await prisma.vocalProfile.deleteMany({ where: { userId } });

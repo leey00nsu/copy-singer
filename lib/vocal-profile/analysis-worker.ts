@@ -1,12 +1,12 @@
 import "server-only";
 
 import { createHash } from "node:crypto";
-import { vocalProfileAnalysisLeaseSeconds } from "@/lib/config/server-env";
-import { prisma } from "@/lib/db/prisma";
 import { discardMediaAsset } from "@/lib/leemage/media-service";
 import type { VocalProfileAnalysisJobRow } from "@/lib/vocal-profile/analysis-queue";
 import { AnalyzerClientError, analyzeVocalProfileBytes } from "@/lib/vocal-profile/analyzer";
 import { persistQueuedAnalyzedVocalProfile, VocalProfilePersistenceError } from "@/lib/vocal-profile/persistence";
+import { vocalProfileAnalysisLeaseSeconds } from "@/shared/config/index.server";
+import { prisma } from "@/shared/db/index.server";
 
 export type VocalProfileAnalysisWorkerDependencies = {
   fetchImpl?: typeof fetch;

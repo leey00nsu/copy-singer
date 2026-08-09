@@ -16,9 +16,6 @@ import {
 import { useMemo, useState } from "react";
 import { Bar, BarChart, CartesianGrid, Cell, Line, LineChart, ReferenceLine, XAxis, YAxis } from "recharts";
 import { ReferenceBandPlayers } from "@/components/audio/reference-band-players";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import type { VocalProfileResponse } from "@/lib/vocal-profile/contract";
 import { midiToNoteName } from "@/lib/vocal-profile/pitch";
 import { referenceBandAvailability, referenceBandSegments } from "@/lib/vocal-profile/reference-segments";
@@ -31,6 +28,9 @@ import {
   rangeChartData,
   type VocalProfileVisualization,
 } from "@/lib/vocal-profile/visualization";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/shared/ui/chart";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/shared/ui/collapsible";
 
 const RANGE_CHART_CONFIG = {
   range: { label: "음역", color: "#059669" },

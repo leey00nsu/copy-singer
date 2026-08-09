@@ -2,7 +2,7 @@ import { config } from "dotenv";
 
 config({ path: [".env.local", ".env"], quiet: true });
 
-const { mixingWorkerConcurrency } = await import("../lib/config/server-env");
+const { mixingWorkerConcurrency } = await import("../src/shared/config/index.server");
 const { runMixingWorkerOnce } = await import("../lib/mixing/worker");
 
 let stopping = false;

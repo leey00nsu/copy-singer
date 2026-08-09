@@ -1,9 +1,8 @@
 import { ArrowLeft, BadgeCheck, Gauge } from "lucide-react";
-
-import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
 import type { RecommendationHandoff } from "@/lib/recommendation/handoff";
 import { formatRecommendedShift } from "@/lib/recommendation/ranking";
+import { Badge } from "@/shared/ui/badge";
+import { buttonVariants } from "@/shared/ui/button";
 
 export function RecommendationHandoffBanner({ selection }: { selection: RecommendationHandoff }) {
   return (

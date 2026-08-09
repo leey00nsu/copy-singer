@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { MAX_VOCAL_PROFILE_RECORDING_MS, recorderExtension, shouldStopRecording } from "../lib/audio/recording";
+import { MAX_VOCAL_PROFILE_RECORDING_MS, recorderExtension, shouldStopRecording } from "../src/shared/lib/audio";
 
 test("vocal profile recording stops at 60 seconds", () => {
   assert.equal(MAX_VOCAL_PROFILE_RECORDING_MS, 60_000);

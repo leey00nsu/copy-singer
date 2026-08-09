@@ -10,7 +10,7 @@ test("concurrent item starts create one Modal job with the fixed preset", async 
     context.skip("DATABASE_URL is not configured");
     return;
   }
-  const { prisma } = await import("../lib/db/prisma");
+  const { prisma } = await import("../src/shared/db/index.server");
   const { createRecommendationRun, getRecommendationRun } = await import("../lib/recommendation/server");
   const { cleanupRecommendationSyntheses, reconcileRecommendationSyntheses, startRecommendationSynthesis } =
     await import("../lib/recommendation/synthesis");
@@ -126,7 +126,7 @@ test("expired reference fails before target download or Modal creation", async (
     context.skip("DATABASE_URL is not configured");
     return;
   }
-  const { prisma } = await import("../lib/db/prisma");
+  const { prisma } = await import("../src/shared/db/index.server");
   const { createRecommendationRun } = await import("../lib/recommendation/server");
   const { reconcileRecommendationSyntheses, startRecommendationSynthesis } = await import(
     "../lib/recommendation/synthesis"

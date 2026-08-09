@@ -1,6 +1,6 @@
 import "server-only";
 
-import { prisma } from "@/lib/db/prisma";
+import { prisma } from "@/shared/db/index.server";
 
 const historySelect = {
   id: true,

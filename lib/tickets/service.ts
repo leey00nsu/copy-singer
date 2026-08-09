@@ -1,8 +1,8 @@
 import "server-only";
 
 import type { Prisma, TicketLedgerType } from "@/generated/prisma/client";
-import { signupTicketGrant } from "@/lib/config/server-env";
-import { prisma } from "@/lib/db/prisma";
+import { signupTicketGrant } from "@/shared/config/index.server";
+import { prisma } from "@/shared/db/index.server";
 
 export class InsufficientTicketsError extends Error {
   constructor(

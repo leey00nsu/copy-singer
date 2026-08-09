@@ -1,9 +1,9 @@
 import "server-only";
 
-import { vocalProfileAnalysisMaxAttempts } from "@/lib/config/server-env";
-import { prisma } from "@/lib/db/prisma";
 import { discardMediaAsset, storeAnalyzerReferenceBytes } from "@/lib/leemage/media-service";
 import { serializeProfile } from "@/lib/vocal-profile/server";
+import { vocalProfileAnalysisMaxAttempts } from "@/shared/config/index.server";
+import { prisma } from "@/shared/db/index.server";
 
 export type VocalProfileAnalysisJobStatus = "PENDING" | "PROCESSING" | "SUCCEEDED" | "FAILED";
 

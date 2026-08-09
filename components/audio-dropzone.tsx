@@ -4,9 +4,9 @@ import { FileAudio, Music2, RotateCcw, UploadCloud, X } from "lucide-react";
 import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/cn";
+import { Button } from "@/shared/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
 
 export const MAX_AUDIO_UPLOAD_BYTES = {
   reference: 128 * 1024 * 1024,

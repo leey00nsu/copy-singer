@@ -24,7 +24,7 @@ test("catalog target import uploads once, links Song, and is idempotent by SHA-2
   process.env.LEEMAGE_API_KEY = "catalog-target-test-key";
   process.env.LEEMAGE_PROJECT_ID = "catalog-target-project";
 
-  const { prisma } = await import("../lib/db/prisma");
+  const { prisma } = await import("../src/shared/db/index.server");
   const { importCatalogTargetAsset } = await import("../lib/song-catalog/target-assets");
 
   const catalogOrder = 100;

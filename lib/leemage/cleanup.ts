@@ -1,7 +1,7 @@
 import "server-only";
 
-import { prisma } from "@/lib/db/prisma";
 import { createLeemageClient, LeemageError } from "@/lib/leemage/client";
+import { prisma } from "@/shared/db/index.server";
 
 export async function processOneMediaCleanup(fetchImpl: typeof fetch = fetch) {
   const now = new Date();

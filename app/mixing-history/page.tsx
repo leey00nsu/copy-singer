@@ -1,9 +1,9 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { MixingHistoryList } from "@/components/mixing/mixing-history-list";
-import { Button } from "@/components/ui/button";
 import { requirePageSession } from "@/lib/auth/session";
 import { getMixingHistory } from "@/lib/mixing/history";
+import { Button } from "@/shared/ui/button";
 
 export default async function MixingHistoryPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const session = await requirePageSession("/mixing-history");

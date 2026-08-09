@@ -2,8 +2,8 @@
 
 import { LogIn } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth/client";
+import { Button } from "@/shared/ui/button";
 
 export function GoogleSignIn({ callbackURL, configured }: { callbackURL: string; configured: boolean }) {
   const [pending, setPending] = useState(false);

@@ -1,11 +1,11 @@
 "use client";
 
 import { ChevronDown, RotateCcw, SlidersHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
+import { Button } from "@/shared/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/shared/ui/collapsible";
+import { Label } from "@/shared/ui/label";
+import { Slider } from "@/shared/ui/slider";
+import { Switch } from "@/shared/ui/switch";
 
 export type ConversionSettings = {
   promptVocalSeparation: boolean;

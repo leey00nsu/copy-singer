@@ -1,12 +1,12 @@
 import "server-only";
 
-import { type CompressedMixingAudio, compressMixingResult } from "@/lib/audio/compress-mixing-result";
-import { mixingLeaseSeconds, mixingPollIntervalMs } from "@/lib/config/server-env";
-import { prisma } from "@/lib/db/prisma";
 import { processOneMediaCleanup } from "@/lib/leemage/cleanup";
 import { discardMediaAsset, storeMixingResult } from "@/lib/leemage/media-service";
 import { SYNTHESIS_PRESET } from "@/lib/recommendation/synthesis-state";
 import { applyTicketChange } from "@/lib/tickets/service";
+import { mixingLeaseSeconds, mixingPollIntervalMs } from "@/shared/config/index.server";
+import { prisma } from "@/shared/db/index.server";
+import { type CompressedMixingAudio, compressMixingResult } from "@/shared/lib/audio/index.server";
 
 type ModalJob = {
   id: string;

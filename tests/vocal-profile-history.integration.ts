@@ -9,7 +9,7 @@ test("profile history, detail, and reference are scoped to the owning user", asy
     context.skip("DATABASE_URL is not configured");
     return;
   }
-  const { prisma } = await import("../lib/db/prisma");
+  const { prisma } = await import("../src/shared/db/index.server");
   const { getVocalProfileDetail, getVocalProfileHistory, getVocalProfileReference, getVocalProfileSynthesisReference } =
     await import("../lib/vocal-profile/history");
   const suffix = crypto.randomUUID();

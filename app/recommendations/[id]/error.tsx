@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertTriangle, RotateCcw } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 
 export default function RecommendationErrorPage({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (

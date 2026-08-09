@@ -1,8 +1,8 @@
 import "server-only";
 
+import { prisma } from "@/shared/db/index.server";
 import artifactJson from "../../data/catalogs/tj-2607-song-profiles.json";
 import type { Prisma } from "../../generated/prisma/client";
-import { prisma } from "../db/prisma";
 import type { KeyFitProfile, KeyFitReasonCode } from "../key-fit/contract";
 import { RecommendationError, type RecommendationRunResponse, type RecommendationScoreMetrics } from "./contract";
 import { buildRankedRecommendations } from "./data";

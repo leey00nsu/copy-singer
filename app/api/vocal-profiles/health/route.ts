@@ -1,7 +1,7 @@
 export const runtime = "nodejs";
 
-import { prisma } from "@/lib/db/prisma";
 import { vocalProfileAnalyzerHealth } from "@/lib/vocal-profile/analyzer";
+import { prisma } from "@/shared/db/index.server";
 
 export async function GET() {
   const [analyzer, database] = await Promise.allSettled([vocalProfileAnalyzerHealth(), prisma.$queryRaw`SELECT 1`]);

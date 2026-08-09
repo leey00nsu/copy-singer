@@ -4,9 +4,9 @@ import { useWavesurfer } from "@wavesurfer/react";
 import { Mic, Square } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import RecordPlugin from "wavesurfer.js/dist/plugins/record.esm.js";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { MAX_VOCAL_PROFILE_RECORDING_MS, recorderExtension, shouldStopRecording } from "@/lib/audio/recording";
+import { MAX_VOCAL_PROFILE_RECORDING_MS, recorderExtension, shouldStopRecording } from "@/shared/lib/audio";
+import { Button } from "@/shared/ui/button";
+import { Progress } from "@/shared/ui/progress";
 
 type RecorderState = "ready" | "starting" | "recording";
 

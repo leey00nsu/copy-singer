@@ -1,6 +1,6 @@
 import { AudioLines } from "lucide-react";
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/shared/ui/button";
 
 export default function VocalProfileNotFound() {
   return (

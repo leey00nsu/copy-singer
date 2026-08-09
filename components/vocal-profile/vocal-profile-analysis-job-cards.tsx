@@ -3,9 +3,9 @@
 import { AlertTriangle, Clock3, LoaderCircle, RotateCcw } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
 import type { VocalProfileAnalysisJobResponse } from "@/lib/vocal-profile/contract";
+import { Badge } from "@/shared/ui/badge";
+import { buttonVariants } from "@/shared/ui/button";
 
 const POLL_INTERVAL_MS = 3_000;
 

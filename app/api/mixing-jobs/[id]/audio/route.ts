@@ -1,7 +1,7 @@
 export const runtime = "nodejs";
 
 import { requireApiSession, unauthorizedResponse } from "@/lib/auth/session";
-import { prisma } from "@/lib/db/prisma";
+import { prisma } from "@/shared/db/index.server";
 
 export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
   const session = await requireApiSession(request);

@@ -18,11 +18,11 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
-import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { RecommendationRunResponse } from "@/lib/recommendation/contract";
 import { formatRecommendedShift } from "@/lib/recommendation/ranking";
+import { Badge } from "@/shared/ui/badge";
+import { Button, buttonVariants } from "@/shared/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
 
 export function RecommendationResults({
   initialRun,

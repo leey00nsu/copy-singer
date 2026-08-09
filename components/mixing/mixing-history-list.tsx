@@ -3,8 +3,8 @@
 import { AlertTriangle, CheckCircle2, Clock3, Download, LoaderCircle, Music2, Ticket } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AudioWaveformPlayer } from "@/components/audio/audio-waveform-player";
-import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
+import { Badge } from "@/shared/ui/badge";
+import { buttonVariants } from "@/shared/ui/button";
 
 export type MixingHistoryPayload = {
   page: number;

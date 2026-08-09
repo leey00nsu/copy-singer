@@ -2,7 +2,7 @@ import { config } from "dotenv";
 
 config({ path: [".env.local", ".env"], quiet: true });
 
-const { vocalProfileAnalysisWorkerConcurrency } = await import("../lib/config/server-env");
+const { vocalProfileAnalysisWorkerConcurrency } = await import("../src/shared/config/index.server");
 const { runVocalProfileAnalysisWorkerOnce } = await import("../lib/vocal-profile/analysis-worker");
 
 let stopping = false;

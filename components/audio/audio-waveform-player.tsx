@@ -3,10 +3,10 @@
 import { useWavesurfer } from "@wavesurfer/react";
 import { Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { formatPlaybackTime } from "@/lib/audio/playback";
-import { cn } from "@/lib/utils";
 import type { AudioSourceRange } from "@/lib/vocal-profile/reference-segments";
+import { formatPlaybackTime } from "@/shared/lib/audio";
+import { cn } from "@/shared/lib/cn";
+import { Button } from "@/shared/ui/button";
 
 export type AudioPlaybackSegment = {
   id: string;

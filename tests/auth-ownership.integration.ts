@@ -10,7 +10,7 @@ test("legacy rows remain unowned while new profiles and runs are user-scoped", a
     return;
   }
 
-  const { prisma } = await import("../lib/db/prisma");
+  const { prisma } = await import("../src/shared/db/index.server");
   const suffix = crypto.randomUUID();
   const firstUserId = `auth-owner-${suffix}`;
   const secondUserId = `auth-other-${suffix}`;
