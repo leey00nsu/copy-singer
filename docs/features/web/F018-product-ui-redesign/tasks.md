@@ -232,17 +232,17 @@
     - [x] 마이크 action의 Link semantics, focus, reduced-motion 처리
     - [x] Landing Storybook·접근성·responsive test와 실제 브라우저 검증
 
-- [TODO][PRD-FR-049] T-F018-12 Song Match 비교 밀도·필터·CTA 반응형 보완
+- [DONE][PRD-FR-049] T-F018-12 Song Match 비교 밀도·필터·CTA 반응형 보완
   - Date: 2026-08-10
   - Acceptance:
     - desktop 목록은 곡 비교에 필요한 핵심 열만 남겨 100곡을 빠르게 훑을 수 있고 tablet에서 제목 열이 글자 단위로 붕괴하지 않는다.
     - mobile 첫 viewport에는 적어도 첫 곡이 보이며 상세 필터는 Sheet로 이동하고 적용 조건 수를 표시한다.
     - 목록의 반복 primary CTA를 낮추고 상세 진입을 주 interaction으로 유지하며 기존 mixing/query 계약은 보존된다.
   - Checklist:
-    - [ ] desktop row 높이와 column width를 compact comparison 수준으로 축소
-    - [ ] table breakpoint와 mobile filter Sheet 구현
-    - [ ] row reason/metadata/action 위계를 Song Detail 중심으로 재배치
-    - [ ] 100-item·360/768/1024/1280 Storybook 및 회귀 test 보강
+    - [x] desktop row 높이와 column width를 compact comparison 수준으로 축소
+    - [x] table breakpoint와 mobile filter Sheet 구현
+    - [x] row reason/metadata/action 위계를 Song Detail 중심으로 재배치
+    - [x] 100-item·360/768/1024/1280 Storybook 및 회귀 test 보강
 
 - [TODO][PRD-FR-050] T-F018-13 Library 오류 언어·행 밀도·탭·액션 위계 보완
   - Date: 2026-08-10
@@ -294,6 +294,7 @@
 | `pnpm run test:vocal-profile-analysis-queue` | `2026-08-10` | 통과 — idempotency·owner·lease·retry·cleanup 5/5 |
 | `pnpm run test:vocal-profile-history` | `2026-08-10` | 통과 — 공유 Library UI 3/3, private audio·ownership 3/3 |
 | `pnpm run test:recommendation` | `2026-08-10` | 통과 — ranking 10/10, presentation·synthesis·list·detail 17/17 |
+| `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx` | `2026-08-10` | 통과 — 100곡 dense list·mobile filter Sheet·polling·완료 상태 8/8 |
 | `pnpm run test:recommendation:db` | `2026-08-10` | 통과 — persistence·synthesis 3/3 |
 | `pnpm run test:mixing:ui` | `2026-08-10` | 통과 — history·실제 timeline·상세 adapter·active/terminal 상태 7/7 |
 | `pnpm run test:mixing:db` | `2026-08-10` | 통과 — queue·owner/filter/pagination·active 409·terminal 삭제·cleanup queue·ticket SetNull 1/1 |
@@ -308,4 +309,4 @@
 | `pnpm run test:process-scripts` | `2026-08-10` | 통과 — process supervisor·Storybook production boundary 5/5 |
 | `pnpm test` | `2026-08-10` | 통과 — production build, 전체 unit·integration·DB·Query·architecture와 Storybook 35 files/89 tests |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T17:50:38.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T17:58:13.000Z -->

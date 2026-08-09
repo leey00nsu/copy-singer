@@ -260,10 +260,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **DOING 시작 시점**: Landing은 motion과 첫 viewport, Song Match는 100곡·tablet·mobile filter, Library는 raw error·density·action hierarchy를 각각 독립 검증 경계로 고정했다.
   - **T-F018-11 확인**: Landing을 Server Component로 유지하면서 CSS Module에 서로 다른 duration·delay의 24개 waveform bar와 3개 ripple ring을 구현했다. microphone은 기존 `primaryHref` Link로 바꾸고 focus-visible과 reduced-motion 정적 fallback을 제공했다. 1280×800에서는 제목을 두 줄로 정리하고 360×800에서는 제목·두 CTA·microphone이 첫 viewport에 함께 노출됨을 실제 브라우저 screenshot과 서로 다른 animation frame으로 확인했다.
+  - **T-F018-12 확인**: Song Match는 `xl`부터만 semantic table을 사용하고 그 아래에서는 곡명·점수·추천 키·상태를 compact comparison row로 배치했다. 상세 필터는 1280px 미만에서 적용 조건 수를 보여 주는 bottom Sheet로 이동했고, 목록에 100번 반복되던 AI 믹싱 primary action은 상태 label·결과 상세 진입으로 낮춰 Song Detail의 단일 생성 action을 보존했다. 100곡 fixture를 360·768·1024·1280에서 비교해 tablet 제목 붕괴와 horizontal overflow가 없고 768px 첫 화면에 9개 곡이 보임을 확인했다.
   - **DONE 전 확정 시점**: 구현과 검증 후 기록한다.
   - **머지 후 확인**: 로컬 통합 후 기록한다.
 - **Evidence**:
   - **Commit**: T-F018-11~14 task checkpoint commits
   - **PR**: 로컬 워크플로 — 해당 없음
-  - **Test/Log**: Landing Storybook 2/2, auth-navigation 5/5, Biome targeted check, 실제 browser 1280×800·360×800와 animation frame 변화·console error 0건
+  - **Test/Log**: Landing Storybook 2/2, auth-navigation 5/5, Recommendation ranking/presentation/UI 27/27, Recommendation Storybook 8/8, Biome targeted check, 실제 browser Landing 1280×800·360×800와 Song Match 360×800·768×1024·1024×800·1280×800, animation frame 변화·console error 0건
 - **Consequences**: F018은 다시 implementation 단계로 돌아가며 네 보완 태스크와 최종 visual QA가 끝날 때까지 local merge를 진행하지 않는다.
