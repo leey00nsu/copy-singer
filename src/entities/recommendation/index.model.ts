@@ -1,6 +1,7 @@
 export * from "./lib/handoff";
 export * from "./lib/key-fit-catalog";
 export * from "./lib/key-fit-scorer";
+export * from "./lib/presentation";
 export * from "./lib/ranking";
 export type {
   SongProfileArtifact,
