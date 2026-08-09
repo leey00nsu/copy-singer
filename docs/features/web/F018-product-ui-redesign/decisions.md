@@ -58,6 +58,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **DOING 시작 시점**: `globals.css`의 component selector별로 `app`·`src` 사용처를 검색했다. `page-shell`, `site-header`, `brand-mark`만 사용자 flow와 dev SVC에 함께 쓰이고 나머지 조합 class는 dev SVC 전용임을 확인했다.
   - **DONE 전 확정 시점**: 새 Shared UI에는 전역 component class를 추가하지 않았고 selector별 실제 소비 위치를 기준으로 T-F018-02, 03, 09, 10의 제거 순서를 확정했다.
+  - **T-F018-03 확인**: `/profile`에서 `page-shell`과 완료 결과·추천 action을 제거하고 Page slice의 responsive content rail과 Voice Scan 전용 composition으로 전환했다.
   - **머지 후 확인**: 로컬 통합 후 기록한다.
 - **Evidence**:
   - **Commit**: T-F018-01 task checkpoint commit
@@ -84,3 +85,23 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 워크플로 — 해당 없음
   - **Test/Log**: `pnpm run test:auth-navigation` (4/4), `pnpm run check`, `pnpm run test:storybook --run` (26 files, 51 tests), `pnpm run build-storybook`, `pnpm run build`, local browser smoke (1280×720·360×800)
 - **Consequences**: 후속 사용자 route는 `(product)` layout 아래 adapter만 추가하면 동일 navigation·content rail·mobile Sheet를 사용한다.
+
+## D021: Voice Scan 입력 상태와 durable 분석 상태의 분리 (2026-08-09)
+
+- **Context**: 현재 `/profile` workbench는 마이크 녹음, 파일 업로드·trim, 준비된 오디오, 분석 mutation, durable job polling과 완료 결과를 한 Client Component에서 조립한다. 사용자는 입력 장치 상태와 서버 분석 상태를 같은 카드에서 해석해야 하고 권한 거부·재시도·복구의 다음 행동이 충분히 분리되어 있지 않다.
+- **Constraints**: 5초 최소·10초 권장·60초 최대, 25MB upload, long-audio trim/compress, idempotency, localStorage 복구, Query polling과 media cleanup 계약을 유지한다. 서버가 제공하지 않는 진행률이나 분석 단계를 만들지 않는다.
+- **Options**:
+  1. 기존 workbench의 문구와 색상만 바꾼다.
+  2. 녹음·업로드·분석을 별도 route와 새 server model로 분리한다.
+  3. 기존 계약과 단일 `/profile` route를 유지하면서 입력 준비와 durable 분석 상태를 독립된 UI 책임으로 분리하고 명시적 recorder state를 둔다.
+- **Decision**: 옵션 3을 채택한다. recorder는 `idle → requesting_permission → recording → stopping → ready | error`와 media resource만 소유하고, `VoiceScanInput`은 녹음·upload·prepared preview를, `AnalysisStatus`는 실제 durable job 상태만 표현한다. 성공 결과는 workbench에 다시 그리지 않고 `/vocal-profiles/[id]`로 이동한다.
+- **Rationale**: 10초 권장과 5초 최소를 구분하면서 권한·장치 오류의 upload 대안을 입력 가까이에 유지할 수 있다. 동시에 서버의 pending/processing/retry/failed보다 정밀한 진행률을 만들지 않고 localStorage 복구와 Query polling을 그대로 재사용한다.
+- **Trace**:
+  - **DOING 시작 시점**: 기존 recorder, workbench, analysis Query와 cleanup test를 다시 읽고 상태 전이·resource 소유권을 먼저 고정한 뒤 시각 composition을 교체한다.
+  - **DONE 전 확정 시점**: 녹음 취소와 60초 자동 종료 모두 `record-end`에서 mic을 중지하고 unmount 시 listener, Record plugin과 mic을 정리하도록 고정했다. 5초 미만 prepared audio는 제출을 막되 5–10초는 허용하며 권장 문구만 표시한다. 성공 시 health/jobs Query를 invalidate하고 profile detail로 이동한다. 1280×720·360×800 브라우저에서 권한 요청·취소 중에도 upload 대안, overflow 없음과 콘솔 오류 0건을 확인했다.
+  - **머지 후 확인**: 로컬 통합 후 기록한다.
+- **Evidence**:
+  - **Commit**: T-F018-03 task checkpoint commit
+  - **PR**: 로컬 워크플로 — 해당 없음
+  - **Test/Log**: `pnpm run test:voice-scan` (12/12), `pnpm run test:vocal-profile-analysis-queue` (5/5), `pnpm run test:query` (20/20 + streaming 1/1), `pnpm run test:vocal-profile-history` (6/6), `pnpm run test:storybook --run` (28 files, 61 tests), `pnpm run check`, `pnpm run build-storybook`, `pnpm run build`, local browser smoke (1280×720·360×800)
+- **Consequences**: Voice Scan은 입력과 분석 진행에 집중하고 완성된 결과 해석·추천 action은 profile detail이 소유한다.

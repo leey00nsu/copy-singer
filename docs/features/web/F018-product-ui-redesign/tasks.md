@@ -91,7 +91,7 @@
     - [x] Admin 복귀·logout navigation과 dev SVC 독립 layout 회귀 확인
     - [x] route/auth/architecture 및 ProductShell Storybook test 추가
 
-- [TODO][PRD-FR-047] T-F018-03 Voice Scan·마이크 권한·Analyzing 상태 재구성
+- [DONE][PRD-FR-047] T-F018-03 Voice Scan·마이크 권한·Analyzing 상태 재구성
   - Date: 2026-08-09
   - Acceptance:
     - record/upload, 25MB, long audio trim, 5초 최소·약 10초 권장·60초 최대 계약이 유지된다.
@@ -99,13 +99,13 @@
     - live waveform, 경과 시간, stop/cancel과 upload 대안이 keyboard·screen reader에서도 이해 가능하다.
     - durable job과 localStorage 복구가 유지되고 성공 시 생성된 `/vocal-profiles/[id]`로 이동한다.
   - Checklist:
-    - [ ] Workbench를 input, prepared preview, analysis status와 dialog 책임으로 분리
-    - [ ] recorder explicit state와 10초 권장 marker 구현
-    - [ ] permission denied/device unavailable 상태와 upload 대안 구현
-    - [ ] WaveSurfer stream/plugin/Blob URL cleanup 경로 회귀 확인
-    - [ ] upload trim/compress, idempotency와 durable polling 보존
-    - [ ] 성공 profile navigation과 Query/history invalidate 적용
-    - [ ] recorder/workbench helper, cleanup, Storybook와 Query 회귀 test 추가
+    - [x] Workbench를 input, prepared preview, analysis status와 dialog 책임으로 분리
+    - [x] recorder explicit state와 10초 권장 marker 구현
+    - [x] permission denied/device unavailable 상태와 upload 대안 구현
+    - [x] WaveSurfer stream/plugin/Blob URL cleanup 경로 회귀 확인
+    - [x] upload trim/compress, idempotency와 durable polling 보존
+    - [x] 성공 profile navigation과 Query/history invalidate 적용
+    - [x] recorder/workbench helper, cleanup, Storybook와 Query 회귀 test 추가
 
 - [TODO][PRD-FR-048] T-F018-04 Voice Profile summary·history·detail 정보 위계 개선
   - Date: 2026-08-09
@@ -240,20 +240,22 @@
 | `pnpm run check` | `2026-08-09` | 통과 — error 0, Biome warning 61건, Steiger 및 architecture 4/4 |
 | `pnpm run test:auth-navigation` | `2026-08-09` | 통과 — safe callback·navigation·route group 4/4 |
 | `pnpm exec tsx --test tests/effect-cleanup.test.ts tests/recommendation-ui.test.tsx` | `2026-08-09` | 통과 — cleanup·추천 UI 회귀 6/6 |
-| `pnpm run test:vocal-profile-history` | `-` | 미실행 — 구현 전 |
+| `pnpm run test:voice-scan` | `2026-08-09` | 통과 — 녹음 정책·오류·상태·cleanup 12/12 |
+| `pnpm run test:vocal-profile-analysis-queue` | `2026-08-09` | 통과 — idempotency·owner·lease·retry·cleanup 5/5 |
+| `pnpm run test:vocal-profile-history` | `2026-08-09` | 통과 — UI 3/3, private audio·ownership 3/3 |
 | `pnpm run test:recommendation` | `-` | 미실행 — 구현 전 |
 | `pnpm run test:recommendation:db` | `-` | 미실행 — 구현 전 |
 | `pnpm run test:mixing:ui` | `-` | 미실행 — 구현 전 |
 | `pnpm run test:mixing:db` | `-` | 미실행 — 구현 전 |
-| `pnpm run test:query` | `-` | 미실행 — 구현 전 |
+| `pnpm run test:query` | `2026-08-09` | 통과 — Query/API/MSW 20/20, streaming proxy 1/1 |
 | `pnpm run test:auth:db` | `-` | 미실행 — 구현 전 |
 | `pnpm run test:tickets` | `-` | 미실행 — 구현 전 |
 | `pnpm run test:architecture-boundaries` | `2026-08-09` | 통과 — `pnpm run check` 내부 4/4 |
-| `pnpm run test:storybook --run` | `2026-08-09` | 통과 — 26 files, 51 tests |
+| `pnpm run test:storybook --run` | `2026-08-09` | 통과 — 28 files, 61 tests |
 | `pnpm run build-storybook` | `2026-08-09` | 통과 — chunk size warning만 있음 |
 | `pnpm run build` | `2026-08-09` | 통과 — 기존 public/product/Admin/dev/API URL 보존 |
 | `pnpm run test:base-ui` | `2026-08-09` | 통과 — 1/1 |
 | `pnpm run test:process-scripts` | `2026-08-09` | 통과 — 5/5 |
 | `pnpm test` | `-` | 미실행 — 구현 전 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T14:18:22.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T14:38:29.000Z -->
