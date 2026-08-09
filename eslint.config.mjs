@@ -11,9 +11,11 @@ const eslintConfig = defineConfig([
   globalIgnores([
     ".next/**",
     ".codex/**",
+    ".storybook/public/mockServiceWorker.js",
     "dist/**",
     "generated/**",
     "out/**",
+    "storybook-static/**",
     "build/**",
     "**/.venv/**",
     "next-env.d.ts",

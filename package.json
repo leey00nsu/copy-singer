@@ -9,6 +9,8 @@
   "scripts": {
     "dev": "concurrently --kill-others-on-fail --names web,mixing,analysis \"pnpm run dev:web\" \"pnpm run worker:mixing\" \"pnpm run worker:vocal-profile-analysis\"",
     "dev:web": "next dev",
+    "storybook": "storybook dev --port 6006",
+    "build-storybook": "storybook build",
     "build": "next build",
     "prepare": "husky",
     "start": "concurrently --kill-others-on-fail --names web,mixing,analysis \"pnpm run start:web\" \"pnpm run worker:mixing\" \"pnpm run worker:vocal-profile-analysis\"",
@@ -51,7 +53,8 @@
     "test:vocal-profile-analysis-queue": "node --conditions react-server --import tsx --test tests/vocal-profile-analysis-queue.integration.ts",
     "test:vocal-profile-history": "tsx --test tests/vocal-profile-history-ui.test.tsx && node --conditions react-server --import tsx --test tests/private-audio-proxy.test.ts tests/vocal-profile-history.integration.ts",
     "test:base-ui": "tsx --test tests/base-ui-link-button.test.ts",
-    "test:process-scripts": "tsx --test tests/process-scripts.test.ts",
+    "test:process-scripts": "tsx --test tests/process-scripts.test.ts tests/storybook-production-boundary.test.ts",
+    "test:storybook": "vitest --project storybook",
     "test:recommendation": "node --conditions react-server --import tsx --test tests/recommendation-ranking.test.ts && tsx --test tests/recommendation-synthesis.test.ts tests/recommendation-ui.test.tsx",
     "test:recommendation:db": "node --conditions react-server --import tsx --test tests/recommendation-persistence.integration.ts tests/recommendation-synthesis.integration.ts",
     "test:auth:db": "node --conditions react-server --import tsx --test tests/auth-ownership.integration.ts tests/dev-auth-bypass.integration.ts",
@@ -92,11 +95,18 @@
     "@eslint/js": "9.39.4",
     "@feature-sliced/steiger-plugin": "0.7.0",
     "@next/eslint-plugin-next": "16.3.0",
+    "@storybook/addon-a11y": "10.5.7",
+    "@storybook/addon-docs": "10.5.7",
+    "@storybook/addon-vitest": "10.5.7",
+    "@storybook/nextjs-vite": "10.5.7",
     "@tailwindcss/postcss": "4.2.1",
     "@types/node": "22.19.19",
     "@types/pg": "8.20.4",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
+    "@vitest/browser": "4.1.10",
+    "@vitest/browser-playwright": "4.1.10",
+    "@vitest/runner": "4.1.10",
     "concurrently": "^10.0.4",
     "eslint": "9.39.4",
     "eslint-plugin-jsx-a11y": "6.10.2",
@@ -105,12 +115,22 @@
     "globals": "16.4.0",
     "husky": "9.1.7",
     "msw": "2.15.0",
+    "msw-storybook-addon": "3.0.0",
+    "playwright": "1.62.1",
     "prisma": "7.9.1",
     "steiger": "0.6.0",
+    "storybook": "10.5.7",
     "tailwindcss": "4.2.1",
     "tsx": "4.23.7",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.59.3"
+    "typescript-eslint": "8.59.3",
+    "vite": "8.2.1",
+    "vitest": "4.1.10"
   },
-  "type": "module"
+  "type": "module",
+  "msw": {
+    "workerDirectory": [
+      ".storybook/public"
+    ]
+  }
 }

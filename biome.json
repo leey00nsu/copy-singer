@@ -10,11 +10,13 @@
     "includes": [
       "**",
       "!!.codex",
+      "!!.storybook/public/mockServiceWorker.js",
       "!!docs",
       "!!data/catalogs",
       "!!drizzle/meta",
       "!!generated",
       "!!outputs",
+      "!!storybook-static",
       "!!tmp",
       "!!work"
     ]
