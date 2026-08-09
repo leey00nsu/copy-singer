@@ -104,7 +104,7 @@
 
 **Acceptance Criteria:**
 
-- [x] 인증 제품 화면은 Voice Scan, Library와 Account를 연결하는 responsive app shell을 공유하고 현재 route를 명확히 표시한다.
+- [x] 인증 제품 화면은 desktop persistent sidebar 없이 Voice Scan, Library와 Account를 연결하는 top-header app shell을 공유하고 mobile에서는 compact Sheet navigation으로 현재 route를 명확히 표시한다.
 - [x] 기존 warm beige/orange gradient와 과도한 rounded card를 neutral white/gray/black token, 낮은 대비 border, 제한된 shadow와 의미 기반 accent로 교체한다.
 - [x] `docs/designs/design-system.md`가 color, typography, spacing, shape, component, 상태, responsive, 접근성과 변경 관리 규칙을 정의하고 실제 token·공통 UI·Storybook과 동기화된다.
 - [x] desktop, tablet, mobile에서 핵심 content와 CTA가 겹치거나 수평으로 잘리지 않으며 표는 mobile list로 전환된다.
@@ -121,12 +121,14 @@
 - `docs/designs/product-ui-redesign.md`를 F018의 visual brief와 원본 reference로 사용하고 `docs/designs/design-system.md`를 전 제품의 규범적 시각·상호작용 기준으로 사용한다.
 - 현재 semantic token을 neutral white/gray/black 중심으로 재정의하고 넓은 canvas의 beige/cream/yellow chroma를 금지하며 waveform·분석·success에만 제한적 accent를 사용한다.
 - 공통 brand, app navigation, page heading, state panel과 action layout을 재사용 가능한 FSD UI로 제공한다.
+- desktop app navigation은 64px top header의 brand·중앙 primary navigation·우측 compact account menu로 고정하고 persistent product sidebar를 사용하지 않는다.
 - 디자인 시스템의 의미는 문서, 정확한 값은 `globals.css`, component 계약은 `src/shared/ui`, 주요 variant·상태는 Storybook에서 관리하고 같은 변경에서 동기화한다.
 - 루트 `app/` adapter는 얇게 유지하고 shell 조립은 `src/_app`, 화면 composition은 `src/_pages`에 둔다.
 
 ### FR-2: 공개 entry와 인증
 
 - public landing과 Google-only login을 디자인 보드의 공간감과 정보 위계로 재구성한다.
+- Landing 마지막은 `Every voice has its song.` CTA, 프로젝트의 iridescent crystal asset과 그 아래 실제 site footer로 구성한다.
 - 기존 Better Auth callback, session, dev bypass와 private resource 권한을 변경하지 않는다.
 - persistent onboarding, 목적 선택과 다른 로그인 공급자는 F018에 포함하지 않는다.
 
@@ -159,7 +161,7 @@
 ### FR-7: 상태·반응형·Storybook
 
 - 공통 상태 component와 route별 loading/error/empty UI를 구현한다.
-- mobile에서 sidebar/filter는 Sheet 등 현재 shadcn/Base UI 계열 primitive로 전환하고 핵심 control의 touch target을 유지한다.
+- mobile에서 product navigation과 filter는 Sheet 등 현재 shadcn/Base UI 계열 primitive로 전환하고 핵심 control의 touch target을 유지한다.
 - recorder, audio player, app shell, recommendation row/detail, mixing progress와 state panel의 주요 variant를 Storybook에 추가한다.
 
 ---

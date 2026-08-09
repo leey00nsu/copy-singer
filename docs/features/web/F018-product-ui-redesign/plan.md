@@ -24,7 +24,7 @@ F018은 현재 동작하는 제품 계약 위에 공통 Design System과 사용�
 | --- | --- | --- |
 | `/` | 로그인 필수 `VocalProfileWorkbench` | 인증 없이 보는 product landing |
 | `/login` | Google OAuth, emerald radial Card | Google-only 한 열 entry 화면 |
-| 전역 navigation | Root Layout의 우상단 fixed `UserMenu` | private route group의 persistent responsive product shell |
+| 전역 navigation | Root Layout의 우상단 fixed `UserMenu` | private route group의 top-header responsive product shell |
 | `/profile` | 녹음·업로드·분석·결과가 한 workbench | Voice Scan과 실제 job 기반 Analyzing, 성공 후 profile detail 이동 |
 | `/vocal-profiles` | 저장 프로필 Card grid | 평면 list 중심 profile library view |
 | `/vocal-profiles/[id]` | 모든 분석을 같은 위계로 표시 | 핵심 summary 후 chart·quality·reference 세부 정보 |
@@ -121,7 +121,7 @@ app/
 
 - Root Layout은 Query/Tooltip/Toaster/font와 metadata만 소유하고 request session 조회와 fixed `UserMenu`를 제거한다.
 - Product Layout은 `requirePageSession`으로 보호한 뒤 session/user/admin 정보를 `ProductShell`에 전달한다.
-- `src/widgets/product-shell`은 desktop sidebar, mobile Sheet navigation, active route, user menu와 content rail을 조립한다. pathname을 읽는 작은 Client Component만 client boundary로 둔다.
+- `src/widgets/product-shell`은 desktop 64px top header, mobile right Sheet navigation, active route, compact user menu와 content rail을 조립한다. desktop persistent sidebar는 사용하지 않고 pathname을 읽는 작은 Client Component만 client boundary로 둔다.
 - `/admin`은 product로 돌아가는 링크와 기존 sign-out 접근을 자체 화면에서 유지한다.
 - `/dev/svc`는 별도 진단 layout을 유지하고 product shell로 감싸지 않는다.
 
@@ -131,10 +131,11 @@ app/
 
 - Landing Server Page는 optional session을 읽어 CTA를 `/login` 또는 `/profile`로 연결한다.
 - 제품 설명은 실제 분석 → 100곡 추천 → 선택형 AI 믹싱만 사용한다.
-- 디자인 보드의 prism은 product asset으로 복사하지 않고 CSS/audio motif와 실제 waveform 중심으로 구성한다.
+- Hero는 CSS/audio motif와 실제 waveform 중심으로 구성하고, Landing 마지막 CTA는 사용자 제공 crystal reference를 바탕으로 생성한 `public/images/copy-singer-crystal.png`를 사용한다.
 - Hero는 reference처럼 copy와 circular audio visual의 균형을 맞춘다. waveform bar는 서로 다른 delay·duration·amplitude로 반복 움직이고, microphone 뒤의 복수 ring은 scale과 opacity를 조합해 바깥으로 확산되도록 한다.
 - microphone은 `primaryHref`를 사용하는 실제 Link action이며 focus-visible과 accessible label을 제공한다. 모든 decorative motion은 `prefers-reduced-motion`에서 정지하고 CTA 의미는 유지한다.
 - mobile에서는 제목·여백·visual 크기를 줄여 360×800 첫 viewport 안에 copy, primary CTA와 microphone action이 함께 들어오도록 한다.
+- CTA 다음에는 brand 설명, Product/Account link와 copyright를 포함하는 실제 site footer를 둔다.
 - Login의 safe callback 검증은 유지하고 기본 callback을 public `/`가 아닌 `/profile`로 변경한다.
 - Google OAuth만 표시하고 configured/disabled/error 상태를 기존 `GoogleSignIn`으로 유지한다.
 
@@ -338,8 +339,8 @@ src/
 | Viewport | Navigation | 목록 | 상세/차트 |
 | --- | --- | --- | --- |
 | 360px mobile | Sheet/compact header | stacked row, 핵심 값 2–3개 | 한 열, control 우선, 수평 잘림 없음 |
-| 768px tablet | compact sidebar 또는 Sheet | 열 축소와 filter Sheet | 중요도에 따라 1–2열 |
-| 1280px desktop | persistent sidebar | semantic table/flat row | max 1200px rail, summary/detail 분리 |
+| 768px tablet | compact top header 또는 Sheet | 열 축소와 filter Sheet | 중요도에 따라 1–2열 |
+| 1280px desktop | 64px top header | semantic table/flat row | max 1200px rail, summary/detail 분리 |
 
 - icon-only action은 accessible name과 충분한 touch target을 갖는다.
 - focus-visible을 모든 primitive에서 유지한다.
@@ -400,7 +401,7 @@ Screenshot은 디자인 보드와 정보 위계·spacing·상태 구조를 비�
 
 - 13개 App Router page를 1280×800 current baseline으로 캡처한다.
 - 원본 보드를 직접 참조하고 Landing과 Library를 public/product master로 잠근 V2 ImageGen 시안을 route마다 한 장씩 저장한다.
-- V1처럼 페이지를 독립 prompt로 생성하지 않으며 `#FFFFFF` neutral canvas, 동일 product rail·wordmark·typography·density를 공통 제약으로 사용한다.
+- V1처럼 페이지를 독립 prompt로 생성하지 않으며 `#FFFFFF` neutral canvas, 동일 top header·wordmark·typography·density를 공통 제약으로 사용한다.
 - current-vs-concept 차이는 `docs/designs/page-redesign-analysis.md`에 페이지별 우선순위와 기능 보존 제약을 함께 기록한다.
 - 생성 이미지의 fixture와 작은 문구는 구현 요구사항으로 승격하지 않고 실제 API·Zod·Page 계약을 우선한다.
 

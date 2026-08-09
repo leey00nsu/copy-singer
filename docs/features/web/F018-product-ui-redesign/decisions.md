@@ -289,3 +289,24 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 워크플로 — 해당 없음
   - **Test/Log**: V2 최종 PNG 13개와 current baseline 13개 존재 확인, `file` PNG 검증, `git diff --check`, lee-spec-kit workflow audit
 - **Consequences**: `concepts-v2`만 후속 UI 구현의 방향 시안으로 사용한다. Light semantic token의 neutral 교정과 high-priority page 재배치는 별도 구현 작업으로 남으며, 생성 이미지의 unsupported action과 fixture 값은 구현하지 않는다.
+
+## D031: sidebar V2 폐기와 top-header·crystal Landing 확정 (2026-08-10)
+
+- **Context**: 최초 채택 V2는 Library 보드의 좌측 rail을 모든 인증 제품 화면에 확장했지만, 사용자 검수에서 원하는 기준은 Landing·Discovery·Creation 보드처럼 수평 header navigation을 사용하는 구조임이 확인됐다. Landing 끝부분에도 보드의 prism 계열과 같은 iridescent crystal CTA 및 CTA 아래 실제 footer가 필요했다.
+- **Constraints**: 기존 `(product)` route group, auth guard, active navigation, mobile 접근성, Query 상태와 Page composition을 바꾸지 않는다. 새 UI library나 별도 디자인 시스템을 추가하지 않고 neutral token과 기존 shadcn/Base UI primitive를 사용한다. Crystal은 장식 자산이며 핵심 CTA의 대체 텍스트나 focus 의미를 가로채지 않는다.
+- **Options**:
+  1. 기존 216–240px sidebar V2와 코드를 유지하고 Landing에만 crystal을 추가한다.
+  2. 제품 화면마다 원본 보드에 보이는 서로 다른 navigation 구조를 사용한다.
+  3. 모든 인증 제품 화면을 동일 64px top header로 통일하고 mobile에서만 Sheet를 사용하며, Landing 마지막에 crystal CTA와 site footer를 둔다.
+- **Decision**: 사용자의 명시적 요청에 따라 옵션 3을 채택한다. 데스크톱 header는 brand, 중앙 `Voice Scan / Library / Account`, 우측 compact avatar로 구성한다. Admin과 dev SVC는 제품 navigation을 가장하지 않는 top utility header 예외로 유지한다. Light token은 순수 neutral scale로 교정하고 Landing은 `public/images/copy-singer-crystal.png`를 사용하는 CTA 다음에 site footer를 렌더링한다.
+- **Rationale**: 수평 navigation은 사용자가 지정한 최종 visual direction과 공통 제품 정보 구조를 동시에 만족하며, content 폭을 sidebar에 빼앗기지 않는다. Crystal을 Landing 끝의 제한된 brand accent로 사용하면 waveform·분석 accent와 경쟁하지 않고 보드의 정체성을 회복할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 첨부 crystal reference를 검수하고 T-F018-16을 추가했다. 기존 ProductShell, Landing, token, 13개 V2 시안과 관련 문서의 sidebar 가정을 inventory했다.
+  - **구현 확인**: ProductShell의 desktop aside를 제거하고 64px sticky header와 right-side mobile Sheet로 전환했다. `UserMenu` compact variant를 header avatar로 재사용했으며 neutral light token, Landing crystal CTA와 Product/Account/footer copyright 구조를 구현했다. V2 13개 concept과 contact sheet도 동일 top-header 기준으로 다시 생성·교정했다.
+  - **DONE 전 확정 시점**: Landing과 ProductShell을 1280×800 및 360×800 실제 브라우저에서 검수했다. 데스크톱은 중앙 navigation과 compact avatar, 모바일은 오른쪽 Sheet와 현재 route를 확인했고 horizontal overflow가 없었다. Landing은 mobile 첫 viewport에 제목·CTA·waveform microphone을 유지하고 desktop 하단에서 crystal CTA 다음 site footer가 이어짐을 확인했다. compact avatar의 한 축 flex shrink가 만들던 Next Image warning도 44px trigger와 32px fixed image로 제거했다. 13개 current baseline과 채택 V2 contact sheet를 새 shell 기준으로 동기화했다.
+- **Evidence**:
+  - **Asset**: `public/images/copy-singer-crystal.png`, `docs/designs/generated/page-redesigns/concepts-v2-contact-sheet.png`
+  - **Commit**: T-F018-16 task checkpoint commit
+  - **PR**: 로컬 워크플로 — 해당 없음
+  - **Test/Log**: `pnpm run check` (error 0, 기존 Biome warning 60건, architecture 4/4), `pnpm run test:auth-navigation` (5/5), targeted Storybook (3 files/7 tests), 전체 Storybook (36 files/92 tests), `pnpm run build` (23개 page 생성), 실제 browser Landing·Library 1280×800·360×800 및 mobile Sheet
+- **Consequences**: D030의 neutral V2 원칙은 유지하되 product rail 결정은 D031이 대체한다. 이후 제품 route는 desktop sidebar를 새로 만들지 않으며 navigation 정보 구조가 바뀔 때 Design System·ProductShell story·V2 style lock을 함께 갱신한다.

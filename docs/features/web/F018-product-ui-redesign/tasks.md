@@ -80,12 +80,12 @@
   - Acceptance:
     - `/`가 실제 제품 가치를 설명하는 public Landing이며 session에 따라 `/login` 또는 `/profile` CTA를 제공한다.
     - Google-only Login은 safe callback과 인증 configured/error 동작을 유지하고 기본 성공 목적지를 `/profile`로 사용한다.
-    - 사용자 route가 persistent `(product)` layout 안에서 desktop sidebar와 mobile Sheet navigation을 공유한다.
+    - 사용자 route가 persistent `(product)` layout 안에서 desktop top header와 mobile Sheet navigation을 공유한다.
     - Root Layout fixed `UserMenu` 제거 후에도 Account, Admin, logout과 dev SVC 접근·동작이 보존된다.
   - Checklist:
     - [x] Next.js `(public)`·`(product)` route group adapter 이동과 URL 목록 고정
     - [x] Root Layout provider/metadata와 Product Layout auth 책임 분리
-    - [x] `widgets/product-shell` brand/navigation/user menu desktop·mobile 구현
+    - [x] `widgets/product-shell` top-header brand/navigation/user menu와 mobile Sheet 구현
     - [x] `_pages/home`을 public Landing 책임으로 전환 또는 `landing` slice로 정리
     - [x] Login visual hierarchy와 기본 callback 갱신
     - [x] Admin 복귀·logout navigation과 dev SVC 독립 layout 회귀 확인
@@ -281,19 +281,19 @@
     - [x] 페이지별 current-vs-concept gap analysis 문서 작성
     - [x] feature docs sync·workflow audit와 산출물 링크 검증
 
-- [TODO][PRD-FR-046] T-F018-16 상단 헤더 shell·neutral token·crystal CTA/footer 정합화
+- [DONE][PRD-FR-046] T-F018-16 상단 헤더 shell·neutral token·crystal CTA/footer 정합화
   - Date: 2026-08-10
   - Acceptance:
     - 인증 제품 화면은 desktop에서 persistent sidebar 없이 레퍼런스와 같은 상단 header navigation을 공유하고 mobile에서는 접근 가능한 compact navigation을 제공한다.
-    - Landing과 제품 shell은 neutral white/gray token을 사용하고 첨부 reference 기반 crystal visual, footer CTA와 site footer를 일관되게 제공한다.
+    - Landing과 제품 shell은 neutral white/gray token을 사용하고 Landing은 첨부 reference 기반 crystal visual, footer CTA와 site footer를 일관되게 제공한다.
     - 기존 route, auth, Query 상태, responsive interaction과 접근성 계약을 보존하며 원본 보드·V2 문서·Storybook이 구현과 동기화된다.
   - Checklist:
-    - [ ] 첨부 crystal reference를 프로젝트용 최종 이미지 자산으로 생성·검수
-    - [ ] ProductShell desktop sidebar를 header navigation으로 전환하고 mobile navigation 회귀
-    - [ ] light semantic token을 neutral scale로 교정
-    - [ ] 공통 footer CTA와 site footer composition 구현
-    - [ ] Landing·Login·제품 route·Admin/dev 예외 responsive Storybook/browser QA
-    - [ ] Design System·visual brief·gap analysis·feature decisions·workflow marker 동기화
+    - [x] 첨부 crystal reference를 프로젝트용 최종 이미지 자산으로 생성·검수
+    - [x] ProductShell desktop sidebar를 header navigation으로 전환하고 mobile navigation 회귀
+    - [x] light semantic token을 neutral scale로 교정
+    - [x] Landing footer CTA와 site footer composition 구현
+    - [x] Landing·Login·제품 route·Admin/dev 예외 responsive Storybook/browser QA
+    - [x] Design System·visual brief·gap analysis·feature decisions·workflow marker 동기화
 
 ---
 
@@ -301,9 +301,9 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -314,7 +314,7 @@
 | --- | --- | --- |
 | `pnpm run check` | `2026-08-10` | 통과 — error 0, 기존 Biome warning 60건, Steiger 및 architecture 4/4 |
 | `pnpm run test:auth-navigation` | `2026-08-10` | 통과 — safe callback·Library/Account navigation·route group·keyboard/touch label 5/5 |
-| `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-10` | 통과 — Landing signed-out/signed-in microphone Link와 visual semantics 2/2 |
+| `pnpm run test:storybook --run src/widgets/product-shell/ui/product-shell.stories.tsx src/_pages/home/ui/landing-page.stories.tsx src/_pages/library/ui/library-page.stories.tsx` | `2026-08-10` | 통과 — top header/no-aside·mobile navigation·crystal CTA/footer·dense Library 7/7 |
 | `pnpm exec tsx --test tests/effect-cleanup.test.ts tests/recommendation-ui.test.tsx` | `2026-08-09` | 통과 — cleanup·추천 UI 회귀 6/6 |
 | `pnpm exec tsx --test tests/effect-cleanup.test.ts` | `2026-08-10` | 통과 — Library·Mixing Detail Query polling 포함 component timer/fetch inventory 2/2 |
 | `pnpm run test:voice-scan` | `2026-08-10` | 통과 — 녹음 정책·오류·상태·cleanup 12/12 |
@@ -337,6 +337,6 @@
 | `pnpm run test:process-scripts` | `2026-08-10` | 통과 — process supervisor·Storybook production boundary 5/5 |
 | `pnpm test` | `2026-08-10` | 통과 — production build, 전체 unit·integration·DB·Query·architecture와 Storybook 36 files/92 tests |
 | `find docs/designs/generated/page-redesigns/concepts-v2 -maxdepth 1 -type f -name '*.png'` | `2026-08-10` | 통과 — 채택 V2 시안 13개 확인; V1·중간 시안은 검수 후 폐기 |
-| `git diff --check` | `2026-08-10` | 통과 — ImageGen 자산·분석·Design System·Feature 문서 whitespace 오류 없음 |
+| `git diff --check` | `2026-08-10` | 통과 — crystal·top-header 코드, current/V2 baseline, Design System·Feature 문서 whitespace 오류 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T19:33:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T20:35:02.000Z -->
