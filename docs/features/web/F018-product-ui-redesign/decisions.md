@@ -105,3 +105,23 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 워크플로 — 해당 없음
   - **Test/Log**: `pnpm run test:voice-scan` (12/12), `pnpm run test:vocal-profile-analysis-queue` (5/5), `pnpm run test:query` (20/20 + streaming 1/1), `pnpm run test:vocal-profile-history` (6/6), `pnpm run test:storybook --run` (28 files, 61 tests), `pnpm run check`, `pnpm run build-storybook`, `pnpm run build`, local browser smoke (1280×720·360×800)
 - **Consequences**: Voice Scan은 입력과 분석 진행에 집중하고 완성된 결과 해석·추천 action은 profile detail이 소유한다.
+
+## D022: 측정값만 사용하는 보컬 프로필 presentation mapper (2026-08-09)
+
+- **Context**: 현재 보컬 프로필 상세는 음역·품질·차트·레퍼런스를 동일한 위계로 표시하고, 목록은 여러 rounded metric card를 반복한다. 디자인 보드의 `Warm Tenor` 같은 label은 현재 분석 계약이 직접 증명하지 않는 성별·음색 의미를 포함한다.
+- **Constraints**: min/max, tessitura, median, voiced ratio, pitch stability, clipping과 RMS만 사용한다. 기존 descriptor, chart, source/reference audio, 삭제와 추천 action을 보존하고 저장 schema나 analyzer를 변경하지 않는다.
+- **Options**:
+  1. 디자인 보드의 vocal type과 trait를 고정 문구로 표시한다.
+  2. 새 AI 분류를 서버와 DB에 추가한다.
+  3. 현재 측정값을 입력으로 받는 결정적 presentation mapper가 중립적인 label·trait·quality 문구를 생성하고 UI는 summary/detail 두 수준으로 배치한다.
+- **Decision**: 옵션 3을 채택한다. 순수 presentation mapper가 observed/practical range 폭, median, voiced ratio, pitch stability, clipping과 RMS만으로 중립적 label과 최대 세 가지 observable trait를 만든다. 같은 mapper를 상세 summary와 history row가 함께 사용한다.
+- **Rationale**: 저장 schema나 분석기를 확장하지 않고도 같은 측정값에 항상 같은 설명을 제공하며, UI가 성별·건강·음색·장르처럼 증명할 수 없는 의미를 만들지 않게 한다. threshold와 비정상 수치 fallback을 순수 함수 테스트로 고정해 문구 분기를 검토 가능하게 유지한다.
+- **Trace**:
+  - **DOING 시작 시점**: 저장된 분석 계약과 현재 detail/history UI를 다시 대조하고, 데이터로 직접 설명할 수 없는 성별·건강·장르·음색 표현을 배제한 mapper 출력을 먼저 설계한다.
+  - **DONE 전 확정 시점**: 실용 음역 폭에 따른 `넓게/균형 있게/집중되어 관찰된 실용 음역`, 안정도와 입력 품질 문구를 mapper에 고정했다. 상세는 label·CTA와 private source audio를 먼저, range·histogram·pitch와 quality·reference를 뒤에 배치했고 차트의 raw green을 semantic data token으로 교체했다. history와 durable analysis job은 desktop row/mobile stacked row로 통합했으며 추천 생성·최근 추천 이동·삭제 확인 동작을 상세 화면에 복원했다. Storybook을 1280×720과 360×800에서 확인해 가로 overflow가 없고 모바일 제목이 한 줄로 자연스럽게 배치됨을 확인했다.
+  - **머지 후 확인**: 로컬 통합 후 기록한다.
+- **Evidence**:
+  - **Commit**: T-F018-04 task checkpoint commit
+  - **PR**: 로컬 워크플로 — 해당 없음
+  - **Test/Log**: `pnpm run test:vocal-profile-presentation` (12/12), `pnpm run test:vocal-profile-history` (UI 3/3 + private/ownership 3/3), visualization/results (10/10), `pnpm run test:storybook --run` (29 files, 63 tests), `pnpm run check`, `pnpm run build-storybook`, `pnpm run build`, Storybook browser smoke (1280×720·360×800)
+- **Consequences**: 동일 분석값은 모든 목록·상세·Storybook에서 같은 요약 언어를 사용하고, 기존 세부 분석은 필요할 때 펼쳐 확인한다.

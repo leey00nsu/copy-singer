@@ -107,7 +107,7 @@
     - [x] 성공 profile navigation과 Query/history invalidate 적용
     - [x] recorder/workbench helper, cleanup, Storybook와 Query 회귀 test 추가
 
-- [TODO][PRD-FR-048] T-F018-04 Voice Profile summary·history·detail 정보 위계 개선
+- [DONE][PRD-FR-048] T-F018-04 Voice Profile summary·history·detail 정보 위계 개선
   - Date: 2026-08-09
   - Acceptance:
     - 측정값에서 결정적으로 생성되는 중립적 profile label과 observable trait가 핵심 summary에 표시된다.
@@ -115,13 +115,13 @@
     - 성별, 건강, warm/clear 또는 장르 적합도처럼 현재 데이터에 없는 의미를 추정하지 않는다.
     - profile history, active/failed analysis job, detail audio, recommendation 생성과 삭제 동작이 유지된다.
   - Checklist:
-    - [ ] vocal profile presentation mapper와 threshold/fallback test 추가
-    - [ ] profile summary component와 Storybook state 추가
-    - [ ] `VocalProfileResults`를 summary/detail 위계와 semantic chart color로 재구성
-    - [ ] profile history를 desktop row/mobile stacked row로 전환
-    - [ ] analysis job row를 공통 state language로 전환
-    - [ ] source/reference audio, delete와 recommendation CTA 회귀 확인
-    - [ ] profile UI, visualization, history와 private media test 통과
+    - [x] vocal profile presentation mapper와 threshold/fallback test 추가
+    - [x] profile summary component와 Storybook state 추가
+    - [x] `VocalProfileResults`를 summary/detail 위계와 semantic chart color로 재구성
+    - [x] profile history를 desktop row/mobile stacked row로 전환
+    - [x] analysis job row를 공통 state language로 전환
+    - [x] source/reference audio, delete와 recommendation CTA 회귀 확인
+    - [x] profile UI, visualization, history와 private media test 통과
 
 - [TODO][PRD-FR-049] T-F018-05 Song Match 100곡 목록·검색·정렬·필터 개선
   - Date: 2026-08-09
@@ -258,4 +258,4 @@
 | `pnpm run test:process-scripts` | `2026-08-09` | 통과 — 5/5 |
 | `pnpm test` | `-` | 미실행 — 구현 전 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T14:38:29.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T14:58:57.000Z -->
