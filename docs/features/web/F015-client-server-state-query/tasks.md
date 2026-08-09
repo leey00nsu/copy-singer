@@ -67,19 +67,19 @@
     - [x] 공통 API client/error 단위 테스트와 package `test:query` script 추가
     - [x] `pnpm run test:query`, `pnpm run typecheck`, `pnpm run check:architecture` 통과
 
-- [TODO][NON-PRD] T-F015-02 Zod endpoint 계약과 Route Handler 입력 검증 적용
+- [DONE][NON-PRD] T-F015-02 Zod endpoint 계약과 Route Handler 입력 검증 적용
   - Date: 2026-08-09
   - Acceptance:
     - 대상 endpoint의 browser-safe success/error schema에서 TypeScript response type이 파생된다.
     - JSON body, UUID param, pagination과 parse 가능한 multipart metadata가 Route Handler 경계에서 검증된다.
     - 기존 URL, status, error envelope와 Modal conversion streaming 전달 방식이 유지된다.
   - Checklist:
-    - [ ] vocal profile/recommendation/mixing job entity response schema 및 public API 추가
-    - [ ] analyze/create recommendation/create mixing/development conversion/manage tickets feature request·response schema 추가
-    - [ ] 추천 생성, mixing 생성, ticket adjustment JSON body를 Zod `safeParse`로 전환
-    - [ ] 대상 UUID route param, page query, vocal multipart scalar/file metadata 검증 전환
-    - [ ] Modal conversion route가 `request.body` stream을 계속 직접 전달하는지 회귀 확인
-    - [ ] schema valid/invalid fixture 및 기존 Route Handler 계약 테스트 통과
+    - [x] vocal profile/recommendation/mixing job entity response schema 및 public API 추가
+    - [x] analyze/create recommendation/create mixing/development conversion/manage tickets feature request·response schema 추가
+    - [x] 추천 생성, mixing 생성, ticket adjustment JSON body를 Zod `safeParse`로 전환
+    - [x] 대상 UUID route param, page query, vocal multipart scalar/file metadata 검증 전환
+    - [x] Modal conversion route가 `request.body` stream을 계속 직접 전달하는지 회귀 확인
+    - [x] schema valid/invalid fixture 및 기존 Route Handler 계약 테스트 통과
 
 - [TODO][NON-PRD] T-F015-03 Vocal profile query·mutation과 durable polling 전환
   - Date: 2026-08-09
@@ -153,8 +153,8 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm run test:query` | `2026-08-09` | PASS (5 tests) |
+| `pnpm run test:query` | `2026-08-09` | PASS (10 tests) |
 | `pnpm run check` | `-` | 미실행 |
-| `pnpm run build` | `-` | 미실행 |
+| `pnpm run build` | `2026-08-09` | PASS (Next.js 16.3 production build, 22 pages) |
 | `pnpm test` | `-` | 미실행 |
 | `pnpm audit --prod` | `-` | 미실행 |

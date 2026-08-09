@@ -36,3 +36,22 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: `pnpm run test:query` PASS (5), `pnpm run typecheck` PASS, `pnpm run check:architecture` PASS, `pnpm run lint` PASS (2026-08-09)
 - **Consequences**: query cache는 브라우저 메모리에만 유지되고, endpoint schema 불일치는 재시도하지 않는 contract error가 된다.
+
+---
+
+## D002: Zod 계약 소유권과 streaming 검증 경계 (2026-08-09)
+
+- **Context**: response type이 화면 또는 server serializer 근처에 수기로 흩어져 있고 JSON body/route param 검증도 endpoint마다 type guard와 정규식으로 반복된다.
+- **Constraints**: 현재 wire field/status/error envelope를 바꾸지 않아야 하며, Modal conversion proxy는 WAV 두 개를 메모리에 buffering하지 않고 `request.body`를 그대로 전달해야 한다.
+- **Options**: 모든 schema를 Shared에 집중, Route Handler별 schema 배치, resource response는 Entity/action request는 Feature에 배치하는 방식을 검토한다.
+- **Decision**: resource response schema는 browser-safe Entity model, action request/response schema는 Feature model에 두고 `z.infer`로 type을 파생한다. Route Handler는 parse 가능한 JSON/param/query/FormData metadata만 `safeParse`하고 conversion stream body는 parse하지 않는다.
+- **Rationale**: FSD domain 소유권을 유지하면서 client와 server가 같은 계약을 재사용하고, runtime validation이 업로드 메모리 특성을 악화시키지 않게 하기 위해서다.
+- **Trace**:
+  - **DOING 시작 시점**: 기존 serializer와 UI type을 valid fixture 기준으로 삼고 schema가 legacy payload를 좁히지 않는지 contract test로 확인한다. stream route는 source-level 회귀와 long upload test로 보호한다.
+  - **DONE 전 확정 시점**: Entity/Feature schema와 `safeParse` Route Handler 경계를 적용하고 legacy 대표 payload, invalid request, 25MB 제한, UUID/page와 stream source 회귀를 검증했다. Modal upload는 Zod 적용 후에도 body를 parse하지 않는다.
+  - **머지 후 확인**: 로컬 통합 후 갱신 예정
+- **Evidence**:
+  - **Commit**: task commit 후 갱신 예정
+  - **PR**: 로컬 workflow (원격 PR 없음)
+  - **Test/Log**: `pnpm run test:query` PASS (10), 관련 기존 test PASS (12), `pnpm run typecheck`/`lint`/`check:biome`/`check:architecture` PASS, `pnpm run build` PASS (2026-08-09)
+- **Consequences**: client가 소비하는 success JSON은 runtime contract를 가지지만 binary/audio response와 server-to-server stream은 기존 전용 경계를 유지한다.
