@@ -281,6 +281,20 @@
     - [x] 페이지별 current-vs-concept gap analysis 문서 작성
     - [x] feature docs sync·workflow audit와 산출물 링크 검증
 
+- [TODO][PRD-FR-046] T-F018-16 상단 헤더 shell·neutral token·crystal CTA/footer 정합화
+  - Date: 2026-08-10
+  - Acceptance:
+    - 인증 제품 화면은 desktop에서 persistent sidebar 없이 레퍼런스와 같은 상단 header navigation을 공유하고 mobile에서는 접근 가능한 compact navigation을 제공한다.
+    - Landing과 제품 shell은 neutral white/gray token을 사용하고 첨부 reference 기반 crystal visual, footer CTA와 site footer를 일관되게 제공한다.
+    - 기존 route, auth, Query 상태, responsive interaction과 접근성 계약을 보존하며 원본 보드·V2 문서·Storybook이 구현과 동기화된다.
+  - Checklist:
+    - [ ] 첨부 crystal reference를 프로젝트용 최종 이미지 자산으로 생성·검수
+    - [ ] ProductShell desktop sidebar를 header navigation으로 전환하고 mobile navigation 회귀
+    - [ ] light semantic token을 neutral scale로 교정
+    - [ ] 공통 footer CTA와 site footer composition 구현
+    - [ ] Landing·Login·제품 route·Admin/dev 예외 responsive Storybook/browser QA
+    - [ ] Design System·visual brief·gap analysis·feature decisions·workflow marker 동기화
+
 ---
 
 ## 완료 조건
