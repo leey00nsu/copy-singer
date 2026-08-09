@@ -53,3 +53,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `pnpm run prepare`, 격리 index의 `.husky/_/pre-commit` 성공·실패 검사, `HUSKY=0 pnpm run prepare`, `HUSKY=0 pnpm run check:staged`, `pnpm run check` 모두 2026-08-09 PASS
 - **Consequences**: 타입·Next.js 전용 ESLint·전체 테스트는 pre-commit에서 제외하고 명시적 `pnpm check`와 CI가 담당한다.
+
+## D003: 단일 read-only CI job에서 정적 검사와 PostgreSQL 회귀 검증 (2026-08-09)
+
+- **Context**: 로컬 hook은 우회 가능하고 staged 범위만 검사하므로 main 브랜치 품질을 보장하려면 전체 저장소와 DB 통합 테스트를 재현하는 CI가 필요하다.
+- **Constraints**: 운영 secret, 운영 DB, 외부 유료 서비스 호출 없이 frozen lockfile과 Node.js 22 기준으로 실행되어야 한다. workflow는 저장소 내용을 수정·push·배포하지 않아야 한다.
+- **Options**: 정적 검사만 실행, 정적/DB job 분리, PostgreSQL service를 포함한 단일 quality job.
+- **Decision**: read-only 단일 quality job에서 frozen install, Prisma generate/migrate, 100곡 테스트 카탈로그 import, `pnpm check`, DB validate/status, 전체 `pnpm test`를 순서대로 실행한다. action은 현재 공식 major인 checkout v7, setup-node v6, pnpm/action-setup v6를 사용한다.
+- **Rationale**: 현재 규모에서는 하나의 필수 gate가 실패 원인과 순서를 명확히 보여주며, 후속 Feature가 package script를 확장하면 같은 gate에 자동 반영할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 프로젝트 `test` script가 Next.js production build와 DB 통합 suite를 포함하고, 로컬 DB에는 10개 migration이 적용되어 있음을 확인했다.
+  - **DONE 전 확정 시점**: 첫 fresh PostgreSQL 검증에서 migration만 적용한 DB에는 통합 테스트가 요구하는 catalogOrder 100 레코드가 없어 실패함을 발견했다. 외부 호출 없는 기존 `catalog:import`를 migration 직후 추가했고, 두 번째 fresh PostgreSQL 17 실행에서 10개 migration, 100곡 import, 정적 검사, Next.js build와 전체 회귀 suite가 모두 통과했다. lease recovery 테스트의 상대 시간 경계도 Unix epoch로 고정해 동일 케이스 3회와 전체 suite에서 안정화했다.
+  - **머지 후 확인**: 실제 결과/영향
+- **Evidence**:
+  - **Commit**: T-F013-03 task checkpoint에서 기록
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: actionlint PASS; CI placeholder env와 일회용 PostgreSQL 17에서 `pnpm install --frozen-lockfile`, generate, migrate, catalog import, check, DB validate/status, `pnpm test` 전체 PASS
+- **Consequences**: 전체 suite 실행 시간은 늘지만 로컬 hook은 계속 빠르게 유지된다. 필요 시 후속 Feature에서 job을 분리하되 검사 범위는 유지한다.

@@ -89,7 +89,7 @@
     - [x] 임시 index 또는 동등한 격리된 검증으로 성공·실패 경로와 index 불변성을 확인한다.
     - [x] hook 설치를 비활성화한 환경에서도 수동 check와 CI 검사가 동작하는지 확인한다.
 
-- [TODO][NON-PRD] T-F013-frontend-quality-foundation-03 GitHub Actions 품질 게이트와 최종 회귀 검증
+- [DONE][NON-PRD] T-F013-frontend-quality-foundation-03 GitHub Actions 품질 게이트와 최종 회귀 검증
   - Date: 2026-08-09
   - Acceptance:
     - GitHub Actions가 frozen pnpm lockfile로 설치하고 Biome, ESLint, TypeScript, 기존 회귀 테스트를 실행한다.
@@ -97,17 +97,17 @@
     - workflow는 read-only 권한으로 품질 검사만 수행하며 배포·push를 수행하지 않는다.
     - F014~F016이 추가 검사를 확장할 수 있는 안정적인 script 경계가 문서화된다.
   - Checklist:
-    - [ ] .github/workflows/quality.yml에 Node.js 22, pnpm cache, PostgreSQL service를 구성한다.
-    - [ ] HUSKY=0 설치와 테스트용 DATABASE_URL, prisma migrate deploy 단계를 구성한다.
-    - [ ] CI가 참조하는 모든 package script와 회귀 명령을 로컬에서 실행한다.
-    - [ ] workflow YAML, docs evidence, workflow-sync marker를 최종 상태와 동기화한다.
+    - [x] .github/workflows/quality.yml에 Node.js 22, pnpm cache, PostgreSQL service를 구성한다.
+    - [x] HUSKY=0 설치와 테스트용 DATABASE_URL, prisma migrate deploy 및 카탈로그 import 단계를 구성한다.
+    - [x] CI가 참조하는 모든 package script와 회귀 명령을 로컬에서 실행한다.
+    - [x] workflow YAML, docs evidence, workflow-sync marker를 최종 상태와 동기화한다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -126,5 +126,8 @@
 | `GIT_INDEX_FILE=<temporary> .husky/_/pre-commit` | `2026-08-09` | `PASS (정상 변경 통과, 위반 변경 exit 1, 양쪽 index hash 불변)` |
 | `HUSKY=0 pnpm run check:staged` | `2026-08-09` | `PASS (staged 파일 0개)` |
 | `pnpm run check` | `2026-08-09` | `PASS` |
+| `actionlint .github/workflows/quality.yml` | `2026-08-09` | `PASS (rhysd/actionlint container)` |
+| `pnpm run test:vocal-profile-analysis-queue` | `2026-08-09` | `PASS (lease recovery 경계 안정화 후 동일 케이스 3회 및 suite 통과)` |
+| `CI env + fresh PostgreSQL 17: install → generate → migrate → catalog import → check → db validate/status → test` | `2026-08-09` | `PASS (10 migrations, 100곡 import, 전체 build/회귀 suite)` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T06:59:17.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T07:07:59.000Z -->

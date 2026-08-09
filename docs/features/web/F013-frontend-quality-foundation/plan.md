@@ -41,6 +41,7 @@ pull request / push
   -> GitHub Actions quality
   -> install --frozen-lockfile
   -> PostgreSQL migrate
+  -> test catalog import
   -> Biome full check
   -> ESLint
   -> TypeScript
@@ -66,6 +67,7 @@ pre-commit과 CI의 목적을 분리한다. pre-commit은 빠른 staged 검사�
 - Node.js 22와 pnpm lockfile cache를 사용한다.
 - `pnpm install --frozen-lockfile` 중 불필요한 Git hook 설치를 막도록 CI에서 `HUSKY=0`을 설정한다.
 - PostgreSQL service와 전용 테스트용 `DATABASE_URL`을 사용하고 `prisma migrate deploy` 후 회귀 테스트를 실행한다.
+- migration 후 저장소에 포함된 TJ Top 100 카탈로그를 import해 빈 DB에서도 catalog integration suite를 재현한다.
 - OAuth, Modal, Leemage 등 외부 서비스 값은 테스트용 placeholder 또는 기존 mock 경계를 사용하며 운영 secret을 요구하지 않는다.
 - workflow 권한은 기본 read-only로 제한하고 배포·push 작업은 수행하지 않는다.
 
@@ -114,7 +116,7 @@ pre-commit과 CI의 목적을 분리한다. pre-commit은 빠른 staged 검사�
 2. 현재 소스에 Biome를 read-only 실행해 ESLint와 충돌하는 규칙 및 제외 경로를 확정한다.
 3. 지원 파일을 한 번 포맷하고 변경 후 전체 빌드/테스트로 동작 회귀가 없는지 확인한다.
 4. Husky pre-commit을 추가하고 정상 파일/의도적 오류 파일을 각각 임시 index로 검증한다.
-5. GitHub Actions quality workflow와 PostgreSQL service를 추가한다.
+5. GitHub Actions quality workflow, PostgreSQL service, migration 및 테스트 카탈로그 import를 추가한다.
 6. 로컬에서 CI와 동일한 명령을 실행하고 문서/evidence를 동기화한다.
 
 ---
@@ -136,7 +138,8 @@ pre-commit과 CI의 목적을 분리한다. pre-commit은 빠른 staged 검사�
   - 기존 `pnpm test` 통과
   - Prisma schema validate 및 migration status 확인
 - **CI 문법 검증**:
-  - workflow YAML과 package script가 참조하는 명령이 로컬에서 실행 가능
+  - actionlint로 workflow YAML을 검사하고 package script가 참조하는 명령이 로컬에서 실행 가능
+  - 일회용 fresh PostgreSQL 17에서 migration, catalog import, 전체 회귀 suite 통과
   - 원격 push/실행은 사용자 승인 전 수행하지 않음
 
 ---
