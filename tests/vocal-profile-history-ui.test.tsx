@@ -33,6 +33,8 @@ test("vocal profile history renders persisted analysis and detail navigation", (
             tessituraHighMidi: 56,
             voicedRatio: 0.82,
             pitchStability: 0.91,
+            clippingRatio: 0,
+            rmsDb: -20,
             analyzer: "test",
             analyzerVersion: "1",
             durationMs: 12_300,

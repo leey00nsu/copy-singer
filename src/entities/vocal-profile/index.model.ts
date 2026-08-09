@@ -1,4 +1,5 @@
 export * from "./lib/audio-file";
+export * from "./lib/presentation";
 export * from "./lib/reference-preview";
 export * from "./model/contract";
 export * from "./model/pitch";

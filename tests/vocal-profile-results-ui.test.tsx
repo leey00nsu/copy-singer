@@ -46,6 +46,11 @@ const profile: VocalProfileResponse = {
 
 test("renders low, mid, and high analysis playback controls", () => {
   const html = renderToStaticMarkup(<VocalProfileResults profile={profile} sourceAudioSrc="/profile.webm" />);
+  assert.match(html, /집중되어 관찰된 실용 음역/);
+  assert.match(html, /전체 관측 음역/);
+  assert.match(html, /실용 음역/);
+  assert.match(html, /중심 음/);
+  assert.match(html, /피치 안정도/);
   assert.match(html, /분석된 대표 음역 구간/);
   assert.match(html, /저음 영역/);
   assert.match(html, /중앙 영역/);

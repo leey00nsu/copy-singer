@@ -17,10 +17,10 @@ export default async function VocalProfilesPage({ searchParams }: { searchParams
   const analysisJobs = analysisJobRows.map(analysisJobPayload);
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-6xl px-5 py-16 sm:px-8">
+    <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
       <div className="flex flex-wrap items-end justify-between gap-5">
         <div>
-          <p className="text-sm font-semibold text-emerald-700">VOCAL PROFILES</p>
+          <p className="text-xs font-semibold tracking-[0.18em] text-data-accent-foreground">VOCAL PROFILES</p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">내 보컬 프로필</h1>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
             저장된 분석을 다시 보고, 제출했던 보컬을 안전하게 들어보세요.
@@ -54,6 +54,6 @@ export default async function VocalProfilesPage({ searchParams }: { searchParams
           다음 <ChevronRight />
         </Button>
       </nav>
-    </main>
+    </div>
   );
 }

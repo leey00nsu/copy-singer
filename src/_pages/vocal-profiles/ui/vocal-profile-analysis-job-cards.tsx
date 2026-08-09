@@ -13,7 +13,7 @@ function jobCopy(job: VocalProfileAnalysisJobResponse) {
   if (job.status === "processing") {
     return {
       title: "보컬 프로필 분석 중",
-      detail: "Modal에서 음정 분포와 스마트 레퍼런스를 만들고 있어요.",
+      detail: "음정 분포와 믹싱에 사용할 보컬 레퍼런스를 만들고 있어요.",
       badge: "분석 중",
     };
   }
@@ -57,21 +57,31 @@ export function VocalProfileAnalysisJobCards({ jobs }: { jobs: VocalProfileAnaly
     const copy = jobCopy(job);
     const failed = job.status === "failed";
     return (
-      <article className="rounded-2xl border bg-background p-5 shadow-sm" key={job.id}>
-        <div className="flex items-start justify-between gap-3">
-          <div>
+      <article className="grid gap-5 bg-background py-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-center" key={job.id}>
+        <div>
+          <div className="flex flex-wrap items-center gap-2">
             <Badge variant={failed ? "destructive" : "secondary"}>{copy.badge}</Badge>
-            <div className="mt-3 flex items-center gap-2">
+            <div className="flex items-center gap-2">
               {failed ? (
                 <AlertTriangle className="size-5 text-destructive" aria-hidden="true" />
               ) : (
-                <LoaderCircle className="size-5 animate-spin text-emerald-600" aria-hidden="true" />
+                <LoaderCircle
+                  className="size-5 animate-spin text-data-accent-foreground motion-reduce:animate-none"
+                  aria-hidden="true"
+                />
               )}
               <h2 className="text-lg font-semibold">{copy.title}</h2>
             </div>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">{copy.detail}</p>
           </div>
-          <div className="shrink-0 text-right text-xs text-muted-foreground">
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{copy.detail}</p>
+          {!failed ? (
+            <p className="mt-2 text-xs leading-5 text-muted-foreground">
+              이 페이지를 닫아도 분석은 계속됩니다. 완료되면 저장된 보컬 프로필로 자동 전환됩니다.
+            </p>
+          ) : null}
+        </div>
+        <div className="flex flex-wrap items-center gap-3 md:justify-end">
+          <div className="text-xs text-muted-foreground md:text-right">
             <p className="flex items-center gap-1">
               <Clock3 className="size-3" aria-hidden="true" />
               {new Date(job.createdAt).toLocaleString("ko-KR")}
@@ -80,16 +90,12 @@ export function VocalProfileAnalysisJobCards({ jobs }: { jobs: VocalProfileAnaly
               시도 {Math.min(job.attempts, job.maxAttempts)} / {job.maxAttempts}
             </p>
           </div>
+          {failed ? (
+            <Link className={buttonVariants({ variant: "outline" })} href="/profile">
+              <RotateCcw className="size-4" aria-hidden="true" /> 다시 분석하기
+            </Link>
+          ) : null}
         </div>
-        {failed ? (
-          <Link className={`${buttonVariants({ variant: "outline" })} mt-5 w-full`} href="/profile">
-            <RotateCcw className="size-4" aria-hidden="true" /> 새 프로필 만들기
-          </Link>
-        ) : (
-          <div className="mt-5 rounded-xl bg-muted/45 px-4 py-3 text-xs leading-5 text-muted-foreground">
-            이 페이지를 닫아도 분석은 계속됩니다. 완료되면 저장된 보컬 프로필 카드로 자동 전환됩니다.
-          </div>
-        )}
       </article>
     );
   });
