@@ -7,7 +7,7 @@ lee-spec-kit:
 # Copy Singer Design System
 
 - **상태**: Approved
-- **버전**: 0.1
+- **버전**: 0.2
 - **최초 적용 Feature**: F018 product-ui-redesign
 - **적용 범위**: 사용자용 Web UI
 
@@ -111,6 +111,8 @@ Light theme가 현재 디자인 정본이다. 기존 dark token을 깨뜨리지 
 ### Public entry
 
 - Landing은 넓은 whitespace, 한 개의 Display 문장과 한 개의 primary CTA를 중심으로 한다.
+- Hero의 제품 visual이 버튼처럼 보이면 실제 primary flow로 이동하는 Link/Button이어야 하며, mobile 첫 viewport 안에 copy·CTA·핵심 visual을 함께 노출한다.
+- 시연용 waveform은 서로 다른 진폭과 위상으로 움직일 수 있고 microphone ring은 바깥으로 확산할 수 있지만, 가짜 입력·진행률로 오해될 값은 표시하지 않는다.
 - 기능 설명은 실제 제품 흐름인 분석 → 추천 → 선택형 AI 믹싱 순서와 일치한다.
 - 인증 화면은 한 열로 유지하며 사용할 수 없는 provider를 placeholder로 표시하지 않는다.
 
@@ -125,6 +127,7 @@ Light theme가 현재 디자인 정본이다. 기존 dark token을 깨뜨리지 
 
 - desktop의 비교 데이터는 table 또는 정렬된 평면 list를 우선한다.
 - mobile에서는 중요한 2–3개 값과 action을 남긴 stacked row로 전환한다.
+- 긴 목록은 제목·핵심 비교값·상태와 한 개의 다음 action을 우선하고, 반복되는 근거·waveform·download·delete는 상세 화면으로 이동한다.
 - 상세 화면은 Summary → 근거/분석 → 관련 action 순서를 유지한다.
 - filter는 실제 query/data field만 제공하고 결과 개수와 초기화 action을 함께 보여준다.
 
@@ -219,6 +222,7 @@ Light theme가 현재 디자인 정본이다. 기존 dark token을 깨뜨리지 
 - text/background와 control boundary는 WCAG AA 대비를 목표로 한다.
 - `prefers-reduced-motion`에서는 장식 animation, pulse와 큰 이동을 제거한다.
 - waveform 변화처럼 핵심 기능 animation도 정보가 유지되는 정적 대안을 제공한다.
+- Landing의 시연용 waveform·ripple도 reduced-motion에서 정지하며, microphone action의 이름·focus·목적지는 그대로 유지한다.
 
 ## Content voice
 

@@ -256,17 +256,17 @@
     - [x] compact tabs, 명확한 추천·믹스 label, profile total·최신순 표시
     - [x] ProductShell 포함 dense Library Storybook·responsive 회귀 검증
 
-- [TODO][NON-PRD] T-F018-14 리뷰 보완 통합 visual QA와 문서 동기화
+- [DONE][NON-PRD] T-F018-14 리뷰 보완 통합 visual QA와 문서 동기화
   - Date: 2026-08-10
   - Acceptance:
     - Landing, Song Match, Library를 레퍼런스와 다시 비교해 공간감·정보 밀도·interaction 위계가 개선됐음을 screenshot으로 확인한다.
     - 360x800, 768x1024, 1024x800, 1280x800에서 horizontal overflow, 핵심 CTA clipping, console error와 접근성 오류가 없다.
     - Design System, Feature decisions, 테스트 기록과 workflow sync marker가 최종 코드와 일치한다.
   - Checklist:
-    - [ ] targeted test, Storybook browser/a11y, check/build 실행
-    - [ ] desktop/tablet/mobile 실제 browser screenshot 비교
-    - [ ] 서브에이전트 finding별 반영 결과와 잔여 위험 기록
-    - [ ] workflow-audit 통과
+    - [x] targeted test, Storybook browser/a11y, check/build 실행
+    - [x] desktop/tablet/mobile 실제 browser screenshot 비교
+    - [x] 서브에이전트 finding별 반영 결과와 잔여 위험 기록
+    - [x] workflow-audit 통과
 
 ---
 
@@ -274,9 +274,9 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -303,11 +303,11 @@
 | `pnpm run test:auth:db` | `2026-08-10` | 통과 — session/role·Google provider account ownership 3/3 |
 | `pnpm run test:tickets` | `2026-08-10` | 통과 — 실제 Account identity/provider/ticket UI 3/3, ledger balance·pagination clamp DB 1/1 |
 | `pnpm run test:architecture-boundaries` | `2026-08-10` | 통과 — `pnpm run check` 내부 FSD·Client/Server·App adapter 4/4 |
-| `pnpm run test:storybook --run` | `2026-08-10` | 통과 — 35 files, 89 tests, Account·ProductShell·StatePanel·product route 상태/a11y 포함 |
-| `pnpm run build-storybook` | `2026-08-10` | 통과 — chunk size warning만 있음 |
-| `pnpm run build` | `2026-08-10` | 통과 — Account와 product route 공통 상태를 포함한 기존 public/product/Admin/dev URL 보존 |
+| `pnpm run test:storybook --run` | `2026-08-10` | 통과 — 36 files, 92 tests, Landing motion·100곡 비교·dense ProductShell Library 상태/a11y 포함 |
+| `pnpm run build-storybook` | `2026-08-10` | 통과 — 36개 story file 정적 산출물 생성, 기존 chunk size warning만 있음 |
+| `pnpm run build` | `2026-08-10` | 통과 — Next.js 16 production build와 기존 23개 public/product/Admin/dev route 보존 |
 | `pnpm run test:base-ui` | `2026-08-10` | 통과 — TSX AST 기반 Link/Base UI non-native semantics 1/1 |
 | `pnpm run test:process-scripts` | `2026-08-10` | 통과 — process supervisor·Storybook production boundary 5/5 |
-| `pnpm test` | `2026-08-10` | 통과 — production build, 전체 unit·integration·DB·Query·architecture와 Storybook 35 files/89 tests |
+| `pnpm test` | `2026-08-10` | 통과 — production build, 전체 unit·integration·DB·Query·architecture와 Storybook 36 files/92 tests |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T18:05:45.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T18:09:45.000Z -->
