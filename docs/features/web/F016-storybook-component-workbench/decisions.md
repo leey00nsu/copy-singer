@@ -1,38 +1,23 @@
 # Decisions Log
 
 기술 결정과 그 이유를 기록합니다.
-canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `docs/superpowers/*`)이 있더라도, 실제로 채택한 대안과 선택 이유는 이 파일에 다시 남겨 Feature의 결정 이력을 유지합니다.
-
-> ADR(Architecture Decision Record)은 구현 중 내린 중요한 기술/구조 결정을 남기는 기록입니다.
-> 나중에 "왜 이렇게 만들었는지"를 추적하고, 팀 합의를 재확인하기 위해 작성합니다.
-
-> 형식: `D016: storybook-component-workbench 결정 (2026-08-09)`
-
-기록 원칙:
-
-- 새 ADR 생성에는 `npx lee-spec-kit decision add <feature-ref> --title "..." --context "..." --decision "..." --rationale "..." --evidence "..."` 사용을 우선하세요.
-- 모든 ADR은 **Decision(무엇을 선택했는가)** + **Trace(어떻게 고민했고 무엇을 확인했는가)** 를 함께 남깁니다.
-- 작성 타이밍을 고정합니다.
-  - 태스크 시작(`[TODO] -> [DOING]`): `Context/Constraints`와 `Trace(초기 가설)`를 1~3줄로 먼저 기록
-  - 태스크 완료 직전(`[DOING] -> [DONE]`): `Options/Decision/Rationale`를 최종화하고 `Trace`를 보강
-  - PR 머지 후: 실제 결과/영향을 `Trace(머지 후 확인)`에 1~2줄 추가
-- 모든 ADR에는 최소 1개 이상의 **Evidence 링크**(커밋/PR/테스트 로그 중 하나 이상)를 남깁니다.
+canonical docs surface 밖의 unmanaged docs 산출물이 있더라도, 실제로 채택한 대안과 선택 이유는 이 파일에 다시 남겨 Feature의 결정 이력을 유지합니다.
 
 ---
 
-## D001: storybook-component-workbench 결정 (2026-08-09)
+## D001: Vite Storybook과 production 격리 경계 (2026-08-09)
 
-- **Context**: 문제 상황 또는 배경
-- **Constraints**: 제약 조건 (시간/기술/운영/호환성)
-- **Options**: 고려한 대안들
-- **Decision**: 최종 선택
-- **Rationale**: 선택 이유
+- **Context**: Next.js App Router UI를 실제 애플리케이션과 backend 없이 렌더하고 Storybook story를 real browser test로 재사용할 기반이 없다.
+- **Constraints**: Next.js 16/React 19/Tailwind 4/FSD public API와 호환되어야 하며 Storybook, MSW worker와 Playwright가 Coolify production runtime 또는 Next.js `public`에 포함되면 안 된다. 기존 Node `node:test` suite를 유지해야 한다.
+- **Options**: Webpack 기반 Storybook과 legacy test-runner, Vite 기반 Storybook과 Vitest browser project, 별도 Vite demo app을 검토한다.
+- **Decision**: `@storybook/nextjs-vite`와 Storybook 10의 CSF Next preview를 사용하고, Vitest browser project는 공식 10.5.7 template처럼 `storybookTest` plugin이 preview annotation을 직접 읽도록 구성한다. 별도 `vitest.setup.ts`는 두지 않는다.
+- **Rationale**: Vite builder는 Vitest addon과 직접 통합되고 Next.js 16/React 19 peer 범위를 충족한다. 설치 버전의 공식 template을 따르면 preview annotation 이중 등록을 피하면서 기존 `tsx --test` Node suite와 browser project를 분리할 수 있다.
 - **Trace**:
-  - **DOING 시작 시점**: 초기 판단/가설
-  - **DONE 전 확정 시점**: 선택 근거 최종화
-  - **머지 후 확인**: 실제 결과/영향
+  - **DOING 시작 시점**: Storybook 공식 권장인 `@storybook/nextjs-vite`와 Vitest addon을 사용하고 모든 패키지를 devDependency로 제한한다. preview는 production QueryClient singleton 대신 story별 instance를 만들며 worker는 `.storybook/public`에서만 제공한다.
+  - **DONE 전 확정 시점**: Storybook 10.5.7 CSF Next preview, story별 QueryClient, App Router parameter와 Tailwind 전역 CSS를 구성했다. MSW addon의 기본 worker setup은 Storybook 내부·정적 asset request만 제외하고 그 외 unhandled request를 warning으로 알려 주며 story 종료 시 handler를 reset한다. worker를 `.storybook/public`에서만 제공하고 production 경계 test로 Next.js `public` 유입을 막았다.
+  - **머지 후 확인**: 로컬 통합 후 갱신 예정
 - **Evidence**:
-  - **Commit**: 커밋 해시 또는 링크
-  - **PR**: PR 링크
-  - **Test/Log**: 테스트 결과/로그/스크린샷 경로
-- **Consequences**: 결과 및 영향 (선택사항)
+  - **Commit**: task commit 후 갱신 예정
+  - **PR**: 로컬 workflow (원격 PR 없음)
+  - **Test/Log**: Storybook smoke/static build/browser test, `pnpm run typecheck`, `pnpm run check:architecture`, production 경계 test PASS (2026-08-09)
+- **Consequences**: Storybook 실행에는 로컬 Playwright Chromium 설치가 필요하지만 Next.js build/start와 Coolify runtime에는 새 command, 환경 변수 또는 production dependency가 추가되지 않는다.

@@ -17,7 +17,7 @@
 ---
 
 ## 로컬 추적 정보
-- **문서 상태**: -
+- **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/storybook-component-workbench`
 - **대기 중 변경 요청**: -
@@ -59,6 +59,74 @@
 > placeholder 상태의 `Acceptance` / `Checklist`를 그대로 두지 마세요. 구체 항목이 아니면 구현을 시작하지 않습니다.
 > 수동 편집이 필요하면 현재 태스크 근처가 아니라 `태스크 목록`의 마지막 기존 태스크 block 아래에만 append 하세요.
 
+- [DOING][NON-PRD] T-F016-01 Storybook Vite 기반과 격리 provider 구성
+  - Date: 2026-08-09
+  - Acceptance:
+    - Next.js Vite Storybook dev server와 static build가 Tailwind 전역 스타일, `@/*` alias와 App Router mock을 사용해 시작된다.
+    - story마다 새 QueryClient가 생성되고 Storybook 전용 MSW worker가 Next.js production public 경로와 분리된다.
+    - Storybook/Vitest/Playwright 패키지는 devDependency이며 기존 Next.js build/start 명령을 바꾸지 않는다.
+  - Checklist:
+    - [ ] Storybook 10.5.7, Vitest 4.1.10, Playwright 1.62.1 및 addon dependency를 고정 설치
+    - [ ] `.storybook/main.ts`, `preview.tsx`와 `vitest.config.ts` 구성
+    - [ ] story별 QueryClient/App Router/global CSS decorator 구현
+    - [ ] `.storybook/public`에 MSW worker 생성, `storybook-static` gitignore 및 production 분리 test 추가
+    - [ ] `storybook`, `build-storybook`, `test:storybook` script와 Chromium browser 설치
+    - [ ] Storybook smoke/static build, TypeScript와 FSD architecture 검사 통과
+
+- [TODO][NON-PRD] T-F016-02 Shared UI primitive story와 Controls·interaction 추가
+  - Date: 2026-08-09
+  - Acceptance:
+    - shared UI의 action/layout/input primitive를 Storybook에서 args와 Controls로 탐색할 수 있다.
+    - click, toggle, slider, collapsible과 tooltip의 대표 interaction이 accessible role/name 기반 assertion으로 검증된다.
+    - story는 component public API를 사용하고 중복 fixture markup을 최소화한다.
+  - Checklist:
+    - [ ] Button/Badge/Card/Progress/Separator story 작성
+    - [ ] Slider/Switch/Collapsible/Tooltip/Label story 작성
+    - [ ] AudioWaveformPlayer의 network-independent story와 consumer 기반 Chart/Sonner coverage 판단 기록
+    - [ ] variant, disabled, composed layout 및 keyboard/click interaction `play` 함수 추가
+    - [ ] shared story Storybook browser/a11y test 통과
+
+- [TODO][NON-PRD] T-F016-03 핵심 entity·feature·widget 상태 story 구성
+  - Date: 2026-08-09
+  - Acceptance:
+    - ticket, vocal profile과 widget/form의 empty, data, pending, warning 및 interactive 상태가 실제 production component로 렌더된다.
+    - story를 위해 필요한 경우 browser-safe presentation boundary만 동일 slice 안에서 추출하고 사용자 DOM/동작을 보존한다.
+    - story graph에 Prisma, `server-only`, 실제 인증 또는 외부 API가 포함되지 않는다.
+  - Checklist:
+    - [ ] TicketLedger empty와 grant/debit history story 작성
+    - [ ] TicketAdjustmentFields default와 pending/disabled story 작성
+    - [ ] VocalProfileResults 대표 분석과 low-confidence/legacy 안내 story 작성
+    - [ ] LongAudioDialog 또는 Recorder의 대표 상태와 confirm/close interaction story 작성
+    - [ ] server-only import inventory와 domain story browser/a11y test 통과
+
+- [TODO][NON-PRD] T-F016-04 MSW 기반 Query success·error·polling story 연결
+  - Date: 2026-08-09
+  - Acceptance:
+    - F015 Zod type과 MSW fixture/handler를 Node 및 Storybook browser runtime에서 재사용한다.
+    - 대표 Query UI가 success, 권한/계약 오류와 active→terminal 전이를 backend 없이 결정적으로 재현한다.
+    - story 전환과 browser test 사이에 Query cache, handler와 sequence cursor가 누출되지 않는다.
+  - Checklist:
+    - [ ] `tests/msw` fixture/handler와 Node server import를 runtime-neutral/server-only 경계로 재확인
+    - [ ] Storybook preview MSW 초기화 및 unhandled request 정책 구성
+    - [ ] 대표 Query UI의 active/success/error story와 endpoint handler override 작성
+    - [ ] polling sequence factory, terminal stop 및 mutation/cache UI interaction 검증
+    - [ ] `pnpm run test:query`, Storybook browser test와 static build 통과
+
+- [TODO][NON-PRD] T-F016-05 접근성·browser test와 production 회귀 최종화
+  - Date: 2026-08-09
+  - Acceptance:
+    - testable story의 axe 검사와 대표 play interaction이 Playwright Chromium headless 환경에서 통과한다.
+    - Storybook static output/worker/devDependency가 Next.js production bundle과 Coolify 실행 경로에 포함되지 않는다.
+    - 전체 정적 검사, Next.js/Storybook build, 기존 test suite 및 production dependency audit이 통과한다.
+  - Checklist:
+    - [ ] global a11y error mode와 예외 사유 inventory 확정
+    - [ ] `pnpm run storybook --ci --smoke-test` 통과
+    - [ ] `pnpm run build-storybook` 통과
+    - [ ] `pnpm run test:storybook --run` 통과
+    - [ ] `pnpm run check`, `pnpm run build`, `pnpm test` 통과
+    - [ ] `pnpm audit --prod` known vulnerability 0건 확인
+    - [ ] spec acceptance, workflow-sync marker, Decisions/Tasks evidence와 최종 완료 조건 갱신
+
 ---
 
 ## 완료 조건
@@ -76,4 +144,14 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `{실행한 테스트 명령어}` | `-` | `{PASS/FAIL 요약}` |
+| `pnpm run storybook --ci --smoke-test` | `2026-08-09` | PASS (Storybook 10.5.7 smoke) |
+| `pnpm run build-storybook` | `-` | 미실행 |
+| `pnpm run test:storybook --run` | `2026-08-09` | PASS (1 story) |
+| `pnpm run test:query` | `-` | 미실행 |
+| `pnpm run check` | `-` | 미실행 |
+| `pnpm run build` | `-` | 미실행 |
+| `pnpm test` | `-` | 미실행 |
+| `pnpm audit --prod` | `-` | 미실행 |
+| `pnpm run typecheck` | `2026-08-09` | PASS |
+| `pnpm run check:architecture` | `2026-08-09` | PASS |
+| `pnpm run test:process-scripts` | `2026-08-09` | PASS (4 tests) |
