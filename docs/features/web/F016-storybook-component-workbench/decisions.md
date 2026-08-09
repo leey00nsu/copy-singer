@@ -59,3 +59,22 @@ canonical docs surface 밖의 unmanaged docs 산출물이 있더라도, 실제�
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: Storybook browser/a11y PASS (15 files, 28 stories), static build PASS (3,246 modules), server-only source inventory PASS, ticket/admin/vocal-profile 기존 UI test PASS, lint/typecheck/Steiger PASS (2026-08-09)
 - **Consequences**: 도메인 story가 DB·auth·실제 audio 없이 재현 가능하며 Chart wrapper는 실제 VocalProfileResults 소비 경로에서 자동 검증된다. server-owned page shell은 Storybook 범위 밖으로 유지된다.
+
+---
+
+## D004: MSW handler 수명과 Query 상태 story (2026-08-09)
+
+- **Context**: F015의 Node query test는 typed fixture와 handler factory를 가지지만 Storybook browser worker에서 실제 Query UI 상태를 재현하지 않는다. polling cursor와 Query cache가 story 간 공유되면 실행 순서에 따라 결과가 달라질 수 있다.
+- **Constraints**: production Zod schema/type과 fixture를 복제하지 않고 `msw/node` import는 browser graph에서 제외해야 한다. 실제 API·DB 없이 success, 오류, active→terminal과 mutation 사용자 피드백을 결정적으로 검증해야 한다.
+- **Options**: story마다 inline 응답 작성, 전역 고정 handler 사용, runtime-neutral handler factory를 story `beforeEach`에서 새로 생성하는 방식을 검토한다.
+- **Decision**: 구현 후 확정 예정
+- **Rationale**: 구현 후 확정 예정
+- **Trace**:
+  - **DOING 시작 시점**: `tests/msw/fixtures.ts`와 `handlers.ts`만 browser에서 재사용하고 `server.ts`는 Node 전용으로 유지한다. 각 story의 `beforeEach({ msw })`에서 handler/sequence factory를 생성하며 preview의 key 기반 QueryClient가 story별 cache를 소유한다.
+  - **DONE 전 확정 시점**: 구현 후 갱신 예정
+  - **머지 후 확인**: 로컬 통합 후 갱신 예정
+- **Evidence**:
+  - **Commit**: task commit 후 갱신 예정
+  - **PR**: 로컬 workflow (원격 PR 없음)
+  - **Test/Log**: 구현 후 갱신 예정
+- **Consequences**: 구현 후 갱신 예정

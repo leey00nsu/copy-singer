@@ -99,7 +99,7 @@
     - [x] LongAudioDialog 또는 Recorder의 대표 상태와 confirm/close interaction story 작성
     - [x] server-only import inventory와 domain story browser/a11y test 통과
 
-- [TODO][NON-PRD] T-F016-04 MSW 기반 Query success·error·polling story 연결
+- [DOING][NON-PRD] T-F016-04 MSW 기반 Query success·error·polling story 연결
   - Date: 2026-08-09
   - Acceptance:
     - F015 Zod type과 MSW fixture/handler를 Node 및 Storybook browser runtime에서 재사용한다.
