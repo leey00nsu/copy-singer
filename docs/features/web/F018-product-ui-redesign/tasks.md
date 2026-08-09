@@ -244,17 +244,17 @@
     - [x] row reason/metadata/action 위계를 Song Detail 중심으로 재배치
     - [x] 100-item·360/768/1024/1280 Storybook 및 회귀 test 보강
 
-- [TODO][PRD-FR-050] T-F018-13 Library 오류 언어·행 밀도·탭·액션 위계 보완
+- [DONE][PRD-FR-050] T-F018-13 Library 오류 언어·행 밀도·탭·액션 위계 보완
   - Date: 2026-08-10
   - Acceptance:
     - mixing 실패 raw detail이나 외부 오류 코드가 노출되지 않고 안전한 사용자 문구로 변환된다.
     - profile과 AI mix 목록은 desktop/mobile 모두 compact row로 탐색 가능하며 탭은 content 기반 좌측 정렬을 사용한다.
     - 목록에는 상태별 핵심 action 하나만 우선 노출하고 재생·다운로드·삭제 세부 동작은 상세 화면에서 보존된다.
   - Checklist:
-    - [ ] mixing error presentation mapper와 fallback test 추가
-    - [ ] profile/mix row spacing과 mobile metric grid 축소
-    - [ ] compact tabs, 명확한 추천·믹스 label, profile total·최신순 표시
-    - [ ] ProductShell 포함 dense Library Storybook·responsive 회귀 검증
+    - [x] mixing error presentation mapper와 fallback test 추가
+    - [x] profile/mix row spacing과 mobile metric grid 축소
+    - [x] compact tabs, 명확한 추천·믹스 label, profile total·최신순 표시
+    - [x] ProductShell 포함 dense Library Storybook·responsive 회귀 검증
 
 - [TODO][NON-PRD] T-F018-14 리뷰 보완 통합 visual QA와 문서 동기화
   - Date: 2026-08-10
@@ -295,8 +295,9 @@
 | `pnpm run test:vocal-profile-history` | `2026-08-10` | 통과 — 공유 Library UI 3/3, private audio·ownership 3/3 |
 | `pnpm run test:recommendation` | `2026-08-10` | 통과 — ranking 10/10, presentation·synthesis·list·detail 17/17 |
 | `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx` | `2026-08-10` | 통과 — 100곡 dense list·mobile filter Sheet·polling·완료 상태 8/8 |
+| `pnpm run test:storybook --run src/widgets/library/ui/mixing-library.stories.tsx src/widgets/library/ui/vocal-profile-library.stories.tsx src/_pages/library/ui/library-page.stories.tsx` | `2026-08-10` | 통과 — raw error 차단·10/12개 dense row·ProductShell 통합 10/10 |
 | `pnpm run test:recommendation:db` | `2026-08-10` | 통과 — persistence·synthesis 3/3 |
-| `pnpm run test:mixing:ui` | `2026-08-10` | 통과 — history·실제 timeline·상세 adapter·active/terminal 상태 7/7 |
+| `pnpm run test:mixing:ui` | `2026-08-10` | 통과 — safe failure presentation·history 단일 action·실제 timeline·상세 adapter 8/8 |
 | `pnpm run test:mixing:db` | `2026-08-10` | 통과 — queue·owner/filter/pagination·active 409·terminal 삭제·cleanup queue·ticket SetNull 1/1 |
 | `pnpm run test:query` | `2026-08-10` | 통과 — detail/history Query key·terminal polling·삭제 envelope 포함 23/23, streaming proxy 1/1 |
 | `pnpm run test:auth:db` | `2026-08-10` | 통과 — session/role·Google provider account ownership 3/3 |
@@ -309,4 +310,4 @@
 | `pnpm run test:process-scripts` | `2026-08-10` | 통과 — process supervisor·Storybook production boundary 5/5 |
 | `pnpm test` | `2026-08-10` | 통과 — production build, 전체 unit·integration·DB·Query·architecture와 Storybook 35 files/89 tests |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T17:58:13.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T18:05:45.000Z -->
