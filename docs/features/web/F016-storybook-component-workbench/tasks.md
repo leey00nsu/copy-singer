@@ -59,19 +59,19 @@
 > placeholder 상태의 `Acceptance` / `Checklist`를 그대로 두지 마세요. 구체 항목이 아니면 구현을 시작하지 않습니다.
 > 수동 편집이 필요하면 현재 태스크 근처가 아니라 `태스크 목록`의 마지막 기존 태스크 block 아래에만 append 하세요.
 
-- [DOING][NON-PRD] T-F016-01 Storybook Vite 기반과 격리 provider 구성
+- [DONE][NON-PRD] T-F016-01 Storybook Vite 기반과 격리 provider 구성
   - Date: 2026-08-09
   - Acceptance:
     - Next.js Vite Storybook dev server와 static build가 Tailwind 전역 스타일, `@/*` alias와 App Router mock을 사용해 시작된다.
     - story마다 새 QueryClient가 생성되고 Storybook 전용 MSW worker가 Next.js production public 경로와 분리된다.
     - Storybook/Vitest/Playwright 패키지는 devDependency이며 기존 Next.js build/start 명령을 바꾸지 않는다.
   - Checklist:
-    - [ ] Storybook 10.5.7, Vitest 4.1.10, Playwright 1.62.1 및 addon dependency를 고정 설치
-    - [ ] `.storybook/main.ts`, `preview.tsx`와 `vitest.config.ts` 구성
-    - [ ] story별 QueryClient/App Router/global CSS decorator 구현
-    - [ ] `.storybook/public`에 MSW worker 생성, `storybook-static` gitignore 및 production 분리 test 추가
-    - [ ] `storybook`, `build-storybook`, `test:storybook` script와 Chromium browser 설치
-    - [ ] Storybook smoke/static build, TypeScript와 FSD architecture 검사 통과
+    - [x] Storybook 10.5.7, Vitest 4.1.10, Playwright 1.62.1 및 addon dependency를 고정 설치
+    - [x] `.storybook/main.ts`, `preview.tsx`와 `vitest.config.ts` 구성
+    - [x] story별 QueryClient/App Router/global CSS decorator 구현
+    - [x] `.storybook/public`에 MSW worker 생성, `storybook-static` gitignore 및 production 분리 test 추가
+    - [x] `storybook`, `build-storybook`, `test:storybook` script와 Chromium browser 설치
+    - [x] Storybook smoke/static build, TypeScript와 FSD architecture 검사 통과
 
 - [TODO][NON-PRD] T-F016-02 Shared UI primitive story와 Controls·interaction 추가
   - Date: 2026-08-09
@@ -145,10 +145,10 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `pnpm run storybook --ci --smoke-test` | `2026-08-09` | PASS (Storybook 10.5.7 smoke) |
-| `pnpm run build-storybook` | `-` | 미실행 |
+| `pnpm run build-storybook` | `2026-08-09` | PASS (718 modules, worker 포함) |
 | `pnpm run test:storybook --run` | `2026-08-09` | PASS (1 story) |
 | `pnpm run test:query` | `-` | 미실행 |
-| `pnpm run check` | `-` | 미실행 |
+| `pnpm run check` | `2026-08-09` | FAIL (기존 key-fit test fixture export Biome 2건, T-F016-05에서 정리) |
 | `pnpm run build` | `-` | 미실행 |
 | `pnpm test` | `-` | 미실행 |
 | `pnpm audit --prod` | `-` | 미실행 |
