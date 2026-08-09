@@ -20,19 +20,19 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 
 ---
 
-## D001: client-server-state-query 결정 (2026-08-09)
+## D001: Query provider와 typed API 오류 경계 (2026-08-09)
 
-- **Context**: 문제 상황 또는 배경
-- **Constraints**: 제약 조건 (시간/기술/운영/호환성)
-- **Options**: 고려한 대안들
-- **Decision**: 최종 선택
-- **Rationale**: 선택 이유
+- **Context**: Client Component마다 fetch, 오류 parsing, retry와 timer를 직접 관리해 동일 API도 처리 기준이 달라진다.
+- **Constraints**: Next.js 16.3 Server/Client Component 경계를 유지하고 authenticated cache를 server request 또는 browser storage 사이에 공유하지 않아야 한다. 기존 Node test runner를 유지해야 한다.
+- **Options**: component마다 QueryClient 생성, module browser singleton과 server request별 instance, root에서 dehydration을 항상 사용하는 구성을 검토한다.
+- **Decision**: server에서는 render별 QueryClient, browser에서는 단일 안정 instance를 사용하는 provider와 `ApiError`/Zod schema 기반 `requestJson`을 공통 기반으로 사용한다. 기본 query retry는 retryable network/429/5xx에만 최대 2회 허용한다.
+- **Rationale**: 동일 browser render에서 cache를 공유하면서 SSR request 간 private data 누출을 막고, 현재 initial props에는 전역 dehydration 비용을 추가하지 않기 위해서다.
 - **Trace**:
-  - **DOING 시작 시점**: 초기 판단/가설
-  - **DONE 전 확정 시점**: 선택 근거 최종화
-  - **머지 후 확인**: 실제 결과/영향
+  - **DOING 시작 시점**: TanStack 공식 SSR guidance와 로컬 Next.js provider 문서를 기준으로 provider는 필요한 범위에 두고, 공통 오류는 UI에 raw response를 노출하지 않는 최소 metadata만 유지한다.
+  - **DONE 전 확정 시점**: `requestJson`이 valid payload만 반환하고 4xx·contract error를 재시도하지 않으며 retryable 5xx/network만 재시도 대상으로 분류함을 5개 Node test로 확인했다. MSW postinstall은 browser worker가 필요 없는 F015 범위에서 실행하지 않도록 pnpm `allowBuilds`에 명시했다.
+  - **머지 후 확인**: 로컬 통합 후 갱신 예정
 - **Evidence**:
-  - **Commit**: 커밋 해시 또는 링크
-  - **PR**: PR 링크
-  - **Test/Log**: 테스트 결과/로그/스크린샷 경로
-- **Consequences**: 결과 및 영향 (선택사항)
+  - **Commit**: task commit 후 갱신 예정
+  - **PR**: 로컬 workflow (원격 PR 없음)
+  - **Test/Log**: `pnpm run test:query` PASS (5), `pnpm run typecheck` PASS, `pnpm run check:architecture` PASS, `pnpm run lint` PASS (2026-08-09)
+- **Consequences**: query cache는 브라우저 메모리에만 유지되고, endpoint schema 불일치는 재시도하지 않는 contract error가 된다.

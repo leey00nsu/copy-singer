@@ -17,7 +17,7 @@
 ---
 
 ## 로컬 추적 정보
-- **문서 상태**: -
+- **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/client-server-state-query`
 - **대기 중 변경 요청**: -
@@ -52,12 +52,89 @@
 
 ## 태스크 목록
 
-> 아래에 태스크를 추가하세요. **최소 1개가 필요**합니다.
-> 태스크는 하나의 순차 리스트로 유지하고, 위에서 아래 순서 자체를 실행 우선순위로 취급하세요.
-> 새 태스크 append에는 `npx lee-spec-kit task add <feature-ref> --title "..." --ref NON-PRD --acceptance "..." --check "..."` 사용을 우선하세요.
-> 새 태스크는 마지막 기존 태스크 아래에 완전한 태스크 블록으로 추가하세요. `PRD-FR-001`이나 `PRD-SCOPE-V1-DESKTOP-EDITOR`처럼 이미 정의된 PRD key를 사용하거나, 내부 작업이면 `[NON-PRD]`를 사용합니다.
-> placeholder 상태의 `Acceptance` / `Checklist`를 그대로 두지 마세요. 구체 항목이 아니면 구현을 시작하지 않습니다.
-> 수동 편집이 필요하면 현재 태스크 근처가 아니라 `태스크 목록`의 마지막 기존 태스크 block 아래에만 append 하세요.
+> 태스크는 아래 순서대로 실행하고 각 `[DONE]` 전 docs/project task commit checkpoint를 통과합니다.
+
+- [DONE][NON-PRD] T-F015-01 Query provider와 typed API client 기반 추가
+  - Date: 2026-08-09
+  - Acceptance:
+    - TanStack Query provider가 root layout에 연결되고 server request별/browser render별 QueryClient 수명 정책이 지켜진다.
+    - 공통 JSON client가 Zod success parse 및 network/HTTP/contract 오류 정규화를 지원한다.
+    - TanStack Query, Zod와 test 전용 MSW dependency 및 lockfile이 재현 가능하게 추가된다.
+  - Checklist:
+    - [x] `@tanstack/react-query@5.101.4`, `zod@4.4.3`, `msw@2.15.0`을 올바른 dependency 구분으로 설치
+    - [x] retry/stale/gc/focus/reconnect 정책을 가진 `_app` Query provider 구현 및 root layout 연결
+    - [x] `AbortSignal`, JSON/FormData와 typed `ApiError`를 지원하는 `shared/api` 구현
+    - [x] 공통 API client/error 단위 테스트와 package `test:query` script 추가
+    - [x] `pnpm run test:query`, `pnpm run typecheck`, `pnpm run check:architecture` 통과
+
+- [TODO][NON-PRD] T-F015-02 Zod endpoint 계약과 Route Handler 입력 검증 적용
+  - Date: 2026-08-09
+  - Acceptance:
+    - 대상 endpoint의 browser-safe success/error schema에서 TypeScript response type이 파생된다.
+    - JSON body, UUID param, pagination과 parse 가능한 multipart metadata가 Route Handler 경계에서 검증된다.
+    - 기존 URL, status, error envelope와 Modal conversion streaming 전달 방식이 유지된다.
+  - Checklist:
+    - [ ] vocal profile/recommendation/mixing job entity response schema 및 public API 추가
+    - [ ] analyze/create recommendation/create mixing/development conversion/manage tickets feature request·response schema 추가
+    - [ ] 추천 생성, mixing 생성, ticket adjustment JSON body를 Zod `safeParse`로 전환
+    - [ ] 대상 UUID route param, page query, vocal multipart scalar/file metadata 검증 전환
+    - [ ] Modal conversion route가 `request.body` stream을 계속 직접 전달하는지 회귀 확인
+    - [ ] schema valid/invalid fixture 및 기존 Route Handler 계약 테스트 통과
+
+- [TODO][NON-PRD] T-F015-03 Vocal profile query·mutation과 durable polling 전환
+  - Date: 2026-08-09
+  - Acceptance:
+    - analyzer health, analysis job list/detail과 submit/delete/recommendation mutation이 typed client 및 TanStack Query를 사용한다.
+    - active job만 기존 interval로 polling하고 terminal 상태에서 멈추며 localStorage resume이 유지된다.
+    - job list 초기 data와 분석 완료 후 profile 전환 동작이 유지된다.
+  - Checklist:
+    - [ ] vocal profile/analyze feature API 함수, key/options 및 terminal predicate 구현
+    - [ ] workbench의 server-state `useState`/수동 polling loop를 query/mutation으로 교체
+    - [ ] job cards의 initialData, 3초 polling과 완료 시 reload 동작 전환
+    - [ ] upload idempotency key, localStorage cleanup, toast 및 오류 안내 회귀 검증
+    - [ ] vocal profile 관련 기존 test와 신규 query polling test 통과
+
+- [TODO][NON-PRD] T-F015-04 Recommendation·mixing query와 cache 동기화 전환
+  - Date: 2026-08-09
+  - Acceptance:
+    - recommendation detail과 mixing history가 typed query 및 상태 기반 polling을 사용한다.
+    - mixing 생성·추천 삭제 mutation의 pending/error UI와 cache patch/invalidation이 기존 동작을 보존한다.
+    - paginated history initialData가 즉시 표시되고 active job이 없으면 polling하지 않는다.
+  - Checklist:
+    - [ ] recommendation/mixing API 함수와 key/options factory 구현
+    - [ ] recommendation detail fetch/polling/delete를 query/mutation으로 교체
+    - [ ] mixing 시작 시 item preparing cache patch, 실패 rollback/error patch와 성공 invalidation 구현
+    - [ ] mixing history type을 entity Zod schema로 이동하고 initialData/pagination polling 전환
+    - [ ] recommendation/mixing UI 및 query cache 회귀 test 통과
+
+- [TODO][NON-PRD] T-F015-05 Development conversion·ticket mutation과 MSW fixture 완성
+  - Date: 2026-08-09
+  - Acceptance:
+    - Modal health/handoff/conversion job과 ticket adjustment가 typed query/mutation을 사용한다.
+    - conversion upload body는 buffering하지 않고 queued/processing에서만 polling한다.
+    - MSW Node fixture가 success, 4xx, retryable error, malformed response와 terminal polling sequence를 재현한다.
+  - Checklist:
+    - [ ] development conversion client/key/options/mutations 및 terminal transition toast 구현
+    - [ ] recommendation handoff query와 기존 invalid URL 상태 처리 유지
+    - [ ] ticket adjustment form pending/success/error를 mutation state로 전환
+    - [ ] `tests/msw` fixture/handlers/server를 test 전용으로 구성하고 handler reset 구현
+    - [ ] no-retry/retry limit, malformed schema, polling stop와 mutation cache test 통과
+    - [ ] long audio upload 및 ticket/admin 기존 회귀 test 통과
+
+- [TODO][NON-PRD] T-F015-06 대상 fetch inventory 정리와 전체 회귀 검증
+  - Date: 2026-08-09
+  - Acceptance:
+    - 대상 Client Component에는 server-state용 직접 fetch와 수동 polling timer가 남지 않는다.
+    - 허용된 audio/UI timer 및 server-to-server fetch만 범위 밖으로 남는다.
+    - 전체 정적 검사, production build, test suite와 production dependency audit이 통과한다.
+  - Checklist:
+    - [ ] client `fetch`/timer inventory를 재검사하고 범위 내 잔여 호출 제거
+    - [ ] spec 사용자 스토리와 기능 요구사항 Acceptance를 실제 검증 결과에 맞춰 갱신
+    - [ ] `pnpm run check` 통과
+    - [ ] `pnpm run build` 통과
+    - [ ] `pnpm test` 통과
+    - [ ] `pnpm audit --prod` 결과 검토 및 blocker 0건 확인
+    - [ ] workflow-sync marker, Decisions/Tasks test evidence 및 최종 완료 조건 갱신
 
 ---
 
@@ -76,4 +153,8 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `{실행한 테스트 명령어}` | `-` | `{PASS/FAIL 요약}` |
+| `pnpm run test:query` | `2026-08-09` | PASS (5 tests) |
+| `pnpm run check` | `-` | 미실행 |
+| `pnpm run build` | `-` | 미실행 |
+| `pnpm test` | `-` | 미실행 |
+| `pnpm audit --prod` | `-` | 미실행 |
