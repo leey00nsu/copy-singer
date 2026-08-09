@@ -40,3 +40,22 @@ canonical docs surface 밖의 unmanaged docs 산출물이 있더라도, 실제�
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: `pnpm run test:storybook --run` PASS (11 files, 19 stories), `pnpm run build-storybook` PASS (2,669 modules), `pnpm run lint`/`typecheck`/`check:architecture` PASS (2026-08-09)
 - **Consequences**: shared story가 accessibility·interaction 회귀를 직접 보호하며 Chart와 toast의 사용자-visible 동작은 중복 primitive demo 대신 후속 consumer story evidence에 포함된다.
+
+---
+
+## D003: 도메인 story의 browser-safe presentation 경계 (2026-08-09)
+
+- **Context**: ticket와 vocal profile UI는 실제 DB/auth/page shell 없이도 렌더 가능한 부분과 server data loader가 한 slice 안에 공존한다. Storybook에서 잘못된 barrel을 import하면 Prisma나 `server-only`가 browser bundle에 유입될 수 있다.
+- **Constraints**: production component와 DOM 의미를 유지하고 실제 API, 인증 session, audio device 또는 private payload를 사용하지 않아야 한다. 필요한 fixture는 browser-safe inferred type을 만족해야 한다.
+- **Options**: page 전체를 mock, 별도 story 전용 복제 component, 기존 presentation component를 public browser API로 직접 렌더하는 방식을 검토한다.
+- **Decision**: 구현 후 확정 예정
+- **Rationale**: 구현 후 확정 예정
+- **Trace**:
+  - **DOING 시작 시점**: TicketLedger, TicketAdjustmentFields, VocalProfileResults와 LongAudioDialog의 기존 browser public API를 직접 사용한다. test fixture를 현재 계약에 맞게 작성하고, server-only module inventory test와 Storybook Vite build로 import graph를 검증한다.
+  - **DONE 전 확정 시점**: 구현 후 갱신 예정
+  - **머지 후 확인**: 로컬 통합 후 갱신 예정
+- **Evidence**:
+  - **Commit**: task commit 후 갱신 예정
+  - **PR**: 로컬 workflow (원격 PR 없음)
+  - **Test/Log**: 구현 후 갱신 예정
+- **Consequences**: 구현 후 갱신 예정

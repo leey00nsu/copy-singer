@@ -86,7 +86,7 @@
     - [x] variant, disabled, composed layout 및 keyboard/click interaction `play` 함수 추가
     - [x] shared story Storybook browser/a11y test 통과
 
-- [TODO][NON-PRD] T-F016-03 핵심 entity·feature·widget 상태 story 구성
+- [DOING][NON-PRD] T-F016-03 핵심 entity·feature·widget 상태 story 구성
   - Date: 2026-08-09
   - Acceptance:
     - ticket, vocal profile과 widget/form의 empty, data, pending, warning 및 interactive 상태가 실제 production component로 렌더된다.
