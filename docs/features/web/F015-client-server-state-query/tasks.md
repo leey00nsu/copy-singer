@@ -121,20 +121,20 @@
     - [x] no-retry/retry limit, malformed schema, polling stop와 mutation cache test 통과
     - [x] long audio upload 및 ticket/admin 기존 회귀 test 통과
 
-- [TODO][NON-PRD] T-F015-06 대상 fetch inventory 정리와 전체 회귀 검증
+- [DONE][NON-PRD] T-F015-06 대상 fetch inventory 정리와 전체 회귀 검증
   - Date: 2026-08-09
   - Acceptance:
     - 대상 Client Component에는 server-state용 직접 fetch와 수동 polling timer가 남지 않는다.
     - 허용된 audio/UI timer 및 server-to-server fetch만 범위 밖으로 남는다.
     - 전체 정적 검사, production build, test suite와 production dependency audit이 통과한다.
   - Checklist:
-    - [ ] client `fetch`/timer inventory를 재검사하고 범위 내 잔여 호출 제거
-    - [ ] spec 사용자 스토리와 기능 요구사항 Acceptance를 실제 검증 결과에 맞춰 갱신
-    - [ ] `pnpm run check` 통과
-    - [ ] `pnpm run build` 통과
-    - [ ] `pnpm test` 통과
-    - [ ] `pnpm audit --prod` 결과 검토 및 blocker 0건 확인
-    - [ ] workflow-sync marker, Decisions/Tasks test evidence 및 최종 완료 조건 갱신
+    - [x] client `fetch`/timer inventory를 재검사하고 범위 내 잔여 호출 제거
+    - [x] spec 사용자 스토리와 기능 요구사항 Acceptance를 실제 검증 결과에 맞춰 갱신
+    - [x] `pnpm run check` 통과
+    - [x] `pnpm run build` 통과
+    - [x] `pnpm test` 통과
+    - [x] `pnpm audit --prod` 결과 검토 및 blocker 0건 확인
+    - [x] workflow-sync marker, Decisions/Tasks test evidence 및 최종 완료 조건 갱신
 
 ---
 
@@ -142,9 +142,9 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -154,7 +154,9 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `pnpm run test:query` | `2026-08-09` | PASS (20 tests: query/contracts/MSW 19 + 64MB streaming proxy 1) |
-| `pnpm run check` | `-` | 미실행 |
+| `pnpm run check` | `2026-08-09` | PASS (Biome/ESLint/TypeScript/Steiger, existing Biome warnings only) |
 | `pnpm run build` | `2026-08-09` | PASS (Next.js 16.3 production build, 22 pages) |
-| `pnpm test` | `-` | 미실행 |
-| `pnpm audit --prod` | `-` | 미실행 |
+| `pnpm test` | `2026-08-09` | PASS (full unit/integration/UI/query suite + production build) |
+| `pnpm audit --prod` | `2026-08-09` | PASS (known vulnerabilities 0) |
+
+<!-- lee-spec-kit:workflow-sync 2026-08-09T09:12:19.387Z -->

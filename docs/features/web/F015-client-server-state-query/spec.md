@@ -34,11 +34,11 @@
 
 **Acceptance Criteria:**
 
-- [ ] 기존 Client Component의 원격 JSON 조회와 polling은 TanStack Query query를 사용한다.
-- [ ] 진행 중 상태만 기존 주기에 맞춰 polling하고 성공·실패·취소 등 terminal 상태에서는 자동 중단한다.
-- [ ] component unmount 또는 query 비활성화 후 별도 timer나 완료되지 않은 수동 polling loop가 남지 않는다.
-- [ ] vocal analysis의 기존 localStorage job resume 동작과 새로고침 후 복구가 유지된다.
-- [ ] Server Component가 전달하는 초기 결과·목록은 첫 화면에 즉시 표시되고 mount 직후 불필요한 중복 조회가 발생하지 않는다.
+- [x] 기존 Client Component의 원격 JSON 조회와 polling은 TanStack Query query를 사용한다.
+- [x] 진행 중 상태만 기존 주기에 맞춰 polling하고 성공·실패·취소 등 terminal 상태에서는 자동 중단한다.
+- [x] component unmount 또는 query 비활성화 후 별도 timer나 완료되지 않은 수동 polling loop가 남지 않는다.
+- [x] vocal analysis의 기존 localStorage job resume 동작과 새로고침 후 복구가 유지된다.
+- [x] Server Component가 전달하는 초기 결과·목록은 첫 화면에 즉시 표시되고 mount 직후 불필요한 중복 조회가 발생하지 않는다.
 
 ### US-2: mutation 결과를 바로 확인하는 사용자와 관리자
 
@@ -48,10 +48,10 @@
 
 **Acceptance Criteria:**
 
-- [ ] 대상 JSON API mutation은 TanStack Query mutation으로 실행되고 기존 버튼 disable, toast 및 오류 메시지 동작을 유지한다.
-- [ ] 성공한 mutation은 관련 query cache를 직접 갱신하거나 정확한 query key만 invalidate한다.
-- [ ] 요청 재시도 가능 여부와 HTTP status가 typed API error로 보존되며, 인증·권한·일반 4xx 오류를 자동 재시도하지 않는다.
-- [ ] mutation의 요청 URL, payload, idempotency key, status code 및 response shape는 기존 계약을 유지한다.
+- [x] 대상 JSON API mutation은 TanStack Query mutation으로 실행되고 기존 버튼 disable, toast 및 오류 메시지 동작을 유지한다.
+- [x] 성공한 mutation은 관련 query cache를 직접 갱신하거나 정확한 query key만 invalidate한다.
+- [x] 요청 재시도 가능 여부와 HTTP status가 typed API error로 보존되며, 인증·권한·일반 4xx 오류를 자동 재시도하지 않는다.
+- [x] mutation의 요청 URL, payload, idempotency key, status code 및 response shape는 기존 계약을 유지한다.
 
 ### US-3: 런타임 API 계약을 신뢰하는 개발자
 
@@ -61,11 +61,11 @@
 
 **Acceptance Criteria:**
 
-- [ ] JSON body, route parameter와 query parameter는 Route Handler 경계에서 Zod로 검증되고 기존 오류 status/shape를 유지한다.
-- [ ] typed API client는 성공 JSON 응답을 endpoint별 Zod schema로 검증한 뒤 inferred type을 반환한다.
-- [ ] HTTP 오류 응답과 schema 불일치는 구분 가능한 공통 API error로 정규화되며 사용자에게 raw payload, stack 또는 secret을 노출하지 않는다.
-- [ ] 기존 수동 type guard·정규식·`as` 단언 중 schema와 중복되는 검증은 제거된다.
-- [ ] multipart·binary·streaming 경계는 body를 강제로 buffering하지 않고 검증 가능한 metadata, parameter와 JSON 응답만 Zod로 검증한다.
+- [x] JSON body, route parameter와 query parameter는 Route Handler 경계에서 Zod로 검증되고 기존 오류 status/shape를 유지한다.
+- [x] typed API client는 성공 JSON 응답을 endpoint별 Zod schema로 검증한 뒤 inferred type을 반환한다.
+- [x] HTTP 오류 응답과 schema 불일치는 구분 가능한 공통 API error로 정규화되며 사용자에게 raw payload, stack 또는 secret을 노출하지 않는다.
+- [x] 기존 수동 type guard·정규식·`as` 단언 중 schema와 중복되는 검증은 제거된다.
+- [x] multipart·binary·streaming 경계는 body를 강제로 buffering하지 않고 검증 가능한 metadata, parameter와 JSON 응답만 Zod로 검증한다.
 
 ### US-4: 재현 가능한 API 상태를 테스트하는 유지보수자
 
@@ -75,10 +75,10 @@
 
 **Acceptance Criteria:**
 
-- [ ] MSW Node fixture가 대표 endpoint의 성공, 인증/권한 오류, retryable 오류 및 계약 불일치 응답을 제공한다.
-- [ ] 진행 중 응답에서 terminal 응답으로 바뀌는 polling sequence를 test fixture로 재현할 수 있다.
-- [ ] 테스트별 새 QueryClient와 handler reset으로 cache 및 mock 상태가 다른 테스트에 누출되지 않는다.
-- [ ] MSW browser worker나 mock runtime은 production bundle과 실제 배포 요청 경로에 포함되지 않는다.
+- [x] MSW Node fixture가 대표 endpoint의 성공, 인증/권한 오류, retryable 오류 및 계약 불일치 응답을 제공한다.
+- [x] 진행 중 응답에서 terminal 응답으로 바뀌는 polling sequence를 test fixture로 재현할 수 있다.
+- [x] 테스트별 새 QueryClient와 handler reset으로 cache 및 mock 상태가 다른 테스트에 누출되지 않는다.
+- [x] MSW browser worker나 mock runtime은 production bundle과 실제 배포 요청 경로에 포함되지 않는다.
 
 ---
 

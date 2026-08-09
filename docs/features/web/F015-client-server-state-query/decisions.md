@@ -112,3 +112,22 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: `pnpm run test:query` PASS (20), `pnpm run test:tickets` PASS (2), `pnpm run test:admin` PASS (2), effect inventory PASS (1), `pnpm run check:biome`/`lint`/`typecheck`/`check:architecture` PASS, `pnpm run build` PASS (2026-08-09)
 - **Consequences**: 변환 본문은 client와 proxy에서 JSON 변환 없이 stream 경계를 유지하며 mock handler는 test teardown 때 reset된다.
+
+---
+
+## D006: Client fetch inventory와 최종 검증 경계 (2026-08-09)
+
+- **Context**: 대상 server state 전환은 끝났지만 client graph에 남은 fetch/timer가 의도된 audio·UI 동작인지 누락된 JSON server state인지 최종 분류해야 한다.
+- **Constraints**: binary audio, browser playback, server-to-server fetch와 worker polling은 F015 범위 밖이며 CI `quality.yml`은 사용자 요청대로 연기한다. 전체 build/test/audit evidence가 필요하다.
+- **Options**: 모든 fetch를 기계적으로 제거, 대상 화면과 Client Component inventory를 분류해 JSON server state만 제거, 현 상태를 검증 없이 종료하는 방식을 검토한다.
+- **Decision**: Client Component의 직접 JSON fetch와 component-owned polling timer는 허용하지 않고 inventory test로 고정한다. 유일한 직접 client fetch는 vocal reference preview의 binary `arrayBuffer()` 처리로 남긴다. React Query public API는 browser index에만 두고 server route/worker/test는 `index.server` 또는 model 전용 entry를 사용한다.
+- **Rationale**: server state 전환 누락을 자동 감지하면서 audio decoding과 server-to-server 통신까지 Query로 잘못 이동하지 않고, `react-server` module graph에 browser provider가 유입되는 것을 막기 위해서다.
+- **Trace**:
+  - **DOING 시작 시점**: `use client` graph의 fetch/timer를 endpoint와 response 종류별로 확인하고, 허용 항목은 binary/audio 또는 순수 UI timer임을 source/test로 증명한다.
+  - **DONE 전 확정 시점**: 전체 `pnpm test`의 `react-server` 조건에서 create-mixing server barrel이 browser Query client를 재수출하는 회귀를 발견했다. model/server public API를 분리하고 Route Handler import와 integration test를 server-safe entry로 교정한 뒤 전체 suite를 재실행해 통과했다. 직접 Client Component fetch inventory는 binary audio preview 한 곳이며 JSON parse와 timer는 0건이다.
+  - **머지 후 확인**: 로컬 통합 후 갱신 예정
+- **Evidence**:
+  - **Commit**: task commit 후 갱신 예정
+  - **PR**: 로컬 workflow (원격 PR 없음)
+  - **Test/Log**: `pnpm run check` PASS, `pnpm run build` PASS (22 pages), `pnpm test` PASS, `pnpm run test:query` PASS (20), client fetch/timer inventory PASS (2), `pnpm audit --prod` PASS (known vulnerabilities 0) (2026-08-09)
+- **Consequences**: 이후 Client Component에 직접 JSON fetch 또는 timer가 추가되면 inventory test가 실패하며, GitHub Actions `quality.yml`은 사용자 요청대로 연기된 상태를 유지한다.
