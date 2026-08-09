@@ -139,7 +139,7 @@
     - [x] recommendation delete를 공통 Dialog로 전환
     - [x] recommendation UI/Query/Storybook 회귀 test 추가
 
-- [TODO][PRD-FR-049] T-F018-06 Song Detail route와 저장 곡 음역 계약 확장
+- [DONE][PRD-FR-049] T-F018-06 Song Detail route와 저장 곡 음역 계약 확장
   - Date: 2026-08-09
   - Acceptance:
     - `/recommendations/[id]/songs/[itemId]`가 run ownership과 item 포함 여부를 검증하고 잘못된 주소를 not-found로 처리한다.
@@ -148,13 +148,13 @@
     - album art, genre, difficulty, lyrics와 in-app preview를 생성하지 않고 source URL은 외부 링크로만 제공한다.
     - 목록과 상세의 mixing state가 동일 Query cache에서 동기화된다.
   - Checklist:
-    - [ ] Song vocal profile select/serializer와 Zod response contract 확장
-    - [ ] legacy/additive/nullable payload contract 및 DB integration test 추가
-    - [ ] `song-detail` Page slice와 App adapter/loading/not-found 추가
-    - [ ] range comparison, reason summary와 unavailable state 구현
-    - [ ] 동일 recommendation Query key의 mixing CTA/result 연결
-    - [ ] 외부 source link security label/rel 처리
-    - [ ] Song Detail desktop/mobile Storybook와 route 회귀 test 추가
+    - [x] Song vocal profile select/serializer와 Zod response contract 확장
+    - [x] legacy/additive/nullable payload contract 및 DB integration test 추가
+    - [x] `song-detail` Page slice와 App adapter/loading/not-found 추가
+    - [x] range comparison, reason summary와 unavailable state 구현
+    - [x] 동일 recommendation Query key의 mixing CTA/result 연결
+    - [x] 외부 source link security label/rel 처리
+    - [x] Song Detail desktop/mobile Storybook와 route 회귀 test 추가
 
 - [TODO][PRD-FR-050] T-F018-07 Profile·AI Mix 통합 Library와 실제 필터 구축
   - Date: 2026-08-09
@@ -258,4 +258,4 @@
 | `pnpm run test:process-scripts` | `2026-08-09` | 통과 — 5/5 |
 | `pnpm test` | `-` | 미실행 — 구현 전 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T15:14:43.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T15:35:26.000Z -->

@@ -145,3 +145,23 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 워크플로 — 해당 없음
   - **Test/Log**: `pnpm run test:recommendation` (presentation 10/10 + UI 11/11), `pnpm run test:query` (20/20 + streaming 1/1), `pnpm run test:storybook --run` (29 files, 66 tests), `pnpm run check`, `pnpm run build-storybook`, `pnpm run build`, Storybook browser smoke (1280×800·360×800, horizontal overflow 없음, 초기 waveform 0개)
 - **Consequences**: 필터 결과는 저장 run의 client projection이며 원본 rank와 Query cache를 변경하지 않는다. 서버 pagination이 필요해질 만큼 dataset이 커질 때는 URL contract를 유지한 채 query backend만 교체할 수 있다.
+
+## D024: Song Detail의 additive snapshot 계약과 동일 run cache (2026-08-10)
+
+- **Context**: 추천 item에는 점수와 이유가 저장되어 있지만 곡 음역과 original key는 응답에 없고, 디자인 보드의 album art·genre·lyrics·preview는 현재 도메인 계약에 존재하지 않는다.
+- **Constraints**: PostgreSQL migration 없이 기존 `Song.originalKey`와 연결된 `Song.vocalProfile`만 사용한다. 상세 주소는 run 소유권과 item 포함 여부를 모두 확인해야 하며 목록의 mixing 상태와 분리된 client state를 만들지 않는다.
+- **Options**:
+  1. Song Detail 전용 API와 Query key를 새로 만든다.
+  2. route param만 신뢰하고 catalog에서 song을 직접 조회한다.
+  3. recommendation run 응답에 nullable song snapshot을 additive로 포함하고 상세도 같은 run Query key에서 item을 선택한다.
+- **Decision**: 옵션 3을 채택한다. recommendation run serializer가 `Song.originalKey`와 완전하고 순서가 유효한 `SONG` vocal profile만 nullable additive field로 제공하며 legacy payload는 Zod default로 `null` 복구한다. Song Detail Server Page는 UUID, session, run ownership과 item 포함 여부를 확인하고 client는 목록과 같은 `recommendationKeys.detail(runId)` cache에서 선택한 item을 읽는다.
+- **Rationale**: 기존 run API가 이미 점수 snapshot과 mixing 상태의 정본이므로 별도 상세 API를 만들면 polling·optimistic patch가 갈라질 위험이 있다. 작은 nullable profile을 같은 응답에 더하면 DB migration 없이 목록과 상세의 상태가 자동으로 일치하고, 불완전한 곡 분석은 명시적 unavailable state로 처리할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: `Song.originalKey`, `Song.vocalProfile`, recommendation serializer·Zod contract와 기존 mixing mutation/polling을 확인했다. DB schema는 이미 필요한 값을 소유하므로 migration과 별도 상세 API를 배제했다.
+  - **DONE 전 확정 시점**: `/recommendations/[id]/songs/[itemId]`에 얇은 App adapter와 loading/not-found boundary를 추가했다. 상세는 사용자·곡의 실용/관측 음역, 원키·추천 키 점수, 실제 reason과 overlap·고음 초과·confidence breakdown만 표시하고 HTTP(S) source URL만 `target="_blank" rel="noreferrer noopener"` 외부 링크로 노출한다. 목록의 mixing action과 mutation을 `features/create-mixing`으로 승격해 start/retry/idempotency/polling/result lazy mount가 두 화면에서 같은 cache를 사용하도록 했다. Storybook 정상·음역 없음·진행·성공·실패 상태와 1280×800/360×800 browser smoke에서 horizontal overflow와 clipping이 없음을 확인했다.
+  - **머지 후 확인**: 로컬 통합 후 기록한다.
+- **Evidence**:
+  - **Commit**: T-F018-06 task checkpoint commit
+  - **PR**: 로컬 워크플로 — 해당 없음
+  - **Test/Log**: `pnpm run test:recommendation` (ranking 10/10 + presentation/synthesis/list/detail 17/17), `pnpm run test:recommendation:db` (3/3), `pnpm run test:query` (21/21 + streaming 1/1), `pnpm run test:storybook --run` (30 files, 71 tests), `pnpm run check`, `pnpm run build-storybook`, `pnpm run build`, Storybook browser smoke (1280×800·360×800, horizontal overflow/clipping 없음, 초기 waveform 0개)
+- **Consequences**: 상세는 저장된 run의 점수 snapshot과 현재 연결된 song profile을 함께 표시하며, 없는 album art·genre·difficulty·lyrics·preview를 추정하지 않는다. 추후 별도 song detail API가 필요해져도 현재 route와 nullable response field는 호환 경계로 유지할 수 있다.
