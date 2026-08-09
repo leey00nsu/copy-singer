@@ -63,7 +63,7 @@
     "test:auth-navigation": "tsx --test tests/auth-navigation.test.ts",
     "test:auth:db": "node --conditions react-server --import tsx --test tests/auth-ownership.integration.ts tests/dev-auth-bypass.integration.ts",
     "test:media": "node --conditions react-server --import tsx --test tests/leemage-client.test.ts tests/leemage-media.integration.ts",
-    "test:tickets": "tsx --test tests/ticket-ledger-ui.test.tsx && node --conditions react-server --import tsx --test tests/ticket-ledger.integration.ts",
+    "test:tickets": "tsx --test tests/ticket-ledger-ui.test.tsx tests/account-ui.test.tsx && node --conditions react-server --import tsx --test tests/ticket-ledger.integration.ts",
     "test:mixing:db": "node --conditions react-server --import tsx --test tests/mixing-queue.integration.ts",
     "test:mixing:ui": "tsx --test tests/mixing-history-ui.test.tsx tests/mixing-status-presentation.test.ts tests/mixing-detail-ui.test.tsx",
     "test:admin": "tsx --test tests/admin-ui.test.tsx && node --conditions react-server --import tsx --test tests/admin-operations.integration.ts"

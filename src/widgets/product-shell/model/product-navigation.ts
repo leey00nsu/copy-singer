@@ -1,6 +1,7 @@
 const productNavigation = [
   { href: "/profile", label: "목소리 분석", icon: "microphone" },
   { href: "/library", label: "라이브러리", icon: "library" },
+  { href: "/account", label: "내 계정", icon: "account" },
 ] as const;
 
 function isProductPathActive(pathname: string, href: string) {
@@ -13,6 +14,7 @@ function isProductPathActive(pathname: string, href: string) {
       pathname.startsWith("/recommendations/")
     );
   }
+  if (href === "/account") return pathname.startsWith(href);
   return pathname.startsWith(href);
 }
 

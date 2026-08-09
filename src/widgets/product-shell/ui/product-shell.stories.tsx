@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 
 import { ProductShell } from "@/widgets/product-shell";
 
@@ -37,10 +38,30 @@ export const Desktop: Story = {
   globals: {
     viewport: { value: "desktop", isRotated: false },
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("link", { name: "라이브러리" })).toHaveAttribute("aria-current", "page");
+    await expect(canvas.getByRole("link", { name: "내 계정" })).toBeVisible();
+  },
 };
 
 export const Mobile: Story = {
   globals: {
     viewport: { value: "mobile1", isRotated: false },
+  },
+  play: async ({ canvasElement }) => {
+    await userEvent.click(within(canvasElement).getByRole("button", { name: "제품 메뉴 열기" }));
+    const body = within(document.body);
+    await waitFor(() => expect(body.getByRole("dialog")).toBeVisible());
+    await waitFor(() => expect(body.getByRole("link", { name: "내 계정" })).toBeVisible());
+  },
+};
+
+export const AccountActive: Story = {
+  parameters: {
+    nextjs: { navigation: { pathname: "/account" } },
+  },
+  play: async ({ canvasElement }) => {
+    await expect(within(canvasElement).getByRole("link", { name: "내 계정" })).toHaveAttribute("aria-current", "page");
   },
 };

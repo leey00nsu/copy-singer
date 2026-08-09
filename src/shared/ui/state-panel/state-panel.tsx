@@ -24,11 +24,22 @@ type StatePanelProps = React.ComponentProps<"section"> &
   VariantProps<typeof statePanelIconVariants> & {
     action?: React.ReactNode;
     description?: React.ReactNode;
+    headingLevel?: "h1" | "h2";
     icon?: React.ReactNode;
     title: React.ReactNode;
   };
 
-function StatePanel({ action, className, description, icon, title, tone = "neutral", ...props }: StatePanelProps) {
+function StatePanel({
+  action,
+  className,
+  description,
+  headingLevel = "h2",
+  icon,
+  title,
+  tone = "neutral",
+  ...props
+}: StatePanelProps) {
+  const Heading = headingLevel;
   return (
     <section
       data-slot="state-panel"
@@ -44,7 +55,7 @@ function StatePanel({ action, className, description, icon, title, tone = "neutr
           {icon}
         </span>
       ) : null}
-      <h2 className={cn("text-lg font-semibold tracking-tight", icon && "mt-4")}>{title}</h2>
+      <Heading className={cn("text-lg font-semibold tracking-tight", icon && "mt-4")}>{title}</Heading>
       {description ? <div className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">{description}</div> : null}
       {action ? <div className="mt-5 flex flex-wrap items-center justify-center gap-2">{action}</div> : null}
     </section>

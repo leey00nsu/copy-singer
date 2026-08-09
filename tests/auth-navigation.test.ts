@@ -24,6 +24,8 @@ test("product navigation keeps saved resources and recommendation details under 
   assert.equal(isProductPathActive("/recommendations/run-1", "/library"), true);
   assert.equal(isProductPathActive("/mixing-history", "/library"), true);
   assert.equal(isProductPathActive("/profile", "/library"), false);
+  assert.equal(isProductPathActive("/account", "/account"), true);
+  assert.equal(isProductPathActive("/library", "/account"), false);
 });
 
 test("route groups preserve public URLs while the root layout stays shell-free", () => {
@@ -36,6 +38,9 @@ test("route groups preserve public URLs while the root layout stays shell-free",
     "app/(product)/mixing-history/page.tsx",
     "app/(product)/library/page.tsx",
     "app/(product)/account/page.tsx",
+    "app/(product)/loading.tsx",
+    "app/(product)/error.tsx",
+    "app/(product)/not-found.tsx",
   ]) {
     assert.equal(existsSync(new URL(route, root)), true, `${route} should exist`);
   }
@@ -44,4 +49,21 @@ test("route groups preserve public URLs while the root layout stays shell-free",
 
   const rootLayout = readFileSync(new URL("src/_app/layout/root-layout.tsx", root), "utf8");
   assert.doesNotMatch(rootLayout, /UserMenu|getRequestSession/);
+  for (const state of ["loading.tsx", "error.tsx", "not-found.tsx"]) {
+    const adapter = readFileSync(new URL(`app/(product)/${state}`, root), "utf8");
+    assert.match(adapter, /@\/_app\/layout/);
+    assert.doesNotMatch(adapter, /<main|<section|className=/);
+  }
+});
+
+test("product shell keeps keyboard, touch-target, and navigation labels explicit", () => {
+  const root = new URL("../", import.meta.url);
+  const shell = readFileSync(new URL("src/widgets/product-shell/ui/product-shell.tsx", root), "utf8");
+
+  assert.match(shell, /본문 바로가기/);
+  assert.match(shell, /href="#product-content"/);
+  assert.match(shell, /focus-visible:ring/);
+  assert.match(shell, /min-h-11/);
+  assert.match(shell, /aria-label="제품 메뉴"/);
+  assert.match(shell, /aria-label="제품 메뉴 열기"/);
 });

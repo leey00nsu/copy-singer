@@ -1,3 +1,3 @@
 import "server-only";
 
-export { default as AccountPage } from "./ui/account-page";
+export { default as AccountPage, metadata } from "./ui/account-page";

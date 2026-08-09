@@ -1,4 +1,6 @@
 import { ArrowDownRight, ArrowUpRight, Ticket } from "lucide-react";
+import Link from "next/link";
+import { StatePanel } from "@/shared/ui/state-panel";
 
 export type TicketEntryView = {
   id: string;
@@ -6,6 +8,7 @@ export type TicketEntryView = {
   amount: number;
   balanceAfter: number;
   reason: string;
+  mixingJobId?: string | null;
   createdAt: Date;
 };
 
@@ -19,29 +22,48 @@ const TYPE_LABELS: Record<TicketEntryView["type"], string> = {
 export function TicketLedger({ entries }: { entries: TicketEntryView[] }) {
   if (entries.length === 0) {
     return (
-      <p className="rounded-2xl border border-dashed p-8 text-center text-sm text-muted-foreground">
-        티켓 내역이 없습니다.
-      </p>
+      <StatePanel
+        description="티켓을 지급받거나 사용하면 이곳에 기록됩니다."
+        icon={<Ticket />}
+        title="티켓 내역이 없습니다."
+      />
     );
   }
   return (
-    <div className="divide-y rounded-2xl border bg-background">
+    <div className="divide-y border-y bg-background">
       {entries.map((entry) => (
-        <article key={entry.id} className="flex items-center gap-4 px-4 py-4 sm:px-5">
+        <article
+          className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3 px-2 py-5 sm:gap-4 sm:px-4"
+          key={entry.id}
+        >
           <span
-            className={`flex size-10 shrink-0 items-center justify-center rounded-full ${entry.amount >= 0 ? "bg-emerald-50 text-emerald-700" : "bg-orange-50 text-orange-700"}`}
+            className={`flex size-9 shrink-0 items-center justify-center rounded-lg border ${entry.amount >= 0 ? "border-success/70 bg-success text-success-foreground" : "border-warning/70 bg-warning text-warning-foreground"}`}
           >
-            {entry.amount >= 0 ? <ArrowUpRight aria-hidden="true" /> : <ArrowDownRight aria-hidden="true" />}
+            {entry.amount >= 0 ? (
+              <ArrowUpRight aria-hidden="true" className="size-4" />
+            ) : (
+              <ArrowDownRight aria-hidden="true" className="size-4" />
+            )}
           </span>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
               <p className="font-medium">{TYPE_LABELS[entry.type]}</p>
               <span className="text-xs text-muted-foreground">{entry.createdAt.toLocaleString("ko-KR")}</span>
             </div>
-            <p className="truncate text-sm text-muted-foreground">{entry.reason}</p>
+            <p className="mt-1 break-words text-sm leading-5 text-muted-foreground">{entry.reason}</p>
+            {entry.mixingJobId ? (
+              <Link
+                className="mt-2 inline-block text-xs font-medium underline underline-offset-4"
+                href={`/library/mixes/${entry.mixingJobId}`}
+              >
+                AI 믹스 상세 보기
+              </Link>
+            ) : null}
           </div>
           <div className="text-right">
-            <p className={`font-semibold tabular-nums ${entry.amount >= 0 ? "text-emerald-700" : "text-orange-700"}`}>
+            <p
+              className={`font-semibold tabular-nums ${entry.amount >= 0 ? "text-success-foreground" : "text-warning-foreground"}`}
+            >
               {entry.amount >= 0 ? "+" : ""}
               {entry.amount}
             </p>

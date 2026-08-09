@@ -115,13 +115,18 @@ export async function ensureSignupGrant(userId: string) {
 }
 
 export async function getTicketAccount(userId: string, page = 1, pageSize = 20) {
-  const normalizedPage = Math.max(1, Math.trunc(page));
+  const requestedPage = Math.max(1, Math.trunc(page));
   const normalizedPageSize = Math.min(100, Math.max(1, Math.trunc(pageSize)));
   const where: Prisma.TicketLedgerWhereInput = { userId };
-  const [user, total, entries] = await prisma.$transaction([
-    prisma.user.findUniqueOrThrow({ where: { id: userId }, select: { ticketBalance: true } }),
-    prisma.ticketLedger.count({ where }),
-    prisma.ticketLedger.findMany({
+  return prisma.$transaction(async (transaction) => {
+    const user = await transaction.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: { ticketBalance: true },
+    });
+    const total = await transaction.ticketLedger.count({ where });
+    const pageCount = Math.max(1, Math.ceil(total / normalizedPageSize));
+    const normalizedPage = Math.min(requestedPage, pageCount);
+    const entries = await transaction.ticketLedger.findMany({
       where,
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       skip: (normalizedPage - 1) * normalizedPageSize,
@@ -136,14 +141,14 @@ export async function getTicketAccount(userId: string, page = 1, pageSize = 20) 
         actorUserId: true,
         createdAt: true,
       },
-    }),
-  ]);
-  return {
-    balance: user.ticketBalance,
-    page: normalizedPage,
-    pageSize: normalizedPageSize,
-    total,
-    pageCount: Math.max(1, Math.ceil(total / normalizedPageSize)),
-    entries,
-  };
+    });
+    return {
+      balance: user.ticketBalance,
+      page: normalizedPage,
+      pageSize: normalizedPageSize,
+      total,
+      pageCount,
+      entries,
+    };
+  });
 }

@@ -1,10 +1,10 @@
 "use client";
 
-import { AlertTriangle, RotateCcw } from "lucide-react";
+import { RotateCcw, TriangleAlert } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { StatePanel } from "@/shared/ui/state-panel";
 
-export default function RecommendationErrorPage({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export function ProductRouteError({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
     <main className="flex min-h-[70vh] items-center px-5 py-12 sm:px-8">
       <StatePanel
@@ -14,11 +14,11 @@ export default function RecommendationErrorPage({ reset }: { error: Error & { di
           </Button>
         }
         className="mx-auto w-full max-w-3xl"
-        description="저장된 결과는 그대로 있습니다. 잠시 뒤 다시 시도해주세요."
+        description="마지막으로 저장된 데이터는 그대로 있습니다. 잠시 뒤 다시 시도해주세요."
         headingLevel="h1"
-        icon={<AlertTriangle />}
+        icon={<TriangleAlert />}
         role="alert"
-        title="추천 결과를 불러오지 못했어요."
+        title="페이지를 불러오지 못했어요."
         tone="destructive"
       />
     </main>

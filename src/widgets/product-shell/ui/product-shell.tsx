@@ -1,6 +1,6 @@
 "use client";
 
-import { Library, Menu, Mic2 } from "lucide-react";
+import { Library, Menu, Mic2, UserRound } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
@@ -16,6 +16,7 @@ import { ProductBrand } from "./product-brand";
 const productNavigationIcons = {
   microphone: Mic2,
   library: Library,
+  account: UserRound,
 } as const;
 
 function ProductNavigation({ onNavigate }: { onNavigate?: () => void }) {
@@ -88,7 +89,7 @@ function ProductShell({ admin = false, children, user }: ProductShellProps) {
             <SheetContent className="w-[min(22rem,calc(100%-2rem))]" side="left">
               <SheetHeader>
                 <SheetTitle>Copy Singer</SheetTitle>
-                <SheetDescription>목소리 분석과 저장된 라이브러리로 이동합니다.</SheetDescription>
+                <SheetDescription>목소리 분석, 라이브러리와 내 계정으로 이동합니다.</SheetDescription>
               </SheetHeader>
               <div className="border-y px-3 py-4">
                 <ProductNavigation onNavigate={() => setMobileOpen(false)} />
