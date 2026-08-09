@@ -1,0 +1,130 @@
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { expect, within } from "storybook/test";
+import type { MixingHistoryPayload } from "@/entities/mixing-job";
+import type { VocalProfileHistoryPayload } from "@/entities/vocal-profile";
+import { LibraryTabs, MixingLibrary, VocalProfileLibrary } from "@/widgets/library";
+import { ProductShell } from "@/widgets/product-shell";
+
+const denseMixingHistory: MixingHistoryPayload = {
+  page: 1,
+  pageSize: 20,
+  total: 12,
+  pageCount: 1,
+  jobs: Array.from({ length: 12 }, (_, index): MixingHistoryPayload["jobs"][number] => {
+    const succeeded = index % 2 === 0;
+    const suffix = String(index + 201).padStart(12, "0");
+    return {
+      id: `30000000-0000-4000-8000-${suffix}`,
+      status: succeeded ? "succeeded" : "failed",
+      ticketCost: 1,
+      error: succeeded ? null : { code: "MIXING_TARGET_UNAVAILABLE", detail: "upstream fetch failed (502)" },
+      song: {
+        title: succeeded ? `서른 즈음에 ${index + 1}` : `기억의 습작 ${index + 1}`,
+        artist: succeeded ? "김광석" : "전람회",
+        catalogOrder: 300 + index,
+      },
+      vocalProfile: {
+        id: `30000000-0000-4000-9000-${suffix}`,
+        createdAt: "2026-08-01T00:00:00.000Z",
+      },
+      resultReady: succeeded,
+      audioUrl: succeeded ? "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=" : null,
+      createdAt: `2026-08-${String(9 - (index % 7)).padStart(2, "0")}T03:00:00.000Z`,
+      updatedAt: "2026-08-09T03:02:00.000Z",
+      submittedAt: "2026-08-09T03:00:20.000Z",
+      startedAt: "2026-08-09T03:00:30.000Z",
+      completedAt: "2026-08-09T03:02:00.000Z",
+    };
+  }),
+};
+
+const denseProfileHistory: VocalProfileHistoryPayload = {
+  page: 1,
+  pageSize: 12,
+  total: 10,
+  pageCount: 1,
+  profiles: Array.from({ length: 10 }, (_, index): VocalProfileHistoryPayload["profiles"][number] => {
+    const suffix = String(index + 301).padStart(12, "0");
+    return {
+      id: `40000000-0000-4000-8000-${suffix}`,
+      minMidi: 46,
+      maxMidi: 70,
+      medianMidi: 58,
+      tessituraLowMidi: 50,
+      tessituraHighMidi: 66,
+      voicedRatio: 0.86,
+      pitchStability: 0.91,
+      clippingRatio: 0,
+      rmsDb: -20,
+      analyzer: "storybook",
+      analyzerVersion: "1",
+      durationMs: 10_400,
+      mimeType: "audio/wav",
+      recommendationCount: index + 1,
+      mixingCount: index % 4,
+      latestRecommendationId: null,
+      createdAt: `2026-08-${String(9 - (index % 7)).padStart(2, "0")}T00:00:00.000Z`,
+    };
+  }),
+};
+
+function LibraryPreview({ tab }: { tab: "profiles" | "mixes" }) {
+  return (
+    <ProductShell user={{ email: "jieun@copysinger.test", name: "지은" }}>
+      <div className="mx-auto w-full max-w-6xl px-5 py-10 sm:px-8">
+        <p className="text-xs font-semibold tracking-[0.18em] text-data-accent-foreground">LIBRARY</p>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">내 라이브러리</h1>
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
+          저장한 보컬 프로필과 AI 믹싱 작업을 구분해 확인하세요.
+        </p>
+        <div className="mt-8">
+          <LibraryTabs tab={tab} />
+        </div>
+        <div className="mt-6">
+          {tab === "profiles" ? (
+            <VocalProfileLibrary basePath="/library" history={denseProfileHistory} />
+          ) : (
+            <MixingLibrary
+              basePath="/library"
+              filters={{ page: 1, q: "", status: "all" }}
+              initial={denseMixingHistory}
+            />
+          )}
+        </div>
+      </div>
+    </ProductShell>
+  );
+}
+
+const meta = {
+  title: "Pages/Library/Dense Product Shell",
+  component: LibraryPreview,
+  args: { tab: "profiles" },
+  parameters: {
+    layout: "fullscreen",
+    nextjs: { navigation: { pathname: "/library" } },
+  },
+} satisfies Meta<typeof LibraryPreview>;
+
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const Profiles: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("link", { name: "라이브러리" })).toHaveAttribute("aria-current", "page");
+    await expect(canvas.getByText("보컬 프로필 10개")).toBeVisible();
+    await expect(canvas.getAllByRole("link", { name: /분석과 제출 보컬 보기/ })).toHaveLength(10);
+  },
+};
+
+export const Mixes: Story = {
+  args: { tab: "mixes" },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("저장된 AI 믹스 12개")).toBeVisible();
+    await expect(canvas.getAllByRole("link", { name: "결과 듣기" })).toHaveLength(6);
+    await expect(canvas.queryByText(/upstream|502/)).not.toBeInTheDocument();
+  },
+};

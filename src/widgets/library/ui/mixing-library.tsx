@@ -1,17 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import {
-  AlertTriangle,
-  CheckCircle2,
-  Clock3,
-  Download,
-  LoaderCircle,
-  Music2,
-  RotateCcw,
-  Search,
-  Ticket,
-} from "lucide-react";
+import { AlertTriangle, CheckCircle2, Clock3, LoaderCircle, Music2, RotateCcw, Search, Ticket } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -23,8 +13,8 @@ import {
   type MixingHistoryRow,
   mixingHistoryFiltersSchema,
   mixingHistoryQueryOptions,
+  presentMixingFailure,
 } from "@/entities/mixing-job";
-import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
 import { Badge } from "@/shared/ui/badge";
 import { Button, buttonVariants } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
@@ -53,7 +43,7 @@ function statusIcon(job: MixingHistoryRow) {
 function statusDescription(job: MixingHistoryRow) {
   if (job.resultReady) return "결과 준비 완료";
   if (job.status === "succeeded") return "결과 파일을 확인하고 있어요";
-  if (job.status === "failed") return job.error?.detail ?? "믹싱 작업을 완료하지 못했어요.";
+  if (job.status === "failed") return presentMixingFailure(job.error);
   if (job.status === "canceled") return "믹싱 작업이 취소됐어요.";
   return "페이지를 닫아도 서버에서 계속 진행됩니다.";
 }
@@ -135,100 +125,82 @@ function MixingLibraryFilters({
 }
 
 function MixingLibraryRows({ jobs }: { jobs: MixingHistoryRow[] }) {
-  const [expandedJobId, setExpandedJobId] = useState<string | null>(null);
-
   return (
     <div className="border-y">
-      <table className="block w-full table-fixed border-collapse md:table">
+      <table className="block w-full table-fixed border-collapse xl:table">
         <caption className="sr-only">AI 믹스 작업 목록</caption>
-        <thead className="hidden border-b bg-muted/20 text-left text-xs text-muted-foreground md:table-header-group">
+        <thead className="hidden border-b bg-muted/20 text-left text-xs text-muted-foreground xl:table-header-group">
           <tr>
-            <th className="w-36 px-4 py-3 font-medium" scope="col">
+            <th className="w-32 px-4 py-2.5 font-medium" scope="col">
               상태
             </th>
-            <th className="px-4 py-3 font-medium" scope="col">
+            <th className="px-4 py-2.5 font-medium" scope="col">
               곡
             </th>
-            <th className="w-48 px-4 py-3 font-medium" scope="col">
-              보컬 프로필
+            <th className="w-52 px-4 py-2.5 font-medium" scope="col">
+              작업 정보
             </th>
-            <th className="w-24 px-4 py-3 font-medium" scope="col">
-              티켓
-            </th>
-            <th className="w-56 px-4 py-3 font-medium" scope="col">
+            <th className="w-72 px-4 py-2.5 font-medium" scope="col">
               결과
             </th>
           </tr>
         </thead>
-        <tbody className="block divide-y md:table-row-group">
+        <tbody className="block divide-y xl:table-row-group">
           {jobs.map((job) => {
             const active = isActiveMixingStatus(job.status);
-            const expanded = expandedJobId === job.id;
+            const detailHref = `/library/mixes/${job.id}`;
+            const actionLabel = job.resultReady
+              ? "결과 듣기"
+              : active
+                ? "진행 확인"
+                : job.status === "failed"
+                  ? "다시 시도"
+                  : "상세 보기";
             return (
-              <tr className="grid grid-cols-2 gap-4 py-5 md:table-row md:py-0" key={job.id}>
-                <td className="col-span-2 px-4 align-top md:table-cell md:py-5">
+              <tr
+                className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-2 py-4 xl:table-row xl:py-0"
+                key={job.id}
+              >
+                <td className="col-start-2 row-start-1 px-4 text-right align-middle xl:table-cell xl:py-4 xl:text-left">
                   <Badge variant={job.status === "failed" ? "destructive" : job.resultReady ? "default" : "secondary"}>
                     {statusIcon(job)}
                     {STATUS_LABELS[job.status]}
                   </Badge>
                   {active ? <span className="sr-only">자동 새로고침 중</span> : null}
                 </td>
-                <td className="col-span-2 min-w-0 px-4 align-top md:table-cell md:py-5">
-                  <h2 className="truncate text-base font-semibold">
-                    <Link className="underline-offset-4 hover:underline" href={`/library/mixes/${job.id}`}>
+                <td className="col-start-1 row-start-1 min-w-0 pr-0 pl-4 align-middle xl:table-cell xl:px-4 xl:py-4">
+                  <h2 className="truncate text-sm font-semibold">
+                    <Link className="underline-offset-4 hover:underline" href={detailHref}>
                       {job.song.title}
                     </Link>
                   </h2>
-                  <p className="mt-1 text-sm text-muted-foreground">{job.song.artist}</p>
-                  <p className="mt-2 font-mono text-[10px] text-muted-foreground">TJ #{job.song.catalogOrder}</p>
+                  <p className="mt-0.5 truncate text-xs text-muted-foreground">{job.song.artist}</p>
                 </td>
-                <td className="px-4 align-top md:table-cell md:py-5">
-                  <p className="text-xs text-muted-foreground md:sr-only">보컬 프로필</p>
+                <td className="col-span-2 row-start-2 flex flex-wrap items-center gap-x-4 gap-y-1 px-4 align-middle text-xs text-muted-foreground xl:table-cell xl:py-4">
                   <Link
-                    className="mt-1 inline-block text-sm font-medium underline-offset-4 hover:underline md:mt-0"
+                    className="font-medium text-foreground underline-offset-4 hover:underline"
                     href={`/vocal-profiles/${job.vocalProfile.id}`}
                   >
-                    분석 보기
+                    보컬 분석
                   </Link>
-                  <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                  <span className="inline-flex items-center gap-1 xl:mt-1 xl:flex">
                     <Clock3 aria-hidden="true" className="size-3" />
                     {new Date(job.createdAt).toLocaleDateString("ko-KR")}
-                  </p>
+                  </span>
+                  <span className="inline-flex items-center gap-1 xl:mt-1 xl:flex">
+                    <Ticket aria-hidden="true" className="size-3" /> 티켓 {job.ticketCost}개
+                  </span>
                 </td>
-                <td className="px-4 align-top md:table-cell md:py-5">
-                  <p className="text-xs text-muted-foreground md:sr-only">사용 티켓</p>
-                  <p className="mt-1 flex items-center gap-1 text-sm font-medium md:mt-0">
-                    <Ticket aria-hidden="true" className="size-3" /> {job.ticketCost}개
+                <td className="col-span-2 row-start-3 flex items-center justify-between gap-3 px-4 align-middle xl:table-cell xl:py-4">
+                  <p className="min-w-0 text-xs leading-5 text-muted-foreground xl:line-clamp-2">
+                    {statusDescription(job)}
                   </p>
-                </td>
-                <td className="col-span-2 px-4 align-top md:table-cell md:py-5">
-                  <p className="text-xs leading-5 text-muted-foreground">{statusDescription(job)}</p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <Link
-                      className={buttonVariants({ size: "sm", variant: "outline" })}
-                      href={`/library/mixes/${job.id}`}
-                    >
-                      상세 보기
-                    </Link>
-                    {job.audioUrl ? (
-                      <>
-                        <Button onClick={() => setExpandedJobId(expanded ? null : job.id)} size="sm" variant="outline">
-                          <Music2 aria-hidden="true" className="size-4" /> {expanded ? "플레이어 닫기" : "결과 듣기"}
-                        </Button>
-                        <a className={buttonVariants({ size: "sm", variant: "outline" })} download href={job.audioUrl}>
-                          <Download aria-hidden="true" className="size-4" /> 결과 저장
-                        </a>
-                      </>
-                    ) : null}
-                  </div>
-                  {expanded && job.audioUrl ? (
-                    <div className="mt-4 min-w-0 rounded-lg bg-muted/40 p-3">
-                      <AudioWaveformPlayer
-                        label={`${job.song.artist} ${job.song.title} AI 믹싱 결과`}
-                        src={job.audioUrl}
-                      />
-                    </div>
-                  ) : null}
+                  <Link
+                    className={buttonVariants({ size: "sm", variant: job.resultReady ? "outline" : "ghost" })}
+                    href={detailHref}
+                  >
+                    {actionLabel}
+                  </Link>
                 </td>
               </tr>
             );

@@ -71,7 +71,7 @@ function VocalProfileAnalysisJobRows({ jobs }: { jobs: VocalProfileAnalysisJobRe
         const failed = job.status === "failed";
         return (
           <article
-            className="grid gap-5 bg-background py-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-center"
+            className="grid gap-3 bg-background py-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-center"
             key={job.id}
           >
             <div>
@@ -86,7 +86,7 @@ function VocalProfileAnalysisJobRows({ jobs }: { jobs: VocalProfileAnalysisJobRe
                       className="size-5 animate-spin text-data-accent-foreground motion-reduce:animate-none"
                     />
                   )}
-                  <h2 className="text-lg font-semibold">{copy.title}</h2>
+                  <h2 className="text-base font-semibold">{copy.title}</h2>
                 </div>
               </div>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">{copy.detail}</p>
@@ -145,20 +145,24 @@ export function VocalProfileLibrary({
 
   return (
     <section aria-label="보컬 프로필 목록">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
+        <p aria-live="polite">보컬 프로필 {history.total}개</p>
+        <p>최신 분석순</p>
+      </div>
       <div className="divide-y border-y">
         <VocalProfileAnalysisJobRows jobs={analysisJobs} />
         {history.profiles.map((profile) => {
           const presentation = presentVocalProfile(profile);
           return (
             <article
-              className="grid gap-5 bg-background py-6 md:grid-cols-[minmax(0,1.6fr)_repeat(3,minmax(5.5rem,.55fr))_auto] md:items-center"
+              className="grid gap-3 bg-background py-4 md:grid-cols-[minmax(0,1.5fr)_minmax(6.5rem,.55fr)_minmax(5rem,.45fr)_minmax(9rem,.7fr)_auto] md:items-center"
               key={profile.id}
             >
               <div className="min-w-0">
                 <p className="text-xs font-semibold tracking-[0.14em] text-data-accent-foreground">
                   VOCAL PROFILE<span className="sr-only"> 보컬 프로필</span>
                 </p>
-                <h2 className="mt-2 truncate text-lg font-semibold">{presentation.label}</h2>
+                <h2 className="mt-1 truncate text-base font-semibold">{presentation.label}</h2>
                 <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1">
                     <CalendarDays aria-hidden="true" className="size-3" />
@@ -167,21 +171,21 @@ export function VocalProfileLibrary({
                   <span>{profile.durationMs ? `${(profile.durationMs / 1000).toFixed(1)}초` : "길이 정보 없음"}</span>
                 </p>
               </div>
-              <dl className="contents">
+              <dl className="grid grid-cols-3 gap-2 md:contents">
                 {[
-                  ["실용 음역", presentation.practicalRange.label],
+                  ["음역", presentation.practicalRange.label],
                   ["안정도", `${presentation.stability.percent}%`],
-                  ["추천 · 믹싱", `${profile.recommendationCount} · ${profile.mixingCount}`],
+                  ["활동", `추천 ${profile.recommendationCount} · 믹스 ${profile.mixingCount}`],
                 ].map(([label, value]) => (
-                  <div className="border-l pl-3" key={label}>
+                  <div className="min-w-0 border-l pl-2 md:pl-3" key={label}>
                     <dt className="text-xs text-muted-foreground">{label}</dt>
-                    <dd className="mt-1 text-sm font-medium">{value}</dd>
+                    <dd className="mt-0.5 text-xs font-medium sm:text-sm">{value}</dd>
                   </div>
                 ))}
               </dl>
               <Link
                 aria-label={`${presentation.label} 분석과 제출 보컬 보기`}
-                className={buttonVariants({ variant: "outline" })}
+                className={buttonVariants({ size: "sm", variant: "ghost" })}
                 href={`/vocal-profiles/${profile.id}`}
               >
                 상세 보기 <ChevronRight aria-hidden="true" className="size-4" />

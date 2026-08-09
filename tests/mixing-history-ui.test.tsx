@@ -7,7 +7,7 @@ import { createQueryClient } from "@/_app/providers";
 import { MixingHistoryList } from "../src/_pages/mixing-history";
 import { LibraryTabs, MixingLibrary, mixingHistoryHref } from "../src/widgets/library";
 
-test("mixing history renders active state and persisted result controls", () => {
+test("mixing history renders active state and one detail action per result", () => {
   const client = createQueryClient(true);
   const markup = renderToStaticMarkup(
     <QueryClientProvider client={client}>
@@ -54,8 +54,9 @@ test("mixing history renders active state and persisted result controls", () => 
   client.clear();
   assert.match(markup, /믹싱 중/);
   assert.match(markup, /완료 곡/);
-  assert.match(markup, /\/api\/mixing-jobs\/done\/audio/);
-  assert.match(markup, /결과 저장/);
+  assert.match(markup, /결과 듣기/);
+  assert.doesNotMatch(markup, /\/api\/mixing-jobs\/done\/audio/);
+  assert.doesNotMatch(markup, /결과 저장/);
   assert.match(markup, /AI 믹스 작업 목록/);
   assert.match(markup, /name="q"/);
   assert.match(markup, /name="status"/);
@@ -78,7 +79,7 @@ test("mixing library distinguishes failed and filtered empty states", () => {
               id: "10000000-0000-4000-8000-000000000100",
               status: "failed",
               ticketCost: 1,
-              error: { code: "MIXING_FAILED", detail: "원곡을 준비하지 못했습니다." },
+              error: { code: "MIXING_FAILED", detail: "upstream fetch failed (502)" },
               song: { title: "실패 곡", artist: "가수", catalogOrder: 3 },
               vocalProfile: {
                 id: "10000000-0000-4000-8000-000000000101",
@@ -96,7 +97,8 @@ test("mixing library distinguishes failed and filtered empty states", () => {
       />
     </QueryClientProvider>,
   );
-  assert.match(failedMarkup, /원곡을 준비하지 못했습니다/);
+  assert.match(failedMarkup, /AI 믹싱을 완료하지 못했어요/);
+  assert.doesNotMatch(failedMarkup, /upstream fetch failed|502/);
   assert.match(failedMarkup, /type="hidden" name="tab" value="mixes"/);
   client.clear();
 

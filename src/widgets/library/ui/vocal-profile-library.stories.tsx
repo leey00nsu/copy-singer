@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, within } from "storybook/test";
+import type { VocalProfileHistoryPayload } from "@/entities/vocal-profile";
 import { LibraryTabs } from "./library-tabs";
 import { VocalProfileLibrary } from "./vocal-profile-library";
 
@@ -30,7 +31,7 @@ const profileHistory = {
       createdAt: "2026-08-09T00:00:00.000Z",
     },
   ],
-};
+} satisfies VocalProfileHistoryPayload;
 
 const meta = {
   title: "Widgets/Library/Vocal Profiles",
@@ -73,6 +74,32 @@ export const SavedProfile: Story = {
       "href",
       "/vocal-profiles/40000000-0000-4000-8000-000000000001",
     );
+  },
+};
+
+const denseProfileHistory: VocalProfileHistoryPayload = {
+  ...profileHistory,
+  total: 10,
+  profiles: Array.from({ length: 10 }, (_, index) => {
+    const source = profileHistory.profiles[0];
+    const suffix = String(index + 101).padStart(12, "0");
+    return {
+      ...source,
+      id: `40000000-0000-4000-8000-${suffix}`,
+      recommendationCount: index + 1,
+      mixingCount: index % 4,
+      createdAt: `2026-08-${String(9 - (index % 7)).padStart(2, "0")}T00:00:00.000Z`,
+    };
+  }),
+};
+
+export const DenseLibrary: Story = {
+  args: { history: denseProfileHistory },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("보컬 프로필 10개")).toBeVisible();
+    await expect(canvas.getByText("최신 분석순")).toBeVisible();
+    await expect(canvas.getAllByRole("link", { name: /분석과 제출 보컬 보기/ })).toHaveLength(10);
   },
 };
 
