@@ -72,19 +72,19 @@
     - [x] `fsd.how` 정본과 Steiger narrow override 근거 연결
     - [x] README format 및 링크 검토
 
-- [TODO][NON-PRD] T-F017-02 Feature model API와 authentication server 경계 강화
+- [DONE][NON-PRD] T-F017-02 Feature model API와 authentication server 경계 강화
   - Date: 2026-08-09
   - Acceptance:
     - 분석, 추천, 티켓 route handler가 Feature 내부 `model/contract` 대신 slice-root model 공개 API를 사용한다.
     - `ADMIN_EMAILS`를 읽는 정책은 server-only 공개 API로만 노출되고 Root Layout은 UI와 서버 정책 entry를 분리한다.
     - Zod schema 동작, 기존 browser export 및 authentication 동작이 보존된다.
   - Checklist:
-    - [ ] analyze-vocal-profile, create-recommendation, manage-tickets `index.model.ts` 추가
-    - [ ] 세 route handler의 contract deep import를 model 공개 API로 교체
-    - [ ] authentication 기본 공개 API에서 Admin policy export 제거
-    - [ ] Admin policy에 server-only marker 추가 및 server 공개 API export 확인
-    - [ ] Root Layout의 UserMenu/Admin policy import 분리
-    - [ ] 관련 Query/API/auth test와 정적 검사 통과
+    - [x] analyze-vocal-profile, create-recommendation, manage-tickets `index.model.ts` 추가
+    - [x] 세 route handler의 contract deep import를 model 공개 API로 교체
+    - [x] authentication 기본 공개 API에서 Admin policy export 제거
+    - [x] Admin policy에 server-only marker 추가 및 server 공개 API export 확인
+    - [x] Root Layout의 UserMenu/Admin policy import 분리
+    - [x] 관련 Query/API/auth test와 정적 검사 통과
 
 - [TODO][NON-PRD] T-F017-03 Admin 조회 서비스를 Feature server API로 이동
   - Date: 2026-08-09
