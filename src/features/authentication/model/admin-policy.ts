@@ -1,3 +1,5 @@
+import "server-only";
+
 export function adminEmails() {
   return new Set(
     (process.env.ADMIN_EMAILS ?? "")

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { headers } from "next/headers";
-import { isAdminEmail, UserMenu } from "@/features/authentication";
-import { getRequestSession } from "@/features/authentication/index.server";
+import { UserMenu } from "@/features/authentication";
+import { getRequestSession, isAdminEmail } from "@/features/authentication/index.server";
 import { Toaster } from "@/shared/ui/sonner";
 import { TooltipProvider } from "@/shared/ui/tooltip";
 import { QueryProvider } from "../providers";

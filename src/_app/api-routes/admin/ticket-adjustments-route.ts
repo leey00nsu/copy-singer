@@ -1,7 +1,7 @@
 import { InsufficientTicketsError } from "@/entities/ticket/index.server";
 import { requireAdminApi } from "@/features/authentication/index.server";
+import { ticketAdjustmentRequestSchema } from "@/features/manage-tickets/index.model";
 import { adjustUserTickets } from "@/features/manage-tickets/index.server";
-import { ticketAdjustmentRequestSchema } from "@/features/manage-tickets/model/contract";
 
 export async function ticketAdjustmentsPost(request: Request) {
   const access = await requireAdminApi(request);

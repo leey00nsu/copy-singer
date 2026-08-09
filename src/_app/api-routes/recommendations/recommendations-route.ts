@@ -1,7 +1,7 @@
 import { RecommendationError } from "@/entities/recommendation/index.model";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
+import { createRecommendationRequestSchema } from "@/features/create-recommendation/index.model";
 import { createRecommendationRun } from "@/features/create-recommendation/index.server";
-import { createRecommendationRequestSchema } from "@/features/create-recommendation/model/contract";
 
 function errorResponse(error: unknown) {
   if (error instanceof RecommendationError) {
