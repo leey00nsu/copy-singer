@@ -204,7 +204,7 @@ test("expired analysis leases are recoverable by another worker", async (context
     assert.equal(await claimNextVocalProfileAnalysisJob("worker-b", job.id), null);
     await prisma.$executeRaw`
       UPDATE "VocalProfileAnalysisJob"
-      SET "leaseExpiresAt" = ${new Date(Date.now() - 1_000)}
+      SET "leaseExpiresAt" = ${new Date(0)}
       WHERE "id" = ${job.id}::uuid
     `;
     assert.equal(await claimNextVocalProfileAnalysisJob("worker-b", job.id), job.id);
