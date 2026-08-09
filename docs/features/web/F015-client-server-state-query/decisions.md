@@ -32,7 +32,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: `requestJson`이 valid payload만 반환하고 4xx·contract error를 재시도하지 않으며 retryable 5xx/network만 재시도 대상으로 분류함을 5개 Node test로 확인했다. MSW postinstall은 browser worker가 필요 없는 F015 범위에서 실행하지 않도록 pnpm `allowBuilds`에 명시했다.
   - **머지 후 확인**: 로컬 통합 후 갱신 예정
 - **Evidence**:
-  - **Commit**: task commit 후 갱신 예정
+  - **Commit**: docs `bb05b2d`, project `477e6f9`
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: `pnpm run test:query` PASS (5), `pnpm run typecheck` PASS, `pnpm run check:architecture` PASS, `pnpm run lint` PASS (2026-08-09)
 - **Consequences**: query cache는 브라우저 메모리에만 유지되고, endpoint schema 불일치는 재시도하지 않는 contract error가 된다.
