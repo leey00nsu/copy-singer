@@ -1,5 +1,6 @@
 "use client";
 
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Activity,
   AlertTriangle,
@@ -17,12 +18,23 @@ import {
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import type {
-  VocalProfileAnalysisJobResponse,
-  VocalProfileError,
-  VocalProfileResponse,
+import type { VocalProfileError } from "@/entities/vocal-profile";
+import {
+  deleteVocalProfileMutationOptions,
+  isLongProfileAudio,
+  readAudioDuration,
+  VocalProfileResults,
+  vocalProfileErrorSchema,
 } from "@/entities/vocal-profile";
-import { isLongProfileAudio, readAudioDuration, VocalProfileResults } from "@/entities/vocal-profile";
+import {
+  isActiveAnalysisJob,
+  submitVocalProfileAnalysisMutationOptions,
+  vocalAnalysisKeys,
+  vocalProfileAnalysisJobQueryOptions,
+  vocalProfileHealthQueryOptions,
+} from "@/features/analyze-vocal-profile";
+import { createRecommendationMutationOptions } from "@/features/create-recommendation";
+import { ApiError } from "@/shared/api";
 import { prepareProfileAudio } from "@/shared/lib/audio";
 import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
 import { Badge } from "@/shared/ui/badge";
@@ -34,9 +46,6 @@ import { VocalProfileRecorder } from "./vocal-profile-recorder";
 const MAX_PROFILE_AUDIO_BYTES = 25 * 1024 * 1024;
 const ACCEPTED_AUDIO = ".wav,.mp3,.m4a,.webm,audio/wav,audio/mpeg,audio/mp4,audio/webm";
 const ANALYSIS_JOB_STORAGE_KEY = "copy-singer:vocal-profile-analysis-job";
-const ANALYSIS_POLL_INTERVAL_MS = 1_500;
-
-type ServiceHealth = "checking" | "ok" | "unavailable";
 
 const ERROR_GUIDANCE: Record<string, { title: string; action: string }> = {
   TOO_SHORT: { title: "녹음이 너무 짧아요", action: "5초 이상 노래한 뒤 다시 시도해주세요." },
@@ -61,12 +70,13 @@ const ERROR_GUIDANCE: Record<string, { title: string; action: string }> = {
 };
 
 function profileError(value: unknown): VocalProfileError {
-  if (value && typeof value === "object" && "reasonCode" in value) {
-    const candidate = value as Partial<VocalProfileError>;
+  const parsed = vocalProfileErrorSchema.safeParse(value);
+  if (parsed.success) return parsed.data;
+  if (value instanceof ApiError) {
     return {
-      reasonCode: String(candidate.reasonCode),
-      detail: String(candidate.detail ?? ""),
-      retryable: candidate.retryable !== false,
+      reasonCode: value.code ?? "ANALYSIS_FAILED",
+      detail: value.message,
+      retryable: value.retryable,
     };
   }
   return { reasonCode: "ANALYSIS_FAILED", detail: "Unknown analysis error.", retryable: true };
@@ -79,17 +89,38 @@ export function VocalProfileWorkbench() {
   const [pendingLongDuration, setPendingLongDuration] = useState<number | null>(null);
   const [preparingAudio, setPreparingAudio] = useState(false);
   const [preparationProgress, setPreparationProgress] = useState(0);
-  const [health, setHealth] = useState<ServiceHealth>("checking");
-  const [analyzing, setAnalyzing] = useState(false);
   const [analysisJobId, setAnalysisJobId] = useState<string | null>(null);
-  const [analysisJobStatus, setAnalysisJobStatus] = useState<VocalProfileAnalysisJobResponse["status"] | null>(null);
   const analysisIdempotencyKey = useRef<string | null>(null);
-  const [deleting, setDeleting] = useState(false);
-  const [recommending, setRecommending] = useState(false);
-  const [profile, setProfile] = useState<VocalProfileResponse | null>(null);
+  const handledTerminalJob = useRef<string | null>(null);
   const [analysisError, setAnalysisError] = useState<VocalProfileError | null>(null);
+  const queryClient = useQueryClient();
+  const healthQuery = useQuery(vocalProfileHealthQueryOptions());
+  const analysisJobQuery = useQuery(vocalProfileAnalysisJobQueryOptions(analysisJobId));
+  const submitAnalysis = useMutation(submitVocalProfileAnalysisMutationOptions());
+  const deleteProfileMutation = useMutation(deleteVocalProfileMutationOptions());
+  const createRecommendation = useMutation(createRecommendationMutationOptions());
+  const analysisJob = analysisJobQuery.data;
+  const analysisJobStatus = analysisJob?.status ?? null;
+  const profile = analysisJob?.profile ?? null;
+  const analysisJobRequestError = analysisJobQuery.error ? profileError(analysisJobQuery.error) : null;
+  const terminalAnalysisError =
+    analysisJob?.status === "failed"
+      ? (analysisJob.error ?? {
+          reasonCode: "ANALYSIS_FAILED",
+          detail: "Background analysis failed.",
+          retryable: true,
+        })
+      : analysisJobRequestError && !analysisJobRequestError.retryable
+        ? analysisJobRequestError
+        : null;
+  const displayedAnalysisError = analysisError ?? terminalAnalysisError;
+  const health = healthQuery.isPending ? "checking" : healthQuery.data?.status === "ok" ? "ok" : "unavailable";
   const audioUrl = useMemo(() => (audioFile ? URL.createObjectURL(audioFile) : null), [audioFile]);
-  const analysisBusy = analyzing || analysisJobId !== null;
+  const analysisBusy =
+    submitAnalysis.isPending ||
+    isActiveAnalysisJob(analysisJob) ||
+    (analysisJobId !== null && analysisJobQuery.isPending) ||
+    (analysisJobId !== null && analysisJobRequestError?.retryable === true);
 
   useEffect(() => {
     return () => {
@@ -98,83 +129,37 @@ export function VocalProfileWorkbench() {
   }, [audioUrl]);
 
   useEffect(() => {
-    let active = true;
-    void fetch("/api/vocal-profiles/health", { cache: "no-store" })
-      .then((response) => {
-        if (active) setHealth(response.ok ? "ok" : "unavailable");
-      })
-      .catch(() => {
-        if (active) setHealth("unavailable");
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  useEffect(() => {
     const storedJobId = window.localStorage.getItem(ANALYSIS_JOB_STORAGE_KEY);
     if (storedJobId) queueMicrotask(() => setAnalysisJobId(storedJobId));
   }, []);
 
   useEffect(() => {
-    if (!analysisJobId) return;
-    let active = true;
-    window.localStorage.setItem(ANALYSIS_JOB_STORAGE_KEY, analysisJobId);
+    if (!analysisJobId || !analysisJob) return;
+    if (isActiveAnalysisJob(analysisJob)) {
+      window.localStorage.setItem(ANALYSIS_JOB_STORAGE_KEY, analysisJobId);
+      return;
+    }
 
-    const poll = async () => {
-      while (active) {
-        try {
-          const response = await fetch(`/api/vocal-profile-analysis-jobs/${analysisJobId}`, { cache: "no-store" });
-          const payload = (await response.json().catch(() => null)) as
-            | VocalProfileAnalysisJobResponse
-            | VocalProfileError
-            | null;
-          if (!response.ok) {
-            if (active) {
-              setAnalysisError(profileError(payload));
-              setAnalyzing(false);
-              setAnalysisJobId(null);
-              setAnalysisJobStatus(null);
-              analysisIdempotencyKey.current = null;
-              window.localStorage.removeItem(ANALYSIS_JOB_STORAGE_KEY);
-            }
-            return;
-          }
-          const job = payload as VocalProfileAnalysisJobResponse;
-          if (!active) return;
-          setAnalysisJobStatus(job.status);
-          if (job.status === "succeeded" && job.profile) {
-            setProfile(job.profile);
-            setAnalyzing(false);
-            setAnalysisJobId(null);
-            analysisIdempotencyKey.current = null;
-            window.localStorage.removeItem(ANALYSIS_JOB_STORAGE_KEY);
-            setHealth("ok");
-            toast.success("보컬 프로필 분석이 완료됐습니다.");
-            return;
-          }
-          if (job.status === "failed") {
-            setAnalysisError(
-              job.error ?? { reasonCode: "ANALYSIS_FAILED", detail: "Background analysis failed.", retryable: true },
-            );
-            setAnalyzing(false);
-            setAnalysisJobId(null);
-            analysisIdempotencyKey.current = null;
-            window.localStorage.removeItem(ANALYSIS_JOB_STORAGE_KEY);
-            return;
-          }
-        } catch {
-          // Keep the durable job id and retry polling after transient browser/network failures.
-        }
-        await new Promise((resolve) => setTimeout(resolve, ANALYSIS_POLL_INTERVAL_MS));
-      }
-    };
+    const terminalKey = `${analysisJobId}:${analysisJob.status}`;
+    if (handledTerminalJob.current === terminalKey) return;
+    handledTerminalJob.current = terminalKey;
+    analysisIdempotencyKey.current = null;
+    window.localStorage.removeItem(ANALYSIS_JOB_STORAGE_KEY);
 
-    void poll();
-    return () => {
-      active = false;
-    };
-  }, [analysisJobId]);
+    if (analysisJob.status === "succeeded" && analysisJob.profile) {
+      void queryClient.invalidateQueries({ queryKey: vocalAnalysisKeys.health() });
+      toast.success("보컬 프로필 분석이 완료됐습니다.");
+      return;
+    }
+  }, [analysisJob, analysisJobId, queryClient]);
+
+  useEffect(() => {
+    if (!analysisJobId || !analysisJobQuery.error) return;
+    const error = profileError(analysisJobQuery.error);
+    if (error.retryable) return;
+    analysisIdempotencyKey.current = null;
+    window.localStorage.removeItem(ANALYSIS_JOB_STORAGE_KEY);
+  }, [analysisJobId, analysisJobQuery.error]);
 
   const resetAudio = () => {
     setAudioFile(null);
@@ -183,6 +168,7 @@ export function VocalProfileWorkbench() {
     setPendingLongDuration(null);
     setPreparationProgress(0);
     setAnalysisError(null);
+    setAnalysisJobId(null);
     analysisIdempotencyKey.current = null;
   };
 
@@ -250,82 +236,56 @@ export function VocalProfileWorkbench() {
     void prepareSelectedAudio(file);
   };
 
-  const analyzeAudio = async () => {
+  const analyzeAudio = () => {
     if (!audioFile || analysisBusy) return;
-    setAnalyzing(true);
     setAnalysisError(null);
-    const body = new FormData();
-    body.append("audio", audioFile, audioFile.name);
+    setAnalysisJobId(null);
     const idempotencyKey = analysisIdempotencyKey.current ?? crypto.randomUUID();
     analysisIdempotencyKey.current = idempotencyKey;
-    try {
-      const response = await fetch("/api/vocal-profile-analysis-jobs", {
-        method: "POST",
-        headers: { "Idempotency-Key": idempotencyKey },
-        body,
-      });
-      const payload: unknown = await response.json().catch(() => null);
-      if (!response.ok) throw profileError(payload);
-      const job = payload as VocalProfileAnalysisJobResponse;
-      if (!job.id) throw profileError(payload);
-      window.localStorage.setItem(ANALYSIS_JOB_STORAGE_KEY, job.id);
-      setAnalysisJobStatus(job.status);
-      setAnalysisJobId(job.id);
-      setHealth("ok");
-      toast.success("보컬 분석을 대기열에 추가했습니다.");
-    } catch (error) {
-      setAnalysisError(profileError(error));
-      setAnalyzing(false);
-    }
+    submitAnalysis.mutate(
+      { file: audioFile, idempotencyKey },
+      {
+        onSuccess: (job) => {
+          handledTerminalJob.current = null;
+          window.localStorage.setItem(ANALYSIS_JOB_STORAGE_KEY, job.id);
+          queryClient.setQueryData(vocalAnalysisKeys.job(job.id), job);
+          setAnalysisJobId(job.id);
+          void queryClient.invalidateQueries({ queryKey: vocalAnalysisKeys.health() });
+          toast.success("보컬 분석을 대기열에 추가했습니다.");
+        },
+        onError: (error) => setAnalysisError(profileError(error)),
+      },
+    );
   };
 
-  const deleteProfile = async () => {
-    if (!profile || deleting || !window.confirm("이 보컬 프로필과 원본 녹음을 삭제할까요?")) return;
-    setDeleting(true);
-    setAnalysisError(null);
-    try {
-      const response = await fetch(`/api/vocal-profiles/${profile.id}`, { method: "DELETE" });
-      const payload: unknown = await response.json().catch(() => null);
-      if (!response.ok) throw profileError(payload);
-      setProfile(null);
-      setAudioFile(null);
-      setAudioDuration(null);
-      toast.success("프로필과 원본 녹음을 삭제했습니다.");
-    } catch (error) {
-      setAnalysisError(profileError(error));
-    } finally {
-      setDeleting(false);
+  const deleteProfile = () => {
+    if (!profile || deleteProfileMutation.isPending || !window.confirm("이 보컬 프로필과 원본 녹음을 삭제할까요?")) {
+      return;
     }
+    setAnalysisError(null);
+    deleteProfileMutation.mutate(profile.id, {
+      onSuccess: () => {
+        if (analysisJobId) queryClient.removeQueries({ queryKey: vocalAnalysisKeys.job(analysisJobId) });
+        setAnalysisJobId(null);
+        setAudioFile(null);
+        setAudioDuration(null);
+        toast.success("프로필과 원본 녹음을 삭제했습니다.");
+      },
+      onError: (error) => setAnalysisError(profileError(error)),
+    });
   };
 
-  const createRecommendations = async () => {
-    if (!profile || recommending) return;
-    setRecommending(true);
+  const createRecommendations = () => {
+    if (!profile || createRecommendation.isPending) return;
     setAnalysisError(null);
-    try {
-      const response = await fetch("/api/recommendations", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userVocalProfileId: profile.id }),
-      });
-      const payload = (await response.json().catch(() => null)) as {
-        id?: string;
-        error?: { code?: string; message?: string; retryable?: boolean };
-      } | null;
-      if (!response.ok || !payload?.id) {
-        throw {
-          reasonCode: payload?.error?.code ?? "RECOMMENDATION_SAVE_FAILED",
-          detail: payload?.error?.message ?? "Recommendation failed.",
-          retryable: payload?.error?.retryable ?? true,
-        } satisfies VocalProfileError;
-      }
-      // Direct component tests do not provide a Next router context.
-      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
-      window.location.href = `/recommendations/${payload.id}`;
-    } catch (error) {
-      setAnalysisError(profileError(error));
-      setRecommending(false);
-    }
+    createRecommendation.mutate(profile.id, {
+      onSuccess: (run) => {
+        // Direct component tests do not provide a Next router context.
+        // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+        window.location.href = `/recommendations/${run.id}`;
+      },
+      onError: (error) => setAnalysisError(profileError(error)),
+    });
   };
 
   return (
@@ -471,7 +431,7 @@ export function VocalProfileWorkbench() {
           </Card>
         </div>
 
-        {analysisJobId ? (
+        {isActiveAnalysisJob(analysisJob) ? (
           <section aria-live="polite" className="mt-6 rounded-2xl border bg-muted/35 p-5">
             <div className="flex items-center gap-3">
               <LoaderCircle className="size-5 animate-spin text-primary" />
@@ -487,18 +447,18 @@ export function VocalProfileWorkbench() {
           </section>
         ) : null}
 
-        {analysisError ? (
+        {displayedAnalysisError ? (
           <section aria-live="assertive" className="mt-6 rounded-2xl border border-destructive/30 bg-destructive/5 p-5">
             <div className="flex gap-3">
               <AlertTriangle className="mt-0.5 size-5 shrink-0 text-destructive" />
               <div>
                 <h2 className="font-semibold">
-                  {ERROR_GUIDANCE[analysisError.reasonCode]?.title ?? "분석을 완료하지 못했어요"}
+                  {ERROR_GUIDANCE[displayedAnalysisError.reasonCode]?.title ?? "분석을 완료하지 못했어요"}
                 </h2>
                 <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                  {ERROR_GUIDANCE[analysisError.reasonCode]?.action ?? "잠시 뒤 다시 시도해주세요."}
+                  {ERROR_GUIDANCE[displayedAnalysisError.reasonCode]?.action ?? "잠시 뒤 다시 시도해주세요."}
                 </p>
-                <p className="mt-2 font-mono text-[11px] text-muted-foreground">{analysisError.reasonCode}</p>
+                <p className="mt-2 font-mono text-[11px] text-muted-foreground">{displayedAnalysisError.reasonCode}</p>
               </div>
             </div>
           </section>
@@ -520,12 +480,16 @@ export function VocalProfileWorkbench() {
                 </div>
                 <Button
                   aria-label="보컬 프로필 삭제"
-                  disabled={deleting}
+                  disabled={deleteProfileMutation.isPending}
                   onClick={() => void deleteProfile()}
                   size="icon"
                   variant="ghost"
                 >
-                  {deleting ? <LoaderCircle className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
+                  {deleteProfileMutation.isPending ? (
+                    <LoaderCircle className="size-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="size-4" />
+                  )}
                 </Button>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -543,13 +507,17 @@ export function VocalProfileWorkbench() {
                 </div>
                 <Button
                   className="w-full"
-                  disabled={recommending}
+                  disabled={createRecommendation.isPending}
                   onClick={() => void createRecommendations()}
                   size="lg"
                 >
-                  {recommending ? <LoaderCircle className="size-4 animate-spin" /> : <Sparkles className="size-4" />}
-                  {recommending ? "100곡을 비교하는 중…" : "100곡 추천 순위 보기"}
-                  {!recommending ? <ArrowRight className="ml-auto size-4" /> : null}
+                  {createRecommendation.isPending ? (
+                    <LoaderCircle className="size-4 animate-spin" />
+                  ) : (
+                    <Sparkles className="size-4" />
+                  )}
+                  {createRecommendation.isPending ? "100곡을 비교하는 중…" : "100곡 추천 순위 보기"}
+                  {!createRecommendation.isPending ? <ArrowRight className="ml-auto size-4" /> : null}
                 </Button>
               </CardContent>
             </Card>

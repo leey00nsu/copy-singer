@@ -3,12 +3,12 @@
 import { isServer, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { shouldRetryQuery } from "@/shared/api";
 
-export function createQueryClient() {
+export function createQueryClient(serverRuntime = isServer) {
   return new QueryClient({
     defaultOptions: {
       queries: {
         staleTime: 30_000,
-        gcTime: 5 * 60_000,
+        gcTime: serverRuntime ? Number.POSITIVE_INFINITY : 5 * 60_000,
         refetchOnWindowFocus: false,
         refetchOnReconnect: true,
         retry: shouldRetryQuery,
@@ -24,8 +24,8 @@ export function createQueryClient() {
 let browserQueryClient: QueryClient | undefined;
 
 function getQueryClient() {
-  if (isServer) return createQueryClient();
-  browserQueryClient ??= createQueryClient();
+  if (isServer) return createQueryClient(true);
+  browserQueryClient ??= createQueryClient(false);
   return browserQueryClient;
 }
 

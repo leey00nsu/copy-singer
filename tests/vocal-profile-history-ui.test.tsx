@@ -1,11 +1,22 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { renderToStaticMarkup } from "react-dom/server";
 
+import { createQueryClient } from "@/_app/providers";
 import { VocalProfileHistoryList } from "../src/_pages/vocal-profiles";
 
+function renderHistory(ui: React.ReactNode) {
+  const client = createQueryClient(true);
+  try {
+    return renderToStaticMarkup(<QueryClientProvider client={client}>{ui}</QueryClientProvider>);
+  } finally {
+    client.clear();
+  }
+}
+
 test("vocal profile history renders persisted analysis and detail navigation", () => {
-  const markup = renderToStaticMarkup(
+  const markup = renderHistory(
     <VocalProfileHistoryList
       history={{
         page: 1,
@@ -43,7 +54,7 @@ test("vocal profile history renders persisted analysis and detail navigation", (
 });
 
 test("vocal profile history shows queued analysis instead of an empty state", () => {
-  const markup = renderToStaticMarkup(
+  const markup = renderHistory(
     <VocalProfileHistoryList
       analysisJobs={[
         {
@@ -66,7 +77,7 @@ test("vocal profile history shows queued analysis instead of an empty state", ()
 });
 
 test("vocal profile history provides an empty-state creation link", () => {
-  const markup = renderToStaticMarkup(
+  const markup = renderHistory(
     <VocalProfileHistoryList history={{ page: 1, pageSize: 12, total: 0, pageCount: 1, profiles: [] }} />,
   );
   assert.match(markup, /아직 저장된 보컬 프로필이 없어요/);

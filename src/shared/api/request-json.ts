@@ -24,7 +24,11 @@ function readErrorDetails(payload: unknown, status: number): ErrorDetails {
   }
 
   if (typeof payload.detail === "string") {
-    return { code: null, message: payload.detail, retryable: status === 429 || status >= 500 };
+    return {
+      code: typeof payload.reasonCode === "string" ? payload.reasonCode : null,
+      message: payload.detail,
+      retryable: typeof payload.retryable === "boolean" ? payload.retryable : status === 429 || status >= 500,
+    };
   }
 
   if (typeof payload.error === "string") {

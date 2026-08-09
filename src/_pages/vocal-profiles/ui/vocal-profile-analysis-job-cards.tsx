@@ -1,13 +1,13 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, Clock3, LoaderCircle, RotateCcw } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import type { VocalProfileAnalysisJobResponse } from "@/entities/vocal-profile";
+import { isActiveAnalysisJob, vocalProfileAnalysisJobsQueryOptions } from "@/features/analyze-vocal-profile";
 import { Badge } from "@/shared/ui/badge";
 import { buttonVariants } from "@/shared/ui/button";
-
-const POLL_INTERVAL_MS = 3_000;
 
 function jobCopy(job: VocalProfileAnalysisJobResponse) {
   if (job.status === "processing") {
@@ -39,42 +39,19 @@ function jobCopy(job: VocalProfileAnalysisJobResponse) {
 }
 
 export function VocalProfileAnalysisJobCards({ jobs }: { jobs: VocalProfileAnalysisJobResponse[] }) {
-  const [currentJobs, setCurrentJobs] = useState(jobs);
-  const activeKey = currentJobs
-    .filter((job) => job.status === "pending" || job.status === "processing")
-    .map((job) => job.id)
-    .join(",");
+  const jobsQuery = useQuery(vocalProfileAnalysisJobsQueryOptions(jobs));
+  const currentJobs = jobsQuery.data?.jobs ?? jobs;
+  const activeIds = useRef(jobs.filter(isActiveAnalysisJob).map((job) => job.id));
 
   useEffect(() => {
-    if (!activeKey) return;
-    const activeIds = new Set(activeKey.split(","));
-    let active = true;
-    const poll = async () => {
-      try {
-        const response = await fetch("/api/vocal-profile-analysis-jobs", { cache: "no-store" });
-        if (!response.ok) return;
-        const payload = (await response.json()) as { jobs?: VocalProfileAnalysisJobResponse[] };
-        const updates = Array.isArray(payload.jobs) ? payload.jobs : [];
-        if (!active) return;
-        const visibleIds = new Set(updates.map((job) => job.id));
-        if ([...activeIds].some((id) => !visibleIds.has(id))) {
-          window.location.reload();
-          return;
-        }
-        setCurrentJobs(updates);
-      } catch {
-        // Keep the last known status and try again on the next interval.
-      }
-    };
-    void poll();
-    const timer = window.setInterval(() => {
-      void poll();
-    }, POLL_INTERVAL_MS);
-    return () => {
-      active = false;
-      window.clearInterval(timer);
-    };
-  }, [activeKey]);
+    if (!jobsQuery.data) return;
+    const visibleIds = new Set(jobsQuery.data.jobs.map((job) => job.id));
+    if (activeIds.current.some((id) => !visibleIds.has(id))) {
+      window.location.reload();
+      return;
+    }
+    activeIds.current = jobsQuery.data.jobs.filter(isActiveAnalysisJob).map((job) => job.id);
+  }, [jobsQuery.data]);
 
   return currentJobs.map((job) => {
     const copy = jobCopy(job);
