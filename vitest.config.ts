@@ -25,6 +25,7 @@ export default defineConfig({
       "@base-ui/react/tooltip",
       "@base-ui/react/use-render",
       "@wavesurfer/react",
+      "wavesurfer.js/dist/plugins/record.esm.js",
       "better-auth/react",
       "lucide-react",
       "mediabunny",

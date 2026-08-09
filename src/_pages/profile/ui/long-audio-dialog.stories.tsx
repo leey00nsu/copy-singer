@@ -23,13 +23,13 @@ type Story = StoryObj<typeof meta>;
 
 export const Open: Story = {
   play: async ({ args, canvasElement }) => {
-    const canvas = within(canvasElement);
-    const dialog = canvas.getByRole("dialog", { name: /파일의 길이가 너무 길어요/ });
+    const page = within(canvasElement.ownerDocument.body);
+    const dialog = page.getByRole("dialog", { name: /파일의 길이가 너무 길어요/ });
     const confirm = within(dialog).getByRole("button", { name: "예, 자동으로 자르기" });
     const cancel = within(dialog).getByRole("button", { name: "아니오" });
 
     await expect(confirm).toHaveFocus();
-    await userEvent.tab();
+    await userEvent.tab({ shift: true });
     await expect(cancel).toHaveFocus();
     await userEvent.keyboard("{Escape}");
     await expect(args.onCancel).toHaveBeenCalledOnce();
