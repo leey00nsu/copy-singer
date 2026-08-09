@@ -151,4 +151,4 @@
 | `pnpm test` | `2026-08-09` | PASS — Next.js production build와 전체 Node/DB/Query/Storybook browser 회귀 |
 | `pnpm run build-storybook` | `2026-08-09` | PASS — Storybook 10.5.7 정적 빌드 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T12:39:53.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T12:48:50.000Z -->

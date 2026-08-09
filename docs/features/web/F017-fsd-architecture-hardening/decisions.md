@@ -38,9 +38,10 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **T-F017-05 시작 시점**: 구현된 공개 API·server/client·App adapter 경계를 전체 source inventory와 정규 quality/test/build 명령으로 다시 검증한다. API·DB·Coolify·CI 범위가 변경되지 않았는지도 최종 diff에서 함께 확인한다.
   - **T-F017-05 완료 시점**: 실제 `app`·`src`·`scripts`에서 slice segment deep import가 0건임을 확인했고 source graph 및 App adapter 검사 4건이 통과했다. 전체 quality, Admin 회귀, Next.js production build, 전체 test와 Storybook build가 통과했으며 route diff는 공개 API import 교체뿐이고 Prisma·Coolify·GitHub Actions 변경 파일은 없다.
   - **DONE 전 확정 시점**: 실제 저장소 Layout과 공개 API 종류를 inventory하고 README에 adapter/layer/entry point 규칙 및 Steiger 0.6.0 narrow override 근거를 반영했다.
-  - **머지 후 확인**: 로컬 통합 전이며 workflow의 local-ff 승인·검증 단계에서 결과를 기록한다.
+  - **머지 후 확인**: Feature tip `7f5072c`를 `main`에 fast-forward 통합했다. post-merge `pnpm test`, `pnpm run lint`, `pnpm exec tsc --noEmit`가 모두 통과했고 managed worktree와 로컬 Feature 브랜치 cleanup도 완료됐다.
 - **Evidence**:
   - **Commit**: `c411825` (Feature 문서), `4ab5709` (T-F017-01), `b34af7e` (T-F017-02), `0c55216` (T-F017-03), `13dcb2b` (T-F017-04)
   - **PR**: 로컬 워크플로우로 원격 PR 없음
+  - **Local merge**: `LOCAL_MERGE_VERIFIED`, `LOCAL_CLEANUP_COMPLETE` — base/feature tip `7f5072c`
   - **Test/Log**: `git diff --check`, targeted Biome/ESLint, `pnpm run typecheck`, `pnpm run test:query` (21), `pnpm run test:auth:db` (3), `pnpm run test:admin` (2), Admin service move diff, `pnpm run test:architecture-boundaries` (4), `pnpm run check`, `pnpm test`, `pnpm run build-storybook` PASS
 - **Consequences**: 개발자는 루트 `app/`과 FSD App/Pages 레이어를 구분하고 capability별 공개 API를 선택할 수 있다. Steiger가 놓치는 경계는 로컬 표준 검사에서 회귀 방지되며 runtime·API·DB·Coolify·CI 구성에는 영향이 없다. architecture package를 갱신할 때 override와 보완 검사를 함께 재평가해야 한다.
