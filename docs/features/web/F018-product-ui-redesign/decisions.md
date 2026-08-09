@@ -246,3 +246,23 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 워크플로 — 해당 없음
   - **Test/Log**: `pnpm test` 전체 통과, `pnpm run check` (error 0, 기존 Biome warning 60건, Steiger·architecture 4/4), `pnpm run build-storybook`, `pnpm run test:base-ui` (1/1), Storybook 35 files/89 tests, 실제 browser smoke 및 screenshot 비교 (360×800·768×1024·1280×800)
 - **Consequences**: 제품 route는 장기 Design System과 semantic token을 공유하고 새 화면도 실제 계약을 먼저 정의해야 한다. `/dev/svc`의 전용 전역 class와 raw status color는 사용자 제품 UI로 재사용하지 않으며, 개발 도구 자체를 재설계하는 후속 Feature에서 제거한다.
+
+## D029: visual review 이후 interaction fidelity 보완 (2026-08-10)
+
+- **Context**: F018 local merge 직전 실제 route와 네 디자인 보드를 다시 비교한 결과, Landing의 microphone이 정적 장식에 머물고 Song Match·Library는 긴 목록에서 reference보다 행 밀도가 낮으며 반복 action이 비교 위계를 방해한다는 세 개의 독립 리뷰 finding이 확인됐다.
+- **Constraints**: 기존 auth CTA, recommendation Query/mixing mutation, Library owner filter와 상세 action은 보존한다. 새 UI library나 가짜 도메인 필드를 추가하지 않고 CSS motion은 reduced-motion 접근성을 따라야 한다.
+- **Options**:
+  1. 현재 구현을 그대로 병합하고 별도 feature로 미룬다.
+  2. Landing motion만 추가하고 목록 finding은 수용하지 않는다.
+  3. F018 병합을 보류하고 Landing interaction, Song Match 비교 밀도, Library 상태 언어·행 위계를 순차 보완한 뒤 responsive visual QA를 다시 수행한다.
+- **Decision**: 사용자의 `B` 선택에 따라 옵션 3을 채택하고 T-F018-11~14를 추가한다.
+- **Rationale**: 세 finding은 새로운 제품 기능이 아니라 승인된 visual source of truth와 기존 acceptance를 충족하기 위한 presentation 보완이며, 현재 feature branch에서 함께 검증하는 편이 디자인 회귀를 줄인다.
+- **Trace**:
+  - **DOING 시작 시점**: Landing은 motion과 첫 viewport, Song Match는 100곡·tablet·mobile filter, Library는 raw error·density·action hierarchy를 각각 독립 검증 경계로 고정했다.
+  - **DONE 전 확정 시점**: 구현과 검증 후 기록한다.
+  - **머지 후 확인**: 로컬 통합 후 기록한다.
+- **Evidence**:
+  - **Commit**: T-F018-11~14 task checkpoint commits
+  - **PR**: 로컬 워크플로 — 해당 없음
+  - **Test/Log**: 구현 후 기록한다.
+- **Consequences**: F018은 다시 implementation 단계로 돌아가며 네 보완 태스크와 최종 visual QA가 끝날 때까지 local merge를 진행하지 않는다.

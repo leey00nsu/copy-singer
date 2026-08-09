@@ -220,15 +220,63 @@
     - [x] spec acceptance, Decisions evidence와 테스트 실행 기록 갱신
     - [x] 최신 코드 이후 workflow-sync marker 1개와 workflow audit 통과
 
+- [TODO][PRD-FR-046] T-F018-11 Landing Hero 파형·마이크·확산 링 모션과 첫 화면 위계 보완
+  - Date: 2026-08-10
+  - Acceptance:
+    - 랜딩 우측 visual은 서로 다른 진폭의 파형이 연속 애니메이션되고 마이크 중심에서 복수의 원형 ring이 물결처럼 바깥으로 확산된다.
+    - 마이크 visual은 인증 상태에 따른 기존 primary CTA 목적지로 이동하는 접근 가능한 실제 action이며 reduced-motion에서는 정적인 상태로 안전하게 축소된다.
+    - 1280px에서 제목과 visual이 균형을 이루고 360x800 첫 viewport 안에 제목·CTA·마이크 핵심 interaction이 노출된다.
+  - Checklist:
+    - [ ] Landing Hero title/grid/spacing을 레퍼런스 비율로 조정
+    - [ ] 재사용 가능한 waveform bar와 ripple ring CSS motion 구현
+    - [ ] 마이크 action의 Link semantics, focus, reduced-motion 처리
+    - [ ] Landing Storybook·접근성·responsive test와 실제 브라우저 검증
+
+- [TODO][PRD-FR-049] T-F018-12 Song Match 비교 밀도·필터·CTA 반응형 보완
+  - Date: 2026-08-10
+  - Acceptance:
+    - desktop 목록은 곡 비교에 필요한 핵심 열만 남겨 100곡을 빠르게 훑을 수 있고 tablet에서 제목 열이 글자 단위로 붕괴하지 않는다.
+    - mobile 첫 viewport에는 적어도 첫 곡이 보이며 상세 필터는 Sheet로 이동하고 적용 조건 수를 표시한다.
+    - 목록의 반복 primary CTA를 낮추고 상세 진입을 주 interaction으로 유지하며 기존 mixing/query 계약은 보존된다.
+  - Checklist:
+    - [ ] desktop row 높이와 column width를 compact comparison 수준으로 축소
+    - [ ] table breakpoint와 mobile filter Sheet 구현
+    - [ ] row reason/metadata/action 위계를 Song Detail 중심으로 재배치
+    - [ ] 100-item·360/768/1024/1280 Storybook 및 회귀 test 보강
+
+- [TODO][PRD-FR-050] T-F018-13 Library 오류 언어·행 밀도·탭·액션 위계 보완
+  - Date: 2026-08-10
+  - Acceptance:
+    - mixing 실패 raw detail이나 외부 오류 코드가 노출되지 않고 안전한 사용자 문구로 변환된다.
+    - profile과 AI mix 목록은 desktop/mobile 모두 compact row로 탐색 가능하며 탭은 content 기반 좌측 정렬을 사용한다.
+    - 목록에는 상태별 핵심 action 하나만 우선 노출하고 재생·다운로드·삭제 세부 동작은 상세 화면에서 보존된다.
+  - Checklist:
+    - [ ] mixing error presentation mapper와 fallback test 추가
+    - [ ] profile/mix row spacing과 mobile metric grid 축소
+    - [ ] compact tabs, 명확한 추천·믹스 label, profile total·최신순 표시
+    - [ ] ProductShell 포함 dense Library Storybook·responsive 회귀 검증
+
+- [TODO][NON-PRD] T-F018-14 리뷰 보완 통합 visual QA와 문서 동기화
+  - Date: 2026-08-10
+  - Acceptance:
+    - Landing, Song Match, Library를 레퍼런스와 다시 비교해 공간감·정보 밀도·interaction 위계가 개선됐음을 screenshot으로 확인한다.
+    - 360x800, 768x1024, 1024x800, 1280x800에서 horizontal overflow, 핵심 CTA clipping, console error와 접근성 오류가 없다.
+    - Design System, Feature decisions, 테스트 기록과 workflow sync marker가 최종 코드와 일치한다.
+  - Checklist:
+    - [ ] targeted test, Storybook browser/a11y, check/build 실행
+    - [ ] desktop/tablet/mobile 실제 browser screenshot 비교
+    - [ ] 서브에이전트 finding별 반영 결과와 잔여 위험 기록
+    - [ ] workflow-audit 통과
+
 ---
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 

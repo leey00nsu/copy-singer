@@ -132,6 +132,9 @@ app/
 - Landing Server Page는 optional session을 읽어 CTA를 `/login` 또는 `/profile`로 연결한다.
 - 제품 설명은 실제 분석 → 100곡 추천 → 선택형 AI 믹싱만 사용한다.
 - 디자인 보드의 prism은 product asset으로 복사하지 않고 CSS/audio motif와 실제 waveform 중심으로 구성한다.
+- Hero는 reference처럼 copy와 circular audio visual의 균형을 맞춘다. waveform bar는 서로 다른 delay·duration·amplitude로 반복 움직이고, microphone 뒤의 복수 ring은 scale과 opacity를 조합해 바깥으로 확산되도록 한다.
+- microphone은 `primaryHref`를 사용하는 실제 Link action이며 focus-visible과 accessible label을 제공한다. 모든 decorative motion은 `prefers-reduced-motion`에서 정지하고 CTA 의미는 유지한다.
+- mobile에서는 제목·여백·visual 크기를 줄여 360×800 첫 viewport 안에 copy, primary CTA와 microphone action이 함께 들어오도록 한다.
 - Login의 safe callback 검증은 유지하고 기본 callback을 public `/`가 아닌 `/profile`로 변경한다.
 - Google OAuth만 표시하고 configured/disabled/error 상태를 기존 `GoogleSignIn`으로 유지한다.
 
@@ -191,6 +194,9 @@ desktop semantic table / mobile stacked rows
 
 - filter state는 URL query에 직렬화해 back/forward와 공유 가능한 상태를 제공하되 database 재조회는 하지 않는다.
 - row에는 rank, title, artist, 정수 적합도, recommended shift와 mixing status를 우선 표시한다.
+- desktop row는 56–72px 수준의 compact comparison density를 목표로 하고 reason·TJ·원키 세부 정보는 Song Detail로 넘긴다. table은 shell content 폭이 충분한 `xl` 이상에서만 사용한다.
+- mobile은 검색·정렬·필터 요약만 상단에 두고 score·shift·mixing status 조건은 Sheet로 옮겨 첫 viewport에서 첫 추천 곡을 확인할 수 있게 한다.
+- 목록의 반복 검은 CTA는 제거하고 제목/행 상세 진입을 주 interaction으로, mixing은 secondary action 또는 Song Detail 책임으로 낮춘다.
 - 100개 row마다 waveform을 생성하지 않고 audio player는 detail 또는 expanded result에만 mount한다.
 - 기존 mixing mutation, idempotency, Query invalidation과 5초 polling을 유지한다.
 - recommendation 삭제는 native confirm 대신 공통 Dialog를 사용하되 기존 cleanup 의미를 보존한다.
@@ -224,6 +230,9 @@ desktop semantic table / mobile stacked rows
 - `tab`, `page`, `q`, `status`는 URL search param으로 유지
 - mixing search는 title/artist, status filter는 실제 DB field를 사용하도록 `getMixingHistory`와 `/api/mixing-jobs`를 확장
 - profile tab은 이름 없는 profile에 가짜 project title을 만들지 않고 날짜·음역·상태로 표시
+- profile과 mixing row는 desktop 72–104px 범위의 compact density를 목표로 하고 mobile metric은 2열 definition grid로 구성한다.
+- tab trigger는 content 폭 기반 좌측 정렬을 사용하며 profile total·최신순을 실제 history metadata에서 표시한다.
+- mixing 목록은 상태별 핵심 action 하나만 노출하고 waveform·download·delete는 detail에 유지한다. 실패 detail은 presentation mapper로 안전한 사용자 문구로 변환하고 raw 외부 오류는 노출하지 않는다.
 - 기존 `/vocal-profiles`, `/mixing-history`는 같은 list widget을 사용해 URL을 유지하고 primary navigation만 `/library`로 통합
 
 `/library/mixes/[id]`는 기존 owner-scoped `GET /api/mixing-jobs/[id]`를 사용한다.
