@@ -30,4 +30,5 @@ Feature 문서에서 디자인을 참조할 때는 상대경로보다 **프로�
 
 ## 현재 문서
 
-아직 등록된 UI 디자인 참고 자료가 없습니다. 녹음 화면, 추천 결과 화면, 디자인 시스템 자료가 생기면 이곳에 추가합니다.
+- [Copy Singer Design System](./design-system.md): 전 제품의 color, typography, spacing, component, 상태, responsive, 접근성과 변경 관리 규칙
+- [Copy Singer Product UI Redesign](./product-ui-redesign.md): F018 디자인 보드 원본과 화면별 visual brief, 데이터 정직성 원칙
