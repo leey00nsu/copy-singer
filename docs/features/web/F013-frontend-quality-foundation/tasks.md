@@ -87,10 +87,11 @@
     - [x] husky를 개발 의존성으로 설치하고 prepare script를 구성한다.
     - [x] .husky/pre-commit에서 check:staged package script를 실행한다.
     - [x] 임시 index 또는 동등한 격리된 검증으로 성공·실패 경로와 index 불변성을 확인한다.
-    - [x] hook 설치를 비활성화한 환경에서도 수동 check와 CI 검사가 동작하는지 확인한다.
+    - [x] hook 설치를 비활성화한 환경에서도 수동 staged 검사와 전체 check가 동작하는지 확인한다.
 
-- [DONE][NON-PRD] T-F013-frontend-quality-foundation-03 GitHub Actions 품질 게이트와 최종 회귀 검증
+- [DONE][NON-PRD] T-F013-frontend-quality-foundation-03 GitHub Actions 품질 게이트와 최종 회귀 검증 (T04에서 후속 범위로 전환)
   - Date: 2026-08-09
+  - Outcome: workflow를 구현·검증했으나 사용자 변경 요청에 따라 T04에서 제거하며, 최종 F013 산출물에는 포함하지 않는다.
   - Acceptance:
     - GitHub Actions가 frozen pnpm lockfile로 설치하고 Biome, ESLint, TypeScript, 기존 회귀 테스트를 실행한다.
     - DB 검증은 격리된 PostgreSQL service와 migration을 사용하고 운영 secret이나 외부 유료 서비스에 의존하지 않는다.
@@ -101,6 +102,19 @@
     - [x] HUSKY=0 설치와 테스트용 DATABASE_URL, prisma migrate deploy 및 카탈로그 import 단계를 구성한다.
     - [x] CI가 참조하는 모든 package script와 회귀 명령을 로컬에서 실행한다.
     - [x] workflow YAML, docs evidence, workflow-sync marker를 최종 상태와 동기화한다.
+
+- [DONE][NON-PRD] T-F013-frontend-quality-foundation-04 CI 도입 연기와 F013 범위 정리
+  - Date: 2026-08-09
+  - Acceptance:
+    - `.github/workflows/quality.yml`을 제거해 GitHub Actions 사용과 Coolify 배포를 분리한다.
+    - F013의 최종 범위는 Biome, kebab-case, Husky staged 검사와 로컬 통합 검사 script로 한정된다.
+    - CI 품질 게이트는 후속 작업으로 명시하고 F014~F016 구현의 선행 조건으로 취급하지 않는다.
+    - CI 제거 후 로컬 정적 검사와 기존 전체 회귀 테스트가 통과한다.
+  - Checklist:
+    - [x] GitHub Actions quality workflow를 제거한다.
+    - [x] spec, plan, tasks, decisions에서 CI 구현 요구를 후속 범위로 전환한다.
+    - [x] 기존 package script와 Husky hook이 독립적으로 동작하는지 재검증한다.
+    - [x] 정적 검사, 전체 회귀 테스트, workflow audit을 실행한다.
 
 ## 완료 조건
 
@@ -122,12 +136,13 @@
 | `pnpm run typecheck` | `2026-08-09` | `PASS` |
 | `pnpm test` | `2026-08-09` | `PASS (Next.js production build 및 전체 회귀 suite)` |
 | `pnpm run db:validate && pnpm run db:status` | `2026-08-09` | `PASS (schema valid, 10 migrations up to date)` |
-| `pnpm run prepare && HUSKY=0 pnpm run prepare` | `2026-08-09` | `PASS (hook 설치 및 CI skip 경로)` |
+| `pnpm run prepare && HUSKY=0 pnpm run prepare` | `2026-08-09` | `PASS (hook 설치 및 비활성화 경로)` |
 | `GIT_INDEX_FILE=<temporary> .husky/_/pre-commit` | `2026-08-09` | `PASS (정상 변경 통과, 위반 변경 exit 1, 양쪽 index hash 불변)` |
 | `HUSKY=0 pnpm run check:staged` | `2026-08-09` | `PASS (staged 파일 0개)` |
 | `pnpm run check` | `2026-08-09` | `PASS` |
-| `actionlint .github/workflows/quality.yml` | `2026-08-09` | `PASS (rhysd/actionlint container)` |
+| `actionlint .github/workflows/quality.yml` | `2026-08-09` | `HISTORICAL PASS (D004 결정으로 workflow 제거)` |
 | `pnpm run test:vocal-profile-analysis-queue` | `2026-08-09` | `PASS (lease recovery 경계 안정화 후 동일 케이스 3회 및 suite 통과)` |
-| `CI env + fresh PostgreSQL 17: install → generate → migrate → catalog import → check → db validate/status → test` | `2026-08-09` | `PASS (10 migrations, 100곡 import, 전체 build/회귀 suite)` |
+| `CI env + fresh PostgreSQL 17: install → generate → migrate → catalog import → check → db validate/status → test` | `2026-08-09` | `HISTORICAL PASS (D004 결정으로 CI 도입 연기)` |
+| `test ! -e .github/workflows/quality.yml` | `2026-08-09` | `PASS (workflow 제거 확인)` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T07:07:59.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T07:16:51.000Z -->

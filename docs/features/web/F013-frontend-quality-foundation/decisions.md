@@ -40,7 +40,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 ## D002: pre-commit은 staged Biome read-only 검사만 실행 (2026-08-09)
 
 - **Context**: 전체 정적 검사와 회귀 테스트는 수 분이 걸리므로 모든 커밋에서 실행하면 개발 흐름을 방해한다. 반면 커밋 대상 파일의 포맷·일반 lint·파일명 오류는 즉시 차단할 필요가 있다.
-- **Constraints**: hook은 unstaged 변경이나 Git index를 자동 수정하지 않아야 하며, CI 또는 `HUSKY=0` 환경에서도 동일한 수동 검사 명령을 실행할 수 있어야 한다.
+- **Constraints**: hook은 unstaged 변경이나 Git index를 자동 수정하지 않아야 하며, `HUSKY=0` 환경에서도 동일한 수동 검사 명령을 실행할 수 있어야 한다.
 - **Options**: 전체 `pnpm check` 실행, lint-staged로 자동 수정, Biome의 Git staged read-only 검사.
 - **Decision**: Husky v9 `pre-commit`에서 `pnpm run check:staged`만 실행하고, 해당 script가 `biome check --staged --no-errors-on-unmatched`를 호출하게 한다. hook 파일에는 deprecated bootstrap을 넣지 않고 Husky가 관리하는 `.husky/_` shim을 사용한다.
 - **Rationale**: 별도 staged 파일 선택 도구 없이 Biome의 Git 통합을 재사용하면서 커밋 지연과 자동 수정 위험을 최소화한다.
@@ -52,10 +52,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Commit**: T-F013-02 task checkpoint에서 기록
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `pnpm run prepare`, 격리 index의 `.husky/_/pre-commit` 성공·실패 검사, `HUSKY=0 pnpm run prepare`, `HUSKY=0 pnpm run check:staged`, `pnpm run check` 모두 2026-08-09 PASS
-- **Consequences**: 타입·Next.js 전용 ESLint·전체 테스트는 pre-commit에서 제외하고 명시적 `pnpm check`와 CI가 담당한다.
+- **Consequences**: 타입·Next.js 전용 ESLint·전체 테스트는 pre-commit에서 제외하고 명시적 `pnpm check`와 `pnpm test`가 담당한다.
 
-## D003: 단일 read-only CI job에서 정적 검사와 PostgreSQL 회귀 검증 (2026-08-09)
+## D003: 단일 read-only CI job에서 정적 검사와 PostgreSQL 회귀 검증 (2026-08-09, D004로 대체)
 
+- **Status**: Superseded — 구현과 검증 이력만 보존하며 workflow는 최종 tree에서 제거한다.
 - **Context**: 로컬 hook은 우회 가능하고 staged 범위만 검사하므로 main 브랜치 품질을 보장하려면 전체 저장소와 DB 통합 테스트를 재현하는 CI가 필요하다.
 - **Constraints**: 운영 secret, 운영 DB, 외부 유료 서비스 호출 없이 frozen lockfile과 Node.js 22 기준으로 실행되어야 한다. workflow는 저장소 내용을 수정·push·배포하지 않아야 한다.
 - **Options**: 정적 검사만 실행, 정적/DB job 분리, PostgreSQL service를 포함한 단일 quality job.
@@ -69,4 +70,21 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Commit**: T-F013-03 task checkpoint에서 기록
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: actionlint PASS; CI placeholder env와 일회용 PostgreSQL 17에서 `pnpm install --frozen-lockfile`, generate, migrate, catalog import, check, DB validate/status, `pnpm test` 전체 PASS
-- **Consequences**: 전체 suite 실행 시간은 늘지만 로컬 hook은 계속 빠르게 유지된다. 필요 시 후속 Feature에서 job을 분리하되 검사 범위는 유지한다.
+- **Consequences**: D004 결정으로 현재 효력은 없다. 후속 CI Feature에서 이 검증 결과를 참고할 수 있다.
+
+## D004: GitHub Actions 도입을 Coolify 배포 구성 이후로 연기 (2026-08-09)
+
+- **Context**: F013 구현 승인 단계에서 사용자는 Coolify로 Next.js와 PostgreSQL을 운영할 예정이며 `quality.yml`을 나중에 추가할 수 있는지 검토한 뒤 CI 연기를 요청했다.
+- **Constraints**: F013의 Biome/Husky 품질 기반은 유지하되, Coolify 배포 방식과 GitHub Actions 배포 gate를 지금 결합하지 않는다. 이미 검증한 CI 이력은 삭제하지 않고 결정 로그에 남긴다.
+- **Options**: 현재 quality workflow 유지, CI가 Coolify webhook을 호출하도록 확장, workflow 제거 후 후속 작업으로 연기.
+- **Decision**: `.github/workflows/quality.yml`을 F013 최종 결과에서 제거하고 GitHub Actions 품질 게이트를 후속 작업으로 연기한다. 로컬 `pnpm check`/`pnpm test`와 Husky pre-commit은 그대로 유지한다.
+- **Rationale**: 현재 필요한 커밋 전 품질 기준선을 먼저 확정하면서, 실제 Coolify 배포 정책과 branch protection 방식이 정해진 뒤 CI/CD 경계를 설계할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 사용자 응답 `CI 연기해줘`를 implementation 변경 요청으로 기록하고 T-F013-04를 시작했다.
+  - **DONE 전 확정 시점**: `quality.yml`을 제거하고 spec/plan/tasks를 Biome, Husky, 로컬 검사 범위로 동기화했다. staged 파일 0개 검사, 전체 Biome/ESLint/TypeScript 검사, Next.js production build와 전체 회귀 suite가 모두 통과했다.
+  - **머지 후 확인**: 실제 결과/영향
+- **Evidence**:
+  - **Commit**: T-F013-04 task checkpoint에서 기록
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: `test ! -e .github/workflows/quality.yml`, `pnpm run check:staged`, `pnpm run check`, `pnpm test` 모두 2026-08-09 PASS
+- **Consequences**: Coolify 배포는 GitHub Actions 결과에 의해 자동 차단되지 않는다. CI 도입 전까지 배포 전 로컬 전체 검사가 필요하다.

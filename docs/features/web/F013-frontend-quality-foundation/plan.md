@@ -19,7 +19,6 @@
 | framework lint | 기존 ESLint 9 flat config | Biome에 없는 Next.js/React/JSX 접근성 규칙을 보완 |
 | Git hook | Husky | pnpm `prepare` lifecycle과 저장소 기반 hook을 단순하게 유지 |
 | package manager | 기존 pnpm 11 | `packageManager`/lockfile 기준을 유지하고 신규 lockfile을 만들지 않음 |
-| CI | GitHub Actions + Node.js 22 + PostgreSQL service | 현재 GitHub origin 및 Prisma 통합 테스트를 재현 |
 
 ---
 
@@ -37,18 +36,15 @@ git commit
   -> pnpm check:staged
   -> biome check --staged (read-only)
 
-pull request / push
-  -> GitHub Actions quality
-  -> install --frozen-lockfile
-  -> PostgreSQL migrate
-  -> test catalog import
+명시적 전체 검사
+  -> pnpm check
   -> Biome full check
   -> ESLint
   -> TypeScript
-  -> existing test/build suite
+  -> pnpm test (existing build/regression suite)
 ```
 
-pre-commit과 CI의 목적을 분리한다. pre-commit은 빠른 staged 검사만 수행하고, import graph·타입·전체 테스트처럼 전체 저장소가 필요한 검사는 명시적 로컬 `check` 및 CI에서 수행한다.
+pre-commit과 전체 검사의 목적을 분리한다. pre-commit은 빠른 staged 검사만 수행하고, import graph·타입·전체 테스트처럼 전체 저장소가 필요한 검사는 명시적 로컬 `check` 및 `test`에서 수행한다.
 
 ### Biome와 ESLint 역할 분담
 
@@ -61,15 +57,12 @@ pre-commit과 CI의 목적을 분리한다. pre-commit은 빠른 staged 검사�
 
 `useFilenamingConvention`을 opt-in error로 활성화하고 기본 파일 이름을 kebab-case로 고정한다. Biome가 인식하는 Next.js dynamic route와 `page.tsx`, `route.ts` 같은 framework convention은 허용한다. `.test.ts`, `.integration.ts`, `.stories.tsx`, `.config.ts`는 base name만 kebab-case인지 검사한다.
 
-### CI 환경
+### 후속 CI와 Coolify 경계
 
-- `actions/checkout`, pnpm 공식 setup action, `actions/setup-node`를 사용한다.
-- Node.js 22와 pnpm lockfile cache를 사용한다.
-- `pnpm install --frozen-lockfile` 중 불필요한 Git hook 설치를 막도록 CI에서 `HUSKY=0`을 설정한다.
-- PostgreSQL service와 전용 테스트용 `DATABASE_URL`을 사용하고 `prisma migrate deploy` 후 회귀 테스트를 실행한다.
-- migration 후 저장소에 포함된 TJ Top 100 카탈로그를 import해 빈 DB에서도 catalog integration suite를 재현한다.
-- OAuth, Modal, Leemage 등 외부 서비스 값은 테스트용 placeholder 또는 기존 mock 경계를 사용하며 운영 secret을 요구하지 않는다.
-- workflow 권한은 기본 read-only로 제한하고 배포·push 작업은 수행하지 않는다.
+- F013은 GitHub Actions workflow를 포함하지 않는다.
+- Coolify는 Next.js와 PostgreSQL 운영 배포를 담당하고, GitHub Actions 품질 게이트 및 배포 선행 조건은 실제 배포 정책이 정해진 뒤 별도 Feature에서 설계한다.
+- 후속 CI는 `check`, `test`, Prisma migration 및 필요한 테스트 seed 경계를 재사용한다.
+- CI 도입 전에는 배포 전에 로컬 `pnpm check`와 `pnpm test`를 명시적으로 실행한다.
 
 ---
 
@@ -101,9 +94,6 @@ pre-commit과 CI의 목적을 분리한다. pre-commit은 빠른 staged 검사�
 ├── eslint.config.mjs
 ├── .husky/
 │   └── pre-commit
-└── .github/
-    └── workflows/
-        └── quality.yml
 ```
 
 도구 설정 파일 이름은 각 도구의 고정 convention이므로 kebab-case 정책의 예외가 아니다.
@@ -116,8 +106,7 @@ pre-commit과 CI의 목적을 분리한다. pre-commit은 빠른 staged 검사�
 2. 현재 소스에 Biome를 read-only 실행해 ESLint와 충돌하는 규칙 및 제외 경로를 확정한다.
 3. 지원 파일을 한 번 포맷하고 변경 후 전체 빌드/테스트로 동작 회귀가 없는지 확인한다.
 4. Husky pre-commit을 추가하고 정상 파일/의도적 오류 파일을 각각 임시 index로 검증한다.
-5. GitHub Actions quality workflow, PostgreSQL service, migration 및 테스트 카탈로그 import를 추가한다.
-6. 로컬에서 CI와 동일한 명령을 실행하고 문서/evidence를 동기화한다.
+5. 로컬 통합 검사와 전체 회귀 테스트를 실행하고 문서/evidence를 동기화한다.
 
 ---
 
@@ -137,18 +126,16 @@ pre-commit과 CI의 목적을 분리한다. pre-commit은 빠른 staged 검사�
 - **회귀 검증**:
   - 기존 `pnpm test` 통과
   - Prisma schema validate 및 migration status 확인
-- **CI 문법 검증**:
-  - actionlint로 workflow YAML을 검사하고 package script가 참조하는 명령이 로컬에서 실행 가능
-  - 일회용 fresh PostgreSQL 17에서 migration, catalog import, 전체 회귀 suite 통과
-  - 원격 push/실행은 사용자 승인 전 수행하지 않음
+- **후속 CI 준비성**:
+  - 품질 도구별 package script와 전체 회귀 명령이 독립적으로 실행 가능
+  - 원격 CI와 배포 연동은 후속 Feature에서 Coolify 정책과 함께 검증
 
 ---
 
 ## 롤백 전략
 
 - Biome 도입 문제는 `biome.json`, 관련 scripts/의존성을 제거하면 기존 ESLint 경로로 복귀할 수 있다.
-- Husky가 특정 환경에서 설치되지 않아도 CI와 수동 `pnpm check`가 품질 기준을 유지한다.
-- CI PostgreSQL 통합이 불안정하면 정적 검사 job과 DB 회귀 job을 분리해 원인을 격리하되 검사를 삭제하지 않는다.
+- Husky가 특정 환경에서 설치되지 않아도 수동 `pnpm check`가 정적 품질 기준을 유지한다.
 
 ---
 
@@ -156,7 +143,8 @@ pre-commit과 CI의 목적을 분리한다. pre-commit은 빠른 staged 검사�
 
 - F014는 `check`에 Steiger 구조 검사를 추가한다.
 - F015는 TanStack Query/MSW/Zod 검증을 기존 테스트 경계에 추가한다.
-- F016은 `build-storybook`과 Storybook Vitest browser 검사를 CI 경계에 추가한다.
+- F016은 `build-storybook`과 Storybook Vitest browser 검사를 로컬 script 경계에 추가한다.
+- GitHub Actions 품질 게이트는 F014~F016의 완료를 막지 않으며 Coolify 배포 정책 확정 후 별도 Feature로 도입한다.
 
 ---
 
