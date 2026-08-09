@@ -113,6 +113,106 @@ test("entity response schemas accept representative legacy payloads", () => {
   assert.equal(history.jobs[0]?.status, "processing");
 });
 
+test("recommendation items accept legacy, additive, and unavailable song profile payloads", () => {
+  const item = {
+    id: "10000000-0000-4000-8000-000000000011",
+    rank: 1,
+    songId: "10000000-0000-4000-8000-000000000012",
+    catalogOrder: 1,
+    title: "Stored song",
+    artist: "Stored artist",
+    sourceUrl: "https://example.test/source",
+    originalKeyScore: 78,
+    adjustedScore: 91,
+    selectionScore: 90,
+    recommendedShift: -2,
+    reasonCodes: [],
+    reasons: [],
+    metrics: {
+      confidence: 0.8,
+      original: {
+        shift: 0,
+        tessituraOverlapRatio: 0.7,
+        highTessituraExcess: 2,
+        lowTessituraExcess: 0,
+        highExtremeExcess: 1,
+        lowExtremeExcess: 0,
+        tessituraFit: 0.8,
+        extremeFit: 0.7,
+        confidence: 0.8,
+        contributions: { overlap: 28, tessituraFit: 24, extremeFit: 14, confidence: 8 },
+        rawScore: 74,
+        score: 78,
+      },
+      recommended: {
+        shift: -2,
+        tessituraOverlapRatio: 0.9,
+        highTessituraExcess: 0,
+        lowTessituraExcess: 0,
+        highExtremeExcess: 0,
+        lowExtremeExcess: 0,
+        tessituraFit: 1,
+        extremeFit: 1,
+        confidence: 0.8,
+        contributions: { overlap: 36, tessituraFit: 30, extremeFit: 20, confidence: 8 },
+        rawScore: 94,
+        score: 91,
+      },
+    },
+    synthesis: {
+      status: "not_started",
+      jobId: null,
+      error: null,
+      startedAt: null,
+      updatedAt: null,
+      completedAt: null,
+      expiresAt: null,
+      attemptCount: 0,
+      audioUrl: null,
+    },
+  };
+
+  const legacy = recommendationRunResponseSchema.shape.items.element.parse(item);
+  assert.equal(legacy.originalKey, null);
+  assert.equal(legacy.songProfile, null);
+
+  const additive = recommendationRunResponseSchema.shape.items.element.parse({
+    ...item,
+    originalKey: "C",
+    songProfile: {
+      minMidi: 50,
+      maxMidi: 75,
+      medianMidi: 63,
+      tessituraLowMidi: 55,
+      tessituraHighMidi: 72,
+    },
+  });
+  assert.equal(additive.originalKey, "C");
+  assert.equal(additive.songProfile?.medianMidi, 63);
+
+  const unavailable = recommendationRunResponseSchema.shape.items.element.parse({
+    ...item,
+    originalKey: null,
+    songProfile: null,
+  });
+  assert.equal(unavailable.songProfile, null);
+
+  assert.equal(
+    recommendationRunResponseSchema.shape.items.element.safeParse({
+      ...item,
+      originalKey: "C",
+      songProfile: {
+        minMidi: 75,
+        maxMidi: 50,
+        medianMidi: 63,
+        tessituraLowMidi: 55,
+        tessituraHighMidi: 72,
+      },
+    }).success,
+    false,
+  );
+});
+
 test("development conversion and ticket response schemas preserve their current wire fields", () => {
   assert.equal(conversionHealthSchema.parse({ status: "ok", platform: "modal", gpu: "L4" }).status, "ok");
   assert.deepEqual(

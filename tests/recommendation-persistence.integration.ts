@@ -62,6 +62,35 @@ test("persists, reads, and cascade-deletes one recommendation run", async (conte
     assert.ok(created.items.every((item) => Number.isFinite(item.selectionScore)));
     assert.ok(created.items.every((item) => item.selectionScore === item.metrics.selectionScore));
 
+    const storedSongs = await prisma.song.findMany({
+      where: { id: { in: created.items.map((item) => item.songId) } },
+      include: { vocalProfile: true },
+    });
+    const storedSongById = new Map(storedSongs.map((song) => [song.id, song]));
+    for (const item of created.items) {
+      const song = storedSongById.get(item.songId);
+      assert.ok(song);
+      assert.equal(item.originalKey, song.originalKey?.trim() || null);
+      if (item.songProfile) {
+        assert.equal(item.songProfile.minMidi, song.vocalProfile?.minMidi);
+        assert.equal(item.songProfile.maxMidi, song.vocalProfile?.maxMidi);
+        assert.equal(item.songProfile.medianMidi, song.vocalProfile?.medianMidi);
+        assert.equal(item.songProfile.tessituraLowMidi, song.vocalProfile?.tessituraLowMidi);
+        assert.equal(item.songProfile.tessituraHighMidi, song.vocalProfile?.tessituraHighMidi);
+      } else {
+        assert.ok(
+          !song.vocalProfile ||
+            [
+              song.vocalProfile.minMidi,
+              song.vocalProfile.maxMidi,
+              song.vocalProfile.medianMidi,
+              song.vocalProfile.tessituraLowMidi,
+              song.vocalProfile.tessituraHighMidi,
+            ].some((value) => value === null),
+        );
+      }
+    }
+
     const stored = await getRecommendationRun(created.id);
     assert.deepEqual(stored, created);
     assert.deepEqual(await deleteRecommendationRun(created.id), { status: "deleted", id: created.id });

@@ -58,7 +58,7 @@
     "test:process-scripts": "tsx --test tests/process-scripts.test.ts tests/storybook-production-boundary.test.ts",
     "test:architecture-boundaries": "tsx --test tests/fsd-architecture-boundaries.test.ts",
     "test:storybook": "vitest --project storybook",
-    "test:recommendation": "node --conditions react-server --import tsx --test tests/recommendation-ranking.test.ts && tsx --test tests/recommendation-presentation.test.ts tests/recommendation-synthesis.test.ts tests/recommendation-ui.test.tsx",
+    "test:recommendation": "node --conditions react-server --import tsx --test tests/recommendation-ranking.test.ts && tsx --test tests/recommendation-presentation.test.ts tests/recommendation-synthesis.test.ts tests/recommendation-ui.test.tsx tests/recommendation-song-detail.test.tsx",
     "test:recommendation:db": "node --conditions react-server --import tsx --test tests/recommendation-persistence.integration.ts tests/recommendation-synthesis.integration.ts",
     "test:auth-navigation": "tsx --test tests/auth-navigation.test.ts",
     "test:auth:db": "node --conditions react-server --import tsx --test tests/auth-ownership.integration.ts tests/dev-auth-bypass.integration.ts",

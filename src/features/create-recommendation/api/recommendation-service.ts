@@ -5,6 +5,7 @@ import {
   type KeyFitProfile,
   type KeyFitReasonCode,
   parseSynthesisAttempts,
+  projectRecommendationSongProfile,
   RecommendationError,
   type RecommendationRunResponse,
   type RecommendationScoreMetrics,
@@ -19,7 +20,20 @@ const runInclude = {
   userVocalProfile: true,
   items: {
     include: {
-      song: true,
+      song: {
+        include: {
+          vocalProfile: {
+            select: {
+              sourceType: true,
+              minMidi: true,
+              maxMidi: true,
+              medianMidi: true,
+              tessituraLowMidi: true,
+              tessituraHighMidi: true,
+            },
+          },
+        },
+      },
       mixingJobs: {
         include: { resultAsset: true },
         orderBy: { createdAt: "desc" as const },
@@ -119,6 +133,8 @@ export function serializeRecommendationRun(run: StoredRun): RecommendationRunRes
       catalogOrder: item.song.catalogOrder,
       title: item.song.title,
       artist: item.song.artist,
+      originalKey: item.song.originalKey?.trim() || null,
+      songProfile: projectRecommendationSongProfile(item.song.vocalProfile),
       sourceUrl:
         item.song.metadata && typeof item.song.metadata === "object" && !Array.isArray(item.song.metadata)
           ? (() => {

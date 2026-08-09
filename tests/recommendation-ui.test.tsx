@@ -47,6 +47,8 @@ const run: RecommendationRunResponse = {
     title: item.title,
     artist: item.artist,
     sourceUrl: item.sourceUrl,
+    originalKey: null,
+    songProfile: null,
     originalKeyScore: item.originalKeyScore,
     adjustedScore: item.adjustedScore,
     selectionScore: item.selectionScore,
@@ -96,6 +98,7 @@ test("renders the full ranked recommendation list without starting synthesis", (
   assert.match(html, /이번 한 소절에서 관찰된 음역/);
   assert.match(html, /가창력이나 건강 상태를 평가하지 않습니다/);
   assert.equal((html.match(/AI 믹싱<\/button>/g) ?? []).length, 100);
+  assert.equal((html.match(/\/songs\/item-/g) ?? []).length, 100);
   assert.doesNotMatch(html, /AI 믹싱 결과 파형/);
   assert.match(html, /목록을 보는 것만으로 작업이 시작되지 않습니다/);
 });

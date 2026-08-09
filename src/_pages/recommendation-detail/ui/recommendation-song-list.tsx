@@ -1,14 +1,17 @@
+import Link from "next/link";
 import type { RecommendationItemResponse } from "@/entities/recommendation";
 import { formatRecommendedShift, recommendationMatchPercent } from "@/entities/recommendation";
+import { RecommendationMixingAction } from "@/features/create-mixing";
 import { Badge } from "@/shared/ui/badge";
-import { RecommendationMixingAction } from "./recommendation-mixing-action";
 
 export function RecommendationSongList({
   items,
   onStart,
+  runId,
 }: {
   items: RecommendationItemResponse[];
   onStart: (itemId: string, retry?: boolean) => void;
+  runId: string;
 }) {
   return (
     <div className="border-y">
@@ -43,7 +46,14 @@ export function RecommendationSongList({
                     {item.rank}위
                   </Badge>
                   <div className="min-w-0">
-                    <h2 className="truncate text-base font-semibold">{item.title}</h2>
+                    <h2 className="truncate text-base font-semibold">
+                      <Link
+                        className="underline-offset-4 hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        href={`/recommendations/${runId}/songs/${item.id}`}
+                      >
+                        {item.title}
+                      </Link>
+                    </h2>
                     <p className="mt-1 text-sm text-muted-foreground">{item.artist}</p>
                     <p className="mt-2 line-clamp-2 text-xs leading-5 text-muted-foreground">{item.reasons[0]}</p>
                     <p className="mt-1 font-mono text-[10px] text-muted-foreground">TJ #{item.catalogOrder}</p>

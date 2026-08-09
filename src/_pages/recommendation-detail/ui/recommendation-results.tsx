@@ -3,9 +3,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertTriangle, Clock3, LoaderCircle, Mic2, Music2, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
 import { toast } from "sonner";
-import { mixingJobKeys } from "@/entities/mixing-job";
 import {
   DEFAULT_RECOMMENDATION_FILTERS,
   deleteRecommendationMutationOptions,
@@ -17,7 +16,7 @@ import {
   recommendationKeys,
   serializeRecommendationFilters,
 } from "@/entities/recommendation";
-import { createMixingMutationOptions, patchRecommendationSynthesis } from "@/features/create-mixing";
+import { useRecommendationMixing } from "@/features/create-mixing";
 import { ApiError } from "@/shared/api";
 import { Button, buttonVariants } from "@/shared/ui/button";
 import {
@@ -95,39 +94,8 @@ export function RecommendationResults({
   const queryClient = useQueryClient();
   const runQuery = useQuery(recommendationDetailQueryOptions(resolvedRunId, initialRun));
   const deleteRunMutation = useMutation(deleteRecommendationMutationOptions());
-  const startingItemsRef = useRef(new Set<string>());
   const { filters, resetFilters, updateFilters } = useRecommendationFilters();
-  const createMixingMutation = useMutation({
-    ...createMixingMutationOptions(),
-    onMutate: (input) => {
-      patchRecommendationSynthesis(queryClient, input.runId, input.recommendationItemId, {
-        status: "preparing",
-        error: null,
-      });
-    },
-    onSuccess: async (_, input) => {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: recommendationKeys.detail(input.runId) }),
-        queryClient.invalidateQueries({ queryKey: mixingJobKeys.histories() }),
-      ]);
-      toast.success("믹싱을 접수했어요. 페이지를 닫아도 계속 진행됩니다.");
-    },
-    onError: (error, input) => {
-      const apiError = error instanceof ApiError ? error : null;
-      patchRecommendationSynthesis(queryClient, input.runId, input.recommendationItemId, {
-        status: "failed",
-        error: {
-          code: apiError?.code ?? "SYNTHESIS_UPSTREAM_FAILED",
-          detail: apiError?.message ?? "합성 서버에 연결하지 못했습니다.",
-          retryable: apiError?.retryable ?? true,
-        },
-      });
-      toast.error(input.retry ? "이 곡의 합성을 다시 시작하지 못했습니다." : "AI 믹싱을 시작하지 못했습니다.");
-    },
-    onSettled: (_, __, input) => {
-      startingItemsRef.current.delete(input.recommendationItemId);
-    },
-  });
+  const { startMixing } = useRecommendationMixing();
   const run = runQuery.data ?? null;
   const loadError: "not-found" | "failed" | null =
     !resolvedRunId || runQuery.error
@@ -137,14 +105,8 @@ export function RecommendationResults({
       : null;
 
   const startItem = (itemId: string, retry = false) => {
-    if (!run || startingItemsRef.current.has(itemId)) return;
-    startingItemsRef.current.add(itemId);
-    createMixingMutation.mutate({
-      runId: run.id,
-      recommendationItemId: itemId,
-      idempotencyKey: crypto.randomUUID(),
-      retry,
-    });
+    if (!run) return;
+    startMixing(run.id, itemId, retry);
   };
 
   const deleteRun = () => {
@@ -249,7 +211,7 @@ export function RecommendationResults({
 
       <section aria-label="추천 노래 전체 순위" className="mt-5">
         {visibleItems.length > 0 ? (
-          <RecommendationSongList items={visibleItems} onStart={startItem} />
+          <RecommendationSongList items={visibleItems} onStart={startItem} runId={run.id} />
         ) : (
           <StatePanel
             action={

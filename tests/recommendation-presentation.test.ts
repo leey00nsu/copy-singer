@@ -4,6 +4,7 @@ import {
   DEFAULT_RECOMMENDATION_FILTERS,
   parseRecommendationFilters,
   projectRecommendationItems,
+  projectRecommendationSongProfile,
   recommendationMatchPercent,
   serializeRecommendationFilters,
 } from "../src/entities/recommendation";
@@ -94,4 +95,46 @@ test("shows a bounded integer match percent without fabricating precision", () =
   assert.equal(recommendationMatchPercent(items[0]), 92);
   assert.equal(recommendationMatchPercent({ adjustedScore: 101.2 }), 100);
   assert.equal(recommendationMatchPercent({ adjustedScore: -1 }), 0);
+});
+
+test("projects only complete SONG vocal profiles for recommendation details", () => {
+  assert.deepEqual(
+    projectRecommendationSongProfile({
+      sourceType: "SONG",
+      minMidi: 50,
+      maxMidi: 75,
+      medianMidi: 63,
+      tessituraLowMidi: 55,
+      tessituraHighMidi: 72,
+    }),
+    {
+      minMidi: 50,
+      maxMidi: 75,
+      medianMidi: 63,
+      tessituraLowMidi: 55,
+      tessituraHighMidi: 72,
+    },
+  );
+  assert.equal(
+    projectRecommendationSongProfile({
+      sourceType: "SONG",
+      minMidi: 50,
+      maxMidi: 75,
+      medianMidi: null,
+      tessituraLowMidi: 55,
+      tessituraHighMidi: 72,
+    }),
+    null,
+  );
+  assert.equal(
+    projectRecommendationSongProfile({
+      sourceType: "USER",
+      minMidi: 50,
+      maxMidi: 75,
+      medianMidi: 63,
+      tessituraLowMidi: 55,
+      tessituraHighMidi: 72,
+    }),
+    null,
+  );
 });

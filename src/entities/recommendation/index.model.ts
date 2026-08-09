@@ -8,6 +8,8 @@ export type {
   SongProfileArtifactEntry,
   SongProfileMetrics,
 } from "./lib/song-catalog/artifact";
+export * from "./lib/song-detail";
+export * from "./lib/song-profile";
 export * from "./model/contract";
 export * from "./model/key-fit-contract";
 export * from "./model/synthesis-state";

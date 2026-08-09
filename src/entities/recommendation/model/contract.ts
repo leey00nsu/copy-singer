@@ -76,6 +76,25 @@ export const recommendationScoreMetricsSchema = z.object({
 
 export type RecommendationScoreMetrics = z.infer<typeof recommendationScoreMetricsSchema>;
 
+export const recommendationSongProfileSchema = z
+  .object({
+    minMidi: z.number(),
+    maxMidi: z.number(),
+    medianMidi: z.number(),
+    tessituraLowMidi: z.number(),
+    tessituraHighMidi: z.number(),
+  })
+  .refine(
+    (profile) =>
+      profile.minMidi <= profile.tessituraLowMidi &&
+      profile.tessituraLowMidi <= profile.medianMidi &&
+      profile.medianMidi <= profile.tessituraHighMidi &&
+      profile.tessituraHighMidi <= profile.maxMidi,
+    { message: "Song vocal profile ranges must be ordered." },
+  );
+
+export type RecommendationSongProfile = z.infer<typeof recommendationSongProfileSchema>;
+
 export const recommendationItemResponseSchema = z.object({
   id: z.uuid(),
   rank: z.number().int().positive(),
@@ -84,6 +103,8 @@ export const recommendationItemResponseSchema = z.object({
   title: z.string(),
   artist: z.string(),
   sourceUrl: z.string(),
+  originalKey: z.string().trim().min(1).nullable().optional().default(null),
+  songProfile: recommendationSongProfileSchema.nullable().optional().default(null),
   originalKeyScore: z.number(),
   adjustedScore: z.number(),
   selectionScore: z.number().nullable(),
