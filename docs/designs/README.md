@@ -32,3 +32,5 @@ Feature 문서에서 디자인을 참조할 때는 상대경로보다 **프로�
 
 - [Copy Singer Design System](./design-system.md): 전 제품의 color, typography, spacing, component, 상태, responsive, 접근성과 변경 관리 규칙
 - [Copy Singer Product UI Redesign](./product-ui-redesign.md): F018 디자인 보드 원본과 화면별 visual brief, 데이터 정직성 원칙
+- [F018 Page Redesign Gap Analysis](./page-redesign-analysis.md): 현재 13개 route 캡처와 reference-conditioned V2 시안의 페이지별 차이·우선순위
+- [Page Redesign Image Set](./generated/page-redesigns/README.md): 원본·현재·V1 폐기본·V2 채택본의 생성 방식과 파일 목록

@@ -7,7 +7,7 @@ lee-spec-kit:
 # Copy Singer Design System
 
 - **상태**: Approved
-- **버전**: 0.2
+- **버전**: 0.3
 - **최초 적용 Feature**: F018 product-ui-redesign
 - **적용 범위**: 사용자용 Web UI
 
@@ -43,7 +43,7 @@ Copy Singer의 화면이 Feature와 route가 늘어나도 하나의 제품처럼
 
 | 역할 | Token 계열 | 사용 기준 |
 | --- | --- | --- |
-| Canvas | `background`, `foreground` | white/warm gray 배경과 black에 가까운 본문 |
+| Canvas | `background`, `foreground` | neutral white 배경과 black에 가까운 본문; beige/cream/yellow chroma 금지 |
 | Surface | `card`, `popover` | 입력 그룹, overlay 또는 실제 경계가 필요한 surface |
 | Quiet surface | `muted`, `muted-foreground` | 보조 설명, 비선택 navigation, skeleton |
 | Structure | `border`, `input` | 낮은 대비의 1px 경계와 form control |
@@ -67,6 +67,8 @@ Accent 사용 규칙:
 - 본문 문장이나 넓은 배경을 accent로 채우지 않는다.
 
 Light theme가 현재 디자인 정본이다. 기존 dark token을 깨뜨리지 않되 F018에서 새 theme toggle이나 독립적인 dark visual language를 만들지 않는다. Dark mode를 제품 기능으로 제공할 때 별도 Feature에서 동일한 대비·상태 기준을 검증한다.
+
+Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface와 sidebar도 neutral gray scale 안에서만 명도를 달리하며, 넓은 배경에 hue 75–80 계열의 warm chroma를 넣지 않는다. 원본 보드의 미세한 촬영·압축 색은 제품 token으로 해석하지 않는다.
 
 ### Typography
 

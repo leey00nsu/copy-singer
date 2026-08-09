@@ -37,9 +37,16 @@ F018과 후속 제품 UI Feature가 공유하는 디자인 정본이다. 원본 
 
 네 자산은 모두 `1448 × 1086` PNG다. 프로젝트 안의 kebab-case 파일을 이후 구현·리뷰·시각 비교의 기준으로 사용하며 Desktop의 원래 파일 경로에 의존하지 않는다.
 
+## 생성 시안과 구현 비교
+
+- [Page Redesign Image Set](./generated/page-redesigns/README.md): 13개 current capture와 reference-conditioned V2 concept
+- [Page Redesign Gap Analysis](./page-redesign-analysis.md): 색감 원인, 페이지별 차이와 구현 우선순위
+
+독립 prompt로 생성되어 warm canvas와 서로 다른 shell을 사용한 V1은 폐기한다. V2는 원본 보드와 Landing/Library master를 직접 참조하고 neutral white canvas를 잠가 일관된 방향 시안으로 사용한다. 생성 이미지의 작은 문구와 fixture 값은 실제 제품 계약을 대체하지 않는다.
+
 ## 시각 원칙
 
-- white, warm gray, black을 기본으로 하고 black을 primary action에 사용한다.
+- neutral white, neutral gray, black을 기본으로 하고 black을 primary action에 사용한다. 넓은 canvas와 app shell에 beige/cream/yellow chroma를 넣지 않는다.
 - 경계는 얇고 낮은 대비로 표현하며 shadow는 overlay와 꼭 필요한 떠 있는 요소에만 쓴다.
 - 모든 영역을 둥근 카드로 감싸지 않는다. grid, spacing, separator와 typography로 먼저 구분한다.
 - 제목은 크고 간결하게, 보조 설명은 작고 차분하게 두어 정보 위계를 만든다.
