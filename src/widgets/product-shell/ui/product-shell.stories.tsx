@@ -40,6 +40,8 @@ export const Desktop: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    await expect(canvas.getByRole("navigation", { name: "제품 메뉴" })).toBeVisible();
+    await expect(canvas.queryByRole("complementary")).not.toBeInTheDocument();
     await expect(canvas.getByRole("link", { name: "라이브러리" })).toHaveAttribute("aria-current", "page");
     await expect(canvas.getByRole("link", { name: "내 계정" })).toBeVisible();
   },

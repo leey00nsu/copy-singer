@@ -18,8 +18,9 @@ V1은 `#FBFAF7` warm canvas와 독립 prompt 때문에 페이지마다 wordmark,
 - Product master: `concepts-v2/library.png`
 - 모든 화면에 관련 원본 보드와 master를 `referenced_image_paths`로 함께 전달했다.
 - 공통 prompt lock: `#FFFFFF` canvas, `#FAFAFA/#F7F7F7` quiet surface, `#E8E8E8` border, `#111111/#737373` type, black primary CTA, lavender/blue data accent, green status, shadow 최소화, sans typography, flat information hierarchy
-- Product shell lock: 216px sidebar, 동일 waveform mark와 `Copy Singer`, `Voice Scan / Library / Account`, pale-gray active item
-- Admin은 같은 token을 사용하는 internal utility rail, dev SVC는 같은 token을 사용하는 top-header utility 예외다.
+- Product shell lock: sidebar 없는 64px top header, 동일 waveform mark와 `Copy Singer`, 중앙 `Voice Scan / Library / Account`, 우측 compact avatar
+- Landing ending lock: `Every voice has its song.` CTA, iridescent crystal과 그 아래의 실제 site footer
+- Admin과 dev SVC는 같은 token을 사용하는 top-header utility 예외다.
 
 세부 prompt와 제약은 [V2 Style Lock](./v2-style-lock.md)을 따른다. 생성 이미지의 작은 문구와 fixture 숫자는 구현 계약이 아니며 실제 API·Zod·Page composition이 정본이다.
 

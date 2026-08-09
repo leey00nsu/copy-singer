@@ -44,6 +44,8 @@ F018과 후속 제품 UI Feature가 공유하는 디자인 정본이다. 원본 
 
 독립 prompt로 생성되어 warm canvas와 서로 다른 shell을 사용한 V1은 폐기한다. V2는 원본 보드와 Landing/Library master를 직접 참조하고 neutral white canvas를 잠가 일관된 방향 시안으로 사용한다. 생성 이미지의 작은 문구와 fixture 값은 실제 제품 계약을 대체하지 않는다.
 
+2026-08-10 사용자 검수에서 V2의 좌측 sidebar는 최종 방향에서 제외했다. 인증 제품 화면은 원본 Landing·Discovery·Creation 보드의 수평 navigation 리듬을 확장한 상단 header를 사용하고, Landing 마지막에는 iridescent crystal CTA와 실제 site footer를 둔다. 최종 production crystal은 `public/images/copy-singer-crystal.png`다.
+
 ## 시각 원칙
 
 - neutral white, neutral gray, black을 기본으로 하고 black을 primary action에 사용한다. 넓은 canvas와 app shell에 beige/cream/yellow chroma를 넣지 않는다.
@@ -77,9 +79,9 @@ F018과 후속 제품 UI Feature가 공유하는 디자인 정본이다. 원본 
 
 ## 반응형·상태 원칙
 
-- desktop에서는 sidebar 또는 상단 navigation과 넓은 content rail을 사용한다.
+- desktop 제품 화면은 persistent sidebar 없이 브랜드·중앙 제품 메뉴·우측 계정 메뉴를 담은 상단 navigation과 넓은 content rail을 사용한다.
 - tablet에서는 정보 열을 재배치하고 필터는 접을 수 있게 한다.
-- mobile에서는 핵심 CTA와 재생·녹음 control을 우선하고 표를 단순 목록으로 전환한다.
+- mobile에서는 header menu를 Sheet로 전환하고 핵심 CTA와 재생·녹음 control을 우선하며 표를 단순 목록으로 전환한다.
 - loading, empty, error, disabled, permission denied, recording, processing과 success를 텍스트와 아이콘으로 함께 구분한다.
 - waveform 이외의 장식 animation은 reduced motion 환경에서 제거한다.
 

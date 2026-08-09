@@ -18,13 +18,14 @@ import { authClient } from "../api/auth-client";
 
 type UserMenuProps = {
   admin?: boolean;
+  compact?: boolean;
   email?: string;
   image?: string | null;
   name: string;
   side?: "bottom" | "left" | "right" | "top";
 };
 
-export function UserMenu({ name, email, image, admin = false, side = "bottom" }: UserMenuProps) {
+export function UserMenu({ name, email, image, admin = false, compact = false, side = "bottom" }: UserMenuProps) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,13 +44,15 @@ export function UserMenu({ name, email, image, admin = false, side = "bottom" }:
   }
 
   return (
-    <div className="w-full">
+    <div className={compact ? "w-auto" : "w-full"}>
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
             <Button
               aria-label={`${name} 계정 메뉴`}
-              className="h-auto w-full justify-start gap-3 p-2 text-left"
+              className={
+                compact ? "size-11 justify-center rounded-full p-1" : "h-auto w-full justify-start gap-3 p-2 text-left"
+              }
               variant="ghost"
             />
           }
@@ -57,7 +60,7 @@ export function UserMenu({ name, email, image, admin = false, side = "bottom" }:
           {image ? (
             <Image
               alt=""
-              className="size-8 rounded-full object-cover"
+              className="size-8 shrink-0 rounded-full object-cover"
               height={32}
               referrerPolicy="no-referrer"
               src={image}
@@ -69,10 +72,12 @@ export function UserMenu({ name, email, image, admin = false, side = "bottom" }:
               <UserRound className="size-4" aria-hidden="true" />
             </span>
           )}
-          <span className="min-w-0 flex-1">
-            <span className="block truncate text-sm font-medium">{name}</span>
-            {email ? <span className="block truncate text-xs font-normal text-muted-foreground">{email}</span> : null}
-          </span>
+          {compact ? null : (
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-sm font-medium">{name}</span>
+              {email ? <span className="block truncate text-xs font-normal text-muted-foreground">{email}</span> : null}
+            </span>
+          )}
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56" side={side} sideOffset={8}>
           <DropdownMenuLabel>계정</DropdownMenuLabel>

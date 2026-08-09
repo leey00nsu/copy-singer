@@ -7,7 +7,7 @@ lee-spec-kit:
 # Copy Singer Design System
 
 - **상태**: Approved
-- **버전**: 0.3
+- **버전**: 0.4
 - **최초 적용 Feature**: F018 product-ui-redesign
 - **적용 범위**: 사용자용 Web UI
 
@@ -55,7 +55,7 @@ Copy Singer의 화면이 Feature와 route가 늘어나도 하나의 제품처럼
 | Caution state | `warning`, `warning-foreground` | 대기, retry와 사용자의 주의가 필요한 상태 |
 | Audio/data accent | `data-accent`, `data-accent-foreground` | waveform의 active 구간과 핵심 분석 포인트 |
 | Data visualization | `chart-1`~`chart-5` | pitch, range와 waveform의 구분 가능한 series |
-| App navigation | `sidebar-*` | sidebar와 mobile navigation의 semantic 상태 |
+| App navigation | `sidebar-*` | 기존 token 이름을 유지하는 header·mobile navigation의 semantic 상태 |
 
 Accent 사용 규칙:
 
@@ -117,11 +117,13 @@ Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface�
 - 시연용 waveform은 서로 다른 진폭과 위상으로 움직일 수 있고 microphone ring은 바깥으로 확산할 수 있지만, 가짜 입력·진행률로 오해될 값은 표시하지 않는다.
 - 기능 설명은 실제 제품 흐름인 분석 → 추천 → 선택형 AI 믹싱 순서와 일치한다.
 - 인증 화면은 한 열로 유지하며 사용할 수 없는 provider를 placeholder로 표시하지 않는다.
+- Landing 마지막에는 한 개의 primary action, iridescent crystal visual과 짧은 설명으로 구성한 CTA를 두고, 그 아래에 brand·제품/계정 link·copyright가 있는 실제 site footer를 둔다.
+- Crystal은 `public/images/copy-singer-crystal.png`를 재사용하고 넓은 purple gradient나 별도 glass 디자인 시스템으로 확장하지 않는다.
 
 ### Authenticated app shell
 
-- desktop에서는 지속 가능한 sidebar 또는 충분한 공간의 top navigation을 사용한다.
-- mobile navigation은 Sheet 또는 compact navigation으로 전환한다.
+- desktop 제품 화면은 persistent sidebar를 사용하지 않고 64px top header에 brand, 중앙 primary navigation과 우측 compact account menu를 둔다.
+- mobile navigation은 같은 header의 menu trigger와 오른쪽 Sheet로 전환한다.
 - 현재 route, 사용자 메뉴와 ticket balance가 서로 경쟁하지 않게 위계를 분리한다.
 - content의 page heading, primary action와 filter 영역 위치를 route마다 임의로 바꾸지 않는다.
 
@@ -147,7 +149,7 @@ Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface�
 
 - 입력 label은 placeholder로 대체하지 않는다.
 - validation은 문제, 원인과 다음 action을 가능한 짧게 설명한다.
-- desktop filter sidebar는 tablet/mobile에서 Sheet로 이동할 수 있다.
+- desktop의 보조 filter rail은 tablet/mobile에서 Sheet로 이동할 수 있다. 제품 전체 navigation sidebar로 사용하지 않는다.
 - DropdownMenu는 action 묶음, Select는 값 선택에 사용해 의미를 섞지 않는다.
 
 ### Surfaces
@@ -197,7 +199,7 @@ Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface�
 ### Mobile: 320–767px
 
 - 한 열을 기본으로 하며 page gutter는 최소 20px을 유지한다.
-- table은 stacked row로, sidebar/filter는 Sheet로 전환한다.
+- table은 stacked row로, navigation/filter는 Sheet로 전환한다.
 - 녹음·재생 primary control과 현재 상태가 첫 viewport에 들어오도록 우선한다.
 - horizontal scroll은 waveform이나 명시적 data visualization 외에는 사용하지 않는다.
 

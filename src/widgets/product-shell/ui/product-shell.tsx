@@ -19,11 +19,11 @@ const productNavigationIcons = {
   account: UserRound,
 } as const;
 
-function ProductNavigation({ onNavigate }: { onNavigate?: () => void }) {
+function ProductNavigation({ mobile = false, onNavigate }: { mobile?: boolean; onNavigate?: () => void }) {
   const pathname = usePathname();
 
   return (
-    <nav aria-label="제품 메뉴" className="grid gap-1">
+    <nav aria-label="제품 메뉴" className={cn(mobile ? "grid gap-1" : "flex items-center gap-1")}>
       {productNavigation.map(({ href, icon, label }) => {
         const Icon = productNavigationIcons[icon];
         const active = isProductPathActive(pathname, href);
@@ -31,14 +31,15 @@ function ProductNavigation({ onNavigate }: { onNavigate?: () => void }) {
           <Link
             aria-current={active ? "page" : undefined}
             className={cn(
-              "flex min-h-11 items-center gap-3 rounded-md px-3 text-sm font-medium text-sidebar-foreground/65 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sidebar-ring/40",
-              active && "bg-sidebar-accent text-sidebar-accent-foreground",
+              "flex min-h-11 items-center rounded-md px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/40",
+              mobile && "gap-3",
+              active && "bg-muted text-foreground",
             )}
             href={href}
             key={href}
             onClick={onNavigate}
           >
-            <Icon aria-hidden="true" className="size-4" />
+            {mobile ? <Icon aria-hidden="true" className="size-4" /> : null}
             {label}
           </Link>
         );
@@ -61,7 +62,7 @@ function ProductShell({ admin = false, children, user }: ProductShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background lg:grid lg:grid-cols-[15rem_minmax(0,1fr)]">
+    <div className="flex min-h-screen flex-col bg-background">
       <a
         className="fixed top-3 left-3 z-[70] -translate-y-20 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-transform focus:translate-y-0"
         href="#product-content"
@@ -69,41 +70,40 @@ function ProductShell({ admin = false, children, user }: ProductShellProps) {
         본문 바로가기
       </a>
 
-      <aside className="sticky top-0 hidden h-screen flex-col border-r border-sidebar-border bg-sidebar p-4 lg:flex">
-        <ProductBrand className="px-2 py-1" href="/profile" />
-        <div className="mt-9">
-          <ProductNavigation />
-        </div>
-        <div className="mt-auto border-t border-sidebar-border pt-3">
-          <UserMenu admin={admin} email={user.email} image={user.image} name={user.name} side="top" />
-        </div>
-      </aside>
-
-      <div className="min-w-0">
-        <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b bg-background/95 px-5 backdrop-blur lg:hidden">
+      <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
+        <div className="mx-auto flex h-16 w-full max-w-[88rem] items-center justify-between gap-6 px-5 md:grid md:grid-cols-[1fr_auto_1fr] md:px-8 lg:px-12">
           <ProductBrand href="/profile" />
+          <div className="hidden md:block">
+            <ProductNavigation />
+          </div>
+          <div className="hidden justify-self-end md:block">
+            <UserMenu admin={admin} compact email={user.email} image={user.image} name={user.name} side="bottom" />
+          </div>
           <Sheet onOpenChange={setMobileOpen} open={mobileOpen}>
-            <SheetTrigger render={<Button aria-label="제품 메뉴 열기" size="icon" variant="outline" />}>
+            <SheetTrigger
+              className="md:hidden"
+              render={<Button aria-label="제품 메뉴 열기" size="icon" variant="outline" />}
+            >
               <Menu aria-hidden="true" />
             </SheetTrigger>
-            <SheetContent className="w-[min(22rem,calc(100%-2rem))]" side="left">
+            <SheetContent className="w-[min(22rem,calc(100%-2rem))]" side="right">
               <SheetHeader>
                 <SheetTitle>Copy Singer</SheetTitle>
                 <SheetDescription>목소리 분석, 라이브러리와 내 계정으로 이동합니다.</SheetDescription>
               </SheetHeader>
               <div className="border-y px-3 py-4">
-                <ProductNavigation onNavigate={() => setMobileOpen(false)} />
+                <ProductNavigation mobile onNavigate={() => setMobileOpen(false)} />
               </div>
               <div className="mt-auto p-3">
                 <UserMenu admin={admin} email={user.email} image={user.image} name={user.name} side="top" />
               </div>
             </SheetContent>
           </Sheet>
-        </header>
-        <main className="min-h-screen" id="product-content" tabIndex={-1}>
-          {children}
-        </main>
-      </div>
+        </div>
+      </header>
+      <main className="min-h-[calc(100svh-4rem)] min-w-0 flex-1" id="product-content" tabIndex={-1}>
+        {children}
+      </main>
     </div>
   );
 }

@@ -23,12 +23,22 @@ V1 ImageGen 시안은 원본 보드보다 노란 canvas를 사용했고 페이�
 
 ## Locked product shell
 
-- Desktop sidebar: 216px
+- Desktop: persistent sidebar를 사용하지 않는 64px top header
 - Brand: identical waveform mark and `Copy Singer` wordmark on every product page
-- Navigation: `Voice Scan`, `Library`, `Account`
-- Active navigation: `#F5F5F5` rectangular background, black text; black-filled item 금지
-- Content gutter: 40–48px; content max width approximately 1120px
+- Navigation: header 중앙의 `Voice Scan`, `Library`, `Account`
+- Account: header 우측의 compact avatar menu
+- Active navigation: neutral `#F5F5F5` background와 black text; black-filled item 금지
+- Mobile navigation: header의 menu trigger와 오른쪽 Sheet. 제품 sidebar를 축소해 재현하지 않는다.
+- Content gutter: 40–48px; content max width approximately 1200px
 - Page eyebrow, title, helper and top action use the same vertical rhythm on every route
+- Admin과 dev SVC는 제품 navigation을 가장하지 않는 top utility header를 사용한다.
+
+## Locked Landing ending
+
+- Hero의 waveform과 microphone ripple은 제품 interaction으로 유지한다.
+- 마지막 CTA는 `Every voice has its song.` 문구와 밝은 iridescent crystal visual을 좌우로 배치한다.
+- Crystal은 `public/images/copy-singer-crystal.png`를 사용하며 넓은 배경을 보라색 gradient로 채우지 않는다.
+- CTA 다음에는 brand 설명, Product/Account link와 copyright를 포함하는 실제 site footer가 반드시 이어진다.
 
 ## Locked typography and density
 

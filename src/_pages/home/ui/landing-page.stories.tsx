@@ -23,6 +23,9 @@ export const SignedOut: Story = {
       "/login?callbackURL=%2Fprofile",
     );
     await expect(canvas.getByLabelText("움직이는 목소리 파형과 분석 시작")).toBeVisible();
+    await expect(canvas.getByTestId("landing-crystal")).toBeVisible();
+    await expect(canvas.getByRole("navigation", { name: "푸터 제품 메뉴" })).toBeVisible();
+    await expect(canvas.getByText("© 2026 Copy Singer.")).toBeVisible();
   },
 };
 

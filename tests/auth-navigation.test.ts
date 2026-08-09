@@ -66,4 +66,6 @@ test("product shell keeps keyboard, touch-target, and navigation labels explicit
   assert.match(shell, /min-h-11/);
   assert.match(shell, /aria-label="제품 메뉴"/);
   assert.match(shell, /aria-label="제품 메뉴 열기"/);
+  assert.match(shell, /<header className="sticky top-0/);
+  assert.doesNotMatch(shell, /<aside/);
 });

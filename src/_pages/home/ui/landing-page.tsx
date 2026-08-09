@@ -1,4 +1,5 @@
 import { ArrowRight, AudioLines, Check, Mic2, Music2, Sparkles } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties } from "react";
 
@@ -175,25 +176,68 @@ function LandingPage({ authenticated = false }: { authenticated?: boolean }) {
           </div>
         </section>
 
-        <section className="border-t bg-muted/45">
-          <div className="mx-auto flex w-full max-w-7xl flex-col items-start justify-between gap-8 px-5 py-16 md:flex-row md:items-center md:px-8 lg:px-12">
-            <div>
-              <h2 className="text-2xl font-semibold tracking-tight">Every voice has its song.</h2>
-              <p className="mt-2 text-sm text-muted-foreground">
-                지금 목소리를 들려주고 첫 보컬 프로필을 만들어보세요.
+        <section className="overflow-hidden border-t">
+          <div className="mx-auto grid min-h-[23rem] w-full max-w-7xl items-center gap-6 px-5 py-12 md:grid-cols-[minmax(0,1fr)_minmax(18rem,0.72fr)] md:px-8 lg:px-12">
+            <div className="relative z-10 max-w-xl">
+              <p className="text-xs font-medium tracking-[0.16em] text-muted-foreground uppercase">Start your song</p>
+              <h2 className="mt-4 text-3xl font-semibold tracking-tight md:text-4xl">Every voice has its song.</h2>
+              <p className="mt-4 text-sm leading-6 text-muted-foreground md:text-base">
+                지금 목소리를 들려주고 첫 보컬 프로필을 만들어보세요. 분석부터 추천과 AI 믹싱까지 한 흐름으로
+                이어집니다.
               </p>
+              <Button className="mt-7" nativeButton={false} render={<Link href={primaryHref} />} size="lg">
+                {primaryLabel} <ArrowRight aria-hidden="true" />
+              </Button>
             </div>
-            <Button nativeButton={false} render={<Link href={primaryHref} />} size="lg">
-              {primaryLabel} <ArrowRight aria-hidden="true" />
-            </Button>
+            <div
+              aria-hidden="true"
+              className="relative mx-auto aspect-square w-full max-w-[21rem] md:justify-self-end"
+              data-testid="landing-crystal"
+            >
+              <Image
+                alt=""
+                className="object-contain"
+                fill
+                sizes="(max-width: 767px) 80vw, 22rem"
+                src="/images/copy-singer-crystal.png"
+              />
+            </div>
           </div>
         </section>
       </main>
 
       <footer className="border-t">
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-5 px-5 py-10 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between md:px-8 lg:px-12">
-          <ProductBrand />
-          <p>© 2026 Copy Singer. 목소리 분석과 AI 믹싱 경험.</p>
+        <div className="mx-auto grid w-full max-w-7xl gap-10 px-5 py-12 md:grid-cols-[minmax(0,1fr)_auto_auto] md:px-8 lg:px-12">
+          <div className="max-w-xs">
+            <ProductBrand />
+            <p className="mt-4 text-sm leading-6 text-muted-foreground">
+              목소리를 이해하고, 가장 잘 맞는 노래와 연결합니다.
+            </p>
+          </div>
+          <nav aria-label="푸터 제품 메뉴" className="grid content-start gap-3 text-sm">
+            <p className="text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase">Product</p>
+            <a className="hover:underline" href="#how-it-works">
+              이용 방법
+            </a>
+            <a className="hover:underline" href="#why-copy-singer">
+              분석 기준
+            </a>
+          </nav>
+          <nav aria-label="푸터 계정 메뉴" className="grid content-start gap-3 text-sm">
+            <p className="text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase">Account</p>
+            <Link className="hover:underline" href={primaryHref}>
+              {authenticated ? "목소리 분석" : "로그인"}
+            </Link>
+            <Link className="hover:underline" href="/library">
+              라이브러리
+            </Link>
+          </nav>
+        </div>
+        <div className="border-t">
+          <div className="mx-auto flex w-full max-w-7xl flex-col gap-2 px-5 py-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between md:px-8 lg:px-12">
+            <p>© 2026 Copy Singer.</p>
+            <p>Voice analysis · Song match · AI mixing</p>
+          </div>
         </div>
       </footer>
     </div>
