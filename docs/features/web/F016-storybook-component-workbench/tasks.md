@@ -73,18 +73,18 @@
     - [x] `storybook`, `build-storybook`, `test:storybook` script와 Chromium browser 설치
     - [x] Storybook smoke/static build, TypeScript와 FSD architecture 검사 통과
 
-- [DOING][NON-PRD] T-F016-02 Shared UI primitive story와 Controls·interaction 추가
+- [DONE][NON-PRD] T-F016-02 Shared UI primitive story와 Controls·interaction 추가
   - Date: 2026-08-09
   - Acceptance:
     - shared UI의 action/layout/input primitive를 Storybook에서 args와 Controls로 탐색할 수 있다.
     - click, toggle, slider, collapsible과 tooltip의 대표 interaction이 accessible role/name 기반 assertion으로 검증된다.
     - story는 component public API를 사용하고 중복 fixture markup을 최소화한다.
   - Checklist:
-    - [ ] Button/Badge/Card/Progress/Separator story 작성
-    - [ ] Slider/Switch/Collapsible/Tooltip/Label story 작성
-    - [ ] AudioWaveformPlayer의 network-independent story와 consumer 기반 Chart/Sonner coverage 판단 기록
-    - [ ] variant, disabled, composed layout 및 keyboard/click interaction `play` 함수 추가
-    - [ ] shared story Storybook browser/a11y test 통과
+    - [x] Button/Badge/Card/Progress/Separator story 작성
+    - [x] Slider/Switch/Collapsible/Tooltip/Label story 작성
+    - [x] AudioWaveformPlayer의 network-independent story와 consumer 기반 Chart/Sonner coverage 판단 기록
+    - [x] variant, disabled, composed layout 및 keyboard/click interaction `play` 함수 추가
+    - [x] shared story Storybook browser/a11y test 통과
 
 - [TODO][NON-PRD] T-F016-03 핵심 entity·feature·widget 상태 story 구성
   - Date: 2026-08-09
@@ -145,13 +145,14 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `pnpm run storybook --ci --smoke-test` | `2026-08-09` | PASS (Storybook 10.5.7 smoke) |
-| `pnpm run build-storybook` | `2026-08-09` | PASS (718 modules, worker 포함) |
-| `pnpm run test:storybook --run` | `2026-08-09` | PASS (1 story) |
+| `pnpm run build-storybook` | `2026-08-09` | PASS (2,669 modules, worker 포함) |
+| `pnpm run test:storybook --run` | `2026-08-09` | PASS (11 files, 19 stories) |
 | `pnpm run test:query` | `-` | 미실행 |
 | `pnpm run check` | `2026-08-09` | FAIL (기존 key-fit test fixture export Biome 2건, T-F016-05에서 정리) |
 | `pnpm run build` | `-` | 미실행 |
 | `pnpm test` | `-` | 미실행 |
 | `pnpm audit --prod` | `-` | 미실행 |
 | `pnpm run typecheck` | `2026-08-09` | PASS |
+| `pnpm run lint` | `2026-08-09` | PASS |
 | `pnpm run check:architecture` | `2026-08-09` | PASS |
 | `pnpm run test:process-scripts` | `2026-08-09` | PASS (4 tests) |
