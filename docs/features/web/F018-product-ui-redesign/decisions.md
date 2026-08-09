@@ -125,3 +125,23 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 워크플로 — 해당 없음
   - **Test/Log**: `pnpm run test:vocal-profile-presentation` (12/12), `pnpm run test:vocal-profile-history` (UI 3/3 + private/ownership 3/3), visualization/results (10/10), `pnpm run test:storybook --run` (29 files, 63 tests), `pnpm run check`, `pnpm run build-storybook`, `pnpm run build`, Storybook browser smoke (1280×720·360×800)
 - **Consequences**: 동일 분석값은 모든 목록·상세·Storybook에서 같은 요약 언어를 사용하고, 기존 세부 분석은 필요할 때 펼쳐 확인한다.
+
+## D023: 저장된 추천 run의 클라이언트 목록 projection (2026-08-10)
+
+- **Context**: 추천 API는 한 run에 100개 item과 점수·추천 shift·reason·합성 상태를 반환하지만 현재 화면은 각 item마다 큰 Card와 waveform player를 렌더링해 비교와 탐색 비용이 높다.
+- **Constraints**: 새 server pagination이나 도메인 필드를 만들지 않는다. title, artist, score, recommended shift와 실제 synthesis 상태만 검색·정렬·필터에 사용하고 mixing mutation·polling·idempotency·결과 재생·run 삭제 semantics를 보존한다.
+- **Options**:
+  1. 서버 pagination과 검색 endpoint를 새로 만든다.
+  2. 100개 Card를 유지하고 상단 control만 추가한다.
+  3. 저장된 run을 공통 Query cache에서 읽고 순수 client projection으로 검색·정렬·필터한 뒤 desktop table/mobile row를 렌더링한다.
+- **Decision**: 옵션 3을 채택한다. Zod로 정규화한 URL query를 projection state의 정본으로 사용하고, 저장된 run의 원본 배열은 변경하지 않은 채 순수 helper가 검색·필터·stable sort를 수행한다. 목록은 단일 semantic table DOM을 desktop table/mobile stacked row로 반응형 전환하며 mixing action과 성공 result audio는 행 단위로 분리해 필요할 때만 mount한다.
+- **Rationale**: API·DB 계약을 확장하지 않고도 100곡의 비교 밀도를 높이며 URL 복원성과 Query cache의 상태 일관성을 함께 보존한다. 초기 화면에 waveform player를 만들지 않아 행 수가 늘어도 audio instance 비용이 비례해 증가하지 않고, 정수 적합도·추천 shift·실제 synthesis 상태만으로 증명 가능한 비교를 제공한다.
+- **Trace**:
+  - **DOING 시작 시점**: recommendation response, Query polling, mixing mutation과 기존 Storybook/test를 다시 읽고 100개 행에서 유지해야 할 실제 상태와 lazy audio 경계를 먼저 고정한다.
+  - **DONE 전 확정 시점**: 검색·점수·shift·status 필터와 rank·score·title 정렬을 순수 projection helper로 고정했다. URL은 `useSyncExternalStore`로 읽고 유효하지 않은 값은 Zod 기본값으로 복구하며 reset/빈 결과 동작을 제공한다. desktop/mobile은 같은 table 행을 사용하고 모바일에서 score와 shift를 한 줄 비교로 배치했다. start/retry/idempotency/polling/cache 갱신과 result download는 유지하고 성공 audio는 사용자가 `결과 듣기`를 선택한 행에만 mount한다. 삭제는 공통 Dialog로 전환했다.
+  - **머지 후 확인**: 로컬 통합 후 기록한다.
+- **Evidence**:
+  - **Commit**: T-F018-05 task checkpoint commit
+  - **PR**: 로컬 워크플로 — 해당 없음
+  - **Test/Log**: `pnpm run test:recommendation` (presentation 10/10 + UI 11/11), `pnpm run test:query` (20/20 + streaming 1/1), `pnpm run test:storybook --run` (29 files, 66 tests), `pnpm run check`, `pnpm run build-storybook`, `pnpm run build`, Storybook browser smoke (1280×800·360×800, horizontal overflow 없음, 초기 waveform 0개)
+- **Consequences**: 필터 결과는 저장 run의 client projection이며 원본 rank와 Query cache를 변경하지 않는다. 서버 pagination이 필요해질 만큼 dataset이 커질 때는 URL contract를 유지한 채 query backend만 교체할 수 있다.

@@ -123,7 +123,7 @@
     - [x] source/reference audio, delete와 recommendation CTA 회귀 확인
     - [x] profile UI, visualization, history와 private media test 통과
 
-- [TODO][PRD-FR-049] T-F018-05 Song Match 100곡 목록·검색·정렬·필터 개선
+- [DONE][PRD-FR-049] T-F018-05 Song Match 100곡 목록·검색·정렬·필터 개선
   - Date: 2026-08-09
   - Acceptance:
     - 100곡을 desktop semantic table과 mobile stacked row에서 곡·아티스트·적합도·추천 shift·mixing 상태로 비교할 수 있다.
@@ -131,13 +131,13 @@
     - filter state는 URL에 유지되고 빈 결과를 초기화할 수 있으며 행마다 waveform instance를 만들지 않는다.
     - mixing start/retry, idempotency, polling, result와 recommendation delete 동작이 기존 Query 정책을 유지한다.
   - Checklist:
-    - [ ] recommendation presentation/filter/sort 순수 helper와 test 추가
-    - [ ] URL query state와 desktop/mobile list 구현
-    - [ ] score 정수 표현, shift, reasons와 low-confidence 안내 정리
-    - [ ] mixing state/action을 행 단위 공통 component로 분리
-    - [ ] result audio lazy mount와 100개 행 performance 확인
-    - [ ] recommendation delete를 공통 Dialog로 전환
-    - [ ] recommendation UI/Query/Storybook 회귀 test 추가
+    - [x] recommendation presentation/filter/sort 순수 helper와 test 추가
+    - [x] URL query state와 desktop/mobile list 구현
+    - [x] score 정수 표현, shift, reasons와 low-confidence 안내 정리
+    - [x] mixing state/action을 행 단위 공통 component로 분리
+    - [x] result audio lazy mount와 100개 행 performance 확인
+    - [x] recommendation delete를 공통 Dialog로 전환
+    - [x] recommendation UI/Query/Storybook 회귀 test 추가
 
 - [TODO][PRD-FR-049] T-F018-06 Song Detail route와 저장 곡 음역 계약 확장
   - Date: 2026-08-09
@@ -258,4 +258,4 @@
 | `pnpm run test:process-scripts` | `2026-08-09` | 통과 — 5/5 |
 | `pnpm test` | `-` | 미실행 — 구현 전 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T14:58:57.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T15:14:43.000Z -->
