@@ -1,0 +1,93 @@
+.visual {
+  isolation: isolate;
+}
+
+.ambientRing,
+.rippleRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+.ambientRing {
+  border: 1px dashed color-mix(in oklab, var(--data-accent) 22%, transparent);
+}
+
+.rippleRing {
+  inset: 16%;
+  border: 1px solid color-mix(in oklab, var(--data-accent) 32%, transparent);
+  animation: landing-ripple 4.2s cubic-bezier(0.2, 0.65, 0.35, 1) infinite;
+  opacity: 0;
+}
+
+.rippleRing:nth-of-type(2) {
+  animation-delay: -1.4s;
+}
+
+.rippleRing:nth-of-type(3) {
+  animation-delay: -2.8s;
+}
+
+.waveBar {
+  height: var(--bar-height);
+  animation: landing-wave var(--bar-duration) ease-in-out var(--bar-delay) infinite alternate;
+  transform: scaleY(0.48);
+  transform-origin: center;
+}
+
+@keyframes landing-wave {
+  0% {
+    opacity: 0.42;
+    transform: scaleY(0.42);
+  }
+  55% {
+    opacity: 0.86;
+    transform: scaleY(0.86);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(1.08);
+  }
+}
+
+@keyframes landing-ripple {
+  0% {
+    opacity: 0;
+    transform: scale(0.58);
+  }
+  18% {
+    opacity: 0.58;
+  }
+  72% {
+    opacity: 0.16;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.34);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rippleRing,
+  .waveBar {
+    animation: none;
+  }
+
+  .rippleRing {
+    opacity: 0.2;
+  }
+
+  .rippleRing:nth-of-type(2) {
+    transform: scale(0.78);
+  }
+
+  .rippleRing:nth-of-type(3) {
+    transform: scale(0.58);
+  }
+
+  .waveBar {
+    opacity: 0.78;
+    transform: none;
+  }
+}

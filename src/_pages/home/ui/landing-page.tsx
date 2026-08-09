@@ -1,8 +1,11 @@
 import { ArrowRight, AudioLines, Check, Mic2, Music2, Sparkles } from "lucide-react";
 import Link from "next/link";
+import type { CSSProperties } from "react";
 
 import { Button } from "@/shared/ui/button";
 import { ProductBrand } from "@/widgets/product-shell";
+
+import styles from "./landing-hero.module.css";
 
 const waveformBars = [18, 32, 46, 28, 58, 72, 42, 64, 36, 82, 54, 68, 34, 48, 76, 44, 62, 30, 52, 38, 70, 48, 26, 42];
 
@@ -37,19 +40,20 @@ function LandingPage({ authenticated = false }: { authenticated?: boolean }) {
       </header>
 
       <main>
-        <section className="mx-auto grid min-h-[calc(100vh-4rem)] w-full max-w-7xl items-center gap-16 px-5 py-20 md:px-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(28rem,0.95fr)] lg:px-12 lg:py-28">
-          <div className="max-w-2xl">
+        <section className="mx-auto grid w-full max-w-7xl items-center gap-6 px-5 py-8 sm:gap-10 sm:py-14 md:px-8 lg:min-h-[calc(100svh-4rem)] lg:grid-cols-[minmax(0,1.08fr)_minmax(24rem,0.82fr)] lg:gap-12 lg:px-12 lg:py-16">
+          <div className="max-w-[42rem]">
             <p className="text-xs font-medium tracking-[0.18em] text-muted-foreground uppercase">
               Voice match & AI mixing
             </p>
-            <h1 className="mt-6 text-[clamp(2.75rem,7vw,5.5rem)] leading-[0.98] font-semibold tracking-[-0.055em] text-balance">
-              당신의 목소리에 맞는 노래를 찾습니다.
+            <h1 className="mt-4 text-[clamp(2.55rem,5.3vw,4.75rem)] leading-[0.98] font-semibold tracking-[-0.052em] sm:mt-5">
+              <span className="block">당신의 목소리에</span>
+              <span className="block">맞는 노래를 찾습니다.</span>
             </h1>
-            <p className="mt-7 max-w-xl text-base leading-7 text-muted-foreground md:text-lg md:leading-8">
+            <p className="mt-5 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7 md:text-lg md:leading-8">
               짧은 목소리 샘플로 음역과 안정성을 분석하고, 실제 근거가 있는 추천 키와 노래를 확인하세요. 원하는 곡은 AI
               믹싱 결과로 이어집니다.
             </p>
-            <div className="mt-9 flex flex-wrap items-center gap-3">
+            <div className="mt-6 flex flex-wrap items-center gap-3 sm:mt-8">
               <Button nativeButton={false} render={<Link href={primaryHref} />} size="lg">
                 {primaryLabel} <ArrowRight aria-hidden="true" />
               </Button>
@@ -62,26 +66,46 @@ function LandingPage({ authenticated = false }: { authenticated?: boolean }) {
             </p>
           </div>
 
-          <div aria-label="목소리 분석 인터랙션 예시" className="relative mx-auto w-full max-w-xl" role="img">
-            <div className="absolute inset-8 rounded-full border border-data-accent/15" />
-            <div className="absolute inset-16 rounded-full border border-data-accent/20" />
-            <div className="relative flex aspect-square flex-col items-center justify-center rounded-full border bg-card p-10">
-              <p className="text-xs font-medium text-muted-foreground">10초 목소리 샘플</p>
-              <div aria-hidden="true" className="mt-8 flex h-24 w-full items-center justify-center gap-1.5">
+          <figure
+            aria-label="움직이는 목소리 파형과 분석 시작"
+            className={`${styles.visual} relative mx-auto aspect-square w-full max-w-[17rem] sm:max-w-sm lg:max-w-[28rem]`}
+          >
+            <span aria-hidden="true" className={styles.ambientRing} />
+            <span aria-hidden="true" className={styles.rippleRing} />
+            <span aria-hidden="true" className={styles.rippleRing} />
+            <span aria-hidden="true" className={styles.rippleRing} />
+            <div className="absolute inset-[9%] flex flex-col items-center justify-center rounded-full border bg-card/92 px-7 sm:px-10">
+              <p className="text-[0.6875rem] font-medium tracking-[0.12em] text-muted-foreground uppercase sm:text-xs">
+                10초 목소리 샘플
+              </p>
+              <div
+                aria-hidden="true"
+                className="mt-4 flex h-14 w-full items-center justify-center gap-1 sm:mt-7 sm:h-20 sm:gap-1.5"
+              >
                 {waveformBars.map((height, index) => (
                   <span
-                    className="w-1 rounded-full bg-data-accent odd:bg-data-accent/45"
+                    className={`${styles.waveBar} w-0.5 rounded-full bg-data-accent odd:bg-data-accent/45 sm:w-1`}
                     key={`${height}-${index}`}
-                    style={{ height: `${height}%` }}
+                    style={
+                      {
+                        "--bar-delay": `${-(index % 8) * 110}ms`,
+                        "--bar-duration": `${940 + (index % 5) * 170}ms`,
+                        "--bar-height": `${height}%`,
+                      } as CSSProperties
+                    }
                   />
                 ))}
               </div>
-              <span className="mt-8 flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground">
+              <Link
+                aria-label={`${primaryLabel}: 목소리 분석 시작`}
+                className="mt-5 flex size-12 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring motion-reduce:transform-none sm:mt-7 sm:size-14"
+                href={primaryHref}
+              >
                 <Mic2 aria-hidden="true" className="size-5" />
-              </span>
-              <p className="mt-4 text-sm font-medium">목소리 분석 준비</p>
+              </Link>
+              <p className="mt-3 text-xs font-medium sm:mt-4 sm:text-sm">눌러서 목소리 분석 시작</p>
             </div>
-          </div>
+          </figure>
         </section>
 
         <section className="border-y" id="how-it-works">
