@@ -228,21 +228,60 @@ curl -fsS http://localhost:8001/health
 ## Layout
 
 ```text
-app/                         Next.js pages and API proxy routes
-components/                  Vocal workbench and shadcn/ui components
-data/catalogs/               Versioned song metadata and analysis artifact
-lib/db/                      Server-only Prisma client
-lib/auth/                    Better Auth session and admin authorization
-lib/leemage/                 Leemage upload, delete, and cleanup lifecycle
-lib/mixing/                  Durable queue, worker, history, and result access
-lib/tickets/                 Atomic balance and append-only ticket ledger
-prisma/                      Prisma schema, migrations, and development seed
-scripts/                     Local database verification scripts
-services/soulx-singer-svc/   Modal GPU API deployment
-services/song-catalog-analyzer/  Ephemeral Modal L4 catalog benchmark
-services/vocal-profile-api/  Local FastAPI/librosa CPU analyzer
-work/vocal-profiles/         Ignored local recording storage
+app/                              Thin Next.js App Router adapters
+src/_app/                         FSD App layer: layout, providers, routes, workers
+src/_pages/                       FSD Pages layer: route-level UI composition
+src/widgets/                      Reusable, self-contained page sections
+src/features/                     User actions and application use cases
+src/entities/                     Domain data, behavior, and domain UI
+src/shared/                       Framework-agnostic API, config, DB, media, and UI
+data/catalogs/                    Versioned song metadata and analysis artifacts
+prisma/                           Prisma schema, migrations, and development seed
+scripts/                          Workers and local verification/maintenance tools
+services/soulx-singer-svc/        Modal GPU singing-voice conversion API
+services/vocal-profile-modal/     Modal GPU vocal-profile analyzer
+services/song-catalog-analyzer/   Ephemeral Modal catalog benchmark
+services/vocal-profile-api/       Local FastAPI/librosa CPU analyzer
+tests/                            Node, integration, UI, Query, and boundary tests
+work/vocal-profiles/              Ignored local recording storage
 ```
+
+The root `app/` and `src/_app/` are intentionally different. Next.js requires
+route conventions such as `page.tsx`, `layout.tsx`, and `route.ts` under
+`app/`. Those files contain only Next.js route configuration and re-exports
+from an FSD public API. Application composition and Route Handler
+implementations live in `src/_app/`. Likewise, `src/_pages/` is the FSD Pages
+layer, not a second Next.js router. The `_app` and `_pages` names follow the
+[official FSD Next.js guide](https://fsd.how/docs/guides/tech/with-nextjs/)
+to avoid collisions with Next.js directories.
+
+FSD dependencies point from higher layers to lower layers:
+
+```text
+_app → _pages → widgets → features → entities → shared
+```
+
+A module may skip layers while following that direction. Code in one slice
+must not import another slice's `api/`, `model/`, `ui/`, `lib/`, or `config/`
+files directly. Import through the target slice's root public API instead.
+Relative imports within the same slice remain internal implementation details.
+
+Public API entry points describe their runtime capability:
+
+- `index.ts` exports browser-safe UI, client APIs, and pure model values.
+- `index.model.ts` exports runtime-neutral schemas, types, and value contracts
+  without pulling UI, client hooks, database access, or secrets into the graph.
+- `index.server.ts` exports database operations, server policies, secrets, and
+  other server-only capabilities.
+- More specific suffixes, when present, expose a deliberately narrower
+  capability and should be used only by the named consumer class.
+
+`pnpm run check:architecture` runs Steiger's standard FSD rules and the
+repository boundary tests. The narrow overrides in `steiger.config.ts` remain
+necessary because the current Steiger/FSD filesystem versions do not normalize
+underscore-prefixed App/Pages layers consistently in every rule and do not
+count some `_app` Route Handler or worker consumers. Keep exceptions limited to
+confirmed paths and re-evaluate them when those packages are upgraded.
 
 ## Documentation workflow
 
