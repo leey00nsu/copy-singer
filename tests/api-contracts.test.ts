@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { mixingHistoryFiltersSchema, mixingHistoryPayloadSchema } from "@/entities/mixing-job";
+import {
+  mixingDeleteResponseSchema,
+  mixingHistoryFiltersSchema,
+  mixingHistoryPayloadSchema,
+} from "@/entities/mixing-job";
 import { recommendationRunResponseSchema } from "@/entities/recommendation";
 import { vocalProfileAnalysisJobResponseSchema } from "@/entities/vocal-profile";
 import {
@@ -54,6 +58,17 @@ test("mixing history filters normalize URL values without inventing statuses", (
     status: "all",
   });
   assert.equal(mixingHistoryFiltersSchema.parse({ page: "1", q: "x".repeat(100) }).q.length, 80);
+});
+
+test("mixing deletion has a stable terminal cleanup envelope", () => {
+  assert.deepEqual(
+    mixingDeleteResponseSchema.parse({ status: "deleted", id: JOB_ID, mediaCleanupPending: true, ignored: true }),
+    { status: "deleted", id: JOB_ID, mediaCleanupPending: true },
+  );
+  assert.equal(
+    mixingDeleteResponseSchema.safeParse({ status: "ok", id: JOB_ID, mediaCleanupPending: false }).success,
+    false,
+  );
 });
 
 test("analysis upload schema checks file metadata without reading file bytes", () => {

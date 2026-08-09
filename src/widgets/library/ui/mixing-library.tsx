@@ -15,6 +15,8 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 import {
+  isActiveMixingStatus,
+  MIXING_STATUS_LABELS,
   type MixingHistoryFilterStatus,
   type MixingHistoryFilters,
   type MixingHistoryPayload,
@@ -32,23 +34,16 @@ import { StatePanel } from "@/shared/ui/state-panel";
 import { mixingHistoryHref } from "../model/search-params";
 import { LibraryPagination } from "./library-pagination";
 
-const ACTIVE_STATUSES = new Set(["pending", "preparing", "submitted", "processing"]);
-
 const STATUS_LABELS: Record<MixingHistoryFilterStatus, string> = {
   all: "모든 상태",
-  pending: "대기 중",
-  preparing: "음원 준비 중",
-  submitted: "GPU 대기 중",
+  ...MIXING_STATUS_LABELS,
   processing: "믹싱 중",
-  succeeded: "완료",
-  failed: "실패",
-  canceled: "취소",
 };
 
 const STATUS_OPTIONS = Object.entries(STATUS_LABELS) as Array<[MixingHistoryFilterStatus, string]>;
 
 function statusIcon(job: MixingHistoryRow) {
-  if (ACTIVE_STATUSES.has(job.status)) {
+  if (isActiveMixingStatus(job.status)) {
     return <LoaderCircle aria-hidden="true" className="size-3 animate-spin motion-reduce:animate-none" />;
   }
   if (job.status === "succeeded") return <CheckCircle2 aria-hidden="true" className="size-3" />;
@@ -167,7 +162,7 @@ function MixingLibraryRows({ jobs }: { jobs: MixingHistoryRow[] }) {
         </thead>
         <tbody className="block divide-y md:table-row-group">
           {jobs.map((job) => {
-            const active = ACTIVE_STATUSES.has(job.status);
+            const active = isActiveMixingStatus(job.status);
             const expanded = expandedJobId === job.id;
             return (
               <tr className="grid grid-cols-2 gap-4 py-5 md:table-row md:py-0" key={job.id}>
@@ -179,7 +174,11 @@ function MixingLibraryRows({ jobs }: { jobs: MixingHistoryRow[] }) {
                   {active ? <span className="sr-only">자동 새로고침 중</span> : null}
                 </td>
                 <td className="col-span-2 min-w-0 px-4 align-top md:table-cell md:py-5">
-                  <h2 className="truncate text-base font-semibold">{job.song.title}</h2>
+                  <h2 className="truncate text-base font-semibold">
+                    <Link className="underline-offset-4 hover:underline" href={`/library/mixes/${job.id}`}>
+                      {job.song.title}
+                    </Link>
+                  </h2>
                   <p className="mt-1 text-sm text-muted-foreground">{job.song.artist}</p>
                   <p className="mt-2 font-mono text-[10px] text-muted-foreground">TJ #{job.song.catalogOrder}</p>
                 </td>
@@ -204,16 +203,24 @@ function MixingLibraryRows({ jobs }: { jobs: MixingHistoryRow[] }) {
                 </td>
                 <td className="col-span-2 px-4 align-top md:table-cell md:py-5">
                   <p className="text-xs leading-5 text-muted-foreground">{statusDescription(job)}</p>
-                  {job.audioUrl ? (
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <Button onClick={() => setExpandedJobId(expanded ? null : job.id)} size="sm" variant="outline">
-                        <Music2 aria-hidden="true" className="size-4" /> {expanded ? "플레이어 닫기" : "결과 듣기"}
-                      </Button>
-                      <a className={buttonVariants({ size: "sm", variant: "outline" })} download href={job.audioUrl}>
-                        <Download aria-hidden="true" className="size-4" /> 결과 저장
-                      </a>
-                    </div>
-                  ) : null}
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Link
+                      className={buttonVariants({ size: "sm", variant: "outline" })}
+                      href={`/library/mixes/${job.id}`}
+                    >
+                      상세 보기
+                    </Link>
+                    {job.audioUrl ? (
+                      <>
+                        <Button onClick={() => setExpandedJobId(expanded ? null : job.id)} size="sm" variant="outline">
+                          <Music2 aria-hidden="true" className="size-4" /> {expanded ? "플레이어 닫기" : "결과 듣기"}
+                        </Button>
+                        <a className={buttonVariants({ size: "sm", variant: "outline" })} download href={job.audioUrl}>
+                          <Download aria-hidden="true" className="size-4" /> 결과 저장
+                        </a>
+                      </>
+                    ) : null}
+                  </div>
                   {expanded && job.audioUrl ? (
                     <div className="mt-4 min-w-0 rounded-lg bg-muted/40 p-3">
                       <AudioWaveformPlayer
@@ -255,7 +262,7 @@ export function MixingLibrary({
       />
       <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
         <p aria-live="polite">{filtered ? `검색 결과 ${history.total}개` : `저장된 AI 믹스 ${history.total}개`}</p>
-        {history.jobs.some((job) => ACTIVE_STATUSES.has(job.status)) ? (
+        {history.jobs.some((job) => isActiveMixingStatus(job.status)) ? (
           <p>진행 중인 작업을 자동으로 확인하고 있어요.</p>
         ) : null}
       </div>

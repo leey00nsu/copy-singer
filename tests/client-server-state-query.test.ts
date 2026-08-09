@@ -2,7 +2,13 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { z } from "zod";
 import { createQueryClient } from "@/_app/providers";
-import { mixingHistoryPollingInterval, mixingHistoryQueryOptions, mixingJobKeys } from "@/entities/mixing-job";
+import {
+  mixingDetailPollingInterval,
+  mixingDetailQueryOptions,
+  mixingHistoryPollingInterval,
+  mixingHistoryQueryOptions,
+  mixingJobKeys,
+} from "@/entities/mixing-job";
 import {
   type RecommendationRunResponse,
   recommendationKeys,
@@ -277,6 +283,13 @@ test("recommendation and mixing polling stop at terminal state while item cache 
     "mixing-job",
     "history",
     { page: 2, q: "Song", status: "processing" },
+  ]);
+  assert.equal(mixingDetailPollingInterval(historyJob), 5_000);
+  assert.equal(mixingDetailPollingInterval({ ...historyJob, status: "failed" }), false);
+  assert.deepEqual(mixingDetailQueryOptions(historyJob.id, historyJob).queryKey, [
+    "mixing-job",
+    "detail",
+    historyJob.id,
   ]);
   client.clear();
 });

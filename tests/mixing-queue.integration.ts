@@ -34,7 +34,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     "../src/_app/background-jobs/mixing/index.server"
   );
   const { InsufficientTicketsError } = await import("../src/entities/ticket/index.server");
-  const { MixingError } = await import("../src/entities/mixing-job/index.server");
+  const { deleteMixingJobForUser, MixingError } = await import("../src/entities/mixing-job/index.server");
   const { applyTicketChange } = await import("../src/entities/ticket/index.server");
   const { getMixingHistory, getMixingJobForUser } = await import("../src/entities/mixing-job/index.server");
   const suffix = crypto.randomUUID();
@@ -49,6 +49,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
 
   let originalTargetAssetId: string | null = null;
   let songId: string | null = null;
+  const originalFetch = globalThis.fetch;
 
   try {
     const song = await prisma.song.findFirstOrThrow({ where: { catalogOrder: 1 } });
@@ -470,7 +471,49 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     assert.notEqual(firstHistoryPage.jobs[0]?.id, secondHistoryPage.jobs[0]?.id);
     assert.equal((await getMixingHistory("another-user", { page: 1, q: song.title, status: "all" })).total, 0);
     assert.equal(await getMixingJobForUser("another-user", successful.id), null);
+
+    const activeForDelete = await prisma.mixingJob.create({
+      data: {
+        userId,
+        vocalProfileId: profileId,
+        songId: song.id,
+        recommendationItemId: itemId,
+        referenceAssetId: smartAssetId,
+        targetAssetId,
+        status: "PENDING",
+        ticketCost: 1,
+        idempotencyKey: `active-delete-${suffix}`,
+      },
+    });
+    await assert.rejects(
+      () => deleteMixingJobForUser(userId, activeForDelete.id),
+      (error) => error instanceof MixingError && error.code === "MIXING_ACTIVE" && error.status === 409,
+    );
+    assert.ok(await prisma.mixingJob.findUnique({ where: { id: activeForDelete.id } }));
+    await assert.rejects(
+      () => deleteMixingJobForUser("another-user", successful.id),
+      (error) => error instanceof MixingError && error.code === "MIXING_NOT_FOUND" && error.status === 404,
+    );
+
+    const resultAssetId = completed.resultAsset?.id;
+    assert.ok(resultAssetId);
+    const debit = await prisma.ticketLedger.findFirstOrThrow({
+      where: { mixingJobId: successful.id, type: "MIXING_DEBIT" },
+    });
+    globalThis.fetch = async () => new Response(null, { status: 503 });
+    const deletion = await deleteMixingJobForUser(userId, successful.id);
+    globalThis.fetch = originalFetch;
+    assert.deepEqual(deletion, { status: "deleted", id: successful.id, mediaCleanupPending: true });
+    assert.equal(await prisma.mixingJob.findUnique({ where: { id: successful.id } }), null);
+    assert.equal(await getMixingJobForUser(userId, successful.id), null);
+    assert.equal((await prisma.ticketLedger.findUniqueOrThrow({ where: { id: debit.id } })).mixingJobId, null);
+    assert.equal(
+      (await prisma.mediaAsset.findUniqueOrThrow({ where: { id: resultAssetId } })).status,
+      "DELETE_PENDING",
+    );
+    assert.equal(await prisma.mediaCleanupJob.count({ where: { mediaAssetId: resultAssetId, status: "PENDING" } }), 1);
   } finally {
+    globalThis.fetch = originalFetch;
     for (const [name, value] of Object.entries({
       MIXING_TICKET_COST: previousEnv.cost,
       MIXING_MAX_ATTEMPTS: previousEnv.maxAttempts,

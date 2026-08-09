@@ -71,6 +71,7 @@ export const mixingHistoryRowSchema = z.object({
   audioUrl: z.string().nullable(),
   createdAt: z.string(),
   updatedAt: z.string(),
+  submittedAt: z.string().nullable().optional(),
   startedAt: z.string().nullable(),
   completedAt: z.string().nullable(),
 });
@@ -87,11 +88,13 @@ export const mixingHistoryPayloadSchema = z.object({
 
 export type MixingHistoryPayload = z.infer<typeof mixingHistoryPayloadSchema>;
 
-export const mixingDeleteResponseSchema = z
-  .object({
-    status: z.string(),
-  })
-  .passthrough();
+export const mixingDeleteResponseSchema = z.object({
+  status: z.literal("deleted"),
+  id: z.uuid(),
+  mediaCleanupPending: z.boolean(),
+});
+
+export type MixingDeleteResponse = z.infer<typeof mixingDeleteResponseSchema>;
 
 export class MixingError extends Error {
   constructor(

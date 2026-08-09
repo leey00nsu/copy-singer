@@ -17,6 +17,7 @@ const historySelect = {
   errorDetail: true,
   createdAt: true,
   updatedAt: true,
+  submittedAt: true,
   startedAt: true,
   completedAt: true,
   song: { select: { title: true, artist: true, catalogOrder: true } },
@@ -40,6 +41,7 @@ function serializeRow(row: Awaited<ReturnType<typeof findRows>>[number]): Mixing
       row.status === "SUCCEEDED" && row.resultAsset?.status === "READY" ? `/api/mixing-jobs/${row.id}/audio` : null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
+    submittedAt: row.submittedAt?.toISOString() ?? null,
     startedAt: row.startedAt?.toISOString() ?? null,
     completedAt: row.completedAt?.toISOString() ?? null,
   };

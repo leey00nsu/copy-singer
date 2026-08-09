@@ -1,5 +1,5 @@
 import { delay, HttpResponse, http } from "msw";
-import type { MixingHistoryPayload } from "@/entities/mixing-job";
+import type { MixingHistoryPayload, MixingHistoryRow } from "@/entities/mixing-job";
 import type { RecommendationRunResponse } from "@/entities/recommendation";
 import {
   activeRecommendationRunFixture,
@@ -74,6 +74,19 @@ export function mixingSubmissionHandler() {
 
 export function mixingHistoryHandler(payload: MixingHistoryPayload = mixingHistoryFixture) {
   return http.get("*/api/mixing-jobs", () => HttpResponse.json(payload));
+}
+
+const defaultMixingDetail = mixingHistoryFixture.jobs[0];
+if (!defaultMixingDetail) throw new Error("The MSW mixing fixture requires at least one detail row.");
+
+export function mixingDetailHandler(payload: MixingHistoryRow = defaultMixingDetail) {
+  return http.get("*/api/mixing-jobs/:id", () => HttpResponse.json(payload));
+}
+
+export function mixingDeleteHandler(mediaCleanupPending = false) {
+  return http.delete("*/api/mixing-jobs/:id", ({ params }) =>
+    HttpResponse.json({ status: "deleted", id: params.id, mediaCleanupPending }),
+  );
 }
 
 export function mixingForbiddenHandler() {
