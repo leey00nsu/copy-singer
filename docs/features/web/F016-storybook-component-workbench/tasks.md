@@ -112,20 +112,20 @@
     - [x] polling sequence factory, terminal stop 및 mutation/cache UI interaction 검증
     - [x] `pnpm run test:query`, Storybook browser test와 static build 통과
 
-- [DOING][NON-PRD] T-F016-05 접근성·browser test와 production 회귀 최종화
+- [DONE][NON-PRD] T-F016-05 접근성·browser test와 production 회귀 최종화
   - Date: 2026-08-09
   - Acceptance:
     - testable story의 axe 검사와 대표 play interaction이 Playwright Chromium headless 환경에서 통과한다.
     - Storybook static output/worker/devDependency가 Next.js production bundle과 Coolify 실행 경로에 포함되지 않는다.
     - 전체 정적 검사, Next.js/Storybook build, 기존 test suite 및 production dependency audit이 통과한다.
   - Checklist:
-    - [ ] global a11y error mode와 예외 사유 inventory 확정
-    - [ ] `pnpm run storybook --ci --smoke-test` 통과
-    - [ ] `pnpm run build-storybook` 통과
-    - [ ] `pnpm run test:storybook --run` 통과
-    - [ ] `pnpm run check`, `pnpm run build`, `pnpm test` 통과
-    - [ ] `pnpm audit --prod` known vulnerability 0건 확인
-    - [ ] spec acceptance, workflow-sync marker, Decisions/Tasks evidence와 최종 완료 조건 갱신
+    - [x] global a11y error mode와 예외 사유 inventory 확정
+    - [x] `pnpm run storybook --ci --smoke-test` 통과
+    - [x] `pnpm run build-storybook` 통과
+    - [x] `pnpm run test:storybook --run` 통과
+    - [x] `pnpm run check`, `pnpm run build`, `pnpm test` 통과
+    - [x] `pnpm audit --prod` known vulnerability 0건 확인
+    - [x] spec acceptance, workflow-sync marker, Decisions/Tasks evidence와 최종 완료 조건 갱신
 
 ---
 
@@ -133,8 +133,8 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -148,10 +148,10 @@
 | `pnpm run build-storybook` | `2026-08-09` | PASS (3,268 modules, worker 포함) |
 | `pnpm run test:storybook --run` | `2026-08-09` | PASS (16 files, 34 stories) |
 | `pnpm run test:query` | `2026-08-09` | PASS (Query/API/MSW 20 + streaming 1 tests) |
-| `pnpm run check` | `2026-08-09` | FAIL (기존 key-fit test fixture export Biome 2건, T-F016-05에서 정리) |
-| `pnpm run build` | `-` | 미실행 |
-| `pnpm test` | `-` | 미실행 |
-| `pnpm audit --prod` | `-` | 미실행 |
+| `pnpm run check` | `2026-08-09` | PASS (Biome/ESLint/TypeScript/Steiger) |
+| `pnpm run build` | `2026-08-09` | PASS (Next.js 16.3.0 production build, 22 routes generated) |
+| `pnpm test` | `2026-08-09` | PASS (production build + 전체 Node/DB/UI/Query suite + Storybook 34 stories) |
+| `pnpm audit --prod` | `2026-08-09` | PASS (known vulnerability 0건) |
 | `pnpm run typecheck` | `2026-08-09` | PASS |
 | `pnpm run lint` | `2026-08-09` | PASS |
 | `pnpm run check:architecture` | `2026-08-09` | PASS |
@@ -159,3 +159,5 @@
 | `pnpm run test:tickets` | `2026-08-09` | PASS (2 tests) |
 | `pnpm run test:admin` | `2026-08-09` | PASS (2 tests) |
 | `pnpm exec tsx --test tests/vocal-profile-results-ui.test.tsx` | `2026-08-09` | PASS (5 tests) |
+
+<!-- lee-spec-kit:workflow-sync 2026-08-09T09:57:05.000Z -->

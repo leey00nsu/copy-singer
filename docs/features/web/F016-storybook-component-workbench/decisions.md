@@ -86,14 +86,14 @@ canonical docs surface 밖의 unmanaged docs 산출물이 있더라도, 실제�
 - **Context**: Storybook dev/build/browser test가 개별 script로 동작하지만 Feature 완료 전에는 전체 로컬 test 명령과 Next.js production 회귀를 한 번에 증명해야 한다. 기존 `tests/key-fit-scoring.test.ts`의 exported fixture 2건은 Biome `noExportsInTest`를 위반한다.
 - **Constraints**: GitHub Actions `quality.yml`은 계속 연기하고 Coolify의 Next.js/PostgreSQL process는 변경하지 않는다. lint 규칙을 disable하지 않으며 Storybook/Playwright/MSW worker는 production dependency와 Next.js public graph에 포함하지 않는다.
 - **Options**: Storybook test를 별도 수동 명령으로만 유지, root `test`에 browser suite를 연결, CI workflow를 함께 추가하는 방식을 검토한다.
-- **Decision**: 최종 검증 후 확정 예정
-- **Rationale**: 최종 검증 후 확정 예정
+- **Decision**: root `pnpm test`의 마지막 단계에 `pnpm run test:storybook --run`을 연결해 기존 Node/DB/UI suite가 성공한 뒤 Chromium story/a11y 회귀도 실행한다. 기존 key-fit fixture는 파일 밖에서 사용되지 않으므로 test module export를 제거해 Biome 오류를 해소한다. Storybook smoke/static build와 Next.js production build, production dependency audit은 완료 evidence로 별도 실행한다.
+- **Rationale**: 개발자가 로컬 전체 회귀를 실행할 때 browser suite가 조용히 누락되지 않고, CI가 연기된 동안에도 하나의 명령으로 production과 Storybook 경계를 함께 검증할 수 있다. 사용하지 않는 export 제거는 fixture 이동이나 lint disable보다 모듈 표면을 작게 유지한다.
 - **Trace**:
   - **DOING 시작 시점**: exported scoring fixture는 test가 아닌 runtime-neutral fixture module로 옮기거나 export가 불필요하면 제거해 Biome 규칙을 만족시킨다. root `pnpm test`는 기존 Node suite 성공 뒤 Storybook Chromium suite도 실행하도록 연결하고 smoke/static/production build/audit를 독립적으로 재확인한다.
-  - **DONE 전 확정 시점**: 최종 검증 후 갱신 예정
+  - **DONE 전 확정 시점**: 전역 a11y `error` mode를 유지하고 story별 disable/skip 예외가 없음을 inventory로 확인했다. Storybook smoke, 3,268-module static build, Chromium 16 files/34 stories, Next.js 16.3 production build, 전체 DB·UI·Query suite와 production audit이 모두 통과했다. Storybook은 devDependency 및 `.storybook` 전용 worker로 남고 Coolify start process에는 변화가 없다.
   - **머지 후 확인**: 로컬 통합 후 갱신 예정
 - **Evidence**:
-  - **Commit**: task commit 후 갱신 예정
+  - **Commit**: docs `e05cd09`, project `a2f1c68`
   - **PR**: 로컬 workflow (원격 PR 없음)
-  - **Test/Log**: 최종 검증 후 갱신 예정
-- **Consequences**: 최종 검증 후 갱신 예정
+  - **Test/Log**: `pnpm run check`, Storybook smoke/static/browser, `pnpm run build`, `pnpm test`, `pnpm audit --prod` PASS (2026-08-09)
+- **Consequences**: 로컬 `pnpm test`는 Playwright Chromium binary가 필요하고 약 11초의 browser suite가 추가된다. production `build`/`start`, Next.js public assets, PostgreSQL 및 Coolify 구성은 Storybook과 분리되며 `quality.yml`은 생성하지 않았다.

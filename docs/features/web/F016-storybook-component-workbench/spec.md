@@ -34,10 +34,10 @@ Next.js App Router에 맞는 Vite 기반 Storybook을 도입해 재사용 UI와 
 
 **Acceptance Criteria:**
 
-- [ ] Storybook dev server와 정적 build가 현재 Next.js App Router, React, Tailwind 전역 스타일 및 `@/*` alias 환경에서 동작한다.
-- [ ] shared UI primitive의 기본, variant, disabled 및 상호작용 상태가 Controls로 탐색 가능하다.
-- [ ] 핵심 entity/widget은 empty, loading 또는 active, success, error 같은 실제 사용자-visible 상태를 story로 제공한다.
-- [ ] story는 server-only DB, secret, 실제 외부 API 또는 사용자 production data를 import하지 않는다.
+- [x] Storybook dev server와 정적 build가 현재 Next.js App Router, React, Tailwind 전역 스타일 및 `@/*` alias 환경에서 동작한다.
+- [x] shared UI primitive의 기본, variant, disabled 및 상호작용 상태가 Controls로 탐색 가능하다.
+- [x] 핵심 entity/widget은 empty, loading 또는 active, success, error 같은 실제 사용자-visible 상태를 story로 제공한다.
+- [x] story는 server-only DB, secret, 실제 외부 API 또는 사용자 production data를 import하지 않는다.
 
 ### US-2: 상호작용과 접근성을 검증하는 유지보수자
 
@@ -47,10 +47,10 @@ Next.js App Router에 맞는 Vite 기반 Storybook을 도입해 재사용 UI와 
 
 **Acceptance Criteria:**
 
-- [ ] 접근성 addon이 story별 axe 결과를 표시하고 자동 test 실행에서 위반을 실패로 처리한다.
-- [ ] 대표 interactive story는 `play` 함수로 클릭, 입력, 상태 변화와 disabled 동작을 검증한다.
-- [ ] Vitest Storybook project가 Playwright Chromium browser mode에서 headless로 실행된다.
-- [ ] 기존 Node `node:test` suite와 Storybook browser test의 설정·cache·실행 명령이 서로 충돌하지 않는다.
+- [x] 접근성 addon이 story별 axe 결과를 표시하고 자동 test 실행에서 위반을 실패로 처리한다.
+- [x] 대표 interactive story는 `play` 함수로 클릭, 입력, 상태 변화와 disabled 동작을 검증한다.
+- [x] Vitest Storybook project가 Playwright Chromium browser mode에서 headless로 실행된다.
+- [x] 기존 Node `node:test` suite와 Storybook browser test의 설정·cache·실행 명령이 서로 충돌하지 않는다.
 
 ### US-3: server state를 결정적으로 재현하는 개발자
 
@@ -60,10 +60,10 @@ Next.js App Router에 맞는 Vite 기반 Storybook을 도입해 재사용 UI와 
 
 **Acceptance Criteria:**
 
-- [ ] Storybook 전용 MSW browser runtime이 story 시작 시 활성화되고 story 전환 후 handler state가 초기화된다.
-- [ ] F015의 production Zod schema/type과 대표 MSW fixture를 복제하지 않고 재사용한다.
-- [ ] story별 handler override로 success, error 및 active→terminal sequence를 재현할 수 있다.
-- [ ] 각 story/test는 격리된 QueryClient를 사용해 이전 story의 인증 응답·mutation·polling cache가 누출되지 않는다.
+- [x] Storybook 전용 MSW browser runtime이 story 시작 시 활성화되고 story 전환 후 handler state가 초기화된다.
+- [x] F015의 production Zod schema/type과 대표 MSW fixture를 복제하지 않고 재사용한다.
+- [x] story별 handler override로 success, error 및 active→terminal sequence를 재현할 수 있다.
+- [x] 각 story/test는 격리된 QueryClient를 사용해 이전 story의 인증 응답·mutation·polling cache가 누출되지 않는다.
 
 ### US-4: production과 분리된 도구를 운영하는 배포 담당자
 
@@ -73,10 +73,10 @@ Next.js App Router에 맞는 Vite 기반 Storybook을 도입해 재사용 UI와 
 
 **Acceptance Criteria:**
 
-- [ ] Storybook, Vitest, Playwright, 접근성 addon과 browser MSW 연결은 devDependency 및 별도 script/config로만 존재한다.
-- [ ] MSW service worker는 Storybook 전용 static directory/build에만 포함되고 Next.js `public` 및 production bundle에는 포함되지 않는다.
-- [ ] 기본 `pnpm build`, `pnpm test`, `pnpm start`와 Coolify service 구성이 Storybook 실행을 요구하지 않는다.
-- [ ] Storybook publish, Chromatic·외부 visual regression service와 GitHub Actions `quality.yml`은 이번 범위에 포함하지 않는다.
+- [x] Storybook, Vitest, Playwright, 접근성 addon과 browser MSW 연결은 devDependency 및 별도 script/config로만 존재한다.
+- [x] MSW service worker는 Storybook 전용 static directory/build에만 포함되고 Next.js `public` 및 production bundle에는 포함되지 않는다.
+- [x] 기본 `pnpm build`, `pnpm start`와 Coolify service 구성은 Storybook 실행을 요구하지 않으며, 로컬 `pnpm test`만 마지막에 headless browser 회귀를 실행한다.
+- [x] Storybook publish, Chromatic·외부 visual regression service와 GitHub Actions `quality.yml`은 이번 범위에 포함하지 않는다.
 
 ---
 
