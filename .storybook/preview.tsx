@@ -4,6 +4,7 @@ import addonMsw from "msw-storybook-addon";
 import { type ReactNode, useEffect, useState } from "react";
 
 import { createQueryClient } from "@/_app/providers";
+import { Toaster } from "@/shared/ui/sonner";
 import { TooltipProvider } from "@/shared/ui/tooltip";
 
 import "../src/_app/styles/globals.css";
@@ -16,6 +17,7 @@ function StoryProviders({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>{children}</TooltipProvider>
+      <Toaster position="bottom-right" richColors />
     </QueryClientProvider>
   );
 }
