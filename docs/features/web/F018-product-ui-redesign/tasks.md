@@ -204,7 +204,7 @@
     - [x] keyboard/focus/label/live region/reduced-motion 검증
     - [x] Admin/dev SVC token·navigation·desktop smoke 회귀 확인
 
-- [TODO][NON-PRD] T-F018-10 전체 회귀·디자인 정본·Feature 문서 최종화
+- [DONE][NON-PRD] T-F018-10 전체 회귀·디자인 정본·Feature 문서 최종화
   - Date: 2026-08-09
   - Acceptance:
     - 정적 검사, FSD 경계, targeted UI/DB/Query, Storybook build/browser와 전체 production build/test가 통과한다.
@@ -212,13 +212,13 @@
     - Design System, token, Shared UI, Storybook, PRD와 Feature 문서가 최종 코드와 동기화된다.
     - DB migration, Modal/worker 알고리즘, Coolify와 `quality.yml`이 변경되지 않았음을 diff로 확인한다.
   - Checklist:
-    - [ ] route/API/public API/raw color/legacy class와 새 dependency 최종 inventory
-    - [ ] `pnpm run check`와 targeted test suite 통과
-    - [ ] `pnpm run build-storybook`, Storybook browser/a11y test 통과
-    - [ ] `pnpm test` production build와 전체 회귀 통과
-    - [ ] design board 대비 desktop/tablet/mobile 최종 browser 검토
-    - [ ] spec acceptance, Decisions evidence와 테스트 실행 기록 갱신
-    - [ ] 최신 코드 이후 workflow-sync marker 1개와 workflow audit 통과
+    - [x] route/API/public API/raw color/legacy class와 새 dependency 최종 inventory
+    - [x] `pnpm run check`와 targeted test suite 통과
+    - [x] `pnpm run build-storybook`, Storybook browser/a11y test 통과
+    - [x] `pnpm test` production build와 전체 회귀 통과
+    - [x] design board 대비 desktop/tablet/mobile 최종 browser 검토
+    - [x] spec acceptance, Decisions evidence와 테스트 실행 기록 갱신
+    - [x] 최신 코드 이후 workflow-sync marker 1개와 workflow audit 통과
 
 ---
 
@@ -226,9 +226,9 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -241,8 +241,8 @@
 | `pnpm run test:auth-navigation` | `2026-08-10` | 통과 — safe callback·Library/Account navigation·route group·keyboard/touch label 5/5 |
 | `pnpm exec tsx --test tests/effect-cleanup.test.ts tests/recommendation-ui.test.tsx` | `2026-08-09` | 통과 — cleanup·추천 UI 회귀 6/6 |
 | `pnpm exec tsx --test tests/effect-cleanup.test.ts` | `2026-08-10` | 통과 — Library·Mixing Detail Query polling 포함 component timer/fetch inventory 2/2 |
-| `pnpm run test:voice-scan` | `2026-08-09` | 통과 — 녹음 정책·오류·상태·cleanup 12/12 |
-| `pnpm run test:vocal-profile-analysis-queue` | `2026-08-09` | 통과 — idempotency·owner·lease·retry·cleanup 5/5 |
+| `pnpm run test:voice-scan` | `2026-08-10` | 통과 — 녹음 정책·오류·상태·cleanup 12/12 |
+| `pnpm run test:vocal-profile-analysis-queue` | `2026-08-10` | 통과 — idempotency·owner·lease·retry·cleanup 5/5 |
 | `pnpm run test:vocal-profile-history` | `2026-08-10` | 통과 — 공유 Library UI 3/3, private audio·ownership 3/3 |
 | `pnpm run test:recommendation` | `2026-08-10` | 통과 — ranking 10/10, presentation·synthesis·list·detail 17/17 |
 | `pnpm run test:recommendation:db` | `2026-08-10` | 통과 — persistence·synthesis 3/3 |
@@ -255,8 +255,8 @@
 | `pnpm run test:storybook --run` | `2026-08-10` | 통과 — 35 files, 89 tests, Account·ProductShell·StatePanel·product route 상태/a11y 포함 |
 | `pnpm run build-storybook` | `2026-08-10` | 통과 — chunk size warning만 있음 |
 | `pnpm run build` | `2026-08-10` | 통과 — Account와 product route 공통 상태를 포함한 기존 public/product/Admin/dev URL 보존 |
-| `pnpm run test:base-ui` | `2026-08-09` | 통과 — 1/1 |
-| `pnpm run test:process-scripts` | `2026-08-09` | 통과 — 5/5 |
-| `pnpm test` | `-` | 미실행 — 구현 전 |
+| `pnpm run test:base-ui` | `2026-08-10` | 통과 — TSX AST 기반 Link/Base UI non-native semantics 1/1 |
+| `pnpm run test:process-scripts` | `2026-08-10` | 통과 — process supervisor·Storybook production boundary 5/5 |
+| `pnpm test` | `2026-08-10` | 통과 — production build, 전체 unit·integration·DB·Query·architecture와 Storybook 35 files/89 tests |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T16:36:09.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T16:44:16.000Z -->

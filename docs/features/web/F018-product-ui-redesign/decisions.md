@@ -59,6 +59,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DOING 시작 시점**: `globals.css`의 component selector별로 `app`·`src` 사용처를 검색했다. `page-shell`, `site-header`, `brand-mark`만 사용자 flow와 dev SVC에 함께 쓰이고 나머지 조합 class는 dev SVC 전용임을 확인했다.
   - **DONE 전 확정 시점**: 새 Shared UI에는 전역 component class를 추가하지 않았고 selector별 실제 소비 위치를 기준으로 T-F018-02, 03, 09, 10의 제거 순서를 확정했다.
   - **T-F018-03 확인**: `/profile`에서 `page-shell`과 완료 결과·추천 action을 제거하고 Page slice의 responsive content rail과 Voice Scan 전용 composition으로 전환했다.
+  - **T-F018-10 최종 확인**: 사용자 product route에는 legacy component class와 신규 raw color가 없음을 diff inventory로 확인했다. `page-shell`, `site-header`, `hero-copy`, `workbench-grid`, `audio-card`, `settings-*`, `dropzone*`, `waveform*`, `*-orbit`, `result-column`, `convert-button`의 남은 사용처는 전면 redesign 제외 범위인 `/dev/svc`뿐이므로 개발 도구 예외로 유지한다.
   - **머지 후 확인**: 로컬 통합 후 기록한다.
 - **Evidence**:
   - **Commit**: T-F018-01 task checkpoint commit
@@ -225,3 +226,23 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 워크플로 — 해당 없음
   - **Test/Log**: `pnpm run test:tickets` (Account UI 3/3 + DB 1/1), `pnpm run test:auth:db` (3/3), `pnpm run test:auth-navigation` (5/5), `pnpm run test:vocal-profile-history` (UI 3/3 + private/ownership 3/3), `pnpm run test:recommendation` (10/10 + 17/17), `pnpm run test:mixing:ui` (7/7), `pnpm run test:storybook --run` (35 files, 89 tests), `pnpm run check`, `pnpm run build-storybook`, `pnpm run build`, 실제 browser smoke (Account 360×800·768×1024·1280×800, Admin/dev SVC 1280×800)
 - **Consequences**: Account는 실제로 확인 가능한 identity·Google 연결·ticket 정보만 표시한다. route-level 상태 표현은 Shared `StatePanel`을 통해 일관되며, 이후 계정 설정 기능이 추가될 때 별도 feature와 실제 저장 계약을 먼저 정의해야 한다.
+
+## D028: 최종 visual fidelity와 개발 도구 예외 (2026-08-10)
+
+- **Context**: 네 디자인 보드와 구현 전체를 최종 비교하고 legacy class, raw color, 의존성 및 제외 범위를 확정해야 한다.
+- **Constraints**: 디자인 보드는 공간감·정보 위계·interaction 구조의 정본이지만 현재 DB/API에 없는 프로젝트, 플레이리스트, 가격제, 사용자 가창 원본, 앨범·가사 메타데이터를 production UI에 만들지 않는다. F018은 PostgreSQL migration, Modal/worker 알고리즘, Coolify와 연기된 `quality.yml`을 변경하지 않는다.
+- **Options**:
+  1. 보드의 모든 패널과 콘텐츠를 mock data로 채워 시각적 유사도를 최대화한다.
+  2. 모든 화면을 보드와 동일한 navigation·surface 구조로 강제하고 기존 데이터 흐름을 바꾼다.
+  3. 보드의 여백·타이포그래피·평면 목록·상태 위계를 실제 route와 데이터 계약에 적용하고, 존재하지 않는 기능과 개발 도구는 명시적 차이로 남긴다.
+- **Decision**: 제품 화면은 디자인 보드의 공간감·위계·상태 구조를 따르되 실제 도메인 계약만 표시한다. Admin과 dev SVC는 전면 redesign 제외 범위를 유지하며 dev SVC 전용 전역 class와 raw status color는 개발 도구 예외로 남긴다.
+- **Rationale**: 가짜 프로젝트·가격제·앨범 메타데이터를 만들지 않으면서 사용자 제품 UI를 일관되게 완성하고, 제외된 개발 도구의 기능 회귀 위험을 피한다.
+- **Trace**:
+  - **DOING 시작 시점**: main 기준 전체 route/API/public API, dependency, raw color, legacy class와 DB·배포 파일 diff를 조사했다. dependency와 lockfile 추가, Prisma migration, Modal/worker, Coolify 및 `.github` 변경이 없음을 확인했다.
+  - **DONE 전 확정 시점**: Landing·Voice Scan·Library를 360×800, 768×1024, 1280×800 실제 브라우저에서 다시 확인해 horizontal overflow 0과 명확한 current navigation을 검증했다. 1280px Landing과 360px Library screenshot을 보드와 비교해 warm-white canvas, black CTA, 넓은 여백, 평면 list와 제품 interaction 중심 위계를 확인했다. 보드와 다른 부분은 실제 데이터가 없는 onboarding·가창 recording·Before/After·project·playlist·pricing·album/lyrics를 제외한 것과, 제품 shell을 desktop sidebar/mobile Sheet로 통일한 것이다. 전체 회귀 중 발견한 Link/Base UI semantics 검사를 TSX AST 기반으로 보강하고 Account/Admin menu item에 non-native 의미를 명시했다.
+  - **머지 후 확인**: 로컬 통합 후 기록한다.
+- **Evidence**:
+  - **Commit**: T-F018-10 task checkpoint commit
+  - **PR**: 로컬 워크플로 — 해당 없음
+  - **Test/Log**: `pnpm test` 전체 통과, `pnpm run check` (error 0, 기존 Biome warning 60건, Steiger·architecture 4/4), `pnpm run build-storybook`, `pnpm run test:base-ui` (1/1), Storybook 35 files/89 tests, 실제 browser smoke 및 screenshot 비교 (360×800·768×1024·1280×800)
+- **Consequences**: 제품 route는 장기 Design System과 semantic token을 공유하고 새 화면도 실제 계약을 먼저 정의해야 한다. `/dev/svc`의 전용 전역 class와 raw status color는 사용자 제품 UI로 재사용하지 않으며, 개발 도구 자체를 재설계하는 후속 Feature에서 제거한다.

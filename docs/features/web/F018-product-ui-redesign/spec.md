@@ -34,10 +34,10 @@
 
 **Acceptance Criteria:**
 
-- [ ] `/`는 인증 없이 접근 가능한 landing을 제공하고 제품의 실제 세 단계인 음성 분석, 노래 추천과 선택형 AI 믹싱을 설명한다.
-- [ ] primary CTA는 비로그인 사용자에게 `/login`, 로그인 사용자에게 음성 스캔으로 연결된다.
-- [ ] 로그인 화면은 Google OAuth만 제공하며 이메일, Apple 또는 magic link가 사용 가능한 것처럼 표시하지 않는다.
-- [ ] 로그인 실패, 진행 중과 disabled 상태가 현재 인증 동작을 보존하면서 명확히 표현된다.
+- [x] `/`는 인증 없이 접근 가능한 landing을 제공하고 제품의 실제 세 단계인 음성 분석, 노래 추천과 선택형 AI 믹싱을 설명한다.
+- [x] primary CTA는 비로그인 사용자에게 `/login`, 로그인 사용자에게 음성 스캔으로 연결된다.
+- [x] 로그인 화면은 Google OAuth만 제공하며 이메일, Apple 또는 magic link가 사용 가능한 것처럼 표시하지 않는다.
+- [x] 로그인 실패, 진행 중과 disabled 상태가 현재 인증 동작을 보존하면서 명확히 표현된다.
 
 ### US-2: 안심하고 음성을 스캔하는 사용자
 
@@ -47,11 +47,11 @@
 
 **Acceptance Criteria:**
 
-- [ ] 기존 record/upload 두 입력 방식, 서버 최소 유효 길이 5초, 약 10초의 권장 녹음, 최대 60초, 긴 파일 trim 확인과 validation 오류가 보존된다.
-- [ ] 녹음은 실제 입력 stream의 live waveform, 경과 시간, 시작·중지·취소·재녹음 상태를 제공하고 종료 시 media resource를 정리한다.
-- [ ] 마이크 권한 요청·거부·device 오류, 분석 준비·대기·처리·retry·실패 상태마다 설명과 가능한 action이 표시된다.
-- [ ] 분석 UI는 서버가 제공하는 durable job 상태보다 정밀한 단계 또는 진행률을 가장하지 않는다.
-- [ ] 사용자가 이탈 후 돌아와도 기존 localStorage와 DB 기반 진행 복구가 유지된다.
+- [x] 기존 record/upload 두 입력 방식, 서버 최소 유효 길이 5초, 약 10초의 권장 녹음, 최대 60초, 긴 파일 trim 확인과 validation 오류가 보존된다.
+- [x] 녹음은 실제 입력 stream의 live waveform, 경과 시간, 시작·중지·취소·재녹음 상태를 제공하고 종료 시 media resource를 정리한다.
+- [x] 마이크 권한 요청·거부·device 오류, 분석 준비·대기·처리·retry·실패 상태마다 설명과 가능한 action이 표시된다.
+- [x] 분석 UI는 서버가 제공하는 durable job 상태보다 정밀한 단계 또는 진행률을 가장하지 않는다.
+- [x] 사용자가 이탈 후 돌아와도 기존 localStorage와 DB 기반 진행 복구가 유지된다.
 
 ### US-3: 핵심부터 이해하는 보컬 프로필 사용자
 
@@ -61,10 +61,10 @@
 
 **Acceptance Criteria:**
 
-- [ ] 결과 상단은 설명형 vocal type, 전체·실용 음역, 중앙음, 안정도와 데이터에서 도출 가능한 핵심 특성을 우선 표시한다.
-- [ ] 기존 음정 histogram, pitch trace, 품질 지표, low/mid/high reference band와 전체 reference 재생은 제거되지 않고 세부 영역에서 확인할 수 있다.
-- [ ] 보컬 타입과 특성은 기존 분석값에서 결정적으로 파생되며 성별, 건강, 장르 적합도처럼 데이터에 없는 의미를 추정하지 않는다.
-- [ ] 프로필 목록·상세, 삭제, 추천 생성과 진행 중 분석 복구의 기존 기능이 유지된다.
+- [x] 결과 상단은 설명형 vocal type, 전체·실용 음역, 중앙음, 안정도와 데이터에서 도출 가능한 핵심 특성을 우선 표시한다.
+- [x] 기존 음정 histogram, pitch trace, 품질 지표, low/mid/high reference band와 전체 reference 재생은 제거되지 않고 세부 영역에서 확인할 수 있다.
+- [x] 보컬 타입과 특성은 기존 분석값에서 결정적으로 파생되며 성별, 건강, 장르 적합도처럼 데이터에 없는 의미를 추정하지 않는다.
+- [x] 프로필 목록·상세, 삭제, 추천 생성과 진행 중 분석 복구의 기존 기능이 유지된다.
 
 ### US-4: 비교하고 이해하는 노래 추천 사용자
 
@@ -74,11 +74,11 @@
 
 **Acceptance Criteria:**
 
-- [ ] 추천 화면은 100개의 큰 카드 대신 desktop table/list와 mobile list를 사용해 곡, 아티스트, 적합도, 추천 키와 믹싱 상태를 비교할 수 있다.
-- [ ] 검색, 정렬과 필터는 현재 API에 존재하는 title, artist, score, recommended shift와 mix availability/status만 사용한다.
-- [ ] 적합도는 과도한 정확성을 암시하지 않는 정수 수준 표현과 함께 이유·원키 점수·키 이동 효과를 설명한다.
-- [ ] 선택한 추천 item은 별도 Song Detail에서 같은 저장 결과의 사용자 음역, 곡 음역, 추천 키, structured reason과 실제 AI 믹싱 CTA를 보여준다.
-- [ ] 앨범 이미지, genre, difficulty, lyrics와 인앱 preview처럼 현재 계약에 없는 값은 가짜로 만들거나 지원되는 것처럼 표시하지 않는다.
+- [x] 추천 화면은 100개의 큰 카드 대신 desktop table/list와 mobile list를 사용해 곡, 아티스트, 적합도, 추천 키와 믹싱 상태를 비교할 수 있다.
+- [x] 검색, 정렬과 필터는 현재 API에 존재하는 title, artist, score, recommended shift와 mix availability/status만 사용한다.
+- [x] 적합도는 과도한 정확성을 암시하지 않는 정수 수준 표현과 함께 이유·원키 점수·키 이동 효과를 설명한다.
+- [x] 선택한 추천 item은 별도 Song Detail에서 같은 저장 결과의 사용자 음역, 곡 음역, 추천 키, structured reason과 실제 AI 믹싱 CTA를 보여준다.
+- [x] 앨범 이미지, genre, difficulty, lyrics와 인앱 preview처럼 현재 계약에 없는 값은 가짜로 만들거나 지원되는 것처럼 표시하지 않는다.
 
 ### US-5: 믹싱 상태와 결과를 다시 찾는 사용자
 
@@ -88,11 +88,11 @@
 
 **Acceptance Criteria:**
 
-- [ ] pending, preparing, submitted, processing, succeeded, failed와 canceled를 서버 상태에 충실한 사용자 언어와 단계로 표시한다.
-- [ ] 믹싱 시작의 티켓 비용, 중복 방지, target/reference 준비 오류와 환불 의미가 기존 계약대로 유지된다.
-- [ ] Library는 사용자 소유 보컬 프로필과 AI 믹싱 이력을 구분해 검색·필터·상태별 조회할 수 있다.
-- [ ] 믹싱 결과 상세는 곡, 사용 프로필, 상태·시각, 결과 waveform player, 다운로드와 기존 삭제 action을 제공한다.
-- [ ] 사용자 가창 Recording 모델이 없는 상태에서 Raw/AI Mixed Before & After 또는 프로젝트 편집 기능을 제공하는 것처럼 표시하지 않는다.
+- [x] pending, preparing, submitted, processing, succeeded, failed와 canceled를 서버 상태에 충실한 사용자 언어와 단계로 표시한다.
+- [x] 믹싱 시작의 티켓 비용, 중복 방지, target/reference 준비 오류와 환불 의미가 기존 계약대로 유지된다.
+- [x] Library는 사용자 소유 보컬 프로필과 AI 믹싱 이력을 구분해 검색·필터·상태별 조회할 수 있다.
+- [x] 믹싱 결과 상세는 곡, 사용 프로필, 상태·시각, 결과 waveform player, 다운로드와 기존 삭제 action을 제공한다.
+- [x] 사용자 가창 Recording 모델이 없는 상태에서 Raw/AI Mixed Before & After 또는 프로젝트 편집 기능을 제공하는 것처럼 표시하지 않는다.
 
 ### US-6: 어느 화면에서도 일관된 제품을 사용하는 사용자
 
@@ -102,13 +102,13 @@
 
 **Acceptance Criteria:**
 
-- [ ] 인증 제품 화면은 Voice Scan, Library와 Account를 연결하는 responsive app shell을 공유하고 현재 route를 명확히 표시한다.
-- [ ] 기존 warm beige/orange gradient와 과도한 rounded card를 white/warm gray/black token, 낮은 대비 border, 제한된 shadow와 의미 기반 accent로 교체한다.
-- [ ] `docs/designs/design-system.md`가 color, typography, spacing, shape, component, 상태, responsive, 접근성과 변경 관리 규칙을 정의하고 실제 token·공통 UI·Storybook과 동기화된다.
-- [ ] desktop, tablet, mobile에서 핵심 content와 CTA가 겹치거나 수평으로 잘리지 않으며 표는 mobile list로 전환된다.
-- [ ] button label, focus-visible, keyboard interaction, semantic heading, live status와 reduced-motion을 포함한 접근성 기준을 만족한다.
-- [ ] 포함 화면의 loading, empty, error, disabled, permission denied, recording, processing와 success 상태가 공통 언어로 제공된다.
-- [ ] 핵심 공통 컴포넌트와 상태 variant를 Storybook에서 독립적으로 확인할 수 있다.
+- [x] 인증 제품 화면은 Voice Scan, Library와 Account를 연결하는 responsive app shell을 공유하고 현재 route를 명확히 표시한다.
+- [x] 기존 warm beige/orange gradient와 과도한 rounded card를 white/warm gray/black token, 낮은 대비 border, 제한된 shadow와 의미 기반 accent로 교체한다.
+- [x] `docs/designs/design-system.md`가 color, typography, spacing, shape, component, 상태, responsive, 접근성과 변경 관리 규칙을 정의하고 실제 token·공통 UI·Storybook과 동기화된다.
+- [x] desktop, tablet, mobile에서 핵심 content와 CTA가 겹치거나 수평으로 잘리지 않으며 표는 mobile list로 전환된다.
+- [x] button label, focus-visible, keyboard interaction, semantic heading, live status와 reduced-motion을 포함한 접근성 기준을 만족한다.
+- [x] 포함 화면의 loading, empty, error, disabled, permission denied, recording, processing와 success 상태가 공통 언어로 제공된다.
+- [x] 핵심 공통 컴포넌트와 상태 variant를 Storybook에서 독립적으로 확인할 수 있다.
 
 ---
 

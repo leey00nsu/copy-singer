@@ -265,13 +265,13 @@ Light theme가 현재 디자인 정본이다. 기존 dark token을 깨뜨리지 
 
 ## Design 변경 완료 조건
 
-- [ ] 디자인 보드와 이 문서 중 어떤 정본을 적용했는지 Feature 문서에 연결했다.
-- [ ] 임의 raw color, spacing과 page 전용 primitive를 불필요하게 추가하지 않았다.
-- [ ] 추가·변경된 공통 component의 주요 state와 responsive 조합이 Storybook에 있다.
-- [ ] loading, empty, error, disabled와 async 상태가 실제 backend 계약과 일치한다.
-- [ ] keyboard, focus-visible, accessible name, contrast와 reduced motion을 확인했다.
-- [ ] mobile, tablet과 desktop에서 핵심 flow를 검증했다.
-- [ ] 문서·CSS token·공통 UI·Storybook 사이의 차이를 동기화하거나 decision에 기록했다.
+- [x] 디자인 보드와 이 문서 중 어떤 정본을 적용했는지 Feature 문서에 연결했다.
+- [x] 임의 raw color, spacing과 page 전용 primitive를 불필요하게 추가하지 않았다.
+- [x] 추가·변경된 공통 component의 주요 state와 responsive 조합이 Storybook에 있다.
+- [x] loading, empty, error, disabled와 async 상태가 실제 backend 계약과 일치한다.
+- [x] keyboard, focus-visible, accessible name, contrast와 reduced motion을 확인했다.
+- [x] mobile, tablet과 desktop에서 핵심 flow를 검증했다.
+- [x] 문서·CSS token·공통 UI·Storybook 사이의 차이를 동기화하거나 decision에 기록했다.
 
 ## 관련 문서
 
