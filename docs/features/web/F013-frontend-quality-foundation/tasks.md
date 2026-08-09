@@ -76,7 +76,7 @@
     - [x] Biome와 ESLint 충돌을 조정하고 지원 파일을 한 번 정규화한다.
     - [x] Biome, ESLint, TypeScript, build 및 관련 회귀 테스트를 실행한다.
 
-- [TODO][NON-PRD] T-F013-frontend-quality-foundation-02 Husky staged pre-commit 검사 구축
+- [DONE][NON-PRD] T-F013-frontend-quality-foundation-02 Husky staged pre-commit 검사 구축
   - Date: 2026-08-09
   - Acceptance:
     - pnpm install lifecycle 후 별도 수동 명령 없이 Husky hook이 준비된다.
@@ -84,10 +84,10 @@
     - 정상 staged 변경은 통과하고 format 또는 lint 오류가 있는 staged 변경은 커밋 전에 실패한다.
     - hook 실행은 unstaged 파일과 Git index 내용을 자동 수정하지 않는다.
   - Checklist:
-    - [ ] husky를 개발 의존성으로 설치하고 prepare script를 구성한다.
-    - [ ] .husky/pre-commit에서 check:staged package script를 실행한다.
-    - [ ] 임시 index 또는 동등한 격리된 검증으로 성공·실패 경로와 index 불변성을 확인한다.
-    - [ ] hook 설치를 비활성화한 환경에서도 수동 check와 CI 검사가 동작하는지 확인한다.
+    - [x] husky를 개발 의존성으로 설치하고 prepare script를 구성한다.
+    - [x] .husky/pre-commit에서 check:staged package script를 실행한다.
+    - [x] 임시 index 또는 동등한 격리된 검증으로 성공·실패 경로와 index 불변성을 확인한다.
+    - [x] hook 설치를 비활성화한 환경에서도 수동 check와 CI 검사가 동작하는지 확인한다.
 
 - [TODO][NON-PRD] T-F013-frontend-quality-foundation-03 GitHub Actions 품질 게이트와 최종 회귀 검증
   - Date: 2026-08-09
@@ -122,5 +122,9 @@
 | `pnpm run typecheck` | `2026-08-09` | `PASS` |
 | `pnpm test` | `2026-08-09` | `PASS (Next.js production build 및 전체 회귀 suite)` |
 | `pnpm run db:validate && pnpm run db:status` | `2026-08-09` | `PASS (schema valid, 10 migrations up to date)` |
+| `pnpm run prepare && HUSKY=0 pnpm run prepare` | `2026-08-09` | `PASS (hook 설치 및 CI skip 경로)` |
+| `GIT_INDEX_FILE=<temporary> .husky/_/pre-commit` | `2026-08-09` | `PASS (정상 변경 통과, 위반 변경 exit 1, 양쪽 index hash 불변)` |
+| `HUSKY=0 pnpm run check:staged` | `2026-08-09` | `PASS (staged 파일 0개)` |
+| `pnpm run check` | `2026-08-09` | `PASS` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T06:56:47.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T06:59:17.000Z -->

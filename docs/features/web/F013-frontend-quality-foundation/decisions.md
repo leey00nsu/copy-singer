@@ -36,3 +36,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `pnpm run check:biome`, `pnpm run lint`, `pnpm run typecheck`, `pnpm test`, `pnpm run db:validate && pnpm run db:status` 모두 2026-08-09 PASS
 - **Consequences**: 단기적으로 두 lint 도구를 유지하지만 각 도구의 책임과 실행 시점을 분리한다.
+
+## D002: pre-commit은 staged Biome read-only 검사만 실행 (2026-08-09)
+
+- **Context**: 전체 정적 검사와 회귀 테스트는 수 분이 걸리므로 모든 커밋에서 실행하면 개발 흐름을 방해한다. 반면 커밋 대상 파일의 포맷·일반 lint·파일명 오류는 즉시 차단할 필요가 있다.
+- **Constraints**: hook은 unstaged 변경이나 Git index를 자동 수정하지 않아야 하며, CI 또는 `HUSKY=0` 환경에서도 동일한 수동 검사 명령을 실행할 수 있어야 한다.
+- **Options**: 전체 `pnpm check` 실행, lint-staged로 자동 수정, Biome의 Git staged read-only 검사.
+- **Decision**: Husky v9 `pre-commit`에서 `pnpm run check:staged`만 실행하고, 해당 script가 `biome check --staged --no-errors-on-unmatched`를 호출하게 한다. hook 파일에는 deprecated bootstrap을 넣지 않고 Husky가 관리하는 `.husky/_` shim을 사용한다.
+- **Rationale**: 별도 staged 파일 선택 도구 없이 Biome의 Git 통합을 재사용하면서 커밋 지연과 자동 수정 위험을 최소화한다.
+- **Trace**:
+  - **DOING 시작 시점**: Biome 전체 기준선과 `check:staged` script가 먼저 준비되었고, 기존 저장소는 hook이 없는 상태임을 확인했다.
+  - **DONE 전 확정 시점**: 임시 `GIT_INDEX_FILE`에서 정상 staged 변경은 통과하고 camelCase fixture는 exit 1로 실패했다. 두 경로 모두 실행 전후 tree hash가 동일했다. `HUSKY=0` prepare skip과 staged 파일 0개 수동 검사도 통과했다.
+  - **머지 후 확인**: 실제 결과/영향
+- **Evidence**:
+  - **Commit**: T-F013-02 task checkpoint에서 기록
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: `pnpm run prepare`, 격리 index의 `.husky/_/pre-commit` 성공·실패 검사, `HUSKY=0 pnpm run prepare`, `HUSKY=0 pnpm run check:staged`, `pnpm run check` 모두 2026-08-09 PASS
+- **Consequences**: 타입·Next.js 전용 ESLint·전체 테스트는 pre-commit에서 제외하고 명시적 `pnpm check`와 CI가 담당한다.
