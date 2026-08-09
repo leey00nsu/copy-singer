@@ -17,9 +17,10 @@
 ---
 
 ## 로컬 추적 정보
-- **문서 상태**: -
+- **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/fsd-architecture-migration`
+- **스펙 승인**: 2026-08-09 사용자 응답 `자동진행`을 workflow 기본 옵션 `A`로 기록
 - **대기 중 변경 요청**: -
   - 구현 중 새로 수용한 사용자 요청을 잠시 표시하는 sync marker입니다
   - 요청을 `tasks.md`와 관련 문서에 반영한 뒤 값을 비우세요
@@ -61,6 +62,67 @@
 
 ---
 
+- [DONE][NON-PRD] T-F014-fsd-architecture-migration-01 Steiger와 Shared 기반 이전
+  - Date: 2026-08-09
+  - Acceptance:
+    - Steiger recommended FSD 검사가 src를 대상으로 실행되고 로컬 check에 연결된다.
+    - shared UI, cn, DB, server config 등 독립 기반 모듈이 public API와 client/server 경계를 갖고 src/shared로 이전된다.
+    - 중간 alias 호환 범위에서도 production build와 Shared 관련 회귀 검사가 통과한다.
+  - Checklist:
+    - [x] steiger@0.6.0과 @feature-sliced/steiger-plugin@0.7.0을 exact devDependency로 설치하고 설정 및 check:architecture script를 추가한다.
+    - [x] components/ui, lib/utils, lib/db, lib/config과 독립 범용 모듈을 shared 목적별 segment로 이동한다.
+    - [x] 이동한 모듈의 소비 import와 테스트를 public API 기준으로 갱신한다.
+    - [x] pnpm run check:architecture, pnpm run check, pnpm run build 및 관련 테스트를 실행한다.
+
+- [TODO][NON-PRD] T-F014-fsd-architecture-migration-02 보컬 프로필·인증·티켓 경계 이전
+  - Date: 2026-08-09
+  - Acceptance:
+    - 보컬 프로필과 티켓의 독립 계약·표현·persistence가 Entity에 있고 분석 및 인증 조합은 Feature/App 경계에 있다.
+    - browser-safe index.ts와 server-only index.server.ts가 분리되고 Client Component에서 server 전용 import가 없다.
+    - 관련 auth, vocal-profile, ticket, media 테스트와 production build가 기존 동작으로 통과한다.
+  - Checklist:
+    - [ ] vocal-profile과 ticket 모듈을 significant Entity slice 및 public API로 재구성한다.
+    - [ ] analysis queue/worker, authentication, ticket 관리처럼 여러 책임을 조합하는 코드를 Feature 또는 App 계층으로 올린다.
+    - [ ] Leemage media adapter와 audio utility의 소유 위치 및 server-only 경계를 확정한다.
+    - [ ] 관련 app, component, route, script, worker, test import를 새 public API로 갱신한다.
+    - [ ] Steiger, 정적 검사, production build와 관련 테스트를 실행한다.
+
+- [TODO][NON-PRD] T-F014-fsd-architecture-migration-03 추천·믹싱·관리자·개발 합성 경계 이전
+  - Date: 2026-08-09
+  - Acceptance:
+    - 추천과 mixing-job의 공유 계약·표현은 Entity에 있고 여러 Entity를 조합하는 생성·queue·관리 흐름은 Feature/App에 있다.
+    - key-fit, song catalog와 개발 합성 코드는 실제 소비 관계에 따라 Page 또는 Feature에 배치되어 같은 레이어 cross-import가 없다.
+    - recommendation, mixing, catalog, admin, conversion 관련 기존 테스트와 production build가 통과한다.
+  - Checklist:
+    - [ ] recommendation과 mixing 모듈을 Entity와 Feature 책임으로 분리한다.
+    - [ ] admin service, key-fit, song catalog, conversion orchestration을 pages-first와 significant usage 기준으로 배치한다.
+    - [ ] 관련 app, component, route, script, worker, data 및 test import를 public API 기준으로 갱신한다.
+    - [ ] Steiger violation을 예외 없이 해소하고 정적 검사, build와 관련 테스트를 실행한다.
+
+- [TODO][NON-PRD] T-F014-fsd-architecture-migration-04 Widget·Page·Layout과 root page adapter 이전
+  - Date: 2026-08-09
+  - Acceptance:
+    - 10개 UI route 구현과 loading/error/not-found 경계가 _pages public API로 이전되고 URL과 렌더링 동작이 유지된다.
+    - 공유 workbench만 Widget으로 유지되고 단일 화면 UI는 해당 Page slice에 배치된다.
+    - root page/layout special file은 framework config와 FSD public API 조립만 담당하며 root components 디렉터리가 제거된다.
+  - Checklist:
+    - [ ] page 전용 component와 10개 page 구현을 _pages slice로 이동한다.
+    - [ ] home/profile 공용 vocal-profile workbench를 Widget으로 이동하고 나머지 UI의 significant usage를 검증한다.
+    - [ ] root layout, provider와 global styles를 _app으로 옮기고 root page/layout/loading/error/not-found를 thin adapter로 전환한다.
+    - [ ] UI 테스트 import를 갱신하고 Steiger, 정적 검사, production build와 UI 회귀 테스트를 실행한다.
+
+- [TODO][NON-PRD] T-F014-fsd-architecture-migration-05 API·worker adapter 전환과 legacy 제거 및 최종 검증
+  - Date: 2026-08-09
+  - Acceptance:
+    - 24개 Route Handler 구현이 _app/api-routes로 이전되고 root route.ts는 method export와 route config만 유지한다.
+    - mixing 및 vocal-profile analysis worker entry command와 동작이 유지되고 server public API를 사용한다.
+    - root lib과 compatibility re-export가 제거되고 @ alias가 src만 가리키며 전체 품질·build·test suite가 통과한다.
+  - Checklist:
+    - [ ] 24개 handler를 endpoint public API로 이동하고 root route adapter의 URL, method, runtime, status/response 계약을 검증한다.
+    - [ ] background worker implementation과 root script wrapper import를 _app 및 server public API 기준으로 갱신한다.
+    - [ ] 모든 test와 script import를 갱신하고 root lib, 임시 alias fallback 및 compatibility export를 제거한다.
+    - [ ] route inventory, client-to-server import, Steiger, pnpm run check, pnpm test와 feature config 검증을 실행한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -76,4 +138,11 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `{실행한 테스트 명령어}` | `-` | `{PASS/FAIL 요약}` |
+| `pnpm run check:architecture` | `2026-08-09` | `PASS (Steiger recommended rules 오류 0건)` |
+| `pnpm run check` | `2026-08-09` | `PASS (Biome 경고 63건, ESLint·TypeScript·Steiger 오류 0건)` |
+| `pnpm run build` | `2026-08-09` | `PASS (Next.js production build 및 기존 route inventory 유지)` |
+| `pnpm test` | `-` | `대기` |
+| `pnpm run verify:feature-config` | `-` | `대기` |
+| `pnpm exec tsx --test tests/base-ui-link-button.test.ts tests/audio-waveform-player.test.ts tests/profile-audio-preparation.test.ts tests/vocal-profile-recorder.test.ts tests/compress-mixing-result.test.ts tests/process-scripts.test.ts` | `2026-08-09` | `PASS (13 tests)` |
+
+<!-- lee-spec-kit:workflow-sync 2026-08-09T07:38:52.000Z -->

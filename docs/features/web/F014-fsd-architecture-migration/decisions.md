@@ -20,19 +20,19 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 
 ---
 
-## D001: fsd-architecture-migration 결정 (2026-08-09)
+## D001: Next.js adapter와 prefixed FSD layer 분리 (2026-08-09)
 
-- **Context**: 문제 상황 또는 배경
-- **Constraints**: 제약 조건 (시간/기술/운영/호환성)
-- **Options**: 고려한 대안들
-- **Decision**: 최종 선택
-- **Rationale**: 선택 이유
+- **Context**: Next.js `app` special folder와 FSD App/Pages layer 이름이 충돌하며 현재 root `app`, `components`, `lib`에 framework·UI·server 책임이 혼재한다.
+- **Constraints**: 기존 10개 page, 24개 Route Handler, worker entrypoint와 Coolify 실행 방식을 유지하면서 Steiger recommended rules를 통과해야 한다.
+- **Options**: root `app`을 유지하고 `src/_app`·`src/_pages`를 두는 방식, Next router를 `src/app`으로 옮기는 방식, FSD layer 이름을 임의 변경하는 방식을 검토한다.
+- **Decision**: 공식 Next.js용 FSD 가이드와 Steiger prefix 인식을 따라 root `app` adapter + `src/_app`·`src/_pages` 구조를 사용한다. FSD source의 첫 기반은 `src/shared`에 두고, browser-safe public API는 `index.ts`, server 전용 public API는 `index.server.ts`로 분리한다.
+- **Rationale**: Next.js route inventory를 그대로 보존하면서 framework adapter와 FSD source를 물리적으로 분리하고 공식 linter의 표준 layer 규칙을 사용할 수 있다.
 - **Trace**:
-  - **DOING 시작 시점**: 초기 판단/가설
-  - **DONE 전 확정 시점**: 선택 근거 최종화
+  - **DOING 시작 시점**: 2026-08-09 공식 FSD Next.js 가이드, Steiger prefixed layer test와 설치된 Next.js 16.3 project structure 문서를 확인했다. 첫 태스크에서는 `src/shared`와 Steiger를 먼저 구성해 prefix/import/public API 가설을 실제 검사로 검증한다.
+  - **DONE 전 확정 시점**: `src/shared`의 UI primitive, cn, audio, config와 DB 모듈을 public API 구조로 이전했다. Steiger recommended rules 오류 0건, 통합 정적 검사, Next.js production build와 Shared/audio 관련 13개 테스트 통과로 alias·public API·server-only 경계를 검증했다. `steiger@0.6.0`과 plugin `0.7.0`은 현재 package dependency 관계에 맞춰 exact pin했다.
   - **머지 후 확인**: 실제 결과/영향
 - **Evidence**:
-  - **Commit**: 커밋 해시 또는 링크
-  - **PR**: PR 링크
-  - **Test/Log**: 테스트 결과/로그/스크린샷 경로
-- **Consequences**: 결과 및 영향 (선택사항)
+  - **Commit**: T-F014-01 task checkpoint에서 기록
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: `pnpm run check:architecture`, `pnpm run check`, `pnpm run build`, Shared/audio 관련 13개 테스트 모두 2026-08-09 PASS
+- **Consequences**: migration 중에는 `@/*`가 `src/*`를 우선하고 root를 fallback으로 찾는다. 최종 태스크에서 root fallback과 legacy `components`/`lib`를 제거한다.
