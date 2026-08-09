@@ -112,7 +112,7 @@
     - [x] polling sequence factory, terminal stop 및 mutation/cache UI interaction 검증
     - [x] `pnpm run test:query`, Storybook browser test와 static build 통과
 
-- [TODO][NON-PRD] T-F016-05 접근성·browser test와 production 회귀 최종화
+- [DOING][NON-PRD] T-F016-05 접근성·browser test와 production 회귀 최종화
   - Date: 2026-08-09
   - Acceptance:
     - testable story의 axe 검사와 대표 play interaction이 Playwright Chromium headless 환경에서 통과한다.
