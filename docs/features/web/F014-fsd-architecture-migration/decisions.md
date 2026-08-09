@@ -59,14 +59,31 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Context**: Steiger 실행 root를 `./src`로 고정했기 때문에 아직 root `app`에 남은 실제 소비 import를 `insignificant-slice`가 집계하지 못한다. 또한 설치된 `@feature-sliced/filesystem@3.1.0`은 layer 탐색에서는 `_app` prefix를 제거하지만 일부 규칙은 물리 폴더명 `_app`을 다시 검사한다.
 - **Constraints**: recommended rules 전체를 유지하면서 F014의 각 증분 태스크에서도 구조 검사가 통과해야 하고, 실제 layer/import/public API 위반을 숨겨서는 안 된다.
 - **Options**: Steiger를 repository root에서 실행, F014 완료까지 architecture 검사를 생략, 확인된 진단 경로와 규칙만 끄는 방식을 검토했다.
-- **Decision**: `_app` 경로에는 prefix 처리 불일치가 있는 `no-segmentless-slices`와 `typo-in-layer-name`만 끄고, 아직 root adapter가 주 소비자인 T02 신규 slice에는 `insignificant-slice`만 한시적으로 끈다. 다른 recommended rule은 모두 유지한다.
+- **Decision**: `_app` 경로에는 prefix 처리 불일치가 있는 `no-segmentless-slices`와 `typo-in-layer-name`만, `_pages` 경로에는 같은 원인의 `typo-in-layer-name`만 끈다. 아직 root adapter가 주 소비자인 T02·T03 신규 slice에는 `insignificant-slice`만 한시적으로 끈다. 다른 recommended rule은 모두 유지한다.
 - **Rationale**: repository root 실행은 `src` 아래 FSD layer를 발견하지 못하고 검사 생략은 실제 위반을 놓친다. 진단별 최소 override는 검사의 유효 범위를 가장 크게 유지한다.
 - **Trace**:
   - **DOING 시작 시점**: T02 첫 Steiger 실행에서 8개 오류를 확인하고 설치된 plugin과 filesystem 구현 및 실제 소비 import를 대조했다.
-  - **DONE 전 확정 시점**: 특정 경로·규칙 override 후 Steiger recommended rules 오류 0건을 확인했으며 client-to-server import와 legacy import도 별도 검색으로 0건임을 검증했다.
+  - **DONE 전 확정 시점**: 특정 경로·규칙 override 후 Steiger recommended rules 오류 0건을 확인했으며 T02·T03에서 client-to-server import와 legacy import도 별도 검색으로 0건임을 검증했다. `_pages`의 물리 prefix 진단도 같은 설치 버전 구현 불일치로 확인해 해당 규칙만 범위를 확장했다.
   - **머지 후 확인**: 실제 결과/영향
 - **Evidence**:
   - **Commit**: T-F014-02 task checkpoint에서 기록
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `pnpm run check:architecture`, `pnpm run check` 2026-08-09 PASS
 - **Consequences**: T04·T05에서 root adapter 소비자가 `_pages`·`_app`으로 이동할 때 `insignificant-slice` override를 다시 평가해 제거 가능한 항목을 제거한다. `_app` prefix 관련 두 override는 plugin이 물리 이름까지 일관되게 정규화할 때 제거한다.
+
+## D004: 추천·믹싱 계약과 생성 흐름의 소유 경계 (2026-08-09)
+
+- **Context**: 기존 recommendation, mixing, key-fit, song-catalog와 admin service는 공유 계약·조회·사용자 생성 흐름·worker·개발용 변환 조립을 root `lib`에서 서로 직접 참조한다.
+- **Constraints**: Recommendation과 MixingJob Entity는 서로 또는 VocalProfile/Ticket Entity를 직접 import할 수 없고, 단일 화면·개발 도구 전용 코드는 불필요한 Entity slice가 되면 안 된다. 기존 API, worker, catalog artifact와 DB 동작을 유지해야 한다.
+- **Options**: 기존 폴더별로 그대로 Entity화, 모든 코드를 하나의 Feature로 통합, 공유 계약/자체 조회는 Entity에 두고 교차 도메인 생성·queue·worker·개발 변환을 Feature/App/Page 책임으로 분리하는 방식을 검토한다.
+- **Decision**: recommendation의 계약·키 적합도·ranking·handoff와 해당 use case에 종속된 song catalog를 하나의 Recommendation Entity에 두고, 추천 생성·합성은 Create Recommendation Feature로 분리한다. MixingJob Entity는 계약과 자체 조회를 소유하고, 보컬 프로필·티켓·추천을 조합하는 queue/reference는 Create Mixing Feature, worker는 App이 소유한다. 관리자 조회는 Admin Page, 개발 변환 접근 정책은 Development Conversion Feature에 둔다.
+- **Rationale**: 도메인 표현의 재사용성을 유지하면서 Entity 간 직접 결합과 의미 없는 song-catalog/key-fit Entity 추출을 피할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 2026-08-09 recommendation, mixing, key-fit, song-catalog, admin 및 conversion 모듈의 import/소비 관계를 기준으로 경계 분리를 시작한다.
+  - **DONE 전 확정 시점**: root recommendation/mixing/key-fit/song-catalog/admin/dev-svc 모듈을 Entity·Feature·App·Page 경계와 환경별 public API로 이전했다. build tooling용 catalog 명령은 server-only 조건을 명시하고, worker/package script 이름과 데이터 artifact 경로는 유지했다. legacy import와 Client Component의 server-only import가 없고 관련 54개 테스트, catalog artifact 검증, 정적 검사, Steiger와 production build가 통과했다.
+  - **머지 후 확인**: 실제 결과/영향
+- **Evidence**:
+  - **Commit**: T-F014-03 task checkpoint에서 기록
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: F014 tasks.md의 catalog, key-fit, recommendation, mixing, admin 및 process script 관련 54개 테스트와 `pnpm run catalog:verify`, `pnpm run check`, `pnpm run build` 2026-08-09 PASS
+- **Consequences**: 추천과 믹싱의 재사용 계약은 browser-safe public API로, DB·외부 합성·worker·catalog tooling은 server public API로 분리됐다. song catalog와 key-fit은 독립 Entity를 늘리지 않고 실제 주 use case인 Recommendation slice 내부에 유지한다.

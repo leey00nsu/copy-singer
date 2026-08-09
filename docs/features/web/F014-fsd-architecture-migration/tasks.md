@@ -87,17 +87,17 @@
     - [x] 관련 app, component, route, script, worker, test import를 새 public API로 갱신한다.
     - [x] Steiger, 정적 검사, production build와 관련 테스트를 실행한다.
 
-- [TODO][NON-PRD] T-F014-fsd-architecture-migration-03 추천·믹싱·관리자·개발 합성 경계 이전
+- [DONE][NON-PRD] T-F014-fsd-architecture-migration-03 추천·믹싱·관리자·개발 합성 경계 이전
   - Date: 2026-08-09
   - Acceptance:
     - 추천과 mixing-job의 공유 계약·표현은 Entity에 있고 여러 Entity를 조합하는 생성·queue·관리 흐름은 Feature/App에 있다.
     - key-fit, song catalog와 개발 합성 코드는 실제 소비 관계에 따라 Page 또는 Feature에 배치되어 같은 레이어 cross-import가 없다.
     - recommendation, mixing, catalog, admin, conversion 관련 기존 테스트와 production build가 통과한다.
   - Checklist:
-    - [ ] recommendation과 mixing 모듈을 Entity와 Feature 책임으로 분리한다.
-    - [ ] admin service, key-fit, song catalog, conversion orchestration을 pages-first와 significant usage 기준으로 배치한다.
-    - [ ] 관련 app, component, route, script, worker, data 및 test import를 public API 기준으로 갱신한다.
-    - [ ] Steiger violation을 예외 없이 해소하고 정적 검사, build와 관련 테스트를 실행한다.
+    - [x] recommendation과 mixing 모듈을 Entity와 Feature 책임으로 분리한다.
+    - [x] admin service, key-fit, song catalog, conversion orchestration을 pages-first와 significant usage 기준으로 배치한다.
+    - [x] 관련 app, component, route, script, worker, data 및 test import를 public API 기준으로 갱신한다.
+    - [x] Steiger violation을 예외 없이 해소하고 정적 검사, build와 관련 테스트를 실행한다.
 
 - [TODO][NON-PRD] T-F014-fsd-architecture-migration-04 Widget·Page·Layout과 root page adapter 이전
   - Date: 2026-08-09
@@ -142,7 +142,7 @@
 | `pnpm run check` | `2026-08-09` | `PASS (Biome 경고 63건, ESLint·TypeScript·Steiger 오류 0건)` |
 | `pnpm run build` | `2026-08-09` | `PASS (Next.js production build 및 기존 route inventory 유지)` |
 | `pnpm test` | `-` | `대기` |
-| `pnpm run verify:feature-config` | `-` | `대기` |
+| `pnpm run verify:feature-config` | `2026-08-09` | `PASS (auth, admin, Leemage 환경 변수 검증)` |
 | `pnpm exec tsx --test tests/base-ui-link-button.test.ts tests/audio-waveform-player.test.ts tests/profile-audio-preparation.test.ts tests/vocal-profile-recorder.test.ts tests/compress-mixing-result.test.ts tests/process-scripts.test.ts` | `2026-08-09` | `PASS (13 tests)` |
 | `pnpm run test:auth:db` | `2026-08-09` | `PASS (3 tests)` |
 | `pnpm run test:tickets` | `2026-08-09` | `PASS (2 tests)` |
@@ -153,5 +153,14 @@
 | `pnpm run test:vocal-profile-history` | `2026-08-09` | `PASS (6 tests)` |
 | `pnpm run test:admin` | `2026-08-09` | `PASS (2 tests)` |
 | `pnpm exec tsx --test tests/vocal-profile-contract.test.ts tests/vocal-profile-visualization.test.ts tests/long-audio-upload.test.ts tests/reference-preview.test.ts tests/vocal-profile-reference-bands.test.ts tests/vocal-profile-results-ui.test.tsx` | `2026-08-09` | `PASS (21 tests)` |
+| `pnpm run test:catalog` | `2026-08-09` | `PASS (7 tests)` |
+| `pnpm run test:catalog-targets` | `2026-08-09` | `PASS (1 test)` |
+| `pnpm run test:key-fit` | `2026-08-09` | `PASS (19 tests)` |
+| `pnpm run test:recommendation` | `2026-08-09` | `PASS (18 tests)` |
+| `pnpm run test:recommendation:db` | `2026-08-09` | `PASS (3 tests)` |
+| `pnpm run test:mixing:db` | `2026-08-09` | `PASS (1 test)` |
+| `pnpm run test:mixing:ui` | `2026-08-09` | `PASS (1 test)` |
+| `pnpm run test:process-scripts` | `2026-08-09` | `PASS (2 tests)` |
+| `pnpm run catalog:verify` | `2026-08-09` | `PASS (100곡 artifact READY 상태 확인)` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T07:52:06.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T07:59:50.000Z -->
