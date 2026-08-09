@@ -188,7 +188,7 @@
     - [x] delete mutation/confirmation/cache invalidate/navigation 구현
     - [x] active race, ownership, media cleanup, Query와 Storybook test 추가
 
-- [TODO][PRD-FR-051] T-F018-09 Account·route 상태·반응형·Storybook 상태 행렬 완성
+- [DONE][PRD-FR-051] T-F018-09 Account·route 상태·반응형·Storybook 상태 행렬 완성
   - Date: 2026-08-09
   - Acceptance:
     - Account가 실제 사용자·Google 계정·ticket balance/ledger와 Library/Admin 링크만 제공한다.
@@ -196,13 +196,13 @@
     - 360px mobile, 768px tablet, 1280px desktop에서 navigation, table/list, waveform, chart와 CTA가 겹치거나 잘리지 않는다.
     - keyboard, focus-visible, accessible label/live status와 reduced-motion 기준을 만족하고 Storybook a11y error가 없다.
   - Checklist:
-    - [ ] Account flat layout과 ticket ledger pagination/navigation 개선
-    - [ ] Product route `loading.tsx`, `error.tsx`, detail `not-found.tsx` 일관화
-    - [ ] polling stale-data/error, disabled와 destructive confirmation 상태 검토
-    - [ ] ProductShell·StatePanel·핵심 route state Storybook matrix 완성
-    - [ ] 360×800, 768×1024, 1280×800 실제 browser smoke와 screenshot 비교
-    - [ ] keyboard/focus/label/live region/reduced-motion 검증
-    - [ ] Admin/dev SVC token·navigation·desktop smoke 회귀 확인
+    - [x] Account flat layout과 ticket ledger pagination/navigation 개선
+    - [x] Product route `loading.tsx`, `error.tsx`, detail `not-found.tsx` 일관화
+    - [x] polling stale-data/error, disabled와 destructive confirmation 상태 검토
+    - [x] ProductShell·StatePanel·핵심 route state Storybook matrix 완성
+    - [x] 360×800, 768×1024, 1280×800 실제 browser smoke와 screenshot 비교
+    - [x] keyboard/focus/label/live region/reduced-motion 검증
+    - [x] Admin/dev SVC token·navigation·desktop smoke 회귀 확인
 
 - [TODO][NON-PRD] T-F018-10 전체 회귀·디자인 정본·Feature 문서 최종화
   - Date: 2026-08-09
@@ -238,7 +238,7 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `pnpm run check` | `2026-08-10` | 통과 — error 0, 기존 Biome warning 60건, Steiger 및 architecture 4/4 |
-| `pnpm run test:auth-navigation` | `2026-08-10` | 통과 — safe callback·Library navigation·route group 4/4 |
+| `pnpm run test:auth-navigation` | `2026-08-10` | 통과 — safe callback·Library/Account navigation·route group·keyboard/touch label 5/5 |
 | `pnpm exec tsx --test tests/effect-cleanup.test.ts tests/recommendation-ui.test.tsx` | `2026-08-09` | 통과 — cleanup·추천 UI 회귀 6/6 |
 | `pnpm exec tsx --test tests/effect-cleanup.test.ts` | `2026-08-10` | 통과 — Library·Mixing Detail Query polling 포함 component timer/fetch inventory 2/2 |
 | `pnpm run test:voice-scan` | `2026-08-09` | 통과 — 녹음 정책·오류·상태·cleanup 12/12 |
@@ -249,14 +249,14 @@
 | `pnpm run test:mixing:ui` | `2026-08-10` | 통과 — history·실제 timeline·상세 adapter·active/terminal 상태 7/7 |
 | `pnpm run test:mixing:db` | `2026-08-10` | 통과 — queue·owner/filter/pagination·active 409·terminal 삭제·cleanup queue·ticket SetNull 1/1 |
 | `pnpm run test:query` | `2026-08-10` | 통과 — detail/history Query key·terminal polling·삭제 envelope 포함 23/23, streaming proxy 1/1 |
-| `pnpm run test:auth:db` | `-` | 미실행 — 구현 전 |
-| `pnpm run test:tickets` | `-` | 미실행 — 구현 전 |
+| `pnpm run test:auth:db` | `2026-08-10` | 통과 — session/role·Google provider account ownership 3/3 |
+| `pnpm run test:tickets` | `2026-08-10` | 통과 — 실제 Account identity/provider/ticket UI 3/3, ledger balance·pagination clamp DB 1/1 |
 | `pnpm run test:architecture-boundaries` | `2026-08-10` | 통과 — `pnpm run check` 내부 FSD·Client/Server·App adapter 4/4 |
-| `pnpm run test:storybook --run` | `2026-08-10` | 통과 — 33 files, 81 tests, Mixing Detail 완료·진행·실패·삭제 확인 포함 |
+| `pnpm run test:storybook --run` | `2026-08-10` | 통과 — 35 files, 89 tests, Account·ProductShell·StatePanel·product route 상태/a11y 포함 |
 | `pnpm run build-storybook` | `2026-08-10` | 통과 — chunk size warning만 있음 |
-| `pnpm run build` | `2026-08-10` | 통과 — `/library/mixes/[id]`, DELETE API와 기존 public/product/Admin/dev URL 보존 |
+| `pnpm run build` | `2026-08-10` | 통과 — Account와 product route 공통 상태를 포함한 기존 public/product/Admin/dev URL 보존 |
 | `pnpm run test:base-ui` | `2026-08-09` | 통과 — 1/1 |
 | `pnpm run test:process-scripts` | `2026-08-09` | 통과 — 5/5 |
 | `pnpm test` | `-` | 미실행 — 구현 전 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T16:18:06.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T16:36:09.000Z -->

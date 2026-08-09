@@ -205,3 +205,23 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 워크플로 — 해당 없음
   - **Test/Log**: `pnpm run test:mixing:ui` (7/7), `pnpm run test:mixing:db` (1/1, active 409·owner 404·cleanup queue·ticket SetNull 포함), `pnpm run test:query` (23/23 + streaming 1/1), `pnpm run test:storybook --run` (33 files, 81 tests), `pnpm exec tsx --test tests/effect-cleanup.test.ts` (2/2), `pnpm run check`, `pnpm run build-storybook`, `pnpm run build`, Storybook browser smoke (1280×800·360×800)
 - **Consequences**: 믹싱 작업 기록은 terminal 상태에서만 사용자가 제거할 수 있고, 삭제 후에도 ticket 회계 기록은 유지된다. 외부 파일 삭제 장애는 사용자 요청을 되돌리지 않고 기존 cleanup worker가 재시도한다.
+
+## D027: 실제 계정 데이터와 product route group 상태 경계 (2026-08-10)
+
+- **Context**: 현재 Account는 사용자와 티켓을 rounded card로만 표시하고 Google 연결 여부를 확인하지 않으며, ProductShell 주 메뉴에 Account가 없어 현재 route가 드러나지 않는다. 여러 제품 route는 loading/error/not-found 경계도 부분적으로만 제공한다.
+- **Constraints**: 구독·설정·연결 해제처럼 현재 데이터나 기능이 없는 항목을 만들지 않는다. 사용자 identity는 session, Google 연결은 실제 Better Auth `Account.providerId`, 티켓은 기존 ledger를 정본으로 사용하며 DB migration을 추가하지 않는다. product route의 App 파일은 FSD 가이드에 맞는 얇은 adapter로 유지한다.
+- **Options**:
+  1. Account UI만 재배치하고 Google 연결 여부는 고정 문구로 표시한다.
+  2. 계정·구독·알림 설정을 mock data로 채워 디자인 보드에 가까운 설정 화면을 만든다.
+  3. 실제 session·Google Account·ticket ledger만 server에서 조합하고 flat UI와 공통 route 상태를 재사용한다.
+- **Decision**: Account는 Better Auth Account의 Google provider 존재 여부, session 사용자, ticket balance/ledger를 server query로 조합한 flat view로 만들고 Library/Admin 링크만 제공한다. Account를 ProductShell 주 메뉴에 추가하며 product route group의 공통 loading/error/not-found는 _app layout composition을 얇은 App adapter가 재사용한다.
+- **Rationale**: DB에 존재하는 정보만 보여주면서 navigation과 상태 언어를 모든 제품 화면에서 일관되게 유지하고, route별 중복 상태 UI를 줄일 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: AccountPage, ProductShell, Better Auth Account schema, TicketLedger와 product route boundary를 조사했다. 디자인 보드의 설정·구독 정보는 현재 정본 데이터가 없으므로 범위에서 제외했다.
+  - **DONE 전 확정 시점**: Account server composition이 session 사용자, 실제 Google provider 존재 여부와 paginated ticket ledger를 읽고 page 범위를 transaction 안에서 보정한다. ProductShell에는 Account current navigation을 추가하고 product route group의 loading/error/not-found는 `_app/layout` StatePanel composition을 얇은 adapter로 노출했다. active polling은 기존 Query가 stale data를 유지하고 terminal에서 중지하며, 오류·disabled·삭제 Dialog를 Storybook 상태 행렬에서 재검증했다. Account를 360×800·768×1024·1280×800, Admin과 dev SVC를 1280×800 실제 브라우저에서 확인해 horizontal overflow와 console error가 없음을 확인했다.
+  - **머지 후 확인**: 로컬 통합 후 기록한다.
+- **Evidence**:
+  - **Commit**: T-F018-09 task checkpoint commit
+  - **PR**: 로컬 워크플로 — 해당 없음
+  - **Test/Log**: `pnpm run test:tickets` (Account UI 3/3 + DB 1/1), `pnpm run test:auth:db` (3/3), `pnpm run test:auth-navigation` (5/5), `pnpm run test:vocal-profile-history` (UI 3/3 + private/ownership 3/3), `pnpm run test:recommendation` (10/10 + 17/17), `pnpm run test:mixing:ui` (7/7), `pnpm run test:storybook --run` (35 files, 89 tests), `pnpm run check`, `pnpm run build-storybook`, `pnpm run build`, 실제 browser smoke (Account 360×800·768×1024·1280×800, Admin/dev SVC 1280×800)
+- **Consequences**: Account는 실제로 확인 가능한 identity·Google 연결·ticket 정보만 표시한다. route-level 상태 표현은 Shared `StatePanel`을 통해 일관되며, 이후 계정 설정 기능이 추가될 때 별도 feature와 실제 저장 계약을 먼저 정의해야 한다.
