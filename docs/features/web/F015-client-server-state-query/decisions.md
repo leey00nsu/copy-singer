@@ -70,7 +70,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: workbench와 job cards의 response state/수동 timer를 Query cache와 함수형 interval로 교체했다. retryable detail 오류는 1.5초 polling을 유지하고 terminal 상태에서는 `false`를 반환하며, SSR QueryClient는 GC timer를 만들지 않도록 server `gcTime: Infinity`로 보정했다.
   - **머지 후 확인**: 로컬 통합 후 갱신 예정
 - **Evidence**:
-  - **Commit**: task commit 후 갱신 예정
+  - **Commit**: docs `b79309e`, project `d95a650`
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: `pnpm run test:query` PASS (12), `pnpm run test:vocal-profile-history` PASS (6), recorder/profile/effect test PASS (8), `pnpm run lint`/`typecheck`/`check:biome`/`check:architecture` PASS, `pnpm run build` PASS (2026-08-09)
 - **Consequences**: 완료된 profile은 terminal detail query cache에서 표시하며 cache 자체는 storage에 persist하지 않는다.
