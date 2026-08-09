@@ -89,7 +89,7 @@
     - [x] 임시 index 또는 동등한 격리된 검증으로 성공·실패 경로와 index 불변성을 확인한다.
     - [x] hook 설치를 비활성화한 환경에서도 수동 staged 검사와 전체 check가 동작하는지 확인한다.
 
-- [DONE][NON-PRD] T-F013-frontend-quality-foundation-03 GitHub Actions 품질 게이트와 최종 회귀 검증 (T04에서 후속 범위로 전환)
+- [DONE][NON-PRD] T-F013-frontend-quality-foundation-03 GitHub Actions 품질 게이트와 최종 회귀 검증
   - Date: 2026-08-09
   - Outcome: workflow를 구현·검증했으나 사용자 변경 요청에 따라 T04에서 제거하며, 최종 F013 산출물에는 포함하지 않는다.
   - Acceptance:
@@ -103,7 +103,7 @@
     - [x] CI가 참조하는 모든 package script와 회귀 명령을 로컬에서 실행한다.
     - [x] workflow YAML, docs evidence, workflow-sync marker를 최종 상태와 동기화한다.
 
-- [DONE][NON-PRD] T-F013-frontend-quality-foundation-04 CI 도입 연기와 F013 범위 정리
+- [DOING][NON-PRD] T-F013-frontend-quality-foundation-04 CI 도입 연기와 F013 범위 정리
   - Date: 2026-08-09
   - Acceptance:
     - `.github/workflows/quality.yml`을 제거해 GitHub Actions 사용과 Coolify 배포를 분리한다.
@@ -120,8 +120,8 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
