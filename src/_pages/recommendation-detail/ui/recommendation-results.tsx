@@ -3,14 +3,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AlertTriangle,
-  ArrowLeft,
   Clock3,
   Download,
   Gauge,
   Headphones,
   LoaderCircle,
   Mic2,
-  Music2,
   RefreshCw,
   Sparkles,
   Trash2,
@@ -147,23 +145,6 @@ export function RecommendationResults({
 
   return (
     <main className="min-h-screen bg-background">
-      <header className="site-header">
-        <div className="page-shell flex h-16 items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="brand-mark">
-              <Music2 className="size-4" />
-            </span>
-            <div>
-              <p className="text-sm font-semibold">Copy Singer</p>
-              <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Song match</p>
-            </div>
-          </div>
-          <a className={buttonVariants({ size: "sm", variant: "ghost" })} href="/profile">
-            <ArrowLeft className="size-4" /> 다시 측정
-          </a>
-        </div>
-      </header>
-
       <div className="page-shell py-10 sm:py-14">
         <section className="mx-auto max-w-4xl text-center">
           <Badge className="gap-1.5" variant="secondary">

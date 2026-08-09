@@ -1,6 +1,5 @@
 "use client";
 
-import { LogIn } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/shared/ui/button";
 import { authClient } from "../api/auth-client";
@@ -22,13 +21,20 @@ export function GoogleSignIn({ callbackURL, configured }: { callbackURL: string;
   return (
     <div className="space-y-3">
       <Button className="h-11 w-full text-sm" disabled={!configured || pending} onClick={signIn}>
-        <LogIn aria-hidden="true" />
+        <span
+          aria-hidden="true"
+          className="flex size-5 items-center justify-center rounded-full bg-background text-xs font-semibold text-foreground"
+        >
+          G
+        </span>
         {pending ? "Google로 이동 중…" : "Google로 계속하기"}
       </Button>
       {!configured ? (
-        <p className="text-center text-xs text-amber-700">Google OAuth 환경변수를 먼저 설정해주세요.</p>
+        <p className="text-center text-xs text-warning-foreground">Google OAuth 환경변수를 먼저 설정해 주세요.</p>
       ) : null}
-      {error ? <p className="text-center text-xs text-destructive">{error}</p> : null}
+      <p aria-live="polite" className="text-center text-xs text-destructive" role={error ? "alert" : undefined}>
+        {error}
+      </p>
     </div>
   );
 }

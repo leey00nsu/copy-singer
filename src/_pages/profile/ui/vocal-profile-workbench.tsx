@@ -4,18 +4,15 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Activity,
   AlertTriangle,
-  ArrowLeft,
   ArrowRight,
   CheckCircle2,
   FileAudio,
   LoaderCircle,
-  Mic,
   RotateCcw,
   Sparkles,
   Trash2,
   Upload,
 } from "lucide-react";
-import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import type { VocalProfileError } from "@/entities/vocal-profile";
@@ -38,7 +35,7 @@ import { ApiError } from "@/shared/api";
 import { prepareProfileAudio } from "@/shared/lib/audio";
 import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
 import { Badge } from "@/shared/ui/badge";
-import { Button, buttonVariants } from "@/shared/ui/button";
+import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
 import { LongAudioDialog } from "./long-audio-dialog";
 import { VocalProfileRecorder } from "./vocal-profile-recorder";
@@ -298,23 +295,6 @@ export function VocalProfileWorkbench() {
           onConfirm={confirmLongAudio}
         />
       ) : null}
-      <header className="site-header">
-        <div className="page-shell flex h-16 items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="brand-mark">
-              <Mic className="size-4" />
-            </span>
-            <div>
-              <p className="text-sm font-semibold">Copy Singer</p>
-              <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Vocal profile lab</p>
-            </div>
-          </div>
-          <Link className={buttonVariants({ size: "sm", variant: "ghost" })} href="/">
-            <ArrowLeft className="size-4" /> 처음으로
-          </Link>
-        </div>
-      </header>
-
       <div className="page-shell py-10 sm:py-14">
         <section className="max-w-2xl">
           <div className="flex flex-wrap items-center gap-2">

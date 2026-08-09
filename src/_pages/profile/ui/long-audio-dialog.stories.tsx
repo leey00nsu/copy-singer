@@ -4,7 +4,7 @@ import { expect, fn, userEvent, within } from "storybook/test";
 import { LongAudioDialog } from "./long-audio-dialog";
 
 const meta = {
-  title: "Widgets/Vocal Profile Workbench/LongAudioDialog",
+  title: "Pages/Profile/LongAudioDialog",
   component: LongAudioDialog,
   args: {
     durationSeconds: 87.4,

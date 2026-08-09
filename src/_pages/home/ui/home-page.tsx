@@ -1,7 +1,7 @@
-import { requirePageSession } from "@/features/authentication/index.server";
-import { VocalProfileWorkbench } from "@/widgets/vocal-profile-workbench";
+import { getRequestSession } from "@/features/authentication/index.server";
+import { LandingPage } from "./landing-page";
 
-export default async function Home() {
-  await requirePageSession("/");
-  return <VocalProfileWorkbench />;
+export default async function HomePage() {
+  const session = await getRequestSession();
+  return <LandingPage authenticated={Boolean(session)} />;
 }

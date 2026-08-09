@@ -1,4 +1,5 @@
-import { Activity, AlertTriangle, Search, Ticket, Users } from "lucide-react";
+import { Activity, AlertTriangle, ArrowLeft, Search, Ticket, Users } from "lucide-react";
+import Link from "next/link";
 import { requireAdminPage } from "@/features/authentication/index.server";
 import {
   getAdminOverview,
@@ -27,7 +28,10 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-7xl px-5 py-14 sm:px-8">
-      <p className="text-sm font-semibold text-emerald-700">ADMIN</p>
+      <Button nativeButton={false} render={<Link href="/profile" />} variant="ghost">
+        <ArrowLeft aria-hidden="true" /> 제품으로 돌아가기
+      </Button>
+      <p className="mt-8 text-sm font-semibold text-muted-foreground">ADMIN</p>
       <h1 className="mt-2 text-3xl font-bold tracking-tight">Copy Singer 운영</h1>
       <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {[

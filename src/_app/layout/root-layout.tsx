@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { headers } from "next/headers";
-import { UserMenu } from "@/features/authentication";
-import { getRequestSession, isAdminEmail } from "@/features/authentication/index.server";
 import { Toaster } from "@/shared/ui/sonner";
 import { TooltipProvider } from "@/shared/ui/tooltip";
 import { QueryProvider } from "../providers";
@@ -26,8 +24,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase: new URL(origin),
-    title: "Copy Singer — 보컬 프로필과 음성 합성",
-    description: "내 음역을 측정하고 SoulX-Singer로 보컬 합성을 테스트하세요.",
+    title: "Copy Singer — 내 목소리에 맞는 노래",
+    description: "목소리를 분석해 어울리는 노래와 키를 찾고 AI 믹싱 결과를 만들어보세요.",
     icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
     openGraph: {
       title: "Copy Singer",
@@ -45,28 +43,16 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getRequestSession();
   return (
     <html lang="ko">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <QueryProvider>
-          <TooltipProvider>
-            {session ? (
-              <div className="fixed right-4 top-4 z-50">
-                <UserMenu
-                  name={session.user.name}
-                  image={session.user.image}
-                  admin={isAdminEmail(session.user.email)}
-                />
-              </div>
-            ) : null}
-            {children}
-          </TooltipProvider>
+          <TooltipProvider>{children}</TooltipProvider>
         </QueryProvider>
         <Toaster richColors position="bottom-right" />
       </body>

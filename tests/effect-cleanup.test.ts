@@ -22,7 +22,7 @@ test("query-managed server state has no component-owned fetch or polling timer",
     "src/_pages/mixing-history/ui/mixing-history-list.tsx",
     "src/_pages/vocal-profiles/ui/vocal-profile-analysis-job-cards.tsx",
     "src/features/manage-tickets/ui/ticket-adjustment-form.tsx",
-    "src/widgets/vocal-profile-workbench/ui/vocal-profile-workbench.tsx",
+    "src/_pages/profile/ui/vocal-profile-workbench.tsx",
   ];
   for (const path of paths) {
     const source = await readFile(path, "utf8");
