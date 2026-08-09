@@ -9,14 +9,45 @@ import { Badge } from "@/shared/ui/badge";
 import { Button, buttonVariants } from "@/shared/ui/button";
 
 export function RecommendationMixingAction({
+  compact = false,
+  detailHref,
   item,
   onStart,
 }: {
+  compact?: boolean;
+  detailHref?: string;
   item: RecommendationItemResponse;
   onStart: (itemId: string, retry?: boolean) => void;
 }) {
   const [audioOpen, setAudioOpen] = useState(false);
   const status = item.synthesis.status;
+
+  if (compact) {
+    if (status === "not_started") {
+      return <span className="text-xs text-muted-foreground">선택 전</span>;
+    }
+    if (["preparing", "queued", "processing"].includes(status)) {
+      return (
+        <Badge aria-live="polite" className="h-7 px-2" variant="secondary">
+          <LoaderCircle className="animate-spin motion-reduce:animate-none" aria-hidden="true" /> 진행 중
+        </Badge>
+      );
+    }
+    if (status === "succeeded" && detailHref) {
+      return (
+        <Link className={buttonVariants({ size: "xs", variant: "outline" })} href={detailHref}>
+          결과 확인
+        </Link>
+      );
+    }
+    return item.synthesis.error?.retryable ? (
+      <Button onClick={() => onStart(item.id, true)} size="xs" variant="ghost">
+        <RefreshCw aria-hidden="true" className="size-3" /> 재시도
+      </Button>
+    ) : (
+      <Badge variant="destructive">실패</Badge>
+    );
+  }
 
   if (status === "not_started") {
     return (

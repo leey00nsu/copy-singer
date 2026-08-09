@@ -8,8 +8,6 @@ import {
   succeededRecommendationRunFixture,
 } from "../../../../tests/msw/fixtures";
 import {
-  mixingForbiddenHandler,
-  mixingSubmissionHandler,
   recommendationForbiddenHandler,
   recommendationHandler,
   recommendationLoadingHandler,
@@ -34,7 +32,7 @@ type Story = StoryObj<typeof meta>;
 
 const denseRun = {
   ...recommendationRunFixture,
-  items: Array.from({ length: 8 }, (_, index) => {
+  items: Array.from({ length: 100 }, (_, index) => {
     const source = recommendationRunFixture.items[0];
     if (!source) throw new Error("Recommendation story fixture requires one item.");
     return {
@@ -42,7 +40,7 @@ const denseRun = {
       id: `20000000-0000-4000-8000-${String(index + 10).padStart(12, "0")}`,
       rank: index + 1,
       catalogOrder: 1234 + index,
-      title:
+      title: `${
         [
           "서른 즈음에",
           "바람의 노래",
@@ -52,11 +50,13 @@ const denseRun = {
           "기억의 습작",
           "오래된 노래",
           "별 보러 가자",
-        ][index] ?? source.title,
-      artist: ["김광석", "조용필", "아이유", "토이", "조덕배", "전람회", "스탠딩 에그", "적재"][index] ?? source.artist,
+        ][index % 8] ?? source.title
+      } ${index + 1}`,
+      artist:
+        ["김광석", "조용필", "아이유", "토이", "조덕배", "전람회", "스탠딩 에그", "적재"][index % 8] ?? source.artist,
       adjustedScore: 94 - index * 2.1,
       originalKeyScore: 82 - index,
-      recommendedShift: [-2, 0, -1, 1, -3, 0, 2, -1][index] ?? 0,
+      recommendedShift: [-2, 0, -1, 1, -3, 0, 2, -1][index % 8] ?? 0,
     };
   }),
 };
@@ -77,7 +77,7 @@ export const Success: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(await canvas.findByText("서른 즈음에")).toBeVisible();
-    await expect(canvas.getByRole("button", { name: "AI 믹싱" })).toBeEnabled();
+    await expect(canvas.queryByRole("button", { name: "AI 믹싱" })).not.toBeInTheDocument();
     await userEvent.type(canvas.getByRole("searchbox", { name: "곡 또는 아티스트 검색" }), "없는 노래");
     await expect(canvas.getByText("조건에 맞는 노래가 없어요.")).toBeVisible();
     await userEvent.click(canvas.getByRole("button", { name: "모든 조건 지우기" }));
@@ -93,8 +93,25 @@ export const DenseComparisonList: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("table", { name: "추천 노래 비교 목록" })).toBeVisible();
-    await expect(canvas.getByText("전체 8곡 중 8곡")).toBeVisible();
-    await expect(canvas.getAllByRole("button", { name: "AI 믹싱" })).toHaveLength(8);
+    await expect(canvas.getByText("전체 100곡 중 100곡")).toBeVisible();
+    await expect(canvas.getAllByRole("link", { name: /\d+$/ })).toHaveLength(100);
+    await expect(canvas.queryByRole("button", { name: "AI 믹싱" })).not.toBeInTheDocument();
+  },
+};
+
+export const MobileFilters: Story = {
+  args: {
+    initialRun: denseRun,
+    runId: undefined,
+  },
+  globals: {
+    viewport: { value: "mobile1", isRotated: false },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("link", { name: "서른 즈음에 1" })).toBeVisible();
+    await userEvent.click(canvas.getByRole("button", { name: "필터" }));
+    await waitFor(() => expect(within(document.body).getByRole("dialog", { name: "추천곡 필터" })).toBeVisible());
   },
 };
 
@@ -119,45 +136,9 @@ export const ActiveToTerminalPolling: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByText("믹싱 처리 중")).toBeVisible();
-    await waitFor(() => expect(canvas.getByRole("button", { name: "결과 듣기" })).toBeVisible(), { timeout: 7_000 });
-    await expect(canvas.queryByText("믹싱 처리 중")).not.toBeInTheDocument();
-  },
-};
-
-export const MutationSuccess: Story = {
-  args: {
-    initialRun: recommendationRunFixture,
-    runId: undefined,
-  },
-  beforeEach({ msw }) {
-    msw.use(mixingSubmissionHandler(), recommendationHandler());
-  },
-  play: async ({ canvasElement }) => {
-    await userEvent.click(within(canvasElement).getByRole("button", { name: "AI 믹싱" }));
-    await waitFor(() => {
-      const toast = document.querySelector('[data-sonner-toast][data-type="success"]');
-      expect(toast).toHaveTextContent("믹싱을 접수했어요. 페이지를 닫아도 계속 진행됩니다.");
-    });
-  },
-};
-
-export const MutationPermissionError: Story = {
-  args: {
-    initialRun: recommendationRunFixture,
-    runId: undefined,
-  },
-  beforeEach({ msw }) {
-    msw.use(mixingForbiddenHandler());
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole("button", { name: "AI 믹싱" }));
-    await expect(await canvas.findByText("티켓이 부족합니다.")).toBeVisible();
-    await waitFor(() => {
-      const toast = document.querySelector('[data-sonner-toast][data-type="error"]');
-      expect(toast).toHaveTextContent("AI 믹싱을 시작하지 못했습니다.");
-    });
+    await expect(canvas.getByText("진행 중")).toBeVisible();
+    await waitFor(() => expect(canvas.getByRole("link", { name: "결과 확인" })).toBeVisible(), { timeout: 7_000 });
+    await expect(canvas.queryByText("진행 중")).not.toBeInTheDocument();
   },
 };
 
@@ -169,8 +150,10 @@ export const CompletedAudioIsLazy: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.queryByRole("img", { name: /AI 믹싱 결과 파형/ })).not.toBeInTheDocument();
-    await userEvent.click(canvas.getByRole("button", { name: "결과 듣기" }));
-    await expect(canvas.getByRole("img", { name: /AI 믹싱 결과 파형/ })).toBeVisible();
+    await expect(canvas.getByRole("link", { name: "결과 확인" })).toHaveAttribute(
+      "href",
+      `/recommendations/${succeededRecommendationRunFixture.id}/songs/${succeededRecommendationRunFixture.items[0]?.id}`,
+    );
   },
 };
 

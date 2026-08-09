@@ -135,7 +135,7 @@ export function RecommendationResults({
         description={
           loadError === "not-found"
             ? "삭제됐거나 올바르지 않은 주소입니다."
-            : "PostgreSQL 연결과 추천 결과 상태를 확인한 뒤 다시 시도해주세요."
+            : "잠시 뒤 다시 시도해주세요. 문제가 계속되면 보컬 프로필에서 추천을 다시 만들어주세요."
         }
         icon={<AlertTriangle />}
         title={loadError === "not-found" ? "추천 결과를 찾을 수 없어요." : "추천 결과를 불러오지 못했어요."}
@@ -157,17 +157,17 @@ export function RecommendationResults({
   const visibleItems = projectRecommendationItems(run.items, filters);
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
-      <header className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,.6fr)] lg:items-end">
+    <div className="mx-auto w-full max-w-7xl px-5 py-8 sm:px-8 sm:py-10">
+      <header className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,.48fr)] lg:items-end">
         <div>
           <p className="text-xs font-semibold tracking-[0.18em] text-data-accent-foreground">SONG MATCH</p>
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-5xl">내 목소리에 맞는 노래</h1>
-          <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">내 목소리에 맞는 노래</h1>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
             이번 한 소절에서 관찰된 음역을 기준으로 {run.items.length}곡을 비교했습니다. 추천 적합도는 정수로 단순화해
             표시하며, 추천 키와 근거를 함께 확인할 수 있습니다.
           </p>
         </div>
-        <div className="grid gap-3 border-l pl-5 text-sm">
+        <div className="hidden gap-2 border-l pl-5 text-xs lg:grid">
           <p className="flex items-center justify-between gap-4">
             <span className="text-muted-foreground">비교한 곡</span>
             <strong>{run.items.length}곡</strong>
@@ -199,7 +199,7 @@ export function RecommendationResults({
         </section>
       ) : null}
 
-      <div className="mt-10">
+      <div className="mt-6">
         <RecommendationFilterBar
           filters={filters}
           onChange={updateFilters}

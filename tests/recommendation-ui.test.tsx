@@ -92,12 +92,13 @@ test("renders the full ranked recommendation list without starting synthesis", (
   const html = renderRecommendation(run);
   assert.match(html, /내 목소리에 맞는 노래/);
   assert.match(html, /추천 노래 비교 목록/);
-  assert.equal((html.match(/<h2 class="truncate text-base font-semibold">/g) ?? []).length, 100);
+  assert.equal((html.match(/<h2 class="truncate text-sm font-semibold sm:text-base">/g) ?? []).length, 100);
   assert.match(html, /추천 적합도/);
   assert.match(html, /추천 키/);
   assert.match(html, /이번 한 소절에서 관찰된 음역/);
   assert.match(html, /가창력이나 건강 상태를 평가하지 않습니다/);
-  assert.equal((html.match(/AI 믹싱<\/button>/g) ?? []).length, 100);
+  assert.equal((html.match(/AI 믹싱<\/button>/g) ?? []).length, 0);
+  assert.equal((html.match(/선택 전/g) ?? []).length, 100);
   assert.equal((html.match(/\/songs\/item-/g) ?? []).length, 100);
   assert.doesNotMatch(html, /AI 믹싱 결과 파형/);
   assert.match(html, /목록을 보는 것만으로 작업이 시작되지 않습니다/);
@@ -116,7 +117,7 @@ test("labels a completed synthesis as an AI mix", () => {
     ),
   };
   const html = renderRecommendation(succeeded);
-  assert.match(html, /결과 듣기/);
+  assert.match(html, /결과 확인/);
   assert.doesNotMatch(html, /AI 믹싱 결과 파형/);
 });
 
@@ -143,5 +144,5 @@ test("renders verified handoff context without implying automatic SVC settings",
 test("keeps low-confidence ranking visible with a rerecording warning", () => {
   const html = renderRecommendation({ ...run, lowConfidence: true });
   assert.match(html, /조금 더 긴 소절로 다시 측정해보세요/);
-  assert.equal((html.match(/<h2 class="truncate text-base font-semibold">/g) ?? []).length, 100);
+  assert.equal((html.match(/<h2 class="truncate text-sm font-semibold sm:text-base">/g) ?? []).length, 100);
 });
