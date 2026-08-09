@@ -6,7 +6,7 @@ import {
   type StoredSynthesisStatus,
   SYNTHESIS_PRESET,
   toPublicSynthesisStatus,
-} from "@/entities/recommendation";
+} from "@/entities/recommendation/index.model";
 import { vocalProfileAnalyzerUrl } from "@/shared/config/index.server";
 import type { Prisma } from "@/shared/db/index.server";
 import { prisma } from "@/shared/db/index.server";

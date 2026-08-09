@@ -1,8 +1,8 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, CheckCircle2, Clock3, Download, LoaderCircle, Music2, Ticket } from "lucide-react";
-import { useEffect, useState } from "react";
-import type { MixingHistoryPayload } from "@/entities/mixing-job";
+import { type MixingHistoryPayload, mixingHistoryQueryOptions } from "@/entities/mixing-job";
 import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
 import { Badge } from "@/shared/ui/badge";
 import { buttonVariants } from "@/shared/ui/button";
@@ -19,15 +19,8 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 export function MixingHistoryList({ initial }: { initial: MixingHistoryPayload }) {
-  const [history, setHistory] = useState(initial);
-  useEffect(() => {
-    if (!history.jobs.some((job) => ACTIVE.has(job.status))) return;
-    const timer = window.setTimeout(async () => {
-      const response = await fetch(`/api/mixing-jobs?page=${history.page}`, { cache: "no-store" }).catch(() => null);
-      if (response?.ok) setHistory((await response.json()) as MixingHistoryPayload);
-    }, 5_000);
-    return () => window.clearTimeout(timer);
-  }, [history]);
+  const historyQuery = useQuery(mixingHistoryQueryOptions(initial));
+  const history = historyQuery.data;
 
   if (history.jobs.length === 0) {
     return (

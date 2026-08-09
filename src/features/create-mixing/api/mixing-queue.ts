@@ -1,6 +1,6 @@
 import "server-only";
 
-import { MixingError } from "@/entities/mixing-job";
+import { MixingError } from "@/entities/mixing-job/index.server";
 import { InsufficientTicketsError } from "@/entities/ticket/index.server";
 import { synthesisReferenceContractVersion, type VocalProfileDescriptors } from "@/entities/vocal-profile/index.model";
 import { mixingMaxAttempts, mixingTicketCost } from "@/shared/config/index.server";

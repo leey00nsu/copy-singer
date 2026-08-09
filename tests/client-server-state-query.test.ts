@@ -2,12 +2,19 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { z } from "zod";
 import { createQueryClient } from "@/_app/providers";
+import { mixingHistoryPollingInterval, mixingJobKeys } from "@/entities/mixing-job";
+import {
+  type RecommendationRunResponse,
+  recommendationKeys,
+  recommendationPollingInterval,
+} from "@/entities/recommendation";
 import type { VocalProfileAnalysisJobResponse } from "@/entities/vocal-profile";
 import {
   analysisJobPollingInterval,
   analysisJobsPollingInterval,
   vocalAnalysisKeys,
 } from "@/features/analyze-vocal-profile";
+import { patchRecommendationSynthesis } from "@/features/create-mixing";
 import { ApiError, requestJson, shouldRetryQuery } from "@/shared/api";
 
 const payloadSchema = z.object({ id: z.string(), status: z.enum(["pending", "succeeded"]) });
@@ -141,4 +148,120 @@ test("requestJson preserves root vocal-profile error codes", async () => {
       return true;
     },
   );
+});
+
+test("recommendation and mixing polling stop at terminal state while item cache patches stay scoped", () => {
+  const client = createQueryClient(true);
+  const run: RecommendationRunResponse = {
+    id: "10000000-0000-4000-8000-000000000010",
+    userVocalProfileId: "10000000-0000-4000-8000-000000000011",
+    scoringVersion: "key-fit-v2",
+    createdAt: "2026-08-09T00:00:00.000Z",
+    profileConfidence: 0.9,
+    lowConfidence: false,
+    profile: {
+      analyzer: "test",
+      analyzerVersion: "1",
+      tessituraLowMidi: 48,
+      tessituraHighMidi: 72,
+      minMidi: 45,
+      maxMidi: 76,
+    },
+    items: [
+      {
+        id: "10000000-0000-4000-8000-000000000012",
+        rank: 1,
+        songId: "10000000-0000-4000-8000-000000000013",
+        catalogOrder: 1,
+        title: "Song",
+        artist: "Singer",
+        sourceUrl: "https://example.test/song",
+        originalKeyScore: 70,
+        adjustedScore: 90,
+        selectionScore: 90,
+        recommendedShift: -1,
+        reasonCodes: ["KEY_SHIFT_IMPROVES_FIT"],
+        reasons: ["better fit"],
+        metrics: {
+          confidence: 0.9,
+          original: {
+            shift: 0,
+            tessituraOverlapRatio: 0.5,
+            highTessituraExcess: 0,
+            lowTessituraExcess: 0,
+            highExtremeExcess: 0,
+            lowExtremeExcess: 0,
+            tessituraFit: 1,
+            extremeFit: 1,
+            confidence: 0.9,
+            contributions: { overlap: 1, tessituraFit: 1, extremeFit: 1, confidence: 1 },
+            rawScore: 70,
+            score: 70,
+          },
+          recommended: {
+            shift: -1,
+            tessituraOverlapRatio: 0.9,
+            highTessituraExcess: 0,
+            lowTessituraExcess: 0,
+            highExtremeExcess: 0,
+            lowExtremeExcess: 0,
+            tessituraFit: 1,
+            extremeFit: 1,
+            confidence: 0.9,
+            contributions: { overlap: 1, tessituraFit: 1, extremeFit: 1, confidence: 1 },
+            rawScore: 90,
+            score: 90,
+          },
+        },
+        synthesis: {
+          status: "not_started",
+          jobId: null,
+          error: null,
+          startedAt: null,
+          updatedAt: null,
+          completedAt: null,
+          expiresAt: null,
+          attemptCount: 0,
+          audioUrl: null,
+        },
+      },
+    ],
+  };
+  const recommendationItem = run.items[0];
+  assert.ok(recommendationItem);
+  client.setQueryData(recommendationKeys.detail(run.id), run);
+  patchRecommendationSynthesis(client, run.id, recommendationItem.id, { status: "preparing" });
+  const patched = client.getQueryData<RecommendationRunResponse>(recommendationKeys.detail(run.id));
+  assert.equal(patched?.items[0]?.synthesis.status, "preparing");
+  assert.equal(recommendationPollingInterval(patched), 5_000);
+  assert.equal(recommendationPollingInterval(run), false);
+
+  const history = {
+    page: 2,
+    pageSize: 20,
+    total: 1,
+    pageCount: 2,
+    jobs: [
+      {
+        id: "10000000-0000-4000-8000-000000000014",
+        status: "processing" as const,
+        ticketCost: 1,
+        error: null,
+        song: { title: "Song", artist: "Singer", catalogOrder: 1 },
+        vocalProfile: { id: run.userVocalProfileId, createdAt: run.createdAt },
+        resultReady: false,
+        audioUrl: null,
+        createdAt: run.createdAt,
+        updatedAt: run.createdAt,
+        startedAt: run.createdAt,
+        completedAt: null,
+      },
+    ],
+  };
+  const historyJob = history.jobs[0];
+  assert.ok(historyJob);
+  assert.equal(mixingHistoryPollingInterval(history), 5_000);
+  assert.equal(mixingHistoryPollingInterval({ ...history, jobs: [{ ...historyJob, status: "succeeded" }] }), false);
+  assert.notDeepEqual(mixingJobKeys.history(1), mixingJobKeys.history(2));
+  client.clear();
 });

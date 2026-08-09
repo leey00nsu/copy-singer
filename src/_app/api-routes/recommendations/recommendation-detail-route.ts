@@ -1,4 +1,4 @@
-import { RecommendationError } from "@/entities/recommendation";
+import { RecommendationError } from "@/entities/recommendation/index.model";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 import {
   deleteRecommendationRun,

@@ -9,7 +9,7 @@ import {
   type RecommendationRunResponse,
   type RecommendationScoreMetrics,
   toPublicSynthesisStatus,
-} from "@/entities/recommendation";
+} from "@/entities/recommendation/index.model";
 import type { Prisma } from "@/shared/db/index.server";
 import { prisma } from "@/shared/db/index.server";
 import artifactJson from "../../../../data/catalogs/tj-2607-song-profiles.json";

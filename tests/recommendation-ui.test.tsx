@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { renderToStaticMarkup } from "react-dom/server";
+import { createQueryClient } from "@/_app/providers";
 import artifactJson from "../data/catalogs/tj-2607-song-profiles.json";
 import { RecommendationHandoffBanner } from "../src/_pages/dev-svc";
 import { RecommendationResults } from "../src/_pages/recommendation-detail";
@@ -71,8 +73,21 @@ const run: RecommendationRunResponse = {
   })),
 };
 
+function renderRecommendation(value: RecommendationRunResponse) {
+  const client = createQueryClient(true);
+  try {
+    return renderToStaticMarkup(
+      <QueryClientProvider client={client}>
+        <RecommendationResults initialRun={value} />
+      </QueryClientProvider>,
+    );
+  } finally {
+    client.clear();
+  }
+}
+
 test("renders the full ranked recommendation list without starting synthesis", () => {
-  const html = renderToStaticMarkup(<RecommendationResults initialRun={run} />);
+  const html = renderRecommendation(run);
   assert.match(html, /내 목소리와 어울리는/);
   assert.equal((html.match(/원키 적합도/g) ?? []).length, 100);
   assert.match(html, /추천 노래방 키/);
@@ -96,7 +111,7 @@ test("labels a completed synthesis as an AI mix", () => {
         : item,
     ),
   };
-  const html = renderToStaticMarkup(<RecommendationResults initialRun={succeeded} />);
+  const html = renderRecommendation(succeeded);
   assert.match(html, /AI 믹싱 완료/);
 });
 
@@ -121,7 +136,7 @@ test("renders verified handoff context without implying automatic SVC settings",
 });
 
 test("keeps low-confidence ranking visible with a rerecording warning", () => {
-  const html = renderToStaticMarkup(<RecommendationResults initialRun={{ ...run, lowConfidence: true }} />);
+  const html = renderRecommendation({ ...run, lowConfidence: true });
   assert.match(html, /조금 더 긴 소절로 다시 측정해보세요/);
   assert.equal((html.match(/원키 적합도/g) ?? []).length, 100);
 });

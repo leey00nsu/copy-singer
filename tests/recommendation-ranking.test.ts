@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import type { KeyFitProfile, SongProfileArtifact } from "../src/entities/recommendation";
+import type { KeyFitProfile, SongProfileArtifact } from "../src/entities/recommendation/index.model";
 import {
   type CatalogKeyFitResult,
   calculateRecommendationSelectionScore,
@@ -12,7 +12,7 @@ import {
   rankRecommendations,
   scoreCatalogKeyFits,
   selectRecommendationHandoff,
-} from "../src/entities/recommendation";
+} from "../src/entities/recommendation/index.model";
 import {
   buildRankedRecommendations,
   validateAndIndexSongRows,

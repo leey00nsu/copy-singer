@@ -1,6 +1,6 @@
 import "server-only";
 
-import { SYNTHESIS_PRESET } from "@/entities/recommendation";
+import { SYNTHESIS_PRESET } from "@/entities/recommendation/index.model";
 import { applyTicketChange } from "@/entities/ticket/index.server";
 import { mixingLeaseSeconds, mixingPollIntervalMs } from "@/shared/config/index.server";
 import { prisma } from "@/shared/db/index.server";

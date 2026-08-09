@@ -1,5 +1,6 @@
 "use client";
 
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AlertTriangle,
   ArrowLeft,
@@ -14,11 +15,18 @@ import {
   Sparkles,
   Trash2,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { toast } from "sonner";
-
+import { mixingJobKeys } from "@/entities/mixing-job";
 import type { RecommendationRunResponse } from "@/entities/recommendation";
-import { formatRecommendedShift } from "@/entities/recommendation";
+import {
+  deleteRecommendationMutationOptions,
+  formatRecommendedShift,
+  recommendationDetailQueryOptions,
+  recommendationKeys,
+} from "@/entities/recommendation";
+import { createMixingMutationOptions, patchRecommendationSynthesis } from "@/features/create-mixing";
+import { ApiError } from "@/shared/api";
 import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
 import { Badge } from "@/shared/ui/badge";
 import { Button, buttonVariants } from "@/shared/ui/button";
@@ -31,167 +39,79 @@ export function RecommendationResults({
   initialRun?: RecommendationRunResponse;
   runId?: string;
 }) {
-  const [run, setRun] = useState<RecommendationRunResponse | null>(initialRun ?? null);
-  const [loadError, setLoadError] = useState<"not-found" | "failed" | null>(null);
-  const [deleting, setDeleting] = useState(false);
+  const resolvedRunId = initialRun?.id ?? runId ?? null;
+  const queryClient = useQueryClient();
+  const runQuery = useQuery(recommendationDetailQueryOptions(resolvedRunId, initialRun));
+  const deleteRunMutation = useMutation(deleteRecommendationMutationOptions());
   const startingItemsRef = useRef(new Set<string>());
-
-  const mergeRun = (next: RecommendationRunResponse) => {
-    setRun((current) => ({
-      ...next,
-      items: next.items.map((item) => {
-        if (item.synthesis.status !== "not_started" || !startingItemsRef.current.has(item.id)) return item;
-        const previous = current?.items.find((candidate) => candidate.id === item.id);
-        return {
-          ...item,
-          synthesis:
-            previous?.synthesis.status === "preparing"
-              ? previous.synthesis
-              : { ...item.synthesis, status: "preparing" },
-        };
-      }),
-    }));
-  };
-
-  useEffect(() => {
-    if (run || !runId) return;
-    let active = true;
-    fetch(`/api/recommendations/${runId}`, { cache: "no-store" })
-      .then(async (response) => {
-        if (!active) return;
-        if (!response.ok) {
-          setLoadError(response.status === 404 ? "not-found" : "failed");
-          return;
-        }
-        const next = (await response.json()) as RecommendationRunResponse;
-        if (active) setRun(next);
-      })
-      .catch(() => {
-        if (active) setLoadError("failed");
+  const createMixingMutation = useMutation({
+    ...createMixingMutationOptions(),
+    onMutate: (input) => {
+      patchRecommendationSynthesis(queryClient, input.runId, input.recommendationItemId, {
+        status: "preparing",
+        error: null,
       });
-    return () => {
-      active = false;
-    };
-  }, [run, runId]);
+    },
+    onSuccess: async (_, input) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: recommendationKeys.detail(input.runId) }),
+        queryClient.invalidateQueries({ queryKey: mixingJobKeys.histories() }),
+      ]);
+      toast.success("믹싱을 접수했어요. 페이지를 닫아도 계속 진행됩니다.");
+    },
+    onError: (error, input) => {
+      const apiError = error instanceof ApiError ? error : null;
+      patchRecommendationSynthesis(queryClient, input.runId, input.recommendationItemId, {
+        status: "failed",
+        error: {
+          code: apiError?.code ?? "SYNTHESIS_UPSTREAM_FAILED",
+          detail: apiError?.message ?? "합성 서버에 연결하지 못했습니다.",
+          retryable: apiError?.retryable ?? true,
+        },
+      });
+      toast.error(input.retry ? "이 곡의 합성을 다시 시작하지 못했습니다." : "AI 믹싱을 시작하지 못했습니다.");
+    },
+    onSettled: (_, __, input) => {
+      startingItemsRef.current.delete(input.recommendationItemId);
+    },
+  });
+  const run = runQuery.data ?? null;
+  const loadError: "not-found" | "failed" | null =
+    !resolvedRunId || runQuery.error
+      ? runQuery.error instanceof ApiError && runQuery.error.status === 404
+        ? "not-found"
+        : "failed"
+      : null;
 
-  useEffect(() => {
-    if (!run?.items.some((item) => ["preparing", "queued", "processing"].includes(item.synthesis.status))) return;
-    let cancelled = false;
-    const timer = window.setTimeout(async () => {
-      try {
-        const response = await fetch(`/api/recommendations/${run.id}`, { cache: "no-store" });
-        if (response.ok && !cancelled) mergeRun((await response.json()) as RecommendationRunResponse);
-      } catch {
-        // Keep the last known states and try again on the next render cycle.
-      }
-    }, 5_000);
-    return () => {
-      cancelled = true;
-      window.clearTimeout(timer);
-    };
-  }, [run]);
-
-  const startItem = async (itemId: string, retry = false) => {
+  const startItem = (itemId: string, retry = false) => {
     if (!run || startingItemsRef.current.has(itemId)) return;
     startingItemsRef.current.add(itemId);
-    setRun((current) =>
-      current
-        ? {
-            ...current,
-            items: current.items.map((item) =>
-              item.id === itemId
-                ? { ...item, synthesis: { ...item.synthesis, status: "preparing", error: null } }
-                : item,
-            ),
-          }
-        : current,
-    );
-    try {
-      const response = await fetch("/api/mixing-jobs", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ recommendationItemId: itemId, idempotencyKey: crypto.randomUUID() }),
-      });
-      const payload = (await response.json()) as {
-        id?: string;
-        error?: { code?: string; message?: string; retryable?: boolean };
-      };
-      if (!response.ok || !payload.id) {
-        const error = payload.error;
-        setRun((current) =>
-          current
-            ? {
-                ...current,
-                items: current.items.map((item) =>
-                  item.id === itemId
-                    ? {
-                        ...item,
-                        synthesis: {
-                          ...item.synthesis,
-                          status: "failed",
-                          error: {
-                            code: error?.code ?? "SYNTHESIS_UPSTREAM_FAILED",
-                            detail: error?.message ?? "합성 작업을 시작하지 못했습니다.",
-                            retryable: error?.retryable ?? true,
-                          },
-                        },
-                      }
-                    : item,
-                ),
-              }
-            : current,
-        );
-        return;
-      }
-      const refreshed = await fetch(`/api/recommendations/${run.id}`, { cache: "no-store" });
-      if (!refreshed.ok) throw new Error("recommendation refresh failed");
-      mergeRun((await refreshed.json()) as RecommendationRunResponse);
-      toast.success("믹싱을 접수했어요. 페이지를 닫아도 계속 진행됩니다.");
-    } catch {
-      setRun((current) =>
-        current
-          ? {
-              ...current,
-              items: current.items.map((item) =>
-                item.id === itemId
-                  ? {
-                      ...item,
-                      synthesis: {
-                        ...item.synthesis,
-                        status: "failed",
-                        error: {
-                          code: "SYNTHESIS_UPSTREAM_FAILED",
-                          detail: "합성 서버에 연결하지 못했습니다.",
-                          retryable: true,
-                        },
-                      },
-                    }
-                  : item,
-              ),
-            }
-          : current,
-      );
-      toast.error(retry ? "이 곡의 합성을 다시 시작하지 못했습니다." : "AI 믹싱을 시작하지 못했습니다.");
-    } finally {
-      startingItemsRef.current.delete(itemId);
-    }
+    createMixingMutation.mutate({
+      runId: run.id,
+      recommendationItemId: itemId,
+      idempotencyKey: crypto.randomUUID(),
+      retry,
+    });
   };
 
-  const deleteRun = async () => {
-    if (deleting || !window.confirm("이 추천 결과와 합성 파일을 삭제할까요? 보컬 프로필은 유지됩니다.")) return;
-    setDeleting(true);
-    try {
-      if (!run) return;
-      const response = await fetch(`/api/recommendations/${run.id}`, { method: "DELETE" });
-      if (!response.ok) throw new Error("delete failed");
-      toast.success("추천 결과를 삭제했습니다.");
-      // Direct Node-rendered component tests do not provide a Next router context.
-      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
-      window.location.href = "/profile";
-    } catch {
-      toast.error("추천 결과를 삭제하지 못했습니다. 잠시 뒤 다시 시도해주세요.");
-      setDeleting(false);
+  const deleteRun = () => {
+    if (
+      !run ||
+      deleteRunMutation.isPending ||
+      !window.confirm("이 추천 결과와 합성 파일을 삭제할까요? 보컬 프로필은 유지됩니다.")
+    ) {
+      return;
     }
+    deleteRunMutation.mutate(run.id, {
+      onSuccess: () => {
+        queryClient.removeQueries({ queryKey: recommendationKeys.detail(run.id) });
+        toast.success("추천 결과를 삭제했습니다.");
+        // Direct Node-rendered component tests do not provide a Next router context.
+        // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+        window.location.href = "/profile";
+      },
+      onError: () => toast.error("추천 결과를 삭제하지 못했습니다. 잠시 뒤 다시 시도해주세요."),
+    });
   };
 
   if (loadError) {
@@ -411,8 +331,12 @@ export function RecommendationResults({
           <p className="self-center font-mono text-[10px] text-muted-foreground">
             RUN {run.id.slice(0, 8)} · {new Date(run.createdAt).toLocaleString("ko-KR")}
           </p>
-          <Button disabled={deleting} onClick={() => void deleteRun()} variant="ghost">
-            {deleting ? <LoaderCircle className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
+          <Button disabled={deleteRunMutation.isPending} onClick={deleteRun} variant="ghost">
+            {deleteRunMutation.isPending ? (
+              <LoaderCircle className="size-4 animate-spin" />
+            ) : (
+              <Trash2 className="size-4" />
+            )}
             결과 삭제
           </Button>
         </div>
