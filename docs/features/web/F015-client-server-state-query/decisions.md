@@ -89,7 +89,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: detail/history initialData와 함수형 5초 polling을 적용하고 대상 item만 cache patch한 뒤 detail/history를 invalidate하도록 구현했다. `react-server` 조건 test에서 browser Query client 재수출을 발견해 Recommendation `index.model.ts` 및 Mixing server public API를 분리했다.
   - **머지 후 확인**: 로컬 통합 후 갱신 예정
 - **Evidence**:
-  - **Commit**: task commit 후 갱신 예정
+  - **Commit**: docs `0ff2808`, project `50d1191`
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: `pnpm run test:query` PASS (13), `pnpm run test:recommendation` PASS (18), `pnpm run test:mixing:ui` PASS, effect inventory PASS (2), `pnpm run lint`/`typecheck`/`check:architecture` PASS, `pnpm run build` PASS (2026-08-09)
 - **Consequences**: mutation 중 임시 상태는 Query cache에만 존재하고 성공 직후 server detail로 교체된다.
