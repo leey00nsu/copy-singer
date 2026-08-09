@@ -81,18 +81,18 @@
     - [x] Modal conversion route가 `request.body` stream을 계속 직접 전달하는지 회귀 확인
     - [x] schema valid/invalid fixture 및 기존 Route Handler 계약 테스트 통과
 
-- [TODO][NON-PRD] T-F015-03 Vocal profile query·mutation과 durable polling 전환
+- [DONE][NON-PRD] T-F015-03 Vocal profile query·mutation과 durable polling 전환
   - Date: 2026-08-09
   - Acceptance:
     - analyzer health, analysis job list/detail과 submit/delete/recommendation mutation이 typed client 및 TanStack Query를 사용한다.
     - active job만 기존 interval로 polling하고 terminal 상태에서 멈추며 localStorage resume이 유지된다.
     - job list 초기 data와 분석 완료 후 profile 전환 동작이 유지된다.
   - Checklist:
-    - [ ] vocal profile/analyze feature API 함수, key/options 및 terminal predicate 구현
-    - [ ] workbench의 server-state `useState`/수동 polling loop를 query/mutation으로 교체
-    - [ ] job cards의 initialData, 3초 polling과 완료 시 reload 동작 전환
-    - [ ] upload idempotency key, localStorage cleanup, toast 및 오류 안내 회귀 검증
-    - [ ] vocal profile 관련 기존 test와 신규 query polling test 통과
+    - [x] vocal profile/analyze feature API 함수, key/options 및 terminal predicate 구현
+    - [x] workbench의 server-state `useState`/수동 polling loop를 query/mutation으로 교체
+    - [x] job cards의 initialData, 3초 polling과 완료 시 reload 동작 전환
+    - [x] upload idempotency key, localStorage cleanup, toast 및 오류 안내 회귀 검증
+    - [x] vocal profile 관련 기존 test와 신규 query polling test 통과
 
 - [TODO][NON-PRD] T-F015-04 Recommendation·mixing query와 cache 동기화 전환
   - Date: 2026-08-09
@@ -153,7 +153,7 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm run test:query` | `2026-08-09` | PASS (10 tests) |
+| `pnpm run test:query` | `2026-08-09` | PASS (12 tests) |
 | `pnpm run check` | `-` | 미실행 |
 | `pnpm run build` | `2026-08-09` | PASS (Next.js 16.3 production build, 22 pages) |
 | `pnpm test` | `-` | 미실행 |

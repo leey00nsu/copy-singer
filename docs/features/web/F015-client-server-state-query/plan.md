@@ -42,7 +42,7 @@
 기본 query 정책은 다음과 같이 명시한다.
 
 - 일반 query `staleTime`: 30초. Server Component의 `initialData`가 mount 직후 바로 다시 조회되지 않게 한다.
-- `gcTime`: 5분. route 이동 직후 돌아왔을 때 짧은 cache 재사용을 허용하되 장기 persistence는 하지 않는다.
+- browser `gcTime`: 5분. route 이동 직후 돌아왔을 때 짧은 cache 재사용을 허용하되 장기 persistence는 하지 않는다. server render에서는 request별 QueryClient를 폐기하므로 GC timer를 만들지 않게 `Infinity`를 사용한다.
 - `refetchOnWindowFocus`: `false`. 기존 화면에 없던 focus refetch를 전역에서 새로 만들지 않는다.
 - `refetchOnReconnect`: `true`. offline 이후 stale query가 복구될 수 있게 한다.
 - query retry: `ApiError.retryable`이 참인 network/429/5xx만 최대 2회, 그 외 4xx·contract 오류는 0회.

@@ -55,3 +55,22 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: `pnpm run test:query` PASS (10), 관련 기존 test PASS (12), `pnpm run typecheck`/`lint`/`check:biome`/`check:architecture` PASS, `pnpm run build` PASS (2026-08-09)
 - **Consequences**: client가 소비하는 success JSON은 runtime contract를 가지지만 binary/audio response와 server-to-server stream은 기존 전용 경계를 유지한다.
+
+---
+
+## D003: Vocal analysis durable job을 Query cache로 표현 (2026-08-09)
+
+- **Context**: workbench와 job cards가 각각 job response를 local state에 복제하고 while/setInterval polling을 직접 관리한다. 분석 job ID는 새로고침 후에도 이어져야 한다.
+- **Constraints**: localStorage에는 job ID만 유지하고 authenticated response payload는 저장하지 않는다. 기존 1.5초/3초 polling, idempotency key, terminal toast와 완료 후 profile UI를 보존해야 한다.
+- **Options**: job payload를 component state와 Query cache에 이중 저장, localStorage payload persistence, job ID만 local state에 두고 response는 Query cache에서 파생하는 방식을 검토한다.
+- **Decision**: job ID와 로컬 audio UI만 component/localStorage에 두고 health/job/list response는 Query cache의 단일 server-state로 사용한다. retryable network 오류에서는 durable detail polling을 계속하고 succeeded/failed에서는 interval을 중단한다.
+- **Rationale**: 새로고침 복구를 유지하면서 stale response 이중화를 제거하고, terminal 상태에서 timer가 남지 않게 하기 위해서다.
+- **Trace**:
+  - **DOING 시작 시점**: submit 성공 payload를 detail cache에 seed하고, terminal side effect는 job ID/status 조합당 한 번만 실행한다. list에서 active job이 사라지면 기존처럼 server-rendered profile 목록을 reload한다.
+  - **DONE 전 확정 시점**: workbench와 job cards의 response state/수동 timer를 Query cache와 함수형 interval로 교체했다. retryable detail 오류는 1.5초 polling을 유지하고 terminal 상태에서는 `false`를 반환하며, SSR QueryClient는 GC timer를 만들지 않도록 server `gcTime: Infinity`로 보정했다.
+  - **머지 후 확인**: 로컬 통합 후 갱신 예정
+- **Evidence**:
+  - **Commit**: task commit 후 갱신 예정
+  - **PR**: 로컬 workflow (원격 PR 없음)
+  - **Test/Log**: `pnpm run test:query` PASS (12), `pnpm run test:vocal-profile-history` PASS (6), recorder/profile/effect test PASS (8), `pnpm run lint`/`typecheck`/`check:biome`/`check:architecture` PASS, `pnpm run build` PASS (2026-08-09)
+- **Consequences**: 완료된 profile은 terminal detail query cache에서 표시하며 cache 자체는 storage에 persist하지 않는다.
