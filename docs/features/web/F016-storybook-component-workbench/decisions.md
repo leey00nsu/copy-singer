@@ -48,14 +48,14 @@ canonical docs surface 밖의 unmanaged docs 산출물이 있더라도, 실제�
 - **Context**: ticket와 vocal profile UI는 실제 DB/auth/page shell 없이도 렌더 가능한 부분과 server data loader가 한 slice 안에 공존한다. Storybook에서 잘못된 barrel을 import하면 Prisma나 `server-only`가 browser bundle에 유입될 수 있다.
 - **Constraints**: production component와 DOM 의미를 유지하고 실제 API, 인증 session, audio device 또는 private payload를 사용하지 않아야 한다. 필요한 fixture는 browser-safe inferred type을 만족해야 한다.
 - **Options**: page 전체를 mock, 별도 story 전용 복제 component, 기존 presentation component를 public browser API로 직접 렌더하는 방식을 검토한다.
-- **Decision**: 구현 후 확정 예정
-- **Rationale**: 구현 후 확정 예정
+- **Decision**: cross-slice story는 Ticket, VocalProfile, ManageTickets public API를 사용하고, widget 내부에 colocate된 LongAudioDialog story는 같은 slice의 상대 import를 사용한다. page/server loader를 복제하지 않고 typed fixture를 presentation component props로 직접 전달한다. 직접 server-only/Prisma import는 source inventory로 금지하고 transitive browser 호환성은 Vite static build로 검증한다.
+- **Rationale**: 기존 UI와 DOM을 그대로 검증하면서 DB/auth 조건을 제거할 수 있고, same-slice 내부 component를 Storybook 때문에 불필요하게 외부 public API로 넓히지 않는다. source inventory와 실제 browser build를 함께 사용하면 정적 금지 패턴과 transitive bundling 문제를 각각 잡을 수 있다.
 - **Trace**:
   - **DOING 시작 시점**: TicketLedger, TicketAdjustmentFields, VocalProfileResults와 LongAudioDialog의 기존 browser public API를 직접 사용한다. test fixture를 현재 계약에 맞게 작성하고, server-only module inventory test와 Storybook Vite build로 import graph를 검증한다.
-  - **DONE 전 확정 시점**: 구현 후 갱신 예정
+  - **DONE 전 확정 시점**: TicketLedger 2개, TicketAdjustmentFields 2개, VocalProfileResults 3개, LongAudioDialog 2개 상태를 추가했다. 실제 Recharts range/histogram/pitch consumer, dialog focus trap·Escape·confirm과 ticket form interaction을 Playwright Chromium에서 검증했다. Vocal low-confidence/legacy story는 inline audio URL을 전달하되 reference player를 만들지 않는 안내 분기만 사용해 network를 발생시키지 않는다.
   - **머지 후 확인**: 로컬 통합 후 갱신 예정
 - **Evidence**:
-  - **Commit**: task commit 후 갱신 예정
+  - **Commit**: docs `9795519`, project `9d4c24f`
   - **PR**: 로컬 workflow (원격 PR 없음)
-  - **Test/Log**: 구현 후 갱신 예정
-- **Consequences**: 구현 후 갱신 예정
+  - **Test/Log**: Storybook browser/a11y PASS (15 files, 28 stories), static build PASS (3,246 modules), server-only source inventory PASS, ticket/admin/vocal-profile 기존 UI test PASS, lint/typecheck/Steiger PASS (2026-08-09)
+- **Consequences**: 도메인 story가 DB·auth·실제 audio 없이 재현 가능하며 Chart wrapper는 실제 VocalProfileResults 소비 경로에서 자동 검증된다. server-owned page shell은 Storybook 범위 밖으로 유지된다.

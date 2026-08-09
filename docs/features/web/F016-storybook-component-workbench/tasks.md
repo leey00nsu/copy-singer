@@ -86,18 +86,18 @@
     - [x] variant, disabled, composed layout 및 keyboard/click interaction `play` 함수 추가
     - [x] shared story Storybook browser/a11y test 통과
 
-- [DOING][NON-PRD] T-F016-03 핵심 entity·feature·widget 상태 story 구성
+- [DONE][NON-PRD] T-F016-03 핵심 entity·feature·widget 상태 story 구성
   - Date: 2026-08-09
   - Acceptance:
     - ticket, vocal profile과 widget/form의 empty, data, pending, warning 및 interactive 상태가 실제 production component로 렌더된다.
     - story를 위해 필요한 경우 browser-safe presentation boundary만 동일 slice 안에서 추출하고 사용자 DOM/동작을 보존한다.
     - story graph에 Prisma, `server-only`, 실제 인증 또는 외부 API가 포함되지 않는다.
   - Checklist:
-    - [ ] TicketLedger empty와 grant/debit history story 작성
-    - [ ] TicketAdjustmentFields default와 pending/disabled story 작성
-    - [ ] VocalProfileResults 대표 분석과 low-confidence/legacy 안내 story 작성
-    - [ ] LongAudioDialog 또는 Recorder의 대표 상태와 confirm/close interaction story 작성
-    - [ ] server-only import inventory와 domain story browser/a11y test 통과
+    - [x] TicketLedger empty와 grant/debit history story 작성
+    - [x] TicketAdjustmentFields default와 pending/disabled story 작성
+    - [x] VocalProfileResults 대표 분석과 low-confidence/legacy 안내 story 작성
+    - [x] LongAudioDialog 또는 Recorder의 대표 상태와 confirm/close interaction story 작성
+    - [x] server-only import inventory와 domain story browser/a11y test 통과
 
 - [TODO][NON-PRD] T-F016-04 MSW 기반 Query success·error·polling story 연결
   - Date: 2026-08-09
@@ -145,8 +145,8 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `pnpm run storybook --ci --smoke-test` | `2026-08-09` | PASS (Storybook 10.5.7 smoke) |
-| `pnpm run build-storybook` | `2026-08-09` | PASS (2,669 modules, worker 포함) |
-| `pnpm run test:storybook --run` | `2026-08-09` | PASS (11 files, 19 stories) |
+| `pnpm run build-storybook` | `2026-08-09` | PASS (3,246 modules, worker 포함) |
+| `pnpm run test:storybook --run` | `2026-08-09` | PASS (15 files, 28 stories) |
 | `pnpm run test:query` | `-` | 미실행 |
 | `pnpm run check` | `2026-08-09` | FAIL (기존 key-fit test fixture export Biome 2건, T-F016-05에서 정리) |
 | `pnpm run build` | `-` | 미실행 |
@@ -155,4 +155,7 @@
 | `pnpm run typecheck` | `2026-08-09` | PASS |
 | `pnpm run lint` | `2026-08-09` | PASS |
 | `pnpm run check:architecture` | `2026-08-09` | PASS |
-| `pnpm run test:process-scripts` | `2026-08-09` | PASS (4 tests) |
+| `pnpm run test:process-scripts` | `2026-08-09` | PASS (5 tests) |
+| `pnpm run test:tickets` | `2026-08-09` | PASS (2 tests) |
+| `pnpm run test:admin` | `2026-08-09` | PASS (2 tests) |
+| `pnpm exec tsx --test tests/vocal-profile-results-ui.test.tsx` | `2026-08-09` | PASS (5 tests) |
