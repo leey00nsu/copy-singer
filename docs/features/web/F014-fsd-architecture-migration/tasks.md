@@ -74,18 +74,18 @@
     - [x] 이동한 모듈의 소비 import와 테스트를 public API 기준으로 갱신한다.
     - [x] pnpm run check:architecture, pnpm run check, pnpm run build 및 관련 테스트를 실행한다.
 
-- [TODO][NON-PRD] T-F014-fsd-architecture-migration-02 보컬 프로필·인증·티켓 경계 이전
+- [DONE][NON-PRD] T-F014-fsd-architecture-migration-02 보컬 프로필·인증·티켓 경계 이전
   - Date: 2026-08-09
   - Acceptance:
     - 보컬 프로필과 티켓의 독립 계약·표현·persistence가 Entity에 있고 분석 및 인증 조합은 Feature/App 경계에 있다.
     - browser-safe index.ts와 server-only index.server.ts가 분리되고 Client Component에서 server 전용 import가 없다.
     - 관련 auth, vocal-profile, ticket, media 테스트와 production build가 기존 동작으로 통과한다.
   - Checklist:
-    - [ ] vocal-profile과 ticket 모듈을 significant Entity slice 및 public API로 재구성한다.
-    - [ ] analysis queue/worker, authentication, ticket 관리처럼 여러 책임을 조합하는 코드를 Feature 또는 App 계층으로 올린다.
-    - [ ] Leemage media adapter와 audio utility의 소유 위치 및 server-only 경계를 확정한다.
-    - [ ] 관련 app, component, route, script, worker, test import를 새 public API로 갱신한다.
-    - [ ] Steiger, 정적 검사, production build와 관련 테스트를 실행한다.
+    - [x] vocal-profile과 ticket 모듈을 significant Entity slice 및 public API로 재구성한다.
+    - [x] analysis queue/worker, authentication, ticket 관리처럼 여러 책임을 조합하는 코드를 Feature 또는 App 계층으로 올린다.
+    - [x] Leemage media adapter와 audio utility의 소유 위치 및 server-only 경계를 확정한다.
+    - [x] 관련 app, component, route, script, worker, test import를 새 public API로 갱신한다.
+    - [x] Steiger, 정적 검사, production build와 관련 테스트를 실행한다.
 
 - [TODO][NON-PRD] T-F014-fsd-architecture-migration-03 추천·믹싱·관리자·개발 합성 경계 이전
   - Date: 2026-08-09
@@ -144,5 +144,14 @@
 | `pnpm test` | `-` | `대기` |
 | `pnpm run verify:feature-config` | `-` | `대기` |
 | `pnpm exec tsx --test tests/base-ui-link-button.test.ts tests/audio-waveform-player.test.ts tests/profile-audio-preparation.test.ts tests/vocal-profile-recorder.test.ts tests/compress-mixing-result.test.ts tests/process-scripts.test.ts` | `2026-08-09` | `PASS (13 tests)` |
+| `pnpm run test:auth:db` | `2026-08-09` | `PASS (3 tests)` |
+| `pnpm run test:tickets` | `2026-08-09` | `PASS (2 tests)` |
+| `pnpm run test:media` | `2026-08-09` | `PASS (5 tests)` |
+| `pnpm run test:vocal-profile-analyzer` | `2026-08-09` | `PASS (8 tests)` |
+| `pnpm run test:vocal-profile-persistence` | `2026-08-09` | `PASS (3 tests)` |
+| `pnpm run test:vocal-profile-analysis-queue` | `2026-08-09` | `PASS (5 tests)` |
+| `pnpm run test:vocal-profile-history` | `2026-08-09` | `PASS (6 tests)` |
+| `pnpm run test:admin` | `2026-08-09` | `PASS (2 tests)` |
+| `pnpm exec tsx --test tests/vocal-profile-contract.test.ts tests/vocal-profile-visualization.test.ts tests/long-audio-upload.test.ts tests/reference-preview.test.ts tests/vocal-profile-reference-bands.test.ts tests/vocal-profile-results-ui.test.tsx` | `2026-08-09` | `PASS (21 tests)` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T07:38:52.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-09T07:52:06.000Z -->

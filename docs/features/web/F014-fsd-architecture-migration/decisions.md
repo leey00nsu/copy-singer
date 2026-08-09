@@ -36,3 +36,37 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `pnpm run check:architecture`, `pnpm run check`, `pnpm run build`, Shared/audio 관련 13개 테스트 모두 2026-08-09 PASS
 - **Consequences**: migration 중에는 `@/*`가 `src/*`를 우선하고 root를 fallback으로 찾는다. 최종 태스크에서 root fallback과 legacy `components`/`lib`를 제거한다.
+
+## D002: 도메인 자체 책임과 교차 도메인 use case 분리 (2026-08-09)
+
+- **Context**: 기존 vocal-profile, auth, tickets, Leemage 모듈은 계약·UI·persistence·queue·worker와 가입 티켓 지급 같은 교차 도메인 흐름을 디렉터리 하나에 함께 둔다.
+- **Constraints**: FSD Entity slice는 같은 레이어의 다른 Entity를 직접 import할 수 없고, Client Component는 DB·secret·Node.js 전용 구현에 도달하면 안 된다. 기존 API, worker와 DB 동작은 유지해야 한다.
+- **Options**: 기존 domain 폴더를 그대로 Entity로 이동, 모든 server 코드를 Shared로 이동, 자체 계약/persistence는 Entity에 두고 교차 도메인 흐름을 Feature/App으로 올리는 방식을 검토한다.
+- **Decision**: vocal-profile과 ticket의 자체 계약·표현·persistence를 Entity에 두고 analysis queue와 authentication, ticket 관리 흐름은 Feature로, analysis worker와 HTTP handler 조립은 App으로 올린다. Leemage 저장·프록시·정리는 Shared media adapter로 유지한다. browser-safe `index.ts`, 통합 server `index.server.ts`와 분석기·프록시처럼 DB 초기화 없이 독립 검증해야 하는 좁은 server public API를 분리한다.
+- **Rationale**: business code를 Shared에 숨기지 않으면서 Entity 간 직접 결합과 client/server public API 혼합을 동시에 방지할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 2026-08-09 vocal-profile 15개 module, auth 8개 module, ticket service와 media adapter의 현재 import 관계를 기준으로 경계 분리를 시작한다.
+  - **DONE 전 확정 시점**: 기존 모듈을 Entity/Feature/App/Shared 경계로 이전하고 root app, component, route, script, worker와 test import를 public API 기준으로 갱신했다. 서버 barrel의 불필요한 eager dependency는 인증의 Next request-context dynamic import와 analyzer/media의 좁은 server public API로 분리해 단위 테스트 격리를 유지했다. Client Component의 server-only import가 없고 관련 55개 테스트, 정적 검사, Steiger와 production build가 통과했다.
+  - **머지 후 확인**: 실제 결과/영향
+- **Evidence**:
+  - **Commit**: T-F014-02 task checkpoint에서 기록
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: F014 tasks.md의 auth, ticket, admin, media, vocal-profile 관련 55개 테스트와 `pnpm run check`, `pnpm run build` 2026-08-09 PASS
+- **Consequences**: App·Page 이전 전에도 도메인 경계가 명확해졌고 client/server module graph가 분리됐다. 통합 server barrel은 실제 조립 코드에서 사용하고 환경 의존성을 격리해야 하는 단위 테스트는 capability별 server public API를 사용한다.
+
+## D003: 증분 이전 중 Steiger false positive의 범위 제한 (2026-08-09)
+
+- **Context**: Steiger 실행 root를 `./src`로 고정했기 때문에 아직 root `app`에 남은 실제 소비 import를 `insignificant-slice`가 집계하지 못한다. 또한 설치된 `@feature-sliced/filesystem@3.1.0`은 layer 탐색에서는 `_app` prefix를 제거하지만 일부 규칙은 물리 폴더명 `_app`을 다시 검사한다.
+- **Constraints**: recommended rules 전체를 유지하면서 F014의 각 증분 태스크에서도 구조 검사가 통과해야 하고, 실제 layer/import/public API 위반을 숨겨서는 안 된다.
+- **Options**: Steiger를 repository root에서 실행, F014 완료까지 architecture 검사를 생략, 확인된 진단 경로와 규칙만 끄는 방식을 검토했다.
+- **Decision**: `_app` 경로에는 prefix 처리 불일치가 있는 `no-segmentless-slices`와 `typo-in-layer-name`만 끄고, 아직 root adapter가 주 소비자인 T02 신규 slice에는 `insignificant-slice`만 한시적으로 끈다. 다른 recommended rule은 모두 유지한다.
+- **Rationale**: repository root 실행은 `src` 아래 FSD layer를 발견하지 못하고 검사 생략은 실제 위반을 놓친다. 진단별 최소 override는 검사의 유효 범위를 가장 크게 유지한다.
+- **Trace**:
+  - **DOING 시작 시점**: T02 첫 Steiger 실행에서 8개 오류를 확인하고 설치된 plugin과 filesystem 구현 및 실제 소비 import를 대조했다.
+  - **DONE 전 확정 시점**: 특정 경로·규칙 override 후 Steiger recommended rules 오류 0건을 확인했으며 client-to-server import와 legacy import도 별도 검색으로 0건임을 검증했다.
+  - **머지 후 확인**: 실제 결과/영향
+- **Evidence**:
+  - **Commit**: T-F014-02 task checkpoint에서 기록
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: `pnpm run check:architecture`, `pnpm run check` 2026-08-09 PASS
+- **Consequences**: T04·T05에서 root adapter 소비자가 `_pages`·`_app`으로 이동할 때 `insignificant-slice` override를 다시 평가해 제거 가능한 항목을 제거한다. `_app` prefix 관련 두 override는 plugin이 물리 이름까지 일관되게 정규화할 때 제거한다.
