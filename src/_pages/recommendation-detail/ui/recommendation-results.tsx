@@ -30,6 +30,7 @@ import {
   DialogTrigger,
 } from "@/shared/ui/dialog";
 import { StatePanel } from "@/shared/ui/state-panel";
+import { CreationFunnelShell } from "@/widgets/creation-funnel";
 import { RecommendationFilterBar } from "./recommendation-filter-bar";
 import { RecommendationSongList } from "./recommendation-song-list";
 
@@ -157,7 +158,7 @@ export function RecommendationResults({
   const visibleItems = projectRecommendationItems(run.items, filters);
 
   return (
-    <div className="mx-auto w-full max-w-[72rem] px-5 py-10 sm:px-7 lg:px-8 lg:py-12">
+    <CreationFunnelShell currentStep="recommendation">
       <header className="grid gap-8 border-b pb-9 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,.42fr)] lg:items-end">
         <div>
           <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
@@ -279,6 +280,6 @@ export function RecommendationResults({
           </DialogContent>
         </Dialog>
       </footer>
-    </div>
+    </CreationFunnelShell>
   );
 }

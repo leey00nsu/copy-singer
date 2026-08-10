@@ -54,6 +54,7 @@
 - [x] 마이크 권한 요청·거부·device 오류, 분석 준비·대기·처리·retry·실패 상태마다 설명과 가능한 action이 표시된다.
 - [x] 분석 UI는 서버가 제공하는 durable job 상태보다 정밀한 단계 또는 진행률을 가장하지 않는다.
 - [x] 사용자가 이탈 후 돌아와도 기존 localStorage와 DB 기반 진행 복구가 유지된다.
+- [ ] 분석 완료 후 별도 프로필 상세 방문을 강제하지 않고, 같은 생성 흐름에서 핵심 요약과 노래 추천 CTA를 제공한다.
 
 ### US-3: 핵심부터 이해하는 보컬 프로필 사용자
 
@@ -80,6 +81,7 @@
 - [x] 검색, 정렬과 필터는 현재 API에 존재하는 title, artist, score, recommended shift와 mix availability/status만 사용한다.
 - [x] 적합도는 과도한 정확성을 암시하지 않는 정수 수준 표현과 함께 이유·원키 점수·키 이동 효과를 설명한다.
 - [x] 선택한 추천 item은 별도 Song Detail에서 같은 저장 결과의 사용자 음역, 곡 음역, 추천 키, structured reason과 실제 AI 믹싱 CTA를 보여준다.
+- [ ] 추천 목록에서 곡을 선택하면 핵심 근거와 티켓 비용을 확인하고 바로 AI 믹싱을 시작할 수 있으며, Song Detail은 전체 근거를 보는 선택 경로로 유지한다.
 - [x] 앨범 이미지, genre, difficulty, lyrics와 인앱 preview처럼 현재 계약에 없는 값은 가짜로 만들거나 지원되는 것처럼 표시하지 않는다.
 
 ### US-5: 믹싱 상태와 결과를 다시 찾는 사용자
@@ -94,6 +96,7 @@
 - [x] 믹싱 시작의 티켓 비용, 중복 방지, target/reference 준비 오류와 환불 의미가 기존 계약대로 유지된다.
 - [x] Library는 사용자 소유 보컬 프로필과 AI 믹싱 이력을 구분해 검색·필터·상태별 조회할 수 있다.
 - [x] 믹싱 결과 상세는 곡, 사용 프로필, 상태·시각, 결과 waveform player, 다운로드와 기존 삭제 action을 제공한다.
+- [ ] 믹싱 생성 성공 시 반환된 작업 ID의 상세 화면으로 즉시 이동해 접수·처리·실패·완료 상태를 한 화면에서 이어서 확인한다.
 - [x] 사용자 가창 Recording 모델이 없는 상태에서 Raw/AI Mixed Before & After 또는 프로젝트 편집 기능을 제공하는 것처럼 표시하지 않는다.
 
 ### US-6: 어느 화면에서도 일관된 제품을 사용하는 사용자
@@ -121,6 +124,7 @@
 - `docs/designs/product-ui-redesign.md`를 F018의 visual brief와 원본 reference로 사용하고 `docs/designs/design-system.md`를 전 제품의 규범적 시각·상호작용 기준으로 사용한다.
 - 현재 semantic token을 neutral white/gray/black 중심으로 재정의하고 넓은 canvas의 beige/cream/yellow chroma를 금지하며 waveform·분석·success에만 제한적 accent를 사용한다.
 - 공통 brand, app navigation, page heading, state panel과 action layout을 재사용 가능한 FSD UI로 제공한다.
+- 분석·추천·믹싱 생성 화면은 `목소리 분석 → 노래 추천 → AI 믹싱`의 세 단계 생성 여정과 Mixing Detail 기반의 공통 process visual language를 공유한다.
 - desktop app navigation은 64px top header의 brand·중앙 primary navigation·우측 compact account menu로 고정하고 persistent product sidebar를 사용하지 않는다.
 - 디자인 시스템의 의미는 문서, 정확한 값은 `globals.css`, component 계약은 `src/shared/ui`, 주요 variant·상태는 Storybook에서 관리하고 같은 변경에서 동기화한다.
 - 루트 `app/` adapter는 얇게 유지하고 shell 조립은 `src/_app`, 화면 composition은 `src/_pages`에 둔다.
@@ -138,7 +142,7 @@
 - live waveform과 audio control을 제품 interaction의 중심으로 배치하고 permission·recording·processing state를 명시한다.
 - Landing의 microphone visual은 장식이 아니라 인증 상태에 따른 기존 primary CTA 목적지를 사용하는 접근 가능한 action으로 제공한다.
 - 약 10초를 권장 목표로 안내하되 현재 analyzer가 허용하는 5초 이상 입력은 막지 않고 최대 60초 계약을 유지한다.
-- 분석이 끝나면 새로 생성된 profile detail로 이동하고 진행 복구·재시도·취소 동작을 보존한다.
+- 분석이 끝나면 같은 생성 흐름에서 핵심 profile 요약과 명시적 추천 생성 CTA를 제공하고, profile detail은 선택 링크로 유지한다. 진행 복구·재시도·취소 동작은 보존한다.
 
 ### FR-4: Voice Profile 정보 위계
 
@@ -150,6 +154,7 @@
 
 - 추천 run 목록은 scannable table/list, 검색, 정렬, 실제 필드 기반 필터를 제공한다.
 - 기존 recommendation item ID를 사용하는 소유권 보호 Song Detail route를 추가하고 run contract에서 표시 가능한 분석만 사용한다.
+- 추천 목록의 선택 panel 또는 mobile Sheet가 핵심 근거·추천 키·티켓 비용과 실제 AI 믹싱 CTA를 제공한다. 별도 Song Detail은 전체 분석 근거를 확인하는 deep link로 유지한다.
 - 믹싱 시작·폴링·결과 action은 목록과 상세에서 같은 Query key와 mutation 정책을 사용한다.
 
 ### FR-6: Library와 믹싱 결과 상세

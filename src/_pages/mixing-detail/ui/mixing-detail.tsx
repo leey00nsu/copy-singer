@@ -37,6 +37,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/shared/ui/dialog";
+import { ActualStateTimeline, CreationFunnelShell, ProcessHero } from "@/widgets/creation-funnel";
 
 function TimelineIcon({ state }: { state: "complete" | "reached" | "current" | "upcoming" | "skipped" }) {
   if (state === "complete") return <Check aria-hidden="true" className="size-4" />;
@@ -84,83 +85,35 @@ function ActiveMixingProgress({ job }: { job: MixingHistoryRow }) {
   const presentation = presentMixingJob(job);
 
   return (
-    <section className="mx-auto max-w-[48rem] py-10 text-center sm:py-14" aria-labelledby="active-mixing-title">
-      <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">AI mixing</p>
-      <h1
-        className="mx-auto mt-4 max-w-[40rem] text-3xl leading-tight font-semibold tracking-[-0.04em] sm:text-4xl"
-        id="active-mixing-title"
-      >
-        AI가 당신의 목소리를 분석하고
-        <br className="hidden sm:block" /> 최적의 사운드로 믹싱하고 있어요
-      </h1>
-      <p className="mt-4 text-sm text-muted-foreground">
-        {job.song.title} · {job.song.artist}
-      </p>
-      <p className="mt-1 text-sm text-muted-foreground">잠시만 기다려주세요.</p>
-
-      <div className="mx-auto mt-7 flex justify-center" aria-hidden="true">
-        <div className="relative grid aspect-square w-[min(22rem,78vw)] place-items-center">
-          <span className="absolute inset-[8%] rounded-full border border-dashed border-data-accent/20" />
-          <span className="absolute inset-[16%] rounded-full border border-dashed border-data-accent/15" />
-          <span className="absolute inset-[24%] rounded-full border border-dashed border-data-accent/10" />
-          <span className="relative block aspect-square w-[48%] overflow-hidden rounded-full bg-violet-50 shadow-[0_24px_60px_oklch(0.75_0.09_285/0.15)]">
-            <span
-              className="absolute -inset-1/3 animate-[spin_8s_linear_infinite] rounded-full blur-xl motion-reduce:animate-none"
-              style={{
-                background:
-                  "conic-gradient(from 30deg, oklch(0.82 0.12 292 / 0.85), oklch(0.9 0.09 220 / 0.82), oklch(0.9 0.1 20 / 0.72), oklch(0.84 0.1 260 / 0.82), oklch(0.82 0.12 292 / 0.85))",
-              }}
-            />
-            <span
-              className="absolute inset-[12%] rounded-full blur-md"
-              style={{
-                background:
-                  "radial-gradient(circle at 32% 28%, oklch(0.95 0.04 315 / 0.95), transparent 42%), radial-gradient(circle at 68% 65%, oklch(0.9 0.08 230 / 0.9), transparent 48%), oklch(0.93 0.055 285)",
-              }}
-            />
+    <ProcessHero
+      action={
+        <Link className={buttonVariants({ variant: "outline" })} href="/library?tab=mixes&page=1">
+          AI 믹스 목록으로 돌아가기
+        </Link>
+      }
+      description={
+        <>
+          <span className="block text-foreground">
+            {job.song.title} · {job.song.artist}
           </span>
-        </div>
-      </div>
-
-      <div className="mt-1 flex justify-center">
-        <MixingStatusBadge className="h-8 px-3" status={job.status} />
-      </div>
-
-      <ol
-        className="mx-auto mt-8 max-w-[36rem] overflow-hidden rounded-2xl border bg-background text-left"
-        aria-label="AI 믹싱 진행 단계"
-      >
-        {presentation.timeline.map((step, index) => (
-          <li className="relative grid grid-cols-[2rem_minmax(0,1fr)] gap-3 px-5 py-4" key={step.id}>
-            {index < presentation.timeline.length - 1 ? (
-              <span className="absolute top-10 bottom-[-1rem] left-[2.45rem] w-px bg-border" aria-hidden="true" />
-            ) : null}
-            <span
-              className={cn(
-                "relative z-10 flex size-7 items-center justify-center rounded-full border bg-background",
-                step.state === "complete" && "border-data-accent bg-data-accent text-white",
-                step.state === "current" && "border-data-accent-foreground text-data-accent-foreground",
-                step.state === "skipped" && "text-muted-foreground",
-              )}
-            >
-              <TimelineIcon state={step.state} />
-            </span>
-            <div className="border-b pb-4 last:border-b-0">
-              <p className="text-sm font-semibold">{step.label}</p>
-              <p className="mt-1 text-xs leading-5 text-muted-foreground">{step.description}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
-
+          <span className="mt-1 block">잠시만 기다려주세요.</span>
+        </>
+      }
+      eyebrow="AI mixing"
+      status={<MixingStatusBadge className="h-8 px-3" status={job.status} />}
+      title={
+        <>
+          AI가 당신의 목소리를 분석하고
+          <br className="hidden sm:block" /> 최적의 사운드로 믹싱하고 있어요
+        </>
+      }
+    >
+      <ActualStateTimeline label="AI 믹싱 진행 단계" steps={presentation.timeline} />
       <p className="mx-auto mt-5 max-w-md text-xs leading-5 text-muted-foreground">
         서버가 제공하는 실제 단계만 표시하며 임의의 진행률은 계산하지 않습니다. 이 페이지를 닫아도 작업은 서버에서 계속
         진행되고, 완료되면 AI 믹스 라이브러리에서 결과를 확인할 수 있어요.
       </p>
-      <Link className={`${buttonVariants({ variant: "outline" })} mt-6`} href="/library?tab=mixes&page=1">
-        AI 믹스 목록으로 돌아가기
-      </Link>
-    </section>
+    </ProcessHero>
   );
 }
 
@@ -227,12 +180,16 @@ export function MixingDetail({ initial }: { initial: MixingHistoryRow }) {
 
   if (presentation.active) {
     return (
-      <div className="mx-auto w-full max-w-[72rem] px-5 py-8 sm:px-7 lg:px-8 lg:py-10">
-        <Link className={buttonVariants({ size: "sm", variant: "ghost" })} href="/library?tab=mixes&page=1">
-          <ArrowLeft aria-hidden="true" className="size-4" /> AI 믹스 목록
-        </Link>
+      <CreationFunnelShell
+        backAction={
+          <Link className={buttonVariants({ size: "sm", variant: "ghost" })} href="/library?tab=mixes&page=1">
+            <ArrowLeft aria-hidden="true" className="size-4" /> AI 믹스 목록
+          </Link>
+        }
+        currentStep="mixing"
+      >
         <ActiveMixingProgress job={job} />
-      </div>
+      </CreationFunnelShell>
     );
   }
 

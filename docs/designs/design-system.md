@@ -134,6 +134,15 @@ Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface�
 - desktop의 비교 데이터는 table 또는 정렬된 평면 list를 우선한다.
 - mobile에서는 중요한 2–3개 값과 action을 남긴 stacked row로 전환한다.
 - 긴 목록은 제목·핵심 비교값·상태와 한 개의 다음 action을 우선하고, 반복되는 근거·waveform·download·delete는 상세 화면으로 이동한다.
+
+### Creation funnel
+
+- 목소리 분석, 노래 추천과 AI 믹싱 생성은 `목소리 분석 → 노래 추천 → AI 믹싱`의 세 단계 사용자 여정을 공유한다.
+- 상단 journey stepper는 사용자의 현재 위치만 설명하며 backend 진행률을 의미하지 않는다. 각 분석·믹싱 job의 실제 상태는 별도 timeline과 status copy로 표시한다.
+- processing 화면은 Mixing Detail의 중앙 집중형 제목, 넓은 whitespace, restrained violet process visual과 실제 상태 설명을 기준으로 한다.
+- desktop 추천 선택은 목록 옆 보조 panel, mobile은 Sheet를 사용하며 primary action은 선택한 곡 하나에만 제공한다.
+- Profile Detail과 Song Detail은 전체 근거를 보는 선택 경로다. 생성 퍼널은 해당 상세 route를 필수 단계로 요구하지 않는다.
+- process visual의 animation은 상태를 보조할 뿐이며 `prefers-reduced-motion`에서 정지해도 title, status와 timeline만으로 의미가 유지돼야 한다.
 - 상세 화면은 Summary → 근거/분석 → 관련 action 순서를 유지한다.
 - filter는 실제 query/data field만 제공하고 결과 개수와 초기화 action을 함께 보여준다.
 

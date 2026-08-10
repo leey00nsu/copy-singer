@@ -345,7 +345,58 @@
     - 768/360 실제 브라우저에서 인증 화면 horizontal overflow 0 확인; Admin ticket form intrinsic width와 10행 mixing pagination(24건 → 3페이지) 보정
     - 2026-08-10 사용자 확인으로 현재 구현·최종 5개 canonical reference 정리 상태를 T-F018-19 완료 기준으로 수용; 미사용 Next 기본 SVG 3개 삭제는 후속 housekeeping으로 분리
 
-- [TODO][NON-PRD] T-F018-20 미사용 public 기본 asset housekeeping
+- [DONE][PRD-FR-046] T-F018-20 생성 퍼널 계약과 공통 UI 기반
+  - Date: 2026-08-10
+  - Acceptance:
+    - 분석·추천·믹싱 화면은 `목소리 분석 → 노래 추천 → AI 믹싱`의 동일한 사용자 여정 표시와 Mixing Detail 기반 process visual language를 공유한다.
+    - 사용자 여정 단계와 실제 server job timeline을 분리하고 존재하지 않는 진행률을 표시하지 않는다.
+    - domain-aware composition은 `widgets/creation-funnel`, 범용 primitive는 `shared/ui` 소유권을 지킨다.
+  - Checklist:
+    - [x] `CreationFunnelShell`, `CreationFunnelStepper`, `ProcessHero`, `ActualStateTimeline`, `FunnelActionBar` 구현
+    - [x] 분석·추천·믹싱 단계와 active/success/failure 상태 Storybook 계약 추가
+    - [x] reduced-motion, keyboard semantics, responsive layout 계약 검증
+
+- [TODO][PRD-FR-046] T-F018-21 Voice Scan 분석 완료 handoff 단순화
+  - Date: 2026-08-10
+  - Acceptance:
+    - 분석 처리 중에는 입력 UI 대신 공통 process 화면을 표시하고 완료 후 profile detail 강제 이동 없이 핵심 요약과 추천 생성 CTA를 제공한다.
+    - 기존 localStorage job 복구, retry, 새 오디오 선택과 profile detail deep link는 유지한다.
+  - Checklist:
+    - [ ] active analysis를 공통 funnel process UI로 전환
+    - [ ] 완료 profile summary와 명시적 추천 생성 CTA 구현
+    - [ ] 자동 추천 중복 생성 없이 route transition과 오류 상태 검증
+
+- [TODO][PRD-FR-046] T-F018-22 추천 선택과 믹싱 CTA 통합
+  - Date: 2026-08-10
+  - Acceptance:
+    - 추천 목록에서 곡을 선택하면 desktop panel/mobile Sheet에서 핵심 근거·추천 키·티켓 비용을 확인하고 바로 AI 믹싱을 시작할 수 있다.
+    - Song Detail은 전체 근거 확인용 선택 deep link로 유지하고 기존 100곡 검색·정렬·필터·polling 계약을 보존한다.
+  - Checklist:
+    - [ ] 선택 가능한 dense recommendation row와 current selection semantics 구현
+    - [ ] desktop detail panel/mobile Sheet와 funnel action 구현
+    - [ ] mixing active/succeeded/failed row 및 Song Detail 회귀 검증
+
+- [TODO][PRD-FR-046] T-F018-23 믹싱 생성 후 Detail 직접 연결
+  - Date: 2026-08-10
+  - Acceptance:
+    - 믹싱 POST 성공 시 response job ID의 `/library/mixes/[id]`로 즉시 이동하고 active polling, failure와 result를 같은 detail 화면에서 이어서 확인한다.
+    - idempotency, Query invalidation, ticket 오류와 retry 동작을 보존한다.
+  - Checklist:
+    - [ ] create mixing hook이 성공 job을 caller와 route handoff에 제공
+    - [ ] 목록과 Song Detail 시작 경로의 직접 이동 적용
+    - [ ] mutation·navigation·polling 회귀 테스트 추가
+
+- [TODO][PRD-FR-046] T-F018-24 생성 퍼널 반응형·접근성 통합 QA
+  - Date: 2026-08-10
+  - Acceptance:
+    - 360/768/1280에서 분석→추천→믹싱의 primary action, 선택 panel과 process timeline이 잘리지 않고 keyboard와 screen reader로 현재 단계를 이해할 수 있다.
+    - 새로고침·뒤로 가기·active job 복구와 실패 재시도에서 durable resource 상태가 유지된다.
+  - Checklist:
+    - [ ] targeted/full Storybook, 관련 unit·query·UI 회귀 실행
+    - [ ] 실제 browser responsive·console·horizontal overflow 검증
+    - [ ] Design System·Feature docs·workflow evidence 최종 동기화
+
+- [TODO][NON-PRD] T-F018-25 미사용 public 기본 asset housekeeping
   - Date: 2026-08-10
   - Acceptance:
     - runtime과 문서에서 참조되지 않는 Next 기본 public asset만 제거하고 `favicon.svg`, `og.png` 등 실제 metadata asset은 보존한다.
@@ -399,4 +450,4 @@
 | `rg` design asset/reference audit | `2026-08-10` | 통과 — 현재 정본 문서는 canonical `references/copy-singer`만 안내하고 generated/current/V2는 legacy로 명시; production에서 crystal/file/globe/window asset 참조 없음 |
 | `git diff --check` | `2026-08-10` | 통과 — 공통 chrome·Pretendard·violet audio UI·Feature 문서 whitespace 오류 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-10T22:14:00+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-10T22:38:00+09:00 -->

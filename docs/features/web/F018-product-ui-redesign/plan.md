@@ -159,8 +159,9 @@ VocalProfileWorkbench
 - RecordPlugin은 녹음/progress lifecycle에만 사용하고, 같은 microphone `MediaStream`을 `AudioContext → AnalyserNode → canvas`로 연결해 실제 입력 amplitude history를 왼쪽→오른쪽으로 렌더링한다. stream/plugin/AudioContext/animation frame cleanup을 유지한다.
 - upload 25MB, long audio trim/compress, idempotency key와 localStorage job recovery를 유지한다.
 - analysis는 실제 `pending`, `processing`, retry waiting, failed, succeeded만 표시하고 임의 percentage를 만들지 않는다.
+- active analysis는 Mixing Detail의 중앙 집중형 제목·process visual·실제 상태 설명을 재사용하며 입력 화면과 동시에 두 개의 주 작업을 노출하지 않는다.
 - 성공한 job의 `vocalProfileId`로 `/vocal-profiles/[id]`에 이동하고 관련 Query를 invalidate한다.
-- workbench 안의 전체 result와 recommendation action은 profile detail로 이동해 Voice Scan을 한 작업에 집중시킨다.
+- 분석 완료 후 workbench는 저장 profile의 핵심 요약과 명시적 추천 생성 CTA를 표시한다. 자동 추천 생성은 현재 idempotency 계약이 없으므로 수행하지 않으며, 전체 result와 삭제는 profile detail에 유지한다.
 
 ### 5. Voice Profile presentation
 
@@ -195,11 +196,13 @@ desktop semantic table / mobile stacked rows
 
 - filter state는 URL query에 직렬화해 back/forward와 공유 가능한 상태를 제공하되 database 재조회는 하지 않는다.
 - row에는 rank, title, artist, 정수 적합도, recommended shift와 mixing status를 우선 표시한다.
+- 선택한 row의 핵심 근거·추천 키·티켓 비용은 desktop side panel과 mobile Sheet에서 확인하고, 여기서 바로 AI 믹싱을 시작할 수 있다.
 - desktop row는 56–72px 수준의 compact comparison density를 목표로 하고 reason·TJ·원키 세부 정보는 Song Detail로 넘긴다. table은 shell content 폭이 충분한 `xl` 이상에서만 사용한다.
 - mobile은 검색·정렬·필터 요약만 상단에 두고 score·shift·mixing status 조건은 Sheet로 옮겨 첫 viewport에서 첫 추천 곡을 확인할 수 있게 한다.
-- 목록의 반복 검은 CTA는 제거하고 제목/행 상세 진입을 주 interaction으로, mixing은 secondary action 또는 Song Detail 책임으로 낮춘다.
+- 목록의 반복 검은 CTA는 제거하고 행 선택을 주 interaction으로 사용한다. Song Detail은 전체 근거 deep link이며 믹싱 시작의 필수 경로가 아니다.
 - 100개 row마다 waveform을 생성하지 않고 audio player는 detail 또는 expanded result에만 mount한다.
 - 기존 mixing mutation, idempotency, Query invalidation과 5초 polling을 유지한다.
+- mixing mutation 성공 시 response의 job ID로 `/library/mixes/[id]`를 `router.push`해 active detail polling으로 즉시 handoff한다.
 - recommendation 삭제는 native confirm 대신 공통 Dialog를 사용하되 기존 cleanup 의미를 보존한다.
 
 ### 7. Song Detail과 recommendation contract 확장
@@ -262,6 +265,8 @@ Account는 기존 server-side account/ticket query를 유지하고 product shell
 ---
 
 ## FSD 소유권과 파일 구조
+
+분석·추천·믹싱을 잇는 사용자 여정 composition은 `src/widgets/creation-funnel`이 소유한다. `CreationFunnelShell`, `CreationFunnelStepper`, `ProcessHero`, `ActualStateTimeline`, `FunnelActionBar`는 domain-aware widget으로 두고 Button·Badge·Sheet·Dialog 같은 범용 primitive만 `src/shared/ui`에서 재사용한다. 상단 세 단계는 사용자 여정을 설명하고, 내부 timeline은 각 server job의 실제 상태만 표현해 임의 진행률과 혼동하지 않는다.
 
 ```text
 src/
@@ -439,6 +444,7 @@ DB 또는 external service가 필요한 검사는 기존 skip/mock 정책을 유
 8. Account, legacy route, Admin/dev 회귀와 route 상태 화면을 정리한다.
 9. Storybook state matrix와 targeted test를 추가하고 browser responsive QA를 수행한다.
 10. 전체 quality/build/test를 통과시키고 Design System·Feature docs·workflow evidence를 동기화한다.
+11. 분석→추천→믹싱 생성 여정을 세 단계로 단순화하고 Mixing Detail 기반 공통 funnel widget을 적용한다.
 
 각 단계는 tasks.md의 순차 task와 commit checkpoint로 분리한다. 기존 기능을 test로 고정한 뒤 presentation을 교체한다.
 

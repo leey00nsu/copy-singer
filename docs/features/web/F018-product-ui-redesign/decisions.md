@@ -366,3 +366,14 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: visual source가 하나여야 에이전트와 사람이 같은 화면을 기준으로 구현·검수할 수 있고, Git history가 이미 과거 시안의 archive 역할을 하므로 working tree에 중간 산출물을 중복 보관할 필요가 없다.
 - **Implementation**: `docs/designs/README.md`, `product-ui-redesign.md`, `design-system.md`를 현재 reference 정책으로 갱신하고 legacy analysis/generated 문서는 deprecation stub으로 축소한다. crystal 규칙과 V2 `채택` 표현을 현재 정본에서 제거한다.
 - **Consequences**: 이후 visual QA는 최종 reference 디렉터리와 실제 렌더 screenshot을 직접 비교한다. 과거 이미지가 working tree에 물리적으로 남아 있더라도 정본으로 사용하지 않으며, 삭제 가능한 로컬 파일 작업이 허용되는 도구에서 legacy binary를 제거한다.
+
+## D039: Mixing Detail 기반 3단계 생성 퍼널과 선택형 상세 경로 (2026-08-10)
+
+- **Context**: 실제 생성 여정은 Voice Scan 완료 후 Profile Detail, Recommendation List, Song Detail을 순서대로 방문한 뒤 Mixing을 시작하고도 현재 화면에 머물러 Library나 상태 링크를 다시 찾아야 한다. 각 화면의 page heading, processing state와 CTA도 서로 다른 composition을 사용한다.
+- **Constraints**: saved profile, recommendation run, song detail과 mixing detail의 durable resource URL·ownership·polling은 보존한다. 분석·믹싱의 실제 server 상태보다 정밀한 percentage를 만들지 않는다. 추천 생성 API에는 idempotency 계약이 없으므로 분석 성공만으로 자동 생성하지 않는다.
+- **Decision**: 생성 여정은 `목소리 분석 → 노래 추천 → AI 믹싱` 세 단계로 설명한다. Mixing Detail active story의 중앙 제목, restrained violet process visual, 실제 상태 timeline과 넓은 여백을 공통 visual language로 추출한다. 분석 완료는 같은 흐름에서 핵심 profile summary와 명시적 추천 CTA를 제공하고 Profile Detail은 선택 링크로 낮춘다. 추천 목록은 선택 panel/mobile Sheet에서 핵심 근거와 믹싱 CTA를 제공하며 Song Detail은 전체 근거 deep link로 유지한다. 믹싱 생성 성공 시 response job ID의 detail route로 즉시 이동한다.
+- **Rationale**: 사용자가 생성 과정에서 반드시 거치는 화면을 다섯 단계에서 세 단계로 줄이면서도 저장 resource의 재방문성과 고급 분석 정보는 잃지 않는다. 자동 추천을 피하면 새로고침·복구 중 중복 run 위험 없이 사용자의 명시적 의사를 유지한다.
+- **Trace**:
+  - **T-F018-20**: `widgets/creation-funnel`에 공통 shell, journey stepper, process hero, 실제 상태 timeline과 action bar를 추가했다. Mixing Detail active와 Recommendation Results가 public API를 통해 widget을 실제 사용하며, Storybook에서 분석 active/success, 추천 선택과 믹싱 failure를 검증했다.
+- **Evidence**: targeted Storybook 2 files/8 tests, `pnpm run test:mixing:ui` 8/8, `pnpm run test:recommendation` ranking 10/10·presentation/UI 17/17, `pnpm run check` 통과(error 0, 기존 Biome warning 59건, architecture 4/4).
+- **Consequences**: `src/widgets/creation-funnel`이 domain-aware funnel composition을 소유하고 Shared는 범용 primitive만 제공한다. 상단 journey stepper와 server timeline은 서로 다른 의미로 표현한다. 기존 Profile/Song Detail URL은 삭제하거나 redirect하지 않으며 Library에서 그대로 접근할 수 있다.
