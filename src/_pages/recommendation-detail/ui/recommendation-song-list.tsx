@@ -1,3 +1,4 @@
+import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import type { RecommendationItemResponse } from "@/entities/recommendation";
 import { formatRecommendedShift, recommendationMatchPercent } from "@/entities/recommendation";
@@ -7,11 +8,15 @@ import { Badge } from "@/shared/ui/badge";
 export function RecommendationSongList({
   items,
   onStart,
+  onSelect,
   runId,
+  selectedItemId,
 }: {
   items: RecommendationItemResponse[];
   onStart: (itemId: string, retry?: boolean) => void;
+  onSelect: (itemId: string) => void;
   runId: string;
+  selectedItemId: string;
 }) {
   return (
     <div className="border-y">
@@ -40,9 +45,11 @@ export function RecommendationSongList({
           {items.map((item) => {
             const matchPercent = recommendationMatchPercent(item);
             const detailHref = `/recommendations/${runId}/songs/${item.id}`;
+            const selected = item.id === selectedItemId;
             return (
               <tr
-                className="grid grid-cols-[1fr_1fr_auto] gap-3 px-4 py-4 sm:grid-cols-[minmax(0,1fr)_5.5rem_5.5rem_6rem] sm:items-center sm:gap-4 sm:py-3 xl:table-row xl:px-0 xl:py-0"
+                aria-selected={selected}
+                className="grid grid-cols-[1fr_1fr_auto] gap-3 px-4 py-4 transition-colors aria-selected:bg-data-accent/[0.07] sm:grid-cols-[minmax(0,1fr)_5.5rem_5.5rem_6rem] sm:items-center sm:gap-4 sm:py-3 xl:table-row xl:px-0 xl:py-0"
                 key={item.id}
               >
                 <td className="hidden px-3 py-3 align-middle text-sm font-semibold xl:table-cell">{item.rank}</td>
@@ -52,14 +59,25 @@ export function RecommendationSongList({
                       {item.rank}위
                     </Badge>
                     <div className="min-w-0">
-                      <h2 className="truncate text-sm font-semibold sm:text-base">
+                      <div className="flex min-w-0 items-center gap-2">
+                        <h2 className="min-w-0 truncate text-sm font-semibold sm:text-base">
+                          <button
+                            aria-pressed={selected}
+                            className="max-w-full truncate text-left underline-offset-4 hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                            onClick={() => onSelect(item.id)}
+                            type="button"
+                          >
+                            {item.title}
+                          </button>
+                        </h2>
                         <Link
-                          className="underline-offset-4 hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          aria-label={`${item.title} 전체 분석 근거`}
+                          className="shrink-0 text-muted-foreground hover:text-foreground focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                           href={detailHref}
                         >
-                          {item.title}
+                          <ArrowUpRight aria-hidden="true" className="size-3.5" />
                         </Link>
-                      </h2>
+                      </div>
                       <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">{item.artist}</p>
                     </div>
                   </div>

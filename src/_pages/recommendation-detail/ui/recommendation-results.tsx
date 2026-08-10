@@ -32,6 +32,7 @@ import {
 import { StatePanel } from "@/shared/ui/state-panel";
 import { CreationFunnelShell } from "@/widgets/creation-funnel";
 import { RecommendationFilterBar } from "./recommendation-filter-bar";
+import { RecommendationSelection } from "./recommendation-selection";
 import { RecommendationSongList } from "./recommendation-song-list";
 
 function isRecommendationRoute() {
@@ -87,9 +88,11 @@ function useRecommendationFilters() {
 export function RecommendationResults({
   initialRun,
   runId,
+  ticketCost = 1,
 }: {
   initialRun?: RecommendationRunResponse;
   runId?: string;
+  ticketCost?: number;
 }) {
   const resolvedRunId = initialRun?.id ?? runId ?? null;
   const queryClient = useQueryClient();
@@ -97,6 +100,7 @@ export function RecommendationResults({
   const deleteRunMutation = useMutation(deleteRecommendationMutationOptions());
   const { filters, resetFilters, updateFilters } = useRecommendationFilters();
   const { startMixing } = useRecommendationMixing();
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const run = runQuery.data ?? null;
   const loadError: "not-found" | "failed" | null =
     !resolvedRunId || runQuery.error
@@ -156,6 +160,7 @@ export function RecommendationResults({
   }
 
   const visibleItems = projectRecommendationItems(run.items, filters);
+  const selectedItem = visibleItems.find((item) => item.id === selectedItemId) ?? visibleItems[0] ?? null;
 
   return (
     <CreationFunnelShell currentStep="recommendation">
@@ -216,22 +221,33 @@ export function RecommendationResults({
         />
       </div>
 
-      <section aria-label="추천 노래 전체 순위" className="mt-7">
-        {visibleItems.length > 0 ? (
-          <RecommendationSongList items={visibleItems} onStart={startItem} runId={run.id} />
-        ) : (
-          <StatePanel
-            action={
-              <Button onClick={resetFilters} variant="outline">
-                모든 조건 지우기
-              </Button>
-            }
-            description="검색어 또는 필터를 바꾸면 저장된 추천 100곡 안에서 다시 찾을 수 있습니다."
-            icon={<Music2 />}
-            title="조건에 맞는 노래가 없어요."
-          />
-        )}
-      </section>
+      <div className="mt-7 grid gap-8 pb-24 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start lg:pb-0">
+        <section aria-label="추천 노래 전체 순위">
+          {visibleItems.length > 0 && selectedItem ? (
+            <RecommendationSongList
+              items={visibleItems}
+              onSelect={setSelectedItemId}
+              onStart={startItem}
+              runId={run.id}
+              selectedItemId={selectedItem.id}
+            />
+          ) : (
+            <StatePanel
+              action={
+                <Button onClick={resetFilters} variant="outline">
+                  모든 조건 지우기
+                </Button>
+              }
+              description="검색어 또는 필터를 바꾸면 저장된 추천 100곡 안에서 다시 찾을 수 있습니다."
+              icon={<Music2 />}
+              title="조건에 맞는 노래가 없어요."
+            />
+          )}
+        </section>
+        {selectedItem ? (
+          <RecommendationSelection item={selectedItem} onStart={startItem} runId={run.id} ticketCost={ticketCost} />
+        ) : null}
+      </div>
 
       <section className="mt-10 grid gap-5 border-y py-6 text-xs leading-6 text-muted-foreground lg:grid-cols-2">
         <div className="flex gap-3">

@@ -366,15 +366,15 @@
     - [x] 완료 profile summary와 명시적 추천 생성 CTA 구현
     - [x] 자동 추천 중복 생성 없이 route transition과 오류 상태 검증
 
-- [TODO][PRD-FR-046] T-F018-22 추천 선택과 믹싱 CTA 통합
+- [DONE][PRD-FR-046] T-F018-22 추천 선택과 믹싱 CTA 통합
   - Date: 2026-08-10
   - Acceptance:
     - 추천 목록에서 곡을 선택하면 desktop panel/mobile Sheet에서 핵심 근거·추천 키·티켓 비용을 확인하고 바로 AI 믹싱을 시작할 수 있다.
     - Song Detail은 전체 근거 확인용 선택 deep link로 유지하고 기존 100곡 검색·정렬·필터·polling 계약을 보존한다.
   - Checklist:
-    - [ ] 선택 가능한 dense recommendation row와 current selection semantics 구현
-    - [ ] desktop detail panel/mobile Sheet와 funnel action 구현
-    - [ ] mixing active/succeeded/failed row 및 Song Detail 회귀 검증
+    - [x] 선택 가능한 dense recommendation row와 current selection semantics 구현
+    - [x] desktop detail panel/mobile Sheet와 funnel action 구현
+    - [x] mixing active/succeeded/failed row 및 Song Detail 회귀 검증
 
 - [TODO][PRD-FR-046] T-F018-23 믹싱 생성 후 Detail 직접 연결
   - Date: 2026-08-10
@@ -450,4 +450,4 @@
 | `rg` design asset/reference audit | `2026-08-10` | 통과 — 현재 정본 문서는 canonical `references/copy-singer`만 안내하고 generated/current/V2는 legacy로 명시; production에서 crystal/file/globe/window asset 참조 없음 |
 | `git diff --check` | `2026-08-10` | 통과 — 공통 chrome·Pretendard·violet audio UI·Feature 문서 whitespace 오류 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-10T22:44:00+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-10T13:49:58.000Z -->

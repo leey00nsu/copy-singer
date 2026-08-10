@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { requirePageSession } from "@/features/authentication/index.server";
+import { mixingTicketCost } from "@/shared/config/index.server";
 import { RecommendationResults } from "./recommendation-results";
 
 export const metadata: Metadata = {
@@ -10,5 +11,5 @@ export const metadata: Metadata = {
 export default async function RecommendationPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   await requirePageSession(`/recommendations/${id}`);
-  return <RecommendationResults runId={id} />;
+  return <RecommendationResults runId={id} ticketCost={mixingTicketCost()} />;
 }

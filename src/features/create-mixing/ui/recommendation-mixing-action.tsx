@@ -12,11 +12,13 @@ import { Button, buttonVariants } from "@/shared/ui/button";
 export function RecommendationMixingAction({
   compact = false,
   detailHref,
+  idleLabel = "AI 믹싱",
   item,
   onStart,
 }: {
   compact?: boolean;
   detailHref?: string;
+  idleLabel?: string;
   item: RecommendationItemResponse;
   onStart: (itemId: string, retry?: boolean) => void;
 }) {
@@ -64,7 +66,7 @@ export function RecommendationMixingAction({
   if (status === "not_started") {
     return (
       <Button onClick={() => onStart(item.id)} size="sm">
-        <Sparkles className="size-4" aria-hidden="true" /> AI 믹싱
+        <Sparkles className="size-4" aria-hidden="true" /> {idleLabel}
       </Button>
     );
   }

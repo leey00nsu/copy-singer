@@ -76,12 +76,13 @@ export const Success: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(await canvas.findByText("서른 즈음에")).toBeVisible();
-    await expect(canvas.queryByRole("button", { name: "AI 믹싱" })).not.toBeInTheDocument();
+    await expect((await canvas.findAllByText("서른 즈음에"))[0]).toBeVisible();
+    await expect(canvas.getByRole("button", { name: "이 곡으로 AI 믹싱" })).toBeVisible();
+    await expect(canvas.getByRole("button", { name: "서른 즈음에" })).toHaveAttribute("aria-pressed", "true");
     await userEvent.type(canvas.getByRole("searchbox", { name: "곡 또는 아티스트 검색" }), "없는 노래");
     await expect(canvas.getByText("조건에 맞는 노래가 없어요.")).toBeVisible();
     await userEvent.click(canvas.getByRole("button", { name: "모든 조건 지우기" }));
-    await expect(canvas.getByText("서른 즈음에")).toBeVisible();
+    await expect(canvas.getAllByText("서른 즈음에")[0]).toBeVisible();
   },
 };
 
@@ -94,8 +95,8 @@ export const DenseComparisonList: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("table", { name: "추천 노래 비교 목록" })).toBeVisible();
     await expect(canvas.getByText("전체 100곡 중 100곡")).toBeVisible();
-    await expect(canvas.getAllByRole("link", { name: /\d+$/ })).toHaveLength(100);
-    await expect(canvas.queryByRole("button", { name: "AI 믹싱" })).not.toBeInTheDocument();
+    await expect(canvas.getAllByRole("button", { name: /\d+$/ })).toHaveLength(100);
+    await expect(canvas.getByRole("button", { name: "이 곡으로 AI 믹싱" })).toBeVisible();
   },
 };
 
@@ -109,9 +110,29 @@ export const MobileFilters: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("link", { name: "서른 즈음에 1" })).toBeVisible();
+    await expect(canvas.getByRole("button", { name: "서른 즈음에 1" })).toBeVisible();
     await userEvent.click(canvas.getByRole("button", { name: "필터" }));
     await waitFor(() => expect(within(document.body).getByRole("dialog", { name: "추천곡 필터" })).toBeVisible());
+  },
+};
+
+export const MobileSelection: Story = {
+  args: {
+    initialRun: denseRun,
+    runId: undefined,
+  },
+  globals: {
+    viewport: { value: "mobile1", isRotated: false },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: "밤편지 3" }));
+    await expect(canvas.getByText("밤편지 3 · 아이유")).toBeVisible();
+    await userEvent.click(canvas.getByRole("button", { name: "선택한 곡 확인" }));
+    const sheet = within(document.body).getByRole("dialog", { name: "선택한 추천곡" });
+    await waitFor(() => expect(sheet).toBeVisible());
+    await expect(within(sheet).getByRole("button", { name: "이 곡으로 AI 믹싱" })).toBeVisible();
+    await expect(within(sheet).getByRole("link", { name: "전체 분석 근거 보기" })).toBeVisible();
   },
 };
 
@@ -136,9 +157,9 @@ export const ActiveToTerminalPolling: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByText("AI 믹싱 중")).toBeVisible();
+    await expect(canvas.getAllByText("AI 믹싱 중").some((status) => status.getClientRects().length > 0)).toBe(true);
     await waitFor(() => expect(canvas.getByRole("link", { name: "결과 확인" })).toBeVisible(), { timeout: 7_000 });
-    await expect(canvas.queryByText("AI 믹싱 중")).not.toBeInTheDocument();
+    await expect(canvas.queryAllByText("AI 믹싱 중")).toHaveLength(0);
   },
 };
 
