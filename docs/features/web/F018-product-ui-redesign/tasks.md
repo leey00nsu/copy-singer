@@ -20,7 +20,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/product-ui-redesign`
-- **대기 중 변경 요청**: 결정: changes_requested UserMenu의 Base UI Menu.Group context 런타임 회귀 수정
+- **대기 중 변경 요청**: -
   - 구현 중 새로 수용한 사용자 요청을 잠시 표시하는 sync marker입니다
   - 요청을 `tasks.md`와 관련 문서에 반영한 뒤 값을 비우세요
   - pre-PR 리뷰 handoff를 시작하면 `Running`, 리뷰 결과 기록까지 끝나면 `Done`으로 변경
@@ -295,14 +295,14 @@
     - [x] Landing·Login·제품 route·Admin/dev 예외 responsive Storybook/browser QA
     - [x] Design System·visual brief·gap analysis·feature decisions·workflow marker 동기화
 
-- [DOING][NON-PRD] T-F018-17 DropdownMenu Group context 런타임 회귀 수정
+- [DONE][NON-PRD] T-F018-17 DropdownMenu Group context 런타임 회귀 수정
   - Date: 2026-08-10
   - Acceptance:
     - UserMenu와 공통 DropdownMenu 예제의 label이 Base UI Menu.Group context 안에서 렌더링되고 계정 메뉴를 열 때 런타임 오류가 발생하지 않는다.
   - Checklist:
-    - [ ] UserMenu와 DropdownMenu Story의 Group/Label 구조 교정
-    - [ ] 계정 메뉴와 공통 DropdownMenu를 실제로 여는 Storybook 회귀 테스트 추가
-    - [ ] targeted Storybook·전체 check·workflow audit 통과
+    - [x] UserMenu와 DropdownMenu Story의 Group/Label 구조 교정
+    - [x] 계정 메뉴와 공통 DropdownMenu를 실제로 여는 Storybook 회귀 테스트 추가
+    - [x] targeted Storybook·전체 check·workflow audit 통과
 
 ---
 
@@ -310,9 +310,9 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -324,6 +324,7 @@
 | `pnpm run check` | `2026-08-10` | 통과 — error 0, 기존 Biome warning 60건, Steiger 및 architecture 4/4 |
 | `pnpm run test:auth-navigation` | `2026-08-10` | 통과 — safe callback·Library/Account navigation·route group·keyboard/touch label 5/5 |
 | `pnpm run test:storybook --run src/widgets/product-shell/ui/product-shell.stories.tsx src/_pages/home/ui/landing-page.stories.tsx src/_pages/library/ui/library-page.stories.tsx` | `2026-08-10` | 통과 — top header/no-aside·mobile navigation·crystal CTA/footer·dense Library 7/7 |
+| `pnpm run test:storybook --run src/shared/ui/dropdown-menu/dropdown-menu.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-10` | 통과 — 공통 메뉴와 계정 메뉴를 실제로 열어 Menu.Group context·menuitem 4/4 확인 |
 | `pnpm exec tsx --test tests/effect-cleanup.test.ts tests/recommendation-ui.test.tsx` | `2026-08-09` | 통과 — cleanup·추천 UI 회귀 6/6 |
 | `pnpm exec tsx --test tests/effect-cleanup.test.ts` | `2026-08-10` | 통과 — Library·Mixing Detail Query polling 포함 component timer/fetch inventory 2/2 |
 | `pnpm run test:voice-scan` | `2026-08-10` | 통과 — 녹음 정책·오류·상태·cleanup 12/12 |
@@ -348,4 +349,4 @@
 | `find docs/designs/generated/page-redesigns/concepts-v2 -maxdepth 1 -type f -name '*.png'` | `2026-08-10` | 통과 — 채택 V2 시안 13개 확인; V1·중간 시안은 검수 후 폐기 |
 | `git diff --check` | `2026-08-10` | 통과 — crystal·top-header 코드, current/V2 baseline, Design System·Feature 문서 whitespace 오류 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-09T20:35:02.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-10T08:01:44.000Z -->

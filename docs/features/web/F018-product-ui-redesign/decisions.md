@@ -310,3 +310,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: 로컬 워크플로 — 해당 없음
   - **Test/Log**: `pnpm run check` (error 0, 기존 Biome warning 60건, architecture 4/4), `pnpm run test:auth-navigation` (5/5), targeted Storybook (3 files/7 tests), 전체 Storybook (36 files/92 tests), `pnpm run build` (23개 page 생성), 실제 browser Landing·Library 1280×800·360×800 및 mobile Sheet
 - **Consequences**: D030의 neutral V2 원칙은 유지하되 product rail 결정은 D031이 대체한다. 이후 제품 route는 desktop sidebar를 새로 만들지 않으며 navigation 정보 구조가 바뀔 때 Design System·ProductShell story·V2 style lock을 함께 갱신한다.
+
+## D032: Base UI Menu.Group context 런타임 회귀 방지 (2026-08-10)
+
+- **Context**: T-F018-16 완료 후 실제 ProductShell의 계정 메뉴를 열면 `DropdownMenuLabel`이 Base UI `Menu.GroupLabel`로 렌더링되면서 `MenuGroupContext is missing` 런타임 오류가 발생했다. 기존 Storybook은 ProductShell을 렌더링했지만 desktop 계정 메뉴와 공통 DropdownMenu popup을 실제로 열지 않아 오류 경로를 실행하지 않았다.
+- **Decision**: `DropdownMenuLabel`의 primitive 계약은 유지하고, 모든 사용처에서 label과 관련 item을 `DropdownMenuGroup` 안에 배치한다. Shared DropdownMenu와 ProductShell desktop story는 trigger를 실제로 클릭하고 portal의 group label·menuitem이 보이는지 검증한다.
+- **Rationale**: GroupLabel을 일반 text로 약화하면 Base UI의 접근성 구조를 잃는다. 사용처를 올바른 context로 교정하고 popup open 경로를 테스트해야 실제 사용자 interaction과 동일한 회귀 경계를 확보할 수 있다.
+- **Evidence**: targeted Storybook 2 files/4 tests, 전체 Storybook 36 files/92 tests, `pnpm run check`, 실제 `/library` 계정 메뉴 DOM의 `menu > group "계정" > menuitem` 확인과 browser error log 0건.
+- **Consequences**: 이후 `DropdownMenuLabel`을 추가할 때 `DropdownMenuGroup`이 필수이며, popup primitive의 Story는 정적 render만 하지 않고 최소 한 번 실제 open interaction을 검증한다.
