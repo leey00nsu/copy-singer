@@ -9,6 +9,7 @@ import { Button } from "@/shared/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -80,15 +81,17 @@ export function UserMenu({ name, email, image, admin = false, compact = false, s
           )}
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56" side={side} sideOffset={8}>
-          <DropdownMenuLabel>계정</DropdownMenuLabel>
-          <DropdownMenuItem nativeButton={false} render={<Link href="/account" />}>
-            <UserRound aria-hidden="true" /> 내 계정
-          </DropdownMenuItem>
-          {admin ? (
-            <DropdownMenuItem nativeButton={false} render={<Link href="/admin" />}>
-              <ShieldCheck aria-hidden="true" /> 관리
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>계정</DropdownMenuLabel>
+            <DropdownMenuItem nativeButton={false} render={<Link href="/account" />}>
+              <UserRound aria-hidden="true" /> 내 계정
             </DropdownMenuItem>
-          ) : null}
+            {admin ? (
+              <DropdownMenuItem nativeButton={false} render={<Link href="/admin" />}>
+                <ShieldCheck aria-hidden="true" /> 관리
+              </DropdownMenuItem>
+            ) : null}
+          </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem disabled={pending} onClick={() => void signOut()}>
             <LogOut aria-hidden="true" /> {pending ? "로그아웃 중…" : "로그아웃"}

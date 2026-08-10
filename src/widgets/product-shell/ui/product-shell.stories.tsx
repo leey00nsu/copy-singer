@@ -44,6 +44,10 @@ export const Desktop: Story = {
     await expect(canvas.queryByRole("complementary")).not.toBeInTheDocument();
     await expect(canvas.getByRole("link", { name: "라이브러리" })).toHaveAttribute("aria-current", "page");
     await expect(canvas.getByRole("link", { name: "내 계정" })).toBeVisible();
+    await userEvent.click(canvas.getByRole("button", { name: "지은 계정 메뉴" }));
+    const body = within(document.body);
+    await waitFor(() => expect(body.getByText("계정")).toBeVisible());
+    await expect(body.getByRole("menuitem", { name: "내 계정" })).toBeVisible();
   },
 };
 
