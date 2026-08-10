@@ -54,12 +54,12 @@ F018은 현재 동작하는 제품 계약 위에 공통 Design System과 사용�
 | Styling | Tailwind CSS 4.2, shadcn 4.16 token | `globals.css` token과 공통 primitive를 수정하고 page raw color를 축소 |
 | Primitive | `@base-ui/react` 1.7, CVA | 기존 `base-nova` 방식으로 필요한 shadcn primitive 추가 |
 | Server state | TanStack Query 5.101 | recommendation/mixing/vocal job의 기존 key·polling 정책 재사용 |
-| Audio | WaveSurfer 7.12, `@wavesurfer/react` | recorder와 공통 player를 재구성하고 media cleanup 보존 |
+| Audio | WaveSurfer 7.12, `@wavesurfer/react`, Web Audio API | WaveSurfer는 저장 오디오 player에 유지하고 recorder는 실제 microphone stream을 Web Audio analyser로 시각화하며 media cleanup 보존 |
 | Charts | Recharts 3.8, shadcn Chart | 기존 descriptor와 accessibility layer 보존 |
 | Validation | Zod 4.4 | recommendation/mixing response와 filter query 검증 |
 | Component QA | Storybook 10.5, Vitest browser, a11y addon | 공통 상태와 responsive variant를 story·browser test로 검증 |
 
-새 runtime dependency를 추가하지 않는다. ElevenLabs UI package를 설치하지 않고 live waveform, scrubber와 explicit state model의 공개 패턴만 현재 WaveSurfer/Base UI 구조에 맞게 적용한다.
+새 runtime dependency를 추가하지 않는다. ElevenLabs UI package를 설치하지 않고 live waveform은 브라우저 기본 `MediaStream`/`AudioContext`/`AnalyserNode`로 직접 렌더링하며, 저장 오디오 scrubber와 player는 현재 WaveSurfer/Base UI 구조를 유지한다.
 
 ---
 
@@ -122,7 +122,7 @@ app/
 - Root Layout은 Query/Tooltip/Toaster/font와 metadata만 소유하고 request session 조회와 fixed `UserMenu`를 제거한다.
 - Product Layout은 `requirePageSession`으로 보호한 뒤 session/user/admin 정보를 `ProductShell`에 전달한다.
 - `src/widgets/product-shell`은 desktop 64px top header, mobile right Sheet navigation, active route, compact user menu와 content rail을 조립한다. desktop persistent sidebar는 사용하지 않고 pathname을 읽는 작은 Client Component만 client boundary로 둔다.
-- `/admin`은 product로 돌아가는 링크와 기존 운영 기능·권한·검색·티켓 조정 동작을 유지하되, visual composition은 네 원본 디자인 보드와 동일한 neutral editorial language로 재구성한다. Admin에는 crystal/prism 장식을 사용하지 않는다.
+- `/admin`은 product로 돌아가는 링크와 기존 운영 기능·권한·검색·티켓 조정 동작을 유지하되, visual composition은 네 원본 디자인 보드와 동일한 neutral editorial language로 재구성하고 Landing/product와 동일한 Header/Footer를 공유한다. Production 전역에서 crystal/prism 장식은 사용하지 않는다.
 - `/dev/svc`는 별도 진단 layout을 유지하고 product shell로 감싸지 않는다.
 
 ### 3. Public Landing과 Google Login
@@ -131,7 +131,7 @@ app/
 
 - Landing Server Page는 optional session을 읽어 CTA를 `/login` 또는 `/profile`로 연결한다.
 - 제품 설명은 실제 분석 → 100곡 추천 → 선택형 AI 믹싱만 사용한다.
-- Hero는 CSS/audio motif와 실제 waveform 중심으로 구성하고, Landing 마지막 CTA는 사용자 제공 crystal reference를 바탕으로 생성한 `public/images/copy-singer-crystal.png`를 사용한다.
+- Hero는 CSS/audio motif와 실제 waveform 중심으로 구성하고, Landing 마지막 CTA도 crystal asset 없이 neutral surface와 restrained pastel accent만 사용한다.
 - Hero는 reference처럼 copy와 circular audio visual의 균형을 맞춘다. waveform bar는 서로 다른 delay·duration·amplitude로 반복 움직이고, microphone 뒤의 복수 ring은 scale과 opacity를 조합해 바깥으로 확산되도록 한다.
 - microphone은 `primaryHref`를 사용하는 실제 Link action이며 focus-visible과 accessible label을 제공한다. 모든 decorative motion은 `prefers-reduced-motion`에서 정지하고 CTA 의미는 유지한다.
 - mobile에서는 제목·여백·visual 크기를 줄여 360×800 첫 viewport 안에 copy, primary CTA와 microphone action이 함께 들어오도록 한다.
@@ -156,7 +156,7 @@ VocalProfileWorkbench
 - recorder state를 `idle → requesting_permission → recording → stopping → ready | error`로 명시한다.
 - 10초를 권장 marker로 표시하되 5초 이상이면 분석을 허용하고 60초에서 자동 종료한다.
 - permission denied는 browser 설정 안내와 upload 대안을 제공한다.
-- WaveSurfer Record plugin, progress callback, stream/plugin/Blob URL cleanup을 유지한다.
+- RecordPlugin은 녹음/progress lifecycle에만 사용하고, 같은 microphone `MediaStream`을 `AudioContext → AnalyserNode → canvas`로 연결해 실제 입력 amplitude history를 왼쪽→오른쪽으로 렌더링한다. stream/plugin/AudioContext/animation frame cleanup을 유지한다.
 - upload 25MB, long audio trim/compress, idempotency key와 localStorage job recovery를 유지한다.
 - analysis는 실제 `pending`, `processing`, retry waiting, failed, succeeded만 표시하고 임의 percentage를 만들지 않는다.
 - 성공한 job의 `vocalProfileId`로 `/vocal-profiles/[id]`에 이동하고 관련 Query를 invalidate한다.
@@ -214,7 +214,7 @@ desktop semantic table / mobile stacked rows
 
 표시 정보:
 
-- 곡/아티스트/TJ 순서와 외부 source link
+- 곡/아티스트와 필요한 경우 외부 source link; 사용자에게 노래방 상호·TJ/catalog 번호는 노출하지 않는다.
 - 사용자와 곡의 practical/observed range
 - original/adjusted score, semitone shift와 structured reasons
 - overlap/excess/confidence breakdown의 사용자 친화 요약
@@ -255,7 +255,7 @@ Terminal mixing job 삭제를 새로 지원한다.
 
 ### 9. Account와 공통 상태
 
-Account는 기존 server-side account/ticket query를 유지하고 product shell 안에서 사용자 정보, Google 계정, ticket balance/ledger, Library와 admin 링크로 재배치한다. notification, theme, password 또는 subscription setting을 만들지 않는다.
+Account는 기존 server-side account/ticket query를 유지하고 product shell 안에서 사용자 정보, Google 계정, ticket balance/ledger를 flat section으로 배치한다. Library·새 목소리 분석·Admin shortcut은 본문에 반복하지 않고 공통 Header navigation이 이동을 담당한다. notification, theme, password 또는 subscription setting을 만들지 않는다.
 
 공통 `StatePanel`과 `PageSkeleton`을 `src/shared/ui`에 추가한다. Route-level `loading.tsx`는 layout shift가 작은 skeleton, `error.tsx`는 Client Component `retry()`, dynamic detail의 `not-found.tsx`는 안전한 상위 route를 제공한다. polling 오류는 마지막 유효 데이터를 숨기지 않고 인접 상태로 표시한다.
 
@@ -397,13 +397,13 @@ src/
 
 Screenshot은 디자인 보드와 정보 위계·spacing·상태 구조를 비교하는 증거로 사용하되 픽셀 동일성을 acceptance로 삼지 않는다.
 
-### 페이지별 ImageGen 방향 시안
+### Visual reference governance
 
-- 13개 App Router page를 1280×800 current baseline으로 캡처한다.
-- 원본 보드를 직접 참조하고 Landing과 Library를 public/product master로 잠근 V2 ImageGen 시안을 route마다 한 장씩 저장한다.
-- V1처럼 페이지를 독립 prompt로 생성하지 않으며 `#FFFFFF` neutral canvas, 동일 top header·wordmark·typography·density를 공통 제약으로 사용한다.
-- current-vs-concept 차이는 `docs/designs/page-redesign-analysis.md`에 페이지별 우선순위와 기능 보존 제약을 함께 기록한다.
-- 생성 이미지의 fixture와 작은 문구는 구현 요구사항으로 승격하지 않고 실제 API·Zod·Page 계약을 우선한다.
+- 최종 사용자 승인 reference는 `docs/designs/references/copy-singer/` 한 곳에서만 관리한다.
+- current screenshot, generated concept, contact sheet는 working tree의 디자인 정본으로 보관하지 않는다. visual QA 산출물은 `/tmp` 또는 gitignored artifact 경로에서 일회성으로 생성한다.
+- `docs/designs/assets/product-ui-redesign/`, `docs/designs/generated/page-redesigns/`, `docs/designs/page-redesign-analysis.md`는 legacy이며 구현·리뷰 기준으로 사용하지 않는다.
+- 과거 방향이 필요하면 Git history를 사용한다.
+- reference의 fixture와 작은 문구는 실제 API·Zod·Page 계약을 대체하지 않는다.
 
 ### 실행 명령
 
@@ -479,5 +479,5 @@ DB 또는 external service가 필요한 검사는 기존 skip/mock 정책을 유
 - Decisions: [decisions.md](./decisions.md)
 - Design System: [design-system.md](../../../designs/design-system.md)
 - Visual brief: [product-ui-redesign.md](../../../designs/product-ui-redesign.md)
-- Page concepts and gap analysis: [page-redesign-analysis.md](../../../designs/page-redesign-analysis.md)
+- Visual references: [references/copy-singer/README.md](../../../designs/references/copy-singer/README.md)
 - PRD: [copy-singer-prd.md](../../../prd/copy-singer-prd.md)

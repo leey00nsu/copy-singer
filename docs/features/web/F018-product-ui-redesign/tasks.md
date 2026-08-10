@@ -313,21 +313,45 @@
     - [x] 로그아웃 성공·실패 상태와 navigation 구현·회귀 테스트
     - [x] 실제 브라우저·targeted Storybook·전체 check·workflow audit 통과
 
-- [DOING][PRD-FR-046] T-F018-19 원본 4장 기준 전 페이지 visual fidelity 재작업
+- [DONE][PRD-FR-046] T-F018-19 원본 4장 기준 전 페이지 visual fidelity 재작업
   - Date: 2026-08-10
   - Acceptance:
     - 현재 구현은 기능과 데이터 계약만 보존하고 Landing, Login, Voice Scan, Voice Profile, Recommendation, Library, Mixing, Account, Admin의 레이아웃과 정보 위계를 네 원본 디자인 보드에 맞게 재구성한다.
-    - crystal asset은 Landing 하단 Every voice has its song. CTA에서만 사용하고 다른 페이지에는 렌더링하지 않는다.
+    - crystal asset과 prism 장식은 전 제품에서 제거하고, 브랜드 accent는 pastel violet waveform·status·mixing progress visual에만 제한한다.
     - desktop/tablet/mobile에서 원본 보드의 여백, flat section, thin border, black CTA, restrained accent를 일관되게 적용하고 기존 auth/query/audio/ticket/admin 동작을 보존한다.
   - Checklist:
-    - [ ] 기존 화면 구조를 visual source로 삼지 않는 규칙을 design/feature docs에 반영
-    - [ ] 공통 shell/token/spacing/type scale을 원본 보드 기준으로 재점검
-    - [ ] Landing/Login/Voice Scan 화면군 재작업
-    - [ ] Voice Profile/Recommendation/Song Detail 화면군 재작업
-    - [ ] Library/Mixing/Account 화면군 재작업
-    - [ ] Admin을 동일한 visual language로 재작업하고 dev/svc는 개발 도구 예외 유지
-    - [ ] 크리스탈 사용처가 Landing CTA 단 한 곳인지 정적 검사
-    - [ ] 브라우저 screenshot으로 원본 보드와 desktop/tablet/mobile visual QA
+    - [x] 기존 화면 구조를 visual source로 삼지 않는 규칙을 design/feature docs에 반영
+    - [x] 공통 shell/token/spacing/type scale을 최종 1672×941 보드 기준으로 재점검
+    - [x] Landing/Login/Voice Scan 화면군 재작업
+    - [x] Voice Profile/Recommendation/Song Detail 화면군 재작업
+    - [x] Library/Mixing/Account 화면군 재작업
+    - [x] Admin을 동일한 visual language로 재작업하고 dev/svc는 개발 도구 예외 유지
+    - [x] Landing·제품·Admin이 공통 Header/Footer를 사용하고 logo `/` 이동, 동일 UserMenu/profile image, admin nav를 공유
+    - [x] Account shortcut 제거, 사용자 TJ/catalog 번호 제거, 주요 생성일시 표시와 AI Mix search/select 높이 통일
+    - [x] pastel violet waveform token 통일과 실제 microphone MediaStream 기반 live waveform을 왼쪽→오른쪽으로 연속 렌더링
+    - [x] 분석 품질 analyzer 항목 제거, Recommendation/AI Mix status chip 공통화와 완료 결과 `/library/mixes/[id]` 연결
+    - [x] active Mixing Detail을 실제 server timeline + animated pastel gradient orb로 재구성하고 fake progress를 만들지 않음
+    - [x] Pretendard 적용, 작은 본문/표 글자 보정, production global component helper를 Tailwind로 이동
+    - [x] crystal/prism 렌더링과 사용자 노출용 TJ/catalog 번호가 production 화면에 없는지 정적 검사
+    - [x] 디자인 문서의 visual source를 `docs/designs/references/copy-singer/` 하나로 단일화하고 legacy analysis/generated 문서를 deprecation 상태로 축소
+    - [x] 최종 5개 reference binary를 canonical reference 디렉터리에 vendoring하고 legacy PNG/contact sheet·crystal asset을 제거; 미사용 Next 기본 SVG 3개(`public/file.svg`, `globe.svg`, `window.svg`)는 runtime 미참조 상태로 후속 housekeeping에 이관
+    - [x] 최종 1672×941 네 보드 기준 desktop과 768/360 responsive 브라우저 QA를 수행하고 horizontal overflow·주요 content rail·row density·section ordering을 확인; pixel-overlay 비교는 별도 acceptance로 요구하지 않음
+  - Verification:
+    - `pnpm run check` 통과 — 기존 Biome warning 59건, error 0, architecture 4/4
+    - `pnpm test` 전체 통과 — Next production build 23 pages, Storybook 36 files/94 tests 포함
+    - Chromium fake microphone(`work/vocal-profile-guide.wav`)으로 실제 MediaStream recorder를 실행해 350ms/850ms canvas bitmap 변화(`waveformChanged: true`)와 녹음 종료 후 ready 상태 확인
+    - Landing/Login 실제 Next 브라우저 1280/768/360에서 horizontal overflow 0 확인
+    - 개발 인증 우회 Next 서버에서 `/profile`, Library 두 탭, Account, Admin을 1672×941로 직접 확인; Voice Scan 2열, Library 65px row, 분석 상세의 source→2열 chart→quality/pitch→3개 band player 순서 확인
+    - 768/360 실제 브라우저에서 인증 화면 horizontal overflow 0 확인; Admin ticket form intrinsic width와 10행 mixing pagination(24건 → 3페이지) 보정
+    - 2026-08-10 사용자 확인으로 현재 구현·최종 5개 canonical reference 정리 상태를 T-F018-19 완료 기준으로 수용; 미사용 Next 기본 SVG 3개 삭제는 후속 housekeeping으로 분리
+
+- [TODO][NON-PRD] T-F018-20 미사용 public 기본 asset housekeeping
+  - Date: 2026-08-10
+  - Acceptance:
+    - runtime과 문서에서 참조되지 않는 Next 기본 public asset만 제거하고 `favicon.svg`, `og.png` 등 실제 metadata asset은 보존한다.
+  - Checklist:
+    - [ ] `public/file.svg`, `public/globe.svg`, `public/window.svg`의 참조 0건 재확인
+    - [ ] 미사용 SVG 3개 제거 후 production asset 참조 및 build/check 회귀 확인
 
 ---
 
@@ -346,9 +370,9 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm run check` | `2026-08-10` | 통과 — error 0, 기존 Biome warning 60건, Steiger 및 architecture 4/4 |
+| `pnpm run check` | `2026-08-10` | 통과 — error 0, 기존 Biome warning 59건, Steiger 및 architecture 4/4 |
 | `pnpm run test:auth-navigation` | `2026-08-10` | 통과 — safe callback·Library/Account navigation·route group·keyboard/touch label·sign-out 후 replace/refresh 5/5 |
-| `pnpm run test:storybook --run src/widgets/product-shell/ui/product-shell.stories.tsx src/_pages/home/ui/landing-page.stories.tsx src/_pages/library/ui/library-page.stories.tsx` | `2026-08-10` | 통과 — top header/no-aside·mobile navigation·crystal CTA/footer·dense Library 7/7 |
+| `pnpm run test:storybook --run src/widgets/product-shell/ui/product-shell.stories.tsx src/_pages/home/ui/landing-page.stories.tsx src/_pages/library/ui/library-page.stories.tsx` | `2026-08-10` | 통과 — 공통 Header/Footer·UserMenu·admin navigation·crystal 제거·dense Library 검증 |
 | `pnpm run test:storybook --run src/shared/ui/dropdown-menu/dropdown-menu.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-10` | 통과 — 공통 메뉴와 계정 메뉴를 실제로 열어 Menu.Group context·menuitem 4/4 확인 |
 | `pnpm run test:storybook --run src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-10` | 통과 — 일반 계정 메뉴와 개발 인증 우회 비활성 상태 4/4 |
 | `pnpm exec tsx --test tests/effect-cleanup.test.ts tests/recommendation-ui.test.tsx` | `2026-08-09` | 통과 — cleanup·추천 UI 회귀 6/6 |
@@ -366,13 +390,13 @@
 | `pnpm run test:auth:db` | `2026-08-10` | 통과 — session/role·Google provider account ownership·강제 개발 인증 우회 session 식별 3/3 |
 | `pnpm run test:tickets` | `2026-08-10` | 통과 — 실제 Account identity/provider/ticket UI 3/3, ledger balance·pagination clamp DB 1/1 |
 | `pnpm run test:architecture-boundaries` | `2026-08-10` | 통과 — `pnpm run check` 내부 FSD·Client/Server·App adapter 4/4 |
-| `pnpm run test:storybook --run` | `2026-08-10` | 통과 — 36 files, 93 tests, Landing motion·100곡 비교·dense ProductShell Library·development bypass 상태/a11y 포함; 최종 단일 ProductShell 재검증은 4/4 |
+| `pnpm run test:storybook --run` | `2026-08-10` | 통과 — 36 files, 94 tests, live microphone recorder story·Landing motion·100곡 비교·dense ProductShell Library·development bypass 상태/a11y 포함 |
 | `pnpm run build-storybook` | `2026-08-10` | 통과 — 36개 story file 정적 산출물 생성, 기존 chunk size warning만 있음 |
 | `pnpm run build` | `2026-08-10` | 통과 — Next.js 16 production build와 기존 23개 public/product/Admin/dev route 보존 |
 | `pnpm run test:base-ui` | `2026-08-10` | 통과 — TSX AST 기반 Link/Base UI non-native semantics 1/1 |
 | `pnpm run test:process-scripts` | `2026-08-10` | 통과 — process supervisor·Storybook production boundary 5/5 |
-| `pnpm test` | `2026-08-10` | 통과 — production build, 전체 unit·integration·DB·Query·architecture와 Storybook 36 files/92 tests |
-| `find docs/designs/generated/page-redesigns/concepts-v2 -maxdepth 1 -type f -name '*.png'` | `2026-08-10` | 통과 — 채택 V2 시안 13개 확인; V1·중간 시안은 검수 후 폐기 |
-| `git diff --check` | `2026-08-10` | 통과 — crystal·top-header 코드, current/V2 baseline, Design System·Feature 문서 whitespace 오류 없음 |
+| `pnpm test` | `2026-08-10` | 통과 — production build, 전체 unit·integration·DB·Query·architecture와 Storybook 36 files/94 tests |
+| `rg` design asset/reference audit | `2026-08-10` | 통과 — 현재 정본 문서는 canonical `references/copy-singer`만 안내하고 generated/current/V2는 legacy로 명시; production에서 crystal/file/globe/window asset 참조 없음 |
+| `git diff --check` | `2026-08-10` | 통과 — 공통 chrome·Pretendard·violet audio UI·Feature 문서 whitespace 오류 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-10T17:29:00+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-10T22:14:00+09:00 -->

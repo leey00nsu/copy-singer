@@ -128,7 +128,7 @@
 ### FR-2: 공개 entry와 인증
 
 - public landing과 Google-only login을 디자인 보드의 공간감과 정보 위계로 재구성한다.
-- Landing 마지막은 `Every voice has its song.` CTA, 프로젝트의 iridescent crystal asset과 그 아래 실제 site footer로 구성한다.
+- Landing 마지막은 `Every voice has its song.` CTA와 그 아래 실제 site footer로 구성하고 crystal/prism 이미지는 사용하지 않는다.
 - 기존 Better Auth callback, session, dev bypass와 private resource 권한을 변경하지 않는다.
 - persistent onboarding, 목적 선택과 다른 로그인 공급자는 F018에 포함하지 않는다.
 
@@ -214,5 +214,5 @@
 - PRD: [copy-singer-prd.md](../../../prd/copy-singer-prd.md)
 - Design System: [design-system.md](../../../designs/design-system.md)
 - Design: [product-ui-redesign.md](../../../designs/product-ui-redesign.md)
-- Page concepts and gap analysis: [page-redesign-analysis.md](../../../designs/page-redesign-analysis.md)
+- Visual references: [references/copy-singer/README.md](../../../designs/references/copy-singer/README.md)
 - PRD Refs: `PRD-US-019`, `PRD-US-020`, `PRD-US-021`, `PRD-US-022`, `PRD-US-023`, `PRD-US-024`, `PRD-FR-001`, `PRD-FR-002`, `PRD-FR-017`, `PRD-FR-021`, `PRD-FR-022`, `PRD-FR-023`, `PRD-FR-025`, `PRD-FR-036`, `PRD-FR-037`, `PRD-FR-039`, `PRD-FR-040`, `PRD-FR-041`, `PRD-FR-043`, `PRD-FR-045`, `PRD-FR-046`, `PRD-FR-047`, `PRD-FR-048`, `PRD-FR-049`, `PRD-FR-050`, `PRD-FR-051`

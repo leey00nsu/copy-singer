@@ -334,3 +334,35 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Decision**: 현재 구현 캡처는 기능·데이터·상태 계약 확인용으로만 사용하고 visual source로 사용하지 않는다. Landing, Login, Voice Scan, Voice Profile, Recommendation/Song Detail, Library/Mixing, Account와 Admin은 네 원본 디자인 보드의 composition, whitespace, flat sections, thin borders, typography hierarchy와 restrained accent를 우선해 재조립한다. Crystal asset은 Landing 하단 `Every voice has its song.` CTA에서만 렌더링하고 다른 모든 route에서는 제거한다. `/dev/svc`만 개발 도구 visual 예외로 유지한다.
 - **Rationale**: 기능 보존과 시각 보존을 분리해야 원본 보드의 에디토리얼한 공간감과 제품 중심 interaction을 실제 화면에 반영할 수 있다. Crystal 사용처를 한 곳으로 제한하면 waveform·분석 데이터가 각 작업 화면의 시각적 중심으로 유지된다.
 - **Consequences**: 기존 Page component의 wrapper, card grouping, section ordering과 content width는 호환성 대상이 아니다. route, action, data contract와 accessibility semantics가 유지되는 한 원본 보드에 맞춰 재배치할 수 있으며 Admin도 같은 시각 언어의 구현 범위에 포함된다.
+
+## D035: 1672×941 최종 4보드가 legacy reference/V2를 대체 (2026-08-10)
+
+- **Context**: T-F018-19 구현 중 사용자가 다시 첨부한 최종 네 장은 `Landing + Voice Scan`, `Library Vocal Profile + AI Mix`, `Analysis Detail + Account`, `Admin`을 한 화면군씩 보여 주는 `1672 × 941` 보드다. 프로젝트에 보관된 `1448 × 1086` 네 자산 및 generated V2와 구성·밀도·header/footer가 달라, legacy 자산을 계속 정본으로 사용하면 로컬 구현이 사용자 최종 레퍼런스와 다시 어긋난다.
+- **Decision**: 2026-08-10 최종 `1672 × 941` 네 장을 최상위 visual source of truth로 고정한다. 기존 `docs/designs/assets/product-ui-redesign/`의 `1448 × 1086` 네 장과 generated V1/V2는 히스토리·gap 추적용 legacy 자료로 강등한다. 최종 보드의 외곽 번호/설명/presentation frame은 구현하지 않고 Copy Singer app frame 내부만 재현한다.
+- **Implementation**: 제품 shell은 64px top header, 약 72rem 중앙 rail과 underline active navigation으로 맞춘다. Landing/Voice Scan, Library 두 탭, Analysis Detail, Account, Admin의 typography scale·table density·hairline·CTA 위치를 최종 보드 기준으로 재조립한다. ProductShell에는 Library 보드의 compact footer를 추가하고 Admin은 전용 운영 footer를 유지한다. Crystal은 Landing 하단 CTA 한 곳만 유지한다.
+- **Evidence**: `pnpm run check` 통과(기존 Biome warning 60건), `pnpm test` 전체 통과, Storybook 36 files/93 tests, crystal exact usage가 Landing component/test-id에만 존재, 실제 Next Landing/Login 1280·768·360에서 horizontal overflow 0 확인.
+- **Consequences**: 이후 F018과 후속 UI 작업에서 legacy 1448 보드나 generated V2가 최종 보드와 충돌하면 최종 1672 보드를 따른다. 기존 구현 화면의 spacing/card/table 구조를 다시 시각 기준으로 승격하지 않는다.
+
+## D036: 공통 app chrome·Pretendard·violet audio UI와 crystal 완전 제거 (2026-08-10)
+
+- **Context**: 최종 보드 구현 후 실제 사용 검수에서 Landing과 product route의 header/footer 간격·프로필 메뉴가 서로 달랐고, Account shortcut, TJ 번호, green waveform, 작은 본문 크기, 분석기 metadata, Recommendation/Mix 상태 표현 차이와 active Mixing Detail의 약한 진행 피드백이 확인됐다. 사용자는 crystal 장식을 최종적으로 제거하고 첨부 AI mixing 이미지를 진행 화면의 구조 reference로 지정했다.
+- **Decision**: Landing·product·Admin은 동일 `ProductHeader`/`ProductFooter`를 사용하고 brand link는 항상 `/`로 이동한다. 로그인 사용자는 Landing에서도 동일 `UserMenu`와 실제 profile image를 사용하며 admin이면 중앙 navigation에 `Admin`을 노출한다. Crystal/prism은 전 제품 UI에서 제거한다. Pretendard를 기본 sans로 사용하고 pastel violet semantic token을 waveform·status·mixing progress에 일관되게 사용한다.
+- **Implementation**: Account shortcut을 제거하고 사용자용 TJ/catalog 번호를 숨긴다. 생성일은 주요 목록에서 날짜+시간으로 표시하고 AI Mix search/select control 높이를 동일하게 맞춘다. Recorder는 Wavesurfer continuous waveform을 100ms timeslice로 갱신하며 violet token을 사용한다. Analysis Quality에서 analyzer metadata를 제거하고, Recommendation과 AI Mix는 공통 `MixingStatusBadge`를 사용한다. 완료된 추천 결과는 실제 mixing job id가 있으면 `/library/mixes/[id]`로 이동한다. Active Mixing Detail은 fake percentage 없이 실제 server timeline과 animated pastel gradient orb를 사용한다. Production의 `editorial-*`/`flat-surface`/`product-page*` global helper는 Tailwind utility로 이동하고 `globals.css`에는 token/base와 `/dev/svc` legacy helper만 남긴다.
+- **Rationale**: app chrome과 interaction primitive를 한 구현으로 합쳐야 Landing과 product 간 drift를 막을 수 있고, 브랜드 색·상태·오디오 시각 언어가 동일해야 사용자가 분석→추천→믹싱 흐름을 하나의 제품으로 인지할 수 있다. 실제 backend 단계만 표시하면 시각적 피드백을 강화하면서도 존재하지 않는 진행률을 만들지 않는다.
+- **Consequences**: D031/D034/D035의 crystal 유지와 Admin 전용 footer 부분은 D036이 대체한다. 이후 제품 UI에서 새로운 global component helper를 추가하기보다 Tailwind utility 또는 component-local 표현을 우선하고, `/dev/svc`만 기존 global helper 예외로 유지한다.
+
+## D037: Recorder live waveform은 WaveSurfer render loop 대신 실제 microphone analyser를 사용 (2026-08-10)
+
+- **Context**: D036에서 `RecordPlugin.continuousWaveform`을 활성화했지만 실제 `/profile` 녹음 중 사용자가 파형이 움직이지 않는 회귀를 재확인했다. WaveSurfer RecordPlugin은 내부적으로 짧은 analyser sample을 반복 `wavesurfer.load()`하는 방식이라 recorder UI의 live rendering을 플러그인 구현 세부에 의존하게 된다.
+- **Decision**: RecordPlugin은 녹음·duration event·Blob 생성에만 사용한다. 권한 승인 시 `plugin.startMic()`이 반환한 실제 `MediaStream`을 동일 녹음에 재사용하고, 별도 `AudioContext → MediaStreamAudioSourceNode → AnalyserNode`에서 입력 amplitude를 읽어 component-local canvas에 그린다. 약 45ms마다 새 amplitude bar를 오른쪽에 추가하고, canvas 폭을 채운 뒤에는 가장 오래된 bar를 제거해 왼쪽으로 흐르게 한다.
+- **Rationale**: 실제 녹음 스트림을 직접 샘플링하면 파형 표시가 WaveSurfer의 `load()`/duration/minPxPerSec 상태와 분리되어 브라우저에서 관찰 가능한 microphone signal 자체를 UI에 반영할 수 있다. 저장 오디오 player에는 기존 WaveSurfer를 그대로 유지하므로 재생 기능의 회귀 범위도 제한된다.
+- **Evidence**: `pnpm run typecheck`, `pnpm run test:voice-scan` 12/12, VoiceScanInput Storybook 6/6 통과. Chromium에 `--use-file-for-fake-audio-capture=work/vocal-profile-guide.wav`를 사용해 실제 microphone API 경로를 실행했으며 350ms/850ms 시점의 canvas bitmap이 달라졌고(`waveformChanged: true`), 녹음 종료 후 `녹음 준비 완료`까지 확인했다.
+- **Consequences**: D036의 `Wavesurfer continuous waveform 100ms` 구현 설명은 D037이 대체한다. live recorder canvas는 animation frame·AudioContext·source/analyser를 unmount/stream 교체 시 모두 정리해야 하며, WaveSurfer는 저장된 오디오 재생 용도로만 사용한다.
+
+## D038: 디자인 reference 단일 SSOT와 generated/current artifact 제거 정책 (2026-08-10)
+
+- **Context**: F018 진행 중 1448×1086 legacy reference, generated V2, current route screenshot, contact sheet, crystal runtime asset와 1672×941 최종 reference가 동시에 존재해 새 에이전트가 어떤 이미지를 정본으로 봐야 하는지 판단하기 어려워졌다. 문서 일부도 V2를 `채택 시안`으로 부르거나 crystal 재사용을 요구해 최신 결정과 충돌했다.
+- **Decision**: 제품 visual reference는 `docs/designs/references/copy-singer/` 한 곳만 정본으로 사용한다. 최종 세트는 Landing+Voice Scan, Library, Analysis+Account, Admin 4보드와 Mixing Progress 1장이다. `docs/designs/assets/product-ui-redesign/`, `docs/designs/generated/page-redesigns/`, `docs/designs/page-redesign-analysis.md`는 legacy로 간주하고 신규 구현·리뷰에서 참조하지 않는다. current screenshot, generated concept, contact sheet는 repository에 새로 추가하지 않고 일회성 QA artifact로만 생성한다. `public/`에는 실제 runtime에서 참조되는 asset만 유지한다.
+- **Rationale**: visual source가 하나여야 에이전트와 사람이 같은 화면을 기준으로 구현·검수할 수 있고, Git history가 이미 과거 시안의 archive 역할을 하므로 working tree에 중간 산출물을 중복 보관할 필요가 없다.
+- **Implementation**: `docs/designs/README.md`, `product-ui-redesign.md`, `design-system.md`를 현재 reference 정책으로 갱신하고 legacy analysis/generated 문서는 deprecation stub으로 축소한다. crystal 규칙과 V2 `채택` 표현을 현재 정본에서 제거한다.
+- **Consequences**: 이후 visual QA는 최종 reference 디렉터리와 실제 렌더 screenshot을 직접 비교한다. 과거 이미지가 working tree에 물리적으로 남아 있더라도 정본으로 사용하지 않으며, 삭제 가능한 로컬 파일 작업이 허용되는 도구에서 legacy binary를 제거한다.
