@@ -17,12 +17,16 @@ export default async function VocalProfilesPage({ searchParams }: { searchParams
   const analysisJobs = analysisJobRows.map(analysisJobPayload);
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
-      <div className="flex flex-wrap items-end justify-between gap-5">
+    <div className="mx-auto w-full max-w-[72rem] px-5 py-12 sm:px-7 lg:px-8 lg:py-14">
+      <div className="flex flex-wrap items-end justify-between gap-8 border-b pb-9">
         <div>
-          <p className="text-xs font-semibold tracking-[0.18em] text-data-accent-foreground">VOCAL PROFILES</p>
-          <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">내 보컬 프로필</h1>
-          <p className="mt-3 text-sm leading-6 text-muted-foreground">
+          <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
+            Vocal profiles
+          </p>
+          <h1 className="mt-2.5 max-w-3xl text-[clamp(2rem,4vw,3.5rem)] leading-[1.04] font-semibold tracking-[-0.045em] text-balance">
+            내 보컬 프로필
+          </h1>
+          <p className="mt-4 max-w-2xl text-[15px] leading-7 text-muted-foreground">
             저장된 분석을 다시 보고, 제출했던 보컬을 안전하게 들어보세요.
           </p>
         </div>

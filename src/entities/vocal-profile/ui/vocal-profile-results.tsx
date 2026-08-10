@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity, AudioWaveform, BadgeCheck, ChevronDown, Clock3, Code2, Gauge, Info, Volume2 } from "lucide-react";
+import { Activity, AudioWaveform, BadgeCheck, ChevronDown, Clock3, Gauge, Info, Volume2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Bar, BarChart, CartesianGrid, Cell, Line, LineChart, ReferenceLine, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
@@ -39,9 +39,9 @@ function RangeProfile({ profile }: { profile: VocalProfileResponse }) {
 
   return (
     <Card className="overflow-hidden rounded-none border-x-0 shadow-none">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg">음역 프로필</CardTitle>
-        <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted-foreground">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm">음역 프로필</CardTitle>
+        <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[10px] text-muted-foreground">
           <span className="flex items-center gap-2">
             <i className="h-2 w-7 rounded-full bg-data-accent/30" />
             전체 관측 음역
@@ -59,7 +59,7 @@ function RangeProfile({ profile }: { profile: VocalProfileResponse }) {
       <CardContent>
         <ChartContainer
           aria-label={`전체 관측 음역 ${midiToNoteName(profile.minMidi)}부터 ${midiToNoteName(profile.maxMidi)}, 실용 음역 ${midiToNoteName(profile.tessituraLowMidi)}부터 ${midiToNoteName(profile.tessituraHighMidi)}, 중앙음 ${midiToNoteName(profile.medianMidi)}`}
-          className="h-44 w-full aspect-auto"
+          className="h-36 w-full aspect-auto"
           config={RANGE_CHART_CONFIG}
           role="img"
         >
@@ -108,7 +108,7 @@ function RangeProfile({ profile }: { profile: VocalProfileResponse }) {
             </Bar>
           </BarChart>
         </ChartContainer>
-        <div className="grid overflow-hidden rounded-xl border sm:grid-cols-3">
+        <div className="grid overflow-hidden border-y sm:grid-cols-3 sm:divide-x">
           {[
             [
               "전체 관측 음역",
@@ -122,9 +122,9 @@ function RangeProfile({ profile }: { profile: VocalProfileResponse }) {
             ],
             ["중앙음", midiToNoteName(profile.medianMidi), `${profile.medianMidi.toFixed(1)} MIDI`],
           ].map(([label, value, detail]) => (
-            <div className="border-b p-4 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0" key={label}>
-              <p className="text-xs text-muted-foreground">{label}</p>
-              <p className="mt-1 text-lg font-semibold">{value}</p>
+            <div className="border-b px-1 py-3 last:border-b-0 sm:border-b-0 sm:px-4" key={label}>
+              <p className="text-[10px] text-muted-foreground">{label}</p>
+              <p className="mt-1 text-sm font-semibold">{value}</p>
               <p className="mt-1 font-mono text-[10px] text-muted-foreground">{detail}</p>
             </div>
           ))}
@@ -153,13 +153,13 @@ function HistogramChart({
   return (
     <Card className="rounded-none border-x-0 shadow-none">
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg">음정 분포</CardTitle>
-        <p className="text-xs text-muted-foreground">오래 머문 음일수록 막대가 높습니다.</p>
+        <CardTitle className="text-sm">음정 분포</CardTitle>
+        <p className="text-[10px] text-muted-foreground">오래 머문 음일수록 막대가 높습니다.</p>
       </CardHeader>
       <CardContent>
         <ChartContainer
           aria-label="음정별 상대 빈도 막대그래프"
-          className="h-[250px] w-full aspect-auto"
+          className="h-[210px] w-full aspect-auto"
           config={HISTOGRAM_CHART_CONFIG}
           role="img"
         >
@@ -200,10 +200,10 @@ function VisualizationUnavailable({ title }: { title: string }) {
   return (
     <Card className="rounded-none border-x-0 shadow-none">
       <CardHeader>
-        <CardTitle className="text-lg">{title}</CardTitle>
+        <CardTitle className="text-sm">{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex min-h-48 items-center justify-center rounded-xl border border-dashed bg-muted/25 p-6 text-center text-sm leading-6 text-muted-foreground">
+        <div className="flex min-h-40 items-center justify-center rounded-lg border border-dashed bg-muted/20 p-5 text-center text-xs leading-5 text-muted-foreground">
           이 프로필은 상세 시각화 데이터가 없습니다.
           <br />
           새로 녹음해 분석하면 그래프를 확인할 수 있어요.
@@ -228,10 +228,10 @@ function PitchTrace({ visualization }: { visualization: VocalProfileVisualizatio
   return (
     <Collapsible onOpenChange={setOpen} open={open}>
       <Card className="rounded-none border-x-0 shadow-none">
-        <CollapsibleTrigger className="flex w-full items-center justify-between p-6 text-left">
+        <CollapsibleTrigger className="flex w-full items-center justify-between px-5 py-4 text-left">
           <span>
-            <span className="block text-lg font-semibold">상세 피치 추적</span>
-            <span className="mt-1 block text-xs text-muted-foreground">
+            <span className="block text-sm font-semibold">상세 피치 추적</span>
+            <span className="mt-1 block text-[10px] text-muted-foreground">
               시각화를 위해 최대 720포인트로 요약된 음높이입니다.
             </span>
           </span>
@@ -241,7 +241,7 @@ function PitchTrace({ visualization }: { visualization: VocalProfileVisualizatio
           <CardContent className="pt-0">
             <ChartContainer
               aria-label="시간에 따른 보컬 피치 추적 그래프"
-              className="h-60 w-full aspect-auto"
+              className="h-48 w-full aspect-auto"
               config={PITCH_CHART_CONFIG}
               role="img"
             >
@@ -320,35 +320,31 @@ export function VocalProfileResults({
       profile.recording.sampleRate ? `${profile.recording.sampleRate.toLocaleString()}Hz` : "-",
       AudioWaveform,
     ],
-    ["분석기", profile.analyzer, Code2],
   ] as const;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5">
       {showSummary ? <VocalProfileSummary profile={profile} /> : null}
-      <div className="grid gap-6 lg:grid-cols-[1.08fr_.92fr]">
+      <div className="grid gap-4 lg:grid-cols-[1.08fr_.92fr]">
         <RangeProfile profile={profile} />
         <HistogramChart profile={profile} visualization={visualization} />
       </div>
       <div className="grid gap-4 lg:grid-cols-[1.3fr_.9fr]">
         <Card className="rounded-none border-x-0 shadow-none">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg">분석 품질</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">분석 품질</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 xl:grid-cols-7">
+            <div className="grid border-y sm:grid-cols-3 xl:grid-cols-6">
               {quality.map(([label, value, Icon]) => (
-                <div className="rounded-xl border bg-muted/20 p-3" key={label}>
+                <div className="border-b px-3 py-3 sm:border-r xl:border-b-0 xl:last:border-r-0" key={label}>
                   <p className="text-[11px] text-muted-foreground">{label}</p>
-                  <p className="mt-2 break-words text-sm font-semibold">{value}</p>
-                  <Icon className="mt-3 size-4 text-data-accent-foreground" />
-                  <p className="mt-1 font-mono text-[9px] text-muted-foreground">
-                    {label === "분석기" ? profile.analyzerVersion : ""}
-                  </p>
+                  <p className="mt-1.5 break-words text-sm font-semibold">{value}</p>
+                  <Icon className="mt-2 size-3.5 text-data-accent-foreground" />
                 </div>
               ))}
             </div>
-            <p className="mt-4 flex gap-2 text-xs leading-5 text-muted-foreground">
+            <p className="mt-3 flex gap-2 text-xs leading-5 text-muted-foreground">
               <Info className="mt-0.5 size-3.5 shrink-0" />
               짧은 한 소절에서 관찰된 결과입니다. 2~3곡을 추가로 분석하면 더 정확해집니다.
             </p>
@@ -358,9 +354,9 @@ export function VocalProfileResults({
       </div>
       {sourceAudioSrc ? (
         <Card className="rounded-none border-x-0 shadow-none">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg">분석된 대표 음역 구간</CardTitle>
-            <p className="text-xs leading-5 text-muted-foreground">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">분석된 대표 음역 구간</CardTitle>
+            <p className="text-[10px] leading-4.5 text-muted-foreground">
               무음을 제외하고 분석된 저음·중앙·고음 대표 구간입니다. 버튼을 누르면 제출한 최대 60초 오디오에서 해당
               구간만 이어서 재생합니다. AI 믹싱에는 이 분석 표시와 별도로 안정적인 중음만 만든 레퍼런스를 사용합니다.
             </p>
@@ -369,7 +365,7 @@ export function VocalProfileResults({
             {referenceAvailability === "ready" ? (
               <ReferenceBandPlayers key={sourceAudioSrc} segments={referenceSegments} sourceAudioSrc={sourceAudioSrc} />
             ) : (
-              <div className="rounded-xl border border-dashed bg-muted/25 p-5 text-sm leading-6 text-muted-foreground">
+              <div className="border-y border-dashed py-4 text-xs leading-5 text-muted-foreground">
                 {referenceAvailability === "unavailable"
                   ? "이 녹음에서는 안정적인 저음·중앙·고음 구간을 충분히 찾지 못했어요. 반주 없이 여러 음높이가 포함된 소절로 다시 분석해주세요."
                   : "이 프로필은 음역 영역 분석을 지원하기 전에 만들어졌어요. 최신 분석기로 새 보컬 프로필을 만들어주세요."}

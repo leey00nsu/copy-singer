@@ -26,6 +26,8 @@ Copy Singer의 화면이 Feature와 route가 늘어나도 하나의 제품처럼
 
 문서와 코드가 다르면 이를 의도된 예외로 간주하지 않는다. 실제 코드를 먼저 확인하고 같은 변경에서 문서, Storybook 또는 decision을 동기화한다.
 
+Visual reference는 `docs/designs/references/copy-singer/`만 정본으로 사용한다. 과거 current screenshot, generated concept/contact sheet와 legacy reference를 working tree의 디자인 기준으로 유지하지 않으며, 일회성 visual QA 이미지는 `/tmp` 또는 gitignored artifact 경로에서 생성한다. production `public/`에는 runtime에서 실제 참조되는 asset만 둔다.
+
 ## 제품 원칙
 
 1. **제품 상호작용이 중심이다**: 녹음, waveform, 분석 결과, 추천 근거와 오디오 재생이 장식보다 먼저 보인다.
@@ -72,7 +74,7 @@ Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface�
 
 ### Typography
 
-현재 애플리케이션의 sans font stack을 유지한다. 새로운 브랜드 font dependency를 추가하지 않는다.
+제품 UI의 기본 sans는 **Pretendard Variable**을 사용한다. 숫자·시간처럼 고정폭 표현이 필요한 경우에만 기존 monospace stack을 제한적으로 사용한다. 페이지별로 별도 sans font를 도입하지 않는다.
 
 | 역할 | 권장 크기/행간 | Weight | 사용 |
 | --- | --- | --- | --- |
@@ -117,8 +119,8 @@ Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface�
 - 시연용 waveform은 서로 다른 진폭과 위상으로 움직일 수 있고 microphone ring은 바깥으로 확산할 수 있지만, 가짜 입력·진행률로 오해될 값은 표시하지 않는다.
 - 기능 설명은 실제 제품 흐름인 분석 → 추천 → 선택형 AI 믹싱 순서와 일치한다.
 - 인증 화면은 한 열로 유지하며 사용할 수 없는 provider를 placeholder로 표시하지 않는다.
-- Landing 마지막에는 한 개의 primary action, iridescent crystal visual과 짧은 설명으로 구성한 CTA를 두고, 그 아래에 brand·제품/계정 link·copyright가 있는 실제 site footer를 둔다.
-- Crystal은 `public/images/copy-singer-crystal.png`를 재사용하고 넓은 purple gradient나 별도 glass 디자인 시스템으로 확장하지 않는다.
+- Landing 마지막에는 한 개의 primary action과 짧은 설명으로 구성한 CTA를 두고, 그 아래에 brand·제품/계정 link·copyright가 있는 실제 site footer를 둔다.
+- crystal/prism 이미지는 제품 UI에서 사용하지 않는다. CTA의 색감이 필요하면 낮은 채도의 pastel violet/blue 계열 surface를 제한적으로 사용한다.
 
 ### Authenticated app shell
 
@@ -286,4 +288,4 @@ Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface�
 - [Product UI Redesign](./product-ui-redesign.md)
 - [F018 Spec](../features/web/F018-product-ui-redesign/spec.md)
 - [Copy Singer PRD](../prd/copy-singer-prd.md)
-- [Design assets](./assets/product-ui-redesign/)
+- [Visual references](./references/copy-singer/README.md)

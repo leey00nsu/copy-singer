@@ -13,6 +13,11 @@
 # testing
 /coverage
 /storybook-static/
+/artifacts/ui-review/
+
+# deprecated design screenshots/concepts; canonical references live in docs/designs/references/
+/docs/designs/assets/product-ui-redesign/*.png
+/docs/designs/generated/page-redesigns/**/*.png
 
 # next.js
 /.next/

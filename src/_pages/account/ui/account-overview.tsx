@@ -1,4 +1,4 @@
-import { AudioLines, Library, ShieldCheck, Ticket, UserRound } from "lucide-react";
+import { ShieldCheck, Ticket, UserRound } from "lucide-react";
 import Link from "next/link";
 import { type TicketEntryView, TicketLedger } from "@/entities/ticket";
 import { Badge } from "@/shared/ui/badge";
@@ -33,23 +33,23 @@ function PaginationAction({
   href: string;
 }) {
   return disabled ? (
-    <Button disabled variant="outline">
+    <Button disabled size="sm" variant="outline">
       {direction}
     </Button>
   ) : (
-    <Link className={buttonVariants({ variant: "outline" })} href={href}>
+    <Link className={buttonVariants({ size: "sm", variant: "outline" })} href={href}>
       {direction}
     </Link>
   );
 }
 
-export function AccountOverview({ account, admin = false, authentication, user }: AccountOverviewProps) {
+export function AccountOverview({ account, authentication, user }: AccountOverviewProps) {
   return (
-    <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
+    <div className="mx-auto w-full max-w-[72rem] px-5 py-12 sm:px-7 lg:px-8 lg:py-14">
       <header>
-        <p className="text-xs font-semibold tracking-[0.18em] text-data-accent-foreground">ACCOUNT</p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">내 계정</h1>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
+        <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">Account</p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-[-0.04em] sm:text-[2rem]">내 계정</h1>
+        <p className="mt-2.5 max-w-2xl text-xs leading-5 text-muted-foreground">
           로그인 계정과 사용 가능한 티켓, 변경 내역을 확인하세요.
         </p>
       </header>
@@ -57,32 +57,32 @@ export function AccountOverview({ account, admin = false, authentication, user }
       <section aria-labelledby="account-information-title" className="mt-10">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h2 className="text-xl font-semibold" id="account-information-title">
+            <h2 className="text-base font-semibold" id="account-information-title">
               계정 정보
             </h2>
-            <p className="mt-1 text-sm text-muted-foreground">현재 로그인한 사용자와 실제 연결 공급자입니다.</p>
+            <p className="mt-1 text-xs text-muted-foreground">현재 로그인한 사용자와 실제 연결 공급자입니다.</p>
           </div>
-          <Badge variant={authentication.googleConnected ? "outline" : "secondary"}>
+          <Badge className="text-[11px]" variant={authentication.googleConnected ? "outline" : "secondary"}>
             <ShieldCheck aria-hidden="true" className="size-3" />
             {authentication.googleConnected ? "Google 연결됨" : "Google 연결 정보 없음"}
           </Badge>
         </div>
         <dl className="mt-4 grid gap-px border-y bg-border md:grid-cols-3">
-          <div className="bg-background px-4 py-5 sm:px-6">
-            <dt className="flex items-center gap-2 text-xs text-muted-foreground">
-              <UserRound aria-hidden="true" className="size-3.5" /> 이름
+          <div className="bg-background px-4 py-4 sm:px-5">
+            <dt className="flex items-center gap-2 text-[11px] text-muted-foreground">
+              <UserRound aria-hidden="true" className="size-3" /> 이름
             </dt>
-            <dd className="mt-2 break-words text-sm font-semibold">{user.name}</dd>
+            <dd className="mt-1.5 break-words text-xs font-semibold">{user.name}</dd>
           </div>
-          <div className="bg-background px-4 py-5 sm:px-6">
-            <dt className="text-xs text-muted-foreground">이메일</dt>
-            <dd className="mt-2 break-all text-sm font-semibold">{user.email}</dd>
+          <div className="bg-background px-4 py-4 sm:px-5">
+            <dt className="text-[11px] text-muted-foreground">이메일</dt>
+            <dd className="mt-1.5 break-all text-xs font-semibold">{user.email}</dd>
           </div>
-          <div className="bg-background px-4 py-5 sm:px-6">
-            <dt className="text-xs text-muted-foreground">로그인 방식</dt>
-            <dd className="mt-2 text-sm font-semibold">{authentication.googleConnected ? "Google" : "현재 세션"}</dd>
+          <div className="bg-background px-4 py-4 sm:px-5">
+            <dt className="text-[11px] text-muted-foreground">로그인 방식</dt>
+            <dd className="mt-1.5 text-xs font-semibold">{authentication.googleConnected ? "Google" : "현재 세션"}</dd>
             {authentication.googleConnectedAt ? (
-              <p className="mt-1 text-xs text-muted-foreground">
+              <p className="mt-1 text-[11px] text-muted-foreground">
                 {authentication.googleConnectedAt.toLocaleDateString("ko-KR")} 연결
               </p>
             ) : null}
@@ -90,43 +90,26 @@ export function AccountOverview({ account, admin = false, authentication, user }
         </dl>
       </section>
 
-      <section aria-labelledby="ticket-balance-title" className="mt-10 border-y py-7">
-        <div className="flex flex-wrap items-center justify-between gap-5">
-          <div>
-            <p className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Ticket aria-hidden="true" className="size-4" /> 사용 가능한 티켓
-            </p>
-            <h2 className="mt-2 text-4xl font-semibold tracking-tight tabular-nums" id="ticket-balance-title">
-              {account.balance}개
-            </h2>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Link className={buttonVariants()} href="/library">
-              <Library aria-hidden="true" className="size-4" /> Library
-            </Link>
-            <Link className={buttonVariants({ variant: "outline" })} href="/profile">
-              <AudioLines aria-hidden="true" className="size-4" /> 새 목소리 분석
-            </Link>
-            {admin ? (
-              <Link className={buttonVariants({ variant: "outline" })} href="/admin">
-                <ShieldCheck aria-hidden="true" className="size-4" /> Admin
-              </Link>
-            ) : null}
-          </div>
-        </div>
+      <section aria-labelledby="ticket-balance-title" className="mt-8 border-y py-6">
+        <p className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Ticket aria-hidden="true" className="size-3.5" /> 사용 가능한 티켓
+        </p>
+        <h2 className="mt-1.5 text-3xl font-semibold tracking-[-0.04em] tabular-nums" id="ticket-balance-title">
+          {account.balance}개
+        </h2>
       </section>
 
-      <section aria-labelledby="ticket-ledger-title" className="mt-10">
-        <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
+      <section aria-labelledby="ticket-ledger-title" className="mt-9">
+        <div className="mb-3 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h2 className="text-xl font-semibold" id="ticket-ledger-title">
+            <h2 className="text-base font-semibold" id="ticket-ledger-title">
               티켓 변경 내역
             </h2>
-            <p className="mt-1 text-sm leading-6 text-muted-foreground">
+            <p className="mt-1 text-xs leading-5 text-muted-foreground">
               지급, AI 믹싱 사용, 자동 환불과 관리자 조정을 시간순으로 표시합니다.
             </p>
           </div>
-          <p className="text-xs text-muted-foreground">총 {account.total}건</p>
+          <p className="text-[11px] text-muted-foreground">총 {account.total}건</p>
         </div>
         <TicketLedger entries={account.entries} />
         {account.total > 0 ? (
@@ -136,7 +119,7 @@ export function AccountOverview({ account, admin = false, authentication, user }
               disabled={account.page <= 1}
               href={`/account?page=${account.page - 1}`}
             />
-            <span className="min-w-16 text-center text-sm text-muted-foreground" aria-live="polite">
+            <span className="min-w-14 text-center text-xs text-muted-foreground" aria-live="polite">
               {account.page} / {account.pageCount}
             </span>
             <PaginationAction

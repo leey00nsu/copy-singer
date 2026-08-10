@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, AudioLines, CalendarDays, ChevronRight, Clock3, LoaderCircle, RotateCcw } from "lucide-react";
+import { AlertTriangle, AudioLines, ChevronRight, Clock3, LoaderCircle, RotateCcw } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import {
@@ -149,46 +149,53 @@ export function VocalProfileLibrary({
         <p aria-live="polite">보컬 프로필 {history.total}개</p>
         <p>최신 분석순</p>
       </div>
-      <div className="divide-y border-y">
+      <div className="hidden grid-cols-[minmax(0,2fr)_minmax(9rem,1fr)_minmax(6rem,.75fr)_minmax(5rem,.6fr)_minmax(8rem,.9fr)_5.5rem] border-y bg-muted/15 px-3 py-2 text-[11px] font-medium text-muted-foreground md:grid">
+        <span>프로필 이름</span>
+        <span>생성일</span>
+        <span>음역 (최저–최고)</span>
+        <span>안정도</span>
+        <span>활동</span>
+        <span className="text-right">상세</span>
+      </div>
+      <div className="divide-y border-b">
         <VocalProfileAnalysisJobRows jobs={analysisJobs} />
         {history.profiles.map((profile) => {
           const presentation = presentVocalProfile(profile);
           return (
             <article
-              className="grid gap-3 bg-background py-4 md:grid-cols-[minmax(0,1.5fr)_minmax(6.5rem,.55fr)_minmax(5rem,.45fr)_minmax(9rem,.7fr)_auto] md:items-center"
+              className="grid gap-3 bg-background px-3 py-3.5 md:grid-cols-[minmax(0,2fr)_minmax(9rem,1fr)_minmax(6rem,.75fr)_minmax(5rem,.6fr)_minmax(8rem,.9fr)_5.5rem] md:items-center md:gap-0"
               key={profile.id}
             >
-              <div className="min-w-0">
-                <p className="text-xs font-semibold tracking-[0.14em] text-data-accent-foreground">
-                  VOCAL PROFILE<span className="sr-only"> 보컬 프로필</span>
-                </p>
-                <h2 className="mt-1 truncate text-base font-semibold">{presentation.label}</h2>
-                <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <CalendarDays aria-hidden="true" className="size-3" />
-                    {new Date(profile.createdAt).toLocaleDateString("ko-KR")}
-                  </span>
-                  <span>{profile.durationMs ? `${(profile.durationMs / 1000).toFixed(1)}초` : "길이 정보 없음"}</span>
-                </p>
+              <div className="flex min-w-0 items-center gap-3">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-data-accent/10 text-data-accent-foreground">
+                  <AudioLines aria-hidden="true" className="size-3.5" />
+                </span>
+                <div className="min-w-0">
+                  <h2 className="truncate text-sm font-semibold">{presentation.label}</h2>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {profile.durationMs ? `${(profile.durationMs / 1000).toFixed(1)}초` : "길이 정보 없음"}
+                  </p>
+                </div>
               </div>
-              <dl className="grid grid-cols-3 gap-2 md:contents">
-                {[
-                  ["음역", presentation.practicalRange.label],
-                  ["안정도", `${presentation.stability.percent}%`],
-                  ["활동", `추천 ${profile.recommendationCount} · 믹스 ${profile.mixingCount}`],
-                ].map(([label, value]) => (
-                  <div className="min-w-0 border-l pl-2 md:pl-3" key={label}>
-                    <dt className="text-xs text-muted-foreground">{label}</dt>
-                    <dd className="mt-0.5 text-xs font-medium sm:text-sm">{value}</dd>
-                  </div>
-                ))}
-              </dl>
+              <p className="text-xs text-muted-foreground">
+                {new Date(profile.createdAt).toLocaleString("ko-KR", { dateStyle: "short", timeStyle: "short" })}
+              </p>
+              <p className="text-xs font-medium">{presentation.practicalRange.label}</p>
+              <p className="text-xs font-medium tabular-nums">{presentation.stability.percent}%</p>
+              <p className="text-[11px] text-muted-foreground sm:text-xs">
+                추천 {profile.recommendationCount} · 믹스 {profile.mixingCount}
+              </p>
               <Link
                 aria-label={`${presentation.label} 분석과 제출 보컬 보기`}
-                className={buttonVariants({ size: "sm", variant: "ghost" })}
+                className={buttonVariants({
+                  size: "sm",
+                  variant: "ghost",
+                  className: "justify-self-start px-2 text-xs md:justify-self-end",
+                })}
                 href={`/vocal-profiles/${profile.id}`}
               >
-                상세 보기 <ChevronRight aria-hidden="true" className="size-4" />
+                <span className="md:sr-only">상세 보기</span>
+                <ChevronRight aria-hidden="true" className="size-3.5" />
               </Link>
             </article>
           );

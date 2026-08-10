@@ -59,7 +59,7 @@ export const RangeUnavailable: Story = {
 export const MixingActive: Story = {
   args: { initialRun: activeRecommendationRunFixture },
   play: async ({ canvasElement }) => {
-    await expect(within(canvasElement).getByText("믹싱 처리 중")).toBeVisible();
+    await expect(within(canvasElement).getByText("AI 믹싱 중")).toBeVisible();
   },
 };
 

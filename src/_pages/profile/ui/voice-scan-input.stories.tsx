@@ -41,8 +41,14 @@ export const Idle: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("button", { name: "마이크로 녹음" })).toBeVisible();
+    await expect(canvas.getByRole("button", { name: "마이크로 녹음 시작" })).toBeVisible();
     await expect(canvas.getByText(/최대 25MB/)).toBeVisible();
+  },
+};
+
+export const LiveMicrophone: Story = {
+  play: async ({ canvasElement }) => {
+    await expect(within(canvasElement).getByRole("button", { name: "마이크로 녹음 시작" })).toBeVisible();
   },
 };
 

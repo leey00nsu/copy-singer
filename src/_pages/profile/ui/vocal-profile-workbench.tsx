@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Activity, AudioLines, Check, LoaderCircle, Mic2, ShieldCheck, Timer, Upload } from "lucide-react";
+import { Activity, ArrowRight, AudioLines, Check, LoaderCircle, Mic2, ShieldCheck, Timer, Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -236,7 +236,7 @@ export function VocalProfileWorkbench() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-8 sm:py-12 xl:px-10">
+    <div className="mx-auto w-full max-w-[72rem] px-5 py-12 sm:px-7 lg:px-8 lg:py-14">
       {pendingLongFile ? (
         <LongAudioDialog
           durationSeconds={pendingLongDuration}
@@ -246,62 +246,70 @@ export function VocalProfileWorkbench() {
         />
       ) : null}
 
-      <header className="max-w-3xl">
-        <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="secondary">Step 1 · 내 음역 측정</Badge>
-          <Badge className="gap-1.5" variant={health === "ok" ? "outline" : "secondary"}>
-            {health === "checking" ? (
-              <LoaderCircle aria-hidden="true" className="size-3 animate-spin motion-reduce:animate-none" />
-            ) : (
-              <Activity aria-hidden="true" className="size-3" />
-            )}
-            {health === "checking" ? "분석기 확인 중" : health === "ok" ? "분석기 준비됨" : "분석기 연결 확인 필요"}
-          </Badge>
-        </div>
-        <h1 className="mt-5 text-3xl font-semibold tracking-[-0.04em] sm:text-5xl sm:leading-[1.08]">
-          노래 한 소절로,
-          <br />내 목소리의 기준점을 만드세요.
-        </h1>
-        <p className="mt-5 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
-          정해진 음계 없이 평소처럼 편안하게 부르면 됩니다. 이 녹음에서 관찰한 음역과 안정성을 저장한 뒤 실제 근거가
-          있는 노래 추천으로 이어집니다.
-        </p>
-      </header>
+      <div className="flex flex-wrap items-center gap-2 text-[11px]">
+        <Badge className="border-data-accent bg-data-accent px-3 text-white" variant="outline">
+          Step 1
+        </Badge>
+        <Badge variant="outline">내 음역 측정</Badge>
+        <ArrowRight aria-hidden="true" className="size-3 text-muted-foreground" />
+        <Badge className="gap-1.5" variant={health === "ok" ? "outline" : "secondary"}>
+          {health === "checking" ? (
+            <LoaderCircle aria-hidden="true" className="size-3 animate-spin motion-reduce:animate-none" />
+          ) : (
+            <Activity aria-hidden="true" className="size-3" />
+          )}
+          {health === "checking" ? "분석기 확인 중" : health === "ok" ? "분석기 준비됨" : "분석기 연결 확인 필요"}
+        </Badge>
+      </div>
 
-      <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,.82fr)_minmax(28rem,1.18fr)] lg:items-start">
-        <section aria-labelledby="voice-scan-guide-title" className="lg:sticky lg:top-10">
-          <p className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">HOW TO RECORD</p>
-          <h2 className="mt-3 text-2xl font-semibold tracking-tight" id="voice-scan-guide-title">
-            가장 편한 키로 불러주세요
-          </h2>
-          <p className="mt-3 text-sm leading-7 text-muted-foreground">
-            잘 부르려고 힘주지 않아도 됩니다. 애국가나 생일축하 노래처럼 익숙한 한 소절이면 충분해요.
-          </p>
-          <ol className="mt-7 divide-y border-y">
-            {[
-              { icon: Mic2, title: "반주 없이", description: "목소리만 또렷하게 전달해주세요." },
-              { icon: Timer, title: "약 10초 권장", description: "5초부터 분석할 수 있고 60초에 자동 종료됩니다." },
-              { icon: AudioLines, title: "편안한 음역", description: "최고음에 무리하지 말고 평소처럼 불러주세요." },
-              { icon: Upload, title: "파일도 가능", description: "마이크를 쓸 수 없다면 기존 오디오를 올려주세요." },
-            ].map(({ description, icon: Icon, title }) => (
-              <li className="flex gap-4 py-4" key={title}>
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-md border bg-muted/30">
-                  <Icon aria-hidden="true" className="size-4" />
-                </span>
-                <div>
-                  <h3 className="text-sm font-semibold">{title}</h3>
-                  <p className="mt-1 text-xs leading-5 text-muted-foreground">{description}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-          <div className="mt-5 flex gap-3 text-xs leading-5 text-muted-foreground">
-            <ShieldCheck aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-            <p>
-              결과는 노래 추천을 위한 관찰값이며 의료적 진단이 아닙니다. 본인에게 사용 권한이 있는 음성만 제출해주세요.
+      <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,.9fr)_minmax(29rem,1.1fr)] lg:items-start lg:gap-14">
+        <div className="min-w-0">
+          <header className="max-w-[34rem]">
+            <h1 className="text-[clamp(2.35rem,4.2vw,3.45rem)] font-semibold leading-[1.03] tracking-[-0.052em]">
+              노래 한 소절로,
+              <br />내 목소리의 기준점을 만드세요.
+            </h1>
+            <p className="mt-5 max-w-[31rem] text-[13px] leading-6 text-muted-foreground sm:text-sm sm:leading-7">
+              정해진 음계 없이 평소처럼 편안하게 부르면 됩니다. 이 녹음에서 관찰한 음역과 안정성을 저장한 뒤 실제 근거가
+              있는 노래 추천으로 이어집니다.
             </p>
-          </div>
-        </section>
+          </header>
+
+          <section aria-labelledby="voice-scan-guide-title" className="mt-10">
+            <p className="text-[10px] font-semibold tracking-[0.18em] text-muted-foreground">HOW TO RECORD</p>
+            <h2 className="mt-3 text-xl font-semibold tracking-[-0.03em]" id="voice-scan-guide-title">
+              가장 편한 키로 불러주세요
+            </h2>
+            <p className="mt-2.5 text-sm leading-6 text-muted-foreground">
+              잘 부르려고 힘주지 않아도 됩니다. 익숙한 한 소절이면 충분해요.
+            </p>
+            <ol className="mt-5 grid gap-2.5">
+              {[
+                { icon: Mic2, title: "반주 없이", description: "목소리만 또렷하게 전달해주세요." },
+                { icon: Timer, title: "약 10초 권장", description: "5초부터 분석 가능 · 60초 자동 종료" },
+                { icon: AudioLines, title: "편안한 음역", description: "최고음에 무리하지 말고 평소처럼 불러주세요." },
+                { icon: Upload, title: "파일도 가능", description: "마이크를 쓸 수 없다면 기존 오디오를 올려주세요." },
+              ].map(({ description, icon: Icon, title }) => (
+                <li className="flex gap-3 rounded-lg border px-4 py-3.5" key={title}>
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-md border bg-background">
+                    <Icon aria-hidden="true" className="size-3.5" />
+                  </span>
+                  <div>
+                    <h3 className="text-sm font-semibold">{title}</h3>
+                    <p className="mt-1 text-xs leading-5 text-muted-foreground">{description}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <div className="mt-5 flex gap-3 border-t pt-5 text-xs leading-5 text-muted-foreground">
+              <ShieldCheck aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />
+              <p>
+                결과는 노래 추천을 위한 관찰값이며 의료적 진단이 아닙니다. 본인에게 사용 권한이 있는 음성만
+                제출해주세요.
+              </p>
+            </div>
+          </section>
+        </div>
 
         <VoiceScanInput
           analysisBusy={analysisBusy}
@@ -334,7 +342,7 @@ export function VocalProfileWorkbench() {
       />
 
       {!analysisStage && audioFile ? (
-        <div className="mt-8 flex items-center gap-3 border-y bg-muted/20 px-4 py-3 text-xs text-muted-foreground">
+        <div className="mt-10 flex items-center gap-3 border-y px-1 py-4 text-xs text-muted-foreground">
           <Check aria-hidden="true" className="size-4 text-success-foreground" />
           준비된 오디오는 분석 요청 전까지 브라우저 안에서만 미리 확인합니다.
         </div>

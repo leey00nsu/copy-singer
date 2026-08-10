@@ -21,7 +21,7 @@ const account = {
   ],
 };
 
-test("account overview renders actual identity, provider, ticket data, and safe product links", () => {
+test("account overview renders actual identity, provider, ticket data without shortcut actions", () => {
   const html = renderToStaticMarkup(
     <AccountOverview
       account={account}
@@ -33,8 +33,9 @@ test("account overview renders actual identity, provider, ticket data, and safe 
   assert.match(html, /Google 연결됨/);
   assert.match(html, /jieun@copysinger\.test/);
   assert.match(html, /사용 가능한 티켓/);
-  assert.match(html, /href="\/library"/);
-  assert.match(html, /href="\/admin"/);
+  assert.doesNotMatch(html, /href="\/library"/);
+  assert.doesNotMatch(html, /href="\/profile"/);
+  assert.doesNotMatch(html, /href="\/admin"/);
   assert.match(html, /href="\/library\/mixes\/30000000-0000-4000-8000-000000000002"/);
   assert.match(html, /disabled=""/);
   assert.match(html, /href="\/account\?page=2"/);

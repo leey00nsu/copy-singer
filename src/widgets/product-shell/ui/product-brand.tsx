@@ -5,7 +5,10 @@ import { cn } from "@/shared/lib/cn";
 
 function ProductBrand({ className, href = "/" }: { className?: string; href?: string }) {
   return (
-    <Link className={cn("inline-flex items-center gap-2 text-sm font-semibold tracking-tight", className)} href={href}>
+    <Link
+      className={cn("inline-flex items-center gap-2 text-[13px] font-semibold tracking-[-0.02em]", className)}
+      href={href}
+    >
       <span className="flex size-6 items-center justify-center text-foreground">
         <AudioWaveform aria-hidden="true" className="size-5" />
       </span>

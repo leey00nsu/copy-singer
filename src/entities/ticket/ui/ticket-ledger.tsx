@@ -33,11 +33,11 @@ export function TicketLedger({ entries }: { entries: TicketEntryView[] }) {
     <div className="divide-y border-y bg-background">
       {entries.map((entry) => (
         <article
-          className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3 px-2 py-5 sm:gap-4 sm:px-4"
+          className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-2 py-3 sm:px-3"
           key={entry.id}
         >
           <span
-            className={`flex size-9 shrink-0 items-center justify-center rounded-lg border ${entry.amount >= 0 ? "border-success/70 bg-success text-success-foreground" : "border-warning/70 bg-warning text-warning-foreground"}`}
+            className={`flex size-8 shrink-0 items-center justify-center rounded-lg border ${entry.amount >= 0 ? "border-success/70 bg-success text-success-foreground" : "border-warning/70 bg-warning text-warning-foreground"}`}
           >
             {entry.amount >= 0 ? (
               <ArrowUpRight aria-hidden="true" className="size-4" />
@@ -47,13 +47,13 @@ export function TicketLedger({ entries }: { entries: TicketEntryView[] }) {
           </span>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-              <p className="font-medium">{TYPE_LABELS[entry.type]}</p>
+              <p className="text-sm font-medium">{TYPE_LABELS[entry.type]}</p>
               <span className="text-xs text-muted-foreground">{entry.createdAt.toLocaleString("ko-KR")}</span>
             </div>
-            <p className="mt-1 break-words text-sm leading-5 text-muted-foreground">{entry.reason}</p>
+            <p className="mt-0.5 break-words text-xs leading-5 text-muted-foreground">{entry.reason}</p>
             {entry.mixingJobId ? (
               <Link
-                className="mt-2 inline-block text-xs font-medium underline underline-offset-4"
+                className="mt-1 inline-block text-xs font-medium underline underline-offset-4"
                 href={`/library/mixes/${entry.mixingJobId}`}
               >
                 AI 믹스 상세 보기
@@ -62,7 +62,7 @@ export function TicketLedger({ entries }: { entries: TicketEntryView[] }) {
           </div>
           <div className="text-right">
             <p
-              className={`font-semibold tabular-nums ${entry.amount >= 0 ? "text-success-foreground" : "text-warning-foreground"}`}
+              className={`text-sm font-semibold tabular-nums ${entry.amount >= 0 ? "text-success-foreground" : "text-warning-foreground"}`}
             >
               {entry.amount >= 0 ? "+" : ""}
               {entry.amount}

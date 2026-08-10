@@ -17,17 +17,19 @@ export default async function VocalProfileDetailPage({ params }: { params: Promi
   const presentation = presentVocalProfile(detail.profile);
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
+    <div className="mx-auto w-full max-w-[72rem] px-5 py-10 sm:px-7 lg:px-8 lg:py-12">
       <Link className={buttonVariants({ size: "sm", variant: "ghost" })} href="/vocal-profiles">
         <ArrowLeft className="size-4" /> 목록으로
       </Link>
-      <div className="mt-7 flex flex-wrap items-start justify-between gap-5">
+      <div className="mt-6 flex flex-wrap items-start justify-between gap-8 border-b pb-7">
         <div className="max-w-2xl">
-          <p className="text-xs font-semibold tracking-[0.18em] text-data-accent-foreground">SAVED ANALYSIS</p>
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{presentation.label}</h1>
-          <p className="mt-3 text-sm leading-6 text-muted-foreground">{presentation.summary}</p>
-          <p className="mt-3 flex items-center gap-1.5 text-sm text-muted-foreground">
-            <CalendarDays className="size-4" /> {new Date(detail.profile.createdAt).toLocaleString("ko-KR")}
+          <p className="text-[10px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
+            Saved analysis
+          </p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-[-0.045em] sm:text-[2.25rem]">{presentation.label}</h1>
+          <p className="mt-2.5 max-w-xl text-xs leading-5 text-muted-foreground">{presentation.summary}</p>
+          <p className="mt-2.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
+            <CalendarDays className="size-3.5" /> {new Date(detail.profile.createdAt).toLocaleString("ko-KR")}
           </p>
         </div>
         <div className="grid justify-items-start gap-4 sm:justify-items-end">
@@ -43,13 +45,13 @@ export default async function VocalProfileDetailPage({ params }: { params: Promi
         </div>
       </div>
 
-      <section className="mt-10 border-y py-6" aria-labelledby="source-audio-title">
-        <div className="grid gap-5 lg:grid-cols-[minmax(14rem,.45fr)_minmax(0,1fr)] lg:items-center">
+      <section className="border-b py-5" aria-labelledby="source-audio-title">
+        <div className="grid gap-5 lg:grid-cols-[minmax(12rem,.4fr)_minmax(0,1fr)] lg:items-center">
           <div>
-            <h2 className="text-lg font-semibold" id="source-audio-title">
+            <h2 className="text-sm font-semibold" id="source-audio-title">
               제출한 보컬
             </h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="mt-1.5 text-[11px] leading-5 text-muted-foreground">
               분석에 사용한 표준화 오디오입니다. 로그인한 본인에게만 스트리밍됩니다.
             </p>
           </div>
@@ -57,11 +59,11 @@ export default async function VocalProfileDetailPage({ params }: { params: Promi
         </div>
       </section>
 
-      <section className="mt-8">
+      <section className="pt-6">
         <VocalProfileResults profile={detail.profile} showSummary={false} sourceAudioSrc={detail.audioUrl} />
       </section>
 
-      <div className="mt-10 flex flex-wrap items-center justify-end gap-3 border-t pt-6">
+      <div className="mt-8 flex flex-wrap items-center justify-end gap-3 border-t pt-5">
         <Link className={buttonVariants({ variant: "outline" })} href="/profile">
           새 프로필 분석하기
         </Link>

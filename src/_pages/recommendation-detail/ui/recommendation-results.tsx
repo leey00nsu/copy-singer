@@ -157,12 +157,16 @@ export function RecommendationResults({
   const visibleItems = projectRecommendationItems(run.items, filters);
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-5 py-8 sm:px-8 sm:py-10">
-      <header className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,.48fr)] lg:items-end">
+    <div className="mx-auto w-full max-w-[72rem] px-5 py-10 sm:px-7 lg:px-8 lg:py-12">
+      <header className="grid gap-8 border-b pb-9 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,.42fr)] lg:items-end">
         <div>
-          <p className="text-xs font-semibold tracking-[0.18em] text-data-accent-foreground">SONG MATCH</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">내 목소리에 맞는 노래</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
+          <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
+            Song match
+          </p>
+          <h1 className="mt-2.5 max-w-3xl text-[clamp(2rem,4vw,3.5rem)] leading-[1.04] font-semibold tracking-[-0.045em] text-balance">
+            내 목소리에 맞는 노래
+          </h1>
+          <p className="mt-4 max-w-2xl text-[15px] leading-7 text-muted-foreground">
             이번 한 소절에서 관찰된 음역을 기준으로 {run.items.length}곡을 비교했습니다. 추천 적합도는 정수로 단순화해
             표시하며, 추천 키와 근거를 함께 확인할 수 있습니다.
           </p>
@@ -174,7 +178,9 @@ export function RecommendationResults({
           </p>
           <p className="flex items-center justify-between gap-4">
             <span className="text-muted-foreground">추천 생성</span>
-            <strong>{new Date(run.createdAt).toLocaleDateString("ko-KR")}</strong>
+            <strong>
+              {new Date(run.createdAt).toLocaleString("ko-KR", { dateStyle: "short", timeStyle: "short" })}
+            </strong>
           </p>
           <p className="flex items-center justify-between gap-4">
             <span className="text-muted-foreground">믹싱 방식</span>
@@ -199,7 +205,7 @@ export function RecommendationResults({
         </section>
       ) : null}
 
-      <div className="mt-6">
+      <div className="mt-8 border-y py-5">
         <RecommendationFilterBar
           filters={filters}
           onChange={updateFilters}
@@ -209,7 +215,7 @@ export function RecommendationResults({
         />
       </div>
 
-      <section aria-label="추천 노래 전체 순위" className="mt-5">
+      <section aria-label="추천 노래 전체 순위" className="mt-7">
         {visibleItems.length > 0 ? (
           <RecommendationSongList items={visibleItems} onStart={startItem} runId={run.id} />
         ) : (
@@ -226,7 +232,7 @@ export function RecommendationResults({
         )}
       </section>
 
-      <section className="mt-8 grid gap-3 border-y py-5 text-xs leading-6 text-muted-foreground lg:grid-cols-2">
+      <section className="mt-10 grid gap-5 border-y py-6 text-xs leading-6 text-muted-foreground lg:grid-cols-2">
         <div className="flex gap-3">
           <Mic2 className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
           <p>

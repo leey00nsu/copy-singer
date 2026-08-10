@@ -136,9 +136,9 @@ export const ActiveToTerminalPolling: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByText("진행 중")).toBeVisible();
+    await expect(canvas.getByText("AI 믹싱 중")).toBeVisible();
     await waitFor(() => expect(canvas.getByRole("link", { name: "결과 확인" })).toBeVisible(), { timeout: 7_000 });
-    await expect(canvas.queryByText("진행 중")).not.toBeInTheDocument();
+    await expect(canvas.queryByText("AI 믹싱 중")).not.toBeInTheDocument();
   },
 };
 
@@ -150,9 +150,11 @@ export const CompletedAudioIsLazy: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.queryByRole("img", { name: /AI 믹싱 결과 파형/ })).not.toBeInTheDocument();
+    const mixingJobId = succeededRecommendationRunFixture.items[0]?.synthesis.jobId;
+    await expect(mixingJobId).toBeTruthy();
     await expect(canvas.getByRole("link", { name: "결과 확인" })).toHaveAttribute(
       "href",
-      `/recommendations/${succeededRecommendationRunFixture.id}/songs/${succeededRecommendationRunFixture.items[0]?.id}`,
+      `/library/mixes/${mixingJobId}`,
     );
   },
 };

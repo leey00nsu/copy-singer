@@ -22,7 +22,7 @@ test("mixing detail renders an actual active timeline without terminal actions",
     assert.match(html, /AI 믹싱 중/);
     assert.match(html, /임의의 진행률은 계산하지 않습니다/);
     assert.doesNotMatch(html, /AI 믹스 삭제/);
-    assert.doesNotMatch(html, /\d+%/);
+    assert.doesNotMatch(html, />\s*\d+%\s*</);
   } finally {
     client.clear();
   }

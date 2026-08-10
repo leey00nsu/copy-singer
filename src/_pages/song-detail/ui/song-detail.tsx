@@ -66,20 +66,21 @@ export function SongDetail({
   const scoreGain = Math.round(item.adjustedScore) - Math.round(item.originalKeyScore);
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
+    <div className="mx-auto w-full max-w-[72rem] px-5 py-10 sm:px-7 lg:px-8 lg:py-12">
       <Link className={buttonVariants({ size: "sm", variant: "ghost" })} href={`/recommendations/${run.id}`}>
         <ArrowLeft className="size-4" aria-hidden="true" /> 추천 목록으로
       </Link>
 
-      <header className="mt-8 grid gap-8 border-b pb-9 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+      <header className="mt-10 grid gap-10 border-b pb-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
         <div>
-          <p className="text-xs font-semibold tracking-[0.18em] text-data-accent-foreground">
-            SONG MATCH · #{item.rank}
+          <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
+            Song match · #{item.rank}
           </p>
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-5xl">{item.title}</h1>
+          <h1 className="mt-4 text-[clamp(2.5rem,5vw,4.5rem)] font-semibold leading-none tracking-[-0.055em]">
+            {item.title}
+          </h1>
           <p className="mt-3 text-lg text-muted-foreground">{item.artist}</p>
           <div className="mt-5 flex flex-wrap gap-2">
-            <Badge variant="secondary">TJ #{item.catalogOrder}</Badge>
             <Badge variant="secondary">원키 {item.originalKey ?? "정보 없음"}</Badge>
             <Badge>{formatRecommendedShift(shift)} 추천</Badge>
           </div>
@@ -104,7 +105,7 @@ export function SongDetail({
         </div>
       </header>
 
-      <section aria-labelledby="score-title" className="py-8">
+      <section aria-labelledby="score-title" className="py-8 sm:py-10 lg:py-12">
         <h2 className="text-lg font-semibold" id="score-title">
           키 조정 결과
         </h2>
@@ -129,7 +130,7 @@ export function SongDetail({
         </dl>
       </section>
 
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_19rem]">
+      <div className="grid gap-14 border-t pt-10 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="min-w-0 space-y-10">
           <section aria-labelledby="range-title">
             <h2 className="text-lg font-semibold" id="range-title">
@@ -243,7 +244,7 @@ export function SongDetail({
           </section>
         </div>
 
-        <aside className="h-fit border-y py-6 lg:sticky lg:top-24" aria-labelledby="mixing-title">
+        <aside className="h-fit rounded-lg border bg-background p-6 lg:sticky lg:top-28" aria-labelledby="mixing-title">
           <p className="text-xs font-semibold tracking-[0.16em] text-data-accent-foreground">OPTIONAL AI MIXING</p>
           <h2 className="mt-2 text-xl font-semibold" id="mixing-title">
             이 곡으로 AI 믹싱

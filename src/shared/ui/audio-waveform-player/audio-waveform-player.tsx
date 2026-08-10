@@ -2,7 +2,7 @@
 
 import { useWavesurfer } from "@wavesurfer/react";
 import { Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { formatPlaybackTime } from "@/shared/lib/audio";
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/button";
@@ -18,6 +18,11 @@ export type AudioPlaybackSegment = {
   ranges: AudioPlaybackRange[];
 };
 const EMPTY_SEGMENTS: AudioPlaybackSegment[] = [];
+
+function themeColor(token: string, fallback: string) {
+  if (typeof document === "undefined") return fallback;
+  return getComputedStyle(document.documentElement).getPropertyValue(token).trim() || fallback;
+}
 
 type AudioWaveformPlayerProps = {
   src: string;
@@ -43,13 +48,18 @@ function AudioWaveformPlayerInstance({
   const [finished, setFinished] = useState(false);
   const [activeSegmentId, setActiveSegmentId] = useState<string | null>(null);
   const activeRangeRef = useRef<{ segmentId: string; rangeIndex: number } | null>(null);
+  const waveformColors = useMemo(() => {
+    const accent = themeColor("--data-accent", "#a89cf5");
+    const strong = themeColor("--data-accent-foreground", "#6757c8");
+    return { accent, strong };
+  }, []);
   const { wavesurfer, isReady, isPlaying, currentTime } = useWavesurfer({
     container: containerRef,
     url: src,
     height: 72,
-    waveColor: "#cbd5e1",
-    progressColor: "#059669",
-    cursorColor: "#047857",
+    waveColor: waveformColors.accent,
+    progressColor: waveformColors.strong,
+    cursorColor: waveformColors.strong,
     barWidth: 2,
     barGap: 2,
     barRadius: 2,
@@ -125,7 +135,8 @@ function AudioWaveformPlayerInstance({
   const playSegment = useCallback(
     (segment: AudioPlaybackSegment) => {
       if (!wavesurfer || segment.ranges.length === 0) return;
-      const first = segment.ranges[0]!;
+      const first = segment.ranges[0];
+      if (!first) return;
       activeRangeRef.current = { segmentId: segment.id, rangeIndex: 0 };
       setActiveSegmentId(segment.id);
       setFinished(false);

@@ -40,10 +40,12 @@ export const Desktop: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("navigation", { name: "제품 메뉴" })).toBeVisible();
+    const productMenu = within(canvas.getByRole("navigation", { name: "제품 메뉴" }));
+    await expect(productMenu.getByRole("link", { name: "라이브러리" })).toHaveAttribute("aria-current", "page");
+    await expect(productMenu.getByRole("link", { name: "내 계정" })).toBeVisible();
     await expect(canvas.queryByRole("complementary")).not.toBeInTheDocument();
-    await expect(canvas.getByRole("link", { name: "라이브러리" })).toHaveAttribute("aria-current", "page");
-    await expect(canvas.getByRole("link", { name: "내 계정" })).toBeVisible();
+    await expect(canvas.getByRole("navigation", { name: "제품 푸터 메뉴" })).toBeVisible();
+    await expect(canvas.getByText("© 2026 Copy Singer.")).toBeVisible();
     await userEvent.click(canvas.getByRole("button", { name: "지은 계정 메뉴" }));
     const body = within(document.body);
     await waitFor(() => expect(body.getByText("계정")).toBeVisible());
@@ -68,7 +70,9 @@ export const AccountActive: Story = {
     nextjs: { navigation: { pathname: "/account" } },
   },
   play: async ({ canvasElement }) => {
-    await expect(within(canvasElement).getByRole("link", { name: "내 계정" })).toHaveAttribute("aria-current", "page");
+    const canvas = within(canvasElement);
+    const productMenu = within(canvas.getByRole("navigation", { name: "제품 메뉴" }));
+    await expect(productMenu.getByRole("link", { name: "내 계정" })).toHaveAttribute("aria-current", "page");
   },
 };
 

@@ -91,6 +91,15 @@ test("voice scan components keep media cleanup, responsibility split, and detail
   assert.match(recorder, /plugin\.stopMic\(\)/);
   assert.match(recorder, /plugin\.destroy\(\)/);
   assert.match(recorder, /canceledRef/);
+  assert.match(recorder, /plugin\.startMic\(/);
+  assert.match(recorder, /mediaRecorderTimeslice:\s*100/);
+  assert.match(recorder, /createMediaStreamSource\(stream\)/);
+  assert.match(recorder, /createAnalyser\(\)/);
+  assert.match(recorder, /requestAnimationFrame\(render\)/);
+  assert.match(recorder, /history\.push\(/);
+  assert.match(recorder, /slotWidth \* index/);
+  assert.match(recorder, /--data-accent/);
+  assert.doesNotMatch(recorder, /useWavesurfer/);
   assert.match(workbench, /<VoiceScanInput/);
   assert.match(workbench, /<AnalysisStatus/);
   assert.match(workbench, /router\.replace\(`\/vocal-profiles\/\$\{completedProfileId\}`\)/);

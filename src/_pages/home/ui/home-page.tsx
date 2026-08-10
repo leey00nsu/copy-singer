@@ -1,7 +1,25 @@
-import { getRequestSession } from "@/features/authentication/index.server";
+import {
+  getRequestSession,
+  isAdminEmail,
+  isDevelopmentAuthBypassSession,
+} from "@/features/authentication/index.server";
 import { LandingPage } from "./landing-page";
 
 export default async function HomePage() {
   const session = await getRequestSession();
-  return <LandingPage authenticated={Boolean(session)} />;
+  return (
+    <LandingPage
+      admin={session ? isAdminEmail(session.user.email) : false}
+      user={
+        session
+          ? {
+              developmentBypass: isDevelopmentAuthBypassSession(session.session),
+              email: session.user.email,
+              image: session.user.image,
+              name: session.user.name,
+            }
+          : null
+      }
+    />
+  );
 }

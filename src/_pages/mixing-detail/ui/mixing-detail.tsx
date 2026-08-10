@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import {
   deleteMixingJobMutationOptions,
   type MixingHistoryRow,
+  MixingStatusBadge,
   mixingDetailQueryOptions,
   mixingJobKeys,
   presentMixingJob,
@@ -25,7 +26,6 @@ import {
 import { ApiError } from "@/shared/api";
 import { cn } from "@/shared/lib/cn";
 import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
-import { Badge } from "@/shared/ui/badge";
 import { Button, buttonVariants } from "@/shared/ui/button";
 import {
   Dialog,
@@ -77,6 +77,90 @@ function MixingTimeline({ job }: { job: MixingHistoryRow }) {
         </li>
       ))}
     </ol>
+  );
+}
+
+function ActiveMixingProgress({ job }: { job: MixingHistoryRow }) {
+  const presentation = presentMixingJob(job);
+
+  return (
+    <section className="mx-auto max-w-[48rem] py-10 text-center sm:py-14" aria-labelledby="active-mixing-title">
+      <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">AI mixing</p>
+      <h1
+        className="mx-auto mt-4 max-w-[40rem] text-3xl leading-tight font-semibold tracking-[-0.04em] sm:text-4xl"
+        id="active-mixing-title"
+      >
+        AI가 당신의 목소리를 분석하고
+        <br className="hidden sm:block" /> 최적의 사운드로 믹싱하고 있어요
+      </h1>
+      <p className="mt-4 text-sm text-muted-foreground">
+        {job.song.title} · {job.song.artist}
+      </p>
+      <p className="mt-1 text-sm text-muted-foreground">잠시만 기다려주세요.</p>
+
+      <div className="mx-auto mt-7 flex justify-center" aria-hidden="true">
+        <div className="relative grid aspect-square w-[min(22rem,78vw)] place-items-center">
+          <span className="absolute inset-[8%] rounded-full border border-dashed border-data-accent/20" />
+          <span className="absolute inset-[16%] rounded-full border border-dashed border-data-accent/15" />
+          <span className="absolute inset-[24%] rounded-full border border-dashed border-data-accent/10" />
+          <span className="relative block aspect-square w-[48%] overflow-hidden rounded-full bg-violet-50 shadow-[0_24px_60px_oklch(0.75_0.09_285/0.15)]">
+            <span
+              className="absolute -inset-1/3 animate-[spin_8s_linear_infinite] rounded-full blur-xl motion-reduce:animate-none"
+              style={{
+                background:
+                  "conic-gradient(from 30deg, oklch(0.82 0.12 292 / 0.85), oklch(0.9 0.09 220 / 0.82), oklch(0.9 0.1 20 / 0.72), oklch(0.84 0.1 260 / 0.82), oklch(0.82 0.12 292 / 0.85))",
+              }}
+            />
+            <span
+              className="absolute inset-[12%] rounded-full blur-md"
+              style={{
+                background:
+                  "radial-gradient(circle at 32% 28%, oklch(0.95 0.04 315 / 0.95), transparent 42%), radial-gradient(circle at 68% 65%, oklch(0.9 0.08 230 / 0.9), transparent 48%), oklch(0.93 0.055 285)",
+              }}
+            />
+          </span>
+        </div>
+      </div>
+
+      <div className="mt-1 flex justify-center">
+        <MixingStatusBadge className="h-8 px-3" status={job.status} />
+      </div>
+
+      <ol
+        className="mx-auto mt-8 max-w-[36rem] overflow-hidden rounded-2xl border bg-background text-left"
+        aria-label="AI 믹싱 진행 단계"
+      >
+        {presentation.timeline.map((step, index) => (
+          <li className="relative grid grid-cols-[2rem_minmax(0,1fr)] gap-3 px-5 py-4" key={step.id}>
+            {index < presentation.timeline.length - 1 ? (
+              <span className="absolute top-10 bottom-[-1rem] left-[2.45rem] w-px bg-border" aria-hidden="true" />
+            ) : null}
+            <span
+              className={cn(
+                "relative z-10 flex size-7 items-center justify-center rounded-full border bg-background",
+                step.state === "complete" && "border-data-accent bg-data-accent text-white",
+                step.state === "current" && "border-data-accent-foreground text-data-accent-foreground",
+                step.state === "skipped" && "text-muted-foreground",
+              )}
+            >
+              <TimelineIcon state={step.state} />
+            </span>
+            <div className="border-b pb-4 last:border-b-0">
+              <p className="text-sm font-semibold">{step.label}</p>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">{step.description}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <p className="mx-auto mt-5 max-w-md text-xs leading-5 text-muted-foreground">
+        서버가 제공하는 실제 단계만 표시하며 임의의 진행률은 계산하지 않습니다. 이 페이지를 닫아도 작업은 서버에서 계속
+        진행되고, 완료되면 AI 믹스 라이브러리에서 결과를 확인할 수 있어요.
+      </p>
+      <Link className={`${buttonVariants({ variant: "outline" })} mt-6`} href="/library?tab=mixes&page=1">
+        AI 믹스 목록으로 돌아가기
+      </Link>
+    </section>
   );
 }
 
@@ -141,35 +225,35 @@ export function MixingDetail({ initial }: { initial: MixingHistoryRow }) {
   const job = detailQuery.data ?? initial;
   const presentation = presentMixingJob(job);
 
+  if (presentation.active) {
+    return (
+      <div className="mx-auto w-full max-w-[72rem] px-5 py-8 sm:px-7 lg:px-8 lg:py-10">
+        <Link className={buttonVariants({ size: "sm", variant: "ghost" })} href="/library?tab=mixes&page=1">
+          <ArrowLeft aria-hidden="true" className="size-4" /> AI 믹스 목록
+        </Link>
+        <ActiveMixingProgress job={job} />
+      </div>
+    );
+  }
+
   return (
-    <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
+    <div className="mx-auto w-full max-w-[72rem] px-5 py-10 sm:px-7 lg:px-8 lg:py-12">
       <Link className={buttonVariants({ size: "sm", variant: "ghost" })} href="/library?tab=mixes&page=1">
         <ArrowLeft aria-hidden="true" className="size-4" /> AI 믹스 목록
       </Link>
 
-      <header className="mt-7 flex flex-wrap items-start justify-between gap-5">
+      <header className="mt-9 flex flex-wrap items-start justify-between gap-8 border-b pb-10">
         <div className="min-w-0 max-w-3xl">
-          <p className="text-xs font-semibold tracking-[0.18em] text-data-accent-foreground">AI MIX DETAIL</p>
-          <div className="mt-3 flex flex-wrap items-center gap-3">
-            <h1 className="min-w-0 text-3xl font-semibold tracking-tight sm:text-4xl">{job.song.title}</h1>
-            <Badge
-              variant={
-                presentation.tone === "destructive"
-                  ? "destructive"
-                  : presentation.tone === "success"
-                    ? "default"
-                    : "secondary"
-              }
-            >
-              {presentation.active ? (
-                <LoaderCircle aria-hidden="true" className="size-3 animate-spin motion-reduce:animate-none" />
-              ) : null}
-              {presentation.label}
-            </Badge>
-          </div>
-          <p className="mt-3 text-sm text-muted-foreground">
-            {job.song.artist} · TJ #{job.song.catalogOrder}
+          <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
+            AI mix detail
           </p>
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            <h1 className="min-w-0 text-[clamp(2.5rem,5vw,4.25rem)] font-semibold leading-none tracking-[-0.055em]">
+              {job.song.title}
+            </h1>
+            <MixingStatusBadge status={job.status} />
+          </div>
+          <p className="mt-3 text-sm text-muted-foreground">{job.song.artist}</p>
           <p aria-live="polite" className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground">
             {presentation.description}
           </p>
@@ -187,7 +271,30 @@ export function MixingDetail({ initial }: { initial: MixingHistoryRow }) {
         </div>
       </header>
 
-      <dl className="mt-10 grid gap-px border-y bg-border sm:grid-cols-3">
+      {job.resultReady && job.audioUrl ? (
+        <section aria-labelledby="mixing-result-title" className="py-8 sm:py-10 lg:py-12">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
+                Result
+              </p>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight" id="mixing-result-title">
+                완성된 AI 믹스
+              </h2>
+            </div>
+            <a className={buttonVariants()} download href={job.audioUrl}>
+              <Download aria-hidden="true" className="size-4" /> 결과 저장
+            </a>
+          </div>
+          <AudioWaveformPlayer
+            className="mt-7"
+            label={`${job.song.artist} ${job.song.title} AI 믹싱 결과`}
+            src={job.audioUrl}
+          />
+        </section>
+      ) : null}
+
+      <dl className="grid gap-px border-y bg-border sm:grid-cols-3">
         <div className="bg-background px-4 py-5 sm:px-6">
           <dt className="text-xs text-muted-foreground">사용 티켓</dt>
           <dd className="mt-1 text-lg font-semibold">{job.ticketCost}개</dd>
@@ -202,7 +309,7 @@ export function MixingDetail({ initial }: { initial: MixingHistoryRow }) {
         </div>
       </dl>
 
-      <section aria-labelledby="mixing-progress-title" className="mt-10">
+      <section aria-labelledby="mixing-progress-title" className="border-t py-8 sm:py-10 lg:py-12">
         <div className="mb-4">
           <h2 className="text-xl font-semibold" id="mixing-progress-title">
             믹싱 진행
@@ -214,29 +321,8 @@ export function MixingDetail({ initial }: { initial: MixingHistoryRow }) {
         <MixingTimeline job={job} />
       </section>
 
-      {job.resultReady && job.audioUrl ? (
-        <section aria-labelledby="mixing-result-title" className="mt-10 border-y py-7">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="text-xs font-semibold tracking-[0.16em] text-data-accent-foreground">RESULT</p>
-              <h2 className="mt-2 text-xl font-semibold" id="mixing-result-title">
-                완성된 AI 믹스
-              </h2>
-            </div>
-            <a className={buttonVariants()} download href={job.audioUrl}>
-              <Download aria-hidden="true" className="size-4" /> 결과 저장
-            </a>
-          </div>
-          <AudioWaveformPlayer
-            className="mt-6"
-            label={`${job.song.artist} ${job.song.title} AI 믹싱 결과`}
-            src={job.audioUrl}
-          />
-        </section>
-      ) : null}
-
       {job.status === "failed" || job.status === "canceled" ? (
-        <section className="mt-10 border-y px-4 py-8 sm:px-6" aria-labelledby="mixing-next-action-title">
+        <section className="border-t py-8 sm:py-10 lg:py-12" aria-labelledby="mixing-next-action-title">
           <div className="flex gap-4">
             <span className="flex size-10 shrink-0 items-center justify-center rounded-lg border text-destructive">
               <TriangleAlert aria-hidden="true" className="size-5" />

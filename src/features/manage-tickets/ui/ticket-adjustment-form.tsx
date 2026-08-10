@@ -33,7 +33,7 @@ export function TicketAdjustmentForm({
   return (
     <form
       action={submit}
-      className="grid gap-4 rounded-2xl border bg-background p-5 lg:grid-cols-[minmax(220px,1fr)_140px_minmax(260px,1.4fr)_auto] lg:items-end"
+      className="grid min-w-0 gap-3 lg:grid-cols-[minmax(220px,1fr)_140px_minmax(260px,1.4fr)_auto] lg:items-end"
     >
       <TicketAdjustmentFields users={users} pending={adjustmentMutation.isPending} />
     </form>
@@ -49,9 +49,9 @@ export function TicketAdjustmentFields({
 }) {
   return (
     <>
-      <label className="grid gap-1.5 text-sm font-medium">
+      <label className="grid min-w-0 gap-1.5 text-sm font-medium">
         사용자
-        <select className="h-10 rounded-lg border bg-background px-3 text-sm" name="userId" required>
+        <select className="h-10 w-full min-w-0 rounded-lg border bg-background px-3 text-sm" name="userId" required>
           <option value="">선택해주세요</option>
           {users.map((user) => (
             <option key={user.id} value={user.id}>
@@ -60,10 +60,10 @@ export function TicketAdjustmentFields({
           ))}
         </select>
       </label>
-      <label className="grid gap-1.5 text-sm font-medium">
+      <label className="grid min-w-0 gap-1.5 text-sm font-medium">
         조정량
         <input
-          className="h-10 rounded-lg border bg-background px-3 text-sm"
+          className="h-10 w-full min-w-0 rounded-lg border bg-background px-3 text-sm"
           name="amount"
           type="number"
           min="-10000"
@@ -73,10 +73,10 @@ export function TicketAdjustmentFields({
           required
         />
       </label>
-      <label className="grid gap-1.5 text-sm font-medium">
+      <label className="grid min-w-0 gap-1.5 text-sm font-medium">
         사유
         <input
-          className="h-10 rounded-lg border bg-background px-3 text-sm"
+          className="h-10 w-full min-w-0 rounded-lg border bg-background px-3 text-sm"
           name="reason"
           minLength={3}
           maxLength={500}

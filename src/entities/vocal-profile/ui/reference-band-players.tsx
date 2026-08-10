@@ -61,7 +61,7 @@ export function ReferenceBandPlayers({
 
   if (state.status === "error") {
     return (
-      <div className="rounded-xl border border-dashed bg-muted/25 p-5 text-sm leading-6 text-muted-foreground">
+      <div className="rounded-lg border border-dashed bg-muted/20 p-4 text-xs leading-5 text-muted-foreground">
         선택된 음역 구간의 파형을 만들지 못했어요. 페이지를 새로고침한 뒤 다시 시도해주세요.
       </div>
     );
@@ -74,8 +74,8 @@ export function ReferenceBandPlayers({
       {items.map(({ segment, url }) => (
         <section className="space-y-2" key={segment.id}>
           <div>
-            <h3 className="text-sm font-semibold">{segment.label}</h3>
-            <p className="text-xs text-muted-foreground">
+            <h3 className="text-xs font-semibold">{segment.label}</h3>
+            <p className="text-[10px] text-muted-foreground">
               채택된 구간 {segment.ranges.length}개 · 기본 10초 목표, 부족분 재분배 가능
             </p>
           </div>
@@ -84,7 +84,7 @@ export function ReferenceBandPlayers({
           ) : (
             <div
               aria-label={`${segment.label} 파형 준비 중`}
-              className="flex min-h-32 items-center justify-center rounded-xl border bg-muted/20 text-xs text-muted-foreground"
+              className="flex min-h-24 items-center justify-center rounded-lg border bg-muted/20 text-[10px] text-muted-foreground"
               role="status"
             >
               선택 구간 파형 준비 중…

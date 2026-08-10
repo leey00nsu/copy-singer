@@ -1,8 +1,9 @@
 "use client";
 
-import { AlertTriangle, Download, Headphones, LoaderCircle, Mic2, RefreshCw, Sparkles } from "lucide-react";
+import { AlertTriangle, Download, Headphones, Mic2, RefreshCw, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { MixingStatusBadge, type PublicMixingJobStatus } from "@/entities/mixing-job";
 import type { RecommendationItemResponse } from "@/entities/recommendation";
 import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
 import { Badge } from "@/shared/ui/badge";
@@ -22,30 +23,41 @@ export function RecommendationMixingAction({
   const [audioOpen, setAudioOpen] = useState(false);
   const status = item.synthesis.status;
 
+  const mixingStatus = (() => {
+    if (status === "preparing") return "preparing";
+    if (status === "queued") return "submitted";
+    if (status === "processing") return "processing";
+    if (status === "succeeded") return "succeeded";
+    if (status === "failed") return "failed";
+    return null;
+  })() satisfies PublicMixingJobStatus | null;
+
   if (compact) {
     if (status === "not_started") {
-      return <span className="text-xs text-muted-foreground">선택 전</span>;
+      return <Badge variant="secondary">선택 전</Badge>;
     }
-    if (["preparing", "queued", "processing"].includes(status)) {
+    if (mixingStatus && mixingStatus !== "failed") {
+      const resultHref = item.synthesis.jobId ? `/library/mixes/${item.synthesis.jobId}` : detailHref;
       return (
-        <Badge aria-live="polite" className="h-7 px-2" variant="secondary">
-          <LoaderCircle className="animate-spin motion-reduce:animate-none" aria-hidden="true" /> 진행 중
-        </Badge>
+        <div className="flex flex-wrap items-center justify-end gap-2 xl:justify-start">
+          <MixingStatusBadge status={mixingStatus} />
+          {status === "succeeded" && resultHref ? (
+            <Link className="text-xs font-semibold underline-offset-4 hover:underline" href={resultHref}>
+              결과 확인
+            </Link>
+          ) : null}
+        </div>
       );
     }
-    if (status === "succeeded" && detailHref) {
-      return (
-        <Link className={buttonVariants({ size: "xs", variant: "outline" })} href={detailHref}>
-          결과 확인
-        </Link>
-      );
-    }
-    return item.synthesis.error?.retryable ? (
-      <Button onClick={() => onStart(item.id, true)} size="xs" variant="ghost">
-        <RefreshCw aria-hidden="true" className="size-3" /> 재시도
-      </Button>
-    ) : (
-      <Badge variant="destructive">실패</Badge>
+    return (
+      <div className="flex flex-wrap items-center justify-end gap-2 xl:justify-start">
+        <MixingStatusBadge status="failed" />
+        {item.synthesis.error?.retryable ? (
+          <Button onClick={() => onStart(item.id, true)} size="xs" variant="ghost">
+            <RefreshCw aria-hidden="true" className="size-3" /> 재시도
+          </Button>
+        ) : null}
+      </div>
     );
   }
 
@@ -57,13 +69,8 @@ export function RecommendationMixingAction({
     );
   }
 
-  if (["preparing", "queued", "processing"].includes(status)) {
-    const label = status === "queued" ? "믹싱 대기 중" : status === "processing" ? "믹싱 처리 중" : "오디오 준비 중";
-    return (
-      <Badge aria-live="polite" className="h-8 px-3" variant="secondary">
-        <LoaderCircle className="animate-spin motion-reduce:animate-none" aria-hidden="true" /> {label}
-      </Badge>
-    );
+  if (mixingStatus && ["preparing", "submitted", "processing"].includes(mixingStatus)) {
+    return <MixingStatusBadge className="h-8 px-3" status={mixingStatus} />;
   }
 
   if (status === "succeeded" && item.synthesis.audioUrl) {

@@ -71,16 +71,16 @@ const denseProfileHistory: VocalProfileHistoryPayload = {
 function LibraryPreview({ tab }: { tab: "profiles" | "mixes" }) {
   return (
     <ProductShell user={{ email: "jieun@copysinger.test", name: "지은" }}>
-      <div className="mx-auto w-full max-w-6xl px-5 py-10 sm:px-8">
-        <p className="text-xs font-semibold tracking-[0.18em] text-data-accent-foreground">LIBRARY</p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">내 라이브러리</h1>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
+      <div className="mx-auto w-full max-w-[72rem] px-5 py-12 sm:px-7 lg:px-8 lg:py-14">
+        <p className="text-[10px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">LIBRARY</p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-[-0.04em] sm:text-[2rem]">내 라이브러리</h1>
+        <p className="mt-2.5 max-w-2xl text-xs leading-5 text-muted-foreground">
           저장한 보컬 프로필과 AI 믹싱 작업을 구분해 확인하세요.
         </p>
-        <div className="mt-8">
+        <div className="mt-7">
           <LibraryTabs tab={tab} />
         </div>
-        <div className="mt-6">
+        <div className="mt-4">
           {tab === "profiles" ? (
             <VocalProfileLibrary basePath="/library" history={denseProfileHistory} />
           ) : (
@@ -113,7 +113,8 @@ type Story = StoryObj<typeof meta>;
 export const Profiles: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("link", { name: "라이브러리" })).toHaveAttribute("aria-current", "page");
+    const productMenu = within(canvas.getByRole("navigation", { name: "제품 메뉴" }));
+    await expect(productMenu.getByRole("link", { name: "라이브러리" })).toHaveAttribute("aria-current", "page");
     await expect(canvas.getByText("보컬 프로필 10개")).toBeVisible();
     await expect(canvas.getAllByRole("link", { name: /분석과 제출 보컬 보기/ })).toHaveLength(10);
   },

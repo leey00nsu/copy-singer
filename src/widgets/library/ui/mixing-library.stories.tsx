@@ -52,7 +52,7 @@ export const MixedStates: Story = {
     await expect(canvas.getByText("결과 준비 완료")).toBeVisible();
     await expect(canvas.getByText(/믹싱에 사용할 반주를 준비하지 못했어요/)).toBeVisible();
     await expect(canvas.queryByText("믹싱용 원곡을 준비하지 못했습니다.")).not.toBeInTheDocument();
-    await expect(canvas.getByRole("searchbox", { name: "곡 또는 아티스트 검색" })).toBeVisible();
+    await expect(canvas.getByRole("searchbox", { name: "작업 또는 아티스트 검색" })).toBeVisible();
   },
 };
 

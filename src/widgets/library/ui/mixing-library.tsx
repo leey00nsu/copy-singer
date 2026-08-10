@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, CheckCircle2, Clock3, LoaderCircle, Music2, RotateCcw, Search, Ticket } from "lucide-react";
+import { ChevronRight, Music2, RotateCcw, Search } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -11,11 +11,11 @@ import {
   type MixingHistoryFilters,
   type MixingHistoryPayload,
   type MixingHistoryRow,
+  MixingStatusBadge,
   mixingHistoryFiltersSchema,
   mixingHistoryQueryOptions,
   presentMixingFailure,
 } from "@/entities/mixing-job";
-import { Badge } from "@/shared/ui/badge";
 import { Button, buttonVariants } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
@@ -31,14 +31,6 @@ const STATUS_LABELS: Record<MixingHistoryFilterStatus, string> = {
 };
 
 const STATUS_OPTIONS = Object.entries(STATUS_LABELS) as Array<[MixingHistoryFilterStatus, string]>;
-
-function statusIcon(job: MixingHistoryRow) {
-  if (isActiveMixingStatus(job.status)) {
-    return <LoaderCircle aria-hidden="true" className="size-3 animate-spin motion-reduce:animate-none" />;
-  }
-  if (job.status === "succeeded") return <CheckCircle2 aria-hidden="true" className="size-3" />;
-  return <AlertTriangle aria-hidden="true" className="size-3" />;
-}
 
 function statusDescription(job: MixingHistoryRow) {
   if (job.resultReady) return "결과 준비 완료";
@@ -69,7 +61,9 @@ function MixingLibraryFilters({
       {basePath === "/library" ? <input name="tab" type="hidden" value="mixes" /> : null}
       <input name="status" type="hidden" value={status} />
       <div className="grid gap-1.5">
-        <Label htmlFor={`${basePath.slice(1)}-mixing-search`}>곡 또는 아티스트 검색</Label>
+        <Label className="text-[11px]" htmlFor={`${basePath.slice(1)}-mixing-search`}>
+          작업 또는 아티스트 검색
+        </Label>
         <div className="relative">
           <Search
             aria-hidden="true"
@@ -77,19 +71,21 @@ function MixingLibraryFilters({
           />
           <Input
             autoComplete="off"
-            className="pl-9"
+            className="h-10 pl-9 text-sm"
             id={`${basePath.slice(1)}-mixing-search`}
             maxLength={80}
             name="q"
             onChange={(event) => setQuery(event.currentTarget.value)}
-            placeholder="곡명, 아티스트"
+            placeholder="작업, 아티스트"
             type="search"
             value={query}
           />
         </div>
       </div>
       <div className="grid gap-1.5">
-        <Label htmlFor={`${basePath.slice(1)}-mixing-status`}>작업 상태</Label>
+        <Label className="text-[11px]" htmlFor={`${basePath.slice(1)}-mixing-status`}>
+          작업 상태
+        </Label>
         <Select onValueChange={(value) => value && setStatus(value as MixingHistoryFilterStatus)} value={status}>
           <SelectTrigger className="h-10 w-full lg:w-44" id={`${basePath.slice(1)}-mixing-status`}>
             <SelectValue>{STATUS_LABELS[status]}</SelectValue>
@@ -104,18 +100,18 @@ function MixingLibraryFilters({
         </Select>
       </div>
       <div className="flex gap-2">
-        <Button className="flex-1 lg:flex-none" type="submit">
+        <Button className="h-10 flex-1 lg:flex-none" size="sm" type="submit">
           검색
         </Button>
         {filters.q || filters.status !== "all" ? (
           <Link
-            className={buttonVariants({ variant: "ghost" })}
+            className={`${buttonVariants({ size: "sm", variant: "ghost" })} h-10`}
             href={mixingHistoryHref(basePath, { page: 1, q: "", status: "all" })}
           >
             <RotateCcw aria-hidden="true" className="size-4" /> 초기화
           </Link>
         ) : (
-          <Button disabled type="button" variant="ghost">
+          <Button className="h-10" disabled size="sm" type="button" variant="ghost">
             <RotateCcw aria-hidden="true" className="size-4" /> 초기화
           </Button>
         )}
@@ -127,25 +123,28 @@ function MixingLibraryFilters({
 function MixingLibraryRows({ jobs }: { jobs: MixingHistoryRow[] }) {
   return (
     <div className="border-y">
-      <table className="block w-full table-fixed border-collapse xl:table">
+      <table className="block w-full table-fixed border-collapse lg:table">
         <caption className="sr-only">AI 믹스 작업 목록</caption>
-        <thead className="hidden border-b bg-muted/20 text-left text-xs text-muted-foreground xl:table-header-group">
+        <thead className="hidden border-b bg-muted/15 text-left text-[11px] text-muted-foreground lg:table-header-group">
           <tr>
-            <th className="w-32 px-4 py-2.5 font-medium" scope="col">
+            <th className="w-28 px-3 py-2 font-medium" scope="col">
               상태
             </th>
-            <th className="px-4 py-2.5 font-medium" scope="col">
-              곡
+            <th className="px-3 py-2 font-medium" scope="col">
+              작업 / 아티스트
             </th>
-            <th className="w-52 px-4 py-2.5 font-medium" scope="col">
-              작업 정보
+            <th className="w-36 px-3 py-2 font-medium" scope="col">
+              생성일
             </th>
-            <th className="w-72 px-4 py-2.5 font-medium" scope="col">
+            <th className="w-48 px-3 py-2 font-medium" scope="col">
               결과
+            </th>
+            <th className="w-10 px-2 py-2" scope="col">
+              <span className="sr-only">상세</span>
             </th>
           </tr>
         </thead>
-        <tbody className="block divide-y xl:table-row-group">
+        <tbody className="block divide-y lg:table-row-group">
           {jobs.map((job) => {
             const active = isActiveMixingStatus(job.status);
             const detailHref = `/library/mixes/${job.id}`;
@@ -158,17 +157,14 @@ function MixingLibraryRows({ jobs }: { jobs: MixingHistoryRow[] }) {
                   : "상세 보기";
             return (
               <tr
-                className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-2 py-4 xl:table-row xl:py-0"
+                className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-2 px-3 py-3 lg:table-row lg:px-0 lg:py-0"
                 key={job.id}
               >
-                <td className="col-start-2 row-start-1 px-4 text-right align-middle xl:table-cell xl:py-4 xl:text-left">
-                  <Badge variant={job.status === "failed" ? "destructive" : job.resultReady ? "default" : "secondary"}>
-                    {statusIcon(job)}
-                    {STATUS_LABELS[job.status]}
-                  </Badge>
+                <td className="col-start-2 row-start-1 text-right align-middle lg:table-cell lg:px-3 lg:py-3 lg:text-left">
+                  <MixingStatusBadge label={STATUS_LABELS[job.status]} status={job.status} />
                   {active ? <span className="sr-only">자동 새로고침 중</span> : null}
                 </td>
-                <td className="col-start-1 row-start-1 min-w-0 pr-0 pl-4 align-middle xl:table-cell xl:px-4 xl:py-4">
+                <td className="col-start-1 row-start-1 min-w-0 align-middle lg:table-cell lg:px-3 lg:py-3">
                   <h2 className="truncate text-sm font-semibold">
                     <Link className="underline-offset-4 hover:underline" href={detailHref}>
                       {job.song.title}
@@ -176,30 +172,26 @@ function MixingLibraryRows({ jobs }: { jobs: MixingHistoryRow[] }) {
                   </h2>
                   <p className="mt-0.5 truncate text-xs text-muted-foreground">{job.song.artist}</p>
                 </td>
-                <td className="col-span-2 row-start-2 flex flex-wrap items-center gap-x-4 gap-y-1 px-4 align-middle text-xs text-muted-foreground xl:table-cell xl:py-4">
-                  <Link
-                    className="font-medium text-foreground underline-offset-4 hover:underline"
-                    href={`/vocal-profiles/${job.vocalProfile.id}`}
-                  >
-                    보컬 분석
-                  </Link>
-                  <span className="inline-flex items-center gap-1 xl:mt-1 xl:flex">
-                    <Clock3 aria-hidden="true" className="size-3" />
-                    {new Date(job.createdAt).toLocaleDateString("ko-KR")}
-                  </span>
-                  <span className="inline-flex items-center gap-1 xl:mt-1 xl:flex">
-                    <Ticket aria-hidden="true" className="size-3" /> 티켓 {job.ticketCost}개
-                  </span>
+                <td className="col-span-2 row-start-2 text-xs text-muted-foreground lg:table-cell lg:px-3 lg:py-3">
+                  <span className="lg:hidden">생성 · </span>
+                  {new Date(job.createdAt).toLocaleString("ko-KR", { dateStyle: "short", timeStyle: "short" })}
                 </td>
-                <td className="col-span-2 row-start-3 flex items-center justify-between gap-3 px-4 align-middle xl:table-cell xl:py-4">
-                  <p className="min-w-0 text-xs leading-5 text-muted-foreground xl:line-clamp-2">
-                    {statusDescription(job)}
-                  </p>
+                <td className="col-span-2 row-start-3 align-middle lg:table-cell lg:px-3 lg:py-3">
+                  <p className="text-xs leading-5 text-muted-foreground">{statusDescription(job)}</p>
                   <Link
-                    className={buttonVariants({ size: "sm", variant: job.resultReady ? "outline" : "ghost" })}
+                    className="mt-0.5 inline-flex text-xs font-semibold underline-offset-4 hover:underline"
                     href={detailHref}
                   >
                     {actionLabel}
+                  </Link>
+                </td>
+                <td className="hidden align-middle lg:table-cell lg:px-2 lg:py-3 lg:text-right">
+                  <Link
+                    aria-label={`${job.song.title} 상세 보기`}
+                    className="inline-flex size-8 items-center justify-center rounded-md hover:bg-muted"
+                    href={detailHref}
+                  >
+                    <ChevronRight aria-hidden="true" className="size-3.5" />
                   </Link>
                 </td>
               </tr>

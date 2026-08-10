@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 
 import { LandingPage } from "./landing-page";
 
@@ -23,19 +23,31 @@ export const SignedOut: Story = {
       "/login?callbackURL=%2Fprofile",
     );
     await expect(canvas.getByLabelText("움직이는 목소리 파형과 분석 시작")).toBeVisible();
-    await expect(canvas.getByTestId("landing-crystal")).toBeVisible();
-    await expect(canvas.getByRole("navigation", { name: "푸터 제품 메뉴" })).toBeVisible();
+    await expect(canvas.queryByTestId("landing-crystal")).not.toBeInTheDocument();
+    await expect(canvas.getByRole("navigation", { name: "제품 푸터 메뉴" })).toBeVisible();
     await expect(canvas.getByText("© 2026 Copy Singer.")).toBeVisible();
   },
 };
 
 export const SignedIn: Story = {
   args: {
-    authenticated: true,
+    admin: true,
+    user: {
+      email: "jieun@copysinger.test",
+      image: null,
+      name: "지은",
+    },
   },
   play: async ({ canvasElement }) => {
-    await expect(
-      within(canvasElement).getByRole("link", { name: "목소리 분석 계속하기: 목소리 분석 시작" }),
-    ).toHaveAttribute("href", "/profile");
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("link", { name: "목소리 분석 시작하기: 목소리 분석 시작" })).toHaveAttribute(
+      "href",
+      "/profile",
+    );
+    await expect(canvas.getByRole("link", { name: "Admin" })).toHaveAttribute("href", "/admin");
+    await userEvent.click(canvas.getByRole("button", { name: "지은 계정 메뉴" }));
+    const body = within(document.body);
+    await waitFor(() => expect(body.getByRole("menuitem", { name: "내 계정" })).toBeVisible());
+    await expect(body.getByRole("menuitem", { name: "관리" })).toBeVisible();
   },
 };

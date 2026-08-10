@@ -59,7 +59,9 @@ export const GoogleConnected: Story = {
 export const Admin: Story = {
   args: { admin: true },
   play: async ({ canvasElement }) => {
-    await expect(within(canvasElement).getByRole("link", { name: "Admin" })).toHaveAttribute("href", "/admin");
+    const canvas = within(canvasElement);
+    await expect(canvas.queryByRole("link", { name: "Admin" })).not.toBeInTheDocument();
+    await expect(canvas.queryByRole("link", { name: /새 목소리 분석|Library/ })).not.toBeInTheDocument();
   },
 };
 
