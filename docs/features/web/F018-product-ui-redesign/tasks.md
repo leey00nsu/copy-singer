@@ -356,15 +356,15 @@
     - [x] 분석·추천·믹싱 단계와 active/success/failure 상태 Storybook 계약 추가
     - [x] reduced-motion, keyboard semantics, responsive layout 계약 검증
 
-- [TODO][PRD-FR-046] T-F018-21 Voice Scan 분석 완료 handoff 단순화
+- [DONE][PRD-FR-046] T-F018-21 Voice Scan 분석 완료 handoff 단순화
   - Date: 2026-08-10
   - Acceptance:
     - 분석 처리 중에는 입력 UI 대신 공통 process 화면을 표시하고 완료 후 profile detail 강제 이동 없이 핵심 요약과 추천 생성 CTA를 제공한다.
     - 기존 localStorage job 복구, retry, 새 오디오 선택과 profile detail deep link는 유지한다.
   - Checklist:
-    - [ ] active analysis를 공통 funnel process UI로 전환
-    - [ ] 완료 profile summary와 명시적 추천 생성 CTA 구현
-    - [ ] 자동 추천 중복 생성 없이 route transition과 오류 상태 검증
+    - [x] active analysis를 공통 funnel process UI로 전환
+    - [x] 완료 profile summary와 명시적 추천 생성 CTA 구현
+    - [x] 자동 추천 중복 생성 없이 route transition과 오류 상태 검증
 
 - [TODO][PRD-FR-046] T-F018-22 추천 선택과 믹싱 CTA 통합
   - Date: 2026-08-10
@@ -450,4 +450,4 @@
 | `rg` design asset/reference audit | `2026-08-10` | 통과 — 현재 정본 문서는 canonical `references/copy-singer`만 안내하고 generated/current/V2는 legacy로 명시; production에서 crystal/file/globe/window asset 참조 없음 |
 | `git diff --check` | `2026-08-10` | 통과 — 공통 chrome·Pretendard·violet audio UI·Feature 문서 whitespace 오류 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-10T22:38:00+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-10T22:44:00+09:00 -->

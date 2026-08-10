@@ -375,5 +375,6 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 사용자가 생성 과정에서 반드시 거치는 화면을 다섯 단계에서 세 단계로 줄이면서도 저장 resource의 재방문성과 고급 분석 정보는 잃지 않는다. 자동 추천을 피하면 새로고침·복구 중 중복 run 위험 없이 사용자의 명시적 의사를 유지한다.
 - **Trace**:
   - **T-F018-20**: `widgets/creation-funnel`에 공통 shell, journey stepper, process hero, 실제 상태 timeline과 action bar를 추가했다. Mixing Detail active와 Recommendation Results가 public API를 통해 widget을 실제 사용하며, Storybook에서 분석 active/success, 추천 선택과 믹싱 failure를 검증했다.
-- **Evidence**: targeted Storybook 2 files/8 tests, `pnpm run test:mixing:ui` 8/8, `pnpm run test:recommendation` ranking 10/10·presentation/UI 17/17, `pnpm run check` 통과(error 0, 기존 Biome warning 59건, architecture 4/4).
+  - **T-F018-21**: Voice Scan active/error는 입력 form을 숨기고 공통 ProcessHero와 실제 분석 timeline만 표시한다. succeeded job은 localStorage에 유지해 reload 복구가 가능하며 같은 화면에서 핵심 VocalProfileSummary, 전체 분석 deep link와 명시적 추천 생성 CTA를 제공한다. CTA 성공 뒤에만 job key를 지우고 recommendation route로 이동한다.
+- **Evidence**: T-F018-20 targeted Storybook 2 files/8 tests, mixing UI 8/8, recommendation ranking 10/10·presentation/UI 17/17. T-F018-21 voice scan 12/12, Analysis Status/Success Storybook 2 files/7 tests. 각 checkpoint `pnpm run check` 통과(error 0, 기존 Biome warning 59건, architecture 4/4).
 - **Consequences**: `src/widgets/creation-funnel`이 domain-aware funnel composition을 소유하고 Shared는 범용 primitive만 제공한다. 상단 journey stepper와 server timeline은 서로 다른 의미로 표현한다. 기존 Profile/Song Detail URL은 삭제하거나 redirect하지 않으며 Library에서 그대로 접근할 수 있다.

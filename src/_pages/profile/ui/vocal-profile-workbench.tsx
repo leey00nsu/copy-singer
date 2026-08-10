@@ -14,8 +14,10 @@ import {
   vocalProfileAnalysisJobQueryOptions,
   vocalProfileHealthQueryOptions,
 } from "@/features/analyze-vocal-profile";
+import { createRecommendationMutationOptions } from "@/features/create-recommendation";
 import { prepareProfileAudio } from "@/shared/lib/audio";
 import { Badge } from "@/shared/ui/badge";
+import { CreationFunnelShell } from "@/widgets/creation-funnel";
 import {
   normalizeProfileError,
   type RecorderIssue,
@@ -23,6 +25,7 @@ import {
   resolveAnalysisStage,
 } from "../model/voice-scan";
 import { AnalysisStatus } from "./analysis-status";
+import { AnalysisSuccess } from "./analysis-success";
 import { LongAudioDialog } from "./long-audio-dialog";
 import type { VocalProfileRecorderState } from "./vocal-profile-recorder";
 import { VoiceScanInput } from "./voice-scan-input";
@@ -49,6 +52,7 @@ export function VocalProfileWorkbench() {
   const healthQuery = useQuery(vocalProfileHealthQueryOptions());
   const analysisJobQuery = useQuery(vocalProfileAnalysisJobQueryOptions(analysisJobId));
   const submitAnalysis = useMutation(submitVocalProfileAnalysisMutationOptions());
+  const createRecommendation = useMutation(createRecommendationMutationOptions());
   const analysisJob = analysisJobQuery.data;
   const analysisJobRequestError = analysisJobQuery.error ? normalizeProfileError(analysisJobQuery.error) : null;
   const terminalAnalysisError =
@@ -107,9 +111,10 @@ export function VocalProfileWorkbench() {
     if (handledTerminalJob.current === terminalKey) return;
     handledTerminalJob.current = terminalKey;
     analysisIdempotencyKey.current = null;
-    window.localStorage.removeItem(ANALYSIS_JOB_STORAGE_KEY);
-
-    if (analysisJob.status !== "succeeded") return;
+    if (analysisJob.status !== "succeeded") {
+      window.localStorage.removeItem(ANALYSIS_JOB_STORAGE_KEY);
+      return;
+    }
     if (!completedProfileId) return;
 
     void Promise.all([
@@ -117,8 +122,7 @@ export function VocalProfileWorkbench() {
       queryClient.invalidateQueries({ queryKey: vocalAnalysisKeys.jobs() }),
     ]);
     toast.success("보컬 프로필 분석이 완료됐습니다.");
-    router.replace(`/vocal-profiles/${completedProfileId}`);
-  }, [analysisJob, analysisJobId, completedProfileId, queryClient, router]);
+  }, [analysisJob, analysisJobId, completedProfileId, queryClient]);
 
   useEffect(() => {
     if (!analysisJobId || !analysisJobQuery.error) return;
@@ -235,8 +239,51 @@ export function VocalProfileWorkbench() {
     );
   };
 
+  const continueToRecommendation = () => {
+    if (!completedProfileId || createRecommendation.isPending) return;
+    createRecommendation.mutate(completedProfileId, {
+      onSuccess: (run) => {
+        window.localStorage.removeItem(ANALYSIS_JOB_STORAGE_KEY);
+        toast.success("목소리에 맞는 노래를 찾았습니다.");
+        router.push(`/recommendations/${run.id}`);
+      },
+      onError: () => toast.error("노래 추천을 만들지 못했습니다. 잠시 뒤 다시 시도해주세요."),
+    });
+  };
+
+  if (analysisStage) {
+    return (
+      <CreationFunnelShell currentStep="analysis">
+        <AnalysisStatus
+          attempts={analysisJob?.attempts}
+          canRetry={audioFile !== null && displayedAnalysisError?.retryable === true}
+          error={displayedAnalysisError}
+          maxAttempts={analysisJob?.maxAttempts}
+          onCheckAgain={() => void analysisJobQuery.refetch()}
+          onReset={resetAudio}
+          onRetry={analyzeAudio}
+          stage={analysisStage}
+        />
+      </CreationFunnelShell>
+    );
+  }
+
+  if (analysisJob?.status === "succeeded" && completedProfileId) {
+    return (
+      <CreationFunnelShell currentStep="analysis">
+        <AnalysisSuccess
+          creatingRecommendation={createRecommendation.isPending}
+          onContinue={continueToRecommendation}
+          onReset={resetAudio}
+          profile={analysisJob.profile}
+          profileId={completedProfileId}
+        />
+      </CreationFunnelShell>
+    );
+  }
+
   return (
-    <div className="mx-auto w-full max-w-[72rem] px-5 py-12 sm:px-7 lg:px-8 lg:py-14">
+    <CreationFunnelShell currentStep="analysis">
       {pendingLongFile ? (
         <LongAudioDialog
           durationSeconds={pendingLongDuration}
@@ -330,23 +377,12 @@ export function VocalProfileWorkbench() {
         />
       </div>
 
-      <AnalysisStatus
-        attempts={analysisJob?.attempts}
-        canRetry={audioFile !== null && displayedAnalysisError?.retryable === true}
-        error={displayedAnalysisError}
-        maxAttempts={analysisJob?.maxAttempts}
-        onCheckAgain={() => void analysisJobQuery.refetch()}
-        onReset={resetAudio}
-        onRetry={analyzeAudio}
-        stage={analysisStage}
-      />
-
-      {!analysisStage && audioFile ? (
+      {audioFile ? (
         <div className="mt-10 flex items-center gap-3 border-y px-1 py-4 text-xs text-muted-foreground">
           <Check aria-hidden="true" className="size-4 text-success-foreground" />
           준비된 오디오는 분석 요청 전까지 브라우저 안에서만 미리 확인합니다.
         </div>
       ) : null}
-    </div>
+    </CreationFunnelShell>
   );
 }

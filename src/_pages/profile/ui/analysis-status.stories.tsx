@@ -28,7 +28,9 @@ type Story = StoryObj<typeof meta>;
 
 export const Pending: Story = {
   play: async ({ canvasElement }) => {
-    await expect(within(canvasElement).getByText("보컬 분석 대기 중")).toBeVisible();
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("heading", { name: "목소리 분석을 준비하고 있어요" })).toBeVisible();
+    await expect(canvas.getByRole("list", { name: "보컬 분석 진행 단계" })).toBeVisible();
   },
 };
 
