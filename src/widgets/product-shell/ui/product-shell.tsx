@@ -52,6 +52,7 @@ type ProductShellProps = {
   admin?: boolean;
   children: ReactNode;
   user: {
+    developmentBypass?: boolean;
     email: string;
     image?: string | null;
     name: string;
@@ -77,7 +78,15 @@ function ProductShell({ admin = false, children, user }: ProductShellProps) {
             <ProductNavigation />
           </div>
           <div className="hidden justify-self-end md:block">
-            <UserMenu admin={admin} compact email={user.email} image={user.image} name={user.name} side="bottom" />
+            <UserMenu
+              admin={admin}
+              compact
+              developmentBypass={user.developmentBypass}
+              email={user.email}
+              image={user.image}
+              name={user.name}
+              side="bottom"
+            />
           </div>
           <Sheet onOpenChange={setMobileOpen} open={mobileOpen}>
             <SheetTrigger
@@ -95,7 +104,14 @@ function ProductShell({ admin = false, children, user }: ProductShellProps) {
                 <ProductNavigation mobile onNavigate={() => setMobileOpen(false)} />
               </div>
               <div className="mt-auto p-3">
-                <UserMenu admin={admin} email={user.email} image={user.image} name={user.name} side="top" />
+                <UserMenu
+                  admin={admin}
+                  developmentBypass={user.developmentBypass}
+                  email={user.email}
+                  image={user.image}
+                  name={user.name}
+                  side="top"
+                />
               </div>
             </SheetContent>
           </Sheet>

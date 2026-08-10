@@ -10,3 +10,7 @@ export function developmentAuthBypassUserId(environment: AuthBypassEnvironment) 
   const userId = environment.DEV_AUTH_BYPASS_USER_ID?.trim();
   return userId || null;
 }
+
+export function isDevelopmentAuthBypassSession(session: { token: string }) {
+  return session.token === "dev-auth-bypass";
+}

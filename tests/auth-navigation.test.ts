@@ -67,5 +67,11 @@ test("product shell keeps keyboard, touch-target, and navigation labels explicit
   assert.match(shell, /aria-label="제품 메뉴"/);
   assert.match(shell, /aria-label="제품 메뉴 열기"/);
   assert.match(shell, /<header className="sticky top-0/);
+  assert.match(shell, /developmentBypass/);
   assert.doesNotMatch(shell, /<aside/);
+
+  const userMenu = readFileSync(new URL("src/features/authentication/ui/user-menu.tsx", root), "utf8");
+  assert.match(userMenu, /router\.replace\("\/"\)/);
+  assert.match(userMenu, /router\.refresh\(\)/);
+  assert.match(userMenu, /개발 인증 우회 사용 중/);
 });

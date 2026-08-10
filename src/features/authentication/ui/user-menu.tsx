@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/shared/ui/button";
 import {
   DropdownMenu,
@@ -20,28 +21,36 @@ import { authClient } from "../api/auth-client";
 type UserMenuProps = {
   admin?: boolean;
   compact?: boolean;
+  developmentBypass?: boolean;
   email?: string;
   image?: string | null;
   name: string;
   side?: "bottom" | "left" | "right" | "top";
 };
 
-export function UserMenu({ name, email, image, admin = false, compact = false, side = "bottom" }: UserMenuProps) {
+export function UserMenu({
+  name,
+  email,
+  image,
+  admin = false,
+  compact = false,
+  developmentBypass = false,
+  side = "bottom",
+}: UserMenuProps) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   async function signOut() {
     setPending(true);
-    setError(null);
-    const result = await authClient.signOut();
-    if (result.error) {
+    try {
+      const result = await authClient.signOut();
+      if (result.error) throw result.error;
+      router.replace("/");
+      router.refresh();
+    } catch {
       setPending(false);
-      setError("로그아웃하지 못했어요. 다시 시도해 주세요.");
-      return;
+      toast.error("로그아웃하지 못했어요. 다시 시도해 주세요.");
     }
-    router.replace("/");
-    router.refresh();
   }
 
   return (
@@ -93,16 +102,17 @@ export function UserMenu({ name, email, image, admin = false, compact = false, s
             ) : null}
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem disabled={pending} onClick={() => void signOut()}>
-            <LogOut aria-hidden="true" /> {pending ? "로그아웃 중…" : "로그아웃"}
-          </DropdownMenuItem>
+          {developmentBypass ? (
+            <DropdownMenuItem disabled>
+              <LogOut aria-hidden="true" /> 개발 인증 우회 사용 중
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem disabled={pending} onClick={() => void signOut()}>
+              <LogOut aria-hidden="true" /> {pending ? "로그아웃 중…" : "로그아웃"}
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
-      {error ? (
-        <p className="mt-2 px-2 text-xs text-destructive" role="alert">
-          {error}
-        </p>
-      ) : null}
     </div>
   );
 }

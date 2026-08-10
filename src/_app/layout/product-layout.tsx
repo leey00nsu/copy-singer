@@ -1,6 +1,10 @@
 import type { ReactNode } from "react";
 
-import { getRequestSession, isAdminEmail } from "@/features/authentication/index.server";
+import {
+  getRequestSession,
+  isAdminEmail,
+  isDevelopmentAuthBypassSession,
+} from "@/features/authentication/index.server";
 import { ProductShell } from "@/widgets/product-shell";
 
 async function ProductLayout({ children }: { children: ReactNode }) {
@@ -13,7 +17,12 @@ async function ProductLayout({ children }: { children: ReactNode }) {
   return (
     <ProductShell
       admin={isAdminEmail(session.user.email)}
-      user={{ email: session.user.email, image: session.user.image, name: session.user.name }}
+      user={{
+        developmentBypass: isDevelopmentAuthBypassSession(session.session),
+        email: session.user.email,
+        image: session.user.image,
+        name: session.user.name,
+      }}
     >
       {children}
     </ProductShell>

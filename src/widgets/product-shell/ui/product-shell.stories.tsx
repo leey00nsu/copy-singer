@@ -71,3 +71,19 @@ export const AccountActive: Story = {
     await expect(within(canvasElement).getByRole("link", { name: "내 계정" })).toHaveAttribute("aria-current", "page");
   },
 };
+
+export const DevelopmentBypass: Story = {
+  args: {
+    user: {
+      developmentBypass: true,
+      email: "dev@copysinger.test",
+      name: "개발 사용자",
+    },
+  },
+  play: async ({ canvasElement }) => {
+    await userEvent.click(within(canvasElement).getByRole("button", { name: "개발 사용자 계정 메뉴" }));
+    const body = within(document.body);
+    const bypassStatus = await body.findByRole("menuitem", { name: "개발 인증 우회 사용 중" });
+    await expect(bypassStatus).toHaveAttribute("aria-disabled", "true");
+  },
+};
