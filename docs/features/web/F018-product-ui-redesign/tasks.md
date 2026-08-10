@@ -20,7 +20,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/product-ui-redesign`
-- **대기 중 변경 요청**: 결정: changes_requested 계정 메뉴 로그아웃의 실제 세션 종료 회귀 수정
+- **대기 중 변경 요청**: -
   - 구현 중 새로 수용한 사용자 요청을 잠시 표시하는 sync marker입니다
   - 요청을 `tasks.md`와 관련 문서에 반영한 뒤 값을 비우세요
   - pre-PR 리뷰 handoff를 시작하면 `Running`, 리뷰 결과 기록까지 끝나면 `Done`으로 변경
@@ -304,14 +304,14 @@
     - [x] 계정 메뉴와 공통 DropdownMenu를 실제로 여는 Storybook 회귀 테스트 추가
     - [x] targeted Storybook·전체 check·workflow audit 통과
 
-- [DOING][NON-PRD] T-F018-18 로그아웃 요청·세션 갱신 회귀 수정
+- [DONE][NON-PRD] T-F018-18 로그아웃 요청·세션 갱신 회귀 수정
   - Date: 2026-08-10
   - Acceptance:
     - 계정 메뉴의 로그아웃을 선택하면 Better Auth sign-out이 완료되고 세션이 제거된 뒤 public Landing으로 이동하며 실패 시 메뉴 밖에서도 확인 가능한 오류를 표시한다.
   - Checklist:
-    - [ ] 실제 sign-out 요청과 현재 UserMenu 이벤트·라우팅 동작 재현
-    - [ ] 로그아웃 성공·실패 상태와 navigation 구현·회귀 테스트
-    - [ ] 실제 브라우저·targeted Storybook·전체 check·workflow audit 통과
+    - [x] 실제 sign-out 요청과 현재 UserMenu 이벤트·라우팅 동작 재현
+    - [x] 로그아웃 성공·실패 상태와 navigation 구현·회귀 테스트
+    - [x] 실제 브라우저·targeted Storybook·전체 check·workflow audit 통과
 
 ---
 
@@ -319,9 +319,9 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -331,9 +331,10 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `pnpm run check` | `2026-08-10` | 통과 — error 0, 기존 Biome warning 60건, Steiger 및 architecture 4/4 |
-| `pnpm run test:auth-navigation` | `2026-08-10` | 통과 — safe callback·Library/Account navigation·route group·keyboard/touch label 5/5 |
+| `pnpm run test:auth-navigation` | `2026-08-10` | 통과 — safe callback·Library/Account navigation·route group·keyboard/touch label·sign-out 후 replace/refresh 5/5 |
 | `pnpm run test:storybook --run src/widgets/product-shell/ui/product-shell.stories.tsx src/_pages/home/ui/landing-page.stories.tsx src/_pages/library/ui/library-page.stories.tsx` | `2026-08-10` | 통과 — top header/no-aside·mobile navigation·crystal CTA/footer·dense Library 7/7 |
 | `pnpm run test:storybook --run src/shared/ui/dropdown-menu/dropdown-menu.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-10` | 통과 — 공통 메뉴와 계정 메뉴를 실제로 열어 Menu.Group context·menuitem 4/4 확인 |
+| `pnpm run test:storybook --run src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-10` | 통과 — 일반 계정 메뉴와 개발 인증 우회 비활성 상태 4/4 |
 | `pnpm exec tsx --test tests/effect-cleanup.test.ts tests/recommendation-ui.test.tsx` | `2026-08-09` | 통과 — cleanup·추천 UI 회귀 6/6 |
 | `pnpm exec tsx --test tests/effect-cleanup.test.ts` | `2026-08-10` | 통과 — Library·Mixing Detail Query polling 포함 component timer/fetch inventory 2/2 |
 | `pnpm run test:voice-scan` | `2026-08-10` | 통과 — 녹음 정책·오류·상태·cleanup 12/12 |
@@ -346,10 +347,10 @@
 | `pnpm run test:mixing:ui` | `2026-08-10` | 통과 — safe failure presentation·history 단일 action·실제 timeline·상세 adapter 8/8 |
 | `pnpm run test:mixing:db` | `2026-08-10` | 통과 — queue·owner/filter/pagination·active 409·terminal 삭제·cleanup queue·ticket SetNull 1/1 |
 | `pnpm run test:query` | `2026-08-10` | 통과 — detail/history Query key·terminal polling·삭제 envelope 포함 23/23, streaming proxy 1/1 |
-| `pnpm run test:auth:db` | `2026-08-10` | 통과 — session/role·Google provider account ownership 3/3 |
+| `pnpm run test:auth:db` | `2026-08-10` | 통과 — session/role·Google provider account ownership·강제 개발 인증 우회 session 식별 3/3 |
 | `pnpm run test:tickets` | `2026-08-10` | 통과 — 실제 Account identity/provider/ticket UI 3/3, ledger balance·pagination clamp DB 1/1 |
 | `pnpm run test:architecture-boundaries` | `2026-08-10` | 통과 — `pnpm run check` 내부 FSD·Client/Server·App adapter 4/4 |
-| `pnpm run test:storybook --run` | `2026-08-10` | 통과 — 36 files, 92 tests, Landing motion·100곡 비교·dense ProductShell Library 상태/a11y 포함 |
+| `pnpm run test:storybook --run` | `2026-08-10` | 통과 — 36 files, 93 tests, Landing motion·100곡 비교·dense ProductShell Library·development bypass 상태/a11y 포함; 최종 단일 ProductShell 재검증은 4/4 |
 | `pnpm run build-storybook` | `2026-08-10` | 통과 — 36개 story file 정적 산출물 생성, 기존 chunk size warning만 있음 |
 | `pnpm run build` | `2026-08-10` | 통과 — Next.js 16 production build와 기존 23개 public/product/Admin/dev route 보존 |
 | `pnpm run test:base-ui` | `2026-08-10` | 통과 — TSX AST 기반 Link/Base UI non-native semantics 1/1 |
@@ -358,4 +359,4 @@
 | `find docs/designs/generated/page-redesigns/concepts-v2 -maxdepth 1 -type f -name '*.png'` | `2026-08-10` | 통과 — 채택 V2 시안 13개 확인; V1·중간 시안은 검수 후 폐기 |
 | `git diff --check` | `2026-08-10` | 통과 — crystal·top-header 코드, current/V2 baseline, Design System·Feature 문서 whitespace 오류 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-10T08:01:44.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-10T08:17:20.000Z -->

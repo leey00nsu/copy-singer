@@ -318,3 +318,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: GroupLabel을 일반 text로 약화하면 Base UI의 접근성 구조를 잃는다. 사용처를 올바른 context로 교정하고 popup open 경로를 테스트해야 실제 사용자 interaction과 동일한 회귀 경계를 확보할 수 있다.
 - **Evidence**: targeted Storybook 2 files/4 tests, 전체 Storybook 36 files/92 tests, `pnpm run check`, 실제 `/library` 계정 메뉴 DOM의 `menu > group "계정" > menuitem` 확인과 browser error log 0건.
 - **Consequences**: 이후 `DropdownMenuLabel`을 추가할 때 `DropdownMenuGroup`이 필수이며, popup primitive의 Story는 정적 render만 하지 않고 최소 한 번 실제 open interaction을 검증한다.
+
+## D033: 실제 세션 로그아웃과 개발 인증 우회 상태 분리 (2026-08-10)
+
+- **Context**: 계정 메뉴에서 Better Auth `signOut` 요청은 성공하고 `/`로 이동했지만, 새 요청마다 `DEV_AUTH_BYPASS_ENABLED=true`가 동일 개발 사용자를 다시 주입해 Landing과 private route가 계속 로그인 상태로 보였다. 이는 로그아웃 API 실패가 아니라 강제 개발 인증 우회가 실제 세션 종료 결과를 덮어쓴 문제였다.
+- **Decision**: Google OAuth가 구성된 로컬 환경은 개발 인증 우회를 끄고 실제 Better Auth 세션을 사용한다. 일반 세션의 로그아웃은 요청 오류를 toast로 노출하고 성공 시 `router.replace("/")`와 `router.refresh()`로 public Landing 및 server session 상태를 즉시 갱신한다. 우회 token으로 식별된 강제 개발 세션은 계정 메뉴에서 가짜 로그아웃 action을 제공하지 않고 `개발 인증 우회 사용 중` 비활성 상태를 표시한다.
+- **Rationale**: 강제 우회가 켜진 동안에는 cookie를 삭제해도 다음 요청에서 사용자가 의도적으로 재주입되므로 정상적인 interactive logout 의미를 제공할 수 없다. 실제 세션과 우회 상태를 UI·정책에서 분리하면 운영 로그아웃 계약을 보존하면서 로컬 자동화 설정의 동작도 오해하지 않게 된다.
+- **Evidence**: `pnpm run test:auth-navigation` 5/5, `pnpm run test:auth:db` 3/3, ProductShell Storybook 4/4, `pnpm run check`, 실제 브라우저에서 로그아웃 후 Landing의 `로그인`/`무료로 시작하기` CTA, `/library`의 `/login?callbackURL=%2Flibrary` redirect, browser error 0건 확인.
+- **Consequences**: `DEV_AUTH_BYPASS_ENABLED=true`는 매 요청에 사용자를 강제로 주입하는 자동화 전용 모드이며 interactive logout을 지원하지 않는다. 실제 로그인·로그아웃을 시험할 때는 이를 `false`로 두어야 하고 production에서는 기존 fail-closed 정책이 유지된다.
