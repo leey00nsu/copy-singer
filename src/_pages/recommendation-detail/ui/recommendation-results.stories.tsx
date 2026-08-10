@@ -132,7 +132,7 @@ export const MobileSelection: Story = {
     const sheet = within(document.body).getByRole("dialog", { name: "선택한 추천곡" });
     await waitFor(() => expect(sheet).toBeVisible());
     await expect(within(sheet).getByRole("button", { name: "이 곡으로 AI 믹싱" })).toBeVisible();
-    await expect(within(sheet).getByRole("link", { name: "전체 분석 근거 보기" })).toBeVisible();
+    await expect(within(sheet).getByRole("link", { name: "전체 분석 결과 보기" })).toBeVisible();
   },
 };
 

@@ -24,7 +24,7 @@ export const DEFAULT_RECOMMENDATION_FILTERS: RecommendationFilters = Object.free
   score: "all",
   shift: "all",
   status: "all",
-  sort: "rank",
+  sort: "adjusted-score",
 });
 
 const FILTER_KEYS = ["q", "score", "shift", "status", "sort"] as const;
@@ -41,7 +41,7 @@ export function parseRecommendationFilters(input: string | URLSearchParams): Rec
     score: parsedOrDefault(recommendationScoreFilterSchema, params.get("score"), "all"),
     shift: parsedOrDefault(recommendationShiftFilterSchema, params.get("shift"), "all"),
     status: parsedOrDefault(recommendationStatusFilterSchema, params.get("status"), "all"),
-    sort: parsedOrDefault(recommendationSortSchema, params.get("sort"), "rank"),
+    sort: parsedOrDefault(recommendationSortSchema, params.get("sort"), "adjusted-score"),
   };
 }
 
@@ -52,7 +52,7 @@ export function serializeRecommendationFilters(filters: RecommendationFilters, c
   if (filters.score !== "all") params.set("score", filters.score);
   if (filters.shift !== "all") params.set("shift", filters.shift);
   if (filters.status !== "all") params.set("status", filters.status);
-  if (filters.sort !== "rank") params.set("sort", filters.sort);
+  if (filters.sort !== "adjusted-score") params.set("sort", filters.sort);
   return params.toString();
 }
 
@@ -67,6 +67,12 @@ export function synthesisStatusFilter(
 
 export function recommendationMatchPercent(item: Pick<RecommendationItemResponse, "adjustedScore">) {
   return Math.max(0, Math.min(100, Math.round(item.adjustedScore)));
+}
+
+export function visibleRecommendationReasons(item: Pick<RecommendationItemResponse, "reasonCodes" | "reasons">) {
+  return item.reasons.flatMap((reason, index) =>
+    item.reasonCodes[index] === "HIGH_RANGE_BURDEN" ? [] : [{ code: item.reasonCodes[index], reason }],
+  );
 }
 
 type ProjectableRecommendation = Pick<

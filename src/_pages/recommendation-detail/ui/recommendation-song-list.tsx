@@ -71,7 +71,7 @@ export function RecommendationSongList({
                           </button>
                         </h2>
                         <Link
-                          aria-label={`${item.title} 전체 분석 근거`}
+                          aria-label={`${item.title} 전체 분석 결과`}
                           className="shrink-0 text-muted-foreground hover:text-foreground focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                           href={detailHref}
                         >

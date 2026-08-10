@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, ArrowUpRight, AudioLines, Gauge, Info, Music2, Ticket } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Music2, Ticket } from "lucide-react";
 import Link from "next/link";
 import {
   formatRecommendedShift,
@@ -10,6 +10,7 @@ import {
   recommendationMatchPercent,
   safeRecommendationSourceUrl,
   selectRecommendationItem,
+  visibleRecommendationReasons,
 } from "@/entities/recommendation";
 import { midiToNoteName } from "@/entities/vocal-profile";
 import { RecommendationMixingAction, useRecommendationMixing } from "@/features/create-mixing";
@@ -19,14 +20,6 @@ import { StatePanel } from "@/shared/ui/state-panel";
 
 function noteRange(lowMidi: number, highMidi: number) {
   return `${midiToNoteName(lowMidi)}–${midiToNoteName(highMidi)}`;
-}
-
-function percent(value: number) {
-  return Math.round(Math.min(1, Math.max(0, value)) * 100);
-}
-
-function semitones(value: number) {
-  return `${Math.max(0, value).toFixed(1)}반음`;
 }
 
 export function SongDetail({
@@ -60,10 +53,9 @@ export function SongDetail({
   }
 
   const sourceUrl = safeRecommendationSourceUrl(item);
-  const songProfile = item.songProfile;
   const shift = item.recommendedShift;
-  const recommended = item.metrics.recommended;
   const scoreGain = Math.round(item.adjustedScore) - Math.round(item.originalKeyScore);
+  const visibleReasons = visibleRecommendationReasons(item);
 
   return (
     <div className="mx-auto w-full max-w-[72rem] px-5 py-10 sm:px-7 lg:px-8 lg:py-12">
@@ -107,7 +99,7 @@ export function SongDetail({
 
       <section aria-labelledby="score-title" className="py-8 sm:py-10 lg:py-12">
         <h2 className="text-lg font-semibold" id="score-title">
-          키 조정 결과
+          분석 결과
         </h2>
         <p className="mt-1 text-sm leading-6 text-muted-foreground">
           저장된 추천 계산 결과입니다. 실제 가창에서는 곡과 컨디션에 따라 다르게 느껴질 수 있습니다.
@@ -134,10 +126,10 @@ export function SongDetail({
         <div className="min-w-0 space-y-10">
           <section aria-labelledby="range-title">
             <h2 className="text-lg font-semibold" id="range-title">
-              음역 비교
+              내 목소리 음역
             </h2>
-            <p className="mt-1 text-sm text-muted-foreground">사용자 분석값과 저장된 곡 분석값만 비교합니다.</p>
-            <div className="mt-5 grid border-y md:grid-cols-2 md:divide-x">
+            <p className="mt-1 text-sm text-muted-foreground">이번 녹음에서 분석된 내 목소리의 관측 범위입니다.</p>
+            <div className="mt-5 border-y">
               <div className="px-1 py-6 md:px-6">
                 <p className="text-xs font-semibold tracking-[0.14em] text-muted-foreground">MY VOICE</p>
                 <dl className="mt-4 grid gap-3 text-sm">
@@ -153,56 +145,16 @@ export function SongDetail({
                   </div>
                 </dl>
               </div>
-              <div className="border-t px-1 py-6 md:border-t-0 md:px-6">
-                <p className="text-xs font-semibold tracking-[0.14em] text-muted-foreground">SONG RANGE</p>
-                {songProfile ? (
-                  <dl className="mt-4 grid gap-3 text-sm">
-                    <div className="flex justify-between gap-4">
-                      <dt className="text-muted-foreground">원키 실용 음역</dt>
-                      <dd>{noteRange(songProfile.tessituraLowMidi, songProfile.tessituraHighMidi)}</dd>
-                    </div>
-                    <div className="flex justify-between gap-4">
-                      <dt className="text-muted-foreground">추천 키 반영</dt>
-                      <dd className="font-semibold text-data-accent-foreground">
-                        {noteRange(songProfile.tessituraLowMidi + shift, songProfile.tessituraHighMidi + shift)}
-                      </dd>
-                    </div>
-                    <div className="flex justify-between gap-4">
-                      <dt className="text-muted-foreground">곡 전체 관측</dt>
-                      <dd>{noteRange(songProfile.minMidi, songProfile.maxMidi)}</dd>
-                    </div>
-                    <div className="flex justify-between gap-4">
-                      <dt className="text-muted-foreground">곡 중앙음</dt>
-                      <dd>{midiToNoteName(songProfile.medianMidi)}</dd>
-                    </div>
-                  </dl>
-                ) : (
-                  <div className="mt-4 flex gap-3 border-l-2 border-warning px-4 py-2 text-sm leading-6">
-                    <AudioLines className="mt-0.5 size-4 shrink-0 text-warning-foreground" aria-hidden="true" />
-                    <p>
-                      <strong>곡 음역을 표시할 수 없어요.</strong>
-                      <br />
-                      <span className="text-muted-foreground">
-                        저장된 곡 분석이 없거나 불완전합니다. 값을 추정하지 않습니다.
-                      </span>
-                    </p>
-                  </div>
-                )}
-              </div>
             </div>
           </section>
-
           <section aria-labelledby="reason-title">
             <h2 className="text-lg font-semibold" id="reason-title">
               이 곡을 추천한 이유
             </h2>
-            {item.reasons.length > 0 ? (
+            {visibleReasons.length > 0 ? (
               <ol className="mt-5 divide-y border-y">
-                {item.reasons.map((reason, index) => (
-                  <li
-                    className="flex gap-4 py-4 text-sm leading-6"
-                    key={`${item.reasonCodes[index] ?? "reason"}-${index}`}
-                  >
+                {visibleReasons.map(({ code, reason }, index) => (
+                  <li className="flex gap-4 py-4 text-sm leading-6" key={`${code ?? "reason"}-${index}`}>
                     <span className="font-mono text-xs text-muted-foreground">
                       {String(index + 1).padStart(2, "0")}
                     </span>
@@ -213,34 +165,6 @@ export function SongDetail({
             ) : (
               <p className="mt-5 border-y py-5 text-sm text-muted-foreground">저장된 추천 근거가 없습니다.</p>
             )}
-          </section>
-
-          <section aria-labelledby="breakdown-title">
-            <h2 className="text-lg font-semibold" id="breakdown-title">
-              분석 근거
-            </h2>
-            <dl className="mt-5 grid border-y sm:grid-cols-3 sm:divide-x">
-              <div className="px-1 py-5 sm:px-5">
-                <dt className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <Gauge className="size-4" aria-hidden="true" /> 실용 음역 겹침
-                </dt>
-                <dd className="mt-2 text-xl font-semibold">{percent(recommended.tessituraOverlapRatio)}%</dd>
-              </div>
-              <div className="border-t px-1 py-5 sm:border-t-0 sm:px-5">
-                <dt className="text-xs text-muted-foreground">남은 고음 부담</dt>
-                <dd className="mt-2 text-xl font-semibold">
-                  {semitones(recommended.highTessituraExcess + recommended.highExtremeExcess)}
-                </dd>
-              </div>
-              <div className="border-t px-1 py-5 sm:border-t-0 sm:px-5">
-                <dt className="text-xs text-muted-foreground">분석 신뢰도</dt>
-                <dd className="mt-2 text-xl font-semibold">{percent(item.metrics.confidence)}%</dd>
-              </div>
-            </dl>
-            <p className="mt-4 flex gap-2 text-xs leading-5 text-muted-foreground">
-              <Info className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" /> 이 수치는 저장된 score breakdown을 읽기
-              쉽게 요약한 값이며 가창력 평가가 아닙니다.
-            </p>
           </section>
         </div>
 

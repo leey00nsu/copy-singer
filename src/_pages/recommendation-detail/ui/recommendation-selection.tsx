@@ -4,6 +4,7 @@ import {
   formatRecommendedShift,
   type RecommendationItemResponse,
   recommendationMatchPercent,
+  visibleRecommendationReasons,
 } from "@/entities/recommendation";
 import { RecommendationMixingAction } from "@/features/create-mixing";
 import { Badge } from "@/shared/ui/badge";
@@ -25,6 +26,7 @@ function SelectionDetails({
   ticketCost: number;
 }) {
   const detailHref = `/recommendations/${runId}/songs/${item.id}`;
+  const visibleReasons = visibleRecommendationReasons(item);
   return (
     <section aria-labelledby={`${idPrefix}-title`}>
       <div className="flex items-center justify-between gap-3">
@@ -51,10 +53,10 @@ function SelectionDetails({
         <h3 className="flex items-center gap-2 text-sm font-semibold" id={`${idPrefix}-reason-title`}>
           <Gauge aria-hidden="true" className="size-4" /> 이 곡을 추천한 이유
         </h3>
-        {item.reasons.length > 0 ? (
+        {visibleReasons.length > 0 ? (
           <ul className="mt-3 divide-y border-y text-sm leading-6">
-            {item.reasons.slice(0, 3).map((reason, index) => (
-              <li className="flex gap-3 py-3" key={`${item.reasonCodes[index] ?? "reason"}-${index}`}>
+            {visibleReasons.slice(0, 3).map(({ code, reason }, index) => (
+              <li className="flex gap-3 py-3" key={`${code ?? "reason"}-${index}`}>
                 <span className="font-mono text-[10px] text-muted-foreground">
                   {String(index + 1).padStart(2, "0")}
                 </span>
@@ -78,7 +80,7 @@ function SelectionDetails({
           onStart={onStart}
         />
         <Link className={buttonVariants({ size: "sm", variant: "ghost" })} href={detailHref}>
-          전체 분석 근거 보기 <ArrowUpRight aria-hidden="true" className="size-4" />
+          전체 분석 결과 보기 <ArrowUpRight aria-hidden="true" className="size-4" />
         </Link>
       </div>
     </section>

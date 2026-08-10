@@ -404,6 +404,18 @@
     - [x] `public/file.svg`, `public/globe.svg`, `public/window.svg`의 runtime 참조 0건 재확인
     - [x] 미사용 SVG 3개 제거 후 production asset 참조 및 build/check 회귀 확인
 
+- [DONE][PRD-FR-046] T-F018-26 추천 기본 정렬·Song Detail 근거 단순화
+  - Date: 2026-08-10
+  - Change request: implementation approval checkpoint에서 사용자 변경 요청(B)으로 추가
+  - Acceptance:
+    - Recommendation 목록의 초기 정렬은 추천 적합도 높은 순이며 URL에 유효한 다른 정렬이 있으면 해당 선택을 유지한다.
+    - 사용자 UI에서 추천 키 적용 후에도 남는 고음 부담 안내 문구를 노출하지 않는다.
+    - Song Detail은 `분석 결과`로 제목을 단순화하고 SONG RANGE, 추천 이유와 score breakdown 분석 근거 section을 제거한다.
+  - Checklist:
+    - [x] 기본 recommendation projection sort를 adjusted score로 변경
+    - [x] recommendation 선택 panel의 고음 부담 reason 노출 제거
+    - [x] Song Detail heading·range·reason·breakdown 구성 단순화 및 회귀 검증
+
 ---
 
 ## 완료 조건
@@ -431,7 +443,7 @@
 | `pnpm run test:voice-scan` | `2026-08-10` | 통과 — 녹음 정책·오류·상태·cleanup 12/12 |
 | `pnpm run test:vocal-profile-analysis-queue` | `2026-08-10` | 통과 — idempotency·owner·lease·retry·cleanup 5/5 |
 | `pnpm run test:vocal-profile-history` | `2026-08-10` | 통과 — 공유 Library UI 3/3, private audio·ownership 3/3 |
-| `pnpm run test:recommendation` | `2026-08-10` | 통과 — ranking 10/10, presentation·synthesis·list·detail 17/17 |
+| `pnpm run test:recommendation` | `2026-08-10` | 통과 — ranking 10/10, 기본 적합도 정렬·reason 표시 정책·synthesis·list·detail 18/18 |
 | `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx` | `2026-08-10` | 통과 — 100곡 dense list·선택 panel/mobile Sheet·polling·완료 상태 9/9 |
 | `pnpm run test:storybook --run src/widgets/library/ui/mixing-library.stories.tsx src/widgets/library/ui/vocal-profile-library.stories.tsx src/_pages/library/ui/library-page.stories.tsx` | `2026-08-10` | 통과 — raw error 차단·10/12개 dense row·ProductShell 통합 10/10 |
 | `pnpm run test:recommendation:db` | `2026-08-10` | 통과 — persistence·synthesis 3/3 |
@@ -451,4 +463,4 @@
 | `rg` design asset/reference audit | `2026-08-10` | 통과 — canonical `references/copy-singer` 정책 유지; production 참조 0건인 Next 기본 `file/globe/window.svg` 제거, `favicon.svg`·`og.png` 보존 |
 | `git diff --check` | `2026-08-10` | 통과 — 공통 chrome·Pretendard·violet audio UI·Feature 문서 whitespace 오류 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-10T13:58:34.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-10T14:11:35.000Z -->

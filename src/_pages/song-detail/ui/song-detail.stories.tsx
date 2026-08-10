@@ -30,8 +30,10 @@ export const Available: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("heading", { level: 1, name: "서른 즈음에" })).toBeVisible();
+    await expect(canvas.getByRole("heading", { name: "분석 결과" })).toBeVisible();
     await expect(canvas.getByText("A3–A♯4")).toBeVisible();
-    await expect(canvas.getByText("F3–A♯4")).toBeVisible();
+    await expect(canvas.queryByText("F3–A♯4")).not.toBeInTheDocument();
+    await expect(canvas.queryByRole("heading", { name: "분석 근거" })).not.toBeInTheDocument();
     await expect(canvas.getByRole("link", { name: /외부 출처 열기/ })).toHaveAttribute("target", "_blank");
     await expect(canvas.getByRole("button", { name: "AI 믹싱" })).toBeEnabled();
   },
@@ -51,7 +53,7 @@ export const RangeUnavailable: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByText("곡 음역을 표시할 수 없어요.")).toBeVisible();
+    await expect(canvas.queryByText("SONG RANGE")).not.toBeInTheDocument();
     await expect(canvas.queryByRole("link", { name: /외부 출처 열기/ })).not.toBeInTheDocument();
   },
 };

@@ -143,6 +143,7 @@ Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface�
 - desktop 추천 선택은 목록 옆 보조 panel, mobile은 Sheet를 사용하며 primary action은 선택한 곡 하나에만 제공한다.
 - 추천 선택 UI는 `lg` 이상에서 sticky 보조 panel을, 그 미만에서는 화면 하단 action과 bottom Sheet를 사용한다. 하단 action이 목록의 마지막 행을 가리지 않도록 mobile content에 여유 공간을 둔다.
 - Profile Detail과 Song Detail은 전체 근거를 보는 선택 경로다. 생성 퍼널은 해당 상세 route를 필수 단계로 요구하지 않는다.
+- Song Detail은 추천 적합도 비교, 내 목소리 음역과 사용자에게 유효한 추천 이유만 보여준다. 별도 SONG RANGE와 score breakdown 근거, 추천 키 적용 후 남은 고음 부담 문구는 노출하지 않는다.
 - process visual의 animation은 상태를 보조할 뿐이며 `prefers-reduced-motion`에서 정지해도 title, status와 timeline만으로 의미가 유지돼야 한다.
 - 상세 화면은 Summary → 근거/분석 → 관련 action 순서를 유지한다.
 - filter는 실제 query/data field만 제공하고 결과 개수와 초기화 action을 함께 보여준다.

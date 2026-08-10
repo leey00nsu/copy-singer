@@ -7,6 +7,7 @@ import {
   projectRecommendationSongProfile,
   recommendationMatchPercent,
   serializeRecommendationFilters,
+  visibleRecommendationReasons,
 } from "../src/entities/recommendation";
 
 const synthesis = (status: "not_started" | "processing" | "succeeded" | "failed") => ({
@@ -60,11 +61,16 @@ test("parses and serializes only supported recommendation URL filters", () => {
     status: "active",
     sort: "adjusted-score",
   });
-  assert.equal(
-    serializeRecommendationFilters(parsed),
-    "q=%EB%B0%94%EB%9E%8C&score=90-plus&shift=lower&status=active&sort=adjusted-score",
-  );
+  assert.equal(serializeRecommendationFilters(parsed), "q=%EB%B0%94%EB%9E%8C&score=90-plus&shift=lower&status=active");
   assert.deepEqual(parseRecommendationFilters("score=invalid&sort=unknown"), DEFAULT_RECOMMENDATION_FILTERS);
+  assert.deepEqual(
+    projectRecommendationItems(items, DEFAULT_RECOMMENDATION_FILTERS).map((item) => item.rank),
+    [2, 1, 3],
+  );
+  assert.deepEqual(
+    projectRecommendationItems(items, { ...DEFAULT_RECOMMENDATION_FILTERS, sort: "rank" }).map((item) => item.rank),
+    [1, 2, 3],
+  );
 });
 
 test("projects search, score, shift, status, and sort without mutating source rank", () => {
@@ -95,6 +101,16 @@ test("shows a bounded integer match percent without fabricating precision", () =
   assert.equal(recommendationMatchPercent(items[0]), 92);
   assert.equal(recommendationMatchPercent({ adjustedScore: 101.2 }), 100);
   assert.equal(recommendationMatchPercent({ adjustedScore: -1 }), 0);
+});
+
+test("hides remaining high-range burden from user-facing recommendation reasons", () => {
+  assert.deepEqual(
+    visibleRecommendationReasons({
+      reasonCodes: ["HIGH_TESSITURA_OVERLAP", "HIGH_RANGE_BURDEN"],
+      reasons: ["실용 음역이 편안하게 겹칩니다.", "추천 키에서도 고음 부담이 약 1.7반음 남아 있습니다."],
+    }),
+    [{ code: "HIGH_TESSITURA_OVERLAP", reason: "실용 음역이 편안하게 겹칩니다." }],
+  );
 });
 
 test("projects only complete SONG vocal profiles for recommendation details", () => {

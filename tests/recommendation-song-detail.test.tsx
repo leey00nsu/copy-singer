@@ -50,19 +50,19 @@ test("allows only HTTP(S) external song source links", () => {
   assert.equal(safeRecommendationSourceUrl({ sourceUrl: "" }), null);
 });
 
-test("renders stored user/song ranges, score evidence, and the shared mixing action", () => {
+test("renders a simplified analysis result and the shared mixing action", () => {
   const html = renderSongDetail();
   assert.match(html, /서른 즈음에/);
+  assert.match(html, /분석 결과/);
   assert.match(html, /A3–A♯4/);
-  assert.match(html, /F3–A♯4/);
-  assert.match(html, /실용 음역 겹침/);
   assert.match(html, /티켓 1개 사용/);
   assert.match(html, /target="_blank"/);
   assert.match(html, /rel="noreferrer noopener"/);
   assert.match(html, /AI 믹싱/);
+  assert.doesNotMatch(html, /SONG RANGE|F3–A♯4|분석 근거|남은 고음 부담/);
 });
 
-test("renders an explicit unavailable state without inventing song metadata", () => {
+test("does not expose removed song-range metadata when it is unavailable", () => {
   const unavailable = {
     ...recommendationRunFixture,
     items: recommendationRunFixture.items.map((item) => ({
@@ -73,10 +73,8 @@ test("renders an explicit unavailable state without inventing song metadata", ()
     })),
   };
   const html = renderSongDetail(unavailable);
-  assert.match(html, /곡 음역을 표시할 수 없어요/);
-  assert.match(html, /값을 추정하지 않습니다/);
   assert.doesNotMatch(html, /외부 출처 열기/);
-  assert.doesNotMatch(html, /앨범|장르|가사|미리듣기/);
+  assert.doesNotMatch(html, /SONG RANGE|곡 음역을 표시할 수 없어요|앨범|장르|가사|미리듣기/);
 });
 
 test("keeps the App route as a thin adapter with loading and not-found boundaries", () => {

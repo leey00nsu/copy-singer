@@ -35,7 +35,7 @@ export function RecommendationFilterBar({
     filters.score !== "all" ||
     filters.shift !== "all" ||
     filters.status !== "all" ||
-    filters.sort !== "rank";
+    filters.sort !== "adjusted-score";
   const activeFilterCount = [filters.score !== "all", filters.shift !== "all", filters.status !== "all"].filter(
     Boolean,
   ).length;
@@ -155,8 +155,8 @@ const statusOptions = [
 ] as const;
 
 const sortOptions = [
-  ["rank", "추천 순위"],
   ["adjusted-score", "추천 적합도 높은 순"],
+  ["rank", "종합 추천 순위"],
   ["original-score", "원키 적합도 높은 순"],
   ["title", "곡명 가나다순"],
 ] as const;

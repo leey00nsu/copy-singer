@@ -381,3 +381,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **T-F018-24**: 실제 360/768/1280 viewport에서 분석·추천·믹싱의 stepper, timeline과 action을 검수했다. 추천은 360/768에서 bottom action+Sheet, 1280에서 sticky panel을 사용하고 전 크기 horizontal overflow가 없었다. 모바일 곡 선택·CTA·deep link와 clean browser console도 확인했다.
 - **Evidence**: T-F018-20 targeted Storybook 2 files/8 tests, mixing UI 8/8, recommendation ranking 10/10·presentation/UI 17/17. T-F018-21 voice scan 12/12, Analysis Status/Success Storybook 2 files/7 tests. T-F018-22 recommendation 27/27, Recommendation Results Storybook 9/9. T-F018-23 Query 24/24·streaming 1/1, recommendation 27/27, Mixing UI 8/8, Recommendation/Song Detail Storybook 14/14. T-F018-24 `pnpm test` 전체 통과(Next production 23/23 routes, Storybook 38 files/101 tests), browser 360/768/1280 overflow 0·console error/warning 0. 각 checkpoint `pnpm run check` 통과(error 0, 기존 Biome warning 59건, architecture 4/4).
 - **Consequences**: `src/widgets/creation-funnel`이 domain-aware funnel composition을 소유하고 Shared는 범용 primitive만 제공한다. 상단 journey stepper와 server timeline은 서로 다른 의미로 표현한다. 기존 Profile/Song Detail URL은 삭제하거나 redirect하지 않으며 Library에서 그대로 접근할 수 있다.
+
+## D040: 추천 적합도 기본 정렬과 Song Detail 근거 축소 (2026-08-10)
+
+- **Context**: 저장된 `rank`는 원키 적합도, 추천 키 적합도와 shift penalty를 합친 종합 순위지만 목록에서 가장 크게 표시되는 값은 추천 키 적용 후 `adjustedScore`다. 두 기준이 다른 초기 순서를 만들고, Song Detail의 곡 음역·score breakdown·남은 고음 부담은 사용자가 선택을 확정하는 데 비해 정보 비용이 컸다.
+- **Decision**: URL에 sort가 없으면 `adjusted-score`를 기본으로 사용하고 명시적 `sort=rank`만 종합 추천 순위를 복원한다. `HIGH_RANGE_BURDEN` reason은 저장 계약을 유지한 채 사용자 표시 projection에서 제외한다. Song Detail은 `분석 결과`, 내 목소리 음역, 정제된 추천 이유와 믹싱 action만 유지하고 SONG RANGE와 별도 `분석 근거` section을 제거한다. 링크 명칭도 `전체 분석 결과`로 맞춘다.
+- **Rationale**: 목록의 주 지표와 초기 순서를 일치시키면 사용자가 정렬 기준을 바로 이해할 수 있다. 원본 run과 reason code를 변경하지 않고 표시만 축소하면 기존 결과 호환성과 내부 분석 가능성을 보존할 수 있다.
+- **Evidence**: `pnpm run test:recommendation` ranking 10/10·presentation/UI/detail 18/18, Recommendation/Song Detail Storybook 2 files/14 tests, `pnpm run check` 통과(error 0, 기존 warning 59건), Next production build 23/23 routes.
+- **Consequences**: query string이 없는 Recommendation 화면은 추천 적합도 내림차순이다. 종합 추천 순위는 정렬 메뉴의 선택 옵션으로 남고, backend ranking·stored run·Song Detail route 계약은 변경하지 않는다.
