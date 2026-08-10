@@ -389,3 +389,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 목록의 주 지표와 초기 순서를 일치시키면 사용자가 정렬 기준을 바로 이해할 수 있다. 원본 run과 reason code를 변경하지 않고 표시만 축소하면 기존 결과 호환성과 내부 분석 가능성을 보존할 수 있다.
 - **Evidence**: `pnpm run test:recommendation` ranking 10/10·presentation/UI/detail 18/18, Recommendation/Song Detail Storybook 2 files/14 tests, `pnpm run check` 통과(error 0, 기존 warning 59건), Next production build 23/23 routes.
 - **Consequences**: query string이 없는 Recommendation 화면은 추천 적합도 내림차순이다. 종합 추천 순위는 정렬 메뉴의 선택 옵션으로 남고, backend ranking·stored run·Song Detail route 계약은 변경하지 않는다.
+
+## D041: Song Detail 음역 graph와 사용자 reason projection (2026-08-10)
+
+- **Context**: 숫자와 음 이름만 나열한 `내 목소리 음역`은 전체 관측 범위와 실제로 편안한 실용 음역의 관계를 한눈에 보여 주지 못했다. 키 조정 전후 적합도나 고·저음 부담 변화 문장은 화면의 점수와 키 정보를 반복하면서 선택에 필요한 근거를 흐렸다.
+- **Decision**: Vocal Profile의 range graph를 `VocalRangeProfile` public component로 분리해 Song Detail의 `분석 결과` 안에서 재사용한다. recommendation snapshot이 소유한 전체 관측·실용 음역만 표시하고 없는 중앙음은 추정하거나 legend·요약에 노출하지 않는다. `KEY_SHIFT_IMPROVES_FIT`, `HIGH_RANGE_BURDEN`, `LOW_RANGE_BURDEN`, `HIGH_NOTES_REDUCED`, `LOW_NOTES_REDUCED`는 저장 reason을 유지한 채 사용자 표시 projection에서 제외하며, 표시할 reason이 없으면 section 자체를 생략한다.
+- **Rationale**: 같은 음역 데이터를 같은 시각 문법으로 표현하면 Profile과 Song Detail을 오갈 때 학습 비용이 줄고, 존재하지 않는 값을 만들지 않으면서 관측 범위와 실용 범위의 포함 관계를 전달할 수 있다. reason 정제는 backend 설명 가능성은 보존하면서 사용자 화면의 중복 문구만 줄인다.
+- **Evidence**: `pnpm run test:recommendation` ranking 10/10·presentation/UI/detail 18/18, Vocal Profile visualization 10/10, targeted Vocal Profile/Recommendation/Song Detail Storybook 3 files·17 tests, `pnpm run check` 통과(error 0, 기존 warning 59건), Next production build 23/23 routes.
+- **Consequences**: Profile Detail은 중앙음을 포함한 graph를 유지하고 Song Detail은 중앙음 없는 2개 지표 graph를 사용한다. 원본 recommendation reason code·text, ranking, API와 DB 계약은 변경하지 않는다.

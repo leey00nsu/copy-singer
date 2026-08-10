@@ -416,6 +416,18 @@
     - [x] recommendation 선택 panel의 고음 부담 reason 노출 제거
     - [x] Song Detail heading·range·reason·breakdown 구성 단순화 및 회귀 검증
 
+- [DONE][PRD-FR-046] T-F018-27 Song Detail 보컬 음역 시각화·reason 정제
+  - Date: 2026-08-10
+  - Change request: implementation approval checkpoint에서 사용자 변경 요청(B)으로 추가
+  - Acceptance:
+    - Song Detail의 분석 결과 안에서 보컬 프로필과 동일한 visual language의 실제 전체 관측·실용 음역 graph를 제공한다.
+    - recommendation profile에 없는 중앙음 등은 추정하지 않고 graph에서도 생략한다.
+    - 적합도 변화 수치, 고·저음 부담 감소/잔존처럼 선택에 의미가 낮은 technical reason은 사용자 UI에 노출하지 않는다.
+  - Checklist:
+    - [x] 보컬 프로필 range graph를 recommendation profile에서도 재사용 가능한 public component로 정리
+    - [x] Song Detail 분석 결과와 내 목소리 음역을 단일 visual section으로 통합
+    - [x] 사용자 reason projection 정제 및 unit·Storybook·build 회귀 검증
+
 ---
 
 ## 완료 조건
@@ -445,6 +457,8 @@
 | `pnpm run test:vocal-profile-history` | `2026-08-10` | 통과 — 공유 Library UI 3/3, private audio·ownership 3/3 |
 | `pnpm run test:recommendation` | `2026-08-10` | 통과 — ranking 10/10, 기본 적합도 정렬·reason 표시 정책·synthesis·list·detail 18/18 |
 | `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx` | `2026-08-10` | 통과 — 100곡 dense list·선택 panel/mobile Sheet·polling·완료 상태 9/9 |
+| `pnpm run test:storybook --run src/entities/vocal-profile/ui/vocal-profile-results.stories.tsx src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/_pages/song-detail/ui/song-detail.stories.tsx` | `2026-08-10` | 통과 — 중앙음 유무에 따른 공통 음역 graph·정제된 recommendation reason·Song Detail 17/17 |
+| `pnpm exec tsx --test tests/vocal-profile-visualization.test.ts tests/vocal-profile-results-ui.test.tsx` | `2026-08-10` | 통과 — 음역 graph data·접근 가능한 시각화 UI 10/10 |
 | `pnpm run test:storybook --run src/widgets/library/ui/mixing-library.stories.tsx src/widgets/library/ui/vocal-profile-library.stories.tsx src/_pages/library/ui/library-page.stories.tsx` | `2026-08-10` | 통과 — raw error 차단·10/12개 dense row·ProductShell 통합 10/10 |
 | `pnpm run test:recommendation:db` | `2026-08-10` | 통과 — persistence·synthesis 3/3 |
 | `pnpm run test:mixing:ui` | `2026-08-10` | 통과 — safe failure presentation·history 단일 action·실제 timeline·상세 adapter 8/8 |
@@ -463,4 +477,4 @@
 | `rg` design asset/reference audit | `2026-08-10` | 통과 — canonical `references/copy-singer` 정책 유지; production 참조 0건인 Next 기본 `file/globe/window.svg` 제거, `favicon.svg`·`og.png` 보존 |
 | `git diff --check` | `2026-08-10` | 통과 — 공통 chrome·Pretendard·violet audio UI·Feature 문서 whitespace 오류 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-10T14:11:35.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-10T14:22:50.000Z -->

@@ -11,6 +11,14 @@ export type RecommendationShiftFilter = z.infer<typeof recommendationShiftFilter
 export type RecommendationStatusFilter = z.infer<typeof recommendationStatusFilterSchema>;
 export type RecommendationSort = z.infer<typeof recommendationSortSchema>;
 
+const HIDDEN_RECOMMENDATION_REASON_CODES = new Set([
+  "KEY_SHIFT_IMPROVES_FIT",
+  "HIGH_RANGE_BURDEN",
+  "LOW_RANGE_BURDEN",
+  "HIGH_NOTES_REDUCED",
+  "LOW_NOTES_REDUCED",
+]);
+
 export type RecommendationFilters = {
   query: string;
   score: RecommendationScoreFilter;
@@ -71,7 +79,9 @@ export function recommendationMatchPercent(item: Pick<RecommendationItemResponse
 
 export function visibleRecommendationReasons(item: Pick<RecommendationItemResponse, "reasonCodes" | "reasons">) {
   return item.reasons.flatMap((reason, index) =>
-    item.reasonCodes[index] === "HIGH_RANGE_BURDEN" ? [] : [{ code: item.reasonCodes[index], reason }],
+    HIDDEN_RECOMMENDATION_REASON_CODES.has(item.reasonCodes[index] ?? "")
+      ? []
+      : [{ code: item.reasonCodes[index], reason }],
   );
 }
 

@@ -49,11 +49,11 @@ function SelectionDetails({
         </div>
       </dl>
 
-      <section aria-labelledby={`${idPrefix}-reason-title`} className="mt-6">
-        <h3 className="flex items-center gap-2 text-sm font-semibold" id={`${idPrefix}-reason-title`}>
-          <Gauge aria-hidden="true" className="size-4" /> 이 곡을 추천한 이유
-        </h3>
-        {visibleReasons.length > 0 ? (
+      {visibleReasons.length > 0 ? (
+        <section aria-labelledby={`${idPrefix}-reason-title`} className="mt-6">
+          <h3 className="flex items-center gap-2 text-sm font-semibold" id={`${idPrefix}-reason-title`}>
+            <Gauge aria-hidden="true" className="size-4" /> 이 곡을 추천한 이유
+          </h3>
           <ul className="mt-3 divide-y border-y text-sm leading-6">
             {visibleReasons.slice(0, 3).map(({ code, reason }, index) => (
               <li className="flex gap-3 py-3" key={`${code ?? "reason"}-${index}`}>
@@ -64,10 +64,8 @@ function SelectionDetails({
               </li>
             ))}
           </ul>
-        ) : (
-          <p className="mt-3 border-y py-4 text-sm text-muted-foreground">저장된 추천 근거가 없습니다.</p>
-        )}
-      </section>
+        </section>
+      ) : null}
 
       <div className="mt-6 flex items-center gap-2 text-sm font-medium">
         <Ticket aria-hidden="true" className="size-4" /> 티켓 {ticketCost}개 사용

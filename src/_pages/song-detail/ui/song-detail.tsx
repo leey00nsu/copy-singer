@@ -12,15 +12,11 @@ import {
   selectRecommendationItem,
   visibleRecommendationReasons,
 } from "@/entities/recommendation";
-import { midiToNoteName } from "@/entities/vocal-profile";
+import { VocalRangeProfile } from "@/entities/vocal-profile";
 import { RecommendationMixingAction, useRecommendationMixing } from "@/features/create-mixing";
 import { Badge } from "@/shared/ui/badge";
 import { buttonVariants } from "@/shared/ui/button";
 import { StatePanel } from "@/shared/ui/state-panel";
-
-function noteRange(lowMidi: number, highMidi: number) {
-  return `${midiToNoteName(lowMidi)}–${midiToNoteName(highMidi)}`;
-}
 
 export function SongDetail({
   initialRun,
@@ -120,38 +116,18 @@ export function SongDetail({
             <dd className="mt-2 text-2xl font-semibold">{scoreGain > 0 ? `+${scoreGain}` : scoreGain}%p</dd>
           </div>
         </dl>
+        <div className="mt-8">
+          <VocalRangeProfile profile={run.profile} title="내 목소리 음역" />
+        </div>
       </section>
 
       <div className="grid gap-14 border-t pt-10 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="min-w-0 space-y-10">
-          <section aria-labelledby="range-title">
-            <h2 className="text-lg font-semibold" id="range-title">
-              내 목소리 음역
-            </h2>
-            <p className="mt-1 text-sm text-muted-foreground">이번 녹음에서 분석된 내 목소리의 관측 범위입니다.</p>
-            <div className="mt-5 border-y">
-              <div className="px-1 py-6 md:px-6">
-                <p className="text-xs font-semibold tracking-[0.14em] text-muted-foreground">MY VOICE</p>
-                <dl className="mt-4 grid gap-3 text-sm">
-                  <div className="flex justify-between gap-4">
-                    <dt className="text-muted-foreground">실용 음역</dt>
-                    <dd className="font-semibold">
-                      {noteRange(run.profile.tessituraLowMidi, run.profile.tessituraHighMidi)}
-                    </dd>
-                  </div>
-                  <div className="flex justify-between gap-4">
-                    <dt className="text-muted-foreground">전체 관측</dt>
-                    <dd>{noteRange(run.profile.minMidi, run.profile.maxMidi)}</dd>
-                  </div>
-                </dl>
-              </div>
-            </div>
-          </section>
-          <section aria-labelledby="reason-title">
-            <h2 className="text-lg font-semibold" id="reason-title">
-              이 곡을 추천한 이유
-            </h2>
-            {visibleReasons.length > 0 ? (
+          {visibleReasons.length > 0 ? (
+            <section aria-labelledby="reason-title">
+              <h2 className="text-lg font-semibold" id="reason-title">
+                이 곡을 추천한 이유
+              </h2>
               <ol className="mt-5 divide-y border-y">
                 {visibleReasons.map(({ code, reason }, index) => (
                   <li className="flex gap-4 py-4 text-sm leading-6" key={`${code ?? "reason"}-${index}`}>
@@ -162,10 +138,8 @@ export function SongDetail({
                   </li>
                 ))}
               </ol>
-            ) : (
-              <p className="mt-5 border-y py-5 text-sm text-muted-foreground">저장된 추천 근거가 없습니다.</p>
-            )}
-          </section>
+            </section>
+          ) : null}
         </div>
 
         <aside className="h-fit rounded-lg border bg-background p-6 lg:sticky lg:top-28" aria-labelledby="mixing-title">

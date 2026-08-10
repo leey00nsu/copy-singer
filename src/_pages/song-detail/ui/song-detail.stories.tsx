@@ -31,8 +31,9 @@ export const Available: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("heading", { level: 1, name: "서른 즈음에" })).toBeVisible();
     await expect(canvas.getByRole("heading", { name: "분석 결과" })).toBeVisible();
-    await expect(canvas.getByText("A3–A♯4")).toBeVisible();
+    await expect(canvas.getByRole("img", { name: /전체 관측 음역 E3부터 E5, 실용 음역 A3부터 A♯4/ })).toBeVisible();
     await expect(canvas.queryByText("F3–A♯4")).not.toBeInTheDocument();
+    await expect(canvas.queryByText("중앙음")).not.toBeInTheDocument();
     await expect(canvas.queryByRole("heading", { name: "분석 근거" })).not.toBeInTheDocument();
     await expect(canvas.getByRole("link", { name: /외부 출처 열기/ })).toHaveAttribute("target", "_blank");
     await expect(canvas.getByRole("button", { name: "AI 믹싱" })).toBeEnabled();

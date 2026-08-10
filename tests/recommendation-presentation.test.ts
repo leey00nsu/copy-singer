@@ -103,11 +103,23 @@ test("shows a bounded integer match percent without fabricating precision", () =
   assert.equal(recommendationMatchPercent({ adjustedScore: -1 }), 0);
 });
 
-test("hides remaining high-range burden from user-facing recommendation reasons", () => {
+test("keeps only user-meaningful recommendation reasons", () => {
   assert.deepEqual(
     visibleRecommendationReasons({
-      reasonCodes: ["HIGH_TESSITURA_OVERLAP", "HIGH_RANGE_BURDEN"],
-      reasons: ["실용 음역이 편안하게 겹칩니다.", "추천 키에서도 고음 부담이 약 1.7반음 남아 있습니다."],
+      reasonCodes: [
+        "HIGH_TESSITURA_OVERLAP",
+        "KEY_SHIFT_IMPROVES_FIT",
+        "HIGH_RANGE_BURDEN",
+        "HIGH_NOTES_REDUCED",
+        "LOW_NOTES_REDUCED",
+      ],
+      reasons: [
+        "실용 음역이 편안하게 겹칩니다.",
+        "-6키로 조정하면 예상 적합도가 34.4점에서 75.7점으로 높아집니다.",
+        "추천 키에서도 고음 부담이 약 1.7반음 남아 있습니다.",
+        "키를 조정해 고음 부담을 약 12.0반음 줄였습니다.",
+        "키를 조정해 저음 부담을 줄였습니다.",
+      ],
     }),
     [{ code: "HIGH_TESSITURA_OVERLAP", reason: "실용 음역이 편안하게 겹칩니다." }],
   );

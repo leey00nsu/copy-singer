@@ -17,6 +17,7 @@ import {
   pitchChartData,
   rangeChartData,
   type VocalProfileVisualization,
+  type VocalRangeMetrics,
 } from "../model/visualization";
 import { ReferenceBandPlayers } from "./reference-band-players";
 import { VocalProfileSummary } from "./vocal-profile-summary";
@@ -33,14 +34,35 @@ const PITCH_CHART_CONFIG = {
   midi: { label: "음높이", color: "var(--data-accent)" },
 } satisfies ChartConfig;
 
-function RangeProfile({ profile }: { profile: VocalProfileResponse }) {
+export function VocalRangeProfile({
+  profile,
+  title = "음역 프로필",
+}: {
+  profile: VocalRangeMetrics & { medianMidi?: number | null };
+  title?: string;
+}) {
   const axis = midiAxis(profile.minMidi, profile.maxMidi);
   const data = rangeChartData(profile);
+  const medianMidi =
+    typeof profile.medianMidi === "number" && Number.isFinite(profile.medianMidi) ? profile.medianMidi : null;
+  const summary: Array<[string, string, string]> = [
+    [
+      "전체 관측 음역",
+      `${midiToNoteName(profile.minMidi)} ~ ${midiToNoteName(profile.maxMidi)}`,
+      `${profile.minMidi.toFixed(1)} – ${profile.maxMidi.toFixed(1)} MIDI`,
+    ],
+    [
+      "실용 음역",
+      `${midiToNoteName(profile.tessituraLowMidi)} ~ ${midiToNoteName(profile.tessituraHighMidi)}`,
+      `${profile.tessituraLowMidi.toFixed(1)} – ${profile.tessituraHighMidi.toFixed(1)} MIDI`,
+    ],
+  ];
+  if (medianMidi !== null) summary.push(["중앙음", midiToNoteName(medianMidi), `${medianMidi.toFixed(1)} MIDI`]);
 
   return (
     <Card className="overflow-hidden rounded-none border-x-0 shadow-none">
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm">음역 프로필</CardTitle>
+        <CardTitle className="text-sm">{title}</CardTitle>
         <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[10px] text-muted-foreground">
           <span className="flex items-center gap-2">
             <i className="h-2 w-7 rounded-full bg-data-accent/30" />
@@ -50,15 +72,17 @@ function RangeProfile({ profile }: { profile: VocalProfileResponse }) {
             <i className="h-2 w-7 rounded-full bg-data-accent" />
             실용 음역
           </span>
-          <span className="flex items-center gap-2">
-            <i className="size-2.5 rounded-full bg-zinc-600" />
-            중앙음
-          </span>
+          {medianMidi !== null ? (
+            <span className="flex items-center gap-2">
+              <i className="size-2.5 rounded-full bg-zinc-600" />
+              중앙음
+            </span>
+          ) : null}
         </div>
       </CardHeader>
       <CardContent>
         <ChartContainer
-          aria-label={`전체 관측 음역 ${midiToNoteName(profile.minMidi)}부터 ${midiToNoteName(profile.maxMidi)}, 실용 음역 ${midiToNoteName(profile.tessituraLowMidi)}부터 ${midiToNoteName(profile.tessituraHighMidi)}, 중앙음 ${midiToNoteName(profile.medianMidi)}`}
+          aria-label={`전체 관측 음역 ${midiToNoteName(profile.minMidi)}부터 ${midiToNoteName(profile.maxMidi)}, 실용 음역 ${midiToNoteName(profile.tessituraLowMidi)}부터 ${midiToNoteName(profile.tessituraHighMidi)}${medianMidi === null ? "" : `, 중앙음 ${midiToNoteName(medianMidi)}`}`}
           className="h-36 w-full aspect-auto"
           config={RANGE_CHART_CONFIG}
           role="img"
@@ -95,12 +119,14 @@ function RangeProfile({ profile }: { profile: VocalProfileResponse }) {
                 />
               }
             />
-            <ReferenceLine
-              label={{ value: `중앙음 ${midiToNoteName(profile.medianMidi)}`, position: "top", fontSize: 10 }}
-              stroke="var(--data-accent-foreground)"
-              strokeDasharray="4 4"
-              x={profile.medianMidi}
-            />
+            {medianMidi !== null ? (
+              <ReferenceLine
+                label={{ value: `중앙음 ${midiToNoteName(medianMidi)}`, position: "top", fontSize: 10 }}
+                stroke="var(--data-accent-foreground)"
+                strokeDasharray="4 4"
+                x={medianMidi}
+              />
+            ) : null}
             <Bar dataKey="range" radius={8}>
               {data.map((row) => (
                 <Cell fill={row.key === "observed" ? "var(--accent)" : "var(--color-range)"} key={row.key} />
@@ -108,20 +134,10 @@ function RangeProfile({ profile }: { profile: VocalProfileResponse }) {
             </Bar>
           </BarChart>
         </ChartContainer>
-        <div className="grid overflow-hidden border-y sm:grid-cols-3 sm:divide-x">
-          {[
-            [
-              "전체 관측 음역",
-              `${midiToNoteName(profile.minMidi)} ~ ${midiToNoteName(profile.maxMidi)}`,
-              `${profile.minMidi.toFixed(1)} – ${profile.maxMidi.toFixed(1)} MIDI`,
-            ],
-            [
-              "실용 음역",
-              `${midiToNoteName(profile.tessituraLowMidi)} ~ ${midiToNoteName(profile.tessituraHighMidi)}`,
-              `${profile.tessituraLowMidi.toFixed(1)} – ${profile.tessituraHighMidi.toFixed(1)} MIDI`,
-            ],
-            ["중앙음", midiToNoteName(profile.medianMidi), `${profile.medianMidi.toFixed(1)} MIDI`],
-          ].map(([label, value, detail]) => (
+        <div
+          className={`grid overflow-hidden border-y sm:divide-x ${medianMidi === null ? "sm:grid-cols-2" : "sm:grid-cols-3"}`}
+        >
+          {summary.map(([label, value, detail]) => (
             <div className="border-b px-1 py-3 last:border-b-0 sm:border-b-0 sm:px-4" key={label}>
               <p className="text-[10px] text-muted-foreground">{label}</p>
               <p className="mt-1 text-sm font-semibold">{value}</p>
@@ -326,7 +342,7 @@ export function VocalProfileResults({
     <div className="space-y-5">
       {showSummary ? <VocalProfileSummary profile={profile} /> : null}
       <div className="grid gap-4 lg:grid-cols-[1.08fr_.92fr]">
-        <RangeProfile profile={profile} />
+        <VocalRangeProfile profile={profile} />
         <HistogramChart profile={profile} visualization={visualization} />
       </div>
       <div className="grid gap-4 lg:grid-cols-[1.3fr_.9fr]">

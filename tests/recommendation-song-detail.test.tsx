@@ -54,12 +54,13 @@ test("renders a simplified analysis result and the shared mixing action", () => 
   const html = renderSongDetail();
   assert.match(html, /서른 즈음에/);
   assert.match(html, /분석 결과/);
-  assert.match(html, /A3–A♯4/);
+  assert.match(html, /role="img"/);
+  assert.match(html, /전체 관측 음역 E3부터 E5, 실용 음역 A3부터 A♯4/);
   assert.match(html, /티켓 1개 사용/);
   assert.match(html, /target="_blank"/);
   assert.match(html, /rel="noreferrer noopener"/);
   assert.match(html, /AI 믹싱/);
-  assert.doesNotMatch(html, /SONG RANGE|F3–A♯4|분석 근거|남은 고음 부담/);
+  assert.doesNotMatch(html, /SONG RANGE|F3–A♯4|분석 근거|남은 고음 부담|중앙음/);
 });
 
 test("does not expose removed song-range metadata when it is unavailable", () => {
