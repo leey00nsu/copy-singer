@@ -386,15 +386,15 @@
     - [x] 목록과 Song Detail 시작 경로의 직접 이동 적용
     - [x] mutation·navigation·polling 회귀 테스트 추가
 
-- [TODO][PRD-FR-046] T-F018-24 생성 퍼널 반응형·접근성 통합 QA
+- [DONE][PRD-FR-046] T-F018-24 생성 퍼널 반응형·접근성 통합 QA
   - Date: 2026-08-10
   - Acceptance:
     - 360/768/1280에서 분석→추천→믹싱의 primary action, 선택 panel과 process timeline이 잘리지 않고 keyboard와 screen reader로 현재 단계를 이해할 수 있다.
     - 새로고침·뒤로 가기·active job 복구와 실패 재시도에서 durable resource 상태가 유지된다.
   - Checklist:
-    - [ ] targeted/full Storybook, 관련 unit·query·UI 회귀 실행
-    - [ ] 실제 browser responsive·console·horizontal overflow 검증
-    - [ ] Design System·Feature docs·workflow evidence 최종 동기화
+    - [x] targeted/full Storybook, 관련 unit·query·UI 회귀 실행
+    - [x] 실제 browser responsive·console·horizontal overflow 검증
+    - [x] Design System·Feature docs·workflow evidence 최종 동기화
 
 - [TODO][NON-PRD] T-F018-25 미사용 public 기본 asset housekeeping
   - Date: 2026-08-10
@@ -432,22 +432,23 @@
 | `pnpm run test:vocal-profile-analysis-queue` | `2026-08-10` | 통과 — idempotency·owner·lease·retry·cleanup 5/5 |
 | `pnpm run test:vocal-profile-history` | `2026-08-10` | 통과 — 공유 Library UI 3/3, private audio·ownership 3/3 |
 | `pnpm run test:recommendation` | `2026-08-10` | 통과 — ranking 10/10, presentation·synthesis·list·detail 17/17 |
-| `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx` | `2026-08-10` | 통과 — 100곡 dense list·mobile filter Sheet·polling·완료 상태 8/8 |
+| `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx` | `2026-08-10` | 통과 — 100곡 dense list·선택 panel/mobile Sheet·polling·완료 상태 9/9 |
 | `pnpm run test:storybook --run src/widgets/library/ui/mixing-library.stories.tsx src/widgets/library/ui/vocal-profile-library.stories.tsx src/_pages/library/ui/library-page.stories.tsx` | `2026-08-10` | 통과 — raw error 차단·10/12개 dense row·ProductShell 통합 10/10 |
 | `pnpm run test:recommendation:db` | `2026-08-10` | 통과 — persistence·synthesis 3/3 |
 | `pnpm run test:mixing:ui` | `2026-08-10` | 통과 — safe failure presentation·history 단일 action·실제 timeline·상세 adapter 8/8 |
 | `pnpm run test:mixing:db` | `2026-08-10` | 통과 — queue·owner/filter/pagination·active 409·terminal 삭제·cleanup queue·ticket SetNull 1/1 |
-| `pnpm run test:query` | `2026-08-10` | 통과 — detail/history Query key·terminal polling·삭제 envelope 포함 23/23, streaming proxy 1/1 |
+| `pnpm run test:query` | `2026-08-10` | 통과 — detail/history Query key·terminal polling·생성 job 직접 route·삭제 envelope 포함 24/24, streaming proxy 1/1 |
 | `pnpm run test:auth:db` | `2026-08-10` | 통과 — session/role·Google provider account ownership·강제 개발 인증 우회 session 식별 3/3 |
 | `pnpm run test:tickets` | `2026-08-10` | 통과 — 실제 Account identity/provider/ticket UI 3/3, ledger balance·pagination clamp DB 1/1 |
 | `pnpm run test:architecture-boundaries` | `2026-08-10` | 통과 — `pnpm run check` 내부 FSD·Client/Server·App adapter 4/4 |
-| `pnpm run test:storybook --run` | `2026-08-10` | 통과 — 36 files, 94 tests, live microphone recorder story·Landing motion·100곡 비교·dense ProductShell Library·development bypass 상태/a11y 포함 |
+| `pnpm run test:storybook --run` | `2026-08-10` | 통과 — 38 files, 101 tests, 생성 퍼널 상태·추천 선택/mobile Sheet·live microphone·dense Library·상태/a11y 포함 |
 | `pnpm run build-storybook` | `2026-08-10` | 통과 — 36개 story file 정적 산출물 생성, 기존 chunk size warning만 있음 |
 | `pnpm run build` | `2026-08-10` | 통과 — Next.js 16 production build와 기존 23개 public/product/Admin/dev route 보존 |
 | `pnpm run test:base-ui` | `2026-08-10` | 통과 — TSX AST 기반 Link/Base UI non-native semantics 1/1 |
 | `pnpm run test:process-scripts` | `2026-08-10` | 통과 — process supervisor·Storybook production boundary 5/5 |
-| `pnpm test` | `2026-08-10` | 통과 — production build, 전체 unit·integration·DB·Query·architecture와 Storybook 36 files/94 tests |
+| `pnpm test` | `2026-08-10` | 통과 — production build 23/23 routes, 전체 unit·integration·DB·Query·architecture와 Storybook 38 files/101 tests |
+| 실제 browser 생성 퍼널 QA | `2026-08-10` | 통과 — 분석·추천·믹싱 360/768/1280, horizontal overflow 0, mobile Sheet 선택/CTA/deep link, desktop sticky panel, fake percentage 없음, clean console error/warning 0 |
 | `rg` design asset/reference audit | `2026-08-10` | 통과 — 현재 정본 문서는 canonical `references/copy-singer`만 안내하고 generated/current/V2는 legacy로 명시; production에서 crystal/file/globe/window asset 참조 없음 |
 | `git diff --check` | `2026-08-10` | 통과 — 공통 chrome·Pretendard·violet audio UI·Feature 문서 whitespace 오류 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-10T13:52:40.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-10T13:57:12.000Z -->
