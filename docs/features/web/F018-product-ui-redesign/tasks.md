@@ -313,7 +313,7 @@
     - [x] 로그아웃 성공·실패 상태와 navigation 구현·회귀 테스트
     - [x] 실제 브라우저·targeted Storybook·전체 check·workflow audit 통과
 
-- [TODO][PRD-FR-046] T-F018-product-ui-redesign-01 원본 4장 기준 전 페이지 visual fidelity 재작업
+- [TODO][PRD-FR-046] T-F018-19 원본 4장 기준 전 페이지 visual fidelity 재작업
   - Date: 2026-08-10
   - Acceptance:
     - 현재 구현은 기능과 데이터 계약만 보존하고 Landing, Login, Voice Scan, Voice Profile, Recommendation, Library, Mixing, Account, Admin의 레이아웃과 정보 위계를 네 원본 디자인 보드에 맞게 재구성한다.
