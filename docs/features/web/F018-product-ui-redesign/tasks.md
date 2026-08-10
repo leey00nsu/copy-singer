@@ -396,13 +396,13 @@
     - [x] 실제 browser responsive·console·horizontal overflow 검증
     - [x] Design System·Feature docs·workflow evidence 최종 동기화
 
-- [TODO][NON-PRD] T-F018-25 미사용 public 기본 asset housekeeping
+- [DONE][NON-PRD] T-F018-25 미사용 public 기본 asset housekeeping
   - Date: 2026-08-10
   - Acceptance:
     - runtime과 문서에서 참조되지 않는 Next 기본 public asset만 제거하고 `favicon.svg`, `og.png` 등 실제 metadata asset은 보존한다.
   - Checklist:
-    - [ ] `public/file.svg`, `public/globe.svg`, `public/window.svg`의 참조 0건 재확인
-    - [ ] 미사용 SVG 3개 제거 후 production asset 참조 및 build/check 회귀 확인
+    - [x] `public/file.svg`, `public/globe.svg`, `public/window.svg`의 runtime 참조 0건 재확인
+    - [x] 미사용 SVG 3개 제거 후 production asset 참조 및 build/check 회귀 확인
 
 ---
 
@@ -410,8 +410,8 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -448,7 +448,7 @@
 | `pnpm run test:process-scripts` | `2026-08-10` | 통과 — process supervisor·Storybook production boundary 5/5 |
 | `pnpm test` | `2026-08-10` | 통과 — production build 23/23 routes, 전체 unit·integration·DB·Query·architecture와 Storybook 38 files/101 tests |
 | 실제 browser 생성 퍼널 QA | `2026-08-10` | 통과 — 분석·추천·믹싱 360/768/1280, horizontal overflow 0, mobile Sheet 선택/CTA/deep link, desktop sticky panel, fake percentage 없음, clean console error/warning 0 |
-| `rg` design asset/reference audit | `2026-08-10` | 통과 — 현재 정본 문서는 canonical `references/copy-singer`만 안내하고 generated/current/V2는 legacy로 명시; production에서 crystal/file/globe/window asset 참조 없음 |
+| `rg` design asset/reference audit | `2026-08-10` | 통과 — canonical `references/copy-singer` 정책 유지; production 참조 0건인 Next 기본 `file/globe/window.svg` 제거, `favicon.svg`·`og.png` 보존 |
 | `git diff --check` | `2026-08-10` | 통과 — 공통 chrome·Pretendard·violet audio UI·Feature 문서 whitespace 오류 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-10T13:57:12.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-10T13:58:34.000Z -->

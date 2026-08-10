@@ -364,7 +364,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Context**: F018 진행 중 1448×1086 legacy reference, generated V2, current route screenshot, contact sheet, crystal runtime asset와 1672×941 최종 reference가 동시에 존재해 새 에이전트가 어떤 이미지를 정본으로 봐야 하는지 판단하기 어려워졌다. 문서 일부도 V2를 `채택 시안`으로 부르거나 crystal 재사용을 요구해 최신 결정과 충돌했다.
 - **Decision**: 제품 visual reference는 `docs/designs/references/copy-singer/` 한 곳만 정본으로 사용한다. 최종 세트는 Landing+Voice Scan, Library, Analysis+Account, Admin 4보드와 Mixing Progress 1장이다. `docs/designs/assets/product-ui-redesign/`, `docs/designs/generated/page-redesigns/`, `docs/designs/page-redesign-analysis.md`는 legacy로 간주하고 신규 구현·리뷰에서 참조하지 않는다. current screenshot, generated concept, contact sheet는 repository에 새로 추가하지 않고 일회성 QA artifact로만 생성한다. `public/`에는 실제 runtime에서 참조되는 asset만 유지한다.
 - **Rationale**: visual source가 하나여야 에이전트와 사람이 같은 화면을 기준으로 구현·검수할 수 있고, Git history가 이미 과거 시안의 archive 역할을 하므로 working tree에 중간 산출물을 중복 보관할 필요가 없다.
-- **Implementation**: `docs/designs/README.md`, `product-ui-redesign.md`, `design-system.md`를 현재 reference 정책으로 갱신하고 legacy analysis/generated 문서는 deprecation stub으로 축소한다. crystal 규칙과 V2 `채택` 표현을 현재 정본에서 제거한다.
+- **Implementation**: `docs/designs/README.md`, `product-ui-redesign.md`, `design-system.md`를 현재 reference 정책으로 갱신하고 legacy analysis/generated 문서는 deprecation stub으로 축소한다. crystal 규칙과 V2 `채택` 표현을 현재 정본에서 제거한다. runtime과 문서 구현 참조가 0건인 Next 기본 `file.svg`, `globe.svg`, `window.svg`는 제거하고 실제 metadata 자산인 `favicon.svg`, `og.png`는 보존한다.
 - **Consequences**: 이후 visual QA는 최종 reference 디렉터리와 실제 렌더 screenshot을 직접 비교한다. 과거 이미지가 working tree에 물리적으로 남아 있더라도 정본으로 사용하지 않으며, 삭제 가능한 로컬 파일 작업이 허용되는 도구에서 legacy binary를 제거한다.
 
 ## D039: Mixing Detail 기반 3단계 생성 퍼널과 선택형 상세 경로 (2026-08-10)
