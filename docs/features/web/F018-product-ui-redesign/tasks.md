@@ -376,15 +376,15 @@
     - [x] desktop detail panel/mobile Sheet와 funnel action 구현
     - [x] mixing active/succeeded/failed row 및 Song Detail 회귀 검증
 
-- [TODO][PRD-FR-046] T-F018-23 믹싱 생성 후 Detail 직접 연결
+- [DONE][PRD-FR-046] T-F018-23 믹싱 생성 후 Detail 직접 연결
   - Date: 2026-08-10
   - Acceptance:
     - 믹싱 POST 성공 시 response job ID의 `/library/mixes/[id]`로 즉시 이동하고 active polling, failure와 result를 같은 detail 화면에서 이어서 확인한다.
     - idempotency, Query invalidation, ticket 오류와 retry 동작을 보존한다.
   - Checklist:
-    - [ ] create mixing hook이 성공 job을 caller와 route handoff에 제공
-    - [ ] 목록과 Song Detail 시작 경로의 직접 이동 적용
-    - [ ] mutation·navigation·polling 회귀 테스트 추가
+    - [x] create mixing hook이 성공 job을 caller와 route handoff에 제공
+    - [x] 목록과 Song Detail 시작 경로의 직접 이동 적용
+    - [x] mutation·navigation·polling 회귀 테스트 추가
 
 - [TODO][PRD-FR-046] T-F018-24 생성 퍼널 반응형·접근성 통합 QA
   - Date: 2026-08-10
@@ -450,4 +450,4 @@
 | `rg` design asset/reference audit | `2026-08-10` | 통과 — 현재 정본 문서는 canonical `references/copy-singer`만 안내하고 generated/current/V2는 legacy로 명시; production에서 crystal/file/globe/window asset 참조 없음 |
 | `git diff --check` | `2026-08-10` | 통과 — 공통 chrome·Pretendard·violet audio UI·Feature 문서 whitespace 오류 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-10T13:49:58.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-10T13:52:40.000Z -->

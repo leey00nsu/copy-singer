@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { AppRouterContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createQueryClient } from "@/_app/providers";
 import artifactJson from "../data/catalogs/tj-2607-song-profiles.json";
@@ -74,13 +75,24 @@ const run: RecommendationRunResponse = {
     },
   })),
 };
+const testRouter = {
+  back() {},
+  bfcacheId: "recommendation-test",
+  forward() {},
+  prefetch() {},
+  push() {},
+  refresh() {},
+  replace() {},
+};
 
 function renderRecommendation(value: RecommendationRunResponse) {
   const client = createQueryClient(true);
   try {
     return renderToStaticMarkup(
       <QueryClientProvider client={client}>
-        <RecommendationResults initialRun={value} />
+        <AppRouterContext.Provider value={testRouter}>
+          <RecommendationResults initialRun={value} />
+        </AppRouterContext.Provider>
       </QueryClientProvider>,
     );
   } finally {

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import test from "node:test";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { AppRouterContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createQueryClient } from "@/_app/providers";
 import { SongDetail } from "@/_pages/song-detail";
@@ -10,13 +11,24 @@ import { recommendationRunFixture } from "./msw/fixtures";
 
 const itemId = recommendationRunFixture.items[0]?.id;
 if (!itemId) throw new Error("Song detail test fixture requires one recommendation item.");
+const testRouter = {
+  back() {},
+  bfcacheId: "song-detail-test",
+  forward() {},
+  prefetch() {},
+  push() {},
+  refresh() {},
+  replace() {},
+};
 
 function renderSongDetail(initialRun = recommendationRunFixture) {
   const client = createQueryClient(true);
   try {
     return renderToStaticMarkup(
       <QueryClientProvider client={client}>
-        <SongDetail initialRun={initialRun} itemId={itemId} ticketCost={1} />
+        <AppRouterContext.Provider value={testRouter}>
+          <SongDetail initialRun={initialRun} itemId={itemId} ticketCost={1} />
+        </AppRouterContext.Provider>
       </QueryClientProvider>,
     );
   } finally {

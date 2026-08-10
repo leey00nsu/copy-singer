@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import { z } from "zod";
 import { createQueryClient } from "@/_app/providers";
@@ -20,7 +21,7 @@ import {
   analysisJobsPollingInterval,
   vocalAnalysisKeys,
 } from "@/features/analyze-vocal-profile";
-import { patchRecommendationSynthesis } from "@/features/create-mixing";
+import { mixingJobDetailHref, patchRecommendationSynthesis } from "@/features/create-mixing";
 import { ApiError, requestJson, shouldRetryQuery } from "@/shared/api";
 
 const payloadSchema = z.object({ id: z.string(), status: z.enum(["pending", "succeeded"]) });
@@ -154,6 +155,21 @@ test("requestJson preserves root vocal-profile error codes", async () => {
       return true;
     },
   );
+});
+
+test("a created mixing job links directly to its durable detail route", () => {
+  assert.equal(
+    mixingJobDetailHref("10000000-0000-4000-8000-000000000014"),
+    "/library/mixes/10000000-0000-4000-8000-000000000014",
+  );
+
+  const hook = readFileSync(
+    new URL("../src/features/create-mixing/api/use-recommendation-mixing.ts", import.meta.url),
+    "utf8",
+  );
+  assert.match(hook, /onSuccess: async \(job, input\)/);
+  assert.match(hook, /router\.push\(mixingJobDetailHref\(job\.id\)\)/);
+  assert.match(hook, /createdJob: mutation\.data \?\? null/);
 });
 
 test("recommendation and mixing polling stop at terminal state while item cache patches stay scoped", () => {

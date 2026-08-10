@@ -1,15 +1,17 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { useCallback, useRef } from "react";
 import { toast } from "sonner";
 import { mixingJobKeys } from "@/entities/mixing-job";
 import { recommendationKeys } from "@/entities/recommendation";
 import { ApiError } from "@/shared/api";
-import { createMixingMutationOptions, patchRecommendationSynthesis } from "./client";
+import { createMixingMutationOptions, mixingJobDetailHref, patchRecommendationSynthesis } from "./client";
 
 export function useRecommendationMixing() {
   const queryClient = useQueryClient();
+  const router = useRouter();
   const startingItemsRef = useRef(new Set<string>());
   const mutation = useMutation({
     ...createMixingMutationOptions(),
@@ -19,12 +21,14 @@ export function useRecommendationMixing() {
         error: null,
       });
     },
-    onSuccess: async (_, input) => {
-      await Promise.all([
+    onSuccess: async (job, input) => {
+      const invalidations = Promise.all([
         queryClient.invalidateQueries({ queryKey: recommendationKeys.detail(input.runId) }),
         queryClient.invalidateQueries({ queryKey: mixingJobKeys.histories() }),
       ]);
       toast.success("믹싱을 접수했어요. 페이지를 닫아도 계속 진행됩니다.");
+      router.push(mixingJobDetailHref(job.id));
+      await invalidations;
     },
     onError: (error, input) => {
       const apiError = error instanceof ApiError ? error : null;
@@ -57,5 +61,5 @@ export function useRecommendationMixing() {
     [mutation],
   );
 
-  return { isPending: mutation.isPending, startMixing };
+  return { createdJob: mutation.data ?? null, isPending: mutation.isPending, startMixing };
 }

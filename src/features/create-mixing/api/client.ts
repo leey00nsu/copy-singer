@@ -15,6 +15,10 @@ export type CreateMixingInput = {
   retry?: boolean;
 };
 
+export function mixingJobDetailHref(jobId: string) {
+  return `/library/mixes/${jobId}`;
+}
+
 export function createMixing(input: CreateMixingInput): Promise<MixingJobResponse> {
   const request = createMixingRequestSchema.parse(input);
   return requestJson("/api/mixing-jobs", {
