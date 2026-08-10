@@ -313,15 +313,31 @@
     - [x] 로그아웃 성공·실패 상태와 navigation 구현·회귀 테스트
     - [x] 실제 브라우저·targeted Storybook·전체 check·workflow audit 통과
 
+- [TODO][PRD-FR-046] T-F018-product-ui-redesign-01 원본 4장 기준 전 페이지 visual fidelity 재작업
+  - Date: 2026-08-10
+  - Acceptance:
+    - 현재 구현은 기능과 데이터 계약만 보존하고 Landing, Login, Voice Scan, Voice Profile, Recommendation, Library, Mixing, Account, Admin의 레이아웃과 정보 위계를 네 원본 디자인 보드에 맞게 재구성한다.
+    - crystal asset은 Landing 하단 Every voice has its song. CTA에서만 사용하고 다른 페이지에는 렌더링하지 않는다.
+    - desktop/tablet/mobile에서 원본 보드의 여백, flat section, thin border, black CTA, restrained accent를 일관되게 적용하고 기존 auth/query/audio/ticket/admin 동작을 보존한다.
+  - Checklist:
+    - [ ] 기존 화면 구조를 visual source로 삼지 않는 규칙을 design/feature docs에 반영
+    - [ ] 공통 shell/token/spacing/type scale을 원본 보드 기준으로 재점검
+    - [ ] Landing/Login/Voice Scan 화면군 재작업
+    - [ ] Voice Profile/Recommendation/Song Detail 화면군 재작업
+    - [ ] Library/Mixing/Account 화면군 재작업
+    - [ ] Admin을 동일한 visual language로 재작업하고 dev/svc는 개발 도구 예외 유지
+    - [ ] 크리스탈 사용처가 Landing CTA 단 한 곳인지 정적 검사
+    - [ ] 브라우저 screenshot으로 원본 보드와 desktop/tablet/mobile visual QA
+
 ---
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -359,4 +375,4 @@
 | `find docs/designs/generated/page-redesigns/concepts-v2 -maxdepth 1 -type f -name '*.png'` | `2026-08-10` | 통과 — 채택 V2 시안 13개 확인; V1·중간 시안은 검수 후 폐기 |
 | `git diff --check` | `2026-08-10` | 통과 — crystal·top-header 코드, current/V2 baseline, Design System·Feature 문서 whitespace 오류 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-10T08:17:20.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-10T17:29:00+09:00 -->

@@ -177,6 +177,7 @@
 - 실제 AI mixing progress/result presentation
 - profile·mixing 기반 Library와 mixing result detail
 - Account 화면의 공통 shell·token 적용
+- Admin 운영 화면의 기능 계약을 유지한 reference-board visual redesign
 - 장기 디자인 규칙과 동기화 정책을 정의하는 `docs/designs/design-system.md`
 - loading, empty, error, disabled, permission와 processing states
 - 필요한 shadcn/Base UI primitive, Storybook story와 반응형·접근성 회귀
@@ -190,7 +191,7 @@
 - 앨범 artwork, genre, difficulty, lyrics와 라이선스된 in-app preview metadata
 - subscription, pricing, checkout와 entitlement
 - Google 이외의 로그인 공급자
-- Admin과 개발용 SVC 화면의 전면 redesign
+- 개발용 SVC 화면의 전면 redesign
 - PostgreSQL migration, Modal/worker 알고리즘, Coolify와 연기된 `quality.yml` 변경
 
 ---

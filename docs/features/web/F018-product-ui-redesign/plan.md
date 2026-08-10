@@ -114,7 +114,7 @@ app/
 │   │   └── mixes/[id]/page.tsx
 │   ├── mixing-history/page.tsx                 기존 URL 호환
 │   └── account/page.tsx
-├── admin/page.tsx                              기존 운영 화면 유지
+├── admin/page.tsx                              운영 기능 유지 + reference-board visual redesign
 ├── dev/svc/page.tsx                            기존 진단 화면 유지
 └── api/                                        URL 변경 없음
 ```
@@ -122,7 +122,7 @@ app/
 - Root Layout은 Query/Tooltip/Toaster/font와 metadata만 소유하고 request session 조회와 fixed `UserMenu`를 제거한다.
 - Product Layout은 `requirePageSession`으로 보호한 뒤 session/user/admin 정보를 `ProductShell`에 전달한다.
 - `src/widgets/product-shell`은 desktop 64px top header, mobile right Sheet navigation, active route, compact user menu와 content rail을 조립한다. desktop persistent sidebar는 사용하지 않고 pathname을 읽는 작은 Client Component만 client boundary로 둔다.
-- `/admin`은 product로 돌아가는 링크와 기존 sign-out 접근을 자체 화면에서 유지한다.
+- `/admin`은 product로 돌아가는 링크와 기존 운영 기능·권한·검색·티켓 조정 동작을 유지하되, visual composition은 네 원본 디자인 보드와 동일한 neutral editorial language로 재구성한다. Admin에는 crystal/prism 장식을 사용하지 않는다.
 - `/dev/svc`는 별도 진단 layout을 유지하고 product shell로 감싸지 않는다.
 
 ### 3. Public Landing과 Google Login

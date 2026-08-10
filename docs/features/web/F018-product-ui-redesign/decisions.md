@@ -326,3 +326,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 강제 우회가 켜진 동안에는 cookie를 삭제해도 다음 요청에서 사용자가 의도적으로 재주입되므로 정상적인 interactive logout 의미를 제공할 수 없다. 실제 세션과 우회 상태를 UI·정책에서 분리하면 운영 로그아웃 계약을 보존하면서 로컬 자동화 설정의 동작도 오해하지 않게 된다.
 - **Evidence**: `pnpm run test:auth-navigation` 5/5, `pnpm run test:auth:db` 3/3, ProductShell Storybook 4/4, `pnpm run check`, 실제 브라우저에서 로그아웃 후 Landing의 `로그인`/`무료로 시작하기` CTA, `/library`의 `/login?callbackURL=%2Flibrary` redirect, browser error 0건 확인.
 - **Consequences**: `DEV_AUTH_BYPASS_ENABLED=true`는 매 요청에 사용자를 강제로 주입하는 자동화 전용 모드이며 interactive logout을 지원하지 않는다. 실제 로그인·로그아웃을 시험할 때는 이를 `false`로 두어야 하고 production에서는 기존 fail-closed 정책이 유지된다.
+
+## D034: 현재 UI 비참조·원본 4장 visual fidelity와 crystal 단일 사용 (2026-08-10)
+
+- **Context**: 사용자 검수에서 F018 구현이 기능 계약뿐 아니라 기존 화면의 카드 배치·표 구조·정보 밀도까지 과도하게 보존해 네 원본 디자인 보드와 충분히 닮지 않았다는 피드백이 확인됐다. 또한 crystal visual이 Landing CTA 외 화면에 반복되면 브랜드 accent가 제품 interaction과 경쟁한다.
+- **Constraints**: 현재 auth, audio, analysis, recommendation, mixing, ticket, ownership와 admin 운영 기능은 회귀 없이 유지한다. 현재 API/DB에 없는 album art, lyrics, project, subscription 같은 데이터를 생성하지 않는다. shadcn/FSD와 semantic token 체계는 유지한다.
+- **Decision**: 현재 구현 캡처는 기능·데이터·상태 계약 확인용으로만 사용하고 visual source로 사용하지 않는다. Landing, Login, Voice Scan, Voice Profile, Recommendation/Song Detail, Library/Mixing, Account와 Admin은 네 원본 디자인 보드의 composition, whitespace, flat sections, thin borders, typography hierarchy와 restrained accent를 우선해 재조립한다. Crystal asset은 Landing 하단 `Every voice has its song.` CTA에서만 렌더링하고 다른 모든 route에서는 제거한다. `/dev/svc`만 개발 도구 visual 예외로 유지한다.
+- **Rationale**: 기능 보존과 시각 보존을 분리해야 원본 보드의 에디토리얼한 공간감과 제품 중심 interaction을 실제 화면에 반영할 수 있다. Crystal 사용처를 한 곳으로 제한하면 waveform·분석 데이터가 각 작업 화면의 시각적 중심으로 유지된다.
+- **Consequences**: 기존 Page component의 wrapper, card grouping, section ordering과 content width는 호환성 대상이 아니다. route, action, data contract와 accessibility semantics가 유지되는 한 원본 보드에 맞춰 재배치할 수 있으며 Admin도 같은 시각 언어의 구현 범위에 포함된다.
