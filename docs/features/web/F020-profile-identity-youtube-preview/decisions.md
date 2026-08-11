@@ -85,3 +85,19 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow
   - **Test/Log**: `pnpm exec tsx --test tests/vocal-profile-history-ui.test.tsx`, `pnpm run test:storybook --run src/widgets/library/ui/vocal-profile-library.stories.tsx`, `pnpm run typecheck`, `pnpm run check:architecture`, `pnpm run build`, Storybook browser QA
 - **Consequences**: 분석 완료 전 행은 클릭·hover 상세 affordance가 없고, 미확정 분석 컬럼에는 `—`만 표시한다.
+
+## D005: 라이브러리 목록의 오른쪽 상태 컬럼 (2026-08-11)
+
+- **Context**: AI 믹스 목록의 결과 설명은 대부분 상태 chip을 반복하고, 보컬 프로필의 마지막 AI 믹싱 횟수는 상태와 다른 활동 정보라 분석 job 상태와 역할이 섞였다.
+- **Constraints**: 보컬 프로필의 AI 믹싱 횟수는 유지해야 하며, 실패 상세 설명과 재시도 안내는 상세 화면에서 계속 제공해야 한다.
+- **Options**: 기존 컬럼 유지, AI 믹싱 횟수를 상태로 대체, AI 믹싱과 상태를 분리하고 두 목록의 상태 위치만 공통화.
+- **Decision**: AI 믹스의 결과 컬럼을 제거하고, 보컬 프로필에는 별도 상태 컬럼을 추가해 두 목록 모두 상태를 desktop 오른쪽 끝·mobile identity 상단에 배치한다.
+- **Rationale**: 중복 문장은 제거하면서 프로필 활용도를 나타내는 AI 믹싱 횟수와 lifecycle 상태를 각각 보존한다.
+- **Trace**:
+  - **DOING 시작 시점**: AI 믹스 결과 문구가 완료·진행·취소 상태를 반복하고 실패 사유만 추가 정보임을 확인했다. 보컬 프로필은 5-column의 마지막 열이 AI 믹싱 횟수이며 분석 job은 같은 위치를 상태로 사용하고 있었다.
+  - **DONE 전 확정 시점**: 구현과 responsive QA 후 보강 예정.
+- **Evidence**:
+  - **Commit**: 구현 후 기록
+  - **PR**: local workflow
+  - **Test/Log**: 구현 후 기록
+- **Consequences**: 목록은 간결한 상태만 제공하고 구체적인 진행·실패 설명은 상세 화면이 담당한다.

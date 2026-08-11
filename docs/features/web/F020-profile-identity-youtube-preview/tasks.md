@@ -20,7 +20,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/profile-identity-youtube-preview`
-- **대기 중 변경 요청**: -
+- **대기 중 변경 요청**: 결정: changes_requested — AI 믹스 결과 컬럼 제거와 보컬 프로필 AI 믹싱·상태 분리 공통화
   - 구현 중 새로 수용한 사용자 요청을 잠시 표시하는 sync marker입니다
   - 요청을 `tasks.md`와 관련 문서에 반영한 뒤 값을 비우세요
   - pre-PR 리뷰 handoff를 시작하면 `Running`, 리뷰 결과 기록까지 끝나면 `Done`으로 변경
@@ -151,12 +151,22 @@
     - [x] 생성일·미확정 분석값·상태 column 정렬 및 aria-busy 적용
     - [x] pending·processing·retry·failed Storybook과 목록 회귀 검증
 
+- [TODO][PRD-FR-050] T-F020-profile-identity-youtube-preview-11 라이브러리 상태 컬럼 공통화
+  - Date: 2026-08-11
+  - Acceptance:
+    - AI 믹스는 결과 설명 컬럼 없이 작업·생성일·상태만 표시하고, 보컬 프로필은 AI 믹싱 횟수를 유지한 6-column 구조에서 상태를 맨 오른쪽에 표시한다.
+    - 두 목록은 mobile에서 상태를 identity 영역 위에 표시하며 결과 확인 중과 프로필 분석 상태를 정확히 구분한다.
+  - Checklist:
+    - [ ] AI 믹스 결과 column 제거·상태 재배치·결과 확인 중 label 구현
+    - [ ] 보컬 프로필 AI 믹싱·상태 분리 6-column 및 mobile metadata 구현
+    - [ ] 두 목록 Storybook·component·responsive browser 회귀 검증
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -191,4 +201,4 @@
 | `pnpm run test:mixing:db` | `2026-08-11` | 통과 — reference 선택·티켓 차감 전 방어·queue 회귀 1/1 |
 | `Storybook browser QA (analysis job row desktop)` | `2026-08-11` | 통과 — 저장 행과 같은 5개 열·72px 행 높이, interactive target·runtime error 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T20:44:44+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T20:52:24+09:00 -->

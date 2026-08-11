@@ -71,6 +71,20 @@
 - [ ] 분석 결과의 저·중앙·고 대표 구간은 항상 세 슬롯으로 표시하고 중앙 구간이 없으면 누락 이유를 명시한다.
 - [ ] 믹싱용 중앙 대표 구간이 없는 프로필의 추천 목록·곡 상세는 AI 믹싱 action을 실행 전에 비활성화하고 재분석 경로를 제공한다.
 
+### US-4: 공통 목록 상태 문법
+
+**As a** 라이브러리에서 보컬 프로필과 AI 믹스를 확인하는 사용자
+**I want** 두 목록의 상태를 같은 위치와 표현 방식으로 확인하고 싶다.
+**So that** 중복 설명 없이 항목의 현재 사용 가능 여부를 빠르게 비교할 수 있다.
+
+**Acceptance Criteria:**
+
+- [ ] AI 믹스 목록은 중복되는 `결과` 컬럼을 제거하고 `작업 / 아티스트 · 생성일 · 상태` 순서로 표시한다.
+- [ ] 결과 파일 확인 중인 성공 job은 `완료`가 아니라 `결과 확인 중` 상태로 구분한다.
+- [ ] 보컬 프로필 목록은 `프로필 이름 · 생성일 · 음역 · 안정도 · AI 믹싱 · 상태`의 6-column 구조를 사용한다.
+- [ ] 저장 프로필은 `사용 가능`, 분석 job은 대기·진행·재시도·실패 상태를 마지막 컬럼에 표시한다. 미확정 `AI 믹싱` 값은 `—`로 표시한다.
+- [ ] 모바일에서는 상태를 identity 영역의 제목 위에 우선 배치하고 나머지 정보를 compact metadata로 제공한다.
+
 ---
 
 ## 기능 요구사항
@@ -115,6 +129,13 @@
 - 믹싱 reference가 없는 경우 추천 목록·선택·곡 상세는 요청을 보내는 button 대신 명시적 불가 상태와 `/profile` 재분석 link를 표시한다.
 - server의 기존 `MIXING_REFERENCE_UNAVAILABLE` 방어와 티켓 미차감 동작은 유지한다.
 
+### FR-7: 라이브러리 상태 컬럼 공통화
+
+- AI 믹스 목록의 `statusDescription` 결과 컬럼을 제거하되 상세 화면의 진행 설명과 실패 사유는 유지한다.
+- AI 믹스 status presentation은 `resultReady=false`인 succeeded job을 `결과 확인 중`으로 표시하고 상태를 맨 오른쪽 컬럼에 배치한다.
+- 보컬 프로필 목록은 AI 믹싱 횟수와 상태를 별도 컬럼으로 유지하며 저장 profile과 분석 job이 같은 6-column template을 공유한다.
+- 데스크톱에서는 상태를 마지막 column, 모바일에서는 identity block 상단에 배치한다. 완료 전 분석 job은 계속 non-interactive로 유지한다.
+
 ### 제외 범위
 
 - YouTube Data API 검색, 추천 영상 자동 탐색 또는 thumbnail 영구 저장
@@ -137,7 +158,7 @@
 ## 관련 문서
 
 - PRD: `../../prd/`
-- PRD Refs: `PRD-US-015`, `PRD-US-022`, `PRD-US-025`, `PRD-US-026`, `PRD-FR-024`, `PRD-FR-039`, `PRD-FR-049`, `PRD-FR-054`, `PRD-FR-055`, `PRD-FR-056`, `PRD-FR-057`, `PRD-DATA-011`, `PRD-NFR-005`, `PRD-NFR-009`
+- PRD Refs: `PRD-US-015`, `PRD-US-022`, `PRD-US-023`, `PRD-US-025`, `PRD-US-026`, `PRD-FR-024`, `PRD-FR-036`, `PRD-FR-039`, `PRD-FR-049`, `PRD-FR-050`, `PRD-FR-054`, `PRD-FR-055`, `PRD-FR-056`, `PRD-FR-057`, `PRD-DATA-011`, `PRD-NFR-005`, `PRD-NFR-009`
   - 이미 원문 요구사항 문서에 정의된 ID만 적으세요. `spec.md`나 `tasks.md`에서 임의로 PRD ID를 만들지 않습니다.
   - 레거시 요구사항 문서에 아직 PRD ID가 없다면, 먼저 원문에 ID를 backfill한 뒤 이 필드와 `tasks.md` 태스크 태그를 함께 갱신하세요.
   - 요구사항/스코프 변경 시 PRD 문서 + 이 필드 + `tasks.md` 태스크 태그를 함께 갱신하세요.
