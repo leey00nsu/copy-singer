@@ -46,10 +46,10 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 저장·업로드 비용 없이 재접속 안정성을 제공하고 목록의 초기 player 비용과 외부 데이터 처리를 줄인다.
 - **Trace**:
   - **DOING 시작 시점**: 카탈로그 100곡 모두 `sourceVideoId`를 보유하고 현재 응답은 sourceUrl만 노출함을 확인했다.
-  - **DONE 전 확정 시점**: UUID hash의 hue·gradient geometry와 정적 SVG turbulence overlay로 구현해 animation·bitmap storage 없이 목록과 상세에서 같은 cover가 렌더링됨을 확인했다. YouTube facade 결정은 후속 태스크에서 확정한다.
+  - **DONE 전 확정 시점**: UUID hash의 hue·gradient geometry와 정적 SVG turbulence overlay로 구현해 animation·bitmap storage 없이 목록과 상세에서 같은 cover가 렌더링됨을 확인했다. YouTube는 server에서 11자 sourceVideoId를 검증하고 facade에서는 thumbnail만, 활성화 후에는 privacy-enhanced iframe만 생성하도록 확정했다.
   - **머지 후 확인**: 통합 후 보강 예정.
 - **Evidence**:
   - **Commit**: 구현 후 기록
   - **PR**: local workflow
-  - **Test/Log**: YouTube 공식 iframe/player parameter 및 privacy-enhanced mode 문서, `pnpm exec tsx --test tests/vocal-profile-contract.test.ts tests/vocal-profile-history-ui.test.tsx`, profile library Storybook 4/4
+  - **Test/Log**: YouTube 공식 iframe/player parameter 및 privacy-enhanced mode 문서, `pnpm exec tsx --test tests/vocal-profile-contract.test.ts tests/vocal-profile-history-ui.test.tsx`, `pnpm exec tsx --test tests/api-contracts.test.ts tests/recommendation-presentation.test.ts tests/recommendation-ui.test.tsx tests/client-server-state-query.test.ts`, `pnpm run test:recommendation:db`
 - **Consequences**: facade thumbnail은 lazy network request를 만들 수 있지만 iframe과 player script는 사용자가 재생하기 전 생성하지 않는다.

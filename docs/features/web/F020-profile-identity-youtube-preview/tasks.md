@@ -79,13 +79,13 @@
     - [x] pure artwork token generator와 공통 UI 구현
     - [x] library/detail 적용과 접근성·반응형 Storybook 검증
 
-- [TODO][PRD-FR-056] T-F020-profile-identity-youtube-preview-03 추천 YouTube source 계약과 공통 player
+- [DONE][PRD-FR-056] T-F020-profile-identity-youtube-preview-03 추천 YouTube source 계약과 공통 player
   - Date: 2026-08-11
   - Acceptance:
     - 추천 응답은 검증된 nullable sourceVideoId를 제공하고 player는 privacy-enhanced domain·autoplay off·accessible title을 사용한다.
   - Checklist:
-    - [ ] server serializer video ID validation과 response schema 구현
-    - [ ] click-to-load facade/player 공통 component와 contract tests
+    - [x] server serializer video ID validation과 response schema 구현
+    - [x] click-to-load facade/player 공통 component와 contract tests
 
 - [TODO][PRD-FR-049] T-F020-profile-identity-youtube-preview-04 추천 목록·상세 영상 UI 통합
   - Date: 2026-08-11
@@ -119,5 +119,7 @@
 | `pnpm run check:architecture` | `2026-08-11` | 통과 — Steiger·boundary 4/4 |
 | `pnpm exec tsx --test tests/vocal-profile-contract.test.ts tests/vocal-profile-history-ui.test.tsx` | `2026-08-11` | 통과 — artwork 결정성·분산과 library 회귀 포함 10/10 |
 | `pnpm run test:storybook --run src/widgets/library/ui/vocal-profile-library.stories.tsx` | `2026-08-11` | 통과 — profile artwork·list 상태 4/4 |
+| `pnpm exec tsx --test tests/api-contracts.test.ts tests/recommendation-presentation.test.ts tests/recommendation-ui.test.tsx tests/client-server-state-query.test.ts` | `2026-08-11` | 통과 — video ID·URL·facade/player·추천 회귀 30/30 |
+| `pnpm run test:recommendation:db` | `2026-08-11` | 통과 — 100곡 sourceVideoId 직렬화 포함 3/3 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T19:22:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T19:33:00.000Z -->
