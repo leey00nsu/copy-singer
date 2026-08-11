@@ -26,8 +26,8 @@ export const Default: Story = {
     await expect(canvas.getByText("계속하려면 로그인하세요.")).toBeVisible();
     await expect(canvas.getByRole("button", { name: "구글로 시작하기" })).toBeEnabled();
     await expect(canvas.getByText("Google 계정으로 로그인하면")).toBeVisible();
-    await expect(canvas.getByText("이용 약관")).toBeVisible();
-    await expect(canvas.getByText("개인정보 처리방침")).toBeVisible();
+    await expect(canvas.getByRole("link", { name: "이용 약관" })).toHaveAttribute("href", "/terms");
+    await expect(canvas.getByRole("link", { name: "개인정보 처리방침" })).toHaveAttribute("href", "/privacy");
     await expect(canvasElement.querySelector('[data-google-icon=""]')).toBeVisible();
     await expect(canvasElement.querySelectorAll('img[src*="copy-singer-mark"]')).toHaveLength(2);
     await expect(canvas.queryByText("홈으로")).not.toBeInTheDocument();

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { GoogleSignIn } from "@/features/authentication";
 import { ProductBrand, ProductMark } from "@/widgets/product-shell";
 
@@ -26,8 +27,15 @@ function LoginScreen({ callbackURL, configured }: LoginScreenProps) {
           <p className="mt-6 text-xs leading-5 text-muted-foreground">
             <span className="block">Google 계정으로 로그인하면</span>
             <span className="block">
-              Copy Singer의 <span className="underline underline-offset-2">이용 약관</span> 및{" "}
-              <span className="underline underline-offset-2">개인정보 처리방침</span>에 동의하게 됩니다.
+              Copy Singer의{" "}
+              <Link className="underline underline-offset-2 hover:text-foreground" href="/terms">
+                이용 약관
+              </Link>{" "}
+              및{" "}
+              <Link className="underline underline-offset-2 hover:text-foreground" href="/privacy">
+                개인정보 처리방침
+              </Link>
+              에 동의하게 됩니다.
             </span>
           </p>
         </div>

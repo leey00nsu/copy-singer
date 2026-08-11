@@ -54,6 +54,8 @@ test("route groups preserve public URLs while the root layout stays shell-free",
   for (const route of [
     "app/(public)/page.tsx",
     "app/(public)/login/page.tsx",
+    "app/(public)/terms/page.tsx",
+    "app/(public)/privacy/page.tsx",
     "app/(product)/profile/page.tsx",
     "app/(product)/vocal-profiles/page.tsx",
     "app/(product)/mixing-history/page.tsx",
@@ -75,6 +77,26 @@ test("route groups preserve public URLs while the root layout stays shell-free",
     assert.match(adapter, /@\/_app\/layout/);
     assert.doesNotMatch(adapter, /<main|<section|className=/);
   }
+});
+
+test("public legal pages and consent copy expose real document links", () => {
+  const root = new URL("../", import.meta.url);
+  const loginScreen = readFileSync(new URL("src/_pages/login/ui/login-screen.tsx", root), "utf8");
+  const productShell = readFileSync(new URL("src/widgets/product-shell/ui/product-shell.tsx", root), "utf8");
+  const terms = readFileSync(new URL("src/_pages/legal/ui/terms-page.tsx", root), "utf8");
+  const privacy = readFileSync(new URL("src/_pages/legal/ui/privacy-page.tsx", root), "utf8");
+
+  for (const source of [loginScreen, productShell]) {
+    assert.match(source, /href="\/terms"/);
+    assert.match(source, /href="\/privacy"/);
+  }
+  assert.match(terms, /음성·콘텐츠에 대한 권리와 책임/);
+  assert.match(terms, /AI 결과의 한계/);
+  assert.match(privacy, /Google 계정/);
+  assert.match(privacy, /Leemage/);
+  assert.match(privacy, /Modal \/ SoulX/);
+  assert.match(privacy, /국외 이전 확인사항/);
+  assert.match(privacy, /정식 공개 전 개인정보 보호책임자/);
 });
 
 test("product shell keeps keyboard, touch-target, and navigation labels explicit", () => {

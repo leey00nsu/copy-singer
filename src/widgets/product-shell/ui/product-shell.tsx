@@ -167,8 +167,12 @@ function ProductFooter() {
           <p className="mt-3 text-[11px]">© 2026 Copy Singer.</p>
         </div>
         <nav aria-label="제품 푸터 메뉴" className="flex flex-wrap gap-x-7 gap-y-2 text-[11px]">
-          <span>이용 약관</span>
-          <span>개인정보 처리방침</span>
+          <Link className="underline-offset-4 hover:text-foreground hover:underline" href="/terms">
+            이용 약관
+          </Link>
+          <Link className="underline-offset-4 hover:text-foreground hover:underline" href="/privacy">
+            개인정보 처리방침
+          </Link>
           <span>문의하기</span>
         </nav>
       </div>

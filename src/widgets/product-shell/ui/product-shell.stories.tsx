@@ -47,6 +47,8 @@ export const Desktop: Story = {
     await expect(productMenu.getByRole("link", { name: "내 계정" })).toBeVisible();
     await expect(canvas.queryByRole("complementary")).not.toBeInTheDocument();
     await expect(canvas.getByRole("navigation", { name: "제품 푸터 메뉴" })).toBeVisible();
+    await expect(canvas.getByRole("link", { name: "이용 약관" })).toHaveAttribute("href", "/terms");
+    await expect(canvas.getByRole("link", { name: "개인정보 처리방침" })).toHaveAttribute("href", "/privacy");
     await expect(canvas.getByText("© 2026 Copy Singer.")).toBeVisible();
     await userEvent.click(canvas.getByRole("button", { name: "지은 계정 메뉴" }));
     const body = within(document.body);
