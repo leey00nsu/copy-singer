@@ -101,3 +101,19 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow
   - **Test/Log**: `pnpm exec tsx --test tests/mixing-history-ui.test.tsx tests/vocal-profile-history-ui.test.tsx`, `pnpm run test:storybook --run src/widgets/library/ui/mixing-library.stories.tsx src/widgets/library/ui/vocal-profile-library.stories.tsx`, `pnpm run typecheck`, `pnpm run check:architecture`, `pnpm run lint`, `pnpm run build`, Storybook browser QA
 - **Consequences**: 목록은 간결한 상태만 제공하고 구체적인 진행·실패 설명은 상세 화면이 담당한다.
+
+## D006: 추천 목록 완료 chip과 sticky selection 경계 (2026-08-11)
+
+- **Context**: 추천 목록의 완료 행이 `완료` chip과 `결과 확인` link를 함께 보여 중복되고, 선택 카드 내부만 sticky라 부모 aside 높이에 묶여 긴 목록 스크롤을 따라가지 못했다.
+- **Constraints**: 결과 듣기·저장은 선택 카드와 상세에서 유지하며, sticky 카드는 공통 header를 가리거나 grid section 밖으로 넘어가면 안 된다.
+- **Options**: 완료 link 유지, 완료 chip만 유지; 내부 card sticky 유지, aside 자체 sticky, viewport fixed card.
+- **Decision**: compact 목록은 완료 chip만 표시하고 데스크톱 selection aside 자체를 header offset을 가진 sticky grid item으로 만든다.
+- **Rationale**: 목록의 중복 action을 줄이고, fixed overlay 없이 CSS sticky의 section 경계와 반응형 동작을 활용한다.
+- **Trace**:
+  - **DOING 시작 시점**: compact succeeded branch가 chip 옆에 job detail link를 생성하고, sticky 요소의 containing block인 aside가 card 높이만 가져 이동 여유가 없음을 확인했다.
+  - **DONE 전 확정 시점**: 구현과 scroll QA 후 보강 예정.
+- **Evidence**:
+  - **Commit**: 구현 후 기록
+  - **PR**: local workflow
+  - **Test/Log**: 구현 후 기록
+- **Consequences**: 목록 행에서는 완료 여부만 확인하고 결과 조작은 선택 카드나 상세 화면에서 수행한다.

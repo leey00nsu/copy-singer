@@ -70,6 +70,8 @@
 - [ ] 프로필 목록·상세는 `추천 N` 개수와 기존 결과가 있을 때의 `새 추천 만들기` action을 노출하지 않는다.
 - [ ] 분석 결과의 저·중앙·고 대표 구간은 항상 세 슬롯으로 표시하고 중앙 구간이 없으면 누락 이유를 명시한다.
 - [ ] 믹싱용 중앙 대표 구간이 없는 프로필의 추천 목록·곡 상세는 AI 믹싱 action을 실행 전에 비활성화하고 재분석 경로를 제공한다.
+- [ ] 추천 목록에서 AI 믹싱이 완료된 곡은 `완료` chip만 표시하며 별도 `결과 확인` link를 반복하지 않는다.
+- [ ] 데스크톱의 선택한 추천곡 카드는 긴 목록을 스크롤하는 동안 공통 header 아래에서 sticky로 유지된다.
 
 ### US-4: 공통 목록 상태 문법
 
@@ -115,6 +117,7 @@
 - facade의 재생 control은 별도 interactive target이며 기존 clickable row overlay와 이벤트·focus가 충돌하지 않는다.
 - 한 목록에서 새 영상을 재생하면 기존 inline player를 닫아 동시에 하나만 활성화한다.
 - 상세 player는 곡 제목 위의 full-width media 영역에 배치하고 기존 `외부 출처 열기` action과 관련 icon import를 제거한다.
+- 데스크톱 선택 요약 aside 자체를 sticky container로 만들고 공통 header를 가리지 않는 top offset을 사용한다. 모바일 bottom sheet 동작은 유지한다.
 
 ### FR-5: 프로필별 단일 추천 스냅샷
 
@@ -128,6 +131,7 @@
 - 추천 응답은 해당 프로필로 실제 믹싱 reference를 선택할 수 있는지와 불가 사유를 제공한다.
 - 믹싱 reference가 없는 경우 추천 목록·선택·곡 상세는 요청을 보내는 button 대신 명시적 불가 상태와 `/profile` 재분석 link를 표시한다.
 - server의 기존 `MIXING_REFERENCE_UNAVAILABLE` 방어와 티켓 미차감 동작은 유지한다.
+- 추천 목록의 compact 완료 상태는 `완료` chip만 노출한다. 결과 재생·저장과 상세 이동은 선택 카드 및 상세 화면에서 제공한다.
 
 ### FR-7: 라이브러리 상태 컬럼 공통화
 
