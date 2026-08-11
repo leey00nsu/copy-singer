@@ -28,6 +28,10 @@ test("login screen keeps only product branding and the Google start action", () 
   assert.match(loginPage, /<LoginScreen/);
   assert.match(loginScreen, /<ProductMark/);
   assert.match(loginScreen, />Copy Singer</);
+  assert.match(loginScreen, /계속하려면 로그인하세요\./);
+  assert.match(loginScreen, /Google 계정으로 로그인하면/);
+  assert.match(loginScreen, /이용 약관/);
+  assert.match(loginScreen, /개인정보 처리방침/);
   assert.doesNotMatch(loginScreen, /홈으로|Account|계정으로 시작하세요|현재는 Google 계정으로만/);
   assert.match(googleSignIn, /<GoogleIcon/);
   assert.match(googleSignIn, /구글로 시작하기/);
