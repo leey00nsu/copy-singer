@@ -79,7 +79,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 목록의 시각 문법을 통일하면서 아직 존재하지 않는 상세 페이지나 분석값을 암시하지 않는다.
 - **Trace**:
   - **DOING 시작 시점**: 현재 job row가 `md:grid-cols-[minmax(0,1fr)_auto]`로 별도 구성되고 저장 row는 5-column grid임을 확인했다.
-  - **DONE 전 확정 시점**: 저장 행과 job 행이 하나의 5-column grid token을 공유하도록 바꾸고 pending·processing·retry·failed 모두 생성일·미확정 값·상태가 같은 위치에 표시됨을 확인했다. 완료 전 행에는 링크나 버튼이 없고 `aria-busy=true`, 실패 행은 `aria-busy=false`와 재분석 action만 제공한다. 분석 완료 감지는 전체 페이지 reload 대신 App Router refresh를 사용한다.
+  - **DONE 전 확정 시점**: 저장 행과 job 행이 공통 grid token을 공유하도록 바꾸고 pending·processing·retry·failed 모두 생성일·미확정 값·상태가 같은 위치에 표시됨을 확인했다. 후속 D005에서 AI 믹싱과 상태를 분리한 최종 6-column으로 확장했다. 완료 전 행에는 링크나 버튼이 없고 `aria-busy=true`, 실패 행은 `aria-busy=false`와 재분석 action만 제공한다. 분석 완료 감지는 전체 페이지 reload 대신 App Router refresh를 사용한다.
 - **Evidence**:
   - **Commit**: 구현 후 기록
   - **PR**: local workflow
@@ -95,9 +95,9 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 중복 문장은 제거하면서 프로필 활용도를 나타내는 AI 믹싱 횟수와 lifecycle 상태를 각각 보존한다.
 - **Trace**:
   - **DOING 시작 시점**: AI 믹스 결과 문구가 완료·진행·취소 상태를 반복하고 실패 사유만 추가 정보임을 확인했다. 보컬 프로필은 5-column의 마지막 열이 AI 믹싱 횟수이며 분석 job은 같은 위치를 상태로 사용하고 있었다.
-  - **DONE 전 확정 시점**: 구현과 responsive QA 후 보강 예정.
+  - **DONE 전 확정 시점**: AI 믹스 목록을 작업·생성일·상태 3-column으로 정리하고 succeeded지만 result asset이 준비되지 않은 경우 `결과 확인 중`으로 구분했다. 프로필은 AI 믹싱 횟수를 보존한 채 별도 상태를 추가해 저장·분석 job 모두 6-column을 공유하며, 저장 profile은 `사용 가능`, job은 실제 분석 상태와 미확정 AI 믹싱 `—`를 표시한다. Storybook 실화면에서 header/cell 좌표와 오른쪽 상태 정렬, 가로 overflow 없음, 분석 중 행의 non-interactive 상태를 확인했다.
 - **Evidence**:
   - **Commit**: 구현 후 기록
   - **PR**: local workflow
-  - **Test/Log**: 구현 후 기록
+  - **Test/Log**: `pnpm exec tsx --test tests/mixing-history-ui.test.tsx tests/vocal-profile-history-ui.test.tsx`, `pnpm run test:storybook --run src/widgets/library/ui/mixing-library.stories.tsx src/widgets/library/ui/vocal-profile-library.stories.tsx`, `pnpm run typecheck`, `pnpm run check:architecture`, `pnpm run lint`, `pnpm run build`, Storybook browser QA
 - **Consequences**: 목록은 간결한 상태만 제공하고 구체적인 진행·실패 설명은 상세 화면이 담당한다.
