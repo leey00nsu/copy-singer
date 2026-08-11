@@ -113,7 +113,7 @@ test("renders the full ranked recommendation list without starting synthesis", (
   assert.match(html, /가창력이나 건강 상태를 평가하지 않습니다/);
   assert.equal((html.match(/이 곡으로 AI 믹싱<\/button>/g) ?? []).length, 1);
   assert.equal((html.match(/선택 전/g) ?? []).length, 100);
-  assert.ok((html.match(/\/songs\/item-/g) ?? []).length >= 100);
+  assert.equal((html.match(/\/songs\/item-/g) ?? []).length, 1);
   assert.doesNotMatch(html, /AI 믹싱 결과 파형/);
   assert.match(html, /목록을 보는 것만으로 작업이 시작되지 않습니다/);
 });

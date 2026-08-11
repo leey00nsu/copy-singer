@@ -7,7 +7,7 @@ import { createQueryClient } from "@/_app/providers";
 import { MixingHistoryList } from "../src/_pages/mixing-history";
 import { LibraryTabs, MixingLibrary, mixingHistoryHref } from "../src/widgets/library";
 
-test("mixing history renders active state and one detail action per result", () => {
+test("mixing history renders one stretched detail link per result", () => {
   const client = createQueryClient(true);
   const markup = renderToStaticMarkup(
     <QueryClientProvider client={client}>
@@ -54,7 +54,9 @@ test("mixing history renders active state and one detail action per result", () 
   client.clear();
   assert.match(markup, /믹싱 중/);
   assert.match(markup, /완료 곡/);
-  assert.match(markup, /결과 듣기/);
+  assert.match(markup, /진행 곡 AI 믹스 상세 보기/);
+  assert.match(markup, /완료 곡 AI 믹스 상세 보기/);
+  assert.doesNotMatch(markup, /결과 듣기/);
   assert.doesNotMatch(markup, /\/api\/mixing-jobs\/done\/audio/);
   assert.doesNotMatch(markup, /결과 저장/);
   assert.match(markup, /AI 믹스 작업 목록/);

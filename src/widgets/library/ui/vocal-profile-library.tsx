@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, AudioLines, ChevronRight, Clock3, LoaderCircle, RotateCcw } from "lucide-react";
+import { AlertTriangle, AudioLines, Clock3, LoaderCircle, RotateCcw } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import {
@@ -12,6 +12,7 @@ import {
 import { isActiveAnalysisJob, vocalProfileAnalysisJobsQueryOptions } from "@/features/analyze-vocal-profile";
 import { Badge } from "@/shared/ui/badge";
 import { buttonVariants } from "@/shared/ui/button";
+import { ResourceRowLink, resourceRowInteractiveClassName } from "@/shared/ui/resource-row-link";
 import { StatePanel } from "@/shared/ui/state-panel";
 import { LibraryPagination } from "./library-pagination";
 
@@ -149,13 +150,12 @@ export function VocalProfileLibrary({
         <p aria-live="polite">보컬 프로필 {history.total}개</p>
         <p>최신 분석순</p>
       </div>
-      <div className="hidden grid-cols-[minmax(0,2fr)_minmax(9rem,1fr)_minmax(6rem,.75fr)_minmax(5rem,.6fr)_minmax(8rem,.9fr)_5.5rem] border-y bg-muted/15 px-3 py-2 text-[11px] font-medium text-muted-foreground md:grid">
+      <div className="hidden grid-cols-[minmax(0,2fr)_minmax(9rem,1fr)_minmax(6rem,.75fr)_minmax(5rem,.6fr)_minmax(8rem,.9fr)] border-y bg-muted/15 px-3 py-2 text-[11px] font-medium text-muted-foreground md:grid">
         <span>프로필 이름</span>
         <span>생성일</span>
         <span>음역 (최저–최고)</span>
         <span>안정도</span>
         <span>활동</span>
-        <span className="text-right">상세</span>
       </div>
       <div className="divide-y border-b">
         <VocalProfileAnalysisJobRows jobs={analysisJobs} />
@@ -163,7 +163,7 @@ export function VocalProfileLibrary({
           const presentation = presentVocalProfile(profile);
           return (
             <article
-              className="grid gap-3 bg-background px-3 py-3.5 md:grid-cols-[minmax(0,2fr)_minmax(9rem,1fr)_minmax(6rem,.75fr)_minmax(5rem,.6fr)_minmax(8rem,.9fr)_5.5rem] md:items-center md:gap-0"
+              className={`${resourceRowInteractiveClassName} grid gap-3 bg-background px-3 py-3.5 md:grid-cols-[minmax(0,2fr)_minmax(9rem,1fr)_minmax(6rem,.75fr)_minmax(5rem,.6fr)_minmax(8rem,.9fr)] md:items-center md:gap-0`}
               key={profile.id}
             >
               <div className="flex min-w-0 items-center gap-3">
@@ -171,7 +171,15 @@ export function VocalProfileLibrary({
                   <AudioLines aria-hidden="true" className="size-3.5" />
                 </span>
                 <div className="min-w-0">
-                  <h2 className="truncate text-sm font-semibold">{presentation.label}</h2>
+                  <h2 className="truncate text-sm font-semibold">
+                    <ResourceRowLink
+                      aria-label={`${presentation.label} 분석과 제출 보컬 보기`}
+                      className="underline-offset-4 group-hover/resource-row:underline"
+                      href={`/vocal-profiles/${profile.id}`}
+                    >
+                      {presentation.label}
+                    </ResourceRowLink>
+                  </h2>
                   <p className="mt-0.5 text-xs text-muted-foreground">
                     {profile.durationMs ? `${(profile.durationMs / 1000).toFixed(1)}초` : "길이 정보 없음"}
                   </p>
@@ -185,18 +193,6 @@ export function VocalProfileLibrary({
               <p className="text-[11px] text-muted-foreground sm:text-xs">
                 추천 {profile.recommendationCount} · 믹스 {profile.mixingCount}
               </p>
-              <Link
-                aria-label={`${presentation.label} 분석과 제출 보컬 보기`}
-                className={buttonVariants({
-                  size: "sm",
-                  variant: "ghost",
-                  className: "justify-self-start px-2 text-xs md:justify-self-end",
-                })}
-                href={`/vocal-profiles/${profile.id}`}
-              >
-                <span className="md:sr-only">상세 보기</span>
-                <ChevronRight aria-hidden="true" className="size-3.5" />
-              </Link>
             </article>
           );
         })}

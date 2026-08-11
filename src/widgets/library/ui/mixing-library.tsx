@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { ChevronRight, Music2, RotateCcw, Search } from "lucide-react";
+import { Music2, RotateCcw, Search } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -19,6 +19,7 @@ import {
 import { Button, buttonVariants } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
+import { ResourceRowLink, resourceRowInteractiveClassName } from "@/shared/ui/resource-row-link";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
 import { StatePanel } from "@/shared/ui/state-panel";
 import { mixingHistoryHref } from "../model/search-params";
@@ -139,25 +140,15 @@ function MixingLibraryRows({ jobs }: { jobs: MixingHistoryRow[] }) {
             <th className="w-48 px-3 py-2 font-medium" scope="col">
               결과
             </th>
-            <th className="w-10 px-2 py-2" scope="col">
-              <span className="sr-only">상세</span>
-            </th>
           </tr>
         </thead>
         <tbody className="block divide-y lg:table-row-group">
           {jobs.map((job) => {
             const active = isActiveMixingStatus(job.status);
             const detailHref = `/library/mixes/${job.id}`;
-            const actionLabel = job.resultReady
-              ? "결과 듣기"
-              : active
-                ? "진행 확인"
-                : job.status === "failed"
-                  ? "다시 시도"
-                  : "상세 보기";
             return (
               <tr
-                className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-2 px-3 py-3 lg:table-row lg:px-0 lg:py-0"
+                className={`${resourceRowInteractiveClassName} grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-2 px-3 py-3 lg:table-row lg:px-0 lg:py-0`}
                 key={job.id}
               >
                 <td className="col-start-2 row-start-1 text-right align-middle lg:table-cell lg:px-3 lg:py-3 lg:text-left">
@@ -166,9 +157,13 @@ function MixingLibraryRows({ jobs }: { jobs: MixingHistoryRow[] }) {
                 </td>
                 <td className="col-start-1 row-start-1 min-w-0 align-middle lg:table-cell lg:px-3 lg:py-3">
                   <h2 className="truncate text-sm font-semibold">
-                    <Link className="underline-offset-4 hover:underline" href={detailHref}>
+                    <ResourceRowLink
+                      aria-label={`${job.song.title} AI 믹스 상세 보기`}
+                      className="underline-offset-4 group-hover/resource-row:underline"
+                      href={detailHref}
+                    >
                       {job.song.title}
-                    </Link>
+                    </ResourceRowLink>
                   </h2>
                   <p className="mt-0.5 truncate text-xs text-muted-foreground">{job.song.artist}</p>
                 </td>
@@ -178,21 +173,6 @@ function MixingLibraryRows({ jobs }: { jobs: MixingHistoryRow[] }) {
                 </td>
                 <td className="col-span-2 row-start-3 align-middle lg:table-cell lg:px-3 lg:py-3">
                   <p className="text-xs leading-5 text-muted-foreground">{statusDescription(job)}</p>
-                  <Link
-                    className="mt-0.5 inline-flex text-xs font-semibold underline-offset-4 hover:underline"
-                    href={detailHref}
-                  >
-                    {actionLabel}
-                  </Link>
-                </td>
-                <td className="hidden align-middle lg:table-cell lg:px-2 lg:py-3 lg:text-right">
-                  <Link
-                    aria-label={`${job.song.title} 상세 보기`}
-                    className="inline-flex size-8 items-center justify-center rounded-md hover:bg-muted"
-                    href={detailHref}
-                  >
-                    <ChevronRight aria-hidden="true" className="size-3.5" />
-                  </Link>
                 </td>
               </tr>
             );

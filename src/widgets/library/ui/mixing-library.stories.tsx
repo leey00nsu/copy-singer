@@ -83,7 +83,8 @@ export const DenseLibrary: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("table").querySelectorAll("tbody tr")).toHaveLength(12);
-    await expect(canvas.getAllByRole("link", { name: "결과 듣기" })).toHaveLength(6);
+    await expect(canvas.getAllByRole("link", { name: /AI 믹스 상세 보기/ })).toHaveLength(12);
+    await expect(canvas.queryByRole("link", { name: "결과 듣기" })).not.toBeInTheDocument();
     await expect(canvas.queryByRole("link", { name: "결과 저장" })).not.toBeInTheDocument();
   },
 };

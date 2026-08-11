@@ -79,6 +79,8 @@ export const Success: Story = {
     await expect((await canvas.findAllByText("서른 즈음에"))[0]).toBeVisible();
     await expect(canvas.getByRole("button", { name: "이 곡으로 AI 믹싱" })).toBeVisible();
     await expect(canvas.getByRole("button", { name: "서른 즈음에" })).toHaveAttribute("aria-pressed", "true");
+    await expect(canvas.queryByRole("link", { name: "서른 즈음에 전체 분석 결과" })).not.toBeInTheDocument();
+    await expect(canvas.getByRole("link", { name: "전체 분석 결과 보기" })).toBeVisible();
     await userEvent.type(canvas.getByRole("searchbox", { name: "곡 또는 아티스트 검색" }), "없는 노래");
     await expect(canvas.getByText("조건에 맞는 노래가 없어요.")).toBeVisible();
     await userEvent.click(canvas.getByRole("button", { name: "모든 조건 지우기" }));

@@ -1,5 +1,3 @@
-import { ArrowUpRight } from "lucide-react";
-import Link from "next/link";
 import type { RecommendationItemResponse } from "@/entities/recommendation";
 import {
   formatRecommendedShift,
@@ -54,7 +52,7 @@ export function RecommendationSongList({
               >
                 <td className="col-span-3 min-w-0 align-middle sm:col-span-1 xl:px-3 xl:py-3">
                   <div className="min-w-0">
-                    <div className="flex min-w-0 items-center gap-2">
+                    <div className="flex min-w-0 items-center">
                       <h2 className="min-w-0 truncate text-sm font-semibold sm:text-base">
                         <button
                           aria-pressed={selected}
@@ -65,13 +63,6 @@ export function RecommendationSongList({
                           {item.title}
                         </button>
                       </h2>
-                      <Link
-                        aria-label={`${item.title} 전체 분석 결과`}
-                        className="shrink-0 text-muted-foreground hover:text-foreground focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                        href={detailHref}
-                      >
-                        <ArrowUpRight aria-hidden="true" className="size-3.5" />
-                      </Link>
                     </div>
                     <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">{item.artist}</p>
                   </div>

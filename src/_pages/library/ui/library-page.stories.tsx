@@ -125,7 +125,8 @@ export const Mixes: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText("저장된 AI 믹스 12개")).toBeVisible();
-    await expect(canvas.getAllByRole("link", { name: "결과 듣기" })).toHaveLength(6);
+    await expect(canvas.getAllByRole("link", { name: /AI 믹스 상세 보기/ })).toHaveLength(12);
+    await expect(canvas.queryByRole("link", { name: "결과 듣기" })).not.toBeInTheDocument();
     await expect(canvas.queryByText(/upstream|502/)).not.toBeInTheDocument();
   },
 };
