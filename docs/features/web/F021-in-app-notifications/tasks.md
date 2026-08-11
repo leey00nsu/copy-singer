@@ -71,16 +71,16 @@
     - [x] 알림 생성·목록·개별/전체 읽음 server service와 contract 구현
     - [x] migration·소유권·중복·페이지네이션 DB 테스트
 
-- [TODO][PRD-FR-058] T-F021-in-app-notifications-02 terminal 도메인 알림 연결
+- [DONE][PRD-FR-058] T-F021-in-app-notifications-02 terminal 도메인 알림 연결
   - Date: 2026-08-11
   - Acceptance:
     - 관리자 양수 티켓 조정, 보컬 분석과 믹싱의 성공·최종 실패가 각 event당 알림 한 건을 생성한다.
     - 가입 지급·믹싱 환불·차감·retry 중간 실패·worker 재실행은 중복 또는 불필요한 알림을 만들지 않는다.
   - Checklist:
-    - [ ] ticket transaction의 대상 유형 알림 연결
-    - [ ] vocal analysis terminal 상태와 알림 연결
-    - [ ] mixing terminal 상태와 알림 연결
-    - [ ] 성공·실패·retry·idempotency 통합 테스트
+    - [x] ticket transaction의 대상 유형 알림 연결
+    - [x] vocal analysis terminal 상태와 알림 연결
+    - [x] mixing terminal 상태와 알림 연결
+    - [x] 성공·실패·retry·idempotency 통합 테스트
 
 - [TODO][PRD-FR-058] T-F021-in-app-notifications-03 알림 API와 client server-state
   - Date: 2026-08-11
@@ -122,5 +122,6 @@
 | `pnpm run db:validate` | `2026-08-11` | 통과 |
 | `pnpm run typecheck` | `2026-08-11` | 통과 |
 | `node --conditions react-server --import tsx --test tests/notification-service.integration.ts` | `2026-08-11` | 통과 — 영속화·동시 dedupe·소유권·읽음·페이지네이션 1/1 |
+| `node --conditions react-server --import tsx --test tests/admin-operations.integration.ts tests/vocal-profile-analysis-queue.integration.ts tests/mixing-queue.integration.ts` | `2026-08-11` | 통과 — 티켓 양수 지급 단일 알림, 분석·믹싱 성공/최종 실패와 retry 제외 7/7 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T22:24:40+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T22:28:16+09:00 -->

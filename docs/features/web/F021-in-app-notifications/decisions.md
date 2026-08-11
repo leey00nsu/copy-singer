@@ -30,6 +30,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **DOING 시작 시점**: `TicketLedger`는 idempotency key를 갖고 analysis/mixing worker는 terminal update를 명시적으로 수행하므로 이 경계에서 알림을 기록할 수 있음을 확인했다. 공통 `ProductHeader`는 client component이고 TanStack Query provider가 이미 전역에 있어 polling consumer를 추가할 수 있다.
   - **DONE 전 확정 시점**: `Notification`에 user/type/text/internal href/source/dedupe/readAt/createdAt을 저장하고 global namespaced dedupe key unique를 적용했다. Prisma concurrent upsert가 unique 경합에서 P2002를 반환함을 통합 테스트에서 확인해 `createMany(skipDuplicates)` 후 기존 row의 전체 identity를 검증하는 방식으로 확정했다. 목록·unread count·개별/전체 읽음은 항상 userId로 scope한다.
+  - **DONE 전 확정 시점(T02)**: 관리자 ticket feature는 양수 adjustment 원장 ID로만 credit 알림을 생성해 가입 지급·환불·차감을 제외한다. analysis와 mixing worker는 retry branch에는 알림을 만들지 않고 terminal DB update와 notification create를 같은 transaction에 묶었다. 성공 알림은 profile/mix 상세, 분석 실패는 profile library, 믹싱 실패는 job 상세의 내부 경로를 snapshot한다.
   - **머지 후 확인**: 실제 결과/영향
 - **Evidence**:
   - **Commit**: 커밋 해시 또는 링크
