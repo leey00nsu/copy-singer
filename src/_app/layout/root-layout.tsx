@@ -1,15 +1,9 @@
 import type { Metadata } from "next";
-import { Geist_Mono } from "next/font/google";
 import { headers } from "next/headers";
 import { Toaster } from "@/shared/ui/sonner";
 import { TooltipProvider } from "@/shared/ui/tooltip";
 import { QueryProvider } from "../providers";
 import "../styles/globals.css";
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();
@@ -49,7 +43,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={`${geistMono.variable} antialiased`}>
+      <body className="antialiased">
         <QueryProvider>
           <TooltipProvider>{children}</TooltipProvider>
         </QueryProvider>
