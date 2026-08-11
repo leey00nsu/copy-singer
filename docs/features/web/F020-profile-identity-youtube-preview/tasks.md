@@ -106,6 +106,14 @@
     - [x] Geist Mono import·CSS variable 제거
     - [x] typecheck·build·UI 회귀 검증
 
+- [DONE][PRD-FR-049] T-F020-profile-identity-youtube-preview-06 추천 곡 상세 내부 순위 표기 제거
+  - Date: 2026-08-11
+  - Acceptance:
+    - 추천 곡 상세 eyebrow는 Song match만 표시하고 내부 rank의 #N 표기를 노출하지 않는다.
+  - Checklist:
+    - [x] Song match eyebrow에서 #N 제거
+    - [x] 상세 unit·Storybook·build 회귀 검증
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -136,5 +144,7 @@
 | `Storybook browser QA (desktop 1440px / mobile 390px)` | `2026-08-11` | 통과 — 재생 전후 요약 행·곡 셀 폭 유지, 4-column 확장 행, iframe 최대 1개, 200px 최소 높이와 가로 overflow 없음 |
 | `rg -n "Geist_Mono\|font-geist-mono\|next/font/google" src` | `2026-08-11` | 통과 — 잔여 Geist Mono import·variable 없음 |
 | `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/widgets/library/ui/vocal-profile-library.stories.tsx` | `2026-08-11` | 통과 — 추천 수치·프로필 분석 UI 회귀 14/14 |
+| `pnpm exec tsx --test tests/recommendation-song-detail.test.tsx` | `2026-08-11` | 통과 — Song match #N 제거 포함 상세 회귀 5/5 |
+| `pnpm run test:storybook --run src/_pages/song-detail/ui/song-detail.stories.tsx` | `2026-08-11` | 통과 — 원본 영상·Song match label 1/1 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T20:05:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T20:24:00.000Z -->
