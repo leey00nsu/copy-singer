@@ -87,22 +87,22 @@
     - [x] server serializer video ID validation과 response schema 구현
     - [x] click-to-load facade/player 공통 component와 contract tests
 
-- [TODO][PRD-FR-049] T-F020-profile-identity-youtube-preview-04 추천 목록·상세 영상 UI 통합
+- [DONE][PRD-FR-049] T-F020-profile-identity-youtube-preview-04 추천 목록·상세 영상 UI 통합
   - Date: 2026-08-11
   - Acceptance:
     - 목록 왼쪽에서 행 동작과 충돌 없이 원본 영상을 재생하며 동시에 iframe 하나만 활성화된다.
     - 상세 제목 위에 16:9 player가 표시되고 외부 출처 열기 action이 제거된다.
   - Checklist:
-    - [ ] recommendation list facade·single-active state·responsive layout 적용
-    - [ ] song detail player 배치와 external source action 제거
-    - [ ] Storybook·unit·build·desktop/mobile browser QA
+    - [x] recommendation list facade·single-active state·responsive layout 적용
+    - [x] song detail player 배치와 external source action 제거
+    - [x] Storybook·unit·build·desktop/mobile browser QA
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -121,5 +121,9 @@
 | `pnpm run test:storybook --run src/widgets/library/ui/vocal-profile-library.stories.tsx` | `2026-08-11` | 통과 — profile artwork·list 상태 4/4 |
 | `pnpm exec tsx --test tests/api-contracts.test.ts tests/recommendation-presentation.test.ts tests/recommendation-ui.test.tsx tests/client-server-state-query.test.ts` | `2026-08-11` | 통과 — video ID·URL·facade/player·추천 회귀 30/30 |
 | `pnpm run test:recommendation:db` | `2026-08-11` | 통과 — 100곡 sourceVideoId 직렬화 포함 3/3 |
+| `pnpm run test:recommendation` | `2026-08-11` | 통과 — ranking 10/10, presentation·UI·detail 등 22/22 |
+| `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/_pages/song-detail/ui/song-detail.stories.tsx` | `2026-08-11` | 통과 — 목록 single-active player·상세 배치 포함 10/10 |
+| `pnpm run build` | `2026-08-11` | 통과 — Next.js production build 및 25개 static page 생성 |
+| `Storybook browser QA (desktop 1280px / mobile 390px)` | `2026-08-11` | 통과 — 목록 iframe 최대 1개, 상세 player 제목 상단 배치, 200px 최소 높이와 가로 overflow 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T19:33:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T19:35:00.000Z -->

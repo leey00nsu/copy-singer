@@ -101,7 +101,7 @@
 - **성능**: 목록 초기 렌더는 YouTube iframe을 0개 로드하고 facade 이미지는 lazy loading한다. 동시에 활성화되는 목록 player는 최대 1개다.
 - **보안·개인정보**: server가 검증한 video ID만 embed 경로에 사용하며 privacy-enhanced domain을 사용한다. 프로필 이름 PATCH는 인증과 소유권을 server에서 확인한다.
 - **접근성**: facade는 곡명을 포함한 재생 이름을 제공하고 keyboard로 활성화할 수 있다. iframe title, focus-visible, 저장 상태와 validation 오류를 제공한다.
-- **반응형**: 목록 media는 mobile에서도 곡 제목·적합도·키·믹싱 action을 밀어내거나 horizontal overflow를 만들지 않으며 상세 player는 16:9 비율을 유지한다.
+- **반응형**: 목록 media는 mobile에서도 곡 제목·적합도·키·믹싱 action을 밀어내거나 horizontal overflow를 만들지 않는다. player는 16:9를 기본으로 하되 좁은 화면에서는 YouTube 최소 200px 높이를 우선한다.
 
 ---
 

@@ -78,7 +78,7 @@ Song.metadata.catalog.sourceVideoId
 - 공통 `YouTubeVideo`는 `facade`와 `player` variant를 제공한다. facade thumbnail은 lazy-load하고 iframe은 click 이후 생성한다.
 - 목록 parent가 active item ID 하나를 관리해 동시에 하나의 iframe만 존재하게 한다. player/button 영역은 stretched row button보다 높은 stacking context를 갖고 이벤트 전파를 차단한다.
 - 상세는 title header 직전 full-width 16:9 player를 배치하고 `safeRecommendationSourceUrl`과 외부 link UI를 제거한다. sourceUrl은 하위 호환을 위해 응답에 당분간 유지한다.
-- embed 불가·연령 제한 영상은 YouTube player 자체 상태를 따르며, 유효 ID가 없는 fixture/data에는 중립 placeholder를 표시한다.
+- embed 불가·연령 제한 영상은 YouTube player 자체 상태를 따르며, 유효 ID가 없는 fixture/data에는 중립 placeholder를 표시한다. player는 16:9를 기본으로 하고 좁은 화면에서는 공식 최소 viewport인 200px 높이를 보장한다.
 
 ---
 
