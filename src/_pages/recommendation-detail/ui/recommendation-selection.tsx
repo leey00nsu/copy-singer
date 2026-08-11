@@ -3,6 +3,7 @@ import Link from "next/link";
 import {
   formatRecommendedShift,
   type RecommendationItemResponse,
+  recommendationMatchColor,
   recommendationMatchPercent,
   visibleRecommendationReasons,
 } from "@/entities/recommendation";
@@ -31,7 +32,9 @@ function SelectionDetails({
     <section aria-labelledby={`${idPrefix}-title`}>
       <div className="flex items-center justify-between gap-3">
         <Badge variant={item.rank <= 3 ? "default" : "secondary"}>{item.rank}위 추천</Badge>
-        <span className="text-2xl font-semibold text-data-accent-foreground">{recommendationMatchPercent(item)}%</span>
+        <span className="text-2xl font-semibold" style={{ color: recommendationMatchColor(item) }}>
+          {recommendationMatchPercent(item)}%
+        </span>
       </div>
       <h2 className="mt-5 text-2xl font-semibold tracking-tight" id={`${idPrefix}-title`}>
         {item.title}

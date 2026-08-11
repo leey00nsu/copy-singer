@@ -1,7 +1,11 @@
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import type { RecommendationItemResponse } from "@/entities/recommendation";
-import { formatRecommendedShift, recommendationMatchPercent } from "@/entities/recommendation";
+import {
+  formatRecommendedShift,
+  recommendationMatchColor,
+  recommendationMatchPercent,
+} from "@/entities/recommendation";
 import { RecommendationMixingAction } from "@/features/create-mixing";
 import { Badge } from "@/shared/ui/badge";
 
@@ -85,7 +89,8 @@ export function RecommendationSongList({
                 <td className="align-middle xl:px-3 xl:py-3">
                   <p className="text-[11px] text-muted-foreground sm:sr-only">추천 적합도</p>
                   <p
-                    className={`mt-0.5 text-lg font-semibold tracking-tight xl:mt-0 ${matchPercent >= 90 ? "text-success-foreground" : "text-foreground"}`}
+                    className="mt-0.5 text-lg font-semibold tracking-tight xl:mt-0"
+                    style={{ color: recommendationMatchColor(item) }}
                   >
                     {matchPercent}%
                   </p>

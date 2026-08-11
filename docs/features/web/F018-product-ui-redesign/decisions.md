@@ -397,3 +397,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 같은 음역 데이터를 같은 시각 문법으로 표현하면 Profile과 Song Detail을 오갈 때 학습 비용이 줄고, 존재하지 않는 값을 만들지 않으면서 관측 범위와 실용 범위의 포함 관계를 전달할 수 있다. reason 정제는 backend 설명 가능성은 보존하면서 사용자 화면의 중복 문구만 줄인다.
 - **Evidence**: `pnpm run test:recommendation` ranking 10/10·presentation/UI/detail 18/18, Vocal Profile visualization 10/10, targeted Vocal Profile/Recommendation/Song Detail Storybook 3 files·17 tests, `pnpm run check` 통과(error 0, 기존 warning 59건), Next production build 23/23 routes.
 - **Consequences**: Profile Detail은 중앙음을 포함한 graph를 유지하고 Song Detail은 중앙음 없는 2개 지표 graph를 사용한다. 원본 recommendation reason code·text, ranking, API와 DB 계약은 변경하지 않는다.
+
+## D042: 추천 적합도는 브랜드 컬러 연속 척도를 사용 (2026-08-11)
+
+- **Context**: 목록의 추천 적합도는 90점 이상에서만 success green으로 갑자기 전환되고, 선택 상세는 점수와 무관하게 브랜드 컬러로 고정되어 같은 값의 시각 규칙이 화면마다 달랐다. 적합도는 완료 상태가 아니라 0–100의 연속적인 강도다.
+- **Decision**: 정수로 clamp·round한 추천 적합도를 CSS `color-mix(in oklab, ...)`의 보간 비율로 사용한다. 0%는 `foreground`, 100%는 텍스트용 브랜드 토큰 `data-accent-foreground`이며 목록과 desktop/mobile 선택 상세가 동일 `recommendationMatchColor` helper를 사용한다. success green은 완료·ready 상태에만 유지한다.
+- **Rationale**: 브랜드색의 채도로 적합도 강도를 연속 표현하면 임의 임계치의 상태 변화처럼 보이지 않고, 브랜드 visual language와도 일치한다. 정수 percentage를 항상 함께 표시하므로 색각이나 CSS color 지원 여부와 무관하게 값이 전달된다.
+- **Evidence**: `pnpm run test:recommendation` ranking 10/10·presentation/UI/detail 19/19, Recommendation Results Storybook 9/9, `pnpm run check` 통과(error 0, 기존 warning 59건), Next production build 23/23 routes.
+- **Consequences**: 추천 적합도는 더 이상 `success-foreground`를 사용하지 않는다. 점수·정렬·API·저장 계약은 변경하지 않으며 브랜드 token 변경 시 보간 끝점도 자동으로 따라간다.

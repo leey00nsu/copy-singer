@@ -5,6 +5,7 @@ import {
   parseRecommendationFilters,
   projectRecommendationItems,
   projectRecommendationSongProfile,
+  recommendationMatchColor,
   recommendationMatchPercent,
   serializeRecommendationFilters,
   visibleRecommendationReasons,
@@ -101,6 +102,21 @@ test("shows a bounded integer match percent without fabricating precision", () =
   assert.equal(recommendationMatchPercent(items[0]), 92);
   assert.equal(recommendationMatchPercent({ adjustedScore: 101.2 }), 100);
   assert.equal(recommendationMatchPercent({ adjustedScore: -1 }), 0);
+});
+
+test("maps match strength continuously from foreground black to the brand accent", () => {
+  assert.equal(
+    recommendationMatchColor({ adjustedScore: 0 }),
+    "color-mix(in oklab, var(--foreground), var(--data-accent-foreground) 0%)",
+  );
+  assert.equal(
+    recommendationMatchColor({ adjustedScore: 50.4 }),
+    "color-mix(in oklab, var(--foreground), var(--data-accent-foreground) 50%)",
+  );
+  assert.equal(
+    recommendationMatchColor({ adjustedScore: 100 }),
+    "color-mix(in oklab, var(--foreground), var(--data-accent-foreground) 100%)",
+  );
 });
 
 test("keeps only user-meaningful recommendation reasons", () => {

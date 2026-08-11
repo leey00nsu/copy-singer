@@ -428,6 +428,18 @@
     - [x] Song Detail 분석 결과와 내 목소리 음역을 단일 visual section으로 통합
     - [x] 사용자 reason projection 정제 및 unit·Storybook·build 회귀 검증
 
+- [DONE][PRD-FR-049] T-F018-28 추천 적합도 브랜드 컬러 연속 척도
+  - Date: 2026-08-11
+  - Change request: implementation approval checkpoint에서 사용자 변경 요청(B)으로 추가
+  - Acceptance:
+    - 추천 적합도 숫자는 0%에서 검정, 100%에서 현재 `data-accent-foreground` 브랜드 컬러가 되며 중간값은 두 색을 연속 보간한다.
+    - 기존 green success 의미와 적합도 강도를 분리하고, 색상 외 숫자 label로 적합도를 계속 전달한다.
+    - 목록과 선택 상세가 동일한 색상 계산 규칙을 사용하고 0·중간·100 경계를 회귀 테스트로 고정한다.
+  - Checklist:
+    - [x] recommendation 적합도 색상 presentation helper 구현
+    - [x] 목록·선택 상세의 적합도 숫자에 공통 연속 색상 적용
+    - [x] Design System·unit·Storybook·build 회귀 검증
+
 ---
 
 ## 완료 조건
@@ -445,7 +457,7 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm run check` | `2026-08-10` | 통과 — error 0, 기존 Biome warning 59건, Steiger 및 architecture 4/4 |
+| `pnpm run check` | `2026-08-11` | 통과 — error 0, 기존 Biome warning 59건, Steiger 및 architecture 4/4 |
 | `pnpm run test:auth-navigation` | `2026-08-10` | 통과 — safe callback·Library/Account navigation·route group·keyboard/touch label·sign-out 후 replace/refresh 5/5 |
 | `pnpm run test:storybook --run src/widgets/product-shell/ui/product-shell.stories.tsx src/_pages/home/ui/landing-page.stories.tsx src/_pages/library/ui/library-page.stories.tsx` | `2026-08-10` | 통과 — 공통 Header/Footer·UserMenu·admin navigation·crystal 제거·dense Library 검증 |
 | `pnpm run test:storybook --run src/shared/ui/dropdown-menu/dropdown-menu.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-10` | 통과 — 공통 메뉴와 계정 메뉴를 실제로 열어 Menu.Group context·menuitem 4/4 확인 |
@@ -455,8 +467,8 @@
 | `pnpm run test:voice-scan` | `2026-08-10` | 통과 — 녹음 정책·오류·상태·cleanup 12/12 |
 | `pnpm run test:vocal-profile-analysis-queue` | `2026-08-10` | 통과 — idempotency·owner·lease·retry·cleanup 5/5 |
 | `pnpm run test:vocal-profile-history` | `2026-08-10` | 통과 — 공유 Library UI 3/3, private audio·ownership 3/3 |
-| `pnpm run test:recommendation` | `2026-08-10` | 통과 — ranking 10/10, 기본 적합도 정렬·reason 표시 정책·synthesis·list·detail 18/18 |
-| `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx` | `2026-08-10` | 통과 — 100곡 dense list·선택 panel/mobile Sheet·polling·완료 상태 9/9 |
+| `pnpm run test:recommendation` | `2026-08-11` | 통과 — ranking 10/10, 적합도 브랜드 색상 경계·기본 정렬·reason 표시 정책·synthesis·list·detail 19/19 |
+| `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx` | `2026-08-11` | 통과 — 100곡 적합도 연속 브랜드 색상·선택 panel/mobile Sheet·polling·완료 상태 9/9 |
 | `pnpm run test:storybook --run src/entities/vocal-profile/ui/vocal-profile-results.stories.tsx src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/_pages/song-detail/ui/song-detail.stories.tsx` | `2026-08-10` | 통과 — 중앙음 유무에 따른 공통 음역 graph·정제된 recommendation reason·Song Detail 17/17 |
 | `pnpm exec tsx --test tests/vocal-profile-visualization.test.ts tests/vocal-profile-results-ui.test.tsx` | `2026-08-10` | 통과 — 음역 graph data·접근 가능한 시각화 UI 10/10 |
 | `pnpm run test:storybook --run src/widgets/library/ui/mixing-library.stories.tsx src/widgets/library/ui/vocal-profile-library.stories.tsx src/_pages/library/ui/library-page.stories.tsx` | `2026-08-10` | 통과 — raw error 차단·10/12개 dense row·ProductShell 통합 10/10 |
@@ -469,7 +481,7 @@
 | `pnpm run test:architecture-boundaries` | `2026-08-10` | 통과 — `pnpm run check` 내부 FSD·Client/Server·App adapter 4/4 |
 | `pnpm run test:storybook --run` | `2026-08-10` | 통과 — 38 files, 101 tests, 생성 퍼널 상태·추천 선택/mobile Sheet·live microphone·dense Library·상태/a11y 포함 |
 | `pnpm run build-storybook` | `2026-08-10` | 통과 — 36개 story file 정적 산출물 생성, 기존 chunk size warning만 있음 |
-| `pnpm run build` | `2026-08-10` | 통과 — Next.js 16 production build와 기존 23개 public/product/Admin/dev route 보존 |
+| `pnpm run build` | `2026-08-11` | 통과 — Next.js 16 production build와 기존 23개 public/product/Admin/dev route 보존 |
 | `pnpm run test:base-ui` | `2026-08-10` | 통과 — TSX AST 기반 Link/Base UI non-native semantics 1/1 |
 | `pnpm run test:process-scripts` | `2026-08-10` | 통과 — process supervisor·Storybook production boundary 5/5 |
 | `pnpm test` | `2026-08-10` | 통과 — production build 23/23 routes, 전체 unit·integration·DB·Query·architecture와 Storybook 38 files/101 tests |
@@ -477,4 +489,4 @@
 | `rg` design asset/reference audit | `2026-08-10` | 통과 — canonical `references/copy-singer` 정책 유지; production 참조 0건인 Next 기본 `file/globe/window.svg` 제거, `favicon.svg`·`og.png` 보존 |
 | `git diff --check` | `2026-08-10` | 통과 — 공통 chrome·Pretendard·violet audio UI·Feature 문서 whitespace 오류 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-10T14:22:50.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T06:12:28.000Z -->

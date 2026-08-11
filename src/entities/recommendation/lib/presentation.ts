@@ -77,6 +77,11 @@ export function recommendationMatchPercent(item: Pick<RecommendationItemResponse
   return Math.max(0, Math.min(100, Math.round(item.adjustedScore)));
 }
 
+export function recommendationMatchColor(item: Pick<RecommendationItemResponse, "adjustedScore">) {
+  const matchPercent = recommendationMatchPercent(item);
+  return `color-mix(in oklab, var(--foreground), var(--data-accent-foreground) ${matchPercent}%)`;
+}
+
 export function visibleRecommendationReasons(item: Pick<RecommendationItemResponse, "reasonCodes" | "reasons">) {
   return item.reasons.flatMap((reason, index) =>
     HIDDEN_RECOMMENDATION_REASON_CODES.has(item.reasonCodes[index] ?? "")

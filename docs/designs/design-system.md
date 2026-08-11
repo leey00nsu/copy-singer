@@ -62,7 +62,8 @@ Visual reference는 `docs/designs/references/copy-singer/`만 정본으로 사�
 Accent 사용 규칙:
 
 - lavender·blue: waveform, pitch trace와 분석 강조
-- green: 성공, ready와 긍정적인 적합도
+- green: 성공과 ready 상태에만 사용하며 적합도 강도에는 사용하지 않는다.
+- 추천 적합도 숫자는 0%의 `foreground`에서 100%의 `data-accent-foreground`까지 OKLab으로 연속 보간한다. 색상은 보조 표현이며 정수 percentage label을 항상 함께 제공한다.
 - amber: 대기, retry와 주의
 - red: destructive action과 복구가 필요한 error
 - 한 surface에 의미 없는 accent를 두 가지 이상 섞지 않는다.
