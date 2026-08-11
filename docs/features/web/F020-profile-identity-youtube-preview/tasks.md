@@ -20,7 +20,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/profile-identity-youtube-preview`
-- **대기 중 변경 요청**: 결정: changes_requested 숫자·시간·분석값·기술 정보를 포함한 전체 앱 typography를 Pretendard로 통일
+- **대기 중 변경 요청**: -
   - 구현 중 새로 수용한 사용자 요청을 잠시 표시하는 sync marker입니다
   - 요청을 `tasks.md`와 관련 문서에 반영한 뒤 값을 비우세요
   - pre-PR 리뷰 handoff를 시작하면 `Running`, 리뷰 결과 기록까지 끝나면 `Done`으로 변경
@@ -97,21 +97,21 @@
     - [x] song detail player 배치와 external source action 제거
     - [x] Storybook·unit·build·desktop/mobile browser QA
 
-- [DOING][PRD-FR-045] T-F020-profile-identity-youtube-preview-05 전역 수치·기술 정보 폰트 Pretendard 통일
+- [DONE][PRD-FR-045] T-F020-profile-identity-youtube-preview-05 전역 수치·기술 정보 폰트 Pretendard 통일
   - Date: 2026-08-11
   - Acceptance:
     - font-mono를 사용하는 숫자·시간·분석값·기술 정보까지 Pretendard로 표시하고 Geist Mono 로딩을 제거한다.
   - Checklist:
-    - [ ] 전역 mono font token을 Pretendard로 통일
-    - [ ] Geist Mono import·CSS variable 제거
-    - [ ] typecheck·build·UI 회귀 검증
+    - [x] 전역 mono font token을 Pretendard로 통일
+    - [x] Geist Mono import·CSS variable 제거
+    - [x] typecheck·build·UI 회귀 검증
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -134,5 +134,7 @@
 | `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/_pages/song-detail/ui/song-detail.stories.tsx` | `2026-08-11` | 통과 — full-width 확장 행·single-active player·상세 배치 포함 11/11 |
 | `pnpm run build` | `2026-08-11` | 통과 — Next.js production build 및 25개 static page 생성 |
 | `Storybook browser QA (desktop 1440px / mobile 390px)` | `2026-08-11` | 통과 — 재생 전후 요약 행·곡 셀 폭 유지, 4-column 확장 행, iframe 최대 1개, 200px 최소 높이와 가로 overflow 없음 |
+| `rg -n "Geist_Mono\|font-geist-mono\|next/font/google" src` | `2026-08-11` | 통과 — 잔여 Geist Mono import·variable 없음 |
+| `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/widgets/library/ui/vocal-profile-library.stories.tsx` | `2026-08-11` | 통과 — 추천 수치·프로필 분석 UI 회귀 14/14 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T20:02:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T20:05:00.000Z -->
