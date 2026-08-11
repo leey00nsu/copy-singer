@@ -39,13 +39,14 @@ LoginPage (server)
   ├─ safeCallbackURL + existing-session redirect
   └─ LoginScreen
       ├─ header ProductBrand
-      ├─ ProductMark + Copy Singer
-      └─ GoogleSignIn → authClient.signIn.social
+      ├─ ProductMark + Copy Singer + muted login guidance
+      ├─ GoogleSignIn → authClient.signIn.social
+      └─ Google login legal consent copy
 ```
 
 - desktop/mobile header는 동일 callback URL의 `로그인` action 하나만 제공한다.
 - `LoginPage`의 server redirect와 OAuth configured 값을 유지하고, 렌더 가능한 `LoginScreen` composition을 분리해 Storybook에서 정적·disabled 상태를 검증한다.
-- 정적 설명은 제거하되 `GoogleSignIn`의 pending, provider 미설정과 runtime error는 실제 상태이므로 유지한다.
+- 제품 기능 설명은 제거하되 짧은 로그인 안내와 약관 동의 문구를 보조 위계로 제공한다. `GoogleSignIn`의 pending, provider 미설정과 runtime error는 실제 상태이므로 유지한다.
 
 ### 브랜드 자산
 
@@ -85,7 +86,7 @@ public/
 ## 테스트 전략
 
 - **단위 테스트**: auth navigation/static render 검사에서 desktop/mobile `로그인` 단일 action, callback URL, 제거 문구, Google label/icon과 runtime status 계약을 고정한다.
-- **컴포넌트 테스트**: ProductShell과 LoginScreen Storybook에서 비로그인 header, central logo/name/button, configured false 상태와 focusable Google action을 검증한다.
+- **컴포넌트 테스트**: ProductShell과 LoginScreen Storybook에서 비로그인 header, central logo/name/guidance/button/legal copy, configured false 상태와 focusable Google action을 검증한다.
 - **자산 검증**: master/favicons의 PNG signature, dimensions, alpha channel, transparent corner, nonempty subject coverage를 검사하고 16/24/32px contact sheet를 눈으로 확인한다.
 - **통합 테스트**: `pnpm run check`, 관련 Storybook, auth navigation, production build로 route/metadata 경계를 검증한다.
 - **브라우저 QA**: `/` 비로그인 header와 `/login`을 mobile/desktop에서 확인하며 duplicate CTA, overflow, console error와 favicon request를 검수한다.

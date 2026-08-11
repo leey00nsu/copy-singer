@@ -89,12 +89,21 @@
     - [x] multicolor GoogleIcon과 outline 구글로 시작하기 action 적용
     - [x] unit·Storybook·browser·check·build 회귀 검증
 
+- [TODO][PRD-FR-046] T-F019-04 로그인 안내와 약관 동의 문구 보완
+  - Date: 2026-08-11
+  - Acceptance:
+    - `Copy Singer` 아래에는 muted `계속하려면 로그인하세요.`를 표시한다.
+    - Google action 아래에는 첨부 reference의 Google 로그인 및 이용 약관·개인정보 처리방침 동의 문구를 보조 위계로 표시한다.
+  - Checklist:
+    - [ ] LoginScreen 안내·동의 문구와 responsive spacing 적용
+    - [ ] Storybook·auth navigation·browser·check·build 회귀 검증
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
