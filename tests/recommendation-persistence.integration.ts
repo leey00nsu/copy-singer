@@ -63,6 +63,14 @@ test("persists, reads, and cascade-deletes one recommendation run", async (conte
     assert.ok(created.items.every((item) => Number.isFinite(item.selectionScore)));
     assert.ok(created.items.every((item) => item.selectionScore === item.metrics.selectionScore));
 
+    const repeated = await createRecommendationRun(profileId);
+    assert.deepEqual(repeated, created);
+    assert.equal(await prisma.recommendationRun.count({ where: { userVocalProfileId: profileId } }), 1);
+
+    const concurrent = await Promise.all(Array.from({ length: 3 }, () => createRecommendationRun(profileId)));
+    assert.ok(concurrent.every((run) => run.id === created.id));
+    assert.equal(await prisma.recommendationRun.count({ where: { userVocalProfileId: profileId } }), 1);
+
     const storedSongs = await prisma.song.findMany({
       where: { id: { in: created.items.map((item) => item.songId) } },
       include: { vocalProfile: true },

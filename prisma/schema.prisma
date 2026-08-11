@@ -181,7 +181,7 @@ model RecommendationRun {
   items              RecommendationItem[]
 
   @@index([userId, createdAt])
-  @@index([userVocalProfileId, createdAt])
+  @@unique([userVocalProfileId])
 }
 
 model RecommendationItem {

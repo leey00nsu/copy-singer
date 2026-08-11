@@ -221,6 +221,13 @@ export async function createRecommendationRun(userVocalProfileId: string, userId
   if (!profileRow) {
     throw new RecommendationError("INVALID_PROFILE", "Vocal profile was not found.", { status: 404 });
   }
+
+  const existingRun = await prisma.recommendationRun.findFirst({
+    where: { userVocalProfileId },
+    include: runInclude,
+  });
+  if (existingRun) return serializeRecommendationRun(existingRun);
+
   const profile = requiredProfile(profileRow);
   const songs = await prisma.song.findMany({
     where: { catalogOrder: { gte: 1, lte: 100 } },
@@ -255,6 +262,13 @@ export async function createRecommendationRun(userVocalProfileId: string, userId
     });
     return serializeRecommendationRun(run);
   } catch (error) {
+    if (error && typeof error === "object" && "code" in error && error.code === "P2002") {
+      const concurrentRun = await prisma.recommendationRun.findFirst({
+        where: { userVocalProfileId },
+        include: runInclude,
+      });
+      if (concurrentRun) return serializeRecommendationRun(concurrentRun);
+    }
     console.error("Could not persist recommendation run", error instanceof Error ? error.message : "unknown error");
     throw new RecommendationError("RECOMMENDATION_SAVE_FAILED", "Recommendation could not be saved.", {
       status: 500,
