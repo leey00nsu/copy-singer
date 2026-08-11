@@ -98,23 +98,23 @@
     - [x] LoginScreen 안내·동의 문구와 responsive spacing 적용
     - [x] Storybook·auth navigation·browser·check·build 회귀 검증
 
-- [TODO][PRD-FR-053] T-F019-05 이용 약관·개인정보 처리방침 공개 page와 Link 적용
+- [DONE][PRD-FR-053] T-F019-05 이용 약관·개인정보 처리방침 공개 page와 Link 적용
   - Date: 2026-08-11
   - Acceptance:
     - `/terms`와 `/privacy`가 인증 없이 열리고 현재 구현의 계정·음성·추천·믹싱·ticket·외부 처리·삭제 계약에 맞는 문서를 제공한다.
     - 로그인 동의 문구와 ProductFooter의 약관·개인정보 문서명이 실제 route Link로 동작한다.
     - 확인되지 않은 운영 주체 연락처와 국외 처리 지역은 draft 확인 항목으로 명시하고 임의 정보를 생성하지 않는다.
   - Checklist:
-    - [ ] current data-flow와 2026 PIPC 작성지침 기반 legal content 작성
-    - [ ] 공통 LegalDocumentLayout과 `/terms`·`/privacy` public adapter 구현
-    - [ ] LoginScreen·ProductFooter link 및 Storybook·unit·browser·check·build 검증
+    - [x] current data-flow와 2026 PIPC 작성지침 기반 legal content 작성
+    - [x] 공통 LegalDocumentLayout과 `/terms`·`/privacy` public adapter 구현
+    - [x] LoginScreen·ProductFooter link 및 Storybook·unit·browser·check·build 검증
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -124,11 +124,11 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm run test:storybook --run src/_pages/login/ui/login-screen.stories.tsx` | `2026-08-11` | 통과 — 로그인 안내·약관 동의 copy·Google icon·OAuth 미설정 상태 2/2 |
-| `pnpm run test:auth-navigation` | `2026-08-11` | 통과 — safe callback·LoginScreen 안내 copy·route group·제품 navigation·keyboard/touch label 6/6 |
+| `pnpm run test:storybook --run src/_pages/legal/ui/legal-pages.stories.tsx src/_pages/login/ui/login-screen.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-11` | 통과 — legal page 핵심 section·draft notice·login/footer Link·Google/OAuth/header 상태 10/10 |
+| `pnpm run test:auth-navigation` | `2026-08-11` | 통과 — `/terms`·`/privacy` public adapter, legal content/link, safe callback·route group·제품 navigation 7/7 |
 | `pnpm run check` | `2026-08-11` | 통과 — Biome 기존 warning 59개, ESLint·TypeScript·FSD/architecture 오류 0 |
-| `pnpm run build` | `2026-08-11` | 통과 — Next.js 16.3 production build와 `/login` route 생성 완료 |
-| in-app browser `/login` visual QA | `2026-08-11` | 통과 — desktop와 390×844에서 muted 안내·2행 약관 copy·밑줄 강조 확인, 가로 overflow·console error 0 |
+| `pnpm run build` | `2026-08-11` | 통과 — Next.js 16.3 production build와 `/login`·`/terms`·`/privacy` route 생성 완료 |
+| in-app browser `/login`·`/terms`·`/privacy` visual QA | `2026-08-11` | 통과 — login Link 실제 이동, mobile 390px legal 문서 overflow 0, 문서 간 이동·metadata title·draft/국외 이전 section·console error 0 |
 | bundled Pillow asset audit | `2026-08-11` | 통과 — master 1024², favicon 64², apple icon 180², RGBA·transparent corner·nonempty alpha 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T08:10:31.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T08:50:29.000Z -->

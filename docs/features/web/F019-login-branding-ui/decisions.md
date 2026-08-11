@@ -76,7 +76,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 390×844에서 동의 문구가 읽기 쉬운 3개 시각 line으로 자연스럽게 줄바꿈되고, 1280px에서는 의도한 2행을 유지하며 양쪽 모두 horizontal overflow와 console error가 없음을 확인했다.
 - **Evidence**:
   - **Test/Log**: LoginScreen Storybook 2/2, auth navigation 6/6, `pnpm run check`, `pnpm run build`, in-app browser desktop/mobile QA 통과
-- **Consequences**: 실제 약관 route가 추가되면 강조 span을 접근 가능한 Link로 교체하고 destination별 navigation test를 추가해야 한다.
+- **Consequences**: 이 결정은 route가 없던 T-F019-04 시점의 과도기 경계였다. T-F019-05에서 실제 문서를 추가하며 강조 span을 접근 가능한 Link로 교체했다.
 
 ## D005: 법률 문서는 current data-flow 기반 공개 초안으로 제공 (2026-08-11)
 
@@ -87,6 +87,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 실제 처리보다 적게 또는 다르게 고지하지 않으면서도 존재하지 않는 연락처·국외 이전 정보를 꾸며내는 위험을 피한다.
 - **Trace**:
   - **DOING 시작 시점**: Prisma schema·README·auth/media/analyzer/mixing/delete route를 확인하고 PIPC 2026 작성지침, 개인정보 보호법 제21·28조의8·30·35조와 시행령 제31조를 기준 항목으로 선택했다.
+  - **DONE 전 확정 시점**: 약관 12개 section과 개인정보 처리방침 14개 section을 구성했다. `/terms`에서 footer Link로 `/privacy`가 열리고 login의 약관 Link가 `/terms`로 이동함을 확인했으며, 390px에서 horizontal overflow가 없고 page metadata title과 console error 0을 검증했다.
 - **Evidence**:
   - **Official guidance**: https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS217&mCode=D010030020&nttId=12018
   - **Official law**: https://law.go.kr/LSW/lsInfoP.do?lsiSeq=270351
