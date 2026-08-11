@@ -155,6 +155,20 @@ test("labels a completed synthesis as an AI mix", () => {
   assert.doesNotMatch(html, /AI 믹싱 결과 파형/);
 });
 
+test("blocks AI mixing before a request when the mid reference is unavailable", () => {
+  const html = renderRecommendation({
+    ...run,
+    profile: {
+      ...run.profile,
+      mixing: { available: false, unavailableReason: "missing_mid_reference" },
+    },
+  });
+  assert.equal((html.match(/믹싱 불가/g) ?? []).length, 100);
+  assert.match(html, /안정적인 중앙 음역 구간을 찾지 못해 이 프로필로는 AI 믹싱을 만들 수 없어요/);
+  assert.match(html, /href="\/profile"/);
+  assert.doesNotMatch(html, /이 곡으로 AI 믹싱<\/button>/);
+});
+
 test("renders verified handoff context without implying automatic SVC settings", () => {
   const html = renderToStaticMarkup(
     <RecommendationHandoffBanner

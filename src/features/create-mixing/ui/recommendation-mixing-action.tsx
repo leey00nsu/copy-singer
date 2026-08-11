@@ -4,7 +4,11 @@ import { AlertTriangle, Download, Headphones, Mic2, RefreshCw, Sparkles } from "
 import Link from "next/link";
 import { useState } from "react";
 import { MixingStatusBadge, type PublicMixingJobStatus } from "@/entities/mixing-job";
-import type { RecommendationItemResponse } from "@/entities/recommendation";
+import {
+  type RecommendationItemResponse,
+  type RecommendationMixingCapability,
+  recommendationMixingUnavailableDescription,
+} from "@/entities/recommendation";
 import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
 import { Badge } from "@/shared/ui/badge";
 import { Button, buttonVariants } from "@/shared/ui/button";
@@ -14,16 +18,20 @@ export function RecommendationMixingAction({
   detailHref,
   idleLabel = "AI 믹싱",
   item,
+  mixing,
   onStart,
 }: {
   compact?: boolean;
   detailHref?: string;
   idleLabel?: string;
   item: RecommendationItemResponse;
+  mixing?: RecommendationMixingCapability;
   onStart: (itemId: string, retry?: boolean) => void;
 }) {
   const [audioOpen, setAudioOpen] = useState(false);
   const status = item.synthesis.status;
+  const mixingUnavailable = mixing?.available === false;
+  const unavailableDescription = recommendationMixingUnavailableDescription(mixing);
 
   const mixingStatus = (() => {
     if (status === "preparing") return "preparing";
@@ -36,7 +44,13 @@ export function RecommendationMixingAction({
 
   if (compact) {
     if (status === "not_started") {
-      return <Badge variant="secondary">선택 전</Badge>;
+      return mixingUnavailable ? (
+        <Badge aria-label={unavailableDescription} title={unavailableDescription} variant="outline">
+          믹싱 불가
+        </Badge>
+      ) : (
+        <Badge variant="secondary">선택 전</Badge>
+      );
     }
     if (mixingStatus && mixingStatus !== "failed") {
       const resultHref = item.synthesis.jobId ? `/library/mixes/${item.synthesis.jobId}` : detailHref;
@@ -54,7 +68,7 @@ export function RecommendationMixingAction({
     return (
       <div className="flex flex-wrap items-center justify-end gap-2 xl:justify-start">
         <MixingStatusBadge status="failed" />
-        {item.synthesis.error?.retryable ? (
+        {item.synthesis.error?.retryable && !mixingUnavailable ? (
           <Button onClick={() => onStart(item.id, true)} size="xs" variant="ghost">
             <RefreshCw aria-hidden="true" className="size-3" /> 재시도
           </Button>
@@ -64,6 +78,19 @@ export function RecommendationMixingAction({
   }
 
   if (status === "not_started") {
+    if (mixingUnavailable) {
+      return (
+        <div className="grid gap-2" role="status">
+          <p className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+            <AlertTriangle className="size-3.5" aria-hidden="true" /> AI 믹싱을 만들 수 없어요
+          </p>
+          <p className="text-xs leading-5 text-muted-foreground">{unavailableDescription}</p>
+          <Link className={buttonVariants({ size: "sm", variant: "outline" })} href="/profile">
+            <Mic2 className="size-4" aria-hidden="true" /> 새 프로필 분석하기
+          </Link>
+        </div>
+      );
+    }
     return (
       <Button onClick={() => onStart(item.id)} size="sm">
         <Sparkles className="size-4" aria-hidden="true" /> {idleLabel}
@@ -106,13 +133,13 @@ export function RecommendationMixingAction({
       <p className="text-xs leading-5 text-muted-foreground">
         {item.synthesis.error?.detail ?? "잠시 뒤 다시 시도해주세요."}
       </p>
-      {item.synthesis.error?.retryable ? (
+      {item.synthesis.error?.retryable && !mixingUnavailable ? (
         <Button onClick={() => onStart(item.id, true)} size="sm" variant="outline">
           <RefreshCw className="size-4" aria-hidden="true" /> 다시 시도
         </Button>
       ) : (
         <Link className={buttonVariants({ size: "sm", variant: "outline" })} href="/profile">
-          <Mic2 className="size-4" aria-hidden="true" /> 다시 녹음
+          <Mic2 className="size-4" aria-hidden="true" /> 새 프로필 분석하기
         </Link>
       )}
     </div>

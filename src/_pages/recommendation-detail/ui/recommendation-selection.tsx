@@ -3,6 +3,7 @@ import Link from "next/link";
 import {
   formatRecommendedShift,
   type RecommendationItemResponse,
+  type RecommendationMixingCapability,
   recommendationMatchColor,
   recommendationMatchPercent,
   visibleRecommendationReasons,
@@ -17,6 +18,7 @@ function SelectionDetails({
   idPrefix,
   item,
   matchRank,
+  mixing,
   onStart,
   runId,
   ticketCost,
@@ -24,6 +26,7 @@ function SelectionDetails({
   idPrefix: string;
   item: RecommendationItemResponse;
   matchRank: number | null;
+  mixing?: RecommendationMixingCapability;
   onStart: (itemId: string, retry?: boolean) => void;
   runId: string;
   ticketCost: number;
@@ -82,6 +85,7 @@ function SelectionDetails({
           detailHref={detailHref}
           idleLabel="이 곡으로 AI 믹싱"
           item={item}
+          mixing={mixing}
           onStart={onStart}
         />
         <Link className={buttonVariants({ size: "sm", variant: "ghost" })} href={detailHref}>
@@ -95,12 +99,14 @@ function SelectionDetails({
 export function RecommendationSelection({
   item,
   matchRank,
+  mixing,
   onStart,
   runId,
   ticketCost,
 }: {
   item: RecommendationItemResponse;
   matchRank: number | null;
+  mixing?: RecommendationMixingCapability;
   onStart: (itemId: string, retry?: boolean) => void;
   runId: string;
   ticketCost: number;
@@ -113,6 +119,7 @@ export function RecommendationSelection({
             idPrefix="desktop-selection"
             item={item}
             matchRank={matchRank}
+            mixing={mixing}
             onStart={onStart}
             runId={runId}
             ticketCost={ticketCost}
@@ -142,6 +149,7 @@ export function RecommendationSelection({
                 idPrefix="mobile-selection"
                 item={item}
                 matchRank={matchRank}
+                mixing={mixing}
                 onStart={onStart}
                 runId={runId}
                 ticketCost={ticketCost}

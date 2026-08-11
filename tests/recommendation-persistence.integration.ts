@@ -45,6 +45,13 @@ test("persists, reads, and cascade-deletes one recommendation run", async (conte
             clippingRatio: 0.001,
             analyzer: "librosa-pyin",
             analyzerVersion: "0.11.0",
+            descriptors: {
+              synthesisReference: {
+                version: "smart-reference-mid-v1",
+                status: "unavailable",
+                fallbackReason: "no-quality-mid-phrase",
+              },
+            },
           },
         },
       },
@@ -62,6 +69,10 @@ test("persists, reads, and cascade-deletes one recommendation run", async (conte
     assert.ok(created.items.every((item) => /^[A-Za-z0-9_-]{11}$/.test(item.sourceVideoId ?? "")));
     assert.ok(created.items.every((item) => Number.isFinite(item.selectionScore)));
     assert.ok(created.items.every((item) => item.selectionScore === item.metrics.selectionScore));
+    assert.deepEqual(created.profile.mixing, {
+      available: false,
+      unavailableReason: "missing_mid_reference",
+    });
 
     const repeated = await createRecommendationRun(profileId);
     assert.deepEqual(repeated, created);

@@ -15,6 +15,7 @@ import {
   recommendationDetailQueryOptions,
   recommendationKeys,
   recommendationMatchRank,
+  recommendationMixingUnavailableDescription,
   serializeRecommendationFilters,
 } from "@/entities/recommendation";
 import { useRecommendationMixing } from "@/features/create-mixing";
@@ -111,7 +112,7 @@ export function RecommendationResults({
       : null;
 
   const startItem = (itemId: string, retry = false) => {
-    if (!run) return;
+    if (!run || run.profile.mixing?.available === false) return;
     startMixing(run.id, itemId, retry);
   };
 
@@ -213,6 +214,27 @@ export function RecommendationResults({
         </section>
       ) : null}
 
+      {run.profile.mixing?.available === false ? (
+        <section
+          className="mt-5 flex flex-wrap items-center justify-between gap-4 border-y bg-muted/20 px-4 py-4"
+          role="status"
+        >
+          <div className="flex min-w-0 gap-3">
+            <AlertTriangle className="mt-0.5 size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+            <p className="text-sm leading-6">
+              <strong>이 프로필로는 AI 믹싱을 만들 수 없어요.</strong>
+              <br />
+              <span className="text-muted-foreground">
+                {recommendationMixingUnavailableDescription(run.profile.mixing)}
+              </span>
+            </p>
+          </div>
+          <Link className={buttonVariants({ size: "sm", variant: "outline" })} href="/profile">
+            <Mic2 className="size-4" aria-hidden="true" /> 새 프로필 분석하기
+          </Link>
+        </section>
+      ) : null}
+
       <div className="mt-8 border-y py-5">
         <RecommendationFilterBar
           filters={filters}
@@ -228,6 +250,7 @@ export function RecommendationResults({
           {visibleItems.length > 0 && selectedItem ? (
             <RecommendationSongList
               items={visibleItems}
+              mixing={run.profile.mixing}
               onSelect={setSelectedItemId}
               onStart={startItem}
               runId={run.id}
@@ -250,6 +273,7 @@ export function RecommendationResults({
           <RecommendationSelection
             item={selectedItem}
             matchRank={selectedMatchRank}
+            mixing={run.profile.mixing}
             onStart={startItem}
             runId={run.id}
             ticketCost={ticketCost}

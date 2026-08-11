@@ -11,6 +11,12 @@ type PreviewState =
   | { status: "ready"; previews: ReferencePreview[] }
   | { status: "error"; previews: [] };
 
+const REFERENCE_BANDS = [
+  { id: "low", label: "저음 영역" },
+  { id: "mid", label: "중앙 영역" },
+  { id: "high", label: "고음 영역" },
+] as const;
+
 export function ReferenceBandPlayers({
   segments,
   sourceAudioSrc,
@@ -67,31 +73,49 @@ export function ReferenceBandPlayers({
     );
   }
 
-  const items = state.status === "ready" ? state.previews : segments.map((segment) => ({ segment, url: null }));
+  const segmentById = new Map(segments.map((segment) => [segment.id, segment]));
+  const previewById = new Map(
+    state.status === "ready" ? state.previews.map((preview) => [preview.segment.id, preview]) : [],
+  );
 
   return (
     <div className="grid gap-3 lg:grid-cols-3">
-      {items.map(({ segment, url }) => (
-        <section className="space-y-2" key={segment.id}>
-          <div>
-            <h3 className="text-xs font-semibold">{segment.label}</h3>
-            <p className="text-[10px] text-muted-foreground">
-              채택된 구간 {segment.ranges.length}개 · 기본 10초 목표, 부족분 재분배 가능
-            </p>
-          </div>
-          {url ? (
-            <AudioWaveformPlayer label={segment.label} src={url} />
-          ) : (
-            <div
-              aria-label={`${segment.label} 파형 준비 중`}
-              className="flex min-h-24 items-center justify-center rounded-lg border bg-muted/20 text-[10px] text-muted-foreground"
-              role="status"
-            >
-              선택 구간 파형 준비 중…
+      {REFERENCE_BANDS.map((band) => {
+        const segment = segmentById.get(band.id);
+        const preview = previewById.get(band.id);
+        return (
+          <section className="space-y-2" key={band.id}>
+            <div>
+              <h3 className="text-xs font-semibold">{band.label}</h3>
+              {segment ? (
+                <p className="text-[10px] text-muted-foreground">
+                  채택된 구간 {segment.ranges.length}개 · 기본 10초 목표, 부족분 재분배 가능
+                </p>
+              ) : (
+                <p className="text-[10px] text-muted-foreground">채택된 구간 없음</p>
+              )}
             </div>
-          )}
-        </section>
-      ))}
+            {!segment ? (
+              <div
+                className="flex min-h-24 items-center justify-center rounded-lg border border-dashed bg-muted/20 px-4 text-center text-xs leading-5 text-muted-foreground"
+                role="status"
+              >
+                {band.label}을 충분히 찾지 못했어요.
+              </div>
+            ) : preview ? (
+              <AudioWaveformPlayer label={segment.label} src={preview.url} />
+            ) : (
+              <div
+                aria-label={`${segment.label} 파형 준비 중`}
+                className="flex min-h-24 items-center justify-center rounded-lg border bg-muted/20 text-[10px] text-muted-foreground"
+                role="status"
+              >
+                선택 구간 파형 준비 중…
+              </div>
+            )}
+          </section>
+        );
+      })}
     </div>
   );
 }

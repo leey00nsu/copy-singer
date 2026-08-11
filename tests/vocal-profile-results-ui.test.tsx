@@ -108,7 +108,6 @@ test("keeps analysis players even when mid-only synthesis reference is unavailab
             status: "ready",
             sourceRanges: [
               { startMs: 1_000, endMs: 2_000, band: "low" },
-              { startMs: 3_000, endMs: 4_000, band: "mid" },
               { startMs: 5_000, endMs: 6_000, band: "high" },
             ],
           },
@@ -125,6 +124,8 @@ test("keeps analysis players even when mid-only synthesis reference is unavailab
   assert.match(html, /저음 영역/);
   assert.match(html, /중앙 영역/);
   assert.match(html, /고음 영역/);
+  assert.match(html, /중앙 영역을 충분히 찾지 못했어요/);
+  assert.equal((html.match(/채택된 구간 없음/g) ?? []).length, 1);
 });
 
 test("explains why legacy profiles have no smart-reference region controls", () => {

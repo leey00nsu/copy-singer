@@ -96,6 +96,13 @@ export const recommendationSongProfileSchema = z
 
 export type RecommendationSongProfile = z.infer<typeof recommendationSongProfileSchema>;
 
+export const recommendationMixingCapabilitySchema = z.object({
+  available: z.boolean(),
+  unavailableReason: z.enum(["missing_mid_reference", "reference_unavailable"]).nullable(),
+});
+
+export type RecommendationMixingCapability = z.infer<typeof recommendationMixingCapabilitySchema>;
+
 export const recommendationItemResponseSchema = z.object({
   id: z.uuid(),
   rank: z.number().int().positive(),
@@ -133,6 +140,7 @@ export const recommendationRunResponseSchema = z.object({
     tessituraHighMidi: z.number(),
     minMidi: z.number(),
     maxMidi: z.number(),
+    mixing: recommendationMixingCapabilitySchema.optional(),
   }),
   items: z.array(recommendationItemResponseSchema),
 });

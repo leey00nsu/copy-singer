@@ -111,10 +111,15 @@ test("entity response schemas accept representative legacy payloads", () => {
       tessituraHighMidi: 72,
       minMidi: 45,
       maxMidi: 76,
+      mixing: { available: false, unavailableReason: "missing_mid_reference" },
     },
     items: [],
   });
   assert.equal(recommendationRunResponseSchema.parse(recommendation).id, RUN_ID);
+  assert.deepEqual(recommendation.profile.mixing, {
+    available: false,
+    unavailableReason: "missing_mid_reference",
+  });
 
   const history = mixingHistoryPayloadSchema.parse({
     page: 1,

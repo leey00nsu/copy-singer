@@ -194,6 +194,20 @@ export type VocalProfileRenameResponse = z.infer<typeof vocalProfileRenameRespon
 export const SMART_REFERENCE_VERSION = "smart-reference-v1" as const;
 export const SMART_REFERENCE_MID_VERSION = "smart-reference-mid-v1" as const;
 export type SynthesisReferenceContractVersion = typeof SMART_REFERENCE_VERSION | typeof SMART_REFERENCE_MID_VERSION;
+export type MixingReferenceUnavailableReason = "missing_mid_reference" | "reference_unavailable";
+
+export function mixingReferenceCapability(input: {
+  smartReady: boolean;
+  sourceReady: boolean;
+  contractVersion?: SynthesisReferenceContractVersion | null;
+}): { available: boolean; unavailableReason: MixingReferenceUnavailableReason | null } {
+  if (input.smartReady) return { available: true, unavailableReason: null };
+  if (input.contractVersion === SMART_REFERENCE_MID_VERSION) {
+    return { available: false, unavailableReason: "missing_mid_reference" };
+  }
+  if (input.sourceReady) return { available: true, unavailableReason: null };
+  return { available: false, unavailableReason: "reference_unavailable" };
+}
 
 function supportedReferenceVersion(value: unknown): value is SynthesisReferenceContractVersion {
   return value === SMART_REFERENCE_VERSION || value === SMART_REFERENCE_MID_VERSION;

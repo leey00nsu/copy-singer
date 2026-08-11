@@ -35,3 +35,21 @@ export const WithOriginalVideo: Story = {
     await expect(canvas.queryByText("외부 출처 열기")).not.toBeInTheDocument();
   },
 };
+
+export const MixingUnavailable: Story = {
+  args: {
+    initialRun: {
+      ...recommendationRunFixture,
+      profile: {
+        ...recommendationRunFixture.profile,
+        mixing: { available: false, unavailableReason: "missing_mid_reference" },
+      },
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText(/안정적인 중앙 음역 구간을 찾지 못해/)).toBeVisible();
+    await expect(canvas.getByRole("link", { name: "새 프로필 분석하기" })).toHaveAttribute("href", "/profile");
+    await expect(canvas.queryByRole("button", { name: "AI 믹싱" })).not.toBeInTheDocument();
+  },
+};

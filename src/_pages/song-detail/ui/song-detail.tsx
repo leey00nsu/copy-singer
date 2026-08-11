@@ -149,6 +149,7 @@ export function SongDetail({
           <div className="mt-5">
             <RecommendationMixingAction
               item={item}
+              mixing={run.profile.mixing}
               onStart={(selectedItemId, retry) => startMixing(run.id, selectedItemId, retry)}
             />
           </div>

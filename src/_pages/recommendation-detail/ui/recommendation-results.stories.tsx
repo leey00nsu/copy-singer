@@ -103,6 +103,28 @@ export const VideoExpansionLayout: Story = {
   },
 };
 
+export const MixingUnavailable: Story = {
+  args: {
+    initialRun: {
+      ...recommendationRunFixture,
+      profile: {
+        ...recommendationRunFixture.profile,
+        mixing: { available: false, unavailableReason: "missing_mid_reference" },
+      },
+    },
+    runId: undefined,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getAllByText("믹싱 불가")).toHaveLength(recommendationRunFixture.items.length);
+    await expect(canvas.getAllByText(/안정적인 중앙 음역 구간을 찾지 못해/)[0]).toBeVisible();
+    for (const link of canvas.getAllByRole("link", { name: "새 프로필 분석하기" })) {
+      await expect(link).toHaveAttribute("href", "/profile");
+    }
+    await expect(canvas.queryByRole("button", { name: "이 곡으로 AI 믹싱" })).not.toBeInTheDocument();
+  },
+};
+
 export const DenseComparisonList: Story = {
   args: {
     initialRun: denseRun,

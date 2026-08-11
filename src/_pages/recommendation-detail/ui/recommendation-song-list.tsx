@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useState } from "react";
-import type { RecommendationItemResponse } from "@/entities/recommendation";
+import type { RecommendationItemResponse, RecommendationMixingCapability } from "@/entities/recommendation";
 import {
   formatRecommendedShift,
   recommendationMatchColor,
@@ -13,12 +13,14 @@ import { ResourceRowButton, resourceRowInteractiveClassName } from "@/shared/ui/
 
 export function RecommendationSongList({
   items,
+  mixing,
   onStart,
   onSelect,
   runId,
   selectedItemId,
 }: {
   items: RecommendationItemResponse[];
+  mixing?: RecommendationMixingCapability;
   onStart: (itemId: string, retry?: boolean) => void;
   onSelect: (itemId: string) => void;
   runId: string;
@@ -105,7 +107,13 @@ export function RecommendationSongList({
                     </p>
                   </td>
                   <td className="relative z-20 min-w-0 self-end text-right align-middle xl:px-3 xl:py-3 xl:text-left">
-                    <RecommendationMixingAction compact detailHref={detailHref} item={item} onStart={onStart} />
+                    <RecommendationMixingAction
+                      compact
+                      detailHref={detailHref}
+                      item={item}
+                      mixing={mixing}
+                      onStart={onStart}
+                    />
                   </td>
                 </tr>
                 {videoActive ? (

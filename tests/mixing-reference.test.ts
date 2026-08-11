@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { SMART_REFERENCE_MID_VERSION, SMART_REFERENCE_VERSION } from "../src/entities/vocal-profile";
+import {
+  mixingReferenceCapability,
+  SMART_REFERENCE_MID_VERSION,
+  SMART_REFERENCE_VERSION,
+} from "../src/entities/vocal-profile";
 import { selectMixingReference } from "../src/features/create-mixing";
 
 const source = { id: "source", userId: "owner", kind: "REFERENCE", status: "READY" };
@@ -18,6 +22,14 @@ test("profiles snapshot the ready smart synthesis reference", () => {
 });
 
 test("mid-only profiles reject source fallback when smart reference is unavailable", () => {
+  assert.deepEqual(
+    mixingReferenceCapability({
+      smartReady: false,
+      sourceReady: true,
+      contractVersion: SMART_REFERENCE_MID_VERSION,
+    }),
+    { available: false, unavailableReason: "missing_mid_reference" },
+  );
   assert.equal(
     selectMixingReference({ userId: "owner", smart: null, source, contractVersion: SMART_REFERENCE_MID_VERSION }),
     null,

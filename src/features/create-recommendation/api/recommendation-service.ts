@@ -12,13 +12,31 @@ import {
   type RecommendationScoreMetrics,
   toPublicSynthesisStatus,
 } from "@/entities/recommendation/index.model";
+import {
+  mixingReferenceCapability,
+  synthesisReferenceContractVersion,
+  type VocalProfileDescriptors,
+} from "@/entities/vocal-profile/index.model";
 import type { Prisma } from "@/shared/db/index.server";
 import { prisma } from "@/shared/db/index.server";
 import artifactJson from "../../../../data/catalogs/tj-2607-song-profiles.json";
 import { buildRankedRecommendations } from "../lib/recommendation-data";
 
 const runInclude = {
-  userVocalProfile: true,
+  userVocalProfile: {
+    include: {
+      synthesisReferenceAsset: {
+        select: { userId: true, kind: true, status: true },
+      },
+      recording: {
+        include: {
+          mediaAsset: {
+            select: { userId: true, kind: true, status: true },
+          },
+        },
+      },
+    },
+  },
   items: {
     include: {
       song: {
@@ -110,6 +128,24 @@ function parseReasonCodes(value: Prisma.JsonValue): KeyFitReasonCode[] {
 
 export function serializeRecommendationRun(run: StoredRun): RecommendationRunResponse {
   const profile = requiredProfile(run.userVocalProfile);
+  const profileOwnerId = run.userVocalProfile.userId;
+  const smartReference = run.userVocalProfile.synthesisReferenceAsset;
+  const sourceReference = run.userVocalProfile.recording.mediaAsset;
+  const mixing = mixingReferenceCapability({
+    smartReady:
+      profileOwnerId !== null &&
+      smartReference?.userId === profileOwnerId &&
+      smartReference.kind === "SYNTHESIS_REFERENCE" &&
+      smartReference.status === "READY",
+    sourceReady:
+      profileOwnerId !== null &&
+      sourceReference?.userId === profileOwnerId &&
+      sourceReference.kind === "REFERENCE" &&
+      sourceReference.status === "READY",
+    contractVersion: synthesisReferenceContractVersion(
+      run.userVocalProfile.descriptors as VocalProfileDescriptors | null,
+    ),
+  });
   const items = run.items.map((item) => {
     const metrics = parseMetrics(item.metrics);
     const reasonCodes = parseReasonCodes(item.reasonCodes);
@@ -209,6 +245,7 @@ export function serializeRecommendationRun(run: StoredRun): RecommendationRunRes
       tessituraHighMidi: profile.tessituraHighMidi,
       minMidi: profile.minMidi,
       maxMidi: profile.maxMidi,
+      mixing,
     },
     items,
   };

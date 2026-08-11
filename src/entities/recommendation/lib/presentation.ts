@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { RecommendationItemResponse } from "../model/contract";
+import type { RecommendationItemResponse, RecommendationMixingCapability } from "../model/contract";
 
 export const recommendationScoreFilterSchema = z.enum(["all", "90-plus", "80-plus", "under-80"]);
 export const recommendationShiftFilterSchema = z.enum(["all", "original", "lower", "higher"]);
@@ -80,6 +80,14 @@ export function recommendationMatchPercent(item: Pick<RecommendationItemResponse
 export function recommendationMatchColor(item: Pick<RecommendationItemResponse, "adjustedScore">) {
   const matchPercent = recommendationMatchPercent(item);
   return `color-mix(in oklab, var(--foreground), var(--data-accent-foreground) ${matchPercent}%)`;
+}
+
+export function recommendationMixingUnavailableDescription(
+  mixing: Pick<RecommendationMixingCapability, "unavailableReason"> | null | undefined,
+) {
+  return mixing?.unavailableReason === "missing_mid_reference"
+    ? "안정적인 중앙 음역 구간을 찾지 못해 이 프로필로는 AI 믹싱을 만들 수 없어요."
+    : "저장된 보컬 레퍼런스를 사용할 수 없어 이 프로필로는 AI 믹싱을 만들 수 없어요.";
 }
 
 export function visibleRecommendationReasons(item: Pick<RecommendationItemResponse, "reasonCodes" | "reasons">) {
