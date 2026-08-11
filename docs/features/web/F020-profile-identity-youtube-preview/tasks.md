@@ -20,7 +20,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/profile-identity-youtube-preview`
-- **대기 중 변경 요청**: 결정: changes_requested — AI 믹스 목록·상세에 사용한 보컬 프로필 identity와 검색 추가
+- **대기 중 변경 요청**: -
   - 구현 중 새로 수용한 사용자 요청을 잠시 표시하는 sync marker입니다
   - 요청을 `tasks.md`와 관련 문서에 반영한 뒤 값을 비우세요
   - pre-PR 리뷰 handoff를 시작하면 `Running`, 리뷰 결과 기록까지 끝나면 `Done`으로 변경
@@ -189,23 +189,23 @@
     - [x] completed Storybook에서 icon·button computed color 일치 검증
     - [x] typecheck·build 회귀 검증
 
-- [TODO][PRD-FR-036] T-F020-profile-identity-youtube-preview-15 AI 믹스 사용 보컬 프로필 표시
+- [DONE][PRD-FR-036] T-F020-profile-identity-youtube-preview-15 AI 믹스 사용 보컬 프로필 표시
   - Date: 2026-08-11
   - Acceptance:
     - AI 믹스 목록은 사용한 프로필의 artwork·현재 이름을 별도 column으로 표시하고 프로필 이름 검색을 지원한다.
     - 믹스 상세는 active·terminal 모두 사용한 프로필 이름을 표시하며 terminal 화면에서 프로필 상세로 이동할 수 있다.
   - Checklist:
-    - [ ] mixing history contract·serializer·profile displayName 검색 확장
-    - [ ] 목록 profile column·mobile metadata와 검색 label 적용
-    - [ ] 상세 profile artwork·name·link와 active copy 적용
-    - [ ] API·component·Storybook·DB·build 회귀 검증
+    - [x] mixing history contract·serializer·profile displayName 검색 확장
+    - [x] 목록 profile column·mobile metadata와 검색 label 적용
+    - [x] 상세 profile artwork·name·link와 active copy 적용
+    - [x] API·component·Storybook·DB·build 회귀 검증
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -245,5 +245,8 @@
 | `Storybook browser QA (library status columns desktop)` | `2026-08-11` | 통과 — AI 믹스 3열·프로필 6열 header/cell 좌표 일치, 상태 맨 오른쪽, 가로 overflow 없음 |
 | `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx` | `2026-08-11` | 통과 — 완료 chip·sticky selection·결과 듣기 primary와 icon foreground 상속→결과 닫기 outline 포함 11/11 |
 | `Storybook browser QA (recommendation sticky selection)` | `2026-08-11` | 통과 — 100곡 목록 중간에서 top 96px 유지, grid 끝에서 containment, 완료 chip 1개·결과 확인 link 0개·선택 카드 결과 듣기 유지 |
+| `pnpm exec tsx --test tests/api-contracts.test.ts tests/client-server-state-query.test.ts tests/mixing-history-ui.test.tsx tests/mixing-detail-ui.test.tsx tests/mixing-status-presentation.test.ts` | `2026-08-11` | 통과 — history profile 계약·목록·상세·상태 회귀 25/25 |
+| `pnpm run test:storybook --run src/widgets/library/ui/mixing-library.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx src/_pages/library/ui/library-page.stories.tsx` | `2026-08-11` | 통과 — profile column·artwork·상세 link 포함 11/11 |
+| `Storybook browser QA (mixing profile identity)` | `2026-08-11` | 통과 — 목록 4열, 프로필 이름·artwork, terminal profile link와 active copy 표시, desktop 가로 overflow 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T21:39:19+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T21:45:41+09:00 -->

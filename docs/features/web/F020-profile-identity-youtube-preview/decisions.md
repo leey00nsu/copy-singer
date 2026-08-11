@@ -143,9 +143,9 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: profile identity는 ID로 안정적이고 이름 변경을 모든 화면에 즉시 반영하며, 기존 Restrict 관계로 job에서 profile이 사라지지 않는다.
 - **Trace**:
   - **DOING 시작 시점**: history select와 public contract가 profile id·createdAt만 제공하고 검색도 곡명·아티스트만 포함함을 확인했다. detail의 `보컬 분석 보기` action은 이름을 노출하지 않았다.
-  - **DONE 전 확정 시점**: 구현과 DB/browser QA 후 보강 예정.
+  - **DONE 전 확정 시점**: history contract와 serializer에 현재 displayName을 추가하고 곡명·아티스트와 함께 프로필 이름을 검색하도록 확장했다. 목록은 artwork·이름의 독립 column과 mobile metadata를 제공하되 행 내부에는 중첩 profile link를 만들지 않아 전체 행 상세 이동을 유지한다. terminal 상세는 artwork·이름으로 프로필 상세에 연결하고 active 상세는 사용 프로필 이름을 진행 설명에 표시한다. DB 통합 테스트에서 프로필 이름 검색을 확인했고 Storybook 실화면에서 4열 목록과 상세 link, 가로 overflow 없음을 확인했다.
 - **Evidence**:
   - **Commit**: 구현 후 기록
   - **PR**: local workflow
-  - **Test/Log**: 구현 후 기록
+  - **Test/Log**: targeted contract·component 25/25, targeted Storybook 11/11, `pnpm run test:mixing:db`, `pnpm run typecheck`, `pnpm run check:architecture`, `pnpm run lint`, `pnpm run build`, Storybook browser QA
 - **Consequences**: 과거 믹스에도 현재 프로필 이름이 표시되며 rename 후 목록·상세 이름도 함께 바뀐다.
