@@ -151,7 +151,8 @@ test("labels a completed synthesis as an AI mix", () => {
     ),
   };
   const html = renderRecommendation(succeeded);
-  assert.match(html, /결과 확인/);
+  assert.match(html, /완료/);
+  assert.doesNotMatch(html, /결과 확인/);
   assert.doesNotMatch(html, /AI 믹싱 결과 파형/);
 });
 

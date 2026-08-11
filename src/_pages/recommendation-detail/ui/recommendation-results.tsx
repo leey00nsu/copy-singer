@@ -253,7 +253,6 @@ export function RecommendationResults({
               mixing={run.profile.mixing}
               onSelect={setSelectedItemId}
               onStart={startItem}
-              runId={run.id}
               selectedItemId={selectedItem.id}
             />
           ) : (

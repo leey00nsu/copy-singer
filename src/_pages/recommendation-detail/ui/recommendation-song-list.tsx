@@ -16,14 +16,12 @@ export function RecommendationSongList({
   mixing,
   onStart,
   onSelect,
-  runId,
   selectedItemId,
 }: {
   items: RecommendationItemResponse[];
   mixing?: RecommendationMixingCapability;
   onStart: (itemId: string, retry?: boolean) => void;
   onSelect: (itemId: string) => void;
-  runId: string;
   selectedItemId: string;
 }) {
   const [activeVideoItemId, setActiveVideoItemId] = useState<string | null>(null);
@@ -51,7 +49,6 @@ export function RecommendationSongList({
         <tbody className="block xl:table-row-group">
           {items.map((item) => {
             const matchPercent = recommendationMatchPercent(item);
-            const detailHref = `/recommendations/${runId}/songs/${item.id}`;
             const selected = item.id === selectedItemId;
             const videoActive = item.id === activeVideoItemId;
             const playerId = `recommendation-video-${item.id}`;
@@ -107,13 +104,7 @@ export function RecommendationSongList({
                     </p>
                   </td>
                   <td className="relative z-20 min-w-0 self-end text-right align-middle xl:px-3 xl:py-3 xl:text-left">
-                    <RecommendationMixingAction
-                      compact
-                      detailHref={detailHref}
-                      item={item}
-                      mixing={mixing}
-                      onStart={onStart}
-                    />
+                    <RecommendationMixingAction compact item={item} mixing={mixing} onStart={onStart} />
                   </td>
                 </tr>
                 {videoActive ? (

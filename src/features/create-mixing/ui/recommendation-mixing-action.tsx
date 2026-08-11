@@ -15,14 +15,12 @@ import { Button, buttonVariants } from "@/shared/ui/button";
 
 export function RecommendationMixingAction({
   compact = false,
-  detailHref,
   idleLabel = "AI 믹싱",
   item,
   mixing,
   onStart,
 }: {
   compact?: boolean;
-  detailHref?: string;
   idleLabel?: string;
   item: RecommendationItemResponse;
   mixing?: RecommendationMixingCapability;
@@ -53,17 +51,7 @@ export function RecommendationMixingAction({
       );
     }
     if (mixingStatus && mixingStatus !== "failed") {
-      const resultHref = item.synthesis.jobId ? `/library/mixes/${item.synthesis.jobId}` : detailHref;
-      return (
-        <div className="flex flex-wrap items-center justify-end gap-2 xl:justify-start">
-          <MixingStatusBadge status={mixingStatus} />
-          {status === "succeeded" && resultHref ? (
-            <Link className="text-xs font-semibold underline-offset-4 hover:underline" href={resultHref}>
-              결과 확인
-            </Link>
-          ) : null}
-        </div>
-      );
+      return <MixingStatusBadge status={mixingStatus} />;
     }
     return (
       <div className="flex flex-wrap items-center justify-end gap-2 xl:justify-start">

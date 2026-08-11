@@ -81,13 +81,7 @@ function SelectionDetails({
         <Ticket aria-hidden="true" className="size-4" /> 티켓 {ticketCost}개 사용
       </div>
       <div className="mt-4 grid gap-2">
-        <RecommendationMixingAction
-          detailHref={detailHref}
-          idleLabel="이 곡으로 AI 믹싱"
-          item={item}
-          mixing={mixing}
-          onStart={onStart}
-        />
+        <RecommendationMixingAction idleLabel="이 곡으로 AI 믹싱" item={item} mixing={mixing} onStart={onStart} />
         <Link className={buttonVariants({ size: "sm", variant: "ghost" })} href={detailHref}>
           전체 분석 결과 보기 <ArrowUpRight aria-hidden="true" className="size-4" />
         </Link>
@@ -113,8 +107,12 @@ export function RecommendationSelection({
 }) {
   return (
     <>
-      <aside className="hidden lg:block" aria-label="선택한 추천곡">
-        <div className="sticky top-24 rounded-xl border p-6">
+      <aside
+        className="hidden lg:sticky lg:top-24 lg:block lg:self-start"
+        aria-label="선택한 추천곡"
+        data-recommendation-selection-sticky=""
+      >
+        <div className="rounded-xl border p-6">
           <SelectionDetails
             idPrefix="desktop-selection"
             item={item}

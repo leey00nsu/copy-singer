@@ -151,6 +151,7 @@ export const DenseComparisonList: Story = {
     await userEvent.click(rowButton as HTMLElement);
 
     const selection = canvas.getByRole("complementary", { name: "선택한 추천곡" });
+    await expect(selection).toHaveClass("lg:sticky", "lg:top-24", "lg:self-start");
     await expect(within(selection).getByRole("heading", { name: "밤편지 3" })).toBeVisible();
     await expect(within(selection).getByText("추천 적합도 3위")).toBeVisible();
 
@@ -224,7 +225,8 @@ export const ActiveToTerminalPolling: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getAllByText("AI 믹싱 중").some((status) => status.getClientRects().length > 0)).toBe(true);
-    await waitFor(() => expect(canvas.getByRole("link", { name: "결과 확인" })).toBeVisible(), { timeout: 7_000 });
+    await waitFor(() => expect(canvas.getByText("완료")).toBeVisible(), { timeout: 7_000 });
+    await expect(canvas.queryByRole("link", { name: "결과 확인" })).not.toBeInTheDocument();
     await expect(canvas.queryAllByText("AI 믹싱 중")).toHaveLength(0);
   },
 };
@@ -237,12 +239,8 @@ export const CompletedAudioIsLazy: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.queryByRole("img", { name: /AI 믹싱 결과 파형/ })).not.toBeInTheDocument();
-    const mixingJobId = succeededRecommendationRunFixture.items[0]?.synthesis.jobId;
-    await expect(mixingJobId).toBeTruthy();
-    await expect(canvas.getByRole("link", { name: "결과 확인" })).toHaveAttribute(
-      "href",
-      `/library/mixes/${mixingJobId}`,
-    );
+    await expect(canvas.getByText("완료")).toBeVisible();
+    await expect(canvas.queryByRole("link", { name: "결과 확인" })).not.toBeInTheDocument();
   },
 };
 
