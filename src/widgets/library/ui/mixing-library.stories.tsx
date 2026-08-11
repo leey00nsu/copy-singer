@@ -49,10 +49,34 @@ export const MixedStates: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("table", { name: "AI 믹스 작업 목록" })).toBeVisible();
     await expect(canvas.getByText("믹싱 중")).toBeVisible();
-    await expect(canvas.getByText("결과 준비 완료")).toBeVisible();
-    await expect(canvas.getByText(/믹싱에 사용할 반주를 준비하지 못했어요/)).toBeVisible();
+    await expect(canvas.getByText("완료")).toBeVisible();
+    await expect(canvas.getByText("실패")).toBeVisible();
+    await expect(canvas.queryByRole("columnheader", { name: "결과" })).not.toBeInTheDocument();
+    await expect(canvas.getByRole("columnheader", { name: "상태" })).toBeVisible();
+    await expect(canvasElement.querySelectorAll("[data-mixing-column='status']")).toHaveLength(3);
     await expect(canvas.queryByText("믹싱용 원곡을 준비하지 못했습니다.")).not.toBeInTheDocument();
     await expect(canvas.getByRole("searchbox", { name: "작업 또는 아티스트 검색" })).toBeVisible();
+  },
+};
+
+const resultCheckingJob = mixingHistoryFixture.jobs[1];
+if (!resultCheckingJob) throw new Error("Result checking fixture source is missing");
+
+const resultCheckingHistory: MixingHistoryPayload = {
+  ...mixingHistoryFixture,
+  total: 1,
+  jobs: [{ ...resultCheckingJob, resultReady: false, audioUrl: null }],
+};
+
+export const ResultChecking: Story = {
+  args: { initial: resultCheckingHistory },
+  beforeEach({ msw }) {
+    msw.use(mixingHistoryHandler(resultCheckingHistory));
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("결과 확인 중")).toBeVisible();
+    await expect(canvas.queryByText("결과 파일을 확인하고 있어요")).not.toBeInTheDocument();
   },
 };
 

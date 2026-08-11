@@ -15,7 +15,7 @@ test("mixing history renders one stretched detail link per result", () => {
         initial={{
           page: 1,
           pageSize: 20,
-          total: 2,
+          total: 3,
           pageCount: 1,
           jobs: [
             {
@@ -46,6 +46,20 @@ test("mixing history renders one stretched detail link per result", () => {
               startedAt: "2026-08-06T00:00:30Z",
               completedAt: "2026-08-06T00:02:00Z",
             },
+            {
+              id: "checking",
+              status: "succeeded",
+              ticketCost: 1,
+              error: null,
+              song: { title: "확인 중인 곡", artist: "가수", catalogOrder: 3 },
+              vocalProfile: { id: "profile-checking", createdAt: "2026-08-06T00:00:00Z" },
+              resultReady: false,
+              audioUrl: null,
+              createdAt: "2026-08-06T00:00:00Z",
+              updatedAt: "2026-08-06T00:02:00Z",
+              startedAt: "2026-08-06T00:00:30Z",
+              completedAt: "2026-08-06T00:02:00Z",
+            },
           ],
         }}
       />
@@ -54,12 +68,15 @@ test("mixing history renders one stretched detail link per result", () => {
   client.clear();
   assert.match(markup, /믹싱 중/);
   assert.match(markup, /완료 곡/);
+  assert.match(markup, /결과 확인 중/);
   assert.match(markup, /진행 곡 AI 믹스 상세 보기/);
   assert.match(markup, /완료 곡 AI 믹스 상세 보기/);
   assert.doesNotMatch(markup, /결과 듣기/);
   assert.doesNotMatch(markup, /\/api\/mixing-jobs\/done\/audio/);
   assert.doesNotMatch(markup, /결과 저장/);
   assert.match(markup, /AI 믹스 작업 목록/);
+  assert.doesNotMatch(markup, /<th[^>]*>\s*결과\s*<\/th>/);
+  assert.equal((markup.match(/data-mixing-column="status"/g) ?? []).length, 3);
   assert.match(markup, /name="q"/);
   assert.match(markup, /name="status"/);
 });
@@ -99,7 +116,7 @@ test("mixing library distinguishes failed and filtered empty states", () => {
       />
     </QueryClientProvider>,
   );
-  assert.match(failedMarkup, /AI 믹싱을 완료하지 못했어요/);
+  assert.doesNotMatch(failedMarkup, /AI 믹싱을 완료하지 못했어요/);
   assert.doesNotMatch(failedMarkup, /upstream fetch failed|502/);
   assert.match(failedMarkup, /type="hidden" name="tab" value="mixes"/);
   client.clear();

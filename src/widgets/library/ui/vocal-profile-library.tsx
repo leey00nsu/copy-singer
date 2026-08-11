@@ -19,7 +19,7 @@ import { StatePanel } from "@/shared/ui/state-panel";
 import { LibraryPagination } from "./library-pagination";
 
 const PROFILE_ROW_GRID_CLASS =
-  "grid gap-3 md:grid-cols-[minmax(0,2fr)_minmax(9rem,1fr)_minmax(6rem,.75fr)_minmax(5rem,.6fr)_minmax(8rem,.9fr)] md:items-center md:gap-0";
+  "grid grid-cols-2 gap-3 md:grid-cols-[minmax(0,2fr)_minmax(8rem,1fr)_minmax(6rem,.75fr)_minmax(5rem,.6fr)_minmax(5rem,.6fr)_minmax(7rem,.75fr)] md:items-center md:gap-0";
 
 function analysisJobCopy(job: VocalProfileAnalysisJobResponse) {
   if (job.status === "processing") {
@@ -81,7 +81,7 @@ function VocalProfileAnalysisJobRows({ jobs }: { jobs: VocalProfileAnalysisJobRe
             data-analysis-job-row={job.status}
             key={job.id}
           >
-            <div className="flex min-w-0 items-center gap-3" data-profile-column="identity">
+            <div className="col-span-2 flex min-w-0 items-center gap-3 md:col-span-1" data-profile-column="identity">
               <div className="flex size-11 shrink-0 items-center justify-center rounded-lg border bg-muted/30">
                 {failed ? (
                   <AlertTriangle aria-hidden="true" className="size-5 text-destructive" />
@@ -116,7 +116,13 @@ function VocalProfileAnalysisJobRows({ jobs }: { jobs: VocalProfileAnalysisJobRe
             <p className="text-xs text-muted-foreground" data-profile-column="stability">
               <span className="md:sr-only">안정도 </span>—
             </p>
-            <div className="flex flex-wrap items-center gap-2" data-profile-column="status">
+            <p className="text-xs text-muted-foreground" data-profile-column="mixes">
+              <span className="md:sr-only">AI 믹싱 </span>—
+            </p>
+            <div
+              className="order-first col-span-2 flex flex-wrap items-center gap-2 md:order-none md:col-span-1"
+              data-profile-column="status"
+            >
               <Badge variant={failed ? "destructive" : "secondary"}>{copy.badge}</Badge>
               {failed ? (
                 <Link className={buttonVariants({ size: "xs", variant: "outline" })} href="/profile">
@@ -161,12 +167,13 @@ export function VocalProfileLibrary({
         <p aria-live="polite">보컬 프로필 {history.total}개</p>
         <p>최신 분석순</p>
       </div>
-      <div className="hidden grid-cols-[minmax(0,2fr)_minmax(9rem,1fr)_minmax(6rem,.75fr)_minmax(5rem,.6fr)_minmax(8rem,.9fr)] border-y bg-muted/15 px-3 py-2 text-[11px] font-medium text-muted-foreground md:grid">
+      <div className="hidden grid-cols-[minmax(0,2fr)_minmax(8rem,1fr)_minmax(6rem,.75fr)_minmax(5rem,.6fr)_minmax(5rem,.6fr)_minmax(7rem,.75fr)] border-y bg-muted/15 px-3 py-2 text-[11px] font-medium text-muted-foreground md:grid">
         <span>프로필 이름</span>
         <span>생성일</span>
         <span>음역 (최저–최고)</span>
         <span>안정도</span>
         <span>AI 믹싱</span>
+        <span>상태</span>
       </div>
       <div className="divide-y border-b">
         <VocalProfileAnalysisJobRows jobs={analysisJobs} />
@@ -177,7 +184,7 @@ export function VocalProfileLibrary({
               className={`${resourceRowInteractiveClassName} ${PROFILE_ROW_GRID_CLASS} bg-background px-3 py-3.5`}
               key={profile.id}
             >
-              <div className="flex min-w-0 items-center gap-3">
+              <div className="col-span-2 flex min-w-0 items-center gap-3 md:col-span-1" data-profile-column="identity">
                 <VocalProfileArtwork className="size-11" profileId={profile.id} />
                 <div className="min-w-0">
                   <h2 className="truncate text-sm font-semibold">
@@ -194,12 +201,25 @@ export function VocalProfileLibrary({
                   </p>
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground" data-profile-column="created-at">
+                <span className="mr-1 text-[10px] md:sr-only">생성</span>
                 {new Date(profile.createdAt).toLocaleString("ko-KR", { dateStyle: "short", timeStyle: "short" })}
               </p>
-              <p className="text-xs font-medium">{presentation.practicalRange.label}</p>
-              <p className="text-xs font-medium tabular-nums">{presentation.stability.percent}%</p>
-              <p className="text-[11px] text-muted-foreground sm:text-xs">{profile.mixingCount}개</p>
+              <p className="text-xs font-medium" data-profile-column="range">
+                <span className="mr-1 text-[10px] font-normal text-muted-foreground md:sr-only">음역</span>
+                {presentation.practicalRange.label}
+              </p>
+              <p className="text-xs font-medium tabular-nums" data-profile-column="stability">
+                <span className="mr-1 text-[10px] font-normal text-muted-foreground md:sr-only">안정도</span>
+                {presentation.stability.percent}%
+              </p>
+              <p className="text-[11px] text-muted-foreground sm:text-xs" data-profile-column="mixes">
+                <span className="mr-1 text-[10px] md:sr-only">AI 믹싱</span>
+                {profile.mixingCount}개
+              </p>
+              <div className="order-first col-span-2 md:order-none md:col-span-1" data-profile-column="status">
+                <Badge variant="secondary">사용 가능</Badge>
+              </div>
             </article>
           );
         })}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Music2, RotateCcw, Search } from "lucide-react";
+import { LoaderCircle, Music2, RotateCcw, Search } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -14,8 +14,8 @@ import {
   MixingStatusBadge,
   mixingHistoryFiltersSchema,
   mixingHistoryQueryOptions,
-  presentMixingFailure,
 } from "@/entities/mixing-job";
+import { Badge } from "@/shared/ui/badge";
 import { Button, buttonVariants } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
@@ -33,12 +33,17 @@ const STATUS_LABELS: Record<MixingHistoryFilterStatus, string> = {
 
 const STATUS_OPTIONS = Object.entries(STATUS_LABELS) as Array<[MixingHistoryFilterStatus, string]>;
 
-function statusDescription(job: MixingHistoryRow) {
-  if (job.resultReady) return "결과 준비 완료";
-  if (job.status === "succeeded") return "결과 파일을 확인하고 있어요";
-  if (job.status === "failed") return presentMixingFailure(job.error);
-  if (job.status === "canceled") return "믹싱 작업이 취소됐어요.";
-  return "페이지를 닫아도 서버에서 계속 진행됩니다.";
+function MixingLibraryStatus({ job }: { job: MixingHistoryRow }) {
+  if (job.status === "succeeded" && !job.resultReady) {
+    return (
+      <Badge className="h-7 gap-1.5 border border-data-accent/35 bg-data-accent/10 px-2.5 text-[11px] text-data-accent-foreground">
+        <LoaderCircle aria-hidden="true" className="size-3 animate-spin motion-reduce:animate-none" />
+        결과 확인 중
+      </Badge>
+    );
+  }
+
+  return <MixingStatusBadge label={STATUS_LABELS[job.status]} status={job.status} />;
 }
 
 function MixingLibraryFilters({
@@ -128,17 +133,14 @@ function MixingLibraryRows({ jobs }: { jobs: MixingHistoryRow[] }) {
         <caption className="sr-only">AI 믹스 작업 목록</caption>
         <thead className="hidden border-b bg-muted/15 text-left text-[11px] text-muted-foreground lg:table-header-group">
           <tr>
-            <th className="w-28 px-3 py-2 font-medium" scope="col">
-              상태
-            </th>
             <th className="px-3 py-2 font-medium" scope="col">
               작업 / 아티스트
             </th>
             <th className="w-36 px-3 py-2 font-medium" scope="col">
               생성일
             </th>
-            <th className="w-48 px-3 py-2 font-medium" scope="col">
-              결과
+            <th className="w-36 px-3 py-2 font-medium" scope="col">
+              상태
             </th>
           </tr>
         </thead>
@@ -148,14 +150,13 @@ function MixingLibraryRows({ jobs }: { jobs: MixingHistoryRow[] }) {
             const detailHref = `/library/mixes/${job.id}`;
             return (
               <tr
-                className={`${resourceRowInteractiveClassName} grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-2 px-3 py-3 lg:table-row lg:px-0 lg:py-0`}
+                className={`${resourceRowInteractiveClassName} grid gap-2 px-3 py-3 lg:table-row lg:px-0 lg:py-0`}
                 key={job.id}
               >
-                <td className="col-start-2 row-start-1 text-right align-middle lg:table-cell lg:px-3 lg:py-3 lg:text-left">
-                  <MixingStatusBadge label={STATUS_LABELS[job.status]} status={job.status} />
-                  {active ? <span className="sr-only">자동 새로고침 중</span> : null}
-                </td>
-                <td className="col-start-1 row-start-1 min-w-0 align-middle lg:table-cell lg:px-3 lg:py-3">
+                <td
+                  className="row-start-2 min-w-0 align-middle lg:table-cell lg:px-3 lg:py-3"
+                  data-mixing-column="identity"
+                >
                   <h2 className="truncate text-sm font-semibold">
                     <ResourceRowLink
                       aria-label={`${job.song.title} AI 믹스 상세 보기`}
@@ -167,12 +168,16 @@ function MixingLibraryRows({ jobs }: { jobs: MixingHistoryRow[] }) {
                   </h2>
                   <p className="mt-0.5 truncate text-xs text-muted-foreground">{job.song.artist}</p>
                 </td>
-                <td className="col-span-2 row-start-2 text-xs text-muted-foreground lg:table-cell lg:px-3 lg:py-3">
+                <td
+                  className="row-start-3 text-xs text-muted-foreground lg:table-cell lg:px-3 lg:py-3"
+                  data-mixing-column="created-at"
+                >
                   <span className="lg:hidden">생성 · </span>
                   {new Date(job.createdAt).toLocaleString("ko-KR", { dateStyle: "short", timeStyle: "short" })}
                 </td>
-                <td className="col-span-2 row-start-3 align-middle lg:table-cell lg:px-3 lg:py-3">
-                  <p className="text-xs leading-5 text-muted-foreground">{statusDescription(job)}</p>
+                <td className="row-start-1 align-middle lg:table-cell lg:px-3 lg:py-3" data-mixing-column="status">
+                  <MixingLibraryStatus job={job} />
+                  {active ? <span className="sr-only">자동 새로고침 중</span> : null}
                 </td>
               </tr>
             );
