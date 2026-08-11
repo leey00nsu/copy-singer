@@ -1,8 +1,9 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, AudioLines, Clock3, LoaderCircle, RotateCcw } from "lucide-react";
+import { AlertTriangle, AudioLines, LoaderCircle, RotateCcw } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import {
   presentVocalProfile,
@@ -16,6 +17,9 @@ import { buttonVariants } from "@/shared/ui/button";
 import { ResourceRowLink, resourceRowInteractiveClassName } from "@/shared/ui/resource-row-link";
 import { StatePanel } from "@/shared/ui/state-panel";
 import { LibraryPagination } from "./library-pagination";
+
+const PROFILE_ROW_GRID_CLASS =
+  "grid gap-3 md:grid-cols-[minmax(0,2fr)_minmax(9rem,1fr)_minmax(6rem,.75fr)_minmax(5rem,.6fr)_minmax(8rem,.9fr)] md:items-center md:gap-0";
 
 function analysisJobCopy(job: VocalProfileAnalysisJobResponse) {
   if (job.status === "processing") {
@@ -47,6 +51,7 @@ function analysisJobCopy(job: VocalProfileAnalysisJobResponse) {
 }
 
 function VocalProfileAnalysisJobRows({ jobs }: { jobs: VocalProfileAnalysisJobResponse[] }) {
+  const router = useRouter();
   const jobsQuery = useQuery(vocalProfileAnalysisJobsQueryOptions(jobs));
   const currentJobs = jobsQuery.data?.jobs ?? jobs;
   const activeIds = useRef(jobs.filter(isActiveAnalysisJob).map((job) => job.id));
@@ -54,12 +59,10 @@ function VocalProfileAnalysisJobRows({ jobs }: { jobs: VocalProfileAnalysisJobRe
   useEffect(() => {
     if (!jobsQuery.data) return;
     const visibleIds = new Set(jobsQuery.data.jobs.map((job) => job.id));
-    if (activeIds.current.some((id) => !visibleIds.has(id))) {
-      window.location.reload();
-      return;
-    }
+    const profileCompleted = activeIds.current.some((id) => !visibleIds.has(id));
     activeIds.current = jobsQuery.data.jobs.filter(isActiveAnalysisJob).map((job) => job.id);
-  }, [jobsQuery.data]);
+    if (profileCompleted) router.refresh();
+  }, [jobsQuery.data, router]);
 
   return (
     <>
@@ -73,43 +76,50 @@ function VocalProfileAnalysisJobRows({ jobs }: { jobs: VocalProfileAnalysisJobRe
         const failed = job.status === "failed";
         return (
           <article
-            className="grid gap-3 bg-background py-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-center"
+            aria-busy={!failed}
+            className={`${PROFILE_ROW_GRID_CLASS} bg-background px-3 py-3.5`}
+            data-analysis-job-row={job.status}
             key={job.id}
           >
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge variant={failed ? "destructive" : "secondary"}>{copy.badge}</Badge>
+            <div className="flex min-w-0 items-center gap-3" data-profile-column="identity">
+              <div className="flex size-11 shrink-0 items-center justify-center rounded-lg border bg-muted/30">
+                {failed ? (
+                  <AlertTriangle aria-hidden="true" className="size-5 text-destructive" />
+                ) : (
+                  <LoaderCircle
+                    aria-hidden="true"
+                    className="size-5 animate-spin text-data-accent-foreground motion-reduce:animate-none"
+                  />
+                )}
+              </div>
+              <div className="min-w-0">
                 <div className="flex items-center gap-2">
                   {failed ? (
-                    <AlertTriangle aria-hidden="true" className="size-5 text-destructive" />
+                    <span className="size-1.5 shrink-0 rounded-full bg-destructive" aria-hidden="true" />
                   ) : (
-                    <LoaderCircle
-                      aria-hidden="true"
-                      className="size-5 animate-spin text-data-accent-foreground motion-reduce:animate-none"
-                    />
+                    <span className="size-1.5 shrink-0 rounded-full bg-data-accent" aria-hidden="true" />
                   )}
-                  <h2 className="text-base font-semibold">{copy.title}</h2>
+                  <h2 className="truncate text-sm font-semibold">{copy.title}</h2>
                 </div>
+                <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted-foreground">{copy.detail}</p>
               </div>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">{copy.detail}</p>
-              {!failed ? (
-                <p className="mt-2 text-xs leading-5 text-muted-foreground">
-                  이 페이지를 닫아도 분석은 계속됩니다. 완료되면 저장된 보컬 프로필로 자동 전환됩니다.
-                </p>
-              ) : null}
             </div>
-            <div className="flex flex-wrap items-center gap-3 md:justify-end">
-              <div className="text-xs text-muted-foreground md:text-right">
-                <p className="flex items-center gap-1">
-                  <Clock3 aria-hidden="true" className="size-3" />
-                  {new Date(job.createdAt).toLocaleString("ko-KR")}
-                </p>
-                <p className="mt-1">
-                  시도 {Math.min(job.attempts, job.maxAttempts)} / {job.maxAttempts}
-                </p>
-              </div>
+            <div className="text-xs text-muted-foreground" data-profile-column="created-at">
+              <p>{new Date(job.createdAt).toLocaleString("ko-KR", { dateStyle: "short", timeStyle: "short" })}</p>
+              <p className="mt-1 text-[10px]">
+                시도 {Math.min(job.attempts, job.maxAttempts)} / {job.maxAttempts}
+              </p>
+            </div>
+            <p className="text-xs text-muted-foreground" data-profile-column="range">
+              <span className="md:sr-only">음역 </span>—
+            </p>
+            <p className="text-xs text-muted-foreground" data-profile-column="stability">
+              <span className="md:sr-only">안정도 </span>—
+            </p>
+            <div className="flex flex-wrap items-center gap-2" data-profile-column="status">
+              <Badge variant={failed ? "destructive" : "secondary"}>{copy.badge}</Badge>
               {failed ? (
-                <Link className={buttonVariants({ variant: "outline" })} href="/profile">
+                <Link className={buttonVariants({ size: "xs", variant: "outline" })} href="/profile">
                   <RotateCcw aria-hidden="true" className="size-4" /> 다시 분석하기
                 </Link>
               ) : null}
@@ -164,7 +174,7 @@ export function VocalProfileLibrary({
           const presentation = presentVocalProfile(profile);
           return (
             <article
-              className={`${resourceRowInteractiveClassName} grid gap-3 bg-background px-3 py-3.5 md:grid-cols-[minmax(0,2fr)_minmax(9rem,1fr)_minmax(6rem,.75fr)_minmax(5rem,.6fr)_minmax(8rem,.9fr)] md:items-center md:gap-0`}
+              className={`${resourceRowInteractiveClassName} ${PROFILE_ROW_GRID_CLASS} bg-background px-3 py-3.5`}
               key={profile.id}
             >
               <div className="flex min-w-0 items-center gap-3">

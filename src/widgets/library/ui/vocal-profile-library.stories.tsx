@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { HttpResponse, http } from "msw";
+import type {} from "msw-storybook-addon/types";
 import { expect, within } from "storybook/test";
-import type { VocalProfileHistoryPayload } from "@/entities/vocal-profile";
+import type { VocalProfileAnalysisJobResponse, VocalProfileHistoryPayload } from "@/entities/vocal-profile";
 import { LibraryTabs } from "./library-tabs";
 import { VocalProfileLibrary } from "./vocal-profile-library";
 
@@ -34,6 +36,43 @@ const profileHistory = {
     },
   ],
 } satisfies VocalProfileHistoryPayload;
+
+const failedAnalysisJob = {
+  id: "40000000-0000-4000-8000-000000000003",
+  status: "failed",
+  vocalProfileId: null,
+  attempts: 3,
+  maxAttempts: 3,
+  error: { reasonCode: "ANALYSIS_FAILED", detail: "음정을 충분히 찾지 못했어요.", retryable: false },
+  createdAt: "2026-08-09T01:00:00.000Z",
+  updatedAt: "2026-08-09T01:01:00.000Z",
+} satisfies VocalProfileAnalysisJobResponse;
+
+const processingAnalysisJob = {
+  id: "40000000-0000-4000-8000-000000000004",
+  status: "processing",
+  vocalProfileId: null,
+  attempts: 1,
+  maxAttempts: 3,
+  error: null,
+  createdAt: "2026-08-11T11:36:37.000Z",
+  updatedAt: "2026-08-11T11:36:40.000Z",
+} satisfies VocalProfileAnalysisJobResponse;
+
+const retryingAnalysisJob = {
+  id: "40000000-0000-4000-8000-000000000005",
+  status: "pending",
+  vocalProfileId: null,
+  attempts: 1,
+  maxAttempts: 3,
+  error: { reasonCode: "ANALYZER_UNAVAILABLE", detail: "분석기 연결을 다시 시도합니다.", retryable: true },
+  createdAt: "2026-08-11T11:36:37.000Z",
+  updatedAt: "2026-08-11T11:36:45.000Z",
+} satisfies VocalProfileAnalysisJobResponse;
+
+function analysisJobsHandler(jobs: VocalProfileAnalysisJobResponse[]) {
+  return http.get("*/api/vocal-profile-analysis-jobs", () => HttpResponse.json({ jobs }));
+}
 
 const meta = {
   title: "Widgets/Library/Vocal Profiles",
@@ -111,24 +150,60 @@ export const DenseLibrary: Story = {
 
 export const FailedAnalysis: Story = {
   args: {
-    analysisJobs: [
-      {
-        id: "40000000-0000-4000-8000-000000000003",
-        status: "failed",
-        vocalProfileId: null,
-        attempts: 3,
-        maxAttempts: 3,
-        error: { reasonCode: "ANALYSIS_FAILED", detail: "음정을 충분히 찾지 못했어요.", retryable: false },
-        createdAt: "2026-08-09T01:00:00.000Z",
-        updatedAt: "2026-08-09T01:01:00.000Z",
-      },
-    ],
+    analysisJobs: [failedAnalysisJob],
     history: { ...profileHistory, total: 0, profiles: [] },
+  },
+  beforeEach({ msw }) {
+    msw.use(analysisJobsHandler([failedAnalysisJob]));
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText("보컬 프로필을 만들지 못했어요")).toBeVisible();
     await expect(canvas.getByRole("link", { name: "다시 분석하기" })).toHaveAttribute("href", "/profile");
+    const row = canvasElement.querySelector('[data-analysis-job-row="failed"]');
+    if (!(row instanceof HTMLElement)) throw new Error("Failed analysis row is missing.");
+    await expect(row).toBeVisible();
+    await expect(row).toHaveAttribute("aria-busy", "false");
+    await expect(row.querySelectorAll("[data-profile-column]")).toHaveLength(5);
+  },
+};
+
+export const ProcessingAnalysis: Story = {
+  args: {
+    analysisJobs: [processingAnalysisJob],
+    history: { ...profileHistory, total: 0, profiles: [] },
+  },
+  beforeEach({ msw }) {
+    msw.use(analysisJobsHandler([processingAnalysisJob]));
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("보컬 프로필 분석 중")).toBeVisible();
+    await expect(canvas.getByText("분석 중")).toBeVisible();
+    const row = canvasElement.querySelector('[data-analysis-job-row="processing"]');
+    if (!(row instanceof HTMLElement)) throw new Error("Processing analysis row is missing.");
+    await expect(row).toBeVisible();
+    await expect(row).toHaveAttribute("aria-busy", "true");
+    await expect(row.querySelectorAll("[data-profile-column]")).toHaveLength(5);
+    await expect(row.querySelectorAll("a, button")).toHaveLength(0);
+  },
+};
+
+export const RetryingAnalysis: Story = {
+  args: {
+    analysisJobs: [retryingAnalysisJob],
+    history: { ...profileHistory, total: 0, profiles: [] },
+  },
+  beforeEach({ msw }) {
+    msw.use(analysisJobsHandler([retryingAnalysisJob]));
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("분석을 다시 시도하고 있어요")).toBeVisible();
+    await expect(canvas.getByText("재시도 1/3")).toBeVisible();
+    const row = canvasElement.querySelector('[data-analysis-job-row="pending"]');
+    if (!(row instanceof HTMLElement)) throw new Error("Retrying analysis row is missing.");
+    await expect(row.querySelectorAll("[data-profile-column]")).toHaveLength(5);
   },
 };
 

@@ -1,15 +1,30 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { AppRouterContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { renderToStaticMarkup } from "react-dom/server";
 
 import { createQueryClient } from "@/_app/providers";
 import { VocalProfileHistoryList } from "../src/_pages/vocal-profiles";
 
+const testRouter = {
+  back() {},
+  bfcacheId: "vocal-profile-history-test",
+  forward() {},
+  prefetch() {},
+  push() {},
+  refresh() {},
+  replace() {},
+};
+
 function renderHistory(ui: React.ReactNode) {
   const client = createQueryClient(true);
   try {
-    return renderToStaticMarkup(<QueryClientProvider client={client}>{ui}</QueryClientProvider>);
+    return renderToStaticMarkup(
+      <QueryClientProvider client={client}>
+        <AppRouterContext.Provider value={testRouter}>{ui}</AppRouterContext.Provider>
+      </QueryClientProvider>,
+    );
   } finally {
     client.clear();
   }
@@ -79,7 +94,11 @@ test("vocal profile history shows queued analysis instead of an empty state", ()
     />,
   );
   assert.match(markup, /보컬 프로필 분석 대기 중/);
-  assert.match(markup, /이 페이지를 닫아도 분석은 계속됩니다/);
+  assert.match(markup, /data-analysis-job-row="pending"/);
+  assert.match(markup, /data-profile-column="range"/);
+  assert.match(markup, /data-profile-column="stability"/);
+  assert.match(markup, /aria-busy="true"/);
+  assert.doesNotMatch(markup, /href="\/vocal-profiles\//);
   assert.doesNotMatch(markup, /아직 저장된 보컬 프로필이 없어요/);
 });
 
