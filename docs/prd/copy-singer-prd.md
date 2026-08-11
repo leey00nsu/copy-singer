@@ -149,6 +149,7 @@ Google OAuth 로그인
 - **PRD-FR-050**: AI 믹싱 UI는 영속 작업의 실제 상태를 이해하기 쉬운 단계로 매핑하고 대기·재시도·실패·성공을 구분해야 한다. 라이브러리는 기존 사용자 소유 보컬 프로필과 믹싱 이력을 통합 탐색할 수 있게 하며, 결과 상세에서 저장된 오디오 재생·다운로드와 기존 삭제 동작을 제공해야 한다. 사용자가 노래를 직접 부른 원본과 AI 결과의 Before/After 비교는 해당 녹음 도메인이 구현되기 전까지 표시하지 않아야 한다.
 - **PRD-FR-051**: 인증 제품 화면은 데스크톱에서 persistent sidebar 없이 브랜드·중앙 제품 navigation·우측 계정 메뉴를 담은 공통 top header를 사용하고, 모바일에서는 접근 가능한 compact navigation을 제공해야 한다. 비로그인 header는 중복 가입 CTA 없이 primary `로그인` action 하나만 제공한다. 제품 화면은 focus-visible, 명시적인 button label, 키보드 조작, reduced-motion 배려와 loading·empty·error·disabled 상태를 제공해야 하며 공통 상태와 핵심 오디오 상호작용은 Storybook에서 독립적으로 검증할 수 있어야 한다.
 - **PRD-FR-052**: 제공된 짙은 헤드폰과 pink–violet–blue 파형 심볼을 Copy Singer의 공통 app mark로 사용해야 한다. header/footer/login의 로고와 favicon은 같은 투명 master 자산에서 파생하고 작은 크기에서도 식별 가능한 silhouette, 접근 가능한 제품명과 기존 브랜드 color relationship을 유지해야 한다.
+- **PRD-FR-053**: 로그인 화면과 제품 footer의 `이용 약관` 및 `개인정보 처리방침`은 각각 공개 route로 연결되어야 한다. 문서는 현재 구현의 Google 인증, 음성 녹음·분석, 추천, 티켓 기반 AI 믹싱, 외부 저장·처리와 삭제 계약을 사실대로 설명하고, 확인되지 않은 운영자 연락처·국외 처리 지역은 임의로 생성하지 않아야 한다.
 
 ## 데이터 요구사항
 

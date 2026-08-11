@@ -50,6 +50,19 @@
 - [ ] 공통 ProductBrand와 로그인 화면은 같은 master logo를 사용하고 제품명 accessible name을 유지한다.
 - [ ] favicon은 같은 master에서 파생하며 16px·32px browser 표시에서도 식별 가능하다.
 
+### US-3: 로그인 전 확인 가능한 법률 문서
+
+**As a** 로그인하려는 방문자
+**I want** 약관 동의 안내에서 실제 이용 약관과 개인정보 처리방침을 열어보고 싶다.
+**So that** 계정·음성·추천·믹싱 데이터가 어떻게 이용되는지 확인한 뒤 로그인할 수 있다.
+
+**Acceptance Criteria:**
+
+- [ ] `/terms`와 `/privacy`는 인증 없이 접근 가능하고 공통 브랜드 UI와 읽기 쉬운 문서 위계를 제공한다.
+- [ ] 로그인 동의 문구와 제품 footer의 문서명이 각 route의 실제 Link로 동작한다.
+- [ ] 문서는 현재 코드의 Google OAuth, session, 음성 분석·저장, 추천, 티켓·믹싱, 사용자 삭제와 외부 처리 흐름을 반영한다.
+- [ ] 저장소에서 확인할 수 없는 운영자 연락처와 외부 처리 지역은 임의로 생성하지 않고 정식 공개 전 확인 항목으로 명시한다.
+
 ---
 
 ## 기능 요구사항
@@ -72,6 +85,12 @@
 - master는 헤드폰과 다섯 파형 bar의 구성·dark/pink/violet/blue 관계를 보존하고 text·shadow·추가 장식을 포함하지 않는다.
 - 공통 ProductBrand, login hero와 metadata favicon이 같은 asset family를 사용한다.
 
+### FR-4: 이용 약관과 개인정보 처리방침
+
+- `/terms`는 서비스 정의, 계정, 음성·콘텐츠 권리, 추천·AI 결과의 한계, 티켓, 금지행위, 삭제·중단, 책임과 변경 절차를 설명한다.
+- `/privacy`는 처리 목적·항목·보유기간, 외부 처리, cookie/session, 파기, 안전조치, 정보주체 권리와 문의 정보를 설명한다.
+- 두 문서는 2026 개인정보 처리방침 작성지침과 현행 개인정보 보호법의 공개·파기·권리·국외 이전 항목을 참고하되 법률 검토가 완료된 것처럼 표현하지 않는다.
+
 ### 제외 범위
 
 - Google OAuth provider/API, session, callback validation 변경
@@ -93,7 +112,7 @@
 ## 관련 문서
 
 - PRD: `../../prd/`
-- PRD Refs: `PRD-US-010`, `PRD-US-019`, `PRD-US-024`, `PRD-FR-045`, `PRD-FR-046`, `PRD-FR-051`, `PRD-FR-052`
+- PRD Refs: `PRD-US-010`, `PRD-US-019`, `PRD-US-024`, `PRD-FR-045`, `PRD-FR-046`, `PRD-FR-051`, `PRD-FR-052`, `PRD-FR-053`
   - 이미 원문 요구사항 문서에 정의된 ID만 적으세요. `spec.md`나 `tasks.md`에서 임의로 PRD ID를 만들지 않습니다.
   - 레거시 요구사항 문서에 아직 PRD ID가 없다면, 먼저 원문에 ID를 backfill한 뒤 이 필드와 `tasks.md` 태스크 태그를 함께 갱신하세요.
   - 요구사항/스코프 변경 시 PRD 문서 + 이 필드 + `tasks.md` 태스크 태그를 함께 갱신하세요.

@@ -77,3 +77,17 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**:
   - **Test/Log**: LoginScreen Storybook 2/2, auth navigation 6/6, `pnpm run check`, `pnpm run build`, in-app browser desktop/mobile QA 통과
 - **Consequences**: 실제 약관 route가 추가되면 강조 span을 접근 가능한 Link로 교체하고 destination별 navigation test를 추가해야 한다.
+
+## D005: 법률 문서는 current data-flow 기반 공개 초안으로 제공 (2026-08-11)
+
+- **Context**: 사용자가 이용 약관과 개인정보 처리방침 page를 만들고 로그인 동의 문구를 실제 문서에 연결하도록 요청했다.
+- **Constraints**: 코드에서 Google OAuth, PostgreSQL, Leemage, Modal, 음성·추천·믹싱·ticket lifecycle은 확인되지만 운영자의 법적 명칭·주소·연락처와 외부 처리 국가/region은 확인되지 않는다.
+- **Options**: generic template만 게시, 확인되지 않은 정보를 추정해 완성본처럼 게시, current data-flow를 구체화하고 미확정 운영 정보를 draft 확인 항목으로 표시.
+- **Decision**: current data-flow 기반 공개 초안을 작성하고 `/terms`·`/privacy`를 public route로 제공한다. 로그인과 footer는 실제 Link로 전환하며 미확정 운영 정보는 명시적인 배포 전 확인 항목으로 남긴다.
+- **Rationale**: 실제 처리보다 적게 또는 다르게 고지하지 않으면서도 존재하지 않는 연락처·국외 이전 정보를 꾸며내는 위험을 피한다.
+- **Trace**:
+  - **DOING 시작 시점**: Prisma schema·README·auth/media/analyzer/mixing/delete route를 확인하고 PIPC 2026 작성지침, 개인정보 보호법 제21·28조의8·30·35조와 시행령 제31조를 기준 항목으로 선택했다.
+- **Evidence**:
+  - **Official guidance**: https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS217&mCode=D010030020&nttId=12018
+  - **Official law**: https://law.go.kr/LSW/lsInfoP.do?lsiSeq=270351
+- **Consequences**: 정식 공개 전 운영자/CPO 연락처와 실제 배포 provider region을 확정해 draft notice와 미확정 값을 교체하고 법률 전문가 검토를 받아야 한다.

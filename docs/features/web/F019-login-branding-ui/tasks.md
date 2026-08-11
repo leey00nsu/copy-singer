@@ -98,12 +98,23 @@
     - [x] LoginScreen 안내·동의 문구와 responsive spacing 적용
     - [x] Storybook·auth navigation·browser·check·build 회귀 검증
 
+- [TODO][PRD-FR-053] T-F019-05 이용 약관·개인정보 처리방침 공개 page와 Link 적용
+  - Date: 2026-08-11
+  - Acceptance:
+    - `/terms`와 `/privacy`가 인증 없이 열리고 현재 구현의 계정·음성·추천·믹싱·ticket·외부 처리·삭제 계약에 맞는 문서를 제공한다.
+    - 로그인 동의 문구와 ProductFooter의 약관·개인정보 문서명이 실제 route Link로 동작한다.
+    - 확인되지 않은 운영 주체 연락처와 국외 처리 지역은 draft 확인 항목으로 명시하고 임의 정보를 생성하지 않는다.
+  - Checklist:
+    - [ ] current data-flow와 2026 PIPC 작성지침 기반 legal content 작성
+    - [ ] 공통 LegalDocumentLayout과 `/terms`·`/privacy` public adapter 구현
+    - [ ] LoginScreen·ProductFooter link 및 Storybook·unit·browser·check·build 검증
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록

@@ -56,6 +56,25 @@ LoginPage (server)
 - master에서 `public/favicon.png`와 `public/apple-touch-icon.png`를 deterministic downsample해 같은 silhouette을 유지한다. alpha channel, transparent corner, subject coverage와 16/24/32px thumbnail을 검수한다.
 - `ProductMark`가 master와 intrinsic size를 소유하고 `ProductBrand`, login composition이 이를 재사용한다. logo bitmap 자체에는 text를 넣지 않으며 accessible name은 `Copy Singer` text가 담당한다.
 
+### 공개 법률 문서
+
+```text
+LoginScreen legal consent
+  ├─ 이용 약관 Link → /terms
+  └─ 개인정보 처리방침 Link → /privacy
+
+ProductFooter legal navigation
+  ├─ 이용 약관 Link → /terms
+  └─ 개인정보 처리방침 Link → /privacy
+
+app/(public)/{terms,privacy}/page.tsx
+  └─ _pages/legal public API → shared LegalDocumentLayout
+```
+
+- 문서 내용은 Prisma schema, Better Auth 설정, Leemage media lifecycle, Modal analyzer/mixing adapter와 사용자 삭제 route를 source evidence로 사용한다.
+- 공통 layout은 ProductBrand header, document metadata, table/list/section typography와 상호 문서 navigation을 제공한다.
+- 현재 저장소에 없는 사업자명·주소·연락처와 외부 처리 국가를 추정하지 않고 draft 확인 항목으로 표시한다.
+
 ---
 
 ## 파일 구조
@@ -67,6 +86,9 @@ src/
 │   ├── login-page.tsx                          # session/callback server adapter
 │   ├── login-screen.tsx                        # 최소 로그인 composition
 │   └── login-screen.stories.tsx                # configured/disabled UI
+├── _pages/legal/
+│   ├── index.ts                                 # public page API
+│   └── ui/                                      # terms/privacy/shared document layout
 ├── features/authentication/ui/
 │   ├── google-icon.tsx                         # multicolor Google brand glyph
 │   └── google-sign-in.tsx                      # outline Google 시작 action
@@ -90,6 +112,7 @@ public/
 - **자산 검증**: master/favicons의 PNG signature, dimensions, alpha channel, transparent corner, nonempty subject coverage를 검사하고 16/24/32px contact sheet를 눈으로 확인한다.
 - **통합 테스트**: `pnpm run check`, 관련 Storybook, auth navigation, production build로 route/metadata 경계를 검증한다.
 - **브라우저 QA**: `/` 비로그인 header와 `/login`을 mobile/desktop에서 확인하며 duplicate CTA, overflow, console error와 favicon request를 검수한다.
+- **법률 route QA**: `/terms`, `/privacy` public route, login/footer Link, heading·table responsive overflow와 문서 간 navigation을 검증한다.
 
 ## 호환성과 위험 관리
 
