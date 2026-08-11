@@ -89,21 +89,21 @@
     - [x] multicolor GoogleIcon과 outline 구글로 시작하기 action 적용
     - [x] unit·Storybook·browser·check·build 회귀 검증
 
-- [TODO][PRD-FR-046] T-F019-04 로그인 안내와 약관 동의 문구 보완
+- [DONE][PRD-FR-046] T-F019-04 로그인 안내와 약관 동의 문구 보완
   - Date: 2026-08-11
   - Acceptance:
     - `Copy Singer` 아래에는 muted `계속하려면 로그인하세요.`를 표시한다.
     - Google action 아래에는 첨부 reference의 Google 로그인 및 이용 약관·개인정보 처리방침 동의 문구를 보조 위계로 표시한다.
   - Checklist:
-    - [ ] LoginScreen 안내·동의 문구와 responsive spacing 적용
-    - [ ] Storybook·auth navigation·browser·check·build 회귀 검증
+    - [x] LoginScreen 안내·동의 문구와 responsive spacing 적용
+    - [x] Storybook·auth navigation·browser·check·build 회귀 검증
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -113,11 +113,11 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm run test:storybook --run src/_pages/login/ui/login-screen.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-11` | 통과 — 최소 로그인 화면·Google icon/OAuth 미설정 상태·desktop/mobile header action 8/8 |
-| `pnpm run test:auth-navigation` | `2026-08-11` | 통과 — safe callback·minimal LoginScreen·route group·제품 navigation·keyboard/touch label 6/6 |
+| `pnpm run test:storybook --run src/_pages/login/ui/login-screen.stories.tsx` | `2026-08-11` | 통과 — 로그인 안내·약관 동의 copy·Google icon·OAuth 미설정 상태 2/2 |
+| `pnpm run test:auth-navigation` | `2026-08-11` | 통과 — safe callback·LoginScreen 안내 copy·route group·제품 navigation·keyboard/touch label 6/6 |
 | `pnpm run check` | `2026-08-11` | 통과 — Biome 기존 warning 59개, ESLint·TypeScript·FSD/architecture 오류 0 |
 | `pnpm run build` | `2026-08-11` | 통과 — Next.js 16.3 production build와 `/login` route 생성 완료 |
-| in-app browser `/login` visual QA | `2026-08-11` | 통과 — desktop/mobile 390×844에서 logo/name/Google action만 표시, 335px button·가로 overflow 없음·console error 0 |
+| in-app browser `/login` visual QA | `2026-08-11` | 통과 — desktop와 390×844에서 muted 안내·2행 약관 copy·밑줄 강조 확인, 가로 overflow·console error 0 |
 | bundled Pillow asset audit | `2026-08-11` | 통과 — master 1024², favicon 64², apple icon 180², RGBA·transparent corner·nonempty alpha 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T07:54:47.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T08:10:31.000Z -->

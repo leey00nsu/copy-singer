@@ -63,3 +63,17 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**:
   - **Test/Log**: LoginScreen/ProductShell Storybook 8/8, auth navigation 6/6, `pnpm run check`, `pnpm run build`, in-app browser visual QA 통과
 - **Consequences**: 로그인 시각 변경은 `LoginScreen` Story로 검증하고, callback/session 정책 변경은 server adapter 및 auth navigation test에서 별도로 검증한다.
+
+## D004: 로그인 보조 안내는 비동작 text로 제공 (2026-08-11)
+
+- **Context**: 구현 승인 checkpoint에서 사용자가 제목 아래 로그인 안내와 Google action 아래 약관·개인정보 동의 문구 추가를 요청했다.
+- **Constraints**: 현재 제품에는 이용 약관·개인정보 처리방침 route가 없으며 존재하지 않는 목적지나 `#` link를 만들지 않는다.
+- **Options**: 임시 link 생성, 일반 text만 표시, 첨부 reference처럼 문서명을 밑줄 강조한 비동작 text로 표시.
+- **Decision**: `계속하려면 로그인하세요.`는 muted 14px로 제목 아래 배치하고 동의 문구는 12px·2행 보조 text로 button 아래 배치한다. `이용 약관`과 `개인정보 처리방침`은 밑줄로 강조하되 link semantics는 부여하지 않는다.
+- **Rationale**: 요청한 시각 위계를 충족하면서 아직 없는 법률 문서 page로 잘못 이동시키거나 click 가능성을 기술적으로 가장하지 않는다.
+- **Trace**:
+  - **DOING 시작 시점**: 기존 product footer에도 문서명만 있고 route가 없음을 확인해 text-only 경계를 유지했다.
+  - **DONE 전 확정 시점**: 390×844에서 동의 문구가 읽기 쉬운 3개 시각 line으로 자연스럽게 줄바꿈되고, 1280px에서는 의도한 2행을 유지하며 양쪽 모두 horizontal overflow와 console error가 없음을 확인했다.
+- **Evidence**:
+  - **Test/Log**: LoginScreen Storybook 2/2, auth navigation 6/6, `pnpm run check`, `pnpm run build`, in-app browser desktop/mobile QA 통과
+- **Consequences**: 실제 약관 route가 추가되면 강조 span을 접근 가능한 Link로 교체하고 destination별 navigation test를 추가해야 한다.
