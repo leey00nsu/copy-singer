@@ -1,4 +1,4 @@
-import { ArrowLeft, CalendarDays, Music2, Sparkles } from "lucide-react";
+import { ArrowLeft, CalendarDays, Music2 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { presentVocalProfile, VocalProfileArtwork, VocalProfileResults } from "@/entities/vocal-profile";
@@ -39,9 +39,6 @@ export default async function VocalProfileDetailPage({ params }: { params: Promi
         </div>
         <div className="grid justify-items-start gap-4 sm:justify-items-end">
           <div className="flex flex-wrap gap-2">
-            <Badge variant="secondary">
-              <Sparkles className="size-3" /> 추천 {detail.recommendationCount}
-            </Badge>
             <Badge variant="secondary">
               <Music2 className="size-3" /> 믹싱 {detail.mixingCount}
             </Badge>

@@ -156,7 +156,7 @@ export function VocalProfileLibrary({
         <span>생성일</span>
         <span>음역 (최저–최고)</span>
         <span>안정도</span>
-        <span>활동</span>
+        <span>AI 믹싱</span>
       </div>
       <div className="divide-y border-b">
         <VocalProfileAnalysisJobRows jobs={analysisJobs} />
@@ -189,9 +189,7 @@ export function VocalProfileLibrary({
               </p>
               <p className="text-xs font-medium">{presentation.practicalRange.label}</p>
               <p className="text-xs font-medium tabular-nums">{presentation.stability.percent}%</p>
-              <p className="text-[11px] text-muted-foreground sm:text-xs">
-                추천 {profile.recommendationCount} · 믹스 {profile.mixingCount}
-              </p>
+              <p className="text-[11px] text-muted-foreground sm:text-xs">{profile.mixingCount}개</p>
             </article>
           );
         })}

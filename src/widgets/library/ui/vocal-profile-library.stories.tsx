@@ -77,6 +77,7 @@ export const SavedProfile: Story = {
       "/vocal-profiles/40000000-0000-4000-8000-000000000001",
     );
     await expect(canvasElement.querySelectorAll("[data-profile-artwork]")).toHaveLength(1);
+    await expect(canvas.queryByText(/추천 2/)).not.toBeInTheDocument();
   },
 };
 

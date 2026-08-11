@@ -54,7 +54,9 @@ test("vocal profile history renders persisted analysis and detail navigation", (
   assert.match(markup, /안정도/);
   assert.match(markup, /보컬 프로필 1개/);
   assert.match(markup, /최신 분석순/);
-  assert.match(markup, /추천 2 · 믹스 1/);
+  assert.match(markup, /AI 믹싱/);
+  assert.match(markup, />1개</);
+  assert.doesNotMatch(markup, /추천 2/);
   assert.match(markup, /\/vocal-profiles\/profile-id/);
 });
 

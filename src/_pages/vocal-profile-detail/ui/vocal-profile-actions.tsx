@@ -174,16 +174,6 @@ export function VocalProfileActions({
           {createRecommendation.isPending ? "노래를 찾는 중" : "맞는 노래 찾기"}
         </Button>
       )}
-      {latestRecommendationId ? (
-        <Button disabled={createRecommendation.isPending || deleteProfile.isPending} onClick={create} variant="outline">
-          {createRecommendation.isPending ? (
-            <LoaderCircle className="size-4 animate-spin motion-reduce:animate-none" aria-hidden="true" />
-          ) : (
-            <Sparkles className="size-4" aria-hidden="true" />
-          )}
-          새 추천 만들기
-        </Button>
-      ) : null}
       <Dialog>
         <DialogTrigger
           render={<Button disabled={createRecommendation.isPending || deleteProfile.isPending} variant="ghost" />}
