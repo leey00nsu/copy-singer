@@ -123,14 +123,14 @@
     - [x] recommendation get-or-create와 P2002 경합 복구 구현
     - [x] DB integration·migration 검증
 
-- [TODO][PRD-FR-057] T-F020-profile-identity-youtube-preview-08 프로필 추천 활동 UI 단순화
+- [DONE][PRD-FR-057] T-F020-profile-identity-youtube-preview-08 프로필 추천 활동 UI 단순화
   - Date: 2026-08-11
   - Acceptance:
     - 보컬 프로필 목록·상세에서 추천 개수를 제거하고 기존 추천이 있으면 결과 보기 action만 제공한다.
   - Checklist:
-    - [ ] 목록·상세 추천 count chip/text 제거
-    - [ ] 새 추천 만들기 action 제거와 기존 결과 navigation 유지
-    - [ ] component·presentation 회귀 검증
+    - [x] 목록·상세 추천 count chip/text 제거
+    - [x] 새 추천 만들기 action 제거와 기존 결과 navigation 유지
+    - [x] component·presentation 회귀 검증
 
 - [TODO][PRD-FR-057] T-F020-profile-identity-youtube-preview-09 중앙 대표 구간 누락과 믹싱 불가 사전 안내
   - Date: 2026-08-11
@@ -163,7 +163,7 @@
 | `pnpm run typecheck` | `2026-08-11` | 통과 |
 | `pnpm run check:architecture` | `2026-08-11` | 통과 — Steiger·boundary 4/4 |
 | `pnpm exec tsx --test tests/vocal-profile-contract.test.ts tests/vocal-profile-history-ui.test.tsx` | `2026-08-11` | 통과 — artwork 결정성·분산과 library 회귀 포함 10/10 |
-| `pnpm run test:storybook --run src/widgets/library/ui/vocal-profile-library.stories.tsx` | `2026-08-11` | 통과 — profile artwork·list 상태 4/4 |
+| `pnpm run test:storybook --run src/widgets/library/ui/vocal-profile-library.stories.tsx` | `2026-08-11` | 통과 — profile artwork·추천 count 미노출·list 상태 4/4 |
 | `pnpm exec tsx --test tests/api-contracts.test.ts tests/recommendation-presentation.test.ts tests/recommendation-ui.test.tsx tests/client-server-state-query.test.ts` | `2026-08-11` | 통과 — video ID·URL·facade/player·추천 회귀 30/30 |
 | `pnpm run test:recommendation:db` | `2026-08-11` | 통과 — 반복·동시 추천 singleton, sourceVideoId, synthesis 포함 3/3 |
 | `pnpm prisma migrate deploy` | `2026-08-11` | 통과 — 중복 run 최신 1건 보존 및 profile unique migration 적용 |
@@ -176,5 +176,6 @@
 | `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/widgets/library/ui/vocal-profile-library.stories.tsx` | `2026-08-11` | 통과 — 추천 수치·프로필 분석 UI 회귀 14/14 |
 | `pnpm exec tsx --test tests/recommendation-song-detail.test.tsx` | `2026-08-11` | 통과 — Song match #N 제거 포함 상세 회귀 5/5 |
 | `pnpm run test:storybook --run src/_pages/song-detail/ui/song-detail.stories.tsx` | `2026-08-11` | 통과 — 원본 영상·Song match label 1/1 |
+| `pnpm exec tsx --test tests/vocal-profile-history-ui.test.tsx` | `2026-08-11` | 통과 — 추천 count 제거·AI 믹싱 수치·상세 navigation 포함 3/3 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T20:13:06.000+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T20:15:17.000+09:00 -->
