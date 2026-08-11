@@ -437,3 +437,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: interaction 계약을 한 primitive에서 관리하면 article과 semantic table의 구조를 보존하면서도 사용자가 목록마다 다른 작은 상세 target을 학습할 필요가 없다. 실제 anchor를 유지하므로 keyboard focus, 새 탭 열기와 URL preview도 보존된다.
 - **Evidence**: `pnpm run check` 통과(error 0, 기존 warning 59건), Mixing UI 8/8, Recommendation 10/10+19/19, 공통 primitive·Library·Recommendation targeted Storybook 5 files/20 tests, Next production build 23/23 routes.
 - **Consequences**: `/library`, `/vocal-profiles`, `/mixing-history`의 완료 resource 행은 어디를 클릭해도 기존 상세 URL로 이동한다. 독립 action이 추가되는 행은 stretched Link 위에 중첩하지 말고 전체 행 navigation 계약을 재검토해야 한다.
+
+## D047: Recommendation 행 선택과 표시 순위를 추천 적합도 기준으로 정합화 (2026-08-11)
+
+- **Context**: Recommendation journey stepper와 page header 사이에 별도 간격이 없어 Profile과 달리 붙어 보였다. 추천곡은 제목 button만 선택할 수 있어 상세 아이콘 제거 뒤에도 적합도·추천 키 cell 클릭이 반영되지 않았고, 선택 card의 `N위 추천`은 기본 목록 정렬인 추천 적합도가 아니라 저장 종합 rank를 사용해 기준이 모호했다.
+- **Decision**: Recommendation header에 `mt-8 lg:mt-12`를 적용한다. 추천 행은 제목의 실제 `ResourceRowButton`을 stretched overlay로 확장해 독립 AI 믹싱 action cell을 제외한 전체 행을 선택 target으로 사용한다. 선택 card는 전체 run을 `adjustedScore` 내림차순·저장 rank tie-break로 계산한 위치를 `추천 적합도 N위`로 표시하며 현재 필터·사용자 정렬과 무관하게 같은 의미를 유지한다.
+- **Rationale**: 생성 단계 사이의 spacing 문법을 맞추고 큰 행 target을 제공하면 pointer와 keyboard 사용자 모두 같은 선택 모델을 이해할 수 있다. 주 지표·초기 정렬·표시 순위의 기준을 일치시키면 `N위`의 의미를 별도 설명 없이 읽을 수 있다.
+- **Evidence**: Recommendation unit/UI 10/10+20/20, 공통 row action·Recommendation Storybook 2 files/11 tests에서 적합도 cell 좌표의 실제 hit target이 row button이며 선택 card가 1위→3위로 갱신됨을 검증했다. `pnpm run check` 통과(error 0, 기존 warning 59건), Next production build 23/23 routes.
+- **Consequences**: 저장 `rank`, 종합 추천 순위 정렬 option과 API/DB 계약은 유지된다. D046의 Recommendation 예외는 “상세 Link로 만들지 않는다”는 원칙은 유지하되 전체 선택 button을 허용하는 것으로 확장된다.

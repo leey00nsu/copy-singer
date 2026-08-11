@@ -137,6 +137,7 @@ Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface�
 - 긴 목록은 제목·핵심 비교값·상태와 한 개의 다음 action을 우선하고, 반복되는 근거·waveform·download·delete는 상세 화면으로 이동한다.
 - 하나의 resource 행이 하나의 상세 목적지만 가지면 제목의 실제 Link를 행 전체로 확장하고 별도 chevron·`상세 보기` 같은 중복 action을 두지 않는다. hover와 focus-visible은 행 전체에 표시한다.
 - 행 안에 선택·재생·믹싱처럼 독립 interaction이 있거나 모든 항목에 상세 목적지가 없으면 행 전체를 상세 Link로 만들지 않는다. Link를 포함한 행을 `onClick` navigation이나 중첩 anchor로 구현하지 않는다.
+- 비교 목록의 primary interaction이 현재 항목 선택이면 제목의 실제 button을 행 전체로 확장할 수 있다. 행 안의 AI 믹싱 같은 독립 action은 별도 상호작용 층으로 분리하고, 행 button 안에 다른 button이나 Link를 중첩하지 않는다.
 
 ### Creation funnel
 
@@ -147,7 +148,9 @@ Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface�
 - processing 화면은 Mixing Detail의 중앙 집중형 제목, 넓은 whitespace, restrained violet process visual과 실제 상태 설명을 기준으로 한다.
 - desktop 추천 선택은 목록 옆 보조 panel, mobile은 Sheet를 사용하며 primary action은 선택한 곡 하나에만 제공한다.
 - 추천 선택 UI는 `lg` 이상에서 sticky 보조 panel을, 그 미만에서는 화면 하단 action과 bottom Sheet를 사용한다. 하단 action이 목록의 마지막 행을 가리지 않도록 mobile content에 여유 공간을 둔다.
+- Recommendation page header도 journey stepper 아래에서 mobile 32px·desktop 48px 이상 분리한다.
 - 추천 비교 목록은 저장된 rank를 정렬 계약으로 유지하되 별도 순위 열이나 mobile 순위 badge를 노출하지 않고 곡·적합도·추천 키·믹싱 상태를 우선한다.
+- 선택 카드에 순위를 표시할 때는 저장 종합 rank 대신 사용자가 보고 있는 주 지표와 같은 전체 추천 적합도 순위를 `추천 적합도 N위`로 명시한다.
 - Profile Detail과 Song Detail은 전체 근거를 보는 선택 경로다. 생성 퍼널은 해당 상세 route를 필수 단계로 요구하지 않는다.
 - Song Detail은 추천 적합도 비교, 보컬 프로필과 같은 visual language의 전체 관측·실용 음역 graph와 사용자에게 유효한 추천 이유만 보여준다. recommendation snapshot에 없는 중앙음은 추정하지 않는다.
 - 키 조정 전후 점수 변화, 고·저음 부담 감소·잔존처럼 선택에 의미가 낮은 technical reason은 저장 계약을 유지하되 사용자 표시 projection에서 제외한다. 별도 SONG RANGE와 score breakdown 근거도 노출하지 않는다.

@@ -197,6 +197,8 @@ desktop semantic table / mobile stacked rows
 - filter state는 URL query에 직렬화해 back/forward와 공유 가능한 상태를 제공하되 database 재조회는 하지 않는다.
 - row에는 rank, title, artist, 정수 적합도, recommended shift와 mixing status를 우선 표시한다.
 - 선택한 row의 핵심 근거·추천 키·티켓 비용은 desktop side panel과 mobile Sheet에서 확인하고, 여기서 바로 AI 믹싱을 시작할 수 있다.
+- 제목의 실제 `ResourceRowButton`을 row 전체로 확장해 곡·적합도·추천 키 영역 클릭이 모두 선택에 반영되게 하고, AI 믹싱 action cell은 독립 interaction layer로 유지한다.
+- 선택 card의 badge는 저장된 종합 rank가 아니라 전체 run의 `adjustedScore` 내림차순 위치를 `추천 적합도 N위`로 표시한다. 사용자 정렬·필터가 바뀌어도 이 기준은 유지한다.
 - desktop row는 56–72px 수준의 compact comparison density를 목표로 하고 reason·TJ·원키 세부 정보는 Song Detail로 넘긴다. table은 shell content 폭이 충분한 `xl` 이상에서만 사용한다.
 - mobile은 검색·정렬·필터 요약만 상단에 두고 score·shift·mixing status 조건은 Sheet로 옮겨 첫 viewport에서 첫 추천 곡을 확인할 수 있게 한다.
 - 목록의 반복 검은 CTA는 제거하고 행 선택을 주 interaction으로 사용한다. Song Detail은 전체 근거 deep link이며 믹싱 시작의 필수 경로가 아니다.

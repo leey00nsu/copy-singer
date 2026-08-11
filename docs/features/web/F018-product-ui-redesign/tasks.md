@@ -488,6 +488,19 @@
     - [x] 추천곡 행의 상세 아이콘 제거와 선택 panel deep link 유지
     - [x] 관련 unit·Storybook·check·build 회귀 검증
 
+- [DONE][PRD-FR-049] T-F018-33 Recommendation 간격·행 선택·적합도 순위 정합화
+  - Date: 2026-08-11
+  - Change request: implementation approval checkpoint에서 사용자 변경 요청(B)으로 추가
+  - Acceptance:
+    - Recommendation journey stepper와 page header는 mobile 32px·desktop 48px 이상 분리된다.
+    - 추천곡 행의 독립 믹싱 action을 제외한 행 전체 클릭·키보드 focus가 해당 곡 선택에 반영된다.
+    - 선택 카드의 순위는 저장 종합 rank가 아니라 전체 결과의 추천 적합도 내림차순 위치이며 `추천 적합도 N위`로 기준을 명시한다.
+  - Checklist:
+    - [x] Recommendation funnel–header spacing 적용
+    - [x] 공통 stretched row button으로 추천곡 행 선택 영역 확장
+    - [x] 추천 적합도 순위 helper와 선택 카드 label 적용
+    - [x] unit·Storybook·check·build 및 문서 회귀 검증
+
 ---
 
 ## 완료 조건
@@ -515,8 +528,9 @@
 | `pnpm run test:voice-scan` | `2026-08-11` | 통과 — Profile eyebrow·funnel spacing, 중복 step/health chip 제거·녹음 정책·오류·상태·cleanup 12/12 |
 | `pnpm run test:vocal-profile-analysis-queue` | `2026-08-10` | 통과 — idempotency·owner·lease·retry·cleanup 5/5 |
 | `pnpm run test:vocal-profile-history` | `2026-08-10` | 통과 — 공유 Library UI 3/3, private audio·ownership 3/3 |
-| `pnpm run test:recommendation` | `2026-08-11` | 통과 — ranking 10/10, 적합도 브랜드 색상 경계·기본 정렬·reason 표시 정책·선택 panel 단일 Song Detail 진입·synthesis·list·detail 19/19 |
+| `pnpm run test:recommendation` | `2026-08-11` | 통과 — ranking 10/10, 추천 적합도 표시 순위·브랜드 색상 경계·기본 정렬·reason·선택 panel·synthesis·list·detail 20/20 |
 | `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx` | `2026-08-11` | 통과 — 100곡 적합도 연속 브랜드 색상·선택 panel/mobile Sheet·polling·완료 상태 9/9 |
+| `pnpm run test:storybook --run src/shared/ui/resource-row-link/resource-row-link.stories.tsx src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx` | `2026-08-11` | 통과 — 공통 stretched Link/Button 2종·퍼널 간격·적합도 cell 실제 hit-test 행 선택·추천 적합도 순위 11/11 |
 | `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/_pages/profile/ui/voice-scan-input.stories.tsx` | `2026-08-11` | 통과 — 순위 표시 없는 추천 비교 목록·Voice Scan 입력 상태 15/15 |
 | `pnpm run test:storybook --run src/_pages/mixing-detail/ui/mixing-detail.stories.tsx` | `2026-08-11` | 통과 — terminal 상태 chip이 곡명보다 앞서는 DOM 위계와 active/success/failure/delete 4/4 |
 | `pnpm run test:storybook --run src/shared/ui/button/button.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx` | `2026-08-11` | 통과 — outline/ghost computed border 구분·Mixing 단일 상위 목록 link·terminal action 7/7 |
@@ -540,4 +554,4 @@
 | `rg` design asset/reference audit | `2026-08-10` | 통과 — canonical `references/copy-singer` 정책 유지; production 참조 0건인 Next 기본 `file/globe/window.svg` 제거, `favicon.svg`·`og.png` 보존 |
 | `git diff --check` | `2026-08-11` | 통과 — Profile header·상세 복귀·공통 Button·Feature 문서 whitespace 오류 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T07:11:02.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T07:21:50.000Z -->
