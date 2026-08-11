@@ -108,6 +108,8 @@ VocalProfile analysis reference
 - AI 믹스 목록은 결과 설명 column을 제거하고 item·생성일·상태의 3-column table로 단순화한다. 목록의 상태 label은 실제 job status와 `resultReady`를 함께 반영하고 상세의 풍부한 설명은 유지한다.
 - 보컬 프로필은 기존 AI 믹싱 횟수를 보존하면서 상태 column을 추가한다. 저장 profile은 `사용 가능`, 분석 job은 현재 polling status를 표시하며 두 행은 같은 6-column grid token을 공유한다.
 - 두 목록 모두 desktop에서는 상태를 오른쪽 끝에, mobile에서는 identity 영역 상단에 배치한다. 완료 전 profile job의 non-interactive 계약과 완료 항목의 stretched row link는 유지한다.
+- mixing history Prisma select와 public schema에 normalized profile displayName을 추가하고 검색 OR 조건에 profile displayName을 포함한다.
+- AI 믹스 목록은 `VocalProfileArtwork`와 profile name을 비상호작용 column으로 렌더링한다. 믹스 상세는 같은 artwork/name을 profile link로 제공하고 active progress에는 이름 텍스트를 포함한다.
 
 ### 추천 목록 완료 상태와 sticky 선택 카드
 
@@ -153,7 +155,7 @@ prisma/
 
 - **단위 테스트**: profile name trim/length contract, UUID artwork token 결정성·분산, YouTube ID validation/embed URL, serializers와 rename ownership을 검증한다.
 - **DB 테스트**: migration backfill, counter 증가, 삭제 후 번호 미재사용, 프로필별 추천 get-or-create·동시 unique invariant와 SONG profile null 호환을 검증한다.
-- **컴포넌트 테스트**: profile library/detail의 artwork·stored title·rename states·고정 대표 구간·분석 job 행 6-column 정렬과 비활성 상태, mixing library의 결과 column 제거·오른쪽 상태·결과 확인 중 label, recommendation list의 facade/단일 iframe/row selection 분리·compact 완료 chip 단독 표시·sticky selection·믹싱 불가 상태, detail player·외부 link 제거를 Storybook interaction으로 검증한다.
+- **컴포넌트 테스트**: profile library/detail의 artwork·stored title·rename states·고정 대표 구간·분석 job 행 6-column 정렬과 비활성 상태, mixing library의 profile identity column·이름 검색·오른쪽 상태와 mixing detail의 사용 profile 표시, recommendation list의 facade/단일 iframe/row selection 분리·compact 완료 chip 단독 표시·sticky selection·믹싱 불가 상태, detail player·외부 link 제거를 Storybook interaction으로 검증한다.
 - **통합 테스트**: Prisma generate/validate, 관련 Vitest/Storybook, architecture check, TypeScript·ESLint와 production build를 실행한다.
 - **브라우저 QA**: 실제 DB profile 생성·rename·재접속, 추천 목록 영상 재생·다른 행 전환·상세 player를 desktop/mobile에서 확인한다.
 

@@ -133,3 +133,19 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow
   - **Test/Log**: `pnpm run test:recommendation`, `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx`, `pnpm run typecheck`, `pnpm run check:architecture`, `pnpm run lint`, `pnpm run build`
 - **Consequences**: 같은 toggle control의 시각 위계와 icon 전경색이 열림 상태에 따라 함께 바뀐다.
+
+## D008: AI 믹스에서 현재 보컬 프로필 identity 참조 (2026-08-11)
+
+- **Context**: 믹스 목록과 상세가 vocalProfile ID를 이미 갖지만 이름을 응답하지 않아 어떤 프로필을 사용했는지 빠르게 구분할 수 없었다.
+- **Constraints**: profile 이름은 변경 가능하고 mixing row 전체가 이미 상세 이동 target이며 VocalProfile 삭제는 MixingJob 관계가 Restrict한다.
+- **Options**: profile ID/생성일 표시, job 생성 시 이름 snapshot 저장, 현재 profile displayName과 artwork 표시.
+- **Decision**: 별도 snapshot column을 만들지 않고 관계로 연결된 현재 profile displayName과 ID 기반 artwork를 목록·상세에 표시한다.
+- **Rationale**: profile identity는 ID로 안정적이고 이름 변경을 모든 화면에 즉시 반영하며, 기존 Restrict 관계로 job에서 profile이 사라지지 않는다.
+- **Trace**:
+  - **DOING 시작 시점**: history select와 public contract가 profile id·createdAt만 제공하고 검색도 곡명·아티스트만 포함함을 확인했다. detail의 `보컬 분석 보기` action은 이름을 노출하지 않았다.
+  - **DONE 전 확정 시점**: 구현과 DB/browser QA 후 보강 예정.
+- **Evidence**:
+  - **Commit**: 구현 후 기록
+  - **PR**: local workflow
+  - **Test/Log**: 구현 후 기록
+- **Consequences**: 과거 믹스에도 현재 프로필 이름이 표시되며 rename 후 목록·상세 이름도 함께 바뀐다.

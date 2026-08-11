@@ -87,6 +87,8 @@
 - [ ] 보컬 프로필 목록은 `프로필 이름 · 생성일 · 음역 · 안정도 · AI 믹싱 · 상태`의 6-column 구조를 사용한다.
 - [ ] 저장 프로필은 `사용 가능`, 분석 job은 대기·진행·재시도·실패 상태를 마지막 컬럼에 표시한다. 미확정 `AI 믹싱` 값은 `—`로 표시한다.
 - [ ] 모바일에서는 상태를 identity 영역의 제목 위에 우선 배치하고 나머지 정보를 compact metadata로 제공한다.
+- [ ] AI 믹스 목록은 `작업 / 아티스트 · 사용한 보컬 프로필 · 생성일 · 상태`를 표시하고 프로필 이름으로도 검색할 수 있다.
+- [ ] AI 믹스 상세는 진행·완료·실패 상태 모두 실제 사용한 보컬 프로필 이름을 표시하고 완료·실패 화면에서는 해당 프로필 상세로 이동할 수 있다.
 
 ---
 
@@ -141,6 +143,13 @@
 - AI 믹스 status presentation은 `resultReady=false`인 succeeded job을 `결과 확인 중`으로 표시하고 상태를 맨 오른쪽 컬럼에 배치한다.
 - 보컬 프로필 목록은 AI 믹싱 횟수와 상태를 별도 컬럼으로 유지하며 저장 profile과 분석 job이 같은 6-column template을 공유한다.
 - 데스크톱에서는 상태를 마지막 column, 모바일에서는 identity block 상단에 배치한다. 완료 전 분석 job은 계속 non-interactive로 유지한다.
+
+### FR-8: AI 믹스의 사용 보컬 프로필 identity
+
+- 믹싱 히스토리 응답은 사용한 profile의 `id`, 현재 `displayName`, `createdAt`을 제공한다. nullable legacy name은 server serializer에서 profile number 기반 기본 이름으로 정규화한다.
+- AI 믹스 검색은 곡명·아티스트뿐 아니라 현재 보컬 프로필 이름도 포함한다.
+- 목록 desktop은 사용한 보컬 프로필을 별도 column으로 표시하고, mobile은 곡 identity 아래 compact metadata로 표시한다. 목록 전체 상세 이동과 충돌하지 않도록 profile 정보 자체는 별도 link로 만들지 않는다.
+- 믹스 상세 header는 profile artwork와 현재 이름을 표시하며 terminal 상태에서는 profile 상세 link를 제공한다. active progress에도 이름을 표시한다.
 
 ### 제외 범위
 
