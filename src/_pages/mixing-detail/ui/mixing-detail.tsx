@@ -204,12 +204,12 @@ export function MixingDetail({ initial }: { initial: MixingHistoryRow }) {
           <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
             AI mix detail
           </p>
-          <div className="mt-3 flex flex-wrap items-center gap-3">
-            <h1 className="min-w-0 text-[clamp(2.5rem,5vw,4.25rem)] font-semibold leading-none tracking-[-0.055em]">
-              {job.song.title}
-            </h1>
+          <div className="mt-3">
             <MixingStatusBadge status={job.status} />
           </div>
+          <h1 className="mt-4 min-w-0 text-[clamp(2.5rem,5vw,4.25rem)] font-semibold leading-none tracking-[-0.055em]">
+            {job.song.title}
+          </h1>
           <p className="mt-3 text-sm text-muted-foreground">{job.song.artist}</p>
           <p aria-live="polite" className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground">
             {presentation.description}

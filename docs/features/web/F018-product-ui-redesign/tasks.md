@@ -452,6 +452,16 @@
     - [x] Voice Scan 중복 chip과 표시 전용 health query 제거
     - [x] Design System·unit·Storybook·build 회귀 검증
 
+- [DONE][PRD-FR-050] T-F018-30 Mixing Detail 상태 chip 위계 조정
+  - Date: 2026-08-11
+  - Change request: implementation approval checkpoint에서 사용자 변경 요청(B)으로 추가
+  - Acceptance:
+    - `/library/mixes/[id]` terminal 상세 header의 진행 상태 chip은 곡명 오른쪽이 아니라 곡명 위에 위치한다.
+    - active process 화면과 terminal 성공·실패 상세의 상태 의미와 접근성은 유지한다.
+  - Checklist:
+    - [x] Mixing Detail terminal header의 상태·곡명 세로 위계 적용
+    - [x] Mixing Detail Storybook·UI·build 회귀 검증
+
 ---
 
 ## 완료 조건
@@ -482,11 +492,12 @@
 | `pnpm run test:recommendation` | `2026-08-11` | 통과 — ranking 10/10, 적합도 브랜드 색상 경계·기본 정렬·reason 표시 정책·synthesis·list·detail 19/19 |
 | `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx` | `2026-08-11` | 통과 — 100곡 적합도 연속 브랜드 색상·선택 panel/mobile Sheet·polling·완료 상태 9/9 |
 | `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/_pages/profile/ui/voice-scan-input.stories.tsx` | `2026-08-11` | 통과 — 순위 표시 없는 추천 비교 목록·Voice Scan 입력 상태 15/15 |
+| `pnpm run test:storybook --run src/_pages/mixing-detail/ui/mixing-detail.stories.tsx` | `2026-08-11` | 통과 — terminal 상태 chip이 곡명보다 앞서는 DOM 위계와 active/success/failure/delete 4/4 |
 | `pnpm run test:storybook --run src/entities/vocal-profile/ui/vocal-profile-results.stories.tsx src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/_pages/song-detail/ui/song-detail.stories.tsx` | `2026-08-10` | 통과 — 중앙음 유무에 따른 공통 음역 graph·정제된 recommendation reason·Song Detail 17/17 |
 | `pnpm exec tsx --test tests/vocal-profile-visualization.test.ts tests/vocal-profile-results-ui.test.tsx` | `2026-08-10` | 통과 — 음역 graph data·접근 가능한 시각화 UI 10/10 |
 | `pnpm run test:storybook --run src/widgets/library/ui/mixing-library.stories.tsx src/widgets/library/ui/vocal-profile-library.stories.tsx src/_pages/library/ui/library-page.stories.tsx` | `2026-08-10` | 통과 — raw error 차단·10/12개 dense row·ProductShell 통합 10/10 |
 | `pnpm run test:recommendation:db` | `2026-08-10` | 통과 — persistence·synthesis 3/3 |
-| `pnpm run test:mixing:ui` | `2026-08-10` | 통과 — safe failure presentation·history 단일 action·실제 timeline·상세 adapter 8/8 |
+| `pnpm run test:mixing:ui` | `2026-08-11` | 통과 — 상태 chip·곡명 위계, safe failure presentation·history 단일 action·실제 timeline·상세 adapter 8/8 |
 | `pnpm run test:mixing:db` | `2026-08-10` | 통과 — queue·owner/filter/pagination·active 409·terminal 삭제·cleanup queue·ticket SetNull 1/1 |
 | `pnpm run test:query` | `2026-08-10` | 통과 — detail/history Query key·terminal polling·생성 job 직접 route·삭제 envelope 포함 24/24, streaming proxy 1/1 |
 | `pnpm run test:auth:db` | `2026-08-10` | 통과 — session/role·Google provider account ownership·강제 개발 인증 우회 session 식별 3/3 |
@@ -502,4 +513,4 @@
 | `rg` design asset/reference audit | `2026-08-10` | 통과 — canonical `references/copy-singer` 정책 유지; production 참조 0건인 Next 기본 `file/globe/window.svg` 제거, `favicon.svg`·`og.png` 보존 |
 | `git diff --check` | `2026-08-10` | 통과 — 공통 chrome·Pretendard·violet audio UI·Feature 문서 whitespace 오류 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T06:19:54.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T06:25:54.000Z -->

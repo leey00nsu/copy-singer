@@ -413,3 +413,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 비교 화면은 곡·적합도·추천 키·믹싱 상태에 집중하고, 생성 화면의 현재 단계는 하나의 공통 stepper만 책임지게 하면 정보 위계가 명확해진다. 사용자가 조치할 수 없는 사전 health 상태보다 실제 분석 요청 결과가 더 유효한 상태 피드백이다.
 - **Evidence**: `pnpm run test:recommendation` 10/10+19/19, `pnpm run test:voice-scan` 12/12, Recommendation/Voice Scan targeted Storybook 15/15, `pnpm run check` 통과(error 0, 기존 warning 59건), Next production build 23/23 routes.
 - **Consequences**: API와 ranking algorithm은 변경되지 않는다. analyzer health endpoint와 Query option은 다른 진단 경로를 위해 유지하지만 Voice Scan idle 화면은 이를 선조회하지 않는다.
+
+## D044: Mixing Detail terminal 상태는 곡명 위에 배치 (2026-08-11)
+
+- **Context**: terminal Mixing Detail header에서 상태 chip과 큰 곡명이 같은 flex row에 있어 상태가 곡명 오른쪽에 붙고, 긴 곡명이나 좁은 viewport에서는 핵심 정보의 읽기 순서가 불안정했다.
+- **Decision**: terminal header를 `AI mix detail` eyebrow, `MixingStatusBadge`, 곡명, 아티스트의 세로 순서로 구성한다. active job은 기존 `ProcessHero`의 title 위 status slot을 유지한다.
+- **Rationale**: 상태를 곡명 위의 작은 선행 정보로 분리하면 긴 제목과 경쟁하지 않고 active·terminal 화면 모두 상태를 먼저 확인한 뒤 대상 곡을 읽는 흐름이 된다.
+- **Evidence**: `pnpm run test:mixing:ui` 8/8, Mixing Detail Storybook 4/4에서 status badge가 song heading보다 앞서는 DOM 순서 검증, `pnpm run check` 통과(error 0, 기존 warning 59건), Next production build 23/23 routes.
+- **Consequences**: 상태 label·색·polling·terminal action과 API 계약은 변경하지 않고 header composition만 바뀐다.

@@ -27,6 +27,10 @@ type Story = StoryObj<typeof meta>;
 export const ResultReady: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    const status = canvas.getAllByText("완료").find((element) => element.getAttribute("data-slot") === "badge");
+    if (!status) throw new Error("ResultReady requires a completed status badge.");
+    const songTitle = canvas.getByRole("heading", { name: "서른 즈음에" });
+    await expect(status.compareDocumentPosition(songTitle) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     await expect(canvas.getByRole("heading", { name: "완성된 AI 믹스" })).toBeVisible();
     await expect(canvas.getByRole("link", { name: "결과 저장" })).toBeVisible();
     await expect(canvas.getByRole("list", { name: "AI 믹싱 진행 단계" })).toBeVisible();

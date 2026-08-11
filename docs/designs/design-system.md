@@ -150,6 +150,7 @@ Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface�
 - 키 조정 전후 점수 변화, 고·저음 부담 감소·잔존처럼 선택에 의미가 낮은 technical reason은 저장 계약을 유지하되 사용자 표시 projection에서 제외한다. 별도 SONG RANGE와 score breakdown 근거도 노출하지 않는다.
 - process visual의 animation은 상태를 보조할 뿐이며 `prefers-reduced-motion`에서 정지해도 title, status와 timeline만으로 의미가 유지돼야 한다.
 - 상세 화면은 Summary → 근거/분석 → 관련 action 순서를 유지한다.
+- Mixing Detail의 terminal header는 eyebrow → 상태 chip → 곡명 → 아티스트 순서로 세로 위계를 구성해 상태가 긴 곡명과 같은 행에서 경쟁하지 않게 한다.
 - filter는 실제 query/data field만 제공하고 결과 개수와 초기화 action을 함께 보여준다.
 
 ## Component rules
