@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 
-import { ProductShell } from "@/widgets/product-shell";
+import { ProductHeader, ProductShell } from "@/widgets/product-shell";
 
 const meta = {
   title: "Widgets/ProductShell",
@@ -91,5 +91,37 @@ export const DevelopmentBypass: Story = {
     const body = within(document.body);
     const bypassStatus = await body.findByRole("menuitem", { name: "개발 인증 우회 사용 중" });
     await expect(bypassStatus).toHaveAttribute("aria-disabled", "true");
+  },
+};
+
+export const UnauthenticatedDesktop: Story = {
+  render: () => <ProductHeader />,
+  globals: {
+    viewport: { value: "desktop", isRotated: false },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("button", { name: "로그인" })).toHaveAttribute(
+      "href",
+      "/login?callbackURL=%2Fprofile",
+    );
+    await expect(canvas.queryByText("무료로 시작하기")).not.toBeInTheDocument();
+  },
+};
+
+export const UnauthenticatedMobile: Story = {
+  render: () => <ProductHeader />,
+  globals: {
+    viewport: { value: "mobile1", isRotated: false },
+  },
+  play: async ({ canvasElement }) => {
+    await userEvent.click(within(canvasElement).getByRole("button", { name: "제품 메뉴 열기" }));
+    const dialog = within(document.body).getByRole("dialog");
+    await waitFor(() => expect(dialog).toBeVisible());
+    await expect(within(dialog).getByRole("button", { name: "로그인" })).toHaveAttribute(
+      "href",
+      "/login?callbackURL=%2Fprofile",
+    );
+    await expect(within(dialog).queryByText("무료로 시작하기")).not.toBeInTheDocument();
   },
 };

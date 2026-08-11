@@ -107,17 +107,9 @@ function ProductHeader({ admin = false, user = null }: ProductHeaderProps) {
               />
             </div>
           ) : (
-            <div className="hidden items-center gap-2 sm:flex">
-              <Button
-                nativeButton={false}
-                render={<Link href="/login?callbackURL=%2Fprofile" />}
-                size="sm"
-                variant="ghost"
-              >
-                로그인
-              </Button>
+            <div className="hidden sm:block">
               <Button nativeButton={false} render={<Link href="/login?callbackURL=%2Fprofile" />} size="sm">
-                무료로 시작하기
+                로그인
               </Button>
             </div>
           )}
@@ -152,18 +144,9 @@ function ProductHeader({ admin = false, user = null }: ProductHeaderProps) {
                     side="top"
                   />
                 ) : (
-                  <div className="grid gap-2">
-                    <Button
-                      nativeButton={false}
-                      render={<Link href="/login?callbackURL=%2Fprofile" />}
-                      variant="outline"
-                    >
-                      로그인
-                    </Button>
-                    <Button nativeButton={false} render={<Link href="/login?callbackURL=%2Fprofile" />}>
-                      무료로 시작하기
-                    </Button>
-                  </div>
+                  <Button nativeButton={false} render={<Link href="/login?callbackURL=%2Fprofile" />}>
+                    로그인
+                  </Button>
                 )}
               </div>
             </SheetContent>
