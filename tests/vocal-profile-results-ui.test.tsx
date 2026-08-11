@@ -7,6 +7,8 @@ import { VocalProfileResults } from "../src/entities/vocal-profile";
 const profile: VocalProfileResponse = {
   id: "profile",
   sourceType: "USER",
+  profileNumber: 1,
+  displayName: "보컬 프로필 1",
   minMidi: 60,
   maxMidi: 72,
   p10Midi: 64,

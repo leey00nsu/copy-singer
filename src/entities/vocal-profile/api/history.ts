@@ -6,6 +6,8 @@ import { serializeProfile } from "./profile-service";
 
 const profileSummarySelect = {
   id: true,
+  profileNumber: true,
+  displayName: true,
   minMidi: true,
   maxMidi: true,
   medianMidi: true,
@@ -29,8 +31,11 @@ function requiredMetric(value: number | null, name: string) {
 }
 
 function serializeSummary(row: Awaited<ReturnType<typeof findProfileRows>>[number]): VocalProfileHistoryRow {
+  const profileNumber = row.profileNumber ?? 1;
   return {
     id: row.id,
+    profileNumber,
+    displayName: row.displayName?.trim() || `보컬 프로필 ${profileNumber}`,
     minMidi: requiredMetric(row.minMidi, "minMidi"),
     maxMidi: requiredMetric(row.maxMidi, "maxMidi"),
     medianMidi: requiredMetric(row.medianMidi, "medianMidi"),

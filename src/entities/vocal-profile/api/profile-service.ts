@@ -6,6 +6,8 @@ import type { VocalProfileResponse } from "../model/contract";
 type StoredProfile = {
   id: string;
   sourceType: "USER" | "SONG";
+  profileNumber?: number | null;
+  displayName?: string | null;
   minMidi: number | null;
   maxMidi: number | null;
   p10Midi: number | null;
@@ -39,9 +41,12 @@ function requiredMetric(value: number | null, name: string) {
 
 export function serializeProfile(profile: StoredProfile): VocalProfileResponse {
   if (profile.sourceType !== "USER") throw new Error("Expected a user vocal profile.");
+  const profileNumber = profile.profileNumber ?? 1;
   return {
     id: profile.id,
     sourceType: "USER",
+    profileNumber,
+    displayName: profile.displayName?.trim() || `보컬 프로필 ${profileNumber}`,
     minMidi: requiredMetric(profile.minMidi, "minMidi"),
     maxMidi: requiredMetric(profile.maxMidi, "maxMidi"),
     p10Midi: requiredMetric(profile.p10Midi, "p10Midi"),

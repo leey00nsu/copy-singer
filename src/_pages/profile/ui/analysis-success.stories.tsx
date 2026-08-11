@@ -7,6 +7,8 @@ import { AnalysisSuccess } from "./analysis-success";
 const profile: VocalProfileResponse = {
   id: "0198be62-667c-7a90-87a5-57d65f245c11",
   sourceType: "USER",
+  profileNumber: 1,
+  displayName: "보컬 프로필 1",
   minMidi: 48,
   maxMidi: 72,
   p10Midi: 52,

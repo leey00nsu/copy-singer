@@ -71,6 +71,8 @@ export type AnalyzerProfile = Omit<AnalyzerProfileData, "synthesisReference"> & 
 export const vocalProfileResponseSchema = z.object({
   id: z.uuid(),
   sourceType: z.literal("USER"),
+  profileNumber: z.number().int().positive(),
+  displayName: z.string().trim().min(1).max(40),
   minMidi: z.number(),
   maxMidi: z.number(),
   p10Midi: z.number(),
@@ -101,6 +103,8 @@ export type VocalProfileResponse = z.infer<typeof vocalProfileResponseSchema>;
 
 export type VocalProfileHistoryRow = {
   id: string;
+  profileNumber: number;
+  displayName: string;
   minMidi: number;
   maxMidi: number;
   medianMidi: number;
@@ -174,6 +178,18 @@ export const vocalProfileDeleteResponseSchema = z.object({
 });
 
 export type VocalProfileDeleteResponse = z.infer<typeof vocalProfileDeleteResponseSchema>;
+
+export const vocalProfileRenameRequestSchema = z.object({
+  displayName: z.string().trim().min(1, "프로필 이름을 입력해주세요.").max(40, "프로필 이름은 40자 이하여야 합니다."),
+});
+
+export const vocalProfileRenameResponseSchema = z.object({
+  id: z.uuid(),
+  displayName: z.string().trim().min(1).max(40),
+});
+
+export type VocalProfileRenameRequest = z.infer<typeof vocalProfileRenameRequestSchema>;
+export type VocalProfileRenameResponse = z.infer<typeof vocalProfileRenameResponseSchema>;
 
 export const SMART_REFERENCE_VERSION = "smart-reference-v1" as const;
 export const SMART_REFERENCE_MID_VERSION = "smart-reference-mid-v1" as const;

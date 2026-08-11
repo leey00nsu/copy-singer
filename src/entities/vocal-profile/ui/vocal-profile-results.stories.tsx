@@ -6,6 +6,8 @@ import { type VocalProfileResponse, VocalProfileResults } from "@/entities/vocal
 const PROFILE: VocalProfileResponse = {
   id: "62fae3c1-45f0-4ed8-85bd-2809ac95cde9",
   sourceType: "USER",
+  profileNumber: 1,
+  displayName: "보컬 프로필 1",
   minMidi: 52,
   maxMidi: 76,
   p10Midi: 56,

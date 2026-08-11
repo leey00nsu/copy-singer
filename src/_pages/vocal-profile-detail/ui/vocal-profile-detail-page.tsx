@@ -26,7 +26,9 @@ export default async function VocalProfileDetailPage({ params }: { params: Promi
           <p className="text-[10px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
             Saved analysis
           </p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-[-0.045em] sm:text-[2.25rem]">{presentation.label}</h1>
+          <h1 className="mt-2 text-3xl font-semibold tracking-[-0.045em] sm:text-[2.25rem]">
+            {detail.profile.displayName}
+          </h1>
           <p className="mt-2.5 max-w-xl text-xs leading-5 text-muted-foreground">{presentation.summary}</p>
           <p className="mt-2.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
             <CalendarDays className="size-3.5" /> {new Date(detail.profile.createdAt).toLocaleString("ko-KR")}
@@ -41,7 +43,11 @@ export default async function VocalProfileDetailPage({ params }: { params: Promi
               <Music2 className="size-3" /> 믹싱 {detail.mixingCount}
             </Badge>
           </div>
-          <VocalProfileActions profileId={detail.profile.id} latestRecommendationId={detail.latestRecommendationId} />
+          <VocalProfileActions
+            displayName={detail.profile.displayName}
+            profileId={detail.profile.id}
+            latestRecommendationId={detail.latestRecommendationId}
+          />
         </div>
       </div>
 

@@ -7,7 +7,14 @@ import {
   SMART_REFERENCE_MID_VERSION,
   SMART_REFERENCE_VERSION,
   synthesisReferenceContractVersion,
+  vocalProfileRenameRequestSchema,
 } from "../src/entities/vocal-profile";
+
+test("vocal profile names are trimmed and limited to 40 characters", () => {
+  assert.equal(vocalProfileRenameRequestSchema.parse({ displayName: "  아침 목소리  " }).displayName, "아침 목소리");
+  assert.equal(vocalProfileRenameRequestSchema.safeParse({ displayName: "   " }).success, false);
+  assert.equal(vocalProfileRenameRequestSchema.safeParse({ displayName: "가".repeat(41) }).success, false);
+});
 
 test("MIDI values are rounded to Korean UI note labels", () => {
   assert.equal(midiToNoteName(48), "C3");

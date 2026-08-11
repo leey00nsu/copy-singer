@@ -114,6 +114,8 @@ model Recording {
 model VocalProfile {
   id                        String                 @id @default(uuid()) @db.Uuid
   userId                    String?
+  profileNumber             Int?
+  displayName               String?
   sourceType                VocalProfileSourceType
   recordingId               String                 @db.Uuid
   synthesisReferenceAssetId String?                @unique @db.Uuid
@@ -142,6 +144,7 @@ model VocalProfile {
   analysisJob               VocalProfileAnalysisJob?
 
   @@unique([recordingId, analyzer, analyzerVersion])
+  @@unique([userId, profileNumber])
   @@index([userId, createdAt])
   @@index([sourceType, createdAt])
 }
@@ -221,6 +224,7 @@ model User {
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
   ticketBalance      Int                 @default(0)
+  nextVocalProfileNumber Int             @default(1)
   sessions           Session[]
   accounts           Account[]
   vocalProfiles      VocalProfile[]

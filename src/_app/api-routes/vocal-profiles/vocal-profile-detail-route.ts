@@ -1,3 +1,4 @@
+import { vocalProfileRenameRequestSchema } from "@/entities/vocal-profile";
 import { deleteAnalyzerRecording, serializeProfile } from "@/entities/vocal-profile/index.server";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 import { resourceIdSchema } from "@/shared/api";
@@ -21,10 +22,39 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
     where: { id, userId: session.user.id },
     include: { recording: true },
   });
-  if (!profile || profile.sourceType !== "USER") {
+  if (profile?.sourceType !== "USER") {
     return profileNotFoundResponse();
   }
   return Response.json(serializeProfile(profile));
+}
+
+export async function PATCH(request: Request, context: { params: Promise<{ id: string }> }) {
+  const session = await requireApiSession(request);
+  if (!session) return unauthorizedResponse();
+  const parsedId = resourceIdSchema.safeParse((await context.params).id);
+  if (!parsedId.success) return profileNotFoundResponse();
+  const parsedBody = vocalProfileRenameRequestSchema.safeParse(await request.json().catch(() => null));
+  if (!parsedBody.success) {
+    return Response.json(
+      {
+        reasonCode: "INVALID_PROFILE_NAME",
+        detail: parsedBody.error.issues[0]?.message ?? "Vocal profile name is invalid.",
+        retryable: false,
+      },
+      { status: 400 },
+    );
+  }
+  const profile = await prisma.vocalProfile.findFirst({
+    where: { id: parsedId.data, userId: session.user.id, sourceType: "USER" },
+    select: { id: true },
+  });
+  if (!profile) return profileNotFoundResponse();
+  const updated = await prisma.vocalProfile.update({
+    where: { id: profile.id },
+    data: { displayName: parsedBody.data.displayName },
+    select: { id: true },
+  });
+  return Response.json({ id: updated.id, displayName: parsedBody.data.displayName });
 }
 
 export async function DELETE(request: Request, context: { params: Promise<{ id: string }> }) {
@@ -41,7 +71,7 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
       recommendationRuns: { select: { id: true }, take: 1 },
     },
   });
-  if (!profile || profile.sourceType !== "USER") {
+  if (profile?.sourceType !== "USER") {
     return profileNotFoundResponse();
   }
   if (profile.recommendationRuns.length > 0) {

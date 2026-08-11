@@ -9,6 +9,7 @@ export { GET as vocalProfileAudioGet } from "./vocal-profile-audio-route";
 export {
   DELETE as vocalProfileDetailDelete,
   GET as vocalProfileDetailGet,
+  PATCH as vocalProfileDetailPatch,
 } from "./vocal-profile-detail-route";
 export { GET as vocalProfileHealthGet } from "./vocal-profile-health-route";
 export { GET as vocalProfileSynthesisReferenceAudioGet } from "./vocal-profile-synthesis-reference-audio-route";

@@ -21,6 +21,16 @@ export class VocalProfilePersistenceError extends Error {
   }
 }
 
+async function allocateVocalProfileIdentity(tx: Prisma.TransactionClient, userId: string) {
+  const user = await tx.user.update({
+    where: { id: userId },
+    data: { nextVocalProfileNumber: { increment: 1 } },
+    select: { nextVocalProfileNumber: true },
+  });
+  const profileNumber = user.nextVocalProfileNumber - 1;
+  return { profileNumber, displayName: `보컬 프로필 ${profileNumber}` };
+}
+
 export async function persistAnalyzedVocalProfile(input: {
   userId: string;
   recordingId: string;
@@ -80,42 +90,46 @@ export async function persistAnalyzedVocalProfile(input: {
   }
 
   try {
-    await prisma.vocalProfile.create({
-      data: {
-        user: { connect: { id: input.userId } },
-        sourceType: "USER",
-        minMidi: profile.minMidi,
-        maxMidi: profile.maxMidi,
-        p10Midi: profile.p10Midi,
-        medianMidi: profile.medianMidi,
-        p90Midi: profile.p90Midi,
-        tessituraLowMidi: profile.tessituraLowMidi,
-        tessituraHighMidi: profile.tessituraHighMidi,
-        voicedRatio: profile.voicedRatio,
-        pitchStability: profile.pitchStability,
-        clippingRatio: profile.clippingRatio,
-        rmsDb: profile.rmsDb,
-        descriptors: profile.descriptors as Prisma.InputJsonValue,
-        analyzer: profile.analyzer,
-        analyzerVersion: profile.analyzerVersion,
-        ...(synthesisReferenceAsset
-          ? { synthesisReferenceAsset: { connect: { id: synthesisReferenceAsset.id } } }
-          : {}),
-        recording: {
-          create: {
-            id: input.recordingId,
-            kind: RecordingKind.USER_TEST,
-            storagePath: `leemage://${mediaAsset.externalProjectId}/${mediaAsset.externalFileId}`,
-            mimeType: profile.mimeType,
-            durationMs: profile.durationMs,
-            sizeBytes: BigInt(profile.sizeBytes),
-            sampleRate: profile.sampleRate,
-            status: RecordingStatus.READY,
-            expiresAt: null,
-            mediaAsset: { connect: { id: mediaAsset.id } },
+    await prisma.$transaction(async (tx) => {
+      const identity = await allocateVocalProfileIdentity(tx, input.userId);
+      await tx.vocalProfile.create({
+        data: {
+          ...identity,
+          user: { connect: { id: input.userId } },
+          sourceType: "USER",
+          minMidi: profile.minMidi,
+          maxMidi: profile.maxMidi,
+          p10Midi: profile.p10Midi,
+          medianMidi: profile.medianMidi,
+          p90Midi: profile.p90Midi,
+          tessituraLowMidi: profile.tessituraLowMidi,
+          tessituraHighMidi: profile.tessituraHighMidi,
+          voicedRatio: profile.voicedRatio,
+          pitchStability: profile.pitchStability,
+          clippingRatio: profile.clippingRatio,
+          rmsDb: profile.rmsDb,
+          descriptors: profile.descriptors as Prisma.InputJsonValue,
+          analyzer: profile.analyzer,
+          analyzerVersion: profile.analyzerVersion,
+          ...(synthesisReferenceAsset
+            ? { synthesisReferenceAsset: { connect: { id: synthesisReferenceAsset.id } } }
+            : {}),
+          recording: {
+            create: {
+              id: input.recordingId,
+              kind: RecordingKind.USER_TEST,
+              storagePath: `leemage://${mediaAsset.externalProjectId}/${mediaAsset.externalFileId}`,
+              mimeType: profile.mimeType,
+              durationMs: profile.durationMs,
+              sizeBytes: BigInt(profile.sizeBytes),
+              sampleRate: profile.sampleRate,
+              status: RecordingStatus.READY,
+              expiresAt: null,
+              mediaAsset: { connect: { id: mediaAsset.id } },
+            },
           },
         },
-      },
+      });
     });
     return prisma.vocalProfile.findFirstOrThrow({
       where: { recordingId: input.recordingId, userId: input.userId },
@@ -205,6 +219,7 @@ export async function persistQueuedAnalyzedVocalProfile(input: {
         select: { id: true },
       });
       if (raced) return;
+      const identity = await allocateVocalProfileIdentity(tx, input.userId);
       await tx.recording.create({
         data: {
           id: input.recordingId,
@@ -221,6 +236,7 @@ export async function persistQueuedAnalyzedVocalProfile(input: {
       });
       await tx.vocalProfile.create({
         data: {
+          ...identity,
           user: { connect: { id: input.userId } },
           sourceType: "USER",
           recording: { connect: { id: input.recordingId } },

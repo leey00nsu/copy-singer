@@ -70,6 +70,8 @@ test("profile history, detail, and reference are scoped to the owning user", asy
       data: {
         id: profileId,
         userId: ownerId,
+        profileNumber: 1,
+        displayName: "새벽 연습",
         sourceType: "USER",
         recordingId,
         minMidi: 46,
@@ -93,6 +95,8 @@ test("profile history, detail, and reference are scoped to the owning user", asy
     const ownerHistory = await getVocalProfileHistory(ownerId);
     assert.equal(ownerHistory.total, 1);
     assert.equal(ownerHistory.profiles[0]?.id, profileId);
+    assert.equal(ownerHistory.profiles[0]?.displayName, "새벽 연습");
+    assert.equal((await getVocalProfileDetail(ownerId, profileId))?.profile.displayName, "새벽 연습");
     assert.equal((await getVocalProfileHistory(otherId)).total, 0);
     assert.equal((await getVocalProfileDetail(ownerId, profileId))?.audioUrl, `/api/vocal-profiles/${profileId}/audio`);
     assert.equal(await getVocalProfileDetail(otherId, profileId), null);

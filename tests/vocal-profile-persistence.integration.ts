@@ -130,7 +130,9 @@ async function runPersistenceFailureCase(mode: FailureMode) {
       );
     }
     if (url.includes("/files/") && init?.method === "DELETE") {
-      deletedExternalFiles.push(decodeURIComponent(url.split("/").at(-1)!));
+      const externalFileId = url.split("/").at(-1);
+      if (!externalFileId) throw new Error("Fixture delete URL omitted a file ID.");
+      deletedExternalFiles.push(decodeURIComponent(externalFileId));
       return Response.json({ status: "deleted" });
     }
     throw new Error(`Unexpected URL: ${url}`);
@@ -159,6 +161,13 @@ async function runPersistenceFailureCase(mode: FailureMode) {
       });
       assert.ok(stored.recording.mediaAsset);
       assert.equal(stored.synthesisReferenceAsset, null);
+      assert.equal(stored.profileNumber, 1);
+      assert.equal(stored.displayName, "보컬 프로필 1");
+      assert.equal(
+        (await prisma.user.findUniqueOrThrow({ where: { id: userId }, select: { nextVocalProfileNumber: true } }))
+          .nextVocalProfileNumber,
+        2,
+      );
       const descriptors = stored.descriptors as { synthesisReferenceStorage?: { status?: string; fallback?: string } };
       assert.deepEqual(descriptors.synthesisReferenceStorage, {
         status: "failed",
@@ -172,6 +181,11 @@ async function runPersistenceFailureCase(mode: FailureMode) {
       assert.equal(await prisma.vocalProfile.count({ where: { userId } }), 0);
       assert.equal(await prisma.mediaAsset.count({ where: { userId } }), 0);
       assert.equal(deletedExternalFiles.length, 2);
+      assert.equal(
+        (await prisma.user.findUniqueOrThrow({ where: { id: userId }, select: { nextVocalProfileNumber: true } }))
+          .nextVocalProfileNumber,
+        1,
+      );
     }
   } finally {
     globalThis.fetch = previousFetch;

@@ -47,6 +47,8 @@ const denseProfileHistory: VocalProfileHistoryPayload = {
     const suffix = String(index + 301).padStart(12, "0");
     return {
       id: `40000000-0000-4000-8000-${suffix}`,
+      profileNumber: index + 1,
+      displayName: `보컬 프로필 ${index + 1}`,
       minMidi: 46,
       maxMidi: 70,
       medianMidi: 58,

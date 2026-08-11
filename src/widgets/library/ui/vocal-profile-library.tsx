@@ -173,11 +173,11 @@ export function VocalProfileLibrary({
                 <div className="min-w-0">
                   <h2 className="truncate text-sm font-semibold">
                     <ResourceRowLink
-                      aria-label={`${presentation.label} 분석과 제출 보컬 보기`}
+                      aria-label={`${profile.displayName} 분석과 제출 보컬 보기`}
                       className="underline-offset-4 group-hover/resource-row:underline"
                       href={`/vocal-profiles/${profile.id}`}
                     >
-                      {presentation.label}
+                      {profile.displayName}
                     </ResourceRowLink>
                   </h2>
                   <p className="mt-0.5 text-xs text-muted-foreground">

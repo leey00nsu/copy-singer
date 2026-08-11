@@ -26,6 +26,8 @@ test("vocal profile history renders persisted analysis and detail navigation", (
         profiles: [
           {
             id: "profile-id",
+            profileNumber: 1,
+            displayName: "보컬 프로필 1",
             minMidi: 46,
             maxMidi: 58,
             medianMidi: 52,
