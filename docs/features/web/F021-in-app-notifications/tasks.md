@@ -92,23 +92,23 @@
     - [x] Zod response validation과 TanStack Query options/mutations 구현
     - [x] 인증·잘못된 ID·contract·cache 동작 테스트
 
-- [TODO][PRD-FR-058] T-F021-in-app-notifications-04 Header Bell과 알림 센터 UI
+- [DONE][PRD-FR-058] T-F021-in-app-notifications-04 Header Bell과 알림 센터 UI
   - Date: 2026-08-11
   - Acceptance:
     - 인증 header에서 Bell이 desktop 계정 메뉴 왼쪽·mobile 제품 메뉴 왼쪽에 표시되고 unread 수와 최신 알림을 접근 가능하게 제공한다.
     - `/notifications`는 읽음 구분·최신순 페이지·empty/loading/error 상태를 제공하며 알림 클릭은 읽음 처리 후 안전한 내부 경로로 이동한다.
   - Checklist:
-    - [ ] 공통 notification item·Bell menu·badge 구현
-    - [ ] ProductHeader desktop/mobile 배치와 비로그인 미노출 적용
-    - [ ] notifications page·pagination·상태 UI 구현
-    - [ ] component·Storybook·browser responsive·build 회귀 검증
+    - [x] 공통 notification item·Bell menu·badge 구현
+    - [x] ProductHeader desktop/mobile 배치와 비로그인 미노출 적용
+    - [x] notifications page·pagination·상태 UI 구현
+    - [x] component·Storybook·browser responsive·build 회귀 검증
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -125,5 +125,10 @@
 | `node --conditions react-server --import tsx --test tests/admin-operations.integration.ts tests/vocal-profile-analysis-queue.integration.ts tests/mixing-queue.integration.ts` | `2026-08-11` | 통과 — 티켓 양수 지급 단일 알림, 분석·믹싱 성공/최종 실패와 retry 제외 7/7 |
 | `pnpm exec tsx --test tests/api-contracts.test.ts tests/client-server-state-query.test.ts` | `2026-08-11` | 통과 — 알림 internal href·page/read 계약, 30초 polling·focus refetch·mutation cache invalidation 포함 19/19 |
 | `node --conditions react-server --import tsx --test tests/notification-routes.integration.ts` | `2026-08-11` | 통과 — 인증 401, owner scope 404, 개별·전체 읽음 1/1 |
+| `pnpm run test:storybook --run src/_pages/notifications/ui/notifications-list.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-11` | 통과 — desktop/mobile Bell 배치·비로그인 미노출·dropdown 실제 열기·알림 이력/empty 8/8 |
+| `pnpm run lint` | `2026-08-11` | 통과 |
+| `pnpm run check:architecture` | `2026-08-11` | 통과 — Steiger 및 FSD boundary 4/4 |
+| `pnpm run build` | `2026-08-11` | 통과 — Next.js production build 및 `/notifications` route 생성 |
+| Browser responsive QA | `2026-08-11` | 통과 — Bell dropdown과 전체 알림 화면 렌더링·읽음 상태·내부 이동 구조 확인, Base UI label context 오류 수정 후 재검증 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T22:33:29+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T13:43:26.300Z -->
