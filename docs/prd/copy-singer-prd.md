@@ -142,12 +142,13 @@ Google OAuth 로그인
 ### 제품 UI와 탐색
 
 - **PRD-FR-045**: 웹 앱은 white·neutral gray·black 중심의 공통 semantic token, 절제된 radius·border·shadow, 명확한 typography와 spacing 위계를 사용해야 하며 waveform, 분석 결과와 상태처럼 의미 있는 콘텐츠에만 제한적으로 accent color를 사용해야 한다. 넓은 canvas에 beige·cream·yellow chroma를 사용하지 않아야 한다.
-- **PRD-FR-046**: 루트 진입 화면은 인증 없이 제품 가치와 핵심 흐름을 설명하고 Google 로그인 또는 인증된 음성 스캔으로 연결해야 한다. 마지막 CTA 아래에는 실제 site footer를 제공하며 crystal/prism 이미지는 사용하지 않는다. 로그인 화면은 Google OAuth만 제공하고 다른 공급자나 이메일 가입이 가능한 것처럼 표시하지 않아야 한다.
+- **PRD-FR-046**: 루트 진입 화면은 인증 없이 제품 가치와 핵심 흐름을 설명하고 Google 로그인 또는 인증된 음성 스캔으로 연결해야 한다. 마지막 CTA 아래에는 실제 site footer를 제공하며 crystal/prism 이미지는 사용하지 않는다. 로그인 화면은 제품 로고, `Copy Singer` 이름과 Google icon을 포함한 `구글로 시작하기` action만 중심 콘텐츠로 제공하고 다른 공급자나 이메일 가입이 가능한 것처럼 표시하지 않아야 한다. OAuth 진행·설정 누락·실패 상태는 조건부로 안내한다.
 - **PRD-FR-047**: 음성 스캔은 기존 녹음·업로드·검증·durable analysis job 계약을 유지하면서 마이크 권한, live waveform, 경과 시간, 서버 최소 유효 길이 5초, 약 10초의 권장 녹음과 최대 60초, 중지·재시도·오류 상태를 명확히 표시해야 한다. 분석 진행률과 단계는 서버에서 확인할 수 있는 상태보다 더 정밀한 진행을 가장하지 않아야 한다.
 - **PRD-FR-048**: 보컬 프로필 화면은 보컬 타입에 해당하는 설명, 전체·실용 음역, 중앙음, 안정도와 핵심 특성을 우선 요약하고 기존 histogram, pitch trace, 품질 지표와 reference band 오디오를 세부 정보로 보존해야 한다. 의학적 진단이나 데이터에 없는 성별·장르 적합도를 추정하지 않아야 한다.
 - **PRD-FR-049**: 추천 목록은 현재 API가 제공하는 곡·아티스트·적합도·추천 키·이유·믹싱 가능 여부를 기준으로 검색·정렬·필터링할 수 있어야 한다. 곡 상세는 동일한 저장 추천 결과에서 실제 근거를 보여주며, 앨범 이미지·장르·난이도·가사·인앱 미리듣기처럼 현재 계약에 없는 값을 생성하거나 암시하지 않아야 한다.
 - **PRD-FR-050**: AI 믹싱 UI는 영속 작업의 실제 상태를 이해하기 쉬운 단계로 매핑하고 대기·재시도·실패·성공을 구분해야 한다. 라이브러리는 기존 사용자 소유 보컬 프로필과 믹싱 이력을 통합 탐색할 수 있게 하며, 결과 상세에서 저장된 오디오 재생·다운로드와 기존 삭제 동작을 제공해야 한다. 사용자가 노래를 직접 부른 원본과 AI 결과의 Before/After 비교는 해당 녹음 도메인이 구현되기 전까지 표시하지 않아야 한다.
-- **PRD-FR-051**: 인증 제품 화면은 데스크톱에서 persistent sidebar 없이 브랜드·중앙 제품 navigation·우측 계정 메뉴를 담은 공통 top header를 사용하고, 모바일에서는 접근 가능한 compact navigation을 제공해야 한다. 제품 화면은 focus-visible, 명시적인 button label, 키보드 조작, reduced-motion 배려와 loading·empty·error·disabled 상태를 제공해야 하며 공통 상태와 핵심 오디오 상호작용은 Storybook에서 독립적으로 검증할 수 있어야 한다.
+- **PRD-FR-051**: 인증 제품 화면은 데스크톱에서 persistent sidebar 없이 브랜드·중앙 제품 navigation·우측 계정 메뉴를 담은 공통 top header를 사용하고, 모바일에서는 접근 가능한 compact navigation을 제공해야 한다. 비로그인 header는 중복 가입 CTA 없이 primary `로그인` action 하나만 제공한다. 제품 화면은 focus-visible, 명시적인 button label, 키보드 조작, reduced-motion 배려와 loading·empty·error·disabled 상태를 제공해야 하며 공통 상태와 핵심 오디오 상호작용은 Storybook에서 독립적으로 검증할 수 있어야 한다.
+- **PRD-FR-052**: 제공된 짙은 헤드폰과 pink–violet–blue 파형 심볼을 Copy Singer의 공통 app mark로 사용해야 한다. header/footer/login의 로고와 favicon은 같은 투명 master 자산에서 파생하고 작은 크기에서도 식별 가능한 silhouette, 접근 가능한 제품명과 기존 브랜드 color relationship을 유지해야 한다.
 
 ## 데이터 요구사항
 
