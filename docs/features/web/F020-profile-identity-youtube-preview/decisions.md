@@ -123,7 +123,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Context**: 완료 후 핵심 다음 행동인 `결과 듣기`가 outline이라 시작 전 primary AI 믹싱 action보다 낮은 위계로 보였다.
 - **Constraints**: 같은 button이 플레이어를 열고 닫는 toggle이며 결과 저장은 보조 action으로 남아야 한다.
 - **Options**: 항상 outline, 항상 primary, 닫힘 primary·열림 outline.
-- **Decision**: 플레이어가 닫혔을 때 `결과 듣기`는 primary, 열린 뒤 `결과 닫기`는 outline으로 전환한다.
+- **Decision**: 플레이어가 닫혔을 때 `결과 듣기`는 primary, 열린 뒤 `결과 닫기`는 outline으로 전환하고 icon은 각 button variant의 foreground를 상속한다.
 - **Rationale**: 현재 화면의 핵심 다음 행동을 강조하되, 이미 열린 결과를 닫는 보조 동작까지 과도하게 강조하지 않는다.
 - **Trace**:
   - **DOING 시작 시점**: succeeded non-compact action이 `audioOpen`과 무관하게 항상 outline variant를 사용함을 확인했다.
@@ -132,4 +132,4 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Commit**: 구현 후 기록
   - **PR**: local workflow
   - **Test/Log**: `pnpm run test:recommendation`, `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx`, `pnpm run typecheck`, `pnpm run check:architecture`, `pnpm run lint`, `pnpm run build`
-- **Consequences**: 같은 toggle control의 시각 위계가 열림 상태에 따라 바뀐다.
+- **Consequences**: 같은 toggle control의 시각 위계와 icon 전경색이 열림 상태에 따라 함께 바뀐다.

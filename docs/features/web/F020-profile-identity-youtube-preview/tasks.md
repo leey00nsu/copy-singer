@@ -20,7 +20,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/profile-identity-youtube-preview`
-- **대기 중 변경 요청**: -
+- **대기 중 변경 요청**: 결정: changes_requested — primary 결과 듣기 icon의 흰색 foreground 상속
   - 구현 중 새로 수용한 사용자 요청을 잠시 표시하는 sync marker입니다
   - 요청을 `tasks.md`와 관련 문서에 반영한 뒤 값을 비우세요
   - pre-PR 리뷰 handoff를 시작하면 `Running`, 리뷰 결과 기록까지 끝나면 `Done`으로 변경
@@ -180,12 +180,21 @@
     - [x] completed Storybook에서 닫힘·열림 위계 검증
     - [x] recommendation·typecheck·build 회귀 검증
 
+- [TODO][PRD-FR-051] T-F020-profile-identity-youtube-preview-14 결과 듣기 icon foreground 통일
+  - Date: 2026-08-11
+  - Acceptance:
+    - primary `결과 듣기`의 icon이 별도 성공색 없이 button의 흰색 foreground를 상속하고 outline 전환 후에도 해당 variant의 전경색을 상속한다.
+  - Checklist:
+    - [ ] Headphones icon의 고정 success color 제거
+    - [ ] completed Storybook에서 icon·button computed color 일치 검증
+    - [ ] typecheck·build 회귀 검증
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -226,4 +235,4 @@
 | `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx` | `2026-08-11` | 통과 — polling 완료 chip·sticky selection·결과 듣기 primary→결과 닫기 outline 포함 11/11 |
 | `Storybook browser QA (recommendation sticky selection)` | `2026-08-11` | 통과 — 100곡 목록 중간에서 top 96px 유지, grid 끝에서 containment, 완료 chip 1개·결과 확인 link 0개·선택 카드 결과 듣기 유지 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T21:16:57+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T21:34:24+09:00 -->
