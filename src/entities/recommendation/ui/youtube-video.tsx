@@ -7,6 +7,8 @@ import { youtubeEmbedUrl, youtubeThumbnailUrl } from "../lib/youtube";
 export function YouTubeVideo({
   active = false,
   className,
+  controlsId,
+  expanded = false,
   onActivate,
   title,
   variant = "player",
@@ -14,6 +16,8 @@ export function YouTubeVideo({
 }: {
   active?: boolean;
   className?: string;
+  controlsId?: string;
+  expanded?: boolean;
   onActivate?: () => void;
   title: string;
   variant?: "facade" | "player";
@@ -42,7 +46,9 @@ export function YouTubeVideo({
   if (!showPlayer) {
     return (
       <button
-        aria-label={`${title} 원본 영상 플레이어 열기`}
+        aria-controls={controlsId}
+        aria-expanded={expanded}
+        aria-label={`${title} 원본 영상 플레이어 ${expanded ? "닫기" : "열기"}`}
         className={cn(
           "group/video relative block aspect-video w-full overflow-hidden rounded-lg border bg-neutral-950 text-white outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
           className,

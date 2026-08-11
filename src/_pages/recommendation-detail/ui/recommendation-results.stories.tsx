@@ -96,6 +96,13 @@ export const Success: Story = {
   },
 };
 
+export const VideoExpansionLayout: Story = {
+  args: {
+    initialRun: denseRun,
+    runId: undefined,
+  },
+};
+
 export const DenseComparisonList: Story = {
   args: {
     initialRun: denseRun,
@@ -124,6 +131,16 @@ export const DenseComparisonList: Story = {
     const selection = canvas.getByRole("complementary", { name: "선택한 추천곡" });
     await expect(within(selection).getByRole("heading", { name: "밤편지 3" })).toBeVisible();
     await expect(within(selection).getByText("추천 적합도 3위")).toBeVisible();
+
+    await userEvent.click(canvas.getByRole("button", { name: "서른 즈음에 1 · 김광석 원본 영상 플레이어 열기" }));
+    const expandedRow = canvasElement.querySelector("[data-youtube-expanded-row]");
+    await expect(expandedRow).toBeVisible();
+    await expect(expandedRow?.querySelector("td")).toHaveAttribute("colspan", "4");
+    await expect(canvasElement.querySelectorAll("[data-youtube-player]")).toHaveLength(1);
+
+    await userEvent.click(canvas.getByRole("button", { name: "바람의 노래 2 · 조용필 원본 영상 플레이어 열기" }));
+    await expect(canvas.getByTitle("바람의 노래 2 · 조용필 원본 YouTube 영상")).toBeVisible();
+    await expect(canvasElement.querySelectorAll("[data-youtube-player]")).toHaveLength(1);
   },
 };
 
