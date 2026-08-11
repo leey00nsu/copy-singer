@@ -93,7 +93,12 @@ export function RecommendationMixingAction({
   if (status === "succeeded" && item.synthesis.audioUrl) {
     return (
       <div className="grid min-w-0 gap-2">
-        <Button aria-expanded={audioOpen} onClick={() => setAudioOpen((open) => !open)} size="sm" variant="outline">
+        <Button
+          aria-expanded={audioOpen}
+          onClick={() => setAudioOpen((open) => !open)}
+          size="sm"
+          variant={audioOpen ? "outline" : "default"}
+        >
           <Headphones className="size-4 text-success-foreground" aria-hidden="true" />
           {audioOpen ? "결과 닫기" : "결과 듣기"}
         </Button>

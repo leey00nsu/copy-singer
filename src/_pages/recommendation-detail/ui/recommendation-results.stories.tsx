@@ -241,6 +241,12 @@ export const CompletedAudioIsLazy: Story = {
     await expect(canvas.queryByRole("img", { name: /AI 믹싱 결과 파형/ })).not.toBeInTheDocument();
     await expect(canvas.getByText("완료")).toBeVisible();
     await expect(canvas.queryByRole("link", { name: "결과 확인" })).not.toBeInTheDocument();
+    const listenButton = canvas.getByRole("button", { name: "결과 듣기" });
+    await expect(listenButton).toHaveClass("bg-primary", "text-primary-foreground");
+    await userEvent.click(listenButton);
+    const closeButton = canvas.getByRole("button", { name: "결과 닫기" });
+    await expect(closeButton).toHaveClass("bg-background");
+    await expect(closeButton).not.toHaveClass("bg-primary");
   },
 };
 
