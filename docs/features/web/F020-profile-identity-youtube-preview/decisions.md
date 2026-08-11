@@ -111,9 +111,9 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 목록의 중복 action을 줄이고, fixed overlay 없이 CSS sticky의 section 경계와 반응형 동작을 활용한다.
 - **Trace**:
   - **DOING 시작 시점**: compact succeeded branch가 chip 옆에 job detail link를 생성하고, sticky 요소의 containing block인 aside가 card 높이만 가져 이동 여유가 없음을 확인했다.
-  - **DONE 전 확정 시점**: 구현과 scroll QA 후 보강 예정.
+  - **DONE 전 확정 시점**: compact succeeded branch를 `MixingStatusBadge` 하나로 단순화하고 사용되지 않게 된 detailHref·runId 전달도 제거했다. selection aside 자체에 `lg:sticky lg:top-24 lg:self-start`를 적용했다. 100곡 Storybook에서 scrollY 4928일 때 card top이 96px로 유지되고 마지막 행에서는 card bottom과 grid bottom이 477.75px로 같아 section 경계에서 멈추는 것을 확인했다. 완료 fixture는 chip 1개, 결과 확인 link 0개, selection의 결과 듣기 button 1개였다.
 - **Evidence**:
   - **Commit**: 구현 후 기록
   - **PR**: local workflow
-  - **Test/Log**: 구현 후 기록
+  - **Test/Log**: `pnpm run test:recommendation`, `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx`, `pnpm run typecheck`, `pnpm run check:architecture`, `pnpm run lint`, `pnpm run build`, Storybook scroll browser QA
 - **Consequences**: 목록 행에서는 완료 여부만 확인하고 결과 조작은 선택 카드나 상세 화면에서 수행한다.
