@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Activity, ArrowRight, AudioLines, Check, LoaderCircle, Mic2, ShieldCheck, Timer, Upload } from "lucide-react";
+import { AudioLines, Check, Mic2, ShieldCheck, Timer, Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -12,11 +12,9 @@ import {
   submitVocalProfileAnalysisMutationOptions,
   vocalAnalysisKeys,
   vocalProfileAnalysisJobQueryOptions,
-  vocalProfileHealthQueryOptions,
 } from "@/features/analyze-vocal-profile";
 import { createRecommendationMutationOptions } from "@/features/create-recommendation";
 import { prepareProfileAudio } from "@/shared/lib/audio";
-import { Badge } from "@/shared/ui/badge";
 import { CreationFunnelShell } from "@/widgets/creation-funnel";
 import {
   normalizeProfileError,
@@ -49,7 +47,6 @@ export function VocalProfileWorkbench() {
   const analysisIdempotencyKey = useRef<string | null>(null);
   const handledTerminalJob = useRef<string | null>(null);
 
-  const healthQuery = useQuery(vocalProfileHealthQueryOptions());
   const analysisJobQuery = useQuery(vocalProfileAnalysisJobQueryOptions(analysisJobId));
   const submitAnalysis = useMutation(submitVocalProfileAnalysisMutationOptions());
   const createRecommendation = useMutation(createRecommendationMutationOptions());
@@ -75,7 +72,6 @@ export function VocalProfileWorkbench() {
         }
       : null;
   const displayedAnalysisError = analysisError ?? terminalAnalysisError ?? successContractError;
-  const health = healthQuery.isPending ? "checking" : healthQuery.data?.status === "ok" ? "ok" : "unavailable";
   const audioUrl = useMemo(() => (audioFile ? URL.createObjectURL(audioFile) : null), [audioFile]);
   const analysisBusy =
     submitAnalysis.isPending ||
@@ -293,23 +289,7 @@ export function VocalProfileWorkbench() {
         />
       ) : null}
 
-      <div className="flex flex-wrap items-center gap-2 text-[11px]">
-        <Badge className="border-data-accent bg-data-accent px-3 text-white" variant="outline">
-          Step 1
-        </Badge>
-        <Badge variant="outline">내 음역 측정</Badge>
-        <ArrowRight aria-hidden="true" className="size-3 text-muted-foreground" />
-        <Badge className="gap-1.5" variant={health === "ok" ? "outline" : "secondary"}>
-          {health === "checking" ? (
-            <LoaderCircle aria-hidden="true" className="size-3 animate-spin motion-reduce:animate-none" />
-          ) : (
-            <Activity aria-hidden="true" className="size-3" />
-          )}
-          {health === "checking" ? "분석기 확인 중" : health === "ok" ? "분석기 준비됨" : "분석기 연결 확인 필요"}
-        </Badge>
-      </div>
-
-      <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,.9fr)_minmax(29rem,1.1fr)] lg:items-start lg:gap-14">
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,.9fr)_minmax(29rem,1.1fr)] lg:items-start lg:gap-14">
         <div className="min-w-0">
           <header className="max-w-[34rem]">
             <h1 className="text-[clamp(2.35rem,4.2vw,3.45rem)] font-semibold leading-[1.03] tracking-[-0.052em]">

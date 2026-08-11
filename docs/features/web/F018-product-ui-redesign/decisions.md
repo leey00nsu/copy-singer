@@ -405,3 +405,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 브랜드색의 채도로 적합도 강도를 연속 표현하면 임의 임계치의 상태 변화처럼 보이지 않고, 브랜드 visual language와도 일치한다. 정수 percentage를 항상 함께 표시하므로 색각이나 CSS color 지원 여부와 무관하게 값이 전달된다.
 - **Evidence**: `pnpm run test:recommendation` ranking 10/10·presentation/UI/detail 19/19, Recommendation Results Storybook 9/9, `pnpm run check` 통과(error 0, 기존 warning 59건), Next production build 23/23 routes.
 - **Consequences**: 추천 적합도는 더 이상 `success-foreground`를 사용하지 않는다. 점수·정렬·API·저장 계약은 변경하지 않으며 브랜드 token 변경 시 보간 끝점도 자동으로 따라간다.
+
+## D043: 비교 목록 rank 표시와 Voice Scan 중복 단계 chip 제거 (2026-08-11)
+
+- **Context**: Recommendation은 추천 적합도 내림차순이 기본이지만 별도 순위 열과 mobile badge가 같은 우선순위를 반복했다. Voice Scan도 공통 3단계 journey stepper 바로 아래에서 `Step 1`, `내 음역 측정`, analyzer health를 chip으로 다시 설명해 상단 정보가 중복됐다.
+- **Decision**: Recommendation list의 desktop 순위 열과 mobile 순위 badge를 제거하고 접근성 section label을 `추천 노래 비교 목록`으로 바꾼다. 저장 rank, rank 정렬과 선택 상세의 문맥 정보는 유지한다. Voice Scan 입력 화면의 세 chip과 chip 표시만을 위한 health Query 구독을 제거하며 실제 분석 요청·durable job·오류 presentation은 유지한다.
+- **Rationale**: 비교 화면은 곡·적합도·추천 키·믹싱 상태에 집중하고, 생성 화면의 현재 단계는 하나의 공통 stepper만 책임지게 하면 정보 위계가 명확해진다. 사용자가 조치할 수 없는 사전 health 상태보다 실제 분석 요청 결과가 더 유효한 상태 피드백이다.
+- **Evidence**: `pnpm run test:recommendation` 10/10+19/19, `pnpm run test:voice-scan` 12/12, Recommendation/Voice Scan targeted Storybook 15/15, `pnpm run check` 통과(error 0, 기존 warning 59건), Next production build 23/23 routes.
+- **Consequences**: API와 ranking algorithm은 변경되지 않는다. analyzer health endpoint와 Query option은 다른 진단 경로를 위해 유지하지만 Voice Scan idle 화면은 이를 선조회하지 않는다.

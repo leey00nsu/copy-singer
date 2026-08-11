@@ -104,6 +104,8 @@ test("voice scan components keep media cleanup and continue from analysis to rec
   assert.match(workbench, /<AnalysisStatus/);
   assert.match(workbench, /<CreationFunnelShell currentStep="analysis">/);
   assert.match(workbench, /<AnalysisSuccess/);
+  assert.doesNotMatch(workbench, /Step 1|내 음역 측정|분석기 확인 중|분석기 준비됨|분석기 연결 확인 필요/);
+  assert.doesNotMatch(workbench, /vocalProfileHealthQueryOptions/);
   assert.match(workbench, /createRecommendation\.mutate\(completedProfileId/);
   assert.match(workbench, /router\.push\(`\/recommendations\/\$\{run\.id\}`\)/);
   assert.doesNotMatch(workbench, /router\.replace\(`\/vocal-profiles\/\$\{completedProfileId\}`\)/);

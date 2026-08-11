@@ -440,6 +440,18 @@
     - [x] 목록·선택 상세의 적합도 숫자에 공통 연속 색상 적용
     - [x] Design System·unit·Storybook·build 회귀 검증
 
+- [DONE][PRD-FR-046] T-F018-29 추천 순위 열·Voice Scan 중복 chip 제거
+  - Date: 2026-08-11
+  - Change request: implementation approval checkpoint에서 사용자 변경 요청(B)으로 추가
+  - Acceptance:
+    - Recommendation 비교 목록은 순위 column과 mobile row의 순위 badge 없이 곡·추천 적합도·추천 키·믹싱 상태에 집중한다.
+    - Voice Scan 상단은 공통 3단계 funnel 아래에 `Step 1`, `내 음역 측정`, 분석기 health chip을 중복 표시하지 않는다.
+    - recommendation의 저장 rank·정렬 옵션과 실제 분석 제출·오류 처리는 유지한다.
+  - Checklist:
+    - [x] desktop/mobile recommendation list의 순위 표시 제거 및 접근성 label 정리
+    - [x] Voice Scan 중복 chip과 표시 전용 health query 제거
+    - [x] Design System·unit·Storybook·build 회귀 검증
+
 ---
 
 ## 완료 조건
@@ -464,11 +476,12 @@
 | `pnpm run test:storybook --run src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-10` | 통과 — 일반 계정 메뉴와 개발 인증 우회 비활성 상태 4/4 |
 | `pnpm exec tsx --test tests/effect-cleanup.test.ts tests/recommendation-ui.test.tsx` | `2026-08-09` | 통과 — cleanup·추천 UI 회귀 6/6 |
 | `pnpm exec tsx --test tests/effect-cleanup.test.ts` | `2026-08-10` | 통과 — Library·Mixing Detail Query polling 포함 component timer/fetch inventory 2/2 |
-| `pnpm run test:voice-scan` | `2026-08-10` | 통과 — 녹음 정책·오류·상태·cleanup 12/12 |
+| `pnpm run test:voice-scan` | `2026-08-11` | 통과 — 중복 step/health chip 제거·녹음 정책·오류·상태·cleanup 12/12 |
 | `pnpm run test:vocal-profile-analysis-queue` | `2026-08-10` | 통과 — idempotency·owner·lease·retry·cleanup 5/5 |
 | `pnpm run test:vocal-profile-history` | `2026-08-10` | 통과 — 공유 Library UI 3/3, private audio·ownership 3/3 |
 | `pnpm run test:recommendation` | `2026-08-11` | 통과 — ranking 10/10, 적합도 브랜드 색상 경계·기본 정렬·reason 표시 정책·synthesis·list·detail 19/19 |
 | `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx` | `2026-08-11` | 통과 — 100곡 적합도 연속 브랜드 색상·선택 panel/mobile Sheet·polling·완료 상태 9/9 |
+| `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/_pages/profile/ui/voice-scan-input.stories.tsx` | `2026-08-11` | 통과 — 순위 표시 없는 추천 비교 목록·Voice Scan 입력 상태 15/15 |
 | `pnpm run test:storybook --run src/entities/vocal-profile/ui/vocal-profile-results.stories.tsx src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/_pages/song-detail/ui/song-detail.stories.tsx` | `2026-08-10` | 통과 — 중앙음 유무에 따른 공통 음역 graph·정제된 recommendation reason·Song Detail 17/17 |
 | `pnpm exec tsx --test tests/vocal-profile-visualization.test.ts tests/vocal-profile-results-ui.test.tsx` | `2026-08-10` | 통과 — 음역 graph data·접근 가능한 시각화 UI 10/10 |
 | `pnpm run test:storybook --run src/widgets/library/ui/mixing-library.stories.tsx src/widgets/library/ui/vocal-profile-library.stories.tsx src/_pages/library/ui/library-page.stories.tsx` | `2026-08-10` | 통과 — raw error 차단·10/12개 dense row·ProductShell 통합 10/10 |
@@ -489,4 +502,4 @@
 | `rg` design asset/reference audit | `2026-08-10` | 통과 — canonical `references/copy-singer` 정책 유지; production 참조 0건인 Next 기본 `file/globe/window.svg` 제거, `favicon.svg`·`og.png` 보존 |
 | `git diff --check` | `2026-08-10` | 통과 — 공통 chrome·Pretendard·violet audio UI·Feature 문서 whitespace 오류 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T06:12:28.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T06:19:54.000Z -->

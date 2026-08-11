@@ -104,6 +104,8 @@ test("renders the full ranked recommendation list without starting synthesis", (
   const html = renderRecommendation(run);
   assert.match(html, /내 목소리에 맞는 노래/);
   assert.match(html, /추천 노래 비교 목록/);
+  assert.doesNotMatch(html, /scope="col">순위<\/th>/);
+  assert.doesNotMatch(html, />\d+위<\/span>/);
   assert.equal((html.match(/aria-pressed="(?:true|false)"/g) ?? []).length, 100);
   assert.match(html, /추천 적합도/);
   assert.match(html, /추천 키/);

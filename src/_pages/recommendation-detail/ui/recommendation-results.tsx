@@ -222,7 +222,7 @@ export function RecommendationResults({
       </div>
 
       <div className="mt-7 grid gap-8 pb-24 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start lg:pb-0">
-        <section aria-label="추천 노래 전체 순위">
+        <section aria-label="추천 노래 비교 목록">
           {visibleItems.length > 0 && selectedItem ? (
             <RecommendationSongList
               items={visibleItems}

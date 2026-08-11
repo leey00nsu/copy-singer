@@ -140,9 +140,11 @@ Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface�
 
 - 목소리 분석, 노래 추천과 AI 믹싱 생성은 `목소리 분석 → 노래 추천 → AI 믹싱`의 세 단계 사용자 여정을 공유한다.
 - 상단 journey stepper는 사용자의 현재 위치만 설명하며 backend 진행률을 의미하지 않는다. 각 분석·믹싱 job의 실제 상태는 별도 timeline과 status copy로 표시한다.
+- Voice Scan 입력 화면은 상단 journey stepper와 같은 단계 의미를 반복하는 `Step 1`·단계명·health chip을 추가하지 않는다. 실제 연결 오류는 분석 action의 상태와 오류 UI에서 전달한다.
 - processing 화면은 Mixing Detail의 중앙 집중형 제목, 넓은 whitespace, restrained violet process visual과 실제 상태 설명을 기준으로 한다.
 - desktop 추천 선택은 목록 옆 보조 panel, mobile은 Sheet를 사용하며 primary action은 선택한 곡 하나에만 제공한다.
 - 추천 선택 UI는 `lg` 이상에서 sticky 보조 panel을, 그 미만에서는 화면 하단 action과 bottom Sheet를 사용한다. 하단 action이 목록의 마지막 행을 가리지 않도록 mobile content에 여유 공간을 둔다.
+- 추천 비교 목록은 저장된 rank를 정렬 계약으로 유지하되 별도 순위 열이나 mobile 순위 badge를 노출하지 않고 곡·적합도·추천 키·믹싱 상태를 우선한다.
 - Profile Detail과 Song Detail은 전체 근거를 보는 선택 경로다. 생성 퍼널은 해당 상세 route를 필수 단계로 요구하지 않는다.
 - Song Detail은 추천 적합도 비교, 보컬 프로필과 같은 visual language의 전체 관측·실용 음역 graph와 사용자에게 유효한 추천 이유만 보여준다. recommendation snapshot에 없는 중앙음은 추정하지 않는다.
 - 키 조정 전후 점수 변화, 고·저음 부담 감소·잔존처럼 선택에 의미가 낮은 technical reason은 저장 계약을 유지하되 사용자 표시 projection에서 제외한다. 별도 SONG RANGE와 score breakdown 근거도 노출하지 않는다.
