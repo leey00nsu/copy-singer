@@ -79,22 +79,22 @@
     - [x] desktop/mobile 중복 무료로 시작하기 action 제거
     - [x] ProductShell Storybook과 auth navigation 회귀 검증
 
-- [TODO][PRD-FR-046] T-F019-03 최소 로그인 화면과 Google 시작 button 적용
+- [DONE][PRD-FR-046] T-F019-03 최소 로그인 화면과 Google 시작 button 적용
   - Date: 2026-08-11
   - Acceptance:
     - 로그인 page는 header 홈으로를 제거하고 중심에 logo, Copy Singer, Google icon이 포함된 구글로 시작하기 button만 정적으로 표시한다.
     - 기존 OAuth pending·configured false·runtime error와 safe callback/session redirect 계약을 유지한다.
   - Checklist:
-    - [ ] LoginScreen composition 분리와 불필요한 static copy 제거
-    - [ ] multicolor GoogleIcon과 outline 구글로 시작하기 action 적용
-    - [ ] unit·Storybook·browser·check·build 회귀 검증
+    - [x] LoginScreen composition 분리와 불필요한 static copy 제거
+    - [x] multicolor GoogleIcon과 outline 구글로 시작하기 action 적용
+    - [x] unit·Storybook·browser·check·build 회귀 검증
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -104,9 +104,11 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm run test:storybook --run src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-11` | 통과 — 공통 ProductMark, 기존 인증 상태와 desktop/mobile 비로그인 primary 로그인 단일 action 6/6 |
-| `pnpm run test:auth-navigation` | `2026-08-11` | 통과 — safe callback·route group·제품 navigation·keyboard/touch label 5/5 |
-| `pnpm exec tsc --noEmit && pnpm exec biome check src/widgets/product-shell src/_app/layout/root-layout.tsx --max-diagnostics=50` | `2026-08-11` | 통과 — 새 ProductMark·metadata·ProductBrand type/format 오류 0 |
+| `pnpm run test:storybook --run src/_pages/login/ui/login-screen.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-11` | 통과 — 최소 로그인 화면·Google icon/OAuth 미설정 상태·desktop/mobile header action 8/8 |
+| `pnpm run test:auth-navigation` | `2026-08-11` | 통과 — safe callback·minimal LoginScreen·route group·제품 navigation·keyboard/touch label 6/6 |
+| `pnpm run check` | `2026-08-11` | 통과 — Biome 기존 warning 59개, ESLint·TypeScript·FSD/architecture 오류 0 |
+| `pnpm run build` | `2026-08-11` | 통과 — Next.js 16.3 production build와 `/login` route 생성 완료 |
+| in-app browser `/login` visual QA | `2026-08-11` | 통과 — desktop/mobile 390×844에서 logo/name/Google action만 표시, 335px button·가로 overflow 없음·console error 0 |
 | bundled Pillow asset audit | `2026-08-11` | 통과 — master 1024², favicon 64², apple icon 180², RGBA·transparent corner·nonempty alpha 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T07:48:29.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T07:54:47.000Z -->
