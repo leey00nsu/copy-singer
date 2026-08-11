@@ -243,10 +243,16 @@ export const CompletedAudioIsLazy: Story = {
     await expect(canvas.queryByRole("link", { name: "결과 확인" })).not.toBeInTheDocument();
     const listenButton = canvas.getByRole("button", { name: "결과 듣기" });
     await expect(listenButton).toHaveClass("bg-primary", "text-primary-foreground");
+    const listenIcon = listenButton.querySelector("svg");
+    if (!(listenIcon instanceof SVGElement)) throw new Error("Result listen icon is missing");
+    await expect(getComputedStyle(listenIcon).color).toBe(getComputedStyle(listenButton).color);
     await userEvent.click(listenButton);
     const closeButton = canvas.getByRole("button", { name: "결과 닫기" });
     await expect(closeButton).toHaveClass("bg-background");
     await expect(closeButton).not.toHaveClass("bg-primary");
+    const closeIcon = closeButton.querySelector("svg");
+    if (!(closeIcon instanceof SVGElement)) throw new Error("Result close icon is missing");
+    await expect(getComputedStyle(closeIcon).color).toBe(getComputedStyle(closeButton).color);
   },
 };
 

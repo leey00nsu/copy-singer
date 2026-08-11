@@ -99,7 +99,7 @@ export function RecommendationMixingAction({
           size="sm"
           variant={audioOpen ? "outline" : "default"}
         >
-          <Headphones className="size-4 text-success-foreground" aria-hidden="true" />
+          <Headphones className="size-4" aria-hidden="true" />
           {audioOpen ? "결과 닫기" : "결과 듣기"}
         </Button>
         {audioOpen ? (
