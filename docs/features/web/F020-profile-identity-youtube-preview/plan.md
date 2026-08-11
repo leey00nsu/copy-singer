@@ -113,6 +113,7 @@ VocalProfile analysis reference
 
 - `RecommendationMixingAction`의 compact succeeded branch는 `MixingStatusBadge`만 반환하고 결과 상세 link를 만들지 않는다. non-compact selection/detail action은 기존 결과 듣기·저장을 유지한다.
 - 데스크톱 `RecommendationSelection`은 내부 card가 아니라 grid item인 aside 자체에 `position: sticky`, header 아래 top offset과 `self-start`를 적용한다. 이렇게 해야 sticky containing block이 목록 높이를 사용해 긴 추천 목록을 따라간다.
+- non-compact succeeded action은 `audioOpen` 상태에 따라 button variant를 `default → outline`로 전환해 재생 시작을 primary, 닫기를 secondary 위계로 표현한다.
 
 ---
 
