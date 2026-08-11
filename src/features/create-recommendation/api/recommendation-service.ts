@@ -5,6 +5,7 @@ import {
   type KeyFitProfile,
   type KeyFitReasonCode,
   parseSynthesisAttempts,
+  parseYouTubeVideoId,
   projectRecommendationSongProfile,
   RecommendationError,
   type RecommendationRunResponse,
@@ -126,6 +127,14 @@ export function serializeRecommendationRun(run: StoredRun): RecommendationRunRes
           } as const
         )[mixing.status]
       : null;
+    const catalogMetadata =
+      item.song.metadata && typeof item.song.metadata === "object" && !Array.isArray(item.song.metadata)
+        ? item.song.metadata.catalog
+        : null;
+    const catalog =
+      catalogMetadata && typeof catalogMetadata === "object" && !Array.isArray(catalogMetadata)
+        ? catalogMetadata
+        : null;
     return {
       id: item.id,
       rank: item.rank,
@@ -135,15 +144,8 @@ export function serializeRecommendationRun(run: StoredRun): RecommendationRunRes
       artist: item.song.artist,
       originalKey: item.song.originalKey?.trim() || null,
       songProfile: projectRecommendationSongProfile(item.song.vocalProfile),
-      sourceUrl:
-        item.song.metadata && typeof item.song.metadata === "object" && !Array.isArray(item.song.metadata)
-          ? (() => {
-              const catalog = item.song.metadata.catalog;
-              return catalog && typeof catalog === "object" && !Array.isArray(catalog)
-                ? String(catalog.sourceUrl ?? "")
-                : "";
-            })()
-          : "",
+      sourceUrl: catalog ? String(catalog.sourceUrl ?? "") : "",
+      sourceVideoId: parseYouTubeVideoId(catalog?.sourceVideoId),
       originalKeyScore: item.originalKeyScore,
       adjustedScore: item.adjustedScore,
       selectionScore: Number.isFinite(metrics.selectionScore) ? metrics.selectionScore! : null,

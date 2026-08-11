@@ -198,6 +198,7 @@ test("recommendation and mixing polling stop at terminal state while item cache 
         title: "Song",
         artist: "Singer",
         sourceUrl: "https://example.test/song",
+        sourceVideoId: null,
         originalKey: null,
         songProfile: null,
         originalKeyScore: 70,

@@ -227,6 +227,7 @@ test("selects a handoff only when the item belongs to the stored run", () => {
     title: "Song",
     artist: "Artist",
     sourceUrl: "https://www.youtube.com/watch?v=NbKH4iZqq1Y",
+    sourceVideoId: "NbKH4iZqq1Y",
     originalKey: null,
     songProfile: null,
     originalKeyScore: 80,

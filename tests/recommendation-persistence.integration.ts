@@ -59,6 +59,7 @@ test("persists, reads, and cascade-deletes one recommendation run", async (conte
     );
     assert.ok(created.items.every((item) => item.synthesis.status === "not_started"));
     assert.ok(created.items.every((item) => item.sourceUrl.startsWith("https://www.youtube.com/")));
+    assert.ok(created.items.every((item) => /^[A-Za-z0-9_-]{11}$/.test(item.sourceVideoId ?? "")));
     assert.ok(created.items.every((item) => Number.isFinite(item.selectionScore)));
     assert.ok(created.items.every((item) => item.selectionScore === item.metrics.selectionScore));
 

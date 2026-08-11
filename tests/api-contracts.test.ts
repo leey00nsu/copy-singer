@@ -150,6 +150,7 @@ test("recommendation items accept legacy, additive, and unavailable song profile
     title: "Stored song",
     artist: "Stored artist",
     sourceUrl: "https://example.test/source",
+    sourceVideoId: "NbKH4iZqq1Y",
     originalKeyScore: 78,
     adjustedScore: 91,
     selectionScore: 90,
@@ -203,6 +204,11 @@ test("recommendation items accept legacy, additive, and unavailable song profile
   const legacy = recommendationRunResponseSchema.shape.items.element.parse(item);
   assert.equal(legacy.originalKey, null);
   assert.equal(legacy.songProfile, null);
+  assert.equal(legacy.sourceVideoId, "NbKH4iZqq1Y");
+  assert.equal(
+    recommendationRunResponseSchema.shape.items.element.safeParse({ ...item, sourceVideoId: "invalid" }).success,
+    false,
+  );
 
   const additive = recommendationRunResponseSchema.shape.items.element.parse({
     ...item,

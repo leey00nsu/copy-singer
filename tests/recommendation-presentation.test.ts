@@ -10,7 +10,18 @@ import {
   recommendationMatchRank,
   serializeRecommendationFilters,
   visibleRecommendationReasons,
+  youtubeEmbedUrl,
+  youtubeThumbnailUrl,
 } from "../src/entities/recommendation";
+
+test("builds YouTube media URLs only from canonical video IDs", () => {
+  assert.equal(
+    youtubeEmbedUrl("NbKH4iZqq1Y"),
+    "https://www.youtube-nocookie.com/embed/NbKH4iZqq1Y?autoplay=0&playsinline=1&rel=0",
+  );
+  assert.equal(youtubeThumbnailUrl("NbKH4iZqq1Y"), "https://i.ytimg.com/vi/NbKH4iZqq1Y/hqdefault.jpg");
+  assert.equal(youtubeEmbedUrl("../javascript"), null);
+});
 
 const synthesis = (status: "not_started" | "processing" | "succeeded" | "failed") => ({
   status,

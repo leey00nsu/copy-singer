@@ -79,6 +79,7 @@ export const recommendationRunFixture: RecommendationRunResponse = {
       title: "서른 즈음에",
       artist: "김광석",
       sourceUrl: "https://example.test/catalog/1234",
+      sourceVideoId: "NbKH4iZqq1Y",
       originalKey: "C",
       songProfile: {
         minMidi: 50,

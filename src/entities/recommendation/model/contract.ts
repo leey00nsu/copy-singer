@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { YOUTUBE_VIDEO_ID_PATTERN } from "../lib/youtube";
 import { keyFitReasonCodeSchema, keyFitScoreBreakdownSchema } from "./key-fit-contract";
 
 export const SYNTHESIS_STATUSES = ["preparing", "queued", "processing", "succeeded", "failed"] as const;
@@ -103,6 +104,7 @@ export const recommendationItemResponseSchema = z.object({
   title: z.string(),
   artist: z.string(),
   sourceUrl: z.string(),
+  sourceVideoId: z.string().regex(YOUTUBE_VIDEO_ID_PATTERN).nullable().optional().default(null),
   originalKey: z.string().trim().min(1).nullable().optional().default(null),
   songProfile: recommendationSongProfileSchema.nullable().optional().default(null),
   originalKeyScore: z.number(),

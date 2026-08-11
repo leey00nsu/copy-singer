@@ -8,7 +8,12 @@ import artifactJson from "../data/catalogs/tj-2607-song-profiles.json";
 import { RecommendationHandoffBanner } from "../src/_pages/dev-svc";
 import { RecommendationResults } from "../src/_pages/recommendation-detail";
 import type { RecommendationRunResponse, SongProfileArtifact } from "../src/entities/recommendation";
-import { formatRecommendationReasons, rankRecommendations, scoreCatalogKeyFits } from "../src/entities/recommendation";
+import {
+  formatRecommendationReasons,
+  rankRecommendations,
+  scoreCatalogKeyFits,
+  YouTubeVideo,
+} from "../src/entities/recommendation";
 
 const profile = {
   minMidi: 48,
@@ -48,6 +53,7 @@ const run: RecommendationRunResponse = {
     title: item.title,
     artist: item.artist,
     sourceUrl: item.sourceUrl,
+    sourceVideoId: item.sourceVideoId,
     originalKey: null,
     songProfile: null,
     originalKeyScore: item.originalKeyScore,
@@ -75,6 +81,18 @@ const run: RecommendationRunResponse = {
     },
   })),
 };
+
+test("YouTube media renders a lightweight facade before the privacy-enhanced player", () => {
+  const facade = renderToStaticMarkup(<YouTubeVideo title="Drowning · WOODZ" variant="facade" videoId="NbKH4iZqq1Y" />);
+  assert.match(facade, /data-youtube-facade="true"/);
+  assert.match(facade, /i\.ytimg\.com\/vi\/NbKH4iZqq1Y\/hqdefault\.jpg/);
+  assert.doesNotMatch(facade, /iframe|youtube-nocookie/);
+
+  const player = renderToStaticMarkup(<YouTubeVideo title="Drowning · WOODZ" videoId="NbKH4iZqq1Y" />);
+  assert.match(player, /data-youtube-player="true"/);
+  assert.match(player, /youtube-nocookie\.com\/embed\/NbKH4iZqq1Y\?autoplay=0/);
+  assert.match(player, /title="Drowning · WOODZ 원본 YouTube 영상"/);
+});
 const testRouter = {
   back() {},
   bfcacheId: "recommendation-test",
