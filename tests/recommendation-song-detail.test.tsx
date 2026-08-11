@@ -53,6 +53,8 @@ test("allows only HTTP(S) external song source links", () => {
 test("renders a simplified analysis result and the shared mixing action", () => {
   const html = renderSongDetail();
   assert.match(html, /서른 즈음에/);
+  assert.match(html, />Song match</);
+  assert.doesNotMatch(html, /Song match · #\d+/);
   assert.match(html, /분석 결과/);
   assert.match(html, /role="img"/);
   assert.match(html, /전체 관측 음역 E3부터 E5, 실용 음역 A3부터 A♯4/);

@@ -65,7 +65,7 @@ export function SongDetail({
       <header className="mt-8 grid gap-10 border-b pb-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
         <div>
           <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
-            Song match · #{item.rank}
+            Song match
           </p>
           <h1 className="mt-4 text-[clamp(2.5rem,5vw,4.5rem)] font-semibold leading-none tracking-[-0.055em]">
             {item.title}

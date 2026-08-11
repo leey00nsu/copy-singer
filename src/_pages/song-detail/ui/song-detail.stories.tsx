@@ -30,6 +30,8 @@ export const WithOriginalVideo: Story = {
     const heading = canvas.getByRole("heading", { level: 1, name: item.title });
     await expect(player).toBeVisible();
     await expect(player.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    await expect(canvas.getByText("Song match")).toBeVisible();
+    await expect(canvas.queryByText(/Song match · #\d+/)).not.toBeInTheDocument();
     await expect(canvas.queryByText("외부 출처 열기")).not.toBeInTheDocument();
   },
 };
