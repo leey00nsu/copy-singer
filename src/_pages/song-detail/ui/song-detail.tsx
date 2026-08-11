@@ -1,16 +1,16 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, ArrowUpRight, Music2, Ticket } from "lucide-react";
+import { ArrowLeft, Music2, Ticket } from "lucide-react";
 import Link from "next/link";
 import {
   formatRecommendedShift,
   type RecommendationRunResponse,
   recommendationDetailQueryOptions,
   recommendationMatchPercent,
-  safeRecommendationSourceUrl,
   selectRecommendationItem,
   visibleRecommendationReasons,
+  YouTubeVideo,
 } from "@/entities/recommendation";
 import { VocalRangeProfile } from "@/entities/vocal-profile";
 import { RecommendationMixingAction, useRecommendationMixing } from "@/features/create-mixing";
@@ -48,7 +48,6 @@ export function SongDetail({
     );
   }
 
-  const sourceUrl = safeRecommendationSourceUrl(item);
   const shift = item.recommendedShift;
   const scoreGain = Math.round(item.adjustedScore) - Math.round(item.originalKeyScore);
   const visibleReasons = visibleRecommendationReasons(item);
@@ -59,7 +58,11 @@ export function SongDetail({
         <ArrowLeft className="size-4" aria-hidden="true" /> 추천 목록으로
       </Link>
 
-      <header className="mt-10 grid gap-10 border-b pb-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+      <section aria-label="원본 영상" className="mt-8 max-w-4xl">
+        <YouTubeVideo title={`${item.title} · ${item.artist}`} videoId={item.sourceVideoId} />
+      </section>
+
+      <header className="mt-8 grid gap-10 border-b pb-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
         <div>
           <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
             Song match · #{item.rank}
@@ -74,16 +77,6 @@ export function SongDetail({
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-3 lg:justify-end">
-          {sourceUrl ? (
-            <a
-              className={buttonVariants({ variant: "outline" })}
-              href={sourceUrl}
-              rel="noreferrer noopener"
-              target="_blank"
-            >
-              외부 출처 열기 <ArrowUpRight className="size-4" aria-hidden="true" />
-            </a>
-          ) : null}
           <div className="min-w-28 border-l pl-4">
             <p className="text-xs text-muted-foreground">추천 적합도</p>
             <p className="mt-1 text-3xl font-semibold text-data-accent-foreground">

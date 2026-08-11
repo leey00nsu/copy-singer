@@ -68,7 +68,10 @@ export function YouTubeVideo({
 
   return (
     <div
-      className={cn("aspect-video overflow-hidden rounded-lg border bg-black", className)}
+      className={cn(
+        "h-50 w-full overflow-hidden rounded-lg border bg-black lg:aspect-video lg:h-auto lg:min-h-50",
+        className,
+      )}
       data-youtube-player="true"
     >
       <iframe

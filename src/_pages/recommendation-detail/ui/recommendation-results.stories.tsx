@@ -82,6 +82,10 @@ export const Success: Story = {
       "lg:mt-12",
     );
     await expect(canvas.getByRole("button", { name: "이 곡으로 AI 믹싱" })).toBeVisible();
+    const videoButton = canvas.getByRole("button", { name: "서른 즈음에 · 김광석 원본 영상 플레이어 열기" });
+    await userEvent.click(videoButton);
+    await expect(canvas.getByTitle("서른 즈음에 · 김광석 원본 YouTube 영상")).toBeVisible();
+    await expect(canvasElement.querySelectorAll("[data-youtube-player]")).toHaveLength(1);
     await expect(canvas.getByRole("button", { name: "서른 즈음에" })).toHaveAttribute("aria-pressed", "true");
     await expect(canvas.queryByRole("link", { name: "서른 즈음에 전체 분석 결과" })).not.toBeInTheDocument();
     await expect(canvas.getByRole("link", { name: "전체 분석 결과 보기" })).toBeVisible();
