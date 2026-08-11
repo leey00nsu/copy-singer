@@ -22,6 +22,12 @@ import {
   vocalAnalysisKeys,
 } from "@/features/analyze-vocal-profile";
 import { mixingJobDetailHref, patchRecommendationSynthesis } from "@/features/create-mixing";
+import {
+  markAllNotificationsReadMutationOptions,
+  markNotificationReadMutationOptions,
+  notificationKeys,
+  notificationListQueryOptions,
+} from "@/features/manage-notifications";
 import { ApiError, requestJson, shouldRetryQuery } from "@/shared/api";
 
 const payloadSchema = z.object({ id: z.string(), status: z.enum(["pending", "succeeded"]) });
@@ -111,6 +117,36 @@ test("the QueryClient defaults preserve the documented cache and retry policy", 
   assert.equal(shouldRetryQuery(1, retryable), true);
   assert.equal(shouldRetryQuery(2, retryable), false);
   assert.equal(shouldRetryQuery(0, forbidden), false);
+});
+
+test("notification queries poll on a bounded interval and read mutations refresh all list caches", async () => {
+  const client = createQueryClient(true);
+  const initial = {
+    page: 1,
+    pageSize: 5,
+    total: 0,
+    pageCount: 1,
+    unreadCount: 0,
+    notifications: [],
+  };
+  const options = notificationListQueryOptions({ page: 1, pageSize: 5 }, initial);
+  assert.deepEqual(options.queryKey, ["notifications", "list", { page: 1, pageSize: 5 }]);
+  assert.equal(options.refetchInterval, 30_000);
+  assert.equal(options.refetchOnWindowFocus, true);
+  assert.notDeepEqual(notificationKeys.list({ page: 1, pageSize: 5 }), notificationKeys.list({ page: 2, pageSize: 5 }));
+
+  const key = notificationKeys.list({ page: 1, pageSize: 5 });
+  client.setQueryData(key, initial);
+  const read = markNotificationReadMutationOptions(client);
+  const readAll = markAllNotificationsReadMutationOptions(client);
+  assert.deepEqual(read.mutationKey, ["notifications", "read"]);
+  assert.deepEqual(readAll.mutationKey, ["notifications", "read-all"]);
+  await read.onSuccess?.({ notification: null }, "10000000-0000-4000-8000-000000000001", undefined, undefined as never);
+  assert.equal(client.getQueryState(key)?.isInvalidated, true);
+  client.setQueryData(key, initial);
+  await readAll.onSuccess?.({ updatedCount: 0, unreadCount: 0 }, undefined, undefined, undefined as never);
+  assert.equal(client.getQueryState(key)?.isInvalidated, true);
+  client.clear();
 });
 
 test("vocal analysis polling continues only for active jobs or retryable transport errors", () => {

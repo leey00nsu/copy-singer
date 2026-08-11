@@ -6,6 +6,12 @@ import {
   mixingHistoryFiltersSchema,
   mixingHistoryPayloadSchema,
 } from "@/entities/mixing-job";
+import {
+  notificationFiltersSchema,
+  notificationListSchema,
+  notificationReadAllResponseSchema,
+  notificationReadResponseSchema,
+} from "@/entities/notification";
 import { recommendationRunResponseSchema } from "@/entities/recommendation";
 import { vocalProfileAnalysisJobResponseSchema } from "@/entities/vocal-profile";
 import {
@@ -58,6 +64,48 @@ test("mixing history filters normalize URL values without inventing statuses", (
     status: "all",
   });
   assert.equal(mixingHistoryFiltersSchema.parse({ page: "1", q: "x".repeat(100) }).q.length, 80);
+});
+
+test("notification contracts keep internal links, bounded pages, and read envelopes", () => {
+  assert.deepEqual(notificationFiltersSchema.parse({ page: "2", pageSize: "5" }), { page: 2, pageSize: 5 });
+  assert.deepEqual(notificationFiltersSchema.parse({ page: "bad", pageSize: "500" }), { page: 1, pageSize: 20 });
+  const item = {
+    id: JOB_ID,
+    type: "mixing_succeeded" as const,
+    title: "AI 믹스가 완성되었습니다",
+    message: "결과를 들어보세요.",
+    href: `/library/mixes/${JOB_ID}`,
+    sourceId: JOB_ID,
+    readAt: null,
+    createdAt: "2026-08-11T00:00:00.000Z",
+  };
+  assert.equal(
+    notificationListSchema.parse({
+      page: 1,
+      pageSize: 5,
+      total: 1,
+      pageCount: 1,
+      unreadCount: 1,
+      notifications: [item],
+    }).notifications[0]?.href,
+    item.href,
+  );
+  assert.equal(
+    notificationListSchema.safeParse({
+      page: 1,
+      pageSize: 5,
+      total: 1,
+      pageCount: 1,
+      unreadCount: 1,
+      notifications: [{ ...item, href: "https://evil.test" }],
+    }).success,
+    false,
+  );
+  assert.equal(notificationReadResponseSchema.parse({ notification: item }).notification?.id, JOB_ID);
+  assert.deepEqual(notificationReadAllResponseSchema.parse({ updatedCount: 2, unreadCount: 0 }), {
+    updatedCount: 2,
+    unreadCount: 0,
+  });
 });
 
 test("mixing deletion has a stable terminal cleanup envelope", () => {
