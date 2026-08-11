@@ -1,11 +1,13 @@
 import { delay, HttpResponse, http } from "msw";
 import type { MixingHistoryPayload, MixingHistoryRow } from "@/entities/mixing-job";
+import type { NotificationList } from "@/entities/notification";
 import type { RecommendationRunResponse } from "@/entities/recommendation";
 import {
   activeRecommendationRunFixture,
   conversionHealthFixture,
   mixingHistoryFixture,
   mixingJobFixture,
+  notificationListFixture,
   queuedConversionFixture,
   recommendationRunFixture,
   succeededConversionFixture,
@@ -19,7 +21,19 @@ export const handlers = [
   http.get("*/api/recommendations/:id", () => HttpResponse.json(recommendationRunFixture)),
   http.post("*/api/mixing-jobs", () => HttpResponse.json(mixingJobFixture, { status: 201 })),
   http.post("*/api/admin/ticket-adjustments", () => HttpResponse.json(ticketAdjustmentFixture, { status: 201 })),
+  http.get("*/api/notifications", () => HttpResponse.json(notificationListFixture)),
+  http.patch("*/api/notifications/:id", ({ params }) => {
+    const notification = notificationListFixture.notifications.find((item) => item.id === params.id) ?? null;
+    return HttpResponse.json({
+      notification: notification ? { ...notification, readAt: "2026-08-11T13:00:00.000Z" } : null,
+    });
+  }),
+  http.post("*/api/notifications/read-all", () => HttpResponse.json({ updatedCount: 2, unreadCount: 0 })),
 ];
+
+export function notificationListHandler(payload: NotificationList = notificationListFixture) {
+  return http.get("*/api/notifications", () => HttpResponse.json(payload));
+}
 
 export function conversionPollingSequenceHandler() {
   const sequence = [queuedConversionFixture, succeededConversionFixture];

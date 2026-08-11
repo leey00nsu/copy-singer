@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import type {} from "msw-storybook-addon/types";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 
 import { ProductHeader, ProductShell } from "@/widgets/product-shell";
+import { notificationListHandler } from "../../../../tests/msw/handlers";
 
 const meta = {
   title: "Widgets/ProductShell",
@@ -28,6 +30,9 @@ const meta = {
       name: "지은",
     },
   },
+  beforeEach({ msw }) {
+    msw.use(notificationListHandler());
+  },
 } satisfies Meta<typeof ProductShell>;
 
 export default meta;
@@ -46,6 +51,11 @@ export const Desktop: Story = {
     await expect(productMenu.getByRole("link", { name: "라이브러리" })).toHaveAttribute("aria-current", "page");
     await expect(productMenu.getByRole("link", { name: "내 계정" })).toBeVisible();
     await expect(canvas.queryByRole("complementary")).not.toBeInTheDocument();
+    const notificationButton = await canvas.findByRole("button", { name: "알림, 읽지 않은 알림 2개" });
+    const accountButton = canvas.getByRole("button", { name: "지은 계정 메뉴" });
+    await expect(
+      notificationButton.compareDocumentPosition(accountButton) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
     await expect(canvas.getByRole("navigation", { name: "제품 푸터 메뉴" })).toBeVisible();
     await expect(canvas.getByRole("link", { name: "이용 약관" })).toHaveAttribute("href", "/terms");
     await expect(canvas.getByRole("link", { name: "개인정보 처리방침" })).toHaveAttribute("href", "/privacy");
@@ -54,6 +64,11 @@ export const Desktop: Story = {
     const body = within(document.body);
     await waitFor(() => expect(body.getByText("계정")).toBeVisible());
     await expect(body.getByRole("menuitem", { name: "내 계정" })).toBeVisible();
+    await userEvent.click(accountButton);
+    await userEvent.click(notificationButton);
+    await waitFor(() => expect(body.getByText("AI 믹스가 완성되었습니다")).toBeVisible());
+    await expect(body.getByRole("menuitem", { name: /AI 믹스가 완성되었습니다/ })).toBeVisible();
+    await expect(body.getByRole("menuitem", { name: "전체 알림 보기" })).toHaveAttribute("href", "/notifications");
   },
 };
 
@@ -62,7 +77,9 @@ export const Mobile: Story = {
     viewport: { value: "mobile1", isRotated: false },
   },
   play: async ({ canvasElement }) => {
-    await userEvent.click(within(canvasElement).getByRole("button", { name: "제품 메뉴 열기" }));
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByRole("button", { name: "알림, 읽지 않은 알림 2개" })).toBeVisible();
+    await userEvent.click(canvas.getByRole("button", { name: "제품 메뉴 열기" }));
     const body = within(document.body);
     await waitFor(() => expect(body.getByRole("dialog")).toBeVisible());
     await waitFor(() => expect(body.getByRole("link", { name: "내 계정" })).toBeVisible());
@@ -108,6 +125,7 @@ export const UnauthenticatedDesktop: Story = {
       "/login?callbackURL=%2Fprofile",
     );
     await expect(canvas.queryByText("무료로 시작하기")).not.toBeInTheDocument();
+    await expect(canvas.queryByRole("button", { name: /^알림/ })).not.toBeInTheDocument();
   },
 };
 
@@ -125,5 +143,6 @@ export const UnauthenticatedMobile: Story = {
       "/login?callbackURL=%2Fprofile",
     );
     await expect(within(dialog).queryByText("무료로 시작하기")).not.toBeInTheDocument();
+    await expect(within(canvasElement).queryByRole("button", { name: /^알림/ })).not.toBeInTheDocument();
   },
 };

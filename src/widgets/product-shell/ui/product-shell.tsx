@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 import { useState } from "react";
 
 import { UserMenu } from "@/features/authentication";
+import { NotificationBell } from "@/features/manage-notifications";
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/shared/ui/sheet";
@@ -94,6 +95,7 @@ function ProductHeader({ admin = false, user = null }: ProductHeaderProps) {
           <ProductNavigation admin={admin} authenticated={authenticated} />
         </div>
         <div className="flex items-center justify-self-end gap-2">
+          {user ? <NotificationBell /> : null}
           {user ? (
             <div className="hidden md:block">
               <UserMenu

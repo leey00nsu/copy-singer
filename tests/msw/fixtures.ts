@@ -1,9 +1,50 @@
 import type { MixingHistoryPayload, MixingJobResponse } from "@/entities/mixing-job";
+import type { NotificationList } from "@/entities/notification";
 import type { RecommendationRunResponse } from "@/entities/recommendation";
 import type { ConversionHealth, ConversionJob } from "@/features/development-conversion";
 import type { TicketAdjustmentResponse } from "@/features/manage-tickets";
 
 export const MSW_API_ORIGIN = "http://copy-singer.test";
+
+export const notificationListFixture: NotificationList = {
+  page: 1,
+  pageSize: 5,
+  total: 3,
+  pageCount: 1,
+  unreadCount: 2,
+  notifications: [
+    {
+      id: "40000000-0000-4000-8000-000000000001",
+      type: "mixing_succeeded",
+      title: "AI 믹스가 완성되었습니다",
+      message: "서른 즈음에 결과를 들어보세요.",
+      href: "/library/mixes/30000000-0000-4000-8000-000000000002",
+      sourceId: "30000000-0000-4000-8000-000000000002",
+      readAt: null,
+      createdAt: "2026-08-11T12:30:00.000Z",
+    },
+    {
+      id: "40000000-0000-4000-8000-000000000002",
+      type: "vocal_profile_succeeded",
+      title: "보컬 프로필 분석이 완료되었습니다",
+      message: "메인 보컬의 분석 결과를 확인해 보세요.",
+      href: "/vocal-profiles/30000000-0000-4000-8000-000000000012",
+      sourceId: "30000000-0000-4000-8000-000000000011",
+      readAt: null,
+      createdAt: "2026-08-11T11:00:00.000Z",
+    },
+    {
+      id: "40000000-0000-4000-8000-000000000003",
+      type: "ticket_credit",
+      title: "티켓이 추가되었습니다",
+      message: "티켓 2개가 추가되었습니다. 고객 지원 지급",
+      href: "/account",
+      sourceId: "40000000-0000-4000-8000-000000000004",
+      readAt: "2026-08-11T10:05:00.000Z",
+      createdAt: "2026-08-11T10:00:00.000Z",
+    },
+  ],
+};
 
 export const conversionHealthFixture: ConversionHealth = {
   status: "ok",
