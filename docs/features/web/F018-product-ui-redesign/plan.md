@@ -236,7 +236,8 @@ desktop semantic table / mobile stacked rows
 - profile tab은 이름 없는 profile에 가짜 project title을 만들지 않고 날짜·음역·상태로 표시
 - profile과 mixing row는 desktop 72–104px 범위의 compact density를 목표로 하고 mobile metric은 2열 definition grid로 구성한다.
 - tab trigger는 content 폭 기반 좌측 정렬을 사용하며 profile total·최신순을 실제 history metadata에서 표시한다.
-- mixing 목록은 상태별 핵심 action 하나만 노출하고 waveform·download·delete는 detail에 유지한다. 실패 detail은 presentation mapper로 안전한 사용자 문구로 변환하고 raw 외부 오류는 노출하지 않는다.
+- 완료 profile과 mixing 목록은 제목의 실제 `ResourceRowLink` 클릭 영역을 행 전체로 확장하고 chevron·상태별 중복 상세 action을 제거한다. waveform·download·delete는 detail에 유지한다. 실패 detail은 presentation mapper로 안전한 사용자 문구로 변환하고 raw 외부 오류는 노출하지 않는다.
+- 추천 비교 행은 선택과 AI 믹싱 action을 함께 가지므로 전체 상세 Link로 만들지 않고, 선택 panel/mobile Sheet의 `전체 분석 결과 보기`를 Song Detail 진입점으로 유지한다.
 - 기존 `/vocal-profiles`, `/mixing-history`는 같은 list widget을 사용해 URL을 유지하고 primary navigation만 `/library`로 통합
 
 `/library/mixes/[id]`는 기존 owner-scoped `GET /api/mixing-jobs/[id]`를 사용한다.

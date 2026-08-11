@@ -135,6 +135,8 @@ Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface�
 - desktop의 비교 데이터는 table 또는 정렬된 평면 list를 우선한다.
 - mobile에서는 중요한 2–3개 값과 action을 남긴 stacked row로 전환한다.
 - 긴 목록은 제목·핵심 비교값·상태와 한 개의 다음 action을 우선하고, 반복되는 근거·waveform·download·delete는 상세 화면으로 이동한다.
+- 하나의 resource 행이 하나의 상세 목적지만 가지면 제목의 실제 Link를 행 전체로 확장하고 별도 chevron·`상세 보기` 같은 중복 action을 두지 않는다. hover와 focus-visible은 행 전체에 표시한다.
+- 행 안에 선택·재생·믹싱처럼 독립 interaction이 있거나 모든 항목에 상세 목적지가 없으면 행 전체를 상세 Link로 만들지 않는다. Link를 포함한 행을 `onClick` navigation이나 중첩 anchor로 구현하지 않는다.
 
 ### Creation funnel
 

@@ -429,3 +429,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 페이지 문법은 맞추되 작업 화면의 정보 위계를 평범한 관리 page로 축소하지 않는 편이 생성 여정에 적합하다. 상위 resource link는 deep link 탐색에 필요하지만 한 번이면 충분하다. border 색 책임을 variant별로 분리하면 primary·outline·ghost 의미가 코드와 렌더에서 일치한다.
 - **Evidence**: Voice Scan 12/12, Mixing UI 8/8, Account/Ticket 4/4, Button/Mixing targeted Storybook 7/7에서 outline computed border가 투명하지 않고 ghost와 다름을 검증, 전체 Storybook 38 files·101 tests, `pnpm run check` 통과(error 0, 기존 warning 59건), Next production build 23/23 routes.
 - **Consequences**: `최근 추천 결과 보기`는 primary, `새 추천 만들기`와 `보컬 분석 보기`는 실제 outline, header 삭제 trigger는 ghost, Dialog 최종 삭제는 destructive로 보인다. Login·Song Detail·Vocal Profile Detail·Mixing Detail의 직접 진입 parent link는 유지하고 중복 복귀 action만 제거한다.
+
+## D046: 단일 목적지 resource 행은 전체 클릭 영역을 사용 (2026-08-11)
+
+- **Context**: 보컬 프로필과 AI 믹스 목록은 유사한 평면 행 디자인이지만 제목, 상태별 텍스트 action과 chevron의 클릭 가능 여부가 달랐다. AI 믹스는 같은 상세 URL을 한 행에서 최대 세 번 제공해 작은 아이콘과 중복 label에 의존했다.
+- **Decision**: 완료된 보컬 프로필과 AI 믹스처럼 행이 하나의 상세 resource만 가리키면 제목의 실제 `ResourceRowLink`를 stretched overlay로 확장하고 행 전체에 hover·focus-visible 상태를 제공한다. 별도 상세 열, chevron과 같은 목적지의 상태별 action은 제거한다. 추천 행은 곡 선택과 믹싱 action이 공존하므로 전체 상세 Link로 바꾸지 않고 행의 작은 상세 아이콘만 제거하며 선택 panel/mobile Sheet의 `전체 분석 결과 보기`를 유지한다. 분석 job과 Ticket 원장도 보편 상세 목적지가 없어 비클릭 행을 유지한다.
+- **Rationale**: interaction 계약을 한 primitive에서 관리하면 article과 semantic table의 구조를 보존하면서도 사용자가 목록마다 다른 작은 상세 target을 학습할 필요가 없다. 실제 anchor를 유지하므로 keyboard focus, 새 탭 열기와 URL preview도 보존된다.
+- **Evidence**: `pnpm run check` 통과(error 0, 기존 warning 59건), Mixing UI 8/8, Recommendation 10/10+19/19, 공통 primitive·Library·Recommendation targeted Storybook 5 files/20 tests, Next production build 23/23 routes.
+- **Consequences**: `/library`, `/vocal-profiles`, `/mixing-history`의 완료 resource 행은 어디를 클릭해도 기존 상세 URL로 이동한다. 독립 action이 추가되는 행은 stretched Link 위에 중첩하지 말고 전체 행 navigation 계약을 재검토해야 한다.
