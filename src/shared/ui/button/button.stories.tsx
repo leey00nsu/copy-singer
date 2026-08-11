@@ -44,6 +44,14 @@ export const Variants: Story = {
       ))}
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const outline = canvas.getByRole("button", { name: "outline" });
+    const ghost = canvas.getByRole("button", { name: "ghost" });
+    const outlineBorder = getComputedStyle(outline).borderTopColor;
+    await expect(outlineBorder).not.toBe("rgba(0, 0, 0, 0)");
+    await expect(outlineBorder).not.toBe(getComputedStyle(ghost).borderTopColor);
+  },
 };
 
 export const Disabled: Story = {

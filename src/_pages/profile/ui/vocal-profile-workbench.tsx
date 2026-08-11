@@ -289,10 +289,13 @@ export function VocalProfileWorkbench() {
         />
       ) : null}
 
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,.9fr)_minmax(29rem,1.1fr)] lg:items-start lg:gap-14">
+      <div className="mt-8 grid gap-10 lg:mt-12 lg:grid-cols-[minmax(0,.9fr)_minmax(29rem,1.1fr)] lg:items-start lg:gap-14">
         <div className="min-w-0">
           <header className="max-w-[34rem]">
-            <h1 className="text-[clamp(2.35rem,4.2vw,3.45rem)] font-semibold leading-[1.03] tracking-[-0.052em]">
+            <p className="text-[10px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
+              Voice analysis
+            </p>
+            <h1 className="mt-3 text-[clamp(2.35rem,4.2vw,3.45rem)] font-semibold leading-[1.03] tracking-[-0.052em]">
               노래 한 소절로,
               <br />내 목소리의 기준점을 만드세요.
             </h1>

@@ -86,11 +86,6 @@ function ActiveMixingProgress({ job }: { job: MixingHistoryRow }) {
 
   return (
     <ProcessHero
-      action={
-        <Link className={buttonVariants({ variant: "outline" })} href="/library?tab=mixes&page=1">
-          AI 믹스 목록으로 돌아가기
-        </Link>
-      }
       description={
         <>
           <span className="block text-foreground">
@@ -292,9 +287,6 @@ export function MixingDetail({ initial }: { initial: MixingHistoryRow }) {
               <div className="mt-5 flex flex-wrap gap-2">
                 <Link className={buttonVariants()} href={`/vocal-profiles/${job.vocalProfile.id}`}>
                   <Music2 aria-hidden="true" className="size-4" /> 보컬 프로필에서 다시 시작
-                </Link>
-                <Link className={buttonVariants({ variant: "outline" })} href="/library?tab=mixes&page=1">
-                  Library로 돌아가기
                 </Link>
               </div>
             </div>

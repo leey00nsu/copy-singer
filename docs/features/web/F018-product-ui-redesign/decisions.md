@@ -421,3 +421,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 상태를 곡명 위의 작은 선행 정보로 분리하면 긴 제목과 경쟁하지 않고 active·terminal 화면 모두 상태를 먼저 확인한 뒤 대상 곡을 읽는 흐름이 된다.
 - **Evidence**: `pnpm run test:mixing:ui` 8/8, Mixing Detail Storybook 4/4에서 status badge가 song heading보다 앞서는 DOM 순서 검증, `pnpm run check` 통과(error 0, 기존 warning 59건), Next production build 23/23 routes.
 - **Consequences**: 상태 label·색·polling·terminal action과 API 계약은 변경하지 않고 header composition만 바뀐다.
+
+## D045: Profile 제품 문법·상세 복귀·Button 실제 위계 정합화 (2026-08-11)
+
+- **Context**: Voice Scan의 중복 chip을 제거하면서 journey stepper와 본문 사이 여백도 사라졌고 Library·Account가 사용하는 eyebrow 문법과 달라 보였다. 상세 화면에는 상단 link와 본문 복귀 action이 중복됐으며, 공통 Button은 `outline` class를 요청해도 base의 `border-transparent`가 실제 렌더에 남아 ghost처럼 보였다.
+- **Decision**: Profile 입력 본문은 stepper 아래 `mt-8 lg:mt-12` 간격과 `VOICE ANALYSIS` eyebrow를 추가하고 기존 작업 중심 제목·2열 구조를 유지한다. 직접 진입 상세는 상단 parent link 하나만 유지해 Mixing active ProcessHero와 failure section의 중복 목록 action을 제거하며, ProductHeader가 제품 route를 제공하는 Admin의 `제품으로 돌아가기`도 제거한다. Button은 base에서 투명 border를 제거하고 default·secondary·ghost·destructive·link variant에만 `border-transparent`를 할당해 outline이 전역 neutral border를 실제 사용하게 한다.
+- **Rationale**: 페이지 문법은 맞추되 작업 화면의 정보 위계를 평범한 관리 page로 축소하지 않는 편이 생성 여정에 적합하다. 상위 resource link는 deep link 탐색에 필요하지만 한 번이면 충분하다. border 색 책임을 variant별로 분리하면 primary·outline·ghost 의미가 코드와 렌더에서 일치한다.
+- **Evidence**: Voice Scan 12/12, Mixing UI 8/8, Account/Ticket 4/4, Button/Mixing targeted Storybook 7/7에서 outline computed border가 투명하지 않고 ghost와 다름을 검증, 전체 Storybook 38 files·101 tests, `pnpm run check` 통과(error 0, 기존 warning 59건), Next production build 23/23 routes.
+- **Consequences**: `최근 추천 결과 보기`는 primary, `새 추천 만들기`와 `보컬 분석 보기`는 실제 outline, header 삭제 trigger는 ghost, Dialog 최종 삭제는 destructive로 보인다. Login·Song Detail·Vocal Profile Detail·Mixing Detail의 직접 진입 parent link는 유지하고 중복 복귀 action만 제거한다.

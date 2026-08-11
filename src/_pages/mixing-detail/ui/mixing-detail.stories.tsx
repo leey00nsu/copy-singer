@@ -45,6 +45,7 @@ export const Active: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText("AI 믹싱 중")).toBeVisible();
+    await expect(canvas.getAllByRole("link", { name: /AI 믹스 목록/ })).toHaveLength(1);
     await expect(canvas.queryByRole("button", { name: "삭제" })).not.toBeInTheDocument();
   },
 };
@@ -58,6 +59,7 @@ export const Failed: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("heading", { name: "믹싱을 완료하지 못했어요." })).toBeVisible();
     await expect(canvas.getByRole("link", { name: "보컬 프로필에서 다시 시작" })).toBeVisible();
+    await expect(canvas.queryByRole("link", { name: "Library로 돌아가기" })).not.toBeInTheDocument();
   },
 };
 

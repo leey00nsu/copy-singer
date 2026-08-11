@@ -141,6 +141,7 @@ Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface�
 - 목소리 분석, 노래 추천과 AI 믹싱 생성은 `목소리 분석 → 노래 추천 → AI 믹싱`의 세 단계 사용자 여정을 공유한다.
 - 상단 journey stepper는 사용자의 현재 위치만 설명하며 backend 진행률을 의미하지 않는다. 각 분석·믹싱 job의 실제 상태는 별도 timeline과 status copy로 표시한다.
 - Voice Scan 입력 화면은 상단 journey stepper와 같은 단계 의미를 반복하는 `Step 1`·단계명·health chip을 추가하지 않는다. 실제 연결 오류는 분석 action의 상태와 오류 UI에서 전달한다.
+- Voice Scan 입력 본문은 journey stepper 아래에서 mobile 32px·desktop 48px 이상 분리하고 `VOICE ANALYSIS` eyebrow → 작업 중심 제목 → 설명 순서를 사용한다. Library·Account의 제품 문법은 공유하되 작업 hero의 제목 크기와 2열 composition은 유지한다.
 - processing 화면은 Mixing Detail의 중앙 집중형 제목, 넓은 whitespace, restrained violet process visual과 실제 상태 설명을 기준으로 한다.
 - desktop 추천 선택은 목록 옆 보조 panel, mobile은 Sheet를 사용하며 primary action은 선택한 곡 하나에만 제공한다.
 - 추천 선택 UI는 `lg` 이상에서 sticky 보조 panel을, 그 미만에서는 화면 하단 action과 bottom Sheet를 사용한다. 하단 action이 목록의 마지막 행을 가리지 않도록 mobile content에 여유 공간을 둔다.
@@ -150,6 +151,7 @@ Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface�
 - 키 조정 전후 점수 변화, 고·저음 부담 감소·잔존처럼 선택에 의미가 낮은 technical reason은 저장 계약을 유지하되 사용자 표시 projection에서 제외한다. 별도 SONG RANGE와 score breakdown 근거도 노출하지 않는다.
 - process visual의 animation은 상태를 보조할 뿐이며 `prefers-reduced-motion`에서 정지해도 title, status와 timeline만으로 의미가 유지돼야 한다.
 - 상세 화면은 Summary → 근거/분석 → 관련 action 순서를 유지한다.
+- 직접 URL로 진입할 수 있는 상세 화면은 제목 위에 고정 상위 resource link를 최대 1개 제공한다. 같은 목적의 목록 복귀 action을 본문·실패 section에서 반복하지 않고, 전역 Header navigation으로 충분한 Admin 같은 화면에는 별도 복귀 button을 두지 않는다.
 - Mixing Detail의 terminal header는 eyebrow → 상태 chip → 곡명 → 아티스트 순서로 세로 위계를 구성해 상태가 긴 곡명과 같은 행에서 경쟁하지 않게 한다.
 - filter는 실제 query/data field만 제공하고 결과 개수와 초기화 action을 함께 보여준다.
 
@@ -157,8 +159,9 @@ Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface�
 
 ### Actions
 
-- `Button`의 기본 variant를 primary CTA에 사용한다.
-- secondary, outline과 ghost는 위계가 낮은 action에 사용한다.
+- `Button`의 기본 variant는 현재 화면의 가장 자연스러운 다음 action 하나에 사용한다.
+- `outline`은 관련 결과 생성·다른 resource 확인 같은 secondary action에 neutral 1px border로 사용하고, `ghost`는 삭제 trigger와 낮은 위계 navigation처럼 border가 없어야 하는 action에 사용한다.
+- destructive 색은 되돌릴 수 없는 action의 확인 Dialog 안 최종 실행 button에 사용하고, header의 삭제 trigger는 ghost로 유지한다.
 - icon-only button은 접근 가능한 이름과 최소 44px touch target을 제공한다.
 - destructive action은 결과를 명확히 설명하고 필요한 경우 Dialog로 확인한다.
 - 비동기 action은 중복 실행을 막고 label 또는 인접 status로 진행 중임을 알린다.

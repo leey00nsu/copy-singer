@@ -1,4 +1,4 @@
-import { Activity, AlertTriangle, ArrowLeft, ChevronLeft, ChevronRight, Search, Ticket, Users } from "lucide-react";
+import { Activity, AlertTriangle, ChevronLeft, ChevronRight, Search, Ticket, Users } from "lucide-react";
 import Link from "next/link";
 import { requireAdminPage } from "@/features/authentication/index.server";
 import {
@@ -63,11 +63,7 @@ export default async function AdminPage({
       <ProductHeader admin user={{ email: session.user.email, image: session.user.image, name: session.user.name }} />
 
       <main className="mx-auto w-full max-w-[82rem] px-6 py-8 lg:px-8 lg:py-10">
-        <Button className="-ml-3" nativeButton={false} render={<Link href="/profile" />} size="sm" variant="ghost">
-          <ArrowLeft aria-hidden="true" /> 제품으로 돌아가기
-        </Button>
-
-        <section className="mt-5 grid gap-8 lg:grid-cols-[minmax(18rem,.68fr)_minmax(0,1.32fr)] lg:items-start">
+        <section className="grid gap-8 lg:grid-cols-[minmax(18rem,.68fr)_minmax(0,1.32fr)] lg:items-start">
           <div>
             <p className="text-[10px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">Admin</p>
             <h1 className="mt-2 text-4xl font-semibold tracking-[-0.045em]">Copy Singer 운영</h1>
