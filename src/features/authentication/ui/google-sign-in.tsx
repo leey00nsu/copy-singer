@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/shared/ui/button";
 import { authClient } from "../api/auth-client";
+import { GoogleIcon } from "./google-icon";
 
 export function GoogleSignIn({ callbackURL, configured }: { callbackURL: string; configured: boolean }) {
   const [pending, setPending] = useState(false);
@@ -20,14 +21,14 @@ export function GoogleSignIn({ callbackURL, configured }: { callbackURL: string;
 
   return (
     <div className="space-y-3">
-      <Button className="h-11 w-full text-sm" disabled={!configured || pending} onClick={signIn}>
-        <span
-          aria-hidden="true"
-          className="flex size-5 items-center justify-center rounded-full bg-background text-xs font-semibold text-foreground"
-        >
-          G
-        </span>
-        {pending ? "Google로 이동 중…" : "Google로 계속하기"}
+      <Button
+        className="h-12 w-full justify-center bg-background text-sm font-semibold shadow-sm hover:bg-muted/40"
+        disabled={!configured || pending}
+        onClick={signIn}
+        variant="outline"
+      >
+        <GoogleIcon className="size-5" />
+        {pending ? "구글로 이동 중…" : "구글로 시작하기"}
       </Button>
       {!configured ? (
         <p className="text-center text-xs text-warning-foreground">Google OAuth 환경변수를 먼저 설정해 주세요.</p>
