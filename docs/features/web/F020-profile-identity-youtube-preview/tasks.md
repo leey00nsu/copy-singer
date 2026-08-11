@@ -71,13 +71,13 @@
     - [x] rename contract·owner-checked PATCH·query invalidation 구현
     - [x] migration·동시성·validation·ownership 테스트
 
-- [TODO][PRD-FR-055] T-F020-profile-identity-youtube-preview-02 결정적 grainy gradient 프로필 artwork
+- [DONE][PRD-FR-055] T-F020-profile-identity-youtube-preview-02 결정적 grainy gradient 프로필 artwork
   - Date: 2026-08-11
   - Acceptance:
     - 목록과 상세가 파형 glyph 대신 같은 profile ID에서 안정적으로 생성된 square grainy gradient cover를 표시한다.
   - Checklist:
-    - [ ] pure artwork token generator와 공통 UI 구현
-    - [ ] library/detail 적용과 접근성·반응형 Storybook 검증
+    - [x] pure artwork token generator와 공통 UI 구현
+    - [x] library/detail 적용과 접근성·반응형 Storybook 검증
 
 - [TODO][PRD-FR-056] T-F020-profile-identity-youtube-preview-03 추천 YouTube source 계약과 공통 player
   - Date: 2026-08-11
@@ -117,5 +117,7 @@
 | `pnpm run test:vocal-profile-persistence` | `2026-08-11` | 통과 — 기본 이름·counter 증가와 실패 rollback 포함 3/3 |
 | `pnpm run typecheck` | `2026-08-11` | 통과 |
 | `pnpm run check:architecture` | `2026-08-11` | 통과 — Steiger·boundary 4/4 |
+| `pnpm exec tsx --test tests/vocal-profile-contract.test.ts tests/vocal-profile-history-ui.test.tsx` | `2026-08-11` | 통과 — artwork 결정성·분산과 library 회귀 포함 10/10 |
+| `pnpm run test:storybook --run src/widgets/library/ui/vocal-profile-library.stories.tsx` | `2026-08-11` | 통과 — profile artwork·list 상태 4/4 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T12:35:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T19:22:00.000Z -->
