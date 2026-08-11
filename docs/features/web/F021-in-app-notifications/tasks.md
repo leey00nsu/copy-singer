@@ -82,15 +82,15 @@
     - [x] mixing terminal 상태와 알림 연결
     - [x] 성공·실패·retry·idempotency 통합 테스트
 
-- [TODO][PRD-FR-058] T-F021-in-app-notifications-03 알림 API와 client server-state
+- [DONE][PRD-FR-058] T-F021-in-app-notifications-03 알림 API와 client server-state
   - Date: 2026-08-11
   - Acceptance:
     - 인증 사용자는 최신 알림·전체 이력·unread count를 조회하고 본인의 개별 알림 또는 전체를 읽음 처리할 수 있다.
     - header query는 30초 polling과 window focus refetch를 사용하며 mutation 후 관련 cache를 일관되게 갱신한다.
   - Checklist:
-    - [ ] GET 목록·PATCH 개별 읽음·POST 모두 읽음 route 구현
-    - [ ] Zod response validation과 TanStack Query options/mutations 구현
-    - [ ] 인증·잘못된 ID·contract·cache 동작 테스트
+    - [x] GET 목록·PATCH 개별 읽음·POST 모두 읽음 route 구현
+    - [x] Zod response validation과 TanStack Query options/mutations 구현
+    - [x] 인증·잘못된 ID·contract·cache 동작 테스트
 
 - [TODO][PRD-FR-058] T-F021-in-app-notifications-04 Header Bell과 알림 센터 UI
   - Date: 2026-08-11
@@ -123,5 +123,7 @@
 | `pnpm run typecheck` | `2026-08-11` | 통과 |
 | `node --conditions react-server --import tsx --test tests/notification-service.integration.ts` | `2026-08-11` | 통과 — 영속화·동시 dedupe·소유권·읽음·페이지네이션 1/1 |
 | `node --conditions react-server --import tsx --test tests/admin-operations.integration.ts tests/vocal-profile-analysis-queue.integration.ts tests/mixing-queue.integration.ts` | `2026-08-11` | 통과 — 티켓 양수 지급 단일 알림, 분석·믹싱 성공/최종 실패와 retry 제외 7/7 |
+| `pnpm exec tsx --test tests/api-contracts.test.ts tests/client-server-state-query.test.ts` | `2026-08-11` | 통과 — 알림 internal href·page/read 계약, 30초 polling·focus refetch·mutation cache invalidation 포함 19/19 |
+| `node --conditions react-server --import tsx --test tests/notification-routes.integration.ts` | `2026-08-11` | 통과 — 인증 401, owner scope 404, 개별·전체 읽음 1/1 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T22:28:16+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T22:33:29+09:00 -->
