@@ -57,6 +57,19 @@
 - [ ] video ID가 없거나 유효하지 않으면 깨진 iframe 대신 중립 placeholder를 보여주며 추천 조회와 믹싱은 계속 사용할 수 있다.
 - [ ] autoplay는 사용하지 않고 privacy-enhanced domain, accessible title, keyboard focus와 fullscreen을 지원한다.
 
+### US-3: 일관된 추천 스냅샷과 믹싱 가능 상태
+
+**As a** 보컬 프로필을 기준으로 추천과 믹싱을 이어가는 사용자
+**I want** 같은 프로필의 추천 결과와 믹싱 가능 여부가 화면마다 일관되게 보이길 원한다.
+**So that** 중복 결과나 뒤늦은 실패 없이 다음 행동을 이해할 수 있다.
+
+**Acceptance Criteria:**
+
+- [ ] 사용자 보컬 프로필마다 추천 스냅샷은 하나만 존재하며 반복·동시 생성 요청은 같은 결과를 반환한다.
+- [ ] 프로필 목록·상세는 `추천 N` 개수와 기존 결과가 있을 때의 `새 추천 만들기` action을 노출하지 않는다.
+- [ ] 분석 결과의 저·중앙·고 대표 구간은 항상 세 슬롯으로 표시하고 중앙 구간이 없으면 누락 이유를 명시한다.
+- [ ] 믹싱용 중앙 대표 구간이 없는 프로필의 추천 목록·곡 상세는 AI 믹싱 action을 실행 전에 비활성화하고 재분석 경로를 제공한다.
+
 ---
 
 ## 기능 요구사항
@@ -87,12 +100,26 @@
 - 한 목록에서 새 영상을 재생하면 기존 inline player를 닫아 동시에 하나만 활성화한다.
 - 상세 player는 곡 제목 위의 full-width media 영역에 배치하고 기존 `외부 출처 열기` action과 관련 icon import를 제거한다.
 
+### FR-5: 프로필별 단일 추천 스냅샷
+
+- `RecommendationRun.userVocalProfileId`는 DB에서 unique invariant로 보호하고 기존 중복 데이터는 최신 `createdAt`, `id` 순으로 한 건만 유지한다.
+- 추천 생성 API는 기존 스냅샷을 우선 반환하며 동시 생성 경합에서도 unique violation을 기존 결과 조회로 복구한다.
+- 프로필 목록과 상세는 추천 개수를 표시하지 않고 기존 결과가 있으면 해당 결과로 이동하는 action만 제공한다.
+
+### FR-6: 중앙 대표 구간과 믹싱 가능 상태
+
+- 대표 구간 UI는 low·mid·high 슬롯을 고정 표시하고 실제 segment가 없는 mid 슬롯에는 `중앙 영역을 충분히 찾지 못했어요` 안내를 표시한다.
+- 추천 응답은 해당 프로필로 실제 믹싱 reference를 선택할 수 있는지와 불가 사유를 제공한다.
+- 믹싱 reference가 없는 경우 추천 목록·선택·곡 상세는 요청을 보내는 button 대신 명시적 불가 상태와 `/profile` 재분석 link를 표시한다.
+- server의 기존 `MIXING_REFERENCE_UNAVAILABLE` 방어와 티켓 미차감 동작은 유지한다.
+
 ### 제외 범위
 
 - YouTube Data API 검색, 추천 영상 자동 탐색 또는 thumbnail 영구 저장
 - 영상 autoplay, background 재생, 재생 위치 동기화와 custom YouTube controls
 - 프로필 cover 업로드·직접 색상 선택·이미지 편집
 - 프로필 이름을 추천 실행 또는 기존 믹싱 snapshot에 복제 저장
+- 기존 추천 결과를 강제로 다시 계산하거나 추천 이력을 여러 버전으로 보존하는 기능
 
 ---
 
@@ -108,7 +135,7 @@
 ## 관련 문서
 
 - PRD: `../../prd/`
-- PRD Refs: `PRD-US-015`, `PRD-US-022`, `PRD-US-025`, `PRD-US-026`, `PRD-FR-024`, `PRD-FR-039`, `PRD-FR-049`, `PRD-FR-054`, `PRD-FR-055`, `PRD-FR-056`, `PRD-DATA-011`, `PRD-NFR-005`, `PRD-NFR-009`
+- PRD Refs: `PRD-US-015`, `PRD-US-022`, `PRD-US-025`, `PRD-US-026`, `PRD-FR-024`, `PRD-FR-039`, `PRD-FR-049`, `PRD-FR-054`, `PRD-FR-055`, `PRD-FR-056`, `PRD-FR-057`, `PRD-DATA-011`, `PRD-NFR-005`, `PRD-NFR-009`
   - 이미 원문 요구사항 문서에 정의된 ID만 적으세요. `spec.md`나 `tasks.md`에서 임의로 PRD ID를 만들지 않습니다.
   - 레거시 요구사항 문서에 아직 PRD ID가 없다면, 먼저 원문에 ID를 backfill한 뒤 이 필드와 `tasks.md` 태스크 태그를 함께 갱신하세요.
   - 요구사항/스코프 변경 시 PRD 문서 + 이 필드 + `tasks.md` 태스크 태그를 함께 갱신하세요.

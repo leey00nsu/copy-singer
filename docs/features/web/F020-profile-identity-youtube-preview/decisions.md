@@ -53,3 +53,19 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow
   - **Test/Log**: YouTube 공식 iframe/player parameter 및 privacy-enhanced mode 문서, `pnpm exec tsx --test tests/vocal-profile-contract.test.ts tests/vocal-profile-history-ui.test.tsx`, `pnpm exec tsx --test tests/api-contracts.test.ts tests/recommendation-presentation.test.ts tests/recommendation-ui.test.tsx tests/client-server-state-query.test.ts`, `pnpm run test:recommendation:db`
 - **Consequences**: facade thumbnail은 lazy network request를 만들 수 있지만 iframe과 player script는 사용자가 재생하기 전 생성하지 않는다.
+
+## D003: 프로필별 단일 추천과 중앙 reference capability (2026-08-11)
+
+- **Context**: 같은 보컬 제출에서 추천 run이 중복 생성되어 `추천 2`가 표시되고, 중앙 대표 구간이 없는 프로필은 믹싱 요청 후에야 실패를 알 수 있었다.
+- **Constraints**: 기존 추천 결과와 믹싱 이력은 최대한 보존해야 하며, client 상태만으로 server의 reference 검증을 대체할 수 없다.
+- **Options**: 추천 이력을 계속 누적하고 최신 run만 숨김, 생성 시 기존 run만 재사용, DB unique를 포함한 singleton; 믹싱 실패를 그대로 노출, source reference fallback, capability 사전 노출.
+- **Decision**: 프로필별 최신 추천 run 하나를 DB unique와 get-or-create로 보장하고, smart mid reference를 확보하지 못한 profile은 명시적 mixing-unavailable capability로 노출한다.
+- **Rationale**: 현재 추천은 동일 분석 snapshot의 deterministic 결과이므로 중복 이력의 사용자 가치가 없고, 품질 계약을 깨는 source fallback보다 재분석 안내가 안전하다.
+- **Trace**:
+  - **DOING 시작 시점**: 지정 프로필은 medianMidi는 있지만 연속성과 voiced density 조건을 충족한 mid phrase가 없어 `smart-reference-mid-v1` synthesis reference가 unavailable임을 확인했다. 같은 profile에 같은 결과의 run 두 건이 약 6초 간격으로 저장된 것도 확인했다.
+  - **DONE 전 확정 시점**: 최신 run 1건만 보존하는 migration과 profile unique index를 적용했고, 반복·동시 `createRecommendationRun` 호출이 동일 ID를 반환하며 DB row가 하나임을 통합 테스트로 확인했다. 믹싱 capability UI는 후속 태스크에서 보강한다.
+- **Evidence**:
+  - **Commit**: 구현 후 기록
+  - **PR**: local workflow
+  - **Test/Log**: `pnpm prisma migrate deploy`, `pnpm prisma validate`, `pnpm run test:recommendation:db`, `pnpm run typecheck`
+- **Consequences**: 기존 중복 run 중 최신 한 건만 남고 오래된 item 참조는 null 처리되며, 중앙 reference를 확보하지 못한 프로필은 새 분석 전까지 AI 믹싱을 생성할 수 없다.

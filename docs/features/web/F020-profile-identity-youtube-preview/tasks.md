@@ -114,12 +114,40 @@
     - [x] Song match eyebrow에서 #N 제거
     - [x] 상세 unit·Storybook·build 회귀 검증
 
+- [DONE][PRD-FR-057] T-F020-profile-identity-youtube-preview-07 프로필별 추천 스냅샷 singleton persistence
+  - Date: 2026-08-11
+  - Acceptance:
+    - 같은 보컬 프로필의 반복·동시 추천 생성은 동일 run을 반환하고 DB에는 최신 스냅샷 한 건만 존재한다.
+  - Checklist:
+    - [x] 기존 중복 run 최신 1건 보존 migration과 unique invariant 추가
+    - [x] recommendation get-or-create와 P2002 경합 복구 구현
+    - [x] DB integration·migration 검증
+
+- [TODO][PRD-FR-057] T-F020-profile-identity-youtube-preview-08 프로필 추천 활동 UI 단순화
+  - Date: 2026-08-11
+  - Acceptance:
+    - 보컬 프로필 목록·상세에서 추천 개수를 제거하고 기존 추천이 있으면 결과 보기 action만 제공한다.
+  - Checklist:
+    - [ ] 목록·상세 추천 count chip/text 제거
+    - [ ] 새 추천 만들기 action 제거와 기존 결과 navigation 유지
+    - [ ] component·presentation 회귀 검증
+
+- [TODO][PRD-FR-057] T-F020-profile-identity-youtube-preview-09 중앙 대표 구간 누락과 믹싱 불가 사전 안내
+  - Date: 2026-08-11
+  - Acceptance:
+    - 중앙 대표 구간이 없는 프로필은 결과에서 누락 상태를 보고 추천 목록·선택·곡 상세에서 믹싱 불가와 재분석 경로를 요청 전에 확인한다.
+  - Checklist:
+    - [ ] low·mid·high 고정 슬롯과 mid placeholder 구현
+    - [ ] recommendation mixing capability contract·serializer 구현
+    - [ ] 모든 추천 mixing action의 unavailable state와 재분석 link 구현
+    - [ ] contract·component·Storybook·build 검증
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -137,7 +165,9 @@
 | `pnpm exec tsx --test tests/vocal-profile-contract.test.ts tests/vocal-profile-history-ui.test.tsx` | `2026-08-11` | 통과 — artwork 결정성·분산과 library 회귀 포함 10/10 |
 | `pnpm run test:storybook --run src/widgets/library/ui/vocal-profile-library.stories.tsx` | `2026-08-11` | 통과 — profile artwork·list 상태 4/4 |
 | `pnpm exec tsx --test tests/api-contracts.test.ts tests/recommendation-presentation.test.ts tests/recommendation-ui.test.tsx tests/client-server-state-query.test.ts` | `2026-08-11` | 통과 — video ID·URL·facade/player·추천 회귀 30/30 |
-| `pnpm run test:recommendation:db` | `2026-08-11` | 통과 — 100곡 sourceVideoId 직렬화 포함 3/3 |
+| `pnpm run test:recommendation:db` | `2026-08-11` | 통과 — 반복·동시 추천 singleton, sourceVideoId, synthesis 포함 3/3 |
+| `pnpm prisma migrate deploy` | `2026-08-11` | 통과 — 중복 run 최신 1건 보존 및 profile unique migration 적용 |
+| `pnpm prisma validate` | `2026-08-11` | 통과 — profile별 recommendation run unique schema 유효 |
 | `pnpm run test:recommendation` | `2026-08-11` | 통과 — ranking 10/10, presentation·UI·detail 등 22/22 |
 | `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/_pages/song-detail/ui/song-detail.stories.tsx` | `2026-08-11` | 통과 — full-width 확장 행·single-active player·상세 배치 포함 11/11 |
 | `pnpm run build` | `2026-08-11` | 통과 — Next.js production build 및 25개 static page 생성 |
@@ -147,4 +177,4 @@
 | `pnpm exec tsx --test tests/recommendation-song-detail.test.tsx` | `2026-08-11` | 통과 — Song match #N 제거 포함 상세 회귀 5/5 |
 | `pnpm run test:storybook --run src/_pages/song-detail/ui/song-detail.stories.tsx` | `2026-08-11` | 통과 — 원본 영상·Song match label 1/1 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T20:24:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T20:13:06.000+09:00 -->

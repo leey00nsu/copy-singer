@@ -24,6 +24,8 @@
 | State | TanStack Query + 기존 fetch client | 이름 PATCH 후 목록·상세 cache를 일관되게 갱신 |
 | Artwork | CSS layered gradients + inline SVG noise | 이미지 저장 없이 profile ID에 대해 안정적이고 다양한 cover 생성 |
 | Video | YouTube privacy-enhanced iframe + click-to-load facade | 카탈로그 sourceVideoId를 재사용하고 목록 초기 player 비용을 제한 |
+| Recommendation snapshot | PostgreSQL unique invariant + idempotent get-or-create | 같은 프로필의 중복 추천 결과와 모호한 추천 개수 제거 |
+| Mixing eligibility | Recommendation response capability + server invariant | 중앙 대표 구간 누락을 요청 전에 설명하고 티켓 차감 전 방어 유지 |
 
 ---
 
@@ -80,6 +82,26 @@ Song.metadata.catalog.sourceVideoId
 - 상세는 title header 직전 full-width 16:9 player를 배치하고 `safeRecommendationSourceUrl`과 외부 link UI를 제거한다. sourceUrl은 하위 호환을 위해 응답에 당분간 유지한다.
 - embed 불가·연령 제한 영상은 YouTube player 자체 상태를 따르며, 유효 ID가 없는 fixture/data에는 중립 placeholder를 표시한다. player는 16:9를 기본으로 하고 좁은 화면에서는 공식 최소 viewport인 200px 높이를 보장한다.
 
+### 단일 추천 스냅샷과 믹싱 capability
+
+```text
+POST recommendation-runs(profileId)
+  ├─ existing run → same snapshot response
+  └─ create once → unique(profileId)
+       └─ concurrent P2002 → fetch existing snapshot
+
+VocalProfile analysis reference
+  ├─ smart mid reference ready → mixingAvailable: true
+  └─ no qualifying mid phrase → mixingAvailable: false
+       ├─ profile result: fixed mid placeholder
+       └─ recommendation UI: disabled state + /profile reanalysis link
+```
+
+- migration은 프로필별 최신 `RecommendationRun`만 남긴 뒤 `userVocalProfileId` unique index를 추가한다. 연결된 오래된 recommendation item은 cascade 삭제되고 기존 mixing job은 schema의 `onDelete: SetNull` 계약에 따라 보존한다.
+- 생성 service는 기존 run을 먼저 조회하고, 동시 요청으로 unique 경합이 발생하면 P2002를 기존 run 조회로 복구한다.
+- serializer는 profile의 실제 synthesis reference 계약을 기준으로 `mixingAvailable`과 제한된 reason enum을 내려준다. client는 동일 값을 목록·선택·상세 action에 전달하되 server 큐의 reference 재검증은 제거하지 않는다.
+- `ReferenceBandPlayers`는 데이터가 있는 항목만 순회하지 않고 low·mid·high 세 band를 고정 렌더링한다.
+
 ---
 
 ## 파일 구조
@@ -89,7 +111,7 @@ src/
 ├── app/api/vocal-profiles/[id]/route.ts        # GET/DELETE + owner-checked PATCH
 ├── entities/
 │   ├── recommendation/
-│   │   ├── model/contract.ts                   # nullable sourceVideoId
+│   │   ├── model/contract.ts                   # nullable sourceVideoId + mixing capability
 │   │   └── ui/youtube-video.tsx                # facade/player 공통 UI
 │   └── vocal-profile/
 │       ├── api/history.ts                      # displayName/profileNumber serialization
@@ -103,6 +125,10 @@ src/
 │   └── vocal-profile-detail/ui/                 # detail page + page-local rename action
 └── widgets/library/ui/vocal-profile-library.tsx
 
+src/features/
+├── create-recommendation/api/recommendation-service.ts # singleton get-or-create
+└── create-mixing/ui/recommendation-mixing-action.tsx    # unavailable state
+
 prisma/
 ├── schema.prisma
 └── migrations/*_vocal_profile_identity/
@@ -113,8 +139,8 @@ prisma/
 ## 테스트 전략
 
 - **단위 테스트**: profile name trim/length contract, UUID artwork token 결정성·분산, YouTube ID validation/embed URL, serializers와 rename ownership을 검증한다.
-- **DB 테스트**: migration backfill, counter 증가, 삭제 후 번호 미재사용, 동시 생성 unique invariant와 SONG profile null 호환을 검증한다.
-- **컴포넌트 테스트**: profile library/detail의 artwork·stored title·rename states, recommendation list의 facade/단일 iframe/row selection 분리, detail player·외부 link 제거를 Storybook interaction으로 검증한다.
+- **DB 테스트**: migration backfill, counter 증가, 삭제 후 번호 미재사용, 프로필별 추천 get-or-create·동시 unique invariant와 SONG profile null 호환을 검증한다.
+- **컴포넌트 테스트**: profile library/detail의 artwork·stored title·rename states·고정 대표 구간, recommendation list의 facade/단일 iframe/row selection 분리·믹싱 불가 상태, detail player·외부 link 제거를 Storybook interaction으로 검증한다.
 - **통합 테스트**: Prisma generate/validate, 관련 Vitest/Storybook, architecture check, TypeScript·ESLint와 production build를 실행한다.
 - **브라우저 QA**: 실제 DB profile 생성·rename·재접속, 추천 목록 영상 재생·다른 행 전환·상세 player를 desktop/mobile에서 확인한다.
 
@@ -125,6 +151,8 @@ prisma/
 - YouTube 영상은 소유자가 embedding을 제한하거나 연령 제한할 수 있다. 앱은 추천 자체를 실패시키지 않으며 player가 제공하는 상태를 그대로 표시한다.
 - YouTube thumbnail이 초기 네트워크 요청을 만들 수 있으나 iframe/player script는 사용자 재생 전 로드하지 않는다. autoplay는 활성화하지 않는다.
 - Next.js image optimization domain 설정을 늘리지 않도록 facade thumbnail은 제한된 video ID로 만든 native lazy image를 사용하고 고정 aspect ratio로 layout shift를 막는다.
+- 중복 추천 run 정리 시 오래된 run/item은 제거되지만 최신 추천 스냅샷과 믹싱 이력 row는 유지된다. 오래된 item을 참조하던 믹싱 job의 recommendationItemId만 null이 된다.
+- capability는 UX 최적화이며 권한·reference 가용성의 최종 판정은 mixing queue server가 계속 수행한다.
 
 ---
 
