@@ -63,9 +63,9 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 현재 추천은 동일 분석 snapshot의 deterministic 결과이므로 중복 이력의 사용자 가치가 없고, 품질 계약을 깨는 source fallback보다 재분석 안내가 안전하다.
 - **Trace**:
   - **DOING 시작 시점**: 지정 프로필은 medianMidi는 있지만 연속성과 voiced density 조건을 충족한 mid phrase가 없어 `smart-reference-mid-v1` synthesis reference가 unavailable임을 확인했다. 같은 profile에 같은 결과의 run 두 건이 약 6초 간격으로 저장된 것도 확인했다.
-  - **DONE 전 확정 시점**: 최신 run 1건만 보존하는 migration과 profile unique index를 적용했고, 반복·동시 `createRecommendationRun` 호출이 동일 ID를 반환하며 DB row가 하나임을 통합 테스트로 확인했다. 믹싱 capability UI는 후속 태스크에서 보강한다.
+  - **DONE 전 확정 시점**: 최신 run 1건만 보존하는 migration과 profile unique index를 적용했고, 반복·동시 `createRecommendationRun` 호출이 동일 ID를 반환하며 DB row가 하나임을 통합 테스트로 확인했다. 추천 응답은 smart/reference asset과 descriptor version을 같은 선택 규칙으로 평가하고, 중앙 phrase 누락 시 목록·선택·상세에서 시작과 재시도를 차단한다. 지정 프로필 `ca4ae55a-6d53-4565-a204-f17dbf9e6d0f`도 run 1건과 `missing_mid_reference` 상태로 직렬화됨을 실데이터에서 확인했다.
 - **Evidence**:
   - **Commit**: 구현 후 기록
   - **PR**: local workflow
-  - **Test/Log**: `pnpm prisma migrate deploy`, `pnpm prisma validate`, `pnpm run test:recommendation:db`, `pnpm run typecheck`
+  - **Test/Log**: `pnpm prisma migrate deploy`, `pnpm prisma validate`, `pnpm run test:recommendation:db`, `pnpm run test:recommendation`, `pnpm run test:vocal-profile-presentation`, `pnpm run test:mixing:db`, targeted Storybook, `pnpm run typecheck`, `pnpm run check:architecture`, `pnpm run build`
 - **Consequences**: 기존 중복 run 중 최신 한 건만 남고 오래된 item 참조는 null 처리되며, 중앙 reference를 확보하지 못한 프로필은 새 분석 전까지 AI 믹싱을 생성할 수 없다.

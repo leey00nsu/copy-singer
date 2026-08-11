@@ -132,22 +132,22 @@
     - [x] 새 추천 만들기 action 제거와 기존 결과 navigation 유지
     - [x] component·presentation 회귀 검증
 
-- [TODO][PRD-FR-057] T-F020-profile-identity-youtube-preview-09 중앙 대표 구간 누락과 믹싱 불가 사전 안내
+- [DONE][PRD-FR-057] T-F020-profile-identity-youtube-preview-09 중앙 대표 구간 누락과 믹싱 불가 사전 안내
   - Date: 2026-08-11
   - Acceptance:
     - 중앙 대표 구간이 없는 프로필은 결과에서 누락 상태를 보고 추천 목록·선택·곡 상세에서 믹싱 불가와 재분석 경로를 요청 전에 확인한다.
   - Checklist:
-    - [ ] low·mid·high 고정 슬롯과 mid placeholder 구현
-    - [ ] recommendation mixing capability contract·serializer 구현
-    - [ ] 모든 추천 mixing action의 unavailable state와 재분석 link 구현
-    - [ ] contract·component·Storybook·build 검증
+    - [x] low·mid·high 고정 슬롯과 mid placeholder 구현
+    - [x] recommendation mixing capability contract·serializer 구현
+    - [x] 모든 추천 mixing action의 unavailable state와 재분석 link 구현
+    - [x] contract·component·Storybook·build 검증
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -168,8 +168,8 @@
 | `pnpm run test:recommendation:db` | `2026-08-11` | 통과 — 반복·동시 추천 singleton, sourceVideoId, synthesis 포함 3/3 |
 | `pnpm prisma migrate deploy` | `2026-08-11` | 통과 — 중복 run 최신 1건 보존 및 profile unique migration 적용 |
 | `pnpm prisma validate` | `2026-08-11` | 통과 — profile별 recommendation run unique schema 유효 |
-| `pnpm run test:recommendation` | `2026-08-11` | 통과 — ranking 10/10, presentation·UI·detail 등 22/22 |
-| `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/_pages/song-detail/ui/song-detail.stories.tsx` | `2026-08-11` | 통과 — full-width 확장 행·single-active player·상세 배치 포함 11/11 |
+| `pnpm run test:recommendation` | `2026-08-11` | 통과 — ranking 10/10, mixing 불가 사전 차단 포함 presentation·UI·detail 23/23 |
+| `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/_pages/song-detail/ui/song-detail.stories.tsx` | `2026-08-11` | 통과 — 목록·상세 mixing 불가와 재분석 link 포함 13/13 |
 | `pnpm run build` | `2026-08-11` | 통과 — Next.js production build 및 25개 static page 생성 |
 | `Storybook browser QA (desktop 1440px / mobile 390px)` | `2026-08-11` | 통과 — 재생 전후 요약 행·곡 셀 폭 유지, 4-column 확장 행, iframe 최대 1개, 200px 최소 높이와 가로 overflow 없음 |
 | `rg -n "Geist_Mono\|font-geist-mono\|next/font/google" src` | `2026-08-11` | 통과 — 잔여 Geist Mono import·variable 없음 |
@@ -177,5 +177,8 @@
 | `pnpm exec tsx --test tests/recommendation-song-detail.test.tsx` | `2026-08-11` | 통과 — Song match #N 제거 포함 상세 회귀 5/5 |
 | `pnpm run test:storybook --run src/_pages/song-detail/ui/song-detail.stories.tsx` | `2026-08-11` | 통과 — 원본 영상·Song match label 1/1 |
 | `pnpm exec tsx --test tests/vocal-profile-history-ui.test.tsx` | `2026-08-11` | 통과 — 추천 count 제거·AI 믹싱 수치·상세 navigation 포함 3/3 |
+| `pnpm exec tsx --test tests/api-contracts.test.ts tests/recommendation-ui.test.tsx tests/vocal-profile-results-ui.test.tsx tests/vocal-profile-reference-bands.test.ts tests/mixing-reference.test.ts` | `2026-08-11` | 통과 — capability contract·중앙 placeholder·요청 전 차단 26/26 |
+| `pnpm run test:vocal-profile-presentation` | `2026-08-11` | 통과 — 중앙 대표 구간 누락과 profile UI 회귀 12/12 |
+| `pnpm run test:mixing:db` | `2026-08-11` | 통과 — reference 선택·티켓 차감 전 방어·queue 회귀 1/1 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T20:15:17.000+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T20:22:37.000+09:00 -->
