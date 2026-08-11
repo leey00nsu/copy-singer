@@ -1,5 +1,6 @@
 import "server-only";
 
+import { createNotification } from "@/entities/notification/index.server";
 import { applyTicketChange } from "@/entities/ticket/index.server";
 
 export async function adjustUserTickets(input: {
@@ -15,7 +16,7 @@ export async function adjustUserTickets(input: {
   if (input.reason.trim().length < 3 || input.reason.trim().length > 500) {
     throw new Error("조정 사유를 3~500자로 입력해주세요.");
   }
-  return applyTicketChange({
+  const ledger = await applyTicketChange({
     userId: input.targetUserId,
     type: "ADMIN_ADJUSTMENT",
     amount: input.amount,
@@ -23,4 +24,16 @@ export async function adjustUserTickets(input: {
     actorUserId: input.actorUserId,
     reason: input.reason,
   });
+  if (ledger.amount > 0) {
+    await createNotification({
+      userId: input.targetUserId,
+      type: "TICKET_CREDIT",
+      title: "티켓이 추가되었습니다",
+      message: `티켓 ${ledger.amount}개가 추가되었습니다. ${ledger.reason}`.slice(0, 500),
+      href: "/account",
+      sourceId: ledger.id,
+      dedupeKey: `ticket-ledger:${ledger.id}`,
+    });
+  }
+  return ledger;
 }

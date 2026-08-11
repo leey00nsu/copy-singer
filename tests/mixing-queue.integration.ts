@@ -313,6 +313,10 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       await prisma.ticketLedger.count({ where: { mixingJobId: submittedFailure.id, type: "MIXING_REFUND" } }),
       0,
     );
+    assert.equal(
+      await prisma.notification.count({ where: { sourceId: submittedFailure.id, type: "MIXING_FAILED" } }),
+      1,
+    );
 
     await applyTicketChange({
       userId,
@@ -367,6 +371,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       await prisma.ticketLedger.count({ where: { mixingJobId: finalizationFailure.id, type: "MIXING_REFUND" } }),
       0,
     );
+    assert.equal(await prisma.notification.count({ where: { sourceId: finalizationFailure.id } }), 0);
 
     await prisma.$executeRaw`
       UPDATE "MixingJob" SET "nextAttemptAt" = ${new Date(Date.now() - 1_000)}
@@ -389,6 +394,10 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     assert.equal(
       await prisma.ticketLedger.count({ where: { mixingJobId: finalizationFailure.id, type: "MIXING_REFUND" } }),
       0,
+    );
+    assert.equal(
+      await prisma.notification.count({ where: { sourceId: finalizationFailure.id, type: "MIXING_FAILED" } }),
+      1,
     );
 
     await applyTicketChange({
@@ -457,6 +466,11 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     assert.equal(completed.resultAsset?.mimeType, "audio/mp4");
     assert.match(completed.resultAsset?.fileName ?? "", /\.m4a$/);
     assert.equal(completed.resultAsset?.externalUrl, "https://objects.example/result.wav");
+    const successNotification = await prisma.notification.findFirstOrThrow({
+      where: { sourceId: successful.id, type: "MIXING_SUCCEEDED" },
+    });
+    assert.equal(successNotification.userId, userId);
+    assert.equal(successNotification.href, `/library/mixes/${successful.id}`);
     const history = await getMixingHistory(userId, 1, 20);
     assert.equal(history.jobs[0]?.id, successful.id);
     assert.equal(history.jobs[0]?.resultReady, true);

@@ -1,5 +1,6 @@
 import "server-only";
 
+import { createNotification } from "@/entities/notification/index.server";
 import { SYNTHESIS_PRESET } from "@/entities/recommendation/index.model";
 import { applyTicketChange } from "@/entities/ticket/index.server";
 import { mixingLeaseSeconds, mixingPollIntervalMs } from "@/shared/config/index.server";
@@ -171,7 +172,7 @@ async function releaseMixingFailure(jobId: string, error: unknown, submitted: bo
   const failure = mixingFailure(error, submitted);
   const job = await prisma.mixingJob.findUnique({
     where: { id: jobId },
-    select: { attempts: true, maxAttempts: true },
+    select: { attempts: true, maxAttempts: true, userId: true, song: { select: { title: true } } },
   });
   if (!job) return;
 
@@ -215,23 +216,33 @@ async function releaseMixingFailure(jobId: string, error: unknown, submitted: bo
     return;
   }
 
-  await prisma.mixingJob.update({
-    where: { id: jobId },
-    data: {
-      status: "FAILED",
-      refundState: submitted ? "NONE" : "REQUIRED",
-      errorCode: failure.code,
-      errorDetail: failure.detail.slice(0, 2_000),
-      completedAt: now,
-      leaseOwner: null,
-      leaseExpiresAt: null,
-    },
+  await prisma.$transaction(async (transaction) => {
+    await transaction.mixingJob.update({
+      where: { id: jobId },
+      data: {
+        status: "FAILED",
+        refundState: submitted ? "NONE" : "REQUIRED",
+        errorCode: failure.code,
+        errorDetail: failure.detail.slice(0, 2_000),
+        retryable: failure.retryable,
+        completedAt: now,
+        leaseOwner: null,
+        leaseExpiresAt: null,
+      },
+    });
+    await createNotification(
+      {
+        userId: job.userId,
+        type: "MIXING_FAILED",
+        title: "AI 믹싱을 완료하지 못했습니다",
+        message: `${job.song.title} 작업을 확인하고 다시 시도해 주세요.`,
+        href: `/library/mixes/${jobId}`,
+        sourceId: jobId,
+        dedupeKey: `mixing:${jobId}:failed`,
+      },
+      transaction,
+    );
   });
-  await prisma.$executeRaw`
-    UPDATE "MixingJob"
-    SET "retryable" = ${failure.retryable}, "updatedAt" = ${now}
-    WHERE "id" = ${jobId}::uuid
-  `;
   if (!submitted) await ensureMixingRefund(jobId);
 }
 
@@ -390,17 +401,31 @@ export async function processClaimedMixingJob(jobId: string, owner: string, depe
           fetchImpl,
         });
         try {
-          await prisma.mixingJob.update({
-            where: { id: job.id },
-            data: {
-              status: "SUCCEEDED",
-              resultAssetId: resultAsset.id,
-              completedAt: new Date(),
-              errorCode: null,
-              errorDetail: null,
-              leaseOwner: null,
-              leaseExpiresAt: null,
-            },
+          await prisma.$transaction(async (transaction) => {
+            await transaction.mixingJob.update({
+              where: { id: job.id },
+              data: {
+                status: "SUCCEEDED",
+                resultAssetId: resultAsset.id,
+                completedAt: new Date(),
+                errorCode: null,
+                errorDetail: null,
+                leaseOwner: null,
+                leaseExpiresAt: null,
+              },
+            });
+            await createNotification(
+              {
+                userId: job.userId,
+                type: "MIXING_SUCCEEDED",
+                title: "AI 믹스가 완성되었습니다",
+                message: `${job.song.title} 결과를 들어보세요.`,
+                href: `/library/mixes/${job.id}`,
+                sourceId: job.id,
+                dedupeKey: `mixing:${job.id}:succeeded`,
+              },
+              transaction,
+            );
           });
         } catch (error) {
           await discardMediaAsset(resultAsset.id);

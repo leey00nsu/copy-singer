@@ -47,6 +47,19 @@ test("admin allowlist and ticket adjustments preserve actor, reason, and nonnega
     assert.equal(granted.balanceAfter, 3);
     assert.equal(granted.actorUserId, adminId);
     assert.equal(granted.reason, "고객 지원 지급");
+    const grantedAgain = await adjustUserTickets({
+      actorUserId: adminId,
+      targetUserId: targetId,
+      amount: 2,
+      reason: "고객 지원 지급",
+      idempotencyKey: `grant-${suffix}`,
+    });
+    assert.equal(grantedAgain.id, granted.id);
+    const creditNotifications = await prisma.notification.findMany({ where: { userId: targetId } });
+    assert.equal(creditNotifications.length, 1);
+    assert.equal(creditNotifications[0]?.type, "TICKET_CREDIT");
+    assert.equal(creditNotifications[0]?.sourceId, granted.id);
+    assert.equal(creditNotifications[0]?.href, "/account");
 
     const removed = await adjustUserTickets({
       actorUserId: adminId,
@@ -56,6 +69,7 @@ test("admin allowlist and ticket adjustments preserve actor, reason, and nonnega
       idempotencyKey: `remove-${suffix}`,
     });
     assert.equal(removed.balanceAfter, 2);
+    assert.equal(await prisma.notification.count({ where: { userId: targetId } }), 1);
     await assert.rejects(
       () =>
         adjustUserTickets({

@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createHash } from "node:crypto";
+import { createNotification } from "@/entities/notification/index.server";
 import {
   AnalyzerClientError,
   analyzeVocalProfileBytes,
@@ -87,21 +88,39 @@ async function loadClaimedJob(jobId: string, owner: string) {
 
 async function markSucceeded(job: VocalProfileAnalysisJobRow, profileId: string) {
   const now = new Date();
-  await prisma.$executeRaw`
-    UPDATE "VocalProfileAnalysisJob"
-    SET
-      "status" = 'SUCCEEDED'::"VocalProfileAnalysisJobStatus",
-      "vocalProfileId" = ${profileId}::uuid,
-      "errorCode" = NULL,
-      "errorDetail" = NULL,
-      "retryable" = NULL,
-      "completedAt" = ${now},
-      "leaseOwner" = NULL,
-      "leaseExpiresAt" = NULL,
-      "heartbeatAt" = ${now},
-      "updatedAt" = ${now}
-    WHERE "id" = ${job.id}::uuid
-  `;
+  await prisma.$transaction(async (transaction) => {
+    const profile = await transaction.vocalProfile.findUniqueOrThrow({
+      where: { id: profileId },
+      select: { profileNumber: true, displayName: true },
+    });
+    await transaction.vocalProfileAnalysisJob.update({
+      where: { id: job.id },
+      data: {
+        status: "SUCCEEDED",
+        vocalProfileId: profileId,
+        errorCode: null,
+        errorDetail: null,
+        retryable: null,
+        completedAt: now,
+        leaseOwner: null,
+        leaseExpiresAt: null,
+        heartbeatAt: now,
+      },
+    });
+    const displayName = profile.displayName?.trim() || `보컬 프로필 ${profile.profileNumber ?? 1}`;
+    await createNotification(
+      {
+        userId: job.userId,
+        type: "VOCAL_PROFILE_SUCCEEDED",
+        title: "보컬 프로필 분석이 완료되었습니다",
+        message: `${displayName}의 분석 결과를 확인해 보세요.`,
+        href: `/vocal-profiles/${profileId}`,
+        sourceId: job.id,
+        dedupeKey: `vocal-analysis:${job.id}:succeeded`,
+      },
+      transaction,
+    );
+  });
 }
 
 async function releaseFailure(job: VocalProfileAnalysisJobRow, error: unknown) {
@@ -127,20 +146,33 @@ async function releaseFailure(job: VocalProfileAnalysisJobRow, error: unknown) {
     return;
   }
 
-  await prisma.$executeRaw`
-    UPDATE "VocalProfileAnalysisJob"
-    SET
-      "status" = 'FAILED'::"VocalProfileAnalysisJobStatus",
-      "sourceAssetId" = NULL,
-      "errorCode" = ${failure.code},
-      "errorDetail" = ${failure.detail.slice(0, 2000)},
-      "retryable" = ${failure.retryable},
-      "completedAt" = ${now},
-      "leaseOwner" = NULL,
-      "leaseExpiresAt" = NULL,
-      "updatedAt" = ${now}
-    WHERE "id" = ${job.id}::uuid
-  `;
+  await prisma.$transaction(async (transaction) => {
+    await transaction.vocalProfileAnalysisJob.update({
+      where: { id: job.id },
+      data: {
+        status: "FAILED",
+        sourceAssetId: null,
+        errorCode: failure.code,
+        errorDetail: failure.detail.slice(0, 2_000),
+        retryable: failure.retryable,
+        completedAt: now,
+        leaseOwner: null,
+        leaseExpiresAt: null,
+      },
+    });
+    await createNotification(
+      {
+        userId: job.userId,
+        type: "VOCAL_PROFILE_FAILED",
+        title: "보컬 프로필 분석을 완료하지 못했습니다",
+        message: "새 음성으로 다시 분석해 주세요.",
+        href: "/library?tab=profiles",
+        sourceId: job.id,
+        dedupeKey: `vocal-analysis:${job.id}:failed`,
+      },
+      transaction,
+    );
+  });
   if (job.sourceAssetId) await discardMediaAsset(job.sourceAssetId);
 }
 

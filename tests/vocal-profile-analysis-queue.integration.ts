@@ -253,6 +253,10 @@ test("worker persists a profile while reusing the durable source asset", async (
     assert.equal(profile.recording.mediaAssetId, source.id);
     assert.equal(profile.recordingId, job.recordingId);
     assert.equal(await prisma.mediaAsset.count({ where: { userId, kind: "REFERENCE" } }), 1);
+    const notification = await prisma.notification.findFirstOrThrow({ where: { userId } });
+    assert.equal(notification.type, "VOCAL_PROFILE_SUCCEEDED");
+    assert.equal(notification.sourceId, job.id);
+    assert.equal(notification.href, `/vocal-profiles/${profile.id}`);
   } finally {
     if (previous.backend === undefined) delete process.env.VOCAL_PROFILE_ANALYZER_BACKEND;
     else process.env.VOCAL_PROFILE_ANALYZER_BACKEND = previous.backend;
@@ -266,7 +270,7 @@ test("worker persists a profile while reusing the durable source asset", async (
 
 test("transient Modal failure requeues without deleting the source", async (context) => {
   if (!process.env.DATABASE_URL) return context.skip("DATABASE_URL is not configured");
-  const { userId } = await withUser();
+  const { prisma, userId } = await withUser();
   const bytes = Uint8Array.from([1, 2, 3]);
   const source = await createSourceAsset(userId, bytes);
   const job = await insertJob({ userId, sourceAssetId: source.id, maxAttempts: 3 });
@@ -293,6 +297,7 @@ test("transient Modal failure requeues without deleting the source", async (cont
     assert.equal(stored.sourceAssetId, source.id);
     assert.equal(stored.errorCode, "ANALYZER_UNAVAILABLE");
     assert.equal(stored.retryable, true);
+    assert.equal(await prisma.notification.count({ where: { userId } }), 0);
   } finally {
     if (previous.backend === undefined) delete process.env.VOCAL_PROFILE_ANALYZER_BACKEND;
     else process.env.VOCAL_PROFILE_ANALYZER_BACKEND = previous.backend;
@@ -346,6 +351,10 @@ test("terminal analysis failure detaches and deletes the queued source", async (
     assert.equal(stored.errorCode, "TOO_SILENT");
     assert.equal(stored.retryable, false);
     assert.equal(await prisma.mediaAsset.findUnique({ where: { id: source.id } }), null);
+    const notification = await prisma.notification.findFirstOrThrow({ where: { userId } });
+    assert.equal(notification.type, "VOCAL_PROFILE_FAILED");
+    assert.equal(notification.sourceId, job.id);
+    assert.equal(notification.href, "/library?tab=profiles");
   } finally {
     globalThis.fetch = previousFetch;
     if (previous.backend === undefined) delete process.env.VOCAL_PROFILE_ANALYZER_BACKEND;
