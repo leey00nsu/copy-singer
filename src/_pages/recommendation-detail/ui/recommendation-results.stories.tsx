@@ -77,6 +77,10 @@ export const Success: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect((await canvas.findAllByText("서른 즈음에"))[0]).toBeVisible();
+    await expect(canvas.getByRole("heading", { name: "내 목소리에 맞는 노래" }).closest("header")).toHaveClass(
+      "mt-8",
+      "lg:mt-12",
+    );
     await expect(canvas.getByRole("button", { name: "이 곡으로 AI 믹싱" })).toBeVisible();
     await expect(canvas.getByRole("button", { name: "서른 즈음에" })).toHaveAttribute("aria-pressed", "true");
     await expect(canvas.queryByRole("link", { name: "서른 즈음에 전체 분석 결과" })).not.toBeInTheDocument();
@@ -99,6 +103,23 @@ export const DenseComparisonList: Story = {
     await expect(canvas.getByText("전체 100곡 중 100곡")).toBeVisible();
     await expect(canvas.getAllByRole("button", { name: /\d+$/ })).toHaveLength(100);
     await expect(canvas.getByRole("button", { name: "이 곡으로 AI 믹싱" })).toBeVisible();
+    await expect(canvas.getByText("추천 적합도 1위")).toBeVisible();
+
+    const thirdRow = canvas.getByRole("table").querySelectorAll("tbody tr")[2];
+    if (!(thirdRow instanceof HTMLElement)) throw new Error("Third recommendation row is missing");
+    const score = within(thirdRow).getByText("90%");
+    const scoreRect = score.getBoundingClientRect();
+    const hitTarget = document.elementFromPoint(
+      scoreRect.left + scoreRect.width / 2,
+      scoreRect.top + scoreRect.height / 2,
+    );
+    const rowButton = hitTarget?.closest("[data-resource-row-button]");
+    await expect(rowButton).toHaveAccessibleName("밤편지 3");
+    await userEvent.click(rowButton as HTMLElement);
+
+    const selection = canvas.getByRole("complementary", { name: "선택한 추천곡" });
+    await expect(within(selection).getByRole("heading", { name: "밤편지 3" })).toBeVisible();
+    await expect(within(selection).getByText("추천 적합도 3위")).toBeVisible();
   },
 };
 

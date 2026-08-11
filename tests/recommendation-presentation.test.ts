@@ -7,6 +7,7 @@ import {
   projectRecommendationSongProfile,
   recommendationMatchColor,
   recommendationMatchPercent,
+  recommendationMatchRank,
   serializeRecommendationFilters,
   visibleRecommendationReasons,
 } from "../src/entities/recommendation";
@@ -102,6 +103,14 @@ test("shows a bounded integer match percent without fabricating precision", () =
   assert.equal(recommendationMatchPercent(items[0]), 92);
   assert.equal(recommendationMatchPercent({ adjustedScore: 101.2 }), 100);
   assert.equal(recommendationMatchPercent({ adjustedScore: -1 }), 0);
+});
+
+test("derives the displayed recommendation rank from adjusted match score", () => {
+  const rankedItems = items.map((item) => ({ ...item, id: `item-${item.rank}` }));
+  assert.equal(recommendationMatchRank(rankedItems, "item-2"), 1);
+  assert.equal(recommendationMatchRank(rankedItems, "item-1"), 2);
+  assert.equal(recommendationMatchRank(rankedItems, "item-3"), 3);
+  assert.equal(recommendationMatchRank(rankedItems, "missing"), null);
 });
 
 test("maps match strength continuously from foreground black to the brand accent", () => {

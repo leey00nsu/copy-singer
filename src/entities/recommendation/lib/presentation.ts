@@ -95,6 +95,15 @@ type ProjectableRecommendation = Pick<
   "rank" | "title" | "artist" | "originalKeyScore" | "adjustedScore" | "recommendedShift" | "synthesis"
 >;
 
+export function recommendationMatchRank<
+  T extends Pick<ProjectableRecommendation, "adjustedScore" | "rank"> & { id: string },
+>(items: readonly T[], itemId: string) {
+  const index = items
+    .toSorted((first, second) => second.adjustedScore - first.adjustedScore || first.rank - second.rank)
+    .findIndex((item) => item.id === itemId);
+  return index < 0 ? null : index + 1;
+}
+
 export function projectRecommendationItems<T extends ProjectableRecommendation>(
   items: readonly T[],
   filters: RecommendationFilters,

@@ -14,6 +14,7 @@ import {
   type RecommendationRunResponse,
   recommendationDetailQueryOptions,
   recommendationKeys,
+  recommendationMatchRank,
   serializeRecommendationFilters,
 } from "@/entities/recommendation";
 import { useRecommendationMixing } from "@/features/create-mixing";
@@ -161,10 +162,11 @@ export function RecommendationResults({
 
   const visibleItems = projectRecommendationItems(run.items, filters);
   const selectedItem = visibleItems.find((item) => item.id === selectedItemId) ?? visibleItems[0] ?? null;
+  const selectedMatchRank = selectedItem ? recommendationMatchRank(run.items, selectedItem.id) : null;
 
   return (
     <CreationFunnelShell currentStep="recommendation">
-      <header className="grid gap-8 border-b pb-9 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,.42fr)] lg:items-end">
+      <header className="mt-8 grid gap-8 border-b pb-9 lg:mt-12 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,.42fr)] lg:items-end">
         <div>
           <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
             Song match
@@ -245,7 +247,13 @@ export function RecommendationResults({
           )}
         </section>
         {selectedItem ? (
-          <RecommendationSelection item={selectedItem} onStart={startItem} runId={run.id} ticketCost={ticketCost} />
+          <RecommendationSelection
+            item={selectedItem}
+            matchRank={selectedMatchRank}
+            onStart={startItem}
+            runId={run.id}
+            ticketCost={ticketCost}
+          />
         ) : null}
       </div>
 

@@ -5,6 +5,7 @@ import {
   recommendationMatchPercent,
 } from "@/entities/recommendation";
 import { RecommendationMixingAction } from "@/features/create-mixing";
+import { ResourceRowButton, resourceRowInteractiveClassName } from "@/shared/ui/resource-row-link";
 
 export function RecommendationSongList({
   items,
@@ -47,21 +48,20 @@ export function RecommendationSongList({
             return (
               <tr
                 aria-selected={selected}
-                className="grid grid-cols-[1fr_1fr_auto] gap-3 px-4 py-4 transition-colors aria-selected:bg-data-accent/[0.07] sm:grid-cols-[minmax(0,1fr)_5.5rem_5.5rem_6rem] sm:items-center sm:gap-4 sm:py-3 xl:table-row xl:px-0 xl:py-0"
+                className={`${resourceRowInteractiveClassName} grid grid-cols-[1fr_1fr_auto] gap-3 px-4 py-4 aria-selected:bg-data-accent/[0.07] sm:grid-cols-[minmax(0,1fr)_5.5rem_5.5rem_6rem] sm:items-center sm:gap-4 sm:py-3 xl:table-row xl:px-0 xl:py-0`}
                 key={item.id}
               >
                 <td className="col-span-3 min-w-0 align-middle sm:col-span-1 xl:px-3 xl:py-3">
                   <div className="min-w-0">
                     <div className="flex min-w-0 items-center">
                       <h2 className="min-w-0 truncate text-sm font-semibold sm:text-base">
-                        <button
+                        <ResourceRowButton
                           aria-pressed={selected}
-                          className="max-w-full truncate text-left underline-offset-4 hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          className="max-w-full truncate text-left underline-offset-4 group-hover/resource-row:underline"
                           onClick={() => onSelect(item.id)}
-                          type="button"
                         >
                           {item.title}
-                        </button>
+                        </ResourceRowButton>
                       </h2>
                     </div>
                     <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">{item.artist}</p>
@@ -82,7 +82,7 @@ export function RecommendationSongList({
                     {formatRecommendedShift(item.recommendedShift)}
                   </p>
                 </td>
-                <td className="min-w-0 self-end text-right align-middle xl:px-3 xl:py-3 xl:text-left">
+                <td className="relative z-20 min-w-0 self-end text-right align-middle xl:px-3 xl:py-3 xl:text-left">
                   <RecommendationMixingAction compact detailHref={detailHref} item={item} onStart={onStart} />
                 </td>
               </tr>

@@ -1,1 +1,1 @@
-export { ResourceRowLink, resourceRowInteractiveClassName } from "./resource-row-link";
+export { ResourceRowButton, ResourceRowLink, resourceRowInteractiveClassName } from "./resource-row-link";

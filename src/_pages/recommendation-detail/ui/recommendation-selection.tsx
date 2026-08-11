@@ -16,12 +16,14 @@ import { FunnelActionBar } from "@/widgets/creation-funnel";
 function SelectionDetails({
   idPrefix,
   item,
+  matchRank,
   onStart,
   runId,
   ticketCost,
 }: {
   idPrefix: string;
   item: RecommendationItemResponse;
+  matchRank: number | null;
   onStart: (itemId: string, retry?: boolean) => void;
   runId: string;
   ticketCost: number;
@@ -31,7 +33,9 @@ function SelectionDetails({
   return (
     <section aria-labelledby={`${idPrefix}-title`}>
       <div className="flex items-center justify-between gap-3">
-        <Badge variant={item.rank <= 3 ? "default" : "secondary"}>{item.rank}위 추천</Badge>
+        <Badge variant={matchRank !== null && matchRank <= 3 ? "default" : "secondary"}>
+          {matchRank === null ? "추천 적합도 순위 없음" : `추천 적합도 ${matchRank}위`}
+        </Badge>
         <span className="text-2xl font-semibold" style={{ color: recommendationMatchColor(item) }}>
           {recommendationMatchPercent(item)}%
         </span>
@@ -90,11 +94,13 @@ function SelectionDetails({
 
 export function RecommendationSelection({
   item,
+  matchRank,
   onStart,
   runId,
   ticketCost,
 }: {
   item: RecommendationItemResponse;
+  matchRank: number | null;
   onStart: (itemId: string, retry?: boolean) => void;
   runId: string;
   ticketCost: number;
@@ -106,6 +112,7 @@ export function RecommendationSelection({
           <SelectionDetails
             idPrefix="desktop-selection"
             item={item}
+            matchRank={matchRank}
             onStart={onStart}
             runId={runId}
             ticketCost={ticketCost}
@@ -134,6 +141,7 @@ export function RecommendationSelection({
               <SelectionDetails
                 idPrefix="mobile-selection"
                 item={item}
+                matchRank={matchRank}
                 onStart={onStart}
                 runId={runId}
                 ticketCost={ticketCost}
