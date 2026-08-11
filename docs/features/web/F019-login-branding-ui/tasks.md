@@ -71,13 +71,13 @@
     - [x] favicon/apple touch icon deterministic 파생과 alpha·dimension·축소 QA
     - [x] ProductMark·ProductBrand·metadata 적용 및 Storybook 회귀
 
-- [TODO][PRD-FR-051] T-F019-02 비로그인 ProductHeader 로그인 action 단일화
+- [DONE][PRD-FR-051] T-F019-02 비로그인 ProductHeader 로그인 action 단일화
   - Date: 2026-08-11
   - Acceptance:
     - desktop과 mobile 비로그인 header는 primary 로그인 action 하나만 제공하고 기존 callback URL을 유지한다.
   - Checklist:
-    - [ ] desktop/mobile 중복 무료로 시작하기 action 제거
-    - [ ] ProductShell Storybook과 auth navigation 회귀 검증
+    - [x] desktop/mobile 중복 무료로 시작하기 action 제거
+    - [x] ProductShell Storybook과 auth navigation 회귀 검증
 
 - [TODO][PRD-FR-046] T-F019-03 최소 로그인 화면과 Google 시작 button 적용
   - Date: 2026-08-11
@@ -104,8 +104,9 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm run test:storybook --run src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-11` | 통과 — 공통 ProductMark 렌더와 기존 desktop/mobile/account/development 상태 4/4 |
+| `pnpm run test:storybook --run src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-11` | 통과 — 공통 ProductMark, 기존 인증 상태와 desktop/mobile 비로그인 primary 로그인 단일 action 6/6 |
+| `pnpm run test:auth-navigation` | `2026-08-11` | 통과 — safe callback·route group·제품 navigation·keyboard/touch label 5/5 |
 | `pnpm exec tsc --noEmit && pnpm exec biome check src/widgets/product-shell src/_app/layout/root-layout.tsx --max-diagnostics=50` | `2026-08-11` | 통과 — 새 ProductMark·metadata·ProductBrand type/format 오류 0 |
 | bundled Pillow asset audit | `2026-08-11` | 통과 — master 1024², favicon 64², apple icon 180², RGBA·transparent corner·nonempty alpha 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T07:44:52.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T07:48:29.000Z -->

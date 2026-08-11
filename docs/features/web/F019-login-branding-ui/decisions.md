@@ -36,3 +36,16 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: PR 링크
   - **Test/Log**: `tmp/imagegen/copy-singer-mark-qa.png`, ProductShell Storybook 4/4, RGBA asset audit 통과
 - **Consequences**: public master는 header/footer/login UI가 공유하고 favicon/Apple icon은 같은 source를 사용한다. ImageGen built-in edit prompt와 결과 경로는 Feature 완료 보고에 남긴다.
+
+## D002: 비로그인 header는 primary 로그인 action 하나만 제공 (2026-08-11)
+
+- **Context**: desktop과 mobile header에서 같은 `/login?callbackURL=%2Fprofile`로 이동하는 `로그인`과 `무료로 시작하기`가 button hierarchy만 달리해 반복됐다.
+- **Constraints**: Landing 본문의 제품 value CTA와 비로그인 product navigation의 개별 callback URL은 유지한다.
+- **Options**: 로그인/무료 시작 두 action 유지, 무료 시작만 유지, primary 로그인 하나로 통합.
+- **Decision**: desktop와 mobile Sheet 모두 primary `로그인` 하나만 제공하고 callback URL은 기존 profile entry를 유지한다.
+- **Rationale**: 실제 auth provider와 목적지가 하나이므로 action label도 하나여야 하며, 로그인 page의 `구글로 시작하기`와 역할을 단계적으로 구분할 수 있다.
+- **Trace**:
+  - **DONE 전 확정 시점**: ProductHeader standalone Story에서 desktop/mobile 각각 login role button 1개와 `무료로 시작하기` 부재를 검증했다.
+- **Evidence**:
+  - **Test/Log**: ProductShell Storybook 6/6, auth navigation 5/5, targeted Biome/TypeScript 통과
+- **Consequences**: Landing hero의 `무료로 시작하기`는 header auth action이 아니라 제품 CTA이므로 유지된다.
