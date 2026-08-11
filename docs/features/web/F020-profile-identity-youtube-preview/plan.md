@@ -64,6 +64,7 @@ profile UUID → stable integer hash
 - hash 함수와 palette 계산은 pure entity lib으로 두어 Storybook·unit test에서 결정성을 검증한다.
 - 이름이나 분석 값은 seed로 사용하지 않으므로 rename 이후 cover가 바뀌지 않는다.
 - 장식 이미지는 `aria-hidden`; 프로필 이름이 accessible identity를 담당한다. reduced-motion을 위해 artwork에는 animation을 사용하지 않는다.
+- 분석 job은 저장된 profile row의 grid template을 재사용한다. 첫 컬럼에는 neutral loading cover·상태 badge·설명을, 나머지 컬럼에는 생성 시각·미확정 값 placeholder·상태를 배치하고 profile ID가 생기기 전에는 clickable row affordance를 적용하지 않는다.
 
 ### YouTube source와 player
 
@@ -140,7 +141,7 @@ prisma/
 
 - **단위 테스트**: profile name trim/length contract, UUID artwork token 결정성·분산, YouTube ID validation/embed URL, serializers와 rename ownership을 검증한다.
 - **DB 테스트**: migration backfill, counter 증가, 삭제 후 번호 미재사용, 프로필별 추천 get-or-create·동시 unique invariant와 SONG profile null 호환을 검증한다.
-- **컴포넌트 테스트**: profile library/detail의 artwork·stored title·rename states·고정 대표 구간, recommendation list의 facade/단일 iframe/row selection 분리·믹싱 불가 상태, detail player·외부 link 제거를 Storybook interaction으로 검증한다.
+- **컴포넌트 테스트**: profile library/detail의 artwork·stored title·rename states·고정 대표 구간·분석 job 행 정렬과 비활성 상태, recommendation list의 facade/단일 iframe/row selection 분리·믹싱 불가 상태, detail player·외부 link 제거를 Storybook interaction으로 검증한다.
 - **통합 테스트**: Prisma generate/validate, 관련 Vitest/Storybook, architecture check, TypeScript·ESLint와 production build를 실행한다.
 - **브라우저 QA**: 실제 DB profile 생성·rename·재접속, 추천 목록 영상 재생·다른 행 전환·상세 player를 desktop/mobile에서 확인한다.
 

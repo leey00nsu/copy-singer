@@ -142,6 +142,15 @@
     - [x] 모든 추천 mixing action의 unavailable state와 재분석 link 구현
     - [x] contract·component·Storybook·build 검증
 
+- [DONE][PRD-FR-051] T-F020-profile-identity-youtube-preview-10 분석 job 행과 저장 프로필 목록 UI 통일
+  - Date: 2026-08-11
+  - Acceptance:
+    - 분석 대기·진행·실패 항목이 저장 프로필과 같은 5-column 목록 구조로 표시되며 완료 전에는 클릭·hover 상세 affordance가 없다.
+  - Checklist:
+    - [x] neutral loading cover와 상태별 first-cell content 구현
+    - [x] 생성일·미확정 분석값·상태 column 정렬 및 aria-busy 적용
+    - [x] pending·processing·retry·failed Storybook과 목록 회귀 검증
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -163,7 +172,7 @@
 | `pnpm run typecheck` | `2026-08-11` | 통과 |
 | `pnpm run check:architecture` | `2026-08-11` | 통과 — Steiger·boundary 4/4 |
 | `pnpm exec tsx --test tests/vocal-profile-contract.test.ts tests/vocal-profile-history-ui.test.tsx` | `2026-08-11` | 통과 — artwork 결정성·분산과 library 회귀 포함 10/10 |
-| `pnpm run test:storybook --run src/widgets/library/ui/vocal-profile-library.stories.tsx` | `2026-08-11` | 통과 — profile artwork·추천 count 미노출·list 상태 4/4 |
+| `pnpm run test:storybook --run src/widgets/library/ui/vocal-profile-library.stories.tsx` | `2026-08-11` | 통과 — profile artwork와 분석 pending·processing·retry·failed 동일 목록 구조 6/6 |
 | `pnpm exec tsx --test tests/api-contracts.test.ts tests/recommendation-presentation.test.ts tests/recommendation-ui.test.tsx tests/client-server-state-query.test.ts` | `2026-08-11` | 통과 — video ID·URL·facade/player·추천 회귀 30/30 |
 | `pnpm run test:recommendation:db` | `2026-08-11` | 통과 — 반복·동시 추천 singleton, sourceVideoId, synthesis 포함 3/3 |
 | `pnpm prisma migrate deploy` | `2026-08-11` | 통과 — 중복 run 최신 1건 보존 및 profile unique migration 적용 |
@@ -176,9 +185,10 @@
 | `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/widgets/library/ui/vocal-profile-library.stories.tsx` | `2026-08-11` | 통과 — 추천 수치·프로필 분석 UI 회귀 14/14 |
 | `pnpm exec tsx --test tests/recommendation-song-detail.test.tsx` | `2026-08-11` | 통과 — Song match #N 제거 포함 상세 회귀 5/5 |
 | `pnpm run test:storybook --run src/_pages/song-detail/ui/song-detail.stories.tsx` | `2026-08-11` | 통과 — 원본 영상·Song match label 1/1 |
-| `pnpm exec tsx --test tests/vocal-profile-history-ui.test.tsx` | `2026-08-11` | 통과 — 추천 count 제거·AI 믹싱 수치·상세 navigation 포함 3/3 |
+| `pnpm exec tsx --test tests/vocal-profile-history-ui.test.tsx` | `2026-08-11` | 통과 — 분석 중 5-column·aria-busy·비클릭 상태와 저장 목록 회귀 3/3 |
 | `pnpm exec tsx --test tests/api-contracts.test.ts tests/recommendation-ui.test.tsx tests/vocal-profile-results-ui.test.tsx tests/vocal-profile-reference-bands.test.ts tests/mixing-reference.test.ts` | `2026-08-11` | 통과 — capability contract·중앙 placeholder·요청 전 차단 26/26 |
 | `pnpm run test:vocal-profile-presentation` | `2026-08-11` | 통과 — 중앙 대표 구간 누락과 profile UI 회귀 12/12 |
 | `pnpm run test:mixing:db` | `2026-08-11` | 통과 — reference 선택·티켓 차감 전 방어·queue 회귀 1/1 |
+| `Storybook browser QA (analysis job row desktop)` | `2026-08-11` | 통과 — 저장 행과 같은 5개 열·72px 행 높이, interactive target·runtime error 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T20:22:37.000+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T20:44:44+09:00 -->

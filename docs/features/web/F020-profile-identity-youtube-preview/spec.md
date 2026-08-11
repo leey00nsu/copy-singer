@@ -41,6 +41,7 @@
 - [ ] 빈 이름·41자 이상·권한 없는 프로필 수정은 거부되며 저장 중·오류 상태가 명시된다.
 - [ ] 목록과 상세의 프로필 제목은 저장된 이름을 사용하고, 분석 결과에서 계산한 보컬 유형·요약은 설명으로 유지한다.
 - [ ] 기존 파형 아이콘은 프로필 ID로 결정되는 square grainy gradient 커버로 대체되고 이름 변경·재접속 후에도 동일하다.
+- [ ] 분석 대기·진행·실패 항목은 저장된 프로필과 같은 목록 컬럼·간격을 사용하되, 프로필 생성 전에는 비활성 행으로 표시하고 상세 이동을 제공하지 않는다.
 
 ### US-2: 추천 맥락 안에서 확인하는 원곡
 
@@ -86,6 +87,7 @@
 - 공통 `VocalProfileArtwork`는 profile ID를 seed로 hue·gradient position을 결정하고 CSS gradient와 noise overlay로 square cover를 그린다.
 - artwork는 이름·분석 점수·목록 순서에 의존하지 않으며 별도 bitmap이나 사용자 입력을 저장하지 않는다.
 - 목록에서는 파형 icon 영역을 cover로 교체하고, 상세 제목 영역에서도 같은 artwork를 재사용한다.
+- 아직 profile ID가 없는 분석 job 행은 같은 크기의 중립 loading cover를 사용하고 `aria-busy` 상태를 제공한다. 생성일 외 미확정 분석 값은 `—`로 표시한다.
 
 ### FR-3: 검증된 YouTube source contract
 

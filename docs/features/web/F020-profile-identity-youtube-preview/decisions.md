@@ -69,3 +69,19 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow
   - **Test/Log**: `pnpm prisma migrate deploy`, `pnpm prisma validate`, `pnpm run test:recommendation:db`, `pnpm run test:recommendation`, `pnpm run test:vocal-profile-presentation`, `pnpm run test:mixing:db`, targeted Storybook, `pnpm run typecheck`, `pnpm run check:architecture`, `pnpm run build`
 - **Consequences**: 기존 중복 run 중 최신 한 건만 남고 오래된 item 참조는 null 처리되며, 중앙 reference를 확보하지 못한 프로필은 새 분석 전까지 AI 믹싱을 생성할 수 없다.
+
+## D004: 분석 job과 저장 프로필의 동일 목록 문법 (2026-08-11)
+
+- **Context**: 분석 중 항목이 같은 보컬 프로필 목록 안에서 별도 알림 배너처럼 표시되어 저장 프로필과 다른 콘텐츠 유형처럼 보였다.
+- **Constraints**: profile ID와 음역·안정도 값은 분석 완료 전 존재하지 않으며, 진행·실패·재시도 설명은 유지해야 한다.
+- **Options**: 독립 상태 banner 유지, 저장 행과 동일한 clickable skeleton, 동일 grid의 non-interactive status row.
+- **Decision**: 분석 job은 저장 profile row와 같은 grid column을 사용하되 neutral cover와 placeholder를 가진 비활성 행으로 렌더링한다.
+- **Rationale**: 목록의 시각 문법을 통일하면서 아직 존재하지 않는 상세 페이지나 분석값을 암시하지 않는다.
+- **Trace**:
+  - **DOING 시작 시점**: 현재 job row가 `md:grid-cols-[minmax(0,1fr)_auto]`로 별도 구성되고 저장 row는 5-column grid임을 확인했다.
+  - **DONE 전 확정 시점**: 저장 행과 job 행이 하나의 5-column grid token을 공유하도록 바꾸고 pending·processing·retry·failed 모두 생성일·미확정 값·상태가 같은 위치에 표시됨을 확인했다. 완료 전 행에는 링크나 버튼이 없고 `aria-busy=true`, 실패 행은 `aria-busy=false`와 재분석 action만 제공한다. 분석 완료 감지는 전체 페이지 reload 대신 App Router refresh를 사용한다.
+- **Evidence**:
+  - **Commit**: 구현 후 기록
+  - **PR**: local workflow
+  - **Test/Log**: `pnpm exec tsx --test tests/vocal-profile-history-ui.test.tsx`, `pnpm run test:storybook --run src/widgets/library/ui/vocal-profile-library.stories.tsx`, `pnpm run typecheck`, `pnpm run check:architecture`, `pnpm run build`, Storybook browser QA
+- **Consequences**: 분석 완료 전 행은 클릭·hover 상세 affordance가 없고, 미확정 분석 컬럼에는 `—`만 표시한다.
