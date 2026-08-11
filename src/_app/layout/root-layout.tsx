@@ -21,7 +21,11 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(origin),
     title: "Copy Singer — 내 목소리에 맞는 노래",
     description: "목소리를 분석해 어울리는 노래와 키를 찾고 AI 믹싱 결과를 만들어보세요.",
-    icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
+    icons: {
+      icon: [{ url: "/favicon.png", sizes: "64x64", type: "image/png" }],
+      shortcut: "/favicon.png",
+      apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    },
     openGraph: {
       title: "Copy Singer",
       description: "내 음역을 측정하고 어울리는 노래와 키를 찾아보세요.",

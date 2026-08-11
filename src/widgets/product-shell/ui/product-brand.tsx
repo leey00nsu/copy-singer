@@ -1,7 +1,7 @@
-import { AudioWaveform } from "lucide-react";
 import Link from "next/link";
 
 import { cn } from "@/shared/lib/cn";
+import { ProductMark } from "./product-mark";
 
 function ProductBrand({ className, href = "/" }: { className?: string; href?: string }) {
   return (
@@ -9,9 +9,7 @@ function ProductBrand({ className, href = "/" }: { className?: string; href?: st
       className={cn("inline-flex items-center gap-2 text-[13px] font-semibold tracking-[-0.02em]", className)}
       href={href}
     >
-      <span className="flex size-6 items-center justify-center text-foreground">
-        <AudioWaveform aria-hidden="true" className="size-5" />
-      </span>
+      <ProductMark />
       <span>Copy Singer</span>
     </Link>
   );
