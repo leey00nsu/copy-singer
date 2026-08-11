@@ -2,6 +2,7 @@ import "server-only";
 
 export {
   MixingJobStatus,
+  NotificationType,
   Prisma,
   PrismaClient,
   RecordingKind,

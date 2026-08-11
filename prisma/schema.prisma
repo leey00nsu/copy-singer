@@ -90,6 +90,14 @@ enum TicketRefundState {
   REFUNDED
 }
 
+enum NotificationType {
+  TICKET_CREDIT
+  VOCAL_PROFILE_SUCCEEDED
+  VOCAL_PROFILE_FAILED
+  MIXING_SUCCEEDED
+  MIXING_FAILED
+}
+
 model Recording {
   id            String          @id @default(uuid()) @db.Uuid
   kind          RecordingKind
@@ -112,13 +120,13 @@ model Recording {
 }
 
 model VocalProfile {
-  id                        String                 @id @default(uuid()) @db.Uuid
+  id                        String                   @id @default(uuid()) @db.Uuid
   userId                    String?
   profileNumber             Int?
   displayName               String?
   sourceType                VocalProfileSourceType
-  recordingId               String                 @db.Uuid
-  synthesisReferenceAssetId String?                @unique @db.Uuid
+  recordingId               String                   @db.Uuid
+  synthesisReferenceAssetId String?                  @unique @db.Uuid
   minMidi                   Float?
   maxMidi                   Float?
   p10Midi                   Float?
@@ -133,11 +141,11 @@ model VocalProfile {
   descriptors               Json?
   analyzer                  String
   analyzerVersion           String
-  createdAt                 DateTime               @default(now())
-  updatedAt                 DateTime               @updatedAt
-  recording                 Recording              @relation(fields: [recordingId], references: [id], onDelete: Restrict)
-  synthesisReferenceAsset   MediaAsset?            @relation("VocalProfileSynthesisReference", fields: [synthesisReferenceAssetId], references: [id], onDelete: SetNull)
-  user                      User?                  @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt                 DateTime                 @default(now())
+  updatedAt                 DateTime                 @updatedAt
+  recording                 Recording                @relation(fields: [recordingId], references: [id], onDelete: Restrict)
+  synthesisReferenceAsset   MediaAsset?              @relation("VocalProfileSynthesisReference", fields: [synthesisReferenceAssetId], references: [id], onDelete: SetNull)
+  user                      User?                    @relation(fields: [userId], references: [id], onDelete: SetNull)
   song                      Song?
   recommendationRuns        RecommendationRun[]
   mixingJobs                MixingJob[]
@@ -180,8 +188,8 @@ model RecommendationRun {
   user               User?                @relation(fields: [userId], references: [id], onDelete: SetNull)
   items              RecommendationItem[]
 
-  @@index([userId, createdAt])
   @@unique([userVocalProfileId])
+  @@index([userId, createdAt])
 }
 
 model RecommendationItem {
@@ -216,24 +224,25 @@ model RecommendationItem {
 }
 
 model User {
-  id                 String              @id
-  name               String
-  email              String              @unique
-  emailVerified      Boolean             @default(false)
-  image              String?
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @updatedAt
-  ticketBalance      Int                 @default(0)
-  nextVocalProfileNumber Int             @default(1)
-  sessions           Session[]
-  accounts           Account[]
-  vocalProfiles      VocalProfile[]
-  recommendationRuns RecommendationRun[]
-  mediaAssets        MediaAsset[]
-  ticketLedgers      TicketLedger[]      @relation("TicketOwner")
-  ticketActions      TicketLedger[]      @relation("TicketActor")
-  mixingJobs         MixingJob[]
+  id                       String                    @id
+  name                     String
+  email                    String                    @unique
+  emailVerified            Boolean                   @default(false)
+  image                    String?
+  createdAt                DateTime                  @default(now())
+  updatedAt                DateTime                  @updatedAt
+  ticketBalance            Int                       @default(0)
+  nextVocalProfileNumber   Int                       @default(1)
+  sessions                 Session[]
+  accounts                 Account[]
+  vocalProfiles            VocalProfile[]
+  recommendationRuns       RecommendationRun[]
+  mediaAssets              MediaAsset[]
+  ticketLedgers            TicketLedger[]            @relation("TicketOwner")
+  ticketActions            TicketLedger[]            @relation("TicketActor")
+  mixingJobs               MixingJob[]
   vocalProfileAnalysisJobs VocalProfileAnalysisJob[]
+  notifications            Notification[]
 }
 
 model Session {
@@ -282,27 +291,27 @@ model Verification {
 }
 
 model MediaAsset {
-  id                    String            @id @default(uuid()) @db.Uuid
-  userId                String
-  kind                  MediaAssetKind
-  provider              String            @default("LEEMAGE")
-  externalProjectId     String
-  externalFileId        String
-  externalUrl           String
-  fileName              String
-  mimeType              String
-  sizeBytes             BigInt
-  status                MediaAssetStatus  @default(READY)
-  lastError             String?
-  createdAt             DateTime          @default(now())
-  updatedAt             DateTime          @updatedAt
-  deletedAt             DateTime?
-  user                  User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  recording             Recording?
-  synthesisVocalProfile VocalProfile?     @relation("VocalProfileSynthesisReference")
-  cleanupJobs           MediaCleanupJob[]
-  referenceMixingJobs   MixingJob[]       @relation("MixingReference")
-  resultMixingJobs      MixingJob[]       @relation("MixingResult")
+  id                       String                    @id @default(uuid()) @db.Uuid
+  userId                   String
+  kind                     MediaAssetKind
+  provider                 String                    @default("LEEMAGE")
+  externalProjectId        String
+  externalFileId           String
+  externalUrl              String
+  fileName                 String
+  mimeType                 String
+  sizeBytes                BigInt
+  status                   MediaAssetStatus          @default(READY)
+  lastError                String?
+  createdAt                DateTime                  @default(now())
+  updatedAt                DateTime                  @updatedAt
+  deletedAt                DateTime?
+  user                     User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recording                Recording?
+  synthesisVocalProfile    VocalProfile?             @relation("VocalProfileSynthesisReference")
+  cleanupJobs              MediaCleanupJob[]
+  referenceMixingJobs      MixingJob[]               @relation("MixingReference")
+  resultMixingJobs         MixingJob[]               @relation("MixingResult")
   vocalProfileAnalysisJobs VocalProfileAnalysisJob[] @relation("VocalProfileAnalysisSource")
 
   @@unique([externalProjectId, externalFileId])
@@ -366,6 +375,23 @@ model TicketLedger {
   @@index([userId, createdAt])
   @@index([mixingJobId])
   @@index([actorUserId, createdAt])
+}
+
+model Notification {
+  id        String           @id @default(uuid()) @db.Uuid
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  href      String
+  sourceId  String?
+  dedupeKey String           @unique
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([userId, readAt, createdAt])
 }
 
 model VocalProfileAnalysisJob {
