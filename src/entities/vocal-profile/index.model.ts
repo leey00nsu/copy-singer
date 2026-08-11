@@ -1,3 +1,4 @@
+export * from "./lib/artwork";
 export * from "./lib/audio-file";
 export * from "./lib/presentation";
 export * from "./lib/reference-preview";

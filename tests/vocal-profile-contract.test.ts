@@ -7,8 +7,16 @@ import {
   SMART_REFERENCE_MID_VERSION,
   SMART_REFERENCE_VERSION,
   synthesisReferenceContractVersion,
+  vocalProfileArtworkTokens,
   vocalProfileRenameRequestSchema,
 } from "../src/entities/vocal-profile";
+
+test("vocal profile artwork is stable per profile and varies across identities", () => {
+  const first = vocalProfileArtworkTokens("10000000-0000-4000-8000-000000000001");
+  assert.deepEqual(first, vocalProfileArtworkTokens("10000000-0000-4000-8000-000000000001"));
+  assert.notDeepEqual(first, vocalProfileArtworkTokens("10000000-0000-4000-8000-000000000002"));
+  assert.match(first.backgroundImage, /radial-gradient/);
+});
 
 test("vocal profile names are trimmed and limited to 40 characters", () => {
   assert.equal(vocalProfileRenameRequestSchema.parse({ displayName: "  아침 목소리  " }).displayName, "아침 목소리");

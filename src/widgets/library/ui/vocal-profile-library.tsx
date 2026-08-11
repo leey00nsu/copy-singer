@@ -7,6 +7,7 @@ import { useEffect, useRef } from "react";
 import {
   presentVocalProfile,
   type VocalProfileAnalysisJobResponse,
+  VocalProfileArtwork,
   type VocalProfileHistoryPayload,
 } from "@/entities/vocal-profile";
 import { isActiveAnalysisJob, vocalProfileAnalysisJobsQueryOptions } from "@/features/analyze-vocal-profile";
@@ -167,9 +168,7 @@ export function VocalProfileLibrary({
               key={profile.id}
             >
               <div className="flex min-w-0 items-center gap-3">
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-data-accent/10 text-data-accent-foreground">
-                  <AudioLines aria-hidden="true" className="size-3.5" />
-                </span>
+                <VocalProfileArtwork className="size-11" profileId={profile.id} />
                 <div className="min-w-0">
                   <h2 className="truncate text-sm font-semibold">
                     <ResourceRowLink

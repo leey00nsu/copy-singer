@@ -76,6 +76,7 @@ export const SavedProfile: Story = {
       "href",
       "/vocal-profiles/40000000-0000-4000-8000-000000000001",
     );
+    await expect(canvasElement.querySelectorAll("[data-profile-artwork]")).toHaveLength(1);
   },
 };
 

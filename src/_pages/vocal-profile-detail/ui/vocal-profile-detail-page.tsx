@@ -1,7 +1,7 @@
 import { ArrowLeft, CalendarDays, Music2, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { presentVocalProfile, VocalProfileResults } from "@/entities/vocal-profile";
+import { presentVocalProfile, VocalProfileArtwork, VocalProfileResults } from "@/entities/vocal-profile";
 import { getVocalProfileDetail } from "@/entities/vocal-profile/index.server";
 import { requirePageSession } from "@/features/authentication/index.server";
 import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
@@ -22,17 +22,20 @@ export default async function VocalProfileDetailPage({ params }: { params: Promi
         <ArrowLeft className="size-4" /> 목록으로
       </Link>
       <div className="mt-6 flex flex-wrap items-start justify-between gap-8 border-b pb-7">
-        <div className="max-w-2xl">
-          <p className="text-[10px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
-            Saved analysis
-          </p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-[-0.045em] sm:text-[2.25rem]">
-            {detail.profile.displayName}
-          </h1>
-          <p className="mt-2.5 max-w-xl text-xs leading-5 text-muted-foreground">{presentation.summary}</p>
-          <p className="mt-2.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
-            <CalendarDays className="size-3.5" /> {new Date(detail.profile.createdAt).toLocaleString("ko-KR")}
-          </p>
+        <div className="flex min-w-0 max-w-3xl items-start gap-4 sm:gap-5">
+          <VocalProfileArtwork className="size-20 sm:size-24" profileId={detail.profile.id} />
+          <div className="min-w-0">
+            <p className="text-[10px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
+              Saved analysis
+            </p>
+            <h1 className="mt-2 text-3xl font-semibold tracking-[-0.045em] sm:text-[2.25rem]">
+              {detail.profile.displayName}
+            </h1>
+            <p className="mt-2.5 max-w-xl text-xs leading-5 text-muted-foreground">{presentation.summary}</p>
+            <p className="mt-2.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
+              <CalendarDays className="size-3.5" /> {new Date(detail.profile.createdAt).toLocaleString("ko-KR")}
+            </p>
+          </div>
         </div>
         <div className="grid justify-items-start gap-4 sm:justify-items-end">
           <div className="flex flex-wrap gap-2">
