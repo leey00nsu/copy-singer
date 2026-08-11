@@ -23,6 +23,7 @@ import {
   mixingJobKeys,
   presentMixingJob,
 } from "@/entities/mixing-job";
+import { VocalProfileArtwork } from "@/entities/vocal-profile";
 import { ApiError } from "@/shared/api";
 import { cn } from "@/shared/lib/cn";
 import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
@@ -91,6 +92,12 @@ function ActiveMixingProgress({ job }: { job: MixingHistoryRow }) {
           <span className="block text-foreground">
             {job.song.title} · {job.song.artist}
           </span>
+          <Link
+            className="mt-2 inline-flex items-center gap-2 font-medium text-foreground underline-offset-4 hover:underline"
+            href={`/vocal-profiles/${job.vocalProfile.id}`}
+          >
+            사용한 보컬 · {job.vocalProfile.displayName}
+          </Link>
           <span className="mt-1 block">잠시만 기다려주세요.</span>
         </>
       }
@@ -206,6 +213,17 @@ export function MixingDetail({ initial }: { initial: MixingHistoryRow }) {
             {job.song.title}
           </h1>
           <p className="mt-3 text-sm text-muted-foreground">{job.song.artist}</p>
+          <Link
+            aria-label={`사용한 보컬 프로필 ${job.vocalProfile.displayName} 보기`}
+            className="mt-5 inline-flex min-w-0 items-center gap-3 rounded-lg border p-2 pr-4 transition-colors hover:bg-muted/35"
+            href={`/vocal-profiles/${job.vocalProfile.id}`}
+          >
+            <VocalProfileArtwork className="size-9 shrink-0" profileId={job.vocalProfile.id} />
+            <span className="min-w-0 text-left">
+              <span className="block text-[10px] text-muted-foreground">사용한 보컬 프로필</span>
+              <strong className="block truncate text-sm font-semibold">{job.vocalProfile.displayName}</strong>
+            </span>
+          </Link>
           <p aria-live="polite" className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground">
             {presentation.description}
           </p>
@@ -215,12 +233,7 @@ export function MixingDetail({ initial }: { initial: MixingHistoryRow }) {
             </p>
           ) : null}
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Link className={buttonVariants({ variant: "outline" })} href={`/vocal-profiles/${job.vocalProfile.id}`}>
-            보컬 분석 보기
-          </Link>
-          {presentation.terminal ? <MixingDeleteAction job={job} /> : null}
-        </div>
+        <div className="flex flex-wrap gap-2">{presentation.terminal ? <MixingDeleteAction job={job} /> : null}</div>
       </header>
 
       {job.resultReady && job.audioUrl ? (

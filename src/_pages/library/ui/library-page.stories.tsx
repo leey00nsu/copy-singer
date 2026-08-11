@@ -25,6 +25,7 @@ const denseMixingHistory: MixingHistoryPayload = {
       },
       vocalProfile: {
         id: `30000000-0000-4000-9000-${suffix}`,
+        displayName: `보컬 프로필 ${(index % 3) + 1}`,
         createdAt: "2026-08-01T00:00:00.000Z",
       },
       resultReady: succeeded,

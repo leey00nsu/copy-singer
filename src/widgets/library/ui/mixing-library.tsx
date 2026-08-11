@@ -15,6 +15,7 @@ import {
   mixingHistoryFiltersSchema,
   mixingHistoryQueryOptions,
 } from "@/entities/mixing-job";
+import { VocalProfileArtwork } from "@/entities/vocal-profile";
 import { Badge } from "@/shared/ui/badge";
 import { Button, buttonVariants } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
@@ -68,7 +69,7 @@ function MixingLibraryFilters({
       <input name="status" type="hidden" value={status} />
       <div className="grid gap-1.5">
         <Label className="text-[11px]" htmlFor={`${basePath.slice(1)}-mixing-search`}>
-          작업 또는 아티스트 검색
+          작업, 아티스트 또는 보컬 프로필 검색
         </Label>
         <div className="relative">
           <Search
@@ -82,7 +83,7 @@ function MixingLibraryFilters({
             maxLength={80}
             name="q"
             onChange={(event) => setQuery(event.currentTarget.value)}
-            placeholder="작업, 아티스트"
+            placeholder="작업, 아티스트, 보컬 프로필"
             type="search"
             value={query}
           />
@@ -136,6 +137,9 @@ function MixingLibraryRows({ jobs }: { jobs: MixingHistoryRow[] }) {
             <th className="px-3 py-2 font-medium" scope="col">
               작업 / 아티스트
             </th>
+            <th className="w-52 px-3 py-2 font-medium" scope="col">
+              사용한 보컬 프로필
+            </th>
             <th className="w-36 px-3 py-2 font-medium" scope="col">
               생성일
             </th>
@@ -169,7 +173,19 @@ function MixingLibraryRows({ jobs }: { jobs: MixingHistoryRow[] }) {
                   <p className="mt-0.5 truncate text-xs text-muted-foreground">{job.song.artist}</p>
                 </td>
                 <td
-                  className="row-start-3 text-xs text-muted-foreground lg:table-cell lg:px-3 lg:py-3"
+                  className="row-start-3 min-w-0 align-middle lg:table-cell lg:px-3 lg:py-3"
+                  data-mixing-column="vocal-profile"
+                >
+                  <div className="flex min-w-0 items-center gap-2">
+                    <VocalProfileArtwork className="size-7 shrink-0" profileId={job.vocalProfile.id} />
+                    <p className="min-w-0 truncate text-xs font-medium">
+                      <span className="text-[10px] text-muted-foreground lg:hidden">보컬 · </span>
+                      {job.vocalProfile.displayName}
+                    </p>
+                  </div>
+                </td>
+                <td
+                  className="row-start-4 text-xs text-muted-foreground lg:table-cell lg:px-3 lg:py-3"
                   data-mixing-column="created-at"
                 >
                   <span className="lg:hidden">생성 · </span>

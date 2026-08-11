@@ -55,7 +55,9 @@ export const MixedStates: Story = {
     await expect(canvas.getByRole("columnheader", { name: "상태" })).toBeVisible();
     await expect(canvasElement.querySelectorAll("[data-mixing-column='status']")).toHaveLength(3);
     await expect(canvas.queryByText("믹싱용 원곡을 준비하지 못했습니다.")).not.toBeInTheDocument();
-    await expect(canvas.getByRole("searchbox", { name: "작업 또는 아티스트 검색" })).toBeVisible();
+    await expect(canvas.getByRole("searchbox", { name: "작업, 아티스트 또는 보컬 프로필 검색" })).toBeVisible();
+    await expect(canvas.getByRole("columnheader", { name: "사용한 보컬 프로필" })).toBeVisible();
+    await expect(canvasElement.querySelectorAll("[data-mixing-column='vocal-profile']")).toHaveLength(3);
   },
 };
 
@@ -108,6 +110,7 @@ export const DenseLibrary: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("table").querySelectorAll("tbody tr")).toHaveLength(12);
     await expect(canvas.getAllByRole("link", { name: /AI 믹스 상세 보기/ })).toHaveLength(12);
+    await expect(canvasElement.querySelectorAll("[data-mixing-column='vocal-profile']")).toHaveLength(12);
     await expect(canvas.queryByRole("link", { name: "결과 듣기" })).not.toBeInTheDocument();
     await expect(canvas.queryByRole("link", { name: "결과 저장" })).not.toBeInTheDocument();
   },

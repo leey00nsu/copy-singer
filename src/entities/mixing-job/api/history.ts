@@ -21,7 +21,7 @@ const historySelect = {
   startedAt: true,
   completedAt: true,
   song: { select: { title: true, artist: true, catalogOrder: true } },
-  vocalProfile: { select: { id: true, createdAt: true } },
+  vocalProfile: { select: { id: true, profileNumber: true, displayName: true, createdAt: true } },
   resultAsset: { select: { id: true, status: true } },
 } as const;
 
@@ -35,7 +35,11 @@ function serializeRow(row: Awaited<ReturnType<typeof findRows>>[number]): Mixing
         ? { code: row.errorCode, detail: row.errorDetail ?? "믹싱 작업이 실패했습니다." }
         : null,
     song: row.song,
-    vocalProfile: { id: row.vocalProfile.id, createdAt: row.vocalProfile.createdAt.toISOString() },
+    vocalProfile: {
+      id: row.vocalProfile.id,
+      displayName: row.vocalProfile.displayName?.trim() || `보컬 프로필 ${row.vocalProfile.profileNumber ?? 1}`,
+      createdAt: row.vocalProfile.createdAt.toISOString(),
+    },
     resultReady: row.status === "SUCCEEDED" && row.resultAsset?.status === "READY",
     audioUrl:
       row.status === "SUCCEEDED" && row.resultAsset?.status === "READY" ? `/api/mixing-jobs/${row.id}/audio` : null,
@@ -66,6 +70,7 @@ function mixingHistoryWhere(userId: string, filters: MixingHistoryFilters): Pris
           OR: [
             { song: { title: { contains: filters.q, mode: "insensitive" as const } } },
             { song: { artist: { contains: filters.q, mode: "insensitive" as const } } },
+            { vocalProfile: { displayName: { contains: filters.q, mode: "insensitive" as const } } },
           ],
         }
       : {}),

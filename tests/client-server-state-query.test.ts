@@ -273,7 +273,7 @@ test("recommendation and mixing polling stop at terminal state while item cache 
         ticketCost: 1,
         error: null,
         song: { title: "Song", artist: "Singer", catalogOrder: 1 },
-        vocalProfile: { id: run.userVocalProfileId, createdAt: run.createdAt },
+        vocalProfile: { id: run.userVocalProfileId, displayName: "보컬 프로필 1", createdAt: run.createdAt },
         resultReady: false,
         audioUrl: null,
         createdAt: run.createdAt,

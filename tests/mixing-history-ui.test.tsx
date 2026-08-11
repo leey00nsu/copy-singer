@@ -24,7 +24,7 @@ test("mixing history renders one stretched detail link per result", () => {
               ticketCost: 1,
               error: null,
               song: { title: "진행 곡", artist: "가수", catalogOrder: 1 },
-              vocalProfile: { id: "profile-active", createdAt: "2026-08-06T00:00:00Z" },
+              vocalProfile: { id: "profile-active", displayName: "활성 보컬", createdAt: "2026-08-06T00:00:00Z" },
               resultReady: false,
               audioUrl: null,
               createdAt: "2026-08-06T00:00:00Z",
@@ -38,7 +38,7 @@ test("mixing history renders one stretched detail link per result", () => {
               ticketCost: 1,
               error: null,
               song: { title: "완료 곡", artist: "가수", catalogOrder: 2 },
-              vocalProfile: { id: "profile-done", createdAt: "2026-08-06T00:00:00Z" },
+              vocalProfile: { id: "profile-done", displayName: "완료 보컬", createdAt: "2026-08-06T00:00:00Z" },
               resultReady: true,
               audioUrl: "/api/mixing-jobs/done/audio",
               createdAt: "2026-08-06T00:00:00Z",
@@ -52,7 +52,11 @@ test("mixing history renders one stretched detail link per result", () => {
               ticketCost: 1,
               error: null,
               song: { title: "확인 중인 곡", artist: "가수", catalogOrder: 3 },
-              vocalProfile: { id: "profile-checking", createdAt: "2026-08-06T00:00:00Z" },
+              vocalProfile: {
+                id: "profile-checking",
+                displayName: "확인 보컬",
+                createdAt: "2026-08-06T00:00:00Z",
+              },
               resultReady: false,
               audioUrl: null,
               createdAt: "2026-08-06T00:00:00Z",
@@ -75,6 +79,9 @@ test("mixing history renders one stretched detail link per result", () => {
   assert.doesNotMatch(markup, /\/api\/mixing-jobs\/done\/audio/);
   assert.doesNotMatch(markup, /결과 저장/);
   assert.match(markup, /AI 믹스 작업 목록/);
+  assert.match(markup, /사용한 보컬 프로필/);
+  assert.match(markup, /완료 보컬/);
+  assert.equal((markup.match(/data-mixing-column="vocal-profile"/g) ?? []).length, 3);
   assert.doesNotMatch(markup, /<th[^>]*>\s*결과\s*<\/th>/);
   assert.equal((markup.match(/data-mixing-column="status"/g) ?? []).length, 3);
   assert.match(markup, /name="q"/);
@@ -102,6 +109,7 @@ test("mixing library distinguishes failed and filtered empty states", () => {
               song: { title: "실패 곡", artist: "가수", catalogOrder: 3 },
               vocalProfile: {
                 id: "10000000-0000-4000-8000-000000000101",
+                displayName: "실패 보컬",
                 createdAt: "2026-08-06T00:00:00Z",
               },
               resultReady: false,

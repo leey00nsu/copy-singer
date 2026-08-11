@@ -41,6 +41,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
   const userId = `mixing-owner-${suffix}`;
   const recordingId = crypto.randomUUID();
   const profileId = crypto.randomUUID();
+  const profileDisplayName = `믹싱 테스트 보컬 ${suffix.slice(0, 8)}`;
   const assetId = crypto.randomUUID();
   const smartAssetId = crypto.randomUUID();
   const targetAssetId = crypto.randomUUID();
@@ -105,6 +106,8 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       data: {
         id: profileId,
         userId,
+        profileNumber: 1,
+        displayName: profileDisplayName,
         sourceType: "USER",
         recordingId,
         analyzer: "test",
@@ -458,9 +461,13 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     assert.equal(history.jobs[0]?.id, successful.id);
     assert.equal(history.jobs[0]?.resultReady, true);
     assert.equal(history.jobs[0]?.audioUrl, `/api/mixing-jobs/${successful.id}/audio`);
+    assert.equal(history.jobs[0]?.vocalProfile.displayName, profileDisplayName);
     const titleFiltered = await getMixingHistory(userId, { page: 1, q: song.title, status: "succeeded" }, 20);
     assert.equal(titleFiltered.total, 1);
     assert.equal(titleFiltered.jobs[0]?.id, successful.id);
+    const profileFiltered = await getMixingHistory(userId, { page: 1, q: profileDisplayName, status: "all" }, 20);
+    assert.ok(profileFiltered.total >= 1);
+    assert.ok(profileFiltered.jobs.every((job) => job.vocalProfile.displayName === profileDisplayName));
     const artistFiltered = await getMixingHistory(userId, { page: 1, q: song.artist, status: "failed" }, 20);
     assert.ok(artistFiltered.total >= 1);
     assert.ok(artistFiltered.jobs.every((job) => job.status === "failed"));

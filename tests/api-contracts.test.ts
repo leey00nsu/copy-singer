@@ -133,7 +133,7 @@ test("entity response schemas accept representative legacy payloads", () => {
         ticketCost: 1,
         error: null,
         song: { title: "Song", artist: "Singer", catalogOrder: 1 },
-        vocalProfile: { id: PROFILE_ID, createdAt: "2026-08-09T00:00:00.000Z" },
+        vocalProfile: { id: PROFILE_ID, displayName: "보컬 프로필 1", createdAt: "2026-08-09T00:00:00.000Z" },
         resultReady: false,
         audioUrl: null,
         createdAt: "2026-08-09T00:00:00.000Z",

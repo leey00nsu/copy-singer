@@ -8,7 +8,11 @@ const base: MixingHistoryRow = {
   ticketCost: 1,
   error: null,
   song: { title: "밤편지", artist: "아이유", catalogOrder: 101 },
-  vocalProfile: { id: "30000000-0000-4000-8000-000000000011", createdAt: "2026-08-09T00:00:00.000Z" },
+  vocalProfile: {
+    id: "30000000-0000-4000-8000-000000000011",
+    displayName: "보컬 프로필 1",
+    createdAt: "2026-08-09T00:00:00.000Z",
+  },
   resultReady: false,
   audioUrl: null,
   createdAt: "2026-08-09T03:00:00.000Z",

@@ -32,6 +32,11 @@ export const ResultReady: Story = {
     const songTitle = canvas.getByRole("heading", { name: "서른 즈음에" });
     await expect(status.compareDocumentPosition(songTitle) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     await expect(canvas.getByRole("heading", { name: "완성된 AI 믹스" })).toBeVisible();
+    await expect(canvas.getByRole("link", { name: "사용한 보컬 프로필 메인 보컬 보기" })).toHaveAttribute(
+      "href",
+      "/vocal-profiles/30000000-0000-4000-8000-000000000012",
+    );
+    await expect(canvasElement.querySelectorAll("[data-profile-artwork]")).toHaveLength(1);
     await expect(canvas.getByRole("link", { name: "결과 저장" })).toBeVisible();
     await expect(canvas.getByRole("list", { name: "AI 믹싱 진행 단계" })).toBeVisible();
   },
@@ -45,6 +50,10 @@ export const Active: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText("AI 믹싱 중")).toBeVisible();
+    await expect(canvas.getByRole("link", { name: "사용한 보컬 · 보컬 프로필 1" })).toHaveAttribute(
+      "href",
+      "/vocal-profiles/30000000-0000-4000-8000-000000000011",
+    );
     await expect(canvas.getAllByRole("link", { name: /AI 믹스 목록/ })).toHaveLength(1);
     await expect(canvas.queryByRole("button", { name: "삭제" })).not.toBeInTheDocument();
   },
