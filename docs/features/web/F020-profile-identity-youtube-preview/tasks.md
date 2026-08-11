@@ -93,7 +93,7 @@
     - 목록 왼쪽에서 행 동작과 충돌 없이 원본 영상을 재생하며 동시에 iframe 하나만 활성화된다.
     - 상세 제목 위에 16:9 player가 표시되고 외부 출처 열기 action이 제거된다.
   - Checklist:
-    - [x] recommendation list facade·single-active state·responsive layout 적용
+    - [x] recommendation list facade·single-active full-width row·responsive layout 적용
     - [x] song detail player 배치와 external source action 제거
     - [x] Storybook·unit·build·desktop/mobile browser QA
 
@@ -122,8 +122,8 @@
 | `pnpm exec tsx --test tests/api-contracts.test.ts tests/recommendation-presentation.test.ts tests/recommendation-ui.test.tsx tests/client-server-state-query.test.ts` | `2026-08-11` | 통과 — video ID·URL·facade/player·추천 회귀 30/30 |
 | `pnpm run test:recommendation:db` | `2026-08-11` | 통과 — 100곡 sourceVideoId 직렬화 포함 3/3 |
 | `pnpm run test:recommendation` | `2026-08-11` | 통과 — ranking 10/10, presentation·UI·detail 등 22/22 |
-| `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/_pages/song-detail/ui/song-detail.stories.tsx` | `2026-08-11` | 통과 — 목록 single-active player·상세 배치 포함 10/10 |
+| `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/_pages/song-detail/ui/song-detail.stories.tsx` | `2026-08-11` | 통과 — full-width 확장 행·single-active player·상세 배치 포함 11/11 |
 | `pnpm run build` | `2026-08-11` | 통과 — Next.js production build 및 25개 static page 생성 |
-| `Storybook browser QA (desktop 1280px / mobile 390px)` | `2026-08-11` | 통과 — 목록 iframe 최대 1개, 상세 player 제목 상단 배치, 200px 최소 높이와 가로 overflow 없음 |
+| `Storybook browser QA (desktop 1440px / mobile 390px)` | `2026-08-11` | 통과 — 재생 전후 요약 행·곡 셀 폭 유지, 4-column 확장 행, iframe 최대 1개, 200px 최소 높이와 가로 overflow 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T19:35:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T19:51:00.000Z -->
