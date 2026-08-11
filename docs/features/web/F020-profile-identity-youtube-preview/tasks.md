@@ -20,7 +20,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/profile-identity-youtube-preview`
-- **대기 중 변경 요청**: 결정: changes_requested — 완료 카드 결과 듣기 primary·결과 닫기 outline 위계 적용
+- **대기 중 변경 요청**: -
   - 구현 중 새로 수용한 사용자 요청을 잠시 표시하는 sync marker입니다
   - 요청을 `tasks.md`와 관련 문서에 반영한 뒤 값을 비우세요
   - pre-PR 리뷰 handoff를 시작하면 `Running`, 리뷰 결과 기록까지 끝나면 `Done`으로 변경
@@ -171,21 +171,21 @@
     - [x] selection aside sticky containing block·top offset 수정
     - [x] polling·completed·dense Storybook과 scroll browser QA
 
-- [TODO][PRD-FR-051] T-F020-profile-identity-youtube-preview-13 완료 결과 재생 버튼 위계 조정
+- [DONE][PRD-FR-051] T-F020-profile-identity-youtube-preview-13 완료 결과 재생 버튼 위계 조정
   - Date: 2026-08-11
   - Acceptance:
     - 완료 선택 카드의 재생 전 `결과 듣기`는 primary이고 재생 후 `결과 닫기`는 outline으로 표시된다.
   - Checklist:
-    - [ ] audioOpen 기반 결과 button variant 전환
-    - [ ] completed Storybook에서 닫힘·열림 위계 검증
-    - [ ] recommendation·typecheck·build 회귀 검증
+    - [x] audioOpen 기반 결과 button variant 전환
+    - [x] completed Storybook에서 닫힘·열림 위계 검증
+    - [x] recommendation·typecheck·build 회귀 검증
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -223,7 +223,7 @@
 | `pnpm run test:storybook --run src/widgets/library/ui/mixing-library.stories.tsx src/widgets/library/ui/vocal-profile-library.stories.tsx` | `2026-08-11` | 통과 — 결과 column 제거·오른쪽 상태와 프로필 6-column 상태 11/11 |
 | `pnpm run lint` | `2026-08-11` | 통과 |
 | `Storybook browser QA (library status columns desktop)` | `2026-08-11` | 통과 — AI 믹스 3열·프로필 6열 header/cell 좌표 일치, 상태 맨 오른쪽, 가로 overflow 없음 |
-| `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx` | `2026-08-11` | 통과 — polling 완료 chip·결과 확인 미노출·sticky selection 포함 11/11 |
+| `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx` | `2026-08-11` | 통과 — polling 완료 chip·sticky selection·결과 듣기 primary→결과 닫기 outline 포함 11/11 |
 | `Storybook browser QA (recommendation sticky selection)` | `2026-08-11` | 통과 — 100곡 목록 중간에서 top 96px 유지, grid 끝에서 containment, 완료 chip 1개·결과 확인 link 0개·선택 카드 결과 듣기 유지 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T21:15:13+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T21:16:57+09:00 -->

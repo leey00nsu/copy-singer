@@ -127,9 +127,9 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 현재 화면의 핵심 다음 행동을 강조하되, 이미 열린 결과를 닫는 보조 동작까지 과도하게 강조하지 않는다.
 - **Trace**:
   - **DOING 시작 시점**: succeeded non-compact action이 `audioOpen`과 무관하게 항상 outline variant를 사용함을 확인했다.
-  - **DONE 전 확정 시점**: 구현과 Storybook 검증 후 보강 예정.
+  - **DONE 전 확정 시점**: 동일 toggle button의 variant를 `audioOpen ? outline : default`로 전환했다. completed Storybook에서 닫힌 `결과 듣기`가 `bg-primary text-primary-foreground`, 클릭 후 `결과 닫기`가 `bg-background`이며 `bg-primary`가 아님을 확인했다.
 - **Evidence**:
   - **Commit**: 구현 후 기록
   - **PR**: local workflow
-  - **Test/Log**: 구현 후 기록
+  - **Test/Log**: `pnpm run test:recommendation`, `pnpm run test:storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx`, `pnpm run typecheck`, `pnpm run check:architecture`, `pnpm run lint`, `pnpm run build`
 - **Consequences**: 같은 toggle control의 시각 위계가 열림 상태에 따라 바뀐다.
