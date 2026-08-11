@@ -20,7 +20,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/login-branding-ui`
-- **대기 중 변경 요청**: -
+- **대기 중 변경 요청**: 결정: approve — 2026-08-11 사용자 `일단 A로 마무리` 응답을 workflow 승인 옵션 `A`로 기록하고 main fast-forward 통합, post-merge 검증 및 통합된 로컬 Feature 브랜치/관리 worktree 정리를 허가함
   - 구현 중 새로 수용한 사용자 요청을 잠시 표시하는 sync marker입니다
   - 요청을 `tasks.md`와 관련 문서에 반영한 뒤 값을 비우세요
   - pre-PR 리뷰 handoff를 시작하면 `Running`, 리뷰 결과 기록까지 끝나면 `Done`으로 변경
@@ -115,7 +115,9 @@
 
 - [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
 - [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+
+- 2026-08-11 구현 승인: 사용자 응답 `일단 A로 마무리`를 workflow 승인 옵션 `A`로 기록함.
 
 ### 테스트 실행 기록
 
@@ -131,4 +133,4 @@
 | in-app browser `/login`·`/terms`·`/privacy` visual QA | `2026-08-11` | 통과 — login Link 실제 이동, mobile 390px legal 문서 overflow 0, 문서 간 이동·metadata title·draft/국외 이전 section·console error 0 |
 | bundled Pillow asset audit | `2026-08-11` | 통과 — master 1024², favicon 64², apple icon 180², RGBA·transparent corner·nonempty alpha 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T08:50:29.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-11T09:01:20.000Z -->
