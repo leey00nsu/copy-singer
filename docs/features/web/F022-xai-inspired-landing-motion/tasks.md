@@ -261,13 +261,24 @@
     - [x] Editorial, metric, Voice Notes, final CTA markup에 의미별 reveal target과 stagger index를 연결했다.
     - [x] Storybook, typecheck, lint, architecture boundary, build와 실제 desktop/mobile scroll에서 순서·overflow·reduced-motion을 검증했다.
 
+- [DOING][PRD-FR-046] T-F022-xai-inspired-landing-motion-20 프로필 녹음 Voice Core 통합
+  - Date: 2026-08-12
+  - Acceptance:
+    - 분석 전의 정적 preview bar와 녹음 중 live waveform canvas를 제거하고 idle→recording→processing을 같은 Orb 계열 Voice Core로 연결한다.
+    - idle은 WebGL 없는 저채도 정적 poster, recording은 실제 마이크 RMS·peak에 따라 작은 scale·glow만 반응하고 processing은 기존 full Orb를 유지한다.
+    - 녹음 시간·5초/10초/60초 안내·진행률·취소/완료 action과 준비된 오디오의 기능성 playback waveform은 유지한다.
+  - Checklist:
+    - [ ] 공통 `VoiceSignalCore`와 recording signal analyser lifecycle을 구현한다.
+    - [ ] `RecorderSurface` idle/requesting/recording/stopping 및 `ProcessHero` active visual을 Voice Core로 연결하고 기존 bar/canvas를 제거한다.
+    - [ ] Storybook, typecheck, lint, architecture boundary, build와 reduced-motion/WebGL fallback에서 state·cleanup·overflow를 검증한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -290,4 +301,4 @@
 | Voice Notes Aurora QA | `2026-08-12` | 통과 — 1440×1000에서 4-up 263×159 crop, 390×844에서 1열 335×203 crop과 밝은 ice→cyan→blue-violet→dark neutral 순서를 직접 확인; desktop/mobile horizontal overflow 0, console warning/error 0 |
 | Album Cover Stack QA | `2026-08-12` | 통과 — 1440×1000에서 4개 cover layer와 hover fan-out, 390×844에서 stacked mixing card와 crop 확인; horizontal overflow 0, console warning/error 0, reduced-motion story 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T05:18:59.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T05:29:51.000Z -->

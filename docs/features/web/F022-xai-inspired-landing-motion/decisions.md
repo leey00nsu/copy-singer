@@ -264,3 +264,13 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Components**: `src/shared/ui/reveal-content`, `src/_pages/home/ui/landing-page.tsx`
 - **Test/Log**: landing Storybook 4/4, TypeScript, ESLint, architecture boundary, Next.js 16.3 production build와 1440px/390px browser scroll QA 통과
 - **Consequences**: `RevealContent`의 기존 explicit duration·distance·opacity API는 유지되며 Bento full fade는 회귀하지 않는다. Reduced-motion·no-script에서는 root, item, media와 line 모두 즉시 최종 상태를 표시한다.
+
+## D016: 프로필 녹음의 audio-reactive Voice Core (2026-08-12)
+
+- **Context**: 사용자가 분석 중에는 Orb를 사용하지만 분석 전 profile에는 기존 막대 파형이 남아 있고 녹음 중 live waveform도 현재 디자인과 어울리지 않는다고 지적했다.
+- **Constraints**: 실제 마이크 반응을 유지하되 amplitude를 장식 정보 이상으로 과장하지 않고 React high-frequency render, 복수 AudioContext, WebGL 의존 실패, reduced-motion과 녹음 cleanup 문제를 피해야 한다.
+- **Options**: 막대 스타일만 변경 / 원형 spectrum 추가 / idle·recording·processing을 하나의 Voice Core 상태로 통합
+- **Decision**: 구현 및 검증 후 확정한다. 초기 방향은 idle에 정적 Orb poster를 사용하고 recording에서 기존 analyser의 RMS·peak를 smoothing한 CSS 변수로 Orb scale과 glow만 갱신하며 processing은 현재 `VoiceOrb`를 유지하는 것이다.
+- **Rationale**: 구현 및 검증 후 확정한다.
+- **Trace**:
+  - **DOING 시작 시점**: 현재 `RecorderSurface`는 idle에서 20개 고정 bar, recording에서 별도 2D canvas의 history bar와 baseline을 사용하고 `ProcessHero`만 `VoiceOrb`를 사용한다. Timer·milestone·progress는 visual과 독립된 의미 계약이므로 그대로 보존할 수 있다.
