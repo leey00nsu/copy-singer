@@ -540,3 +540,13 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 경계선을 구조적 affordance에만 남기면 Landing의 넓은 whitespace와 quiet surface 언어가 제품 화면까지 이어진다. 정상 소비를 warning으로 보이지 않게 하면서도 부호와 icon을 통해 증감 의미는 명확히 유지된다.
 - **Evidence**: `src/entities/vocal-profile/ui`, `src/entities/ticket/ui/ticket-ledger.tsx`, `src/widgets/creation-funnel/ui/funnel-action-bar.tsx`, Recommendation, Mixing Detail, Notifications와 ProductShell surface
 - **Trace**: Storybook 34/34, TypeScript, ESLint, architecture boundary를 통과했다. Chromium 1280px에서 profile editorial section top/bottom border 0px·overflow 0, TicketLedger outer border 0px와 credit success/debit neutral computed color를 확인했고 390px floating action은 좌우 16px 여백, 10px radius, 24px blur와 overflow 0을 확인했다. Console warning/error는 0건이었다.
+
+## D039: Borderless hierarchy는 chapter surface와 여백으로 표현 (2026-08-12)
+
+- **Context**: 장식 hairline을 제거한 뒤 보컬 분석의 여러 chart, 추천 filter와 티켓 원장처럼 정보 밀도가 높은 영역은 인접 section 사이의 위계가 약해졌다.
+- **Constraints**: Landing에서 확립한 넓은 whitespace와 borderless visual language를 유지해야 하며 table row, ledger row, ordered reason, timeline, form control과 overlay처럼 구조를 설명하는 separator는 제거하면 안 된다.
+- **Decision**: 페이지 section은 intro와 `mt-10~14` 간격으로 나누고, 연관된 여러 visualization은 `rounded-3xl bg-muted/15` chapter surface 하나로 묶는다. 추천 filter·티켓 ledger·오류 상태처럼 독립 기능 surface에는 `bg-muted/15~20` 또는 semantic tint만 사용하고 개별 Card border는 복원하지 않는다. 구조적 row separator와 sticky action border는 유지한다.
+- **Rationale**: 선을 다시 늘리지 않고도 배경 명도와 간격 단계가 chapter 경계를 만들며, 실제 조작·행 구조를 뜻하는 선만 남아 정보의 의미가 더 명확해진다.
+- **Evidence**: `src/entities/vocal-profile/ui/vocal-profile-results.tsx`, `src/_pages/vocal-profile-detail/ui/vocal-profile-detail-page.tsx`, Recommendation, TicketLedger, Song Detail과 Mixing Detail Storybook
+- **Trace**: 보컬 결과를 range/distribution, quality/pitch, reference band chapter로 재구성하고 상세 페이지에 분석 결과 intro를 추가했다. 추천 filter와 ledger는 quiet rounded surface, 곡 range는 단일 analysis surface, 믹싱 실패는 destructive tint surface로 보강했다. Storybook 24/24, TypeScript, ESLint, Biome과 architecture 4/4를 통과했으며 Chromium에서 보컬·추천 surface의 borderless hierarchy를 확인했다.
+- **Consequences**: `muted/15`는 section grouping, `muted/25`는 내부 metric grouping에 사용한다. 두 단계 surface를 중첩하더라도 개별 chart Card의 border와 shadow는 추가하지 않는다.

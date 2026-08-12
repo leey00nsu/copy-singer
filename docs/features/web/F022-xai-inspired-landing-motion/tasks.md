@@ -563,25 +563,25 @@
     - [x] FunnelActionBar, 추천·곡 상세, 믹싱 상세, 알림과 모바일 메뉴의 장식성 border-y를 선별 정리한다.
     - [x] 관련 Storybook, TypeScript, lint와 desktop/mobile visual QA를 통과한다.
 
-- [DOING][PRD-FR-047] T-F022-xai-inspired-landing-motion-48 Borderless section hierarchy 보강
+- [DONE][PRD-FR-047] T-F022-xai-inspired-landing-motion-48 Borderless section hierarchy 보강
   - Date: 2026-08-12
   - Acceptance:
     - 보컬 프로필 결과는 개별 Card border 없이 분석 chapter surface와 section intro·여백으로 명확히 구분된다.
     - 티켓 원장과 추천 filter는 낮은 대비의 rounded surface로 주변 영역과 구분되며 거래·table/list의 semantic separator는 유지한다.
     - 곡·믹싱 상세는 중첩 surface를 피하면서 필요한 상태와 분석 영역만 선택적으로 강화하고 desktop/mobile에서 정보 위계를 유지한다.
   - Checklist:
-    - [ ] VocalProfileResults를 chapter group으로 재구성하고 상세 페이지에 분석 결과 intro를 추가한다.
-    - [ ] TicketLedger wrapper와 Recommendation filter surface를 보강한다.
-    - [ ] Song range와 Mixing failure 상태를 선택적으로 보강하고 구조적 separator를 보존한다.
-    - [ ] 관련 Storybook, TypeScript, lint, architecture와 desktop/mobile visual QA를 통과한다.
+    - [x] VocalProfileResults를 chapter group으로 재구성하고 상세 페이지에 분석 결과 intro를 추가한다.
+    - [x] TicketLedger wrapper와 Recommendation filter surface를 보강한다.
+    - [x] Song range와 Mixing failure 상태를 선택적으로 보강하고 구조적 separator를 보존한다.
+    - [x] 관련 Storybook, TypeScript, lint, architecture와 desktop/mobile visual QA를 통과한다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -640,5 +640,6 @@
 | Brand signal gradient QA | `2026-08-12` | 통과 — Chromium 1265px에서 음역 range·histogram·pitch trace의 violet→blue→pink computed stop, static animation 0과 horizontal overflow 0을 확인 |
 | Restrained vocal chart QA | `2026-08-12` | 통과 — Chromium 1265px에서 전체 관측 bar fill `oklch(0.97 0 0)`, 범례 2개·중앙음 범례 0, 최종 chart stop 0.74/0.76/0.78 lightness와 overflow 0을 확인 |
 | SVG chart fallback QA | `2026-08-12` | 통과 — chart token을 `initial`로 리셋한 Chromium fixture에서 black stop 0, 세 gradient의 concrete OKLCH fallback과 legend linear-gradient, observed muted fill을 확인 |
+| Borderless hierarchy QA | `2026-08-12` | 통과 — 보컬 결과 2개 chapter, 추천 filter, 티켓 ledger, 곡 range와 믹싱 failure가 border 0·quiet rounded fill을 사용하고 table/list/timeline separator는 유지됨을 확인; Storybook 24/24, TypeScript, ESLint, Biome, architecture 4/4 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T11:30:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T11:47:30.000Z -->
