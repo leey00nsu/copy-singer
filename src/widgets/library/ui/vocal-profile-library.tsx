@@ -189,7 +189,7 @@ export function VocalProfileLibrary({
               key={profile.id}
             >
               <div className="col-span-2 flex min-w-0 items-center gap-3 md:col-span-1" data-profile-column="identity">
-                <VocalProfileArtwork className="size-11" profileId={profile.id} />
+                <VocalProfileArtwork analysis={profile} className="size-11" profileId={profile.id} />
                 <div className="min-w-0">
                   <h2 className="truncate text-sm font-semibold">
                     <ResourceRowLink

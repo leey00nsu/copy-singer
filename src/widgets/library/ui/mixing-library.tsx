@@ -178,7 +178,11 @@ function MixingLibraryRows({ jobs }: { jobs: MixingHistoryRow[] }) {
                   data-mixing-column="vocal-profile"
                 >
                   <div className="flex min-w-0 items-center gap-2">
-                    <VocalProfileArtwork className="size-7 shrink-0" profileId={job.vocalProfile.id} />
+                    <VocalProfileArtwork
+                      analysis={job.vocalProfile.artwork}
+                      className="size-7 shrink-0"
+                      profileId={job.vocalProfile.id}
+                    />
                     <p className="min-w-0 truncate text-xs font-medium">
                       <span className="text-[10px] text-muted-foreground lg:hidden">보컬 · </span>
                       {job.vocalProfile.displayName}

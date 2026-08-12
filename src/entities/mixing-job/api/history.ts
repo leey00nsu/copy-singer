@@ -21,7 +21,20 @@ const historySelect = {
   startedAt: true,
   completedAt: true,
   song: { select: { title: true, artist: true, catalogOrder: true } },
-  vocalProfile: { select: { id: true, profileNumber: true, displayName: true, createdAt: true } },
+  vocalProfile: {
+    select: {
+      id: true,
+      profileNumber: true,
+      displayName: true,
+      createdAt: true,
+      minMidi: true,
+      maxMidi: true,
+      medianMidi: true,
+      pitchStability: true,
+      voicedRatio: true,
+      rmsDb: true,
+    },
+  },
   resultAsset: { select: { id: true, status: true } },
 } as const;
 
@@ -39,6 +52,22 @@ function serializeRow(row: Awaited<ReturnType<typeof findRows>>[number]): Mixing
       id: row.vocalProfile.id,
       displayName: row.vocalProfile.displayName?.trim() || `보컬 프로필 ${row.vocalProfile.profileNumber ?? 1}`,
       createdAt: row.vocalProfile.createdAt.toISOString(),
+      artwork:
+        row.vocalProfile.minMidi === null ||
+        row.vocalProfile.maxMidi === null ||
+        row.vocalProfile.medianMidi === null ||
+        row.vocalProfile.pitchStability === null ||
+        row.vocalProfile.voicedRatio === null ||
+        row.vocalProfile.rmsDb === null
+          ? undefined
+          : {
+              minMidi: row.vocalProfile.minMidi,
+              maxMidi: row.vocalProfile.maxMidi,
+              medianMidi: row.vocalProfile.medianMidi,
+              pitchStability: row.vocalProfile.pitchStability,
+              voicedRatio: row.vocalProfile.voicedRatio,
+              rmsDb: row.vocalProfile.rmsDb,
+            },
     },
     resultReady: row.status === "SUCCEEDED" && row.resultAsset?.status === "READY",
     audioUrl:

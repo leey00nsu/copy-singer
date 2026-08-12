@@ -66,7 +66,21 @@ export const mixingHistoryRowSchema = z.object({
     artist: z.string(),
     catalogOrder: z.number().int().positive(),
   }),
-  vocalProfile: z.object({ id: z.uuid(), displayName: z.string().min(1), createdAt: z.string() }),
+  vocalProfile: z.object({
+    id: z.uuid(),
+    displayName: z.string().min(1),
+    createdAt: z.string(),
+    artwork: z
+      .object({
+        minMidi: z.number(),
+        maxMidi: z.number(),
+        medianMidi: z.number(),
+        pitchStability: z.number(),
+        voicedRatio: z.number(),
+        rmsDb: z.number(),
+      })
+      .optional(),
+  }),
   resultReady: z.boolean(),
   audioUrl: z.string().nullable(),
   createdAt: z.string(),

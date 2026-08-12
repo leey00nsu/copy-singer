@@ -220,7 +220,11 @@ export function MixingDetail({ initial }: { initial: MixingHistoryRow }) {
           className="mt-5 inline-flex min-w-0 items-center gap-3 rounded-lg border p-2 pr-4 transition-colors hover:bg-muted/35"
           href={`/vocal-profiles/${job.vocalProfile.id}`}
         >
-          <VocalProfileArtwork className="size-9 shrink-0" profileId={job.vocalProfile.id} />
+          <VocalProfileArtwork
+            analysis={job.vocalProfile.artwork}
+            className="size-9 shrink-0"
+            profileId={job.vocalProfile.id}
+          />
           <span className="min-w-0 text-left">
             <span className="block text-[10px] text-muted-foreground">사용한 보컬 프로필</span>
             <strong className="block truncate text-sm font-semibold">{job.vocalProfile.displayName}</strong>

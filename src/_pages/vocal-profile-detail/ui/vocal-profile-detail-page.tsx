@@ -23,7 +23,7 @@ export default async function VocalProfileDetailPage({ params }: { params: Promi
       </Link>
       <div className="mt-6 flex flex-wrap items-start justify-between gap-8 pb-7">
         <div className="flex min-w-0 max-w-3xl items-start gap-4 sm:gap-5">
-          <VocalProfileArtwork className="size-20 sm:size-24" profileId={detail.profile.id} />
+          <VocalProfileArtwork analysis={detail.profile} className="size-20 sm:size-24" profileId={detail.profile.id} />
           <div className="min-w-0">
             <p className="text-[10px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
               Saved analysis
