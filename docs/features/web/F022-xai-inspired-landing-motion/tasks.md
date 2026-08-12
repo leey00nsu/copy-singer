@@ -400,13 +400,47 @@
     - [x] VoiceSignalCore의 Orb filter와 waveform opacity transition을 구현했다.
     - [x] Storybook, reduced-motion, desktop/mobile layout shift와 회귀를 검증했다.
 
+- [DONE][PRD-FR-047] T-F022-xai-inspired-landing-motion-33 공통 Product Page Intro와 Login 브랜드 연결
+  - Date: 2026-08-12
+  - Acceptance:
+    - 제품 index/detail/task 화면이 공통 page intro의 typography·spacing 계약을 재사용하고 route별 과대·과소 hero 편차를 줄인다.
+    - Login은 공통 Product Header/Footer chrome과 절제된 voice visual을 사용하며 하나의 Google 로그인 action과 법적 문구를 유지한다.
+    - 공통 intro와 Login은 Server/Client boundary를 불필요하게 확장하지 않고 390px/1440px에서 overflow가 없다.
+  - Checklist:
+    - [x] Shared ProductPageIntro와 variant/story를 구현한다.
+    - [x] Login과 대표 index/detail/task 화면에 공통 intro를 적용한다.
+    - [x] Login·대표 화면 Storybook, 접근성, desktop/mobile visual을 검증한다.
+
+- [TODO][PRD-FR-047] T-F022-xai-inspired-landing-motion-34 Account·Admin editorial hierarchy 정리
+  - Date: 2026-08-12
+  - Acceptance:
+    - Account는 identity와 ticket balance를 desktop 요약 composition으로 제공하고 ledger는 전체 폭 작업 surface로 유지한다.
+    - Admin metric은 반복 bordered card가 아닌 compact stat band로 표현되며 form·filter·table의 구조적 border는 유지한다.
+    - 작은 보조 텍스트의 가독성을 높이고 Admin의 넓은 rail은 명시적인 table-density 예외로 유지한다.
+  - Checklist:
+    - [ ] Account desktop/mobile composition을 정리한다.
+    - [ ] Admin metric·section hierarchy와 text scale을 정리한다.
+    - [ ] Account·Admin Storybook과 responsive visual을 검증한다.
+
+- [TODO][PRD-FR-047] T-F022-xai-inspired-landing-motion-35 브랜드 artwork·Creation stepper·Recommendation density 정리
+  - Date: 2026-08-12
+  - Acceptance:
+    - Vocal profile artwork는 deterministic identity를 유지하면서 브랜드 hue family 안에서만 생성된다.
+    - Creation stepper는 semantic state를 유지한 가벼운 progress rail로 표현된다.
+    - Recommendation desktop은 검색·필터·결과가 더 빠르게 노출되고 mobile 순서와 선택 action 접근성이 유지된다.
+  - Checklist:
+    - [ ] Artwork hue mapping과 관련 테스트를 갱신한다.
+    - [ ] Creation funnel stepper visual과 Storybook을 갱신한다.
+    - [ ] Recommendation intro density와 Success story action assertion을 실제 UI 계약에 맞춘다.
+    - [ ] TypeScript, lint, architecture, Storybook과 desktop/mobile browser QA를 통과한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -416,6 +450,7 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx src/shared/ui/voice-orb/voice-orb.stories.tsx` | `2026-08-12` | 통과 — landing signed-out/in·mobile·reduced-motion, ProcessHero active/success/failure와 WebGL fallback 10/10 |
+| `pnpm run test:storybook --run src/shared/ui/product-page-intro/product-page-intro.stories.tsx src/_pages/login/ui/login-screen.stories.tsx src/_pages/library/ui/library-page.stories.tsx src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx` | `2026-08-12` | 통과 — ProductPageIntro 3 variant, Login brand bridge, index/task/detail 대표 화면과 action 회귀 20/20 |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/entities/vocal-profile/ui/vocal-profile-summary.stories.tsx src/_pages/profile/ui/analysis-success.stories.tsx` | `2026-08-12` | 통과 — Landing Sample Vocal Range Profile과 실제 profile 결과 회귀 8/8 |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — 공식 Motion Gradient Text 단일 field·animationSpeed 1.5·yoyo, signed-out/in·mobile·reduced-motion 콘텐츠와 기존 Landing 회귀 4/4 |
 | `pnpm run test:storybook --run src/_pages/profile/ui/voice-scan-input.stories.tsx src/shared/ui/voice-orb/voice-orb.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx` | `2026-08-12` | 통과 — 녹음 전 timer 숨김, WebGL canvas 유지, recorder height·Orb filter·waveform opacity transition과 기존 상태 회귀 15/15 |
@@ -443,4 +478,4 @@
 | Voice Notes Aurora QA | `2026-08-12` | 통과 — 1440×1000에서 4-up 263×159 crop, 390×844에서 1열 335×203 crop과 밝은 ice→cyan→blue-violet→dark neutral 순서를 직접 확인; desktop/mobile horizontal overflow 0, console warning/error 0 |
 | Album Cover Stack QA | `2026-08-12` | 통과 — 1440×1000에서 4개 cover layer와 hover fan-out, 390×844에서 stacked mixing card와 crop 확인; horizontal overflow 0, console warning/error 0, reduced-motion story 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T09:33:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T09:26:00.000Z -->

@@ -428,3 +428,16 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**: `src/_pages/profile/ui/vocal-profile-recorder.tsx`, `src/shared/ui/voice-signal-core/voice-signal-core.module.css`, `src/shared/ui/voice-orb/voice-orb.tsx`, `src/_pages/profile/ui/voice-scan-input.stories.tsx`
 - **Test/Log**: Profile input·Orb·Creation Funnel Storybook 15/15, TypeScript, ESLint, architecture boundary, Next.js 16.3 production build와 1440px/390px browser transition QA 통과
 - **Consequences**: Recording 전환의 color/layout/opacity는 부드럽지만 microphone amplitude transform은 기존 120ms 응답성을 유지한다. Reduced-motion에서는 영역과 Orb 위치를 즉시 최종 상태로 바꾸고 waveform도 animation 없이 표시한다.
+
+## D028: Landing-to-product visual alignment (2026-08-12)
+
+- **Context**: Landing 재설계 이후 프로젝트 화면을 검토한 결과 Login은 브랜드 연결이 약하고, 제품 page intro의 크기·간격 편차, Account/Admin의 반복 bordered surface, 전체 색상환 artwork와 무거운 segmented stepper가 새 시각 언어와 단절되어 있었다.
+- **Constraints**: Landing의 Gradient Text·Bento·scroll reveal을 작업 화면에 복제하지 않고 table/list/form의 구조적 border, 제품 정보 밀도, Server Component와 접근성 계약을 유지해야 한다.
+- **Options**: Landing effect를 전체 route로 확산 / 각 route를 개별 수정 / 공통 product-scale intro와 semantic surface 규칙을 만든 뒤 불일치가 큰 화면만 선별 정리
+- **Decision**: Server-safe `ProductPageIntro` variant를 공통화하고 Login, Account, Admin, Recommendation과 대표 index/detail 화면의 위계를 맞춘다. 요약 정보의 장식 border는 quiet fill·whitespace로 대체하되 form/table/list border는 유지한다. Profile artwork는 brand hue family로 제한하고 Creation stepper는 lightweight progress rail로 교체한다.
+- **Rationale**: Landing과 제품 화면의 연결감은 효과의 반복보다 rail, typography, spacing, color rarity와 surface hierarchy에서 생긴다. 공통 intro가 route별 drift를 막고 작업 화면은 안정적인 layout과 즉시 읽히는 action을 유지할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: Login은 독립 full-width bordered header와 큰 정적 mark를 사용하고, 약 10개 page가 유사한 eyebrow/title/description을 서로 다른 크기와 spacing으로 구현한다. Admin은 네 개 metric card와 form/filter/table을 모두 같은 bordered box로 취급하며 artwork는 `seed % 360` 전 색상환을 사용한다.
+- **T33 결과**: Server-safe `ProductPageIntro`의 index/task/detail variant를 만들고 Library, Notifications, Vocal Profiles, Mixing History, Recommendation, Mixing Detail에 적용했다. Login은 공통 scroll glass Header/Footer와 저속 Voice Orb·단일 인증 copy로 재구성했으며 Login 전용 header에서는 중복 auth action만 숨긴다. Storybook 20/20과 TypeScript를 통과했고 Chromium 1440px/390px에서 overflow 없이 Login과 Recommendation의 product-scale density를 확인했다.
+- **Evidence**: `src/shared/ui/product-page-intro`, `src/_pages/login`, `src/_pages/account`, `src/_pages/admin`, `src/entities/vocal-profile`, `src/widgets/creation-funnel`, `src/_pages/recommendation-detail`
+- **Consequences**: Landing 전용 motion은 희소성을 유지하고 제품 route는 공통 정적 primitive 중심으로 정리한다. Admin의 넓은 rail과 table border는 operational density 예외로 유지한다.

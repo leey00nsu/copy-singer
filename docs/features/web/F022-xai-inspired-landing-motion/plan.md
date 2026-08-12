@@ -77,6 +77,15 @@ VocalProfileRecorder
 - 음역·안정성, 추천 키·이유와 선택형 AI 믹싱 등 PRD에 존재하는 개념만 표시한다.
 - preview 내부 action은 가짜 control로 만들지 않고 실제 `/profile` 진입 Link 또는 비상호작용 presentation으로 명확히 구분한다.
 
+### 제품 화면 정합성 확장
+
+- `shared/ui/product-page-intro`는 Server Component로 유지하고 `index`, `detail`, `task` variant에서 eyebrow·title·description·aside의 typography와 spacing만 소유한다. Route data fetching이나 interaction은 포함하지 않는다.
+- Login은 별도 full-width hairline shell을 제거하고 공통 `ProductHeader`/`ProductFooter`를 조합하되, 인증 form은 작은 단일 client boundary로 유지한다.
+- Account와 Admin은 page intro를 재사용하고 desktop composition만 정리한다. Table/list/form border는 유지하고 요약 영역의 장식 card/hairline만 quiet fill과 whitespace로 대체한다.
+- Vocal profile artwork는 기존 hash seed를 유지하되 허용 hue family를 brand violet·blue·pink token 범위로 매핑한다.
+- Creation stepper는 semantic `ol`, `aria-current`, complete/current/upcoming state를 유지하면서 horizontal progress line과 step marker로 표현한다.
+- Storybook은 Login, Account, Admin, Recommendation desktop/mobile과 Creation Funnel을 검증하고 변경된 accessible action name을 실제 UI 계약과 동기화한다.
+
 ### 외부 레퍼런스 적용 정책
 
 - x.ai에서는 절제된 중앙형 hero, 넓은 section whitespace, 비대칭 product mosaic, 2열 editorial demo, hairline metric band, 4-up editorial rail과 2-up CTA의 정보 구조를 참고한다.

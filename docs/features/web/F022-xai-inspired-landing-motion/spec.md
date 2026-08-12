@@ -121,6 +121,16 @@ x.ai의 절제된 중앙형 랜딩 구조를 Copy Singer에 맞게 재해석하�
 - 기존 CTA href, Admin navigation, footer와 accessible waveform action에 대한 회귀 검증을 유지한다.
 - 최종 browser 검증에서 desktop과 mobile의 hero, 3단계 흐름, 마지막 CTA와 footer를 확인한다.
 
+### FR-7: Landing 이후 제품 화면 시각 정합성
+
+- Landing의 브랜드 언어를 제품 화면 전체에 그대로 복제하지 않고 공통 page intro, typography, spacing과 semantic border 규칙으로 연결한다.
+- Login은 공통 Product Header/Footer chrome과 절제된 voice visual을 사용해 Landing에서 인증 흐름으로 이어지는 경험을 제공한다.
+- Account와 Admin은 동일 위계의 bordered card 반복을 줄이고, 요약 정보는 editorial stat surface로, form·table·list는 구조적 경계를 가진 작업 surface로 구분한다.
+- Vocal profile artwork의 결정적 변형은 violet·blue·pink 브랜드 hue family 안에서 생성하며 프로필 간 식별 가능성은 유지한다.
+- Creation funnel stepper는 무거운 segmented strip 대신 상태와 현재 단계를 명확히 읽을 수 있는 가벼운 progress rail을 사용한다.
+- Recommendation desktop은 결과 탐색 action이 과도한 hero 여백 아래로 밀리지 않도록 product-scale intro 밀도를 사용하고, mobile의 현재 읽기 순서와 접근성을 유지한다.
+- Landing 전용 Gradient Text, scroll reveal, Bento와 상시 animation을 form·table·관리 작업 화면에 확산하지 않는다.
+
 ---
 
 ## 비기능 요구사항
