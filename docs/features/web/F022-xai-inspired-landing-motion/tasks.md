@@ -239,24 +239,24 @@
     - [x] Landing KeySurface에 가상 profile chart를 적용하고 Recommended key visualizer와 Count Up notice를 제거했다.
     - [x] Landing·profile Storybook, typecheck, lint, build와 desktop/mobile browser에서 chart layout·overflow를 검증했다.
 
-- [DOING][PRD-FR-045] T-F022-xai-inspired-landing-motion-18 Bento 보조 라벨과 Orb 장식 제거
+- [DONE][PRD-FR-045] T-F022-xai-inspired-landing-motion-18 Bento 보조 라벨과 Orb 장식 제거
   - Date: 2026-08-12
   - Acceptance:
     - 보컬 프로필 chart surface에서 `Sample profile`과 `가상 데이터` 텍스트를 제거하고 chart 자체만 표시한다.
     - 하단 Orb surface에서 `VOICE SIGNAL` 텍스트와 Sparkles 아이콘을 제거하고 Orb visual만 유지한다.
     - chart의 accessible range label과 Orb canvas·fallback 계약은 유지한다.
   - Checklist:
-    - [ ] KeySurface와 OrbPoster의 보조 텍스트·아이콘 markup 및 불필요한 import를 제거한다.
-    - [ ] Landing Storybook assertion을 새 최소 표현 계약에 맞춘다.
-    - [ ] Storybook, typecheck, lint와 desktop/mobile browser에서 chart·Orb 정렬과 overflow를 검증한다.
+    - [x] KeySurface와 OrbPoster의 보조 텍스트·아이콘 markup 및 불필요한 import를 제거했다.
+    - [x] Landing Storybook assertion을 새 최소 표현 계약에 맞췄다.
+    - [x] Storybook, typecheck, lint와 desktop/mobile browser에서 chart·Orb 정렬과 overflow를 검증했다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -267,15 +267,16 @@
 | --- | --- | --- |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx src/shared/ui/voice-orb/voice-orb.stories.tsx` | `2026-08-12` | 통과 — landing signed-out/in·mobile·reduced-motion, ProcessHero active/success/failure와 WebGL fallback 10/10 |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/entities/vocal-profile/ui/vocal-profile-summary.stories.tsx src/_pages/profile/ui/analysis-success.stories.tsx` | `2026-08-12` | 통과 — Landing Sample Vocal Range Profile과 실제 profile 결과 회귀 8/8 |
+| `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — Sample profile·가상 데이터·VOICE SIGNAL 제거 및 landing signed-out/in·mobile·reduced-motion 4/4 |
 | `pnpm exec biome check src/_pages/home/ui/landing-page.tsx src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — Voice Notes 이미지 markup과 Storybook assertion format/lint 확인 |
 | `pnpm exec biome check src/_pages/home/ui/landing-page.tsx src/_pages/home/ui/landing-hero.tsx src/_pages/home/ui/landing-hero.module.css` | `2026-08-12` | 통과 — 3개 landing 파일 format/lint 확인 |
 | `pnpm run typecheck` | `2026-08-12` | 통과 — 신규 landing story component 포함 TypeScript 오류 없음 |
 | `pnpm run lint` | `2026-08-12` | 통과 — 전체 ESLint 오류 없음 |
 | `pnpm run test:architecture-boundaries` | `2026-08-12` | 통과 — FSD, client/server와 root App boundary 4/4 |
 | `pnpm run build` | `2026-08-12` | 통과 — Next.js 16.3 production build, TypeScript와 29개 static page 생성 완료 |
-| Browser responsive QA | `2026-08-12` | 통과 — Landing sample에서 전체 관측 음역·실용 음역·중앙음과 `Sample profile`·`가상 데이터`를 확인하고 기존 key visualizer 0개 확인; 390px과 1440px horizontal overflow 0 |
+| Browser responsive QA | `2026-08-12` | 통과 — 전체 관측 음역·실용 음역·중앙음 accessible chart와 Orb canvas 1개를 유지하면서 `Sample profile`·`가상 데이터`·`VOICE SIGNAL`이 모두 0개임을 확인; 390px과 1440px horizontal overflow 0 |
 | Voice Notes / Orb QA | `2026-08-12` | 통과 — 독립 Voice Notes 4개와 Tailwind grain gradient 직접 검토, Grainient canvas 0개·Orb canvas 1개, Orb root transparent·fallback opacity 0, gray half/square artifact와 horizontal overflow 0 확인; 관련 Storybook 10/10 통과 |
 | Voice Notes Aurora QA | `2026-08-12` | 통과 — 1440×1000에서 4-up 263×159 crop, 390×844에서 1열 335×203 crop과 밝은 ice→cyan→blue-violet→dark neutral 순서를 직접 확인; desktop/mobile horizontal overflow 0, console warning/error 0 |
 | Album Cover Stack QA | `2026-08-12` | 통과 — 1440×1000에서 4개 cover layer와 hover fan-out, 390×844에서 stacked mixing card와 crop 확인; horizontal overflow 0, console warning/error 0, reduced-motion story 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T05:05:08.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T05:07:03.000Z -->

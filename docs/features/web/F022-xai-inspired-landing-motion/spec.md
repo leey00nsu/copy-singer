@@ -53,7 +53,7 @@ x.ai의 절제된 중앙형 랜딩 구조를 Copy Singer에 맞게 재해석하�
 - [ ] 랜딩은 분석, 노래와 키 추천, 선택형 AI 믹싱의 세 단계만 실제 순서대로 설명한다.
 - [ ] desktop에서는 bento product showcase와 2열 editorial demo가 제품 흐름을 연결하고, mobile에서는 같은 내용을 읽기 쉬운 단일 열로 제공한다.
 - [ ] preview는 현재 제품 계약에 있는 파형, 음역·안정성 분석, 추천 키·이유, 사용자 선택형 AI 믹싱만 표현한다.
-- [ ] API나 저장 데이터에 없는 점수, 진행률, 장르, 난이도, 가사 또는 인앱 음원 preview를 만들거나 암시하지 않는다. 장식 album-cover와 `Sample profile`로 명시한 가상 음역 차트는 실제 추천·분석 결과와 구분한다.
+- [ ] API나 저장 데이터에 없는 점수, 진행률, 장르, 난이도, 가사 또는 인앱 음원 preview를 만들거나 암시하지 않는다. 장식 album-cover와 고정된 예시 음역 차트는 실제 추천·분석 결과나 저장된 사용자 데이터로 표현하지 않는다.
 
 ### US-3: 움직임 설정과 무관한 접근
 
@@ -98,7 +98,7 @@ x.ai의 절제된 중앙형 랜딩 구조를 Copy Singer에 맞게 재해석하�
 - Aceternity UI의 Bento Grid·Glowing Effect와 React Bits의 Orb·Animated Content source pattern을 Copy Singer token과 컴포넌트 구조에 맞게 조정한다.
 - Hero headline은 단어 단위로 순차 등장하고 설명은 문장 전체가 아래에서 위로 한 번 등장한다. Bento product showcase는 카드별 분절 없이 전체가 opacity 0에서 1로 천천히 한 번 등장한다.
 - Hero 설명과 action은 animation 시작 전 opacity 0으로 완전히 숨기고 각 reveal 시점에만 표시한다.
-- 기존 Recommended key animation visualizer는 제거하고 실제 분석 결과와 같은 Vocal Range Profile chart를 사용한다. 랜딩에서는 `Sample profile`로 가상 데이터임을 명시하고 전체 관측 음역, 실용 음역과 중앙음만 표시한다.
+- 기존 Recommended key animation visualizer는 제거하고 실제 분석 결과와 같은 Vocal Range Profile chart를 사용한다. 랜딩에서는 별도 sample header 없이 전체 관측 음역, 실용 음역과 중앙음만 표시한다.
 - Metric band의 `5초+`, `60초`, `3단계`는 정적인 제품 사실로 표시하고 Count Up을 적용하지 않는다.
 - headline과 section reveal은 첫 진입 시 한 번만 실행하고, 작은 opacity 및 translate 변화로 제한한다.
 - 포인터 기반 highlight를 사용할 경우 제품 preview surface에만 적용하며 primary action의 위치나 hit target을 움직이지 않는다.

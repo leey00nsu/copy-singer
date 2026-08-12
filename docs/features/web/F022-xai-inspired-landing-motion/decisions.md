@@ -240,7 +240,12 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Context**: 사용자가 보컬 프로필 chart의 `Sample profile`·`가상 데이터`와 아래 Orb surface의 `VOICE SIGNAL`·아이콘을 제거하도록 요청했다.
 - **Constraints**: 화면상 보조 라벨을 없애더라도 chart의 accessible range 설명과 Orb의 WebGL/fallback 동작은 유지해야 한다.
 - **Options**: 보조 라벨 유지 / 일부만 제거 / 요청한 네 요소를 모두 제거하고 visual만 유지
-- **Decision**: 구현 및 검증 후 확정한다. 초기 방향은 visual component와 접근 가능한 이름은 유지하면서 별도 header overlay만 제거하는 것이다.
-- **Rationale**: 구현 및 검증 후 확정한다.
+- **Decision**: `KeySurface`에서는 `Sample profile`·`가상 데이터` header row를 제거하고 chart를 카드 중앙에 배치한다. `OrbPoster`에서는 `VOICE SIGNAL`·Sparkles overlay를 제거하고 Orb만 유지한다. Chart의 accessible range name과 Orb canvas/fallback은 변경하지 않는다.
+- **Rationale**: 카드 title과 chart 자체가 이미 visual의 역할을 전달하므로 중복 microcopy를 덜어 정보 밀도를 낮출 수 있다. 의미가 필요한 chart 범위는 접근 가능한 이름에 남기고 Orb는 순수한 장식 visual로 유지한다.
 - **Trace**:
   - **DOING 시작 시점**: `KeySurface`의 두 `<p>`와 `OrbPoster`의 absolute label row가 대상이며, Sparkles는 해당 row에서만 사용되므로 import도 함께 정리할 수 있다.
+  - **DONE 전 확정 시점**: 네 보조 요소와 Sparkles import를 제거하고 chart margin을 중앙 정렬에 맞게 정리했다. Landing Storybook 4/4, typecheck와 lint를 통과했으며 실제 1440px/390px route에서 세 텍스트 0개, accessible chart 유지, Orb canvas 1개와 horizontal overflow 0을 확인했다.
+- **Evidence**:
+  - **Component**: `src/_pages/home/ui/landing-product-story.tsx`
+- **Test/Log**: landing Storybook 4/4, TypeScript, ESLint와 desktop/mobile browser QA 통과
+- **Consequences**: D013의 명시적 `Sample profile`·`가상 데이터` header 결정은 이 결정으로 대체된다. 고정 chart 값은 landing preview 안에서만 사용하며 실제 결과나 저장 데이터로 연결하지 않는다.
