@@ -492,13 +492,22 @@
     - [x] Storybook에서 loading, ready, reduced-motion과 기존 controls를 검증한다.
     - [x] Audio player unit, TypeScript, lint, architecture와 browser QA를 통과한다.
 
+- [TODO][PRD-FR-047] T-F022-xai-inspired-landing-motion-41 ready audio waveform 배경 잔상 제거
+  - Date: 2026-08-12
+  - Acceptance:
+    - 파형 decode가 완료되면 loading skeleton과 muted surface 색이 완전히 사라지고 페이지 배경이 그대로 보인다.
+    - 실제 파형과 브랜드 progress gradient, 고정 높이, loading transition 계약은 유지한다.
+  - Checklist:
+    - [ ] ready 상태의 visual surface를 투명하게 전환한다.
+    - [ ] Storybook에서 ready 배경 투명성과 loading surface 유지를 검증한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
