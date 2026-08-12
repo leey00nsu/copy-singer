@@ -354,6 +354,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 
 - **Context**: 사용자가 Landing headline의 `내 목소리` 부분에 React Bits Gradient Text를 브랜드 컬러와 1.5초 속도로 적용하도록 요청했다.
 - **Constraints**: 기존 word-by-word entry, heading accessible name, 한국어 조사 `에`, reduced-motion과 text contrast를 보존해야 한다.
-- **Decision**: 구현·브라우저 검증 후 gradient stop과 markup 분리 방식을 확정한다.
+- **Decision**: `내`와 `목소리에`의 기존 word wrapper를 유지하고 내부에서 `내`, `목소리`만 `gradientText` span으로 감싸 조사는 단색으로 남긴다. Gradient는 semantic `data-accent-foreground`에서 blue `oklch(0.59 0.18 260)`, restrained pink `oklch(0.67 0.17 330)`를 지나 처음 색으로 돌아오며 `background-size: 300% 100%`, linear 1.5초 infinite shift를 사용한다. Reduced-motion에서는 50% position의 정적 gradient로 고정한다.
+- **Rationale**: Word wrapper를 쪼개지 않아 reveal index와 한국어 줄바꿈을 그대로 유지하면서 사용자가 지정한 phrase만 색을 줄 수 있다. Semantic violet을 양 끝에 반복해 loop seam을 줄이고 blue/pink는 기존 Orb·data accent 계열과 연결한다.
 - **Trace**:
   - **DOING 시작 시점**: Headline은 공백 기준 `StaggeredWords`로 `내`와 `목소리에`가 각각 reveal되며 전체가 foreground 단색이다.
+  - **DONE 전 확정 시점**: 두 word wrapper 안에 phrase-only gradient span을 추가하고 1.5초 animation과 reduced-motion 정적 상태를 구현했다. Landing Storybook 4/4, TypeScript와 ESLint를 통과했으며 browser에서 desktop/mobile의 segment text, gradient stops, duration 1.5s와 390px overflow 0을 확인했다.
+- **Evidence**: `src/_pages/home/ui/landing-hero.tsx`, `src/_pages/home/ui/landing-hero.module.css`, `src/_pages/home/ui/landing-page.stories.tsx`
+- **Test/Log**: Landing Storybook 4/4, TypeScript, ESLint와 desktop/mobile browser QA 통과
+- **Consequences**: Accessible H1은 기존 단일 `aria-label`을 유지해 animation markup이 읽기 순서에 노출되지 않는다. Gradient animation은 word entry 이후에도 지속되지만 reduced-motion에서는 완전히 정지한다.
