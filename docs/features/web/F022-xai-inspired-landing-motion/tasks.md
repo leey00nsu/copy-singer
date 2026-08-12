@@ -91,15 +91,15 @@
     - [x] 실제 action은 Hero의 profile Link로 유지하고 story preview는 비상호작용 presentation으로 구분했다.
     - [x] scroll story 뒤에 trust 근거, 마지막 CTA와 footer가 이어지는 문서 순서를 확인했다.
 
-- [TODO][PRD-FR-051] T-F022-xai-inspired-landing-motion-04 접근성·reduced-motion·Storybook 회귀 검증
+- [DONE][PRD-FR-051] T-F022-xai-inspired-landing-motion-04 접근성·reduced-motion·Storybook 회귀 검증
   - Date: 2026-08-12
   - Acceptance:
     - Keyboard, focus-visible, accessible name, heading/landmark 구조와 WCAG AA 대비 기준을 충족한다.
     - Reduced-motion에서 장식 animation과 큰 transform이 제거돼도 모든 정보와 action이 유지된다.
   - Checklist:
-    - [ ] signed-out, signed-in, mobile과 reduced-motion Storybook 상태를 추가 또는 보강한다.
-    - [ ] Storybook browser interaction과 a11y 검증을 실행한다.
-    - [ ] TypeScript, lint와 architecture boundary 검사를 통과한다.
+    - [x] signed-out, signed-in, mobile과 reduced-motion Storybook 상태를 추가 또는 보강했다.
+    - [x] Storybook browser interaction과 addon a11y 검증을 실행했다.
+    - [x] TypeScript, lint와 architecture boundary 검사를 통과했다.
 
 - [TODO][NON-PRD] T-F022-xai-inspired-landing-motion-05 브라우저 시각·성능 검증과 문서 동기화
   - Date: 2026-08-12
@@ -126,8 +126,10 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — motion 적용 후 signed-out/in CTA, waveform action, Admin/UserMenu와 footer 회귀 2/2 |
+| `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — signed-out/in, mobile, reduced-motion의 CTA·단일 h1·3단계 순서·footer 및 addon a11y 4/4 |
 | `pnpm exec biome check src/_pages/home/ui/landing-page.tsx src/_pages/home/ui/landing-hero.tsx src/_pages/home/ui/landing-hero.module.css` | `2026-08-12` | 통과 — 3개 landing 파일 format/lint 확인 |
 | `pnpm run typecheck` | `2026-08-12` | 통과 — 신규 landing story component 포함 TypeScript 오류 없음 |
+| `pnpm run lint` | `2026-08-12` | 통과 — 전체 ESLint 오류 없음 |
+| `pnpm run test:architecture-boundaries` | `2026-08-12` | 통과 — FSD, client/server와 root App boundary 4/4 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T01:48:07.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T01:50:22.000Z -->
