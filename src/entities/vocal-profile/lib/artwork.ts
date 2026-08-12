@@ -12,7 +12,7 @@ export type VocalProfileArtworkAnalysis = {
   voicedRatio: number;
 };
 
-const ARTWORK_VERSION = 3;
+const ARTWORK_VERSION = 4;
 
 type AuroraFamily = {
   accent: readonly [hue: number, saturation: number, lightness: number];
@@ -42,6 +42,11 @@ const AURORA_FAMILIES: readonly AuroraFamily[] = [
     deep: [243, 22, 35],
     base: [200, 47, 45],
     accent: [181, 59, 70],
+  },
+  {
+    deep: [290, 69, 23],
+    base: [276, 55, 42],
+    accent: [264, 58, 68],
   },
 ];
 
@@ -85,15 +90,26 @@ function finiteAnalysis(analysis?: Partial<VocalProfileArtworkAnalysis>): VocalP
   return analysis as VocalProfileArtworkAnalysis;
 }
 
+function artworkFamilySeed(profileId: string, metrics: VocalProfileArtworkAnalysis | null) {
+  if (!metrics) return hashIdentity(`${ARTWORK_VERSION}:legacy:${profileId}`);
+  const range = metrics.maxMidi - metrics.minMidi;
+  const voiceSignature = [
+    Math.round(metrics.medianMidi / 2),
+    Math.round(range / 3),
+    Math.round(metrics.pitchStability * 10),
+    Math.round(metrics.voicedRatio * 10),
+    Math.round((metrics.rmsDb + 60) / 4),
+  ].join(":");
+  return hashIdentity(`${ARTWORK_VERSION}:${voiceSignature}:${profileId}`);
+}
+
 export function vocalProfileArtworkTokens(
   profileId: string,
   analysis?: Partial<VocalProfileArtworkAnalysis>,
 ): VocalProfileArtworkTokens {
   const seed = hashIdentity(`${ARTWORK_VERSION}:${profileId}`);
   const metrics = finiteAnalysis(analysis);
-  const familyIndex = metrics
-    ? Math.min(AURORA_FAMILIES.length - 1, Math.floor(scaled(metrics.medianMidi, 38, 82, 0, AURORA_FAMILIES.length)))
-    : seed % AURORA_FAMILIES.length;
+  const familyIndex = artworkFamilySeed(profileId, metrics) % AURORA_FAMILIES.length;
   const family = AURORA_FAMILIES[familyIndex];
   const jitter = (seed % 7) - 3;
   const range = metrics ? clamp(metrics.maxMidi - metrics.minMidi, 4, 36) : 18 + ((seed >>> 7) % 14);

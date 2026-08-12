@@ -77,7 +77,24 @@ test("each analyzed artwork stays inside one restrained Aurora hue family", () =
     assert.ok(Math.max(...distances) <= 65);
   }
 
-  assert.equal(new Set(profiles.map((profile) => firstHue(profile.backgroundColor))).size, 4);
+  assert.ok(new Set(profiles.map((profile) => firstHue(profile.backgroundColor))).size >= 3);
+});
+
+test("common voice metrics distribute stable profile identities across all palette families", () => {
+  const profiles = Array.from({ length: 40 }, (_, index) =>
+    vocalProfileArtworkTokens(`profile-common-${index}`, balancedVoice),
+  );
+  const repeated = Array.from({ length: 40 }, (_, index) =>
+    vocalProfileArtworkTokens(`profile-common-${index}`, balancedVoice),
+  );
+  const familyAnchors = profiles.map((profile) => firstHue(profile.backgroundColor));
+
+  assert.deepEqual(profiles, repeated);
+  assert.ok(new Set(familyAnchors).size >= 12);
+  assert.ok(familyAnchors.some((hue) => hue >= 330));
+  assert.ok(familyAnchors.some((hue) => hue >= 145 && hue <= 160));
+  assert.ok(familyAnchors.some((hue) => hue >= 195 && hue <= 220));
+  assert.ok(familyAnchors.some((hue) => hue >= 265 && hue <= 285));
 });
 
 test("profile identity adds stable variation and legacy payloads keep an id fallback", () => {
