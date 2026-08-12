@@ -121,17 +121,17 @@
     - [x] 가짜 점수·진행률·앨범 데이터 없이 실제 제품 개념만 표시했다.
     - [x] 기존 인증별 CTA, ProductHeader와 ProductFooter 계약을 유지했다.
 
-- [TODO][PRD-FR-045] T-F022-xai-inspired-landing-motion-07 React Bits Orb 기반 분석 visual 도입
+- [DONE][PRD-FR-045] T-F022-xai-inspired-landing-motion-07 React Bits Orb 기반 분석 visual 도입
   - Date: 2026-08-12
   - Acceptance:
     - 목소리 분석의 중앙 효과는 React Bits Orb를 hue 294, rotateOnHover false, hoverIntensity 0으로 렌더링하며 waveform과 dotted motion을 사용하지 않는다.
     - 랜딩의 분석 card와 실제 분석 active ProcessHero는 같은 공통 Orb visual을 사용하고 success/failure 상태는 기존 icon과 의미를 유지한다.
     - Orb는 작은 client island로 격리되고 reduced-motion, WebGL 미지원과 viewport 밖 상태에서 안전한 정적 fallback 또는 정지를 제공한다.
   - Checklist:
-    - [ ] 공식 React Bits Orb source를 프로젝트 스타일과 TypeScript 규칙에 맞게 통합하고 ogl 의존성·라이선스를 기록한다.
-    - [ ] Landing product bento와 ProcessHero active tone에 공통 Orb를 적용한다.
-    - [ ] DPR, ResizeObserver, requestAnimationFrame lifecycle과 WebGL context cleanup을 제한한다.
-    - [ ] Orb가 action으로 오해되지 않도록 실제 profile CTA와 분리해 접근 가능한 presentation으로 제공한다.
+    - [x] 공식 React Bits Orb source를 프로젝트 스타일과 TypeScript 규칙에 맞게 통합하고 ogl 의존성·라이선스를 기록했다.
+    - [x] Landing product bento와 ProcessHero active tone에 공통 Orb를 적용했다.
+    - [x] DPR, ResizeObserver, requestAnimationFrame lifecycle과 WebGL context cleanup을 제한했다.
+    - [x] Orb가 action으로 오해되지 않도록 실제 profile CTA와 분리해 접근 가능한 presentation으로 제공했다.
 
 - [TODO][PRD-FR-046] T-F022-xai-inspired-landing-motion-08 Editorial demo·metric band·Voice Notes·2-up CTA 완성
   - Date: 2026-08-12
@@ -176,4 +176,4 @@
 | `pnpm run build` | `2026-08-12` | 통과 — Next.js 16.3 production build, TypeScript와 29개 static page 생성 완료 |
 | Browser responsive QA | `2026-08-12` | 통과 — desktop 1440×1000 sticky story, mobile 390×844 static stack 및 overflow 없음, reduced-motion animation 0개, console warning/error 0개 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T02:25:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T02:29:00.000Z -->
