@@ -17,7 +17,7 @@ function LandingHero({ primaryLabel, profileHref }: LandingHeroProps) {
   return (
     <section className="overflow-hidden border-b">
       <div className="mx-auto w-full max-w-[72rem] px-5 pt-16 sm:px-7 sm:pt-20 lg:px-8 lg:pt-24">
-        <div className="mx-auto max-w-[50rem] text-center">
+        <div className={`${styles.heroCopy} mx-auto max-w-[50rem] text-center`}>
           <p className="mx-auto inline-flex min-h-7 items-center rounded-full border bg-background px-3 text-[10px] font-semibold tracking-[0.14em] text-muted-foreground uppercase">
             Voice match · Song recommendation · AI mixing
           </p>
@@ -44,7 +44,7 @@ function LandingHero({ primaryLabel, profileHref }: LandingHeroProps) {
 
         <figure
           aria-label="움직이는 목소리 파형과 분석 시작"
-          className={`${styles.visual} relative mx-auto mt-14 max-w-[61rem] sm:mt-16`}
+          className={`${styles.heroPreview} ${styles.visual} relative mx-auto mt-14 max-w-[61rem] sm:mt-16`}
         >
           <span aria-hidden="true" className={styles.ambientRing} />
           <span aria-hidden="true" className={styles.rippleRing} />

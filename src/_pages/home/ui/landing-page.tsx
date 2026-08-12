@@ -5,6 +5,7 @@ import { Button } from "@/shared/ui/button";
 import { ProductFooter, ProductHeader, type ProductUser } from "@/widgets/product-shell";
 
 import { LandingHero } from "./landing-hero";
+import styles from "./landing-hero.module.css";
 
 const railClass = "mx-auto w-full max-w-[72rem] px-5 sm:px-7 lg:px-8";
 
@@ -21,7 +22,7 @@ function LandingPage({ admin = false, user = null }: { admin?: boolean; user?: P
         <LandingHero primaryLabel={primaryLabel} profileHref={profileHref} />
 
         <section className="border-y" id="how-it-works">
-          <div className={`${railClass} py-16 lg:py-20`}>
+          <div className={`${styles.sectionReveal} ${railClass} py-16 lg:py-20`}>
             <p className="text-[10px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
               From voice to music
             </p>
@@ -62,7 +63,7 @@ function LandingPage({ admin = false, user = null }: { admin?: boolean; user?: P
         </section>
 
         <section
-          className={`${railClass} grid gap-8 py-16 lg:grid-cols-[minmax(0,.92fr)_minmax(0,1.08fr)] lg:items-start lg:gap-16 lg:py-20`}
+          className={`${styles.sectionReveal} ${railClass} grid gap-8 py-16 lg:grid-cols-[minmax(0,.92fr)_minmax(0,1.08fr)] lg:items-start lg:gap-16 lg:py-20`}
           id="why-copy-singer"
         >
           <div>
@@ -88,7 +89,7 @@ function LandingPage({ admin = false, user = null }: { admin?: boolean; user?: P
         </section>
 
         <section className="border-t py-12 sm:py-14">
-          <div className={`${railClass}`}>
+          <div className={`${styles.sectionReveal} ${railClass}`}>
             <div className="min-h-[12.5rem] rounded-xl border bg-gradient-to-br from-violet-50 via-white to-sky-50 px-7 py-8 sm:px-9 lg:px-11">
               <div className="max-w-[36rem]">
                 <p className="text-[10px] font-semibold tracking-[0.16em] text-muted-foreground uppercase">
