@@ -522,3 +522,4 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Decision**: SVG stop은 inline CSS `stopColor` property에서 `var(--brand-chart-*, <OKLCH fallback>)`를 사용하고 legend gradient에도 완전한 linear-gradient fallback을 제공한다. 정상 환경에서는 semantic token이 우선하며 fallback은 동일한 light restrained palette를 사용한다.
 - **Rationale**: token 정본을 유지하면서도 SVG presentation attribute와 stylesheet load 차이에 따른 검정 fallback을 차단한다.
 - **Evidence**: `src/entities/vocal-profile/ui/vocal-range-chart.tsx`, `src/entities/vocal-profile/ui/vocal-profile-results.tsx`, Storybook
+- **Trace**: Chart fallback을 내부 `chart-brand.ts` 한 곳에 모으고 세 SVG gradient stop을 inline CSS property로 교체했다. Missing-token Story에서 custom property를 `initial`로 리셋해도 three gradient와 legend가 0.68/0.70/0.72 OKLCH fallback으로 렌더되고 black stop이 0임을 Storybook 11/11과 Chromium screenshot으로 확인했다. TypeScript와 lint도 통과했다.

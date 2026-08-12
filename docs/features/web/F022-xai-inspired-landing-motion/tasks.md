@@ -523,22 +523,22 @@
     - [x] observed range와 중앙음 범례를 정리한다.
     - [x] Storybook, TypeScript와 browser QA를 통과한다.
 
-- [TODO][PRD-FR-047] T-F022-xai-inspired-landing-motion-44 SVG chart gradient browser fallback
+- [DONE][PRD-FR-047] T-F022-xai-inspired-landing-motion-44 SVG chart gradient browser fallback
   - Date: 2026-08-12
   - Acceptance:
     - SVG presentation attribute에서 CSS custom property를 해석하지 못하거나 신규 token stylesheet가 지연된 환경에서도 chart가 검정으로 fallback되지 않는다.
     - Range, histogram, pitch trace와 legend는 동일한 restrained chart palette를 유지한다.
   - Checklist:
-    - [ ] SVG stop과 legend에 명시적 CSS color fallback을 추가한다.
-    - [ ] token 미정의 fixture와 정상 token 환경을 Storybook에서 검증한다.
-    - [ ] TypeScript, lint와 browser QA를 통과한다.
+    - [x] SVG stop과 legend에 명시적 CSS color fallback을 추가한다.
+    - [x] token 미정의 fixture와 정상 token 환경을 Storybook에서 검증한다.
+    - [x] TypeScript, lint와 browser QA를 통과한다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -558,7 +558,7 @@
 | `pnpm run test:storybook --run src/shared/ui/audio-waveform-player/audio-waveform-player.stories.tsx src/_pages/profile/ui/voice-scan-input.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx` | `2026-08-12` | 통과 — audio ready/loading/reduced-motion, brand progress gradient와 Profile/Mixing controls 회귀 16/16 |
 | `pnpm run test:storybook --run src/shared/ui/audio-waveform-player/audio-waveform-player.stories.tsx` | `2026-08-12` | 통과 — ready surface·waveform 투명, skeleton hidden과 loading/reduced-motion 회귀 3/3 |
 | `pnpm run test:storybook --run src/entities/vocal-profile/ui/vocal-profile-results.stories.tsx src/shared/ui/audio-waveform-player/audio-waveform-player.stories.tsx src/_pages/profile/ui/voice-scan-input.stories.tsx src/_pages/home/ui/landing-page.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx` | `2026-08-12` | 통과 — light/dark brand chart stop, live/stored waveform, Landing과 Mixing 회귀 23/23 |
-| `pnpm run test:storybook --run src/entities/vocal-profile/ui/vocal-profile-results.stories.tsx src/_pages/home/ui/landing-page.stories.tsx src/_pages/profile/ui/analysis-success.stories.tsx` | `2026-08-12` | 통과 — restrained chart stop, 2-item range legend, neutral observed range와 실제 profile/Landing 회귀 10/10 |
+| `pnpm run test:storybook --run src/entities/vocal-profile/ui/vocal-profile-results.stories.tsx src/_pages/home/ui/landing-page.stories.tsx src/_pages/profile/ui/analysis-success.stories.tsx` | `2026-08-12` | 통과 — 정상/missing-token SVG fallback, restrained chart stop, 2-item legend와 실제 profile/Landing 회귀 11/11 |
 | `pnpm exec tsx --test tests/audio-waveform-player.test.ts` | `2026-08-12` | 통과 — playback time/range 계산 회귀 3/3 |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/entities/vocal-profile/ui/vocal-profile-summary.stories.tsx src/_pages/profile/ui/analysis-success.stories.tsx` | `2026-08-12` | 통과 — Landing Sample Vocal Range Profile과 실제 profile 결과 회귀 8/8 |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — 공식 Motion Gradient Text 단일 field·animationSpeed 1.5·yoyo, signed-out/in·mobile·reduced-motion 콘텐츠와 기존 Landing 회귀 4/4 |
@@ -594,5 +594,6 @@
 | Branded audio waveform QA | `2026-08-12` | 통과 — ready surface·waveform background `rgba(0, 0, 0, 0)`, skeleton opacity 0·visibility hidden과 72px 높이를 브라우저에서 확인; 브랜드 파형과 loading transition 유지 |
 | Brand signal gradient QA | `2026-08-12` | 통과 — Chromium 1265px에서 음역 range·histogram·pitch trace의 violet→blue→pink computed stop, static animation 0과 horizontal overflow 0을 확인 |
 | Restrained vocal chart QA | `2026-08-12` | 통과 — Chromium 1265px에서 전체 관측 bar fill `oklch(0.97 0 0)`, 범례 2개·중앙음 범례 0, chart stop 0.68/0.70/0.72 lightness와 overflow 0을 확인 |
+| SVG chart fallback QA | `2026-08-12` | 통과 — chart token을 `initial`로 리셋한 Chromium fixture에서 black stop 0, 세 gradient의 concrete OKLCH fallback과 legend linear-gradient, observed muted fill을 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T10:51:41.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T10:58:19.000Z -->
