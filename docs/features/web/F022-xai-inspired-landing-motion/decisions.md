@@ -310,3 +310,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Primary surface**: `src/_pages/profile/ui/vocal-profile-recorder.tsx`, `src/_pages/profile/ui/voice-scan-input.tsx`
 - **Test/Log**: 관련 Storybook 43/43, TypeScript, ESLint, architecture boundary, Next.js 16.3 production build와 desktop/mobile browser QA 통과
 - **Consequences**: Border의 전면 금지가 아니라 semantic 사용 규칙이므로 table/list/form/overlay 경계는 유지된다. Idle Orb는 움직이지만 색상 위계가 recording과 분리되며, reduced-motion·WebGL fallback과 audio analyser cleanup 계약은 그대로다.
+
+## D019: Orb body-bound alpha mask (2026-08-12)
+
+- **Context**: 사각 canvas 배경을 제거하기 위해 추가한 radial alpha mask가 shader의 넓은 무채색 외곽 halo까지 남겨 사용자 화면에서 굵은 회색 원으로 보였다.
+- **Constraints**: Color Orb 본체와 내부 motion은 자르지 않으면서 canvas 모서리, gray halo와 hard clipping을 모두 피해야 한다.
+- **Decision**: 구현 및 검증 후 본체 반경과 feather 구간을 확정한다.
+- **Trace**:
+  - **DOING 시작 시점**: 현재 mask는 normalized radius 0.92–1.12에서만 fade되어 약 0.8 반경부터 보이는 shader의 gray halo가 그대로 불투명하게 남는다.

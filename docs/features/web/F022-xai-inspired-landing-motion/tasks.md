@@ -296,12 +296,21 @@
     - [x] Shared `StatusNotice`와 stories를 만들고 기존 card형 status/alert를 마이그레이션했다.
     - [x] Storybook, typecheck, lint, architecture boundary, build와 desktop/mobile browser에서 투명 배경·정렬·overflow를 검증했다.
 
+- [DOING][PRD-FR-046] T-F022-xai-inspired-landing-motion-23 Orb 외곽 gray halo 제거
+  - Date: 2026-08-12
+  - Acceptance:
+    - VoiceOrb의 투명 alpha mask가 shader의 무채색 외곽 halo를 남기지 않고 color Orb 본체 경계에서 자연스럽게 사라진다.
+    - Idle grayscale, recording color response, processing과 WebGL fallback은 기존 상태 계약을 유지한다.
+  - Checklist:
+    - [ ] Fragment alpha mask 범위를 Orb 본체 반경에 맞게 조정한다.
+    - [ ] Storybook과 browser screenshot에서 gray ring·square artifact·overflow가 없음을 검증한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
