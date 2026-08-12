@@ -161,7 +161,11 @@ function AudioWaveformPlayerInstance({
         </div>
       ) : (
         <>
-          <div className={styles.visual} data-audio-waveform-ready={isReady ? "true" : "false"}>
+          <div
+            className={styles.visual}
+            data-audio-waveform-ready={isReady ? "true" : "false"}
+            data-audio-waveform-surface="true"
+          >
             <div
               aria-busy={!isReady}
               aria-label={`${label} 파형. 클릭하거나 드래그하여 재생 위치를 이동할 수 있습니다.`}

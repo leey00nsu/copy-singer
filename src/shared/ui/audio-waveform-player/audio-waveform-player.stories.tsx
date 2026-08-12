@@ -31,6 +31,12 @@ export const NetworkIndependent: Story = {
     await waitFor(() => expect(waveform).toBeVisible());
     await expect(waveform).toHaveAttribute("data-audio-waveform", "brand");
     await expect(waveform).toHaveAttribute("data-waveform-progress-gradient", "violet-blue-pink");
+    const surface = canvasElement.querySelector<HTMLElement>("[data-audio-waveform-surface]");
+    const skeleton = canvasElement.querySelector<HTMLElement>("[data-audio-waveform-skeleton]");
+    await expect(surface).not.toBeNull();
+    await expect(skeleton).not.toBeNull();
+    await waitFor(() => expect(getComputedStyle(surface as HTMLElement).backgroundColor).toBe("rgba(0, 0, 0, 0)"));
+    await waitFor(() => expect(getComputedStyle(skeleton as HTMLElement).visibility).toBe("hidden"));
     await expect(canvas.getByRole("button", { name: "테스트 보컬 재생" })).toBeInTheDocument();
     await expect(canvas.getByRole("button", { name: "테스트 보컬 음소거" })).toBeInTheDocument();
   },
