@@ -323,3 +323,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**: `src/shared/ui/voice-orb/voice-orb.tsx`
 - **Test/Log**: Profile input·Creation Funnel·Orb Storybook 14/14, TypeScript, ESLint와 desktop browser screenshot QA 통과
 - **Consequences**: Mask는 alpha에만 적용되어 hue·animation·audio response를 바꾸지 않는다. WebGL fallback은 CSS poster 경로이므로 영향받지 않는다.
+
+## D020: Orb edge luminance/chroma rejection (2026-08-12)
+
+- **Context**: Halo 제거 후에도 확대 화면에서 Orb 본체의 가장 바깥 shader pixel이 얇은 회색 contour로 남았다.
+- **Constraints**: 전체 반경을 과도하게 줄이거나 color edge와 내부 highlight를 손상하지 않아야 한다.
+- **Decision**: 구현·확대 검증 후 outer-band color rejection threshold를 확정한다.
+- **Trace**:
+  - **DOING 시작 시점**: D019의 chroma mask는 낮은 threshold 때문에 미세한 hue를 가진 어두운 gray contour를 color edge로 통과시킨다.
