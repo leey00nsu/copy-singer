@@ -409,3 +409,9 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Source**: `https://github.com/elevenlabs/ui/blob/main/apps/www/registry/elevenlabs-ui/ui/waveform.tsx` (MIT)
 - **Decision**: ElevenLabs `ScrollingWaveform`의 canvas bar x-position loop, rounded bar와 destination-out edge fade pattern을 `VoiceSignalCore`에 통합한다. 별도 analyser/component가 아니라 기존 recording analyser가 45ms마다 history height를 추가하고 같은 RAF가 Orb CSS level과 canvas를 갱신한다. Bar fill은 Copy Singer violet→blue→pink linear gradient를 사용한다.
 - **Rationale**: 한 AudioContext와 RAF로 Orb·waveform을 함께 구동하면 이중 microphone pipeline 없이 요청한 시각 패턴을 얻고 cleanup 책임도 한 component에 유지할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 녹음 surface는 audio-reactive Orb만 표시하고 있어 시간에 따라 축적되는 입력 rhythm이 없었다. 공식 source의 `ScrollingWaveform`은 x-position history, rounded canvas bar와 edge fade를 제공하지만 자체 microphone 획득을 그대로 사용하면 기존 recorder와 권한·AudioContext가 중복된다.
+  - **DONE 전 확정 시점**: recording mode에서만 Orb 아래 64px canvas를 렌더링하고 기존 stream의 한 analyser가 Orb level과 45ms history sample을 함께 만든다. Storybook 14/14, TypeScript, ESLint, architecture boundary와 production build를 통과했으며 browser에서 desktop/mobile의 Orb 하단 배치, brand gradient, overflow 0과 console warning/error 0을 확인했다.
+- **Evidence**: `src/shared/ui/voice-signal-core/voice-signal-core.tsx`, `src/shared/ui/voice-signal-core/voice-signal-core.module.css`, `src/_pages/profile/ui/vocal-profile-recorder.tsx`
+- **Test/Log**: Profile input·Orb·Creation Funnel Storybook 14/14, TypeScript, ESLint, architecture boundary, Next.js 16.3 production build와 1440px/390px browser QA 통과
+- **Consequences**: Idle/requesting/stopping/processing에는 scrolling canvas가 생성되지 않는다. Reduced-motion에서는 analyser·RAF 없이 정적 history만 그리고, recording 종료/unmount에서는 RAF·ResizeObserver·audio graph·AudioContext를 정리한다. D016의 “recording live waveform 제거” 결정은 이 요청에 한해 Orb 아래의 보조 visualization으로 대체되며 Orb 자체는 계속 primary visual이다.

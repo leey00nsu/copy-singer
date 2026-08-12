@@ -82,7 +82,7 @@ F022 이후 `01-landing-voice-scan.*`의 오른쪽 Voice Scan frame은 계속 �
 ### Voice Scan
 
 - 설명 영역과 실제 voice input surface가 desktop에서 균형 잡힌 2열로 보이고 mobile에서 한 열로 재배치된다.
-- 녹음 전 고정 bar와 녹음 중 live waveform canvas는 사용하지 않는다. 입력 surface는 grayscale·저속 dynamic Voice Core에서 시작해 recording 중에만 color로 전환하고 실제 microphone `MediaStream`의 RMS·peak에 따라 scale·glow가 명확히 반응한다. Surface와 canvas는 투명·무경계이며 분석 중에는 같은 형태의 full-speed React Bits Orb로 이어진다.
+- 녹음 전 고정 bar는 사용하지 않는다. 입력 surface는 grayscale·저속 dynamic Voice Core에서 시작해 recording 중에만 color로 전환하고 실제 microphone `MediaStream`의 RMS·peak에 따라 scale·glow가 명확히 반응한다. Recording 중에는 Orb를 primary visual로 유지하면서 바로 아래에 ElevenLabs UI `ScrollingWaveform` 기반의 violet→blue→pink history bar와 edge fade를 보조 visualization으로 표시한다. Surface와 canvas는 투명·무경계이며 분석 중에는 같은 형태의 full-speed React Bits Orb로 이어진다.
 - 5초부터 분석 가능, 약 10초 권장, 최대 60초 계약을 그대로 보여준다.
 - 준비된 오디오 길이, permission, 오류와 다른 card형 상태는 shared `StatusNotice`로 표시하고 icon·copy 정렬, radius, spacing과 neutral/success/warning/destructive tone을 통일한다.
 - microphone permission, error, cancel, stop, ready, upload 대안을 명확하게 구분한다.
