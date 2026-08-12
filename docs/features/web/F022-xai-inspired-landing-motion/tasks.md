@@ -411,16 +411,16 @@
     - [x] Login과 대표 index/detail/task 화면에 공통 intro를 적용한다.
     - [x] Login·대표 화면 Storybook, 접근성, desktop/mobile visual을 검증한다.
 
-- [TODO][PRD-FR-047] T-F022-xai-inspired-landing-motion-34 Account·Admin editorial hierarchy 정리
+- [DONE][PRD-FR-047] T-F022-xai-inspired-landing-motion-34 Account·Admin editorial hierarchy 정리
   - Date: 2026-08-12
   - Acceptance:
     - Account는 identity와 ticket balance를 desktop 요약 composition으로 제공하고 ledger는 전체 폭 작업 surface로 유지한다.
     - Admin metric은 반복 bordered card가 아닌 compact stat band로 표현되며 form·filter·table의 구조적 border는 유지한다.
     - 작은 보조 텍스트의 가독성을 높이고 Admin의 넓은 rail은 명시적인 table-density 예외로 유지한다.
   - Checklist:
-    - [ ] Account desktop/mobile composition을 정리한다.
-    - [ ] Admin metric·section hierarchy와 text scale을 정리한다.
-    - [ ] Account·Admin Storybook과 responsive visual을 검증한다.
+    - [x] Account desktop/mobile composition을 정리한다.
+    - [x] Admin metric·section hierarchy와 text scale을 정리한다.
+    - [x] Account·Admin Storybook과 responsive visual을 검증한다.
 
 - [TODO][PRD-FR-047] T-F022-xai-inspired-landing-motion-35 브랜드 artwork·Creation stepper·Recommendation density 정리
   - Date: 2026-08-12
@@ -451,6 +451,7 @@
 | --- | --- | --- |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx src/shared/ui/voice-orb/voice-orb.stories.tsx` | `2026-08-12` | 통과 — landing signed-out/in·mobile·reduced-motion, ProcessHero active/success/failure와 WebGL fallback 10/10 |
 | `pnpm run test:storybook --run src/shared/ui/product-page-intro/product-page-intro.stories.tsx src/_pages/login/ui/login-screen.stories.tsx src/_pages/library/ui/library-page.stories.tsx src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx` | `2026-08-12` | 통과 — ProductPageIntro 3 variant, Login brand bridge, index/task/detail 대표 화면과 action 회귀 20/20 |
+| `pnpm run test:storybook --run src/_pages/account/ui/account-overview.stories.tsx src/_pages/admin/ui/admin-metric-band.stories.tsx` | `2026-08-12` | 통과 — Account summary/ledger와 Admin stat band 회귀 4/4 |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/entities/vocal-profile/ui/vocal-profile-summary.stories.tsx src/_pages/profile/ui/analysis-success.stories.tsx` | `2026-08-12` | 통과 — Landing Sample Vocal Range Profile과 실제 profile 결과 회귀 8/8 |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — 공식 Motion Gradient Text 단일 field·animationSpeed 1.5·yoyo, signed-out/in·mobile·reduced-motion 콘텐츠와 기존 Landing 회귀 4/4 |
 | `pnpm run test:storybook --run src/_pages/profile/ui/voice-scan-input.stories.tsx src/shared/ui/voice-orb/voice-orb.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx` | `2026-08-12` | 통과 — 녹음 전 timer 숨김, WebGL canvas 유지, recorder height·Orb filter·waveform opacity transition과 기존 상태 회귀 15/15 |
@@ -478,4 +479,4 @@
 | Voice Notes Aurora QA | `2026-08-12` | 통과 — 1440×1000에서 4-up 263×159 crop, 390×844에서 1열 335×203 crop과 밝은 ice→cyan→blue-violet→dark neutral 순서를 직접 확인; desktop/mobile horizontal overflow 0, console warning/error 0 |
 | Album Cover Stack QA | `2026-08-12` | 통과 — 1440×1000에서 4개 cover layer와 hover fan-out, 390×844에서 stacked mixing card와 crop 확인; horizontal overflow 0, console warning/error 0, reduced-motion story 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T09:26:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T09:31:00.000Z -->
