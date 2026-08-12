@@ -128,8 +128,11 @@ const fragmentShader = /* glsl */ `
     uv.x += hover * hoverIntensity * 0.1 * sin(uv.y * 10.0 + iTime);
     uv.y += hover * hoverIntensity * 0.1 * sin(uv.x * 10.0 + iTime);
     vec4 col = draw(uv);
-    float edgeMask = 1.0 - smoothstep(0.92, 1.12, length(uv));
-    float alpha = col.a * edgeMask;
+    float edgeMask = 1.0 - smoothstep(0.76, 0.9, length(uv));
+    float chroma = max(max(col.r, col.g), col.b) - min(min(col.r, col.g), col.b);
+    float outerBand = smoothstep(0.58, 0.8, length(uv));
+    float colorMask = mix(1.0, smoothstep(0.035, 0.14, chroma), outerBand);
+    float alpha = col.a * edgeMask * colorMask;
     gl_FragColor = vec4(col.rgb * alpha, alpha);
   }
 `;
