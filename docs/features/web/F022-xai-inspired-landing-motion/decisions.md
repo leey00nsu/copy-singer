@@ -249,3 +249,13 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Component**: `src/_pages/home/ui/landing-product-story.tsx`
 - **Test/Log**: landing Storybook 4/4, TypeScript, ESLint와 desktop/mobile browser QA 통과
 - **Consequences**: D013의 명시적 `Sample profile`·`가상 데이터` header 결정은 이 결정으로 대체된다. 고정 chart 값은 landing preview 안에서만 사용하며 실제 결과나 저장 데이터로 연결하지 않는다.
+
+## D015: 하단 섹션의 역할 기반 reveal hierarchy (2026-08-12)
+
+- **Context**: 사용자가 스크롤 이후 모든 section이 조금씩 위로 올라오는 동일한 motion만 반복되어 단조롭다고 보고, 랜딩 전체의 통일성을 높이는 수정안을 적용하도록 요청했다.
+- **Constraints**: 기존 Hero word reveal과 Bento full fade를 유지하고, metric Count Up·scroll-jacking·과도한 transform을 재도입하지 않으며 client observer 수와 reduced-motion 계약을 관리해야 한다.
+- **Options**: 모든 section에 같은 translate-up 강화 / 외부 motion runtime 추가 / 기존 `RevealContent`를 역할별 variant와 CSS child stagger로 확장
+- **Decision**: 구현 및 검증 후 확정한다. 초기 방향은 공통 easing을 유지하면서 section·group·stagger·line·fade variant를 추가하고 하나의 observer 안에서 child index로 순서를 제어하는 것이다.
+- **Rationale**: 구현 및 검증 후 확정한다.
+- **Trace**:
+  - **DOING 시작 시점**: 현재 `RevealContent` 기본값은 opacity 0.94, translateY 8px, 700ms이며 editorial·Voice Notes·CTA 전체와 metric 각 칸에 반복 적용돼 차이가 거의 보이지 않으면서 동일한 상승 동작만 누적된다.

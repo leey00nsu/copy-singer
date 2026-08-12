@@ -250,13 +250,24 @@
     - [x] Landing Storybook assertion을 새 최소 표현 계약에 맞췄다.
     - [x] Storybook, typecheck, lint와 desktop/mobile browser에서 chart·Orb 정렬과 overflow를 검증했다.
 
+- [DOING][PRD-FR-045] T-F022-xai-inspired-landing-motion-19 하단 섹션 reveal hierarchy 통일
+  - Date: 2026-08-12
+  - Acceptance:
+    - Hero와 Bento 이후 section은 동일 easing을 공유하되 section heading, content group, 반복 card, metric hairline과 final CTA에 역할별 reveal을 사용한다.
+    - Editorial은 제목에서 단계 순서로, metric은 hairline 뒤 정적 숫자로, Voice Notes는 heading 뒤 card opacity stagger로 나타나며 final CTA는 이동 없는 단일 fade를 사용한다.
+    - 반복되는 일괄 translate-up을 제거하고 animation은 one-shot, reduced-motion과 no-script에서 즉시 최종 상태를 제공한다.
+  - Checklist:
+    - [ ] `RevealContent`에 landing용 section·group·stagger·line·fade variant와 공통 timing token을 추가한다.
+    - [ ] Editorial, metric, Voice Notes, final CTA markup에 의미별 reveal target과 stagger index를 연결한다.
+    - [ ] Storybook, typecheck, lint, architecture boundary, build와 실제 desktop/mobile scroll에서 순서·overflow·reduced-motion을 검증한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -279,4 +290,4 @@
 | Voice Notes Aurora QA | `2026-08-12` | 통과 — 1440×1000에서 4-up 263×159 crop, 390×844에서 1열 335×203 crop과 밝은 ice→cyan→blue-violet→dark neutral 순서를 직접 확인; desktop/mobile horizontal overflow 0, console warning/error 0 |
 | Album Cover Stack QA | `2026-08-12` | 통과 — 1440×1000에서 4개 cover layer와 hover fan-out, 390×844에서 stacked mixing card와 crop 확인; horizontal overflow 0, console warning/error 0, reduced-motion story 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T05:07:03.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T05:12:45.000Z -->
