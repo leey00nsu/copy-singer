@@ -109,7 +109,7 @@ export function SongDetail({
             <dd className="mt-2 text-2xl font-semibold">{scoreGain > 0 ? `+${scoreGain}` : scoreGain}%p</dd>
           </div>
         </dl>
-        <div className="mt-8 rounded-3xl bg-muted/15 p-4 sm:p-6" data-song-analysis-chapter="vocal-range">
+        <div className="mt-8 rounded-3xl bg-muted/55 p-4 sm:p-6" data-song-analysis-chapter="vocal-range">
           <VocalRangeProfile profile={run.profile} title="내 목소리 음역" />
         </div>
       </section>

@@ -223,7 +223,7 @@ export function RecommendationResults({
         />
       ) : null}
 
-      <div className="mt-8 rounded-2xl bg-muted/20 p-4 sm:p-5" data-recommendation-filter-surface>
+      <div className="mt-8 rounded-2xl bg-muted/55 p-4 sm:p-5" data-recommendation-filter-surface>
         <RecommendationFilterBar
           filters={filters}
           onChange={updateFilters}

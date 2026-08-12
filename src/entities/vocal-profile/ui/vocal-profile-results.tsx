@@ -1,11 +1,10 @@
 "use client";
 
-import { Activity, AudioWaveform, BadgeCheck, ChevronDown, Clock3, Gauge, Info, Volume2 } from "lucide-react";
-import { useId, useMemo, useState } from "react";
+import { Activity, AudioWaveform, BadgeCheck, Clock3, Gauge, Info, Volume2 } from "lucide-react";
+import { useId, useMemo } from "react";
 import { Bar, BarChart, CartesianGrid, Line, LineChart, ReferenceLine, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/shared/ui/chart";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/shared/ui/collapsible";
 import { StatusNotice } from "@/shared/ui/status-notice";
 import { VOCAL_CHART_COLOR, VOCAL_CHART_GRADIENT } from "../lib/chart-brand";
 import type { VocalProfileResponse } from "../model/contract";
@@ -191,7 +190,6 @@ function VisualizationUnavailable({ title }: { title: string }) {
 }
 
 function PitchTrace({ visualization }: { visualization: VocalProfileVisualization | null }) {
-  const [open, setOpen] = useState(true);
   const traceGradientId = `${useId().replaceAll(":", "")}-pitch-trace`;
   if (!visualization) return null;
   const voiced = visualization.track.filter((point): point is { timeMs: number; midi: number } => point.midi !== null);
@@ -204,81 +202,72 @@ function PitchTrace({ visualization }: { visualization: VocalProfileVisualizatio
   const data = pitchChartData(visualization);
 
   return (
-    <Collapsible onOpenChange={setOpen} open={open}>
-      <Card className="rounded-none border-0 bg-transparent shadow-none" data-vocal-profile-section="pitch-trace">
-        <CollapsibleTrigger className="flex w-full items-center justify-between px-5 py-4 text-left">
-          <span>
-            <span className="block text-sm font-semibold">상세 피치 추적</span>
-            <span className="mt-1 block text-[10px] text-muted-foreground">
-              시각화를 위해 최대 720포인트로 요약된 음높이입니다.
-            </span>
-          </span>
-          <ChevronDown className={`size-4 transition-transform ${open ? "rotate-180" : ""}`} />
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <CardContent className="pt-0">
-            <ChartContainer
-              aria-label="시간에 따른 보컬 피치 추적 그래프"
-              className="h-48 w-full aspect-auto"
-              config={PITCH_CHART_CONFIG}
-              role="img"
-            >
-              <LineChart accessibilityLayer data={data} margin={{ left: 2, right: 10, top: 10, bottom: 4 }}>
-                <defs>
-                  <linearGradient data-brand-signal-gradient="pitch-trace" id={traceGradientId} x1="0%" x2="100%">
-                    <stop offset="0%" style={{ stopColor: VOCAL_CHART_COLOR.violet }} />
-                    <stop offset="50%" style={{ stopColor: VOCAL_CHART_COLOR.blue }} />
-                    <stop offset="100%" style={{ stopColor: VOCAL_CHART_COLOR.pink }} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="4 4" />
-                <XAxis
-                  dataKey="timeSeconds"
-                  tickFormatter={(value) => `${Number(value).toFixed(1)}s`}
-                  tickLine={false}
-                  type="number"
+    <Card className="rounded-none border-0 bg-transparent shadow-none" data-vocal-profile-section="pitch-trace">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm">상세 피치 추적</CardTitle>
+        <p className="text-[10px] text-muted-foreground">시각화를 위해 최대 720포인트로 요약된 음높이입니다.</p>
+      </CardHeader>
+      <CardContent>
+        <ChartContainer
+          aria-label="시간에 따른 보컬 피치 추적 그래프"
+          className="h-48 w-full aspect-auto"
+          config={PITCH_CHART_CONFIG}
+          role="img"
+        >
+          <LineChart accessibilityLayer data={data} margin={{ left: 2, right: 10, top: 10, bottom: 4 }}>
+            <defs>
+              <linearGradient data-brand-signal-gradient="pitch-trace" id={traceGradientId} x1="0%" x2="100%">
+                <stop offset="0%" style={{ stopColor: VOCAL_CHART_COLOR.violet }} />
+                <stop offset="50%" style={{ stopColor: VOCAL_CHART_COLOR.blue }} />
+                <stop offset="100%" style={{ stopColor: VOCAL_CHART_COLOR.pink }} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="4 4" />
+            <XAxis
+              dataKey="timeSeconds"
+              tickFormatter={(value) => `${Number(value).toFixed(1)}s`}
+              tickLine={false}
+              type="number"
+            />
+            <YAxis
+              domain={[axis.low, axis.high]}
+              tickFormatter={(value) => midiToNoteName(Number(value))}
+              ticks={axisTicks(axis.low, axis.high, 5)}
+              width={36}
+            />
+            <ChartTooltip
+              content={
+                <ChartTooltipContent
+                  formatter={(value, _, item) => (
+                    <div className="grid min-w-36 grid-cols-2 gap-x-4">
+                      <span className="text-muted-foreground">시간</span>
+                      <span className="text-right font-mono">{Number(item.payload.timeSeconds).toFixed(2)}초</span>
+                      <span className="text-muted-foreground">음높이</span>
+                      <span className="text-right font-mono">
+                        {item.payload.note} · {Number(value).toFixed(1)}
+                      </span>
+                    </div>
+                  )}
+                  hideLabel
+                  hideIndicator
                 />
-                <YAxis
-                  domain={[axis.low, axis.high]}
-                  tickFormatter={(value) => midiToNoteName(Number(value))}
-                  ticks={axisTicks(axis.low, axis.high, 5)}
-                  width={36}
-                />
-                <ChartTooltip
-                  content={
-                    <ChartTooltipContent
-                      formatter={(value, _, item) => (
-                        <div className="grid min-w-36 grid-cols-2 gap-x-4">
-                          <span className="text-muted-foreground">시간</span>
-                          <span className="text-right font-mono">{Number(item.payload.timeSeconds).toFixed(2)}초</span>
-                          <span className="text-muted-foreground">음높이</span>
-                          <span className="text-right font-mono">
-                            {item.payload.note} · {Number(value).toFixed(1)}
-                          </span>
-                        </div>
-                      )}
-                      hideLabel
-                      hideIndicator
-                    />
-                  }
-                />
-                <Line
-                  connectNulls={false}
-                  dataKey="midi"
-                  dot={false}
-                  isAnimationActive={false}
-                  stroke={`url(#${traceGradientId})`}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2.5}
-                  type="linear"
-                />
-              </LineChart>
-            </ChartContainer>
-          </CardContent>
-        </CollapsibleContent>
-      </Card>
-    </Collapsible>
+              }
+            />
+            <Line
+              connectNulls={false}
+              dataKey="midi"
+              dot={false}
+              isAnimationActive={false}
+              stroke={`url(#${traceGradientId})`}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2.5}
+              type="linear"
+            />
+          </LineChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -312,7 +301,7 @@ export function VocalProfileResults({
       {showSummary ? <VocalProfileSummary profile={profile} /> : null}
       <section
         aria-label="음역과 음정 분포"
-        className="rounded-3xl bg-muted/15 p-4 sm:p-6 lg:p-7"
+        className="rounded-3xl bg-muted/55 p-4 sm:p-6 lg:p-7"
         data-vocal-profile-chapter="range"
       >
         <div className="grid gap-6 lg:grid-cols-[1.08fr_.92fr] lg:gap-8">
@@ -322,7 +311,7 @@ export function VocalProfileResults({
       </section>
       <section
         aria-label="분석 품질과 피치 추적"
-        className="rounded-3xl bg-muted/15 p-4 sm:p-6 lg:p-7"
+        className="rounded-3xl bg-muted/55 p-4 sm:p-6 lg:p-7"
         data-vocal-profile-chapter="quality"
       >
         <div className="grid gap-6 lg:grid-cols-[1.3fr_.9fr] lg:gap-8">
@@ -355,7 +344,7 @@ export function VocalProfileResults({
       {sourceAudioSrc ? (
         <section
           aria-label="분석된 대표 음역 구간"
-          className="rounded-3xl bg-muted/15 p-4 sm:p-6 lg:p-7"
+          className="rounded-3xl bg-muted/55 p-4 sm:p-6 lg:p-7"
           data-vocal-profile-chapter="reference-bands"
         >
           <Card

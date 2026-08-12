@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import type { CSSProperties } from "react";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, within } from "storybook/test";
 
 import { type VocalProfileResponse, VocalProfileResults } from "@/entities/vocal-profile";
 
@@ -115,6 +115,7 @@ export const RepresentativeAnalysis: Story = {
     const chapters = canvasElement.querySelectorAll<HTMLElement>("[data-vocal-profile-chapter]");
     await expect(chapters).toHaveLength(2);
     for (const chapter of chapters) {
+      await expect(chapter).toHaveClass("bg-muted/55");
       await expect(getComputedStyle(chapter).borderTopWidth).toBe("0px");
       await expect(getComputedStyle(chapter).borderRadius).not.toBe("0px");
       await expect(getComputedStyle(chapter).backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
@@ -124,10 +125,9 @@ export const RepresentativeAnalysis: Story = {
         Array.from(gradient.querySelectorAll("stop")).map((stop) => getComputedStyle(stop).stopColor),
       ).toEqual(["oklch(0.74 0.12 293)", "oklch(0.76 0.09 260)", "oklch(0.78 0.08 330)"]);
     }
-    const pitchTrace = canvas.getByRole("button", { name: /상세 피치 추적/ });
-    await expect(pitchTrace).toHaveAttribute("aria-expanded", "true");
-    await userEvent.click(pitchTrace);
-    await expect(pitchTrace).toHaveAttribute("aria-expanded", "false");
+    await expect(canvas.getByText("상세 피치 추적")).toBeVisible();
+    await expect(canvas.getByRole("img", { name: "시간에 따른 보컬 피치 추적 그래프" })).toBeVisible();
+    await expect(canvas.queryByRole("button", { name: /상세 피치 추적/ })).not.toBeInTheDocument();
   },
 };
 

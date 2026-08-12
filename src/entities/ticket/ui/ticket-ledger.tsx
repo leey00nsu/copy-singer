@@ -31,7 +31,7 @@ export function TicketLedger({ entries }: { entries: TicketEntryView[] }) {
   }
   return (
     <div
-      className="divide-y divide-border/70 overflow-hidden rounded-2xl bg-muted/15 px-3 sm:px-4"
+      className="divide-y divide-border/70 overflow-hidden rounded-2xl bg-muted/55 px-3 sm:px-4"
       data-ticket-ledger-surface
     >
       {entries.map((entry) => {

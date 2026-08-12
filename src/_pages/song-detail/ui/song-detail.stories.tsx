@@ -33,6 +33,7 @@ export const WithOriginalVideo: Story = {
     await expect(canvas.getByText("Song match")).toBeVisible();
     const vocalRangeChapter = canvasElement.querySelector<HTMLElement>("[data-song-analysis-chapter='vocal-range']");
     await expect(vocalRangeChapter).not.toBeNull();
+    await expect(vocalRangeChapter).toHaveClass("bg-muted/55");
     await expect(getComputedStyle(vocalRangeChapter as HTMLElement).borderTopWidth).toBe("0px");
     await expect(getComputedStyle(vocalRangeChapter as HTMLElement).backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
     await expect(canvas.queryByText(/Song match · #\d+/)).not.toBeInTheDocument();

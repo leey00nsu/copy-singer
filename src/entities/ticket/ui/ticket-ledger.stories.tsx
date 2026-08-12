@@ -60,6 +60,7 @@ export const GrantAndDebitHistory: Story = {
     await expect(creditRows).toHaveLength(2);
     await expect(debitRow).not.toBeNull();
     await expect(ledgerSurface).not.toBeNull();
+    await expect(ledgerSurface).toHaveClass("bg-muted/55");
     await expect(getComputedStyle(ledgerSurface as HTMLElement).borderTopWidth).toBe("0px");
     await expect(getComputedStyle(ledgerSurface as HTMLElement).backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
     await expect(within(debitRow as HTMLElement).getByText("-1")).toHaveClass("text-foreground");

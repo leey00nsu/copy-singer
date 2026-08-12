@@ -32,6 +32,7 @@ export const ResultReady: Story = {
     const songTitle = canvas.getByRole("heading", { name: "서른 즈음에" });
     await expect(status.compareDocumentPosition(songTitle) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     await expect(canvas.getByRole("heading", { name: "완성된 AI 믹스" })).toBeVisible();
+    await expect(canvas.queryByText("Result")).not.toBeInTheDocument();
     await expect(canvas.getByRole("link", { name: "사용한 보컬 프로필 메인 보컬 보기" })).toHaveAttribute(
       "href",
       "/vocal-profiles/30000000-0000-4000-8000-000000000012",

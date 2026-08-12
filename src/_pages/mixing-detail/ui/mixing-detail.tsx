@@ -244,10 +244,7 @@ export function MixingDetail({ initial }: { initial: MixingHistoryRow }) {
         <section aria-labelledby="mixing-result-title" className="py-8 sm:py-10 lg:py-12">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
-                Result
-              </p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight" id="mixing-result-title">
+              <h2 className="text-2xl font-semibold tracking-tight" id="mixing-result-title">
                 완성된 AI 믹스
               </h2>
             </div>
