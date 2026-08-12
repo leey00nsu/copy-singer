@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import type { CSSProperties } from "react";
 import { expect, userEvent, within } from "storybook/test";
 
 import { type VocalProfileResponse, VocalProfileResults } from "@/entities/vocal-profile";
@@ -56,6 +57,11 @@ const PROFILE: VocalProfileResponse = {
 };
 
 const NO_NETWORK_AUDIO = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=";
+const MISSING_CHART_TOKEN_STYLE = {
+  "--brand-chart-violet": "initial",
+  "--brand-chart-blue": "initial",
+  "--brand-chart-pink": "initial",
+} as CSSProperties;
 
 const meta = {
   title: "Entities/Vocal Profile/VocalProfileResults",
@@ -101,8 +107,8 @@ export const RepresentativeAnalysis: Story = {
     );
     for (const gradient of signalGradients) {
       await expect(
-        Array.from(gradient.querySelectorAll("stop")).map((stop) => stop.getAttribute("stop-color")),
-      ).toEqual(["var(--brand-chart-violet)", "var(--brand-chart-blue)", "var(--brand-chart-pink)"]);
+        Array.from(gradient.querySelectorAll("stop")).map((stop) => getComputedStyle(stop).stopColor),
+      ).toEqual(["oklch(0.68 0.17 293)", "oklch(0.7 0.13 260)", "oklch(0.72 0.12 330)"]);
     }
     const pitchTrace = canvas.getByRole("button", { name: /상세 피치 추적/ });
     await expect(pitchTrace).toHaveAttribute("aria-expanded", "true");
@@ -127,6 +133,28 @@ export const DarkBrandSignal: Story = {
         (stop) => getComputedStyle(stop).stopColor,
       ),
     ).toEqual(["oklch(0.76 0.13 293)", "oklch(0.77 0.1 250)", "oklch(0.78 0.1 330)"]);
+  },
+};
+
+export const MissingTokenFallback: Story = {
+  decorators: [
+    (Story) => (
+      <div className="bg-background p-6 text-foreground" style={MISSING_CHART_TOKEN_STYLE}>
+        <Story />
+      </div>
+    ),
+  ],
+  play: async ({ canvasElement }) => {
+    const rangeGradient = canvasElement.querySelector("[data-brand-signal-gradient='vocal-range']");
+    const swatch = canvasElement.querySelector<HTMLElement>("[data-range-legend-swatch='practical']");
+    await expect(rangeGradient).not.toBeNull();
+    await expect(swatch).not.toBeNull();
+    await expect(
+      Array.from((rangeGradient as SVGLinearGradientElement).querySelectorAll("stop")).map(
+        (stop) => getComputedStyle(stop).stopColor,
+      ),
+    ).toEqual(["oklch(0.68 0.17 293)", "oklch(0.7 0.13 260)", "oklch(0.72 0.12 330)"]);
+    await expect(getComputedStyle(swatch as HTMLElement).backgroundImage).not.toBe("none");
   },
 };
 

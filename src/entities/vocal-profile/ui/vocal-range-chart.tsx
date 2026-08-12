@@ -5,6 +5,7 @@ import { Bar, BarChart, CartesianGrid, Cell, ReferenceLine, XAxis, YAxis } from 
 
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/shared/ui/chart";
 
+import { VOCAL_CHART_COLOR } from "../lib/chart-brand";
 import { midiToNoteName } from "../model/pitch";
 import { midiAxis, rangeChartData, type VocalRangeMetrics } from "../model/visualization";
 
@@ -37,9 +38,9 @@ function VocalRangeChart({
       <BarChart accessibilityLayer data={data} layout="vertical" margin={{ left: 8, right: 18, top: 30, bottom: 8 }}>
         <defs>
           <linearGradient data-brand-signal-gradient="vocal-range" id={practicalGradientId} x1="0%" x2="100%">
-            <stop offset="0%" stopColor="var(--brand-chart-violet)" />
-            <stop offset="50%" stopColor="var(--brand-chart-blue)" />
-            <stop offset="100%" stopColor="var(--brand-chart-pink)" />
+            <stop offset="0%" style={{ stopColor: VOCAL_CHART_COLOR.violet }} />
+            <stop offset="50%" style={{ stopColor: VOCAL_CHART_COLOR.blue }} />
+            <stop offset="100%" style={{ stopColor: VOCAL_CHART_COLOR.pink }} />
           </linearGradient>
         </defs>
         <CartesianGrid horizontal={false} strokeDasharray="4 4" />

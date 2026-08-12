@@ -6,6 +6,7 @@ import { Bar, BarChart, CartesianGrid, Line, LineChart, ReferenceLine, XAxis, YA
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/shared/ui/chart";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/shared/ui/collapsible";
+import { VOCAL_CHART_COLOR, VOCAL_CHART_GRADIENT } from "../lib/chart-brand";
 import type { VocalProfileResponse } from "../model/contract";
 import { midiToNoteName } from "../model/pitch";
 import { referenceBandAvailability, referenceBandSegments } from "../model/reference-segments";
@@ -63,7 +64,11 @@ export function VocalRangeProfile({
             전체 관측 음역
           </span>
           <span className="flex items-center gap-2" data-range-legend="practical">
-            <i className="h-2 w-7 rounded-full" style={{ background: "var(--brand-gradient-chart)" }} />
+            <i
+              className="h-2 w-7 rounded-full"
+              data-range-legend-swatch="practical"
+              style={{ backgroundImage: VOCAL_CHART_GRADIENT }}
+            />
             실용 음역
           </span>
         </div>
@@ -126,9 +131,9 @@ function HistogramChart({
                 y1="100%"
                 y2="0%"
               >
-                <stop offset="0%" stopColor="var(--brand-chart-violet)" />
-                <stop offset="55%" stopColor="var(--brand-chart-blue)" />
-                <stop offset="100%" stopColor="var(--brand-chart-pink)" />
+                <stop offset="0%" style={{ stopColor: VOCAL_CHART_COLOR.violet }} />
+                <stop offset="55%" style={{ stopColor: VOCAL_CHART_COLOR.blue }} />
+                <stop offset="100%" style={{ stopColor: VOCAL_CHART_COLOR.pink }} />
               </linearGradient>
             </defs>
             <CartesianGrid vertical={false} strokeDasharray="4 4" />
@@ -216,9 +221,9 @@ function PitchTrace({ visualization }: { visualization: VocalProfileVisualizatio
               <LineChart accessibilityLayer data={data} margin={{ left: 2, right: 10, top: 10, bottom: 4 }}>
                 <defs>
                   <linearGradient data-brand-signal-gradient="pitch-trace" id={traceGradientId} x1="0%" x2="100%">
-                    <stop offset="0%" stopColor="var(--brand-chart-violet)" />
-                    <stop offset="50%" stopColor="var(--brand-chart-blue)" />
-                    <stop offset="100%" stopColor="var(--brand-chart-pink)" />
+                    <stop offset="0%" style={{ stopColor: VOCAL_CHART_COLOR.violet }} />
+                    <stop offset="50%" style={{ stopColor: VOCAL_CHART_COLOR.blue }} />
+                    <stop offset="100%" style={{ stopColor: VOCAL_CHART_COLOR.pink }} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="4 4" />
