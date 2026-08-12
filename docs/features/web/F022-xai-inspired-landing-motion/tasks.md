@@ -457,7 +457,7 @@
     - [x] Palette·Library·Mixing Storybook에서 크기별 질감을 검증한다.
     - [x] TypeScript, lint, architecture와 desktop/mobile browser QA를 통과한다.
 
-- [DOING][PRD-FR-047] T-F022-xai-inspired-landing-motion-38 Aurora preset 기반 restrained artwork palette
+- [DONE][PRD-FR-047] T-F022-xai-inspired-landing-motion-38 Aurora preset 기반 restrained artwork palette
   - Date: 2026-08-12
   - Acceptance:
     - Artwork 하나에는 Aurora Gradient Generator의 `Northern Sky`, `Ocean Blue`, `Forest`, `Berry`처럼 인접한 hue family만 사용하고 원거리 보색이 동시에 섞이지 않는다.
@@ -473,8 +473,8 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -522,4 +522,4 @@
 | Aurora grain artwork QA | `2026-08-12` | 통과 — fine soft-light와 coarse multiply grain, soft vignette를 1440px palette와 44px Library thumbnail에서 확인; color mapping·radius·overflow 유지 |
 | Restrained Aurora preset QA | `2026-08-12` | 통과 — 실제 preset의 recursive·grain 25·gray 200 값을 확인하고 Berry/Forest/Ocean/Northern analogous family로 재구성; desktop/mobile Palette와 44px Library에서 원거리 hue 혼합·overflow 0 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T10:02:45.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T10:03:57.000Z -->
