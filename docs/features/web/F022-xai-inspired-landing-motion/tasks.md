@@ -337,12 +337,21 @@
     - [x] 1.5초 gradient animation과 reduced-motion fallback을 구현했다.
     - [x] Storybook과 browser에서 headline 문구·animation duration·overflow를 검증했다.
 
+- [DOING][PRD-FR-048] T-F022-xai-inspired-landing-motion-27 Gradient Text seamless loop
+  - Date: 2026-08-12
+  - Acceptance:
+    - `내 목소리` gradient가 반복 경계에서 100%→0%로 순간 이동하지 않고 0%→100%→0%로 부드럽게 왕복한다.
+    - 1.5초 duration, 기존 word reveal과 reduced-motion 정적 gradient를 유지한다.
+  - Checklist:
+    - [ ] Gradient keyframe의 시작·종료 frame을 동일하게 만든다.
+    - [ ] Storybook과 browser에서 duration·iteration·중간/종료 position을 검증한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록

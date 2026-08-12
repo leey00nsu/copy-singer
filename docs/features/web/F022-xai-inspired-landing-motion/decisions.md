@@ -362,3 +362,10 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**: `src/_pages/home/ui/landing-hero.tsx`, `src/_pages/home/ui/landing-hero.module.css`, `src/_pages/home/ui/landing-page.stories.tsx`
 - **Test/Log**: Landing Storybook 4/4, TypeScript, ESLint와 desktop/mobile browser QA 통과
 - **Consequences**: Accessible H1은 기존 단일 `aria-label`을 유지해 animation markup이 읽기 순서에 노출되지 않는다. Gradient animation은 word entry 이후에도 지속되지만 reduced-motion에서는 완전히 정지한다.
+
+## D023: Gradient Text ping-pong loop (2026-08-12)
+
+- **Context**: 0%→100% 단방향 background-position이 iteration 경계에서 즉시 0%로 reset되어 gradient가 중간에 끊겼다가 다시 재생되는 것처럼 보였다.
+- **Constraints**: 사용자가 지정한 1.5초 duration과 reduced-motion fallback을 유지해야 한다.
+- **Decision**: Keyframe을 0%→100%→0% 왕복으로 닫아 첫 frame과 마지막 frame을 동일하게 만든다.
+- **Rationale**: 별도 runtime이나 복제 gradient tile 없이 CSS keyframe만으로 iteration seam을 제거하고 기존 component 구조를 보존한다.
