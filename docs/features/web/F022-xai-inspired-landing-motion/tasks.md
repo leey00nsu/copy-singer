@@ -551,12 +551,24 @@
     - [x] light/dark chart stop과 fallback을 같은 값으로 조정한다.
     - [x] Storybook 5/5, TypeScript와 browser visual QA를 통과한다.
 
+- [TODO][PRD-FR-047] T-F022-xai-inspired-landing-motion-47 Semantic border와 티켓 변동 surface 정합성 정리
+  - Date: 2026-08-12
+  - Acceptance:
+    - 보컬 프로필의 장식성 상·하단 hairline과 bespoke empty/error border를 제거하되 차트 좌표선, form control, audio player와 table/list row의 구조적 경계는 유지한다.
+    - 티켓 변경 내역은 외곽 hairline을 제거하고 지급·환불은 success, 정상 차감은 neutral semantic tone으로 구분하며 브랜드 gradient를 사용하지 않는다.
+    - 추천·믹싱·알림·모바일 action/navigation surface의 불필요한 border-y를 동일 semantic surface 규칙으로 정리하고 desktop/mobile에서 정보 구조와 focus affordance를 유지한다.
+  - Checklist:
+    - [ ] 보컬 프로필 결과·요약·대표 음역 상태 surface를 정리하고 shared StatusNotice 또는 quiet skeleton을 재사용한다.
+    - [ ] TicketLedger의 outer border와 증감 icon/number tone을 정리한다.
+    - [ ] FunnelActionBar, 추천·곡 상세, 믹싱 상세, 알림과 모바일 메뉴의 장식성 border-y를 선별 정리한다.
+    - [ ] 관련 Storybook, TypeScript, lint와 desktop/mobile visual QA를 통과한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
