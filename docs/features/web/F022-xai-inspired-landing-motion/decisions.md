@@ -336,3 +336,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**: `src/shared/ui/voice-orb/voice-orb.tsx`
 - **Test/Log**: Profile input·Creation Funnel·Orb Storybook 14/14, TypeScript, ESLint와 확대/실사용 browser screenshot QA 통과
 - **Consequences**: 별도 color threshold가 없어 shader의 원래 hue와 highlight가 보존된다. Radial alpha mask, idle grayscale CSS filter와 fallback 경로는 유지된다.
+
+## D021: Rail-scoped chrome separators and scroll glass (2026-08-12)
+
+- **Context**: 사용자가 Header/Footer border를 page content 폭으로 제한하고, Header는 top에서 border 없이 시작해 scroll 후에만 border가 나타나며 뒤 content가 희미하게 비치는 blur surface를 원했다.
+- **Constraints**: Landing과 authenticated route가 같은 chrome을 사용하고 mobile에서도 separator width가 viewport 밖으로 넘치지 않아야 한다. Scroll listener는 상태 변화 시에만 render하고 cleanup해야 한다.
+- **Decision**: 구현·브라우저 검증 후 scroll threshold, background opacity와 separator placement를 확정한다.
+- **Trace**:
+  - **DOING 시작 시점**: 현재 Header/Footer outer element에 full-width `border-b`/`border-t`가 있고 Header는 scroll 여부와 무관하게 `bg-background/96 backdrop-blur-xl`을 사용한다.

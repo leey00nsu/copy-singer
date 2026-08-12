@@ -314,12 +314,24 @@
     - [x] Canvas가 기대하는 unpremultiplied RGB와 radial alpha를 출력해 이중 premultiplication을 제거했다.
     - [x] 확대 screenshot과 기본 크기 Storybook에서 contour 제거를 검증했다.
 
+- [DOING][PRD-FR-047] T-F022-xai-inspired-landing-motion-25 Header/Footer rail border와 scroll glass
+  - Date: 2026-08-12
+  - Acceptance:
+    - Header와 Footer의 separator는 viewport 전체가 아니라 공통 최대 content rail 폭에서만 표시된다.
+    - Header는 page top에서 border가 없고, scroll threshold를 넘으면 content rail border가 나타난다.
+    - Header background는 content가 아주 희미하게 비치는 neutral translucent fill과 backdrop blur를 사용한다.
+    - Landing과 authenticated product route가 같은 ProductHeader/ProductFooter 계약을 공유한다.
+  - Checklist:
+    - [ ] ProductHeader에 scroll state와 rail-scoped separator를 구현한다.
+    - [ ] ProductFooter separator를 rail 내부로 이동한다.
+    - [ ] Storybook과 browser에서 top/scrolled, desktop/mobile과 footer 폭을 검증한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
