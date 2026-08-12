@@ -187,4 +187,4 @@
 | Browser responsive QA | `2026-08-12` | 통과 — 1280px full-page에서 x.ai형 hero·3+2 bento·editorial demo·metric·Voice Notes·2-up CTA 직접 검토, horizontal overflow 0, h1 1개, Orb DPR 1.5 및 fallback 없음; Storybook 390px mobile/reduced-motion/WebGL fallback 보완 |
 | Grainient QA | `2026-08-12` | 통과 — Voice Notes 카드 대비 직접 검토, Grainient canvas 1개·전체 canvas 2개(Orb 포함), 제거 문구 0개와 horizontal overflow 0 확인; 관련 Storybook 8/8 및 WebGL fallback 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T02:56:30.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T02:58:30.000Z -->
