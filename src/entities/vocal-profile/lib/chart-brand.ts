@@ -1,7 +1,7 @@
 const VOCAL_CHART_FALLBACK = {
-  violet: "oklch(0.68 0.17 293)",
-  blue: "oklch(0.7 0.13 260)",
-  pink: "oklch(0.72 0.12 330)",
+  violet: "oklch(0.74 0.12 293)",
+  blue: "oklch(0.76 0.09 260)",
+  pink: "oklch(0.78 0.08 330)",
 } as const;
 
 const VOCAL_CHART_COLOR = {

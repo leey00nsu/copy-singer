@@ -108,7 +108,7 @@ export const RepresentativeAnalysis: Story = {
     for (const gradient of signalGradients) {
       await expect(
         Array.from(gradient.querySelectorAll("stop")).map((stop) => getComputedStyle(stop).stopColor),
-      ).toEqual(["oklch(0.68 0.17 293)", "oklch(0.7 0.13 260)", "oklch(0.72 0.12 330)"]);
+      ).toEqual(["oklch(0.74 0.12 293)", "oklch(0.76 0.09 260)", "oklch(0.78 0.08 330)"]);
     }
     const pitchTrace = canvas.getByRole("button", { name: /상세 피치 추적/ });
     await expect(pitchTrace).toHaveAttribute("aria-expanded", "true");
@@ -132,7 +132,7 @@ export const DarkBrandSignal: Story = {
       Array.from((rangeGradient as SVGLinearGradientElement).querySelectorAll("stop")).map(
         (stop) => getComputedStyle(stop).stopColor,
       ),
-    ).toEqual(["oklch(0.76 0.13 293)", "oklch(0.77 0.1 250)", "oklch(0.78 0.1 330)"]);
+    ).toEqual(["oklch(0.8 0.1 293)", "oklch(0.81 0.08 250)", "oklch(0.82 0.08 330)"]);
   },
 };
 
@@ -153,7 +153,7 @@ export const MissingTokenFallback: Story = {
       Array.from((rangeGradient as SVGLinearGradientElement).querySelectorAll("stop")).map(
         (stop) => getComputedStyle(stop).stopColor,
       ),
-    ).toEqual(["oklch(0.68 0.17 293)", "oklch(0.7 0.13 260)", "oklch(0.72 0.12 330)"]);
+    ).toEqual(["oklch(0.74 0.12 293)", "oklch(0.76 0.09 260)", "oklch(0.78 0.08 330)"]);
     await expect(getComputedStyle(swatch as HTMLElement).backgroundImage).not.toBe("none");
   },
 };
