@@ -2,11 +2,10 @@ import { Check, Sparkles } from "lucide-react";
 import Image from "next/image";
 
 import { BentoGrid, BentoGridItem } from "@/shared/ui/bento-grid";
-import { CountUpText } from "@/shared/ui/count-up-text";
 import { RevealContent } from "@/shared/ui/reveal-content";
 import { VoiceOrb } from "@/shared/ui/voice-orb";
 
-const recommendedKeys = [1, -1, 0] as const;
+import { RecommendedKeyVisualizer } from "./recommended-key-visualizer";
 
 function AnalysisSurface() {
   return (
@@ -54,17 +53,7 @@ function KeySurface() {
   return (
     <div className="relative flex h-full min-h-44 w-full items-center justify-center bg-neutral-950 text-white">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_115%,oklch(0.7_0.2_294/0.32),transparent_52%)]" />
-      <div className="relative text-center">
-        <p className="text-[9px] tracking-[0.18em] text-white/45 uppercase">Recommended key</p>
-        <CountUpText
-          ariaLabel="추천 키 예시 마이너스 2"
-          className="mt-2 text-5xl font-light tracking-[-0.06em]"
-          cycleValues={recommendedKeys}
-          duration={900}
-          to={-2}
-        />
-        <p className="mt-2 text-[10px] text-white/55">더 편안한 중심 음역으로</p>
-      </div>
+      <RecommendedKeyVisualizer />
     </div>
   );
 }

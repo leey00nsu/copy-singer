@@ -2,7 +2,6 @@ import { ArrowRight, Library, Mic2, Music2, Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { CountUpText } from "@/shared/ui/count-up-text";
 import { RevealContent } from "@/shared/ui/reveal-content";
 import { ProductFooter, ProductHeader, type ProductUser } from "@/widgets/product-shell";
 
@@ -133,9 +132,7 @@ function LandingPage({ admin = false, user = null }: { admin?: boolean; user?: P
                 delay={index * 70}
                 key={label}
               >
-                <p className="text-5xl font-light tracking-[-0.055em] sm:text-6xl">
-                  <CountUpText ariaLabel={`${value}${suffix}`} delay={index * 90} suffix={suffix} to={value} />
-                </p>
+                <p className="text-5xl font-light tracking-[-0.055em] sm:text-6xl">{`${value}${suffix}`}</p>
                 <p className="mt-4 text-[10px] text-muted-foreground">{label}</p>
               </RevealContent>
             ))}

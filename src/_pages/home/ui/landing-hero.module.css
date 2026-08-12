@@ -2,12 +2,16 @@
   animation: landing-entry 640ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.heroCopy > :nth-child(4) {
-  animation-delay: 1.55s;
+.heroDescription {
+  animation-delay: 760ms;
 }
 
-.heroCopy > :nth-child(5) {
-  animation-delay: 1.66s;
+.heroActions {
+  animation-delay: 940ms;
+}
+
+.heroHint {
+  animation-delay: 1.04s;
 }
 
 .wordLine {

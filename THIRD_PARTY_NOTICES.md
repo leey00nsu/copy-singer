@@ -22,7 +22,7 @@ The software is provided "AS IS", without warranty of any kind, express or impli
 
 ## React Bits Count Up
 
-`src/shared/ui/count-up-text` is adapted from the React Bits Count Up component.
+`src/_pages/home/ui/recommended-key-visualizer.tsx` adapts the viewport-triggered number transition from the React Bits Count Up component.
 
 - Copyright (c) 2026 David Haz
 - Source: https://github.com/DavidHDev/react-bits/tree/main/src/ts-tailwind/TextAnimations/CountUp

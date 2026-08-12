@@ -50,13 +50,15 @@ function LandingHero({ primaryLabel, profileHref }: LandingHeroProps) {
               </span>
             </span>
           </h1>
-          <p className="mx-auto mt-6 max-w-[38rem] text-sm leading-7 text-muted-foreground sm:text-[15px]">
-            <StaggeredWords
-              startIndex={8}
-              text="한 소절의 목소리에서 음역과 안정성을 읽고, 부르기 좋은 노래와 키를 추천합니다. 선택한 곡은 AI 믹싱으로 자연스럽게 이어집니다."
-            />
+          <p
+            className={`${styles.heroMeta} ${styles.heroDescription} mx-auto mt-6 max-w-[38rem] text-sm leading-7 text-muted-foreground sm:text-[15px]`}
+          >
+            한 소절의 목소리에서 음역과 안정성을 읽고, 부르기 좋은 노래와 키를 추천합니다. 선택한 곡은 AI 믹싱으로
+            자연스럽게 이어집니다.
           </p>
-          <div className={`${styles.heroMeta} mt-7 flex flex-wrap items-center justify-center gap-2.5`}>
+          <div
+            className={`${styles.heroMeta} ${styles.heroActions} mt-7 flex flex-wrap items-center justify-center gap-2.5`}
+          >
             <Button
               nativeButton={false}
               render={<Link aria-label={`${primaryLabel}: 목소리 분석 시작`} href={profileHref} />}
@@ -68,7 +70,7 @@ function LandingHero({ primaryLabel, profileHref }: LandingHeroProps) {
               제품 둘러보기
             </Button>
           </div>
-          <p className={`${styles.heroMeta} mt-4 text-[11px] text-muted-foreground`}>
+          <p className={`${styles.heroMeta} ${styles.heroHint} mt-4 text-[11px] text-muted-foreground`}>
             5초 이상 녹음하거나 파일을 올리면 바로 시작할 수 있어요.
           </p>
         </div>
