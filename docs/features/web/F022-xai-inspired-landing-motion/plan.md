@@ -21,7 +21,7 @@
 | ---- | ---- | ---- |
 | UI runtime | React 19.2 + Next.js 16.3 Server Components | 기존 `LandingPage`의 정적 HTML, 인증별 href와 공통 shell을 유지하고 animation 때문에 랜딩 전체를 client boundary로 만들지 않는다. |
 | Styling | Tailwind CSS 4 + CSS Module | 기존 semantic token을 재사용하고 bento/editorial layout과 정적 fallback을 route 가까이에 캡슐화한다. |
-| Motion | Aceternity source primitives + React Bits source components | Bento Grid·Glowing Effect·Animated Content를 역할별 client island로 통합하고, React Bits Orb는 `ogl` 기반 공통 visual로 사용한다. 미지원 환경에서는 콘텐츠를 숨기지 않고 정적으로 표시한다. |
+| Motion | `motion/react` + Aceternity/React Bits source components | 공식 Gradient Text의 frame-driven yoyo와 Hero/Reveal viewport motion을 작은 client island로 통합한다. React Bits Orb는 `ogl` 기반 공통 visual로 유지하고 미지원 환경에서는 콘텐츠를 숨기지 않는다. |
 | Orb runtime | `ogl` + React client island | 공식 React Bits Orb shader를 필요한 범위에만 소유하고 DPR·RAF·visibility·WebGL cleanup을 보강한다. |
 | Icons/actions | Lucide React + shared `Button` | 현재 접근 가능한 action과 일관된 제품 UI를 유지한다. |
 | Component verification | Storybook 10 + Vitest browser + axe addon | signed-out/in, mobile, reduced-motion과 CTA 회귀를 독립적으로 검증한다. |
@@ -60,11 +60,11 @@ VocalProfileRecorder
 
 ### Motion 계층
 
-1. **Hero entry**: headline은 접근 가능한 원문과 `aria-hidden` visual word span으로 분리해 CSS stagger를 적용하고, 설명과 action은 opacity 0인 하나의 block이 각 delay에 맞춰 아래에서 위로 등장한다. bento는 카드별 stagger 없이 하나의 wrapper가 opacity 0에서 1로 천천히 한 번 등장한다.
+1. **Hero entry**: headline은 접근 가능한 원문과 `aria-hidden` visual word span으로 분리해 Motion stagger를 적용하고, 설명과 action은 opacity 0인 하나의 block이 각 delay에 맞춰 아래에서 위로 등장한다. `내 목소리`는 공식 React Bits Gradient Text source의 하나의 연속 gradient field와 `animationSpeed=1.5`, yoyo 왕복을 사용한다. bento는 카드별 stagger 없이 하나의 wrapper가 opacity 0에서 1로 천천히 한 번 등장한다.
 2. **Bento interaction**: Aceternity Bento Grid와 Glowing Effect source를 Copy Singer token으로 조정하고 pointer hover와 keyboard focus에 같은 경계 강조를 제공한다.
 3. **Voice Orb**: 분석 bento card와 실제 active `ProcessHero`에 공통 Orb를 사용한다. `hue=294`, `rotateOnHover=false`, `hoverIntensity=0`을 고정하고 viewport/visibility/reduced-motion에 따라 RAF를 정지한다.
    Profile recorder는 이를 감싼 `VoiceSignalCore`를 사용한다. idle/requesting은 processing보다 느린 grayscale shader를 유지하고 recording부터 color로 전환한다. Recording은 MediaStream analyser의 RMS·peak를 45ms 간격으로 smoothing해 `--signal-level` CSS 변수만 갱신하고 scale·glow에 명확히 반영한다. Core surface와 Orb alpha 밖은 transparent·borderless이며, reduced-motion·WebGL 실패에서는 정적 poster로 대체한다. React state는 고주파 신호에 사용하지 않으며 unmount/recording 종료에서 RAF, source, analyser와 AudioContext를 정리한다.
-4. **Editorial story**: desktop에서 2열 제품 demo를 사용하고 mobile에서는 sticky 없이 순서가 명확한 stacked layout을 사용한다. 하단 reveal은 `RevealContent`의 section·group·stagger·line·fade variant를 공통 easing으로 묶고, heading→단계, hairline→정적 metric, heading→Voice Notes card, final CTA 단일 fade 순서를 CSS child delay로 제어한다.
+4. **Editorial story**: desktop에서 2열 제품 demo를 사용하고 mobile에서는 sticky 없이 순서가 명확한 stacked layout을 사용한다. 하단 reveal은 `RevealContent`의 section·group·stagger·line·fade variant를 Motion viewport·selector animation과 공통 easing으로 묶고, heading→단계, hairline→정적 metric, heading→Voice Notes card, final CTA 단일 fade 순서를 제어한다.
 5. **Sample Vocal Range Profile**: 실제 `VocalRangeProfile`에서 range chart를 `VocalRangeChart` client island로 분리하고 실제 분석 결과와 랜딩이 같은 Recharts 축·range·median 규칙을 사용한다. 랜딩은 저장·API 호출 없는 직렬화 가능한 고정 profile만 전달하고 별도 sample header 없이 chart만 표시하며 metric band는 정적으로 유지한다.
 6. **Reduced motion/fallback**: word/bento reveal을 제거하고 Orb는 정지 또는 CSS poster fallback으로 전환한다. Vocal Range chart와 모든 텍스트/action은 animation 없이 그대로 남긴다.
 7. **Border와 status hierarchy**: Page/section의 장식 hairline은 whitespace·quiet fill로 대체하고, form control·table/list row·focus·overlay 경계는 보존한다. Card형 status/alert는 shared `StatusNotice`에서 icon·copy 중앙 정렬과 tone을 소유한다.
@@ -82,7 +82,7 @@ VocalProfileRecorder
 - Aceternity UI의 Bento Grid·Glowing Effect와 restrained scroll reveal은 source component로 가져와 프로젝트 semantic token과 FSD 경계에 맞게 소유한다.
 - React Bits의 Orb와 Animated Content를 source component로 가져와 client boundary를 해당 visual/reveal로 제한한다.
 - 외부 demo의 global gradient, magnetic control, custom cursor, scroll-jacking과 glass surface는 가져오지 않는다. WebGL은 Orb에만 허용한다.
-- React Bits 라이선스 고지를 보존하고 `ogl`만 runtime dependency로 추가한다. motion library가 추가로 필요하면 먼저 기존 CSS/Observer 구현과 비용을 비교해 decisions에 기록한다.
+- React Bits 라이선스 고지를 보존하고 `ogl`과 `motion`을 runtime dependency로 사용한다. Motion은 공식 Gradient Text, Hero entry와 공통 RevealContent에만 적용하고 Orb/audio RAF와 단순 hover CSS에는 확산하지 않는다.
 
 ---
 

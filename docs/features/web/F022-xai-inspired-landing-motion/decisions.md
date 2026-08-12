@@ -375,3 +375,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**: `src/_pages/home/ui/landing-hero.module.css`, `src/_pages/home/ui/landing-page.stories.tsx`
 - **Test/Log**: Landing Storybook 4/4, Biome, TypeScript, ESLint 통과
 - **Consequences**: 1.5초는 한 방향 이동 시간이 아니라 완전한 왕복 주기가 되며, iteration 경계의 순간 이동은 사라진다. Reduced-motion에서는 기존 정적 50% gradient를 유지한다.
+
+## D024: Official React Bits Gradient Text and scoped Motion runtime (2026-08-12)
+
+- **Context**: 사용자가 구현 승인 대신 변경 요청 `B`를 선택해 CSS로 모사한 Gradient Text를 공식 React Bits source로 교체하고, `motion` 설치를 계기로 기존 수동 motion 구현의 최적화 가능 범위를 함께 조사하도록 요청했다.
+- **Constraints**: Landing 전체를 불필요하게 client boundary로 확장하지 않고, accessible H1·word reveal·one-shot viewport reveal·reduced-motion·no-JS 정적 콘텐츠를 유지해야 한다.
+- **Options**: 기존 CSS 유지 / Gradient Text만 Motion으로 교체 / Gradient Text와 수동 Hero·Reveal primitive를 Motion으로 통합
+- **Decision**: 공식 Gradient Text의 `useAnimationFrame`, MotionValue와 yoyo semantics를 shared component로 소유하고, Hero entry와 공통 RevealContent까지 `motion/react`로 통합한다. Orb shader RAF와 microphone analyser RAF는 각각 WebGL/audio sampling 책임이므로 유지하며 album stack·image hover 같은 단순 interaction은 CSS에 남긴다.
+- **Rationale**: 공식 효과의 속도·연속 gradient field를 재현하면서, Motion이 이미 로드되는 Landing에서 중복 observer/state/keyframe 코드를 줄일 수 있다. 반대로 고주파 render loop와 단순 CSS hover까지 추상화하면 성능·복잡도 이득이 없다.

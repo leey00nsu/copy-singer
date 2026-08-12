@@ -346,12 +346,34 @@
     - [x] Gradient keyframe의 시작·종료 frame을 동일하게 만들었다.
     - [x] Storybook browser에서 duration·iteration·중간/종료 position을 검증했다.
 
+- [DOING][PRD-FR-048] T-F022-xai-inspired-landing-motion-28 공식 React Bits Gradient Text 통합
+  - Date: 2026-08-12
+  - Acceptance:
+    - `motion`을 설치하고 공식 React Bits `GradientText` source의 frame-driven yoyo 동작을 shared client component로 통합한다.
+    - `내 목소리` 전체가 하나의 연속 brand gradient를 공유하고 `animationSpeed=1.5`는 편도 1.5초·왕복 3초로 동작한다.
+    - 기존 단어 reveal, 단일 accessible H1과 reduced-motion 정적 fallback을 유지한다.
+  - Checklist:
+    - [ ] `motion` dependency와 source attribution을 추가한다.
+    - [ ] Gradient Text를 shared component로 만들고 Hero에 연결한다.
+    - [ ] Storybook에서 단일 gradient field, yoyo timing과 reduced-motion을 검증한다.
+
+- [TODO][PRD-FR-048] T-F022-xai-inspired-landing-motion-29 Landing Motion primitive 최적화
+  - Date: 2026-08-12
+  - Acceptance:
+    - Hero의 수동 entry keyframe과 공통 RevealContent의 직접 IntersectionObserver/state/CSS transition을 Motion primitive로 교체한다.
+    - section·stagger·line·fade 역할, one-shot viewport 진입, reduced-motion, no-JS content visibility와 기존 문서 순서를 유지한다.
+    - Orb WebGL/audio RAF와 단순 hover CSS는 Motion으로 옮기지 않고 책임 경계를 문서화한다.
+  - Checklist:
+    - [ ] Hero word/copy/action entry를 Motion variants로 통합한다.
+    - [ ] RevealContent를 Motion viewport/selector animation으로 통합한다.
+    - [ ] Landing Storybook, architecture, build와 responsive browser 회귀를 검증한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
