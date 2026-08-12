@@ -52,3 +52,19 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Commit**: `817aa52` (`feat(F022-xai-inspired-landing-motion): waveform glow와 reveal motion 구현`)
   - **Test/Log**: pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx 통과 (2/2)
 - **Consequences**: 지원하지 않는 browser에서는 section reveal이 생략되지만 정보와 action은 동일하게 유지된다.
+
+## D003: 단일 DOM 기반 반응형 scroll story (2026-08-12)
+
+- **Context**: Desktop에서 제품 narrative를 강화하면서 mobile과 animation 미지원 환경에서 같은 내용을 유지해야 한다.
+- **Constraints**: Scroll-jacking과 horizontal carousel은 금지하며 320px부터 자연스러운 문서 흐름과 heading 순서를 보장해야 한다.
+- **Options**: Desktop/mobile 별도 markup; JavaScript active-step state; 단일 semantic list와 CSS sticky/reveal
+- **Decision**: 하나의 ordered list를 사용하고 desktop에서만 설명 header를 sticky로 만들며 mobile에서는 일반 stacked layout으로 해제한다.
+- **Rationale**: 중복 콘텐츠와 client state 없이 DOM 순서, 접근성, mobile fallback과 제품 단계의 정직성을 함께 유지한다.
+- **Trace**:
+  - **At DOING start**: Recorded by `decision add` when the decision was created.
+  - **Before DONE**: Update this line when the related task is completed.
+  - **Post-merge check**: Update this line after merge when applicable.
+- **Evidence**:
+  - **Test/Log**: pnpm run typecheck 통과
+  - **Test/Log**: pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx 통과 (2/2)
+- **Consequences**: Desktop active step을 별도 상태로 강조하지 않지만 세 패널의 위치와 순서가 narrative를 전달한다.

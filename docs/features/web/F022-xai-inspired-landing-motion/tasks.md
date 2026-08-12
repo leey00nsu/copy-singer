@@ -81,15 +81,15 @@
     - [x] entry와 view reveal은 작은 opacity/translate 변화로 한 번만 실행되게 했다.
     - [x] dotted glow는 정적으로 유지하고 지속 animation은 첫 Hero의 waveform/ripple로 제한했다.
 
-- [TODO][PRD-FR-046] T-F022-xai-inspired-landing-motion-03 3단계 scroll story와 반응형 fallback 완성
+- [DONE][PRD-FR-046] T-F022-xai-inspired-landing-motion-03 3단계 scroll story와 반응형 fallback 완성
   - Date: 2026-08-12
   - Acceptance:
     - Desktop에서 분석, 추천, 선택형 AI 믹싱이 sticky scroll narrative로 실제 순서대로 연결된다.
     - Mobile 320px 이상에서는 sticky나 scroll-jacking 없이 단일 열로 표시되고 horizontal overflow가 없다.
   - Checklist:
-    - [ ] 세 단계 preview에 현재 제품 계약에 존재하는 정보만 사용한다.
-    - [ ] 실제 action과 비상호작용 preview를 의미와 스타일에서 구분한다.
-    - [ ] 마지막 CTA, trust 근거와 footer까지 자연스러운 문서 순서를 확인한다.
+    - [x] 세 단계 preview에 현재 제품 계약에 존재하는 정보만 사용했다.
+    - [x] 실제 action은 Hero의 profile Link로 유지하고 story preview는 비상호작용 presentation으로 구분했다.
+    - [x] scroll story 뒤에 trust 근거, 마지막 CTA와 footer가 이어지는 문서 순서를 확인했다.
 
 - [TODO][PRD-FR-051] T-F022-xai-inspired-landing-motion-04 접근성·reduced-motion·Storybook 회귀 검증
   - Date: 2026-08-12
@@ -128,5 +128,6 @@
 | --- | --- | --- |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — motion 적용 후 signed-out/in CTA, waveform action, Admin/UserMenu와 footer 회귀 2/2 |
 | `pnpm exec biome check src/_pages/home/ui/landing-page.tsx src/_pages/home/ui/landing-hero.tsx src/_pages/home/ui/landing-hero.module.css` | `2026-08-12` | 통과 — 3개 landing 파일 format/lint 확인 |
+| `pnpm run typecheck` | `2026-08-12` | 통과 — 신규 landing story component 포함 TypeScript 오류 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T01:44:15.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T01:47:08.000Z -->
