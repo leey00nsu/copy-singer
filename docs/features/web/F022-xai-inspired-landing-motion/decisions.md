@@ -187,3 +187,13 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Source**: `https://github.com/DavidHDev/react-bits/blob/main/src/ts-tailwind/TextAnimations/CountUp/CountUp.tsx`
 - **Test/Log**: landing Storybook 4/4, Biome, TypeScript, ESLint, architecture boundary와 Next.js 16.3 production build 통과
 - **Consequences**: `CountUpText`는 숫자 애니메이션의 공통 public API가 되고 `RevealContent`는 기존 기본값을 보존하면서 시작 opacity·거리·duration을 선택적으로 받을 수 있다. 추천 키 순환은 예시 visual이며 접근 가능한 텍스트는 안정적인 `추천 키 예시 마이너스 2`로 유지한다.
+
+## D011: Recommended key의 원본 기준 visualizer와 metric motion 제거 (2026-08-12)
+
+- **Context**: 사용자가 Hero 설명의 단어별 reveal과 metric Count Up을 제거하고, Recommended key 숫자 변화가 원본 대비 어떤 의미인지 waveform 형태의 기준점·delta 색으로 설명하도록 요청했다.
+- **Constraints**: 첨부 visual의 단순한 rounded bar rhythm을 참고하되 기존에 제거한 장식 waveform을 재도입하지 않고, 색상만으로 상승·하강을 구분하지 않으며 reduced-motion과 offscreen pause를 유지해야 한다.
+- **Options**: 숫자와 색만 유지 / pitch chart 추가 / 원본 중앙 bar와 delta 구간을 결합한 landing 전용 key scale visualizer
+- **Decision**: 구현 및 검증 후 확정한다. 초기 방향은 중앙 원본 bar를 고정하고 delta 구간만 하강은 blue, 상승은 violet로 표시하며 `N키 낮춤/높임` 문구를 동기화하는 landing 전용 client island다.
+- **Rationale**: 구현 및 검증 후 확정한다.
+- **Trace**:
+  - **DOING 시작 시점**: 사용자 첨부 이미지는 21개의 rounded bar 중 중앙 기준 bar 하나를 진하게 표시한다. 이를 단순 waveform 장식이 아니라 원본 0과 delta 방향을 읽는 scale로 재해석하고, metric은 Server Component 정적 문자열로 복원한다.
