@@ -58,6 +58,7 @@
 - [ ] Bell 메뉴는 최신 알림을 제공하며 메뉴를 여는 것만으로 읽음 처리하지 않는다.
 - [ ] 알림 클릭은 해당 사용자 알림만 읽음 처리한 뒤 내부 경로로 이동하고 `모두 읽음`을 제공한다.
 - [ ] `/notifications`는 최신순 페이지네이션, loading·empty·error 상태와 읽음 구분을 제공한다.
+- [ ] `/notifications`는 라이브러리·계정 등 인증 제품 페이지와 같은 72rem content rail과 responsive gutter를 사용한다.
 - [ ] 로그인하지 않은 header에는 Bell을 표시하지 않는다.
 
 ### US-4: 계정 메뉴에서 티켓 잔액 확인

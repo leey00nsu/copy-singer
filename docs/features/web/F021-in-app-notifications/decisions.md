@@ -68,3 +68,16 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**:
   - **Test/Log**: `pnpm exec tsx --test tests/api-contracts.test.ts tests/client-server-state-query.test.ts`, `node --conditions react-server --import tsx --test tests/notification-routes.integration.ts`, `pnpm run test:storybook --run src/widgets/product-shell/ui/product-shell.stories.tsx`, `pnpm run build`
 - **Consequences**: 메뉴 첫 open에 짧은 loading 상태가 보일 수 있으며 조회 실패 시 메뉴의 navigation과 logout은 계속 사용할 수 있어야 한다.
+
+## D004: 알림 페이지 제품 공통 content rail (2026-08-12)
+
+- **Context**: 알림 페이지가 `max-w-3xl` 문서형 폭을 사용해 라이브러리·계정 등 제품 페이지의 좌우 기준선과 달랐다.
+- **Constraints**: 알림은 단일 컬럼이지만 별도 공개 문서가 아니라 공통 ProductShell 안의 인증 제품 페이지다.
+- **Options**: 집중형 3xl 폭 유지, 바깥 72rem·안쪽 3xl 이중 rail, 목록까지 72rem 공통 rail.
+- **Decision**: 페이지와 Storybook 모두 제품 공통 `max-w-[72rem]` 및 `lg:px-8` gutter를 사용하고 알림 목록도 해당 폭을 따른다.
+- **Rationale**: 별도 inner rail의 비대칭 여백 없이 라이브러리·계정과 header/content 기준선을 일치시킨다.
+- **Trace**:
+  - **DONE 전 확정 시점**: page와 Storybook class 계약을 함께 변경하고 Storybook interaction에서 `max-w-[72rem]`을 검증했다.
+- **Evidence**:
+  - **Test/Log**: `pnpm run typecheck`, `pnpm run test:storybook --run src/_pages/notifications/ui/notifications-list.stories.tsx`
+- **Consequences**: 넓은 화면에서 알림 행이 더 길어지지만 제품 목록의 공통 레이아웃 정렬이 우선된다.

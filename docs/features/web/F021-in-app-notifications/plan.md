@@ -35,7 +35,7 @@
 3. owner-scoped API는 session user만 사용해 최신 목록·전체 page·unread count를 반환하고 개별/전체 읽음을 갱신한다.
 4. `NotificationBell`은 ProductHeader 안에서 최신 5개 query를 30초 polling하고 focus 복귀 시 갱신한다. 메뉴 open만으로 읽음 처리하지 않는다.
 5. 알림 item 선택 시 읽음 mutation을 먼저 요청하고 내부 href로 이동한다. mutation 실패 시에도 안전한 navigation을 막지 않고 다음 refetch에서 상태를 복구한다.
-6. `/notifications` server page는 인증을 요구하고 client list에 초기 payload를 제공해 loading flash를 줄인다.
+6. `/notifications` server page는 인증을 요구하고 client list에 초기 payload를 제공해 loading flash를 줄이며, 다른 인증 제품 페이지와 같은 72rem content rail을 사용한다.
 7. `UserMenu`가 열리면 owner-scoped ticket balance query를 활성화하고 메뉴 최상단에 잔여 수량을 표시한다. 전용 balance 응답으로 티켓 원장 전체를 내려받지 않으며 재개방 시 stale query를 갱신한다.
 
 ### 알림 생성 규칙

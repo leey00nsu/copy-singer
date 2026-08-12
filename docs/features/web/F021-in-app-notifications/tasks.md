@@ -112,6 +112,14 @@
     - [x] UserMenu 최상단 잔여 티켓 UI와 loading/error fallback 구현
     - [x] Storybook interaction·contract·build 회귀 검증
 
+- [DONE][PRD-FR-045] T-F021-in-app-notifications-06 알림 페이지 제품 공통 폭 정렬
+  - Date: 2026-08-12
+  - Acceptance:
+    - 알림 페이지와 Storybook이 다른 인증 제품 페이지와 동일한 72rem content rail과 responsive gutter를 사용한다.
+  - Checklist:
+    - [x] notifications page container를 공통 72rem rail로 변경
+    - [x] Storybook container와 interaction 회귀 검증
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -139,6 +147,7 @@
 | `pnpm run check:architecture` | `2026-08-12` | 통과 — Steiger 및 FSD boundary 4/4 |
 | `pnpm run build` | `2026-08-12` | 통과 — Next.js production build 및 `/notifications`, `/api/account/ticket-balance` route 생성 |
 | `pnpm run test:storybook --run src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-12` | 통과 — 계정 메뉴 최상단 `잔여 티켓 3개`와 기존 desktop/mobile 동작 6/6 |
+| `pnpm run test:storybook --run src/_pages/notifications/ui/notifications-list.stories.tsx` | `2026-08-12` | 통과 — 제품 공통 `max-w-[72rem]` rail과 알림 이력·empty 2/2 |
 | Browser responsive QA | `2026-08-11` | 통과 — Bell dropdown과 전체 알림 화면 렌더링·읽음 상태·내부 이동 구조 확인, Base UI label context 오류 수정 후 재검증 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T00:24:35.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T00:29:36.000Z -->
