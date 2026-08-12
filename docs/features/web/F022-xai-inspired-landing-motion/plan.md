@@ -92,7 +92,10 @@ src/
 src/shared/ui/motion/
 ├── voice-orb.tsx                         # React Bits Orb 기반 공통 client island
 ├── animated-content.tsx                  # restrained one-shot reveal
-└── glowing-card.tsx                      # Aceternity 경계 효과
+    └── glowing-card.tsx                      # Aceternity 경계 효과
+
+public/
+└── images/landing/voice-notes/              # 사용자 제공 Aurora WebP 4장
 
 docs/
 ├── designs/product-ui-redesign.md        # 최종 landing visual 계약 동기화
@@ -125,6 +128,7 @@ docs/
   - mobile 첫 viewport와 stacked story
   - reduced-motion 정적 상태
   - light/dark token 대비가 필요한 경우 기존 theme 범위에서 확인
+  - Voice Notes 네 이미지의 desktop/mobile object-cover crop과 밝음→어두움 순서를 확인
 - **성능 검증**: production build 성공, Orb client island 밖으로 `ogl`이 확산되지 않는지 dependency/diff로 확인하고, DPR 최대 1.5, offscreen/background RAF 정지, context cleanup, layout shift와 console/WebGL 오류가 없는지 browser에서 확인한다.
 - **회귀 검증**: `pnpm run build`를 최종 gate로 실행하고 기존 header/footer 및 landing Storybook interaction을 통과시킨다.
 

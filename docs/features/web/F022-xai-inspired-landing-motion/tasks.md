@@ -20,7 +20,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/xai-inspired-landing-motion`
-- **대기 중 변경 요청**: 결정: approve — Voice Notes 독립 카드와 Tailwind grain gradient 복원, Orb fallback 회색 artifact 제거·검증 완료
+- **대기 중 변경 요청**: 결정: changes_requested — Voice Notes의 Tailwind 생성 배경을 사용자 제공 Aurora WebP 4장으로 교체
   - 구현 중 새로 수용한 사용자 요청을 잠시 표시하는 sync marker입니다
   - 요청을 `tasks.md`와 관련 문서에 반영한 뒤 값을 비우세요
   - pre-PR 리뷰 handoff를 시작하면 `Running`, 리뷰 결과 기록까지 끝나면 `Done`으로 변경
@@ -173,13 +173,24 @@
     - [x] VoiceOrb canvas가 준비되면 fallback poster를 숨기고 Landing Orb container 및 Storybook decorator를 background token에 맞게 정리했다.
     - [x] Storybook, typecheck, lint, build와 실제 browser screenshot에서 배경 artifact·overflow·canvas count를 검증했다.
 
+- [TODO][PRD-FR-045] T-F022-xai-inspired-landing-motion-12 Voice Notes Aurora 이미지 자산 적용
+  - Date: 2026-08-12
+  - Acceptance:
+    - Voice Notes 네 카드의 상단 visual은 사용자 제공 Aurora WebP를 각각 사용하고 기존 label·title·description 구조를 유지한다.
+    - 이미지는 녹음(밝은 ice) → 실용 음역(cyan) → 추천 키(blue-violet) → AI 믹싱(dark neutral) 순으로 배치되며 텍스트를 이미지 위에 겹치지 않는다.
+    - `object-cover` crop이 desktop과 mobile에서 빈 영역이나 왜곡 없이 보이고 dark visual은 기존 landing 대비와 조화를 유지한다.
+  - Checklist:
+    - [ ] 사용자 제공 WebP 4장을 landing 전용 정적 자산 경로로 복사하고 의미가 드러나는 파일명으로 정리한다.
+    - [ ] Tailwind 생성 gradient/noise visual을 이미지 기반 visual로 교체하고 장식 이미지의 접근성 계약을 유지한다.
+    - [ ] Storybook과 browser에서 네 카드의 순서·crop·반응형 표시를 확인하고 관련 정적 검증을 통과한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 

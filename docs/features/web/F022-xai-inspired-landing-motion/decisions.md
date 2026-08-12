@@ -140,3 +140,15 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**:
   - **Reference**: `https://www.reactbits.dev/backgrounds/grainient`
   - **Test/Log**: Landing·Orb·ProcessHero Storybook 10/10, TypeScript, ESLint, architecture boundary, Next.js production build 통과
+
+## D008: Voice Notes 사용자 제공 Aurora 이미지 적용 (2026-08-12)
+
+- **Context**: 사용자가 직접 생성한 Aurora gradient WebP 4장을 Voice Notes 카드 visual에 적용하도록 요청했다.
+- **Constraints**: 기존 독립 카드의 label·title·description 구조, 반응형 crop과 장식 이미지 접근성 계약을 유지하고 사용자 소유 원본 파일은 수정하지 않는다.
+- **Options**: Tailwind 생성 gradient 유지 / 한 이미지를 네 카드에 반복 / 네 WebP를 각 카드 의미에 맞게 개별 배치
+- **Decision**: 사용자 제공 원본을 landing 전용 public 자산으로 복사하고 밝은 ice, cyan, blue-violet, dark neutral 순으로 네 Voice Notes visual에 각각 배치한다.
+- **Rationale**: 각 단계의 성격을 구분하면서도 생성된 질감을 그대로 보존하고, x.ai형 editorial rail에 필요한 밝고 어두운 visual 대비를 만든다.
+- **Trace**:
+  - **DOING 시작 전**: 제공된 네 이미지의 색감과 기존 Voice Notes 순서를 비교해 녹음→음역→추천→믹싱의 점진적 tonal flow를 정했다.
+- **Evidence**:
+  - **Source assets**: 사용자 제공 `aurora-gradient-*.webp` 4장
