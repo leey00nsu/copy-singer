@@ -228,13 +228,24 @@
     - [x] Key visualizer label을 정리하고 bar별 vertical delta segment 구조로 교체했다.
     - [x] Storybook, typecheck, lint, build와 desktop/mobile browser에서 초기 visibility·bar segment·overflow를 검증했다.
 
+- [DOING][PRD-FR-045] T-F022-xai-inspired-landing-motion-17 Recommended key를 Sample Vocal Range Profile로 교체
+  - Date: 2026-08-12
+  - Acceptance:
+    - Recommended key animation visualizer를 제거하고 실제 분석 결과가 사용하는 전체 관측 음역·실용 음역·중앙음 차트를 표시한다.
+    - 랜딩 차트는 `Sample profile`로 가상 데이터임을 명시하고 실제 점수·사용자 결과로 오해될 상태를 만들지 않는다.
+    - 실제 분석 결과와 랜딩 sample은 같은 axis, note formatting, range bar와 median reference line 컴포넌트를 사용한다.
+  - Checklist:
+    - [ ] VocalRangeProfile의 chart를 독립 public component로 분리하고 기존 결과 화면을 회귀 없이 연결한다.
+    - [ ] Landing KeySurface에 가상 profile chart를 적용하고 Recommended key CountUp 관련 코드를 제거한다.
+    - [ ] Landing·profile Storybook, typecheck, lint, build와 desktop/mobile browser에서 chart layout·overflow를 검증한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -256,4 +267,4 @@
 | Voice Notes Aurora QA | `2026-08-12` | 통과 — 1440×1000에서 4-up 263×159 crop, 390×844에서 1열 335×203 crop과 밝은 ice→cyan→blue-violet→dark neutral 순서를 직접 확인; desktop/mobile horizontal overflow 0, console warning/error 0 |
 | Album Cover Stack QA | `2026-08-12` | 통과 — 1440×1000에서 4개 cover layer와 hover fan-out, 390×844에서 stacked mixing card와 crop 확인; horizontal overflow 0, console warning/error 0, reduced-motion story 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T04:49:49.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T04:53:00.000Z -->

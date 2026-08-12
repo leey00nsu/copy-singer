@@ -59,7 +59,7 @@ ProcessHero
 2. **Bento interaction**: Aceternity Bento Grid와 Glowing Effect source를 Copy Singer token으로 조정하고 pointer hover와 keyboard focus에 같은 경계 강조를 제공한다.
 3. **Voice Orb**: 분석 bento card와 실제 active `ProcessHero`에 공통 Orb를 사용한다. `hue=294`, `rotateOnHover=false`, `hoverIntensity=0`을 고정하고 viewport/visibility/reduced-motion에 따라 RAF를 정지한다.
 4. **Editorial story**: desktop에서 2열 제품 demo와 restrained scroll reveal을 사용하고 mobile에서는 sticky 없이 순서가 명확한 stacked layout을 사용한다.
-5. **Recommended key visualizer**: React Bits Count Up의 viewport-triggered number transition을 `motion/react` 없이 landing 전용 client island로 재구성한다. 각 세로 bar는 neutral 원본 높이와 현재 높이의 수직 차이를 계산하고 차감 구간은 cyan, 증가 구간은 violet cap으로 표시한다. 화면 라벨은 하단 `낮춤/높임` 한 줄만 남기며 offscreen·background에서는 정지한다. Metric band는 정적으로 유지한다.
+5. **Sample Vocal Range Profile**: 실제 `VocalRangeProfile`에서 range chart를 `VocalRangeChart` client island로 분리하고 실제 분석 결과와 랜딩이 같은 Recharts 축·range·median 규칙을 사용한다. 랜딩은 `Sample profile`로 명시한 직렬화 가능한 가상 profile만 전달하고 metric band는 정적으로 유지한다.
 6. **Reduced motion/fallback**: word/bento/count reveal을 제거하고 최종 숫자를 즉시 표시하며, Orb는 정지 또는 CSS poster fallback으로 전환한다. 모든 텍스트/action은 그대로 남긴다.
 
 ### 데이터와 콘텐츠 정직성
@@ -95,8 +95,8 @@ src/shared/ui/motion/
 ├── animated-content.tsx                  # restrained one-shot reveal
 └── glowing-card.tsx                      # Aceternity 경계 효과
 
-src/_pages/home/ui/
-└── recommended-key-visualizer.tsx        # Count Up + 원본/변경분 key visualizer client island
+src/entities/vocal-profile/ui/
+└── vocal-range-chart.tsx                 # 실제 결과와 랜딩이 공유하는 range chart client island
 
 public/
 └── images/landing/voice-notes/              # 사용자 제공 Aurora WebP 4장
@@ -137,7 +137,7 @@ docs/
   - AI 믹싱 album-cover stack의 layer order, crop, hover/focus fan-out과 reduced-motion 정적 상태를 확인
   - Hero word stagger 순서, bento 단일 fade-in과 추천 키의 deterministic cycle을 확인
   - metric `5초+`, `60초`, `3단계`가 animation 없이 정적으로 표시되는지 확인
-  - 추천 키 visualizer의 원본 기준점, delta 방향색, `낮춤/높임` 문구와 deterministic cycle을 확인
+  - 실제 결과와 landing sample의 관찰 음역·실용 음역·중앙음 chart contract를 확인
 - **성능 검증**: production build 성공, Orb client island 밖으로 `ogl`이 확산되지 않는지 dependency/diff로 확인하고, DPR 최대 1.5, offscreen/background RAF 정지, context cleanup, layout shift와 console/WebGL 오류가 없는지 browser에서 확인한다.
 - **회귀 검증**: `pnpm run build`를 최종 gate로 실행하고 기존 header/footer 및 landing Storybook interaction을 통과시킨다.
 

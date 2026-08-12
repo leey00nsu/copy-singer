@@ -218,3 +218,13 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Reference image**: 사용자 제공 `codex-clipboard-2d7872dd-6db3-4cfa-a304-184fdca97b7a.png`
 - **Test/Log**: landing Storybook 4/4, TypeScript, ESLint, architecture boundary, Next.js 16.3 production build 통과
 - **Consequences**: 키가 낮아질 때 cyan segment는 원본 높이 안에서 차감된 구간을, 높아질 때 violet segment는 원본 높이 위에 추가된 구간을 나타낸다. 시각 라벨을 줄였지만 `role=img`의 동적 accessible name은 방향과 값을 계속 전달한다.
+
+## D013: Recommended key 대신 실제 Vocal Range Profile chart 재사용 (2026-08-12)
+
+- **Context**: 사용자가 반복 조정한 key delta visualizer 대신 첨부 이미지처럼 실제 보컬 프로필 차트를 가상 데이터로 표시하도록 요청했다.
+- **Constraints**: 가상 데이터를 실제 사용자 결과로 오해시키지 않고, 기존 분석 상세 화면과 landing이 서로 다른 chart 규칙을 중복 구현하지 않아야 한다.
+- **Options**: 첨부 이미지를 CSS로 별도 모사 / 기존 `VocalRangeProfile` 전체 card 삽입 / range chart만 공통 component로 분리해 재사용
+- **Decision**: 구현 및 검증 후 확정한다. 초기 방향은 기존 Recharts range chart를 entity public component로 분리하고 landing에는 `Sample profile` 표기와 직렬화 가능한 가상 range metrics를 전달하는 것이다.
+- **Rationale**: 구현 및 검증 후 확정한다.
+- **Trace**:
+  - **DOING 시작 시점**: 실제 제품은 `VocalRangeProfile`에서 `midiAxis`, `rangeChartData`, `midiToNoteName`, median ReferenceLine을 사용한다. Landing이 이를 재사용하면 첨부 이미지의 전체/실용 음역과 중앙음 구성을 제품 계약과 동일하게 표현할 수 있다.
