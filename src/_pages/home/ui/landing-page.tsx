@@ -1,4 +1,4 @@
-import { ArrowRight, AudioLines, Music2, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/shared/ui/button";
@@ -6,6 +6,7 @@ import { ProductFooter, ProductHeader, type ProductUser } from "@/widgets/produc
 
 import { LandingHero } from "./landing-hero";
 import styles from "./landing-hero.module.css";
+import { LandingProductStory } from "./landing-product-story";
 
 const railClass = "mx-auto w-full max-w-[72rem] px-5 sm:px-7 lg:px-8";
 
@@ -21,46 +22,7 @@ function LandingPage({ admin = false, user = null }: { admin?: boolean; user?: P
       <main>
         <LandingHero primaryLabel={primaryLabel} profileHref={profileHref} />
 
-        <section className="border-y" id="how-it-works">
-          <div className={`${styles.sectionReveal} ${railClass} py-16 lg:py-20`}>
-            <p className="text-[10px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
-              From voice to music
-            </p>
-            <h2 className="mt-3 text-2xl font-semibold tracking-[-0.035em] sm:text-3xl">
-              분석부터 AI 믹싱까지, 한 흐름으로
-            </h2>
-            <ol className="mt-9 grid border-t md:grid-cols-3 md:divide-x">
-              {[
-                {
-                  icon: AudioLines,
-                  title: "목소리 분석",
-                  description: "녹음이나 오디오 파일에서 관찰 음역, 실용 음역과 안정성을 확인합니다.",
-                },
-                {
-                  icon: Music2,
-                  title: "노래와 키 추천",
-                  description: "분석 결과를 바탕으로 보컬 특성과 비교해 적합한 키와 노래를 추천합니다.",
-                },
-                {
-                  icon: Sparkles,
-                  title: "선택형 AI 믹싱",
-                  description: "원하는 추천곡만 선택해 AI로 믹싱하고 완료된 결과를 다시 들을 수 있습니다.",
-                },
-              ].map(({ description, icon: Icon, title }, index) => (
-                <li className="border-b py-6 md:border-b-0 md:px-7 md:first:pl-0 md:last:pr-0" key={title}>
-                  <div className="flex items-center justify-between">
-                    <span className="flex size-9 items-center justify-center rounded-full bg-data-accent/10 text-data-accent-foreground">
-                      <Icon aria-hidden="true" className="size-4" />
-                    </span>
-                    <span className="text-[10px] tabular-nums text-muted-foreground">0{index + 1}</span>
-                  </div>
-                  <h3 className="mt-5 text-sm font-semibold">{title}</h3>
-                  <p className="mt-2 max-w-[17rem] text-[13px] leading-6 text-muted-foreground">{description}</p>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
+        <LandingProductStory />
 
         <section
           className={`${styles.sectionReveal} ${railClass} grid gap-8 py-16 lg:grid-cols-[minmax(0,.92fr)_minmax(0,1.08fr)] lg:items-start lg:gap-16 lg:py-20`}
