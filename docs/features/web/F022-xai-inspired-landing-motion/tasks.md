@@ -71,15 +71,15 @@
     - [x] 가짜 진행률·점수·데이터와 crystal/prism 없이 semantic token으로 구성했다.
     - [x] signed-out과 signed-in CTA 및 공통 shell 회귀를 Storybook에서 확인했다.
 
-- [TODO][PRD-FR-045] T-F022-xai-inspired-landing-motion-02 절제된 waveform·glow·reveal motion 구현
+- [DONE][PRD-FR-045] T-F022-xai-inspired-landing-motion-02 절제된 waveform·glow·reveal motion 구현
   - Date: 2026-08-12
   - Acceptance:
     - Hero waveform, masked dotted glow와 section reveal이 Copy Singer accent 범위 안에서 동작하며 layout shift를 만들지 않는다.
     - WebGL·GSAP·motion runtime 없이 CSS progressive enhancement로 구현하고 미지원 환경에서 콘텐츠가 정적으로 보인다.
   - Checklist:
-    - [ ] 기존 waveform/ripple CSS를 진폭·위상·glow 계층으로 확장한다.
-    - [ ] entry와 view reveal은 작은 opacity/translate 변화로 한 번만 실행되게 한다.
-    - [ ] offscreen 또는 불필요한 상시 animation을 만들지 않았는지 확인한다.
+    - [x] 기존 waveform/ripple CSS를 진폭·위상·glow 계층으로 확장했다.
+    - [x] entry와 view reveal은 작은 opacity/translate 변화로 한 번만 실행되게 했다.
+    - [x] dotted glow는 정적으로 유지하고 지속 animation은 첫 Hero의 waveform/ripple로 제한했다.
 
 - [TODO][PRD-FR-046] T-F022-xai-inspired-landing-motion-03 3단계 scroll story와 반응형 fallback 완성
   - Date: 2026-08-12
@@ -126,7 +126,7 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — signed-out/in CTA, waveform action, Admin/UserMenu와 footer 회귀 2/2 |
-| `pnpm exec biome check src/_pages/home/ui/landing-page.tsx src/_pages/home/ui/landing-hero.tsx src/_pages/home/ui/landing-hero.module.css` | `2026-08-12` | format 차이 1건 확인 후 `biome format --write`로 수정 |
+| `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — motion 적용 후 signed-out/in CTA, waveform action, Admin/UserMenu와 footer 회귀 2/2 |
+| `pnpm exec biome check src/_pages/home/ui/landing-page.tsx src/_pages/home/ui/landing-hero.tsx src/_pages/home/ui/landing-hero.module.css` | `2026-08-12` | 통과 — 3개 landing 파일 format/lint 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T01:39:11.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T01:43:04.000Z -->

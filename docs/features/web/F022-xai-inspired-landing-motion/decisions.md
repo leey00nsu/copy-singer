@@ -36,3 +36,18 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: PR 링크
   - **Test/Log**: `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` 통과 (2/2)
 - **Consequences**: 결과 및 영향 (선택사항)
+
+## D002: CSS progressive enhancement motion (2026-08-12)
+
+- **Context**: Hero와 후속 section에 Aceternity/React Bits 계열의 glow·fade·reveal 감각을 적용해야 한다.
+- **Constraints**: 기본 콘텐츠는 항상 보여야 하고 reduced-motion, CSS animation 미지원, Server Component와 초기 bundle 기준을 지켜야 한다.
+- **Options**: motion 또는 GSAP runtime 도입; IntersectionObserver client island; CSS keyframe과 view timeline progressive enhancement
+- **Decision**: 정적 dotted glow, CSS waveform/ripple, 1회 entry와 @supports 안의 view timeline reveal을 사용한다.
+- **Rationale**: 새 runtime과 hydration 없이 기본 HTML을 visible 상태로 유지하고, 지원 환경에서만 장식 motion을 더할 수 있다.
+- **Trace**:
+  - **At DOING start**: Recorded by `decision add` when the decision was created.
+  - **Before DONE**: Update this line when the related task is completed.
+  - **Post-merge check**: Update this line after merge when applicable.
+- **Evidence**:
+  - **Test/Log**: pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx 통과 (2/2)
+- **Consequences**: 지원하지 않는 browser에서는 section reveal이 생략되지만 정보와 action은 동일하게 유지된다.
