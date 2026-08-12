@@ -20,7 +20,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/in-app-notifications`
-- **대기 중 변경 요청**: -
+- **대기 중 변경 요청**: 결정: approve — 2026-08-12 사용자가 구현 완료 및 local 통합 흐름 진행 승인
   - 구현 중 새로 수용한 사용자 요청을 잠시 표시하는 sync marker입니다
   - 요청을 `tasks.md`와 관련 문서에 반영한 뒤 값을 비우세요
   - pre-PR 리뷰 handoff를 시작하면 `Running`, 리뷰 결과 기록까지 끝나면 `Done`으로 변경
@@ -126,7 +126,7 @@
 
 - [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
 - [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -150,4 +150,4 @@
 | `pnpm run test:storybook --run src/_pages/notifications/ui/notifications-list.stories.tsx` | `2026-08-12` | 통과 — 제품 공통 `max-w-[72rem]` rail과 알림 이력·empty 2/2 |
 | Browser responsive QA | `2026-08-11` | 통과 — Bell dropdown과 전체 알림 화면 렌더링·읽음 상태·내부 이동 구조 확인, Base UI label context 오류 수정 후 재검증 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T00:29:36.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T00:32:50.000Z -->
