@@ -31,6 +31,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/shared/ui/dialog";
+import { ProductPageIntro } from "@/shared/ui/product-page-intro";
 import { StatePanel } from "@/shared/ui/state-panel";
 import { StatusNotice } from "@/shared/ui/status-notice";
 import { CreationFunnelShell } from "@/widgets/creation-funnel";
@@ -168,36 +169,36 @@ export function RecommendationResults({
 
   return (
     <CreationFunnelShell currentStep="recommendation">
-      <header className="mt-8 grid gap-8 pb-9 lg:mt-12 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,.42fr)] lg:items-end">
-        <div>
-          <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
-            Song match
-          </p>
-          <h1 className="mt-2.5 max-w-3xl text-[clamp(2rem,4vw,3.5rem)] leading-[1.04] font-semibold tracking-[-0.045em] text-balance">
-            내 목소리에 맞는 노래
-          </h1>
-          <p className="mt-4 max-w-2xl text-[15px] leading-7 text-muted-foreground">
+      <ProductPageIntro
+        aside={
+          <div className="hidden min-w-64 gap-2 rounded-2xl bg-muted/30 p-4 text-xs lg:grid">
+            <p className="flex items-center justify-between gap-4">
+              <span className="text-muted-foreground">비교한 곡</span>
+              <strong>{run.items.length}곡</strong>
+            </p>
+            <p className="flex items-center justify-between gap-4">
+              <span className="text-muted-foreground">추천 생성</span>
+              <strong>
+                {new Date(run.createdAt).toLocaleString("ko-KR", { dateStyle: "short", timeStyle: "short" })}
+              </strong>
+            </p>
+            <p className="flex items-center justify-between gap-4">
+              <span className="text-muted-foreground">믹싱 방식</span>
+              <strong>선택한 곡만 시작</strong>
+            </p>
+          </div>
+        }
+        className="mt-8 pb-7 lg:mt-10"
+        description={
+          <>
             이번 한 소절에서 관찰된 음역을 기준으로 {run.items.length}곡을 비교했습니다. 추천 적합도는 정수로 단순화해
             표시하며, 추천 키와 근거를 함께 확인할 수 있습니다.
-          </p>
-        </div>
-        <div className="hidden gap-2 border-l pl-5 text-xs lg:grid">
-          <p className="flex items-center justify-between gap-4">
-            <span className="text-muted-foreground">비교한 곡</span>
-            <strong>{run.items.length}곡</strong>
-          </p>
-          <p className="flex items-center justify-between gap-4">
-            <span className="text-muted-foreground">추천 생성</span>
-            <strong>
-              {new Date(run.createdAt).toLocaleString("ko-KR", { dateStyle: "short", timeStyle: "short" })}
-            </strong>
-          </p>
-          <p className="flex items-center justify-between gap-4">
-            <span className="text-muted-foreground">믹싱 방식</span>
-            <strong>선택한 곡만 시작</strong>
-          </p>
-        </div>
-      </header>
+          </>
+        }
+        eyebrow="Song match"
+        title="내 목소리에 맞는 노래"
+        variant="task"
+      />
 
       {run.lowConfidence ? (
         <StatusNotice

@@ -38,6 +38,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/shared/ui/dialog";
+import { ProductPageIntro } from "@/shared/ui/product-page-intro";
 import { StatusNotice } from "@/shared/ui/status-notice";
 import { ActualStateTimeline, CreationFunnelShell, ProcessHero } from "@/widgets/creation-funnel";
 
@@ -202,43 +203,38 @@ export function MixingDetail({ initial }: { initial: MixingHistoryRow }) {
         <ArrowLeft aria-hidden="true" className="size-4" /> AI 믹스 목록
       </Link>
 
-      <header className="mt-9 flex flex-wrap items-start justify-between gap-8 pb-10">
-        <div className="min-w-0 max-w-3xl">
-          <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
-            AI mix detail
-          </p>
-          <div className="mt-3">
-            <MixingStatusBadge status={job.status} />
-          </div>
-          <h1 className="mt-4 min-w-0 text-[clamp(2.5rem,5vw,4.25rem)] font-semibold leading-none tracking-[-0.055em]">
-            {job.song.title}
-          </h1>
-          <p className="mt-3 text-sm text-muted-foreground">{job.song.artist}</p>
-          <Link
-            aria-label={`사용한 보컬 프로필 ${job.vocalProfile.displayName} 보기`}
-            className="mt-5 inline-flex min-w-0 items-center gap-3 rounded-lg border p-2 pr-4 transition-colors hover:bg-muted/35"
-            href={`/vocal-profiles/${job.vocalProfile.id}`}
-          >
-            <VocalProfileArtwork className="size-9 shrink-0" profileId={job.vocalProfile.id} />
-            <span className="min-w-0 text-left">
-              <span className="block text-[10px] text-muted-foreground">사용한 보컬 프로필</span>
-              <strong className="block truncate text-sm font-semibold">{job.vocalProfile.displayName}</strong>
-            </span>
-          </Link>
-          <p aria-live="polite" className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground">
-            {presentation.description}
-          </p>
-          {detailQuery.isError ? (
-            <StatusNotice
-              className="mt-4 max-w-xl"
-              description="마지막으로 확인한 정보를 표시합니다."
-              title="최신 상태를 확인하지 못했어요"
-              tone="destructive"
-            />
-          ) : null}
-        </div>
-        <div className="flex flex-wrap gap-2">{presentation.terminal ? <MixingDeleteAction job={job} /> : null}</div>
-      </header>
+      <ProductPageIntro
+        aside={
+          <div className="flex flex-wrap gap-2">{presentation.terminal ? <MixingDeleteAction job={job} /> : null}</div>
+        }
+        className="mt-9 pb-10"
+        description={presentation.description}
+        eyebrow="AI mix detail"
+        meta={<MixingStatusBadge status={job.status} />}
+        title={job.song.title}
+        variant="detail"
+      >
+        <p className="mt-3 text-sm text-muted-foreground">{job.song.artist}</p>
+        <Link
+          aria-label={`사용한 보컬 프로필 ${job.vocalProfile.displayName} 보기`}
+          className="mt-5 inline-flex min-w-0 items-center gap-3 rounded-lg border p-2 pr-4 transition-colors hover:bg-muted/35"
+          href={`/vocal-profiles/${job.vocalProfile.id}`}
+        >
+          <VocalProfileArtwork className="size-9 shrink-0" profileId={job.vocalProfile.id} />
+          <span className="min-w-0 text-left">
+            <span className="block text-[10px] text-muted-foreground">사용한 보컬 프로필</span>
+            <strong className="block truncate text-sm font-semibold">{job.vocalProfile.displayName}</strong>
+          </span>
+        </Link>
+        {detailQuery.isError ? (
+          <StatusNotice
+            className="mt-4 max-w-xl"
+            description="마지막으로 확인한 정보를 표시합니다."
+            title="최신 상태를 확인하지 못했어요"
+            tone="destructive"
+          />
+        ) : null}
+      </ProductPageIntro>
 
       {job.resultReady && job.audioUrl ? (
         <section aria-labelledby="mixing-result-title" className="py-8 sm:py-10 lg:py-12">

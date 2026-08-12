@@ -5,6 +5,7 @@ import { getVocalProfileHistory } from "@/entities/vocal-profile/index.server";
 import { analysisJobPayload, listVisibleVocalProfileAnalysisJobs } from "@/features/analyze-vocal-profile/index.server";
 import { requirePageSession } from "@/features/authentication/index.server";
 import { buttonVariants } from "@/shared/ui/button";
+import { ProductPageIntro } from "@/shared/ui/product-page-intro";
 import { LibraryTabs, MixingLibrary, parseLibrarySearchParams, VocalProfileLibrary } from "@/widgets/library";
 
 type LibraryPageProps = {
@@ -29,18 +30,16 @@ export default async function LibraryPage({ searchParams }: LibraryPageProps) {
 
   return (
     <div className="mx-auto w-full max-w-[72rem] px-5 py-12 sm:px-7 lg:px-8 lg:py-14">
-      <div className="flex flex-wrap items-end justify-between gap-6">
-        <div>
-          <p className="text-[10px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">Library</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-[-0.04em] sm:text-[2rem]">내 라이브러리</h1>
-          <p className="mt-2.5 max-w-2xl text-xs leading-5 text-muted-foreground">
-            저장한 보컬 프로필과 AI 믹싱 작업을 구분해 확인하세요. 진행 중인 작업은 페이지를 닫아도 계속됩니다.
-          </p>
-        </div>
-        <Link className={buttonVariants({ size: "sm" })} href="/profile">
-          <Plus aria-hidden="true" className="size-4" /> 새 목소리 분석
-        </Link>
-      </div>
+      <ProductPageIntro
+        aside={
+          <Link className={buttonVariants({ size: "sm" })} href="/profile">
+            <Plus aria-hidden="true" className="size-4" /> 새 목소리 분석
+          </Link>
+        }
+        description="저장한 보컬 프로필과 AI 믹싱 작업을 구분해 확인하세요. 진행 중인 작업은 페이지를 닫아도 계속됩니다."
+        eyebrow="Library"
+        title="내 라이브러리"
+      />
       <div className="mt-7">
         <LibraryTabs tab={filters.tab} />
       </div>

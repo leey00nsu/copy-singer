@@ -77,11 +77,11 @@ export const Success: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect((await canvas.findAllByText("서른 즈음에"))[0]).toBeVisible();
-    await expect(canvas.getByRole("heading", { name: "내 목소리에 맞는 노래" }).closest("header")).toHaveClass(
-      "mt-8",
-      "lg:mt-12",
+    await expect(canvas.getByRole("heading", { name: "내 목소리에 맞는 노래" }).closest("header")).toHaveAttribute(
+      "data-page-intro",
+      "task",
     );
-    await expect(canvas.getByRole("button", { name: "이 곡으로 AI 믹싱" })).toBeVisible();
+    await expect(canvas.getByRole("button", { name: /이 곡으로 AI 믹싱|선택한 곡 확인/ })).toBeVisible();
     const videoButton = canvas.getByRole("button", { name: "서른 즈음에 · 김광석 원본 영상 플레이어 열기" });
     await userEvent.click(videoButton);
     await expect(canvas.getByTitle("서른 즈음에 · 김광석 원본 YouTube 영상")).toBeVisible();

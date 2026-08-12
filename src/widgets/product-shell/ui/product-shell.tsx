@@ -80,10 +80,11 @@ function ProductNavigation({
 
 type ProductHeaderProps = {
   admin?: boolean;
+  showAuthAction?: boolean;
   user?: ProductUser | null;
 };
 
-function ProductHeader({ admin = false, user = null }: ProductHeaderProps) {
+function ProductHeader({ admin = false, showAuthAction = true, user = null }: ProductHeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const authenticated = Boolean(user);
@@ -124,13 +125,13 @@ function ProductHeader({ admin = false, user = null }: ProductHeaderProps) {
                 side="bottom"
               />
             </div>
-          ) : (
+          ) : showAuthAction ? (
             <div className="hidden sm:block">
               <Button nativeButton={false} render={<Link href="/login?callbackURL=%2Fprofile" />} size="sm">
                 로그인
               </Button>
             </div>
-          )}
+          ) : null}
           <Sheet onOpenChange={setMobileOpen} open={mobileOpen}>
             <SheetTrigger
               className="md:hidden"
@@ -161,11 +162,11 @@ function ProductHeader({ admin = false, user = null }: ProductHeaderProps) {
                     name={user.name}
                     side="top"
                   />
-                ) : (
+                ) : showAuthAction ? (
                   <Button nativeButton={false} render={<Link href="/login?callbackURL=%2Fprofile" />}>
                     로그인
                   </Button>
-                )}
+                ) : null}
               </div>
             </SheetContent>
           </Sheet>

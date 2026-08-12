@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, within } from "storybook/test";
 import type { MixingHistoryPayload } from "@/entities/mixing-job";
 import type { VocalProfileHistoryPayload } from "@/entities/vocal-profile";
+import { ProductPageIntro } from "@/shared/ui/product-page-intro";
 import { LibraryTabs, MixingLibrary, VocalProfileLibrary } from "@/widgets/library";
 import { ProductShell } from "@/widgets/product-shell";
 
@@ -75,11 +76,11 @@ function LibraryPreview({ tab }: { tab: "profiles" | "mixes" }) {
   return (
     <ProductShell user={{ email: "jieun@copysinger.test", name: "지은" }}>
       <div className="mx-auto w-full max-w-[72rem] px-5 py-12 sm:px-7 lg:px-8 lg:py-14">
-        <p className="text-[10px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">LIBRARY</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-[-0.04em] sm:text-[2rem]">내 라이브러리</h1>
-        <p className="mt-2.5 max-w-2xl text-xs leading-5 text-muted-foreground">
-          저장한 보컬 프로필과 AI 믹싱 작업을 구분해 확인하세요.
-        </p>
+        <ProductPageIntro
+          description="저장한 보컬 프로필과 AI 믹싱 작업을 구분해 확인하세요."
+          eyebrow="Library"
+          title="내 라이브러리"
+        />
         <div className="mt-7">
           <LibraryTabs tab={tab} />
         </div>

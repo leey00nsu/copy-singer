@@ -22,14 +22,15 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("heading", { name: "Copy Singer" })).toBeVisible();
-    await expect(canvas.getByText("계속하려면 로그인하세요.")).toBeVisible();
+    await expect(canvas.getByRole("heading", { name: "내 목소리로 계속하기" })).toBeVisible();
+    await expect(canvas.getByText("저장한 보컬 프로필과 추천, AI 믹싱 결과를 이어서 확인하세요.")).toBeVisible();
     await expect(canvas.getByRole("button", { name: "구글로 시작하기" })).toBeEnabled();
     await expect(canvas.getByText("Google 계정으로 로그인하면")).toBeVisible();
-    await expect(canvas.getByRole("link", { name: "이용 약관" })).toHaveAttribute("href", "/terms");
-    await expect(canvas.getByRole("link", { name: "개인정보 처리방침" })).toHaveAttribute("href", "/privacy");
+    await expect(canvas.getAllByRole("link", { name: "이용 약관" })[0]).toHaveAttribute("href", "/terms");
+    await expect(canvas.getAllByRole("link", { name: "개인정보 처리방침" })[0]).toHaveAttribute("href", "/privacy");
     await expect(canvasElement.querySelector('[data-google-icon=""]')).toBeVisible();
     await expect(canvasElement.querySelectorAll('img[src*="copy-singer-mark"]')).toHaveLength(2);
+    await expect(canvasElement.querySelector('[data-testid="voice-orb"]')).toBeInTheDocument();
     await expect(canvas.queryByText("홈으로")).not.toBeInTheDocument();
     await expect(canvas.queryByText("Account")).not.toBeInTheDocument();
     await expect(canvas.queryByText("계정으로 시작하세요")).not.toBeInTheDocument();
