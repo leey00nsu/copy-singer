@@ -224,7 +224,13 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Context**: 사용자가 반복 조정한 key delta visualizer 대신 첨부 이미지처럼 실제 보컬 프로필 차트를 가상 데이터로 표시하도록 요청했다.
 - **Constraints**: 가상 데이터를 실제 사용자 결과로 오해시키지 않고, 기존 분석 상세 화면과 landing이 서로 다른 chart 규칙을 중복 구현하지 않아야 한다.
 - **Options**: 첨부 이미지를 CSS로 별도 모사 / 기존 `VocalRangeProfile` 전체 card 삽입 / range chart만 공통 component로 분리해 재사용
-- **Decision**: 구현 및 검증 후 확정한다. 초기 방향은 기존 Recharts range chart를 entity public component로 분리하고 landing에는 `Sample profile` 표기와 직렬화 가능한 가상 range metrics를 전달하는 것이다.
-- **Rationale**: 구현 및 검증 후 확정한다.
+- **Decision**: 기존 Recharts range chart를 entity public component `VocalRangeChart`로 분리하고 실제 `VocalRangeProfile`과 landing sample이 이를 함께 사용한다. Landing은 직렬화 가능한 가상 profile을 전달하고 `Sample profile`과 `가상 데이터`를 동시에 표시하며, 별도 Recommended key visualizer와 남은 Count Up 고지를 제거한다.
+- **Rationale**: 실제 분석 화면의 축 범위, 음명 formatting, 전체·실용 음역 bar와 중앙음 reference line을 그대로 재사용해 랜딩 preview와 제품 결과의 시각 언어를 일치시킨다. 가상 데이터 표기를 두 위치에 명시해 실제 사용자 측정값으로 오해할 위험을 낮춘다.
 - **Trace**:
   - **DOING 시작 시점**: 실제 제품은 `VocalRangeProfile`에서 `midiAxis`, `rangeChartData`, `midiToNoteName`, median ReferenceLine을 사용한다. Landing이 이를 재사용하면 첨부 이미지의 전체/실용 음역과 중앙음 구성을 제품 계약과 동일하게 표현할 수 있다.
+  - **DONE 전 확정 시점**: `VocalRangeChart`를 entity public API로 분리하고 기존 결과 화면과 landing bento를 같은 component에 연결했다. Storybook 8/8, typecheck, lint, architecture boundary와 production build를 통과했으며 실제 1440px/390px route에서 accessible range label, 두 range 의미, 중앙음, 가상 데이터 표기, 기존 visualizer 0개와 horizontal overflow 0을 확인했다.
+- **Evidence**:
+  - **Reference image**: 사용자 제공 `codex-clipboard-501e82de-2ab9-4105-ae08-728efcceb81c.png`
+  - **Shared component**: `src/entities/vocal-profile/ui/vocal-range-chart.tsx`
+- **Test/Log**: landing·profile Storybook 8/8, TypeScript, ESLint, architecture boundary, Next.js 16.3 production build와 desktop/mobile browser QA 통과
+- **Consequences**: D011/D012의 landing 전용 Recommended key visualizer 계약은 이 결정으로 대체된다. Landing sample은 실제 분석 chart 표현을 사용하지만 저장·API 호출 없이 고정된 가상 profile만 렌더링한다.

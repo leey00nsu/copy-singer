@@ -60,7 +60,7 @@ ProcessHero
 3. **Voice Orb**: 분석 bento card와 실제 active `ProcessHero`에 공통 Orb를 사용한다. `hue=294`, `rotateOnHover=false`, `hoverIntensity=0`을 고정하고 viewport/visibility/reduced-motion에 따라 RAF를 정지한다.
 4. **Editorial story**: desktop에서 2열 제품 demo와 restrained scroll reveal을 사용하고 mobile에서는 sticky 없이 순서가 명확한 stacked layout을 사용한다.
 5. **Sample Vocal Range Profile**: 실제 `VocalRangeProfile`에서 range chart를 `VocalRangeChart` client island로 분리하고 실제 분석 결과와 랜딩이 같은 Recharts 축·range·median 규칙을 사용한다. 랜딩은 `Sample profile`로 명시한 직렬화 가능한 가상 profile만 전달하고 metric band는 정적으로 유지한다.
-6. **Reduced motion/fallback**: word/bento/count reveal을 제거하고 최종 숫자를 즉시 표시하며, Orb는 정지 또는 CSS poster fallback으로 전환한다. 모든 텍스트/action은 그대로 남긴다.
+6. **Reduced motion/fallback**: word/bento reveal을 제거하고 Orb는 정지 또는 CSS poster fallback으로 전환한다. Vocal Range chart와 모든 텍스트/action은 animation 없이 그대로 남긴다.
 
 ### 데이터와 콘텐츠 정직성
 
