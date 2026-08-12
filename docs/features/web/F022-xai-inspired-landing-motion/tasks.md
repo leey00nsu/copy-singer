@@ -480,6 +480,18 @@
     - [x] 동일 분석값을 가진 여러 profile ID에서도 family 분산과 결정성을 단위/Storybook으로 검증한다.
     - [x] Palette·Library desktop/mobile QA와 TypeScript/lint를 통과한다.
 
+- [DONE][PRD-FR-047] T-F022-xai-inspired-landing-motion-40 공통 audio waveform brand/loading transition
+  - Date: 2026-08-12
+  - Acceptance:
+    - 모든 `AudioWaveformPlayer` 사용 화면에서 미재생 파형은 quiet brand tint, 진행 구간은 violet→blue→pink accent로 표현된다.
+    - Decode 전 72px 영역이 비어 보이지 않고 추상 skeleton이 표시되며 ready 시 실제 파형과 부드럽게 crossfade한다.
+    - Skeleton은 실제 audio amplitude를 암시하지 않고 accessible loading status를 제공하며 reduced-motion에서는 shimmer·transform이 제거된다.
+    - 기존 play/pause/seek/mute/segment/error fallback과 layout 높이를 유지한다.
+  - Checklist:
+    - [x] WaveSurfer brand gradient와 loading/ready surface를 구현한다.
+    - [x] Storybook에서 loading, ready, reduced-motion과 기존 controls를 검증한다.
+    - [x] Audio player unit, TypeScript, lint, architecture와 browser QA를 통과한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -502,6 +514,8 @@
 | `pnpm exec tsx --test tests/vocal-profile-artwork.test.ts` | `2026-08-12` | 통과 — 동일 보컬 결정성, 분석값 변화, analogous family 최대 hue 거리 65° 이하, 일반 voice 40개에서 five-family 분산과 legacy fallback 검증 5/5 |
 | `pnpm exec tsx --test tests/api-contracts.test.ts tests/mixing-history-ui.test.tsx tests/mixing-status-presentation.test.ts` | `2026-08-12` | 통과 — optional artwork payload 하위 호환, mixing list와 상태 presentation 회귀 16/16 |
 | `pnpm run test:storybook --run src/entities/vocal-profile/ui/vocal-profile-artwork.stories.tsx src/_pages/library/ui/library-page.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx` | `2026-08-12` | 통과 — preset-derived palette 8종, grain opacity 20%/5%, Library와 Mixing Detail artwork 회귀 7/7 |
+| `pnpm run test:storybook --run src/shared/ui/audio-waveform-player/audio-waveform-player.stories.tsx src/_pages/profile/ui/voice-scan-input.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx` | `2026-08-12` | 통과 — audio ready/loading/reduced-motion, brand progress gradient와 Profile/Mixing controls 회귀 16/16 |
+| `pnpm exec tsx --test tests/audio-waveform-player.test.ts` | `2026-08-12` | 통과 — playback time/range 계산 회귀 3/3 |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/entities/vocal-profile/ui/vocal-profile-summary.stories.tsx src/_pages/profile/ui/analysis-success.stories.tsx` | `2026-08-12` | 통과 — Landing Sample Vocal Range Profile과 실제 profile 결과 회귀 8/8 |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — 공식 Motion Gradient Text 단일 field·animationSpeed 1.5·yoyo, signed-out/in·mobile·reduced-motion 콘텐츠와 기존 Landing 회귀 4/4 |
 | `pnpm run test:storybook --run src/_pages/profile/ui/voice-scan-input.stories.tsx src/shared/ui/voice-orb/voice-orb.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx` | `2026-08-12` | 통과 — 녹음 전 timer 숨김, WebGL canvas 유지, recorder height·Orb filter·waveform opacity transition과 기존 상태 회귀 15/15 |
@@ -533,5 +547,6 @@
 | Aurora grain artwork QA | `2026-08-12` | 통과 — fine soft-light와 coarse multiply grain, soft vignette를 1440px palette와 44px Library thumbnail에서 확인; color mapping·radius·overflow 유지 |
 | Restrained Aurora preset QA | `2026-08-12` | 통과 — 실제 preset의 recursive·grain 25·gray 200 값을 확인하고 Berry/Forest/Ocean/Northern analogous family로 재구성; desktop/mobile Palette와 44px Library에서 원거리 hue 혼합·overflow 0 확인 |
 | Voice-signature palette QA | `2026-08-12` | 통과 — 동일 분석값의 Library 10개가 Violet·Ocean/Northern·Forest·Berry로 분산되고 1280px/390px에서 44px artwork 식별성과 overflow 0 확인; Palette 8개도 단일-family harmony 유지 |
+| Branded audio waveform QA | `2026-08-12` | 통과 — ready에서 quiet violet/blue wave와 violet→blue→pink progress 계약, loading에서 72px grain-gradient skeleton·sweep·disabled controls 확인; 390px ready/loading 모두 scrollWidth 390, reduced-motion story 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T10:09:34.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T10:23:08.000Z -->

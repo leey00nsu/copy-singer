@@ -487,3 +487,13 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**: `src/entities/vocal-profile/lib/artwork.ts`, `tests/vocal-profile-artwork.test.ts`, `src/entities/vocal-profile/ui/vocal-profile-artwork.stories.tsx`
 - **Trace**: `ARTWORK_VERSION=4`에서 median 2 MIDI, range 3 semitone, stability·voiced ratio 0.1, RMS 4dB 단위의 signature와 profile ID를 FNV hash했다. `Aurora Violet`은 hue 264–290 범위로 제한했다. 동일 분석값 profile 40개에서 Berry·Forest·Ocean·Northern·Violet anchor가 모두 나타나고 결과가 재실행 간 동일함을 unit 5/5로 검증했다. Storybook 7/7, TypeScript, lint, architecture 4/4를 통과했으며 동일 분석 fixture 10개의 Library가 1280px/390px에서 violet·blue·green·berry로 분산되고 overflow가 없음을 확인했다.
 - **Consequences**: Artwork mapping version을 올려 기존 profile의 시각 색상은 한 번 변경되지만 DB/API schema는 그대로다.
+
+## D033: Branded stored-audio waveform and decode crossfade (2026-08-12)
+
+- **Context**: 녹음 중 waveform은 brand gradient와 entrance transition을 사용하지만 저장 오디오의 공통 WaveSurfer player는 두 개의 보라 단색만 사용하고 decode 전 72px surface가 비어 있다가 실제 파형이 즉시 나타난다.
+- **Constraints**: 저장 오디오는 live signal보다 차분해야 하고, loading placeholder가 가짜 amplitude처럼 보이면 안 된다. 기존 seek/segment/error fallback과 고정 높이로 인한 CLS 0 계약을 유지해야 한다.
+- **Decision**: Unplayed wave는 muted violet/blue tint로 유지하고 progress wave에만 violet→blue→pink CanvasGradient를 사용한다. Decode 중에는 반복 파형 대신 grain-gradient veil과 loading label을 표시하고 ready에서 skeleton opacity out, waveform opacity 0→1·scaleY 0.94→1로 전환한다. Reduced-motion은 shimmer와 transform을 제거한다.
+- **Rationale**: Live waveform과 같은 브랜드 family를 공유하되 진행 구간만 강하게 표현해 저장/재생 UI의 정보 위계를 보존한다. 실제 decoded waveform 자체를 애니메이션으로 생성하지 않아 오디오 데이터를 왜곡하지 않는다.
+- **Evidence**: `src/shared/ui/audio-waveform-player/audio-waveform-player.tsx`, CSS Module, Storybook
+- **Trace**: WaveSurfer `waveColor`는 quiet violet/blue 배열, `progressColor`는 `#7c3aed → #3b82f6 → #ec4899`, cursor는 semantic strong token으로 설정했다. 72px visual slot에 grain data texture와 abstract radial veil·1.8s sweep를 추가하고 ready에서 waveform 360/420ms opacity·scaleY, skeleton 280ms opacity transition을 연결했다. 실제 amplitude placeholder는 만들지 않았다. Storybook 16/16, unit 3/3, TypeScript, lint, architecture 4/4를 통과했고 Chromium 390px에서 ready/loading 높이 72px·overflow 0과 reduced-motion 정적 preview를 확인했다.
+- **Consequences**: 공통 component를 쓰는 Profile, Recommendation, Mixing과 dev surface가 한 번에 갱신되며 native audio fallback은 브라우저 기본 스타일을 유지한다.
