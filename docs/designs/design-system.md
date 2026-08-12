@@ -56,6 +56,7 @@ Visual reference는 `docs/designs/references/copy-singer/`만 정본으로 사�
 | Positive state | `success`, `success-foreground` | 완료, ready와 긍정적인 상태의 제한된 강조 |
 | Caution state | `warning`, `warning-foreground` | 대기, retry와 사용자의 주의가 필요한 상태 |
 | Audio/data accent | `data-accent`, `data-accent-foreground` | waveform의 active 구간과 핵심 분석 포인트 |
+| Brand signal | `brand-violet`, `brand-blue`, `brand-pink`, `brand-gradient-*` | waveform·연속형 분석 차트·processing처럼 변화 또는 흐름이 있는 시각화 |
 | Data visualization | `chart-1`~`chart-5` | pitch, range와 waveform의 구분 가능한 series |
 | App navigation | `sidebar-*` | 기존 token 이름을 유지하는 header·mobile navigation의 semantic 상태 |
 
@@ -68,6 +69,7 @@ Accent 사용 규칙:
 - red: destructive action과 복구가 필요한 error
 - 한 surface에 의미 없는 accent를 두 가지 이상 섞지 않는다.
 - 본문 문장이나 넓은 배경을 accent로 채우지 않는다.
+- Brand gradient는 연속 데이터와 active signal에만 사용한다. Primary button, badge, 작은 icon, status 의미, focus ring과 border에는 gradient 대신 기존 semantic 단색을 유지한다.
 
 Light theme가 현재 디자인 정본이다. 기존 dark token을 깨뜨리지 않되 F018에서 새 theme toggle이나 독립적인 dark visual language를 만들지 않는다. Dark mode를 제품 기능으로 제공할 때 별도 Feature에서 동일한 대비·상태 기준을 검증한다.
 

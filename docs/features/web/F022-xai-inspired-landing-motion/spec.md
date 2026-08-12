@@ -129,6 +129,7 @@ x.ai의 절제된 중앙형 랜딩 구조를 Copy Singer에 맞게 재해석하�
 - Vocal profile artwork는 제출 보컬의 중앙음·음역 폭·안정도·유성음 비율·RMS와 profile ID를 하나의 deterministic signature로 조합해 색상 family를 고르고, 분석값으로 색차·채도·밝기를 조절한다. 같은 프로필은 모든 화면에서 같은 artwork를 유지하고 목록에서는 특정 음역대에 흔한 초록·파랑만 반복되지 않아야 한다. 한 artwork 안에서는 인접 hue ramp만 사용해 과도한 다색 혼합을 피한다.
 - Artwork 표면은 Aurora Gradient Generator의 `Northern Sky`, `Ocean Blue`, `Forest`, `Berry`와 Aurora Lights의 violet side처럼 한 계열 안에서 명도가 넓게 번지는 recursive/radial color field 위에 약 25% 수준의 neutral grain을 겹친 질감을 사용한다. `Purple Dream`·`Cyberpunk`처럼 원거리 hue가 한 표면에 동시에 섞이는 조합은 제외하고, grain은 작은 목록 썸네일에서도 인지되되 텍스트 대비나 프로필 식별 색을 흐리지 않는다.
 - 공통 저장 오디오 플레이어는 미재생 파형에 절제된 brand tint를, 재생 진행 구간에 violet→blue→pink 계열의 stronger accent를 사용해 녹음 중 live waveform과 연결한다. 파형 decode 전에는 고정된 72px 영역 안에 실제 amplitude로 오해되지 않는 추상 skeleton을 표시하고, 준비되면 skeleton과 실제 파형을 crossfade한다. Reduced-motion에서는 움직이는 shimmer와 transform 없이 즉시 교체한다.
+- violet·blue·pink 브랜드 컬러는 공통 semantic token으로 관리한다. 다색 gradient는 waveform, 음역·피치 차트와 processing visual처럼 연속 데이터나 변화가 있는 표현에만 사용하고, 버튼·상태 badge·작은 icon·본문·border는 기존 단색 semantic color를 유지한다.
 - Creation funnel stepper는 무거운 segmented strip 대신 상태와 현재 단계를 명확히 읽을 수 있는 가벼운 progress rail을 사용한다.
 - Recommendation desktop은 결과 탐색 action이 과도한 hero 여백 아래로 밀리지 않도록 product-scale intro 밀도를 사용하고, mobile의 현재 읽기 순서와 접근성을 유지한다.
 - Landing 전용 Gradient Text, scroll reveal, Bento와 상시 animation을 form·table·관리 작업 화면에 확산하지 않는다.

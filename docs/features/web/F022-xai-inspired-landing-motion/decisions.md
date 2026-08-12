@@ -497,3 +497,12 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**: `src/shared/ui/audio-waveform-player/audio-waveform-player.tsx`, CSS Module, Storybook
 - **Trace**: WaveSurfer `waveColor`는 quiet violet/blue 배열, `progressColor`는 `#7c3aed → #3b82f6 → #ec4899`, cursor는 semantic strong token으로 설정했다. 72px visual slot에 grain data texture와 abstract radial veil·1.8s sweep를 추가하고 ready에서 waveform 360/420ms opacity·scaleY, skeleton 280ms opacity transition을 연결했다. 실제 amplitude placeholder는 만들지 않았다. Storybook 16/16, unit 3/3, TypeScript, lint, architecture 4/4를 통과했고 Chromium 390px에서 ready/loading 높이 72px·overflow 0과 reduced-motion 정적 preview를 확인했다.
 - **Consequences**: 공통 component를 쓰는 Profile, Recommendation, Mixing과 dev surface가 한 번에 갱신되며 native audio fallback은 브라우저 기본 스타일을 유지한다.
+
+## D034: Brand gradient를 연속 signal에만 제한 (2026-08-12)
+
+- **Context**: Landing과 live/stored waveform은 violet→blue→pink를 사용하지만 일부 구현은 raw hex·OKLCH를 반복하고, 제품의 다른 보라색 accent까지 모두 gradient로 바꾸면 상태 의미와 시각 위계가 약해질 수 있다.
+- **Constraints**: black primary CTA, semantic status, focus ring, 작은 icon과 reference line의 대비를 유지하고 색만으로 데이터를 구분하지 않아야 한다.
+- **Decision**: 전역 `brand-violet`·`brand-blue`·`brand-pink` token과 signal/soft gradient를 정의한다. 강한 3색 gradient는 live/stored waveform의 active 구간과 연속형 보컬 분석 차트에만 사용하고 Landing Gradient Text도 같은 stop token을 읽는다. 상태·button·badge·icon·border는 기존 단색 semantic token을 유지한다.
+- **Rationale**: 색의 반복보다 용도를 일관되게 제한할 때 브랜드가 더 선명해지고, 변화·진행·범위라는 동일한 의미가 화면 사이에서 연결된다.
+- **Evidence**: `src/_app/styles/globals.css`, `src/shared/ui/voice-signal-core`, `src/shared/ui/audio-waveform-player`, `src/_pages/home/ui/landing-hero.tsx`, `src/entities/vocal-profile/ui`
+- **Consequences**: 기존 hard-coded brand stop은 제거되고, light/dark 조정은 token 한 곳에서 가능해진다. Profile artwork의 voice-derived analogous family와 semantic 단색 상태는 이 gradient 계약의 적용 대상이 아니다.

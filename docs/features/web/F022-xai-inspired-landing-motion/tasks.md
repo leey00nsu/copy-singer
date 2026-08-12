@@ -501,12 +501,23 @@
     - [x] ready 상태의 visual surface를 투명하게 전환한다.
     - [x] Storybook에서 ready 배경 투명성과 loading surface 유지를 검증한다.
 
+- [TODO][PRD-FR-047] T-F022-xai-inspired-landing-motion-42 브랜드 signal gradient token과 데이터 시각화 통합
+  - Date: 2026-08-12
+  - Acceptance:
+    - violet·blue·pink 브랜드 색은 전역 token에서 관리되고 live/stored waveform과 Landing Gradient Text가 같은 source를 사용한다.
+    - 음역 bar, 음정 histogram과 pitch trace는 static brand gradient를 사용하되 label·reference line·상태·button은 단색 semantic color를 유지한다.
+    - light/dark에서 정보가 색만으로 전달되지 않고 기존 label, tooltip, range와 status text가 유지된다.
+  - Checklist:
+    - [ ] 공통 brand color와 signal/soft gradient token을 추가하고 raw color를 제거한다.
+    - [ ] 저장/실시간 waveform, Landing Gradient Text와 보컬 분석 차트에 token을 연결한다.
+    - [ ] Storybook, TypeScript, lint, architecture와 browser QA를 통과한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
