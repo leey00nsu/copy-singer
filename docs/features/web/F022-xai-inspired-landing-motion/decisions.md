@@ -150,5 +150,8 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 각 단계의 성격을 구분하면서도 생성된 질감을 그대로 보존하고, x.ai형 editorial rail에 필요한 밝고 어두운 visual 대비를 만든다.
 - **Trace**:
   - **DOING 시작 전**: 제공된 네 이미지의 색감과 기존 Voice Notes 순서를 비교해 녹음→음역→추천→믹싱의 점진적 tonal flow를 정했다.
+  - **DONE 전 확정 시점**: 원본 1920×1080 WebP를 의미 기반 파일명으로 복사하고 `next/image`의 `fill`, 반응형 `sizes`, `object-cover`로 연결했다. 기존 중복 제목 overlay와 합성 grain/shimmer는 제거했다. 실제 1440×1000과 390×844 화면에서 네 이미지의 crop, 순서, overflow 0과 console warning/error 0을 확인했다.
 - **Evidence**:
   - **Source assets**: 사용자 제공 `aurora-gradient-*.webp` 4장
+  - **Test/Log**: landing Storybook 4/4, TypeScript와 Biome 통과
+- **Consequences**: D007의 Tailwind 생성 gradient 결정은 카드 구조와 Orb 수정에 대해서만 유지되고 Voice Notes visual 배경 선택은 이 결정으로 대체된다. 이미지 4장은 viewport 밖에서 lazy-load되며 별도 canvas나 animation runtime을 추가하지 않는다.

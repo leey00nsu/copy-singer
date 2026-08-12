@@ -66,7 +66,7 @@ F022 이후 `01-landing-voice-scan.*`의 오른쪽 Voice Scan frame은 계속 �
 - 분석 → 노래/키 추천 → 선택형 AI 믹싱의 실제 3단계는 desktop에서 sticky 설명과 연속 preview panel로, mobile에서 같은 DOM 순서의 한 열로 설명한다. scroll-jacking, horizontal carousel과 JavaScript active-step state는 사용하지 않는다.
 - Aceternity UI의 Bento Grid·Glowing Effect source pattern과 React Bits의 Orb·Animated Content를 실제로 통합한다. Orb는 `hue=294`, `rotateOnHover=false`, `hoverIntensity=0`으로 분석 카드와 실제 분석 진행 중앙 visual에 사용하며, 기존 랜딩 waveform·dotted glow·ripple과 dashed ring은 제거한다.
 - 후속 section은 긴 반복 sticky card 대신 2열 editorial demo, 정직한 metric band, 분석 결과 rail과 2-up 시작 CTA로 구성한다.
-- Voice Notes의 4개 editorial card는 각각 독립된 visual과 하단 label·title·description을 유지하고, visual 배경만 React Bits Grainient의 색감과 grain을 참고한 Tailwind 정적 gradient로 구성한다. 이 section에는 WebGL canvas를 사용하지 않는다.
+- Voice Notes의 4개 editorial card는 각각 독립된 visual과 하단 label·title·description을 유지하고, visual에는 사용자 제공 Aurora WebP를 녹음(밝은 ice) → 실용 음역(cyan) → 추천 키(blue-violet) → AI 믹싱(dark neutral) 순으로 사용한다. 이미지는 장식으로 처리하고 제목이나 설명을 이미지 위에 겹치지 않으며 이 section에는 WebGL canvas를 사용하지 않는다.
 - WebGL/GSAP/motion runtime, custom cursor, magnetic button, 3D tilt, 무한 marquee와 전역 animated gradient를 Landing에 추가하지 않는다.
 - `prefers-reduced-motion`에서는 entry와 section reveal을 제거하고 Orb를 정지 또는 정적 fallback으로 대체하며 동일한 heading, 설명, CTA와 preview를 유지한다.
 - 하단 CTA는 neutral surface와 restrained pastel accent를 사용할 수 있지만 crystal 이미지는 사용하지 않는다.
