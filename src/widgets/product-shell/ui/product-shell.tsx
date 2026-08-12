@@ -4,7 +4,7 @@ import { Library, Menu, Mic2, ShieldCheck, UserRound } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { UserMenu } from "@/features/authentication";
 import { NotificationBell } from "@/features/manage-notifications";
@@ -85,11 +85,27 @@ type ProductHeaderProps = {
 
 function ProductHeader({ admin = false, user = null }: ProductHeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const authenticated = Boolean(user);
 
+  useEffect(() => {
+    const updateScrolled = () => {
+      const next = window.scrollY > 8;
+      setScrolled((current) => (current === next ? current : next));
+    };
+
+    updateScrolled();
+    window.addEventListener("scroll", updateScrolled, { passive: true });
+    return () => window.removeEventListener("scroll", updateScrolled);
+  }, []);
+
   return (
-    <header className="sticky top-0 z-40 border-b border-border/80 bg-background/96 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 w-full max-w-[72rem] items-center justify-between gap-6 px-5 sm:px-7 md:grid md:grid-cols-[1fr_auto_1fr] lg:px-8">
+    <header
+      className="sticky top-0 z-40 bg-background/72 backdrop-blur-xl backdrop-saturate-150 transition-colors duration-300 supports-[backdrop-filter]:bg-background/64"
+      data-scrolled={scrolled ? "true" : "false"}
+      data-testid="product-header"
+    >
+      <div className="relative mx-auto flex h-16 w-full max-w-[72rem] items-center justify-between gap-6 px-5 sm:px-7 md:grid md:grid-cols-[1fr_auto_1fr] lg:px-8">
         <ProductBrand href="/" />
         <div className="hidden md:block">
           <ProductNavigation admin={admin} authenticated={authenticated} />
@@ -154,6 +170,14 @@ function ProductHeader({ admin = false, user = null }: ProductHeaderProps) {
             </SheetContent>
           </Sheet>
         </div>
+        <span
+          aria-hidden="true"
+          className={cn(
+            "pointer-events-none absolute inset-x-0 bottom-0 h-px transition-colors duration-300",
+            scrolled ? "bg-border/80" : "bg-transparent",
+          )}
+          data-testid="product-header-separator"
+        />
       </div>
     </header>
   );
@@ -161,8 +185,11 @@ function ProductHeader({ admin = false, user = null }: ProductHeaderProps) {
 
 function ProductFooter() {
   return (
-    <footer className="border-t border-border/80">
-      <div className="mx-auto flex w-full max-w-[72rem] flex-col gap-5 px-5 py-7 text-xs text-muted-foreground sm:px-7 md:flex-row md:items-end md:justify-between lg:px-8">
+    <footer className="bg-background/72 backdrop-blur-xl backdrop-saturate-150 supports-[backdrop-filter]:bg-background/64">
+      <div
+        className="mx-auto flex w-full max-w-[72rem] flex-col gap-5 border-t border-border/80 px-5 py-7 text-xs text-muted-foreground sm:px-7 md:flex-row md:items-end md:justify-between lg:px-8"
+        data-testid="product-footer-rail"
+      >
         <div>
           <ProductBrand href="/" />
           <p className="mt-2">목소리로 이해하고, 가장 잘 맞는 노래와 연결합니다.</p>

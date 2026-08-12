@@ -74,6 +74,27 @@ export const Desktop: Story = {
   },
 };
 
+export const ScrollChrome: Story = {
+  args: {
+    children: <div className="mx-auto min-h-[140vh] max-w-4xl px-5 py-12">스크롤 동작 확인</div>,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const header = canvas.getByTestId("product-header");
+    const separator = canvas.getByTestId("product-header-separator");
+    await expect(header).toHaveAttribute("data-scrolled", "false");
+    await expect(getComputedStyle(separator).backgroundColor).toBe("rgba(0, 0, 0, 0)");
+
+    window.scrollTo({ top: 120 });
+    await waitFor(() => expect(header).toHaveAttribute("data-scrolled", "true"));
+    await expect(getComputedStyle(separator).backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
+
+    const footerRail = canvas.getByTestId("product-footer-rail");
+    await expect(footerRail.getBoundingClientRect().width).toBeLessThanOrEqual(1152);
+    window.scrollTo({ top: 0 });
+  },
+};
+
 export const Mobile: Story = {
   globals: {
     viewport: { value: "mobile1", isRotated: false },
