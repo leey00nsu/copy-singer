@@ -101,23 +101,23 @@
     - [x] Storybook browser interaction과 addon a11y 검증을 실행했다.
     - [x] TypeScript, lint와 architecture boundary 검사를 통과했다.
 
-- [TODO][NON-PRD] T-F022-xai-inspired-landing-motion-05 브라우저 시각·성능 검증과 문서 동기화
+- [DONE][NON-PRD] T-F022-xai-inspired-landing-motion-05 브라우저 시각·성능 검증과 문서 동기화
   - Date: 2026-08-12
   - Acceptance:
     - Desktop/mobile/reduced-motion 브라우저 검증에서 hero, scroll story, CTA/footer가 의도대로 보이며 console 오류가 없다.
     - Production build가 통과하고 신규 animation runtime이나 WebGL dependency가 포함되지 않는다.
   - Checklist:
-    - [ ] desktop과 mobile 결과 스크린샷을 생성하고 직접 검토한다.
-    - [ ] production build 및 관련 전체 검증 명령을 실행한다.
-    - [ ] product UI 디자인 문서, decisions와 workflow sync evidence를 최종 구현에 맞게 갱신한다.
+    - [x] desktop, mobile과 reduced-motion 결과 스크린샷을 생성하고 직접 검토했다.
+    - [x] production build 및 관련 전체 검증 명령을 실행했다.
+    - [x] product UI 디자인 문서, decisions와 workflow sync evidence를 최종 구현에 맞게 갱신했다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -131,5 +131,7 @@
 | `pnpm run typecheck` | `2026-08-12` | 통과 — 신규 landing story component 포함 TypeScript 오류 없음 |
 | `pnpm run lint` | `2026-08-12` | 통과 — 전체 ESLint 오류 없음 |
 | `pnpm run test:architecture-boundaries` | `2026-08-12` | 통과 — FSD, client/server와 root App boundary 4/4 |
+| `pnpm run build` | `2026-08-12` | 통과 — Next.js 16.3 production build, TypeScript와 29개 static page 생성 완료 |
+| Browser responsive QA | `2026-08-12` | 통과 — desktop 1440×1000 sticky story, mobile 390×844 static stack 및 overflow 없음, reduced-motion animation 0개, console warning/error 0개 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T01:51:26.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T01:57:34.000Z -->

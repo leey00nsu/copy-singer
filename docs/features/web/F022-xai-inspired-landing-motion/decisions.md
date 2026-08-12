@@ -30,12 +30,12 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **DOING 시작 시점**: 현재 waveform/ripple CSS와 정적 랜딩 구조만으로 Hero의 semantic 재구성과 preview 기반을 만들 수 있다고 판단했다. 외부 레퍼런스는 레이아웃과 motion timing의 근거로만 사용한다.
   - **DONE 전 확정 시점**: `LandingHero`를 Server Component로 분리하고 기존 CSS waveform을 재사용해 중앙형 headline, 실제 CTA와 semantic preview를 구성했다. 별도 client boundary 없이 Storybook signed-out/in 회귀가 통과했다.
-  - **머지 후 확인**: 실제 결과/영향
+  - **머지 후 확인**: local integration 이후 최종 확인 예정
 - **Evidence**:
   - **Commit**: `654fd3a` (`feat(F022-xai-inspired-landing-motion): 중앙형 랜딩 구조와 제품 preview 재구성`)
-  - **PR**: PR 링크
+  - **PR**: local workflow이므로 원격 PR 없음
   - **Test/Log**: `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` 통과 (2/2)
-- **Consequences**: 결과 및 영향 (선택사항)
+- **Consequences**: Landing markup이 Hero와 product story 책임으로 분리되고 외부 animation runtime 없이 유지된다.
 
 ## D002: CSS progressive enhancement motion (2026-08-12)
 
@@ -47,7 +47,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **At DOING start**: CSS만으로 motion을 구성하되 기본 opacity와 문서 흐름은 visible 상태로 유지하는 가설로 시작했다.
   - **Before DONE**: entry 시작 opacity를 0이 아닌 값으로 보정해 첫 animation frame에서도 preview가 접근성 검사에서 visible하도록 했고, Storybook 회귀를 재통과했다.
-  - **Post-merge check**: Update this line after merge when applicable.
+  - **Post-merge check**: local integration 이후 최종 확인 예정
 - **Evidence**:
   - **Commit**: `817aa52` (`feat(F022-xai-inspired-landing-motion): waveform glow와 reveal motion 구현`)
   - **Test/Log**: pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx 통과 (2/2)
@@ -63,9 +63,29 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **At DOING start**: Desktop와 mobile markup을 분기하지 않고 ordered list의 문서 순서를 그대로 유지하는 구조로 시작했다.
   - **Before DONE**: 세 단계 preview를 비상호작용 presentation으로 구성하고, desktop에서만 sticky header를 활성화했다. TypeScript와 Storybook 회귀가 통과했다.
-  - **Post-merge check**: Update this line after merge when applicable.
+  - **Post-merge check**: local integration 이후 최종 확인 예정
 - **Evidence**:
   - **Commit**: `054347a` (`feat(F022-xai-inspired-landing-motion): 3단계 scroll story 구현`)
   - **Test/Log**: pnpm run typecheck 통과
   - **Test/Log**: pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx 통과 (2/2)
 - **Consequences**: Desktop active step을 별도 상태로 강조하지 않지만 세 패널의 위치와 순서가 narrative를 전달한다.
+
+## D004: 최종 시각·성능 검증 결과 (2026-08-12)
+
+- **Context**: 정적 테스트만으로는 sticky, responsive layout, CSS animation fallback과 실제 화면 품질을 확정할 수 없다.
+- **Constraints**: 사용자 소유 카탈로그 변경은 검증과 commit 범위에서 제외하고, UI 스크린샷은 로컬 임시 evidence로 유지한다.
+- **Options**: Storybook 테스트만 사용 / 실제 Next.js route와 reduced-motion Storybook을 함께 검증
+- **Decision**: 실제 `/` route를 desktop 1440×1000과 mobile 390×844로 검증하고, reduced-motion Storybook에서 computed animation 수를 확인한다.
+- **Rationale**: 실제 route의 공통 Header/Footer, responsive sticky fallback, overflow와 console 상태를 함께 확인할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 기존 로컬 Next.js 서버와 임시 Storybook 서버를 분리해 검증했다.
+  - **DONE 전 확정 시점**: desktop/mobile overflow 없음, desktop sticky/mobile static, reduced-motion animation 0개와 console warning/error 0개를 확인했다.
+  - **머지 후 확인**: local integration 이후 최종 확인 예정
+- **Evidence**:
+  - **Screenshot**: `/tmp/lee-spec-kit/pr-assets/f022-landing-desktop-hero.png`
+  - **Screenshot**: `/tmp/lee-spec-kit/pr-assets/f022-landing-desktop-story.png`
+  - **Screenshot**: `/tmp/lee-spec-kit/pr-assets/f022-landing-mobile.png`
+  - **Screenshot**: `/tmp/lee-spec-kit/pr-assets/f022-landing-mobile-story.png`
+  - **Screenshot**: `/tmp/lee-spec-kit/pr-assets/f022-landing-reduced-motion.png`
+  - **Test/Log**: `pnpm run build` 통과 — Next.js production build와 29개 static page 생성
+- **Consequences**: 신규 animation runtime 또는 WebGL dependency 없이 F022의 시각·성능 acceptance를 충족했다.
