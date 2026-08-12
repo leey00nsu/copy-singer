@@ -357,23 +357,23 @@
     - [x] Gradient Text를 shared component로 만들고 Hero에 연결했다.
     - [x] Storybook에서 단일 gradient field, yoyo timing과 reduced-motion 계약을 검증했다.
 
-- [DOING][PRD-FR-048] T-F022-xai-inspired-landing-motion-29 Landing Motion primitive 최적화
+- [DONE][PRD-FR-048] T-F022-xai-inspired-landing-motion-29 Landing Motion primitive 최적화
   - Date: 2026-08-12
   - Acceptance:
     - Hero의 수동 entry keyframe과 공통 RevealContent의 직접 IntersectionObserver/state/CSS transition을 Motion primitive로 교체한다.
     - section·stagger·line·fade 역할, one-shot viewport 진입, reduced-motion, no-JS content visibility와 기존 문서 순서를 유지한다.
     - Orb WebGL/audio RAF와 단순 hover CSS는 Motion으로 옮기지 않고 책임 경계를 문서화한다.
   - Checklist:
-    - [ ] Hero word/copy/action entry를 Motion variants로 통합한다.
-    - [ ] RevealContent를 Motion viewport/selector animation으로 통합한다.
-    - [ ] Landing Storybook, architecture, build와 responsive browser 회귀를 검증한다.
+    - [x] Hero word/copy/action entry를 Motion variants로 통합했다.
+    - [x] RevealContent를 Motion viewport/selector animation으로 통합했다.
+    - [x] Landing Storybook, architecture, build와 responsive browser 회귀를 검증했다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -389,6 +389,7 @@
 | `pnpm run test:storybook --run src/_pages/profile/ui/voice-scan-input.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx src/shared/ui/voice-orb/voice-orb.stories.tsx` | `2026-08-12` | 통과 — gray halo 없는 dynamic idle/recording/processing Voice Core, notice와 Orb fallback 14/14 |
 | `pnpm run test:storybook --run src/_pages/profile/ui/voice-scan-input.stories.tsx src/shared/ui/status-notice/status-notice.stories.tsx src/shared/ui/state-panel/state-panel.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/widgets/library/ui/vocal-profile-library.stories.tsx src/widgets/library/ui/mixing-library.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx` | `2026-08-12` | 통과 — grayscale/recording Voice Core, shared StatusNotice tone·정렬, border hierarchy와 관련 화면 회귀 43/43 |
 | `pnpm run test:storybook --run src/widgets/product-shell/ui/product-shell.stories.tsx src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — Header top/scrolled separator, Footer rail, authenticated/unauthenticated와 Landing chrome 회귀 11/11 |
+| `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx src/shared/ui/voice-orb/voice-orb.stories.tsx` | `2026-08-12` | 통과 — Motion Hero/Reveal, shell과 Orb client island 회귀 13/13, LCP lazy warning 0 |
 | `pnpm exec biome check src/_pages/home/ui/landing-page.tsx src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — Voice Notes 이미지 markup과 Storybook assertion format/lint 확인 |
 | `pnpm exec biome check src/_pages/home/ui/landing-page.tsx src/_pages/home/ui/landing-hero.tsx src/_pages/home/ui/landing-hero.module.css` | `2026-08-12` | 통과 — 3개 landing 파일 format/lint 확인 |
 | `pnpm run typecheck` | `2026-08-12` | 통과 — 신규 landing story component 포함 TypeScript 오류 없음 |
@@ -403,8 +404,9 @@
 | Header/Footer chrome QA | `2026-08-12` | 통과 — 1265px viewport에서 top separator transparent, scrollY 180에서 header data-scrolled true·separator 1152px·footer rail 1152px, backdrop blur(24px) saturate(1.5)와 overflow 0 확인 |
 | Hero Gradient Text QA | `2026-08-12` | 통과 — desktop/mobile에서 `내 목소리` 2개 segment, violet→blue→pink background와 duration 1.5s 확인; heading 시각 문구·조사·word reveal 유지, 390px overflow 0 |
 | Gradient Text loop QA | `2026-08-12` | 통과 — Storybook browser에서 0ms와 1500ms background-position 동일, 750ms position 상이, linear infinite와 reduced-motion 0s 확인 |
+| Official Gradient Text / Motion QA | `2026-08-12` | 통과 — Chromium 1440×1000·390×844에서 `내 목소리` 단일 violet→pink field, 조사 foreground, Hero word/copy reveal과 bento/section one-shot reveal 확인; mobile scrollWidth=clientWidth=390 |
 | Voice Notes / Orb QA | `2026-08-12` | 통과 — 독립 Voice Notes 4개와 Tailwind grain gradient 직접 검토, Grainient canvas 0개·Orb canvas 1개, Orb root transparent·fallback opacity 0, gray half/square artifact와 horizontal overflow 0 확인; 관련 Storybook 10/10 통과 |
 | Voice Notes Aurora QA | `2026-08-12` | 통과 — 1440×1000에서 4-up 263×159 crop, 390×844에서 1열 335×203 crop과 밝은 ice→cyan→blue-violet→dark neutral 순서를 직접 확인; desktop/mobile horizontal overflow 0, console warning/error 0 |
 | Album Cover Stack QA | `2026-08-12` | 통과 — 1440×1000에서 4개 cover layer와 hover fan-out, 390×844에서 stacked mixing card와 crop 확인; horizontal overflow 0, console warning/error 0, reduced-motion story 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T08:20:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T08:29:30.000Z -->

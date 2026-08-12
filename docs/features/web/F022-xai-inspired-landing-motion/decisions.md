@@ -385,5 +385,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 공식 효과의 속도·연속 gradient field를 재현하면서, Motion이 이미 로드되는 Landing에서 중복 observer/state/keyframe 코드를 줄일 수 있다. 반대로 고주파 render loop와 단순 CSS hover까지 추상화하면 성능·복잡도 이득이 없다.
 - **Trace**:
   - **T28 DONE 시점**: `motion@13.1.0`을 설치하고 React Bits source의 `useAnimationFrame`·MotionValue·yoyo를 `shared/ui/gradient-text`로 통합했다. `내 목소리`는 하나의 gradient field를 공유하고 조사 `에`만 foreground로 덮으며, 공식 의미대로 편도 1.5초·왕복 3초가 된다.
-- **Evidence**: `src/shared/ui/gradient-text`, `src/_pages/home/ui/landing-hero.tsx`, `package.json`, `pnpm-lock.yaml`
-- **Test/Log**: Landing Storybook 4/4, Biome, TypeScript 통과
+  - **T29 DONE 시점**: Hero의 CSS keyframe/delay를 Motion entrance primitive로 교체하고 `RevealContent`의 직접 IntersectionObserver·visible state·transition CSS를 `useInView`·`useAnimate` 기반 one-shot sequence로 축소했다. 공식 Gradient Text 안에 중첩 word span을 넣으면 `background-clip:text`가 적용되지 않는 Chromium 결과를 발견해, `내 목소리` direct text를 하나의 branded entrance unit으로 확정했다. 첫 viewport album stack의 LCP 후보 한 장만 eager-load하고 나머지는 lazy로 유지했다.
+- **Evidence**: `src/shared/ui/gradient-text`, `src/shared/ui/reveal-content`, `src/_pages/home/ui/landing-hero.tsx`, `src/_pages/home/ui/landing-product-story.tsx`, `package.json`, `pnpm-lock.yaml`
+- **Test/Log**: Landing·ProductShell·VoiceOrb Storybook 13/13, Biome, TypeScript, ESLint, architecture 4/4, production build와 Chromium desktop/mobile QA 통과
+- **Consequences**: Landing에서는 Motion runtime을 Gradient Text·Hero entry·RevealContent가 공유하며 중복 Observer/state/keyframe이 제거된다. Reduced-motion과 no-JS media fallback은 Motion inline initial state보다 우선하도록 제한적으로 보존한다. Orb/audio RAF와 hover CSS는 기존 책임을 유지한다.

@@ -64,6 +64,7 @@ F022 이후 `01-landing-voice-scan.*`의 오른쪽 Voice Scan frame은 계속 �
 - 첫 viewport는 넓은 whitespace 안의 중앙 정렬 display copy, 실제 voice-analysis primary CTA와 아래에서 이어지는 넓은 voice preview를 중심으로 구성한다.
 - Hero의 작은 announcement, 절제된 headline, 설명, primary/secondary action과 넓은 여백은 x.ai의 정보 위계를 참고하되 Copy Singer semantic token과 한국어 제품 문구를 유지한다.
 - Hero headline의 `내 목소리` phrase는 공식 React Bits Gradient Text source 기반 violet data accent→blue→restrained pink의 단일 gradient field를 사용한다. `animationSpeed=1.5`는 편도 1.5초·yoyo 왕복 3초로 해석하고 reduced-motion에서는 동일 gradient를 정적으로 유지한다.
+- Hero word/copy entry와 section·stagger·line·fade reveal은 `motion/react`의 one-shot viewport primitive를 공유한다. Orb WebGL·녹음 analyser RAF와 단순 hover transition은 각각의 전용 구현을 유지한다.
 - Hero 아래에는 x.ai식 비대칭 product bento를 두고 `목소리 분석`, `노래와 키 추천`, `선택형 AI 믹싱`을 서로 다른 mini-product surface로 보여준다. preview 안의 분석 항목은 값을 가장하지 않고 `관찰 음역`, `실용 음역`, `음정 안정성`처럼 실제로 제공하는 결과 종류만 예고한다.
 - 분석 → 노래/키 추천 → 선택형 AI 믹싱의 실제 3단계는 desktop에서 sticky 설명과 연속 preview panel로, mobile에서 같은 DOM 순서의 한 열로 설명한다. scroll-jacking, horizontal carousel과 JavaScript active-step state는 사용하지 않는다.
 - Aceternity UI의 Bento Grid·Glowing Effect source pattern과 React Bits의 Orb·Animated Content를 실제로 통합한다. Orb는 `hue=294`, `rotateOnHover=false`, `hoverIntensity=0`으로 분석 카드와 실제 분석 진행 중앙 visual에 사용하며, 기존 랜딩 waveform·dotted glow·ripple과 dashed ring은 제거한다.
