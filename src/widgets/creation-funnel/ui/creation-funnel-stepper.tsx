@@ -7,31 +7,40 @@ export function CreationFunnelStepper({ current }: { current: CreationFunnelStep
 
   return (
     <nav aria-label="생성 진행 단계">
-      <ol className="grid grid-cols-3 overflow-hidden rounded-lg bg-muted/30 text-xs sm:text-sm">
+      <ol className="relative grid grid-cols-3 text-xs sm:text-sm">
         {creationFunnelSteps.map((step, index) => {
           const state = index < currentIndex ? "complete" : index === currentIndex ? "current" : "upcoming";
           return (
             <li
               aria-current={state === "current" ? "step" : undefined}
               className={cn(
-                "relative flex min-w-0 items-center gap-2 px-2 py-3 sm:px-4",
-                index > 0 && "border-l",
+                "relative z-10 flex min-w-0 flex-col items-center gap-2 px-1 text-center",
                 state === "upcoming" && "text-muted-foreground",
               )}
               data-state={state}
               key={step.id}
             >
+              {index < creationFunnelSteps.length - 1 ? (
+                <span aria-hidden="true" className="absolute top-3 left-1/2 z-0 h-px w-full bg-border">
+                  <span
+                    className={cn(
+                      "block h-full w-0 bg-foreground transition-[width] duration-500 motion-reduce:transition-none",
+                      index < currentIndex && "w-full",
+                    )}
+                  />
+                </span>
+              ) : null}
               <span
                 aria-hidden="true"
                 className={cn(
-                  "flex size-6 shrink-0 items-center justify-center rounded-full border text-[10px] font-semibold",
+                  "relative z-10 flex size-6 shrink-0 items-center justify-center rounded-full border bg-background text-[10px] font-semibold transition-colors duration-300",
                   state === "complete" && "border-foreground bg-foreground text-background",
                   state === "current" && "border-data-accent bg-data-accent text-white",
                 )}
               >
                 {state === "complete" ? <Check className="size-3.5" /> : index + 1}
               </span>
-              <span className="truncate font-medium">{step.label}</span>
+              <span className="max-w-full truncate font-medium">{step.label}</span>
             </li>
           );
         })}

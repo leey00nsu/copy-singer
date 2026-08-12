@@ -12,11 +12,24 @@ function hashIdentity(value: string) {
   return hash >>> 0;
 }
 
+const brandHueFamilies = [
+  { accent: 294, base: 258, third: 330 },
+  { accent: 274, base: 224, third: 318 },
+  { accent: 324, base: 282, third: 246 },
+  { accent: 252, base: 210, third: 302 },
+] as const;
+
+function normalizedHue(value: number) {
+  return (value + 360) % 360;
+}
+
 export function vocalProfileArtworkTokens(profileId: string): VocalProfileArtworkTokens {
   const seed = hashIdentity(profileId);
-  const hue = seed % 360;
-  const accentHue = (hue + 44 + ((seed >>> 8) % 74)) % 360;
-  const thirdHue = (hue + 184 + ((seed >>> 16) % 48)) % 360;
+  const family = brandHueFamilies[seed % brandHueFamilies.length] ?? brandHueFamilies[0];
+  const variation = ((seed >>> 8) % 17) - 8;
+  const hue = normalizedHue(family.base + variation);
+  const accentHue = normalizedHue(family.accent - Math.round(variation * 0.5));
+  const thirdHue = normalizedHue(family.third + Math.round(variation * 0.75));
   const x = 18 + ((seed >>> 5) % 65);
   const y = 14 + ((seed >>> 13) % 68);
   const angle = 105 + ((seed >>> 19) % 130);
