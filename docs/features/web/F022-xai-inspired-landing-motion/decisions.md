@@ -255,7 +255,12 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Context**: 사용자가 스크롤 이후 모든 section이 조금씩 위로 올라오는 동일한 motion만 반복되어 단조롭다고 보고, 랜딩 전체의 통일성을 높이는 수정안을 적용하도록 요청했다.
 - **Constraints**: 기존 Hero word reveal과 Bento full fade를 유지하고, metric Count Up·scroll-jacking·과도한 transform을 재도입하지 않으며 client observer 수와 reduced-motion 계약을 관리해야 한다.
 - **Options**: 모든 section에 같은 translate-up 강화 / 외부 motion runtime 추가 / 기존 `RevealContent`를 역할별 variant와 CSS child stagger로 확장
-- **Decision**: 구현 및 검증 후 확정한다. 초기 방향은 공통 easing을 유지하면서 section·group·stagger·line·fade variant를 추가하고 하나의 observer 안에서 child index로 순서를 제어하는 것이다.
-- **Rationale**: 구현 및 검증 후 확정한다.
+- **Decision**: `RevealContent`에 공통 `cubic-bezier(0.22, 1, 0.36, 1)` 기반 section·group·stagger·line·fade variant를 추가한다. Editorial은 heading과 app header·3단계, metric은 두 hairline과 정적 숫자 3개, Voice Notes는 heading과 card 4개를 분리해 reveal하고 final CTA는 이동 없는 단일 fade를 사용한다. Child 순서는 CSS variable delay로 처리해 카드마다 observer를 만들지 않는다.
+- **Rationale**: 같은 easing과 70ms rhythm은 페이지를 하나의 motion family로 묶고, 역할별 opacity·translate·scale 차이는 반복되는 translate-up의 단조로움을 줄인다. Metric 숫자는 animation 없이 제품 사실로 남고 선만 펼쳐져 기존 결정과도 충돌하지 않는다.
 - **Trace**:
   - **DOING 시작 시점**: 현재 `RevealContent` 기본값은 opacity 0.94, translateY 8px, 700ms이며 editorial·Voice Notes·CTA 전체와 metric 각 칸에 반복 적용돼 차이가 거의 보이지 않으면서 동일한 상승 동작만 누적된다.
+  - **DONE 전 확정 시점**: variant default map과 CSS child target을 추가하고 하단 네 section을 역할별 markup으로 재구성했다. 실제 브라우저에서 scroll 전 section 16px, card 6px, metric item opacity 0, hairline scaleX 0, final CTA opacity 0/이동 0을 확인하고 각 진입 후 모두 최종 상태가 되는 것을 확인했다. Storybook 4/4, TypeScript, ESLint, architecture boundary와 production build를 통과했다.
+- **Evidence**:
+  - **Components**: `src/shared/ui/reveal-content`, `src/_pages/home/ui/landing-page.tsx`
+- **Test/Log**: landing Storybook 4/4, TypeScript, ESLint, architecture boundary, Next.js 16.3 production build와 1440px/390px browser scroll QA 통과
+- **Consequences**: `RevealContent`의 기존 explicit duration·distance·opacity API는 유지되며 Bento full fade는 회귀하지 않는다. Reduced-motion·no-script에서는 root, item, media와 line 모두 즉시 최종 상태를 표시한다.

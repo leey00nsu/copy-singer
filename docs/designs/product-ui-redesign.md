@@ -66,6 +66,7 @@ F022 이후 `01-landing-voice-scan.*`의 오른쪽 Voice Scan frame은 계속 �
 - 분석 → 노래/키 추천 → 선택형 AI 믹싱의 실제 3단계는 desktop에서 sticky 설명과 연속 preview panel로, mobile에서 같은 DOM 순서의 한 열로 설명한다. scroll-jacking, horizontal carousel과 JavaScript active-step state는 사용하지 않는다.
 - Aceternity UI의 Bento Grid·Glowing Effect source pattern과 React Bits의 Orb·Animated Content를 실제로 통합한다. Orb는 `hue=294`, `rotateOnHover=false`, `hoverIntensity=0`으로 분석 카드와 실제 분석 진행 중앙 visual에 사용하며, 기존 랜딩 waveform·dotted glow·ripple과 dashed ring은 제거한다.
 - Hero headline은 단어 단위 CSS stagger로 순차 등장하고 설명은 문장 전체가 아래에서 위로 한 번 나타난다. 설명과 action은 animation 시작 전 opacity 0으로 완전히 숨긴다. Bento는 카드별 분절 없이 전체 wrapper가 opacity 0에서 1로 천천히 한 번 나타난다. Heading은 하나의 접근 가능한 전체 문장을 유지한다.
+- Bento 이후는 동일한 translate-up을 반복하지 않는다. 공통 easing 아래 editorial은 heading→단계, metric band는 hairline→정적 숫자, Voice Notes는 heading→카드 opacity stagger, 마지막 2-up CTA는 이동 없는 단일 fade를 사용한다. Stagger 간격은 70ms, 이동 거리는 heading 16px·card 6px 이하로 제한한다.
 - 추천 preview는 Recommended key 숫자 animation 대신 실제 분석 결과와 같은 Vocal Range Profile chart를 사용한다. 회색 전체 관측 음역, violet 실용 음역, 점선 중앙음과 note axis만 표시하고 별도 `Sample profile`·`가상 데이터` header는 두지 않는다. 실제 결과와 landing sample은 같은 entity chart component를 사용한다. Orb surface도 `VOICE SIGNAL`과 장식 아이콘 없이 Orb만 표시한다. Metric band의 `5초+`, `60초`, `3단계`는 animation 없는 정적 사실로 유지한다.
 - 후속 section은 긴 반복 sticky card 대신 2열 editorial demo, 정직한 metric band, 분석 결과 rail과 2-up 시작 CTA로 구성한다.
 - AI 믹싱 bento의 `선택한 추천곡만 AI 믹싱` 왼쪽 visual은 단색 음표 아이콘 대신 Pixabay의 추상·자연·도시 이미지 4장을 겹친 album-cover stack으로 구성한다. cover는 장식이며 실제 추천 앨범이나 아티스트 데이터로 표현하지 않는다.

@@ -100,7 +100,7 @@ x.ai의 절제된 중앙형 랜딩 구조를 Copy Singer에 맞게 재해석하�
 - Hero 설명과 action은 animation 시작 전 opacity 0으로 완전히 숨기고 각 reveal 시점에만 표시한다.
 - 기존 Recommended key animation visualizer는 제거하고 실제 분석 결과와 같은 Vocal Range Profile chart를 사용한다. 랜딩에서는 별도 sample header 없이 전체 관측 음역, 실용 음역과 중앙음만 표시한다.
 - Metric band의 `5초+`, `60초`, `3단계`는 정적인 제품 사실로 표시하고 Count Up을 적용하지 않는다.
-- headline과 section reveal은 첫 진입 시 한 번만 실행하고, 작은 opacity 및 translate 변화로 제한한다.
+- headline과 section reveal은 첫 진입 시 한 번만 실행한다. 하단은 공통 easing 아래 section heading, content group, 반복 card, metric hairline과 final CTA의 역할별 reveal을 사용하며 작은 opacity·translate·scale 변화로 제한한다.
 - 포인터 기반 highlight를 사용할 경우 제품 preview surface에만 적용하며 primary action의 위치나 hit target을 움직이지 않는다.
 - Orb 이외의 custom cursor, magnetic button, 무한 marquee, 3D tilt, scroll-jacking과 상시 전체 화면 WebGL 배경은 제외한다.
 
