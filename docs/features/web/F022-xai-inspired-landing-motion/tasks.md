@@ -512,12 +512,23 @@
     - [x] 저장/실시간 waveform, Landing Gradient Text와 보컬 분석 차트에 token을 연결한다.
     - [x] Storybook, TypeScript, lint, architecture와 browser QA를 통과한다.
 
+- [TODO][PRD-FR-047] T-F022-xai-inspired-landing-motion-43 보컬 차트 gradient 강도와 범례 정리
+  - Date: 2026-08-12
+  - Acceptance:
+    - 전체 관측 음역 bar는 neutral gray로 표시하고 실용 음역만 절제된 brand gradient를 사용한다.
+    - 중앙음은 chart 내부 label이 있는 reference line으로만 설명하며 별도 series처럼 보이는 범례 항목은 제거한다.
+    - Histogram과 pitch trace를 포함한 chart gradient는 기존보다 낮은 채도와 대비로 표시된다.
+  - Checklist:
+    - [ ] chart 전용 restrained brand stop을 추가한다.
+    - [ ] observed range와 중앙음 범례를 정리한다.
+    - [ ] Storybook, TypeScript와 browser QA를 통과한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록

@@ -507,3 +507,10 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**: `src/_app/styles/globals.css`, `src/shared/ui/voice-signal-core`, `src/shared/ui/audio-waveform-player`, `src/_pages/home/ui/landing-hero.tsx`, `src/entities/vocal-profile/ui`
 - **Trace**: Global light/dark token과 signal/soft gradient를 추가하고 Landing Gradient Text, live Canvas waveform, WaveSurfer progress를 같은 stop에 연결했다. Vocal range는 quiet observed/strong practical gradient, histogram은 vertical signal gradient, pitch trace는 horizontal signal gradient를 사용한다. Storybook 23/23, TypeScript, lint, architecture 4/4를 통과했고 Chromium에서 세 chart의 computed stop과 animation 0, overflow 0을 확인했다.
 - **Consequences**: 기존 hard-coded brand stop은 제거되고, light/dark 조정은 token 한 곳에서 가능해진다. Profile artwork의 voice-derived analogous family와 semantic 단색 상태는 이 gradient 계약의 적용 대상이 아니다.
+
+## D035: 보컬 차트에서는 neutral context와 restrained signal을 분리 (2026-08-12)
+
+- **Context**: 강한 brand stop을 chart에 그대로 사용하자 실용 음역·histogram이 waveform보다 진하게 보였고, 전체 관측 음역까지 gradient가 적용되면서 일부 환경에서 검은 bar로 렌더됐다. 중앙음은 reference line인데 범례 항목까지 있어 세 번째 bar series처럼 오해됐다.
+- **Decision**: 전체 관측 음역은 neutral `muted` bar로 복원하고 중앙음 범례 항목은 제거한다. 실용 음역·histogram·pitch trace만 background와 혼합한 chart 전용 violet→blue→pink stop을 사용하며 중앙음 reference line과 label은 neutral gray로 유지한다.
+- **Rationale**: 전체 범위는 context, 실용 음역은 핵심 signal, 중앙음은 기준선이라는 서로 다른 역할을 색과 범례 구조가 그대로 설명한다.
+- **Evidence**: `src/_app/styles/globals.css`, `src/entities/vocal-profile/ui/vocal-range-chart.tsx`, `src/entities/vocal-profile/ui/vocal-profile-results.tsx`, Storybook
