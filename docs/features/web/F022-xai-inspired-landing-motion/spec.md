@@ -100,7 +100,7 @@ x.ai의 절제된 중앙형 랜딩 구조를 Copy Singer에 맞게 재해석하�
 - Hero 설명과 action은 animation 시작 전 opacity 0으로 완전히 숨기고 각 reveal 시점에만 표시한다.
 - 기존 Recommended key animation visualizer는 제거하고 실제 분석 결과와 같은 Vocal Range Profile chart를 사용한다. 랜딩에서는 별도 sample header 없이 전체 관측 음역, 실용 음역과 중앙음만 표시한다.
 - Metric band의 `5초+`, `60초`, `3단계`는 정적인 제품 사실로 표시하고 Count Up을 적용하지 않는다.
-- Profile 녹음은 idle의 정적 preview bar와 recording의 live waveform canvas를 제거하고, grayscale 저속 dynamic Voice Core → 마이크 level에 강하게 반응하는 color Voice Core → 분석 중 full-speed Orb로 상태를 연결한다. Core surface와 canvas는 투명·무경계이고 recording에 넓은 accent background를 적용하지 않는다. Reduced-motion·WebGL 실패에서는 정적 poster로 fallback하며, 녹음 시간·진행률·milestone·action과 녹음 완료 후 기능성 audio player는 유지한다.
+- Profile 녹음은 idle의 정적 preview bar를 제거하고, grayscale 저속 dynamic Voice Core → 녹음 중 color Voice Core와 그 아래 ElevenLabs UI Waveform 기반 real-time smooth-scrolling waveform → 분석 중 full-speed Orb로 상태를 연결한다. 녹음 파형은 기존 microphone stream을 재사용하고 violet→blue→pink 브랜드 gradient bar와 edge fade를 사용한다. Core surface와 canvas는 투명·무경계이고 recording에 넓은 accent background를 적용하지 않는다. Reduced-motion·WebGL 실패에서는 정적 poster/파형으로 fallback하며, 녹음 시간·진행률·milestone·action과 녹음 완료 후 기능성 audio player는 유지한다.
 - Page/section/status surface의 의미 없는 상·하단 hairline은 제거하고 form control·table/list row·focus·modal처럼 구조를 전달하는 border만 유지한다. Card형 inline 상태는 shared `StatusNotice`의 정렬·radius·spacing·tone 계약을 사용한다.
 - headline과 section reveal은 첫 진입 시 한 번만 실행한다. 하단은 공통 easing 아래 section heading, content group, 반복 card, metric hairline과 final CTA의 역할별 reveal을 사용하며 작은 opacity·translate·scale 변화로 제한한다.
 - Hero의 `내 목소리`는 공식 React Bits Gradient Text source와 `motion/react` runtime을 사용한다. `animationSpeed=1.5`는 편도 시간으로 해석하고 yoyo 왕복 주기는 3초로 유지하며, phrase 전체에 하나의 연속 gradient field를 적용한다.

@@ -378,12 +378,23 @@
     - [x] Text-only wrapper의 overflow와 vertical alignment를 수정했다.
     - [x] Storybook과 Chromium desktop/mobile에서 computed size·baseline·overflow를 검증했다.
 
+- [DOING][PRD-FR-048] T-F022-xai-inspired-landing-motion-31 녹음 Orb 하단 실시간 Scrolling Waveform
+  - Date: 2026-08-12
+  - Acceptance:
+    - 녹음 중 Orb를 유지하고 바로 아래에 ElevenLabs UI Waveform의 smooth-scrolling canvas pattern을 표시한다.
+    - 기존 microphone stream/analyser lifecycle을 재사용하며 waveform bar는 violet→blue→pink 브랜드 gradient와 edge fade를 사용한다.
+    - idle/requesting/stopping/processing에는 scrolling waveform이 없고 reduced-motion에서는 scroll이 정지한 정적 파형을 제공한다.
+  - Checklist:
+    - [ ] 공식 Waveform source·license·적용 범위를 기록한다.
+    - [ ] VoiceSignalCore의 analyser에서 Orb level과 scrolling history를 함께 갱신한다.
+    - [ ] Storybook, cleanup, desktop/mobile visual과 overflow를 검증한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록

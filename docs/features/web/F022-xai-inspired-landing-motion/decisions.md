@@ -401,3 +401,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**: `src/shared/ui/gradient-text/gradient-text.tsx`, `src/_pages/home/ui/landing-page.stories.tsx`
 - **Test/Log**: Landing Storybook 4/4, Biome, TypeScript와 Chromium desktop/mobile QA 통과
 - **Consequences**: Border mode는 기존 clipping과 radius를 유지하고 text-only mode만 주변 조사·문장과 동일한 baseline을 사용한다.
+
+## D026: Recording Orb 아래 ElevenLabs scrolling waveform (2026-08-12)
+
+- **Context**: 사용자가 녹음 중 Orb 아래에 ElevenLabs UI Waveform 문서의 “Real-time audio visualization with smooth scrolling animation”을 브랜드 gradient로 적용하도록 요청했다.
+- **Constraints**: 기존 녹음 stream을 재사용해 microphone 권한을 중복 요청하지 않고, Orb의 강한 audio response·투명 무경계 surface·reduced-motion·cleanup을 유지해야 한다.
+- **Source**: `https://github.com/elevenlabs/ui/blob/main/apps/www/registry/elevenlabs-ui/ui/waveform.tsx` (MIT)
+- **Decision**: ElevenLabs `ScrollingWaveform`의 canvas bar x-position loop, rounded bar와 destination-out edge fade pattern을 `VoiceSignalCore`에 통합한다. 별도 analyser/component가 아니라 기존 recording analyser가 45ms마다 history height를 추가하고 같은 RAF가 Orb CSS level과 canvas를 갱신한다. Bar fill은 Copy Singer violet→blue→pink linear gradient를 사용한다.
+- **Rationale**: 한 AudioContext와 RAF로 Orb·waveform을 함께 구동하면 이중 microphone pipeline 없이 요청한 시각 패턴을 얻고 cleanup 책임도 한 component에 유지할 수 있다.
