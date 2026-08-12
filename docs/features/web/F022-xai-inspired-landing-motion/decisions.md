@@ -294,3 +294,13 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Components**: `src/shared/ui/voice-orb`, `src/shared/ui/voice-signal-core`, `src/_pages/profile/ui/voice-scan-input.tsx`
 - **Test/Log**: Profile input·Creation Funnel·Orb Storybook 14/14, TypeScript, ESLint, architecture boundary, Next.js 16.3 production build와 desktop/mobile browser QA 통과
 - **Consequences**: Idle도 WebGL runtime을 사용하지만 기존 viewport·visibility 정지, DPR 제한과 cleanup을 그대로 적용한다. Reduced-motion 또는 WebGL 실패에서는 static poster가 남고, notice 문구와 분석 가능/불가 계약은 변경하지 않는다.
+
+## D018: Semantic border hierarchy·shared StatusNotice·neutral idle Orb (2026-08-12)
+
+- **Context**: 사용자가 구현 승인 대신 변경 요청 `B`를 선택해 프로젝트 전반의 의미 없는 상·하단 border, recorder의 recording tint와 Orb 사각형 배경, 정렬이 어긋난 상태 카드, idle Orb의 유채색을 제거하도록 요청했다.
+- **Constraints**: Border를 전부 없애 table/list 행, form control, focus와 modal boundary까지 훼손해서는 안 된다. Status 의미는 색과 icon만이 아니라 텍스트와 ARIA role로 유지하고, idle Orb의 animation·recording audio response·WebGL fallback도 보존해야 한다.
+- **Options**: 요청 화면만 국소 수정 / 모든 border 일괄 삭제 / semantic border 규칙과 shared status primitive를 만든 뒤 장식 surface를 선별 정리
+- **Decision**: 구현 및 검증 후 확정한다. 초기 원칙은 page·section·status의 장식 hairline을 whitespace·radius·soft fill로 대체하고 구조적 border는 유지하며, card형 status/alert는 shared `StatusNotice`의 neutral/success/warning/destructive tone으로 통합하는 것이다. Recorder는 항상 transparent surface를 사용하고 idle shader만 grayscale에 가깝게 처리한다.
+- **Rationale**: 구현 및 검증 후 확정한다.
+- **Trace**:
+  - **DOING 시작 시점**: `RecorderSurface` 자체에 `border-y`와 recording 보라 tint가 있고, `VoiceOrb` shader의 기본 배경색이 흰색이라 투명 canvas에서도 사각 영역처럼 보일 수 있다. Status/alert는 각 화면에서 icon margin, radius, border와 background를 개별 정의해 정렬과 tone이 다르다.
