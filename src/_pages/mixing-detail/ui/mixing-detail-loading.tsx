@@ -17,9 +17,9 @@ export default function MixingDetailLoading() {
         </div>
         <Skeleton className="h-10 w-36" />
       </div>
-      <div className="mt-10 grid gap-px border-y bg-border sm:grid-cols-3">
+      <div className="mt-10 grid gap-1 rounded-2xl bg-muted/25 p-1 sm:grid-cols-3">
         {[0, 1, 2].map((item) => (
-          <div className="space-y-2 bg-background px-5 py-6" key={item}>
+          <div className="space-y-2 rounded-xl bg-background/75 px-5 py-6" key={item}>
             <Skeleton className="h-3 w-20" />
             <Skeleton className="h-6 w-28" />
           </div>

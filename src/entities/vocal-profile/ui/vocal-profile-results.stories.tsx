@@ -105,6 +105,13 @@ export const RepresentativeAnalysis: Story = {
       "data-observed-range-tone",
       "muted",
     );
+    const editorialSections = Array.from(canvasElement.querySelectorAll<HTMLElement>("[data-vocal-profile-section]"));
+    await expect(editorialSections.length).toBeGreaterThan(0);
+    for (const section of editorialSections) {
+      await expect(getComputedStyle(section).borderTopWidth).toBe("0px");
+      await expect(getComputedStyle(section).borderBottomWidth).toBe("0px");
+    }
+    await expect(canvasElement.querySelectorAll("[data-vocal-profile-stat-surface]")).toHaveLength(3);
     for (const gradient of signalGradients) {
       await expect(
         Array.from(gradient.querySelectorAll("stop")).map((stop) => getComputedStyle(stop).stopColor),

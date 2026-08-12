@@ -6,6 +6,7 @@ import { Bar, BarChart, CartesianGrid, Line, LineChart, ReferenceLine, XAxis, YA
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/shared/ui/chart";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/shared/ui/collapsible";
+import { StatusNotice } from "@/shared/ui/status-notice";
 import { VOCAL_CHART_COLOR, VOCAL_CHART_GRADIENT } from "../lib/chart-brand";
 import type { VocalProfileResponse } from "../model/contract";
 import { midiToNoteName } from "../model/pitch";
@@ -55,7 +56,10 @@ export function VocalRangeProfile({
   if (medianMidi !== null) summary.push(["중앙음", midiToNoteName(medianMidi), `${medianMidi.toFixed(1)} MIDI`]);
 
   return (
-    <Card className="overflow-hidden rounded-none border-x-0 shadow-none">
+    <Card
+      className="overflow-hidden rounded-none border-0 bg-transparent shadow-none"
+      data-vocal-profile-section="range"
+    >
       <CardHeader className="pb-2">
         <CardTitle className="text-sm">{title}</CardTitle>
         <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[10px] text-muted-foreground" data-vocal-range-legend>
@@ -76,10 +80,11 @@ export function VocalRangeProfile({
       <CardContent>
         <VocalRangeChart profile={profile} />
         <div
-          className={`grid overflow-hidden border-y sm:divide-x ${medianMidi === null ? "sm:grid-cols-2" : "sm:grid-cols-3"}`}
+          className={`grid gap-1 rounded-2xl bg-muted/25 p-1 ${medianMidi === null ? "sm:grid-cols-2" : "sm:grid-cols-3"}`}
+          data-vocal-profile-stat-surface="range"
         >
           {summary.map(([label, value, detail]) => (
-            <div className="border-b px-1 py-3 last:border-b-0 sm:border-b-0 sm:px-4" key={label}>
+            <div className="rounded-xl bg-background/75 px-3 py-3 sm:px-4" key={label}>
               <p className="text-[10px] text-muted-foreground">{label}</p>
               <p className="mt-1 text-sm font-semibold">{value}</p>
               <p className="mt-1 font-mono text-[10px] text-muted-foreground">{detail}</p>
@@ -109,7 +114,7 @@ function HistogramChart({
   );
 
   return (
-    <Card className="rounded-none border-x-0 shadow-none">
+    <Card className="rounded-none border-0 bg-transparent shadow-none" data-vocal-profile-section="histogram">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm">음정 분포</CardTitle>
         <p className="text-[10px] text-muted-foreground">오래 머문 음일수록 막대가 높습니다.</p>
@@ -170,16 +175,16 @@ function HistogramChart({
 
 function VisualizationUnavailable({ title }: { title: string }) {
   return (
-    <Card className="rounded-none border-x-0 shadow-none">
+    <Card className="rounded-none border-0 bg-transparent shadow-none" data-vocal-profile-section="unavailable">
       <CardHeader>
         <CardTitle className="text-sm">{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex min-h-40 items-center justify-center rounded-lg border border-dashed bg-muted/20 p-5 text-center text-xs leading-5 text-muted-foreground">
-          이 프로필은 상세 시각화 데이터가 없습니다.
-          <br />
-          새로 녹음해 분석하면 그래프를 확인할 수 있어요.
-        </div>
+        <StatusNotice
+          className="min-h-40"
+          description="새로 녹음해 분석하면 그래프를 확인할 수 있어요."
+          title="이 프로필은 상세 시각화 데이터가 없습니다."
+        />
       </CardContent>
     </Card>
   );
@@ -200,7 +205,7 @@ function PitchTrace({ visualization }: { visualization: VocalProfileVisualizatio
 
   return (
     <Collapsible onOpenChange={setOpen} open={open}>
-      <Card className="rounded-none border-x-0 shadow-none">
+      <Card className="rounded-none border-0 bg-transparent shadow-none" data-vocal-profile-section="pitch-trace">
         <CollapsibleTrigger className="flex w-full items-center justify-between px-5 py-4 text-left">
           <span>
             <span className="block text-sm font-semibold">상세 피치 추적</span>
@@ -310,14 +315,17 @@ export function VocalProfileResults({
         <HistogramChart profile={profile} visualization={visualization} />
       </div>
       <div className="grid gap-4 lg:grid-cols-[1.3fr_.9fr]">
-        <Card className="rounded-none border-x-0 shadow-none">
+        <Card className="rounded-none border-0 bg-transparent shadow-none" data-vocal-profile-section="quality">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm">분석 품질</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid border-y sm:grid-cols-3 xl:grid-cols-6">
+            <div
+              className="grid gap-1 rounded-2xl bg-muted/25 p-1 sm:grid-cols-3 xl:grid-cols-6"
+              data-vocal-profile-stat-surface="quality"
+            >
               {quality.map(([label, value, Icon]) => (
-                <div className="border-b px-3 py-3 sm:border-r xl:border-b-0 xl:last:border-r-0" key={label}>
+                <div className="rounded-xl bg-background/75 px-3 py-3" key={label}>
                   <p className="text-[11px] text-muted-foreground">{label}</p>
                   <p className="mt-1.5 break-words text-sm font-semibold">{value}</p>
                   <Icon className="mt-2 size-3.5 text-data-accent-foreground" />
@@ -333,7 +341,7 @@ export function VocalProfileResults({
         <PitchTrace visualization={visualization} />
       </div>
       {sourceAudioSrc ? (
-        <Card className="rounded-none border-x-0 shadow-none">
+        <Card className="rounded-none border-0 bg-transparent shadow-none" data-vocal-profile-section="reference-bands">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm">분석된 대표 음역 구간</CardTitle>
             <p className="text-[10px] leading-4.5 text-muted-foreground">
@@ -345,11 +353,18 @@ export function VocalProfileResults({
             {referenceAvailability === "ready" ? (
               <ReferenceBandPlayers key={sourceAudioSrc} segments={referenceSegments} sourceAudioSrc={sourceAudioSrc} />
             ) : (
-              <div className="border-y border-dashed py-4 text-xs leading-5 text-muted-foreground">
-                {referenceAvailability === "unavailable"
-                  ? "이 녹음에서는 안정적인 저음·중앙·고음 구간을 충분히 찾지 못했어요. 반주 없이 여러 음높이가 포함된 소절로 다시 분석해주세요."
-                  : "이 프로필은 음역 영역 분석을 지원하기 전에 만들어졌어요. 최신 분석기로 새 보컬 프로필을 만들어주세요."}
-              </div>
+              <StatusNotice
+                description={
+                  referenceAvailability === "unavailable"
+                    ? "반주 없이 여러 음높이가 포함된 소절로 다시 분석해주세요."
+                    : "최신 분석기로 새 보컬 프로필을 만들어주세요."
+                }
+                title={
+                  referenceAvailability === "unavailable"
+                    ? "이 녹음에서는 안정적인 저음·중앙·고음 구간을 충분히 찾지 못했어요."
+                    : "이 프로필은 음역 영역 분석을 지원하기 전에 만들어졌어요."
+                }
+              />
             )}
           </CardContent>
         </Card>

@@ -68,7 +68,7 @@ export function NotificationsList({ initial }: { initial: NotificationListPayloa
           <CheckCheck aria-hidden="true" /> 모두 읽음
         </Button>
       </div>
-      <ul className="divide-y border-y" aria-live="polite">
+      <ul className="divide-y" aria-live="polite" data-row-list="notifications">
         {data.notifications.map((item) => (
           <li key={item.id}>
             <button

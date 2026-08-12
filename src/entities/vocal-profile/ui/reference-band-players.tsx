@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
+import { StatusNotice } from "@/shared/ui/status-notice";
 import { createReferencePreviewBlob } from "../lib/reference-preview";
 import type { ReferenceBandSegment } from "../model/reference-segments";
 
@@ -67,9 +68,11 @@ export function ReferenceBandPlayers({
 
   if (state.status === "error") {
     return (
-      <div className="rounded-lg border border-dashed bg-muted/20 p-4 text-xs leading-5 text-muted-foreground">
-        선택된 음역 구간의 파형을 만들지 못했어요. 페이지를 새로고침한 뒤 다시 시도해주세요.
-      </div>
+      <StatusNotice
+        description="페이지를 새로고침한 뒤 다시 시도해주세요."
+        title="선택된 음역 구간의 파형을 만들지 못했어요."
+        tone="warning"
+      />
     );
   }
 
@@ -97,7 +100,7 @@ export function ReferenceBandPlayers({
             </div>
             {!segment ? (
               <div
-                className="flex min-h-24 items-center justify-center rounded-lg border border-dashed bg-muted/20 px-4 text-center text-xs leading-5 text-muted-foreground"
+                className="flex min-h-24 items-center justify-center rounded-xl bg-muted/35 px-4 text-center text-xs leading-5 text-muted-foreground"
                 role="status"
               >
                 {band.label}을 충분히 찾지 못했어요.
@@ -107,7 +110,7 @@ export function ReferenceBandPlayers({
             ) : (
               <div
                 aria-label={`${segment.label} 파형 준비 중`}
-                className="flex min-h-24 items-center justify-center rounded-lg border bg-muted/20 text-[10px] text-muted-foreground"
+                className="flex min-h-24 animate-pulse items-center justify-center rounded-xl bg-muted/35 text-[10px] text-muted-foreground motion-reduce:animate-none"
                 role="status"
               >
                 선택 구간 파형 준비 중…

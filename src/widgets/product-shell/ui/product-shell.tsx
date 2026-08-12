@@ -144,7 +144,7 @@ function ProductHeader({ admin = false, showAuthAction = true, user = null }: Pr
                 <SheetTitle>Copy Singer</SheetTitle>
                 <SheetDescription>목소리 분석, 라이브러리와 내 계정으로 이동합니다.</SheetDescription>
               </SheetHeader>
-              <div className="border-y px-3 py-4">
+              <div className="rounded-xl bg-muted/30 px-3 py-4" data-mobile-navigation-surface="quiet">
                 <ProductNavigation
                   admin={admin}
                   authenticated={authenticated}

@@ -13,8 +13,9 @@ export function FunnelActionBar({
 }) {
   return (
     <aside
-      className="border-y bg-background/95 px-4 py-4 backdrop-blur sm:px-5 lg:rounded-xl lg:border"
+      className="rounded-xl border border-border/65 bg-background/88 px-4 py-4 shadow-[0_18px_48px_-34px_oklch(0.18_0.02_285/0.45)] backdrop-blur-xl sm:px-5"
       aria-label={eyebrow}
+      data-surface="floating-action"
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">

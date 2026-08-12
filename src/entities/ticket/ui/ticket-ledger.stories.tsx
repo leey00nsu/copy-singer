@@ -54,6 +54,12 @@ export const GrantAndDebitHistory: Story = {
     await expect(canvas.getByText("AI 믹싱")).toBeVisible();
     await expect(canvas.getByText("자동 환불")).toBeVisible();
     await expect(canvas.getByText("-1")).toBeVisible();
+    const creditRows = canvasElement.querySelectorAll('[data-ticket-direction="credit"]');
+    const debitRow = canvasElement.querySelector('[data-ticket-direction="debit"]');
+    await expect(creditRows).toHaveLength(2);
+    await expect(debitRow).not.toBeNull();
+    await expect(within(debitRow as HTMLElement).getByText("-1")).toHaveClass("text-foreground");
+    await expect(within(debitRow as HTMLElement).getByText("-1")).not.toHaveClass("text-warning-foreground");
   },
 };
 
