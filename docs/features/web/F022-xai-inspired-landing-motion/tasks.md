@@ -523,12 +523,22 @@
     - [x] observed range와 중앙음 범례를 정리한다.
     - [x] Storybook, TypeScript와 browser QA를 통과한다.
 
+- [TODO][PRD-FR-047] T-F022-xai-inspired-landing-motion-44 SVG chart gradient browser fallback
+  - Date: 2026-08-12
+  - Acceptance:
+    - SVG presentation attribute에서 CSS custom property를 해석하지 못하거나 신규 token stylesheet가 지연된 환경에서도 chart가 검정으로 fallback되지 않는다.
+    - Range, histogram, pitch trace와 legend는 동일한 restrained chart palette를 유지한다.
+  - Checklist:
+    - [ ] SVG stop과 legend에 명시적 CSS color fallback을 추가한다.
+    - [ ] token 미정의 fixture와 정상 token 환경을 Storybook에서 검증한다.
+    - [ ] TypeScript, lint와 browser QA를 통과한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록

@@ -515,3 +515,10 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 전체 범위는 context, 실용 음역은 핵심 signal, 중앙음은 기준선이라는 서로 다른 역할을 색과 범례 구조가 그대로 설명한다.
 - **Evidence**: `src/_app/styles/globals.css`, `src/entities/vocal-profile/ui/vocal-range-chart.tsx`, `src/entities/vocal-profile/ui/vocal-profile-results.tsx`, Storybook
 - **Trace**: Light chart stop을 OKLCH lightness 0.68/0.70/0.72와 낮은 chroma로 분리하고 dark stop도 별도로 정의했다. Observed bar와 legend swatch는 `muted`, 중앙음 reference는 `muted-foreground`로 변경하고 중앙음 legend를 제거했다. Storybook 10/10, TypeScript와 lint를 통과했으며 Chromium에서 observed computed fill `oklch(0.97 0 0)`, legend 2개, 중앙음 legend 0과 overflow 0을 확인했다.
+
+## D036: SVG gradient stop에는 CSS property와 concrete fallback을 함께 사용 (2026-08-12)
+
+- **Context**: 일부 실제 화면에서 `stop-color="var(--brand-chart-*)"` presentation attribute가 해석되지 않거나 token이 아직 로드되지 않아 SVG 기본 stop-color인 검정으로 렌더됐다. 같은 token을 쓰는 legend background도 비어 보였다.
+- **Decision**: SVG stop은 inline CSS `stopColor` property에서 `var(--brand-chart-*, <OKLCH fallback>)`를 사용하고 legend gradient에도 완전한 linear-gradient fallback을 제공한다. 정상 환경에서는 semantic token이 우선하며 fallback은 동일한 light restrained palette를 사용한다.
+- **Rationale**: token 정본을 유지하면서도 SVG presentation attribute와 stylesheet load 차이에 따른 검정 fallback을 차단한다.
+- **Evidence**: `src/entities/vocal-profile/ui/vocal-range-chart.tsx`, `src/entities/vocal-profile/ui/vocal-profile-results.tsx`, Storybook
