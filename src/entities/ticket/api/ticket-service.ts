@@ -114,6 +114,14 @@ export async function ensureSignupGrant(userId: string) {
   });
 }
 
+export async function getTicketBalance(userId: string) {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: { id: userId },
+    select: { ticketBalance: true },
+  });
+  return { balance: user.ticketBalance };
+}
+
 export async function getTicketAccount(userId: string, page = 1, pageSize = 20) {
   const requestedPage = Math.max(1, Math.trunc(page));
   const normalizedPageSize = Math.min(100, Math.max(1, Math.trunc(pageSize)));

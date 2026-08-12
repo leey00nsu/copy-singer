@@ -13,6 +13,7 @@ import {
   notificationReadResponseSchema,
 } from "@/entities/notification";
 import { recommendationRunResponseSchema } from "@/entities/recommendation";
+import { ticketBalanceSchema } from "@/entities/ticket";
 import { vocalProfileAnalysisJobResponseSchema } from "@/entities/vocal-profile";
 import {
   ANALYSIS_AUDIO_MIME_TYPES,
@@ -29,6 +30,12 @@ import { pageSearchParamSchema, resourceIdSchema } from "@/shared/api";
 const RUN_ID = "10000000-0000-4000-8000-000000000001";
 const PROFILE_ID = "10000000-0000-4000-8000-000000000002";
 const JOB_ID = "10000000-0000-4000-8000-000000000003";
+
+test("ticket balance contract accepts only a nonnegative integer balance", () => {
+  assert.deepEqual(ticketBalanceSchema.parse({ balance: 3, ignored: true }), { balance: 3 });
+  assert.equal(ticketBalanceSchema.safeParse({ balance: -1 }).success, false);
+  assert.equal(ticketBalanceSchema.safeParse({ balance: 1.5 }).success, false);
+});
 
 test("owned request schemas validate UUID, idempotency, pagination, and ticket bounds", () => {
   assert.deepEqual(createRecommendationRequestSchema.parse({ userVocalProfileId: PROFILE_ID }), {

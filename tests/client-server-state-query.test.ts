@@ -15,6 +15,7 @@ import {
   recommendationKeys,
   recommendationPollingInterval,
 } from "@/entities/recommendation";
+import { ticketBalanceQueryOptions, ticketKeys } from "@/entities/ticket";
 import type { VocalProfileAnalysisJobResponse } from "@/entities/vocal-profile";
 import {
   analysisJobPollingInterval,
@@ -147,6 +148,16 @@ test("notification queries poll on a bounded interval and read mutations refresh
   await readAll.onSuccess?.({ updatedCount: 0, unreadCount: 0 }, undefined, undefined, undefined as never);
   assert.equal(client.getQueryState(key)?.isInvalidated, true);
   client.clear();
+});
+
+test("ticket balance query stays idle until the account menu opens and then refetches stale data", () => {
+  const closed = ticketBalanceQueryOptions(false);
+  const open = ticketBalanceQueryOptions(true);
+  assert.deepEqual(closed.queryKey, ticketKeys.balance());
+  assert.equal(closed.enabled, false);
+  assert.equal(open.enabled, true);
+  assert.equal(open.staleTime, 0);
+  assert.equal(open.refetchOnWindowFocus, true);
 });
 
 test("vocal analysis polling continues only for active jobs or retryable transport errors", () => {

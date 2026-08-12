@@ -13,6 +13,7 @@ import {
   succeededConversionFixture,
   succeededRecommendationRunFixture,
   ticketAdjustmentFixture,
+  ticketBalanceFixture,
 } from "./fixtures";
 
 export const handlers = [
@@ -21,6 +22,7 @@ export const handlers = [
   http.get("*/api/recommendations/:id", () => HttpResponse.json(recommendationRunFixture)),
   http.post("*/api/mixing-jobs", () => HttpResponse.json(mixingJobFixture, { status: 201 })),
   http.post("*/api/admin/ticket-adjustments", () => HttpResponse.json(ticketAdjustmentFixture, { status: 201 })),
+  http.get("*/api/account/ticket-balance", () => HttpResponse.json(ticketBalanceFixture)),
   http.get("*/api/notifications", () => HttpResponse.json(notificationListFixture)),
   http.patch("*/api/notifications/:id", ({ params }) => {
     const notification = notificationListFixture.notifications.find((item) => item.id === params.id) ?? null;
@@ -33,6 +35,10 @@ export const handlers = [
 
 export function notificationListHandler(payload: NotificationList = notificationListFixture) {
   return http.get("*/api/notifications", () => HttpResponse.json(payload));
+}
+
+export function ticketBalanceHandler(balance = ticketBalanceFixture.balance) {
+  return http.get("*/api/account/ticket-balance", () => HttpResponse.json({ balance }));
 }
 
 export function conversionPollingSequenceHandler() {

@@ -4,7 +4,7 @@ import { config } from "dotenv";
 
 config({ path: [".env.local", ".env"], quiet: true });
 
-test("notification routes require auth, scope IDs, and return validated read state", async (context) => {
+test("authenticated header routes scope notifications and ticket balance to the session owner", async (context) => {
   if (!process.env.DATABASE_URL) {
     context.skip("DATABASE_URL is not configured");
     return;
@@ -28,11 +28,18 @@ test("notification routes require auth, scope IDs, and return validated read sta
   const { notificationsGet, notificationReadPatch, notificationsReadAllPost } = await import(
     "../src/_app/api-routes/notifications/index.server"
   );
+  const { accountTicketBalanceGet } = await import("../src/_app/api-routes/account/index.server");
   try {
     await prisma.user.createMany({
       data: [
-        { id: userId, name: "Route owner", email: `${userId}@example.test`, emailVerified: true },
-        { id: otherUserId, name: "Other owner", email: `${otherUserId}@example.test`, emailVerified: true },
+        { id: userId, name: "Route owner", email: `${userId}@example.test`, emailVerified: true, ticketBalance: 4 },
+        {
+          id: otherUserId,
+          name: "Other owner",
+          email: `${otherUserId}@example.test`,
+          emailVerified: true,
+          ticketBalance: 9,
+        },
       ],
     });
     const own = await createNotification({
@@ -82,9 +89,19 @@ test("notification routes require auth, scope IDs, and return validated read sta
     assert.equal(allResponse.status, 200);
     assert.deepEqual(await allResponse.json(), { updatedCount: 0, unreadCount: 0 });
 
+    const balanceResponse = await accountTicketBalanceGet(
+      new Request("http://copy-singer.test/api/account/ticket-balance"),
+    );
+    assert.equal(balanceResponse.status, 200);
+    assert.deepEqual(await balanceResponse.json(), { balance: 4 });
+
     process.env.DEV_AUTH_BYPASS_ENABLED = "false";
     const unauthorized = await notificationsGet(new Request("http://copy-singer.test/api/notifications"));
     assert.equal(unauthorized.status, 401);
+    const unauthorizedBalance = await accountTicketBalanceGet(
+      new Request("http://copy-singer.test/api/account/ticket-balance"),
+    );
+    assert.equal(unauthorizedBalance.status, 401);
   } finally {
     for (const [name, value] of Object.entries({
       NODE_ENV: previous.nodeEnv,

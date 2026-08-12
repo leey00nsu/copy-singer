@@ -6,6 +6,8 @@ import type { TicketAdjustmentResponse } from "@/features/manage-tickets";
 
 export const MSW_API_ORIGIN = "http://copy-singer.test";
 
+export const ticketBalanceFixture = { balance: 3 };
+
 export const notificationListFixture: NotificationList = {
   page: 1,
   pageSize: 5,

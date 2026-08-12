@@ -1,11 +1,13 @@
 "use client";
 
-import { LogOut, ShieldCheck, UserRound } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { LogOut, ShieldCheck, Ticket, UserRound } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { ticketBalanceQueryOptions } from "@/entities/ticket";
 import { Button } from "@/shared/ui/button";
 import {
   DropdownMenu,
@@ -38,7 +40,9 @@ export function UserMenu({
   side = "bottom",
 }: UserMenuProps) {
   const router = useRouter();
+  const [open, setOpen] = useState(false);
   const [pending, setPending] = useState(false);
+  const ticketBalance = useQuery(ticketBalanceQueryOptions(open));
 
   async function signOut() {
     setPending(true);
@@ -55,7 +59,7 @@ export function UserMenu({
 
   return (
     <div className={compact ? "w-auto" : "w-full"}>
-      <DropdownMenu>
+      <DropdownMenu onOpenChange={setOpen}>
         <DropdownMenuTrigger
           render={
             <Button
@@ -90,6 +94,22 @@ export function UserMenu({
           )}
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56" side={side} sideOffset={8}>
+          <div
+            aria-live="polite"
+            className="mx-1 mb-1 flex items-center justify-between gap-3 rounded-md bg-muted px-3 py-2.5"
+          >
+            <span className="flex items-center gap-2 text-xs text-muted-foreground">
+              <Ticket aria-hidden="true" className="size-3.5" /> 잔여 티켓
+            </span>
+            <strong className="text-sm font-semibold tabular-nums">
+              {ticketBalance.data
+                ? `${ticketBalance.data.balance}개`
+                : ticketBalance.isError
+                  ? "확인 불가"
+                  : "확인 중…"}
+            </strong>
+          </div>
+          <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuLabel>계정</DropdownMenuLabel>
             <DropdownMenuItem nativeButton={false} render={<Link href="/account" />}>

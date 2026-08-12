@@ -3,7 +3,7 @@ import type {} from "msw-storybook-addon/types";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 
 import { ProductHeader, ProductShell } from "@/widgets/product-shell";
-import { notificationListHandler } from "../../../../tests/msw/handlers";
+import { notificationListHandler, ticketBalanceHandler } from "../../../../tests/msw/handlers";
 
 const meta = {
   title: "Widgets/ProductShell",
@@ -31,7 +31,7 @@ const meta = {
     },
   },
   beforeEach({ msw }) {
-    msw.use(notificationListHandler());
+    msw.use(notificationListHandler(), ticketBalanceHandler());
   },
 } satisfies Meta<typeof ProductShell>;
 
@@ -63,6 +63,8 @@ export const Desktop: Story = {
     await userEvent.click(canvas.getByRole("button", { name: "지은 계정 메뉴" }));
     const body = within(document.body);
     await waitFor(() => expect(body.getByText("계정")).toBeVisible());
+    await expect(body.getByText("잔여 티켓")).toBeVisible();
+    await expect(await body.findByText("3개")).toBeVisible();
     await expect(body.getByRole("menuitem", { name: "내 계정" })).toBeVisible();
     await userEvent.click(accountButton);
     await userEvent.click(notificationButton);
