@@ -494,7 +494,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Constraints**: 저장 오디오는 live signal보다 차분해야 하고, loading placeholder가 가짜 amplitude처럼 보이면 안 된다. 기존 seek/segment/error fallback과 고정 높이로 인한 CLS 0 계약을 유지해야 한다.
 - **Decision**: Unplayed wave는 muted violet/blue tint로 유지하고 progress wave에만 violet→blue→pink CanvasGradient를 사용한다. Decode 중에는 반복 파형 대신 grain-gradient veil과 loading label을 표시하고 ready에서 skeleton opacity out, waveform opacity 0→1·scaleY 0.94→1로 전환한다. Reduced-motion은 shimmer와 transform을 제거한다.
 - **Rationale**: Live waveform과 같은 브랜드 family를 공유하되 진행 구간만 강하게 표현해 저장/재생 UI의 정보 위계를 보존한다. 실제 decoded waveform 자체를 애니메이션으로 생성하지 않아 오디오 데이터를 왜곡하지 않는다.
-- **Evidence**: `src/shared/ui/audio-waveform-player/audio-waveform-player.tsx`, CSS Module, Storybook
+- **Evidence**: `src/shared/ui/audio-waveform-player/audio-waveform-player.tsx`, global component layer, Storybook
 - **Trace**: WaveSurfer `waveColor`는 quiet violet/blue 배열, `progressColor`는 `#7c3aed → #3b82f6 → #ec4899`, cursor는 semantic strong token으로 설정했다. 72px visual slot에 grain data texture와 abstract radial veil·1.8s sweep를 추가하고 ready에서 waveform 360/420ms opacity·scaleY, skeleton 280ms opacity transition을 연결했다. 실제 amplitude placeholder는 만들지 않았다. Storybook 16/16, unit 3/3, TypeScript, lint, architecture 4/4를 통과했고 Chromium 390px에서 ready/loading 높이 72px·overflow 0과 reduced-motion 정적 preview를 확인했다.
 - **Consequences**: 공통 component를 쓰는 Profile, Recommendation, Mixing과 dev surface가 한 번에 갱신되며 native audio fallback은 브라우저 기본 스타일을 유지한다.
 
@@ -577,3 +577,13 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**: VocalProfileResults, RecommendationSelection, SongDetail, MixingDetail·loading, AdminMetricBand와 ProductShell source-wide 검색
 - **Trace**: `bg-background/75` source 검색 결과를 0건으로 만들고 `/72`는 ProductShell header/footer 2건만 남겼다. Storybook 23/23, TypeScript, ESLint, Biome과 architecture 4/4를 통과했다. Chromium에서 Mixing light tile은 `oklch(1 0 0)`, Profile dark tile은 `oklch(0.145 0 0)`의 opaque background로 렌더링됨을 확인했다.
 - **Consequences**: Metric tile의 실제 픽셀값은 theme background token과 정확히 같고, muted chapter와의 대비는 부모 surface alpha만으로 결정된다.
+
+## D043: Shared client primitive의 style import는 Node test public graph에서 분리 (2026-08-12)
+
+- **Context**: 로컬 fast-forward 병합 후 전체 `pnpm test`에서 raw `tsx --test`가 public barrel을 평가하며 `ProcessHero → VoiceSignalCore → VoiceOrb`와 AudioWaveformPlayer의 CSS Module import까지 도달했고, Node가 `.css` 확장자를 해석하지 못해 실패했다.
+- **Constraints**: 애플리케이션과 Storybook의 Orb·live/stored waveform 시각 동작, reduced-motion, 고정 visual slot 계약을 유지해야 하며 테스트 전용 CSS loader나 런타임 분기를 추가하지 않아야 한다.
+- **Decision**: AudioWaveformPlayer, VoiceSignalCore, VoiceOrb의 component-scoped style을 전역 `@layer components`로 이동하고 충돌하지 않는 prefixed class를 사용한다. 현재 component 구조를 반영하도록 voice scan과 auth navigation source-contract 테스트도 갱신한다.
+- **Rationale**: 브라우저 전용 style import를 Node public import graph에서 제거해 동일한 component를 앱·Storybook·raw Node test에서 안전하게 참조할 수 있다. 전역 class는 component 이름으로 namespace되어 기존 시각 계약과 cascade 범위를 유지한다.
+- **Evidence**: `src/_app/styles/globals.css`, `src/shared/ui/audio-waveform-player/audio-waveform-player.tsx`, `src/shared/ui/voice-signal-core/voice-signal-core.tsx`, `src/shared/ui/voice-orb/voice-orb.tsx`, `tests/voice-scan-state.test.ts`, `tests/auth-navigation.test.ts`
+- **Trace**: 세 CSS Module의 규칙을 global component layer로 옮기고 TSX class mapping을 갱신했다. 전체 `pnpm test`에서 production build, Node/unit/integration/DB/architecture와 Storybook 47 files·130 tests가 통과했다.
+- **Consequences**: 세 shared primitive의 style은 CSS Module hashing 대신 명시적 prefix에 의존한다. class rename 시 TSX와 global component layer를 함께 변경해야 한다.

@@ -612,6 +612,17 @@
     - [x] Admin metric tile의 `bg-background/72`만 교체하고 ProductShell chrome은 보존한다.
     - [x] 관련 Storybook, TypeScript, lint, architecture와 light/dark browser visual QA를 통과한다.
 
+- [DONE][NON-PRD] T-F022-xai-inspired-landing-motion-52 Post-merge Node test import boundary 정리
+  - Date: 2026-08-12
+  - Acceptance:
+    - 공통 AudioWaveformPlayer, VoiceSignalCore, VoiceOrb의 시각 계약을 유지하면서 raw Node test public import graph에서 CSS Module 해석 오류가 발생하지 않는다.
+    - source-contract 테스트는 현재 VoiceSignalCore와 ProductShell/Login 구조를 검증한다.
+    - 로컬 병합 후 구성된 전체 테스트 suite가 통과한다.
+  - Checklist:
+    - [x] 세 shared client primitive의 style을 prefixed global component layer로 이동한다.
+    - [x] voice scan과 auth navigation source-contract assertion을 현재 구조에 맞게 갱신한다.
+    - [x] 전체 `pnpm test`로 production build, Node/unit/integration/DB/architecture와 Storybook 회귀를 검증한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -652,8 +663,10 @@
 | `pnpm run test:storybook --run src/entities/vocal-profile/ui/vocal-profile-results.stories.tsx src/entities/vocal-profile/ui/vocal-profile-summary.stories.tsx src/entities/ticket/ui/ticket-ledger.stories.tsx src/_pages/account/ui/account-overview.stories.tsx src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-12` | 통과 — semantic border, ticket credit/debit tone, profile/recommendation/mixing/mobile shell 회귀 34/34 |
 | `pnpm run check:architecture` | `2026-08-12` | 통과 — Steiger와 FSD/client-server boundary 4/4 |
 | `pnpm run lint` | `2026-08-12` | 통과 — semantic surface 변경 포함 전체 ESLint 오류 없음 |
+| `pnpm exec tsc --noEmit` | `2026-08-12` | 통과 — post-merge shared primitive style import 경계 변경 포함 TypeScript 오류 없음 |
 | `pnpm run test:architecture-boundaries` | `2026-08-12` | 통과 — FSD, client/server와 root App boundary 4/4 |
 | `pnpm run build` | `2026-08-12` | 통과 — Next.js 16.3 production build, TypeScript와 29개 static page 생성 완료 |
+| `pnpm test` | `2026-08-12` | 통과 — post-merge production build, Node/unit/integration/DB/architecture 및 Storybook 47 files·130 tests 전체 회귀 검증 완료 |
 | Browser responsive QA | `2026-08-12` | 통과 — scroll 전 section 16px·card 6px·metric opacity 0·hairline scaleX 0·CTA pure fade 상태와 진입 후 최종 상태를 확인; editorial 4단계·metric 3개·Voice Notes 4개 순차 reveal, 390px/1440px overflow 0 |
 | Profile Voice Core QA | `2026-08-12` | 통과 — recording에서 Orb 아래 canvas gap 26.6–27.9px, violet→blue→pink scrolling bar·edge fade와 투명 surface 확인; 1440px/390px overflow 0, idle/requesting/stopping에는 canvas 없음, console warning/error 0 |
 | Recorder transition QA | `2026-08-12` | 통과 — 녹음 전 timer/waveform 0, mobile visual height 240→288px·desktop 256→288px 연속 전환, 중간 frame의 grayscale·waveform opacity 변화와 최종 color/opacity 1 확인; WebGL canvas identity 유지, overflow·console warning/error 0 |
@@ -682,4 +695,4 @@
 | Muted / chart context QA | `2026-08-12` | 통과 — source-wide `bg-muted/25` 0건, Account·Profile·Recommendation·Mixing·Admin·Notification을 `bg-muted/55`로 통일; light/dark chart-context 0.90/0.38과 VocalRange cursor 0을 Chromium에서 확인, Storybook 30/30·TypeScript·ESLint·Biome·architecture 4/4 통과 |
 | Opaque metric tile QA | `2026-08-12` | 통과 — Profile·Recommendation·Song·Mixing·Admin의 내부 tile을 불투명 `bg-background`로 통일하고 ProductShell blur chrome만 `/72`로 유지; light Mixing tile `oklch(1 0 0)`, dark Profile tile `oklch(0.145 0 0)` 확인, Storybook 23/23·TypeScript·ESLint·Biome·architecture 4/4 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T12:30:27.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T12:50:48.000Z -->
