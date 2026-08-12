@@ -129,4 +129,4 @@
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — signed-out/in CTA, waveform action, Admin/UserMenu와 footer 회귀 2/2 |
 | `pnpm exec biome check src/_pages/home/ui/landing-page.tsx src/_pages/home/ui/landing-hero.tsx src/_pages/home/ui/landing-hero.module.css` | `2026-08-12` | format 차이 1건 확인 후 `biome format --write`로 수정 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T01:37:35.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T01:39:11.000Z -->
