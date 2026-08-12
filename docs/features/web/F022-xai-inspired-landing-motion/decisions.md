@@ -424,3 +424,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: Orb 자체가 위아래로 재배치되지 않은 상태에서 아래 공간만 열리면 주변 copy/control은 하나의 연속된 layout transition으로 밀린다. Filter transition과 waveform entrance를 분리하면 microphone 반응용 120ms transform은 그대로 유지할 수 있다.
 - **Trace**:
   - **DOING 시작 시점**: Timer는 모든 state에서 항상 렌더링되고, recorder region은 idle의 center alignment/min-height에서 recording의 start alignment/min-height로 즉시 바뀐다. Orb filter transition은 420ms이며 waveform canvas에는 entrance opacity가 없다.
+  - **DONE 전 확정 시점**: Timer는 recording 시작 전 DOM에서 제거하되 고정 높이 slot으로 copy 위치를 보존했다. Recorder region은 top-aligned Orb를 유지하면서 mobile 240→288px, desktop 256→288px로 전환하고 Orb는 900ms filter, waveform은 720ms delayed opacity entrance를 사용한다. `VoiceOrb`는 speed를 ref로 갱신해 idle→recording 전환 중 WebGL canvas를 재생성하지 않는다.
+- **Evidence**: `src/_pages/profile/ui/vocal-profile-recorder.tsx`, `src/shared/ui/voice-signal-core/voice-signal-core.module.css`, `src/shared/ui/voice-orb/voice-orb.tsx`, `src/_pages/profile/ui/voice-scan-input.stories.tsx`
+- **Test/Log**: Profile input·Orb·Creation Funnel Storybook 15/15, TypeScript, ESLint, architecture boundary, Next.js 16.3 production build와 1440px/390px browser transition QA 통과
+- **Consequences**: Recording 전환의 color/layout/opacity는 부드럽지만 microphone amplitude transform은 기존 120ms 응답성을 유지한다. Reduced-motion에서는 영역과 Orb 위치를 즉시 최종 상태로 바꾸고 waveform도 animation 없이 표시한다.

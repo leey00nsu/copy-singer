@@ -389,23 +389,23 @@
     - [x] VoiceSignalCore의 analyser에서 Orb level과 scrolling history를 함께 갱신했다.
     - [x] Storybook, cleanup, desktop/mobile visual과 overflow를 검증했다.
 
-- [DOING][PRD-FR-048] T-F022-xai-inspired-landing-motion-32 Recorder timer·Orb·Waveform transition 정교화
+- [DONE][PRD-FR-048] T-F022-xai-inspired-landing-motion-32 Recorder timer·Orb·Waveform transition 정교화
   - Date: 2026-08-12
   - Acceptance:
     - 녹음 전에는 0:00.0 타이머를 노출하지 않고 recording 시작 후에만 경과 시간을 표시한다.
     - Idle grayscale Orb는 recording 전환 시 색상과 반응 강도가 서서히 이어지며 갑자기 교체되어 보이지 않는다.
     - Waveform 공간은 높이 transition으로 자연스럽게 열리고 canvas는 opacity 0에서 등장해 주변 콘텐츠가 갑자기 밀리지 않는다.
   - Checklist:
-    - [ ] RecorderSurface의 timer 조건부 노출과 recording layout transition을 구현한다.
-    - [ ] VoiceSignalCore의 Orb filter와 waveform opacity transition을 구현한다.
-    - [ ] Storybook, reduced-motion, desktop/mobile layout shift와 회귀를 검증한다.
+    - [x] RecorderSurface의 timer 조건부 노출과 recording layout transition을 구현했다.
+    - [x] VoiceSignalCore의 Orb filter와 waveform opacity transition을 구현했다.
+    - [x] Storybook, reduced-motion, desktop/mobile layout shift와 회귀를 검증했다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -418,7 +418,7 @@
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx src/shared/ui/voice-orb/voice-orb.stories.tsx` | `2026-08-12` | 통과 — landing signed-out/in·mobile·reduced-motion, ProcessHero active/success/failure와 WebGL fallback 10/10 |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/entities/vocal-profile/ui/vocal-profile-summary.stories.tsx src/_pages/profile/ui/analysis-success.stories.tsx` | `2026-08-12` | 통과 — Landing Sample Vocal Range Profile과 실제 profile 결과 회귀 8/8 |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — 공식 Motion Gradient Text 단일 field·animationSpeed 1.5·yoyo, signed-out/in·mobile·reduced-motion 콘텐츠와 기존 Landing 회귀 4/4 |
-| `pnpm run test:storybook --run src/_pages/profile/ui/voice-scan-input.stories.tsx src/shared/ui/voice-orb/voice-orb.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx` | `2026-08-12` | 통과 — recording Orb 하단 Scrolling Waveform·brand gradient와 idle/processing/fallback 회귀 14/14 |
+| `pnpm run test:storybook --run src/_pages/profile/ui/voice-scan-input.stories.tsx src/shared/ui/voice-orb/voice-orb.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx` | `2026-08-12` | 통과 — 녹음 전 timer 숨김, WebGL canvas 유지, recorder height·Orb filter·waveform opacity transition과 기존 상태 회귀 15/15 |
 | `pnpm run test:storybook --run src/_pages/profile/ui/voice-scan-input.stories.tsx src/shared/ui/status-notice/status-notice.stories.tsx src/shared/ui/state-panel/state-panel.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/widgets/library/ui/vocal-profile-library.stories.tsx src/widgets/library/ui/mixing-library.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx` | `2026-08-12` | 통과 — grayscale/recording Voice Core, shared StatusNotice tone·정렬, border hierarchy와 관련 화면 회귀 43/43 |
 | `pnpm run test:storybook --run src/widgets/product-shell/ui/product-shell.stories.tsx src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — Header top/scrolled separator, Footer rail, authenticated/unauthenticated와 Landing chrome 회귀 11/11 |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx src/shared/ui/voice-orb/voice-orb.stories.tsx` | `2026-08-12` | 통과 — Motion Hero/Reveal, shell과 Orb client island 회귀 13/13, LCP lazy warning 0 |
@@ -430,6 +430,7 @@
 | `pnpm run build` | `2026-08-12` | 통과 — Next.js 16.3 production build, TypeScript와 29개 static page 생성 완료 |
 | Browser responsive QA | `2026-08-12` | 통과 — scroll 전 section 16px·card 6px·metric opacity 0·hairline scaleX 0·CTA pure fade 상태와 진입 후 최종 상태를 확인; editorial 4단계·metric 3개·Voice Notes 4개 순차 reveal, 390px/1440px overflow 0 |
 | Profile Voice Core QA | `2026-08-12` | 통과 — recording에서 Orb 아래 canvas gap 26.6–27.9px, violet→blue→pink scrolling bar·edge fade와 투명 surface 확인; 1440px/390px overflow 0, idle/requesting/stopping에는 canvas 없음, console warning/error 0 |
+| Recorder transition QA | `2026-08-12` | 통과 — 녹음 전 timer/waveform 0, mobile visual height 240→288px·desktop 256→288px 연속 전환, 중간 frame의 grayscale·waveform opacity 변화와 최종 color/opacity 1 확인; WebGL canvas identity 유지, overflow·console warning/error 0 |
 | Border / StatusNotice QA | `2026-08-12` | 통과 — idle surface background transparent·top/bottom border 0px·Orb grayscale(1)·canvas 1, recording surface tint/hairline 및 Orb 사각 배경 0; invalid notice icon/copy 중앙 정렬과 borderless rounded fill 확인, 390px screenshot overflow 없음 |
 | Orb body mask QA | `2026-08-12` | 통과 — recording color Orb와 idle grayscale Orb screenshot에서 gray outer ring·square canvas artifact 0, 본체 feather와 내부 motion 유지 |
 | Orb alpha compositing QA | `2026-08-12` | 통과 — 320px 확대 Orb와 실제 recording surface screenshot에서 gray contour 0, pastel edge·transparent canvas·motion 유지 |
@@ -442,4 +443,4 @@
 | Voice Notes Aurora QA | `2026-08-12` | 통과 — 1440×1000에서 4-up 263×159 crop, 390×844에서 1열 335×203 crop과 밝은 ice→cyan→blue-violet→dark neutral 순서를 직접 확인; desktop/mobile horizontal overflow 0, console warning/error 0 |
 | Album Cover Stack QA | `2026-08-12` | 통과 — 1440×1000에서 4개 cover layer와 hover fan-out, 390×844에서 stacked mixing card와 crop 확인; horizontal overflow 0, console warning/error 0, reduced-motion story 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T09:01:16.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T09:07:06.000Z -->
