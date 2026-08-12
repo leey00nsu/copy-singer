@@ -203,3 +203,13 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Count Up source**: `https://github.com/DavidHDev/react-bits/blob/main/src/ts-tailwind/TextAnimations/CountUp/CountUp.tsx`
 - **Test/Log**: landing Storybook 4/4, TypeScript, ESLint, architecture boundary, Next.js 16.3 production build 통과
 - **Consequences**: 키 변화 visualizer는 landing preview의 설명용이며 실제 분석 데이터가 아니다. Reduced-motion에서는 `−2` 정적 상태를 유지하고, 일반 환경의 순환은 offscreen·background에서 정지한다.
+
+## D012: 각 bar 내부 vertical delta segment와 Hero 완전 숨김 (2026-08-12)
+
+- **Context**: 사용자가 Hero 설명·버튼이 animation 전에도 희미하게 보이는 문제와 Recommended key의 과도한 라벨, 가로 방향 delta 강조가 의도와 다름을 지적했다.
+- **Constraints**: 첨부 visual처럼 세로 bar rhythm을 유지하고, 원본 대비 차이는 각 bar 내부에서 수직으로 읽혀야 하며 화면 텍스트는 하단 설명 한 줄로 제한해야 한다.
+- **Options**: 기존 가로 delta bar의 라벨만 제거 / 전체 bar 색 변경 / neutral 원본 bar와 수직 delta cap을 같은 column에 겹쳐 표시
+- **Decision**: 구현 및 검증 후 확정한다. 초기 방향은 Hero entry 시작 opacity를 0으로 바꾸고, 각 bar의 원본 높이에서 key delta에 비례한 pixel 차이를 계산해 차감은 원본 상단 내부 segment, 증가는 원본 위 추가 cap으로 표시하는 것이다.
+- **Rationale**: 구현 및 검증 후 확정한다.
+- **Trace**:
+  - **DOING 시작 시점**: 현재 `landing-entry`가 opacity 0.24에서 시작해 사전 노출이 발생하고, visualizer는 중앙 기준 좌우 bar 묶음을 색칠해 가로 변화로 읽힌다는 원인을 확인했다.

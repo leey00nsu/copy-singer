@@ -97,7 +97,8 @@ x.ai의 절제된 중앙형 랜딩 구조를 Copy Singer에 맞게 재해석하�
 
 - Aceternity UI의 Bento Grid·Glowing Effect와 React Bits의 Orb·Animated Content source pattern을 Copy Singer token과 컴포넌트 구조에 맞게 조정한다.
 - Hero headline은 단어 단위로 순차 등장하고 설명은 문장 전체가 아래에서 위로 한 번 등장한다. Bento product showcase는 카드별 분절 없이 전체가 opacity 0에서 1로 천천히 한 번 등장한다.
-- 추천 키 preview는 React Bits Count Up source pattern으로 정해진 예시 값 사이를 주기적으로 순환하되 실제 분석 결과로 오해되지 않아야 한다. 원본 키 기준점, 이동 구간 visualizer와 `낮춤/높임` 방향 문구를 함께 제공해 숫자의 의미를 색상에만 의존하지 않고 설명한다.
+- Hero 설명과 action은 animation 시작 전 opacity 0으로 완전히 숨기고 각 reveal 시점에만 표시한다.
+- 추천 키 preview는 React Bits Count Up source pattern으로 정해진 예시 값 사이를 주기적으로 순환하되 실제 분석 결과로 오해되지 않아야 한다. 각 세로 bar의 원본 높이와 변경 높이 차이 구간만 색으로 표시하고, 화면 텍스트는 하단의 `낮춤/높임` 설명 한 줄만 제공한다.
 - Metric band의 `5초+`, `60초`, `3단계`는 정적인 제품 사실로 표시하고 Count Up을 적용하지 않는다.
 - headline과 section reveal은 첫 진입 시 한 번만 실행하고, 작은 opacity 및 translate 변화로 제한한다.
 - 포인터 기반 highlight를 사용할 경우 제품 preview surface에만 적용하며 primary action의 위치나 hit target을 움직이지 않는다.

@@ -55,11 +55,11 @@ ProcessHero
 
 ### Motion 계층
 
-1. **Hero entry**: headline은 접근 가능한 원문과 `aria-hidden` visual word span으로 분리해 CSS stagger를 적용하고, 설명은 하나의 문장 block이 아래에서 위로 등장한다. bento는 카드별 stagger 없이 하나의 wrapper가 opacity 0에서 1로 천천히 한 번 등장한다.
+1. **Hero entry**: headline은 접근 가능한 원문과 `aria-hidden` visual word span으로 분리해 CSS stagger를 적용하고, 설명과 action은 opacity 0인 하나의 block이 각 delay에 맞춰 아래에서 위로 등장한다. bento는 카드별 stagger 없이 하나의 wrapper가 opacity 0에서 1로 천천히 한 번 등장한다.
 2. **Bento interaction**: Aceternity Bento Grid와 Glowing Effect source를 Copy Singer token으로 조정하고 pointer hover와 keyboard focus에 같은 경계 강조를 제공한다.
 3. **Voice Orb**: 분석 bento card와 실제 active `ProcessHero`에 공통 Orb를 사용한다. `hue=294`, `rotateOnHover=false`, `hoverIntensity=0`을 고정하고 viewport/visibility/reduced-motion에 따라 RAF를 정지한다.
 4. **Editorial story**: desktop에서 2열 제품 demo와 restrained scroll reveal을 사용하고 mobile에서는 sticky 없이 순서가 명확한 stacked layout을 사용한다.
-5. **Recommended key visualizer**: React Bits Count Up의 viewport-triggered number transition을 `motion/react` 없이 landing 전용 client island로 재구성한다. 추천 키는 정해진 preview 순환을 사용하고 중앙 원본 bar, 방향별 delta bar와 `낮춤/높임` 문구를 함께 갱신하며 offscreen·background에서는 정지한다. Metric band는 정적으로 유지한다.
+5. **Recommended key visualizer**: React Bits Count Up의 viewport-triggered number transition을 `motion/react` 없이 landing 전용 client island로 재구성한다. 각 세로 bar는 neutral 원본 높이와 현재 높이의 수직 차이를 계산하고 차감 구간은 cyan, 증가 구간은 violet cap으로 표시한다. 화면 라벨은 하단 `낮춤/높임` 한 줄만 남기며 offscreen·background에서는 정지한다. Metric band는 정적으로 유지한다.
 6. **Reduced motion/fallback**: word/bento/count reveal을 제거하고 최종 숫자를 즉시 표시하며, Orb는 정지 또는 CSS poster fallback으로 전환한다. 모든 텍스트/action은 그대로 남긴다.
 
 ### 데이터와 콘텐츠 정직성
