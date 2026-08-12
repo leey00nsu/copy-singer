@@ -1,13 +1,14 @@
 "use client";
 
-import type { HTMLAttributes } from "react";
-import { useEffect, useRef, useState } from "react";
+import type { HTMLMotionProps } from "motion/react";
+import { motion, stagger, useAnimate, useInView, useReducedMotion } from "motion/react";
+import { useEffect } from "react";
 
 import { cn } from "@/shared/lib/cn";
 
 import styles from "./reveal-content.module.css";
 
-type RevealContentProps = HTMLAttributes<HTMLDivElement> & {
+type RevealContentProps = HTMLMotionProps<"div"> & {
   delay?: number;
   distance?: number;
   duration?: number;
@@ -24,7 +25,9 @@ const variantDefaults = {
   stagger: { distance: 0, duration: 650, fromOpacity: 1 },
 } as const;
 
-// Adapted from the one-shot reveal pattern used by React Bits Fade Content.
+const revealEase = [0.22, 1, 0.36, 1] as const;
+
+// Motion-backed one-shot reveal adapted from the React Bits Fade/Animated Content pattern.
 function RevealContent({
   className,
   delay = 0,
@@ -35,48 +38,73 @@ function RevealContent({
   variant = "default",
   ...props
 }: RevealContentProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  const [scope, animate] = useAnimate<HTMLDivElement>();
+  const inView = useInView(scope, { amount: 0.08, margin: "0px 0px -10% 0px", once: true });
+  const shouldReduceMotion = Boolean(useReducedMotion());
   const defaults = variantDefaults[variant];
+  const resolvedDistance = distance ?? defaults.distance;
+  const resolvedDuration = duration ?? defaults.duration;
+  const resolvedOpacity = fromOpacity ?? defaults.fromOpacity;
+  const usesChildSequence = variant === "line" || variant === "stagger";
 
   useEffect(() => {
-    const element = ref.current;
-    if (!element || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setVisible(true);
+    if (!usesChildSequence || (!inView && !shouldReduceMotion)) return;
+    const instant = shouldReduceMotion;
+    const baseDelay = instant ? 0 : delay / 1000;
+
+    if (variant === "stagger") {
+      animate(
+        "[data-reveal-item]",
+        { opacity: 1, y: 0 },
+        {
+          delay: instant ? 0 : stagger(0.07, { startDelay: baseDelay }),
+          duration: instant ? 0 : 0.65,
+          ease: revealEase,
+        },
+      );
+      if (scope.current.querySelector("[data-reveal-media]")) {
+        animate(
+          "[data-reveal-media]",
+          { scale: 1 },
+          {
+            delay: instant ? 0 : stagger(0.07, { startDelay: baseDelay }),
+            duration: instant ? 0 : 0.9,
+            ease: revealEase,
+          },
+        );
+      }
       return;
     }
 
-    if (!("IntersectionObserver" in window)) {
-      const frameId = requestAnimationFrame(() => setVisible(true));
-      return () => cancelAnimationFrame(frameId);
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.isIntersecting) return;
-        setVisible(true);
-        observer.disconnect();
+    animate("[data-reveal-line]", { scaleX: 1 }, { delay: baseDelay, duration: instant ? 0 : 0.75, ease: revealEase });
+    animate(
+      "[data-reveal-item]",
+      { opacity: 1 },
+      {
+        delay: instant ? 0 : stagger(0.07, { startDelay: baseDelay + 0.16 }),
+        duration: instant ? 0 : 0.65,
+        ease: revealEase,
       },
-      { rootMargin: "0px 0px -10%", threshold: 0.08 },
     );
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
+  }, [animate, delay, inView, scope, shouldReduceMotion, usesChildSequence, variant]);
 
   return (
-    <div
-      className={cn(styles.root, styles[variant], visible && styles.visible, className)}
+    <motion.div
+      animate={usesChildSequence || !inView ? undefined : { opacity: 1, y: 0 }}
+      className={cn(styles.root, styles[variant], className)}
       data-reveal-variant={variant}
-      ref={ref}
+      initial={usesChildSequence || shouldReduceMotion ? false : { opacity: resolvedOpacity, y: resolvedDistance }}
+      ref={scope}
       style={
         {
           ...style,
           "--reveal-delay": `${delay}ms`,
-          "--reveal-distance": `${distance ?? defaults.distance}px`,
-          "--reveal-duration": `${duration ?? defaults.duration}ms`,
-          "--reveal-opacity": fromOpacity ?? defaults.fromOpacity,
+          "--reveal-distance": `${resolvedDistance}px`,
+          "--reveal-duration": `${resolvedDuration}ms`,
+          "--reveal-opacity": resolvedOpacity,
         } as React.CSSProperties
       }
+      transition={{ delay: delay / 1000, duration: resolvedDuration / 1000, ease: revealEase }}
       {...props}
     />
   );

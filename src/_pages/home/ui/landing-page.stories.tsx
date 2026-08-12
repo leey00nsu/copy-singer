@@ -31,10 +31,12 @@ async function expectLandingStructure(canvasElement: HTMLElement) {
   await expect(gradientText).toHaveLength(1);
   const firstGradientSegment = gradientText.at(0);
   if (!firstGradientSegment) throw new Error("Gradient Text segment를 찾지 못했습니다.");
-  await expect(firstGradientSegment).toHaveTextContent("내 목소리에");
+  await expect(firstGradientSegment).toHaveTextContent("내 목소리");
   await expect(firstGradientSegment).toHaveAttribute("data-animation-speed", "1.5");
   await expect(firstGradientSegment).toHaveAttribute("data-yoyo", "true");
-  await expect(firstGradientSegment.querySelector("[data-gradient-particle]")).toHaveClass("text-foreground");
+  await expect(
+    firstGradientSegment.closest("[data-word-index]")?.querySelector("[data-gradient-particle]"),
+  ).toHaveTextContent("에");
   const reducedMotionPreview = Boolean(canvasElement.querySelector('[data-testid="reduced-motion-preview"]'));
   if (!reducedMotionPreview) {
     const startPosition = firstGradientSegment.style.backgroundPosition;
@@ -135,7 +137,10 @@ export const ReducedMotion: Story = {
         [data-testid="reduced-motion-preview"] *::before,
         [data-testid="reduced-motion-preview"] *::after {
           animation: none !important;
+          filter: none !important;
+          opacity: 1 !important;
           scroll-behavior: auto !important;
+          transform: none !important;
           transition-duration: 0.01ms !important;
         }
       `}</style>
