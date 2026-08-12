@@ -3,6 +3,7 @@ import Link from "next/link";
 import { type TicketEntryView, TicketLedger } from "@/entities/ticket";
 import { Badge } from "@/shared/ui/badge";
 import { Button, buttonVariants } from "@/shared/ui/button";
+import { ProductPageIntro } from "@/shared/ui/product-page-intro";
 
 export type AccountOverviewProps = {
   account: {
@@ -46,60 +47,67 @@ function PaginationAction({
 export function AccountOverview({ account, authentication, user }: AccountOverviewProps) {
   return (
     <div className="mx-auto w-full max-w-[72rem] px-5 py-12 sm:px-7 lg:px-8 lg:py-14">
-      <header>
-        <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">Account</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-[-0.04em] sm:text-[2rem]">내 계정</h1>
-        <p className="mt-2.5 max-w-2xl text-xs leading-5 text-muted-foreground">
-          로그인 계정과 사용 가능한 티켓, 변경 내역을 확인하세요.
-        </p>
-      </header>
+      <ProductPageIntro
+        description="로그인 계정과 사용 가능한 티켓, 변경 내역을 확인하세요."
+        eyebrow="Account"
+        title="내 계정"
+      />
 
-      <section aria-labelledby="account-information-title" className="mt-10">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h2 className="text-base font-semibold" id="account-information-title">
-              계정 정보
-            </h2>
-            <p className="mt-1 text-xs text-muted-foreground">현재 로그인한 사용자와 실제 연결 공급자입니다.</p>
+      <section
+        aria-label="계정과 티켓 요약"
+        className="mt-10 grid gap-3 lg:grid-cols-[minmax(0,1.35fr)_minmax(18rem,.65fr)]"
+      >
+        <div className="rounded-3xl bg-muted/25 p-6 sm:p-7">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <h2 className="text-base font-semibold" id="account-information-title">
+                계정 정보
+              </h2>
+              <p className="mt-1 text-xs text-muted-foreground">현재 로그인한 사용자와 실제 연결 공급자입니다.</p>
+            </div>
+            <Badge className="text-[11px]" variant={authentication.googleConnected ? "outline" : "secondary"}>
+              <ShieldCheck aria-hidden="true" className="size-3" />
+              {authentication.googleConnected ? "Google 연결됨" : "Google 연결 정보 없음"}
+            </Badge>
           </div>
-          <Badge className="text-[11px]" variant={authentication.googleConnected ? "outline" : "secondary"}>
-            <ShieldCheck aria-hidden="true" className="size-3" />
-            {authentication.googleConnected ? "Google 연결됨" : "Google 연결 정보 없음"}
-          </Badge>
+          <dl className="mt-7 grid gap-6 sm:grid-cols-3">
+            <div>
+              <dt className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                <UserRound aria-hidden="true" className="size-3" /> 이름
+              </dt>
+              <dd className="mt-1.5 break-words text-sm font-semibold">{user.name}</dd>
+            </div>
+            <div>
+              <dt className="text-[11px] text-muted-foreground">이메일</dt>
+              <dd className="mt-1.5 break-all text-sm font-semibold">{user.email}</dd>
+            </div>
+            <div>
+              <dt className="text-[11px] text-muted-foreground">로그인 방식</dt>
+              <dd className="mt-1.5 text-sm font-semibold">
+                {authentication.googleConnected ? "Google" : "현재 세션"}
+              </dd>
+              {authentication.googleConnectedAt ? (
+                <p className="mt-1 text-[11px] text-muted-foreground">
+                  {authentication.googleConnectedAt.toLocaleDateString("ko-KR")} 연결
+                </p>
+              ) : null}
+            </div>
+          </dl>
         </div>
-        <dl className="mt-4 grid gap-px border-y bg-border md:grid-cols-3">
-          <div className="bg-background px-4 py-4 sm:px-5">
-            <dt className="flex items-center gap-2 text-[11px] text-muted-foreground">
-              <UserRound aria-hidden="true" className="size-3" /> 이름
-            </dt>
-            <dd className="mt-1.5 break-words text-xs font-semibold">{user.name}</dd>
+        <div className="flex min-h-52 flex-col justify-between rounded-3xl bg-foreground p-6 text-background sm:p-7">
+          <p className="flex items-center gap-2 text-sm text-background/70">
+            <Ticket aria-hidden="true" className="size-4" /> 사용 가능한 티켓
+          </p>
+          <div>
+            <h2 className="text-5xl font-semibold tracking-[-0.055em] tabular-nums" id="ticket-balance-title">
+              {account.balance}개
+            </h2>
+            <p className="mt-2 text-xs leading-5 text-background/60">AI 믹싱을 시작할 때 티켓 1개를 사용합니다.</p>
           </div>
-          <div className="bg-background px-4 py-4 sm:px-5">
-            <dt className="text-[11px] text-muted-foreground">이메일</dt>
-            <dd className="mt-1.5 break-all text-xs font-semibold">{user.email}</dd>
-          </div>
-          <div className="bg-background px-4 py-4 sm:px-5">
-            <dt className="text-[11px] text-muted-foreground">로그인 방식</dt>
-            <dd className="mt-1.5 text-xs font-semibold">{authentication.googleConnected ? "Google" : "현재 세션"}</dd>
-            {authentication.googleConnectedAt ? (
-              <p className="mt-1 text-[11px] text-muted-foreground">
-                {authentication.googleConnectedAt.toLocaleDateString("ko-KR")} 연결
-              </p>
-            ) : null}
-          </div>
-        </dl>
+        </div>
       </section>
 
-      <section aria-labelledby="ticket-balance-title" className="mt-8 py-6">
-        <p className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Ticket aria-hidden="true" className="size-3.5" /> 사용 가능한 티켓
-        </p>
-        <h2 className="mt-1.5 text-3xl font-semibold tracking-[-0.04em] tabular-nums" id="ticket-balance-title">
-          {account.balance}개
-        </h2>
-      </section>
-
-      <section aria-labelledby="ticket-ledger-title" className="mt-9">
+      <section aria-labelledby="ticket-ledger-title" className="mt-12">
         <div className="mb-3 flex flex-wrap items-end justify-between gap-4">
           <div>
             <h2 className="text-base font-semibold" id="ticket-ledger-title">

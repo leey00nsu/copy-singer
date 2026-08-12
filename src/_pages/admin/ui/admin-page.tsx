@@ -9,7 +9,9 @@ import {
 import { TicketAdjustmentForm } from "@/features/manage-tickets";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
+import { ProductPageIntro } from "@/shared/ui/product-page-intro";
 import { ProductFooter, ProductHeader } from "@/widgets/product-shell";
+import { AdminMetricBand } from "./admin-metric-band";
 
 function positivePage(value: string | undefined) {
   const parsed = Number(value ?? "1");
@@ -63,43 +65,33 @@ export default async function AdminPage({
       <ProductHeader admin user={{ email: session.user.email, image: session.user.image, name: session.user.name }} />
 
       <main className="mx-auto w-full max-w-[82rem] px-6 py-8 lg:px-8 lg:py-10">
-        <section className="grid gap-8 lg:grid-cols-[minmax(18rem,.68fr)_minmax(0,1.32fr)] lg:items-start">
-          <div>
-            <p className="text-[10px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">Admin</p>
-            <h1 className="mt-2 text-4xl font-semibold tracking-[-0.045em]">Copy Singer 운영</h1>
-            <p className="mt-3 max-w-md text-xs leading-5 text-muted-foreground">
-              서비스의 사용 현황과 티켓을 관리하고, 작업 상태를 모니터링하세요.
-            </p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {[
-              { label: "사용자", value: overview.users, detail: "전체 가입자", icon: Users },
-              { label: "진행 작업", value: activeJobs, detail: "현재 실행 중", icon: Activity },
-              { label: "24시간 실패", value: overview.recentFailures, detail: "최근 24시간 기준", icon: AlertTriangle },
-              { label: "티켓 잔액", value: overview.ticketNet, detail: "전체 잔여 티켓", icon: Ticket },
-            ].map(({ label, value, detail, icon: Icon }) => (
-              <article className="rounded-xl border bg-background p-5" key={label}>
-                <Icon className="size-5 text-data-accent" aria-hidden="true" />
-                <p className="mt-4 text-xs text-muted-foreground">{label}</p>
-                <p className="mt-1 text-2xl font-semibold tracking-[-0.035em] tabular-nums">{value}</p>
-                <p className="mt-1.5 text-[10px] text-muted-foreground">{detail}</p>
-              </article>
-            ))}
-          </div>
-        </section>
+        <ProductPageIntro
+          description="서비스의 사용 현황과 티켓을 관리하고, 작업 상태를 모니터링하세요."
+          eyebrow="Admin"
+          title="Copy Singer 운영"
+        />
+        <AdminMetricBand
+          className="mt-8"
+          metrics={[
+            { label: "사용자", value: overview.users, detail: "전체 가입자", icon: Users },
+            { label: "진행 작업", value: activeJobs, detail: "현재 실행 중", icon: Activity },
+            { label: "24시간 실패", value: overview.recentFailures, detail: "최근 24시간 기준", icon: AlertTriangle },
+            { label: "티켓 잔액", value: overview.ticketNet, detail: "전체 잔여 티켓", icon: Ticket },
+          ]}
+        />
 
         <section className="mt-7">
           <div className="mb-3">
             <h2 className="text-sm font-semibold">티켓 조정</h2>
-            <p className="mt-1 text-[11px] text-muted-foreground">사용자의 티켓 잔액을 관리하고 조정할 수 있습니다.</p>
+            <p className="mt-1 text-xs text-muted-foreground">사용자의 티켓 잔액을 관리하고 조정할 수 있습니다.</p>
           </div>
-          <div className="rounded-xl border p-4">
+          <div className="rounded-2xl bg-muted/20 p-5">
             <TicketAdjustmentForm users={adjustmentUsers.users} />
           </div>
         </section>
 
         <form
-          className="mt-5 grid gap-3 rounded-xl border p-4 md:grid-cols-[minmax(0,1fr)_22rem_auto] md:items-end"
+          className="mt-5 grid gap-3 rounded-2xl bg-muted/20 p-5 md:grid-cols-[minmax(0,1fr)_22rem_auto] md:items-end"
           method="get"
         >
           <input name="usersPage" type="hidden" value="1" />
