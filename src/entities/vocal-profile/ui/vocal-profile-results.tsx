@@ -87,7 +87,7 @@ export function VocalRangeProfile({
           data-vocal-profile-stat-surface="range"
         >
           {summary.map(([label, value, detail]) => (
-            <div className="rounded-xl bg-background/75 px-3 py-3 sm:px-4" key={label}>
+            <div className="rounded-xl bg-background px-3 py-3 sm:px-4" key={label}>
               <p className="text-[10px] text-muted-foreground">{label}</p>
               <p className="mt-1 text-sm font-semibold">{value}</p>
               <p className="mt-1 font-mono text-[10px] text-muted-foreground">{detail}</p>
@@ -329,7 +329,7 @@ export function VocalProfileResults({
                 data-vocal-profile-stat-surface="quality"
               >
                 {quality.map(([label, value, Icon]) => (
-                  <div className="rounded-xl bg-background/75 px-3 py-3" key={label}>
+                  <div className="rounded-xl bg-background px-3 py-3" key={label}>
                     <p className="text-[11px] text-muted-foreground">{label}</p>
                     <p className="mt-1.5 break-words text-sm font-semibold">{value}</p>
                     <Icon className="mt-2 size-3.5 text-data-accent-foreground" />

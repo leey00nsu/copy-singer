@@ -16,7 +16,7 @@ function AdminMetricBand({ className, metrics }: { className?: string; metrics: 
       className={cn("grid gap-2 rounded-2xl bg-muted/55 p-2 sm:grid-cols-2 xl:grid-cols-4", className)}
     >
       {metrics.map(({ detail, icon: Icon, label, value }) => (
-        <article className="min-w-0 rounded-xl bg-background/72 p-5" key={label}>
+        <article className="min-w-0 rounded-xl bg-background p-5" key={label}>
           <div className="flex items-center justify-between gap-4">
             <p className="text-xs font-medium text-muted-foreground">{label}</p>
             <Icon aria-hidden="true" className="size-4 text-data-accent" />

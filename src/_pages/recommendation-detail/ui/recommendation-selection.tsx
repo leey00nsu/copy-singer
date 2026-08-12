@@ -49,11 +49,11 @@ function SelectionDetails({
       <p className="mt-1 text-sm text-muted-foreground">{item.artist}</p>
 
       <dl className="mt-6 grid grid-cols-2 gap-1 rounded-xl bg-muted/55 p-1">
-        <div className="rounded-lg bg-background/75 px-3 py-4">
+        <div className="rounded-lg bg-background px-3 py-4">
           <dt className="text-xs text-muted-foreground">추천 키</dt>
           <dd className="mt-1 text-lg font-semibold">{formatRecommendedShift(item.recommendedShift)}</dd>
         </div>
-        <div className="rounded-lg bg-background/75 px-3 py-4">
+        <div className="rounded-lg bg-background px-3 py-4">
           <dt className="text-xs text-muted-foreground">원키 적합도</dt>
           <dd className="mt-1 text-lg font-semibold">{Math.round(item.originalKeyScore)}%</dd>
         </div>

@@ -94,17 +94,17 @@ export function SongDetail({
           저장된 추천 계산 결과입니다. 실제 가창에서는 곡과 컨디션에 따라 다르게 느껴질 수 있습니다.
         </p>
         <dl className="mt-5 grid gap-1 rounded-2xl bg-muted/55 p-1 sm:grid-cols-3">
-          <div className="rounded-xl bg-background/75 px-4 py-5 sm:px-6">
+          <div className="rounded-xl bg-background px-4 py-5 sm:px-6">
             <dt className="text-xs text-muted-foreground">원키 적합도</dt>
             <dd className="mt-2 text-2xl font-semibold">{Math.round(item.originalKeyScore)}%</dd>
           </div>
-          <div className="rounded-xl bg-background/75 px-4 py-5 sm:px-6">
+          <div className="rounded-xl bg-background px-4 py-5 sm:px-6">
             <dt className="text-xs text-muted-foreground">{formatRecommendedShift(shift)} 적합도</dt>
             <dd className="mt-2 text-2xl font-semibold text-data-accent-foreground">
               {Math.round(item.adjustedScore)}%
             </dd>
           </div>
-          <div className="rounded-xl bg-background/75 px-4 py-5 sm:px-6">
+          <div className="rounded-xl bg-background px-4 py-5 sm:px-6">
             <dt className="text-xs text-muted-foreground">키 조정 변화</dt>
             <dd className="mt-2 text-2xl font-semibold">{scoreGain > 0 ? `+${scoreGain}` : scoreGain}%p</dd>
           </div>

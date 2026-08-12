@@ -261,15 +261,15 @@ export function MixingDetail({ initial }: { initial: MixingHistoryRow }) {
       ) : null}
 
       <dl className="grid gap-1 rounded-2xl bg-muted/55 p-1 sm:grid-cols-3" data-stat-surface="mixing-detail">
-        <div className="rounded-xl bg-background/75 px-4 py-5 sm:px-6">
+        <div className="rounded-xl bg-background px-4 py-5 sm:px-6">
           <dt className="text-xs text-muted-foreground">사용 티켓</dt>
           <dd className="mt-1 text-lg font-semibold">{job.ticketCost}개</dd>
         </div>
-        <div className="rounded-xl bg-background/75 px-4 py-5 sm:px-6">
+        <div className="rounded-xl bg-background px-4 py-5 sm:px-6">
           <dt className="text-xs text-muted-foreground">요청 시간</dt>
           <dd className="mt-1 text-sm font-medium">{new Date(job.createdAt).toLocaleString("ko-KR")}</dd>
         </div>
-        <div className="rounded-xl bg-background/75 px-4 py-5 sm:px-6">
+        <div className="rounded-xl bg-background px-4 py-5 sm:px-6">
           <dt className="text-xs text-muted-foreground">최근 확인</dt>
           <dd className="mt-1 text-sm font-medium">{new Date(job.updatedAt).toLocaleString("ko-KR")}</dd>
         </div>
