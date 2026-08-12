@@ -601,6 +601,17 @@
     - [x] VocalRangeChart tooltip cursor fill을 제거하고 Storybook contract를 보강한다.
     - [x] 관련 Storybook, TypeScript, lint, architecture와 browser visual QA를 통과한다.
 
+- [DONE][PRD-FR-047] T-F022-xai-inspired-landing-motion-51 Metric tile background 합성 오차 제거
+  - Date: 2026-08-12
+  - Acceptance:
+    - muted surface 내부 metric tile은 반투명 `bg-background/75` 또는 `/72` 대신 불투명 `bg-background`를 사용해 픽셀 색상과 dark theme가 일관된다.
+    - ProductShell header/footer의 backdrop blur용 `bg-background/72`는 별도 chrome 계약으로 유지한다.
+    - 실제·loading surface가 동일한 tile background 구조를 사용한다.
+  - Checklist:
+    - [x] Profile, Recommendation, Song, Mixing metric tile의 `bg-background/75`를 전수 교체한다.
+    - [x] Admin metric tile의 `bg-background/72`만 교체하고 ProductShell chrome은 보존한다.
+    - [x] 관련 Storybook, TypeScript, lint, architecture와 light/dark browser visual QA를 통과한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -669,5 +680,6 @@
 | Borderless hierarchy QA | `2026-08-12` | 통과 — 보컬 결과 2개 chapter, 추천 filter, 티켓 ledger, 곡 range와 믹싱 failure가 border 0·quiet rounded fill을 사용하고 table/list/timeline separator는 유지됨을 확인; Storybook 24/24, TypeScript, ESLint, Biome, architecture 4/4 통과 |
 | Detail eyebrow / muted surface QA | `2026-08-12` | 통과 — Landing `첫 목소리 분석 시작`과 동일한 `bg-muted/55`를 보컬 chapter·추천 filter·티켓 ledger·곡 range에 적용; `Vocal analysis`·`Result` 중복 eyebrow와 PitchTrace 접기 button 제거, Storybook 24/24·TypeScript·ESLint·Biome·architecture 4/4 및 Chromium visual QA 통과 |
 | Muted / chart context QA | `2026-08-12` | 통과 — source-wide `bg-muted/25` 0건, Account·Profile·Recommendation·Mixing·Admin·Notification을 `bg-muted/55`로 통일; light/dark chart-context 0.90/0.38과 VocalRange cursor 0을 Chromium에서 확인, Storybook 30/30·TypeScript·ESLint·Biome·architecture 4/4 통과 |
+| Opaque metric tile QA | `2026-08-12` | 통과 — Profile·Recommendation·Song·Mixing·Admin의 내부 tile을 불투명 `bg-background`로 통일하고 ProductShell blur chrome만 `/72`로 유지; light Mixing tile `oklch(1 0 0)`, dark Profile tile `oklch(0.145 0 0)` 확인, Storybook 23/23·TypeScript·ESLint·Biome·architecture 4/4 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T12:22:31.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T12:30:27.000Z -->

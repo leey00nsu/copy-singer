@@ -568,3 +568,12 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**: `src/_app/styles/globals.css`, `src/entities/vocal-profile/lib/chart-brand.ts`, `src/entities/vocal-profile/ui/vocal-range-chart.tsx`, source-wide muted surface와 관련 Storybook
 - **Trace**: `bg-muted/25` source 검색 결과를 0건으로 만들고 Account, Profile, Recommendation, Mixing, Admin, Notification surface를 갱신했다. Storybook 30/30, TypeScript, ESLint, Biome과 architecture 4/4를 통과했다. Chromium에서 chapter `muted/55`, observed fill `oklch(0.9 0 0)`, practical gradient와 tooltip cursor 0을 확인했고 Account surface도 `muted/55`로 렌더링됨을 확인했다.
 - **Consequences**: 정상 상태·surface는 `muted/55`, 전체 음역 같은 neutral chart context는 `--chart-context`, 실용 signal은 restrained brand chart gradient를 사용한다. Semantic status tint와 구조적 border는 이 변경의 대상이 아니다.
+
+## D042: Muted surface 내부 metric tile은 opaque background를 사용 (2026-08-12)
+
+- **Context**: `bg-muted/55` chapter 안의 `bg-background/75` metric tile은 부모색과 alpha 합성되어 동일한 흰색 역할인데도 surface마다 `#fdfdfd` 또는 `#fefdfd`처럼 서로 다른 픽셀값으로 보였다. Admin의 `/72` tile도 같은 문제가 있었다.
+- **Decision**: Profile, Recommendation, Song, Mixing과 Admin의 내부 metric tile은 불투명 `bg-background`로 통일한다. 실제 결과와 loading skeleton도 동일한 규칙을 사용한다. ProductShell header/footer의 `bg-background/72`는 backdrop blur가 뒤 콘텐츠를 희미하게 비추는 chrome 계약이므로 유지한다.
+- **Rationale**: 정보를 담는 작은 tile은 투명 합성이 의미를 전달하지 않으므로 theme의 canonical background를 그대로 써야 화면·부모 surface와 무관하게 같은 색으로 렌더링된다. 반면 browser chrome의 투명도는 blur 효과 자체의 일부다.
+- **Evidence**: VocalProfileResults, RecommendationSelection, SongDetail, MixingDetail·loading, AdminMetricBand와 ProductShell source-wide 검색
+- **Trace**: `bg-background/75` source 검색 결과를 0건으로 만들고 `/72`는 ProductShell header/footer 2건만 남겼다. Storybook 23/23, TypeScript, ESLint, Biome과 architecture 4/4를 통과했다. Chromium에서 Mixing light tile은 `oklch(1 0 0)`, Profile dark tile은 `oklch(0.145 0 0)`의 opaque background로 렌더링됨을 확인했다.
+- **Consequences**: Metric tile의 실제 픽셀값은 theme background token과 정확히 같고, muted chapter와의 대비는 부모 surface alpha만으로 결정된다.
