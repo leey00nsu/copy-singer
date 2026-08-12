@@ -34,7 +34,18 @@ async function expectLandingStructure(canvasElement: HTMLElement) {
   await expect(canvas.getByText("3단계")).toBeVisible();
   await expect(canvas.getByRole("heading", { name: "더 좋은 한 소절을 위한 짧은 안내" })).toBeVisible();
   await expect(canvas.queryByTestId("grainient-background")).not.toBeInTheDocument();
-  await expect(canvas.getByRole("heading", { name: "편하게 녹음하기" }).closest("article")).toBeVisible();
+  const firstVoiceNote = canvas.getByRole("heading", { name: "편하게 녹음하기" });
+  await expect(firstVoiceNote.closest("article")).toBeVisible();
+  const voiceNoteImages = Array.from(firstVoiceNote.closest("section")?.querySelectorAll("article img") ?? []);
+  await expect(voiceNoteImages).toHaveLength(4);
+  await expect(voiceNoteImages.map((image) => image.getAttribute("src"))).toEqual(
+    expect.arrayContaining([
+      expect.stringContaining("recording-aurora.webp"),
+      expect.stringContaining("vocal-profile-aurora.webp"),
+      expect.stringContaining("song-match-aurora.webp"),
+      expect.stringContaining("ai-mixing-aurora.webp"),
+    ]),
+  );
   await expect(canvas.queryByText("분석에서 믹싱까지, 한 흐름으로")).not.toBeInTheDocument();
   await expect(canvas.queryByText("목소리의 범위와 안정성을 같은 기준으로")).not.toBeInTheDocument();
   await expect(canvas.getByRole("navigation", { name: "제품 푸터 메뉴" })).toBeVisible();

@@ -1,4 +1,5 @@
 import { ArrowRight, Library, Mic2, Music2, Sparkles } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 import { RevealContent } from "@/shared/ui/reveal-content";
@@ -33,31 +34,27 @@ const editorialSteps = [
 const voiceNotes = [
   {
     description: "마이크를 너무 가깝게 두기보다 평소 말하듯 편안한 거리에서 시작하세요.",
+    image: "/images/landing/voice-notes/recording-aurora.webp",
     label: "Recording",
     title: "편하게 녹음하기",
-    visual:
-      "bg-[radial-gradient(circle_at_18%_22%,#ddd6fe_0%,transparent_34%),radial-gradient(circle_at_82%_76%,#bfdbfe_0%,transparent_38%),linear-gradient(135deg,#fafafa,#eef2ff)]",
   },
   {
     description: "최고음 하나보다 부담 없이 반복해서 낼 수 있는 실용 음역이 더 중요합니다.",
+    image: "/images/landing/voice-notes/vocal-profile-aurora.webp",
     label: "Vocal profile",
     title: "실용 음역 읽기",
-    visual:
-      "bg-[radial-gradient(circle_at_74%_20%,#d8b4fe_0%,transparent_30%),radial-gradient(circle_at_25%_80%,#4f46e5_0%,transparent_42%),linear-gradient(135deg,#111827,#312e81)]",
   },
   {
     description: "추천 키는 원곡의 매력을 지키면서 내 목소리의 부담을 줄이는 출발점입니다.",
+    image: "/images/landing/voice-notes/song-match-aurora.webp",
     label: "Song match",
     title: "추천 키 이해하기",
-    visual:
-      "bg-[radial-gradient(circle_at_28%_68%,#93c5fd_0%,transparent_35%),radial-gradient(circle_at_78%_24%,#e9d5ff_0%,transparent_32%),linear-gradient(135deg,#f8fafc,#ede9fe)]",
   },
   {
     description: "완료된 믹싱 결과는 계정의 라이브러리에서 다시 듣고 관리할 수 있습니다.",
+    image: "/images/landing/voice-notes/ai-mixing-aurora.webp",
     label: "AI mixing",
     title: "결과 보관하기",
-    visual:
-      "bg-[radial-gradient(circle_at_72%_72%,#f0abfc_0%,transparent_32%),radial-gradient(circle_at_20%_18%,#4338ca_0%,transparent_36%),linear-gradient(135deg,#18181b,#1e1b4b)]",
   },
 ] as const;
 
@@ -152,14 +149,16 @@ function LandingPage({ admin = false, user = null }: { admin?: boolean; user?: P
               <span className="hidden text-[10px] text-muted-foreground sm:block">Copy Singer guide</span>
             </div>
             <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {voiceNotes.map(({ description, label, title, visual }) => (
+              {voiceNotes.map(({ description, image, label, title }) => (
                 <article key={title}>
-                  <div className={`relative aspect-[1.65] overflow-hidden rounded-lg ${visual}`}>
-                    <div className="absolute inset-0 opacity-35 mix-blend-overlay [background-image:radial-gradient(circle_at_center,rgb(255_255_255/.9)_0_0.55px,transparent_0.7px)] [background-size:3px_3px]" />
-                    <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent_18%,rgb(255_255_255/.22)_46%,transparent_72%)] bg-[length:220%_100%] transition-[background-position] duration-700 hover:bg-[position:100%_0%] motion-reduce:transition-none" />
-                    <span className="absolute inset-x-4 bottom-4 text-sm font-medium text-white mix-blend-difference">
-                      {title}
-                    </span>
+                  <div className="relative aspect-[1.65] overflow-hidden rounded-lg bg-muted">
+                    <Image
+                      alt=""
+                      className="object-cover transition-transform duration-700 hover:scale-[1.015] motion-reduce:transition-none"
+                      fill
+                      sizes="(max-width: 639px) calc(100vw - 2.5rem), (max-width: 1023px) 50vw, 18rem"
+                      src={image}
+                    />
                   </div>
                   <p className="mt-3 text-[9px] text-muted-foreground uppercase">{label}</p>
                   <h3 className="mt-1 text-xs font-semibold">{title}</h3>
