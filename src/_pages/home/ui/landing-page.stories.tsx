@@ -28,28 +28,17 @@ async function expectLandingStructure(canvasElement: HTMLElement) {
   await waitFor(() => expect(bento).toBeVisible());
   await expect(canvas.getAllByRole("heading", { level: 1 })).toHaveLength(1);
   const gradientText = Array.from(canvasElement.querySelectorAll<HTMLElement>("[data-gradient-text]"));
-  await expect(gradientText).toHaveLength(2);
-  await expect(gradientText.map((segment) => segment.textContent).join(" ")).toBe("내 목소리");
+  await expect(gradientText).toHaveLength(1);
   const firstGradientSegment = gradientText.at(0);
   if (!firstGradientSegment) throw new Error("Gradient Text segment를 찾지 못했습니다.");
+  await expect(firstGradientSegment).toHaveTextContent("내 목소리에");
+  await expect(firstGradientSegment).toHaveAttribute("data-animation-speed", "1.5");
+  await expect(firstGradientSegment).toHaveAttribute("data-yoyo", "true");
+  await expect(firstGradientSegment.querySelector("[data-gradient-particle]")).toHaveClass("text-foreground");
   const reducedMotionPreview = Boolean(canvasElement.querySelector('[data-testid="reduced-motion-preview"]'));
-  const gradientStyle = getComputedStyle(firstGradientSegment);
-  await expect(gradientStyle.animationDuration).toBe(reducedMotionPreview ? "0s" : "1.5s");
   if (!reducedMotionPreview) {
-    await expect(gradientStyle.animationIterationCount).toBe("infinite");
-    await expect(gradientStyle.animationTimingFunction).toBe("linear");
-    const gradientAnimation = firstGradientSegment.getAnimations().at(0);
-    if (!gradientAnimation) throw new Error("Gradient Text animation을 찾지 못했습니다.");
-    gradientAnimation.pause();
-    gradientAnimation.currentTime = 0;
-    const startPosition = getComputedStyle(firstGradientSegment).backgroundPosition;
-    gradientAnimation.currentTime = 750;
-    const midpointPosition = getComputedStyle(firstGradientSegment).backgroundPosition;
-    gradientAnimation.currentTime = 1500;
-    const endPosition = getComputedStyle(firstGradientSegment).backgroundPosition;
-    await expect(midpointPosition).not.toBe(startPosition);
-    await expect(endPosition).toBe(startPosition);
-    gradientAnimation.play();
+    const startPosition = firstGradientSegment.style.backgroundPosition;
+    await waitFor(() => expect(firstGradientSegment.style.backgroundPosition).not.toBe(startPosition));
   }
   const analysis = canvas.getByRole("heading", { name: "목소리 분석" });
   const recommendation = canvas.getByRole("heading", { name: "노래와 키 추천" });

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { type CSSProperties, Fragment } from "react";
 
 import { Button } from "@/shared/ui/button";
+import { GradientText } from "@/shared/ui/gradient-text";
 
 import styles from "./landing-hero.module.css";
 
@@ -43,17 +44,20 @@ function LandingHero({ primaryLabel, profileHref }: LandingHeroProps) {
           >
             <span aria-hidden="true">
               <span className={styles.wordLine}>
-                <span className={styles.word} style={{ "--word-index": 0 } as CSSProperties}>
-                  <span className={styles.gradientText} data-gradient-text>
+                <GradientText
+                  animationSpeed={1.5}
+                  colors={["var(--data-accent-foreground)", "oklch(0.59 0.18 260)", "oklch(0.67 0.17 330)"]}
+                >
+                  <span className={styles.word} style={{ "--word-index": 0 } as CSSProperties}>
                     내
-                  </span>
-                </span>{" "}
-                <span className={styles.word} style={{ "--word-index": 1 } as CSSProperties}>
-                  <span className={styles.gradientText} data-gradient-text>
+                  </span>{" "}
+                  <span className={styles.word} style={{ "--word-index": 1 } as CSSProperties}>
                     목소리
+                    <span className="text-foreground" data-gradient-particle>
+                      에
+                    </span>
                   </span>
-                  에
-                </span>{" "}
+                </GradientText>{" "}
                 <StaggeredWords startIndex={2} text="맞는 노래를 찾고," />
               </span>
               <span className={`${styles.wordLine} block`}>
