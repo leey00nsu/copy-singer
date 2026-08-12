@@ -50,7 +50,12 @@ HomePage (server session)
       └─ ProductFooter
 
 ProcessHero
-  └─ active tone: shared VoiceOrb client island
+  └─ active tone: shared VoiceSignalCore(processing)
+
+VocalProfileRecorder
+  └─ VoiceSignalCore
+      ├─ idle/requesting/stopping: static Orb poster
+      └─ recording: VoiceOrb + microphone RMS/peak CSS variables
 ```
 
 ### Motion 계층
@@ -58,6 +63,7 @@ ProcessHero
 1. **Hero entry**: headline은 접근 가능한 원문과 `aria-hidden` visual word span으로 분리해 CSS stagger를 적용하고, 설명과 action은 opacity 0인 하나의 block이 각 delay에 맞춰 아래에서 위로 등장한다. bento는 카드별 stagger 없이 하나의 wrapper가 opacity 0에서 1로 천천히 한 번 등장한다.
 2. **Bento interaction**: Aceternity Bento Grid와 Glowing Effect source를 Copy Singer token으로 조정하고 pointer hover와 keyboard focus에 같은 경계 강조를 제공한다.
 3. **Voice Orb**: 분석 bento card와 실제 active `ProcessHero`에 공통 Orb를 사용한다. `hue=294`, `rotateOnHover=false`, `hoverIntensity=0`을 고정하고 viewport/visibility/reduced-motion에 따라 RAF를 정지한다.
+   Profile recorder는 이를 감싼 `VoiceSignalCore`를 사용한다. idle/requesting/stopping은 WebGL 없는 poster, recording은 MediaStream analyser의 RMS·peak를 45ms 간격으로 smoothing해 `--signal-level` CSS 변수만 갱신하고 scale·glow에 제한적으로 반영한다. React state는 고주파 신호에 사용하지 않으며 unmount/recording 종료에서 RAF, source, analyser와 AudioContext를 정리한다.
 4. **Editorial story**: desktop에서 2열 제품 demo를 사용하고 mobile에서는 sticky 없이 순서가 명확한 stacked layout을 사용한다. 하단 reveal은 `RevealContent`의 section·group·stagger·line·fade variant를 공통 easing으로 묶고, heading→단계, hairline→정적 metric, heading→Voice Notes card, final CTA 단일 fade 순서를 CSS child delay로 제어한다.
 5. **Sample Vocal Range Profile**: 실제 `VocalRangeProfile`에서 range chart를 `VocalRangeChart` client island로 분리하고 실제 분석 결과와 랜딩이 같은 Recharts 축·range·median 규칙을 사용한다. 랜딩은 저장·API 호출 없는 직렬화 가능한 고정 profile만 전달하고 별도 sample header 없이 chart만 표시하며 metric band는 정적으로 유지한다.
 6. **Reduced motion/fallback**: word/bento reveal을 제거하고 Orb는 정지 또는 CSS poster fallback으로 전환한다. Vocal Range chart와 모든 텍스트/action은 animation 없이 그대로 남긴다.

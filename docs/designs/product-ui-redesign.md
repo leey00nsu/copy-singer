@@ -79,10 +79,10 @@ F022 이후 `01-landing-voice-scan.*`의 오른쪽 Voice Scan frame은 계속 �
 ### Voice Scan
 
 - 설명 영역과 실제 voice input surface가 desktop에서 균형 잡힌 2열로 보이고 mobile에서 한 열로 재배치된다.
-- 녹음 중에는 실제 microphone `MediaStream`을 Web Audio `AnalyserNode`로 읽어 live waveform을 왼쪽에서 오른쪽으로 연속 표시한다.
+- 녹음 전 고정 bar와 녹음 중 live waveform canvas는 사용하지 않는다. 입력 surface는 저채도 정적 Voice Core에서 시작해 recording 중 실제 microphone `MediaStream`의 RMS·peak에 따라 작은 scale·glow만 반응하고, 분석 중에는 같은 형태의 full React Bits Orb로 이어진다.
 - 5초부터 분석 가능, 약 10초 권장, 최대 60초 계약을 그대로 보여준다.
 - microphone permission, error, cancel, stop, ready, upload 대안을 명확하게 구분한다.
-- 녹음 waveform은 pastel violet을 사용하고 다른 화면의 audio/data accent와 색을 통일한다.
+- 마이크 반응은 장식이며 상태 의미는 timer, milestone copy, progress와 action으로 전달한다. Reduced-motion에서는 정적 core를 사용하고 녹음 완료 후 탐색 가능한 playback waveform은 유지한다.
 
 ## Library
 

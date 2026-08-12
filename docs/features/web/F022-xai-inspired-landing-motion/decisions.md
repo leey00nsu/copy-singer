@@ -270,7 +270,12 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Context**: 사용자가 분석 중에는 Orb를 사용하지만 분석 전 profile에는 기존 막대 파형이 남아 있고 녹음 중 live waveform도 현재 디자인과 어울리지 않는다고 지적했다.
 - **Constraints**: 실제 마이크 반응을 유지하되 amplitude를 장식 정보 이상으로 과장하지 않고 React high-frequency render, 복수 AudioContext, WebGL 의존 실패, reduced-motion과 녹음 cleanup 문제를 피해야 한다.
 - **Options**: 막대 스타일만 변경 / 원형 spectrum 추가 / idle·recording·processing을 하나의 Voice Core 상태로 통합
-- **Decision**: 구현 및 검증 후 확정한다. 초기 방향은 idle에 정적 Orb poster를 사용하고 recording에서 기존 analyser의 RMS·peak를 smoothing한 CSS 변수로 Orb scale과 glow만 갱신하며 processing은 현재 `VoiceOrb`를 유지하는 것이다.
-- **Rationale**: 구현 및 검증 후 확정한다.
+- **Decision**: 공통 `VoiceSignalCore`에 idle·requesting·recording·stopping·processing mode를 정의한다. Idle/requesting/stopping은 `VoiceOrb`의 WebGL 없는 poster fallback에 mode별 opacity·saturation·scale을 적용하고, recording은 full Orb와 glow를 MediaStream analyser의 RMS·peak에서 smoothing한 `--signal-level`로만 반응시킨다. `ProcessHero` active도 같은 core의 processing mode를 사용한다.
+- **Rationale**: 분석 전부터 분석 중까지 같은 형태를 유지해 제품의 visual continuity를 만들면서, 녹음 중 신호는 오디오 편집기형 history waveform 없이도 살아 있는 입력으로 느껴진다. 고주파 값을 DOM CSS 변수로 직접 전달하므로 React render를 반복하지 않고 기존 timer·progress의 의미도 침범하지 않는다.
 - **Trace**:
   - **DOING 시작 시점**: 현재 `RecorderSurface`는 idle에서 20개 고정 bar, recording에서 별도 2D canvas의 history bar와 baseline을 사용하고 `ProcessHero`만 `VoiceOrb`를 사용한다. Timer·milestone·progress는 visual과 독립된 의미 계약이므로 그대로 보존할 수 있다.
+  - **DONE 전 확정 시점**: 고정 `previewBars`, `LiveMicrophoneWaveform` 2D canvas와 theme color helper를 제거하고 shared Voice Core를 recorder와 ProcessHero에 연결했다. Idle Storybook은 WebGL canvas 0, recording은 old waveform canvas 0·Orb canvas 1, processing은 ready Orb canvas 1을 확인했으며 390px overflow 0을 확인했다. Storybook 13/13, TypeScript, ESLint, architecture boundary와 production build를 통과했다.
+- **Evidence**:
+  - **Components**: `src/shared/ui/voice-signal-core`, `src/_pages/profile/ui/vocal-profile-recorder.tsx`, `src/widgets/creation-funnel/ui/process-hero.tsx`
+- **Test/Log**: Profile input·Creation Funnel·Orb Storybook 13/13, TypeScript, ESLint, architecture boundary, Next.js 16.3 production build와 desktop/mobile browser QA 통과
+- **Consequences**: 준비된 audio의 `AudioWaveformPlayer`는 탐색·재생 기능이 있으므로 유지한다. Reduced-motion에서는 microphone analyser와 signal-driven scale을 시작하지 않고 정적 recording core와 glow를 표시하며, 녹음 종료/unmount 시 RAF·audio graph·AudioContext를 정리한다.
