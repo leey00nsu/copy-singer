@@ -1,11 +1,11 @@
 # Third-party notices
 
-## React Bits Orb
+## React Bits Orb and Grainient
 
-`src/shared/ui/voice-orb` is adapted from the React Bits Orb component.
+`src/shared/ui/voice-orb` and `src/shared/ui/grainient-background` are adapted from the React Bits Orb and Grainient components.
 
 - Copyright (c) 2026 David Haz
-- Source: https://github.com/DavidHDev/react-bits/tree/main/src/ts-tailwind/Backgrounds/Orb
+- Sources: https://github.com/DavidHDev/react-bits/tree/main/src/ts-tailwind/Backgrounds/Orb and https://github.com/DavidHDev/react-bits/tree/main/src/ts-tailwind/Backgrounds/Grainient
 - License: MIT + Commons Clause License Condition v1.0
 
 MIT + Commons Clause License Condition v1.0

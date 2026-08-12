@@ -1,4 +1,4 @@
-import { ArrowUpRight, Check, Music2, Sparkles } from "lucide-react";
+import { Check, Music2, Sparkles } from "lucide-react";
 
 import { BentoGrid, BentoGridItem } from "@/shared/ui/bento-grid";
 import { VoiceOrb } from "@/shared/ui/voice-orb";
@@ -98,50 +98,22 @@ function LandingProductStory() {
       id="how-it-works"
     >
       <BentoGrid aria-label="Copy Singer 제품 흐름 미리보기">
-        <BentoGridItem
-          className="md:col-span-2"
-          description="목소리의 범위와 안정성을 같은 기준으로"
-          eyebrow="01 · Analyze"
-          title="목소리 분석"
-        >
+        <BentoGridItem className="md:col-span-2" eyebrow="01 · Analyze" title="목소리 분석">
           <AnalysisSurface />
         </BentoGridItem>
-        <BentoGridItem
-          className="md:col-span-2"
-          description="부르기 좋은 노래와 이유를 함께"
-          eyebrow="02 · Match"
-          title="노래와 키 추천"
-        >
+        <BentoGridItem className="md:col-span-2" eyebrow="02 · Match" title="노래와 키 추천">
           <RecommendationSurface />
         </BentoGridItem>
-        <BentoGridItem
-          className="md:col-span-2"
-          description="과하지 않은 이동 키 제안"
-          eyebrow="Key fit"
-          title="추천 키"
-        >
+        <BentoGridItem className="md:col-span-2" eyebrow="Key fit" title="추천 키">
           <KeySurface />
         </BentoGridItem>
-        <BentoGridItem
-          className="md:col-span-4"
-          description="선택 후에만 작업을 시작합니다"
-          eyebrow="03 · Create"
-          title="선택형 AI 믹싱"
-        >
+        <BentoGridItem className="md:col-span-4" eyebrow="03 · Create" title="선택형 AI 믹싱">
           <MixingSurface />
         </BentoGridItem>
-        <BentoGridItem
-          className="md:col-span-2"
-          description="한 소절에서 시작되는 보컬 신호"
-          eyebrow="Copy Singer"
-          title="Your voice, made visible"
-        >
+        <BentoGridItem className="md:col-span-2" eyebrow="Copy Singer" title="Your voice, made visible">
           <OrbPoster />
         </BentoGridItem>
       </BentoGrid>
-      <p className="mt-4 flex items-center justify-end gap-1 text-[10px] text-muted-foreground">
-        분석에서 믹싱까지, 한 흐름으로 <ArrowUpRight aria-hidden="true" className="size-3" />
-      </p>
     </section>
   );
 }

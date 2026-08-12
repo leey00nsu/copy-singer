@@ -10,13 +10,11 @@ function BentoGrid({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
 function BentoGridItem({
   children,
   className,
-  description,
   eyebrow,
   title,
   ...props
 }: HTMLAttributes<HTMLElement> & {
   children?: ReactNode;
-  description?: ReactNode;
   eyebrow?: ReactNode;
   title: ReactNode;
 }) {
@@ -29,16 +27,13 @@ function BentoGridItem({
       {...props}
     >
       <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden">{children}</div>
-      <header className="relative flex items-end justify-between gap-5 px-4 py-3.5 sm:px-5">
+      <header className="relative px-4 py-3.5 sm:px-5">
         <div>
           {eyebrow ? (
             <p className="mb-1 text-[9px] font-semibold tracking-[0.14em] text-muted-foreground uppercase">{eyebrow}</p>
           ) : null}
           <h2 className="text-xs font-semibold tracking-[-0.015em]">{title}</h2>
         </div>
-        {description ? (
-          <p className="max-w-48 text-right text-[10px] leading-4 text-muted-foreground">{description}</p>
-        ) : null}
       </header>
     </article>
   );
