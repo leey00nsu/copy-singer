@@ -239,13 +239,24 @@
     - [x] Landing KeySurface에 가상 profile chart를 적용하고 Recommended key visualizer와 Count Up notice를 제거했다.
     - [x] Landing·profile Storybook, typecheck, lint, build와 desktop/mobile browser에서 chart layout·overflow를 검증했다.
 
+- [DOING][PRD-FR-045] T-F022-xai-inspired-landing-motion-18 Bento 보조 라벨과 Orb 장식 제거
+  - Date: 2026-08-12
+  - Acceptance:
+    - 보컬 프로필 chart surface에서 `Sample profile`과 `가상 데이터` 텍스트를 제거하고 chart 자체만 표시한다.
+    - 하단 Orb surface에서 `VOICE SIGNAL` 텍스트와 Sparkles 아이콘을 제거하고 Orb visual만 유지한다.
+    - chart의 accessible range label과 Orb canvas·fallback 계약은 유지한다.
+  - Checklist:
+    - [ ] KeySurface와 OrbPoster의 보조 텍스트·아이콘 markup 및 불필요한 import를 제거한다.
+    - [ ] Landing Storybook assertion을 새 최소 표현 계약에 맞춘다.
+    - [ ] Storybook, typecheck, lint와 desktop/mobile browser에서 chart·Orb 정렬과 overflow를 검증한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -267,4 +278,4 @@
 | Voice Notes Aurora QA | `2026-08-12` | 통과 — 1440×1000에서 4-up 263×159 crop, 390×844에서 1열 335×203 crop과 밝은 ice→cyan→blue-violet→dark neutral 순서를 직접 확인; desktop/mobile horizontal overflow 0, console warning/error 0 |
 | Album Cover Stack QA | `2026-08-12` | 통과 — 1440×1000에서 4개 cover layer와 hover fan-out, 390×844에서 stacked mixing card와 crop 확인; horizontal overflow 0, console warning/error 0, reduced-motion story 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T05:01:07.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T05:05:08.000Z -->

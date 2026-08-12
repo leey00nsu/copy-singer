@@ -234,3 +234,13 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Shared component**: `src/entities/vocal-profile/ui/vocal-range-chart.tsx`
 - **Test/Log**: landing·profile Storybook 8/8, TypeScript, ESLint, architecture boundary, Next.js 16.3 production build와 desktop/mobile browser QA 통과
 - **Consequences**: D011/D012의 landing 전용 Recommended key visualizer 계약은 이 결정으로 대체된다. Landing sample은 실제 분석 chart 표현을 사용하지만 저장·API 호출 없이 고정된 가상 profile만 렌더링한다.
+
+## D014: Bento 보조 라벨을 제거한 최소 visual surface (2026-08-12)
+
+- **Context**: 사용자가 보컬 프로필 chart의 `Sample profile`·`가상 데이터`와 아래 Orb surface의 `VOICE SIGNAL`·아이콘을 제거하도록 요청했다.
+- **Constraints**: 화면상 보조 라벨을 없애더라도 chart의 accessible range 설명과 Orb의 WebGL/fallback 동작은 유지해야 한다.
+- **Options**: 보조 라벨 유지 / 일부만 제거 / 요청한 네 요소를 모두 제거하고 visual만 유지
+- **Decision**: 구현 및 검증 후 확정한다. 초기 방향은 visual component와 접근 가능한 이름은 유지하면서 별도 header overlay만 제거하는 것이다.
+- **Rationale**: 구현 및 검증 후 확정한다.
+- **Trace**:
+  - **DOING 시작 시점**: `KeySurface`의 두 `<p>`와 `OrbPoster`의 absolute label row가 대상이며, Sparkles는 해당 row에서만 사용되므로 import도 함께 정리할 수 있다.
