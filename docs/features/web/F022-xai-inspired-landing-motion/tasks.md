@@ -469,6 +469,17 @@
     - [x] Unit/Storybook assertion으로 결정성과 family 내부 hue 범위를 검증한다.
     - [x] Palette·Library의 desktop/mobile browser QA와 TypeScript/lint를 통과한다.
 
+- [DONE][PRD-FR-047] T-F022-xai-inspired-landing-motion-39 보컬 signature 기반 palette family 분산
+  - Date: 2026-08-12
+  - Acceptance:
+    - 중앙음이 비슷한 일반적인 프로필 목록에서도 Berry·Forest·Ocean·Northern·Violet family가 deterministic하게 분산된다.
+    - Family 선택은 저장된 분석 지표와 profile ID를 함께 사용하며 같은 프로필은 새로고침과 화면 이동에서 동일하다.
+    - 개별 artwork는 기존처럼 하나의 analogous family 안에 머물고 grain·payload·DB 계약은 바뀌지 않는다.
+  - Checklist:
+    - [x] Voice signature hash 기반 five-family selector와 Aurora Violet ramp를 구현한다.
+    - [x] 동일 분석값을 가진 여러 profile ID에서도 family 분산과 결정성을 단위/Storybook으로 검증한다.
+    - [x] Palette·Library desktop/mobile QA와 TypeScript/lint를 통과한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -488,7 +499,7 @@
 | `pnpm run test:storybook --run src/shared/ui/product-page-intro/product-page-intro.stories.tsx src/_pages/login/ui/login-screen.stories.tsx src/_pages/library/ui/library-page.stories.tsx src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx` | `2026-08-12` | 통과 — ProductPageIntro 3 variant, Login brand bridge, index/task/detail 대표 화면과 action 회귀 20/20 |
 | `pnpm run test:storybook --run src/_pages/account/ui/account-overview.stories.tsx src/_pages/admin/ui/admin-metric-band.stories.tsx` | `2026-08-12` | 통과 — Account summary/ledger와 Admin stat band 회귀 4/4 |
 | `pnpm run test:storybook --run src/widgets/creation-funnel/ui/creation-funnel.stories.tsx src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/entities/vocal-profile/ui/vocal-profile-summary.stories.tsx src/_pages/library/ui/library-page.stories.tsx` | `2026-08-12` | 통과 — lightweight stepper, Recommendation action/density와 brand artwork 대표 화면 회귀 19/19 |
-| `pnpm exec tsx --test tests/vocal-profile-artwork.test.ts` | `2026-08-12` | 통과 — 동일 보컬 결정성, 분석값 변화, Aurora analogous family 최대 hue 거리 65° 이하와 legacy ID fallback 검증 4/4 |
+| `pnpm exec tsx --test tests/vocal-profile-artwork.test.ts` | `2026-08-12` | 통과 — 동일 보컬 결정성, 분석값 변화, analogous family 최대 hue 거리 65° 이하, 일반 voice 40개에서 five-family 분산과 legacy fallback 검증 5/5 |
 | `pnpm exec tsx --test tests/api-contracts.test.ts tests/mixing-history-ui.test.tsx tests/mixing-status-presentation.test.ts` | `2026-08-12` | 통과 — optional artwork payload 하위 호환, mixing list와 상태 presentation 회귀 16/16 |
 | `pnpm run test:storybook --run src/entities/vocal-profile/ui/vocal-profile-artwork.stories.tsx src/_pages/library/ui/library-page.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx` | `2026-08-12` | 통과 — preset-derived palette 8종, grain opacity 20%/5%, Library와 Mixing Detail artwork 회귀 7/7 |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/entities/vocal-profile/ui/vocal-profile-summary.stories.tsx src/_pages/profile/ui/analysis-success.stories.tsx` | `2026-08-12` | 통과 — Landing Sample Vocal Range Profile과 실제 profile 결과 회귀 8/8 |
@@ -521,5 +532,6 @@
 | Voice-derived artwork QA | `2026-08-12` | 통과 — 중앙음 44–78, 음역 폭 14–28st, 안정도·유성음·RMS가 다른 8개 fixture에서 6개 이상 base hue와 서로 다른 gradient 확인; 1440px 4열·390px 2열 overflow 0 |
 | Aurora grain artwork QA | `2026-08-12` | 통과 — fine soft-light와 coarse multiply grain, soft vignette를 1440px palette와 44px Library thumbnail에서 확인; color mapping·radius·overflow 유지 |
 | Restrained Aurora preset QA | `2026-08-12` | 통과 — 실제 preset의 recursive·grain 25·gray 200 값을 확인하고 Berry/Forest/Ocean/Northern analogous family로 재구성; desktop/mobile Palette와 44px Library에서 원거리 hue 혼합·overflow 0 확인 |
+| Voice-signature palette QA | `2026-08-12` | 통과 — 동일 분석값의 Library 10개가 Violet·Ocean/Northern·Forest·Berry로 분산되고 1280px/390px에서 44px artwork 식별성과 overflow 0 확인; Palette 8개도 단일-family harmony 유지 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T10:03:57.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T10:09:34.000Z -->

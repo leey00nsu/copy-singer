@@ -476,3 +476,14 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**: `src/entities/vocal-profile/lib/artwork.ts`, `src/entities/vocal-profile/ui/vocal-profile-artwork.tsx`, `src/entities/vocal-profile/ui/vocal-profile-artwork.stories.tsx`
 - **Trace**: `ARTWORK_VERSION=3`에서 중앙음 quartile을 Berry·Forest·Ocean Blue·Northern Sky family에 매핑하고 range spread를 0.32–1.0으로 제한했다. saturation은 family anchor 기준 34–88%, lightness는 역할별 16–82% 범위에서만 움직이며 profile seed hue jitter는 ±3°다. Fine/coarse grain은 20%/5%로 낮췄다. Unit 4/4, Storybook 7/7, TypeScript와 lint를 통과했고 1440px/390px Palette 및 44px Library에서 단일 family color mass와 overflow 0을 확인했다.
 - **Consequences**: 이전 version 2 artwork와 색 배치는 달라지므로 mapping version을 올린다. 저장 데이터와 API shape은 바뀌지 않는다.
+
+## D032: Voice-signature palette distribution (2026-08-12)
+
+- **Context**: 중앙음 quartile을 family에 직접 대응시키자 실제/fixture 중앙음이 50–70 MIDI에 몰리는 제품 특성상 Forest와 Ocean/Northern만 반복되고, Northern도 청록·파랑 계열이라 목록이 사실상 초록·파랑으로 보였다.
+- **Constraints**: 같은 프로필의 결정성과 분석 기반 variation, 개별 artwork의 analogous harmony를 유지하면서 목록 수준의 family 다양성을 높여야 한다.
+- **Options**: 중앙음 bucket 경계만 재조정 / profile ID만으로 family 선택 / 분석값을 양자화한 voice signature와 profile ID를 함께 hash
+- **Decision**: 중앙음·관측 음역·안정도·유성음·RMS를 안정된 단위로 양자화하고 profile ID와 함께 versioned hash해 five-family selector로 사용한다. 기존 네 family에 Aurora Lights의 purple side에서 추출한 restrained `Aurora Violet` family를 추가한다. 분석값은 계속 선택된 family 내부 spread·채도·명도를 제어한다.
+- **Rationale**: 흔한 중앙음 분포가 특정 색을 독점하지 않고 같은 분석값의 여러 제출도 ID에 따라 안정적으로 분산된다. 반면 한 artwork 안에서는 하나의 preset family만 사용하므로 이전의 알록달록한 문제는 되살아나지 않는다.
+- **Evidence**: `src/entities/vocal-profile/lib/artwork.ts`, `tests/vocal-profile-artwork.test.ts`, `src/entities/vocal-profile/ui/vocal-profile-artwork.stories.tsx`
+- **Trace**: `ARTWORK_VERSION=4`에서 median 2 MIDI, range 3 semitone, stability·voiced ratio 0.1, RMS 4dB 단위의 signature와 profile ID를 FNV hash했다. `Aurora Violet`은 hue 264–290 범위로 제한했다. 동일 분석값 profile 40개에서 Berry·Forest·Ocean·Northern·Violet anchor가 모두 나타나고 결과가 재실행 간 동일함을 unit 5/5로 검증했다. Storybook 7/7, TypeScript, lint, architecture 4/4를 통과했으며 동일 분석 fixture 10개의 Library가 1280px/390px에서 violet·blue·green·berry로 분산되고 overflow가 없음을 확인했다.
+- **Consequences**: Artwork mapping version을 올려 기존 profile의 시각 색상은 한 번 변경되지만 DB/API schema는 그대로다.
