@@ -25,12 +25,12 @@ export function VocalProfileArtwork({
       style={tokens}
     >
       <span
-        className="pointer-events-none absolute inset-0 opacity-35 mix-blend-soft-light contrast-200"
+        className="pointer-events-none absolute inset-0 opacity-[0.2] mix-blend-soft-light contrast-200"
         data-artwork-grain="fine"
         style={{ backgroundImage: `url("${FINE_GRAIN_TEXTURE}")`, backgroundSize: "5rem 5rem" }}
       />
       <span
-        className="pointer-events-none absolute inset-0 opacity-[0.13] mix-blend-multiply contrast-150"
+        className="pointer-events-none absolute inset-0 opacity-[0.05] mix-blend-multiply contrast-150"
         data-artwork-grain="coarse"
         style={{ backgroundImage: `url("${COARSE_GRAIN_TEXTURE}")`, backgroundSize: "13rem 13rem" }}
       />

@@ -75,5 +75,11 @@ export const Palette: Story = {
     await expect(new Set(artwork.map((item) => item.style.backgroundColor)).size).toBeGreaterThan(5);
     await expect(canvasElement.querySelectorAll('[data-artwork-grain="fine"]')).toHaveLength(8);
     await expect(canvasElement.querySelectorAll('[data-artwork-grain="coarse"]')).toHaveLength(8);
+    const fineGrain = canvasElement.querySelector<HTMLElement>('[data-artwork-grain="fine"]');
+    const coarseGrain = canvasElement.querySelector<HTMLElement>('[data-artwork-grain="coarse"]');
+    await expect(fineGrain).not.toBeNull();
+    await expect(coarseGrain).not.toBeNull();
+    await expect(getComputedStyle(fineGrain as HTMLElement).opacity).toBe("0.2");
+    await expect(getComputedStyle(coarseGrain as HTMLElement).opacity).toBe("0.05");
   },
 };

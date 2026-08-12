@@ -18,6 +18,15 @@ function firstHue(value: string) {
   return Number(match[1]);
 }
 
+function artworkHues(value: string) {
+  return [...value.matchAll(/hsl\((\d+)/g)].map((match) => Number(match[1]));
+}
+
+function circularHueDistance(first: number, second: number) {
+  const distance = Math.abs(first - second);
+  return Math.min(distance, 360 - distance);
+}
+
 test("vocal profile artwork is deterministic for the same profile and analysis", () => {
   const first = vocalProfileArtworkTokens("profile-stable", balancedVoice);
   const second = vocalProfileArtworkTokens("profile-stable", balancedVoice);
@@ -48,6 +57,27 @@ test("voice median, range and quality metrics influence the artwork", () => {
   assert.notEqual(firstHue(lowNarrow.backgroundColor), firstHue(highWide.backgroundColor));
   assert.notEqual(lowNarrow.backgroundColor, highWide.backgroundColor);
   assert.notEqual(lowNarrow.backgroundImage, highWide.backgroundImage);
+});
+
+test("each analyzed artwork stays inside one restrained Aurora hue family", () => {
+  const profiles = [44, 54, 64, 76].map((medianMidi, index) =>
+    vocalProfileArtworkTokens(`profile-family-${index}`, {
+      ...balancedVoice,
+      minMidi: medianMidi - 12,
+      maxMidi: medianMidi + 14,
+      medianMidi,
+    }),
+  );
+
+  for (const profile of profiles) {
+    const hues = [firstHue(profile.backgroundColor), ...artworkHues(profile.backgroundImage)];
+    const distances = hues.flatMap((hue, index) =>
+      hues.slice(index + 1).map((candidate) => circularHueDistance(hue, candidate)),
+    );
+    assert.ok(Math.max(...distances) <= 65);
+  }
+
+  assert.equal(new Set(profiles.map((profile) => firstHue(profile.backgroundColor))).size, 4);
 });
 
 test("profile identity adds stable variation and legacy payloads keep an id fallback", () => {
