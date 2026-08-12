@@ -125,4 +125,16 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**:
   - **Reference**: `https://www.reactbits.dev/backgrounds/grainient`
   - **Source**: `https://github.com/DavidHDev/react-bits/blob/main/src/ts-tailwind/Backgrounds/Grainient/Grainient.tsx`
-  - **Test/Log**: landing·Grainient·Orb Storybook 8/8, TypeScript, ESLint, architecture boundary, Next.js production build 통과
+- **Test/Log**: landing·Grainient·Orb Storybook 8/8, TypeScript, ESLint, architecture boundary, Next.js production build 통과
+
+## D007: Voice Notes Tailwind grain surface와 Orb 투명 배경 (2026-08-12)
+
+- **Context**: 사용자가 Voice Notes의 shared Grainient panel을 이전 독립 카드 구조로 되돌리고 배경만 Grainient 느낌의 Tailwind surface로 만들며, VOICE SIGNAL과 Orb Storybook의 회색 반원·사각 배경을 제거하도록 요청했다.
+- **Constraints**: 기존 카드 정보 구조와 Orb exact props를 유지하고 Voice Notes의 추가 WebGL runtime을 제거해야 한다.
+- **Options**: shared Grainient canvas 유지 / 카드별 WebGL / Tailwind 정적 multi-gradient와 micro-grain overlay
+- **Decision**: D006의 shared Grainient canvas 결정을 폐기하고, 이전 4개 독립 카드 markup에 Tailwind multi-gradient와 정적 micro-grain overlay만 적용한다. Orb shader background는 검정 alpha 기준으로 바꾸고 container/decorator surface는 `background` token으로 통일한다.
+- **Rationale**: 사용자가 선호한 카드 리듬을 복원하면서 추가 canvas 없이 Grainient의 유기적 색 분포와 질감만 가볍게 유지하고, Orb 주변의 light-background shader artifact를 제거한다.
+- **Trace**:
+  - **DOING 시작 시점**: 현 Voice Notes shared canvas, Orb shader의 `backgroundColor=#fafafa`, Landing `bg-[#fafafa]`와 Storybook decorator `bg-[#fafafa]`가 회색 surface를 만드는 경로를 확인했다.
+- **Evidence**:
+  - **Reference**: `https://www.reactbits.dev/backgrounds/grainient`

@@ -20,7 +20,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/xai-inspired-landing-motion`
-- **대기 중 변경 요청**: 결정: approve — Bento 보조 문구 제거와 Voice Notes Grainient 단일 canvas 적용·검증 완료
+- **대기 중 변경 요청**: 결정: changes_requested — Voice Notes는 독립 카드로 복원하고 Tailwind grain gradient만 적용하며 Orb 회색 배경 artifact 제거
   - 구현 중 새로 수용한 사용자 요청을 잠시 표시하는 sync marker입니다
   - 요청을 `tasks.md`와 관련 문서에 반영한 뒤 값을 비우세요
   - pre-PR 리뷰 handoff를 시작하면 `Running`, 리뷰 결과 기록까지 끝나면 `Done`으로 변경
@@ -163,13 +163,23 @@
     - [x] React Bits Grainient source를 공통 client island로 통합하고 4개 카드군 뒤에 canvas 하나만 사용했다.
     - [x] Storybook, typecheck, lint, build와 browser visual·overflow·canvas count를 검증했다.
 
+- [TODO][PRD-FR-045] T-F022-xai-inspired-landing-motion-11 Voice Notes Tailwind grain gradient 복원과 Orb 배경 정리
+  - Date: 2026-08-12
+  - Acceptance:
+    - Voice Notes는 이전의 독립 visual card와 하단 label·title·description 구조로 복원하고 각 visual 배경만 Tailwind 정적 grain-gradient로 구성한다.
+    - VOICE SIGNAL과 Orb Storybook에서 Orb 외곽의 회색 반원 및 사각 배경이 보이지 않고 transparent surface와 정적 fallback이 유지된다.
+  - Checklist:
+    - [ ] Grainient WebGL component와 관련 story·notice를 제거하고 Voice Notes를 Tailwind gradient/noise surface로 복원한다.
+    - [ ] VoiceOrb 기본 backgroundColor와 Landing Orb container 및 Storybook decorator를 투명·검정 alpha shader에 맞게 정리한다.
+    - [ ] Storybook, typecheck, lint, build와 실제 browser screenshot에서 배경 artifact·overflow·canvas count를 검증한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
