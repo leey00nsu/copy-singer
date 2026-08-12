@@ -73,11 +73,12 @@
 }
 
 @keyframes gradient-text-shift {
-  from {
+  0%,
+  100% {
     background-position: 0% 50%;
   }
 
-  to {
+  50% {
     background-position: 100% 50%;
   }
 }
