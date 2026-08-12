@@ -173,7 +173,7 @@
     - [x] VoiceOrb canvas가 준비되면 fallback poster를 숨기고 Landing Orb container 및 Storybook decorator를 background token에 맞게 정리했다.
     - [x] Storybook, typecheck, lint, build와 실제 browser screenshot에서 배경 artifact·overflow·canvas count를 검증했다.
 
-- [TODO][PRD-FR-045] T-F022-xai-inspired-landing-motion-12 Voice Notes Aurora 이미지 자산 적용
+- [DOING][PRD-FR-045] T-F022-xai-inspired-landing-motion-12 Voice Notes Aurora 이미지 자산 적용
   - Date: 2026-08-12
   - Acceptance:
     - Voice Notes 네 카드의 상단 visual은 사용자 제공 Aurora WebP를 각각 사용하고 기존 label·title·description 구조를 유지한다.
