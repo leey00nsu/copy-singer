@@ -26,3 +26,13 @@ The software is provided "AS IS", without warranty of any kind, express or impli
 
 - Author: Manu Arora
 - Source: https://ui.aceternity.com/registry/bento-grid.json
+
+## Pixabay landing album-cover imagery
+
+The decorative album-cover stack in `public/images/landing/album-covers` uses images made available under the Pixabay Content License.
+
+- Stars and mountains — JoshuaWoroniecki: https://pixabay.com/photos/stars-mountains-night-sky-summer-5442598/
+- Sunset sea — Van3ssa_: https://pixabay.com/photos/sunset-sea-ocean-colorful-sky-6887775/
+- Neon city — Tricell1991: https://pixabay.com/photos/city-at-night-neon-nightlife-3880335/
+- Colorful abstract background — sexta-feira: https://pixabay.com/photos/colorful-abstract-background-4001306/
+- License summary: https://pixabay.com/service/license-summary/

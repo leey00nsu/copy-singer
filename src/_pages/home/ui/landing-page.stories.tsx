@@ -29,6 +29,9 @@ async function expectLandingStructure(canvasElement: HTMLElement) {
   await expect(analysis.compareDocumentPosition(recommendation) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   await expect(recommendation.compareDocumentPosition(mixing) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   await expect(canvas.getByRole("list", { name: "AI 믹싱 이용 흐름" })).toBeVisible();
+  const albumCoverStack = canvas.getByTestId("album-cover-stack");
+  await expect(albumCoverStack).toBeVisible();
+  await expect(albumCoverStack.querySelectorAll("img")).toHaveLength(4);
   await expect(canvas.getByText("5초+")).toBeVisible();
   await expect(canvas.getByText("60초")).toBeVisible();
   await expect(canvas.getByText("3단계")).toBeVisible();

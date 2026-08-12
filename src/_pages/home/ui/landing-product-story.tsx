@@ -1,4 +1,5 @@
-import { Check, Music2, Sparkles } from "lucide-react";
+import { Check, Sparkles } from "lucide-react";
+import Image from "next/image";
 
 import { BentoGrid, BentoGridItem } from "@/shared/ui/bento-grid";
 import { VoiceOrb } from "@/shared/ui/voice-orb";
@@ -58,12 +59,49 @@ function KeySurface() {
   );
 }
 
+const albumCovers = [
+  {
+    className:
+      "z-10 -ml-8 mt-2 -rotate-[8deg] group-hover/bento:-ml-12 group-hover/bento:mt-1 group-hover/bento:-rotate-[10deg]",
+    src: "/images/landing/album-covers/stars-mountain.jpg",
+  },
+  {
+    className:
+      "z-20 ml-8 mt-3 rotate-[8deg] group-hover/bento:ml-12 group-hover/bento:mt-2 group-hover/bento:rotate-[10deg]",
+    src: "/images/landing/album-covers/sunset-sea.jpg",
+  },
+  {
+    className:
+      "z-30 -mt-5 -ml-3 -rotate-[3deg] group-hover/bento:-mt-7 group-hover/bento:-ml-5 group-hover/bento:-rotate-[4deg]",
+    src: "/images/landing/album-covers/neon-city.jpg",
+  },
+  {
+    className:
+      "z-40 mt-1 ml-1 rotate-[1deg] group-hover/bento:mt-2 group-hover/bento:ml-2 group-hover/bento:rotate-[2deg]",
+    src: "/images/landing/album-covers/colorful-abstract.jpg",
+  },
+] as const;
+
+function AlbumCoverStack() {
+  return (
+    <div aria-hidden="true" className="relative isolate h-44 w-52 shrink-0" data-testid="album-cover-stack">
+      <div className="absolute inset-x-8 bottom-2 h-12 rounded-full bg-violet-500/18 blur-2xl" />
+      {albumCovers.map(({ className, src }) => (
+        <div
+          className={`absolute top-1/2 left-1/2 size-28 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-xl border border-white/65 bg-neutral-900 shadow-[0_18px_36px_-18px_oklch(0.18_0.04_285/0.7)] transition-[margin,rotate] duration-500 ease-out motion-reduce:transition-none ${className}`}
+          key={src}
+        >
+          <Image alt="" className="object-cover" fill sizes="7rem" src={src} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function MixingSurface() {
   return (
     <div className="grid h-full min-h-52 w-full content-center gap-5 bg-[linear-gradient(120deg,oklch(0.97_0.02_305),white_45%,oklch(0.96_0.025_225))] px-6 py-8 sm:grid-cols-[.8fr_1.2fr] sm:px-8">
-      <div className="flex aspect-square max-h-36 items-center justify-center justify-self-center rounded-xl bg-neutral-950 text-white shadow-2xl">
-        <Music2 aria-hidden="true" className="size-7 text-violet-300" />
-      </div>
+      <AlbumCoverStack />
       <div className="self-center">
         <p className="text-[9px] font-semibold tracking-[0.14em] text-muted-foreground uppercase">Selected song</p>
         <p className="mt-2 text-lg font-semibold tracking-[-0.03em]">선택한 추천곡만 AI 믹싱</p>
