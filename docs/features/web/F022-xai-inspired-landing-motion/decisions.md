@@ -369,3 +369,9 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Constraints**: 사용자가 지정한 1.5초 duration과 reduced-motion fallback을 유지해야 한다.
 - **Decision**: Keyframe을 0%→100%→0% 왕복으로 닫아 첫 frame과 마지막 frame을 동일하게 만든다.
 - **Rationale**: 별도 runtime이나 복제 gradient tile 없이 CSS keyframe만으로 iteration seam을 제거하고 기존 component 구조를 보존한다.
+- **Trace**:
+  - **DOING 전 확정 시점**: 사용자의 반복 seam 수정 요청을 T27로 열고 단방향 keyframe reset을 원인으로 기록했다.
+  - **DONE 전 확정 시점**: keyframe의 0%·100%를 같은 position으로 묶고 50%에서 반대 position에 도달하도록 구현했다. Storybook browser에서 0ms·750ms·1500ms 값을 직접 고정해 시작과 종료가 같고 중간만 다른 것을 검증했다.
+- **Evidence**: `src/_pages/home/ui/landing-hero.module.css`, `src/_pages/home/ui/landing-page.stories.tsx`
+- **Test/Log**: Landing Storybook 4/4, Biome, TypeScript, ESLint 통과
+- **Consequences**: 1.5초는 한 방향 이동 시간이 아니라 완전한 왕복 주기가 되며, iteration 경계의 순간 이동은 사라진다. Reduced-motion에서는 기존 정적 50% gradient를 유지한다.
