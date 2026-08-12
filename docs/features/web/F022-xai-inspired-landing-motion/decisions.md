@@ -315,6 +315,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 
 - **Context**: 사각 canvas 배경을 제거하기 위해 추가한 radial alpha mask가 shader의 넓은 무채색 외곽 halo까지 남겨 사용자 화면에서 굵은 회색 원으로 보였다.
 - **Constraints**: Color Orb 본체와 내부 motion은 자르지 않으면서 canvas 모서리, gray halo와 hard clipping을 모두 피해야 한다.
-- **Decision**: 구현 및 검증 후 본체 반경과 feather 구간을 확정한다.
+- **Decision**: Radial alpha는 normalized radius 0.76–0.9에서 feather하고, 0.58–0.8의 outer band에서는 RGB chroma 기반 mask를 추가한다. Orb 중심은 chroma와 무관하게 유지하고 외곽의 무채색 pixel만 투명하게 만든다.
+- **Rationale**: Radial mask만 좁히면 gray halo가 얇은 outline으로 남거나 움직이는 color edge를 함께 자른다. 외곽에만 chroma 조건을 적용하면 밝은 중심은 보존하면서 shader background에서 유래한 gray만 제거할 수 있다.
 - **Trace**:
   - **DOING 시작 시점**: 현재 mask는 normalized radius 0.92–1.12에서만 fade되어 약 0.8 반경부터 보이는 shader의 gray halo가 그대로 불투명하게 남는다.
+  - **DONE 전 확정 시점**: body-bound radial feather와 outer chroma mask를 함께 적용했다. Browser screenshot에서 recording color Orb와 idle grayscale Orb 모두 gray ring·square artifact가 사라지고 본체 edge와 motion이 유지됨을 확인했으며 관련 Storybook 14/14, TypeScript와 ESLint를 통과했다.
+- **Evidence**: `src/shared/ui/voice-orb/voice-orb.tsx`
+- **Test/Log**: Profile input·Creation Funnel·Orb Storybook 14/14, TypeScript, ESLint와 desktop browser screenshot QA 통과
+- **Consequences**: Mask는 alpha에만 적용되어 hue·animation·audio response를 바꾸지 않는다. WebGL fallback은 CSS poster 경로이므로 영향받지 않는다.
