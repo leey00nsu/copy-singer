@@ -16,6 +16,7 @@ import { Badge } from "@/shared/ui/badge";
 import { buttonVariants } from "@/shared/ui/button";
 import { ResourceRowLink, resourceRowInteractiveClassName } from "@/shared/ui/resource-row-link";
 import { StatePanel } from "@/shared/ui/state-panel";
+import { StatusNotice } from "@/shared/ui/status-notice";
 import { LibraryPagination } from "./library-pagination";
 
 const PROFILE_ROW_GRID_CLASS =
@@ -67,9 +68,12 @@ function VocalProfileAnalysisJobRows({ jobs }: { jobs: VocalProfileAnalysisJobRe
   return (
     <>
       {jobsQuery.isError ? (
-        <p className="border-b py-3 text-sm text-destructive" role="status">
-          분석 상태를 새로 확인하지 못했어요. 마지막으로 확인한 상태를 표시합니다.
-        </p>
+        <StatusNotice
+          className="mb-3"
+          description="마지막으로 확인한 상태를 표시합니다."
+          title="분석 상태를 새로 확인하지 못했어요"
+          tone="destructive"
+        />
       ) : null}
       {currentJobs.map((job) => {
         const copy = analysisJobCopy(job);

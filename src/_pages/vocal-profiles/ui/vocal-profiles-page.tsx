@@ -18,7 +18,7 @@ export default async function VocalProfilesPage({ searchParams }: { searchParams
 
   return (
     <div className="mx-auto w-full max-w-[72rem] px-5 py-12 sm:px-7 lg:px-8 lg:py-14">
-      <div className="flex flex-wrap items-end justify-between gap-8 border-b pb-9">
+      <div className="flex flex-wrap items-end justify-between gap-8 pb-9">
         <div>
           <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
             Vocal profiles

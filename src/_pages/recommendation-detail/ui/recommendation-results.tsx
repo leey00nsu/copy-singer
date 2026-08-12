@@ -32,6 +32,7 @@ import {
   DialogTrigger,
 } from "@/shared/ui/dialog";
 import { StatePanel } from "@/shared/ui/state-panel";
+import { StatusNotice } from "@/shared/ui/status-notice";
 import { CreationFunnelShell } from "@/widgets/creation-funnel";
 import { RecommendationFilterBar } from "./recommendation-filter-bar";
 import { RecommendationSelection } from "./recommendation-selection";
@@ -167,7 +168,7 @@ export function RecommendationResults({
 
   return (
     <CreationFunnelShell currentStep="recommendation">
-      <header className="mt-8 grid gap-8 border-b pb-9 lg:mt-12 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,.42fr)] lg:items-end">
+      <header className="mt-8 grid gap-8 pb-9 lg:mt-12 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,.42fr)] lg:items-end">
         <div>
           <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
             Song match
@@ -199,43 +200,29 @@ export function RecommendationResults({
       </header>
 
       {run.lowConfidence ? (
-        <section
-          className="mt-8 flex gap-3 border-y border-warning/70 bg-warning/35 px-4 py-4 text-sm leading-6"
-          role="status"
-        >
-          <AlertTriangle className="mt-0.5 size-5 shrink-0 text-warning-foreground" aria-hidden="true" />
-          <p>
-            <strong>조금 더 긴 소절로 다시 측정해보세요.</strong>
-            <br />
-            <span className="text-muted-foreground">
-              분석 신뢰도가 낮아 순위와 추천 키가 달라질 수 있습니다. 현재 결과도 참고용으로 확인할 수 있어요.
-            </span>
-          </p>
-        </section>
+        <StatusNotice
+          className="mt-8"
+          description="분석 신뢰도가 낮아 순위와 추천 키가 달라질 수 있습니다. 현재 결과도 참고용으로 확인할 수 있어요."
+          title="조금 더 긴 소절로 다시 측정해보세요"
+          tone="warning"
+        />
       ) : null}
 
       {run.profile.mixing?.available === false ? (
-        <section
-          className="mt-5 flex flex-wrap items-center justify-between gap-4 border-y bg-muted/20 px-4 py-4"
-          role="status"
-        >
-          <div className="flex min-w-0 gap-3">
-            <AlertTriangle className="mt-0.5 size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
-            <p className="text-sm leading-6">
-              <strong>이 프로필로는 AI 믹싱을 만들 수 없어요.</strong>
-              <br />
-              <span className="text-muted-foreground">
-                {recommendationMixingUnavailableDescription(run.profile.mixing)}
-              </span>
-            </p>
-          </div>
-          <Link className={buttonVariants({ size: "sm", variant: "outline" })} href="/profile">
-            <Mic2 className="size-4" aria-hidden="true" /> 새 프로필 분석하기
-          </Link>
-        </section>
+        <StatusNotice
+          action={
+            <Link className={buttonVariants({ size: "sm", variant: "outline" })} href="/profile">
+              <Mic2 className="size-4" aria-hidden="true" /> 새 프로필 분석하기
+            </Link>
+          }
+          className="mt-5"
+          description={recommendationMixingUnavailableDescription(run.profile.mixing)}
+          title="이 프로필로는 AI 믹싱을 만들 수 없어요"
+          tone="warning"
+        />
       ) : null}
 
-      <div className="mt-8 border-y py-5">
+      <div className="mt-8 py-5">
         <RecommendationFilterBar
           filters={filters}
           onChange={updateFilters}
@@ -280,7 +267,7 @@ export function RecommendationResults({
         ) : null}
       </div>
 
-      <section className="mt-10 grid gap-5 border-y py-6 text-xs leading-6 text-muted-foreground lg:grid-cols-2">
+      <section className="mt-10 grid gap-5 py-6 text-xs leading-6 text-muted-foreground lg:grid-cols-2">
         <div className="flex gap-3">
           <Mic2 className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
           <p>

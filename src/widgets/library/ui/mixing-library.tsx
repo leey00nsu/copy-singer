@@ -23,6 +23,7 @@ import { Label } from "@/shared/ui/label";
 import { ResourceRowLink, resourceRowInteractiveClassName } from "@/shared/ui/resource-row-link";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
 import { StatePanel } from "@/shared/ui/state-panel";
+import { StatusNotice } from "@/shared/ui/status-notice";
 import { mixingHistoryHref } from "../model/search-params";
 import { LibraryPagination } from "./library-pagination";
 
@@ -60,7 +61,7 @@ function MixingLibraryFilters({
   return (
     <form
       aria-label="AI 믹스 검색과 필터"
-      className="grid gap-3 border-y py-4 lg:grid-cols-[minmax(15rem,1fr)_auto_auto] lg:items-end"
+      className="grid gap-3 py-4 lg:grid-cols-[minmax(15rem,1fr)_auto_auto] lg:items-end"
       action={basePath}
       method="get"
     >
@@ -232,9 +233,12 @@ export function MixingLibrary({
         ) : null}
       </div>
       {historyQuery.isError ? (
-        <p className="mt-3 text-sm text-destructive" role="status">
-          최신 작업 상태를 확인하지 못했어요. 마지막으로 확인한 목록을 표시합니다.
-        </p>
+        <StatusNotice
+          className="mt-3"
+          description="마지막으로 확인한 목록을 표시합니다."
+          title="최신 작업 상태를 확인하지 못했어요"
+          tone="destructive"
+        />
       ) : null}
       <div className="mt-4">
         {history.jobs.length === 0 ? (

@@ -22,7 +22,7 @@ export function VocalProfileSummary({ profile }: { profile: VocalProfileResponse
   ] as const;
 
   return (
-    <section aria-labelledby="vocal-profile-summary-title" className="border-y py-8 sm:py-10">
+    <section aria-labelledby="vocal-profile-summary-title" className="py-8 sm:py-10">
       <p className="text-xs font-semibold tracking-[0.18em] text-data-accent-foreground">VOICE PROFILE</p>
       <div className="mt-3 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,.8fr)] lg:items-end">
         <div>

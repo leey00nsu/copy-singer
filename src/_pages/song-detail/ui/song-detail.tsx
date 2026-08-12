@@ -62,7 +62,7 @@ export function SongDetail({
         <YouTubeVideo title={`${item.title} · ${item.artist}`} videoId={item.sourceVideoId} />
       </section>
 
-      <header className="mt-8 grid gap-10 border-b pb-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+      <header className="mt-8 grid gap-10 pb-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
         <div>
           <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
             Song match
@@ -114,7 +114,7 @@ export function SongDetail({
         </div>
       </section>
 
-      <div className="grid gap-14 border-t pt-10 lg:grid-cols-[minmax(0,1fr)_20rem]">
+      <div className="grid gap-14 pt-10 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="min-w-0 space-y-10">
           {visibleReasons.length > 0 ? (
             <section aria-labelledby="reason-title">

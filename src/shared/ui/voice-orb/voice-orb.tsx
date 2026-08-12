@@ -128,7 +128,9 @@ const fragmentShader = /* glsl */ `
     uv.x += hover * hoverIntensity * 0.1 * sin(uv.y * 10.0 + iTime);
     uv.y += hover * hoverIntensity * 0.1 * sin(uv.x * 10.0 + iTime);
     vec4 col = draw(uv);
-    gl_FragColor = vec4(col.rgb * col.a, col.a);
+    float edgeMask = 1.0 - smoothstep(0.92, 1.12, length(uv));
+    float alpha = col.a * edgeMask;
+    gl_FragColor = vec4(col.rgb * alpha, alpha);
   }
 `;
 

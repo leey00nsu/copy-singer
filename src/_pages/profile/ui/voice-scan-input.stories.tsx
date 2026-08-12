@@ -43,6 +43,9 @@ export const Idle: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("button", { name: "마이크로 녹음 시작" })).toBeVisible();
     await expect(canvas.getByText(/최대 25MB/)).toBeVisible();
+    const surface = canvas.getByRole("img", { name: "녹음 대기 상태" });
+    await expect(getComputedStyle(surface).borderTopWidth).toBe("0px");
+    await expect(getComputedStyle(canvas.getByTestId("voice-orb")).filter).toContain("grayscale(1)");
   },
 };
 
@@ -76,6 +79,9 @@ export const Recording: Story = {
     await expect(canvas.getByRole("button", { name: "녹음 완료" })).toBeVisible();
     await expect(canvas.getByRole("img", { name: "실시간 마이크 입력 반응" })).toBeVisible();
     await expect(canvas.getByTestId("voice-signal-core")).toHaveAttribute("data-signal-mode", "recording");
+    const surface = canvas.getByRole("img", { name: "실시간 마이크 입력 반응" });
+    await expect(getComputedStyle(surface).backgroundColor).toBe("rgba(0, 0, 0, 0)");
+    await expect(getComputedStyle(surface).borderTopWidth).toBe("0px");
   },
 };
 
@@ -143,7 +149,7 @@ export const Ready: Story = {
     audioPreview: (
       <div
         aria-label="제출할 보컬 녹음 파형"
-        className="mt-5 flex h-24 items-center justify-center border-y bg-accent/30"
+        className="mt-5 flex h-24 items-center justify-center rounded-lg bg-accent/30"
         role="img"
       >
         <span className="text-sm text-data-accent-foreground">준비된 오디오 파형</span>
@@ -153,7 +159,7 @@ export const Ready: Story = {
   },
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByText(/5초 최소 조건을 충족/)).toBeVisible();
+    await expect(canvas.getByText("분석할 오디오가 준비됐어요")).toBeVisible();
     await expect(canvas.getByTestId("audio-duration-notice")).toHaveAttribute("data-audio-status", "valid");
     await userEvent.click(canvas.getByRole("button", { name: "내 보컬 프로필 만들기" }));
     await expect(args.onAnalyze).toHaveBeenCalledOnce();

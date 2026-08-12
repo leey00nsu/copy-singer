@@ -41,7 +41,7 @@ export function RecommendationFilterBar({
   ).length;
 
   return (
-    <section aria-label="추천 곡 검색과 필터" className="border-y py-3">
+    <section aria-label="추천 곡 검색과 필터" className="py-3">
       <div className="grid gap-3 xl:hidden">
         <div className="grid gap-1.5">
           <Label htmlFor="recommendation-search-mobile">곡 또는 아티스트 검색</Label>

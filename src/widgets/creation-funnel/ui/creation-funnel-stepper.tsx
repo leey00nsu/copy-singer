@@ -7,7 +7,7 @@ export function CreationFunnelStepper({ current }: { current: CreationFunnelStep
 
   return (
     <nav aria-label="생성 진행 단계">
-      <ol className="grid grid-cols-3 border-y text-xs sm:text-sm">
+      <ol className="grid grid-cols-3 overflow-hidden rounded-lg bg-muted/30 text-xs sm:text-sm">
         {creationFunnelSteps.map((step, index) => {
           const state = index < currentIndex ? "complete" : index === currentIndex ? "current" : "upcoming";
           return (

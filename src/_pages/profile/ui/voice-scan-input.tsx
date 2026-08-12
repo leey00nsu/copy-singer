@@ -1,11 +1,11 @@
 "use client";
 
-import { Activity, AlertTriangle, CheckCircle2, FileAudio, LoaderCircle, RotateCcw, Upload } from "lucide-react";
+import { Activity, CheckCircle2, FileAudio, LoaderCircle, RotateCcw, Upload } from "lucide-react";
 import { type ReactNode, useId } from "react";
-import { cn } from "@/shared/lib/cn";
 import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
 import { Button } from "@/shared/ui/button";
 import { Progress, ProgressLabel, ProgressValue } from "@/shared/ui/progress";
+import { StatusNotice } from "@/shared/ui/status-notice";
 import { canAnalyzeVoiceScan, type RecorderIssue } from "../model/voice-scan";
 import { VocalProfileRecorder, type VocalProfileRecorderState } from "./vocal-profile-recorder";
 
@@ -56,7 +56,7 @@ export function VoiceScanInput({
 
   return (
     <section aria-labelledby="voice-scan-input-title" className="overflow-hidden rounded-xl border bg-background">
-      <header className="border-b px-5 py-5 sm:px-6">
+      <header className="px-5 pt-5 sm:px-6 sm:pt-6">
         <p className="text-[10px] font-semibold tracking-[0.18em] text-muted-foreground">VOICE INPUT</p>
         <h2 className="mt-2 text-lg font-semibold tracking-[-0.025em]" id="voice-scan-input-title">
           목소리 샘플 만들기
@@ -68,7 +68,7 @@ export function VoiceScanInput({
 
       <div className="p-5 sm:p-6">
         {preparing ? (
-          <div className="flex min-h-64 flex-col items-center justify-center border-y px-5 py-10 text-center">
+          <div className="flex min-h-64 flex-col items-center justify-center px-5 py-10 text-center">
             <LoaderCircle
               aria-hidden="true"
               className="size-7 animate-spin text-data-accent-foreground motion-reduce:animate-none"
@@ -82,7 +82,7 @@ export function VoiceScanInput({
           </div>
         ) : audioFile && audioUrl ? (
           <div>
-            <div className="flex items-center gap-3 border-b pb-4">
+            <div className="flex items-center gap-3 rounded-lg bg-muted/35 p-3">
               <span className="flex size-10 items-center justify-center rounded-md border bg-muted/40">
                 <FileAudio aria-hidden="true" className="size-5" />
               </span>
@@ -99,39 +99,20 @@ export function VoiceScanInput({
             {audioPreview ??
               (audioUrl ? <AudioWaveformPlayer className="mt-5" label="제출할 보컬 녹음" src={audioUrl} /> : null)}
 
-            <div
-              className={cn(
-                "mt-4 flex items-start gap-3 rounded-lg border px-3.5 py-3 text-xs leading-5",
-                durationAccepted
-                  ? "border-border/70 bg-muted/30 text-muted-foreground"
-                  : "border-destructive/20 bg-destructive/[0.045] text-destructive",
-              )}
+            <StatusNotice
+              className="mt-4"
               data-audio-status={durationAccepted ? "valid" : "invalid"}
               data-testid="audio-duration-notice"
-              role={durationAccepted ? "status" : "alert"}
-            >
-              <span
-                className={cn(
-                  "mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full",
-                  durationAccepted ? "bg-success/40 text-success-foreground" : "bg-destructive/10 text-destructive",
-                )}
-              >
-                {durationAccepted ? (
-                  <CheckCircle2 aria-hidden="true" className="size-3.5" />
-                ) : (
-                  <AlertTriangle aria-hidden="true" className="size-3.5" />
-                )}
-              </span>
-              {durationAccepted ? (
-                audioDuration !== null && audioDuration < 10 ? (
-                  <p>5초 최소 조건을 충족했어요. 약 10초까지 녹음하면 더 충분한 음성 구간을 전달할 수 있어요.</p>
-                ) : (
-                  <p>분석할 오디오가 준비됐어요. 결과는 저장된 보컬 프로필 상세에서 확인합니다.</p>
-                )
-              ) : (
-                <p className="font-medium">5초보다 짧아요. 새 오디오를 녹음하거나 선택해주세요.</p>
-              )}
-            </div>
+              description={
+                durationAccepted
+                  ? audioDuration !== null && audioDuration < 10
+                    ? "약 10초까지 녹음하면 더 충분한 음성 구간을 전달할 수 있어요."
+                    : "결과는 저장된 보컬 프로필 상세에서 확인합니다."
+                  : "새 오디오를 녹음하거나 선택해주세요."
+              }
+              title={durationAccepted ? "분석할 오디오가 준비됐어요" : "5초보다 짧아요"}
+              tone={durationAccepted ? "success" : "destructive"}
+            />
 
             <div className="mt-5 grid gap-2 sm:grid-cols-[1fr_auto]">
               <Button disabled={analysisBusy || !durationAccepted} onClick={onAnalyze} size="lg">
@@ -159,26 +140,16 @@ export function VoiceScanInput({
             )}
 
             {recorderIssue ? (
-              <div
-                className="flex gap-3 border border-warning/70 bg-warning px-4 py-3 text-warning-foreground"
+              <StatusNotice
+                description={recorderIssue.description}
                 role="alert"
-              >
-                <AlertTriangle aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-                <div>
-                  <p className="text-sm font-semibold">{recorderIssue.title}</p>
-                  <p className="mt-1 text-xs leading-5">{recorderIssue.description}</p>
-                </div>
-              </div>
+                title={recorderIssue.title}
+                tone="warning"
+              />
             ) : null}
 
             {inputError ? (
-              <div
-                className="flex gap-3 border border-destructive/30 bg-destructive/5 px-4 py-3 text-destructive"
-                role="alert"
-              >
-                <AlertTriangle aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-                <p className="text-sm leading-5">{inputError}</p>
-              </div>
+              <StatusNotice description={inputError} title="오디오를 준비하지 못했어요" tone="destructive" />
             ) : null}
 
             <label

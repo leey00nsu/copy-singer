@@ -12,7 +12,7 @@ export default async function MixingHistoryPage({
   const history = await getMixingHistory(session.user.id, filters);
   return (
     <div className="mx-auto w-full max-w-[72rem] px-5 py-12 sm:px-7 lg:px-8 lg:py-14">
-      <header className="border-b pb-9">
+      <header className="pb-9">
         <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">AI mixing</p>
         <h1 className="mt-2.5 max-w-3xl text-[clamp(2rem,4vw,3.5rem)] leading-[1.04] font-semibold tracking-[-0.045em] text-balance">
           믹싱 히스토리

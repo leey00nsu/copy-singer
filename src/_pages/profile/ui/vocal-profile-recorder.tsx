@@ -4,7 +4,6 @@ import { Check, Mic, RotateCcw, Square, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import RecordPlugin from "wavesurfer.js/dist/plugins/record.esm.js";
 import { MAX_VOCAL_PROFILE_RECORDING_MS, recorderExtension, shouldStopRecording } from "@/shared/lib/audio";
-import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/button";
 import { Progress, ProgressLabel, ProgressValue } from "@/shared/ui/progress";
 import { VoiceSignalCore, type VoiceSignalMode } from "@/shared/ui/voice-signal-core";
@@ -74,10 +73,7 @@ export function RecorderSurface({
     <div className="flex min-h-[28rem] flex-col bg-background px-1 py-2 sm:px-3 sm:py-4">
       <div
         aria-label={state === "recording" ? "실시간 마이크 입력 반응" : active ? "마이크 연결 상태" : "녹음 대기 상태"}
-        className={cn(
-          "relative flex min-h-48 items-center overflow-hidden border-y border-border/70 px-4 py-8",
-          state === "recording" && "border-data-accent/35 bg-data-accent/[0.025]",
-        )}
+        className="relative flex min-h-48 items-center overflow-hidden bg-transparent px-4 py-8"
         role="img"
       >
         <VoiceSignalCore className="mx-auto size-44 sm:size-48" mode={signalMode} stream={microphoneStream} />

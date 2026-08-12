@@ -30,17 +30,22 @@
     transform 120ms linear;
 }
 
-.idle .orb,
-.stopping .orb {
-  opacity: 0.7;
-  filter: saturate(0.64) brightness(1.08);
+.idle .orb {
+  opacity: 0.66;
+  filter: grayscale(1) saturate(0) contrast(0.92) brightness(1.04);
   transform: scale(0.82);
 }
 
 .requesting .orb {
-  opacity: 0.72;
-  filter: saturate(0.68) brightness(1.08);
+  opacity: 0.7;
+  filter: grayscale(1) saturate(0) contrast(0.94) brightness(1.04);
   animation: voice-core-request 1400ms cubic-bezier(0.22, 1, 0.36, 1) infinite alternate;
+}
+
+.stopping .orb {
+  opacity: 0.76;
+  filter: saturate(0.82) brightness(1.04);
+  transform: scale(0.86);
 }
 
 .recording .orb {

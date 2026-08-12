@@ -15,6 +15,7 @@ import {
 } from "@/features/analyze-vocal-profile";
 import { createRecommendationMutationOptions } from "@/features/create-recommendation";
 import { prepareProfileAudio } from "@/shared/lib/audio";
+import { StatusNotice } from "@/shared/ui/status-notice";
 import { CreationFunnelShell } from "@/widgets/creation-funnel";
 import {
   normalizeProfileError,
@@ -331,13 +332,11 @@ export function VocalProfileWorkbench() {
                 </li>
               ))}
             </ol>
-            <div className="mt-5 flex gap-3 border-t pt-5 text-xs leading-5 text-muted-foreground">
-              <ShieldCheck aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />
-              <p>
-                결과는 노래 추천을 위한 관찰값이며 의료적 진단이 아닙니다. 본인에게 사용 권한이 있는 음성만
-                제출해주세요.
-              </p>
-            </div>
+            <StatusNotice
+              className="mt-5"
+              description="결과는 노래 추천을 위한 관찰값이며 의료적 진단이 아닙니다. 본인에게 사용 권한이 있는 음성만 제출해주세요."
+              icon={<ShieldCheck />}
+            />
           </section>
         </div>
 
@@ -361,10 +360,12 @@ export function VocalProfileWorkbench() {
       </div>
 
       {audioFile ? (
-        <div className="mt-10 flex items-center gap-3 border-y px-1 py-4 text-xs text-muted-foreground">
-          <Check aria-hidden="true" className="size-4 text-success-foreground" />
-          준비된 오디오는 분석 요청 전까지 브라우저 안에서만 미리 확인합니다.
-        </div>
+        <StatusNotice
+          className="mt-10"
+          description="준비된 오디오는 분석 요청 전까지 브라우저 안에서만 미리 확인합니다."
+          icon={<Check />}
+          tone="success"
+        />
       ) : null}
     </CreationFunnelShell>
   );

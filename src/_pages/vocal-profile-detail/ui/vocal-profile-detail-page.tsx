@@ -21,7 +21,7 @@ export default async function VocalProfileDetailPage({ params }: { params: Promi
       <Link className={buttonVariants({ size: "sm", variant: "ghost" })} href="/vocal-profiles">
         <ArrowLeft className="size-4" /> 목록으로
       </Link>
-      <div className="mt-6 flex flex-wrap items-start justify-between gap-8 border-b pb-7">
+      <div className="mt-6 flex flex-wrap items-start justify-between gap-8 pb-7">
         <div className="flex min-w-0 max-w-3xl items-start gap-4 sm:gap-5">
           <VocalProfileArtwork className="size-20 sm:size-24" profileId={detail.profile.id} />
           <div className="min-w-0">
@@ -51,7 +51,7 @@ export default async function VocalProfileDetailPage({ params }: { params: Promi
         </div>
       </div>
 
-      <section className="border-b py-5" aria-labelledby="source-audio-title">
+      <section className="py-5" aria-labelledby="source-audio-title">
         <div className="grid gap-5 lg:grid-cols-[minmax(12rem,.4fr)_minmax(0,1fr)] lg:items-center">
           <div>
             <h2 className="text-sm font-semibold" id="source-audio-title">
@@ -69,7 +69,7 @@ export default async function VocalProfileDetailPage({ params }: { params: Promi
         <VocalProfileResults profile={detail.profile} showSummary={false} sourceAudioSrc={detail.audioUrl} />
       </section>
 
-      <div className="mt-8 flex flex-wrap items-center justify-end gap-3 border-t pt-5">
+      <div className="mt-8 flex flex-wrap items-center justify-end gap-3 pt-5">
         <Link className={buttonVariants({ variant: "outline" })} href="/profile">
           새 프로필 분석하기
         </Link>

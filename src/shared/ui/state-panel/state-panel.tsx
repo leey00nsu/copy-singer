@@ -4,14 +4,14 @@ import type * as React from "react";
 import { cn } from "@/shared/lib/cn";
 
 const statePanelIconVariants = cva(
-  "flex size-11 items-center justify-center rounded-lg border bg-background text-muted-foreground [&_svg]:size-5",
+  "flex size-11 items-center justify-center rounded-lg bg-muted/55 text-muted-foreground [&_svg]:size-5",
   {
     variants: {
       tone: {
         neutral: "",
-        success: "border-success/70 bg-success text-success-foreground",
-        warning: "border-warning/70 bg-warning text-warning-foreground",
-        destructive: "border-destructive/20 bg-destructive/8 text-destructive",
+        success: "bg-success text-success-foreground",
+        warning: "bg-warning text-warning-foreground",
+        destructive: "bg-destructive/8 text-destructive",
       },
     },
     defaultVariants: {
@@ -45,7 +45,7 @@ function StatePanel({
       data-slot="state-panel"
       data-tone={tone}
       className={cn(
-        "flex min-h-52 flex-col items-center justify-center border-y bg-background px-6 py-12 text-center",
+        "flex min-h-52 flex-col items-center justify-center bg-background px-6 py-12 text-center",
         className,
       )}
       {...props}

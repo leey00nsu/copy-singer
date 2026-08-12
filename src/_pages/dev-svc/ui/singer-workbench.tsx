@@ -35,6 +35,7 @@ import { Button, buttonVariants } from "@/shared/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Progress } from "@/shared/ui/progress";
 import { Separator } from "@/shared/ui/separator";
+import { StatusNotice } from "@/shared/ui/status-notice";
 import { AdvancedSettings, type ConversionSettings, DEFAULT_SETTINGS } from "./advanced-settings";
 import { AudioDropzone, MAX_AUDIO_UPLOAD_BYTES } from "./audio-dropzone";
 import { RecommendationHandoffBanner } from "./recommendation-handoff";
@@ -199,13 +200,12 @@ export function SingerWorkbench({
 
         {recommendation ? <RecommendationHandoffBanner selection={recommendation} /> : null}
         {handoffError ? (
-          <p
-            className="mt-6 rounded-xl border border-amber-500/30 bg-amber-500/8 p-4 text-sm text-muted-foreground"
-            role="status"
-          >
-            추천 선택 정보를 확인할 수 없습니다. 추천 결과에서 곡을 다시 선택해주세요. 기존 수동 합성 기능은 그대로
-            사용할 수 있습니다.
-          </p>
+          <StatusNotice
+            className="mt-6"
+            description="추천 결과에서 곡을 다시 선택해주세요. 기존 수동 합성 기능은 그대로 사용할 수 있습니다."
+            title="추천 선택 정보를 확인할 수 없습니다"
+            tone="warning"
+          />
         ) : null}
 
         <div className="workbench-grid mt-9">

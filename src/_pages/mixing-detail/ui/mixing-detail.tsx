@@ -38,6 +38,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/shared/ui/dialog";
+import { StatusNotice } from "@/shared/ui/status-notice";
 import { ActualStateTimeline, CreationFunnelShell, ProcessHero } from "@/widgets/creation-funnel";
 
 function TimelineIcon({ state }: { state: "complete" | "reached" | "current" | "upcoming" | "skipped" }) {
@@ -51,7 +52,7 @@ function TimelineIcon({ state }: { state: "complete" | "reached" | "current" | "
 function MixingTimeline({ job }: { job: MixingHistoryRow }) {
   const presentation = presentMixingJob(job);
   return (
-    <ol aria-label="AI 믹싱 진행 단계" className="grid border-y sm:grid-cols-4">
+    <ol aria-label="AI 믹싱 진행 단계" className="grid overflow-hidden rounded-xl bg-muted/25 sm:grid-cols-4">
       {presentation.timeline.map((step, index) => (
         <li
           className={cn(
@@ -201,7 +202,7 @@ export function MixingDetail({ initial }: { initial: MixingHistoryRow }) {
         <ArrowLeft aria-hidden="true" className="size-4" /> AI 믹스 목록
       </Link>
 
-      <header className="mt-9 flex flex-wrap items-start justify-between gap-8 border-b pb-10">
+      <header className="mt-9 flex flex-wrap items-start justify-between gap-8 pb-10">
         <div className="min-w-0 max-w-3xl">
           <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
             AI mix detail
@@ -228,9 +229,12 @@ export function MixingDetail({ initial }: { initial: MixingHistoryRow }) {
             {presentation.description}
           </p>
           {detailQuery.isError ? (
-            <p className="mt-2 text-sm text-destructive" role="status">
-              최신 상태를 확인하지 못해 마지막으로 확인한 정보를 표시합니다.
-            </p>
+            <StatusNotice
+              className="mt-4 max-w-xl"
+              description="마지막으로 확인한 정보를 표시합니다."
+              title="최신 상태를 확인하지 못했어요"
+              tone="destructive"
+            />
           ) : null}
         </div>
         <div className="flex flex-wrap gap-2">{presentation.terminal ? <MixingDeleteAction job={job} /> : null}</div>
@@ -274,7 +278,7 @@ export function MixingDetail({ initial }: { initial: MixingHistoryRow }) {
         </div>
       </dl>
 
-      <section aria-labelledby="mixing-progress-title" className="border-t py-8 sm:py-10 lg:py-12">
+      <section aria-labelledby="mixing-progress-title" className="py-8 sm:py-10 lg:py-12">
         <div className="mb-4">
           <h2 className="text-xl font-semibold" id="mixing-progress-title">
             믹싱 진행
@@ -287,7 +291,7 @@ export function MixingDetail({ initial }: { initial: MixingHistoryRow }) {
       </section>
 
       {job.status === "failed" || job.status === "canceled" ? (
-        <section className="border-t py-8 sm:py-10 lg:py-12" aria-labelledby="mixing-next-action-title">
+        <section className="py-8 sm:py-10 lg:py-12" aria-labelledby="mixing-next-action-title">
           <div className="flex gap-4">
             <span className="flex size-10 shrink-0 items-center justify-center rounded-lg border text-destructive">
               <TriangleAlert aria-hidden="true" className="size-5" />

@@ -90,7 +90,7 @@ export function AccountOverview({ account, authentication, user }: AccountOvervi
         </dl>
       </section>
 
-      <section aria-labelledby="ticket-balance-title" className="mt-8 border-y py-6">
+      <section aria-labelledby="ticket-balance-title" className="mt-8 py-6">
         <p className="flex items-center gap-2 text-sm text-muted-foreground">
           <Ticket aria-hidden="true" className="size-3.5" /> 사용 가능한 티켓
         </p>

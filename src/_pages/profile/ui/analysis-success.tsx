@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { VocalProfileResponse } from "@/entities/vocal-profile";
 import { VocalProfileSummary } from "@/entities/vocal-profile";
 import { Button, buttonVariants } from "@/shared/ui/button";
+import { StatusNotice } from "@/shared/ui/status-notice";
 import { ProcessHero } from "@/widgets/creation-funnel";
 
 export function AnalysisSuccess({
@@ -46,9 +47,7 @@ export function AnalysisSuccess({
       {profile ? (
         <VocalProfileSummary profile={profile} />
       ) : (
-        <p className="border-y py-6 text-sm text-muted-foreground">
-          저장된 보컬 프로필에서 전체 분석 결과를 확인할 수 있습니다.
-        </p>
+        <StatusNotice description="저장된 보컬 프로필에서 전체 분석 결과를 확인할 수 있습니다." />
       )}
     </ProcessHero>
   );
