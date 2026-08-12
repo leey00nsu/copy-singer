@@ -72,11 +72,15 @@ export function RecorderSurface({
   return (
     <div className="flex min-h-[28rem] flex-col bg-background px-1 py-2 sm:px-3 sm:py-4">
       <div
-        aria-label={state === "recording" ? "실시간 마이크 입력 반응" : active ? "마이크 연결 상태" : "녹음 대기 상태"}
-        className="relative flex min-h-48 items-center overflow-hidden bg-transparent px-4 py-8"
+        aria-label={
+          state === "recording" ? "실시간 마이크 입력 반응과 파형" : active ? "마이크 연결 상태" : "녹음 대기 상태"
+        }
+        className={`relative flex justify-center overflow-hidden bg-transparent px-4 ${
+          state === "recording" ? "min-h-72 items-start py-4" : "min-h-48 items-center py-8"
+        }`}
         role="img"
       >
-        <VoiceSignalCore className="mx-auto size-44 sm:size-48" mode={signalMode} stream={microphoneStream} />
+        <VoiceSignalCore className="size-44 sm:size-48" mode={signalMode} stream={microphoneStream} />
       </div>
 
       <div className="mt-6 text-center">

@@ -58,6 +58,16 @@
   transform: scale(calc(0.9 + var(--signal-level) * 0.32));
 }
 
+.waveform {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  left: 50%;
+  width: min(22rem, calc(100vw - 4rem));
+  height: 4rem;
+  max-width: none;
+  transform: translateX(-50%);
+}
+
 @keyframes voice-core-request {
   from {
     opacity: 0.56;
@@ -84,5 +94,9 @@
     opacity: 0.28;
     filter: blur(32px);
     transform: scale(1.02);
+  }
+
+  .waveform {
+    opacity: 0.82;
   }
 }

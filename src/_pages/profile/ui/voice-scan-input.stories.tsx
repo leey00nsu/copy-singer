@@ -77,9 +77,12 @@ export const Recording: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByText("권장 녹음 시간을 채웠어요")).toBeVisible();
     await expect(canvas.getByRole("button", { name: "녹음 완료" })).toBeVisible();
-    await expect(canvas.getByRole("img", { name: "실시간 마이크 입력 반응" })).toBeVisible();
+    await expect(canvas.getByRole("img", { name: "실시간 마이크 입력 반응과 파형" })).toBeVisible();
     await expect(canvas.getByTestId("voice-signal-core")).toHaveAttribute("data-signal-mode", "recording");
-    const surface = canvas.getByRole("img", { name: "실시간 마이크 입력 반응" });
+    const waveform = canvas.getByTestId("recording-scrolling-waveform");
+    await expect(waveform).toBeVisible();
+    await expect(waveform).toHaveAttribute("data-waveform-gradient", "brand");
+    const surface = canvas.getByRole("img", { name: "실시간 마이크 입력 반응과 파형" });
     await expect(getComputedStyle(surface).backgroundColor).toBe("rgba(0, 0, 0, 0)");
     await expect(getComputedStyle(surface).borderTopWidth).toBe("0px");
   },
