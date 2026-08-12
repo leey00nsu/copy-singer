@@ -133,15 +133,15 @@
     - [x] DPR, ResizeObserver, requestAnimationFrame lifecycle과 WebGL context cleanup을 제한했다.
     - [x] Orb가 action으로 오해되지 않도록 실제 profile CTA와 분리해 접근 가능한 presentation으로 제공했다.
 
-- [TODO][PRD-FR-046] T-F022-xai-inspired-landing-motion-08 Editorial demo·metric band·Voice Notes·2-up CTA 완성
+- [DONE][PRD-FR-046] T-F022-xai-inspired-landing-motion-08 Editorial demo·metric band·Voice Notes·2-up CTA 완성
   - Date: 2026-08-12
   - Acceptance:
     - 긴 반복 sticky card 대신 x.ai식 2열 editorial product demo, hairline metric band, 4-up Voice Notes와 서로 다른 실제 목적지의 2-up CTA가 넓은 section whitespace로 구성된다.
     - 5초 최소 분석, 60초 최대 입력, 3단계 흐름처럼 계약상 참인 수치만 표시하고 가짜 뉴스·날짜·링크를 만들지 않는다.
   - Checklist:
-    - [ ] 분석→추천→믹싱 demo를 Aceternity scroll reveal source pattern으로 구성한다.
-    - [ ] metric band와 Voice Notes rail을 responsive하게 구현한다.
-    - [ ] profile 시작과 library 결과 보기 CTA의 목적지·위계를 구분한다.
+    - [x] 분석→추천→믹싱 demo를 Aceternity scroll reveal source pattern으로 구성했다.
+    - [x] metric band와 Voice Notes rail을 responsive하게 구현했다.
+    - [x] profile 시작과 library 결과 보기 CTA의 목적지·위계를 구분했다.
 
 - [TODO][PRD-FR-051] T-F022-xai-inspired-landing-motion-09 공통 ProcessHero Orb·성능·접근성·시각 parity 검증
   - Date: 2026-08-12
@@ -176,4 +176,4 @@
 | `pnpm run build` | `2026-08-12` | 통과 — Next.js 16.3 production build, TypeScript와 29개 static page 생성 완료 |
 | Browser responsive QA | `2026-08-12` | 통과 — desktop 1440×1000 sticky story, mobile 390×844 static stack 및 overflow 없음, reduced-motion animation 0개, console warning/error 0개 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T02:29:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T02:33:00.000Z -->

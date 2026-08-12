@@ -101,6 +101,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DOING 시작 시점**: 제공된 1440px x.ai 캡처, 현 landing code, React Bits 공식 Orb source와 Next.js 16 client boundary/lazy-loading guide를 비교했다. 서브에이전트의 읽기 전용 gap review도 bento·metric band·editorial rail 누락과 `ProcessHero` 교체를 동일하게 지적했다.
   - **T06 완료 시점**: Aceternity 공식 registry의 `BentoGrid`/`BentoGridItem` 구조를 semantic token과 focus/hover 상태에 맞게 도입했다. 거대한 hero, 단일 dashboard, waveform·dotted·ripple과 반복 sticky panel을 제거하고 3+2 제품 mosaic로 교체했으며 Storybook 4/4, TypeScript와 architecture boundary를 통과했다.
   - **T07 완료 시점**: React Bits 공식 Orb shader와 `ogl@1.0.11`을 공통 `VoiceOrb` client island로 통합했다. DPR을 1.5로 제한하고 ResizeObserver, IntersectionObserver, visibilitychange, context-lost 및 unmount cleanup을 보강했으며 reduced-motion/WebGL 실패 시 정적 poster가 남는다. Landing bento와 active ProcessHero에 같은 exact props를 적용하고 Storybook 8/8을 통과했다.
+  - **T08 완료 시점**: 기존의 작은 trust band와 pastel gradient CTA를 2열 editorial product demo, 계약상 참인 `5초+`·`60초`·`3단계` metric band, 비상호작용 Voice Notes 4열과 profile/library 2-up CTA로 교체했다. Reveal Content는 offscreen 내용을 숨기지 않도록 초기 opacity 0.94와 8px 이동으로 제한했고 1266px full-page 캡처에서 x.ai형 macro rhythm과 모든 section 노출을 확인했다.
   - **DONE 전 확정 시점**: 구현 및 시각 검증 후 보강 예정
 - **Evidence**:
   - **Reference**: `https://reactbits.dev/backgrounds/orb?hue=294&rotateOnHover=false&hoverIntensity=0`
