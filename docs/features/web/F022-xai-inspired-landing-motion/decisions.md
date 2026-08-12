@@ -270,7 +270,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Context**: 사용자가 분석 중에는 Orb를 사용하지만 분석 전 profile에는 기존 막대 파형이 남아 있고 녹음 중 live waveform도 현재 디자인과 어울리지 않는다고 지적했다.
 - **Constraints**: 실제 마이크 반응을 유지하되 amplitude를 장식 정보 이상으로 과장하지 않고 React high-frequency render, 복수 AudioContext, WebGL 의존 실패, reduced-motion과 녹음 cleanup 문제를 피해야 한다.
 - **Options**: 막대 스타일만 변경 / 원형 spectrum 추가 / idle·recording·processing을 하나의 Voice Core 상태로 통합
-- **Decision**: 공통 `VoiceSignalCore`에 idle·requesting·recording·stopping·processing mode를 정의한다. Idle/requesting/stopping은 `VoiceOrb`의 WebGL 없는 poster fallback에 mode별 opacity·saturation·scale을 적용하고, recording은 full Orb와 glow를 MediaStream analyser의 RMS·peak에서 smoothing한 `--signal-level`로만 반응시킨다. `ProcessHero` active도 같은 core의 processing mode를 사용한다.
+- **Decision**: 공통 `VoiceSignalCore`에 idle·requesting·recording·stopping·processing mode를 정의한다. 최초 구현은 idle/requesting/stopping에 poster fallback을 사용했으며, D017에서 이를 저속 dynamic Orb로 확장했다. Recording은 full Orb와 glow를 MediaStream analyser의 RMS·peak에서 smoothing한 `--signal-level`로만 반응시키고 `ProcessHero` active도 같은 core의 processing mode를 사용한다.
 - **Rationale**: 분석 전부터 분석 중까지 같은 형태를 유지해 제품의 visual continuity를 만들면서, 녹음 중 신호는 오디오 편집기형 history waveform 없이도 살아 있는 입력으로 느껴진다. 고주파 값을 DOM CSS 변수로 직접 전달하므로 React render를 반복하지 않고 기존 timer·progress의 의미도 침범하지 않는다.
 - **Trace**:
   - **DOING 시작 시점**: 현재 `RecorderSurface`는 idle에서 20개 고정 bar, recording에서 별도 2D canvas의 history bar와 baseline을 사용하고 `ProcessHero`만 `VoiceOrb`를 사용한다. Timer·milestone·progress는 visual과 독립된 의미 계약이므로 그대로 보존할 수 있다.
@@ -285,7 +285,12 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Context**: 사용자가 분석 전 Orb도 움직이게 하고 녹음 반응을 더 강하게 만들며, 짧은 오디오 오류의 위아래 border panel을 현재 디자인에 맞게 바꾸도록 요청했다.
 - **Constraints**: Idle animation은 full processing과 위계를 구분하고 reduced-motion fallback을 유지해야 한다. Recording 반응은 시각적으로 커져도 layout shift와 control 이동을 만들지 않아야 하며 notice는 기존 오류 문구와 분석 disable 계약을 유지해야 한다.
 - **Options**: idle CSS poster pulse / idle full Orb shader / recording scale만 확대 / scale·glow·signal gain 동시 조정 / hairline 유지 / rounded inline notice
-- **Decision**: 구현 및 검증 후 확정한다. 초기 방향은 idle에 저채도 full Orb를 사용하고 recording의 analyser gain과 CSS response 범위를 함께 늘리며, audio duration 안내는 status별 icon을 가진 rounded low-tint notice로 바꾸는 것이다.
-- **Rationale**: 구현 및 검증 후 확정한다.
+- **Decision**: Idle/requesting/stopping은 각각 speed 0.35/0.45/0.35의 저채도 full Orb를 사용하고 processing은 1, recording은 0.75로 위계를 둔다. Recording analyser는 RMS gain 8, peak gain 2.6과 attack/release 0.5/0.16을 사용하며 Orb scale은 0.82–1, glow opacity는 0.12–0.77 범위로 반응한다. Audio duration 안내는 status별 icon과 low-tint surface를 가진 rounded inline notice로 바꾼다.
+- **Rationale**: 같은 shader가 idle부터 processing까지 끊기지 않아 상태 전환이 자연스럽고, signal gain과 scale·glow를 함께 확대해야 작은 음량에서도 반응이 읽힌다. Notice는 주변 control과 같은 radius·border 언어를 사용하면서 icon과 tone으로 성공/오류를 텍스트 외에도 구분한다.
 - **Trace**:
   - **DOING 시작 시점**: Idle은 `forceFallback` 때문에 canvas 0인 정적 poster이고 recording은 최대 scale 변화가 5.5%, glow opacity 변화가 30%라 실제 음성에서 차이가 약하다. 짧은 오디오 안내는 `border-y bg-muted/25` surface라 다른 rounded input control과 형태가 단절된다.
+  - **DONE 전 확정 시점**: Mode별 shader speed를 추가하고 idle 강제 fallback을 제거했다. Recording gain·smoothing과 scale·glow 범위를 확대했으며, duration 안내를 valid/invalid icon·tone의 rounded notice로 교체했다. Storybook에서 idle ready canvas 1, recording/processing Voice Core, valid/invalid notice와 fallback을 확인했고 관련 14/14, TypeScript, ESLint, architecture boundary와 production build를 통과했다.
+- **Evidence**:
+  - **Components**: `src/shared/ui/voice-orb`, `src/shared/ui/voice-signal-core`, `src/_pages/profile/ui/voice-scan-input.tsx`
+- **Test/Log**: Profile input·Creation Funnel·Orb Storybook 14/14, TypeScript, ESLint, architecture boundary, Next.js 16.3 production build와 desktop/mobile browser QA 통과
+- **Consequences**: Idle도 WebGL runtime을 사용하지만 기존 viewport·visibility 정지, DPR 제한과 cleanup을 그대로 적용한다. Reduced-motion 또는 WebGL 실패에서는 static poster가 남고, notice 문구와 분석 가능/불가 계약은 변경하지 않는다.
