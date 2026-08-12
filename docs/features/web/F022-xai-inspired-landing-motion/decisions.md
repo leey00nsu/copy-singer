@@ -415,3 +415,12 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**: `src/shared/ui/voice-signal-core/voice-signal-core.tsx`, `src/shared/ui/voice-signal-core/voice-signal-core.module.css`, `src/_pages/profile/ui/vocal-profile-recorder.tsx`
 - **Test/Log**: Profile input·Orb·Creation Funnel Storybook 14/14, TypeScript, ESLint, architecture boundary, Next.js 16.3 production build와 1440px/390px browser QA 통과
 - **Consequences**: Idle/requesting/stopping/processing에는 scrolling canvas가 생성되지 않는다. Reduced-motion에서는 analyser·RAF 없이 정적 history만 그리고, recording 종료/unmount에서는 RAF·ResizeObserver·audio graph·AudioContext를 정리한다. D016의 “recording live waveform 제거” 결정은 이 요청에 한해 Orb 아래의 보조 visualization으로 대체되며 Orb 자체는 계속 primary visual이다.
+
+## D027: Recorder progressive state transition (2026-08-12)
+
+- **Context**: 사용자가 녹음 전 `0:00.0`이 의미 없이 보이고, recording 진입 시 Orb 색과 waveform 공간이 즉시 바뀌어 layout shift처럼 느껴진다고 지적했다.
+- **Constraints**: 실제 recording 시작 시점과 타이머 의미를 일치시키고, Orb의 고주파 audio response를 느리게 만들지 않으면서 layout·color·waveform entrance만 부드럽게 이어야 한다.
+- **Decision**: 경과 시간은 recording이 시작됐거나 elapsed 값이 존재할 때만 렌더링한다. Recorder visual region은 Orb의 상단 위치를 유지하고 idle 높이에서 recording 높이로 transition하며, Orb filter·opacity는 장시간 easing으로 grayscale→color를 전환한다. Waveform은 recording mount 시 opacity entrance를 사용한다.
+- **Rationale**: Orb 자체가 위아래로 재배치되지 않은 상태에서 아래 공간만 열리면 주변 copy/control은 하나의 연속된 layout transition으로 밀린다. Filter transition과 waveform entrance를 분리하면 microphone 반응용 120ms transform은 그대로 유지할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: Timer는 모든 state에서 항상 렌더링되고, recorder region은 idle의 center alignment/min-height에서 recording의 start alignment/min-height로 즉시 바뀐다. Orb filter transition은 420ms이며 waveform canvas에는 entrance opacity가 없다.

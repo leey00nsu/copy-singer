@@ -389,12 +389,23 @@
     - [x] VoiceSignalCore의 analyser에서 Orb level과 scrolling history를 함께 갱신했다.
     - [x] Storybook, cleanup, desktop/mobile visual과 overflow를 검증했다.
 
+- [DOING][PRD-FR-048] T-F022-xai-inspired-landing-motion-32 Recorder timer·Orb·Waveform transition 정교화
+  - Date: 2026-08-12
+  - Acceptance:
+    - 녹음 전에는 0:00.0 타이머를 노출하지 않고 recording 시작 후에만 경과 시간을 표시한다.
+    - Idle grayscale Orb는 recording 전환 시 색상과 반응 강도가 서서히 이어지며 갑자기 교체되어 보이지 않는다.
+    - Waveform 공간은 높이 transition으로 자연스럽게 열리고 canvas는 opacity 0에서 등장해 주변 콘텐츠가 갑자기 밀리지 않는다.
+  - Checklist:
+    - [ ] RecorderSurface의 timer 조건부 노출과 recording layout transition을 구현한다.
+    - [ ] VoiceSignalCore의 Orb filter와 waveform opacity transition을 구현한다.
+    - [ ] Storybook, reduced-motion, desktop/mobile layout shift와 회귀를 검증한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -431,4 +442,4 @@
 | Voice Notes Aurora QA | `2026-08-12` | 통과 — 1440×1000에서 4-up 263×159 crop, 390×844에서 1열 335×203 crop과 밝은 ice→cyan→blue-violet→dark neutral 순서를 직접 확인; desktop/mobile horizontal overflow 0, console warning/error 0 |
 | Album Cover Stack QA | `2026-08-12` | 통과 — 1440×1000에서 4개 cover layer와 hover fan-out, 390×844에서 stacked mixing card와 crop 확인; horizontal overflow 0, console warning/error 0, reduced-motion story 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T08:51:55.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T09:01:16.000Z -->
