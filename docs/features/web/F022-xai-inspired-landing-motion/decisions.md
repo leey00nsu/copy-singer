@@ -99,6 +99,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 사용자가 명시한 레퍼런스의 시각 품질을 실제 동작 단위로 가져오면서 Server Component composition과 제품 고유 콘텐츠를 유지할 수 있다. Orb를 공유하면 랜딩 preview와 분석 진행 화면의 visual language도 일치한다.
 - **Trace**:
   - **DOING 시작 시점**: 제공된 1440px x.ai 캡처, 현 landing code, React Bits 공식 Orb source와 Next.js 16 client boundary/lazy-loading guide를 비교했다. 서브에이전트의 읽기 전용 gap review도 bento·metric band·editorial rail 누락과 `ProcessHero` 교체를 동일하게 지적했다.
+  - **T06 완료 시점**: Aceternity 공식 registry의 `BentoGrid`/`BentoGridItem` 구조를 semantic token과 focus/hover 상태에 맞게 도입했다. 거대한 hero, 단일 dashboard, waveform·dotted·ripple과 반복 sticky panel을 제거하고 3+2 제품 mosaic로 교체했으며 Storybook 4/4, TypeScript와 architecture boundary를 통과했다.
   - **DONE 전 확정 시점**: 구현 및 시각 검증 후 보강 예정
 - **Evidence**:
   - **Reference**: `https://reactbits.dev/backgrounds/orb?hue=294&rotateOnHover=false&hoverIntensity=0`

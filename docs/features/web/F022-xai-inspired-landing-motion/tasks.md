@@ -111,15 +111,15 @@
     - [x] production build 및 관련 전체 검증 명령을 실행했다.
     - [x] product UI 디자인 문서, decisions와 workflow sync evidence를 최종 구현에 맞게 갱신했다.
 
-- [TODO][PRD-FR-046] T-F022-xai-inspired-landing-motion-06 x.ai형 랜딩 정보 구조와 제품 모자이크 재설계
+- [DONE][PRD-FR-046] T-F022-xai-inspired-landing-motion-06 x.ai형 랜딩 정보 구조와 제품 모자이크 재설계
   - Date: 2026-08-12
   - Acceptance:
     - Hero는 x.ai처럼 작은 announcement, 절제된 display copy, 두 개 이하 CTA와 넓은 여백을 사용하고, 바로 아래 비대칭 제품 모자이크가 Copy Singer의 분석·추천·믹싱 흐름을 보여준다.
     - 기존 waveform, dotted glow, ripple과 장문 sticky story를 제거하고 mobile 320px 이상에서 같은 정보 순서를 유지한다.
   - Checklist:
-    - [ ] LandingHero와 LandingProductStory를 조용한 hero + bento product showcase 구조로 재구성한다.
-    - [ ] 가짜 점수·진행률·앨범 데이터 없이 실제 제품 개념만 표시한다.
-    - [ ] 기존 인증별 CTA, ProductHeader와 ProductFooter 계약을 유지한다.
+    - [x] LandingHero와 LandingProductStory를 조용한 hero + bento product showcase 구조로 재구성했다.
+    - [x] 가짜 점수·진행률·앨범 데이터 없이 실제 제품 개념만 표시했다.
+    - [x] 기존 인증별 CTA, ProductHeader와 ProductFooter 계약을 유지했다.
 
 - [TODO][PRD-FR-045] T-F022-xai-inspired-landing-motion-07 React Bits Orb 기반 분석 visual 도입
   - Date: 2026-08-12
@@ -176,4 +176,4 @@
 | `pnpm run build` | `2026-08-12` | 통과 — Next.js 16.3 production build, TypeScript와 29개 static page 생성 완료 |
 | Browser responsive QA | `2026-08-12` | 통과 — desktop 1440×1000 sticky story, mobile 390×844 static stack 및 overflow 없음, reduced-motion animation 0개, console warning/error 0개 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T01:57:34.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T02:25:00.000Z -->
