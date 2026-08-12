@@ -1,4 +1,4 @@
-import { Check, Sparkles } from "lucide-react";
+import { Check } from "lucide-react";
 import Image from "next/image";
 
 import { VocalRangeChart } from "@/entities/vocal-profile";
@@ -58,12 +58,8 @@ function RecommendationSurface() {
 
 function KeySurface() {
   return (
-    <div className="relative flex h-full min-h-44 w-full flex-col justify-center overflow-hidden bg-background px-3 py-4">
-      <div className="flex items-center justify-between px-2">
-        <p className="text-[9px] font-semibold tracking-[0.14em] text-muted-foreground uppercase">Sample profile</p>
-        <p className="text-[9px] text-muted-foreground">가상 데이터</p>
-      </div>
-      <VocalRangeChart className="mt-1 h-36 w-full aspect-auto" profile={sampleVocalProfile} />
+    <div className="relative flex h-full min-h-44 w-full items-center overflow-hidden bg-background p-3">
+      <VocalRangeChart className="h-36 w-full aspect-auto" profile={sampleVocalProfile} />
     </div>
   );
 }
@@ -130,10 +126,6 @@ function OrbPoster() {
   return (
     <div className="relative grid h-full min-h-52 w-full place-items-center overflow-hidden bg-background">
       <VoiceOrb className="absolute inset-0" hoverIntensity={0} hue={294} rotateOnHover={false} />
-      <div className="absolute inset-x-5 top-5 flex items-center justify-between text-[9px] text-muted-foreground">
-        <span>VOICE SIGNAL</span>
-        <Sparkles aria-hidden="true" className="size-3" />
-      </div>
     </div>
   );
 }

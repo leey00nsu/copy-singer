@@ -40,8 +40,9 @@ async function expectLandingStructure(canvasElement: HTMLElement) {
   await expect(canvas.getByText("60초")).toBeVisible();
   await expect(canvas.getByText("3단계")).toBeVisible();
   await expect(canvasElement.querySelectorAll("[data-count-up-target]")).toHaveLength(0);
-  await expect(canvas.getByText("Sample profile")).toBeVisible();
-  await expect(canvas.getByText("가상 데이터")).toBeVisible();
+  await expect(canvas.queryByText("Sample profile")).not.toBeInTheDocument();
+  await expect(canvas.queryByText("가상 데이터")).not.toBeInTheDocument();
+  await expect(canvas.queryByText("VOICE SIGNAL")).not.toBeInTheDocument();
   await expect(
     canvas.getByRole("img", { name: "전체 관측 음역 E3부터 A♯5, 실용 음역 G4부터 C♯5, 중앙음 A♯4" }),
   ).toBeVisible();
