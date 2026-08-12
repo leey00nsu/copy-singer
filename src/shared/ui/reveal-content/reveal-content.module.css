@@ -11,8 +11,66 @@
   transform: translateY(0);
 }
 
+.stagger,
+.line {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+.stagger [data-reveal-item] {
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 650ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--reveal-delay, 0ms) + var(--reveal-item-delay, 0ms)),
+    transform 650ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--reveal-delay, 0ms) + var(--reveal-item-delay, 0ms));
+}
+
+.stagger [data-reveal-media] {
+  transform: scale(1.025);
+  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1)
+    calc(var(--reveal-delay, 0ms) + var(--reveal-item-delay, 0ms));
+}
+
+.stagger.visible [data-reveal-item] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.stagger.visible [data-reveal-media] {
+  transform: scale(1);
+}
+
+.line [data-reveal-line] {
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 750ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
+}
+
+.line [data-reveal-item] {
+  opacity: 0;
+  transition: opacity 650ms cubic-bezier(0.22, 1, 0.36, 1)
+    calc(var(--reveal-delay, 0ms) + 160ms + var(--reveal-item-delay, 0ms));
+}
+
+.line.visible [data-reveal-line] {
+  transform: scaleX(1);
+}
+
+.line.visible [data-reveal-item] {
+  opacity: 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .root {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .root [data-reveal-item],
+  .root [data-reveal-media],
+  .root [data-reveal-line] {
     opacity: 1;
     transform: none;
     transition: none;
@@ -21,6 +79,13 @@
 
 @media (scripting: none) {
   .root {
+    opacity: 1;
+    transform: none;
+  }
+
+  .root [data-reveal-item],
+  .root [data-reveal-media],
+  .root [data-reveal-line] {
     opacity: 1;
     transform: none;
   }

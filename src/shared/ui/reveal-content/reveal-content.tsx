@@ -12,20 +12,32 @@ type RevealContentProps = HTMLAttributes<HTMLDivElement> & {
   distance?: number;
   duration?: number;
   fromOpacity?: number;
+  variant?: "default" | "fade" | "group" | "line" | "section" | "stagger";
 };
+
+const variantDefaults = {
+  default: { distance: 8, duration: 700, fromOpacity: 0.94 },
+  fade: { distance: 0, duration: 800, fromOpacity: 0 },
+  group: { distance: 6, duration: 800, fromOpacity: 0 },
+  line: { distance: 0, duration: 700, fromOpacity: 1 },
+  section: { distance: 16, duration: 700, fromOpacity: 0 },
+  stagger: { distance: 0, duration: 650, fromOpacity: 1 },
+} as const;
 
 // Adapted from the one-shot reveal pattern used by React Bits Fade Content.
 function RevealContent({
   className,
   delay = 0,
-  distance = 8,
-  duration = 700,
-  fromOpacity = 0.94,
+  distance,
+  duration,
+  fromOpacity,
   style,
+  variant = "default",
   ...props
 }: RevealContentProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const defaults = variantDefaults[variant];
 
   useEffect(() => {
     const element = ref.current;
@@ -53,15 +65,16 @@ function RevealContent({
 
   return (
     <div
-      className={cn(styles.root, visible && styles.visible, className)}
+      className={cn(styles.root, styles[variant], visible && styles.visible, className)}
+      data-reveal-variant={variant}
       ref={ref}
       style={
         {
           ...style,
           "--reveal-delay": `${delay}ms`,
-          "--reveal-distance": `${distance}px`,
-          "--reveal-duration": `${duration}ms`,
-          "--reveal-opacity": fromOpacity,
+          "--reveal-distance": `${distance ?? defaults.distance}px`,
+          "--reveal-duration": `${duration ?? defaults.duration}ms`,
+          "--reveal-opacity": fromOpacity ?? defaults.fromOpacity,
         } as React.CSSProperties
       }
       {...props}

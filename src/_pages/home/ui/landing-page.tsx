@@ -1,6 +1,7 @@
 import { ArrowRight, Library, Mic2, Music2, Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import type { CSSProperties } from "react";
 
 import { RevealContent } from "@/shared/ui/reveal-content";
 import { ProductFooter, ProductHeader, type ProductUser } from "@/widgets/product-shell";
@@ -9,6 +10,10 @@ import { LandingHero } from "./landing-hero";
 import { LandingProductStory } from "./landing-product-story";
 
 const railClass = "mx-auto w-full max-w-[72rem] px-5 sm:px-7 lg:px-8";
+
+function revealDelay(index: number): CSSProperties {
+  return { "--reveal-item-delay": `${index * 70}ms` } as CSSProperties;
+}
 
 const editorialSteps = [
   {
@@ -79,8 +84,8 @@ function LandingPage({ admin = false, user = null }: { admin?: boolean; user?: P
         <LandingProductStory />
 
         <section className={`${railClass} py-24 sm:py-32 lg:py-44`} id="product-story">
-          <RevealContent className="grid gap-14 lg:grid-cols-[minmax(15rem,.72fr)_minmax(0,1.28fr)] lg:items-start lg:gap-24">
-            <header className="lg:sticky lg:top-32">
+          <div className="grid gap-14 lg:grid-cols-[minmax(15rem,.72fr)_minmax(0,1.28fr)] lg:items-start lg:gap-24">
+            <RevealContent className="lg:sticky lg:top-32" variant="section">
               <p className="text-[10px] font-semibold tracking-[0.16em] text-muted-foreground uppercase">One voice</p>
               <h2 className="mt-4 max-w-[28rem] text-4xl leading-[1.03] font-medium tracking-[-0.045em] sm:text-5xl">
                 한 소절.
@@ -89,10 +94,18 @@ function LandingPage({ admin = false, user = null }: { admin?: boolean; user?: P
               <p className="mt-6 max-w-[25rem] text-[13px] leading-6 text-muted-foreground">
                 복잡한 점수 대신, 목소리를 이해하고 맞는 곡을 찾아 결과를 만드는 데 필요한 정보만 이어서 보여줍니다.
               </p>
-            </header>
+            </RevealContent>
 
-            <div className="overflow-hidden rounded-xl border bg-card shadow-[0_32px_90px_-72px_oklch(0.15_0.02_285/0.45)]">
-              <div className="flex h-11 items-center justify-between border-b px-4 text-[9px] text-muted-foreground sm:px-5">
+            <RevealContent
+              className="overflow-hidden rounded-xl border bg-card shadow-[0_32px_90px_-72px_oklch(0.15_0.02_285/0.45)]"
+              delay={100}
+              variant="stagger"
+            >
+              <div
+                className="flex h-11 items-center justify-between border-b px-4 text-[9px] text-muted-foreground sm:px-5"
+                data-reveal-item
+                style={revealDelay(0)}
+              >
                 <span>COPY SINGER / VOICE TO SONG</span>
                 <span className="flex gap-1">
                   <i className="size-1.5 rounded-full bg-red-300" />
@@ -104,7 +117,9 @@ function LandingPage({ admin = false, user = null }: { admin?: boolean; user?: P
                 {editorialSteps.map(({ description, eyebrow, icon: Icon, title }, index) => (
                   <li
                     className="grid gap-5 border-b p-6 last:border-0 sm:grid-cols-[3rem_1fr_auto] sm:items-center sm:p-8"
+                    data-reveal-item
                     key={title}
+                    style={revealDelay(index + 1)}
                   >
                     <span className="flex size-11 items-center justify-center rounded-full bg-muted text-muted-foreground">
                       <Icon aria-hidden="true" className="size-4" />
@@ -120,59 +135,60 @@ function LandingPage({ admin = false, user = null }: { admin?: boolean; user?: P
                   </li>
                 ))}
               </ol>
-            </div>
-          </RevealContent>
-        </section>
-
-        <section className="border-y">
-          <div className={`${railClass} grid sm:grid-cols-3 sm:divide-x`}>
-            {metrics.map(({ label, suffix, value }, index) => (
-              <RevealContent
-                className="border-b py-16 text-center last:border-b-0 sm:border-b-0 sm:px-7 sm:py-20"
-                delay={index * 70}
-                key={label}
-              >
-                <p className="text-5xl font-light tracking-[-0.055em] sm:text-6xl">{`${value}${suffix}`}</p>
-                <p className="mt-4 text-[10px] text-muted-foreground">{label}</p>
-              </RevealContent>
-            ))}
+            </RevealContent>
           </div>
         </section>
 
-        <section className={`${railClass} py-24 sm:py-32 lg:py-40`}>
-          <RevealContent>
-            <div className="flex items-end justify-between gap-5">
-              <div>
-                <p className="text-[10px] font-semibold tracking-[0.16em] text-muted-foreground uppercase">
-                  Voice notes
-                </p>
-                <h2 className="mt-3 text-2xl font-medium tracking-[-0.035em]">더 좋은 한 소절을 위한 짧은 안내</h2>
-              </div>
-              <span className="hidden text-[10px] text-muted-foreground sm:block">Copy Singer guide</span>
-            </div>
-            <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {voiceNotes.map(({ description, image, label, title }) => (
-                <article key={title}>
-                  <div className="relative aspect-[1.65] overflow-hidden rounded-lg bg-muted">
-                    <Image
-                      alt=""
-                      className="object-cover transition-transform duration-700 hover:scale-[1.015] motion-reduce:transition-none"
-                      fill
-                      sizes="(max-width: 639px) calc(100vw - 2.5rem), (max-width: 1023px) 50vw, 18rem"
-                      src={image}
-                    />
-                  </div>
-                  <p className="mt-3 text-[9px] text-muted-foreground uppercase">{label}</p>
-                  <h3 className="mt-1 text-xs font-semibold">{title}</h3>
-                  <p className="mt-1.5 text-[10px] leading-4 text-muted-foreground">{description}</p>
-                </article>
+        <section>
+          <RevealContent className="relative" variant="line">
+            <span aria-hidden="true" className="absolute inset-x-0 top-0 border-t" data-reveal-line />
+            <div className={`${railClass} grid sm:grid-cols-3 sm:divide-x`}>
+              {metrics.map(({ label, suffix, value }, index) => (
+                <div
+                  className="border-b py-16 text-center last:border-b-0 sm:border-b-0 sm:px-7 sm:py-20"
+                  data-reveal-item
+                  key={label}
+                  style={revealDelay(index)}
+                >
+                  <p className="text-5xl font-light tracking-[-0.055em] sm:text-6xl">{`${value}${suffix}`}</p>
+                  <p className="mt-4 text-[10px] text-muted-foreground">{label}</p>
+                </div>
               ))}
             </div>
+            <span aria-hidden="true" className="absolute inset-x-0 bottom-0 border-b" data-reveal-line />
+          </RevealContent>
+        </section>
+
+        <section className={`${railClass} py-24 sm:py-32 lg:py-40`}>
+          <RevealContent className="flex items-end justify-between gap-5" variant="section">
+            <div>
+              <p className="text-[10px] font-semibold tracking-[0.16em] text-muted-foreground uppercase">Voice notes</p>
+              <h2 className="mt-3 text-2xl font-medium tracking-[-0.035em]">더 좋은 한 소절을 위한 짧은 안내</h2>
+            </div>
+            <span className="hidden text-[10px] text-muted-foreground sm:block">Copy Singer guide</span>
+          </RevealContent>
+          <RevealContent className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4" delay={100} variant="stagger">
+            {voiceNotes.map(({ description, image, label, title }, index) => (
+              <article data-reveal-item key={title} style={revealDelay(index)}>
+                <div className="relative aspect-[1.65] overflow-hidden rounded-lg bg-muted" data-reveal-media>
+                  <Image
+                    alt=""
+                    className="object-cover transition-transform duration-700 hover:scale-[1.015] motion-reduce:transition-none"
+                    fill
+                    sizes="(max-width: 639px) calc(100vw - 2.5rem), (max-width: 1023px) 50vw, 18rem"
+                    src={image}
+                  />
+                </div>
+                <p className="mt-3 text-[9px] text-muted-foreground uppercase">{label}</p>
+                <h3 className="mt-1 text-xs font-semibold">{title}</h3>
+                <p className="mt-1.5 text-[10px] leading-4 text-muted-foreground">{description}</p>
+              </article>
+            ))}
           </RevealContent>
         </section>
 
         <section className={`${railClass} border-t py-20 sm:py-24`}>
-          <RevealContent>
+          <RevealContent variant="fade">
             <h2 className="text-center text-2xl font-medium tracking-[-0.035em]">어떻게 시작할까요?</h2>
             <div className="mt-8 grid gap-3 md:grid-cols-2">
               <article className="flex min-h-64 flex-col rounded-xl bg-muted/55 p-7 sm:p-9">

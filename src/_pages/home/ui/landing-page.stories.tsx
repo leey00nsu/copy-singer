@@ -36,22 +36,31 @@ async function expectLandingStructure(canvasElement: HTMLElement) {
   const albumCoverStack = canvas.getByTestId("album-cover-stack");
   await expect(albumCoverStack).toBeVisible();
   await expect(albumCoverStack.querySelectorAll("img")).toHaveLength(4);
-  await expect(canvas.getByText("5초+")).toBeVisible();
-  await expect(canvas.getByText("60초")).toBeVisible();
-  await expect(canvas.getByText("3단계")).toBeVisible();
+  const firstMetric = canvas.getByText("5초+");
+  firstMetric.scrollIntoView({ block: "center" });
+  await waitFor(() => expect(firstMetric).toBeVisible());
+  await waitFor(() => expect(canvas.getByText("60초")).toBeVisible());
+  await waitFor(() => expect(canvas.getByText("3단계")).toBeVisible());
   await expect(canvasElement.querySelectorAll("[data-count-up-target]")).toHaveLength(0);
   await expect(canvas.queryByText("Sample profile")).not.toBeInTheDocument();
   await expect(canvas.queryByText("가상 데이터")).not.toBeInTheDocument();
   await expect(canvas.queryByText("VOICE SIGNAL")).not.toBeInTheDocument();
+  await expect(canvasElement.querySelectorAll('[data-reveal-variant="section"]')).toHaveLength(2);
+  await expect(canvasElement.querySelectorAll('[data-reveal-variant="stagger"]')).toHaveLength(2);
+  await expect(canvasElement.querySelectorAll('[data-reveal-variant="line"]')).toHaveLength(1);
+  await expect(canvasElement.querySelectorAll('[data-reveal-variant="line"] [data-reveal-line]')).toHaveLength(2);
+  await expect(canvasElement.querySelectorAll('[data-reveal-variant="fade"]')).toHaveLength(1);
   await expect(
     canvas.getByRole("img", { name: "전체 관측 음역 E3부터 A♯5, 실용 음역 G4부터 C♯5, 중앙음 A♯4" }),
   ).toBeVisible();
   await expect(canvas.queryByTestId("recommended-key-visualizer")).not.toBeInTheDocument();
   await expect(canvasElement.querySelectorAll("h1 [aria-hidden='true'] > span")).not.toHaveLength(0);
-  await expect(canvas.getByRole("heading", { name: "더 좋은 한 소절을 위한 짧은 안내" })).toBeVisible();
+  const voiceNotesHeading = canvas.getByRole("heading", { name: "더 좋은 한 소절을 위한 짧은 안내" });
+  voiceNotesHeading.scrollIntoView({ block: "center" });
+  await waitFor(() => expect(voiceNotesHeading).toBeVisible());
   await expect(canvas.queryByTestId("grainient-background")).not.toBeInTheDocument();
   const firstVoiceNote = canvas.getByRole("heading", { name: "편하게 녹음하기" });
-  await expect(firstVoiceNote.closest("article")).toBeVisible();
+  await waitFor(() => expect(firstVoiceNote.closest("article")).toBeVisible());
   const voiceNoteImages = Array.from(firstVoiceNote.closest("section")?.querySelectorAll("article img") ?? []);
   await expect(voiceNoteImages).toHaveLength(4);
   await expect(voiceNoteImages.map((image) => image.getAttribute("src"))).toEqual(
@@ -64,6 +73,9 @@ async function expectLandingStructure(canvasElement: HTMLElement) {
   );
   await expect(canvas.queryByText("분석에서 믹싱까지, 한 흐름으로")).not.toBeInTheDocument();
   await expect(canvas.queryByText("목소리의 범위와 안정성을 같은 기준으로")).not.toBeInTheDocument();
+  const finalCtaHeading = canvas.getByRole("heading", { name: "어떻게 시작할까요?" });
+  finalCtaHeading.scrollIntoView({ block: "center" });
+  await waitFor(() => expect(finalCtaHeading).toBeVisible());
   await expect(canvas.getByRole("navigation", { name: "제품 푸터 메뉴" })).toBeVisible();
 }
 
