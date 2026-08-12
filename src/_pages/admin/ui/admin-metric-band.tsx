@@ -13,7 +13,7 @@ function AdminMetricBand({ className, metrics }: { className?: string; metrics: 
   return (
     <section
       aria-label="운영 요약"
-      className={cn("grid gap-2 rounded-2xl bg-muted/25 p-2 sm:grid-cols-2 xl:grid-cols-4", className)}
+      className={cn("grid gap-2 rounded-2xl bg-muted/55 p-2 sm:grid-cols-2 xl:grid-cols-4", className)}
     >
       {metrics.map(({ detail, icon: Icon, label, value }) => (
         <article className="min-w-0 rounded-xl bg-background/72 p-5" key={label}>

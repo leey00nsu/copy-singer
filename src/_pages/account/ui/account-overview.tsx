@@ -57,7 +57,7 @@ export function AccountOverview({ account, authentication, user }: AccountOvervi
         aria-label="계정과 티켓 요약"
         className="mt-10 grid gap-3 lg:grid-cols-[minmax(0,1.35fr)_minmax(18rem,.65fr)]"
       >
-        <div className="rounded-3xl bg-muted/25 p-6 sm:p-7">
+        <div className="rounded-3xl bg-muted/55 p-6 sm:p-7">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <h2 className="text-base font-semibold" id="account-information-title">

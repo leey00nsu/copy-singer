@@ -53,7 +53,7 @@ function TimelineIcon({ state }: { state: "complete" | "reached" | "current" | "
 function MixingTimeline({ job }: { job: MixingHistoryRow }) {
   const presentation = presentMixingJob(job);
   return (
-    <ol aria-label="AI 믹싱 진행 단계" className="grid overflow-hidden rounded-xl bg-muted/25 sm:grid-cols-4">
+    <ol aria-label="AI 믹싱 진행 단계" className="grid overflow-hidden rounded-xl bg-muted/55 sm:grid-cols-4">
       {presentation.timeline.map((step, index) => (
         <li
           className={cn(
@@ -260,7 +260,7 @@ export function MixingDetail({ initial }: { initial: MixingHistoryRow }) {
         </section>
       ) : null}
 
-      <dl className="grid gap-1 rounded-2xl bg-muted/25 p-1 sm:grid-cols-3" data-stat-surface="mixing-detail">
+      <dl className="grid gap-1 rounded-2xl bg-muted/55 p-1 sm:grid-cols-3" data-stat-surface="mixing-detail">
         <div className="rounded-xl bg-background/75 px-4 py-5 sm:px-6">
           <dt className="text-xs text-muted-foreground">사용 티켓</dt>
           <dd className="mt-1 text-lg font-semibold">{job.ticketCost}개</dd>

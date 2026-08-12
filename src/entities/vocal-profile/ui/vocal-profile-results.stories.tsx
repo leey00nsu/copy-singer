@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import type { CSSProperties } from "react";
-import { expect, within } from "storybook/test";
+import { expect, userEvent, within } from "storybook/test";
 
 import { type VocalProfileResponse, VocalProfileResults } from "@/entities/vocal-profile";
 
@@ -103,8 +103,13 @@ export const RepresentativeAnalysis: Story = {
     await expect(within(rangeLegend as HTMLElement).queryByText("중앙음")).not.toBeInTheDocument();
     await expect(canvasElement.querySelector("[data-observed-range-tone]")).toHaveAttribute(
       "data-observed-range-tone",
-      "muted",
+      "context",
     );
+    const observedLegend = canvasElement.querySelector<HTMLElement>("[data-range-legend-swatch='observed']");
+    await expect(observedLegend).not.toBeNull();
+    await expect(getComputedStyle(observedLegend as HTMLElement).backgroundColor).toContain("0.9");
+    await userEvent.hover(canvas.getByRole("img", { name: /전체 관측 음역/ }));
+    await expect(canvasElement.querySelector(".recharts-tooltip-cursor")).not.toBeInTheDocument();
     const editorialSections = Array.from(canvasElement.querySelectorAll<HTMLElement>("[data-vocal-profile-section]"));
     await expect(editorialSections.length).toBeGreaterThan(0);
     for (const section of editorialSections) {
@@ -141,7 +146,10 @@ export const DarkBrandSignal: Story = {
   ],
   play: async ({ canvasElement }) => {
     const rangeGradient = canvasElement.querySelector("[data-brand-signal-gradient='vocal-range']");
+    const observedLegend = canvasElement.querySelector<HTMLElement>("[data-range-legend-swatch='observed']");
     await expect(rangeGradient).not.toBeNull();
+    await expect(observedLegend).not.toBeNull();
+    await expect(getComputedStyle(observedLegend as HTMLElement).backgroundColor).toContain("0.38");
     await expect(
       Array.from((rangeGradient as SVGLinearGradientElement).querySelectorAll("stop")).map(
         (stop) => getComputedStyle(stop).stopColor,

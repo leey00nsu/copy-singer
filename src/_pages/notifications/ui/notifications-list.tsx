@@ -74,7 +74,7 @@ export function NotificationsList({ initial }: { initial: NotificationListPayloa
             <button
               className={cn(
                 "block min-h-24 w-full px-3 py-4 transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/40 sm:px-4",
-                item.readAt === null && "bg-muted/25",
+                item.readAt === null && "bg-muted/55",
               )}
               disabled={read.isPending && read.variables === item.id}
               onClick={() => void openNotification(item.id, item.href)}

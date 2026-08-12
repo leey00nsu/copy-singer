@@ -63,7 +63,11 @@ export function VocalRangeProfile({
         <CardTitle className="text-sm">{title}</CardTitle>
         <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[10px] text-muted-foreground" data-vocal-range-legend>
           <span className="flex items-center gap-2" data-range-legend="observed">
-            <i className="h-2 w-7 rounded-full bg-muted" />
+            <i
+              className="h-2 w-7 rounded-full"
+              data-range-legend-swatch="observed"
+              style={{ backgroundColor: VOCAL_CHART_COLOR.context }}
+            />
             전체 관측 음역
           </span>
           <span className="flex items-center gap-2" data-range-legend="practical">
@@ -79,7 +83,7 @@ export function VocalRangeProfile({
       <CardContent>
         <VocalRangeChart profile={profile} />
         <div
-          className={`grid gap-1 rounded-2xl bg-muted/25 p-1 ${medianMidi === null ? "sm:grid-cols-2" : "sm:grid-cols-3"}`}
+          className={`grid gap-1 rounded-2xl bg-muted/55 p-1 ${medianMidi === null ? "sm:grid-cols-2" : "sm:grid-cols-3"}`}
           data-vocal-profile-stat-surface="range"
         >
           {summary.map(([label, value, detail]) => (
@@ -321,7 +325,7 @@ export function VocalProfileResults({
             </CardHeader>
             <CardContent>
               <div
-                className="grid gap-1 rounded-2xl bg-muted/25 p-1 sm:grid-cols-3 xl:grid-cols-6"
+                className="grid gap-1 rounded-2xl bg-muted/55 p-1 sm:grid-cols-3 xl:grid-cols-6"
                 data-vocal-profile-stat-surface="quality"
               >
                 {quality.map(([label, value, Icon]) => (

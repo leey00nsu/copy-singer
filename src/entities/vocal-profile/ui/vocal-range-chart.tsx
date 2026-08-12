@@ -32,7 +32,7 @@ function VocalRangeChart({
       aria-label={`전체 관측 음역 ${midiToNoteName(profile.minMidi)}부터 ${midiToNoteName(profile.maxMidi)}, 실용 음역 ${midiToNoteName(profile.tessituraLowMidi)}부터 ${midiToNoteName(profile.tessituraHighMidi)}${medianMidi === null ? "" : `, 중앙음 ${midiToNoteName(medianMidi)}`}`}
       className={className}
       config={RANGE_CHART_CONFIG}
-      data-observed-range-tone="muted"
+      data-observed-range-tone="context"
       role="img"
     >
       <BarChart accessibilityLayer data={data} layout="vertical" margin={{ left: 8, right: 18, top: 30, bottom: 8 }}>
@@ -52,6 +52,7 @@ function VocalRangeChart({
         />
         <YAxis dataKey="label" hide type="category" />
         <ChartTooltip
+          cursor={false}
           content={
             <ChartTooltipContent
               hideLabel
@@ -79,7 +80,10 @@ function VocalRangeChart({
         ) : null}
         <Bar dataKey="range" radius={8}>
           {data.map((row) => (
-            <Cell fill={row.key === "observed" ? "var(--muted)" : `url(#${practicalGradientId})`} key={row.key} />
+            <Cell
+              fill={row.key === "observed" ? VOCAL_CHART_COLOR.context : `url(#${practicalGradientId})`}
+              key={row.key}
+            />
           ))}
         </Bar>
       </BarChart>

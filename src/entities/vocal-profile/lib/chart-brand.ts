@@ -5,6 +5,7 @@ const VOCAL_CHART_FALLBACK = {
 } as const;
 
 const VOCAL_CHART_COLOR = {
+  context: "var(--chart-context, oklch(0.9 0 0))",
   violet: `var(--brand-chart-violet, ${VOCAL_CHART_FALLBACK.violet})`,
   blue: `var(--brand-chart-blue, ${VOCAL_CHART_FALLBACK.blue})`,
   pink: `var(--brand-chart-pink, ${VOCAL_CHART_FALLBACK.pink})`,

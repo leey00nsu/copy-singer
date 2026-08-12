@@ -41,7 +41,7 @@ export function VocalProfileSummary({ profile }: { profile: VocalProfileResponse
         </ul>
       </div>
       <dl
-        className="mt-8 grid gap-6 rounded-2xl bg-muted/25 px-5 py-6 sm:grid-cols-2 xl:grid-cols-4"
+        className="mt-8 grid gap-6 rounded-2xl bg-muted/55 px-5 py-6 sm:grid-cols-2 xl:grid-cols-4"
         data-vocal-profile-stat-surface="summary"
       >
         {metrics.map(([label, value, detail, Icon]) => {
