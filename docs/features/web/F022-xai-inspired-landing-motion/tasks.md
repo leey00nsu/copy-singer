@@ -457,6 +457,18 @@
     - [x] Palette·Library·Mixing Storybook에서 크기별 질감을 검증한다.
     - [x] TypeScript, lint, architecture와 desktop/mobile browser QA를 통과한다.
 
+- [DONE][PRD-FR-047] T-F022-xai-inspired-landing-motion-38 Aurora preset 기반 restrained artwork palette
+  - Date: 2026-08-12
+  - Acceptance:
+    - Artwork 하나에는 Aurora Gradient Generator의 `Northern Sky`, `Ocean Blue`, `Forest`, `Berry`처럼 인접한 hue family만 사용하고 원거리 보색이 동시에 섞이지 않는다.
+    - 중앙음은 deterministic family를 선택하고 음역·안정도·유성음·RMS는 같은 family 안의 spread·채도·명도만 조절해 보컬 기반 구분을 유지한다.
+    - Grain은 사이트 기본값인 25% 수준으로 절제하고 작은/큰 artwork에서 색을 탁하게 덮지 않는다.
+    - 기존 payload fallback, 화면 간 결정성, DB 무변경 계약을 유지한다.
+  - Checklist:
+    - [x] Preset-derived analogous family와 제한된 saturation/lightness mapping을 구현한다.
+    - [x] Unit/Storybook assertion으로 결정성과 family 내부 hue 범위를 검증한다.
+    - [x] Palette·Library의 desktop/mobile browser QA와 TypeScript/lint를 통과한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -476,9 +488,9 @@
 | `pnpm run test:storybook --run src/shared/ui/product-page-intro/product-page-intro.stories.tsx src/_pages/login/ui/login-screen.stories.tsx src/_pages/library/ui/library-page.stories.tsx src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx` | `2026-08-12` | 통과 — ProductPageIntro 3 variant, Login brand bridge, index/task/detail 대표 화면과 action 회귀 20/20 |
 | `pnpm run test:storybook --run src/_pages/account/ui/account-overview.stories.tsx src/_pages/admin/ui/admin-metric-band.stories.tsx` | `2026-08-12` | 통과 — Account summary/ledger와 Admin stat band 회귀 4/4 |
 | `pnpm run test:storybook --run src/widgets/creation-funnel/ui/creation-funnel.stories.tsx src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/entities/vocal-profile/ui/vocal-profile-summary.stories.tsx src/_pages/library/ui/library-page.stories.tsx` | `2026-08-12` | 통과 — lightweight stepper, Recommendation action/density와 brand artwork 대표 화면 회귀 19/19 |
-| `pnpm exec tsx --test tests/vocal-profile-artwork.test.ts` | `2026-08-12` | 통과 — 동일 보컬 결정성, 중앙음·음역·안정도·유성음·RMS 변화와 legacy ID fallback 검증 3/3 |
+| `pnpm exec tsx --test tests/vocal-profile-artwork.test.ts` | `2026-08-12` | 통과 — 동일 보컬 결정성, 분석값 변화, Aurora analogous family 최대 hue 거리 65° 이하와 legacy ID fallback 검증 4/4 |
 | `pnpm exec tsx --test tests/api-contracts.test.ts tests/mixing-history-ui.test.tsx tests/mixing-status-presentation.test.ts` | `2026-08-12` | 통과 — optional artwork payload 하위 호환, mixing list와 상태 presentation 회귀 16/16 |
-| `pnpm run test:storybook --run src/entities/vocal-profile/ui/vocal-profile-artwork.stories.tsx src/_pages/library/ui/library-page.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx` | `2026-08-12` | 통과 — voice-derived palette 8종, Library와 Mixing Detail artwork 회귀 7/7 |
+| `pnpm run test:storybook --run src/entities/vocal-profile/ui/vocal-profile-artwork.stories.tsx src/_pages/library/ui/library-page.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx` | `2026-08-12` | 통과 — preset-derived palette 8종, grain opacity 20%/5%, Library와 Mixing Detail artwork 회귀 7/7 |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/entities/vocal-profile/ui/vocal-profile-summary.stories.tsx src/_pages/profile/ui/analysis-success.stories.tsx` | `2026-08-12` | 통과 — Landing Sample Vocal Range Profile과 실제 profile 결과 회귀 8/8 |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — 공식 Motion Gradient Text 단일 field·animationSpeed 1.5·yoyo, signed-out/in·mobile·reduced-motion 콘텐츠와 기존 Landing 회귀 4/4 |
 | `pnpm run test:storybook --run src/_pages/profile/ui/voice-scan-input.stories.tsx src/shared/ui/voice-orb/voice-orb.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx` | `2026-08-12` | 통과 — 녹음 전 timer 숨김, WebGL canvas 유지, recorder height·Orb filter·waveform opacity transition과 기존 상태 회귀 15/15 |
@@ -508,5 +520,6 @@
 | Product alignment QA | `2026-08-12` | 통과 — 1440px Login·Recommendation·Account·Library와 1440px/390px Creation stepper 직접 검토; 공통 intro, quiet/dark summary, brand artwork palette와 progress rail overflow 0 확인 |
 | Voice-derived artwork QA | `2026-08-12` | 통과 — 중앙음 44–78, 음역 폭 14–28st, 안정도·유성음·RMS가 다른 8개 fixture에서 6개 이상 base hue와 서로 다른 gradient 확인; 1440px 4열·390px 2열 overflow 0 |
 | Aurora grain artwork QA | `2026-08-12` | 통과 — fine soft-light와 coarse multiply grain, soft vignette를 1440px palette와 44px Library thumbnail에서 확인; color mapping·radius·overflow 유지 |
+| Restrained Aurora preset QA | `2026-08-12` | 통과 — 실제 preset의 recursive·grain 25·gray 200 값을 확인하고 Berry/Forest/Ocean/Northern analogous family로 재구성; desktop/mobile Palette와 44px Library에서 원거리 hue 혼합·overflow 0 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T09:49:44.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T10:00:59.000Z -->

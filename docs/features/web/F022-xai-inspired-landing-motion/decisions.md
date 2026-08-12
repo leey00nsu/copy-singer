@@ -465,3 +465,14 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**: `src/entities/vocal-profile/ui/vocal-profile-artwork.tsx`, `src/entities/vocal-profile/ui/vocal-profile-artwork.stories.tsx`
 - **Trace**: Fine noise는 5rem tile·soft-light·35% opacity, coarse noise는 13rem tile·multiply·13% opacity로 적용하고 radial/linear soft-light vignette를 추가했다. Palette·Library·Mixing Detail Storybook 7/7과 TypeScript를 통과했으며 1440px palette와 44px Library thumbnail에서 grain이 색을 덮지 않고 보이는 것을 확인했다.
 - **Consequences**: Texture는 purely decorative child이고 artwork 자체는 계속 `aria-hidden`이다. 추가 network request나 animation lifecycle이 없다.
+
+## D031: Aurora preset-derived analogous artwork families (2026-08-12)
+
+- **Context**: 전체 hue circle과 최대 132° spread를 쓰는 voice-derived mapping은 프로필 구분은 강하지만 하나의 artwork에 coral·lime·cyan·violet 같은 원거리 색이 섞여 Aurora preset보다 알록달록하게 보였다.
+- **Constraints**: 보컬 분석 기반 결정성과 프로필 간 구분, legacy ID fallback, DB 무변경을 유지하면서 한 표면의 색 복잡도를 줄여야 한다.
+- **Source**: `https://auroragradient.com/` — 2026-08-12 확인 결과 preset 공통값은 `style=recursive`, `grainOpacity=25`, `grainColor=200`; restrained 후보는 `Northern Sky`(`#48466d`, `#3d84a8`, `#46cdcf`, `#abedd8`)·`Ocean Blue`(`#0077b6`, `#00b4d8`, `#90e0ef`, `#caf0f8`, `#023e8a`)·`Forest`(`#1b4332`, `#2d6a4f`, `#40916c`, `#52b788`, `#74c69d`)·`Berry`(`#590d22`, `#800f2f`, `#a4133c`, `#c9184a`, `#ff4d6d`)다.
+- **Decision**: 중앙음 구간으로 네 analogous family 중 하나를 결정하고 각 family의 preset hue를 anchor로 사용한다. 음역 폭은 family 내부 spread, 안정도는 saturation, 유성음·RMS는 base/highlight lightness만 제한적으로 조절한다. `Purple Dream`·`Cyberpunk`처럼 hue 거리가 큰 조합은 artwork mapping에서 제외하고 neutral grain 합성 강도는 합계 약 25% 수준으로 낮춘다.
+- **Rationale**: 여러 프로필은 family·명도·focal layout으로 구분되지만 개별 artwork는 하나의 조화로운 색 덩어리로 읽힌다. 사이트의 실제 preset 구조를 따르므로 단순히 채도를 낮추는 것보다 Aurora 특유의 깊이와 정체성을 보존한다.
+- **Evidence**: `src/entities/vocal-profile/lib/artwork.ts`, `src/entities/vocal-profile/ui/vocal-profile-artwork.tsx`, `src/entities/vocal-profile/ui/vocal-profile-artwork.stories.tsx`
+- **Trace**: `ARTWORK_VERSION=3`에서 중앙음 quartile을 Berry·Forest·Ocean Blue·Northern Sky family에 매핑하고 range spread를 0.32–1.0으로 제한했다. saturation은 family anchor 기준 34–88%, lightness는 역할별 16–82% 범위에서만 움직이며 profile seed hue jitter는 ±3°다. Fine/coarse grain은 20%/5%로 낮췄다. Unit 4/4, Storybook 7/7, TypeScript와 lint를 통과했고 1440px/390px Palette 및 44px Library에서 단일 family color mass와 overflow 0을 확인했다.
+- **Consequences**: 이전 version 2 artwork와 색 배치는 달라지므로 mapping version을 올린다. 저장 데이터와 API shape은 바뀌지 않는다.
