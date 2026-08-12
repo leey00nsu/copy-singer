@@ -184,16 +184,16 @@
     - [x] Tailwind 생성 gradient/noise visual을 `next/image` 기반 visual로 교체하고 빈 alt의 장식 이미지 접근성 계약을 유지했다.
     - [x] Storybook과 browser에서 네 카드의 순서·crop·반응형 표시를 확인하고 관련 정적 검증을 통과했다.
 
-- [DOING][PRD-FR-045] T-F022-xai-inspired-landing-motion-13 AI 믹싱 Album Cover Stack 적용
+- [DONE][PRD-FR-045] T-F022-xai-inspired-landing-motion-13 AI 믹싱 Album Cover Stack 적용
   - Date: 2026-08-12
   - Acceptance:
     - `선택한 추천곡만 AI 믹싱` 왼쪽의 검은 음표 아이콘 surface를 서로 다른 Pixabay 이미지 4장이 겹친 album-cover stack으로 교체한다.
     - 스택은 작은 회전·offset·layer shadow로 깊이를 만들고 hover/focus에서는 절제되게 펼쳐지며, reduced-motion에서는 전환 없이 같은 정적 구성을 유지한다.
     - 이미지는 Pixabay Content License 대상이며 출처·작가·원본 링크를 저장하고, 가짜 앨범명·아티스트나 실제 추천 결과로 오해할 정보를 표시하지 않는다.
   - Checklist:
-    - [ ] 식별 가능한 인물·로고가 없는 Pixabay 이미지 4장을 선정하고 landing 전용 정적 자산으로 저장한다.
-    - [ ] 첨부 gallery prompt의 stack composition을 현재 Tailwind·Server Component 구조에 맞게 구현하고 검은 음표 surface를 제거한다.
-    - [ ] Storybook, typecheck, lint, build와 desktop/mobile browser에서 layer, crop, overflow와 reduced-motion을 검증한다.
+    - [x] 식별 가능한 인물·로고가 없는 Pixabay 이미지 4장을 선정하고 landing 전용 정적 자산으로 저장했다.
+    - [x] 첨부 gallery prompt의 stack composition을 현재 Tailwind·Server Component 구조에 맞게 구현하고 검은 음표 surface를 제거했다.
+    - [x] Storybook, typecheck, lint, build와 desktop/mobile browser에서 layer, crop, overflow와 reduced-motion을 검증했다.
 
 ## 완료 조건
 
@@ -221,5 +221,6 @@
 | Browser responsive QA | `2026-08-12` | 통과 — 1280px full-page에서 x.ai형 hero·3+2 bento·editorial demo·metric·Voice Notes·2-up CTA 직접 검토, horizontal overflow 0, h1 1개, Orb DPR 1.5 및 fallback 없음; Storybook 390px mobile/reduced-motion/WebGL fallback 보완 |
 | Voice Notes / Orb QA | `2026-08-12` | 통과 — 독립 Voice Notes 4개와 Tailwind grain gradient 직접 검토, Grainient canvas 0개·Orb canvas 1개, Orb root transparent·fallback opacity 0, gray half/square artifact와 horizontal overflow 0 확인; 관련 Storybook 10/10 통과 |
 | Voice Notes Aurora QA | `2026-08-12` | 통과 — 1440×1000에서 4-up 263×159 crop, 390×844에서 1열 335×203 crop과 밝은 ice→cyan→blue-violet→dark neutral 순서를 직접 확인; desktop/mobile horizontal overflow 0, console warning/error 0 |
+| Album Cover Stack QA | `2026-08-12` | 통과 — 1440×1000에서 4개 cover layer와 hover fan-out, 390×844에서 stacked mixing card와 crop 확인; horizontal overflow 0, console warning/error 0, reduced-motion story 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T03:30:33.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T03:42:28.000Z -->

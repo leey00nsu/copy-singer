@@ -164,7 +164,10 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Decision**: 식별 가능한 인물·로고가 없는 Pixabay 이미지 4장을 로컬 자산으로 저장하고, absolute layer·작은 rotation·shadow와 group hover/focus-within transition으로 stack을 구현한다. drag, random rotation과 Framer Motion은 도입하지 않는다.
 - **Rationale**: 첨부 예시의 겹침과 깊이는 살리면서 번들·hydration·임의성·모바일 drag 문제를 추가하지 않고 기존 bento와 motion 계약에 맞출 수 있다.
 - **Trace**:
-  - **DOING 시작 전**: Pixabay 공식 이미지 페이지와 Content License Summary를 확인하고 stars mountain, sunset sea, neon city, vinyl close-up 네 장을 선택했다.
+  - **DOING 시작 전**: Pixabay 공식 이미지 페이지와 Content License Summary를 확인하고 stars mountain, sunset sea, neon city, colorful abstract 네 장을 선택했다. 최초 vinyl 후보는 앨범 artwork와 인물이 보여 제외했다.
+  - **DONE 전 확정 시점**: 네 JPG를 landing 전용 local asset으로 저장하고 `next/image`, absolute layer, 작은 회전·offset·shadow와 bento hover fan-out으로 구현했다. Storybook 4/4와 TypeScript를 통과했으며 실제 desktop/mobile에서 cover 4장 로드, overflow 0과 console warning/error 0을 확인했다.
 - **Evidence**:
   - **License**: `https://pixabay.com/service/license-summary/`
-  - **Sources**: Pixabay `5442598`, `6887775`, `3880335`, `8163074`
+  - **Sources**: Pixabay `5442598`, `6887775`, `3880335`, `4001306`
+  - **Notice**: `THIRD_PARTY_NOTICES.md`
+- **Consequences**: AI 믹싱 bento는 추가 client runtime 없이 더 강한 시각적 focal point를 얻는다. 네 이미지는 장식으로 숨기고 실제 추천 데이터와 분리하며, 출처와 라이선스는 저장소에서 추적한다.
