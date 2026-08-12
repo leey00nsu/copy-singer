@@ -341,6 +341,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 
 - **Context**: 사용자가 Header/Footer border를 page content 폭으로 제한하고, Header는 top에서 border 없이 시작해 scroll 후에만 border가 나타나며 뒤 content가 희미하게 비치는 blur surface를 원했다.
 - **Constraints**: Landing과 authenticated route가 같은 chrome을 사용하고 mobile에서도 separator width가 viewport 밖으로 넘치지 않아야 한다. Scroll listener는 상태 변화 시에만 render하고 cleanup해야 한다.
-- **Decision**: 구현·브라우저 검증 후 scroll threshold, background opacity와 separator placement를 확정한다.
+- **Decision**: Header outer는 `background/72`와 24px backdrop blur·1.5 saturation을 사용하고 지원 환경에서는 fill을 `background/64`로 낮춘다. 8px 초과 scroll을 boolean state로 추적해 72rem inner rail의 bottom separator만 transparent에서 `border/80`으로 전환한다. Footer outer border를 제거하고 동일 72rem inner rail에 top separator를 둔다.
+- **Rationale**: Blur와 낮은 불투명도는 sticky header 뒤의 content를 미세하게 연결하면서 text 대비를 보존한다. Separator를 inner rail에 두면 넓은 화면에서 페이지 content 폭과 정렬되고, boolean 전환이라 연속 scroll마다 불필요한 React update가 발생하지 않는다.
 - **Trace**:
   - **DOING 시작 시점**: 현재 Header/Footer outer element에 full-width `border-b`/`border-t`가 있고 Header는 scroll 여부와 무관하게 `bg-background/96 backdrop-blur-xl`을 사용한다.
+  - **DONE 전 확정 시점**: Header에 passive scroll listener와 `data-scrolled` 상태를 추가하고 inner rail separator를 연결했으며 Footer border를 rail 내부로 옮겼다. Storybook 11/11, TypeScript, ESLint, architecture boundary와 production build를 통과했다. Browser에서 1265px viewport의 top separator transparent, scrollY 180에서 separator/footer 1152px, blur 24px·saturate 1.5를 확인했다.
+- **Evidence**: `src/widgets/product-shell/ui/product-shell.tsx`, `src/widgets/product-shell/ui/product-shell.stories.tsx`
+- **Test/Log**: ProductShell·Landing Storybook 11/11, TypeScript, ESLint, architecture boundary, Next.js 16.3 production build와 browser top/scrolled QA 통과
+- **Consequences**: Landing과 authenticated route가 같은 component를 사용하므로 별도 scroll implementation이 없다. Header scroll listener는 unmount에서 제거되고 Footer는 viewport에 고정되지 않아 blur 비용이 지속적으로 발생하지 않는다.

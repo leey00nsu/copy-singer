@@ -127,6 +127,7 @@ Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface�
 ### Authenticated app shell
 
 - desktop 제품 화면은 persistent sidebar를 사용하지 않고 64px top header에 brand, 중앙 primary navigation과 우측 compact account menu를 둔다.
+- 공통 Header/Footer separator는 viewport 전체가 아니라 최대 72rem content rail 안에서만 표시한다. Header는 page top에서 separator 없이 시작하고 8px 이상 scroll된 뒤에만 rail border를 표시하며, neutral translucent background와 backdrop blur로 뒤 content를 아주 희미하게 비춘다.
 - mobile navigation은 같은 header의 menu trigger와 오른쪽 Sheet로 전환한다.
 - 현재 route, 사용자 메뉴와 ticket balance가 서로 경쟁하지 않게 위계를 분리한다.
 - content의 page heading, primary action와 filter 영역 위치를 route마다 임의로 바꾸지 않는다.

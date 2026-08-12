@@ -49,6 +49,7 @@ F022 이후 `01-landing-voice-scan.*`의 오른쪽 Voice Scan frame은 계속 �
 - neutral white, neutral gray, black을 기본으로 하고 black을 primary action에 사용한다.
 - 넓은 canvas에 beige/cream/yellow chroma를 넣지 않는다.
 - border는 form control·table/list·focus·overlay처럼 구조가 필요한 곳에만 얇고 낮은 대비로 사용한다. 일반 page/section/status/recording surface의 장식용 상·하단 hairline은 whitespace·radius·quiet fill로 대체한다.
+- Header/Footer의 구조 separator는 공통 72rem content rail 폭으로 제한한다. Sticky Header는 top에서 선 없이 translucent blur surface만 사용하고 scroll 후 rail border를 표시한다.
 - 모든 영역을 rounded Card로 감싸지 않고 grid, spacing, separator, typography로 먼저 구분한다.
 - 큰 제목과 작은 보조 설명의 대비를 사용하되 실제 사용성을 해칠 정도로 본문·표 글자를 축소하지 않는다.
 - pastel violet을 waveform, 분석 시각화, active status와 mixing progress의 제품 accent로 사용한다.
