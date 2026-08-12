@@ -514,7 +514,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Decision**: 전체 관측 음역은 neutral `muted` bar로 복원하고 중앙음 범례 항목은 제거한다. 실용 음역·histogram·pitch trace만 background와 혼합한 chart 전용 violet→blue→pink stop을 사용하며 중앙음 reference line과 label은 neutral gray로 유지한다.
 - **Rationale**: 전체 범위는 context, 실용 음역은 핵심 signal, 중앙음은 기준선이라는 서로 다른 역할을 색과 범례 구조가 그대로 설명한다.
 - **Evidence**: `src/_app/styles/globals.css`, `src/entities/vocal-profile/ui/vocal-range-chart.tsx`, `src/entities/vocal-profile/ui/vocal-profile-results.tsx`, Storybook
-- **Trace**: Light chart stop을 OKLCH lightness 0.68/0.70/0.72와 낮은 chroma로 분리하고 dark stop도 별도로 정의했다. Observed bar와 legend swatch는 `muted`, 중앙음 reference는 `muted-foreground`로 변경하고 중앙음 legend를 제거했다. Storybook 10/10, TypeScript와 lint를 통과했으며 Chromium에서 observed computed fill `oklch(0.97 0 0)`, legend 2개, 중앙음 legend 0과 overflow 0을 확인했다.
+- **Trace**: 최종 light chart stop은 OKLCH lightness 0.74/0.76/0.78, chroma 0.12/0.09/0.08로 조정하고 dark stop도 0.80/0.81/0.82 lightness로 분리했다. Observed bar와 legend swatch는 `muted`, 중앙음 reference는 `muted-foreground`로 유지한다. Storybook 5/5, TypeScript를 통과했으며 Chromium에서 연해진 range·histogram과 fallback stop을 확인했다.
 
 ## D036: SVG gradient stop에는 CSS property와 concrete fallback을 함께 사용 (2026-08-12)
 

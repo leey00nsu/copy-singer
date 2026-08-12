@@ -542,6 +542,15 @@
     - [x] light/dark의 미사용 shorthand 여섯 선언을 제거한다.
     - [x] source 검색, Storybook, TypeScript와 lint로 회귀를 검증한다.
 
+- [DONE][PRD-FR-047] T-F022-xai-inspired-landing-motion-46 보컬 chart palette 미세 조정
+  - Date: 2026-08-12
+  - Acceptance:
+    - light/dark chart stop의 명도를 높이고 chroma를 낮춰 signal waveform보다 차분한 시각 위계를 유지한다.
+    - CSS token, browser fallback과 Storybook 기대값이 동일하다.
+  - Checklist:
+    - [x] light/dark chart stop과 fallback을 같은 값으로 조정한다.
+    - [x] Storybook 5/5, TypeScript와 browser visual QA를 통과한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -603,7 +612,7 @@
 | Voice-signature palette QA | `2026-08-12` | 통과 — 동일 분석값의 Library 10개가 Violet·Ocean/Northern·Forest·Berry로 분산되고 1280px/390px에서 44px artwork 식별성과 overflow 0 확인; Palette 8개도 단일-family harmony 유지 |
 | Branded audio waveform QA | `2026-08-12` | 통과 — ready surface·waveform background `rgba(0, 0, 0, 0)`, skeleton opacity 0·visibility hidden과 72px 높이를 브라우저에서 확인; 브랜드 파형과 loading transition 유지 |
 | Brand signal gradient QA | `2026-08-12` | 통과 — Chromium 1265px에서 음역 range·histogram·pitch trace의 violet→blue→pink computed stop, static animation 0과 horizontal overflow 0을 확인 |
-| Restrained vocal chart QA | `2026-08-12` | 통과 — Chromium 1265px에서 전체 관측 bar fill `oklch(0.97 0 0)`, 범례 2개·중앙음 범례 0, chart stop 0.68/0.70/0.72 lightness와 overflow 0을 확인 |
+| Restrained vocal chart QA | `2026-08-12` | 통과 — Chromium 1265px에서 전체 관측 bar fill `oklch(0.97 0 0)`, 범례 2개·중앙음 범례 0, 최종 chart stop 0.74/0.76/0.78 lightness와 overflow 0을 확인 |
 | SVG chart fallback QA | `2026-08-12` | 통과 — chart token을 `initial`로 리셋한 Chromium fixture에서 black stop 0, 세 gradient의 concrete OKLCH fallback과 legend linear-gradient, observed muted fill을 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T11:04:08.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T11:12:12.000Z -->
