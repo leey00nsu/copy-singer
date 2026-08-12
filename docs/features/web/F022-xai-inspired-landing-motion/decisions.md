@@ -530,3 +530,4 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Decision**: 사용되지 않는 세 gradient shorthand의 light/dark 선언을 제거하고 실제 소비되는 signal·soft·chart 개별 color stop만 전역 token으로 유지한다.
 - **Rationale**: 사용 API와 맞지 않는 추상화를 제거해 token 목록이 실제 계약을 정확히 반영하게 한다.
 - **Evidence**: `src/_app/styles/globals.css`, source-wide `rg` 결과
+- **Trace**: Light/dark에서 총 여섯 shorthand 선언을 제거하고 source-wide 검색 결과를 0건으로 만들었다. 개별 stop을 소비하는 chart/audio/live waveform/Landing Storybook 21/21, TypeScript와 lint를 통과했다.

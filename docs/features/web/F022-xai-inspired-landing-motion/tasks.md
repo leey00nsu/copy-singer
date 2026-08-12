@@ -533,21 +533,21 @@
     - [x] token 미정의 fixture와 정상 token 환경을 Storybook에서 검증한다.
     - [x] TypeScript, lint와 browser QA를 통과한다.
 
-- [TODO][PRD-FR-047] T-F022-xai-inspired-landing-motion-45 미사용 brand gradient shorthand 제거
+- [DONE][PRD-FR-047] T-F022-xai-inspired-landing-motion-45 미사용 brand gradient shorthand 제거
   - Date: 2026-08-12
   - Acceptance:
     - `brand-gradient-signal`, `brand-gradient-soft`, `brand-gradient-chart` 선언을 제거한다.
     - 실제 사용 중인 signal·soft·chart 개별 color stop과 모든 렌더 결과는 유지한다.
   - Checklist:
-    - [ ] light/dark의 미사용 shorthand 여섯 선언을 제거한다.
-    - [ ] source 검색, Storybook, TypeScript와 lint로 회귀를 검증한다.
+    - [x] light/dark의 미사용 shorthand 여섯 선언을 제거한다.
+    - [x] source 검색, Storybook, TypeScript와 lint로 회귀를 검증한다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -568,6 +568,7 @@
 | `pnpm run test:storybook --run src/shared/ui/audio-waveform-player/audio-waveform-player.stories.tsx` | `2026-08-12` | 통과 — ready surface·waveform 투명, skeleton hidden과 loading/reduced-motion 회귀 3/3 |
 | `pnpm run test:storybook --run src/entities/vocal-profile/ui/vocal-profile-results.stories.tsx src/shared/ui/audio-waveform-player/audio-waveform-player.stories.tsx src/_pages/profile/ui/voice-scan-input.stories.tsx src/_pages/home/ui/landing-page.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx` | `2026-08-12` | 통과 — light/dark brand chart stop, live/stored waveform, Landing과 Mixing 회귀 23/23 |
 | `pnpm run test:storybook --run src/entities/vocal-profile/ui/vocal-profile-results.stories.tsx src/_pages/home/ui/landing-page.stories.tsx src/_pages/profile/ui/analysis-success.stories.tsx` | `2026-08-12` | 통과 — 정상/missing-token SVG fallback, restrained chart stop, 2-item legend와 실제 profile/Landing 회귀 11/11 |
+| `pnpm run test:storybook --run src/entities/vocal-profile/ui/vocal-profile-results.stories.tsx src/shared/ui/audio-waveform-player/audio-waveform-player.stories.tsx src/_pages/profile/ui/voice-scan-input.stories.tsx src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — shorthand 제거 후 chart/audio/live waveform/Landing 개별 stop 회귀 21/21 |
 | `pnpm exec tsx --test tests/audio-waveform-player.test.ts` | `2026-08-12` | 통과 — playback time/range 계산 회귀 3/3 |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/entities/vocal-profile/ui/vocal-profile-summary.stories.tsx src/_pages/profile/ui/analysis-success.stories.tsx` | `2026-08-12` | 통과 — Landing Sample Vocal Range Profile과 실제 profile 결과 회귀 8/8 |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — 공식 Motion Gradient Text 단일 field·animationSpeed 1.5·yoyo, signed-out/in·mobile·reduced-motion 콘텐츠와 기존 Landing 회귀 4/4 |
@@ -605,4 +606,4 @@
 | Restrained vocal chart QA | `2026-08-12` | 통과 — Chromium 1265px에서 전체 관측 bar fill `oklch(0.97 0 0)`, 범례 2개·중앙음 범례 0, chart stop 0.68/0.70/0.72 lightness와 overflow 0을 확인 |
 | SVG chart fallback QA | `2026-08-12` | 통과 — chart token을 `initial`로 리셋한 Chromium fixture에서 black stop 0, 세 gradient의 concrete OKLCH fallback과 legend linear-gradient, observed muted fill을 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T10:58:19.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T11:04:08.000Z -->
