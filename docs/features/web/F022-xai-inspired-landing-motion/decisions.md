@@ -209,7 +209,12 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Context**: 사용자가 Hero 설명·버튼이 animation 전에도 희미하게 보이는 문제와 Recommended key의 과도한 라벨, 가로 방향 delta 강조가 의도와 다름을 지적했다.
 - **Constraints**: 첨부 visual처럼 세로 bar rhythm을 유지하고, 원본 대비 차이는 각 bar 내부에서 수직으로 읽혀야 하며 화면 텍스트는 하단 설명 한 줄로 제한해야 한다.
 - **Options**: 기존 가로 delta bar의 라벨만 제거 / 전체 bar 색 변경 / neutral 원본 bar와 수직 delta cap을 같은 column에 겹쳐 표시
-- **Decision**: 구현 및 검증 후 확정한다. 초기 방향은 Hero entry 시작 opacity를 0으로 바꾸고, 각 bar의 원본 높이에서 key delta에 비례한 pixel 차이를 계산해 차감은 원본 상단 내부 segment, 증가는 원본 위 추가 cap으로 표시하는 것이다.
-- **Rationale**: 구현 및 검증 후 확정한다.
+- **Decision**: Hero `landing-entry`의 시작 opacity를 0으로 바꾼다. Key visualizer는 21개 column 각각에 neutral base와 delta segment를 겹쳐 렌더링하며, 한 키당 높이 6%를 사용해 하강은 원본 상단 내부 cyan segment, 상승은 원본 위 violet cap으로 표시한다. 중앙 원본 bar는 neutral 강조만 유지하고 visible label은 하단 방향 문구 한 줄로 제한한다.
+- **Rationale**: 설명·action의 animation 전 노출을 완전히 제거하고, key 변화가 어느 가로 위치로 이동했다는 오해 없이 모든 세로 bar의 높이 변화로 읽히게 한다. Base와 delta를 별도 segment로 유지하면 원본과 변경분의 관계가 명확하다.
 - **Trace**:
   - **DOING 시작 시점**: 현재 `landing-entry`가 opacity 0.24에서 시작해 사전 노출이 발생하고, visualizer는 중앙 기준 좌우 bar 묶음을 색칠해 가로 변화로 읽힌다는 원인을 확인했다.
+  - **DONE 전 확정 시점**: 브라우저 즉시 측정에서 Hero 설명·action opacity 0과 translateY 14px, 완료 후 opacity 1을 확인했다. Key `−1`에서 21개 neutral base와 21개 cyan 차감 segment, `+1`에서 21개 violet 증가 segment가 각 bar 상단에 수직으로 배치되며 visible text가 하단 한 줄뿐임을 확인했다. 1440/390 overflow 0을 확인했다.
+- **Evidence**:
+  - **Reference image**: 사용자 제공 `codex-clipboard-2d7872dd-6db3-4cfa-a304-184fdca97b7a.png`
+- **Test/Log**: landing Storybook 4/4, TypeScript, ESLint, architecture boundary, Next.js 16.3 production build 통과
+- **Consequences**: 키가 낮아질 때 cyan segment는 원본 높이 안에서 차감된 구간을, 높아질 때 violet segment는 원본 높이 위에 추가된 구간을 나타낸다. 시각 라벨을 줄였지만 `role=img`의 동적 accessible name은 방향과 값을 계속 전달한다.
