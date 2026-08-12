@@ -30,12 +30,15 @@ export function TicketLedger({ entries }: { entries: TicketEntryView[] }) {
     );
   }
   return (
-    <div className="divide-y bg-background">
+    <div
+      className="divide-y divide-border/70 overflow-hidden rounded-2xl bg-muted/15 px-3 sm:px-4"
+      data-ticket-ledger-surface
+    >
       {entries.map((entry) => {
         const credit = entry.amount > 0;
         return (
           <article
-            className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-2 py-3 sm:px-3"
+            className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-0 py-3.5 sm:py-4"
             data-ticket-direction={credit ? "credit" : "debit"}
             key={entry.id}
           >

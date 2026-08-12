@@ -81,6 +81,10 @@ export const Success: Story = {
       "data-page-intro",
       "task",
     );
+    const filterSurface = canvasElement.querySelector<HTMLElement>("[data-recommendation-filter-surface]");
+    await expect(filterSurface).not.toBeNull();
+    await expect(getComputedStyle(filterSurface as HTMLElement).borderTopWidth).toBe("0px");
+    await expect(getComputedStyle(filterSurface as HTMLElement).backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
     await expect(canvas.getByRole("button", { name: /이 곡으로 AI 믹싱|선택한 곡 확인/ })).toBeVisible();
     const videoButton = canvas.getByRole("button", { name: "서른 즈음에 · 김광석 원본 영상 플레이어 열기" });
     await userEvent.click(videoButton);

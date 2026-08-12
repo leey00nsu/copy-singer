@@ -292,8 +292,11 @@ export function MixingDetail({ initial }: { initial: MixingHistoryRow }) {
 
       {job.status === "failed" || job.status === "canceled" ? (
         <section className="py-8 sm:py-10 lg:py-12" aria-labelledby="mixing-next-action-title">
-          <div className="flex gap-4">
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-lg border text-destructive">
+          <div
+            className="flex gap-4 rounded-2xl bg-destructive/[0.055] p-5 sm:p-6"
+            data-mixing-state-chapter={job.status}
+          >
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
               <TriangleAlert aria-hidden="true" className="size-5" />
             </span>
             <div>

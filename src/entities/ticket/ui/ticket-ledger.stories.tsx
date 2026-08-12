@@ -56,8 +56,12 @@ export const GrantAndDebitHistory: Story = {
     await expect(canvas.getByText("-1")).toBeVisible();
     const creditRows = canvasElement.querySelectorAll('[data-ticket-direction="credit"]');
     const debitRow = canvasElement.querySelector('[data-ticket-direction="debit"]');
+    const ledgerSurface = canvasElement.querySelector<HTMLElement>("[data-ticket-ledger-surface]");
     await expect(creditRows).toHaveLength(2);
     await expect(debitRow).not.toBeNull();
+    await expect(ledgerSurface).not.toBeNull();
+    await expect(getComputedStyle(ledgerSurface as HTMLElement).borderTopWidth).toBe("0px");
+    await expect(getComputedStyle(ledgerSurface as HTMLElement).backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
     await expect(within(debitRow as HTMLElement).getByText("-1")).toHaveClass("text-foreground");
     await expect(within(debitRow as HTMLElement).getByText("-1")).not.toHaveClass("text-warning-foreground");
   },

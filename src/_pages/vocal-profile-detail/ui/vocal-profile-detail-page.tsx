@@ -65,7 +65,18 @@ export default async function VocalProfileDetailPage({ params }: { params: Promi
         </div>
       </section>
 
-      <section className="pt-6">
+      <section aria-labelledby="vocal-analysis-title" className="mt-10 sm:mt-14">
+        <div className="mb-6 sm:mb-8">
+          <p className="text-[10px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
+            Vocal analysis
+          </p>
+          <h2 className="mt-2 text-xl font-semibold tracking-tight sm:text-2xl" id="vocal-analysis-title">
+            보컬 분석 결과
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            음역과 음정 분포, 녹음 품질을 한 번에 확인할 수 있어요.
+          </p>
+        </div>
         <VocalProfileResults profile={detail.profile} showSummary={false} sourceAudioSrc={detail.audioUrl} />
       </section>
 

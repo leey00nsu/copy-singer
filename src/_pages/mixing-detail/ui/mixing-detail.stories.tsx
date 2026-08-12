@@ -67,6 +67,10 @@ export const Failed: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("heading", { name: "믹싱을 완료하지 못했어요." })).toBeVisible();
+    const stateChapter = canvasElement.querySelector<HTMLElement>("[data-mixing-state-chapter='failed']");
+    await expect(stateChapter).not.toBeNull();
+    await expect(getComputedStyle(stateChapter as HTMLElement).borderTopWidth).toBe("0px");
+    await expect(getComputedStyle(stateChapter as HTMLElement).backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
     await expect(canvas.getByRole("link", { name: "보컬 프로필에서 다시 시작" })).toBeVisible();
     await expect(canvas.queryByRole("link", { name: "Library로 돌아가기" })).not.toBeInTheDocument();
   },

@@ -308,66 +308,91 @@ export function VocalProfileResults({
   ] as const;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-8 sm:space-y-10">
       {showSummary ? <VocalProfileSummary profile={profile} /> : null}
-      <div className="grid gap-4 lg:grid-cols-[1.08fr_.92fr]">
-        <VocalRangeProfile profile={profile} />
-        <HistogramChart profile={profile} visualization={visualization} />
-      </div>
-      <div className="grid gap-4 lg:grid-cols-[1.3fr_.9fr]">
-        <Card className="rounded-none border-0 bg-transparent shadow-none" data-vocal-profile-section="quality">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm">분석 품질</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div
-              className="grid gap-1 rounded-2xl bg-muted/25 p-1 sm:grid-cols-3 xl:grid-cols-6"
-              data-vocal-profile-stat-surface="quality"
-            >
-              {quality.map(([label, value, Icon]) => (
-                <div className="rounded-xl bg-background/75 px-3 py-3" key={label}>
-                  <p className="text-[11px] text-muted-foreground">{label}</p>
-                  <p className="mt-1.5 break-words text-sm font-semibold">{value}</p>
-                  <Icon className="mt-2 size-3.5 text-data-accent-foreground" />
-                </div>
-              ))}
-            </div>
-            <p className="mt-3 flex gap-2 text-xs leading-5 text-muted-foreground">
-              <Info className="mt-0.5 size-3.5 shrink-0" />
-              짧은 한 소절에서 관찰된 결과입니다. 2~3곡을 추가로 분석하면 더 정확해집니다.
-            </p>
-          </CardContent>
-        </Card>
-        <PitchTrace visualization={visualization} />
-      </div>
+      <section
+        aria-label="음역과 음정 분포"
+        className="rounded-3xl bg-muted/15 p-4 sm:p-6 lg:p-7"
+        data-vocal-profile-chapter="range"
+      >
+        <div className="grid gap-6 lg:grid-cols-[1.08fr_.92fr] lg:gap-8">
+          <VocalRangeProfile profile={profile} />
+          <HistogramChart profile={profile} visualization={visualization} />
+        </div>
+      </section>
+      <section
+        aria-label="분석 품질과 피치 추적"
+        className="rounded-3xl bg-muted/15 p-4 sm:p-6 lg:p-7"
+        data-vocal-profile-chapter="quality"
+      >
+        <div className="grid gap-6 lg:grid-cols-[1.3fr_.9fr] lg:gap-8">
+          <Card className="rounded-none border-0 bg-transparent shadow-none" data-vocal-profile-section="quality">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">분석 품질</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div
+                className="grid gap-1 rounded-2xl bg-muted/25 p-1 sm:grid-cols-3 xl:grid-cols-6"
+                data-vocal-profile-stat-surface="quality"
+              >
+                {quality.map(([label, value, Icon]) => (
+                  <div className="rounded-xl bg-background/75 px-3 py-3" key={label}>
+                    <p className="text-[11px] text-muted-foreground">{label}</p>
+                    <p className="mt-1.5 break-words text-sm font-semibold">{value}</p>
+                    <Icon className="mt-2 size-3.5 text-data-accent-foreground" />
+                  </div>
+                ))}
+              </div>
+              <p className="mt-3 flex gap-2 text-xs leading-5 text-muted-foreground">
+                <Info className="mt-0.5 size-3.5 shrink-0" />
+                짧은 한 소절에서 관찰된 결과입니다. 2~3곡을 추가로 분석하면 더 정확해집니다.
+              </p>
+            </CardContent>
+          </Card>
+          <PitchTrace visualization={visualization} />
+        </div>
+      </section>
       {sourceAudioSrc ? (
-        <Card className="rounded-none border-0 bg-transparent shadow-none" data-vocal-profile-section="reference-bands">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm">분석된 대표 음역 구간</CardTitle>
-            <p className="text-[10px] leading-4.5 text-muted-foreground">
-              무음을 제외하고 분석된 저음·중앙·고음 대표 구간입니다. 버튼을 누르면 제출한 최대 60초 오디오에서 해당
-              구간만 이어서 재생합니다. AI 믹싱에는 이 분석 표시와 별도로 안정적인 중음만 만든 레퍼런스를 사용합니다.
-            </p>
-          </CardHeader>
-          <CardContent>
-            {referenceAvailability === "ready" ? (
-              <ReferenceBandPlayers key={sourceAudioSrc} segments={referenceSegments} sourceAudioSrc={sourceAudioSrc} />
-            ) : (
-              <StatusNotice
-                description={
-                  referenceAvailability === "unavailable"
-                    ? "반주 없이 여러 음높이가 포함된 소절로 다시 분석해주세요."
-                    : "최신 분석기로 새 보컬 프로필을 만들어주세요."
-                }
-                title={
-                  referenceAvailability === "unavailable"
-                    ? "이 녹음에서는 안정적인 저음·중앙·고음 구간을 충분히 찾지 못했어요."
-                    : "이 프로필은 음역 영역 분석을 지원하기 전에 만들어졌어요."
-                }
-              />
-            )}
-          </CardContent>
-        </Card>
+        <section
+          aria-label="분석된 대표 음역 구간"
+          className="rounded-3xl bg-muted/15 p-4 sm:p-6 lg:p-7"
+          data-vocal-profile-chapter="reference-bands"
+        >
+          <Card
+            className="rounded-none border-0 bg-transparent shadow-none"
+            data-vocal-profile-section="reference-bands"
+          >
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">분석된 대표 음역 구간</CardTitle>
+              <p className="text-[10px] leading-4.5 text-muted-foreground">
+                무음을 제외하고 분석된 저음·중앙·고음 대표 구간입니다. 버튼을 누르면 제출한 최대 60초 오디오에서 해당
+                구간만 이어서 재생합니다. AI 믹싱에는 이 분석 표시와 별도로 안정적인 중음만 만든 레퍼런스를 사용합니다.
+              </p>
+            </CardHeader>
+            <CardContent>
+              {referenceAvailability === "ready" ? (
+                <ReferenceBandPlayers
+                  key={sourceAudioSrc}
+                  segments={referenceSegments}
+                  sourceAudioSrc={sourceAudioSrc}
+                />
+              ) : (
+                <StatusNotice
+                  description={
+                    referenceAvailability === "unavailable"
+                      ? "반주 없이 여러 음높이가 포함된 소절로 다시 분석해주세요."
+                      : "최신 분석기로 새 보컬 프로필을 만들어주세요."
+                  }
+                  title={
+                    referenceAvailability === "unavailable"
+                      ? "이 녹음에서는 안정적인 저음·중앙·고음 구간을 충분히 찾지 못했어요."
+                      : "이 프로필은 음역 영역 분석을 지원하기 전에 만들어졌어요."
+                  }
+                />
+              )}
+            </CardContent>
+          </Card>
+        </section>
       ) : null}
     </div>
   );

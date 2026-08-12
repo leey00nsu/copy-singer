@@ -112,6 +112,13 @@ export const RepresentativeAnalysis: Story = {
       await expect(getComputedStyle(section).borderBottomWidth).toBe("0px");
     }
     await expect(canvasElement.querySelectorAll("[data-vocal-profile-stat-surface]")).toHaveLength(3);
+    const chapters = canvasElement.querySelectorAll<HTMLElement>("[data-vocal-profile-chapter]");
+    await expect(chapters).toHaveLength(2);
+    for (const chapter of chapters) {
+      await expect(getComputedStyle(chapter).borderTopWidth).toBe("0px");
+      await expect(getComputedStyle(chapter).borderRadius).not.toBe("0px");
+      await expect(getComputedStyle(chapter).backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
+    }
     for (const gradient of signalGradients) {
       await expect(
         Array.from(gradient.querySelectorAll("stop")).map((stop) => getComputedStyle(stop).stopColor),
