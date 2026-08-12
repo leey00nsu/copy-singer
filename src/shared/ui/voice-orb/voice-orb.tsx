@@ -135,6 +135,7 @@ const fragmentShader = /* glsl */ `
 type VoiceOrbProps = {
   backgroundColor?: string;
   className?: string;
+  forceFallback?: boolean;
   hoverIntensity?: number;
   hue?: number;
   rotateOnHover?: boolean;
@@ -143,6 +144,7 @@ type VoiceOrbProps = {
 function VoiceOrb({
   backgroundColor = "#fafafa",
   className,
+  forceFallback = false,
   hoverIntensity = 0,
   hue = 294,
   rotateOnHover = false,
@@ -151,7 +153,7 @@ function VoiceOrb({
 
   useEffect(() => {
     const container = containerRef.current;
-    if (!container || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!container || forceFallback || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     let disposed = false;
     let disposeRuntime: (() => void) | undefined;
@@ -275,10 +277,16 @@ function VoiceOrb({
       disposed = true;
       disposeRuntime?.();
     };
-  }, [backgroundColor, hoverIntensity, hue, rotateOnHover]);
+  }, [backgroundColor, forceFallback, hoverIntensity, hue, rotateOnHover]);
 
   return (
-    <div aria-hidden="true" className={cn(styles.root, className)} data-testid="voice-orb" ref={containerRef}>
+    <div
+      aria-hidden="true"
+      className={cn(styles.root, className)}
+      data-orb-fallback={forceFallback ? "true" : undefined}
+      data-testid="voice-orb"
+      ref={containerRef}
+    >
       <span className={styles.fallback} />
     </div>
   );
