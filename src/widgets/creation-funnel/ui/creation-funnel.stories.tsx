@@ -39,6 +39,7 @@ export const ActiveAnalysis: Story = {
     await expect(canvas.getByRole("navigation", { name: "생성 진행 단계" })).toBeVisible();
     await expect(canvas.getByRole("list", { name: "보컬 분석 진행 단계" })).toBeVisible();
     await expect(canvas.getByText("목소리 분석").closest("li")).toHaveAttribute("aria-current", "step");
+    await expect(canvas.getByTestId("voice-signal-core")).toHaveAttribute("data-signal-mode", "processing");
     await expect(canvas.getByTestId("voice-orb")).toBeVisible();
   },
 };

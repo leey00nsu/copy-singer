@@ -48,7 +48,11 @@ export const Idle: Story = {
 
 export const LiveMicrophone: Story = {
   play: async ({ canvasElement }) => {
-    await expect(within(canvasElement).getByRole("button", { name: "마이크로 녹음 시작" })).toBeVisible();
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("button", { name: "마이크로 녹음 시작" })).toBeVisible();
+    await expect(canvas.getByRole("img", { name: "녹음 대기 상태" })).toBeVisible();
+    await expect(canvas.getByTestId("voice-signal-core")).toHaveAttribute("data-signal-mode", "idle");
+    await expect(canvasElement.querySelectorAll("canvas")).toHaveLength(0);
   },
 };
 
@@ -70,6 +74,30 @@ export const Recording: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByText("권장 녹음 시간을 채웠어요")).toBeVisible();
     await expect(canvas.getByRole("button", { name: "녹음 완료" })).toBeVisible();
+    await expect(canvas.getByRole("img", { name: "실시간 마이크 입력 반응" })).toBeVisible();
+    await expect(canvas.getByTestId("voice-signal-core")).toHaveAttribute("data-signal-mode", "recording");
+  },
+};
+
+export const RequestingPermission: Story = {
+  args: {
+    recorderState: "requesting_permission",
+    recorderOverride: (
+      <RecorderSurface
+        elapsedMs={0}
+        maxDurationMs={60_000}
+        onCancel={noop}
+        onStart={noop}
+        onStop={noop}
+        state="requesting_permission"
+      />
+    ),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("마이크 권한을 확인하는 중…")).toBeVisible();
+    await expect(canvas.getByRole("img", { name: "마이크 연결 상태" })).toBeVisible();
+    await expect(canvas.getByTestId("voice-signal-core")).toHaveAttribute("data-signal-mode", "requesting");
   },
 };
 

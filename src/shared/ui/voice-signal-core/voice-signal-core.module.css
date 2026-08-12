@@ -1,0 +1,83 @@
+.root {
+  --signal-level: 0.08;
+  position: relative;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+}
+
+.orb {
+  position: absolute;
+  inset: 0;
+  transition:
+    opacity 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 120ms linear;
+}
+
+.glow {
+  position: absolute;
+  inset: 20%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(circle, oklch(0.7 0.2 294 / 0.42), oklch(0.72 0.14 225 / 0.12) 48%, transparent 72%);
+  opacity: 0;
+  filter: blur(28px);
+  transform: scale(0.9);
+  transition:
+    opacity 120ms linear,
+    filter 120ms linear,
+    transform 120ms linear;
+}
+
+.idle .orb,
+.stopping .orb {
+  opacity: 0.62;
+  filter: saturate(0.58) brightness(1.08);
+  transform: scale(0.78);
+}
+
+.requesting .orb {
+  opacity: 0.72;
+  filter: saturate(0.68) brightness(1.08);
+  animation: voice-core-request 1400ms cubic-bezier(0.22, 1, 0.36, 1) infinite alternate;
+}
+
+.recording .orb {
+  transform: scale(calc(0.84 + var(--signal-level) * 0.055));
+}
+
+.recording .glow {
+  opacity: calc(0.1 + var(--signal-level) * 0.3);
+  filter: blur(calc(24px + var(--signal-level) * 18px));
+  transform: scale(calc(0.92 + var(--signal-level) * 0.12));
+}
+
+@keyframes voice-core-request {
+  from {
+    opacity: 0.56;
+    transform: scale(0.78);
+  }
+  to {
+    opacity: 0.76;
+    transform: scale(0.84);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orb,
+  .glow {
+    animation: none;
+    transition: none;
+  }
+
+  .recording .orb {
+    transform: scale(0.86);
+  }
+
+  .recording .glow {
+    opacity: 0.18;
+    filter: blur(30px);
+    transform: scale(0.95);
+  }
+}

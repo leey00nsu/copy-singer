@@ -1,7 +1,7 @@
 import { Check, TriangleAlert } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
-import { VoiceOrb } from "@/shared/ui/voice-orb";
+import { VoiceSignalCore } from "@/shared/ui/voice-signal-core";
 
 export function ProcessHero({
   action,
@@ -37,7 +37,7 @@ export function ProcessHero({
 
       <div className="mx-auto mt-7 grid aspect-square w-[min(22rem,78vw)] place-items-center" aria-hidden="true">
         {tone === "active" ? (
-          <VoiceOrb hoverIntensity={0} hue={294} rotateOnHover={false} />
+          <VoiceSignalCore className="size-full" mode="processing" />
         ) : (
           <span
             className={cn(

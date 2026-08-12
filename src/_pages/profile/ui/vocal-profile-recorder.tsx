@@ -7,6 +7,7 @@ import { MAX_VOCAL_PROFILE_RECORDING_MS, recorderExtension, shouldStopRecording 
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/button";
 import { Progress, ProgressLabel, ProgressValue } from "@/shared/ui/progress";
+import { VoiceSignalCore, type VoiceSignalMode } from "@/shared/ui/voice-signal-core";
 import {
   MIN_VOICE_SCAN_DURATION_MS,
   RECOMMENDED_VOICE_SCAN_DURATION_MS,
@@ -26,108 +27,10 @@ type RecorderSurfaceProps = {
   state: VocalProfileRecorderState;
 };
 
-const previewBars = [34, 52, 42, 72, 58, 86, 64, 46, 76, 56, 38, 68, 50, 80, 60, 44, 70, 48, 62, 36];
-
 function formatElapsed(elapsedMs: number) {
   const seconds = Math.max(0, elapsedMs) / 1_000;
   const minutes = Math.floor(seconds / 60);
   return `${minutes}:${(seconds % 60).toFixed(1).padStart(4, "0")}`;
-}
-
-function themeColor(token: string, fallback: string) {
-  if (typeof document === "undefined") return fallback;
-  return getComputedStyle(document.documentElement).getPropertyValue(token).trim() || fallback;
-}
-
-function LiveMicrophoneWaveform({ stream }: { stream: MediaStream }) {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || typeof AudioContext === "undefined") return;
-    const context = canvas.getContext("2d");
-    if (!context) return;
-
-    const audioContext = new AudioContext();
-    const source = audioContext.createMediaStreamSource(stream);
-    const analyser = audioContext.createAnalyser();
-    analyser.fftSize = 1024;
-    analyser.smoothingTimeConstant = 0.58;
-    source.connect(analyser);
-
-    const samples = new Float32Array(analyser.fftSize);
-    const history: number[] = [];
-    const sampleIntervalMs = 45;
-    const waveColor = themeColor("--data-accent-foreground", "#6757c8");
-    const baselineColor = themeColor("--border", "#e5e7eb");
-    let animationFrameId = 0;
-    let lastSampleAt = 0;
-
-    const render = (now: number) => {
-      const width = Math.max(1, canvas.clientWidth);
-      const height = Math.max(1, canvas.clientHeight);
-      const pixelRatio = Math.max(1, window.devicePixelRatio || 1);
-      const pixelWidth = Math.round(width * pixelRatio);
-      const pixelHeight = Math.round(height * pixelRatio);
-      if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
-        canvas.width = pixelWidth;
-        canvas.height = pixelHeight;
-      }
-      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-      context.clearRect(0, 0, width, height);
-
-      const maxBars = Math.max(18, Math.floor(width / 6));
-      if (now - lastSampleAt >= sampleIntervalMs) {
-        analyser.getFloatTimeDomainData(samples);
-        let sumSquares = 0;
-        let peak = 0;
-        for (const sample of samples) {
-          const absolute = Math.abs(sample);
-          sumSquares += sample * sample;
-          peak = Math.max(peak, absolute);
-        }
-        const rms = Math.sqrt(sumSquares / samples.length);
-        history.push(Math.min(1, Math.max(0.025, Math.max(rms * 5, peak * 1.5))));
-        while (history.length > maxBars) history.shift();
-        lastSampleAt = now;
-      }
-
-      const centerY = height / 2;
-      context.beginPath();
-      context.moveTo(0, centerY);
-      context.lineTo(width, centerY);
-      context.strokeStyle = baselineColor;
-      context.lineWidth = 1;
-      context.stroke();
-
-      context.strokeStyle = waveColor;
-      context.lineWidth = 3;
-      context.lineCap = "round";
-      const slotWidth = width / maxBars;
-      history.forEach((amplitude, index) => {
-        const x = slotWidth * index + slotWidth / 2;
-        const barHeight = Math.max(4, amplitude * height * 0.82);
-        context.beginPath();
-        context.moveTo(x, centerY - barHeight / 2);
-        context.lineTo(x, centerY + barHeight / 2);
-        context.stroke();
-      });
-
-      animationFrameId = window.requestAnimationFrame(render);
-    };
-
-    void audioContext.resume();
-    animationFrameId = window.requestAnimationFrame(render);
-
-    return () => {
-      window.cancelAnimationFrame(animationFrameId);
-      source.disconnect();
-      analyser.disconnect();
-      void audioContext.close();
-    };
-  }, [stream]);
-
-  return <canvas className="h-28 w-full" ref={canvasRef} />;
 }
 
 export function RecorderSurface({
@@ -141,6 +44,14 @@ export function RecorderSurface({
   state,
 }: RecorderSurfaceProps) {
   const active = state === "requesting_permission" || state === "recording" || state === "stopping";
+  const signalMode: VoiceSignalMode =
+    state === "recording"
+      ? "recording"
+      : state === "requesting_permission"
+        ? "requesting"
+        : state === "stopping"
+          ? "stopping"
+          : "idle";
   const milestone = recordingMilestone(elapsedMs);
   const stateCopy =
     state === "requesting_permission"
@@ -162,26 +73,14 @@ export function RecorderSurface({
   return (
     <div className="flex min-h-[28rem] flex-col bg-background px-1 py-2 sm:px-3 sm:py-4">
       <div
-        aria-label={active ? "실시간 마이크 입력 파형" : "녹음 대기 파형"}
+        aria-label={state === "recording" ? "실시간 마이크 입력 반응" : active ? "마이크 연결 상태" : "녹음 대기 상태"}
         className={cn(
           "relative flex min-h-48 items-center overflow-hidden border-y border-border/70 px-4 py-8",
           state === "recording" && "border-data-accent/35 bg-data-accent/[0.025]",
         )}
         role="img"
       >
-        {active && microphoneStream ? (
-          <LiveMicrophoneWaveform stream={microphoneStream} />
-        ) : (
-          <span aria-hidden="true" className="flex h-20 w-full items-center justify-center gap-1.5">
-            {previewBars.map((height, index) => (
-              <span
-                className="w-1 rounded-full bg-data-accent/70"
-                key={`${height}-${index}`}
-                style={{ height: `${active ? height : Math.max(14, height * 0.35)}%` }}
-              />
-            ))}
-          </span>
-        )}
+        <VoiceSignalCore className="mx-auto size-44 sm:size-48" mode={signalMode} stream={microphoneStream} />
       </div>
 
       <div className="mt-6 text-center">
