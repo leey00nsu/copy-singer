@@ -22,9 +22,9 @@ function LandingHero({ primaryLabel, profileHref }: LandingHeroProps) {
             목소리 하나로 시작하는 나만의 선곡
             <CirclePlay aria-hidden="true" className="size-3" />
           </p>
-          <h1 className="mt-7 text-[clamp(2.7rem,5.4vw,4.85rem)] leading-[1.01] font-medium tracking-[-0.045em] text-balance">
+          <h1 className="mt-7 text-[clamp(2.65rem,5vw,4.4rem)] leading-[1.02] font-medium tracking-[-0.042em] text-balance">
             내 목소리에 맞는 노래를 찾고,
-            <span className="block">가장 나다운 버전으로 완성하세요.</span>
+            <span className="block">가장 나답게 완성하세요.</span>
           </h1>
           <p className="mx-auto mt-6 max-w-[38rem] text-sm leading-7 text-muted-foreground sm:text-[15px]">
             한 소절의 목소리에서 음역과 안정성을 읽고, 부르기 좋은 노래와 키를 추천합니다. 선택한 곡은 AI 믹싱으로

@@ -29,6 +29,10 @@ async function expectLandingStructure(canvasElement: HTMLElement) {
   await expect(analysis.compareDocumentPosition(recommendation) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   await expect(recommendation.compareDocumentPosition(mixing) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   await expect(canvas.getByRole("list", { name: "AI 믹싱 이용 흐름" })).toBeVisible();
+  await expect(canvas.getByText("5초+")).toBeVisible();
+  await expect(canvas.getByText("60초")).toBeVisible();
+  await expect(canvas.getByText("3단계")).toBeVisible();
+  await expect(canvas.getByRole("heading", { name: "더 좋은 한 소절을 위한 짧은 안내" })).toBeVisible();
   await expect(canvas.getByRole("navigation", { name: "제품 푸터 메뉴" })).toBeVisible();
 }
 
@@ -40,6 +44,10 @@ export const SignedOut: Story = {
       "/login?callbackURL=%2Fprofile",
     );
     await expect(canvas.getByLabelText("Copy Singer 제품 흐름 미리보기")).toBeVisible();
+    await expect(canvas.getByRole("link", { name: "라이브러리 보기" })).toHaveAttribute(
+      "href",
+      "/login?callbackURL=%2Flibrary",
+    );
     await expect(canvas.queryByTestId("landing-crystal")).not.toBeInTheDocument();
     await expect(canvas.getByText("© 2026 Copy Singer.")).toBeVisible();
     await expectLandingStructure(canvasElement);
@@ -101,6 +109,7 @@ export const SignedIn: Story = {
       "/profile",
     );
     await expect(canvas.getByRole("link", { name: "Admin" })).toHaveAttribute("href", "/admin");
+    await expect(canvas.getByRole("link", { name: "라이브러리 보기" })).toHaveAttribute("href", "/library");
     await userEvent.click(canvas.getByRole("button", { name: "지은 계정 메뉴" }));
     const body = within(document.body);
     await waitFor(() => expect(body.getByRole("menuitem", { name: "내 계정" })).toBeVisible());
