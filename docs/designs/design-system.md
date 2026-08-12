@@ -56,7 +56,7 @@ Visual reference는 `docs/designs/references/copy-singer/`만 정본으로 사�
 | Positive state | `success`, `success-foreground` | 완료, ready와 긍정적인 상태의 제한된 강조 |
 | Caution state | `warning`, `warning-foreground` | 대기, retry와 사용자의 주의가 필요한 상태 |
 | Audio/data accent | `data-accent`, `data-accent-foreground` | waveform의 active 구간과 핵심 분석 포인트 |
-| Brand signal | `brand-violet`, `brand-blue`, `brand-pink`, `brand-gradient-*` | waveform·연속형 분석 차트·processing처럼 변화 또는 흐름이 있는 시각화 |
+| Brand signal | `brand-violet/blue/pink`, `brand-soft-*`, `brand-chart-*` | waveform·연속형 분석 차트·processing처럼 변화 또는 흐름이 있는 시각화의 gradient stop |
 | Data visualization | `chart-1`~`chart-5` | pitch, range와 waveform의 구분 가능한 series |
 | App navigation | `sidebar-*` | 기존 token 이름을 유지하는 header·mobile navigation의 semantic 상태 |
 

@@ -502,10 +502,10 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 
 - **Context**: Landing과 live/stored waveform은 violet→blue→pink를 사용하지만 일부 구현은 raw hex·OKLCH를 반복하고, 제품의 다른 보라색 accent까지 모두 gradient로 바꾸면 상태 의미와 시각 위계가 약해질 수 있다.
 - **Constraints**: black primary CTA, semantic status, focus ring, 작은 icon과 reference line의 대비를 유지하고 색만으로 데이터를 구분하지 않아야 한다.
-- **Decision**: 전역 `brand-violet`·`brand-blue`·`brand-pink` token과 signal/soft gradient를 정의한다. 강한 3색 gradient는 live/stored waveform의 active 구간과 연속형 보컬 분석 차트에만 사용하고 Landing Gradient Text도 같은 stop token을 읽는다. 상태·button·badge·icon·border는 기존 단색 semantic token을 유지한다.
+- **Decision**: 전역 signal·soft·chart 역할별 brand color stop을 정의한다. 강한 3색 gradient는 live/stored waveform의 active 구간에 사용하고 연속형 보컬 분석 차트는 restrained chart stop을 사용하며 Landing Gradient Text도 signal stop을 읽는다. 상태·button·badge·icon·border는 기존 단색 semantic token을 유지한다.
 - **Rationale**: 색의 반복보다 용도를 일관되게 제한할 때 브랜드가 더 선명해지고, 변화·진행·범위라는 동일한 의미가 화면 사이에서 연결된다.
 - **Evidence**: `src/_app/styles/globals.css`, `src/shared/ui/voice-signal-core`, `src/shared/ui/audio-waveform-player`, `src/_pages/home/ui/landing-hero.tsx`, `src/entities/vocal-profile/ui`
-- **Trace**: Global light/dark token과 signal/soft gradient를 추가하고 Landing Gradient Text, live Canvas waveform, WaveSurfer progress를 같은 stop에 연결했다. Vocal range는 quiet observed/strong practical gradient, histogram은 vertical signal gradient, pitch trace는 horizontal signal gradient를 사용한다. Storybook 23/23, TypeScript, lint, architecture 4/4를 통과했고 Chromium에서 세 chart의 computed stop과 animation 0, overflow 0을 확인했다.
+- **Trace**: Global light/dark signal·soft·chart stop을 추가하고 Landing Gradient Text, live Canvas waveform, WaveSurfer progress를 같은 signal stop에 연결했다. Vocal range, histogram과 pitch trace는 restrained chart stop을 사용한다. Storybook 23/23, TypeScript, lint, architecture 4/4를 통과했고 Chromium에서 세 chart의 computed stop과 animation 0, overflow 0을 확인했다.
 - **Consequences**: 기존 hard-coded brand stop은 제거되고, light/dark 조정은 token 한 곳에서 가능해진다. Profile artwork의 voice-derived analogous family와 semantic 단색 상태는 이 gradient 계약의 적용 대상이 아니다.
 
 ## D035: 보컬 차트에서는 neutral context와 restrained signal을 분리 (2026-08-12)
@@ -523,3 +523,10 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: token 정본을 유지하면서도 SVG presentation attribute와 stylesheet load 차이에 따른 검정 fallback을 차단한다.
 - **Evidence**: `src/entities/vocal-profile/ui/vocal-range-chart.tsx`, `src/entities/vocal-profile/ui/vocal-profile-results.tsx`, Storybook
 - **Trace**: Chart fallback을 내부 `chart-brand.ts` 한 곳에 모으고 세 SVG gradient stop을 inline CSS property로 교체했다. Missing-token Story에서 custom property를 `initial`로 리셋해도 three gradient와 legend가 0.68/0.70/0.72 OKLCH fallback으로 렌더되고 black stop이 0임을 Storybook 11/11과 Chromium screenshot으로 확인했다. TypeScript와 lint도 통과했다.
+
+## D037: Gradient token은 재사용 가능한 color stop만 유지 (2026-08-12)
+
+- **Context**: Canvas, WaveSurfer와 SVG는 각 API에서 개별 color stop을 요구하고 CSS background가 필요한 chart legend도 browser fallback을 위해 `chart-brand.ts`에서 조립한다. 그 결과 `brand-gradient-signal/soft/chart` shorthand는 선언만 있고 참조가 없었다.
+- **Decision**: 사용되지 않는 세 gradient shorthand의 light/dark 선언을 제거하고 실제 소비되는 signal·soft·chart 개별 color stop만 전역 token으로 유지한다.
+- **Rationale**: 사용 API와 맞지 않는 추상화를 제거해 token 목록이 실제 계약을 정확히 반영하게 한다.
+- **Evidence**: `src/_app/styles/globals.css`, source-wide `rg` 결과

@@ -508,7 +508,7 @@
     - 음역 bar, 음정 histogram과 pitch trace는 static brand gradient를 사용하되 label·reference line·상태·button은 단색 semantic color를 유지한다.
     - light/dark에서 정보가 색만으로 전달되지 않고 기존 label, tooltip, range와 status text가 유지된다.
   - Checklist:
-    - [x] 공통 brand color와 signal/soft gradient token을 추가하고 raw color를 제거한다.
+    - [x] 공통 signal/soft/chart brand color stop을 추가하고 raw color를 제거한다.
     - [x] 저장/실시간 waveform, Landing Gradient Text와 보컬 분석 차트에 token을 연결한다.
     - [x] Storybook, TypeScript, lint, architecture와 browser QA를 통과한다.
 
@@ -533,12 +533,21 @@
     - [x] token 미정의 fixture와 정상 token 환경을 Storybook에서 검증한다.
     - [x] TypeScript, lint와 browser QA를 통과한다.
 
+- [TODO][PRD-FR-047] T-F022-xai-inspired-landing-motion-45 미사용 brand gradient shorthand 제거
+  - Date: 2026-08-12
+  - Acceptance:
+    - `brand-gradient-signal`, `brand-gradient-soft`, `brand-gradient-chart` 선언을 제거한다.
+    - 실제 사용 중인 signal·soft·chart 개별 color stop과 모든 렌더 결과는 유지한다.
+  - Checklist:
+    - [ ] light/dark의 미사용 shorthand 여섯 선언을 제거한다.
+    - [ ] source 검색, Storybook, TypeScript와 lint로 회귀를 검증한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
