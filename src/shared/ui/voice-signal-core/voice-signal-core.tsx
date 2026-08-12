@@ -182,6 +182,7 @@ function VoiceSignalCore({ className, forceFallback = false, mode, stream = null
           className={styles.waveform}
           data-testid="recording-scrolling-waveform"
           data-waveform-gradient="brand"
+          data-waveform-source="elevenlabs-ui-scrolling-waveform"
           ref={waveformRef}
         />
       ) : null}

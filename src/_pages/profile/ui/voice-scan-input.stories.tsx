@@ -82,6 +82,7 @@ export const Recording: Story = {
     const waveform = canvas.getByTestId("recording-scrolling-waveform");
     await expect(waveform).toBeVisible();
     await expect(waveform).toHaveAttribute("data-waveform-gradient", "brand");
+    await expect(waveform).toHaveAttribute("data-waveform-source", "elevenlabs-ui-scrolling-waveform");
     const surface = canvas.getByRole("img", { name: "실시간 마이크 입력 반응과 파형" });
     await expect(getComputedStyle(surface).backgroundColor).toBe("rgba(0, 0, 0, 0)");
     await expect(getComputedStyle(surface).borderTopWidth).toBe("0px");
