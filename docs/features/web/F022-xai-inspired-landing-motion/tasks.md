@@ -575,6 +575,20 @@
     - [x] Song range와 Mixing failure 상태를 선택적으로 보강하고 구조적 separator를 보존한다.
     - [x] 관련 Storybook, TypeScript, lint, architecture와 desktop/mobile visual QA를 통과한다.
 
+- [DONE][PRD-FR-047] T-F022-xai-inspired-landing-motion-49 Detail page eyebrow·chapter surface 정합성 보정
+  - Date: 2026-08-12
+  - Acceptance:
+    - 보컬 프로필과 AI 믹스 상세는 page-level eyebrow를 하나만 사용하며 profile artwork가 있어도 eyebrow의 왼쪽 기준선이 다른 상세 페이지와 일치한다.
+    - 보컬 분석 chapter surface는 흰 배경에서 사람의 눈으로 구분 가능한 neutral fill을 사용하되 개별 chart border·shadow를 추가하지 않는다.
+    - 제출 보컬 copy와 audio player는 세로 흐름으로 배치되어 desktop/mobile에서 같은 읽기 순서를 유지한다.
+    - 상세 피치 추적은 다른 분석 chart와 동일하게 항상 노출되며 독립적인 접기 affordance를 제공하지 않는다.
+  - Checklist:
+    - [x] 보컬 프로필 header의 eyebrow 기준선을 정리하고 중복 `Vocal analysis` eyebrow를 제거한다.
+    - [x] AI 믹스 상세의 `Result` section eyebrow를 제거한다.
+    - [x] chapter surface 대비와 제출 오디오 배치를 조정한다.
+    - [x] PitchTrace의 Collapsible state·trigger를 제거하고 정적 chart로 전환한다.
+    - [x] 관련 Storybook, TypeScript, lint, architecture와 desktop/mobile visual QA를 통과한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -641,5 +655,6 @@
 | Restrained vocal chart QA | `2026-08-12` | 통과 — Chromium 1265px에서 전체 관측 bar fill `oklch(0.97 0 0)`, 범례 2개·중앙음 범례 0, 최종 chart stop 0.74/0.76/0.78 lightness와 overflow 0을 확인 |
 | SVG chart fallback QA | `2026-08-12` | 통과 — chart token을 `initial`로 리셋한 Chromium fixture에서 black stop 0, 세 gradient의 concrete OKLCH fallback과 legend linear-gradient, observed muted fill을 확인 |
 | Borderless hierarchy QA | `2026-08-12` | 통과 — 보컬 결과 2개 chapter, 추천 filter, 티켓 ledger, 곡 range와 믹싱 failure가 border 0·quiet rounded fill을 사용하고 table/list/timeline separator는 유지됨을 확인; Storybook 24/24, TypeScript, ESLint, Biome, architecture 4/4 통과 |
+| Detail eyebrow / muted surface QA | `2026-08-12` | 통과 — Landing `첫 목소리 분석 시작`과 동일한 `bg-muted/55`를 보컬 chapter·추천 filter·티켓 ledger·곡 range에 적용; `Vocal analysis`·`Result` 중복 eyebrow와 PitchTrace 접기 button 제거, Storybook 24/24·TypeScript·ESLint·Biome·architecture 4/4 및 Chromium visual QA 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T11:47:30.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T12:05:48.000Z -->

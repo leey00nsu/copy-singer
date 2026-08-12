@@ -550,3 +550,12 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**: `src/entities/vocal-profile/ui/vocal-profile-results.tsx`, `src/_pages/vocal-profile-detail/ui/vocal-profile-detail-page.tsx`, Recommendation, TicketLedger, Song Detail과 Mixing Detail Storybook
 - **Trace**: 보컬 결과를 range/distribution, quality/pitch, reference band chapter로 재구성하고 상세 페이지에 분석 결과 intro를 추가했다. 추천 filter와 ledger는 quiet rounded surface, 곡 range는 단일 analysis surface, 믹싱 실패는 destructive tint surface로 보강했다. Storybook 24/24, TypeScript, ESLint, Biome과 architecture 4/4를 통과했으며 Chromium에서 보컬·추천 surface의 borderless hierarchy를 확인했다.
 - **Consequences**: `muted/15`는 section grouping, `muted/25`는 내부 metric grouping에 사용한다. 두 단계 surface를 중첩하더라도 개별 chart Card의 border와 shadow는 추가하지 않는다.
+
+## D040: Detail page는 하나의 eyebrow와 Landing-derived muted surface를 사용 (2026-08-12)
+
+- **Context**: 보컬 상세에 `Saved analysis`와 `Vocal analysis`, 믹스 상세에 `AI mix detail`과 `Result`가 함께 나타나 page-level eyebrow가 section label처럼 반복됐다. `bg-muted/15~20` chapter는 흰 배경에서 육안 구분이 약했고, profile artwork가 eyebrow까지 오른쪽으로 밀어 다른 상세 페이지와 왼쪽 기준선이 달랐다.
+- **Decision**: 상세 페이지 eyebrow는 page intro에 하나만 둔다. 보컬 상세의 `Saved analysis`는 artwork 바깥의 page container 왼쪽에 배치하고 `Vocal analysis`, 믹스 결과의 `Result`는 제거한다. Chapter surface는 Landing의 `첫 목소리 분석 시작` 카드와 같은 `bg-muted/55`를 재사용한다. 제출 오디오는 heading·description 아래 full-width player로 배치하고 PitchTrace는 항상 노출되는 일반 chart로 전환한다.
+- **Rationale**: eyebrow의 역할을 페이지 식별자로 한정하면 전체 화면의 시작점이 통일된다. Landing에서 이미 검증된 surface 농도를 재사용하면 새 token 없이 제품 내부 chapter도 충분히 구분되며, 모든 chart의 interaction contract가 같아진다.
+- **Evidence**: `src/_pages/home/ui/landing-page.tsx`, `src/_pages/vocal-profile-detail/ui/vocal-profile-detail-page.tsx`, `src/entities/vocal-profile/ui/vocal-profile-results.tsx`, Mixing Detail과 관련 Storybook
+- **Trace**: Source-wide 검색에서 대상 `Vocal analysis`, `Result`, PitchTrace Collapsible import/state가 0건임을 확인했다. Storybook 24/24, TypeScript, ESLint, Biome과 architecture 4/4를 통과했고 Chromium에서 `bg-muted/55` chapter와 정적 피치 chart를 확인했다.
+- **Consequences**: D039의 초기 `muted/15~20` surface 농도는 `muted/55`로 대체한다. 내부 metric tile과 semantic status tint는 각자의 기존 역할을 유지한다.
