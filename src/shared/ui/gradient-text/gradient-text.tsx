@@ -91,7 +91,11 @@ function GradientText({
 
   return (
     <motion.span
-      className={cn("relative inline-block max-w-fit overflow-hidden", showBorder && "rounded-[1.25rem] p-px")}
+      className={cn(
+        showBorder
+          ? "relative inline-block max-w-fit overflow-hidden rounded-[1.25rem] p-px"
+          : "relative inline overflow-visible align-baseline",
+      )}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -105,7 +109,11 @@ function GradientText({
         </motion.span>
       ) : null}
       <motion.span
-        className={cn("relative z-[1] inline-block bg-clip-text text-transparent", className)}
+        className={cn(
+          "relative z-[1] bg-clip-text leading-[inherit] text-transparent",
+          showBorder ? "inline-block" : "inline align-baseline",
+          className,
+        )}
         data-animation-speed={animationSpeed}
         data-gradient-text
         data-yoyo={yoyo}
