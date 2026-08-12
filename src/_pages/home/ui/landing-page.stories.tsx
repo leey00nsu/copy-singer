@@ -35,11 +35,11 @@ async function expectLandingStructure(canvasElement: HTMLElement) {
 export const SignedOut: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("link", { name: "무료로 시작하기: 목소리 분석 시작" })).toHaveAttribute(
+    await expect(canvas.getByRole("button", { name: "무료로 시작하기: 목소리 분석 시작" })).toHaveAttribute(
       "href",
       "/login?callbackURL=%2Fprofile",
     );
-    await expect(canvas.getByLabelText("움직이는 목소리 파형과 분석 시작")).toBeVisible();
+    await expect(canvas.getByLabelText("Copy Singer 제품 흐름 미리보기")).toBeVisible();
     await expect(canvas.queryByTestId("landing-crystal")).not.toBeInTheDocument();
     await expect(canvas.getByText("© 2026 Copy Singer.")).toBeVisible();
     await expectLandingStructure(canvasElement);
@@ -53,8 +53,8 @@ export const Mobile: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("heading", { level: 1 })).toBeVisible();
-    await expect(canvas.getByRole("link", { name: "무료로 시작하기: 목소리 분석 시작" })).toBeVisible();
-    await expect(canvas.getByLabelText("움직이는 목소리 파형과 분석 시작")).toBeVisible();
+    await expect(canvas.getByRole("button", { name: "무료로 시작하기: 목소리 분석 시작" })).toBeVisible();
+    await expect(canvas.getByLabelText("Copy Singer 제품 흐름 미리보기")).toBeVisible();
     await expectLandingStructure(canvasElement);
     await expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(document.documentElement.clientWidth);
   },
@@ -79,8 +79,8 @@ export const ReducedMotion: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByTestId("reduced-motion-preview")).toBeVisible();
     await expect(canvas.getByRole("heading", { level: 1 })).toBeVisible();
-    await expect(canvas.getByRole("link", { name: "무료로 시작하기: 목소리 분석 시작" })).toBeVisible();
-    await expect(canvas.getByLabelText("움직이는 목소리 파형과 분석 시작")).toBeVisible();
+    await expect(canvas.getByRole("button", { name: "무료로 시작하기: 목소리 분석 시작" })).toBeVisible();
+    await expect(canvas.getByLabelText("Copy Singer 제품 흐름 미리보기")).toBeVisible();
     await expectLandingStructure(canvasElement);
   },
 };
@@ -96,7 +96,7 @@ export const SignedIn: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("link", { name: "목소리 분석 시작하기: 목소리 분석 시작" })).toHaveAttribute(
+    await expect(canvas.getByRole("button", { name: "목소리 분석 시작하기: 목소리 분석 시작" })).toHaveAttribute(
       "href",
       "/profile",
     );
