@@ -522,4 +522,4 @@
 | Aurora grain artwork QA | `2026-08-12` | 통과 — fine soft-light와 coarse multiply grain, soft vignette를 1440px palette와 44px Library thumbnail에서 확인; color mapping·radius·overflow 유지 |
 | Restrained Aurora preset QA | `2026-08-12` | 통과 — 실제 preset의 recursive·grain 25·gray 200 값을 확인하고 Berry/Forest/Ocean/Northern analogous family로 재구성; desktop/mobile Palette와 44px Library에서 원거리 hue 혼합·overflow 0 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T10:00:59.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T10:02:45.000Z -->
