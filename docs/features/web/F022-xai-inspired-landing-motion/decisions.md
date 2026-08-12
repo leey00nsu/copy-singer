@@ -324,10 +324,15 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Test/Log**: Profile input·Creation Funnel·Orb Storybook 14/14, TypeScript, ESLint와 desktop browser screenshot QA 통과
 - **Consequences**: Mask는 alpha에만 적용되어 hue·animation·audio response를 바꾸지 않는다. WebGL fallback은 CSS poster 경로이므로 영향받지 않는다.
 
-## D020: Orb edge luminance/chroma rejection (2026-08-12)
+## D020: Orb alpha compositing correction (2026-08-12)
 
 - **Context**: Halo 제거 후에도 확대 화면에서 Orb 본체의 가장 바깥 shader pixel이 얇은 회색 contour로 남았다.
 - **Constraints**: 전체 반경을 과도하게 줄이거나 color edge와 내부 highlight를 손상하지 않아야 한다.
-- **Decision**: 구현·확대 검증 후 outer-band color rejection threshold를 확정한다.
+- **Decision**: Fragment output은 `vec4(col.rgb, alpha)`로 unpremultiplied RGB와 radial alpha를 전달하고 canvas 합성 단계에 premultiplication을 맡긴다. D019에서 임시 도입한 outer chroma rejection은 제거한다.
+- **Rationale**: Gray contour는 shader 색 자체가 아니라 RGB에 alpha를 미리 곱한 뒤 canvas가 다시 premultiply하며 생긴 dark fringe였다. 합성 계약을 바로잡으면 color 정보를 자르거나 Orb 반경을 축소하지 않고 contour만 제거된다.
 - **Trace**:
   - **DOING 시작 시점**: D019의 chroma mask는 낮은 threshold 때문에 미세한 hue를 가진 어두운 gray contour를 color edge로 통과시킨다.
+  - **DONE 전 확정 시점**: RGB 사전 premultiplication을 제거하고 radial alpha만 별도로 출력했다. 320px 확대 Orb와 실제 recording surface screenshot에서 gray contour가 사라지고 pastel edge·투명 canvas·motion이 유지됨을 확인했으며 관련 Storybook 14/14, TypeScript와 ESLint를 통과했다.
+- **Evidence**: `src/shared/ui/voice-orb/voice-orb.tsx`
+- **Test/Log**: Profile input·Creation Funnel·Orb Storybook 14/14, TypeScript, ESLint와 확대/실사용 browser screenshot QA 통과
+- **Consequences**: 별도 color threshold가 없어 shader의 원래 hue와 highlight가 보존된다. Radial alpha mask, idle grayscale CSS filter와 fallback 경로는 유지된다.

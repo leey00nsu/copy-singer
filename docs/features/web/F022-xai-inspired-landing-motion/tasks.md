@@ -305,21 +305,21 @@
     - [x] Fragment alpha mask 범위를 Orb 본체 반경에 맞게 조정했다.
     - [x] Storybook과 browser screenshot에서 gray ring·square artifact·overflow가 없음을 검증했다.
 
-- [DOING][PRD-FR-046] T-F022-xai-inspired-landing-motion-24 Orb 본체 gray contour 제거
+- [DONE][PRD-FR-046] T-F022-xai-inspired-landing-motion-24 Orb 본체 gray contour 제거
   - Date: 2026-08-12
   - Acceptance:
     - 확대 화면에서도 Orb 본체 가장자리에 회색 contour가 남지 않고 color edge에서 투명하게 feather된다.
     - Idle grayscale mode는 별도 CSS filter로 유지되고 recording/processing color Orb의 내부 색과 motion은 보존된다.
   - Checklist:
-    - [ ] Outer band의 저채도·저명도 shader pixel을 alpha에서 제외한다.
-    - [ ] 확대 screenshot과 기본 크기 Storybook에서 contour 제거를 검증한다.
+    - [x] Canvas가 기대하는 unpremultiplied RGB와 radial alpha를 출력해 이중 premultiplication을 제거했다.
+    - [x] 확대 screenshot과 기본 크기 Storybook에서 contour 제거를 검증했다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -344,8 +344,9 @@
 | Profile Voice Core QA | `2026-08-12` | 통과 — idle은 ready WebGL canvas 1·저속 shader·legacy bar label 0, recording은 old 2D waveform canvas 0·VoiceOrb canvas 1과 signal level별 scale·glow 확대, processing은 full-speed shared core 확인; rounded invalid notice, 390px overflow 0 |
 | Border / StatusNotice QA | `2026-08-12` | 통과 — idle surface background transparent·top/bottom border 0px·Orb grayscale(1)·canvas 1, recording surface tint/hairline 및 Orb 사각 배경 0; invalid notice icon/copy 중앙 정렬과 borderless rounded fill 확인, 390px screenshot overflow 없음 |
 | Orb body mask QA | `2026-08-12` | 통과 — recording color Orb와 idle grayscale Orb screenshot에서 gray outer ring·square canvas artifact 0, 본체 feather와 내부 motion 유지 |
+| Orb alpha compositing QA | `2026-08-12` | 통과 — 320px 확대 Orb와 실제 recording surface screenshot에서 gray contour 0, pastel edge·transparent canvas·motion 유지 |
 | Voice Notes / Orb QA | `2026-08-12` | 통과 — 독립 Voice Notes 4개와 Tailwind grain gradient 직접 검토, Grainient canvas 0개·Orb canvas 1개, Orb root transparent·fallback opacity 0, gray half/square artifact와 horizontal overflow 0 확인; 관련 Storybook 10/10 통과 |
 | Voice Notes Aurora QA | `2026-08-12` | 통과 — 1440×1000에서 4-up 263×159 crop, 390×844에서 1열 335×203 crop과 밝은 ice→cyan→blue-violet→dark neutral 순서를 직접 확인; desktop/mobile horizontal overflow 0, console warning/error 0 |
 | Album Cover Stack QA | `2026-08-12` | 통과 — 1440×1000에서 4개 cover layer와 hover fan-out, 390×844에서 stacked mixing card와 crop 확인; horizontal overflow 0, console warning/error 0, reduced-motion story 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T07:38:11.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T07:47:17.000Z -->
