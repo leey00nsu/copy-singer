@@ -5,8 +5,6 @@ import { useEffect, useRef } from "react";
 import { cn } from "@/shared/lib/cn";
 import { VoiceOrb } from "@/shared/ui/voice-orb";
 
-import styles from "./voice-signal-core.module.css";
-
 type VoiceSignalMode = "idle" | "processing" | "recording" | "requesting" | "stopping";
 
 type VoiceSignalCoreProps = {
@@ -167,14 +165,14 @@ function VoiceSignalCore({ className, forceFallback = false, mode, stream = null
   return (
     <div
       aria-hidden="true"
-      className={cn(styles.root, styles[mode], className)}
+      className={cn("voice-signal-core", `voice-signal-core-${mode}`, className)}
       data-signal-mode={mode}
       data-testid="voice-signal-core"
       ref={rootRef}
     >
-      <span className={styles.glow} />
+      <span className="voice-signal-core-glow" />
       <VoiceOrb
-        className={styles.orb}
+        className="voice-signal-core-orb"
         forceFallback={forceFallback}
         hoverIntensity={0}
         hue={294}
@@ -183,7 +181,7 @@ function VoiceSignalCore({ className, forceFallback = false, mode, stream = null
       />
       {mode === "recording" ? (
         <canvas
-          className={styles.waveform}
+          className="voice-signal-core-waveform"
           data-testid="recording-scrolling-waveform"
           data-waveform-gradient="brand"
           data-waveform-source="elevenlabs-ui-scrolling-waveform"

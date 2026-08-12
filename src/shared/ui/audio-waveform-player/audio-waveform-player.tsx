@@ -6,7 +6,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { formatPlaybackTime } from "@/shared/lib/audio";
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/button";
-import styles from "./audio-waveform-player.module.css";
 
 export type AudioPlaybackRange = {
   startSeconds: number;
@@ -166,20 +165,20 @@ function AudioWaveformPlayerInstance({
       ) : (
         <>
           <div
-            className={styles.visual}
+            className="audio-waveform-visual"
             data-audio-waveform-ready={isReady ? "true" : "false"}
             data-audio-waveform-surface="true"
           >
             <div
               aria-busy={!isReady}
               aria-label={`${label} 파형. 클릭하거나 드래그하여 재생 위치를 이동할 수 있습니다.`}
-              className={styles.waveform}
+              className="audio-waveform-canvas"
               data-audio-waveform="brand"
               data-waveform-progress-gradient="violet-blue-pink"
               ref={containerRef}
               role="img"
             />
-            <div aria-hidden="true" className={styles.skeleton} data-audio-waveform-skeleton="true" />
+            <div aria-hidden="true" className="audio-waveform-skeleton" data-audio-waveform-skeleton="true" />
             {!isReady ? (
               <span className="sr-only" role="status">
                 {label} 파형 불러오는 중

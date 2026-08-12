@@ -4,8 +4,6 @@ import { useEffect, useRef } from "react";
 
 import { cn } from "@/shared/lib/cn";
 
-import styles from "./voice-orb.module.css";
-
 const vertexShader = /* glsl */ `
   precision highp float;
   attribute vec2 position;
@@ -181,7 +179,7 @@ function VoiceOrb({
 
         const gl = renderer.gl;
         gl.clearColor(0, 0, 0, 0);
-        gl.canvas.className = styles.canvas;
+        gl.canvas.className = "voice-orb-canvas";
         gl.canvas.setAttribute("aria-hidden", "true");
         container.appendChild(gl.canvas);
         container.dataset.orbReady = "true";
@@ -294,12 +292,12 @@ function VoiceOrb({
   return (
     <div
       aria-hidden="true"
-      className={cn(styles.root, className)}
+      className={cn("voice-orb", className)}
       data-orb-fallback={forceFallback ? "true" : undefined}
       data-testid="voice-orb"
       ref={containerRef}
     >
-      <span className={styles.fallback} />
+      <span className="voice-orb-fallback" />
     </div>
   );
 }

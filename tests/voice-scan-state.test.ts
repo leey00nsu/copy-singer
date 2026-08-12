@@ -82,8 +82,9 @@ test("analysis presentation follows durable job states without fabricated progre
 });
 
 test("voice scan components keep media cleanup and continue from analysis to recommendations", async () => {
-  const [recorder, workbench] = await Promise.all([
+  const [recorder, signalCore, workbench] = await Promise.all([
     readFile("src/_pages/profile/ui/vocal-profile-recorder.tsx", "utf8"),
+    readFile("src/shared/ui/voice-signal-core/voice-signal-core.tsx", "utf8"),
     readFile("src/_pages/profile/ui/vocal-profile-workbench.tsx", "utf8"),
   ]);
   assert.match(recorder, /requesting_permission/);
@@ -93,13 +94,17 @@ test("voice scan components keep media cleanup and continue from analysis to rec
   assert.match(recorder, /canceledRef/);
   assert.match(recorder, /plugin\.startMic\(/);
   assert.match(recorder, /mediaRecorderTimeslice:\s*100/);
-  assert.match(recorder, /createMediaStreamSource\(stream\)/);
-  assert.match(recorder, /createAnalyser\(\)/);
-  assert.match(recorder, /requestAnimationFrame\(render\)/);
-  assert.match(recorder, /history\.push\(/);
-  assert.match(recorder, /slotWidth \* index/);
-  assert.match(recorder, /--data-accent/);
+  assert.match(recorder, /setMicrophoneStream\(stream\)/);
+  assert.match(recorder, /<VoiceSignalCore/);
   assert.doesNotMatch(recorder, /useWavesurfer/);
+  assert.match(signalCore, /createMediaStreamSource\(stream\)/);
+  assert.match(signalCore, /createAnalyser\(\)/);
+  assert.match(signalCore, /requestAnimationFrame\(animate\)/);
+  assert.match(signalCore, /bar\.x -= scrollSpeed/);
+  assert.match(signalCore, /--brand-violet/);
+  assert.match(signalCore, /--brand-blue/);
+  assert.match(signalCore, /--brand-pink/);
+  assert.doesNotMatch(signalCore, /useWavesurfer/);
   assert.match(workbench, /<VoiceScanInput/);
   assert.match(workbench, /<AnalysisStatus/);
   assert.match(workbench, /<CreationFunnelShell currentStep="analysis">/);
