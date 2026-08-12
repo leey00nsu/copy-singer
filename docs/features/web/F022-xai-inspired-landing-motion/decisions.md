@@ -45,9 +45,10 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Decision**: 정적 dotted glow, CSS waveform/ripple, 1회 entry와 @supports 안의 view timeline reveal을 사용한다.
 - **Rationale**: 새 runtime과 hydration 없이 기본 HTML을 visible 상태로 유지하고, 지원 환경에서만 장식 motion을 더할 수 있다.
 - **Trace**:
-  - **At DOING start**: Recorded by `decision add` when the decision was created.
-  - **Before DONE**: Update this line when the related task is completed.
+  - **At DOING start**: CSS만으로 motion을 구성하되 기본 opacity와 문서 흐름은 visible 상태로 유지하는 가설로 시작했다.
+  - **Before DONE**: entry 시작 opacity를 0이 아닌 값으로 보정해 첫 animation frame에서도 preview가 접근성 검사에서 visible하도록 했고, Storybook 회귀를 재통과했다.
   - **Post-merge check**: Update this line after merge when applicable.
 - **Evidence**:
+  - **Commit**: `817aa52` (`feat(F022-xai-inspired-landing-motion): waveform glow와 reveal motion 구현`)
   - **Test/Log**: pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx 통과 (2/2)
 - **Consequences**: 지원하지 않는 browser에서는 section reveal이 생략되지만 정보와 action은 동일하게 유지된다.

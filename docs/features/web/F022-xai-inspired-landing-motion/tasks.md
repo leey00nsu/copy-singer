@@ -129,4 +129,4 @@
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — motion 적용 후 signed-out/in CTA, waveform action, Admin/UserMenu와 footer 회귀 2/2 |
 | `pnpm exec biome check src/_pages/home/ui/landing-page.tsx src/_pages/home/ui/landing-hero.tsx src/_pages/home/ui/landing-hero.module.css` | `2026-08-12` | 통과 — 3개 landing 파일 format/lint 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T01:43:04.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T01:44:15.000Z -->
