@@ -1,11 +1,18 @@
 import { Check, Sparkles } from "lucide-react";
 import Image from "next/image";
 
+import { VocalRangeChart } from "@/entities/vocal-profile";
 import { BentoGrid, BentoGridItem } from "@/shared/ui/bento-grid";
 import { RevealContent } from "@/shared/ui/reveal-content";
 import { VoiceOrb } from "@/shared/ui/voice-orb";
 
-import { RecommendedKeyVisualizer } from "./recommended-key-visualizer";
+const sampleVocalProfile = {
+  maxMidi: 82,
+  medianMidi: 70,
+  minMidi: 52,
+  tessituraHighMidi: 73,
+  tessituraLowMidi: 67,
+} as const;
 
 function AnalysisSurface() {
   return (
@@ -51,9 +58,12 @@ function RecommendationSurface() {
 
 function KeySurface() {
   return (
-    <div className="relative flex h-full min-h-44 w-full items-center justify-center bg-neutral-950 text-white">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_115%,oklch(0.7_0.2_294/0.32),transparent_52%)]" />
-      <RecommendedKeyVisualizer />
+    <div className="relative flex h-full min-h-44 w-full flex-col justify-center overflow-hidden bg-background px-3 py-4">
+      <div className="flex items-center justify-between px-2">
+        <p className="text-[9px] font-semibold tracking-[0.14em] text-muted-foreground uppercase">Sample profile</p>
+        <p className="text-[9px] text-muted-foreground">가상 데이터</p>
+      </div>
+      <VocalRangeChart className="mt-1 h-36 w-full aspect-auto" profile={sampleVocalProfile} />
     </div>
   );
 }
@@ -142,7 +152,7 @@ function LandingProductStory() {
           <BentoGridItem className="md:col-span-2" eyebrow="02 · Match" title="노래와 키 추천">
             <RecommendationSurface />
           </BentoGridItem>
-          <BentoGridItem className="md:col-span-2" eyebrow="Key fit" title="추천 키">
+          <BentoGridItem className="md:col-span-2" eyebrow="Vocal range" title="보컬 프로필">
             <KeySurface />
           </BentoGridItem>
           <BentoGridItem className="md:col-span-4" eyebrow="03 · Create" title="선택형 AI 믹싱">

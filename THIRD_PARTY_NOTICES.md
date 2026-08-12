@@ -20,14 +20,6 @@ Commons Clause Restriction: You may use this Software, including for any commerc
 
 The software is provided "AS IS", without warranty of any kind, express or implied, including but not limited to merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability arising from, out of or in connection with the software or its use.
 
-## React Bits Count Up
-
-`src/_pages/home/ui/recommended-key-visualizer.tsx` adapts the viewport-triggered number transition from the React Bits Count Up component.
-
-- Copyright (c) 2026 David Haz
-- Source: https://github.com/DavidHDev/react-bits/tree/main/src/ts-tailwind/TextAnimations/CountUp
-- License: MIT + Commons Clause License Condition v1.0 (full text above)
-
 ## Aceternity UI Bento Grid
 
 `src/shared/ui/bento-grid` is adapted from Aceternity UI's Bento Grid registry component.

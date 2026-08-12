@@ -2,7 +2,7 @@
 
 import { Activity, AudioWaveform, BadgeCheck, ChevronDown, Clock3, Gauge, Info, Volume2 } from "lucide-react";
 import { useMemo, useState } from "react";
-import { Bar, BarChart, CartesianGrid, Cell, Line, LineChart, ReferenceLine, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Line, LineChart, ReferenceLine, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/shared/ui/chart";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/shared/ui/collapsible";
@@ -15,16 +15,12 @@ import {
   midiAxis,
   parseVocalProfileVisualization,
   pitchChartData,
-  rangeChartData,
   type VocalProfileVisualization,
   type VocalRangeMetrics,
 } from "../model/visualization";
 import { ReferenceBandPlayers } from "./reference-band-players";
 import { VocalProfileSummary } from "./vocal-profile-summary";
-
-const RANGE_CHART_CONFIG = {
-  range: { label: "음역", color: "var(--data-accent)" },
-} satisfies ChartConfig;
+import { VocalRangeChart } from "./vocal-range-chart";
 
 const HISTOGRAM_CHART_CONFIG = {
   ratioPercent: { label: "상대 빈도", color: "var(--data-accent)" },
@@ -41,8 +37,6 @@ export function VocalRangeProfile({
   profile: VocalRangeMetrics & { medianMidi?: number | null };
   title?: string;
 }) {
-  const axis = midiAxis(profile.minMidi, profile.maxMidi);
-  const data = rangeChartData(profile);
   const medianMidi =
     typeof profile.medianMidi === "number" && Number.isFinite(profile.medianMidi) ? profile.medianMidi : null;
   const summary: Array<[string, string, string]> = [
@@ -81,59 +75,7 @@ export function VocalRangeProfile({
         </div>
       </CardHeader>
       <CardContent>
-        <ChartContainer
-          aria-label={`전체 관측 음역 ${midiToNoteName(profile.minMidi)}부터 ${midiToNoteName(profile.maxMidi)}, 실용 음역 ${midiToNoteName(profile.tessituraLowMidi)}부터 ${midiToNoteName(profile.tessituraHighMidi)}${medianMidi === null ? "" : `, 중앙음 ${midiToNoteName(medianMidi)}`}`}
-          className="h-36 w-full aspect-auto"
-          config={RANGE_CHART_CONFIG}
-          role="img"
-        >
-          <BarChart
-            accessibilityLayer
-            data={data}
-            layout="vertical"
-            margin={{ left: 8, right: 18, top: 30, bottom: 8 }}
-          >
-            <CartesianGrid horizontal={false} strokeDasharray="4 4" />
-            <XAxis
-              dataKey="range"
-              domain={[axis.low, axis.high]}
-              tickFormatter={(value) => midiToNoteName(Number(value))}
-              type="number"
-            />
-            <YAxis dataKey="label" hide type="category" />
-            <ChartTooltip
-              content={
-                <ChartTooltipContent
-                  hideLabel
-                  formatter={(_, __, item) => {
-                    const row = item.payload as (typeof data)[number];
-                    return (
-                      <div className="grid gap-1">
-                        <span className="font-medium">{row.label}</span>
-                        <span className="font-mono text-muted-foreground">
-                          {row.lowNote} – {row.highNote} · {row.range[0].toFixed(1)}–{row.range[1].toFixed(1)} MIDI
-                        </span>
-                      </div>
-                    );
-                  }}
-                />
-              }
-            />
-            {medianMidi !== null ? (
-              <ReferenceLine
-                label={{ value: `중앙음 ${midiToNoteName(medianMidi)}`, position: "top", fontSize: 10 }}
-                stroke="var(--data-accent-foreground)"
-                strokeDasharray="4 4"
-                x={medianMidi}
-              />
-            ) : null}
-            <Bar dataKey="range" radius={8}>
-              {data.map((row) => (
-                <Cell fill={row.key === "observed" ? "var(--accent)" : "var(--color-range)"} key={row.key} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ChartContainer>
+        <VocalRangeChart profile={profile} />
         <div
           className={`grid overflow-hidden border-y sm:divide-x ${medianMidi === null ? "sm:grid-cols-2" : "sm:grid-cols-3"}`}
         >

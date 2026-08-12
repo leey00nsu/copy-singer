@@ -40,14 +40,12 @@ async function expectLandingStructure(canvasElement: HTMLElement) {
   await expect(canvas.getByText("60초")).toBeVisible();
   await expect(canvas.getByText("3단계")).toBeVisible();
   await expect(canvasElement.querySelectorAll("[data-count-up-target]")).toHaveLength(0);
-  const keyVisualizer = canvas.getByTestId("recommended-key-visualizer");
-  await expect(keyVisualizer).toHaveAttribute("data-key-delta");
-  await expect(canvas.getByTestId("key-delta-bars").children).toHaveLength(21);
-  await expect(canvasElement.querySelectorAll("[data-key-bar='origin']")).toHaveLength(1);
-  await expect(canvasElement.querySelectorAll("[data-key-segment='base']")).toHaveLength(21);
-  await expect(canvas.queryByText("Original key")).not.toBeInTheDocument();
-  await expect(canvas.queryByText("Key delta")).not.toBeInTheDocument();
-  await expect(canvas.queryByText("Lower")).not.toBeInTheDocument();
+  await expect(canvas.getByText("Sample profile")).toBeVisible();
+  await expect(canvas.getByText("가상 데이터")).toBeVisible();
+  await expect(
+    canvas.getByRole("img", { name: "전체 관측 음역 E3부터 A♯5, 실용 음역 G4부터 C♯5, 중앙음 A♯4" }),
+  ).toBeVisible();
+  await expect(canvas.queryByTestId("recommended-key-visualizer")).not.toBeInTheDocument();
   await expect(canvasElement.querySelectorAll("h1 [aria-hidden='true'] > span")).not.toHaveLength(0);
   await expect(canvas.getByRole("heading", { name: "더 좋은 한 소절을 위한 짧은 안내" })).toBeVisible();
   await expect(canvas.queryByTestId("grainient-background")).not.toBeInTheDocument();
