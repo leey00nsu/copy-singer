@@ -121,6 +121,8 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 실제 Grainient의 grain·warp motion을 사용하면서 WebGL context와 RAF를 하나로 제한하고 네 카드가 하나의 visual family로 읽히게 한다.
 - **Trace**:
   - **DOING 시작 시점**: React Bits 공식 Grainient source의 WebGL2 shader, `ogl`, offscreen/visibility pause 구조와 기본 parameter를 확인했다. Copy Singer에는 느린 timeSpeed와 violet·blue·pale palette를 적용한다.
+  - **DONE 전 확정 시점**: `GrainientBackground` client island를 추가하고 DPR 1.25, ResizeObserver, IntersectionObserver, visibility pause와 WebGL cleanup을 적용했다. 네 카드는 하나의 canvas 위에 대비가 확보된 translucent surface로 구성했다. 실제 route에서 Grainient canvas 1개, 전체 canvas 2개, 제거 대상 문구 0개와 overflow 0을 확인했다.
 - **Evidence**:
   - **Reference**: `https://www.reactbits.dev/backgrounds/grainient`
   - **Source**: `https://github.com/DavidHDev/react-bits/blob/main/src/ts-tailwind/Backgrounds/Grainient/Grainient.tsx`
+  - **Test/Log**: landing·Grainient·Orb Storybook 8/8, TypeScript, ESLint, architecture boundary, Next.js production build 통과

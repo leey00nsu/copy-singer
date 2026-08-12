@@ -20,7 +20,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/xai-inspired-landing-motion`
-- **대기 중 변경 요청**: 결정: changes_requested — Bento 보조 문구를 정리하고 Voice Notes 카드군에 React Bits Grainient 단일 canvas 배경을 적용
+- **대기 중 변경 요청**: 결정: approve — Bento 보조 문구 제거와 Voice Notes Grainient 단일 canvas 적용·검증 완료
   - 구현 중 새로 수용한 사용자 요청을 잠시 표시하는 sync marker입니다
   - 요청을 `tasks.md`와 관련 문서에 반영한 뒤 값을 비우세요
   - pre-PR 리뷰 handoff를 시작하면 `Running`, 리뷰 결과 기록까지 끝나면 `Done`으로 변경
@@ -153,23 +153,23 @@
     - [x] axe, keyboard focus, 단일 h1, CTA href, DPR·offscreen RAF·cleanup과 production build를 검증했다.
     - [x] 브라우저 full-page screenshot을 직접 검토하고 feature·product design·decisions·workflow evidence를 동기화했다.
 
-- [TODO][PRD-FR-045] T-F022-xai-inspired-landing-motion-10 Bento 보조 문구 정리와 Voice Notes Grainient 적용
+- [DONE][PRD-FR-045] T-F022-xai-inspired-landing-motion-10 Bento 보조 문구 정리와 Voice Notes Grainient 적용
   - Date: 2026-08-12
   - Acceptance:
     - Bento 카드 하단 오른쪽 설명과 bento 아래의 분석에서 믹싱까지 문구를 제거해 product mosaic의 정보 밀도를 낮춘다.
     - Voice Notes 4개 카드 배경은 React Bits Grainient 기반의 단일 shared canvas를 사용하고 Copy Singer violet·blue palette, reduced-motion·WebGL fallback과 offscreen 정지를 제공한다.
   - Checklist:
-    - [ ] BentoGridItem의 optional description surface와 LandingProductStory의 trailing caption을 제거한다.
-    - [ ] React Bits Grainient source를 공통 client island로 통합하고 4개 카드군 뒤에 canvas 하나만 사용한다.
-    - [ ] Storybook, typecheck, lint, build와 browser visual·overflow·canvas count를 검증한다.
+    - [x] BentoGridItem의 optional description surface와 LandingProductStory의 trailing caption을 제거했다.
+    - [x] React Bits Grainient source를 공통 client island로 통합하고 4개 카드군 뒤에 canvas 하나만 사용했다.
+    - [x] Storybook, typecheck, lint, build와 browser visual·overflow·canvas count를 검증했다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -185,5 +185,6 @@
 | `pnpm run test:architecture-boundaries` | `2026-08-12` | 통과 — FSD, client/server와 root App boundary 4/4 |
 | `pnpm run build` | `2026-08-12` | 통과 — Next.js 16.3 production build, TypeScript와 29개 static page 생성 완료 |
 | Browser responsive QA | `2026-08-12` | 통과 — 1280px full-page에서 x.ai형 hero·3+2 bento·editorial demo·metric·Voice Notes·2-up CTA 직접 검토, horizontal overflow 0, h1 1개, Orb DPR 1.5 및 fallback 없음; Storybook 390px mobile/reduced-motion/WebGL fallback 보완 |
+| Grainient QA | `2026-08-12` | 통과 — Voice Notes 카드 대비 직접 검토, Grainient canvas 1개·전체 canvas 2개(Orb 포함), 제거 문구 0개와 horizontal overflow 0 확인; 관련 Storybook 8/8 및 WebGL fallback 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T02:39:10.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T02:56:30.000Z -->
