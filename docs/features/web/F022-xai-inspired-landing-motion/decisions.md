@@ -279,3 +279,13 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Components**: `src/shared/ui/voice-signal-core`, `src/_pages/profile/ui/vocal-profile-recorder.tsx`, `src/widgets/creation-funnel/ui/process-hero.tsx`
 - **Test/Log**: Profile input·Creation Funnel·Orb Storybook 13/13, TypeScript, ESLint, architecture boundary, Next.js 16.3 production build와 desktop/mobile browser QA 통과
 - **Consequences**: 준비된 audio의 `AudioWaveformPlayer`는 탐색·재생 기능이 있으므로 유지한다. Reduced-motion에서는 microphone analyser와 signal-driven scale을 시작하지 않고 정적 recording core와 glow를 표시하며, 녹음 종료/unmount 시 RAF·audio graph·AudioContext를 정리한다.
+
+## D017: Dynamic idle·강한 signal response·inline audio notice (2026-08-12)
+
+- **Context**: 사용자가 분석 전 Orb도 움직이게 하고 녹음 반응을 더 강하게 만들며, 짧은 오디오 오류의 위아래 border panel을 현재 디자인에 맞게 바꾸도록 요청했다.
+- **Constraints**: Idle animation은 full processing과 위계를 구분하고 reduced-motion fallback을 유지해야 한다. Recording 반응은 시각적으로 커져도 layout shift와 control 이동을 만들지 않아야 하며 notice는 기존 오류 문구와 분석 disable 계약을 유지해야 한다.
+- **Options**: idle CSS poster pulse / idle full Orb shader / recording scale만 확대 / scale·glow·signal gain 동시 조정 / hairline 유지 / rounded inline notice
+- **Decision**: 구현 및 검증 후 확정한다. 초기 방향은 idle에 저채도 full Orb를 사용하고 recording의 analyser gain과 CSS response 범위를 함께 늘리며, audio duration 안내는 status별 icon을 가진 rounded low-tint notice로 바꾸는 것이다.
+- **Rationale**: 구현 및 검증 후 확정한다.
+- **Trace**:
+  - **DOING 시작 시점**: Idle은 `forceFallback` 때문에 canvas 0인 정적 poster이고 recording은 최대 scale 변화가 5.5%, glow opacity 변화가 30%라 실제 음성에서 차이가 약하다. 짧은 오디오 안내는 `border-y bg-muted/25` surface라 다른 rounded input control과 형태가 단절된다.
