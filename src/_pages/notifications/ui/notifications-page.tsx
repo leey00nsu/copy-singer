@@ -19,7 +19,7 @@ export default async function NotificationsPage({
   const initial = await getNotifications(session.user.id, filters.page, filters.pageSize);
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-5 py-12 sm:px-7 lg:py-14">
+    <div className="mx-auto w-full max-w-[72rem] px-5 py-12 sm:px-7 lg:px-8 lg:py-14">
       <p className="text-[10px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">Notifications</p>
       <h1 className="mt-2 text-3xl font-semibold tracking-[-0.04em] sm:text-[2rem]">알림</h1>
       <p className="mt-2.5 text-xs leading-5 text-muted-foreground">

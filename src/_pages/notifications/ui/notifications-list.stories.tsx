@@ -12,7 +12,7 @@ const meta = {
   parameters: { layout: "fullscreen" },
   decorators: [
     (Story) => (
-      <main className="mx-auto max-w-3xl px-5 py-12 sm:px-7">
+      <main className="mx-auto w-full max-w-[72rem] px-5 py-12 sm:px-7 lg:px-8">
         <p className="text-[10px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
           Notifications
         </p>
@@ -37,6 +37,7 @@ type Story = StoryObj<typeof meta>;
 export const WithHistory: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    await expect(canvas.getByRole("main")).toHaveClass("max-w-[72rem]");
     await expect(canvas.getByRole("region", { name: "알림 이력" })).toBeVisible();
     await expect(canvas.getByText("전체 3개 · 읽지 않음 2개")).toBeVisible();
     await expect(canvas.getByRole("button", { name: /AI 믹스가 완성되었습니다/ })).toBeVisible();
