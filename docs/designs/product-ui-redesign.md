@@ -48,7 +48,7 @@ F022 이후 `01-landing-voice-scan.*`의 오른쪽 Voice Scan frame은 계속 �
 
 - neutral white, neutral gray, black을 기본으로 하고 black을 primary action에 사용한다.
 - 넓은 canvas에 beige/cream/yellow chroma를 넣지 않는다.
-- border는 얇고 낮은 대비로 사용하고 shadow는 overlay 등 실제 elevation이 필요한 경우에만 사용한다.
+- border는 form control·table/list·focus·overlay처럼 구조가 필요한 곳에만 얇고 낮은 대비로 사용한다. 일반 page/section/status/recording surface의 장식용 상·하단 hairline은 whitespace·radius·quiet fill로 대체한다.
 - 모든 영역을 rounded Card로 감싸지 않고 grid, spacing, separator, typography로 먼저 구분한다.
 - 큰 제목과 작은 보조 설명의 대비를 사용하되 실제 사용성을 해칠 정도로 본문·표 글자를 축소하지 않는다.
 - pastel violet을 waveform, 분석 시각화, active status와 mixing progress의 제품 accent로 사용한다.
@@ -79,9 +79,9 @@ F022 이후 `01-landing-voice-scan.*`의 오른쪽 Voice Scan frame은 계속 �
 ### Voice Scan
 
 - 설명 영역과 실제 voice input surface가 desktop에서 균형 잡힌 2열로 보이고 mobile에서 한 열로 재배치된다.
-- 녹음 전 고정 bar와 녹음 중 live waveform canvas는 사용하지 않는다. 입력 surface는 저채도·저속 dynamic Voice Core에서 시작해 recording 중 실제 microphone `MediaStream`의 RMS·peak에 따라 scale·glow가 명확히 반응하고, 분석 중에는 같은 형태의 full-speed React Bits Orb로 이어진다.
+- 녹음 전 고정 bar와 녹음 중 live waveform canvas는 사용하지 않는다. 입력 surface는 grayscale·저속 dynamic Voice Core에서 시작해 recording 중에만 color로 전환하고 실제 microphone `MediaStream`의 RMS·peak에 따라 scale·glow가 명확히 반응한다. Surface와 canvas는 투명·무경계이며 분석 중에는 같은 형태의 full-speed React Bits Orb로 이어진다.
 - 5초부터 분석 가능, 약 10초 권장, 최대 60초 계약을 그대로 보여준다.
-- 준비된 오디오의 길이 안내는 위아래 hairline band 대신 입력 surface 안의 둥근 inline notice로 표시하고 valid/invalid icon과 저채도 tint를 구분한다.
+- 준비된 오디오 길이, permission, 오류와 다른 card형 상태는 shared `StatusNotice`로 표시하고 icon·copy 정렬, radius, spacing과 neutral/success/warning/destructive tone을 통일한다.
 - microphone permission, error, cancel, stop, ready, upload 대안을 명확하게 구분한다.
 - 마이크 반응은 장식이며 상태 의미는 timer, milestone copy, progress와 action으로 전달한다. Reduced-motion에서는 정적 core를 사용하고 녹음 완료 후 탐색 가능한 playback waveform은 유지한다.
 

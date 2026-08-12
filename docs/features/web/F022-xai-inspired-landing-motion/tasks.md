@@ -283,7 +283,7 @@
     - [x] RMS·peak gain, attack/release와 CSS scale·glow 범위를 확대한다.
     - [x] 오디오 상태 notice와 Storybook state를 갱신하고 typecheck·lint·build·browser에서 검증한다.
 
-- [DOING][PRD-FR-046] T-F022-xai-inspired-landing-motion-22 Border hierarchy·공통 Status Notice·neutral idle Orb
+- [DONE][PRD-FR-046] T-F022-xai-inspired-landing-motion-22 Border hierarchy·공통 Status Notice·neutral idle Orb
   - Date: 2026-08-12
   - Acceptance:
     - 사용자 변경 요청 `B`를 반영해 page/section/status surface의 의미 없는 상·하단 hairline을 제거하되, form control·table/list row·focus·modal boundary처럼 구조를 전달하는 border는 유지한다.
@@ -291,17 +291,17 @@
     - Idle Orb는 움직임을 유지하면서 grayscale에 가까운 neutral tone이며 recording부터만 color와 audio-reactive glow를 사용한다.
     - Inline status/alert card는 shared `StatusNotice`로 공통화하고 icon·한 줄/여러 줄 copy의 수직 정렬, radius, spacing과 tone을 전 프로젝트에서 동일하게 사용한다.
   - Checklist:
-    - [ ] Border 사용처를 구조적/장식적으로 분류하고 장식용 page·section hairline을 제거한다.
-    - [ ] Recorder/VoiceOrb의 배경·border·idle grayscale·recording color 전환을 수정한다.
-    - [ ] Shared `StatusNotice`와 stories를 만들고 기존 card형 status/alert를 마이그레이션한다.
-    - [ ] Storybook, typecheck, lint, architecture boundary, build와 desktop/mobile browser에서 투명 배경·정렬·overflow를 검증한다.
+    - [x] Border 사용처를 구조적/장식적으로 분류하고 장식용 page·section hairline을 제거했다.
+    - [x] Recorder/VoiceOrb의 배경·border·idle grayscale·recording color 전환을 수정했다.
+    - [x] Shared `StatusNotice`와 stories를 만들고 기존 card형 status/alert를 마이그레이션했다.
+    - [x] Storybook, typecheck, lint, architecture boundary, build와 desktop/mobile browser에서 투명 배경·정렬·overflow를 검증했다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -315,6 +315,7 @@
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/entities/vocal-profile/ui/vocal-profile-summary.stories.tsx src/_pages/profile/ui/analysis-success.stories.tsx` | `2026-08-12` | 통과 — Landing Sample Vocal Range Profile과 실제 profile 결과 회귀 8/8 |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — section·stagger·line·fade variant와 실제 scroll reveal, signed-out/in·mobile·reduced-motion 4/4 |
 | `pnpm run test:storybook --run src/_pages/profile/ui/voice-scan-input.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx src/shared/ui/voice-orb/voice-orb.stories.tsx` | `2026-08-12` | 통과 — dynamic idle/requesting/recording/processing Voice Core, valid/invalid notice와 Orb fallback 14/14 |
+| `pnpm run test:storybook --run src/_pages/profile/ui/voice-scan-input.stories.tsx src/shared/ui/status-notice/status-notice.stories.tsx src/shared/ui/state-panel/state-panel.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/widgets/library/ui/vocal-profile-library.stories.tsx src/widgets/library/ui/mixing-library.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx` | `2026-08-12` | 통과 — grayscale/recording Voice Core, shared StatusNotice tone·정렬, border hierarchy와 관련 화면 회귀 43/43 |
 | `pnpm exec biome check src/_pages/home/ui/landing-page.tsx src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — Voice Notes 이미지 markup과 Storybook assertion format/lint 확인 |
 | `pnpm exec biome check src/_pages/home/ui/landing-page.tsx src/_pages/home/ui/landing-hero.tsx src/_pages/home/ui/landing-hero.module.css` | `2026-08-12` | 통과 — 3개 landing 파일 format/lint 확인 |
 | `pnpm run typecheck` | `2026-08-12` | 통과 — 신규 landing story component 포함 TypeScript 오류 없음 |
@@ -323,8 +324,9 @@
 | `pnpm run build` | `2026-08-12` | 통과 — Next.js 16.3 production build, TypeScript와 29개 static page 생성 완료 |
 | Browser responsive QA | `2026-08-12` | 통과 — scroll 전 section 16px·card 6px·metric opacity 0·hairline scaleX 0·CTA pure fade 상태와 진입 후 최종 상태를 확인; editorial 4단계·metric 3개·Voice Notes 4개 순차 reveal, 390px/1440px overflow 0 |
 | Profile Voice Core QA | `2026-08-12` | 통과 — idle은 ready WebGL canvas 1·저속 shader·legacy bar label 0, recording은 old 2D waveform canvas 0·VoiceOrb canvas 1과 signal level별 scale·glow 확대, processing은 full-speed shared core 확인; rounded invalid notice, 390px overflow 0 |
+| Border / StatusNotice QA | `2026-08-12` | 통과 — idle surface background transparent·top/bottom border 0px·Orb grayscale(1)·canvas 1, recording surface tint/hairline 및 Orb 사각 배경 0; invalid notice icon/copy 중앙 정렬과 borderless rounded fill 확인, 390px screenshot overflow 없음 |
 | Voice Notes / Orb QA | `2026-08-12` | 통과 — 독립 Voice Notes 4개와 Tailwind grain gradient 직접 검토, Grainient canvas 0개·Orb canvas 1개, Orb root transparent·fallback opacity 0, gray half/square artifact와 horizontal overflow 0 확인; 관련 Storybook 10/10 통과 |
 | Voice Notes Aurora QA | `2026-08-12` | 통과 — 1440×1000에서 4-up 263×159 crop, 390×844에서 1열 335×203 crop과 밝은 ice→cyan→blue-violet→dark neutral 순서를 직접 확인; desktop/mobile horizontal overflow 0, console warning/error 0 |
 | Album Cover Stack QA | `2026-08-12` | 통과 — 1440×1000에서 4개 cover layer와 hover fan-out, 390×844에서 stacked mixing card와 crop 확인; horizontal overflow 0, console warning/error 0, reduced-motion story 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T05:48:30.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T06:08:32.000Z -->

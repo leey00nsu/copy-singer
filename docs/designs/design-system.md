@@ -7,7 +7,7 @@ lee-spec-kit:
 # Copy Singer Design System
 
 - **상태**: Approved
-- **버전**: 0.4
+- **버전**: 0.5
 - **최초 적용 Feature**: F018 product-ui-redesign
 - **적용 범위**: 사용자용 Web UI
 
@@ -104,7 +104,8 @@ Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface�
 
 ### Shape, border and elevation
 
-- 기본 border는 낮은 대비의 1px이다.
+- Border는 form control, table/list row, focus, overlay처럼 구조·상호작용 경계를 설명할 때만 낮은 대비의 1px로 사용한다.
+- Page heading, 일반 section, empty/status/recording surface를 습관적인 `border-y`·`border-t`·`border-b` hairline으로 구획하지 않는다. 먼저 whitespace, typography, radius와 quiet surface를 사용한다.
 - 작은 control은 6–8px, 주요 surface와 overlay는 10–12px 수준의 radius를 기준으로 한다.
 - 완전한 pill은 status, tag, avatar group 또는 짧은 segmented control에만 사용한다.
 - 기본 Card와 page section에는 shadow를 사용하지 않는다.
@@ -184,12 +185,13 @@ Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface�
 - 페이지 전체, 모든 metric과 모든 section을 Card로 만들지 않는다.
 - `Separator`, whitespace와 muted surface로 먼저 정보 그룹을 만든다.
 - Dialog는 집중이 필요한 짧은 결정, Sheet는 mobile navigation/filter와 보조 작업에 사용한다.
+- Inline 안내·성공·주의·오류 카드는 shared `StatusNotice`의 neutral/success/warning/destructive tone을 사용한다. Icon과 copy는 수직 중앙 정렬하고 상태 의미는 title·description·ARIA role로도 전달한다.
 
 ### Audio and recording
 
 - Waveform은 장식이 아니라 시간·진행·seek가 가능한 제품 control이다.
 - idle, permission, recording, paused, processing, ready와 error 상태를 명시적인 state model로 관리한다.
-- 녹음 중에는 live waveform, 경과 시간과 stop action을 가장 높은 위계로 둔다.
+- 분석 전에는 움직이는 grayscale Voice Core, 녹음 중에는 실제 microphone level에 반응하는 color Voice Core를 사용하고 경과 시간과 stop action을 가장 높은 위계로 둔다. Core surface는 transparent·borderless이며 녹음 시작만으로 넓은 accent 배경을 만들지 않는다.
 - play/pause, seek, 현재/전체 시간과 오류 fallback을 공통 `AudioWaveformPlayer` 계약으로 유지한다.
 - waveform accent는 active/played 영역에 집중하고 inactive 영역은 낮은 대비로 유지한다.
 - media stream, AudioContext와 Blob URL 정리는 화면 이탈·취소·완료 경로 모두에서 수행한다.
@@ -209,7 +211,7 @@ Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface�
 | Loading | skeleton 또는 최소 spinner | 무엇을 불러오는지, layout shift 최소화 |
 | Empty | 조용한 icon/illustration과 짧은 설명 | 첫 행동 또는 탐색으로 돌아가는 CTA |
 | Permission denied | microphone icon과 원인 | browser 설정 안내와 upload 대안 |
-| Recording | active waveform과 경과 시간 | 명시적인 stop/cancel, screen reader status |
+| Recording | audio-reactive Voice Core와 경과 시간 | 명시적인 stop/cancel, screen reader status |
 | Processing | 실제 backend state 기반 단계 | 이탈 가능 여부, 재접속 시 복구 의미 |
 | Retry waiting | amber status | 다음 재시도 또는 수동 action |
 | Error | 문제를 나타내는 title과 설명 | retry 가능 여부와 안전한 다음 action |

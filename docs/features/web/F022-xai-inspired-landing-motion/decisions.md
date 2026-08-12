@@ -300,7 +300,13 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Context**: 사용자가 구현 승인 대신 변경 요청 `B`를 선택해 프로젝트 전반의 의미 없는 상·하단 border, recorder의 recording tint와 Orb 사각형 배경, 정렬이 어긋난 상태 카드, idle Orb의 유채색을 제거하도록 요청했다.
 - **Constraints**: Border를 전부 없애 table/list 행, form control, focus와 modal boundary까지 훼손해서는 안 된다. Status 의미는 색과 icon만이 아니라 텍스트와 ARIA role로 유지하고, idle Orb의 animation·recording audio response·WebGL fallback도 보존해야 한다.
 - **Options**: 요청 화면만 국소 수정 / 모든 border 일괄 삭제 / semantic border 규칙과 shared status primitive를 만든 뒤 장식 surface를 선별 정리
-- **Decision**: 구현 및 검증 후 확정한다. 초기 원칙은 page·section·status의 장식 hairline을 whitespace·radius·soft fill로 대체하고 구조적 border는 유지하며, card형 status/alert는 shared `StatusNotice`의 neutral/success/warning/destructive tone으로 통합하는 것이다. Recorder는 항상 transparent surface를 사용하고 idle shader만 grayscale에 가깝게 처리한다.
-- **Rationale**: 구현 및 검증 후 확정한다.
+- **Decision**: Page heading·일반 section·empty/status/recording surface의 장식 hairline은 whitespace·radius·quiet fill로 대체하고 form control·table/list row·focus·overlay의 구조적 border는 유지한다. Card형 status/alert는 shared `StatusNotice`의 neutral/success/warning/destructive tone과 grid 기반 icon/copy 중앙 정렬로 통합한다. Recorder surface는 모든 mode에서 transparent·borderless로 유지하고 Orb fragment에 원형 edge alpha mask를 적용한다. Idle/requesting은 grayscale shader, recording부터 color와 audio-reactive glow를 사용한다.
+- **Rationale**: Border의 의미를 구조에 한정하면 페이지가 선으로 잘게 나뉘는 현상을 줄이면서 데이터 비교와 interaction affordance는 보존할 수 있다. 공통 notice가 정렬·tone·ARIA를 소유하면 route별 오차가 사라지며, shader alpha mask는 canvas 사각형을 가리는 CSS overlay 없이 실제 투명 픽셀을 보장한다.
 - **Trace**:
   - **DOING 시작 시점**: `RecorderSurface` 자체에 `border-y`와 recording 보라 tint가 있고, `VoiceOrb` shader의 기본 배경색이 흰색이라 투명 canvas에서도 사각 영역처럼 보일 수 있다. Status/alert는 각 화면에서 icon margin, radius, border와 background를 개별 정의해 정렬과 tone이 다르다.
+  - **DONE 전 확정 시점**: Recorder hairline·recording tint를 제거하고 Orb shader에 radial edge mask를 추가했으며 idle/requesting에 grayscale filter를 적용했다. Shared `StatusNotice`를 Profile, Recommendation, Library, Mixing Detail과 dev handoff의 card형 상태에 연결하고 page heading·section의 장식 border를 선별 제거했다. Storybook 43/43, TypeScript, ESLint, architecture boundary와 production build를 통과했고 browser에서 idle transparent/border 0px/grayscale/canvas 1, recording tint·square artifact 0과 390px notice 정렬을 확인했다.
+- **Evidence**:
+  - **Shared components**: `src/shared/ui/status-notice`, `src/shared/ui/voice-orb`, `src/shared/ui/voice-signal-core`
+  - **Primary surface**: `src/_pages/profile/ui/vocal-profile-recorder.tsx`, `src/_pages/profile/ui/voice-scan-input.tsx`
+- **Test/Log**: 관련 Storybook 43/43, TypeScript, ESLint, architecture boundary, Next.js 16.3 production build와 desktop/mobile browser QA 통과
+- **Consequences**: Border의 전면 금지가 아니라 semantic 사용 규칙이므로 table/list/form/overlay 경계는 유지된다. Idle Orb는 움직이지만 색상 위계가 recording과 분리되며, reduced-motion·WebGL fallback과 audio analyser cleanup 계약은 그대로다.
