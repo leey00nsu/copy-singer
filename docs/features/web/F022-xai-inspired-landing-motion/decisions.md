@@ -61,10 +61,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Decision**: 하나의 ordered list를 사용하고 desktop에서만 설명 header를 sticky로 만들며 mobile에서는 일반 stacked layout으로 해제한다.
 - **Rationale**: 중복 콘텐츠와 client state 없이 DOM 순서, 접근성, mobile fallback과 제품 단계의 정직성을 함께 유지한다.
 - **Trace**:
-  - **At DOING start**: Recorded by `decision add` when the decision was created.
-  - **Before DONE**: Update this line when the related task is completed.
+  - **At DOING start**: Desktop와 mobile markup을 분기하지 않고 ordered list의 문서 순서를 그대로 유지하는 구조로 시작했다.
+  - **Before DONE**: 세 단계 preview를 비상호작용 presentation으로 구성하고, desktop에서만 sticky header를 활성화했다. TypeScript와 Storybook 회귀가 통과했다.
   - **Post-merge check**: Update this line after merge when applicable.
 - **Evidence**:
+  - **Commit**: `054347a` (`feat(F022-xai-inspired-landing-motion): 3단계 scroll story 구현`)
   - **Test/Log**: pnpm run typecheck 통과
   - **Test/Log**: pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx 통과 (2/2)
 - **Consequences**: Desktop active step을 별도 상태로 강조하지 않지만 세 패널의 위치와 순서가 narrative를 전달한다.

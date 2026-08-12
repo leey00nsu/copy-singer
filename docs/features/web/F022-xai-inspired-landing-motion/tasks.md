@@ -130,4 +130,4 @@
 | `pnpm exec biome check src/_pages/home/ui/landing-page.tsx src/_pages/home/ui/landing-hero.tsx src/_pages/home/ui/landing-hero.module.css` | `2026-08-12` | 통과 — 3개 landing 파일 format/lint 확인 |
 | `pnpm run typecheck` | `2026-08-12` | 통과 — 신규 landing story component 포함 TypeScript 오류 없음 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T01:47:08.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T01:48:07.000Z -->
