@@ -132,4 +132,4 @@
 | `pnpm run lint` | `2026-08-12` | 통과 — 전체 ESLint 오류 없음 |
 | `pnpm run test:architecture-boundaries` | `2026-08-12` | 통과 — FSD, client/server와 root App boundary 4/4 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T01:50:22.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T01:51:26.000Z -->
