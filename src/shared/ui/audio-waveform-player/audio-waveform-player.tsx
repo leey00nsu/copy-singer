@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { formatPlaybackTime } from "@/shared/lib/audio";
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/button";
+import styles from "./audio-waveform-player.module.css";
 
 export type AudioPlaybackRange = {
   startSeconds: number;
@@ -49,17 +50,20 @@ function AudioWaveformPlayerInstance({
   const [activeSegmentId, setActiveSegmentId] = useState<string | null>(null);
   const activeRangeRef = useRef<{ segmentId: string; rangeIndex: number } | null>(null);
   const waveformColors = useMemo(() => {
-    const accent = themeColor("--data-accent", "#a89cf5");
     const strong = themeColor("--data-accent-foreground", "#6757c8");
-    return { accent, strong };
+    return {
+      cursor: strong,
+      progress: ["#7c3aed", "#3b82f6", "#ec4899"],
+      wave: ["#c4b5fd", "#bfdbfe"],
+    };
   }, []);
   const { wavesurfer, isReady, isPlaying, currentTime } = useWavesurfer({
     container: containerRef,
     url: src,
     height: 72,
-    waveColor: waveformColors.accent,
-    progressColor: waveformColors.strong,
-    cursorColor: waveformColors.strong,
+    waveColor: waveformColors.wave,
+    progressColor: waveformColors.progress,
+    cursorColor: waveformColors.cursor,
     barWidth: 2,
     barGap: 2,
     barRadius: 2,
@@ -157,12 +161,23 @@ function AudioWaveformPlayerInstance({
         </div>
       ) : (
         <>
-          <div
-            aria-label={`${label} 파형. 클릭하거나 드래그하여 재생 위치를 이동할 수 있습니다.`}
-            className="min-h-[72px] overflow-hidden rounded-lg bg-muted/30 px-2"
-            ref={containerRef}
-            role="img"
-          />
+          <div className={styles.visual} data-audio-waveform-ready={isReady ? "true" : "false"}>
+            <div
+              aria-busy={!isReady}
+              aria-label={`${label} 파형. 클릭하거나 드래그하여 재생 위치를 이동할 수 있습니다.`}
+              className={styles.waveform}
+              data-audio-waveform="brand"
+              data-waveform-progress-gradient="violet-blue-pink"
+              ref={containerRef}
+              role="img"
+            />
+            <div aria-hidden="true" className={styles.skeleton} data-audio-waveform-skeleton="true" />
+            {!isReady ? (
+              <span className="sr-only" role="status">
+                {label} 파형 불러오는 중
+              </span>
+            ) : null}
+          </div>
           <div className="mt-3 flex items-center gap-2">
             <Button
               aria-label={isPlaying ? `${label} 일시정지` : `${label} 재생`}

@@ -1,0 +1,78 @@
+.visual {
+  position: relative;
+  min-height: 72px;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: color-mix(in oklab, var(--data-accent) 7%, var(--muted));
+}
+
+.waveform {
+  min-height: 72px;
+  padding-inline: 0.5rem;
+  opacity: 0;
+  transform: scaleY(0.94);
+  transform-origin: center;
+  transition:
+    opacity 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.visual[data-audio-waveform-ready="true"] .waveform {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.skeleton {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 24% 44%, color-mix(in oklab, var(--data-accent) 24%, transparent), transparent 36%),
+    radial-gradient(circle at 72% 56%, rgb(59 130 246 / 0.12), transparent 40%),
+    color-mix(in oklab, var(--data-accent) 5%, var(--muted));
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 280ms ease-out;
+}
+
+.skeleton::before {
+  position: absolute;
+  inset: -35% -45%;
+  background: linear-gradient(105deg, transparent 36%, rgb(255 255 255 / 0.42) 50%, transparent 64%);
+  content: "";
+  transform: translateX(-34%);
+  animation: audio-waveform-loading 1.8s ease-in-out infinite;
+}
+
+.skeleton::after {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.84' numOctaves='3' seed='13' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 4rem 4rem;
+  content: "";
+  mix-blend-mode: soft-light;
+  opacity: 0.12;
+}
+
+.visual[data-audio-waveform-ready="true"] .skeleton {
+  opacity: 0;
+}
+
+@keyframes audio-waveform-loading {
+  50%,
+  100% {
+    transform: translateX(34%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .waveform,
+  .skeleton {
+    transition: none;
+  }
+
+  .skeleton::before {
+    animation: none;
+    transform: none;
+  }
+}
