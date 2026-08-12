@@ -111,3 +111,16 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Test/Log**: `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx src/shared/ui/voice-orb/voice-orb.stories.tsx` 통과 (10/10)
   - **Test/Log**: `pnpm run typecheck`, `pnpm run lint`, `pnpm run test:architecture-boundaries`, `pnpm run build` 통과
 - **Consequences**: 기존 no-runtime/WebGL 제외 결정(D001/D002)은 F022 변경 요청 범위에서 폐기됐다. WebGL은 공통 Orb island에만 포함되고 나머지 landing content는 Server Component 또는 작은 reveal island로 유지된다.
+
+## D006: Voice Notes Grainient canvas 공유 (2026-08-12)
+
+- **Context**: 사용자가 Bento의 작은 우측 설명과 trailing caption 제거를 요청하고, Voice Notes 카드 배경에 React Bits Grainient 적용을 제안했다.
+- **Constraints**: 네 카드에 각각 WebGL renderer를 만들지 않고 기존 `ogl` runtime, reduced-motion/WebGL fallback, offscreen 정지와 낮은 정보 밀도를 유지해야 한다.
+- **Options**: 카드별 Grainient canvas 4개 / 카드군 전체에 Grainient canvas 1개 / CSS gradient로만 유사 구현
+- **Decision**: Voice Notes grid 배경에 Grainient renderer 하나만 배치하고 각 카드 visual을 반투명 surface로 구성해 같은 field의 서로 다른 영역처럼 보이게 한다. Bento의 optional 우측 설명 surface와 trailing caption은 제거한다.
+- **Rationale**: 실제 Grainient의 grain·warp motion을 사용하면서 WebGL context와 RAF를 하나로 제한하고 네 카드가 하나의 visual family로 읽히게 한다.
+- **Trace**:
+  - **DOING 시작 시점**: React Bits 공식 Grainient source의 WebGL2 shader, `ogl`, offscreen/visibility pause 구조와 기본 parameter를 확인했다. Copy Singer에는 느린 timeSpeed와 violet·blue·pale palette를 적용한다.
+- **Evidence**:
+  - **Reference**: `https://www.reactbits.dev/backgrounds/grainient`
+  - **Source**: `https://github.com/DavidHDev/react-bits/blob/main/src/ts-tailwind/Backgrounds/Grainient/Grainient.tsx`
