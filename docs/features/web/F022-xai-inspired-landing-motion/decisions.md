@@ -349,3 +349,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**: `src/widgets/product-shell/ui/product-shell.tsx`, `src/widgets/product-shell/ui/product-shell.stories.tsx`
 - **Test/Log**: ProductShell·Landing Storybook 11/11, TypeScript, ESLint, architecture boundary, Next.js 16.3 production build와 browser top/scrolled QA 통과
 - **Consequences**: Landing과 authenticated route가 같은 component를 사용하므로 별도 scroll implementation이 없다. Header scroll listener는 unmount에서 제거되고 Footer는 viewport에 고정되지 않아 blur 비용이 지속적으로 발생하지 않는다.
+
+## D022: React Bits-style brand Gradient Text (2026-08-12)
+
+- **Context**: 사용자가 Landing headline의 `내 목소리` 부분에 React Bits Gradient Text를 브랜드 컬러와 1.5초 속도로 적용하도록 요청했다.
+- **Constraints**: 기존 word-by-word entry, heading accessible name, 한국어 조사 `에`, reduced-motion과 text contrast를 보존해야 한다.
+- **Decision**: 구현·브라우저 검증 후 gradient stop과 markup 분리 방식을 확정한다.
+- **Trace**:
+  - **DOING 시작 시점**: Headline은 공백 기준 `StaggeredWords`로 `내`와 `목소리에`가 각각 reveal되며 전체가 foreground 단색이다.

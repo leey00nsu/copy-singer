@@ -326,12 +326,23 @@
     - [x] ProductFooter separator를 rail 내부로 이동했다.
     - [x] Storybook과 browser에서 top/scrolled, desktop/mobile과 footer 폭을 검증했다.
 
+- [DOING][PRD-FR-048] T-F022-xai-inspired-landing-motion-26 Hero 브랜드 Gradient Text
+  - Date: 2026-08-12
+  - Acceptance:
+    - Landing headline의 `내 목소리`만 React Bits Gradient Text 기반 animation을 사용한다.
+    - Gradient는 Copy Singer의 violet data accent, blue와 restrained pink 조합이며 animation duration은 1.5초다.
+    - 기존 word reveal과 접근 가능한 단일 heading 문구를 유지하고 reduced-motion에서는 정적 gradient로 표시한다.
+  - Checklist:
+    - [ ] `내 목소리` phrase를 기존 word reveal 구조 안에서 별도 gradient span으로 분리한다.
+    - [ ] 1.5초 gradient animation과 reduced-motion fallback을 구현한다.
+    - [ ] Storybook과 browser에서 headline 문구·animation duration·overflow를 검증한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
