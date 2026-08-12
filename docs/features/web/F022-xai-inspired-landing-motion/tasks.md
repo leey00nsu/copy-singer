@@ -446,23 +446,23 @@
     - [x] Vocal Profile과 Mixing payload/call site에 최소 분석 지표를 연결한다.
     - [x] 대표 Storybook, TypeScript, lint, architecture와 browser palette QA를 통과한다.
 
-- [DONE][PRD-FR-047] T-F022-xai-inspired-landing-motion-37 Aurora Gradient형 grain texture 정교화
+- [DOING][PRD-FR-047] T-F022-xai-inspired-landing-motion-37 Aurora Gradient형 grain texture 정교화
   - Date: 2026-08-12
   - Acceptance:
     - Voice-derived color mapping 위에 fine/coarse monochrome grain이 겹쳐져 Aurora Gradient 계열의 표면 질감이 보인다.
     - Grain은 28px mixing thumbnail과 44px profile thumbnail에서도 인지되고 큰 detail artwork에서는 반복 타일 경계가 두드러지지 않는다.
     - 정적 CSS/SVG texture만 사용하며 canvas, 네트워크 asset 또는 DB 변경을 추가하지 않는다.
   - Checklist:
-    - [x] Fine/coarse grain과 soft vignette layer를 구현한다.
-    - [x] Palette·Library·Mixing Storybook에서 크기별 질감을 검증한다.
-    - [x] TypeScript, lint, architecture와 desktop/mobile browser QA를 통과한다.
+    - [ ] Fine/coarse grain과 soft vignette layer를 구현한다.
+    - [ ] Palette·Library·Mixing Storybook에서 크기별 질감을 검증한다.
+    - [ ] TypeScript, lint, architecture와 desktop/mobile browser QA를 통과한다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
