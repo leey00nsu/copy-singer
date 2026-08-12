@@ -126,7 +126,8 @@ x.ai의 절제된 중앙형 랜딩 구조를 Copy Singer에 맞게 재해석하�
 - Landing의 브랜드 언어를 제품 화면 전체에 그대로 복제하지 않고 공통 page intro, typography, spacing과 semantic border 규칙으로 연결한다.
 - Login은 공통 Product Header/Footer chrome과 절제된 voice visual을 사용해 Landing에서 인증 흐름으로 이어지는 경험을 제공한다.
 - Account와 Admin은 동일 위계의 bordered card 반복을 줄이고, 요약 정보는 editorial stat surface로, form·table·list는 구조적 경계를 가진 작업 surface로 구분한다.
-- Vocal profile artwork의 결정적 변형은 violet·blue·pink 브랜드 hue family 안에서 생성하며 프로필 간 식별 가능성은 유지한다.
+- Vocal profile artwork는 제출 보컬의 중앙음·음역 폭·안정도·유성음 비율·RMS를 색상 계열·색차·채도·밝기에 매핑하고 profile ID seed로 위치·각도·미세 편차를 더한다. 같은 프로필은 모든 화면에서 같은 artwork를 유지하고 서로 다른 보컬은 넓은 색상 범위로 구분한다.
+- Artwork 표면은 Aurora Gradient Generator처럼 넓게 번지는 radial/liquid color field 위에 크기가 다른 monochrome grain을 겹친 질감을 사용한다. Grain은 작은 목록 썸네일에서도 인지되되 텍스트 대비나 프로필 식별 색을 흐리지 않는다.
 - Creation funnel stepper는 무거운 segmented strip 대신 상태와 현재 단계를 명확히 읽을 수 있는 가벼운 progress rail을 사용한다.
 - Recommendation desktop은 결과 탐색 action이 과도한 hero 여백 아래로 밀리지 않도록 product-scale intro 밀도를 사용하고, mobile의 현재 읽기 순서와 접근성을 유지한다.
 - Landing 전용 Gradient Text, scroll reveal, Bento와 상시 animation을 form·table·관리 작업 화면에 확산하지 않는다.

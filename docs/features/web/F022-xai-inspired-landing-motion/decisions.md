@@ -443,3 +443,25 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **T35 결과**: Vocal profile artwork는 네 개 violet·blue·pink hue family와 seed variation으로 제한하면서 32개 fixture에서 deterministic 다양성을 검증했다. Creation stepper는 segmented background와 vertical border를 제거하고 step 사이 progress rail·state marker로 교체했다. Recommendation은 T33의 compact task intro와 desktop/mobile action assertion을 유지한다. 관련 Storybook 19/19, artwork test 1/1, TypeScript, lint, architecture 4/4와 production build를 통과했고 Chromium 1440px/390px에서 stepper와 profile list palette의 overflow 0을 확인했다.
 - **Evidence**: `src/shared/ui/product-page-intro`, `src/_pages/login`, `src/_pages/account`, `src/_pages/admin`, `src/entities/vocal-profile`, `src/widgets/creation-funnel`, `src/_pages/recommendation-detail`
 - **Consequences**: Landing 전용 motion은 희소성을 유지하고 제품 route는 공통 정적 primitive 중심으로 정리한다. Admin의 넓은 rail과 table border는 operational density 예외로 유지한다.
+
+## D029: Voice-derived deterministic profile artwork (2026-08-12)
+
+- **Context**: 브랜드 violet·blue·pink family로 제한한 artwork는 화면 일관성은 높였지만 프로필 간 구분이 약했다. 사용자는 제출한 보컬에 따른 규칙과 랜덤 variation을 결합하길 요청했다.
+- **Constraints**: Artwork를 DB에 별도 저장하거나 원본 audio를 다시 읽지 않고, 같은 프로필이 Library·Detail·Mixing에서 동일하게 보여야 하며 기존 payload에도 안전해야 한다.
+- **Options**: 전체 색상환 ID hash / artwork token DB 저장 / 저장된 분석 지표를 primary seed로 쓰고 ID hash를 보조 variation으로 사용
+- **Decision**: Median MIDI를 circular base hue, observed range를 accent spread, pitch stability를 saturation, voiced ratio와 RMS를 light/highlight에 매핑한다. Profile ID hash는 gradient focal position, angle과 작은 hue jitter만 결정한다. Mixing profile projection에도 최소 분석 지표를 포함하고 optional contract로 이전 fixture/API fallback을 유지한다.
+- **Rationale**: 색상 차이에 실제 보컬 의미를 부여하면서 같은 분석 결과의 프로필도 seed variation으로 구분할 수 있다. 저장 데이터만 사용하므로 schema migration과 audio 재처리가 없다.
+- **Evidence**: `src/entities/vocal-profile/lib/artwork.ts`, `src/entities/vocal-profile/ui/vocal-profile-artwork.tsx`, `src/entities/mixing-job/model/contract.ts`, `src/entities/mixing-job/api/history.ts`
+- **Trace**: `ARTWORK_VERSION=2` mapping과 optional analysis fallback을 구현하고 Vocal Profile list/detail, Mixing history/detail에 같은 입력을 연결했다. 8개 가상 보컬 palette Story에서 low/high·narrow/wide·stable/dynamic 조합이 violet, coral, lime, green, cyan, blue 계열로 분리되는 것을 1440px/390px에서 확인했다. 단위 3/3, contract/mixing 16/16, Storybook 7/7, TypeScript, lint, architecture 4/4와 production build를 통과했다.
+- **Consequences**: 분석 지표를 가진 새 payload는 voice-derived artwork를 사용하고 누락된 legacy fixture는 ID-only fallback을 사용한다. Mapping version을 코드 상수로 고정해 의도치 않은 seed 변경을 줄인다.
+
+## D030: Layered static grain for Aurora Gradient texture (2026-08-12)
+
+- **Context**: Voice-derived palette는 구분되지만 기존 단일 overlay grain이 작은 썸네일에서 거의 보이지 않아 결과가 매끈한 blurred gradient처럼 느껴졌다. 사용자는 Aurora Gradient Generator와 유사한 grainy surface를 요청했다.
+- **Constraints**: 현재 color mapping과 deterministic identity를 유지하고 bitmap 다운로드, canvas runtime, animation과 DB 저장을 추가하지 않아야 한다.
+- **Decision**: Monochrome fractal noise data SVG를 fine/coarse scale 두 겹으로 합성한다. Fine grain은 soft-light로 밝고 어두운 영역 모두에 질감을 주고 coarse grain은 낮은 multiply opacity로 깊이를 더하며, 마지막 vignette가 color bloom을 정리한다.
+- **Rationale**: 단일 타일의 opacity만 높이면 색 noise와 반복 무늬가 먼저 보인다. 서로 다른 frequency·size·blend의 neutral grain은 Aurora Gradient의 섬세한 noise를 작은/큰 artwork에 함께 유지한다.
+- **Source**: `https://auroragradient.com/` — liquid/radial gradient style과 adjustable grain/noise opacity 참고
+- **Evidence**: `src/entities/vocal-profile/ui/vocal-profile-artwork.tsx`, `src/entities/vocal-profile/ui/vocal-profile-artwork.stories.tsx`
+- **Trace**: Fine noise는 5rem tile·soft-light·35% opacity, coarse noise는 13rem tile·multiply·13% opacity로 적용하고 radial/linear soft-light vignette를 추가했다. Palette·Library·Mixing Detail Storybook 7/7과 TypeScript를 통과했으며 1440px palette와 44px Library thumbnail에서 grain이 색을 덮지 않고 보이는 것을 확인했다.
+- **Consequences**: Texture는 purely decorative child이고 artwork 자체는 계속 `aria-hidden`이다. 추가 network request나 animation lifecycle이 없다.

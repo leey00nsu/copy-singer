@@ -82,7 +82,8 @@ VocalProfileRecorder
 - `shared/ui/product-page-intro`는 Server Component로 유지하고 `index`, `detail`, `task` variant에서 eyebrow·title·description·aside의 typography와 spacing만 소유한다. Route data fetching이나 interaction은 포함하지 않는다.
 - Login은 별도 full-width hairline shell을 제거하고 공통 `ProductHeader`/`ProductFooter`를 조합하되, 인증 form은 작은 단일 client boundary로 유지한다.
 - Account와 Admin은 page intro를 재사용하고 desktop composition만 정리한다. Table/list/form border는 유지하고 요약 영역의 장식 card/hairline만 quiet fill과 whitespace로 대체한다.
-- Vocal profile artwork는 기존 hash seed를 유지하되 허용 hue family를 brand violet·blue·pink token 범위로 매핑한다.
+- Vocal profile artwork는 기존 hash seed를 보조 variation으로 유지하고 저장된 분석 지표를 primary visual seed로 사용한다. 중앙음은 base hue, 음역 폭은 hue spread, pitch stability는 saturation, voiced ratio와 RMS는 lightness/highlight에 매핑한다. Mixing payload에도 같은 최소 지표를 포함해 Library·Profile Detail·Mixing에서 동일한 결과를 만든다.
+- Artwork component는 생성된 multi-radial gradient 위에 monochrome fractal noise를 서로 다른 scale·blend로 두 겹 합성하고, 마지막 soft-light vignette로 Aurora Gradient 계열의 부드러운 color bloom과 미세 grain을 만든다. 별도 bitmap이나 canvas runtime은 추가하지 않는다.
 - Creation stepper는 semantic `ol`, `aria-current`, complete/current/upcoming state를 유지하면서 horizontal progress line과 step marker로 표현한다.
 - Storybook은 Login, Account, Admin, Recommendation desktop/mobile과 Creation Funnel을 검증하고 변경된 accessible action name을 실제 UI 계약과 동기화한다.
 
