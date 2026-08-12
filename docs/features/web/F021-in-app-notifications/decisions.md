@@ -54,3 +54,17 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow
   - **Test/Log**: `pnpm run test:storybook --run src/_pages/notifications/ui/notifications-list.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx`, `pnpm run build`, Browser QA
 - **Consequences**: 이름 변경 후에도 과거 알림에는 이벤트 당시 이름이 남고, 삭제된 target은 기존 not-found/list fallback 동작을 따른다.
+
+## D003: 계정 메뉴의 최신 티켓 잔액 조회 (2026-08-12)
+
+- **Context**: 사용자는 AI 믹싱 가능 여부를 판단하기 위해 내 계정 화면으로 이동하지 않고 프로필 아바타 메뉴에서 잔여 티켓을 확인하고자 한다.
+- **Constraints**: 공통 layout은 client navigation 동안 유지될 수 있어 server render 시 전달한 잔액만 사용하면 차감·환불·관리자 지급 후 stale할 수 있다. 기존 계정 API는 페이지네이션 원장까지 반환한다.
+- **Options**: layout server prop으로 잔액 전달, 기존 계정 API 전체 payload 재사용, owner-scoped 전용 balance query.
+- **Decision**: session user로 scope한 `/api/account/ticket-balance` 최소 응답과 TanStack Query를 추가하고, `UserMenu` open 상태에서만 query를 활성화한다. query는 `staleTime: 0`으로 메뉴 재개방 시 최신 잔액을 다시 확인한다.
+- **Rationale**: persistent layout prop의 stale 문제와 기존 원장 API의 불필요한 payload를 피하면서 인증·계약 검증·캐시 정책을 명시할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: `ProductLayout`이 사용자 정보만 `UserMenu`에 전달하며 기존 `/api/account/tickets`는 잔액과 원장 page를 함께 반환함을 확인했다. 최신성과 payload 크기를 함께 지키려면 전용 balance contract가 적합하다.
+  - **DONE 전 확정 시점**: 메뉴 최상단에 `잔여 티켓 N개` 요약을 배치하고 데이터가 없을 때 `확인 중…`, 최초 조회 실패 시 `확인 불가`를 표시한다. balance 조회 실패가 계정 navigation·로그아웃 동작을 막지 않으며 재개방과 window focus에서 다시 조회한다.
+- **Evidence**:
+  - **Test/Log**: `pnpm exec tsx --test tests/api-contracts.test.ts tests/client-server-state-query.test.ts`, `node --conditions react-server --import tsx --test tests/notification-routes.integration.ts`, `pnpm run test:storybook --run src/widgets/product-shell/ui/product-shell.stories.tsx`, `pnpm run build`
+- **Consequences**: 메뉴 첫 open에 짧은 loading 상태가 보일 수 있으며 조회 실패 시 메뉴의 navigation과 logout은 계속 사용할 수 있어야 한다.

@@ -36,6 +36,7 @@
 4. `NotificationBell`은 ProductHeader 안에서 최신 5개 query를 30초 polling하고 focus 복귀 시 갱신한다. 메뉴 open만으로 읽음 처리하지 않는다.
 5. 알림 item 선택 시 읽음 mutation을 먼저 요청하고 내부 href로 이동한다. mutation 실패 시에도 안전한 navigation을 막지 않고 다음 refetch에서 상태를 복구한다.
 6. `/notifications` server page는 인증을 요구하고 client list에 초기 payload를 제공해 loading flash를 줄인다.
+7. `UserMenu`가 열리면 owner-scoped ticket balance query를 활성화하고 메뉴 최상단에 잔여 수량을 표시한다. 전용 balance 응답으로 티켓 원장 전체를 내려받지 않으며 재개방 시 stale query를 갱신한다.
 
 ### 알림 생성 규칙
 
@@ -62,6 +63,9 @@ src/
 │   ├── ui/notification-item.tsx
 │   ├── index.ts
 │   └── index.server.ts
+├── entities/ticket/
+│   ├── api/client.ts
+│   └── model/contract.ts
 ├── features/manage-notifications/
 │   ├── api/client.ts
 │   ├── model/queries.ts
@@ -73,6 +77,7 @@ src/
 └── widgets/product-shell/ui/product-shell.tsx
 
 app/
+├── api/account/ticket-balance/route.ts
 ├── api/notifications/route.ts
 ├── api/notifications/[id]/route.ts
 ├── api/notifications/read-all/route.ts
@@ -87,7 +92,7 @@ prisma/
 
 ## 테스트 전략
 
-- **단위 테스트**: contract parsing, presentation copy, query polling/cache, owner-scoped route adapter.
+- **단위 테스트**: contract parsing, presentation copy, query polling/cache, owner-scoped route adapter, ticket balance query activation.
 - **통합 테스트**: migration, event dedupe, ticket type exclusion, worker success/final failure/retry, read ownership and pagination.
 - **E2E 테스트**: Storybook interaction으로 unread/read/empty/error 및 로그인/비로그인 header를 검증하고 Browser QA로 desktop/mobile placement와 overflow를 확인한다.
 - **회귀 테스트**: `pnpm run typecheck`, `pnpm run lint`, `pnpm run check:architecture`, `pnpm run build`, 관련 기존 ticket·analysis·mixing suites.

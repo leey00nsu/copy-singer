@@ -103,6 +103,15 @@
     - [x] notifications page·pagination·상태 UI 구현
     - [x] component·Storybook·browser responsive·build 회귀 검증
 
+- [DONE][PRD-FR-051] T-F021-in-app-notifications-05 계정 메뉴 잔여 티켓 표시
+  - Date: 2026-08-12
+  - Acceptance:
+    - 프로필 아바타로 연 계정 메뉴의 최상단에 현재 사용 가능한 티켓 수가 표시되고, 메뉴를 다시 열 때 최신 잔액을 조회한다.
+  - Checklist:
+    - [x] owner-scoped 티켓 잔액 API와 client query 구현
+    - [x] UserMenu 최상단 잔여 티켓 UI와 loading/error fallback 구현
+    - [x] Storybook interaction·contract·build 회귀 검증
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -120,15 +129,16 @@
 | --- | --- | --- |
 | `pnpm exec prisma migrate deploy` | `2026-08-11` | 통과 — `20260811220000_add_notifications` 적용 |
 | `pnpm run db:validate` | `2026-08-11` | 통과 |
-| `pnpm run typecheck` | `2026-08-11` | 통과 |
+| `pnpm run typecheck` | `2026-08-12` | 통과 |
 | `node --conditions react-server --import tsx --test tests/notification-service.integration.ts` | `2026-08-11` | 통과 — 영속화·동시 dedupe·소유권·읽음·페이지네이션 1/1 |
 | `node --conditions react-server --import tsx --test tests/admin-operations.integration.ts tests/vocal-profile-analysis-queue.integration.ts tests/mixing-queue.integration.ts` | `2026-08-11` | 통과 — 티켓 양수 지급 단일 알림, 분석·믹싱 성공/최종 실패와 retry 제외 7/7 |
-| `pnpm exec tsx --test tests/api-contracts.test.ts tests/client-server-state-query.test.ts` | `2026-08-11` | 통과 — 알림 internal href·page/read 계약, 30초 polling·focus refetch·mutation cache invalidation 포함 19/19 |
-| `node --conditions react-server --import tsx --test tests/notification-routes.integration.ts` | `2026-08-11` | 통과 — 인증 401, owner scope 404, 개별·전체 읽음 1/1 |
+| `pnpm exec tsx --test tests/api-contracts.test.ts tests/client-server-state-query.test.ts` | `2026-08-12` | 통과 — 알림 계약과 ticket balance nonnegative contract·menu-open query 활성화 포함 21/21 |
+| `node --conditions react-server --import tsx --test tests/notification-routes.integration.ts` | `2026-08-12` | 통과 — 알림 owner scope와 session 사용자 ticket balance 4/타 사용자 9 분리, 비인증 401 1/1 |
 | `pnpm run test:storybook --run src/_pages/notifications/ui/notifications-list.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-11` | 통과 — desktop/mobile Bell 배치·비로그인 미노출·dropdown 실제 열기·알림 이력/empty 8/8 |
-| `pnpm run lint` | `2026-08-11` | 통과 |
-| `pnpm run check:architecture` | `2026-08-11` | 통과 — Steiger 및 FSD boundary 4/4 |
-| `pnpm run build` | `2026-08-11` | 통과 — Next.js production build 및 `/notifications` route 생성 |
+| `pnpm run lint` | `2026-08-12` | 통과 |
+| `pnpm run check:architecture` | `2026-08-12` | 통과 — Steiger 및 FSD boundary 4/4 |
+| `pnpm run build` | `2026-08-12` | 통과 — Next.js production build 및 `/notifications`, `/api/account/ticket-balance` route 생성 |
+| `pnpm run test:storybook --run src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-12` | 통과 — 계정 메뉴 최상단 `잔여 티켓 3개`와 기존 desktop/mobile 동작 6/6 |
 | Browser responsive QA | `2026-08-11` | 통과 — Bell dropdown과 전체 알림 화면 렌더링·읽음 상태·내부 이동 구조 확인, Base UI label context 오류 수정 후 재검증 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-11T13:43:26.300Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T00:24:35.000Z -->

@@ -60,6 +60,17 @@
 - [ ] `/notifications`는 최신순 페이지네이션, loading·empty·error 상태와 읽음 구분을 제공한다.
 - [ ] 로그인하지 않은 header에는 Bell을 표시하지 않는다.
 
+### US-4: 계정 메뉴에서 티켓 잔액 확인
+
+**As a** 로그인 사용자
+**I want** 프로필 아바타 메뉴를 열었을 때 현재 잔여 티켓을 바로 확인하고 싶다
+**So that** 내 계정 화면으로 이동하지 않고도 AI 믹싱 가능 여부를 판단할 수 있다
+
+**Acceptance Criteria:**
+
+- [ ] 계정 메뉴 최상단에 `잔여 티켓`과 현재 티켓 수를 표시한다.
+- [ ] 메뉴를 다시 열면 owner-scoped API에서 최신 잔액을 조회하며 loading·error 상태에서도 메뉴 동작을 유지한다.
+
 ---
 
 ## 기능 요구사항
@@ -84,6 +95,10 @@
 
 알림은 source의 사용자용 text snapshot을 보존한다. target resource가 삭제된 경우 상세 route의 기존 not-found 동작을 따르며 알림 목록 자체는 계속 읽을 수 있다. 이번 범위에서는 자동 보관 삭제, 이메일, 브라우저 push를 구현하지 않는다.
 
+### FR-6: 계정 메뉴 티켓 요약
+
+인증된 계정 메뉴는 최상단에 현재 사용 가능한 티켓 수를 표시한다. 잔액 조회는 session user로 제한한 전용 응답 계약을 사용하고 메뉴가 열릴 때 stale data를 다시 확인한다.
+
 (상세 설명)
 
 ---
@@ -100,7 +115,7 @@
 ## 관련 문서
 
 - PRD: `../../prd/`
-- PRD Refs: `PRD-US-027`, `PRD-FR-058`, `PRD-DATA-012`, `PRD-NFR-005`, `PRD-NFR-009`, `PRD-NFR-010`
+- PRD Refs: `PRD-US-011`, `PRD-US-027`, `PRD-FR-051`, `PRD-FR-058`, `PRD-DATA-012`, `PRD-NFR-005`, `PRD-NFR-009`, `PRD-NFR-010`
   - 이미 원문 요구사항 문서에 정의된 ID만 적으세요. `spec.md`나 `tasks.md`에서 임의로 PRD ID를 만들지 않습니다.
   - 레거시 요구사항 문서에 아직 PRD ID가 없다면, 먼저 원문에 ID를 backfill한 뒤 이 필드와 `tasks.md` 태스크 태그를 함께 갱신하세요.
   - 요구사항/스코프 변경 시 PRD 문서 + 이 필드 + `tasks.md` 태스크 태그를 함께 갱신하세요.
