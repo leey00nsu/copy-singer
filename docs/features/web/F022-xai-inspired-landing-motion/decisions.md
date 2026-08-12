@@ -102,10 +102,12 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **T06 완료 시점**: Aceternity 공식 registry의 `BentoGrid`/`BentoGridItem` 구조를 semantic token과 focus/hover 상태에 맞게 도입했다. 거대한 hero, 단일 dashboard, waveform·dotted·ripple과 반복 sticky panel을 제거하고 3+2 제품 mosaic로 교체했으며 Storybook 4/4, TypeScript와 architecture boundary를 통과했다.
   - **T07 완료 시점**: React Bits 공식 Orb shader와 `ogl@1.0.11`을 공통 `VoiceOrb` client island로 통합했다. DPR을 1.5로 제한하고 ResizeObserver, IntersectionObserver, visibilitychange, context-lost 및 unmount cleanup을 보강했으며 reduced-motion/WebGL 실패 시 정적 poster가 남는다. Landing bento와 active ProcessHero에 같은 exact props를 적용하고 Storybook 8/8을 통과했다.
   - **T08 완료 시점**: 기존의 작은 trust band와 pastel gradient CTA를 2열 editorial product demo, 계약상 참인 `5초+`·`60초`·`3단계` metric band, 비상호작용 Voice Notes 4열과 profile/library 2-up CTA로 교체했다. Reveal Content는 offscreen 내용을 숨기지 않도록 초기 opacity 0.94와 8px 이동으로 제한했고 1266px full-page 캡처에서 x.ai형 macro rhythm과 모든 section 노출을 확인했다.
-  - **DONE 전 확정 시점**: 구현 및 시각 검증 후 보강 예정
+  - **DONE 전 확정 시점**: Landing/ProcessHero/Orb fallback Storybook 10/10, TypeScript, ESLint, architecture boundary와 Next.js production build를 통과했다. 실제 `/` route full-page 검토에서 horizontal overflow 0, 단일 h1, Orb DPR 1.5와 모든 macro section 노출을 확인했다.
 - **Evidence**:
   - **Reference**: `https://reactbits.dev/backgrounds/orb?hue=294&rotateOnHover=false&hoverIntensity=0`
   - **Source**: `https://github.com/DavidHDev/react-bits/blob/main/src/ts-tailwind/Backgrounds/Orb/Orb.tsx`
   - **Reference**: `https://ui.aceternity.com/bento-grid`
   - **Notice**: `THIRD_PARTY_NOTICES.md`
-- **Consequences**: 기존 no-runtime/WebGL 제외 결정(D001/D002)은 F022 변경 요청 범위에서 폐기되며 Orb island의 lifecycle·fallback·라이선스 검증이 새 completion gate가 된다.
+  - **Test/Log**: `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx src/shared/ui/voice-orb/voice-orb.stories.tsx` 통과 (10/10)
+  - **Test/Log**: `pnpm run typecheck`, `pnpm run lint`, `pnpm run test:architecture-boundaries`, `pnpm run build` 통과
+- **Consequences**: 기존 no-runtime/WebGL 제외 결정(D001/D002)은 F022 변경 요청 범위에서 폐기됐다. WebGL은 공통 Orb island에만 포함되고 나머지 landing content는 Server Component 또는 작은 reveal island로 유지된다.

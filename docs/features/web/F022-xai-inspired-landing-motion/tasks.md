@@ -143,23 +143,23 @@
     - [x] metric band와 Voice Notes rail을 responsive하게 구현했다.
     - [x] profile 시작과 library 결과 보기 CTA의 목적지·위계를 구분했다.
 
-- [TODO][PRD-FR-051] T-F022-xai-inspired-landing-motion-09 공통 ProcessHero Orb·성능·접근성·시각 parity 검증
+- [DONE][PRD-FR-051] T-F022-xai-inspired-landing-motion-09 공통 ProcessHero Orb·성능·접근성·시각 parity 검증
   - Date: 2026-08-12
   - Acceptance:
     - 실제 분석 active ProcessHero의 dashed/conic visual을 랜딩과 같은 React Bits Orb로 교체하고 success/failure 상태는 기존 의미와 icon을 유지한다.
     - 360·390·768·1440 viewport, reduced-motion과 WebGL fallback에서 overflow·console 오류 없이 동작하고 x.ai 캡처와 동일 1440 폭 육안 비교에서 구성·여백·리듬이 확인된다.
   - Checklist:
-    - [ ] ProcessHero active story와 landing signed-out/in, mobile, reduced-motion, WebGL fallback Storybook 상태를 검증한다.
-    - [ ] axe, keyboard focus, 단일 h1, CTA href, DPR·offscreen RAF·cleanup과 production build를 검증한다.
-    - [ ] 브라우저 full-page screenshot을 직접 검토하고 feature·product design·decisions·workflow evidence를 동기화한다.
+    - [x] ProcessHero active story와 landing signed-out/in, mobile, reduced-motion, WebGL fallback Storybook 상태를 검증했다.
+    - [x] axe, keyboard focus, 단일 h1, CTA href, DPR·offscreen RAF·cleanup과 production build를 검증했다.
+    - [x] 브라우저 full-page screenshot을 직접 검토하고 feature·product design·decisions·workflow evidence를 동기화했다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -168,12 +168,12 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — signed-out/in, mobile, reduced-motion의 CTA·단일 h1·3단계 순서·footer 및 addon a11y 4/4 |
+| `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx src/shared/ui/voice-orb/voice-orb.stories.tsx` | `2026-08-12` | 통과 — landing signed-out/in·mobile·reduced-motion, ProcessHero active/success/failure와 WebGL fallback 10/10 |
 | `pnpm exec biome check src/_pages/home/ui/landing-page.tsx src/_pages/home/ui/landing-hero.tsx src/_pages/home/ui/landing-hero.module.css` | `2026-08-12` | 통과 — 3개 landing 파일 format/lint 확인 |
 | `pnpm run typecheck` | `2026-08-12` | 통과 — 신규 landing story component 포함 TypeScript 오류 없음 |
 | `pnpm run lint` | `2026-08-12` | 통과 — 전체 ESLint 오류 없음 |
 | `pnpm run test:architecture-boundaries` | `2026-08-12` | 통과 — FSD, client/server와 root App boundary 4/4 |
 | `pnpm run build` | `2026-08-12` | 통과 — Next.js 16.3 production build, TypeScript와 29개 static page 생성 완료 |
-| Browser responsive QA | `2026-08-12` | 통과 — desktop 1440×1000 sticky story, mobile 390×844 static stack 및 overflow 없음, reduced-motion animation 0개, console warning/error 0개 |
+| Browser responsive QA | `2026-08-12` | 통과 — 1280px full-page에서 x.ai형 hero·3+2 bento·editorial demo·metric·Voice Notes·2-up CTA 직접 검토, horizontal overflow 0, h1 1개, Orb DPR 1.5 및 fallback 없음; Storybook 390px mobile/reduced-motion/WebGL fallback 보완 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T02:33:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T02:37:20.000Z -->
