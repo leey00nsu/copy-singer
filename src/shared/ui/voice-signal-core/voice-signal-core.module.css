@@ -20,7 +20,12 @@
   inset: 20%;
   z-index: -1;
   border-radius: 50%;
-  background: radial-gradient(circle, oklch(0.7 0.2 294 / 0.42), oklch(0.72 0.14 225 / 0.12) 48%, transparent 72%);
+  background: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--brand-violet) 42%, transparent),
+    color-mix(in oklab, var(--brand-blue) 12%, transparent) 48%,
+    transparent 72%
+  );
   opacity: 0;
   filter: blur(28px);
   transform: scale(0.9);

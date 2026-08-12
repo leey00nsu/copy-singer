@@ -1,7 +1,7 @@
 "use client";
 
 import { Activity, AudioWaveform, BadgeCheck, ChevronDown, Clock3, Gauge, Info, Volume2 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { Bar, BarChart, CartesianGrid, Line, LineChart, ReferenceLine, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/shared/ui/chart";
@@ -59,11 +59,11 @@ export function VocalRangeProfile({
         <CardTitle className="text-sm">{title}</CardTitle>
         <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[10px] text-muted-foreground">
           <span className="flex items-center gap-2">
-            <i className="h-2 w-7 rounded-full bg-data-accent/30" />
+            <i className="h-2 w-7 rounded-full" style={{ background: "var(--brand-gradient-soft)" }} />
             전체 관측 음역
           </span>
           <span className="flex items-center gap-2">
-            <i className="h-2 w-7 rounded-full bg-data-accent" />
+            <i className="h-2 w-7 rounded-full" style={{ background: "var(--brand-gradient-signal)" }} />
             실용 음역
           </span>
           {medianMidi !== null ? (
@@ -99,6 +99,7 @@ function HistogramChart({
   profile: VocalProfileResponse;
   visualization: VocalProfileVisualization | null;
 }) {
+  const histogramGradientId = `${useId().replaceAll(":", "")}-pitch-histogram`;
   if (!visualization) return <VisualizationUnavailable title="음정 분포" />;
   const bins = histogramChartData(visualization);
   const firstBin = bins[0];
@@ -122,6 +123,20 @@ function HistogramChart({
           role="img"
         >
           <BarChart accessibilityLayer data={bins} margin={{ left: 0, right: 8, top: 12, bottom: 4 }}>
+            <defs>
+              <linearGradient
+                data-brand-signal-gradient="pitch-histogram"
+                id={histogramGradientId}
+                x1="0%"
+                x2="0%"
+                y1="100%"
+                y2="0%"
+              >
+                <stop offset="0%" stopColor="var(--brand-violet)" />
+                <stop offset="55%" stopColor="var(--brand-blue)" />
+                <stop offset="100%" stopColor="var(--brand-pink)" />
+              </linearGradient>
+            </defs>
             <CartesianGrid vertical={false} strokeDasharray="4 4" />
             <XAxis dataKey="note" tickLine={false} />
             <YAxis
@@ -146,7 +161,7 @@ function HistogramChart({
               }
             />
             <ReferenceLine stroke="var(--data-accent-foreground)" strokeDasharray="4 4" x={medianBin.note} />
-            <Bar dataKey="ratioPercent" fill="var(--color-ratioPercent)" radius={[5, 5, 0, 0]} />
+            <Bar dataKey="ratioPercent" fill={`url(#${histogramGradientId})`} radius={[5, 5, 0, 0]} />
           </BarChart>
         </ChartContainer>
       </CardContent>
@@ -173,6 +188,7 @@ function VisualizationUnavailable({ title }: { title: string }) {
 
 function PitchTrace({ visualization }: { visualization: VocalProfileVisualization | null }) {
   const [open, setOpen] = useState(true);
+  const traceGradientId = `${useId().replaceAll(":", "")}-pitch-trace`;
   if (!visualization) return null;
   const voiced = visualization.track.filter((point): point is { timeMs: number; midi: number } => point.midi !== null);
   if (voiced.length === 0) return null;
@@ -204,6 +220,13 @@ function PitchTrace({ visualization }: { visualization: VocalProfileVisualizatio
               role="img"
             >
               <LineChart accessibilityLayer data={data} margin={{ left: 2, right: 10, top: 10, bottom: 4 }}>
+                <defs>
+                  <linearGradient data-brand-signal-gradient="pitch-trace" id={traceGradientId} x1="0%" x2="100%">
+                    <stop offset="0%" stopColor="var(--brand-violet)" />
+                    <stop offset="50%" stopColor="var(--brand-blue)" />
+                    <stop offset="100%" stopColor="var(--brand-pink)" />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="4 4" />
                 <XAxis
                   dataKey="timeSeconds"
@@ -240,7 +263,7 @@ function PitchTrace({ visualization }: { visualization: VocalProfileVisualizatio
                   dataKey="midi"
                   dot={false}
                   isAnimationActive={false}
-                  stroke="var(--color-midi)"
+                  stroke={`url(#${traceGradientId})`}
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2.5}

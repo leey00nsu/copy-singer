@@ -53,8 +53,12 @@ function AudioWaveformPlayerInstance({
     const strong = themeColor("--data-accent-foreground", "#6757c8");
     return {
       cursor: strong,
-      progress: ["#7c3aed", "#3b82f6", "#ec4899"],
-      wave: ["#c4b5fd", "#bfdbfe"],
+      progress: [
+        themeColor("--brand-violet", "#7c3aed"),
+        themeColor("--brand-blue", "#3b82f6"),
+        themeColor("--brand-pink", "#ec4899"),
+      ],
+      wave: [themeColor("--brand-soft-violet", "#c4b5fd"), themeColor("--brand-soft-blue", "#bfdbfe")],
     };
   }, []);
   const { wavesurfer, isReady, isPlaying, currentTime } = useWavesurfer({

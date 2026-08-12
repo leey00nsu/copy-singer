@@ -28,6 +28,10 @@ function VoiceSignalCore({ className, forceFallback = false, mode, stream = null
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const context = canvas.getContext("2d");
     if (!context) return;
+    const rootStyles = getComputedStyle(document.documentElement);
+    const brandViolet = rootStyles.getPropertyValue("--brand-violet").trim() || "#7c3aed";
+    const brandBlue = rootStyles.getPropertyValue("--brand-blue").trim() || "#3b82f6";
+    const brandPink = rootStyles.getPropertyValue("--brand-pink").trim() || "#ec4899";
     const bars: Array<{ height: number; x: number }> = [];
     const barWidth = 3;
     const barGap = 3;
@@ -73,9 +77,9 @@ function VoiceSignalCore({ className, forceFallback = false, mode, stream = null
       context.clearRect(0, 0, rect.width, rect.height);
       const centerY = rect.height / 2;
       const brandGradient = context.createLinearGradient(0, 0, rect.width, 0);
-      brandGradient.addColorStop(0, "#7c3aed");
-      brandGradient.addColorStop(0.5, "#3b82f6");
-      brandGradient.addColorStop(1, "#ec4899");
+      brandGradient.addColorStop(0, brandViolet);
+      brandGradient.addColorStop(0.5, brandBlue);
+      brandGradient.addColorStop(1, brandPink);
       context.fillStyle = brandGradient;
 
       for (const bar of bars) {

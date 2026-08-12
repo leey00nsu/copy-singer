@@ -20,7 +20,7 @@ function AnalysisSurface() {
       <div className="mx-auto max-w-64 rounded-lg border bg-background p-4 shadow-[0_16px_44px_-32px_oklch(0.2_0.02_285/0.4)]">
         <div className="flex items-center justify-between text-[9px] text-muted-foreground">
           <span>VOICE PROFILE</span>
-          <span className="size-1.5 rounded-full bg-violet-500" />
+          <span className="size-1.5 rounded-full bg-data-accent" />
         </div>
         <dl className="mt-5 space-y-3">
           {["관찰 음역", "실용 음역", "음정 안정성"].map((label, index) => (
@@ -94,7 +94,7 @@ const albumCovers = [
 function AlbumCoverStack() {
   return (
     <div aria-hidden="true" className="relative isolate h-44 w-52 shrink-0" data-testid="album-cover-stack">
-      <div className="absolute inset-x-8 bottom-2 h-12 rounded-full bg-violet-500/18 blur-2xl" />
+      <div className="absolute inset-x-8 bottom-2 h-12 rounded-full bg-data-accent/18 blur-2xl" />
       {albumCovers.map(({ className, eager, src }) => (
         <div
           className={`absolute top-1/2 left-1/2 size-28 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-xl border border-white/65 bg-neutral-900 shadow-[0_18px_36px_-18px_oklch(0.18_0.04_285/0.7)] transition-[margin,rotate] duration-500 ease-out motion-reduce:transition-none ${className}`}
@@ -117,7 +117,7 @@ function MixingSurface() {
         <ol aria-label="AI 믹싱 이용 흐름" className="mt-4 grid gap-2 text-[10px]">
           {["추천곡 선택", "AI 믹싱 요청", "결과 듣기와 보관"].map((label) => (
             <li className="flex items-center gap-2" key={label}>
-              <Check aria-hidden="true" className="size-3 text-violet-600" /> {label}
+              <Check aria-hidden="true" className="size-3 text-data-accent-foreground" /> {label}
             </li>
           ))}
         </ol>

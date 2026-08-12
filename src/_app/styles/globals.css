@@ -34,6 +34,9 @@
   --color-warning: var(--warning);
   --color-data-accent-foreground: var(--data-accent-foreground);
   --color-data-accent: var(--data-accent);
+  --color-brand-pink: var(--brand-pink);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-violet: var(--brand-violet);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -78,6 +81,13 @@
   --warning-foreground: oklch(0.42 0.095 65);
   --data-accent: oklch(0.69 0.135 284);
   --data-accent-foreground: oklch(0.34 0.12 282);
+  --brand-violet: oklch(0.55 0.24 293);
+  --brand-blue: oklch(0.59 0.18 260);
+  --brand-pink: oklch(0.67 0.17 330);
+  --brand-soft-violet: oklch(0.86 0.08 293);
+  --brand-soft-blue: oklch(0.88 0.06 245);
+  --brand-gradient-signal: linear-gradient(90deg, var(--brand-violet), var(--brand-blue) 50%, var(--brand-pink));
+  --brand-gradient-soft: linear-gradient(90deg, var(--brand-soft-violet), var(--brand-soft-blue));
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.58 0.145 282);
@@ -119,6 +129,13 @@
   --warning-foreground: oklch(0.86 0.12 83);
   --data-accent: oklch(0.72 0.13 284);
   --data-accent-foreground: oklch(0.9 0.055 284);
+  --brand-violet: oklch(0.72 0.18 293);
+  --brand-blue: oklch(0.72 0.14 250);
+  --brand-pink: oklch(0.75 0.15 330);
+  --brand-soft-violet: oklch(0.45 0.09 293);
+  --brand-soft-blue: oklch(0.43 0.07 245);
+  --brand-gradient-signal: linear-gradient(90deg, var(--brand-violet), var(--brand-blue) 50%, var(--brand-pink));
+  --brand-gradient-soft: linear-gradient(90deg, var(--brand-soft-violet), var(--brand-soft-blue));
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
@@ -284,7 +301,7 @@
   }
 
   .waveform-bar-active {
-    background: linear-gradient(to top, var(--data-accent), var(--chart-1));
+    background: linear-gradient(to top, var(--brand-violet), var(--brand-blue), var(--brand-pink));
     animation: pulse-wave 1.2s ease-in-out infinite alternate;
   }
 

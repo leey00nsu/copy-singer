@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import { Bar, BarChart, CartesianGrid, Cell, ReferenceLine, XAxis, YAxis } from "recharts";
 
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/shared/ui/chart";
@@ -18,6 +19,9 @@ function VocalRangeChart({
   className?: string;
   profile: VocalRangeMetrics & { medianMidi?: number | null };
 }) {
+  const gradientSeed = useId().replaceAll(":", "");
+  const observedGradientId = `${gradientSeed}-observed-range`;
+  const practicalGradientId = `${gradientSeed}-practical-range`;
   const axis = midiAxis(profile.minMidi, profile.maxMidi);
   const data = rangeChartData(profile);
   const medianMidi =
@@ -31,6 +35,17 @@ function VocalRangeChart({
       role="img"
     >
       <BarChart accessibilityLayer data={data} layout="vertical" margin={{ left: 8, right: 18, top: 30, bottom: 8 }}>
+        <defs>
+          <linearGradient data-brand-soft-gradient="vocal-range" id={observedGradientId} x1="0%" x2="100%">
+            <stop offset="0%" stopColor="var(--brand-soft-violet)" />
+            <stop offset="100%" stopColor="var(--brand-soft-blue)" />
+          </linearGradient>
+          <linearGradient data-brand-signal-gradient="vocal-range" id={practicalGradientId} x1="0%" x2="100%">
+            <stop offset="0%" stopColor="var(--brand-violet)" />
+            <stop offset="50%" stopColor="var(--brand-blue)" />
+            <stop offset="100%" stopColor="var(--brand-pink)" />
+          </linearGradient>
+        </defs>
         <CartesianGrid horizontal={false} strokeDasharray="4 4" />
         <XAxis
           dataKey="range"
@@ -67,7 +82,7 @@ function VocalRangeChart({
         ) : null}
         <Bar dataKey="range" radius={8}>
           {data.map((row) => (
-            <Cell fill={row.key === "observed" ? "var(--accent)" : "var(--color-range)"} key={row.key} />
+            <Cell fill={`url(#${row.key === "observed" ? observedGradientId : practicalGradientId})`} key={row.key} />
           ))}
         </Bar>
       </BarChart>

@@ -89,10 +89,37 @@ export const RepresentativeAnalysis: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("img", { name: /전체 관측 음역/ })).toBeVisible();
     await expect(canvas.getByRole("img", { name: "음정별 상대 빈도 막대그래프" })).toBeVisible();
+    const signalGradients = Array.from(canvasElement.querySelectorAll("[data-brand-signal-gradient]"));
+    await expect(signalGradients).toHaveLength(3);
+    await expect(canvasElement.querySelector("[data-brand-soft-gradient='vocal-range']")).not.toBeNull();
+    for (const gradient of signalGradients) {
+      await expect(
+        Array.from(gradient.querySelectorAll("stop")).map((stop) => stop.getAttribute("stop-color")),
+      ).toEqual(["var(--brand-violet)", "var(--brand-blue)", "var(--brand-pink)"]);
+    }
     const pitchTrace = canvas.getByRole("button", { name: /상세 피치 추적/ });
     await expect(pitchTrace).toHaveAttribute("aria-expanded", "true");
     await userEvent.click(pitchTrace);
     await expect(pitchTrace).toHaveAttribute("aria-expanded", "false");
+  },
+};
+
+export const DarkBrandSignal: Story = {
+  decorators: [
+    (Story) => (
+      <div className="dark bg-background p-6 text-foreground">
+        <Story />
+      </div>
+    ),
+  ],
+  play: async ({ canvasElement }) => {
+    const rangeGradient = canvasElement.querySelector("[data-brand-signal-gradient='vocal-range']");
+    await expect(rangeGradient).not.toBeNull();
+    await expect(
+      Array.from((rangeGradient as SVGLinearGradientElement).querySelectorAll("stop")).map(
+        (stop) => getComputedStyle(stop).stopColor,
+      ),
+    ).toEqual(["oklch(0.72 0.18 293)", "oklch(0.72 0.14 250)", "oklch(0.75 0.15 330)"]);
   },
 };
 

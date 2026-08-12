@@ -64,7 +64,7 @@ function LandingHero({ primaryLabel, profileHref }: LandingHeroProps) {
             {...entryMotion(0, reduced)}
             className={`${styles.heroEntry} mx-auto inline-flex min-h-7 items-center gap-2 rounded-full border bg-background px-3 text-[10px] text-muted-foreground`}
           >
-            <span className="rounded-full bg-violet-100 px-1.5 py-0.5 text-[8px] font-bold tracking-[0.08em] text-violet-700 uppercase">
+            <span className="rounded-full bg-data-accent/15 px-1.5 py-0.5 text-[8px] font-bold tracking-[0.08em] text-data-accent-foreground uppercase">
               New
             </span>
             목소리 하나로 시작하는 나만의 선곡
@@ -79,7 +79,7 @@ function LandingHero({ primaryLabel, profileHref }: LandingHeroProps) {
                 <MotionWord index={0} reduced={reduced}>
                   <GradientText
                     animationSpeed={1.5}
-                    colors={["var(--data-accent-foreground)", "oklch(0.59 0.18 260)", "oklch(0.67 0.17 330)"]}
+                    colors={["var(--brand-violet)", "var(--brand-blue)", "var(--brand-pink)"]}
                   >
                     내 목소리
                   </GradientText>

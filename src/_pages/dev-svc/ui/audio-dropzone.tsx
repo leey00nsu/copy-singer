@@ -67,7 +67,7 @@ export function AudioDropzone({
             <div
               className={cn(
                 "audio-card-icon",
-                isReference ? "bg-violet-100 text-violet-700" : "bg-orange-100 text-orange-700",
+                isReference ? "bg-data-accent/15 text-data-accent-foreground" : "bg-orange-100 text-orange-700",
               )}
             >
               {isReference ? <FileAudio className="size-4" /> : <Music2 className="size-4" />}
