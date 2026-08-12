@@ -186,14 +186,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Reference**: `https://www.reactbits.dev/text-animations/count-up`
   - **Source**: `https://github.com/DavidHDev/react-bits/blob/main/src/ts-tailwind/TextAnimations/CountUp/CountUp.tsx`
 - **Test/Log**: landing Storybook 4/4, Biome, TypeScript, ESLint, architecture boundary와 Next.js 16.3 production build 통과
-- **Consequences**: `CountUpText`는 숫자 애니메이션의 공통 public API가 되고 `RevealContent`는 기존 기본값을 보존하면서 시작 opacity·거리·duration을 선택적으로 받을 수 있다. 추천 키 순환은 예시 visual이며 접근 가능한 텍스트는 안정적인 `추천 키 예시 마이너스 2`로 유지한다.
+- **Consequences**: D011에서 공통 `CountUpText`와 metric Count Up을 제거했으므로, 이 결정에서 남는 범위는 Hero word reveal과 `RevealContent`의 configurable opacity·거리·duration뿐이다.
 
 ## D011: Recommended key의 원본 기준 visualizer와 metric motion 제거 (2026-08-12)
 
 - **Context**: 사용자가 Hero 설명의 단어별 reveal과 metric Count Up을 제거하고, Recommended key 숫자 변화가 원본 대비 어떤 의미인지 waveform 형태의 기준점·delta 색으로 설명하도록 요청했다.
 - **Constraints**: 첨부 visual의 단순한 rounded bar rhythm을 참고하되 기존에 제거한 장식 waveform을 재도입하지 않고, 색상만으로 상승·하강을 구분하지 않으며 reduced-motion과 offscreen pause를 유지해야 한다.
 - **Options**: 숫자와 색만 유지 / pitch chart 추가 / 원본 중앙 bar와 delta 구간을 결합한 landing 전용 key scale visualizer
-- **Decision**: 구현 및 검증 후 확정한다. 초기 방향은 중앙 원본 bar를 고정하고 delta 구간만 하강은 blue, 상승은 violet로 표시하며 `N키 낮춤/높임` 문구를 동기화하는 landing 전용 client island다.
-- **Rationale**: 구현 및 검증 후 확정한다.
+- **Decision**: 21개 rounded bar의 중앙을 흰색 원본 0 기준으로 고정하고, delta 한 키당 인접 bar 두 개를 하강은 cyan, 상승은 violet로 표시한다. `Key delta`, `Lower / Original 0 / Higher`와 `원본에서 N키 낮춤/높임` 문구를 같은 landing 전용 client island에서 동기화한다. Metric Count Up과 공통 `CountUpText` public API는 제거하고 세 수치는 정적으로 복원한다.
+- **Rationale**: 숫자, 방향축, 위치와 명시 문구를 함께 보여주므로 색각과 관계없이 원본 대비 변화를 이해할 수 있다. Visualizer를 Recommended key에만 한정하면 숫자 animation의 제품 의미가 분명해지고 metric band는 x.ai식 정적인 정보 위계를 되찾는다.
 - **Trace**:
   - **DOING 시작 시점**: 사용자 첨부 이미지는 21개의 rounded bar 중 중앙 기준 bar 하나를 진하게 표시한다. 이를 단순 waveform 장식이 아니라 원본 0과 delta 방향을 읽는 scale로 재해석하고, metric은 Server Component 정적 문자열로 복원한다.
+  - **DONE 전 확정 시점**: Hero 설명의 word span을 제거해 자식 없는 한 문장 block reveal로 바꾸고, 21-bar key scale을 구현했다. 브라우저에서 `−2`일 때 cyan 하강 bar 4개, `+1`일 때 violet 상승 bar 2개, 원본 bar 1개와 각각의 `낮춤/높임` 접근 가능한 문구가 동기화되는 것을 확인했다. 1440/390 overflow 0, CountUp marker 0을 확인했다.
+- **Evidence**:
+  - **Reference image**: 사용자 제공 `codex-clipboard-2d7872dd-6db3-4cfa-a304-184fdca97b7a.png`
+  - **Count Up source**: `https://github.com/DavidHDev/react-bits/blob/main/src/ts-tailwind/TextAnimations/CountUp/CountUp.tsx`
+- **Test/Log**: landing Storybook 4/4, TypeScript, ESLint, architecture boundary, Next.js 16.3 production build 통과
+- **Consequences**: 키 변화 visualizer는 landing preview의 설명용이며 실제 분석 데이터가 아니다. Reduced-motion에서는 `−2` 정적 상태를 유지하고, 일반 환경의 순환은 offscreen·background에서 정지한다.

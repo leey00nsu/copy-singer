@@ -206,24 +206,24 @@
     - [x] 공통 CountUp client island를 추가하고 추천 키 순환·offscreen/background pause·cleanup을 구현했다.
     - [x] Landing Storybook, reduced-motion, typecheck, lint, build와 실제 browser에서 motion을 검증했다.
 
-- [DOING][PRD-FR-045] T-F022-xai-inspired-landing-motion-15 Hero 설명 reveal·정적 metric·Recommended key visualizer 개선
+- [DONE][PRD-FR-045] T-F022-xai-inspired-landing-motion-15 Hero 설명 reveal·정적 metric·Recommended key visualizer 개선
   - Date: 2026-08-12
   - Acceptance:
     - Hero 설명은 단어별 stagger 없이 `5초 이상 녹음하거나 파일을 올리면 바로 시작할 수 있어요.` 안내처럼 문장 전체가 아래에서 위로 한 번 등장한다.
     - `5초+`, `60초`, `3단계`는 Count Up 없이 최종 문자열을 정적으로 표시한다.
     - Recommended key는 원본 키의 중앙 기준점과 waveform 형태의 scale을 보여주고, 변경된 key delta만 방향별 색으로 표시하며 `낮춤/높임` 문구로 의미를 함께 설명한다.
   - Checklist:
-    - [ ] Hero description의 word span을 제거하고 block reveal timing을 조정한다.
-    - [ ] Metric CountUp을 제거하고 Recommended key 전용 visualizer island를 구현한다.
-    - [ ] Storybook, reduced-motion, typecheck, lint, build와 desktop/mobile browser에서 visualizer 의미·motion·overflow를 검증한다.
+    - [x] Hero description의 word span을 제거하고 block reveal timing을 조정했다.
+    - [x] Metric CountUp을 제거하고 Recommended key 전용 visualizer island를 구현했다.
+    - [x] Storybook, reduced-motion, typecheck, lint, build와 desktop/mobile browser에서 visualizer 의미·motion·overflow를 검증했다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -233,16 +233,16 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx src/shared/ui/voice-orb/voice-orb.stories.tsx` | `2026-08-12` | 통과 — landing signed-out/in·mobile·reduced-motion, ProcessHero active/success/failure와 WebGL fallback 10/10 |
-| `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — Hero word span·bento fade contract·CountUp 4개와 signed-out/in·mobile·reduced-motion 4/4 |
+| `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — Hero description block reveal, 정적 metric, Recommended key 21-bar visualizer와 signed-out/in·mobile·reduced-motion 4/4 |
 | `pnpm exec biome check src/_pages/home/ui/landing-page.tsx src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — Voice Notes 이미지 markup과 Storybook assertion format/lint 확인 |
 | `pnpm exec biome check src/_pages/home/ui/landing-page.tsx src/_pages/home/ui/landing-hero.tsx src/_pages/home/ui/landing-hero.module.css` | `2026-08-12` | 통과 — 3개 landing 파일 format/lint 확인 |
 | `pnpm run typecheck` | `2026-08-12` | 통과 — 신규 landing story component 포함 TypeScript 오류 없음 |
 | `pnpm run lint` | `2026-08-12` | 통과 — 전체 ESLint 오류 없음 |
 | `pnpm run test:architecture-boundaries` | `2026-08-12` | 통과 — FSD, client/server와 root App boundary 4/4 |
 | `pnpm run build` | `2026-08-12` | 통과 — Next.js 16.3 production build, TypeScript와 29개 static page 생성 완료 |
-| Browser responsive QA | `2026-08-12` | 통과 — 1440px에서 word/bento 초기 opacity 0→1, 추천 키 `−2→1`, metric `1초+·0초·0단계→5초+·60초·3단계` 확인; 390px과 1440px horizontal overflow 0, h1 accessible name·Orb visual 정상 |
+| Browser responsive QA | `2026-08-12` | 통과 — 1440px에서 설명 block reveal, 정적 metric, key `−2` cyan 4-bar·`+1` violet 2-bar와 `낮춤/높임` label 동기화 확인; 390px과 1440px horizontal overflow 0, CountUp marker 0 |
 | Voice Notes / Orb QA | `2026-08-12` | 통과 — 독립 Voice Notes 4개와 Tailwind grain gradient 직접 검토, Grainient canvas 0개·Orb canvas 1개, Orb root transparent·fallback opacity 0, gray half/square artifact와 horizontal overflow 0 확인; 관련 Storybook 10/10 통과 |
 | Voice Notes Aurora QA | `2026-08-12` | 통과 — 1440×1000에서 4-up 263×159 crop, 390×844에서 1열 335×203 crop과 밝은 ice→cyan→blue-violet→dark neutral 순서를 직접 확인; desktop/mobile horizontal overflow 0, console warning/error 0 |
 | Album Cover Stack QA | `2026-08-12` | 통과 — 1440×1000에서 4개 cover layer와 hover fan-out, 390×844에서 stacked mixing card와 crop 확인; horizontal overflow 0, console warning/error 0, reduced-motion story 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T04:33:48.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T04:38:34.000Z -->

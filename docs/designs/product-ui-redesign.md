@@ -65,8 +65,8 @@ F022 이후 `01-landing-voice-scan.*`의 오른쪽 Voice Scan frame은 계속 �
 - Hero 아래에는 x.ai식 비대칭 product bento를 두고 `목소리 분석`, `노래와 키 추천`, `선택형 AI 믹싱`을 서로 다른 mini-product surface로 보여준다. preview 안의 분석 항목은 값을 가장하지 않고 `관찰 음역`, `실용 음역`, `음정 안정성`처럼 실제로 제공하는 결과 종류만 예고한다.
 - 분석 → 노래/키 추천 → 선택형 AI 믹싱의 실제 3단계는 desktop에서 sticky 설명과 연속 preview panel로, mobile에서 같은 DOM 순서의 한 열로 설명한다. scroll-jacking, horizontal carousel과 JavaScript active-step state는 사용하지 않는다.
 - Aceternity UI의 Bento Grid·Glowing Effect source pattern과 React Bits의 Orb·Animated Content를 실제로 통합한다. Orb는 `hue=294`, `rotateOnHover=false`, `hoverIntensity=0`으로 분석 카드와 실제 분석 진행 중앙 visual에 사용하며, 기존 랜딩 waveform·dotted glow·ripple과 dashed ring은 제거한다.
-- Hero headline과 설명은 단어 단위 CSS stagger로 순차 등장하고, bento는 카드별 분절 없이 전체 wrapper가 opacity 0에서 1로 천천히 한 번 나타난다. heading은 하나의 접근 가능한 전체 문장을 유지한다.
-- Recommended key와 metric band의 `5초+`, `60초`, `3단계`는 React Bits Count Up source pattern을 사용한다. metric은 viewport 진입 시 한 번 목표값에 도달하고, 추천 키 preview만 `−2 → 1 → −1 → 0`의 정해진 예시 순환을 사용한다. 화면 밖·background·reduced-motion에서는 RAF와 timer를 정지하거나 최종 정적 값을 표시한다.
+- Hero headline은 단어 단위 CSS stagger로 순차 등장하고 설명은 문장 전체가 아래에서 위로 한 번 나타난다. Bento는 카드별 분절 없이 전체 wrapper가 opacity 0에서 1로 천천히 한 번 나타난다. Heading은 하나의 접근 가능한 전체 문장을 유지한다.
+- Recommended key는 React Bits Count Up source pattern으로 `−2 → 1 → −1 → 0`의 정해진 예시 순환을 사용한다. 중앙 원본 0 bar, Lower/Higher 방향축, delta 구간색과 `원본에서 N키 낮춤/높임` 문구를 함께 표시한다. Metric band의 `5초+`, `60초`, `3단계`는 animation 없는 정적 사실로 유지한다. 화면 밖·background·reduced-motion에서는 key visualizer의 RAF와 timer를 정지하거나 최종 정적 값을 표시한다.
 - 후속 section은 긴 반복 sticky card 대신 2열 editorial demo, 정직한 metric band, 분석 결과 rail과 2-up 시작 CTA로 구성한다.
 - AI 믹싱 bento의 `선택한 추천곡만 AI 믹싱` 왼쪽 visual은 단색 음표 아이콘 대신 Pixabay의 추상·자연·도시 이미지 4장을 겹친 album-cover stack으로 구성한다. cover는 장식이며 실제 추천 앨범이나 아티스트 데이터로 표현하지 않는다.
 - Voice Notes의 4개 editorial card는 각각 독립된 visual과 하단 label·title·description을 유지하고, visual에는 사용자 제공 Aurora WebP를 녹음(밝은 ice) → 실용 음역(cyan) → 추천 키(blue-violet) → AI 믹싱(dark neutral) 순으로 사용한다. 이미지는 장식으로 처리하고 제목이나 설명을 이미지 위에 겹치지 않으며 이 section에는 WebGL canvas를 사용하지 않는다.
