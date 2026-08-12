@@ -368,12 +368,22 @@
     - [x] RevealContent를 Motion viewport/selector animation으로 통합했다.
     - [x] Landing Storybook, architecture, build와 responsive browser 회귀를 검증했다.
 
+- [DOING][PRD-FR-048] T-F022-xai-inspired-landing-motion-30 Gradient Text baseline 정렬
+  - Date: 2026-08-12
+  - Acceptance:
+    - `내 목소리`와 조사 `에`가 같은 H1 font-size·line-height·baseline에 정렬된다.
+    - Border를 표시하지 않는 Gradient Text는 inline glyph를 불필요하게 clipping하지 않는다.
+    - 공식 gradient motion, headline wrapping과 reduced-motion 계약을 유지한다.
+  - Checklist:
+    - [ ] Text-only wrapper의 overflow와 vertical alignment를 수정한다.
+    - [ ] Storybook과 Chromium desktop/mobile에서 computed size·baseline·overflow를 검증한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록

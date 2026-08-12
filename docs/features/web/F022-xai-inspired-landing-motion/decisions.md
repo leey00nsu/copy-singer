@@ -389,3 +389,10 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**: `src/shared/ui/gradient-text`, `src/shared/ui/reveal-content`, `src/_pages/home/ui/landing-hero.tsx`, `src/_pages/home/ui/landing-product-story.tsx`, `package.json`, `pnpm-lock.yaml`
 - **Test/Log**: Landing·ProductShell·VoiceOrb Storybook 13/13, Biome, TypeScript, ESLint, architecture 4/4, production build와 Chromium desktop/mobile QA 통과
 - **Consequences**: Landing에서는 Motion runtime을 Gradient Text·Hero entry·RevealContent가 공유하며 중복 Observer/state/keyframe이 제거된다. Reduced-motion과 no-JS media fallback은 Motion inline initial state보다 우선하도록 제한적으로 보존한다. Orb/audio RAF와 hover CSS는 기존 책임을 유지한다.
+
+## D025: Inline Gradient Text baseline contract (2026-08-12)
+
+- **Context**: 공식 Gradient Text wrapper를 H1 안의 inline phrase로 사용하면서 text-only mode에도 `overflow-hidden`이 적용되어 inline-block baseline이 하단 margin edge 기준으로 바뀌었고, 조사 `에`보다 gradient phrase가 위로 떠 보였다.
+- **Constraints**: Border mode의 clipping, gradient motion과 H1 typography·wrapping을 유지해야 한다.
+- **Decision**: Text-only mode는 overflow visible과 explicit baseline alignment·inherited line-height를 사용하고, overflow clipping은 border mode에만 제한한다.
+- **Rationale**: Font-size를 보정하는 임시 offset 없이 브라우저 inline formatting baseline을 복원한다.
