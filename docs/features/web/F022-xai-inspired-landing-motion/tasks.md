@@ -501,23 +501,23 @@
     - [x] ready 상태의 visual surface를 투명하게 전환한다.
     - [x] Storybook에서 ready 배경 투명성과 loading surface 유지를 검증한다.
 
-- [TODO][PRD-FR-047] T-F022-xai-inspired-landing-motion-42 브랜드 signal gradient token과 데이터 시각화 통합
+- [DONE][PRD-FR-047] T-F022-xai-inspired-landing-motion-42 브랜드 signal gradient token과 데이터 시각화 통합
   - Date: 2026-08-12
   - Acceptance:
     - violet·blue·pink 브랜드 색은 전역 token에서 관리되고 live/stored waveform과 Landing Gradient Text가 같은 source를 사용한다.
     - 음역 bar, 음정 histogram과 pitch trace는 static brand gradient를 사용하되 label·reference line·상태·button은 단색 semantic color를 유지한다.
     - light/dark에서 정보가 색만으로 전달되지 않고 기존 label, tooltip, range와 status text가 유지된다.
   - Checklist:
-    - [ ] 공통 brand color와 signal/soft gradient token을 추가하고 raw color를 제거한다.
-    - [ ] 저장/실시간 waveform, Landing Gradient Text와 보컬 분석 차트에 token을 연결한다.
-    - [ ] Storybook, TypeScript, lint, architecture와 browser QA를 통과한다.
+    - [x] 공통 brand color와 signal/soft gradient token을 추가하고 raw color를 제거한다.
+    - [x] 저장/실시간 waveform, Landing Gradient Text와 보컬 분석 차트에 token을 연결한다.
+    - [x] Storybook, TypeScript, lint, architecture와 browser QA를 통과한다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -536,6 +536,7 @@
 | `pnpm run test:storybook --run src/entities/vocal-profile/ui/vocal-profile-artwork.stories.tsx src/_pages/library/ui/library-page.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx` | `2026-08-12` | 통과 — preset-derived palette 8종, grain opacity 20%/5%, Library와 Mixing Detail artwork 회귀 7/7 |
 | `pnpm run test:storybook --run src/shared/ui/audio-waveform-player/audio-waveform-player.stories.tsx src/_pages/profile/ui/voice-scan-input.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx` | `2026-08-12` | 통과 — audio ready/loading/reduced-motion, brand progress gradient와 Profile/Mixing controls 회귀 16/16 |
 | `pnpm run test:storybook --run src/shared/ui/audio-waveform-player/audio-waveform-player.stories.tsx` | `2026-08-12` | 통과 — ready surface·waveform 투명, skeleton hidden과 loading/reduced-motion 회귀 3/3 |
+| `pnpm run test:storybook --run src/entities/vocal-profile/ui/vocal-profile-results.stories.tsx src/shared/ui/audio-waveform-player/audio-waveform-player.stories.tsx src/_pages/profile/ui/voice-scan-input.stories.tsx src/_pages/home/ui/landing-page.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx` | `2026-08-12` | 통과 — light/dark brand chart stop, live/stored waveform, Landing과 Mixing 회귀 23/23 |
 | `pnpm exec tsx --test tests/audio-waveform-player.test.ts` | `2026-08-12` | 통과 — playback time/range 계산 회귀 3/3 |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/entities/vocal-profile/ui/vocal-profile-summary.stories.tsx src/_pages/profile/ui/analysis-success.stories.tsx` | `2026-08-12` | 통과 — Landing Sample Vocal Range Profile과 실제 profile 결과 회귀 8/8 |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — 공식 Motion Gradient Text 단일 field·animationSpeed 1.5·yoyo, signed-out/in·mobile·reduced-motion 콘텐츠와 기존 Landing 회귀 4/4 |
@@ -569,5 +570,6 @@
 | Restrained Aurora preset QA | `2026-08-12` | 통과 — 실제 preset의 recursive·grain 25·gray 200 값을 확인하고 Berry/Forest/Ocean/Northern analogous family로 재구성; desktop/mobile Palette와 44px Library에서 원거리 hue 혼합·overflow 0 확인 |
 | Voice-signature palette QA | `2026-08-12` | 통과 — 동일 분석값의 Library 10개가 Violet·Ocean/Northern·Forest·Berry로 분산되고 1280px/390px에서 44px artwork 식별성과 overflow 0 확인; Palette 8개도 단일-family harmony 유지 |
 | Branded audio waveform QA | `2026-08-12` | 통과 — ready surface·waveform background `rgba(0, 0, 0, 0)`, skeleton opacity 0·visibility hidden과 72px 높이를 브라우저에서 확인; 브랜드 파형과 loading transition 유지 |
+| Brand signal gradient QA | `2026-08-12` | 통과 — Chromium 1265px에서 음역 range·histogram·pitch trace의 violet→blue→pink computed stop, static animation 0과 horizontal overflow 0을 확인; observed range는 quiet violet→blue gradient 유지 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T10:29:25.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T10:45:02.000Z -->
