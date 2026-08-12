@@ -559,3 +559,12 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**: `src/_pages/home/ui/landing-page.tsx`, `src/_pages/vocal-profile-detail/ui/vocal-profile-detail-page.tsx`, `src/entities/vocal-profile/ui/vocal-profile-results.tsx`, Mixing Detail과 관련 Storybook
 - **Trace**: Source-wide 검색에서 대상 `Vocal analysis`, `Result`, PitchTrace Collapsible import/state가 0건임을 확인했다. Storybook 24/24, TypeScript, ESLint, Biome과 architecture 4/4를 통과했고 Chromium에서 `bg-muted/55` chapter와 정적 피치 chart를 확인했다.
 - **Consequences**: D039의 초기 `muted/15~20` surface 농도는 `muted/55`로 대체한다. 내부 metric tile과 semantic status tint는 각자의 기존 역할을 유지한다.
+
+## D041: Muted surface alpha와 chart context 역할을 분리 (2026-08-12)
+
+- **Context**: `bg-muted/25`는 white background 위에서 실제 픽셀 `#fcfcfc` 부근으로 합성되어 독립 surface가 보이지 않았다. 보컬 chapter를 `bg-muted/55`로 높인 뒤에는 전체 관측 음역의 `var(--muted)` fill과 Recharts 기본 `#ccc` hover cursor까지 같은 neutral family로 겹쳤다.
+- **Decision**: Source 전체의 `bg-muted/25`를 Landing 카드와 동일한 `bg-muted/55`로 통일한다. 음역 chart에는 light `oklch(0.9 0 0)`, dark `oklch(0.38 0 0)`의 `--chart-context` token을 추가해 전체 관측 bar와 legend가 함께 사용한다. VocalRangeChart의 Tooltip은 `cursor={false}`로 설정한다.
+- **Rationale**: Surface 농도는 제품 전체에서 하나의 기준을 사용하고, chart의 neutral context는 layout surface와 분리해야 배경·전체 범위·실용 범위가 각각 다른 역할로 읽힌다. 두 행뿐인 range chart는 tooltip만으로 충분해 불투명 hover band가 필요하지 않다.
+- **Evidence**: `src/_app/styles/globals.css`, `src/entities/vocal-profile/lib/chart-brand.ts`, `src/entities/vocal-profile/ui/vocal-range-chart.tsx`, source-wide muted surface와 관련 Storybook
+- **Trace**: `bg-muted/25` source 검색 결과를 0건으로 만들고 Account, Profile, Recommendation, Mixing, Admin, Notification surface를 갱신했다. Storybook 30/30, TypeScript, ESLint, Biome과 architecture 4/4를 통과했다. Chromium에서 chapter `muted/55`, observed fill `oklch(0.9 0 0)`, practical gradient와 tooltip cursor 0을 확인했고 Account surface도 `muted/55`로 렌더링됨을 확인했다.
+- **Consequences**: 정상 상태·surface는 `muted/55`, 전체 음역 같은 neutral chart context는 `--chart-context`, 실용 signal은 restrained brand chart gradient를 사용한다. Semantic status tint와 구조적 border는 이 변경의 대상이 아니다.

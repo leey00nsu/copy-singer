@@ -589,6 +589,18 @@
     - [x] PitchTrace의 Collapsible state·trigger를 제거하고 정적 chart로 전환한다.
     - [x] 관련 Storybook, TypeScript, lint, architecture와 desktop/mobile visual QA를 통과한다.
 
+- [DONE][PRD-FR-047] T-F022-xai-inspired-landing-motion-50 Muted surface 농도와 음역 chart context 분리
+  - Date: 2026-08-12
+  - Acceptance:
+    - source-wide `bg-muted/25` surface는 Landing에서 검증한 `bg-muted/55` 농도로 통일되어 흰 배경에서 육안 구분된다.
+    - 음역 chart의 전체 관측 음역은 chapter surface와 다른 전용 neutral context token을 사용하고 실용 음역 brand gradient와 명확히 구분된다.
+    - VocalRangeChart hover는 Recharts 기본 `#ccc` cursor fill을 사용하지 않으며 tooltip 정보는 유지된다.
+  - Checklist:
+    - [x] Account, Profile, Recommendation, Mixing, Admin, Notification의 `bg-muted/25`를 전수 교체한다.
+    - [x] light/dark `chart-context` token과 SVG·legend 소비 경로를 추가한다.
+    - [x] VocalRangeChart tooltip cursor fill을 제거하고 Storybook contract를 보강한다.
+    - [x] 관련 Storybook, TypeScript, lint, architecture와 browser visual QA를 통과한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -656,5 +668,6 @@
 | SVG chart fallback QA | `2026-08-12` | 통과 — chart token을 `initial`로 리셋한 Chromium fixture에서 black stop 0, 세 gradient의 concrete OKLCH fallback과 legend linear-gradient, observed muted fill을 확인 |
 | Borderless hierarchy QA | `2026-08-12` | 통과 — 보컬 결과 2개 chapter, 추천 filter, 티켓 ledger, 곡 range와 믹싱 failure가 border 0·quiet rounded fill을 사용하고 table/list/timeline separator는 유지됨을 확인; Storybook 24/24, TypeScript, ESLint, Biome, architecture 4/4 통과 |
 | Detail eyebrow / muted surface QA | `2026-08-12` | 통과 — Landing `첫 목소리 분석 시작`과 동일한 `bg-muted/55`를 보컬 chapter·추천 filter·티켓 ledger·곡 range에 적용; `Vocal analysis`·`Result` 중복 eyebrow와 PitchTrace 접기 button 제거, Storybook 24/24·TypeScript·ESLint·Biome·architecture 4/4 및 Chromium visual QA 통과 |
+| Muted / chart context QA | `2026-08-12` | 통과 — source-wide `bg-muted/25` 0건, Account·Profile·Recommendation·Mixing·Admin·Notification을 `bg-muted/55`로 통일; light/dark chart-context 0.90/0.38과 VocalRange cursor 0을 Chromium에서 확인, Storybook 30/30·TypeScript·ESLint·Biome·architecture 4/4 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T12:05:48.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T12:22:31.000Z -->
