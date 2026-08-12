@@ -184,6 +184,17 @@
     - [x] Tailwind 생성 gradient/noise visual을 `next/image` 기반 visual로 교체하고 빈 alt의 장식 이미지 접근성 계약을 유지했다.
     - [x] Storybook과 browser에서 네 카드의 순서·crop·반응형 표시를 확인하고 관련 정적 검증을 통과했다.
 
+- [DOING][PRD-FR-045] T-F022-xai-inspired-landing-motion-13 AI 믹싱 Album Cover Stack 적용
+  - Date: 2026-08-12
+  - Acceptance:
+    - `선택한 추천곡만 AI 믹싱` 왼쪽의 검은 음표 아이콘 surface를 서로 다른 Pixabay 이미지 4장이 겹친 album-cover stack으로 교체한다.
+    - 스택은 작은 회전·offset·layer shadow로 깊이를 만들고 hover/focus에서는 절제되게 펼쳐지며, reduced-motion에서는 전환 없이 같은 정적 구성을 유지한다.
+    - 이미지는 Pixabay Content License 대상이며 출처·작가·원본 링크를 저장하고, 가짜 앨범명·아티스트나 실제 추천 결과로 오해할 정보를 표시하지 않는다.
+  - Checklist:
+    - [ ] 식별 가능한 인물·로고가 없는 Pixabay 이미지 4장을 선정하고 landing 전용 정적 자산으로 저장한다.
+    - [ ] 첨부 gallery prompt의 stack composition을 현재 Tailwind·Server Component 구조에 맞게 구현하고 검은 음표 surface를 제거한다.
+    - [ ] Storybook, typecheck, lint, build와 desktop/mobile browser에서 layer, crop, overflow와 reduced-motion을 검증한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.

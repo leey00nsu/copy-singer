@@ -155,3 +155,16 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Source assets**: 사용자 제공 `aurora-gradient-*.webp` 4장
   - **Test/Log**: landing Storybook 4/4, TypeScript와 Biome 통과
 - **Consequences**: D007의 Tailwind 생성 gradient 결정은 카드 구조와 Orb 수정에 대해서만 유지되고 Voice Notes visual 배경 선택은 이 결정으로 대체된다. 이미지 4장은 viewport 밖에서 lazy-load되며 별도 canvas나 animation runtime을 추가하지 않는다.
+
+## D009: AI 믹싱 Pixabay Album Cover Stack (2026-08-12)
+
+- **Context**: 사용자가 `선택한 추천곡만 AI 믹싱` 왼쪽의 검은 음표 아이콘 대신 첨부 gallery prompt를 참고한 album-cover stack과 Pixabay 무료 이미지 4장을 요청했다.
+- **Constraints**: LandingProductStory의 Server Component 경계, 작은 bento 높이, reduced-motion, 데이터 정직성, Pixabay Content License와 출처 추적을 유지한다. 프로젝트에는 Framer Motion이 없다.
+- **Options**: 첨부 prompt를 그대로 복사하고 Framer Motion 추가 / CSS·Tailwind 정적 stack과 hover fan-out / 한 장의 cover만 표시
+- **Decision**: 식별 가능한 인물·로고가 없는 Pixabay 이미지 4장을 로컬 자산으로 저장하고, absolute layer·작은 rotation·shadow와 group hover/focus-within transition으로 stack을 구현한다. drag, random rotation과 Framer Motion은 도입하지 않는다.
+- **Rationale**: 첨부 예시의 겹침과 깊이는 살리면서 번들·hydration·임의성·모바일 drag 문제를 추가하지 않고 기존 bento와 motion 계약에 맞출 수 있다.
+- **Trace**:
+  - **DOING 시작 전**: Pixabay 공식 이미지 페이지와 Content License Summary를 확인하고 stars mountain, sunset sea, neon city, vinyl close-up 네 장을 선택했다.
+- **Evidence**:
+  - **License**: `https://pixabay.com/service/license-summary/`
+  - **Sources**: Pixabay `5442598`, `6887775`, `3880335`, `8163074`
