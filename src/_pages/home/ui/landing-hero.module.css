@@ -24,6 +24,22 @@
   animation-delay: calc(90ms + var(--word-index) * 62ms);
 }
 
+.gradientText {
+  display: inline-block;
+  color: transparent;
+  background-image: linear-gradient(
+    90deg,
+    var(--data-accent-foreground),
+    oklch(0.59 0.18 260),
+    oklch(0.67 0.17 330),
+    var(--data-accent-foreground)
+  );
+  background-size: 300% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: gradient-text-shift 1.5s linear infinite;
+}
+
 .sectionReveal {
   animation: section-entry linear both;
   animation-timeline: view();
@@ -56,6 +72,16 @@
   }
 }
 
+@keyframes gradient-text-shift {
+  from {
+    background-position: 0% 50%;
+  }
+
+  to {
+    background-position: 100% 50%;
+  }
+}
+
 @keyframes section-entry {
   from {
     opacity: 0.35;
@@ -76,5 +102,10 @@
     filter: none;
     opacity: 1;
     transform: none;
+  }
+
+  .gradientText {
+    animation: none;
+    background-position: 50% 50%;
   }
 }

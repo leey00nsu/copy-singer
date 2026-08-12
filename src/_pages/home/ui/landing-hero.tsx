@@ -43,7 +43,18 @@ function LandingHero({ primaryLabel, profileHref }: LandingHeroProps) {
           >
             <span aria-hidden="true">
               <span className={styles.wordLine}>
-                <StaggeredWords text="내 목소리에 맞는 노래를 찾고," />
+                <span className={styles.word} style={{ "--word-index": 0 } as CSSProperties}>
+                  <span className={styles.gradientText} data-gradient-text>
+                    내
+                  </span>
+                </span>{" "}
+                <span className={styles.word} style={{ "--word-index": 1 } as CSSProperties}>
+                  <span className={styles.gradientText} data-gradient-text>
+                    목소리
+                  </span>
+                  에
+                </span>{" "}
+                <StaggeredWords startIndex={2} text="맞는 노래를 찾고," />
               </span>
               <span className={`${styles.wordLine} block`}>
                 <StaggeredWords startIndex={5} text="가장 나답게 완성하세요." />
