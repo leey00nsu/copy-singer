@@ -1,0 +1,41 @@
+.root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  isolation: isolate;
+}
+
+.fallback {
+  position: absolute;
+  inset: 15%;
+  z-index: -1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 28%, rgb(255 255 255 / 0.94), transparent 18%),
+    radial-gradient(circle at 62% 62%, rgb(26 18 54), transparent 47%),
+    conic-gradient(from 210deg, #a68aff, #27358a, #df82ff, #5e51d8, #a68aff);
+  box-shadow:
+    inset -18px -24px 38px rgb(11 10 28 / 0.75),
+    inset 14px 10px 30px rgb(255 255 255 / 0.2),
+    0 28px 70px -34px rgb(92 61 202 / 0.85);
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.root[data-orb-fallback="true"] .canvas {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fallback {
+    box-shadow:
+      inset -18px -24px 38px rgb(11 10 28 / 0.75),
+      inset 14px 10px 30px rgb(255 255 255 / 0.2),
+      0 20px 46px -32px rgb(92 61 202 / 0.65);
+  }
+}

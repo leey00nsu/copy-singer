@@ -18,38 +18,6 @@
   animation-delay: 210ms;
 }
 
-.productBento > * {
-  animation: landing-entry 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: 240ms;
-}
-
-.productBento > :nth-child(2) {
-  animation-delay: 290ms;
-}
-
-.productBento > :nth-child(3) {
-  animation-delay: 340ms;
-}
-
-.productBento > :nth-child(4),
-.productBento > :nth-child(5) {
-  animation-delay: 390ms;
-}
-
-.orbPoster {
-  width: min(72%, 12rem);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 34% 28%, rgb(255 255 255 / 0.94), transparent 18%),
-    radial-gradient(circle at 62% 62%, rgb(26 18 54), transparent 47%),
-    conic-gradient(from 210deg, #a68aff, #27358a, #df82ff, #5e51d8, #a68aff);
-  box-shadow:
-    inset -18px -24px 38px rgb(11 10 28 / 0.75),
-    inset 14px 10px 30px rgb(255 255 255 / 0.2),
-    0 28px 70px -34px rgb(92 61 202 / 0.85);
-}
-
 .sectionReveal {
   animation: section-entry linear both;
   animation-timeline: view();
@@ -82,7 +50,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .heroCopy > *,
-  .productBento > *,
   .sectionReveal {
     animation: none;
     transform: none;

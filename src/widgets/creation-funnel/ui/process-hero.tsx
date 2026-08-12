@@ -1,6 +1,7 @@
 import { Check, TriangleAlert } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
+import { VoiceOrb } from "@/shared/ui/voice-orb";
 
 export function ProcessHero({
   action,
@@ -36,15 +37,7 @@ export function ProcessHero({
 
       <div className="mx-auto mt-7 grid aspect-square w-[min(22rem,78vw)] place-items-center" aria-hidden="true">
         {tone === "active" ? (
-          <div className="relative grid size-full place-items-center">
-            <span className="absolute inset-[8%] rounded-full border border-dashed border-data-accent/20" />
-            <span className="absolute inset-[16%] rounded-full border border-dashed border-data-accent/15" />
-            <span className="absolute inset-[24%] rounded-full border border-dashed border-data-accent/10" />
-            <span className="relative block aspect-square w-[48%] overflow-hidden rounded-full bg-violet-50 shadow-[0_24px_60px_oklch(0.75_0.09_285/0.15)]">
-              <span className="absolute -inset-1/3 animate-[spin_8s_linear_infinite] rounded-full bg-[conic-gradient(from_30deg,oklch(0.82_0.12_292/0.85),oklch(0.9_0.09_220/0.82),oklch(0.9_0.1_20/0.72),oklch(0.84_0.1_260/0.82),oklch(0.82_0.12_292/0.85))] blur-xl motion-reduce:animate-none" />
-              <span className="absolute inset-[12%] rounded-full bg-[radial-gradient(circle_at_32%_28%,oklch(0.95_0.04_315/0.95),transparent_42%),radial-gradient(circle_at_68%_65%,oklch(0.9_0.08_230/0.9),transparent_48%),oklch(0.93_0.055_285)] blur-md" />
-            </span>
-          </div>
+          <VoiceOrb hoverIntensity={0} hue={294} rotateOnHover={false} />
         ) : (
           <span
             className={cn(

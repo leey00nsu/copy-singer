@@ -1,8 +1,7 @@
 import { ArrowUpRight, Check, Music2, Sparkles } from "lucide-react";
 
 import { BentoGrid, BentoGridItem } from "@/shared/ui/bento-grid";
-
-import styles from "./landing-hero.module.css";
+import { VoiceOrb } from "@/shared/ui/voice-orb";
 
 function AnalysisSurface() {
   return (
@@ -83,7 +82,7 @@ function MixingSurface() {
 function OrbPoster() {
   return (
     <div className="relative grid h-full min-h-52 w-full place-items-center overflow-hidden bg-[#fafafa]">
-      <span aria-hidden="true" className={styles.orbPoster} />
+      <VoiceOrb className="absolute inset-0" hoverIntensity={0} hue={294} rotateOnHover={false} />
       <div className="absolute inset-x-5 top-5 flex items-center justify-between text-[9px] text-muted-foreground">
         <span>VOICE SIGNAL</span>
         <Sparkles aria-hidden="true" className="size-3" />
@@ -98,7 +97,7 @@ function LandingProductStory() {
       className="mx-auto w-full max-w-[72rem] px-5 pt-16 pb-24 sm:px-7 sm:pt-20 lg:px-8 lg:pb-36"
       id="how-it-works"
     >
-      <BentoGrid aria-label="Copy Singer 제품 흐름 미리보기" className={styles.productBento}>
+      <BentoGrid aria-label="Copy Singer 제품 흐름 미리보기">
         <BentoGridItem
           className="md:col-span-2"
           description="목소리의 범위와 안정성을 같은 기준으로"
