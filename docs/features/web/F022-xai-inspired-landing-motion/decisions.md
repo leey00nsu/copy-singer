@@ -396,3 +396,8 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Constraints**: Border mode의 clipping, gradient motion과 H1 typography·wrapping을 유지해야 한다.
 - **Decision**: Text-only mode는 overflow visible과 explicit baseline alignment·inherited line-height를 사용하고, overflow clipping은 border mode에만 제한한다.
 - **Rationale**: Font-size를 보정하는 임시 offset 없이 브라우저 inline formatting baseline을 복원한다.
+- **Trace**:
+  - **DONE 전 확정 시점**: 첫 수정에서 `inline-block` 두 겹 때문에 desktop 4.8125px·mobile 2.75px 차이가 남는 것을 Storybook assertion으로 발견했다. Text-only mode의 두 wrapper를 실제 inline formatting으로 바꾼 뒤 desktop/mobile 모두 baseline delta 0px를 확인했다.
+- **Evidence**: `src/shared/ui/gradient-text/gradient-text.tsx`, `src/_pages/home/ui/landing-page.stories.tsx`
+- **Test/Log**: Landing Storybook 4/4, Biome, TypeScript와 Chromium desktop/mobile QA 통과
+- **Consequences**: Border mode는 기존 clipping과 radius를 유지하고 text-only mode만 주변 조사·문장과 동일한 baseline을 사용한다.

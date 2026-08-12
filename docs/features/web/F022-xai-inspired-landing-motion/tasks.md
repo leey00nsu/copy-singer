@@ -368,22 +368,22 @@
     - [x] RevealContent를 Motion viewport/selector animation으로 통합했다.
     - [x] Landing Storybook, architecture, build와 responsive browser 회귀를 검증했다.
 
-- [DOING][PRD-FR-048] T-F022-xai-inspired-landing-motion-30 Gradient Text baseline 정렬
+- [DONE][PRD-FR-048] T-F022-xai-inspired-landing-motion-30 Gradient Text baseline 정렬
   - Date: 2026-08-12
   - Acceptance:
     - `내 목소리`와 조사 `에`가 같은 H1 font-size·line-height·baseline에 정렬된다.
     - Border를 표시하지 않는 Gradient Text는 inline glyph를 불필요하게 clipping하지 않는다.
     - 공식 gradient motion, headline wrapping과 reduced-motion 계약을 유지한다.
   - Checklist:
-    - [ ] Text-only wrapper의 overflow와 vertical alignment를 수정한다.
-    - [ ] Storybook과 Chromium desktop/mobile에서 computed size·baseline·overflow를 검증한다.
+    - [x] Text-only wrapper의 overflow와 vertical alignment를 수정했다.
+    - [x] Storybook과 Chromium desktop/mobile에서 computed size·baseline·overflow를 검증했다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -415,8 +415,9 @@
 | Hero Gradient Text QA | `2026-08-12` | 통과 — desktop/mobile에서 `내 목소리` 2개 segment, violet→blue→pink background와 duration 1.5s 확인; heading 시각 문구·조사·word reveal 유지, 390px overflow 0 |
 | Gradient Text loop QA | `2026-08-12` | 통과 — Storybook browser에서 0ms와 1500ms background-position 동일, 750ms position 상이, linear infinite와 reduced-motion 0s 확인 |
 | Official Gradient Text / Motion QA | `2026-08-12` | 통과 — Chromium 1440×1000·390×844에서 `내 목소리` 단일 violet→pink field, 조사 foreground, Hero word/copy reveal과 bento/section one-shot reveal 확인; mobile scrollWidth=clientWidth=390 |
+| Gradient Text baseline QA | `2026-08-12` | 통과 — Chromium desktop 70.4px/71.808px, mobile 42.4px/43.248px font-size/line-height 일치; `내 목소리`와 조사 `에`의 baseline delta 0px, overflow 0 |
 | Voice Notes / Orb QA | `2026-08-12` | 통과 — 독립 Voice Notes 4개와 Tailwind grain gradient 직접 검토, Grainient canvas 0개·Orb canvas 1개, Orb root transparent·fallback opacity 0, gray half/square artifact와 horizontal overflow 0 확인; 관련 Storybook 10/10 통과 |
 | Voice Notes Aurora QA | `2026-08-12` | 통과 — 1440×1000에서 4-up 263×159 crop, 390×844에서 1열 335×203 crop과 밝은 ice→cyan→blue-violet→dark neutral 순서를 직접 확인; desktop/mobile horizontal overflow 0, console warning/error 0 |
 | Album Cover Stack QA | `2026-08-12` | 통과 — 1440×1000에서 4개 cover layer와 hover fan-out, 390×844에서 stacked mixing card와 crop 확인; horizontal overflow 0, console warning/error 0, reduced-motion story 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T08:29:30.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T08:36:00.000Z -->
