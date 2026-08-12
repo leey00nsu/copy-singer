@@ -1,9 +1,25 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, fn, userEvent, within } from "storybook/test";
+import { useState } from "react";
+import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 import { RecorderSurface } from "./vocal-profile-recorder";
 import { VoiceScanInput } from "./voice-scan-input";
 
 const noop = fn();
+
+function RecorderTransitionPreview() {
+  const [state, setState] = useState<"idle" | "recording">("idle");
+
+  return (
+    <RecorderSurface
+      elapsedMs={state === "recording" ? 1_200 : 0}
+      maxDurationMs={60_000}
+      onCancel={() => setState("idle")}
+      onStart={() => setState("recording")}
+      onStop={() => setState("idle")}
+      state={state}
+    />
+  );
+}
 
 const meta = {
   title: "Pages/Profile/VoiceScanInput",
@@ -43,8 +59,11 @@ export const Idle: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("button", { name: "마이크로 녹음 시작" })).toBeVisible();
     await expect(canvas.getByText(/최대 25MB/)).toBeVisible();
+    await expect(canvas.queryByTestId("recording-elapsed-time")).not.toBeInTheDocument();
     const surface = canvas.getByRole("img", { name: "녹음 대기 상태" });
+    await expect(surface).toHaveAttribute("data-recorder-visual-state", "idle");
     await expect(getComputedStyle(surface).borderTopWidth).toBe("0px");
+    await expect(getComputedStyle(surface).transitionProperty).toContain("height");
     await expect(getComputedStyle(canvas.getByTestId("voice-orb")).filter).toContain("grayscale(1)");
   },
 };
@@ -77,15 +96,36 @@ export const Recording: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByText("권장 녹음 시간을 채웠어요")).toBeVisible();
     await expect(canvas.getByRole("button", { name: "녹음 완료" })).toBeVisible();
+    await expect(canvas.getByTestId("recording-elapsed-time")).toHaveTextContent("0:12.4");
     await expect(canvas.getByRole("img", { name: "실시간 마이크 입력 반응과 파형" })).toBeVisible();
     await expect(canvas.getByTestId("voice-signal-core")).toHaveAttribute("data-signal-mode", "recording");
     const waveform = canvas.getByTestId("recording-scrolling-waveform");
-    await expect(waveform).toBeVisible();
+    await waitFor(() => expect(waveform).toBeVisible());
     await expect(waveform).toHaveAttribute("data-waveform-gradient", "brand");
     await expect(waveform).toHaveAttribute("data-waveform-source", "elevenlabs-ui-scrolling-waveform");
+    await expect(getComputedStyle(waveform).animationName).not.toBe("none");
     const surface = canvas.getByRole("img", { name: "실시간 마이크 입력 반응과 파형" });
+    await expect(surface).toHaveAttribute("data-recorder-visual-state", "recording");
     await expect(getComputedStyle(surface).backgroundColor).toBe("rgba(0, 0, 0, 0)");
     await expect(getComputedStyle(surface).borderTopWidth).toBe("0px");
+  },
+};
+
+export const RecordingTransition: Story = {
+  render: () => <RecorderTransitionPreview />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const idleOrb = canvas.getByTestId("voice-orb");
+    await expect(canvas.queryByTestId("recording-elapsed-time")).not.toBeInTheDocument();
+    await waitFor(() => expect(idleOrb.querySelector("canvas")).not.toBeNull());
+    const shaderCanvas = idleOrb.querySelector("canvas");
+
+    await userEvent.click(canvas.getByRole("button", { name: "마이크로 녹음 시작" }));
+
+    await expect(canvas.getByRole("img", { name: "실시간 마이크 입력 반응과 파형" })).toBeVisible();
+    await expect(canvas.getByTestId("recording-elapsed-time")).toHaveTextContent("0:01.2");
+    await waitFor(() => expect(canvas.getByTestId("recording-scrolling-waveform")).toBeVisible());
+    await expect(canvas.getByTestId("voice-orb").querySelector("canvas")).toBe(shaderCanvas);
   },
 };
 

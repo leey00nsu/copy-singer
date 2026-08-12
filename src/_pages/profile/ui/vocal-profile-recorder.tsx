@@ -43,6 +43,7 @@ export function RecorderSurface({
   state,
 }: RecorderSurfaceProps) {
   const active = state === "requesting_permission" || state === "recording" || state === "stopping";
+  const recordingStarted = state === "recording" || state === "stopping" || state === "ready" || elapsedMs > 0;
   const signalMode: VoiceSignalMode =
     state === "recording"
       ? "recording"
@@ -75,19 +76,30 @@ export function RecorderSurface({
         aria-label={
           state === "recording" ? "실시간 마이크 입력 반응과 파형" : active ? "마이크 연결 상태" : "녹음 대기 상태"
         }
-        className={`relative flex justify-center overflow-hidden bg-transparent px-4 ${
-          state === "recording" ? "min-h-72 items-start py-4" : "min-h-48 items-center py-8"
+        className={`relative flex items-start justify-center overflow-hidden bg-transparent px-4 py-4 transition-[height] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
+          state === "recording" ? "h-72" : "h-60 sm:h-64"
         }`}
+        data-recorder-visual-state={state}
         role="img"
       >
-        <VoiceSignalCore className="size-44 sm:size-48" mode={signalMode} stream={microphoneStream} />
+        <VoiceSignalCore
+          className={`size-44 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:translate-y-0 motion-reduce:transition-none sm:size-48 ${
+            state === "recording" ? "translate-y-0" : "translate-y-4"
+          }`}
+          mode={signalMode}
+          stream={microphoneStream}
+        />
       </div>
 
       <div className="mt-6 text-center">
-        <span className="font-mono text-sm tabular-nums">
-          <span className="sr-only">녹음 시간 </span>
-          {formatElapsed(elapsedMs)}
-        </span>
+        <div className="h-5">
+          {recordingStarted ? (
+            <span className="font-mono text-sm tabular-nums" data-testid="recording-elapsed-time">
+              <span className="sr-only">녹음 시간 </span>
+              {formatElapsed(elapsedMs)}
+            </span>
+          ) : null}
+        </div>
         <p aria-live="polite" className="mt-3 text-sm font-medium">
           {stateCopy}
         </p>
