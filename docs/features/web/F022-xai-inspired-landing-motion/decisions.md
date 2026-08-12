@@ -177,10 +177,13 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Context**: 사용자가 Hero 텍스트의 단어별 순차 등장, bento 전체 fade-in, Recommended key와 metric band의 React Bits Count Up 애니메이션을 요청했다.
 - **Constraints**: LandingPage와 정적 문구의 Server Component 경계를 유지하고, screen reader 중복 낭독·layout shift·무한 background animation과 `motion/react` 신규 의존성을 피해야 한다.
 - **Options**: React Bits 원본과 `motion/react` 추가 / CSS keyframe과 requestAnimationFrame 기반 작은 client island / 모든 숫자를 CSS counter로만 모사
-- **Decision**: 구현 및 검증 후 확정한다. 초기 방향은 Hero의 접근 가능한 원문과 `aria-hidden` visual word span을 분리한 CSS stagger, bento wrapper의 단일 CSS fade, React Bits의 viewport-triggered Count Up 동작을 기존 API만으로 재구성한 공통 client island다.
-- **Rationale**: 구현 및 검증 후 확정한다.
+- **Decision**: Hero heading은 하나의 `aria-label`과 `aria-hidden` visual word span으로 구성하고 설명은 공백을 보존한 word span으로 구성해 CSS stagger를 적용한다. Bento는 `RevealContent`의 configurable opacity·duration을 이용해 전체 wrapper 하나가 1.4초 동안 fade-in한다. React Bits Count Up의 viewport-triggered transition은 `requestAnimationFrame`·IntersectionObserver 기반 공통 `CountUpText` island로 재구성하고 추천 키는 `−2 → 1 → −1 → 0` 순서로 순환한다.
+- **Rationale**: 정적 Server Component의 문장·레이아웃과 screen reader용 전체 heading을 유지하면서 client JavaScript는 숫자 island에만 제한할 수 있다. deterministic cycle은 random 값보다 visual regression과 사용자 이해가 안정적이며 `motion/react` 번들 추가가 필요 없다.
 - **Trace**:
   - **DOING 시작 시점**: React Bits 공식 Count Up source가 `useInView`, motion value와 spring을 사용해 viewport 진입 시 목표 숫자로 이동하는 구조임을 확인했다. 현재 프로젝트에는 `motion/react`가 없으므로 같은 사용자 경험을 requestAnimationFrame·IntersectionObserver와 deterministic cycle로 재구성하는 방향을 검토한다.
+  - **DONE 전 확정 시점**: Hero 단어 index를 연속 배정하고 bento 전체의 초기 opacity 0·duration 1400ms를 Storybook contract로 고정했다. CountUp은 reduced-motion/API 미지원 시 SSR 최종값을 유지하고, viewport 밖·background에서는 RAF와 timer를 정리한다. 실제 브라우저에서 초기 word/bento opacity 0, 완료 opacity 1, 추천 키 `−2 → 1`, metric `1초+·0초·0단계 → 5초+·60초·3단계`와 1440/390 overflow 0을 확인했다.
 - **Evidence**:
   - **Reference**: `https://www.reactbits.dev/text-animations/count-up`
   - **Source**: `https://github.com/DavidHDev/react-bits/blob/main/src/ts-tailwind/TextAnimations/CountUp/CountUp.tsx`
+- **Test/Log**: landing Storybook 4/4, Biome, TypeScript, ESLint, architecture boundary와 Next.js 16.3 production build 통과
+- **Consequences**: `CountUpText`는 숫자 애니메이션의 공통 public API가 되고 `RevealContent`는 기존 기본값을 보존하면서 시작 opacity·거리·duration을 선택적으로 받을 수 있다. 추천 키 순환은 예시 visual이며 접근 가능한 텍스트는 안정적인 `추천 키 예시 마이너스 2`로 유지한다.
