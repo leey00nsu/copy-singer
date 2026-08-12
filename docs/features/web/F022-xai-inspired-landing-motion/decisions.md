@@ -531,3 +531,12 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 사용 API와 맞지 않는 추상화를 제거해 token 목록이 실제 계약을 정확히 반영하게 한다.
 - **Evidence**: `src/_app/styles/globals.css`, source-wide `rg` 결과
 - **Trace**: Light/dark에서 총 여섯 shorthand 선언을 제거하고 source-wide 검색 결과를 0건으로 만들었다. 개별 stop을 소비하는 chart/audio/live waveform/Landing Storybook 21/21, TypeScript와 lint를 통과했다.
+
+## D038: 장식 hairline은 quiet surface로, 티켓 차감은 neutral semantic tone으로 정리 (2026-08-12)
+
+- **Context**: Landing 이후 border 정리에도 보컬 프로필의 `border-x-0` Card가 상·하단 hairline을 반복했고, TicketLedger의 정상 차감이 warning 색으로 표시됐다. 추천·믹싱·알림·모바일 action에도 내용 구조와 무관한 `border-y`가 남아 있었다.
+- **Constraints**: 차트 좌표선, form control, audio player, table/list row, focus와 overlay 경계는 구조와 조작 가능성을 전달하므로 유지해야 한다. 티켓 방향은 색만이 아니라 부호·화살표·유형 텍스트로 계속 설명해야 한다.
+- **Decision**: 보컬 profile chart section은 transparent borderless editorial Card로, stat 묶음은 rounded quiet fill로 전환한다. Empty/error는 shared `StatusNotice`, loading은 borderless skeleton surface를 사용한다. TicketLedger outer hairline을 제거하고 지급·환불은 success, 정상 차감은 foreground/muted neutral tone으로 표시한다. 추천·믹싱 stat, 알림 outer rail과 mobile navigation의 장식 `border-y`도 같은 규칙으로 정리하며 floating action은 전체 rounded border·blur·shadow를 사용한다.
+- **Rationale**: 경계선을 구조적 affordance에만 남기면 Landing의 넓은 whitespace와 quiet surface 언어가 제품 화면까지 이어진다. 정상 소비를 warning으로 보이지 않게 하면서도 부호와 icon을 통해 증감 의미는 명확히 유지된다.
+- **Evidence**: `src/entities/vocal-profile/ui`, `src/entities/ticket/ui/ticket-ledger.tsx`, `src/widgets/creation-funnel/ui/funnel-action-bar.tsx`, Recommendation, Mixing Detail, Notifications와 ProductShell surface
+- **Trace**: Storybook 34/34, TypeScript, ESLint, architecture boundary를 통과했다. Chromium 1280px에서 profile editorial section top/bottom border 0px·overflow 0, TicketLedger outer border 0px와 credit success/debit neutral computed color를 확인했고 390px floating action은 좌우 16px 여백, 10px radius, 24px blur와 overflow 0을 확인했다. Console warning/error는 0건이었다.

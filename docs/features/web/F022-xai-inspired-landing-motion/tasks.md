@@ -551,24 +551,24 @@
     - [x] light/dark chart stop과 fallback을 같은 값으로 조정한다.
     - [x] Storybook 5/5, TypeScript와 browser visual QA를 통과한다.
 
-- [TODO][PRD-FR-047] T-F022-xai-inspired-landing-motion-47 Semantic border와 티켓 변동 surface 정합성 정리
+- [DONE][PRD-FR-047] T-F022-xai-inspired-landing-motion-47 Semantic border와 티켓 변동 surface 정합성 정리
   - Date: 2026-08-12
   - Acceptance:
     - 보컬 프로필의 장식성 상·하단 hairline과 bespoke empty/error border를 제거하되 차트 좌표선, form control, audio player와 table/list row의 구조적 경계는 유지한다.
     - 티켓 변경 내역은 외곽 hairline을 제거하고 지급·환불은 success, 정상 차감은 neutral semantic tone으로 구분하며 브랜드 gradient를 사용하지 않는다.
     - 추천·믹싱·알림·모바일 action/navigation surface의 불필요한 border-y를 동일 semantic surface 규칙으로 정리하고 desktop/mobile에서 정보 구조와 focus affordance를 유지한다.
   - Checklist:
-    - [ ] 보컬 프로필 결과·요약·대표 음역 상태 surface를 정리하고 shared StatusNotice 또는 quiet skeleton을 재사용한다.
-    - [ ] TicketLedger의 outer border와 증감 icon/number tone을 정리한다.
-    - [ ] FunnelActionBar, 추천·곡 상세, 믹싱 상세, 알림과 모바일 메뉴의 장식성 border-y를 선별 정리한다.
-    - [ ] 관련 Storybook, TypeScript, lint와 desktop/mobile visual QA를 통과한다.
+    - [x] 보컬 프로필 결과·요약·대표 음역 상태 surface를 정리하고 shared StatusNotice 또는 quiet skeleton을 재사용한다.
+    - [x] TicketLedger의 outer border와 증감 icon/number tone을 정리한다.
+    - [x] FunnelActionBar, 추천·곡 상세, 믹싱 상세, 알림과 모바일 메뉴의 장식성 border-y를 선별 정리한다.
+    - [x] 관련 Storybook, TypeScript, lint와 desktop/mobile visual QA를 통과한다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -600,7 +600,9 @@
 | `pnpm exec biome check src/_pages/home/ui/landing-page.tsx src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — Voice Notes 이미지 markup과 Storybook assertion format/lint 확인 |
 | `pnpm exec biome check src/_pages/home/ui/landing-page.tsx src/_pages/home/ui/landing-hero.tsx src/_pages/home/ui/landing-hero.module.css` | `2026-08-12` | 통과 — 3개 landing 파일 format/lint 확인 |
 | `pnpm run typecheck` | `2026-08-12` | 통과 — 신규 landing story component 포함 TypeScript 오류 없음 |
-| `pnpm run lint` | `2026-08-12` | 통과 — 전체 ESLint 오류 없음 |
+| `pnpm run test:storybook --run src/entities/vocal-profile/ui/vocal-profile-results.stories.tsx src/entities/vocal-profile/ui/vocal-profile-summary.stories.tsx src/entities/ticket/ui/ticket-ledger.stories.tsx src/_pages/account/ui/account-overview.stories.tsx src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-12` | 통과 — semantic border, ticket credit/debit tone, profile/recommendation/mixing/mobile shell 회귀 34/34 |
+| `pnpm run check:architecture` | `2026-08-12` | 통과 — Steiger와 FSD/client-server boundary 4/4 |
+| `pnpm run lint` | `2026-08-12` | 통과 — semantic surface 변경 포함 전체 ESLint 오류 없음 |
 | `pnpm run test:architecture-boundaries` | `2026-08-12` | 통과 — FSD, client/server와 root App boundary 4/4 |
 | `pnpm run build` | `2026-08-12` | 통과 — Next.js 16.3 production build, TypeScript와 29개 static page 생성 완료 |
 | Browser responsive QA | `2026-08-12` | 통과 — scroll 전 section 16px·card 6px·metric opacity 0·hairline scaleX 0·CTA pure fade 상태와 진입 후 최종 상태를 확인; editorial 4단계·metric 3개·Voice Notes 4개 순차 reveal, 390px/1440px overflow 0 |
@@ -627,4 +629,4 @@
 | Restrained vocal chart QA | `2026-08-12` | 통과 — Chromium 1265px에서 전체 관측 bar fill `oklch(0.97 0 0)`, 범례 2개·중앙음 범례 0, 최종 chart stop 0.74/0.76/0.78 lightness와 overflow 0을 확인 |
 | SVG chart fallback QA | `2026-08-12` | 통과 — chart token을 `initial`로 리셋한 Chromium fixture에서 black stop 0, 세 gradient의 concrete OKLCH fallback과 legend linear-gradient, observed muted fill을 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T11:12:12.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T11:30:00.000Z -->
