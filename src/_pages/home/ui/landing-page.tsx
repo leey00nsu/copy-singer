@@ -2,6 +2,7 @@ import { ArrowRight, Library, Mic2, Music2, Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { CountUpText } from "@/shared/ui/count-up-text";
 import { RevealContent } from "@/shared/ui/reveal-content";
 import { ProductFooter, ProductHeader, type ProductUser } from "@/widgets/product-shell";
 
@@ -56,6 +57,12 @@ const voiceNotes = [
     label: "AI mixing",
     title: "결과 보관하기",
   },
+] as const;
+
+const metrics = [
+  { label: "분석 가능한 최소 입력", suffix: "초+", value: 5 },
+  { label: "한 번에 담는 최대 입력", suffix: "초", value: 60 },
+  { label: "분석부터 믹싱까지", suffix: "단계", value: 3 },
 ] as const;
 
 function LandingPage({ admin = false, user = null }: { admin?: boolean; user?: ProductUser | null }) {
@@ -120,17 +127,15 @@ function LandingPage({ admin = false, user = null }: { admin?: boolean; user?: P
 
         <section className="border-y">
           <div className={`${railClass} grid sm:grid-cols-3 sm:divide-x`}>
-            {[
-              ["5초+", "분석 가능한 최소 입력"],
-              ["60초", "한 번에 담는 최대 입력"],
-              ["3단계", "분석부터 믹싱까지"],
-            ].map(([value, label], index) => (
+            {metrics.map(({ label, suffix, value }, index) => (
               <RevealContent
                 className="border-b py-16 text-center last:border-b-0 sm:border-b-0 sm:px-7 sm:py-20"
                 delay={index * 70}
-                key={value}
+                key={label}
               >
-                <p className="text-5xl font-light tracking-[-0.055em] sm:text-6xl">{value}</p>
+                <p className="text-5xl font-light tracking-[-0.055em] sm:text-6xl">
+                  <CountUpText ariaLabel={`${value}${suffix}`} delay={index * 90} suffix={suffix} to={value} />
+                </p>
                 <p className="mt-4 text-[10px] text-muted-foreground">{label}</p>
               </RevealContent>
             ))}

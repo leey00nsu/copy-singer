@@ -22,6 +22,10 @@ type Story = StoryObj<typeof meta>;
 
 async function expectLandingStructure(canvasElement: HTMLElement) {
   const canvas = within(canvasElement);
+  const bento = canvas.getByLabelText("Copy Singer 제품 흐름 미리보기");
+  await expect(bento.parentElement).toHaveStyle({ "--reveal-duration": "1400ms", "--reveal-opacity": "0" });
+  bento.scrollIntoView({ block: "center" });
+  await waitFor(() => expect(bento).toBeVisible());
   await expect(canvas.getAllByRole("heading", { level: 1 })).toHaveLength(1);
   const analysis = canvas.getByRole("heading", { name: "목소리 분석" });
   const recommendation = canvas.getByRole("heading", { name: "노래와 키 추천" });
@@ -32,9 +36,12 @@ async function expectLandingStructure(canvasElement: HTMLElement) {
   const albumCoverStack = canvas.getByTestId("album-cover-stack");
   await expect(albumCoverStack).toBeVisible();
   await expect(albumCoverStack.querySelectorAll("img")).toHaveLength(4);
-  await expect(canvas.getByText("5초+")).toBeVisible();
-  await expect(canvas.getByText("60초")).toBeVisible();
-  await expect(canvas.getByText("3단계")).toBeVisible();
+  await expect(canvas.getByText("5초+", { selector: ".sr-only" })).toBeInTheDocument();
+  await expect(canvas.getByText("60초", { selector: ".sr-only" })).toBeInTheDocument();
+  await expect(canvas.getByText("3단계", { selector: ".sr-only" })).toBeInTheDocument();
+  await expect(canvas.getByText("추천 키 예시 마이너스 2", { selector: ".sr-only" })).toBeInTheDocument();
+  await expect(canvasElement.querySelectorAll("[data-count-up-target]")).toHaveLength(4);
+  await expect(canvasElement.querySelectorAll("h1 [aria-hidden='true'] > span")).not.toHaveLength(0);
   await expect(canvas.getByRole("heading", { name: "더 좋은 한 소절을 위한 짧은 안내" })).toBeVisible();
   await expect(canvas.queryByTestId("grainient-background")).not.toBeInTheDocument();
   const firstVoiceNote = canvas.getByRole("heading", { name: "편하게 녹음하기" });
@@ -61,7 +68,7 @@ export const SignedOut: Story = {
       "href",
       "/login?callbackURL=%2Fprofile",
     );
-    await expect(canvas.getByLabelText("Copy Singer 제품 흐름 미리보기")).toBeVisible();
+    await expect(canvas.getByLabelText("Copy Singer 제품 흐름 미리보기")).toBeInTheDocument();
     await expect(canvas.getByRole("link", { name: "라이브러리 보기" })).toHaveAttribute(
       "href",
       "/login?callbackURL=%2Flibrary",
@@ -80,7 +87,7 @@ export const Mobile: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("heading", { level: 1 })).toBeVisible();
     await expect(canvas.getByRole("button", { name: "무료로 시작하기: 목소리 분석 시작" })).toBeVisible();
-    await expect(canvas.getByLabelText("Copy Singer 제품 흐름 미리보기")).toBeVisible();
+    await expect(canvas.getByLabelText("Copy Singer 제품 흐름 미리보기")).toBeInTheDocument();
     await expectLandingStructure(canvasElement);
     await expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(document.documentElement.clientWidth);
   },
@@ -106,7 +113,7 @@ export const ReducedMotion: Story = {
     await expect(canvas.getByTestId("reduced-motion-preview")).toBeVisible();
     await expect(canvas.getByRole("heading", { level: 1 })).toBeVisible();
     await expect(canvas.getByRole("button", { name: "무료로 시작하기: 목소리 분석 시작" })).toBeVisible();
-    await expect(canvas.getByLabelText("Copy Singer 제품 흐름 미리보기")).toBeVisible();
+    await expect(canvas.getByLabelText("Copy Singer 제품 흐름 미리보기")).toBeInTheDocument();
     await expectLandingStructure(canvasElement);
   },
 };

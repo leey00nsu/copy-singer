@@ -2,7 +2,11 @@ import { Check, Sparkles } from "lucide-react";
 import Image from "next/image";
 
 import { BentoGrid, BentoGridItem } from "@/shared/ui/bento-grid";
+import { CountUpText } from "@/shared/ui/count-up-text";
+import { RevealContent } from "@/shared/ui/reveal-content";
 import { VoiceOrb } from "@/shared/ui/voice-orb";
+
+const recommendedKeys = [1, -1, 0] as const;
 
 function AnalysisSurface() {
   return (
@@ -52,7 +56,13 @@ function KeySurface() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_115%,oklch(0.7_0.2_294/0.32),transparent_52%)]" />
       <div className="relative text-center">
         <p className="text-[9px] tracking-[0.18em] text-white/45 uppercase">Recommended key</p>
-        <p className="mt-2 text-5xl font-light tracking-[-0.06em]">−2</p>
+        <CountUpText
+          ariaLabel="추천 키 예시 마이너스 2"
+          className="mt-2 text-5xl font-light tracking-[-0.06em]"
+          cycleValues={recommendedKeys}
+          duration={900}
+          to={-2}
+        />
         <p className="mt-2 text-[10px] text-white/55">더 편안한 중심 음역으로</p>
       </div>
     </div>
@@ -135,23 +145,25 @@ function LandingProductStory() {
       className="mx-auto w-full max-w-[72rem] px-5 pt-16 pb-24 sm:px-7 sm:pt-20 lg:px-8 lg:pb-36"
       id="how-it-works"
     >
-      <BentoGrid aria-label="Copy Singer 제품 흐름 미리보기">
-        <BentoGridItem className="md:col-span-2" eyebrow="01 · Analyze" title="목소리 분석">
-          <AnalysisSurface />
-        </BentoGridItem>
-        <BentoGridItem className="md:col-span-2" eyebrow="02 · Match" title="노래와 키 추천">
-          <RecommendationSurface />
-        </BentoGridItem>
-        <BentoGridItem className="md:col-span-2" eyebrow="Key fit" title="추천 키">
-          <KeySurface />
-        </BentoGridItem>
-        <BentoGridItem className="md:col-span-4" eyebrow="03 · Create" title="선택형 AI 믹싱">
-          <MixingSurface />
-        </BentoGridItem>
-        <BentoGridItem className="md:col-span-2" eyebrow="Copy Singer" title="Your voice, made visible">
-          <OrbPoster />
-        </BentoGridItem>
-      </BentoGrid>
+      <RevealContent distance={0} duration={1400} fromOpacity={0}>
+        <BentoGrid aria-label="Copy Singer 제품 흐름 미리보기">
+          <BentoGridItem className="md:col-span-2" eyebrow="01 · Analyze" title="목소리 분석">
+            <AnalysisSurface />
+          </BentoGridItem>
+          <BentoGridItem className="md:col-span-2" eyebrow="02 · Match" title="노래와 키 추천">
+            <RecommendationSurface />
+          </BentoGridItem>
+          <BentoGridItem className="md:col-span-2" eyebrow="Key fit" title="추천 키">
+            <KeySurface />
+          </BentoGridItem>
+          <BentoGridItem className="md:col-span-4" eyebrow="03 · Create" title="선택형 AI 믹싱">
+            <MixingSurface />
+          </BentoGridItem>
+          <BentoGridItem className="md:col-span-2" eyebrow="Copy Singer" title="Your voice, made visible">
+            <OrbPoster />
+          </BentoGridItem>
+        </BentoGrid>
+      </RevealContent>
     </section>
   );
 }

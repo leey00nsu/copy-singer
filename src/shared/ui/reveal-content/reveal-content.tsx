@@ -9,10 +9,21 @@ import styles from "./reveal-content.module.css";
 
 type RevealContentProps = HTMLAttributes<HTMLDivElement> & {
   delay?: number;
+  distance?: number;
+  duration?: number;
+  fromOpacity?: number;
 };
 
 // Adapted from the one-shot reveal pattern used by React Bits Fade Content.
-function RevealContent({ className, delay = 0, style, ...props }: RevealContentProps) {
+function RevealContent({
+  className,
+  delay = 0,
+  distance = 8,
+  duration = 700,
+  fromOpacity = 0.94,
+  style,
+  ...props
+}: RevealContentProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -21,6 +32,11 @@ function RevealContent({ className, delay = 0, style, ...props }: RevealContentP
     if (!element || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setVisible(true);
       return;
+    }
+
+    if (!("IntersectionObserver" in window)) {
+      const frameId = requestAnimationFrame(() => setVisible(true));
+      return () => cancelAnimationFrame(frameId);
     }
 
     const observer = new IntersectionObserver(
@@ -39,7 +55,15 @@ function RevealContent({ className, delay = 0, style, ...props }: RevealContentP
     <div
       className={cn(styles.root, visible && styles.visible, className)}
       ref={ref}
-      style={{ ...style, "--reveal-delay": `${delay}ms` } as React.CSSProperties}
+      style={
+        {
+          ...style,
+          "--reveal-delay": `${delay}ms`,
+          "--reveal-distance": `${distance}px`,
+          "--reveal-duration": `${duration}ms`,
+          "--reveal-opacity": fromOpacity,
+        } as React.CSSProperties
+      }
       {...props}
     />
   );
