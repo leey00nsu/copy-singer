@@ -96,6 +96,8 @@ x.ai의 절제된 중앙형 랜딩 구조를 Copy Singer에 맞게 재해석하�
 ### FR-4: 제한된 Motion System
 
 - Aceternity UI의 Bento Grid·Glowing Effect와 React Bits의 Orb·Animated Content source pattern을 Copy Singer token과 컴포넌트 구조에 맞게 조정한다.
+- Hero headline과 설명은 단어 단위로 순차 등장하고, bento product showcase는 카드별 분절 없이 전체가 opacity 0에서 1로 천천히 한 번 등장한다.
+- 추천 키와 metric band의 `5초+`, `60초`, `3단계`는 React Bits Count Up source pattern으로 viewport 진입 시 숫자 애니메이션을 제공한다. 추천 키 preview는 정해진 예시 값 사이를 주기적으로 순환하되 실제 분석 결과로 오해되지 않아야 한다.
 - headline과 section reveal은 첫 진입 시 한 번만 실행하고, 작은 opacity 및 translate 변화로 제한한다.
 - 포인터 기반 highlight를 사용할 경우 제품 preview surface에만 적용하며 primary action의 위치나 hit target을 움직이지 않는다.
 - Orb 이외의 custom cursor, magnetic button, 무한 marquee, 3D tilt, scroll-jacking과 상시 전체 화면 WebGL 배경은 제외한다.

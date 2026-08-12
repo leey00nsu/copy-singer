@@ -55,11 +55,12 @@ ProcessHero
 
 ### Motion 계층
 
-1. **Hero entry**: React Bits Animated Content 계열의 짧은 1회 opacity/translate stagger를 headline, description, actions와 bento에 적용한다. HTML의 기본 상태는 visible이다.
+1. **Hero entry**: headline과 설명을 접근 가능한 원문과 `aria-hidden` visual word span으로 분리해 CSS stagger를 적용한다. bento는 카드별 stagger 없이 하나의 wrapper가 opacity 0에서 1로 천천히 한 번 등장한다.
 2. **Bento interaction**: Aceternity Bento Grid와 Glowing Effect source를 Copy Singer token으로 조정하고 pointer hover와 keyboard focus에 같은 경계 강조를 제공한다.
 3. **Voice Orb**: 분석 bento card와 실제 active `ProcessHero`에 공통 Orb를 사용한다. `hue=294`, `rotateOnHover=false`, `hoverIntensity=0`을 고정하고 viewport/visibility/reduced-motion에 따라 RAF를 정지한다.
 4. **Editorial story**: desktop에서 2열 제품 demo와 restrained scroll reveal을 사용하고 mobile에서는 sticky 없이 순서가 명확한 stacked layout을 사용한다.
-5. **Reduced motion/fallback**: reveal을 제거하고 Orb는 정지 또는 CSS poster fallback으로 전환한다. 모든 텍스트/action은 그대로 남긴다.
+5. **Count Up**: React Bits Count Up의 viewport-triggered number transition을 `motion/react` 없이 작은 공통 client island로 재구성한다. metric은 한 번만 목표값에 도달하고 추천 키는 `−2 → −1 → −3`의 정해진 preview 순환을 사용하며 offscreen·background에서는 정지한다.
+6. **Reduced motion/fallback**: word/bento/count reveal을 제거하고 최종 숫자를 즉시 표시하며, Orb는 정지 또는 CSS poster fallback으로 전환한다. 모든 텍스트/action은 그대로 남긴다.
 
 ### 데이터와 콘텐츠 정직성
 
@@ -92,7 +93,11 @@ src/
 src/shared/ui/motion/
 ├── voice-orb.tsx                         # React Bits Orb 기반 공통 client island
 ├── animated-content.tsx                  # restrained one-shot reveal
-    └── glowing-card.tsx                      # Aceternity 경계 효과
+└── glowing-card.tsx                      # Aceternity 경계 효과
+
+src/shared/ui/count-up-text/
+├── count-up-text.tsx                     # React Bits Count Up 기반 작은 client island
+└── index.ts                              # public API
 
 public/
 └── images/landing/voice-notes/              # 사용자 제공 Aurora WebP 4장
@@ -131,6 +136,8 @@ docs/
   - light/dark token 대비가 필요한 경우 기존 theme 범위에서 확인
   - Voice Notes 네 이미지의 desktop/mobile object-cover crop과 밝음→어두움 순서를 확인
   - AI 믹싱 album-cover stack의 layer order, crop, hover/focus fan-out과 reduced-motion 정적 상태를 확인
+  - Hero word stagger 순서, bento 단일 fade-in과 추천 키의 deterministic cycle을 확인
+  - metric `5초+`, `60초`, `3단계`가 viewport 진입 전 초기값에서 최종값으로 도달하고 reduced-motion에서는 즉시 최종값을 표시하는지 확인
 - **성능 검증**: production build 성공, Orb client island 밖으로 `ogl`이 확산되지 않는지 dependency/diff로 확인하고, DPR 최대 1.5, offscreen/background RAF 정지, context cleanup, layout shift와 console/WebGL 오류가 없는지 browser에서 확인한다.
 - **회귀 검증**: `pnpm run build`를 최종 gate로 실행하고 기존 header/footer 및 landing Storybook interaction을 통과시킨다.
 

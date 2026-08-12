@@ -171,3 +171,16 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Sources**: Pixabay `5442598`, `6887775`, `3880335`, `4001306`
   - **Notice**: `THIRD_PARTY_NOTICES.md`
 - **Consequences**: AI 믹싱 bento는 추가 client runtime 없이 더 강한 시각적 focal point를 얻는다. 네 이미지는 장식으로 숨기고 실제 추천 데이터와 분리하며, 출처와 라이선스는 저장소에서 추적한다.
+
+## D010: 단어 reveal과 dependency-free Count Up island (2026-08-12)
+
+- **Context**: 사용자가 Hero 텍스트의 단어별 순차 등장, bento 전체 fade-in, Recommended key와 metric band의 React Bits Count Up 애니메이션을 요청했다.
+- **Constraints**: LandingPage와 정적 문구의 Server Component 경계를 유지하고, screen reader 중복 낭독·layout shift·무한 background animation과 `motion/react` 신규 의존성을 피해야 한다.
+- **Options**: React Bits 원본과 `motion/react` 추가 / CSS keyframe과 requestAnimationFrame 기반 작은 client island / 모든 숫자를 CSS counter로만 모사
+- **Decision**: 구현 및 검증 후 확정한다. 초기 방향은 Hero의 접근 가능한 원문과 `aria-hidden` visual word span을 분리한 CSS stagger, bento wrapper의 단일 CSS fade, React Bits의 viewport-triggered Count Up 동작을 기존 API만으로 재구성한 공통 client island다.
+- **Rationale**: 구현 및 검증 후 확정한다.
+- **Trace**:
+  - **DOING 시작 시점**: React Bits 공식 Count Up source가 `useInView`, motion value와 spring을 사용해 viewport 진입 시 목표 숫자로 이동하는 구조임을 확인했다. 현재 프로젝트에는 `motion/react`가 없으므로 같은 사용자 경험을 requestAnimationFrame·IntersectionObserver와 deterministic cycle로 재구성하는 방향을 검토한다.
+- **Evidence**:
+  - **Reference**: `https://www.reactbits.dev/text-animations/count-up`
+  - **Source**: `https://github.com/DavidHDev/react-bits/blob/main/src/ts-tailwind/TextAnimations/CountUp/CountUp.tsx`

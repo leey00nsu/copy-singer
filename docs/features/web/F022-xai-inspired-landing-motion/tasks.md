@@ -195,13 +195,24 @@
     - [x] 첨부 gallery prompt의 stack composition을 현재 Tailwind·Server Component 구조에 맞게 구현하고 검은 음표 surface를 제거했다.
     - [x] Storybook, typecheck, lint, build와 desktop/mobile browser에서 layer, crop, overflow와 reduced-motion을 검증했다.
 
+- [DOING][PRD-FR-045] T-F022-xai-inspired-landing-motion-14 Hero word reveal·Bento fade·Count Up motion 보강
+  - Date: 2026-08-12
+  - Acceptance:
+    - Hero headline과 설명은 단어 단위로 순차 등장하고 bento product showcase 전체는 opacity 0에서 1로 천천히 한 번 등장한다.
+    - Recommended key 숫자는 React Bits Count Up source pattern으로 애니메이션되고 화면에 보이는 동안 정해진 예시 키 사이를 주기적으로 순환한다.
+    - metric band의 `5초+`, `60초`, `3단계`는 viewport 진입 시 0에서 목표값까지 증가하며 reduced-motion에서는 최종값을 즉시 표시한다.
+  - Checklist:
+    - [ ] 접근 가능한 전체 문장을 유지하는 word stagger와 bento 단일 fade를 구현한다.
+    - [ ] 공통 CountUp client island를 추가하고 추천 키 순환·offscreen/background pause·cleanup을 구현한다.
+    - [ ] Landing Storybook, reduced-motion, typecheck, lint, build와 실제 browser에서 motion을 검증한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -223,4 +234,4 @@
 | Voice Notes Aurora QA | `2026-08-12` | 통과 — 1440×1000에서 4-up 263×159 crop, 390×844에서 1열 335×203 crop과 밝은 ice→cyan→blue-violet→dark neutral 순서를 직접 확인; desktop/mobile horizontal overflow 0, console warning/error 0 |
 | Album Cover Stack QA | `2026-08-12` | 통과 — 1440×1000에서 4개 cover layer와 hover fan-out, 390×844에서 stacked mixing card와 crop 확인; horizontal overflow 0, console warning/error 0, reduced-motion story 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T03:42:28.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T04:11:35.000Z -->
