@@ -91,11 +91,18 @@ export const RepresentativeAnalysis: Story = {
     await expect(canvas.getByRole("img", { name: "음정별 상대 빈도 막대그래프" })).toBeVisible();
     const signalGradients = Array.from(canvasElement.querySelectorAll("[data-brand-signal-gradient]"));
     await expect(signalGradients).toHaveLength(3);
-    await expect(canvasElement.querySelector("[data-brand-soft-gradient='vocal-range']")).not.toBeNull();
+    const rangeLegend = canvasElement.querySelector<HTMLElement>("[data-vocal-range-legend]");
+    await expect(rangeLegend).not.toBeNull();
+    await expect(rangeLegend?.querySelectorAll("[data-range-legend]")).toHaveLength(2);
+    await expect(within(rangeLegend as HTMLElement).queryByText("중앙음")).not.toBeInTheDocument();
+    await expect(canvasElement.querySelector("[data-observed-range-tone]")).toHaveAttribute(
+      "data-observed-range-tone",
+      "muted",
+    );
     for (const gradient of signalGradients) {
       await expect(
         Array.from(gradient.querySelectorAll("stop")).map((stop) => stop.getAttribute("stop-color")),
-      ).toEqual(["var(--brand-violet)", "var(--brand-blue)", "var(--brand-pink)"]);
+      ).toEqual(["var(--brand-chart-violet)", "var(--brand-chart-blue)", "var(--brand-chart-pink)"]);
     }
     const pitchTrace = canvas.getByRole("button", { name: /상세 피치 추적/ });
     await expect(pitchTrace).toHaveAttribute("aria-expanded", "true");
@@ -119,7 +126,7 @@ export const DarkBrandSignal: Story = {
       Array.from((rangeGradient as SVGLinearGradientElement).querySelectorAll("stop")).map(
         (stop) => getComputedStyle(stop).stopColor,
       ),
-    ).toEqual(["oklch(0.72 0.18 293)", "oklch(0.72 0.14 250)", "oklch(0.75 0.15 330)"]);
+    ).toEqual(["oklch(0.76 0.13 293)", "oklch(0.77 0.1 250)", "oklch(0.78 0.1 330)"]);
   },
 };
 

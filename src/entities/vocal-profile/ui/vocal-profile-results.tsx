@@ -57,21 +57,15 @@ export function VocalRangeProfile({
     <Card className="overflow-hidden rounded-none border-x-0 shadow-none">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm">{title}</CardTitle>
-        <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[10px] text-muted-foreground">
-          <span className="flex items-center gap-2">
-            <i className="h-2 w-7 rounded-full" style={{ background: "var(--brand-gradient-soft)" }} />
+        <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[10px] text-muted-foreground" data-vocal-range-legend>
+          <span className="flex items-center gap-2" data-range-legend="observed">
+            <i className="h-2 w-7 rounded-full bg-muted" />
             전체 관측 음역
           </span>
-          <span className="flex items-center gap-2">
-            <i className="h-2 w-7 rounded-full" style={{ background: "var(--brand-gradient-signal)" }} />
+          <span className="flex items-center gap-2" data-range-legend="practical">
+            <i className="h-2 w-7 rounded-full" style={{ background: "var(--brand-gradient-chart)" }} />
             실용 음역
           </span>
-          {medianMidi !== null ? (
-            <span className="flex items-center gap-2">
-              <i className="size-2.5 rounded-full bg-zinc-600" />
-              중앙음
-            </span>
-          ) : null}
         </div>
       </CardHeader>
       <CardContent>
@@ -132,9 +126,9 @@ function HistogramChart({
                 y1="100%"
                 y2="0%"
               >
-                <stop offset="0%" stopColor="var(--brand-violet)" />
-                <stop offset="55%" stopColor="var(--brand-blue)" />
-                <stop offset="100%" stopColor="var(--brand-pink)" />
+                <stop offset="0%" stopColor="var(--brand-chart-violet)" />
+                <stop offset="55%" stopColor="var(--brand-chart-blue)" />
+                <stop offset="100%" stopColor="var(--brand-chart-pink)" />
               </linearGradient>
             </defs>
             <CartesianGrid vertical={false} strokeDasharray="4 4" />
@@ -160,7 +154,7 @@ function HistogramChart({
                 />
               }
             />
-            <ReferenceLine stroke="var(--data-accent-foreground)" strokeDasharray="4 4" x={medianBin.note} />
+            <ReferenceLine stroke="var(--muted-foreground)" strokeDasharray="4 4" x={medianBin.note} />
             <Bar dataKey="ratioPercent" fill={`url(#${histogramGradientId})`} radius={[5, 5, 0, 0]} />
           </BarChart>
         </ChartContainer>
@@ -222,9 +216,9 @@ function PitchTrace({ visualization }: { visualization: VocalProfileVisualizatio
               <LineChart accessibilityLayer data={data} margin={{ left: 2, right: 10, top: 10, bottom: 4 }}>
                 <defs>
                   <linearGradient data-brand-signal-gradient="pitch-trace" id={traceGradientId} x1="0%" x2="100%">
-                    <stop offset="0%" stopColor="var(--brand-violet)" />
-                    <stop offset="50%" stopColor="var(--brand-blue)" />
-                    <stop offset="100%" stopColor="var(--brand-pink)" />
+                    <stop offset="0%" stopColor="var(--brand-chart-violet)" />
+                    <stop offset="50%" stopColor="var(--brand-chart-blue)" />
+                    <stop offset="100%" stopColor="var(--brand-chart-pink)" />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="4 4" />

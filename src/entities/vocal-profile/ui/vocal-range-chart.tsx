@@ -20,7 +20,6 @@ function VocalRangeChart({
   profile: VocalRangeMetrics & { medianMidi?: number | null };
 }) {
   const gradientSeed = useId().replaceAll(":", "");
-  const observedGradientId = `${gradientSeed}-observed-range`;
   const practicalGradientId = `${gradientSeed}-practical-range`;
   const axis = midiAxis(profile.minMidi, profile.maxMidi);
   const data = rangeChartData(profile);
@@ -32,18 +31,15 @@ function VocalRangeChart({
       aria-label={`전체 관측 음역 ${midiToNoteName(profile.minMidi)}부터 ${midiToNoteName(profile.maxMidi)}, 실용 음역 ${midiToNoteName(profile.tessituraLowMidi)}부터 ${midiToNoteName(profile.tessituraHighMidi)}${medianMidi === null ? "" : `, 중앙음 ${midiToNoteName(medianMidi)}`}`}
       className={className}
       config={RANGE_CHART_CONFIG}
+      data-observed-range-tone="muted"
       role="img"
     >
       <BarChart accessibilityLayer data={data} layout="vertical" margin={{ left: 8, right: 18, top: 30, bottom: 8 }}>
         <defs>
-          <linearGradient data-brand-soft-gradient="vocal-range" id={observedGradientId} x1="0%" x2="100%">
-            <stop offset="0%" stopColor="var(--brand-soft-violet)" />
-            <stop offset="100%" stopColor="var(--brand-soft-blue)" />
-          </linearGradient>
           <linearGradient data-brand-signal-gradient="vocal-range" id={practicalGradientId} x1="0%" x2="100%">
-            <stop offset="0%" stopColor="var(--brand-violet)" />
-            <stop offset="50%" stopColor="var(--brand-blue)" />
-            <stop offset="100%" stopColor="var(--brand-pink)" />
+            <stop offset="0%" stopColor="var(--brand-chart-violet)" />
+            <stop offset="50%" stopColor="var(--brand-chart-blue)" />
+            <stop offset="100%" stopColor="var(--brand-chart-pink)" />
           </linearGradient>
         </defs>
         <CartesianGrid horizontal={false} strokeDasharray="4 4" />
@@ -75,14 +71,14 @@ function VocalRangeChart({
         {medianMidi !== null ? (
           <ReferenceLine
             label={{ value: `중앙음 ${midiToNoteName(medianMidi)}`, position: "top", fontSize: 10 }}
-            stroke="var(--data-accent-foreground)"
+            stroke="var(--muted-foreground)"
             strokeDasharray="4 4"
             x={medianMidi}
           />
         ) : null}
         <Bar dataKey="range" radius={8}>
           {data.map((row) => (
-            <Cell fill={`url(#${row.key === "observed" ? observedGradientId : practicalGradientId})`} key={row.key} />
+            <Cell fill={row.key === "observed" ? "var(--muted)" : `url(#${practicalGradientId})`} key={row.key} />
           ))}
         </Bar>
       </BarChart>
