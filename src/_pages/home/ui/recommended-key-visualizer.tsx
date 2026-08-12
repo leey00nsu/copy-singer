@@ -5,13 +5,6 @@ import { useEffect, useRef, useState } from "react";
 const barHeights = [78, 46, 38, 24, 18, 14, 16, 34, 52, 68, 86, 92, 88, 70, 56, 40, 28, 18, 24, 20, 34] as const;
 const keyDeltas = [-2, 1, -1, 0] as const;
 const centerBarIndex = Math.floor(barHeights.length / 2);
-type BarState = "base" | "down" | "origin" | "up";
-
-function formatDelta(value: number) {
-  if (value > 0) return `+${value}`;
-  if (value < 0) return `−${Math.abs(value)}`;
-  return "0";
-}
 
 function getDirectionLabel(value: number) {
   if (value < 0) return `원본에서 ${Math.abs(value)}키 낮춤`;
@@ -23,28 +16,6 @@ function getDirectionTextClass(value: number) {
   if (value < 0) return "text-cyan-300";
   if (value > 0) return "text-violet-300";
   return "text-white/75";
-}
-
-function getBarState(index: number, value: number): BarState {
-  if (index === centerBarIndex) {
-    return "origin";
-  }
-
-  const deltaEnd = centerBarIndex + value * 2;
-  if (value < 0 && index >= deltaEnd && index < centerBarIndex) {
-    return "down";
-  }
-  if (value > 0 && index > centerBarIndex && index <= deltaEnd) {
-    return "up";
-  }
-  return "base";
-}
-
-function getBarClass(state: BarState) {
-  if (state === "origin") return "bg-white/85 shadow-[0_0_18px_oklch(1_0_0/0.18)]";
-  if (state === "down") return "bg-cyan-400/80 shadow-[0_0_14px_oklch(0.78_0.14_220/0.3)]";
-  if (state === "up") return "bg-violet-400/80 shadow-[0_0_14px_oklch(0.7_0.18_294/0.32)]";
-  return "bg-white/14";
 }
 
 function RecommendedKeyVisualizer() {
@@ -156,50 +127,52 @@ function RecommendedKeyVisualizer() {
 
   const delta = Math.round(displayedValue);
   const directionLabel = getDirectionLabel(delta);
+  const deltaHeight = Math.abs(displayedValue) * 6;
+  const deltaTone = displayedValue < 0 ? "bg-cyan-400" : "bg-violet-400";
+  const deltaShadow =
+    displayedValue < 0 ? "shadow-[0_0_12px_oklch(0.78_0.14_220/0.38)]" : "shadow-[0_0_12px_oklch(0.7_0.18_294/0.4)]";
 
   return (
     <div
       aria-label={`추천 키 변경 예시: ${directionLabel}`}
-      className="relative z-10 w-full max-w-[18rem] px-4 py-5"
+      className="relative z-10 w-full max-w-[18rem] px-4 py-6"
       data-key-delta={delta}
       data-testid="recommended-key-visualizer"
       ref={rootRef}
       role="img"
     >
       <div aria-hidden="true">
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <p className="text-[8px] tracking-[0.16em] text-white/35 uppercase">Original key</p>
-            <p className="mt-1 text-sm font-medium text-white/75">0</p>
-          </div>
-          <div className="text-right">
-            <p className="text-[8px] tracking-[0.16em] text-white/35 uppercase">Key delta</p>
-            <p className={`mt-1 text-4xl font-light tracking-[-0.06em] ${getDirectionTextClass(delta)}`}>
-              {formatDelta(delta)}
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-4 flex h-16 items-center justify-between gap-1" data-testid="key-delta-bars">
+        <div className="flex h-24 items-end justify-between gap-1" data-testid="key-delta-bars">
           {barHeights.map((height, index) => {
-            const state = getBarState(index, delta);
+            const baseHeight = displayedValue < 0 ? Math.max(height - deltaHeight, 5) : height;
+            const segmentHeight =
+              displayedValue < 0 ? Math.min(deltaHeight, height - baseHeight) : Math.min(deltaHeight, 100 - height);
+            const segmentBottom = displayedValue < 0 ? baseHeight : height;
+            const isOrigin = index === centerBarIndex;
+
             return (
               <span
-                className={`w-1.5 rounded-full transition-[background-color,box-shadow,transform] duration-500 motion-reduce:transition-none ${getBarClass(state)} ${state === "origin" ? "scale-y-110" : "scale-y-100"}`}
-                data-key-bar={state}
+                className="relative h-full min-w-0 flex-1"
+                data-key-bar={isOrigin ? "origin" : "base"}
                 key={`${height}-${index}`}
-                style={{ height: `${height}%`, transitionDelay: `${Math.abs(index - centerBarIndex) * 14}ms` }}
-              />
+              >
+                <span
+                  className={`absolute inset-x-0 bottom-0 rounded-full ${isOrigin ? "bg-white/82 shadow-[0_0_16px_oklch(1_0_0/0.16)]" : "bg-white/14"}`}
+                  data-key-segment="base"
+                  style={{ height: `${baseHeight}%` }}
+                />
+                {segmentHeight > 0.05 ? (
+                  <span
+                    className={`absolute inset-x-0 rounded-full ${deltaTone} ${deltaShadow}`}
+                    data-key-segment={displayedValue < 0 ? "subtracted" : "added"}
+                    style={{ bottom: `${segmentBottom}%`, height: `${segmentHeight}%` }}
+                  />
+                ) : null}
+              </span>
             );
           })}
         </div>
-
-        <div className="mt-2 flex items-center justify-between text-[8px] tracking-[0.12em] text-white/28 uppercase">
-          <span>Lower</span>
-          <span className="text-white/55">Original 0</span>
-          <span>Higher</span>
-        </div>
-        <p className={`mt-3 text-center text-[10px] font-medium ${getDirectionTextClass(delta)}`}>{directionLabel}</p>
+        <p className={`mt-5 text-center text-[10px] font-medium ${getDirectionTextClass(delta)}`}>{directionLabel}</p>
       </div>
     </div>
   );

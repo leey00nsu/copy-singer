@@ -44,6 +44,10 @@ async function expectLandingStructure(canvasElement: HTMLElement) {
   await expect(keyVisualizer).toHaveAttribute("data-key-delta");
   await expect(canvas.getByTestId("key-delta-bars").children).toHaveLength(21);
   await expect(canvasElement.querySelectorAll("[data-key-bar='origin']")).toHaveLength(1);
+  await expect(canvasElement.querySelectorAll("[data-key-segment='base']")).toHaveLength(21);
+  await expect(canvas.queryByText("Original key")).not.toBeInTheDocument();
+  await expect(canvas.queryByText("Key delta")).not.toBeInTheDocument();
+  await expect(canvas.queryByText("Lower")).not.toBeInTheDocument();
   await expect(canvasElement.querySelectorAll("h1 [aria-hidden='true'] > span")).not.toHaveLength(0);
   await expect(canvas.getByRole("heading", { name: "더 좋은 한 소절을 위한 짧은 안내" })).toBeVisible();
   await expect(canvas.queryByTestId("grainient-background")).not.toBeInTheDocument();
@@ -89,7 +93,10 @@ export const Mobile: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("heading", { level: 1 })).toBeVisible();
-    await expect(canvas.getByRole("button", { name: "무료로 시작하기: 목소리 분석 시작" })).toBeVisible();
+    await waitFor(
+      () => expect(canvas.getByRole("button", { name: "무료로 시작하기: 목소리 분석 시작" })).toBeVisible(),
+      { timeout: 2500 },
+    );
     await expect(canvas.getByLabelText("Copy Singer 제품 흐름 미리보기")).toBeInTheDocument();
     await expectLandingStructure(canvasElement);
     await expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(document.documentElement.clientWidth);

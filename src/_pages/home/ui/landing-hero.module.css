@@ -32,7 +32,7 @@
 
 @keyframes landing-entry {
   from {
-    opacity: 0.24;
+    opacity: 0;
     transform: translateY(14px);
   }
 
