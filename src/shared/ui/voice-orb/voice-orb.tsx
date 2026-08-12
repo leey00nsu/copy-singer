@@ -139,6 +139,7 @@ type VoiceOrbProps = {
   hoverIntensity?: number;
   hue?: number;
   rotateOnHover?: boolean;
+  speed?: number;
 };
 
 function VoiceOrb({
@@ -148,6 +149,7 @@ function VoiceOrb({
   hoverIntensity = 0,
   hue = 294,
   rotateOnHover = false,
+  speed = 1,
 }: VoiceOrbProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -221,7 +223,7 @@ function VoiceOrb({
           if (document.hidden || !inViewport) return;
           const delta = (time - lastTime) * 0.001;
           lastTime = time;
-          program.uniforms.iTime.value = time * 0.001;
+          program.uniforms.iTime.value = time * 0.001 * speed;
           if (rotateOnHover && program.uniforms.hover.value > 0.5) currentRotation += delta * 0.3;
           program.uniforms.rot.value = currentRotation;
           renderer.render({ scene: mesh });
@@ -280,7 +282,7 @@ function VoiceOrb({
       disposed = true;
       disposeRuntime?.();
     };
-  }, [backgroundColor, forceFallback, hoverIntensity, hue, rotateOnHover]);
+  }, [backgroundColor, forceFallback, hoverIntensity, hue, rotateOnHover, speed]);
 
   return (
     <div

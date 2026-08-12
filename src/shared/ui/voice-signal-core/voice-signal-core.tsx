@@ -51,8 +51,8 @@ function VoiceSignalCore({ className, forceFallback = false, mode, stream = null
         }
 
         const rms = Math.sqrt(sumSquares / samples.length);
-        const target = Math.min(1, Math.max(0.04, Math.max(rms * 5, peak * 1.5)));
-        const smoothing = target > level ? 0.34 : 0.12;
+        const target = Math.min(1, Math.max(0.04, Math.max(rms * 8, peak * 2.6)));
+        const smoothing = target > level ? 0.5 : 0.16;
         level += (target - level) * smoothing;
         root.style.setProperty("--signal-level", level.toFixed(3));
         lastSampleAt = now;
@@ -72,7 +72,7 @@ function VoiceSignalCore({ className, forceFallback = false, mode, stream = null
     };
   }, [mode, stream]);
 
-  const staticMode = mode === "idle" || mode === "requesting" || mode === "stopping";
+  const speed = mode === "processing" ? 1 : mode === "recording" ? 0.75 : mode === "requesting" ? 0.45 : 0.35;
 
   return (
     <div
@@ -85,10 +85,11 @@ function VoiceSignalCore({ className, forceFallback = false, mode, stream = null
       <span className={styles.glow} />
       <VoiceOrb
         className={styles.orb}
-        forceFallback={forceFallback || staticMode}
+        forceFallback={forceFallback}
         hoverIntensity={0}
         hue={294}
         rotateOnHover={false}
+        speed={speed}
       />
     </div>
   );

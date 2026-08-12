@@ -2,6 +2,7 @@
 
 import { Activity, AlertTriangle, CheckCircle2, FileAudio, LoaderCircle, RotateCcw, Upload } from "lucide-react";
 import { type ReactNode, useId } from "react";
+import { cn } from "@/shared/lib/cn";
 import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
 import { Button } from "@/shared/ui/button";
 import { Progress, ProgressLabel, ProgressValue } from "@/shared/ui/progress";
@@ -98,7 +99,29 @@ export function VoiceScanInput({
             {audioPreview ??
               (audioUrl ? <AudioWaveformPlayer className="mt-5" label="제출할 보컬 녹음" src={audioUrl} /> : null)}
 
-            <div className="mt-4 border-y bg-muted/25 px-4 py-3 text-xs leading-5 text-muted-foreground">
+            <div
+              className={cn(
+                "mt-4 flex items-start gap-3 rounded-lg border px-3.5 py-3 text-xs leading-5",
+                durationAccepted
+                  ? "border-border/70 bg-muted/30 text-muted-foreground"
+                  : "border-destructive/20 bg-destructive/[0.045] text-destructive",
+              )}
+              data-audio-status={durationAccepted ? "valid" : "invalid"}
+              data-testid="audio-duration-notice"
+              role={durationAccepted ? "status" : "alert"}
+            >
+              <span
+                className={cn(
+                  "mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full",
+                  durationAccepted ? "bg-success/40 text-success-foreground" : "bg-destructive/10 text-destructive",
+                )}
+              >
+                {durationAccepted ? (
+                  <CheckCircle2 aria-hidden="true" className="size-3.5" />
+                ) : (
+                  <AlertTriangle aria-hidden="true" className="size-3.5" />
+                )}
+              </span>
               {durationAccepted ? (
                 audioDuration !== null && audioDuration < 10 ? (
                   <p>5초 최소 조건을 충족했어요. 약 10초까지 녹음하면 더 충분한 음성 구간을 전달할 수 있어요.</p>
@@ -106,7 +129,7 @@ export function VoiceScanInput({
                   <p>분석할 오디오가 준비됐어요. 결과는 저장된 보컬 프로필 상세에서 확인합니다.</p>
                 )
               ) : (
-                <p className="font-medium text-destructive">5초보다 짧아요. 새 오디오를 녹음하거나 선택해주세요.</p>
+                <p className="font-medium">5초보다 짧아요. 새 오디오를 녹음하거나 선택해주세요.</p>
               )}
             </div>
 

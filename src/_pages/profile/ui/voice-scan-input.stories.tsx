@@ -52,7 +52,7 @@ export const LiveMicrophone: Story = {
     await expect(canvas.getByRole("button", { name: "마이크로 녹음 시작" })).toBeVisible();
     await expect(canvas.getByRole("img", { name: "녹음 대기 상태" })).toBeVisible();
     await expect(canvas.getByTestId("voice-signal-core")).toHaveAttribute("data-signal-mode", "idle");
-    await expect(canvasElement.querySelectorAll("canvas")).toHaveLength(0);
+    await expect(canvas.getByTestId("voice-orb")).toBeVisible();
   },
 };
 
@@ -154,7 +154,24 @@ export const Ready: Story = {
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText(/5초 최소 조건을 충족/)).toBeVisible();
+    await expect(canvas.getByTestId("audio-duration-notice")).toHaveAttribute("data-audio-status", "valid");
     await userEvent.click(canvas.getByRole("button", { name: "내 보컬 프로필 만들기" }));
     await expect(args.onAnalyze).toHaveBeenCalledOnce();
+  },
+};
+
+export const TooShort: Story = {
+  args: {
+    audioDuration: 3.2,
+    audioFile: { name: "short-voice.webm", size: 320_000 } as File,
+    audioPreview: <div aria-label="짧은 보컬 녹음" className="mt-5 h-24 rounded-lg bg-muted/40" role="img" />,
+    audioUrl: "blob:storybook-short-voice-scan",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const notice = canvas.getByRole("alert");
+    await expect(notice).toHaveTextContent("5초보다 짧아요");
+    await expect(notice).toHaveAttribute("data-audio-status", "invalid");
+    await expect(canvas.getByRole("button", { name: "내 보컬 프로필 만들기" })).toBeDisabled();
   },
 };

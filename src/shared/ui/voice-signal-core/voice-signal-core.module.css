@@ -32,9 +32,9 @@
 
 .idle .orb,
 .stopping .orb {
-  opacity: 0.62;
-  filter: saturate(0.58) brightness(1.08);
-  transform: scale(0.78);
+  opacity: 0.7;
+  filter: saturate(0.64) brightness(1.08);
+  transform: scale(0.82);
 }
 
 .requesting .orb {
@@ -44,13 +44,13 @@
 }
 
 .recording .orb {
-  transform: scale(calc(0.84 + var(--signal-level) * 0.055));
+  transform: scale(calc(0.82 + var(--signal-level) * 0.18));
 }
 
 .recording .glow {
-  opacity: calc(0.1 + var(--signal-level) * 0.3);
-  filter: blur(calc(24px + var(--signal-level) * 18px));
-  transform: scale(calc(0.92 + var(--signal-level) * 0.12));
+  opacity: calc(0.12 + var(--signal-level) * 0.65);
+  filter: blur(calc(18px + var(--signal-level) * 34px));
+  transform: scale(calc(0.9 + var(--signal-level) * 0.32));
 }
 
 @keyframes voice-core-request {
@@ -72,12 +72,12 @@
   }
 
   .recording .orb {
-    transform: scale(0.86);
+    transform: scale(0.9);
   }
 
   .recording .glow {
-    opacity: 0.18;
-    filter: blur(30px);
-    transform: scale(0.95);
+    opacity: 0.28;
+    filter: blur(32px);
+    transform: scale(1.02);
   }
 }
