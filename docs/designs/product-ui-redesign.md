@@ -61,12 +61,13 @@ F022 이후 `01-landing-voice-scan.*`의 오른쪽 Voice Scan frame은 계속 �
 ### Landing
 
 - 첫 viewport는 넓은 whitespace 안의 중앙 정렬 display copy, 실제 voice-analysis primary CTA와 아래에서 이어지는 넓은 voice preview를 중심으로 구성한다.
-- Hero의 짧은 badge, headline, 설명, primary/secondary action과 preview는 x.ai 계열의 절제된 정보 위계를 참고하되 Copy Singer semantic token과 한국어 제품 문구를 유지한다.
-- microphone/waveform visual은 제품 흐름 진입 action이며 장식 버튼처럼 보이지만 동작하지 않는 요소를 만들지 않는다. preview 안의 분석 항목은 값을 가장하지 않고 `관찰 음역`, `실용 음역`, `음정 안정성`처럼 실제로 제공하는 결과 종류만 예고한다.
+- Hero의 작은 announcement, 절제된 headline, 설명, primary/secondary action과 넓은 여백은 x.ai의 정보 위계를 참고하되 Copy Singer semantic token과 한국어 제품 문구를 유지한다.
+- Hero 아래에는 x.ai식 비대칭 product bento를 두고 `목소리 분석`, `노래와 키 추천`, `선택형 AI 믹싱`을 서로 다른 mini-product surface로 보여준다. preview 안의 분석 항목은 값을 가장하지 않고 `관찰 음역`, `실용 음역`, `음정 안정성`처럼 실제로 제공하는 결과 종류만 예고한다.
 - 분석 → 노래/키 추천 → 선택형 AI 믹싱의 실제 3단계는 desktop에서 sticky 설명과 연속 preview panel로, mobile에서 같은 DOM 순서의 한 열로 설명한다. scroll-jacking, horizontal carousel과 JavaScript active-step state는 사용하지 않는다.
-- Aceternity UI와 React Bits의 dotted glow, fade content, sticky reveal 패턴은 CSS로 재구성한다. pastel violet dotted glow는 Hero preview 뒤에만 제한하고 entry/view reveal은 progressive enhancement로 적용한다.
+- Aceternity UI의 Bento Grid·Glowing Effect source pattern과 React Bits의 Orb·Animated Content를 실제로 통합한다. Orb는 `hue=294`, `rotateOnHover=false`, `hoverIntensity=0`으로 분석 카드와 실제 분석 진행 중앙 visual에 사용하며, 기존 랜딩 waveform·dotted glow·ripple과 dashed ring은 제거한다.
+- 후속 section은 긴 반복 sticky card 대신 2열 editorial demo, 정직한 metric band, 분석 결과 rail과 2-up 시작 CTA로 구성한다.
 - WebGL/GSAP/motion runtime, custom cursor, magnetic button, 3D tilt, 무한 marquee와 전역 animated gradient를 Landing에 추가하지 않는다.
-- `prefers-reduced-motion`에서는 entry, section reveal, ripple과 waveform animation을 제거하고 동일한 heading, 설명, CTA와 정적 preview를 유지한다.
+- `prefers-reduced-motion`에서는 entry와 section reveal을 제거하고 Orb를 정지 또는 정적 fallback으로 대체하며 동일한 heading, 설명, CTA와 preview를 유지한다.
 - 하단 CTA는 neutral surface와 restrained pastel accent를 사용할 수 있지만 crystal 이미지는 사용하지 않는다.
 - Header/Footer/UserMenu는 authenticated route와 같은 component를 사용한다.
 

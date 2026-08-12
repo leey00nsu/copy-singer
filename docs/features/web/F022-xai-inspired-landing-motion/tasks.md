@@ -20,7 +20,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/xai-inspired-landing-motion`
-- **대기 중 변경 요청**: -
+- **대기 중 변경 요청**: 결정: changes_requested — x.ai 시각 문법을 Copy Singer에 재해석하고 Aceternity/React Bits 실제 source component를 적극 도입하며 waveform·dotted·ripple을 Orb로 교체
   - 구현 중 새로 수용한 사용자 요청을 잠시 표시하는 sync marker입니다
   - 요청을 `tasks.md`와 관련 문서에 반영한 뒤 값을 비우세요
   - pre-PR 리뷰 handoff를 시작하면 `Running`, 리뷰 결과 기록까지 끝나면 `Done`으로 변경
@@ -111,13 +111,55 @@
     - [x] production build 및 관련 전체 검증 명령을 실행했다.
     - [x] product UI 디자인 문서, decisions와 workflow sync evidence를 최종 구현에 맞게 갱신했다.
 
+- [TODO][PRD-FR-046] T-F022-xai-inspired-landing-motion-06 x.ai형 랜딩 정보 구조와 제품 모자이크 재설계
+  - Date: 2026-08-12
+  - Acceptance:
+    - Hero는 x.ai처럼 작은 announcement, 절제된 display copy, 두 개 이하 CTA와 넓은 여백을 사용하고, 바로 아래 비대칭 제품 모자이크가 Copy Singer의 분석·추천·믹싱 흐름을 보여준다.
+    - 기존 waveform, dotted glow, ripple과 장문 sticky story를 제거하고 mobile 320px 이상에서 같은 정보 순서를 유지한다.
+  - Checklist:
+    - [ ] LandingHero와 LandingProductStory를 조용한 hero + bento product showcase 구조로 재구성한다.
+    - [ ] 가짜 점수·진행률·앨범 데이터 없이 실제 제품 개념만 표시한다.
+    - [ ] 기존 인증별 CTA, ProductHeader와 ProductFooter 계약을 유지한다.
+
+- [TODO][PRD-FR-045] T-F022-xai-inspired-landing-motion-07 React Bits Orb 기반 분석 visual 도입
+  - Date: 2026-08-12
+  - Acceptance:
+    - 목소리 분석의 중앙 효과는 React Bits Orb를 hue 294, rotateOnHover false, hoverIntensity 0으로 렌더링하며 waveform과 dotted motion을 사용하지 않는다.
+    - 랜딩의 분석 card와 실제 분석 active ProcessHero는 같은 공통 Orb visual을 사용하고 success/failure 상태는 기존 icon과 의미를 유지한다.
+    - Orb는 작은 client island로 격리되고 reduced-motion, WebGL 미지원과 viewport 밖 상태에서 안전한 정적 fallback 또는 정지를 제공한다.
+  - Checklist:
+    - [ ] 공식 React Bits Orb source를 프로젝트 스타일과 TypeScript 규칙에 맞게 통합하고 ogl 의존성·라이선스를 기록한다.
+    - [ ] Landing product bento와 ProcessHero active tone에 공통 Orb를 적용한다.
+    - [ ] DPR, ResizeObserver, requestAnimationFrame lifecycle과 WebGL context cleanup을 제한한다.
+    - [ ] Orb가 action으로 오해되지 않도록 실제 profile CTA와 분리해 접근 가능한 presentation으로 제공한다.
+
+- [TODO][PRD-FR-046] T-F022-xai-inspired-landing-motion-08 Editorial demo·metric band·Voice Notes·2-up CTA 완성
+  - Date: 2026-08-12
+  - Acceptance:
+    - 긴 반복 sticky card 대신 x.ai식 2열 editorial product demo, hairline metric band, 4-up Voice Notes와 서로 다른 실제 목적지의 2-up CTA가 넓은 section whitespace로 구성된다.
+    - 5초 최소 분석, 60초 최대 입력, 3단계 흐름처럼 계약상 참인 수치만 표시하고 가짜 뉴스·날짜·링크를 만들지 않는다.
+  - Checklist:
+    - [ ] 분석→추천→믹싱 demo를 Aceternity scroll reveal source pattern으로 구성한다.
+    - [ ] metric band와 Voice Notes rail을 responsive하게 구현한다.
+    - [ ] profile 시작과 library 결과 보기 CTA의 목적지·위계를 구분한다.
+
+- [TODO][PRD-FR-051] T-F022-xai-inspired-landing-motion-09 공통 ProcessHero Orb·성능·접근성·시각 parity 검증
+  - Date: 2026-08-12
+  - Acceptance:
+    - 실제 분석 active ProcessHero의 dashed/conic visual을 랜딩과 같은 React Bits Orb로 교체하고 success/failure 상태는 기존 의미와 icon을 유지한다.
+    - 360·390·768·1440 viewport, reduced-motion과 WebGL fallback에서 overflow·console 오류 없이 동작하고 x.ai 캡처와 동일 1440 폭 육안 비교에서 구성·여백·리듬이 확인된다.
+  - Checklist:
+    - [ ] ProcessHero active story와 landing signed-out/in, mobile, reduced-motion, WebGL fallback Storybook 상태를 검증한다.
+    - [ ] axe, keyboard focus, 단일 h1, CTA href, DPR·offscreen RAF·cleanup과 production build를 검증한다.
+    - [ ] 브라우저 full-page screenshot을 직접 검토하고 feature·product design·decisions·workflow evidence를 동기화한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 

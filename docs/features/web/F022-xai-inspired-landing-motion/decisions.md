@@ -89,3 +89,19 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Screenshot**: `/tmp/lee-spec-kit/pr-assets/f022-landing-reduced-motion.png`
   - **Test/Log**: `pnpm run build` 통과 — Next.js production build와 29개 static page 생성
 - **Consequences**: 신규 animation runtime 또는 WebGL dependency 없이 F022의 시각·성능 acceptance를 충족했다.
+
+## D005: 사용자 변경 요청에 따른 실제 source component 도입 (2026-08-12)
+
+- **Context**: 최초 구현은 x.ai의 중앙 hero만 얕게 반영하고 CSS로 waveform·dotted glow·ripple과 sticky card를 재구현해, 사용자가 요구한 x.ai의 제품 모자이크·editorial rhythm과 Aceternity/React Bits의 미려한 효과를 충족하지 못했다.
+- **Constraints**: 인증별 CTA와 공통 shell, 데이터 정직성, mobile 문서 순서, reduced-motion과 WebGL fallback을 유지하며 사용자가 지정한 Orb 설정을 랜딩 및 실제 분석 진행에 공통 적용해야 한다.
+- **Options**: 기존 CSS 효과를 조정 / x.ai layout만 재구성 / Aceternity와 React Bits source component를 작은 client island로 실제 통합
+- **Decision**: 기존 waveform·dotted·ripple·dashed ring을 제거하고 Aceternity Bento Grid·Glowing Effect·restrained scroll reveal과 React Bits Orb·Animated Content를 source 수준에서 통합한다. Orb는 `hue=294`, `rotateOnHover=false`, `hoverIntensity=0`으로 고정하며 `ogl`을 유일한 필수 신규 runtime dependency로 허용한다.
+- **Rationale**: 사용자가 명시한 레퍼런스의 시각 품질을 실제 동작 단위로 가져오면서 Server Component composition과 제품 고유 콘텐츠를 유지할 수 있다. Orb를 공유하면 랜딩 preview와 분석 진행 화면의 visual language도 일치한다.
+- **Trace**:
+  - **DOING 시작 시점**: 제공된 1440px x.ai 캡처, 현 landing code, React Bits 공식 Orb source와 Next.js 16 client boundary/lazy-loading guide를 비교했다. 서브에이전트의 읽기 전용 gap review도 bento·metric band·editorial rail 누락과 `ProcessHero` 교체를 동일하게 지적했다.
+  - **DONE 전 확정 시점**: 구현 및 시각 검증 후 보강 예정
+- **Evidence**:
+  - **Reference**: `https://reactbits.dev/backgrounds/orb?hue=294&rotateOnHover=false&hoverIntensity=0`
+  - **Source**: `https://github.com/DavidHDev/react-bits/blob/main/src/ts-tailwind/Backgrounds/Orb/Orb.tsx`
+  - **Reference**: `https://ui.aceternity.com/bento-grid`
+- **Consequences**: 기존 no-runtime/WebGL 제외 결정(D001/D002)은 F022 변경 요청 범위에서 폐기되며 Orb island의 lifecycle·fallback·라이선스 검증이 새 completion gate가 된다.
