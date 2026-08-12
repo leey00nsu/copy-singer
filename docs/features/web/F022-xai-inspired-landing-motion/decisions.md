@@ -136,5 +136,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 사용자가 선호한 카드 리듬을 복원하면서 추가 canvas 없이 Grainient의 유기적 색 분포와 질감만 가볍게 유지하고, Orb 주변의 light-background shader artifact를 제거한다.
 - **Trace**:
   - **DOING 시작 시점**: 현 Voice Notes shared canvas, Orb shader의 `backgroundColor=#fafafa`, Landing `bg-[#fafafa]`와 Storybook decorator `bg-[#fafafa]`가 회색 surface를 만드는 경로를 확인했다.
+  - **DONE 전 확정 시점**: Voice Notes를 독립 카드 markup으로 복원하고 네 Tailwind multi-gradient에 3px micro-grain overlay를 추가했다. 실제 회색 반원은 Orb fallback poster가 rectangular container에서 타원으로 늘어나 canvas 뒤에 남은 것이 원인이어서 fallback을 정원으로 고치고 `data-orb-ready`에서 숨겼다. Storybook/실제 route에서 root transparent, fallback opacity 0, Grainient canvas 0, Orb canvas 1과 overflow 0을 확인했다.
 - **Evidence**:
   - **Reference**: `https://www.reactbits.dev/backgrounds/grainient`
+  - **Test/Log**: Landing·Orb·ProcessHero Storybook 10/10, TypeScript, ESLint, architecture boundary, Next.js production build 통과
