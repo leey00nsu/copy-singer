@@ -33,7 +33,8 @@ async function expectLandingStructure(canvasElement: HTMLElement) {
   await expect(canvas.getByText("60초")).toBeVisible();
   await expect(canvas.getByText("3단계")).toBeVisible();
   await expect(canvas.getByRole("heading", { name: "더 좋은 한 소절을 위한 짧은 안내" })).toBeVisible();
-  await expect(canvas.getByTestId("grainient-background")).toBeVisible();
+  await expect(canvas.queryByTestId("grainient-background")).not.toBeInTheDocument();
+  await expect(canvas.getByRole("heading", { name: "편하게 녹음하기" }).closest("article")).toBeVisible();
   await expect(canvas.queryByText("분석에서 믹싱까지, 한 흐름으로")).not.toBeInTheDocument();
   await expect(canvas.queryByText("목소리의 범위와 안정성을 같은 기준으로")).not.toBeInTheDocument();
   await expect(canvas.getByRole("navigation", { name: "제품 푸터 메뉴" })).toBeVisible();

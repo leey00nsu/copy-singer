@@ -13,7 +13,7 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <div className="grid min-h-[28rem] place-items-center bg-[#fafafa] p-8">
+      <div className="grid min-h-[28rem] place-items-center bg-background p-8">
         <div className="size-80 max-w-full">
           <Story />
         </div>
@@ -28,7 +28,9 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   play: async ({ canvasElement }) => {
-    await expect(within(canvasElement).getByTestId("voice-orb")).toBeVisible();
+    const orb = within(canvasElement).getByTestId("voice-orb");
+    await expect(orb).toBeVisible();
+    await expect(getComputedStyle(orb).backgroundColor).toBe("rgba(0, 0, 0, 0)");
   },
 };
 

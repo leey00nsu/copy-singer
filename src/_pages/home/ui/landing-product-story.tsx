@@ -81,7 +81,7 @@ function MixingSurface() {
 
 function OrbPoster() {
   return (
-    <div className="relative grid h-full min-h-52 w-full place-items-center overflow-hidden bg-[#fafafa]">
+    <div className="relative grid h-full min-h-52 w-full place-items-center overflow-hidden bg-background">
       <VoiceOrb className="absolute inset-0" hoverIntensity={0} hue={294} rotateOnHover={false} />
       <div className="absolute inset-x-5 top-5 flex items-center justify-between text-[9px] text-muted-foreground">
         <span>VOICE SIGNAL</span>

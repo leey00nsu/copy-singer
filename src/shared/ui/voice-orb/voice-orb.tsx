@@ -142,7 +142,7 @@ type VoiceOrbProps = {
 };
 
 function VoiceOrb({
-  backgroundColor = "#fafafa",
+  backgroundColor = "#ffffff",
   className,
   forceFallback = false,
   hoverIntensity = 0,
@@ -175,6 +175,7 @@ function VoiceOrb({
         gl.canvas.className = styles.canvas;
         gl.canvas.setAttribute("aria-hidden", "true");
         container.appendChild(gl.canvas);
+        container.dataset.orbReady = "true";
 
         const hexToVec3 = (color: string) => {
           const value = color.startsWith("#") ? color.slice(1) : "fafafa";
@@ -250,6 +251,7 @@ function VoiceOrb({
         const handleContextLost = (event: Event) => {
           event.preventDefault();
           container.dataset.orbFallback = "true";
+          delete container.dataset.orbReady;
           if (rafId !== null) cancelAnimationFrame(rafId);
           rafId = null;
         };
@@ -266,6 +268,7 @@ function VoiceOrb({
           document.removeEventListener("visibilitychange", handleVisibility);
           gl.canvas.removeEventListener("webglcontextlost", handleContextLost);
           gl.canvas.remove();
+          delete container.dataset.orbReady;
           gl.getExtension("WEBGL_lose_context")?.loseContext();
         };
       })
