@@ -383,3 +383,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Options**: 기존 CSS 유지 / Gradient Text만 Motion으로 교체 / Gradient Text와 수동 Hero·Reveal primitive를 Motion으로 통합
 - **Decision**: 공식 Gradient Text의 `useAnimationFrame`, MotionValue와 yoyo semantics를 shared component로 소유하고, Hero entry와 공통 RevealContent까지 `motion/react`로 통합한다. Orb shader RAF와 microphone analyser RAF는 각각 WebGL/audio sampling 책임이므로 유지하며 album stack·image hover 같은 단순 interaction은 CSS에 남긴다.
 - **Rationale**: 공식 효과의 속도·연속 gradient field를 재현하면서, Motion이 이미 로드되는 Landing에서 중복 observer/state/keyframe 코드를 줄일 수 있다. 반대로 고주파 render loop와 단순 CSS hover까지 추상화하면 성능·복잡도 이득이 없다.
+- **Trace**:
+  - **T28 DONE 시점**: `motion@13.1.0`을 설치하고 React Bits source의 `useAnimationFrame`·MotionValue·yoyo를 `shared/ui/gradient-text`로 통합했다. `내 목소리`는 하나의 gradient field를 공유하고 조사 `에`만 foreground로 덮으며, 공식 의미대로 편도 1.5초·왕복 3초가 된다.
+- **Evidence**: `src/shared/ui/gradient-text`, `src/_pages/home/ui/landing-hero.tsx`, `package.json`, `pnpm-lock.yaml`
+- **Test/Log**: Landing Storybook 4/4, Biome, TypeScript 통과

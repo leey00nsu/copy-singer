@@ -346,18 +346,18 @@
     - [x] Gradient keyframe의 시작·종료 frame을 동일하게 만들었다.
     - [x] Storybook browser에서 duration·iteration·중간/종료 position을 검증했다.
 
-- [DOING][PRD-FR-048] T-F022-xai-inspired-landing-motion-28 공식 React Bits Gradient Text 통합
+- [DONE][PRD-FR-048] T-F022-xai-inspired-landing-motion-28 공식 React Bits Gradient Text 통합
   - Date: 2026-08-12
   - Acceptance:
     - `motion`을 설치하고 공식 React Bits `GradientText` source의 frame-driven yoyo 동작을 shared client component로 통합한다.
     - `내 목소리` 전체가 하나의 연속 brand gradient를 공유하고 `animationSpeed=1.5`는 편도 1.5초·왕복 3초로 동작한다.
     - 기존 단어 reveal, 단일 accessible H1과 reduced-motion 정적 fallback을 유지한다.
   - Checklist:
-    - [ ] `motion` dependency와 source attribution을 추가한다.
-    - [ ] Gradient Text를 shared component로 만들고 Hero에 연결한다.
-    - [ ] Storybook에서 단일 gradient field, yoyo timing과 reduced-motion을 검증한다.
+    - [x] `motion` dependency와 source attribution을 추가했다.
+    - [x] Gradient Text를 shared component로 만들고 Hero에 연결했다.
+    - [x] Storybook에서 단일 gradient field, yoyo timing과 reduced-motion 계약을 검증했다.
 
-- [TODO][PRD-FR-048] T-F022-xai-inspired-landing-motion-29 Landing Motion primitive 최적화
+- [DOING][PRD-FR-048] T-F022-xai-inspired-landing-motion-29 Landing Motion primitive 최적화
   - Date: 2026-08-12
   - Acceptance:
     - Hero의 수동 entry keyframe과 공통 RevealContent의 직접 IntersectionObserver/state/CSS transition을 Motion primitive로 교체한다.
@@ -385,7 +385,7 @@
 | --- | --- | --- |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx src/shared/ui/voice-orb/voice-orb.stories.tsx` | `2026-08-12` | 통과 — landing signed-out/in·mobile·reduced-motion, ProcessHero active/success/failure와 WebGL fallback 10/10 |
 | `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx src/entities/vocal-profile/ui/vocal-profile-summary.stories.tsx src/_pages/profile/ui/analysis-success.stories.tsx` | `2026-08-12` | 통과 — Landing Sample Vocal Range Profile과 실제 profile 결과 회귀 8/8 |
-| `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — `내 목소리` Gradient Text의 0ms·750ms·1500ms position, 1.5초 linear infinite seamless loop와 signed-out/in·mobile·reduced-motion 정적 fallback 4/4 |
+| `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — 공식 Motion Gradient Text 단일 field·animationSpeed 1.5·yoyo, signed-out/in·mobile·reduced-motion 콘텐츠와 기존 Landing 회귀 4/4 |
 | `pnpm run test:storybook --run src/_pages/profile/ui/voice-scan-input.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx src/shared/ui/voice-orb/voice-orb.stories.tsx` | `2026-08-12` | 통과 — gray halo 없는 dynamic idle/recording/processing Voice Core, notice와 Orb fallback 14/14 |
 | `pnpm run test:storybook --run src/_pages/profile/ui/voice-scan-input.stories.tsx src/shared/ui/status-notice/status-notice.stories.tsx src/shared/ui/state-panel/state-panel.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/widgets/library/ui/vocal-profile-library.stories.tsx src/widgets/library/ui/mixing-library.stories.tsx src/_pages/mixing-detail/ui/mixing-detail.stories.tsx` | `2026-08-12` | 통과 — grayscale/recording Voice Core, shared StatusNotice tone·정렬, border hierarchy와 관련 화면 회귀 43/43 |
 | `pnpm run test:storybook --run src/widgets/product-shell/ui/product-shell.stories.tsx src/_pages/home/ui/landing-page.stories.tsx` | `2026-08-12` | 통과 — Header top/scrolled separator, Footer rail, authenticated/unauthenticated와 Landing chrome 회귀 11/11 |
@@ -407,4 +407,4 @@
 | Voice Notes Aurora QA | `2026-08-12` | 통과 — 1440×1000에서 4-up 263×159 crop, 390×844에서 1열 335×203 crop과 밝은 ice→cyan→blue-violet→dark neutral 순서를 직접 확인; desktop/mobile horizontal overflow 0, console warning/error 0 |
 | Album Cover Stack QA | `2026-08-12` | 통과 — 1440×1000에서 4개 cover layer와 hover fan-out, 390×844에서 stacked mixing card와 crop 확인; horizontal overflow 0, console warning/error 0, reduced-motion story 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-12T08:11:30.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-12T08:20:00.000Z -->
