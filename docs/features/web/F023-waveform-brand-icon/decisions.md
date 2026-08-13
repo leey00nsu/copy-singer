@@ -85,10 +85,12 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 
 - **Context**: 사용자는 공개 개인정보 처리방침에서 Google만 남기고 PostgreSQL, SoulX, Modal, Leemage 명칭이 사용자에게 노출되지 않도록 프로젝트 전수검사를 요청했다.
 - **Constraints**: 내부 database provider, API adapter, 환경변수, service directory와 개발 문서는 실제 기능·운영 계약이므로 제거하거나 rename하면 안 된다. 사용자-visible copy와 내부 구현 식별자를 구분해야 한다.
-- **Options**: 구현 중 확정
-- **Decision**: 구현 중 확정
-- **Rationale**: 구현 중 확정
+- **Options**: (A) 법률 문서에 모든 infra 이름 유지, (B) repository 전역에서 내부 식별자까지 rename, (C) 공개 화면·메시지만 비식별화하고 내부 계약은 유지.
+- **Decision**: (C)를 채택했다. 개인정보 처리방침에는 Google OAuth만 고유명으로 남기고 나머지는 저장 시스템·분석기·변환 서비스·데이터베이스 같은 기능명으로 바꿨다. 동일 원칙을 약관, 개발 화면, 사용자 오류, 공개 API title/detail까지 적용했다. 내부 adapter/type/error code/env/schema/service path와 architecture·feature 문서는 변경하지 않았다.
+- **Rationale**: 사용자가 보는 표면에서 불필요한 infrastructure 노출을 없애면서 실제 배포와 데이터 계약, 회귀 테스트, 운영 문서의 추적 가능성을 보존한다. 내부 식별자 rename은 브랜드 고지 제거가 아니라 별도 대규모 migration이므로 범위에서 제외한다.
 - **Trace**:
   - **DOING 시작 시점**: 법률 문서와 `src`의 렌더링 문구·사용자 오류 메시지는 Google 외 고유 기술명을 중립적 기능명으로 바꾸고, 내부 코드·환경변수·architecture 문서는 유지한 뒤 잔존 항목을 분류한다.
+  - **DONE 시점**: legal 문서와 `_pages` scan에서 대상 고유명 노출 0건을 확인했고, 기존 공개 오류·API 설명 문자열 audit도 0건이다. repository 전체 잔존 항목은 내부 구현과 개발 SSOT로 분류해 유지했다.
 - **Evidence**:
-  - **Test/Log**: 구현 후 기록
+  - **Test/Log**: legal Storybook 2/2, analyzer/voice-scan/mixing/recommendation 61/61, `pnpm run check`, `pnpm run build`, 공개 문자열 `rg` audit
+- **Consequences**: 공개 UI는 공급업체 이름과 무관한 기능 언어를 사용한다. 실제 외부 처리업체 공개가 법적·운영상 필요해지면 내부 계약을 source로 개인정보 처리방침을 다시 갱신해야 한다.

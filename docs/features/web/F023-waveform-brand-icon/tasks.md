@@ -107,24 +107,24 @@
     - [x] 이용약관과 개인정보 처리방침의 공개 전 placeholder를 확정된 현재 운영 정책으로 교체한다.
     - [x] 관련 Storybook test와 정적 검사를 실행하고 문서를 동기화한다.
 
-- [DOING][PRD-FR-053] T-F023-waveform-brand-icon-05 공개 화면 외부 기술명 비식별화
+- [DONE][PRD-FR-053] T-F023-waveform-brand-icon-05 공개 화면 외부 기술명 비식별화
   - Date: 2026-08-13
   - Acceptance:
-    - 개인정보 처리방침에서 외부 서비스 고유명은 Google만 남긴다.
-    - 이용약관과 사용자-visible 화면·오류 메시지에서 PostgreSQL, SoulX, Modal, Leemage 명칭을 제거한다.
-    - 내부 구현 식별자와 개발 문서는 기능 보존을 위해 유지하고 전수검사 결과를 분리 기록한다.
+    - [x] 개인정보 처리방침에서 외부 서비스 고유명은 Google만 남긴다.
+    - [x] 이용약관과 사용자-visible 화면·오류 메시지에서 PostgreSQL, SoulX, Modal, Leemage 명칭을 제거한다.
+    - [x] 내부 구현 식별자와 개발 문서는 기능 보존을 위해 유지하고 전수검사 결과를 분리 기록한다.
   - Checklist:
-    - [ ] 법률 문서의 업체 목록과 국외 처리 문구를 Google 중심으로 정리한다.
-    - [ ] src/app 공개 문자열을 전수검사해 외부 기술명을 중립적 용어로 교체한다.
-    - [ ] Storybook test, 정적 검사와 build를 실행하고 문서를 동기화한다.
+    - [x] 법률 문서의 업체 목록과 국외 처리 문구를 Google 중심으로 정리한다.
+    - [x] src/app 공개 문자열을 전수검사해 외부 기술명을 중립적 용어로 교체한다.
+    - [x] Storybook test, 정적 검사와 build를 실행하고 문서를 동기화한다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -141,5 +141,7 @@
 | Browser visual QA | `2026-08-13` | 통과 — production ProductBrand가 Paperlogy 700 계산값을 사용하고 파형 mark/wordmark 정렬 정상; 흰 배경 중앙형 `public/og.png` 확인 |
 | production metadata HTTP audit | `2026-08-13` | 통과 — title/OG site name은 `Copysinger`, Twitter large image와 canonical/OG image 출력 확인 |
 | `pnpm exec vitest --project storybook src/_pages/legal/ui/legal-pages.stories.tsx --run` | `2026-08-13` | 통과 — Terms/Privacy 2/2, draft placeholder 제거와 비상업·원본 음원 미제공 고지 확인 |
+| 공개 문자열 provider-name audit | `2026-08-13` | 통과 — legal 및 `_pages`에서 PostgreSQL/SoulX/Modal/Leemage 노출 0건, 사용자 오류·API 설명의 기존 고유명 문구 0건 |
+| `pnpm run test:vocal-profile-analyzer && pnpm run test:voice-scan && pnpm run test:mixing:ui && pnpm run test:recommendation` | `2026-08-13` | 통과 — analyzer 8, voice scan 12, mixing UI 8, recommendation 33; 합계 61/61 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T14:41:34+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T14:48:58+09:00 -->
