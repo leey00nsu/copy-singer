@@ -64,19 +64,19 @@
     - [x] `src/_pages/recommendation-detail/index.server.ts` / `src/_pages/song-detail/index.server.ts` export 일관성 확인
     - [x] Storybook/a11y(reduced-motion, aria-busy/role) 확인
 
-- [TODO][PRD-FR-051] T-F025-skeleton-ui-audit-02 Profile/Account/Notifications 전용 스켈레톤과 loading 경계 추가
+- [DONE][PRD-FR-051] T-F025-skeleton-ui-audit-02 Profile/Account/Notifications 전용 스켈레톤과 loading 경계 추가
   - Date: 2026-08-14
   - Acceptance:
     - `/profile`, `/account`, `/notifications`가 전용 스켈레톤과 `app/**/loading.tsx` 얇은 adapter를 가진다
     - 각 스켈레톤이 실제 페이지의 shell·intro·section 구조를 근사하고 Skeleton primitive와 a11y 규칙을 따른다
     - 360/768/1280에서 overflow 0과 CLS 최소화를 수동 확인한다
   - Checklist:
-    - [ ] `src/_pages/profile/ui/profile-loading.tsx` 신규
-    - [ ] `src/_pages/account/ui/account-loading.tsx` 신규
-    - [ ] `src/_pages/notifications/ui/notifications-loading.tsx` 신규
-    - [ ] `src/_pages/profile/index.server.ts` 등 export 추가
-    - [ ] `app/(product)/profile/loading.tsx` 등 adapter 3개 추가
-    - [ ] Storybook/a11y 확인
+    - [x] `src/_pages/profile/ui/profile-loading.tsx` 신규
+    - [x] `src/_pages/account/ui/account-loading.tsx` 신규
+    - [x] `src/_pages/notifications/ui/notifications-loading.tsx` 신규
+    - [x] `src/_pages/profile/index.server.ts` 등 export 추가
+    - [x] `app/(product)/profile/loading.tsx` 등 adapter 3개 추가
+    - [x] Storybook/a11y 확인
 
 - [TODO][PRD-FR-051] T-F025-skeleton-ui-audit-03 VocalProfileDetail/Admin 계열 전용 스켈레톤과 loading 경계 추가
   - Date: 2026-08-14
@@ -137,6 +137,7 @@
 | --- | --- | --- |
 | `pnpm run check` | `-` | `-` |
 | `pnpm run test:storybook --run src/shared/ui/page-skeleton/page-skeleton.stories.tsx ...` | `-` | `-` |
+
 
 
 
