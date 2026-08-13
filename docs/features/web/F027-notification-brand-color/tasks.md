@@ -72,15 +72,15 @@
     - [x] `/notifications` 목록 hover와 톤 일치 확인
     - [x] 브라우저 호버·포커스 검증
 
-- [TODO][PRD-FR-051] T-F027-notification-brand-color-03 상태 칩 선택적 브랜드 컬러 적용
+- [DONE][PRD-FR-051] T-F027-notification-brand-color-03 상태 칩 선택적 브랜드 컬러 적용
   - Date: 2026-08-14
   - Acceptance:
     - 활성/선택 칩만 브랜드 컬러로 강조되고 비활성은 neutral 유지
     - primary 버튼 검정은 유지, 넓은 배경은 neutral 유지
   - Checklist:
-    - [ ] 상태성 칩 grep 식별 및 선별 교체
-    - [ ] `Badge` variant 또는 호출부 수정
-    - [ ] 디자인 시스템 규칙 위반 없음 확인
+    - [x] 상태성 칩 grep 식별 및 선별 교체 — 15개 Badge 사용처 감사, MixingStatusBadge active는 이미 data-accent/10, succeeded는 primary(유지), failed는 destructive로 적합 판정
+    - [x] `Badge` variant 또는 호출부 수정 — 추가 변경 불필요 (기존 톤 체계가 PRD-FR-045 규칙 준수)
+    - [x] 디자인 시스템 규칙 위반 없음 확인
 
 ---
 
@@ -105,7 +105,9 @@
 
 
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T16:37:58.144Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T16:38:11.779Z -->
+
+
 
 
 
