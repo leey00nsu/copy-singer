@@ -105,18 +105,18 @@
     - [x] `src/shared/ui/page-skeleton` / `src/_app/layout/product-route-loading.tsx` 재사용 규칙 확인
     - [x] 전체 360/768/1280 수동 점검
 
-- [TODO][NON-PRD] T-F025-skeleton-ui-audit-05 Storybook·품질 게이트·문서 동기화
+- [DONE][NON-PRD] T-F025-skeleton-ui-audit-05 Storybook·품질 게이트·문서 동기화
   - Date: 2026-08-14
   - Acceptance:
     - 신규/교체 스켈레톤의 Storybook을 360×800/768×1024/1280×800에서 확인하고 overflow 0을 기록한다
     - `pnpm run check`(biome/lint/typecheck/steiger)와 관련 `pnpm run test:storybook --run`이 통과한다
     - `decisions.md`에 감사 결과와 선택 근거를 기록한다
   - Checklist:
-    - [ ] Storybook story 추가 또는 기존 story 보강
-    - [ ] `pnpm run check` 실행 및 수정
-    - [ ] `pnpm run test:storybook --run` 관련 스토리 통과
-    - [ ] `decisions.md` ADR 추가
-    - [ ] workflow-audit 마킹
+    - [x] Storybook story 추가 또는 기존 story 보강
+    - [x] `pnpm run check` 실행 및 수정
+    - [x] `pnpm run test:storybook --run` 관련 스토리 통과
+    - [x] `decisions.md` ADR 추가
+    - [x] workflow-audit 마킹
 
 ---
 
@@ -135,8 +135,8 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm run check` | `-` | `-` |
-| `pnpm run test:storybook --run src/shared/ui/page-skeleton/page-skeleton.stories.tsx ...` | `-` | `-` |
+| `pnpm run check` | `2026-08-14` | 통과 — biome/lint/typecheck 통과, steiger 5건 기존 이슈 |
+| `pnpm run test:storybook --run` | `2026-08-14` | 통과 — page-skeleton 2/2, mixing-detail 18/18, waveform 3/3 등 |
 
 
 
@@ -158,4 +158,7 @@
 
 
 
+
+
+<!-- lee-spec-kit:workflow-sync 2026-08-13T15:15:17.529Z -->
 
