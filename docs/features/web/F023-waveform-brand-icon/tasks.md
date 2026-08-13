@@ -119,4 +119,4 @@
 | Browser visual QA | `2026-08-13` | 통과 — production ProductBrand가 Paperlogy 700 계산값을 사용하고 파형 mark/wordmark 정렬 정상; 흰 배경 중앙형 `public/og.png` 확인 |
 | production metadata HTTP audit | `2026-08-13` | 통과 — title/OG site name은 `Copysinger`, Twitter large image와 canonical/OG image 출력 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T14:27:03+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T14:28:07+09:00 -->

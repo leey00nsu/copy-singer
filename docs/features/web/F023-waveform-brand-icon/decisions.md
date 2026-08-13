@@ -62,5 +62,6 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DOING 시작 시점**: TTF를 repository에 복사해 `next/font/local` brand variable과 Sharp SVG data font에 함께 사용하고, 서비스명 텍스트는 전역적으로 `Copysinger`로 동기화한다.
   - **DONE 시점**: production 계산값에서 Paperlogy 700 적용을 확인했고 OG를 흰색 1200×630 canvas 중앙에 작은 파형 mark, `Copysinger`, 정확한 tagline 순서로 확정했다.
 - **Evidence**:
+  - **Commit**: `630810c` (`feat(F023-waveform-brand-icon): Copysinger Paperlogy wordmark 적용`)
   - **Test/Log**: `pnpm run test:brand-icons` 8/8, Storybook 13/13, `pnpm run check`, `pnpm run build`, production browser metadata/font audit, deterministic font/OG SHA-256 비교
 - **Consequences**: repository에는 사용자가 제공한 TTF가 포함된다. 제공 폴더에서 별도 license 문서는 발견되지 않았으므로 배포 권한 관리는 제공자의 font 사용 조건을 따른다.
