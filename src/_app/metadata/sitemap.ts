@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { getSiteOrigin } from "@/shared/config/index.server";
+import { getSiteOrigin } from "@/shared/config/site-metadata";
 
 function buildSitemap(origin = getSiteOrigin()): MetadataRoute.Sitemap {
   return [

@@ -165,7 +165,7 @@ function LandingPage({ admin = false, user = null }: { admin?: boolean; user?: P
               <p className="text-[10px] font-semibold tracking-[0.16em] text-muted-foreground uppercase">Voice notes</p>
               <h2 className="mt-3 text-2xl font-medium tracking-[-0.035em]">더 좋은 한 소절을 위한 짧은 안내</h2>
             </div>
-            <span className="hidden text-[10px] text-muted-foreground sm:block">Copy Singer guide</span>
+            <span className="hidden text-[10px] text-muted-foreground sm:block">Copysinger guide</span>
           </RevealContent>
           <RevealContent className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4" delay={100} variant="stagger">
             {voiceNotes.map(({ description, image, label, title }, index) => (

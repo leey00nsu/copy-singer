@@ -2,7 +2,7 @@ import type { HTMLAttributes, ReactNode } from "react";
 
 import { cn } from "@/shared/lib/cn";
 
-// Adapted from Aceternity UI's Bento Grid for Copy Singer's semantic tokens.
+// Adapted from Aceternity UI's Bento Grid for Copysinger's semantic tokens.
 function BentoGrid({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return <div className={cn("grid grid-cols-1 gap-2 md:grid-cols-6", className)} {...props} />;
 }

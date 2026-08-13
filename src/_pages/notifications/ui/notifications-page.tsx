@@ -6,7 +6,7 @@ import { ProductPageIntro } from "@/shared/ui/product-page-intro";
 import { NotificationsList } from "./notifications-list";
 
 export const metadata: Metadata = {
-  title: "알림 — Copy Singer",
+  title: "알림 — Copysinger",
   description: "보컬 분석, AI 믹싱과 티켓 지급 알림을 확인하세요.",
 };
 

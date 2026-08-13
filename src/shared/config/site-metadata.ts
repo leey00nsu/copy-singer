@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
-const SITE_NAME = "Copy Singer";
-const SITE_TITLE = "Copy Singer — 내 목소리에 맞는 노래";
+const SITE_NAME = "Copysinger";
+const SITE_TITLE = "Copysinger — 내 목소리에 맞는 노래";
 const SITE_DESCRIPTION = "목소리를 분석해 어울리는 노래와 키를 찾고 AI 믹싱 결과를 만들어보세요.";
 const SOCIAL_DESCRIPTION = "내 음역을 측정하고 어울리는 노래와 키를 찾아보세요.";
 
@@ -82,7 +82,7 @@ function buildHomeMetadata(origin = getSiteOrigin()): Metadata {
       description: SOCIAL_DESCRIPTION,
       images: [
         {
-          alt: "Copy Singer 브랜드 파형과 내 목소리에 맞는 노래 찾기",
+          alt: "Copysinger 브랜드 파형과 내 목소리에 맞는 노래 찾기",
           height: 630,
           url: socialImage,
           width: 1200,
@@ -99,7 +99,7 @@ function buildHomeMetadata(origin = getSiteOrigin()): Metadata {
     twitter: {
       card: "summary_large_image",
       description: SOCIAL_DESCRIPTION,
-      images: [{ alt: "Copy Singer 브랜드 파형", url: socialImage }],
+      images: [{ alt: "Copysinger 브랜드 파형", url: socialImage }],
       title: SITE_TITLE,
     },
   };

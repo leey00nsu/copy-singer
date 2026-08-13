@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 
@@ -16,9 +17,16 @@ await Promise.all(
   ),
 );
 
-await sharp(fileURLToPath(new URL("../public/brand/copy-singer-og.svg", import.meta.url)))
+const ogSource = await readFile(new URL("../public/brand/copy-singer-og.svg", import.meta.url), "utf8");
+const paperlogy = await readFile(new URL("../src/_app/fonts/Paperlogy-7Bold.ttf", import.meta.url));
+const ogWithEmbeddedFont = ogSource.replace(
+  "<style>",
+  `<style>@font-face { font-family: "Paperlogy"; src: url("data:font/ttf;base64,${paperlogy.toString("base64")}"); font-weight: 700; }`,
+);
+
+await sharp(Buffer.from(ogWithEmbeddedFont))
   .resize(1200, 630, { fit: "fill" })
-  .flatten({ background: "#f8f9fb" })
+  .flatten({ background: "#ffffff" })
   .removeAlpha()
   .png({ compressionLevel: 9, palette: false })
   .toFile(fileURLToPath(new URL("../public/og.png", import.meta.url)));

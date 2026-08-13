@@ -5,7 +5,7 @@ import { pageSearchParamSchema } from "@/shared/api";
 import { AccountOverview } from "./account-overview";
 
 export const metadata: Metadata = {
-  title: "내 계정 — Copy Singer",
+  title: "내 계정 — Copysinger",
   description: "로그인 계정과 티켓 잔액, 변경 내역을 확인하세요.",
 };
 

@@ -42,7 +42,7 @@ async def lifespan(_: FastAPI):
     yield
 
 
-app = FastAPI(title="Copy Singer Vocal Profile Analyzer", version="1.2.0", lifespan=lifespan)
+app = FastAPI(title="Copysinger Vocal Profile Analyzer", version="1.2.0", lifespan=lifespan)
 
 
 def _recording_directory(recording_id: str) -> Path:

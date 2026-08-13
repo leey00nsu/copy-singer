@@ -8,7 +8,7 @@ import { prisma } from "@/shared/db/index.server";
 const baseURL = process.env.BETTER_AUTH_URL ?? "http://localhost:3000";
 
 export const auth = betterAuth({
-  appName: "Copy Singer",
+  appName: "Copysinger",
   baseURL,
   secret: process.env.BETTER_AUTH_SECRET ?? "copy-singer-local-development-secret-change-me",
   database: prismaAdapter(prisma, { provider: "postgresql" }),

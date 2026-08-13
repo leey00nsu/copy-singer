@@ -147,7 +147,7 @@ export function SingerWorkbench({
               <Mic2 className="size-4" />
             </span>
             <div>
-              <p className="text-sm font-semibold tracking-tight">Copy Singer</p>
+              <p className="text-sm font-semibold tracking-tight">Copysinger</p>
               <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">SoulX Singer Lab</p>
             </div>
           </div>

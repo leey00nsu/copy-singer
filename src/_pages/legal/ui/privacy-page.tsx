@@ -5,21 +5,21 @@ import { LegalDataItem, LegalDataList, LegalDocumentLayout, LegalList, LegalSect
 
 const privacyMetadata: Metadata = {
   alternates: { canonical: "/privacy" },
-  title: "개인정보 처리방침 | Copy Singer",
-  description: "Copy Singer가 계정, 음성, 분석, 추천 및 AI 믹싱 데이터를 처리하는 방법입니다.",
+  title: "개인정보 처리방침 | Copysinger",
+  description: "Copysinger가 계정, 음성, 분석, 추천 및 AI 믹싱 데이터를 처리하는 방법입니다.",
   robots: { follow: true, index: true },
 };
 
 function PrivacyPage() {
   return (
     <LegalDocumentLayout
-      description="Copy Singer가 Google 로그인 정보, 음성 파일과 분석·추천·AI 믹싱 기록을 어떤 목적으로 처리하고 삭제하는지 설명합니다."
+      description="Copysinger가 Google 로그인 정보, 음성 파일과 분석·추천·AI 믹싱 기록을 어떤 목적으로 처리하고 삭제하는지 설명합니다."
       effectiveDate="2026년 8월 11일"
       title="개인정보 처리방침"
     >
       <LegalSection title="1. 처리 원칙">
         <p>
-          Copy Singer 운영팀(이하 “운영자”)은 서비스 제공에 필요한 범위에서 개인정보를 처리하며, 목적이 달성되거나
+          Copysinger 운영팀(이하 “운영자”)은 서비스 제공에 필요한 범위에서 개인정보를 처리하며, 목적이 달성되거나
           이용자가 삭제를 요청하면 관련 법령상 보존 의무가 없는 한 안전하게 파기합니다. 음성은 사용자 식별을 위한
           생체인증 수단으로 사용하지 않고 보컬 분석과 사용자가 요청한 AI 믹싱에 사용합니다.
         </p>

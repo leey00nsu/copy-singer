@@ -8,7 +8,7 @@ import { mixingTicketCost } from "@/shared/config/index.server";
 import { SongDetail } from "./song-detail";
 
 export const metadata: Metadata = {
-  title: "추천 곡 상세 — Copy Singer",
+  title: "추천 곡 상세 — Copysinger",
   description: "내 음역과 추천 곡의 저장된 음역, 키 조정 근거와 AI 믹싱 상태를 확인하세요.",
 };
 

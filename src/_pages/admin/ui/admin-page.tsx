@@ -71,7 +71,7 @@ export default async function AdminPage({
         <ProductPageIntro
           description="서비스의 사용 현황과 티켓을 관리하고, 작업 상태를 모니터링하세요."
           eyebrow="Admin"
-          title="Copy Singer 운영"
+          title="Copysinger 운영"
         />
         <AdminMetricBand
           className="mt-8"

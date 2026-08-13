@@ -141,7 +141,7 @@ function LandingProductStory() {
       id="how-it-works"
     >
       <RevealContent distance={0} duration={1400} fromOpacity={0}>
-        <BentoGrid aria-label="Copy Singer 제품 흐름 미리보기">
+        <BentoGrid aria-label="Copysinger 제품 흐름 미리보기">
           <BentoGridItem className="md:col-span-2" eyebrow="01 · Analyze" title="목소리 분석">
             <AnalysisSurface />
           </BentoGridItem>
@@ -154,7 +154,7 @@ function LandingProductStory() {
           <BentoGridItem className="md:col-span-4" eyebrow="03 · Create" title="선택형 AI 믹싱">
             <MixingSurface />
           </BentoGridItem>
-          <BentoGridItem className="md:col-span-2" eyebrow="Copy Singer" title="Your voice, made visible">
+          <BentoGridItem className="md:col-span-2" eyebrow="Copysinger" title="Your voice, made visible">
             <OrbPoster />
           </BentoGridItem>
         </BentoGrid>

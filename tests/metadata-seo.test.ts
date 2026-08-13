@@ -35,7 +35,7 @@ test("root and home metadata expose icon, canonical, Open Graph and Twitter cont
   assert.ok(home.openGraph && "type" in home.openGraph);
   assert.equal(home.openGraph.type, "website");
   assert.equal(home.openGraph.url, `${origin}/`);
-  assert.equal(home.openGraph.siteName, "Copy Singer");
+  assert.equal(home.openGraph.siteName, "Copysinger");
   assert.equal(home.openGraph.locale, "ko_KR");
   assert.ok(home.twitter && "card" in home.twitter);
   assert.equal(home.twitter.card, "summary_large_image");

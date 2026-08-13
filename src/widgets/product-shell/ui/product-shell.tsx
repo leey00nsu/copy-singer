@@ -141,7 +141,7 @@ function ProductHeader({ admin = false, showAuthAction = true, user = null }: Pr
             </SheetTrigger>
             <SheetContent className="w-[min(22rem,calc(100%-2rem))]" side="right">
               <SheetHeader>
-                <SheetTitle>Copy Singer</SheetTitle>
+                <SheetTitle>Copysinger</SheetTitle>
                 <SheetDescription>목소리 분석, 라이브러리와 내 계정으로 이동합니다.</SheetDescription>
               </SheetHeader>
               <div className="rounded-xl bg-muted/30 px-3 py-4" data-mobile-navigation-surface="quiet">
@@ -194,7 +194,7 @@ function ProductFooter() {
         <div>
           <ProductBrand href="/" />
           <p className="mt-2">목소리로 이해하고, 가장 잘 맞는 노래와 연결합니다.</p>
-          <p className="mt-3 text-[11px]">© 2026 Copy Singer.</p>
+          <p className="mt-3 text-[11px]">© 2026 Copysinger.</p>
         </div>
         <nav aria-label="제품 푸터 메뉴" className="flex flex-wrap gap-x-7 gap-y-2 text-[11px]">
           <Link className="underline-offset-4 hover:text-foreground hover:underline" href="/terms">

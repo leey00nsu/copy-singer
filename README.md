@@ -1,6 +1,6 @@
-# Copy Singer
+# Copysinger
 
-Copy Singer analyzes a signed-in user's test singing, compares the resulting vocal profile with song profiles, recommends suitable songs and karaoke keys, and provides a ticket-based SoulX-Singer voice-conversion demo. Google OAuth identifies users, Leemage stores reference and result audio, and a PostgreSQL-backed worker keeps mixing jobs running after the browser closes.
+Copysinger analyzes a signed-in user's test singing, compares the resulting vocal profile with song profiles, recommends suitable songs and karaoke keys, and provides a ticket-based SoulX-Singer voice-conversion demo. Google OAuth identifies users, Leemage stores reference and result audio, and a PostgreSQL-backed worker keeps mixing jobs running after the browser closes.
 
 ## Local setup
 

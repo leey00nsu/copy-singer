@@ -55,7 +55,7 @@ def require_api_key(x_api_key: str | None = Header(default=None)) -> None:
 
 
 web_app = FastAPI(
-    title="Copy Singer Modal Vocal Profile Analyzer",
+    title="Copysinger Modal Vocal Profile Analyzer",
     version="1.0.0",
     dependencies=[Depends(require_api_key)],
 )

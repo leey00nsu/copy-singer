@@ -116,7 +116,7 @@ async function main() {
     create: {
       id: ids.song,
       title: "Example Song",
-      artist: "Copy Singer Fixture",
+      artist: "Copysinger Fixture",
       originalKey: "C",
       catalogOrder: 1,
       vocalProfileId: ids.songProfile,

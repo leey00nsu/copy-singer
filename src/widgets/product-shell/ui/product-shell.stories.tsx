@@ -45,8 +45,9 @@ export const Desktop: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const brand = canvas.getAllByRole("link", { name: "Copy Singer" })[0];
+    const brand = canvas.getAllByRole("link", { name: "Copysinger" })[0];
     await expect(brand?.querySelector('img[src*="copy-singer-mark.svg"]')).toBeVisible();
+    await expect(within(brand as HTMLElement).getByText("Copysinger")).toHaveClass("font-brand", "font-bold");
     const productMenu = within(canvas.getByRole("navigation", { name: "제품 메뉴" }));
     await expect(productMenu.getByRole("link", { name: "라이브러리" })).toHaveAttribute("aria-current", "page");
     await expect(productMenu.getByRole("link", { name: "내 계정" })).toBeVisible();
@@ -59,7 +60,7 @@ export const Desktop: Story = {
     await expect(canvas.getByRole("navigation", { name: "제품 푸터 메뉴" })).toBeVisible();
     await expect(canvas.getByRole("link", { name: "이용 약관" })).toHaveAttribute("href", "/terms");
     await expect(canvas.getByRole("link", { name: "개인정보 처리방침" })).toHaveAttribute("href", "/privacy");
-    await expect(canvas.getByText("© 2026 Copy Singer.")).toBeVisible();
+    await expect(canvas.getByText("© 2026 Copysinger.")).toBeVisible();
     await userEvent.click(canvas.getByRole("button", { name: "지은 계정 메뉴" }));
     const body = within(document.body);
     await waitFor(() => expect(body.getByText("계정")).toBeVisible());

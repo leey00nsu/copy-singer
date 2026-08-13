@@ -4,23 +4,23 @@ import { LegalDataItem, LegalDataList, LegalDocumentLayout, LegalList, LegalSect
 
 const termsMetadata: Metadata = {
   alternates: { canonical: "/terms" },
-  title: "이용 약관 | Copy Singer",
-  description: "Copy Singer의 계정, 음성 분석, 추천 및 AI 믹싱 서비스 이용 조건입니다.",
+  title: "이용 약관 | Copysinger",
+  description: "Copysinger의 계정, 음성 분석, 추천 및 AI 믹싱 서비스 이용 조건입니다.",
   robots: { follow: true, index: true },
 };
 
 function TermsPage() {
   return (
     <LegalDocumentLayout
-      description="Copy Singer의 Google 계정 로그인, 보컬 분석, 노래 추천과 티켓 기반 AI 믹싱 기능을 이용할 때 적용되는 조건입니다."
+      description="Copysinger의 Google 계정 로그인, 보컬 분석, 노래 추천과 티켓 기반 AI 믹싱 기능을 이용할 때 적용되는 조건입니다."
       effectiveDate="2026년 8월 11일"
       title="이용 약관"
     >
       <LegalSection title="1. 목적과 적용 범위">
         <p>
-          이 약관은 Copy Singer 운영팀(이하 “운영자”)이 제공하는 Copy Singer 웹 서비스(이하 “서비스”)의 이용 조건과
-          운영자 및 이용자의 권리·의무를 정합니다. 이용자가 Google 로그인을 완료하고 서비스를 이용하면 이 약관과
-          개인정보 처리방침을 확인하고 동의한 것으로 봅니다.
+          이 약관은 Copysinger 운영팀(이하 “운영자”)이 제공하는 Copysinger 웹 서비스(이하 “서비스”)의 이용 조건과 운영자
+          및 이용자의 권리·의무를 정합니다. 이용자가 Google 로그인을 완료하고 서비스를 이용하면 이 약관과 개인정보
+          처리방침을 확인하고 동의한 것으로 봅니다.
         </p>
       </LegalSection>
 
@@ -140,7 +140,7 @@ function TermsPage() {
 
       <LegalSection title="12. 운영자 정보와 문의">
         <LegalDataList>
-          <LegalDataItem term="서비스명">Copy Singer</LegalDataItem>
+          <LegalDataItem term="서비스명">Copysinger</LegalDataItem>
           <LegalDataItem term="운영 주체">정식 공개 전 법적 명칭과 대표자 정보 입력 필요</LegalDataItem>
           <LegalDataItem term="주소·문의">
             정식 공개 전 사업장 주소와 실제 수신 가능한 문의 이메일 입력 필요

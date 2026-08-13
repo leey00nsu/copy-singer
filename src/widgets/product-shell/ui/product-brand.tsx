@@ -10,7 +10,7 @@ function ProductBrand({ className, href = "/" }: { className?: string; href?: st
       href={href}
     >
       <ProductMark />
-      <span>Copy Singer</span>
+      <span className="font-brand font-bold">Copysinger</span>
     </Link>
   );
 }

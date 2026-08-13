@@ -34,7 +34,7 @@ function LoginScreen({ callbackURL, configured }: LoginScreenProps) {
             <p className="mt-6 text-xs leading-5 text-muted-foreground">
               <span className="block">Google 계정으로 로그인하면</span>
               <span className="block">
-                Copy Singer의{" "}
+                Copysinger의{" "}
                 <Link className="underline underline-offset-2 hover:text-foreground" href="/terms">
                   이용 약관
                 </Link>{" "}

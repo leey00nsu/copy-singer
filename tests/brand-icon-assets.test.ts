@@ -71,12 +71,16 @@ test("the Open Graph image is a branded 1200x630 RGB derivative", async () => {
   const source = await readFile(new URL("../public/brand/copy-singer-og.svg", import.meta.url), "utf8");
   const metadata = await sharp(fileURLToPath(new URL("../public/og.png", import.meta.url))).metadata();
 
-  assert.match(source, />Copy Singer</);
+  assert.match(source, />Copysinger</);
   assert.match(source, /gradientUnits="userSpaceOnUse"/);
+  assert.match(source, /font-family: "Paperlogy"/);
+  assert.match(source, /text-anchor="middle">Copysinger/);
+  assert.match(source, /text-anchor="middle">Find your voice\. Sing your Match</);
+  assert.match(source, /<rect width="1200" height="630" fill="#ffffff"/);
+  assert.doesNotMatch(source, /<circle|VOICE ANALYSIS|Vocal Loom|#f8f9fb/i);
   assert.match(source, /#7e41ed/);
   assert.match(source, /#3678e6/);
   assert.match(source, /#cd69c6/);
-  assert.doesNotMatch(source, /Vocal Loom|#f[0-9a-f]{2}[de][0-9a-f]{2}/i);
   assert.equal(metadata.format, "png");
   assert.equal(metadata.width, 1200);
   assert.equal(metadata.height, 630);

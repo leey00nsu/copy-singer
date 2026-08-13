@@ -6,7 +6,7 @@ import { resourceIdSchema } from "@/shared/api";
 import { MixingDetail } from "./mixing-detail";
 
 export const metadata: Metadata = {
-  title: "AI 믹스 상세 — Copy Singer",
+  title: "AI 믹스 상세 — Copysinger",
   description: "AI 믹싱의 실제 처리 상태와 완성된 결과를 확인하세요.",
 };
 
