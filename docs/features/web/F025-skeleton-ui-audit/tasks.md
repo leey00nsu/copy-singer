@@ -52,17 +52,17 @@
 
 ## 태스크 목록
 
-- [TODO][PRD-FR-051] T-F025-skeleton-ui-audit-01 스피너 기반 Recommendation/SongDetail 로딩을 레이아웃 보존형 스켈레톤으로 교체
+- [DONE][PRD-FR-051] T-F025-skeleton-ui-audit-01 스피너 기반 Recommendation/SongDetail 로딩을 레이아웃 보존형 스켈레톤으로 교체
   - Date: 2026-08-14
   - Acceptance:
     - recommendation-detail 스피너가 제거되고 CreationFunnelShell + ProductPageIntro + filter bar + 5–6행 테이블 스켈레톤으로 교체된다
     - song-detail 스피너가 제거되고 back link + score 3-tile + 차트 slot + reason 리스트 + aside card 스켈레톤으로 교체된다
     - 두 스켈레톤이 실제 페이지와 같은 max-width(72rem)·gutter·section spacing을 사용한다
   - Checklist:
-    - [ ] `src/_pages/recommendation-detail/ui/recommendation-loading.tsx` 교체
-    - [ ] `src/_pages/song-detail/ui/song-detail-loading.tsx` 교체
-    - [ ] `src/_pages/recommendation-detail/index.server.ts` / `src/_pages/song-detail/index.server.ts` export 일관성 확인
-    - [ ] Storybook/a11y(reduced-motion, aria-busy/role) 확인
+    - [x] `src/_pages/recommendation-detail/ui/recommendation-loading.tsx` 교체
+    - [x] `src/_pages/song-detail/ui/song-detail-loading.tsx` 교체
+    - [x] `src/_pages/recommendation-detail/index.server.ts` / `src/_pages/song-detail/index.server.ts` export 일관성 확인
+    - [x] Storybook/a11y(reduced-motion, aria-busy/role) 확인
 
 - [TODO][PRD-FR-051] T-F025-skeleton-ui-audit-02 Profile/Account/Notifications 전용 스켈레톤과 loading 경계 추가
   - Date: 2026-08-14
@@ -137,6 +137,7 @@
 | --- | --- | --- |
 | `pnpm run check` | `-` | `-` |
 | `pnpm run test:storybook --run src/shared/ui/page-skeleton/page-skeleton.stories.tsx ...` | `-` | `-` |
+
 
 
 
