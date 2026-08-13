@@ -27,28 +27,22 @@ function PrivacyPage() {
 
       <LegalSection title="2. 처리하는 개인정보와 목적">
         <LegalDataList>
-          <LegalDataItem term="Google 계정">
-            Google 계정 식별자, 이름, 이메일, 이메일 확인 여부, 프로필 이미지, OAuth 연결·토큰 metadata를 계정 생성,
-            로그인과 공급자 연결 상태 확인에 사용합니다.
+          <LegalDataItem term="계정정보">
+            Google 계정 식별자, 이름, 이메일, 프로필 정보와 Google 계정 연결 정보를 계정 생성과 로그인에 사용합니다.
           </LegalDataItem>
-          <LegalDataItem term="세션·접속">
-            세션 token, 만료 시각, IP 주소, User-Agent를 로그인 유지, 보안, 오용 방지와 오류 대응에 사용합니다.
+          <LegalDataItem term="접속정보">
+            세션 정보, IP 주소와 브라우저 정보를 로그인 유지, 보안, 오용 방지와 오류 대응에 사용합니다.
           </LegalDataItem>
-          <LegalDataItem term="음성·분석">
-            녹음·업로드 음성, 파일명·형식·크기·길이·sample rate, 음역·중앙음·안정도·음질 지표, 분석 descriptor와 대표
-            구간을 보컬 프로필 생성·재생·추천·AI 믹싱 reference 생성에 사용합니다.
-          </LegalDataItem>
-          <LegalDataItem term="추천">
-            선택한 보컬 프로필, 추천 곡·순위·적합도·권장 키·사유·합성 상태를 추천 결과 저장, 조회와 후속 믹싱 연결에
+          <LegalDataItem term="음성정보">
+            녹음·업로드한 음성 파일과 파일정보, 음성 분석 결과를 보컬 프로필 생성, 재생, 노래 추천과 AI 믹싱에
             사용합니다.
           </LegalDataItem>
-          <LegalDataItem term="AI 믹싱">
-            보컬 프로필·곡·추천 항목 식별자, reference/target/result audio, 외부 작업 ID, 진행 상태, 오류·재시도 기록을
-            변환 작업 수행, 복구, 결과 제공과 삭제에 사용합니다.
+          <LegalDataItem term="추천·믹싱정보">
+            보컬 프로필, 추천 결과, 믹싱 입력·결과 음원 및 작업정보를 추천 결과 제공, AI 믹싱 수행, 결과 조회와 삭제에
+            사용합니다.
           </LegalDataItem>
-          <LegalDataItem term="티켓·운영">
-            티켓 잔액·변경 유형·수량·사유, 관련 믹싱 ID, 관리자 조정자 ID와 작업 상태를 이용량 관리, 환급, 운영 감사와
-            고객 지원에 사용합니다.
+          <LegalDataItem term="이용내역">
+            티켓 잔액 및 사용·환급 내역을 서비스 이용량 관리와 환급 처리에 사용합니다.
           </LegalDataItem>
         </LegalDataList>
       </LegalSection>
@@ -116,17 +110,10 @@ function PrivacyPage() {
       </LegalSection>
 
       <LegalSection title="8. 파기 절차와 방법">
-        <LegalList>
-          <li>삭제 대상 database record는 관계와 진행 상태를 확인한 뒤 제거합니다.</li>
-          <li>
-            외부 저장 음성은 저장 시스템의 삭제 API로 제거하고, 즉시 삭제가 실패하면 cleanup job으로 재시도합니다.
-          </li>
-          <li>
-            분석기의 임시 작업 파일은 분석 응답 후 제거하고, AI 처리 시스템의 임시 파일은 작업 종료 후 정리하도록
-            구성합니다.
-          </li>
-          <li>전자 파일은 복구하기 어렵도록 삭제하며 법령상 보존 정보는 다른 정보와 분리합니다.</li>
-        </LegalList>
+        <p>
+          보유기간이 지나거나 이용자가 삭제를 요청한 개인정보는 지체 없이 삭제합니다. 전자적 파일은 복구하기 어려운
+          방법으로 삭제하며, 법령에 따라 보존해야 하는 정보가 있는 경우 다른 개인정보와 분리하여 보관합니다.
+        </p>
       </LegalSection>
 
       <LegalSection title="9. 이용자의 권리와 행사 방법">
@@ -139,12 +126,9 @@ function PrivacyPage() {
 
       <LegalSection title="10. 안전성 확보 조치">
         <LegalList>
-          <li>Google OAuth와 만료되는 session을 사용하고 사용자 소유 데이터는 서버에서 계정 ID로 접근을 제한합니다.</li>
-          <li>외부 API key와 database credential은 server environment에서 관리하고 브라우저에 노출하지 않습니다.</li>
-          <li>관리자 기능은 허용된 계정과 서버 검증으로 제한하고 ticket 조정 사유와 작업자를 기록합니다.</li>
-          <li>
-            음성 저장소 삭제 실패를 추적·재시도하고 작업 lease, idempotency key와 상태 검증으로 중복 처리를 줄입니다.
-          </li>
+          <li>로그인이 필요한 개인정보는 이용자 계정별로 접근을 제한합니다.</li>
+          <li>서비스 인증정보와 접근 권한은 이용자에게 노출되지 않도록 관리합니다.</li>
+          <li>관리자 기능은 허용된 계정만 사용할 수 있도록 제한합니다.</li>
         </LegalList>
       </LegalSection>
 
