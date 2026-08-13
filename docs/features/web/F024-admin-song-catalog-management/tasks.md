@@ -96,17 +96,17 @@
     - [x] target multipart upload와 superseded asset cleanup 정책을 연결한다.
     - [x] 권한·idempotency·queue·publish 통합 테스트를 작성한다.
 
-- [TODO][PRD-US-028][PRD-FR-059] T-F024-admin-song-catalog-management-04 관리자 카탈로그 UI 구현
+- [DONE][PRD-US-028][PRD-FR-059] T-F024-admin-song-catalog-management-04 관리자 카탈로그 UI 구현
   - Date: 2026-08-13
   - Acceptance:
-    - 관리자는 catalog 목록에서 검색과 상태 필터를 사용하고 곡·출처·분석·target·공개 상태를 구분할 수 있다.
-    - 추가 및 교체 form은 검증 오류와 처리 상태를 표시하며 중복 제출을 막는다.
-    - 실패 재시도와 공개/보관 action은 명시적 확인과 실제 서버 결과를 반영한다.
+    - [x] 관리자는 catalog 목록에서 검색과 상태 필터를 사용하고 곡·출처·분석·target·공개 상태를 구분할 수 있다.
+    - [x] 추가 및 교체 form은 검증 오류와 처리 상태를 표시하며 중복 제출을 막는다.
+    - [x] 실패 재시도와 공개/보관 action은 명시적 확인과 실제 서버 결과를 반영한다.
   - Checklist:
-    - [ ] 기존 admin page에 catalog section과 query state를 추가한다.
-    - [ ] 곡 추가·source 교체·target upload form과 상태 feedback을 구현한다.
-    - [ ] loading·empty·error·disabled·mobile 상태의 Storybook/UI 테스트를 작성한다.
-    - [ ] 관리자 전체 회귀 테스트와 접근성 검사를 실행한다.
+    - [x] 기존 admin page에 catalog section과 query state를 추가한다.
+    - [x] 곡 추가·source 교체·target upload form과 상태 feedback을 구현한다.
+    - [x] loading·empty·error·disabled·mobile 상태의 Storybook/UI 테스트를 작성한다.
+    - [x] 관리자 전체 회귀 테스트와 접근성 검사를 실행한다.
 
 - [TODO][PRD-FR-059][PRD-DATA-006] T-F024-admin-song-catalog-management-05 교체된 4곡 재분석·target 교체 및 잘못된 음원 삭제
   - Date: 2026-08-13
@@ -160,5 +160,8 @@
 | `pnpm run test:song-analysis-queue` | `2026-08-13` | 통과 — 관리자 mutation/publish와 durable claim/retry 4/4 |
 | `pnpm run test:admin && pnpm run test:architecture-boundaries && pnpm run test:process-scripts` | `2026-08-13` | 통과 — admin 2/2, architecture 4/4, process 5/5 |
 | Task 03 targeted Biome·ESLint·TypeScript | `2026-08-13` | 통과 |
+| `pnpm run test:admin` | `2026-08-13` | 통과 — catalog UI contract/story presence와 기존 admin 4/4 |
+| catalog manager Storybook Vitest | `2026-08-13` | 통과 — default·empty·error/retry·loading/disabled·mobile 및 a11y 5/5 |
+| Task 04 targeted Biome·ESLint·TypeScript·architecture | `2026-08-13` | 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T18:02:00+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T18:11:00+09:00 -->
