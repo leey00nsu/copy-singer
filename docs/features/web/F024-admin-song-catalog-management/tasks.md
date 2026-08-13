@@ -153,4 +153,4 @@
 | `pnpm exec tsc --noEmit` | `2026-08-13` | 통과 |
 | `pnpm exec prisma validate` | `2026-08-13` | 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T16:32:00+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T16:36:00+09:00 -->

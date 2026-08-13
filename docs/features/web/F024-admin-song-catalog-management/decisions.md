@@ -32,7 +32,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 기존 runtime 필드는 Task 02 전환 완료 전까지 유지하면서 `SongSource`, `SongAnalysis`, `SongAnalysisJob`, `Catalog`, `CatalogEntry`와 active pointer를 먼저 추가했다. readiness validator가 source·analysis·target revision 일치와 published entry를 함께 검사하고 DB unique/FK가 revision identity를 보호함을 확인했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: Task 01 구현 커밋
+  - **Commit**: `aa2848c` (`feat(F024-admin-song-catalog-management): 카탈로그 revision 모델 구축`)
   - **PR**: -
   - **Test/Log**: `pnpm exec prisma validate`, `pnpm exec tsc --noEmit`, catalog domain 3/3, DB integration 1/1
 - **Consequences**: 기존 F003 D005의 JSON SSOT 결정은 F024 완료 시 superseded가 된다. 개발 DB는 reset/bootstrap이 필요하고 초기 배포 절차에 bootstrap 검증이 추가된다.
