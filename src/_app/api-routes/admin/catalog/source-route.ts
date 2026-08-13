@@ -1,5 +1,10 @@
 import { requireAdminApi } from "@/features/authentication/index.server";
-import { replaceAdminSongSource, replaceAdminSongSourceSchema } from "@/features/manage-song-catalog/index.server";
+import {
+  replaceAdminSongSource,
+  replaceAdminSongSourceSchema,
+  SongCatalogAdminError,
+  uploadAdminCatalogTarget,
+} from "@/features/manage-song-catalog/index.server";
 import { adminCatalogError, adminCatalogJson } from "./http";
 
 export async function POST(request: Request, context: { params: Promise<{ songId: string }> }) {
@@ -7,8 +12,16 @@ export async function POST(request: Request, context: { params: Promise<{ songId
   if (access.response) return access.response;
   try {
     const { songId } = await context.params;
-    const input = replaceAdminSongSourceSchema.parse(await request.json());
-    return adminCatalogJson(await replaceAdminSongSource(songId, input, access.session.user.id), 201);
+    const form = await request.formData();
+    const audio = form.get("audio");
+    if (!(audio instanceof File)) throw new SongCatalogAdminError("AUDIO_REQUIRED", "음원 파일이 필요합니다.", 400);
+    const input = replaceAdminSongSourceSchema.parse({
+      sourceUrl: form.get("sourceUrl"),
+      idempotencyKey: form.get("idempotencyKey"),
+    });
+    const source = await replaceAdminSongSource(songId, input, access.session.user.id);
+    await uploadAdminCatalogTarget({ sourceId: source.id, file: audio });
+    return adminCatalogJson(source, 201);
   } catch (error) {
     return adminCatalogError(error);
   }

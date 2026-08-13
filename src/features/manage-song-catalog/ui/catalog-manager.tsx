@@ -2,10 +2,20 @@
 
 import { Archive, Check, ChevronDown, FileAudio, LoaderCircle, Plus, RefreshCw, Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/shared/ui/dialog";
 import {
   addAdminSong,
   archiveAdminSongClient,
@@ -113,13 +123,17 @@ function ReplaceSourceForm({ songId }: { songId: string }) {
   async function submit(formData: FormData) {
     setPending(true);
     try {
-      await replaceAdminSource(songId, {
-        sourceUrl: String(formData.get("sourceUrl") ?? ""),
-        sourceVideoId: String(formData.get("sourceVideoId") ?? ""),
-        sourceLabel: String(formData.get("sourceLabel") ?? ""),
-        idempotencyKey: crypto.randomUUID(),
-      });
-      toast.success("새 출처 분석을 대기열에 등록했습니다.");
+      const audio = formData.get("audio");
+      if (!(audio instanceof File) || audio.size === 0) throw new Error("교체할 음원 파일을 선택해 주세요.");
+      await replaceAdminSource(
+        songId,
+        {
+          sourceUrl: String(formData.get("sourceUrl") ?? ""),
+          idempotencyKey: crypto.randomUUID(),
+        },
+        audio,
+      );
+      toast.success("새 출처와 음원을 저장하고 Modal 분석을 요청했습니다.");
       router.refresh();
     } catch (error) {
       toast.error(message(error));
@@ -130,22 +144,25 @@ function ReplaceSourceForm({ songId }: { songId: string }) {
   return (
     <form
       action={submit}
-      className="mt-3 grid gap-2 rounded-lg bg-muted/30 p-3 md:grid-cols-[1fr_9rem_12rem_auto] md:items-end"
+      className="mt-3 grid gap-2 rounded-lg bg-muted/30 p-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] md:items-end"
     >
       <label className="grid gap-1 text-[10px] font-medium">
         YouTube URL
         <input className={fieldClass} disabled={pending} name="sourceUrl" required type="url" />
       </label>
       <label className="grid gap-1 text-[10px] font-medium">
-        Video ID
-        <input className={fieldClass} disabled={pending} maxLength={11} minLength={11} name="sourceVideoId" required />
-      </label>
-      <label className="grid gap-1 text-[10px] font-medium">
-        출처 라벨
-        <input className={fieldClass} disabled={pending} name="sourceLabel" placeholder="공식 영상" required />
+        교체 음원
+        <input
+          accept="audio/*,.flac"
+          className={`${fieldClass} py-1.5`}
+          disabled={pending}
+          name="audio"
+          required
+          type="file"
+        />
       </label>
       <Button disabled={pending} size="xs" type="submit" variant="outline">
-        {pending ? <LoaderCircle className="animate-spin" /> : <RefreshCw />} 교체 분석
+        {pending ? <LoaderCircle className="animate-spin" /> : <RefreshCw />} 출처와 음원 교체
       </Button>
     </form>
   );
@@ -201,6 +218,12 @@ function CatalogRow({ entry }: { entry: AdminCatalogEntryView }) {
                 {source.analysisError ? (
                   <p className="mt-1 text-[10px] text-destructive">{source.analysisError}</p>
                 ) : null}
+                {source.estimatedKey ? (
+                  <p className="mt-1 text-[10px] text-muted-foreground">
+                    분석 원키 {source.estimatedKey}
+                    {source.keyConfidence === null ? "" : ` · 신뢰도 ${Math.round(source.keyConfidence * 100)}%`}
+                  </p>
+                ) : null}
               </div>
               <div className="flex flex-wrap gap-1">
                 <StatusBadge value={source.status} />
@@ -228,20 +251,32 @@ function CatalogRow({ entry }: { entry: AdminCatalogEntryView }) {
 export function CatalogManager({ entries, loading = false }: { entries: AdminCatalogEntryView[]; loading?: boolean }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
   const adding = pending || loading;
+  const hasRunningAnalysis = entries.some((entry) =>
+    entry.song.sources.some((source) => source.analysisStatus === "PENDING" || source.analysisStatus === "PROCESSING"),
+  );
+  useEffect(() => {
+    if (!hasRunningAnalysis) return;
+    const interval = window.setInterval(() => router.refresh(), 5_000);
+    return () => window.clearInterval(interval);
+  }, [hasRunningAnalysis, router]);
   async function add(formData: FormData) {
     setPending(true);
     try {
-      await addAdminSong({
-        title: String(formData.get("title") ?? ""),
-        artist: String(formData.get("artist") ?? ""),
-        originalKey: String(formData.get("originalKey") ?? "").trim() || null,
-        sourceUrl: String(formData.get("sourceUrl") ?? ""),
-        sourceVideoId: String(formData.get("sourceVideoId") ?? ""),
-        sourceLabel: String(formData.get("sourceLabel") ?? ""),
-        idempotencyKey: crypto.randomUUID(),
-      });
-      toast.success("곡을 추가하고 분석을 요청했습니다.");
+      const audio = formData.get("audio");
+      if (!(audio instanceof File) || audio.size === 0) throw new Error("분석할 음원 파일을 선택해 주세요.");
+      await addAdminSong(
+        {
+          title: String(formData.get("title") ?? ""),
+          artist: String(formData.get("artist") ?? ""),
+          sourceUrl: String(formData.get("sourceUrl") ?? ""),
+          idempotencyKey: crypto.randomUUID(),
+        },
+        audio,
+      );
+      toast.success("음원을 저장하고 Modal 분석을 요청했습니다.");
+      setAddOpen(false);
       router.refresh();
     } catch (error) {
       toast.error(message(error));
@@ -250,55 +285,63 @@ export function CatalogManager({ entries, loading = false }: { entries: AdminCat
     }
   }
   return (
-    <div className="overflow-hidden rounded-xl border bg-background">
-      <details className="border-b">
-        <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-semibold hover:bg-muted/20">
-          새 곡 추가 <Plus className="size-4" />
-        </summary>
-        <form action={add} className="grid gap-3 border-t bg-muted/10 p-4 md:grid-cols-2 xl:grid-cols-3">
-          <label className="grid gap-1 text-[11px] font-medium">
-            곡 제목
-            <input className={fieldClass} disabled={adding} name="title" required />
-          </label>
-          <label className="grid gap-1 text-[11px] font-medium">
-            아티스트
-            <input className={fieldClass} disabled={adding} name="artist" required />
-          </label>
-          <label className="grid gap-1 text-[11px] font-medium">
-            원키
-            <input className={fieldClass} disabled={adding} name="originalKey" placeholder="선택" />
-          </label>
-          <label className="grid gap-1 text-[11px] font-medium">
-            YouTube URL
-            <input className={fieldClass} disabled={adding} name="sourceUrl" required type="url" />
-          </label>
-          <label className="grid gap-1 text-[11px] font-medium">
-            Video ID
-            <input
-              className={fieldClass}
-              disabled={adding}
-              maxLength={11}
-              minLength={11}
-              name="sourceVideoId"
-              required
-            />
-          </label>
-          <label className="grid gap-1 text-[11px] font-medium">
-            출처 라벨
-            <input className={fieldClass} disabled={adding} name="sourceLabel" placeholder="공식 영상" required />
-          </label>
-          <div className="md:col-span-2 xl:col-span-3 flex justify-end">
-            <Button disabled={adding} size="sm" type="submit">
-              {adding ? <LoaderCircle className="animate-spin" /> : <Plus />} 추가 및 분석
-            </Button>
-          </div>
-        </form>
-      </details>
-      {entries.length ? (
-        entries.map((entry) => <CatalogRow entry={entry} key={entry.id} />)
-      ) : (
-        <div className="px-4 py-12 text-center text-sm text-muted-foreground">조건에 맞는 곡이 없습니다.</div>
-      )}
+    <div>
+      <div className="mb-4 flex justify-end">
+        <Dialog onOpenChange={setAddOpen} open={addOpen}>
+          <DialogTrigger render={<Button disabled={loading} />}>
+            <Plus /> 음원 추가
+          </DialogTrigger>
+          <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>음원 추가</DialogTitle>
+              <DialogDescription>
+                곡 정보와 사용 권한이 있는 음원을 등록합니다. Video ID는 URL에서 추출하고, 원키는 Modal 분석으로
+                추정합니다.
+              </DialogDescription>
+            </DialogHeader>
+            <form action={add} className="grid gap-3 sm:grid-cols-2">
+              <label className="grid gap-1 text-[11px] font-medium">
+                곡 제목
+                <input className={fieldClass} disabled={adding} name="title" required />
+              </label>
+              <label className="grid gap-1 text-[11px] font-medium">
+                아티스트
+                <input className={fieldClass} disabled={adding} name="artist" required />
+              </label>
+              <label className="grid gap-1 text-[11px] font-medium sm:col-span-2">
+                YouTube URL
+                <input className={fieldClass} disabled={adding} name="sourceUrl" required type="url" />
+              </label>
+              <label className="grid gap-1 text-[11px] font-medium sm:col-span-2">
+                분석 및 믹싱용 음원
+                <input
+                  accept="audio/*,.flac"
+                  className={`${fieldClass} py-1.5`}
+                  disabled={adding}
+                  name="audio"
+                  required
+                  type="file"
+                />
+              </label>
+              <DialogFooter className="sm:col-span-2">
+                <DialogClose disabled={adding} render={<Button type="button" variant="outline" />}>
+                  취소
+                </DialogClose>
+                <Button disabled={adding} type="submit">
+                  {adding ? <LoaderCircle className="animate-spin" /> : <Upload />} 등록 및 분석 요청
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
+      <div className="overflow-hidden rounded-xl border bg-background">
+        {entries.length ? (
+          entries.map((entry) => <CatalogRow entry={entry} key={entry.id} />)
+        ) : (
+          <div className="px-4 py-12 text-center text-sm text-muted-foreground">조건에 맞는 곡이 없습니다.</div>
+        )}
+      </div>
     </div>
   );
 }

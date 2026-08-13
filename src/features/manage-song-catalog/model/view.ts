@@ -8,6 +8,8 @@ export type AdminCatalogSourceView = {
   analysisStatus: "PENDING" | "PROCESSING" | "SUCCEEDED" | "FAILED" | null;
   analysisError: string | null;
   analysisReady: boolean;
+  estimatedKey: string | null;
+  keyConfidence: number | null;
   targetReady: boolean;
 };
 

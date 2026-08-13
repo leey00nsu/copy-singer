@@ -265,6 +265,8 @@ model SongAnalysis {
   pitchStability      Float?
   clippingRatio       Float?
   rmsDb               Float?
+  estimatedKey        String?
+  keyConfidence       Float?
   analyzer            String?
   analyzerVersion     String?
   descriptors         Json?
@@ -288,26 +290,28 @@ model SongAnalysis {
 }
 
 model SongAnalysisJob {
-  id             String                @id @default(uuid()) @db.Uuid
-  sourceId       String                @unique @db.Uuid
-  analysisId     String?               @unique @db.Uuid
-  status         SongAnalysisJobStatus @default(PENDING)
-  idempotencyKey String                @unique
-  attempts       Int                   @default(0)
-  maxAttempts    Int                   @default(3)
-  nextAttemptAt  DateTime              @default(now())
-  leaseOwner     String?
-  leaseExpiresAt DateTime?
-  heartbeatAt    DateTime?
-  errorCode      String?
-  errorDetail    String?
-  retryable      Boolean?
-  startedAt      DateTime?
-  completedAt    DateTime?
-  createdAt      DateTime              @default(now())
-  updatedAt      DateTime              @updatedAt
-  source         SongSource            @relation(fields: [sourceId], references: [id], onDelete: Restrict)
-  analysis       SongAnalysis?         @relation(fields: [analysisId], references: [id], onDelete: SetNull)
+  id                  String                @id @default(uuid()) @db.Uuid
+  sourceId            String                @unique @db.Uuid
+  analysisId          String?               @unique @db.Uuid
+  status              SongAnalysisJobStatus @default(PENDING)
+  idempotencyKey      String                @unique
+  attempts            Int                   @default(0)
+  maxAttempts         Int                   @default(3)
+  nextAttemptAt       DateTime              @default(now())
+  leaseOwner          String?
+  leaseExpiresAt      DateTime?
+  heartbeatAt         DateTime?
+  externalJobId       String?
+  externalSubmittedAt DateTime?
+  errorCode           String?
+  errorDetail         String?
+  retryable           Boolean?
+  startedAt           DateTime?
+  completedAt         DateTime?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  source              SongSource            @relation(fields: [sourceId], references: [id], onDelete: Restrict)
+  analysis            SongAnalysis?         @relation(fields: [analysisId], references: [id], onDelete: SetNull)
 
   @@index([status, nextAttemptAt, leaseExpiresAt, createdAt])
 }

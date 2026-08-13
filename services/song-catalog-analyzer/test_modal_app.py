@@ -1,42 +1,58 @@
 from __future__ import annotations
 
-import json
-import os
-import tempfile
+import inspect
+import sys
 import unittest
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 import modal_app
 
 
 class ModalCatalogAnalyzerTest(unittest.TestCase):
-    def test_select_candidates_supports_the_full_catalog_with_a_hard_upper_bound(self) -> None:
-        artifact = {"songs": [{"status": "READY"}] + [{"status": "PENDING", "rank": i} for i in range(5)]}
-        selected = modal_app._select_candidates(artifact, 5)
-        self.assertEqual([entry["rank"] for entry in selected], [0, 1, 2, 3, 4])
-        with self.assertRaisesRegex(ValueError, "between 1 and 100"):
-            modal_app._select_candidates(artifact, 101)
+    def test_submission_contract_rejects_invalid_identity_and_size(self) -> None:
+        modal_app._validate_submission("job-id", "HdTUQhHHJEg", 1024)
+        with self.assertRaisesRegex(ValueError, "INVALID_REQUEST_ID"):
+            modal_app._validate_submission("", "HdTUQhHHJEg", 1024)
+        with self.assertRaisesRegex(ValueError, "INVALID_SOURCE_VIDEO_ID"):
+            modal_app._validate_submission("job-id", "short", 1024)
+        with self.assertRaisesRegex(ValueError, "EMPTY_AUDIO"):
+            modal_app._validate_submission("job-id", "HdTUQhHHJEg", 0)
+        with self.assertRaisesRegex(ValueError, "PAYLOAD_TOO_LARGE"):
+            modal_app._validate_submission(
+                "job-id",
+                "HdTUQhHHJEg",
+                modal_app.MAX_UPLOAD_BYTES + 1,
+            )
 
-    def test_write_artifact_replaces_json_without_leaving_temp_file(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            path = Path(temporary) / "profiles.json"
-            modal_app._write_artifact({"schemaVersion": 1, "songs": []}, path)
-            self.assertEqual(json.loads(path.read_text()), {"schemaVersion": 1, "songs": []})
-            self.assertEqual(list(Path(temporary).iterdir()), [path])
+    def test_audio_suffix_is_allowlisted(self) -> None:
+        self.assertEqual(modal_app._audio_suffix("target.M4A"), ".m4a")
+        with self.assertRaisesRegex(ValueError, "UNSUPPORTED_AUDIO"):
+            modal_app._audio_suffix("target.exe")
 
-    def test_local_temp_root_uses_configured_writable_directory(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            configured = Path(temporary) / "external-temp"
-            previous = os.environ.get("COPY_SINGER_TEMP_ROOT")
-            os.environ["COPY_SINGER_TEMP_ROOT"] = str(configured)
-            try:
-                self.assertEqual(modal_app._local_temp_root(), configured.resolve())
-                self.assertTrue(configured.is_dir())
-            finally:
-                if previous is None:
-                    os.environ.pop("COPY_SINGER_TEMP_ROOT", None)
-                else:
-                    os.environ["COPY_SINGER_TEMP_ROOT"] = previous
+    def test_key_estimator_matches_major_and_minor_profiles(self) -> None:
+        major_key, major_confidence = modal_app._estimate_key(list(modal_app.MAJOR_KEY_PROFILE))
+        self.assertEqual(major_key, "C")
+        self.assertGreater(major_confidence, 0)
+        a_minor = [modal_app.MINOR_KEY_PROFILE[(pitch_class - 9) % 12] for pitch_class in range(12)]
+        minor_key, minor_confidence = modal_app._estimate_key(a_minor)
+        self.assertEqual(minor_key, "Am")
+        self.assertGreater(minor_confidence, 0)
+        self.assertEqual(modal_app._estimate_key([0.0] * 12), (None, 0.0))
+
+    def test_service_uses_cpu_spawn_poll_and_idempotency_index(self) -> None:
+        source = inspect.getsource(modal_app)
+        self.assertEqual(modal_app.ANALYSIS_CPU_CORES, 8.0)
+        self.assertEqual(modal_app.ANALYSIS_MEMORY_MB, 16_384)
+        self.assertIn("analyze_song.spawn.aio", source)
+        self.assertIn("modal.FunctionCall.from_id", source)
+        self.assertIn("job_index.get.aio(request_id", source)
+        self.assertIn("job_index.put.aio(request_id", source)
+        self.assertIn('"--device",\n                "cpu"', source)
+        self.assertNotIn("gpu=", source)
+        self.assertIn("chroma_cqt", source)
+        self.assertIn('"fastapi==0.141.1"', source)
+        self.assertNotIn("yt_dlp", source)
 
 
 if __name__ == "__main__":

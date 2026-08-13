@@ -1,63 +1,54 @@
 import { z } from "zod";
 
-const youtubeVideoId = z
-  .string()
-  .trim()
-  .regex(/^[A-Za-z0-9_-]{11}$/, "올바른 YouTube video ID가 아닙니다.");
-const sourceUrl = z.url().refine((value) => {
-  const host = new URL(value).hostname.replace(/^www\./, "");
-  return host === "youtube.com" || host === "youtu.be";
-}, "YouTube URL만 사용할 수 있습니다.");
+const youtubeVideoId = z.string().regex(/^[A-Za-z0-9_-]{11}$/);
 
-function videoIdFromUrl(value: string) {
-  const url = new URL(value);
-  const host = url.hostname.replace(/^www\./, "");
-  return host === "youtu.be" ? url.pathname.split("/").filter(Boolean)[0] : url.searchParams.get("v");
+export function youtubeVideoIdFromUrl(value: string) {
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    return null;
+  }
+  if (url.protocol !== "https:") return null;
+  const host = url.hostname.replace(/^(?:www|m|music)\./, "");
+  let candidate: string | null = null;
+  if (host === "youtu.be") candidate = url.pathname.split("/").filter(Boolean)[0] ?? null;
+  if (host === "youtube.com") {
+    candidate =
+      (url.pathname === "/watch" ? url.searchParams.get("v") : null) ??
+      (/^\/(?:shorts|live)\/[^/]+/.test(url.pathname) ? (url.pathname.split("/")[2] ?? null) : null);
+  }
+  return youtubeVideoId.safeParse(candidate).success ? candidate : null;
 }
 
-function matchingSource<T extends { sourceUrl: string; sourceVideoId: string }>(schema: z.ZodObject<z.ZodRawShape>) {
-  return schema.superRefine((value, context) => {
-    if (videoIdFromUrl(value.sourceUrl as string) !== value.sourceVideoId) {
-      context.addIssue({ code: "custom", path: ["sourceVideoId"], message: "URL과 video ID가 일치하지 않습니다." });
-    }
-  }) as unknown as z.ZodType<T>;
-}
+const sourceUrl = z
+  .url()
+  .refine((value) => youtubeVideoIdFromUrl(value) !== null, "유효한 HTTPS YouTube URL을 입력해 주세요.");
 
-export const createAdminSongSchema = matchingSource<{
-  title: string;
-  artist: string;
-  originalKey?: string | null;
-  catalogPosition?: number;
-  sourceUrl: string;
-  sourceVideoId: string;
-  sourceLabel: string;
-  idempotencyKey: string;
-}>(
-  z.object({
+export const createAdminSongSchema = z
+  .object({
     title: z.string().trim().min(1).max(200),
     artist: z.string().trim().min(1).max(200),
-    originalKey: z.string().trim().max(20).nullable().optional(),
     catalogPosition: z.number().int().positive().optional(),
     sourceUrl,
-    sourceVideoId: youtubeVideoId,
-    sourceLabel: z.string().trim().min(1).max(200),
     idempotencyKey: z.string().trim().min(1).max(200),
-  }),
-);
+  })
+  .transform((value) => ({
+    ...value,
+    sourceVideoId: youtubeVideoIdFromUrl(value.sourceUrl) as string,
+    sourceLabel: "관리자 업로드",
+  }));
 
-export const replaceAdminSongSourceSchema = matchingSource<{
-  sourceUrl: string;
-  sourceVideoId: string;
-  sourceLabel: string;
-  idempotencyKey: string;
-}>(
-  z.object({
+export const replaceAdminSongSourceSchema = z
+  .object({
     sourceUrl,
-    sourceVideoId: youtubeVideoId,
-    sourceLabel: z.string().trim().min(1).max(200),
     idempotencyKey: z.string().trim().min(1).max(200),
-  }),
-);
+  })
+  .transform((value) => ({
+    ...value,
+    sourceVideoId: youtubeVideoIdFromUrl(value.sourceUrl) as string,
+    sourceLabel: "관리자 교체 업로드",
+  }));
 
 export const adminCatalogQuerySchema = z.object({
   q: z.string().trim().max(200).default(""),
@@ -65,5 +56,5 @@ export const adminCatalogQuerySchema = z.object({
   page: z.coerce.number().int().positive().default(1),
 });
 
-export type CreateAdminSongInput = z.infer<typeof createAdminSongSchema>;
-export type ReplaceAdminSongSourceInput = z.infer<typeof replaceAdminSongSourceSchema>;
+export type CreateAdminSongInput = z.output<typeof createAdminSongSchema>;
+export type ReplaceAdminSongSourceInput = z.output<typeof replaceAdminSongSourceSchema>;

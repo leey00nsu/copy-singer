@@ -4,6 +4,8 @@ import {
   createAdminSong,
   createAdminSongSchema,
   listAdminCatalog,
+  SongCatalogAdminError,
+  uploadAdminCatalogTarget,
 } from "@/features/manage-song-catalog/index.server";
 import { adminCatalogError, adminCatalogJson } from "./http";
 
@@ -23,8 +25,20 @@ export async function POST(request: Request) {
   const access = await requireAdminApi(request);
   if (access.response) return access.response;
   try {
-    const input = createAdminSongSchema.parse(await request.json());
-    return adminCatalogJson(await createAdminSong(input, access.session.user.id), 201);
+    const form = await request.formData();
+    const audio = form.get("audio");
+    if (!(audio instanceof File)) throw new SongCatalogAdminError("AUDIO_REQUIRED", "음원 파일이 필요합니다.", 400);
+    const input = createAdminSongSchema.parse({
+      title: form.get("title"),
+      artist: form.get("artist"),
+      sourceUrl: form.get("sourceUrl"),
+      idempotencyKey: form.get("idempotencyKey"),
+    });
+    const song = await createAdminSong(input, access.session.user.id);
+    const source = song.sources.find((candidate) => candidate.sourceVideoId === input.sourceVideoId);
+    if (!source) throw new SongCatalogAdminError("SOURCE_NOT_FOUND", "생성한 음원 출처를 찾을 수 없습니다.", 500);
+    await uploadAdminCatalogTarget({ sourceId: source.id, file: audio });
+    return adminCatalogJson(song, 201);
   } catch (error) {
     return adminCatalogError(error);
   }

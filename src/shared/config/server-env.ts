@@ -55,6 +55,16 @@ export function songAnalysisLeaseSeconds() {
   return integerEnv("SONG_ANALYSIS_LEASE_SECONDS", 300, { min: 180, max: 3_600 });
 }
 
+export function songAnalysisPollIntervalMs() {
+  return integerEnv("SONG_ANALYSIS_POLL_INTERVAL_MS", 2_500, { min: 250, max: 30_000 });
+}
+
+export function songAnalysisModalConfig() {
+  const url = process.env.SONG_ANALYSIS_MODAL_URL?.trim().replace(/\/$/, "");
+  const apiKey = process.env.SONG_ANALYSIS_MODAL_API_KEY?.trim() || process.env.MODAL_API_KEY?.trim();
+  return url && apiKey ? { url, apiKey } : null;
+}
+
 export function vocalProfileAnalyzerUrl() {
   const url = process.env.VOCAL_PROFILE_API_URL?.replace(/\/$/, "");
   return url || null;

@@ -65,6 +65,8 @@ test("admin catalog mutations are idempotent and publish only matching READY rev
         sourceId: source.id,
         pipelineContract: "yt-dlp-demucs-librosa-pyin-v1",
         status: "READY",
+        estimatedKey: "F#",
+        keyConfidence: 0.38,
         cleanupConfirmed: true,
       },
     });
@@ -84,6 +86,7 @@ test("admin catalog mutations are idempotent and publish only matching READY rev
     assert.equal(active.activeSourceId, source.id);
     assert.equal(active.currentAnalysisId, analysis.id);
     assert.equal(active.targetAssetId, asset.id);
+    assert.equal(active.originalKey, "F#");
     assert.equal(active.catalogEntries[0]?.status, "PUBLISHED");
     await api.archiveAdminSong(song.id);
     assert.equal((await prisma.song.findUniqueOrThrow({ where: { id: song.id } })).lifecycleStatus, "ARCHIVED");

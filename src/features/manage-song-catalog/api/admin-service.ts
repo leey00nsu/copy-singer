@@ -87,7 +87,7 @@ export async function createAdminSong(input: CreateAdminSongInput, adminUserId: 
         data: {
           title: input.title,
           artist: input.artist,
-          originalKey: input.originalKey || null,
+          originalKey: null,
           catalogOrder: position,
           lifecycleStatus: "DRAFT",
           createdByUserId: adminUserId,
@@ -196,6 +196,8 @@ export async function retryAdminSongAnalysis(sourceId: string) {
       completedAt: null,
       leaseOwner: null,
       leaseExpiresAt: null,
+      externalJobId: null,
+      externalSubmittedAt: null,
     },
   });
 }
@@ -231,6 +233,7 @@ export async function publishAdminSongSource(songId: string, sourceId: string, f
         activeSourceId: sourceId,
         currentAnalysisId: analysis.id,
         targetAssetId: target.id,
+        originalKey: analysis.estimatedKey,
       },
     });
   });

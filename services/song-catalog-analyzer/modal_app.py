@@ -1,39 +1,39 @@
 from __future__ import annotations
 
+import hmac
 import importlib.metadata
-import json
+import math
 import os
 import re
 import subprocess
 import sys
 import tempfile
-import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import UTC, datetime
 from pathlib import Path
-from urllib.parse import parse_qs, urlparse
+from typing import Annotated, Any
 
 import modal
+from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, UploadFile
+from fastapi.responses import JSONResponse
 
 
 APP_NAME = "copy-singer-catalog-analyzer"
-GPU_TYPE = "L4"
-DEFAULT_BENCHMARK_SONGS = 3
-MAX_BATCH_SONGS = 100
-MAX_CONTAINERS = 8
-LOCAL_DOWNLOAD_WORKERS = 4
+ANALYSIS_CPU_CORES = 8.0
+ANALYSIS_MEMORY_MB = 16_384
+MAX_CONTAINERS = 4
+MAX_UPLOAD_BYTES = 100 * 1024 * 1024
 SEPARATOR_MODEL = "htdemucs"
+VIDEO_ID_PATTERN = re.compile(r"^[A-Za-z0-9_-]{11}$")
+ALLOWED_SUFFIXES = frozenset({".m4a", ".mp3", ".mp4", ".wav", ".webm"})
+PITCH_CLASS_NAMES = ("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
+MAJOR_KEY_PROFILE = (6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88)
+MINOR_KEY_PROFILE = (6.33, 2.68, 3.52, 5.38, 2.60, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17)
 
 REPO_ROOT = Path(__file__).resolve().parents[2] if modal.is_local() else Path("/root")
-ARTIFACT_PATH = REPO_ROOT / "data" / "catalogs" / "tj-2607-song-profiles.json"
 REMOTE_ANALYZER_PACKAGE = Path("/opt/vocal_profile_app")
-REMOTE_CATALOG_PATH = Path("/opt/catalog/tj-2607-top100.md")
-CATALOG_ENTRY_PATTERN = re.compile(
-    r"^\d+\. \*\*.+? — .+?\*\* · \[.+?\]\(https://www\.youtube\.com/watch\?v=([A-Za-z0-9_-]{11})\)$",
-    re.MULTILINE,
-)
 
 app = modal.App(APP_NAME)
+api_secret = modal.Secret.from_name("soulx-api-secret")
+job_index = modal.Dict.from_name("copy-singer-catalog-analysis-jobs", create_if_missing=True)
 
 analyzer_image = (
     modal.Image.debian_slim(python_version="3.12")
@@ -42,37 +42,48 @@ analyzer_image = (
         "torch==2.6.0",
         "torchaudio==2.6.0",
         "demucs==4.0.1",
-        "yt-dlp==2026.7.4",
+        "fastapi==0.141.1",
         "librosa==0.11.0",
         "numpy==2.3.5",
+        "python-multipart==0.0.32",
         "soundfile==0.14.0",
     )
     .add_local_dir(
         REPO_ROOT / "services" / "vocal-profile-api" / "app",
         remote_path=str(REMOTE_ANALYZER_PACKAGE),
     )
-    .add_local_file(
-        REPO_ROOT / "data" / "catalogs" / "tj-2607-top100.md",
-        remote_path=str(REMOTE_CATALOG_PATH),
-    )
+)
+
+web_image = modal.Image.debian_slim(python_version="3.12").pip_install(
+    "fastapi==0.141.1",
+    "python-multipart==0.0.32",
 )
 
 
-def _utc_now() -> str:
-    return datetime.now(UTC).isoformat().replace("+00:00", "Z")
+def require_api_key(x_api_key: str | None = Header(default=None)) -> None:
+    expected = os.environ.get("SOULX_API_KEY", "")
+    if not expected:
+        raise HTTPException(status_code=503, detail="Server API key is not configured")
+    if x_api_key is None or not hmac.compare_digest(x_api_key, expected):
+        raise HTTPException(status_code=401, detail="Invalid API key")
 
 
-def _validate_source(source_url: str, expected_video_id: str) -> None:
-    allowed_ids = frozenset(
-        CATALOG_ENTRY_PATTERN.findall(REMOTE_CATALOG_PATH.read_text(encoding="utf-8"))
-    )
-    if expected_video_id not in allowed_ids:
-        raise ValueError("SOURCE_NOT_ALLOWLISTED: video ID is not in the packaged catalog")
-    parsed = urlparse(source_url)
-    if parsed.scheme != "https" or parsed.hostname not in {"youtube.com", "www.youtube.com"}:
-        raise ValueError("INVALID_SOURCE_URL: only HTTPS YouTube URLs are allowed")
-    if parsed.path != "/watch" or parse_qs(parsed.query).get("v") != [expected_video_id]:
-        raise ValueError("SOURCE_ID_MISMATCH: source URL and video ID differ")
+def _audio_suffix(file_name: str) -> str:
+    suffix = Path(file_name).suffix.lower()
+    if suffix not in ALLOWED_SUFFIXES:
+        raise ValueError("UNSUPPORTED_AUDIO: unsupported catalog audio extension")
+    return suffix
+
+
+def _validate_submission(request_id: str, source_video_id: str, size_bytes: int) -> None:
+    if not request_id or len(request_id) > 200:
+        raise ValueError("INVALID_REQUEST_ID: requestId is required and must be at most 200 characters")
+    if VIDEO_ID_PATTERN.fullmatch(source_video_id) is None:
+        raise ValueError("INVALID_SOURCE_VIDEO_ID: sourceVideoId must be an 11-character YouTube video ID")
+    if size_bytes <= 0:
+        raise ValueError("EMPTY_AUDIO: catalog audio must not be empty")
+    if size_bytes > MAX_UPLOAD_BYTES:
+        raise ValueError("PAYLOAD_TOO_LARGE: catalog audio must be 100 MB or smaller")
 
 
 def _run_command(command: list[str], timeout_seconds: int) -> None:
@@ -87,8 +98,8 @@ def _run_command(command: list[str], timeout_seconds: int) -> None:
         return
     stderr = completed.stderr.decode("utf-8", errors="replace")
     detail = next((line.strip() for line in reversed(stderr.splitlines()) if line.strip()), "")
-    tool = "yt-dlp" if any(part == "yt_dlp" or part.endswith("yt-dlp") for part in command) else "Demucs"
-    raise RuntimeError(f"{tool.upper().replace('-', '_')}_FAILED: {detail[:500]}")
+    tool = "FFMPEG" if command[0] == "ffmpeg" else "DEMUCS"
+    raise RuntimeError(f"{tool}_FAILED: {detail[:500]}")
 
 
 def _package_version(name: str) -> str:
@@ -98,52 +109,70 @@ def _package_version(name: str) -> str:
         return "unavailable"
 
 
+def _correlation(left: list[float], right: tuple[float, ...]) -> float:
+    left_mean = sum(left) / len(left)
+    right_mean = sum(right) / len(right)
+    left_centered = [value - left_mean for value in left]
+    right_centered = [value - right_mean for value in right]
+    denominator = math.sqrt(
+        sum(value * value for value in left_centered) * sum(value * value for value in right_centered)
+    )
+    if denominator == 0:
+        return 0.0
+    return sum(a * b for a, b in zip(left_centered, right_centered, strict=True)) / denominator
+
+
+def _estimate_key(chroma: list[float]) -> tuple[str | None, float]:
+    if len(chroma) != 12 or not all(math.isfinite(value) for value in chroma) or sum(chroma) <= 0:
+        return None, 0.0
+    candidates: list[tuple[float, str]] = []
+    for tonic, pitch_name in enumerate(PITCH_CLASS_NAMES):
+        major = tuple(MAJOR_KEY_PROFILE[(pitch_class - tonic) % 12] for pitch_class in range(12))
+        minor = tuple(MINOR_KEY_PROFILE[(pitch_class - tonic) % 12] for pitch_class in range(12))
+        candidates.append((_correlation(chroma, major), pitch_name))
+        candidates.append((_correlation(chroma, minor), f"{pitch_name}m"))
+    candidates.sort(reverse=True)
+    best_score, estimated_key = candidates[0]
+    runner_up_score = candidates[1][0]
+    confidence = max(0.0, min(1.0, (best_score - runner_up_score) / 2.0))
+    return estimated_key, confidence
+
+
 @app.function(
     image=analyzer_image,
-    gpu=GPU_TYPE,
-    cpu=4.0,
-    memory=8192,
-    timeout=1_800,
+    cpu=ANALYSIS_CPU_CORES,
+    memory=ANALYSIS_MEMORY_MB,
+    timeout=3_600,
     max_containers=MAX_CONTAINERS,
     retries=modal.Retries(max_retries=2, initial_delay=5.0, backoff_coefficient=2.0),
 )
-def analyze_song(
-    entry: dict[str, object],
-    transfer_volume_id: str,
-    transfer_path: str,
-) -> dict[str, object]:
-    import torch
+def analyze_song(source_bytes: bytes, source_video_id: str, file_name: str) -> dict[str, Any]:
+    import librosa
+    import numpy as np
 
     sys.path.insert(0, str(REMOTE_ANALYZER_PACKAGE.parent))
     from vocal_profile_app.analysis import analyze_wav
     from vocal_profile_app.config import SONG_ANALYSIS_CONFIG
 
-    source_url = str(entry["sourceUrl"])
-    source_video_id = str(entry["sourceVideoId"])
-    _validate_source(source_url, source_video_id)
-    if not torch.cuda.is_available():
-        raise RuntimeError("CUDA_UNAVAILABLE: Modal L4 was not exposed to PyTorch")
-
-    total_started = time.perf_counter()
-    timings: dict[str, float] = {}
+    _validate_submission("modal-cpu-job", source_video_id, len(source_bytes))
+    suffix = _audio_suffix(file_name)
     job_path: Path | None = None
-    profile: dict[str, object]
-
+    profile: dict[str, Any]
     with tempfile.TemporaryDirectory(prefix="copy-singer-modal-song-") as temporary:
         job_path = Path(temporary)
+        upload_path = job_path / f"upload{suffix}"
+        upload_path.write_bytes(source_bytes)
         source_path = job_path / "source.wav"
-        phase_started = time.perf_counter()
-        transfer_volume = modal.Volume.from_id(transfer_volume_id)
-        with source_path.open("wb") as source_output:
-            for chunk in transfer_volume.read_file(transfer_path):
-                source_output.write(chunk)
-        timings["transferReadSeconds"] = round(time.perf_counter() - phase_started, 3)
-        if not source_path.is_file():
-            raise RuntimeError("TRANSFER_OUTPUT_MISSING: ephemeral Volume produced no WAV file")
-        source_size_bytes = source_path.stat().st_size
+        _run_command(
+            ["ffmpeg", "-y", "-i", str(upload_path), "-vn", "-ac", "2", "-ar", "44100", str(source_path)],
+            timeout_seconds=600,
+        )
+
+        mix, mix_sample_rate = librosa.load(source_path, sr=22050, mono=True, duration=600)
+        chroma = librosa.feature.chroma_cqt(y=mix, sr=mix_sample_rate)
+        estimated_key, key_confidence = _estimate_key(np.nanmean(chroma, axis=1).tolist())
 
         separated_root = job_path / "separated"
-        phase_started = time.perf_counter()
         _run_command(
             [
                 sys.executable,
@@ -153,25 +182,22 @@ def analyze_song(
                 "-n",
                 SEPARATOR_MODEL,
                 "--device",
-                "cuda",
+                "cpu",
                 "-o",
                 str(separated_root),
                 str(source_path),
             ],
             timeout_seconds=1_200,
         )
-        timings["separationSeconds"] = round(time.perf_counter() - phase_started, 3)
         vocals_path = separated_root / SEPARATOR_MODEL / "source" / "vocals.wav"
         if not vocals_path.is_file():
             raise RuntimeError("SEPARATOR_OUTPUT_MISSING: Demucs produced no vocals stem")
 
-        phase_started = time.perf_counter()
         result = analyze_wav(vocals_path, config=SONG_ANALYSIS_CONFIG).to_dict()
-        timings["analysisSeconds"] = round(time.perf_counter() - phase_started, 3)
         profile = {
             "durationMs": result.pop("duration_ms"),
             "sampleRate": result.pop("sample_rate"),
-            "sourceSizeBytes": source_size_bytes,
+            "sourceSizeBytes": len(source_bytes),
             "minMidi": result.pop("min_midi"),
             "maxMidi": result.pop("max_midi"),
             "p10Midi": result.pop("p10_midi"),
@@ -183,226 +209,117 @@ def analyze_song(
             "pitchStability": result.pop("pitch_stability"),
             "clippingRatio": result.pop("clipping_ratio"),
             "rmsDb": result.pop("rms_db"),
+            "estimatedKey": estimated_key,
+            "keyConfidence": key_confidence,
             "analyzer": result.pop("analyzer"),
             "analyzerVersion": result.pop("analyzer_version"),
             "descriptors": result.pop("descriptors"),
-            "ytDlpVersion": str(entry["ytDlpVersion"]),
+            "ytDlpVersion": None,
             "separator": "demucs",
             "separatorVersion": _package_version("demucs"),
             "separatorModel": SEPARATOR_MODEL,
-            "cleanupConfirmed": True,
+            "sourceVideoId": source_video_id,
+            "cleanupConfirmed": False,
         }
 
-    if job_path is None or job_path.exists():
+    profile["cleanupConfirmed"] = job_path is not None and not job_path.exists()
+    if not profile["cleanupConfirmed"]:
         raise RuntimeError("CLEANUP_FAILED: temporary Modal audio files remain")
-    timings["totalSeconds"] = round(time.perf_counter() - total_started, 3)
+    return profile
+
+
+web_app = FastAPI(
+    title="Copysinger Song Catalog Analyzer",
+    version="1.0.0",
+    dependencies=[Depends(require_api_key)],
+)
+
+
+@web_app.get("/health")
+async def health() -> dict[str, Any]:
     return {
-        "catalogOrder": entry["catalogOrder"],
-        "sourceVideoId": source_video_id,
-        "profile": profile,
-        "timings": timings,
-        "gpu": torch.cuda.get_device_name(0),
+        "status": "ok",
+        "compute": {"cpu": ANALYSIS_CPU_CORES, "memoryMb": ANALYSIS_MEMORY_MB},
+        "pipeline": {"separator": "demucs", "separatorModel": SEPARATOR_MODEL, "analyzer": "librosa-pyin"},
     }
 
 
-def _load_artifact(path: Path = ARTIFACT_PATH) -> dict[str, object]:
-    artifact = json.loads(path.read_text(encoding="utf-8"))
-    songs = artifact.get("songs")
-    if artifact.get("schemaVersion") != 1 or not isinstance(songs, list) or len(songs) != 100:
-        raise ValueError("The local song profile artifact is invalid")
-    return artifact
-
-
-def _select_candidates(artifact: dict[str, object], limit: int) -> list[dict[str, object]]:
-    if not 1 <= limit <= MAX_BATCH_SONGS:
-        raise ValueError(f"limit must be between 1 and {MAX_BATCH_SONGS}")
-    songs = artifact["songs"]
-    assert isinstance(songs, list)
-    return [song for song in songs if isinstance(song, dict) and song.get("status") != "READY"][:limit]
-
-
-def _write_artifact(artifact: dict[str, object], path: Path = ARTIFACT_PATH) -> None:
-    temporary = path.with_name(f".{path.name}.{os.getpid()}.tmp")
-    try:
-        temporary.write_text(json.dumps(artifact, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        os.replace(temporary, path)
-    finally:
-        temporary.unlink(missing_ok=True)
-
-
-def _local_temp_root() -> Path | None:
-    configured = os.environ.get("COPY_SINGER_TEMP_ROOT")
-    if not configured:
-        return None
-    root = Path(configured).expanduser().resolve()
-    root.mkdir(parents=True, exist_ok=True)
-    if not os.access(root, os.W_OK):
-        raise PermissionError(f"COPY_SINGER_TEMP_ROOT is not writable: {root}")
-    return root
-
-
-def _local_download(entry: dict[str, object], directory: Path) -> tuple[Path, float]:
-    destination_template = directory / f"{entry['catalogOrder']}.%(ext)s"
-    started = time.perf_counter()
-    _run_command(
-        [
-            "yt-dlp",
-            "--ignore-config",
-            "--no-playlist",
-            "--match-filter",
-            "duration <= 600",
-            "--no-progress",
-            "--no-warnings",
-            "--force-overwrites",
-            "-f",
-            "bestaudio/best",
-            "-x",
-            "--audio-format",
-            "wav",
-            "--audio-quality",
-            "0",
-            "-o",
-            str(destination_template),
-            str(entry["sourceUrl"]),
-        ],
-        timeout_seconds=600,
-    )
-    path = directory / f"{entry['catalogOrder']}.wav"
-    if not path.is_file():
-        raise RuntimeError("DOWNLOAD_OUTPUT_MISSING: local yt-dlp produced no WAV file")
-    return path, round(time.perf_counter() - started, 3)
-
-
-@app.local_entrypoint()
-def main(limit: int = DEFAULT_BENCHMARK_SONGS) -> None:
-    artifact = _load_artifact()
-    candidates = _select_candidates(artifact, limit)
-    if not candidates:
-        print(json.dumps({"status": "ok", "selected": 0, "message": "No pending songs."}))
-        return
-
-    started = time.perf_counter()
-    succeeded = 0
-    failed = 0
-    remote_seconds = 0.0
-    benchmarks: list[dict[str, object]] = []
-    yt_dlp_version = subprocess.run(
-        ["yt-dlp", "--version"], check=True, capture_output=True, text=True
-    ).stdout.strip()
-    songs = artifact["songs"]
-    assert isinstance(songs, list)
-
-    with tempfile.TemporaryDirectory(
-        prefix="copy-singer-modal-upload-",
-        dir=_local_temp_root(),
-    ) as temporary:
-        local_temp = Path(temporary)
-        downloaded_by_rank: dict[int, tuple[Path, float]] = {}
-        with ThreadPoolExecutor(max_workers=LOCAL_DOWNLOAD_WORKERS) as executor:
-            futures = {
-                executor.submit(_local_download, candidate, local_temp): candidate
-                for candidate in candidates
-            }
-            for future in as_completed(futures):
-                candidate = futures[future]
-                rank = int(candidate["catalogOrder"])
-                try:
-                    downloaded_by_rank[rank] = future.result()
-                except Exception as error:
-                    target = next(
-                        song
-                        for song in songs
-                        if isinstance(song, dict) and song.get("catalogOrder") == rank
-                    )
-                    target["status"] = "FAILED"
-                    target["profile"] = None
-                    target["error"] = {
-                        "reasonCode": "LOCAL_DOWNLOAD_FAILED",
-                        "detail": f"{type(error).__name__}: {error}",
-                        "updatedAt": _utc_now(),
-                    }
-                    failed += 1
-                    artifact["generatedAt"] = _utc_now()
-                    _write_artifact(artifact)
-
-        gpu_candidates = [
-            candidate
-            for candidate in candidates
-            if int(candidate["catalogOrder"]) in downloaded_by_rank
-        ]
-        downloaded = [
-            downloaded_by_rank[int(candidate["catalogOrder"])] for candidate in gpu_candidates
-        ]
-        remote_paths = [f"/{candidate['catalogOrder']}.wav" for candidate in gpu_candidates]
-        modal_inputs = [
-            {**candidate, "ytDlpVersion": yt_dlp_version}
-            for candidate in gpu_candidates
-        ]
-
-        with modal.Volume.ephemeral() as transfer_volume:
-            with transfer_volume.batch_upload() as batch:
-                for (local_path, _), remote_path in zip(downloaded, remote_paths, strict=True):
-                    batch.put_file(local_path, remote_path)
-
-            results = analyze_song.map(
-                modal_inputs,
-                [transfer_volume.object_id] * len(gpu_candidates),
-                remote_paths,
-                order_outputs=True,
-                return_exceptions=True,
-            )
-            for candidate, (_, download_seconds), result in zip(
-                gpu_candidates, downloaded, results, strict=True
-            ):
-                target = next(
-                    song
-                    for song in songs
-                    if isinstance(song, dict) and song.get("catalogOrder") == candidate["catalogOrder"]
-                )
-                if isinstance(result, BaseException):
-                    target["status"] = "FAILED"
-                    target["profile"] = None
-                    target["error"] = {
-                        "reasonCode": "MODAL_ANALYSIS_FAILED",
-                        "detail": f"{type(result).__name__}: {result}",
-                        "updatedAt": _utc_now(),
-                    }
-                    failed += 1
-                else:
-                    if result["sourceVideoId"] != target["sourceVideoId"]:
-                        raise RuntimeError("Modal result source ID does not match the local artifact")
-                    target["status"] = "READY"
-                    target["profile"] = result["profile"]
-                    target["error"] = None
-                    remote_seconds += float(result["timings"]["totalSeconds"])
-                    benchmarks.append(
-                        {
-                            "catalogOrder": result["catalogOrder"],
-                            "gpu": result["gpu"],
-                            "downloadSeconds": download_seconds,
-                            **result["timings"],
-                        }
-                    )
-                    succeeded += 1
-                artifact["generatedAt"] = _utc_now()
-                _write_artifact(artifact)
-
-    wall_seconds = round(time.perf_counter() - started, 3)
-    estimated_l4_cost_usd = round(remote_seconds * 0.000222, 4)
-    print(
-        json.dumps(
-            {
-                "status": "ok" if failed == 0 else "partial",
-                "selected": len(candidates),
-                "succeeded": succeeded,
-                "failed": failed,
-                "wallSeconds": wall_seconds,
-                "remoteTaskSeconds": round(remote_seconds, 3),
-                "estimatedL4CostUsd": estimated_l4_cost_usd,
-                "benchmarks": benchmarks,
-            },
-            ensure_ascii=False,
+@web_app.post("/v1/jobs")
+async def submit_job(
+    audio: Annotated[UploadFile, File()],
+    request_id: Annotated[str, Form(alias="requestId")],
+    source_video_id: Annotated[str, Form(alias="sourceVideoId")],
+) -> JSONResponse:
+    existing_call_id = await job_index.get.aio(request_id, None)
+    if isinstance(existing_call_id, str) and existing_call_id:
+        await audio.close()
+        return JSONResponse(
+            status_code=202,
+            content={"status": "PROCESSING", "externalJobId": existing_call_id, "reused": True},
         )
+
+    source = await audio.read(MAX_UPLOAD_BYTES + 1)
+    await audio.close()
+    try:
+        _validate_submission(request_id, source_video_id, len(source))
+        _audio_suffix(audio.filename or "")
+    except ValueError as error:
+        reason_code, _, detail = str(error).partition(": ")
+        status_code = 413 if reason_code == "PAYLOAD_TOO_LARGE" else 422
+        return JSONResponse(
+            status_code=status_code,
+            content={"reasonCode": reason_code, "detail": detail, "retryable": False},
+        )
+
+    call = await analyze_song.spawn.aio(source, source_video_id, audio.filename or "source.m4a")
+    await job_index.put.aio(request_id, call.object_id)
+    return JSONResponse(
+        status_code=202,
+        content={"status": "PROCESSING", "externalJobId": call.object_id, "reused": False},
     )
-    if failed:
-        raise RuntimeError(f"{failed} Modal catalog analyses failed")
+
+
+@web_app.get("/v1/jobs/{external_job_id}")
+async def poll_job(external_job_id: str) -> JSONResponse:
+    call = modal.FunctionCall.from_id(external_job_id)
+    try:
+        result = await call.get.aio(timeout=0)
+    except TimeoutError:
+        return JSONResponse(status_code=202, content={"status": "PROCESSING", "externalJobId": external_job_id})
+    except modal.exception.OutputExpiredError:
+        return JSONResponse(
+            status_code=410,
+            content={
+                "status": "FAILED",
+                "reasonCode": "MODAL_RESULT_EXPIRED",
+                "detail": "Modal analysis result expired before it was collected.",
+                "retryable": True,
+            },
+        )
+    except Exception:
+        return JSONResponse(
+            status_code=200,
+            content={
+                "status": "FAILED",
+                "reasonCode": "MODAL_ANALYSIS_FAILED",
+                "detail": "Modal song analysis failed.",
+                "retryable": True,
+            },
+        )
+    return JSONResponse(status_code=200, content={"status": "SUCCEEDED", "result": result})
+
+
+@app.function(
+    image=web_image,
+    cpu=1.0,
+    memory=512,
+    timeout=120,
+    min_containers=0,
+    max_containers=4,
+    scaledown_window=60,
+    secrets=[api_secret],
+)
+@modal.concurrent(max_inputs=20)
+@modal.asgi_app()
+def fastapi_app():
+    return web_app

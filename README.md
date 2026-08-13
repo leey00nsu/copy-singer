@@ -179,6 +179,9 @@ Deleting the named volume also deletes the local database and is intentionally n
 ```dotenv
 MODAL_API_URL=https://dbstndla1212--soulx-singer-svc-web.modal.run
 MODAL_API_KEY=the-value-stored-in-the-soulx-api-secret
+SONG_ANALYSIS_MODAL_URL=https://your-workspace--copy-singer-catalog-analyzer-fastapi-app.modal.run
+# Optional; MODAL_API_KEY is reused when omitted.
+SONG_ANALYSIS_MODAL_API_KEY=
 BETTER_AUTH_SECRET=at-least-32-random-characters
 BETTER_AUTH_URL=http://localhost:3000
 GOOGLE_CLIENT_ID=your-google-client-id
@@ -204,6 +207,8 @@ pnpm run dev:web
 pnpm start
 pnpm run start:web
 pnpm run worker:mixing
+pnpm run worker:song-analysis
+pnpm run modal:song-catalog:deploy # remote deploy; approval required
 pnpm run verify:feature-config
 pnpm run build
 pnpm test

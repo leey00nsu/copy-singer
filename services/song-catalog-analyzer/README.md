@@ -1,14 +1,25 @@
-# Modal song catalog benchmark
+# Modal song catalog analyzer
 
-This non-deployed Modal app analyzes pending catalog songs on up to eight independent L4 containers. It keeps the existing Demucs 4.0.1 and librosa-pYIN 0.11.0 profile contract. The default remains a three-song benchmark; larger limits should be used only after explicit cost approval.
+관리자가 업로드한 catalog target audio를 Modal CPU 함수에서 Demucs·librosa-pYIN으로 분석하고 chroma로 원키를 추정하는 비동기 서비스다. 곡 믹싱/합성의 GPU 함수와 resource 경계를 분리하며, 보컬 진단용 CPU app과는 별도 autoscaling 경계를 사용한다. API는 동일한 `soulx-api-secret`의 `X-API-Key` 계약을 재사용한다.
+
+흐름은 다음과 같다.
+
+1. 앱 worker가 READY `CatalogTargetAsset` bytes와 DB `SongAnalysisJob.id`를 `POST /v1/jobs`에 보낸다.
+2. endpoint는 request ID에 이미 연결된 호출이 있으면 같은 ID를 반환하고, 없으면 8 vCPU·16 GiB CPU 분석 함수를 spawn해 `externalJobId`를 `202`로 반환한다.
+3. 앱 worker는 `GET /v1/jobs/{externalJobId}`를 poll하고 음역·추정 원키·원키 신뢰도를 `SongAnalysis` revision에 저장한다.
+4. CPU 분석 함수의 upload, WAV, stem은 작업별 임시 디렉터리와 함께 삭제된다.
+
+로컬 계약 테스트:
 
 ```bash
-python -m pip install -r requirements-local.txt
-python -m modal setup
-python -m modal run modal_app.py --limit 3
-# Explicitly approved full pending batch example:
-COPY_SINGER_TEMP_ROOT=/Volumes/sn850x/copy-singer-temp \
-  python -m modal run modal_app.py --limit 86
+uv run --with-requirements services/song-catalog-analyzer/requirements-local.txt \
+  python -m unittest services/song-catalog-analyzer/test_modal_app.py
 ```
 
-The limit is restricted to 1–100 and defaults to 3. Set `COPY_SINGER_TEMP_ROOT` to place the job-scoped local temporary directory on a disk with sufficient space. YouTube downloads use four local workers; individual failures are recorded without stopping successful inputs. WAV files are copied to an anonymous `modal.Volume.ephemeral()` only for the duration of the run. GPU functions copy them to their own `/tmp`, delete source and stems on exit, and return aggregate metrics. The local entrypoint atomically updates `data/catalogs/tj-2607-song-profiles.json`. No endpoint is deployed and no named media Volume, Dict, or database row is created.
+원격 배포(비용·원격 변경 승인 후에만 실행):
+
+```bash
+pnpm run modal:song-catalog:deploy
+```
+
+배포 출력의 ASGI URL을 `SONG_ANALYSIS_MODAL_URL`에 설정한다. 서버 API key는 `SONG_ANALYSIS_MODAL_API_KEY`가 있으면 우선 사용하고, 없으면 `MODAL_API_KEY`를 사용한다. 음원 원본이나 stem을 API 응답으로 제공하지 않는다.

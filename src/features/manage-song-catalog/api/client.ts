@@ -3,30 +3,39 @@ import { requestJson } from "@/shared/api";
 
 const entityResponseSchema = z.object({ id: z.string() }).passthrough();
 
-export function addAdminSong(input: {
-  title: string;
-  artist: string;
-  originalKey: string | null;
-  sourceUrl: string;
-  sourceVideoId: string;
-  sourceLabel: string;
-  idempotencyKey: string;
-}) {
-  return requestJson("/api/admin/catalog", { method: "POST", json: input, schema: entityResponseSchema });
+export function addAdminSong(
+  input: {
+    title: string;
+    artist: string;
+    sourceUrl: string;
+    idempotencyKey: string;
+  },
+  file: File,
+) {
+  const body = new FormData();
+  body.set("title", input.title);
+  body.set("artist", input.artist);
+  body.set("sourceUrl", input.sourceUrl);
+  body.set("idempotencyKey", input.idempotencyKey);
+  body.set("audio", file);
+  return requestJson("/api/admin/catalog", { method: "POST", body, schema: entityResponseSchema });
 }
 
 export function replaceAdminSource(
   songId: string,
   input: {
     sourceUrl: string;
-    sourceVideoId: string;
-    sourceLabel: string;
     idempotencyKey: string;
   },
+  file: File,
 ) {
+  const body = new FormData();
+  body.set("sourceUrl", input.sourceUrl);
+  body.set("idempotencyKey", input.idempotencyKey);
+  body.set("audio", file);
   return requestJson(`/api/admin/catalog/${songId}/sources`, {
     method: "POST",
-    json: input,
+    body,
     schema: entityResponseSchema,
   });
 }
