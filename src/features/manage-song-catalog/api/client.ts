@@ -3,6 +3,18 @@ import { requestJson } from "@/shared/api";
 
 const entityResponseSchema = z.object({ id: z.string() }).passthrough();
 
+const catalogImportResultSchema = z.object({
+  total: z.number().int().nonnegative(),
+  published: z.number().int().nonnegative(),
+  songsCreated: z.number().int().nonnegative(),
+  sourcesCreated: z.number().int().nonnegative(),
+  analysesCreated: z.number().int().nonnegative(),
+  targetsCreated: z.number().int().nonnegative(),
+  entriesCreated: z.number().int().nonnegative(),
+});
+
+export type CatalogImportResult = z.infer<typeof catalogImportResultSchema>;
+
 export function addAdminSong(
   input: {
     title: string;
@@ -58,6 +70,16 @@ export function publishAdminSource(songId: string, sourceId: string) {
   return requestJson(`/api/admin/catalog/${songId}/sources/${sourceId}/publish`, {
     method: "POST",
     schema: entityResponseSchema,
+  });
+}
+
+export function importAdminCatalogSnapshot(file: File): Promise<CatalogImportResult> {
+  const body = new FormData();
+  body.set("file", file);
+  return requestJson("/api/admin/catalog/import", {
+    method: "POST",
+    body,
+    schema: catalogImportResultSchema,
   });
 }
 

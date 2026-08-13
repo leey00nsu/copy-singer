@@ -81,8 +81,8 @@ analyzer_image = (
         remote_path=str(REMOTE_SERVICE_ROOT),
     )
     .add_local_file(
-        REPO_ROOT / "data" / "catalogs" / "tj-2607-top100.md",
-        remote_path="/data/catalogs/tj-2607-top100.md",
+        REPO_ROOT / "services" / "vocal-profile-api" / "catalogs" / "tj-2607-top100.md",
+        remote_path=str(REMOTE_ANALYZER_ROOT / "catalogs" / "tj-2607-top100.md"),
     )
 )
 

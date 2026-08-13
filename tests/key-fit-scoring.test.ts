@@ -1,7 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import test from "node:test";
-import type { SongProfileArtifact } from "../src/entities/recommendation";
 import {
   calculateProfileConfidence,
   KEY_FIT_SCORING_VERSION,
@@ -13,6 +11,7 @@ import {
   validateCompatibleKeyFitProfiles,
   validateKeyFitProfile,
 } from "../src/entities/recommendation";
+import { SYNTHETIC_SONG_CATALOG } from "./fixtures/synthetic-song-catalog";
 
 const USER_PROFILE_FIXTURE: KeyFitProfile = {
   minMidi: 48,
@@ -233,14 +232,8 @@ test("adds a low-confidence reason without changing deterministic serialization"
   assert.equal(JSON.stringify(first), JSON.stringify(second));
 });
 
-function loadRealSongArtifact(): SongProfileArtifact {
-  return JSON.parse(
-    readFileSync(new URL("../data/catalogs/tj-2607-song-profiles.json", import.meta.url), "utf8"),
-  ) as SongProfileArtifact;
-}
-
-test("scores all 100 ready artifact songs in catalog order within the CPU target", () => {
-  const artifact = loadRealSongArtifact();
+test("scores all 100 ready synthetic songs in catalog order within the CPU target", () => {
+  const artifact = SYNTHETIC_SONG_CATALOG;
   const startedAt = performance.now();
   const results = scoreCatalogKeyFits(USER_PROFILE_FIXTURE, artifact);
   const elapsedMs = performance.now() - startedAt;
@@ -254,8 +247,8 @@ test("scores all 100 ready artifact songs in catalog order within the CPU target
   assert.ok(elapsedMs < 100, `Expected 100-song scoring under 100ms, received ${elapsedMs.toFixed(2)}ms.`);
 });
 
-test("bulk scoring is deterministic for the real artifact", () => {
-  const artifact = loadRealSongArtifact();
+test("bulk scoring is deterministic for the synthetic catalog", () => {
+  const artifact = SYNTHETIC_SONG_CATALOG;
 
   assert.equal(
     JSON.stringify(scoreCatalogKeyFits(USER_PROFILE_FIXTURE, artifact)),
@@ -264,7 +257,7 @@ test("bulk scoring is deterministic for the real artifact", () => {
 });
 
 test("bulk scoring rejects a non-ready song instead of silently omitting it", () => {
-  const artifact = structuredClone(loadRealSongArtifact());
+  const artifact = structuredClone(SYNTHETIC_SONG_CATALOG);
   artifact.songs[0].status = "PENDING";
   artifact.songs[0].profile = null;
 
@@ -279,7 +272,7 @@ test("bulk scoring rejects a non-ready song instead of silently omitting it", ()
   );
 });
 
-test("scores the analyzed vocal1.wav profile against the real catalog", () => {
+test("scores the analyzed vocal1.wav profile deterministically against the synthetic catalog", () => {
   const vocal1Profile: KeyFitProfile = {
     minMidi: 45.2,
     maxMidi: 55.764,
@@ -294,7 +287,7 @@ test("scores the analyzed vocal1.wav profile against the real catalog", () => {
     analyzer: "librosa-pyin",
     analyzerVersion: "0.11.0",
   };
-  const results = scoreCatalogKeyFits(vocal1Profile, loadRealSongArtifact());
+  const results = scoreCatalogKeyFits(vocal1Profile, SYNTHETIC_SONG_CATALOG);
   const sorted = [...results].sort(
     (first, second) =>
       second.adjustedScore - first.adjustedScore ||
@@ -302,9 +295,8 @@ test("scores the analyzed vocal1.wav profile against the real catalog", () => {
       first.catalogOrder - second.catalogOrder,
   );
 
-  assert.equal(sorted[0].catalogOrder, 64);
-  assert.equal(sorted[0].recommendedShift, -4);
-  assert.equal(sorted[0].originalKeyScore, 46.29);
-  assert.equal(sorted[0].adjustedScore, 93.75);
-  assert.equal(results.filter((result) => result.recommendedShift === -6).length, 99);
+  assert.equal(results.length, 100);
+  assert.equal(sorted[0]?.adjustedScore, Math.max(...results.map((result) => result.adjustedScore)));
+  assert.equal(JSON.stringify(results), JSON.stringify(scoreCatalogKeyFits(vocal1Profile, SYNTHETIC_SONG_CATALOG)));
+  assert.ok(results.every((result) => result.scoringVersion === KEY_FIT_SCORING_VERSION));
 });

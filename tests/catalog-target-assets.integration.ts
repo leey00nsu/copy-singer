@@ -5,8 +5,6 @@ import path from "node:path";
 import test from "node:test";
 import { config } from "dotenv";
 
-import artifactJson from "../data/catalogs/tj-2607-song-profiles.json";
-
 config({ path: [".env.local", ".env"], quiet: true });
 
 test("catalog target import uploads once, links Song, and is idempotent by SHA-256", async (context) => {
@@ -28,7 +26,7 @@ test("catalog target import uploads once, links Song, and is idempotent by SHA-2
   const { importCatalogTargetAsset } = await import("../src/entities/recommendation/index.target-assets.server");
 
   const catalogOrder = 100;
-  const catalog = artifactJson.songs[catalogOrder - 1]!;
+  const sourceVideoId = "5x_CM7x5BQA";
   const catalogEntry = await prisma.catalogEntry.findFirstOrThrow({
     where: { position: catalogOrder, status: "PUBLISHED" },
     include: { song: true },
@@ -36,7 +34,7 @@ test("catalog target import uploads once, links Song, and is idempotent by SHA-2
   const song = catalogEntry.song;
   const originalTargetAssetId = song.targetAssetId;
   const stagingDir = await mkdtemp(path.join(os.tmpdir(), "copy-singer-catalog-targets-"));
-  const sourcePath = path.join(stagingDir, `Fixture Song [${catalog.sourceVideoId}].m4a`);
+  const sourcePath = path.join(stagingDir, `Fixture Song [${sourceVideoId}].m4a`);
   const sourceBytes = Buffer.from("fixture-compressed-audio");
   const fileId = `catalog-target-${crypto.randomUUID()}`;
   let presignCount = 0;
@@ -74,7 +72,7 @@ test("catalog target import uploads once, links Song, and is idempotent by SHA-2
     assert.equal(first.sizeBytes, sourceBytes.byteLength);
     assert.equal(first.mimeType, "audio/mp4");
     assert.equal(first.uploadPath, sourcePath);
-    assert.equal(first.sourceVideoId, catalog.sourceVideoId);
+    assert.equal(first.sourceVideoId, sourceVideoId);
     assert.equal(presignCount, 1);
 
     const linked = await prisma.song.findUniqueOrThrow({
@@ -85,7 +83,7 @@ test("catalog target import uploads once, links Song, and is idempotent by SHA-2
     assert.equal(linked.targetAsset?.status, "READY");
     assert.equal(linked.targetAsset?.mimeType, "audio/mp4");
     assert.match(linked.targetAsset?.fileName ?? "", /\.m4a$/);
-    assert.equal(linked.targetAsset?.sourceVideoId, catalog.sourceVideoId);
+    assert.equal(linked.targetAsset?.sourceVideoId, sourceVideoId);
     assert.equal(linked.targetAsset?.sha256, first.sha256);
 
     const second = await importCatalogTargetAsset({ catalogOrder, stagingDir, fetchImpl });

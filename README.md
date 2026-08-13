@@ -124,15 +124,11 @@ The web request atomically spends `MIXING_TICKET_COST` and creates a PostgreSQL 
 
 ### Song catalog analysis
 
-PostgreSQL is the runtime source of truth for songs, source revisions, analysis revisions, catalog positions, and active target assets. `data/catalogs/tj-2607-song-profiles.json` is retained only as the one-time TJ 2026-07 bootstrap/fixture input; runtime requests do not import it.
+PostgreSQL is the runtime source of truth for songs, source revisions, analysis revisions, catalog positions, and active target assets. The repository no longer contains a catalog data artifact; runtime requests read the published database catalog only.
 
-Initialize a fresh development database from the bootstrap artifact, then verify or export the database catalog:
+/admin/songs의 내보내기·가져오기로 현재 DB 카탈로그를 JSON 스냅샷으로 추출하고 새 배포 DB에 복원할 수 있습니다. 스냅샷에는 분석 결과와 외부 target asset metadata만 포함되며 원본 음원 bytes는 포함되지 않습니다. 가져오기는 같은 스냅샷을 반복해도 중복을 만들지 않습니다. 노래·음원 등록과 복원은 관리자 음원 관리 화면을 통해서만 진행합니다.
 
-```bash
-pnpm run catalog:bootstrap
-pnpm run catalog:db:verify
-pnpm run catalog:export
-```
+Database catalog readiness verification remains an internal diagnostic command; operational export/import is available only from the admin page.
 
 Catalog changes are made from the admin-only `/admin/songs` page. The add/replace dialog accepts title, artist, an HTTPS YouTube URL, and an authorized audio file. The server derives the video ID and source label, stores a draft revision, and queues analysis only after the target asset is READY.
 
@@ -199,9 +195,7 @@ pnpm run db:migrate:deploy
 pnpm run db:seed
 pnpm run db:verify
 pnpm run db:status
-pnpm run catalog:bootstrap
 pnpm run catalog:db:verify
-pnpm run catalog:export
 docker compose run --rm --no-deps \
   -v "$PWD/services/vocal-profile-api:/app" \
   vocal-profile-api sh -lc \
@@ -219,7 +213,6 @@ src/widgets/                      Reusable, self-contained page sections
 src/features/                     User actions and application use cases
 src/entities/                     Domain data, behavior, and domain UI
 src/shared/                       Framework-agnostic API, config, DB, media, and UI
-data/catalogs/                    Versioned song metadata and analysis artifacts
 prisma/                           Prisma schema, migrations, and development seed
 scripts/                          Workers and local verification/maintenance tools
 services/soulx-singer-svc/        Modal GPU singing-voice conversion API

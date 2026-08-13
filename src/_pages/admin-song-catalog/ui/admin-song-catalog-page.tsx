@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight, Music2, Search } from "lucide-react";
 import Link from "next/link";
 import { requireAdminPage } from "@/features/authentication/index.server";
-import { type AdminCatalogEntryView, CatalogManager } from "@/features/manage-song-catalog";
+import { type AdminCatalogEntryView, CatalogManager, CatalogSnapshotToolbar } from "@/features/manage-song-catalog";
 import { listAdminCatalog } from "@/features/manage-song-catalog/index.server";
 import { PRIVATE_METADATA } from "@/shared/config/index.server";
 import { Button } from "@/shared/ui/button";
@@ -96,11 +96,14 @@ export default async function AdminSongCatalogPage({
         />
 
         <section className="mt-8">
-          <div className="mb-3 flex items-center justify-between gap-3">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
             <h2 className="flex items-center gap-2 text-sm font-semibold">
               <Music2 className="size-4" /> 등록된 음원
             </h2>
-            <span className="text-[10px] text-muted-foreground">{result.total}곡</span>
+            <div className="flex items-center gap-3">
+              <span className="text-[10px] text-muted-foreground">{result.total}곡</span>
+              <CatalogSnapshotToolbar />
+            </div>
           </div>
           <form
             className="mb-3 grid gap-3 rounded-xl bg-muted/20 p-4 sm:grid-cols-[minmax(0,1fr)_12rem_auto] sm:items-end"

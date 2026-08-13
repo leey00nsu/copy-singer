@@ -1,4 +1,4 @@
-import { type SongCatalogEntry, TJ_2607_CATALOG_METADATA } from "./catalog";
+import type { SongCatalogEntry, TJ_2607_CATALOG_METADATA } from "./catalog";
 
 export const SONG_PROFILE_ARTIFACT_SCHEMA_VERSION = 1;
 export const SONG_PROFILE_PIPELINE_CONTRACT = "yt-dlp-demucs-librosa-pyin-v1";

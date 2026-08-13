@@ -58,7 +58,7 @@
 3. CPU 분석기가 보컬 프로필을 계산하고 표준 reference를 Leemage에 옮긴 뒤 임시본을 제거한다.
 4. PostgreSQL에는 사용자 소유 프로필, Leemage 파일 ID와 분석 버전만 저장한다.
 5. 같은 분석기로 미리 생성한 곡 프로필과 semitone 후보별 적합도를 계산하고 전체 순위를 반환한다.
-6. 운영자는 사용 권한을 확인한 catalog target 파일을 Git 비추적 `tmp/catalog-targets`에 두고 `catalog:targets:import`로 catalog identity·SHA-256을 검증한 뒤 원본 압축 bytes/MIME 그대로 Leemage `CatalogTargetAsset`으로 등록해 Song에 연결한다. SoulX는 합성 시작 시 입력을 내부 44.1kHz mono로 정규화한다.
+6. 관리자는 관리자 전용 `/admin/songs`에서 곡 메타데이터·HTTPS YouTube URL·target audio를 등록한다. 서버가 video ID와 source label을 파생하고, READY source·analysis·target만 명시적 공개 transaction으로 CatalogEntry에 연결한다. DB를 이동할 때는 같은 화면의 schema 고정 JSON snapshot export/import를 사용하며 snapshot에는 분석 결과와 외부 target metadata만 포함하고 원본 음원 bytes는 포함하지 않는다. SoulX는 합성 시작 시 입력을 내부 44.1kHz mono로 정규화한다.
 7. 사용자가 `AI 믹싱`을 누르면 READY mid-only reference와 READY catalog target을 확인하고 각각 `referenceAssetId`, `targetAssetId`로 snapshot한 뒤 티켓 차감과 PENDING job 생성을 한 DB 트랜잭션에서 수행한다. target이 없으면 티켓 차감 전에 거부한다.
 8. 별도 worker가 lease로 job을 claim하고 snapshot된 reference/target asset을 Leemage에서 읽어 SoulX Modal에 제출한다. production mixing은 런타임 YouTube/yt-dlp `/v1/song-target`을 호출하지 않는다.
 9. reference/catalog-target의 transient network·429·5xx와 이미 생성된 SoulX job의 status/result GET failure는 `nextAttemptAt` exponential backoff로 `maxAttempts` 안에서 재시도한다. 단계별 오류는 `REFERENCE_FETCH_FAILED`, `CATALOG_TARGET_FETCH_FAILED`, `MODAL_SUBMIT_FAILED`, `MODAL_STATUS_FETCH_FAILED`, `MODAL_RESULT_FETCH_FAILED` 등 stable code로 기록한다. SoulX submit의 네트워크 단절은 idempotency 부재로 중복 생성 가능성이 있어 자동 재시도하지 않는다.
@@ -70,5 +70,5 @@
 - SoulX SVC와 보컬 프로필 Modal analyzer는 별도 Modal App으로 배포하며 repo의 Modal Python SDK는 `1.5.3`으로 고정한다.
 - 보컬 프로필 production backend는 `VOCAL_PROFILE_ANALYZER_BACKEND=modal`과 `VOCAL_PROFILE_MODAL_URL`을 명시적으로 설정해야 한다. `VOCAL_PROFILE_API_URL`은 local 분석 개발 경로 전용이며 production mixing target은 analyzer backend와 무관하게 Leemage catalog asset을 사용한다.
 - Better Auth, Google, Modal과 Leemage secret은 `.env.local`에만 두고 클라이언트로 전달하지 않는다. 보컬 프로필 analyzer는 기존 `MODAL_API_KEY`를 기본 server-only `X-API-Key`로 사용하고 필요 시 `VOCAL_PROFILE_MODAL_API_KEY`로 override한다.
-- 사용자 reference/결과와 권한이 확인된 catalog mixing target은 Leemage에 저장한다. catalog target local staging은 Git에서 제외하고, catalog 분석용 다운로드와 stem은 작업 임시 디렉터리에서 제거한다.
+- 사용자 reference/결과와 권한이 확인된 catalog mixing target은 Leemage에 저장한다. 카탈로그 원본·분리 stem은 작업 임시 디렉터리에서 제거하며, DB snapshot에는 외부 target metadata만 저장한다. 신규 등록과 DB 복원은 관리자 `/admin/songs` 경로로 단일화한다.
 - `/dev/svc`와 `/api/conversions/*`는 비프로덕션에서 `ENABLE_DEV_SVC=true`일 때만 제공한다.

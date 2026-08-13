@@ -95,7 +95,7 @@ catalog allowlist target WAV를 개발·진단할 때 사용합니다. productio
 }
 ```
 
-- packaged `data/catalogs/tj-2607-top100.md` allowlist를 검증합니다.
+- packaged `services/vocal-profile-api/catalogs/tj-2607-top100.md` allowlist를 검증합니다.
 - image에 고정된 `yt-dlp==2026.7.4`와 FFmpeg로 WAV를 생성합니다.
 - response는 `audio/wav` streaming이며 stream 종료 후 임시 directory를 삭제합니다.
 - production `VOCAL_PROFILE_ANALYZER_BACKEND=modal`에서는 mixing worker도 이 endpoint를 사용하므로 local `VOCAL_PROFILE_API_URL`이 필요하지 않습니다.

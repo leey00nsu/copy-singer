@@ -10,5 +10,5 @@ export type SongCatalogEntry = {
 export const TJ_2607_CATALOG_METADATA = {
   name: "TJ Top 100",
   issue: "2026-07",
-  sourceFile: "data/catalogs/tj-2607-top100.md",
+  source: "admin-catalog-snapshot",
 } as const;

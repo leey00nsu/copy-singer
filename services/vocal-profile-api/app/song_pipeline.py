@@ -48,7 +48,7 @@ def _catalog_path() -> Path:
     configured = os.environ.get("SONG_CATALOG_PATH")
     if configured:
         return Path(configured)
-    return Path(__file__).resolve().parents[3] / "data" / "catalogs" / "tj-2607-top100.md"
+    return Path(__file__).resolve().parents[1] / "catalogs" / "tj-2607-top100.md"
 
 
 def _allowed_video_ids() -> frozenset[str]:

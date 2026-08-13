@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import test from "node:test";
-import type { KeyFitProfile, SongProfileArtifact } from "../src/entities/recommendation/index.model";
+import type { KeyFitProfile } from "../src/entities/recommendation/index.model";
 import {
   type CatalogKeyFitResult,
   calculateRecommendationSelectionScore,
@@ -15,6 +14,7 @@ import {
 } from "../src/entities/recommendation/index.model";
 import type { PublishedCatalogRow } from "../src/entities/song-catalog/index.server";
 import { buildRankedDatabaseRecommendations } from "../src/features/create-recommendation/index.data.server";
+import { SYNTHETIC_SONG_CATALOG } from "./fixtures/synthetic-song-catalog";
 
 const USER_PROFILE_FIXTURE: KeyFitProfile = {
   minMidi: 48,
@@ -31,9 +31,7 @@ const USER_PROFILE_FIXTURE: KeyFitProfile = {
   analyzerVersion: "0.11.0",
 };
 
-const artifact = JSON.parse(
-  readFileSync(new URL("../data/catalogs/tj-2607-song-profiles.json", import.meta.url), "utf8"),
-) as SongProfileArtifact;
+const artifact = SYNTHETIC_SONG_CATALOG;
 
 function candidate(
   catalogOrder: number,
@@ -103,7 +101,7 @@ test("does not mutate candidates and produces a deterministic full artifact rank
   );
 });
 
-test("real stored profile fixtures no longer share Acrophobic as rank one", () => {
+test("stored profile fixtures get distinct deterministic rank-one results", () => {
   const highProfile: KeyFitProfile = {
     minMidi: 54.6,
     maxMidi: 70.7,
@@ -135,16 +133,14 @@ test("real stored profile fixtures no longer share Acrophobic as rank one", () =
 
   const highRanked = rankRecommendations(scoreCatalogKeyFits(highProfile, artifact));
   const broadRanked = rankRecommendations(scoreCatalogKeyFits(broadProfile, artifact));
+  assert.equal(highRanked.length, 100);
+  assert.equal(broadRanked.length, 100);
+  assert.notEqual(highRanked[0]!.title, broadRanked[0]!.title);
+  const repeated = rankRecommendations(scoreCatalogKeyFits(highProfile, artifact));
   assert.deepEqual(
-    highRanked.slice(0, 3).map((item) => item.title),
-    ["잊었니(신들의만찬OST)", "붉은 노을", "천상연(웹툰 '선녀외전' X 이창섭)"],
+    repeated.map((item) => item.title),
+    highRanked.map((item) => item.title),
   );
-  assert.deepEqual(
-    broadRanked.slice(0, 3).map((item) => item.title),
-    ["소녀(응답하라1988 OST)", "Lemon", "죽일 놈(Guilty)"],
-  );
-  assert.notEqual(highRanked[0]!.title, "아크라포빅");
-  assert.notEqual(broadRanked[0]!.title, "아크라포빅");
 });
 
 test("rejects empty and duplicate ranking inputs as an unready catalog", () => {

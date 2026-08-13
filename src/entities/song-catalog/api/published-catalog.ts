@@ -1,8 +1,7 @@
 import "server-only";
 
+import { TJ_2607_CATALOG_SLUG } from "@/shared/config/index.server";
 import { type Prisma, type PrismaClient, prisma } from "@/shared/db/index.server";
-
-import { TJ_2607_CATALOG_SLUG } from "../lib/bootstrap";
 
 export async function loadPublishedCatalog(
   database: PrismaClient | Prisma.TransactionClient = prisma,

@@ -4,15 +4,15 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { AppRouterContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createQueryClient } from "@/_app/providers";
-import artifactJson from "../data/catalogs/tj-2607-song-profiles.json";
 import { RecommendationResults } from "../src/_pages/recommendation-detail";
-import type { RecommendationRunResponse, SongProfileArtifact } from "../src/entities/recommendation";
+import type { RecommendationRunResponse } from "../src/entities/recommendation";
 import {
   formatRecommendationReasons,
   rankRecommendations,
   scoreCatalogKeyFits,
   YouTubeVideo,
 } from "../src/entities/recommendation";
+import { SYNTHETIC_SONG_CATALOG } from "./fixtures/synthetic-song-catalog";
 
 const profile = {
   minMidi: 48,
@@ -28,7 +28,7 @@ const profile = {
   analyzer: "librosa-pyin",
   analyzerVersion: "0.11.0",
 };
-const ranked = rankRecommendations(scoreCatalogKeyFits(profile, artifactJson as unknown as SongProfileArtifact));
+const ranked = rankRecommendations(scoreCatalogKeyFits(profile, SYNTHETIC_SONG_CATALOG));
 const run: RecommendationRunResponse = {
   id: "00000000-0000-4000-8000-000000000005",
   userVocalProfileId: "00000000-0000-4000-8000-000000000006",

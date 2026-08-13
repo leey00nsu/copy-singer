@@ -97,14 +97,16 @@ async function findStagedSource(catalogOrder: number, sourceVideoId: string, sta
       `Multiple staged source files contain video ID ${sourceVideoId} for catalog order ${catalogOrder}. Keep only one source file.`,
     );
   }
-  if (byVideoId.length === 1) return path.join(stagingDir, byVideoId[0]!);
+  const videoMatch = byVideoId[0];
+  if (videoMatch) return path.join(stagingDir, videoMatch);
 
   const exact = supported.filter((name) => path.parse(name).name === stem);
   if (exact.length === 0) return null;
   if (exact.length > 1) {
     throw new Error(`Multiple staged source files exist for catalog order ${catalogOrder}. Keep only one source file.`);
   }
-  return path.join(stagingDir, exact[0]!);
+  const exactMatch = exact[0];
+  return exactMatch ? path.join(stagingDir, exactMatch) : null;
 }
 
 function sourceMimeType(sourcePath: string) {
@@ -325,10 +327,7 @@ export async function catalogTargetStatus() {
     ready: songs.filter((song) => song.targetAsset?.status === "READY" && song.targetAsset.sourceId === song.sourceId)
       .length,
     missing: songs
-      .filter(
-        (song) =>
-          !song.targetAsset || song.targetAsset.status !== "READY" || song.targetAsset.sourceId !== song.sourceId,
-      )
+      .filter((song) => song.targetAsset?.status !== "READY" || song.targetAsset.sourceId !== song.sourceId)
       .map((song) => {
         return {
           catalogOrder: song.catalogOrder,

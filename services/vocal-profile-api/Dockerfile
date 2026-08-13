@@ -21,7 +21,7 @@ RUN python -m pip install --no-cache-dir --disable-pip-version-check \
 RUN python -m pip install --no-cache-dir --disable-pip-version-check -r requirements-song.txt
 
 COPY services/vocal-profile-api/app ./app
-COPY data/catalogs/tj-2607-top100.md ./catalogs/tj-2607-top100.md
+COPY services/vocal-profile-api/catalogs/tj-2607-top100.md ./catalogs/tj-2607-top100.md
 
 EXPOSE 8000
 
