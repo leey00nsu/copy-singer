@@ -16,8 +16,10 @@ test("default dev and start commands supervise web, mixing, and vocal-profile an
     assert.match(scripts[name] ?? "", new RegExp(`pnpm run ${name}:web`));
     assert.match(scripts[name] ?? "", /pnpm run worker:mixing/);
     assert.match(scripts[name] ?? "", /pnpm run worker:vocal-profile-analysis/);
+    assert.match(scripts[name] ?? "", /pnpm run worker:song-analysis/);
   }
   assert.match(scripts["worker:vocal-profile-analysis"] ?? "", /scripts\/vocal-profile-analysis-worker\.ts/);
+  assert.match(scripts["worker:song-analysis"] ?? "", /scripts\/song-analysis-worker\.ts/);
 });
 
 test("the process supervisor terminates the sibling when one child fails", async () => {

@@ -47,6 +47,14 @@ export function vocalProfileAnalysisLeaseSeconds() {
   return integerEnv("VOCAL_PROFILE_ANALYSIS_LEASE_SECONDS", 300, { min: 180, max: 3_600 });
 }
 
+export function songAnalysisWorkerConcurrency() {
+  return integerEnv("SONG_ANALYSIS_WORKER_CONCURRENCY", 1, { min: 1, max: 8 });
+}
+
+export function songAnalysisLeaseSeconds() {
+  return integerEnv("SONG_ANALYSIS_LEASE_SECONDS", 300, { min: 180, max: 3_600 });
+}
+
 export function vocalProfileAnalyzerUrl() {
   const url = process.env.VOCAL_PROFILE_API_URL?.replace(/\/$/, "");
   return url || null;
