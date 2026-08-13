@@ -72,17 +72,17 @@
     - [x] 공통 catalog domain contract와 readiness validator를 구현한다.
     - [x] schema validation 및 DB integration test를 실행한다.
 
-- [TODO][PRD-FR-005][PRD-FR-007] T-F024-admin-song-catalog-management-02 기존 100곡 bootstrap과 DB 추천 전환
+- [DONE][PRD-FR-005][PRD-FR-007] T-F024-admin-song-catalog-management-02 기존 100곡 bootstrap과 DB 추천 전환
   - Date: 2026-08-13
   - Acceptance:
-    - 기존 READY JSON 100곡을 idempotent하게 DB revision 모델로 적재할 수 있다.
-    - 추천·합성·target lookup이 JSON direct import와 정확히 100곡 하드코딩 없이 DB active revision을 사용한다.
-    - 동일 입력의 전환 전후 추천 순서와 점수가 일치한다.
+    - [x] 기존 READY JSON 100곡을 idempotent하게 DB revision 모델로 적재할 수 있다.
+    - [x] 추천·합성·target lookup이 JSON direct import와 정확히 100곡 하드코딩 없이 DB active revision을 사용한다.
+    - [x] 동일 입력의 전환 전후 추천 순서와 점수가 일치한다.
   - Checklist:
-    - [ ] bootstrap/export/verify command를 구현한다.
-    - [ ] recommendation·synthesis·target asset 경로를 DB query/adapter로 전환한다.
-    - [ ] JSON runtime import와 `RECOMMENDATION_CATALOG_SIZE` 의존을 제거한다.
-    - [ ] parity 및 관련 회귀 테스트를 실행한다.
+    - [x] bootstrap/export/verify command를 구현한다.
+    - [x] recommendation·synthesis·target asset 경로를 DB query/adapter로 전환한다.
+    - [x] JSON runtime import와 `RECOMMENDATION_CATALOG_SIZE` 의존을 제거한다.
+    - [x] parity 및 관련 회귀 테스트를 실행한다.
 
 - [TODO][PRD-FR-059][PRD-NFR-009] T-F024-admin-song-catalog-management-03 관리자 곡 API와 durable 분석 작업 구현
   - Date: 2026-08-13
@@ -152,5 +152,10 @@
 | `node --conditions react-server --import tsx --test tests/song-catalog-db.integration.ts` | `2026-08-13` | 통과 — revision 관계·active pointer·중복 video ID DB 계약 1/1 |
 | `pnpm exec tsc --noEmit` | `2026-08-13` | 통과 |
 | `pnpm exec prisma validate` | `2026-08-13` | 통과 |
+| `pnpm run catalog:bootstrap && pnpm run catalog:db:verify && pnpm run catalog:export` | `2026-08-13` | 통과 — idempotent bootstrap, DB 100/100 READY, JSON export 100곡 |
+| `node --conditions react-server --import tsx --test tests/song-catalog-bootstrap.integration.ts` | `2026-08-13` | 통과 — bootstrap idempotency와 JSON↔DB 전체 ranking parity 1/1 |
+| `pnpm run test:recommendation && pnpm run test:recommendation:db` | `2026-08-13` | 통과 — 추천 unit/UI 33/33, DB persistence/synthesis 3/3 |
+| `pnpm run test:catalog-targets && pnpm run test:mixing:db` | `2026-08-13` | 통과 — target revision 1/1, mixing queue 1/1 |
+| runtime JSON/고정 크기 `rg` audit | `2026-08-13` | 통과 — `src`의 artifact direct import·`RECOMMENDATION_CATALOG_SIZE` 0건 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T16:36:00+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T17:17:00+09:00 -->

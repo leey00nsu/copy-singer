@@ -70,3 +70,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: -
   - **Test/Log**: `find`/`ls -lah tmp/catalog-targets` identity 확인
 - **Consequences**: 실제 삭제는 구현 승인 후 Task 05에서 수행하며, 삭제된 local staging 파일은 Git으로 복구할 수 없다.
+
+## D004: 초기 artifact 이전과 runtime cutover (2026-08-13)
+
+- **Context**: 기존 100곡 JSON은 모든 분석값이 READY이고 DB target asset 100개도 준비되어 있지만 추천·합성 코드가 JSON identity와 정확히 100곡 계약을 직접 사용했다.
+- **Constraints**: 초기 분석값과 결정적 추천 점수는 그대로 보존하면서 관리자 추가 곡은 JSON 수정·재배포 없이 반영돼야 한다. 전환 중 중복 source/analysis/target을 만들면 안 된다.
+- **Options**: JSON/DB dual read 장기 유지, 배포 때마다 JSON import, 한 번의 idempotent bootstrap 후 DB-only runtime.
+- **Decision**: 기존 JSON을 읽는 `catalog:bootstrap`을 초기화 경계로만 두고 source video ID, pipeline contract와 catalog position unique key로 upsert한다. runtime 추천·합성·target lookup은 published DB catalog와 active revision만 읽고, JSON은 export/fixture 역할만 유지한다.
+- **Rationale**: bootstrap을 반복해도 같은 revision과 pointer가 유지되고 runtime은 관리자 변경을 즉시 반영한다. dual read drift와 정확히 100곡이라는 장애 단위를 제거한다.
+- **Trace**:
+  - **DOING 시작 시점**: 기존 target 100/100 READY를 확인한 뒤 분석·target·catalog entry를 묶어 100곡 모두 publish할 수 있다고 판단했다.
+  - **DONE 전 확정 시점**: bootstrap 2회 결과가 동일했고 DB 100/100 READY, export 100곡, 기존 JSON과 DB ranking 전체 parity를 확인했다. `src`에서 artifact direct import와 고정 catalog size가 사라졌다.
+  - **머지 후 확인**: -
+- **Evidence**:
+  - **Commit**: `219d026` (`feat(F024-admin-song-catalog-management): 기존 100곡 bootstrap과 DB 추천 전환`)
+  - **PR**: -
+  - **Test/Log**: bootstrap parity 1/1, recommendation 33/33, recommendation DB 3/3, catalog target 1/1, mixing queue 1/1, TypeScript·Prisma validation
+- **Consequences**: 초기 환경은 migration 후 `catalog:bootstrap`을 실행해야 한다. 기존 `Song.catalogOrder` 등 transitional column과 legacy artifact pipeline 코드는 Task 06에서 제거한다.
