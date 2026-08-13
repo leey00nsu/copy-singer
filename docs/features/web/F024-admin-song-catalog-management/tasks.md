@@ -175,6 +175,21 @@
     - [x] data/catalogs 제거, bootstrap·targets 스크립트/command 정리, allowlist 이전을 완료한다.
     - [x] snapshot/합성 fixture 테스트와 TypeScript·lint·전체 테스트·production build를 통과시킨다.
 
+- [DONE][NON-PRD] T-F024-admin-song-catalog-management-10 카탈로그 YouTube allowlist 제거와 URL 검증 단일화
+  - Date: 2026-08-13
+  - Acceptance:
+    - [x] services/vocal-profile-api/catalogs/tj-2607-top100.md 파일이 저장소와 Docker/Modal 패키징에서 제거된다.
+    - [x] services/vocal-profile-api/app/song_pipeline.py의 _allowed_video_ids/_catalog_path/CATALOG_ENTRY_PATTERN과 catalogEntries 카운트가 제거되고 _validate_source_url은 allowlist 없이 https+youtube watch URL+v 일치만 검증한다.
+    - [x] services/vocal-profile-api/app/main.py와 services/vocal-profile-modal/modal_app.py의 SOURCE_NOT_ALLOWLISTED 분기가 제거된다.
+    - [x] allowlist 관련 테스트와 문서 검증이 정리되고 services/vocal-profile-modal/README.md의 /v1/song-target 설명이 URL 검증 기준으로 갱신된다.
+    - [x] decisions D009/D012가 allowlist 제거를 반영하고 TypeScript·lint·build 검증을 통과한다.
+  - Checklist:
+    - [x] song_pipeline.py의 allowlist 코드와 catalogEntries 의존을 제거한다.
+    - [x] Dockerfile의 SONG_CATALOG_PATH와 Modal add_local_file allowlist 패키징을 제거한다.
+    - [x] main.py와 modal_app.py의 SOURCE_NOT_ALLOWLISTED 에러 분기를 제거한다.
+    - [x] allowlist 테스트와 modal allowlist 검증 문구를 정리하고 README를 갱신한다.
+    - [x] F024 spec/plan/decisions와 tasks를 allowlist 제거 계약에 맞게 동기화한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -230,4 +245,4 @@
 | snapshot export sanitize `rg` audit | `2026-08-13` | 통과 — snapshot에 audioBytes/base64/tempPath 없음, pipelineMetadata allowlist만 포함 |
 | legacy catalog artifact `rg` audit | `2026-08-13` | 통과 — `data/catalogs`·legacy bootstrap/targets script·package command 0건, allowlist는 `services/vocal-profile-api/catalogs`에서만 참조 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T23:31:55.997228+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T23:36:52.291871+09:00 -->
