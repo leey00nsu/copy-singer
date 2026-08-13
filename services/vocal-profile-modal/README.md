@@ -86,7 +86,7 @@ artifact bytes는 base64와 SHA-256을 함께 전달합니다. 이 encoding은 �
 
 ### `POST /v1/song-target`
 
-catalog allowlist target WAV를 개발·진단할 때 사용합니다. production mixing worker의 source-of-truth는 아니며, 운영 믹싱은 `tmp/catalog-targets`에서 권한 확인 후 Leemage에 사전 업로드된 catalog target을 사용합니다.
+YouTube URL을 WAV로 변환해 개발·진단할 때 사용합니다. 요청 URL의 video ID가 `expectedVideoId`와 일치하는지만 검증하며 별도 catalog allowlist는 사용하지 않습니다.
 
 ```json
 {
@@ -95,7 +95,6 @@ catalog allowlist target WAV를 개발·진단할 때 사용합니다. productio
 }
 ```
 
-- packaged `services/vocal-profile-api/catalogs/tj-2607-top100.md` allowlist를 검증합니다.
 - image에 고정된 `yt-dlp==2026.7.4`와 FFmpeg로 WAV를 생성합니다.
 - response는 `audio/wav` streaming이며 stream 종료 후 임시 directory를 삭제합니다.
 - production `VOCAL_PROFILE_ANALYZER_BACKEND=modal`에서는 mixing worker도 이 endpoint를 사용하므로 local `VOCAL_PROFILE_API_URL`이 필요하지 않습니다.

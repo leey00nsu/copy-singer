@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 import importlib.metadata
-import os
-import re
 import shutil
 import subprocess
 import sys
@@ -15,10 +13,6 @@ from .config import SONG_ANALYSIS_CONFIG
 
 JOB_PREFIX = "copy-singer-song-"
 SEPARATOR_MODEL = "htdemucs"
-CATALOG_ENTRY_PATTERN = re.compile(
-    r"^\d+\. \*\*.+? — .+?\*\* · \[.+?\]\(https://www\.youtube\.com/watch\?v=([A-Za-z0-9_-]{11})\)$",
-    re.MULTILINE,
-)
 
 
 class SongPipelineError(RuntimeError):
@@ -40,22 +34,9 @@ def dependency_status() -> dict[str, object]:
         "ytDlp": _package_version("yt-dlp"),
         "demucs": _package_version("demucs"),
         "ffmpeg": shutil.which("ffmpeg") is not None,
-        "catalogEntries": len(_allowed_video_ids()),
     }
 
 
-def _catalog_path() -> Path:
-    configured = os.environ.get("SONG_CATALOG_PATH")
-    if configured:
-        return Path(configured)
-    return Path(__file__).resolve().parents[1] / "catalogs" / "tj-2607-top100.md"
-
-
-def _allowed_video_ids() -> frozenset[str]:
-    path = _catalog_path()
-    if not path.is_file():
-        return frozenset()
-    return frozenset(CATALOG_ENTRY_PATTERN.findall(path.read_text(encoding="utf-8")))
 
 
 def cleanup_abandoned_jobs(temp_root: str | Path | None = None) -> int:
@@ -69,8 +50,6 @@ def cleanup_abandoned_jobs(temp_root: str | Path | None = None) -> int:
 
 
 def _validate_source_url(source_url: str, expected_video_id: str) -> None:
-    if expected_video_id not in _allowed_video_ids():
-        raise SongPipelineError("SOURCE_NOT_ALLOWLISTED", "The video ID is not in the local song catalog.")
     parsed = urlparse(source_url)
     if parsed.scheme != "https" or parsed.hostname not in {"youtube.com", "www.youtube.com"}:
         raise SongPipelineError("INVALID_SOURCE_URL", "Only HTTPS YouTube watch URLs are allowed.")
@@ -78,7 +57,7 @@ def _validate_source_url(source_url: str, expected_video_id: str) -> None:
         raise SongPipelineError("INVALID_SOURCE_URL", "Only YouTube watch URLs are allowed.")
     video_ids = parse_qs(parsed.query).get("v", [])
     if video_ids != [expected_video_id]:
-        raise SongPipelineError("SOURCE_ID_MISMATCH", "The source URL does not match the catalog video ID.")
+        raise SongPipelineError("SOURCE_ID_MISMATCH", "The source URL does not match the expected video ID.")
 
 
 def _run_command(command: list[str], timeout_seconds: int) -> None:
@@ -95,7 +74,7 @@ def _run_command(command: list[str], timeout_seconds: int) -> None:
 
     if completed.returncode != 0:
         tool = "yt-dlp" if "yt_dlp" in command else "Demucs"
-        raise SongPipelineError(f"{tool.upper().replace('-', '_')}_FAILED", f"{tool} could not process this catalog item.")
+        raise SongPipelineError(f"{tool.upper().replace('-', '_')}_FAILED", f"{tool} could not process this item.")
 
 
 def download_song_target(
@@ -104,7 +83,7 @@ def download_song_target(
     *,
     temp_root: str | Path | None = None,
 ) -> tuple[Path, Path]:
-    """Download one allowlisted target; the caller owns and must delete the returned directory."""
+    """Download one YouTube target; the caller owns and must delete the returned directory."""
     _validate_source_url(source_url, expected_video_id)
     job_path = Path(tempfile.mkdtemp(prefix=JOB_PREFIX, dir=temp_root))
     try:

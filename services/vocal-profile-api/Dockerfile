@@ -2,8 +2,7 @@ FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    VOCAL_PROFILE_STORAGE_ROOT=/data \
-    SONG_CATALOG_PATH=/app/catalogs/tj-2607-top100.md
+    VOCAL_PROFILE_STORAGE_ROOT=/data
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ffmpeg \
@@ -21,7 +20,6 @@ RUN python -m pip install --no-cache-dir --disable-pip-version-check \
 RUN python -m pip install --no-cache-dir --disable-pip-version-check -r requirements-song.txt
 
 COPY services/vocal-profile-api/app ./app
-COPY services/vocal-profile-api/catalogs/tj-2607-top100.md ./catalogs/tj-2607-top100.md
 
 EXPOSE 8000
 

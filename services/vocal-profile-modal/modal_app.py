@@ -80,10 +80,6 @@ analyzer_image = (
         REPO_ROOT / "services" / "vocal-profile-modal",
         remote_path=str(REMOTE_SERVICE_ROOT),
     )
-    .add_local_file(
-        REPO_ROOT / "services" / "vocal-profile-api" / "catalogs" / "tj-2607-top100.md",
-        remote_path=str(REMOTE_ANALYZER_ROOT / "catalogs" / "tj-2607-top100.md"),
-    )
 )
 
 
@@ -160,7 +156,6 @@ async def song_target(request: SongTargetRequest) -> StreamingResponse | JSONRes
         )
     except SongPipelineError as error:
         retryable = error.reason_code not in {
-            "SOURCE_NOT_ALLOWLISTED",
             "INVALID_SOURCE_URL",
             "SOURCE_ID_MISMATCH",
         }

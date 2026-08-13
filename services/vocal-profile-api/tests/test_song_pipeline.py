@@ -86,17 +86,6 @@ def test_song_pipeline_rejects_non_catalog_url_before_creating_files(tmp_path) -
     assert list(tmp_path.iterdir()) == []
 
 
-def test_song_pipeline_rejects_video_outside_allowlist(tmp_path) -> None:
-    with pytest.raises(song_pipeline.SongPipelineError) as error:
-        song_pipeline.analyze_song_url(
-            "https://www.youtube.com/watch?v=AAAAAAAAAAA",
-            "AAAAAAAAAAA",
-            temp_root=tmp_path,
-        )
-
-    assert error.value.reason_code == "SOURCE_NOT_ALLOWLISTED"
-    assert list(tmp_path.iterdir()) == []
-
 
 def test_cleanup_abandoned_jobs_only_removes_owned_prefix(tmp_path) -> None:
     abandoned = tmp_path / f"{song_pipeline.JOB_PREFIX}old"
@@ -109,7 +98,7 @@ def test_cleanup_abandoned_jobs_only_removes_owned_prefix(tmp_path) -> None:
     assert unrelated.exists()
 
 
-def test_download_song_target_returns_caller_owned_allowlisted_file(tmp_path, monkeypatch) -> None:
+def test_download_song_target_returns_caller_owned_file(tmp_path, monkeypatch) -> None:
     def fake_run(command: list[str], timeout_seconds: int) -> None:
         assert timeout_seconds == 600
         output = Path(command[command.index("-o") + 1].replace("%(ext)s", "wav"))

@@ -78,7 +78,6 @@ async def song_pipeline_error_handler(_, error: SongPipelineError) -> JSONRespon
     status = (
         400
         if error.reason_code in {"INVALID_SOURCE_URL", "SOURCE_ID_MISMATCH"}
-        or error.reason_code == "SOURCE_NOT_ALLOWLISTED"
         else 504
         if error.reason_code == "PIPELINE_TIMEOUT"
         else 422

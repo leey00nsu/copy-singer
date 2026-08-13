@@ -35,7 +35,6 @@ def test_modal_app_exposes_health_analyze_and_song_target_contract() -> None:
     assert '"smart-reference-mid-v1"' in text
     assert '"song-target-v1"' in text
     assert '"yt-dlp==2026.7.4"' in text
-    assert 'remote_path=str(REMOTE_ANALYZER_ROOT / "catalogs" / "tj-2607-top100.md")' in text
     assert "download_song_target" in text
     assert "StreamingResponse" in text
     assert "shutil.rmtree(job_path" in text
