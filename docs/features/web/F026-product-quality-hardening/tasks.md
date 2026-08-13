@@ -110,16 +110,16 @@
     - [x] waveform 키보드 seek 일관성 확인
     - [x] Storybook a11y addon critical 0 확인
 
-- [TODO][PRD-FR-051] T-F026-product-quality-hardening-06 메타데이터·관찰성 정리
+- [DONE][PRD-FR-051] T-F026-product-quality-hardening-06 메타데이터·관찰성 정리
   - Date: 2026-08-14
   - Acceptance:
     - sitemap은 public route만 노출하고 인증·관리자 route는 noindex를 유지한다
     - OG 이미지·canonical·home 메타가 최신과 일치한다
     - 분석·믹싱 실패 경로에 Sentry/구조화 로그 capture가 최소 범위로 추가된다 (DSN 없으면 no-op)
   - Checklist:
-    - [ ] sitemap/robots/noindex 감사·수정
-    - [ ] OG·canonical 재확인
-    - [ ] worker/API 실패 경로에 capture 추가 (PII 없이 userId/jobId/errorCode만)
+    - [x] sitemap/robots/noindex 감사·수정
+    - [x] OG·canonical 재확인
+    - [x] worker/API 실패 경로에 capture 추가 (PII 없이 userId/jobId/errorCode만)
 
 ---
 
@@ -138,13 +138,15 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm run check:architecture` | `-` | `-` |
+| `pnpm run check:architecture` | `2026-08-14` | 통과 — 0 error |
 | `pnpm run test:storybook --run` | `-` | `-` |
 | `pnpm run typecheck` | `-` | `-` |
 
 
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T15:49:53.757Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T15:50:47.545Z -->
+
+
 
 
 

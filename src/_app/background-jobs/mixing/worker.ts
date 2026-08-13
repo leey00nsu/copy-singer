@@ -170,6 +170,7 @@ function mixingFailure(error: unknown, submitted: boolean) {
 
 async function releaseMixingFailure(jobId: string, error: unknown, submitted: boolean) {
   const failure = mixingFailure(error, submitted);
+  console.error("[mixing] job failed", { jobId, code: failure.code, retryable: failure.retryable, submitted, detail: failure.detail.slice(0, 500) });
   const job = await prisma.mixingJob.findUnique({
     where: { id: jobId },
     select: { attempts: true, maxAttempts: true, userId: true, song: { select: { title: true } } },
@@ -461,3 +462,4 @@ export async function runMixingWorkerOnce(owner: string, dependencies: WorkerDep
   await processClaimedMixingJob(jobId, owner, dependencies);
   return true;
 }
+

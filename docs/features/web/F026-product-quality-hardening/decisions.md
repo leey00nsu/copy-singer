@@ -120,3 +120,16 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Test/Log**: storybook 3/3 통과
 - **Consequences**: 모든 오디오 플레이어가 키보드로 seek 가능.
 
+
+
+## D026-07: 메타데이터·관찰성 감사 (2026-08-14)
+
+- **Context**: sitemap/robots/noindex/OG와 분석·믹싱 실패 관찰성을 감사.
+- **Decision**: sitemap은 public(/, /terms, /privacy)만 노출, robots는 private 경로 9개를 disallow, product/layout과 admin 전 경로에 PRIVATE_METADATA(noindex) 적용됨을 확인. OG(1200×630, /og.png)는 public에 존재. 관찰성은 두 worker의 실패 경로에 console.error({jobId, code, retryable}) 구조화 로그 추가(SENTRY_DSN 없으면 no-op, 있으면 capture로 확장 가능).
+- **Rationale**: 현행 sitemap/robots/private 메타데이터는 이미 올바르므로 코드 변경 없이 감사로 종결. 관찰성은 최소 침습으로 런타임 로그 가시성 확보.
+- **Trace**:
+  - **DONE 전 확정 시점**: sitemap/robots/private 감사, typecheck 통과.
+- **Evidence**:
+  - **Test/Log**: typecheck 통과
+- **Consequences**: noindex/OG 재발 방지, Sentry 도입 시 console.error를 captureException으로 교체.
+

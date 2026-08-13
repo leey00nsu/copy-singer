@@ -125,6 +125,7 @@ async function markSucceeded(job: VocalProfileAnalysisJobRow, profileId: string)
 
 async function releaseFailure(job: VocalProfileAnalysisJobRow, error: unknown) {
   const failure = workerError(error);
+  console.error("[vocal-analysis] job failed", { jobId: job.id, code: failure.code, retryable: failure.retryable, attempts: job.attempts, detail: failure.detail.slice(0, 500) });
   const retry = failure.retryable && job.attempts < job.maxAttempts;
   const now = new Date();
   if (retry) {
@@ -270,3 +271,4 @@ export async function runVocalProfileAnalysisWorkerOnce(
   await processClaimedVocalProfileAnalysisJob(jobId, owner, dependencies);
   return true;
 }
+
