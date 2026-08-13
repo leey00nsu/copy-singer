@@ -138,24 +138,24 @@
 
 Modal CPU 분석/공개 결과: 순위 47 `F`(confidence `0.10758179029087539`), 62 `B`(`0.08131234891181632`), 70 `G`(`0.1283483385183834`), 76 `Gm`(`0.018051874831942094`). 네 곡 모두 source·analysis·target이 READY이며 active pointer가 신규 revision을 가리킨다.
 
-- [TODO][PRD-NFR-005] T-F024-admin-song-catalog-management-06 전체 검증과 legacy JSON runtime 정리
+- [DONE][PRD-NFR-005] T-F024-admin-song-catalog-management-06 전체 검증과 legacy JSON runtime 정리
   - Date: 2026-08-13
   - Acceptance:
-    - production build, lint, TypeScript, Prisma와 전체 테스트가 통과한다.
-    - 애플리케이션 runtime에 `tj-2607-song-profiles.json` direct import와 100곡 고정 계약이 남지 않는다.
-    - Feature 문서와 실제 migration·운영 절차·검증 근거가 동기화된다.
+    - [x] production build, lint, TypeScript, Prisma와 전체 테스트가 통과한다.
+    - [x] 애플리케이션 runtime에 `tj-2607-song-profiles.json` direct import와 100곡 고정 계약이 남지 않는다.
+    - [x] Feature 문서와 실제 migration·운영 절차·검증 근거가 동기화된다.
   - Checklist:
-    - [ ] dead code와 legacy artifact validator를 정리한다.
-    - [ ] full test/check/build 및 공개 문자열·runtime import audit를 실행한다.
-    - [ ] decisions와 테스트 로그, workflow sync marker를 갱신한다.
+    - [x] dead code와 legacy artifact validator를 정리한다.
+    - [x] full test/check/build 및 공개 문자열·runtime import audit를 실행한다.
+    - [x] decisions와 테스트 로그, workflow sync marker를 갱신한다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -164,8 +164,8 @@ Modal CPU 분석/공개 결과: 순위 47 `F`(confidence `0.10758179029087539`),
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm test` | `-` | 미실행 |
-| `pnpm run lint` | `-` | 미실행 |
+| `pnpm test` | `2026-08-13` | 통과 — production build, unit/integration/UI, architecture, Storybook 48/48 files·136/136 tests 포함 전체 suite |
+| `pnpm run lint` | `2026-08-13` | 통과 |
 | `pnpm run build` | `2026-08-13` | 통과 — `/admin/songs` dynamic route 포함 production build |
 | `pnpm exec tsx --test tests/song-catalog-domain.test.ts` | `2026-08-13` | 통과 — readiness·metric contract 3/3 |
 | `node --conditions react-server --import tsx --test tests/song-catalog-db.integration.ts` | `2026-08-13` | 통과 — revision 관계·active pointer·중복 video ID DB 계약 1/1 |
@@ -186,5 +186,7 @@ Modal CPU 분석/공개 결과: 순위 47 `F`(confidence `0.10758179029087539`),
 | Modal CPU 배포 health 및 4곡 submit/poll/publish | `2026-08-13` | 통과 — 8 vCPU·16 GiB health, 4/4 SUCCEEDED·READY·PUBLISHED |
 | analyzer/mixing resource `rg` audit | `2026-08-13` | 통과 — catalog analyzer GPU 할당 0건, 곡 믹싱 `services/soulx-singer-svc/modal_app.py`만 L4 GPU 사용 |
 | Task 05 순차 회귀 검증 | `2026-08-13` | 통과 — admin 5/5, analysis queue 6/6, recommendation 33/33+DB 3/3, target/mixing 각 1/1, TypeScript·Prisma·build |
+| Task 06 legacy/runtime `rg` audit | `2026-08-13` | 통과 — `src`/`app` JSON direct import 0건, `Song.catalogOrder` 제거, legacy generate/analyze/verify command 제거 |
+| Task 06 bootstrap/migration 검증 | `2026-08-13` | 통과 — null catalog snapshot backfill migration 적용, bootstrap 2회 idempotent, DB 100/100 READY |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T18:14:25+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T18:27:23+09:00 -->

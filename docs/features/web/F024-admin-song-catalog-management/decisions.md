@@ -86,7 +86,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Commit**: `219d026` (`feat(F024-admin-song-catalog-management): 기존 100곡 bootstrap과 DB 추천 전환`)
   - **PR**: -
   - **Test/Log**: bootstrap parity 1/1, recommendation 33/33, recommendation DB 3/3, catalog target 1/1, mixing queue 1/1, TypeScript·Prisma validation
-- **Consequences**: 초기 환경은 migration 후 `catalog:bootstrap`을 실행해야 한다. 기존 `Song.catalogOrder` 등 transitional column과 legacy artifact pipeline 코드는 Task 06에서 제거한다.
+- **Consequences**: 초기 환경은 migration 후 `catalog:bootstrap`을 실행해야 한다. `Song.catalogOrder`와 legacy artifact 생성·분석 pipeline은 Task 06에서 제거됐고 JSON은 bootstrap/fixture 입력으로만 남는다.
 
 ## D005: 곡 분석을 Modal 비동기 작업으로 분리 (2026-08-13)
 
@@ -151,3 +151,18 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**:
   - **Test/Log**: test: Modal catalog analyzer unittest; health compute contract; 4곡 CPU analysis run
 - **Consequences**: 카탈로그 분석은 GPU 비용을 발생시키지 않지만 곡 길이와 Modal CPU 가용량에 따라 처리시간이 늘어날 수 있다. 분석과 믹싱의 비용·autoscaling·장애 경계가 코드와 배포 단위로 명확히 분리된다.
+
+## D009: 카탈로그 순위 SSOT와 legacy artifact 축소 (2026-08-13)
+
+- **Context**: DB runtime 전환 후에도 Song.catalogOrder와 과거 JSON 생성·검증·로컬 분석 명령이 남아 CatalogEntry.position과 중복되고 새 관리자 흐름을 우회했다.
+- **Constraints**: 기존 `RecommendationItem.catalogPosition` null row를 보존 가능한 값으로 backfill해야 한다. 초기 TJ 100곡의 재현 가능한 bootstrap 입력과 점수 회귀 fixture는 계속 필요하며, 사용자-visible `catalogOrder` 응답 계약은 유지해야 한다.
+- **Options**: 중복 `Song.catalogOrder` 유지, JSON pipeline 전체 유지하되 runtime에서만 미사용, `CatalogEntry.position`/recommendation snapshot 단일화와 JSON bootstrap/fixture 축소.
+- **Decision**: Song.catalogOrder를 제거하고 CatalogEntry.position을 runtime 순위 SSOT로 사용하며 RecommendationItem.catalogPosition을 필수 snapshot으로 만든다. JSON은 bootstrap과 테스트 fixture 입력만 유지하고 과거 생성·검증·분석 스크립트와 package command를 제거한다.
+- **Rationale**: 중복 순위 drift와 배포 artifact를 runtime처럼 다루는 경로를 제거하면서 과거 추천·믹싱 표시에는 immutable catalogPosition snapshot 또는 현재 CatalogEntry position을 사용한다.
+- **Trace**:
+  - **At DOING start**: runtime import audit에서 `src`의 JSON direct import는 없었지만 schema·seed·일부 조회가 `Song.catalogOrder`를 사용하고 과거 artifact scripts가 package command로 남아 있음을 확인했다.
+  - **Before DONE**: migration이 기존 null recommendation snapshot에서 처음 실패해 `Song.catalogOrder` 기반 backfill을 선행하도록 보완했다. migration 적용, bootstrap 2회, DB 100/100 READY, 전체 `pnpm test`와 lint를 통과했고 bootstrap JSON도 신규 네 source/analysis revision으로 갱신했다.
+  - **Post-merge check**: Update this line after merge when applicable.
+- **Evidence**:
+  - **Test/Log**: test: pnpm test; pnpm run lint; catalog bootstrap 2회 및 DB 100/100 READY; runtime JSON/direct import rg audit
+- **Consequences**: 카탈로그 순위 변경은 `CatalogEntry.position`만 갱신하면 되고 신규 RecommendationItem은 항상 당시 위치를 저장한다. 과거 JSON 생성·URL 다운로드·로컬 분석 명령은 더 이상 지원하지 않으며 신규 분석은 관리자 UI와 Modal CPU job만 사용한다.
