@@ -96,13 +96,24 @@
     - [x] OG SVG와 generation pipeline에 repository font를 embed하고 요청한 중앙형 composition을 구현한다.
     - [x] asset/metadata/Storybook test, 정적 검사, build, production head와 OG visual QA를 수행한다.
 
+- [DOING][PRD-FR-053] T-F023-waveform-brand-icon-04 비상업적 운영 및 음원 이용 고지 정리
+  - Date: 2026-08-13
+  - Acceptance:
+    - 공개 전 경고와 확인되지 않은 운영자 연락처 placeholder를 사용자 화면에서 제거한다.
+    - 이용약관은 Copysinger의 비상업적 토이 프로젝트 성격과 원본 음원 미제공·비판매·비재배포·비학습 원칙을 고지한다.
+    - 개인정보 처리방침은 유지하고 존재하지 않는 이메일이나 문의 기능을 안내하지 않는다.
+  - Checklist:
+    - [ ] 법률 문서 공통 layout의 draft 상태와 경고 배너를 제거한다.
+    - [ ] 이용약관과 개인정보 처리방침의 공개 전 placeholder를 확정된 현재 운영 정책으로 교체한다.
+    - [ ] 관련 Storybook test와 정적 검사를 실행하고 문서를 동기화한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 

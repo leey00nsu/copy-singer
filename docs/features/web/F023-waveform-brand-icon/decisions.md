@@ -65,3 +65,15 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Commit**: `630810c` (`feat(F023-waveform-brand-icon): Copysinger Paperlogy wordmark 적용`)
   - **Test/Log**: `pnpm run test:brand-icons` 8/8, Storybook 13/13, `pnpm run check`, `pnpm run build`, production browser metadata/font audit, deterministic font/OG SHA-256 비교
 - **Consequences**: repository에는 사용자가 제공한 TTF가 포함된다. 제공 폴더에서 별도 license 문서는 발견되지 않았으므로 배포 권한 관리는 제공자의 font 사용 조건을 따른다.
+
+## D004: 비상업적 운영과 음원 고지 범위 (2026-08-13)
+
+- **Context**: 사용자는 Copysinger를 무료·비상업적 토이 프로젝트로 운영하며 이메일을 공개하지 않고, 추후 서비스 내 문의 기능을 별도 도입하기로 했다. 생성 결과의 허용 범위는 이번 문서에서 추가로 제한하지 않는다.
+- **Constraints**: 개인정보 처리방침은 유지해야 하며 존재하지 않는 이메일·문의 기능이나 확인되지 않은 운영자·외부 처리 지역을 사실처럼 기재할 수 없다. 비상업성 고지는 음원 권리 이용허락을 대신한다고 표현해서는 안 된다.
+- **Options**: 구현 중 확정
+- **Decision**: 구현 중 확정
+- **Rationale**: 구현 중 확정
+- **Trace**:
+  - **DOING 시작 시점**: 공통 draft 경고와 placeholder를 제거하고, 약관에는 현재 확정된 비상업적 운영·원본 음원 미제공·판매/광고/재배포/별도 AI 학습 미사용 사실만 명시한다. 개인정보 처리방침은 실제 화면상 삭제 기능을 권리 행사 방법으로 안내한다.
+- **Evidence**:
+  - **Test/Log**: 구현 후 기록
