@@ -32,5 +32,6 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 최초 16px raster test가 antialiasing으로 중앙 행의 막대를 한 덩어리로 감지했고, `crispEdges` 적용 후 7개 occupied run과 사이 투명 column을 확인했다. 16·24·32·64·180px contact sheet와 Storybook header/login에서 light/dark 대비 및 24×24 layout을 확인했다.
   - **머지 후 확인**: 실제 결과/영향
 - **Evidence**:
+  - **Commit**: `0c64f22` (`feat(F023-waveform-brand-icon): 벡터 파형 app mark와 파생 아이콘 적용`)
   - **Test/Log**: `pnpm run test:brand-icons` 4/4, 관련 Storybook 9/9, `pnpm run check`, `pnpm run build`, `/tmp/copy-singer-waveform-icon-contact-sheet.png`
 - **Consequences**: 기존 AI bitmap master는 제거되고 SVG와 두 PNG의 색상은 light/dark theme에서 동일하다. 색상 변경 시 SVG stop을 갱신하고 generation script를 다시 실행해야 하며 asset test와 hash 비교가 동기화를 검증한다.

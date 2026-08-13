@@ -94,4 +94,4 @@
 | `pnpm run brand:icons` + SHA-256 비교 | `2026-08-13` | 통과 — favicon `e97d6d4…`, apple icon `ef15dcec…` 재생성 전후 동일 |
 | Storybook browser QA | `2026-08-13` | 통과 — ProductShell/LoginScreen에서 24×24 mark, 접근성 계약, 정렬, console error 0; 16·24·32·64·180px light/dark contact sheet 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T13:57:30+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T13:58:35+09:00 -->
