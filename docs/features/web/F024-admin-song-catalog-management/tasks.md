@@ -84,17 +84,17 @@
     - [x] JSON runtime import와 `RECOMMENDATION_CATALOG_SIZE` 의존을 제거한다.
     - [x] parity 및 관련 회귀 테스트를 실행한다.
 
-- [TODO][PRD-FR-059][PRD-NFR-009] T-F024-admin-song-catalog-management-03 관리자 곡 API와 durable 분석 작업 구현
+- [DONE][PRD-FR-059][PRD-NFR-009] T-F024-admin-song-catalog-management-03 관리자 곡 API와 durable 분석 작업 구현
   - Date: 2026-08-13
   - Acceptance:
-    - 관리자만 곡 등록·source 교체·target 업로드·분석 재시도·공개·보관 mutation을 실행할 수 있다.
-    - 장시간 분석은 durable job으로 처리되고 재시작·중복 claim·실패 retry 경계를 검증한다.
-    - 공개 transaction은 READY source analysis와 일치하는 READY target만 활성화한다.
+    - [x] 관리자만 곡 등록·source 교체·target 업로드·분석 재시도·공개·보관 mutation을 실행할 수 있다.
+    - [x] 장시간 분석은 durable job으로 처리되고 재시작·중복 claim·실패 retry 경계를 검증한다.
+    - [x] 공개 transaction은 READY source analysis와 일치하는 READY target만 활성화한다.
   - Checklist:
-    - [ ] 관리자 입력 schema와 server service/API route를 구현한다.
-    - [ ] SongAnalysisJob worker와 analyzer adapter를 구현한다.
-    - [ ] target multipart upload와 superseded asset cleanup 정책을 연결한다.
-    - [ ] 권한·idempotency·queue·publish 통합 테스트를 작성한다.
+    - [x] 관리자 입력 schema와 server service/API route를 구현한다.
+    - [x] SongAnalysisJob worker와 analyzer adapter를 구현한다.
+    - [x] target multipart upload와 superseded asset cleanup 정책을 연결한다.
+    - [x] 권한·idempotency·queue·publish 통합 테스트를 작성한다.
 
 - [TODO][PRD-US-028][PRD-FR-059] T-F024-admin-song-catalog-management-04 관리자 카탈로그 UI 구현
   - Date: 2026-08-13
@@ -157,5 +157,8 @@
 | `pnpm run test:recommendation && pnpm run test:recommendation:db` | `2026-08-13` | 통과 — 추천 unit/UI 33/33, DB persistence/synthesis 3/3 |
 | `pnpm run test:catalog-targets && pnpm run test:mixing:db` | `2026-08-13` | 통과 — target revision 1/1, mixing queue 1/1 |
 | runtime JSON/고정 크기 `rg` audit | `2026-08-13` | 통과 — `src`의 artifact direct import·`RECOMMENDATION_CATALOG_SIZE` 0건 |
+| `pnpm run test:song-analysis-queue` | `2026-08-13` | 통과 — 관리자 mutation/publish와 durable claim/retry 4/4 |
+| `pnpm run test:admin && pnpm run test:architecture-boundaries && pnpm run test:process-scripts` | `2026-08-13` | 통과 — admin 2/2, architecture 4/4, process 5/5 |
+| Task 03 targeted Biome·ESLint·TypeScript | `2026-08-13` | 통과 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T17:17:00+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T18:02:00+09:00 -->

@@ -46,12 +46,12 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 긴 작업을 request timeout과 분리하고 기존 READY revision을 유지한 채 새 revision을 준비할 수 있다. 명시 공개는 잘못된 영상·분석의 자동 노출을 막는다.
 - **Trace**:
   - **DOING 시작 시점**: 기존 vocal/mixing queue의 claim·retry 패턴을 재사용하되 곡 분석 전용 상태와 payload로 분리하는 방향을 선택했다.
-  - **DONE 전 확정 시점**: -
+  - **DONE 전 확정 시점**: 관리자 allowlist route와 Zod identity 검증을 모든 mutation 앞에 두고, job claim에는 DB lease·heartbeat·bounded retry를 적용했다. 새 source는 DRAFT로 유지하며 분석과 target이 같은 source revision에 READY일 때만 publish transaction이 active pointer와 catalog entry를 전환하도록 검증했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: -
+  - **Commit**: `ce2a47a` (`feat(F024-admin-song-catalog-management): 관리자 곡 API와 durable 분석 작업 구현`)
   - **PR**: -
-  - **Test/Log**: -
+  - **Test/Log**: song analysis/admin catalog integration 4/4, 기존 admin 2/2, architecture 4/4, process supervisor 5/5, targeted Biome·ESLint·TypeScript
 - **Consequences**: 관리자는 분석 완료와 target 준비 후 별도 공개 action을 수행한다. 새 revision 준비 중에도 기존 공개 곡은 계속 추천 가능하다.
 
 ## D003: 교체 음원 삭제 순서 (2026-08-13)
