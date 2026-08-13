@@ -78,20 +78,20 @@
     - [x] `app/(product)/profile/loading.tsx` 등 adapter 3개 추가
     - [x] Storybook/a11y 확인
 
-- [TODO][PRD-FR-051] T-F025-skeleton-ui-audit-03 VocalProfileDetail/Admin 계열 전용 스켈레톤과 loading 경계 추가
+- [DONE][PRD-FR-051] T-F025-skeleton-ui-audit-03 VocalProfileDetail/Admin 계열 전용 스켈레톤과 loading 경계 추가
   - Date: 2026-08-14
   - Acceptance:
     - `/vocal-profiles/[id]`, `/admin`, `/admin/songs`, `/admin/custom-mixing`이 전용 스켈레톤과 `app/**/loading.tsx` adapter를 가진다
     - Admin 스켈레톤은 metric band·filter·테이블 구조를 근사한다
     - 실제 페이지와 같은 gutter와 spacing을 사용한다
   - Checklist:
-    - [ ] `src/_pages/vocal-profile-detail/ui/vocal-profile-detail-loading.tsx` 신규
-    - [ ] `src/_pages/admin/ui/admin-loading.tsx` 신규
-    - [ ] `src/_pages/admin-song-catalog/ui/admin-song-catalog-loading.tsx` 신규
-    - [ ] `src/_pages/admin-custom-mixing/ui/admin-custom-mixing-loading.tsx` 신규
-    - [ ] `app/(product)/vocal-profiles/[id]/loading.tsx` 등 adapter 추가
-    - [ ] 각 index.server.ts export 확인
-    - [ ] Storybook/a11y 확인
+    - [x] `src/_pages/vocal-profile-detail/ui/vocal-profile-detail-loading.tsx` 신규
+    - [x] `src/_pages/admin/ui/admin-loading.tsx` 신규
+    - [x] `src/_pages/admin-song-catalog/ui/admin-song-catalog-loading.tsx` 신규
+    - [x] `src/_pages/admin-custom-mixing/ui/admin-custom-mixing-loading.tsx` 신규
+    - [x] `app/(product)/vocal-profiles/[id]/loading.tsx` 등 adapter 추가
+    - [x] 각 index.server.ts export 확인
+    - [x] Storybook/a11y 확인
 
 - [TODO][PRD-FR-045] T-F025-skeleton-ui-audit-04 Library/MixingDetail 스켈레톤 정합 및 공통 폴백 정리
   - Date: 2026-08-14
@@ -137,6 +137,7 @@
 | --- | --- | --- |
 | `pnpm run check` | `-` | `-` |
 | `pnpm run test:storybook --run src/shared/ui/page-skeleton/page-skeleton.stories.tsx ...` | `-` | `-` |
+
 
 
 
