@@ -62,15 +62,15 @@
     - [x] 5종 타입 시각 검증 (스토리북 또는 브라우저)
     - [x] 다크모드 대비 확인
 
-- [TODO][PRD-FR-051] T-F027-notification-brand-color-02 알림 모달 호버 대비 확보
+- [DONE][PRD-FR-051] T-F027-notification-brand-color-02 알림 모달 호버 대비 확보
   - Date: 2026-08-14
   - Acceptance:
     - 모달 아이템 호버 시 배경과 아이콘 배지가 명확히 구분된다
     - 키보드 focus-visible에서도 같은 대비가 유지된다
   - Checklist:
-    - [ ] `notification-bell.tsx` 호버 배경 대비 수정
-    - [ ] `/notifications` 목록 hover와 톤 일치 확인
-    - [ ] 브라우저 호버·포커스 검증
+    - [x] `notification-bell.tsx` 호버 배경 대비 수정 — T01 컬러 배지로 대비 확보 (배지 컬러 유지로 해결)
+    - [x] `/notifications` 목록 hover와 톤 일치 확인
+    - [x] 브라우저 호버·포커스 검증
 
 - [TODO][PRD-FR-051] T-F027-notification-brand-color-03 상태 칩 선택적 브랜드 컬러 적용
   - Date: 2026-08-14
@@ -105,5 +105,7 @@
 
 
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T16:37:48.128Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T16:37:58.144Z -->
+
+
 
