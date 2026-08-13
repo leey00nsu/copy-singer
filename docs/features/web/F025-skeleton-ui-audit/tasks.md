@@ -93,17 +93,17 @@
     - [x] 각 index.server.ts export 확인
     - [x] Storybook/a11y 확인
 
-- [TODO][PRD-FR-045] T-F025-skeleton-ui-audit-04 Library/MixingDetail 스켈레톤 정합 및 공통 폴백 정리
+- [DONE][PRD-FR-045] T-F025-skeleton-ui-audit-04 Library/MixingDetail 스켈레톤 정합 및 공통 폴백 정리
   - Date: 2026-08-14
   - Acceptance:
     - `LibraryLoading`과 `MixingDetailLoading`이 실제 페이지의 ProductPageIntro·metric band·waveform slot 간격과 radius를 재점검해 보정된다
     - `PageSkeleton`과 `ProductRouteLoading`은 unknown route 폴백으로 유지되고 제품 route에서 남용되지 않는다
     - 모든 스켈레톤이 `animate-pulse bg-muted motion-reduce:animate-none`와 a11y 레이블을 유지한다
   - Checklist:
-    - [ ] `src/_pages/library/ui/library-loading.tsx` 보정(필요 시)
-    - [ ] `src/_pages/mixing-detail/ui/mixing-detail-loading.tsx` 보정(필요 시)
-    - [ ] `src/shared/ui/page-skeleton` / `src/_app/layout/product-route-loading.tsx` 재사용 규칙 확인
-    - [ ] 전체 360/768/1280 수동 점검
+    - [x] `src/_pages/library/ui/library-loading.tsx` 보정(필요 시)
+    - [x] `src/_pages/mixing-detail/ui/mixing-detail-loading.tsx` 보정(필요 시)
+    - [x] `src/shared/ui/page-skeleton` / `src/_app/layout/product-route-loading.tsx` 재사용 규칙 확인
+    - [x] 전체 360/768/1280 수동 점검
 
 - [TODO][NON-PRD] T-F025-skeleton-ui-audit-05 Storybook·품질 게이트·문서 동기화
   - Date: 2026-08-14
@@ -137,6 +137,7 @@
 | --- | --- | --- |
 | `pnpm run check` | `-` | `-` |
 | `pnpm run test:storybook --run src/shared/ui/page-skeleton/page-skeleton.stories.tsx ...` | `-` | `-` |
+
 
 
 
