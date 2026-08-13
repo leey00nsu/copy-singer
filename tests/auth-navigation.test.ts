@@ -94,10 +94,11 @@ test("public legal pages and consent copy expose real document links", () => {
   assert.match(terms, /음성·콘텐츠에 대한 권리와 책임/);
   assert.match(terms, /AI 결과의 한계/);
   assert.match(privacy, /Google 계정/);
-  assert.match(privacy, /Leemage/);
-  assert.match(privacy, /Modal \/ SoulX/);
-  assert.match(privacy, /국외 이전 확인사항/);
-  assert.match(privacy, /정식 공개 전 개인정보 보호책임자/);
+  assert.match(privacy, /계정정보/);
+  assert.match(privacy, /추천·믹싱정보/);
+  assert.match(privacy, /파기 절차와 방법/);
+  assert.doesNotMatch(privacy, /PostgreSQL|SoulX|Modal|Leemage/);
+  assert.doesNotMatch(privacy, /정식 공개 전|입력 필요/);
 });
 
 test("product shell keeps keyboard, touch-target, and navigation labels explicit", () => {

@@ -106,6 +106,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **DOING 시작 시점**: 처리 항목은 관련성 있는 다섯 범주로 묶고, 파기는 지체 없는 삭제·복구 곤란 방식·법정 보존 분리 원칙으로, 안전성은 인증·접근통제·credential 보호·관리자 제한·삭제 관리 원칙으로 축약한다.
   - **DONE 시점**: 2·8·10절을 축약하고 sample rate, descriptor, 대표 구간, 외부 작업 ID, 재시도, 삭제 API, cleanup job, lease와 idempotency 표현이 처리방침에 남지 않았음을 확인했다.
+  - **머지 후 확인**: 로컬 병합 후 전체 검증에서 이전 업체명·공개 전 문구를 기대하던 법률 페이지 계약 테스트를 발견해 현재 공개 정책 기준으로 갱신했다. 재실행한 `pnpm test` 전체가 통과했다.
 - **Evidence**:
   - **Commit**: `6ad0ee6` (`feat(F023-waveform-brand-icon): 개인정보 처리방침 간소화`)
   - **Test/Log**: legal Storybook 2/2, `pnpm run check`, `pnpm run build`, 과도한 기술 표현 `rg` audit

@@ -154,5 +154,6 @@
 | `pnpm exec vitest --project storybook src/_pages/legal/ui/legal-pages.stories.tsx --run` | `2026-08-13` | 통과 — Terms/Privacy 2/2, 개인정보 다섯 범주와 비상업·원본 음원 미제공 고지 확인 |
 | 공개 문자열 provider-name audit | `2026-08-13` | 통과 — legal 및 `_pages`에서 PostgreSQL/SoulX/Modal/Leemage 노출 0건, 사용자 오류·API 설명의 기존 고유명 문구 0건 |
 | `pnpm run test:vocal-profile-analyzer && pnpm run test:voice-scan && pnpm run test:mixing:ui && pnpm run test:recommendation` | `2026-08-13` | 통과 — analyzer 8, voice scan 12, mixing UI 8, recommendation 33; 합계 61/61 |
+| `pnpm test` | `2026-08-13` | 통과 — production build, 전체 Node 테스트와 Storybook 47 files·130 tests; 공개 개인정보 처리방침 계약 포함 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T14:58:45+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T15:38:00+09:00 -->
