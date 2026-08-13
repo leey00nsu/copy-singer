@@ -25,6 +25,14 @@ export default defineConfig([
     },
   },
   {
+    files: ["./src/shared/ui/skeleton/skeletons.stories.tsx"],
+    rules: {
+      // Skeletons story imports page loading UIs for visual regression. It's a test fixture, not production layer coupling.
+      "fsd/no-public-api-sidestep": "off",
+      "fsd/forbidden-imports": "off",
+    },
+  },
+  {
     files: ["./src/features/create-mixing/api/mixing-queue.ts"],
     rules: {
       // create-mixing queue validates recommendation items via shared contract.
@@ -56,5 +64,6 @@ export default defineConfig([
     },
   },
 ]);
+
 
 
