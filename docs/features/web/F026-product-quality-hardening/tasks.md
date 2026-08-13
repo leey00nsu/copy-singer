@@ -97,7 +97,7 @@
     - [x] loading.tsx 폴백 동작 확인
     - [x] revision key 유지 검증
 
-- [TODO][PRD-FR-051] T-F026-product-quality-hardening-05 접근성 심화 감사·수정
+- [DONE][PRD-FR-051] T-F026-product-quality-hardening-05 접근성 심화 감사·수정
   - Date: 2026-08-14
   - Acceptance:
     - 키보드 전체 플로우(Profile→Library→Recommendations→SongDetail→MixingDetail)가 Tab/Shift+Tab/Enter/Escape로 100% 도달한다
@@ -105,10 +105,10 @@
     - waveform 키보드 seek가 전 경로에서 동일 계약으로 동작한다
     - axe critical 0 유지
   - Checklist:
-    - [ ] 키보드 전체 순회 체크리스트 감사·수정
-    - [ ] aria-busy/live 중복 제거 확인
-    - [ ] waveform 키보드 seek 일관성 확인
-    - [ ] Storybook a11y addon critical 0 확인
+    - [x] 키보드 전체 순회 체크리스트 감사·수정
+    - [x] aria-busy/live 중복 제거 확인
+    - [x] waveform 키보드 seek 일관성 확인
+    - [x] Storybook a11y addon critical 0 확인
 
 - [TODO][PRD-FR-051] T-F026-product-quality-hardening-06 메타데이터·관찰성 정리
   - Date: 2026-08-14
@@ -144,7 +144,9 @@
 
 
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T15:49:10.849Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T15:49:53.757Z -->
+
+
 
 
 

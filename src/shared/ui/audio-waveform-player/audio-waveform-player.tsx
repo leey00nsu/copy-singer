@@ -171,12 +171,36 @@ function AudioWaveformPlayerInstance({
           >
             <div
               aria-busy={!isReady}
-              aria-label={`${label} 파형. 클릭하거나 드래그하여 재생 위치를 이동할 수 있습니다.`}
+              aria-label={`${label} 파형. 클릭하거나 드래그하여 재생 위치를 이동할 수 있습니다. 키보드로 좌우 화살표는 5초 이동, Home/End는 처음/끝으로 이동합니다.`}
+              aria-valuemax={Math.round(duration)}
+              aria-valuemin={0}
+              aria-valuenow={Math.round(currentTime)}
+              aria-valuetext={`${formatPlaybackTime(currentTime)} / ${formatPlaybackTime(Math.round(duration))}`}
               className="audio-waveform-canvas"
               data-audio-waveform="brand"
               data-waveform-progress-gradient="violet-blue-pink"
+              onKeyDown={(event) => {
+                if (!wavesurfer || !isReady) return;
+                if (event.key === "ArrowLeft") {
+                  event.preventDefault();
+                  wavesurfer.setTime(Math.max(0, currentTime - 5));
+                } else if (event.key === "ArrowRight") {
+                  event.preventDefault();
+                  wavesurfer.setTime(Math.min(duration, currentTime + 5));
+                } else if (event.key === "Home") {
+                  event.preventDefault();
+                  wavesurfer.setTime(0);
+                } else if (event.key === "End") {
+                  event.preventDefault();
+                  wavesurfer.setTime(duration);
+                } else if (event.key === " ") {
+                  event.preventDefault();
+                  togglePlayback();
+                }
+              }}
               ref={containerRef}
-              role="img"
+              role="slider"
+              tabIndex={isReady ? 0 : -1}
             />
             <div aria-hidden="true" className="audio-waveform-skeleton" data-audio-waveform-skeleton="true" />
             {!isReady ? (
@@ -250,3 +274,4 @@ function AudioWaveformPlayerInstance({
     </div>
   );
 }
+

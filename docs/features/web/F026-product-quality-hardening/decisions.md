@@ -107,3 +107,16 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Test/Log**: typecheck 통과, loading.tsx re-export 확인
 - **Consequences**: 초기 로드에서 불필요한 네트워크 1회 감소. 필요 시 HydrationBoundary로 추가 개선 가능.
 
+
+
+## D026-06: 접근성 심화 — waveform 키보드 seek (2026-08-14)
+
+- **Context**: AudioWaveformPlayer는 마우스 클릭/드래그만 지원하고 role=img에 키보드 seek가 없었다.
+- **Decision**: role=slider + tabIndex + aria-valuenow/max/min/text + onKeyDown(ArrowLeft/Right 5초, Home/End, Space 토글) 추가. Storybook role을 slider로 갱신.
+- **Rationale**: 전 오디오 경로에서 동일한 키보드 계약을 보장하고, 스크린리더에 현재 위치를 전달한다.
+- **Trace**:
+  - **DONE 전 확정 시점**: typecheck 통과, audio-waveform-player stories 3/3 통과.
+- **Evidence**:
+  - **Test/Log**: storybook 3/3 통과
+- **Consequences**: 모든 오디오 플레이어가 키보드로 seek 가능.
+

@@ -27,7 +27,7 @@ export const NetworkIndependent: Story = {
         "true",
       ),
     );
-    const waveform = canvas.getByRole("img", { name: /테스트 보컬 파형/ });
+    const waveform = canvas.getByRole("slider", { name: /테스트 보컬 파형/ });
     await waitFor(() => expect(waveform).toBeVisible());
     await expect(waveform).toHaveAttribute("data-audio-waveform", "brand");
     await expect(waveform).toHaveAttribute("data-waveform-progress-gradient", "violet-blue-pink");
@@ -46,7 +46,7 @@ export const Loading: Story = {
   args: { src: "" },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const waveform = canvas.getByRole("img", { name: /테스트 보컬 파형/ });
+    const waveform = canvas.getByRole("slider", { name: /테스트 보컬 파형/ });
     const skeleton = canvasElement.querySelector<HTMLElement>("[data-audio-waveform-skeleton]");
     await expect(waveform.closest("[data-audio-waveform-ready]")).toHaveAttribute("data-audio-waveform-ready", "false");
     await expect(canvas.getByRole("status")).toHaveTextContent("테스트 보컬 파형 불러오는 중");
@@ -81,3 +81,4 @@ export const ReducedMotionLoading: Story = {
     await expect(getComputedStyle(skeleton as HTMLElement, "::before").animationName).toBe("none");
   },
 };
+
