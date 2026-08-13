@@ -74,6 +74,7 @@ Google OAuth 로그인
 - **PRD-US-025**: 사용자는 생성 순서를 반영한 이름과 서로 구분되는 커버로 보컬 프로필을 식별하고, 필요하면 이름을 직접 변경할 수 있다.
 - **PRD-US-026**: 사용자는 추천 목록과 곡 상세에서 추천의 근거가 된 원본 YouTube 영상을 페이지를 벗어나지 않고 재생할 수 있다.
 - **PRD-US-027**: 사용자는 다른 화면을 보고 있거나 나중에 다시 접속해도 티켓 지급, 보컬 프로필 분석과 AI 믹싱의 완료·최종 실패를 헤더 알림과 알림 이력에서 확인하고 관련 화면으로 이동할 수 있다.
+- **PRD-US-028**: 관리자는 관리자 화면에서 곡과 영상 출처를 등록·교체하고 분석 및 믹싱 target 준비 상태를 확인·재시도한 뒤 준비된 곡만 추천 카탈로그에 공개할 수 있다.
 
 ## 기능 요구사항
 
@@ -93,9 +94,10 @@ Google OAuth 로그인
 
 ### 곡 카탈로그와 분석
 
-- **PRD-FR-005**: 곡 메타데이터는 제목, 아티스트, 원키와 카탈로그 순서를 포함하고, 곡 보컬 프로필은 배포 가능한 versioned JSON artifact로 관리해야 한다.
+- **PRD-FR-005**: 곡, 출처 revision, 분석 revision과 카탈로그 소속은 PostgreSQL을 런타임 SSOT로 관리해야 한다. 곡 분석 결과는 사용한 출처와 pipeline contract를 추적할 수 있어야 하며 JSON은 초기 적재·검증·export 용도로만 사용할 수 있다.
 - **PRD-FR-006**: 곡 보컬 프로필은 사용자 프로필과 같은 pitch 통계 단위와 분석 버전을 사용해야 한다.
-- **PRD-FR-007**: 추후 제공될 100곡 목록을 반복 실행 가능한 seed/import 방식으로 적재할 수 있어야 한다.
+- **PRD-FR-007**: 초기 100곡 목록과 분석 결과를 반복 실행 가능한 bootstrap 방식으로 DB에 적재할 수 있어야 하며, 이후 관리자 변경은 애플리케이션 재배포나 JSON 수정을 요구하지 않아야 한다.
+- **PRD-FR-059**: 관리자 곡 관리는 서버 관리자 권한을 검증하고 제목·아티스트·원키·정규화된 YouTube 출처와 target audio를 등록할 수 있어야 한다. 신규 또는 교체 출처는 별도 revision과 분석 작업으로 처리하고, 분석과 target이 모두 준비되기 전에는 추천에 공개하지 않으며 실패 원인과 제한된 재시도 동작을 제공해야 한다.
 
 ### 적합도와 추천
 
@@ -166,13 +168,14 @@ Google OAuth 로그인
 - **PRD-DATA-003**: 로컬 개발용 PostgreSQL은 사용자가 실행하는 `docker compose up`으로 시작할 수 있어야 한다.
 - **PRD-DATA-004**: 오디오 바이너리는 PostgreSQL에 직접 넣지 않고 파일 참조와 메타데이터만 저장한다.
 - **PRD-DATA-005**: 분석 결과의 전체 원시 frame 배열은 저장하지 않는다. UI 시각화에 필요한 음정 histogram과 크기가 제한된 다운샘플 피치 series만 집계 descriptor로 저장할 수 있다.
-- **PRD-DATA-006**: 카탈로그 분석용 임시 다운로드와 분리 stem은 프로젝트 저장소나 영구 볼륨에 보관하지 않고 작업별 OS 임시 디렉터리에서 처리한다. 별도로 사용 권한을 확보한 AI 믹싱 target만 Git 비추적 `tmp/catalog-targets` staging을 거쳐 Leemage에 장기 저장할 수 있으며, PostgreSQL에는 target asset의 외부 파일 참조·SHA-256·sourceVideoId와 Song 연결만 저장한다. 출처 링크, 집계 분석값과 도구 버전은 배포 가능한 versioned JSON artifact에 유지한다.
+- **PRD-DATA-006**: 카탈로그 분석용 임시 다운로드와 분리 stem은 프로젝트 저장소나 영구 볼륨에 보관하지 않고 작업별 OS 임시 디렉터리에서 처리한다. 별도로 사용 권한을 확보한 AI 믹싱 target만 Git 비추적 local staging 또는 관리자 업로드를 거쳐 외부 저장소에 장기 저장할 수 있으며, PostgreSQL에는 target asset 참조·SHA-256·source revision 연결과 집계 분석값·도구 버전을 저장한다.
 - **PRD-DATA-007**: PostgreSQL에는 믹싱 작업의 외부 job ID·상태·오류와 Leemage 파일 참조만 저장하고 원곡·reference·결과 오디오 바이너리는 저장하지 않는다.
 - **PRD-DATA-008**: Better Auth 사용자·세션·계정·검증 스키마와 제품 사용자 소유 관계는 Prisma schema와 migration으로 관리한다.
 - **PRD-DATA-009**: 티켓 원장은 append-only로 유지하고 현재 잔액은 원장과 일치하도록 DB 제약 및 트랜잭션으로 보호한다.
 - **PRD-DATA-010**: 사용자 레퍼런스, 믹싱 결과와 사용 권한이 확인된 카탈로그 mixing target은 Leemage에 저장한다. 카탈로그 target의 local staging은 Git에서 제외하고, 그 외 분석용 다운로드·분리 stem·작업 중간 파일은 영구 저장하지 않는다.
 - **PRD-DATA-011**: 사용자 보컬 프로필의 표시 이름과 사용자별 기본 이름 순번은 Prisma schema와 migration으로 관리해야 한다. 기존 사용자 프로필은 사용자별 생성 시각과 ID의 결정적 순서로 backfill하고 곡 분석용 프로필에는 사용자 표시 이름을 적용하지 않아야 한다.
 - **PRD-DATA-012**: 인앱 알림은 사용자 소유 PostgreSQL row로 영속 저장하고 type, 사용자용 제목·메시지, 내부 경로, source identity, dedupe key, 읽은 시각과 생성 시각을 포함해야 한다. 같은 terminal event의 worker 재실행과 ticket idempotency 재시도는 중복 알림을 만들지 않아야 하며 다른 사용자의 알림을 조회·수정할 수 없어야 한다.
+- **PRD-DATA-013**: 곡 identity와 카탈로그 순위는 분리하고, 영상 출처와 곡 분석 결과는 교체 시 덮어쓰지 않는 revision으로 저장해야 한다. 추천 실행은 사용한 곡 분석 revision을 참조해 이후 관리자 변경과 무관하게 당시 결과를 추적할 수 있어야 한다.
 
 ## 비기능 요구사항
 
