@@ -80,3 +80,15 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Commit**: `7c8e6ad` (`feat(F023-waveform-brand-icon): 비상업적 법률 고지 정리`)
   - **Test/Log**: legal Storybook 2/2, `pnpm run check`, `pnpm run build`, placeholder `rg` audit
 - **Consequences**: 문의 이메일이나 내부 문의 기능은 현재 노출하지 않는다. 문의 기능과 계정 전체 삭제가 구현되면 개인정보 처리방침의 권리 행사 방법과 개인정보 관리 항목을 함께 갱신해야 한다.
+
+## D005: 공개 화면의 외부 기술명 범위 (2026-08-13)
+
+- **Context**: 사용자는 공개 개인정보 처리방침에서 Google만 남기고 PostgreSQL, SoulX, Modal, Leemage 명칭이 사용자에게 노출되지 않도록 프로젝트 전수검사를 요청했다.
+- **Constraints**: 내부 database provider, API adapter, 환경변수, service directory와 개발 문서는 실제 기능·운영 계약이므로 제거하거나 rename하면 안 된다. 사용자-visible copy와 내부 구현 식별자를 구분해야 한다.
+- **Options**: 구현 중 확정
+- **Decision**: 구현 중 확정
+- **Rationale**: 구현 중 확정
+- **Trace**:
+  - **DOING 시작 시점**: 법률 문서와 `src`의 렌더링 문구·사용자 오류 메시지는 Google 외 고유 기술명을 중립적 기능명으로 바꾸고, 내부 코드·환경변수·architecture 문서는 유지한 뒤 잔존 항목을 분류한다.
+- **Evidence**:
+  - **Test/Log**: 구현 후 기록
