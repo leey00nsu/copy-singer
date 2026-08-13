@@ -1,4 +1,4 @@
-import { Activity, AlertTriangle, ChevronLeft, ChevronRight, Search, Ticket, Users } from "lucide-react";
+import { Activity, AlertTriangle, ChevronLeft, ChevronRight, Music2, Search, Ticket, Users } from "lucide-react";
 import Link from "next/link";
 import { requireAdminPage } from "@/features/authentication/index.server";
 import {
@@ -6,6 +6,8 @@ import {
   listAdminMixingJobs,
   listAdminUsers,
 } from "@/features/inspect-admin-operations/index.server";
+import { type AdminCatalogEntryView, CatalogManager } from "@/features/manage-song-catalog";
+import { listAdminCatalog } from "@/features/manage-song-catalog/index.server";
 import { TicketAdjustmentForm } from "@/features/manage-tickets";
 import { PRIVATE_METADATA } from "@/shared/config/index.server";
 import { Badge } from "@/shared/ui/badge";
@@ -41,10 +43,67 @@ function adminHref({
   return queryString ? `/admin?${queryString}` : "/admin";
 }
 
+function catalogHref(page: number, q: string, status: string) {
+  const params = new URLSearchParams();
+  if (q) params.set("catalogQ", q);
+  if (status) params.set("catalogStatus", status);
+  if (page > 1) params.set("catalogPage", String(page));
+  const queryString = params.toString();
+  return queryString ? `/admin?${queryString}` : "/admin";
+}
+
+function catalogEntryView(
+  entry: Awaited<ReturnType<typeof listAdminCatalog>>["entries"][number],
+): AdminCatalogEntryView {
+  return {
+    id: entry.id,
+    position: entry.position,
+    status: entry.status,
+    song: {
+      id: entry.song.id,
+      title: entry.song.title,
+      artist: entry.song.artist,
+      originalKey: entry.song.originalKey,
+      lifecycleStatus: entry.song.lifecycleStatus,
+      activeSourceId: entry.song.activeSourceId,
+      currentAnalysisId: entry.song.currentAnalysisId,
+      targetAssetId: entry.song.targetAssetId,
+      sources: entry.song.sources.map((source) => {
+        const readyAnalysis = source.analyses.find(
+          (analysis) => analysis.status === "READY" && analysis.cleanupConfirmed,
+        );
+        const jobStatus = source.analysisJob?.status ?? (readyAnalysis ? "SUCCEEDED" : null);
+        return {
+          id: source.id,
+          revision: source.revision,
+          sourceUrl: source.sourceUrl,
+          sourceVideoId: source.sourceVideoId,
+          sourceLabel: source.sourceLabel,
+          status: source.status,
+          analysisStatus: jobStatus,
+          analysisError: source.analysisJob?.errorCode ?? null,
+          analysisReady: Boolean(readyAnalysis),
+          targetReady: source.targetAssets.some(
+            (target) => target.status === "READY" && target.sourceVideoId === source.sourceVideoId,
+          ),
+        };
+      }),
+    },
+  };
+}
+
 export default async function AdminPage({
   searchParams,
 }: {
-  searchParams: Promise<{ jobsPage?: string; q?: string; status?: string; usersPage?: string }>;
+  searchParams: Promise<{
+    catalogPage?: string;
+    catalogQ?: string;
+    catalogStatus?: string;
+    jobsPage?: string;
+    q?: string;
+    status?: string;
+    usersPage?: string;
+  }>;
 }) {
   const session = await requireAdminPage();
   const filters = await searchParams;
@@ -52,11 +111,17 @@ export default async function AdminPage({
   const status = filters.status ?? "";
   const usersPage = positivePage(filters.usersPage);
   const jobsPage = positivePage(filters.jobsPage);
-  const [overview, adjustmentUsers, userResult, jobResult] = await Promise.all([
+  const catalogPage = positivePage(filters.catalogPage);
+  const catalogQ = filters.catalogQ ?? "";
+  const catalogStatus = ["DRAFT", "ACTIVE", "ARCHIVED"].includes(filters.catalogStatus ?? "")
+    ? (filters.catalogStatus as "DRAFT" | "ACTIVE" | "ARCHIVED")
+    : "";
+  const [overview, adjustmentUsers, userResult, jobResult, catalogResult] = await Promise.all([
     getAdminOverview(),
     listAdminUsers("", 1, 100),
     listAdminUsers(query, usersPage, 10),
     listAdminMixingJobs(query, status, jobsPage, 10),
+    listAdminCatalog({ q: catalogQ, status: catalogStatus, page: catalogPage }),
   ]);
   const activeJobs =
     (overview.jobs.pending ?? 0) +
@@ -82,6 +147,80 @@ export default async function AdminPage({
             { label: "티켓 잔액", value: overview.ticketNet, detail: "전체 잔여 티켓", icon: Ticket },
           ]}
         />
+
+        <section className="mt-7" id="catalog">
+          <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 className="flex items-center gap-2 text-sm font-semibold">
+                <Music2 className="size-4" /> 음원 카탈로그
+              </h2>
+              <p className="mt-1 text-xs text-muted-foreground">
+                출처 revision의 분석과 target을 준비한 뒤 공개하세요.
+              </p>
+            </div>
+            <span className="text-[10px] text-muted-foreground">{catalogResult.total}곡</span>
+          </div>
+          <form
+            className="mb-3 grid gap-3 rounded-xl bg-muted/20 p-4 sm:grid-cols-[minmax(0,1fr)_12rem_auto] sm:items-end"
+            method="get"
+          >
+            <label className="grid gap-1 text-[11px] font-medium">
+              곡 검색
+              <input
+                className="h-9 rounded-md border bg-background px-3 text-xs"
+                defaultValue={catalogQ}
+                name="catalogQ"
+                placeholder="곡 제목 또는 아티스트"
+              />
+            </label>
+            <label className="grid gap-1 text-[11px] font-medium">
+              공개 상태
+              <select
+                className="h-9 rounded-md border bg-background px-3 text-xs"
+                defaultValue={catalogStatus}
+                name="catalogStatus"
+              >
+                <option value="">전체</option>
+                <option value="DRAFT">준비 중</option>
+                <option value="ACTIVE">공개</option>
+                <option value="ARCHIVED">보관</option>
+              </select>
+            </label>
+            <Button className="h-9" size="sm" type="submit">
+              <Search /> 검색
+            </Button>
+          </form>
+          <CatalogManager entries={catalogResult.entries.map(catalogEntryView)} />
+          {catalogResult.pageCount > 1 ? (
+            <nav aria-label="음원 카탈로그 페이지" className="mt-3 flex items-center justify-center gap-1 text-xs">
+              {catalogResult.page > 1 ? (
+                <Link
+                  className="flex size-8 items-center justify-center rounded-md hover:bg-muted"
+                  href={catalogHref(catalogResult.page - 1, catalogQ, catalogStatus)}
+                >
+                  <ChevronLeft />
+                  <span className="sr-only">이전 카탈로그 페이지</span>
+                </Link>
+              ) : (
+                <span className="size-8" />
+              )}
+              <span className="px-3 tabular-nums text-muted-foreground">
+                {catalogResult.page} / {catalogResult.pageCount}
+              </span>
+              {catalogResult.page < catalogResult.pageCount ? (
+                <Link
+                  className="flex size-8 items-center justify-center rounded-md hover:bg-muted"
+                  href={catalogHref(catalogResult.page + 1, catalogQ, catalogStatus)}
+                >
+                  <ChevronRight />
+                  <span className="sr-only">다음 카탈로그 페이지</span>
+                </Link>
+              ) : (
+                <span className="size-8" />
+              )}
+            </nav>
+          ) : null}
+        </section>
 
         <section className="mt-7">
           <div className="mb-3">
