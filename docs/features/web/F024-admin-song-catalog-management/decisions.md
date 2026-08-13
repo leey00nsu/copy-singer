@@ -29,12 +29,12 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: DB transaction으로 준비되지 않은 revision의 부분 공개를 막고, 출처 교체·재분석 이력과 과거 추천 근거를 보존하면서 앱 재배포 없이 카탈로그를 확장할 수 있다.
 - **Trace**:
   - **DOING 시작 시점**: 구현 승인 전 설계 단계에서 JSON direct write보다 normalized DB revision과 active pointer 전환이 교체 원자성과 재현성을 가장 잘 만족한다고 판단했다.
-  - **DONE 전 확정 시점**: -
+  - **DONE 전 확정 시점**: 기존 runtime 필드는 Task 02 전환 완료 전까지 유지하면서 `SongSource`, `SongAnalysis`, `SongAnalysisJob`, `Catalog`, `CatalogEntry`와 active pointer를 먼저 추가했다. readiness validator가 source·analysis·target revision 일치와 published entry를 함께 검사하고 DB unique/FK가 revision identity를 보호함을 확인했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: -
+  - **Commit**: Task 01 구현 커밋
   - **PR**: -
-  - **Test/Log**: 기존 JSON/DB runtime coupling 조사 — `recommendation-service.ts`, `recommendation-data.ts`, `target-assets.ts`, Prisma `Song`
+  - **Test/Log**: `pnpm exec prisma validate`, `pnpm exec tsc --noEmit`, catalog domain 3/3, DB integration 1/1
 - **Consequences**: 기존 F003 D005의 JSON SSOT 결정은 F024 완료 시 superseded가 된다. 개발 DB는 reset/bootstrap이 필요하고 초기 배포 절차에 bootstrap 검증이 추가된다.
 
 ## D002: 관리자 분석·공개 lifecycle (2026-08-13)

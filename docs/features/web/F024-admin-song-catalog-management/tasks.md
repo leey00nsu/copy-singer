@@ -61,16 +61,16 @@
 
 ---
 
-- [DOING][PRD-FR-005][PRD-DATA-013] T-F024-admin-song-catalog-management-01 DB 카탈로그와 revision 모델 구축
+- [DONE][PRD-FR-005][PRD-DATA-013] T-F024-admin-song-catalog-management-01 DB 카탈로그와 revision 모델 구축
   - Date: 2026-08-13
   - Acceptance:
-    - 곡 identity, source, analysis, catalog membership과 analysis job이 분리된 Prisma schema와 breaking migration이 유효하다.
-    - active source/analysis/target pointer와 published entry 제약이 불완전한 곡의 추천 노출을 막는다.
-    - 추천 실행이 사용한 song analysis revision을 추적할 수 있다.
+    - [x] 곡 identity, source, analysis, catalog membership과 analysis job이 분리된 Prisma schema와 breaking migration이 유효하다.
+    - [x] active source/analysis/target pointer와 published entry 제약이 불완전한 곡의 추천 노출을 막는다.
+    - [x] 추천 실행이 사용한 song analysis revision을 추적할 수 있다.
   - Checklist:
-    - [ ] Prisma enum/model/relation/index와 migration을 구현한다.
-    - [ ] 공통 catalog domain contract와 readiness validator를 구현한다.
-    - [ ] schema validation 및 DB integration test를 실행한다.
+    - [x] Prisma enum/model/relation/index와 migration을 구현한다.
+    - [x] 공통 catalog domain contract와 readiness validator를 구현한다.
+    - [x] schema validation 및 DB integration test를 실행한다.
 
 - [TODO][PRD-FR-005][PRD-FR-007] T-F024-admin-song-catalog-management-02 기존 100곡 bootstrap과 DB 추천 전환
   - Date: 2026-08-13
@@ -148,5 +148,9 @@
 | --- | --- | --- |
 | `pnpm test` | `-` | 미실행 |
 | `pnpm run lint` | `-` | 미실행 |
-| `pnpm exec tsc --noEmit` | `-` | 미실행 |
-| `pnpm exec prisma validate` | `-` | 미실행 |
+| `pnpm exec tsx --test tests/song-catalog-domain.test.ts` | `2026-08-13` | 통과 — readiness·metric contract 3/3 |
+| `node --conditions react-server --import tsx --test tests/song-catalog-db.integration.ts` | `2026-08-13` | 통과 — revision 관계·active pointer·중복 video ID DB 계약 1/1 |
+| `pnpm exec tsc --noEmit` | `2026-08-13` | 통과 |
+| `pnpm exec prisma validate` | `2026-08-13` | 통과 |
+
+<!-- lee-spec-kit:workflow-sync 2026-08-13T16:32:00+09:00 -->
