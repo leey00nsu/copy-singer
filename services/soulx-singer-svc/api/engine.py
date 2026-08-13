@@ -153,7 +153,7 @@ class SoulXEngine:
         self._process(args, self.config, self.model)
         generated = generated_dir / "generated.wav"
         if not generated.exists():
-            raise RuntimeError("SoulX-Singer finished without producing generated.wav")
+            raise RuntimeError("The conversion engine finished without producing generated.wav")
 
         if auto_mix_accompaniment and accompaniment is not None:
             vocal, _ = librosa.load(generated, sr=self.config.audio.sample_rate, mono=True)

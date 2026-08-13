@@ -135,7 +135,7 @@ export async function deleteOrScheduleMediaAsset(mediaAssetId: string) {
     });
     return { deleted: true as const };
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Leemage file deletion failed.";
+    const message = error instanceof Error ? error.message : "Media file deletion failed.";
     await prisma.$transaction([
       prisma.mediaAsset.update({
         where: { id: asset.id },

@@ -148,7 +148,7 @@ export function SingerWorkbench({
             </span>
             <div>
               <p className="text-sm font-semibold tracking-tight">Copysinger</p>
-              <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">SoulX Singer Lab</p>
+              <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Voice Conversion Lab</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -174,10 +174,10 @@ export function SingerWorkbench({
                 )}
               />
               {apiStatus === "online"
-                ? "Modal API connected"
+                ? "Conversion API connected"
                 : apiStatus === "offline"
-                  ? "Modal API unavailable"
-                  : "Checking Modal API"}
+                  ? "Conversion API unavailable"
+                  : "Checking conversion API"}
             </Badge>
           </div>
         </div>
@@ -193,8 +193,8 @@ export function SingerWorkbench({
             <br className="hidden sm:block" /> the performance.
           </h1>
           <p>
-            Choose a singing voice, add the performance to transform, then let SoulX-Singer preserve its melody and
-            expression.
+            Choose a singing voice, add the performance to transform, then let the conversion engine preserve its melody
+            and expression.
           </p>
         </section>
 
@@ -261,7 +261,7 @@ export function SingerWorkbench({
                     <p className="mt-6 text-base font-semibold">Shaping the new vocal</p>
                     <p className="mt-2 max-w-[280px] text-sm leading-6 text-muted-foreground">
                       {job?.status === "queued"
-                        ? "Waiting for the Modal GPU to become available."
+                        ? "Waiting for processing capacity to become available."
                         : "Preserving phrasing, pitch and timing while transferring the voice."}
                     </p>
                     <Progress

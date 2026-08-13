@@ -10,7 +10,7 @@ function modalConfig() {
 export async function GET(_: Request, context: { params: Promise<{ id: string }> }) {
   if (!devSvcEnabled()) return devSvcUnavailable();
   const config = modalConfig();
-  if (!config) return Response.json({ detail: "Modal API is not configured." }, { status: 503 });
+  if (!config) return Response.json({ detail: "The conversion API is not configured." }, { status: 503 });
   const { id } = await context.params;
   const response = await fetch(`${config.url}/v1/conversions/${encodeURIComponent(id)}`, {
     headers: { "X-API-Key": config.key },
@@ -25,7 +25,7 @@ export async function GET(_: Request, context: { params: Promise<{ id: string }>
 export async function DELETE(_: Request, context: { params: Promise<{ id: string }> }) {
   if (!devSvcEnabled()) return devSvcUnavailable();
   const config = modalConfig();
-  if (!config) return Response.json({ detail: "Modal API is not configured." }, { status: 503 });
+  if (!config) return Response.json({ detail: "The conversion API is not configured." }, { status: 503 });
   const { id } = await context.params;
   const response = await fetch(`${config.url}/v1/conversions/${encodeURIComponent(id)}`, {
     method: "DELETE",

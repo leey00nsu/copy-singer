@@ -11,10 +11,7 @@ export async function POST(request: Request) {
   if (!devSvcEnabled()) return devSvcUnavailable();
   const config = modalConfig();
   if (!config) {
-    return Response.json(
-      { detail: "Modal API is not configured. Add MODAL_API_URL and MODAL_API_KEY to the server environment." },
-      { status: 503 },
-    );
+    return Response.json({ detail: "The conversion API is not configured." }, { status: 503 });
   }
 
   const contentType = request.headers.get("content-type");
@@ -22,7 +19,7 @@ export async function POST(request: Request) {
     return Response.json({ detail: "Expected a multipart audio upload." }, { status: 400 });
   }
 
-  // Preserve the original multipart boundary and stream the upload to Modal.
+  // Preserve the original multipart boundary and stream the upload to the conversion service.
   // Parsing with request.formData() buffers both audio files in the web worker
   // before sending them upstream, which is especially costly for WAV files.
   const upstreamRequest: RequestInit & { duplex: "half" } = {

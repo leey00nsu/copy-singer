@@ -7,7 +7,7 @@ import { SingerWorkbench } from "./singer-workbench";
 
 export const metadata: Metadata = {
   title: "SVC 개발 Workbench — Copysinger",
-  description: "SoulX-Singer API의 reference, target과 advanced settings를 직접 검증하는 개발 화면입니다.",
+  description: "음성 변환 API의 reference, target과 advanced settings를 직접 검증하는 개발 화면입니다.",
   robots: PRIVATE_ROBOTS,
 };
 

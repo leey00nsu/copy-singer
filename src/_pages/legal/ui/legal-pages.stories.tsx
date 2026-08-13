@@ -33,7 +33,7 @@ export const Privacy: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("heading", { level: 1, name: "개인정보 처리방침" })).toBeVisible();
     await expect(canvas.getByRole("heading", { name: "2. 처리하는 개인정보와 목적" })).toBeVisible();
-    await expect(canvas.getByText("Modal / SoulX")).toBeVisible();
+    await expect(canvas.getByText("Google OAuth")).toBeVisible();
     await expect(canvas.getByText("Copysinger 개인 개발자")).toBeVisible();
     await expect(canvas.queryByText(/정식 공개 전|입력 필요/)).not.toBeInTheDocument();
     const legalNavigation = within(canvas.getByRole("navigation", { name: "법률 문서" }));

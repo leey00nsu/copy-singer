@@ -117,7 +117,7 @@ async function validateUploadSource(sourcePath: string) {
   const sourceStat = await stat(sourcePath);
   if (sourceStat.size <= 0) throw new Error("Catalog target source file is empty.");
   if (sourceStat.size > CATALOG_TARGET_MAX_UPLOAD_BYTES) {
-    throw new Error(`Catalog target source exceeds the Leemage upload limit (${sourceStat.size} bytes).`);
+    throw new Error(`Catalog target source exceeds the storage upload limit (${sourceStat.size} bytes).`);
   }
   const mimeType = sourceMimeType(sourcePath);
   const bytes = new Uint8Array(await readFile(sourcePath));

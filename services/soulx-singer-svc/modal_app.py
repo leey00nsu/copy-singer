@@ -208,12 +208,12 @@ def web():
     from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, UploadFile
     from fastapi.responses import FileResponse
 
-    web_app = FastAPI(title="SoulX-Singer SVC API", version="2.0.0")
+    web_app = FastAPI(title="Copysinger Voice Conversion API", version="2.0.0")
 
     def require_api_key(x_api_key: str | None = Header(default=None)) -> None:
         expected = os.environ.get("SOULX_API_KEY", "")
         if not expected:
-            raise HTTPException(status_code=503, detail="SOULX_API_KEY is not configured")
+            raise HTTPException(status_code=503, detail="Server API key is not configured")
         if x_api_key is None or not hmac.compare_digest(x_api_key, expected):
             raise HTTPException(status_code=401, detail="Invalid API key")
 

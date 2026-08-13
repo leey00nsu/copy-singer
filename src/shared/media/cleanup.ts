@@ -39,7 +39,7 @@ export async function processOneMediaCleanup(fetchImpl: typeof fetch = fetch) {
       await prisma.mediaAsset.delete({ where: { id: asset.id } });
       return true;
     }
-    const message = error instanceof Error ? error.message : "Leemage cleanup failed.";
+    const message = error instanceof Error ? error.message : "Media cleanup failed.";
     const cleanup = await prisma.mediaCleanupJob.findUniqueOrThrow({ where: { id: claimed.id } });
     const delayMinutes = Math.min(2 ** Math.min(cleanup.attempts, 8), 360);
     await prisma.$transaction([

@@ -89,20 +89,11 @@ function PrivacyPage() {
         </LegalDataList>
       </LegalSection>
 
-      <LegalSection title="5. 외부 서비스 이용과 처리위탁">
-        <p>운영자는 현재 기능 제공을 위해 다음 외부 서비스를 사용합니다.</p>
+      <LegalSection title="5. 외부 서비스 이용">
+        <p>운영자는 계정 인증과 로그인을 위해 다음 외부 서비스를 사용합니다.</p>
         <LegalDataList>
           <LegalDataItem term="Google OAuth">
             계정 인증과 로그인. Google 계정 식별자·이름·이메일·프로필 및 OAuth metadata를 처리합니다.
-          </LegalDataItem>
-          <LegalDataItem term="Leemage">
-            사용자 reference, 분석용 대표 음성과 믹싱 결과 파일의 저장·조회·삭제를 처리합니다.
-          </LegalDataItem>
-          <LegalDataItem term="Modal / SoulX">
-            업로드 음성의 보컬 분석과 사용자가 요청한 AI 음성 변환·믹싱 작업을 처리합니다.
-          </LegalDataItem>
-          <LegalDataItem term="PostgreSQL 운영 환경">
-            계정, session, 분석 지표, 추천·믹싱·ticket metadata를 서비스 database에 저장합니다.
           </LegalDataItem>
         </LegalDataList>
         <p>
@@ -110,11 +101,10 @@ function PrivacyPage() {
         </p>
       </LegalSection>
 
-      <LegalSection title="6. 외부 서비스의 국외 처리">
+      <LegalSection title="6. Google 계정 정보 처리">
         <p>
-          Google과 Modal 등 국외 사업자의 서비스를 이용하는 과정에서 계정 인증 정보와 작업 수행에 필요한 음성·작업
-          정보가 네트워크를 통해 전송되어 처리될 수 있습니다. 운영자는 로그인, 보컬 분석과 이용자가 요청한 AI 믹싱을
-          제공하는 데 필요한 범위에서만 해당 서비스를 이용합니다.
+          Google 계정 인증 과정에서 로그인에 필요한 계정 정보가 Google의 인프라를 통해 전송·처리될 수 있습니다. 운영자는
+          계정 인증과 로그인에 필요한 범위에서만 해당 정보를 이용합니다.
         </p>
       </LegalSection>
 
@@ -128,7 +118,9 @@ function PrivacyPage() {
       <LegalSection title="8. 파기 절차와 방법">
         <LegalList>
           <li>삭제 대상 database record는 관계와 진행 상태를 확인한 뒤 제거합니다.</li>
-          <li>외부 저장 음성은 Leemage 삭제 API로 제거하고, 즉시 삭제가 실패하면 cleanup job으로 재시도합니다.</li>
+          <li>
+            외부 저장 음성은 저장 시스템의 삭제 API로 제거하고, 즉시 삭제가 실패하면 cleanup job으로 재시도합니다.
+          </li>
           <li>
             분석기의 임시 작업 파일은 분석 응답 후 제거하고, AI 처리 시스템의 임시 파일은 작업 종료 후 정리하도록
             구성합니다.

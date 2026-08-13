@@ -27,7 +27,7 @@ function modalConfig() {
   const url = process.env.MODAL_API_URL?.replace(/\/$/, "");
   const key = process.env.MODAL_API_KEY;
   if (!url || !key) {
-    throw new RecommendationError("SYNTHESIS_UPSTREAM_FAILED", "Modal API is not configured.", {
+    throw new RecommendationError("SYNTHESIS_UPSTREAM_FAILED", "The conversion service is not configured.", {
       status: 503,
       retryable: true,
     });
@@ -214,7 +214,7 @@ export async function startRecommendationSynthesis(runId: string, itemId: string
     if (!response.ok) {
       throw new RecommendationError(
         "SYNTHESIS_UPSTREAM_FAILED",
-        `Modal이 합성 요청을 거부했습니다. (${response.status})`,
+        `변환 서비스가 합성 요청을 거부했습니다. (${response.status})`,
         {
           status: 502,
           retryable: response.status >= 500 || response.status === 429,
@@ -223,10 +223,14 @@ export async function startRecommendationSynthesis(runId: string, itemId: string
     }
     const job = (await response.json()) as ModalJob;
     if (!job.id || job.status !== "queued") {
-      throw new RecommendationError("SYNTHESIS_UPSTREAM_FAILED", "Modal이 올바른 job 정보를 반환하지 않았습니다.", {
-        status: 502,
-        retryable: true,
-      });
+      throw new RecommendationError(
+        "SYNTHESIS_UPSTREAM_FAILED",
+        "변환 서비스가 올바른 job 정보를 반환하지 않았습니다.",
+        {
+          status: 502,
+          retryable: true,
+        },
+      );
     }
     const now = new Date();
     await prisma.recommendationItem.update({
@@ -256,7 +260,7 @@ async function fetchModalJob(jobId: string) {
     signal: AbortSignal.timeout(30_000),
   });
   if (response.status === 410) return { id: jobId, status: "failed", error: "RESULT_EXPIRED" } as ModalJob;
-  if (!response.ok) throw new Error(`Modal status ${response.status}`);
+  if (!response.ok) throw new Error(`Conversion service status ${response.status}`);
   return response.json() as Promise<ModalJob>;
 }
 
@@ -300,7 +304,7 @@ export async function reconcileRecommendationSyntheses(runId: string) {
               next === "FAILED"
                 ? job.error === "RESULT_EXPIRED"
                   ? "합성 결과가 만료됐습니다."
-                  : "Modal 합성 작업이 실패했습니다."
+                  : "음성 합성 작업이 실패했습니다."
                 : null,
             synthesisRetryable: next === "FAILED" ? true : null,
             synthesisUpdatedAt: new Date(),

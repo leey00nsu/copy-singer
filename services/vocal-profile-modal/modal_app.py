@@ -49,13 +49,13 @@ api_secret = modal.Secret.from_name("soulx-api-secret")
 def require_api_key(x_api_key: str | None = Header(default=None)) -> None:
     expected = os.environ.get("SOULX_API_KEY", "")
     if not expected:
-        raise HTTPException(status_code=503, detail="SOULX_API_KEY is not configured")
+        raise HTTPException(status_code=503, detail="Server API key is not configured")
     if x_api_key is None or not hmac.compare_digest(x_api_key, expected):
         raise HTTPException(status_code=401, detail="Invalid API key")
 
 
 web_app = FastAPI(
-    title="Copysinger Modal Vocal Profile Analyzer",
+    title="Copysinger Vocal Profile Analyzer",
     version="1.0.0",
     dependencies=[Depends(require_api_key)],
 )
@@ -170,7 +170,7 @@ async def song_target(request: SongTargetRequest) -> StreamingResponse | JSONRes
             content={"reasonCode": error.reason_code, "detail": error.detail, "retryable": retryable},
         )
     except Exception:
-        LOGGER.exception("Modal song target preparation failed")
+        LOGGER.exception("Song target preparation failed")
         return JSONResponse(
             status_code=500,
             content={

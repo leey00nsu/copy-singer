@@ -75,7 +75,7 @@ function modalConfig() {
   const url = process.env.MODAL_API_URL?.replace(/\/$/, "");
   const key = process.env.MODAL_API_KEY;
   if (!url || !key) {
-    throw new MixingStageError("MODAL_NOT_CONFIGURED", "SoulX Modal API is not configured.", false);
+    throw new MixingStageError("MODAL_NOT_CONFIGURED", "The conversion API is not configured.", false);
   }
   return { url, key };
 }
@@ -152,7 +152,7 @@ export async function ensureMixingRefund(jobId: string) {
     amount: job.ticketCost,
     idempotencyKey: `mixing:refund:${job.id}`,
     mixingJobId: job.id,
-    reason: "Modal 접수 전 믹싱 실패 자동 환불",
+    reason: "변환 서비스 접수 전 믹싱 실패 자동 환불",
   });
   await prisma.mixingJob.update({ where: { id: job.id }, data: { refundState: "REFUNDED" } });
 }
@@ -320,7 +320,7 @@ export async function processClaimedMixingJob(jobId: string, owner: string, depe
         },
         {
           code: "MODAL_SUBMIT_FAILED",
-          message: "Modal이 합성 요청을 접수하지 못했습니다",
+          message: "변환 서비스가 합성 요청을 접수하지 못했습니다",
           networkRetryable: false,
           retryableStatus: (status) => status === 429,
         },
@@ -329,7 +329,7 @@ export async function processClaimedMixingJob(jobId: string, owner: string, depe
       if (!modalJob.id || modalJob.status !== "queued") {
         throw new MixingStageError(
           "MODAL_SUBMIT_INVALID_RESPONSE",
-          "Modal이 올바른 job 정보를 반환하지 않았습니다.",
+          "변환 서비스가 올바른 job 정보를 반환하지 않았습니다.",
           false,
         );
       }
@@ -354,13 +354,13 @@ export async function processClaimedMixingJob(jobId: string, owner: string, depe
         },
         {
           code: "MODAL_STATUS_FETCH_FAILED",
-          message: "Modal 상태 조회에 실패했습니다",
+          message: "변환 작업 상태 조회에 실패했습니다",
           networkRetryable: true,
         },
       );
       const modalJob = (await response.json()) as ModalJob;
       if (modalJob.status === "failed") {
-        throw new MixingStageError("MODAL_JOB_FAILED", modalJob.error || "Modal 합성 작업이 실패했습니다.", false);
+        throw new MixingStageError("MODAL_JOB_FAILED", modalJob.error || "음성 합성 작업이 실패했습니다.", false);
       }
       if (modalJob.status === "succeeded") {
         const audioResponse = await stageFetch(
@@ -373,14 +373,14 @@ export async function processClaimedMixingJob(jobId: string, owner: string, depe
           },
           {
             code: "MODAL_RESULT_FETCH_FAILED",
-            message: "Modal 합성 결과를 불러오지 못했습니다",
+            message: "음성 합성 결과를 불러오지 못했습니다",
             networkRetryable: true,
           },
         );
         const audio = await mediaBytes(
           audioResponse,
           "MODAL_RESULT_FETCH_FAILED",
-          "Modal 합성 결과를 불러오지 못했습니다",
+          "음성 합성 결과를 불러오지 못했습니다",
         );
         let compressed: CompressedMixingAudio;
         try {

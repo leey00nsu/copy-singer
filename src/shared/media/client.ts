@@ -30,7 +30,7 @@ type FetchLike = typeof fetch;
 
 function envValue(name: string) {
   const value = process.env[name]?.trim();
-  if (!value) throw new LeemageError(`${name} is required for Leemage storage.`, null, false);
+  if (!value) throw new LeemageError(`${name} is required for media storage.`, null, false);
   return value;
 }
 
@@ -57,7 +57,7 @@ function sleep(milliseconds: number) {
 
 async function responseMessage(response: Response) {
   const payload = (await response.json().catch(() => null)) as { message?: unknown } | null;
-  return typeof payload?.message === "string" ? payload.message : `Leemage request failed (${response.status}).`;
+  return typeof payload?.message === "string" ? payload.message : `Media storage request failed (${response.status}).`;
 }
 
 export class LeemageClient {
@@ -84,7 +84,7 @@ export class LeemageClient {
           await sleep(200 * 2 ** attempt);
           continue;
         }
-        throw new LeemageError(error instanceof Error ? error.message : "Leemage is unavailable.", null, true);
+        throw new LeemageError(error instanceof Error ? error.message : "Media storage is unavailable.", null, true);
       }
 
       if (response.ok) return response;
@@ -95,7 +95,7 @@ export class LeemageClient {
       }
       throw new LeemageError(await responseMessage(response), response.status, retryable);
     }
-    throw new LeemageError("Leemage request exhausted its retry limit.", null, true);
+    throw new LeemageError("Media storage request exhausted its retry limit.", null, true);
   }
 
   async uploadFile(input: { fileName: string; mimeType: string; bytes: Uint8Array }): Promise<LeemageStoredFile> {
@@ -117,7 +117,7 @@ export class LeemageClient {
       typeof allocation.objectName !== "string" ||
       typeof allocation.fileId !== "string"
     ) {
-      throw new LeemageError("Leemage returned an invalid presign response.", 502, false);
+      throw new LeemageError("Media storage returned an invalid presign response.", 502, false);
     }
 
     const uploaded = await this.fetchImpl(allocation.presignedUrl, {
@@ -127,7 +127,7 @@ export class LeemageClient {
     });
     if (!uploaded.ok) {
       throw new LeemageError(
-        `Leemage object upload failed (${uploaded.status}).`,
+        `Media object upload failed (${uploaded.status}).`,
         uploaded.status,
         uploaded.status >= 500,
       );
@@ -145,7 +145,7 @@ export class LeemageClient {
     });
     const confirmation = (await confirmed.json()) as { file?: { id?: unknown; url?: unknown } };
     if (typeof confirmation.file?.id !== "string" || typeof confirmation.file.url !== "string") {
-      throw new LeemageError("Leemage returned an invalid confirm response.", 502, false);
+      throw new LeemageError("Media storage returned an invalid confirm response.", 502, false);
     }
     return {
       projectId: this.config.projectId,

@@ -36,7 +36,7 @@ export const ANALYSIS_ERROR_GUIDANCE: Record<string, { action: string; title: st
   ANALYSIS_SOURCE_UNAVAILABLE: { title: "분석용 음성을 불러오지 못했어요", action: "잠시 뒤 다시 시도해주세요." },
   PROFILE_SAVE_FAILED: {
     title: "분석 결과를 저장하지 못했어요",
-    action: "PostgreSQL 연결을 확인한 뒤 다시 시도해주세요.",
+    action: "데이터베이스 연결을 확인한 뒤 다시 시도해주세요.",
   },
 };
 
