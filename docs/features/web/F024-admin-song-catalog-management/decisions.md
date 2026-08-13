@@ -63,13 +63,13 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 사용자의 삭제 요청을 이행하면서도 신규 처리 실패 시 되돌릴 수 있는 안전 경계를 확보하고 과거 믹싱 참조를 깨뜨리지 않는다.
 - **Trace**:
   - **DOING 시작 시점**: 신규 ID `HdTUQhHHJEg`, `vepz3RlTd4M`, `saK6H76TyMI`, `zBTINvN-rCk` 파일과 기존 ID 파일 네 개가 local staging에 함께 존재함을 확인했다.
-  - **DONE 전 확정 시점**: -
+  - **DONE 전 확정 시점**: 신규 파일 네 개의 video ID·MIME·크기·SHA-256을 기록하고 Modal CPU 분석과 관리자 공개를 완료했다. 네 active pointer가 신규 source/analysis/target revision을 가리키고 기존 remote asset 참조가 0건임을 확인한 뒤 기존 로컬 파일 네 개를 삭제했다.
   - **머지 후 확인**: -
 - **Evidence**:
   - **Commit**: -
   - **PR**: -
-  - **Test/Log**: `find`/`ls -lah tmp/catalog-targets` identity 확인
-- **Consequences**: 실제 삭제는 구현 승인 후 Task 05에서 수행하며, 삭제된 local staging 파일은 Git으로 복구할 수 없다.
+  - **Test/Log**: `tmp/catalog-targets` 8개 파일 identity·MIME·size·SHA-256 확인, DB active revision/remote asset 조회, `catalog:db:verify` 100/100 READY
+- **Consequences**: 삭제된 기존 local staging 파일 네 개는 Git 추적 대상이 아니므로 Git으로 복구할 수 없다. 기존 remote asset row도 참조가 없어 publish cleanup 과정에서 제거됐다.
 
 ## D004: 초기 artifact 이전과 runtime cutover (2026-08-13)
 
@@ -87,3 +87,67 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: -
   - **Test/Log**: bootstrap parity 1/1, recommendation 33/33, recommendation DB 3/3, catalog target 1/1, mixing queue 1/1, TypeScript·Prisma validation
 - **Consequences**: 초기 환경은 migration 후 `catalog:bootstrap`을 실행해야 한다. 기존 `Song.catalogOrder` 등 transitional column과 legacy artifact pipeline 코드는 Task 06에서 제거한다.
+
+## D005: 곡 분석을 Modal 비동기 작업으로 분리 (2026-08-13)
+
+- **Context**: 관리자가 업로드한 네 target audio를 로컬 CPU 분석기에 병렬 전달한 결과 Demucs 작업이 메모리 한계를 넘어 종료되었다. 사용자는 현재 보컬 진단과 마찬가지로 곡 분석도 Modal에서 실행하도록 방향을 변경했다.
+- **Constraints**: Modal Web Function의 HTTP 요청은 장시간 분석보다 짧은 timeout을 가지므로 submit과 결과 조회를 분리해야 한다. 승인된 업로드 음원만 분석 입력으로 사용해야 하며 분석 자원 종류는 D008의 운영 경계를 따른다.
+- **Options**: 보컬 진단 endpoint에 곡 분석 추가, 로컬 worker 유지, 전용 Modal job과 인증된 submit/poll endpoint.
+- **Decision**: `song-catalog-analyzer`를 전용 Modal 비동기 job service로 전환한다. 웹 endpoint는 DB job ID를 idempotency key로 받아 분석 함수를 spawn하고 즉시 external job ID를 반환하며, 앱 worker는 그 ID를 `SongAnalysisJob`에 저장해 poll한다. READY `CatalogTargetAsset`이 없는 job은 claim하지 않는다. API 인증은 기존 server-side `X-API-Key` secret을 재사용한다. 구체 compute 자원은 D008로 대체한다.
+- **Rationale**: 앱의 DB lease·retry·publish gate를 유지하면서 장시간 분석을 request lifecycle에서 분리한다. 외부 job ID를 저장하면 앱 worker가 재시작돼도 동일 Modal 결과를 회수하며, 업로드된 파일을 입력으로 써 YouTube 다운로드 실패와 출처 불일치를 제거한다.
+- **Trace**:
+  - **DOING 시작 시점**: 기존 저장소에 Demucs·librosa가 포함된 비배포용 Modal batch analyzer가 있음을 확인했다. Modal job queue의 `spawn()` + `FunctionCall.get(timeout=0)` polling 패턴을 관리자 durable job에 결합하기로 했다.
+  - **DONE 전 확정 시점**: 인증된 submit/poll endpoint와 external job ID 재사용, READY target claim gate, 결과 만료·실패 retry 계약을 구현하고 통합 테스트 6/6을 통과했다. 초기 GPU 자원 선택은 이후 사용자 결정 D008로 대체됐다.
+  - **머지 후 확인**: -
+- **Evidence**:
+  - **Commit**: -
+  - **PR**: -
+  - **Test/Log**: `pnpm run test:song-analysis-queue` 6/6, Modal catalog analyzer unittest 4/4, 원격 health/submit/poll 확인
+- **Consequences**: 곡 분석에는 별도 Modal endpoint URL과 서버 API key 설정이 필요하다. 분석 compute는 D008에 따라 CPU만 사용하며 보컬 진단용 Modal app과 곡 믹싱 GPU app은 변경하지 않는다.
+
+## D006: 음원 운영 진입점을 관리자 페이지로 단일화 (2026-08-13)
+
+- **Context**: 초기 Task 05 진행에서는 로컬 파일 네 쌍을 일회성 교체 스크립트로 처리하려 했지만, 사용자는 실제 운영 방식이 관리자만 접근 가능한 `음원 관리` 페이지의 `음원 추가` 버튼이어야 한다고 정정했다.
+- **Constraints**: 음원 등록 API와 페이지는 모두 서버 관리자 권한을 확인해야 한다. 분석 job은 target upload보다 먼저 실행되면 안 되며, 곡 메타데이터만 저장되거나 파일만 저장되는 UI 흐름을 피해야 한다.
+- **Options**: 로컬 스크립트 유지, 기존 `/admin` 대시보드의 분리된 곡/target 폼 유지, 전용 `/admin/songs` 페이지에서 단일 multipart 등록.
+- **Decision**: 일회성 F024 교체 스크립트와 package command를 제거한다. `/admin/songs`를 `requireAdminPage()`로 보호하고 `음원 추가` dialog에서 곡·출처 정보와 음원 파일을 한 번에 받는다. API는 source/job을 생성한 뒤 같은 요청에서 target을 저장하고, worker는 READY target이 있는 job만 claim한다.
+- **Rationale**: 테스트용 로컬 절차가 실제 운영 인터페이스로 굳어지는 것을 막고, 관리자에게 반복 가능한 단일 진입점과 명확한 분석 상태를 제공한다. target 준비 gate 덕분에 외부 저장 실패 시 Modal이 잘못 시작되지 않는다.
+- **Trace**:
+  - **DOING 시작 시점**: 기존 `/admin` 안에 곡 추가와 source별 target 업로드가 분리되어 있고, 별도 교체 스크립트가 추가된 상태를 확인했다.
+  - **DONE 전 확정 시점**: `/admin/songs` route가 production build에 포함되고 비관리자 요청은 404가 됨을 확인했다. `음원 추가`와 출처 교체 API 모두 multipart로 메타데이터와 필수 audio를 받으며 Storybook에서 dialog·필수 파일·모바일 viewport·접근성 상호작용을 검증했다. 실제 네 곡도 이 관리자 API/UI 흐름으로 등록·공개했다.
+  - **머지 후 확인**: -
+- **Evidence**:
+  - **Commit**: -
+  - **PR**: -
+  - **Test/Log**: `pnpm run test:admin` 5/5, catalog manager Storybook 6/6, TypeScript·Biome·ESLint·architecture boundary, production build
+- **Consequences**: `/admin`은 운영 요약과 `/admin/songs` 진입 링크만 제공한다. 신규 음원은 dialog 등록 후 분석 대기 상태로 표시되고, READY 분석 결과는 기존 명시 공개 action을 거친다.
+
+## D007: 관리자 입력 최소화와 분석 원키 확정 (2026-08-13)
+
+- **Context**: 음원 추가·출처 교체 폼이 운영자에게 원키, YouTube video ID, 출처 라벨을 직접 입력하게 해 파생값과 분석값의 책임이 UI에 노출되어 있었다.
+- **Constraints**: 기존 공개 곡은 교체 revision 분석 중에도 현재 원키를 유지해야 한다. YouTube 입력은 지원하는 HTTPS URL 형태만 허용하고 video ID는 정확히 11자여야 한다. 자동 원키는 확률적 추정값이므로 공개 전 관리자가 결과와 신뢰도를 확인할 수 있어야 한다.
+- **Options**: 원키·video ID 직접 입력 유지, video ID만 파생하고 원키는 비워 두기, video ID를 URL에서 파생하고 원키를 분석 revision에서 추정한 뒤 공개 시 확정.
+- **Decision**: 관리자는 제목·아티스트·HTTPS YouTube URL·음원만 입력한다. 서버가 URL에서 video ID를 검증·추출하고 출처 라벨을 부여한다. Modal은 전체 믹스 chroma와 key profile correlation으로 estimatedKey/keyConfidence를 산출해 SongAnalysis revision에 저장하며, 명시 공개 transaction에서만 Song.originalKey에 반영한다.
+- **Rationale**: 중복 입력과 URL-ID 불일치를 제거하고, 교체 분석 중 기존 공개 곡의 키를 유지하면서 분석 결과를 revision 단위로 검토·공개할 수 있다.
+- **Trace**:
+  - **At DOING start**: 사용자 피드백으로 원키와 video ID의 생성 책임이 관리자 폼이 아니라 분석기와 서버에 있어야 함을 확인했다.
+  - **Before DONE**: 입력 필드를 제거하고 URL 파생 계약, major/minor key profile 추정, analysis persistence, 공개 transaction 반영과 관리자 결과 표시를 테스트했다.
+  - **Post-merge check**: Update this line after merge when applicable.
+- **Evidence**:
+  - **Test/Log**: test: pnpm run test:admin, pnpm run test:song-analysis-queue, Modal analyzer unittest
+- **Consequences**: 신규 곡의 `originalKey`는 등록 직후 null이며 분석 revision 공개 시 채워진다. 키 추정 정확도는 음원 구성에 영향을 받으므로 관리자 화면에 신뢰도를 함께 표시한다. 기존 v1 분석은 키 값이 없고 재분석 전까지 기존 원키를 유지한다.
+
+## D008: 곡 분석 CPU와 곡 믹싱 GPU 자원 경계 (2026-08-13)
+
+- **Context**: 곡 분석 함수가 Demucs 때문에 L4 GPU를 사용하도록 설계됐지만, 사용자는 Demucs를 포함한 카탈로그 분석은 CPU로 처리하고 GPU는 곡 믹싱에만 사용하도록 운영 경계를 변경했다.
+- **Constraints**: Demucs CPU 처리는 GPU보다 오래 걸릴 수 있고 앞선 로컬 병렬 실행은 메모리 부족으로 실패했다. 분석은 durable submit/poll과 작업별 임시 파일 정리 계약을 유지해야 하며 기존 곡 믹싱 GPU 경로에는 회귀가 없어야 한다.
+- **Options**: 카탈로그 분석에도 L4 GPU 사용, Demucs만 GPU 사용하고 나머지 CPU 처리, 카탈로그 분석 전체 CPU 처리 및 믹싱만 GPU 사용.
+- **Decision**: song-catalog-analyzer의 analyze_song은 GPU 요청과 CUDA 검사 없이 8 vCPU, 16 GiB 메모리의 Modal CPU 함수에서 Demucs --device cpu, librosa-pYIN, chroma key estimation을 수행한다. 곡 믹싱/합성 GPU 경로는 변경하지 않는다.
+- **Rationale**: 분석 처리시간 증가는 허용하되 GPU 사용 범위를 실제 믹싱 작업으로 제한해 자원 정책과 비용 의도를 명확하게 유지한다. 높은 메모리 할당으로 앞선 로컬 병렬 Demucs 메모리 실패를 격리한다.
+- **Trace**:
+  - **At DOING start**: 사용자가 Demucs의 CPU 실행 가능성을 근거로 GPU를 믹싱에만 사용하도록 명시했다. analyzer의 `gpu=` 요청, CUDA 검사와 `--device cuda`를 제거하는 범위를 확정했다.
+  - **Before DONE**: 8 vCPU·16 GiB·최대 4 container의 CPU 함수로 배포하고 health contract를 확인했다. 네 곡을 병렬 제출해 모두 READY로 회수했으며 repo resource audit에서 GPU 할당은 `services/soulx-singer-svc/modal_app.py`의 믹싱 경로에만 남았다.
+  - **Post-merge check**: Update this line after merge when applicable.
+- **Evidence**:
+  - **Test/Log**: test: Modal catalog analyzer unittest; health compute contract; 4곡 CPU analysis run
+- **Consequences**: 카탈로그 분석은 GPU 비용을 발생시키지 않지만 곡 길이와 Modal CPU 가용량에 따라 처리시간이 늘어날 수 있다. 분석과 믹싱의 비용·autoscaling·장애 경계가 코드와 배포 단위로 명확히 분리된다.

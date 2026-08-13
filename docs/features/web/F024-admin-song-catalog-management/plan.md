@@ -21,20 +21,25 @@
 | ---- | ---- | ---- |
 | 런타임 SSOT | PostgreSQL + Prisma | 관리자 변경을 재배포 없이 즉시 반영하고 transaction·revision 이력을 보존 |
 | 초기 데이터 | 기존 JSON을 읽는 idempotent bootstrap | 분석이 완료된 100곡을 손실 없이 새 DB 모델로 이전하되 runtime import와 분리 |
-| 분석 실행 | durable `SongAnalysisJob` worker | 장시간 외부 분석을 HTTP 요청 생명주기와 분리하고 재시작·재시도 지원 |
-| 관리자 UI | 기존 `/admin` 내 Catalog section | 기존 allowlist, shell과 운영 패턴 재사용 |
-| target audio | 관리자 multipart upload + 기존 외부 저장 client | local-only CLI 의존을 제거하고 저장 bytes/MIME/SHA-256 계약 재사용 |
+| 분석 실행 | durable `SongAnalysisJob` worker + Modal CPU job | Demucs·pYIN·chroma 분석을 곡 믹싱 GPU와 분리하고 외부 job ID로 재시작·재시도 지원 |
+| 관리자 UI | 전용 `/admin/songs` 페이지 + 최소 입력 `음원 추가` dialog | 제목·아티스트·YouTube URL·음원만 받고 파생값과 분석값 입력을 제거 |
+| target audio | 곡 정보와 파일을 함께 받는 관리자 multipart upload + 기존 외부 저장 client | 단일 사용자 action으로 source/job/target을 준비하고 저장 bytes/MIME/SHA-256 계약 재사용 |
 
 ---
 
 ## 아키텍처
 
 ```text
-Admin form
+Admin-only /admin/songs -> 음원 추가 dialog
   -> admin-only route
+  -> multipart(title, artist, YouTube URL + authorized audio)
+  -> server derives video ID/source label
   -> Song + SongSource revision + SongAnalysisJob(PENDING)
-  -> worker -> analyzer -> SongAnalysis(READY|FAILED)
-  -> target upload -> CatalogTargetAsset(READY, sourceId)
+  -> CatalogTargetAsset(READY, sourceId)
+  -> worker -> authenticated Modal submit(audio bytes, DB job id)
+       -> Modal CPU Demucs + librosa-pYIN + chroma key estimation
+       -> poll by external job id
+       -> SongAnalysis(READY|FAILED)
   -> publish transaction
        Song.activeSourceId
        Song.currentAnalysisId
@@ -52,8 +57,8 @@ Recommendation request
 
 - `Song`: 곡 identity와 운영 상태만 소유한다.
 - `SongSource`: 정규화된 YouTube URL/video ID의 immutable revision이다.
-- `SongAnalysis`: source revision과 pipeline contract에 묶인 immutable 결과다.
-- `SongAnalysisJob`: 분석 queue 상태·attempt·lease를 소유한다.
+- `SongAnalysis`: source revision과 pipeline contract에 묶인 immutable 결과이며 추정 원키와 신뢰도를 포함한다.
+- `SongAnalysisJob`: 분석 queue 상태·attempt·lease와 Modal external job ID를 소유한다.
 - `Catalog`/`CatalogEntry`: 곡 identity와 TJ 차트 position·공개 상태를 분리한다.
 - `CatalogTargetAsset`: source revision을 참조하며 새 asset 활성화 전 기존 asset을 유지한다.
 
@@ -84,7 +89,8 @@ src/
 │   ├── api/
 │   └── lib/
 ├── _app/api-routes/admin/catalog/
-└── _pages/admin/ui/
+├── _pages/admin/ui/
+└── _pages/admin-song-catalog/ui/
 tests/
 ├── song-catalog-db.integration.ts
 ├── admin-song-catalog.integration.ts
@@ -96,9 +102,10 @@ tests/
 
 ## 테스트 전략
 
-- **단위 테스트**: YouTube URL 정규화, source/profile adapter, 공개 readiness, 동적 catalog ranking.
-- **통합 테스트**: bootstrap idempotency, 관리자 권한·CRUD, source revision 교체, durable analysis claim/retry, publish transaction, target 교체와 과거 asset 보존.
-- **UI/Storybook 테스트**: 목록·추가 form, 분석 상태, 오류·재시도, 공개 confirmation과 모바일 layout.
+- **단위 테스트**: YouTube URL에서 video ID 추출, major/minor key profile 추정, source/profile adapter, 공개 readiness, 동적 catalog ranking.
+- **통합 테스트**: bootstrap idempotency, 관리자 권한·CRUD, source revision 교체, target 준비 전 claim 차단, Modal submit/poll 및 외부 job ID 재사용, durable analysis claim/retry, publish transaction, target 교체와 과거 asset 보존.
+- **Modal 단위 테스트**: 업로드·인증·idempotent submit, pending/result/error polling과 CPU 함수 resource·cleanup 계약 및 GPU 미사용.
+- **UI/Storybook 테스트**: 관리자 전용 page, 파생 video ID·분석 원키 입력이 없는 `음원 추가` dialog와 필수 파일, 분석 원키·신뢰도 표시, 목록, 분석 상태, 오류·재시도, 공개 confirmation과 모바일 layout.
 - **회귀 테스트**: recommendation, mixing, admin, catalog target, Prisma validation, TypeScript, lint, production build와 전체 `pnpm test`.
 - **운영 데이터 검증**: 4개 신규 m4a의 video ID·MIME·크기·hash를 확인하고 신규 분석/target/publish 후 기존 잘못된 로컬 파일 4개가 사라졌는지 검사한다.
 

@@ -108,17 +108,35 @@
     - [x] loading·empty·error·disabled·mobile 상태의 Storybook/UI 테스트를 작성한다.
     - [x] 관리자 전체 회귀 테스트와 접근성 검사를 실행한다.
 
-- [TODO][PRD-FR-059][PRD-DATA-006] T-F024-admin-song-catalog-management-05 교체된 4곡 재분석·target 교체 및 잘못된 음원 삭제
+- [DONE][PRD-FR-059][PRD-DATA-006] T-F024-admin-song-catalog-management-05 교체된 4곡 재분석·target 교체 및 잘못된 음원 삭제
   - Date: 2026-08-13
   - Acceptance:
-    - 순위 47·62·70·76이 각각 `HdTUQhHHJEg`, `vepz3RlTd4M`, `saK6H76TyMI`, `zBTINvN-rCk` source/analysis/target revision을 사용한다.
-    - 신규 m4a 네 파일의 identity와 bytes를 검증한 뒤 기존 video ID의 로컬 음원 네 파일을 삭제한다.
-    - 네 곡의 새 analysis와 target이 READY이고 추천·믹싱 preflight가 통과한다.
+    - [x] 순위 47·62·70·76이 각각 `HdTUQhHHJEg`, `vepz3RlTd4M`, `saK6H76TyMI`, `zBTINvN-rCk` source/analysis/target revision을 사용한다.
+    - [x] 신규 m4a 네 파일의 identity와 bytes를 검증한 뒤 기존 video ID의 로컬 음원 네 파일을 삭제한다.
+    - [x] 네 곡의 새 analysis와 target이 READY이고 추천·믹싱 preflight가 통과한다.
   - Checklist:
-    - [ ] 신규/기존 4쌍의 정확한 local path, video ID, MIME, size와 hash를 기록한다.
-    - [ ] 신규 source revision을 분석하고 target asset을 업로드·활성화한다.
-    - [ ] 기존 잘못된 local 음원 네 파일과 참조되지 않는 superseded remote asset을 정리한다.
-    - [ ] catalog/recommendation/mixing 검증을 수행한다.
+    - [x] 신규/기존 4쌍의 정확한 local path, video ID, MIME, size와 hash를 기록한다.
+    - [x] 곡 분석 worker를 업로드 target 기반 Modal CPU submit/poll 흐름으로 전환하고 재시작 복구를 검증한다.
+    - [x] 일회성 교체 스크립트 없이 관리자 전용 `음원 관리` 페이지의 `음원 추가` dialog에서 곡 정보와 파일을 한 번에 등록한다.
+    - [x] 관리자 입력에서 원키·video ID·출처 라벨을 제거하고 URL 파생 video ID와 Modal 원키 추정·공개 반영을 검증한다.
+    - [x] 신규 source revision을 분석하고 target asset을 업로드·활성화한다.
+    - [x] 기존 잘못된 local 음원 네 파일과 참조되지 않는 superseded remote asset을 정리한다.
+    - [x] catalog/recommendation/mixing 검증을 수행한다.
+
+### Task 05 운영 데이터 근거
+
+| 상태 | 순위 | video ID | local path | MIME | bytes | SHA-256 |
+| --- | ---: | --- | --- | --- | ---: | --- |
+| 신규·READY | 47 | `HdTUQhHHJEg` | `tmp/catalog-targets/조장혁 - 중독된 사랑 [가사⧸Lyrics] [HdTUQhHHJEg].m4a` | `audio/x-m4a` | 6,494,364 | `b9b229ee58a1571425324974adc41bdb2c344f9bfde962ede02851547cabb0e1` |
+| 신규·READY | 62 | `vepz3RlTd4M` | `tmp/catalog-targets/허각 - 나를 사랑했던 사람아 [가사⧸Lyrics] [vepz3RlTd4M].m4a` | `audio/x-m4a` | 5,834,400 | `e3f0316d497c0cf4cba87467360f2cbdee75538a937c6771246130bf64861135` |
+| 신규·READY | 70 | `saK6H76TyMI` | `tmp/catalog-targets/닐로(Nilo) - 지나오다 [Lyrics⧸가사] [saK6H76TyMI].m4a` | `audio/x-m4a` | 6,872,992 | `e49e51de59386adc2dcb3eb94d039ba8a7d537373315676b8bdee801e479e71a` |
+| 신규·READY | 76 | `zBTINvN-rCk` | `tmp/catalog-targets/타카하시 요코 - 잔혹한 천사의 테제(残酷な天使のテーゼ) [가사⧸발음⧸해석] [zBTINvN-rCk].m4a` | `audio/x-m4a` | 5,980,147 | `2150a6a777f30955863c9393dd7eb3589bdb8a3b111ccaa032ed6f0685bae40e` |
+| 기존·삭제 | 47 | `WABhOy9wm3c` | `tmp/catalog-targets/열린음악회 - 조장혁 - 중독된 사랑.20190224 [WABhOy9wm3c].m4a` | `audio/x-m4a` | 6,377,714 | `1d56650684a0134d41e2d34020cf62ca5f544e81b20618f32514fc505a89c151` |
+| 기존·삭제 | 62 | `0NBmnq-uG_g` | `tmp/catalog-targets/[MV] 허각(HuhGak) _ 나를 사랑했던 사람아(The Person Who Once Loved Me) [0NBmnq-uG_g].m4a` | `audio/x-m4a` | 10,997,600 | `e2a34cdac22b8b0ba3a58799d29cce264b555fdeeeb9473138b68c8cbd39b12d` |
+| 기존·삭제 | 70 | `lVwtHrwlrF0` | `tmp/catalog-targets/쿨룩 LIVE ▷ 닐로(Nilo) '지나오다' ⧸190506[악동뮤지션 수현의 볼륨을 높여요] [lVwtHrwlrF0].m4a` | `audio/x-m4a` | 6,857,490 | `be454c5bb68d8164f468ed2fa56bde35167177b93caa7fe9583b26f203603737` |
+| 기존·삭제 | 76 | `vPkOZm-2cNA` | `tmp/catalog-targets/高橋洋子「残酷な天使のテーゼ MATSURI SPIRIT」 ｜ エヴァンゲリオン ｜ MV [vPkOZm-2cNA].m4a` | `audio/x-m4a` | 6,727,034 | `0db841cca95ba1c9f23a66ece0acd6274b6144f2e60307526e853b53142acaff` |
+
+Modal CPU 분석/공개 결과: 순위 47 `F`(confidence `0.10758179029087539`), 62 `B`(`0.08131234891181632`), 70 `G`(`0.1283483385183834`), 76 `Gm`(`0.018051874831942094`). 네 곡 모두 source·analysis·target이 READY이며 active pointer가 신규 revision을 가리킨다.
 
 - [TODO][PRD-NFR-005] T-F024-admin-song-catalog-management-06 전체 검증과 legacy JSON runtime 정리
   - Date: 2026-08-13
@@ -148,6 +166,7 @@
 | --- | --- | --- |
 | `pnpm test` | `-` | 미실행 |
 | `pnpm run lint` | `-` | 미실행 |
+| `pnpm run build` | `2026-08-13` | 통과 — `/admin/songs` dynamic route 포함 production build |
 | `pnpm exec tsx --test tests/song-catalog-domain.test.ts` | `2026-08-13` | 통과 — readiness·metric contract 3/3 |
 | `node --conditions react-server --import tsx --test tests/song-catalog-db.integration.ts` | `2026-08-13` | 통과 — revision 관계·active pointer·중복 video ID DB 계약 1/1 |
 | `pnpm exec tsc --noEmit` | `2026-08-13` | 통과 |
@@ -157,11 +176,15 @@
 | `pnpm run test:recommendation && pnpm run test:recommendation:db` | `2026-08-13` | 통과 — 추천 unit/UI 33/33, DB persistence/synthesis 3/3 |
 | `pnpm run test:catalog-targets && pnpm run test:mixing:db` | `2026-08-13` | 통과 — target revision 1/1, mixing queue 1/1 |
 | runtime JSON/고정 크기 `rg` audit | `2026-08-13` | 통과 — `src`의 artifact direct import·`RECOMMENDATION_CATALOG_SIZE` 0건 |
-| `pnpm run test:song-analysis-queue` | `2026-08-13` | 통과 — 관리자 mutation/publish와 durable claim/retry 4/4 |
+| `pnpm run test:song-analysis-queue` | `2026-08-13` | 통과 — Modal submit/poll, target 준비 gate와 durable claim/retry 6/6 |
+| Modal catalog analyzer unittest | `2026-08-13` | 통과 — 입력 제한·확장자·major/minor 원키 추정·CPU resource·spawn/poll/idempotency·GPU 미사용 계약 4/4 |
 | `pnpm run test:admin && pnpm run test:architecture-boundaries && pnpm run test:process-scripts` | `2026-08-13` | 통과 — admin 2/2, architecture 4/4, process 5/5 |
 | Task 03 targeted Biome·ESLint·TypeScript | `2026-08-13` | 통과 |
-| `pnpm run test:admin` | `2026-08-13` | 통과 — catalog UI contract/story presence와 기존 admin 4/4 |
-| catalog manager Storybook Vitest | `2026-08-13` | 통과 — default·empty·error/retry·loading/disabled·mobile 및 a11y 5/5 |
+| `pnpm run test:admin` | `2026-08-13` | 통과 — URL 기반 video ID 파생·최소 입력 음원 관리 page/dialog와 기존 admin 5/5 |
+| catalog manager Storybook Vitest | `2026-08-13` | 통과 — add audio dialog·default·empty·error/retry·loading/disabled·mobile 및 a11y 6/6 |
 | Task 04 targeted Biome·ESLint·TypeScript·architecture | `2026-08-13` | 통과 |
+| Modal CPU 배포 health 및 4곡 submit/poll/publish | `2026-08-13` | 통과 — 8 vCPU·16 GiB health, 4/4 SUCCEEDED·READY·PUBLISHED |
+| analyzer/mixing resource `rg` audit | `2026-08-13` | 통과 — catalog analyzer GPU 할당 0건, 곡 믹싱 `services/soulx-singer-svc/modal_app.py`만 L4 GPU 사용 |
+| Task 05 순차 회귀 검증 | `2026-08-13` | 통과 — admin 5/5, analysis queue 6/6, recommendation 33/33+DB 3/3, target/mixing 각 1/1, TypeScript·Prisma·build |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T18:11:00+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T18:14:25+09:00 -->
