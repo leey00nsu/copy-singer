@@ -149,6 +149,20 @@ Modal CPU 분석/공개 결과: 순위 47 `F`(confidence `0.10758179029087539`),
     - [x] full test/check/build 및 공개 문자열·runtime import audit를 실행한다.
     - [x] decisions와 테스트 로그, workflow sync marker를 갱신한다.
 
+- [TODO][PRD-FR-057] T-F024-admin-song-catalog-management-07 추천 스냅샷 제거와 revision 기반 재계산 전환
+  - Date: 2026-08-13
+  - Acceptance:
+    - 추천 결과는 영속 RecommendationRun/RecommendationItem 스냅샷 없이 현재 보컬 프로필·공개 카탈로그·scoring revision 조합으로 계산된다.
+    - 카탈로그 공개 revision이 변경되면 기존 클라이언트 캐시와 분리되어 교체·추가·보관된 곡을 반영한 추천을 다시 계산한다.
+    - 믹싱 작업은 추천 항목 row가 아니라 검증된 보컬 프로필·곡 분석·target asset·추천 키 입력을 immutable하게 저장한다.
+    - 보컬 프로필의 최근 추천 결과 보기 문구는 추천 결과 보기로 표시된다.
+  - Checklist:
+    - [ ] PRD와 F024 spec·plan·decisions를 on-demand 추천 계약에 맞게 갱신한다.
+    - [ ] Catalog revision과 추천 API·TanStack Query cache key 계약을 구현한다.
+    - [ ] RecommendationRun/RecommendationItem 의존과 스냅샷 저장 모델을 제거하고 믹싱 handoff를 revision 입력으로 전환한다.
+    - [ ] 보컬 프로필 CTA 문구와 관련 단위·통합·UI 테스트를 갱신한다.
+    - [ ] Prisma validation, typecheck, lint, 관련 테스트와 production build를 실행한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
