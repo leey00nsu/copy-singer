@@ -157,7 +157,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Context**: DB runtime 전환 후에도 Song.catalogOrder와 과거 JSON 생성·검증·로컬 분석 명령이 남아 CatalogEntry.position과 중복되고 새 관리자 흐름을 우회했다.
 - **Constraints**: 기존 `RecommendationItem.catalogPosition` null row를 보존 가능한 값으로 backfill해야 한다. 초기 TJ 100곡의 재현 가능한 bootstrap 입력과 점수 회귀 fixture는 계속 필요하며, 사용자-visible `catalogOrder` 응답 계약은 유지해야 한다.
 - **Options**: 중복 `Song.catalogOrder` 유지, JSON pipeline 전체 유지하되 runtime에서만 미사용, `CatalogEntry.position`/recommendation snapshot 단일화와 JSON bootstrap/fixture 축소.
-- **Decision**: Song.catalogOrder를 제거하고 CatalogEntry.position을 runtime 순위 SSOT로 사용한다. 과거 JSON 생성·검증·분석 스크립트와 package command는 제거하며, 카탈로그 이동이 필요할 때는 관리자 snapshot export/import를 사용한다. Modal allowlist는 서비스 전용 catalogs 디렉터리에 둔다.
+- **Decision**: Song.catalogOrder를 제거하고 CatalogEntry.position을 runtime 순위 SSOT로 사용한다. 과거 JSON 생성·검증·분석 스크립트와 package command는 제거하며, 카탈로그 이동이 필요할 때는 관리자 snapshot export/import를 사용한다. YouTube allowlist는 제거하고 URL 형식(videoId 일치)만 검증한다.
 - **Rationale**: 중복 순위 drift와 배포 artifact를 runtime처럼 다루는 경로를 제거하면서 과거 추천·믹싱 표시에는 immutable catalogPosition snapshot 또는 현재 CatalogEntry position을 사용한다.
 - **Trace**:
   - **At DOING start**: runtime import audit에서 `src`의 JSON direct import는 없었지만 schema·seed·일부 조회가 `Song.catalogOrder`를 사용하고 과거 artifact scripts가 package command로 남아 있음을 확인했다.
@@ -204,11 +204,11 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Context**: PostgreSQL 카탈로그가 runtime SSOT로 전환된 뒤에도 저장소의 data/catalogs JSON과 top100 문서, 일회성 bootstrap·target script가 남아 있으면 DB 교체 시 운영 경로가 둘로 나뉘고 stale artifact가 다시 사용될 수 있다.
 - **Constraints**: 배포 전 breaking change가 허용된다. 새 DB에서도 READY 분석·외부 target 연결·TJ position을 복원해야 하지만 원본 음원 bytes와 Modal 작업용 임시 파일은 이동하거나 영속화하지 않는다. 신규 노래 등록은 관리자 음원 관리 페이지 단일 경로여야 한다.
 - **Options**: 저장소 JSON을 계속 유지, 별도 seed/CLI를 제공, 관리자 페이지에서 schema 고정 snapshot을 export/import.
-- **Decision**: data/catalogs와 bootstrap·target import/verify script 및 package command를 제거한다. 현재 DB 카탈로그는 관리자 전용 /admin/songs에서 schema version이 고정된 JSON snapshot으로 내보내고, import는 schema·position·source video ID·target 연결을 검증한 뒤 하나의 transaction에서 song/source/analysis/target/catalog entry를 idempotent upsert한다. 반복 import는 기존 row와 revision을 재사용하고 catalog revision을 낮추지 않는다. snapshot에는 곡 메타데이터, 분석 결과, 외부 target asset metadata만 포함하며 원본 음원 bytes는 포함하지 않는다. Modal/vocal-profile-api allowlist는 services/vocal-profile-api/catalogs에 유지한다.
+- **Decision**: data/catalogs와 bootstrap·target import/verify script 및 package command를 제거한다. 현재 DB 카탈로그는 관리자 전용 /admin/songs에서 schema version이 고정된 JSON snapshot으로 내보내고, import는 schema·position·source video ID·target 연결을 검증한 뒤 하나의 transaction에서 song/source/analysis/target/catalog entry를 idempotent upsert한다. 반복 import는 기존 row와 revision을 재사용하고 catalog revision을 낮추지 않는다. snapshot에는 곡 메타데이터, 분석 결과, 외부 target asset metadata만 포함하며 원본 음원 bytes는 포함하지 않는다. 별도 YouTube allowlist는 두지 않고 URL/videoId 일치만 검증한다.
 - **Rationale**: 관리자 UI 하나만 운영 경로로 유지하면 새 DB 복원과 신규 곡 등록의 권한 경계가 동일해진다. snapshot은 분석·외부 asset 연결을 이동할 만큼 충분하지만 원본 음원을 복제하지 않으므로 저장소·DB·Leemage에 원본 bytes를 남기지 않는 기존 정책을 보존한다. transaction과 identity key 기반 upsert는 네트워크 재시도와 동일 파일 재가져오기에 안전하다.
 - **Trace**:
   - **DOING 시작 시점**: 현재 runtime 코드가 DB active revision을 사용하지만 저장소 artifact와 초기화 명령이 남아 있는 것을 확인하고, F024 안에서 운영 경로를 관리자 snapshot으로 단일화하기로 했다.
-  - **DONE 전 확정 시점**: export/import route·UI·schema validation·transaction import를 구현하고 반복 import, READY 공개 gate, revision 단조 증가, raw audio bytes 제외를 합성 fixture로 검증했다. data/catalogs와 legacy scripts/commands를 제거하고 service allowlist를 새 위치에서 참조하도록 이전했다.
+  - **DONE 전 확정 시점**: export/import route·UI·schema validation·transaction import를 구현하고 반복 import, READY 공개 gate, revision 단조 증가, raw audio bytes 제외를 합성 fixture로 검증했다. data/catalogs와 legacy scripts/commands를 제거했으며, 저장소 및 서비스 전용 allowlist(`services/vocal-profile-api/catalogs/tj-2607-top100.md`)도 함께 제거하고 YouTube URL 검증만 유지했다.
   - **머지 후 확인**: -
 - **Evidence**:
   - **Commit**: T09 task checkpoint

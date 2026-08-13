@@ -230,4 +230,4 @@
 | snapshot export sanitize `rg` audit | `2026-08-13` | 통과 — snapshot에 audioBytes/base64/tempPath 없음, pipelineMetadata allowlist만 포함 |
 | legacy catalog artifact `rg` audit | `2026-08-13` | 통과 — `data/catalogs`·legacy bootstrap/targets script·package command 0건, allowlist는 `services/vocal-profile-api/catalogs`에서만 참조 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T23:15:27.658217+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T23:31:55.997228+09:00 -->
