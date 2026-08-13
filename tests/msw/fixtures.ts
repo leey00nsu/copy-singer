@@ -1,7 +1,7 @@
 import type { MixingHistoryPayload, MixingJobResponse } from "@/entities/mixing-job";
 import type { NotificationList } from "@/entities/notification";
 import type { RecommendationRunResponse } from "@/entities/recommendation";
-import type { AdminCustomMixingJob } from "@/features/admin-custom-mixing";
+import type { AdminCustomMixingJob, AdminCustomMixingProfilesResponse } from "@/features/admin-custom-mixing";
 import type { TicketAdjustmentResponse } from "@/features/manage-tickets";
 
 export const MSW_API_ORIGIN = "http://copy-singer.test";
@@ -60,6 +60,25 @@ export const succeededAdminCustomMixingJobFixture: AdminCustomMixingJob = {
   ...queuedAdminCustomMixingJobFixture,
   status: "succeeded",
   result_url: "/api/conversions/modal-job-1/audio",
+};
+
+export const adminCustomMixingProfilesFixture: AdminCustomMixingProfilesResponse = {
+  profiles: [
+    {
+      id: "20000000-0000-4000-8000-000000000002",
+      profileNumber: 1,
+      displayName: "메인 보컬",
+      referenceKind: "SYNTHESIS_REFERENCE",
+      referenceReady: true,
+    },
+    {
+      id: "20000000-0000-4000-8000-000000000003",
+      profileNumber: 2,
+      displayName: "보컬 프로필 2",
+      referenceKind: null,
+      referenceReady: false,
+    },
+  ],
 };
 
 export const ticketAdjustmentFixture: TicketAdjustmentResponse = {

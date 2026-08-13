@@ -4,6 +4,7 @@ import type { NotificationList } from "@/entities/notification";
 import type { RecommendationRunResponse } from "@/entities/recommendation";
 import {
   activeRecommendationRunFixture,
+  adminCustomMixingProfilesFixture,
   mixingHistoryFixture,
   mixingJobFixture,
   notificationListFixture,
@@ -17,6 +18,8 @@ import {
 
 export const handlers = [
   http.get("*/api/admin/custom-mixing/:id", () => HttpResponse.json(queuedAdminCustomMixingJobFixture)),
+  http.get("*/api/admin/custom-mixing/profiles", () => HttpResponse.json(adminCustomMixingProfilesFixture)),
+  http.post("*/api/admin/custom-mixing", () => HttpResponse.json(queuedAdminCustomMixingJobFixture, { status: 202 })),
   http.get("*/api/recommendations/:id", () => HttpResponse.json(recommendationRunFixture)),
   http.post("*/api/mixing-jobs", () => HttpResponse.json(mixingJobFixture, { status: 201 })),
   http.post("*/api/admin/ticket-adjustments", () => HttpResponse.json(ticketAdjustmentFixture, { status: 201 })),
@@ -47,6 +50,14 @@ export function adminCustomMixingPollingSequenceHandler() {
     requestIndex += 1;
     return HttpResponse.json(payload);
   });
+}
+
+export function adminCustomMixingProfilesHandler(payload = adminCustomMixingProfilesFixture) {
+  return http.get("*/api/admin/custom-mixing/profiles", () => HttpResponse.json(payload));
+}
+
+export function adminCustomMixingSubmitHandler(payload = queuedAdminCustomMixingJobFixture) {
+  return http.post("*/api/admin/custom-mixing", () => HttpResponse.json(payload, { status: 202 }));
 }
 
 export function recommendationHandler(payload: RecommendationRunResponse = recommendationRunFixture) {
