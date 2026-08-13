@@ -1,12 +1,20 @@
 import { AudioLines, CircleAlert, Ticket, WandSparkles } from "lucide-react";
-import type { NotificationItem } from "../model/contract";
+import type { NotificationItem, NotificationType } from "../model/contract";
 
-const icons = {
+const icons: Record<NotificationType, React.ComponentType<{ className?: string; "aria-hidden"?: boolean | "true" | "false" }>> = {
   ticket_credit: Ticket,
   vocal_profile_succeeded: AudioLines,
   vocal_profile_failed: CircleAlert,
   mixing_succeeded: WandSparkles,
   mixing_failed: CircleAlert,
+} as const;
+
+const badgeStyles: Record<NotificationType, string> = {
+  ticket_credit: "bg-success text-success-foreground",
+  vocal_profile_succeeded: "bg-data-accent text-white",
+  vocal_profile_failed: "bg-destructive/10 text-destructive",
+  mixing_succeeded: "bg-data-accent text-white",
+  mixing_failed: "bg-destructive/10 text-destructive",
 } as const;
 
 const dateTimeFormatter = new Intl.DateTimeFormat("ko-KR", {
@@ -18,10 +26,11 @@ const dateTimeFormatter = new Intl.DateTimeFormat("ko-KR", {
 
 export function NotificationItemContent({ compact = false, item }: { compact?: boolean; item: NotificationItem }) {
   const Icon = icons[item.type];
+  const badgeClass = badgeStyles[item.type] ?? "bg-muted text-foreground";
   const unread = item.readAt === null;
   return (
     <span className="flex min-w-0 items-start gap-3 text-left">
-      <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full bg-muted text-foreground">
+      <span className={`mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full ${badgeClass}`}>
         <Icon aria-hidden="true" className="size-4" />
       </span>
       <span className="min-w-0 flex-1">
@@ -44,3 +53,4 @@ export function NotificationItemContent({ compact = false, item }: { compact?: b
     </span>
   );
 }
+
