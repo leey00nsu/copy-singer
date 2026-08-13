@@ -166,3 +166,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**:
   - **Test/Log**: test: pnpm test; pnpm run lint; catalog bootstrap 2회 및 DB 100/100 READY; runtime JSON/direct import rg audit
 - **Consequences**: 카탈로그 순위 변경은 `CatalogEntry.position`만 갱신하면 되고 신규 RecommendationItem은 항상 당시 위치를 저장한다. 과거 JSON 생성·URL 다운로드·로컬 분석 명령은 더 이상 지원하지 않으며 신규 분석은 관리자 UI와 Modal CPU job만 사용한다.
+
+## D010: 추천 스냅샷 제거와 믹싱 입력 분리 (2026-08-13)
+
+- **Context**: `RecommendationRun`이 보컬 프로필당 하나로 고정되어 관리자 곡 교체·추가 후에도 과거 결과를 반환했다. 100여 곡의 READY 수치 비교는 외부 분석이나 GPU 작업 없이 짧게 계산할 수 있어 결과 전체를 영속할 필요가 없다.
+- **Constraints**: 브라우저 캐시는 서버 영속성의 대체물이 아니며 카탈로그 변경을 식별할 revision이 필요하다. 추천 스냅샷을 제거해도 이미 접수된 믹싱은 분석·target·추천 키가 바뀌지 않아야 하고 티켓·worker 내구성은 유지해야 한다.
+- **Options**: 기존 단일 스냅샷 유지, catalog 변경 때 모든 스냅샷 삭제·재생성, 추천은 on-demand 계산하고 믹싱 입력만 영속.
+- **Decision**: `RecommendationRun`과 `RecommendationItem`을 제거하고 보컬 프로필 ID를 추천 route identity로 사용한다. `Catalog.revision`은 공개 결과 변경 transaction에서 증가하며 추천 응답과 TanStack Query key는 profile ID·catalog revision·scoring version을 포함한다. item identity는 immutable `SongAnalysis.id`를 사용한다. 믹싱 API는 profile ID와 analysis ID를 받아 서버에서 현재 추천을 재검증한 뒤 `MixingJob`에 analysis·target·catalog position·recommended shift·catalog/scoring revision을 저장한다.
+- **Rationale**: 카탈로그 변경이 다음 조회에 즉시 반영되고 클라이언트 캐시도 revision 단위로 자연스럽게 분리된다. 비용이 큰 작업은 믹싱뿐이므로 그 입력만 영속하면 재현성과 worker 안정성을 유지하면서 중복 추천 데이터를 없앨 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 현재 query key가 run ID뿐이고 `createRecommendationRun`이 기존 row를 즉시 반환해 catalog revision을 보지 않는 것을 확인했다. 또한 MixingJob이 RecommendationItem을 통해 shift 근거를 간접 참조하고 current Song target을 읽는 불일치를 확인했다.
+  - **DONE 전 확정 시점**: Prisma migration 적용 후 추천 조회가 DB write 없이 현재 catalog revision을 반영하고, 공개·보관 시 revision이 증가하며 동일 재공개는 idempotent함을 통합 테스트로 확인했다. 믹싱 job은 current catalog 검증 후 analysis·target·position·shift·catalog/scoring revision을 자체 저장한다.
+  - **머지 후 확인**: -
+- **Evidence**:
+  - **Commit**: T07 task checkpoint
+  - **PR**: -
+  - **Test/Log**: `pnpm test`, `pnpm run lint`, `pnpm exec prisma validate`, `pnpm run test:recommendation:db`, `pnpm run test:mixing:db`, `node --conditions react-server --import tsx --test tests/admin-song-catalog.integration.ts` 통과. Storybook 48/48 files·135/135 tests 통과.
+- **Consequences**: 추천 결과 삭제 action과 추천 개수 개념은 사라진다. 같은 프로필 URL은 최신 catalog revision 결과를 보여주며, 과거 믹싱 이력은 작업 row에 저장된 immutable 입력을 사용한다.

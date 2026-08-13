@@ -60,7 +60,9 @@
 
 - [ ] 추천은 published catalog entry와 READY active analysis를 DB에서 조회한다.
 - [ ] 곡 수를 100으로 고정하지 않고 현재 공개된 전체 곡을 결정적으로 정렬한다.
-- [ ] RecommendationItem은 사용한 analysis revision을 참조해 과거 결과의 근거를 추적한다.
+- [ ] 추천은 현재 보컬 프로필·카탈로그 revision·scoring version 조합으로 요청 시 계산하고 결과 스냅샷을 영속하지 않는다.
+- [ ] 카탈로그 공개 revision이 바뀌면 이전 TanStack Query 캐시와 분리된 키로 최신 READY 곡을 재계산한다.
+- [ ] 믹싱 작업은 접수 시 검증한 보컬 프로필·곡 분석·target asset·추천 키 revision 입력을 영속한다.
 
 ---
 
@@ -82,6 +84,10 @@
 
 순위 47 `HdTUQhHHJEg`, 62 `vepz3RlTd4M`, 70 `saK6H76TyMI`, 76 `zBTINvN-rCk`를 새 source revision으로 분석하고 저장된 신규 m4a를 target asset으로 교체한다. 기존 `WABhOy9wm3c`, `0NBmnq-uG_g`, `lVwtHrwlrF0`, `vPkOZm-2cNA` 로컬 파일은 신규 파일 검증 후 삭제한다.
 
+### FR-5: on-demand 추천과 revision 캐시
+
+`RecommendationRun`과 `RecommendationItem` 영속 스냅샷을 제거하고 `/recommendations/{vocalProfileId}`에서 현재 공개 카탈로그를 즉시 비교한다. `Catalog.revision`은 곡 공개·교체·보관처럼 추천 집합이나 active analysis가 바뀌는 transaction에서 증가한다. 추천 응답은 보컬 프로필 ID, catalog revision과 scoring version을 제공하며 TanStack Query key는 이 조합을 사용한다. 보컬 프로필 상세의 action은 항상 `추천 결과 보기`로 표시한다. 믹싱 접수는 추천 item row 대신 서버가 현재 결과에서 검증한 `vocalProfileId`, `songAnalysisId`, `targetAssetId`, `recommendedShift`, catalog/scoring revision을 `MixingJob`에 고정한다.
+
 ---
 
 ## 비기능 요구사항
@@ -90,7 +96,7 @@
 - **보안**: 모든 관리자 API는 서버 세션과 allowlist를 검증한다. 업로드는 허용 MIME·크기·빈 파일을 검증하고 외부 저장소 credential과 URL을 클라이언트에 노출하지 않는다.
 - **내구성**: 분석 작업은 서버 재시작 후 재개·재시도 가능하고 동일 source revision을 중복 활성화하지 않는다.
 - **격리성**: 카탈로그 분석과 보컬 진단은 각각 별도 Modal CPU 함수로 운영하고, GPU는 곡 믹싱/합성 함수에만 할당해 workload별 timeout·메모리·autoscaling 경계를 독립적으로 유지한다.
-- **재현성**: 추천 실행은 scoring version과 song analysis revision을 함께 저장한다.
+- **재현성**: 추천 응답은 보컬 프로필·카탈로그·곡 분석 revision과 scoring version을 식별하고, 영속 믹싱 작업은 접수 시 사용한 revision 입력을 저장한다.
 - **호환성**: 서비스가 아직 배포되지 않았으므로 기존 DB와 JSON runtime 계약의 하위 호환은 요구하지 않으며 reset/bootstrap을 허용한다.
 
 ---
@@ -98,7 +104,7 @@
 ## 관련 문서
 
 - PRD: `../../prd/`
-- PRD Refs: `PRD-US-028`, `PRD-FR-005`, `PRD-FR-006`, `PRD-FR-007`, `PRD-FR-019`, `PRD-FR-026`, `PRD-FR-059`, `PRD-DATA-001`, `PRD-DATA-002`, `PRD-DATA-004`, `PRD-DATA-006`, `PRD-DATA-013`, `PRD-NFR-004`, `PRD-NFR-005`, `PRD-NFR-009`
+- PRD Refs: `PRD-US-028`, `PRD-FR-005`, `PRD-FR-006`, `PRD-FR-007`, `PRD-FR-010`, `PRD-FR-019`, `PRD-FR-026`, `PRD-FR-049`, `PRD-FR-057`, `PRD-FR-059`, `PRD-DATA-001`, `PRD-DATA-002`, `PRD-DATA-004`, `PRD-DATA-006`, `PRD-DATA-013`, `PRD-NFR-004`, `PRD-NFR-005`, `PRD-NFR-009`
   - 이미 원문 요구사항 문서에 정의된 ID만 적으세요. `spec.md`나 `tasks.md`에서 임의로 PRD ID를 만들지 않습니다.
   - 레거시 요구사항 문서에 아직 PRD ID가 없다면, 먼저 원문에 ID를 backfill한 뒤 이 필드와 `tasks.md` 태스크 태그를 함께 갱신하세요.
   - 요구사항/스코프 변경 시 PRD 문서 + 이 필드 + `tasks.md` 태스크 태그를 함께 갱신하세요.

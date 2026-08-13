@@ -24,6 +24,8 @@
 | 분석 실행 | durable `SongAnalysisJob` worker + Modal CPU job | Demucs·pYIN·chroma 분석을 곡 믹싱 GPU와 분리하고 외부 job ID로 재시작·재시도 지원 |
 | 관리자 UI | 전용 `/admin/songs` 페이지 + 최소 입력 `음원 추가` dialog | 제목·아티스트·YouTube URL·음원만 받고 파생값과 분석값 입력을 제거 |
 | target audio | 곡 정보와 파일을 함께 받는 관리자 multipart upload + 기존 외부 저장 client | 단일 사용자 action으로 source/job/target을 준비하고 저장 bytes/MIME/SHA-256 계약 재사용 |
+| 추천 계산·캐시 | on-demand DB scoring + TanStack Query revision key | 작은 READY 분석 집합 비교는 요청 시 계산하고 보컬 프로필·catalog·scoring revision이 같을 때만 클라이언트 캐시 재사용 |
+| 믹싱 handoff | `MixingJob` immutable revision input | 추천 스냅샷 없이도 접수 시 검증한 analysis·target·추천 키 근거를 영속 |
 
 ---
 
@@ -47,10 +49,16 @@ Admin-only /admin/songs -> 음원 추가 dialog
        CatalogEntry.status=PUBLISHED
 
 Recommendation request
-  -> published CatalogEntry + Song + current SongAnalysis
+  -> VocalProfile + Catalog.revision + published CatalogEntry + current SongAnalysis
   -> KeyFitProfile adapter
   -> deterministic ranking
-  -> RecommendationItem.songAnalysisId snapshot
+  -> response only (no RecommendationRun/RecommendationItem persistence)
+  -> TanStack Query key(profileId, catalogRevision, scoringVersion)
+
+Mixing request(profileId, songAnalysisId)
+  -> recompute and validate current recommendation item
+  -> MixingJob(profileId, songAnalysisId, targetAssetId,
+               recommendedShift, catalogRevision, scoringVersion)
 ```
 
 핵심 모델:
@@ -59,8 +67,9 @@ Recommendation request
 - `SongSource`: 정규화된 YouTube URL/video ID의 immutable revision이다.
 - `SongAnalysis`: source revision과 pipeline contract에 묶인 immutable 결과이며 추정 원키와 신뢰도를 포함한다.
 - `SongAnalysisJob`: 분석 queue 상태·attempt·lease와 Modal external job ID를 소유한다.
-- `Catalog`/`CatalogEntry`: 곡 identity와 TJ 차트 position·공개 상태를 분리한다.
+- `Catalog`/`CatalogEntry`: 곡 identity와 TJ 차트 position·공개 상태를 분리하고 공개 결과가 바뀔 때 단조 증가 revision을 갱신한다.
 - `CatalogTargetAsset`: source revision을 참조하며 새 asset 활성화 전 기존 asset을 유지한다.
+- `MixingJob`: 접수 시 검증한 보컬 프로필·곡 분석·target·추천 키·catalog/scoring revision을 immutable input으로 보존한다.
 
 Breaking migration은 기존 개발 DB reset 후 bootstrap을 기준으로 한다. 과거 JSON과 신규 DB dual-read fallback은 두지 않고 비교 검증 명령만 제공한다.
 
@@ -104,6 +113,7 @@ tests/
 
 - **단위 테스트**: YouTube URL에서 video ID 추출, major/minor key profile 추정, source/profile adapter, 공개 readiness, 동적 catalog ranking.
 - **통합 테스트**: bootstrap idempotency, 관리자 권한·CRUD, source revision 교체, target 준비 전 claim 차단, Modal submit/poll 및 외부 job ID 재사용, durable analysis claim/retry, publish transaction, target 교체와 과거 asset 보존.
+- **추천·믹싱 통합 테스트**: 추천 조회가 DB snapshot을 만들지 않는지, catalog revision 변경 시 응답·cache key가 바뀌는지, 믹싱이 검증된 immutable revision input을 저장하고 조작된 analysis를 거부하는지 확인한다.
 - **Modal 단위 테스트**: 업로드·인증·idempotent submit, pending/result/error polling과 CPU 함수 resource·cleanup 계약 및 GPU 미사용.
 - **UI/Storybook 테스트**: 관리자 전용 page, 파생 video ID·분석 원키 입력이 없는 `음원 추가` dialog와 필수 파일, 분석 원키·신뢰도 표시, 목록, 분석 상태, 오류·재시도, 공개 confirmation과 모바일 layout.
 - **회귀 테스트**: recommendation, mixing, admin, catalog target, Prisma validation, TypeScript, lint, production build와 전체 `pnpm test`.
