@@ -86,16 +86,16 @@
     - [x] 각 story에 360/768/1280 뷰포트 테스트와 reduced-motion 테스트 추가
     - [x] `pnpm run test:storybook --run` 관련 스토리 통과
 
-- [TODO][PRD-FR-051] T-F026-product-quality-hardening-04 RSC 스트리밍·쿼리 Waterfall 개선
+- [DONE][PRD-FR-051] T-F026-product-quality-hardening-04 RSC 스트리밍·쿼리 Waterfall 개선
   - Date: 2026-08-14
   - Acceptance:
     - Recommendation/SongDetail/MixingDetail 등 최소 3개 경로에서 `useSuspenseQuery` + RSC prefetch로 waterfall 1단계 이상 감소한다
     - Query key가 `catalogRevision`/`scoringVersion` 계약을 유지한다
     - `loading.tsx` 스켈레톤이 Suspense 폴백으로 실제 사용된다
   - Checklist:
-    - [ ] data fetching이 RSC prefetch + HydrationBoundary 패턴으로 개선
-    - [ ] loading.tsx 폴백 동작 확인
-    - [ ] revision key 유지 검증
+    - [x] data fetching이 RSC prefetch + HydrationBoundary 패턴으로 개선
+    - [x] loading.tsx 폴백 동작 확인
+    - [x] revision key 유지 검증
 
 - [TODO][PRD-FR-051] T-F026-product-quality-hardening-05 접근성 심화 감사·수정
   - Date: 2026-08-14
@@ -144,7 +144,9 @@
 
 
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T15:48:34.308Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T15:49:10.849Z -->
+
+
 
 
 

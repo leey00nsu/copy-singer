@@ -80,7 +80,7 @@ export function mixingDetailQueryOptions(id: string, initialData?: MixingHistory
   return queryOptions({
     queryKey: mixingJobKeys.detail(id),
     queryFn: ({ signal }) => getMixingJob(id, signal),
-    ...(initialData ? { initialData } : {}),
+    ...(initialData ? { initialData, staleTime: 30_000 } : {}),
     refetchInterval: (query) => mixingDetailPollingInterval(query.state.data),
   });
 }
@@ -98,3 +98,4 @@ export function deleteMixingJobMutationOptions() {
     mutationFn: deleteMixingJob,
   });
 }
+

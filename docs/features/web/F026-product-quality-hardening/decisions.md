@@ -94,3 +94,16 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Test/Log**: skeletons.stories 12/12 통과
 - **Consequences**: 다음 스켈레톤 변경 시 story만으로 회귀 감지 가능.
 
+
+
+## D026-05: RSC 스트리밍·쿼리 Waterfall 개선 (2026-08-14)
+
+- **Context**: Recommendation/MixingDetail/SongDetail이 useQuery(initialData)로 구성돼 마운트 직후 불필요한 refetch가 발생할 수 있고, loading.tsx 폴백의 Suspense 이점이 일부 희석.
+- **Decision**: recommendationDetailQueryOptions와 mixing query에 staleTime 30초 추가, initialData가 fresh하면 즉시 refetch 방지. loading.tsx는 F025에서 이미 Suspense 폴백으로 올바르게 연결됨을 확인.
+- **Rationale**: polling은 refetchInterval로 유지하고, 초기 hydration 후 30초간은 stale로 간주해 waterfall 1회 제거. revision key(catalogRevision/scoringVersion)는 그대로 유지.
+- **Trace**:
+  - **DONE 전 확정 시점**: loading.tsx 3경로 연결 확인, typecheck 통과.
+- **Evidence**:
+  - **Test/Log**: typecheck 통과, loading.tsx re-export 확인
+- **Consequences**: 초기 로드에서 불필요한 네트워크 1회 감소. 필요 시 HydrationBoundary로 추가 개선 가능.
+

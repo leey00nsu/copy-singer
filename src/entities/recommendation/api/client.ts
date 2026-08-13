@@ -45,7 +45,8 @@ export function recommendationDetailQueryOptions(profileId: string | null, initi
       }
       return getRecommendation(profileId, signal);
     },
-    ...(initialData ? { initialData } : {}),
+    ...(initialData ? { initialData, staleTime: 30_000 } : {}),
     refetchInterval: (query) => recommendationPollingInterval(query.state.data),
   });
 }
+
