@@ -10,7 +10,6 @@ import {
 import { vocalProfileAnalyzerUrl } from "@/shared/config/index.server";
 import type { Prisma } from "@/shared/db/index.server";
 import { prisma } from "@/shared/db/index.server";
-import artifactJson from "../../../../data/catalogs/tj-2607-song-profiles.json";
 import { getRecommendationRun } from "./recommendation-service";
 
 const MODAL_RESULT_TTL_MS = 24 * 60 * 60 * 1_000;
@@ -65,32 +64,20 @@ async function requireMedia(response: Response, code: "SYNTHESIS_PREFLIGHT_FAILE
   };
 }
 
-function catalogMedia(song: {
-  catalogOrder: number;
-  title: string;
-  artist: string;
-  metadata: Prisma.JsonValue | null;
+function catalogMedia(item: {
+  songAnalysis: {
+    sourceId: string;
+    source: { id: string; sourceUrl: string; sourceVideoId: string; status: string };
+  } | null;
 }) {
-  const artifact = artifactJson.songs[song.catalogOrder - 1];
-  const metadata =
-    song.metadata && typeof song.metadata === "object" && !Array.isArray(song.metadata) ? song.metadata.catalog : null;
-  if (
-    !artifact ||
-    artifact.catalogOrder !== song.catalogOrder ||
-    artifact.title !== song.title ||
-    artifact.artist !== song.artist ||
-    !metadata ||
-    typeof metadata !== "object" ||
-    Array.isArray(metadata) ||
-    metadata.sourceUrl !== artifact.sourceUrl ||
-    metadata.sourceVideoId !== artifact.sourceVideoId
-  ) {
-    throw new RecommendationError("SYNTHESIS_PREFLIGHT_FAILED", "추천 곡 정보가 allowlist와 일치하지 않습니다.", {
+  const source = item.songAnalysis?.source;
+  if (!source || source.id !== item.songAnalysis?.sourceId || source.status !== "READY") {
+    throw new RecommendationError("SYNTHESIS_PREFLIGHT_FAILED", "추천 곡의 출처 revision이 준비되지 않았습니다.", {
       status: 422,
       retryable: false,
     });
   }
-  return { sourceUrl: artifact.sourceUrl, sourceVideoId: artifact.sourceVideoId };
+  return { sourceUrl: source.sourceUrl, sourceVideoId: source.sourceVideoId };
 }
 
 async function acquireStart(runId: string, itemId: string, retry: boolean) {
@@ -98,6 +85,7 @@ async function acquireStart(runId: string, itemId: string, retry: boolean) {
     where: { id: itemId, runId },
     include: {
       song: true,
+      songAnalysis: { include: { source: true } },
       run: { include: { userVocalProfile: { include: { recording: true } } } },
     },
   });
@@ -177,7 +165,7 @@ export async function startRecommendationSynthesis(runId: string, itemId: string
       });
     }
     const recording = acquired.item.run.userVocalProfile.recording;
-    const target = catalogMedia(acquired.item.song);
+    const target = catalogMedia(acquired.item);
 
     // Reference preflight always completes before target download to avoid unnecessary work and cost.
     const referenceResponse = await fetch(`${analyzer}/v1/recordings/${encodeURIComponent(recording.id)}/source`, {

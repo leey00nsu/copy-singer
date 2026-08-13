@@ -13,11 +13,8 @@ import {
   scoreCatalogKeyFits,
   selectRecommendationHandoff,
 } from "../src/entities/recommendation/index.model";
-import {
-  buildRankedRecommendations,
-  validateAndIndexSongRows,
-  validateRecommendationArtifact,
-} from "../src/features/create-recommendation/index.data.server";
+import type { PublishedCatalogRow } from "../src/entities/song-catalog/index.server";
+import { buildRankedDatabaseRecommendations } from "../src/features/create-recommendation/index.data.server";
 
 const USER_PROFILE_FIXTURE: KeyFitProfile = {
   minMidi: 48,
@@ -183,36 +180,76 @@ test("low-confidence explanations recommend a longer recording", () => {
   assert.ok(formatRecommendationReasons(result).some((reason) => reason.includes("더 긴 소절")));
 });
 
-test("strictly joins the READY artifact to 100 database song rows", () => {
-  const rows = artifact.songs.map((song, index) => ({
-    id: `00000000-0000-4000-8000-${String(index + 1).padStart(12, "0")}`,
-    catalogOrder: song.catalogOrder,
-    title: song.title,
-    artist: song.artist,
-    analysisStatus: "READY" as const,
-  }));
-  const validatedArtifact = validateRecommendationArtifact(artifact);
-  assert.equal(validateAndIndexSongRows(rows, validatedArtifact).size, 100);
-  const ranked = buildRankedRecommendations(USER_PROFILE_FIXTURE, rows, artifact);
-  assert.equal(ranked.length, 100);
+function publishedRows(count = artifact.songs.length): PublishedCatalogRow[] {
+  return artifact.songs.slice(0, count).map((song, index) => {
+    assert.ok(song.profile);
+    const sourceId = `10000000-0000-4000-8000-${String(index + 1).padStart(12, "0")}`;
+    const analysisId = `20000000-0000-4000-8000-${String(index + 1).padStart(12, "0")}`;
+    const targetAssetId = `30000000-0000-4000-8000-${String(index + 1).padStart(12, "0")}`;
+    return {
+      position: song.catalogOrder,
+      song: {
+        id: `00000000-0000-4000-8000-${String(index + 1).padStart(12, "0")}`,
+        title: song.title,
+        artist: song.artist,
+        originalKey: null,
+        activeSourceId: sourceId,
+        currentAnalysisId: analysisId,
+        targetAssetId,
+        activeSource: {
+          id: sourceId,
+          sourceUrl: song.sourceUrl,
+          sourceVideoId: song.sourceVideoId,
+          sourceLabel: song.sourceLabel,
+          status: "READY",
+        },
+        currentAnalysis: {
+          id: analysisId,
+          sourceId,
+          status: "READY",
+          cleanupConfirmed: true,
+          minMidi: song.profile.minMidi,
+          maxMidi: song.profile.maxMidi,
+          p10Midi: song.profile.p10Midi,
+          medianMidi: song.profile.medianMidi,
+          p90Midi: song.profile.p90Midi,
+          tessituraLowMidi: song.profile.tessituraLowMidi,
+          tessituraHighMidi: song.profile.tessituraHighMidi,
+          voicedRatio: song.profile.voicedRatio,
+          pitchStability: song.profile.pitchStability,
+          clippingRatio: song.profile.clippingRatio,
+          rmsDb: song.profile.rmsDb,
+          analyzer: song.profile.analyzer,
+          analyzerVersion: song.profile.analyzerVersion,
+        },
+        targetAsset: { id: targetAssetId, sourceId, status: "READY" },
+      },
+    };
+  });
+}
+
+test("ranks any non-empty published database catalog without a fixed size contract", () => {
+  const ranked = buildRankedDatabaseRecommendations(USER_PROFILE_FIXTURE, publishedRows(7));
+  assert.equal(ranked.length, 7);
   assert.deepEqual(
     ranked.map((item) => item.rank),
-    Array.from({ length: 100 }, (_, index) => index + 1),
+    Array.from({ length: 7 }, (_, index) => index + 1),
   );
   assert.ok(ranked.every((item) => item.songId.length === 36));
+  assert.ok(ranked.every((item) => item.songAnalysisId.length === 36));
 });
 
-test("rejects database metadata drift before scoring or persistence", () => {
-  const rows = artifact.songs.map((song, index) => ({
-    id: `song-${index + 1}`,
-    catalogOrder: song.catalogOrder,
-    title: song.title,
-    artist: song.artist,
-    analysisStatus: "READY" as const,
-  }));
-  rows[8] = { ...rows[8]!, title: "Wrong title" };
+test("rejects mismatched active database revisions before scoring or persistence", () => {
+  const rows = publishedRows(10);
+  rows[8] = {
+    ...rows[8],
+    song: {
+      ...rows[8]!.song,
+      currentAnalysis: { ...rows[8]!.song.currentAnalysis!, sourceId: "mismatched-source" },
+    },
+  };
   assert.throws(
-    () => buildRankedRecommendations(USER_PROFILE_FIXTURE, rows, artifact),
+    () => buildRankedDatabaseRecommendations(USER_PROFILE_FIXTURE, rows),
     (error: unknown) => error instanceof RecommendationError && error.code === "CATALOG_NOT_READY",
   );
 });

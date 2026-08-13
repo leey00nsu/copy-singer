@@ -3,9 +3,9 @@ import "server-only";
 import { createHash } from "node:crypto";
 import { mkdir, readdir, readFile, stat, unlink } from "node:fs/promises";
 import path from "node:path";
+import { TJ_2607_CATALOG_SLUG } from "@/shared/config/index.server";
 import { prisma } from "@/shared/db/index.server";
 import { createLeemageClient } from "@/shared/media/index.server";
-import artifactJson from "../../../../../data/catalogs/tj-2607-song-profiles.json";
 
 const SUPPORTED_SOURCE_EXTENSIONS = ["wav", "mp3", "m4a", "aac", "webm", "flac"] as const;
 const CATALOG_TARGET_MAX_UPLOAD_BYTES = 49_000_000;
@@ -27,23 +27,36 @@ export type CatalogTargetImportResult = {
 };
 
 type CatalogArtifactSong = {
+  id: string;
   catalogOrder: number;
   title: string;
   artist: string;
+  sourceId: string;
   sourceVideoId: string;
 };
 
-function artifactSong(catalogOrder: number): CatalogArtifactSong {
-  const song = artifactJson.songs[catalogOrder - 1] as CatalogArtifactSong | undefined;
-  if (!song || song.catalogOrder !== catalogOrder) {
-    throw new Error(`Catalog order ${catalogOrder} does not exist in the song artifact.`);
+async function catalogSong(catalogOrder: number): Promise<CatalogArtifactSong> {
+  const entry = await prisma.catalogEntry.findFirst({
+    where: { catalog: { slug: TJ_2607_CATALOG_SLUG }, position: catalogOrder },
+    include: { song: { include: { activeSource: true } } },
+  });
+  const source = entry?.song.activeSource;
+  if (!entry || !source || entry.song.activeSourceId !== source.id || source.status !== "READY") {
+    throw new Error(`Catalog position ${catalogOrder} does not have a READY active source.`);
   }
-  return song;
+  return {
+    id: entry.song.id,
+    catalogOrder: entry.position,
+    title: entry.song.title,
+    artist: entry.song.artist,
+    sourceId: source.id,
+    sourceVideoId: source.sourceVideoId,
+  };
 }
 
 export function catalogTargetStem(catalogOrder: number, sourceVideoId: string) {
-  if (!Number.isInteger(catalogOrder) || catalogOrder < 1 || catalogOrder > 100) {
-    throw new Error("Catalog order must be an integer between 1 and 100.");
+  if (!Number.isInteger(catalogOrder) || catalogOrder < 1) {
+    throw new Error("Catalog position must be a positive integer.");
   }
   if (!/^[A-Za-z0-9_-]{11}$/.test(sourceVideoId)) {
     throw new Error("sourceVideoId must be an 11-character YouTube video ID.");
@@ -173,9 +186,9 @@ export async function importCatalogTargetAsset(input: {
   stagingDir?: string;
   fetchImpl?: typeof fetch;
 }): Promise<CatalogTargetImportResult> {
-  const catalog = artifactSong(input.catalogOrder);
+  const catalog = await catalogSong(input.catalogOrder);
   const song = await prisma.song.findUnique({
-    where: { catalogOrder: input.catalogOrder },
+    where: { id: catalog.id },
     include: { targetAsset: true },
   });
   if (!song || song.title !== catalog.title || song.artist !== catalog.artist) {
@@ -198,7 +211,8 @@ export async function importCatalogTargetAsset(input: {
   if (
     song.targetAsset?.status === "READY" &&
     song.targetAsset.sha256 === digest &&
-    song.targetAsset.sourceVideoId === catalog.sourceVideoId
+    song.targetAsset.sourceVideoId === catalog.sourceVideoId &&
+    song.targetAsset.sourceId === catalog.sourceId
   ) {
     await cleanupDerivedWav(input.catalogOrder, catalog.sourceVideoId, stagingDir, sourcePath);
     return {
@@ -236,6 +250,7 @@ export async function importCatalogTargetAsset(input: {
           sizeBytes: BigInt(stored.sizeBytes),
           sha256: digest,
           sourceVideoId: catalog.sourceVideoId,
+          sourceId: catalog.sourceId,
           status: "READY",
         },
       });
@@ -271,39 +286,56 @@ export async function importCatalogTargetAsset(input: {
 }
 
 export async function catalogTargetStatus() {
-  const songs = await prisma.song.findMany({
-    where: { catalogOrder: { gte: 1, lte: 100 } },
-    orderBy: { catalogOrder: "asc" },
+  const entries = await prisma.catalogEntry.findMany({
+    where: { catalog: { slug: TJ_2607_CATALOG_SLUG } },
+    orderBy: { position: "asc" },
     select: {
-      catalogOrder: true,
-      title: true,
-      artist: true,
-      targetAsset: {
+      position: true,
+      song: {
         select: {
-          id: true,
-          status: true,
-          sizeBytes: true,
-          sha256: true,
-          sourceVideoId: true,
-          mimeType: true,
-          fileName: true,
+          title: true,
+          artist: true,
+          activeSource: { select: { id: true, sourceVideoId: true } },
+          targetAsset: {
+            select: {
+              id: true,
+              sourceId: true,
+              status: true,
+              sizeBytes: true,
+              sha256: true,
+              sourceVideoId: true,
+              mimeType: true,
+              fileName: true,
+            },
+          },
         },
       },
     },
   });
+  const songs = entries.map((entry) => ({
+    catalogOrder: entry.position,
+    title: entry.song.title,
+    artist: entry.song.artist,
+    sourceId: entry.song.activeSource?.id ?? null,
+    sourceVideoId: entry.song.activeSource?.sourceVideoId ?? null,
+    targetAsset: entry.song.targetAsset,
+  }));
   return {
     total: songs.length,
-    ready: songs.filter((song) => song.targetAsset?.status === "READY").length,
+    ready: songs.filter((song) => song.targetAsset?.status === "READY" && song.targetAsset.sourceId === song.sourceId)
+      .length,
     missing: songs
-      .filter((song) => !song.targetAsset || song.targetAsset.status !== "READY")
+      .filter(
+        (song) =>
+          !song.targetAsset || song.targetAsset.status !== "READY" || song.targetAsset.sourceId !== song.sourceId,
+      )
       .map((song) => {
-        const catalog = artifactSong(song.catalogOrder);
         return {
           catalogOrder: song.catalogOrder,
           title: song.title,
           artist: song.artist,
-          sourceVideoId: catalog.sourceVideoId,
-          expectedFile: `${catalogTargetStem(song.catalogOrder, catalog.sourceVideoId)}.wav`,
+          sourceVideoId: song.sourceVideoId,
+          expectedFile: song.sourceVideoId ? `${catalogTargetStem(song.catalogOrder, song.sourceVideoId)}.wav` : null,
         };
       }),
     songs,

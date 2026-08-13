@@ -1,7 +1,7 @@
 import type { RecommendationSongProfile } from "../model/contract";
 
 type StoredSongProfile = {
-  sourceType: string;
+  sourceType?: string;
   minMidi: number | null;
   maxMidi: number | null;
   medianMidi: number | null;
@@ -12,7 +12,7 @@ type StoredSongProfile = {
 export function projectRecommendationSongProfile(
   profile: StoredSongProfile | null | undefined,
 ): RecommendationSongProfile | null {
-  if (profile?.sourceType !== "SONG") return null;
+  if (!profile || (profile.sourceType !== undefined && profile.sourceType !== "SONG")) return null;
 
   const values = [
     profile.minMidi,

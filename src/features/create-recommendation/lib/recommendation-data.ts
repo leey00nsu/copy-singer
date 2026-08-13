@@ -1,25 +1,10 @@
 import {
-  type CatalogKeyFitResult,
   type KeyFitProfile,
-  KeyFitScoringError,
-  type RankedRecommendation,
   RecommendationError,
   rankRecommendations,
-  SONG_PROFILE_ARTIFACT_SCHEMA_VERSION,
-  SONG_PROFILE_PIPELINE_CONTRACT,
-  type SongProfileArtifact,
-  scoreCatalogKeyFits,
+  scoreCatalogProfiles,
 } from "@/entities/recommendation/index.server";
-
-export const RECOMMENDATION_CATALOG_SIZE = 100;
-
-export type RecommendationSongRow = {
-  id: string;
-  catalogOrder: number;
-  title: string;
-  artist: string;
-  analysisStatus: "PENDING" | "READY" | "FAILED";
-};
+import type { PublishedCatalogRow } from "@/entities/song-catalog/index.server";
 
 function catalogNotReady(message: string, details: Record<string, unknown> = {}): never {
   throw new RecommendationError("CATALOG_NOT_READY", message, {
@@ -29,97 +14,85 @@ function catalogNotReady(message: string, details: Record<string, unknown> = {})
   });
 }
 
-export function validateRecommendationArtifact(value: unknown): SongProfileArtifact {
-  if (!value || typeof value !== "object") catalogNotReady("Song profile artifact is missing.");
-  const artifact = value as SongProfileArtifact;
+function requiredCatalogProfile(row: PublishedCatalogRow) {
+  const source = row.song.activeSource;
+  const analysis = row.song.currentAnalysis;
+  const target = row.song.targetAsset;
   if (
-    artifact.schemaVersion !== SONG_PROFILE_ARTIFACT_SCHEMA_VERSION ||
-    artifact.pipelineContract !== SONG_PROFILE_PIPELINE_CONTRACT ||
-    !Array.isArray(artifact.songs) ||
-    artifact.songs.length !== RECOMMENDATION_CATALOG_SIZE
+    !source ||
+    source.id !== row.song.activeSourceId ||
+    source.status !== "READY" ||
+    !analysis ||
+    analysis.id !== row.song.currentAnalysisId ||
+    analysis.sourceId !== source.id ||
+    analysis.status !== "READY" ||
+    !analysis.cleanupConfirmed ||
+    !target ||
+    target.id !== row.song.targetAssetId ||
+    target.sourceId !== source.id ||
+    target.status !== "READY"
   ) {
-    catalogNotReady("Song profile artifact contract does not match this build.");
-  }
-
-  const orders = new Set<number>();
-  for (const [index, song] of artifact.songs.entries()) {
-    if (
-      song.catalogOrder !== index + 1 ||
-      orders.has(song.catalogOrder) ||
-      song.status !== "READY" ||
-      !song.profile ||
-      song.profile.cleanupConfirmed !== true
-    ) {
-      catalogNotReady("Song profile artifact must contain 100 ordered READY profiles.", {
-        catalogOrder: song.catalogOrder,
-        status: song.status,
-      });
-    }
-    orders.add(song.catalogOrder);
-  }
-  return artifact;
-}
-
-export function validateAndIndexSongRows(
-  rows: readonly RecommendationSongRow[],
-  artifact: SongProfileArtifact,
-): Map<number, RecommendationSongRow> {
-  if (rows.length !== RECOMMENDATION_CATALOG_SIZE) {
-    catalogNotReady("Database song catalog must contain exactly 100 songs.", {
-      songCount: rows.length,
+    catalogNotReady("Published catalog contains mismatched active revisions.", {
+      songId: row.song.id,
+      position: row.position,
     });
   }
-
-  const byOrder = new Map<number, RecommendationSongRow>();
-  for (const row of rows) {
-    const artifactSong = artifact.songs[row.catalogOrder - 1];
-    if (
-      byOrder.has(row.catalogOrder) ||
-      !artifactSong ||
-      artifactSong.catalogOrder !== row.catalogOrder ||
-      artifactSong.title !== row.title ||
-      artifactSong.artist !== row.artist
-    ) {
-      catalogNotReady("Database song metadata does not match the analyzed artifact.", {
-        catalogOrder: row.catalogOrder,
+  const required = [
+    "minMidi",
+    "maxMidi",
+    "p10Midi",
+    "medianMidi",
+    "p90Midi",
+    "tessituraLowMidi",
+    "tessituraHighMidi",
+    "voicedRatio",
+    "pitchStability",
+    "clippingRatio",
+  ] as const;
+  for (const field of required) {
+    if (!Number.isFinite(analysis[field])) {
+      catalogNotReady("Published song analysis is missing a scoring metric.", {
+        songId: row.song.id,
+        analysisId: analysis.id,
+        field,
       });
     }
-    byOrder.set(row.catalogOrder, row);
   }
-  return byOrder;
+  if (!analysis.analyzer?.trim() || !analysis.analyzerVersion?.trim()) {
+    catalogNotReady("Published song analysis is missing analyzer identity.", {
+      songId: row.song.id,
+      analysisId: analysis.id,
+    });
+  }
+  return { profile: analysis as KeyFitProfile, source, analysisId: analysis.id };
 }
 
-export function buildRankedRecommendations(
-  profile: KeyFitProfile,
-  rows: readonly RecommendationSongRow[],
-  artifactValue: unknown,
-): Array<RankedRecommendation & { songId: string }> {
-  const artifact = validateRecommendationArtifact(artifactValue);
-  const byOrder = validateAndIndexSongRows(rows, artifact);
-  let scored: CatalogKeyFitResult[];
-  try {
-    scored = scoreCatalogKeyFits(profile, artifact);
-  } catch (error) {
-    if (error instanceof KeyFitScoringError) {
-      if (error.code === "INCOMPATIBLE_ANALYZER") {
-        throw new RecommendationError("INCOMPATIBLE_ANALYZER", error.message, {
-          status: 422,
-          details: error.details,
-        });
-      }
-      if (error.code === "SONG_PROFILE_NOT_READY") {
-        catalogNotReady(error.message, error.details);
-      }
-      throw new RecommendationError("INVALID_PROFILE", error.message, {
-        status: 422,
-        details: error.details,
+export function buildRankedDatabaseRecommendations(profile: KeyFitProfile, rows: readonly PublishedCatalogRow[]) {
+  if (rows.length === 0) catalogNotReady("Published catalog does not contain any READY songs.");
+  const positions = new Set<number>();
+  const identityByPosition = new Map<number, { songId: string; songAnalysisId: string }>();
+  const entries = rows.map((row) => {
+    if (!Number.isInteger(row.position) || row.position < 1 || positions.has(row.position)) {
+      catalogNotReady("Published catalog contains an invalid or duplicate position.", {
+        position: row.position,
       });
     }
-    throw error;
-  }
-
-  return rankRecommendations(scored).map((result) => ({
-    ...result,
-    songId: byOrder.get(result.catalogOrder)!.id,
-  }));
+    positions.add(row.position);
+    const { profile: songProfile, source, analysisId } = requiredCatalogProfile(row);
+    identityByPosition.set(row.position, { songId: row.song.id, songAnalysisId: analysisId });
+    return {
+      catalogOrder: row.position,
+      title: row.song.title,
+      artist: row.song.artist,
+      sourceLabel: source.sourceLabel,
+      sourceUrl: source.sourceUrl,
+      sourceVideoId: source.sourceVideoId,
+      profile: songProfile,
+    };
+  });
+  return rankRecommendations(scoreCatalogProfiles(profile, entries)).map((item) => {
+    const identity = identityByPosition.get(item.catalogOrder);
+    if (!identity) catalogNotReady("Ranked song identity was lost during catalog scoring.");
+    return { ...item, ...identity };
+  });
 }

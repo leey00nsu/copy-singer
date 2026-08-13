@@ -223,22 +223,22 @@ model Song {
 }
 
 model SongSource {
-  id              String              @id @default(uuid()) @db.Uuid
-  songId          String              @db.Uuid
+  id              String               @id @default(uuid()) @db.Uuid
+  songId          String               @db.Uuid
   revision        Int
   sourceUrl       String
-  sourceVideoId   String              @unique
+  sourceVideoId   String               @unique
   sourceLabel     String
-  status          SongSourceStatus    @default(DRAFT)
+  status          SongSourceStatus     @default(DRAFT)
   createdByUserId String?
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
-  song            Song                @relation("SongSources", fields: [songId], references: [id], onDelete: Restrict)
-  activeForSong   Song?               @relation("ActiveSongSource")
-  createdBy       User?               @relation("SongSourceCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  song            Song                 @relation("SongSources", fields: [songId], references: [id], onDelete: Restrict)
+  activeForSong   Song?                @relation("ActiveSongSource")
+  createdBy       User?                @relation("SongSourceCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
   analyses        SongAnalysis[]
   analysisJob     SongAnalysisJob?
-  targetAsset     CatalogTargetAsset?
+  targetAssets    CatalogTargetAsset[]
 
   @@unique([songId, revision])
   @@index([songId, status, createdAt])
@@ -362,6 +362,7 @@ model RecommendationItem {
   runId                String            @db.Uuid
   songId               String            @db.Uuid
   songAnalysisId       String?           @db.Uuid
+  catalogPosition      Int?
   rank                 Int
   originalKeyScore     Float
   adjustedScore        Float
@@ -500,7 +501,7 @@ model CatalogTargetAsset {
   sizeBytes         BigInt
   sha256            String
   sourceVideoId     String
-  sourceId          String?          @unique @db.Uuid
+  sourceId          String?          @db.Uuid
   status            MediaAssetStatus @default(READY)
   lastError         String?
   createdAt         DateTime         @default(now())
@@ -513,6 +514,7 @@ model CatalogTargetAsset {
   @@unique([externalProjectId, externalFileId])
   @@index([status, updatedAt])
   @@index([sourceVideoId])
+  @@index([sourceId, status, createdAt])
 }
 
 model MediaCleanupJob {

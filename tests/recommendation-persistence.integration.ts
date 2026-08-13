@@ -84,7 +84,7 @@ test("persists, reads, and cascade-deletes one recommendation run", async (conte
 
     const storedSongs = await prisma.song.findMany({
       where: { id: { in: created.items.map((item) => item.songId) } },
-      include: { vocalProfile: true },
+      include: { currentAnalysis: true },
     });
     const storedSongById = new Map(storedSongs.map((song) => [song.id, song]));
     for (const item of created.items) {
@@ -92,20 +92,20 @@ test("persists, reads, and cascade-deletes one recommendation run", async (conte
       assert.ok(song);
       assert.equal(item.originalKey, song.originalKey?.trim() || null);
       if (item.songProfile) {
-        assert.equal(item.songProfile.minMidi, song.vocalProfile?.minMidi);
-        assert.equal(item.songProfile.maxMidi, song.vocalProfile?.maxMidi);
-        assert.equal(item.songProfile.medianMidi, song.vocalProfile?.medianMidi);
-        assert.equal(item.songProfile.tessituraLowMidi, song.vocalProfile?.tessituraLowMidi);
-        assert.equal(item.songProfile.tessituraHighMidi, song.vocalProfile?.tessituraHighMidi);
+        assert.equal(item.songProfile.minMidi, song.currentAnalysis?.minMidi);
+        assert.equal(item.songProfile.maxMidi, song.currentAnalysis?.maxMidi);
+        assert.equal(item.songProfile.medianMidi, song.currentAnalysis?.medianMidi);
+        assert.equal(item.songProfile.tessituraLowMidi, song.currentAnalysis?.tessituraLowMidi);
+        assert.equal(item.songProfile.tessituraHighMidi, song.currentAnalysis?.tessituraHighMidi);
       } else {
         assert.ok(
-          !song.vocalProfile ||
+          !song.currentAnalysis ||
             [
-              song.vocalProfile.minMidi,
-              song.vocalProfile.maxMidi,
-              song.vocalProfile.medianMidi,
-              song.vocalProfile.tessituraLowMidi,
-              song.vocalProfile.tessituraHighMidi,
+              song.currentAnalysis.minMidi,
+              song.currentAnalysis.maxMidi,
+              song.currentAnalysis.medianMidi,
+              song.currentAnalysis.tessituraLowMidi,
+              song.currentAnalysis.tessituraHighMidi,
             ].some((value) => value === null),
         );
       }

@@ -12,6 +12,7 @@ import {
   type RecommendationScoreMetrics,
   toPublicSynthesisStatus,
 } from "@/entities/recommendation/index.model";
+import { loadPublishedCatalog } from "@/entities/song-catalog/index.server";
 import {
   mixingReferenceCapability,
   synthesisReferenceContractVersion,
@@ -19,8 +20,7 @@ import {
 } from "@/entities/vocal-profile/index.model";
 import type { Prisma } from "@/shared/db/index.server";
 import { prisma } from "@/shared/db/index.server";
-import artifactJson from "../../../../data/catalogs/tj-2607-song-profiles.json";
-import { buildRankedRecommendations } from "../lib/recommendation-data";
+import { buildRankedDatabaseRecommendations } from "../lib/recommendation-data";
 
 const runInclude = {
   userVocalProfile: {
@@ -53,6 +53,7 @@ const runInclude = {
           },
         },
       },
+      songAnalysis: { include: { source: true } },
       mixingJobs: {
         include: { resultAsset: true },
         orderBy: { createdAt: "desc" as const },
@@ -163,25 +164,18 @@ export function serializeRecommendationRun(run: StoredRun): RecommendationRunRes
           } as const
         )[mixing.status]
       : null;
-    const catalogMetadata =
-      item.song.metadata && typeof item.song.metadata === "object" && !Array.isArray(item.song.metadata)
-        ? item.song.metadata.catalog
-        : null;
-    const catalog =
-      catalogMetadata && typeof catalogMetadata === "object" && !Array.isArray(catalogMetadata)
-        ? catalogMetadata
-        : null;
+    const source = item.songAnalysis?.source;
     return {
       id: item.id,
       rank: item.rank,
       songId: item.songId,
-      catalogOrder: item.song.catalogOrder,
+      catalogOrder: item.catalogPosition ?? item.song.catalogOrder,
       title: item.song.title,
       artist: item.song.artist,
       originalKey: item.song.originalKey?.trim() || null,
-      songProfile: projectRecommendationSongProfile(item.song.vocalProfile),
-      sourceUrl: catalog ? String(catalog.sourceUrl ?? "") : "",
-      sourceVideoId: parseYouTubeVideoId(catalog?.sourceVideoId),
+      songProfile: projectRecommendationSongProfile(item.songAnalysis ?? item.song.vocalProfile),
+      sourceUrl: source?.sourceUrl ?? "",
+      sourceVideoId: parseYouTubeVideoId(source?.sourceVideoId),
       originalKeyScore: item.originalKeyScore,
       adjustedScore: item.adjustedScore,
       selectionScore: Number.isFinite(metrics.selectionScore) ? metrics.selectionScore! : null,
@@ -266,11 +260,8 @@ export async function createRecommendationRun(userVocalProfileId: string, userId
   if (existingRun) return serializeRecommendationRun(existingRun);
 
   const profile = requiredProfile(profileRow);
-  const songs = await prisma.song.findMany({
-    where: { catalogOrder: { gte: 1, lte: 100 } },
-    orderBy: { catalogOrder: "asc" },
-  });
-  const ranked = buildRankedRecommendations(profile, songs, artifactJson);
+  const catalog = await loadPublishedCatalog(prisma);
+  const ranked = buildRankedDatabaseRecommendations(profile, catalog);
 
   try {
     const run = await prisma.recommendationRun.create({
@@ -281,6 +272,8 @@ export async function createRecommendationRun(userVocalProfileId: string, userId
         items: {
           create: ranked.map((item) => ({
             songId: item.songId,
+            songAnalysisId: item.songAnalysisId,
+            catalogPosition: item.catalogOrder,
             rank: item.rank,
             originalKeyScore: item.originalKeyScore,
             adjustedScore: item.adjustedScore,
