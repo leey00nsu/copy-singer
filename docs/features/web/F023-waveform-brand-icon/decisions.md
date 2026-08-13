@@ -100,10 +100,12 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 
 - **Context**: 처리방침 2·8·10절이 DB field, background cleanup과 distributed job 안정성까지 설명해 이용자가 실제 개인정보 처리 범위를 이해하기 어려웠다.
 - **Constraints**: 실제 처리 항목·목적, 파기 절차·방법과 안전성 확보 원칙은 유지하되 schema·provider·queue 구현 설명을 공개 문서에 노출하지 않는다.
-- **Options**: 구현 중 확정
-- **Decision**: 구현 중 확정
-- **Rationale**: 구현 중 확정
+- **Options**: (A) DB field와 작업 runtime을 상세 열거, (B) 법정 항목 자체를 최소화해 누락, (C) 관련 정보를 사용자 관점 범주로 묶고 법정 원칙은 유지.
+- **Decision**: (C)를 채택했다. 처리 항목은 계정정보·접속정보·음성정보·추천/믹싱정보·이용내역의 다섯 범주로 통합했다. 파기 절차는 지체 없는 삭제, 복구하기 어려운 전자적 삭제와 법정 보존정보 분리 원칙으로 정리하고, 안전성 확보 조치는 계정별 접근 제한·인증정보 보호·관리자 제한만 남겼다.
+- **Rationale**: 이용자가 수집 범위와 목적을 한 번에 이해하면서도 실제 처리 범위를 누락하지 않는다. schema field, cleanup mechanism과 분산 작업 안정성은 내부 설계 문서에 두는 것이 공개 처리방침의 목적에 맞다.
 - **Trace**:
   - **DOING 시작 시점**: 처리 항목은 관련성 있는 다섯 범주로 묶고, 파기는 지체 없는 삭제·복구 곤란 방식·법정 보존 분리 원칙으로, 안전성은 인증·접근통제·credential 보호·관리자 제한·삭제 관리 원칙으로 축약한다.
+  - **DONE 시점**: 2·8·10절을 축약하고 sample rate, descriptor, 대표 구간, 외부 작업 ID, 재시도, 삭제 API, cleanup job, lease와 idempotency 표현이 처리방침에 남지 않았음을 확인했다.
 - **Evidence**:
-  - **Test/Log**: 구현 후 기록
+  - **Test/Log**: legal Storybook 2/2, `pnpm run check`, `pnpm run build`, 과도한 기술 표현 `rg` audit
+- **Consequences**: 처리방침은 구현 세부가 아니라 개인정보 범위·목적·파기·보호 원칙을 설명한다. 실제 처리 범주가 추가될 때 다섯 범주의 포괄 여부를 먼저 확인하고 필요할 때만 사용자-facing 항목을 늘린다.
