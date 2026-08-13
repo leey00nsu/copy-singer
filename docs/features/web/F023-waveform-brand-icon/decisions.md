@@ -92,5 +92,6 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DOING 시작 시점**: 법률 문서와 `src`의 렌더링 문구·사용자 오류 메시지는 Google 외 고유 기술명을 중립적 기능명으로 바꾸고, 내부 코드·환경변수·architecture 문서는 유지한 뒤 잔존 항목을 분류한다.
   - **DONE 시점**: legal 문서와 `_pages` scan에서 대상 고유명 노출 0건을 확인했고, 기존 공개 오류·API 설명 문자열 audit도 0건이다. repository 전체 잔존 항목은 내부 구현과 개발 SSOT로 분류해 유지했다.
 - **Evidence**:
+  - **Commit**: `d77088e` (`feat(F023-waveform-brand-icon): 공개 외부 기술명 비식별화`)
   - **Test/Log**: legal Storybook 2/2, analyzer/voice-scan/mixing/recommendation 61/61, `pnpm run check`, `pnpm run build`, 공개 문자열 `rg` audit
 - **Consequences**: 공개 UI는 공급업체 이름과 무관한 기능 언어를 사용한다. 실제 외부 처리업체 공개가 법적·운영상 필요해지면 내부 계약을 source로 개인정보 처리방침을 다시 갱신해야 한다.
