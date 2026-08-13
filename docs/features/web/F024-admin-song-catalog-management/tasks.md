@@ -163,6 +163,19 @@ Modal CPU 분석/공개 결과: 순위 47 `F`(confidence `0.10758179029087539`),
     - [x] 보컬 프로필 CTA 문구와 관련 단위·통합·UI 테스트를 갱신한다.
     - [x] Prisma validation, typecheck, lint, 관련 테스트와 production build를 실행한다.
 
+- [DONE][PRD-FR-060][PRD-FR-061] T-F024-admin-song-catalog-management-08 관리자 커스텀 믹싱 도입과 개발·레거시 목록 경로 정리
+  - Date: 2026-08-13
+  - Acceptance:
+    - [x] 관리자 전용 /admin/custom-mixing에서 자신의 USER 보컬 프로필을 선택하고 target audio 업로드로 Modal SoulX 믹싱을 실행한다.
+    - [x] custom target 원본은 Leemage·PostgreSQL·프로젝트 파일·일반 MixingJob·티켓 원장에 영구 저장되지 않고 처리 중에만 전달된다.
+    - [x] /dev/svc, /mixing-history, /vocal-profiles 목록 page와 관련 legacy client/API 참조를 제거하고 /vocal-profiles/[id] 상세와 /library?tab=profiles 복귀 흐름을 유지한다.
+    - [x] 관리자 권한·profile ownership·파일 검증·상태 polling·결과 재생/다운로드/삭제를 검증하는 테스트와 production build를 통과한다.
+  - Checklist:
+    - [x] PRD, F024 spec/plan/decisions를 새 custom mixing 및 route removal 계약과 동기화한다.
+    - [x] 관리자 custom mixing API/page/client contract와 Modal conversion adapter를 구현한다.
+    - [x] /dev/svc 및 /api/conversions/development-conversion 제거와 목록 route/link/metadata 정리를 완료한다.
+    - [x] TypeScript, lint, 관련 unit/integration/UI 테스트, architecture audit, production build를 실행한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -205,5 +218,12 @@ Modal CPU 분석/공개 결과: 순위 47 `F`(confidence `0.10758179029087539`),
 | `pnpm run test:recommendation:db && pnpm run test:mixing:db` | `2026-08-13` | 통과 — on-demand 재계산·revision cache identity와 immutable mixing input DB 계약 각 1/1 |
 | `node --conditions react-server --import tsx --test tests/admin-song-catalog.integration.ts` | `2026-08-13` | 통과 — 공개 revision 증가·동일 재공개 idempotency·보관 revision 증가 포함 2/2 |
 | Task 07 persistence·문구 `rg` audit | `2026-08-13` | 통과 — runtime Prisma 추천 스냅샷 model/field와 `최근 추천 결과 보기`·추천 삭제 UI 0건 |
+| Task 08 legacy 경로 `rg` audit | `2026-08-13` | 통과 — `src`/`app`/`tests`의 `/dev/svc`·`/api/conversions`·`/api/health`·`development-conversion`·`/mixing-history` 참조 0건 |
+| `node --conditions react-server --import tsx --test tests/admin-custom-mixing.integration.ts tests/conversion-stream-upload.test.ts` | `2026-08-13` | 통과 — profile ownership·reference 우선순위·custom target 비영속·Modal FormData forwarding 2/2 |
+| Task 08 검증 묶음 | `2026-08-13` | 통과 — query/contract 23/23, UI/프레젠테이션 34/34, architecture 4/4, process·boundary 5/5, effect-cleanup 2/2, TypeScript·Biome·ESLint |
+| Task 08 Storybook | `2026-08-13` | 통과 — 48/48 files·135/135 tests (waveform 준비 타이밍 플레이크 1건 단독 재실행 통과) |
+| `pnpm test` | `2026-08-13` | 통과 — production build, unit/integration/UI, architecture, Storybook 48/48 files·135/135 tests 포함 전체 suite (재실행 실패 0건) |
+| `pnpm run lint` | `2026-08-13` | 통과 |
+| `pnpm run build` | `2026-08-13` | 통과 — `/admin/custom-mixing` 신규 dynamic route 포함, `/dev/svc`·`/mixing-history`·`/vocal-profiles` 목록·`/api/conversions`·`/api/health` 제거 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T19:01:47+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T21:04:54+09:00 -->

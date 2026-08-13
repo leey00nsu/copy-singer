@@ -1,7 +1,7 @@
 # Copysinger PRD
 
 - **상태**: Baseline 확장
-- **버전**: 0.5
+- **버전**: 0.6
 - **작성일**: 2026-08-05
 - **제품 범위**: 로컬 Next.js 앱 + PostgreSQL + 분석 서비스 + Modal SoulX-Singer API
 
@@ -75,6 +75,7 @@ Google OAuth 로그인
 - **PRD-US-026**: 사용자는 추천 목록과 곡 상세에서 추천의 근거가 된 원본 YouTube 영상을 페이지를 벗어나지 않고 재생할 수 있다.
 - **PRD-US-027**: 사용자는 다른 화면을 보고 있거나 나중에 다시 접속해도 티켓 지급, 보컬 프로필 분석과 AI 믹싱의 완료·최종 실패를 헤더 알림과 알림 이력에서 확인하고 관련 화면으로 이동할 수 있다.
 - **PRD-US-028**: 관리자는 관리자 화면에서 곡과 영상 출처를 등록·교체하고 분석 및 믹싱 target 준비 상태를 확인·재시도한 뒤 준비된 곡만 추천 카탈로그에 공개할 수 있다.
+- **PRD-US-029**: 관리자는 관리자 화면에서 자신의 보컬 프로필을 선택하고 업로드한 임시 음원을 사용해 커스텀 AI 믹싱을 실행한 뒤 결과를 재생하거나 다운로드할 수 있다.
 
 ## 기능 요구사항
 
@@ -116,7 +117,9 @@ Google OAuth 로그인
 - **PRD-FR-017**: 추천 목록 항목은 합성 전 `AI 믹싱` 버튼을 제공하고, 시작 후 `preparing → queued → processing → succeeded | failed` 상태와 “믹싱 중이에요” 안내를 표시하며 성공 시 결과 오디오 재생·다운로드를 제공해야 한다.
 - **PRD-FR-018**: 추천 목록 합성은 `prompt_vocal_separation=false`, `target_vocal_separation=true`, `auto_pitch_shift=true`, `auto_mix_accompaniment=true`, `pitch_shift=0`의 고정 제품 preset을 사용하고 자동 피치 이동이 적용되는 AI 믹싱임을 명시해야 한다.
 - **PRD-FR-019**: 운영자가 사용 권한을 확보한 카탈로그 target 오디오는 Git 비추적 local staging에서 catalog identity를 검증한 뒤 지원되는 원본 오디오 bytes/MIME을 유지해 Leemage에 사전 업로드하고 Song에 연결해야 한다. AI 믹싱은 작업 시점의 외부 URL 다운로드 대신 해당 READY target asset을 snapshot해 사용하며, SoulX가 합성 시작 시 내부 정규화를 수행한다. target이 준비되지 않은 곡은 티켓 차감 전에 믹싱을 거부해야 한다.
-- **PRD-FR-020**: 기존 자유 reference/target과 advanced settings Workbench는 자동 추천 합성과 분리된 개발·진단용 화면으로 유지해야 한다.
+- **PRD-FR-020**: 기존 자유 reference/target과 advanced settings Workbench는 자동 추천 합성과 분리된 개발·진단용 화면으로 유지하되, 관리자 커스텀 믹싱 화면으로 운영 가능한 흐름을 제공해야 한다.
+- **PRD-FR-060**: 관리자 전용 커스텀 믹싱은 서버에서 `ADMIN_EMAILS` 권한과 관리자 소유 `USER` 보컬 프로필을 검증하고, 업로드한 target audio를 요청 처리 중에만 Modal SoulX 믹싱 GPU 함수로 전달해야 한다. reference는 선택한 프로필의 저장된 reference asset을 사용하며, custom target 원본을 Leemage·PostgreSQL·프로젝트 파일에 영구 저장하거나 일반 사용자 믹싱 큐·티켓을 생성하지 않아야 한다. 관리자는 처리 상태와 결과 오디오를 확인할 수 있어야 한다.
+- **PRD-FR-061**: 개발용 `/dev/svc`와 독립 목록 `/mixing-history`, `/vocal-profiles` 경로는 공개 제품 진입점에서 제거해야 한다. `/vocal-profiles/[id]` 상세는 기존 분석 결과·믹싱 연결을 위해 유지하고 목록 복귀는 `/library?tab=profiles`로 통합해야 한다.
 - **PRD-FR-044**: 새 AI 믹싱 성공 결과는 SoulX 자동 반주 믹싱에서 `vocal-balance-v2`(생성 보컬 -2.0 dB, 반주 0.0 dB, 기존 pitch shift 및 peak protection 유지)을 적용한 뒤, 사용자에게 저장·재생·다운로드되기 전에 고정된 `clarity-normal-v1` finalization을 거쳐야 한다. finalization은 저중역 정리, 보컬 presence/air 강조, 가벼운 stereo widening과 -14 LUFS / -1 dBTP loudness 정리를 포함하며 최종 44.1 kHz stereo AAC/M4A encode와 같은 FFmpeg 경계에서 처리해야 한다. finalization 실패 시 미보정 SoulX 결과를 성공 결과로 fallback하지 않고 기존 submitted job을 재사용하는 bounded retry를 적용해야 한다.
 
 ### 인증과 사용자 소유권
@@ -176,6 +179,7 @@ Google OAuth 로그인
 - **PRD-DATA-011**: 사용자 보컬 프로필의 표시 이름과 사용자별 기본 이름 순번은 Prisma schema와 migration으로 관리해야 한다. 기존 사용자 프로필은 사용자별 생성 시각과 ID의 결정적 순서로 backfill하고 곡 분석용 프로필에는 사용자 표시 이름을 적용하지 않아야 한다.
 - **PRD-DATA-012**: 인앱 알림은 사용자 소유 PostgreSQL row로 영속 저장하고 type, 사용자용 제목·메시지, 내부 경로, source identity, dedupe key, 읽은 시각과 생성 시각을 포함해야 한다. 같은 terminal event의 worker 재실행과 ticket idempotency 재시도는 중복 알림을 만들지 않아야 하며 다른 사용자의 알림을 조회·수정할 수 없어야 한다.
 - **PRD-DATA-013**: 곡 identity와 카탈로그 순위는 분리하고, 영상 출처와 곡 분석 결과는 교체 시 덮어쓰지 않는 revision으로 저장해야 한다. 추천 실행은 사용한 곡 분석 revision을 참조해 이후 관리자 변경과 무관하게 당시 결과를 추적할 수 있어야 한다.
+- **PRD-DATA-014**: 관리자 커스텀 믹싱 target은 요청 처리 중 메모리 또는 OS 임시 영역에서만 사용하고 영구 저장하지 않는다. Modal 결과도 작업 TTL과 삭제 계약을 따르며, custom target을 영속 asset row나 카탈로그 target으로 승격하지 않는다.
 
 ## 비기능 요구사항
 

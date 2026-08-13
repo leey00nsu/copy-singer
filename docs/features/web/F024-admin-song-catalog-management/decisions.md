@@ -183,3 +183,18 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: -
   - **Test/Log**: `pnpm test`, `pnpm run lint`, `pnpm exec prisma validate`, `pnpm run test:recommendation:db`, `pnpm run test:mixing:db`, `node --conditions react-server --import tsx --test tests/admin-song-catalog.integration.ts` 통과. Storybook 48/48 files·135/135 tests 통과.
 - **Consequences**: 추천 결과 삭제 action과 추천 개수 개념은 사라진다. 같은 프로필 URL은 최신 catalog revision 결과를 보여주며, 과거 믹싱 이력은 작업 row에 저장된 immutable 입력을 사용한다.
+
+## D011: 관리자 커스텀 믹싱과 legacy 경로 정리 (2026-08-13)
+
+- **Context**: 개발용 /dev/svc는 관리자 운영 흐름으로 노출할 수 없고, 카탈로그에 등록하지 않은 임시 target을 저장하지 않는 커스텀 믹싱 요구가 추가되었다.
+- **Constraints**: 관리자 API는 서버 세션과 ADMIN_EMAILS allowlist를 재검증해야 하고, custom target은 Modal 요청 처리 중에만 존재해야 한다. 사용자 소유 상세(/vocal-profiles/[id])와 /library?tab=profiles 복귀 흐름은 유지해야 한다.
+- **Options**: 개발용 /dev/svc 유지, 기존 conversion route를 관리자 권한으로 감싸기, 전용 /api/admin/custom-mixing proxy와 /admin/custom-mixing 페이지 신설.
+- **Decision**: /admin/custom-mixing에서 ADMIN_EMAILS 관리자만 자신의 USER 보컬 프로필을 선택해 target audio를 업로드하고, 서버 전용 Modal SoulX conversion proxy로 전달한다. target은 요청 처리 중 메모리 또는 OS 임시 영역에서만 사용하며 Leemage·PostgreSQL·프로젝트 파일·일반 MixingJob·티켓 원장에 저장하지 않는다. /dev/svc와 독립 /mixing-history·/vocal-profiles 목록 route는 제거하고 /vocal-profiles/[id] 상세와 /library?tab=profiles 복귀 흐름은 유지한다.
+- **Rationale**: 관리자 전용 인증과 profile ownership 검증을 API 경계에 두면 개발용 우회 경로를 없애면서 운영 검증용 자유 target을 제공할 수 있다. custom target을 영속화하지 않으면 카탈로그 asset과 사용자 작업 원장을 오염시키지 않고 Modal 결과의 기존 TTL·삭제 정책을 그대로 사용할 수 있다.
+- **Trace**:
+  - **At DOING start**: Recorded by `decision add` when the decision was created.
+  - **Before DONE**: `/api/admin/custom-mixing/*`(profiles·submit·status·audio·delete)와 `/admin/custom-mixing` 페이지를 구현하고 `/dev/svc`·`development-conversion`·`/api/conversions/*`·`/api/health`와 독립 `/mixing-history`·`/vocal-profiles` 목록 route를 제거했다. 프로필 ownership·reference 우선순위(synthesis > recording)·파일 크기/형식 검증·custom target 비영속을 통합 테스트로 검증했고, production build에서 신규 route 포함과 제거 route 부재를 확인했다. `rg` audit로 legacy 경로·컴포넌트·테스트 참조 0건을 확인했다.
+  - **Post-merge check**: Update this line after merge when applicable.
+- **Evidence**:
+  - **Test/Log**: `tests/admin-custom-mixing.integration.ts`, `tests/conversion-stream-upload.test.ts`, `pnpm test`, `pnpm run lint`, `pnpm run build`, Storybook 48/48 files·135/135 tests, Task 08 legacy 경로 `rg` audit
+- **Consequences**: 관리자 커스텀 믹싱은 `/admin/custom-mixing`의 서버 검증 proxy를 통해서만 실행된다. custom target은 어떤 영속 경로에도 저장되지 않으며, 결과는 Modal TTL·삭제 정책에 따라 관리된다. 개발용 Workbench와 독립 목록 페이지의 복귀/링크 계약은 `/library?tab=profiles`로 통합된다.

@@ -64,6 +64,20 @@
 - [ ] 카탈로그 공개 revision이 바뀌면 이전 TanStack Query 캐시와 분리된 키로 최신 READY 곡을 재계산한다.
 - [ ] 믹싱 작업은 접수 시 검증한 보컬 프로필·곡 분석·target asset·추천 키 revision 입력을 영속한다.
 
+### US-4: 관리자 커스텀 믹싱
+
+**As a** 허용된 관리자
+**I want** 내 보컬 프로필을 선택하고 임시 음원 파일을 업로드해 커스텀 믹싱을 실행하고 싶다.
+**So that** 카탈로그에 등록하지 않은 음원을 운영·검증 목적으로 Modal SoulX에서 믹싱할 수 있다.
+
+**Acceptance Criteria:**
+
+- [ ] `/admin/custom-mixing`은 서버 관리자 권한이 없는 요청에 내용을 노출하지 않는다.
+- [ ] 관리자는 자신의 `USER` 보컬 프로필만 선택하고 target audio 파일을 업로드할 수 있다.
+- [ ] 서버는 선택한 프로필의 저장된 reference asset과 요청 중인 target bytes를 Modal `/v1/conversions`에 전달하고, custom target을 Leemage·PostgreSQL·프로젝트 파일에 영구 저장하지 않는다.
+- [ ] 관리자는 queued/processing/succeeded/failed 상태와 결과 오디오 재생·다운로드·삭제를 확인할 수 있다.
+- [ ] `/dev/svc`, `/mixing-history`, `/vocal-profiles` 목록 페이지는 제거하고 `/vocal-profiles/[id]` 상세와 `/library?tab=profiles` 복귀 흐름은 유지한다.
+
 ---
 
 ## 기능 요구사항
@@ -88,6 +102,14 @@
 
 `RecommendationRun`과 `RecommendationItem` 영속 스냅샷을 제거하고 `/recommendations/{vocalProfileId}`에서 현재 공개 카탈로그를 즉시 비교한다. `Catalog.revision`은 곡 공개·교체·보관처럼 추천 집합이나 active analysis가 바뀌는 transaction에서 증가한다. 추천 응답은 보컬 프로필 ID, catalog revision과 scoring version을 제공하며 TanStack Query key는 이 조합을 사용한다. 보컬 프로필 상세의 action은 항상 `추천 결과 보기`로 표시한다. 믹싱 접수는 추천 item row 대신 서버가 현재 결과에서 검증한 `vocalProfileId`, `songAnalysisId`, `targetAssetId`, `recommendedShift`, catalog/scoring revision을 `MixingJob`에 고정한다.
 
+### FR-6: 관리자 커스텀 믹싱과 legacy 경로 정리
+
+- 관리자 커스텀 믹싱은 기존 SoulX `/v1/conversions` 계약을 서버 전용 adapter로 재사용하되 관리자 세션·프로필 소유권을 먼저 검증한다.
+- target multipart는 요청 처리 중에만 스트리밍하거나 OS 임시 파일로 전달하며, custom target용 `MediaAsset`, `CatalogTargetAsset`, `MixingJob`, 티켓 원장을 생성하지 않는다.
+- conversion 상태·오디오·삭제 proxy는 `/api/admin/custom-mixing/*` 아래에 두고 client는 해당 route만 사용한다. 기존 `/api/conversions/*`, `/api/health`와 `development-conversion` feature는 제거한다.
+- `/admin`에는 커스텀 믹싱 진입 링크를 제공하고, `/admin/custom-mixing`은 프로필 선택·파일 업로드·상태 polling·결과 player를 제공한다.
+- 독립 `/mixing-history`와 `/vocal-profiles` 목록 page/링크를 제거하되, 사용자 소유 상세 `/vocal-profiles/[id]`와 `/api/vocal-profiles/*`는 유지한다. 목록 복귀 링크는 `/library?tab=profiles`를 사용한다.
+
 ---
 
 ## 비기능 요구사항
@@ -104,7 +126,7 @@
 ## 관련 문서
 
 - PRD: `../../prd/`
-- PRD Refs: `PRD-US-028`, `PRD-FR-005`, `PRD-FR-006`, `PRD-FR-007`, `PRD-FR-010`, `PRD-FR-019`, `PRD-FR-026`, `PRD-FR-049`, `PRD-FR-057`, `PRD-FR-059`, `PRD-DATA-001`, `PRD-DATA-002`, `PRD-DATA-004`, `PRD-DATA-006`, `PRD-DATA-013`, `PRD-NFR-004`, `PRD-NFR-005`, `PRD-NFR-009`
+- PRD Refs: `PRD-US-028`, `PRD-US-029`, `PRD-FR-005`, `PRD-FR-006`, `PRD-FR-007`, `PRD-FR-010`, `PRD-FR-019`, `PRD-FR-020`, `PRD-FR-026`, `PRD-FR-049`, `PRD-FR-050`, `PRD-FR-057`, `PRD-FR-059`, `PRD-FR-060`, `PRD-FR-061`, `PRD-DATA-001`, `PRD-DATA-002`, `PRD-DATA-004`, `PRD-DATA-006`, `PRD-DATA-007`, `PRD-DATA-010`, `PRD-DATA-013`, `PRD-DATA-014`, `PRD-NFR-003`, `PRD-NFR-004`, `PRD-NFR-005`, `PRD-NFR-009`
   - 이미 원문 요구사항 문서에 정의된 ID만 적으세요. `spec.md`나 `tasks.md`에서 임의로 PRD ID를 만들지 않습니다.
   - 레거시 요구사항 문서에 아직 PRD ID가 없다면, 먼저 원문에 ID를 backfill한 뒤 이 필드와 `tasks.md` 태스크 태그를 함께 갱신하세요.
   - 요구사항/스코프 변경 시 PRD 문서 + 이 필드 + `tasks.md` 태스크 태그를 함께 갱신하세요.

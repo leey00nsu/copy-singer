@@ -26,6 +26,7 @@
 | target audio | 곡 정보와 파일을 함께 받는 관리자 multipart upload + 기존 외부 저장 client | 단일 사용자 action으로 source/job/target을 준비하고 저장 bytes/MIME/SHA-256 계약 재사용 |
 | 추천 계산·캐시 | on-demand DB scoring + TanStack Query revision key | 작은 READY 분석 집합 비교는 요청 시 계산하고 보컬 프로필·catalog·scoring revision이 같을 때만 클라이언트 캐시 재사용 |
 | 믹싱 handoff | `MixingJob` immutable revision input | 추천 스냅샷 없이도 접수 시 검증한 analysis·target·추천 키 근거를 영속 |
+| 관리자 커스텀 믹싱 | `/admin/custom-mixing` + 관리자 전용 Modal conversion proxy | 관리자 자신의 프로필 reference와 요청 중 target만 사용하고 custom target·티켓·MixingJob은 영속하지 않음 |
 
 ---
 
@@ -59,6 +60,13 @@ Mixing request(profileId, songAnalysisId)
   -> recompute and validate current recommendation item
   -> MixingJob(profileId, songAnalysisId, targetAssetId,
                recommendedShift, catalogRevision, scoringVersion)
+
+Admin custom mixing
+  -> /admin/custom-mixing (ADMIN_EMAILS only)
+  -> profileId + target_audio multipart
+  -> server verifies admin-owned USER profile and reads reference asset
+  -> /api/admin/custom-mixing -> Modal /v1/conversions
+  -> status/audio/delete proxy; target bytes are request-scoped only
 ```
 
 핵심 모델:
@@ -98,8 +106,10 @@ src/
 │   ├── api/
 │   └── lib/
 ├── _app/api-routes/admin/catalog/
+├── _app/api-routes/admin/custom-mixing/
 ├── _pages/admin/ui/
 └── _pages/admin-song-catalog/ui/
+    _pages/admin-custom-mixing/ui/
 tests/
 ├── song-catalog-db.integration.ts
 ├── admin-song-catalog.integration.ts
@@ -112,10 +122,11 @@ tests/
 ## 테스트 전략
 
 - **단위 테스트**: YouTube URL에서 video ID 추출, major/minor key profile 추정, source/profile adapter, 공개 readiness, 동적 catalog ranking.
-- **통합 테스트**: bootstrap idempotency, 관리자 권한·CRUD, source revision 교체, target 준비 전 claim 차단, Modal submit/poll 및 외부 job ID 재사용, durable analysis claim/retry, publish transaction, target 교체와 과거 asset 보존.
+- **통합 테스트**: bootstrap idempotency, 관리자 권한·CRUD, source revision 교체, target 준비 전 claim 차단, Modal submit/poll 및 외부 job ID 재사용, durable analysis claim/retry, publish transaction, target 교체와 과거 asset 보존, 관리자 custom mixing의 profile ownership·multipart proxy·임시 target lifetime.
 - **추천·믹싱 통합 테스트**: 추천 조회가 DB snapshot을 만들지 않는지, catalog revision 변경 시 응답·cache key가 바뀌는지, 믹싱이 검증된 immutable revision input을 저장하고 조작된 analysis를 거부하는지 확인한다.
 - **Modal 단위 테스트**: 업로드·인증·idempotent submit, pending/result/error polling과 CPU 함수 resource·cleanup 계약 및 GPU 미사용.
-- **UI/Storybook 테스트**: 관리자 전용 page, 파생 video ID·분석 원키 입력이 없는 `음원 추가` dialog와 필수 파일, 분석 원키·신뢰도 표시, 목록, 분석 상태, 오류·재시도, 공개 confirmation과 모바일 layout.
+- **UI/Storybook 테스트**: 관리자 전용 page, 파생 video ID·분석 원키 입력이 없는 `음원 추가` dialog와 필수 파일, 분석 원키·신뢰도 표시, 목록, 분석 상태, 오류·재시도, 공개 confirmation과 모바일 layout, custom mixing profile select·upload·polling·result/delete 상태.
+- **legacy route 회귀 테스트**: `/dev/svc`, `/mixing-history`, `/vocal-profiles`가 제거되고 `/vocal-profiles/[id]` 및 `/library?tab=profiles` 복귀 링크가 유지되는지 확인한다.
 - **회귀 테스트**: recommendation, mixing, admin, catalog target, Prisma validation, TypeScript, lint, production build와 전체 `pnpm test`.
 - **운영 데이터 검증**: 4개 신규 m4a의 video ID·MIME·크기·hash를 확인하고 신규 분석/target/publish 후 기존 잘못된 로컬 파일 4개가 사라졌는지 검사한다.
 
