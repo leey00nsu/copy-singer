@@ -20,7 +20,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/product-quality-hardening`
-- **대기 중 변경 요청**: -
+- **대기 중 변경 요청**: 결정: approve — 사용자 승인으로 구현 완료, main fast-forward 승인 (2026-08-14)
   - 구현 중 새로 수용한 사용자 요청을 잠시 표시하는 sync marker입니다
   - 요청을 `tasks.md`와 관련 문서에 반영한 뒤 값을 비우세요
   - pre-PR 리뷰 handoff를 시작하면 `Running`, 리뷰 결과 기록까지 끝나면 `Done`으로 변경
@@ -127,9 +127,9 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -139,12 +139,13 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `pnpm run check:architecture` | `2026-08-14` | 통과 — 0 error |
-| `pnpm run test:storybook --run` | `-` | `-` |
-| `pnpm run typecheck` | `-` | `-` |
+| `pnpm run test:storybook --run` | `2026-08-14` | 통과 — skeletons 12/12, audio-waveform 3/3 등 |
+| `pnpm run typecheck` | `2026-08-14` | 통과 |
 
 
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T15:50:47.545Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T16:11:15.373Z -->
+
 
 
 
