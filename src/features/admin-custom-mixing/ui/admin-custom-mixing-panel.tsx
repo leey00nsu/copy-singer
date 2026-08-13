@@ -244,7 +244,7 @@ export function AdminCustomMixingPanel() {
         <TargetDropzone disabled={busy} file={targetFile} onFile={setTargetFile} />
         <Button
           className="w-full"
-          disabled={!selectedProfile || !selectedProfile.referenceReady || !targetFile || busy}
+          disabled={!selectedProfile?.referenceReady || !targetFile || busy}
           onClick={() => void submit()}
           size="lg"
         >

@@ -79,7 +79,7 @@ export async function submitAdminCustomMixing(
   });
 }
 
-async function proxyConversion(request: Request, id: string, method: "GET" | "DELETE") {
+async function proxyConversion(_request: Request, id: string, method: "GET" | "DELETE") {
   const config = modalConfig();
   if (!config) return modalUnavailableResponse();
   const response = await fetch(`${config.url}/v1/conversions/${encodeURIComponent(id)}`, {

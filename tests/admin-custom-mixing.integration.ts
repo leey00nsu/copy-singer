@@ -138,7 +138,7 @@ test("admin custom mixing profiles and reference resolution stay scoped to the a
     process.env.MODAL_API_KEY = "test-key";
     try {
       const target = new File([new Uint8Array(512)], "custom.wav", { type: "audio/wav" });
-      const response = await submitAdminCustomMixing(reference!, target);
+      const response = await submitAdminCustomMixing(reference, target);
       assert.ok(response, "expected a fetch response");
       assert.equal(response.status, 202);
       assert.deepEqual(await response.json(), { id: "modal-job-custom", status: "queued" });
