@@ -1,3 +1,3 @@
 import "server-only";
 
-export { default as LoginPage } from "./ui/login-page";
+export { default as LoginPage, loginMetadata } from "./ui/login-page";

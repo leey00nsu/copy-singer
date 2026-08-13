@@ -1,1 +1,1 @@
-export { ProductLayout as default } from "@/_app/layout/index.server";
+export { ProductLayout as default, productMetadata as metadata } from "@/_app/layout/index.server";

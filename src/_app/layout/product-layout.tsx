@@ -5,7 +5,10 @@ import {
   isAdminEmail,
   isDevelopmentAuthBypassSession,
 } from "@/features/authentication/index.server";
+import { PRIVATE_METADATA } from "@/shared/config/index.server";
 import { ProductShell } from "@/widgets/product-shell";
+
+const productMetadata = PRIVATE_METADATA;
 
 async function ProductLayout({ children }: { children: ReactNode }) {
   const session = await getRequestSession();
@@ -29,4 +32,4 @@ async function ProductLayout({ children }: { children: ReactNode }) {
   );
 }
 
-export { ProductLayout };
+export { ProductLayout, productMetadata };

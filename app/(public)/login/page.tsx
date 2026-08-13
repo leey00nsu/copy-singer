@@ -1,1 +1,1 @@
-export { LoginPage as default } from "@/_pages/login/index.server";
+export { LoginPage as default, loginMetadata as metadata } from "@/_pages/login/index.server";

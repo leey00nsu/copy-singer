@@ -7,11 +7,14 @@ import {
   listAdminUsers,
 } from "@/features/inspect-admin-operations/index.server";
 import { TicketAdjustmentForm } from "@/features/manage-tickets";
+import { PRIVATE_METADATA } from "@/shared/config/index.server";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import { ProductPageIntro } from "@/shared/ui/product-page-intro";
 import { ProductFooter, ProductHeader } from "@/widgets/product-shell";
 import { AdminMetricBand } from "./admin-metric-band";
+
+const adminMetadata = PRIVATE_METADATA;
 
 function positivePage(value: string | undefined) {
   const parsed = Number(value ?? "1");
@@ -287,3 +290,5 @@ export default async function AdminPage({
     </div>
   );
 }
+
+export { adminMetadata };

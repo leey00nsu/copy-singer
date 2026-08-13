@@ -66,3 +66,19 @@ test("the 16px rendering preserves transparent columns between all seven bars", 
 
   assert.equal(runs.length, 7);
 });
+
+test("the Open Graph image is a branded 1200x630 RGB derivative", async () => {
+  const source = await readFile(new URL("../public/brand/copy-singer-og.svg", import.meta.url), "utf8");
+  const metadata = await sharp(fileURLToPath(new URL("../public/og.png", import.meta.url))).metadata();
+
+  assert.match(source, />Copy Singer</);
+  assert.match(source, /gradientUnits="userSpaceOnUse"/);
+  assert.match(source, /#7e41ed/);
+  assert.match(source, /#3678e6/);
+  assert.match(source, /#cd69c6/);
+  assert.doesNotMatch(source, /Vocal Loom|#f[0-9a-f]{2}[de][0-9a-f]{2}/i);
+  assert.equal(metadata.format, "png");
+  assert.equal(metadata.width, 1200);
+  assert.equal(metadata.height, 630);
+  assert.equal(metadata.hasAlpha, false);
+});

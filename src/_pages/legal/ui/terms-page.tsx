@@ -3,8 +3,10 @@ import type { Metadata } from "next";
 import { LegalDataItem, LegalDataList, LegalDocumentLayout, LegalList, LegalSection } from "./legal-document-layout";
 
 const termsMetadata: Metadata = {
+  alternates: { canonical: "/terms" },
   title: "이용 약관 | Copy Singer",
   description: "Copy Singer의 계정, 음성 분석, 추천 및 AI 믹싱 서비스 이용 조건입니다.",
+  robots: { follow: true, index: true },
 };
 
 function TermsPage() {

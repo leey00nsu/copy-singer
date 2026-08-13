@@ -56,7 +56,7 @@
     "test:vocal-profile-history": "tsx --test tests/vocal-profile-history-ui.test.tsx && node --conditions react-server --import tsx --test tests/private-audio-proxy.test.ts tests/vocal-profile-history.integration.ts",
     "test:vocal-profile-presentation": "tsx --test tests/vocal-profile-presentation.test.ts tests/vocal-profile-results-ui.test.tsx tests/vocal-profile-history-ui.test.tsx",
     "test:base-ui": "tsx --test tests/base-ui-link-button.test.ts",
-    "test:brand-icons": "tsx --test tests/brand-icon-assets.test.ts",
+    "test:brand-icons": "tsx --test tests/brand-icon-assets.test.ts tests/metadata-seo.test.ts",
     "test:process-scripts": "tsx --test tests/process-scripts.test.ts tests/storybook-production-boundary.test.ts",
     "test:architecture-boundaries": "tsx --test tests/fsd-architecture-boundaries.test.ts",
     "test:storybook": "vitest --project storybook",

@@ -3,7 +3,10 @@ import {
   isAdminEmail,
   isDevelopmentAuthBypassSession,
 } from "@/features/authentication/index.server";
+import { buildHomeMetadata } from "@/shared/config/index.server";
 import { LandingPage } from "./landing-page";
+
+const homeMetadata = buildHomeMetadata();
 
 export default async function HomePage() {
   const session = await getRequestSession();
@@ -23,3 +26,5 @@ export default async function HomePage() {
     />
   );
 }
+
+export { homeMetadata };

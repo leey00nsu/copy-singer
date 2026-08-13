@@ -4,8 +4,10 @@ import Link from "next/link";
 import { LegalDataItem, LegalDataList, LegalDocumentLayout, LegalList, LegalSection } from "./legal-document-layout";
 
 const privacyMetadata: Metadata = {
+  alternates: { canonical: "/privacy" },
   title: "개인정보 처리방침 | Copy Singer",
   description: "Copy Singer가 계정, 음성, 분석, 추천 및 AI 믹싱 데이터를 처리하는 방법입니다.",
+  robots: { follow: true, index: true },
 };
 
 function PrivacyPage() {

@@ -1,3 +1,3 @@
 import "server-only";
 
-export { default as HomePage } from "./ui/home-page";
+export { default as HomePage, homeMetadata } from "./ui/home-page";

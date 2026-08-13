@@ -2,7 +2,10 @@ import { redirect } from "next/navigation";
 
 import { safeCallbackURL } from "@/features/authentication";
 import { getRequestSession, googleAuthConfigured } from "@/features/authentication/index.server";
+import { PRIVATE_METADATA } from "@/shared/config/index.server";
 import { LoginScreen } from "./login-screen";
+
+const loginMetadata = PRIVATE_METADATA;
 
 export default async function LoginPage({
   searchParams,
@@ -14,3 +17,5 @@ export default async function LoginPage({
 
   return <LoginScreen callbackURL={callbackURL} configured={googleAuthConfigured()} />;
 }
+
+export { loginMetadata };

@@ -15,3 +15,10 @@ await Promise.all(
       .toFile(target),
   ),
 );
+
+await sharp(fileURLToPath(new URL("../public/brand/copy-singer-og.svg", import.meta.url)))
+  .resize(1200, 630, { fit: "fill" })
+  .flatten({ background: "#f8f9fb" })
+  .removeAlpha()
+  .png({ compressionLevel: 9, palette: false })
+  .toFile(fileURLToPath(new URL("../public/og.png", import.meta.url)));
