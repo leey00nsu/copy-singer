@@ -77,5 +77,6 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DOING 시작 시점**: 공통 draft 경고와 placeholder를 제거하고, 약관에는 현재 확정된 비상업적 운영·원본 음원 미제공·판매/광고/재배포/별도 AI 학습 미사용 사실만 명시한다. 개인정보 처리방침은 실제 화면상 삭제 기능을 권리 행사 방법으로 안내한다.
   - **DONE 시점**: 시행일을 2026-08-13로 갱신하고 법률 페이지 전체에서 공개 전·입력 필요 placeholder가 남지 않았음을 검색과 Storybook으로 확인했다.
 - **Evidence**:
+  - **Commit**: `7c8e6ad` (`feat(F023-waveform-brand-icon): 비상업적 법률 고지 정리`)
   - **Test/Log**: legal Storybook 2/2, `pnpm run check`, `pnpm run build`, placeholder `rg` audit
 - **Consequences**: 문의 이메일이나 내부 문의 기능은 현재 노출하지 않는다. 문의 기능과 계정 전체 삭제가 구현되면 개인정보 처리방침의 권리 행사 방법과 개인정보 관리 항목을 함께 갱신해야 한다.

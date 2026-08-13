@@ -131,4 +131,4 @@
 | production metadata HTTP audit | `2026-08-13` | 통과 — title/OG site name은 `Copysinger`, Twitter large image와 canonical/OG image 출력 확인 |
 | `pnpm exec vitest --project storybook src/_pages/legal/ui/legal-pages.stories.tsx --run` | `2026-08-13` | 통과 — Terms/Privacy 2/2, draft placeholder 제거와 비상업·원본 음원 미제공 고지 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T14:40:38+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T14:41:34+09:00 -->
