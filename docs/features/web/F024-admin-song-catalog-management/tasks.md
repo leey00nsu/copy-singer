@@ -225,5 +225,8 @@ Modal CPU 분석/공개 결과: 순위 47 `F`(confidence `0.10758179029087539`),
 | `pnpm test` | `2026-08-13` | 통과 — production build, unit/integration/UI, architecture, Storybook 48/48 files·135/135 tests 포함 전체 suite (재실행 실패 0건) |
 | `pnpm run lint` | `2026-08-13` | 통과 |
 | `pnpm run build` | `2026-08-13` | 통과 — `/admin/custom-mixing` 신규 dynamic route 포함, `/dev/svc`·`/mixing-history`·`/vocal-profiles` 목록·`/api/conversions`·`/api/health` 제거 확인 |
+| Task 08 UI 통일성 개선 Storybook | `2026-08-13` | 통과 — 패널 empty/queued/succeeded 스토리 3/3, 전체 49/49 files·138/138 tests |
+| Task 08 UI 통일성 개선 `pnpm test` | `2026-08-13` | 통과 — 한국어 단일 카드 UI 전환 후 전체 suite 실패 0건 |
+| Task 08 UI 통일성 개선 검증 | `2026-08-13` | 통과 — TypeScript·Biome·ESLint·production build |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T21:04:54+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T21:32:00+09:00 -->
