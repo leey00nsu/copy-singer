@@ -22,7 +22,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 
 ## D001: 랜딩 motion 경계와 외부 레퍼런스 적용 방식 (2026-08-12)
 
-- **Context**: 중앙형 Hero와 제품 narrative를 강화하면서 Aceternity UI와 React Bits의 시각 패턴을 Copy Singer 랜딩에 적용해야 한다.
+- **Context**: 중앙형 Hero와 제품 narrative를 강화하면서 Aceternity UI와 React Bits의 시각 패턴을 Copysinger 랜딩에 적용해야 한다.
 - **Constraints**: 기존 랜딩은 Server Component이며 공통 Header/Footer, 인증별 CTA, neutral semantic token, reduced-motion과 데이터 정직성 계약을 유지해야 한다. 프로젝트에는 motion, GSAP, OGL runtime이 없다.
 - **Options**: 외부 animation runtime과 demo component를 직접 도입 / CSS와 semantic markup으로 패턴 재구현 / 랜딩 전체를 client component로 전환
 - **Decision**: CSS와 semantic Server Component markup으로 중앙형 Hero, preview와 motion pattern을 재구현하고, CSS만으로 acceptance를 충족하지 못할 때에만 작은 client island를 별도 검토한다.
@@ -120,7 +120,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Decision**: Voice Notes grid 배경에 Grainient renderer 하나만 배치하고 각 카드 visual을 반투명 surface로 구성해 같은 field의 서로 다른 영역처럼 보이게 한다. Bento의 optional 우측 설명 surface와 trailing caption은 제거한다.
 - **Rationale**: 실제 Grainient의 grain·warp motion을 사용하면서 WebGL context와 RAF를 하나로 제한하고 네 카드가 하나의 visual family로 읽히게 한다.
 - **Trace**:
-  - **DOING 시작 시점**: React Bits 공식 Grainient source의 WebGL2 shader, `ogl`, offscreen/visibility pause 구조와 기본 parameter를 확인했다. Copy Singer에는 느린 timeSpeed와 violet·blue·pale palette를 적용한다.
+  - **DOING 시작 시점**: React Bits 공식 Grainient source의 WebGL2 shader, `ogl`, offscreen/visibility pause 구조와 기본 parameter를 확인했다. Copysinger에는 느린 timeSpeed와 violet·blue·pale palette를 적용한다.
   - **DONE 전 확정 시점**: `GrainientBackground` client island를 추가하고 DPR 1.25, ResizeObserver, IntersectionObserver, visibility pause와 WebGL cleanup을 적용했다. 네 카드는 하나의 canvas 위에 대비가 확보된 translucent surface로 구성했다. 실제 route에서 Grainient canvas 1개, 전체 canvas 2개, 제거 대상 문구 0개와 overflow 0을 확인했다.
 - **Evidence**:
   - **Reference**: `https://www.reactbits.dev/backgrounds/grainient`
@@ -407,7 +407,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Context**: 사용자가 녹음 중 Orb 아래에 ElevenLabs UI Waveform 문서의 “Real-time audio visualization with smooth scrolling animation”을 브랜드 gradient로 적용하도록 요청했다.
 - **Constraints**: 기존 녹음 stream을 재사용해 microphone 권한을 중복 요청하지 않고, Orb의 강한 audio response·투명 무경계 surface·reduced-motion·cleanup을 유지해야 한다.
 - **Source**: `https://github.com/elevenlabs/ui/blob/main/apps/www/registry/elevenlabs-ui/ui/waveform.tsx` (MIT)
-- **Decision**: ElevenLabs `ScrollingWaveform`의 canvas bar x-position loop, rounded bar와 destination-out edge fade pattern을 `VoiceSignalCore`에 통합한다. 별도 analyser/component가 아니라 기존 recording analyser가 45ms마다 history height를 추가하고 같은 RAF가 Orb CSS level과 canvas를 갱신한다. Bar fill은 Copy Singer violet→blue→pink linear gradient를 사용한다.
+- **Decision**: ElevenLabs `ScrollingWaveform`의 canvas bar x-position loop, rounded bar와 destination-out edge fade pattern을 `VoiceSignalCore`에 통합한다. 별도 analyser/component가 아니라 기존 recording analyser가 45ms마다 history height를 추가하고 같은 RAF가 Orb CSS level과 canvas를 갱신한다. Bar fill은 Copysinger violet→blue→pink linear gradient를 사용한다.
 - **Rationale**: 한 AudioContext와 RAF로 Orb·waveform을 함께 구동하면 이중 microphone pipeline 없이 요청한 시각 패턴을 얻고 cleanup 책임도 한 component에 유지할 수 있다.
 - **Trace**:
   - **DOING 시작 시점**: 녹음 surface는 audio-reactive Orb만 표시하고 있어 시간에 따라 축적되는 입력 rhythm이 없었다. 공식 source의 `ScrollingWaveform`은 x-position history, rounded canvas bar와 edge fade를 제공하지만 자체 microphone 획득을 그대로 사용하면 기존 recorder와 권한·AudioContext가 중복된다.

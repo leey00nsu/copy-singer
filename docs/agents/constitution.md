@@ -1,4 +1,4 @@
-# Copy Singer Constitution
+# Copysinger Constitution
 
 프로젝트의 핵심 원칙과 기술 결정 가이드라인입니다.
 모든 개발 결정은 이 문서를 기준으로 합니다.

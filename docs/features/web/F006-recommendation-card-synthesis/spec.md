@@ -85,7 +85,7 @@ F005의 추천 상위 3곡을 사용자의 테스트 녹음 목소리로 자동 
 **Acceptance Criteria:**
 
 - [ ] 성공한 각 카드는 합성 결과 WAV 플레이어와 다운로드 동작을 표시한다.
-- [ ] 플레이어/다운로드는 Copy Singer API를 경유하며 Modal URL과 API key를 노출하지 않는다.
+- [ ] 플레이어/다운로드는 Copysinger API를 경유하며 Modal URL과 API key를 노출하지 않는다.
 - [ ] 원곡 오디오 또는 분리 stem의 재생·다운로드 endpoint는 제공하지 않는다.
 - [ ] 기존 순위·원키/추천 점수·추천 노래방 키·이유 문구는 합성 상태와 함께 유지된다.
 

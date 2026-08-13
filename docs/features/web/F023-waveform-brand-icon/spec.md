@@ -27,17 +27,18 @@
 
 ### US-1: 선명하고 일관된 제품 마크
 
-**As a** Copy Singer 사용자
+**As a** Copysinger 사용자
 **I want** 모든 화면과 브라우저 탭에서 같은 파형 제품 마크를 보고
 **So that** 작은 크기에서도 서비스를 즉시 식별하고 일관된 브랜드 경험을 얻을 수 있다.
 
 **Acceptance Criteria:**
 
-- [ ] header, footer와 login의 공통 `ProductMark`가 사용자 제공 SVG와 같은 일곱 막대 파형 silhouette을 표시한다.
-- [ ] favicon과 apple touch icon이 같은 벡터 master에서 파생되고 투명 배경과 브랜드 gradient를 유지한다.
-- [ ] 16px, 24px, 32px, 64px와 180px에서 bar가 잘리거나 서로 붙지 않고 파형으로 식별된다.
-- [ ] 검색 결과와 링크 공유에서 Copy Singer 제품명, canonical home URL, 설명과 새 파형 mark를 일관되게 제공한다.
-- [ ] sitemap에는 공개 index route만 포함하고 인증 제품·관리자·개발 화면은 robots metadata와 robots.txt에서 제외한다.
+- [x] header, footer와 login의 공통 `ProductMark`가 사용자 제공 SVG와 같은 일곱 막대 파형 silhouette을 표시한다.
+- [x] favicon과 apple touch icon이 같은 벡터 master에서 파생되고 투명 배경과 브랜드 gradient를 유지한다.
+- [x] 16px, 24px, 32px, 64px와 180px에서 bar가 잘리거나 서로 붙지 않고 파형으로 식별된다.
+- [x] 검색 결과와 링크 공유에서 Copysinger 제품명, canonical home URL, 설명과 새 파형 mark를 일관되게 제공한다.
+- [x] sitemap에는 공개 index route만 포함하고 인증 제품·관리자·개발 화면은 robots metadata와 robots.txt에서 제외한다.
+- [x] 사용자-visible 서비스명은 공백 없는 `Copysinger`로 통일하고 공통 wordmark와 OG 제목은 Paperlogy 7Bold를 사용한다.
 
 ---
 
@@ -63,16 +64,23 @@
 
 ### FR-4: metadata, SEO와 Open Graph 동기화
 
-- 기존 `Vocal Loom` OG bitmap을 제거하고 Copy Singer wordmark, 새 violet–blue–pink 파형 mark와 neutral canvas를 사용하는 1200×630 PNG를 deterministic 생성한다.
-- 홈 metadata는 canonical `/`, `website` Open Graph type, `Copy Singer` site name, `ko_KR` locale, absolute OG URL과 Twitter image alt를 제공한다.
+- 기존 `Vocal Loom` OG bitmap을 제거하고 흰색 1200×630 canvas 중앙에 작은 파형 logo, Paperlogy 7Bold `Copysinger`, `Find your voice. Sing your Match`를 세로 순서로 배치한 PNG를 deterministic 생성한다.
+- 홈 metadata는 canonical `/`, `website` Open Graph type, `Copysinger` site name, `ko_KR` locale, absolute OG URL과 Twitter image alt를 제공한다.
 - `/robots.txt`는 공개 route crawling과 `/sitemap.xml` 위치를 알리고 API, 인증 제품, admin과 dev surface를 disallow한다.
 - `/sitemap.xml`은 `/`, `/terms`, `/privacy`만 canonical origin으로 제공한다.
 - product route group, login, admin과 development page는 `noindex, nofollow` metadata를 제공한다.
 - canonical origin은 배포 시 설정되는 `BETTER_AUTH_URL`을 우선하고 local fallback을 사용하며 trailing slash를 정규화한다.
 
-### FR-5: 범위 제한
+### FR-5: 서비스명과 브랜드 wordmark
 
-- 제품명 `Copy Singer`, wordmark typography, 보컬 차트와 artwork gradient 동작은 변경하지 않는다.
+- UI, metadata, 인증 provider appName, 법률 문서와 접근 가능한 label의 제품명은 `Copysinger`로 통일한다.
+- 사용자 제공 `Paperlogy-7Bold.ttf`를 repository local font로 포함하고 `next/font/local`로 self-host한다.
+- Paperlogy는 공통 ProductBrand wordmark와 OG의 `Copysinger` 제목에 적용하며 본문 Pretendard 계약은 유지한다.
+- OG rasterizer는 repository의 동일 TTF bytes를 SVG에 embed해 실행 환경의 system font 설치 여부에 의존하지 않는다.
+
+### FR-6: 범위 제한
+
+- 본문 Pretendard typography, 보컬 차트와 artwork gradient 동작은 변경하지 않는다.
 - 첨부 SVG의 막대 수, 높이 순서와 간격을 재설계하지 않는다.
 
 ---
@@ -82,7 +90,7 @@
 - **성능**: 공통 mark는 작은 정적 SVG 한 개로 제공하고 layout shift를 만들지 않는다. favicon raster 크기는 기존 계약을 유지한다.
 - **SEO**: absolute URL은 한 canonical origin resolver를 공유하고 preview/request host가 canonical로 굳어지지 않게 한다.
 - **보안**: SVG에는 script, external reference, embedded bitmap과 event handler를 포함하지 않는다.
-- **접근성**: mark 자체는 장식으로 숨기고 인접한 `Copy Singer` text 또는 link/button label이 accessible name을 제공한다.
+- **접근성**: mark 자체는 장식으로 숨기고 인접한 `Copysinger` text 또는 link/button label이 accessible name을 제공한다.
 - **시각 품질**: 16px 축소에서도 bar 사이 최소 한 픽셀 이상의 투명 간격과 식별 가능한 outer padding을 유지하고 transparent corner를 검증한다.
 
 ---

@@ -16,7 +16,7 @@
 
 ## 목적
 
-현재 Copy Singer는 실제 음성 녹음·업로드, durable 분석, 상세 보컬 프로필, 100곡 추천, 티켓 기반 AI 믹싱과 영속 히스토리를 제공하지만 각 기능이 독립된 rounded card와 고정 사용자 메뉴에 나뉘어 있다. 추천 결과는 100개의 큰 카드를 한 열로 표시해 비교가 어렵고, 분석 결과는 핵심 요약과 상세 근거의 위계가 약하다. 로그인 이후 사용자가 현재 위치와 다음 행동을 이해할 수 있는 일관된 제품 navigation도 없다.
+현재 Copysinger는 실제 음성 녹음·업로드, durable 분석, 상세 보컬 프로필, 100곡 추천, 티켓 기반 AI 믹싱과 영속 히스토리를 제공하지만 각 기능이 독립된 rounded card와 고정 사용자 메뉴에 나뉘어 있다. 추천 결과는 100개의 큰 카드를 한 열로 표시해 비교가 어렵고, 분석 결과는 핵심 요약과 상세 근거의 위계가 약하다. 로그인 이후 사용자가 현재 위치와 다음 행동을 이해할 수 있는 일관된 제품 navigation도 없다.
 
 이 기능은 사용자가 제공한 네 장의 디자인 보드를 visual source of truth로 삼아, 현재 제품 계약으로 실제 동작하는 핵심 여정을 밝고 절제된 제품 중심 UI로 재설계한다. 기존 shadcn/ui, semantic token, WaveSurfer, TanStack Query와 FSD 구조를 유지하며 새 UI library나 별도 디자인 시스템 package를 도입하지 않는다. 장기적인 사용 규칙은 `docs/designs/design-system.md`, 정확한 token은 `globals.css`, 공통 component 계약은 `src/shared/ui`, 실행 가능한 상태 예시는 Storybook이 소유하도록 문서와 코드를 함께 관리한다.
 
@@ -29,7 +29,7 @@
 ### US-1: 제품을 이해하고 시작하는 방문자
 
 **As a** 로그인하지 않은 방문자
-**I want** 첫 화면에서 Copy Singer가 제공하는 음성 분석, 노래 추천과 AI 믹싱 데모를 이해하고 싶다.
+**I want** 첫 화면에서 Copysinger가 제공하는 음성 분석, 노래 추천과 AI 믹싱 데모를 이해하고 싶다.
 **So that** 허구의 기능이나 지원하지 않는 로그인 수단에 혼동되지 않고 Google 로그인으로 시작할 수 있다.
 
 **Acceptance Criteria:**

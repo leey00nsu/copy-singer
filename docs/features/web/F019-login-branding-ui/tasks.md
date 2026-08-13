@@ -61,7 +61,7 @@
 
 ---
 
-- [DONE][PRD-FR-052] T-F019-01 Copy Singer 로고 master와 favicon 적용
+- [DONE][PRD-FR-052] T-F019-01 Copysinger 로고 master와 favicon 적용
   - Date: 2026-08-11
   - Acceptance:
     - 제공된 헤드폰·five-bar 파형의 silhouette과 dark/pink/violet/blue 관계를 보존한 transparent PNG master가 project asset으로 저장된다.
@@ -82,7 +82,7 @@
 - [DONE][PRD-FR-046] T-F019-03 최소 로그인 화면과 Google 시작 button 적용
   - Date: 2026-08-11
   - Acceptance:
-    - 로그인 page는 header 홈으로를 제거하고 중심에 logo, Copy Singer, Google icon이 포함된 구글로 시작하기 button만 정적으로 표시한다.
+    - 로그인 page는 header 홈으로를 제거하고 중심에 logo, Copysinger, Google icon이 포함된 구글로 시작하기 button만 정적으로 표시한다.
     - 기존 OAuth pending·configured false·runtime error와 safe callback/session redirect 계약을 유지한다.
   - Checklist:
     - [x] LoginScreen composition 분리와 불필요한 static copy 제거
@@ -92,7 +92,7 @@
 - [DONE][PRD-FR-046] T-F019-04 로그인 안내와 약관 동의 문구 보완
   - Date: 2026-08-11
   - Acceptance:
-    - `Copy Singer` 아래에는 muted `계속하려면 로그인하세요.`를 표시한다.
+    - `Copysinger` 아래에는 muted `계속하려면 로그인하세요.`를 표시한다.
     - Google action 아래에는 첨부 reference의 Google 로그인 및 이용 약관·개인정보 처리방침 동의 문구를 보조 위계로 표시한다.
   - Checklist:
     - [x] LoginScreen 안내·동의 문구와 responsive spacing 적용

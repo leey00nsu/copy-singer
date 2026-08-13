@@ -4,14 +4,14 @@ lee-spec-kit:
   scope: project
 ---
 
-# Copy Singer Design System
+# Copysinger Design System
 
 - **상태**: Approved
 - **버전**: 0.5
 - **최초 적용 Feature**: F018 product-ui-redesign
 - **적용 범위**: 사용자용 Web UI
 
-Copy Singer의 화면이 Feature와 route가 늘어나도 하나의 제품처럼 보이고 동작하도록 만드는 장기 규칙이다. 이 문서는 시각·상호작용의 의도와 사용 기준을 정의한다. 정확한 CSS 값, 실제 컴포넌트 계약과 렌더 결과를 복제해서 문서에 고정하지 않고 각각의 실행 가능한 소스와 함께 관리한다.
+Copysinger의 화면이 Feature와 route가 늘어나도 하나의 제품처럼 보이고 동작하도록 만드는 장기 규칙이다. 이 문서는 시각·상호작용의 의도와 사용 기준을 정의한다. 정확한 CSS 값, 실제 컴포넌트 계약과 렌더 결과를 복제해서 문서에 고정하지 않고 각각의 실행 가능한 소스와 함께 관리한다.
 
 ## 정본과 책임
 
@@ -316,5 +316,5 @@ Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface�
 
 - [Product UI Redesign](./product-ui-redesign.md)
 - [F018 Spec](../features/web/F018-product-ui-redesign/spec.md)
-- [Copy Singer PRD](../prd/copy-singer-prd.md)
+- [Copysinger PRD](../prd/copy-singer-prd.md)
 - [Visual references](./references/copy-singer/README.md)

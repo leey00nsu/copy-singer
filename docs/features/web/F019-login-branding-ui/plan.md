@@ -39,7 +39,7 @@ LoginPage (server)
   ├─ safeCallbackURL + existing-session redirect
   └─ LoginScreen
       ├─ header ProductBrand
-      ├─ ProductMark + Copy Singer + muted login guidance
+      ├─ ProductMark + Copysinger + muted login guidance
       ├─ GoogleSignIn → authClient.signIn.social
       └─ Google login legal consent copy
 ```
@@ -51,10 +51,10 @@ LoginPage (server)
 ### 브랜드 자산
 
 - Image 1은 Google button의 spacing·outline·multicolor G 참고 이미지이며 edit target이 아니다.
-- Image 2는 Copy Singer mark의 edit target이다. built-in ImageGen으로 subject를 flat chroma-key 배경에 정리하고 스킬의 background removal helper로 transparent master를 만든다.
+- Image 2는 Copysinger mark의 edit target이다. built-in ImageGen으로 subject를 flat chroma-key 배경에 정리하고 스킬의 background removal helper로 transparent master를 만든다.
 - 원본을 덮어쓰지 않고 `public/brand/copy-singer-mark.png`에 project master를 저장한다.
 - master에서 `public/favicon.png`와 `public/apple-touch-icon.png`를 deterministic downsample해 같은 silhouette을 유지한다. alpha channel, transparent corner, subject coverage와 16/24/32px thumbnail을 검수한다.
-- `ProductMark`가 master와 intrinsic size를 소유하고 `ProductBrand`, login composition이 이를 재사용한다. logo bitmap 자체에는 text를 넣지 않으며 accessible name은 `Copy Singer` text가 담당한다.
+- `ProductMark`가 master와 intrinsic size를 소유하고 `ProductBrand`, login composition이 이를 재사용한다. logo bitmap 자체에는 text를 넣지 않으며 accessible name은 `Copysinger` text가 담당한다.
 
 ### 공개 법률 문서
 
@@ -93,7 +93,7 @@ src/
 │   ├── google-icon.tsx                         # multicolor Google brand glyph
 │   └── google-sign-in.tsx                      # outline Google 시작 action
 └── widgets/product-shell/ui/
-    ├── product-brand.tsx                       # mark + Copy Singer word label
+    ├── product-brand.tsx                       # mark + Copysinger word label
     ├── product-mark.tsx                        # 공통 master image adapter
     └── product-shell.tsx                       # unauthenticated action 단일화
 

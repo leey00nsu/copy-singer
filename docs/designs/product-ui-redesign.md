@@ -4,7 +4,7 @@ lee-spec-kit:
   scope: project
 ---
 
-# Copy Singer Product UI Redesign
+# Copysinger Product UI Redesign
 
 F018과 후속 제품 UI Feature가 공유하는 화면 디자인 정본이다.
 
@@ -29,7 +29,7 @@ F018과 후속 제품 UI Feature가 공유하는 화면 디자인 정본이다.
 - `04-admin.*`: Admin
 - `05-mixing-progress.*`: `/library/mixes/[id]` 진행 중 상태
 
-최종 4보드의 외곽 번호·설명과 presentation frame은 제품 UI가 아니다. **보드 안의 Copy Singer app frame만 구현 대상으로 본다.**
+최종 4보드의 외곽 번호·설명과 presentation frame은 제품 UI가 아니다. **보드 안의 Copysinger app frame만 구현 대상으로 본다.**
 
 F022 이후 `01-landing-voice-scan.*`의 오른쪽 Voice Scan frame은 계속 유효하지만, 왼쪽 Landing frame의 좌우 분할 Hero와 crystal CTA는 아래 `Landing` 계약으로 대체한다. Landing의 최신 검증 surface는 `Pages/Landing` Storybook의 signed-out, signed-in, mobile과 reduced-motion 상태다.
 
@@ -62,7 +62,7 @@ F022 이후 `01-landing-voice-scan.*`의 오른쪽 Voice Scan frame은 계속 �
 ### Landing
 
 - 첫 viewport는 넓은 whitespace 안의 중앙 정렬 display copy, 실제 voice-analysis primary CTA와 아래에서 이어지는 넓은 voice preview를 중심으로 구성한다.
-- Hero의 작은 announcement, 절제된 headline, 설명, primary/secondary action과 넓은 여백은 x.ai의 정보 위계를 참고하되 Copy Singer semantic token과 한국어 제품 문구를 유지한다.
+- Hero의 작은 announcement, 절제된 headline, 설명, primary/secondary action과 넓은 여백은 x.ai의 정보 위계를 참고하되 Copysinger semantic token과 한국어 제품 문구를 유지한다.
 - Hero headline의 `내 목소리` phrase는 공식 React Bits Gradient Text source 기반 violet data accent→blue→restrained pink의 단일 gradient field를 사용한다. `animationSpeed=1.5`는 편도 1.5초·yoyo 왕복 3초로 해석하고 reduced-motion에서는 동일 gradient를 정적으로 유지한다.
 - Hero word/copy entry와 section·stagger·line·fade reveal은 `motion/react`의 one-shot viewport primitive를 공유한다. Orb WebGL·녹음 analyser RAF와 단순 hover transition은 각각의 전용 구현을 유지한다.
 - Hero 아래에는 x.ai식 비대칭 product bento를 두고 `목소리 분석`, `노래와 키 추천`, `선택형 AI 믹싱`을 서로 다른 mini-product surface로 보여준다. preview 안의 분석 항목은 값을 가장하지 않고 `관찰 음역`, `실용 음역`, `음정 안정성`처럼 실제로 제공하는 결과 종류만 예고한다.
@@ -184,4 +184,4 @@ F022 이후 `01-landing-voice-scan.*`의 오른쪽 Voice Scan frame은 계속 �
 ## 외부 참고
 
 - ElevenLabs UI repository: `https://github.com/elevenlabs/ui`
-- ElevenLabs Waveform / Live Waveform / Mic Selector / Voice Button의 interaction pattern은 참고할 수 있지만 Copy Singer의 shadcn/FSD 구조와 실제 데이터 계약을 우선한다.
+- ElevenLabs Waveform / Live Waveform / Mic Selector / Voice Button의 interaction pattern은 참고할 수 있지만 Copysinger의 shadcn/FSD 구조와 실제 데이터 계약을 우선한다.

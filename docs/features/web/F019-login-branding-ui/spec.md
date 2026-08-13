@@ -35,13 +35,13 @@
 
 - [ ] desktop header와 mobile navigation은 primary `로그인` action 하나만 제공하고 `무료로 시작하기`를 중복 표시하지 않는다.
 - [ ] 로그인 page header는 `홈으로` action을 표시하지 않는다.
-- [ ] 로그인 중심 콘텐츠는 제품 로고, 그 아래 `Copy Singer`, muted `계속하려면 로그인하세요.`, Google icon이 있는 `구글로 시작하기` button과 Google 로그인 약관 동의 안내를 표시한다.
+- [ ] 로그인 중심 콘텐츠는 제품 로고, 그 아래 `Copysinger`, muted `계속하려면 로그인하세요.`, Google icon이 있는 `구글로 시작하기` button과 Google 로그인 약관 동의 안내를 표시한다.
 - [ ] OAuth pending·설정 누락·실패 상태와 safe callback URL 동작은 유지한다.
 
-### US-2: 일관된 Copy Singer 앱 마크
+### US-2: 일관된 Copysinger 앱 마크
 
 **As a** 방문자
-**I want** header, 로그인 화면과 browser tab에서 같은 Copy Singer 심볼을 보고 싶다.
+**I want** header, 로그인 화면과 browser tab에서 같은 Copysinger 심볼을 보고 싶다.
 **So that** 페이지와 진입 경로가 달라도 같은 제품임을 즉시 인식할 수 있다.
 
 **Acceptance Criteria:**
@@ -76,7 +76,7 @@
 
 - login header에서는 `홈으로` link를 제거한다.
 - 중심 콘텐츠에서 `Account`, `계정으로 시작하세요`, 제품 기능 설명, border section과 정적 Google-only 안내를 제거한다.
-- `Copy Singer` 아래에는 muted `계속하려면 로그인하세요.`를 표시하고 Google action 아래에는 Google 계정 로그인 시 Copy Singer의 이용 약관 및 개인정보 처리방침에 동의한다는 안내를 표시한다.
+- `Copysinger` 아래에는 muted `계속하려면 로그인하세요.`를 표시하고 Google action 아래에는 Google 계정 로그인 시 Copysinger의 이용 약관 및 개인정보 처리방침에 동의한다는 안내를 표시한다.
 - Google button은 공식 multicolor G icon과 `구글로 시작하기` label을 사용하며 pending에는 진행 상태 label, 설정 누락·실패에는 기존 조건부 상태를 유지한다.
 
 ### FR-3: 공통 app mark와 favicon

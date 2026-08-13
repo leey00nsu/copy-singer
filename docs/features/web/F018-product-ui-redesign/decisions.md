@@ -338,7 +338,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 ## D035: 1672×941 최종 4보드가 legacy reference/V2를 대체 (2026-08-10)
 
 - **Context**: T-F018-19 구현 중 사용자가 다시 첨부한 최종 네 장은 `Landing + Voice Scan`, `Library Vocal Profile + AI Mix`, `Analysis Detail + Account`, `Admin`을 한 화면군씩 보여 주는 `1672 × 941` 보드다. 프로젝트에 보관된 `1448 × 1086` 네 자산 및 generated V2와 구성·밀도·header/footer가 달라, legacy 자산을 계속 정본으로 사용하면 로컬 구현이 사용자 최종 레퍼런스와 다시 어긋난다.
-- **Decision**: 2026-08-10 최종 `1672 × 941` 네 장을 최상위 visual source of truth로 고정한다. 기존 `docs/designs/assets/product-ui-redesign/`의 `1448 × 1086` 네 장과 generated V1/V2는 히스토리·gap 추적용 legacy 자료로 강등한다. 최종 보드의 외곽 번호/설명/presentation frame은 구현하지 않고 Copy Singer app frame 내부만 재현한다.
+- **Decision**: 2026-08-10 최종 `1672 × 941` 네 장을 최상위 visual source of truth로 고정한다. 기존 `docs/designs/assets/product-ui-redesign/`의 `1448 × 1086` 네 장과 generated V1/V2는 히스토리·gap 추적용 legacy 자료로 강등한다. 최종 보드의 외곽 번호/설명/presentation frame은 구현하지 않고 Copysinger app frame 내부만 재현한다.
 - **Implementation**: 제품 shell은 64px top header, 약 72rem 중앙 rail과 underline active navigation으로 맞춘다. Landing/Voice Scan, Library 두 탭, Analysis Detail, Account, Admin의 typography scale·table density·hairline·CTA 위치를 최종 보드 기준으로 재조립한다. ProductShell에는 Library 보드의 compact footer를 추가하고 Admin은 전용 운영 footer를 유지한다. Crystal은 Landing 하단 CTA 한 곳만 유지한다.
 - **Evidence**: `pnpm run check` 통과(기존 Biome warning 60건), `pnpm test` 전체 통과, Storybook 36 files/93 tests, crystal exact usage가 Landing component/test-id에만 존재, 실제 Next Landing/Login 1280·768·360에서 horizontal overflow 0 확인.
 - **Consequences**: 이후 F018과 후속 UI 작업에서 legacy 1448 보드나 generated V2가 최종 보드와 충돌하면 최종 1672 보드를 따른다. 기존 구현 화면의 spacing/card/table 구조를 다시 시각 기준으로 승격하지 않는다.

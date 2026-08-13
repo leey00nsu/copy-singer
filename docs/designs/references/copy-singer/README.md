@@ -1,6 +1,6 @@
-# Copy Singer Visual References
+# Copysinger Visual References
 
-이 디렉터리는 Copy Singer 제품 UI의 **유일한 visual source of truth**다.
+이 디렉터리는 Copysinger 제품 UI의 **유일한 visual source of truth**다.
 
 ## 우선순위
 

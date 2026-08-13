@@ -50,3 +50,17 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Commit**: `00227e1` (`feat(F023-waveform-brand-icon): metadata SEO와 Open Graph 동기화`)
   - **Test/Log**: `pnpm run test:brand-icons` 8/8, `pnpm run check`, `pnpm run build`, production metadata HTTP audit, `public/og.png` visual QA
 - **Consequences**: production canonical 정확도는 배포 환경의 `BETTER_AUTH_URL` 또는 Vercel production URL 설정에 의존한다. 공개 route 추가 시 sitemap allowlist와 robots policy를 함께 갱신해야 하며 private route는 noindex metadata를 명시해야 한다.
+
+## D003: Copysinger wordmark와 Paperlogy font scope (2026-08-13)
+
+- **Context**: 사용자는 서비스명을 `Copysinger`로 붙여 쓰고 제공한 Paperlogy 7Bold를 사용하며 OG를 흰 배경 중앙형 logo/name/tagline composition으로 맞추길 요청했다.
+- **Constraints**: 본문 Pretendard와 기존 layout은 유지하고 browser/UI wordmark와 committed OG가 같은 font bytes를 사용해야 한다. 외부 다운로드 경로는 runtime 의존성이 될 수 없다.
+- **Options**: (A) Paperlogy를 전체 typography로 적용, (B) wordmark와 OG 제목에만 적용하고 본문 Pretendard 유지, (C) OG에만 outline/path로 변환.
+- **Decision**: (B)를 채택했다. 제공 TTF의 exact bytes를 repository에 포함하고 `next/font/local`의 `--font-paperlogy` brand token과 OG generation의 embedded `@font-face`가 공유한다. 서비스명은 사용자-visible 문구와 metadata 전반에서 `Copysinger`로 통일한다.
+- **Rationale**: brand 식별부에만 개성 있는 서체를 적용해 기존 본문 가독성과 layout을 보존한다. 같은 TTF를 UI와 deterministic raster pipeline이 사용하므로 browser와 공유 이미지 사이의 wordmark drift를 막는다.
+- **Trace**:
+  - **DOING 시작 시점**: TTF를 repository에 복사해 `next/font/local` brand variable과 Sharp SVG data font에 함께 사용하고, 서비스명 텍스트는 전역적으로 `Copysinger`로 동기화한다.
+  - **DONE 시점**: production 계산값에서 Paperlogy 700 적용을 확인했고 OG를 흰색 1200×630 canvas 중앙에 작은 파형 mark, `Copysinger`, 정확한 tagline 순서로 확정했다.
+- **Evidence**:
+  - **Test/Log**: `pnpm run test:brand-icons` 8/8, Storybook 13/13, `pnpm run check`, `pnpm run build`, production browser metadata/font audit, deterministic font/OG SHA-256 비교
+- **Consequences**: repository에는 사용자가 제공한 TTF가 포함된다. 제공 폴더에서 별도 license 문서는 발견되지 않았으므로 배포 권한 관리는 제공자의 font 사용 조건을 따른다.

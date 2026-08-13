@@ -75,14 +75,26 @@
 - [DONE][PRD-FR-052] T-F023-waveform-brand-icon-02 metadata SEO 및 Open Graph 브랜드 동기화
   - Date: 2026-08-13
   - Acceptance:
-    - [x] 홈 production head가 canonical, complete Open Graph/Twitter metadata와 favicon/apple icon을 Copy Singer 기준으로 출력한다.
-    - [x] 1200×630 OG PNG가 새 파형 mark와 Copy Singer 이름을 사용하고 기존 Vocal Loom/beige artwork를 포함하지 않는다.
+    - [x] 홈 production head가 canonical, complete Open Graph/Twitter metadata와 favicon/apple icon을 Copysinger 기준으로 출력한다.
+    - [x] 1200×630 OG PNG가 새 파형 mark와 Copysinger 이름을 사용하고 기존 Vocal Loom/beige artwork를 포함하지 않는다.
     - [x] robots.txt와 sitemap.xml은 공개 route만 crawl/index 대상으로 제공하고 product, login, admin, dev route는 noindex 처리한다.
   - Checklist:
     - [x] canonical site origin resolver와 root/home/private metadata 계약을 구현한다.
-    - [x] Copy Singer OG SVG master 및 PNG generation을 추가하고 asset test를 확장한다.
+    - [x] Copysinger OG SVG master 및 PNG generation을 추가하고 asset test를 확장한다.
     - [x] Next.js robots/sitemap metadata route와 private noindex 경계를 구현한다.
     - [x] metadata unit test, 정적 검사, build, production head 및 OG visual QA를 수행한다.
+
+- [DONE][PRD-FR-052] T-F023-waveform-brand-icon-03 Copysinger wordmark와 Paperlogy OG 정렬
+  - Date: 2026-08-13
+  - Acceptance:
+    - 사용자-visible 제품명, metadata, 인증 appName과 법률 문서가 Copysinger 단일 표기를 사용한다.
+    - 공통 ProductBrand wordmark와 OG 제목이 제공된 Paperlogy 7Bold TTF를 동일하게 사용한다.
+    - OG는 단색 흰 배경 중앙에 작은 파형 logo, Copysinger, Find your voice. Sing your Match 순서로 정렬된 1200×630 이미지다.
+  - Checklist:
+    - [x] Paperlogy 7Bold를 repository local font로 추가하고 Next localFont brand token에 연결한다.
+    - [x] 서비스명 텍스트 표기를 `Copysinger`로 전역 동기화하고 관련 test를 갱신한다.
+    - [x] OG SVG와 generation pipeline에 repository font를 embed하고 요청한 중앙형 composition을 구현한다.
+    - [x] asset/metadata/Storybook test, 정적 검사, build, production head와 OG visual QA를 수행한다.
 
 ## 완료 조건
 
@@ -100,11 +112,11 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `pnpm run test:brand-icons` | `2026-08-13` | 통과 — icon/OG asset 5건, canonical/OG/robots/sitemap metadata 3건, 합계 8/8 |
-| `pnpm exec vitest --project storybook src/widgets/product-shell/ui/product-shell.stories.tsx src/_pages/login/ui/login-screen.stories.tsx --run` | `2026-08-13` | 통과 — 2 files, 9 tests |
+| `pnpm exec vitest --project storybook src/widgets/product-shell/ui/product-shell.stories.tsx src/_pages/login/ui/login-screen.stories.tsx src/_pages/home/ui/landing-page.stories.tsx --run` | `2026-08-13` | 통과 — 3 files, 13 tests |
 | `pnpm run check` | `2026-08-13` | 통과 — Biome 기존 warning 56건, ESLint·TypeScript·Steiger·architecture test 성공 |
 | `pnpm run build` | `2026-08-13` | 통과 — Next.js 16.3.0 production build, 31 routes; `/robots.txt`·`/sitemap.xml` static 생성 |
-| `pnpm run brand:icons` + SHA-256 비교 | `2026-08-13` | 통과 — favicon `e97d6d4…`, apple `ef15dcec…`, OG `463aecc…` 재생성 전후 동일 |
-| Storybook browser QA | `2026-08-13` | 통과 — ProductShell/LoginScreen에서 24×24 mark, 접근성 계약, 정렬, console error 0; 16·24·32·64·180px light/dark contact sheet 확인 |
-| production metadata HTTP audit | `2026-08-13` | 통과 — home canonical/OG/Twitter/icon 9 tags, login noindex+googlebot, robots 18 lines, sitemap public URL 3개 및 private leak 0 |
+| `pnpm run brand:icons` + SHA-256 비교 | `2026-08-13` | 통과 — Paperlogy TTF `fe71049f…`, OG `11deaa82…` 재생성 전후 동일 |
+| Browser visual QA | `2026-08-13` | 통과 — production ProductBrand가 Paperlogy 700 계산값을 사용하고 파형 mark/wordmark 정렬 정상; 흰 배경 중앙형 `public/og.png` 확인 |
+| production metadata HTTP audit | `2026-08-13` | 통과 — title/OG site name은 `Copysinger`, Twitter large image와 canonical/OG image 출력 확인 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T14:14:49+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T14:27:03+09:00 -->

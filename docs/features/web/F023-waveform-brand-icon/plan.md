@@ -24,7 +24,8 @@
 | UI rendering | Next.js `Image` + public SVG | 기존 `ProductMark`의 sizing, preload와 접근성 계약을 최소 변경으로 유지한다. |
 | Raster derivation | Sharp 기반 deterministic generation script | 같은 SVG에서 64px favicon과 180px apple touch PNG를 반복 생성하고 크기·alpha를 검증할 수 있다. |
 | SEO metadata | Next.js 16 Metadata / MetadataRoute | framework-native canonical, robots.txt와 sitemap.xml 출력을 type-safe하게 생성한다. |
-| Social preview | SVG template → Sharp PNG | 새 mark와 Copy Singer 이름을 동일 generation pipeline에서 1200×630 OG bitmap으로 고정한다. |
+| Social preview | SVG template → Sharp PNG | 새 mark와 Copysinger 이름을 동일 generation pipeline에서 1200×630 OG bitmap으로 고정한다. |
+| Brand wordmark | Paperlogy 7Bold + `next/font/local` | 제공 TTF를 self-host하고 공통 wordmark와 OG raster가 같은 font bytes를 사용한다. |
 | Verification | Node test + Storybook interaction/visual QA | 자산 구조와 UI 사용처를 자동 검증하고 실제 축소 렌더링을 눈으로 확인한다. |
 
 ---
@@ -38,7 +39,7 @@
       └─ generation script
           ├─ public/favicon.png (64×64 RGBA)
           ├─ public/apple-touch-icon.png (180×180 RGBA)
-          └─ public/og.png (1200×630 Copy Singer social preview)
+          └─ public/og.png (1200×630 Copysinger social preview)
 
 BETTER_AUTH_URL → canonical site origin resolver
   ├─ home metadata → canonical + complete Open Graph/Twitter tags
@@ -55,6 +56,8 @@ private route metadata → noindex, nofollow
 - 기존 AI master PNG는 canonical 자산에서 제거한다. 같은 basename의 SVG를 사용해 Storybook selector와 자산 회귀 검증을 새 확장자에 맞춘다.
 - root metadata는 공통 title/description/icon default를 유지하고 homepage가 canonical과 complete social graph를 소유한다. URL 생성은 `BETTER_AUTH_URL` 기반 shared resolver 한 곳으로 제한한다.
 - robots.txt disallow와 route-level noindex를 함께 적용한다. robots exclusion만으로 이미 알려진 private URL의 indexing을 막을 수 없기 때문이다.
+- Paperlogy TTF는 `_app/fonts`에 두고 root layout에서 CSS variable만 등록한다. 공통 `ProductBrand` wordmark가 이 variable을 사용하며 body typography는 Pretendard를 유지한다.
+- OG generator는 TTF를 base64 data URL로 SVG style에 주입한 뒤 rasterize해 system font fallback과 환경별 글자 폭 차이를 제거한다.
 
 ---
 
@@ -62,6 +65,7 @@ private route metadata → noindex, nofollow
 
 ```
 src/
+├── _app/fonts/Paperlogy-7Bold.ttf               # user-provided brand font
 └── widgets/product-shell/ui/
     ├── product-mark.tsx                         # SVG master source와 intrinsic size
     └── product-shell.stories.tsx                # 새 asset selector 회귀
@@ -95,6 +99,7 @@ pnpm-lock.yaml                                   # dependency lock
 
 - **단위 테스트**: canonical SVG가 32×32 viewBox, 일곱 path, 단일 user-space gradient, 세 brand stop, 외부 reference/script/event handler 부재를 만족하는지 검사한다. PNG 두 개의 signature, dimensions, alpha channel, transparent corner와 nonempty bounds를 검사한다.
 - **metadata 테스트**: canonical origin normalization, homepage OG/Twitter completeness, private noindex, robots disallow와 sitemap public route allowlist를 plain function 단위로 검증한다.
+- **브랜드 표기 테스트**: canonical service name `Copysinger`, ProductBrand의 local font class와 OG embedded font/title/subtitle/centered composition을 검증한다.
 - **통합 테스트**: ProductMark와 관련 Storybook interaction test가 새 SVG source를 사용하면서 접근 가능한 제품명과 기존 layout을 유지하는지 확인한다. `pnpm run check`로 타입·lint·FSD 경계를 검증한다.
 - **시각 QA**: master와 16/24/32/64/180px contact sheet를 직접 열어 bar 간격, clipping, gradient 연속성과 light/dark 배경 대비를 확인한다. login 및 공통 product shell Storybook에서 logo 크기와 정렬 회귀를 확인한다.
 - **빌드 검증**: `pnpm run build`로 Next.js image/metadata 자산 처리를 확인한다.

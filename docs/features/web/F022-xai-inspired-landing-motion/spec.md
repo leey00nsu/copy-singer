@@ -17,11 +17,11 @@
 
 ## 목적
 
-x.ai의 절제된 중앙형 랜딩 구조를 Copy Singer에 맞게 재해석하고, Aceternity UI와 React Bits를 참고한 접근 가능하고 성능 친화적인 애니메이션을 추가한다.
+x.ai의 절제된 중앙형 랜딩 구조를 Copysinger에 맞게 재해석하고, Aceternity UI와 React Bits를 참고한 접근 가능하고 성능 친화적인 애니메이션을 추가한다.
 
-현재 랜딩은 제품 가치, 실제 3단계 흐름과 primary CTA를 정확하게 설명하지만, 첫 viewport의 좌우 분할 구조와 작은 원형 파형만으로는 Copy Singer의 핵심 경험인 `목소리 → 분석 → 추천 → AI 믹싱`이 충분히 인상적으로 연결되지 않는다.
+현재 랜딩은 제품 가치, 실제 3단계 흐름과 primary CTA를 정확하게 설명하지만, 첫 viewport의 좌우 분할 구조와 작은 원형 파형만으로는 Copysinger의 핵심 경험인 `목소리 → 분석 → 추천 → AI 믹싱`이 충분히 인상적으로 연결되지 않는다.
 
-이 Feature는 x.ai의 넓은 여백, 절제된 중앙 정렬 display copy, 작은 announcement, 비대칭 product bento, editorial demo, hairline metric band와 2-up CTA 구성을 참고한다. Aceternity UI의 Bento Grid·Glowing Effect 계열 source pattern과 React Bits의 Orb·content reveal을 Copy Singer의 semantic token, 데이터 정직성, 접근성 및 성능 기준에 맞게 직접 통합한다.
+이 Feature는 x.ai의 넓은 여백, 절제된 중앙 정렬 display copy, 작은 announcement, 비대칭 product bento, editorial demo, hairline metric band와 2-up CTA 구성을 참고한다. Aceternity UI의 Bento Grid·Glowing Effect 계열 source pattern과 React Bits의 Orb·content reveal을 Copysinger의 semantic token, 데이터 정직성, 접근성 및 성능 기준에 맞게 직접 통합한다.
 
 목표는 레퍼런스 사이트를 복제하거나 효과를 많이 추가하는 것이 아니라, 첫 방문자가 제품 가치를 즉시 이해하고 실제 목소리 분석 흐름으로 자연스럽게 진입하도록 만드는 것이다.
 
@@ -31,7 +31,7 @@ x.ai의 절제된 중앙형 랜딩 구조를 Copy Singer에 맞게 재해석하�
 
 ### US-1: 첫 방문에서 제품 가치 이해
 
-**As a** Copy Singer를 처음 방문한 사용자
+**As a** Copysinger를 처음 방문한 사용자
 **I want** 첫 화면에서 서비스가 내 목소리를 분석해 맞는 노래와 키를 추천하고 AI 믹싱으로 이어진다는 점을 이해하고
 **So that** 서비스를 사용할 가치가 있는지 빠르게 판단할 수 있다.
 
@@ -95,7 +95,7 @@ x.ai의 절제된 중앙형 랜딩 구조를 Copy Singer에 맞게 재해석하�
 
 ### FR-4: 제한된 Motion System
 
-- Aceternity UI의 Bento Grid·Glowing Effect와 React Bits의 Orb·Animated Content source pattern을 Copy Singer token과 컴포넌트 구조에 맞게 조정한다.
+- Aceternity UI의 Bento Grid·Glowing Effect와 React Bits의 Orb·Animated Content source pattern을 Copysinger token과 컴포넌트 구조에 맞게 조정한다.
 - Hero headline은 단어 단위로 순차 등장하고 설명은 문장 전체가 아래에서 위로 한 번 등장한다. Bento product showcase는 카드별 분절 없이 전체가 opacity 0에서 1로 천천히 한 번 등장한다.
 - Hero 설명과 action은 animation 시작 전 opacity 0으로 완전히 숨기고 각 reveal 시점에만 표시한다.
 - 기존 Recommended key animation visualizer는 제거하고 실제 분석 결과와 같은 Vocal Range Profile chart를 사용한다. 랜딩에서는 별도 sample header 없이 전체 관측 음역, 실용 음역과 중앙음만 표시한다.

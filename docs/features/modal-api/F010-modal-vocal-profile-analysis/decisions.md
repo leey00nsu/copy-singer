@@ -120,14 +120,14 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Commit**: `3ad7967`
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: T05 benchmark max wall 39.248초; 60초 17.531/20.821초; remote parity 3/3 exact
-- **Consequences**: Modal compute transport 자체는 sync로 유지한다. 사용자 요청 lifecycle은 D007에서 Copy Singer-owned durable queue로 분리한다.
+- **Consequences**: Modal compute transport 자체는 sync로 유지한다. 사용자 요청 lifecycle은 D007에서 Copysinger-owned durable queue로 분리한다.
 
 ## D007: Modal sync compute를 PostgreSQL durable queue 뒤에서 실행 (2026-08-08)
 
 - **Context**: T05에서 Modal 분석 자체는 sync로 충분히 빠르다고 확인했지만, `/api/vocal-profiles` HTTP 요청이 외부 분석과 Leemage/DB persistence 전체 시간 동안 열려 있으면 브라우저 이탈·호스팅 timeout·일시 장애 복구를 사용자 요청 lifecycle이 직접 떠안는다. 프로젝트에는 이미 MixingJob lease/idempotency worker 패턴이 있다.
 - **Constraints**: 기존 Modal endpoint와 exact parity 계약은 유지하고 Modal 내부 async job 모델을 새로 만들지 않는다. 분석 source는 worker가 나중에 다시 읽을 수 있어야 하며, production에서 local analyzer로 자동 fallback하지 않는다.
 - **Options**: 현재 request-bound sync 유지, Modal 자체를 submit/polling으로 변경, 분석 source를 Leemage에 먼저 저장하고 PostgreSQL queue/worker가 기존 sync analyzer를 호출하는 방식을 비교한다.
-- **Decision**: Copy Singer가 `VocalProfileAnalysisJob` durable queue를 소유한다. 업로드 source를 Leemage에 먼저 저장하고 idempotent job을 생성해 202로 반환하며, 별도 worker가 lease를 claim해 기존 sync analyzer를 호출한다. 성공 시 같은 source asset을 Recording에 연결하고 smart reference/VocalProfile을 저장한다. 브라우저는 job을 polling하고 pending job id를 localStorage에 보관해 재접속 시 복구한다.
+- **Decision**: Copysinger가 `VocalProfileAnalysisJob` durable queue를 소유한다. 업로드 source를 Leemage에 먼저 저장하고 idempotent job을 생성해 202로 반환하며, 별도 worker가 lease를 claim해 기존 sync analyzer를 호출한다. 성공 시 같은 source asset을 Recording에 연결하고 smart reference/VocalProfile을 저장한다. 브라우저는 job을 polling하고 pending job id를 localStorage에 보관해 재접속 시 복구한다.
 - **Rationale**: Modal transport를 검증된 sync primitive로 유지하면서 request timeout, 브라우저 이탈, retry와 worker crash를 DB 상태로 흡수할 수 있다. MixingJob과 동일한 운영 패턴을 재사용하되 도메인 상태와 ticket/refund semantics가 다르므로 별도 job 모델을 사용한다.
 - **Trace**:
   - **DOING 시작 시점**: T08 추가 요청으로 implementation approval을 변경 요청으로 되돌렸다. queue source는 최종 Recording이 사용할 `REFERENCE` MediaAsset으로 먼저 저장하고, worker는 analyzer가 돌려준 source bytes가 durable source와 동일한지 검증한 뒤 재업로드 없이 재사용하는 방향으로 구현한다.

@@ -55,7 +55,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Context**: 기존 로그인 page 하나가 session redirect, safe callback, header navigation, 계정 설명, OAuth action과 상태를 모두 소유해 최소 UI 요구와 시각 테스트를 분리하기 어려웠다.
 - **Constraints**: `safeCallbackURL`, 기존 session redirect, OAuth configured false·pending·runtime error 동작은 유지하고 정적 화면에서만 불필요한 문구를 제거한다.
 - **Options**: 기존 server component에서 markup만 축소, 전체 page client component 전환, server adapter와 `LoginScreen` composition 분리.
-- **Decision**: `LoginPage`는 callback/session/configuration을 처리하고 `LoginScreen`은 ProductBrand header와 중앙 ProductMark·Copy Singer·GoogleSignIn만 구성한다. Google action은 multicolor SVG icon과 outline button을 사용하며 중앙 LCP logo만 preload한다.
+- **Decision**: `LoginPage`는 callback/session/configuration을 처리하고 `LoginScreen`은 ProductBrand header와 중앙 ProductMark·Copysinger·GoogleSignIn만 구성한다. Google action은 multicolor SVG icon과 outline button을 사용하며 중앙 LCP logo만 preload한다.
 - **Rationale**: 인증 경계를 server에 유지하면서 표시 상태를 Storybook에서 독립적으로 검증할 수 있고, 조건부 운영 메시지는 보존하면서 static copy만 정확히 축소할 수 있다.
 - **Trace**:
   - **DOING 시작 시점**: header는 ProductBrand만 유지하고 `홈으로` action을 제거하며, 중앙 영역의 static node를 mark/name/action 세 종류로 제한했다.

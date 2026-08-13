@@ -74,7 +74,7 @@
 - [DONE][PRD-FR-045] T-F022-xai-inspired-landing-motion-02 절제된 waveform·glow·reveal motion 구현
   - Date: 2026-08-12
   - Acceptance:
-    - Hero waveform, masked dotted glow와 section reveal이 Copy Singer accent 범위 안에서 동작하며 layout shift를 만들지 않는다.
+    - Hero waveform, masked dotted glow와 section reveal이 Copysinger accent 범위 안에서 동작하며 layout shift를 만들지 않는다.
     - WebGL·GSAP·motion runtime 없이 CSS progressive enhancement로 구현하고 미지원 환경에서 콘텐츠가 정적으로 보인다.
   - Checklist:
     - [x] 기존 waveform/ripple CSS를 진폭·위상·glow 계층으로 확장했다.
@@ -114,7 +114,7 @@
 - [DONE][PRD-FR-046] T-F022-xai-inspired-landing-motion-06 x.ai형 랜딩 정보 구조와 제품 모자이크 재설계
   - Date: 2026-08-12
   - Acceptance:
-    - Hero는 x.ai처럼 작은 announcement, 절제된 display copy, 두 개 이하 CTA와 넓은 여백을 사용하고, 바로 아래 비대칭 제품 모자이크가 Copy Singer의 분석·추천·믹싱 흐름을 보여준다.
+    - Hero는 x.ai처럼 작은 announcement, 절제된 display copy, 두 개 이하 CTA와 넓은 여백을 사용하고, 바로 아래 비대칭 제품 모자이크가 Copysinger의 분석·추천·믹싱 흐름을 보여준다.
     - 기존 waveform, dotted glow, ripple과 장문 sticky story를 제거하고 mobile 320px 이상에서 같은 정보 순서를 유지한다.
   - Checklist:
     - [x] LandingHero와 LandingProductStory를 조용한 hero + bento product showcase 구조로 재구성했다.
@@ -157,7 +157,7 @@
   - Date: 2026-08-12
   - Acceptance:
     - Bento 카드 하단 오른쪽 설명과 bento 아래의 분석에서 믹싱까지 문구를 제거해 product mosaic의 정보 밀도를 낮춘다.
-    - Voice Notes 4개 카드 배경은 React Bits Grainient 기반의 단일 shared canvas를 사용하고 Copy Singer violet·blue palette, reduced-motion·WebGL fallback과 offscreen 정지를 제공한다.
+    - Voice Notes 4개 카드 배경은 React Bits Grainient 기반의 단일 shared canvas를 사용하고 Copysinger violet·blue palette, reduced-motion·WebGL fallback과 offscreen 정지를 제공한다.
   - Checklist:
     - [x] BentoGridItem의 optional description surface와 LandingProductStory의 trailing caption을 제거했다.
     - [x] React Bits Grainient source를 공통 client island로 통합하고 4개 카드군 뒤에 canvas 하나만 사용했다.
@@ -330,7 +330,7 @@
   - Date: 2026-08-12
   - Acceptance:
     - Landing headline의 `내 목소리`만 React Bits Gradient Text 기반 animation을 사용한다.
-    - Gradient는 Copy Singer의 violet data accent, blue와 restrained pink 조합이며 animation duration은 1.5초다.
+    - Gradient는 Copysinger의 violet data accent, blue와 restrained pink 조합이며 animation duration은 1.5초다.
     - 기존 word reveal과 접근 가능한 단일 heading 문구를 유지하고 reduced-motion에서는 정적 gradient로 표시한다.
   - Checklist:
     - [x] `내 목소리` phrase를 기존 word reveal 구조 안에서 별도 gradient span으로 분리했다.

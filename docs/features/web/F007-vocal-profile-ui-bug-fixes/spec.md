@@ -78,7 +78,7 @@
 
 ### US-2: 표준 Next.js 로컬 앱에서 프로필 저장
 
-**As a** 로컬에서 Copy Singer를 실행하는 사용자  
+**As a** 로컬에서 Copysinger를 실행하는 사용자  
 **I want** 공식 Next.js 서버가 PostgreSQL에 분석 결과를 저장하기를 원한다  
 **So that** 요청하지 않은 Cloudflare Worker 제약 없이 전체 추천 흐름을 테스트할 수 있다
 

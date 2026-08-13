@@ -1,6 +1,6 @@
 # Designs
 
-Copy Singer의 현재 UI 디자인 정본과 장기 규칙을 관리한다.
+Copysinger의 현재 UI 디자인 정본과 장기 규칙을 관리한다.
 
 ## 현재 정본
 
