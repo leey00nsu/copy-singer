@@ -155,4 +155,4 @@
 | 공개 문자열 provider-name audit | `2026-08-13` | 통과 — legal 및 `_pages`에서 PostgreSQL/SoulX/Modal/Leemage 노출 0건, 사용자 오류·API 설명의 기존 고유명 문구 0건 |
 | `pnpm run test:vocal-profile-analyzer && pnpm run test:voice-scan && pnpm run test:mixing:ui && pnpm run test:recommendation` | `2026-08-13` | 통과 — analyzer 8, voice scan 12, mixing UI 8, recommendation 33; 합계 61/61 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T14:57:53+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T14:58:45+09:00 -->

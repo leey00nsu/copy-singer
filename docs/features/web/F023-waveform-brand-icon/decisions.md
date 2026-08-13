@@ -107,5 +107,6 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DOING 시작 시점**: 처리 항목은 관련성 있는 다섯 범주로 묶고, 파기는 지체 없는 삭제·복구 곤란 방식·법정 보존 분리 원칙으로, 안전성은 인증·접근통제·credential 보호·관리자 제한·삭제 관리 원칙으로 축약한다.
   - **DONE 시점**: 2·8·10절을 축약하고 sample rate, descriptor, 대표 구간, 외부 작업 ID, 재시도, 삭제 API, cleanup job, lease와 idempotency 표현이 처리방침에 남지 않았음을 확인했다.
 - **Evidence**:
+  - **Commit**: `6ad0ee6` (`feat(F023-waveform-brand-icon): 개인정보 처리방침 간소화`)
   - **Test/Log**: legal Storybook 2/2, `pnpm run check`, `pnpm run build`, 과도한 기술 표현 `rg` audit
 - **Consequences**: 처리방침은 구현 세부가 아니라 개인정보 범위·목적·파기·보호 원칙을 설명한다. 실제 처리 범주가 추가될 때 다섯 범주의 포괄 여부를 먼저 확인하고 필요할 때만 사용자-facing 항목을 늘린다.
