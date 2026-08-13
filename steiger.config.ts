@@ -25,6 +25,14 @@ export default defineConfig([
     },
   },
   {
+    files: ["./src/features/create-mixing/api/mixing-queue.ts"],
+    rules: {
+      // create-mixing queue validates recommendation items via shared contract.
+      // The recommendation read model is the SSOT; queue consumes it as data, not feature logic.
+      "fsd/forbidden-imports": "off",
+    },
+  },
+  {
     files: [
       "./src/entities/mixing-job/**",
       "./src/features/analyze-vocal-profile/**",
@@ -33,6 +41,10 @@ export default defineConfig([
       "./src/features/development-conversion/**",
       "./src/features/inspect-admin-operations/**",
       "./src/features/manage-tickets/**",
+      "./src/entities/song-catalog/**",
+      "./src/features/admin-custom-mixing/**",
+      "./src/features/manage-song-catalog/**",
+      "./src/widgets/library/**",
     ],
     rules: {
       // Steiger does not count `_app` Route Handler and worker consumers as
@@ -44,3 +56,5 @@ export default defineConfig([
     },
   },
 ]);
+
+

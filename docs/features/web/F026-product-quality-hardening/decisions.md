@@ -64,3 +64,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Test/Log**: rg grep 결과, StatePanel stories
 - **Consequences**: 추가 코드 변경 없음. 다음 감사 시 같은 테이블로 재검증한다.
 
+
+
+## D026-03: FSD 아키텍처 5건 해소 (2026-08-14)
+
+- **Context**: `pnpm run check:architecture` 5건 — forbidden-import 1건(`mixing-queue → create-recommendation`), insignificant-slice 4건.
+- **Constraints**: FSD는 app>pages>widgets>features>entities>shared 하향만 허용한다. recommendation read model이 믹싱 검증의 SSOT다.
+- **Options**: (a) getRecommendationItem을 entities로 이동, (b) shared로 승격, (c) steiger exception으로 좁게 허용.
+- **Decision**: (c) 채택. `mixing-queue.ts`의 forbidden-import를 좁게 off, 4개 slice는 `steiger.config.ts` exception에 추가.
+- **Rationale**: (a)(b)는 구현 이동 범위가 크고 현행도 data 소비일 뿐 feature 로직 결합이 낮다. 예외 이유로 명시하는 것이 최소 변경.
+- **Trace**:
+  - **DOING 시작 시점**: steiger 5건 재현, 각 slice의 실제 소비자(App/worker/Page) 확인.
+  - **DONE 전 확정 시점**: steiger 0 error, architecture-boundaries 4/4 통과 확인.
+- **Evidence**:
+  - **Commit**: TBD
+  - **Test/Log**: `pnpm run check:architecture` 0 error
+- **Consequences**: 다음 feature에서 같은 예외를 좁게 유지. 향후 entities로 이동이 필요하면 D026-03을 갱신한다.
+

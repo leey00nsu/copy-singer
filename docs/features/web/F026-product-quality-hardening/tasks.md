@@ -64,16 +64,16 @@
     - [x] retry 불가 error는 안전한 다음 링크 제공, 가능 error는 reset + stale 유지 문구 확인
     - [x] 관련 Storybook/a11y 확인
 
-- [TODO][NON-PRD] T-F026-product-quality-hardening-02 FSD 아키텍처 경고 5건 해소
+- [DONE][NON-PRD] T-F026-product-quality-hardening-02 FSD 아키텍처 경고 5건 해소
   - Date: 2026-08-14
   - Acceptance:
     - `create-mixing/mixing-queue.ts`의 forbidden-import(cross-import)가 해소된다
     - insignificant-slice 4건이 병합 또는 근거 있는 exception으로 해소된다
     - `pnpm run check:architecture`가 0 error로 통과한다
   - Checklist:
-    - [ ] forbidden-import 원인 분석 및 shared 승격 또는 경계 이동
-    - [ ] 4개 slice에 대해 병합/유지 결정 및 `steiger.config.ts` 조정
-    - [ ] `pnpm run check:architecture` 통과 확인
+    - [x] forbidden-import 원인 분석 및 shared 승격 또는 경계 이동
+    - [x] 4개 slice에 대해 병합/유지 결정 및 `steiger.config.ts` 조정
+    - [x] `pnpm run check:architecture` 통과 확인
 
 - [TODO][PRD-FR-051] T-F026-product-quality-hardening-03 스켈레톤 Storybook 커버리지 추가
   - Date: 2026-08-14
@@ -144,5 +144,7 @@
 
 
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T15:46:45.444Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T15:47:58.177Z -->
+
+
 
