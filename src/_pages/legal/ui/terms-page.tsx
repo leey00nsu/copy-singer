@@ -13,7 +13,7 @@ function TermsPage() {
   return (
     <LegalDocumentLayout
       description="Copysinger의 Google 계정 로그인, 보컬 분석, 노래 추천과 티켓 기반 AI 믹싱 기능을 이용할 때 적용되는 조건입니다."
-      effectiveDate="2026년 8월 11일"
+      effectiveDate="2026년 8월 13일"
       title="이용 약관"
     >
       <LegalSection title="1. 목적과 적용 범위">
@@ -56,6 +56,15 @@ function TermsPage() {
           이용자가 제출한 음성과 생성 결과에 대한 권리는 원래 권리자에게 유지됩니다. 이용자는 서비스 제공, 오류 복구와
           사용자가 요청한 결과 생성을 위해 필요한 범위에서만 운영자가 해당 자료를 저장·변환·전송할 수 있도록 허용합니다.
         </p>
+        <p>
+          서비스에 등록된 곡과 음원의 저작권 및 저작인접권은 각 권리자에게 있습니다. 운영자는 원본 음원 파일을
+          이용자에게 제공하거나 다운로드·추출할 수 있는 기능을 제공하지 않습니다.
+        </p>
+        <p>
+          등록 음원은 보컬 분석, 노래 추천과 이용자가 요청한 AI 믹싱 결과 생성에 필요한 범위에서만 처리합니다. 운영자는
+          등록 음원을 판매, 광고, 재배포하거나 별도의 AI 모델 학습 자료로 사용하지 않습니다. 서비스 이용은 원곡·음원에
+          관한 권리의 이전이나 별도 이용허락을 의미하지 않습니다.
+        </p>
       </LegalSection>
 
       <LegalSection title="5. 분석·추천·AI 결과의 한계">
@@ -83,7 +92,8 @@ function TermsPage() {
             않을 수 있습니다.
           </LegalDataItem>
           <LegalDataItem term="유료 판매">
-            현재 별도 결제 기능은 제공하지 않습니다. 유료 판매를 도입하면 가격·환불 조건을 적용 전에 별도로 고지합니다.
+            Copysinger는 개인 개발자가 비상업적 목적으로 운영하는 토이 프로젝트이며 현재 유료 결제, 광고와 영리 목적의
+            서비스를 제공하지 않습니다.
           </LegalDataItem>
         </LegalDataList>
       </LegalSection>
@@ -138,12 +148,11 @@ function TermsPage() {
         </p>
       </LegalSection>
 
-      <LegalSection title="12. 운영자 정보와 문의">
+      <LegalSection title="12. 운영 정보">
         <LegalDataList>
           <LegalDataItem term="서비스명">Copysinger</LegalDataItem>
-          <LegalDataItem term="운영 주체">정식 공개 전 법적 명칭과 대표자 정보 입력 필요</LegalDataItem>
-          <LegalDataItem term="주소·문의">
-            정식 공개 전 사업장 주소와 실제 수신 가능한 문의 이메일 입력 필요
+          <LegalDataItem term="운영 형태">
+            개인 개발자가 학습과 기능 검증을 위해 운영하는 무료·비상업적 토이 프로젝트
           </LegalDataItem>
         </LegalDataList>
       </LegalSection>

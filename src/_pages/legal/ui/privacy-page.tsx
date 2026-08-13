@@ -14,7 +14,7 @@ function PrivacyPage() {
   return (
     <LegalDocumentLayout
       description="Copysinger가 Google 로그인 정보, 음성 파일과 분석·추천·AI 믹싱 기록을 어떤 목적으로 처리하고 삭제하는지 설명합니다."
-      effectiveDate="2026년 8월 11일"
+      effectiveDate="2026년 8월 13일"
       title="개인정보 처리방침"
     >
       <LegalSection title="1. 처리 원칙">
@@ -81,8 +81,7 @@ function PrivacyPage() {
             이용자가 종료된 작업을 삭제하거나 계정 전체 삭제를 요청할 때까지 보유합니다.
           </LegalDataItem>
           <LegalDataItem term="티켓 원장">
-            계정 운영과 이용량·환급 이력 확인에 필요한 기간 동안 보유하며 정식 유료 서비스 도입 시 법정 보존기간을 별도
-            확정합니다.
+            비상업적 서비스의 계정 운영과 이용량·환급 이력 확인을 위해 계정 삭제 시까지 보유합니다.
           </LegalDataItem>
           <LegalDataItem term="법정 보존">
             관계 법령에 별도 보존 의무가 생기면 해당 정보만 분리하여 법정 기간 동안 보관한 뒤 파기합니다.
@@ -103,8 +102,7 @@ function PrivacyPage() {
             업로드 음성의 보컬 분석과 사용자가 요청한 AI 음성 변환·믹싱 작업을 처리합니다.
           </LegalDataItem>
           <LegalDataItem term="PostgreSQL 운영 환경">
-            계정, session, 분석 지표, 추천·믹싱·ticket metadata를 저장합니다. 실제 hosting 사업자는 배포 전 확정해야
-            합니다.
+            계정, session, 분석 지표, 추천·믹싱·ticket metadata를 서비스 database에 저장합니다.
           </LegalDataItem>
         </LegalDataList>
         <p>
@@ -112,11 +110,11 @@ function PrivacyPage() {
         </p>
       </LegalSection>
 
-      <LegalSection title="6. 국외 이전 확인사항">
+      <LegalSection title="6. 외부 서비스의 국외 처리">
         <p>
-          Google과 Modal 등 외부 서비스의 실제 처리 국가·region은 배포 설정에 따라 달라질 수 있습니다. 정식 공개 전
-          이전받는 자, 국가, 이전 일시·방법, 항목, 목적, 보유기간과 거부 방법을 확정하여 이 방침에 반영하고 필요한 동의
-          또는 계약 이행 근거를 마련해야 합니다. 해당 확인 전에는 이 문서를 최종 국외 이전 고지로 사용할 수 없습니다.
+          Google과 Modal 등 국외 사업자의 서비스를 이용하는 과정에서 계정 인증 정보와 작업 수행에 필요한 음성·작업
+          정보가 네트워크를 통해 전송되어 처리될 수 있습니다. 운영자는 로그인, 보컬 분석과 이용자가 요청한 AI 믹싱을
+          제공하는 데 필요한 범위에서만 해당 서비스를 이용합니다.
         </p>
       </LegalSection>
 
@@ -142,8 +140,8 @@ function PrivacyPage() {
       <LegalSection title="9. 이용자의 권리와 행사 방법">
         <p>
           이용자는 자신의 개인정보에 대한 열람, 정정·삭제, 처리정지와 동의 철회를 요청할 수 있습니다. 보컬 프로필, 추천
-          결과와 종료된 믹싱 작업은 서비스 화면에서 직접 삭제할 수 있으며 계정 전체 삭제나 추가 요청은 아래 문의 채널이
-          확정된 뒤 해당 채널로 접수합니다. 법령에서 제한하는 경우에는 사유를 안내할 수 있습니다.
+          결과와 종료된 믹싱 작업은 서비스 화면에서 직접 삭제할 수 있습니다. 계정 전체 삭제와 별도 문의 접수 기능은 현재
+          제공하지 않습니다.
         </p>
       </LegalSection>
 
@@ -165,11 +163,11 @@ function PrivacyPage() {
         </p>
       </LegalSection>
 
-      <LegalSection title="12. 개인정보 보호책임자와 문의">
+      <LegalSection title="12. 개인정보 관리">
         <LegalDataList>
-          <LegalDataItem term="운영 주체">정식 공개 전 법적 명칭·대표자·사업장 주소 입력 필요</LegalDataItem>
-          <LegalDataItem term="보호책임자">정식 공개 전 개인정보 보호책임자 이름·직책 입력 필요</LegalDataItem>
-          <LegalDataItem term="문의 채널">정식 공개 전 실제 수신 가능한 이메일과 전화번호 입력 필요</LegalDataItem>
+          <LegalDataItem term="운영 주체">Copysinger 개인 개발자</LegalDataItem>
+          <LegalDataItem term="운영 형태">무료·비상업적 토이 프로젝트</LegalDataItem>
+          <LegalDataItem term="삭제 방법">서비스 화면에서 개별 보컬 프로필, 추천 결과와 믹싱 작업 삭제</LegalDataItem>
         </LegalDataList>
       </LegalSection>
 
@@ -190,8 +188,7 @@ function PrivacyPage() {
       <LegalSection title="14. 방침의 변경">
         <p>
           처리 항목, 외부 사업자 또는 보유기간이 변경되면 시행일과 주요 변경 내용을 서비스에서 알립니다. 이전 버전의
-          방침을 확인할 수 있는 보관 방법은 정식 공개 전에 마련합니다. 서비스 이용 조건은{" "}
-          <Link href="/terms">이용 약관</Link>
+          방침은 서비스의 문서 변경 이력으로 보관합니다. 서비스 이용 조건은 <Link href="/terms">이용 약관</Link>
           에서 확인할 수 있습니다.
         </p>
       </LegalSection>

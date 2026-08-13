@@ -31,25 +31,13 @@ function LegalDocumentLayout({ children, description, effectiveDate, title }: Le
             <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">Legal</p>
             <h1 className="mt-3 text-3xl font-semibold tracking-[-0.045em] sm:text-4xl">{title}</h1>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">{description}</p>
-            <dl className="mt-6 flex flex-wrap gap-x-8 gap-y-2 text-xs">
+            <dl className="mt-6 text-xs">
               <div className="flex gap-2">
                 <dt className="text-muted-foreground">시행일</dt>
                 <dd className="font-medium">{effectiveDate}</dd>
               </div>
-              <div className="flex gap-2">
-                <dt className="text-muted-foreground">문서 상태</dt>
-                <dd className="font-medium">서비스 공개 전 검토 초안</dd>
-              </div>
             </dl>
           </header>
-
-          <aside
-            aria-label="정식 공개 전 확인사항"
-            className="mt-8 border border-warning/35 bg-warning/8 px-4 py-4 text-xs leading-6 text-warning-foreground sm:px-5"
-          >
-            현재 저장소에서 확인할 수 없는 운영자의 법적 명칭·주소·문의 이메일과 외부 처리업체의 실제 저장 지역은 임의로
-            작성하지 않았습니다. 정식 서비스 공개 전 해당 정보를 확정하고 법률 전문가의 검토를 받아야 합니다.
-          </aside>
 
           <div className="mt-12 space-y-12">{children}</div>
         </article>
