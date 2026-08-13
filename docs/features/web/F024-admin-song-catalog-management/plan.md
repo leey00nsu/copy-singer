@@ -20,7 +20,7 @@
 | 구분 | 선택 | 이유 |
 | ---- | ---- | ---- |
 | 런타임 SSOT | PostgreSQL + Prisma | 관리자 변경을 재배포 없이 즉시 반영하고 transaction·revision 이력을 보존 |
-| 초기 데이터 | 기존 JSON을 읽는 idempotent bootstrap | 분석이 완료된 100곡을 손실 없이 새 DB 모델로 이전하되 runtime import와 분리 |
+| DB 이동·초기 데이터 | 관리자 JSON snapshot export/import | 현재 DB의 분석 결과와 외부 target metadata를 새 DB에 복원하되 원본 음원 bytes와 저장소 artifact는 이동하지 않음 |
 | 분석 실행 | durable `SongAnalysisJob` worker + Modal CPU job | Demucs·pYIN·chroma 분석을 곡 믹싱 GPU와 분리하고 외부 job ID로 재시작·재시도 지원 |
 | 관리자 UI | 전용 `/admin/songs` 페이지 + 최소 입력 `음원 추가` dialog | 제목·아티스트·YouTube URL·음원만 받고 파생값과 분석값 입력을 제거 |
 | target audio | 곡 정보와 파일을 함께 받는 관리자 multipart upload + 기존 외부 저장 client | 단일 사용자 action으로 source/job/target을 준비하고 저장 bytes/MIME/SHA-256 계약 재사용 |
@@ -61,6 +61,14 @@ Mixing request(profileId, songAnalysisId)
   -> MixingJob(profileId, songAnalysisId, targetAssetId,
                recommendedShift, catalogRevision, scoringVersion)
 
+Catalog snapshot export/import
+  -> /admin/songs export: published + READY DB rows only
+  -> JSON snapshot: song metadata + source/analysis + external target metadata
+     (no original audio bytes)
+  -> /admin/songs import: schema/identity validation
+  -> one transaction: idempotent song/source/analysis/target/entry upsert
+  -> READY rows restore active pointers and published entries
+
 Admin custom mixing
   -> /admin/custom-mixing (ADMIN_EMAILS only)
   -> profileId + target_audio multipart
@@ -79,7 +87,7 @@ Admin custom mixing
 - `CatalogTargetAsset`: source revision을 참조하며 새 asset 활성화 전 기존 asset을 유지한다.
 - `MixingJob`: 접수 시 검증한 보컬 프로필·곡 분석·target·추천 키·catalog/scoring revision을 immutable input으로 보존한다.
 
-Breaking migration은 기존 개발 DB reset 후 bootstrap을 기준으로 한다. 과거 JSON과 신규 DB dual-read fallback은 두지 않고 비교 검증 명령만 제공한다.
+배포 전 breaking migration은 PostgreSQL을 runtime SSOT로 전환한다. 저장소의 과거 JSON artifact와 dual-read fallback은 사용하지 않으며, DB 이동·복원은 관리자 snapshot import로 수행한다. readiness 검증 명령은 내부 진단용으로만 유지한다.
 
 ---
 
@@ -90,9 +98,6 @@ prisma/
 ├── schema.prisma
 ├── migrations/
 └── seed.ts
-scripts/
-├── bootstrap-song-catalog.ts
-└── export-song-catalog.ts
 src/
 ├── entities/song-catalog/
 │   ├── model/
@@ -106,6 +111,8 @@ src/
 │   ├── api/
 │   └── lib/
 ├── _app/api-routes/admin/catalog/
+│   ├── export-route.ts
+│   └── import-route.ts
 ├── _app/api-routes/admin/custom-mixing/
 ├── _pages/admin/ui/
 └── _pages/admin-song-catalog/ui/
@@ -113,8 +120,10 @@ src/
 tests/
 ├── song-catalog-db.integration.ts
 ├── admin-song-catalog.integration.ts
+├── catalog-snapshot.integration.ts
 ├── song-analysis-queue.integration.ts
-└── admin-song-catalog-ui.test.tsx
+├── admin-song-catalog-ui.test.tsx
+└── fixtures/synthetic-song-catalog.ts
 ```
 
 ---
@@ -122,12 +131,13 @@ tests/
 ## 테스트 전략
 
 - **단위 테스트**: YouTube URL에서 video ID 추출, major/minor key profile 추정, source/profile adapter, 공개 readiness, 동적 catalog ranking.
-- **통합 테스트**: bootstrap idempotency, 관리자 권한·CRUD, source revision 교체, target 준비 전 claim 차단, Modal submit/poll 및 외부 job ID 재사용, durable analysis claim/retry, publish transaction, target 교체와 과거 asset 보존, 관리자 custom mixing의 profile ownership·multipart proxy·임시 target lifetime.
+- **통합 테스트**: 관리자 권한·CRUD, source revision 교체, target 준비 전 claim 차단, Modal submit/poll 및 외부 job ID 재사용, durable analysis claim/retry, publish transaction, target 교체와 과거 asset 보존, 관리자 custom mixing의 profile ownership·multipart proxy·임시 target lifetime, snapshot export schema와 import idempotency.
 - **추천·믹싱 통합 테스트**: 추천 조회가 DB snapshot을 만들지 않는지, catalog revision 변경 시 응답·cache key가 바뀌는지, 믹싱이 검증된 immutable revision input을 저장하고 조작된 analysis를 거부하는지 확인한다.
 - **Modal 단위 테스트**: 업로드·인증·idempotent submit, pending/result/error polling과 CPU 함수 resource·cleanup 계약 및 GPU 미사용.
 - **UI/Storybook 테스트**: 관리자 전용 page, 파생 video ID·분석 원키 입력이 없는 `음원 추가` dialog와 필수 파일, 분석 원키·신뢰도 표시, 목록, 분석 상태, 오류·재시도, 공개 confirmation과 모바일 layout, custom mixing profile select·upload·polling·result/delete 상태.
 - **legacy route 회귀 테스트**: `/dev/svc`, `/mixing-history`, `/vocal-profiles`가 제거되고 `/vocal-profiles/[id]` 및 `/library?tab=profiles` 복귀 링크가 유지되는지 확인한다.
-- **회귀 테스트**: recommendation, mixing, admin, catalog target, Prisma validation, TypeScript, lint, production build와 전체 `pnpm test`.
+- **회귀 테스트**: recommendation, mixing, admin, catalog target, Prisma validation, TypeScript, lint, production build와 전체 pnpm test.
+- **snapshot 테스트**: 원본 audio bytes가 snapshot에 들어가지 않는지, source video ID·target 연결/position 중복을 거부하는지, 반복 import에서 생성 row가 0인지, READY 공개 gate와 revision 단조 증가를 검증한다.
 - **운영 데이터 검증**: 4개 신규 m4a의 video ID·MIME·크기·hash를 확인하고 신규 분석/target/publish 후 기존 잘못된 로컬 파일 4개가 사라졌는지 검사한다.
 
 ---

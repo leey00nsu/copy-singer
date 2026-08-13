@@ -35,7 +35,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Commit**: `aa2848c` (`feat(F024-admin-song-catalog-management): 카탈로그 revision 모델 구축`)
   - **PR**: -
   - **Test/Log**: `pnpm exec prisma validate`, `pnpm exec tsc --noEmit`, catalog domain 3/3, DB integration 1/1
-- **Consequences**: 기존 F003 D005의 JSON SSOT 결정은 F024 완료 시 superseded가 된다. 개발 DB는 reset/bootstrap이 필요하고 초기 배포 절차에 bootstrap 검증이 추가된다.
+- **Consequences**: 기존 F003 D005의 JSON SSOT 결정은 F024 D012에 의해 superseded되었다. PostgreSQL이 runtime SSOT이며 DB 이동·복원은 관리자 snapshot import로 수행한다. 과거 reset/bootstrap 절차는 더 이상 운영 경로가 아니다.
 
 ## D002: 관리자 분석·공개 lifecycle (2026-08-13)
 
@@ -76,7 +76,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Context**: 기존 100곡 JSON은 모든 분석값이 READY이고 DB target asset 100개도 준비되어 있지만 추천·합성 코드가 JSON identity와 정확히 100곡 계약을 직접 사용했다.
 - **Constraints**: 초기 분석값과 결정적 추천 점수는 그대로 보존하면서 관리자 추가 곡은 JSON 수정·재배포 없이 반영돼야 한다. 전환 중 중복 source/analysis/target을 만들면 안 된다.
 - **Options**: JSON/DB dual read 장기 유지, 배포 때마다 JSON import, 한 번의 idempotent bootstrap 후 DB-only runtime.
-- **Decision**: 기존 JSON을 읽는 `catalog:bootstrap`을 초기화 경계로만 두고 source video ID, pipeline contract와 catalog position unique key로 upsert한다. runtime 추천·합성·target lookup은 published DB catalog와 active revision만 읽고, JSON은 export/fixture 역할만 유지한다.
+- **Decision**: 기존 JSON bootstrap은 F024 D012에서 폐기한다. runtime 추천·합성·target lookup은 published DB catalog와 active revision만 읽고, DB 이동·복원은 관리자 snapshot import를 사용한다.
 - **Rationale**: bootstrap을 반복해도 같은 revision과 pointer가 유지되고 runtime은 관리자 변경을 즉시 반영한다. dual read drift와 정확히 100곡이라는 장애 단위를 제거한다.
 - **Trace**:
   - **DOING 시작 시점**: 기존 target 100/100 READY를 확인한 뒤 분석·target·catalog entry를 묶어 100곡 모두 publish할 수 있다고 판단했다.
@@ -86,7 +86,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Commit**: `219d026` (`feat(F024-admin-song-catalog-management): 기존 100곡 bootstrap과 DB 추천 전환`)
   - **PR**: -
   - **Test/Log**: bootstrap parity 1/1, recommendation 33/33, recommendation DB 3/3, catalog target 1/1, mixing queue 1/1, TypeScript·Prisma validation
-- **Consequences**: 초기 환경은 migration 후 `catalog:bootstrap`을 실행해야 한다. `Song.catalogOrder`와 legacy artifact 생성·분석 pipeline은 Task 06에서 제거됐고 JSON은 bootstrap/fixture 입력으로만 남는다.
+- **Consequences**: 초기 환경과 새 배포 DB는 migration 후 관리자 snapshot import로 준비한다. `Song.catalogOrder`와 legacy artifact 생성·분석 pipeline은 제거됐으며 저장소 카탈로그 파일을 읽는 초기화 명령도 더 이상 제공하지 않는다.
 
 ## D005: 곡 분석을 Modal 비동기 작업으로 분리 (2026-08-13)
 
@@ -157,7 +157,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Context**: DB runtime 전환 후에도 Song.catalogOrder와 과거 JSON 생성·검증·로컬 분석 명령이 남아 CatalogEntry.position과 중복되고 새 관리자 흐름을 우회했다.
 - **Constraints**: 기존 `RecommendationItem.catalogPosition` null row를 보존 가능한 값으로 backfill해야 한다. 초기 TJ 100곡의 재현 가능한 bootstrap 입력과 점수 회귀 fixture는 계속 필요하며, 사용자-visible `catalogOrder` 응답 계약은 유지해야 한다.
 - **Options**: 중복 `Song.catalogOrder` 유지, JSON pipeline 전체 유지하되 runtime에서만 미사용, `CatalogEntry.position`/recommendation snapshot 단일화와 JSON bootstrap/fixture 축소.
-- **Decision**: Song.catalogOrder를 제거하고 CatalogEntry.position을 runtime 순위 SSOT로 사용하며 RecommendationItem.catalogPosition을 필수 snapshot으로 만든다. JSON은 bootstrap과 테스트 fixture 입력만 유지하고 과거 생성·검증·분석 스크립트와 package command를 제거한다.
+- **Decision**: Song.catalogOrder를 제거하고 CatalogEntry.position을 runtime 순위 SSOT로 사용한다. 과거 JSON 생성·검증·분석 스크립트와 package command는 제거하며, 카탈로그 이동이 필요할 때는 관리자 snapshot export/import를 사용한다. Modal allowlist는 서비스 전용 catalogs 디렉터리에 둔다.
 - **Rationale**: 중복 순위 drift와 배포 artifact를 runtime처럼 다루는 경로를 제거하면서 과거 추천·믹싱 표시에는 immutable catalogPosition snapshot 또는 현재 CatalogEntry position을 사용한다.
 - **Trace**:
   - **At DOING start**: runtime import audit에서 `src`의 JSON direct import는 없었지만 schema·seed·일부 조회가 `Song.catalogOrder`를 사용하고 과거 artifact scripts가 package command로 남아 있음을 확인했다.
@@ -165,7 +165,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Post-merge check**: Update this line after merge when applicable.
 - **Evidence**:
   - **Test/Log**: test: pnpm test; pnpm run lint; catalog bootstrap 2회 및 DB 100/100 READY; runtime JSON/direct import rg audit
-- **Consequences**: 카탈로그 순위 변경은 `CatalogEntry.position`만 갱신하면 되고 신규 RecommendationItem은 항상 당시 위치를 저장한다. 과거 JSON 생성·URL 다운로드·로컬 분석 명령은 더 이상 지원하지 않으며 신규 분석은 관리자 UI와 Modal CPU job만 사용한다.
+- **Consequences**: 카탈로그 순위 변경은 `CatalogEntry.position`만 갱신하면 된다. 과거 JSON 생성·URL 다운로드·로컬 분석 명령은 더 이상 지원하지 않으며 신규 등록과 복원은 관리자 UI, 분석은 Modal CPU job만 사용한다. 이 결정의 JSON bootstrap 부분은 D012에 의해 superseded되었다.
 
 ## D010: 추천 스냅샷 제거와 믹싱 입력 분리 (2026-08-13)
 
@@ -198,3 +198,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**:
   - **Test/Log**: `tests/admin-custom-mixing.integration.ts`, `tests/conversion-stream-upload.test.ts`, `pnpm test`, `pnpm run lint`, `pnpm run build`, Storybook 48/48 files·135/135 tests, Task 08 legacy 경로 `rg` audit
 - **Consequences**: 관리자 커스텀 믹싱은 `/admin/custom-mixing`의 서버 검증 proxy를 통해서만 실행된다. custom target은 어떤 영속 경로에도 저장되지 않으며, 결과는 Modal TTL·삭제 정책에 따라 관리된다. 개발용 Workbench와 독립 목록 페이지의 복귀/링크 계약은 `/library?tab=profiles`로 통합된다.
+
+## D012: 저장소 카탈로그 artifact 제거와 관리자 snapshot import/export (2026-08-13)
+
+- **Context**: PostgreSQL 카탈로그가 runtime SSOT로 전환된 뒤에도 저장소의 data/catalogs JSON과 top100 문서, 일회성 bootstrap·target script가 남아 있으면 DB 교체 시 운영 경로가 둘로 나뉘고 stale artifact가 다시 사용될 수 있다.
+- **Constraints**: 배포 전 breaking change가 허용된다. 새 DB에서도 READY 분석·외부 target 연결·TJ position을 복원해야 하지만 원본 음원 bytes와 Modal 작업용 임시 파일은 이동하거나 영속화하지 않는다. 신규 노래 등록은 관리자 음원 관리 페이지 단일 경로여야 한다.
+- **Options**: 저장소 JSON을 계속 유지, 별도 seed/CLI를 제공, 관리자 페이지에서 schema 고정 snapshot을 export/import.
+- **Decision**: data/catalogs와 bootstrap·target import/verify script 및 package command를 제거한다. 현재 DB 카탈로그는 관리자 전용 /admin/songs에서 schema version이 고정된 JSON snapshot으로 내보내고, import는 schema·position·source video ID·target 연결을 검증한 뒤 하나의 transaction에서 song/source/analysis/target/catalog entry를 idempotent upsert한다. 반복 import는 기존 row와 revision을 재사용하고 catalog revision을 낮추지 않는다. snapshot에는 곡 메타데이터, 분석 결과, 외부 target asset metadata만 포함하며 원본 음원 bytes는 포함하지 않는다. Modal/vocal-profile-api allowlist는 services/vocal-profile-api/catalogs에 유지한다.
+- **Rationale**: 관리자 UI 하나만 운영 경로로 유지하면 새 DB 복원과 신규 곡 등록의 권한 경계가 동일해진다. snapshot은 분석·외부 asset 연결을 이동할 만큼 충분하지만 원본 음원을 복제하지 않으므로 저장소·DB·Leemage에 원본 bytes를 남기지 않는 기존 정책을 보존한다. transaction과 identity key 기반 upsert는 네트워크 재시도와 동일 파일 재가져오기에 안전하다.
+- **Trace**:
+  - **DOING 시작 시점**: 현재 runtime 코드가 DB active revision을 사용하지만 저장소 artifact와 초기화 명령이 남아 있는 것을 확인하고, F024 안에서 운영 경로를 관리자 snapshot으로 단일화하기로 했다.
+  - **DONE 전 확정 시점**: export/import route·UI·schema validation·transaction import를 구현하고 반복 import, READY 공개 gate, revision 단조 증가, raw audio bytes 제외를 합성 fixture로 검증했다. data/catalogs와 legacy scripts/commands를 제거하고 service allowlist를 새 위치에서 참조하도록 이전했다.
+  - **머지 후 확인**: -
+- **Evidence**:
+  - **Commit**: T09 task checkpoint
+  - **PR**: -
+  - **Test/Log**: catalog snapshot integration, TypeScript·Prisma validation, Biome·ESLint, full test/build, legacy artifact rg audit
+- **Consequences**: PostgreSQL이 유일한 runtime SSOT이며 저장소에는 분석 결과를 복원할 수 있는 snapshot 구현만 남는다. snapshot import는 관리자 권한과 파일 검증을 거치며 원본 음원 재업로드 없이 target metadata와 분석 결과를 복원한다. 과거 D001/D004/D009의 JSON bootstrap 결정은 이 ADR의 운영 정책으로 superseded되었다.

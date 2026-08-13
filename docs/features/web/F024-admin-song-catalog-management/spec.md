@@ -17,7 +17,7 @@
 
 ## 목적
 
-현재 추천 런타임은 배포 artifact인 `tj-2607-song-profiles.json`과 정확히 100곡이라는 계약에 묶여 있어 곡 추가·출처 교체마다 파일 수정과 재배포가 필요하다. 배포 전 브레이킹 변경으로 곡·출처·분석·카탈로그의 런타임 SSOT를 PostgreSQL로 전환하고, 관리자 화면에서 준비 상태를 확인한 뒤 안전하게 공개할 수 있게 한다. JSON은 초기 bootstrap과 export/fixture 용도로 축소한다.
+현재 추천 런타임은 정적 artifact와 정확히 100곡이라는 계약에 묶여 있어 곡 추가·출처 교체마다 파일 수정과 재배포가 필요하다. 배포 전 브레이킹 변경으로 곡·출처·분석·카탈로그의 런타임 SSOT를 PostgreSQL로 전환하고, 관리자 화면에서 준비 상태를 확인한 뒤 안전하게 공개할 수 있게 한다. 저장소의 카탈로그 artifact는 제거하며, DB 이동·복원을 위한 JSON snapshot만 관리자 화면에서 일시적으로 생성·가져온다.
 
 ---
 
@@ -78,17 +78,30 @@
 - [ ] 관리자는 queued/processing/succeeded/failed 상태와 결과 오디오 재생·다운로드·삭제를 확인할 수 있다.
 - [ ] `/dev/svc`, `/mixing-history`, `/vocal-profiles` 목록 페이지는 제거하고 `/vocal-profiles/[id]` 상세와 `/library?tab=profiles` 복귀 흐름은 유지한다.
 
+### US-5: 카탈로그 스냅샷 이동·복원
+
+**As a** 허용된 관리자
+**I want** 현재 DB 카탈로그를 JSON snapshot으로 내보내 새 DB에 가져오고 싶다.
+**So that** 배포·개발 DB를 교체해도 분석 결과와 외부 target asset 연결을 다시 수작업으로 등록하지 않는다.
+
+**Acceptance Criteria:**
+
+- [ ] 관리자는 `/admin/songs`에서 현재 공개 카탈로그를 JSON snapshot으로 내보내거나 파일로 가져올 수 있다.
+- [ ] snapshot에는 곡 메타데이터, source·analysis 결과와 외부 target asset metadata만 포함되고 원본 음원 bytes는 포함되지 않는다.
+- [ ] 동일 snapshot을 반복 가져오면 같은 song·source·analysis·target·catalog entry를 재사용해 중복을 만들지 않는다.
+- [ ] 저장소에는 카탈로그 JSON·top100 artifact와 이를 초기화하는 일회성 등록 스크립트가 남지 않으며, 신규 등록은 관리자 음원 관리 경로로만 수행한다.
+
 ---
 
 ## 기능 요구사항
 
 ### FR-1: DB 카탈로그 SSOT
 
-`Song`, `SongSource`, `SongAnalysis`, `Catalog`, `CatalogEntry`를 분리하고 출처·분석 교체를 revision으로 보존한다. `Song.catalogOrder`, JSON runtime import와 정확히 100곡 검증은 제거한다. 초기 TJ 2026-07 데이터는 idempotent bootstrap으로 적재한다.
+`Song`, `SongSource`, `SongAnalysis`, `Catalog`, `CatalogEntry`를 분리하고 출처·분석 교체를 revision으로 보존한다. `Song.catalogOrder`, 저장소 JSON runtime import와 정확히 100곡 검증은 제거한다. DB 카탈로그는 runtime의 유일한 SSOT이며, 다른 DB로 이동할 때는 관리자 snapshot export/import를 사용한다.
 
 ### FR-2: 관리자 카탈로그 API와 UI
 
-기존 `ADMIN_EMAILS` allowlist 권한을 서버에서 검증하는 전용 `/admin/songs` 음원 관리 페이지와 목록·등록·상세·출처 교체·분석 재시도·공개/보관 API를 제공한다. `음원 추가`는 제목·아티스트·HTTPS YouTube URL과 음원 파일만 하나의 multipart 요청으로 등록한다. 서버는 URL에서 video ID를 추출하고 출처 라벨을 부여하며, mutation은 idempotency와 DB transaction으로 중복 등록·부분 활성화를 방지한다. 일회성 운영 스크립트는 사용자 흐름으로 제공하지 않는다.
+기존 `ADMIN_EMAILS` allowlist 권한을 서버에서 검증하는 전용 `/admin/songs` 음원 관리 페이지와 목록·등록·상세·출처 교체·분석 재시도·공개/보관 API를 제공한다. `음원 추가`는 제목·아티스트·HTTPS YouTube URL과 음원 파일만 하나의 multipart 요청으로 등록한다. 서버는 URL에서 video ID를 추출하고 출처 라벨을 부여하며, mutation은 idempotency와 DB transaction으로 중복 등록·부분 활성화를 방지한다. 카탈로그 snapshot export/import도 이 관리자 페이지와 전용 API에서만 제공하고 일회성 운영 스크립트는 제공하지 않는다.
 
 ### FR-3: 비동기 분석 및 공개 게이트
 
@@ -112,6 +125,13 @@
 
 ---
 
+## FR-7: 카탈로그 snapshot export/import
+
+- 관리자 export는 현재 공개되고 readiness 검증을 통과한 catalog만 schema version이 고정된 JSON snapshot으로 반환한다.
+- snapshot은 곡 제목·아티스트·position, source metadata, 분석 결과, 외부 target asset metadata를 포함하고 원본 음원 bytes나 임시 처리 파일은 포함하지 않는다.
+- 관리자 import는 schema·position·source video ID·target 연결을 검증한 뒤 하나의 transaction에서 song/source/analysis/target/catalog entry를 idempotent upsert한다. 기존 source revision과 catalog revision은 낮아지지 않는다.
+- 동일 snapshot을 반복 import해도 새 row가 생기지 않으며, READY source·analysis·target만 공개 entry와 active pointer로 복원한다. 신규 노래 등록은 계속 /admin/songs에서만 수행한다.
+
 ## 비기능 요구사항
 
 - **성능**: 추천 요청은 외부 분석을 실행하지 않고 READY DB row만 읽으며, 공개 카탈로그 조회와 상태 목록에 필요한 복합 index를 둔다.
@@ -119,7 +139,7 @@
 - **내구성**: 분석 작업은 서버 재시작 후 재개·재시도 가능하고 동일 source revision을 중복 활성화하지 않는다.
 - **격리성**: 카탈로그 분석과 보컬 진단은 각각 별도 Modal CPU 함수로 운영하고, GPU는 곡 믹싱/합성 함수에만 할당해 workload별 timeout·메모리·autoscaling 경계를 독립적으로 유지한다.
 - **재현성**: 추천 응답은 보컬 프로필·카탈로그·곡 분석 revision과 scoring version을 식별하고, 영속 믹싱 작업은 접수 시 사용한 revision 입력을 저장한다.
-- **호환성**: 서비스가 아직 배포되지 않았으므로 기존 DB와 JSON runtime 계약의 하위 호환은 요구하지 않으며 reset/bootstrap을 허용한다.
+- **호환성**: 서비스가 아직 배포되지 않았으므로 기존 DB와 저장소 JSON runtime 계약의 하위 호환은 요구하지 않는다. 새 DB 복원은 관리자 snapshot import를 사용하며 destructive reset이나 초기화 CLI를 요구하지 않는다.
 
 ---
 

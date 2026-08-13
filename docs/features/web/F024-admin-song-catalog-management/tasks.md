@@ -122,22 +122,6 @@
     - [x] 신규 source revision을 분석하고 target asset을 업로드·활성화한다.
     - [x] 기존 잘못된 local 음원 네 파일과 참조되지 않는 superseded remote asset을 정리한다.
     - [x] catalog/recommendation/mixing 검증을 수행한다.
-
-### Task 05 운영 데이터 근거
-
-| 상태 | 순위 | video ID | local path | MIME | bytes | SHA-256 |
-| --- | ---: | --- | --- | --- | ---: | --- |
-| 신규·READY | 47 | `HdTUQhHHJEg` | `tmp/catalog-targets/조장혁 - 중독된 사랑 [가사⧸Lyrics] [HdTUQhHHJEg].m4a` | `audio/x-m4a` | 6,494,364 | `b9b229ee58a1571425324974adc41bdb2c344f9bfde962ede02851547cabb0e1` |
-| 신규·READY | 62 | `vepz3RlTd4M` | `tmp/catalog-targets/허각 - 나를 사랑했던 사람아 [가사⧸Lyrics] [vepz3RlTd4M].m4a` | `audio/x-m4a` | 5,834,400 | `e3f0316d497c0cf4cba87467360f2cbdee75538a937c6771246130bf64861135` |
-| 신규·READY | 70 | `saK6H76TyMI` | `tmp/catalog-targets/닐로(Nilo) - 지나오다 [Lyrics⧸가사] [saK6H76TyMI].m4a` | `audio/x-m4a` | 6,872,992 | `e49e51de59386adc2dcb3eb94d039ba8a7d537373315676b8bdee801e479e71a` |
-| 신규·READY | 76 | `zBTINvN-rCk` | `tmp/catalog-targets/타카하시 요코 - 잔혹한 천사의 테제(残酷な天使のテーゼ) [가사⧸발음⧸해석] [zBTINvN-rCk].m4a` | `audio/x-m4a` | 5,980,147 | `2150a6a777f30955863c9393dd7eb3589bdb8a3b111ccaa032ed6f0685bae40e` |
-| 기존·삭제 | 47 | `WABhOy9wm3c` | `tmp/catalog-targets/열린음악회 - 조장혁 - 중독된 사랑.20190224 [WABhOy9wm3c].m4a` | `audio/x-m4a` | 6,377,714 | `1d56650684a0134d41e2d34020cf62ca5f544e81b20618f32514fc505a89c151` |
-| 기존·삭제 | 62 | `0NBmnq-uG_g` | `tmp/catalog-targets/[MV] 허각(HuhGak) _ 나를 사랑했던 사람아(The Person Who Once Loved Me) [0NBmnq-uG_g].m4a` | `audio/x-m4a` | 10,997,600 | `e2a34cdac22b8b0ba3a58799d29cce264b555fdeeeb9473138b68c8cbd39b12d` |
-| 기존·삭제 | 70 | `lVwtHrwlrF0` | `tmp/catalog-targets/쿨룩 LIVE ▷ 닐로(Nilo) '지나오다' ⧸190506[악동뮤지션 수현의 볼륨을 높여요] [lVwtHrwlrF0].m4a` | `audio/x-m4a` | 6,857,490 | `be454c5bb68d8164f468ed2fa56bde35167177b93caa7fe9583b26f203603737` |
-| 기존·삭제 | 76 | `vPkOZm-2cNA` | `tmp/catalog-targets/高橋洋子「残酷な天使のテーゼ MATSURI SPIRIT」 ｜ エヴァンゲリオン ｜ MV [vPkOZm-2cNA].m4a` | `audio/x-m4a` | 6,727,034 | `0db841cca95ba1c9f23a66ece0acd6274b6144f2e60307526e853b53142acaff` |
-
-Modal CPU 분석/공개 결과: 순위 47 `F`(confidence `0.10758179029087539`), 62 `B`(`0.08131234891181632`), 70 `G`(`0.1283483385183834`), 76 `Gm`(`0.018051874831942094`). 네 곡 모두 source·analysis·target이 READY이며 active pointer가 신규 revision을 가리킨다.
-
 - [DONE][PRD-NFR-005] T-F024-admin-song-catalog-management-06 전체 검증과 legacy JSON runtime 정리
   - Date: 2026-08-13
   - Acceptance:
@@ -176,6 +160,21 @@ Modal CPU 분석/공개 결과: 순위 47 `F`(confidence `0.10758179029087539`),
     - [x] /dev/svc 및 /api/conversions/development-conversion 제거와 목록 route/link/metadata 정리를 완료한다.
     - [x] TypeScript, lint, 관련 unit/integration/UI 테스트, architecture audit, production build를 실행한다.
 
+- [DONE][NON-PRD] T-F024-admin-song-catalog-management-09 카탈로그 스냅샷 내보내기/가져오기와 저장소 artifact 제거
+  - Date: 2026-08-13
+  - Acceptance:
+    - [x] 관리자는 /admin/songs의 내보내기로 현재 DB 카탈로그를 JSON 스냅샷으로 추출하고 가져오기로 새 DB에 idempotent하게 복원할 수 있다.
+    - [x] 스냅샷에는 분석 결과와 외부 target metadata만 포함되고 원본 음원 bytes·임시 처리 파일은 포함되지 않는다.
+    - [x] data/catalogs의 JSON과 top100.md가 저장소에서 제거되고 runtime·테스트가 이를 참조하지 않는다.
+    - [x] 노래·음원 등록은 관리자 음원 관리 경로로 단일화되고 일회성 bootstrap·targets 스크립트와 package command가 제거된다.
+    - [x] Modal/vocal-profile-api 서비스의 노래 allowlist가 서비스 전용 위치로 이전되어 동작이 유지된다.
+  - Checklist:
+    - [x] PRD와 F024 spec·plan·decisions에 스냅샷 import/export 및 저장소 artifact 제거 계약을 반영한다.
+    - [x] 카탈로그 스냅샷 export 확장과 schema 검증·transaction·idempotent import 서비스를 구현한다.
+    - [x] 관리자 export/import API와 음원 관리 UI(내보내기/가져오기)를 구현한다.
+    - [x] data/catalogs 제거, bootstrap·targets 스크립트/command 정리, allowlist 이전을 완료한다.
+    - [x] snapshot/합성 fixture 테스트와 TypeScript·lint·전체 테스트·production build를 통과시킨다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -198,8 +197,6 @@ Modal CPU 분석/공개 결과: 순위 47 `F`(confidence `0.10758179029087539`),
 | `node --conditions react-server --import tsx --test tests/song-catalog-db.integration.ts` | `2026-08-13` | 통과 — revision 관계·active pointer·중복 video ID DB 계약 1/1 |
 | `pnpm exec tsc --noEmit` | `2026-08-13` | 통과 |
 | `pnpm exec prisma validate` | `2026-08-13` | 통과 |
-| `pnpm run catalog:bootstrap && pnpm run catalog:db:verify && pnpm run catalog:export` | `2026-08-13` | 통과 — idempotent bootstrap, DB 100/100 READY, JSON export 100곡 |
-| `node --conditions react-server --import tsx --test tests/song-catalog-bootstrap.integration.ts` | `2026-08-13` | 통과 — bootstrap idempotency와 JSON↔DB 전체 ranking parity 1/1 |
 | `pnpm run test:recommendation && pnpm run test:recommendation:db` | `2026-08-13` | 통과 — 추천 unit/UI 33/33, DB persistence/synthesis 3/3 |
 | `pnpm run test:catalog-targets && pnpm run test:mixing:db` | `2026-08-13` | 통과 — target revision 1/1, mixing queue 1/1 |
 | runtime JSON/고정 크기 `rg` audit | `2026-08-13` | 통과 — `src`의 artifact direct import·`RECOMMENDATION_CATALOG_SIZE` 0건 |
@@ -229,4 +226,8 @@ Modal CPU 분석/공개 결과: 순위 47 `F`(confidence `0.10758179029087539`),
 | Task 08 UI 통일성 개선 `pnpm test` | `2026-08-13` | 통과 — 한국어 단일 카드 UI 전환 후 전체 suite 실패 0건 |
 | Task 08 UI 통일성 개선 검증 | `2026-08-13` | 통과 — TypeScript·Biome·ESLint·production build |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T21:32:00+09:00 -->
+| `node --conditions react-server --import tsx --test tests/catalog-snapshot.integration.ts` | `2026-08-13` | 통과 — fresh catalog idempotent import, revision 단조 증가, raw bytes 제외·sourceUrl/videoId 일치·duplicate position/videoId/target 검증 (DB 필요 시 skip) |
+| snapshot export sanitize `rg` audit | `2026-08-13` | 통과 — snapshot에 audioBytes/base64/tempPath 없음, pipelineMetadata allowlist만 포함 |
+| legacy catalog artifact `rg` audit | `2026-08-13` | 통과 — `data/catalogs`·legacy bootstrap/targets script·package command 0건, allowlist는 `services/vocal-profile-api/catalogs`에서만 참조 |
+
+<!-- lee-spec-kit:workflow-sync 2026-08-13T23:15:27.658217+09:00 -->
