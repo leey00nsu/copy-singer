@@ -35,3 +35,17 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Commit**: `0c64f22` (`feat(F023-waveform-brand-icon): 벡터 파형 app mark와 파생 아이콘 적용`)
   - **Test/Log**: `pnpm run test:brand-icons` 4/4, 관련 Storybook 9/9, `pnpm run check`, `pnpm run build`, `/tmp/copy-singer-waveform-icon-contact-sheet.png`
 - **Consequences**: 기존 AI bitmap master는 제거되고 SVG와 두 PNG의 색상은 light/dark theme에서 동일하다. 색상 변경 시 SVG stop을 갱신하고 generation script를 다시 실행해야 하며 asset test와 hash 비교가 동기화를 검증한다.
+
+## D002: 공개 SEO와 private noindex 경계 (2026-08-13)
+
+- **Context**: production head audit에서 icon link는 정상이나 canonical, complete Open Graph fields, robots와 sitemap이 없었고 `public/og.png`는 이전 제품명 `Vocal Loom`과 현재 금지된 beige/orange artwork를 사용했다.
+- **Constraints**: homepage와 공개 법률 문서는 검색 가능해야 하지만 인증 product route, login, admin, dev surface와 API는 index/crawl 대상이 아니어야 한다. preview/request host를 canonical origin으로 굳히지 않아야 한다.
+- **Options**: request host 기반 metadata 유지, homepage metadata만 보강, robots.txt만 추가, canonical resolver와 public sitemap/private noindex를 함께 구축.
+- **Decision**: `BETTER_AUTH_URL` → Vercel production URL → Vercel URL → local 순서의 canonical origin resolver를 shared server config에 두고 root/home/robots/sitemap이 공유한다. 홈은 complete OG/Twitter와 canonical을 소유하고 `/`, `/terms`, `/privacy`만 sitemap에 포함한다. product/login/admin/dev는 `noindex, nofollow`, robots.txt는 private/API path를 disallow한다. OG는 canonical mark path와 user-space gradient를 재사용한 SVG master에서 1200×630 RGB PNG로 파생한다.
+- **Rationale**: request host는 preview/custom host에 따라 canonical이 흔들릴 수 있고 robots disallow만으로 이미 알려진 URL indexing을 막지 못한다. route-level noindex와 crawl disallow를 병행하고 sitemap을 allowlist로 유지하면 public/private 경계가 코드와 실제 output에서 검증 가능하다. OG generation을 기존 Sharp pipeline에 합치면 favicon과 같은 브랜드 색·geometry를 deterministic하게 유지한다.
+- **Trace**:
+  - **DOING 시작 시점**: `BETTER_AUTH_URL` 기반 canonical resolver를 robots/sitemap/home metadata가 공유하고, robots disallow와 private route `noindex, nofollow`를 함께 적용하는 방향으로 시작한다. OG는 새 mark를 재사용한 deterministic SVG→PNG로 교체한다.
+  - **DONE 전 확정 시점**: production output에서 홈 canonical/OG/Twitter/icon 9 tags, login robots/googlebot noindex, robots.txt private disallow와 sitemap 공개 URL 3개를 확인했다. 최초 OG gradient가 path별 반복되는 문제는 `userSpaceOnUse`로 고쳐 canonical mark와 같은 연속 gradient로 맞췄다.
+- **Evidence**:
+  - **Test/Log**: `pnpm run test:brand-icons` 8/8, `pnpm run check`, `pnpm run build`, production metadata HTTP audit, `public/og.png` visual QA
+- **Consequences**: production canonical 정확도는 배포 환경의 `BETTER_AUTH_URL` 또는 Vercel production URL 설정에 의존한다. 공개 route 추가 시 sitemap allowlist와 robots policy를 함께 갱신해야 하며 private route는 noindex metadata를 명시해야 한다.

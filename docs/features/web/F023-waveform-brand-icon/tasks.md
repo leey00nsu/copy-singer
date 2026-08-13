@@ -72,6 +72,18 @@
     - [x] ProductMark와 Storybook asset selector를 SVG source로 전환하고 기존 AI master PNG를 제거한다.
     - [x] 정적 검사, 관련 Storybook test, production build와 multi-size contact sheet QA를 수행한다.
 
+- [DONE][PRD-FR-052] T-F023-waveform-brand-icon-02 metadata SEO 및 Open Graph 브랜드 동기화
+  - Date: 2026-08-13
+  - Acceptance:
+    - [x] 홈 production head가 canonical, complete Open Graph/Twitter metadata와 favicon/apple icon을 Copy Singer 기준으로 출력한다.
+    - [x] 1200×630 OG PNG가 새 파형 mark와 Copy Singer 이름을 사용하고 기존 Vocal Loom/beige artwork를 포함하지 않는다.
+    - [x] robots.txt와 sitemap.xml은 공개 route만 crawl/index 대상으로 제공하고 product, login, admin, dev route는 noindex 처리한다.
+  - Checklist:
+    - [x] canonical site origin resolver와 root/home/private metadata 계약을 구현한다.
+    - [x] Copy Singer OG SVG master 및 PNG generation을 추가하고 asset test를 확장한다.
+    - [x] Next.js robots/sitemap metadata route와 private noindex 경계를 구현한다.
+    - [x] metadata unit test, 정적 검사, build, production head 및 OG visual QA를 수행한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -87,11 +99,12 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm run test:brand-icons` | `2026-08-13` | 통과 — SVG geometry/gradient/safety, 64·180px RGBA와 16px 7-bar 분리 4/4 |
+| `pnpm run test:brand-icons` | `2026-08-13` | 통과 — icon/OG asset 5건, canonical/OG/robots/sitemap metadata 3건, 합계 8/8 |
 | `pnpm exec vitest --project storybook src/widgets/product-shell/ui/product-shell.stories.tsx src/_pages/login/ui/login-screen.stories.tsx --run` | `2026-08-13` | 통과 — 2 files, 9 tests |
 | `pnpm run check` | `2026-08-13` | 통과 — Biome 기존 warning 56건, ESLint·TypeScript·Steiger·architecture test 성공 |
-| `pnpm run build` | `2026-08-13` | 통과 — Next.js 16.3.0 production build, 29 static pages 생성 |
-| `pnpm run brand:icons` + SHA-256 비교 | `2026-08-13` | 통과 — favicon `e97d6d4…`, apple icon `ef15dcec…` 재생성 전후 동일 |
+| `pnpm run build` | `2026-08-13` | 통과 — Next.js 16.3.0 production build, 31 routes; `/robots.txt`·`/sitemap.xml` static 생성 |
+| `pnpm run brand:icons` + SHA-256 비교 | `2026-08-13` | 통과 — favicon `e97d6d4…`, apple `ef15dcec…`, OG `463aecc…` 재생성 전후 동일 |
 | Storybook browser QA | `2026-08-13` | 통과 — ProductShell/LoginScreen에서 24×24 mark, 접근성 계약, 정렬, console error 0; 16·24·32·64·180px light/dark contact sheet 확인 |
+| production metadata HTTP audit | `2026-08-13` | 통과 — home canonical/OG/Twitter/icon 9 tags, login noindex+googlebot, robots 18 lines, sitemap public URL 3개 및 private leak 0 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T13:58:35+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T14:13:35+09:00 -->

@@ -36,6 +36,8 @@
 - [ ] header, footer와 login의 공통 `ProductMark`가 사용자 제공 SVG와 같은 일곱 막대 파형 silhouette을 표시한다.
 - [ ] favicon과 apple touch icon이 같은 벡터 master에서 파생되고 투명 배경과 브랜드 gradient를 유지한다.
 - [ ] 16px, 24px, 32px, 64px와 180px에서 bar가 잘리거나 서로 붙지 않고 파형으로 식별된다.
+- [ ] 검색 결과와 링크 공유에서 Copy Singer 제품명, canonical home URL, 설명과 새 파형 mark를 일관되게 제공한다.
+- [ ] sitemap에는 공개 index route만 포함하고 인증 제품·관리자·개발 화면은 robots metadata와 robots.txt에서 제외한다.
 
 ---
 
@@ -59,9 +61,18 @@
 - `public/favicon.png` 64×64와 `public/apple-touch-icon.png` 180×180은 canonical SVG에서 deterministic rasterize한다.
 - root metadata의 icon URL, 크기와 MIME 계약은 유지한다.
 
-### FR-4: 범위 제한
+### FR-4: metadata, SEO와 Open Graph 동기화
 
-- 제품명 `Copy Singer`, wordmark typography, OG image, 보컬 차트와 artwork gradient 동작은 변경하지 않는다.
+- 기존 `Vocal Loom` OG bitmap을 제거하고 Copy Singer wordmark, 새 violet–blue–pink 파형 mark와 neutral canvas를 사용하는 1200×630 PNG를 deterministic 생성한다.
+- 홈 metadata는 canonical `/`, `website` Open Graph type, `Copy Singer` site name, `ko_KR` locale, absolute OG URL과 Twitter image alt를 제공한다.
+- `/robots.txt`는 공개 route crawling과 `/sitemap.xml` 위치를 알리고 API, 인증 제품, admin과 dev surface를 disallow한다.
+- `/sitemap.xml`은 `/`, `/terms`, `/privacy`만 canonical origin으로 제공한다.
+- product route group, login, admin과 development page는 `noindex, nofollow` metadata를 제공한다.
+- canonical origin은 배포 시 설정되는 `BETTER_AUTH_URL`을 우선하고 local fallback을 사용하며 trailing slash를 정규화한다.
+
+### FR-5: 범위 제한
+
+- 제품명 `Copy Singer`, wordmark typography, 보컬 차트와 artwork gradient 동작은 변경하지 않는다.
 - 첨부 SVG의 막대 수, 높이 순서와 간격을 재설계하지 않는다.
 
 ---
@@ -69,6 +80,7 @@
 ## 비기능 요구사항
 
 - **성능**: 공통 mark는 작은 정적 SVG 한 개로 제공하고 layout shift를 만들지 않는다. favicon raster 크기는 기존 계약을 유지한다.
+- **SEO**: absolute URL은 한 canonical origin resolver를 공유하고 preview/request host가 canonical로 굳어지지 않게 한다.
 - **보안**: SVG에는 script, external reference, embedded bitmap과 event handler를 포함하지 않는다.
 - **접근성**: mark 자체는 장식으로 숨기고 인접한 `Copy Singer` text 또는 link/button label이 accessible name을 제공한다.
 - **시각 품질**: 16px 축소에서도 bar 사이 최소 한 픽셀 이상의 투명 간격과 식별 가능한 outer padding을 유지하고 transparent corner를 검증한다.
