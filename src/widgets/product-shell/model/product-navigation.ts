@@ -7,12 +7,7 @@ const productNavigation = [
 function isProductPathActive(pathname: string, href: string) {
   if (href === "/profile") return pathname === href;
   if (href === "/library") {
-    return (
-      pathname.startsWith(href) ||
-      pathname.startsWith("/vocal-profiles") ||
-      pathname.startsWith("/mixing-history") ||
-      pathname.startsWith("/recommendations/")
-    );
+    return pathname.startsWith(href) || pathname.startsWith("/recommendations/");
   }
   if (href === "/account") return pathname.startsWith(href);
   return pathname.startsWith(href);

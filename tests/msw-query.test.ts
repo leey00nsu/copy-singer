@@ -3,18 +3,18 @@ import { after, afterEach, before, test } from "node:test";
 import { MutationObserver, QueryClient } from "@tanstack/react-query";
 import { HttpResponse, http } from "msw";
 import { recommendationRunResponseSchema } from "@/entities/recommendation";
-import { conversionJobSchema, conversionPollingInterval } from "@/features/development-conversion";
+import { adminCustomMixingJobSchema, adminCustomMixingPollingInterval } from "@/features/admin-custom-mixing";
 import { ticketAdjustmentResponseSchema } from "@/features/manage-tickets";
 import { ApiError, requestJson, shouldRetryQuery } from "@/shared/api";
 import {
   MSW_API_ORIGIN,
   malformedConversionFixture,
-  queuedConversionFixture,
+  queuedAdminCustomMixingJobFixture,
   recommendationRunFixture,
-  succeededConversionFixture,
+  succeededAdminCustomMixingJobFixture,
   succeededRecommendationRunFixture,
 } from "./msw/fixtures";
-import { conversionPollingSequenceHandler, recommendationPollingSequenceHandler } from "./msw/handlers";
+import { adminCustomMixingPollingSequenceHandler, recommendationPollingSequenceHandler } from "./msw/handlers";
 import { mswServer } from "./msw/server";
 
 function createTestQueryClient() {
@@ -35,17 +35,20 @@ afterEach(() => mswServer.resetHandlers());
 after(() => mswServer.close());
 
 test("MSW parses a representative success response through the production Zod schema", async () => {
-  const payload = await requestJson(`${MSW_API_ORIGIN}/api/conversions/${queuedConversionFixture.id}`, {
-    schema: conversionJobSchema,
-  });
-  assert.deepEqual(payload, queuedConversionFixture);
+  const payload = await requestJson(
+    `${MSW_API_ORIGIN}/api/admin/custom-mixing/${queuedAdminCustomMixingJobFixture.id}`,
+    {
+      schema: adminCustomMixingJobSchema,
+    },
+  );
+  assert.deepEqual(payload, queuedAdminCustomMixingJobFixture);
 });
 
 test("ordinary 4xx responses are not retried by QueryClient", async () => {
   const client = createTestQueryClient();
   let attempts = 0;
   mswServer.use(
-    http.get("*/api/conversions/forbidden", () => {
+    http.get("*/api/admin/custom-mixing/forbidden", () => {
       attempts += 1;
       return HttpResponse.json({ detail: "Forbidden" }, { status: 403 });
     }),
@@ -53,10 +56,10 @@ test("ordinary 4xx responses are not retried by QueryClient", async () => {
 
   await assert.rejects(
     client.fetchQuery({
-      queryKey: ["conversion", "forbidden"],
+      queryKey: ["admin-custom-mixing", "forbidden"],
       queryFn: () =>
-        requestJson(`${MSW_API_ORIGIN}/api/conversions/forbidden`, {
-          schema: conversionJobSchema,
+        requestJson(`${MSW_API_ORIGIN}/api/admin/custom-mixing/forbidden`, {
+          schema: adminCustomMixingJobSchema,
         }),
     }),
     (error: unknown) => error instanceof ApiError && error.status === 403,
@@ -69,18 +72,18 @@ test("retryable responses respect the two-retry limit and can recover", async ()
   const client = createTestQueryClient();
   let attempts = 0;
   mswServer.use(
-    http.get("*/api/conversions/retryable", () => {
+    http.get("*/api/admin/custom-mixing/retryable", () => {
       attempts += 1;
       if (attempts < 3) return HttpResponse.json({ detail: "Try again" }, { status: 503 });
-      return HttpResponse.json(succeededConversionFixture);
+      return HttpResponse.json(succeededAdminCustomMixingJobFixture);
     }),
   );
 
   const payload = await client.fetchQuery({
-    queryKey: ["conversion", "retryable"],
+    queryKey: ["admin-custom-mixing", "retryable"],
     queryFn: () =>
-      requestJson(`${MSW_API_ORIGIN}/api/conversions/retryable`, {
-        schema: conversionJobSchema,
+      requestJson(`${MSW_API_ORIGIN}/api/admin/custom-mixing/retryable`, {
+        schema: adminCustomMixingJobSchema,
       }),
   });
   assert.equal(payload.status, "succeeded");
@@ -92,7 +95,7 @@ test("malformed success responses fail once as non-retryable contract errors", a
   const client = createTestQueryClient();
   let attempts = 0;
   mswServer.use(
-    http.get("*/api/conversions/malformed", () => {
+    http.get("*/api/admin/custom-mixing/malformed", () => {
       attempts += 1;
       return HttpResponse.json(malformedConversionFixture);
     }),
@@ -100,10 +103,10 @@ test("malformed success responses fail once as non-retryable contract errors", a
 
   await assert.rejects(
     client.fetchQuery({
-      queryKey: ["conversion", "malformed"],
+      queryKey: ["admin-custom-mixing", "malformed"],
       queryFn: () =>
-        requestJson(`${MSW_API_ORIGIN}/api/conversions/malformed`, {
-          schema: conversionJobSchema,
+        requestJson(`${MSW_API_ORIGIN}/api/admin/custom-mixing/malformed`, {
+          schema: adminCustomMixingJobSchema,
         }),
     }),
     (error: unknown) => {
@@ -119,12 +122,12 @@ test("malformed success responses fail once as non-retryable contract errors", a
 
 test("the polling fixture transitions from active to terminal without leaking state", async () => {
   const client = createTestQueryClient();
-  mswServer.use(conversionPollingSequenceHandler());
+  mswServer.use(adminCustomMixingPollingSequenceHandler());
   const query = {
-    queryKey: ["conversion", "sequence"] as const,
+    queryKey: ["admin-custom-mixing", "sequence"] as const,
     queryFn: () =>
-      requestJson(`${MSW_API_ORIGIN}/api/conversions/sequence`, {
-        schema: conversionJobSchema,
+      requestJson(`${MSW_API_ORIGIN}/api/admin/custom-mixing/sequence`, {
+        schema: adminCustomMixingJobSchema,
       }),
     staleTime: 0,
   };
@@ -133,9 +136,9 @@ test("the polling fixture transitions from active to terminal without leaking st
   await client.invalidateQueries({ queryKey: query.queryKey, exact: true });
   const succeeded = await client.fetchQuery(query);
   assert.equal(queued.status, "queued");
-  assert.equal(conversionPollingInterval(queued), 2_500);
+  assert.equal(adminCustomMixingPollingInterval(queued), 2_500);
   assert.equal(succeeded.status, "succeeded");
-  assert.equal(conversionPollingInterval(succeeded), false);
+  assert.equal(adminCustomMixingPollingInterval(succeeded), false);
   client.clear();
 });
 

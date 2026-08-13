@@ -17,7 +17,7 @@ async function sourceFiles(directory: string): Promise<string[]> {
 
 test("query-managed server state has no component-owned fetch or polling timer", async () => {
   const paths = [
-    "src/_pages/dev-svc/ui/singer-workbench.tsx",
+    "src/features/admin-custom-mixing/ui/admin-custom-mixing-panel.tsx",
     "src/_pages/recommendation-detail/ui/recommendation-results.tsx",
     "src/widgets/library/ui/mixing-library.tsx",
     "src/widgets/library/ui/vocal-profile-library.tsx",

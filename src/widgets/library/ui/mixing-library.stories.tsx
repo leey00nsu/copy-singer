@@ -11,7 +11,6 @@ const meta = {
   title: "Widgets/Library/AI Mixes",
   component: MixingLibrary,
   args: {
-    basePath: "/library",
     filters: { page: 1, q: "", status: "all" },
     initial: mixingHistoryFixture,
   },

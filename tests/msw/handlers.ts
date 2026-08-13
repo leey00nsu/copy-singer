@@ -4,21 +4,19 @@ import type { NotificationList } from "@/entities/notification";
 import type { RecommendationRunResponse } from "@/entities/recommendation";
 import {
   activeRecommendationRunFixture,
-  conversionHealthFixture,
   mixingHistoryFixture,
   mixingJobFixture,
   notificationListFixture,
-  queuedConversionFixture,
+  queuedAdminCustomMixingJobFixture,
   recommendationRunFixture,
-  succeededConversionFixture,
+  succeededAdminCustomMixingJobFixture,
   succeededRecommendationRunFixture,
   ticketAdjustmentFixture,
   ticketBalanceFixture,
 } from "./fixtures";
 
 export const handlers = [
-  http.get("*/api/health", () => HttpResponse.json(conversionHealthFixture)),
-  http.get("*/api/conversions/:id", () => HttpResponse.json(queuedConversionFixture)),
+  http.get("*/api/admin/custom-mixing/:id", () => HttpResponse.json(queuedAdminCustomMixingJobFixture)),
   http.get("*/api/recommendations/:id", () => HttpResponse.json(recommendationRunFixture)),
   http.post("*/api/mixing-jobs", () => HttpResponse.json(mixingJobFixture, { status: 201 })),
   http.post("*/api/admin/ticket-adjustments", () => HttpResponse.json(ticketAdjustmentFixture, { status: 201 })),
@@ -41,10 +39,10 @@ export function ticketBalanceHandler(balance = ticketBalanceFixture.balance) {
   return http.get("*/api/account/ticket-balance", () => HttpResponse.json({ balance }));
 }
 
-export function conversionPollingSequenceHandler() {
-  const sequence = [queuedConversionFixture, succeededConversionFixture];
+export function adminCustomMixingPollingSequenceHandler() {
+  const sequence = [queuedAdminCustomMixingJobFixture, succeededAdminCustomMixingJobFixture];
   let requestIndex = 0;
-  return http.get("*/api/conversions/:id", () => {
+  return http.get("*/api/admin/custom-mixing/:id", () => {
     const payload = sequence[Math.min(requestIndex, sequence.length - 1)];
     requestIndex += 1;
     return HttpResponse.json(payload);

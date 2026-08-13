@@ -22,10 +22,10 @@ export default async function LibraryPage({ searchParams }: LibraryPageProps) {
           getVocalProfileHistory(session.user.id, filters.page),
           listVisibleVocalProfileAnalysisJobs(session.user.id),
         ]).then(([history, jobs]) => (
-          <VocalProfileLibrary analysisJobs={jobs.map(analysisJobPayload)} basePath="/library" history={history} />
+          <VocalProfileLibrary analysisJobs={jobs.map(analysisJobPayload)} history={history} />
         ))
       : await getMixingHistory(session.user.id, filters).then((history) => (
-          <MixingLibrary basePath="/library" filters={filters} initial={history} />
+          <MixingLibrary filters={filters} initial={history} />
         ));
 
   return (

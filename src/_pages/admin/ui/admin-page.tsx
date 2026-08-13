@@ -1,4 +1,14 @@
-import { Activity, AlertTriangle, ChevronLeft, ChevronRight, Music2, Search, Ticket, Users } from "lucide-react";
+import {
+  Activity,
+  AlertTriangle,
+  ChevronLeft,
+  ChevronRight,
+  MicVocal,
+  Music2,
+  Search,
+  Ticket,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 import { requireAdminPage } from "@/features/authentication/index.server";
 import {
@@ -98,6 +108,22 @@ export default async function AdminPage({
             </div>
             <Button nativeButton={false} render={<Link href="/admin/songs" />} size="sm">
               음원 관리 열기
+            </Button>
+          </div>
+        </section>
+
+        <section className="mt-5 rounded-2xl border bg-background p-5">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h2 className="flex items-center gap-2 text-sm font-semibold">
+                <MicVocal className="size-4" /> 커스텀 믹싱
+              </h2>
+              <p className="mt-1 text-xs text-muted-foreground">
+                내 보컬 프로필과 임시 음원으로 카탈로그에 등록하지 않는 믹싱을 실행합니다.
+              </p>
+            </div>
+            <Button nativeButton={false} render={<Link href="/admin/custom-mixing" />} size="sm">
+              커스텀 믹싱 열기
             </Button>
           </div>
         </section>

@@ -19,12 +19,12 @@ export function parseLibrarySearchParams(input: Record<string, string | string[]
   return librarySearchParamsSchema.parse(input);
 }
 
-export function mixingHistoryHref(basePath: "/library" | "/mixing-history", filters: MixingHistoryFilters) {
+export function mixingHistoryHref(filters: MixingHistoryFilters) {
   const search = new URLSearchParams({ page: String(filters.page) });
-  if (basePath === "/library") search.set("tab", "mixes");
+  search.set("tab", "mixes");
   if (filters.q) search.set("q", filters.q);
   if (filters.status !== "all") search.set("status", filters.status);
-  return `${basePath}?${search}`;
+  return `/library?${search}`;
 }
 
 export function libraryTabHref(tab: LibraryTab) {

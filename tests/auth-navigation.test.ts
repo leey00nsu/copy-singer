@@ -42,9 +42,7 @@ test("login screen keeps only product branding and the Google start action", () 
 test("product navigation keeps saved resources and recommendation details under Library", () => {
   assert.equal(isProductPathActive("/profile", "/profile"), true);
   assert.equal(isProductPathActive("/library", "/library"), true);
-  assert.equal(isProductPathActive("/vocal-profiles/voice-1", "/library"), true);
   assert.equal(isProductPathActive("/recommendations/run-1", "/library"), true);
-  assert.equal(isProductPathActive("/mixing-history", "/library"), true);
   assert.equal(isProductPathActive("/profile", "/library"), false);
   assert.equal(isProductPathActive("/account", "/account"), true);
   assert.equal(isProductPathActive("/library", "/account"), false);
@@ -58,8 +56,7 @@ test("route groups preserve public URLs while the root layout stays shell-free",
     "app/(public)/terms/page.tsx",
     "app/(public)/privacy/page.tsx",
     "app/(product)/profile/page.tsx",
-    "app/(product)/vocal-profiles/page.tsx",
-    "app/(product)/mixing-history/page.tsx",
+    "app/(product)/vocal-profiles/[id]/page.tsx",
     "app/(product)/library/page.tsx",
     "app/(product)/account/page.tsx",
     "app/(product)/loading.tsx",

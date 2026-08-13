@@ -48,13 +48,7 @@ function MixingLibraryStatus({ job }: { job: MixingHistoryRow }) {
   return <MixingStatusBadge label={STATUS_LABELS[job.status]} status={job.status} />;
 }
 
-function MixingLibraryFilters({
-  basePath,
-  filters,
-}: {
-  basePath: "/library" | "/mixing-history";
-  filters: MixingHistoryFilters;
-}) {
+function MixingLibraryFilters({ filters }: { filters: MixingHistoryFilters }) {
   const [query, setQuery] = useState(filters.q);
   const [status, setStatus] = useState(filters.status);
 
@@ -62,14 +56,14 @@ function MixingLibraryFilters({
     <form
       aria-label="AI 믹스 검색과 필터"
       className="grid gap-3 py-4 lg:grid-cols-[minmax(15rem,1fr)_auto_auto] lg:items-end"
-      action={basePath}
+      action="/library"
       method="get"
     >
       <input name="page" type="hidden" value="1" />
-      {basePath === "/library" ? <input name="tab" type="hidden" value="mixes" /> : null}
+      <input name="tab" type="hidden" value="mixes" />
       <input name="status" type="hidden" value={status} />
       <div className="grid gap-1.5">
-        <Label className="text-[11px]" htmlFor={`${basePath.slice(1)}-mixing-search`}>
+        <Label className="text-[11px]" htmlFor="library-mixing-search">
           작업, 아티스트 또는 보컬 프로필 검색
         </Label>
         <div className="relative">
@@ -80,7 +74,7 @@ function MixingLibraryFilters({
           <Input
             autoComplete="off"
             className="h-10 pl-9 text-sm"
-            id={`${basePath.slice(1)}-mixing-search`}
+            id="library-mixing-search"
             maxLength={80}
             name="q"
             onChange={(event) => setQuery(event.currentTarget.value)}
@@ -91,11 +85,11 @@ function MixingLibraryFilters({
         </div>
       </div>
       <div className="grid gap-1.5">
-        <Label className="text-[11px]" htmlFor={`${basePath.slice(1)}-mixing-status`}>
+        <Label className="text-[11px]" htmlFor="library-mixing-status">
           작업 상태
         </Label>
         <Select onValueChange={(value) => value && setStatus(value as MixingHistoryFilterStatus)} value={status}>
-          <SelectTrigger className="h-10 w-full lg:w-44" id={`${basePath.slice(1)}-mixing-status`}>
+          <SelectTrigger className="h-10 w-full lg:w-44" id="library-mixing-status">
             <SelectValue>{STATUS_LABELS[status]}</SelectValue>
           </SelectTrigger>
           <SelectContent>
@@ -114,7 +108,7 @@ function MixingLibraryFilters({
         {filters.q || filters.status !== "all" ? (
           <Link
             className={`${buttonVariants({ size: "sm", variant: "ghost" })} h-10`}
-            href={mixingHistoryHref(basePath, { page: 1, q: "", status: "all" })}
+            href={mixingHistoryHref({ page: 1, q: "", status: "all" })}
           >
             <RotateCcw aria-hidden="true" className="size-4" /> 초기화
           </Link>
@@ -210,11 +204,9 @@ function MixingLibraryRows({ jobs }: { jobs: MixingHistoryRow[] }) {
 }
 
 export function MixingLibrary({
-  basePath = "/mixing-history",
   filters: input,
   initial,
 }: {
-  basePath?: "/library" | "/mixing-history";
   filters?: Partial<MixingHistoryFilters>;
   initial: MixingHistoryPayload;
 }) {
@@ -225,11 +217,7 @@ export function MixingLibrary({
 
   return (
     <section aria-label="AI 믹스 라이브러리">
-      <MixingLibraryFilters
-        basePath={basePath}
-        filters={filters}
-        key={`${basePath}:${filters.page}:${filters.q}:${filters.status}`}
-      />
+      <MixingLibraryFilters filters={filters} key={`${filters.page}:${filters.q}:${filters.status}`} />
       <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
         <p aria-live="polite">{filtered ? `검색 결과 ${history.total}개` : `저장된 AI 믹스 ${history.total}개`}</p>
         {history.jobs.some((job) => isActiveMixingStatus(job.status)) ? (
@@ -251,13 +239,13 @@ export function MixingLibrary({
               filtered ? (
                 <Link
                   className={buttonVariants({ variant: "outline" })}
-                  href={mixingHistoryHref(basePath, { page: 1, q: "", status: "all" })}
+                  href={mixingHistoryHref({ page: 1, q: "", status: "all" })}
                 >
                   모든 AI 믹스 보기
                 </Link>
               ) : (
-                <Link className={buttonVariants()} href="/vocal-profiles">
-                  추천할 프로필 고르기
+                <Link className={buttonVariants()} href="/library?tab=profiles">
+                  보컬 프로필 고르기
                 </Link>
               )
             }
@@ -274,7 +262,7 @@ export function MixingLibrary({
         )}
       </div>
       <LibraryPagination
-        getHref={(page) => mixingHistoryHref(basePath, { ...filters, page })}
+        getHref={(page) => mixingHistoryHref({ ...filters, page })}
         label="AI 믹스 페이지"
         page={history.page}
         pageCount={history.pageCount}

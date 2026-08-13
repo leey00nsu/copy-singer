@@ -107,7 +107,7 @@ export function RecommendationResults({
     return (
       <StatePanel
         action={
-          <Link className={buttonVariants()} href="/vocal-profiles">
+          <Link className={buttonVariants()} href="/library?tab=profiles">
             보컬 프로필로 이동
           </Link>
         }

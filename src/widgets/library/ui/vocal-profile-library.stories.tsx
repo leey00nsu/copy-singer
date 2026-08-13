@@ -76,7 +76,6 @@ const meta = {
   title: "Widgets/Library/Vocal Profiles",
   component: VocalProfileLibrary,
   args: {
-    basePath: "/library",
     history: profileHistory,
   },
   parameters: {

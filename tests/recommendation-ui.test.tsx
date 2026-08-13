@@ -5,7 +5,6 @@ import { AppRouterContext } from "next/dist/shared/lib/app-router-context.shared
 import { renderToStaticMarkup } from "react-dom/server";
 import { createQueryClient } from "@/_app/providers";
 import artifactJson from "../data/catalogs/tj-2607-song-profiles.json";
-import { RecommendationHandoffBanner } from "../src/_pages/dev-svc";
 import { RecommendationResults } from "../src/_pages/recommendation-detail";
 import type { RecommendationRunResponse, SongProfileArtifact } from "../src/entities/recommendation";
 import {
@@ -172,26 +171,6 @@ test("blocks AI mixing before a request when the mid reference is unavailable", 
   assert.match(html, /안정적인 중앙 음역 구간을 찾지 못해 이 프로필로는 AI 믹싱을 만들 수 없어요/);
   assert.match(html, /href="\/profile"/);
   assert.doesNotMatch(html, /이 곡으로 AI 믹싱<\/button>/);
-});
-
-test("renders verified handoff context without implying automatic SVC settings", () => {
-  const html = renderToStaticMarkup(
-    <RecommendationHandoffBanner
-      selection={{
-        runId: run.id,
-        id: run.items[0]!.id,
-        title: run.items[0]!.title,
-        artist: run.items[0]!.artist,
-        recommendedShift: -2,
-        originalKeyScore: 70,
-        adjustedScore: 92,
-      }}
-    />,
-  );
-  assert.match(html, /추천 결과에서 선택한 곡/);
-  assert.match(html, /-2키/);
-  assert.match(html, /SVC pitch 설정에는 자동 적용되지 않으며/);
-  assert.match(html, /target 오디오도 직접 선택/);
 });
 
 test("keeps low-confidence ranking visible with a rerecording warning", () => {

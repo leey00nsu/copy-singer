@@ -143,11 +143,9 @@ function VocalProfileAnalysisJobRows({ jobs }: { jobs: VocalProfileAnalysisJobRe
 
 export function VocalProfileLibrary({
   analysisJobs = [],
-  basePath = "/vocal-profiles",
   history,
 }: {
   analysisJobs?: VocalProfileAnalysisJobResponse[];
-  basePath?: "/library" | "/vocal-profiles";
   history: VocalProfileHistoryPayload;
 }) {
   if (history.profiles.length === 0 && analysisJobs.length === 0) {
@@ -229,9 +227,7 @@ export function VocalProfileLibrary({
         })}
       </div>
       <LibraryPagination
-        getHref={(page) =>
-          basePath === "/library" ? `/library?tab=profiles&page=${page}` : `${basePath}?page=${page}`
-        }
+        getHref={(page) => `/library?tab=profiles&page=${page}`}
         label="보컬 프로필 페이지"
         page={history.page}
         pageCount={history.pageCount}

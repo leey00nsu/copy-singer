@@ -18,7 +18,7 @@ export default async function VocalProfileDetailPage({ params }: { params: Promi
 
   return (
     <div className="mx-auto w-full max-w-[72rem] px-5 py-10 sm:px-7 lg:px-8 lg:py-12">
-      <Link className={buttonVariants({ size: "sm", variant: "ghost" })} href="/vocal-profiles">
+      <Link className={buttonVariants({ size: "sm", variant: "ghost" })} href="/library?tab=profiles">
         <ArrowLeft className="size-4" /> 목록으로
       </Link>
       <div className="mt-6 pb-7">

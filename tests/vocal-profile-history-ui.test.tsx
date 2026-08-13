@@ -5,7 +5,7 @@ import { AppRouterContext } from "next/dist/shared/lib/app-router-context.shared
 import { renderToStaticMarkup } from "react-dom/server";
 
 import { createQueryClient } from "@/_app/providers";
-import { VocalProfileHistoryList } from "../src/_pages/vocal-profiles";
+import { VocalProfileLibrary as VocalProfileHistoryList } from "../src/widgets/library";
 
 const testRouter = {
   back() {},

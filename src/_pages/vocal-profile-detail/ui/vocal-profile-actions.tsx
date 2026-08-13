@@ -126,7 +126,7 @@ export function VocalProfileActions({ displayName, profileId }: { displayName: s
     deleteProfile.mutate(profileId, {
       onSuccess: () => {
         toast.success("보컬 프로필을 삭제했습니다.");
-        router.push("/vocal-profiles");
+        router.push("/library?tab=profiles");
         router.refresh();
       },
       onError: () => toast.error("보컬 프로필을 삭제하지 못했습니다. 잠시 뒤 다시 시도해주세요."),

@@ -4,8 +4,12 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { renderToStaticMarkup } from "react-dom/server";
 
 import { createQueryClient } from "@/_app/providers";
-import { MixingHistoryList } from "../src/_pages/mixing-history";
-import { LibraryTabs, MixingLibrary, mixingHistoryHref } from "../src/widgets/library";
+import {
+  LibraryTabs,
+  MixingLibrary as MixingHistoryList,
+  MixingLibrary,
+  mixingHistoryHref,
+} from "../src/widgets/library";
 
 test("mixing history renders one stretched detail link per result", () => {
   const client = createQueryClient(true);
@@ -93,7 +97,6 @@ test("mixing library distinguishes failed and filtered empty states", () => {
   const failedMarkup = renderToStaticMarkup(
     <QueryClientProvider client={client}>
       <MixingLibrary
-        basePath="/library"
         filters={{ page: 1, q: "없는 곡", status: "failed" }}
         initial={{
           page: 1,
@@ -133,7 +136,6 @@ test("mixing library distinguishes failed and filtered empty states", () => {
   const emptyMarkup = renderToStaticMarkup(
     <QueryClientProvider client={emptyClient}>
       <MixingLibrary
-        basePath="/library"
         filters={{ page: 1, q: "없는 곡", status: "all" }}
         initial={{ page: 1, pageSize: 20, total: 0, pageCount: 1, jobs: [] }}
       />
@@ -149,7 +151,7 @@ test("library tabs and pagination hrefs preserve canonical URL state", () => {
   assert.match(markup, /href="\/library\?tab=profiles&amp;page=1"/);
   assert.match(markup, /href="\/library\?tab=mixes&amp;page=1"/);
   assert.equal(
-    mixingHistoryHref("/library", { page: 3, q: "아이유", status: "succeeded" }),
+    mixingHistoryHref({ page: 3, q: "아이유", status: "succeeded" }),
     "/library?page=3&tab=mixes&q=%EC%95%84%EC%9D%B4%EC%9C%A0&status=succeeded",
   );
 });

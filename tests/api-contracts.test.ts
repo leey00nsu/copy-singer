@@ -1,5 +1,4 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
 import test from "node:test";
 import {
   mixingDeleteResponseSchema,
@@ -15,6 +14,7 @@ import {
 import { recommendationRunResponseSchema } from "@/entities/recommendation";
 import { ticketBalanceSchema } from "@/entities/ticket";
 import { vocalProfileAnalysisJobResponseSchema } from "@/entities/vocal-profile";
+import { adminCustomMixingJobSchema } from "@/features/admin-custom-mixing";
 import {
   ANALYSIS_AUDIO_MIME_TYPES,
   analysisAudioFileSchema,
@@ -23,7 +23,6 @@ import {
 } from "@/features/analyze-vocal-profile";
 import { createMixingRequestSchema } from "@/features/create-mixing";
 import { createRecommendationRequestSchema } from "@/features/create-recommendation";
-import { conversionHealthSchema, conversionJobSchema } from "@/features/development-conversion";
 import { ticketAdjustmentRequestSchema, ticketAdjustmentResponseSchema } from "@/features/manage-tickets";
 import { pageSearchParamSchema, resourceIdSchema } from "@/shared/api";
 
@@ -319,10 +318,9 @@ test("recommendation items accept legacy, additive, and unavailable song profile
   );
 });
 
-test("development conversion and ticket response schemas preserve their current wire fields", () => {
-  assert.equal(conversionHealthSchema.parse({ status: "ok", platform: "modal", gpu: "L4" }).status, "ok");
+test("admin custom mixing and ticket response schemas preserve their current wire fields", () => {
   assert.deepEqual(
-    conversionJobSchema.parse({
+    adminCustomMixingJobSchema.parse({
       id: "modal-job-1",
       status: "queued",
       created_at: 1,
@@ -342,10 +340,4 @@ test("development conversion and ticket response schemas preserve their current 
     }).balanceAfter,
     10,
   );
-});
-
-test("the Modal upload proxy forwards request.body without parsing multipart data", async () => {
-  const source = await readFile("src/_app/api-routes/conversions/conversions-route.ts", "utf8");
-  assert.match(source, /body: request\.body/);
-  assert.doesNotMatch(source, /await request\.formData\(\)/);
 });

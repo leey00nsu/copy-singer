@@ -84,13 +84,9 @@ function LibraryPreview({ tab }: { tab: "profiles" | "mixes" }) {
         </div>
         <div className="mt-4">
           {tab === "profiles" ? (
-            <VocalProfileLibrary basePath="/library" history={denseProfileHistory} />
+            <VocalProfileLibrary history={denseProfileHistory} />
           ) : (
-            <MixingLibrary
-              basePath="/library"
-              filters={{ page: 1, q: "", status: "all" }}
-              initial={denseMixingHistory}
-            />
+            <MixingLibrary filters={{ page: 1, q: "", status: "all" }} initial={denseMixingHistory} />
           )}
         </div>
       </div>

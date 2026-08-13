@@ -1,7 +1,7 @@
 import type { MixingHistoryPayload, MixingJobResponse } from "@/entities/mixing-job";
 import type { NotificationList } from "@/entities/notification";
 import type { RecommendationRunResponse } from "@/entities/recommendation";
-import type { ConversionHealth, ConversionJob } from "@/features/development-conversion";
+import type { AdminCustomMixingJob } from "@/features/admin-custom-mixing";
 import type { TicketAdjustmentResponse } from "@/features/manage-tickets";
 
 export const MSW_API_ORIGIN = "http://copy-singer.test";
@@ -48,13 +48,7 @@ export const notificationListFixture: NotificationList = {
   ],
 };
 
-export const conversionHealthFixture: ConversionHealth = {
-  status: "ok",
-  platform: "modal",
-  gpu: "L4",
-};
-
-export const queuedConversionFixture: ConversionJob = {
+export const queuedAdminCustomMixingJobFixture: AdminCustomMixingJob = {
   id: "modal-job-1",
   status: "queued",
   created_at: 1,
@@ -62,8 +56,8 @@ export const queuedConversionFixture: ConversionJob = {
   result_url: null,
 };
 
-export const succeededConversionFixture: ConversionJob = {
-  ...queuedConversionFixture,
+export const succeededAdminCustomMixingJobFixture: AdminCustomMixingJob = {
+  ...queuedAdminCustomMixingJobFixture,
   status: "succeeded",
   result_url: "/api/conversions/modal-job-1/audio",
 };
@@ -273,7 +267,7 @@ export const mixingHistoryFixture: MixingHistoryPayload = {
 };
 
 export const malformedConversionFixture = {
-  id: queuedConversionFixture.id,
+  id: queuedAdminCustomMixingJobFixture.id,
   status: "finished",
   privatePayload: "must-not-leak",
 };

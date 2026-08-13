@@ -9,11 +9,10 @@ const PRIVATE_PATHS = [
   "/dev/",
   "/library",
   "/login",
-  "/mixing-history",
   "/notifications",
   "/profile",
   "/recommendations/",
-  "/vocal-profiles",
+  "/vocal-profiles/",
 ];
 
 function buildRobots(origin = getSiteOrigin()): MetadataRoute.Robots {
