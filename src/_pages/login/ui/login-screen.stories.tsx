@@ -29,7 +29,7 @@ export const Default: Story = {
     await expect(canvas.getAllByRole("link", { name: "이용 약관" })[0]).toHaveAttribute("href", "/terms");
     await expect(canvas.getAllByRole("link", { name: "개인정보 처리방침" })[0]).toHaveAttribute("href", "/privacy");
     await expect(canvasElement.querySelector('[data-google-icon=""]')).toBeVisible();
-    await expect(canvasElement.querySelectorAll('img[src*="copy-singer-mark"]')).toHaveLength(2);
+    await expect(canvasElement.querySelectorAll('img[src*="copy-singer-mark.svg"]')).toHaveLength(2);
     await expect(canvasElement.querySelector('[data-testid="voice-orb"]')).toBeInTheDocument();
     await expect(canvas.queryByText("홈으로")).not.toBeInTheDocument();
     await expect(canvas.queryByText("Account")).not.toBeInTheDocument();

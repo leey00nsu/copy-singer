@@ -46,7 +46,7 @@ export const Desktop: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const brand = canvas.getAllByRole("link", { name: "Copy Singer" })[0];
-    await expect(brand?.querySelector('img[src*="copy-singer-mark"]')).toBeVisible();
+    await expect(brand?.querySelector('img[src*="copy-singer-mark.svg"]')).toBeVisible();
     const productMenu = within(canvas.getByRole("navigation", { name: "제품 메뉴" }));
     await expect(productMenu.getByRole("link", { name: "라이브러리" })).toHaveAttribute("aria-current", "page");
     await expect(productMenu.getByRole("link", { name: "내 계정" })).toBeVisible();
