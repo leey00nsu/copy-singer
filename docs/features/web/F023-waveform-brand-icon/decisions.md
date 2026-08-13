@@ -95,3 +95,15 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Commit**: `d77088e` (`feat(F023-waveform-brand-icon): 공개 외부 기술명 비식별화`)
   - **Test/Log**: legal Storybook 2/2, analyzer/voice-scan/mixing/recommendation 61/61, `pnpm run check`, `pnpm run build`, 공개 문자열 `rg` audit
 - **Consequences**: 공개 UI는 공급업체 이름과 무관한 기능 언어를 사용한다. 실제 외부 처리업체 공개가 법적·운영상 필요해지면 내부 계약을 source로 개인정보 처리방침을 다시 갱신해야 한다.
+
+## D006: 개인정보 처리방침의 정보 밀도 (2026-08-13)
+
+- **Context**: 처리방침 2·8·10절이 DB field, background cleanup과 distributed job 안정성까지 설명해 이용자가 실제 개인정보 처리 범위를 이해하기 어려웠다.
+- **Constraints**: 실제 처리 항목·목적, 파기 절차·방법과 안전성 확보 원칙은 유지하되 schema·provider·queue 구현 설명을 공개 문서에 노출하지 않는다.
+- **Options**: 구현 중 확정
+- **Decision**: 구현 중 확정
+- **Rationale**: 구현 중 확정
+- **Trace**:
+  - **DOING 시작 시점**: 처리 항목은 관련성 있는 다섯 범주로 묶고, 파기는 지체 없는 삭제·복구 곤란 방식·법정 보존 분리 원칙으로, 안전성은 인증·접근통제·credential 보호·관리자 제한·삭제 관리 원칙으로 축약한다.
+- **Evidence**:
+  - **Test/Log**: 구현 후 기록
