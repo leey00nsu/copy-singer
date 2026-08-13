@@ -107,4 +107,4 @@
 | Storybook browser QA | `2026-08-13` | 통과 — ProductShell/LoginScreen에서 24×24 mark, 접근성 계약, 정렬, console error 0; 16·24·32·64·180px light/dark contact sheet 확인 |
 | production metadata HTTP audit | `2026-08-13` | 통과 — home canonical/OG/Twitter/icon 9 tags, login noindex+googlebot, robots 18 lines, sitemap public URL 3개 및 private leak 0 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T14:13:35+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T14:14:49+09:00 -->

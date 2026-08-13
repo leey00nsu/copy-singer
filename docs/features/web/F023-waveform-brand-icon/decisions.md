@@ -47,5 +47,6 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DOING 시작 시점**: `BETTER_AUTH_URL` 기반 canonical resolver를 robots/sitemap/home metadata가 공유하고, robots disallow와 private route `noindex, nofollow`를 함께 적용하는 방향으로 시작한다. OG는 새 mark를 재사용한 deterministic SVG→PNG로 교체한다.
   - **DONE 전 확정 시점**: production output에서 홈 canonical/OG/Twitter/icon 9 tags, login robots/googlebot noindex, robots.txt private disallow와 sitemap 공개 URL 3개를 확인했다. 최초 OG gradient가 path별 반복되는 문제는 `userSpaceOnUse`로 고쳐 canonical mark와 같은 연속 gradient로 맞췄다.
 - **Evidence**:
+  - **Commit**: `00227e1` (`feat(F023-waveform-brand-icon): metadata SEO와 Open Graph 동기화`)
   - **Test/Log**: `pnpm run test:brand-icons` 8/8, `pnpm run check`, `pnpm run build`, production metadata HTTP audit, `public/og.png` visual QA
 - **Consequences**: production canonical 정확도는 배포 환경의 `BETTER_AUTH_URL` 또는 Vercel production URL 설정에 의존한다. 공개 route 추가 시 sitemap allowlist와 robots policy를 함께 갱신해야 하며 private route는 noindex metadata를 명시해야 한다.
