@@ -81,3 +81,16 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Test/Log**: `pnpm run check:architecture` 0 error
 - **Consequences**: 다음 feature에서 같은 예외를 좁게 유지. 향후 entities로 이동이 필요하면 D026-03을 갱신한다.
 
+
+
+## D026-04: 스켈레톤 Storybook 커버리지 (2026-08-14)
+
+- **Context**: F025에서 9개 전용 스켈레톤을 추가했으나 story 커버리지가 PageSkeleton 2개뿐이었다.
+- **Decision**: `src/shared/ui/skeleton/skeletons.stories.tsx`에 12개 story(PageSkeletonDefault + 11개 전용)를 추가하고 각 play에서 skeleton 가시성·aria-busy·reduced-motion guard를 검증한다.
+- **Rationale**: FSD 경계를 넘지 않으면서 단일 파일로 전 스켈레톤을 회귀 테스트 가능. 3뷰포트는 스토리북 브라우저 테스트로 확장 가능.
+- **Trace**:
+  - **DONE 전 확정 시점**: `pnpm run test:storybook --run src/shared/ui/skeleton/skeletons.stories.tsx` 12/12 통과.
+- **Evidence**:
+  - **Test/Log**: skeletons.stories 12/12 통과
+- **Consequences**: 다음 스켈레톤 변경 시 story만으로 회귀 감지 가능.
+

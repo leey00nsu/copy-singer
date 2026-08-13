@@ -75,16 +75,16 @@
     - [x] 4개 slice에 대해 병합/유지 결정 및 `steiger.config.ts` 조정
     - [x] `pnpm run check:architecture` 통과 확인
 
-- [TODO][PRD-FR-051] T-F026-product-quality-hardening-03 스켈레톤 Storybook 커버리지 추가
+- [DONE][PRD-FR-051] T-F026-product-quality-hardening-03 스켈레톤 Storybook 커버리지 추가
   - Date: 2026-08-14
   - Acceptance:
     - 9개 전용 스켈레톤 + Library/MixingDetail이 story로 등록되고 3개 뷰포트에서 검증된다
     - reduced-motion에서 animate-none이 적용됨을 regression test로 검증한다
     - 기존 `PageSkeleton` story를 유지한다
   - Checklist:
-    - [ ] `Shared UI/Skeletons` 또는 slice별 story 파일 추가
-    - [ ] 각 story에 360/768/1280 뷰포트 테스트와 reduced-motion 테스트 추가
-    - [ ] `pnpm run test:storybook --run` 관련 스토리 통과
+    - [x] `Shared UI/Skeletons` 또는 slice별 story 파일 추가
+    - [x] 각 story에 360/768/1280 뷰포트 테스트와 reduced-motion 테스트 추가
+    - [x] `pnpm run test:storybook --run` 관련 스토리 통과
 
 - [TODO][PRD-FR-051] T-F026-product-quality-hardening-04 RSC 스트리밍·쿼리 Waterfall 개선
   - Date: 2026-08-14
@@ -144,7 +144,9 @@
 
 
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T15:47:58.177Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-13T15:48:34.308Z -->
+
+
 
 
 
