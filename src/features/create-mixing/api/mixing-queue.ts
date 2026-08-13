@@ -3,6 +3,7 @@ import "server-only";
 import { MixingError } from "@/entities/mixing-job/index.server";
 import { InsufficientTicketsError } from "@/entities/ticket/index.server";
 import { synthesisReferenceContractVersion, type VocalProfileDescriptors } from "@/entities/vocal-profile/index.model";
+import { getRecommendationItem } from "@/features/create-recommendation/index.server";
 import { mixingMaxAttempts, mixingTicketCost } from "@/shared/config/index.server";
 import { prisma } from "@/shared/db/index.server";
 import { selectMixingReference } from "../model/reference";
@@ -13,12 +14,14 @@ function prismaErrorCode(error: unknown) {
 
 export async function enqueueMixingJob(input: {
   userId: string;
-  recommendationItemId: string;
+  vocalProfileId: string;
+  songAnalysisId: string;
   idempotencyKey: string;
 }) {
   if (!input.idempotencyKey.trim() || input.idempotencyKey.length > 200) {
     throw new MixingError("INVALID_REQUEST", "유효한 idempotency key가 필요합니다.", 400);
   }
+  const { result, item } = await getRecommendationItem(input.vocalProfileId, input.songAnalysisId, input.userId);
   const cost = mixingTicketCost();
 
   for (let attempt = 0; attempt < 3; attempt += 1) {
@@ -28,49 +31,71 @@ export async function enqueueMixingJob(input: {
           const existing = await tx.mixingJob.findUnique({
             where: { userId_idempotencyKey: { userId: input.userId, idempotencyKey: input.idempotencyKey } },
           });
-          if (existing) return existing;
+          if (existing) {
+            if (existing.vocalProfileId !== input.vocalProfileId || existing.songAnalysisId !== input.songAnalysisId) {
+              throw new MixingError("IDEMPOTENCY_CONFLICT", "다른 믹싱 요청에서 사용한 요청 키입니다.", 409);
+            }
+            return existing;
+          }
 
-          const item = await tx.recommendationItem.findFirst({
-            where: { id: input.recommendationItemId, run: { userId: input.userId } },
+          const profile = await tx.vocalProfile.findFirst({
+            where: { id: input.vocalProfileId, userId: input.userId, sourceType: "USER" },
             include: {
-              song: { include: { targetAsset: true } },
-              run: {
+              synthesisReferenceAsset: true,
+              recording: { include: { mediaAsset: true } },
+            },
+          });
+          const analysis = await tx.songAnalysis.findUnique({
+            where: { id: input.songAnalysisId },
+            include: {
+              song: {
                 include: {
-                  userVocalProfile: {
-                    include: {
-                      synthesisReferenceAsset: true,
-                      recording: { include: { mediaAsset: true } },
-                    },
+                  targetAsset: true,
+                  catalogEntries: {
+                    where: { status: "PUBLISHED" },
+                    include: { catalog: true },
                   },
                 },
               },
             },
           });
-          const profile = item?.run.userVocalProfile;
-          if (!item || !profile || profile.userId !== input.userId || profile.sourceType !== "USER") {
+          if (!profile || !analysis || analysis.status !== "READY") {
             throw new MixingError("MIXING_SOURCE_NOT_FOUND", "사용할 추천 또는 보컬 프로필을 찾을 수 없습니다.", 404);
           }
-          const smartReference = profile.synthesisReferenceAsset;
-          const sourceReference = profile.recording.mediaAsset;
+
+          const entry = analysis.song.catalogEntries.find((candidate) => candidate.catalogId === result.catalogId);
+          const targetAsset = analysis.song.targetAsset;
+          if (
+            analysis.song.lifecycleStatus !== "ACTIVE" ||
+            analysis.song.currentAnalysisId !== analysis.id ||
+            !entry ||
+            entry.catalog.status !== "PUBLISHED" ||
+            entry.catalog.revision !== result.catalogRevision ||
+            entry.position !== item.catalogOrder ||
+            !targetAsset ||
+            targetAsset.id !== item.targetAssetId ||
+            targetAsset.sourceId !== analysis.sourceId ||
+            targetAsset.status !== "READY"
+          ) {
+            throw new MixingError(
+              "MIXING_RECOMMENDATION_STALE",
+              "카탈로그가 변경되었습니다. 최신 추천 결과를 확인해주세요.",
+              409,
+              true,
+            );
+          }
+
           const contractVersion = synthesisReferenceContractVersion(
             profile.descriptors as VocalProfileDescriptors | null,
           );
           const reference = selectMixingReference({
             userId: input.userId,
-            smart: smartReference,
-            source: sourceReference,
+            smart: profile.synthesisReferenceAsset,
+            source: profile.recording.mediaAsset,
             contractVersion,
           });
           if (!reference) {
             throw new MixingError("MIXING_REFERENCE_UNAVAILABLE", "저장된 레퍼런스 음성을 사용할 수 없습니다.", 422);
-          }
-          const targetAsset = item.song.targetAsset;
-          if (!targetAsset || targetAsset.status !== "READY") {
-            throw new MixingError(
-              "MIXING_TARGET_UNAVAILABLE",
-              "이 곡의 믹싱용 원곡 target이 아직 준비되지 않았습니다.",
-              422,
-            );
           }
 
           const debited = await tx.user.updateMany({
@@ -92,10 +117,14 @@ export async function enqueueMixingJob(input: {
             data: {
               userId: input.userId,
               vocalProfileId: profile.id,
-              songId: item.songId,
-              recommendationItemId: item.id,
+              songId: analysis.songId,
+              songAnalysisId: analysis.id,
               referenceAssetId: reference.id,
               targetAssetId: targetAsset.id,
+              catalogPosition: item.catalogOrder,
+              recommendedShift: item.recommendedShift,
+              catalogRevision: result.catalogRevision,
+              scoringVersion: result.scoringVersion,
               ticketCost: cost,
               idempotencyKey: input.idempotencyKey,
               maxAttempts: mixingMaxAttempts(),

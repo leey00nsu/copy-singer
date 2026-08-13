@@ -1,19 +1,16 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AlertTriangle, Clock3, LoaderCircle, Mic2, Music2, Trash2 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { AlertTriangle, Clock3, LoaderCircle, Mic2, Music2 } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
-import { toast } from "sonner";
 import {
   DEFAULT_RECOMMENDATION_FILTERS,
-  deleteRecommendationMutationOptions,
   parseRecommendationFilters,
   projectRecommendationItems,
   type RecommendationFilters,
   type RecommendationRunResponse,
   recommendationDetailQueryOptions,
-  recommendationKeys,
   recommendationMatchRank,
   recommendationMixingUnavailableDescription,
   serializeRecommendationFilters,
@@ -21,16 +18,6 @@ import {
 import { useRecommendationMixing } from "@/features/create-mixing";
 import { ApiError } from "@/shared/api";
 import { Button, buttonVariants } from "@/shared/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/shared/ui/dialog";
 import { ProductPageIntro } from "@/shared/ui/product-page-intro";
 import { StatePanel } from "@/shared/ui/state-panel";
 import { StatusNotice } from "@/shared/ui/status-notice";
@@ -99,9 +86,7 @@ export function RecommendationResults({
   ticketCost?: number;
 }) {
   const resolvedRunId = initialRun?.id ?? runId ?? null;
-  const queryClient = useQueryClient();
   const runQuery = useQuery(recommendationDetailQueryOptions(resolvedRunId, initialRun));
-  const deleteRunMutation = useMutation(deleteRecommendationMutationOptions());
   const { filters, resetFilters, updateFilters } = useRecommendationFilters();
   const { startMixing } = useRecommendationMixing();
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
@@ -115,21 +100,7 @@ export function RecommendationResults({
 
   const startItem = (itemId: string, retry = false) => {
     if (!run || run.profile.mixing?.available === false) return;
-    startMixing(run.id, itemId, retry);
-  };
-
-  const deleteRun = () => {
-    if (!run || deleteRunMutation.isPending) return;
-    deleteRunMutation.mutate(run.id, {
-      onSuccess: () => {
-        queryClient.removeQueries({ queryKey: recommendationKeys.detail(run.id) });
-        toast.success("추천 결과를 삭제했습니다.");
-        // Direct Node-rendered component tests do not provide a Next router context.
-        // eslint-disable-next-line @next/next/no-location-assign-relative-destination
-        window.location.href = "/vocal-profiles";
-      },
-      onError: () => toast.error("추천 결과를 삭제하지 못했습니다. 잠시 뒤 다시 시도해주세요."),
-    });
+    startMixing(run, itemId, retry);
   };
 
   if (loadError) {
@@ -177,10 +148,8 @@ export function RecommendationResults({
               <strong>{run.items.length}곡</strong>
             </p>
             <p className="flex items-center justify-between gap-4">
-              <span className="text-muted-foreground">추천 생성</span>
-              <strong>
-                {new Date(run.createdAt).toLocaleString("ko-KR", { dateStyle: "short", timeStyle: "short" })}
-              </strong>
+              <span className="text-muted-foreground">카탈로그 revision</span>
+              <strong>r{run.catalogRevision}</strong>
             </p>
             <p className="flex items-center justify-between gap-4">
               <span className="text-muted-foreground">믹싱 방식</span>
@@ -250,7 +219,7 @@ export function RecommendationResults({
                   모든 조건 지우기
                 </Button>
               }
-              description="검색어 또는 필터를 바꾸면 저장된 추천 100곡 안에서 다시 찾을 수 있습니다."
+              description="검색어 또는 필터를 바꾸면 현재 추천 목록에서 다시 찾을 수 있습니다."
               icon={<Music2 />}
               title="조건에 맞는 노래가 없어요."
             />
@@ -287,33 +256,8 @@ export function RecommendationResults({
 
       <footer className="mt-6 flex flex-wrap items-center justify-between gap-3">
         <p className="font-mono text-[10px] text-muted-foreground">
-          RUN {run.id.slice(0, 8)} · {new Date(run.createdAt).toLocaleString("ko-KR")}
+          PROFILE {run.id.slice(0, 8)} · CATALOG r{run.catalogRevision} · {run.scoringVersion}
         </p>
-        <Dialog>
-          <DialogTrigger render={<Button disabled={deleteRunMutation.isPending} variant="ghost" />}>
-            <Trash2 className="size-4" aria-hidden="true" /> 결과 삭제
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>이 추천 결과를 삭제할까요?</DialogTitle>
-              <DialogDescription>
-                이 추천에 연결된 AI 믹싱 기록과 결과 파일도 함께 삭제됩니다. 보컬 프로필은 유지되며 이 작업은 되돌릴 수
-                없습니다.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <DialogClose render={<Button variant="outline" />}>취소</DialogClose>
-              <Button disabled={deleteRunMutation.isPending} onClick={deleteRun} variant="destructive">
-                {deleteRunMutation.isPending ? (
-                  <LoaderCircle className="size-4 animate-spin motion-reduce:animate-none" aria-hidden="true" />
-                ) : (
-                  <Trash2 className="size-4" aria-hidden="true" />
-                )}
-                {deleteRunMutation.isPending ? "삭제 중" : "추천 결과 삭제"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </footer>
     </CreationFunnelShell>
   );

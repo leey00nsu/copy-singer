@@ -101,8 +101,10 @@ const recommendationItemId = "20000000-0000-4000-8000-000000000003";
 export const recommendationRunFixture: RecommendationRunResponse = {
   id: "20000000-0000-4000-8000-000000000001",
   userVocalProfileId: "20000000-0000-4000-8000-000000000002",
+  catalogId: "20000000-0000-4000-8000-000000000006",
+  catalogRevision: 4,
   scoringVersion: "key-fit-v2",
-  createdAt: "2026-08-09T00:00:00.000Z",
+  calculatedAt: "2026-08-09T00:00:00.000Z",
   profileConfidence: 0.88,
   lowConfidence: false,
   profile: {
@@ -116,6 +118,8 @@ export const recommendationRunFixture: RecommendationRunResponse = {
   items: [
     {
       id: recommendationItemId,
+      songAnalysisId: recommendationItemId,
+      targetAssetId: "20000000-0000-4000-8000-000000000007",
       rank: 1,
       songId: "20000000-0000-4000-8000-000000000004",
       catalogOrder: 1234,
@@ -193,7 +197,7 @@ export const succeededRecommendationRunFixture: RecommendationRunResponse = {
 
 export const mixingJobFixture: MixingJobResponse = {
   id: "20000000-0000-4000-8000-000000000005",
-  recommendationItemId,
+  songAnalysisId: recommendationItemId,
   status: "pending",
   ticketCost: 1,
   error: null,

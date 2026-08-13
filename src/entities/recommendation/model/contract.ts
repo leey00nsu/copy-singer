@@ -32,12 +32,7 @@ export const RECOMMENDATION_ERROR_CODES = [
   "INCOMPATIBLE_ANALYZER",
   "CATALOG_NOT_READY",
   "RECOMMENDATION_NOT_FOUND",
-  "RECOMMENDATION_SAVE_FAILED",
-  "SYNTHESIS_NOT_FOUND",
-  "SYNTHESIS_PREFLIGHT_FAILED",
-  "SYNTHESIS_MEDIA_FAILED",
-  "SYNTHESIS_UPSTREAM_FAILED",
-  "SYNTHESIS_CLEANUP_FAILED",
+  "RECOMMENDATION_CALCULATION_FAILED",
 ] as const;
 
 export const recommendationErrorCodeSchema = z.enum(RECOMMENDATION_ERROR_CODES);
@@ -105,6 +100,8 @@ export type RecommendationMixingCapability = z.infer<typeof recommendationMixing
 
 export const recommendationItemResponseSchema = z.object({
   id: z.uuid(),
+  songAnalysisId: z.uuid(),
+  targetAssetId: z.uuid(),
   rank: z.number().int().positive(),
   songId: z.uuid(),
   catalogOrder: z.number().int().positive(),
@@ -129,8 +126,10 @@ export type RecommendationItemResponse = z.infer<typeof recommendationItemRespon
 export const recommendationRunResponseSchema = z.object({
   id: z.uuid(),
   userVocalProfileId: z.uuid(),
+  catalogId: z.uuid(),
+  catalogRevision: z.number().int().positive(),
   scoringVersion: z.string(),
-  createdAt: z.string(),
+  calculatedAt: z.string(),
   profileConfidence: z.number(),
   lowConfidence: z.boolean(),
   profile: z.object({
@@ -157,10 +156,3 @@ export const recommendationApiErrorSchema = z.object({
 });
 
 export type RecommendationApiError = z.infer<typeof recommendationApiErrorSchema>;
-
-export const recommendationDeleteResponseSchema = z.object({
-  status: z.literal("deleted"),
-  id: z.uuid(),
-});
-
-export type RecommendationDeleteResponse = z.infer<typeof recommendationDeleteResponseSchema>;

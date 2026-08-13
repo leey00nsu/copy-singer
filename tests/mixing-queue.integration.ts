@@ -45,8 +45,6 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
   const assetId = crypto.randomUUID();
   const smartAssetId = crypto.randomUUID();
   const targetAssetId = crypto.randomUUID();
-  const runId = crypto.randomUUID();
-  const itemId = crypto.randomUUID();
 
   let originalTargetAssetId: string | null = null;
   let songId: string | null = null;
@@ -58,9 +56,10 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       include: { song: true },
     });
     const song = catalogEntry.song;
+    const analysisId = song.currentAnalysisId;
+    assert.ok(analysisId);
     songId = song.id;
     originalTargetAssetId = song.targetAssetId;
-    await prisma.song.update({ where: { id: song.id }, data: { targetAssetId: null } });
     await prisma.user.create({
       data: {
         id: userId,
@@ -114,32 +113,32 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
         displayName: profileDisplayName,
         sourceType: "USER",
         recordingId,
-        analyzer: "test",
-        analyzerVersion: "1",
+        minMidi: 48,
+        maxMidi: 72,
+        p10Midi: 52,
+        medianMidi: 60,
+        p90Midi: 68,
+        tessituraLowMidi: 52,
+        tessituraHighMidi: 68,
+        voicedRatio: 0.72,
+        pitchStability: 0.84,
+        clippingRatio: 0.001,
+        rmsDb: -18,
+        analyzer: "librosa-pyin",
+        analyzerVersion: "0.11.0",
         descriptors: { synthesisReference: { version: "smart-reference-mid-v1" } },
-      },
-    });
-    await prisma.recommendationRun.create({
-      data: { id: runId, userId, userVocalProfileId: profileId, scoringVersion: "test" },
-    });
-    await prisma.recommendationItem.create({
-      data: {
-        id: itemId,
-        runId,
-        songId: song.id,
-        catalogPosition: 1,
-        rank: 1,
-        originalKeyScore: 80,
-        adjustedScore: 85,
-        recommendedShift: 1,
-        reasonCodes: [],
-        metrics: {},
       },
     });
 
     const missingReferenceKey = `missing-reference-${suffix}`;
     await assert.rejects(
-      () => enqueueMixingJob({ userId, recommendationItemId: itemId, idempotencyKey: missingReferenceKey }),
+      () =>
+        enqueueMixingJob({
+          userId,
+          vocalProfileId: profileId,
+          songAnalysisId: analysisId,
+          idempotencyKey: missingReferenceKey,
+        }),
       (error) => error instanceof MixingError && error.code === "MIXING_REFERENCE_UNAVAILABLE",
     );
     assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 1);
@@ -151,14 +150,6 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       data: { synthesisReferenceAssetId: smartAssetId },
     });
 
-    const missingTargetKey = `missing-target-${suffix}`;
-    await assert.rejects(
-      () => enqueueMixingJob({ userId, recommendationItemId: itemId, idempotencyKey: missingTargetKey }),
-      (error) => error instanceof MixingError && error.code === "MIXING_TARGET_UNAVAILABLE",
-    );
-    assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 1);
-    assert.equal(await prisma.mixingJob.count({ where: { userId, idempotencyKey: missingTargetKey } }), 0);
-
     await prisma.catalogTargetAsset.create({
       data: {
         id: targetAssetId,
@@ -169,16 +160,28 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
         mimeType: "audio/mp4",
         sizeBytes: BigInt(3),
         sha256: "test-target-sha256",
-        sourceVideoId: "dQw4w9WgXcQ",
+        sourceVideoId: `test${suffix.replaceAll("-", "").slice(0, 7)}`,
+        sourceId: song.activeSourceId,
+        status: "READY",
       },
     });
     await prisma.song.update({ where: { id: song.id }, data: { targetAssetId } });
 
-    const input = { userId, recommendationItemId: itemId, idempotencyKey: `request-${suffix}` };
+    const input = {
+      userId,
+      vocalProfileId: profileId,
+      songAnalysisId: analysisId,
+      idempotencyKey: `request-${suffix}`,
+    };
     const [first, duplicate] = await Promise.all([enqueueMixingJob(input), enqueueMixingJob(input)]);
     assert.equal(first.id, duplicate.id);
     assert.equal(first.referenceAssetId, smartAssetId);
     assert.equal(first.targetAssetId, targetAssetId);
+    assert.equal(first.songAnalysisId, analysisId);
+    assert.equal(first.catalogPosition, catalogEntry.position);
+    assert.equal(first.scoringVersion, "key-fit-v2");
+    assert.ok(Number.isInteger(first.recommendedShift));
+    assert.ok(first.catalogRevision > 0);
     assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 0);
     assert.equal(await prisma.ticketLedger.count({ where: { mixingJobId: first.id, type: "MIXING_DEBIT" } }), 1);
 
@@ -204,7 +207,8 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
 
     const retrying = await enqueueMixingJob({
       userId,
-      recommendationItemId: itemId,
+      vocalProfileId: profileId,
+      songAnalysisId: analysisId,
       idempotencyKey: `retrying-${suffix}`,
     });
     await prisma.mixingJob.update({ where: { id: retrying.id }, data: { maxAttempts: 2 } });
@@ -249,7 +253,8 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
 
     const submitNetworkFailure = await enqueueMixingJob({
       userId,
-      recommendationItemId: itemId,
+      vocalProfileId: profileId,
+      songAnalysisId: analysisId,
       idempotencyKey: `submit-network-${suffix}`,
     });
     assert.equal(await claimNextMixingJob("submit-network-worker", submitNetworkFailure.id), submitNetworkFailure.id);
@@ -277,7 +282,8 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
 
     const submittedFailure = await enqueueMixingJob({
       userId,
-      recommendationItemId: itemId,
+      vocalProfileId: profileId,
+      songAnalysisId: analysisId,
       idempotencyKey: `submitted-${suffix}`,
     });
     assert.equal(await claimNextMixingJob("crashed-worker", submittedFailure.id), submittedFailure.id);
@@ -332,7 +338,8 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     });
     const finalizationFailure = await enqueueMixingJob({
       userId,
-      recommendationItemId: itemId,
+      vocalProfileId: profileId,
+      songAnalysisId: analysisId,
       idempotencyKey: `finalization-${suffix}`,
     });
     await prisma.mixingJob.update({ where: { id: finalizationFailure.id }, data: { maxAttempts: 2 } });
@@ -414,7 +421,8 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     });
     const successful = await enqueueMixingJob({
       userId,
-      recommendationItemId: itemId,
+      vocalProfileId: profileId,
+      songAnalysisId: analysisId,
       idempotencyKey: `successful-${suffix}`,
     });
     assert.equal(await claimNextMixingJob("result-worker", successful.id), successful.id);
@@ -427,9 +435,12 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
         return new Response(new Uint8Array([4, 5, 6]), { headers: { "Content-Type": "audio/mp4" } });
       }
       if (url === "https://modal.example/v1/conversions" && init?.method === "POST") {
-        const targetAudio = (init.body as FormData).get("target_audio") as File | null;
+        const form = init.body as FormData;
+        const targetAudio = form.get("target_audio") as File | null;
         assert.equal(targetAudio?.name, "catalog-target.m4a");
         assert.equal(targetAudio?.type, "audio/mp4");
+        assert.equal(form.get("auto_pitch_shift"), "false");
+        assert.equal(form.get("pitch_shift"), String(successful.recommendedShift));
         return Response.json({ id: "modal-success", status: "queued" });
       }
       if (url === "https://modal.example/v1/conversions/modal-success") {
@@ -503,9 +514,13 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
         userId,
         vocalProfileId: profileId,
         songId: song.id,
-        recommendationItemId: itemId,
+        songAnalysisId: analysisId,
         referenceAssetId: smartAssetId,
         targetAssetId,
+        catalogPosition: catalogEntry.position,
+        recommendedShift: successful.recommendedShift,
+        catalogRevision: successful.catalogRevision,
+        scoringVersion: successful.scoringVersion,
         status: "PENDING",
         ticketCost: 1,
         idempotencyKey: `active-delete-${suffix}`,
@@ -559,8 +574,6 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       await prisma.song.update({ where: { id: songId }, data: { targetAssetId: originalTargetAssetId } });
     }
     await prisma.catalogTargetAsset.deleteMany({ where: { id: targetAssetId } });
-    await prisma.recommendationItem.deleteMany({ where: { id: itemId } });
-    await prisma.recommendationRun.deleteMany({ where: { id: runId } });
     await prisma.vocalProfile.deleteMany({ where: { id: profileId } });
     await prisma.recording.deleteMany({ where: { id: recordingId } });
     await prisma.mediaAsset.deleteMany({ where: { id: { in: [assetId, smartAssetId] } } });

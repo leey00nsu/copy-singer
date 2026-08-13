@@ -64,14 +64,6 @@ enum CatalogEntryStatus {
   ARCHIVED
 }
 
-enum SynthesisStatus {
-  PREPARING
-  QUEUED
-  PROCESSING
-  SUCCEEDED
-  FAILED
-}
-
 enum MediaAssetKind {
   REFERENCE
   SYNTHESIS_REFERENCE
@@ -179,7 +171,6 @@ model VocalProfile {
   synthesisReferenceAsset   MediaAsset?              @relation("VocalProfileSynthesisReference", fields: [synthesisReferenceAssetId], references: [id], onDelete: SetNull)
   user                      User?                    @relation(fields: [userId], references: [id], onDelete: SetNull)
   song                      Song?
-  recommendationRuns        RecommendationRun[]
   mixingJobs                MixingJob[]
   analysisJob               VocalProfileAnalysisJob?
 
@@ -190,30 +181,29 @@ model VocalProfile {
 }
 
 model Song {
-  id                  String               @id @default(uuid()) @db.Uuid
-  title               String
-  artist              String
-  originalKey         String?
-  lifecycleStatus     SongLifecycleStatus  @default(DRAFT)
-  activeSourceId      String?              @unique @db.Uuid
-  currentAnalysisId   String?              @unique @db.Uuid
-  createdByUserId     String?
-  vocalProfileId      String?              @unique @db.Uuid
-  targetAssetId       String?              @unique @db.Uuid
-  analysisStatus      SongAnalysisStatus   @default(PENDING)
-  metadata            Json?
-  createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @updatedAt
-  activeSource        SongSource?          @relation("ActiveSongSource", fields: [activeSourceId], references: [id], onDelete: SetNull)
-  currentAnalysis     SongAnalysis?        @relation("CurrentSongAnalysis", fields: [currentAnalysisId], references: [id], onDelete: SetNull)
-  createdBy           User?                @relation("SongCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
-  vocalProfile        VocalProfile?        @relation(fields: [vocalProfileId], references: [id], onDelete: SetNull)
-  targetAsset         CatalogTargetAsset?  @relation(fields: [targetAssetId], references: [id], onDelete: SetNull)
-  sources             SongSource[]         @relation("SongSources")
-  analyses            SongAnalysis[]       @relation("SongAnalyses")
-  catalogEntries      CatalogEntry[]
-  recommendationItems RecommendationItem[]
-  mixingJobs          MixingJob[]
+  id                String              @id @default(uuid()) @db.Uuid
+  title             String
+  artist            String
+  originalKey       String?
+  lifecycleStatus   SongLifecycleStatus @default(DRAFT)
+  activeSourceId    String?             @unique @db.Uuid
+  currentAnalysisId String?             @unique @db.Uuid
+  createdByUserId   String?
+  vocalProfileId    String?             @unique @db.Uuid
+  targetAssetId     String?             @unique @db.Uuid
+  analysisStatus    SongAnalysisStatus  @default(PENDING)
+  metadata          Json?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  activeSource      SongSource?         @relation("ActiveSongSource", fields: [activeSourceId], references: [id], onDelete: SetNull)
+  currentAnalysis   SongAnalysis?       @relation("CurrentSongAnalysis", fields: [currentAnalysisId], references: [id], onDelete: SetNull)
+  createdBy         User?               @relation("SongCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  vocalProfile      VocalProfile?       @relation(fields: [vocalProfileId], references: [id], onDelete: SetNull)
+  targetAsset       CatalogTargetAsset? @relation(fields: [targetAssetId], references: [id], onDelete: SetNull)
+  sources           SongSource[]        @relation("SongSources")
+  analyses          SongAnalysis[]      @relation("SongAnalyses")
+  catalogEntries    CatalogEntry[]
+  mixingJobs        MixingJob[]
 
   @@unique([title, artist])
   @@index([lifecycleStatus, createdAt])
@@ -244,43 +234,43 @@ model SongSource {
 }
 
 model SongAnalysis {
-  id                  String               @id @default(uuid()) @db.Uuid
-  songId              String               @db.Uuid
-  sourceId            String               @db.Uuid
-  status              SongAnalysisStatus   @default(PENDING)
-  pipelineContract    String
-  durationMs          Int?
-  sampleRate          Int?
-  sourceSizeBytes     BigInt?
-  minMidi             Float?
-  maxMidi             Float?
-  p10Midi             Float?
-  medianMidi          Float?
-  p90Midi             Float?
-  tessituraLowMidi    Float?
-  tessituraHighMidi   Float?
-  voicedRatio         Float?
-  pitchStability      Float?
-  clippingRatio       Float?
-  rmsDb               Float?
-  estimatedKey        String?
-  keyConfidence       Float?
-  analyzer            String?
-  analyzerVersion     String?
-  descriptors         Json?
-  pipelineMetadata    Json?
-  cleanupConfirmed    Boolean              @default(false)
-  errorCode           String?
-  errorDetail         String?
-  startedAt           DateTime?
-  completedAt         DateTime?
-  createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @updatedAt
-  song                Song                 @relation("SongAnalyses", fields: [songId], references: [id], onDelete: Restrict)
-  source              SongSource           @relation(fields: [sourceId], references: [id], onDelete: Restrict)
-  currentForSong      Song?                @relation("CurrentSongAnalysis")
-  analysisJob         SongAnalysisJob?
-  recommendationItems RecommendationItem[]
+  id                String             @id @default(uuid()) @db.Uuid
+  songId            String             @db.Uuid
+  sourceId          String             @db.Uuid
+  status            SongAnalysisStatus @default(PENDING)
+  pipelineContract  String
+  durationMs        Int?
+  sampleRate        Int?
+  sourceSizeBytes   BigInt?
+  minMidi           Float?
+  maxMidi           Float?
+  p10Midi           Float?
+  medianMidi        Float?
+  p90Midi           Float?
+  tessituraLowMidi  Float?
+  tessituraHighMidi Float?
+  voicedRatio       Float?
+  pitchStability    Float?
+  clippingRatio     Float?
+  rmsDb             Float?
+  estimatedKey      String?
+  keyConfidence     Float?
+  analyzer          String?
+  analyzerVersion   String?
+  descriptors       Json?
+  pipelineMetadata  Json?
+  cleanupConfirmed  Boolean            @default(false)
+  errorCode         String?
+  errorDetail       String?
+  startedAt         DateTime?
+  completedAt       DateTime?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  song              Song               @relation("SongAnalyses", fields: [songId], references: [id], onDelete: Restrict)
+  source            SongSource         @relation(fields: [sourceId], references: [id], onDelete: Restrict)
+  currentForSong    Song?              @relation("CurrentSongAnalysis")
+  analysisJob       SongAnalysisJob?
+  mixingJobs        MixingJob[]
 
   @@unique([sourceId, pipelineContract])
   @@index([songId, status, createdAt])
@@ -320,6 +310,7 @@ model Catalog {
   name      String
   issue     String?
   status    CatalogStatus  @default(DRAFT)
+  revision  Int            @default(1)
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
   entries   CatalogEntry[]
@@ -345,55 +336,6 @@ model CatalogEntry {
   @@index([songId, status])
 }
 
-model RecommendationRun {
-  id                 String               @id @default(uuid()) @db.Uuid
-  userId             String?
-  userVocalProfileId String               @db.Uuid
-  scoringVersion     String
-  createdAt          DateTime             @default(now())
-  userVocalProfile   VocalProfile         @relation(fields: [userVocalProfileId], references: [id], onDelete: Restrict)
-  user               User?                @relation(fields: [userId], references: [id], onDelete: SetNull)
-  items              RecommendationItem[]
-
-  @@unique([userVocalProfileId])
-  @@index([userId, createdAt])
-}
-
-model RecommendationItem {
-  id                   String            @id @default(uuid()) @db.Uuid
-  runId                String            @db.Uuid
-  songId               String            @db.Uuid
-  songAnalysisId       String?           @db.Uuid
-  catalogPosition      Int
-  rank                 Int
-  originalKeyScore     Float
-  adjustedScore        Float
-  recommendedShift     Int
-  reasonCodes          Json
-  metrics              Json
-  synthesisStatus      SynthesisStatus?
-  synthesisJobId       String?
-  synthesisErrorCode   String?
-  synthesisErrorDetail String?
-  synthesisRetryable   Boolean?
-  synthesisAttempts    Json              @default("[]")
-  synthesisStartedAt   DateTime?
-  synthesisUpdatedAt   DateTime?
-  synthesisCompletedAt DateTime?
-  synthesisExpiresAt   DateTime?
-  createdAt            DateTime          @default(now())
-  run                  RecommendationRun @relation(fields: [runId], references: [id], onDelete: Cascade)
-  song                 Song              @relation(fields: [songId], references: [id], onDelete: Restrict)
-  songAnalysis         SongAnalysis?     @relation(fields: [songAnalysisId], references: [id], onDelete: Restrict)
-  mixingJobs           MixingJob[]
-
-  @@unique([runId, rank])
-  @@unique([runId, songId])
-  @@index([songId])
-  @@index([songAnalysisId])
-  @@index([synthesisStatus, synthesisUpdatedAt])
-}
-
 model User {
   id                       String                    @id
   name                     String
@@ -407,7 +349,6 @@ model User {
   sessions                 Session[]
   accounts                 Account[]
   vocalProfiles            VocalProfile[]
-  recommendationRuns       RecommendationRun[]
   mediaAssets              MediaAsset[]
   ticketLedgers            TicketLedger[]            @relation("TicketOwner")
   ticketActions            TicketLedger[]            @relation("TicketActor")
@@ -601,46 +542,51 @@ model VocalProfileAnalysisJob {
 }
 
 model MixingJob {
-  id                   String              @id @default(uuid()) @db.Uuid
-  userId               String
-  vocalProfileId       String              @db.Uuid
-  songId               String              @db.Uuid
-  recommendationItemId String?             @db.Uuid
-  referenceAssetId     String              @db.Uuid
-  targetAssetId        String?             @db.Uuid
-  resultAssetId        String?             @db.Uuid
-  status               MixingJobStatus     @default(PENDING)
-  ticketCost           Int
-  refundState          TicketRefundState   @default(NONE)
-  idempotencyKey       String
-  modalJobId           String?
-  attempts             Int                 @default(0)
-  maxAttempts          Int                 @default(3)
-  nextAttemptAt        DateTime            @default(now())
-  retryable            Boolean?
-  leaseOwner           String?
-  leaseExpiresAt       DateTime?
-  heartbeatAt          DateTime?
-  errorCode            String?
-  errorDetail          String?
-  submittedAt          DateTime?
-  startedAt            DateTime?
-  completedAt          DateTime?
-  createdAt            DateTime            @default(now())
-  updatedAt            DateTime            @updatedAt
-  user                 User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  vocalProfile         VocalProfile        @relation(fields: [vocalProfileId], references: [id], onDelete: Restrict)
-  song                 Song                @relation(fields: [songId], references: [id], onDelete: Restrict)
-  recommendationItem   RecommendationItem? @relation(fields: [recommendationItemId], references: [id], onDelete: SetNull)
-  referenceAsset       MediaAsset          @relation("MixingReference", fields: [referenceAssetId], references: [id], onDelete: Restrict)
-  targetAsset          CatalogTargetAsset? @relation("MixingTarget", fields: [targetAssetId], references: [id], onDelete: Restrict)
-  resultAsset          MediaAsset?         @relation("MixingResult", fields: [resultAssetId], references: [id], onDelete: SetNull)
-  ticketEntries        TicketLedger[]
+  id               String             @id @default(uuid()) @db.Uuid
+  userId           String
+  vocalProfileId   String             @db.Uuid
+  songId           String             @db.Uuid
+  songAnalysisId   String             @db.Uuid
+  referenceAssetId String             @db.Uuid
+  targetAssetId    String             @db.Uuid
+  resultAssetId    String?            @db.Uuid
+  catalogPosition  Int
+  recommendedShift Int
+  catalogRevision  Int
+  scoringVersion   String
+  status           MixingJobStatus    @default(PENDING)
+  ticketCost       Int
+  refundState      TicketRefundState  @default(NONE)
+  idempotencyKey   String
+  modalJobId       String?
+  attempts         Int                @default(0)
+  maxAttempts      Int                @default(3)
+  nextAttemptAt    DateTime           @default(now())
+  retryable        Boolean?
+  leaseOwner       String?
+  leaseExpiresAt   DateTime?
+  heartbeatAt      DateTime?
+  errorCode        String?
+  errorDetail      String?
+  submittedAt      DateTime?
+  startedAt        DateTime?
+  completedAt      DateTime?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vocalProfile     VocalProfile       @relation(fields: [vocalProfileId], references: [id], onDelete: Restrict)
+  song             Song               @relation(fields: [songId], references: [id], onDelete: Restrict)
+  songAnalysis     SongAnalysis       @relation(fields: [songAnalysisId], references: [id], onDelete: Restrict)
+  referenceAsset   MediaAsset         @relation("MixingReference", fields: [referenceAssetId], references: [id], onDelete: Restrict)
+  targetAsset      CatalogTargetAsset @relation("MixingTarget", fields: [targetAssetId], references: [id], onDelete: Restrict)
+  resultAsset      MediaAsset?        @relation("MixingResult", fields: [resultAssetId], references: [id], onDelete: SetNull)
+  ticketEntries    TicketLedger[]
 
   @@unique([userId, idempotencyKey])
   @@index([status, nextAttemptAt, leaseExpiresAt, createdAt])
   @@index([userId, createdAt])
-  @@index([recommendationItemId, createdAt])
+  @@index([vocalProfileId, songAnalysisId, createdAt])
+  @@index([songAnalysisId])
   @@index([targetAssetId])
   @@index([modalJobId])
 }

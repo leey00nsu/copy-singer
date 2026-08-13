@@ -1,10 +1,13 @@
 import "server-only";
 
-import { type PrismaClient, prisma } from "@/shared/db/index.server";
+import { type Prisma, type PrismaClient, prisma } from "@/shared/db/index.server";
 
 import { TJ_2607_CATALOG_SLUG } from "../lib/bootstrap";
 
-export async function loadPublishedCatalog(database: PrismaClient = prisma, catalogSlug = TJ_2607_CATALOG_SLUG) {
+export async function loadPublishedCatalog(
+  database: PrismaClient | Prisma.TransactionClient = prisma,
+  catalogSlug = TJ_2607_CATALOG_SLUG,
+) {
   return database.catalogEntry.findMany({
     where: {
       status: "PUBLISHED",

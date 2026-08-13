@@ -254,10 +254,12 @@ test("rejects mismatched active database revisions before scoring or persistence
   );
 });
 
-test("selects a handoff only when the item belongs to the stored run", () => {
+test("selects a handoff only when the item belongs to the calculated result", () => {
   const scored = scoreCatalogKeyFits(USER_PROFILE_FIXTURE, artifact)[0]!;
   const item = {
     id: "item-1",
+    songAnalysisId: "analysis-1",
+    targetAssetId: "target-1",
     rank: 1,
     songId: "song-1",
     catalogOrder: 1,
@@ -289,8 +291,10 @@ test("selects a handoff only when the item belongs to the stored run", () => {
   const run: RecommendationRunResponse = {
     id: "run-1",
     userVocalProfileId: "profile-1",
+    catalogId: "catalog-1",
+    catalogRevision: 1,
     scoringVersion: "key-fit-v1",
-    createdAt: "2026-08-06T00:00:00.000Z",
+    calculatedAt: "2026-08-06T00:00:00.000Z",
     profileConfidence: 0.8,
     lowConfidence: false,
     profile: {

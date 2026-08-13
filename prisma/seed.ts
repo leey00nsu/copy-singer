@@ -13,8 +13,6 @@ const ids = {
   userProfile: "00000000-0000-4000-8000-000000000011",
   songProfile: "00000000-0000-4000-8000-000000000012",
   song: "00000000-0000-4000-8000-000000000021",
-  recommendationRun: "00000000-0000-4000-8000-000000000031",
-  recommendationItem: "00000000-0000-4000-8000-000000000041",
 } as const;
 
 function createClient() {
@@ -121,33 +119,6 @@ async function main() {
       vocalProfileId: ids.songProfile,
       analysisStatus: SongAnalysisStatus.READY,
       metadata: { fixture: true },
-    },
-  });
-
-  await prisma.recommendationRun.upsert({
-    where: { id: ids.recommendationRun },
-    update: {},
-    create: {
-      id: ids.recommendationRun,
-      userVocalProfileId: ids.userProfile,
-      scoringVersion: "fixture-1.0.0",
-    },
-  });
-
-  await prisma.recommendationItem.upsert({
-    where: { id: ids.recommendationItem },
-    update: {},
-    create: {
-      id: ids.recommendationItem,
-      runId: ids.recommendationRun,
-      songId: ids.song,
-      catalogPosition: 1,
-      rank: 1,
-      originalKeyScore: 0.81,
-      adjustedScore: 0.93,
-      recommendedShift: -2,
-      reasonCodes: ["TESSITURA_OVERLAP", "LOWER_HIGH_NOTE_LOAD"],
-      metrics: { overlapRatio: 0.88 },
     },
   });
 

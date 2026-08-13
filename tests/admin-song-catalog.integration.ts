@@ -80,6 +80,9 @@ test("admin catalog mutations are idempotent and publish only matching READY rev
     const repeatedAsset = await api.uploadAdminCatalogTarget({ sourceId: source.id, file, fetchImpl });
     assert.equal(repeatedAsset.id, asset.id);
     assert.equal(uploadCount, 1);
+    const catalogId = song.catalogEntries[0]?.catalogId;
+    assert.ok(catalogId);
+    const revisionBeforePublish = (await prisma.catalog.findUniqueOrThrow({ where: { id: catalogId } })).revision;
     await api.publishAdminSongSource(song.id, source.id, fetchImpl);
     const active = await prisma.song.findUniqueOrThrow({ where: { id: song.id }, include: { catalogEntries: true } });
     assert.equal(active.lifecycleStatus, "ACTIVE");
@@ -88,8 +91,21 @@ test("admin catalog mutations are idempotent and publish only matching READY rev
     assert.equal(active.targetAssetId, asset.id);
     assert.equal(active.originalKey, "F#");
     assert.equal(active.catalogEntries[0]?.status, "PUBLISHED");
+    assert.equal(
+      (await prisma.catalog.findUniqueOrThrow({ where: { id: catalogId } })).revision,
+      revisionBeforePublish + 1,
+    );
+    await api.publishAdminSongSource(song.id, source.id, fetchImpl);
+    assert.equal(
+      (await prisma.catalog.findUniqueOrThrow({ where: { id: catalogId } })).revision,
+      revisionBeforePublish + 1,
+    );
     await api.archiveAdminSong(song.id);
     assert.equal((await prisma.song.findUniqueOrThrow({ where: { id: song.id } })).lifecycleStatus, "ARCHIVED");
+    assert.equal(
+      (await prisma.catalog.findUniqueOrThrow({ where: { id: catalogId } })).revision,
+      revisionBeforePublish + 2,
+    );
   } finally {
     await prisma.song.update({
       where: { id: song.id },

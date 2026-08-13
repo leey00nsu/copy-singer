@@ -9,8 +9,10 @@ import { requestJson } from "@/shared/api";
 import { createMixingRequestSchema } from "../model/contract";
 
 export type CreateMixingInput = {
-  runId: string;
-  recommendationItemId: string;
+  vocalProfileId: string;
+  songAnalysisId: string;
+  catalogRevision: number;
+  scoringVersion: string;
   idempotencyKey: string;
   retry?: boolean;
 };
@@ -20,7 +22,11 @@ export function mixingJobDetailHref(jobId: string) {
 }
 
 export function createMixing(input: CreateMixingInput): Promise<MixingJobResponse> {
-  const request = createMixingRequestSchema.parse(input);
+  const request = createMixingRequestSchema.parse({
+    vocalProfileId: input.vocalProfileId,
+    songAnalysisId: input.songAnalysisId,
+    idempotencyKey: input.idempotencyKey,
+  });
   return requestJson("/api/mixing-jobs", {
     method: "POST",
     json: request,
@@ -30,19 +36,22 @@ export function createMixing(input: CreateMixingInput): Promise<MixingJobRespons
 
 export function patchRecommendationSynthesis(
   queryClient: QueryClient,
-  runId: string,
-  recommendationItemId: string,
+  input: Pick<CreateMixingInput, "vocalProfileId" | "songAnalysisId" | "catalogRevision" | "scoringVersion">,
   patch: Partial<RecommendationSynthesis>,
 ) {
-  queryClient.setQueryData<RecommendationRunResponse>(recommendationKeys.detail(runId), (current) =>
-    current
-      ? {
-          ...current,
-          items: current.items.map((item) =>
-            item.id === recommendationItemId ? { ...item, synthesis: { ...item.synthesis, ...patch } } : item,
-          ),
-        }
-      : current,
+  queryClient.setQueryData<RecommendationRunResponse>(
+    recommendationKeys.detail(input.vocalProfileId, input.catalogRevision, input.scoringVersion),
+    (current) =>
+      current
+        ? {
+            ...current,
+            items: current.items.map((item) =>
+              item.songAnalysisId === input.songAnalysisId
+                ? { ...item, synthesis: { ...item.synthesis, ...patch } }
+                : item,
+            ),
+          }
+        : current,
   );
 }
 

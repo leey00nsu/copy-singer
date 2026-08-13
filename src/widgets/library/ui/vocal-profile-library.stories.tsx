@@ -29,9 +29,7 @@ const profileHistory = {
       analyzerVersion: "1",
       durationMs: 10_400,
       mimeType: "audio/wav",
-      recommendationCount: 2,
       mixingCount: 1,
-      latestRecommendationId: "40000000-0000-4000-8000-000000000002",
       createdAt: "2026-08-09T00:00:00.000Z",
     },
   ],
@@ -133,7 +131,6 @@ const denseProfileHistory: VocalProfileHistoryPayload = {
       id: `40000000-0000-4000-8000-${suffix}`,
       profileNumber: index + 1,
       displayName: `보컬 프로필 ${index + 1}`,
-      recommendationCount: index + 1,
       mixingCount: index % 4,
       createdAt: `2026-08-${String(9 - (index % 7)).padStart(2, "0")}T00:00:00.000Z`,
     };

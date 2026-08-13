@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useRef } from "react";
 import { toast } from "sonner";
 import { mixingJobKeys } from "@/entities/mixing-job";
-import { recommendationKeys } from "@/entities/recommendation";
+import { type RecommendationRunResponse, recommendationKeys } from "@/entities/recommendation";
 import { ApiError } from "@/shared/api";
 import { createMixingMutationOptions, mixingJobDetailHref, patchRecommendationSynthesis } from "./client";
 
@@ -16,14 +16,14 @@ export function useRecommendationMixing() {
   const mutation = useMutation({
     ...createMixingMutationOptions(),
     onMutate: (input) => {
-      patchRecommendationSynthesis(queryClient, input.runId, input.recommendationItemId, {
+      patchRecommendationSynthesis(queryClient, input, {
         status: "preparing",
         error: null,
       });
     },
     onSuccess: async (job, input) => {
       const invalidations = Promise.all([
-        queryClient.invalidateQueries({ queryKey: recommendationKeys.detail(input.runId) }),
+        queryClient.invalidateQueries({ queryKey: recommendationKeys.profile(input.vocalProfileId) }),
         queryClient.invalidateQueries({ queryKey: mixingJobKeys.histories() }),
       ]);
       toast.success("믹싱을 접수했어요. 페이지를 닫아도 계속 진행됩니다.");
@@ -32,7 +32,7 @@ export function useRecommendationMixing() {
     },
     onError: (error, input) => {
       const apiError = error instanceof ApiError ? error : null;
-      patchRecommendationSynthesis(queryClient, input.runId, input.recommendationItemId, {
+      patchRecommendationSynthesis(queryClient, input, {
         status: "failed",
         error: {
           code: apiError?.code ?? "SYNTHESIS_UPSTREAM_FAILED",
@@ -43,17 +43,19 @@ export function useRecommendationMixing() {
       toast.error(input.retry ? "이 곡의 합성을 다시 시작하지 못했습니다." : "AI 믹싱을 시작하지 못했습니다.");
     },
     onSettled: (_, __, input) => {
-      startingItemsRef.current.delete(input.recommendationItemId);
+      startingItemsRef.current.delete(input.songAnalysisId);
     },
   });
 
   const startMixing = useCallback(
-    (runId: string, recommendationItemId: string, retry = false) => {
-      if (startingItemsRef.current.has(recommendationItemId)) return;
-      startingItemsRef.current.add(recommendationItemId);
+    (result: RecommendationRunResponse, songAnalysisId: string, retry = false) => {
+      if (startingItemsRef.current.has(songAnalysisId)) return;
+      startingItemsRef.current.add(songAnalysisId);
       mutation.mutate({
-        runId,
-        recommendationItemId,
+        vocalProfileId: result.userVocalProfileId,
+        songAnalysisId,
+        catalogRevision: result.catalogRevision,
+        scoringVersion: result.scoringVersion,
         idempotencyKey: crypto.randomUUID(),
         retry,
       });

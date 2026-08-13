@@ -20,14 +20,13 @@ const historySelect = {
   submittedAt: true,
   startedAt: true,
   completedAt: true,
+  catalogPosition: true,
   song: {
     select: {
       title: true,
       artist: true,
-      catalogEntries: { select: { position: true }, orderBy: { position: "asc" as const }, take: 1 },
     },
   },
-  recommendationItem: { select: { catalogPosition: true } },
   vocalProfile: {
     select: {
       id: true,
@@ -57,7 +56,7 @@ function serializeRow(row: Awaited<ReturnType<typeof findRows>>[number]): Mixing
     song: {
       title: row.song.title,
       artist: row.song.artist,
-      catalogOrder: row.recommendationItem?.catalogPosition ?? row.song.catalogEntries[0]?.position ?? 1,
+      catalogOrder: row.catalogPosition,
     },
     vocalProfile: {
       id: row.vocalProfile.id,

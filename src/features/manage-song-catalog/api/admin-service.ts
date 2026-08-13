@@ -219,12 +219,21 @@ export async function publishAdminSongSource(songId: string, sourceId: string, f
       throw new SongCatalogAdminError("TARGET_NOT_READY", "출처와 일치하는 target 음원이 없습니다.", 409);
     const entry = await tx.catalogEntry.findFirst({ where: { songId, catalog: { slug: TJ_2607_CATALOG_SLUG } } });
     if (!entry) throw new SongCatalogAdminError("CATALOG_ENTRY_NOT_FOUND", "카탈로그 항목을 찾을 수 없습니다.", 404);
+    const current = await tx.song.findUniqueOrThrow({ where: { id: songId } });
+    const publishedResultChanged =
+      entry.status !== "PUBLISHED" ||
+      current.activeSourceId !== sourceId ||
+      current.currentAnalysisId !== analysis.id ||
+      current.targetAssetId !== target.id;
     await tx.songSource.updateMany({
       where: { songId, id: { not: sourceId }, status: "READY" },
       data: { status: "SUPERSEDED" },
     });
     await tx.songSource.update({ where: { id: sourceId }, data: { status: "READY" } });
     await tx.catalogEntry.update({ where: { id: entry.id }, data: { status: "PUBLISHED", publishedAt: new Date() } });
+    if (publishedResultChanged) {
+      await tx.catalog.update({ where: { id: entry.catalogId }, data: { revision: { increment: 1 } } });
+    }
     return tx.song.update({
       where: { id: songId },
       data: {
@@ -245,7 +254,11 @@ export async function archiveAdminSong(songId: string) {
   return prisma.$transaction(async (tx) => {
     const song = await tx.song.findUnique({ where: { id: songId } });
     if (!song) throw new SongCatalogAdminError("SONG_NOT_FOUND", "곡을 찾을 수 없습니다.", 404);
-    await tx.catalogEntry.updateMany({ where: { songId }, data: { status: "ARCHIVED" } });
+    const entries = await tx.catalogEntry.findMany({ where: { songId, status: { not: "ARCHIVED" } } });
+    await tx.catalogEntry.updateMany({ where: { songId, status: { not: "ARCHIVED" } }, data: { status: "ARCHIVED" } });
+    for (const catalogId of new Set(entries.map((entry) => entry.catalogId))) {
+      await tx.catalog.update({ where: { id: catalogId }, data: { revision: { increment: 1 } } });
+    }
     return tx.song.update({ where: { id: songId }, data: { lifecycleStatus: "ARCHIVED" } });
   });
 }

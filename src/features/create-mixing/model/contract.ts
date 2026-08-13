@@ -1,7 +1,8 @@
 import { z } from "zod";
 
 export const createMixingRequestSchema = z.object({
-  recommendationItemId: z.uuid(),
+  vocalProfileId: z.uuid(),
+  songAnalysisId: z.uuid(),
   idempotencyKey: z.string().trim().min(1).max(200),
 });
 

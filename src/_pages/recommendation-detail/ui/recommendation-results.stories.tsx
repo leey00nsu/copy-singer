@@ -260,15 +260,3 @@ export const CompletedAudioIsLazy: Story = {
     await expect(getComputedStyle(closeIcon).color).toBe(getComputedStyle(closeButton).color);
   },
 };
-
-export const DeleteConfirmation: Story = {
-  args: {
-    initialRun: recommendationRunFixture,
-    runId: undefined,
-  },
-  play: async ({ canvasElement }) => {
-    await userEvent.click(within(canvasElement).getByRole("button", { name: "결과 삭제" }));
-    await expect(document.body).toHaveTextContent("이 추천 결과를 삭제할까요?");
-    await expect(document.body).toHaveTextContent("보컬 프로필은 유지");
-  },
-};

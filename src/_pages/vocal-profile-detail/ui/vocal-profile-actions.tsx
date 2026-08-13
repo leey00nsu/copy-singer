@@ -11,7 +11,6 @@ import {
   renameVocalProfileMutationOptions,
   vocalProfileRenameRequestSchema,
 } from "@/entities/vocal-profile";
-import { createRecommendationMutationOptions } from "@/features/create-recommendation";
 import { Button, buttonVariants } from "@/shared/ui/button";
 import {
   Dialog,
@@ -119,28 +118,9 @@ function RenameVocalProfileAction({
   );
 }
 
-export function VocalProfileActions({
-  displayName,
-  profileId,
-  latestRecommendationId,
-}: {
-  displayName: string;
-  profileId: string;
-  latestRecommendationId: string | null;
-}) {
+export function VocalProfileActions({ displayName, profileId }: { displayName: string; profileId: string }) {
   const router = useRouter();
-  const createRecommendation = useMutation(createRecommendationMutationOptions());
   const deleteProfile = useMutation(deleteVocalProfileMutationOptions());
-
-  const create = () => {
-    createRecommendation.mutate(profileId, {
-      onSuccess: (run) => {
-        toast.success("목소리에 맞는 노래를 찾았습니다.");
-        router.push(`/recommendations/${run.id}`);
-      },
-      onError: () => toast.error("노래 추천을 만들지 못했습니다. 잠시 뒤 다시 시도해주세요."),
-    });
-  };
 
   const remove = () => {
     deleteProfile.mutate(profileId, {
@@ -155,36 +135,19 @@ export function VocalProfileActions({
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <RenameVocalProfileAction
-        disabled={createRecommendation.isPending || deleteProfile.isPending}
-        displayName={displayName}
-        profileId={profileId}
-      />
-      {latestRecommendationId ? (
-        <Link className={buttonVariants()} href={`/recommendations/${latestRecommendationId}`}>
-          <Sparkles className="size-4" aria-hidden="true" /> 최근 추천 결과 보기
-        </Link>
-      ) : (
-        <Button disabled={createRecommendation.isPending || deleteProfile.isPending} onClick={create}>
-          {createRecommendation.isPending ? (
-            <LoaderCircle className="size-4 animate-spin motion-reduce:animate-none" aria-hidden="true" />
-          ) : (
-            <Sparkles className="size-4" aria-hidden="true" />
-          )}
-          {createRecommendation.isPending ? "노래를 찾는 중" : "맞는 노래 찾기"}
-        </Button>
-      )}
+      <RenameVocalProfileAction disabled={deleteProfile.isPending} displayName={displayName} profileId={profileId} />
+      <Link className={buttonVariants()} href={`/recommendations/${profileId}`}>
+        <Sparkles className="size-4" aria-hidden="true" /> 추천 결과 보기
+      </Link>
       <Dialog>
-        <DialogTrigger
-          render={<Button disabled={createRecommendation.isPending || deleteProfile.isPending} variant="ghost" />}
-        >
+        <DialogTrigger render={<Button disabled={deleteProfile.isPending} variant="ghost" />}>
           <Trash2 className="size-4" aria-hidden="true" /> 삭제
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>이 보컬 프로필을 삭제할까요?</DialogTitle>
             <DialogDescription>
-              제출한 보컬과 연결된 추천·믹싱 기록도 함께 삭제됩니다. 이 작업은 되돌릴 수 없습니다.
+              연결된 믹싱 기록이 있으면 먼저 해당 기록을 삭제해야 합니다. 프로필 삭제는 되돌릴 수 없습니다.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

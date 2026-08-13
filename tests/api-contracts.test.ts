@@ -41,10 +41,18 @@ test("owned request schemas validate UUID, idempotency, pagination, and ticket b
   assert.deepEqual(createRecommendationRequestSchema.parse({ userVocalProfileId: PROFILE_ID }), {
     userVocalProfileId: PROFILE_ID,
   });
-  assert.deepEqual(createMixingRequestSchema.parse({ recommendationItemId: RUN_ID, idempotencyKey: " request-1 " }), {
-    recommendationItemId: RUN_ID,
-    idempotencyKey: "request-1",
-  });
+  assert.deepEqual(
+    createMixingRequestSchema.parse({
+      vocalProfileId: PROFILE_ID,
+      songAnalysisId: RUN_ID,
+      idempotencyKey: " request-1 ",
+    }),
+    {
+      vocalProfileId: PROFILE_ID,
+      songAnalysisId: RUN_ID,
+      idempotencyKey: "request-1",
+    },
+  );
   assert.equal(resourceIdSchema.safeParse("not-a-uuid").success, false);
   assert.equal(analysisIdempotencyKeySchema.safeParse(" ").success, false);
   assert.equal(pageSearchParamSchema.parse("2.9"), 2);
@@ -155,8 +163,10 @@ test("entity response schemas accept representative legacy payloads", () => {
   const recommendation = recommendationRunResponseSchema.parse({
     id: RUN_ID,
     userVocalProfileId: PROFILE_ID,
+    catalogId: JOB_ID,
+    catalogRevision: 1,
     scoringVersion: "key-fit-v2",
-    createdAt: "2026-08-09T00:00:00.000Z",
+    calculatedAt: "2026-08-09T00:00:00.000Z",
     profileConfidence: 0.9,
     lowConfidence: false,
     profile: {
@@ -204,6 +214,8 @@ test("entity response schemas accept representative legacy payloads", () => {
 test("recommendation items accept legacy, additive, and unavailable song profile payloads", () => {
   const item = {
     id: "10000000-0000-4000-8000-000000000011",
+    songAnalysisId: "10000000-0000-4000-8000-000000000011",
+    targetAssetId: "10000000-0000-4000-8000-000000000013",
     rank: 1,
     songId: "10000000-0000-4000-8000-000000000012",
     catalogOrder: 1,

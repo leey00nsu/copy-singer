@@ -103,7 +103,7 @@ Google OAuth 로그인
 
 - **PRD-FR-008**: 원키 적합도는 사용자의 편안한 음역과 곡 테시투라의 대칭적 겹침, 극단음 초과량, 음정 안정도 신뢰도를 반영하며 음역이 좁다는 이유만으로 최대 겹침 점수를 주지 않아야 한다.
 - **PRD-FR-009**: 추천 키는 허용 범위 안의 정수 semitone 후보를 평가해 최고 점수의 이동 값을 선택해야 한다.
-- **PRD-FR-010**: 추천 결과는 동일 점수 입력에 대해 결정적이어야 하며 scoring algorithm version을 저장해야 한다.
+- **PRD-FR-010**: 추천 결과는 동일 revision 입력에 대해 결정적이어야 한다. 응답과 영속 믹싱 작업은 사용한 보컬 프로필, 카탈로그 revision, 곡 분석 revision과 scoring algorithm version을 식별할 수 있어야 한다.
 - **PRD-FR-011**: 추천 API는 원키 점수를 우선하고 조정 후 점수와 키 이동 부담을 함께 반영해 카탈로그 전체를 결정적으로 정렬하며, 모든 곡의 원키 점수, 조정 후 점수, 추천 키, 선택 점수와 구조화된 이유 코드를 반환해야 한다.
 - **PRD-FR-012**: UI는 이유 코드를 자연어 설명으로 표시하고 과도한 정확성을 암시하지 않아야 한다.
 
@@ -150,7 +150,7 @@ Google OAuth 로그인
 - **PRD-FR-046**: 루트 진입 화면은 인증 없이 제품 가치와 핵심 흐름을 설명하고 Google 로그인 또는 인증된 음성 스캔으로 연결해야 한다. x.ai의 작은 announcement, 절제된 중앙형 hero, 넓은 여백, 비대칭 product bento, editorial product demo, hairline metric band와 2-up CTA 구조를 Copysinger의 분석·추천·믹싱 내용으로 재해석한다. Aceternity UI와 React Bits의 실제 source pattern을 활용하되 기존 랜딩의 장식 waveform, dotted motion, ripple과 긴 반복 sticky card는 사용하지 않는다. 마지막 CTA 아래에는 실제 site footer를 제공하며 crystal/prism 이미지는 사용하지 않는다. 로그인 화면은 제품 로고, `Copysinger` 이름, muted `계속하려면 로그인하세요.` 안내와 Google icon을 포함한 `구글로 시작하기` action을 중심 콘텐츠로 제공하고, action 아래에는 Google 로그인 시 Copysinger의 이용 약관 및 개인정보 처리방침에 동의한다는 안내를 표시해야 한다. 다른 공급자나 이메일 가입이 가능한 것처럼 표시하지 않으며 OAuth 진행·설정 누락·실패 상태는 조건부로 안내한다.
 - **PRD-FR-047**: 음성 스캔은 기존 녹음·업로드·검증·durable analysis job 계약을 유지하면서 마이크 권한, live waveform, 경과 시간, 서버 최소 유효 길이 5초, 약 10초의 권장 녹음과 최대 60초, 중지·재시도·오류 상태를 명확히 표시해야 한다. 분석 진행률과 단계는 서버에서 확인할 수 있는 상태보다 더 정밀한 진행을 가장하지 않아야 한다.
 - **PRD-FR-048**: 보컬 프로필 화면은 보컬 타입에 해당하는 설명, 전체·실용 음역, 중앙음, 안정도와 핵심 특성을 우선 요약하고 기존 histogram, pitch trace, 품질 지표와 reference band 오디오를 세부 정보로 보존해야 한다. 의학적 진단이나 데이터에 없는 성별·장르 적합도를 추정하지 않아야 한다.
-- **PRD-FR-049**: 추천 목록은 현재 API가 제공하는 곡·아티스트·적합도·추천 키·이유·믹싱 가능 여부를 기준으로 검색·정렬·필터링할 수 있어야 한다. 곡 상세는 동일한 저장 추천 결과에서 실제 근거를 보여주며, 앨범 이미지·장르·난이도·가사·인앱 미리듣기처럼 현재 계약에 없는 값을 생성하거나 암시하지 않아야 한다.
+- **PRD-FR-049**: 추천 목록은 현재 API가 제공하는 곡·아티스트·적합도·추천 키·이유·믹싱 가능 여부를 기준으로 검색·정렬·필터링할 수 있어야 한다. 곡 상세는 동일한 보컬 프로필·카탈로그·scoring revision 조합에서 계산한 실제 근거를 보여주며, 앨범 이미지·장르·난이도·가사·인앱 미리듣기처럼 현재 계약에 없는 값을 생성하거나 암시하지 않아야 한다.
 - **PRD-FR-050**: AI 믹싱 UI는 영속 작업의 실제 상태를 이해하기 쉬운 단계로 매핑하고 대기·재시도·실패·성공을 구분해야 한다. 라이브러리는 기존 사용자 소유 보컬 프로필과 믹싱 이력을 통합 탐색할 수 있게 하며, 결과 상세에서 저장된 오디오 재생·다운로드와 기존 삭제 동작을 제공해야 한다. 사용자가 노래를 직접 부른 원본과 AI 결과의 Before/After 비교는 해당 녹음 도메인이 구현되기 전까지 표시하지 않아야 한다.
 - **PRD-FR-051**: 인증 제품 화면은 데스크톱에서 persistent sidebar 없이 브랜드·중앙 제품 navigation·우측 계정 메뉴를 담은 공통 top header를 사용하고, 모바일에서는 접근 가능한 compact navigation을 제공해야 한다. 계정 메뉴 최상단에는 현재 사용 가능한 티켓 수를 표시하고 메뉴를 다시 열 때 최신 잔액을 조회해야 한다. 비로그인 header는 중복 가입 CTA 없이 primary `로그인` action 하나만 제공한다. 제품 화면은 focus-visible, 명시적인 button label, 키보드 조작, reduced-motion 배려와 loading·empty·error·disabled 상태를 제공해야 하며 공통 상태와 핵심 오디오 상호작용은 Storybook에서 독립적으로 검증할 수 있어야 한다.
 - **PRD-FR-052**: 사용자가 제공한 32×32 SVG의 일곱 막대 파형 silhouette을 Copysinger의 공통 app mark로 사용하고 기존 AI 생성 헤드폰 bitmap을 대체해야 한다. mark에는 기존 brand token과 대응하는 violet–blue–pink 연속 gradient를 적용하며, header/footer/login의 로고와 favicon은 같은 벡터 master 자산에서 파생하고 16px부터 식별 가능한 geometry, 투명 배경, 접근 가능한 제품명을 유지해야 한다. 서비스명은 공백 없는 `Copysinger`로 표기하고 공통 wordmark에는 제공된 Paperlogy 7Bold를 self-host해 사용해야 한다. 검색·공유 표면은 흰 배경 중앙에 작은 mark, Paperlogy `Copysinger`, `Find your voice. Sing your Match`를 배치한 1200×630 Open Graph image, canonical home URL, public sitemap·robots를 제공하며 인증 제품·관리자·개발 화면은 index 대상에서 제외해야 한다.
@@ -158,7 +158,7 @@ Google OAuth 로그인
 - **PRD-FR-054**: 성공적으로 생성된 사용자 보컬 프로필은 사용자별 단조 증가 번호를 사용한 `보컬 프로필 N` 기본 이름을 영속 저장해야 한다. 삭제된 번호를 재사용하거나 기존 프로필을 재번호화하지 않아야 하며, 사용자는 본인 프로필의 이름을 공백 제거 후 1~40자로 변경할 수 있어야 한다.
 - **PRD-FR-055**: 보컬 프로필 목록은 기존 파형 glyph 대신 프로필 ID에서 결정적으로 생성한 square grainy gradient 커버를 표시해야 한다. 같은 프로필은 이름 변경과 재접속 후에도 같은 커버를 유지하고, 서로 다른 프로필은 구분 가능한 색 조합을 가져야 한다.
 - **PRD-FR-056**: 추천 목록과 곡 상세는 저장된 카탈로그 `sourceVideoId`가 유효한 곡에 한해 원본 YouTube 영상을 16:9 player로 제공해야 한다. 목록은 사용자가 재생을 선택하기 전 실제 iframe을 만들지 않는 click-to-load facade를 사용하고, 상세는 제목 위에 privacy-enhanced embed를 표시하며 별도 `외부 출처 열기` action은 제거해야 한다.
-- **PRD-FR-057**: 사용자 보컬 프로필에는 추천 스냅샷을 하나만 유지하고 반복 요청은 기존 결과를 반환해야 한다. 프로필 목록·상세는 중복 가능한 추천 개수나 새 추천 생성 action을 노출하지 않아야 한다. 분석에서 믹싱용 중앙 대표 구간을 확보하지 못한 경우 결과 화면에 누락 상태를 명시하고, 추천 목록·곡 상세는 AI 믹싱 action을 실행 전에 비활성화하며 새 보컬 분석 경로를 안내해야 한다.
+- **PRD-FR-057**: 추천 결과는 `RecommendationRun`·`RecommendationItem` 스냅샷으로 영속하지 않고 현재 보컬 프로필, 공개 카탈로그 revision과 scoring version으로 요청 시 계산해야 한다. 프로필 상세는 `추천 결과 보기` action으로 현재 결과에 접근하며, TanStack Query 캐시는 동일 revision 조합에서만 재사용해야 한다. 분석에서 믹싱용 중앙 대표 구간을 확보하지 못한 경우 결과 화면에 누락 상태를 명시하고, 추천 목록·곡 상세는 AI 믹싱 action을 실행 전에 비활성화하며 새 보컬 분석 경로를 안내해야 한다. 믹싱 작업은 검증된 보컬 프로필·곡 분석·target asset·추천 키·scoring revision 입력을 영속해 카탈로그 변경 후에도 작업 근거를 유지해야 한다.
 - **PRD-FR-058**: 인증 제품 header는 계정 메뉴 왼쪽(모바일에서는 제품 메뉴 왼쪽)에 접근 가능한 알림 Bell과 읽지 않은 수 badge를 표시해야 한다. 인앱 알림은 관리자에 의한 양수 티켓 조정, 보컬 프로필 분석 성공·최종 실패, AI 믹싱 성공·최종 실패에 대해 terminal 상태당 한 번만 생성하고 관련 계정·프로필·라이브러리 상세로 이동해야 한다. 가입 지급과 믹싱 환불은 별도 티켓 알림으로 중복 생성하지 않으며, retry 중간 상태·내부 오류 상세를 사용자에게 노출하지 않아야 한다. 사용자는 최신 알림, 전체 알림 이력, 개별 읽음과 모두 읽음을 사용할 수 있어야 한다.
 
 ## 데이터 요구사항
@@ -182,7 +182,7 @@ Google OAuth 로그인
 - **PRD-NFR-001 보안**: DB 비밀번호, Better Auth secret, Google OAuth secret, `MODAL_API_KEY`와 Leemage API Key는 `.env.local` 또는 Secret에만 두고 Git과 클라이언트 번들에 포함하지 않는다.
 - **PRD-NFR-002 개인정보**: 녹음과 합성 결과는 삭제 가능해야 하며 보관 기간을 명시한다.
 - **PRD-NFR-003 비용**: 프로필 분석과 추천은 기본적으로 CPU에서 수행하고 합성 데모만 Modal GPU를 사용한다.
-- **PRD-NFR-004 재현성**: 분석·scoring 버전과 입력 메타데이터로 추천 결과를 재현할 수 있어야 한다.
+- **PRD-NFR-004 재현성**: 보컬 프로필·카탈로그·곡 분석 revision과 scoring version으로 추천 결과를 재계산할 수 있어야 하며, 영속 믹싱 작업은 접수 시 검증한 revision 입력을 보존해야 한다.
 - **PRD-NFR-005 품질**: 변경 시 TypeScript 검사, ESLint, 프로덕션 빌드, Prisma validation과 관련 테스트를 통과해야 한다.
 - **PRD-NFR-006 책임 있는 사용**: 사용 권한이 있는 음성과 음악만 처리하도록 고지하고, 결과를 의료적 평가로 표현하지 않는다.
 - **PRD-NFR-007 설명 가능성**: 추천 이유는 음역 겹침, 고음/저음 부담, 키 이동 효과처럼 검증 가능한 항목에서 생성한다.

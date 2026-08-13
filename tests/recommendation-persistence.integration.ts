@@ -5,18 +5,20 @@ import { config } from "dotenv";
 
 config({ path: [".env.local", ".env"], quiet: true });
 
-test("persists, reads, and cascade-deletes one recommendation run", async (context) => {
+test("calculates recommendations on demand and changes cache identity with catalog revision", async (context) => {
   if (!process.env.DATABASE_URL) {
     context.skip("DATABASE_URL is not configured");
     return;
   }
 
   const { prisma } = await import("../src/shared/db/index.server");
-  const { createRecommendationRun, deleteRecommendationRun, getRecommendationRun } = await import(
-    "../src/features/create-recommendation/index.server"
-  );
+  const { getRecommendationResult } = await import("../src/features/create-recommendation/index.server");
   const recordingId = crypto.randomUUID();
   const profileId = crypto.randomUUID();
+  const catalog = await prisma.catalog.findFirstOrThrow({
+    where: { status: "PUBLISHED" },
+    orderBy: { createdAt: "asc" },
+  });
 
   try {
     await prisma.recording.create({
@@ -57,66 +59,37 @@ test("persists, reads, and cascade-deletes one recommendation run", async (conte
       },
     });
 
-    const created = await createRecommendationRun(profileId);
-    assert.equal(created.scoringVersion, "key-fit-v2");
-    assert.equal(created.items.length, 100);
+    const first = await getRecommendationResult(profileId);
+    assert.equal(first.id, profileId);
+    assert.equal(first.scoringVersion, "key-fit-v2");
+    assert.ok(first.items.length > 0);
     assert.deepEqual(
-      created.items.map((item) => item.rank),
-      Array.from({ length: 100 }, (_, index) => index + 1),
+      first.items.map((item) => item.rank),
+      Array.from({ length: first.items.length }, (_, index) => index + 1),
     );
-    assert.ok(created.items.every((item) => item.synthesis.status === "not_started"));
-    assert.ok(created.items.every((item) => item.sourceUrl.startsWith("https://www.youtube.com/")));
-    assert.ok(created.items.every((item) => /^[A-Za-z0-9_-]{11}$/.test(item.sourceVideoId ?? "")));
-    assert.ok(created.items.every((item) => Number.isFinite(item.selectionScore)));
-    assert.ok(created.items.every((item) => item.selectionScore === item.metrics.selectionScore));
-    assert.deepEqual(created.profile.mixing, {
+    assert.ok(first.items.every((item) => item.id === item.songAnalysisId));
+    assert.ok(first.items.every((item) => item.synthesis.status === "not_started"));
+    assert.ok(first.items.every((item) => item.sourceUrl.startsWith("https://www.youtube.com/")));
+    assert.ok(first.items.every((item) => /^[A-Za-z0-9_-]{11}$/.test(item.sourceVideoId ?? "")));
+    assert.deepEqual(first.profile.mixing, {
       available: false,
       unavailableReason: "missing_mid_reference",
     });
 
-    const repeated = await createRecommendationRun(profileId);
-    assert.deepEqual(repeated, created);
-    assert.equal(await prisma.recommendationRun.count({ where: { userVocalProfileId: profileId } }), 1);
+    const repeated = await getRecommendationResult(profileId);
+    assert.equal(repeated.catalogRevision, first.catalogRevision);
+    assert.equal(repeated.scoringVersion, first.scoringVersion);
+    assert.deepEqual(repeated.items, first.items);
 
-    const concurrent = await Promise.all(Array.from({ length: 3 }, () => createRecommendationRun(profileId)));
-    assert.ok(concurrent.every((run) => run.id === created.id));
-    assert.equal(await prisma.recommendationRun.count({ where: { userVocalProfileId: profileId } }), 1);
-
-    const storedSongs = await prisma.song.findMany({
-      where: { id: { in: created.items.map((item) => item.songId) } },
-      include: { currentAnalysis: true },
+    const bumped = await prisma.catalog.update({
+      where: { id: catalog.id },
+      data: { revision: { increment: 1 } },
     });
-    const storedSongById = new Map(storedSongs.map((song) => [song.id, song]));
-    for (const item of created.items) {
-      const song = storedSongById.get(item.songId);
-      assert.ok(song);
-      assert.equal(item.originalKey, song.originalKey?.trim() || null);
-      if (item.songProfile) {
-        assert.equal(item.songProfile.minMidi, song.currentAnalysis?.minMidi);
-        assert.equal(item.songProfile.maxMidi, song.currentAnalysis?.maxMidi);
-        assert.equal(item.songProfile.medianMidi, song.currentAnalysis?.medianMidi);
-        assert.equal(item.songProfile.tessituraLowMidi, song.currentAnalysis?.tessituraLowMidi);
-        assert.equal(item.songProfile.tessituraHighMidi, song.currentAnalysis?.tessituraHighMidi);
-      } else {
-        assert.ok(
-          !song.currentAnalysis ||
-            [
-              song.currentAnalysis.minMidi,
-              song.currentAnalysis.maxMidi,
-              song.currentAnalysis.medianMidi,
-              song.currentAnalysis.tessituraLowMidi,
-              song.currentAnalysis.tessituraHighMidi,
-            ].some((value) => value === null),
-        );
-      }
-    }
-
-    const stored = await getRecommendationRun(created.id);
-    assert.deepEqual(stored, created);
-    assert.deepEqual(await deleteRecommendationRun(created.id), { status: "deleted", id: created.id });
-    assert.equal(await prisma.recommendationItem.count({ where: { runId: created.id } }), 0);
+    const refreshed = await getRecommendationResult(profileId);
+    assert.equal(refreshed.catalogRevision, bumped.revision);
+    assert.deepEqual(refreshed.items, first.items);
   } finally {
-    await prisma.recommendationRun.deleteMany({ where: { userVocalProfileId: profileId } });
+    await prisma.catalog.update({ where: { id: catalog.id }, data: { revision: catalog.revision } });
     await prisma.vocalProfile.deleteMany({ where: { id: profileId } });
     await prisma.recording.deleteMany({ where: { id: recordingId } });
     await prisma.$disconnect();

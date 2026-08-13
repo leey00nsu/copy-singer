@@ -3,14 +3,10 @@ import "server-only";
 import {
   formatRecommendationReasons,
   type KeyFitProfile,
-  type KeyFitReasonCode,
-  parseSynthesisAttempts,
   parseYouTubeVideoId,
   projectRecommendationSongProfile,
   RecommendationError,
   type RecommendationRunResponse,
-  type RecommendationScoreMetrics,
-  toPublicSynthesisStatus,
 } from "@/entities/recommendation/index.model";
 import { loadPublishedCatalog } from "@/entities/song-catalog/index.server";
 import {
@@ -18,53 +14,15 @@ import {
   synthesisReferenceContractVersion,
   type VocalProfileDescriptors,
 } from "@/entities/vocal-profile/index.model";
-import type { Prisma } from "@/shared/db/index.server";
 import { prisma } from "@/shared/db/index.server";
 import { buildRankedDatabaseRecommendations } from "../lib/recommendation-data";
 
-const runInclude = {
-  userVocalProfile: {
-    include: {
-      synthesisReferenceAsset: {
-        select: { userId: true, kind: true, status: true },
-      },
-      recording: {
-        include: {
-          mediaAsset: {
-            select: { userId: true, kind: true, status: true },
-          },
-        },
-      },
-    },
+const profileInclude = {
+  synthesisReferenceAsset: { select: { userId: true, kind: true, status: true } },
+  recording: {
+    include: { mediaAsset: { select: { userId: true, kind: true, status: true } } },
   },
-  items: {
-    include: {
-      song: {
-        include: {
-          vocalProfile: {
-            select: {
-              sourceType: true,
-              minMidi: true,
-              maxMidi: true,
-              medianMidi: true,
-              tessituraLowMidi: true,
-              tessituraHighMidi: true,
-            },
-          },
-        },
-      },
-      songAnalysis: { include: { source: true } },
-      mixingJobs: {
-        include: { resultAsset: true },
-        orderBy: { createdAt: "desc" as const },
-        take: 1,
-      },
-    },
-    orderBy: { rank: "asc" as const },
-  },
-};
-
-type StoredRun = Prisma.RecommendationRunGetPayload<{ include: typeof runInclude }>;
+} as const;
 
 function requiredProfile(profile: {
   sourceType: string;
@@ -109,29 +67,74 @@ function requiredProfile(profile: {
   return profile as KeyFitProfile;
 }
 
-function parseMetrics(value: Prisma.JsonValue): RecommendationScoreMetrics {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    throw new RecommendationError("RECOMMENDATION_SAVE_FAILED", "Stored recommendation metrics are invalid.", {
-      status: 500,
-    });
-  }
-  return value as unknown as RecommendationScoreMetrics;
+function publicMixingStatus(status: string) {
+  return (
+    {
+      PENDING: "preparing",
+      PREPARING: "preparing",
+      SUBMITTED: "queued",
+      PROCESSING: "processing",
+      SUCCEEDED: "succeeded",
+      FAILED: "failed",
+      CANCELED: "failed",
+    } as const
+  )[status as "PENDING" | "PREPARING" | "SUBMITTED" | "PROCESSING" | "SUCCEEDED" | "FAILED" | "CANCELED"];
 }
 
-function parseReasonCodes(value: Prisma.JsonValue): KeyFitReasonCode[] {
-  if (!Array.isArray(value) || value.some((code) => typeof code !== "string")) {
-    throw new RecommendationError("RECOMMENDATION_SAVE_FAILED", "Stored recommendation reasons are invalid.", {
-      status: 500,
+export async function getRecommendationResult(
+  userVocalProfileId: string,
+  userId?: string,
+): Promise<RecommendationRunResponse> {
+  const profileRow = await prisma.vocalProfile.findFirst({
+    where: { id: userVocalProfileId, ...(userId ? { userId } : {}) },
+    include: profileInclude,
+  });
+  if (!profileRow) {
+    throw new RecommendationError("RECOMMENDATION_NOT_FOUND", "Recommendation profile was not found.", {
+      status: 404,
     });
   }
-  return value as KeyFitReasonCode[];
-}
 
-export function serializeRecommendationRun(run: StoredRun): RecommendationRunResponse {
-  const profile = requiredProfile(run.userVocalProfile);
-  const profileOwnerId = run.userVocalProfile.userId;
-  const smartReference = run.userVocalProfile.synthesisReferenceAsset;
-  const sourceReference = run.userVocalProfile.recording.mediaAsset;
+  const profile = requiredProfile(profileRow);
+  const { catalog, rows } = await prisma.$transaction(
+    async (tx) => {
+      const catalog = await tx.catalog.findFirst({ where: { status: "PUBLISHED" }, orderBy: { createdAt: "asc" } });
+      if (!catalog) {
+        throw new RecommendationError("CATALOG_NOT_READY", "Published catalog was not found.", {
+          status: 503,
+          retryable: true,
+        });
+      }
+      return { catalog, rows: await loadPublishedCatalog(tx, catalog.slug) };
+    },
+    { isolationLevel: "RepeatableRead" },
+  );
+  const ranked = buildRankedDatabaseRecommendations(profile, rows);
+  const scoringVersion = ranked[0]?.scoringVersion;
+  if (!scoringVersion) {
+    throw new RecommendationError("CATALOG_NOT_READY", "Published catalog could not be scored.", {
+      status: 503,
+      retryable: true,
+    });
+  }
+
+  const analysisIds = ranked.map((item) => item.songAnalysisId);
+  const mixingJobs = userId
+    ? await prisma.mixingJob.findMany({
+        where: { userId, vocalProfileId: userVocalProfileId, songAnalysisId: { in: analysisIds } },
+        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+        include: { resultAsset: { select: { status: true } } },
+      })
+    : [];
+  const latestMixingByAnalysis = new Map<string, (typeof mixingJobs)[number]>();
+  for (const job of mixingJobs) {
+    if (!latestMixingByAnalysis.has(job.songAnalysisId)) latestMixingByAnalysis.set(job.songAnalysisId, job);
+  }
+  const rowByPosition = new Map(rows.map((row) => [row.position, row]));
+
+  const profileOwnerId = profileRow.userId;
+  const smartReference = profileRow.synthesisReferenceAsset;
+  const sourceReference = profileRow.recording.mediaAsset;
   const mixing = mixingReferenceCapability({
     smartReady:
       profileOwnerId !== null &&
@@ -143,93 +146,80 @@ export function serializeRecommendationRun(run: StoredRun): RecommendationRunRes
       sourceReference?.userId === profileOwnerId &&
       sourceReference.kind === "REFERENCE" &&
       sourceReference.status === "READY",
-    contractVersion: synthesisReferenceContractVersion(
-      run.userVocalProfile.descriptors as VocalProfileDescriptors | null,
-    ),
+    contractVersion: synthesisReferenceContractVersion(profileRow.descriptors as VocalProfileDescriptors | null),
   });
-  const items = run.items.map((item) => {
-    const metrics = parseMetrics(item.metrics);
-    const reasonCodes = parseReasonCodes(item.reasonCodes);
-    const mixing = item.mixingJobs[0];
-    const mixingStatus = mixing
-      ? (
-          {
-            PENDING: "preparing",
-            PREPARING: "preparing",
-            SUBMITTED: "queued",
-            PROCESSING: "processing",
-            SUCCEEDED: "succeeded",
-            FAILED: "failed",
-            CANCELED: "failed",
-          } as const
-        )[mixing.status]
-      : null;
-    const source = item.songAnalysis?.source;
+
+  const items = ranked.map((item) => {
+    const row = rowByPosition.get(item.catalogOrder);
+    const analysis = row?.song.currentAnalysis;
+    const source = row?.song.activeSource;
+    const target = row?.song.targetAsset;
+    if (!row || !analysis || !source || !target || analysis.id !== item.songAnalysisId) {
+      throw new RecommendationError("CATALOG_NOT_READY", "Ranked catalog revision could not be resolved.", {
+        status: 503,
+        retryable: true,
+        details: { catalogPosition: item.catalogOrder },
+      });
+    }
+    const job = latestMixingByAnalysis.get(analysis.id);
+    const status = job ? publicMixingStatus(job.status) : ("not_started" as const);
     return {
-      id: item.id,
+      id: analysis.id,
+      songAnalysisId: analysis.id,
+      targetAssetId: target.id,
       rank: item.rank,
-      songId: item.songId,
-      catalogOrder: item.catalogPosition,
-      title: item.song.title,
-      artist: item.song.artist,
-      originalKey: item.song.originalKey?.trim() || null,
-      songProfile: projectRecommendationSongProfile(item.songAnalysis ?? item.song.vocalProfile),
-      sourceUrl: source?.sourceUrl ?? "",
-      sourceVideoId: parseYouTubeVideoId(source?.sourceVideoId),
+      songId: row.song.id,
+      catalogOrder: row.position,
+      title: row.song.title,
+      artist: row.song.artist,
+      originalKey: row.song.originalKey?.trim() || null,
+      songProfile: projectRecommendationSongProfile(analysis),
+      sourceUrl: source.sourceUrl,
+      sourceVideoId: parseYouTubeVideoId(source.sourceVideoId),
       originalKeyScore: item.originalKeyScore,
       adjustedScore: item.adjustedScore,
-      selectionScore: Number.isFinite(metrics.selectionScore) ? metrics.selectionScore! : null,
+      selectionScore: item.selectionScore,
       recommendedShift: item.recommendedShift,
-      reasonCodes,
-      reasons: formatRecommendationReasons({
-        reasonCodes,
-        originalKeyScore: item.originalKeyScore,
-        adjustedScore: item.adjustedScore,
-        recommendedShift: item.recommendedShift,
-        original: metrics.original,
-        recommended: metrics.recommended,
-      }),
-      metrics,
+      reasonCodes: item.reasonCodes,
+      reasons: formatRecommendationReasons(item),
+      metrics: {
+        confidence: item.confidence,
+        selectionScore: item.selectionScore,
+        original: item.original,
+        recommended: item.recommended,
+      },
       synthesis: {
-        status:
-          mixingStatus ??
-          (item.synthesisStatus ? toPublicSynthesisStatus(item.synthesisStatus) : ("not_started" as const)),
-        jobId: mixing?.id ?? item.synthesisJobId,
+        status,
+        jobId: job?.id ?? null,
         error:
-          mixing?.status === "FAILED" && mixing.errorCode
+          job?.status === "FAILED" && job.errorCode
             ? {
-                code: mixing.errorCode,
-                detail: mixing.errorDetail ?? "합성 작업을 완료하지 못했습니다.",
-                retryable: mixing.retryable ?? false,
+                code: job.errorCode,
+                detail: job.errorDetail ?? "믹싱 작업을 완료하지 못했습니다.",
+                retryable: job.retryable ?? false,
               }
-            : item.synthesisErrorCode
-              ? {
-                  code: item.synthesisErrorCode,
-                  detail: item.synthesisErrorDetail ?? "합성 작업을 완료하지 못했습니다.",
-                  retryable: item.synthesisRetryable ?? false,
-                }
-              : null,
-        startedAt: mixing?.startedAt?.toISOString() ?? item.synthesisStartedAt?.toISOString() ?? null,
-        updatedAt: mixing?.updatedAt.toISOString() ?? item.synthesisUpdatedAt?.toISOString() ?? null,
-        completedAt: mixing?.completedAt?.toISOString() ?? item.synthesisCompletedAt?.toISOString() ?? null,
-        expiresAt: mixing ? null : (item.synthesisExpiresAt?.toISOString() ?? null),
-        attemptCount:
-          mixing?.attempts ?? parseSynthesisAttempts(item.synthesisAttempts).length + (item.synthesisStatus ? 1 : 0),
+            : null,
+        startedAt: job?.startedAt?.toISOString() ?? null,
+        updatedAt: job?.updatedAt.toISOString() ?? null,
+        completedAt: job?.completedAt?.toISOString() ?? null,
+        expiresAt: null,
+        attemptCount: job?.attempts ?? 0,
         audioUrl:
-          mixing?.status === "SUCCEEDED" && mixing.resultAsset?.status === "READY"
-            ? `/api/mixing-jobs/${mixing.id}/audio`
-            : item.synthesisStatus === "SUCCEEDED"
-              ? `/api/recommendations/${run.id}/items/${item.id}/synthesis/audio`
-              : null,
+          job?.status === "SUCCEEDED" && job.resultAsset?.status === "READY"
+            ? `/api/mixing-jobs/${job.id}/audio`
+            : null,
       },
     };
   });
+
   const profileConfidence = items[0]?.metrics.confidence ?? 0;
   return {
-    id: run.id,
-    userVocalProfileId: run.userVocalProfileId,
-    scoringVersion: run.scoringVersion,
-    createdAt: run.createdAt.toISOString(),
+    id: profileRow.id,
+    userVocalProfileId: profileRow.id,
+    catalogId: catalog.id,
+    catalogRevision: catalog.revision,
+    scoringVersion,
+    calculatedAt: new Date().toISOString(),
     profileConfidence,
     lowConfidence: profileConfidence < 0.6,
     profile: {
@@ -245,93 +235,11 @@ export function serializeRecommendationRun(run: StoredRun): RecommendationRunRes
   };
 }
 
-export async function createRecommendationRun(userVocalProfileId: string, userId?: string) {
-  const profileRow = await prisma.vocalProfile.findFirst({
-    where: { id: userVocalProfileId, ...(userId ? { userId } : {}) },
-  });
-  if (!profileRow) {
-    throw new RecommendationError("INVALID_PROFILE", "Vocal profile was not found.", { status: 404 });
+export async function getRecommendationItem(userVocalProfileId: string, songAnalysisId: string, userId: string) {
+  const result = await getRecommendationResult(userVocalProfileId, userId);
+  const item = result.items.find((candidate) => candidate.songAnalysisId === songAnalysisId);
+  if (!item) {
+    throw new RecommendationError("RECOMMENDATION_NOT_FOUND", "Recommendation item was not found.", { status: 404 });
   }
-
-  const existingRun = await prisma.recommendationRun.findFirst({
-    where: { userVocalProfileId },
-    include: runInclude,
-  });
-  if (existingRun) return serializeRecommendationRun(existingRun);
-
-  const profile = requiredProfile(profileRow);
-  const catalog = await loadPublishedCatalog(prisma);
-  const ranked = buildRankedDatabaseRecommendations(profile, catalog);
-
-  try {
-    const run = await prisma.recommendationRun.create({
-      data: {
-        userId,
-        userVocalProfileId,
-        scoringVersion: ranked[0]!.scoringVersion,
-        items: {
-          create: ranked.map((item) => ({
-            songId: item.songId,
-            songAnalysisId: item.songAnalysisId,
-            catalogPosition: item.catalogOrder,
-            rank: item.rank,
-            originalKeyScore: item.originalKeyScore,
-            adjustedScore: item.adjustedScore,
-            recommendedShift: item.recommendedShift,
-            reasonCodes: item.reasonCodes as Prisma.InputJsonValue,
-            metrics: {
-              confidence: item.confidence,
-              selectionScore: item.selectionScore,
-              original: item.original,
-              recommended: item.recommended,
-            } as Prisma.InputJsonValue,
-          })),
-        },
-      },
-      include: runInclude,
-    });
-    return serializeRecommendationRun(run);
-  } catch (error) {
-    if (error && typeof error === "object" && "code" in error && error.code === "P2002") {
-      const concurrentRun = await prisma.recommendationRun.findFirst({
-        where: { userVocalProfileId },
-        include: runInclude,
-      });
-      if (concurrentRun) return serializeRecommendationRun(concurrentRun);
-    }
-    console.error("Could not persist recommendation run", error instanceof Error ? error.message : "unknown error");
-    throw new RecommendationError("RECOMMENDATION_SAVE_FAILED", "Recommendation could not be saved.", {
-      status: 500,
-      retryable: true,
-    });
-  }
-}
-
-export async function getRecommendationRun(id: string, userId?: string) {
-  const run = await prisma.recommendationRun.findFirst({
-    where: { id, ...(userId ? { userId } : {}) },
-    include: runInclude,
-  });
-  if (!run) {
-    throw new RecommendationError("RECOMMENDATION_NOT_FOUND", "Recommendation was not found.", {
-      status: 404,
-    });
-  }
-  return serializeRecommendationRun(run);
-}
-
-export async function deleteRecommendationRun(id: string, userId?: string) {
-  const run = await prisma.recommendationRun.findFirst({
-    where: { id, ...(userId ? { userId } : {}) },
-    select: { id: true },
-  });
-  if (!run) {
-    throw new RecommendationError("RECOMMENDATION_NOT_FOUND", "Recommendation was not found.", {
-      status: 404,
-    });
-  }
-  const { cleanupRecommendationSyntheses } = await import("./synthesis-service");
-  await cleanupRecommendationSyntheses(id);
-  await prisma.recommendationRun.delete({ where: { id } });
-  return { status: "deleted" as const, id };
+  return { result, item };
 }

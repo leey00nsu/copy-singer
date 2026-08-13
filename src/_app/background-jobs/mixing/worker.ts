@@ -289,14 +289,14 @@ export async function processClaimedMixingJob(jobId: string, owner: string, depe
         { cache: "no-store", signal: AbortSignal.timeout(60_000) },
         {
           code: "CATALOG_TARGET_FETCH_FAILED",
-          message: "저장된 추천 곡 target을 불러오지 못했습니다",
+          message: "저장된 믹싱 target을 불러오지 못했습니다",
           networkRetryable: true,
         },
       );
       const targetAudio = await mediaBytes(
         targetResponse,
         "CATALOG_TARGET_FETCH_FAILED",
-        "저장된 추천 곡 target을 불러오지 못했습니다",
+        "저장된 믹싱 target을 불러오지 못했습니다",
       );
       const form = new FormData();
       form.append("prompt_audio", new Blob([reference.bytes], { type: reference.contentType }), "prompt.wav");
@@ -306,6 +306,8 @@ export async function processClaimedMixingJob(jobId: string, owner: string, depe
         job.targetAsset.fileName,
       );
       for (const [name, value] of Object.entries(SYNTHESIS_PRESET)) form.append(name, String(value));
+      form.set("auto_pitch_shift", "false");
+      form.set("pitch_shift", String(job.recommendedShift));
 
       const modal = modalConfig();
       const response = await stageFetch(

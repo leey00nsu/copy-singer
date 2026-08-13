@@ -1,18 +1,15 @@
-import { mutationOptions, queryOptions } from "@tanstack/react-query";
+import { queryOptions } from "@tanstack/react-query";
 import { ApiError, requestJson } from "@/shared/api";
-import {
-  type RecommendationDeleteResponse,
-  type RecommendationRunResponse,
-  recommendationDeleteResponseSchema,
-  recommendationRunResponseSchema,
-} from "../model/contract";
+import { type RecommendationRunResponse, recommendationRunResponseSchema } from "../model/contract";
 
 const RECOMMENDATION_POLL_INTERVAL_MS = 5_000;
 
 export const recommendationKeys = {
   all: ["recommendation"] as const,
-  details: () => [...recommendationKeys.all, "detail"] as const,
-  detail: (id: string | null) => [...recommendationKeys.details(), id] as const,
+  profiles: () => [...recommendationKeys.all, "profile"] as const,
+  profile: (profileId: string | null) => [...recommendationKeys.profiles(), profileId] as const,
+  detail: (profileId: string | null, catalogRevision: number | "current", scoringVersion: string | "current") =>
+    [...recommendationKeys.profile(profileId), catalogRevision, scoringVersion] as const,
 };
 
 export function hasActiveRecommendationSynthesis(run: RecommendationRunResponse | null | undefined) {
@@ -23,42 +20,32 @@ export function recommendationPollingInterval(run: RecommendationRunResponse | u
   return hasActiveRecommendationSynthesis(run) ? RECOMMENDATION_POLL_INTERVAL_MS : false;
 }
 
-export function getRecommendation(id: string, signal?: AbortSignal): Promise<RecommendationRunResponse> {
-  return requestJson(`/api/recommendations/${encodeURIComponent(id)}`, {
+export function getRecommendation(profileId: string, signal?: AbortSignal): Promise<RecommendationRunResponse> {
+  return requestJson(`/api/recommendations/${encodeURIComponent(profileId)}`, {
     cache: "no-store",
     signal,
     schema: recommendationRunResponseSchema,
   });
 }
 
-export function deleteRecommendation(id: string): Promise<RecommendationDeleteResponse> {
-  return requestJson(`/api/recommendations/${encodeURIComponent(id)}`, {
-    method: "DELETE",
-    schema: recommendationDeleteResponseSchema,
-  });
-}
-
-export function recommendationDetailQueryOptions(id: string | null, initialData?: RecommendationRunResponse) {
+export function recommendationDetailQueryOptions(profileId: string | null, initialData?: RecommendationRunResponse) {
   return queryOptions({
-    queryKey: recommendationKeys.detail(id),
-    enabled: id !== null,
+    queryKey: recommendationKeys.detail(
+      profileId,
+      initialData?.catalogRevision ?? "current",
+      initialData?.scoringVersion ?? "current",
+    ),
+    enabled: profileId !== null,
     queryFn: ({ signal }) => {
-      if (id === null) {
-        throw new ApiError("A recommendation ID is required.", {
+      if (profileId === null) {
+        throw new ApiError("A vocal profile ID is required.", {
           kind: "contract",
-          code: "MISSING_RECOMMENDATION_ID",
+          code: "MISSING_VOCAL_PROFILE_ID",
         });
       }
-      return getRecommendation(id, signal);
+      return getRecommendation(profileId, signal);
     },
     ...(initialData ? { initialData } : {}),
     refetchInterval: (query) => recommendationPollingInterval(query.state.data),
-  });
-}
-
-export function deleteRecommendationMutationOptions() {
-  return mutationOptions({
-    mutationKey: [...recommendationKeys.all, "delete"] as const,
-    mutationFn: deleteRecommendation,
   });
 }

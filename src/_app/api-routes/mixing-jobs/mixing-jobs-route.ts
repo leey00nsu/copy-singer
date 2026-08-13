@@ -34,7 +34,8 @@ export async function POST(request: Request) {
   try {
     const job = await enqueueMixingJob({
       userId: session.user.id,
-      recommendationItemId: body.data.recommendationItemId,
+      vocalProfileId: body.data.vocalProfileId,
+      songAnalysisId: body.data.songAnalysisId,
       idempotencyKey: body.data.idempotencyKey,
     });
     return Response.json(serializeMixingJob(job), { status: 202 });

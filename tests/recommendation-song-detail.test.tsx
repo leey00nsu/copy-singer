@@ -36,7 +36,7 @@ function renderSongDetail(initialRun = recommendationRunFixture) {
   }
 }
 
-test("selects only an item contained in the owned recommendation snapshot", () => {
+test("selects only an item contained in the calculated recommendation result", () => {
   assert.equal(selectRecommendationItem(recommendationRunFixture, itemId)?.title, "서른 즈음에");
   assert.equal(selectRecommendationItem(recommendationRunFixture, crypto.randomUUID()), null);
 });
@@ -92,7 +92,7 @@ test("keeps the App route as a thin adapter with loading and not-found boundarie
   const page = readFileSync(new URL("src/_pages/song-detail/ui/song-detail-page.tsx", root), "utf8");
   assert.match(adapter, /@\/_pages\/song-detail\/index\.server/);
   assert.match(page, /requirePageSession/);
-  assert.match(page, /getRecommendationRun\(parsedRunId\.data, session\.user\.id\)/);
+  assert.match(page, /getRecommendationResult\(parsedRunId\.data, session\.user\.id\)/);
   assert.match(page, /selectRecommendationItem/);
   assert.match(page, /notFound\(\)/);
 });

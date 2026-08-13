@@ -21,8 +21,7 @@ const profileSummarySelect = {
   analyzerVersion: true,
   createdAt: true,
   recording: { select: { durationMs: true, mimeType: true } },
-  recommendationRuns: { orderBy: { createdAt: "desc" as const }, take: 1, select: { id: true } },
-  _count: { select: { recommendationRuns: true, mixingJobs: true } },
+  _count: { select: { mixingJobs: true } },
 } as const;
 
 function requiredMetric(value: number | null, name: string) {
@@ -49,9 +48,7 @@ function serializeSummary(row: Awaited<ReturnType<typeof findProfileRows>>[numbe
     analyzerVersion: row.analyzerVersion,
     durationMs: row.recording.durationMs,
     mimeType: row.recording.mimeType,
-    recommendationCount: row._count.recommendationRuns,
     mixingCount: row._count.mixingJobs,
-    latestRecommendationId: row.recommendationRuns[0]?.id ?? null,
     createdAt: row.createdAt.toISOString(),
   };
 }
@@ -92,16 +89,13 @@ export async function getVocalProfileDetail(userId: string, id: string) {
     where: { id, userId, sourceType: "USER" },
     include: {
       recording: true,
-      recommendationRuns: { orderBy: { createdAt: "desc" }, take: 1, select: { id: true } },
-      _count: { select: { recommendationRuns: true, mixingJobs: true } },
+      _count: { select: { mixingJobs: true } },
     },
   });
   if (!row) return null;
   return {
     profile: serializeProfile(row),
-    recommendationCount: row._count.recommendationRuns,
     mixingCount: row._count.mixingJobs,
-    latestRecommendationId: row.recommendationRuns[0]?.id ?? null,
     audioUrl: `/api/vocal-profiles/${row.id}/audio`,
   };
 }

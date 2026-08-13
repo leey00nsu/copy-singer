@@ -45,7 +45,7 @@ export const mixingJobErrorSchema = z.object({
 
 export const mixingJobResponseSchema = z.object({
   id: z.uuid(),
-  recommendationItemId: z.uuid().nullable(),
+  songAnalysisId: z.uuid(),
   status: publicMixingJobStatusSchema,
   ticketCost: z.number().int().nonnegative(),
   error: mixingJobErrorSchema.nullable(),
@@ -124,7 +124,7 @@ export class MixingError extends Error {
 
 export function serializeMixingJob(job: {
   id: string;
-  recommendationItemId: string | null;
+  songAnalysisId: string;
   status: string;
   ticketCost: number;
   errorCode: string | null;
@@ -135,7 +135,7 @@ export function serializeMixingJob(job: {
 }) {
   return {
     id: job.id,
-    recommendationItemId: job.recommendationItemId,
+    songAnalysisId: job.songAnalysisId,
     status: job.status.toLowerCase() as PublicMixingJobStatus,
     ticketCost: job.ticketCost,
     error: job.errorCode ? { code: job.errorCode, detail: job.errorDetail ?? "믹싱 작업이 실패했습니다." } : null,

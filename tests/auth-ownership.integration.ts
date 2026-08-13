@@ -4,7 +4,7 @@ import { config } from "dotenv";
 
 config({ path: [".env.local", ".env"], quiet: true });
 
-test("legacy rows remain unowned while new profiles and runs are user-scoped", async (context) => {
+test("new profiles are scoped to their owning user", async (context) => {
   if (!process.env.DATABASE_URL) {
     context.skip("DATABASE_URL is not configured");
     return;
@@ -16,7 +16,6 @@ test("legacy rows remain unowned while new profiles and runs are user-scoped", a
   const secondUserId = `auth-other-${suffix}`;
   const recordingId = crypto.randomUUID();
   const profileId = crypto.randomUUID();
-  const runId = crypto.randomUUID();
   const googleAccountId = `google-account-${suffix}`;
 
   try {
@@ -53,19 +52,12 @@ test("legacy rows remain unowned while new profiles and runs are user-scoped", a
         analyzerVersion: "1",
       },
     });
-    await prisma.recommendationRun.create({
-      data: { id: runId, userId: firstUserId, userVocalProfileId: profileId, scoringVersion: "test" },
-    });
-
     assert.equal(await prisma.vocalProfile.count({ where: { id: profileId, userId: firstUserId } }), 1);
     assert.equal(await prisma.vocalProfile.count({ where: { id: profileId, userId: secondUserId } }), 0);
-    assert.equal(await prisma.recommendationRun.count({ where: { id: runId, userId: firstUserId } }), 1);
-    assert.equal(await prisma.recommendationRun.count({ where: { id: runId, userId: secondUserId } }), 0);
     const { getAuthenticationSummary } = await import("../src/features/authentication/index.server");
     assert.equal((await getAuthenticationSummary(firstUserId)).googleConnected, true);
     assert.equal((await getAuthenticationSummary(secondUserId)).googleConnected, false);
   } finally {
-    await prisma.recommendationRun.deleteMany({ where: { id: runId } });
     await prisma.vocalProfile.deleteMany({ where: { id: profileId } });
     await prisma.recording.deleteMany({ where: { id: recordingId } });
     await prisma.user.deleteMany({ where: { id: { in: [firstUserId, secondUserId] } } });

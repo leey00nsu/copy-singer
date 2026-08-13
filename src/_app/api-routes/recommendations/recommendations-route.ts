@@ -1,7 +1,7 @@
 import { RecommendationError } from "@/entities/recommendation/index.model";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 import { createRecommendationRequestSchema } from "@/features/create-recommendation/index.model";
-import { createRecommendationRun } from "@/features/create-recommendation/index.server";
+import { getRecommendationResult } from "@/features/create-recommendation/index.server";
 
 function errorResponse(error: unknown) {
   if (error instanceof RecommendationError) {
@@ -19,7 +19,7 @@ function errorResponse(error: unknown) {
   }
   console.error("Unexpected recommendation error", error instanceof Error ? error.message : "unknown error");
   return Response.json(
-    { error: { code: "RECOMMENDATION_SAVE_FAILED", message: "Recommendation failed.", retryable: true } },
+    { error: { code: "RECOMMENDATION_CALCULATION_FAILED", message: "Recommendation failed.", retryable: true } },
     { status: 500 },
   );
 }
@@ -41,8 +41,8 @@ export async function POST(request: Request) {
     );
   }
   try {
-    return Response.json(await createRecommendationRun(parsed.data.userVocalProfileId, session.user.id), {
-      status: 201,
+    return Response.json(await getRecommendationResult(parsed.data.userVocalProfileId, session.user.id), {
+      status: 200,
     });
   } catch (error) {
     return errorResponse(error);

@@ -48,11 +48,7 @@ export default async function VocalProfileDetailPage({ params }: { params: Promi
                 <Music2 className="size-3" /> 믹싱 {detail.mixingCount}
               </Badge>
             </div>
-            <VocalProfileActions
-              displayName={detail.profile.displayName}
-              profileId={detail.profile.id}
-              latestRecommendationId={detail.latestRecommendationId}
-            />
+            <VocalProfileActions displayName={detail.profile.displayName} profileId={detail.profile.id} />
           </div>
         </div>
       </div>

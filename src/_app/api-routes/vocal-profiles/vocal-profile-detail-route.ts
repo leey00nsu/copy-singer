@@ -68,15 +68,15 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
     include: {
       recording: { include: { mediaAsset: true } },
       synthesisReferenceAsset: true,
-      recommendationRuns: { select: { id: true }, take: 1 },
+      _count: { select: { mixingJobs: true } },
     },
   });
   if (profile?.sourceType !== "USER") {
     return profileNotFoundResponse();
   }
-  if (profile.recommendationRuns.length > 0) {
+  if (profile._count.mixingJobs > 0) {
     return Response.json(
-      { reasonCode: "PROFILE_IN_USE", detail: "Delete related recommendations before this profile.", retryable: false },
+      { reasonCode: "PROFILE_IN_USE", detail: "Delete related mixing jobs before this profile.", retryable: false },
       { status: 409 },
     );
   }

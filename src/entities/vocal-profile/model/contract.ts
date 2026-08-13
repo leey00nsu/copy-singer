@@ -118,9 +118,7 @@ export type VocalProfileHistoryRow = {
   analyzerVersion: string;
   durationMs: number | null;
   mimeType: string;
-  recommendationCount: number;
   mixingCount: number;
-  latestRecommendationId: string | null;
   createdAt: string;
 };
 

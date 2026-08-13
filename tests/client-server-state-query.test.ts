@@ -224,8 +224,10 @@ test("recommendation and mixing polling stop at terminal state while item cache 
   const run: RecommendationRunResponse = {
     id: "10000000-0000-4000-8000-000000000010",
     userVocalProfileId: "10000000-0000-4000-8000-000000000011",
+    catalogId: "10000000-0000-4000-8000-000000000015",
+    catalogRevision: 3,
     scoringVersion: "key-fit-v2",
-    createdAt: "2026-08-09T00:00:00.000Z",
+    calculatedAt: "2026-08-09T00:00:00.000Z",
     profileConfidence: 0.9,
     lowConfidence: false,
     profile: {
@@ -239,6 +241,8 @@ test("recommendation and mixing polling stop at terminal state while item cache 
     items: [
       {
         id: "10000000-0000-4000-8000-000000000012",
+        songAnalysisId: "10000000-0000-4000-8000-000000000012",
+        targetAssetId: "10000000-0000-4000-8000-000000000016",
         rank: 1,
         songId: "10000000-0000-4000-8000-000000000013",
         catalogOrder: 1,
@@ -301,9 +305,19 @@ test("recommendation and mixing polling stop at terminal state while item cache 
   };
   const recommendationItem = run.items[0];
   assert.ok(recommendationItem);
-  client.setQueryData(recommendationKeys.detail(run.id), run);
-  patchRecommendationSynthesis(client, run.id, recommendationItem.id, { status: "preparing" });
-  const patched = client.getQueryData<RecommendationRunResponse>(recommendationKeys.detail(run.id));
+  const detailKey = recommendationKeys.detail(run.id, run.catalogRevision, run.scoringVersion);
+  client.setQueryData(detailKey, run);
+  patchRecommendationSynthesis(
+    client,
+    {
+      vocalProfileId: run.id,
+      songAnalysisId: recommendationItem.id,
+      catalogRevision: run.catalogRevision,
+      scoringVersion: run.scoringVersion,
+    },
+    { status: "preparing" },
+  );
+  const patched = client.getQueryData<RecommendationRunResponse>(detailKey);
   assert.equal(patched?.items[0]?.synthesis.status, "preparing");
   assert.equal(recommendationPollingInterval(patched), 5_000);
   assert.equal(recommendationPollingInterval(run), false);
@@ -320,12 +334,12 @@ test("recommendation and mixing polling stop at terminal state while item cache 
         ticketCost: 1,
         error: null,
         song: { title: "Song", artist: "Singer", catalogOrder: 1 },
-        vocalProfile: { id: run.userVocalProfileId, displayName: "보컬 프로필 1", createdAt: run.createdAt },
+        vocalProfile: { id: run.userVocalProfileId, displayName: "보컬 프로필 1", createdAt: run.calculatedAt },
         resultReady: false,
         audioUrl: null,
-        createdAt: run.createdAt,
-        updatedAt: run.createdAt,
-        startedAt: run.createdAt,
+        createdAt: run.calculatedAt,
+        updatedAt: run.calculatedAt,
+        startedAt: run.calculatedAt,
         completedAt: null,
       },
     ],

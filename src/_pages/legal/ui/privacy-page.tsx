@@ -67,9 +67,8 @@ function PrivacyPage() {
           <LegalDataItem term="음성·보컬 프로필">
             이용자가 해당 프로필을 삭제하거나 계정 전체 삭제를 요청할 때까지 보유합니다.
           </LegalDataItem>
-          <LegalDataItem term="추천·합성">
-            이용자가 추천 결과를 삭제하거나 계정 전체 삭제를 요청할 때까지 보유하며 임시 합성물은 기록된 만료 시각에
-            정리될 수 있습니다.
+          <LegalDataItem term="추천 결과">
+            현재 보컬 프로필과 공개 곡 정보를 조회 시 비교하여 계산하며 추천 결과 자체는 별도로 저장하지 않습니다.
           </LegalDataItem>
           <LegalDataItem term="믹싱·결과">
             이용자가 종료된 작업을 삭제하거나 계정 전체 삭제를 요청할 때까지 보유합니다.

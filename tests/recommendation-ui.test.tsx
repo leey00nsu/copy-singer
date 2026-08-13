@@ -33,8 +33,10 @@ const ranked = rankRecommendations(scoreCatalogKeyFits(profile, artifactJson as 
 const run: RecommendationRunResponse = {
   id: "00000000-0000-4000-8000-000000000005",
   userVocalProfileId: "00000000-0000-4000-8000-000000000006",
+  catalogId: "00000000-0000-4000-8000-000000000007",
+  catalogRevision: 1,
   scoringVersion: ranked[0]!.scoringVersion,
-  createdAt: "2026-08-06T00:00:00.000Z",
+  calculatedAt: "2026-08-06T00:00:00.000Z",
   profileConfidence: ranked[0]!.confidence,
   lowConfidence: false,
   profile: {
@@ -47,6 +49,8 @@ const run: RecommendationRunResponse = {
   },
   items: ranked.map((item, index) => ({
     id: `item-${index}`,
+    songAnalysisId: `item-${index}`,
+    targetAssetId: `target-${index}`,
     rank: item.rank,
     songId: `song-${index}`,
     catalogOrder: item.catalogOrder,

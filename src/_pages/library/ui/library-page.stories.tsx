@@ -64,9 +64,7 @@ const denseProfileHistory: VocalProfileHistoryPayload = {
       analyzerVersion: "1",
       durationMs: 10_400,
       mimeType: "audio/wav",
-      recommendationCount: index + 1,
       mixingCount: index % 4,
-      latestRecommendationId: null,
       createdAt: `2026-08-${String(9 - (index % 7)).padStart(2, "0")}T00:00:00.000Z`,
     };
   }),
