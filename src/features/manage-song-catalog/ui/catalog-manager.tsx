@@ -2,7 +2,7 @@
 
 import { Archive, Check, ChevronDown, FileAudio, LoaderCircle, Plus, RefreshCw, Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
@@ -253,14 +253,6 @@ export function CatalogManager({ entries, loading = false }: { entries: AdminCat
   const [pending, setPending] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const adding = pending || loading;
-  const hasRunningAnalysis = entries.some((entry) =>
-    entry.song.sources.some((source) => source.analysisStatus === "PENDING" || source.analysisStatus === "PROCESSING"),
-  );
-  useEffect(() => {
-    if (!hasRunningAnalysis) return;
-    const interval = window.setInterval(() => router.refresh(), 5_000);
-    return () => window.clearInterval(interval);
-  }, [hasRunningAnalysis, router]);
   async function add(formData: FormData) {
     setPending(true);
     try {
@@ -286,7 +278,10 @@ export function CatalogManager({ entries, loading = false }: { entries: AdminCat
   }
   return (
     <div>
-      <div className="mb-4 flex justify-end">
+      <div className="mb-4 flex justify-end gap-2">
+        <Button disabled={loading} onClick={() => router.refresh()} type="button" variant="outline">
+          <RefreshCw /> 새로고침
+        </Button>
         <Dialog onOpenChange={setAddOpen} open={addOpen}>
           <DialogTrigger render={<Button disabled={loading} />}>
             <Plus /> 음원 추가

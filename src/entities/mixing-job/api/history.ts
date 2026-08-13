@@ -20,7 +20,14 @@ const historySelect = {
   submittedAt: true,
   startedAt: true,
   completedAt: true,
-  song: { select: { title: true, artist: true, catalogOrder: true } },
+  song: {
+    select: {
+      title: true,
+      artist: true,
+      catalogEntries: { select: { position: true }, orderBy: { position: "asc" as const }, take: 1 },
+    },
+  },
+  recommendationItem: { select: { catalogPosition: true } },
   vocalProfile: {
     select: {
       id: true,
@@ -47,7 +54,11 @@ function serializeRow(row: Awaited<ReturnType<typeof findRows>>[number]): Mixing
       row.status === "FAILED" && row.errorCode
         ? { code: row.errorCode, detail: row.errorDetail ?? "믹싱 작업이 실패했습니다." }
         : null,
-    song: row.song,
+    song: {
+      title: row.song.title,
+      artist: row.song.artist,
+      catalogOrder: row.recommendationItem?.catalogPosition ?? row.song.catalogEntries[0]?.position ?? 1,
+    },
     vocalProfile: {
       id: row.vocalProfile.id,
       displayName: row.vocalProfile.displayName?.trim() || `보컬 프로필 ${row.vocalProfile.profileNumber ?? 1}`,

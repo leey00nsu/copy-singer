@@ -26,7 +26,6 @@ test("catalog revisions persist a publish-ready song with matching active pointe
       data: {
         title: `Revision Song ${suffix}`,
         artist: "Catalog Test",
-        catalogOrder: 1_000_000 + Math.floor(Math.random() * 100_000),
       },
     });
     songId = song.id;

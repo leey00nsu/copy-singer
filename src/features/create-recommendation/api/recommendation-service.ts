@@ -169,7 +169,7 @@ export function serializeRecommendationRun(run: StoredRun): RecommendationRunRes
       id: item.id,
       rank: item.rank,
       songId: item.songId,
-      catalogOrder: item.catalogPosition ?? item.song.catalogOrder,
+      catalogOrder: item.catalogPosition,
       title: item.song.title,
       artist: item.song.artist,
       originalKey: item.song.originalKey?.trim() || null,

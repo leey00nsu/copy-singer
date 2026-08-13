@@ -124,45 +124,25 @@ The web request atomically spends `MIXING_TICKET_COST` and creates a PostgreSQL 
 
 ### Song catalog analysis
 
-The TJ 2026-07 Top 100 source list is stored in `data/catalogs/tj-2607-top100.md`. PostgreSQL holds mutable application metadata, while the reproducible analysis results are committed in `data/catalogs/tj-2607-song-profiles.json` and shipped unchanged with each deployment.
+PostgreSQL is the runtime source of truth for songs, source revisions, analysis revisions, catalog positions, and active target assets. `data/catalogs/tj-2607-song-profiles.json` is retained only as the one-time TJ 2026-07 bootstrap/fixture input; runtime requests do not import it.
 
-Import the metadata, initialize the artifact, then analyze pending songs sequentially:
-
-```bash
-pnpm run catalog:import
-pnpm run catalog:init-profiles
-pnpm run catalog:analyze -- --limit 1 --resume
-pnpm run catalog:verify
-```
-
-Use `--rank 49 --resume` to retry one catalog entry, or omit `--rank` and set `--limit` for a bounded sequential batch. READY songs are not downloaded again.
-
-`catalog:analyze` is a local-development-only build workflow. For each allowlisted catalog URL, the analyzer downloads audio with yt-dlp into an OS temporary directory, separates vocals with Demucs, computes aggregate pYIN metrics, and removes the source plus every stem before responding. It writes metrics, source links, status, and tool versions atomically to the JSON artifact after each song; it does not create `Recording` or `VocalProfile` rows. Song audio is never stored in the repository, database, artifact, or a persistent Docker volume.
-
-For an optional three-song Modal GPU benchmark, install and authenticate the Modal CLI, then run:
+Initialize a fresh development database from the bootstrap artifact, then verify or export the database catalog:
 
 ```bash
-python -m pip install -r services/song-catalog-analyzer/requirements-local.txt
-python -m modal setup
-python -m modal run services/song-catalog-analyzer/modal_app.py --limit 3
+pnpm run catalog:bootstrap
+pnpm run catalog:db:verify
+pnpm run catalog:export
 ```
 
-The command defaults to a three-song benchmark and accepts an explicitly approved limit up to 100. It downloads on the local machine because YouTube blocks Modal data-center IPs, uploads WAV files to an anonymous `Volume.ephemeral()`, runs up to eight independent L4 functions, updates the local JSON artifact, and deletes the temporary local directory and ephemeral Volume when the run exits. Individual local download failures do not stop the remaining GPU inputs. It does not deploy an endpoint or create a named media Volume.
+Catalog changes are made from the admin-only `/admin/songs` page. The add/replace dialog accepts title, artist, an HTTPS YouTube URL, and an authorized audio file. The server derives the video ID and source label, stores a draft revision, and queues analysis only after the target asset is READY.
 
-For a large batch, point the job-scoped local temporary directory at a disk with enough free space:
+Deploy the dedicated analyzer after Modal authentication:
 
 ```bash
-COPY_SINGER_TEMP_ROOT=/Volumes/sn850x/copy-singer-temp \
-  python -m modal run services/song-catalog-analyzer/modal_app.py --limit 86
+pnpm run modal:song-catalog:deploy
 ```
 
-Before release, require all 100 profiles to be present:
-
-```bash
-pnpm run catalog:verify -- --require-ready
-```
-
-`catalog:clear-db-profiles` is a one-time migration helper that removes legacy catalog analysis rows produced by the earlier DB-backed implementation. It is deliberately limited to catalog ranks 1–100 and refuses to delete referenced profiles.
+The analyzer uses a Modal CPU function (8 vCPU, 16 GiB): Demucs runs with `--device cpu`, followed by pYIN range analysis and chroma key estimation. GPU is reserved for the separate song mixing/synthesis service. Uploads, converted WAV files, and stems live in a job-scoped temporary directory and are removed before a successful result is returned.
 
 The `demucs_models` Docker volume contains reusable model weights only. Downloading and immediate deletion do not replace the requirement to have permission to process a source. A future recommendation-to-Convert integration must use the same job-scoped cleanup boundary and must never expose the original or separated stems.
 
@@ -219,10 +199,9 @@ pnpm run db:migrate:deploy
 pnpm run db:seed
 pnpm run db:verify
 pnpm run db:status
-pnpm run catalog:import
-pnpm run catalog:init-profiles
-pnpm run catalog:analyze -- --limit 1 --resume
-pnpm run catalog:verify -- --require-ready
+pnpm run catalog:bootstrap
+pnpm run catalog:db:verify
+pnpm run catalog:export
 docker compose run --rm --no-deps \
   -v "$PWD/services/vocal-profile-api:/app" \
   vocal-profile-api sh -lc \

@@ -198,7 +198,6 @@ model Song {
   activeSourceId      String?              @unique @db.Uuid
   currentAnalysisId   String?              @unique @db.Uuid
   createdByUserId     String?
-  catalogOrder        Int                  @unique
   vocalProfileId      String?              @unique @db.Uuid
   targetAssetId       String?              @unique @db.Uuid
   analysisStatus      SongAnalysisStatus   @default(PENDING)
@@ -219,7 +218,6 @@ model Song {
   @@unique([title, artist])
   @@index([lifecycleStatus, createdAt])
   @@index([createdByUserId, createdAt])
-  @@index([analysisStatus, catalogOrder])
 }
 
 model SongSource {
@@ -366,7 +364,7 @@ model RecommendationItem {
   runId                String            @db.Uuid
   songId               String            @db.Uuid
   songAnalysisId       String?           @db.Uuid
-  catalogPosition      Int?
+  catalogPosition      Int
   rank                 Int
   originalKeyScore     Float
   adjustedScore        Float

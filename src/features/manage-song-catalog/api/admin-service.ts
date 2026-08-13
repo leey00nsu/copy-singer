@@ -88,7 +88,6 @@ export async function createAdminSong(input: CreateAdminSongInput, adminUserId: 
           title: input.title,
           artist: input.artist,
           originalKey: null,
-          catalogOrder: position,
           lifecycleStatus: "DRAFT",
           createdByUserId: adminUserId,
         },

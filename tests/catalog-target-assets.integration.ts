@@ -29,7 +29,11 @@ test("catalog target import uploads once, links Song, and is idempotent by SHA-2
 
   const catalogOrder = 100;
   const catalog = artifactJson.songs[catalogOrder - 1]!;
-  const song = await prisma.song.findUniqueOrThrow({ where: { catalogOrder } });
+  const catalogEntry = await prisma.catalogEntry.findFirstOrThrow({
+    where: { position: catalogOrder, status: "PUBLISHED" },
+    include: { song: true },
+  });
+  const song = catalogEntry.song;
   const originalTargetAssetId = song.targetAssetId;
   const stagingDir = await mkdtemp(path.join(os.tmpdir(), "copy-singer-catalog-targets-"));
   const sourcePath = path.join(stagingDir, `Fixture Song [${catalog.sourceVideoId}].m4a`);

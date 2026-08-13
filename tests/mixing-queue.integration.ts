@@ -53,7 +53,11 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
   const originalFetch = globalThis.fetch;
 
   try {
-    const song = await prisma.song.findFirstOrThrow({ where: { catalogOrder: 1 } });
+    const catalogEntry = await prisma.catalogEntry.findFirstOrThrow({
+      where: { position: 1, status: "PUBLISHED" },
+      include: { song: true },
+    });
+    const song = catalogEntry.song;
     songId = song.id;
     originalTargetAssetId = song.targetAssetId;
     await prisma.song.update({ where: { id: song.id }, data: { targetAssetId: null } });
@@ -123,6 +127,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
         id: itemId,
         runId,
         songId: song.id,
+        catalogPosition: 1,
         rank: 1,
         originalKeyScore: 80,
         adjustedScore: 85,

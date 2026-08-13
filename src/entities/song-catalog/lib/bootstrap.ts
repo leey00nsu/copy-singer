@@ -99,10 +99,9 @@ async function bootstrapEntry(
     create: {
       title: entry.title,
       artist: entry.artist,
-      catalogOrder: entry.catalogOrder,
       lifecycleStatus: "DRAFT",
     },
-    update: { catalogOrder: entry.catalogOrder },
+    update: {},
   });
 
   const source = await tx.songSource.upsert({
