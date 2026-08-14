@@ -26,20 +26,26 @@
 
 ## 태스크 목록
 
-- [TODO][NON-PRD] T-F029-cso-security-audit-01 공격면·secret·공급망 read-only 감사
+- [DONE][NON-PRD] T-F029-cso-security-audit-01 공격면·secret·공급망 read-only 감사
   - Date: 2026-08-14
   - Acceptance:
     - gstack cso Phase 0–8 중 architecture/surface/secrets/dependency/CI-CD/infra/integration/AI/skill-supply-chain 항목을 repo에 적용한다.
     - secret 후보는 실제 값을 출력하거나 Git에 기록하지 않는다.
     - CI/CD, IaC, repo-local skill처럼 존재하지 않는 surface도 `NOT_APPLICABLE` 또는 count 0으로 명시한다.
   - Checklist:
-    - [ ] Node/Python/Docker/DB/external integration architecture와 trust boundary를 inventory 한다.
-    - [ ] public/auth/admin/API/upload/worker/fetch/subprocess surface를 집계한다.
-    - [ ] `.env*` tracking/ignore와 Git history secret 후보를 redacted 방식으로 검사한다.
-    - [ ] pnpm/Python dependency 및 lockfile/supply-chain 상태를 검사한다.
-    - [ ] CI/CD, Docker/IaC, external integration, AI/skill supply-chain surface를 기록한다.
+    - [x] Node/Python/Docker/DB/external integration architecture와 trust boundary를 inventory 한다.
+    - [x] public/auth/admin/API/upload/worker/fetch/subprocess surface를 집계한다.
+    - [x] `.env*` tracking/ignore와 Git history secret 후보를 redacted 방식으로 검사한다.
+    - [x] pnpm/Python dependency 및 lockfile/supply-chain 상태를 검사한다.
+    - [x] CI/CD, Docker/IaC, external integration, AI/skill supply-chain surface를 기록한다.
+  - Evidence:
+    - API route file 44개(관리자 20개), tracked Python source 29개, server fetch file 9개, raw SQL file 8개, subprocess/ffmpeg 관련 file 9개를 surface로 확인했다.
+    - tracked IaC/deploy config는 root `docker-compose.yml`과 `services/vocal-profile-api/Dockerfile`; GitHub workflow 0개, repo-local AI skill 0개, LLM API/tooling indicator 0개다.
+    - `.env.local`은 `.gitignore`로 제외되고 현재/과거 tracked `.env*`는 `.env.example`만 확인됐다. high-signal credential prefix/private-key 패턴은 current/history path scan 모두 0건이었다.
+    - pnpm lockfile과 `allowBuilds` policy가 tracked 상태이며 `pnpm audit`은 high 3건(`image-size` 2, `nanoid` 1)을 candidate로 반환했다. `image-size`는 Storybook dev dependency 경로이며 `nanoid`는 Next/PostCSS 경로도 포함해 T03 reachability 검증 대상으로 남긴다.
+    - pinned Python direct requirements는 `pip-audit --no-deps --disable-pip` 기준 확인한 파일에서 0건이었다. SoulX requirements는 non-exact range 때문에 동일 방식의 완전 감사가 불가해 supply-chain candidate로 남긴다.
 
-- [TODO][NON-PRD] T-F029-cso-security-audit-02 애플리케이션 OWASP·STRIDE code-tracing 감사
+- [DOING][NON-PRD] T-F029-cso-security-audit-02 애플리케이션 OWASP·STRIDE code-tracing 감사
   - Date: 2026-08-14
   - Acceptance:
     - auth/admin/owner scope, upload, raw SQL, URL fetch, media proxy, worker, Python service를 실제 code path로 추적한다.
@@ -91,8 +97,8 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| redacted secret/history audit | - | - |
-| Node/Python dependency audit | - | - |
+| redacted secret/history audit | `2026-08-14` | `PASS — tracked/history high-signal secret candidate 0; .env.local ignored` |
+| Node/Python dependency audit | `2026-08-14` | `CANDIDATES — pnpm high 3; audited pinned Python direct deps 0; SoulX non-exact range unresolved` |
 | OWASP/STRIDE code tracing | - | - |
 | `pnpm test` | - | - |
 | `pnpm run lint` | - | - |
