@@ -1,7 +1,10 @@
 import { AudioLines, CircleAlert, Ticket, WandSparkles } from "lucide-react";
 import type { NotificationItem, NotificationType } from "../model/contract";
 
-const icons: Record<NotificationType, React.ComponentType<{ className?: string; "aria-hidden"?: boolean | "true" | "false" }>> = {
+const icons: Record<
+  NotificationType,
+  React.ComponentType<{ className?: string; "aria-hidden"?: boolean | "true" | "false" }>
+> = {
   ticket_credit: Ticket,
   vocal_profile_succeeded: AudioLines,
   vocal_profile_failed: CircleAlert,
@@ -53,4 +56,3 @@ export function NotificationItemContent({ compact = false, item }: { compact?: b
     </span>
   );
 }
-
