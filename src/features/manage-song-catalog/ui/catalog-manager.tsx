@@ -2,8 +2,9 @@
 
 import { Archive, Check, ChevronDown, FileAudio, LoaderCircle, Plus, RefreshCw, Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { toast } from "sonner";
+import { SUPPORTED_AUDIO_UPLOAD_ACCEPT, SUPPORTED_AUDIO_UPLOAD_FORMAT_LABEL } from "@/shared/lib/audio";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import {
@@ -27,6 +28,39 @@ import {
 import type { AdminCatalogEntryView, AdminCatalogSourceView } from "../model/view";
 
 const fieldClass = "h-9 min-w-0 rounded-md border bg-background px-3 text-xs";
+
+type AudioFileInputProps = {
+  className?: string;
+  disabled: boolean;
+  label: string;
+  textClassName?: string;
+};
+
+function AudioFileInput({ className, disabled, label, textClassName = "text-[10px]" }: AudioFileInputProps) {
+  const inputId = useId();
+  const hintId = `${inputId}-formats`;
+
+  return (
+    <div className={`grid gap-1 ${textClassName} ${className ?? ""}`}>
+      <label className="font-medium" htmlFor={inputId}>
+        {label}
+      </label>
+      <input
+        accept={SUPPORTED_AUDIO_UPLOAD_ACCEPT}
+        aria-describedby={hintId}
+        className={`${fieldClass} py-1.5`}
+        disabled={disabled}
+        id={inputId}
+        name="audio"
+        required
+        type="file"
+      />
+      <p className="font-normal text-muted-foreground" id={hintId}>
+        지원 형식: {SUPPORTED_AUDIO_UPLOAD_FORMAT_LABEL}
+      </p>
+    </div>
+  );
+}
 
 function message(error: unknown) {
   return error instanceof Error ? error.message : "요청을 처리하지 못했습니다.";
@@ -76,17 +110,7 @@ function SourceActions({ songId, source }: { songId: string; source: AdminCatalo
   return (
     <div className="mt-3 grid gap-3 border-t pt-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
       <form action={upload} className="flex min-w-0 flex-wrap items-end gap-2">
-        <label className="grid min-w-52 flex-1 gap-1 text-[10px] font-medium">
-          믹싱 target 음원
-          <input
-            accept="audio/*,.flac"
-            className={`${fieldClass} py-1.5`}
-            disabled={pending !== null}
-            name="audio"
-            required
-            type="file"
-          />
-        </label>
+        <AudioFileInput className="min-w-52 flex-1" disabled={pending !== null} label="믹싱 target 음원" />
         <Button disabled={pending !== null} size="xs" type="submit" variant="outline">
           {pending === "target 업로드" ? <LoaderCircle className="animate-spin" /> : <Upload />} 업로드
         </Button>
@@ -150,17 +174,7 @@ function ReplaceSourceForm({ songId }: { songId: string }) {
         YouTube URL
         <input className={fieldClass} disabled={pending} name="sourceUrl" required type="url" />
       </label>
-      <label className="grid gap-1 text-[10px] font-medium">
-        교체 음원
-        <input
-          accept="audio/*,.flac"
-          className={`${fieldClass} py-1.5`}
-          disabled={pending}
-          name="audio"
-          required
-          type="file"
-        />
-      </label>
+      <AudioFileInput disabled={pending} label="교체 음원" />
       <Button disabled={pending} size="xs" type="submit" variant="outline">
         {pending ? <LoaderCircle className="animate-spin" /> : <RefreshCw />} 출처와 음원 교체
       </Button>
@@ -307,17 +321,12 @@ export function CatalogManager({ entries, loading = false }: { entries: AdminCat
                 YouTube URL
                 <input className={fieldClass} disabled={adding} name="sourceUrl" required type="url" />
               </label>
-              <label className="grid gap-1 text-[11px] font-medium sm:col-span-2">
-                분석 및 믹싱용 음원
-                <input
-                  accept="audio/*,.flac"
-                  className={`${fieldClass} py-1.5`}
-                  disabled={adding}
-                  name="audio"
-                  required
-                  type="file"
-                />
-              </label>
+              <AudioFileInput
+                className="sm:col-span-2"
+                disabled={adding}
+                label="분석 및 믹싱용 음원"
+                textClassName="text-[11px]"
+              />
               <DialogFooter className="sm:col-span-2">
                 <DialogClose disabled={adding} render={<Button type="button" variant="outline" />}>
                   취소

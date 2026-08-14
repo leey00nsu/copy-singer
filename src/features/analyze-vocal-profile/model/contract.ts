@@ -1,15 +1,9 @@
 import { z } from "zod";
+import { SUPPORTED_AUDIO_UPLOAD_MIME_TYPES } from "@/shared/lib/audio";
 
 export const MAX_PROFILE_ANALYSIS_AUDIO_BYTES = 25 * 1024 * 1024;
 
-export const ANALYSIS_AUDIO_MIME_TYPES = [
-  "audio/wav",
-  "audio/x-wav",
-  "audio/mpeg",
-  "audio/mp4",
-  "audio/aac",
-  "audio/webm",
-] as const;
+export const ANALYSIS_AUDIO_MIME_TYPES = SUPPORTED_AUDIO_UPLOAD_MIME_TYPES;
 
 export const analysisIdempotencyKeySchema = z.string().trim().min(1).max(200);
 

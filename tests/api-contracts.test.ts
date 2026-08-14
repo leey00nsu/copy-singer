@@ -133,9 +133,17 @@ test("mixing deletion has a stable terminal cleanup envelope", () => {
   );
 });
 
-test("analysis upload schema checks file metadata without reading file bytes", () => {
+test("analysis upload schema checks the shared audio formats without reading file bytes", () => {
   const valid = new File([new Uint8Array([1, 2, 3])], "voice.wav", { type: ANALYSIS_AUDIO_MIME_TYPES[0] });
   assert.equal(analysisAudioFileSchema.safeParse(valid).success, true);
+
+  for (const mimeType of ["audio/mp4", "audio/aac", "audio/x-m4a"]) {
+    const m4a = new File([new Uint8Array([1])], "voice.m4a", { type: mimeType });
+    assert.equal(analysisAudioFileSchema.safeParse(m4a).success, true);
+  }
+
+  const flac = new File([new Uint8Array([1])], "voice.flac", { type: "audio/flac" });
+  assert.equal(analysisAudioFileSchema.safeParse(flac).success, false);
 
   const unsupported = new File([new Uint8Array([1])], "voice.txt", { type: "text/plain" });
   assert.equal(analysisAudioFileSchema.safeParse(unsupported).success, false);

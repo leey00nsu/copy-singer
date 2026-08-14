@@ -3,6 +3,7 @@ import "server-only";
 import { serializeProfile } from "@/entities/vocal-profile/index.server";
 import { vocalProfileAnalysisMaxAttempts } from "@/shared/config/index.server";
 import { prisma } from "@/shared/db/index.server";
+import { isSupportedAudioUploadMimeType, normalizeAudioUploadMimeType } from "@/shared/lib/audio";
 import { discardMediaAsset, storeAnalyzerReferenceBytes } from "@/shared/media/index.server";
 
 export type VocalProfileAnalysisJobStatus = "PENDING" | "PROCESSING" | "SUCCEEDED" | "FAILED";
@@ -31,11 +32,6 @@ export type VocalProfileAnalysisJobRow = {
 };
 
 const MAX_AUDIO_BYTES = 25 * 1024 * 1024;
-const ALLOWED_MIME_TYPES = new Set(["audio/wav", "audio/x-wav", "audio/mpeg", "audio/mp4", "audio/aac", "audio/webm"]);
-
-function normalizedMimeType(value: string) {
-  return value.split(";", 1)[0]?.trim().toLowerCase() || "";
-}
 
 export function analysisJobPayload(row: VocalProfileAnalysisJobRow) {
   return {
@@ -67,8 +63,8 @@ export async function enqueueVocalProfileAnalysis(input: { userId: string; idemp
   const existing = await findByIdempotency(input.userId, key);
   if (existing) return existing;
 
-  const mimeType = normalizedMimeType(input.file.type);
-  if (!ALLOWED_MIME_TYPES.has(mimeType)) throw new Error("UNSUPPORTED_AUDIO");
+  const mimeType = normalizeAudioUploadMimeType(input.file.type);
+  if (!isSupportedAudioUploadMimeType(mimeType)) throw new Error("UNSUPPORTED_AUDIO");
   if (input.file.size <= 0 || input.file.size > MAX_AUDIO_BYTES) throw new Error("PAYLOAD_TOO_LARGE");
 
   const recordingId = crypto.randomUUID();

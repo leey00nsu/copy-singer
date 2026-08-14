@@ -2,6 +2,7 @@
 
 import { Activity, CheckCircle2, FileAudio, LoaderCircle, RotateCcw, Upload } from "lucide-react";
 import { type ReactNode, useId } from "react";
+import { SUPPORTED_AUDIO_UPLOAD_ACCEPT, SUPPORTED_AUDIO_UPLOAD_FORMAT_LABEL } from "@/shared/lib/audio";
 import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
 import { Button } from "@/shared/ui/button";
 import { Progress, ProgressLabel, ProgressValue } from "@/shared/ui/progress";
@@ -9,7 +10,7 @@ import { StatusNotice } from "@/shared/ui/status-notice";
 import { canAnalyzeVoiceScan, type RecorderIssue } from "../model/voice-scan";
 import { VocalProfileRecorder, type VocalProfileRecorderState } from "./vocal-profile-recorder";
 
-export const ACCEPTED_VOICE_SCAN_AUDIO = ".wav,.mp3,.m4a,.webm,audio/wav,audio/mpeg,audio/mp4,audio/webm";
+export const ACCEPTED_VOICE_SCAN_AUDIO = SUPPORTED_AUDIO_UPLOAD_ACCEPT;
 
 type VoiceScanInputProps = {
   analysisBusy?: boolean;
@@ -171,7 +172,9 @@ export function VoiceScanInput({
                 type="file"
               />
             </label>
-            <p className="text-center text-xs text-muted-foreground">WAV, MP3, M4A, WebM · 최대 25MB / 60초</p>
+            <p className="text-center text-xs text-muted-foreground">
+              지원 형식: {SUPPORTED_AUDIO_UPLOAD_FORMAT_LABEL} · 최대 25MB / 60초
+            </p>
           </div>
         )}
       </div>

@@ -3,23 +3,11 @@ import "server-only";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import { prisma } from "@/shared/db/index.server";
+import { isSupportedAudioUploadMimeType, normalizeAudioUploadMimeType } from "@/shared/lib/audio";
 import { createLeemageClient } from "@/shared/media/index.server";
 import { SongCatalogAdminError } from "../model/error";
 
 const MAX_UPLOAD_BYTES = 49_000_000;
-const MIME_TYPES = new Set([
-  "audio/wav",
-  "audio/x-wav",
-  "audio/mpeg",
-  "audio/mp4",
-  "audio/aac",
-  "audio/webm",
-  "audio/flac",
-]);
-
-function normalizeMimeType(value: string) {
-  return value.split(";", 1)[0]?.trim().toLowerCase() || "";
-}
 
 function safeExtension(fileName: string) {
   const extension = path.extname(fileName).toLowerCase();
@@ -32,8 +20,8 @@ export async function uploadAdminCatalogTarget(input: { sourceId: string; file: 
     select: { id: true, sourceVideoId: true },
   });
   if (!source) throw new SongCatalogAdminError("SOURCE_NOT_FOUND", "음원 출처를 찾을 수 없습니다.", 404);
-  const mimeType = normalizeMimeType(input.file.type);
-  if (!MIME_TYPES.has(mimeType))
+  const mimeType = normalizeAudioUploadMimeType(input.file.type);
+  if (!isSupportedAudioUploadMimeType(mimeType))
     throw new SongCatalogAdminError("UNSUPPORTED_AUDIO", "지원하지 않는 음원 형식입니다.", 415);
   if (input.file.size <= 0 || input.file.size > MAX_UPLOAD_BYTES) {
     throw new SongCatalogAdminError("PAYLOAD_TOO_LARGE", "음원 파일은 49MB 이하여야 합니다.", 413);

@@ -5,6 +5,8 @@ import { RecorderSurface } from "./vocal-profile-recorder";
 import { VoiceScanInput } from "./voice-scan-input";
 
 const noop = fn();
+const EXPECTED_AUDIO_ACCEPT =
+  ".wav,.mp3,.m4a,.webm,audio/wav,audio/x-wav,audio/mpeg,audio/mp4,audio/aac,audio/x-m4a,audio/webm";
 
 function RecorderTransitionPreview() {
   const [state, setState] = useState<"idle" | "recording">("idle");
@@ -58,7 +60,8 @@ export const Idle: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("button", { name: "마이크로 녹음 시작" })).toBeVisible();
-    await expect(canvas.getByText(/최대 25MB/)).toBeVisible();
+    await expect(canvas.getByLabelText("오디오 파일 업로드")).toHaveAttribute("accept", EXPECTED_AUDIO_ACCEPT);
+    await expect(canvas.getByText("지원 형식: WAV · MP3 · M4A · WEBM · 최대 25MB / 60초")).toBeVisible();
     await expect(canvas.queryByTestId("recording-elapsed-time")).not.toBeInTheDocument();
     const surface = canvas.getByRole("img", { name: "녹음 대기 상태" });
     await expect(surface).toHaveAttribute("data-recorder-visual-state", "idle");

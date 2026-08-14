@@ -74,7 +74,18 @@ test("admin catalog mutations are idempotent and publish only matching READY rev
       () => api.publishAdminSongSource(song.id, source.id),
       (error: unknown) => error instanceof api.SongCatalogAdminError && error.code === "TARGET_NOT_READY",
     );
-    const file = new File([Buffer.from("fixture-audio")], "target.m4a", { type: "audio/mp4" });
+    await assert.rejects(
+      () =>
+        api.uploadAdminCatalogTarget({
+          sourceId: source.id,
+          file: new File([Buffer.from("fixture-flac")], "target.flac", { type: "audio/flac" }),
+          fetchImpl,
+        }),
+      (error: unknown) => error instanceof api.SongCatalogAdminError && error.code === "UNSUPPORTED_AUDIO",
+    );
+    assert.equal(uploadCount, 0);
+
+    const file = new File([Buffer.from("fixture-audio")], "target.m4a", { type: "audio/x-m4a" });
     const asset = await api.uploadAdminCatalogTarget({ sourceId: source.id, file, fetchImpl });
     assetId = asset.id;
     const repeatedAsset = await api.uploadAdminCatalogTarget({ sourceId: source.id, file, fetchImpl });

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { type AdminCatalogEntryView, CatalogManager } from "@/features/manage-song-catalog";
 
 const replacementSource: AdminCatalogEntryView["song"]["sources"][number] = {
@@ -75,6 +75,10 @@ const failedEntry: AdminCatalogEntryView = {
   },
 };
 
+const EXPECTED_AUDIO_ACCEPT =
+  ".wav,.mp3,.m4a,.webm,audio/wav,audio/x-wav,audio/mpeg,audio/mp4,audio/aac,audio/x-m4a,audio/webm";
+const EXPECTED_AUDIO_FORMAT_HINT = "지원 형식: WAV · MP3 · M4A · WEBM";
+
 const meta = {
   title: "Features/Manage Song Catalog/CatalogManager",
   component: CatalogManager,
@@ -106,11 +110,27 @@ export const AddAudioDialog: Story = {
   play: async ({ canvasElement }) => {
     await userEvent.click(within(canvasElement).getByRole("button", { name: "음원 추가" }));
     const dialog = within(document.body).getByRole("dialog", { name: "음원 추가" });
+    const audioInput = within(dialog).getByLabelText("분석 및 믹싱용 음원");
     await expect(within(dialog).getByRole("textbox", { name: "곡 제목" })).toBeEnabled();
     await expect(within(dialog).queryByRole("textbox", { name: "원키" })).not.toBeInTheDocument();
     await expect(within(dialog).queryByRole("textbox", { name: "Video ID" })).not.toBeInTheDocument();
-    await expect(within(dialog).getByLabelText("분석 및 믹싱용 음원")).toBeRequired();
+    await expect(audioInput).toBeRequired();
+    await expect(audioInput).toHaveAttribute("accept", EXPECTED_AUDIO_ACCEPT);
+    await waitFor(() => expect(within(dialog).getByText(EXPECTED_AUDIO_FORMAT_HINT)).toBeVisible());
     await expect(within(dialog).getByRole("button", { name: "등록 및 분석 요청" })).toBeEnabled();
+  },
+};
+
+export const ExistingAudioInputsUseSameFormats: Story = {
+  args: { entries: [readyEntry] },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByText("너였다면"));
+
+    const targetInputs = canvas.getAllByLabelText("믹싱 target 음원");
+    for (const input of targetInputs) await expect(input).toHaveAttribute("accept", EXPECTED_AUDIO_ACCEPT);
+    await expect(canvas.getByLabelText("교체 음원")).toHaveAttribute("accept", EXPECTED_AUDIO_ACCEPT);
+    await expect(canvas.getAllByText(EXPECTED_AUDIO_FORMAT_HINT)).toHaveLength(targetInputs.length + 1);
   },
 };
 
