@@ -63,6 +63,23 @@ export const OpenWithAllTypes: Story = {
     await expect(body.getByText("보컬 프로필 분석을 완료하지 못했습니다")).toBeVisible();
     await expect(body.getByText("AI 믹스가 완성되었습니다")).toBeVisible();
     await expect(body.getByText("AI 믹스를 완료하지 못했습니다")).toBeVisible();
+
+    const notificationItems = [
+      ["티켓이 추가되었습니다", "ticket_credit"],
+      ["보컬 프로필 분석이 완료되었습니다", "vocal_profile_succeeded"],
+      ["보컬 프로필 분석을 완료하지 못했습니다", "vocal_profile_failed"],
+      ["AI 믹스가 완성되었습니다", "mixing_succeeded"],
+      ["AI 믹스를 완료하지 못했습니다", "mixing_failed"],
+    ] as const;
+    for (const [title, type] of notificationItems) {
+      const item = body.getByRole("menuitem", { name: new RegExp(title) });
+      const badge = item.querySelector<HTMLElement>(`[data-notification-icon-badge="${type}"]`);
+      if (!badge) throw new Error(`Missing notification icon badge for ${type}.`);
+      const colorBeforeHover = getComputedStyle(badge).color;
+      await userEvent.hover(item);
+      await waitFor(() => expect(getComputedStyle(badge).color).toBe(colorBeforeHover));
+    }
+
     await expect(body.getByRole("menuitem", { name: "전체 알림 보기" })).toHaveAttribute("href", "/notifications");
   },
 };

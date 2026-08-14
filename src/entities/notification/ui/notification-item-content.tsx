@@ -20,6 +20,14 @@ const badgeStyles: Record<NotificationType, string> = {
   mixing_failed: "bg-destructive/10 text-destructive",
 } as const;
 
+const badgeForegrounds: Record<NotificationType, string> = {
+  ticket_credit: "var(--success-foreground)",
+  vocal_profile_succeeded: "white",
+  vocal_profile_failed: "var(--destructive)",
+  mixing_succeeded: "white",
+  mixing_failed: "var(--destructive)",
+} as const;
+
 const dateTimeFormatter = new Intl.DateTimeFormat("ko-KR", {
   month: "numeric",
   day: "numeric",
@@ -33,7 +41,11 @@ export function NotificationItemContent({ compact = false, item }: { compact?: b
   const unread = item.readAt === null;
   return (
     <span className="flex min-w-0 items-start gap-3 text-left">
-      <span className={`mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full ${badgeClass}`}>
+      <span
+        className={`mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full ${badgeClass}`}
+        data-notification-icon-badge={item.type}
+        style={{ color: badgeForegrounds[item.type] }}
+      >
         <Icon aria-hidden="true" className="size-4" />
       </span>
       <span className="min-w-0 flex-1">
