@@ -164,5 +164,19 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**:
   - **Commit**: `8c9c4b7` (`fix(F027): 알림 hover 아이콘 semantic color 유지`)
   - **Test/Log**: `pnpm run typecheck` PASS, NotificationBell + badge Storybook 2/2 PASS, `pnpm run check:architecture` PASS, `pnpm run test:storybook --run` 최종 151/151 PASS. 전체 실행 중 기존 AdminCustomMixing/VoiceOrb/AudioWaveform 타이밍성 테스트가 각각 간헐 실패했으나 각 단독 재검증은 통과했고 마지막 전체 실행은 green.
-- **Consequences**: 알림 배지는 pointer hover와 keyboard focus 모두 타입 의미 색을 유지하며, 다른 dropdown item의 focus color 정책은 바뀌지 않는다.
+- **Consequences**: 알림 배지는 pointer hover와 keyboard focus 모두 타입 의미 색을 유지하며, 다른 dropdown item의 focus color 정책은 바뀌지 않는다. 다만 T11 실사용 재검증에서 이 검증이 wrapper `span`만 확인해 실제 Lucide `svg` 회귀를 놓친 것으로 확인되어 후속 보완했다.
+
+## D027-10: 알림 hover 회귀 검증 대상을 실제 SVG로 수정 (2026-08-14)
+
+- **Context**: T10 완료 후 로컬 실사용에서 알림 아이콘이 hover 시 여전히 검정으로 바뀌었다. T10 Storybook은 `data-notification-icon-badge` wrapper의 computed color만 비교했고, 공용 `DropdownMenuItem`의 descendant selector는 내부 Lucide `svg`에 직접 `color`를 지정하고 있었다.
+- **Constraints**: 공용 dropdown의 focus/highlight 텍스트 정책은 유지하고, 실제 아이콘 SVG의 semantic foreground만 알림 타입별로 고정해야 한다.
+- **Decision**: `NotificationItemContent`의 Lucide `Icon` 자체에도 badge와 동일한 semantic foreground inline style을 적용한다. `NotificationBell` 회귀 테스트는 wrapper가 아니라 실제 `svg`의 hover 전후 computed color를 직접 비교한다.
+- **Rationale**: 부모의 inline `color`는 자식에 직접 적용된 CSS `color` 선언을 이길 수 없다. SVG 자체의 inline color가 가장 좁은 범위에서 공용 descendant selector보다 우선하며, 테스트도 사용자가 실제로 보는 요소를 검증해야 한다.
+- **Trace**:
+  - **DOING 시작 시점**: 테스트 대상을 실제 SVG로 바꾸자 `ticket_credit` 아이콘이 hover 전 `oklch(0.38 0.105 151)`에서 hover 후 `oklch(0.205 0 0)`으로 바뀌며 로컬 증상을 그대로 재현했다.
+  - **DONE 전 확정 시점**: SVG 자체에 semantic foreground를 적용한 뒤 NotificationBell + badge 타깃 Storybook 2/2, typecheck, architecture가 통과했다.
+- **Evidence**:
+  - **Commit**: `c54dcfe` (`fix(F027): 알림 SVG hover semantic color 유지`)
+  - **Test/Log**: 수정 전 실제 SVG hover 회귀 테스트 1/1 FAIL로 재현, 수정 후 NotificationBell + badge 2/2 PASS, `pnpm run typecheck` PASS, `pnpm run check:architecture` PASS. 전체 Storybook에서는 기존 VoiceOrb WebGL/AudioWaveform readiness 타이밍성 테스트가 각각 간헐 실패했으며 단독 재검증은 VoiceScanInput 10/10, AudioWaveformPlayer 3/3 PASS.
+- **Consequences**: 알림 아이콘의 실제 Lucide SVG가 hover/focus에서도 success/data-accent/destructive foreground를 유지한다. 이후 hover 회귀는 wrapper가 아니라 실제 시각 요소의 computed style을 검증한다.
 
