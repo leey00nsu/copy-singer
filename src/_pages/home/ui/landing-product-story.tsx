@@ -142,19 +142,19 @@ function LandingProductStory() {
     >
       <RevealContent distance={0} duration={1400} fromOpacity={0}>
         <BentoGrid aria-label="Copysinger 제품 흐름 미리보기">
-          <BentoGridItem className="md:col-span-2" eyebrow="01 · Analyze" title="목소리 분석">
+          <BentoGridItem className="md:col-span-2" eyebrow="01 · ANALYZE" title="목소리 분석">
             <AnalysisSurface />
           </BentoGridItem>
-          <BentoGridItem className="md:col-span-2" eyebrow="02 · Match" title="노래와 키 추천">
+          <BentoGridItem className="md:col-span-2" eyebrow="02 · MATCH" title="노래 · 키 추천">
             <RecommendationSurface />
           </BentoGridItem>
           <BentoGridItem className="md:col-span-2" eyebrow="Vocal range" title="보컬 프로필">
             <KeySurface />
           </BentoGridItem>
-          <BentoGridItem className="md:col-span-4" eyebrow="03 · Create" title="선택형 AI 믹싱">
+          <BentoGridItem className="md:col-span-4" eyebrow="03 · CREATE" title="AI 믹싱">
             <MixingSurface />
           </BentoGridItem>
-          <BentoGridItem className="md:col-span-2" eyebrow="Copysinger" title="Your voice, made visible">
+          <BentoGridItem className="md:col-span-2" eyebrow="Copysinger" title="내 목소리를 한눈에.">
             <OrbPoster />
           </BentoGridItem>
         </BentoGrid>

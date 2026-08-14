@@ -109,7 +109,10 @@ test("voice scan components keep media cleanup and redirect completed analysis t
   assert.match(workbench, /<AnalysisStatus/);
   assert.match(workbench, /<CreationFunnelShell currentStep="analysis">/);
   assert.doesNotMatch(workbench, /<AnalysisSuccess/);
-  assert.match(workbench, /Voice analysis/);
+  assert.match(workbench, /VOICE ANALYSIS/);
+  assert.match(workbench, /한 소절이면/);
+  assert.match(workbench, /나에게 맞는 노래를 찾을 수 있어요/);
+  assert.match(workbench, /아는 노래 한 소절을 편하게 불러주세요/);
   assert.match(workbench, /break-keep text-balance text-\[2rem\]/);
   assert.match(workbench, /mt-8 grid gap-10 lg:mt-12/);
   assert.doesNotMatch(workbench, /Step 1|내 음역 측정|분석기 확인 중|분석기 준비됨|분석기 연결 확인 필요/);

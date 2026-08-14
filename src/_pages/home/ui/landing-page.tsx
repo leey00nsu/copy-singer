@@ -17,63 +17,63 @@ function revealDelay(index: number): CSSProperties {
 
 const editorialSteps = [
   {
-    description: "녹음하거나 파일을 올리면 관찰 음역, 실용 음역과 음정 안정성을 확인해요.",
-    eyebrow: "01 · Voice",
+    description: "아는 노래 한 소절을 평소처럼 편하게 불러주세요.",
+    eyebrow: "01 · VOICE",
     icon: Mic2,
-    title: "한 소절을 들려주세요.",
+    title: "목소리를 들려주세요",
   },
   {
-    description: "보컬 프로필과 곡의 음역을 비교해 추천곡과 키, 이유를 보여줘요.",
-    eyebrow: "02 · Match",
+    description: "내 음역과 보컬 특성을 바탕으로 노래와 추천 키를 보여드려요.",
+    eyebrow: "02 · MATCH",
     icon: Music2,
-    title: "맞는 노래와 키를 찾아요.",
+    title: "잘 맞는 노래와 키를 찾아요",
   },
   {
-    description: "추천곡을 선택해 AI 믹싱을 만들고, 완료된 결과는 라이브러리에 저장해요.",
-    eyebrow: "03 · Create",
+    description: "마음에 드는 추천곡을 골라 AI 믹싱으로 들어보세요.",
+    eyebrow: "03 · CREATE",
     icon: Sparkles,
-    title: "추천곡을 AI 믹싱해요.",
+    title: "내 목소리로 완성해요",
   },
 ] as const;
 
 const voiceNotes = [
   {
-    description: "마이크를 너무 가깝게 두지 말고 평소처럼 편하게 불러주세요.",
+    description: "잘 부르려고 애쓰지 않아도 괜찮아요. 평소 목소리가 더 도움이 돼요.",
     image: "/images/landing/voice-notes/recording-aurora.webp",
     label: "Recording",
-    title: "편하게 녹음하기",
+    title: "편하게 불러주세요",
   },
   {
-    description: "최고음보다 반복해서 편하게 낼 수 있는 실용 음역을 기준으로 봐요.",
+    description: "편하게 낼 수 있는 음역을 기준으로 보컬 프로필을 보여드려요.",
     image: "/images/landing/voice-notes/vocal-profile-aurora.webp",
     label: "Vocal profile",
-    title: "실용 음역 읽기",
+    title: "내 음역을 확인해요",
   },
   {
-    description: "추천 키는 내 음역에서 고음·저음 부담을 줄이는 방향으로 계산해요.",
+    description: "원곡 키뿐 아니라 내 음역에 더 편한 키도 함께 확인해보세요.",
     image: "/images/landing/voice-notes/song-match-aurora.webp",
     label: "Song match",
-    title: "추천 키 이해하기",
+    title: "추천 키를 함께 봐요",
   },
   {
-    description: "완료된 AI 믹싱은 라이브러리에서 다시 듣고 관리할 수 있어요.",
+    description: "추천곡을 선택해 AI 믹싱 결과로 직접 비교해볼 수 있어요.",
     image: "/images/landing/voice-notes/ai-mixing-aurora.webp",
     label: "AI mixing",
-    title: "결과 보관하기",
+    title: "내 목소리로 들어봐요",
   },
 ] as const;
 
 const metrics = [
-  { label: "분석 가능한 최소 입력", suffix: "초+", value: 5 },
-  { label: "한 번에 담는 최대 입력", suffix: "초", value: 60 },
-  { label: "분석부터 믹싱까지", suffix: "단계", value: 3 },
+  { label: "목소리 분석에 충분해요", value: "한 소절" },
+  { label: "가장 편한 녹음 길이예요", value: "약 10초" },
+  { label: "분석부터 AI 믹싱까지", value: "3단계" },
 ] as const;
 
 function LandingPage({ admin = false, user = null }: { admin?: boolean; user?: ProductUser | null }) {
   const authenticated = Boolean(user);
   const profileHref = authenticated ? "/profile" : "/login?callbackURL=%2Fprofile";
   const libraryHref = authenticated ? "/library" : "/login?callbackURL=%2Flibrary";
-  const primaryLabel = authenticated ? "목소리 분석 시작하기" : "무료로 시작하기";
+  const primaryLabel = "내 목소리 분석하기";
 
   return (
     <div className="min-h-screen bg-background">
@@ -87,12 +87,12 @@ function LandingPage({ admin = false, user = null }: { admin?: boolean; user?: P
           <div className="grid gap-14 lg:grid-cols-[minmax(15rem,.72fr)_minmax(0,1.28fr)] lg:items-start lg:gap-24">
             <RevealContent className="lg:sticky lg:top-32" variant="section">
               <p className="text-[10px] font-semibold tracking-[0.16em] text-muted-foreground uppercase">One voice</p>
-              <h2 className="mt-4 max-w-[28rem] text-4xl leading-[1.03] font-medium tracking-[-0.045em] sm:text-5xl">
-                한 소절.
-                <span className="block text-muted-foreground">세 단계의 흐름.</span>
+              <h2 className="mt-4 max-w-[28rem] break-keep text-4xl leading-[1.03] font-medium tracking-[-0.045em] sm:text-5xl">
+                한 소절로 시작해,
+                <span className="block text-muted-foreground">내 목소리로 완성.</span>
               </h2>
               <p className="mt-6 max-w-[25rem] text-[13px] leading-6 text-muted-foreground">
-                목소리 분석, 노래 추천, AI 믹싱 순서로 필요한 결과를 확인해요.
+                목소리를 들려주면 분석, 노래 · 키 추천, AI 믹싱이 차례로 이어져요.
               </p>
             </RevealContent>
 
@@ -143,14 +143,14 @@ function LandingPage({ admin = false, user = null }: { admin?: boolean; user?: P
           <RevealContent className="relative" variant="line">
             <span aria-hidden="true" className="absolute inset-x-0 top-0 border-t" data-reveal-line />
             <div className={`${railClass} grid sm:grid-cols-3 sm:divide-x`}>
-              {metrics.map(({ label, suffix, value }, index) => (
+              {metrics.map(({ label, value }, index) => (
                 <div
                   className="border-b py-16 text-center last:border-b-0 sm:border-b-0 sm:px-7 sm:py-20"
                   data-reveal-item
                   key={label}
                   style={revealDelay(index)}
                 >
-                  <p className="text-5xl font-light tracking-[-0.055em] sm:text-6xl">{`${value}${suffix}`}</p>
+                  <p className="text-5xl font-light tracking-[-0.055em] sm:text-6xl">{value}</p>
                   <p className="mt-4 text-[10px] text-muted-foreground">{label}</p>
                 </div>
               ))}
@@ -163,7 +163,7 @@ function LandingPage({ admin = false, user = null }: { admin?: boolean; user?: P
           <RevealContent className="flex items-end justify-between gap-5" variant="section">
             <div>
               <p className="text-[10px] font-semibold tracking-[0.16em] text-muted-foreground uppercase">Voice notes</p>
-              <h2 className="mt-3 text-2xl font-medium tracking-[-0.035em]">녹음과 추천을 볼 때 알아둘 점</h2>
+              <h2 className="mt-3 text-2xl font-medium tracking-[-0.035em]">녹음부터 AI 믹싱까지, 어렵지 않아요.</h2>
             </div>
             <span className="hidden text-[10px] text-muted-foreground sm:block">Copysinger guide</span>
           </RevealContent>

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { GoogleSignIn } from "@/features/authentication";
 import { VoiceOrb } from "@/shared/ui/voice-orb";
-import { ProductFooter, ProductHeader } from "@/widgets/product-shell";
+import { ProductBrand, ProductFooter, ProductHeader } from "@/widgets/product-shell";
 
 type LoginScreenProps = {
   callbackURL: string;
@@ -21,9 +21,7 @@ function LoginScreen({ callbackURL, configured }: LoginScreenProps) {
             </div>
           </div>
           <div className="mx-auto flex w-full max-w-sm flex-col text-center lg:mx-0 lg:text-left">
-            <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
-              Copysinger
-            </p>
+            <ProductBrand className="mx-auto text-sm lg:mx-0" />
             <h1 className="mt-3 break-keep text-balance text-[2rem] font-semibold leading-[1.08] tracking-[-0.05em] sm:text-[2.75rem] lg:text-5xl">
               계속하려면 로그인해 주세요.
             </h1>

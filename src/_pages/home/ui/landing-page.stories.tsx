@@ -31,42 +31,30 @@ async function expectLandingStructure(canvasElement: HTMLElement) {
   await expect(gradientText).toHaveLength(1);
   const firstGradientSegment = gradientText.at(0);
   if (!firstGradientSegment) throw new Error("Gradient Text segment를 찾지 못했습니다.");
-  await expect(firstGradientSegment).toHaveTextContent("내 목소리");
+  await expect(firstGradientSegment).toHaveTextContent("내 목소리로");
   await expect(
-    canvas.getByRole("heading", { level: 1, name: "내 목소리를 분석하고, 가장 잘 어울리는 노래를 만나보세요" }),
+    canvas.getByRole("heading", { level: 1, name: "나에게 맞는 노래를 찾고 내 목소리로 완성하세요." }),
   ).toBeVisible();
   await expect(firstGradientSegment).toHaveAttribute("data-animation-speed", "1.5");
   await expect(firstGradientSegment).toHaveAttribute("data-yoyo", "true");
-  const gradientParticle = firstGradientSegment
-    .closest("[data-word-index]")
-    ?.querySelector<HTMLElement>("[data-gradient-particle]");
-  await expect(gradientParticle).toHaveTextContent("를");
-  if (!gradientParticle) throw new Error("Gradient Text 조사 element를 찾지 못했습니다.");
-  const gradientStyle = getComputedStyle(firstGradientSegment);
-  const particleStyle = getComputedStyle(gradientParticle);
-  await expect(gradientStyle.fontSize).toBe(particleStyle.fontSize);
-  await expect(gradientStyle.lineHeight).toBe(particleStyle.lineHeight);
-  await expect(
-    Math.abs(firstGradientSegment.getBoundingClientRect().bottom - gradientParticle.getBoundingClientRect().bottom),
-  ).toBeLessThanOrEqual(1);
   const reducedMotionPreview = Boolean(canvasElement.querySelector('[data-testid="reduced-motion-preview"]'));
   if (!reducedMotionPreview) {
     const startPosition = firstGradientSegment.style.backgroundPosition;
     await waitFor(() => expect(firstGradientSegment.style.backgroundPosition).not.toBe(startPosition));
   }
   const analysis = canvas.getByRole("heading", { name: "목소리 분석" });
-  const recommendation = canvas.getByRole("heading", { name: "노래와 키 추천" });
-  const mixing = canvas.getByRole("heading", { name: "선택형 AI 믹싱" });
+  const recommendation = canvas.getByRole("heading", { name: "노래 · 키 추천" });
+  const mixing = canvas.getByRole("heading", { name: "AI 믹싱" });
   await expect(analysis.compareDocumentPosition(recommendation) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   await expect(recommendation.compareDocumentPosition(mixing) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   await expect(canvas.getByRole("list", { name: "AI 믹싱 이용 흐름" })).toBeVisible();
   const albumCoverStack = canvas.getByTestId("album-cover-stack");
   await expect(albumCoverStack).toBeVisible();
   await expect(albumCoverStack.querySelectorAll("img")).toHaveLength(4);
-  const firstMetric = canvas.getByText("5초+");
+  const firstMetric = canvas.getByText("한 소절");
   firstMetric.scrollIntoView({ block: "center" });
   await waitFor(() => expect(firstMetric).toBeVisible());
-  await waitFor(() => expect(canvas.getByText("60초")).toBeVisible());
+  await waitFor(() => expect(canvas.getByText("약 10초")).toBeVisible());
   await waitFor(() => expect(canvas.getByText("3단계")).toBeVisible());
   await expect(canvasElement.querySelectorAll("[data-count-up-target]")).toHaveLength(0);
   await expect(canvas.queryByText("Sample profile")).not.toBeInTheDocument();
@@ -82,11 +70,11 @@ async function expectLandingStructure(canvasElement: HTMLElement) {
   ).toBeVisible();
   await expect(canvas.queryByTestId("recommended-key-visualizer")).not.toBeInTheDocument();
   await expect(canvasElement.querySelectorAll("h1 [aria-hidden='true'] > span")).not.toHaveLength(0);
-  const voiceNotesHeading = canvas.getByRole("heading", { name: "녹음과 추천을 볼 때 알아둘 점" });
+  const voiceNotesHeading = canvas.getByRole("heading", { name: "녹음부터 AI 믹싱까지, 어렵지 않아요." });
   voiceNotesHeading.scrollIntoView({ block: "center" });
   await waitFor(() => expect(voiceNotesHeading).toBeVisible());
   await expect(canvas.queryByTestId("grainient-background")).not.toBeInTheDocument();
-  const firstVoiceNote = canvas.getByRole("heading", { name: "편하게 녹음하기" });
+  const firstVoiceNote = canvas.getByRole("heading", { name: "편하게 불러주세요" });
   await waitFor(() => expect(firstVoiceNote.closest("article")).toBeVisible());
   const voiceNoteImages = Array.from(firstVoiceNote.closest("section")?.querySelectorAll("article img") ?? []);
   await expect(voiceNoteImages).toHaveLength(4);
@@ -109,7 +97,7 @@ async function expectLandingStructure(canvasElement: HTMLElement) {
 export const SignedOut: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("button", { name: "무료로 시작하기: 목소리 분석 시작" })).toHaveAttribute(
+    await expect(canvas.getByRole("button", { name: "내 목소리 분석하기: 목소리 분석 시작" })).toHaveAttribute(
       "href",
       "/login?callbackURL=%2Fprofile",
     );
@@ -132,7 +120,7 @@ export const Mobile: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("heading", { level: 1 })).toBeVisible();
     await waitFor(
-      () => expect(canvas.getByRole("button", { name: "무료로 시작하기: 목소리 분석 시작" })).toBeVisible(),
+      () => expect(canvas.getByRole("button", { name: "내 목소리 분석하기: 목소리 분석 시작" })).toBeVisible(),
       { timeout: 2500 },
     );
     await expect(canvas.getByLabelText("Copysinger 제품 흐름 미리보기")).toBeInTheDocument();
@@ -163,7 +151,7 @@ export const ReducedMotion: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByTestId("reduced-motion-preview")).toBeVisible();
     await expect(canvas.getByRole("heading", { level: 1 })).toBeVisible();
-    await expect(canvas.getByRole("button", { name: "무료로 시작하기: 목소리 분석 시작" })).toBeVisible();
+    await expect(canvas.getByRole("button", { name: "내 목소리 분석하기: 목소리 분석 시작" })).toBeVisible();
     await expect(canvas.getByLabelText("Copysinger 제품 흐름 미리보기")).toBeInTheDocument();
     await expectLandingStructure(canvasElement);
   },
@@ -180,7 +168,7 @@ export const SignedIn: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("button", { name: "목소리 분석 시작하기: 목소리 분석 시작" })).toHaveAttribute(
+    await expect(canvas.getByRole("button", { name: "내 목소리 분석하기: 목소리 분석 시작" })).toHaveAttribute(
       "href",
       "/profile",
     );

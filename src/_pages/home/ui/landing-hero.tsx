@@ -71,24 +71,23 @@ function LandingHero({ primaryLabel, profileHref }: LandingHeroProps) {
             <CirclePlay aria-hidden="true" className="size-3" />
           </motion.p>
           <h1
-            aria-label="내 목소리를 분석하고, 가장 잘 어울리는 노래를 만나보세요"
+            aria-label="나에게 맞는 노래를 찾고 내 목소리로 완성하세요."
             className="mt-7 break-keep text-[clamp(2.65rem,5vw,4.4rem)] leading-[1.02] font-medium tracking-[-0.042em] text-balance"
           >
             <span aria-hidden="true">
-              <span>
-                <MotionWord index={0} reduced={reduced}>
+              <span className="block">
+                <StaggeredWords reduced={reduced} text="나에게 맞는 노래를 찾고" />
+              </span>
+              <span className="block">
+                <MotionWord index={4} reduced={reduced}>
                   <GradientText
                     animationSpeed={1.5}
                     colors={["var(--brand-violet)", "var(--brand-blue)", "var(--brand-pink)"]}
                   >
-                    내 목소리
+                    내 목소리로
                   </GradientText>
-                  <span data-gradient-particle>를</span>
                 </MotionWord>{" "}
-                <StaggeredWords reduced={reduced} startIndex={1} text="분석하고," />
-              </span>
-              <span className="block">
-                <StaggeredWords reduced={reduced} startIndex={2} text="가장 잘 어울리는 노래를 만나보세요" />
+                <StaggeredWords reduced={reduced} startIndex={5} text="완성하세요." />
               </span>
             </span>
           </h1>
@@ -96,7 +95,7 @@ function LandingHero({ primaryLabel, profileHref }: LandingHeroProps) {
             {...entryMotion(0.76, reduced)}
             className={`${styles.heroEntry} mx-auto mt-6 max-w-[38rem] text-sm leading-7 text-muted-foreground sm:text-[15px]`}
           >
-            한 소절을 분석해 음역과 안정성을 확인하고, 부르기 좋은 노래와 추천 키를 보여줘요.
+            한 소절을 들려주면 음역과 보컬 특성을 분석해, 잘 맞는 노래와 키를 추천하고 AI 믹싱까지 이어드려요.
           </motion.p>
           <motion.div
             {...entryMotion(0.94, reduced)}
@@ -110,14 +109,14 @@ function LandingHero({ primaryLabel, profileHref }: LandingHeroProps) {
               {primaryLabel} <ArrowRight aria-hidden="true" />
             </Button>
             <Button nativeButton={false} render={<Link href="#how-it-works" />} size="sm" variant="outline">
-              제품 둘러보기
+              어떻게 되는지 보기
             </Button>
           </motion.div>
           <motion.p
             {...entryMotion(1.04, reduced)}
             className={`${styles.heroEntry} mt-4 text-[11px] text-muted-foreground`}
           >
-            5초 이상 녹음하거나 파일을 올리면 바로 시작할 수 있어요.
+            한 소절이면 충분해요 · 10초 정도를 권장해요
           </motion.p>
         </div>
       </div>

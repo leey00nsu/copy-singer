@@ -60,10 +60,10 @@ export function VoiceScanInput({
       <header className="px-5 pt-5 sm:px-6 sm:pt-6">
         <p className="text-[10px] font-semibold tracking-[0.18em] text-muted-foreground">VOICE INPUT</p>
         <h2 className="mt-2 text-lg font-semibold tracking-[-0.025em]" id="voice-scan-input-title">
-          목소리 샘플 만들기
+          내 목소리 들려주기
         </h2>
         <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
-          마이크로 바로 녹음하거나 가지고 있는 오디오 파일을 사용할 수 있어요.
+          지금 한 소절을 녹음하거나, 기존 녹음 파일을 올려주세요.
         </p>
       </header>
 
@@ -158,7 +158,7 @@ export function VoiceScanInput({
               className="flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed px-4 py-3 text-sm font-medium transition-colors hover:bg-muted/30 has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50"
               htmlFor={uploadId}
             >
-              <Upload aria-hidden="true" className="size-4" /> 오디오 파일 업로드
+              <Upload aria-hidden="true" className="size-4" /> 녹음 파일로 분석하기
               <input
                 accept={ACCEPTED_VOICE_SCAN_AUDIO}
                 className="sr-only"

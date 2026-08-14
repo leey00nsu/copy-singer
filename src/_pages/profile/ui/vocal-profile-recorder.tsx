@@ -68,7 +68,7 @@ export function RecorderSurface({
             ? "녹음을 준비했어요"
             : state === "error"
               ? "마이크 상태를 확인해 주세요"
-              : "마이크로 바로 시작할 수 있어요";
+              : "한 소절이면 충분해요";
 
   return (
     <div className="flex min-h-[28rem] flex-col bg-background px-1 py-2 sm:px-3 sm:py-4">
@@ -103,7 +103,9 @@ export function RecorderSurface({
         <p aria-live="polite" className="mt-3 text-sm font-medium">
           {stateCopy}
         </p>
-        <p className="mt-1 text-xs leading-5 text-muted-foreground">5초부터 분석 가능 · 10초 권장 · 60초 자동 종료</p>
+        <p className="mt-1 text-xs leading-5 text-muted-foreground">
+          {state === "idle" ? "10초 정도 편하게 불러주세요." : "5초부터 분석 가능 · 10초 권장 · 60초 자동 종료"}
+        </p>
       </div>
 
       {active || elapsedMs > 0 ? (
@@ -145,19 +147,19 @@ export function RecorderSurface({
       ) : (
         <div className="mt-7 flex flex-col items-center gap-3">
           <Button
-            aria-label={state === "error" ? "마이크 다시 시도" : "마이크로 녹음 시작"}
-            className="size-14 rounded-full"
+            aria-label={state === "error" ? "마이크 다시 시도" : "녹음 시작"}
+            className="min-w-36"
             disabled={disabled}
             onClick={onStart}
-            size="icon-lg"
+            size="lg"
           >
             {state === "error" ? (
-              <RotateCcw aria-hidden="true" className="size-5" />
+              <RotateCcw aria-hidden="true" className="size-4" />
             ) : (
-              <Mic aria-hidden="true" className="size-5" />
+              <Mic aria-hidden="true" className="size-4" />
             )}
+            {state === "error" ? "마이크 다시 시도" : "녹음 시작"}
           </Button>
-          <p className="text-xs font-medium">{state === "error" ? "마이크 다시 시도" : "마이크 녹음"}</p>
         </div>
       )}
     </div>

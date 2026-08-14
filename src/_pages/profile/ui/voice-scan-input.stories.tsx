@@ -59,8 +59,12 @@ export const Idle: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("button", { name: "마이크로 녹음 시작" })).toBeVisible();
-    await expect(canvas.getByLabelText("오디오 파일 업로드")).toHaveAttribute("accept", EXPECTED_AUDIO_ACCEPT);
+    await expect(canvas.getByRole("heading", { name: "내 목소리 들려주기" })).toBeVisible();
+    await expect(canvas.getByText("지금 한 소절을 녹음하거나, 기존 녹음 파일을 올려주세요.")).toBeVisible();
+    await expect(canvas.getByText("한 소절이면 충분해요")).toBeVisible();
+    await expect(canvas.getByText("10초 정도 편하게 불러주세요.")).toBeVisible();
+    await expect(canvas.getByRole("button", { name: "녹음 시작" })).toBeVisible();
+    await expect(canvas.getByLabelText("녹음 파일로 분석하기")).toHaveAttribute("accept", EXPECTED_AUDIO_ACCEPT);
     await expect(canvas.getByText("지원 형식: WAV · MP3 · M4A · WEBM · 최대 25MB / 60초")).toBeVisible();
     await expect(canvas.queryByTestId("recording-elapsed-time")).not.toBeInTheDocument();
     const surface = canvas.getByRole("img", { name: "녹음 대기 상태" });
@@ -74,7 +78,7 @@ export const Idle: Story = {
 export const LiveMicrophone: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("button", { name: "마이크로 녹음 시작" })).toBeVisible();
+    await expect(canvas.getByRole("button", { name: "녹음 시작" })).toBeVisible();
     await expect(canvas.getByRole("img", { name: "녹음 대기 상태" })).toBeVisible();
     await expect(canvas.getByTestId("voice-signal-core")).toHaveAttribute("data-signal-mode", "idle");
     await expect(canvas.getByTestId("voice-orb")).toBeVisible();
@@ -123,7 +127,7 @@ export const RecordingTransition: Story = {
     await waitFor(() => expect(idleOrb.querySelector("canvas")).not.toBeNull());
     const shaderCanvas = idleOrb.querySelector("canvas");
 
-    await userEvent.click(canvas.getByRole("button", { name: "마이크로 녹음 시작" }));
+    await userEvent.click(canvas.getByRole("button", { name: "녹음 시작" }));
 
     await expect(canvas.getByRole("img", { name: "실시간 마이크 입력 반응과 파형" })).toBeVisible();
     await expect(canvas.getByTestId("recording-elapsed-time")).toHaveTextContent("0:01.2");
@@ -175,7 +179,7 @@ export const PermissionDenied: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("alert")).toHaveTextContent("마이크 권한이 차단됐어요");
-    await expect(canvas.getByText("오디오 파일 업로드")).toBeVisible();
+    await expect(canvas.getByText("녹음 파일로 분석하기")).toBeVisible();
   },
 };
 

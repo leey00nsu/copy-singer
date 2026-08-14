@@ -287,31 +287,32 @@ export function VocalProfileWorkbench() {
         <div className="min-w-0">
           <header className="max-w-[34rem]">
             <p className="text-[10px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
-              Voice analysis
+              VOICE ANALYSIS
             </p>
-            <h1 className="mt-3 break-keep text-balance text-[2rem] font-semibold leading-[1.06] tracking-[-0.052em] sm:text-[2.65rem] lg:text-[3.45rem]">
-              한 소절로,
-              <br />내 보컬 프로필을 만들어 보세요.
+            <h1 className="mt-3 break-keep text-balance text-[2rem] font-semibold leading-[1.08] tracking-[-0.052em] sm:text-[2.55rem] lg:text-[2.9rem]">
+              <span className="block">한 소절이면</span>
+              <span className="block">나에게 맞는 노래를 찾을 수 있어요.</span>
             </h1>
             <p className="mt-5 max-w-[31rem] text-[13px] leading-6 text-muted-foreground sm:text-sm sm:leading-7">
-              평소처럼 편하게 부르면 음역과 안정성을 분석해요. 분석이 끝나면 내 목소리에 맞는 노래를 확인할 수 있어요.
+              <span className="block">평소처럼 한 소절만 불러주세요.</span>
+              <span className="block">음역과 보컬 특성을 분석해 나에게 잘 맞는 노래와 키를 추천해 드려요.</span>
             </p>
           </header>
 
           <section aria-labelledby="voice-scan-guide-title" className="mt-10">
             <p className="text-[10px] font-semibold tracking-[0.18em] text-muted-foreground">HOW TO RECORD</p>
             <h2 className="mt-3 text-xl font-semibold tracking-[-0.03em]" id="voice-scan-guide-title">
-              가장 편한 키로 불러주세요
+              아는 노래 한 소절을 편하게 불러주세요.
             </h2>
             <p className="mt-2.5 text-sm leading-6 text-muted-foreground">
-              익숙한 한 소절을 평소처럼 편하게 불러 주세요.
+              어떤 노래든 괜찮아요. 무리하지 말고 평소 목소리로 불러주세요.
             </p>
             <ol className="mt-5 grid gap-2.5">
               {[
-                { icon: Mic2, title: "반주 없이", description: "목소리만 또렷하게 들리게 해 주세요." },
-                { icon: Timer, title: "약 10초 권장", description: "5초부터 분석 가능 · 60초 자동 종료" },
-                { icon: AudioLines, title: "편안한 음역", description: "최고음에 무리하지 말고 평소처럼 불러 주세요." },
-                { icon: Upload, title: "파일도 가능", description: "마이크를 쓸 수 없다면 오디오 파일을 올려 주세요." },
+                { icon: Mic2, title: "반주 없이", description: "목소리만 들리게 불러주세요." },
+                { icon: Timer, title: "10초 정도", description: "한 소절이면 충분해요." },
+                { icon: AudioLines, title: "무리하지 않게", description: "고음이나 저음을 억지로 내지 않아도 돼요." },
+                { icon: Upload, title: "파일도 OK", description: "녹음해 둔 오디오를 올려도 돼요." },
               ].map(({ description, icon: Icon, title }) => (
                 <li className="flex gap-3 rounded-lg border px-4 py-3.5" key={title}>
                   <span className="flex size-8 shrink-0 items-center justify-center rounded-md border bg-background">
@@ -326,7 +327,7 @@ export function VocalProfileWorkbench() {
             </ol>
             <StatusNotice
               className="mt-5"
-              description="이 결과는 노래 추천을 위한 참고값이며 의료적 진단이 아니에요. 본인에게 사용 권한이 있는 음성만 제출해 주세요."
+              description="이 결과는 노래 · 키 추천을 위한 참고값이며 의료적 진단이 아니에요. 본인에게 사용 권한이 있는 음성만 제출해 주세요."
               icon={<ShieldCheck />}
             />
           </section>
