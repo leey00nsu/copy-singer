@@ -9,7 +9,7 @@ export async function ticketAdjustmentsPost(request: Request) {
   const body = ticketAdjustmentRequestSchema.safeParse(await request.json().catch(() => null));
   if (!body.success) {
     return Response.json(
-      { error: { code: "INVALID_REQUEST", message: "사용자, 조정량, 사유와 요청 키가 필요합니다." } },
+      { error: { code: "INVALID_REQUEST", message: "사용자, 조정량, 사유와 요청 키가 필요해요." } },
       { status: 400 },
     );
   }
@@ -32,7 +32,7 @@ export async function ticketAdjustmentsPost(request: Request) {
       { status: 201 },
     );
   } catch (error) {
-    const message = error instanceof Error ? error.message : "티켓을 조정하지 못했습니다.";
+    const message = error instanceof Error ? error.message : "티켓을 조정하지 못했어요.";
     return Response.json(
       {
         error: {

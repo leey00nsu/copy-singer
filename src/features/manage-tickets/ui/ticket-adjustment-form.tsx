@@ -23,10 +23,10 @@ export function TicketAdjustmentForm({
         reason: String(formData.get("reason") ?? ""),
         idempotencyKey: crypto.randomUUID(),
       });
-      toast.success(`티켓을 조정했습니다. 새 잔액 ${payload.balanceAfter}개`);
+      toast.success(`티켓을 조정했어요. 새 잔액 ${payload.balanceAfter}개`);
       router.refresh();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "티켓을 조정하지 못했습니다.");
+      toast.error(error instanceof Error ? error.message : "티켓을 조정하지 못했어요.");
     }
   }
 
@@ -52,7 +52,7 @@ export function TicketAdjustmentFields({
       <label className="grid min-w-0 gap-1.5 text-sm font-medium">
         사용자
         <select className="h-10 w-full min-w-0 rounded-lg border bg-background px-3 text-sm" name="userId" required>
-          <option value="">선택해주세요</option>
+          <option value="">선택해 주세요</option>
           {users.map((user) => (
             <option key={user.id} value={user.id}>
               {user.name} · {user.email} · {user.ticketBalance}장

@@ -73,6 +73,6 @@ export const Empty: Story = {
     entries: [],
   },
   play: async ({ canvasElement }) => {
-    await expect(within(canvasElement).getByText("티켓 내역이 없습니다.")).toBeVisible();
+    await expect(within(canvasElement).getByText("아직 티켓 내역이 없어요.")).toBeVisible();
   },
 };

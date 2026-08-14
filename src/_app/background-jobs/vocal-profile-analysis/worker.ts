@@ -112,8 +112,8 @@ async function markSucceeded(job: VocalProfileAnalysisJobRow, profileId: string)
       {
         userId: job.userId,
         type: "VOCAL_PROFILE_SUCCEEDED",
-        title: "보컬 프로필 분석이 완료되었습니다",
-        message: `${displayName}의 분석 결과를 확인해 보세요.`,
+        title: "보컬 프로필 분석이 끝났어요",
+        message: `${displayName}의 분석 결과를 확인할 수 있어요.`,
         href: `/vocal-profiles/${profileId}`,
         sourceId: job.id,
         dedupeKey: `vocal-analysis:${job.id}:succeeded`,
@@ -125,7 +125,13 @@ async function markSucceeded(job: VocalProfileAnalysisJobRow, profileId: string)
 
 async function releaseFailure(job: VocalProfileAnalysisJobRow, error: unknown) {
   const failure = workerError(error);
-  console.error("[vocal-analysis] job failed", { jobId: job.id, code: failure.code, retryable: failure.retryable, attempts: job.attempts, detail: failure.detail.slice(0, 500) });
+  console.error("[vocal-analysis] job failed", {
+    jobId: job.id,
+    code: failure.code,
+    retryable: failure.retryable,
+    attempts: job.attempts,
+    detail: failure.detail.slice(0, 500),
+  });
   const retry = failure.retryable && job.attempts < job.maxAttempts;
   const now = new Date();
   if (retry) {
@@ -165,7 +171,7 @@ async function releaseFailure(job: VocalProfileAnalysisJobRow, error: unknown) {
       {
         userId: job.userId,
         type: "VOCAL_PROFILE_FAILED",
-        title: "보컬 프로필 분석을 완료하지 못했습니다",
+        title: "보컬 프로필 분석을 완료하지 못했어요",
         message: "새 음성으로 다시 분석해 주세요.",
         href: "/library?tab=profiles",
         sourceId: job.id,
@@ -271,4 +277,3 @@ export async function runVocalProfileAnalysisWorkerOnce(
   await processClaimedVocalProfileAnalysisJob(jobId, owner, dependencies);
   return true;
 }
-

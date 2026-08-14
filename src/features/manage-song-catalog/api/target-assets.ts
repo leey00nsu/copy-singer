@@ -19,12 +19,12 @@ export async function uploadAdminCatalogTarget(input: { sourceId: string; file: 
     where: { id: input.sourceId },
     select: { id: true, sourceVideoId: true },
   });
-  if (!source) throw new SongCatalogAdminError("SOURCE_NOT_FOUND", "음원 출처를 찾을 수 없습니다.", 404);
+  if (!source) throw new SongCatalogAdminError("SOURCE_NOT_FOUND", "음원 출처를 찾을 수 없어요.", 404);
   const mimeType = normalizeAudioUploadMimeType(input.file.type);
   if (!isSupportedAudioUploadMimeType(mimeType))
-    throw new SongCatalogAdminError("UNSUPPORTED_AUDIO", "지원하지 않는 음원 형식입니다.", 415);
+    throw new SongCatalogAdminError("UNSUPPORTED_AUDIO", "지원하지 않는 음원 형식이에요.", 415);
   if (input.file.size <= 0 || input.file.size > ADMIN_CATALOG_TARGET_MAX_UPLOAD_BYTES) {
-    throw new SongCatalogAdminError("PAYLOAD_TOO_LARGE", "음원 파일은 49MB 이하여야 합니다.", 413);
+    throw new SongCatalogAdminError("PAYLOAD_TOO_LARGE", "음원 파일은 49MB 이하여야 해요.", 413);
   }
   const bytes = new Uint8Array(await input.file.arrayBuffer());
   if (mimeType === "audio/wav" || mimeType === "audio/x-wav") {

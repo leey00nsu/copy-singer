@@ -51,7 +51,7 @@ test("account empty state omits pagination and does not invent a Google connecti
     />,
   );
   assert.match(html, /Google 연결 정보 없음/);
-  assert.match(html, /티켓 내역이 없습니다/);
+  assert.match(html, /아직 티켓 내역이 없어요/);
   assert.doesNotMatch(html, /티켓 내역 페이지/);
   assert.doesNotMatch(html, /href="\/admin"/);
 });

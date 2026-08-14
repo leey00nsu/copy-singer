@@ -90,7 +90,7 @@ export default async function AdminSongCatalogPage({
           <ChevronLeft className="size-3.5" /> 운영 대시보드
         </Link>
         <ProductPageIntro
-          description="곡 정보와 음원을 등록하고 Modal 분석 상태를 확인한 뒤 추천 카탈로그에 공개하세요."
+          description="곡 정보와 음원을 등록하고 Modal 분석 상태를 확인한 뒤 추천 카탈로그에 공개할 수 있어요."
           eyebrow="Admin"
           title="음원 관리"
         />

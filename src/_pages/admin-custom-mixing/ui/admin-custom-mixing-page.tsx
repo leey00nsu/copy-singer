@@ -21,7 +21,7 @@ export default async function AdminCustomMixingPage() {
           <ChevronLeft className="size-3.5" /> 운영 대시보드
         </Link>
         <ProductPageIntro
-          description="저장된 보컬 프로필과 임시 음원으로 커스텀 AI 믹싱을 실행합니다. 업로드한 target 음원과 결과는 저장되지 않습니다."
+          description="저장된 보컬 프로필과 임시 음원으로 커스텀 AI 믹싱을 만들어요. 업로드한 target 음원과 결과는 저장하지 않아요."
           eyebrow="Admin"
           title="커스텀 믹싱"
         />

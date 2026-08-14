@@ -19,7 +19,7 @@ export async function enqueueMixingJob(input: {
   idempotencyKey: string;
 }) {
   if (!input.idempotencyKey.trim() || input.idempotencyKey.length > 200) {
-    throw new MixingError("INVALID_REQUEST", "유효한 idempotency key가 필요합니다.", 400);
+    throw new MixingError("INVALID_REQUEST", "올바른 요청 키가 필요해요.", 400);
   }
   const { result, item } = await getRecommendationItem(input.vocalProfileId, input.songAnalysisId, input.userId);
   const cost = mixingTicketCost();
@@ -33,7 +33,7 @@ export async function enqueueMixingJob(input: {
           });
           if (existing) {
             if (existing.vocalProfileId !== input.vocalProfileId || existing.songAnalysisId !== input.songAnalysisId) {
-              throw new MixingError("IDEMPOTENCY_CONFLICT", "다른 믹싱 요청에서 사용한 요청 키입니다.", 409);
+              throw new MixingError("IDEMPOTENCY_CONFLICT", "다른 믹싱 요청에서 이미 사용한 요청 키예요.", 409);
             }
             return existing;
           }
@@ -60,7 +60,7 @@ export async function enqueueMixingJob(input: {
             },
           });
           if (!profile || !analysis || analysis.status !== "READY") {
-            throw new MixingError("MIXING_SOURCE_NOT_FOUND", "사용할 추천 또는 보컬 프로필을 찾을 수 없습니다.", 404);
+            throw new MixingError("MIXING_SOURCE_NOT_FOUND", "사용할 추천 또는 보컬 프로필을 찾을 수 없어요.", 404);
           }
 
           const entry = analysis.song.catalogEntries.find((candidate) => candidate.catalogId === result.catalogId);
@@ -79,7 +79,7 @@ export async function enqueueMixingJob(input: {
           ) {
             throw new MixingError(
               "MIXING_RECOMMENDATION_STALE",
-              "카탈로그가 변경되었습니다. 최신 추천 결과를 확인해주세요.",
+              "카탈로그가 변경됐어요. 최신 추천 결과를 확인해 주세요.",
               409,
               true,
             );
@@ -95,7 +95,7 @@ export async function enqueueMixingJob(input: {
             contractVersion,
           });
           if (!reference) {
-            throw new MixingError("MIXING_REFERENCE_UNAVAILABLE", "저장된 레퍼런스 음성을 사용할 수 없습니다.", 422);
+            throw new MixingError("MIXING_REFERENCE_UNAVAILABLE", "저장된 레퍼런스 음성을 사용할 수 없어요.", 422);
           }
 
           const debited = await tx.user.updateMany({
@@ -156,5 +156,5 @@ export async function enqueueMixingJob(input: {
       throw error;
     }
   }
-  throw new MixingError("MIXING_ENQUEUE_FAILED", "믹싱 요청을 저장하지 못했습니다.", 503, true);
+  throw new MixingError("MIXING_ENQUEUE_FAILED", "믹싱 요청을 저장하지 못했어요.", 503, true);
 }

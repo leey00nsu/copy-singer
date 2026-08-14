@@ -51,7 +51,7 @@ function serializeRow(row: Awaited<ReturnType<typeof findRows>>[number]): Mixing
     ticketCost: row.ticketCost,
     error:
       row.status === "FAILED" && row.errorCode
-        ? { code: row.errorCode, detail: row.errorDetail ?? "믹싱 작업이 실패했습니다." }
+        ? { code: row.errorCode, detail: row.errorDetail ?? "믹싱 작업을 완료하지 못했어요." }
         : null,
     song: {
       title: row.song.title,

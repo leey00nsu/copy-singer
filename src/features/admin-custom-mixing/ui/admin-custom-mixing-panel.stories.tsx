@@ -45,8 +45,8 @@ export const Queued: Story = {
     const canvas = within(canvasElement);
     await pickProfileAndUpload(canvas);
     await userEvent.click(canvas.getByRole("button", { name: "커스텀 믹싱 시작" }));
-    await expect(canvas.getByText("GPU 처리 순서를 기다리고 있어요")).toBeVisible();
-    await expect(canvas.getByText("GPU 대기 중")).toBeVisible();
+    await expect(canvas.getByText("믹싱 순서를 기다리고 있어요")).toBeVisible();
+    await expect(canvas.getByText("믹싱 대기 중")).toBeVisible();
   },
 };
 
@@ -58,7 +58,7 @@ export const Succeeded: Story = {
     const canvas = within(canvasElement);
     await pickProfileAndUpload(canvas);
     await userEvent.click(canvas.getByRole("button", { name: "커스텀 믹싱 시작" }));
-    await expect(canvas.getByText("믹싱 결과가 준비됐습니다")).toBeVisible();
+    await expect(canvas.getByText("믹싱 결과가 준비됐어요")).toBeVisible();
     await expect(canvas.getByRole("link", { name: /결과 WAV 다운로드/ })).toBeVisible();
   },
 };

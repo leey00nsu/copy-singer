@@ -20,19 +20,19 @@ export async function POST(request: Request) {
     } catch (error) {
       if (error instanceof MultipartBodyTooLargeError) {
         return adminCatalogJson(
-          { error: { code: "SNAPSHOT_TOO_LARGE", message: "스냅샷 파일은 20MB 이하여야 합니다." } },
+          { error: { code: "SNAPSHOT_TOO_LARGE", message: "스냅샷 파일은 20MB 이하여야 해요." } },
           400,
         );
       }
-      return adminCatalogJson({ error: { code: "SNAPSHOT_REQUIRED", message: "스냅샷 파일이 필요합니다." } }, 400);
+      return adminCatalogJson({ error: { code: "SNAPSHOT_REQUIRED", message: "스냅샷 파일이 필요해요." } }, 400);
     }
     const file = form.get("file");
     if (!(file instanceof File) || file.size === 0) {
-      return adminCatalogJson({ error: { code: "SNAPSHOT_REQUIRED", message: "스냅샷 파일이 필요합니다." } }, 400);
+      return adminCatalogJson({ error: { code: "SNAPSHOT_REQUIRED", message: "스냅샷 파일이 필요해요." } }, 400);
     }
     if (file.size > MAX_SNAPSHOT_BYTES) {
       return adminCatalogJson(
-        { error: { code: "SNAPSHOT_TOO_LARGE", message: "스냅샷 파일은 20MB 이하여야 합니다." } },
+        { error: { code: "SNAPSHOT_TOO_LARGE", message: "스냅샷 파일은 20MB 이하여야 해요." } },
         400,
       );
     }
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
     try {
       payload = JSON.parse(await file.text());
     } catch {
-      return adminCatalogJson({ error: { code: "INVALID_JSON", message: "올바른 JSON 스냅샷이 아닙니다." } }, 400);
+      return adminCatalogJson({ error: { code: "INVALID_JSON", message: "올바른 JSON 스냅샷이 아니에요." } }, 400);
     }
     const parsed = parseCatalogSnapshot(payload);
     if (!parsed.success) {
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
         {
           error: {
             code: "INVALID_SNAPSHOT",
-            message: "지원하지 않는 카탈로그 스냅샷 형식입니다.",
+            message: "지원하지 않는 카탈로그 스냅샷 형식이에요.",
             issues: parsed.error.issues,
           },
         },

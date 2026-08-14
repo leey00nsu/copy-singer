@@ -32,5 +32,5 @@ test("ticket ledger renders grant, debit, balance, reason, and empty state", () 
   assert.match(markup, /\+1/);
   assert.match(markup, /-1/);
 
-  assert.match(renderToStaticMarkup(<TicketLedger entries={[]} />), /티켓 내역이 없습니다/);
+  assert.match(renderToStaticMarkup(<TicketLedger entries={[]} />), /아직 티켓 내역이 없어요/);
 });

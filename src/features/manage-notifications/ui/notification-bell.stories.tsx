@@ -22,7 +22,7 @@ const allNotificationTypes: NotificationList = {
       ...vocalSucceeded,
       id: "40000000-0000-4000-8000-000000000004",
       type: "vocal_profile_failed",
-      title: "보컬 프로필 분석을 완료하지 못했습니다",
+      title: "보컬 프로필 분석을 완료하지 못했어요",
       message: "새 오디오로 다시 분석해 보세요.",
       readAt: null,
     },
@@ -31,7 +31,7 @@ const allNotificationTypes: NotificationList = {
       ...mixingSucceeded,
       id: "40000000-0000-4000-8000-000000000005",
       type: "mixing_failed",
-      title: "AI 믹스를 완료하지 못했습니다",
+      title: "AI 믹싱을 완료하지 못했어요",
       message: "잠시 뒤 다시 시도해 보세요.",
       readAt: null,
     },
@@ -58,18 +58,18 @@ export const OpenWithAllTypes: Story = {
     await userEvent.click(await canvas.findByRole("button", { name: "알림, 읽지 않은 알림 5개" }));
 
     const body = within(document.body);
-    await waitFor(() => expect(body.getByText("티켓이 추가되었습니다")).toBeVisible());
-    await expect(body.getByText("보컬 프로필 분석이 완료되었습니다")).toBeVisible();
-    await expect(body.getByText("보컬 프로필 분석을 완료하지 못했습니다")).toBeVisible();
-    await expect(body.getByText("AI 믹스가 완성되었습니다")).toBeVisible();
-    await expect(body.getByText("AI 믹스를 완료하지 못했습니다")).toBeVisible();
+    await waitFor(() => expect(body.getByText("티켓이 추가됐어요")).toBeVisible());
+    await expect(body.getByText("보컬 프로필 분석이 끝났어요")).toBeVisible();
+    await expect(body.getByText("보컬 프로필 분석을 완료하지 못했어요")).toBeVisible();
+    await expect(body.getByText("AI 믹스가 완성됐어요")).toBeVisible();
+    await expect(body.getByText("AI 믹싱을 완료하지 못했어요")).toBeVisible();
 
     const notificationItems = [
-      ["티켓이 추가되었습니다", "ticket_credit"],
-      ["보컬 프로필 분석이 완료되었습니다", "vocal_profile_succeeded"],
-      ["보컬 프로필 분석을 완료하지 못했습니다", "vocal_profile_failed"],
-      ["AI 믹스가 완성되었습니다", "mixing_succeeded"],
-      ["AI 믹스를 완료하지 못했습니다", "mixing_failed"],
+      ["티켓이 추가됐어요", "ticket_credit"],
+      ["보컬 프로필 분석이 끝났어요", "vocal_profile_succeeded"],
+      ["보컬 프로필 분석을 완료하지 못했어요", "vocal_profile_failed"],
+      ["AI 믹스가 완성됐어요", "mixing_succeeded"],
+      ["AI 믹싱을 완료하지 못했어요", "mixing_failed"],
     ] as const;
     for (const [title, type] of notificationItems) {
       const item = body.getByRole("menuitem", { name: new RegExp(title) });

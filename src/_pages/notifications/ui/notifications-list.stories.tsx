@@ -39,7 +39,7 @@ export const WithHistory: Story = {
     await expect(canvas.getByText("보컬 분석·AI 믹싱 결과와 티켓 지급 알림을 확인할 수 있어요.")).toBeVisible();
     await expect(canvas.getByRole("region", { name: "알림 이력" })).toBeVisible();
     await expect(canvas.getByText("전체 3개 · 읽지 않음 2개")).toBeVisible();
-    await expect(canvas.getByRole("button", { name: /AI 믹스가 완성되었습니다/ })).toBeVisible();
+    await expect(canvas.getByRole("button", { name: /AI 믹스가 완성됐어요/ })).toBeVisible();
     await expect(canvas.getAllByText("읽지 않음")).toHaveLength(2);
     await expect(canvas.getByRole("button", { name: "모두 읽음" })).toBeEnabled();
   },

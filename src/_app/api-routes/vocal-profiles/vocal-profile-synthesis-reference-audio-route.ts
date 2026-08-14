@@ -11,7 +11,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
       {
         error: {
           code: "VOCAL_PROFILE_SYNTHESIS_REFERENCE_NOT_FOUND",
-          message: "재생할 AI 믹싱 레퍼런스를 찾을 수 없습니다.",
+          message: "재생할 AI 믹싱 레퍼런스를 찾을 수 없어요.",
         },
       },
       { status: 404 },
@@ -29,7 +29,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
       {
         error: {
           code: "VOCAL_PROFILE_SYNTHESIS_REFERENCE_UNAVAILABLE",
-          message: "AI 믹싱 레퍼런스 저장소에 연결하지 못했습니다.",
+          message: "AI 믹싱 레퍼런스를 불러오지 못했어요.",
         },
       },
       { status: 502 },

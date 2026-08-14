@@ -107,6 +107,6 @@ export const DeleteConfirmation: Story = {
   play: async ({ canvasElement }) => {
     await userEvent.click(within(canvasElement).getByRole("button", { name: "삭제" }));
     await expect(document.body).toHaveTextContent("이 AI 믹스를 삭제할까요?");
-    await expect(document.body).toHaveTextContent("티켓 사용 내역은 기록으로 유지");
+    await expect(document.body).toHaveTextContent("티켓 사용 내역은 남아요");
   },
 };

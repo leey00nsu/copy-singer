@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   const body = createMixingRequestSchema.safeParse(await request.json().catch(() => null));
   if (!body.success) {
     return Response.json(
-      { error: { code: "INVALID_REQUEST", message: "추천 곡과 요청 키가 필요합니다." } },
+      { error: { code: "INVALID_REQUEST", message: "추천 곡과 요청 키가 필요해요." } },
       { status: 400 },
     );
   }
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
       );
     }
     return Response.json(
-      { error: { code: "MIXING_ENQUEUE_FAILED", message: "믹싱 요청을 저장하지 못했습니다." } },
+      { error: { code: "MIXING_ENQUEUE_FAILED", message: "믹싱 요청을 저장하지 못했어요." } },
       { status: 500 },
     );
   }

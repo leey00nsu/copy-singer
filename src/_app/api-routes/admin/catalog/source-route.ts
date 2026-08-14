@@ -14,7 +14,7 @@ export async function POST(request: Request, context: { params: Promise<{ songId
     const { songId } = await context.params;
     const form = await adminCatalogAudioFormData(request);
     const audio = form.get("audio");
-    if (!(audio instanceof File)) throw new SongCatalogAdminError("AUDIO_REQUIRED", "음원 파일이 필요합니다.", 400);
+    if (!(audio instanceof File)) throw new SongCatalogAdminError("AUDIO_REQUIRED", "음원 파일이 필요해요.", 400);
     const input = replaceAdminSongSourceSchema.parse({
       sourceUrl: form.get("sourceUrl"),
       idempotencyKey: form.get("idempotencyKey"),

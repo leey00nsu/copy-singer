@@ -63,7 +63,7 @@ function AudioFileInput({ className, disabled, label, textClassName = "text-[10p
 }
 
 function message(error: unknown) {
-  return error instanceof Error ? error.message : "요청을 처리하지 못했습니다.";
+  return error instanceof Error ? error.message : "요청을 처리하지 못했어요.";
 }
 
 function StatusBadge({ value }: { value: string }) {
@@ -91,7 +91,7 @@ function SourceActions({ songId, source }: { songId: string; source: AdminCatalo
     setPending(label);
     try {
       await action();
-      toast.success(`${label} 요청을 완료했습니다.`);
+      toast.success(`${label}을 완료했어요.`);
       router.refresh();
     } catch (error) {
       toast.error(message(error));
@@ -157,7 +157,7 @@ function ReplaceSourceForm({ songId }: { songId: string }) {
         },
         audio,
       );
-      toast.success("새 출처와 음원을 저장하고 Modal 분석을 요청했습니다.");
+      toast.success("새 출처와 음원을 저장하고 Modal 분석을 요청했어요.");
       router.refresh();
     } catch (error) {
       toast.error(message(error));
@@ -191,7 +191,7 @@ function CatalogRow({ entry }: { entry: AdminCatalogEntryView }) {
     setArchiving(true);
     try {
       await archiveAdminSongClient(entry.song.id);
-      toast.success("곡을 보관 처리했습니다.");
+      toast.success("곡을 보관 처리했어요.");
       router.refresh();
     } catch (error) {
       toast.error(message(error));
@@ -281,7 +281,7 @@ export function CatalogManager({ entries, loading = false }: { entries: AdminCat
         },
         audio,
       );
-      toast.success("음원을 저장하고 Modal 분석을 요청했습니다.");
+      toast.success("음원을 저장하고 Modal 분석을 요청했어요.");
       setAddOpen(false);
       router.refresh();
     } catch (error) {
@@ -304,8 +304,7 @@ export function CatalogManager({ entries, loading = false }: { entries: AdminCat
             <DialogHeader>
               <DialogTitle>음원 추가</DialogTitle>
               <DialogDescription>
-                곡 정보와 사용 권한이 있는 음원을 등록합니다. Video ID는 URL에서 추출하고, 원키는 Modal 분석으로
-                추정합니다.
+                곡 정보와 사용 권한이 있는 음원을 등록해요. Video ID는 URL에서 추출하고, 원키는 Modal 분석으로 추정해요.
               </DialogDescription>
             </DialogHeader>
             <form action={add} className="grid gap-3 sm:grid-cols-2">
@@ -343,7 +342,7 @@ export function CatalogManager({ entries, loading = false }: { entries: AdminCat
         {entries.length ? (
           entries.map((entry) => <CatalogRow entry={entry} key={entry.id} />)
         ) : (
-          <div className="px-4 py-12 text-center text-sm text-muted-foreground">조건에 맞는 곡이 없습니다.</div>
+          <div className="px-4 py-12 text-center text-sm text-muted-foreground">조건에 맞는 곡이 없어요.</div>
         )}
       </div>
     </div>

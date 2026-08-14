@@ -9,7 +9,7 @@ export async function POST(request: Request, context: { params: Promise<{ source
     const { sourceId } = await context.params;
     const form = await adminCatalogAudioFormData(request);
     const file = form.get("audio");
-    if (!(file instanceof File)) throw new SongCatalogAdminError("AUDIO_REQUIRED", "음원 파일이 필요합니다.", 400);
+    if (!(file instanceof File)) throw new SongCatalogAdminError("AUDIO_REQUIRED", "음원 파일이 필요해요.", 400);
     return adminCatalogJson(await uploadAdminCatalogTarget({ sourceId, file }), 201);
   } catch (error) {
     return adminCatalogError(error);

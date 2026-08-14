@@ -53,7 +53,7 @@ export async function prepareProfileAudio(
   onProgress?: (progress: number) => void,
 ): Promise<PreparedProfileAudio> {
   const AudioContextClass = window.AudioContext;
-  if (!AudioContextClass) throw new Error("이 브라우저는 오디오 변환을 지원하지 않습니다.");
+  if (!AudioContextClass) throw new Error("이 브라우저는 오디오 변환을 지원하지 않아요.");
   const context = new AudioContextClass();
   let decoded: AudioBuffer;
   try {
@@ -65,7 +65,7 @@ export async function prepareProfileAudio(
   const firstFrame = findFirstAudibleFrame(channels, decoded.sampleRate);
   const trimStartSeconds = firstFrame / decoded.sampleRate;
   const durationSeconds = boundedProfileUploadDuration(decoded.duration - trimStartSeconds);
-  if (durationSeconds < 0.1) throw new Error("재생 가능한 음성을 찾지 못했습니다.");
+  if (durationSeconds < 0.1) throw new Error("재생 가능한 음성을 찾지 못했어요.");
 
   const media = await import("mediabunny");
   const input = new media.Input({ source: new media.BlobSource(source), formats: media.ALL_FORMATS });
@@ -85,7 +85,7 @@ export async function prepareProfileAudio(
     }));
   if (!codec) {
     input.dispose();
-    throw new Error("이 브라우저에서 AAC 또는 Opus 인코더를 사용할 수 없습니다.");
+    throw new Error("이 브라우저에서 오디오를 변환할 수 없어요.");
   }
   const output = new media.Output({
     format: format === "m4a" ? new media.Mp4OutputFormat() : new media.WebMOutputFormat(),
@@ -108,7 +108,7 @@ export async function prepareProfileAudio(
   });
   if (!conversion.isValid) {
     input.dispose();
-    throw new Error("선택한 오디오를 변환할 수 없습니다.");
+    throw new Error("선택한 오디오를 변환할 수 없어요.");
   }
   conversion.onProgress = (progress) => onProgress?.(progress);
   try {
@@ -116,7 +116,7 @@ export async function prepareProfileAudio(
   } finally {
     input.dispose();
   }
-  if (!target.buffer) throw new Error("오디오 변환 결과가 비어 있습니다.");
+  if (!target.buffer) throw new Error("오디오 변환 결과가 비어 있어요.");
   return {
     file: new File([target.buffer], outputName(source.name, format), {
       type: format === "m4a" ? "audio/mp4" : "audio/webm",

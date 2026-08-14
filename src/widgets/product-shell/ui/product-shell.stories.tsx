@@ -69,8 +69,8 @@ export const Desktop: Story = {
     await expect(body.getByRole("menuitem", { name: "내 계정" })).toBeVisible();
     await userEvent.click(accountButton);
     await userEvent.click(notificationButton);
-    await waitFor(() => expect(body.getByText("AI 믹스가 완성되었습니다")).toBeVisible());
-    await expect(body.getByRole("menuitem", { name: /AI 믹스가 완성되었습니다/ })).toBeVisible();
+    await waitFor(() => expect(body.getByText("AI 믹스가 완성됐어요")).toBeVisible());
+    await expect(body.getByRole("menuitem", { name: /AI 믹스가 완성됐어요/ })).toBeVisible();
     await expect(body.getByRole("menuitem", { name: "전체 알림 보기" })).toHaveAttribute("href", "/notifications");
   },
 };

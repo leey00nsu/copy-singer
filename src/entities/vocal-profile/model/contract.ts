@@ -178,7 +178,7 @@ export const vocalProfileDeleteResponseSchema = z.object({
 export type VocalProfileDeleteResponse = z.infer<typeof vocalProfileDeleteResponseSchema>;
 
 export const vocalProfileRenameRequestSchema = z.object({
-  displayName: z.string().trim().min(1, "프로필 이름을 입력해주세요.").max(40, "프로필 이름은 40자 이하여야 합니다."),
+  displayName: z.string().trim().min(1, "프로필 이름을 입력해 주세요.").max(40, "프로필 이름은 40자 이하여야 해요."),
 });
 
 export const vocalProfileRenameResponseSchema = z.object({

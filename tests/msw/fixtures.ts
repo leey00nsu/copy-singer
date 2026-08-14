@@ -18,8 +18,8 @@ export const notificationListFixture: NotificationList = {
     {
       id: "40000000-0000-4000-8000-000000000001",
       type: "mixing_succeeded",
-      title: "AI 믹스가 완성되었습니다",
-      message: "서른 즈음에 결과를 들어보세요.",
+      title: "AI 믹스가 완성됐어요",
+      message: "서른 즈음에 결과를 들을 수 있어요.",
       href: "/library/mixes/30000000-0000-4000-8000-000000000002",
       sourceId: "30000000-0000-4000-8000-000000000002",
       readAt: null,
@@ -28,8 +28,8 @@ export const notificationListFixture: NotificationList = {
     {
       id: "40000000-0000-4000-8000-000000000002",
       type: "vocal_profile_succeeded",
-      title: "보컬 프로필 분석이 완료되었습니다",
-      message: "메인 보컬의 분석 결과를 확인해 보세요.",
+      title: "보컬 프로필 분석이 끝났어요",
+      message: "메인 보컬의 분석 결과를 확인할 수 있어요.",
       href: "/vocal-profiles/30000000-0000-4000-8000-000000000012",
       sourceId: "30000000-0000-4000-8000-000000000011",
       readAt: null,
@@ -38,8 +38,8 @@ export const notificationListFixture: NotificationList = {
     {
       id: "40000000-0000-4000-8000-000000000003",
       type: "ticket_credit",
-      title: "티켓이 추가되었습니다",
-      message: "티켓 2개가 추가되었습니다. 고객 지원 지급",
+      title: "티켓이 추가됐어요",
+      message: "티켓 2개가 추가됐어요. 고객 지원 지급",
       href: "/account",
       sourceId: "40000000-0000-4000-8000-000000000004",
       readAt: "2026-08-11T10:05:00.000Z",

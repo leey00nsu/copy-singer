@@ -19,7 +19,7 @@ export async function requireAdminApi(request: Request) {
   if (!session) return { response: unauthorizedResponse(), session: null } as const;
   if (!isAdminEmail(session.user.email)) {
     return {
-      response: Response.json({ error: { code: "FORBIDDEN", message: "관리자 권한이 필요합니다." } }, { status: 403 }),
+      response: Response.json({ error: { code: "FORBIDDEN", message: "관리자 권한이 필요해요." } }, { status: 403 }),
       session: null,
     } as const;
   }

@@ -84,7 +84,7 @@ export default async function AdminPage({
 
       <main className="mx-auto w-full max-w-[82rem] px-6 py-8 lg:px-8 lg:py-10">
         <ProductPageIntro
-          description="서비스의 사용 현황과 티켓을 관리하고, 작업 상태를 모니터링하세요."
+          description="서비스 사용 현황과 티켓, 작업 상태를 확인하고 관리할 수 있어요."
           eyebrow="Admin"
           title="Copysinger 운영"
         />
@@ -104,7 +104,9 @@ export default async function AdminPage({
               <h2 className="flex items-center gap-2 text-sm font-semibold">
                 <Music2 className="size-4" /> 음원 관리
               </h2>
-              <p className="mt-1 text-xs text-muted-foreground">곡 추가, Modal 분석 상태와 공개 여부를 관리합니다.</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                곡 추가, Modal 분석 상태와 공개 여부를 관리할 수 있어요.
+              </p>
             </div>
             <Button nativeButton={false} render={<Link href="/admin/songs" />} size="sm">
               음원 관리 열기
@@ -119,7 +121,7 @@ export default async function AdminPage({
                 <MicVocal className="size-4" /> 커스텀 믹싱
               </h2>
               <p className="mt-1 text-xs text-muted-foreground">
-                내 보컬 프로필과 임시 음원으로 카탈로그에 등록하지 않는 믹싱을 실행합니다.
+                내 보컬 프로필과 임시 음원으로 카탈로그에 등록하지 않는 믹싱을 만들 수 있어요.
               </p>
             </div>
             <Button nativeButton={false} render={<Link href="/admin/custom-mixing" />} size="sm">
@@ -131,7 +133,7 @@ export default async function AdminPage({
         <section className="mt-7">
           <div className="mb-3">
             <h2 className="text-sm font-semibold">티켓 조정</h2>
-            <p className="mt-1 text-xs text-muted-foreground">사용자의 티켓 잔액을 관리하고 조정할 수 있습니다.</p>
+            <p className="mt-1 text-xs text-muted-foreground">사용자의 티켓 잔액을 확인하고 조정할 수 있어요.</p>
           </div>
           <div className="rounded-2xl bg-muted/20 p-5">
             <TicketAdjustmentForm users={adjustmentUsers.users} />
@@ -327,7 +329,7 @@ export default async function AdminPage({
         </section>
 
         <p className="mt-6 text-[10px] leading-5 text-muted-foreground">
-          개인정보 보호를 위해 관리자 화면에는 사용자 레퍼런스 오디오 재생·다운로드와 저장소 URL을 제공하지 않습니다.
+          개인정보 보호를 위해 관리자 화면에서는 사용자 레퍼런스 오디오 재생·다운로드와 저장소 URL을 제공하지 않아요.
         </p>
       </main>
 

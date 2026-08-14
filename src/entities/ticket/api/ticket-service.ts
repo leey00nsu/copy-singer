@@ -9,7 +9,7 @@ export class InsufficientTicketsError extends Error {
     readonly required: number,
     readonly balance: number,
   ) {
-    super(`티켓이 부족합니다. 필요한 티켓 ${required}개, 현재 ${balance}개입니다.`);
+    super(`티켓이 부족해요. 필요한 티켓은 ${required}개이고, 현재 ${balance}개 있어요.`);
     this.name = "InsufficientTicketsError";
   }
 }

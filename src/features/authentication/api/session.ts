@@ -29,7 +29,7 @@ export async function requireApiSession(request: Request) {
 
 export function unauthorizedResponse() {
   return Response.json(
-    { error: { code: "UNAUTHENTICATED", message: "Google 로그인이 필요합니다.", retryable: false } },
+    { error: { code: "UNAUTHENTICATED", message: "Google 로그인이 필요해요.", retryable: false } },
     { status: 401 },
   );
 }

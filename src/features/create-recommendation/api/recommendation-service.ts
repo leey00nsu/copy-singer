@@ -195,7 +195,7 @@ export async function getRecommendationResult(
           job?.status === "FAILED" && job.errorCode
             ? {
                 code: job.errorCode,
-                detail: job.errorDetail ?? "믹싱 작업을 완료하지 못했습니다.",
+                detail: job.errorDetail ?? "믹싱 작업을 완료하지 못했어요.",
                 retryable: job.retryable ?? false,
               }
             : null,

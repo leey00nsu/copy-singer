@@ -10,7 +10,7 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
   return notification
     ? Response.json({ notification })
     : Response.json(
-        { error: { code: "NOTIFICATION_NOT_FOUND", message: "알림을 찾을 수 없습니다.", retryable: false } },
+        { error: { code: "NOTIFICATION_NOT_FOUND", message: "알림을 찾을 수 없어요.", retryable: false } },
         { status: 404 },
       );
 }

@@ -170,7 +170,13 @@ function mixingFailure(error: unknown, submitted: boolean) {
 
 async function releaseMixingFailure(jobId: string, error: unknown, submitted: boolean) {
   const failure = mixingFailure(error, submitted);
-  console.error("[mixing] job failed", { jobId, code: failure.code, retryable: failure.retryable, submitted, detail: failure.detail.slice(0, 500) });
+  console.error("[mixing] job failed", {
+    jobId,
+    code: failure.code,
+    retryable: failure.retryable,
+    submitted,
+    detail: failure.detail.slice(0, 500),
+  });
   const job = await prisma.mixingJob.findUnique({
     where: { id: jobId },
     select: { attempts: true, maxAttempts: true, userId: true, song: { select: { title: true } } },
@@ -235,7 +241,7 @@ async function releaseMixingFailure(jobId: string, error: unknown, submitted: bo
       {
         userId: job.userId,
         type: "MIXING_FAILED",
-        title: "AI 믹싱을 완료하지 못했습니다",
+        title: "AI 믹싱을 완료하지 못했어요",
         message: `${job.song.title} 작업을 확인하고 다시 시도해 주세요.`,
         href: `/library/mixes/${jobId}`,
         sourceId: jobId,
@@ -421,8 +427,8 @@ export async function processClaimedMixingJob(jobId: string, owner: string, depe
               {
                 userId: job.userId,
                 type: "MIXING_SUCCEEDED",
-                title: "AI 믹스가 완성되었습니다",
-                message: `${job.song.title} 결과를 들어보세요.`,
+                title: "AI 믹스가 완성됐어요",
+                message: `${job.song.title} 결과를 들을 수 있어요.`,
                 href: `/library/mixes/${job.id}`,
                 sourceId: job.id,
                 dedupeKey: `mixing:${job.id}:succeeded`,
@@ -462,4 +468,3 @@ export async function runMixingWorkerOnce(owner: string, dependencies: WorkerDep
   await processClaimedMixingJob(jobId, owner, dependencies);
   return true;
 }
-

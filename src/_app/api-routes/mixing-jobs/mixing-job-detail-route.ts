@@ -9,7 +9,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
   const job = id.success ? await getMixingJobForUser(session.user.id, id.data) : null;
   return job
     ? Response.json(job)
-    : Response.json({ error: { code: "MIXING_NOT_FOUND", message: "믹싱 작업을 찾을 수 없습니다." } }, { status: 404 });
+    : Response.json({ error: { code: "MIXING_NOT_FOUND", message: "믹싱 작업을 찾을 수 없어요." } }, { status: 404 });
 }
 
 export async function DELETE(request: Request, context: { params: Promise<{ id: string }> }) {
@@ -18,7 +18,7 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
   const id = resourceIdSchema.safeParse((await context.params).id);
   if (!id.success) {
     return Response.json(
-      { error: { code: "MIXING_NOT_FOUND", message: "믹싱 작업을 찾을 수 없습니다.", retryable: false } },
+      { error: { code: "MIXING_NOT_FOUND", message: "믹싱 작업을 찾을 수 없어요.", retryable: false } },
       { status: 404 },
     );
   }
@@ -35,7 +35,7 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
       {
         error: {
           code: "MIXING_DELETE_FAILED",
-          message: "믹싱 작업을 삭제하지 못했습니다.",
+          message: "믹싱 작업을 삭제하지 못했어요.",
           retryable: true,
         },
       },

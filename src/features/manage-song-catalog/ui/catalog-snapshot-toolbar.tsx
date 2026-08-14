@@ -29,18 +29,18 @@ export function CatalogSnapshotToolbar() {
     mutationFn: importAdminCatalogSnapshot,
     onSuccess: (nextResult) => {
       setResult(nextResult);
-      toast.success(`카탈로그를 가져왔습니다 (${nextResult.total}곡 중 ${nextResult.published}곡 공개).`);
+      toast.success(`카탈로그를 가져왔어요. ${nextResult.total}곡 중 ${nextResult.published}곡이 공개 상태예요.`);
       router.refresh();
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "카탈로그 가져오기를 완료하지 못했습니다.");
+      toast.error(error instanceof Error ? error.message : "카탈로그를 가져오지 못했어요.");
     },
   });
 
   const submit = () => {
     const file = inputRef.current?.files?.[0];
     if (!file) {
-      toast.error("가져올 스냅샷 파일을 선택해주세요.");
+      toast.error("가져올 스냅샷 파일을 선택해 주세요.");
       return;
     }
     setResult(null);
@@ -69,8 +69,8 @@ export function CatalogSnapshotToolbar() {
           <DialogHeader>
             <DialogTitle>카탈로그 가져오기</DialogTitle>
             <DialogDescription>
-              내보내기로 만든 스냅샷(JSON)을 업로드하면 곡·출처·분석·target·카탈로그가 복원됩니다. 같은 스냅샷을 다시
-              가져와도 중복되지 않습니다.
+              내보낸 JSON 스냅샷을 가져오면 곡·출처·분석·target·카탈로그를 복원해요. 같은 스냅샷을 다시 가져와도
+              중복으로 만들지 않아요.
             </DialogDescription>
           </DialogHeader>
           <div className="mt-5 grid gap-2">
@@ -85,7 +85,7 @@ export function CatalogSnapshotToolbar() {
             />
             {result ? (
               <StatusNotice
-                description={`${result.total}곡 중 ${result.published}곡이 공개 상태로 복원됐습니다. 생성: 곡 ${result.songsCreated} · 출처 ${result.sourcesCreated} · 분석 ${result.analysesCreated} · target ${result.targetsCreated} · 카탈로그 ${result.entriesCreated}`}
+                description={`${result.total}곡 중 ${result.published}곡을 공개 상태로 복원했어요. 새 항목: 곡 ${result.songsCreated} · 출처 ${result.sourcesCreated} · 분석 ${result.analysesCreated} · target ${result.targetsCreated} · 카탈로그 ${result.entriesCreated}`}
                 title="가져오기 완료"
                 tone="success"
               />

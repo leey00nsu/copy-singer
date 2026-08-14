@@ -10,7 +10,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
   });
   if (!job?.resultAsset || job.resultAsset.status !== "READY") {
     return Response.json(
-      { error: { code: "MIXING_RESULT_NOT_FOUND", message: "완료된 믹싱 결과를 찾을 수 없습니다." } },
+      { error: { code: "MIXING_RESULT_NOT_FOUND", message: "완료된 믹싱 결과를 찾을 수 없어요." } },
       { status: 404 },
     );
   }
@@ -22,7 +22,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
   });
   if (!upstream.ok && upstream.status !== 206) {
     return Response.json(
-      { error: { code: "MIXING_RESULT_UNAVAILABLE", message: "결과 저장소에 연결하지 못했습니다." } },
+      { error: { code: "MIXING_RESULT_UNAVAILABLE", message: "믹싱 결과를 불러오지 못했어요." } },
       { status: 502 },
     );
   }

@@ -22,7 +22,7 @@ function songInclude() {
 
 async function catalogOrThrow(tx: Prisma.TransactionClient | typeof prisma = prisma) {
   const catalog = await tx.catalog.findUnique({ where: { slug: TJ_2607_CATALOG_SLUG } });
-  if (!catalog) throw new SongCatalogAdminError("CATALOG_NOT_FOUND", "카탈로그를 먼저 초기화해야 합니다.", 409);
+  if (!catalog) throw new SongCatalogAdminError("CATALOG_NOT_FOUND", "카탈로그를 먼저 초기화해야 해요.", 409);
   return catalog;
 }
 
@@ -70,7 +70,7 @@ export async function createAdminSong(input: CreateAdminSongInput, adminUserId: 
       existing.song.title !== input.title ||
       existing.song.artist !== input.artist
     ) {
-      throw new SongCatalogAdminError("IDEMPOTENCY_CONFLICT", "다른 요청에서 사용한 요청 키입니다.", 409);
+      throw new SongCatalogAdminError("IDEMPOTENCY_CONFLICT", "다른 요청에서 이미 사용한 요청 키예요.", 409);
     }
     return existing.song;
   }
@@ -119,7 +119,7 @@ export async function createAdminSong(input: CreateAdminSongInput, adminUserId: 
         raced.source.song.artist === input.artist
       )
         return raced.source.song;
-      throw new SongCatalogAdminError("SONG_CONFLICT", "곡, 순위 또는 출처가 이미 등록되어 있습니다.", 409);
+      throw new SongCatalogAdminError("SONG_CONFLICT", "곡, 순위 또는 출처가 이미 등록되어 있어요.", 409);
     }
     throw error;
   }
@@ -136,15 +136,15 @@ export async function replaceAdminSongSource(
   });
   if (existingJob) {
     if (existingJob.source.songId !== songId)
-      throw new SongCatalogAdminError("IDEMPOTENCY_CONFLICT", "다른 곡에서 사용한 요청 키입니다.", 409);
+      throw new SongCatalogAdminError("IDEMPOTENCY_CONFLICT", "다른 곡에서 이미 사용한 요청 키예요.", 409);
     if (existingJob.source.sourceVideoId !== input.sourceVideoId)
-      throw new SongCatalogAdminError("IDEMPOTENCY_CONFLICT", "다른 출처에서 사용한 요청 키입니다.", 409);
+      throw new SongCatalogAdminError("IDEMPOTENCY_CONFLICT", "다른 출처에서 이미 사용한 요청 키예요.", 409);
     return existingJob.source;
   }
   try {
     return await prisma.$transaction(async (tx) => {
       const song = await tx.song.findUnique({ where: { id: songId }, select: { id: true } });
-      if (!song) throw new SongCatalogAdminError("SONG_NOT_FOUND", "곡을 찾을 수 없습니다.", 404);
+      if (!song) throw new SongCatalogAdminError("SONG_NOT_FOUND", "곡을 찾을 수 없어요.", 404);
       const last = await tx.songSource.findFirst({
         where: { songId },
         orderBy: { revision: "desc" },
@@ -172,7 +172,7 @@ export async function replaceAdminSongSource(
         include: { source: true },
       });
       if (raced?.source.songId === songId && raced.source.sourceVideoId === input.sourceVideoId) return raced.source;
-      throw new SongCatalogAdminError("SOURCE_CONFLICT", "이미 등록된 출처입니다.", 409);
+      throw new SongCatalogAdminError("SOURCE_CONFLICT", "이미 등록된 출처예요.", 409);
     }
     throw error;
   }
@@ -180,9 +180,9 @@ export async function replaceAdminSongSource(
 
 export async function retryAdminSongAnalysis(sourceId: string) {
   const job = await prisma.songAnalysisJob.findUnique({ where: { sourceId } });
-  if (!job) throw new SongCatalogAdminError("ANALYSIS_JOB_NOT_FOUND", "분석 작업을 찾을 수 없습니다.", 404);
+  if (!job) throw new SongCatalogAdminError("ANALYSIS_JOB_NOT_FOUND", "분석 작업을 찾을 수 없어요.", 404);
   if (job.status !== "FAILED")
-    throw new SongCatalogAdminError("ANALYSIS_JOB_NOT_FAILED", "실패한 분석 작업만 재시도할 수 있습니다.", 409);
+    throw new SongCatalogAdminError("ANALYSIS_JOB_NOT_FAILED", "실패한 분석 작업만 다시 시도할 수 있어요.", 409);
   return prisma.songAnalysisJob.update({
     where: { id: job.id },
     data: {
@@ -205,20 +205,20 @@ export async function publishAdminSongSource(songId: string, sourceId: string, f
   const previous = await prisma.song.findUnique({ where: { id: songId }, include: { targetAsset: true } });
   const result = await prisma.$transaction(async (tx) => {
     const source = await tx.songSource.findFirst({ where: { id: sourceId, songId } });
-    if (!source) throw new SongCatalogAdminError("SOURCE_NOT_FOUND", "곡의 출처를 찾을 수 없습니다.", 404);
+    if (!source) throw new SongCatalogAdminError("SOURCE_NOT_FOUND", "곡의 출처를 찾을 수 없어요.", 404);
     const analysis = await tx.songAnalysis.findUnique({
       where: { sourceId_pipelineContract: { sourceId, pipelineContract: SONG_ANALYSIS_PIPELINE_CONTRACT } },
     });
     if (analysis?.status !== "READY" || analysis.cleanupConfirmed !== true)
-      throw new SongCatalogAdminError("ANALYSIS_NOT_READY", "분석이 완료되지 않았습니다.", 409);
+      throw new SongCatalogAdminError("ANALYSIS_NOT_READY", "분석이 아직 완료되지 않았어요.", 409);
     const target = await tx.catalogTargetAsset.findFirst({
       where: { sourceId, status: "READY" },
       orderBy: { createdAt: "desc" },
     });
     if (!target || target.sourceVideoId !== source.sourceVideoId)
-      throw new SongCatalogAdminError("TARGET_NOT_READY", "출처와 일치하는 target 음원이 없습니다.", 409);
+      throw new SongCatalogAdminError("TARGET_NOT_READY", "출처와 일치하는 target 음원이 없어요.", 409);
     const entry = await tx.catalogEntry.findFirst({ where: { songId, catalog: { slug: TJ_2607_CATALOG_SLUG } } });
-    if (!entry) throw new SongCatalogAdminError("CATALOG_ENTRY_NOT_FOUND", "카탈로그 항목을 찾을 수 없습니다.", 404);
+    if (!entry) throw new SongCatalogAdminError("CATALOG_ENTRY_NOT_FOUND", "카탈로그 항목을 찾을 수 없어요.", 404);
     const current = await tx.song.findUniqueOrThrow({ where: { id: songId } });
     const publishedResultChanged =
       entry.status !== "PUBLISHED" ||
@@ -253,7 +253,7 @@ export async function publishAdminSongSource(songId: string, sourceId: string, f
 export async function archiveAdminSong(songId: string) {
   return prisma.$transaction(async (tx) => {
     const song = await tx.song.findUnique({ where: { id: songId } });
-    if (!song) throw new SongCatalogAdminError("SONG_NOT_FOUND", "곡을 찾을 수 없습니다.", 404);
+    if (!song) throw new SongCatalogAdminError("SONG_NOT_FOUND", "곡을 찾을 수 없어요.", 404);
     const entries = await tx.catalogEntry.findMany({ where: { songId, status: { not: "ARCHIVED" } } });
     await tx.catalogEntry.updateMany({ where: { songId, status: { not: "ARCHIVED" } }, data: { status: "ARCHIVED" } });
     for (const catalogId of new Set(entries.map((entry) => entry.catalogId))) {

@@ -54,11 +54,11 @@ function TargetAudioInput({
   const acceptFile = (candidate?: File) => {
     if (!candidate) return;
     if (!(candidate.type.startsWith("audio/") || candidate.name.match(/\.(wav|mp3|flac|m4a|ogg|aac|webm)$/i))) {
-      toast.error("지원하는 오디오 형식이 아닙니다.");
+      toast.error("지원하는 오디오 형식이 아니에요.");
       return;
     }
     if (candidate.size > ADMIN_CUSTOM_MIXING_LIMITS.targetBytes) {
-      toast.error(`음원은 ${formatBytes(ADMIN_CUSTOM_MIXING_LIMITS.targetBytes)} 이하여야 합니다.`);
+      toast.error(`음원은 ${formatBytes(ADMIN_CUSTOM_MIXING_LIMITS.targetBytes)} 이하여야 해요.`);
       return;
     }
     onFile(candidate);
@@ -126,10 +126,10 @@ export function AdminCustomMixingPanel() {
     onSuccess: (nextJob) => {
       queryClient.setQueryData(adminCustomMixingKeys.conversion(nextJob.id), nextJob);
       setJobId(nextJob.id);
-      toast.success("커스텀 믹싱 작업을 GPU 큐에 등록했습니다.");
+      toast.success("커스텀 믹싱을 시작했어요.");
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "커스텀 믹싱을 시작하지 못했습니다.");
+      toast.error(error instanceof Error ? error.message : "커스텀 믹싱을 시작하지 못했어요.");
     },
   });
   const deleteMutation = useMutation(deleteAdminCustomMixingMutationOptions());
@@ -144,17 +144,17 @@ export function AdminCustomMixingPanel() {
     const noticeKey = `${job.id}:${job.status}`;
     if (terminalNoticeRef.current === noticeKey) return;
     terminalNoticeRef.current = noticeKey;
-    if (job.status === "succeeded") toast.success("커스텀 믹싱 결과가 준비됐습니다.");
-    else toast.error(job.error ?? "커스텀 믹싱이 실패했습니다.");
+    if (job.status === "succeeded") toast.success("커스텀 믹싱 결과가 준비됐어요.");
+    else toast.error(job.error ?? "커스텀 믹싱을 완료하지 못했어요.");
   }, [job]);
 
   const submit = () => {
     if (!selectedProfile || !targetFile) {
-      toast.error("보컬 프로필과 target 음원을 선택해주세요.");
+      toast.error("보컬 프로필과 target 음원을 선택해 주세요.");
       return;
     }
     if (!selectedProfile.referenceReady) {
-      toast.error("선택한 프로필에는 준비된 보컬 reference가 없습니다.");
+      toast.error("선택한 프로필에는 사용할 수 있는 보컬 reference가 없어요.");
       return;
     }
     const data = new FormData();
@@ -182,7 +182,7 @@ export function AdminCustomMixingPanel() {
           <MicVocal className="size-4" /> 커스텀 믹싱 실행
         </h2>
         <p className="mt-1 text-xs leading-5 text-muted-foreground">
-          저장된 보컬 프로필과 임시 음원으로 AI 믹싱을 실행합니다. 업로드한 음원과 결과는 저장되지 않습니다.
+          저장된 보컬 프로필과 임시 음원으로 AI 믹싱을 만들어요. 업로드한 음원과 결과는 저장하지 않아요.
         </p>
 
         <div className="mt-5 grid gap-5">
@@ -207,7 +207,7 @@ export function AdminCustomMixingPanel() {
             </Select>
             {selectedProfile && !selectedProfile.referenceReady ? (
               <p className="text-xs text-destructive" role="alert">
-                이 프로필에는 준비된 보컬 reference가 없어 커스텀 믹싱을 실행할 수 없습니다.
+                이 프로필에는 사용할 수 있는 보컬 reference가 없어 커스텀 믹싱을 만들 수 없어요.
               </p>
             ) : null}
           </div>
@@ -219,7 +219,7 @@ export function AdminCustomMixingPanel() {
 
           {profilesQuery.isError ? (
             <StatusNotice
-              description="보컬 프로필을 불러오지 못했습니다. 잠시 뒤 다시 시도해주세요."
+              description="보컬 프로필을 불러오지 못했어요. 잠시 뒤 다시 시도해 주세요."
               title="프로필을 불러오지 못했어요"
               tone="destructive"
             />
@@ -252,8 +252,10 @@ export function AdminCustomMixingPanel() {
             <div className="p-5">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <p className="text-sm font-semibold">믹싱 결과가 준비됐습니다</p>
-                  <p className="mt-1 text-xs text-muted-foreground">결과는 저장되지 않으므로 지금 다운로드하세요.</p>
+                  <p className="text-sm font-semibold">믹싱 결과가 준비됐어요</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    결과는 저장하지 않으니 필요한 경우 지금 다운로드해 주세요.
+                  </p>
                 </div>
                 <MixingStatusBadge status="succeeded" />
               </div>
@@ -276,10 +278,10 @@ export function AdminCustomMixingPanel() {
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold">
-                    {job?.status === "queued" ? "GPU 처리 순서를 기다리고 있어요" : "AI 믹싱을 진행하고 있어요"}
+                    {job?.status === "queued" ? "믹싱 순서를 기다리고 있어요" : "AI 믹싱을 진행하고 있어요"}
                   </p>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    작업이 끝나기 전에 이 화면을 벗어나면 결과를 다시 확인할 수 없습니다.
+                    작업이 끝나기 전에 이 화면을 벗어나면 결과를 다시 확인할 수 없어요.
                   </p>
                 </div>
                 <MixingStatusBadge status={job ? publicStatus(job.status) : "processing"} />
@@ -297,14 +299,14 @@ export function AdminCustomMixingPanel() {
                     <RefreshCw className="size-3.5" /> 새 작업 시작
                   </Button>
                 }
-                description={job.error ?? "커스텀 믹싱을 완료하지 못했습니다. 잠시 뒤 다시 시도해주세요."}
+                description={job.error ?? "커스텀 믹싱을 완료하지 못했어요. 잠시 뒤 다시 시도해 주세요."}
                 title="커스텀 믹싱을 완료하지 못했어요"
                 tone="destructive"
               />
             </div>
           ) : (
             <StatePanel
-              description="보컬 프로필과 target 음원을 선택한 뒤 커스텀 믹싱을 시작하면 결과가 여기에 표시됩니다."
+              description="보컬 프로필과 target 음원을 선택해 커스텀 믹싱을 시작하면 결과가 여기에 표시돼요."
               icon={<AudioLines />}
               title="아직 커스텀 믹싱 결과가 없어요"
             />

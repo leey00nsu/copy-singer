@@ -102,7 +102,7 @@ export const Default: Story = {
 export const Empty: Story = {
   args: { entries: [] },
   play: async ({ canvasElement }) => {
-    await expect(within(canvasElement).getByText("조건에 맞는 곡이 없습니다.")).toBeVisible();
+    await expect(within(canvasElement).getByText("조건에 맞는 곡이 없어요.")).toBeVisible();
   },
 };
 

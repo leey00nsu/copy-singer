@@ -70,7 +70,7 @@ export const Failed: Story = {
   },
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByText("보컬 분석기에 연결할 수 없어요")).toBeVisible();
+    await expect(canvas.getByText("목소리를 분석할 수 없어요")).toBeVisible();
     await userEvent.click(canvas.getByRole("button", { name: "분석 다시 시도" }));
     await expect(args.onRetry).toHaveBeenCalledOnce();
   },

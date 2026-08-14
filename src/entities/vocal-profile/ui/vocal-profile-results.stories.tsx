@@ -210,6 +210,6 @@ export const LegacyGuidance: Story = {
     sourceAudioSrc: NO_NETWORK_AUDIO,
   },
   play: async ({ canvasElement }) => {
-    await expect(within(canvasElement).getByText(/최신 분석기로 새 보컬 프로필을 만들어주세요/)).toBeVisible();
+    await expect(within(canvasElement).getByText(/새 보컬 프로필을 만들어 주세요/)).toBeVisible();
   },
 };

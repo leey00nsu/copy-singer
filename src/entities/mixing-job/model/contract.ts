@@ -138,7 +138,7 @@ export function serializeMixingJob(job: {
     songAnalysisId: job.songAnalysisId,
     status: job.status.toLowerCase() as PublicMixingJobStatus,
     ticketCost: job.ticketCost,
-    error: job.errorCode ? { code: job.errorCode, detail: job.errorDetail ?? "믹싱 작업이 실패했습니다." } : null,
+    error: job.errorCode ? { code: job.errorCode, detail: job.errorDetail ?? "믹싱 작업을 완료하지 못했어요." } : null,
     createdAt: job.createdAt.toISOString(),
     updatedAt: job.updatedAt.toISOString(),
     completedAt: job.completedAt?.toISOString() ?? null,

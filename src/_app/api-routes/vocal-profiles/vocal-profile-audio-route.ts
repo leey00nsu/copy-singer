@@ -8,7 +8,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
   const reference = await getVocalProfileReference(session.user.id, (await context.params).id);
   if (!reference) {
     return Response.json(
-      { error: { code: "VOCAL_PROFILE_AUDIO_NOT_FOUND", message: "재생할 보컬 프로필 음성을 찾을 수 없습니다." } },
+      { error: { code: "VOCAL_PROFILE_AUDIO_NOT_FOUND", message: "재생할 보컬 프로필 음성을 찾을 수 없어요." } },
       { status: 404 },
     );
   }
@@ -21,7 +21,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
   return (
     response ??
     Response.json(
-      { error: { code: "VOCAL_PROFILE_AUDIO_UNAVAILABLE", message: "보컬 프로필 저장소에 연결하지 못했습니다." } },
+      { error: { code: "VOCAL_PROFILE_AUDIO_UNAVAILABLE", message: "보컬 프로필 오디오를 불러오지 못했어요." } },
       { status: 502 },
     )
   );

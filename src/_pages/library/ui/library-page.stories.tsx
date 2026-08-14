@@ -109,7 +109,7 @@ export const Profiles: Story = {
     const productMenu = within(canvas.getByRole("navigation", { name: "제품 메뉴" }));
     await expect(productMenu.getByRole("link", { name: "라이브러리" })).toHaveAttribute("aria-current", "page");
     await expect(canvas.getByRole("link", { name: "새 목소리 분석" })).toHaveAttribute("href", "/profile");
-    await expect(canvas.getByText("진행 중인 작업은 페이지를 닫아도 계속됩니다.", { exact: false })).toBeVisible();
+    await expect(canvas.getByText("저장된 보컬 프로필과 AI 믹싱 결과를 한곳에서 확인할 수 있어요.")).toBeVisible();
     await expect(canvas.getByText("보컬 프로필 10개")).toBeVisible();
     await expect(canvas.getAllByRole("link", { name: /분석과 제출 보컬 보기/ })).toHaveLength(10);
   },

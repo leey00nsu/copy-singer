@@ -157,7 +157,7 @@ function AudioWaveformPlayerInstance({
     <div className={cn("rounded-xl border bg-background p-3", className)}>
       {decodeFailed ? (
         <div>
-          <p className="mb-2 text-xs text-muted-foreground">파형을 불러오지 못해 기본 플레이어로 재생합니다.</p>
+          <p className="mb-2 text-xs text-muted-foreground">파형을 불러오지 못해 기본 플레이어로 재생해요.</p>
           {/* Audio-only singing samples do not have a meaningful caption track. */}
           {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
           <audio aria-label={label} className="w-full" controls preload="metadata" src={src} />
@@ -171,7 +171,7 @@ function AudioWaveformPlayerInstance({
           >
             <div
               aria-busy={!isReady}
-              aria-label={`${label} 파형. 클릭하거나 드래그하여 재생 위치를 이동할 수 있습니다. 키보드로 좌우 화살표는 5초 이동, Home/End는 처음/끝으로 이동합니다.`}
+              aria-label={`${label} 파형. 클릭하거나 드래그해 재생 위치를 이동할 수 있어요. 좌우 화살표는 5초 이동, Home/End는 처음과 끝으로 이동해요.`}
               aria-valuemax={Math.round(duration)}
               aria-valuemin={0}
               aria-valuenow={Math.round(currentTime)}
@@ -274,4 +274,3 @@ function AudioWaveformPlayerInstance({
     </div>
   );
 }
-

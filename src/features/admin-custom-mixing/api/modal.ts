@@ -12,26 +12,22 @@ function modalConfig(): ModalConfig | null {
 }
 
 export function modalUnavailableResponse() {
-  return Response.json({ detail: "The conversion API is not configured." }, { status: 503 });
+  return Response.json({ detail: "현재 커스텀 믹싱을 사용할 수 없어요." }, { status: 503 });
 }
 
 async function fetchReference(reference: { externalUrl: string; mimeType: string; fileName: string }) {
   let response: Response;
   try {
     response = await fetch(reference.externalUrl, { cache: "no-store", signal: AbortSignal.timeout(60_000) });
-  } catch (error) {
+  } catch {
     return {
-      error: Response.json(
-        { detail: `보컬 reference를 불러오지 못했습니다: ${error instanceof Error ? error.message : "network error"}` },
-        { status: 502 },
-      ),
+      error: Response.json({ detail: "보컬 reference를 불러오지 못했어요." }, { status: 502 }),
     };
   }
-  if (!response.ok)
-    return { error: Response.json({ detail: "보컬 reference를 불러오지 못했습니다." }, { status: 502 }) };
+  if (!response.ok) return { error: Response.json({ detail: "보컬 reference를 불러오지 못했어요." }, { status: 502 }) };
   const bytes = await response.arrayBuffer();
   if (bytes.byteLength === 0 || bytes.byteLength > ADMIN_CUSTOM_MIXING_LIMITS.referenceBytes) {
-    return { error: Response.json({ detail: "보컬 reference 파일 크기를 확인할 수 없습니다." }, { status: 502 }) };
+    return { error: Response.json({ detail: "보컬 reference 파일을 확인할 수 없어요." }, { status: 502 }) };
   }
   return {
     bytes,
@@ -67,11 +63,8 @@ export async function submitAdminCustomMixing(
       cache: "no-store",
       signal: AbortSignal.timeout(15 * 60_000),
     });
-  } catch (error) {
-    return Response.json(
-      { detail: `변환 서비스에 연결하지 못했습니다: ${error instanceof Error ? error.message : "network error"}` },
-      { status: 502 },
-    );
+  } catch {
+    return Response.json({ detail: "커스텀 믹싱을 시작하지 못했어요." }, { status: 502 });
   }
   return new Response(response.body, {
     status: response.status,

@@ -48,7 +48,7 @@ export function AccountOverview({ account, authentication, user }: AccountOvervi
   return (
     <div className="mx-auto w-full max-w-[72rem] px-5 py-12 sm:px-7 lg:px-8 lg:py-14">
       <ProductPageIntro
-        description="로그인 계정과 사용 가능한 티켓, 변경 내역을 확인하세요."
+        description="로그인 계정과 사용 가능한 티켓, 변경 내역을 확인할 수 있어요."
         eyebrow="Account"
         title="내 계정"
       />
@@ -63,7 +63,7 @@ export function AccountOverview({ account, authentication, user }: AccountOvervi
               <h2 className="text-base font-semibold" id="account-information-title">
                 계정 정보
               </h2>
-              <p className="mt-1 text-xs text-muted-foreground">현재 로그인한 사용자와 실제 연결 공급자입니다.</p>
+              <p className="mt-1 text-xs text-muted-foreground">현재 로그인한 계정 정보를 보여줘요.</p>
             </div>
             <Badge className="text-[11px]" variant={authentication.googleConnected ? "outline" : "secondary"}>
               <ShieldCheck aria-hidden="true" className="size-3" />
@@ -102,7 +102,7 @@ export function AccountOverview({ account, authentication, user }: AccountOvervi
             <h2 className="text-5xl font-semibold tracking-[-0.055em] tabular-nums" id="ticket-balance-title">
               {account.balance}개
             </h2>
-            <p className="mt-2 text-xs leading-5 text-background/60">AI 믹싱을 시작할 때 티켓 1개를 사용합니다.</p>
+            <p className="mt-2 text-xs leading-5 text-background/60">AI 믹싱을 시작할 때 티켓 1개를 사용해요.</p>
           </div>
         </div>
       </section>
@@ -114,7 +114,7 @@ export function AccountOverview({ account, authentication, user }: AccountOvervi
               티켓 변경 내역
             </h2>
             <p className="mt-1 text-xs leading-5 text-muted-foreground">
-              지급, AI 믹싱 사용, 자동 환불과 관리자 조정을 시간순으로 표시합니다.
+              티켓 지급, AI 믹싱 사용, 환불과 관리자 조정 내역을 시간순으로 보여줘요.
             </p>
           </div>
           <p className="text-[11px] text-muted-foreground">총 {account.total}건</p>
