@@ -37,7 +37,7 @@
     - [x] `VoiceScanInput`의 기존 지원 형식 안내도 shared 표시 문구를 사용한다.
     - [x] `uploadAdminCatalogTarget` MIME 검증을 공통 MIME만 허용하도록 통일하고 FLAC을 거절한다.
 
-- [DOING][PRD-US-028][PRD-FR-059] T-F028-song-catalog-audio-format-parity-02 m4a 선택·서버 검증 회귀 테스트
+- [DONE][PRD-US-028][PRD-FR-059] T-F028-song-catalog-audio-format-parity-02 m4a 선택·서버 검증 회귀 테스트
   - Date: 2026-08-14
   - Acceptance:
     - 관리자 곡 추가·target 업로드·출처 교체 UI가 동일한 accept 계약과 지원 확장자 안내를 가진다.
@@ -54,7 +54,7 @@
 
 ## 완료 조건
 
-- [ ] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
+- [x] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
 - [x] 테스트 실행 및 통과 기록 완료
 - [ ] 최종 결과 공유 및 workflow checkpoint 사용자 확인 기록 완료
 
@@ -71,4 +71,4 @@
 | 타깃 Storybook | `2026-08-14` | `PASS — CatalogManager + VoiceScanInput 17/17` |
 | `pnpm run test:storybook --run` | `2026-08-14` | `PASS — 54 indexed: 52 passed + 2 skipped, 154/154 tests` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-14T08:05:43.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-14T08:08:13.000Z -->
