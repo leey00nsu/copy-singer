@@ -132,6 +132,18 @@
     - [x] `Shared UI/Progress > CompletionSync`에서 36→100 동적 변경 후 `aria-valuenow=100`, transition 0s, indicator width=track width를 브라우저 검증
     - [x] `pnpm run test:voice-scan` 12/12, Progress story 3/3, 전체 Storybook 51 passed + 2 skipped / 151 tests, typecheck·architecture PASS
 
+- [DONE][PRD-FR-022] T-F027-notification-brand-color-08 오디오 준비 완료 프레임 보장
+  - Date: 2026-08-14
+  - Acceptance:
+    - MediaBunny 변환 완료 후 100% 상태가 실제 브라우저에 paint된 뒤 Ready 화면으로 전환된다
+    - 마지막 progress callback과 `preparing=false`가 같은 React batch에 묶여 100% 막대가 생략되지 않는다
+    - 실제 `VoiceScanInput` 준비 상태 전환을 Storybook에서 재현해 100% 막대 노출을 검증한다
+  - Checklist:
+    - [x] 변환 성공 후 `setPreparationProgress(1)`을 명시하고 8 animation frames 동안 완료 상태를 유지한 뒤 Ready 화면으로 전환
+    - [x] T07의 complete-state 즉시 width 동기화는 유지하되 generic `CompletionSync` story는 제거하고 실제 `VoiceScanInput` 검증으로 대체
+    - [x] `VoiceScanInput` Preparing 46%/PreparingComplete 100%에서 실제 indicator/track 폭을 브라우저 DOM으로 검증
+    - [x] `pnpm run test:voice-scan` 12/12, 타깃 Storybook 12/12, 전체 Storybook 51 passed + 2 skipped / 151 tests, typecheck·architecture PASS
+
 ---
 
 ## 완료 조건
@@ -155,7 +167,7 @@
 
 
 
-<!-- lee-spec-kit:workflow-sync 2026-08-14T04:05:52.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-14T04:33:47.808Z -->
 
 
 

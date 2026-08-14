@@ -122,5 +122,19 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**:
   - **Commit**: `d5f5f0b` (`fix(F027): 오디오 준비 progress 완료 동기화`)
   - **Test/Log**: Progress story 3/3 PASS, `pnpm run test:voice-scan` 12/12 PASS, `pnpm run test:storybook --run` 53 indexed files 중 51 passed + 2 skipped / 151 tests PASS, `pnpm run typecheck` PASS, `pnpm run check:architecture` PASS.
-- **Consequences**: 진행 중 progress는 기존처럼 부드럽게 움직이되 완료 순간에는 시각적 지연 없이 실제 100% 상태가 표시된다.
+- **Consequences**: 진행 중 progress는 기존처럼 부드럽게 움직이되 완료 순간에는 시각적 지연 없이 실제 100% 상태가 표시된다. 다만 후속 실사용 재검증에서 이 변경만으로는 충분하지 않았고, T08에서 React paint/unmount 타이밍 문제를 추가로 수정했다.
+
+## D027-07: 오디오 준비 100% paint 보장 (2026-08-14)
+
+- **Context**: T07 이후에도 실사용 `/profile` 퍼널에서 숫자는 100%에 도달하지만 indicator가 이전 중간 위치에 남은 채 Ready 화면으로 전환되는 현상이 재현됐다. 공용 Progress 단독 story에서는 100% width가 정상이라 컴포넌트 자체보다 상위 상태 전환 타이밍을 다시 조사했다.
+- **Constraints**: `effect-cleanup.test.ts`가 Client Component의 `setTimeout`/`setInterval` 사용을 금지하므로 인위적인 timer hold는 사용할 수 없다. MediaBunny `Conversion.onProgress`의 마지막 `1` 콜백은 output finalize 후 `execute()`가 resolve되기 직전에 발생한다.
+- **Decision**: `prepareProfileAudio()`가 resolve된 직후 workbench가 `setPreparationProgress(1)`을 명시하고, `requestAnimationFrame` 8프레임 동안 `preparing=true`를 유지한 뒤 Ready 상태로 전환한다. Base UI Progress의 complete-state 즉시 width 동기화는 유지한다. T07의 generic `Shared UI/Progress > CompletionSync` story는 제거하고 실제 `VoiceScanInput`의 `Preparing` 46%와 `PreparingComplete` 100% story에서 indicator/track 실제 폭을 검증한다.
+- **Rationale**: 마지막 progress update와 `setPreparingAudio(false)`가 같은 React batch에 들어가면 100% DOM 상태가 실제 browser paint 전에 unmount될 수 있다. 완료 width를 즉시 계산하는 것만으로는 이 paint boundary를 보장하지 못한다. animation frame 경계를 명시하면 timer 없이 완료 상태가 실제 렌더링된 뒤 화면을 교체할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: MediaBunny 1.52.3 소스에서 `output.finalize()` 후 `onProgress(1)`을 호출하고 곧바로 `execute()`가 반환하는 순서를 확인했다. 현재 workbench는 `await prepareProfileAudio()` 직후 성공 state를 설정하고 `finally`에서 즉시 `setPreparingAudio(false)`를 호출하고 있었다.
+  - **DONE 전 확정 시점**: `setPreparationProgress(1)` 후 8개의 `requestAnimationFrame`을 기다리도록 변경했다. 실제 `VoiceScanInput` story에서 46%는 indicator/track 비율 약 0.46, 100%는 indicator width와 track width가 동일함을 Chromium DOM에서 검증했다.
+- **Evidence**:
+  - **Commit**: `a4c88ee` (`fix(F027): 오디오 준비 완료 프레임 보장`)
+  - **Test/Log**: `pnpm run test:voice-scan` 12/12 PASS, VoiceScanInput + Progress 타깃 Storybook 12/12 PASS, `pnpm run test:storybook --run` 최종 53 indexed files 중 51 passed + 2 skipped / 151 tests PASS, `pnpm run typecheck` PASS, `pnpm run check:architecture` PASS. 전체 Storybook 첫 실행에서 기존 `LongAudioDialog` focus assertion 1건이 간헐 실패했으나 해당 story 단독 2/2 및 전체 재실행 151/151 PASS.
+- **Consequences**: 업로드 자르기/인코딩이 완료되면 100% 숫자와 full-width bar가 실제로 paint된 뒤 Ready UI로 전환된다. 완료 표시를 위한 별도 polling/timer는 추가하지 않는다.
 
