@@ -215,14 +215,26 @@
     - [x] `Widgets/Creation Funnel > ActiveAnalysis`에서 상단 current=`bg-data-accent text-white`, 내부 timeline current=`bg-data-accent/10 text-data-accent-foreground`를 같은 story에서 동시 검증
     - [x] 변경 파일 Biome PASS, typecheck PASS, architecture 4/4 PASS, Creation Funnel Storybook 4/4 PASS, 전체 Storybook 52 passed + 2 skipped / 152 tests PASS
 
+- [DOING][NON-PRD] T-F027-notification-brand-color-15 VoiceOrb 전역 motion 완화 및 ready-entry 애니메이션
+  - Date: 2026-08-14
+  - Acceptance:
+    - 모든 `VoiceOrb`의 shader/rotation motion 속도가 기존 대비 50%로 감소한다
+    - WebGL ready 또는 fallback 확정 전에는 Orb가 보이지 않고, 준비 후 opacity 0→1 / scale 0→1 등장 애니메이션으로 노출된다
+    - `prefers-reduced-motion: reduce`에서는 등장 애니메이션 없이 최종 상태를 즉시 표시한다
+  - Checklist:
+    - [ ] 공용 `VoiceOrb` 내부에서 최종 motion speed를 0.5배로 적용해 개별 사용처 누락을 방지한다
+    - [ ] `.voice-orb` ready/fallback 상태를 기준으로 공용 entrance animation을 추가한다
+    - [ ] Storybook에서 ready/fallback entry 상태와 전역 speed scale을 회귀 검증한다
+    - [ ] typecheck, architecture, 관련 Storybook 및 전체 Storybook을 통과한다
+
 ---
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
