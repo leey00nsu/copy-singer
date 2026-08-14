@@ -17,7 +17,7 @@
 
 ## 목적
 
-아이콘·버튼·칩의 검정 일색(`bg-primary`/`text-foreground`/`bg-muted`)을 브랜드 컬러로 선택적 교체한다. 알림 모달은 그 대표 사례다: 아이콘 배지가 모두 `bg-muted text-foreground`로 같고 호버(`focus:bg-accent`≈`muted`)와 구분이 안 돼 종류 구분과 인터랙션 피드백이 약하다. 이 feature는 디자인 시스템 "Brand gradient는 연속 데이터와 active signal에만, primary 버튼/보더/포커스 링에는 단색 유지" 규칙을 지키면서, 상태성 있는 아이콘·칩만 `data-accent`/`success`/`destructive`로 선택적 교체하고 알림 모달 호버 대비를 확보한다.
+아이콘·버튼·칩의 검정 일색(`bg-primary`/`text-foreground`/`bg-muted`)을 브랜드 컬러로 선택적 교체한다. 알림 모달은 그 대표 사례다: 아이콘 배지가 모두 `bg-muted text-foreground`로 같고 호버(`focus:bg-accent`≈`muted`)와 구분이 안 돼 종류 구분과 인터랙션 피드백이 약하다. 이 feature는 상태 UI의 의미를 통일해 현재/진행 중은 연한 브랜드 컬러, 완료된 중간 단계는 검정/foreground, 최종 성공은 진한 브랜드 컬러, 대기·취소는 neutral, 실패는 destructive로 표시한다. primary 버튼/보더/포커스 링에는 기존 단색 규칙을 유지한다.
 
 ---
 
@@ -50,13 +50,14 @@
 ### US-3: 상태 칩의 의미를 컬러로 즉시 아는 사용자
 
 **As a** 추천·라이브러리·믹싱 상태를 보는 사용자
-**I want** 활성/선택 상태의 칩이 브랜드 컬러로 강조되고 비활성은 neutral로 남아
-**So that** 현재 상태와 선택을 즉시 알 수 있다.
+**I want** 진행 중·최종 성공·완료된 중간 단계가 서로 다른 의미 색으로 일관되게 표시되고
+**So that** 지금 진행 중인지, 이미 지나온 단계인지, 최종 성공인지 즉시 알 수 있다.
 
 **Acceptance Criteria:**
 
-- [ ] 선택·활성 상태의 칩/`Badge`(예: 필터 선택, 활성 analysis job, 선택된 추천 카드 표시)만 `data-accent` 계열로 강조한다
-- [ ] 비활성·empty·disabled 칩은 `secondary`/`outline` neutral을 유지한다
+- [ ] 현재/진행 중 상태는 `data-accent/10` + `data-accent-foreground` 계열로 강조한다
+- [ ] 완료된 중간 단계는 검정/foreground + check로 표시하고, 최종 성공 상태만 `data-accent` solid + white/check로 강조한다
+- [ ] 대기·취소·empty·disabled는 neutral, 실패는 destructive를 유지한다
 - [ ] "한 화면에 하나의 primary action"과 "넓은 배경은 neutral 유지" 원칙을 깨지 않는다 (primary 버튼은 검정 유지)
 
 ---
@@ -77,11 +78,12 @@
 - 옵선: (a) 아이콘 배지가 컬러이므로 호버 배경을 `bg-muted`보다 진한 `bg-accent`가 아닌 `bg-foreground/5` 등으로 분리, 또는 (b) 배지는 `group-focus` 시 더 진해지도록. 두 중 시각 검증 후 선택하되, 아이콘 컬러 유지가 우선.
 - 전체 알림 보기(`/notifications`)의 `hover:bg-muted/60`와도 톤을 맞춘다.
 
-### FR-3: 상태 칩 선택적 브랜드 컬러
+### FR-3: 작업 상태 컬러 의미 통일
 
-- `Badge`/`badgeVariants`와 `Button` secondary/ghost 중 상태성인 것만 선택적 교체한다. 예: Library filter 활성 칩, recommendation filter 선택, mixing status의 succeeded/active.
-- 비활성·disabled·empty는 neutral 유지. `primary` 버튼(검정)은 변경하지 않는다.
-- 변경 대상은 코드 grep으로 상태성 칩을 식별하고, 디자인 시스템 "한 surface에 accent 2개 이상 혼용 금지"를 지킨다.
+- 작업 lifecycle을 표시하는 chip/step/timeline은 공통 semantic 규칙을 사용한다: `active/current`=연한 `data-accent`, `completed intermediate`=검정/foreground, `terminal success`=solid `data-accent`, `failed`=destructive, `upcoming/canceled`=neutral.
+- `MixingStatusBadge`, 생성 퍼널 stepper, `ActualStateTimeline`, 믹싱 상세 timeline, 보컬 분석 진행 badge/라이브러리 active analysis badge는 같은 규칙을 따른다.
+- 필터 선택처럼 작업 lifecycle이 아닌 선택 상태는 기존 accent 규칙을 유지하고, 비활성·disabled·empty는 neutral 유지한다. `primary` 버튼(검정)은 변경하지 않는다.
+- 변경 대상은 코드 grep으로 상태성 UI를 식별하고, 디자인 시스템 "한 surface에 accent 2개 이상 혼용 금지"를 지킨다.
 
 ### FR-4: 검증
 

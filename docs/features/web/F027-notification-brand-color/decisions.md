@@ -194,3 +194,17 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Test/Log**: 수정 전 NotificationBell 실제 mark 회귀 1/1 FAIL로 재현, 수정 후 NotificationBell + badge 2/2 PASS, `pnpm run typecheck` PASS, `pnpm run check:architecture` PASS. 전체 Storybook은 기존 VoiceOrb/AdminCustomMixing 타이밍성 실패가 각각 한 번 발생했으나 단독 10/10·3/3 PASS 후 최종 전체 51 passed + 2 skipped / 151 tests PASS.
 - **Consequences**: 실제 사용자에게 보이는 Lucide 선 색이 hover/focus에서도 타입별 semantic color를 유지한다. 이후 notification icon 회귀 테스트는 SVG 부모가 아니라 실제 mark descendant를 기준으로 한다.
 
+## D027-12: 작업 lifecycle 상태 컬러를 current/completed/terminal 기준으로 통일 (2026-08-14)
+
+- **Context**: F027 초기 결정은 active 상태만 `data-accent`로 강조하고 succeeded/completed를 검정으로 유지했지만, `ActualStateTimeline`은 completed를 브랜드 컬러로 사용해 `MixingStatusBadge`, 상단 funnel stepper, 믹싱 상세 timeline과 의미가 뒤집혀 있었다. 사용자는 동일한 작업 상태가 화면마다 다른 컬러 의미를 갖는 문제를 확인했다.
+- **Constraints**: primary action 버튼은 검정 단색을 유지하고, status UI만 의미 기반으로 통일한다. 실패는 destructive, 대기·취소는 neutral 규칙을 유지해야 한다.
+- **Options**: (a) 진행 중=검정 / 완료=브랜드로 단순 swap, (b) 현재/진행 중=연한 브랜드, 완료된 중간 단계=검정, 최종 성공=진한 브랜드로 상태 강도를 분리.
+- **Decision**: (b)를 채택한다. 공용 semantic class를 shared SSOT로 두고 lifecycle UI에서 `active/current`는 brand tint, `completed intermediate`는 foreground solid, `terminal success`는 brand solid, `failed`는 destructive, `upcoming/canceled`는 neutral로 사용한다. 이 결정은 D027-02의 succeeded=검정 판정을 supersede한다.
+- **Rationale**: 사용자가 지금 있는 위치는 브랜드 컬러로 즉시 보여주되, 이미 지나온 단계는 검정으로 후퇴시켜 시선을 현재에 둔다. 작업 전체가 성공적으로 확정된 terminal success에는 다시 강한 브랜드 컬러를 사용해 완료의 긍정적 확정성을 전달한다.
+- **Trace**:
+  - **DOING 시작 시점**: `CreationFunnelStepper`와 `MixingStatusBadge`는 current/active=brand·complete/succeeded=black, `ActualStateTimeline`은 complete=brand, 믹싱 상세 `MixingTimeline`은 complete=black으로 서로 다른 매핑을 사용하는 것을 코드로 확인했다.
+- **Evidence**:
+  - **Commit**: TBD
+  - **Test/Log**: TBD
+- **Consequences**: 작업 상태를 나타내는 chip/step/timeline은 화면 종류와 무관하게 같은 색 의미를 갖는다. 일반 정보 badge와 primary button은 이 규칙의 대상이 아니다.
+
