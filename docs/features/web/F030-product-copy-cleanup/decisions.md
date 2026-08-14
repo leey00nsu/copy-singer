@@ -85,7 +85,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 랜딩 hero의 accessible/visual headline을 사용자 지정 문구로 교체했다. 프로필·로그인 헤드라인은 `break-keep`과 모바일 `2rem` 기준으로 조정해 한글 음절 단위 분절을 막았고, 추천 페이지 메타의 정적 `100곡`은 제거했다. 추천 결과 화면의 곡 수는 기존처럼 `run.items.length`를 사용하므로 실제 카탈로그 크기에 따라 바뀐다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: -
+  - **Commit**: `5460c09` (`feat(F030): 구현 승인 피드백 반영`)
   - **PR**: -
   - **Test/Log**: auth 8/8 PASS; voice-scan 4/4 PASS; recommendation ranking 10/10 + UI/presentation/synthesis 20/20 PASS; landing/login Storybook 6/6 PASS; lint/typecheck PASS; 첫 전체 `pnpm test`에서 unrelated admin custom mixing Storybook 1건이 타이밍성 실패 후 단독 3/3 PASS, 재실행한 전체 `pnpm test` PASS
 - **Consequences**: 카피 Feature에 제한적인 타이포그래피 조정이 포함되지만, 목적은 한글 헤드라인 가독성 보완으로 한정된다.
