@@ -123,3 +123,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: -
   - **Test/Log**: account unit 2/2 PASS; account Storybook 3/3 PASS; ESLint PASS; `tsc --noEmit` PASS; 전체 `pnpm test` 중 변경 무관 타이밍성 Storybook 2건과 Leemage cleanup 1건은 각각 단독 재실행 13/13, 3/3 PASS.
 - **Consequences**: 계정 카드 상단이 단순해지며, 인증 제공자 정보는 상세 필드에서 계속 확인할 수 있다.
+
+## D007: 계정 정보 라벨 아이콘은 세 필드 모두 같은 패턴으로 정렬 (2026-08-14)
+
+- **Context**: `이름` 라벨에만 `UserRound` 아이콘이 있고 `이메일`, `로그인 방식`에는 아이콘이 없어 같은 레벨의 필드가 시각적으로 불균형해 보였다.
+- **Constraints**: 필드 값, 인증 상태, 연결일, 티켓 동작은 변경하지 않고 라벨 표현만 정리한다.
+- **Options**: 이름 아이콘을 제거해 모두 텍스트로 맞추거나, 세 필드 모두 의미에 맞는 아이콘을 추가하는 방식을 비교한다.
+- **Decision**: 기존 `UserRound`를 유지하고 `이메일`에는 `Mail`, `로그인 방식`에는 `LogIn`을 추가한다.
+- **Rationale**: 사용자가 아이콘을 유지하는 방향을 선호했고, 같은 정보 위계의 라벨에 동일한 `icon + text` 구조를 적용하면 스캔하기 쉬우면서 시각적 균형도 맞는다.
+- **Trace**:
+  - **DOING 시작 시점**: account 정보 카드의 세 라벨만 T07 범위로 잡고 데이터/레이아웃 구조는 유지한다.
+  - **DONE 전 확정 시점**: `이메일`과 `로그인 방식` 라벨에 각각 `Mail`, `LogIn`을 추가하고 기존 `이름`의 `UserRound`와 동일한 `flex items-center gap-2` 패턴으로 맞췄다. 필드 값과 연결일 표시에는 변경이 없다.
+  - **머지 후 확인**: -
+- **Evidence**:
+  - **Commit**: -
+  - **PR**: -
+  - **Test/Log**: account unit 2/2 PASS; account Storybook 3/3 PASS; ESLint PASS; `tsc --noEmit` PASS.
+- **Consequences**: 계정 정보 라벨은 세 필드 모두 아이콘을 포함하며, 정보 구조 자체는 그대로 유지된다.

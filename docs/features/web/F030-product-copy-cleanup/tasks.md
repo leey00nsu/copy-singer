@@ -108,15 +108,26 @@
     - [x] account 단위 테스트와 Storybook 기대값을 새 UI에 맞췄다.
     - [x] account 단위 테스트 2/2, account Storybook 3/3, ESLint, TypeScript를 통과했다. 전체 `pnpm test`에서 이번 변경과 무관한 기존 타이밍성 Storybook 2건과 Leemage cleanup 통합 테스트 1건이 각각 일시 실패했지만, 해당 실패들은 단독 재실행 13/13 및 3/3으로 모두 통과했다.
 
+- [DONE][NON-PRD] T-F030-product-copy-cleanup-07 계정 정보 필드 아이콘 정렬
+  - Date: 2026-08-14
+  - Acceptance:
+    - 계정 정보의 `이름`, `이메일`, `로그인 방식` 라벨이 같은 시각적 위계로 아이콘을 함께 표시한다.
+    - 기존 이름 아이콘은 유지하고 이메일은 `Mail`, 로그인 방식은 `LogIn` 아이콘을 사용한다.
+    - 계정 정보 내용과 인증/티켓 동작은 변경하지 않는다.
+  - Checklist:
+    - [x] `AccountOverview`의 세 필드 라벨 구조와 아이콘을 `UserRound` / `Mail` / `LogIn`으로 통일했다.
+    - [x] account 단위 테스트와 Storybook에서 세 라벨에 아이콘이 렌더링되는 것을 확인했다.
+    - [x] account unit 2/2, account Storybook 3/3, ESLint, TypeScript를 통과했다.
+
 ---
 
 ## 완료 조건
 
 - [x] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
 - [x] 테스트 실행 및 통과 기록 완료
-- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
-- 2026-08-14 구현 승인: 사용자가 최종 결과를 공유받은 뒤 응답 `마무리해줘`로 구현 완료와 다음 완료 흐름 진행을 승인함.
+- 2026-08-14 기존 구현 승인: 사용자가 당시 최종 결과를 공유받은 뒤 응답 `마무리해줘`로 완료 흐름 진행을 승인했으나, 이후 T06/T07 후속 변경 요청이 추가되어 현재 구현은 다시 승인 대상임.
 
 ### 테스트 실행 기록
 
@@ -132,8 +143,8 @@
 | `pnpm test` | `2026-08-14` | `PASS — build + unit/integration + Storybook` |
 | `pnpm run lint` | `2026-08-14` | `PASS` |
 | `pnpm exec tsc --noEmit` | `2026-08-14` | `PASS` |
-| targeted account: `tests/account-ui.test.tsx` + account Storybook | `2026-08-14` | `PASS — 2/2 + 3/3` |
+| targeted account: `tests/account-ui.test.tsx` + account Storybook | `2026-08-14` | `PASS — 2/2 + 3/3; T07 세 필드 아이콘 확인` |
 | flaky reruns: voice-scan/admin custom mixing Storybook + Leemage cleanup | `2026-08-14` | `PASS — 13/13 + 3/3` |
 | latest `pnpm test` | `2026-08-14` | `PARTIAL — 변경 무관 flaky 1건(Leemage cleanup)에서 중단; 해당 파일 단독 3/3 PASS` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-14T13:11:32.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-14T13:16:11.000Z -->
