@@ -45,20 +45,27 @@
     - pnpm lockfile과 `allowBuilds` policy가 tracked 상태이며 `pnpm audit`은 high 3건(`image-size` 2, `nanoid` 1)을 candidate로 반환했다. `image-size`는 Storybook dev dependency 경로이며 `nanoid`는 Next/PostCSS 경로도 포함해 T03 reachability 검증 대상으로 남긴다.
     - pinned Python direct requirements는 `pip-audit --no-deps --disable-pip` 기준 확인한 파일에서 0건이었다. SoulX requirements는 non-exact range 때문에 동일 방식의 완전 감사가 불가해 supply-chain candidate로 남긴다.
 
-- [DOING][NON-PRD] T-F029-cso-security-audit-02 애플리케이션 OWASP·STRIDE code-tracing 감사
+- [DONE][NON-PRD] T-F029-cso-security-audit-02 애플리케이션 OWASP·STRIDE code-tracing 감사
   - Date: 2026-08-14
   - Acceptance:
     - auth/admin/owner scope, upload, raw SQL, URL fetch, media proxy, worker, Python service를 실제 code path로 추적한다.
     - OWASP A01–A10과 주요 component의 STRIDE threat를 evidence 기반으로 평가한다.
     - theoretical concern과 실제 exploit candidate를 구분한다.
   - Checklist:
-    - [ ] authentication/session/admin authorization과 IDOR/owner scope를 추적한다.
-    - [ ] file upload, private media, external URL/fetch, raw SQL, subprocess/ffmpeg 경로를 검사한다.
-    - [ ] Leemage/Modal/Google OAuth 및 Python service의 credential/request/response boundary를 검사한다.
-    - [ ] CSP/CORS/security header/error exposure/rate-abuse 관련 경계를 확인한다.
-    - [ ] OWASP/STRIDE/data classification matrix를 작성한다.
+    - [x] authentication/session/admin authorization과 IDOR/owner scope를 추적한다.
+    - [x] file upload, private media, external URL/fetch, raw SQL, subprocess/ffmpeg 경로를 검사한다.
+    - [x] Leemage/Modal/Google OAuth 및 Python service의 credential/request/response boundary를 검사한다.
+    - [x] CSP/CORS/security header/error exposure/rate-abuse 관련 경계를 확인한다.
+    - [x] OWASP/STRIDE/data classification matrix를 작성한다.
+  - Evidence:
+    - admin route 20개는 모두 `requireAdminApi`, auth/health를 제외한 사용자 API route는 모두 session/admin guard를 직접 적용한다. owner scope는 vocal profile, private media, recommendation, mixing job 경로에서 `session.user.id`까지 persistence query로 전달되는 것을 확인했다.
+    - 회귀 검증은 auth DB 3/3, vocal-profile history UI 3/3 + private/owner 3/3, admin UI 4/4 + integration 1/1, mixing DB 1/1 PASS였다.
+    - Prisma unsafe raw API 사용은 0건이며 raw SQL은 tagged template만 사용한다. YouTube source는 HTTPS/host/video-id를 검증한 뒤 shell이 아닌 argv subprocess로 전달하고, TLS verification disable/NEXT_PUBLIC credential 노출 패턴도 0건이었다.
+    - Leemage/Modal machine credential은 server-only env에서 읽고 누락 시 fail-closed하며, Python Modal web app은 global API-key dependency와 constant-time 비교를 사용한다. private audio는 owner-scoped DB asset에서만 external URL을 얻어 `private, no-store`로 proxy한다.
+    - OWASP/STRIDE mapping에서 A01/A03/A10 및 IDOR/SQLi/command injection/SSRF는 PASS evidence가 확보됐다. A02/A04/A05/A06 후보는 T03으로 좁혔다: known auth-secret fallback, vocal-analysis admission abuse, multipart pre-parse resource bound, transitive dependency advisories.
+    - data classification은 Restricted=auth/session secret 및 사용자 원본 음성, Confidential=provider/Leemage/Modal credential과 분석·믹싱 artifact metadata, Internal=job/error/운영 metadata, Public=published catalog·marketing/legal로 분류했다.
 
-- [TODO][NON-PRD] T-F029-cso-security-audit-03 candidate active verification 및 posture report
+- [DOING][NON-PRD] T-F029-cso-security-audit-03 candidate active verification 및 posture report
   - Date: 2026-08-14
   - Acceptance:
     - 모든 candidate에 severity/confidence/status/exploit scenario/evidence/recommendation이 있다.
@@ -99,7 +106,7 @@
 | --- | --- | --- |
 | redacted secret/history audit | `2026-08-14` | `PASS — tracked/history high-signal secret candidate 0; .env.local ignored` |
 | Node/Python dependency audit | `2026-08-14` | `CANDIDATES — pnpm high 3; audited pinned Python direct deps 0; SoulX non-exact range unresolved` |
-| OWASP/STRIDE code tracing | - | - |
+| OWASP/STRIDE code tracing | `2026-08-14` | `PASS/CANDIDATES — access-control/injection/SSRF 방어 확인; auth-secret/analysis-admission/multipart/dependency 후보를 T03로 승격` |
 | `pnpm test` | - | - |
 | `pnpm run lint` | - | - |
 | `pnpm exec tsc --noEmit` | - | - |
