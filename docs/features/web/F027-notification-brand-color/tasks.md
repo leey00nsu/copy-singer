@@ -20,7 +20,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/notification-brand-color`
-- **대기 중 변경 요청**: -
+- **대기 중 변경 요청**: 오디오 업로드/자동 자르기 준비가 100%에 도달해도 progress bar가 실제 값보다 뒤처져 보이는 문제를 수정한다.
   - 구현 중 새로 수용한 사용자 요청을 잠시 표시하는 sync marker입니다
   - 요청을 `tasks.md`와 관련 문서에 반영한 뒤 값을 비우세요
   - pre-PR 리뷰 handoff를 시작하면 `Running`, 리뷰 결과 기록까지 끝나면 `Done`으로 변경
@@ -120,6 +120,17 @@
     - [x] `AnalysisSuccess`/`VocalProfileSummary`를 production 흐름에서 제거하고 해당 전용 story는 `!dev`/`!test`로 제품 Storybook 목록과 회귀 대상에서 제외
     - [x] `VocalProfileDetailContent`를 추출해 서버 상세 페이지와 `Pages/Vocal Profile Detail` Desktop/Mobile story가 동일 composition을 공유
     - [x] `pnpm run test:voice-scan` 12/12, `pnpm run test:vocal-profile-presentation` 12/12, 상세 story 2/2, 전체 Storybook 51 passed + 2 skipped files / 150 tests, typecheck·architecture PASS
+
+- [DOING][PRD-FR-022] T-F027-notification-brand-color-07 오디오 준비 progress bar 실제 진행률 동기화
+  - Date: 2026-08-14
+  - Acceptance:
+    - 업로드 파일 자동 자르기/인코딩 진행률 숫자와 progress bar 길이가 같은 값을 즉시 반영한다
+    - 준비 진행률이 100%이면 bar도 완료 위치까지 도달한 상태가 화면에 반영된 뒤 준비 UI가 종료된다
+    - 녹음 시간 progress와 다른 Progress 사용처의 접근성 값은 깨지지 않는다
+  - Checklist:
+    - [ ] Base UI Progress indicator의 transition 지연 원인을 제거하거나 업로드 준비 UI에서 비활성화한다
+    - [ ] 0→100 동적 변경에서 indicator가 즉시 100% width를 반영하는 Storybook 회귀 테스트를 추가한다
+    - [ ] voice-scan 및 Storybook/typecheck 회귀 검증을 통과한다
 
 ---
 
