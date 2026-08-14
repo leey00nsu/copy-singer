@@ -97,6 +97,17 @@
     - [x] landing Hero/product story/3단계/metrics/voice notes 카피를 수정하고 핵심 단계명을 `목소리 분석` / `노래 · 키 추천` / `AI 믹싱`으로 정리했다.
     - [x] auth 8/8, voice-scan 4/4, landing/login/voice-input Storybook 16/16, lint/typecheck를 통과했고 최종 `pnpm test` 전체 실행도 PASS했다.
 
+- [DONE][PRD-FR-062] T-F030-product-copy-cleanup-06 내 계정 Google 연결 상태 chip 제거
+  - Date: 2026-08-14
+  - Acceptance:
+    - 내 계정의 계정 정보 카드에 `Google 연결됨` 또는 `Google 연결 정보 없음` 상태 chip이 표시되지 않는다.
+    - 이름, 이메일, 로그인 방식과 Google 연결일 등 기존 계정 상세 정보는 유지한다.
+    - 계정/티켓 동작과 데이터 계약은 변경하지 않는다.
+  - Checklist:
+    - [x] `AccountOverview`에서 Google 연결 상태 Badge를 제거하고 불필요 import를 정리했다.
+    - [x] account 단위 테스트와 Storybook 기대값을 새 UI에 맞췄다.
+    - [x] account 단위 테스트 2/2, account Storybook 3/3, ESLint, TypeScript를 통과했다. 전체 `pnpm test`에서 이번 변경과 무관한 기존 타이밍성 Storybook 2건과 Leemage cleanup 통합 테스트 1건이 각각 일시 실패했지만, 해당 실패들은 단독 재실행 13/13 및 3/3으로 모두 통과했다.
+
 ---
 
 ## 완료 조건
@@ -121,5 +132,8 @@
 | `pnpm test` | `2026-08-14` | `PASS — build + unit/integration + Storybook` |
 | `pnpm run lint` | `2026-08-14` | `PASS` |
 | `pnpm exec tsc --noEmit` | `2026-08-14` | `PASS` |
+| targeted account: `tests/account-ui.test.tsx` + account Storybook | `2026-08-14` | `PASS — 2/2 + 3/3` |
+| flaky reruns: voice-scan/admin custom mixing Storybook + Leemage cleanup | `2026-08-14` | `PASS — 13/13 + 3/3` |
+| latest `pnpm test` | `2026-08-14` | `PARTIAL — 변경 무관 flaky 1건(Leemage cleanup)에서 중단; 해당 파일 단독 3/3 PASS` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-14T13:02:36.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-14T13:10:25.000Z -->

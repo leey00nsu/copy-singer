@@ -106,3 +106,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: -
   - **Test/Log**: auth 8/8 PASS; voice-scan 4/4 PASS; landing/login/voice-input targeted Storybook 16/16 PASS; ESLint PASS; `tsc --noEmit` PASS; 첫 전체 `pnpm test`에서 unrelated `VoiceOrb` WebGL 준비 타이밍 1건 실패 후 단독 3/3 PASS, 재실행한 전체 `pnpm test` PASS (Storybook 154/154).
 - **Consequences**: 랜딩의 카피 밀도와 단계명은 크게 바뀌지만 레이아웃·기능·데이터 흐름은 유지한다.
+
+## D006: 계정 카드의 Google 연결 상태 chip은 제거하고 상세 정보는 유지 (2026-08-14)
+
+- **Context**: 구현 승인 단계에서 내 계정의 `Google 연결됨` chip이 불필요하므로 제거해 달라는 요청이 들어왔다.
+- **Constraints**: 인증 데이터와 로그인 방식 표시는 유지하고, 계정/티켓 동작이나 API 계약은 변경하지 않는다.
+- **Options**: 연결된 경우의 chip만 숨기거나, 연결 여부와 무관하게 계정 카드 상단의 연결 상태 chip 자체를 제거하는 방식을 비교한다.
+- **Decision**: 계정 카드 상단의 Google 연결 상태 Badge를 전체 제거한다. `로그인 방식`과 연결일 등 상세 정보는 그대로 유지한다.
+- **Rationale**: 같은 카드 안에서 로그인 방식이 이미 제공되므로 상태 chip은 정보를 중복하며, 미연결 상태 chip까지 남길 이유도 없다.
+- **Trace**:
+  - **DOING 시작 시점**: `AccountOverview`와 직접 문자열을 검증하는 account 테스트/Storybook만 후속 T06 범위로 잡는다.
+  - **DONE 전 확정 시점**: 계정 카드 상단의 `Google 연결됨`/`Google 연결 정보 없음` Badge와 관련 아이콘을 제거했다. 이름·이메일·로그인 방식·연결일은 그대로 유지했고 account 단위/Storybook 테스트로 양쪽 상태 모두 chip이 사라지는 것을 확인했다.
+  - **머지 후 확인**: -
+- **Evidence**:
+  - **Commit**: -
+  - **PR**: -
+  - **Test/Log**: account unit 2/2 PASS; account Storybook 3/3 PASS; ESLint PASS; `tsc --noEmit` PASS; 전체 `pnpm test` 중 변경 무관 타이밍성 Storybook 2건과 Leemage cleanup 1건은 각각 단독 재실행 13/13, 3/3 PASS.
+- **Consequences**: 계정 카드 상단이 단순해지며, 인증 제공자 정보는 상세 필드에서 계속 확인할 수 있다.
