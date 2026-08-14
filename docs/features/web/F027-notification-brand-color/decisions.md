@@ -138,3 +138,17 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Test/Log**: `pnpm run test:voice-scan` 12/12 PASS, VoiceScanInput + Progress 타깃 Storybook 12/12 PASS, `pnpm run test:storybook --run` 최종 53 indexed files 중 51 passed + 2 skipped / 151 tests PASS, `pnpm run typecheck` PASS, `pnpm run check:architecture` PASS. 전체 Storybook 첫 실행에서 기존 `LongAudioDialog` focus assertion 1건이 간헐 실패했으나 해당 story 단독 2/2 및 전체 재실행 151/151 PASS.
 - **Consequences**: 업로드 자르기/인코딩이 완료되면 100% 숫자와 full-width bar가 실제로 paint된 뒤 Ready UI로 전환된다. 완료 표시를 위한 별도 polling/timer는 추가하지 않는다.
 
+## D027-08: 진행 중 숫자와 progress bar를 같은 프레임에 표시 (2026-08-14)
+
+- **Context**: T08로 100% 완료 프레임은 보장됐지만 실사용 재검증에서 1~99% 구간의 숫자와 막대 위치가 서로 어긋나 보였다. `VoiceScanInput` 숫자는 React state 변경 즉시 새 값을 표시하는 반면 공용 `ProgressIndicator`에는 `transition-[width]`가 남아 있어 막대가 이전 width에서 약간 늦게 따라왔다.
+- **Constraints**: Base UI가 계산하는 `aria-valuenow`와 indicator inline width를 SSOT로 유지하고, 녹음 시간 progress와 관리자 상태 progress 등 공용 사용처의 값/접근성 계약은 바꾸지 않는다.
+- **Decision**: 공용 `ProgressIndicator`에서 width transition을 제거한다. 숫자, `aria-valuenow`, inline `width`와 실제 렌더 폭이 같은 렌더의 동일 값을 나타내도록 하고, T08의 완료 paint 보장 로직은 그대로 유지한다.
+- **Rationale**: determinate progress는 애니메이션된 추정 위치보다 현재 보고된 값을 정확히 보여주는 것이 우선이다. MediaBunny progress가 빠르게 갱신될 때 150ms 시각 지연은 숫자와 막대가 서로 다른 상태처럼 보이게 한다.
+- **Trace**:
+  - **DOING 시작 시점**: `ProgressIndicator`에 진행 중 `transition-[width]`가 유지되고 있고 `VoiceScanInput`의 퍼센트 숫자는 동일한 `preparationProgress`를 transition 없이 즉시 표시함을 확인했다.
+  - **DONE 전 확정 시점**: transition 제거 후 `VoiceScanInput > Preparing`에서 숫자 `46%`, `aria-valuenow=46`, indicator inline width `46%`, computed transition duration `0s`, 실제 indicator/track 폭 비율 약 `0.46`을 Chromium에서 동시에 검증했다.
+- **Evidence**:
+  - **Commit**: `0e66113` (`fix(F027): progress 숫자와 막대 실시간 동기화`)
+  - **Test/Log**: `pnpm run typecheck` PASS, `pnpm run test:voice-scan` 12/12 PASS, VoiceScanInput + Progress 타깃 Storybook 12/12 PASS, `pnpm run test:storybook --run` 최종 53 indexed files 중 51 passed + 2 skipped / 151 tests PASS, `pnpm run check:architecture` PASS. 전체 Storybook 첫 실행에서 기존 `AudioWaveformPlayer` readiness assertion 1건이 간헐 실패했으나 해당 story 단독 3/3 및 전체 재실행 151/151 PASS.
+- **Consequences**: progress 숫자와 막대가 중간 구간에서도 같은 값을 즉시 가리킨다. 공용 Progress의 시각적 보간은 제거되지만 값 정확성과 접근성 상태는 그대로 유지된다.
+

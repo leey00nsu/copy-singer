@@ -144,16 +144,16 @@
     - [x] `VoiceScanInput` Preparing 46%/PreparingComplete 100%에서 실제 indicator/track 폭을 브라우저 DOM으로 검증
     - [x] `pnpm run test:voice-scan` 12/12, 타깃 Storybook 12/12, 전체 Storybook 51 passed + 2 skipped / 151 tests, typecheck·architecture PASS
 
-- [DOING][PRD-FR-022] T-F027-notification-brand-color-09 오디오 준비 숫자와 progress bar 실시간 정합성
+- [DONE][PRD-FR-022] T-F027-notification-brand-color-09 오디오 준비 숫자와 progress bar 실시간 정합성
   - Date: 2026-08-14
   - Acceptance:
     - 준비 진행률이 1~99%인 동안 숫자와 indicator 폭이 같은 프레임의 같은 값을 나타낸다
     - progress 값 변경 시 bar가 CSS transition 때문에 숫자보다 뒤처지지 않는다
     - 공용 Progress의 녹음 시간·관리자 상태 등 기존 사용처와 접근성 값이 유지된다
   - Checklist:
-    - [ ] `ProgressIndicator`의 width transition이 실제 값 표시를 지연시키는지 확인하고 제거한다
-    - [ ] 실제 `VoiceScanInput` Preparing 상태에서 숫자·aria-valuenow·indicator/track 폭의 일치를 브라우저 검증한다
-    - [ ] voice-scan, 전체 Storybook, typecheck, architecture 검증을 통과한다
+    - [x] `ProgressIndicator`의 `transition-[width]`를 제거해 Base UI inline width를 같은 렌더에서 그대로 표시
+    - [x] 실제 `VoiceScanInput` Preparing 46%에서 표시 숫자=46%, `aria-valuenow=46`, inline width=46%, transition 0s, 실제 indicator/track 폭≈0.46을 Chromium 검증
+    - [x] `pnpm run test:voice-scan` 12/12, 타깃 Storybook 12/12, 전체 Storybook 51 passed + 2 skipped / 151 tests, typecheck·architecture PASS
 
 ---
 
@@ -161,8 +161,8 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -178,7 +178,7 @@
 
 
 
-<!-- lee-spec-kit:workflow-sync 2026-08-14T04:33:47.808Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-14T04:40:17.000Z -->
 
 
 
