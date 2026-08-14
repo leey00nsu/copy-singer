@@ -136,7 +136,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: `이메일`과 `로그인 방식` 라벨에 각각 `Mail`, `LogIn`을 추가하고 기존 `이름`의 `UserRound`와 동일한 `flex items-center gap-2` 패턴으로 맞췄다. 필드 값과 연결일 표시에는 변경이 없다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: -
+  - **Commit**: `f39436f` (`feat(F030): 계정 정보 필드 아이콘 정렬`)
   - **PR**: -
   - **Test/Log**: account unit 2/2 PASS; account Storybook 3/3 PASS; ESLint PASS; `tsc --noEmit` PASS.
 - **Consequences**: 계정 정보 라벨은 세 필드 모두 아이콘을 포함하며, 정보 구조 자체는 그대로 유지된다.
