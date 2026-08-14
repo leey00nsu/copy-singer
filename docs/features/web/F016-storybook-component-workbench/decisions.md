@@ -17,7 +17,7 @@ canonical docs surface 밖의 unmanaged docs 산출물이 있더라도, 실제�
   - **DONE 전 확정 시점**: Storybook 10.5.7 CSF Next preview, story별 QueryClient, App Router parameter와 Tailwind 전역 CSS를 구성했다. MSW addon의 기본 worker setup은 Storybook 내부·정적 asset request만 제외하고 그 외 unhandled request를 warning으로 알려 주며 story 종료 시 handler를 reset한다. worker를 `.storybook/public`에서만 제공하고 production 경계 test로 Next.js `public` 유입을 막았다.
   - **머지 후 확인**: 로컬 통합 후 갱신 예정
 - **Evidence**:
-  - **Commit**: docs `12eb3dc`, project `86c16c2`
+  - **Commit**: docs `3d18a14`, project `f58a31e`
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: Storybook smoke/static build/browser test, `pnpm run typecheck`, `pnpm run check:architecture`, production 경계 test PASS (2026-08-09)
 - **Consequences**: Storybook 실행에는 로컬 Playwright Chromium 설치가 필요하지만 Next.js build/start와 Coolify runtime에는 새 command, 환경 변수 또는 production dependency가 추가되지 않는다.
@@ -36,7 +36,7 @@ canonical docs surface 밖의 unmanaged docs 산출물이 있더라도, 실제�
   - **DONE 전 확정 시점**: 11개 story file에 19개 상태를 구성하고 Button click/disabled, Label input, Slider keyboard, Switch toggle/disabled, Collapsible open, Tooltip hover를 검증했다. Audio fixture는 외부 URL 대신 inline WAV data URL을 사용한다. 새 모듈 로드로 Vitest server가 중간 reload되지 않도록 실제 Storybook graph의 Base UI/Wavesurfer/Sonner dependency를 `optimizeDeps.include`에 고정했다.
   - **머지 후 확인**: 로컬 통합 후 갱신 예정
 - **Evidence**:
-  - **Commit**: docs `3a05211`, project `38b15c0`
+  - **Commit**: docs `2f565aa`, project `556c1d3`
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: `pnpm run test:storybook --run` PASS (11 files, 19 stories), `pnpm run build-storybook` PASS (2,669 modules), `pnpm run lint`/`typecheck`/`check:architecture` PASS (2026-08-09)
 - **Consequences**: shared story가 accessibility·interaction 회귀를 직접 보호하며 Chart와 toast의 사용자-visible 동작은 중복 primitive demo 대신 후속 consumer story evidence에 포함된다.
@@ -55,7 +55,7 @@ canonical docs surface 밖의 unmanaged docs 산출물이 있더라도, 실제�
   - **DONE 전 확정 시점**: TicketLedger 2개, TicketAdjustmentFields 2개, VocalProfileResults 3개, LongAudioDialog 2개 상태를 추가했다. 실제 Recharts range/histogram/pitch consumer, dialog focus trap·Escape·confirm과 ticket form interaction을 Playwright Chromium에서 검증했다. Vocal low-confidence/legacy story는 inline audio URL을 전달하되 reference player를 만들지 않는 안내 분기만 사용해 network를 발생시키지 않는다.
   - **머지 후 확인**: 로컬 통합 후 갱신 예정
 - **Evidence**:
-  - **Commit**: docs `9795519`, project `9d4c24f`
+  - **Commit**: docs `d4a9557`, project `e9b27aa`
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: Storybook browser/a11y PASS (15 files, 28 stories), static build PASS (3,246 modules), server-only source inventory PASS, ticket/admin/vocal-profile 기존 UI test PASS, lint/typecheck/Steiger PASS (2026-08-09)
 - **Consequences**: 도메인 story가 DB·auth·실제 audio 없이 재현 가능하며 Chart wrapper는 실제 VocalProfileResults 소비 경로에서 자동 검증된다. server-owned page shell은 Storybook 범위 밖으로 유지된다.
@@ -74,7 +74,7 @@ canonical docs surface 밖의 unmanaged docs 산출물이 있더라도, 실제�
   - **DONE 전 확정 시점**: `RecommendationResults`에 6개 Query/mutation story를 추가하고 production endpoint와 Zod parsing을 통과시켰다. loading은 pending handler, 403은 실제 `ApiError` UI, polling은 5초 production interval 뒤 terminal audio 상태, mutation은 cache patch와 production Sonner toast를 각각 검증한다. sequence factory를 새로 만들면 cursor가 processing부터 다시 시작한다는 Node MSW test도 추가했다.
   - **머지 후 확인**: 로컬 통합 후 갱신 예정
 - **Evidence**:
-  - **Commit**: docs `b857bd6`, project `ec2b034`
+  - **Commit**: docs `5a16c5a`, project `3ecf7bc`
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: `pnpm run test:query` PASS (Query/API/MSW 20 + streaming 1), Storybook browser/a11y PASS (16 files, 34 stories), static build PASS (3,268 modules), lint/typecheck/Steiger/production boundary PASS (2026-08-09)
 - **Consequences**: Query 화면과 Sonner consumer를 실제 browser에서 backend 없이 반복 검증할 수 있다. fixture는 test graph에만 있고 MSW Node adapter·mock worker·private data는 production graph에 포함되지 않는다. production polling 5초를 그대로 쓰므로 해당 terminal story 한 건은 약 5초가 걸린다.
@@ -93,7 +93,7 @@ canonical docs surface 밖의 unmanaged docs 산출물이 있더라도, 실제�
   - **DONE 전 확정 시점**: 전역 a11y `error` mode를 유지하고 story별 disable/skip 예외가 없음을 inventory로 확인했다. Storybook smoke, 3,268-module static build, Chromium 16 files/34 stories, Next.js 16.3 production build, 전체 DB·UI·Query suite와 production audit이 모두 통과했다. Storybook은 devDependency 및 `.storybook` 전용 worker로 남고 Coolify start process에는 변화가 없다.
   - **머지 후 확인**: 로컬 통합 후 갱신 예정
 - **Evidence**:
-  - **Commit**: docs `e05cd09`, project `a2f1c68`
+  - **Commit**: docs `abf5fb5`, project `73aa548`
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: `pnpm run check`, Storybook smoke/static/browser, `pnpm run build`, `pnpm test`, `pnpm audit --prod` PASS (2026-08-09)
 - **Consequences**: 로컬 `pnpm test`는 Playwright Chromium binary가 필요하고 약 11초의 browser suite가 추가된다. production `build`/`start`, Next.js public assets, PostgreSQL 및 Coolify 구성은 Storybook과 분리되며 `quality.yml`은 생성하지 않았다.

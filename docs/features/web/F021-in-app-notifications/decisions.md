@@ -50,7 +50,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: Bell dropdown과 `/notifications` 모두 동일한 snapshot item을 렌더링하며 메뉴를 여는 것만으로는 읽음 처리하지 않는다. 개별 item은 owner-scoped read mutation 완료를 시도한 뒤 snapshot된 allowlisted 내부 href로 이동하고, 명시적인 `모두 읽음`만 전체 unread를 갱신한다. header는 인증 사용자에게만 렌더링하며 desktop 계정 메뉴와 mobile 제품 메뉴 바로 왼쪽에 같은 Bell을 공유한다.
   - **머지 후 확인**: 통합 후 보강 예정.
 - **Evidence**:
-  - **Commit**: `e4090a2` (API/client state), Header Bell·알림 센터 구현 커밋
+  - **Commit**: `2fc8875` (API/client state), Header Bell·알림 센터 구현 커밋
   - **PR**: local workflow
   - **Test/Log**: `pnpm run test:storybook --run src/_pages/notifications/ui/notifications-list.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx`, `pnpm run build`, Browser QA
 - **Consequences**: 이름 변경 후에도 과거 알림에는 이벤트 당시 이름이 남고, 삭제된 target은 기존 not-found/list fallback 동작을 따른다.

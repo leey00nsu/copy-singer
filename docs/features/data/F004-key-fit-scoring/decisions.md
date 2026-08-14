@@ -32,7 +32,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 17개 fixture/통합 테스트로 weight·tie-break·오류 계약을 확정했고 실제 F003 READY 100곡을 약 7.3ms에 결정적으로 평가했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: `5e8026a`, `db32057`, `305a7f7` 및 F004 bulk adapter task commit
+  - **Commit**: `f543e14`, `c64198f`, `783cf51` 및 F004 bulk adapter task commit
   - **PR**: 로컬 workflow로 생성하지 않음
   - **Test/Log**: `npm run test:key-fit` 17 tests PASS, `npm test` 전체 PASS
 - **Consequences**: weight나 후보 정책 변경은 기존 결과를 덮어쓰지 않고 새 scoring version으로 추가해야 한다.

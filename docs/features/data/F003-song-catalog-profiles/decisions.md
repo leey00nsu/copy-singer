@@ -12,7 +12,7 @@
   - **DONE 전 확정 시점**: 1위 곡을 실제 처리해 aggregate profile 저장과 임시 디렉터리 삭제를 확인했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: `38999a3`, `a3902a5`
+  - **Commit**: `2f8b451`, `a1bd1a1`
   - **Test/Log**: `tests/song-catalog.test.ts`, `npm run catalog:verify` (`count=100`, `readyCount=1`)
 - **Consequences**: 실행자는 대상 콘텐츠를 다운로드·분석할 권리를 확인해야 하며 원본·stem은 프로젝트, DB, 영구 volume 어디에도 보관하지 않는다.
 
@@ -28,7 +28,7 @@
   - **DONE 전 확정 시점**: CPU-only Demucs 4.0.1 `htdemucs`로 실제 한 곡 분리를 완료했다. 출력 stem은 분석 후 삭제됐다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: `a3902a5`
+  - **Commit**: `a1bd1a1`
   - **Test/Log**: `npm run catalog:analyze -- --rank 1 --resume` 성공 1건
 - **Consequences**: CPU 일괄 처리는 오래 걸리고 최초 실행에서 모델 weight 다운로드가 발생한다.
 
@@ -44,7 +44,7 @@
   - **DONE 전 확정 시점**: song endpoint contract, 잘못된 URL 거부, 같은 `librosa-pyin` 출력과 DB transaction을 확인했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: `a3902a5`
+  - **Commit**: `a1bd1a1`
   - **Test/Log**: `services/vocal-profile-api/tests/test_api.py`, `tests/test_song_pipeline.py`
 
 ## D004: 곡 음원과 stem을 영구 저장하지 않음 (2026-08-05)
@@ -59,7 +59,7 @@
   - **DONE 전 확정 시점**: 성공·Demucs 실패 모두 temp root가 비고, 실제 한 곡 이후 컨테이너 `/tmp`에 job prefix가 없음을 확인했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: `a3902a5`
+  - **Commit**: `a1bd1a1`
   - **Test/Log**: `services/vocal-profile-api/tests/test_song_pipeline.py` 4 cases PASS
 
 ## D005: 곡 분석 profile의 SSOT를 JSON artifact로 전환 (2026-08-05)
@@ -74,7 +74,7 @@
   - **DONE 전 확정 시점**: 100곡 모두 READY인 artifact와 DB cleanup을 검증했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: `2939344` 및 후속 F003 task commit
+  - **Commit**: `d87d0ba` 및 후속 F003 task commit
   - **Test/Log**: `npm run catalog:verify -- --require-ready` (`count=100`, `READY=100`, `FAILED=0`, `PENDING=0`)
 
 ## D006: 일시적 수집 오류를 제한 재시도하고 삭제된 출처를 공식 링크로 교체 (2026-08-05)

@@ -32,7 +32,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 기존 runtime 필드는 Task 02 전환 완료 전까지 유지하면서 `SongSource`, `SongAnalysis`, `SongAnalysisJob`, `Catalog`, `CatalogEntry`와 active pointer를 먼저 추가했다. readiness validator가 source·analysis·target revision 일치와 published entry를 함께 검사하고 DB unique/FK가 revision identity를 보호함을 확인했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: `aa2848c` (`feat(F024-admin-song-catalog-management): 카탈로그 revision 모델 구축`)
+  - **Commit**: `dfe2f35` (`feat(F024): 카탈로그 revision 모델 구축`)
   - **PR**: -
   - **Test/Log**: `pnpm exec prisma validate`, `pnpm exec tsc --noEmit`, catalog domain 3/3, DB integration 1/1
 - **Consequences**: 기존 F003 D005의 JSON SSOT 결정은 F024 D012에 의해 superseded되었다. PostgreSQL이 runtime SSOT이며 DB 이동·복원은 관리자 snapshot import로 수행한다. 과거 reset/bootstrap 절차는 더 이상 운영 경로가 아니다.
@@ -49,7 +49,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 관리자 allowlist route와 Zod identity 검증을 모든 mutation 앞에 두고, job claim에는 DB lease·heartbeat·bounded retry를 적용했다. 새 source는 DRAFT로 유지하며 분석과 target이 같은 source revision에 READY일 때만 publish transaction이 active pointer와 catalog entry를 전환하도록 검증했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: `ce2a47a` (`feat(F024-admin-song-catalog-management): 관리자 곡 API와 durable 분석 작업 구현`)
+  - **Commit**: `a109f79` (`feat(F024): 관리자 곡 API와 durable 분석 작업 구현`)
   - **PR**: -
   - **Test/Log**: song analysis/admin catalog integration 4/4, 기존 admin 2/2, architecture 4/4, process supervisor 5/5, targeted Biome·ESLint·TypeScript
 - **Consequences**: 관리자는 분석 완료와 target 준비 후 별도 공개 action을 수행한다. 새 revision 준비 중에도 기존 공개 곡은 계속 추천 가능하다.
@@ -83,7 +83,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: bootstrap 2회 결과가 동일했고 DB 100/100 READY, export 100곡, 기존 JSON과 DB ranking 전체 parity를 확인했다. `src`에서 artifact direct import와 고정 catalog size가 사라졌다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: `219d026` (`feat(F024-admin-song-catalog-management): 기존 100곡 bootstrap과 DB 추천 전환`)
+  - **Commit**: `73218a9` (`feat(F024): 기존 100곡 bootstrap과 DB 추천 전환`)
   - **PR**: -
   - **Test/Log**: bootstrap parity 1/1, recommendation 33/33, recommendation DB 3/3, catalog target 1/1, mixing queue 1/1, TypeScript·Prisma validation
 - **Consequences**: 초기 환경과 새 배포 DB는 migration 후 관리자 snapshot import로 준비한다. `Song.catalogOrder`와 legacy artifact 생성·분석 pipeline은 제거됐으며 저장소 카탈로그 파일을 읽는 초기화 명령도 더 이상 제공하지 않는다.

@@ -32,7 +32,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: `LandingHero`를 Server Component로 분리하고 기존 CSS waveform을 재사용해 중앙형 headline, 실제 CTA와 semantic preview를 구성했다. 별도 client boundary 없이 Storybook signed-out/in 회귀가 통과했다.
   - **머지 후 확인**: local integration 이후 최종 확인 예정
 - **Evidence**:
-  - **Commit**: `654fd3a` (`feat(F022-xai-inspired-landing-motion): 중앙형 랜딩 구조와 제품 preview 재구성`)
+  - **Commit**: `71597b8` (`feat(F022): 중앙형 랜딩 구조와 제품 preview 재구성`)
   - **PR**: local workflow이므로 원격 PR 없음
   - **Test/Log**: `pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx` 통과 (2/2)
 - **Consequences**: Landing markup이 Hero와 product story 책임으로 분리되고 외부 animation runtime 없이 유지된다.
@@ -49,7 +49,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Before DONE**: entry 시작 opacity를 0이 아닌 값으로 보정해 첫 animation frame에서도 preview가 접근성 검사에서 visible하도록 했고, Storybook 회귀를 재통과했다.
   - **Post-merge check**: local integration 이후 최종 확인 예정
 - **Evidence**:
-  - **Commit**: `817aa52` (`feat(F022-xai-inspired-landing-motion): waveform glow와 reveal motion 구현`)
+  - **Commit**: `a2fcf79` (`feat(F022): waveform glow와 reveal motion 구현`)
   - **Test/Log**: pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx 통과 (2/2)
 - **Consequences**: 지원하지 않는 browser에서는 section reveal이 생략되지만 정보와 action은 동일하게 유지된다.
 
@@ -65,7 +65,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Before DONE**: 세 단계 preview를 비상호작용 presentation으로 구성하고, desktop에서만 sticky header를 활성화했다. TypeScript와 Storybook 회귀가 통과했다.
   - **Post-merge check**: local integration 이후 최종 확인 예정
 - **Evidence**:
-  - **Commit**: `054347a` (`feat(F022-xai-inspired-landing-motion): 3단계 scroll story 구현`)
+  - **Commit**: `11a7142` (`feat(F022): 3단계 scroll story 구현`)
   - **Test/Log**: pnpm run typecheck 통과
   - **Test/Log**: pnpm run test:storybook --run src/_pages/home/ui/landing-page.stories.tsx 통과 (2/2)
 - **Consequences**: Desktop active step을 별도 상태로 강조하지 않지만 세 패널의 위치와 순서가 narrative를 전달한다.

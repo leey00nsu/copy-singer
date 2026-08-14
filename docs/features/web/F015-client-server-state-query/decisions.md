@@ -32,7 +32,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: `requestJson`이 valid payload만 반환하고 4xx·contract error를 재시도하지 않으며 retryable 5xx/network만 재시도 대상으로 분류함을 5개 Node test로 확인했다. MSW postinstall은 browser worker가 필요 없는 F015 범위에서 실행하지 않도록 pnpm `allowBuilds`에 명시했다.
   - **머지 후 확인**: 로컬 통합 후 갱신 예정
 - **Evidence**:
-  - **Commit**: docs `bb05b2d`, project `477e6f9`
+  - **Commit**: docs `7e3b94e`, project `915c762`
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: `pnpm run test:query` PASS (5), `pnpm run typecheck` PASS, `pnpm run check:architecture` PASS, `pnpm run lint` PASS (2026-08-09)
 - **Consequences**: query cache는 브라우저 메모리에만 유지되고, endpoint schema 불일치는 재시도하지 않는 contract error가 된다.
@@ -51,7 +51,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: Entity/Feature schema와 `safeParse` Route Handler 경계를 적용하고 legacy 대표 payload, invalid request, 25MB 제한, UUID/page와 stream source 회귀를 검증했다. Modal upload는 Zod 적용 후에도 body를 parse하지 않는다.
   - **머지 후 확인**: 로컬 통합 후 갱신 예정
 - **Evidence**:
-  - **Commit**: docs `5ad4ee7`, project `db7ade9`
+  - **Commit**: docs `0e6b860`, project `c0db520`
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: `pnpm run test:query` PASS (10), 관련 기존 test PASS (12), `pnpm run typecheck`/`lint`/`check:biome`/`check:architecture` PASS, `pnpm run build` PASS (2026-08-09)
 - **Consequences**: client가 소비하는 success JSON은 runtime contract를 가지지만 binary/audio response와 server-to-server stream은 기존 전용 경계를 유지한다.
@@ -70,7 +70,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: workbench와 job cards의 response state/수동 timer를 Query cache와 함수형 interval로 교체했다. retryable detail 오류는 1.5초 polling을 유지하고 terminal 상태에서는 `false`를 반환하며, SSR QueryClient는 GC timer를 만들지 않도록 server `gcTime: Infinity`로 보정했다.
   - **머지 후 확인**: 로컬 통합 후 갱신 예정
 - **Evidence**:
-  - **Commit**: docs `b79309e`, project `d95a650`
+  - **Commit**: docs `85a2f85`, project `3852a72`
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: `pnpm run test:query` PASS (12), `pnpm run test:vocal-profile-history` PASS (6), recorder/profile/effect test PASS (8), `pnpm run lint`/`typecheck`/`check:biome`/`check:architecture` PASS, `pnpm run build` PASS (2026-08-09)
 - **Consequences**: 완료된 profile은 terminal detail query cache에서 표시하며 cache 자체는 storage에 persist하지 않는다.
@@ -89,7 +89,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: detail/history initialData와 함수형 5초 polling을 적용하고 대상 item만 cache patch한 뒤 detail/history를 invalidate하도록 구현했다. `react-server` 조건 test에서 browser Query client 재수출을 발견해 Recommendation `index.model.ts` 및 Mixing server public API를 분리했다.
   - **머지 후 확인**: 로컬 통합 후 갱신 예정
 - **Evidence**:
-  - **Commit**: docs `0ff2808`, project `50d1191`
+  - **Commit**: docs `3ca5611`, project `d010e13`
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: `pnpm run test:query` PASS (13), `pnpm run test:recommendation` PASS (18), `pnpm run test:mixing:ui` PASS, effect inventory PASS (2), `pnpm run lint`/`typecheck`/`check:architecture` PASS, `pnpm run build` PASS (2026-08-09)
 - **Consequences**: mutation 중 임시 상태는 Query cache에만 존재하고 성공 직후 server detail로 교체된다.
@@ -108,7 +108,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: Next.js 비동기 `searchParams`에서 handoff ID를 전달하고 Query가 recommendation을 검증하도록 전환했다. conversion은 queued/processing에서만 2.5초 polling하며 terminal toast를 job/status당 한 번 표시한다. 64MB lazy stream의 동일 body reference가 upstream fetch로 전달되는 회귀 test와 MSW success/4xx/5xx/contract/sequence/cache test를 통과했다.
   - **머지 후 확인**: 로컬 통합 후 갱신 예정
 - **Evidence**:
-  - **Commit**: docs `c6dc098`, project `cdfec46`
+  - **Commit**: docs `08ab1dd`, project `4ae48ab`
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: `pnpm run test:query` PASS (20), `pnpm run test:tickets` PASS (2), `pnpm run test:admin` PASS (2), effect inventory PASS (1), `pnpm run check:biome`/`lint`/`typecheck`/`check:architecture` PASS, `pnpm run build` PASS (2026-08-09)
 - **Consequences**: 변환 본문은 client와 proxy에서 JSON 변환 없이 stream 경계를 유지하며 mock handler는 test teardown 때 reset된다.
@@ -127,7 +127,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 전체 `pnpm test`의 `react-server` 조건에서 create-mixing server barrel이 browser Query client를 재수출하는 회귀를 발견했다. model/server public API를 분리하고 Route Handler import와 integration test를 server-safe entry로 교정한 뒤 전체 suite를 재실행해 통과했다. 직접 Client Component fetch inventory는 binary audio preview 한 곳이며 JSON parse와 timer는 0건이다.
   - **머지 후 확인**: 로컬 통합 후 갱신 예정
 - **Evidence**:
-  - **Commit**: docs `807b650`, project `f95aa8d`
+  - **Commit**: docs `f7bd384`, project `69cace6`
   - **PR**: 로컬 workflow (원격 PR 없음)
   - **Test/Log**: `pnpm run check` PASS, `pnpm run build` PASS (22 pages), `pnpm test` PASS, `pnpm run test:query` PASS (20), client fetch/timer inventory PASS (2), `pnpm audit --prod` PASS (known vulnerabilities 0) (2026-08-09)
 - **Consequences**: 이후 Client Component에 직접 JSON fetch 또는 timer가 추가되면 inventory test가 실패하며, GitHub Actions `quality.yml`은 사용자 요청대로 연기된 상태를 유지한다.

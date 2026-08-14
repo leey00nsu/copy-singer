@@ -32,7 +32,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 최초 16px raster test가 antialiasing으로 중앙 행의 막대를 한 덩어리로 감지했고, `crispEdges` 적용 후 7개 occupied run과 사이 투명 column을 확인했다. 16·24·32·64·180px contact sheet와 Storybook header/login에서 light/dark 대비 및 24×24 layout을 확인했다.
   - **머지 후 확인**: 실제 결과/영향
 - **Evidence**:
-  - **Commit**: `0c64f22` (`feat(F023-waveform-brand-icon): 벡터 파형 app mark와 파생 아이콘 적용`)
+  - **Commit**: `8c94f21` (`feat(F023): 벡터 파형 app mark와 파생 아이콘 적용`)
   - **Test/Log**: `pnpm run test:brand-icons` 4/4, 관련 Storybook 9/9, `pnpm run check`, `pnpm run build`, `/tmp/copy-singer-waveform-icon-contact-sheet.png`
 - **Consequences**: 기존 AI bitmap master는 제거되고 SVG와 두 PNG의 색상은 light/dark theme에서 동일하다. 색상 변경 시 SVG stop을 갱신하고 generation script를 다시 실행해야 하며 asset test와 hash 비교가 동기화를 검증한다.
 
@@ -47,7 +47,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DOING 시작 시점**: `BETTER_AUTH_URL` 기반 canonical resolver를 robots/sitemap/home metadata가 공유하고, robots disallow와 private route `noindex, nofollow`를 함께 적용하는 방향으로 시작한다. OG는 새 mark를 재사용한 deterministic SVG→PNG로 교체한다.
   - **DONE 전 확정 시점**: production output에서 홈 canonical/OG/Twitter/icon 9 tags, login robots/googlebot noindex, robots.txt private disallow와 sitemap 공개 URL 3개를 확인했다. 최초 OG gradient가 path별 반복되는 문제는 `userSpaceOnUse`로 고쳐 canonical mark와 같은 연속 gradient로 맞췄다.
 - **Evidence**:
-  - **Commit**: `00227e1` (`feat(F023-waveform-brand-icon): metadata SEO와 Open Graph 동기화`)
+  - **Commit**: `dc257b0` (`feat(F023): metadata SEO와 Open Graph 동기화`)
   - **Test/Log**: `pnpm run test:brand-icons` 8/8, `pnpm run check`, `pnpm run build`, production metadata HTTP audit, `public/og.png` visual QA
 - **Consequences**: production canonical 정확도는 배포 환경의 `BETTER_AUTH_URL` 또는 Vercel production URL 설정에 의존한다. 공개 route 추가 시 sitemap allowlist와 robots policy를 함께 갱신해야 하며 private route는 noindex metadata를 명시해야 한다.
 
@@ -62,7 +62,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DOING 시작 시점**: TTF를 repository에 복사해 `next/font/local` brand variable과 Sharp SVG data font에 함께 사용하고, 서비스명 텍스트는 전역적으로 `Copysinger`로 동기화한다.
   - **DONE 시점**: production 계산값에서 Paperlogy 700 적용을 확인했고 OG를 흰색 1200×630 canvas 중앙에 작은 파형 mark, `Copysinger`, 정확한 tagline 순서로 확정했다.
 - **Evidence**:
-  - **Commit**: `630810c` (`feat(F023-waveform-brand-icon): Copysinger Paperlogy wordmark 적용`)
+  - **Commit**: `9a47513` (`feat(F023): Copysinger Paperlogy wordmark 적용`)
   - **Test/Log**: `pnpm run test:brand-icons` 8/8, Storybook 13/13, `pnpm run check`, `pnpm run build`, production browser metadata/font audit, deterministic font/OG SHA-256 비교
 - **Consequences**: repository에는 사용자가 제공한 TTF가 포함된다. 제공 폴더에서 별도 license 문서는 발견되지 않았으므로 배포 권한 관리는 제공자의 font 사용 조건을 따른다.
 
@@ -77,7 +77,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DOING 시작 시점**: 공통 draft 경고와 placeholder를 제거하고, 약관에는 현재 확정된 비상업적 운영·원본 음원 미제공·판매/광고/재배포/별도 AI 학습 미사용 사실만 명시한다. 개인정보 처리방침은 실제 화면상 삭제 기능을 권리 행사 방법으로 안내한다.
   - **DONE 시점**: 시행일을 2026-08-13로 갱신하고 법률 페이지 전체에서 공개 전·입력 필요 placeholder가 남지 않았음을 검색과 Storybook으로 확인했다.
 - **Evidence**:
-  - **Commit**: `7c8e6ad` (`feat(F023-waveform-brand-icon): 비상업적 법률 고지 정리`)
+  - **Commit**: `4fa8abf` (`feat(F023): 비상업적 법률 고지 정리`)
   - **Test/Log**: legal Storybook 2/2, `pnpm run check`, `pnpm run build`, placeholder `rg` audit
 - **Consequences**: 문의 이메일이나 내부 문의 기능은 현재 노출하지 않는다. 문의 기능과 계정 전체 삭제가 구현되면 개인정보 처리방침의 권리 행사 방법과 개인정보 관리 항목을 함께 갱신해야 한다.
 
@@ -92,7 +92,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DOING 시작 시점**: 법률 문서와 `src`의 렌더링 문구·사용자 오류 메시지는 Google 외 고유 기술명을 중립적 기능명으로 바꾸고, 내부 코드·환경변수·architecture 문서는 유지한 뒤 잔존 항목을 분류한다.
   - **DONE 시점**: legal 문서와 `_pages` scan에서 대상 고유명 노출 0건을 확인했고, 기존 공개 오류·API 설명 문자열 audit도 0건이다. repository 전체 잔존 항목은 내부 구현과 개발 SSOT로 분류해 유지했다.
 - **Evidence**:
-  - **Commit**: `d77088e` (`feat(F023-waveform-brand-icon): 공개 외부 기술명 비식별화`)
+  - **Commit**: `766303c` (`feat(F023): 공개 외부 기술명 비식별화`)
   - **Test/Log**: legal Storybook 2/2, analyzer/voice-scan/mixing/recommendation 61/61, `pnpm run check`, `pnpm run build`, 공개 문자열 `rg` audit
 - **Consequences**: 공개 UI는 공급업체 이름과 무관한 기능 언어를 사용한다. 실제 외부 처리업체 공개가 법적·운영상 필요해지면 내부 계약을 source로 개인정보 처리방침을 다시 갱신해야 한다.
 
@@ -108,6 +108,6 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 시점**: 2·8·10절을 축약하고 sample rate, descriptor, 대표 구간, 외부 작업 ID, 재시도, 삭제 API, cleanup job, lease와 idempotency 표현이 처리방침에 남지 않았음을 확인했다.
   - **머지 후 확인**: 로컬 병합 후 전체 검증에서 이전 업체명·공개 전 문구를 기대하던 법률 페이지 계약 테스트를 발견해 현재 공개 정책 기준으로 갱신했다. 재실행한 `pnpm test` 전체가 통과했다.
 - **Evidence**:
-  - **Commit**: `6ad0ee6` (`feat(F023-waveform-brand-icon): 개인정보 처리방침 간소화`)
+  - **Commit**: `39d6fc3` (`feat(F023): 개인정보 처리방침 간소화`)
   - **Test/Log**: legal Storybook 2/2, `pnpm run check`, `pnpm run build`, 과도한 기술 표현 `rg` audit
 - **Consequences**: 처리방침은 구현 세부가 아니라 개인정보 범위·목적·파기·보호 원칙을 설명한다. 실제 처리 범주가 추가될 때 다섯 범주의 포괄 여부를 먼저 확인하고 필요할 때만 사용자-facing 항목을 늘린다.

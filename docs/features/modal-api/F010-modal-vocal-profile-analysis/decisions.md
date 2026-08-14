@@ -32,7 +32,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: `analysis_service.py`를 추가해 MIME 정규화, segment 계약, audio 표준화, pYIN 분석과 smart reference 생성을 request-scoped service로 분리했다. local `main.py`는 upload size/recording TTL/GET·DELETE lifecycle만 유지하고 service 결과로 기존 `AnalyzerResponse`를 조립한다. 전체 vocal-profile Python suite 28/28과 기존 API/reference 회귀가 통과했다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
-  - **Commit**: `caf2b50`
+  - **Commit**: `42b0e1c`
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `services/vocal-profile-api/.venv/bin/pytest -q services/vocal-profile-api/tests` → PASS (28/28), `git diff --check` → PASS
 - **Consequences**: 다음 Modal adapter는 shared service 결과를 persistent filesystem 없이 serialize할 수 있고, local adapter는 기존 TTL artifact lifecycle을 계속 제공할 수 있다.
@@ -49,7 +49,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: `services/vocal-profile-modal`에 CPU-only ASGI app, request `TemporaryDirectory`, `modal-analysis-envelope-v1` transport를 추가했다. source/reference는 base64+SHA-256으로 한 응답에 포함하고 persistent `modal.Volume`을 사용하지 않는다. 인증은 기존 SoulX API와 동일하게 Modal Secret `soulx-api-secret`의 `SOULX_API_KEY`를 주입하고 FastAPI에서 `X-API-Key`를 constant-time 비교한다. health는 analyzer/version, `smart-reference-v1`, transport/resource 정보를 반환한다. transport/cleanup/static contract 9/9와 기존 analyzer suite 28/28이 통과했다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
-  - **Commit**: `2886b0b`
+  - **Commit**: `e22dd20`
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `cd services/vocal-profile-modal && ../vocal-profile-api/.venv/bin/pytest -q test_transport.py test_runtime.py test_modal_app_source.py` → PASS (9/9), `services/vocal-profile-api/.venv/bin/pytest -q services/vocal-profile-api/tests` → PASS (28/28), `git diff --check` → PASS
 - **Consequences**: base64 encoding은 약 33% 전송 overhead가 있으므로 T05 benchmark에서 payload/serialization cost를 측정하고 필요 시 binary multipart codec으로 교체한다.
@@ -66,7 +66,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: `lib/vocal-profile/analyzer`에 local/Modal adapter와 fail-closed backend selector를 추가했다. local adapter는 기존 POST/GET/DELETE 임시 lifecycle을 bytes로 흡수하고 즉시 cleanup하며, Modal adapter는 server-only `X-API-Key` 인증과 envelope hash/size/cleanup contract를 검증한다. `/api/vocal-profiles`와 health route는 backend 세부사항을 제거했고 Leemage는 bytes 입력 primitive로 source/reference를 저장한다. production에서 backend 미설정은 `ANALYZER_NOT_CONFIGURED`로 실패한다. adapter 4/4, media 5/5, 관련 profile/mixing UI 8/8, TypeScript/lint/build가 통과했다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
-  - **Commit**: `5562c42`
+  - **Commit**: `d34df97`
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `pnpm run test:vocal-profile-analyzer` → PASS (4/4), `pnpm run test:media` → PASS (5/5), `pnpm exec tsc --noEmit`/`pnpm run lint`/`pnpm run build` → PASS
 - **Consequences**: `AnalyzerProfile`의 legacy storagePath/expiry는 local transport 내부 세부사항이 되고, route 이후의 persistence는 source/reference bytes와 profile metadata만 사용한다.
@@ -83,7 +83,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 10·30·60초 동일 WAV fixture에서 local FastAPI 응답과 Modal serializer profile/source/reference가 일치했고 무음 rejection도 동일 `TOO_SILENT`로 확인됐다. 이 parity test가 Modal serializer가 synthesisReference에 local Pydantic 계약에 없는 `sourceDurationMs`를 노출하던 drift를 발견해 allowlist serializer로 수정했다. auth/expected 4xx는 비재시도, 429/5xx/network/timeout은 stable `retryable=true` infrastructure error로 고정했고 같은 HTTP request 안에서 자동 재실행하지 않는다. 실제 DB 통합 테스트에서 source 저장 실패는 영구 resource 0개, smart-reference 저장 실패는 source profile + fallback 유지, DB 실패는 생성된 Leemage asset 2개 보상 삭제를 확인했다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
-  - **Commit**: `a1dcecb`
+  - **Commit**: `e05a9a3`
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: Python analyzer suite → PASS (32/32; 10/30/60 parity + silent rejection 포함), Modal unit → PASS (9/9), `pnpm run test:vocal-profile-analyzer` → PASS (8/8), `pnpm run test:vocal-profile-persistence` → PASS (3/3), `pnpm run test:media` → PASS (5/5), tsc/lint/build → PASS
 - **Consequences**: 자동 retry 횟수/백오프는 실제 remote latency와 429 패턴을 본 뒤 필요하면 T06에서 추가한다.
@@ -100,7 +100,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: `copy-singer-vocal-profile-analyzer`를 Modal 1.5.3 CLI 환경으로 배포했다. 잘못된 API key는 401, authenticated health는 `librosa-pyin 0.11.0`, `smart-reference-v1`, CPU 2 cores/4096 MiB/GPU false를 확인했다. 10초 wall 34.074/5.414초, 30초 10.797/39.248초, 60초 17.531/20.821초로 최대 39.248초였다. 60초 response는 약 4.33 MB였고 Modal 공식 문서상 Web Function response body는 unlimited이다. 공식 단가 CPU `$0.0000131/core/sec`, memory `$0.00000222/GiB/sec` 기준 6회 handler 추정 합계 `$0.003617`, wall upper-bound `$0.004486`였다. 별도 remote parity 3회에서 10/30/60초 profile JSON과 source/reference bytes가 local shared analyzer와 exact match했다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
-  - **Commit**: `8474487`
+  - **Commit**: `ac765cf`
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `pnpm run modal:vocal-profile:deploy` → deployed, `pnpm run modal:vocal-profile:benchmark` → PASS (wrong key 401 + 6 samples), deployed remote parity pytest → PASS (3/3 exact profile/artifact bytes)
 - **Consequences**: 실제 최악 wall 39.248초로 T06의 sync 승인 기준 90초보다 충분히 낮다. base64 60초 response 약 4.33 MB도 Modal Web Function response 제한에 걸리지 않으므로 binary transport 전환은 이번 Feature의 필수 조건이 아니다.
@@ -117,7 +117,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 최종 resource/autoscaling 설정을 코드에 명시해 재배포했고, health 응답과 로컬 회귀 테스트로 설정 적용을 확인했다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
-  - **Commit**: `3ad7967`
+  - **Commit**: `ea16241`
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: T05 benchmark max wall 39.248초; 60초 17.531/20.821초; remote parity 3/3 exact
 - **Consequences**: Modal compute transport 자체는 sync로 유지한다. 사용자 요청 lifecycle은 D007에서 Copysinger-owned durable queue로 분리한다.

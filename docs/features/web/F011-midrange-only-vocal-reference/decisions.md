@@ -32,7 +32,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: `_select_candidates`를 mid-only 단일 pass로 바꿔 candidate 반복·low/high 재분배를 제거했다. 거의 단일 음정인 녹음에서 segmented pYIN median의 미세 오차로 mid가 사라지는 edge case를 테스트가 발견해 boundary에 ±0.25 semitone tolerance를 추가했다. 새 descriptor는 `voiced-mid-phrase-selection` / `smart-reference-mid-v1`이며 unavailable reason은 `no-quality-mid-phrase`다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
-  - **Commit**: `33b5852`
+  - **Commit**: `a911006`
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: target 17/17 PASS; 전체 analyzer suite 35 passed, remote-only 3 skipped
 - **Consequences**: 새 reference는 30초보다 짧을 수 있으며, mid candidate가 전혀 없으면 profile은 저장되더라도 synthesis reference는 unavailable 상태가 된다.
@@ -49,7 +49,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: `hasSmartReferenceContract`를 v1+mid-v1 dual-read로 확장하고 `synthesisReferenceContractVersion()` helper를 추가했다. mid-v1 success payload는 descriptor/artifact version 일치와 non-empty `band: mid` sourceRanges를 양쪽 모두 검증한다. Modal health capability도 실제 생성 계약인 `smart-reference-mid-v1`로 변경했다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
-  - **Commit**: `cb13340`
+  - **Commit**: `6f1fc5a`
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: TS contract 5/5, Modal transport 9/9, local↔Modal parity 4/4, analyzer adapter 8/8, tsc PASS
 - **Consequences**: 지원하지 않는 future version은 명시적으로 analyzer update/contract 오류가 되며 조용히 저장되지 않는다.
@@ -66,7 +66,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: owner-scoped `getVocalProfileSynthesisReference()`와 `/api/vocal-profiles/:id/synthesis-reference/audio` proxy를 추가했다. `VocalProfileResults`는 mid-v1이면 저장된 synthesis reference용 `AudioWaveformPlayer` 하나를 표시하고 unavailable이면 재녹음 안내를 보여주며, v1/legacy는 기존 3-band source preview를 유지한다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
-  - **Commit**: `2c438c1`
+  - **Commit**: `040b721`
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: vocal-profile-results UI 5/5, private audio + history ownership 3/3, tsc/lint PASS
 - **Consequences**: mid-v1 player는 source player와 별도 HTTP stream을 사용하지만 reference가 최대 30초라 browser decode 부담은 제한적이다.
@@ -83,7 +83,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: `selectMixingReference()`가 contract version을 받아 mid-v1에서는 READY synthesis asset이 없으면 즉시 null을 반환하도록 변경했다. queue는 profile descriptor version을 전달하고 기존 `MIXING_REFERENCE_UNAVAILABLE`를 티켓 차감 전에 발생시킨다. integration test에서 mid-v1 reference missing 시 ticketBalance 유지, MixingJob 0, debit ledger 0을 확인한 뒤 synthesis asset 연결 후 기존 snapshot/worker flow가 정상 동작함을 검증했다.
   - **머지 후 확인**: 머지 후 갱신한다.
 - **Evidence**:
-  - **Commit**: `c9306a0`
+  - **Commit**: `61f695f`
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: mixing selector 4/4, mixing DB integration 1/1, tsc/lint PASS
 - **Consequences**: mid reference unavailable profile은 추천 결과를 볼 수 있어도 AI mixing enqueue는 명시적으로 거부된다.
