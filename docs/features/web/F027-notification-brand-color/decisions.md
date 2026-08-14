@@ -80,3 +80,18 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Test/Log**: rg 교차 검증, ls로 빈 디렉터리 확인 후 rmdir
 - **Consequences**: 미사용 story 0건, vestige 디렉터리만 정리. 다음 조사 시 같은 글롭으로 재검증.
 
+## D027-04: Storybook 실제 UI 정합성 재감사 (2026-08-14)
+
+- **Context**: T04는 story 파일의 사용 여부만 검증했고, 사용 중인 story가 실제 제품 화면의 props·wrapper·폭·배경·상태 composition을 충실히 재현하는지는 검증하지 못했다. 사용자가 Storybook에서 실제 UI와 다른 몇 개의 화면을 직접 확인했다.
+- **Constraints**: Storybook 전용 mock markup으로 제품 UI를 흉내 내는 방식은 최소화하고, 가능한 한 실제 컴포넌트와 제품 사용처의 composition을 그대로 재사용한다. 제품 코드 동작은 이 감사 때문에 변경하지 않는다.
+- **Options**: (a) 눈에 띄는 story만 개별 수정, (b) 51개 story를 실제 import/use site 기준으로 다시 대조한 뒤 불일치 story만 수정.
+- **Decision**: (b) 채택. 제품 화면을 복제한 story markup을 줄이고 실제 제품에서 사용하는 presentational frame/component composition을 공유한다. Library와 Notifications는 페이지 content frame을 실제 page와 story가 함께 사용하고, widget story는 오래된 가짜 페이지 chrome을 제거한다. AnalysisStatus는 실제 `CreationFunnelShell` 안에서 렌더링하고, 알림 hover 검증은 fake `<div>` 대신 실제 `NotificationBell` story로 옮긴다. `VocalProfileResults`와 `VoiceScanInput`은 실제 사용 props/폭을 기준으로 맞춘다.
+- **Rationale**: 단순 import 존재 여부나 비슷하게 만든 wrapper로는 Storybook이 제품 화면의 신뢰 가능한 시각 회귀 기준이 되지 못한다. 실제 composition을 공유하면 제품 UI 변경이 story에도 구조적으로 전파된다.
+- **Trace**:
+  - **DOING 시작 시점**: 51개 story의 meta/component/render/decorator 구성을 수집했다. 실제 컴포넌트를 직접 렌더하지 않고 story 전용 wrapper/mock composition을 만드는 항목과 fullscreen/padded 차이를 우선 후보로 봤다.
+  - **DONE 전 확정 시점**: Library page story는 실제 CTA와 긴 description이 누락됐고 Library widget 2개 story는 구형 heading/간격을 복제하고 있었다. Notifications story도 `ProductPageIntro` 대신 수동 heading을 사용하고 `ProductShell`이 없었다. AnalysisStatus는 실제 funnel shell이 빠져 있었고, notification badge story는 실제 dropdown hover를 `<div>`로 흉내 냈다. `VocalProfileResults`는 실제 유일 사용처와 달리 `showSummary=true`/source audio 없음으로 렌더링했고 VoiceScanInput story 폭은 실제 desktop 우측 column보다 넓었다. 이 차이를 수정하고 실제 `NotificationBell` open story를 추가해 story 수는 52개가 됐다.
+- **Evidence**:
+  - **Commit**: `5b51fae` (`refactor(F027): Storybook 실제 UI 정합성 보정`)
+  - **Test/Log**: `pnpm run typecheck` PASS, `pnpm run check:architecture` PASS (Steiger 0 issues, boundary 4/4), 변경 대상 8 story files 27/27 PASS, `pnpm run test:storybook --run` 최종 52 files / 152 tests PASS
+- **Consequences**: Library/Notifications 페이지 story는 실제 제품 frame 변경을 공유하며, NotificationBell의 실제 dropdown을 Storybook에서 직접 확인할 수 있다. widget/entity story는 제품 페이지를 임의로 흉내 내기보다 자신의 실제 사용 폭·props에 집중한다.
+
