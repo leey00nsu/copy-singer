@@ -110,3 +110,17 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Test/Log**: `pnpm run test:voice-scan` 12/12 PASS, `pnpm run test:vocal-profile-presentation` 12/12 PASS, 신규 상세 Storybook 2/2 PASS, `pnpm run test:storybook --run` 53 indexed files 중 51 passed + 2 skipped / 150 tests PASS, `pnpm run typecheck` PASS, `pnpm run check:architecture` PASS. 전체 `pnpm run check`는 이번 변경과 무관한 기존 repo-wide Biome 진단 때문에 baseline 실패를 유지한다.
 - **Consequences**: 분석 성공 후 browser history에 중간 성공 화면을 남기지 않고 저장된 상세로 바로 이동한다. Storybook의 대표 보컬 프로필 화면은 실제 상세 composition이 되며, Summary/Analysis Success는 제품 UI 탐색에서 보이지 않는다.
 
+## D027-06: 오디오 준비 progress 완료 상태 시각 동기화 (2026-08-14)
+
+- **Context**: 60초 초과 업로드를 자르고 인코딩할 때 MediaBunny의 progress 값과 숫자 표시는 100%까지 도달하지만 progress indicator가 중간 위치에 남은 채 준비 UI가 종료되는 현상이 있었다.
+- **Constraints**: progress 값/접근성 계약은 Base UI `Progress.Root`의 0–100 값을 유지하고, 녹음 시간·관리자 작업 등 기존 공용 Progress 사용처를 깨지 않아야 한다.
+- **Decision**: `ProgressIndicator`는 진행 중에는 width만 transition하고 Base UI state가 `complete`가 되는 순간 transition을 제거한다. 따라서 100% 값에서는 indicator width가 즉시 track 전체 폭과 동기화된다.
+- **Rationale**: 원인은 progress 계산 오류가 아니라 `transition-all`의 시각적 지연이었다. 변환 완료 직후 준비 UI가 unmount되므로, 완료 width까지 애니메이션을 기다리는 방식보다 완료 상태를 즉시 그리는 것이 실제 상태를 정확히 반영한다.
+- **Trace**:
+  - **DOING 시작 시점**: `prepareProfileAudio`의 `conversion.onProgress`는 0–1 값을 정상 전달하고 `VoiceScanInput`은 이를 0–100으로 정상 표시함을 확인했다. Base UI Indicator는 inline width를 즉시 100%로 갱신하지만 wrapper의 CSS transition 때문에 실제 렌더 폭이 뒤처졌다.
+  - **DONE 전 확정 시점**: `Shared UI/Progress > CompletionSync`에서 36→100 동적 변경 직후 `aria-valuenow=100`, computed transition duration `0s`, indicator/track 실제 width 동일을 브라우저에서 검증했다.
+- **Evidence**:
+  - **Commit**: `d5f5f0b` (`fix(F027): 오디오 준비 progress 완료 동기화`)
+  - **Test/Log**: Progress story 3/3 PASS, `pnpm run test:voice-scan` 12/12 PASS, `pnpm run test:storybook --run` 53 indexed files 중 51 passed + 2 skipped / 151 tests PASS, `pnpm run typecheck` PASS, `pnpm run check:architecture` PASS.
+- **Consequences**: 진행 중 progress는 기존처럼 부드럽게 움직이되 완료 순간에는 시각적 지연 없이 실제 100% 상태가 표시된다.
+
