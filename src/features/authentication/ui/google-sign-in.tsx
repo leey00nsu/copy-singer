@@ -14,7 +14,7 @@ export function GoogleSignIn({ callbackURL, configured }: { callbackURL: string;
     setError(null);
     const result = await authClient.signIn.social({ provider: "google", callbackURL });
     if (result.error) {
-      setError("Google 로그인을 시작하지 못했어요. OAuth 설정을 확인해주세요.");
+      setError("Google 로그인을 시작하지 못했어요. 잠시 뒤 다시 시도해 주세요.");
       setPending(false);
     }
   }
@@ -31,7 +31,7 @@ export function GoogleSignIn({ callbackURL, configured }: { callbackURL: string;
         {pending ? "구글로 이동 중…" : "구글로 시작하기"}
       </Button>
       {!configured ? (
-        <p className="text-center text-xs text-warning-foreground">Google OAuth 환경변수를 먼저 설정해 주세요.</p>
+        <p className="text-center text-xs text-warning-foreground">현재 Google 로그인을 사용할 수 없어요.</p>
       ) : null}
       <p aria-live="polite" className="text-center text-xs text-destructive" role={error ? "alert" : undefined}>
         {error}

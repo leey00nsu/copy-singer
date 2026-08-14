@@ -67,11 +67,11 @@ function LandingHero({ primaryLabel, profileHref }: LandingHeroProps) {
             <span className="rounded-full bg-data-accent/15 px-1.5 py-0.5 text-[8px] font-bold tracking-[0.08em] text-data-accent-foreground uppercase">
               New
             </span>
-            목소리 하나로 시작하는 나만의 선곡
+            한 소절로 음역과 추천 키를 확인해요
             <CirclePlay aria-hidden="true" className="size-3" />
           </motion.p>
           <h1
-            aria-label="내 목소리에 맞는 노래를 찾고, 가장 나답게 완성하세요."
+            aria-label="내 목소리에 맞는 노래와 키를 찾고, 추천곡을 AI 믹싱해 보세요."
             className="mt-7 text-[clamp(2.65rem,5vw,4.4rem)] leading-[1.02] font-medium tracking-[-0.042em] text-balance"
           >
             <span aria-hidden="true">
@@ -85,10 +85,10 @@ function LandingHero({ primaryLabel, profileHref }: LandingHeroProps) {
                   </GradientText>
                   <span data-gradient-particle>에</span>
                 </MotionWord>{" "}
-                <StaggeredWords reduced={reduced} startIndex={1} text="맞는 노래를 찾고," />
+                <StaggeredWords reduced={reduced} startIndex={1} text="맞는 노래와 키를 찾고," />
               </span>
               <span className="block">
-                <StaggeredWords reduced={reduced} startIndex={4} text="가장 나답게 완성하세요." />
+                <StaggeredWords reduced={reduced} startIndex={5} text="추천곡을 AI 믹싱해 보세요." />
               </span>
             </span>
           </h1>
@@ -96,8 +96,7 @@ function LandingHero({ primaryLabel, profileHref }: LandingHeroProps) {
             {...entryMotion(0.76, reduced)}
             className={`${styles.heroEntry} mx-auto mt-6 max-w-[38rem] text-sm leading-7 text-muted-foreground sm:text-[15px]`}
           >
-            한 소절의 목소리에서 음역과 안정성을 읽고, 부르기 좋은 노래와 키를 추천합니다. 선택한 곡은 AI 믹싱으로
-            자연스럽게 이어집니다.
+            한 소절을 분석해 음역과 안정성을 확인하고, 부르기 좋은 노래와 추천 키를 보여줘요.
           </motion.p>
           <motion.div
             {...entryMotion(0.94, reduced)}

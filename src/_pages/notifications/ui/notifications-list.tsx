@@ -34,10 +34,10 @@ export function NotificationsList({ initial }: { initial: NotificationListPayloa
   if (list.isError && !list.data) {
     return (
       <StatePanel
-        description="잠시 뒤 다시 시도해 주세요. 저장된 알림은 그대로 유지됩니다."
+        description="잠시 뒤 다시 시도해 주세요."
         icon={<Bell />}
         role="alert"
-        title="알림을 불러오지 못했습니다."
+        title="알림을 불러오지 못했어요."
         tone="destructive"
       />
     );
@@ -46,9 +46,9 @@ export function NotificationsList({ initial }: { initial: NotificationListPayloa
   if (data.total === 0) {
     return (
       <StatePanel
-        description="보컬 분석과 AI 믹싱 결과가 준비되면 이곳에서 알려드릴게요."
+        description="보컬 분석·AI 믹싱 결과와 티켓 지급 알림이 여기에 표시돼요."
         icon={<Bell />}
-        title="아직 알림이 없습니다."
+        title="아직 알림이 없어요."
       />
     );
   }

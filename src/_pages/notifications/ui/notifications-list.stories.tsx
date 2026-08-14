@@ -36,7 +36,7 @@ export const WithHistory: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("heading", { name: "알림" })).toBeVisible();
-    await expect(canvas.getByText("티켓 지급과 보컬 분석, AI 믹싱 작업의 중요한 결과를 확인하세요.")).toBeVisible();
+    await expect(canvas.getByText("보컬 분석·AI 믹싱 결과와 티켓 지급 알림을 확인할 수 있어요.")).toBeVisible();
     await expect(canvas.getByRole("region", { name: "알림 이력" })).toBeVisible();
     await expect(canvas.getByText("전체 3개 · 읽지 않음 2개")).toBeVisible();
     await expect(canvas.getByRole("button", { name: /AI 믹스가 완성되었습니다/ })).toBeVisible();
@@ -53,6 +53,6 @@ export const Empty: Story = {
     msw.use(notificationListHandler(empty), ticketBalanceHandler());
   },
   play: async ({ canvasElement }) => {
-    await expect(within(canvasElement).getByRole("heading", { name: "아직 알림이 없습니다." })).toBeVisible();
+    await expect(within(canvasElement).getByRole("heading", { name: "아직 알림이 없어요." })).toBeVisible();
   },
 };

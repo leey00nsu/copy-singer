@@ -79,7 +79,7 @@ async function expectLandingStructure(canvasElement: HTMLElement) {
   ).toBeVisible();
   await expect(canvas.queryByTestId("recommended-key-visualizer")).not.toBeInTheDocument();
   await expect(canvasElement.querySelectorAll("h1 [aria-hidden='true'] > span")).not.toHaveLength(0);
-  const voiceNotesHeading = canvas.getByRole("heading", { name: "더 좋은 한 소절을 위한 짧은 안내" });
+  const voiceNotesHeading = canvas.getByRole("heading", { name: "녹음과 추천을 볼 때 알아둘 점" });
   voiceNotesHeading.scrollIntoView({ block: "center" });
   await waitFor(() => expect(voiceNotesHeading).toBeVisible());
   await expect(canvas.queryByTestId("grainient-background")).not.toBeInTheDocument();

@@ -17,46 +17,46 @@ function revealDelay(index: number): CSSProperties {
 
 const editorialSteps = [
   {
-    description: "녹음이나 파일에서 관찰 음역, 실용 음역과 음정 안정성을 같은 기준으로 정리합니다.",
+    description: "녹음하거나 파일을 올리면 관찰 음역, 실용 음역과 음정 안정성을 확인해요.",
     eyebrow: "01 · Voice",
     icon: Mic2,
     title: "한 소절을 들려주세요.",
   },
   {
-    description: "내 보컬 특성과 곡의 요구 범위를 비교해 부르기 좋은 노래, 추천 키와 이유를 보여줍니다.",
+    description: "보컬 프로필과 곡의 음역을 비교해 추천곡과 키, 이유를 보여줘요.",
     eyebrow: "02 · Match",
     icon: Music2,
-    title: "맞는 노래와 키를 찾습니다.",
+    title: "맞는 노래와 키를 찾아요.",
   },
   {
-    description: "추천을 확인한 뒤 선택한 곡만 AI 믹싱하고, 완성된 결과는 라이브러리에 보관합니다.",
+    description: "추천곡을 선택해 AI 믹싱을 만들고, 완료된 결과는 라이브러리에 저장해요.",
     eyebrow: "03 · Create",
     icon: Sparkles,
-    title: "가장 나다운 버전으로 완성합니다.",
+    title: "추천곡을 AI 믹싱해요.",
   },
 ] as const;
 
 const voiceNotes = [
   {
-    description: "마이크를 너무 가깝게 두기보다 평소 말하듯 편안한 거리에서 시작하세요.",
+    description: "마이크를 너무 가깝게 두지 말고 평소처럼 편하게 불러주세요.",
     image: "/images/landing/voice-notes/recording-aurora.webp",
     label: "Recording",
     title: "편하게 녹음하기",
   },
   {
-    description: "최고음 하나보다 부담 없이 반복해서 낼 수 있는 실용 음역이 더 중요합니다.",
+    description: "최고음보다 반복해서 편하게 낼 수 있는 실용 음역을 기준으로 봐요.",
     image: "/images/landing/voice-notes/vocal-profile-aurora.webp",
     label: "Vocal profile",
     title: "실용 음역 읽기",
   },
   {
-    description: "추천 키는 원곡의 매력을 지키면서 내 목소리의 부담을 줄이는 출발점입니다.",
+    description: "추천 키는 내 음역에서 고음·저음 부담을 줄이는 방향으로 계산해요.",
     image: "/images/landing/voice-notes/song-match-aurora.webp",
     label: "Song match",
     title: "추천 키 이해하기",
   },
   {
-    description: "완료된 믹싱 결과는 계정의 라이브러리에서 다시 듣고 관리할 수 있습니다.",
+    description: "완료된 AI 믹싱은 라이브러리에서 다시 듣고 관리할 수 있어요.",
     image: "/images/landing/voice-notes/ai-mixing-aurora.webp",
     label: "AI mixing",
     title: "결과 보관하기",
@@ -92,7 +92,7 @@ function LandingPage({ admin = false, user = null }: { admin?: boolean; user?: P
                 <span className="block text-muted-foreground">세 단계의 흐름.</span>
               </h2>
               <p className="mt-6 max-w-[25rem] text-[13px] leading-6 text-muted-foreground">
-                복잡한 점수 대신, 목소리를 이해하고 맞는 곡을 찾아 결과를 만드는 데 필요한 정보만 이어서 보여줍니다.
+                목소리 분석, 노래 추천, AI 믹싱 순서로 필요한 결과를 확인해요.
               </p>
             </RevealContent>
 
@@ -163,7 +163,7 @@ function LandingPage({ admin = false, user = null }: { admin?: boolean; user?: P
           <RevealContent className="flex items-end justify-between gap-5" variant="section">
             <div>
               <p className="text-[10px] font-semibold tracking-[0.16em] text-muted-foreground uppercase">Voice notes</p>
-              <h2 className="mt-3 text-2xl font-medium tracking-[-0.035em]">더 좋은 한 소절을 위한 짧은 안내</h2>
+              <h2 className="mt-3 text-2xl font-medium tracking-[-0.035em]">녹음과 추천을 볼 때 알아둘 점</h2>
             </div>
             <span className="hidden text-[10px] text-muted-foreground sm:block">Copysinger guide</span>
           </RevealContent>
@@ -195,7 +195,7 @@ function LandingPage({ admin = false, user = null }: { admin?: boolean; user?: P
                 <Mic2 aria-hidden="true" className="size-5" />
                 <h3 className="mt-6 text-lg font-semibold tracking-[-0.025em]">첫 목소리 분석 시작</h3>
                 <p className="mt-2 max-w-md text-xs leading-5 text-muted-foreground">
-                  한 소절을 녹음하거나 파일을 올리고 내 보컬 프로필을 만드세요.
+                  한 소절을 녹음하거나 파일을 올려 보컬 프로필을 만들어요.
                 </p>
                 <Link
                   className="mt-auto flex min-h-11 items-center justify-center rounded-md bg-primary px-4 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/88 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
@@ -208,7 +208,7 @@ function LandingPage({ admin = false, user = null }: { admin?: boolean; user?: P
                 <Library aria-hidden="true" className="size-5" />
                 <h3 className="mt-6 text-lg font-semibold tracking-[-0.025em]">기존 결과 이어보기</h3>
                 <p className="mt-2 max-w-md text-xs leading-5 text-muted-foreground">
-                  저장된 분석과 AI 믹싱 결과를 라이브러리에서 다시 확인하세요.
+                  저장된 보컬 프로필과 AI 믹싱 결과는 라이브러리에서 다시 볼 수 있어요.
                 </p>
                 <Link
                   className="mt-auto flex min-h-11 items-center justify-center rounded-md border px-4 text-xs font-medium transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"

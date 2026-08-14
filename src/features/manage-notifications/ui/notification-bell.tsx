@@ -71,10 +71,10 @@ export function NotificationBell() {
           <p className="px-3 py-8 text-center text-xs text-muted-foreground">알림을 불러오는 중…</p>
         ) : null}
         {list.isError ? (
-          <p className="px-3 py-8 text-center text-xs text-destructive">알림을 불러오지 못했습니다.</p>
+          <p className="px-3 py-8 text-center text-xs text-destructive">알림을 불러오지 못했어요.</p>
         ) : null}
         {list.data?.notifications.length === 0 ? (
-          <p className="px-3 py-8 text-center text-xs text-muted-foreground">새 알림이 없습니다.</p>
+          <p className="px-3 py-8 text-center text-xs text-muted-foreground">새 알림이 없어요.</p>
         ) : null}
         {list.data?.notifications.map((item) => (
           <DropdownMenuItem

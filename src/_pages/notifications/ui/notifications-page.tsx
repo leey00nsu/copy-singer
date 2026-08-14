@@ -7,7 +7,7 @@ import { NotificationsPageContent } from "./notifications-page-content";
 
 export const metadata: Metadata = {
   title: "알림 — Copysinger",
-  description: "보컬 분석, AI 믹싱과 티켓 지급 알림을 확인하세요.",
+  description: "보컬 분석, AI 믹싱과 티켓 지급 알림을 확인할 수 있어요.",
 };
 
 export default async function NotificationsPage({

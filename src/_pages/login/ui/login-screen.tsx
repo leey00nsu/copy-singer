@@ -22,11 +22,11 @@ function LoginScreen({ callbackURL, configured }: LoginScreenProps) {
           </div>
           <div className="mx-auto flex w-full max-w-sm flex-col text-center lg:mx-0 lg:text-left">
             <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
-              Continue your voice
+              Copysinger
             </p>
-            <h1 className="mt-3 text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">내 목소리로 계속하기</h1>
+            <h1 className="mt-3 text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">계속하려면 로그인해 주세요.</h1>
             <p className="mt-4 text-sm leading-6 text-muted-foreground">
-              저장한 보컬 프로필과 추천, AI 믹싱 결과를 이어서 확인하세요.
+              저장된 보컬 프로필과 AI 믹싱 결과는 로그인 후 확인할 수 있어요.
             </p>
             <div className="mt-8 w-full">
               <GoogleSignIn callbackURL={callbackURL} configured={configured} />

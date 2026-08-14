@@ -22,8 +22,8 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("heading", { name: "내 목소리로 계속하기" })).toBeVisible();
-    await expect(canvas.getByText("저장한 보컬 프로필과 추천, AI 믹싱 결과를 이어서 확인하세요.")).toBeVisible();
+    await expect(canvas.getByRole("heading", { name: "계속하려면 로그인해 주세요." })).toBeVisible();
+    await expect(canvas.getByText("저장된 보컬 프로필과 AI 믹싱 결과는 로그인 후 확인할 수 있어요.")).toBeVisible();
     await expect(canvas.getByRole("button", { name: "구글로 시작하기" })).toBeEnabled();
     await expect(canvas.getByText("Google 계정으로 로그인하면")).toBeVisible();
     await expect(canvas.getAllByRole("link", { name: "이용 약관" })[0]).toHaveAttribute("href", "/terms");
@@ -45,6 +45,6 @@ export const OAuthNotConfigured: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("button", { name: "구글로 시작하기" })).toBeDisabled();
-    await expect(canvas.getByText("Google OAuth 환경변수를 먼저 설정해 주세요.")).toBeVisible();
+    await expect(canvas.getByText("현재 Google 로그인을 사용할 수 없어요.")).toBeVisible();
   },
 };
