@@ -56,7 +56,7 @@ export const ActiveAnalysis: Story = {
     );
     if (!funnelCurrent || !timelineCompleted || !timelineCurrent)
       throw new Error("Lifecycle status markers are missing.");
-    await expect(funnelCurrent).toHaveClass("bg-data-accent/10", "text-data-accent-foreground");
+    await expect(funnelCurrent).toHaveClass("bg-data-accent", "text-white");
     await expect(timelineCompleted).toHaveClass("bg-foreground", "text-background");
     await expect(timelineCurrent).toHaveClass("bg-data-accent/10", "text-data-accent-foreground");
     await expect(canvas.getByTestId("voice-signal-core")).toHaveAttribute("data-signal-mode", "processing");

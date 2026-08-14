@@ -36,7 +36,7 @@ export function CreationFunnelStepper({ current }: { current: CreationFunnelStep
                 className={cn(
                   "relative z-10 flex size-6 shrink-0 items-center justify-center rounded-full border bg-background text-[10px] font-semibold transition-colors duration-300",
                   state === "complete" && lifecycleStatusClassNames.completed,
-                  state === "current" && lifecycleStatusClassNames.active,
+                  state === "current" && "border-data-accent bg-data-accent text-white",
                 )}
                 data-lifecycle-marker="true"
               >
