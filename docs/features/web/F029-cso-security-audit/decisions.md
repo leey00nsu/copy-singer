@@ -103,3 +103,47 @@
   - Data classification: Restricted=auth/session secret·사용자 원본 음성, Confidential=provider/Leemage/Modal credential·private artifact metadata, Internal=job/error/ops metadata, Public=published catalog·marketing/legal.
   - Phase 0–14: 0/1/2 PASS, 3 CANDIDATES, 4 NOT_APPLICABLE, 5 PASS/OBSERVATION, 6 PASS, 7/8 NOT_APPLICABLE, 9/10 FINDINGS, 11/12 PASS, 13 T04 PENDING, 14 PASS.
 - **Consequences**: T04는 세 VERIFIED finding만 수정한다. dependency 후보는 제품 security fix로 강제하지 않고 exit audit에서 다시 분류한다.
+
+---
+
+## D029-07: verified finding remediation과 exit re-audit 완료 (2026-08-14)
+
+- **Context**: D029-05에서 확정한 `F029-SEC-01/02/03`을 T04에서 최소 범위로 수정하고 daily-style confidence gate로 재검증했다.
+- **Constraints**: 정상 auth/upload/admin/worker 경로를 유지하고, migration은 기존 active duplicate를 임의로 정리하지 않으며, dependency candidate는 reachability 없이 강제 업그레이드하지 않는다.
+- **Options**: (a) app-layer check만 추가, (b) auth fail-closed + DB admission invariant + bounded multipart reader를 함께 적용, (c) report만 유지하고 risk acceptance.
+- **Decision**: (b)를 적용했다.
+- **Rationale**: 세 finding의 exploit-enabling primitive를 각 경계에서 직접 제거하고 race/variant까지 방어한다.
+- **Trace**:
+  - `F029-SEC-01`: production/test 환경 정책을 분리한 `resolveAuthSecret`을 도입해 production에서 explicit secret 없이는 auth 초기화가 실패한다.
+  - `F029-SEC-02`: pre-admission active check와 PostgreSQL partial unique index `VocalProfileAnalysisJob_one_active_per_user`를 함께 적용하고 conflict는 `ANALYSIS_BUSY`로 처리한다. 기존 idempotency race는 유지한다.
+  - `F029-SEC-03`: shared `readBoundedMultipartFormData`가 declared length와 실제 stream byte를 모두 제한하며, vocal profile 2개 route뿐 아니라 발견된 admin multipart variant까지 모두 이 경계를 사용한다.
+- **Evidence**:
+  - implementation commit: `771da70 fix(F029): verified security findings hardening`.
+  - exit verification: production + secret unset import=`FAILED`; active-admission DB index=1; `src/_app/api-routes`의 direct `request.formData()`=0.
+  - targeted: auth navigation 8/8, bounded multipart 3/3, vocal analysis queue 6/6, query contract 27/27 + server tests 5/5, admin 4/4 + 1/1, song analysis/admin catalog 6/6.
+  - quality: lint PASS, typecheck PASS, Steiger 0 issue + architecture 4/4, `git diff --check` PASS.
+  - full regression: 최초 Storybook 3개 readiness/timing flake 후 해당 files 16/16 PASS, 최종 `pnpm test` 전체 Storybook 154/154 PASS.
+  - dependency exit audit: critical 0, high 3(`image-size`, `nanoid`)로 T03와 동일하며 verified product path는 새로 확인되지 않았다.
+  - secret-safe diff count: private-key marker 0, provider-key prefix 0.
+- **Consequences**: audit에서 확인된 VERIFIED CRITICAL/HIGH는 unresolved 0이며, dependency advisory는 TENTATIVE 상태로 일반 dependency maintenance에서 추적한다. Python service 코드는 변경하지 않았다.
+
+---
+
+## D029-07: VERIFIED 3건 remediation 완료 및 exit posture 확정 (2026-08-14)
+
+- **Context**: T03에서 `F029-SEC-01/02/03` 세 건이 remediation threshold를 충족했고, T04에서 실제 hardening과 regression test를 적용했다.
+- **Constraints**: tentative dependency advisory는 제품 exploit path가 확인되지 않았으므로 security fix 범위에 포함하지 않는다. Python 제품 코드는 변경하지 않는다.
+- **Options**: (a) verified 3건만 최소 수정, (b) advisory까지 광범위 dependency update, (c) report만 남기고 수정하지 않음.
+- **Decision**: (a)를 완료했다. SEC-01은 production auth secret fail-closed, SEC-02는 DB partial unique index 기반 사용자별 active analysis 1건 + `ANALYSIS_BUSY`, SEC-03은 shared bounded multipart reader 및 동일 application variant 적용으로 닫았다.
+- **Rationale**: 세 변경 모두 원래 exploit path를 직접 차단하면서 기존 auth/admin/upload/worker 정상 경로를 유지한다. dependency 후보는 reachability evidence가 바뀌지 않았다.
+- **Trace**:
+  - `F029-SEC-01`: production secret 누락 시 throw, development/test fallback만 허용.
+  - `F029-SEC-02`: `PENDING/PROCESSING` partial unique index + application pre-check/409; 실제 concurrent distinct request에서 one-winner invariant와 loser media cleanup 검증.
+  - `F029-SEC-03`: `Content-Length` 사전 거절과 chunked stream byte cap을 가진 bounded reader; vocal-analysis 및 같은 `request.formData()` variant에 적용.
+- **Evidence**:
+  - Commit: `771da70 fix(F029): verified security findings hardening`.
+  - Targeted: auth navigation 8/8, vocal-analysis queue 6/6, query/custom multipart 32/32 PASS.
+  - Full: `pnpm test` PASS (Storybook 154/154 포함), `pnpm run lint` PASS, `pnpm exec tsc --noEmit` PASS, `pnpm run check:architecture` PASS.
+  - Exit static audit: application `request.formData()` unbounded variant 0, high-signal tracked secret file 0, Prisma schema valid 및 21 migrations local DB up-to-date.
+  - Dependency audit: high 3건은 기존 `image-size`/`nanoid` tentative 후보로 유지; verified product call path는 새로 확인되지 않았다.
+- **Consequences**: unresolved VERIFIED CRITICAL/HIGH finding은 0건이다. F029는 implementation approval checkpoint로 이동할 수 있으며, tentative dependency 후보는 일반 dependency maintenance 또는 별도 verified finding이 생길 때 다룬다.

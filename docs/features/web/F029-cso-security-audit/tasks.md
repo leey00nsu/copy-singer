@@ -84,26 +84,33 @@
     - pnpm high advisory 3건은 `image-size` Storybook dev path 및 `nanoid` vulnerable custom-generator API 미사용을 확인해 TENTATIVE로 유지했다.
     - Phase 0–14 status, OWASP A01–A10, STRIDE, data classification, T04 remediation scope를 redacted report에 기록했다.
 
-- [DOING][NON-PRD] T-F029-cso-security-audit-04 verified finding remediation 및 exit re-audit
+- [DONE][NON-PRD] T-F029-cso-security-audit-04 verified finding remediation 및 exit re-audit
   - Date: 2026-08-14
   - Acceptance:
     - VERIFIED 또는 confidence 8+ finding만 수정한다.
     - 수정된 finding에 regression/security test가 존재한다.
     - unresolved VERIFIED CRITICAL/HIGH가 없거나 명시적 risk acceptance가 기록된다.
   - Checklist:
-    - [ ] T03에서 확정된 finding만 최소 범위로 수정한다. finding이 없으면 no-op 근거를 기록한다.
-    - [ ] 동일 패턴 variant와 정상 사용자/관리자/worker 경로 회귀를 테스트한다.
-    - [ ] daily-style confidence 8/10 gate로 exit re-audit를 수행한다.
-    - [ ] `pnpm test`, `pnpm run lint`, `pnpm exec tsc --noEmit`, `pnpm run check:architecture`를 통과한다.
-    - [ ] Python 변경 시 관련 service test를 통과한다.
-    - [ ] docs와 Git diff에 raw secret이 새로 포함되지 않았음을 확인한다.
+    - [x] T03에서 확정된 `F029-SEC-01/02/03`만 remediation하고 tentative dependency 후보는 제품 security fix로 변경하지 않았다.
+    - [x] SEC-03 동일 패턴 variant를 확인해 vocal-analysis뿐 아니라 admin catalog/custom-mixing multipart route도 공용 bounded reader로 통일했다.
+    - [x] daily-style confidence 8/10 exit re-audit에서 unbounded `request.formData()` application variant 0, high-signal tracked secret file 0을 확인했다.
+    - [x] `pnpm test`, `pnpm run lint`, `pnpm exec tsc --noEmit`, `pnpm run check:architecture`를 통과했다.
+    - [x] Python 제품 코드 변경이 없어 Python service test 추가 실행은 불필요했다.
+    - [x] docs와 Git diff에 raw secret이 새로 포함되지 않았음을 확인했다.
+  - Evidence:
+    - **SEC-01 RESOLVED**: production/test/dev secret policy를 분리하고 production에서 `BETTER_AUTH_SECRET` 누락 시 fail-closed하도록 변경했다. auth navigation regression 8/8 PASS.
+    - **SEC-02 RESOLVED**: partial unique DB index로 사용자별 active `PENDING/PROCESSING` job을 1개로 제한하고 `ANALYSIS_BUSY` 409 contract를 추가했다. 순차 busy + 실제 concurrent distinct request race에서 1건만 admission되고 loser media cleanup까지 검증했으며 queue integration 6/6 PASS.
+    - **SEC-03 RESOLVED**: streaming bounded multipart reader가 `Content-Length` 및 chunked body를 byte budget에서 중단하도록 하고 모든 application multipart route variant에 적용했다. bounded multipart + query/custom-mixing tests 32/32 PASS.
+    - Prisma schema valid, 21 migrations 기준 local DB up-to-date, full `pnpm test` 및 Storybook 154/154 PASS, lint/typecheck/architecture PASS.
+    - exit `pnpm audit`는 기존 high 3건(`image-size` 2, `nanoid` 1)을 그대로 반환했으나 T03 reachability 판정이 바뀌지 않아 `TENTATIVE` 상태를 유지한다.
+    - Remediation commit: `771da70 fix(F029): verified security findings hardening`.
 
 ---
 
 ## 완료 조건
 
-- [ ] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
-- [ ] 테스트 실행 및 통과 기록 완료
+- [x] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
+- [x] 테스트 실행 및 통과 기록 완료
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -113,8 +120,10 @@
 | redacted secret/history audit | `2026-08-14` | `PASS — tracked/history high-signal secret candidate 0; .env.local ignored` |
 | Node/Python dependency audit | `2026-08-14` | `CANDIDATES — pnpm high 3; audited pinned Python direct deps 0; SoulX non-exact range unresolved` |
 | OWASP/STRIDE code tracing | `2026-08-14` | `PASS/CANDIDATES — access-control/injection/SSRF 방어 확인; auth-secret/analysis-admission/multipart/dependency 후보를 T03로 승격` |
-| `pnpm test` | - | - |
-| `pnpm run lint` | - | - |
-| `pnpm exec tsc --noEmit` | - | - |
-| `pnpm run check:architecture` | - | - |
-| Python service tests (if changed) | - | - |
+| `pnpm test` | `2026-08-14` | `PASS — full suite + Storybook 154/154` |
+| `pnpm run lint` | `2026-08-14` | `PASS` |
+| `pnpm exec tsc --noEmit` | `2026-08-14` | `PASS` |
+| `pnpm run check:architecture` | `2026-08-14` | `PASS — Steiger 0 issues, architecture boundary 4/4` |
+| security remediation targeted | `2026-08-14` | `PASS — auth 8/8, analysis queue 6/6 incl. concurrent race, query/custom-multipart 32/32` |
+| exit static audit | `2026-08-14` | `PASS — unbounded multipart variant 0, high-signal tracked secret file 0, Prisma migration current` |
+| Python service tests (if changed) | `2026-08-14` | `N/A — Python product code unchanged` |
