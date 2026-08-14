@@ -155,6 +155,18 @@
     - [x] 실제 `VoiceScanInput` Preparing 46%에서 표시 숫자=46%, `aria-valuenow=46`, inline width=46%, transition 0s, 실제 indicator/track 폭≈0.46을 Chromium 검증
     - [x] `pnpm run test:voice-scan` 12/12, 타깃 Storybook 12/12, 전체 Storybook 51 passed + 2 skipped / 151 tests, typecheck·architecture PASS
 
+- [TODO][PRD-FR-058] T-F027-notification-brand-color-10 알림 hover/focus 아이콘 semantic color 유지
+  - Date: 2026-08-14
+  - Acceptance:
+    - 알림 Bell dropdown에서 item hover/focus 시 타입별 아이콘 배지 색이 기본 상태와 동일하게 유지된다
+    - `ticket_credit` success, succeeded data-accent/white, failed destructive semantic color가 공용 dropdown focus descendant 색상에 덮어쓰이지 않는다
+    - 실제 `NotificationBell` Storybook에서 hover 전후 computed icon color를 검증한다
+  - Checklist:
+    - [ ] dropdown item focus descendant color가 알림 배지에 미치는 충돌을 최소 범위에서 차단한다
+    - [ ] `NotificationItemContent`에 테스트 가능한 badge hook을 추가하고 타입별 semantic color를 hover/focus에서도 유지한다
+    - [ ] `NotificationBell` 실제 open story에서 hover 전후 아이콘 color 불변을 브라우저 computed style로 검증한다
+    - [ ] 관련 Storybook, typecheck, architecture 검증을 통과한다
+
 ---
 
 ## 완료 조건
