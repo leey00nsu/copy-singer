@@ -75,10 +75,16 @@ export const OpenWithAllTypes: Story = {
       const item = body.getByRole("menuitem", { name: new RegExp(title) });
       const badge = item.querySelector<HTMLElement>(`[data-notification-icon-badge="${type}"]`);
       const icon = badge?.querySelector<SVGElement>("svg");
-      if (!badge || !icon) throw new Error(`Missing notification icon badge or svg for ${type}.`);
-      const colorBeforeHover = getComputedStyle(icon).color;
+      const iconMark = icon?.querySelector<SVGElement>("path, line, circle, polyline");
+      if (!badge || !icon || !iconMark) throw new Error(`Missing notification icon badge, svg, or mark for ${type}.`);
+      const semanticColor = getComputedStyle(badge).color;
+      await expect(getComputedStyle(iconMark).color).toBe(semanticColor);
+
       await userEvent.hover(item);
-      await waitFor(() => expect(getComputedStyle(icon).color).toBe(colorBeforeHover));
+      await waitFor(() => expect(getComputedStyle(iconMark).color).toBe(semanticColor));
+
+      item.focus();
+      await waitFor(() => expect(getComputedStyle(iconMark).color).toBe(semanticColor));
     }
 
     await expect(body.getByRole("menuitem", { name: "전체 알림 보기" })).toHaveAttribute("href", "/notifications");

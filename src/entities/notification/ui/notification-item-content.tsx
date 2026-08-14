@@ -46,7 +46,7 @@ export function NotificationItemContent({ compact = false, item }: { compact?: b
   return (
     <span className="flex min-w-0 items-start gap-3 text-left">
       <span
-        className={`mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full ${badgeClass}`}
+        className={`mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full [&_svg_*]:!text-inherit ${badgeClass}`}
         data-notification-icon-badge={item.type}
         style={{ color: badgeForegrounds[item.type] }}
       >
