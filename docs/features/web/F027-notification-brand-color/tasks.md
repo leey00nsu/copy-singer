@@ -20,7 +20,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/notification-brand-color`
-- **대기 중 변경 요청**: -
+- **대기 중 변경 요청**: 보컬 분석 성공 직후 별도 Summary 화면을 거치지 않고 생성된 보컬 프로필 상세로 이동하며, 실제 `/vocal-profiles/[id]` UI를 재현하는 Storybook을 추가한다.
   - 구현 중 새로 수용한 사용자 요청을 잠시 표시하는 sync marker입니다
   - 요청을 `tasks.md`와 관련 문서에 반영한 뒤 값을 비우세요
   - pre-PR 리뷰 handoff를 시작하면 `Running`, 리뷰 결과 기록까지 끝나면 `Done`으로 변경
@@ -107,6 +107,19 @@
     - [x] props, container, theme/background, responsive width 차이를 실제 UI 기준으로 수정 — 페이지 content frame 공유, Library widget wrapper 정규화, VoiceScanInput 폭 보정
     - [x] story 전용 mock markup이 실제 UI와 다른 경우 실제 컴포넌트 composition으로 교체 — fake notification hover 제거 후 실제 `NotificationBell` open story 추가, Notifications/Library는 제품 frame 재사용
     - [x] 수정 story 테스트와 회귀 확인 — 변경 대상 8 files 27/27 PASS, 전체 Storybook 52 files / 152 tests PASS
+
+- [TODO][PRD-FR-039] T-F027-notification-brand-color-06 분석 성공 후 보컬 프로필 상세 직행 및 상세 Storybook 추가
+  - Date: 2026-08-14
+  - Acceptance:
+    - `/profile`의 분석 job이 성공하면 별도 Summary 성공 화면 없이 생성된 `/vocal-profiles/[id]` 상세로 자동 이동한다
+    - 제품 흐름에서 더 이상 사용하지 않는 `VocalProfileSummary` 중간 UI와 해당 전용 story를 정리한다
+    - Storybook에 실제 `/vocal-profiles/[id]` 상세 composition을 공유하는 page-level story가 추가되고 Saved analysis 헤더, 제출 보컬, 상세 분석, actions를 제품 UI와 동일하게 렌더링한다
+    - 관련 Storybook test, typecheck, architecture check가 통과한다
+  - Checklist:
+    - [ ] 분석 성공 상태의 redirect 및 local analysis job 정리 동작을 구현한다
+    - [ ] `VocalProfileSummary`의 실제 production 사용 여부를 제거 후 재확인하고 dead UI/story를 정리한다
+    - [ ] 보컬 프로필 상세 페이지 body를 Storybook과 공유 가능한 composition으로 분리하고 실제 상세 story를 추가한다
+    - [ ] 관련 회귀 테스트와 전체 Storybook 검증을 통과한다
 
 ---
 
