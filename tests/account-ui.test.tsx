@@ -32,6 +32,9 @@ test("account overview renders actual identity, provider, ticket data without sh
   );
   assert.doesNotMatch(html, /Google 연결됨|Google 연결 정보 없음/);
   assert.match(html, /로그인 방식/);
+  assert.match(html, /lucide-user-round/);
+  assert.match(html, /lucide-mail/);
+  assert.match(html, /lucide-log-in/);
   assert.match(html, />Google</);
   assert.match(html, /jieun@copysinger\.test/);
   assert.match(html, /사용 가능한 티켓/);

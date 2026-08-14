@@ -1,4 +1,4 @@
-import { Ticket, UserRound } from "lucide-react";
+import { LogIn, Mail, Ticket, UserRound } from "lucide-react";
 import Link from "next/link";
 import { type TicketEntryView, TicketLedger } from "@/entities/ticket";
 import { Button, buttonVariants } from "@/shared/ui/button";
@@ -71,11 +71,15 @@ export function AccountOverview({ account, authentication, user }: AccountOvervi
               <dd className="mt-1.5 break-words text-sm font-semibold">{user.name}</dd>
             </div>
             <div>
-              <dt className="text-[11px] text-muted-foreground">이메일</dt>
+              <dt className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                <Mail aria-hidden="true" className="size-3" /> 이메일
+              </dt>
               <dd className="mt-1.5 break-all text-sm font-semibold">{user.email}</dd>
             </div>
             <div>
-              <dt className="text-[11px] text-muted-foreground">로그인 방식</dt>
+              <dt className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                <LogIn aria-hidden="true" className="size-3" /> 로그인 방식
+              </dt>
               <dd className="mt-1.5 text-sm font-semibold">
                 {authentication.googleConnected ? "Google" : "현재 세션"}
               </dd>

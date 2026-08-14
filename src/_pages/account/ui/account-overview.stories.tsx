@@ -50,6 +50,10 @@ export const GoogleConnected: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.queryByText("Google 연결됨")).not.toBeInTheDocument();
+    for (const label of ["이름", "이메일", "로그인 방식"]) {
+      const term = canvas.getByText(label).closest("dt");
+      await expect(term?.querySelector("svg")).toBeVisible();
+    }
     await expect(canvas.getByText("Google")).toBeVisible();
     await expect(canvas.getByRole("link", { name: "AI 믹스 상세 보기" })).toBeVisible();
     await expect(canvas.getByRole("button", { name: "이전" })).toBeDisabled();
