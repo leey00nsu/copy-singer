@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, within } from "storybook/test";
+import { lifecycleStatusClassNames } from "@/shared/lib/lifecycle-status-colors";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import { ActualStateTimeline } from "./actual-state-timeline";
@@ -27,7 +28,11 @@ export const ActiveAnalysis: Story = {
       <ProcessHero
         description="페이지를 닫아도 서버에서 계속 진행되며 돌아오면 같은 작업을 확인합니다."
         eyebrow="Voice analysis"
-        status={<Badge variant="secondary">분석 중</Badge>}
+        status={
+          <Badge className={lifecycleStatusClassNames.active} variant="secondary">
+            분석 중
+          </Badge>
+        }
         title="당신의 목소리 기준을 찾고 있어요"
       >
         <ActualStateTimeline label="보컬 분석 진행 단계" steps={[...analysisSteps]} />
@@ -36,9 +41,24 @@ export const ActiveAnalysis: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("navigation", { name: "생성 진행 단계" })).toBeVisible();
-    await expect(canvas.getByRole("list", { name: "보컬 분석 진행 단계" })).toBeVisible();
+    const funnel = canvas.getByRole("navigation", { name: "생성 진행 단계" });
+    const timeline = canvas.getByRole("list", { name: "보컬 분석 진행 단계" });
+    await expect(funnel).toBeVisible();
+    await expect(timeline).toBeVisible();
     await expect(canvas.getByText("목소리 분석").closest("li")).toHaveAttribute("aria-current", "step");
+
+    const funnelCurrent = funnel.querySelector<HTMLElement>('[data-state="current"] [data-lifecycle-marker="true"]');
+    const timelineCompleted = timeline.querySelector<HTMLElement>(
+      '[data-state="complete"] [data-lifecycle-marker="true"]',
+    );
+    const timelineCurrent = timeline.querySelector<HTMLElement>(
+      '[data-state="current"] [data-lifecycle-marker="true"]',
+    );
+    if (!funnelCurrent || !timelineCompleted || !timelineCurrent)
+      throw new Error("Lifecycle status markers are missing.");
+    await expect(funnelCurrent).toHaveClass("bg-data-accent/10", "text-data-accent-foreground");
+    await expect(timelineCompleted).toHaveClass("bg-foreground", "text-background");
+    await expect(timelineCurrent).toHaveClass("bg-data-accent/10", "text-data-accent-foreground");
     await expect(canvas.getByTestId("voice-signal-core")).toHaveAttribute("data-signal-mode", "processing");
     await expect(canvas.getByTestId("voice-orb")).toBeVisible();
   },

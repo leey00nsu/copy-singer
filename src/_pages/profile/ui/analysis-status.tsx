@@ -1,5 +1,6 @@
 import { RotateCcw } from "lucide-react";
 import type { VocalProfileError } from "@/entities/vocal-profile";
+import { lifecycleStatusClassNames } from "@/shared/lib/lifecycle-status-colors";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import { type ActualStateStep, ActualStateTimeline, ProcessHero } from "@/widgets/creation-funnel";
@@ -114,7 +115,11 @@ export function AnalysisStatus({
       }
       description="페이지를 닫아도 서버에서 계속 진행되며 돌아오면 같은 작업 상태를 확인합니다."
       eyebrow="Voice analysis"
-      status={<Badge variant="secondary">{copy.status}</Badge>}
+      status={
+        <Badge className={lifecycleStatusClassNames.active} variant="secondary">
+          {copy.status}
+        </Badge>
+      }
       title={copy.title}
     >
       <ActualStateTimeline label="보컬 분석 진행 단계" steps={timelineFor(stage, attempts, maxAttempts)} />

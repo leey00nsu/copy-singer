@@ -168,7 +168,9 @@ export const ProcessingAnalysis: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText("보컬 프로필 분석 중")).toBeVisible();
-    await expect(canvas.getByText("분석 중")).toBeVisible();
+    const status = canvas.getByText("분석 중").closest('[data-slot="badge"]');
+    if (!(status instanceof HTMLElement)) throw new Error("Processing analysis status badge is missing.");
+    await expect(status).toHaveClass("bg-data-accent/10", "text-data-accent-foreground");
     const row = canvasElement.querySelector('[data-analysis-job-row="processing"]');
     if (!(row instanceof HTMLElement)) throw new Error("Processing analysis row is missing.");
     await expect(row).toBeVisible();

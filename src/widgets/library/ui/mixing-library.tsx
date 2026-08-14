@@ -16,6 +16,7 @@ import {
   mixingHistoryQueryOptions,
 } from "@/entities/mixing-job";
 import { VocalProfileArtwork } from "@/entities/vocal-profile";
+import { lifecycleStatusClassNames } from "@/shared/lib/lifecycle-status-colors";
 import { Badge } from "@/shared/ui/badge";
 import { Button, buttonVariants } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
@@ -38,7 +39,7 @@ const STATUS_OPTIONS = Object.entries(STATUS_LABELS) as Array<[MixingHistoryFilt
 function MixingLibraryStatus({ job }: { job: MixingHistoryRow }) {
   if (job.status === "succeeded" && !job.resultReady) {
     return (
-      <Badge className="h-7 gap-1.5 border border-data-accent/35 bg-data-accent/10 px-2.5 text-[11px] text-data-accent-foreground">
+      <Badge className={`h-7 gap-1.5 px-2.5 text-[11px] ${lifecycleStatusClassNames.active}`}>
         <LoaderCircle aria-hidden="true" className="size-3 animate-spin motion-reduce:animate-none" />
         결과 확인 중
       </Badge>

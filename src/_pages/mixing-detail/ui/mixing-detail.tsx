@@ -11,6 +11,7 @@ import {
   Music2,
   Trash2,
   TriangleAlert,
+  XCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -26,6 +27,7 @@ import {
 import { VocalProfileArtwork } from "@/entities/vocal-profile";
 import { ApiError } from "@/shared/api";
 import { cn } from "@/shared/lib/cn";
+import { lifecycleStatusClassNames } from "@/shared/lib/lifecycle-status-colors";
 import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
 import { Button, buttonVariants } from "@/shared/ui/button";
 import {
@@ -42,7 +44,16 @@ import { ProductPageIntro } from "@/shared/ui/product-page-intro";
 import { StatusNotice } from "@/shared/ui/status-notice";
 import { ActualStateTimeline, CreationFunnelShell, ProcessHero } from "@/widgets/creation-funnel";
 
-function TimelineIcon({ state }: { state: "complete" | "reached" | "current" | "upcoming" | "skipped" }) {
+function TimelineIcon({
+  state,
+  terminalStatus,
+}: {
+  state: "complete" | "reached" | "current" | "upcoming" | "skipped";
+  terminalStatus?: MixingHistoryRow["status"];
+}) {
+  if (state === "complete" && terminalStatus === "failed")
+    return <TriangleAlert aria-hidden="true" className="size-4" />;
+  if (state === "complete" && terminalStatus === "canceled") return <XCircle aria-hidden="true" className="size-4" />;
   if (state === "complete") return <Check aria-hidden="true" className="size-4" />;
   if (state === "reached") return <CircleDot aria-hidden="true" className="size-4" />;
   if (state === "current")
@@ -54,32 +65,43 @@ function MixingTimeline({ job }: { job: MixingHistoryRow }) {
   const presentation = presentMixingJob(job);
   return (
     <ol aria-label="AI 믹싱 진행 단계" className="grid overflow-hidden rounded-xl bg-muted/55 sm:grid-cols-4">
-      {presentation.timeline.map((step, index) => (
-        <li
-          className={cn(
-            "relative grid grid-cols-[auto_1fr] gap-3 px-4 py-5 sm:block sm:px-5",
-            index > 0 && "border-t sm:border-t-0 sm:border-l",
-            step.state === "skipped" && "text-muted-foreground",
-          )}
-          data-state={step.state}
-          key={step.id}
-        >
-          <span
+      {presentation.timeline.map((step, index) => {
+        const terminalStep = step.id === "terminal" && presentation.terminal;
+        const terminalSuccess = terminalStep && job.status === "succeeded";
+        const terminalFailure = terminalStep && job.status === "failed";
+        const terminalCanceled = terminalStep && job.status === "canceled";
+        return (
+          <li
             className={cn(
-              "flex size-7 items-center justify-center rounded-full border",
-              step.state === "complete" && "border-primary bg-primary text-primary-foreground",
-              step.state === "reached" && "border-foreground text-foreground",
-              step.state === "current" && "border-data-accent-foreground text-data-accent-foreground",
+              "relative grid grid-cols-[auto_1fr] gap-3 px-4 py-5 sm:block sm:px-5",
+              index > 0 && "border-t sm:border-t-0 sm:border-l",
+              step.state === "skipped" && "text-muted-foreground",
             )}
+            data-state={step.state}
+            data-terminal-state={terminalStep ? job.status : undefined}
+            key={step.id}
           >
-            <TimelineIcon state={step.state} />
-          </span>
-          <div className="sm:mt-4">
-            <p className="text-sm font-semibold">{step.label}</p>
-            <p className="mt-1 text-xs leading-5 text-muted-foreground">{step.description}</p>
-          </div>
-        </li>
-      ))}
+            <span
+              className={cn(
+                "flex size-7 items-center justify-center rounded-full border",
+                step.state === "complete" && !terminalStep && lifecycleStatusClassNames.completed,
+                step.state === "reached" && "border-foreground text-foreground",
+                step.state === "current" && lifecycleStatusClassNames.active,
+                terminalSuccess && lifecycleStatusClassNames.success,
+                terminalFailure && lifecycleStatusClassNames.failure,
+                terminalCanceled && "border-muted-foreground/35 bg-muted text-muted-foreground",
+              )}
+              data-lifecycle-marker="true"
+            >
+              <TimelineIcon state={step.state} terminalStatus={terminalStep ? job.status : undefined} />
+            </span>
+            <div className="sm:mt-4">
+              <p className="text-sm font-semibold">{step.label}</p>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">{step.description}</p>
+            </div>
+          </li>
+        );
+      })}
     </ol>
   );
 }

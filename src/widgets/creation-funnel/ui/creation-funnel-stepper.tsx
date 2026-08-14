@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
+import { lifecycleStatusClassNames } from "@/shared/lib/lifecycle-status-colors";
 import { type CreationFunnelStep, creationFunnelSteps } from "../model/creation-funnel";
 
 export function CreationFunnelStepper({ current }: { current: CreationFunnelStep }) {
@@ -34,9 +35,10 @@ export function CreationFunnelStepper({ current }: { current: CreationFunnelStep
                 aria-hidden="true"
                 className={cn(
                   "relative z-10 flex size-6 shrink-0 items-center justify-center rounded-full border bg-background text-[10px] font-semibold transition-colors duration-300",
-                  state === "complete" && "border-foreground bg-foreground text-background",
-                  state === "current" && "border-data-accent bg-data-accent text-white",
+                  state === "complete" && lifecycleStatusClassNames.completed,
+                  state === "current" && lifecycleStatusClassNames.active,
                 )}
+                data-lifecycle-marker="true"
               >
                 {state === "complete" ? <Check className="size-3.5" /> : index + 1}
               </span>

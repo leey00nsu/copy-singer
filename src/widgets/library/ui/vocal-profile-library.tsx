@@ -12,6 +12,7 @@ import {
   type VocalProfileHistoryPayload,
 } from "@/entities/vocal-profile";
 import { isActiveAnalysisJob, vocalProfileAnalysisJobsQueryOptions } from "@/features/analyze-vocal-profile";
+import { lifecycleStatusClassNames } from "@/shared/lib/lifecycle-status-colors";
 import { Badge } from "@/shared/ui/badge";
 import { buttonVariants } from "@/shared/ui/button";
 import { ResourceRowLink, resourceRowInteractiveClassName } from "@/shared/ui/resource-row-link";
@@ -127,7 +128,12 @@ function VocalProfileAnalysisJobRows({ jobs }: { jobs: VocalProfileAnalysisJobRe
               className="order-first col-span-2 flex flex-wrap items-center gap-2 md:order-none md:col-span-1"
               data-profile-column="status"
             >
-              <Badge variant={failed ? "destructive" : "secondary"}>{copy.badge}</Badge>
+              <Badge
+                className={failed ? undefined : lifecycleStatusClassNames.active}
+                variant={failed ? "destructive" : "secondary"}
+              >
+                {copy.badge}
+              </Badge>
               {failed ? (
                 <Link className={buttonVariants({ size: "xs", variant: "outline" })} href="/profile">
                   <RotateCcw aria-hidden="true" className="size-4" /> 다시 분석하기

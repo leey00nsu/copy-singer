@@ -31,7 +31,18 @@ export const Pending: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("heading", { name: "목소리 분석을 준비하고 있어요" })).toBeVisible();
-    await expect(canvas.getByRole("list", { name: "보컬 분석 진행 단계" })).toBeVisible();
+    const status = canvas.getByText("분석 대기").closest('[data-slot="badge"]');
+    if (!(status instanceof HTMLElement)) throw new Error("Pending analysis status badge is missing.");
+    await expect(status).toHaveClass("bg-data-accent/10", "text-data-accent-foreground");
+    const timeline = canvas.getByRole("list", { name: "보컬 분석 진행 단계" });
+    await expect(timeline).toBeVisible();
+    const completedMarker = timeline.querySelector<HTMLElement>(
+      '[data-state="complete"] [data-lifecycle-marker="true"]',
+    );
+    const currentMarker = timeline.querySelector<HTMLElement>('[data-state="current"] [data-lifecycle-marker="true"]');
+    if (!completedMarker || !currentMarker) throw new Error("Analysis lifecycle markers are missing.");
+    await expect(completedMarker).toHaveClass("bg-foreground", "text-background");
+    await expect(currentMarker).toHaveClass("bg-data-accent/10", "text-data-accent-foreground");
   },
 };
 
