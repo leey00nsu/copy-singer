@@ -20,7 +20,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/notification-brand-color`
-- **대기 중 변경 요청**: -
+- **대기 중 변경 요청**: Storybook 일부 story가 실제 제품 UI와 시각적으로 다르므로, 실제 사용처 기준으로 재감사하고 불일치 story를 수정한다.
   - 구현 중 새로 수용한 사용자 요청을 잠시 표시하는 sync marker입니다
   - 요청을 `tasks.md`와 관련 문서에 반영한 뒤 값을 비우세요
   - pre-PR 리뷰 handoff를 시작하면 `Running`, 리뷰 결과 기록까지 끝나면 `Done`으로 변경
@@ -94,6 +94,19 @@
     - [x] .storybook/main.ts 글롭 포함 여부 확인 — ../src/**/*.stories.* 에 51개 모두 포함
     - [x] 미사용 story 삭제 또는 유지 근거 기록 — 빈 디렉터리 2개 rmdir, 나머지 49개 active story는 유지 (decisions.md 기록)
     - [x] pnpm run test:storybook --run 회귀 확인 — notification-badge-colors 3/3, skeleton 12/12 등 통과
+
+- [TODO][NON-PRD] T-F027-notification-brand-color-05 Storybook과 실제 UI 시각 정합성 재감사
+  - Date: 2026-08-14
+  - Acceptance:
+    - 실제 제품에서 사용되는 컴포넌트의 story가 제품 사용처와 동일한 핵심 props, wrapper, width/background/context를 사용한다
+    - 실제 UI를 흉내 낸 별도 mock markup 대신 가능한 한 실제 컴포넌트와 동일 composition을 렌더링한다
+    - 불일치로 판정한 story와 수정 근거가 `decisions.md`에 기록된다
+    - 관련 Storybook test와 `pnpm run typecheck`가 통과한다
+  - Checklist:
+    - [ ] 51개 story를 실제 import/use site와 다시 대조해 시각 불일치 후보를 식별한다
+    - [ ] 각 후보의 props, container, theme/background, responsive width 차이를 실제 UI 기준으로 수정한다
+    - [ ] story 전용 mock markup이 실제 UI와 다른 경우 실제 컴포넌트 composition으로 교체한다
+    - [ ] 수정 story를 테스트하고 회귀 여부를 기록한다
 
 ---
 
