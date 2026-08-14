@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, fn, userEvent, within } from "storybook/test";
+import { CreationFunnelShell } from "@/widgets/creation-funnel";
 import { AnalysisStatus } from "./analysis-status";
 
 const meta = {
@@ -13,13 +14,13 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <div className="w-[min(100vw-2rem,56rem)]">
+      <CreationFunnelShell currentStep="analysis">
         <Story />
-      </div>
+      </CreationFunnelShell>
     ),
   ],
   parameters: {
-    layout: "centered",
+    layout: "fullscreen",
   },
 } satisfies Meta<typeof AnalysisStatus>;
 

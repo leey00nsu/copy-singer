@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { expect } from "storybook/test";
 import type { NotificationItem } from "@/entities/notification/model/contract";
 import { NotificationItemContent } from "@/entities/notification/ui/notification-item-content";
 
@@ -33,32 +34,19 @@ export const AllTypes: Story = {
           "mixing_failed",
         ] as const
       ).map((type) => (
-        <div key={type} className="rounded-lg border p-3">
+        <div data-notification-type={type} key={type} className="rounded-lg border p-3">
           <p className="mb-2 text-[11px] font-mono text-muted-foreground">{type}</p>
           <NotificationItemContent item={{ ...base, type }} />
         </div>
       ))}
-      <div className="mt-4 grid gap-3">
-        <p className="text-xs text-muted-foreground">Dropdown 모달 호버 (배지 컬러 유지, 배경 muted와 구분)</p>
-        <div
-          className="group flex cursor-pointer items-center gap-3 rounded-md px-2 py-2.5 hover:bg-accent focus:bg-accent"
-          tabIndex={0}
-        >
-          <NotificationItemContent
-            compact
-            item={{ ...base, type: "mixing_succeeded", title: "AI 믹싱 성공", message: "호버 시 배지 보라 유지" }}
-          />
-        </div>
-        <div
-          className="group flex cursor-pointer items-center gap-3 rounded-md px-2 py-2.5 hover:bg-accent focus:bg-accent"
-          tabIndex={0}
-        >
-          <NotificationItemContent
-            compact
-            item={{ ...base, type: "ticket_credit", title: "티켓 지급", message: "호버 시 배지 초록 유지" }}
-          />
-        </div>
-      </div>
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const badgeFor = (type: string) => canvasElement.querySelector(`[data-notification-type="${type}"] > span > span`);
+    await expect(badgeFor("ticket_credit")).toHaveClass("bg-success", "text-success-foreground");
+    await expect(badgeFor("vocal_profile_succeeded")).toHaveClass("bg-data-accent", "text-white");
+    await expect(badgeFor("mixing_succeeded")).toHaveClass("bg-data-accent", "text-white");
+    await expect(badgeFor("vocal_profile_failed")).toHaveClass("bg-destructive/10", "text-destructive");
+    await expect(badgeFor("mixing_failed")).toHaveClass("bg-destructive/10", "text-destructive");
+  },
 };

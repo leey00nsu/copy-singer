@@ -68,6 +68,8 @@ const meta = {
   component: VocalProfileResults,
   args: {
     profile: PROFILE,
+    showSummary: false,
+    sourceAudioSrc: NO_NETWORK_AUDIO,
   },
   argTypes: {
     profile: {
@@ -76,9 +78,11 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <main className="mx-auto max-w-6xl p-6">
-        <Story />
-      </main>
+      <div className="mx-auto w-full max-w-[72rem] px-5 py-10 sm:px-7 lg:px-8 lg:py-12">
+        <section className="mt-10 sm:mt-14">
+          <Story />
+        </section>
+      </div>
     ),
   ],
   parameters: {
@@ -116,9 +120,9 @@ export const RepresentativeAnalysis: Story = {
       await expect(getComputedStyle(section).borderTopWidth).toBe("0px");
       await expect(getComputedStyle(section).borderBottomWidth).toBe("0px");
     }
-    await expect(canvasElement.querySelectorAll("[data-vocal-profile-stat-surface]")).toHaveLength(3);
+    await expect(canvasElement.querySelectorAll("[data-vocal-profile-stat-surface]")).toHaveLength(2);
     const chapters = canvasElement.querySelectorAll<HTMLElement>("[data-vocal-profile-chapter]");
-    await expect(chapters).toHaveLength(2);
+    await expect(chapters).toHaveLength(3);
     for (const chapter of chapters) {
       await expect(chapter).toHaveClass("bg-muted/55");
       await expect(getComputedStyle(chapter).borderTopWidth).toBe("0px");

@@ -1,10 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import type {} from "msw-storybook-addon/types";
 import { expect, within } from "storybook/test";
 import type { MixingHistoryPayload } from "@/entities/mixing-job";
 import type { VocalProfileHistoryPayload } from "@/entities/vocal-profile";
-import { ProductPageIntro } from "@/shared/ui/product-page-intro";
-import { LibraryTabs, MixingLibrary, VocalProfileLibrary } from "@/widgets/library";
+import { MixingLibrary, VocalProfileLibrary } from "@/widgets/library";
 import { ProductShell } from "@/widgets/product-shell";
+import { notificationListHandler, ticketBalanceHandler } from "../../../../tests/msw/handlers";
+import { LibraryPageContent } from "./library-page-content";
 
 const denseMixingHistory: MixingHistoryPayload = {
   page: 1,
@@ -73,23 +75,13 @@ const denseProfileHistory: VocalProfileHistoryPayload = {
 function LibraryPreview({ tab }: { tab: "profiles" | "mixes" }) {
   return (
     <ProductShell user={{ email: "jieun@copysinger.test", name: "지은" }}>
-      <div className="mx-auto w-full max-w-[72rem] px-5 py-12 sm:px-7 lg:px-8 lg:py-14">
-        <ProductPageIntro
-          description="저장한 보컬 프로필과 AI 믹싱 작업을 구분해 확인하세요."
-          eyebrow="Library"
-          title="내 라이브러리"
-        />
-        <div className="mt-7">
-          <LibraryTabs tab={tab} />
-        </div>
-        <div className="mt-4">
-          {tab === "profiles" ? (
-            <VocalProfileLibrary history={denseProfileHistory} />
-          ) : (
-            <MixingLibrary filters={{ page: 1, q: "", status: "all" }} initial={denseMixingHistory} />
-          )}
-        </div>
-      </div>
+      <LibraryPageContent tab={tab}>
+        {tab === "profiles" ? (
+          <VocalProfileLibrary history={denseProfileHistory} />
+        ) : (
+          <MixingLibrary filters={{ page: 1, q: "", status: "all" }} initial={denseMixingHistory} />
+        )}
+      </LibraryPageContent>
     </ProductShell>
   );
 }
@@ -102,6 +94,9 @@ const meta = {
     layout: "fullscreen",
     nextjs: { navigation: { pathname: "/library" } },
   },
+  beforeEach({ msw }) {
+    msw.use(notificationListHandler(), ticketBalanceHandler());
+  },
 } satisfies Meta<typeof LibraryPreview>;
 
 export default meta;
@@ -113,6 +108,8 @@ export const Profiles: Story = {
     const canvas = within(canvasElement);
     const productMenu = within(canvas.getByRole("navigation", { name: "제품 메뉴" }));
     await expect(productMenu.getByRole("link", { name: "라이브러리" })).toHaveAttribute("aria-current", "page");
+    await expect(canvas.getByRole("link", { name: "새 목소리 분석" })).toHaveAttribute("href", "/profile");
+    await expect(canvas.getByText("진행 중인 작업은 페이지를 닫아도 계속됩니다.", { exact: false })).toBeVisible();
     await expect(canvas.getByText("보컬 프로필 10개")).toBeVisible();
     await expect(canvas.getAllByRole("link", { name: /분석과 제출 보컬 보기/ })).toHaveLength(10);
   },

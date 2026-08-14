@@ -3,7 +3,6 @@ import { HttpResponse, http } from "msw";
 import type {} from "msw-storybook-addon/types";
 import { expect, within } from "storybook/test";
 import type { VocalProfileAnalysisJobResponse, VocalProfileHistoryPayload } from "@/entities/vocal-profile";
-import { LibraryTabs } from "./library-tabs";
 import { VocalProfileLibrary } from "./vocal-profile-library";
 
 const profileHistory = {
@@ -83,16 +82,8 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <div className="mx-auto w-full max-w-6xl px-5 py-10 sm:px-8">
-        <p className="text-xs font-semibold tracking-[0.18em] text-data-accent-foreground">LIBRARY</p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">내 라이브러리</h1>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-          저장한 보컬 프로필과 AI 믹싱 작업을 구분해 확인하세요.
-        </p>
-        <div className="mt-8">
-          <LibraryTabs tab="profiles" />
-        </div>
-        <div className="mt-6">
+      <div className="mx-auto w-full max-w-[72rem] px-5 py-12 sm:px-7 lg:px-8 lg:py-14">
+        <div className="mt-4">
           <Story />
         </div>
       </div>
