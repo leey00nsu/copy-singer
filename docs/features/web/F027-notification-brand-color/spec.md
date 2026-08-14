@@ -55,7 +55,8 @@
 
 **Acceptance Criteria:**
 
-- [ ] 현재/진행 중 상태는 `data-accent/10` + `data-accent-foreground` 계열로 강조한다
+- [ ] 작업 상태 chip/timeline의 현재/진행 중은 `data-accent/10` + `data-accent-foreground` 계열로 강조한다
+- [ ] 상단 생성 navigation stepper의 현재 단계는 기존처럼 `data-accent` solid + white로 강조하고, 완료된 이전 단계는 검정으로 표시한다
 - [ ] 완료된 중간 단계는 검정/foreground + check로 표시하고, 최종 성공 상태만 `data-accent` solid + white/check로 강조한다
 - [ ] 대기·취소·empty·disabled는 neutral, 실패는 destructive를 유지한다
 - [ ] "한 화면에 하나의 primary action"과 "넓은 배경은 neutral 유지" 원칙을 깨지 않는다 (primary 버튼은 검정 유지)
@@ -80,8 +81,9 @@
 
 ### FR-3: 작업 상태 컬러 의미 통일
 
-- 작업 lifecycle을 표시하는 chip/step/timeline은 공통 semantic 규칙을 사용한다: `active/current`=연한 `data-accent`, `completed intermediate`=검정/foreground, `terminal success`=solid `data-accent`, `failed`=destructive, `upcoming/canceled`=neutral.
-- `MixingStatusBadge`, 생성 퍼널 stepper, `ActualStateTimeline`, 믹싱 상세 timeline, 보컬 분석 진행 badge/라이브러리 active analysis badge는 같은 규칙을 따른다.
+- 작업 lifecycle을 표시하는 chip/timeline은 공통 semantic 규칙을 사용한다: `active/current`=연한 `data-accent`, `completed intermediate`=검정/foreground, `terminal success`=solid `data-accent`, `failed`=destructive, `upcoming/canceled`=neutral.
+- 상단 `CreationFunnelStepper`는 작업 상태 chip이 아니라 navigation hierarchy이므로 예외로 둔다: `current`=solid `data-accent`, `complete`=검정/foreground, `upcoming`=neutral.
+- `MixingStatusBadge`, `ActualStateTimeline`, 믹싱 상세 timeline, 보컬 분석 진행 badge/라이브러리 active analysis badge는 lifecycle status 규칙을 따른다.
 - 필터 선택처럼 작업 lifecycle이 아닌 선택 상태는 기존 accent 규칙을 유지하고, 비활성·disabled·empty는 neutral 유지한다. `primary` 버튼(검정)은 변경하지 않는다.
 - 변경 대상은 코드 grep으로 상태성 UI를 식별하고, 디자인 시스템 "한 surface에 accent 2개 이상 혼용 금지"를 지킨다.
 

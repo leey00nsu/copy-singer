@@ -195,14 +195,25 @@
   - Acceptance:
     - 현재/진행 중은 연한 브랜드 컬러, 완료된 중간 단계는 검정, 최종 성공은 진한 브랜드 컬러를 사용한다
     - 대기·취소는 neutral, 실패는 destructive를 사용하며 lifecycle 의미가 화면마다 뒤집히지 않는다
-    - 생성 퍼널, 공용 실제 상태 timeline, 믹싱 상세 timeline, MixingStatusBadge, 보컬 분석 상태 chip이 같은 규칙을 따른다
+    - 공용 실제 상태 timeline, 믹싱 상세 timeline, MixingStatusBadge, 보컬 분석 상태 chip이 같은 규칙을 따른다
   - Checklist:
     - [x] `lifecycleStatusClassNames`를 shared SSOT로 추가해 active/completed/success/failure semantic class를 공용화
-    - [x] CreationFunnelStepper/ActualStateTimeline/MixingTimeline을 current=brand tint, completed intermediate=foreground, terminal success=solid brand 규칙으로 통일
+    - [x] ActualStateTimeline/MixingTimeline을 current=brand tint, completed intermediate=foreground, terminal success=solid brand 규칙으로 통일
     - [x] MixingStatusBadge의 active는 brand tint, succeeded는 solid brand, failed는 destructive, canceled는 neutral로 통일하고 전 상태 Storybook 추가
     - [x] AnalysisStatus와 VocalProfileLibrary의 active analysis badge, MixingLibrary의 결과 확인 중 badge를 brand tint로 통일
     - [x] Storybook에서 current/completed/final success/failure 색 의미를 DOM class로 검증하고 failed terminal icon도 destructive 의미로 교체
     - [x] typecheck PASS, architecture 4/4 PASS, mixing/voice 관련 10/10 PASS, 타깃 Storybook 20/20 PASS, 전체 Storybook 52 passed + 2 skipped / 152 tests PASS
+
+- [DOING][PRD-FR-051] T-F027-notification-brand-color-14 생성 퍼널 current solid brand 디자인 복원
+  - Date: 2026-08-14
+  - Acceptance:
+    - 상단 생성 퍼널의 현재 단계는 기존처럼 solid `data-accent` + white로 강하게 표시된다
+    - 완료된 이전 단계는 검정, upcoming은 neutral을 유지한다
+    - 내부 작업 상태 timeline/chip은 T13의 brand tint 규칙을 유지해 navigation stepper와 lifecycle status UI를 구분한다
+  - Checklist:
+    - [ ] `CreationFunnelStepper` current marker를 기존 solid brand 스타일로 복원한다
+    - [ ] Storybook에서 상단 current=solid brand, 내부 timeline current=brand tint가 동시에 유지됨을 검증한다
+    - [ ] typecheck, architecture, 관련 Storybook 및 전체 Storybook을 통과한다
 
 ---
 

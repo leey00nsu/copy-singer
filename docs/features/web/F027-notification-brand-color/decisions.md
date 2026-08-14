@@ -207,5 +207,18 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**:
   - **Commit**: `e8d8263` (`feat(F027): 작업 상태 컬러 semantic 규칙 통일`)
   - **Test/Log**: 변경 파일 Biome PASS, `pnpm run typecheck` PASS, `pnpm run check:architecture` PASS (Steiger 0 issues, boundary 4/4), mixing/voice 관련 10/10 PASS, 관련 Storybook 5 files / 20 tests PASS, `pnpm run test:storybook --run` 54 indexed files 중 52 passed + 2 skipped / 152 tests PASS, `git diff --check` PASS.
-- **Consequences**: 작업 상태를 나타내는 chip/step/timeline은 화면 종류와 무관하게 같은 색 의미를 갖는다. 진행 중은 연한 brand tint, 지나온 중간 완료는 foreground solid, 최종 성공은 brand solid, 실패는 destructive, 대기·취소는 neutral이다. 일반 정보 badge와 primary button은 이 규칙의 대상이 아니다.
+- **Consequences**: 작업 상태를 나타내는 chip/timeline은 화면 종류와 무관하게 같은 색 의미를 갖는다. 진행 중은 연한 brand tint, 지나온 중간 완료는 foreground solid, 최종 성공은 brand solid, 실패는 destructive, 대기·취소는 neutral이다. 상단 생성 navigation stepper는 후속 D027-13에서 별도 hierarchy 규칙으로 분리한다. 일반 정보 badge와 primary button은 이 규칙의 대상이 아니다.
+
+## D027-13: 생성 navigation stepper의 current는 solid brand 유지 (2026-08-14)
+
+- **Context**: T13에서 상단 `CreationFunnelStepper`까지 lifecycle status의 `active=brand tint` 규칙에 포함하면서 기존 solid brand current marker가 연한 outline/tint 형태로 바뀌었다. 사용자 재검증에서 기존 퍼널의 강한 현재 위치 표시가 더 명확하다는 피드백이 있었다.
+- **Constraints**: 내부 작업 상태 timeline/chip의 `active=brand tint` 규칙은 유지하고, 완료된 이전 퍼널 단계는 검정, upcoming은 neutral이어야 한다.
+- **Decision**: `CreationFunnelStepper`는 작업 상태 indicator가 아니라 생성 여정의 navigation hierarchy로 분리한다. current는 기존 `border-data-accent bg-data-accent text-white` solid brand를 복원하고, complete는 foreground solid, upcoming은 neutral을 유지한다.
+- **Rationale**: navigation stepper는 사용자의 현재 위치를 가장 강하게 보여주는 것이 우선이고, 내부 lifecycle status는 진행 강도를 보조적으로 전달하므로 같은 `active` 표현을 공유할 필요가 없다.
+- **Trace**:
+  - **DOING 시작 시점**: T13 이전 stepper current가 solid brand였고 T13 이후 `lifecycleStatusClassNames.active`의 brand tint로 바뀐 diff를 확인했다.
+- **Evidence**:
+  - **Commit**: TBD
+  - **Test/Log**: Storybook에서 상단 current=solid brand, 내부 timeline current=brand tint 동시 검증 예정.
+- **Consequences**: 브랜드 컬러 의미는 유지하되 계층을 구분한다. 상단 navigation current는 강한 solid brand, 내부 진행 상태는 연한 brand tint를 사용한다.
 
