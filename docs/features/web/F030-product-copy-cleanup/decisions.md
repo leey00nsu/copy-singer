@@ -51,7 +51,24 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 보컬 분석에서 대기열·백그라운드·서버 설정을 제거하고, 프로필 결과에서 `720포인트`·reference 배분 규칙을 제거했다. 추천 화면의 catalog/scoring 식별자와 AI 믹싱의 GPU·target·임의 진행률 설명도 없애고 실제 상태와 다음 행동만 남겼다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: -
+  - **Commit**: `4a5c57d` (`feat(F030): 프로필·추천·믹싱 핵심 플로우 카피 정리`)
   - **PR**: -
   - **Test/Log**: `pnpm run test:vocal-profile-presentation` 12/12 PASS; `pnpm run test:mixing:ui` 8/8 PASS; `pnpm run test:recommendation` ranking 10/10 + UI/presentation/synthesis 19/19 PASS
 - **Consequences**: 디버깅/운영 정보는 사용자 UI가 아니라 로그와 관리자 진단 경계에 남는다.
+
+## D003: 잔여 감사는 노출 경계와 역할을 구분해 적용 (2026-08-14)
+
+- **Context**: 전체 `app`/`src`에는 일반 사용자 화면뿐 아니라 관리자 도구, 서버 오류 문자열, 접근성 레이블, 법적 문서와 개발 진단 문구가 함께 존재한다.
+- **Constraints**: `~요` 톤을 기계적으로 전체 문자열에 적용하면 법적 의미, 관리자 진단 정확성 또는 API 내부 계약을 손상할 수 있다.
+- **Options**: 한국어 문장형 문자열을 일괄 치환하거나, 실제 사용자 노출 여부와 화면 역할을 확인해 수정 대상을 선별하는 방법을 비교한다.
+- **Decision**: 실제 제품 UI에 노출되는 문장형 카피를 우선 정리하고, 법적 문서·접근성용 명칭·필요한 관리자 전문 용어·내부 전용 오류는 맥락상 예외로 둔다.
+- **Rationale**: 톤 일관성보다 사실성·기능적 의미가 우선이며, 역할별 경계를 구분해야 AI식 일괄 문체 변환을 피할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 전체 문자열을 검색하되 변경 후보마다 실제 렌더링/전달 경로를 확인하고, 일반 사용자에게 직접 보이는 문구만 적극적으로 정리한다.
+  - **DONE 전 확정 시점**: 일반 UI 전체를 재검색해 `~습니다/~합니다` 계열 문장과 추상적·내부 구현 표현을 제거했다. 관리자 전문 용어는 필요한 범위에서 유지하되 toast/dialog/API 오류는 자연스러운 `~요` 톤으로 맞췄고, 인앱 알림을 만드는 worker와 그대로 전달되는 API 메시지도 같은 기준으로 정리했다. 사용자에게 필요 없는 raw network/storage 오류 세부는 일반화했다. 로그인 약관 동의 문장과 법적 문서는 의미 보존을 위해 formal 문체 예외로 유지했다.
+  - **머지 후 확인**: -
+- **Evidence**:
+  - **Commit**: T03 task commit pending
+  - **PR**: -
+  - **Test/Log**: 일반 UI formal tone 재검색은 법적 동의 1건만 의도적 예외; vague/internal UI 검색 0건; `pnpm test` PASS; Storybook 154/154 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS
+- **Consequences**: 프로젝트에 formal 문체가 일부 남을 수 있지만, 법적·관리자·내부 경계의 의도된 예외로 구분한다.

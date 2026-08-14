@@ -56,7 +56,7 @@
     - [x] `720포인트`, GPU, 카탈로그 revision, 백그라운드/대기열/서버 설정 등 기술적 내부 표현과 추상적 AI 슬롭 표현을 제거하거나 사용자 상태 중심으로 바꿨다.
     - [x] 관련 profile/recommendation/mixing 테스트의 문자열 기대값을 새 카피에 맞춰 갱신했다.
 
-- [TODO][PRD-FR-062] T-F030-product-copy-cleanup-03 프로젝트 잔여 카피 감사와 회귀 검증
+- [DONE][PRD-FR-062] T-F030-product-copy-cleanup-03 프로젝트 잔여 카피 감사와 회귀 검증
   - Date: 2026-08-14
   - Acceptance:
     - 실제 제품에 노출되는 TSX/TS 문자열을 다시 검색해 명백한 `~습니다` 톤 혼용, 구현 불일치, 과도한 장문/내부 세부가 남지 않는다.
@@ -64,18 +64,18 @@
     - 약관/개인정보 처리방침은 법적 의미를 바꾸지 않으며 일반 제품 카피 톤 강제 대상에서 제외한다.
     - lint/typecheck 및 관련 테스트가 통과한다.
   - Checklist:
-    - [ ] `app`/`src` 전체에서 실제 제품 카피를 재검색하고 예외를 맥락별로 확인한다.
-    - [ ] 관리자/공통 UI의 명백한 구현 불일치 또는 톤 회귀만 수정한다.
-    - [ ] `pnpm run test:auth-navigation`, `pnpm run test:vocal-profile-presentation`, `pnpm run test:mixing:ui`, `pnpm run test:recommendation`을 실행한다.
-    - [ ] 관리자 문자열을 변경했다면 `pnpm run test:admin`을 실행한다.
-    - [ ] `pnpm run lint`, `pnpm exec tsc --noEmit`을 통과한다.
+    - [x] `app`/`src` 전체에서 실제 제품 카피를 재검색하고 예외를 맥락별로 확인했다. 일반 UI의 formal tone 검색 결과는 로그인 법적 동의 문장 1건만 의도적으로 남겼다.
+    - [x] 관리자/공통 UI의 명백한 구현 불일치 또는 톤 회귀와 사용자에게 그대로 전달되는 API/알림 문구를 정리했다.
+    - [x] `pnpm run test:auth-navigation`, `pnpm run test:vocal-profile-presentation`, `pnpm run test:mixing:ui`, `pnpm run test:recommendation`을 실행했다.
+    - [x] 관리자 문자열 변경 후 `pnpm run test:admin`을 실행했다.
+    - [x] 전체 `pnpm test`, `pnpm run lint`, `pnpm exec tsc --noEmit`을 통과했다.
 
 ---
 
 ## 완료 조건
 
-- [ ] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
-- [ ] 테스트 실행 및 통과 기록 완료
+- [x] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
+- [x] 테스트 실행 및 통과 기록 완료
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -87,8 +87,10 @@
 | `pnpm run test:vocal-profile-presentation` | `2026-08-14` | `PASS — 12/12` |
 | `pnpm run test:mixing:ui` | `2026-08-14` | `PASS — 8/8` |
 | `pnpm run test:recommendation` | `2026-08-14` | `PASS — ranking 10/10 + UI/presentation/synthesis 19/19` |
-| `pnpm run test:admin` | `-` | `N/A unless admin copy changes` |
-| `pnpm run lint` | `-` | `-` |
-| `pnpm exec tsc --noEmit` | `-` | `-` |
+| `pnpm run test:admin` | `2026-08-14` | `PASS — UI 4/4 + integration 1/1` |
+| `pnpm run test:storybook --run` | `2026-08-14` | `PASS — 52 files passed, 2 skipped; 154/154 tests` |
+| `pnpm test` | `2026-08-14` | `PASS — build + unit/integration + Storybook` |
+| `pnpm run lint` | `2026-08-14` | `PASS` |
+| `pnpm exec tsc --noEmit` | `2026-08-14` | `PASS` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-14T11:20:57.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-14T11:44:56.000Z -->
