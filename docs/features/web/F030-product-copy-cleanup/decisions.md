@@ -68,7 +68,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 일반 UI 전체를 재검색해 `~습니다/~합니다` 계열 문장과 추상적·내부 구현 표현을 제거했다. 관리자 전문 용어는 필요한 범위에서 유지하되 toast/dialog/API 오류는 자연스러운 `~요` 톤으로 맞췄고, 인앱 알림을 만드는 worker와 그대로 전달되는 API 메시지도 같은 기준으로 정리했다. 사용자에게 필요 없는 raw network/storage 오류 세부는 일반화했다. 로그인 약관 동의 문장과 법적 문서는 의미 보존을 위해 formal 문체 예외로 유지했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: T03 task commit pending
+  - **Commit**: `4aad874` (`feat(F030): 프로젝트 잔여 카피 감사와 회귀 검증`)
   - **PR**: -
   - **Test/Log**: 일반 UI formal tone 재검색은 법적 동의 1건만 의도적 예외; vague/internal UI 검색 0건; `pnpm test` PASS; Storybook 154/154 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS
 - **Consequences**: 프로젝트에 formal 문체가 일부 남을 수 있지만, 법적·관리자·내부 경계의 의도된 예외로 구분한다.

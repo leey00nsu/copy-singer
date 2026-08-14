@@ -93,4 +93,4 @@
 | `pnpm run lint` | `2026-08-14` | `PASS` |
 | `pnpm exec tsc --noEmit` | `2026-08-14` | `PASS` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-14T11:44:56.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-14T11:48:37.000Z -->
