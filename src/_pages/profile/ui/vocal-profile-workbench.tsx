@@ -28,6 +28,22 @@ import type { VocalProfileRecorderState } from "./vocal-profile-recorder";
 import { VoiceScanInput } from "./voice-scan-input";
 
 const ANALYSIS_JOB_STORAGE_KEY = "copy-singer:vocal-profile-analysis-job";
+const PREPARATION_COMPLETE_HOLD_FRAMES = 8;
+
+function holdPreparationCompleteState() {
+  return new Promise<void>((resolve) => {
+    let remainingFrames = PREPARATION_COMPLETE_HOLD_FRAMES;
+    const nextFrame = () => {
+      remainingFrames -= 1;
+      if (remainingFrames <= 0) {
+        resolve();
+        return;
+      }
+      window.requestAnimationFrame(nextFrame);
+    };
+    window.requestAnimationFrame(nextFrame);
+  });
+}
 
 export function VocalProfileWorkbench() {
   const router = useRouter();
@@ -150,6 +166,8 @@ export function VocalProfileWorkbench() {
     setRecorderIssue(null);
     try {
       const prepared = await prepareProfileAudio(file, setPreparationProgress);
+      setPreparationProgress(1);
+      await holdPreparationCompleteState();
       setAudioFile(prepared.file);
       setAudioDuration(prepared.durationSeconds);
       analysisIdempotencyKey.current = null;

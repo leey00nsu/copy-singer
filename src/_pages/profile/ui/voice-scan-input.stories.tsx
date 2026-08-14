@@ -182,7 +182,31 @@ export const Preparing: Story = {
     preparationProgress: 0.46,
   },
   play: async ({ canvasElement }) => {
-    await expect(within(canvasElement).getByText("46%")).toBeVisible();
+    const canvas = within(canvasElement);
+    const progress = canvas.getByRole("progressbar", { name: "오디오 준비" });
+    const track = progress.querySelector<HTMLElement>('[data-slot="progress-track"]');
+    const indicator = progress.querySelector<HTMLElement>('[data-slot="progress-indicator"]');
+    if (!track || !indicator) throw new Error("Preparing progress track or indicator is missing.");
+    await expect(canvas.getByText("46%")).toBeVisible();
+    await expect(progress).toHaveAttribute("aria-valuenow", "46");
+    await expect(indicator.getBoundingClientRect().width / track.getBoundingClientRect().width).toBeCloseTo(0.46, 1);
+  },
+};
+
+export const PreparingComplete: Story = {
+  args: {
+    preparing: true,
+    preparationProgress: 1,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const progress = canvas.getByRole("progressbar", { name: "오디오 준비" });
+    const track = progress.querySelector<HTMLElement>('[data-slot="progress-track"]');
+    const indicator = progress.querySelector<HTMLElement>('[data-slot="progress-indicator"]');
+    if (!track || !indicator) throw new Error("Completed progress track or indicator is missing.");
+    await expect(canvas.getByText("100%")).toBeVisible();
+    await expect(progress).toHaveAttribute("aria-valuenow", "100");
+    await expect(indicator.getBoundingClientRect().width).toBe(track.getBoundingClientRect().width);
   },
 };
 

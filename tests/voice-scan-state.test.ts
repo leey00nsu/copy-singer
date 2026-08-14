@@ -116,5 +116,8 @@ test("voice scan components keep media cleanup and redirect completed analysis t
   assert.doesNotMatch(workbench, /createRecommendation\.mutate\(completedProfileId/);
   assert.match(workbench, /router\.replace\(`\/vocal-profiles\/\$\{completedProfileId\}`\)/);
   assert.match(workbench, /localStorage\.removeItem\(ANALYSIS_JOB_STORAGE_KEY\)/);
+  assert.match(workbench, /PREPARATION_COMPLETE_HOLD_FRAMES = 8/);
+  assert.match(workbench, /requestAnimationFrame\(nextFrame\)/);
+  assert.match(workbench, /setPreparationProgress\(1\);\s*await holdPreparationCompleteState\(\);/);
   assert.doesNotMatch(workbench, /VocalProfileResults|deleteVocalProfile/);
 });
