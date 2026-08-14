@@ -178,5 +178,19 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**:
   - **Commit**: `c54dcfe` (`fix(F027): 알림 SVG hover semantic color 유지`)
   - **Test/Log**: 수정 전 실제 SVG hover 회귀 테스트 1/1 FAIL로 재현, 수정 후 NotificationBell + badge 2/2 PASS, `pnpm run typecheck` PASS, `pnpm run check:architecture` PASS. 전체 Storybook에서는 기존 VoiceOrb WebGL/AudioWaveform readiness 타이밍성 테스트가 각각 간헐 실패했으며 단독 재검증은 VoiceScanInput 10/10, AudioWaveformPlayer 3/3 PASS.
-- **Consequences**: 알림 아이콘의 실제 Lucide SVG가 hover/focus에서도 success/data-accent/destructive foreground를 유지한다. 이후 hover 회귀는 wrapper가 아니라 실제 시각 요소의 computed style을 검증한다.
+- **Consequences**: 알림 아이콘의 실제 Lucide SVG가 hover/focus에서도 success/data-accent/destructive foreground를 유지한다. 이후 hover 회귀는 wrapper가 아니라 실제 시각 요소의 computed style을 검증한다. 다만 후속 실사용 재검증에서 SVG 부모의 color만 확인해 실제 선을 그리는 `<path>`에 공용 descendant focus color가 적용되는 경우를 놓친 것으로 확인됐다.
+
+## D027-11: Lucide mark descendant까지 semantic color 상속 강제 (2026-08-14)
+
+- **Context**: T11 이후에도 실제 로컬 Bell dropdown에서 hover된 `mixing_succeeded` 아이콘 선이 흰색에서 검정으로 변했다. Lucide SVG는 `stroke="currentColor"`를 사용하지만 실제 선은 내부 `<path>`가 그리며, `DropdownMenuItem`의 `focus:**:text-accent-foreground`는 SVG뿐 아니라 그 `<path>`까지 직접 `color`를 지정한다.
+- **Constraints**: 공용 dropdown의 다른 텍스트/focus 정책은 변경하지 않고, 알림 아이콘 subtree만 타입별 semantic color를 유지해야 한다. 회귀 테스트는 wrapper나 SVG 부모가 아니라 실제 렌더 mark를 확인해야 한다.
+- **Decision**: 알림 badge에 `[&_svg_*]:!text-inherit`를 적용해 Lucide 내부 mark가 SVG의 semantic foreground를 `!important`로 상속하게 한다. 기존 badge/SVG inline semantic foreground는 유지하고, Storybook은 각 타입의 `<path>`/mark computed color가 badge semantic color와 같으며 hover와 focus 후에도 불변인지 검사한다.
+- **Rationale**: SVG 부모의 inline `color`는 자식 `<path>`에 직접 적용된 CSS color 선언을 이길 수 없다. mark 자체에 `color: inherit !important`를 적용하면 공용 descendant selector의 직접 color를 무효화하면서도 영향 범위를 notification icon subtree로 제한할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 테스트 대상을 실제 `<path>`로 바꾸자 `ticket_credit`가 hover 전 `oklch(0.38 0.105 151)`에서 hover 후 `oklch(0.205 0 0)`으로 변해 사용자 스크린샷과 같은 문제를 Chromium에서 재현했다.
+  - **DONE 전 확정 시점**: `[&_svg_*]:!text-inherit` 적용 후 NotificationBell의 5종 mark가 badge semantic color와 일치하고 pointer hover 및 focus 후에도 그대로 유지됐다.
+- **Evidence**:
+  - **Commit**: `0bcd933` (`fix(F027): 알림 Lucide mark hover 색상 고정`)
+  - **Test/Log**: 수정 전 NotificationBell 실제 mark 회귀 1/1 FAIL로 재현, 수정 후 NotificationBell + badge 2/2 PASS, `pnpm run typecheck` PASS, `pnpm run check:architecture` PASS. 전체 Storybook은 기존 VoiceOrb/AdminCustomMixing 타이밍성 실패가 각각 한 번 발생했으나 단독 10/10·3/3 PASS 후 최종 전체 51 passed + 2 skipped / 151 tests PASS.
+- **Consequences**: 실제 사용자에게 보이는 Lucide 선 색이 hover/focus에서도 타입별 semantic color를 유지한다. 이후 notification icon 회귀 테스트는 SVG 부모가 아니라 실제 mark descendant를 기준으로 한다.
 

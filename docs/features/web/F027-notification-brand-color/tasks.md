@@ -178,17 +178,17 @@
     - [x] `NotificationBell` story가 badge span이 아니라 실제 `svg` hover 전후 computed color를 검증 — 수정 전 `ticket_credit`가 success→검정으로 실패, 수정 후 2/2 타깃 PASS
     - [x] `pnpm run typecheck` PASS, `pnpm run check:architecture` PASS; 전체 Storybook은 기존 VoiceOrb/AudioWaveform 타이밍성 1건씩 간헐 실패했으나 각 단독 10/10, 3/3 PASS
 
-- [DOING][PRD-FR-058] T-F027-notification-brand-color-12 알림 Lucide stroke hover 컬러 직접 고정
+- [DONE][PRD-FR-058] T-F027-notification-brand-color-12 알림 Lucide stroke hover 컬러 직접 고정
   - Date: 2026-08-14
   - Acceptance:
     - 실제 로컬 Bell dropdown에서 hover된 성공 알림의 Lucide stroke가 검정으로 바뀌지 않고 흰색을 유지한다
-    - 회귀 테스트는 `svg`의 `color`가 아니라 실제 렌더 선에 적용되는 `stroke`를 hover 전후 비교한다
+    - 회귀 테스트는 `svg` 부모가 아니라 실제 선을 그리는 `<path>`/mark의 `currentColor` 소스를 hover/focus 전후 비교한다
     - success/data-accent/destructive 5종 의미 색이 pointer hover와 keyboard focus 모두 유지된다
   - Checklist:
-    - [ ] 현재 T11 코드에서 `svg` computed `stroke` 기준으로 로컬 증상을 자동 재현한다
-    - [ ] Lucide 아이콘의 실제 stroke를 타입별 semantic token으로 직접 고정하고 공용 dropdown focus 스타일보다 우선하도록 한다
-    - [ ] NotificationBell 실제 open story에서 5종 hover/focus 전후 `stroke` 불변을 검증한다
-    - [ ] 관련 Storybook, typecheck, architecture 및 전체 Storybook을 재검증한다
+    - [x] T11 코드에서 실제 `<path>` computed color를 검사하도록 바꾸자 `ticket_credit`가 success `oklch(0.38 0.105 151)` → 검정 `oklch(0.205 0 0)`으로 변해 로컬 증상을 자동 재현
+    - [x] 알림 badge에 `[&_svg_*]:!text-inherit`를 적용해 Lucide mark가 SVG의 semantic foreground를 강제 상속하고 공용 dropdown descendant focus 색보다 우선하도록 수정
+    - [x] `NotificationBell` 실제 open story에서 5종 모두 badge semantic color = 실제 SVG mark color이며 pointer hover와 focus 후에도 불변임을 Chromium 검증
+    - [x] NotificationBell+badge 2/2, typecheck, architecture PASS; 전체 Storybook 최종 51 passed + 2 skipped / 151 tests PASS
 
 ---
 
@@ -196,8 +196,8 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -213,7 +213,7 @@
 
 
 
-<!-- lee-spec-kit:workflow-sync 2026-08-14T05:20:36.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-14T05:32:43.000Z -->
 
 
 
