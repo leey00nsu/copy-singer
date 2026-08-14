@@ -95,3 +95,18 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Test/Log**: `pnpm run typecheck` PASS, `pnpm run check:architecture` PASS (Steiger 0 issues, boundary 4/4), 변경 대상 8 story files 27/27 PASS, `pnpm run test:storybook --run` 최종 52 files / 152 tests PASS
 - **Consequences**: Library/Notifications 페이지 story는 실제 제품 frame 변경을 공유하며, NotificationBell의 실제 dropdown을 Storybook에서 직접 확인할 수 있다. widget/entity story는 제품 페이지를 임의로 흉내 내기보다 자신의 실제 사용 폭·props에 집중한다.
 
+## D027-05: 분석 완료 후 저장된 보컬 프로필 상세로 직접 이동 (2026-08-14)
+
+- **Context**: 실제 `/vocal-profiles/[id]` 상세은 Saved analysis 헤더, 제출 보컬 플레이어, 상세 분석과 프로필 actions를 제공하지만 Storybook에는 이 page-level composition이 없었다. 반대로 분석 직후 `/profile`에는 `AnalysisSuccess` + `VocalProfileSummary` 중간 화면이 있어 사용자가 실제 저장된 프로필 UI와 다른 Summary를 별도 제품 화면으로 오해할 수 있었다.
+- **Constraints**: durable analysis job 성공 시점에는 저장된 `vocalProfileId`가 이미 존재하며, 프로필 상세는 PRD-FR-039의 사용자 소유 상세 조회 경로다. Storybook은 서버 fetch를 복제하지 않고 실제 페이지 body composition을 공유해야 한다.
+- **Options**: (a) AnalysisSuccess Summary를 유지하고 상세 story만 추가, (b) 성공 즉시 상세로 이동하고 Summary 성공 화면을 제품 흐름에서 제거한 뒤 실제 상세 story를 기준으로 사용.
+- **Decision**: (b) 채택. 성공 terminal job에서 local job key를 제거하고 `router.replace`로 `/vocal-profiles/[id]`에 이동한다. `VocalProfileResults`의 선택적 Summary 렌더링 경로도 제거했다. 기존 `Analysis Success`와 `Vocal Profile/Summary` stories는 `!dev`/`!test`로 제품 Storybook 목록과 회귀 대상에서 제외하고, `VocalProfileDetailContent`를 서버 페이지와 `Pages/Vocal Profile Detail` Desktop/Mobile stories가 함께 사용한다.
+- **Rationale**: 분석 완료 후 사용자가 확인해야 할 SSOT는 영속 저장된 프로필 상세이며, 별도 성공 Summary는 같은 데이터를 다른 composition으로 한 번 더 보여줘 탐색 단계와 Storybook 기준을 불필요하게 이원화한다.
+- **Trace**:
+  - **DOING 시작 시점**: 실제 상세 페이지에는 `VocalProfileSummary`가 없고 `VocalProfileResults showSummary={false}`만 사용하며, Summary는 분석 성공 중간 화면에만 노출됨을 확인했다.
+  - **DONE 전 확정 시점**: workbench 성공 branch를 제거하고 terminal effect에서 상세 redirect를 수행하도록 변경했다. 상세 body를 `VocalProfileDetailContent`로 추출해 실제 page와 story가 같은 JSX를 사용한다. Summary/Analysis Success stories는 Storybook dev/test에서 제외됐다.
+- **Evidence**:
+  - **Commit**: `2e5be66` (`feat(F027): 분석 완료 상세 직행 및 보컬 프로필 Storybook 추가`)
+  - **Test/Log**: `pnpm run test:voice-scan` 12/12 PASS, `pnpm run test:vocal-profile-presentation` 12/12 PASS, 신규 상세 Storybook 2/2 PASS, `pnpm run test:storybook --run` 53 indexed files 중 51 passed + 2 skipped / 150 tests PASS, `pnpm run typecheck` PASS, `pnpm run check:architecture` PASS. 전체 `pnpm run check`는 이번 변경과 무관한 기존 repo-wide Biome 진단 때문에 baseline 실패를 유지한다.
+- **Consequences**: 분석 성공 후 browser history에 중간 성공 화면을 남기지 않고 저장된 상세로 바로 이동한다. Storybook의 대표 보컬 프로필 화면은 실제 상세 composition이 되며, Summary/Analysis Success는 제품 UI 탐색에서 보이지 않는다.
+
