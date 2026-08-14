@@ -39,6 +39,8 @@
 6. 접근성 레이블, 법적 고지, 입력 전 필수 제약처럼 기능적 의미가 있는 텍스트는 보존한다.
 7. 한글 헤드라인이 작은 화면에서 글자 단위로 잘리면 `break-keep`과 모바일 글자 크기를 우선 조정한다.
 8. 카탈로그 개수처럼 런타임 값은 정적 문구에 숫자를 박지 않고, 필요한 결과 UI에서는 실제 데이터 길이를 사용한다.
+9. 브랜드 표시는 별도 텍스트를 다시 만들지 않고 기존 `ProductBrand`/`ProductMark`를 재사용해 실제 로고 자산과 브랜드 타이포그래피를 일치시킨다.
+10. 랜딩의 단계명은 `목소리 분석`, `노래 · 키 추천`, `AI 믹싱`으로 고정하고, 상세 문장은 결과지향적 사용자 표현을 사용한다.
 
 ### 카피 판단 기준
 
@@ -62,7 +64,7 @@ app/
 
 src/
 ├── widgets/
-│   ├── product-shell/        # header/mobile nav/footer
+│   ├── product-shell/        # header/mobile nav/footer 및 공용 ProductBrand/Mark
 │   ├── library/              # 프로필/믹싱 목록 상태와 empty copy
 │   └── creation-funnel/      # 분석·추천·믹싱 단계 설명
 ├── entities/

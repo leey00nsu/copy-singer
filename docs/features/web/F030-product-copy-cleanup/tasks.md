@@ -82,6 +82,21 @@
     - [x] 추천 페이지 메타 설명의 정적 `100곡`을 제거했고, 결과 화면의 곡 수 표시는 기존 `run.items.length` 기반 동적 카운트를 유지했다.
     - [x] auth/voice-scan/recommendation 타깃 테스트, landing/login Storybook, lint/typecheck와 전체 `pnpm test`를 통과했다.
 
+- [DONE][PRD-FR-062] T-F030-product-copy-cleanup-05 브랜드·분석·랜딩 카피 피드백 반영
+  - Date: 2026-08-14
+  - Acceptance:
+    - 로그인 본문 브랜드 영역은 공용 `ProductBrand`를 사용해 실제 로고 마크와 브랜드 폰트 로고텍스트를 함께 보여준다.
+    - 목소리 분석 화면의 왼쪽 소개, HOW TO RECORD, 오른쪽 VOICE INPUT 카피가 사용자 지정 문구와 의미를 따른다.
+    - 목소리 분석의 긴 제목은 로그인 화면과 같은 방식으로 작은 화면에서 읽기 좋은 크기와 한글 줄바꿈을 유지한다.
+    - 랜딩 Hero는 `나에게 맞는 노래를 찾고` / `내 목소리로 완성하세요.` 구조를 사용하고 `내 목소리로`에 브랜드 포인트를 둔다.
+    - 랜딩의 Primary/Secondary CTA, 하단 안내, 3단계 소개, 지표, 가이드 카드가 사용자 제안 문구로 정리된다.
+    - 랜딩 핵심 제품 용어는 `목소리 분석`, `노래 · 키 추천`, `AI 믹싱`으로 통일한다.
+  - Checklist:
+    - [x] 로그인 본문 `Copysinger` 텍스트를 공용 `ProductBrand`로 교체하고 Storybook에서 실제 SVG 마크+브랜드 폰트 텍스트를 확인했다.
+    - [x] `vocal-profile-workbench`, `voice-scan-input`, recorder의 초기 안내/버튼 카피를 사용자 지정 문구로 수정하고 5초 최소·60초 제한은 상세 제약으로 유지했다.
+    - [x] landing Hero/product story/3단계/metrics/voice notes 카피를 수정하고 핵심 단계명을 `목소리 분석` / `노래 · 키 추천` / `AI 믹싱`으로 정리했다.
+    - [x] auth 8/8, voice-scan 4/4, landing/login/voice-input Storybook 16/16, lint/typecheck를 통과했고 최종 `pnpm test` 전체 실행도 PASS했다.
+
 ---
 
 ## 완료 조건
@@ -95,7 +110,7 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `pnpm run test:auth-navigation` | `2026-08-14` | `PASS — 8/8` |
-| targeted Storybook: landing/login | `2026-08-14` | `PASS — 2 files, 6/6` |
+| targeted Storybook: landing/login/voice-input | `2026-08-14` | `PASS — 3 files, 16/16` |
 | `pnpm run test:vocal-profile-presentation` | `2026-08-14` | `PASS — 12/12` |
 | `pnpm run test:mixing:ui` | `2026-08-14` | `PASS — 8/8` |
 | `pnpm run test:recommendation` | `2026-08-14` | `PASS — ranking 10/10 + UI/presentation/synthesis 20/20` |
@@ -105,4 +120,4 @@
 | `pnpm run lint` | `2026-08-14` | `PASS` |
 | `pnpm exec tsc --noEmit` | `2026-08-14` | `PASS` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-14T12:39:20.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-14T13:01:14.000Z -->

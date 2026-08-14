@@ -89,3 +89,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: -
   - **Test/Log**: auth 8/8 PASS; voice-scan 4/4 PASS; recommendation ranking 10/10 + UI/presentation/synthesis 20/20 PASS; landing/login Storybook 6/6 PASS; lint/typecheck PASS; 첫 전체 `pnpm test`에서 unrelated admin custom mixing Storybook 1건이 타이밍성 실패 후 단독 3/3 PASS, 재실행한 전체 `pnpm test` PASS
 - **Consequences**: 카피 Feature에 제한적인 타이포그래피 조정이 포함되지만, 목적은 한글 헤드라인 가독성 보완으로 한정된다.
+
+## D005: 브랜드 자산 재사용과 결과지향적 랜딩 용어 체계 적용 (2026-08-14)
+
+- **Context**: 후속 구현 승인 피드백에서 로그인 본문의 텍스트형 브랜드를 실제 로고+로고텍스트로 바꾸고, 목소리 분석/랜딩의 카피를 더 짧고 결과지향적으로 재정리하며 3단계 제품 용어를 고정해 달라는 요청이 들어왔다.
+- **Constraints**: 기능 플로우와 데이터 계약은 바꾸지 않고, 기존 공용 브랜드 컴포넌트와 랜딩 시각 구조를 재사용한다. 분석 입력의 실제 5초 최소·60초 제한은 동작 제약으로 유지하되 랜딩의 매력 포인트에서는 10초 권장 경험을 우선 전달한다.
+- **Options**: 화면별로 새 로고/카피를 직접 만들거나, 공용 `ProductBrand`를 재사용하고 단계명만 canonical 용어로 고정하면서 결과지향적 상세 카피를 적용하는 방식을 비교한다.
+- **Decision**: 로그인은 공용 `ProductBrand`를 사용한다. 랜딩 단계명은 `목소리 분석` / `노래 · 키 추천` / `AI 믹싱`으로 고정하고, Hero와 상세 단계는 `내 목소리로 완성` 등 사용자 결과 중심 문구를 사용한다. 분석 입력 화면은 사용자가 제시한 문구를 기준으로 간결화한다.
+- **Rationale**: 브랜드 표현은 한 소스에서 관리해야 시각적 불일치를 막을 수 있고, 단계명과 결과 카피의 역할을 분리하면 제품 구조는 일관되면서도 랜딩이 기술 설명서처럼 보이지 않는다.
+- **Trace**:
+  - **DOING 시작 시점**: 로그인 브랜드, 목소리 분석 좌·우 카피, 랜딩 Hero/CTA/3단계/지표/가이드 카드를 T05 단일 후속 태스크로 묶었다.
+  - **DONE 전 확정 시점**: 로그인 본문은 공용 `ProductBrand`를 사용해 실제 브랜드 SVG와 로고텍스트를 함께 렌더링하도록 바꿨다. 목소리 분석은 `한 소절이면 / 나에게 맞는 노래를 찾을 수 있어요.` 중심으로 좌·우 안내를 재작성하고 초기 녹음 CTA를 `녹음 시작`, 업로드 CTA를 `녹음 파일로 분석하기`로 정리했다. 랜딩은 `나에게 맞는 노래를 찾고 / 내 목소리로 완성하세요.`를 Hero로 사용하고 `내 목소리로`에 기존 GradientText 포인트를 적용했다. 3단계명은 `목소리 분석` / `노래 · 키 추천` / `AI 믹싱`으로 통일하고 지표·가이드 섹션도 결과지향적 문구로 교체했다.
+  - **머지 후 확인**: -
+- **Evidence**:
+  - **Commit**: -
+  - **PR**: -
+  - **Test/Log**: auth 8/8 PASS; voice-scan 4/4 PASS; landing/login/voice-input targeted Storybook 16/16 PASS; ESLint PASS; `tsc --noEmit` PASS; 첫 전체 `pnpm test`에서 unrelated `VoiceOrb` WebGL 준비 타이밍 1건 실패 후 단독 3/3 PASS, 재실행한 전체 `pnpm test` PASS (Storybook 154/154).
+- **Consequences**: 랜딩의 카피 밀도와 단계명은 크게 바뀌지만 레이아웃·기능·데이터 흐름은 유지한다.
