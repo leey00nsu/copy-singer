@@ -102,7 +102,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 로그인 본문은 공용 `ProductBrand`를 사용해 실제 브랜드 SVG와 로고텍스트를 함께 렌더링하도록 바꿨다. 목소리 분석은 `한 소절이면 / 나에게 맞는 노래를 찾을 수 있어요.` 중심으로 좌·우 안내를 재작성하고 초기 녹음 CTA를 `녹음 시작`, 업로드 CTA를 `녹음 파일로 분석하기`로 정리했다. 랜딩은 `나에게 맞는 노래를 찾고 / 내 목소리로 완성하세요.`를 Hero로 사용하고 `내 목소리로`에 기존 GradientText 포인트를 적용했다. 3단계명은 `목소리 분석` / `노래 · 키 추천` / `AI 믹싱`으로 통일하고 지표·가이드 섹션도 결과지향적 문구로 교체했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: -
+  - **Commit**: `e931419` (`feat(F030): 브랜드·분석·랜딩 카피 피드백 반영`)
   - **PR**: -
   - **Test/Log**: auth 8/8 PASS; voice-scan 4/4 PASS; landing/login/voice-input targeted Storybook 16/16 PASS; ESLint PASS; `tsc --noEmit` PASS; 첫 전체 `pnpm test`에서 unrelated `VoiceOrb` WebGL 준비 타이밍 1건 실패 후 단독 3/3 PASS, 재실행한 전체 `pnpm test` PASS (Storybook 154/154).
 - **Consequences**: 랜딩의 카피 밀도와 단계명은 크게 바뀌지만 레이아웃·기능·데이터 흐름은 유지한다.
