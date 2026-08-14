@@ -29,12 +29,12 @@
 
 - `NotificationItemContent`에 타입→스타일 맵(`Record<NotificationType, string>`)을 추가해 배지 `bg-*`/`text-*`를 분기한다. 아이콘 매핑은 기존 `icons` 객체와 병렬.
 - `NotificationBell`의 `DropdownMenuItem`은 `focus:bg-accent`≈`bg-muted` 중복을 해소한다. 배지가 컬러이므로 호버 배경은 진한 neutral과 구분하되 배지 컬러는 유지.
-- `Badge` variant 중 상태성(선택/활성)만 `data-accent` 계열로 교체. `primary` 버튼 검정은 유지.
+- 작업 lifecycle 상태는 shared `lifecycleStatusClassNames`를 SSOT로 사용한다: active/current=brand tint, completed intermediate=foreground solid, terminal success=brand solid, failed=destructive, upcoming/canceled=neutral. 선택 상태 accent와 `primary` 버튼 검정은 기존 규칙을 유지한다.
 
 ```
 src/entities/notification/ui/notification-item-content.tsx  -- FR-1
 src/features/manage-notifications/ui/notification-bell.tsx  -- FR-2
-src/shared/ui/badge/badge.tsx (선택) + 호출부 grep 결과         -- FR-3
+src/shared/lib/lifecycle-status-colors.ts + 상태 UI 호출부       -- FR-3
 src/_app/styles/globals.css                          -- 토큰 참조만
 ```
 

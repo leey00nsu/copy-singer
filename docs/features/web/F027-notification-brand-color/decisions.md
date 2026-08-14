@@ -203,8 +203,9 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 사용자가 지금 있는 위치는 브랜드 컬러로 즉시 보여주되, 이미 지나온 단계는 검정으로 후퇴시켜 시선을 현재에 둔다. 작업 전체가 성공적으로 확정된 terminal success에는 다시 강한 브랜드 컬러를 사용해 완료의 긍정적 확정성을 전달한다.
 - **Trace**:
   - **DOING 시작 시점**: `CreationFunnelStepper`와 `MixingStatusBadge`는 current/active=brand·complete/succeeded=black, `ActualStateTimeline`은 complete=brand, 믹싱 상세 `MixingTimeline`은 complete=black으로 서로 다른 매핑을 사용하는 것을 코드로 확인했다.
+  - **DONE 전 확정 시점**: `lifecycleStatusClassNames`를 shared SSOT로 추가하고 생성 퍼널·실제 상태 timeline·믹싱 timeline·MixingStatusBadge·분석 상태 badge가 이를 사용하도록 변경했다. 믹싱 terminal은 실제 job status를 확인해 succeeded=brand solid, failed=destructive, canceled=neutral로 분기하며 failed terminal은 check 대신 warning icon을 사용한다.
 - **Evidence**:
-  - **Commit**: TBD
-  - **Test/Log**: TBD
-- **Consequences**: 작업 상태를 나타내는 chip/step/timeline은 화면 종류와 무관하게 같은 색 의미를 갖는다. 일반 정보 badge와 primary button은 이 규칙의 대상이 아니다.
+  - **Commit**: `e8d8263` (`feat(F027): 작업 상태 컬러 semantic 규칙 통일`)
+  - **Test/Log**: 변경 파일 Biome PASS, `pnpm run typecheck` PASS, `pnpm run check:architecture` PASS (Steiger 0 issues, boundary 4/4), mixing/voice 관련 10/10 PASS, 관련 Storybook 5 files / 20 tests PASS, `pnpm run test:storybook --run` 54 indexed files 중 52 passed + 2 skipped / 152 tests PASS, `git diff --check` PASS.
+- **Consequences**: 작업 상태를 나타내는 chip/step/timeline은 화면 종류와 무관하게 같은 색 의미를 갖는다. 진행 중은 연한 brand tint, 지나온 중간 완료는 foreground solid, 최종 성공은 brand solid, 실패는 destructive, 대기·취소는 neutral이다. 일반 정보 badge와 primary button은 이 규칙의 대상이 아니다.
 

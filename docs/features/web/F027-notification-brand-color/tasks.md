@@ -190,19 +190,19 @@
     - [x] `NotificationBell` 실제 open story에서 5종 모두 badge semantic color = 실제 SVG mark color이며 pointer hover와 focus 후에도 불변임을 Chromium 검증
     - [x] NotificationBell+badge 2/2, typecheck, architecture PASS; 전체 Storybook 최종 51 passed + 2 skipped / 151 tests PASS
 
-- [DOING][PRD-FR-051] T-F027-notification-brand-color-13 작업 상태 컬러 semantic 규칙 통일
+- [DONE][PRD-FR-051] T-F027-notification-brand-color-13 작업 상태 컬러 semantic 규칙 통일
   - Date: 2026-08-14
   - Acceptance:
     - 현재/진행 중은 연한 브랜드 컬러, 완료된 중간 단계는 검정, 최종 성공은 진한 브랜드 컬러를 사용한다
     - 대기·취소는 neutral, 실패는 destructive를 사용하며 lifecycle 의미가 화면마다 뒤집히지 않는다
     - 생성 퍼널, 공용 실제 상태 timeline, 믹싱 상세 timeline, MixingStatusBadge, 보컬 분석 상태 chip이 같은 규칙을 따른다
   - Checklist:
-    - [ ] 공용 status semantic class를 shared SSOT로 추가한다
-    - [ ] CreationFunnelStepper/ActualStateTimeline/MixingTimeline을 current·completed·terminal 규칙으로 통일한다
-    - [ ] MixingStatusBadge의 active는 brand tint, succeeded는 solid brand, failed는 destructive, canceled는 neutral로 통일한다
-    - [ ] AnalysisStatus와 VocalProfileLibrary의 active analysis badge를 brand tint로 통일한다
-    - [ ] Storybook에서 current/completed/final success/failure 색 의미를 computed style/class로 검증한다
-    - [ ] typecheck, architecture, 관련 테스트 및 전체 Storybook을 통과한다
+    - [x] `lifecycleStatusClassNames`를 shared SSOT로 추가해 active/completed/success/failure semantic class를 공용화
+    - [x] CreationFunnelStepper/ActualStateTimeline/MixingTimeline을 current=brand tint, completed intermediate=foreground, terminal success=solid brand 규칙으로 통일
+    - [x] MixingStatusBadge의 active는 brand tint, succeeded는 solid brand, failed는 destructive, canceled는 neutral로 통일하고 전 상태 Storybook 추가
+    - [x] AnalysisStatus와 VocalProfileLibrary의 active analysis badge, MixingLibrary의 결과 확인 중 badge를 brand tint로 통일
+    - [x] Storybook에서 current/completed/final success/failure 색 의미를 DOM class로 검증하고 failed terminal icon도 destructive 의미로 교체
+    - [x] typecheck PASS, architecture 4/4 PASS, mixing/voice 관련 10/10 PASS, 타깃 Storybook 20/20 PASS, 전체 Storybook 52 passed + 2 skipped / 152 tests PASS
 
 ---
 
@@ -210,8 +210,8 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -222,12 +222,12 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `pnpm run check:architecture` | `2026-08-14` | `PASS — Steiger 0 issues, architecture boundary 4/4` |
-| `pnpm run test:storybook --run` | `2026-08-14` | `PASS — 53 indexed story files: 51 passed, Summary/Analysis Success 2 skipped; 151 tests passed` |
+| `pnpm run test:storybook --run` | `2026-08-14` | `PASS — 54 indexed story files: 52 passed, Summary/Analysis Success 2 skipped; 152 tests passed` |
 | `pnpm run typecheck` | `2026-08-14` | `PASS` |
 
 
 
-<!-- lee-spec-kit:workflow-sync 2026-08-14T05:32:43.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-14T05:53:19.000Z -->
 
 
 
