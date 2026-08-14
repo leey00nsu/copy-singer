@@ -58,7 +58,7 @@
 - 안전한 code tracing 또는 local-only regression reproduction으로 active verification한다.
 - finding은 `VERIFIED`, `UNVERIFIED`, `TENTATIVE`로 구분한다.
 - `VERIFIED` finding은 동일 패턴 variant를 repo 전체에서 검색한다.
-- redacted report를 `docs/features/web/F029-cso-security-audit/security-posture.md`에 기록한다.
+- lee-spec-kit canonical feature-doc 규칙 때문에 redacted posture의 canonical 요약은 `decisions.md`/`tasks.md`에 기록하고, 상세 `security-posture.md`가 필요하면 Git ignored local-only evidence로 유지한다.
 
 ### 5. Verified remediation
 
@@ -108,7 +108,7 @@ docs/features/web/F029-cso-security-audit/spec.md
 docs/features/web/F029-cso-security-audit/plan.md
 docs/features/web/F029-cso-security-audit/tasks.md
 docs/features/web/F029-cso-security-audit/decisions.md
-docs/features/web/F029-cso-security-audit/security-posture.md
+<Git ignored local-only: docs/features/web/F029-cso-security-audit/security-posture.md>
 <verified finding에 필요한 source/test changes only>
 ```
 

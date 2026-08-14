@@ -49,6 +49,9 @@ yarn-error.log*
 # local build/type-check artifacts
 *.tsbuildinfo
 
+# local security audit evidence; canonical redacted findings live in F029 decisions/tasks
+/docs/features/*/F*-cso-security-audit/security-posture.md
+
 # Python service environments and caches
 **/.venv/
 **/__pycache__/

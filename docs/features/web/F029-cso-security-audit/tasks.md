@@ -65,20 +65,26 @@
     - OWASP/STRIDE mapping에서 A01/A03/A10 및 IDOR/SQLi/command injection/SSRF는 PASS evidence가 확보됐다. A02/A04/A05/A06 후보는 T03으로 좁혔다: known auth-secret fallback, vocal-analysis admission abuse, multipart pre-parse resource bound, transitive dependency advisories.
     - data classification은 Restricted=auth/session secret 및 사용자 원본 음성, Confidential=provider/Leemage/Modal credential과 분석·믹싱 artifact metadata, Internal=job/error/운영 metadata, Public=published catalog·marketing/legal로 분류했다.
 
-- [DOING][NON-PRD] T-F029-cso-security-audit-03 candidate active verification 및 posture report
+- [DONE][NON-PRD] T-F029-cso-security-audit-03 candidate active verification 및 posture report
   - Date: 2026-08-14
   - Acceptance:
     - 모든 candidate에 severity/confidence/status/exploit scenario/evidence/recommendation이 있다.
     - `VERIFIED`, `UNVERIFIED`, `TENTATIVE`를 명확히 구분한다.
     - redacted `security-posture.md`를 생성하고 raw secret을 포함하지 않는다.
   - Checklist:
-    - [ ] broad scan candidate를 motivating source line까지 좁힌다.
-    - [ ] safe code tracing/local-only test로 false positive를 제거한다.
-    - [ ] VERIFIED candidate의 variant를 repo 전체에서 재검색한다.
-    - [ ] Phase 0–14 결과를 PASS/FINDING/NOT_APPLICABLE로 요약한다.
-    - [ ] remediation 대상(`VERIFIED` 또는 confidence 8+)을 T04 범위로 확정한다.
+    - [x] broad scan candidate를 motivating source line까지 좁힌다.
+    - [x] safe code tracing/local-only test로 false positive를 제거한다.
+    - [x] VERIFIED candidate의 variant를 repo 전체에서 재검색한다.
+    - [x] Phase 0–14 결과를 PASS/FINDING/NOT_APPLICABLE로 요약한다.
+    - [x] remediation 대상(`VERIFIED` 또는 confidence 8+)을 T04 범위로 확정한다.
+  - Evidence:
+    - `security-posture.md`에 VERIFIED 3건을 확정했다: `SEC-01` auth secret fallback(HIGH, 10/10), `SEC-02` unbounded vocal-analysis admission(MEDIUM, 10/10), `SEC-03` multipart pre-parse body bound(MEDIUM, 8/10).
+    - `SEC-01`은 production mode에서 auth secret env를 제거한 local import가 성공하는 것으로 fail-open을 재현했다. 실제 fallback 값은 report에 복제하지 않았다.
+    - `SEC-02`는 local DB + mock storage로 동일 사용자 distinct idempotency 2건이 동시에 active job으로 admission되는 것을 재현하고 테스트 데이터를 삭제했다.
+    - pnpm high advisory 3건은 `image-size` Storybook dev path 및 `nanoid` vulnerable custom-generator API 미사용을 확인해 TENTATIVE로 유지했다.
+    - Phase 0–14 status, OWASP A01–A10, STRIDE, data classification, T04 remediation scope를 redacted report에 기록했다.
 
-- [TODO][NON-PRD] T-F029-cso-security-audit-04 verified finding remediation 및 exit re-audit
+- [DOING][NON-PRD] T-F029-cso-security-audit-04 verified finding remediation 및 exit re-audit
   - Date: 2026-08-14
   - Acceptance:
     - VERIFIED 또는 confidence 8+ finding만 수정한다.

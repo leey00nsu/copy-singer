@@ -57,3 +57,49 @@
 - **Trace**: spec Phase 2/6/12/14와 plan Evidence 방식에 반영했다.
 - **Evidence**: 감사 command는 가능한 한 filename/commit/status만 출력하도록 구성한다.
 - **Consequences**: 일부 finding은 live exploit 없이 UNVERIFIED로 남을 수 있으며, 그 경우 과장해 VERIFIED로 승격하지 않는다.
+
+---
+
+## D029-05: T04 remediation은 verified 3건으로 제한 (2026-08-14)
+
+- **Context**: T01–T03 감사에서 auth secret fallback, vocal-analysis admission, multipart pre-parse resource bound가 구체적인 source/exploit path를 가진 candidate로 남았고, pnpm high advisory 3건은 transitive dependency에서만 탐지됐다.
+- **Constraints**: T04는 `VERIFIED` 또는 confidence 8+만 수정한다. dependency advisory는 upstream severity만으로 제품 exploitability를 가정하지 않는다.
+- **Options**: (a) audit에서 나온 모든 advisory/observation을 수정, (b) verified 3건만 수정하고 reachability가 없는 dependency 후보는 report에 유지, (c) remediation 없이 report만 종료.
+- **Decision**: (b)를 채택한다. `F029-SEC-01` production auth secret fail-closed, `F029-SEC-02` per-user active vocal-analysis admission bound, `F029-SEC-03` bounded multipart pre-parse를 T04 대상으로 확정한다.
+- **Rationale**: 세 건은 각각 production-mode local verification, local DB/mock-storage active verification, route-level body-consumption tracing으로 confidence 8+ evidence가 있다. `image-size`는 Storybook dev path, `nanoid`는 vulnerable custom-generator API의 repo 직접 사용이 없어 자동 security fix 근거가 부족하다.
+- **Trace**: 상세 severity/confidence/exploit scenario는 아래 D029-06 canonical summary와 Git ignored local-only `security-posture.md`에 기록했다.
+- **Evidence**: auth module은 production + secret 미설정 상태에서 초기화 성공; 동일 사용자 distinct idempotency 2건이 active queue로 동시 admission됨; 두 multipart route 모두 `request.formData()` 후에 25MB policy를 적용한다.
+- **Consequences**: T04는 제품 보안 경계 세 곳만 최소 변경하고 dependency 후보는 exit audit에서 재확인한다.
+
+---
+
+## D029-06: first-run Security Posture 확정 (2026-08-14)
+
+- **Context**: lee-spec-kit은 feature folder에 `spec.md`, `plan.md`, `tasks.md`, `decisions.md`, `issue.md`, `pr.md` 외의 canonical file을 허용하지 않는다. 따라서 상세 report 파일은 local-only evidence로 두고 canonical posture를 이 결정에 남긴다.
+- **Constraints**: raw secret value나 private payload는 기록하지 않는다. finding은 concrete exploit path와 confidence/status가 있어야 한다.
+- **Options**: (a) 비정규 `security-posture.md`를 commit, (b) report를 폐기, (c) 상세 local report는 Git ignored로 유지하고 canonical 요약을 decisions/tasks에 기록.
+- **Decision**: (c)를 채택한다.
+- **Rationale**: 감사 evidence는 보존하면서 lee-spec-kit taxonomy와 secret-safe persistence 원칙을 모두 지킨다.
+- **Trace**:
+
+| ID | Severity | Confidence | Status | Canonical finding |
+| --- | --- | --- | --- | --- |
+| `F029-SEC-01` | HIGH | 10/10 | VERIFIED | production에서 auth secret 미설정 시 repository-known fallback으로 초기화가 성공하는 fail-open 구성 |
+| `F029-SEC-02` | MEDIUM | 10/10 | VERIFIED | 한 authenticated user가 distinct idempotency key로 active vocal-analysis job을 제한 없이 admission 가능 |
+| `F029-SEC-03` | MEDIUM | 8/10 | VERIFIED (application layer) | 두 vocal-analysis multipart route가 body byte cap 적용 전에 `request.formData()`로 전체 body를 소비 |
+| `DEP-01` | upstream HIGH | 3/10 | TENTATIVE | `image-size@2.0.2` advisory는 Storybook dev dependency path만 확인 |
+| `DEP-02` | upstream HIGH | 3/10 | TENTATIVE | `nanoid@3.3.17` advisory는 vulnerable custom-generator API의 repo 직접 사용이 없음 |
+| `DEP-03` | MEDIUM observation | 5/10 | UNVERIFIED | SoulX Python non-exact requirement range는 resolved-version 기준 재현 감사가 불완전 |
+
+- **Evidence**:
+  - A01 Broken Access Control: PASS — admin guard coverage와 owner/private-media integration tests 통과.
+  - A02/A07: `F029-SEC-01` finding.
+  - A03 Injection/A10 SSRF: PASS — unsafe Prisma raw API 0, strict YouTube identity validation, argv subprocess, persisted storage URL proxy.
+  - A04/A05: `F029-SEC-02`, `F029-SEC-03` finding.
+  - A06: transitive advisory candidates만 남고 verified product exploit path는 없음.
+  - A08: PASS — Modal artifact integrity/server-only credential boundary 확인.
+  - A09: durable error/attempt state는 존재하며 별도 exploitable finding 없음.
+  - STRIDE: auth Spoofing root secret과 analysis DoS만 finding으로 승격; admin tampering/elevation, media disclosure, SQL injection, Modal spoofing 경로는 현재 controls로 PASS.
+  - Data classification: Restricted=auth/session secret·사용자 원본 음성, Confidential=provider/Leemage/Modal credential·private artifact metadata, Internal=job/error/ops metadata, Public=published catalog·marketing/legal.
+  - Phase 0–14: 0/1/2 PASS, 3 CANDIDATES, 4 NOT_APPLICABLE, 5 PASS/OBSERVATION, 6 PASS, 7/8 NOT_APPLICABLE, 9/10 FINDINGS, 11/12 PASS, 13 T04 PENDING, 14 PASS.
+- **Consequences**: T04는 세 VERIFIED finding만 수정한다. dependency 후보는 제품 security fix로 강제하지 않고 exit audit에서 다시 분류한다.
