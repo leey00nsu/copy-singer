@@ -204,16 +204,16 @@
     - [x] Storybook에서 current/completed/final success/failure 색 의미를 DOM class로 검증하고 failed terminal icon도 destructive 의미로 교체
     - [x] typecheck PASS, architecture 4/4 PASS, mixing/voice 관련 10/10 PASS, 타깃 Storybook 20/20 PASS, 전체 Storybook 52 passed + 2 skipped / 152 tests PASS
 
-- [DOING][PRD-FR-051] T-F027-notification-brand-color-14 생성 퍼널 current solid brand 디자인 복원
+- [DONE][PRD-FR-051] T-F027-notification-brand-color-14 생성 퍼널 current solid brand 디자인 복원
   - Date: 2026-08-14
   - Acceptance:
     - 상단 생성 퍼널의 현재 단계는 기존처럼 solid `data-accent` + white로 강하게 표시된다
     - 완료된 이전 단계는 검정, upcoming은 neutral을 유지한다
     - 내부 작업 상태 timeline/chip은 T13의 brand tint 규칙을 유지해 navigation stepper와 lifecycle status UI를 구분한다
   - Checklist:
-    - [ ] `CreationFunnelStepper` current marker를 기존 solid brand 스타일로 복원한다
-    - [ ] Storybook에서 상단 current=solid brand, 내부 timeline current=brand tint가 동시에 유지됨을 검증한다
-    - [ ] typecheck, architecture, 관련 Storybook 및 전체 Storybook을 통과한다
+    - [x] `CreationFunnelStepper` current marker를 기존 `border-data-accent bg-data-accent text-white` solid brand 스타일로 복원
+    - [x] `Widgets/Creation Funnel > ActiveAnalysis`에서 상단 current=`bg-data-accent text-white`, 내부 timeline current=`bg-data-accent/10 text-data-accent-foreground`를 같은 story에서 동시 검증
+    - [x] 변경 파일 Biome PASS, typecheck PASS, architecture 4/4 PASS, Creation Funnel Storybook 4/4 PASS, 전체 Storybook 52 passed + 2 skipped / 152 tests PASS
 
 ---
 
@@ -238,7 +238,7 @@
 
 
 
-<!-- lee-spec-kit:workflow-sync 2026-08-14T05:53:19.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-14T06:58:02.000Z -->
 
 
 

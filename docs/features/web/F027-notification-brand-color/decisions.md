@@ -217,8 +217,9 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: navigation stepper는 사용자의 현재 위치를 가장 강하게 보여주는 것이 우선이고, 내부 lifecycle status는 진행 강도를 보조적으로 전달하므로 같은 `active` 표현을 공유할 필요가 없다.
 - **Trace**:
   - **DOING 시작 시점**: T13 이전 stepper current가 solid brand였고 T13 이후 `lifecycleStatusClassNames.active`의 brand tint로 바뀐 diff를 확인했다.
+  - **DONE 전 확정 시점**: `CreationFunnelStepper` current를 기존 solid brand class로 복원하고, 같은 `ActiveAnalysis` story에서 상단 current는 solid brand, 내부 `ActualStateTimeline` current는 brand tint임을 동시에 검증했다.
 - **Evidence**:
-  - **Commit**: TBD
-  - **Test/Log**: Storybook에서 상단 current=solid brand, 내부 timeline current=brand tint 동시 검증 예정.
+  - **Commit**: `ea3cda4` (`fix(F027): 생성 퍼널 current solid brand 복원`)
+  - **Test/Log**: 변경 파일 Biome PASS, `pnpm run typecheck` PASS, Creation Funnel Storybook 4/4 PASS, `pnpm run check:architecture` PASS (4/4), `pnpm run test:storybook --run` 54 indexed files 중 52 passed + 2 skipped / 152 tests PASS.
 - **Consequences**: 브랜드 컬러 의미는 유지하되 계층을 구분한다. 상단 navigation current는 강한 solid brand, 내부 진행 상태는 연한 brand tint를 사용한다.
 
