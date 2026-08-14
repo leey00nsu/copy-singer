@@ -34,13 +34,7 @@ function ProgressIndicator({ className, ...props }: ProgressPrimitive.Indicator.
   return (
     <ProgressPrimitive.Indicator
       data-slot="progress-indicator"
-      className={(state) =>
-        cn(
-          "h-full bg-primary transition-[width]",
-          state.status === "complete" && "transition-none",
-          typeof className === "function" ? className(state) : className,
-        )
-      }
+      className={(state) => cn("h-full bg-primary", typeof className === "function" ? className(state) : className)}
       {...props}
     />
   );

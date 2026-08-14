@@ -189,6 +189,8 @@ export const Preparing: Story = {
     if (!track || !indicator) throw new Error("Preparing progress track or indicator is missing.");
     await expect(canvas.getByText("46%")).toBeVisible();
     await expect(progress).toHaveAttribute("aria-valuenow", "46");
+    await expect(indicator.style.width).toBe("46%");
+    await expect(getComputedStyle(indicator).transitionDuration).toBe("0s");
     await expect(indicator.getBoundingClientRect().width / track.getBoundingClientRect().width).toBeCloseTo(0.46, 1);
   },
 };
@@ -206,6 +208,8 @@ export const PreparingComplete: Story = {
     if (!track || !indicator) throw new Error("Completed progress track or indicator is missing.");
     await expect(canvas.getByText("100%")).toBeVisible();
     await expect(progress).toHaveAttribute("aria-valuenow", "100");
+    await expect(indicator.style.width).toBe("100%");
+    await expect(getComputedStyle(indicator).transitionDuration).toBe("0s");
     await expect(indicator.getBoundingClientRect().width).toBe(track.getBoundingClientRect().width);
   },
 };
