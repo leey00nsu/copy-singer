@@ -38,6 +38,7 @@ const meta = {
   title: "Entities/Vocal Profile/Summary",
   component: VocalProfileSummary,
   args: { profile },
+  tags: ["!dev", "!test"],
   parameters: { layout: "padded" },
 } satisfies Meta<typeof VocalProfileSummary>;
 

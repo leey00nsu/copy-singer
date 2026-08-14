@@ -20,7 +20,6 @@ import {
   type VocalRangeMetrics,
 } from "../model/visualization";
 import { ReferenceBandPlayers } from "./reference-band-players";
-import { VocalProfileSummary } from "./vocal-profile-summary";
 import { VocalRangeChart } from "./vocal-range-chart";
 
 const HISTOGRAM_CHART_CONFIG = {
@@ -277,11 +276,9 @@ function PitchTrace({ visualization }: { visualization: VocalProfileVisualizatio
 
 export function VocalProfileResults({
   profile,
-  showSummary = true,
   sourceAudioSrc,
 }: {
   profile: VocalProfileResponse;
-  showSummary?: boolean;
   sourceAudioSrc?: string;
 }) {
   const visualization = useMemo(() => parseVocalProfileVisualization(profile.descriptors), [profile.descriptors]);
@@ -302,7 +299,6 @@ export function VocalProfileResults({
 
   return (
     <div className="space-y-8 sm:space-y-10">
-      {showSummary ? <VocalProfileSummary profile={profile} /> : null}
       <section
         aria-label="음역과 음정 분포"
         className="rounded-3xl bg-muted/55 p-4 sm:p-6 lg:p-7"

@@ -45,6 +45,7 @@ const meta = {
     profile,
     profileId: profile.id,
   },
+  tags: ["!dev", "!test"],
   decorators: [
     (Story) => (
       <CreationFunnelShell currentStep="analysis">

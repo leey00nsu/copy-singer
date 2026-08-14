@@ -81,7 +81,7 @@ test("analysis presentation follows durable job states without fabricated progre
   );
 });
 
-test("voice scan components keep media cleanup and continue from analysis to recommendations", async () => {
+test("voice scan components keep media cleanup and redirect completed analysis to the stored profile", async () => {
   const [recorder, signalCore, workbench] = await Promise.all([
     readFile("src/_pages/profile/ui/vocal-profile-recorder.tsx", "utf8"),
     readFile("src/shared/ui/voice-signal-core/voice-signal-core.tsx", "utf8"),
@@ -108,13 +108,13 @@ test("voice scan components keep media cleanup and continue from analysis to rec
   assert.match(workbench, /<VoiceScanInput/);
   assert.match(workbench, /<AnalysisStatus/);
   assert.match(workbench, /<CreationFunnelShell currentStep="analysis">/);
-  assert.match(workbench, /<AnalysisSuccess/);
+  assert.doesNotMatch(workbench, /<AnalysisSuccess/);
   assert.match(workbench, /Voice analysis/);
   assert.match(workbench, /mt-8 grid gap-10 lg:mt-12/);
   assert.doesNotMatch(workbench, /Step 1|내 음역 측정|분석기 확인 중|분석기 준비됨|분석기 연결 확인 필요/);
   assert.doesNotMatch(workbench, /vocalProfileHealthQueryOptions/);
-  assert.match(workbench, /createRecommendation\.mutate\(completedProfileId/);
-  assert.match(workbench, /router\.push\(`\/recommendations\/\$\{run\.id\}`\)/);
-  assert.doesNotMatch(workbench, /router\.replace\(`\/vocal-profiles\/\$\{completedProfileId\}`\)/);
+  assert.doesNotMatch(workbench, /createRecommendation\.mutate\(completedProfileId/);
+  assert.match(workbench, /router\.replace\(`\/vocal-profiles\/\$\{completedProfileId\}`\)/);
+  assert.match(workbench, /localStorage\.removeItem\(ANALYSIS_JOB_STORAGE_KEY\)/);
   assert.doesNotMatch(workbench, /VocalProfileResults|deleteVocalProfile/);
 });

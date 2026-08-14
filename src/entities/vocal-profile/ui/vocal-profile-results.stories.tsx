@@ -68,7 +68,6 @@ const meta = {
   component: VocalProfileResults,
   args: {
     profile: PROFILE,
-    showSummary: false,
     sourceAudioSrc: NO_NETWORK_AUDIO,
   },
   argTypes: {

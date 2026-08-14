@@ -50,12 +50,14 @@ test("normalizes reversed ranges and provides a transparent invalid-quality fall
 });
 
 test("detail page preserves private source audio, current recommendation, and destructive confirmation flows", async () => {
-  const [page, actions] = await Promise.all([
+  const [page, content, actions] = await Promise.all([
     readFile("src/_pages/vocal-profile-detail/ui/vocal-profile-detail-page.tsx", "utf8"),
+    readFile("src/_pages/vocal-profile-detail/ui/vocal-profile-detail-content.tsx", "utf8"),
     readFile("src/_pages/vocal-profile-detail/ui/vocal-profile-actions.tsx", "utf8"),
   ]);
-  assert.match(page, /detail\.audioUrl/);
-  assert.match(page, /VocalProfileResults/);
+  assert.match(page, /VocalProfileDetailContent detail=\{detail\}/);
+  assert.match(content, /detail\.audioUrl/);
+  assert.match(content, /VocalProfileResults/);
   assert.match(actions, /추천 결과 보기/);
   assert.doesNotMatch(actions, /최근 추천 결과 보기/);
   assert.match(actions, /deleteVocalProfileMutationOptions/);

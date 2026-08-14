@@ -13,7 +13,6 @@ import {
   vocalAnalysisKeys,
   vocalProfileAnalysisJobQueryOptions,
 } from "@/features/analyze-vocal-profile";
-import { createRecommendationMutationOptions } from "@/features/create-recommendation";
 import { prepareProfileAudio } from "@/shared/lib/audio";
 import { StatusNotice } from "@/shared/ui/status-notice";
 import { CreationFunnelShell } from "@/widgets/creation-funnel";
@@ -24,7 +23,6 @@ import {
   resolveAnalysisStage,
 } from "../model/voice-scan";
 import { AnalysisStatus } from "./analysis-status";
-import { AnalysisSuccess } from "./analysis-success";
 import { LongAudioDialog } from "./long-audio-dialog";
 import type { VocalProfileRecorderState } from "./vocal-profile-recorder";
 import { VoiceScanInput } from "./voice-scan-input";
@@ -50,7 +48,6 @@ export function VocalProfileWorkbench() {
 
   const analysisJobQuery = useQuery(vocalProfileAnalysisJobQueryOptions(analysisJobId));
   const submitAnalysis = useMutation(submitVocalProfileAnalysisMutationOptions());
-  const createRecommendation = useMutation(createRecommendationMutationOptions());
   const analysisJob = analysisJobQuery.data;
   const analysisJobRequestError = analysisJobQuery.error ? normalizeProfileError(analysisJobQuery.error) : null;
   const terminalAnalysisError =
@@ -114,12 +111,14 @@ export function VocalProfileWorkbench() {
     }
     if (!completedProfileId) return;
 
+    window.localStorage.removeItem(ANALYSIS_JOB_STORAGE_KEY);
     void Promise.all([
       queryClient.invalidateQueries({ queryKey: vocalAnalysisKeys.health() }),
       queryClient.invalidateQueries({ queryKey: vocalAnalysisKeys.jobs() }),
     ]);
     toast.success("보컬 프로필 분석이 완료됐습니다.");
-  }, [analysisJob, analysisJobId, completedProfileId, queryClient]);
+    router.replace(`/vocal-profiles/${completedProfileId}`);
+  }, [analysisJob, analysisJobId, completedProfileId, queryClient, router]);
 
   useEffect(() => {
     if (!analysisJobId || !analysisJobQuery.error) return;
@@ -236,18 +235,6 @@ export function VocalProfileWorkbench() {
     );
   };
 
-  const continueToRecommendation = () => {
-    if (!completedProfileId || createRecommendation.isPending) return;
-    createRecommendation.mutate(completedProfileId, {
-      onSuccess: (run) => {
-        window.localStorage.removeItem(ANALYSIS_JOB_STORAGE_KEY);
-        toast.success("목소리에 맞는 노래를 찾았습니다.");
-        router.push(`/recommendations/${run.id}`);
-      },
-      onError: () => toast.error("노래 추천을 만들지 못했습니다. 잠시 뒤 다시 시도해주세요."),
-    });
-  };
-
   if (analysisStage) {
     return (
       <CreationFunnelShell currentStep="analysis">
@@ -265,19 +252,7 @@ export function VocalProfileWorkbench() {
     );
   }
 
-  if (analysisJob?.status === "succeeded" && completedProfileId) {
-    return (
-      <CreationFunnelShell currentStep="analysis">
-        <AnalysisSuccess
-          creatingRecommendation={createRecommendation.isPending}
-          onContinue={continueToRecommendation}
-          onReset={resetAudio}
-          profile={analysisJob.profile}
-          profileId={completedProfileId}
-        />
-      </CreationFunnelShell>
-    );
-  }
+  if (analysisJob?.status === "succeeded" && completedProfileId) return null;
 
   return (
     <CreationFunnelShell currentStep="analysis">
