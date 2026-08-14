@@ -30,7 +30,9 @@ test("account overview renders actual identity, provider, ticket data without sh
       user={{ email: "jieun@copysinger.test", name: "지은" }}
     />,
   );
-  assert.match(html, /Google 연결됨/);
+  assert.doesNotMatch(html, /Google 연결됨|Google 연결 정보 없음/);
+  assert.match(html, /로그인 방식/);
+  assert.match(html, />Google</);
   assert.match(html, /jieun@copysinger\.test/);
   assert.match(html, /사용 가능한 티켓/);
   assert.doesNotMatch(html, /href="\/library"/);
@@ -50,7 +52,8 @@ test("account empty state omits pagination and does not invent a Google connecti
       user={{ email: "dev@copysinger.test", name: "개발 사용자" }}
     />,
   );
-  assert.match(html, /Google 연결 정보 없음/);
+  assert.doesNotMatch(html, /Google 연결됨|Google 연결 정보 없음/);
+  assert.match(html, /현재 세션/);
   assert.match(html, /아직 티켓 내역이 없어요/);
   assert.doesNotMatch(html, /티켓 내역 페이지/);
   assert.doesNotMatch(html, /href="\/admin"/);

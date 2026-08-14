@@ -1,7 +1,6 @@
-import { ShieldCheck, Ticket, UserRound } from "lucide-react";
+import { Ticket, UserRound } from "lucide-react";
 import Link from "next/link";
 import { type TicketEntryView, TicketLedger } from "@/entities/ticket";
-import { Badge } from "@/shared/ui/badge";
 import { Button, buttonVariants } from "@/shared/ui/button";
 import { ProductPageIntro } from "@/shared/ui/product-page-intro";
 
@@ -58,17 +57,11 @@ export function AccountOverview({ account, authentication, user }: AccountOvervi
         className="mt-10 grid gap-3 lg:grid-cols-[minmax(0,1.35fr)_minmax(18rem,.65fr)]"
       >
         <div className="rounded-3xl bg-muted/55 p-6 sm:p-7">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <h2 className="text-base font-semibold" id="account-information-title">
-                계정 정보
-              </h2>
-              <p className="mt-1 text-xs text-muted-foreground">현재 로그인한 계정 정보를 보여줘요.</p>
-            </div>
-            <Badge className="text-[11px]" variant={authentication.googleConnected ? "outline" : "secondary"}>
-              <ShieldCheck aria-hidden="true" className="size-3" />
-              {authentication.googleConnected ? "Google 연결됨" : "Google 연결 정보 없음"}
-            </Badge>
+          <div>
+            <h2 className="text-base font-semibold" id="account-information-title">
+              계정 정보
+            </h2>
+            <p className="mt-1 text-xs text-muted-foreground">현재 로그인한 계정 정보를 보여줘요.</p>
           </div>
           <dl className="mt-7 grid gap-6 sm:grid-cols-3">
             <div>

@@ -49,7 +49,8 @@ type Story = StoryObj<typeof meta>;
 export const GoogleConnected: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByText("Google 연결됨")).toBeVisible();
+    await expect(canvas.queryByText("Google 연결됨")).not.toBeInTheDocument();
+    await expect(canvas.getByText("Google")).toBeVisible();
     await expect(canvas.getByRole("link", { name: "AI 믹스 상세 보기" })).toBeVisible();
     await expect(canvas.getByRole("button", { name: "이전" })).toBeDisabled();
     await expect(canvas.getByRole("link", { name: "다음" })).toHaveAttribute("href", "/account?page=2");
@@ -72,7 +73,8 @@ export const DevelopmentSessionEmpty: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByText("Google 연결 정보 없음")).toBeVisible();
+    await expect(canvas.queryByText("Google 연결 정보 없음")).not.toBeInTheDocument();
+    await expect(canvas.getByText("현재 세션")).toBeVisible();
     await expect(canvas.getByRole("heading", { name: "아직 티켓 내역이 없어요." })).toBeVisible();
     await expect(canvas.queryByRole("navigation", { name: "티켓 내역 페이지" })).not.toBeInTheDocument();
   },
