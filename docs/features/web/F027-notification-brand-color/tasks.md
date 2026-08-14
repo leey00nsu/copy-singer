@@ -167,6 +167,17 @@
     - [x] `NotificationBell` 실제 open story에서 5종 모두 hover 전후 computed color 불변 검증 — 수정 전 story가 실제로 실패했고 수정 후 2/2 타깃 PASS
     - [x] `pnpm run typecheck` PASS, `pnpm run check:architecture` PASS, 최종 전체 Storybook 51 passed + 2 skipped / 151 tests PASS
 
+- [DOING][PRD-FR-058] T-F027-notification-brand-color-11 알림 SVG 아이콘 hover 컬러 회귀 보완
+  - Date: 2026-08-14
+  - Acceptance:
+    - 알림 Bell dropdown hover/focus 시 실제 `svg` 아이콘의 computed color가 타입별 semantic color를 유지한다
+    - T10처럼 wrapper badge만 검증하지 않고 실제 Lucide SVG를 직접 회귀 검증한다
+    - 공용 dropdown의 다른 focus 텍스트 동작은 변경하지 않는다
+  - Checklist:
+    - [ ] `NotificationItemContent`의 아이콘 자체에 semantic foreground를 적용한다
+    - [ ] `NotificationBell` story가 badge span이 아니라 실제 `svg` hover 전후 computed color를 검증한다
+    - [ ] 관련 Storybook, typecheck, architecture 검증을 통과한다
+
 ---
 
 ## 완료 조건
