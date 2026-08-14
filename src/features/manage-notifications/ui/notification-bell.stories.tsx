@@ -74,10 +74,11 @@ export const OpenWithAllTypes: Story = {
     for (const [title, type] of notificationItems) {
       const item = body.getByRole("menuitem", { name: new RegExp(title) });
       const badge = item.querySelector<HTMLElement>(`[data-notification-icon-badge="${type}"]`);
-      if (!badge) throw new Error(`Missing notification icon badge for ${type}.`);
-      const colorBeforeHover = getComputedStyle(badge).color;
+      const icon = badge?.querySelector<SVGElement>("svg");
+      if (!badge || !icon) throw new Error(`Missing notification icon badge or svg for ${type}.`);
+      const colorBeforeHover = getComputedStyle(icon).color;
       await userEvent.hover(item);
-      await waitFor(() => expect(getComputedStyle(badge).color).toBe(colorBeforeHover));
+      await waitFor(() => expect(getComputedStyle(icon).color).toBe(colorBeforeHover));
     }
 
     await expect(body.getByRole("menuitem", { name: "전체 알림 보기" })).toHaveAttribute("href", "/notifications");

@@ -3,7 +3,11 @@ import type { NotificationItem, NotificationType } from "../model/contract";
 
 const icons: Record<
   NotificationType,
-  React.ComponentType<{ className?: string; "aria-hidden"?: boolean | "true" | "false" }>
+  React.ComponentType<{
+    className?: string;
+    style?: React.CSSProperties;
+    "aria-hidden"?: boolean | "true" | "false";
+  }>
 > = {
   ticket_credit: Ticket,
   vocal_profile_succeeded: AudioLines,
@@ -46,7 +50,7 @@ export function NotificationItemContent({ compact = false, item }: { compact?: b
         data-notification-icon-badge={item.type}
         style={{ color: badgeForegrounds[item.type] }}
       >
-        <Icon aria-hidden="true" className="size-4" />
+        <Icon aria-hidden="true" className="size-4" style={{ color: badgeForegrounds[item.type] }} />
       </span>
       <span className="min-w-0 flex-1">
         <span className="flex items-start gap-2">
