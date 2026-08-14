@@ -155,17 +155,17 @@
     - [x] 실제 `VoiceScanInput` Preparing 46%에서 표시 숫자=46%, `aria-valuenow=46`, inline width=46%, transition 0s, 실제 indicator/track 폭≈0.46을 Chromium 검증
     - [x] `pnpm run test:voice-scan` 12/12, 타깃 Storybook 12/12, 전체 Storybook 51 passed + 2 skipped / 151 tests, typecheck·architecture PASS
 
-- [TODO][PRD-FR-058] T-F027-notification-brand-color-10 알림 hover/focus 아이콘 semantic color 유지
+- [DONE][PRD-FR-058] T-F027-notification-brand-color-10 알림 hover/focus 아이콘 semantic color 유지
   - Date: 2026-08-14
   - Acceptance:
     - 알림 Bell dropdown에서 item hover/focus 시 타입별 아이콘 배지 색이 기본 상태와 동일하게 유지된다
     - `ticket_credit` success, succeeded data-accent/white, failed destructive semantic color가 공용 dropdown focus descendant 색상에 덮어쓰이지 않는다
     - 실제 `NotificationBell` Storybook에서 hover 전후 computed icon color를 검증한다
   - Checklist:
-    - [ ] dropdown item focus descendant color가 알림 배지에 미치는 충돌을 최소 범위에서 차단한다
-    - [ ] `NotificationItemContent`에 테스트 가능한 badge hook을 추가하고 타입별 semantic color를 hover/focus에서도 유지한다
-    - [ ] `NotificationBell` 실제 open story에서 hover 전후 아이콘 color 불변을 브라우저 computed style로 검증한다
-    - [ ] 관련 Storybook, typecheck, architecture 검증을 통과한다
+    - [x] 공용 `DropdownMenuItem`의 `focus:**:text-accent-foreground`가 배지 semantic foreground를 덮어쓰는 충돌 확인; 공용 dropdown 동작은 유지하고 알림 배지 foreground만 inline token으로 고정
+    - [x] `NotificationItemContent`에 `data-notification-icon-badge` hook과 success/white/destructive foreground token을 추가해 hover/focus에서도 타입 색 유지
+    - [x] `NotificationBell` 실제 open story에서 5종 모두 hover 전후 computed color 불변 검증 — 수정 전 story가 실제로 실패했고 수정 후 2/2 타깃 PASS
+    - [x] `pnpm run typecheck` PASS, `pnpm run check:architecture` PASS, 최종 전체 Storybook 51 passed + 2 skipped / 151 tests PASS
 
 ---
 
@@ -190,7 +190,7 @@
 
 
 
-<!-- lee-spec-kit:workflow-sync 2026-08-14T04:40:17.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-14T05:01:19.000Z -->
 
 
 

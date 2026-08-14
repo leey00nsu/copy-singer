@@ -152,3 +152,17 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Test/Log**: `pnpm run typecheck` PASS, `pnpm run test:voice-scan` 12/12 PASS, VoiceScanInput + Progress 타깃 Storybook 12/12 PASS, `pnpm run test:storybook --run` 최종 53 indexed files 중 51 passed + 2 skipped / 151 tests PASS, `pnpm run check:architecture` PASS. 전체 Storybook 첫 실행에서 기존 `AudioWaveformPlayer` readiness assertion 1건이 간헐 실패했으나 해당 story 단독 3/3 및 전체 재실행 151/151 PASS.
 - **Consequences**: progress 숫자와 막대가 중간 구간에서도 같은 값을 즉시 가리킨다. 공용 Progress의 시각적 보간은 제거되지만 값 정확성과 접근성 상태는 그대로 유지된다.
 
+## D027-09: 알림 dropdown hover/focus에서 semantic icon color 유지 (2026-08-14)
+
+- **Context**: `NotificationItemContent`의 타입별 배지는 기본 상태에서 success/data-accent/destructive 색을 사용하지만, `DropdownMenuItem`의 공용 `focus:**:text-accent-foreground` 규칙이 hover로 highlight/focus된 모든 자식의 foreground를 덮어써 아이콘이 검정 계열로 바뀌었다.
+- **Constraints**: 다른 dropdown의 focus 텍스트 동작은 유지하고, 알림 타입 의미 색만 hover/focus에서도 보존해야 한다. `/notifications` 목록과 Bell dropdown은 같은 `NotificationItemContent`를 공유한다.
+- **Decision**: 공용 dropdown 스타일은 변경하지 않고 알림 icon badge에 타입별 semantic foreground를 inline CSS token(`var(--success-foreground)`, `white`, `var(--destructive)`)으로 고정한다. Storybook에서 실제 Bell을 열어 5종 menuitem을 hover하고 computed color가 hover 전후 동일한지 검증한다.
+- **Rationale**: `group-focus` utility는 공용 descendant selector의 specificity를 이기지 못해 실제 회귀 테스트가 실패했다. 배지 자체의 inline foreground는 영향 범위를 알림 semantic icon에 한정하면서 공용 dropdown focus 동작보다 우선한다.
+- **Trace**:
+  - **DOING 시작 시점**: 실제 `NotificationBell` story에 hover 전후 computed color 비교를 추가하자 `ticket_credit`가 `oklch(0.38 0.105 151)`에서 `oklch(0.205 0 0)`로 바뀌며 재현됐다.
+  - **DONE 전 확정 시점**: inline semantic foreground 적용 후 NotificationBell + badge 타깃 Storybook 2/2 PASS, 전체 Storybook 최종 51 passed + 2 skipped / 151 tests PASS.
+- **Evidence**:
+  - **Commit**: `8c9c4b7` (`fix(F027): 알림 hover 아이콘 semantic color 유지`)
+  - **Test/Log**: `pnpm run typecheck` PASS, NotificationBell + badge Storybook 2/2 PASS, `pnpm run check:architecture` PASS, `pnpm run test:storybook --run` 최종 151/151 PASS. 전체 실행 중 기존 AdminCustomMixing/VoiceOrb/AudioWaveform 타이밍성 테스트가 각각 간헐 실패했으나 각 단독 재검증은 통과했고 마지막 전체 실행은 green.
+- **Consequences**: 알림 배지는 pointer hover와 keyboard focus 모두 타입 의미 색을 유지하며, 다른 dropdown item의 focus color 정책은 바뀌지 않는다.
+
