@@ -223,3 +223,17 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Test/Log**: 변경 파일 Biome PASS, `pnpm run typecheck` PASS, Creation Funnel Storybook 4/4 PASS, `pnpm run check:architecture` PASS (4/4), `pnpm run test:storybook --run` 54 indexed files 중 52 passed + 2 skipped / 152 tests PASS.
 - **Consequences**: 브랜드 컬러 의미는 유지하되 계층을 구분한다. 상단 navigation current는 강한 solid brand, 내부 진행 상태는 연한 brand tint를 사용한다.
 
+## D027-14: VoiceOrb 전역 motion 50% 완화 및 first-frame ready entry (2026-08-14)
+
+- **Context**: 실제 화면에서 Orb 회전/내부 motion이 전반적으로 빠르게 느껴졌고, OGL canvas가 준비되기 전 fallback/초기 WebGL 상태가 순간적으로 노출되어 로딩 초기에 형태가 깨져 보였다.
+- **Constraints**: 로그인, 랜딩, 보컬 분석 등 모든 `VoiceOrb` 사용처에 동일하게 적용되어야 하며, 개별 `speed` prop의 상대적 차이는 유지해야 한다. reduced-motion 사용자는 새 등장 애니메이션을 보지 않아야 한다.
+- **Decision**: 공용 `VoiceOrb`에 `ORB_MOTION_SPEED_SCALE=0.5`를 두고 shader `iTime`과 hover rotation에 공통 적용한다. root는 ready/fallback 확정 전 opacity 0 + scale 0으로 숨기고, WebGL은 첫 `renderer.render()` 이후에만 `data-orb-ready=true`를 설정한다. ready 또는 fallback 상태가 되면 700ms 동안 opacity 0→1, scale 0→1로 등장하며 reduced-motion에서는 animation 없이 최종 상태를 즉시 표시한다.
+- **Rationale**: 각 사용처의 `speed` 값을 직접 절반으로 수정하면 신규 사용처나 상태별 speed 계산이 누락될 수 있다. 공용 scale을 적용하면 `speed=1`과 `speed=0.3` 같은 상대 차이는 그대로 유지하면서 전체 체감 속도만 절반으로 낮출 수 있다. 또한 canvas DOM append가 아니라 첫 실제 render를 ready 기준으로 사용해야 불완전한 WebGL 프레임이 사용자에게 노출되지 않는다.
+- **Trace**:
+  - **DOING 시작 시점**: `VoiceOrb`가 canvas append 직후 `data-orb-ready`를 설정하고 있었으며, `VoiceSignalCore` 및 로그인 화면에서 서로 다른 speed 값을 전달하고 있음을 확인했다.
+  - **DONE 전 확정 시점**: 기본 `speed=1`의 effective speed가 `0.5`, 로그인과 동일한 `speed=0.3`이 `0.15`가 됨을 Storybook으로 검증했다. WebGL ready와 forced fallback 모두 `voice-orb-enter` animation을 사용하고, 상위 Creation Funnel story도 ready 이후 visibility를 기다리도록 계약을 갱신했다.
+- **Evidence**:
+  - **Commit**: `a9c2ea1` (`feat(F027): VoiceOrb motion 완화 및 ready entry 추가`)
+  - **Test/Log**: 변경 파일 Biome PASS, `pnpm run typecheck` PASS, VoiceOrb/Login/VoiceScanInput 타깃 Storybook 15/15 PASS, `pnpm run test:voice-scan` 12/12 PASS, `pnpm run check:architecture` PASS (4/4), `pnpm run test:storybook --run` 최종 54 indexed files 중 52 passed + 2 skipped / 153 tests PASS. 첫 전체 실행의 AudioWaveform readiness와 후속 실행의 AdminCustomMixing MSW 타이밍 실패는 각각 단독 PASS 후 최종 전체 green으로 확인했다.
+- **Consequences**: 모든 Orb의 체감 motion은 기존의 절반 속도가 되고, WebGL 또는 fallback이 실제 표시 가능한 상태가 되기 전에는 사용자에게 노출되지 않는다. 신규 `VoiceOrb` 사용처도 별도 설정 없이 동일한 speed scale과 ready-entry를 상속한다.
+
