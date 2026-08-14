@@ -27,27 +27,27 @@ function analysisJobCopy(job: VocalProfileAnalysisJobResponse) {
   if (job.status === "processing") {
     return {
       title: "보컬 프로필 분석 중",
-      detail: "음정 분포와 믹싱에 사용할 보컬 레퍼런스를 만들고 있어요.",
+      detail: "음역과 안정성을 분석하고 있어요.",
       badge: "분석 중",
     };
   }
   if (job.status === "pending" && job.attempts > 0 && job.error?.retryable) {
     return {
       title: "분석을 다시 시도하고 있어요",
-      detail: "일시적인 연결 문제로 작업이 자동 재시도 대기 중입니다.",
+      detail: "일시적인 문제로 다시 시도할 예정이에요.",
       badge: `재시도 ${job.attempts}/${job.maxAttempts}`,
     };
   }
   if (job.status === "pending") {
     return {
       title: "보컬 프로필 분석 대기 중",
-      detail: "업로드는 안전하게 저장됐고 백그라운드 작업 순서를 기다리고 있어요.",
+      detail: "분석 순서를 기다리고 있어요.",
       badge: "대기 중",
     };
   }
   return {
     title: "보컬 프로필을 만들지 못했어요",
-    detail: job.error?.detail || "분석 작업이 완료되지 않았습니다.",
+    detail: job.error?.detail || "분석을 완료하지 못했어요.",
     badge: "실패",
   };
 }
@@ -71,7 +71,7 @@ function VocalProfileAnalysisJobRows({ jobs }: { jobs: VocalProfileAnalysisJobRe
       {jobsQuery.isError ? (
         <StatusNotice
           className="mb-3"
-          description="마지막으로 확인한 상태를 표시합니다."
+          description="잠시 뒤 다시 확인해 주세요."
           title="분석 상태를 새로 확인하지 못했어요"
           tone="destructive"
         />
@@ -162,7 +162,7 @@ export function VocalProfileLibrary({
             첫 프로필 만들기
           </Link>
         }
-        description="노래 한 소절을 분석하면 음역과 제출한 보컬을 여기에 보관합니다."
+        description="목소리를 분석하면 보컬 프로필이 여기에 저장돼요."
         icon={<AudioLines />}
         title="아직 저장된 보컬 프로필이 없어요."
       />

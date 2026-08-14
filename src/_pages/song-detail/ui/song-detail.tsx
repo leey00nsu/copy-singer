@@ -41,7 +41,7 @@ export function SongDetail({
           </Link>
         }
         className="min-h-[60vh]"
-        description="추천 목록이 갱신되었거나 이 결과에 포함되지 않은 곡입니다."
+        description="추천 목록이 바뀌었거나 현재 결과에 없는 곡이에요."
         icon={<Music2 />}
         title="추천 곡을 찾을 수 없어요."
       />
@@ -91,8 +91,7 @@ export function SongDetail({
           분석 결과
         </h2>
         <p className="mt-1 text-sm leading-6 text-muted-foreground">
-          현재 보컬 프로필과 카탈로그 revision으로 계산한 결과입니다. 실제 가창에서는 곡과 컨디션에 따라 다르게 느껴질
-          수 있습니다.
+          현재 보컬 프로필을 기준으로 계산한 결과예요. 실제로 부를 때는 컨디션에 따라 다르게 느껴질 수 있어요.
         </p>
         <dl className="mt-5 grid gap-1 rounded-2xl bg-muted/55 p-1 sm:grid-cols-3">
           <div className="rounded-xl bg-background px-4 py-5 sm:px-6">
@@ -142,7 +141,7 @@ export function SongDetail({
             이 곡으로 AI 믹싱
           </h2>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            분석에 사용한 내 목소리와 준비된 곡 target으로 믹싱합니다. 선택한 경우에만 작업이 시작됩니다.
+            이 곡과 보컬 프로필로 AI 믹싱을 만들어요. 아래 버튼을 눌러야 작업이 시작돼요.
           </p>
           <p className="mt-4 flex items-center gap-2 text-sm font-medium">
             <Ticket className="size-4" aria-hidden="true" /> 티켓 {ticketCost}개 사용

@@ -13,7 +13,7 @@ export default function VocalProfileNotFound() {
           </Link>
         }
         className="mx-auto w-full max-w-3xl"
-        description="삭제됐거나 본인 소유가 아닌 보컬 프로필입니다."
+        description="삭제됐거나 현재 계정에서 볼 수 없는 보컬 프로필이에요."
         headingLevel="h1"
         icon={<AudioLines />}
         title="보컬 프로필을 찾을 수 없어요."

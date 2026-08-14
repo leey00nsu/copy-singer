@@ -58,16 +58,16 @@ export function RecorderSurface({
       ? "마이크 권한을 확인하는 중…"
       : state === "recording"
         ? milestone === "minimum"
-          ? "최소 5초까지 편안하게 불러주세요"
+          ? "최소 5초까지 편하게 불러 주세요"
           : milestone === "analyzable"
             ? "분석할 수 있어요 · 10초 녹음을 권장해요"
             : "권장 녹음 시간을 채웠어요"
         : state === "stopping"
-          ? "녹음을 안전하게 마치는 중…"
+          ? "녹음을 마치는 중…"
           : state === "ready"
             ? "녹음을 준비했어요"
             : state === "error"
-              ? "마이크 상태를 확인해주세요"
+              ? "마이크 상태를 확인해 주세요"
               : "마이크로 바로 시작할 수 있어요";
 
   return (

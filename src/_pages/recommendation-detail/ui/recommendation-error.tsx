@@ -14,7 +14,7 @@ export default function RecommendationErrorPage({ reset }: { error: Error & { di
           </Button>
         }
         className="mx-auto w-full max-w-3xl"
-        description="저장된 결과는 그대로 있습니다. 잠시 뒤 다시 시도해주세요."
+        description="잠시 뒤 다시 시도해 주세요."
         headingLevel="h1"
         icon={<AlertTriangle />}
         role="alert"

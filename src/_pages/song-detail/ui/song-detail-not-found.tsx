@@ -13,7 +13,7 @@ export default function SongDetailNotFound() {
           </Link>
         }
         className="mx-auto w-full max-w-3xl"
-        description="삭제됐거나 본인 소유가 아닌 추천 결과, 또는 이 추천에 포함되지 않은 곡입니다."
+        description="삭제됐거나 현재 추천 결과에서 볼 수 없는 곡이에요."
         headingLevel="h1"
         icon={<Music2 />}
         title="추천 곡을 찾을 수 없어요."

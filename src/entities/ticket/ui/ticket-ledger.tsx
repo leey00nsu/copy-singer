@@ -23,9 +23,9 @@ export function TicketLedger({ entries }: { entries: TicketEntryView[] }) {
   if (entries.length === 0) {
     return (
       <StatePanel
-        description="티켓을 지급받거나 사용하면 이곳에 기록됩니다."
+        description="티켓을 받거나 사용하면 내역이 여기에 표시돼요."
         icon={<Ticket />}
-        title="티켓 내역이 없습니다."
+        title="아직 티켓 내역이 없어요."
       />
     );
   }

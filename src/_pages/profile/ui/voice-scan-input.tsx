@@ -75,7 +75,7 @@ export function VoiceScanInput({
               className="size-7 animate-spin text-data-accent-foreground motion-reduce:animate-none"
             />
             <p className="mt-4 font-medium">첫 음부터 최대 60초를 준비하는 중</p>
-            <p className="mt-2 text-sm text-muted-foreground">원본은 변경하지 않고 분석용 복사본만 압축합니다.</p>
+            <p className="mt-2 text-sm text-muted-foreground">분석할 구간을 준비하고 있어요.</p>
             <Progress className="mt-6 w-full max-w-sm" value={Math.round(preparationProgress * 100)}>
               <ProgressLabel>오디오 준비</ProgressLabel>
               <ProgressValue>{() => `${Math.round(preparationProgress * 100)}%`}</ProgressValue>
@@ -108,8 +108,8 @@ export function VoiceScanInput({
                 durationAccepted
                   ? audioDuration !== null && audioDuration < 10
                     ? "약 10초까지 녹음하면 더 충분한 음성 구간을 전달할 수 있어요."
-                    : "결과는 저장된 보컬 프로필 상세에서 확인합니다."
-                  : "새 오디오를 녹음하거나 선택해주세요."
+                    : "결과는 저장된 보컬 프로필에서 확인할 수 있어요."
+                  : "새 오디오를 녹음하거나 선택해 주세요."
               }
               title={durationAccepted ? "분석할 오디오가 준비됐어요" : "5초보다 짧아요"}
               tone={durationAccepted ? "success" : "destructive"}

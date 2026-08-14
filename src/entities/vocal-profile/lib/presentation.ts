@@ -77,19 +77,19 @@ export function presentVocalProfile(input: VocalProfilePresentationInput): Vocal
         : "변화 폭이 크게 관찰된 음정";
 
   let inputLabel = "분석 가능한 음성 구간 확보";
-  let inputDescription = `전체 녹음의 ${Math.round(voiced * 100)}%에서 음높이를 관찰했습니다.`;
+  let inputDescription = `전체 녹음의 ${Math.round(voiced * 100)}%에서 음높이를 관찰했어요.`;
   if (!Number.isFinite(input.voicedRatio) || !Number.isFinite(input.clippingRatio) || !Number.isFinite(input.rmsDb)) {
     inputLabel = "분석 품질 확인 필요";
-    inputDescription = "일부 품질 수치가 없어 상세 분석 값을 함께 확인해주세요.";
+    inputDescription = "일부 품질 수치가 없어 상세 분석 값을 함께 확인해 주세요.";
   } else if (clipping >= 0.01) {
     inputLabel = "입력 피크 보완 권장";
-    inputDescription = `녹음의 ${(clipping * 100).toFixed(1)}%에서 입력 한계에 가까운 신호가 관찰됐습니다.`;
+    inputDescription = `녹음의 ${(clipping * 100).toFixed(1)}%에서 입력 한계에 가까운 신호가 관찰됐어요.`;
   } else if (rmsDb < -35) {
     inputLabel = "입력 음량 보완 권장";
-    inputDescription = `평균 음량이 ${rmsDb.toFixed(1)} dB로 관찰됐습니다.`;
+    inputDescription = `평균 음량은 ${rmsDb.toFixed(1)} dB로 관찰됐어요.`;
   } else if (voiced < 0.45) {
     inputLabel = "노래 구간을 더 길게 권장";
-    inputDescription = `전체 녹음의 ${Math.round(voiced * 100)}%에서 음높이를 관찰했습니다.`;
+    inputDescription = `전체 녹음의 ${Math.round(voiced * 100)}%에서 음높이를 관찰했어요.`;
   }
 
   const observedLabel = noteRange(observedLow, observedHigh);
@@ -98,7 +98,7 @@ export function presentVocalProfile(input: VocalProfilePresentationInput): Vocal
 
   return {
     label,
-    summary: `이 녹음에서는 ${practicalLabel} 구간이 반복적으로 관찰됐고, 중심 음은 ${medianLabel}입니다.`,
+    summary: `이 녹음에서는 ${practicalLabel} 구간이 반복적으로 관찰됐고, 중심 음은 ${medianLabel}로 나타났어요.`,
     observedRange: { label: observedLabel, lowMidi: observedLow, highMidi: observedHigh, semitones: observedSemitones },
     practicalRange: {
       label: practicalLabel,

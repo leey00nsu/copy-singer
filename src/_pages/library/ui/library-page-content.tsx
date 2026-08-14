@@ -14,7 +14,7 @@ export function LibraryPageContent({ children, tab }: { children: ReactNode; tab
             <Plus aria-hidden="true" className="size-4" /> 새 목소리 분석
           </Link>
         }
-        description="저장한 보컬 프로필과 AI 믹싱 작업을 구분해 확인하세요. 진행 중인 작업은 페이지를 닫아도 계속됩니다."
+        description="저장된 보컬 프로필과 AI 믹싱 결과를 한곳에서 확인할 수 있어요."
         eyebrow="Library"
         title="내 라이브러리"
       />

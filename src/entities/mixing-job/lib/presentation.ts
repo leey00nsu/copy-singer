@@ -17,7 +17,7 @@ export type MixingStatusTone = "neutral" | "success" | "destructive";
 export const MIXING_STATUS_LABELS: Record<PublicMixingJobStatus, string> = {
   pending: "대기 중",
   preparing: "음원 준비 중",
-  submitted: "GPU 대기 중",
+  submitted: "믹싱 대기 중",
   processing: "AI 믹싱 중",
   succeeded: "완료",
   failed: "실패",
@@ -33,19 +33,19 @@ export function isTerminalMixingStatus(status: PublicMixingJobStatus) {
 }
 
 const MIXING_FAILURE_COPY: Record<string, string> = {
-  REFERENCE_FETCH_FAILED: "제출한 보컬을 불러오지 못했어요. 보컬 프로필을 확인한 뒤 다시 시도해주세요.",
+  REFERENCE_FETCH_FAILED: "제출한 보컬을 불러오지 못했어요. 보컬 프로필을 확인한 뒤 다시 시도해 주세요.",
   CATALOG_TARGET_FETCH_FAILED:
-    "믹싱에 사용할 반주를 준비하지 못했어요. 다른 곡을 선택하거나 잠시 후 다시 시도해주세요.",
-  MIXING_TARGET_UNAVAILABLE: "믹싱에 사용할 반주를 준비하지 못했어요. 다른 곡을 선택하거나 잠시 후 다시 시도해주세요.",
-  MODAL_SUBMIT_FAILED: "AI 믹싱을 시작하지 못했어요. 잠시 후 다시 시도해주세요.",
-  MODAL_JOB_FAILED: "AI 믹싱을 완료하지 못했어요. 잠시 후 다시 시도해주세요.",
-  MIXING_FAILED: "AI 믹싱을 완료하지 못했어요. 잠시 후 다시 시도해주세요.",
-  MIXING_FINALIZATION_FAILED: "완성된 결과를 저장하지 못했어요. 잠시 후 다시 확인해주세요.",
+    "믹싱에 사용할 반주를 준비하지 못했어요. 다른 곡을 선택하거나 잠시 후 다시 시도해 주세요.",
+  MIXING_TARGET_UNAVAILABLE: "믹싱에 사용할 반주를 준비하지 못했어요. 다른 곡을 선택하거나 잠시 후 다시 시도해 주세요.",
+  MODAL_SUBMIT_FAILED: "AI 믹싱을 시작하지 못했어요. 잠시 후 다시 시도해 주세요.",
+  MODAL_JOB_FAILED: "AI 믹싱을 완료하지 못했어요. 잠시 후 다시 시도해 주세요.",
+  MIXING_FAILED: "AI 믹싱을 완료하지 못했어요. 잠시 후 다시 시도해 주세요.",
+  MIXING_FINALIZATION_FAILED: "완성된 결과를 저장하지 못했어요. 잠시 후 다시 확인해 주세요.",
 };
 
 export function presentMixingFailure(error: MixingHistoryRow["error"]) {
-  if (!error) return "믹싱 작업을 완료하지 못했어요. 상세 화면에서 다시 시도할 수 있습니다.";
-  return MIXING_FAILURE_COPY[error.code] ?? "믹싱 작업을 완료하지 못했어요. 상세 화면에서 다시 시도할 수 있습니다.";
+  if (!error) return "믹싱 작업을 완료하지 못했어요. 상세 화면에서 다시 시도할 수 있어요.";
+  return MIXING_FAILURE_COPY[error.code] ?? "믹싱 작업을 완료하지 못했어요. 상세 화면에서 다시 시도할 수 있어요.";
 }
 
 function achievedOrSkipped(achieved: boolean, terminal: boolean): MixingTimelineStepState {
@@ -65,8 +65,8 @@ export function presentMixingJob(job: MixingHistoryRow) {
     if (job.status === "succeeded") return "믹싱은 완료됐지만 결과 파일을 아직 확인하고 있어요.";
     if (job.status === "failed") return presentMixingFailure(job.error);
     if (job.status === "canceled") return "믹싱 작업이 취소됐어요.";
-    if (job.status === "submitted") return "GPU 작업이 접수되어 실행을 기다리고 있어요.";
-    if (job.status === "processing") return "AI가 보컬과 반주를 실제로 믹싱하고 있어요.";
+    if (job.status === "submitted") return "믹싱 순서를 기다리고 있어요.";
+    if (job.status === "processing") return "보컬과 반주를 AI 믹싱하고 있어요.";
     return "믹싱에 사용할 음원과 요청을 준비하고 있어요.";
   })();
 
@@ -85,8 +85,8 @@ export function presentMixingJob(job: MixingHistoryRow) {
     },
     {
       id: "submitted",
-      label: "GPU 작업 접수",
-      description: "믹싱 작업 실행 대기",
+      label: "믹싱 요청",
+      description: "믹싱 순서 대기",
       state: started
         ? "complete"
         : job.status === "submitted"
@@ -98,7 +98,7 @@ export function presentMixingJob(job: MixingHistoryRow) {
     {
       id: "processing",
       label: "AI 믹싱",
-      description: "보컬과 반주 사운드 처리",
+      description: "보컬과 반주 믹싱",
       state: succeeded
         ? "complete"
         : job.status === "processing"
@@ -110,7 +110,7 @@ export function presentMixingJob(job: MixingHistoryRow) {
     {
       id: "terminal",
       label: terminal ? MIXING_STATUS_LABELS[job.status] : "결과",
-      description: terminal ? description : "완료·실패·취소 결과",
+      description: terminal ? description : "믹싱 결과",
       state: terminal ? "complete" : "upcoming",
     },
   ];

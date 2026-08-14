@@ -119,7 +119,7 @@ function HistogramChart({
     <Card className="rounded-none border-0 bg-transparent shadow-none" data-vocal-profile-section="histogram">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm">음정 분포</CardTitle>
-        <p className="text-[10px] text-muted-foreground">오래 머문 음일수록 막대가 높습니다.</p>
+        <p className="text-[10px] text-muted-foreground">오래 낸 음일수록 막대가 높아요.</p>
       </CardHeader>
       <CardContent>
         <ChartContainer
@@ -185,7 +185,7 @@ function VisualizationUnavailable({ title }: { title: string }) {
         <StatusNotice
           className="min-h-40"
           description="새로 녹음해 분석하면 그래프를 확인할 수 있어요."
-          title="이 프로필은 상세 시각화 데이터가 없습니다."
+          title="이 프로필에는 상세 차트가 없어요."
         />
       </CardContent>
     </Card>
@@ -208,7 +208,7 @@ function PitchTrace({ visualization }: { visualization: VocalProfileVisualizatio
     <Card className="rounded-none border-0 bg-transparent shadow-none" data-vocal-profile-section="pitch-trace">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm">상세 피치 추적</CardTitle>
-        <p className="text-[10px] text-muted-foreground">시각화를 위해 최대 720포인트로 요약된 음높이입니다.</p>
+        <p className="text-[10px] text-muted-foreground">시간에 따라 관찰된 음높이를 보여줘요.</p>
       </CardHeader>
       <CardContent>
         <ChartContainer
@@ -334,7 +334,7 @@ export function VocalProfileResults({
               </div>
               <p className="mt-3 flex gap-2 text-xs leading-5 text-muted-foreground">
                 <Info className="mt-0.5 size-3.5 shrink-0" />
-                짧은 한 소절에서 관찰된 결과입니다. 2~3곡을 추가로 분석하면 더 정확해집니다.
+                이번 녹음에서 관찰된 결과예요.
               </p>
             </CardContent>
           </Card>
@@ -354,8 +354,7 @@ export function VocalProfileResults({
             <CardHeader className="pb-2">
               <CardTitle className="text-sm">분석된 대표 음역 구간</CardTitle>
               <p className="text-[10px] leading-4.5 text-muted-foreground">
-                무음을 제외하고 분석된 저음·중앙·고음 대표 구간입니다. 버튼을 누르면 제출한 최대 60초 오디오에서 해당
-                구간만 이어서 재생합니다. AI 믹싱에는 이 분석 표시와 별도로 안정적인 중음만 만든 레퍼런스를 사용합니다.
+                이번 녹음에서 확인한 저음·중앙·고음 구간을 들어볼 수 있어요.
               </p>
             </CardHeader>
             <CardContent>
@@ -369,8 +368,8 @@ export function VocalProfileResults({
                 <StatusNotice
                   description={
                     referenceAvailability === "unavailable"
-                      ? "반주 없이 여러 음높이가 포함된 소절로 다시 분석해주세요."
-                      : "최신 분석기로 새 보컬 프로필을 만들어주세요."
+                      ? "반주 없이 여러 음높이가 포함된 소절로 다시 분석해 주세요."
+                      : "새 보컬 프로필을 만들어 주세요."
                   }
                   title={
                     referenceAvailability === "unavailable"

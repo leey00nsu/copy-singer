@@ -69,7 +69,7 @@ export function ReferenceBandPlayers({
   if (state.status === "error") {
     return (
       <StatusNotice
-        description="페이지를 새로고침한 뒤 다시 시도해주세요."
+        description="페이지를 새로고침한 뒤 다시 시도해 주세요."
         title="선택된 음역 구간의 파형을 만들지 못했어요."
         tone="warning"
       />
@@ -91,11 +91,9 @@ export function ReferenceBandPlayers({
             <div>
               <h3 className="text-xs font-semibold">{band.label}</h3>
               {segment ? (
-                <p className="text-[10px] text-muted-foreground">
-                  채택된 구간 {segment.ranges.length}개 · 기본 10초 목표, 부족분 재분배 가능
-                </p>
+                <p className="text-[10px] text-muted-foreground">선택된 구간 {segment.ranges.length}개</p>
               ) : (
-                <p className="text-[10px] text-muted-foreground">채택된 구간 없음</p>
+                <p className="text-[10px] text-muted-foreground">선택된 구간 없음</p>
               )}
             </div>
             {!segment ? (

@@ -39,7 +39,7 @@ export function AnalysisSuccess({
           </Button>
         </>
       }
-      description="핵심 결과를 저장했습니다. 전체 차트는 상세 분석에서 언제든 다시 확인할 수 있어요."
+      description="분석 결과를 보컬 프로필에 저장했어요. 전체 차트도 다시 볼 수 있어요."
       eyebrow="Voice analysis"
       title="목소리 분석을 완료했어요"
       tone="success"
@@ -47,7 +47,7 @@ export function AnalysisSuccess({
       {profile ? (
         <VocalProfileSummary profile={profile} />
       ) : (
-        <StatusNotice description="저장된 보컬 프로필에서 전체 분석 결과를 확인할 수 있습니다." />
+        <StatusNotice description="저장된 보컬 프로필에서 전체 분석 결과를 확인할 수 있어요." />
       )}
     </ProcessHero>
   );

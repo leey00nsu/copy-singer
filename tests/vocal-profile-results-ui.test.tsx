@@ -57,7 +57,7 @@ test("renders low, mid, and high analysis playback controls", () => {
   assert.match(html, /저음 영역/);
   assert.match(html, /중앙 영역/);
   assert.match(html, /고음 영역/);
-  assert.equal((html.match(/채택된 구간/g) ?? []).length, 3);
+  assert.equal((html.match(/선택된 구간/g) ?? []).length, 3);
   assert.match(html, /저음 영역 파형 준비 중/);
   assert.match(html, /중앙 영역 파형 준비 중/);
   assert.match(html, /고음 영역 파형 준비 중/);
@@ -93,7 +93,7 @@ test("keeps three analysis players while smart-reference-mid-v1 stays mid-only",
   assert.match(html, /저음 영역/);
   assert.match(html, /중앙 영역/);
   assert.match(html, /고음 영역/);
-  assert.match(html, /AI 믹싱에는 이 분석 표시와 별도로 안정적인 중음만 만든 레퍼런스를 사용합니다/);
+  assert.match(html, /이번 녹음에서 확인한 저음·중앙·고음 구간을 들어볼 수 있어요/);
   assert.doesNotMatch(html, /AI 믹싱 중음 레퍼런스 재생/);
 });
 
@@ -125,14 +125,14 @@ test("keeps analysis players even when mid-only synthesis reference is unavailab
   assert.match(html, /중앙 영역/);
   assert.match(html, /고음 영역/);
   assert.match(html, /중앙 영역을 충분히 찾지 못했어요/);
-  assert.equal((html.match(/채택된 구간 없음/g) ?? []).length, 1);
+  assert.equal((html.match(/선택된 구간 없음/g) ?? []).length, 1);
 });
 
 test("explains why legacy profiles have no smart-reference region controls", () => {
   const html = renderToStaticMarkup(
     <VocalProfileResults profile={{ ...profile, descriptors: {} }} sourceAudioSrc="/profile.webm" />,
   );
-  assert.match(html, /최신 분석기로 새 보컬 프로필을 만들어주세요/);
+  assert.match(html, /새 보컬 프로필을 만들어 주세요/);
 });
 
 test("explains when no quality smart-reference regions were found", () => {

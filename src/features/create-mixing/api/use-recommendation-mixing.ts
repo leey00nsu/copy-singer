@@ -26,7 +26,7 @@ export function useRecommendationMixing() {
         queryClient.invalidateQueries({ queryKey: recommendationKeys.profile(input.vocalProfileId) }),
         queryClient.invalidateQueries({ queryKey: mixingJobKeys.histories() }),
       ]);
-      toast.success("믹싱을 접수했어요. 페이지를 닫아도 계속 진행됩니다.");
+      toast.success("AI 믹싱을 시작했어요. 페이지를 닫아도 계속돼요.");
       router.push(mixingJobDetailHref(job.id));
       await invalidations;
     },
@@ -36,11 +36,11 @@ export function useRecommendationMixing() {
         status: "failed",
         error: {
           code: apiError?.code ?? "SYNTHESIS_UPSTREAM_FAILED",
-          detail: apiError?.message ?? "합성 서버에 연결하지 못했습니다.",
+          detail: apiError?.message ?? "AI 믹싱을 시작하지 못했어요.",
           retryable: apiError?.retryable ?? true,
         },
       });
-      toast.error(input.retry ? "이 곡의 합성을 다시 시작하지 못했습니다." : "AI 믹싱을 시작하지 못했습니다.");
+      toast.error(input.retry ? "이 곡의 AI 믹싱을 다시 시작하지 못했어요." : "AI 믹싱을 시작하지 못했어요.");
     },
     onSettled: (_, __, input) => {
       startingItemsRef.current.delete(input.songAnalysisId);

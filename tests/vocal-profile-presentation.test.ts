@@ -62,5 +62,5 @@ test("detail page preserves private source audio, current recommendation, and de
   assert.doesNotMatch(actions, /최근 추천 결과 보기/);
   assert.match(actions, /deleteVocalProfileMutationOptions/);
   assert.match(actions, /DialogDescription/);
-  assert.match(actions, /되돌릴 수 없습니다/);
+  assert.match(actions, /복구할 수 없어요/);
 });

@@ -21,18 +21,18 @@ function timelineFor(stage: Exclude<AnalysisStatusStage, "failed">, attempts: nu
   const deliveryCurrent = stage === "submitting";
   const analysisDescription =
     stage === "pending"
-      ? "백그라운드 작업 순서를 기다리고 있어요."
+      ? "분석 순서를 기다리고 있어요."
       : stage === "retrying"
-        ? `일시적인 문제로 다시 시도할 예정입니다. 시도 ${Math.min(attempts, maxAttempts)} / ${maxAttempts}`
+        ? `일시적인 문제로 다시 시도할 예정이에요. 시도 ${Math.min(attempts, maxAttempts)} / ${maxAttempts}`
         : stage === "reconnecting"
-          ? "서버 작업은 계속될 수 있으며 연결이 돌아오면 같은 상태를 확인합니다."
+          ? "연결을 다시 확인하고 있어요."
           : "실제 음역과 안정성을 분석하고 있어요.";
 
   return [
     {
       id: "delivery",
       label: "오디오 전달",
-      description: deliveryCurrent ? "분석할 오디오를 안전하게 전달하고 있어요." : "분석할 오디오를 저장했습니다.",
+      description: deliveryCurrent ? "분석할 오디오를 보내고 있어요." : "오디오 전달을 마쳤어요.",
       state: deliveryCurrent ? "current" : "complete",
     },
     {
@@ -44,7 +44,7 @@ function timelineFor(stage: Exclude<AnalysisStatusStage, "failed">, attempts: nu
     {
       id: "save",
       label: "결과 저장",
-      description: "완료된 결과를 보컬 프로필로 저장합니다.",
+      description: "분석 결과를 보컬 프로필로 저장해요.",
       state: "upcoming",
     },
   ] satisfies ActualStateStep[];
@@ -82,7 +82,7 @@ export function AnalysisStatus({
         }
         description={
           <>
-            <p>{guidance?.action ?? "잠시 뒤 다시 시도해주세요."}</p>
+            <p>{guidance?.action ?? "잠시 뒤 다시 시도해 주세요."}</p>
             {error?.reasonCode ? <p className="mt-2 font-mono text-[11px]">{error.reasonCode}</p> : null}
           </>
         }
@@ -95,14 +95,14 @@ export function AnalysisStatus({
 
   const copy =
     stage === "submitting"
-      ? { title: "오디오를 안전하게 전달하고 있어요", status: "전달 중" }
+      ? { title: "오디오를 보내고 있어요", status: "전달 중" }
       : stage === "pending"
         ? { title: "목소리 분석을 준비하고 있어요", status: "분석 대기" }
         : stage === "retrying"
-          ? { title: "분석을 자동으로 다시 시도할 예정이에요", status: "재시도 대기" }
+          ? { title: "분석을 다시 시도할 예정이에요", status: "재시도 대기" }
           : stage === "reconnecting"
-            ? { title: "분석 상태 연결을 다시 확인하고 있어요", status: "연결 확인" }
-            : { title: "당신의 목소리 기준을 찾고 있어요", status: "분석 중" };
+            ? { title: "분석 상태를 다시 확인하고 있어요", status: "연결 확인" }
+            : { title: "목소리를 분석하고 있어요", status: "분석 중" };
 
   return (
     <ProcessHero
@@ -113,7 +113,7 @@ export function AnalysisStatus({
           </Button>
         ) : undefined
       }
-      description="페이지를 닫아도 서버에서 계속 진행되며 돌아오면 같은 작업 상태를 확인합니다."
+      description="페이지를 닫아도 분석은 계속돼요. 진행 상태는 라이브러리에서 확인할 수 있어요."
       eyebrow="Voice analysis"
       status={
         <Badge className={lifecycleStatusClassNames.active} variant="secondary">

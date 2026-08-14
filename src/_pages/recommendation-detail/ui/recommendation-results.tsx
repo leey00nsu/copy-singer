@@ -114,8 +114,8 @@ export function RecommendationResults({
         className="min-h-[60vh]"
         description={
           loadError === "not-found"
-            ? "삭제됐거나 올바르지 않은 주소입니다."
-            : "잠시 뒤 다시 시도해주세요. 문제가 계속되면 보컬 프로필에서 추천을 다시 만들어주세요."
+            ? "삭제됐거나 올바르지 않은 주소예요."
+            : "잠시 뒤 다시 시도해 주세요. 계속 문제가 생기면 보컬 프로필에서 추천을 다시 확인해 주세요."
         }
         icon={<AlertTriangle />}
         title={loadError === "not-found" ? "추천 결과를 찾을 수 없어요." : "추천 결과를 불러오지 못했어요."}
@@ -148,10 +148,6 @@ export function RecommendationResults({
               <strong>{run.items.length}곡</strong>
             </p>
             <p className="flex items-center justify-between gap-4">
-              <span className="text-muted-foreground">카탈로그 revision</span>
-              <strong>r{run.catalogRevision}</strong>
-            </p>
-            <p className="flex items-center justify-between gap-4">
               <span className="text-muted-foreground">믹싱 방식</span>
               <strong>선택한 곡만 시작</strong>
             </p>
@@ -159,10 +155,7 @@ export function RecommendationResults({
         }
         className="mt-8 pb-7 lg:mt-10"
         description={
-          <>
-            이번 한 소절에서 관찰된 음역을 기준으로 {run.items.length}곡을 비교했습니다. 추천 적합도는 정수로 단순화해
-            표시하며, 추천 키와 근거를 함께 확인할 수 있습니다.
-          </>
+          <>이번 보컬 프로필로 {run.items.length}곡을 비교했어요. 각 곡의 추천 키와 이유를 확인할 수 있어요.</>
         }
         eyebrow="Song match"
         title="내 목소리에 맞는 노래"
@@ -172,8 +165,8 @@ export function RecommendationResults({
       {run.lowConfidence ? (
         <StatusNotice
           className="mt-8"
-          description="분석 신뢰도가 낮아 순위와 추천 키가 달라질 수 있습니다. 현재 결과도 참고용으로 확인할 수 있어요."
-          title="조금 더 긴 소절로 다시 측정해보세요"
+          description="더 긴 소절로 다시 분석하면 순위와 추천 키가 달라질 수 있어요."
+          title="녹음이 짧아 추천이 달라질 수 있어요"
           tone="warning"
         />
       ) : null}
@@ -219,7 +212,7 @@ export function RecommendationResults({
                   모든 조건 지우기
                 </Button>
               }
-              description="검색어 또는 필터를 바꾸면 현재 추천 목록에서 다시 찾을 수 있습니다."
+              description="검색어나 필터를 바꿔 다시 찾아보세요."
               icon={<Music2 />}
               title="조건에 맞는 노래가 없어요."
             />
@@ -241,24 +234,17 @@ export function RecommendationResults({
         <div className="flex gap-3">
           <Mic2 className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
           <p>
-            이 결과는 <strong className="text-foreground">{run.scoringVersion}</strong>으로 계산한 참고값이며 가창력이나
-            건강 상태를 평가하지 않습니다. 추천 키는 직접 부를 때의 안내입니다.
+            추천은 음역을 기준으로 계산한 참고값이에요. 가창력이나 건강 상태를 평가하지 않아요. 추천 키는 직접 부를 때
+            참고해 주세요.
           </p>
         </div>
         <div className="flex gap-3">
           <Clock3 className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
           <p>
-            목록을 보는 것만으로 작업이 시작되지 않습니다. 누른 곡만 처리하며 페이지를 닫아도 라이브러리에서 상태와
-            결과를 확인할 수 있습니다.
+            곡을 선택해 AI 믹싱을 시작하기 전에는 작업이 생기지 않아요. 시작한 작업은 라이브러리에서 확인할 수 있어요.
           </p>
         </div>
       </section>
-
-      <footer className="mt-6 flex flex-wrap items-center justify-between gap-3">
-        <p className="font-mono text-[10px] text-muted-foreground">
-          PROFILE {run.id.slice(0, 8)} · CATALOG r{run.catalogRevision} · {run.scoringVersion}
-        </p>
-      </footer>
     </CreationFunnelShell>
   );
 }

@@ -132,13 +132,13 @@ test("renders the full ranked recommendation list without starting synthesis", (
   assert.equal((html.match(/aria-pressed="(?:true|false)"/g) ?? []).length, 100);
   assert.match(html, /추천 적합도/);
   assert.match(html, /추천 키/);
-  assert.match(html, /이번 한 소절에서 관찰된 음역/);
-  assert.match(html, /가창력이나 건강 상태를 평가하지 않습니다/);
+  assert.match(html, /이번 보컬 프로필로 100곡을 비교했어요/);
+  assert.match(html, /가창력이나 건강 상태를 평가하지 않아요/);
   assert.equal((html.match(/이 곡으로 AI 믹싱<\/button>/g) ?? []).length, 1);
   assert.equal((html.match(/선택 전/g) ?? []).length, 100);
   assert.equal((html.match(/\/songs\/item-/g) ?? []).length, 1);
   assert.doesNotMatch(html, /AI 믹싱 결과 파형/);
-  assert.match(html, /목록을 보는 것만으로 작업이 시작되지 않습니다/);
+  assert.match(html, /AI 믹싱을 시작하기 전에는 작업이 생기지 않아요/);
 });
 
 test("labels a completed synthesis as an AI mix", () => {
@@ -175,6 +175,6 @@ test("blocks AI mixing before a request when the mid reference is unavailable", 
 
 test("keeps low-confidence ranking visible with a rerecording warning", () => {
   const html = renderRecommendation({ ...run, lowConfidence: true });
-  assert.match(html, /조금 더 긴 소절로 다시 측정해보세요/);
+  assert.match(html, /녹음이 짧아 추천이 달라질 수 있어요/);
   assert.equal((html.match(/aria-pressed="(?:true|false)"/g) ?? []).length, 100);
 });

@@ -57,7 +57,7 @@ test("terminal presentation preserves achieved timestamps and skips unobserved s
   assert.equal(failed.timeline[1]?.state, "skipped");
   assert.equal(failed.timeline[2]?.state, "skipped");
   assert.equal(failed.timeline[3]?.label, "실패");
-  assert.equal(failed.description, "제출한 보컬을 불러오지 못했어요. 보컬 프로필을 확인한 뒤 다시 시도해주세요.");
+  assert.equal(failed.description, "제출한 보컬을 불러오지 못했어요. 보컬 프로필을 확인한 뒤 다시 시도해 주세요.");
   assert.doesNotMatch(failed.description, /보컬 파일을 읽지 못했습니다/);
 
   const succeeded = presentMixingJob({
@@ -84,6 +84,6 @@ test("failed mixing presentation never exposes unknown upstream detail", () => {
     completedAt: base.updatedAt,
   });
 
-  assert.equal(failed.description, "믹싱 작업을 완료하지 못했어요. 상세 화면에서 다시 시도할 수 있습니다.");
+  assert.equal(failed.description, "믹싱 작업을 완료하지 못했어요. 상세 화면에서 다시 시도할 수 있어요.");
   assert.doesNotMatch(failed.description, /gpu|502|fetch failed/);
 });

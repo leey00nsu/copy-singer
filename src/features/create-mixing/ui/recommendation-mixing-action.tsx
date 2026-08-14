@@ -124,7 +124,7 @@ export function RecommendationMixingAction({
         <AlertTriangle className="size-3.5" aria-hidden="true" /> 믹싱 실패
       </p>
       <p className="text-xs leading-5 text-muted-foreground">
-        {item.synthesis.error?.detail ?? "잠시 뒤 다시 시도해주세요."}
+        {item.synthesis.error?.detail ?? "잠시 뒤 다시 시도해 주세요."}
       </p>
       {item.synthesis.error?.retryable && !mixingUnavailable ? (
         <Button onClick={() => onStart(item.id, true)} size="sm" variant="outline">

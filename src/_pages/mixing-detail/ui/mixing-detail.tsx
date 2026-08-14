@@ -122,22 +122,16 @@ function ActiveMixingProgress({ job }: { job: MixingHistoryRow }) {
           >
             사용한 보컬 · {job.vocalProfile.displayName}
           </Link>
-          <span className="mt-1 block">잠시만 기다려주세요.</span>
+          <span className="mt-1 block">페이지를 닫아도 작업은 계속돼요.</span>
         </>
       }
       eyebrow="AI mixing"
       status={<MixingStatusBadge className="h-8 px-3" status={job.status} />}
-      title={
-        <>
-          AI가 당신의 목소리를 분석하고
-          <br className="hidden sm:block" /> 최적의 사운드로 믹싱하고 있어요
-        </>
-      }
+      title="AI 믹싱을 진행하고 있어요"
     >
       <ActualStateTimeline label="AI 믹싱 진행 단계" steps={presentation.timeline} />
       <p className="mx-auto mt-5 max-w-md text-xs leading-5 text-muted-foreground">
-        서버가 제공하는 실제 단계만 표시하며 임의의 진행률은 계산하지 않습니다. 이 페이지를 닫아도 작업은 서버에서 계속
-        진행되고, 완료되면 AI 믹스 라이브러리에서 결과를 확인할 수 있어요.
+        완료되면 라이브러리에서 결과를 확인할 수 있어요.
       </p>
     </ProcessHero>
   );
@@ -150,23 +144,19 @@ function MixingDeleteAction({ job }: { job: MixingHistoryRow }) {
 
   const remove = () => {
     deletion.mutate(job.id, {
-      onSuccess: async (result) => {
+      onSuccess: async () => {
         await queryClient.invalidateQueries({ queryKey: mixingJobKeys.histories() });
         queryClient.removeQueries({ queryKey: mixingJobKeys.detail(job.id) });
-        toast.success(
-          result.mediaCleanupPending
-            ? "AI 믹스를 삭제했습니다. 결과 파일은 안전하게 정리 중입니다."
-            : "AI 믹스를 삭제했습니다.",
-        );
+        toast.success("AI 믹스를 삭제했어요.");
         router.push("/library?tab=mixes&page=1");
         router.refresh();
       },
       onError: (error) => {
         if (error instanceof ApiError && error.code === "MIXING_ACTIVE") {
-          toast.error("진행 중인 믹싱은 완료된 뒤 삭제할 수 있습니다.");
+          toast.error("진행 중인 믹싱은 완료된 뒤 삭제할 수 있어요.");
           return;
         }
-        toast.error("AI 믹스를 삭제하지 못했습니다. 잠시 뒤 다시 시도해주세요.");
+        toast.error("AI 믹스를 삭제하지 못했어요. 잠시 뒤 다시 시도해 주세요.");
       },
     });
   };
@@ -180,7 +170,7 @@ function MixingDeleteAction({ job }: { job: MixingHistoryRow }) {
         <DialogHeader>
           <DialogTitle>이 AI 믹스를 삭제할까요?</DialogTitle>
           <DialogDescription>
-            저장된 믹싱 결과 파일은 정리되지만 티켓 사용 내역은 기록으로 유지됩니다. 이 작업은 되돌릴 수 없습니다.
+            믹싱 결과는 삭제되지만 티켓 사용 내역은 남아요. 삭제한 결과는 복구할 수 없어요.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
@@ -255,7 +245,7 @@ export function MixingDetail({ initial }: { initial: MixingHistoryRow }) {
         {detailQuery.isError ? (
           <StatusNotice
             className="mt-4 max-w-xl"
-            description="마지막으로 확인한 정보를 표시합니다."
+            description="잠시 뒤 다시 확인해 주세요."
             title="최신 상태를 확인하지 못했어요"
             tone="destructive"
           />
@@ -302,9 +292,6 @@ export function MixingDetail({ initial }: { initial: MixingHistoryRow }) {
           <h2 className="text-xl font-semibold" id="mixing-progress-title">
             믹싱 진행
           </h2>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            서버에 저장된 상태와 시각만 표시하며 임의의 진행률은 계산하지 않습니다.
-          </p>
         </div>
         <MixingTimeline job={job} />
       </section>
@@ -320,7 +307,7 @@ export function MixingDetail({ initial }: { initial: MixingHistoryRow }) {
             </span>
             <div>
               <h2 className="text-lg font-semibold" id="mixing-next-action-title">
-                {job.status === "failed" ? "믹싱을 완료하지 못했어요." : "취소된 믹싱입니다."}
+                {job.status === "failed" ? "믹싱을 완료하지 못했어요." : "믹싱이 취소됐어요."}
               </h2>
               <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">{presentation.description}</p>
               <div className="mt-5 flex flex-wrap gap-2">

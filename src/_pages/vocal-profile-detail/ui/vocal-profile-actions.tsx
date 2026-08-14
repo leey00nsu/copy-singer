@@ -46,7 +46,7 @@ function RenameVocalProfileAction({
     event.preventDefault();
     const parsed = vocalProfileRenameRequestSchema.safeParse({ displayName: value });
     if (!parsed.success) {
-      setValidationMessage(parsed.error.issues[0]?.message ?? "프로필 이름을 확인해주세요.");
+      setValidationMessage(parsed.error.issues[0]?.message ?? "프로필 이름을 확인해 주세요.");
       return;
     }
     setValidationMessage(null);
@@ -56,7 +56,7 @@ function RenameVocalProfileAction({
         onSuccess: async () => {
           await queryClient.invalidateQueries({ queryKey: ["vocal-profile"] });
           setOpen(false);
-          toast.success("프로필 이름을 변경했습니다.");
+          toast.success("프로필 이름을 변경했어요.");
           router.refresh();
         },
         onError: (error) => setValidationMessage(error.message),
@@ -82,7 +82,7 @@ function RenameVocalProfileAction({
         <form onSubmit={submit}>
           <DialogHeader>
             <DialogTitle>프로필 이름 변경</DialogTitle>
-            <DialogDescription>목록과 상세 화면에서 사용할 이름을 입력하세요.</DialogDescription>
+            <DialogDescription>목록과 상세 화면에서 사용할 이름을 입력해 주세요.</DialogDescription>
           </DialogHeader>
           <div className="mt-5 grid gap-2">
             <Label htmlFor={inputId}>프로필 이름</Label>
@@ -125,11 +125,11 @@ export function VocalProfileActions({ displayName, profileId }: { displayName: s
   const remove = () => {
     deleteProfile.mutate(profileId, {
       onSuccess: () => {
-        toast.success("보컬 프로필을 삭제했습니다.");
+        toast.success("보컬 프로필을 삭제했어요.");
         router.push("/library?tab=profiles");
         router.refresh();
       },
-      onError: () => toast.error("보컬 프로필을 삭제하지 못했습니다. 잠시 뒤 다시 시도해주세요."),
+      onError: () => toast.error("보컬 프로필을 삭제하지 못했어요. 잠시 뒤 다시 시도해 주세요."),
     });
   };
 
@@ -147,7 +147,7 @@ export function VocalProfileActions({ displayName, profileId }: { displayName: s
           <DialogHeader>
             <DialogTitle>이 보컬 프로필을 삭제할까요?</DialogTitle>
             <DialogDescription>
-              연결된 믹싱 기록이 있으면 먼저 해당 기록을 삭제해야 합니다. 프로필 삭제는 되돌릴 수 없습니다.
+              연결된 AI 믹스가 있으면 먼저 삭제해 주세요. 삭제한 보컬 프로필은 복구할 수 없어요.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

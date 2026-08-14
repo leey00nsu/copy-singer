@@ -18,12 +18,12 @@ test("mixing detail renders an actual active timeline without terminal actions",
       </QueryClientProvider>,
     );
     assert.match(html, /AI 믹싱 진행 단계/);
-    assert.match(html, /GPU 작업 접수/);
+    assert.match(html, /믹싱 요청/);
     assert.match(html, /AI 믹싱 중/);
     assert.match(html, /사용한 보컬/);
     assert.match(html, /보컬 프로필 1/);
     assert.match(html, /href="\/vocal-profiles\/30000000-0000-4000-8000-000000000011"/);
-    assert.match(html, /임의의 진행률은 계산하지 않습니다/);
+    assert.doesNotMatch(html, /임의의 진행률/);
     assert.doesNotMatch(html, /AI 믹스 삭제/);
     assert.doesNotMatch(html, />\s*\d+%\s*</);
   } finally {

@@ -132,7 +132,7 @@ export function VocalProfileWorkbench() {
       queryClient.invalidateQueries({ queryKey: vocalAnalysisKeys.health() }),
       queryClient.invalidateQueries({ queryKey: vocalAnalysisKeys.jobs() }),
     ]);
-    toast.success("보컬 프로필 분석이 완료됐습니다.");
+    toast.success("보컬 프로필을 만들었어요.");
     router.replace(`/vocal-profiles/${completedProfileId}`);
   }, [analysisJob, analysisJobId, completedProfileId, queryClient, router]);
 
@@ -172,9 +172,9 @@ export function VocalProfileWorkbench() {
       setAudioDuration(prepared.durationSeconds);
       analysisIdempotencyKey.current = null;
       setAnalysisError(null);
-      toast.success(`분석용 오디오가 준비됐습니다. (${(prepared.file.size / 1024 / 1024).toFixed(1)} MB)`);
+      toast.success("분석할 오디오가 준비됐어요.");
     } catch (error) {
-      setInputError(error instanceof Error ? error.message : "오디오를 변환하지 못했습니다.");
+      setInputError(error instanceof Error ? error.message : "오디오를 준비하지 못했어요.");
     } finally {
       setPreparingAudio(false);
     }
@@ -201,7 +201,7 @@ export function VocalProfileWorkbench() {
     setInputError(null);
     setRecorderIssue(null);
     if (file.size > MAX_PROFILE_ANALYSIS_AUDIO_BYTES) {
-      setInputError("테스트 오디오는 25MB 이하여야 합니다.");
+      setInputError("오디오 파일은 25MB 이하여야 해요.");
       return;
     }
     let duration: number | null = null;
@@ -246,7 +246,7 @@ export function VocalProfileWorkbench() {
           queryClient.setQueryData(vocalAnalysisKeys.job(job.id), job);
           setAnalysisJobId(job.id);
           void queryClient.invalidateQueries({ queryKey: vocalAnalysisKeys.jobs() });
-          toast.success("보컬 분석을 대기열에 추가했습니다.");
+          toast.success("목소리 분석을 시작했어요.");
         },
         onError: (error) => setAnalysisError(normalizeProfileError(error)),
       },
@@ -290,12 +290,11 @@ export function VocalProfileWorkbench() {
               Voice analysis
             </p>
             <h1 className="mt-3 text-[clamp(2.35rem,4.2vw,3.45rem)] font-semibold leading-[1.03] tracking-[-0.052em]">
-              노래 한 소절로,
-              <br />내 목소리의 기준점을 만드세요.
+              한 소절로,
+              <br />내 보컬 프로필을 만들어 보세요.
             </h1>
             <p className="mt-5 max-w-[31rem] text-[13px] leading-6 text-muted-foreground sm:text-sm sm:leading-7">
-              정해진 음계 없이 평소처럼 편안하게 부르면 됩니다. 이 녹음에서 관찰한 음역과 안정성을 저장한 뒤 실제 근거가
-              있는 노래 추천으로 이어집니다.
+              평소처럼 편하게 부르면 음역과 안정성을 분석해요. 분석이 끝나면 내 목소리에 맞는 노래를 확인할 수 있어요.
             </p>
           </header>
 
@@ -305,14 +304,14 @@ export function VocalProfileWorkbench() {
               가장 편한 키로 불러주세요
             </h2>
             <p className="mt-2.5 text-sm leading-6 text-muted-foreground">
-              잘 부르려고 힘주지 않아도 됩니다. 익숙한 한 소절이면 충분해요.
+              익숙한 한 소절을 평소처럼 편하게 불러 주세요.
             </p>
             <ol className="mt-5 grid gap-2.5">
               {[
-                { icon: Mic2, title: "반주 없이", description: "목소리만 또렷하게 전달해주세요." },
+                { icon: Mic2, title: "반주 없이", description: "목소리만 또렷하게 들리게 해 주세요." },
                 { icon: Timer, title: "약 10초 권장", description: "5초부터 분석 가능 · 60초 자동 종료" },
-                { icon: AudioLines, title: "편안한 음역", description: "최고음에 무리하지 말고 평소처럼 불러주세요." },
-                { icon: Upload, title: "파일도 가능", description: "마이크를 쓸 수 없다면 기존 오디오를 올려주세요." },
+                { icon: AudioLines, title: "편안한 음역", description: "최고음에 무리하지 말고 평소처럼 불러 주세요." },
+                { icon: Upload, title: "파일도 가능", description: "마이크를 쓸 수 없다면 오디오 파일을 올려 주세요." },
               ].map(({ description, icon: Icon, title }) => (
                 <li className="flex gap-3 rounded-lg border px-4 py-3.5" key={title}>
                   <span className="flex size-8 shrink-0 items-center justify-center rounded-md border bg-background">
@@ -327,7 +326,7 @@ export function VocalProfileWorkbench() {
             </ol>
             <StatusNotice
               className="mt-5"
-              description="결과는 노래 추천을 위한 관찰값이며 의료적 진단이 아닙니다. 본인에게 사용 권한이 있는 음성만 제출해주세요."
+              description="이 결과는 노래 추천을 위한 참고값이며 의료적 진단이 아니에요. 본인에게 사용 권한이 있는 음성만 제출해 주세요."
               icon={<ShieldCheck />}
             />
           </section>
@@ -355,7 +354,7 @@ export function VocalProfileWorkbench() {
       {audioFile ? (
         <StatusNotice
           className="mt-10"
-          description="준비된 오디오는 분석 요청 전까지 브라우저 안에서만 미리 확인합니다."
+          description="분석을 시작하기 전까지 준비한 오디오를 미리 들을 수 있어요."
           icon={<Check />}
           tone="success"
         />

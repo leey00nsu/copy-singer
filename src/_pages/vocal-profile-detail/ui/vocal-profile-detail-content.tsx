@@ -65,7 +65,7 @@ export function VocalProfileDetailContent({ detail }: VocalProfileDetailContentP
             제출한 보컬
           </h2>
           <p className="mt-1.5 text-[11px] leading-5 text-muted-foreground">
-            분석에 사용한 표준화 오디오입니다. 로그인한 본인에게만 스트리밍됩니다.
+            분석에 사용한 오디오예요. 로그인한 본인만 들을 수 있어요.
           </p>
         </div>
         <AudioWaveformPlayer className="mt-5" label="제출한 보컬" src={detail.audioUrl} />

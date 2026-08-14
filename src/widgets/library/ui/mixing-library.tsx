@@ -193,7 +193,7 @@ function MixingLibraryRows({ jobs }: { jobs: MixingHistoryRow[] }) {
                 </td>
                 <td className="row-start-1 align-middle lg:table-cell lg:px-3 lg:py-3" data-mixing-column="status">
                   <MixingLibraryStatus job={job} />
-                  {active ? <span className="sr-only">자동 새로고침 중</span> : null}
+                  {active ? <span className="sr-only">상태 갱신 중</span> : null}
                 </td>
               </tr>
             );
@@ -221,14 +221,12 @@ export function MixingLibrary({
       <MixingLibraryFilters filters={filters} key={`${filters.page}:${filters.q}:${filters.status}`} />
       <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
         <p aria-live="polite">{filtered ? `검색 결과 ${history.total}개` : `저장된 AI 믹스 ${history.total}개`}</p>
-        {history.jobs.some((job) => isActiveMixingStatus(job.status)) ? (
-          <p>진행 중인 작업을 자동으로 확인하고 있어요.</p>
-        ) : null}
+        {history.jobs.some((job) => isActiveMixingStatus(job.status)) ? <p>진행 중인 AI 믹스가 있어요.</p> : null}
       </div>
       {historyQuery.isError ? (
         <StatusNotice
           className="mt-3"
-          description="마지막으로 확인한 목록을 표시합니다."
+          description="잠시 뒤 다시 확인해 주세요."
           title="최신 작업 상태를 확인하지 못했어요"
           tone="destructive"
         />
@@ -252,8 +250,8 @@ export function MixingLibrary({
             }
             description={
               filtered
-                ? "검색어나 작업 상태를 바꿔 다시 확인해보세요."
-                : "추천 목록에서 원하는 곡의 AI 믹싱을 시작하면 작업과 결과가 여기에 저장됩니다."
+                ? "검색어나 작업 상태를 바꿔 다시 찾아보세요."
+                : "추천곡의 AI 믹싱을 시작하면 작업과 결과가 여기에 저장돼요."
             }
             icon={<Music2 />}
             title={filtered ? "조건에 맞는 AI 믹스가 없어요." : "아직 AI 믹스가 없어요."}
