@@ -120,6 +120,7 @@ Google OAuth 로그인
 - **PRD-FR-020**: 기존 자유 reference/target과 advanced settings Workbench는 자동 추천 합성과 분리된 개발·진단용 화면으로 유지하되, 관리자 커스텀 믹싱 화면으로 운영 가능한 흐름을 제공해야 한다.
 - **PRD-FR-060**: 관리자 전용 커스텀 믹싱은 서버에서 `ADMIN_EMAILS` 권한과 관리자 소유 `USER` 보컬 프로필을 검증하고, 업로드한 target audio를 요청 처리 중에만 Modal SoulX 믹싱 GPU 함수로 전달해야 한다. reference는 선택한 프로필의 저장된 reference asset을 사용하며, custom target 원본을 Leemage·PostgreSQL·프로젝트 파일에 영구 저장하거나 일반 사용자 믹싱 큐·티켓을 생성하지 않아야 한다. 관리자는 처리 상태와 결과 오디오를 확인할 수 있어야 한다.
 - **PRD-FR-061**: 개발용 `/dev/svc`와 독립 목록 `/mixing-history`, `/vocal-profiles` 경로는 공개 제품 진입점에서 제거해야 한다. `/vocal-profiles/[id]` 상세는 기존 분석 결과·믹싱 연결을 위해 유지하고 목록 복귀는 `/library?tab=profiles`로 통합해야 한다.
+- **PRD-FR-062**: 사용자-facing 제품 카피는 현재 구현과 실제 제공 기능을 사실대로 설명하고, 행동 결정에 필요하지 않은 반복·장문 설명이나 내부 구현 세부를 노출하지 않아야 한다. 문장형 카피는 기존 제품의 자연스러운 `~요` 존댓말 톤을 일관되게 사용하되 버튼·메뉴·탭·짧은 라벨은 기능에 맞는 간결한 명사형/행동형 표현을 유지한다. 동일 개념은 화면 전반에서 일관된 용어를 사용하고, 상태·오류·도움말은 사용자가 다음 행동을 판단하는 데 필요한 정보만 간결하게 제공해야 한다. 추상적인 홍보 문구, 근거 없는 과장, 상투적인 친절 표현, 불필요한 감탄·수식·반복처럼 AI가 생성한 듯한 범용 문장을 피하고 해당 화면의 실제 상태와 행동에 직접 연결되는 구체적인 표현을 우선해야 한다.
 - **PRD-FR-044**: 새 AI 믹싱 성공 결과는 SoulX 자동 반주 믹싱에서 `vocal-balance-v2`(생성 보컬 -2.0 dB, 반주 0.0 dB, 기존 pitch shift 및 peak protection 유지)을 적용한 뒤, 사용자에게 저장·재생·다운로드되기 전에 고정된 `clarity-normal-v1` finalization을 거쳐야 한다. finalization은 저중역 정리, 보컬 presence/air 강조, 가벼운 stereo widening과 -14 LUFS / -1 dBTP loudness 정리를 포함하며 최종 44.1 kHz stereo AAC/M4A encode와 같은 FFmpeg 경계에서 처리해야 한다. finalization 실패 시 미보정 SoulX 결과를 성공 결과로 fallback하지 않고 기존 submitted job을 재사용하는 bounded retry를 적용해야 한다.
 
 ### 인증과 사용자 소유권

@@ -1,0 +1,94 @@
+# Tasks: product-copy-cleanup
+
+## 태스크 규칙
+
+- **상태**: `[TODO]` → `[DOING]` → `[DONE]`
+- `[TODO] → [DOING]`: 시작 전 태스크 제목을 공유하고 상태를 갱신합니다.
+- `[DOING] → [DONE]`: Acceptance와 Checklist를 실제 검증 후 함께 완료합니다.
+- 한 번에 하나의 태스크만 진행합니다.
+- 문서화된 review checkpoint와 원격/파괴적 작업 외에는 별도 승인 단계를 추가하지 않습니다.
+- 카피를 맞추기 위해 기능 동작/API/데이터 모델을 변경하지 않습니다.
+
+---
+
+## 로컬 추적 정보
+
+- **문서 상태**: Approved
+- **레포**: copy-singer-web
+- **브랜치**: `feat/product-copy-cleanup`
+- **대기 중 변경 요청**: -
+- **스펙 승인**: 2026-08-14 사용자 응답 `자동진행해봐.`를 workflow 승인 옵션 `A`로 기록
+- **구현 승인**: -
+- **로컬 머지 승인**: -
+- **PR 전 리뷰**: Pending
+- **PR 전 리뷰 Evidence**: -
+- **PR 전 리뷰 Decision**: -
+- **PR 리뷰**: -
+- **PR 리뷰 Evidence**: -
+- **PR 리뷰 Decision**: -
+
+---
+
+## 태스크 목록
+
+- [DONE][PRD-FR-062] T-F030-product-copy-cleanup-01 공통 진입·탐색 카피 정리
+  - Date: 2026-08-14
+  - Acceptance:
+    - 랜딩/로그인/공통 product shell/알림 등 진입·탐색 화면의 문장형 카피가 자연스러운 `~요` 톤을 사용한다.
+    - 제목·내비게이션이 이미 전달하는 내용을 반복하는 설명과 추상적인 홍보 문구가 제거되거나 짧아진다.
+    - 버튼·메뉴·탭·badge·짧은 label은 억지 존댓말 없이 간결한 UI 문법을 유지한다.
+    - 접근성 레이블과 법적 동의에 필요한 의미는 보존한다.
+  - Checklist:
+    - [x] `app/(public)`과 `src/widgets/product-shell`의 실제 사용자-facing 문자열을 맥락별로 검토했다.
+    - [x] `authentication`, `manage-notifications`의 상태/오류 문구에서 `~습니다` 혼용, OAuth 내부 용어, 중복 설명을 정리했다.
+    - [x] 변경 문자열을 직접 검증하는 auth/navigation·Storybook 기대값을 갱신했다.
+
+- [TODO][PRD-FR-062] T-F030-product-copy-cleanup-02 프로필·추천·믹싱 핵심 플로우 카피 정리
+  - Date: 2026-08-14
+  - Acceptance:
+    - 보컬 분석·프로필·추천·AI 믹싱·라이브러리 화면의 사용자-facing 문구가 현재 구현과 일치한다.
+    - `최대 720포인트`, polling/retry 내부 상태, reference 생성 규칙처럼 다음 행동에 필요하지 않은 구현 세부는 제거하거나 사용자 관점으로 바뀐다.
+    - empty/error/status 문구는 같은 내용을 제목과 본문에서 반복하지 않고 상태와 필요한 다음 행동만 전달한다.
+    - `목소리 분석`, `보컬 프로필`, `노래 추천`, `AI 믹싱`, `라이브러리`, `티켓` 용어를 불필요하게 변형하지 않는다.
+  - Checklist:
+    - [ ] `vocal-profile`, `creation-funnel`, `library` 카피를 실제 분석/저장 계약과 대조해 정리한다.
+    - [ ] `recommendation`, `mixing-job`, `create-mixing`, `ticket` 카피를 실제 제공 기능과 대조해 정리한다.
+    - [ ] 기술적 내부 표현·상투적 AI 슬롭 표현·과도한 친절/감탄/수식을 제거한다.
+    - [ ] 관련 profile/recommendation/mixing 테스트의 문자열 기대값을 갱신한다.
+
+- [TODO][PRD-FR-062] T-F030-product-copy-cleanup-03 프로젝트 잔여 카피 감사와 회귀 검증
+  - Date: 2026-08-14
+  - Acceptance:
+    - 실제 제품에 노출되는 TSX/TS 문자열을 다시 검색해 명백한 `~습니다` 톤 혼용, 구현 불일치, 과도한 장문/내부 세부가 남지 않는다.
+    - 관리자 화면은 전문 용어를 임의로 일반화하지 않되 명백한 구현 불일치와 사용자-facing 톤 불일치는 정리한다.
+    - 약관/개인정보 처리방침은 법적 의미를 바꾸지 않으며 일반 제품 카피 톤 강제 대상에서 제외한다.
+    - lint/typecheck 및 관련 테스트가 통과한다.
+  - Checklist:
+    - [ ] `app`/`src` 전체에서 실제 제품 카피를 재검색하고 예외를 맥락별로 확인한다.
+    - [ ] 관리자/공통 UI의 명백한 구현 불일치 또는 톤 회귀만 수정한다.
+    - [ ] `pnpm run test:auth-navigation`, `pnpm run test:vocal-profile-presentation`, `pnpm run test:mixing:ui`, `pnpm run test:recommendation`을 실행한다.
+    - [ ] 관리자 문자열을 변경했다면 `pnpm run test:admin`을 실행한다.
+    - [ ] `pnpm run lint`, `pnpm exec tsc --noEmit`을 통과한다.
+
+---
+
+## 완료 조건
+
+- [ ] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
+- [ ] 테스트 실행 및 통과 기록 완료
+- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+
+### 테스트 실행 기록
+
+| 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
+| --- | --- | --- |
+| `pnpm run test:auth-navigation` | `2026-08-14` | `PASS — 8/8` |
+| targeted Storybook: landing/login/notifications | `2026-08-14` | `PASS — 3 files, 8/8` |
+| `pnpm run test:vocal-profile-presentation` | `-` | `-` |
+| `pnpm run test:mixing:ui` | `-` | `-` |
+| `pnpm run test:recommendation` | `-` | `-` |
+| `pnpm run test:admin` | `-` | `N/A unless admin copy changes` |
+| `pnpm run lint` | `-` | `-` |
+| `pnpm exec tsc --noEmit` | `-` | `-` |
+
+<!-- lee-spec-kit:workflow-sync 2026-08-14T11:07:49.000Z -->
