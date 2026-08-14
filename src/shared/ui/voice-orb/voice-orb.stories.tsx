@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, within } from "storybook/test";
+import { expect, waitFor, within } from "storybook/test";
 
 import { VoiceOrb } from "./voice-orb";
 
@@ -10,6 +10,7 @@ const meta = {
     hoverIntensity: 0,
     hue: 294,
     rotateOnHover: false,
+    speed: 1,
   },
   decorators: [
     (Story) => (
@@ -29,7 +30,11 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   play: async ({ canvasElement }) => {
     const orb = within(canvasElement).getByTestId("voice-orb");
-    await expect(orb).toBeVisible();
+    await waitFor(() => expect(orb).toHaveAttribute("data-orb-ready", "true"));
+    await expect(orb).toHaveAttribute("data-orb-motion-scale", "0.5");
+    await expect(orb).toHaveAttribute("data-orb-effective-speed", "0.5");
+    await expect(orb.querySelector("canvas")).toBeInTheDocument();
+    await expect(getComputedStyle(orb).animationName).toBe("voice-orb-enter");
     await expect(getComputedStyle(orb).backgroundColor).toBe("rgba(0, 0, 0, 0)");
   },
 };
@@ -37,6 +42,17 @@ export const Default: Story = {
 export const WebGLFallback: Story = {
   args: { forceFallback: true },
   play: async ({ canvasElement }) => {
-    await expect(within(canvasElement).getByTestId("voice-orb")).toHaveAttribute("data-orb-fallback", "true");
+    const orb = within(canvasElement).getByTestId("voice-orb");
+    await expect(orb).toHaveAttribute("data-orb-fallback", "true");
+    await expect(getComputedStyle(orb).animationName).toBe("voice-orb-enter");
+  },
+};
+
+export const CustomSpeedIsHalved: Story = {
+  args: { speed: 0.3 },
+  play: async ({ canvasElement }) => {
+    const orb = within(canvasElement).getByTestId("voice-orb");
+    await expect(orb).toHaveAttribute("data-orb-motion-scale", "0.5");
+    await expect(orb).toHaveAttribute("data-orb-effective-speed", "0.15");
   },
 };

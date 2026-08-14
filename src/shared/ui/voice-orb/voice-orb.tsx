@@ -132,6 +132,8 @@ const fragmentShader = /* glsl */ `
   }
 `;
 
+const ORB_MOTION_SPEED_SCALE = 0.5;
+
 type VoiceOrbProps = {
   backgroundColor?: string;
   className?: string;
@@ -152,11 +154,12 @@ function VoiceOrb({
   speed = 1,
 }: VoiceOrbProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const speedRef = useRef(speed);
+  const effectiveSpeed = speed * ORB_MOTION_SPEED_SCALE;
+  const speedRef = useRef(effectiveSpeed);
 
   useEffect(() => {
-    speedRef.current = speed;
-  }, [speed]);
+    speedRef.current = effectiveSpeed;
+  }, [effectiveSpeed]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -182,7 +185,6 @@ function VoiceOrb({
         gl.canvas.className = "voice-orb-canvas";
         gl.canvas.setAttribute("aria-hidden", "true");
         container.appendChild(gl.canvas);
-        container.dataset.orbReady = "true";
 
         const hexToVec3 = (color: string) => {
           const value = color.startsWith("#") ? color.slice(1) : "fafafa";
@@ -229,9 +231,12 @@ function VoiceOrb({
           const delta = (time - lastTime) * 0.001;
           lastTime = time;
           program.uniforms.iTime.value = time * 0.001 * speedRef.current;
-          if (rotateOnHover && program.uniforms.hover.value > 0.5) currentRotation += delta * 0.3;
+          if (rotateOnHover && program.uniforms.hover.value > 0.5) {
+            currentRotation += delta * 0.3 * ORB_MOTION_SPEED_SCALE;
+          }
           program.uniforms.rot.value = currentRotation;
           renderer.render({ scene: mesh });
+          if (container.dataset.orbReady !== "true") container.dataset.orbReady = "true";
           rafId = requestAnimationFrame(render);
         };
         const resume = () => {
@@ -293,7 +298,9 @@ function VoiceOrb({
     <div
       aria-hidden="true"
       className={cn("voice-orb", className)}
+      data-orb-effective-speed={effectiveSpeed}
       data-orb-fallback={forceFallback ? "true" : undefined}
+      data-orb-motion-scale={ORB_MOTION_SPEED_SCALE}
       data-testid="voice-orb"
       ref={containerRef}
     >

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, within } from "storybook/test";
+import { expect, waitFor, within } from "storybook/test";
 import { lifecycleStatusClassNames } from "@/shared/lib/lifecycle-status-colors";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
@@ -60,7 +60,7 @@ export const ActiveAnalysis: Story = {
     await expect(timelineCompleted).toHaveClass("bg-foreground", "text-background");
     await expect(timelineCurrent).toHaveClass("bg-data-accent/10", "text-data-accent-foreground");
     await expect(canvas.getByTestId("voice-signal-core")).toHaveAttribute("data-signal-mode", "processing");
-    await expect(canvas.getByTestId("voice-orb")).toBeVisible();
+    await waitFor(() => expect(canvas.getByTestId("voice-orb")).toBeVisible());
   },
 };
 

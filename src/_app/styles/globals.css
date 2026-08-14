@@ -187,6 +187,26 @@
     height: 100%;
     isolation: isolate;
     background: transparent;
+    opacity: 0;
+    transform: scale(0);
+    transform-origin: center;
+  }
+
+  .voice-orb[data-orb-ready="true"],
+  .voice-orb[data-orb-fallback="true"] {
+    animation: voice-orb-enter 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes voice-orb-enter {
+    from {
+      opacity: 0;
+      transform: scale(0);
+    }
+
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 
   .voice-orb-fallback {
@@ -650,6 +670,12 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .voice-orb {
+      animation: none;
+      opacity: 1;
+      transform: scale(1);
+    }
+
     .voice-orb-fallback {
       box-shadow:
         inset -18px -24px 38px rgb(11 10 28 / 0.75),
