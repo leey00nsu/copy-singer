@@ -74,4 +74,4 @@
 | 타깃 Storybook | `2026-08-14` | `PASS — CatalogManager + VoiceScanInput 17/17` |
 | `pnpm run test:storybook --run` | `2026-08-14` | `PASS — 54 indexed: 52 passed + 2 skipped, 154/154 tests` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-14T08:09:01.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-14T08:33:49.000Z -->
