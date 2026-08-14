@@ -81,7 +81,18 @@ test("admin catalog mutations are idempotent and publish only matching READY rev
           file: new File([Buffer.from("fixture-flac")], "target.flac", { type: "audio/flac" }),
           fetchImpl,
         }),
-      (error: unknown) => error instanceof api.SongCatalogAdminError && error.code === "UNSUPPORTED_AUDIO",
+      (error: unknown) =>
+        error instanceof api.SongCatalogAdminError && error.code === "UNSUPPORTED_AUDIO" && error.status === 415,
+    );
+    await assert.rejects(
+      () =>
+        api.uploadAdminCatalogTarget({
+          sourceId: source.id,
+          file: new File([Buffer.from("fixture-ogg")], "target.ogg", { type: "audio/ogg" }),
+          fetchImpl,
+        }),
+      (error: unknown) =>
+        error instanceof api.SongCatalogAdminError && error.code === "UNSUPPORTED_AUDIO" && error.status === 415,
     );
     assert.equal(uploadCount, 0);
 
