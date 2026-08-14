@@ -32,12 +32,15 @@ async function expectLandingStructure(canvasElement: HTMLElement) {
   const firstGradientSegment = gradientText.at(0);
   if (!firstGradientSegment) throw new Error("Gradient Text segment를 찾지 못했습니다.");
   await expect(firstGradientSegment).toHaveTextContent("내 목소리");
+  await expect(
+    canvas.getByRole("heading", { level: 1, name: "내 목소리를 분석하고, 가장 잘 어울리는 노래를 만나보세요" }),
+  ).toBeVisible();
   await expect(firstGradientSegment).toHaveAttribute("data-animation-speed", "1.5");
   await expect(firstGradientSegment).toHaveAttribute("data-yoyo", "true");
   const gradientParticle = firstGradientSegment
     .closest("[data-word-index]")
     ?.querySelector<HTMLElement>("[data-gradient-particle]");
-  await expect(gradientParticle).toHaveTextContent("에");
+  await expect(gradientParticle).toHaveTextContent("를");
   if (!gradientParticle) throw new Error("Gradient Text 조사 element를 찾지 못했습니다.");
   const gradientStyle = getComputedStyle(firstGradientSegment);
   const particleStyle = getComputedStyle(gradientParticle);

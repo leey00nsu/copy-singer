@@ -24,7 +24,9 @@ function LoginScreen({ callbackURL, configured }: LoginScreenProps) {
             <p className="text-[11px] font-semibold tracking-[0.18em] text-data-accent-foreground uppercase">
               Copysinger
             </p>
-            <h1 className="mt-3 text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">계속하려면 로그인해 주세요.</h1>
+            <h1 className="mt-3 break-keep text-balance text-[2rem] font-semibold leading-[1.08] tracking-[-0.05em] sm:text-[2.75rem] lg:text-5xl">
+              계속하려면 로그인해 주세요.
+            </h1>
             <p className="mt-4 text-sm leading-6 text-muted-foreground">
               저장된 보컬 프로필과 AI 믹싱 결과는 로그인 후 확인할 수 있어요.
             </p>

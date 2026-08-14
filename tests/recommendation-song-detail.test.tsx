@@ -82,6 +82,16 @@ test("does not expose removed song-range metadata when it is unavailable", () =>
   assert.doesNotMatch(html, /SONG RANGE|곡 음역을 표시할 수 없어요|앨범|장르|가사|미리듣기/);
 });
 
+test("recommendation metadata does not hardcode the catalog size", () => {
+  const root = new URL("../", import.meta.url);
+  const page = readFileSync(
+    new URL("src/_pages/recommendation-detail/ui/recommendation-detail-page.tsx", root),
+    "utf8",
+  );
+  assert.match(page, /내 보컬 프로필과 잘 맞는 노래 순위와 추천 노래방 키를 확인하세요/);
+  assert.doesNotMatch(page, /100곡/);
+});
+
 test("keeps the App route as a thin adapter with loading and not-found boundaries", () => {
   const root = new URL("../", import.meta.url);
   const route = "app/(product)/recommendations/[id]/songs/[itemId]";

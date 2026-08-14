@@ -40,6 +40,7 @@ test("login screen keeps only product branding and the Google start action", () 
   assert.match(loginScreen, /<ProductFooter/);
   assert.match(loginScreen, /<VoiceOrb/);
   assert.match(loginScreen, /계속하려면 로그인해 주세요/);
+  assert.match(loginScreen, /break-keep text-balance text-\[2rem\]/);
   assert.match(loginScreen, /Google 계정으로 로그인하면/);
   assert.match(loginScreen, /이용 약관/);
   assert.match(loginScreen, /개인정보 처리방침/);

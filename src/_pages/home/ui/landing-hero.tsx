@@ -71,8 +71,8 @@ function LandingHero({ primaryLabel, profileHref }: LandingHeroProps) {
             <CirclePlay aria-hidden="true" className="size-3" />
           </motion.p>
           <h1
-            aria-label="내 목소리에 맞는 노래와 키를 찾고, 추천곡을 AI 믹싱해 보세요."
-            className="mt-7 text-[clamp(2.65rem,5vw,4.4rem)] leading-[1.02] font-medium tracking-[-0.042em] text-balance"
+            aria-label="내 목소리를 분석하고, 가장 잘 어울리는 노래를 만나보세요"
+            className="mt-7 break-keep text-[clamp(2.65rem,5vw,4.4rem)] leading-[1.02] font-medium tracking-[-0.042em] text-balance"
           >
             <span aria-hidden="true">
               <span>
@@ -83,12 +83,12 @@ function LandingHero({ primaryLabel, profileHref }: LandingHeroProps) {
                   >
                     내 목소리
                   </GradientText>
-                  <span data-gradient-particle>에</span>
+                  <span data-gradient-particle>를</span>
                 </MotionWord>{" "}
-                <StaggeredWords reduced={reduced} startIndex={1} text="맞는 노래와 키를 찾고," />
+                <StaggeredWords reduced={reduced} startIndex={1} text="분석하고," />
               </span>
               <span className="block">
-                <StaggeredWords reduced={reduced} startIndex={5} text="추천곡을 AI 믹싱해 보세요." />
+                <StaggeredWords reduced={reduced} startIndex={2} text="가장 잘 어울리는 노래를 만나보세요" />
               </span>
             </span>
           </h1>
