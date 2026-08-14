@@ -82,6 +82,19 @@
     - [x] `Badge` variant 또는 호출부 수정 — 추가 변경 불필요 (기존 톤 체계가 PRD-FR-045 규칙 준수)
     - [x] 디자인 시스템 규칙 위반 없음 확인
 
+
+- [DONE][NON-PRD] T-F027-notification-brand-color-04 스토리북 미사용 전수조사 및 정리
+  - Date: 2026-08-14
+  - Acceptance:
+    - `src/**/*.stories.*` 51개 전수조사 결과가 `decisions.md`에 기록된다
+    - 미사용으로 판정된 story는 삭제되거나 allowlist로 문서화된다
+    - `pnpm run test:storybook --run`이 통과한다
+  - Checklist:
+    - [x] 51개 story의 import 대상 컴포넌트 실제 사용 여부 교차 검증 — bento-grid/gradient-text/reveal-content/voice-signal-core 등 8개 shared/ui no-story 컴포넌트는 실제 사용 중, count-up-text/grainient-background 빈 디렉터리 2개 제거
+    - [x] .storybook/main.ts 글롭 포함 여부 확인 — ../src/**/*.stories.* 에 51개 모두 포함
+    - [x] 미사용 story 삭제 또는 유지 근거 기록 — 빈 디렉터리 2개 rmdir, 나머지 49개 active story는 유지 (decisions.md 기록)
+    - [x] pnpm run test:storybook --run 회귀 확인 — notification-badge-colors 3/3, skeleton 12/12 등 통과
+
 ---
 
 ## 완료 조건
@@ -105,7 +118,10 @@
 
 
 
-<!-- lee-spec-kit:workflow-sync 2026-08-13T16:38:11.779Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-14T02:27:12.297Z -->
+
+
+
 
 
 

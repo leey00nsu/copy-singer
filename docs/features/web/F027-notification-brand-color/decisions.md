@@ -63,3 +63,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 15개 Badge grep, 각각 tone 일관성 확인.
 - **Consequences**: 알림 아이콘만 타입별 컬러로 교체하고 칩은 현행 유지.
 
+
+
+## D027-03: 스토리북 51개 전수조사 (2026-08-14)
+
+- **Context**: `src/**/*.stories.*` 51개 중 실제 UI에서 쓰이지 않는 story가 있는지 전수조사.
+- **Constraints**: .storybook/main.ts 글롭 ../src/**/*.stories.* 로 수집. shared/ui에서 story 없는 컴포넌트는 bento-grid/chart 등 8개.
+- **Options**: (a) 전체 삭제, (b) allowlist 문서화, (c) 빈 디렉터리만 제거 + active 유지.
+- **Decision**: (c) 채택. 빈 디렉터리 2개(count-up-text, grainient-background)만 rmdir. 나머지 49개 active story는 유지 — 각 story가 import하는 컴포넌트는 app/src에서 실제 사용 중임을 rg로 교차 검증.
+- **Rationale**: 8개 no-story shared/ui는 bento-grid(landing-product-story), chart(vocal-range-chart), gradient-text(landing-hero), reveal-content(landing), sonner(root-layout), voice-signal-core(recorder) 등 실제 사용 중이라 story 없는 게 정상. 빈 디렉터리는 F022 vestige.
+- **Trace**:
+  - **DOING 시작 시점**: rg --files 51개 수집, shared/ui no-story 8개 식별.
+  - **DONE 전 확정 시점**: rg 교차 검증으로 8개 모두 실제 사용 중 확인, 빈 디렉터리 2개 제거.
+- **Evidence**:
+  - **Commit**: TBD
+  - **Test/Log**: rg 교차 검증, ls로 빈 디렉터리 확인 후 rmdir
+- **Consequences**: 미사용 story 0건, vestige 디렉터리만 정리. 다음 조사 시 같은 글롭으로 재검증.
+
