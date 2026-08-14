@@ -70,6 +70,18 @@
     - [x] 관리자 문자열 변경 후 `pnpm run test:admin`을 실행했다.
     - [x] 전체 `pnpm test`, `pnpm run lint`, `pnpm exec tsc --noEmit`을 통과했다.
 
+- [DONE][PRD-FR-062] T-F030-product-copy-cleanup-04 구현 승인 피드백 반영
+  - Date: 2026-08-14
+  - Acceptance:
+    - 랜딩 핵심 헤드라인은 `내 목소리를 분석하고, 가장 잘 어울리는 노래를 만나보세요` 문구를 그대로 전달한다.
+    - `한 소절로, 내 보컬 프로필을 만들어 보세요.`와 `계속하려면 로그인해 주세요.` 헤드라인이 작은 화면에서 한글 단어 중간이 어색하게 잘리지 않는다.
+    - 카탈로그 음원 수를 고정값 `100곡`으로 약속하는 제품 문구가 없고, 개수가 필요한 실제 결과 UI는 런타임 데이터에서 계산한다.
+  - Checklist:
+    - [x] 랜딩 hero의 시각 텍스트와 accessible name을 지정 문구에 맞췄다.
+    - [x] 프로필·로그인 헤드라인에 `break-keep`과 모바일 `2rem` 기준의 제한적인 반응형 글자 크기를 적용했다.
+    - [x] 추천 페이지 메타 설명의 정적 `100곡`을 제거했고, 결과 화면의 곡 수 표시는 기존 `run.items.length` 기반 동적 카운트를 유지했다.
+    - [x] auth/voice-scan/recommendation 타깃 테스트, landing/login Storybook, lint/typecheck와 전체 `pnpm test`를 통과했다.
+
 ---
 
 ## 완료 조건
@@ -83,14 +95,14 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `pnpm run test:auth-navigation` | `2026-08-14` | `PASS — 8/8` |
-| targeted Storybook: landing/login/notifications | `2026-08-14` | `PASS — 3 files, 8/8` |
+| targeted Storybook: landing/login | `2026-08-14` | `PASS — 2 files, 6/6` |
 | `pnpm run test:vocal-profile-presentation` | `2026-08-14` | `PASS — 12/12` |
 | `pnpm run test:mixing:ui` | `2026-08-14` | `PASS — 8/8` |
-| `pnpm run test:recommendation` | `2026-08-14` | `PASS — ranking 10/10 + UI/presentation/synthesis 19/19` |
+| `pnpm run test:recommendation` | `2026-08-14` | `PASS — ranking 10/10 + UI/presentation/synthesis 20/20` |
 | `pnpm run test:admin` | `2026-08-14` | `PASS — UI 4/4 + integration 1/1` |
 | `pnpm run test:storybook --run` | `2026-08-14` | `PASS — 52 files passed, 2 skipped; 154/154 tests` |
 | `pnpm test` | `2026-08-14` | `PASS — build + unit/integration + Storybook` |
 | `pnpm run lint` | `2026-08-14` | `PASS` |
 | `pnpm exec tsc --noEmit` | `2026-08-14` | `PASS` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-14T11:48:37.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-14T12:39:20.000Z -->

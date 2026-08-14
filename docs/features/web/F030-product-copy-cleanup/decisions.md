@@ -72,3 +72,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: -
   - **Test/Log**: 일반 UI formal tone 재검색은 법적 동의 1건만 의도적 예외; vague/internal UI 검색 0건; `pnpm test` PASS; Storybook 154/154 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS
 - **Consequences**: 프로젝트에 formal 문체가 일부 남을 수 있지만, 법적·관리자·내부 경계의 의도된 예외로 구분한다.
+
+## D004: 구현 승인 피드백은 카피 정확성과 한글 줄바꿈까지 보완 (2026-08-14)
+
+- **Context**: 구현 승인 단계에서 랜딩 핵심 문구 교체, 프로필/로그인 헤드라인의 한글 단어 분절 개선, 고정 `100곡` 표현 제거 요청이 들어왔다.
+- **Constraints**: 기존 레이아웃과 기능 플로우는 유지하고, 카탈로그 개수는 실제 데이터와 어긋나는 정적 약속을 만들지 않는다.
+- **Options**: 헤드라인 문구만 바꾸거나, 문구 교체와 함께 작은 화면의 `break-keep`/반응형 글자 크기를 조정하고 고정 카탈로그 숫자를 제거하는 방식을 비교한다.
+- **Decision**: 지정된 랜딩 문구를 그대로 사용하고, 프로필/로그인 헤드라인은 제한적인 모바일 타이포그래피와 한글 줄바꿈 규칙으로 보완한다. `100곡`은 fixture/runtime 결과에서 실제로 100인 경우만 표시하고 정적 제품 설명에서는 제거한다.
+- **Rationale**: 텍스트 자체가 맞더라도 단어 중간 분절이 생기면 가독성이 떨어지며, 카탈로그 규모는 변할 수 있으므로 정적 숫자는 실제 제품 계약과 맞지 않는다.
+- **Trace**:
+  - **DOING 시작 시점**: 사용자 피드백 3건을 T04로 추가하고, 대규모 리디자인 없이 카피·줄바꿈·동적 개수 정합성만 수정한다.
+  - **DONE 전 확정 시점**: 랜딩 hero의 accessible/visual headline을 사용자 지정 문구로 교체했다. 프로필·로그인 헤드라인은 `break-keep`과 모바일 `2rem` 기준으로 조정해 한글 음절 단위 분절을 막았고, 추천 페이지 메타의 정적 `100곡`은 제거했다. 추천 결과 화면의 곡 수는 기존처럼 `run.items.length`를 사용하므로 실제 카탈로그 크기에 따라 바뀐다.
+  - **머지 후 확인**: -
+- **Evidence**:
+  - **Commit**: -
+  - **PR**: -
+  - **Test/Log**: auth 8/8 PASS; voice-scan 4/4 PASS; recommendation ranking 10/10 + UI/presentation/synthesis 20/20 PASS; landing/login Storybook 6/6 PASS; lint/typecheck PASS; 첫 전체 `pnpm test`에서 unrelated admin custom mixing Storybook 1건이 타이밍성 실패 후 단독 3/3 PASS, 재실행한 전체 `pnpm test` PASS
+- **Consequences**: 카피 Feature에 제한적인 타이포그래피 조정이 포함되지만, 목적은 한글 헤드라인 가독성 보완으로 한정된다.
