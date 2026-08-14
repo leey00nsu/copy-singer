@@ -136,4 +136,4 @@
 | flaky reruns: voice-scan/admin custom mixing Storybook + Leemage cleanup | `2026-08-14` | `PASS — 13/13 + 3/3` |
 | latest `pnpm test` | `2026-08-14` | `PARTIAL — 변경 무관 flaky 1건(Leemage cleanup)에서 중단; 해당 파일 단독 3/3 PASS` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-14T13:10:25.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-14T13:11:32.000Z -->

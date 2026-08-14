@@ -119,7 +119,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 계정 카드 상단의 `Google 연결됨`/`Google 연결 정보 없음` Badge와 관련 아이콘을 제거했다. 이름·이메일·로그인 방식·연결일은 그대로 유지했고 account 단위/Storybook 테스트로 양쪽 상태 모두 chip이 사라지는 것을 확인했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: -
+  - **Commit**: `8436191` (`feat(F030): 내 계정 Google 연결 상태 chip 제거`)
   - **PR**: -
   - **Test/Log**: account unit 2/2 PASS; account Storybook 3/3 PASS; ESLint PASS; `tsc --noEmit` PASS; 전체 `pnpm test` 중 변경 무관 타이밍성 Storybook 2건과 Leemage cleanup 1건은 각각 단독 재실행 13/13, 3/3 PASS.
 - **Consequences**: 계정 카드 상단이 단순해지며, 인증 제공자 정보는 상세 필드에서 계속 확인할 수 있다.
