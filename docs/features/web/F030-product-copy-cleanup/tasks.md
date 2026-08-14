@@ -43,7 +43,7 @@
     - [x] `authentication`, `manage-notifications`의 상태/오류 문구에서 `~습니다` 혼용, OAuth 내부 용어, 중복 설명을 정리했다.
     - [x] 변경 문자열을 직접 검증하는 auth/navigation·Storybook 기대값을 갱신했다.
 
-- [TODO][PRD-FR-062] T-F030-product-copy-cleanup-02 프로필·추천·믹싱 핵심 플로우 카피 정리
+- [DONE][PRD-FR-062] T-F030-product-copy-cleanup-02 프로필·추천·믹싱 핵심 플로우 카피 정리
   - Date: 2026-08-14
   - Acceptance:
     - 보컬 분석·프로필·추천·AI 믹싱·라이브러리 화면의 사용자-facing 문구가 현재 구현과 일치한다.
@@ -51,10 +51,10 @@
     - empty/error/status 문구는 같은 내용을 제목과 본문에서 반복하지 않고 상태와 필요한 다음 행동만 전달한다.
     - `목소리 분석`, `보컬 프로필`, `노래 추천`, `AI 믹싱`, `라이브러리`, `티켓` 용어를 불필요하게 변형하지 않는다.
   - Checklist:
-    - [ ] `vocal-profile`, `creation-funnel`, `library` 카피를 실제 분석/저장 계약과 대조해 정리한다.
-    - [ ] `recommendation`, `mixing-job`, `create-mixing`, `ticket` 카피를 실제 제공 기능과 대조해 정리한다.
-    - [ ] 기술적 내부 표현·상투적 AI 슬롭 표현·과도한 친절/감탄/수식을 제거한다.
-    - [ ] 관련 profile/recommendation/mixing 테스트의 문자열 기대값을 갱신한다.
+    - [x] `vocal-profile`, `creation-funnel`, `library` 카피를 실제 분석/저장 계약과 대조해 정리했다.
+    - [x] `recommendation`, `mixing-job`, `create-mixing`, `ticket` 카피를 실제 제공 기능과 대조해 정리했다.
+    - [x] `720포인트`, GPU, 카탈로그 revision, 백그라운드/대기열/서버 설정 등 기술적 내부 표현과 추상적 AI 슬롭 표현을 제거하거나 사용자 상태 중심으로 바꿨다.
+    - [x] 관련 profile/recommendation/mixing 테스트의 문자열 기대값을 새 카피에 맞춰 갱신했다.
 
 - [TODO][PRD-FR-062] T-F030-product-copy-cleanup-03 프로젝트 잔여 카피 감사와 회귀 검증
   - Date: 2026-08-14
@@ -84,11 +84,11 @@
 | --- | --- | --- |
 | `pnpm run test:auth-navigation` | `2026-08-14` | `PASS — 8/8` |
 | targeted Storybook: landing/login/notifications | `2026-08-14` | `PASS — 3 files, 8/8` |
-| `pnpm run test:vocal-profile-presentation` | `-` | `-` |
-| `pnpm run test:mixing:ui` | `-` | `-` |
-| `pnpm run test:recommendation` | `-` | `-` |
+| `pnpm run test:vocal-profile-presentation` | `2026-08-14` | `PASS — 12/12` |
+| `pnpm run test:mixing:ui` | `2026-08-14` | `PASS — 8/8` |
+| `pnpm run test:recommendation` | `2026-08-14` | `PASS — ranking 10/10 + UI/presentation/synthesis 19/19` |
 | `pnpm run test:admin` | `-` | `N/A unless admin copy changes` |
 | `pnpm run lint` | `-` | `-` |
 | `pnpm exec tsc --noEmit` | `-` | `-` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-14T11:07:49.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-14T11:20:57.000Z -->

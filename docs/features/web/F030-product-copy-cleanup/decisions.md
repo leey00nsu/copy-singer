@@ -34,7 +34,24 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 랜딩의 `가장 나답게`·`원곡의 매력` 같은 추상 표현을 실제 분석/추천/믹싱 동작으로 교체하고, 로그인에서 영속되지 않는 추천 결과를 저장된 것처럼 설명하던 문구를 제거했다. OAuth 환경변수 같은 내부 설정 용어도 사용자 문구에서 제거했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: -
+  - **Commit**: `9103811` (`feat(F030): 공통 진입·탐색 카피 정리`)
   - **PR**: -
   - **Test/Log**: `pnpm run test:auth-navigation` 8/8 PASS; landing/login/notifications targeted Storybook 8/8 PASS
 - **Consequences**: 사용자-facing 문구는 짧아지지만, 구현 세부를 디버깅해야 하는 정보는 UI가 아니라 로그/코드에 남는다.
+
+## D002: 핵심 플로우는 처리 방식보다 상태와 다음 행동을 설명 (2026-08-14)
+
+- **Context**: 보컬 프로필·라이브러리·AI 믹싱 화면에 polling, retry queue, 포인트 수, reference 생성 규칙처럼 사용자 행동에 필요하지 않은 처리 세부가 노출돼 있다.
+- **Constraints**: 분석/추천/믹싱의 실제 상태와 지원 제약은 숨기지 않고, 사용자가 복구 또는 다음 행동을 선택하는 데 필요한 정보는 유지한다.
+- **Options**: 내부 처리 세부를 쉬운 말로 모두 번역하거나, 사용자의 현재 상태와 다음 행동에 직접 필요한 정보만 남기는 방식을 비교한다.
+- **Decision**: 구현 세부 자체를 설명하지 않고 `현재 상태 → 필요한 제약 → 다음 행동` 순서로 카피를 정리한다.
+- **Rationale**: 내부 구현을 쉬운 말로 바꾸는 것만으로는 과설명이 남는다. 사용자가 판단할 정보만 남겨야 화면 밀도와 사실성이 함께 개선된다.
+- **Trace**:
+  - **DOING 시작 시점**: `최대 720포인트`, 자동 polling/retry, reference segment 배분 규칙, 백그라운드 저장 표현을 우선 제거 후보로 잡는다.
+  - **DONE 전 확정 시점**: 보컬 분석에서 대기열·백그라운드·서버 설정을 제거하고, 프로필 결과에서 `720포인트`·reference 배분 규칙을 제거했다. 추천 화면의 catalog/scoring 식별자와 AI 믹싱의 GPU·target·임의 진행률 설명도 없애고 실제 상태와 다음 행동만 남겼다.
+  - **머지 후 확인**: -
+- **Evidence**:
+  - **Commit**: -
+  - **PR**: -
+  - **Test/Log**: `pnpm run test:vocal-profile-presentation` 12/12 PASS; `pnpm run test:mixing:ui` 8/8 PASS; `pnpm run test:recommendation` ranking 10/10 + UI/presentation/synthesis 19/19 PASS
+- **Consequences**: 디버깅/운영 정보는 사용자 UI가 아니라 로그와 관리자 진단 경계에 남는다.
