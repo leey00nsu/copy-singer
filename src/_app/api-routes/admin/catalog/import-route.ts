@@ -1,18 +1,36 @@
 import { importDatabaseSongCatalog, parseCatalogSnapshot } from "@/entities/song-catalog/index.server";
 import { requireAdminApi } from "@/features/authentication/index.server";
+import {
+  MultipartBodyTooLargeError,
+  multipartBodyLimit,
+  readBoundedMultipartFormData,
+} from "@/shared/api/index.server";
 import { prisma } from "@/shared/db/index.server";
 import { adminCatalogError, adminCatalogJson } from "./http";
+
+const MAX_SNAPSHOT_BYTES = 20 * 1024 * 1024;
 
 export async function POST(request: Request) {
   const access = await requireAdminApi(request);
   if (access.response) return access.response;
   try {
-    const form = await request.formData();
+    let form: FormData;
+    try {
+      form = await readBoundedMultipartFormData(request, multipartBodyLimit(MAX_SNAPSHOT_BYTES));
+    } catch (error) {
+      if (error instanceof MultipartBodyTooLargeError) {
+        return adminCatalogJson(
+          { error: { code: "SNAPSHOT_TOO_LARGE", message: "스냅샷 파일은 20MB 이하여야 합니다." } },
+          400,
+        );
+      }
+      return adminCatalogJson({ error: { code: "SNAPSHOT_REQUIRED", message: "스냅샷 파일이 필요합니다." } }, 400);
+    }
     const file = form.get("file");
     if (!(file instanceof File) || file.size === 0) {
       return adminCatalogJson({ error: { code: "SNAPSHOT_REQUIRED", message: "스냅샷 파일이 필요합니다." } }, 400);
     }
-    if (file.size > 20 * 1024 * 1024) {
+    if (file.size > MAX_SNAPSHOT_BYTES) {
       return adminCatalogJson(
         { error: { code: "SNAPSHOT_TOO_LARGE", message: "스냅샷 파일은 20MB 이하여야 합니다." } },
         400,

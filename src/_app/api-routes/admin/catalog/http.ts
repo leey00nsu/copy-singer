@@ -1,5 +1,24 @@
 import { ZodError } from "zod";
-import { SongCatalogAdminError } from "@/features/manage-song-catalog/index.server";
+import {
+  ADMIN_CATALOG_TARGET_MAX_UPLOAD_BYTES,
+  SongCatalogAdminError,
+} from "@/features/manage-song-catalog/index.server";
+import {
+  MultipartBodyTooLargeError,
+  multipartBodyLimit,
+  readBoundedMultipartFormData,
+} from "@/shared/api/index.server";
+
+export async function adminCatalogAudioFormData(request: Request) {
+  try {
+    return await readBoundedMultipartFormData(request, multipartBodyLimit(ADMIN_CATALOG_TARGET_MAX_UPLOAD_BYTES));
+  } catch (error) {
+    if (error instanceof MultipartBodyTooLargeError) {
+      throw new SongCatalogAdminError("PAYLOAD_TOO_LARGE", "음원 파일은 49MB 이하여야 합니다.", 413);
+    }
+    throw new SongCatalogAdminError("INVALID_UPLOAD", "올바른 multipart 음원 요청이 필요합니다.", 400);
+  }
+}
 
 export function adminCatalogJson(value: unknown, status = 200) {
   return new Response(

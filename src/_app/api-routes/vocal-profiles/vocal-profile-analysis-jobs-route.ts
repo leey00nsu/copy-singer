@@ -2,6 +2,7 @@ import {
   ANALYSIS_AUDIO_MIME_TYPES,
   analysisAudioFileSchema,
   analysisIdempotencyKeySchema,
+  MAX_PROFILE_ANALYSIS_AUDIO_BYTES,
 } from "@/features/analyze-vocal-profile/index.model";
 import {
   analysisJobPayload,
@@ -9,6 +10,11 @@ import {
   listVisibleVocalProfileAnalysisJobs,
 } from "@/features/analyze-vocal-profile/index.server";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
+import {
+  MultipartBodyTooLargeError,
+  multipartBodyLimit,
+  readBoundedMultipartFormData,
+} from "@/shared/api/index.server";
 
 function enqueueError(error: unknown) {
   const code = error instanceof Error ? error.message : "ANALYSIS_ENQUEUE_FAILED";
@@ -30,6 +36,16 @@ function enqueueError(error: unknown) {
       { status: 413 },
     );
   }
+  if (code === "ANALYSIS_BUSY") {
+    return Response.json(
+      {
+        reasonCode: code,
+        detail: "Wait for the active vocal analysis to finish before starting another.",
+        retryable: true,
+      },
+      { status: 409 },
+    );
+  }
   return Response.json(
     { reasonCode: "ANALYSIS_ENQUEUE_FAILED", detail: "The analysis job could not be queued.", retryable: true },
     { status: 503 },
@@ -49,8 +65,9 @@ export async function POST(request: Request) {
   const idempotencyKey = request.headers.get("Idempotency-Key")?.trim() ?? "";
   let form: FormData;
   try {
-    form = await request.formData();
-  } catch {
+    form = await readBoundedMultipartFormData(request, multipartBodyLimit(MAX_PROFILE_ANALYSIS_AUDIO_BYTES));
+  } catch (error) {
+    if (error instanceof MultipartBodyTooLargeError) return enqueueError(new Error("PAYLOAD_TOO_LARGE"));
     return Response.json(
       { reasonCode: "INVALID_UPLOAD", detail: "Expected one multipart audio upload.", retryable: false },
       { status: 400 },

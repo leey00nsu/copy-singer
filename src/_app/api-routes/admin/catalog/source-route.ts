@@ -5,14 +5,14 @@ import {
   SongCatalogAdminError,
   uploadAdminCatalogTarget,
 } from "@/features/manage-song-catalog/index.server";
-import { adminCatalogError, adminCatalogJson } from "./http";
+import { adminCatalogAudioFormData, adminCatalogError, adminCatalogJson } from "./http";
 
 export async function POST(request: Request, context: { params: Promise<{ songId: string }> }) {
   const access = await requireAdminApi(request);
   if (access.response) return access.response;
   try {
     const { songId } = await context.params;
-    const form = await request.formData();
+    const form = await adminCatalogAudioFormData(request);
     const audio = form.get("audio");
     if (!(audio instanceof File)) throw new SongCatalogAdminError("AUDIO_REQUIRED", "음원 파일이 필요합니다.", 400);
     const input = replaceAdminSongSourceSchema.parse({

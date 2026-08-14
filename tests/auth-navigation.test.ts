@@ -2,8 +2,18 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import test from "node:test";
 
+import { resolveAuthSecret } from "../src/features/authentication/model/auth-secret-policy";
 import { safeCallbackURL } from "../src/features/authentication/model/safe-callback-url";
 import { isProductPathActive } from "../src/widgets/product-shell/model/product-navigation";
+
+test("production authentication fails closed without an explicit secret", () => {
+  assert.throws(() => resolveAuthSecret({ NODE_ENV: "production" }), /BETTER_AUTH_SECRET/);
+  assert.equal(
+    resolveAuthSecret({ NODE_ENV: "production", BETTER_AUTH_SECRET: " configured-secret " }),
+    "configured-secret",
+  );
+  assert.equal(typeof resolveAuthSecret({ NODE_ENV: "development" }), "string");
+});
 
 test("login callback accepts local paths and defaults to the product entry", () => {
   assert.equal(safeCallbackURL(undefined), "/profile");

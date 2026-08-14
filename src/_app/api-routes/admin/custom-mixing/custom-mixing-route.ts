@@ -4,6 +4,11 @@ import {
   submitAdminCustomMixing,
 } from "@/features/admin-custom-mixing/index.server";
 import { requireAdminApi } from "@/features/authentication/index.server";
+import {
+  MultipartBodyTooLargeError,
+  multipartBodyLimit,
+  readBoundedMultipartFormData,
+} from "@/shared/api/index.server";
 
 function invalidMultipartResponse() {
   return Response.json({ detail: "Expected a multipart form with profileId and target_audio." }, { status: 400 });
@@ -22,8 +27,11 @@ export async function POST(request: Request) {
 
   let form: FormData;
   try {
-    form = await request.formData();
-  } catch {
+    form = await readBoundedMultipartFormData(request, multipartBodyLimit(ADMIN_CUSTOM_MIXING_LIMITS.targetBytes));
+  } catch (error) {
+    if (error instanceof MultipartBodyTooLargeError) {
+      return Response.json({ detail: "target audio는 256MB 이하여야 합니다." }, { status: 400 });
+    }
     return invalidMultipartResponse();
   }
 

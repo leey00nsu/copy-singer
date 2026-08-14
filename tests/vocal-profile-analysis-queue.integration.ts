@@ -171,7 +171,21 @@ test("enqueue is idempotent and job reads are owner-scoped", async (context) => 
     const first = await enqueueVocalProfileAnalysis({ userId, idempotencyKey: "same-request", file });
     const second = await enqueueVocalProfileAnalysis({ userId, idempotencyKey: "same-request", file });
     assert.equal(second.id, first.id);
+    await assert.rejects(
+      () => enqueueVocalProfileAnalysis({ userId, idempotencyKey: "different-request", file }),
+      (error: unknown) => error instanceof Error && error.message === "ANALYSIS_BUSY",
+    );
     assert.equal(presigns, 1);
+    assert.equal(
+      await prisma.vocalProfileAnalysisJob.count({ where: { userId, status: { in: ["PENDING", "PROCESSING"] } } }),
+      1,
+    );
+    const admissionIndexes = await prisma.$queryRaw<Array<{ indexname: string }>>`
+      SELECT indexname FROM pg_indexes
+      WHERE schemaname = current_schema()
+        AND indexname = 'VocalProfileAnalysisJob_one_active_per_user'
+    `;
+    assert.equal(admissionIndexes.length, 1);
     assert.equal(await prisma.mediaAsset.count({ where: { userId } }), 1);
     assert.equal((await getVocalProfileAnalysisJob(userId, first.id))?.job.id, first.id);
     assert.equal(await getVocalProfileAnalysisJob(otherId, first.id), null);
@@ -190,6 +204,79 @@ test("enqueue is idempotent and job reads are owner-scoped", async (context) => 
     else process.env.LEEMAGE_PROJECT_ID = previousEnv.projectId;
     await cleanupUser(userId);
     await prisma.user.deleteMany({ where: { id: otherId } });
+  }
+});
+
+test("concurrent distinct analysis requests admit only one active job", async (context) => {
+  if (!process.env.DATABASE_URL) return context.skip("DATABASE_URL is not configured");
+  const { prisma, userId } = await withUser();
+  const previousFetch = globalThis.fetch;
+  const previousEnv = {
+    baseUrl: process.env.LEEMAGE_BASE_URL,
+    apiKey: process.env.LEEMAGE_API_KEY,
+    projectId: process.env.LEEMAGE_PROJECT_ID,
+  };
+  process.env.LEEMAGE_BASE_URL = "https://leemage.example/api/v1";
+  process.env.LEEMAGE_API_KEY = "test-key";
+  process.env.LEEMAGE_PROJECT_ID = "project";
+  let presigns = 0;
+  let deletes = 0;
+  globalThis.fetch = (async (input, init) => {
+    const url = String(input);
+    if (url.endsWith("/files/presign")) {
+      presigns += 1;
+      const fileId = `race-${userId}-${presigns}`;
+      return Response.json({
+        presignedUrl: `https://objects.example/upload-${presigns}`,
+        objectName: `project/${fileId}.wav`,
+        fileId,
+      });
+    }
+    if (url.startsWith("https://objects.example/upload-") && init?.method === "PUT") {
+      return new Response(null, { status: 200 });
+    }
+    if (url.endsWith("/files/confirm")) {
+      const body = JSON.parse(String(init?.body ?? "{}")) as { fileId?: string };
+      return Response.json(
+        { file: { id: body.fileId, url: `https://objects.example/${body.fileId}.wav` } },
+        { status: 201 },
+      );
+    }
+    if (init?.method === "DELETE") {
+      deletes += 1;
+      return new Response(null, { status: 204 });
+    }
+    throw new Error(`Unexpected URL ${url} ${init?.method ?? "GET"}`);
+  }) as typeof fetch;
+
+  try {
+    const { enqueueVocalProfileAnalysis } = await import("../src/features/analyze-vocal-profile/index.server");
+    const file = new File([Uint8Array.from([1, 2, 3, 4])], "voice.wav", { type: "audio/wav" });
+    const results = await Promise.allSettled([
+      enqueueVocalProfileAnalysis({ userId, idempotencyKey: "race-a", file }),
+      enqueueVocalProfileAnalysis({ userId, idempotencyKey: "race-b", file }),
+    ]);
+
+    assert.equal(results.filter((result) => result.status === "fulfilled").length, 1);
+    const rejected = results.find((result) => result.status === "rejected");
+    assert.ok(rejected?.status === "rejected");
+    assert.equal(rejected.reason instanceof Error ? rejected.reason.message : null, "ANALYSIS_BUSY");
+    assert.equal(presigns, 2);
+    assert.equal(deletes, 1);
+    assert.equal(
+      await prisma.vocalProfileAnalysisJob.count({ where: { userId, status: { in: ["PENDING", "PROCESSING"] } } }),
+      1,
+    );
+    assert.equal(await prisma.mediaAsset.count({ where: { userId } }), 1);
+  } finally {
+    globalThis.fetch = previousFetch;
+    if (previousEnv.baseUrl === undefined) delete process.env.LEEMAGE_BASE_URL;
+    else process.env.LEEMAGE_BASE_URL = previousEnv.baseUrl;
+    if (previousEnv.apiKey === undefined) delete process.env.LEEMAGE_API_KEY;
+    else process.env.LEEMAGE_API_KEY = previousEnv.apiKey;
+    if (previousEnv.projectId === undefined) delete process.env.LEEMAGE_PROJECT_ID;
+    else process.env.LEEMAGE_PROJECT_ID = previousEnv.projectId;
+    await cleanupUser(userId);
   }
 });
 

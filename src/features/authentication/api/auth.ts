@@ -4,13 +4,14 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { ensureSignupGrant } from "@/entities/ticket/index.server";
 import { prisma } from "@/shared/db/index.server";
+import { resolveAuthSecret } from "../model/auth-secret-policy";
 
 const baseURL = process.env.BETTER_AUTH_URL ?? "http://localhost:3000";
 
 export const auth = betterAuth({
   appName: "Copysinger",
   baseURL,
-  secret: process.env.BETTER_AUTH_SECRET ?? "copy-singer-local-development-secret-change-me",
+  secret: resolveAuthSecret(process.env),
   database: prismaAdapter(prisma, { provider: "postgresql" }),
   emailAndPassword: { enabled: false },
   socialProviders: {

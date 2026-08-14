@@ -57,11 +57,22 @@ async function findByIdempotency(userId: string, idempotencyKey: string) {
   return rows[0] ?? null;
 }
 
+async function hasActiveAnalysisJob(userId: string) {
+  const rows = await prisma.$queryRaw<Array<{ id: string }>>`
+    SELECT "id" FROM "VocalProfileAnalysisJob"
+    WHERE "userId" = ${userId}
+      AND "status" IN ('PENDING'::"VocalProfileAnalysisJobStatus", 'PROCESSING'::"VocalProfileAnalysisJobStatus")
+    LIMIT 1
+  `;
+  return rows.length > 0;
+}
+
 export async function enqueueVocalProfileAnalysis(input: { userId: string; idempotencyKey: string; file: File }) {
   const key = input.idempotencyKey.trim();
   if (!key || key.length > 200) throw new Error("INVALID_IDEMPOTENCY_KEY");
   const existing = await findByIdempotency(input.userId, key);
   if (existing) return existing;
+  if (await hasActiveAnalysisJob(input.userId)) throw new Error("ANALYSIS_BUSY");
 
   const mimeType = normalizeAudioUploadMimeType(input.file.type);
   if (!isSupportedAudioUploadMimeType(mimeType)) throw new Error("UNSUPPORTED_AUDIO");
@@ -87,7 +98,7 @@ export async function enqueueVocalProfileAnalysis(input: { userId: string; idemp
         'PENDING'::"VocalProfileAnalysisJobStatus", ${key}, ${vocalProfileAnalysisMaxAttempts()},
         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
       )
-      ON CONFLICT ("userId", "idempotencyKey") DO NOTHING
+      ON CONFLICT DO NOTHING
       RETURNING *
     `;
     if (rows[0]) return rows[0];
@@ -96,7 +107,7 @@ export async function enqueueVocalProfileAnalysis(input: { userId: string; idemp
       await discardMediaAsset(sourceAsset.id);
       return raced;
     }
-    throw new Error("ANALYSIS_ENQUEUE_FAILED");
+    throw new Error("ANALYSIS_BUSY");
   } catch (error) {
     await discardMediaAsset(sourceAsset.id);
     throw error;

@@ -7,7 +7,7 @@ import { isSupportedAudioUploadMimeType, normalizeAudioUploadMimeType } from "@/
 import { createLeemageClient } from "@/shared/media/index.server";
 import { SongCatalogAdminError } from "../model/error";
 
-const MAX_UPLOAD_BYTES = 49_000_000;
+export const ADMIN_CATALOG_TARGET_MAX_UPLOAD_BYTES = 49_000_000;
 
 function safeExtension(fileName: string) {
   const extension = path.extname(fileName).toLowerCase();
@@ -23,7 +23,7 @@ export async function uploadAdminCatalogTarget(input: { sourceId: string; file: 
   const mimeType = normalizeAudioUploadMimeType(input.file.type);
   if (!isSupportedAudioUploadMimeType(mimeType))
     throw new SongCatalogAdminError("UNSUPPORTED_AUDIO", "지원하지 않는 음원 형식입니다.", 415);
-  if (input.file.size <= 0 || input.file.size > MAX_UPLOAD_BYTES) {
+  if (input.file.size <= 0 || input.file.size > ADMIN_CATALOG_TARGET_MAX_UPLOAD_BYTES) {
     throw new SongCatalogAdminError("PAYLOAD_TOO_LARGE", "음원 파일은 49MB 이하여야 합니다.", 413);
   }
   const bytes = new Uint8Array(await input.file.arrayBuffer());
