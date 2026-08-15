@@ -43,6 +43,7 @@
     - [x] summary/results/range chart/histogram/pitch trace copy와 tooltip을 새 용어로 동기화했다.
     - [x] `유효 음성 구간`과 녹음 길이만 남긴 간결한 녹음 정보 surface와 분석 용어 각주를 구현했다.
     - [x] presentation/UI/contract targeted tests와 Storybook 7/7, TypeScript를 통과했다.
+  - Evidence: `7d40e98` (`feat(F033): 보컬 분석 용어·음이름·요약 정리`)
 
 - [TODO][PRD-FR-065] T-F033-analysis-insight-recommendation-clarity-02 보컬 프로필 목록·곡 비교 UI 단순화
   - Date: 2026-08-15
@@ -118,3 +119,5 @@
 | `pnpm run lint` | `-` | `-` |
 | `pnpm exec tsc --noEmit` | `-` | `-` |
 | `pnpm test` | `-` | `-` |
+
+<!-- lee-spec-kit:workflow-sync 2026-08-15T11:06:23.000Z -->
