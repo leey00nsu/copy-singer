@@ -193,6 +193,14 @@ POST 오류는 다음을 구분한다.
 
 이 확인은 사용자 실수 방지용 UX 경계다. 서버 API에는 신뢰 가능한 `confirmed` 플래그를 추가하지 않고 기존 잔액 검증, idempotency, debit/refund를 그대로 권한 경계로 유지한다.
 
+### 13. 공용 modal viewport overflow 방어
+
+`shared/ui/dialog`의 popup grid는 `minmax(0, 1fr)` 단일 column과 `min-w-0`을 강제해 긴 파일명·URL·ID가 intrinsic min-content 폭으로 dialog 자체를 늘리지 못하게 한다. dialog는 `max-h-[calc(100dvh-2rem)]` 안에서 세로 스크롤하고 가로 overflow는 viewport 밖으로 새지 않게 막는다. header/footer/title/description도 축소 가능한 최소폭과 긴 토큰 wrapping을 갖는다.
+
+`shared/ui/sheet`도 동일한 `min-w-0`과 긴 토큰 wrapping을 적용하고, top/bottom sheet는 viewport 최대 높이 안에서 내부 스크롤을 제공한다. 개별 modal은 공용 primitive 방어를 우회하지 않으며, 파일명처럼 한 줄 요약이 적절한 값은 제한된 부모 안에서 `truncate`를 유지한다.
+
+회귀 검증은 공용 Dialog/Sheet story에 긴 무공백 토큰을 넣고 bounding rect가 viewport를 넘지 않는지 확인하며, 실제 재현 경로인 `LongAudioDialog`에는 긴 파일명 story를 추가한다.
+
 ---
 
 ## 주요 변경 파일
@@ -294,7 +302,7 @@ DB migration이 필요하다. 기존 사용자 데이터는 삭제하지 않는�
 - 기존 `ticketBalance` → AI_MIXING wallet로 보존
 - 기존 ticket ledger → AI_MIXING kind backfill
 - 기존 사용자의 분석 ticket 가입 지급은 애플리케이션의 idempotent ensure 경계에서 현재 환경변수 정책으로 1회 적용
-- 기존 프로필이 slot limit보다 많아도 보존하고 새 분석만 차단
+- 기존 보컬 프로필은 개수와 관계없이 그대로 보존하며 분석 admission은 프로필 보유 수를 검사하지 않음
 
 배포 환경에서는 다음 환경변수를 명시적으로 검토한다.
 

@@ -135,6 +135,22 @@
     - [x] 분석/믹싱 Storybook에서 취소 0회·확인 1회와 `ticketCost=0` 즉시 실행을 검증했다. targeted Storybook 26/26 PASS를 확인했다.
     - [x] 관련 정적 UI/API 테스트 35/35, FSD 4/4, lint/typecheck, 최종 `pnpm test`를 통과했다.
 
+- [DONE][NON-PRD] T-F031-vocal-profile-slot-limit-08 공용 모달 viewport overflow 방어
+  - Date: 2026-08-15
+  - Acceptance:
+    - 긴 파일명·URL·ID 같은 긴 문자열이 들어가도 `Dialog`가 viewport 가로 폭을 넘지 않는다.
+    - 긴 콘텐츠가 dialog grid의 intrinsic width를 키워 footer까지 바깥으로 밀어내지 않는다.
+    - `Dialog`는 작은 viewport에서 세로로도 화면을 벗어나지 않고 내부 스크롤로 접근할 수 있다.
+    - `Sheet`도 긴 문자열이 가로로 화면 밖으로 새지 않으며 bottom/top sheet의 긴 내용은 viewport 안에서 스크롤할 수 있다.
+    - 기존 확인·삭제·이름변경·카탈로그·필터·모바일 메뉴 modal/sheet 동작은 유지한다.
+  - Checklist:
+    - [x] 공용 `DialogContent`의 grid를 `minmax(0,1fr)`로 제한하고 viewport 최대 높이·내부 스크롤·가로 overflow 방어를 추가했다.
+    - [x] `DialogHeader/Footer/Title/Description`에 축소 가능한 최소폭과 긴 문자열 wrapping을 적용했다.
+    - [x] 공용 `SheetContent/Header/Footer/Title/Description`에도 가로 overflow 방어와 top/bottom viewport 최대 높이를 적용했다.
+    - [x] 실제 재현 경로인 `LongAudioDialog`에 긴 파일명 ellipsis/title과 viewport bounding 회귀 Storybook을 추가했다.
+    - [x] 공용 Dialog/Sheet에 긴 무공백 토큰·긴 세로 콘텐츠 회귀 story를 추가해 content/footer가 viewport 안에 남는지 검증했다.
+    - [x] 전체 Dialog/Sheet Storybook 사용처를 감사해 6 files / 26 tests PASS, 공용 재현 3 files / 8 tests PASS, lint/typecheck 및 최종 `pnpm test` PASS를 확인했다.
+
 ---
 
 ## 완료 조건
@@ -153,12 +169,14 @@
 | `pnpm run test:admin` | `2026-08-15` | `PASS — UI 4/4 + integration 1/1` |
 | account/API/query targeted tests | `2026-08-15` | `PASS — 24/24` |
 | targeted Storybook: ticket confirmation/profile/recommendation/song detail | `2026-08-15` | `PASS — 4 files, 26/26` |
+| modal overflow regression: Dialog/Sheet/LongAudioDialog | `2026-08-15` | `PASS — 3 files, 8/8` |
+| all Dialog/Sheet usage stories | `2026-08-15` | `PASS — 6 files, 26/26` |
 | targeted UI/API/query tests | `2026-08-15` | `PASS — 35/35` |
 | FSD architecture boundaries | `2026-08-15` | `PASS — 4/4` |
 | `pnpm run lint` | `2026-08-15` | `PASS` |
 | `pnpm exec tsc --noEmit` | `2026-08-15` | `PASS` |
-| `pnpm test` | `2026-08-15` | `PASS — build + unit/integration + Storybook 158/158` |
+| `pnpm test` | `2026-08-15` | `PASS — build + unit/integration + Storybook 162/162` |
 
 - **구현 커밋**: `69c51de` (`feat(F031): 회귀 검증과 문서 동기화`), `096b43e` (`feat(F031): 보컬 프로필 상한 제거`), `65a03df` (`feat(F031): 티켓 소모 확인 모달`)
 
-<!-- lee-spec-kit:workflow-sync 2026-08-15T09:07:07.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-15T09:25:02.000Z -->

@@ -135,3 +135,20 @@
   - **PR**: -
   - **Test/Log**: targeted Storybook 4 files 26/26 PASS; 관련 UI/API/query 35/35 PASS; FSD 4/4 PASS; lint/typecheck PASS; 최종 `pnpm test` PASS (Storybook 158/158).
 - **Consequences**: 분석/믹싱 버튼 자체는 서버 요청을 직접 실행하지 않고 확인 dialog를 여는 트리거가 된다. 서버 API 계약에는 신뢰용 confirmation 플래그를 추가하지 않는다.
+
+## D009: modal overflow는 개별 화면이 아니라 공용 Dialog/Sheet primitive에서 방어한다 (2026-08-15)
+
+- **Context**: 긴 오디오 파일명이 들어간 `LongAudioDialog`에서 dialog 내부 grid의 intrinsic min-content 폭이 popup 너비보다 커지며 파일 정보와 footer가 viewport 밖으로 밀려나는 문제가 확인됐다. 같은 공용 primitive를 쓰는 다른 modal도 긴 URL·ID·문구에서 동일한 위험이 있다.
+- **Constraints**: 개별 modal마다 `overflow-hidden`을 반복하지 않고, 작은 viewport와 긴 세로 콘텐츠까지 공통으로 안전해야 한다. 정상 콘텐츠를 무조건 잘라 정보 접근성을 떨어뜨리지 않아야 한다.
+- **Options**: 재현 화면에만 `truncate/min-w-0` 추가, 모든 사용처 개별 보강, 공용 `Dialog`/`Sheet` 레이아웃 계약을 보강하고 실제 긴 값 표현만 화면별로 조정하는 방식을 비교한다.
+- **Decision**: 공용 `DialogContent`의 grid column을 `minmax(0,1fr)`로 제한하고 content/header/footer/text 계층에 축소 가능한 최소폭과 긴 토큰 wrapping을 적용한다. dialog는 viewport 최대 높이 안에서 내부 스크롤한다. `Sheet`도 가로 overflow와 top/bottom viewport 높이를 같은 원칙으로 방어한다. `LongAudioDialog`의 파일명은 제한된 폭 안에서 ellipsis로 표시한다.
+- **Rationale**: root cause를 primitive에서 제거하면 현재와 미래의 모든 modal이 같은 안전영역 계약을 얻고, 개별 화면은 값의 표현 방식만 책임지면 된다.
+- **Trace**:
+  - **DOING 시작 시점**: 사용자 스크린샷 기반 구현 수정 요청을 받아 전체 `DialogContent`/`SheetContent` 사용처를 감사하고 T08을 추가했다.
+  - **DONE 전 확정 시점**: `DialogContent`의 grid를 `minmax(0,1fr)`로 제한하고 viewport 최대 높이·내부 스크롤·긴 토큰 wrapping을 추가했다. `Sheet`에도 같은 가로 안전영역과 top/bottom 최대 높이를 적용하고, 실제 긴 오디오 파일명과 공용 긴 토큰/세로 overflow를 Storybook bounding-box 테스트로 고정했다.
+  - **머지 후 확인**: -
+- **Evidence**:
+  - **Commit**: Pending.
+  - **PR**: -
+  - **Test/Log**: modal overflow regression 3 files 8/8 PASS; 전체 Dialog/Sheet 사용 Storybook 6 files 26/26 PASS; lint/typecheck PASS; 최종 `pnpm test` PASS (Storybook 162/162).
+- **Consequences**: modal primitive 자체가 긴 문자열과 작은 viewport에 대한 공통 방어선이 되며, 새 modal은 별도 폭 overflow 패치를 기본적으로 요구하지 않는다.
