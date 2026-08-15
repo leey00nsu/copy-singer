@@ -159,6 +159,6 @@
 | `pnpm exec tsc --noEmit` | `2026-08-15` | `PASS` |
 | `pnpm test` | `2026-08-15` | `PASS — build + unit/integration + Storybook 158/158` |
 
-- **구현 커밋**: `69c51de` (`feat(F031): 회귀 검증과 문서 동기화`), `096b43e` (`feat(F031): 보컬 프로필 상한 제거`)
+- **구현 커밋**: `69c51de` (`feat(F031): 회귀 검증과 문서 동기화`), `096b43e` (`feat(F031): 보컬 프로필 상한 제거`), `65a03df` (`feat(F031): 티켓 소모 확인 모달`)
 
-<!-- lee-spec-kit:workflow-sync 2026-08-15T09:05:50.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-15T09:07:07.000Z -->

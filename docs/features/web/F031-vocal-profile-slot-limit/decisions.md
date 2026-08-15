@@ -131,7 +131,7 @@
   - **DONE 전 확정 시점**: `TicketConsumptionConfirmDialog`를 공용 ticket UI로 추가하고 보컬 분석, AI 믹싱 최초 시작, retry 경로를 모두 연결했다. 비용 0은 확인을 생략하고 기존 액션을 바로 실행한다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: -
+  - **Commit**: `65a03df` (`feat(F031): 티켓 소모 확인 모달`)
   - **PR**: -
   - **Test/Log**: targeted Storybook 4 files 26/26 PASS; 관련 UI/API/query 35/35 PASS; FSD 4/4 PASS; lint/typecheck PASS; 최종 `pnpm test` PASS (Storybook 158/158).
 - **Consequences**: 분석/믹싱 버튼 자체는 서버 요청을 직접 실행하지 않고 확인 dialog를 여는 트리거가 된다. 서버 API 계약에는 신뢰용 confirmation 플래그를 추가하지 않는다.
