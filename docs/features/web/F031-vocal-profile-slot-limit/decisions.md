@@ -114,7 +114,7 @@
   - **DONE 전 확정 시점**: analysis queue와 API/contract에서 프로필 개수 검사를 제거하고, UI에는 분석 티켓 잔액/비용만 남겼다. 기존 프로필 5개 보유 상태에서도 새 분석 접수와 티켓 1장 차감이 정상 동작하도록 integration으로 고정했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: Pending T06 implementation commit
+  - **Commit**: `096b43e` (`feat(F031): 보컬 프로필 상한 제거`)
   - **PR**: -
   - **Test/Log**: vocal analysis queue 8/8 PASS; profile Storybook 11/11 PASS; lint/typecheck PASS; 최종 `pnpm test` PASS (Storybook 155/155).
 - **Consequences**: D001의 슬롯 정책, D004의 슬롯 환경변수, D006의 슬롯 만석 UX는 더 이상 활성 정책이 아니다. 분석 화면에는 분석 티켓 잔액/비용만 남는다.
