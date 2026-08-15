@@ -106,3 +106,19 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: -
   - **Test/Log**: landing Storybook 4/4 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS
 - **Consequences**: CTA를 누르면 별도 script 없이 브라우저가 `한 소절로 시작해, 내 목소리로 완성.` 섹션으로 이동하며 URL hash는 `#product-story`가 된다.
+
+## D006: 이용 방법 CTA는 reduced-motion을 존중하는 smooth scroll을 사용 (2026-08-16)
+
+- **Context**: `이용 방법 보기` CTA의 대상 섹션은 올바르게 연결됐지만 native anchor 이동은 즉시 점프하므로 사용자가 부드러운 스크롤 이동을 요청했다.
+- **Constraints**: `#product-story` deep link와 URL hash 의미를 유지하고, 전역 스크롤 동작이나 다른 anchor의 이동 방식은 바꾸지 않는다. `prefers-reduced-motion` 사용자는 애니메이션 이동을 강제하지 않는다.
+- **Decision**: 일반 환경에서는 CTA 클릭을 가로채 대상 섹션에 `scrollIntoView({ behavior: "smooth", block: "start" })`를 호출하고 hash를 `#product-story`로 유지한다. `useReducedMotion()`이 true이거나 대상 섹션을 찾지 못하면 native anchor 동작으로 fallback한다.
+- **Rationale**: 요청한 CTA 하나에만 smooth scroll을 적용하면서 기존 deep-link semantics와 접근성 설정을 함께 보존한다.
+- **Trace**:
+  - **DOING 시작 시점**: 사용자 요청으로 기존 native anchor 이동을 smooth scroll로 확장한다.
+  - **DONE 전 확정 시점**: CTA 클릭 handler가 일반 환경에서는 `scrollIntoView({ behavior: "smooth", block: "start" })`를 호출하고 `#product-story` hash를 유지하며, `useReducedMotion()`이 true이면 native anchor fallback을 사용하도록 구현했다.
+  - **머지 후 확인**: Pending
+- **Evidence**:
+  - **Commit**: implementation commit pending
+  - **PR**: -
+  - **Test/Log**: landing Storybook 4/4 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS
+- **Consequences**: 일반 사용자는 CTA 클릭 시 부드럽게 대상 섹션으로 이동하고, reduced-motion 환경에서는 기존 즉시 이동을 사용한다.

@@ -132,6 +132,18 @@
     - [x] landing Storybook 4/4, lint, TypeScript를 통과시키고 spec/plan/decisions/tasks를 동기화했다.
   - Evidence: landing Storybook 4/4 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS
 
+- [DONE][PRD-FR-062] T-F033-analysis-insight-recommendation-clarity-08 랜딩 이용 방법 CTA smooth scroll 적용
+  - Date: 2026-08-16
+  - Acceptance:
+    - `이용 방법 보기` 클릭 시 `#product-story` 섹션으로 smooth scroll 이동한다.
+    - URL hash와 기존 anchor fallback은 유지한다.
+    - `prefers-reduced-motion` 환경에서는 애니메이션 없이 즉시 이동한다.
+  - Checklist:
+    - [x] CTA 클릭 handler에 smooth scroll과 reduced-motion fallback을 적용했다.
+    - [x] landing Storybook에서 `scrollIntoView({ behavior: "smooth", block: "start" })` 호출과 `#product-story` hash를 검증했다.
+    - [x] landing Storybook 4/4, lint, TypeScript를 통과시키고 spec/plan/decisions/tasks를 동기화했다.
+  - Evidence: landing Storybook 4/4 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS; implementation commit pending
+
 ---
 
 ## 완료 조건

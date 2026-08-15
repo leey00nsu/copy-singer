@@ -271,7 +271,7 @@ src/_pages/song-detail/ui/song-detail.tsx
 
 ### 6.1 랜딩 이용 방법 CTA
 
-`src/_pages/home/ui/landing-hero.tsx`의 보조 CTA 문구를 `이용 방법 보기`로 바꾸고 `#product-story`로 연결한다. 대상 anchor는 `src/_pages/home/ui/landing-page.tsx`의 `한 소절로 시작해, 내 목소리로 완성.` 섹션이 가진 기존 `id="product-story"`를 그대로 사용해 새 scroll 로직이나 client state를 추가하지 않는다.
+`src/_pages/home/ui/landing-hero.tsx`의 보조 CTA 문구를 `이용 방법 보기`로 유지하고 `#product-story`로 연결한다. 클릭 시 대상 섹션의 기존 `id="product-story"`를 찾아 `scrollIntoView({ behavior: "smooth", block: "start" })`로 이동하며 URL hash도 유지한다. 이미 사용 중인 `useReducedMotion()` 결과가 true이면 native anchor 동작을 그대로 사용해 즉시 이동한다. 별도 client state나 전역 scroll style은 추가하지 않는다.
 
 ---
 
@@ -317,7 +317,7 @@ src/_pages/song-detail/ui/song-detail.tsx
 
 ### Storybook
 
-관련 보컬 프로필 detail/summary/library와 recommendation results/song detail stories를 실행해 desktop/mobile에서 구조와 copy를 검증한다. 랜딩 story에서는 `이용 방법 보기` 링크의 `href="#product-story"`와 대상 섹션 존재를 함께 확인한다.
+관련 보컬 프로필 detail/summary/library와 recommendation results/song detail stories를 실행해 desktop/mobile에서 구조와 copy를 검증한다. 랜딩 story에서는 `이용 방법 보기` 링크의 `href="#product-story"`, 대상 섹션 존재, 클릭 시 `scrollIntoView({ behavior: "smooth", block: "start" })` 호출을 함께 확인한다.
 
 ### 전체 회귀
 

@@ -248,7 +248,7 @@ Histogram, pitch trace, low/mid/high reference audio는 유지한다. `MIDI` dec
 
 ### FR-11: 랜딩 이용 방법 진입점 명확화
 
-랜딩 hero의 보조 CTA는 `이용 방법 보기`로 표시하고, 클릭하면 `한 소절로 시작해, 내 목소리로 완성.` 제목의 제품 이용 흐름 섹션으로 이동해야 한다. 기존 별도 product story 섹션으로 이동하지 않는다.
+랜딩 hero의 보조 CTA는 `이용 방법 보기`로 표시하고, 클릭하면 `한 소절로 시작해, 내 목소리로 완성.` 제목의 제품 이용 흐름 섹션으로 smooth scroll 이동해야 한다. `prefers-reduced-motion` 환경에서는 애니메이션 없이 즉시 이동하며, 기존 별도 product story 섹션으로 이동하지 않는다.
 
 ---
 
