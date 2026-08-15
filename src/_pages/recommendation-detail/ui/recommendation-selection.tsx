@@ -4,8 +4,8 @@ import {
   formatRecommendedShift,
   type RecommendationItemResponse,
   type RecommendationMixingCapability,
-  recommendationMatchColor,
-  recommendationMatchPercent,
+  recommendationScore,
+  recommendationScoreColor,
   visibleRecommendationReasons,
 } from "@/entities/recommendation";
 import { RecommendationMixingAction } from "@/features/create-mixing";
@@ -37,10 +37,10 @@ function SelectionDetails({
     <section aria-labelledby={`${idPrefix}-title`}>
       <div className="flex items-center justify-between gap-3">
         <Badge variant={matchRank !== null && matchRank <= 3 ? "default" : "secondary"}>
-          {matchRank === null ? "추천 적합도 순위 없음" : `추천 적합도 ${matchRank}위`}
+          {matchRank === null ? "추천 순위 없음" : `추천 ${matchRank}위`}
         </Badge>
-        <span className="text-2xl font-semibold" style={{ color: recommendationMatchColor(item) }}>
-          {recommendationMatchPercent(item)}%
+        <span className="text-2xl font-semibold" style={{ color: recommendationScoreColor(item) }}>
+          {recommendationScore(item)}점
         </span>
       </div>
       <h2 className="mt-5 text-2xl font-semibold tracking-tight" id={`${idPrefix}-title`}>
@@ -55,7 +55,7 @@ function SelectionDetails({
         </div>
         <div className="rounded-lg bg-background px-3 py-4">
           <dt className="text-xs text-muted-foreground">원키 적합도</dt>
-          <dd className="mt-1 text-lg font-semibold">{Math.round(item.originalKeyScore)}%</dd>
+          <dd className="mt-1 text-lg font-semibold">{Math.round(item.originalKeyScore)}점</dd>
         </div>
       </dl>
 

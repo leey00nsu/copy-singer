@@ -11,8 +11,8 @@ import {
   type RecommendationFilters,
   type RecommendationRunResponse,
   recommendationDetailQueryOptions,
-  recommendationMatchRank,
   recommendationMixingUnavailableDescription,
+  recommendationRank,
   serializeRecommendationFilters,
 } from "@/entities/recommendation";
 import { useRecommendationMixing } from "@/features/create-mixing";
@@ -136,7 +136,7 @@ export function RecommendationResults({
 
   const visibleItems = projectRecommendationItems(run.items, filters);
   const selectedItem = visibleItems.find((item) => item.id === selectedItemId) ?? visibleItems[0] ?? null;
-  const selectedMatchRank = selectedItem ? recommendationMatchRank(run.items, selectedItem.id) : null;
+  const selectedMatchRank = selectedItem ? recommendationRank(run.items, selectedItem.id) : null;
 
   return (
     <CreationFunnelShell currentStep="recommendation">

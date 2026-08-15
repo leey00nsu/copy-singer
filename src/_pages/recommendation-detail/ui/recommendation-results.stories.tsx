@@ -141,11 +141,11 @@ export const DenseComparisonList: Story = {
     await expect(canvas.getByText("전체 100곡 중 100곡")).toBeVisible();
     await expect(canvas.getAllByRole("button", { name: /\d+$/ })).toHaveLength(100);
     await expect(canvas.getByRole("button", { name: "이 곡으로 AI 믹싱" })).toBeVisible();
-    await expect(canvas.getByText("추천 적합도 1위")).toBeVisible();
+    await expect(canvas.getByText("추천 1위")).toBeVisible();
 
     const thirdRow = canvas.getByRole("table").querySelectorAll("tbody tr")[2];
     if (!(thirdRow instanceof HTMLElement)) throw new Error("Third recommendation row is missing");
-    const score = within(thirdRow).getByText("90%");
+    const score = within(thirdRow).getByText("91점");
     const scoreRect = score.getBoundingClientRect();
     const hitTarget = document.elementFromPoint(
       scoreRect.left + scoreRect.width / 2,
@@ -158,7 +158,7 @@ export const DenseComparisonList: Story = {
     const selection = canvas.getByRole("complementary", { name: "선택한 추천곡" });
     await expect(selection).toHaveClass("lg:sticky", "lg:top-24", "lg:self-start");
     await expect(within(selection).getByRole("heading", { name: "밤편지 3" })).toBeVisible();
-    await expect(within(selection).getByText("추천 적합도 3위")).toBeVisible();
+    await expect(within(selection).getByText("추천 3위")).toBeVisible();
 
     await userEvent.click(canvas.getByRole("button", { name: "서른 즈음에 1 · 김광석 원본 영상 플레이어 열기" }));
     const expandedRow = canvasElement.querySelector("[data-youtube-expanded-row]");

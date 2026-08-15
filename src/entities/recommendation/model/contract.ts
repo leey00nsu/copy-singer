@@ -113,7 +113,7 @@ export const recommendationItemResponseSchema = z.object({
   songProfile: recommendationSongProfileSchema.nullable().optional().default(null),
   originalKeyScore: z.number(),
   adjustedScore: z.number(),
-  selectionScore: z.number().nullable(),
+  selectionScore: z.number(),
   recommendedShift: z.number(),
   reasonCodes: z.array(keyFitReasonCodeSchema),
   reasons: z.array(z.string()),

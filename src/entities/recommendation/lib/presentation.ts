@@ -4,13 +4,14 @@ import type { RecommendationItemResponse, RecommendationMixingCapability } from 
 export const recommendationScoreFilterSchema = z.enum(["all", "90-plus", "80-plus", "under-80"]);
 export const recommendationShiftFilterSchema = z.enum(["all", "original", "lower", "higher"]);
 export const recommendationStatusFilterSchema = z.enum(["all", "not-started", "active", "succeeded", "failed"]);
-export const recommendationSortSchema = z.enum(["rank", "adjusted-score", "original-score", "title"]);
+export const recommendationSortSchema = z.enum(["recommendation-score", "original-score", "title"]);
 
 export type RecommendationScoreFilter = z.infer<typeof recommendationScoreFilterSchema>;
 export type RecommendationShiftFilter = z.infer<typeof recommendationShiftFilterSchema>;
 export type RecommendationStatusFilter = z.infer<typeof recommendationStatusFilterSchema>;
 export type RecommendationSort = z.infer<typeof recommendationSortSchema>;
 
+const LEGACY_RECOMMENDATION_SCORE_SORTS = new Set(["rank", "adjusted-score"]);
 const HIDDEN_RECOMMENDATION_REASON_CODES = new Set([
   "KEY_SHIFT_IMPROVES_FIT",
   "HIGH_RANGE_BURDEN",
@@ -32,7 +33,7 @@ export const DEFAULT_RECOMMENDATION_FILTERS: RecommendationFilters = Object.free
   score: "all",
   shift: "all",
   status: "all",
-  sort: "adjusted-score",
+  sort: "recommendation-score",
 });
 
 const FILTER_KEYS = ["q", "score", "shift", "status", "sort"] as const;
@@ -42,6 +43,11 @@ function parsedOrDefault<T extends string>(schema: z.ZodType<T>, value: string |
   return parsed.success ? parsed.data : fallback;
 }
 
+function parseRecommendationSort(value: string | null): RecommendationSort {
+  if (value && LEGACY_RECOMMENDATION_SCORE_SORTS.has(value)) return "recommendation-score";
+  return parsedOrDefault(recommendationSortSchema, value, "recommendation-score");
+}
+
 export function parseRecommendationFilters(input: string | URLSearchParams): RecommendationFilters {
   const params = typeof input === "string" ? new URLSearchParams(input) : input;
   return {
@@ -49,7 +55,7 @@ export function parseRecommendationFilters(input: string | URLSearchParams): Rec
     score: parsedOrDefault(recommendationScoreFilterSchema, params.get("score"), "all"),
     shift: parsedOrDefault(recommendationShiftFilterSchema, params.get("shift"), "all"),
     status: parsedOrDefault(recommendationStatusFilterSchema, params.get("status"), "all"),
-    sort: parsedOrDefault(recommendationSortSchema, params.get("sort"), "adjusted-score"),
+    sort: parseRecommendationSort(params.get("sort")),
   };
 }
 
@@ -60,7 +66,7 @@ export function serializeRecommendationFilters(filters: RecommendationFilters, c
   if (filters.score !== "all") params.set("score", filters.score);
   if (filters.shift !== "all") params.set("shift", filters.shift);
   if (filters.status !== "all") params.set("status", filters.status);
-  if (filters.sort !== "adjusted-score") params.set("sort", filters.sort);
+  if (filters.sort !== "recommendation-score") params.set("sort", filters.sort);
   return params.toString();
 }
 
@@ -73,13 +79,13 @@ export function synthesisStatusFilter(
   return "active";
 }
 
-export function recommendationMatchPercent(item: Pick<RecommendationItemResponse, "adjustedScore">) {
-  return Math.max(0, Math.min(100, Math.round(item.adjustedScore)));
+export function recommendationScore(item: Pick<RecommendationItemResponse, "selectionScore">) {
+  return Math.max(0, Math.min(100, Math.round(item.selectionScore)));
 }
 
-export function recommendationMatchColor(item: Pick<RecommendationItemResponse, "adjustedScore">) {
-  const matchPercent = recommendationMatchPercent(item);
-  return `color-mix(in oklab, var(--foreground), var(--data-accent-foreground) ${matchPercent}%)`;
+export function recommendationScoreColor(item: Pick<RecommendationItemResponse, "selectionScore">) {
+  const score = recommendationScore(item);
+  return `color-mix(in oklab, var(--foreground), var(--data-accent-foreground) ${score}%)`;
 }
 
 export function recommendationMixingUnavailableDescription(
@@ -100,16 +106,14 @@ export function visibleRecommendationReasons(item: Pick<RecommendationItemRespon
 
 type ProjectableRecommendation = Pick<
   RecommendationItemResponse,
-  "rank" | "title" | "artist" | "originalKeyScore" | "adjustedScore" | "recommendedShift" | "synthesis"
+  "rank" | "title" | "artist" | "selectionScore" | "originalKeyScore" | "recommendedShift" | "synthesis"
 >;
 
-export function recommendationMatchRank<
-  T extends Pick<ProjectableRecommendation, "adjustedScore" | "rank"> & { id: string },
->(items: readonly T[], itemId: string) {
-  const index = items
-    .toSorted((first, second) => second.adjustedScore - first.adjustedScore || first.rank - second.rank)
-    .findIndex((item) => item.id === itemId);
-  return index < 0 ? null : index + 1;
+export function recommendationRank<T extends Pick<ProjectableRecommendation, "rank"> & { id: string }>(
+  items: readonly T[],
+  itemId: string,
+) {
+  return items.find((item) => item.id === itemId)?.rank ?? null;
 }
 
 export function projectRecommendationItems<T extends ProjectableRecommendation>(
@@ -122,7 +126,7 @@ export function projectRecommendationItems<T extends ProjectableRecommendation>(
       if (query && !`${item.title} ${item.artist}`.normalize("NFKC").toLocaleLowerCase("ko-KR").includes(query)) {
         return false;
       }
-      const score = recommendationMatchPercent(item);
+      const score = recommendationScore(item);
       if (filters.score === "90-plus" && score < 90) return false;
       if (filters.score === "80-plus" && (score < 80 || score >= 90)) return false;
       if (filters.score === "under-80" && score >= 80) return false;
@@ -133,16 +137,14 @@ export function projectRecommendationItems<T extends ProjectableRecommendation>(
       return true;
     })
     .toSorted((first, second) => {
-      if (filters.sort === "adjusted-score")
-        return second.adjustedScore - first.adjustedScore || first.rank - second.rank;
+      if (filters.sort === "recommendation-score")
+        return second.selectionScore - first.selectionScore || first.rank - second.rank;
       if (filters.sort === "original-score")
         return second.originalKeyScore - first.originalKeyScore || first.rank - second.rank;
-      if (filters.sort === "title")
-        return (
-          first.title.localeCompare(second.title, "ko-KR") ||
-          first.artist.localeCompare(second.artist, "ko-KR") ||
-          first.rank - second.rank
-        );
-      return first.rank - second.rank;
+      return (
+        first.title.localeCompare(second.title, "ko-KR") ||
+        first.artist.localeCompare(second.artist, "ko-KR") ||
+        first.rank - second.rank
+      );
     });
 }

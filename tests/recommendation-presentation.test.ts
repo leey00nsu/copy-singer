@@ -5,9 +5,9 @@ import {
   parseRecommendationFilters,
   projectRecommendationItems,
   projectRecommendationSongProfile,
-  recommendationMatchColor,
-  recommendationMatchPercent,
-  recommendationMatchRank,
+  recommendationRank,
+  recommendationScore,
+  recommendationScoreColor,
   serializeRecommendationFilters,
   visibleRecommendationReasons,
   youtubeEmbedUrl,
@@ -42,6 +42,7 @@ const items = [
     artist: "조용필",
     originalKeyScore: 84.4,
     adjustedScore: 91.6,
+    selectionScore: 94.2,
     recommendedShift: -2,
     synthesis: synthesis("processing"),
   },
@@ -51,6 +52,7 @@ const items = [
     artist: "테스트",
     originalKeyScore: 92.2,
     adjustedScore: 92.2,
+    selectionScore: 90.1,
     recommendedShift: 0,
     synthesis: synthesis("not_started"),
   },
@@ -60,6 +62,7 @@ const items = [
     artist: "밤",
     originalKeyScore: 60,
     adjustedScore: 76.3,
+    selectionScore: 70.4,
     recommendedShift: 1,
     synthesis: synthesis("succeeded"),
   },
@@ -72,16 +75,14 @@ test("parses and serializes only supported recommendation URL filters", () => {
     score: "90-plus",
     shift: "lower",
     status: "active",
-    sort: "adjusted-score",
+    sort: "recommendation-score",
   });
   assert.equal(serializeRecommendationFilters(parsed), "q=%EB%B0%94%EB%9E%8C&score=90-plus&shift=lower&status=active");
   assert.deepEqual(parseRecommendationFilters("score=invalid&sort=unknown"), DEFAULT_RECOMMENDATION_FILTERS);
+  assert.equal(parseRecommendationFilters("sort=rank").sort, "recommendation-score");
+  assert.equal(parseRecommendationFilters("sort=adjusted-score").sort, "recommendation-score");
   assert.deepEqual(
     projectRecommendationItems(items, DEFAULT_RECOMMENDATION_FILTERS).map((item) => item.rank),
-    [2, 1, 3],
-  );
-  assert.deepEqual(
-    projectRecommendationItems(items, { ...DEFAULT_RECOMMENDATION_FILTERS, sort: "rank" }).map((item) => item.rank),
     [1, 2, 3],
   );
 });
@@ -110,31 +111,31 @@ test("projects search, score, shift, status, and sort without mutating source ra
   );
 });
 
-test("shows a bounded integer match percent without fabricating precision", () => {
-  assert.equal(recommendationMatchPercent(items[0]), 92);
-  assert.equal(recommendationMatchPercent({ adjustedScore: 101.2 }), 100);
-  assert.equal(recommendationMatchPercent({ adjustedScore: -1 }), 0);
+test("shows a bounded integer recommendation score without fabricating precision", () => {
+  assert.equal(recommendationScore(items[0]), 94);
+  assert.equal(recommendationScore({ selectionScore: 101.2 }), 100);
+  assert.equal(recommendationScore({ selectionScore: -1 }), 0);
 });
 
-test("derives the displayed recommendation rank from adjusted match score", () => {
+test("uses the server recommendation rank as the displayed rank", () => {
   const rankedItems = items.map((item) => ({ ...item, id: `item-${item.rank}` }));
-  assert.equal(recommendationMatchRank(rankedItems, "item-2"), 1);
-  assert.equal(recommendationMatchRank(rankedItems, "item-1"), 2);
-  assert.equal(recommendationMatchRank(rankedItems, "item-3"), 3);
-  assert.equal(recommendationMatchRank(rankedItems, "missing"), null);
+  assert.equal(recommendationRank(rankedItems, "item-1"), 1);
+  assert.equal(recommendationRank(rankedItems, "item-2"), 2);
+  assert.equal(recommendationRank(rankedItems, "item-3"), 3);
+  assert.equal(recommendationRank(rankedItems, "missing"), null);
 });
 
-test("maps match strength continuously from foreground black to the brand accent", () => {
+test("maps recommendation score continuously from foreground black to the brand accent", () => {
   assert.equal(
-    recommendationMatchColor({ adjustedScore: 0 }),
+    recommendationScoreColor({ selectionScore: 0 }),
     "color-mix(in oklab, var(--foreground), var(--data-accent-foreground) 0%)",
   );
   assert.equal(
-    recommendationMatchColor({ adjustedScore: 50.4 }),
+    recommendationScoreColor({ selectionScore: 50.4 }),
     "color-mix(in oklab, var(--foreground), var(--data-accent-foreground) 50%)",
   );
   assert.equal(
-    recommendationMatchColor({ adjustedScore: 100 }),
+    recommendationScoreColor({ selectionScore: 100 }),
     "color-mix(in oklab, var(--foreground), var(--data-accent-foreground) 100%)",
   );
 });
@@ -150,14 +151,14 @@ test("keeps only user-meaningful recommendation reasons", () => {
         "LOW_NOTES_REDUCED",
       ],
       reasons: [
-        "실용 음역이 편안하게 겹칩니다.",
-        "-6키로 조정하면 예상 적합도가 34.4점에서 75.7점으로 높아집니다.",
+        "이번 녹음의 주요 음역과 곡의 주요 음역이 겹칩니다.",
+        "-6키로 조정하면 음역 적합도 점수가 34.4점에서 75.7점으로 높아집니다.",
         "추천 키에서도 고음 부담이 약 1.7반음 남아 있습니다.",
         "키를 조정해 고음 부담을 약 12.0반음 줄였습니다.",
         "키를 조정해 저음 부담을 줄였습니다.",
       ],
     }),
-    [{ code: "HIGH_TESSITURA_OVERLAP", reason: "실용 음역이 편안하게 겹칩니다." }],
+    [{ code: "HIGH_TESSITURA_OVERLAP", reason: "이번 녹음의 주요 음역과 곡의 주요 음역이 겹칩니다." }],
   );
 });
 

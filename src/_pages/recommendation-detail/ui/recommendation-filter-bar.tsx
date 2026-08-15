@@ -35,7 +35,7 @@ export function RecommendationFilterBar({
     filters.score !== "all" ||
     filters.shift !== "all" ||
     filters.status !== "all" ||
-    filters.sort !== "adjusted-score";
+    filters.sort !== "recommendation-score";
   const activeFilterCount = [filters.score !== "all", filters.shift !== "all", filters.status !== "all"].filter(
     Boolean,
   ).length;
@@ -133,7 +133,7 @@ export function RecommendationFilterBar({
 }
 
 const scoreOptions = [
-  ["all", "전체 적합도"],
+  ["all", "전체 추천 점수"],
   ["90-plus", "90% 이상"],
   ["80-plus", "80–89%"],
   ["under-80", "80% 미만"],
@@ -155,8 +155,7 @@ const statusOptions = [
 ] as const;
 
 const sortOptions = [
-  ["adjusted-score", "추천 적합도 높은 순"],
-  ["rank", "종합 추천 순위"],
+  ["recommendation-score", "추천 점수 높은 순"],
   ["original-score", "원키 적합도 높은 순"],
   ["title", "곡명 가나다순"],
 ] as const;

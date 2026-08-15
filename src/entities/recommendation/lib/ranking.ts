@@ -101,11 +101,11 @@ function formatReason(
   const recommended = result.recommended;
   switch (code) {
     case "ORIGINAL_KEY_BEST":
-      return "이번 소절에서 관찰된 음역에는 원키가 가장 잘 맞았어요.";
+      return "이번 녹음의 주요 음역에는 원키가 가장 잘 맞았어요.";
     case "KEY_SHIFT_IMPROVES_FIT":
-      return `${formatRecommendedShift(result.recommendedShift)}로 조정하면 예상 적합도가 ${result.originalKeyScore.toFixed(1)}점에서 ${result.adjustedScore.toFixed(1)}점으로 높아져요.`;
+      return `${formatRecommendedShift(result.recommendedShift)}로 조정하면 음역 적합도 점수가 ${result.originalKeyScore.toFixed(1)}점에서 ${result.adjustedScore.toFixed(1)}점으로 높아져요.`;
     case "HIGH_TESSITURA_OVERLAP":
-      return `편안한 음역과 곡의 주요 음역이 약 ${Math.round(recommended.tessituraOverlapRatio * 100)}% 겹쳐요.`;
+      return `이번 녹음의 주요 음역과 곡의 주요 음역이 약 ${Math.round(recommended.tessituraOverlapRatio * 100)}% 겹쳐요.`;
     case "HIGH_RANGE_BURDEN":
       return `추천 키에서도 고음 부담이 약 ${(recommended.highTessituraExcess + recommended.highExtremeExcess).toFixed(1)}반음 남아 있어요.`;
     case "LOW_RANGE_BURDEN":
@@ -127,7 +127,7 @@ function formatReason(
       return `키를 조정해 저음 부담을 약 ${Math.max(0, reduced).toFixed(1)}반음 줄였어요.`;
     }
     case "LOW_PROFILE_CONFIDENCE":
-      return "분석 신뢰도가 낮아 더 긴 소절로 다시 분석하면 추천이 달라질 수 있어요.";
+      return "이번 녹음에서는 추천 근거가 충분하지 않아 더 긴 소절로 다시 분석하면 결과가 달라질 수 있어요.";
   }
 }
 

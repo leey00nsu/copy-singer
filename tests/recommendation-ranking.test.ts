@@ -167,7 +167,7 @@ test("formats signed karaoke keys and evidence-backed Korean reasons", () => {
   const reasons = formatRecommendationReasons(result);
   assert.equal(reasons.length, result.reasonCodes.length);
   assert.ok(reasons.every((reason) => reason.endsWith(".")));
-  assert.ok(reasons.some((reason) => reason.includes("예상 적합도")));
+  assert.ok(reasons.some((reason) => reason.includes("음역 적합도 점수")));
 });
 
 test("low-confidence explanations recommend a longer recording", () => {

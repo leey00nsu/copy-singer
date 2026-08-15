@@ -130,8 +130,10 @@ test("renders the full ranked recommendation list without starting synthesis", (
   assert.doesNotMatch(html, /scope="col">순위<\/th>/);
   assert.doesNotMatch(html, />\d+위<\/span>/);
   assert.equal((html.match(/aria-pressed="(?:true|false)"/g) ?? []).length, 100);
-  assert.match(html, /추천 적합도/);
+  assert.match(html, /추천 점수/);
   assert.match(html, /추천 키/);
+  assert.doesNotMatch(html, /추천 적합도|종합 추천 순위/);
+  assert.match(html, /\d+점/);
   assert.match(html, /이번 보컬 프로필로 100곡을 비교했어요/);
   assert.match(html, /가창력이나 건강 상태를 평가하지 않아요/);
   assert.equal((html.match(/이 곡으로 AI 믹싱<\/button>/g) ?? []).length, 1);

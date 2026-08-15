@@ -4,8 +4,8 @@ import { Fragment, useState } from "react";
 import type { RecommendationItemResponse, RecommendationMixingCapability } from "@/entities/recommendation";
 import {
   formatRecommendedShift,
-  recommendationMatchColor,
-  recommendationMatchPercent,
+  recommendationScore,
+  recommendationScoreColor,
   YouTubeVideo,
 } from "@/entities/recommendation";
 import { RecommendationMixingAction } from "@/features/create-mixing";
@@ -38,7 +38,7 @@ export function RecommendationSongList({
               곡
             </th>
             <th className="w-24 px-3 py-2.5 font-medium" scope="col">
-              추천 적합도
+              추천 점수
             </th>
             <th className="w-24 px-3 py-2.5 font-medium" scope="col">
               추천 키
@@ -50,7 +50,7 @@ export function RecommendationSongList({
         </thead>
         <tbody className="block xl:table-row-group">
           {items.map((item) => {
-            const matchPercent = recommendationMatchPercent(item);
+            const score = recommendationScore(item);
             const selected = item.id === selectedItemId;
             const videoActive = item.id === activeVideoItemId;
             const playerId = `recommendation-video-${item.id}`;
@@ -91,12 +91,12 @@ export function RecommendationSongList({
                     </div>
                   </td>
                   <td className="align-middle xl:px-3 xl:py-3">
-                    <p className="text-[11px] text-muted-foreground sm:sr-only">추천 적합도</p>
+                    <p className="text-[11px] text-muted-foreground sm:sr-only">추천 점수</p>
                     <p
                       className="mt-0.5 text-lg font-semibold tracking-tight xl:mt-0"
-                      style={{ color: recommendationMatchColor(item) }}
+                      style={{ color: recommendationScoreColor(item) }}
                     >
-                      {matchPercent}%
+                      {score}점
                     </p>
                   </td>
                   <td className="align-middle xl:px-3 xl:py-3">
