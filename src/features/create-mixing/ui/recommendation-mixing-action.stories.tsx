@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, fn, userEvent, within } from "storybook/test";
+import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 import { recommendationRunFixture } from "../../../../tests/msw/fixtures";
 import { RecommendationMixingAction } from "./recommendation-mixing-action";
 
@@ -25,7 +25,7 @@ export const TicketConfirmation: Story = {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("button", { name: "AI 믹싱" }));
     const firstDialog = within(document.body).getByRole("dialog", { name: "믹싱 티켓 1장을 사용할까요?" });
-    await expect(firstDialog).toBeVisible();
+    await waitFor(() => expect(firstDialog).toBeVisible());
     await expect(within(firstDialog).getByText("믹싱 티켓 1장")).toBeVisible();
     await expect(args.onStart).not.toHaveBeenCalled();
     await userEvent.click(within(firstDialog).getByRole("button", { name: "취소" }));
@@ -33,6 +33,7 @@ export const TicketConfirmation: Story = {
 
     await userEvent.click(canvas.getByRole("button", { name: "AI 믹싱" }));
     const confirmDialog = within(document.body).getByRole("dialog", { name: "믹싱 티켓 1장을 사용할까요?" });
+    await waitFor(() => expect(confirmDialog).toBeVisible());
     await userEvent.click(within(confirmDialog).getByRole("button", { name: "AI 믹싱 시작" }));
     await expect(args.onStart).toHaveBeenCalledOnce();
     await expect(args.onStart).toHaveBeenCalledWith(item.id);
@@ -59,6 +60,7 @@ export const RetryConfirmation: Story = {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("button", { name: "다시 시도" }));
     const dialog = within(document.body).getByRole("dialog", { name: "믹싱 티켓 1장을 사용할까요?" });
+    await waitFor(() => expect(dialog).toBeVisible());
     await expect(args.onStart).not.toHaveBeenCalled();
     await userEvent.click(within(dialog).getByRole("button", { name: "다시 믹싱" }));
     await expect(args.onStart).toHaveBeenCalledWith(item.id, true);

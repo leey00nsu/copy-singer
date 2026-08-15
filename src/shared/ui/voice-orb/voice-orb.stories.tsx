@@ -39,6 +39,16 @@ export const Default: Story = {
   },
 };
 
+export const SoftBlendReference: Story = {
+  args: { speed: 0 },
+  play: async ({ canvasElement }) => {
+    const orb = within(canvasElement).getByTestId("voice-orb");
+    await waitFor(() => expect(orb).toHaveAttribute("data-orb-ready", "true"));
+    await expect(orb).toHaveAttribute("data-orb-effective-speed", "0");
+    await expect(orb.querySelector("canvas")).toBeInTheDocument();
+  },
+};
+
 export const WebGLFallback: Story = {
   args: { forceFallback: true },
   play: async ({ canvasElement }) => {

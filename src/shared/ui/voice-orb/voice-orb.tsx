@@ -69,9 +69,16 @@ const fragmentShader = /* glsl */ `
     return dot(vec4(31.316), n);
   }
 
+  float smoothMax3(vec3 colorIn) {
+    const float power = 6.0;
+    vec3 safeColor = max(colorIn, vec3(0.0));
+    vec3 powered = pow(safeColor, vec3(power));
+    return pow(powered.r + powered.g + powered.b, 1.0 / power);
+  }
+
   vec4 extractAlpha(vec3 colorIn) {
-    float a = max(max(colorIn.r, colorIn.g), colorIn.b);
-    return vec4(colorIn.rgb / (a + 1e-5), a);
+    float a = clamp(smoothMax3(colorIn), 0.0, 1.0);
+    return vec4(colorIn.rgb / max(a, 1e-4), a);
   }
 
   const vec3 baseColor1 = vec3(0.611765, 0.262745, 0.996078);
@@ -94,11 +101,14 @@ const fragmentShader = /* glsl */ `
     float n0 = snoise3(vec3(uv * noiseScale, iTime * 0.5)) * 0.5 + 0.5;
     float r0 = mix(mix(innerRadius, 1.0, 0.4), mix(innerRadius, 1.0, 0.6), n0);
     float d0 = distance(uv, (r0 * invLen) * uv);
-    float v0 = light1(1.0, 10.0, d0);
+    float v0 = light1(1.0, 6.5, d0);
     v0 *= smoothstep(r0 * 1.05, r0, len);
     float innerFade = smoothstep(r0 * 0.8, r0 * 0.95, len);
     v0 *= mix(innerFade, 1.0, bgLuminance * 0.7);
-    float cl = cos(ang + iTime * 2.0) * 0.5 + 0.5;
+    v0 = pow(clamp(v0, 0.0, 1.0), 0.8);
+    float colorWarp = snoise3(vec3(uv * 0.32, iTime * 0.1 + 7.0)) * 0.16;
+    float cl = cos(ang + iTime * 1.35 + colorWarp) * 0.5 + 0.5;
+    cl = 0.5 + (cl - 0.5) * 0.72;
     float a = iTime * -1.0;
     vec2 pos = vec2(cos(a), sin(a)) * r0;
     float d = distance(uv, pos);
