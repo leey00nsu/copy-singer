@@ -33,3 +33,20 @@
   - **PR**: -
   - **Test/Log**: targeted Storybook 5 files / 25 tests PASS; lint/typecheck PASS; `pnpm test` PASS (Storybook 163/163).
 - **Consequences**: 내부 색 경계는 시간에 따라 천천히 움직이지만 기존 전체 orb motion 속도 계약은 바뀌지 않는다.
+
+## D003: smooth alpha는 기존 hard-max보다 전체 밀도를 높이지 않는다 (2026-08-15)
+
+- **Context**: 초기 F032의 power norm은 dominant-channel 전환을 부드럽게 했지만 여러 채널의 powered 값을 합산하면서 기존 hard max보다 alpha가 커질 수 있었고, 실제 검토에서 orb 색이 이전보다 진하고 불투명해졌다.
+- **Constraints**: 내부 seam 완화는 유지해야 하며 외곽 edgeMask·silhouette·motion을 투명도 보정 수단으로 사용하지 않는다.
+- **Options**: 전체 canvas opacity를 낮추기, edgeMask를 약하게 만들기, smooth normalization 자체가 hard-max 상한을 넘지 않도록 바꾸기를 비교한다.
+- **Decision**: `smoothMax3()`를 softmax-weighted average로 바꿔 반환값이 입력 RGB의 최대 채널보다 커지지 않게 한다. 초기 F032에서 강화했던 `v0` attenuation/gamma는 F032 이전 값으로 복원하고, fallback의 색/그림자 alpha도 낮춰 반투명한 인상을 맞춘다.
+- **Rationale**: seam 완화 로직을 유지하면서 진해진 직접 원인인 내부 alpha/컬러 기여도만 되돌릴 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 사용자 피드백 `색이 너무 진해졌는데 이전처럼 투명한 느낌으로`를 implementation approval의 변경 요청으로 받아 T04를 추가했다.
+  - **DONE 전 확정 시점**: `smoothMax3()`를 `sharpness=12` softmax-weighted average로 교체해 smooth alpha가 기존 hard max를 넘지 않게 했다. `v0`는 `light1(1.0, 10.0, d0)`로 복원하고 gamma 보정을 제거했으며, fallback conic alpha는 `0.68`, dark inner shadow는 `0.42`, outer shadow는 `0.45`로 낮췄다.
+  - **머지 후 확인**: -
+- **Evidence**:
+  - **Commit**: pending task commit
+  - **PR**: -
+  - **Test/Log**: shader/fallback contract 4/4 PASS; 주요 VoiceOrb 사용처 Storybook 5 files / 25 tests PASS; lint/typecheck PASS; 최종 `pnpm test` PASS (Storybook 163/163). 전체 실행 중 기존 admin/VoiceOrb Storybook 준비 타이밍 실패는 단독 재검증 및 ready timeout 보강 후 최종 전체 PASS로 해소했다.
+- **Consequences**: F032의 color phase warp와 blend contrast는 유지되지만 전체 alpha와 중심 컬러 밀도는 이전 orb에 가까워진다.

@@ -19,7 +19,7 @@
 
 현재 `VoiceOrb` 내부에서 핑크·라벤더·보라 계열 색이 섞이는 일부 구간이 연속적인 빛의 덩어리보다 얇은 경계/띠처럼 읽힌다. 외곽 silhouette나 alpha feather를 바꾸는 것이 아니라 **orb 내부의 색 혼합과 밝기 전환만 더 넓고 연속적으로 보이게** 조정한다.
 
-사용자가 특정 색 경계선을 쉽게 짚을 수 없는 상태를 목표로 하되, 현재 브랜드 hue, orb 크기, 외곽 투명도, 모션 속도와 상호작용 계약은 유지한다.
+사용자가 특정 색 경계선을 쉽게 짚을 수 없는 상태를 목표로 하되, 현재 브랜드 hue, orb 크기, 외곽 투명도, 모션 속도와 상호작용 계약을 유지하고 **F032 적용 전의 가볍고 반투명한 전체 밀도감도 보존한다.**
 
 ---
 
@@ -60,7 +60,7 @@
 
 현재 fragment shader의 `extractAlpha()`에서 RGB 최대 채널을 직접 선택하는 불연속적인 `max(max(r,g),b)` normalization을 내부 색 혼합의 시각적 seam 원인 후보로 본다. dominant channel이 바뀌어도 결과가 연속적으로 변하는 smooth norm/soft-max 계열 계산으로 교체한다.
 
-새 계산은 `colorIn`의 상대 색조를 유지하면서 alpha가 `0..1` 범위를 벗어나지 않아야 하며 0에 가까운 입력에서 division instability를 만들지 않아야 한다.
+새 계산은 `colorIn`의 상대 색조를 유지하면서 alpha가 `0..1` 범위를 벗어나지 않아야 하며 0에 가까운 입력에서 division instability를 만들지 않아야 한다. smooth normalization 때문에 기존 hard-max alpha보다 전체 alpha가 체계적으로 커져 orb가 진하고 불투명해져서는 안 된다.
 
 ### FR-2: 넓은 색 전환 영역
 
@@ -84,7 +84,7 @@ float edgeMask = 1.0 - smoothstep(0.76, 0.9, length(uv));
 
 ### FR-5: fallback 일관성
 
-CSS fallback의 색 전환이 live orb보다 더 선명한 seam을 만들 경우, 기존 브랜드 색과 silhouette를 유지하는 범위에서 gradient stop/중간색을 조정한다. fallback은 애니메이션이나 WebGL 기능을 추가하지 않는다.
+CSS fallback의 색 전환이 live orb보다 더 선명한 seam을 만들 경우, 기존 브랜드 색과 silhouette를 유지하는 범위에서 gradient stop/중간색을 조정한다. fallback은 애니메이션이나 WebGL 기능을 추가하지 않으며 live orb와 비슷한 반투명 밀도를 유지한다.
 
 ---
 

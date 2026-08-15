@@ -15,7 +15,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/voice-orb-color-blend-smoothing`
-- **대기 중 변경 요청**: VoiceOrb 내부 핑크↔보라 색 혼합 경계를 더 부드럽게 조정
+- **대기 중 변경 요청**: 내부 색 혼합 완화는 유지하되 F032 적용 전과 비슷한 가볍고 투명한 orb 밀도로 복원
 - **스펙 승인**: 2026-08-15 사용자 응답 `자동진행.`을 workflow 승인 옵션 `A`로 기록
 - **구현 승인**: -
 - **로컬 머지 승인**: -
@@ -66,6 +66,20 @@
     - [x] `pnpm test`를 실행해 build/unit/integration 및 Storybook 163/163 PASS를 확인했다.
     - [x] 구현 수치와 검증 Evidence를 decisions/tasks에 동기화했다.
 
+- [DONE][PRD-FR-064] T-F032-voice-orb-color-blend-smoothing-04 기존 투명감 복원
+  - Date: 2026-08-15
+  - Acceptance:
+    - smooth normalization과 저주파 color warp는 유지해 내부 핑크↔보라 seam을 다시 만들지 않는다.
+    - F032 초기 구현에서 증가한 alpha/채도 밀도를 낮춰 이전 orb처럼 배경이 은은하게 비치는 가벼운 인상을 복원한다.
+    - 외곽 `edgeMask`, orb 크기, motion scale, public props는 변경하지 않는다.
+    - WebGL fallback도 live orb와 비슷한 투명한 밀도를 유지한다.
+  - Checklist:
+    - [x] smooth normalization을 softmax-weighted average(`sharpness=12`)로 바꿔 기존 hard max보다 alpha가 커지지 않게 했다.
+    - [x] `v0` attenuation/gamma를 F032 이전 밀도로 복원하고 fallback gradient/inner shadow의 불투명도를 낮췄다.
+    - [x] shader contract 4/4와 고정 프레임/주요 사용처 Storybook 5 files / 25 tests PASS를 확인했다.
+    - [x] lint/typecheck와 최종 `pnpm test`를 다시 통과해 Storybook 163/163 PASS를 확인했다.
+    - [x] 최종 Evidence를 decisions/tasks에 동기화했다.
+
 ---
 
 ## 완료 조건
@@ -78,7 +92,7 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| VoiceOrb shader/fallback contract | `2026-08-15` | `PASS — 3/3` |
+| VoiceOrb shader/fallback contract | `2026-08-15` | `PASS — 4/4, smooth alpha ≤ 기존 hard max 검증 포함` |
 | targeted Storybook: VoiceOrb/login/landing/voice-signal | `2026-08-15` | `PASS — 5 files / 25 tests` |
 | `pnpm run lint` | `2026-08-15` | `PASS` |
 | `pnpm exec tsc --noEmit` | `2026-08-15` | `PASS` |
@@ -86,4 +100,4 @@
 
 - **구현 커밋**: `2961a82` (`feat(F032): 전체 회귀 검증과 문서 동기화`)
 
-<!-- lee-spec-kit:workflow-sync 2026-08-15T10:04:32.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-15T10:14:57.000Z -->

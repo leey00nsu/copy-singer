@@ -38,18 +38,18 @@ float a = max(max(colorIn.r, colorIn.g), colorIn.b);
 
 핑크 영역에서는 red, 보라 영역에서는 blue가 dominant channel이 되면서 선택 채널이 바뀌는 지점의 기울기가 꺾일 수 있다. 이를 연속적인 smooth norm으로 바꾼다.
 
-최종 구현은 power `6.0`의 smooth norm을 사용한다.
+초기 구현의 power norm은 여러 채널의 powered 값을 합산해 기존 hard max보다 alpha를 크게 만들 수 있었고, 실제 검토에서 orb가 이전보다 진하고 불투명해졌다. 후속 보정에서는 **최대 입력 채널을 넘지 않는 smooth weighted average**로 교체한다.
 
 ```glsl
 float smoothMax3(vec3 colorIn) {
-  const float power = 6.0;
-  vec3 safeColor = max(colorIn, vec3(0.0));
-  vec3 powered = pow(safeColor, vec3(power));
-  return pow(powered.r + powered.g + powered.b, 1.0 / power);
+  const float sharpness = 12.0;
+  vec3 safeColor = clamp(colorIn, 0.0, 1.0);
+  vec3 weights = exp(safeColor * sharpness);
+  return dot(safeColor, weights) / max(weights.r + weights.g + weights.b, 1e-4);
 }
 ```
 
-`extractAlpha()`에서는 `a`를 `0..1`로 clamp하고 division denominator를 `max(a, 1e-4)`로 보호한다.
+`extractAlpha()`에서는 `a`를 `0..1`로 clamp하고 division denominator를 `max(a, 1e-4)`로 보호한다. weighted average는 dominant-channel 전환에서 연속적이면서 입력의 실제 최대값보다 커지지 않아 F032 적용 전보다 alpha를 체계적으로 높이지 않는다.
 
 ### 2. angular color phase를 넓고 비정형으로 만들기
 
@@ -66,17 +66,11 @@ float smoothMax3(vec3 colorIn) {
 
 ### 3. 내부 밝기 transition 완화
 
-현재 `v0 = light1(1.0, 10.0, d0)`의 attenuation을 낮추고 필요 시 clamp 후 gamma/easing을 사용한다.
+초기 F032에서 `v0` attenuation을 `6.5`로 낮추고 gamma `0.8`을 적용했지만, 이 변화는 seam 완화와 함께 배경색보다 컬러 기여도도 키워 전체 orb가 진해지는 부작용이 있었다.
 
-최종 값:
+후속 보정에서는 **F032 이전의 `light1(1.0, 10.0, d0)`와 선형 falloff를 복원**하고, 내부 seam 완화는 smooth alpha normalization과 color phase warp가 담당하게 한다.
 
-```glsl
-float v0 = light1(1.0, 6.5, d0);
-...
-v0 = pow(clamp(v0, 0.0, 1.0), 0.8);
-```
-
-목표는 중심 highlight의 존재감을 없애는 것이 아니라 밝은 중심→색 영역 전환 폭을 넓히는 것이다.
+목표는 중심 highlight와 기존 반투명 밀도를 되살리면서 핑크↔보라 전환선의 규칙성만 낮추는 것이다.
 
 ### 4. 외곽은 변경하지 않기
 
@@ -93,7 +87,8 @@ float edgeMask = 1.0 - smoothstep(0.76, 0.9, length(uv));
 `globals.css`의 `.voice-orb-fallback`은 현재 conic gradient의 강한 색 대비가 live orb와 다른 seam을 만들 수 있다. WebGL 결과를 기준으로 다음 범위에서만 조정한다.
 
 - radial highlight가 `24% → 48%`, 보라 내부광이 `38% → 68%` 범위에서 천천히 사라지도록 transition 폭을 넓힌다.
-- conic gradient를 `#c4a8f6 → #b9baf2 → #e1b7ee → #c8b5f0`의 중간 라벤더 계열로 완화한다.
+- conic gradient의 중간 라벤더 stop은 유지하되 전체 alpha를 낮춰 배경이 은은하게 비치게 한다.
+- inner/outer shadow의 불투명도도 필요한 범위에서 낮춘다.
 - 기존 silhouette, 크기, shadow 구조는 유지한다.
 
 ### 6. 검증용 deterministic story
