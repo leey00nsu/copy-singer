@@ -27,8 +27,10 @@ export function LongAudioDialog({ durationSeconds, fileName, onCancel, onConfirm
             첫 음이 감지되는 지점부터 최대 60초를 사용해요. 원본 파일은 변경하지 않아요.
           </DialogDescription>
         </DialogHeader>
-        <div className="rounded-lg bg-muted/45 px-4 py-3 text-sm">
-          <p className="truncate font-medium">{fileName}</p>
+        <div className="min-w-0 rounded-lg bg-muted/45 px-4 py-3 text-sm">
+          <p className="min-w-0 truncate font-medium" title={fileName}>
+            {fileName}
+          </p>
           {durationSeconds !== null ? (
             <p className="mt-1 text-xs text-muted-foreground">약 {Math.ceil(durationSeconds)}초</p>
           ) : null}

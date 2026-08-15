@@ -43,3 +43,35 @@ export const UnknownDuration: Story = {
     durationSeconds: null,
   },
 };
+
+export const LongFileNameStaysInsideDialog: Story = {
+  args: {
+    durationSeconds: 242,
+    fileName:
+      "Mariah Carey (머라이어 캐리) - All I Want For Christmas Is You [가사-Lyrics] [c5SUQgjObwY]-very-long-recording-file-name-without-any-safe-short-boundary.m4a",
+  },
+  globals: {
+    viewport: { value: "mobile1", isRotated: false },
+  },
+  play: async ({ canvasElement }) => {
+    const page = within(canvasElement.ownerDocument.body);
+    const dialog = page.getByRole("dialog", { name: /파일의 길이가 너무 길어요/ });
+    const fileName = page.getByTitle(
+      "Mariah Carey (머라이어 캐리) - All I Want For Christmas Is You [가사-Lyrics] [c5SUQgjObwY]-very-long-recording-file-name-without-any-safe-short-boundary.m4a",
+    );
+    const footer = dialog.querySelector<HTMLElement>('[data-slot="dialog-footer"]');
+    if (!footer) throw new Error("Long audio dialog footer is missing.");
+
+    const viewportWidth = dialog.ownerDocument.documentElement.clientWidth;
+    const dialogRect = dialog.getBoundingClientRect();
+    const fileRect = fileName.getBoundingClientRect();
+    const footerRect = footer.getBoundingClientRect();
+
+    await expect(dialogRect.left).toBeGreaterThanOrEqual(0);
+    await expect(dialogRect.right).toBeLessThanOrEqual(viewportWidth);
+    await expect(fileRect.right).toBeLessThanOrEqual(dialogRect.right);
+    await expect(footerRect.left).toBeGreaterThanOrEqual(dialogRect.left);
+    await expect(footerRect.right).toBeLessThanOrEqual(dialogRect.right + 1);
+    await expect(fileName.scrollWidth).toBeGreaterThan(fileName.clientWidth);
+  },
+};
