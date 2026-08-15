@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity, AudioWaveform, BadgeCheck, Clock3, Gauge, Info, Volume2 } from "lucide-react";
+import { Activity, Clock3, Info } from "lucide-react";
 import { useId, useMemo } from "react";
 import { Bar, BarChart, CartesianGrid, Line, LineChart, ReferenceLine, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
@@ -8,7 +8,7 @@ import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } f
 import { StatusNotice } from "@/shared/ui/status-notice";
 import { VOCAL_CHART_COLOR, VOCAL_CHART_GRADIENT } from "../lib/chart-brand";
 import type { VocalProfileResponse } from "../model/contract";
-import { midiToNoteName } from "../model/pitch";
+import { midiToKoreanNoteName, midiToNoteName } from "../model/pitch";
 import { referenceBandAvailability, referenceBandSegments } from "../model/reference-segments";
 import {
   axisTicks,
@@ -41,17 +41,17 @@ export function VocalRangeProfile({
     typeof profile.medianMidi === "number" && Number.isFinite(profile.medianMidi) ? profile.medianMidi : null;
   const summary: Array<[string, string, string]> = [
     [
-      "전체 관측 음역",
-      `${midiToNoteName(profile.minMidi)} ~ ${midiToNoteName(profile.maxMidi)}`,
-      `${profile.minMidi.toFixed(1)} – ${profile.maxMidi.toFixed(1)} MIDI`,
+      "관측 음역",
+      `${midiToKoreanNoteName(profile.minMidi)} ~ ${midiToKoreanNoteName(profile.maxMidi)}`,
+      "이번 녹음에서 관찰된 범위",
     ],
     [
-      "실용 음역",
-      `${midiToNoteName(profile.tessituraLowMidi)} ~ ${midiToNoteName(profile.tessituraHighMidi)}`,
-      `${profile.tessituraLowMidi.toFixed(1)} – ${profile.tessituraHighMidi.toFixed(1)} MIDI`,
+      "주요 음역",
+      `${midiToKoreanNoteName(profile.tessituraLowMidi)} ~ ${midiToKoreanNoteName(profile.tessituraHighMidi)}`,
+      "자주 관찰된 음높이 구간",
     ],
   ];
-  if (medianMidi !== null) summary.push(["중앙음", midiToNoteName(medianMidi), `${medianMidi.toFixed(1)} MIDI`]);
+  if (medianMidi !== null) summary.push(["중심 음", midiToKoreanNoteName(medianMidi), "음이 가장 많이 모인 위치"]);
 
   return (
     <Card
@@ -67,7 +67,7 @@ export function VocalRangeProfile({
               data-range-legend-swatch="observed"
               style={{ backgroundColor: VOCAL_CHART_COLOR.context }}
             />
-            전체 관측 음역
+            관측 음역
           </span>
           <span className="flex items-center gap-2" data-range-legend="practical">
             <i
@@ -75,7 +75,7 @@ export function VocalRangeProfile({
               data-range-legend-swatch="practical"
               style={{ backgroundImage: VOCAL_CHART_GRADIENT }}
             />
-            실용 음역
+            주요 음역
           </span>
         </div>
       </CardHeader>
@@ -156,9 +156,7 @@ function HistogramChart({
                 <ChartTooltipContent
                   formatter={(value, _, item) => (
                     <div className="flex min-w-32 justify-between gap-4">
-                      <span>
-                        {item.payload.note} · {item.payload.midi.toFixed(1)} MIDI
-                      </span>
+                      <span>{midiToKoreanNoteName(item.payload.midi)}</span>
                       <span className="font-mono font-medium">{Number(value).toFixed(1)}%</span>
                     </div>
                   )}
@@ -246,9 +244,7 @@ function PitchTrace({ visualization }: { visualization: VocalProfileVisualizatio
                       <span className="text-muted-foreground">시간</span>
                       <span className="text-right font-mono">{Number(item.payload.timeSeconds).toFixed(2)}초</span>
                       <span className="text-muted-foreground">음높이</span>
-                      <span className="text-right font-mono">
-                        {item.payload.note} · {Number(value).toFixed(1)}
-                      </span>
+                      <span className="text-right font-medium">{midiToKoreanNoteName(Number(value))}</span>
                     </div>
                   )}
                   hideLabel
@@ -284,17 +280,9 @@ export function VocalProfileResults({
   const visualization = useMemo(() => parseVocalProfileVisualization(profile.descriptors), [profile.descriptors]);
   const referenceSegments = useMemo(() => referenceBandSegments(profile.descriptors), [profile.descriptors]);
   const referenceAvailability = useMemo(() => referenceBandAvailability(profile.descriptors), [profile.descriptors]);
-  const quality = [
-    ["유성 비율", `${(profile.voicedRatio * 100).toFixed(1)}%`, Activity],
-    ["피치 안정성", `${(profile.pitchStability * 100).toFixed(1)}%`, Gauge],
-    ["클리핑", profile.clippingRatio < 0.001 ? "없음" : `${(profile.clippingRatio * 100).toFixed(2)}%`, BadgeCheck],
-    ["평균 음량", `${profile.rmsDb.toFixed(1)} dB`, Volume2],
+  const recordingInfo = [
+    ["유효 음성 구간", `${Math.round(profile.voicedRatio * 100)}%`, Activity],
     ["녹음 길이", profile.recording.durationMs ? `${(profile.recording.durationMs / 1000).toFixed(1)}초` : "-", Clock3],
-    [
-      "샘플레이트",
-      profile.recording.sampleRate ? `${profile.recording.sampleRate.toLocaleString()}Hz` : "-",
-      AudioWaveform,
-    ],
   ] as const;
 
   return (
@@ -310,21 +298,21 @@ export function VocalProfileResults({
         </div>
       </section>
       <section
-        aria-label="분석 품질과 피치 추적"
+        aria-label="녹음 정보와 피치 추적"
         className="rounded-3xl bg-muted/55 p-4 sm:p-6 lg:p-7"
         data-vocal-profile-chapter="quality"
       >
         <div className="grid gap-6 lg:grid-cols-[1.3fr_.9fr] lg:gap-8">
           <Card className="rounded-none border-0 bg-transparent shadow-none" data-vocal-profile-section="quality">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm">분석 품질</CardTitle>
+              <CardTitle className="text-sm">녹음 정보</CardTitle>
             </CardHeader>
             <CardContent>
               <div
-                className="grid gap-1 rounded-2xl bg-muted/55 p-1 sm:grid-cols-3 xl:grid-cols-6"
+                className="grid gap-1 rounded-2xl bg-muted/55 p-1 sm:grid-cols-2"
                 data-vocal-profile-stat-surface="quality"
               >
-                {quality.map(([label, value, Icon]) => (
+                {recordingInfo.map(([label, value, Icon]) => (
                   <div className="rounded-xl bg-background px-3 py-3" key={label}>
                     <p className="text-[11px] text-muted-foreground">{label}</p>
                     <p className="mt-1.5 break-words text-sm font-semibold">{value}</p>
@@ -334,7 +322,7 @@ export function VocalProfileResults({
               </div>
               <p className="mt-3 flex gap-2 text-xs leading-5 text-muted-foreground">
                 <Info className="mt-0.5 size-3.5 shrink-0" />
-                이번 녹음에서 관찰된 결과예요.
+                유효 음성 구간은 전체 녹음 중 음높이를 추적할 수 있었던 구간의 비율이에요.
               </p>
             </CardContent>
           </Card>
@@ -382,6 +370,11 @@ export function VocalProfileResults({
           </Card>
         </section>
       ) : null}
+      <aside className="border-t pt-4 text-[11px] leading-5 text-muted-foreground" aria-label="분석 용어">
+        <p className="font-medium text-foreground">분석 용어</p>
+        <p className="mt-1">C=도 · D=레 · E=미 · F=파 · G=솔 · A=라 · B=시. 숫자는 옥타브 위치를 나타내요.</p>
+        <p>MIDI는 음높이를 수치화하는 내부 분석 단위이며, 화면에서는 이해하기 쉬운 음이름으로 바꿔 보여줘요.</p>
+      </aside>
     </div>
   );
 }

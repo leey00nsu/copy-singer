@@ -5,20 +5,10 @@ import type { VocalProfileResponse } from "../model/contract";
 export function VocalProfileSummary({ profile }: { profile: VocalProfileResponse }) {
   const presentation = presentVocalProfile(profile);
   const metrics = [
-    [
-      "전체 관측 음역",
-      presentation.observedRange.label,
-      `${presentation.observedRange.semitones.toFixed(1)} semitone`,
-      AudioWaveform,
-    ],
-    [
-      "실용 음역",
-      presentation.practicalRange.label,
-      `${presentation.practicalRange.semitones.toFixed(1)} semitone`,
-      Target,
-    ],
-    ["중심 음", presentation.median.label, `${presentation.median.midi.toFixed(1)} MIDI`, Gauge],
-    ["피치 안정도", `${presentation.stability.percent}%`, presentation.stability.label, Activity],
+    ["관측 음역", presentation.observedRange.label, "이번 녹음에서 관찰된 범위", AudioWaveform],
+    ["주요 음역", presentation.practicalRange.label, presentation.rangeWidthDescription, Target],
+    ["중심 음", presentation.median.label, "음이 가장 많이 모인 위치", Gauge],
+    ["유효 음성 구간", `${presentation.voiced.percent}%`, "음높이를 추적할 수 있었던 구간", Activity],
   ] as const;
 
   return (

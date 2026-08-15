@@ -53,8 +53,8 @@ test("builds a padded MIDI axis with stable positions and ticks", () => {
 
 test("maps range and histogram values for shadcn Chart", () => {
   assert.deepEqual(rangeChartData({ minMidi: 48, maxMidi: 67, tessituraLowMidi: 52, tessituraHighMidi: 64 }), [
-    { key: "observed", label: "전체 관측 음역", range: [48, 67], lowNote: "C3", highNote: "G4" },
-    { key: "tessitura", label: "실용 음역", range: [52, 64], lowNote: "E3", highNote: "E4" },
+    { key: "observed", label: "관측 음역", range: [48, 67], lowNote: "C3", highNote: "G4" },
+    { key: "tessitura", label: "주요 음역", range: [52, 64], lowNote: "E3", highNote: "E4" },
   ]);
   assert.deepEqual(histogramChartData({ histogram: [{ midi: 60, count: 4, ratio: 0.25 }], track: [] }), [
     { midi: 60, count: 4, ratio: 0.25, note: "C4", ratioPercent: 25 },

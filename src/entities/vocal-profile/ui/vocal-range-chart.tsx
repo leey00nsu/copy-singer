@@ -6,7 +6,7 @@ import { Bar, BarChart, CartesianGrid, Cell, ReferenceLine, XAxis, YAxis } from 
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/shared/ui/chart";
 
 import { VOCAL_CHART_COLOR } from "../lib/chart-brand";
-import { midiToNoteName } from "../model/pitch";
+import { midiToKoreanNoteName, midiToNoteName } from "../model/pitch";
 import { midiAxis, rangeChartData, type VocalRangeMetrics } from "../model/visualization";
 
 const RANGE_CHART_CONFIG = {
@@ -29,7 +29,7 @@ function VocalRangeChart({
 
   return (
     <ChartContainer
-      aria-label={`전체 관측 음역 ${midiToNoteName(profile.minMidi)}부터 ${midiToNoteName(profile.maxMidi)}, 실용 음역 ${midiToNoteName(profile.tessituraLowMidi)}부터 ${midiToNoteName(profile.tessituraHighMidi)}${medianMidi === null ? "" : `, 중앙음 ${midiToNoteName(medianMidi)}`}`}
+      aria-label={`관측 음역 ${midiToKoreanNoteName(profile.minMidi)}부터 ${midiToKoreanNoteName(profile.maxMidi)}, 주요 음역 ${midiToKoreanNoteName(profile.tessituraLowMidi)}부터 ${midiToKoreanNoteName(profile.tessituraHighMidi)}${medianMidi === null ? "" : `, 중심 음 ${midiToKoreanNoteName(medianMidi)}`}`}
       className={className}
       config={RANGE_CHART_CONFIG}
       data-observed-range-tone="context"
@@ -61,8 +61,8 @@ function VocalRangeChart({
                 return (
                   <div className="grid gap-1">
                     <span className="font-medium">{row.label}</span>
-                    <span className="font-mono text-muted-foreground">
-                      {row.lowNote} – {row.highNote} · {row.range[0].toFixed(1)}–{row.range[1].toFixed(1)} MIDI
+                    <span className="text-muted-foreground">
+                      {midiToKoreanNoteName(row.range[0])} – {midiToKoreanNoteName(row.range[1])}
                     </span>
                   </div>
                 );
@@ -72,7 +72,7 @@ function VocalRangeChart({
         />
         {medianMidi !== null ? (
           <ReferenceLine
-            label={{ value: `중앙음 ${midiToNoteName(medianMidi)}`, position: "top", fontSize: 10 }}
+            label={{ value: `중심 음 ${midiToNoteName(medianMidi)}`, position: "top", fontSize: 10 }}
             stroke="var(--muted-foreground)"
             strokeDasharray="4 4"
             x={medianMidi}

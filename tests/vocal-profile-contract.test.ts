@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   type AnalyzerProfile,
   hasSmartReferenceContract,
+  midiToKoreanNoteName,
   midiToNoteName,
   SMART_REFERENCE_MID_VERSION,
   SMART_REFERENCE_VERSION,
@@ -24,11 +25,15 @@ test("vocal profile names are trimmed and limited to 40 characters", () => {
   assert.equal(vocalProfileRenameRequestSchema.safeParse({ displayName: "가".repeat(41) }).success, false);
 });
 
-test("MIDI values are rounded to Korean UI note labels", () => {
+test("MIDI values are rounded to stable international and Korean UI note labels", () => {
   assert.equal(midiToNoteName(48), "C3");
   assert.equal(midiToNoteName(54.6), "G3");
   assert.equal(midiToNoteName(60), "C4");
   assert.equal(midiToNoteName(65.7), "F♯4");
+  assert.equal(midiToKoreanNoteName(48), "도3(C3)");
+  assert.equal(midiToKoreanNoteName(54.6), "솔3(G3)");
+  assert.equal(midiToKoreanNoteName(62), "레4(D4)");
+  assert.equal(midiToKoreanNoteName(65.7), "파♯4(F♯4)");
 });
 
 function unavailableProfile(version: string) {

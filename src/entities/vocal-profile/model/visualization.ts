@@ -77,14 +77,14 @@ export function rangeChartData(profile: VocalRangeMetrics) {
   return [
     {
       key: "observed",
-      label: "전체 관측 음역",
+      label: "관측 음역",
       range: [profile.minMidi, profile.maxMidi] as [number, number],
       lowNote: midiToNoteName(profile.minMidi),
       highNote: midiToNoteName(profile.maxMidi),
     },
     {
       key: "tessitura",
-      label: "실용 음역",
+      label: "주요 음역",
       range: [profile.tessituraLowMidi, profile.tessituraHighMidi] as [number, number],
       lowNote: midiToNoteName(profile.tessituraLowMidi),
       highNote: midiToNoteName(profile.tessituraHighMidi),

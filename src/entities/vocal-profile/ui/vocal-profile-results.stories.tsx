@@ -96,14 +96,14 @@ type Story = StoryObj<typeof meta>;
 export const RepresentativeAnalysis: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("img", { name: /전체 관측 음역/ })).toBeVisible();
+    await expect(canvas.getByRole("img", { name: /관측 음역/ })).toBeVisible();
     await expect(canvas.getByRole("img", { name: "음정별 상대 빈도 막대그래프" })).toBeVisible();
     const signalGradients = Array.from(canvasElement.querySelectorAll("[data-brand-signal-gradient]"));
     await expect(signalGradients).toHaveLength(3);
     const rangeLegend = canvasElement.querySelector<HTMLElement>("[data-vocal-range-legend]");
     await expect(rangeLegend).not.toBeNull();
     await expect(rangeLegend?.querySelectorAll("[data-range-legend]")).toHaveLength(2);
-    await expect(within(rangeLegend as HTMLElement).queryByText("중앙음")).not.toBeInTheDocument();
+    await expect(within(rangeLegend as HTMLElement).queryByText("중심 음")).not.toBeInTheDocument();
     await expect(canvasElement.querySelector("[data-observed-range-tone]")).toHaveAttribute(
       "data-observed-range-tone",
       "context",
@@ -111,7 +111,7 @@ export const RepresentativeAnalysis: Story = {
     const observedLegend = canvasElement.querySelector<HTMLElement>("[data-range-legend-swatch='observed']");
     await expect(observedLegend).not.toBeNull();
     await expect(getComputedStyle(observedLegend as HTMLElement).backgroundColor).toContain("0.9");
-    await userEvent.hover(canvas.getByRole("img", { name: /전체 관측 음역/ }));
+    await userEvent.hover(canvas.getByRole("img", { name: /관측 음역/ }));
     await expect(canvasElement.querySelector(".recharts-tooltip-cursor")).not.toBeInTheDocument();
     const editorialSections = Array.from(canvasElement.querySelectorAll<HTMLElement>("[data-vocal-profile-section]"));
     await expect(editorialSections.length).toBeGreaterThan(0);

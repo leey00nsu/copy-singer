@@ -1,4 +1,4 @@
-import { midiToNoteName } from "../model/pitch";
+import { midiToKoreanNoteName } from "../model/pitch";
 
 export type VocalProfilePresentationInput = {
   minMidi: number;
@@ -13,7 +13,7 @@ export type VocalProfilePresentationInput = {
 };
 
 export type VocalProfileTrait = {
-  id: "range" | "stability" | "input";
+  id: "range" | "input";
   label: string;
   description: string;
 };
@@ -21,9 +21,11 @@ export type VocalProfileTrait = {
 export type VocalProfilePresentation = {
   label: string;
   summary: string;
+  rangeWidthDescription: string;
   observedRange: { label: string; lowMidi: number; highMidi: number; semitones: number };
   practicalRange: { label: string; lowMidi: number; highMidi: number; semitones: number };
   median: { label: string; midi: number };
+  voiced: { label: string; percent: number; description: string };
   stability: { label: string; percent: number };
   traits: VocalProfileTrait[];
 };
@@ -43,7 +45,13 @@ function orderedRange(first: number, second: number, fallback: [number, number])
 }
 
 function noteRange(lowMidi: number, highMidi: number) {
-  return `${midiToNoteName(lowMidi)}–${midiToNoteName(highMidi)}`;
+  return `${midiToKoreanNoteName(lowMidi)}–${midiToKoreanNoteName(highMidi)}`;
+}
+
+function describeRangeWidth(semitones: number) {
+  if (semitones >= 10.5 && semitones <= 13.5) return "주요 음역 폭은 약 1옥타브예요.";
+  if (semitones >= 22.5 && semitones <= 25.5) return "주요 음역 폭은 약 2옥타브예요.";
+  return `주요 음역 폭은 약 ${Math.max(0, Math.round(semitones))}반음이에요.`;
 }
 
 export function presentVocalProfile(input: VocalProfilePresentationInput): VocalProfilePresentation {
@@ -59,15 +67,13 @@ export function presentVocalProfile(input: VocalProfilePresentationInput): Vocal
   const practicalSemitones = Math.max(0, practicalHigh - practicalLow);
   const stability = ratio(input.pitchStability);
   const voiced = ratio(input.voicedRatio);
-  const clipping = ratio(input.clippingRatio);
-  const rmsDb = finite(input.rmsDb, Number.NEGATIVE_INFINITY);
 
   const label =
     practicalSemitones >= 18
-      ? "넓게 관찰된 실용 음역"
+      ? "넓게 관찰된 주요 음역"
       : practicalSemitones >= 10
-        ? "균형 있게 관찰된 실용 음역"
-        : "집중되어 관찰된 실용 음역";
+        ? "균형 있게 관찰된 주요 음역"
+        : "집중되어 관찰된 주요 음역";
 
   const stabilityLabel =
     stability >= 0.85
@@ -76,29 +82,17 @@ export function presentVocalProfile(input: VocalProfilePresentationInput): Vocal
         ? "변화가 있는 음정"
         : "변화 폭이 크게 관찰된 음정";
 
-  let inputLabel = "분석 가능한 음성 구간 확보";
-  let inputDescription = `전체 녹음의 ${Math.round(voiced * 100)}%에서 음높이를 관찰했어요.`;
-  if (!Number.isFinite(input.voicedRatio) || !Number.isFinite(input.clippingRatio) || !Number.isFinite(input.rmsDb)) {
-    inputLabel = "분석 품질 확인 필요";
-    inputDescription = "일부 품질 수치가 없어 상세 분석 값을 함께 확인해 주세요.";
-  } else if (clipping >= 0.01) {
-    inputLabel = "입력 피크 보완 권장";
-    inputDescription = `녹음의 ${(clipping * 100).toFixed(1)}%에서 입력 한계에 가까운 신호가 관찰됐어요.`;
-  } else if (rmsDb < -35) {
-    inputLabel = "입력 음량 보완 권장";
-    inputDescription = `평균 음량은 ${rmsDb.toFixed(1)} dB로 관찰됐어요.`;
-  } else if (voiced < 0.45) {
-    inputLabel = "노래 구간을 더 길게 권장";
-    inputDescription = `전체 녹음의 ${Math.round(voiced * 100)}%에서 음높이를 관찰했어요.`;
-  }
-
   const observedLabel = noteRange(observedLow, observedHigh);
   const practicalLabel = noteRange(practicalLow, practicalHigh);
-  const medianLabel = midiToNoteName(medianMidi);
+  const medianLabel = midiToKoreanNoteName(medianMidi);
+  const voicedPercent = Math.round(voiced * 100);
+  const voicedDescription = `전체 녹음 중 음높이를 추적할 수 있었던 구간은 약 ${voicedPercent}%예요.`;
+  const rangeWidthDescription = describeRangeWidth(practicalSemitones);
 
   return {
     label,
-    summary: `이 녹음에서는 ${practicalLabel} 구간이 반복적으로 관찰됐고, 중심 음은 ${medianLabel}로 나타났어요.`,
+    summary: `이번 녹음에서는 ${practicalLabel} 구간의 음이 자주 관찰됐고, ${medianLabel} 부근에 음이 많이 모였어요. ${rangeWidthDescription}`,
+    rangeWidthDescription,
     observedRange: { label: observedLabel, lowMidi: observedLow, highMidi: observedHigh, semitones: observedSemitones },
     practicalRange: {
       label: practicalLabel,
@@ -107,19 +101,19 @@ export function presentVocalProfile(input: VocalProfilePresentationInput): Vocal
       semitones: practicalSemitones,
     },
     median: { label: medianLabel, midi: medianMidi },
+    voiced: { label: "유효 음성 구간", percent: voicedPercent, description: voicedDescription },
     stability: { label: stabilityLabel, percent: Math.round(stability * 100) },
     traits: [
       {
         id: "range",
         label,
-        description: `실용 음역 ${practicalLabel} · ${practicalSemitones.toFixed(1)} semitone`,
+        description: rangeWidthDescription,
       },
       {
-        id: "stability",
-        label: stabilityLabel,
-        description: `이 녹음에서 계산한 피치 안정도 ${Math.round(stability * 100)}%`,
+        id: "input",
+        label: "유효 음성 구간",
+        description: voicedDescription,
       },
-      { id: "input", label: inputLabel, description: inputDescription },
     ],
   };
 }
