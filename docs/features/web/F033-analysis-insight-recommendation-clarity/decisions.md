@@ -34,7 +34,24 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: confidence만 바꾼 두 user profile이 같은 song/shift에서 동일 score/contributions를 반환하고 confidence 값만 달라지는 회귀 테스트를 추가했다. 기존 shift 선택, tie-break, 100곡 결정성/성능은 유지됐다.
   - **머지 후 확인**: Pending
 - **Evidence**:
-  - **Commit**: Pending
+  - **Commit**: `6d205db` (`feat(F033): key-fit scoring v3로 신뢰도 가산 분리`)
   - **PR**: -
   - **Test/Log**: `pnpm run test:key-fit` 20/20 PASS; `pnpm run test:recommendation` 30/30 PASS; `pnpm run test:query` 32/32 PASS; TypeScript PASS
 - **Consequences**: 같은 profile/catalog 입력이라도 v2와 v3의 절대 적합도 값은 달라질 수 있다. 추천 cache/mixing snapshot은 `key-fit-v3` version으로 구분되며, 낮은 입력 신뢰도는 점수가 아니라 별도 warning으로 전달된다.
+
+## D002: selectionScore를 사용자-facing 추천 점수와 순위의 단일 기준으로 사용 (2026-08-15)
+
+- **Context**: 서버 `rank`는 `selectionScore = 0.65 × originalKeyScore + 0.35 × adjustedScore - shiftPenalty`로 정하지만, 추천 목록의 대표 `추천 적합도`와 기본 정렬은 `adjustedScore`를 사용하고 있었다. 따라서 서버 1위와 화면의 기본 첫 곡이 서로 다른 기준일 수 있고 `추천 적합도 높은 순`과 `종합 추천 순위`가 동시에 존재했다.
+- **Constraints**: 기존 selection policy와 shift penalty는 이번 Feature에서 재튜닝하지 않는다. 원키 적합도와 추천 키 적합도는 상세 근거로 유지하고, 기존 URL의 `sort=rank`와 `sort=adjusted-score`는 깨뜨리지 않아야 한다.
+- **Options**: (1) `adjustedScore`를 rank 기준으로 바꾸기, (2) rank와 adjusted score를 계속 별도 노출하기, (3) 실제 rank source인 `selectionScore`를 사용자-facing `추천 점수`로 승격하고 상세에 key-fit score를 남기는 방식을 비교했다.
+- **Decision**: `selectionScore`를 0–100의 `추천 점수`로 표시하고 서버 `rank`, 기본 목록 순서, 추천 점수 filter/sort를 같은 기준으로 통일한다. 대표 점수는 확률처럼 읽히지 않도록 `%` 대신 `점`으로 표시한다. 정렬은 `추천 점수 높은 순`, `원키 적합도 높은 순`, `곡명 가나다순`만 제공한다. legacy `rank`/`adjusted-score` query는 parser에서 `recommendation-score`로 normalize한다.
+- **Rationale**: 사용자는 하나의 추천 기준을 보고, 원키/추천키 적합도는 곡 상세의 설명 근거로 분리된다. 서버와 UI의 첫 곡·순위·점수가 동일한 source-of-truth를 사용한다.
+- **Trace**:
+  - **DOING 시작 시점**: `rankRecommendations()`는 selectionScore를 사용하지만 `DEFAULT_RECOMMENDATION_FILTERS.sort`와 `recommendationMatchPercent()`는 adjustedScore를 사용하는 불일치를 확인했다.
+  - **DONE 전 확정 시점**: canonical `recommendation-score` sort, legacy alias parsing, selectionScore score/filter/color helper와 server rank 표시를 구현했다. 추천 결과·곡 상세 Storybook에서 `점` 표기와 선택 순위를 검증했다.
+  - **머지 후 확인**: Pending
+- **Evidence**:
+  - **Commit**: Pending
+  - **PR**: -
+  - **Test/Log**: `pnpm run test:recommendation` 30/30 PASS; `pnpm run test:query` 32/32 PASS; targeted Storybook 12/12 PASS; TypeScript PASS
+- **Consequences**: 목록 대표 추천 점수는 adjusted key-fit score와 수치가 다를 수 있으며, 곡 상세에서 원키/추천키 적합도를 별도 근거로 확인할 수 있다. 기존 sort URL은 읽을 수 있지만 새 URL에는 canonical 값만 기록한다.

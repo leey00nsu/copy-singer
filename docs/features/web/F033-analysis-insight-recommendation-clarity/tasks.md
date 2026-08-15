@@ -71,7 +71,7 @@
     - [x] `calculateProfileConfidence()`와 low-confidence reason을 유지했다.
     - [x] key-fit 20/20, recommendation 30/30, query/contract 32/32와 TypeScript를 통과했다.
 
-- [TODO][PRD-FR-011][PRD-FR-012][PRD-FR-049][PRD-FR-065] T-F033-analysis-insight-recommendation-clarity-04 추천 점수·순위·정렬 기준 통일
+- [DONE][PRD-FR-011][PRD-FR-012][PRD-FR-049][PRD-FR-065] T-F033-analysis-insight-recommendation-clarity-04 추천 점수·순위·정렬 기준 통일
   - Date: 2026-08-15
   - Acceptance:
     - 서버 ranking에 사용하는 `selectionScore`가 사용자-facing `추천 점수`의 단일 source-of-truth가 된다.
@@ -80,11 +80,11 @@
     - 새 정렬 UI는 `추천 점수 높은 순 / 원키 적합도 높은 순 / 곡명 가나다순`만 제공한다.
     - legacy `sort=rank`, `sort=adjusted-score` URL은 canonical 추천 점수 정렬로 안전하게 호환된다.
   - Checklist:
-    - [ ] recommendation score presentation helper를 `selectionScore` 기준으로 변경한다.
-    - [ ] 목록·선택 panel·곡 상세의 대표 점수와 카피를 `추천 점수`로 통일한다.
-    - [ ] sort schema/parser/serializer/projector를 canonical recommendation-score 기준으로 갱신한다.
-    - [ ] 추천 이유의 `편안한/실용 음역` 표현을 관찰 기반 용어로 바꾼다.
-    - [ ] ranking/presentation/UI/legacy URL 테스트를 갱신하고 통과한다.
+    - [x] recommendation score presentation helper를 `selectionScore` 기준으로 변경했다.
+    - [x] 목록·선택 panel·곡 상세의 대표 점수와 카피를 `추천 점수`/`점`으로 통일했다.
+    - [x] sort schema/parser/serializer/projector를 canonical `recommendation-score` 기준으로 갱신하고 legacy alias를 유지했다.
+    - [x] 추천 이유의 `편안한/실용 음역` 표현을 이번 녹음의 주요 음역 기반 표현으로 바꿨다.
+    - [x] recommendation 30/30, query/contract 32/32, targeted Storybook 12/12, TypeScript를 통과했다.
 
 - [TODO][PRD-FR-065] T-F033-analysis-insight-recommendation-clarity-05 제품 카피·전체 회귀·문서 Evidence 동기화
   - Date: 2026-08-15
