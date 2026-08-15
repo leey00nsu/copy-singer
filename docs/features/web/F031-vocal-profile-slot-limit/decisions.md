@@ -148,7 +148,7 @@
   - **DONE 전 확정 시점**: `DialogContent`의 grid를 `minmax(0,1fr)`로 제한하고 viewport 최대 높이·내부 스크롤·긴 토큰 wrapping을 추가했다. `Sheet`에도 같은 가로 안전영역과 top/bottom 최대 높이를 적용하고, 실제 긴 오디오 파일명과 공용 긴 토큰/세로 overflow를 Storybook bounding-box 테스트로 고정했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: Pending.
+  - **Commit**: `3fddaa9` (`feat(F031): 공용 모달 viewport overflow 방어`)
   - **PR**: -
   - **Test/Log**: modal overflow regression 3 files 8/8 PASS; 전체 Dialog/Sheet 사용 Storybook 6 files 26/26 PASS; lint/typecheck PASS; 최종 `pnpm test` PASS (Storybook 162/162).
 - **Consequences**: modal primitive 자체가 긴 문자열과 작은 viewport에 대한 공통 방어선이 되며, 새 modal은 별도 폭 overflow 패치를 기본적으로 요구하지 않는다.
