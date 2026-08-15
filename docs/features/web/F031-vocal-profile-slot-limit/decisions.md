@@ -101,3 +101,20 @@
   - **PR**: -
   - **Test/Log**: targeted Storybook 26/26 PASS; admin UI/integration 4/4 + 1/1 PASS; 최종 Storybook 156/156 PASS.
 - **Consequences**: profile workbench가 두 정책 상태를 한 API 응답에서 함께 소비한다.
+
+## D007: 보컬 프로필 보유 상한을 제거하고 분석 티켓만 사용량 제한으로 유지한다 (2026-08-15)
+
+- **Context**: `VOCAL_ANALYSIS` 티켓이 분석 작업 횟수를 직접 제어하므로, 별도의 보컬 프로필 슬롯 상한까지 유지하면 동일한 사용자 행동을 두 정책으로 중복 제한하게 된다.
+- **Constraints**: 분석 비용·환불·active analysis 1개 제한은 유지하고, 기존 프로필 삭제·추천·믹싱 연결 계약도 깨지지 않아야 한다.
+- **Options**: 기존 슬롯+티켓 이중 제한 유지, 슬롯을 매우 큰 값으로 완화, 슬롯 정책 자체 제거를 비교한다.
+- **Decision**: `USER` 보컬 프로필 최대 보유 개수 제한을 제거한다. 새 분석 admission은 보유 프로필 수를 보지 않고 `VOCAL_ANALYSIS` 티켓, active analysis 충돌, 오디오 유효성만 검사한다. `VOCAL_PROFILE_MAX_USER_PROFILES`, `profileQuota`, `PROFILE_LIMIT_REACHED`도 제거한다.
+- **Rationale**: 분석 티켓이 실제 비용이 발생하는 분석 사용량을 이미 정확히 제한한다. 프로필은 성공 결과의 저장 단위이므로 보유 개수 제한 없이 사용자가 필요에 따라 유지·삭제하도록 두는 편이 정책과 UX가 단순하다.
+- **Trace**:
+  - **DOING 시작 시점**: 사용자 구현 변경 요청을 implementation approval의 request-changes로 기록하고 T06을 추가했다.
+  - **DONE 전 확정 시점**: analysis queue와 API/contract에서 프로필 개수 검사를 제거하고, UI에는 분석 티켓 잔액/비용만 남겼다. 기존 프로필 5개 보유 상태에서도 새 분석 접수와 티켓 1장 차감이 정상 동작하도록 integration으로 고정했다.
+  - **머지 후 확인**: -
+- **Evidence**:
+  - **Commit**: Pending T06 implementation commit
+  - **PR**: -
+  - **Test/Log**: vocal analysis queue 8/8 PASS; profile Storybook 11/11 PASS; lint/typecheck PASS; 최종 `pnpm test` PASS (Storybook 155/155).
+- **Consequences**: D001의 슬롯 정책, D004의 슬롯 환경변수, D006의 슬롯 만석 UX는 더 이상 활성 정책이 아니다. 분석 화면에는 분석 티켓 잔액/비용만 남는다.

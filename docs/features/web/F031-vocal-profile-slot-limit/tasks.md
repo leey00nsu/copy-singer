@@ -104,6 +104,22 @@
     - [x] 최종 `pnpm test`를 실행하고 전체 PASS를 확인했다.
     - [x] decisions/tasks 구현·검증 Evidence를 구현 커밋 `69c51de`와 동기화했다.
 
+- [DONE][PRD-FR-063] T-F031-vocal-profile-slot-limit-06 보컬 프로필 상한 제거
+  - Date: 2026-08-15
+  - Acceptance:
+    - `USER` 보컬 프로필 보유 개수는 새 분석 admission을 제한하지 않는다.
+    - 분석 사용량은 `VOCAL_ANALYSIS` 티켓 잔액과 기존 active-analysis 1개 제한으로만 제어한다.
+    - `VOCAL_PROFILE_MAX_USER_PROFILES`, `profileQuota`, `PROFILE_LIMIT_REACHED` 계약을 런타임과 문서에서 제거한다.
+    - 분석 화면은 슬롯/보유 개수 제한 상태를 노출하지 않고 분석 티켓 잔액과 비용만 안내한다.
+    - 프로필 삭제는 기존 삭제·믹싱 연결 규칙을 유지하며 분석 티켓을 복구하지 않는다.
+  - Checklist:
+    - [x] server env와 analysis queue에서 프로필 최대치 검사를 제거했다.
+    - [x] analysis API/contract에서 `profileQuota`와 `PROFILE_LIMIT_REACHED`를 제거했다.
+    - [x] profile UI/Storybook에서 슬롯 카운터·만석 상태·관리 action을 제거했다.
+    - [x] 슬롯 제한 integration 테스트를 제거하고 기존 프로필 5개 보유 상태에서도 분석 접수가 가능한 회귀 테스트를 추가했다.
+    - [x] PRD/spec/plan/decisions를 분석 티켓 단일 제한 정책으로 동기화했다.
+    - [x] targeted tests, lint, typecheck, 최종 `pnpm test`를 통과했다.
+
 ---
 
 ## 완료 조건
@@ -117,16 +133,16 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `pnpm run db:migrate:deploy` + ticket wallet integration | `2026-08-15` | `PASS — migration applied + wallet 1/1` |
-| `pnpm run test:vocal-profile-analysis-queue` | `2026-08-15` | `PASS — 8/8` |
+| `pnpm run test:vocal-profile-analysis-queue` | `2026-08-15` | `PASS — 8/8, 기존 프로필 5개 상태 신규 분석 허용 포함` |
 | `pnpm run test:mixing:db` | `2026-08-15` | `PASS — 1/1` |
 | `pnpm run test:admin` | `2026-08-15` | `PASS — UI 4/4 + integration 1/1` |
 | account/API/query targeted tests | `2026-08-15` | `PASS — 24/24` |
-| targeted Storybook: profile/shell/account/ticket/admin | `2026-08-15` | `PASS — 5 files, 26/26` |
+| targeted Storybook: profile/shell/account/ticket/admin | `2026-08-15` | `PASS — profile T06 11/11 포함` |
 | FSD architecture boundaries | `2026-08-15` | `PASS — 4/4` |
 | `pnpm run lint` | `2026-08-15` | `PASS` |
 | `pnpm exec tsc --noEmit` | `2026-08-15` | `PASS` |
-| `pnpm test` | `2026-08-15` | `PASS — build + unit/integration + Storybook 156/156` |
+| `pnpm test` | `2026-08-15` | `PASS — build + unit/integration + Storybook 155/155` |
 
 - **구현 커밋**: `69c51de` (`feat(F031): 회귀 검증과 문서 동기화`)
 
-<!-- lee-spec-kit:workflow-sync 2026-08-15T07:18:18.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-15T08:51:26.000Z -->

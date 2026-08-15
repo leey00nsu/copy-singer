@@ -21,10 +21,10 @@
 | ---- | ---- | ---- |
 | Persistence | Prisma/PostgreSQL | 종류별 티켓 지갑, 원장, analysis job 비용/환불 상태를 영속한다. |
 | Server | Next.js API route + 기존 worker | 분석 접수/환불과 믹싱 티켓 전환을 기존 서버 경계에서 처리한다. |
-| Config | `server-env.ts` `integerEnv()` | 슬롯·가입 지급·기능별 비용을 환경변수로 운영한다. |
-| Client state | TanStack Query | 종류별 티켓 잔액과 분석 quota를 기존 query 흐름으로 제공한다. |
+| Config | `server-env.ts` `integerEnv()` | 가입 지급·기능별 비용을 환경변수로 운영한다. |
+| Client state | TanStack Query | 종류별 티켓 잔액과 분석 티켓 정책을 기존 query 흐름으로 제공한다. |
 | UI | React 19 + 기존 shared UI | 분석 입력, 계정 메뉴/계정 화면, 관리자 티켓 조정 UI를 확장한다. |
-| Validation | Zod | ticket kind, wallet 응답, analysis quota 계약을 런타임 검증한다. |
+| Validation | Zod | ticket kind, wallet 응답, 분석 티켓 정책 계약을 런타임 검증한다. |
 | Test | Node/tsx integration + Storybook + ESLint/TypeScript | 잔액 마이그레이션, 차감/환불, 제한 UX를 함께 검증한다. |
 
 ---
@@ -83,7 +83,6 @@ DB migration은 다음 순서로 안전하게 수행한다.
 
 `src/shared/config/server-env.ts`에 다음 accessor를 둔다.
 
-- `vocalProfileMaxUserProfiles()` → `VOCAL_PROFILE_MAX_USER_PROFILES`, default 3
 - `signupVocalAnalysisTicketGrant()` → `SIGNUP_VOCAL_ANALYSIS_TICKET_GRANT`, default 5
 - `signupMixingTicketGrant()` → `SIGNUP_MIXING_TICKET_GRANT`, default 1
 - `vocalProfileAnalysisTicketCost()` → `VOCAL_PROFILE_ANALYSIS_TICKET_COST`, default 1
@@ -99,17 +98,11 @@ DB migration은 다음 순서로 안전하게 수행한다.
 
 조회 API는 단일 `{ balance }` 대신 종류별 wallet 목록을 제공한다. 계정 내역의 각 row도 `kind`를 포함한다.
 
-### 5. 보컬 프로필 슬롯 계산
+### 5. 보컬 프로필 보유 수 제한 제거
 
-서버에서 사용자 소유 `sourceType = USER` 프로필을 count한다.
+사용자 소유 `sourceType = USER` 프로필 수는 새 분석 admission 조건으로 사용하지 않는다. 서버는 프로필 개수를 세어 신규 분석을 차단하지 않으며 `VOCAL_PROFILE_MAX_USER_PROFILES` 설정도 제거한다.
 
-```ts
-used = count(USER profiles for owner)
-limit = vocalProfileMaxUserProfiles()
-remaining = Math.max(0, limit - used)
-```
-
-`SONG` 프로필, 실패한 job, 삭제된 profile은 슬롯을 사용하지 않는다. 기존 초과 사용자는 데이터 삭제 없이 신규 분석만 제한한다.
+프로필 삭제·추천·믹싱 연결 제한과 사용자별 `profileNumber` 증가 규칙은 기존 계약을 유지한다.
 
 ### 6. 분석 enqueue + 티켓 debit
 
@@ -118,14 +111,13 @@ remaining = Math.max(0, limit - used)
 1. idempotency key 검증
 2. 동일 요청이 있으면 기존 job 반환
 3. active analysis 1개 제한 확인
-4. USER profile slot 확인
-5. MIME/크기 검증
-6. 분석 티켓 잔액/비용 확인
-7. source asset 저장
-8. serializable DB transaction에서 분석 티켓 debit + analysis job 생성
-9. DB 접수 실패 시 source asset discard
+4. MIME/크기 검증
+5. 분석 티켓 잔액/비용 확인
+6. source asset 저장
+7. serializable DB transaction에서 분석 티켓 debit + analysis job 생성
+8. DB 접수 실패 시 source asset discard
 
-DB transaction에서는 현재 wallet 잔액과 슬롯 조건을 다시 검증해 race를 방어한다. job에는 접수 당시 `ticketCost`, `refundState`를 저장한다. ticket ledger debit은 `vocalProfileAnalysisJobId`와 연결하고 idempotency key를 job/request에 결정적으로 연결한다.
+DB transaction에서는 현재 wallet 잔액을 다시 검증해 race를 방어한다. job에는 접수 당시 `ticketCost`, `refundState`를 저장한다. ticket ledger debit은 `vocalProfileAnalysisJobId`와 연결하고 idempotency key를 job/request에 결정적으로 연결한다.
 
 동일 idempotency 요청 재시도는 기존 job과 기존 debit을 재사용한다.
 
@@ -155,11 +147,6 @@ analysis jobs GET 응답은 기존 jobs에 다음 policy를 추가한다.
 ```ts
 {
   jobs: [...],
-  profileQuota: {
-    used: number,
-    limit: number,
-    remaining: number,
-  },
   analysisTickets: {
     balance: number,
     cost: number,
@@ -167,32 +154,24 @@ analysis jobs GET 응답은 기존 jobs에 다음 policy를 추가한다.
 }
 ```
 
-프로필 limit, 티켓 grant/cost는 서버 설정에서 계산된 값만 내려보낸다. 클라이언트는 환경변수를 직접 알 필요가 없다.
+티켓 grant/cost는 서버 설정에서 계산된 값만 내려보낸다. 클라이언트는 환경변수를 직접 알 필요가 없다.
 
 POST 오류는 다음을 구분한다.
 
-- `PROFILE_LIMIT_REACHED` → 프로필 관리 필요
 - insufficient `VOCAL_ANALYSIS` ticket → 분석 티켓 부족
 - `ANALYSIS_BUSY` → 현재 분석 완료 대기
 
 ### 10. 분석 화면 UX
 
-`VocalProfileWorkbench`/`VoiceScanInput`의 VOICE INPUT 영역에 작은 사용 현황을 배치한다.
+`VocalProfileWorkbench`/`VoiceScanInput`의 VOICE INPUT 영역에 분석 티켓 현황을 배치한다.
 
 ```text
-보컬 프로필  2 / 3개
 분석 티켓    3장
 ```
 
 정상 상태에서는 기존 입력을 유지하고 `분석을 시작하면 분석 티켓 1장을 사용해요.`를 보조 안내로 표시한다.
 
-상태 우선순위:
-
-1. 분석 티켓 부족
-2. 프로필 슬롯 만석
-3. 정상
-
-티켓 부족 상태는 프로필 삭제로 해결되는 것처럼 보이지 않게 한다. 슬롯 만석이면 `/library?tab=profiles`의 `보컬 프로필 관리` action을 제공한다.
+분석 티켓이 부족하면 새 분석 입력을 막고 티켓 부족 상태를 명시한다. 보유 프로필 수 때문에 별도 제한 상태를 만들거나 프로필 삭제를 유도하지 않는다.
 
 ### 11. 계정 메뉴 / 계정 / 관리자
 
@@ -212,7 +191,7 @@ prisma/
 └── migrations/...                           # TicketKind/Wallet/ledger/job migration
 
 src/shared/config/
-└── server-env.ts                            # 슬롯/가입 지급/분석 비용 env
+└── server-env.ts                            # 가입 지급/분석 비용 env
 
 .env.example                                 # 새 정책 환경변수
 
@@ -222,7 +201,7 @@ src/entities/ticket/
 └── ui/ticket-ledger.tsx                     # 종류 표시
 
 src/features/analyze-vocal-profile/
-└── api/analysis-queue.ts                    # slot + analysis ticket debit
+└── api/analysis-queue.ts                    # analysis ticket debit
 
 src/_app/background-jobs/vocal-profile-analysis/
 └── worker.ts                                # terminal failure refund
@@ -237,7 +216,7 @@ src/features/authentication/                 # 두 signup grant 보장
 src/features/manage-tickets/                 # kind 선택 admin adjustment
 src/features/manage-notifications/           # 종류별 credit copy
 
-src/_pages/profile/ui/                       # 슬롯 + 분석 티켓 UX
+src/_pages/profile/ui/                       # 분석 티켓 UX
 src/_pages/account/ui/                       # 두 지갑 표시
 
 src/features/authentication/ui/user-menu.tsx # 두 잔액 표시
@@ -278,8 +257,8 @@ tests/                                       # migration/service/queue/UI 회귀
 
 ### 4. UI
 
-- 분석 화면: `프로필 used/limit`, `분석 티켓 balance`, cost 안내
-- 티켓 부족 / 슬롯 만석 / 정상 우선순위
+- 분석 화면: `분석 티켓 balance`, cost 안내
+- 티켓 부족 상태와 정상 입력 전환
 - 계정 메뉴: 분석/믹싱 잔액
 - 계정 화면: 두 지갑 + kind가 있는 ledger
 - 관리자: kind 선택 adjustment
@@ -306,7 +285,6 @@ DB migration이 필요하다. 기존 사용자 데이터는 삭제하지 않는�
 배포 환경에서는 다음 환경변수를 명시적으로 검토한다.
 
 ```text
-VOCAL_PROFILE_MAX_USER_PROFILES=3
 SIGNUP_VOCAL_ANALYSIS_TICKET_GRANT=5
 SIGNUP_MIXING_TICKET_GRANT=1
 VOCAL_PROFILE_ANALYSIS_TICKET_COST=1
