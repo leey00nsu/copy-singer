@@ -3,7 +3,7 @@
 import { ArrowRight, CirclePlay } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
-import { Fragment, type ReactNode } from "react";
+import { Fragment, type MouseEvent, type ReactNode } from "react";
 
 import { Button } from "@/shared/ui/button";
 import { GradientText } from "@/shared/ui/gradient-text";
@@ -55,6 +55,17 @@ function entryMotion(delay: number, reduced: boolean) {
 
 function LandingHero({ primaryLabel, profileHref }: LandingHeroProps) {
   const reduced = Boolean(useReducedMotion());
+
+  const handleUsageNavigation = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (reduced) return;
+
+    const target = document.getElementById("product-story");
+    if (!target) return;
+
+    event.preventDefault();
+    window.history.pushState(null, "", "#product-story");
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
     <section className="overflow-hidden">
@@ -108,7 +119,12 @@ function LandingHero({ primaryLabel, profileHref }: LandingHeroProps) {
             >
               {primaryLabel} <ArrowRight aria-hidden="true" />
             </Button>
-            <Button nativeButton={false} render={<Link href="#product-story" />} size="sm" variant="outline">
+            <Button
+              nativeButton={false}
+              render={<Link href="#product-story" onClick={handleUsageNavigation} />}
+              size="sm"
+              variant="outline"
+            >
               이용 방법 보기
             </Button>
           </motion.div>

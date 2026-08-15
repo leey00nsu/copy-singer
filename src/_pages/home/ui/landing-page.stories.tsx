@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import type {} from "msw-storybook-addon/types";
-import { expect, userEvent, waitFor, within } from "storybook/test";
+import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 
 import { notificationListHandler, ticketBalanceHandler } from "../../../../tests/msw/handlers";
 import { LandingPage } from "./landing-page";
@@ -38,10 +38,19 @@ async function expectLandingStructure(canvasElement: HTMLElement) {
   const usageLink = canvas.getByRole("button", { name: "이용 방법 보기" });
   await expect(usageLink).toHaveAttribute("href", "#product-story");
   const usageSection = canvasElement.querySelector<HTMLElement>("#product-story");
-  await expect(usageSection).not.toBeNull();
+  if (!usageSection) throw new Error("이용 방법 섹션을 찾지 못했습니다.");
   await expect(
-    within(usageSection as HTMLElement).getByRole("heading", { name: "한 소절로 시작해, 내 목소리로 완성." }),
+    within(usageSection).getByRole("heading", { name: "한 소절로 시작해, 내 목소리로 완성." }),
   ).toBeInTheDocument();
+  const originalScrollIntoView = usageSection.scrollIntoView;
+  const smoothScroll = fn();
+  const beforeUsageClickUrl = window.location.href;
+  usageSection.scrollIntoView = smoothScroll;
+  await userEvent.click(usageLink);
+  await expect(smoothScroll).toHaveBeenCalledWith({ behavior: "smooth", block: "start" });
+  await expect(window.location.hash).toBe("#product-story");
+  usageSection.scrollIntoView = originalScrollIntoView;
+  window.history.replaceState(null, "", beforeUsageClickUrl);
   await expect(canvas.queryByText("어떻게 되는지 보기")).not.toBeInTheDocument();
   await expect(firstGradientSegment).toHaveAttribute("data-animation-speed", "1.5");
   await expect(firstGradientSegment).toHaveAttribute("data-yoyo", "true");
