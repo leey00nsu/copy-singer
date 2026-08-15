@@ -58,16 +58,13 @@ raw MIDI decimal(`62.0 MIDI`)은 사용자-facing 카드/tooltip에서 제거한
 `src/entities/vocal-profile/lib/presentation.ts`를 다음 의미로 바꾼다.
 
 - `label`: `넓게/균형 있게/집중되어 관찰된 주요 음역`
-- `summary`: 주요 음역 + 중심 음 + 폭 설명
+- `summary`: 주요 음역 + 중심 음 설명만 유지하고 음역 폭 문장은 제거
 - `practicalRange` 타입명은 내부 호환을 위해 당장 유지할 수 있지만 label은 `주요 음역`으로 변경
 - `stability`는 내부 반환을 유지해 기존 비사용 consumer와 contract를 깨지 않거나, consumer 제거 후 타입을 최소화한다.
 - user-facing traits는 `range`, `input` 중심으로 단순화하고 `stability` trait를 제거한다.
 - `inputDescription`에서 RMS/clipping raw 숫자를 성공 결과 설명으로 다시 노출하지 않는다.
 
-주요 음역 폭 문장은 반음 수를 사용자 친화적으로 정규화한다.
-
-- 11.5~12.5 semitone 부근: `주요 음역 폭은 약 1옥타브예요.`
-- 그 외: `주요 음역 폭은 약 N반음이에요.` 또는 24반음 이상이면 `약 2옥타브`처럼 정수 옥타브가 자연스러운 경우 사용
+`rangeWidthDescription`과 사용자-facing 음역 폭 문장은 제거한다. 내부 `semitones` 값은 계산/분석 계약에 남겨도 되지만 요약·trait 설명에는 사용하지 않는다.
 
 정확한 성별/성종/장르 분류 문장은 만들지 않는다.
 
@@ -97,7 +94,7 @@ raw MIDI decimal(`62.0 MIDI`)은 사용자-facing 카드/tooltip에서 제거한
 - 분석 화면 하단에 짧은 `분석 용어` 각주 추가
   - C~B와 도~시 대응
   - 숫자는 옥타브 위치
-  - MIDI는 내부 분석 단위이며 화면에서는 음이름으로 변환해 보여준다는 설명
+  - 사용자-facing에서 더 이상 사용하지 않는 `MIDI` 용어는 각주에서도 제거
 
 `src/entities/vocal-profile/ui/vocal-range-chart.tsx`, `src/entities/vocal-profile/model/visualization.ts`
 
@@ -131,7 +128,9 @@ aria-label과 legend를 새 용어로 동기화한다. 차트 축은 공간 제�
 
 - 내 음역과 곡 음역을 같은 presentation 규칙으로 비교한다.
 - `내 주요 음역`, `곡 주요 음역`을 계이름 병기로 노출한다.
+- recommendation run의 user `profile` contract에도 `medianMidi`를 포함해 `내 음역`의 중심 음을 `곡 보컬 음역`과 동일하게 표시한다.
 - 원키 적합도와 추천 키 적합도는 `음역 기반 적합도`임을 설명한다.
+- `키 조정 변화` 카드는 제거하고 원키/추천 키 적합도만 유지한다.
 - 곡 분석의 QA metric(clipping/RMS/sample-rate/pitch-stability)은 노출하지 않는다.
 
 관리자 catalog UI의 analyzer 상태/원키 추정 신뢰도는 운영 정보이므로 변경하지 않는다.
@@ -196,7 +195,7 @@ shift penalty도 현재 단계형 정책 `[0, 1, 3, 7, 12, 20, 30]`을 유지한
 
 - 목록: `87점`
 - 선택 상세: `추천 점수 87점`
-- 상세 분석: `추천 점수`, `원키 적합도`, `{추천 키} 적합도`, `키 조정 변화`
+- 상세 분석: `추천 점수`, `원키 적합도`, `{추천 키} 적합도`; `키 조정 변화`는 표시하지 않음
 
 `adjustedScore`는 목록 대표 점수로 사용하지 않는다.
 
@@ -281,7 +280,7 @@ src/_pages/song-detail/ui/song-detail.tsx
   - sharp/octave 결정성
 - `tests/vocal-profile-presentation.test.ts`
   - `주요 음역` label
-  - 중심 음/폭 설명
+  - 중심 음 설명과 음역 폭 문구 부재
   - 성별/성종 문구 부재
 - `tests/vocal-profile-results-ui.test.tsx`
   - 유효 음성 구간/녹음 길이 표시
@@ -309,7 +308,8 @@ src/_pages/song-detail/ui/song-detail.tsx
 - `tests/recommendation-ui.test.tsx`, `tests/recommendation-song-detail.test.tsx`
   - `%` 대표 추천 점수 제거
   - `점` 표기
-  - 내/곡 주요 음역 비교
+  - 내/곡 주요 음역 및 중심 음 비교
+  - `키 조정 변화` 부재
 
 ### Storybook
 

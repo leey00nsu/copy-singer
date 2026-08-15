@@ -102,12 +102,28 @@
     - [x] vocal presentation 12/12, key-fit 20/20, recommendation 30/30과 관련 Storybook을 검증했다.
     - [x] 최신 코드에서 `pnpm run lint`, `pnpm exec tsc --noEmit`, `pnpm test`를 통과했다. Storybook은 163/163 PASS다.
     - [x] decisions/tasks의 Evidence와 workflow-sync marker를 최신 코드 이후 시각으로 갱신했다.
+  - Evidence: `df28a4b` (`feat(F033): 제품 카피·전체 회귀·문서 Evidence 동기화`)
+
+- [TODO][PRD-FR-021][PRD-FR-048][PRD-FR-065] T-F033-analysis-insight-recommendation-clarity-06 사용자 피드백 기반 분석 상세 정보 정리
+  - Date: 2026-08-15
+  - Acceptance:
+    - 분석 용어 각주에서 더 이상 사용자-facing에 쓰지 않는 `MIDI` 설명을 제거한다.
+    - 보컬 프로필 요약에서 `주요 음역 폭은 약 N반음/옥타브` 같은 음역 폭 문장을 제거한다.
+    - 제출한 보컬 설명에서 `로그인한 본인만 들을 수 있어요.` 문구를 제거한다.
+    - 추천 곡 상세의 `내 음역`에도 `곡 보컬 음역`과 동일하게 `중심 음`을 표시한다.
+    - 추천 곡 상세의 `키 조정 변화` 정보는 제거한다.
+  - Checklist:
+    - [ ] presentation helper와 분석 결과/상세 copy를 새 요구사항에 맞게 정리한다.
+    - [ ] recommendation run user profile에 `medianMidi`를 전달하고 내 음역 중심 음을 렌더링한다.
+    - [ ] 곡 상세의 `키 조정 변화` 카드를 제거하고 score layout을 정리한다.
+    - [ ] 관련 unit/UI/Storybook 회귀 테스트를 갱신하고 통과시킨다.
+    - [ ] spec/plan/decisions/tasks Evidence를 최종 구현과 동기화한다.
 
 ---
 
 ## 완료 조건
 
-- [x] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
+- [ ] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
 - [x] 테스트 실행 및 통과 기록 완료
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
