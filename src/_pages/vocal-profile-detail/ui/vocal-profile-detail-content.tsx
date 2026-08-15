@@ -77,7 +77,7 @@ export function VocalProfileDetailContent({ detail }: VocalProfileDetailContentP
             보컬 분석 결과
           </h2>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            음역과 음정 분포, 녹음 품질을 한 번에 확인할 수 있어요.
+            음역과 음정 분포, 녹음 정보를 한 번에 확인할 수 있어요.
           </p>
         </div>
         <VocalProfileResults profile={detail.profile} sourceAudioSrc={detail.audioUrl} />

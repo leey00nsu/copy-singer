@@ -61,7 +61,7 @@ export const Palette: Story = {
           />
           <p className="text-sm font-medium">{label}</p>
           <p className="text-xs text-muted-foreground">
-            중앙음 {analysis.medianMidi} · 음역 {analysis.maxMidi - analysis.minMidi}st
+            중심 음 {analysis.medianMidi} · 음역 {analysis.maxMidi - analysis.minMidi}st
           </p>
         </article>
       ))}
@@ -69,7 +69,7 @@ export const Palette: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getAllByText(/중앙음/)).toHaveLength(8);
+    await expect(canvas.getAllByText(/중심 음/)).toHaveLength(8);
     const artwork = [...canvasElement.querySelectorAll<HTMLElement>("[data-profile-artwork]")];
     await expect(artwork).toHaveLength(8);
     await expect(new Set(artwork.map((item) => item.style.backgroundColor)).size).toBeGreaterThan(5);

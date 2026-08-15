@@ -48,7 +48,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("heading", { name: "균형 있게 관찰된 실용 음역" })).toBeInTheDocument();
+    await expect(canvas.getByRole("heading", { name: "균형 있게 관찰된 주요 음역" })).toBeInTheDocument();
     await expect(canvas.getByText("E3–E4")).toBeInTheDocument();
     await expect(canvas.getByText("91%")).toBeInTheDocument();
   },

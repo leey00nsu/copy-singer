@@ -66,7 +66,9 @@ async function expectLandingStructure(canvasElement: HTMLElement) {
   await expect(canvasElement.querySelectorAll('[data-reveal-variant="line"] [data-reveal-line]')).toHaveLength(2);
   await expect(canvasElement.querySelectorAll('[data-reveal-variant="fade"]')).toHaveLength(1);
   await expect(
-    canvas.getByRole("img", { name: "전체 관측 음역 E3부터 A♯5, 실용 음역 G4부터 C♯5, 중앙음 A♯4" }),
+    canvas.getByRole("img", {
+      name: "관측 음역 미3(E3)부터 라♯5(A♯5), 주요 음역 솔4(G4)부터 도♯5(C♯5), 중심 음 라♯4(A♯4)",
+    }),
   ).toBeVisible();
   await expect(canvas.queryByTestId("recommended-key-visualizer")).not.toBeInTheDocument();
   await expect(canvasElement.querySelectorAll("h1 [aria-hidden='true'] > span")).not.toHaveLength(0);

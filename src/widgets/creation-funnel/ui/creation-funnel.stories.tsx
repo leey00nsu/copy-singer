@@ -92,7 +92,7 @@ export const AnalysisSucceeded: Story = {
     <CreationFunnelShell currentStep="analysis">
       <ProcessHero
         action={<Button>내 목소리에 맞는 노래 찾기</Button>}
-        description="실용 음역과 안정성을 저장했습니다. 전체 분석은 Library에서 언제든 다시 볼 수 있어요."
+        description="주요 음역과 유효 음성 구간을 저장했습니다. 전체 분석은 Library에서 언제든 다시 볼 수 있어요."
         eyebrow="Voice analysis"
         title="목소리 분석을 완료했어요"
         tone="success"

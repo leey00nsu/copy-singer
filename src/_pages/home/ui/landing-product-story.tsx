@@ -23,7 +23,7 @@ function AnalysisSurface() {
           <span className="size-1.5 rounded-full bg-data-accent" />
         </div>
         <dl className="mt-5 space-y-3">
-          {["관찰 음역", "실용 음역", "음정 안정성"].map((label, index) => (
+          {["관측 음역", "주요 음역", "유효 음성 구간"].map((label, index) => (
             <div
               className="flex items-center justify-between border-b pb-2 text-[10px] last:border-0 last:pb-0"
               key={label}
@@ -41,17 +41,19 @@ function AnalysisSurface() {
 function RecommendationSurface() {
   return (
     <div className="grid w-full gap-2 px-5 py-6 sm:px-7">
-      {["내 실용 음역과 곡 구간 비교", "부담을 줄이는 추천 키", "보컬 특성에 맞는 추천 이유"].map((label, index) => (
-        <div
-          className="flex items-center gap-3 rounded-lg border bg-background px-3 py-2.5 text-[10px] shadow-[0_10px_28px_-26px_oklch(0.2_0.02_285/0.5)]"
-          key={label}
-        >
-          <span className="flex size-5 items-center justify-center rounded-full bg-muted font-medium tabular-nums">
-            {index + 1}
-          </span>
-          <span>{label}</span>
-        </div>
-      ))}
+      {["내 주요 음역과 곡 주요 음역 비교", "부담을 줄이는 추천 키", "분석 결과에 기반한 추천 이유"].map(
+        (label, index) => (
+          <div
+            className="flex items-center gap-3 rounded-lg border bg-background px-3 py-2.5 text-[10px] shadow-[0_10px_28px_-26px_oklch(0.2_0.02_285/0.5)]"
+            key={label}
+          >
+            <span className="flex size-5 items-center justify-center rounded-full bg-muted font-medium tabular-nums">
+              {index + 1}
+            </span>
+            <span>{label}</span>
+          </div>
+        ),
+      )}
     </div>
   );
 }

@@ -63,7 +63,7 @@ export const ReadyForRecommendation: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("heading", { name: "목소리 분석을 완료했어요" })).toBeVisible();
-    await expect(canvas.getByRole("heading", { name: "균형 있게 관찰된 실용 음역" })).toBeVisible();
+    await expect(canvas.getByRole("heading", { name: "균형 있게 관찰된 주요 음역" })).toBeVisible();
     await expect(canvas.getByRole("button", { name: "내 목소리에 맞는 노래 찾기" })).toBeEnabled();
     await expect(canvas.getByRole("link", { name: "전체 분석 보기" })).toHaveAttribute(
       "href",
