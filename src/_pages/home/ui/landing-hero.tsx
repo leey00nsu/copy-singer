@@ -108,8 +108,8 @@ function LandingHero({ primaryLabel, profileHref }: LandingHeroProps) {
             >
               {primaryLabel} <ArrowRight aria-hidden="true" />
             </Button>
-            <Button nativeButton={false} render={<Link href="#how-it-works" />} size="sm" variant="outline">
-              어떻게 되는지 보기
+            <Button nativeButton={false} render={<Link href="#product-story" />} size="sm" variant="outline">
+              이용 방법 보기
             </Button>
           </motion.div>
           <motion.p

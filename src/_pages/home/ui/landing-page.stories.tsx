@@ -35,6 +35,14 @@ async function expectLandingStructure(canvasElement: HTMLElement) {
   await expect(
     canvas.getByRole("heading", { level: 1, name: "나에게 맞는 노래를 찾고 내 목소리로 완성하세요." }),
   ).toBeVisible();
+  const usageLink = canvas.getByRole("button", { name: "이용 방법 보기" });
+  await expect(usageLink).toHaveAttribute("href", "#product-story");
+  const usageSection = canvasElement.querySelector<HTMLElement>("#product-story");
+  await expect(usageSection).not.toBeNull();
+  await expect(
+    within(usageSection as HTMLElement).getByRole("heading", { name: "한 소절로 시작해, 내 목소리로 완성." }),
+  ).toBeInTheDocument();
+  await expect(canvas.queryByText("어떻게 되는지 보기")).not.toBeInTheDocument();
   await expect(firstGradientSegment).toHaveAttribute("data-animation-speed", "1.5");
   await expect(firstGradientSegment).toHaveAttribute("data-yoyo", "true");
   const reducedMotionPreview = Boolean(canvasElement.querySelector('[data-testid="reduced-motion-preview"]'));
