@@ -6,7 +6,7 @@ export function VocalProfileSummary({ profile }: { profile: VocalProfileResponse
   const presentation = presentVocalProfile(profile);
   const metrics = [
     ["관측 음역", presentation.observedRange.label, "이번 녹음에서 관찰된 범위", AudioWaveform],
-    ["주요 음역", presentation.practicalRange.label, presentation.rangeWidthDescription, Target],
+    ["주요 음역", presentation.practicalRange.label, "자주 관찰된 음높이 구간", Target],
     ["중심 음", presentation.median.label, "음이 가장 많이 모인 위치", Gauge],
     ["유효 음성 구간", `${presentation.voiced.percent}%`, "음높이를 추적할 수 있었던 구간", Activity],
   ] as const;

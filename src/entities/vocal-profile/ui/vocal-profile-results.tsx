@@ -373,7 +373,6 @@ export function VocalProfileResults({
       <aside className="border-t pt-4 text-[11px] leading-5 text-muted-foreground" aria-label="분석 용어">
         <p className="font-medium text-foreground">분석 용어</p>
         <p className="mt-1">C=도 · D=레 · E=미 · F=파 · G=솔 · A=라 · B=시. 숫자는 옥타브 위치를 나타내요.</p>
-        <p>MIDI는 음높이를 수치화하는 내부 분석 단위이며, 화면에서는 이해하기 쉬운 음이름으로 바꿔 보여줘요.</p>
       </aside>
     </div>
   );

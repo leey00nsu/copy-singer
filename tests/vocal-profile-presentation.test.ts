@@ -22,9 +22,9 @@ test("maps only observed vocal metrics to a neutral profile presentation", () =>
   assert.equal(presentation.practicalRange.label, "미3(E3)–미4(E4)");
   assert.equal(presentation.median.label, "도4(C4)");
   assert.equal(presentation.voiced.percent, 80);
-  assert.equal(presentation.rangeWidthDescription, "주요 음역 폭은 약 1옥타브예요.");
   assert.equal(presentation.traits.length, 2);
-  assert.doesNotMatch(JSON.stringify(presentation), /테너|소프라노|건강|장르|따뜻|맑은/);
+  assert.doesNotMatch(presentation.summary, /주요 음역 폭|반음|옥타브/);
+  assert.doesNotMatch(JSON.stringify(presentation), /주요 음역 폭|테너|소프라노|건강|장르|따뜻|맑은/);
 });
 
 test("keeps range and internal stability thresholds deterministic", () => {
@@ -60,6 +60,8 @@ test("detail page preserves private source audio, current recommendation, and de
   assert.match(page, /VocalProfileDetailContent detail=\{detail\}/);
   assert.match(content, /detail\.audioUrl/);
   assert.match(content, /VocalProfileResults/);
+  assert.match(content, /분석에 사용한 오디오예요/);
+  assert.doesNotMatch(content, /로그인한 본인만 들을 수 있어요/);
   assert.match(actions, /추천 결과 보기/);
   assert.doesNotMatch(actions, /최근 추천 결과 보기/);
   assert.match(actions, /deleteVocalProfileMutationOptions/);

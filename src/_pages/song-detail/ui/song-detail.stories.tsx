@@ -36,6 +36,8 @@ export const WithOriginalVideo: Story = {
     await expect(vocalRangeChapter).toHaveClass("bg-muted/55");
     await expect(getComputedStyle(vocalRangeChapter as HTMLElement).borderTopWidth).toBe("0px");
     await expect(getComputedStyle(vocalRangeChapter as HTMLElement).backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
+    await expect(canvas.getAllByText("중심 음")).toHaveLength(2);
+    await expect(canvas.queryByText("키 조정 변화")).not.toBeInTheDocument();
     await expect(canvas.queryByText(/Song match · #\d+/)).not.toBeInTheDocument();
     await expect(canvas.queryByText("외부 출처 열기")).not.toBeInTheDocument();
   },

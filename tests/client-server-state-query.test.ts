@@ -238,6 +238,7 @@ test("recommendation and mixing polling stop at terminal state while item cache 
       analyzerVersion: "1",
       tessituraLowMidi: 48,
       tessituraHighMidi: 72,
+      medianMidi: 60,
       minMidi: 45,
       maxMidi: 76,
     },

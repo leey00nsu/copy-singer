@@ -62,12 +62,12 @@ test("renders a simplified analysis result and the shared mixing action", () => 
   assert.match(html, /라3\(A3\)–라♯4\(A♯4\)/);
   assert.match(html, /곡 주요 음역/);
   assert.match(html, /솔3\(G3\)–도5\(C5\)/);
-  assert.match(html, /관측 음역 미3\(E3\)부터 미5\(E5\), 주요 음역 라3\(A3\)부터 라♯4\(A♯4\)/);
+  assert.match(html, /관측 음역 미3\(E3\)부터 미5\(E5\), 주요 음역 라3\(A3\)부터 라♯4\(A♯4\), 중심 음 레♯4\(D♯4\)/);
   assert.match(html, /티켓 1개 사용/);
   assert.match(html, /youtube-nocookie\.com\/embed\/NbKH4iZqq1Y/);
   assert.doesNotMatch(html, /외부 출처 열기|target="_blank"/);
   assert.match(html, /AI 믹싱/);
-  assert.doesNotMatch(html, /SONG RANGE|F3–A♯4|분석 근거|남은 고음 부담|중앙음/);
+  assert.doesNotMatch(html, /키 조정 변화|SONG RANGE|F3–A♯4|분석 근거|남은 고음 부담|중앙음/);
 });
 
 test("does not expose removed song-range metadata when it is unavailable", () => {

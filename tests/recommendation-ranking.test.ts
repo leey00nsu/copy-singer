@@ -298,6 +298,7 @@ test("selects a handoff only when the item belongs to the calculated result", ()
       analyzerVersion: "0.11.0",
       tessituraLowMidi: 52,
       tessituraHighMidi: 68,
+      medianMidi: 60,
       minMidi: 48,
       maxMidi: 72,
     },

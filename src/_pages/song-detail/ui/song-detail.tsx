@@ -49,7 +49,6 @@ export function SongDetail({
   }
 
   const shift = item.recommendedShift;
-  const scoreGain = Math.round(item.adjustedScore) - Math.round(item.originalKeyScore);
   const visibleReasons = visibleRecommendationReasons(item);
   const userMajorRange = `${midiToKoreanNoteName(run.profile.tessituraLowMidi)}–${midiToKoreanNoteName(run.profile.tessituraHighMidi)}`;
   const songMajorRange = item.songProfile
@@ -95,7 +94,7 @@ export function SongDetail({
         <p className="mt-1 text-sm leading-6 text-muted-foreground">
           현재 보컬 프로필을 기준으로 계산한 결과예요. 실제로 부를 때는 컨디션에 따라 다르게 느껴질 수 있어요.
         </p>
-        <dl className="mt-5 grid gap-1 rounded-2xl bg-muted/55 p-1 sm:grid-cols-3">
+        <dl className="mt-5 grid gap-1 rounded-2xl bg-muted/55 p-1 sm:grid-cols-2">
           <div className="rounded-xl bg-background px-4 py-5 sm:px-6">
             <dt className="text-xs text-muted-foreground">원키 적합도</dt>
             <dd className="mt-2 text-2xl font-semibold">{Math.round(item.originalKeyScore)}점</dd>
@@ -105,10 +104,6 @@ export function SongDetail({
             <dd className="mt-2 text-2xl font-semibold text-data-accent-foreground">
               {Math.round(item.adjustedScore)}점
             </dd>
-          </div>
-          <div className="rounded-xl bg-background px-4 py-5 sm:px-6">
-            <dt className="text-xs text-muted-foreground">키 조정 변화</dt>
-            <dd className="mt-2 text-2xl font-semibold">{scoreGain > 0 ? `+${scoreGain}` : scoreGain}점</dd>
           </div>
         </dl>
         <div className="mt-8 rounded-3xl bg-muted/55 p-4 sm:p-6" data-song-analysis-chapter="vocal-range">

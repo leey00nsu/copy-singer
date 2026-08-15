@@ -227,6 +227,7 @@ export async function getRecommendationResult(
       analyzerVersion: profile.analyzerVersion,
       tessituraLowMidi: profile.tessituraLowMidi,
       tessituraHighMidi: profile.tessituraHighMidi,
+      medianMidi: profile.medianMidi,
       minMidi: profile.minMidi,
       maxMidi: profile.maxMidi,
       mixing,

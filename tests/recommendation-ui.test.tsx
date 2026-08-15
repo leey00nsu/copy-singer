@@ -43,6 +43,7 @@ const run: RecommendationRunResponse = {
     analyzerVersion: profile.analyzerVersion,
     tessituraLowMidi: profile.tessituraLowMidi,
     tessituraHighMidi: profile.tessituraHighMidi,
+    medianMidi: profile.medianMidi,
     minMidi: profile.minMidi,
     maxMidi: profile.maxMidi,
   },

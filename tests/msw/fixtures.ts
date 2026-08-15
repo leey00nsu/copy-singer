@@ -131,6 +131,7 @@ export const recommendationRunFixture: RecommendationRunResponse = {
     analyzerVersion: "1.2.0",
     tessituraLowMidi: 57,
     tessituraHighMidi: 70,
+    medianMidi: 63,
     minMidi: 52,
     maxMidi: 76,
   },

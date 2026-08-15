@@ -21,7 +21,6 @@ export type VocalProfileTrait = {
 export type VocalProfilePresentation = {
   label: string;
   summary: string;
-  rangeWidthDescription: string;
   observedRange: { label: string; lowMidi: number; highMidi: number; semitones: number };
   practicalRange: { label: string; lowMidi: number; highMidi: number; semitones: number };
   median: { label: string; midi: number };
@@ -46,12 +45,6 @@ function orderedRange(first: number, second: number, fallback: [number, number])
 
 function noteRange(lowMidi: number, highMidi: number) {
   return `${midiToKoreanNoteName(lowMidi)}–${midiToKoreanNoteName(highMidi)}`;
-}
-
-function describeRangeWidth(semitones: number) {
-  if (semitones >= 10.5 && semitones <= 13.5) return "주요 음역 폭은 약 1옥타브예요.";
-  if (semitones >= 22.5 && semitones <= 25.5) return "주요 음역 폭은 약 2옥타브예요.";
-  return `주요 음역 폭은 약 ${Math.max(0, Math.round(semitones))}반음이에요.`;
 }
 
 export function presentVocalProfile(input: VocalProfilePresentationInput): VocalProfilePresentation {
@@ -87,12 +80,10 @@ export function presentVocalProfile(input: VocalProfilePresentationInput): Vocal
   const medianLabel = midiToKoreanNoteName(medianMidi);
   const voicedPercent = Math.round(voiced * 100);
   const voicedDescription = `전체 녹음 중 음높이를 추적할 수 있었던 구간은 약 ${voicedPercent}%예요.`;
-  const rangeWidthDescription = describeRangeWidth(practicalSemitones);
 
   return {
     label,
-    summary: `이번 녹음에서는 ${practicalLabel} 구간의 음이 자주 관찰됐고, ${medianLabel} 부근에 음이 많이 모였어요. ${rangeWidthDescription}`,
-    rangeWidthDescription,
+    summary: `이번 녹음에서는 ${practicalLabel} 구간의 음이 자주 관찰됐고, ${medianLabel} 부근에 음이 많이 모였어요.`,
     observedRange: { label: observedLabel, lowMidi: observedLow, highMidi: observedHigh, semitones: observedSemitones },
     practicalRange: {
       label: practicalLabel,
@@ -107,7 +98,7 @@ export function presentVocalProfile(input: VocalProfilePresentationInput): Vocal
       {
         id: "range",
         label,
-        description: rangeWidthDescription,
+        description: "이번 녹음에서 자주 관찰된 음높이 구간이에요.",
       },
       {
         id: "input",

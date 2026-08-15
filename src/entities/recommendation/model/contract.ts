@@ -137,6 +137,7 @@ export const recommendationRunResponseSchema = z.object({
     analyzerVersion: z.string(),
     tessituraLowMidi: z.number(),
     tessituraHighMidi: z.number(),
+    medianMidi: z.number().optional(),
     minMidi: z.number(),
     maxMidi: z.number(),
     mixing: recommendationMixingCapabilitySchema.optional(),
