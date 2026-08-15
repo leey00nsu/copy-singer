@@ -57,6 +57,7 @@
     - [x] 목록의 모바일/sr-only label과 Storybook/test를 5열 구조에 맞췄다.
     - [x] 곡 상세에 사용자/곡 주요 음역 비교 정보를 추가했다.
     - [x] Library/song-detail UI tests 9/9, Storybook 8/8, TypeScript를 통과했다.
+  - Evidence: `9ff7505` (`feat(F033): 보컬 프로필 목록·곡 비교 UI 단순화`)
 
 - [DONE][PRD-FR-008][PRD-FR-010][PRD-FR-065] T-F033-analysis-insight-recommendation-clarity-03 key-fit scoring v3로 신뢰도 가산 분리
   - Date: 2026-08-15
@@ -70,6 +71,7 @@
     - [x] confidence contribution을 candidate score breakdown에서 제거하고 top-level diagnostic confidence는 유지했다.
     - [x] `calculateProfileConfidence()`와 low-confidence reason을 유지했다.
     - [x] key-fit 20/20, recommendation 30/30, query/contract 32/32와 TypeScript를 통과했다.
+  - Evidence: `6d205db` (`feat(F033): key-fit scoring v3로 신뢰도 가산 분리`)
 
 - [DONE][PRD-FR-011][PRD-FR-012][PRD-FR-049][PRD-FR-065] T-F033-analysis-insight-recommendation-clarity-04 추천 점수·순위·정렬 기준 통일
   - Date: 2026-08-15
@@ -85,8 +87,9 @@
     - [x] sort schema/parser/serializer/projector를 canonical `recommendation-score` 기준으로 갱신하고 legacy alias를 유지했다.
     - [x] 추천 이유의 `편안한/실용 음역` 표현을 이번 녹음의 주요 음역 기반 표현으로 바꿨다.
     - [x] recommendation 30/30, query/contract 32/32, targeted Storybook 12/12, TypeScript를 통과했다.
+  - Evidence: `41c14d3` (`feat(F033): 추천 점수·순위·정렬 기준 통일`)
 
-- [TODO][PRD-FR-065] T-F033-analysis-insight-recommendation-clarity-05 제품 카피·전체 회귀·문서 Evidence 동기화
+- [DONE][PRD-FR-065] T-F033-analysis-insight-recommendation-clarity-05 제품 카피·전체 회귀·문서 Evidence 동기화
   - Date: 2026-08-15
   - Acceptance:
     - 사용자-facing 제품 전반에서 오래된 `실용 음역`, `중앙음`, 대표 `추천 적합도` 용어가 의도치 않게 남지 않는다.
@@ -94,30 +97,30 @@
     - lint/typecheck/build/전체 테스트와 Storybook이 통과한다.
     - 최종 구현 수치와 테스트 Evidence가 plan/decisions/tasks에 동기화된다.
   - Checklist:
-    - [ ] landing/creation funnel/fixture/story copy의 사용자-facing 용어를 audit한다.
-    - [ ] analyzer/DB raw metric 삭제가 없는지 diff/contract로 확인한다.
-    - [ ] targeted vocal/recommendation 테스트를 실행한다.
-    - [ ] `pnpm run lint`, `pnpm exec tsc --noEmit`, `pnpm test`를 통과한다.
-    - [ ] decisions/tasks의 Evidence와 workflow-sync marker를 최신 코드 이후 시각으로 갱신한다.
+    - [x] landing/creation funnel/fixture/story copy의 사용자-facing 용어를 audit하고 오래된 성공 화면 용어를 제거했다.
+    - [x] analyzer/DB raw metric이 analyzer contract와 persistence에 그대로 남아 있음을 source audit로 확인했다.
+    - [x] vocal presentation 12/12, key-fit 20/20, recommendation 30/30과 관련 Storybook을 검증했다.
+    - [x] 최신 코드에서 `pnpm run lint`, `pnpm exec tsc --noEmit`, `pnpm test`를 통과했다. Storybook은 163/163 PASS다.
+    - [x] decisions/tasks의 Evidence와 workflow-sync marker를 최신 코드 이후 시각으로 갱신했다.
 
 ---
 
 ## 완료 조건
 
-- [ ] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
-- [ ] 테스트 실행 및 통과 기록 완료
+- [x] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
+- [x] 테스트 실행 및 통과 기록 완료
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `pnpm run test:vocal-profile-presentation` | `-` | `-` |
-| `pnpm run test:key-fit` | `-` | `-` |
-| `pnpm run test:recommendation` | `-` | `-` |
-| targeted Storybook | `-` | `-` |
-| `pnpm run lint` | `-` | `-` |
-| `pnpm exec tsc --noEmit` | `-` | `-` |
-| `pnpm test` | `-` | `-` |
+| `pnpm run test:vocal-profile-presentation` | `2026-08-15` | `PASS — 12/12` |
+| `pnpm run test:key-fit` | `2026-08-15` | `PASS — 20/20, key-fit-v3 + confidence 비가산 검증` |
+| `pnpm run test:recommendation` | `2026-08-15` | `PASS — 30/30` |
+| targeted Storybook | `2026-08-15` | `PASS — F033 관련 story 검증; 병렬 orb timing 1건은 단독 4/4 재검증 PASS` |
+| `pnpm run lint` | `2026-08-15` | `PASS` |
+| `pnpm exec tsc --noEmit` | `2026-08-15` | `PASS` |
+| `pnpm test` | `2026-08-15` | `PASS — build + unit/integration + FSD + Storybook 163/163` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-15T11:06:23.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-15T11:28:14.000Z -->

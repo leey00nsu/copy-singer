@@ -51,7 +51,24 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: canonical `recommendation-score` sort, legacy alias parsing, selectionScore score/filter/color helper와 server rank 표시를 구현했다. 추천 결과·곡 상세 Storybook에서 `점` 표기와 선택 순위를 검증했다.
   - **머지 후 확인**: Pending
 - **Evidence**:
-  - **Commit**: Pending
+  - **Commit**: `41c14d3` (`feat(F033): 추천 점수·순위·정렬 기준 통일`)
   - **PR**: -
   - **Test/Log**: `pnpm run test:recommendation` 30/30 PASS; `pnpm run test:query` 32/32 PASS; targeted Storybook 12/12 PASS; TypeScript PASS
 - **Consequences**: 목록 대표 추천 점수는 adjusted key-fit score와 수치가 다를 수 있으며, 곡 상세에서 원키/추천키 적합도를 별도 근거로 확인할 수 있다. 기존 sort URL은 읽을 수 있지만 새 URL에는 canonical 값만 기록한다.
+
+## D003: raw 분석 metric은 보존하고 사용자 presentation만 단순화 (2026-08-15)
+
+- **Context**: 성공한 보컬 프로필 화면에 clipping, RMS, sample rate, pitch stability, raw MIDI가 함께 노출되어 내부 QA/분석 단위와 사용자가 실제로 이해해야 할 결과가 섞여 있었다. `tessituraLow/High`도 p10–p90 관찰 구간인데 `실용 음역`으로 표시되어 능력 전체를 측정한 것처럼 읽힐 여지가 있었다.
+- **Constraints**: analyzer rejection, DB persistence, catalog snapshot, mixing/reference selection은 기존 raw metric을 계속 사용해야 하며 데이터 migration이나 analyzer/Modal 재배포를 만들면 안 된다. 한 소절만으로 성별·성종·장르를 추정하지 않는다.
+- **Options**: raw metric 자체를 제거, 상세 접힘 영역으로 유지, 내부 계약은 그대로 두고 성공 화면에서 사용자 의미가 있는 정보만 표시하는 방식을 비교했다.
+- **Decision**: analyzer/DB의 `voicedRatio`, `pitchStability`, `clippingRatio`, `rmsDb`, `sampleRate`, MIDI 통계는 그대로 보존한다. 사용자-facing 성공 화면은 `관측 음역`, p10–p90의 `주요 음역`, p50의 `중심 음`, `유효 음성 구간`, 녹음 길이 중심으로 단순화한다. 음높이는 `레4(D4)`처럼 한국어 계이름과 국제 음이름을 병기하고 raw MIDI decimal은 숨긴다. 보컬 프로필 목록에서는 안정도 컬럼을 제거한다.
+- **Rationale**: 품질 gate와 추천 계산에 필요한 측정값을 잃지 않으면서 사용자는 자신의 녹음에서 실제로 관찰된 정보만 이해하게 된다. 용어가 분석 정의와 일치해 과도한 능력·성별 추론을 줄인다.
+- **Trace**:
+  - **DOING 시작 시점**: analyzer에서 min/max가 2/98 percentile, 주요 구간이 p10/p90, voiced ratio가 valid voiced frame 비율임을 확인했다.
+  - **DONE 전 확정 시점**: 사용자-facing source/story에서 오래된 `실용 음역`, `중앙음`, `추천 적합도`를 제거했고 analyzer/persistence contract에 raw metric이 그대로 존재하는 rg audit를 통과했다.
+  - **머지 후 확인**: Pending
+- **Evidence**:
+  - **Commit**: `7d40e98` (보컬 분석 presentation), `9ff7505` (Library/곡 비교)
+  - **PR**: -
+  - **Test/Log**: vocal presentation 12/12 PASS; key-fit 20/20 PASS; full `pnpm test` PASS; Storybook 163/163 PASS; raw metric source audit PASS
+- **Consequences**: 저장 스키마와 analyzer response는 바뀌지 않아 기존 프로필을 재분석할 필요가 없다. 사용자 화면의 용어와 정보 밀도만 변경된다.
