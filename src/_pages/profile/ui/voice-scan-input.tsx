@@ -2,6 +2,7 @@
 
 import { Activity, CheckCircle2, FileAudio, LoaderCircle, RotateCcw, Upload } from "lucide-react";
 import { type ReactNode, useId } from "react";
+import { TicketConsumptionConfirmDialog } from "@/entities/ticket";
 import { SUPPORTED_AUDIO_UPLOAD_ACCEPT, SUPPORTED_AUDIO_UPLOAD_FORMAT_LABEL } from "@/shared/lib/audio";
 import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
 import { Button } from "@/shared/ui/button";
@@ -133,14 +134,21 @@ export function VoiceScanInput({
             />
 
             <div className="mt-5 grid gap-2 sm:grid-cols-[1fr_auto]">
-              <Button disabled={analysisBusy || !durationAccepted} onClick={onAnalyze} size="lg">
+              <TicketConsumptionConfirmDialog
+                actionName="보컬 분석"
+                confirmLabel="분석 시작"
+                cost={analysisTickets?.cost ?? 0}
+                kind="VOCAL_ANALYSIS"
+                onConfirm={onAnalyze}
+                triggerProps={{ disabled: analysisBusy || !durationAccepted || analysisTickets === null, size: "lg" }}
+              >
                 {analysisBusy ? (
                   <LoaderCircle aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />
                 ) : (
                   <Activity aria-hidden="true" className="size-4" />
                 )}
                 {analysisBusy ? "분석 작업 확인 중…" : "내 보컬 프로필 만들기"}
-              </Button>
+              </TicketConsumptionConfirmDialog>
               <Button disabled={analysisBusy} onClick={onReset} size="lg" variant="outline">
                 <RotateCcw aria-hidden="true" className="size-4" /> 다시 선택
               </Button>

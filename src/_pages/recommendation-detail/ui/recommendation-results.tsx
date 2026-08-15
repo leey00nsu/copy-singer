@@ -204,6 +204,7 @@ export function RecommendationResults({
               onSelect={setSelectedItemId}
               onStart={startItem}
               selectedItemId={selectedItem.id}
+              ticketCost={ticketCost}
             />
           ) : (
             <StatePanel

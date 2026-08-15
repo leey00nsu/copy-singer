@@ -151,6 +151,7 @@ export function SongDetail({
               item={item}
               mixing={run.profile.mixing}
               onStart={(selectedItemId, retry) => startMixing(run, selectedItemId, retry)}
+              ticketCost={ticketCost}
             />
           </div>
         </aside>

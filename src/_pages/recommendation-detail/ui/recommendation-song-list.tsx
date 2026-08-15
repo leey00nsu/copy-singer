@@ -17,12 +17,14 @@ export function RecommendationSongList({
   onStart,
   onSelect,
   selectedItemId,
+  ticketCost,
 }: {
   items: RecommendationItemResponse[];
   mixing?: RecommendationMixingCapability;
   onStart: (itemId: string, retry?: boolean) => void;
   onSelect: (itemId: string) => void;
   selectedItemId: string;
+  ticketCost: number;
 }) {
   const [activeVideoItemId, setActiveVideoItemId] = useState<string | null>(null);
 
@@ -104,7 +106,13 @@ export function RecommendationSongList({
                     </p>
                   </td>
                   <td className="relative z-20 min-w-0 self-end text-right align-middle xl:px-3 xl:py-3 xl:text-left">
-                    <RecommendationMixingAction compact item={item} mixing={mixing} onStart={onStart} />
+                    <RecommendationMixingAction
+                      compact
+                      item={item}
+                      mixing={mixing}
+                      onStart={onStart}
+                      ticketCost={ticketCost}
+                    />
                   </td>
                 </tr>
                 {videoActive ? (

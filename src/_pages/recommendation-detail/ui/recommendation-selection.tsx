@@ -81,7 +81,13 @@ function SelectionDetails({
         <Ticket aria-hidden="true" className="size-4" /> 티켓 {ticketCost}개 사용
       </div>
       <div className="mt-4 grid gap-2">
-        <RecommendationMixingAction idleLabel="이 곡으로 AI 믹싱" item={item} mixing={mixing} onStart={onStart} />
+        <RecommendationMixingAction
+          idleLabel="이 곡으로 AI 믹싱"
+          item={item}
+          mixing={mixing}
+          onStart={onStart}
+          ticketCost={ticketCost}
+        />
         <Link className={buttonVariants({ size: "sm", variant: "ghost" })} href={detailHref}>
           전체 분석 결과 보기 <ArrowUpRight aria-hidden="true" className="size-4" />
         </Link>

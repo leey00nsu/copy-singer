@@ -9,6 +9,7 @@ import {
   type RecommendationMixingCapability,
   recommendationMixingUnavailableDescription,
 } from "@/entities/recommendation";
+import { TicketConsumptionConfirmDialog } from "@/entities/ticket";
 import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
 import { Badge } from "@/shared/ui/badge";
 import { Button, buttonVariants } from "@/shared/ui/button";
@@ -19,12 +20,14 @@ export function RecommendationMixingAction({
   item,
   mixing,
   onStart,
+  ticketCost,
 }: {
   compact?: boolean;
   idleLabel?: string;
   item: RecommendationItemResponse;
   mixing?: RecommendationMixingCapability;
   onStart: (itemId: string, retry?: boolean) => void;
+  ticketCost: number;
 }) {
   const [audioOpen, setAudioOpen] = useState(false);
   const status = item.synthesis.status;
@@ -57,9 +60,16 @@ export function RecommendationMixingAction({
       <div className="flex flex-wrap items-center justify-end gap-2 xl:justify-start">
         <MixingStatusBadge status="failed" />
         {item.synthesis.error?.retryable && !mixingUnavailable ? (
-          <Button onClick={() => onStart(item.id, true)} size="xs" variant="ghost">
+          <TicketConsumptionConfirmDialog
+            actionName="AI 믹싱"
+            confirmLabel="다시 믹싱"
+            cost={ticketCost}
+            kind="AI_MIXING"
+            onConfirm={() => onStart(item.id, true)}
+            triggerProps={{ size: "xs", variant: "ghost" }}
+          >
             <RefreshCw aria-hidden="true" className="size-3" /> 재시도
-          </Button>
+          </TicketConsumptionConfirmDialog>
         ) : null}
       </div>
     );
@@ -80,9 +90,16 @@ export function RecommendationMixingAction({
       );
     }
     return (
-      <Button onClick={() => onStart(item.id)} size="sm">
+      <TicketConsumptionConfirmDialog
+        actionName="AI 믹싱"
+        confirmLabel="AI 믹싱 시작"
+        cost={ticketCost}
+        kind="AI_MIXING"
+        onConfirm={() => onStart(item.id)}
+        triggerProps={{ size: "sm" }}
+      >
         <Sparkles className="size-4" aria-hidden="true" /> {idleLabel}
-      </Button>
+      </TicketConsumptionConfirmDialog>
     );
   }
 
@@ -127,9 +144,16 @@ export function RecommendationMixingAction({
         {item.synthesis.error?.detail ?? "잠시 뒤 다시 시도해 주세요."}
       </p>
       {item.synthesis.error?.retryable && !mixingUnavailable ? (
-        <Button onClick={() => onStart(item.id, true)} size="sm" variant="outline">
+        <TicketConsumptionConfirmDialog
+          actionName="AI 믹싱"
+          confirmLabel="다시 믹싱"
+          cost={ticketCost}
+          kind="AI_MIXING"
+          onConfirm={() => onStart(item.id, true)}
+          triggerProps={{ size: "sm", variant: "outline" }}
+        >
           <RefreshCw className="size-4" aria-hidden="true" /> 다시 시도
-        </Button>
+        </TicketConsumptionConfirmDialog>
       ) : (
         <Link className={buttonVariants({ size: "sm", variant: "outline" })} href="/profile">
           <Mic2 className="size-4" aria-hidden="true" /> 새 프로필 분석하기

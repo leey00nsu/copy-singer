@@ -244,6 +244,16 @@ export const Ready: Story = {
     await expect(canvas.getByText("분석할 오디오가 준비됐어요")).toBeVisible();
     await expect(canvas.getByTestId("audio-duration-notice")).toHaveAttribute("data-audio-status", "valid");
     await userEvent.click(canvas.getByRole("button", { name: "내 보컬 프로필 만들기" }));
+    const firstDialog = within(document.body).getByRole("dialog", { name: "분석 티켓 1장을 사용할까요?" });
+    await waitFor(() => expect(firstDialog).toBeVisible());
+    await expect(within(firstDialog).getByText("분석 티켓 1장")).toBeVisible();
+    await expect(args.onAnalyze).not.toHaveBeenCalled();
+    await userEvent.click(within(firstDialog).getByRole("button", { name: "취소" }));
+    await expect(args.onAnalyze).not.toHaveBeenCalled();
+
+    await userEvent.click(canvas.getByRole("button", { name: "내 보컬 프로필 만들기" }));
+    const confirmDialog = within(document.body).getByRole("dialog", { name: "분석 티켓 1장을 사용할까요?" });
+    await userEvent.click(within(confirmDialog).getByRole("button", { name: "분석 시작" }));
     await expect(args.onAnalyze).toHaveBeenCalledOnce();
   },
 };
