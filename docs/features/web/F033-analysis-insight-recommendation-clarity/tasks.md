@@ -45,7 +45,7 @@
     - [x] presentation/UI/contract targeted tests와 Storybook 7/7, TypeScript를 통과했다.
   - Evidence: `7d40e98` (`feat(F033): 보컬 분석 용어·음이름·요약 정리`)
 
-- [TODO][PRD-FR-065] T-F033-analysis-insight-recommendation-clarity-02 보컬 프로필 목록·곡 비교 UI 단순화
+- [DONE][PRD-FR-065] T-F033-analysis-insight-recommendation-clarity-02 보컬 프로필 목록·곡 비교 UI 단순화
   - Date: 2026-08-15
   - Acceptance:
     - 보컬 프로필 Library에서 안정도 컬럼이 제거되고 pending/failed row도 동일한 5열 구조를 사용한다.
@@ -53,10 +53,10 @@
     - 곡 상세에서 내 주요 음역과 곡 주요 음역을 같은 음이름 규칙으로 비교할 수 있다.
     - 관리자 catalog 운영용 분석 정보는 변경하지 않는다.
   - Checklist:
-    - [ ] Library grid/header/row/job placeholder에서 안정도 컬럼을 제거한다.
-    - [ ] 목록의 모바일/sr-only label과 Storybook/test를 5열 구조에 맞춘다.
-    - [ ] 곡 상세에 사용자/곡 주요 음역 비교 정보를 추가한다.
-    - [ ] 관련 Library/song-detail 테스트와 Storybook을 통과한다.
+    - [x] Library grid/header/row/job placeholder에서 안정도 컬럼을 제거했다.
+    - [x] 목록의 모바일/sr-only label과 Storybook/test를 5열 구조에 맞췄다.
+    - [x] 곡 상세에 사용자/곡 주요 음역 비교 정보를 추가했다.
+    - [x] Library/song-detail UI tests 9/9, Storybook 8/8, TypeScript를 통과했다.
 
 - [TODO][PRD-FR-008][PRD-FR-010][PRD-FR-065] T-F033-analysis-insight-recommendation-clarity-03 key-fit scoring v3로 신뢰도 가산 분리
   - Date: 2026-08-15
