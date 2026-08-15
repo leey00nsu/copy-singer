@@ -12,7 +12,7 @@
   - **DONE 전 확정 시점**: 서버는 `profileQuota`와 `analysisTickets`를 함께 계산하고, UI는 두 값을 별도 표시하며 삭제는 슬롯만 복구하는 계약을 유지한다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: 구현 커밋 후 동기화
+  - **Commit**: `69c51de` (`feat(F031): 회귀 검증과 문서 동기화`)
   - **PR**: -
   - **Test/Log**: vocal analysis queue 8/8 PASS; targeted profile Storybook 포함 최종 전체 Storybook 156/156 PASS.
 - **Consequences**: 분석 화면은 슬롯 사용량과 분석 티켓 잔액을 함께 보여줘야 한다.
@@ -29,7 +29,7 @@
   - **DONE 전 확정 시점**: `TicketWallet(userId, kind)`가 잔액 SSOT가 되고 모든 debit/refund/admin adjustment가 동일 서비스에서 kind를 명시하도록 정리했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: 구현 커밋 후 동기화
+  - **Commit**: `69c51de` (`feat(F031): 회귀 검증과 문서 동기화`)
   - **PR**: -
   - **Test/Log**: ticket wallet integration 1/1 PASS; API/query/account targeted 24/24 PASS; FSD 4/4 PASS.
 - **Consequences**: Prisma migration과 기존 ticket API/UI 전반의 additive/breaking internal contract 변경이 필요하다.
@@ -46,7 +46,7 @@
   - **DONE 전 확정 시점**: 기존 AI_MIXING `SIGNUP_GRANT`가 있으면 새 mixing 가입 지급을 재생성하지 않고, 새 VOCAL_ANALYSIS 지급만 독립적으로 보장하도록 ensure 로직을 고정했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: 구현 커밋 후 동기화
+  - **Commit**: `69c51de` (`feat(F031): 회귀 검증과 문서 동기화`)
   - **PR**: -
   - **Test/Log**: `pnpm run db:migrate:deploy` PASS; ticket wallet signup/idempotency integration 1/1 PASS.
 - **Consequences**: 기존 사용자에게 새 분석 티켓은 별도 가입 지급 정책으로 최초 1회 생성해야 한다.
@@ -63,7 +63,7 @@
   - **DONE 전 확정 시점**: 브라우저는 최대치/비용을 하드코딩하지 않고 analysis API가 반환하는 `profileQuota`와 `analysisTickets`만 소비한다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: 구현 커밋 후 동기화
+  - **Commit**: `69c51de` (`feat(F031): 회귀 검증과 문서 동기화`)
   - **PR**: -
   - **Test/Log**: ESLint PASS; `tsc --noEmit` PASS; 최종 `pnpm test` PASS.
 - **Consequences**: `.env.example`과 운영 환경 설정 변경이 필요하다.
@@ -80,7 +80,7 @@
   - **DONE 전 확정 시점**: `ticketCost` snapshot, idempotent refund key, REQUIRED reconciliation을 적용해 retry 중 미환불·terminal failure 1회 환불을 보장했다. 동일 idempotency 경합 시 중복 source asset도 정리한다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: 구현 커밋 후 동기화
+  - **Commit**: `69c51de` (`feat(F031): 회귀 검증과 문서 동기화`)
   - **PR**: -
   - **Test/Log**: vocal analysis queue/refund/idempotency 8/8 PASS; mixing debit/refund integration 1/1 PASS.
 - **Consequences**: analysis worker에 refund reconciliation과 ticket ledger relation이 추가된다.
@@ -97,7 +97,7 @@
   - **DONE 전 확정 시점**: 티켓 0장은 분석 티켓 필요 안내만 보여주고, 슬롯 만석은 `/library?tab=profiles`의 `보컬 프로필 관리` action을 제공한다. 계정/메뉴/관리자도 분석·믹싱 티켓을 구분한다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: 구현 커밋 후 동기화
+  - **Commit**: `69c51de` (`feat(F031): 회귀 검증과 문서 동기화`)
   - **PR**: -
   - **Test/Log**: targeted Storybook 26/26 PASS; admin UI/integration 4/4 + 1/1 PASS; 최종 Storybook 156/156 PASS.
 - **Consequences**: profile workbench가 두 정책 상태를 한 API 응답에서 함께 소비한다.

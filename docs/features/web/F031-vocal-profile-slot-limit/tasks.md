@@ -102,7 +102,7 @@
     - [x] 관련 Storybook을 실행했다. 비결정적 기존 Storybook 대기 조건도 안정화해 최종 156/156 PASS를 확인했다.
     - [x] `pnpm run lint`와 `pnpm exec tsc --noEmit`을 실행했다.
     - [x] 최종 `pnpm test`를 실행하고 전체 PASS를 확인했다.
-    - [x] decisions/tasks에 구현·검증 Evidence를 정리했고 구현 커밋 후 hash만 후속 sync한다.
+    - [x] decisions/tasks 구현·검증 Evidence를 구현 커밋 `69c51de`와 동기화했다.
 
 ---
 
@@ -127,4 +127,6 @@
 | `pnpm exec tsc --noEmit` | `2026-08-15` | `PASS` |
 | `pnpm test` | `2026-08-15` | `PASS — build + unit/integration + Storybook 156/156` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-15T07:13:39.000Z -->
+- **구현 커밋**: `69c51de` (`feat(F031): 회귀 검증과 문서 동기화`)
+
+<!-- lee-spec-kit:workflow-sync 2026-08-15T07:18:18.000Z -->
