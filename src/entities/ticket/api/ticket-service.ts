@@ -33,7 +33,10 @@ function prismaErrorCode(error: unknown) {
 }
 
 function isTransactionWriteConflict(error: unknown) {
-  return prismaErrorCode(error) === "P2034" || (error instanceof Error && error.message === "TransactionWriteConflict");
+  return (
+    prismaErrorCode(error) === "P2034" ||
+    (error instanceof Error && /TransactionWriteConflict|write conflict|deadlock/i.test(error.message))
+  );
 }
 
 function validateTicketChange(input: TicketChange) {

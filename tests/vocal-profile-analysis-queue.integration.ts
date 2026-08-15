@@ -240,46 +240,99 @@ test("analysis admission rejects empty analysis-ticket wallets before storing me
   }
 });
 
-test("analysis admission rejects full profile slots before storing media", async (context) => {
+test("analysis admission ignores existing profile count when analysis tickets remain", async (context) => {
   if (!process.env.DATABASE_URL) return context.skip("DATABASE_URL is not configured");
+  const previousFetch = globalThis.fetch;
+  const previousEnv = {
+    grant: process.env.SIGNUP_VOCAL_ANALYSIS_TICKET_GRANT,
+    cost: process.env.VOCAL_PROFILE_ANALYSIS_TICKET_COST,
+    baseUrl: process.env.LEEMAGE_BASE_URL,
+    apiKey: process.env.LEEMAGE_API_KEY,
+    projectId: process.env.LEEMAGE_PROJECT_ID,
+  };
+  process.env.SIGNUP_VOCAL_ANALYSIS_TICKET_GRANT = "5";
+  process.env.VOCAL_PROFILE_ANALYSIS_TICKET_COST = "1";
+  process.env.LEEMAGE_BASE_URL = "https://leemage.example/api/v1";
+  process.env.LEEMAGE_API_KEY = "test-key";
+  process.env.LEEMAGE_PROJECT_ID = "project";
   const { prisma, userId } = await withUser();
-  const previousLimit = process.env.VOCAL_PROFILE_MAX_USER_PROFILES;
-  process.env.VOCAL_PROFILE_MAX_USER_PROFILES = "1";
+  globalThis.fetch = (async (input, init) => {
+    const url = String(input);
+    if (url.endsWith("/files/presign")) {
+      return Response.json({
+        presignedUrl: "https://objects.example/unlimited-profile-upload",
+        objectName: "project/unlimited-profile.wav",
+        fileId: `unlimited-profile-${userId}`,
+      });
+    }
+    if (url === "https://objects.example/unlimited-profile-upload" && init?.method === "PUT") {
+      return new Response(null, { status: 200 });
+    }
+    if (url.endsWith("/files/confirm")) {
+      return Response.json(
+        { file: { id: `unlimited-profile-${userId}`, url: "https://objects.example/unlimited-profile.wav" } },
+        { status: 201 },
+      );
+    }
+    throw new Error(`Unexpected URL ${url} ${init?.method ?? "GET"}`);
+  }) as typeof fetch;
+
   try {
-    const recording = await prisma.recording.create({
-      data: {
-        kind: "USER_TEST",
-        storagePath: `slot-test-${crypto.randomUUID()}`,
-        mimeType: "audio/wav",
-        status: "READY",
-      },
-    });
-    await prisma.vocalProfile.create({
-      data: {
-        userId,
-        profileNumber: 1,
-        displayName: "보컬 프로필 1",
-        sourceType: "USER",
-        recordingId: recording.id,
-        analyzer: "test",
-        analyzerVersion: "1",
-      },
-    });
+    for (let profileNumber = 1; profileNumber <= 5; profileNumber += 1) {
+      const recording = await prisma.recording.create({
+        data: {
+          kind: "USER_TEST",
+          storagePath: `unlimited-profile-${profileNumber}-${crypto.randomUUID()}`,
+          mimeType: "audio/wav",
+          status: "READY",
+        },
+      });
+      await prisma.vocalProfile.create({
+        data: {
+          userId,
+          profileNumber,
+          displayName: `보컬 프로필 ${profileNumber}`,
+          sourceType: "USER",
+          recordingId: recording.id,
+          analyzer: "test",
+          analyzerVersion: "1",
+        },
+      });
+    }
+
     const { enqueueVocalProfileAnalysis, getVocalProfileAnalysisPolicy } = await import(
       "../src/features/analyze-vocal-profile/index.server"
     );
     const policy = await getVocalProfileAnalysisPolicy(userId);
-    assert.deepEqual(policy.profileQuota, { used: 1, limit: 1, remaining: 0 });
+    assert.deepEqual(policy, { analysisTickets: { balance: 5, cost: 1 } });
+
     const file = new File([Uint8Array.from([1, 2, 3, 4])], "voice.wav", { type: "audio/wav" });
-    await assert.rejects(
-      () => enqueueVocalProfileAnalysis({ userId, idempotencyKey: "full-profile-slots", file }),
-      (error: unknown) => error instanceof Error && error.message === "PROFILE_LIMIT_REACHED",
-    );
-    assert.equal(await prisma.vocalProfileAnalysisJob.count({ where: { userId } }), 0);
-    assert.equal(await prisma.mediaAsset.count({ where: { userId } }), 0);
+    const job = await enqueueVocalProfileAnalysis({
+      userId,
+      idempotencyKey: "existing-profiles-do-not-block",
+      file,
+    });
+
+    assert.ok(job.id);
+    assert.equal(await prisma.vocalProfile.count({ where: { userId, sourceType: "USER" } }), 5);
+    assert.equal(await prisma.vocalProfileAnalysisJob.count({ where: { userId } }), 1);
+    assert.equal(await prisma.mediaAsset.count({ where: { userId } }), 1);
+    const wallet = await prisma.ticketWallet.findUniqueOrThrow({
+      where: { userId_kind: { userId, kind: "VOCAL_ANALYSIS" } },
+    });
+    assert.equal(wallet.balance, 4);
   } finally {
-    if (previousLimit === undefined) delete process.env.VOCAL_PROFILE_MAX_USER_PROFILES;
-    else process.env.VOCAL_PROFILE_MAX_USER_PROFILES = previousLimit;
+    globalThis.fetch = previousFetch;
+    if (previousEnv.grant === undefined) delete process.env.SIGNUP_VOCAL_ANALYSIS_TICKET_GRANT;
+    else process.env.SIGNUP_VOCAL_ANALYSIS_TICKET_GRANT = previousEnv.grant;
+    if (previousEnv.cost === undefined) delete process.env.VOCAL_PROFILE_ANALYSIS_TICKET_COST;
+    else process.env.VOCAL_PROFILE_ANALYSIS_TICKET_COST = previousEnv.cost;
+    if (previousEnv.baseUrl === undefined) delete process.env.LEEMAGE_BASE_URL;
+    else process.env.LEEMAGE_BASE_URL = previousEnv.baseUrl;
+    if (previousEnv.apiKey === undefined) delete process.env.LEEMAGE_API_KEY;
+    else process.env.LEEMAGE_API_KEY = previousEnv.apiKey;
+    if (previousEnv.projectId === undefined) delete process.env.LEEMAGE_PROJECT_ID;
+    else process.env.LEEMAGE_PROJECT_ID = previousEnv.projectId;
     await cleanupUser(userId);
   }
 });

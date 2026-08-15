@@ -156,11 +156,6 @@ export type VocalProfileAnalysisJobResponse = z.infer<typeof vocalProfileAnalysi
 
 export const vocalProfileAnalysisJobListSchema = z.object({
   jobs: z.array(vocalProfileAnalysisJobResponseSchema),
-  profileQuota: z.object({
-    used: z.number().int().nonnegative(),
-    limit: z.number().int().positive(),
-    remaining: z.number().int().nonnegative(),
-  }),
   analysisTickets: z.object({
     balance: z.number().int().nonnegative(),
     cost: z.number().int().nonnegative(),

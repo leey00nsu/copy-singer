@@ -30,7 +30,6 @@ const meta = {
     audioDuration: null,
     audioFile: null,
     audioUrl: null,
-    profileQuota: { used: 1, limit: 3, remaining: 2 },
     analysisTickets: { balance: 4, cost: 1 },
     onAnalyze: fn(),
     onRecordingComplete: fn(),
@@ -66,6 +65,8 @@ export const Idle: Story = {
     await expect(canvas.getByText("한 소절이면 충분해요")).toBeVisible();
     await expect(canvas.getByText("10초 정도 편하게 불러주세요.")).toBeVisible();
     await expect(canvas.getByRole("button", { name: "녹음 시작" })).toBeVisible();
+    await expect(canvas.getByText("분석 티켓").closest("div")).toHaveTextContent("4장");
+    await expect(canvas.queryByText("보컬 프로필")).not.toBeInTheDocument();
     await expect(canvas.getByLabelText("녹음 파일로 분석하기")).toHaveAttribute("accept", EXPECTED_AUDIO_ACCEPT);
     await expect(canvas.getByText("지원 형식: WAV · MP3 · M4A · WEBM · 최대 25MB / 60초")).toBeVisible();
     await expect(canvas.queryByTestId("recording-elapsed-time")).not.toBeInTheDocument();
@@ -257,21 +258,6 @@ export const AnalysisTicketsEmpty: Story = {
     await expect(canvas.getByText("분석 티켓").closest("div")).toHaveTextContent("0장");
     await expect(canvas.queryByRole("button", { name: "녹음 시작" })).not.toBeInTheDocument();
     await expect(canvas.queryByRole("link", { name: "보컬 프로필 관리" })).not.toBeInTheDocument();
-  },
-};
-
-export const ProfileSlotsFull: Story = {
-  args: {
-    profileQuota: { used: 3, limit: 3, remaining: 0 },
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await expect(canvas.getByText("보컬 프로필을 모두 사용하고 있어요")).toBeVisible();
-    await expect(canvas.getByRole("link", { name: "보컬 프로필 관리" })).toHaveAttribute(
-      "href",
-      "/library?tab=profiles",
-    );
-    await expect(canvas.queryByRole("button", { name: "녹음 시작" })).not.toBeInTheDocument();
   },
 };
 

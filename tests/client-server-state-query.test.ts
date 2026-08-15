@@ -172,7 +172,6 @@ test("vocal analysis polling continues only for active jobs or retryable transpo
     updatedAt: "2026-08-09T00:00:00.000Z",
   };
   const policy = {
-    profileQuota: { used: 1, limit: 3, remaining: 2 },
     analysisTickets: { balance: 4, cost: 1 },
   };
   assert.equal(analysisJobPollingInterval(job, null), 1_500);

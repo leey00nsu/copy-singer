@@ -2,11 +2,7 @@ import "server-only";
 
 import { applyTicketChangeInTransaction, InsufficientTicketsError } from "@/entities/ticket/index.server";
 import { serializeProfile } from "@/entities/vocal-profile/index.server";
-import {
-  vocalProfileAnalysisMaxAttempts,
-  vocalProfileAnalysisTicketCost,
-  vocalProfileMaxUserProfiles,
-} from "@/shared/config/index.server";
+import { vocalProfileAnalysisMaxAttempts, vocalProfileAnalysisTicketCost } from "@/shared/config/index.server";
 import { prisma } from "@/shared/db/index.server";
 import { isSupportedAudioUploadMimeType, normalizeAudioUploadMimeType } from "@/shared/lib/audio";
 import { discardMediaAsset, storeAnalyzerReferenceBytes } from "@/shared/media/index.server";
@@ -79,21 +75,19 @@ function prismaErrorCode(error: unknown) {
 }
 
 function isTransactionWriteConflict(error: unknown) {
-  return prismaErrorCode(error) === "P2034" || (error instanceof Error && error.message === "TransactionWriteConflict");
+  return (
+    prismaErrorCode(error) === "P2034" ||
+    (error instanceof Error && /TransactionWriteConflict|write conflict|deadlock/i.test(error.message))
+  );
 }
 
 export async function getVocalProfileAnalysisPolicy(userId: string) {
-  const limit = vocalProfileMaxUserProfiles();
   const cost = vocalProfileAnalysisTicketCost();
-  const [used, wallet] = await Promise.all([
-    prisma.vocalProfile.count({ where: { userId, sourceType: "USER" } }),
-    prisma.ticketWallet.findUnique({
-      where: { userId_kind: { userId, kind: "VOCAL_ANALYSIS" } },
-      select: { balance: true },
-    }),
-  ]);
+  const wallet = await prisma.ticketWallet.findUnique({
+    where: { userId_kind: { userId, kind: "VOCAL_ANALYSIS" } },
+    select: { balance: true },
+  });
   return {
-    profileQuota: { used, limit, remaining: Math.max(0, limit - used) },
     analysisTickets: { balance: wallet?.balance ?? 0, cost },
   };
 }
@@ -106,7 +100,6 @@ export async function enqueueVocalProfileAnalysis(input: { userId: string; idemp
   if (await hasActiveAnalysisJob(input.userId)) throw new Error("ANALYSIS_BUSY");
 
   const policy = await getVocalProfileAnalysisPolicy(input.userId);
-  if (policy.profileQuota.used >= policy.profileQuota.limit) throw new Error("PROFILE_LIMIT_REACHED");
 
   const mimeType = normalizeAudioUploadMimeType(input.file.type);
   if (!isSupportedAudioUploadMimeType(mimeType)) throw new Error("UNSUPPORTED_AUDIO");
@@ -140,9 +133,6 @@ export async function enqueueVocalProfileAnalysis(input: { userId: string; idemp
               where: { userId: input.userId, status: { in: ["PENDING", "PROCESSING"] } },
             });
             if (active > 0) throw new Error("ANALYSIS_BUSY");
-
-            const profileCount = await tx.vocalProfile.count({ where: { userId: input.userId, sourceType: "USER" } });
-            if (profileCount >= vocalProfileMaxUserProfiles()) throw new Error("PROFILE_LIMIT_REACHED");
 
             const job = await tx.vocalProfileAnalysisJob.create({
               data: {

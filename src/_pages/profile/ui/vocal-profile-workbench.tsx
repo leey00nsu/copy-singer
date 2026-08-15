@@ -351,7 +351,6 @@ export function VocalProfileWorkbench() {
           onSelectFile={(file) => void selectFile(file)}
           preparationProgress={preparationProgress}
           preparing={preparingAudio}
-          profileQuota={analysisPolicyQuery.data?.profileQuota ?? null}
           recorderIssue={recorderIssue}
           recorderState={recorderState}
         />
