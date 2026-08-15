@@ -85,7 +85,24 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 분석 용어의 MIDI 설명, 음역 폭 문장, 제출 오디오 소유권 문구가 사용자-facing source에서 제거됐고, 현재 recommendation run은 사용자 `medianMidi`를 반환해 곡 상세의 양쪽 음역 카드가 모두 중심 음을 표시한다. legacy recommendation payload는 optional additive field로 계속 parse하며 `키 조정 변화` 카드는 제거됐다.
   - **머지 후 확인**: Pending
 - **Evidence**:
-  - **Commit**: implementation commit pending
+  - **Commit**: `123e770` (`feat(F033): 사용자 피드백 기반 분석 상세 정보 정리`)
   - **PR**: -
   - **Test/Log**: vocal presentation 12/12 PASS; recommendation 30/30 PASS; query 32/32 PASS; targeted Storybook 9/9 PASS; TypeScript PASS; full `pnpm test` PASS; Storybook 163/163 PASS
 - **Consequences**: 현재 recommendation run response의 `profile` payload에 `medianMidi`가 추가되며 기존 필드는 유지된다. 클라이언트 schema는 기존 cached/legacy payload를 깨지 않도록 `medianMidi`를 optional additive field로 수용하고, 새 서버 응답에서는 값을 항상 제공한다. 사용자-facing 정보량은 줄지만 내부 분석 및 scoring 계약은 그대로 유지된다.
+
+## D005: 랜딩 이용 방법 CTA는 기존 섹션 anchor를 직접 사용 (2026-08-16)
+
+- **Context**: 랜딩 hero의 보조 CTA `어떻게 되는지 보기`는 `#how-it-works`로 이동했지만, 사용자는 이 CTA를 `이용 방법 보기`로 바꾸고 `한 소절로 시작해, 내 목소리로 완성.` 섹션으로 바로 이동하도록 요청했다.
+- **Constraints**: hero primary CTA, landing section 순서와 레이아웃은 바꾸지 않고 추가 client state나 scroll handler를 만들지 않는다.
+- **Options**: (1) JavaScript `scrollIntoView()` handler 추가, (2) 대상 섹션에 새 id를 추가, (3) 이미 대상 섹션에 있는 `id="product-story"`를 native anchor로 직접 연결하는 방식을 비교했다.
+- **Decision**: 보조 CTA label을 `이용 방법 보기`로 변경하고 `href="#product-story"`를 사용한다. 대상 섹션의 기존 id는 유지한다.
+- **Rationale**: 브라우저 기본 anchor 이동만으로 요구사항을 충족해 코드와 접근성 동작을 단순하게 유지하고, 별도 scroll 로직이나 hydration 의존성을 추가하지 않는다.
+- **Trace**:
+  - **DOING 시작 시점**: 현재 CTA가 `#how-it-works`를 가리키고 요청한 제목 섹션은 이미 `id="product-story"`를 사용함을 확인했다.
+  - **DONE 전 확정 시점**: landing Storybook에서 `이용 방법 보기` control의 `href="#product-story"`, 대상 section id, 대상 heading 존재와 기존 문구 부재를 검증했다.
+  - **머지 후 확인**: Pending
+- **Evidence**:
+  - **Commit**: Pending
+  - **PR**: -
+  - **Test/Log**: landing Storybook 4/4 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS
+- **Consequences**: CTA를 누르면 별도 script 없이 브라우저가 `한 소절로 시작해, 내 목소리로 완성.` 섹션으로 이동하며 URL hash는 `#product-story`가 된다.
