@@ -21,7 +21,7 @@ import { StatusNotice } from "@/shared/ui/status-notice";
 import { LibraryPagination } from "./library-pagination";
 
 const PROFILE_ROW_GRID_CLASS =
-  "grid grid-cols-2 gap-3 md:grid-cols-[minmax(0,2fr)_minmax(8rem,1fr)_minmax(6rem,.75fr)_minmax(5rem,.6fr)_minmax(5rem,.6fr)_minmax(7rem,.75fr)] md:items-center md:gap-0";
+  "grid grid-cols-2 gap-3 md:grid-cols-[minmax(0,2fr)_minmax(8rem,1fr)_minmax(7rem,.85fr)_minmax(5rem,.65fr)_minmax(7rem,.75fr)] md:items-center md:gap-0";
 
 function analysisJobCopy(job: VocalProfileAnalysisJobResponse) {
   if (job.status === "processing") {
@@ -118,9 +118,6 @@ function VocalProfileAnalysisJobRows({ jobs }: { jobs: VocalProfileAnalysisJobRe
             <p className="text-xs text-muted-foreground" data-profile-column="range">
               <span className="md:sr-only">음역 </span>—
             </p>
-            <p className="text-xs text-muted-foreground" data-profile-column="stability">
-              <span className="md:sr-only">안정도 </span>—
-            </p>
             <p className="text-xs text-muted-foreground" data-profile-column="mixes">
               <span className="md:sr-only">AI 믹싱 </span>—
             </p>
@@ -175,11 +172,10 @@ export function VocalProfileLibrary({
         <p aria-live="polite">보컬 프로필 {history.total}개</p>
         <p>최신 분석순</p>
       </div>
-      <div className="hidden grid-cols-[minmax(0,2fr)_minmax(8rem,1fr)_minmax(6rem,.75fr)_minmax(5rem,.6fr)_minmax(5rem,.6fr)_minmax(7rem,.75fr)] border-y bg-muted/15 px-3 py-2 text-[11px] font-medium text-muted-foreground md:grid">
+      <div className="hidden grid-cols-[minmax(0,2fr)_minmax(8rem,1fr)_minmax(7rem,.85fr)_minmax(5rem,.65fr)_minmax(7rem,.75fr)] border-y bg-muted/15 px-3 py-2 text-[11px] font-medium text-muted-foreground md:grid">
         <span>프로필 이름</span>
         <span>생성일</span>
-        <span>음역 (최저–최고)</span>
-        <span>안정도</span>
+        <span>주요 음역</span>
         <span>AI 믹싱</span>
         <span>상태</span>
       </div>
@@ -216,10 +212,6 @@ export function VocalProfileLibrary({
               <p className="text-xs font-medium" data-profile-column="range">
                 <span className="mr-1 text-[10px] font-normal text-muted-foreground md:sr-only">음역</span>
                 {presentation.practicalRange.label}
-              </p>
-              <p className="text-xs font-medium tabular-nums" data-profile-column="stability">
-                <span className="mr-1 text-[10px] font-normal text-muted-foreground md:sr-only">안정도</span>
-                {presentation.stability.percent}%
               </p>
               <p className="text-[11px] text-muted-foreground sm:text-xs" data-profile-column="mixes">
                 <span className="mr-1 text-[10px] md:sr-only">AI 믹싱</span>

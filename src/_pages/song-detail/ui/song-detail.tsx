@@ -12,7 +12,7 @@ import {
   visibleRecommendationReasons,
   YouTubeVideo,
 } from "@/entities/recommendation";
-import { VocalRangeProfile } from "@/entities/vocal-profile";
+import { midiToKoreanNoteName, VocalRangeProfile } from "@/entities/vocal-profile";
 import { RecommendationMixingAction, useRecommendationMixing } from "@/features/create-mixing";
 import { Badge } from "@/shared/ui/badge";
 import { buttonVariants } from "@/shared/ui/button";
@@ -51,6 +51,10 @@ export function SongDetail({
   const shift = item.recommendedShift;
   const scoreGain = Math.round(item.adjustedScore) - Math.round(item.originalKeyScore);
   const visibleReasons = visibleRecommendationReasons(item);
+  const userMajorRange = `${midiToKoreanNoteName(run.profile.tessituraLowMidi)}–${midiToKoreanNoteName(run.profile.tessituraHighMidi)}`;
+  const songMajorRange = item.songProfile
+    ? `${midiToKoreanNoteName(item.songProfile.tessituraLowMidi)}–${midiToKoreanNoteName(item.songProfile.tessituraHighMidi)}`
+    : null;
 
   return (
     <div className="mx-auto w-full max-w-[72rem] px-5 py-10 sm:px-7 lg:px-8 lg:py-12">
@@ -110,7 +114,26 @@ export function SongDetail({
           </div>
         </dl>
         <div className="mt-8 rounded-3xl bg-muted/55 p-4 sm:p-6" data-song-analysis-chapter="vocal-range">
-          <VocalRangeProfile profile={run.profile} title="내 목소리 음역" />
+          <div>
+            <h3 className="text-sm font-semibold">주요 음역 비교</h3>
+            <p className="mt-1 text-xs leading-5 text-muted-foreground">
+              이번 녹음과 곡 보컬 분석에서 자주 관찰된 음높이 구간을 같은 기준으로 비교해요.
+            </p>
+          </div>
+          <dl className="mt-4 grid gap-1 rounded-2xl bg-muted/55 p-1 sm:grid-cols-2">
+            <div className="rounded-xl bg-background px-4 py-4">
+              <dt className="text-xs text-muted-foreground">내 주요 음역</dt>
+              <dd className="mt-1.5 text-sm font-semibold">{userMajorRange}</dd>
+            </div>
+            <div className="rounded-xl bg-background px-4 py-4">
+              <dt className="text-xs text-muted-foreground">곡 주요 음역</dt>
+              <dd className="mt-1.5 text-sm font-semibold">{songMajorRange ?? "분석 정보 없음"}</dd>
+            </div>
+          </dl>
+          <div className={`mt-6 grid gap-6 ${item.songProfile ? "lg:grid-cols-2" : ""}`}>
+            <VocalRangeProfile profile={run.profile} title="내 음역" />
+            {item.songProfile ? <VocalRangeProfile profile={item.songProfile} title="곡 보컬 음역" /> : null}
+          </div>
         </div>
       </section>
 

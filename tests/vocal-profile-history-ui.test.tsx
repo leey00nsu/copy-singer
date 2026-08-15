@@ -64,7 +64,7 @@ test("vocal profile history renders persisted analysis and detail navigation", (
     />,
   );
   assert.match(markup, /보컬 프로필/);
-  assert.match(markup, /안정도/);
+  assert.doesNotMatch(markup, /안정도|data-profile-column="stability"/);
   assert.match(markup, /보컬 프로필 1개/);
   assert.match(markup, /최신 분석순/);
   assert.match(markup, /AI 믹싱/);
@@ -72,7 +72,8 @@ test("vocal profile history renders persisted analysis and detail navigation", (
   assert.match(markup, /사용 가능/);
   assert.match(markup, /data-profile-column="mixes"/);
   assert.match(markup, /data-profile-column="status"/);
-  assert.equal((markup.match(/data-profile-column=/g) ?? []).length, 6);
+  assert.equal((markup.match(/data-profile-column=/g) ?? []).length, 5);
+  assert.match(markup, /도3\(C3\).*솔♯3\(G♯3\)/);
   assert.doesNotMatch(markup, /추천 2/);
   assert.match(markup, /\/vocal-profiles\/profile-id/);
 });
@@ -98,10 +99,10 @@ test("vocal profile history shows queued analysis instead of an empty state", ()
   assert.match(markup, /보컬 프로필 분석 대기 중/);
   assert.match(markup, /data-analysis-job-row="pending"/);
   assert.match(markup, /data-profile-column="range"/);
-  assert.match(markup, /data-profile-column="stability"/);
+  assert.doesNotMatch(markup, /data-profile-column="stability"/);
   assert.match(markup, /data-profile-column="mixes"/);
   assert.match(markup, /data-profile-column="status"/);
-  assert.equal((markup.match(/data-profile-column=/g) ?? []).length, 6);
+  assert.equal((markup.match(/data-profile-column=/g) ?? []).length, 5);
   assert.match(markup, /aria-busy="true"/);
   assert.doesNotMatch(markup, /href="\/vocal-profiles\//);
   assert.doesNotMatch(markup, /아직 저장된 보컬 프로필이 없어요/);

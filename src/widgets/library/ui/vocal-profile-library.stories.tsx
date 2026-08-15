@@ -105,7 +105,7 @@ export const SavedProfile: Story = {
     );
     await expect(canvasElement.querySelectorAll("[data-profile-artwork]")).toHaveLength(1);
     await expect(canvas.getByText("사용 가능")).toBeVisible();
-    await expect(canvasElement.querySelectorAll("[data-profile-column]")).toHaveLength(6);
+    await expect(canvasElement.querySelectorAll("[data-profile-column]")).toHaveLength(5);
     await expect(canvas.queryByText(/추천 2/)).not.toBeInTheDocument();
   },
 };
@@ -153,7 +153,7 @@ export const FailedAnalysis: Story = {
     if (!(row instanceof HTMLElement)) throw new Error("Failed analysis row is missing.");
     await expect(row).toBeVisible();
     await expect(row).toHaveAttribute("aria-busy", "false");
-    await expect(row.querySelectorAll("[data-profile-column]")).toHaveLength(6);
+    await expect(row.querySelectorAll("[data-profile-column]")).toHaveLength(5);
   },
 };
 
@@ -175,7 +175,7 @@ export const ProcessingAnalysis: Story = {
     if (!(row instanceof HTMLElement)) throw new Error("Processing analysis row is missing.");
     await expect(row).toBeVisible();
     await expect(row).toHaveAttribute("aria-busy", "true");
-    await expect(row.querySelectorAll("[data-profile-column]")).toHaveLength(6);
+    await expect(row.querySelectorAll("[data-profile-column]")).toHaveLength(5);
     await expect(row.querySelectorAll("a, button")).toHaveLength(0);
   },
 };
@@ -194,7 +194,7 @@ export const RetryingAnalysis: Story = {
     await expect(canvas.getByText("재시도 1/3")).toBeVisible();
     const row = canvasElement.querySelector('[data-analysis-job-row="pending"]');
     if (!(row instanceof HTMLElement)) throw new Error("Retrying analysis row is missing.");
-    await expect(row.querySelectorAll("[data-profile-column]")).toHaveLength(6);
+    await expect(row.querySelectorAll("[data-profile-column]")).toHaveLength(5);
   },
 };
 

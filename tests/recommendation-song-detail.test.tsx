@@ -57,7 +57,12 @@ test("renders a simplified analysis result and the shared mixing action", () => 
   assert.doesNotMatch(html, /Song match · #\d+/);
   assert.match(html, /분석 결과/);
   assert.match(html, /role="img"/);
-  assert.match(html, /전체 관측 음역 E3부터 E5, 실용 음역 A3부터 A♯4/);
+  assert.match(html, /주요 음역 비교/);
+  assert.match(html, /내 주요 음역/);
+  assert.match(html, /라3\(A3\)–라♯4\(A♯4\)/);
+  assert.match(html, /곡 주요 음역/);
+  assert.match(html, /솔3\(G3\)–도5\(C5\)/);
+  assert.match(html, /관측 음역 미3\(E3\)부터 미5\(E5\), 주요 음역 라3\(A3\)부터 라♯4\(A♯4\)/);
   assert.match(html, /티켓 1개 사용/);
   assert.match(html, /youtube-nocookie\.com\/embed\/NbKH4iZqq1Y/);
   assert.doesNotMatch(html, /외부 출처 열기|target="_blank"/);
@@ -79,7 +84,9 @@ test("does not expose removed song-range metadata when it is unavailable", () =>
   const html = renderSongDetail(unavailable);
   assert.doesNotMatch(html, /외부 출처 열기/);
   assert.match(html, /원본 영상을 재생할 수 없어요/);
-  assert.doesNotMatch(html, /SONG RANGE|곡 음역을 표시할 수 없어요|앨범|장르|가사|미리듣기/);
+  assert.match(html, /곡 주요 음역/);
+  assert.match(html, /분석 정보 없음/);
+  assert.doesNotMatch(html, /SONG RANGE|앨범|장르|가사|미리듣기/);
 });
 
 test("recommendation metadata does not hardcode the catalog size", () => {
