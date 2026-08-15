@@ -46,7 +46,7 @@
   - **DONE 전 확정 시점**: `smoothMax3()`를 `sharpness=12` softmax-weighted average로 교체해 smooth alpha가 기존 hard max를 넘지 않게 했다. `v0`는 `light1(1.0, 10.0, d0)`로 복원하고 gamma 보정을 제거했으며, fallback conic alpha는 `0.68`, dark inner shadow는 `0.42`, outer shadow는 `0.45`로 낮췄다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: pending task commit
+  - **Commit**: `4eafce2` (`feat(F032): 기존 투명감 복원`)
   - **PR**: -
   - **Test/Log**: shader/fallback contract 4/4 PASS; 주요 VoiceOrb 사용처 Storybook 5 files / 25 tests PASS; lint/typecheck PASS; 최종 `pnpm test` PASS (Storybook 163/163). 전체 실행 중 기존 admin/VoiceOrb Storybook 준비 타이밍 실패는 단독 재검증 및 ready timeout 보강 후 최종 전체 PASS로 해소했다.
 - **Consequences**: F032의 color phase warp와 blend contrast는 유지되지만 전체 alpha와 중심 컬러 밀도는 이전 orb에 가까워진다.

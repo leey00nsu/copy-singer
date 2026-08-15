@@ -98,6 +98,6 @@
 | `pnpm exec tsc --noEmit` | `2026-08-15` | `PASS` |
 | `pnpm test` | `2026-08-15` | `PASS — build + unit/integration + Storybook 163/163` |
 
-- **구현 커밋**: `2961a82` (`feat(F032): 전체 회귀 검증과 문서 동기화`)
+- **구현 커밋**: `2961a82` (`feat(F032): 전체 회귀 검증과 문서 동기화`), `4eafce2` (`feat(F032): 기존 투명감 복원`)
 
-<!-- lee-spec-kit:workflow-sync 2026-08-15T10:14:57.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-15T10:16:17.000Z -->
