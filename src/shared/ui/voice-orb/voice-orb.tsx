@@ -70,10 +70,11 @@ const fragmentShader = /* glsl */ `
   }
 
   float smoothMax3(vec3 colorIn) {
-    const float power = 6.0;
-    vec3 safeColor = max(colorIn, vec3(0.0));
-    vec3 powered = pow(safeColor, vec3(power));
-    return pow(powered.r + powered.g + powered.b, 1.0 / power);
+    const float sharpness = 12.0;
+    vec3 safeColor = clamp(colorIn, 0.0, 1.0);
+    vec3 weights = exp(safeColor * sharpness);
+    float weightSum = weights.r + weights.g + weights.b;
+    return dot(safeColor, weights) / max(weightSum, 1e-4);
   }
 
   vec4 extractAlpha(vec3 colorIn) {
@@ -101,11 +102,10 @@ const fragmentShader = /* glsl */ `
     float n0 = snoise3(vec3(uv * noiseScale, iTime * 0.5)) * 0.5 + 0.5;
     float r0 = mix(mix(innerRadius, 1.0, 0.4), mix(innerRadius, 1.0, 0.6), n0);
     float d0 = distance(uv, (r0 * invLen) * uv);
-    float v0 = light1(1.0, 6.5, d0);
+    float v0 = light1(1.0, 10.0, d0);
     v0 *= smoothstep(r0 * 1.05, r0, len);
     float innerFade = smoothstep(r0 * 0.8, r0 * 0.95, len);
     v0 *= mix(innerFade, 1.0, bgLuminance * 0.7);
-    v0 = pow(clamp(v0, 0.0, 1.0), 0.8);
     float colorWarp = snoise3(vec3(uv * 0.32, iTime * 0.1 + 7.0)) * 0.16;
     float cl = cos(ang + iTime * 1.35 + colorWarp) * 0.5 + 0.5;
     cl = 0.5 + (cl - 0.5) * 0.72;

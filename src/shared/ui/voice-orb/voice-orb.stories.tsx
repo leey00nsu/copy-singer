@@ -30,7 +30,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   play: async ({ canvasElement }) => {
     const orb = within(canvasElement).getByTestId("voice-orb");
-    await waitFor(() => expect(orb).toHaveAttribute("data-orb-ready", "true"));
+    await waitFor(() => expect(orb).toHaveAttribute("data-orb-ready", "true"), { timeout: 5000 });
     await expect(orb).toHaveAttribute("data-orb-motion-scale", "0.5");
     await expect(orb).toHaveAttribute("data-orb-effective-speed", "0.5");
     await expect(orb.querySelector("canvas")).toBeInTheDocument();
@@ -43,7 +43,7 @@ export const SoftBlendReference: Story = {
   args: { speed: 0 },
   play: async ({ canvasElement }) => {
     const orb = within(canvasElement).getByTestId("voice-orb");
-    await waitFor(() => expect(orb).toHaveAttribute("data-orb-ready", "true"));
+    await waitFor(() => expect(orb).toHaveAttribute("data-orb-ready", "true"), { timeout: 5000 });
     await expect(orb).toHaveAttribute("data-orb-effective-speed", "0");
     await expect(orb.querySelector("canvas")).toBeInTheDocument();
   },

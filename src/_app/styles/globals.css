@@ -219,13 +219,20 @@
     translate: -50% -50%;
     border-radius: 50%;
     background:
-      radial-gradient(circle at 34% 28%, rgb(255 255 255 / 0.86) 0%, rgb(255 244 253 / 0.34) 24%, transparent 48%),
-      radial-gradient(circle at 64% 62%, rgb(183 160 241 / 0.34) 0%, rgb(215 193 246 / 0.18) 38%, transparent 68%),
-      conic-gradient(from 210deg, #c4a8f6 0deg, #b9baf2 90deg, #e1b7ee 180deg, #c8b5f0 270deg, #c4a8f6 360deg);
+      radial-gradient(circle at 34% 28%, rgb(255 255 255 / 0.68) 0%, rgb(255 244 253 / 0.22) 24%, transparent 48%),
+      radial-gradient(circle at 64% 62%, rgb(183 160 241 / 0.22) 0%, rgb(215 193 246 / 0.1) 38%, transparent 68%),
+      conic-gradient(
+        from 210deg,
+        rgb(196 168 246 / 0.68) 0deg,
+        rgb(185 186 242 / 0.68) 90deg,
+        rgb(225 183 238 / 0.68) 180deg,
+        rgb(200 181 240 / 0.68) 270deg,
+        rgb(196 168 246 / 0.68) 360deg
+      );
     box-shadow:
-      inset -18px -24px 38px rgb(11 10 28 / 0.75),
-      inset 14px 10px 30px rgb(255 255 255 / 0.2),
-      0 28px 70px -34px rgb(92 61 202 / 0.85);
+      inset -18px -24px 38px rgb(11 10 28 / 0.42),
+      inset 14px 10px 30px rgb(255 255 255 / 0.12),
+      0 28px 70px -34px rgb(92 61 202 / 0.45);
   }
 
   .voice-orb[data-orb-ready="true"] .voice-orb-fallback {
