@@ -181,7 +181,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     assert.equal(first.targetAssetId, targetAssetId);
     assert.equal(first.songAnalysisId, analysisId);
     assert.equal(first.catalogPosition, catalogEntry.position);
-    assert.equal(first.scoringVersion, "key-fit-v2");
+    assert.equal(first.scoringVersion, "key-fit-v3");
     assert.ok(Number.isInteger(first.recommendedShift));
     assert.ok(first.catalogRevision > 0);
     assert.equal(await readMixingBalance(userId), 0);

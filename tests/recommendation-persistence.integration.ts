@@ -61,7 +61,7 @@ test("calculates recommendations on demand and changes cache identity with catal
 
     const first = await getRecommendationResult(profileId);
     assert.equal(first.id, profileId);
-    assert.equal(first.scoringVersion, "key-fit-v2");
+    assert.equal(first.scoringVersion, "key-fit-v3");
     assert.ok(first.items.length > 0);
     assert.deepEqual(
       first.items.map((item) => item.rank),

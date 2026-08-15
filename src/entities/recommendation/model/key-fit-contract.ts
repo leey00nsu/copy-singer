@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const KEY_FIT_SCORING_VERSION = "key-fit-v2";
+export const KEY_FIT_SCORING_VERSION = "key-fit-v3";
 
 export const KEY_SHIFT_MIN = -6;
 export const KEY_SHIFT_MAX = 6;
@@ -39,7 +39,6 @@ export const keyFitContributionsSchema = z.object({
   overlap: z.number(),
   tessituraFit: z.number(),
   extremeFit: z.number(),
-  confidence: z.number(),
 });
 
 export type KeyFitContributions = z.infer<typeof keyFitContributionsSchema>;

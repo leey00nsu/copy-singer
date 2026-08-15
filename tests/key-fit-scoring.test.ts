@@ -40,7 +40,7 @@ const SONG_PROFILE_FIXTURE: KeyFitProfile = {
 };
 
 test("exposes a stable key-fit scoring version", () => {
-  assert.equal(KEY_FIT_SCORING_VERSION, "key-fit-v2");
+  assert.equal(KEY_FIT_SCORING_VERSION, "key-fit-v3");
 });
 
 test("accepts ordered compatible user and song profiles", () => {
@@ -93,12 +93,11 @@ test("scores a fully overlapping original key with an explainable breakdown", ()
   assert.equal(result.extremeFit, 1);
   assert.equal(result.confidence, 0.88);
   assert.deepEqual(result.contributions, {
-    overlap: 55,
-    tessituraFit: 25,
-    extremeFit: 15,
-    confidence: 4.4,
+    overlap: 58,
+    tessituraFit: 26,
+    extremeFit: 16,
   });
-  assert.equal(result.score, 99.4);
+  assert.equal(result.score, 100);
 });
 
 test("uses symmetric tessitura overlap instead of rewarding narrow contained songs", () => {
@@ -152,6 +151,23 @@ test("profile confidence combines stability and voiced ratio within the unit int
     }),
     1,
   );
+});
+
+test("profile confidence stays diagnostic and does not change candidate fit score", () => {
+  const lowConfidence = scoreKeyFitCandidate(
+    { ...USER_PROFILE_FIXTURE, voicedRatio: 0.25, pitchStability: 0.2 },
+    SONG_PROFILE_FIXTURE,
+    -2,
+  );
+  const highConfidence = scoreKeyFitCandidate(
+    { ...USER_PROFILE_FIXTURE, voicedRatio: 1, pitchStability: 1 },
+    SONG_PROFILE_FIXTURE,
+    -2,
+  );
+
+  assert.notEqual(lowConfidence.confidence, highConfidence.confidence);
+  assert.equal(lowConfidence.score, highConfidence.score);
+  assert.deepEqual(lowConfidence.contributions, highConfidence.contributions);
 });
 
 test("candidate scoring rejects fractional shifts", () => {

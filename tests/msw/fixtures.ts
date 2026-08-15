@@ -122,7 +122,7 @@ export const recommendationRunFixture: RecommendationRunResponse = {
   userVocalProfileId: "20000000-0000-4000-8000-000000000002",
   catalogId: "20000000-0000-4000-8000-000000000006",
   catalogRevision: 4,
-  scoringVersion: "key-fit-v2",
+  scoringVersion: "key-fit-v3",
   calculatedAt: "2026-08-09T00:00:00.000Z",
   profileConfidence: 0.88,
   lowConfidence: false,

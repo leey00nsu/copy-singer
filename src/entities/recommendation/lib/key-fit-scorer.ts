@@ -10,10 +10,9 @@ import {
 } from "../model/key-fit-contract";
 
 const SCORE_WEIGHTS = {
-  overlap: 55,
-  tessituraFit: 25,
-  extremeFit: 15,
-  confidence: 5,
+  overlap: 58,
+  tessituraFit: 26,
+  extremeFit: 16,
 } as const;
 
 const EXCESS_PENALTY_CAP_SEMITONES = 12;
@@ -163,13 +162,9 @@ export function scoreKeyFitCandidate(user: KeyFitProfile, song: KeyFitProfile, s
     overlap: SCORE_WEIGHTS.overlap * tessituraOverlapRatio,
     tessituraFit: SCORE_WEIGHTS.tessituraFit * tessituraFit,
     extremeFit: SCORE_WEIGHTS.extremeFit * extremeFit,
-    confidence: SCORE_WEIGHTS.confidence * confidence,
   };
   const rawScore = clamp(
-    rawContributions.overlap +
-      rawContributions.tessituraFit +
-      rawContributions.extremeFit +
-      rawContributions.confidence,
+    rawContributions.overlap + rawContributions.tessituraFit + rawContributions.extremeFit,
     0,
     100,
   );
@@ -188,7 +183,6 @@ export function scoreKeyFitCandidate(user: KeyFitProfile, song: KeyFitProfile, s
       overlap: round(rawContributions.overlap, 4),
       tessituraFit: round(rawContributions.tessituraFit, 4),
       extremeFit: round(rawContributions.extremeFit, 4),
-      confidence: round(rawContributions.confidence, 4),
     },
     rawScore,
     score: round(rawScore, 2),
