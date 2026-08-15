@@ -12,7 +12,7 @@
   - **DONE 전 확정 시점**: `smoothMax3(power=6)`, `light1(..., 6.5, d0)`, `pow(v0, 0.8)`을 적용하고 source-contract test로 기존 `edgeMask(0.76, 0.9)`와 `ORB_MOTION_SPEED_SCALE=0.5`를 고정했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: pending task commit
+  - **Commit**: `2961a82` (`feat(F032): 전체 회귀 검증과 문서 동기화`)
   - **PR**: -
   - **Test/Log**: shader/fallback contract 3/3 PASS; targeted VoiceOrb 사용처 Storybook 5 files / 25 tests PASS; 최종 Storybook 163/163 PASS.
 - **Consequences**: shader 내부 계산은 변경되지만 VoiceOrb public API와 외곽 mask 계약은 그대로 유지한다.
@@ -29,7 +29,7 @@
   - **DONE 전 확정 시점**: spatial scale `0.32`, time scale `0.1`, amplitude `0.16`, blend contrast `0.72`로 확정하고 fallback에도 넓은 radial transition과 중간 라벤더 conic stops를 적용했다. `speed=0`의 `SoftBlendReference` Story로 고정 프레임 비교 경로를 추가했다.
   - **머지 후 확인**: -
 - **Evidence**:
-  - **Commit**: pending task commit
+  - **Commit**: `2961a82` (`feat(F032): 전체 회귀 검증과 문서 동기화`)
   - **PR**: -
   - **Test/Log**: targeted Storybook 5 files / 25 tests PASS; lint/typecheck PASS; `pnpm test` PASS (Storybook 163/163).
 - **Consequences**: 내부 색 경계는 시간에 따라 천천히 움직이지만 기존 전체 orb motion 속도 계약은 바뀌지 않는다.
