@@ -13,7 +13,8 @@ test("authenticated header routes scope notifications and ticket balance to the 
     nodeEnv: process.env.NODE_ENV,
     bypassEnabled: process.env.DEV_AUTH_BYPASS_ENABLED,
     bypassUserId: process.env.DEV_AUTH_BYPASS_USER_ID,
-    signupGrant: process.env.SIGNUP_TICKET_GRANT,
+    analysisGrant: process.env.SIGNUP_VOCAL_ANALYSIS_TICKET_GRANT,
+    mixingGrant: process.env.SIGNUP_MIXING_TICKET_GRANT,
   };
   const suffix = crypto.randomUUID();
   const userId = `notification-route-${suffix}`;
@@ -21,7 +22,8 @@ test("authenticated header routes scope notifications and ticket balance to the 
   Reflect.set(process.env, "NODE_ENV", "test");
   process.env.DEV_AUTH_BYPASS_ENABLED = "true";
   process.env.DEV_AUTH_BYPASS_USER_ID = userId;
-  process.env.SIGNUP_TICKET_GRANT = "0";
+  process.env.SIGNUP_VOCAL_ANALYSIS_TICKET_GRANT = "0";
+  process.env.SIGNUP_MIXING_TICKET_GRANT = "0";
 
   const { prisma } = await import("../src/shared/db/index.server");
   const { createNotification } = await import("../src/entities/notification/index.server");
@@ -32,14 +34,21 @@ test("authenticated header routes scope notifications and ticket balance to the 
   try {
     await prisma.user.createMany({
       data: [
-        { id: userId, name: "Route owner", email: `${userId}@example.test`, emailVerified: true, ticketBalance: 4 },
+        { id: userId, name: "Route owner", email: `${userId}@example.test`, emailVerified: true },
         {
           id: otherUserId,
           name: "Other owner",
           email: `${otherUserId}@example.test`,
           emailVerified: true,
-          ticketBalance: 9,
         },
+      ],
+    });
+    await prisma.ticketWallet.createMany({
+      data: [
+        { userId, kind: "VOCAL_ANALYSIS", balance: 2 },
+        { userId, kind: "AI_MIXING", balance: 4 },
+        { userId: otherUserId, kind: "VOCAL_ANALYSIS", balance: 7 },
+        { userId: otherUserId, kind: "AI_MIXING", balance: 9 },
       ],
     });
     const own = await createNotification({
@@ -93,7 +102,12 @@ test("authenticated header routes scope notifications and ticket balance to the 
       new Request("http://copy-singer.test/api/account/ticket-balance"),
     );
     assert.equal(balanceResponse.status, 200);
-    assert.deepEqual(await balanceResponse.json(), { balance: 4 });
+    assert.deepEqual(await balanceResponse.json(), {
+      wallets: [
+        { kind: "VOCAL_ANALYSIS", balance: 2 },
+        { kind: "AI_MIXING", balance: 4 },
+      ],
+    });
 
     process.env.DEV_AUTH_BYPASS_ENABLED = "false";
     const unauthorized = await notificationsGet(new Request("http://copy-singer.test/api/notifications"));
@@ -107,7 +121,8 @@ test("authenticated header routes scope notifications and ticket balance to the 
       NODE_ENV: previous.nodeEnv,
       DEV_AUTH_BYPASS_ENABLED: previous.bypassEnabled,
       DEV_AUTH_BYPASS_USER_ID: previous.bypassUserId,
-      SIGNUP_TICKET_GRANT: previous.signupGrant,
+      SIGNUP_VOCAL_ANALYSIS_TICKET_GRANT: previous.analysisGrant,
+      SIGNUP_MIXING_TICKET_GRANT: previous.mixingGrant,
     })) {
       if (value === undefined) delete process.env[name];
       else process.env[name] = value;

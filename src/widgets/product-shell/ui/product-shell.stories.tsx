@@ -64,8 +64,11 @@ export const Desktop: Story = {
     await userEvent.click(canvas.getByRole("button", { name: "지은 계정 메뉴" }));
     const body = within(document.body);
     await waitFor(() => expect(body.getByText("계정")).toBeVisible());
-    await expect(body.getByText("잔여 티켓")).toBeVisible();
-    await expect(await body.findByText("3개")).toBeVisible();
+    await expect(body.getByText("사용 가능한 티켓")).toBeVisible();
+    await expect(await body.findByText("분석")).toBeVisible();
+    await expect(await body.findByText("믹싱")).toBeVisible();
+    await expect(await body.findByText("5장")).toBeVisible();
+    await expect(await body.findByText("3장")).toBeVisible();
     await expect(body.getByRole("menuitem", { name: "내 계정" })).toBeVisible();
     await userEvent.click(accountButton);
     await userEvent.click(notificationButton);

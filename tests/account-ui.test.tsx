@@ -4,14 +4,18 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { AccountOverview } from "@/_pages/account";
 
 const account = {
-  balance: 2,
+  wallets: [
+    { kind: "VOCAL_ANALYSIS" as const, balance: 4 },
+    { kind: "AI_MIXING" as const, balance: 2 },
+  ],
   page: 1,
   pageCount: 2,
   total: 1,
   entries: [
     {
       id: "ticket-entry",
-      type: "MIXING_DEBIT" as const,
+      kind: "AI_MIXING" as const,
+      type: "USAGE_DEBIT" as const,
       amount: -1,
       balanceAfter: 2,
       reason: "AI 믹싱",
@@ -50,7 +54,16 @@ test("account overview renders actual identity, provider, ticket data without sh
 test("account empty state omits pagination and does not invent a Google connection", () => {
   const html = renderToStaticMarkup(
     <AccountOverview
-      account={{ ...account, balance: 0, entries: [], pageCount: 1, total: 0 }}
+      account={{
+        ...account,
+        wallets: [
+          { kind: "VOCAL_ANALYSIS", balance: 0 },
+          { kind: "AI_MIXING", balance: 0 },
+        ],
+        entries: [],
+        pageCount: 1,
+        total: 0,
+      }}
       authentication={{ googleConnected: false, googleConnectedAt: null }}
       user={{ email: "dev@copysinger.test", name: "개발 사용자" }}
     />,

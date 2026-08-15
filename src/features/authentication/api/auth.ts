@@ -2,7 +2,7 @@ import "server-only";
 
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { ensureSignupGrant } from "@/entities/ticket/index.server";
+import { ensureSignupTicketGrants } from "@/entities/ticket/index.server";
 import { prisma } from "@/shared/db/index.server";
 import { resolveAuthSecret } from "../model/auth-secret-policy";
 
@@ -25,7 +25,7 @@ export const auth = betterAuth({
     user: {
       create: {
         after: async (user) => {
-          await ensureSignupGrant(user.id);
+          await ensureSignupTicketGrants(user.id);
         },
       },
     },

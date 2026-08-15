@@ -1,11 +1,13 @@
 import "server-only";
 
 import { createNotification } from "@/entities/notification/index.server";
+import { type TicketKind, ticketKindLabel } from "@/entities/ticket/index.model";
 import { applyTicketChange } from "@/entities/ticket/index.server";
 
 export async function adjustUserTickets(input: {
   actorUserId: string;
   targetUserId: string;
+  kind: TicketKind;
   amount: number;
   reason: string;
   idempotencyKey: string;
@@ -18,6 +20,7 @@ export async function adjustUserTickets(input: {
   }
   const ledger = await applyTicketChange({
     userId: input.targetUserId,
+    kind: input.kind,
     type: "ADMIN_ADJUSTMENT",
     amount: input.amount,
     idempotencyKey: `admin:${input.actorUserId}:${input.idempotencyKey}`,
@@ -25,11 +28,12 @@ export async function adjustUserTickets(input: {
     reason: input.reason,
   });
   if (ledger.amount > 0) {
+    const label = ticketKindLabel(input.kind);
     await createNotification({
       userId: input.targetUserId,
       type: "TICKET_CREDIT",
-      title: "티켓이 추가됐어요",
-      message: `티켓 ${ledger.amount}개가 추가됐어요. ${ledger.reason}`.slice(0, 500),
+      title: `${label}이 추가됐어요`,
+      message: `${label} ${ledger.amount}장이 추가됐어요. ${ledger.reason}`.slice(0, 500),
       href: "/account",
       sourceId: ledger.id,
       dedupeKey: `ticket-ledger:${ledger.id}`,

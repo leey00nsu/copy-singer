@@ -1,3 +1,4 @@
+import { InsufficientTicketsError } from "@/entities/ticket/index.server";
 import {
   ANALYSIS_AUDIO_MIME_TYPES,
   analysisAudioFileSchema,
@@ -7,6 +8,7 @@ import {
 import {
   analysisJobPayload,
   enqueueVocalProfileAnalysis,
+  getVocalProfileAnalysisPolicy,
   listVisibleVocalProfileAnalysisJobs,
 } from "@/features/analyze-vocal-profile/index.server";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
@@ -36,6 +38,26 @@ function enqueueError(error: unknown) {
       { status: 413 },
     );
   }
+  if (error instanceof InsufficientTicketsError && error.kind === "VOCAL_ANALYSIS") {
+    return Response.json(
+      {
+        reasonCode: "INSUFFICIENT_ANALYSIS_TICKETS",
+        detail: error.message,
+        retryable: false,
+      },
+      { status: 402 },
+    );
+  }
+  if (code === "PROFILE_LIMIT_REACHED") {
+    return Response.json(
+      {
+        reasonCode: code,
+        detail: "보컬 프로필을 모두 사용하고 있어요. 기존 프로필을 정리한 뒤 다시 분석해 주세요.",
+        retryable: false,
+      },
+      { status: 409 },
+    );
+  }
   if (code === "ANALYSIS_BUSY") {
     return Response.json(
       {
@@ -55,8 +77,11 @@ function enqueueError(error: unknown) {
 export async function GET(request: Request) {
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
-  const jobs = await listVisibleVocalProfileAnalysisJobs(session.user.id);
-  return Response.json({ jobs: jobs.map(analysisJobPayload) });
+  const [jobs, policy] = await Promise.all([
+    listVisibleVocalProfileAnalysisJobs(session.user.id),
+    getVocalProfileAnalysisPolicy(session.user.id),
+  ]);
+  return Response.json({ jobs: jobs.map(analysisJobPayload), ...policy });
 }
 
 export async function POST(request: Request) {

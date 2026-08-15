@@ -1,7 +1,12 @@
 import "server-only";
 
+import { applyTicketChangeInTransaction, InsufficientTicketsError } from "@/entities/ticket/index.server";
 import { serializeProfile } from "@/entities/vocal-profile/index.server";
-import { vocalProfileAnalysisMaxAttempts } from "@/shared/config/index.server";
+import {
+  vocalProfileAnalysisMaxAttempts,
+  vocalProfileAnalysisTicketCost,
+  vocalProfileMaxUserProfiles,
+} from "@/shared/config/index.server";
 import { prisma } from "@/shared/db/index.server";
 import { isSupportedAudioUploadMimeType, normalizeAudioUploadMimeType } from "@/shared/lib/audio";
 import { discardMediaAsset, storeAnalyzerReferenceBytes } from "@/shared/media/index.server";
@@ -16,6 +21,8 @@ export type VocalProfileAnalysisJobRow = {
   vocalProfileId: string | null;
   status: VocalProfileAnalysisJobStatus;
   idempotencyKey: string;
+  ticketCost: number;
+  refundState: "NONE" | "REQUIRED" | "REFUNDED";
   attempts: number;
   maxAttempts: number;
   nextAttemptAt: Date;
@@ -67,6 +74,30 @@ async function hasActiveAnalysisJob(userId: string) {
   return rows.length > 0;
 }
 
+function prismaErrorCode(error: unknown) {
+  return error && typeof error === "object" && "code" in error && typeof error.code === "string" ? error.code : null;
+}
+
+function isTransactionWriteConflict(error: unknown) {
+  return prismaErrorCode(error) === "P2034" || (error instanceof Error && error.message === "TransactionWriteConflict");
+}
+
+export async function getVocalProfileAnalysisPolicy(userId: string) {
+  const limit = vocalProfileMaxUserProfiles();
+  const cost = vocalProfileAnalysisTicketCost();
+  const [used, wallet] = await Promise.all([
+    prisma.vocalProfile.count({ where: { userId, sourceType: "USER" } }),
+    prisma.ticketWallet.findUnique({
+      where: { userId_kind: { userId, kind: "VOCAL_ANALYSIS" } },
+      select: { balance: true },
+    }),
+  ]);
+  return {
+    profileQuota: { used, limit, remaining: Math.max(0, limit - used) },
+    analysisTickets: { balance: wallet?.balance ?? 0, cost },
+  };
+}
+
 export async function enqueueVocalProfileAnalysis(input: { userId: string; idempotencyKey: string; file: File }) {
   const key = input.idempotencyKey.trim();
   if (!key || key.length > 200) throw new Error("INVALID_IDEMPOTENCY_KEY");
@@ -74,9 +105,15 @@ export async function enqueueVocalProfileAnalysis(input: { userId: string; idemp
   if (existing) return existing;
   if (await hasActiveAnalysisJob(input.userId)) throw new Error("ANALYSIS_BUSY");
 
+  const policy = await getVocalProfileAnalysisPolicy(input.userId);
+  if (policy.profileQuota.used >= policy.profileQuota.limit) throw new Error("PROFILE_LIMIT_REACHED");
+
   const mimeType = normalizeAudioUploadMimeType(input.file.type);
   if (!isSupportedAudioUploadMimeType(mimeType)) throw new Error("UNSUPPORTED_AUDIO");
   if (input.file.size <= 0 || input.file.size > MAX_AUDIO_BYTES) throw new Error("PAYLOAD_TOO_LARGE");
+  if (policy.analysisTickets.balance < policy.analysisTickets.cost) {
+    throw new InsufficientTicketsError("VOCAL_ANALYSIS", policy.analysisTickets.cost, policy.analysisTickets.balance);
+  }
 
   const recordingId = crypto.randomUUID();
   const sourceAsset = await storeAnalyzerReferenceBytes({
@@ -87,27 +124,68 @@ export async function enqueueVocalProfileAnalysis(input: { userId: string; idemp
     fileName: input.file.name || `${recordingId}.audio`,
   });
 
+  const id = crypto.randomUUID();
+  const ticketCost = policy.analysisTickets.cost;
   try {
-    const id = crypto.randomUUID();
-    const rows = await prisma.$queryRaw<VocalProfileAnalysisJobRow[]>`
-      INSERT INTO "VocalProfileAnalysisJob" (
-        "id", "userId", "recordingId", "sourceAssetId", "status", "idempotencyKey",
-        "maxAttempts", "nextAttemptAt", "createdAt", "updatedAt"
-      ) VALUES (
-        ${id}::uuid, ${input.userId}, ${recordingId}::uuid, ${sourceAsset.id}::uuid,
-        'PENDING'::"VocalProfileAnalysisJobStatus", ${key}, ${vocalProfileAnalysisMaxAttempts()},
-        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
-      )
-      ON CONFLICT DO NOTHING
-      RETURNING *
-    `;
-    if (rows[0]) return rows[0];
-    const raced = await findByIdempotency(input.userId, key);
-    if (raced) {
-      await discardMediaAsset(sourceAsset.id);
-      return raced;
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      try {
+        const result = await prisma.$transaction(
+          async (tx) => {
+            const raced = await tx.vocalProfileAnalysisJob.findUnique({
+              where: { userId_idempotencyKey: { userId: input.userId, idempotencyKey: key } },
+            });
+            if (raced) return { job: raced, created: false };
+
+            const active = await tx.vocalProfileAnalysisJob.count({
+              where: { userId: input.userId, status: { in: ["PENDING", "PROCESSING"] } },
+            });
+            if (active > 0) throw new Error("ANALYSIS_BUSY");
+
+            const profileCount = await tx.vocalProfile.count({ where: { userId: input.userId, sourceType: "USER" } });
+            if (profileCount >= vocalProfileMaxUserProfiles()) throw new Error("PROFILE_LIMIT_REACHED");
+
+            const job = await tx.vocalProfileAnalysisJob.create({
+              data: {
+                id,
+                userId: input.userId,
+                recordingId,
+                sourceAssetId: sourceAsset.id,
+                idempotencyKey: key,
+                ticketCost,
+                maxAttempts: vocalProfileAnalysisMaxAttempts(),
+              },
+            });
+            if (ticketCost > 0) {
+              await applyTicketChangeInTransaction(tx, {
+                userId: input.userId,
+                kind: "VOCAL_ANALYSIS",
+                type: "USAGE_DEBIT",
+                amount: -ticketCost,
+                idempotencyKey: `vocal-analysis:debit:${input.userId}:${key}`,
+                reason: "보컬 프로필 분석",
+                vocalProfileAnalysisJobId: job.id,
+              });
+            }
+            return { job, created: true };
+          },
+          { isolationLevel: "Serializable" },
+        );
+        if (!result.created) await discardMediaAsset(sourceAsset.id);
+        return result.job;
+      } catch (error) {
+        const code = prismaErrorCode(error);
+        if (isTransactionWriteConflict(error) && attempt < 2) continue;
+        if (code === "P2002") {
+          const raced = await findByIdempotency(input.userId, key);
+          if (raced) {
+            await discardMediaAsset(sourceAsset.id);
+            return raced;
+          }
+        }
+        throw error;
+      }
     }
-    throw new Error("ANALYSIS_BUSY");
+    throw new Error("ANALYSIS_ENQUEUE_FAILED");
   } catch (error) {
     await discardMediaAsset(sourceAsset.id);
     throw error;

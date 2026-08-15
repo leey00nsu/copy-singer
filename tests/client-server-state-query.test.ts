@@ -15,7 +15,7 @@ import {
   recommendationKeys,
   recommendationPollingInterval,
 } from "@/entities/recommendation";
-import { ticketBalanceQueryOptions, ticketKeys } from "@/entities/ticket";
+import { ticketKeys, ticketWalletsQueryOptions } from "@/entities/ticket";
 import type { VocalProfileAnalysisJobResponse } from "@/entities/vocal-profile";
 import {
   analysisJobPollingInterval,
@@ -150,10 +150,10 @@ test("notification queries poll on a bounded interval and read mutations refresh
   client.clear();
 });
 
-test("ticket balance query stays idle until the account menu opens and then refetches stale data", () => {
-  const closed = ticketBalanceQueryOptions(false);
-  const open = ticketBalanceQueryOptions(true);
-  assert.deepEqual(closed.queryKey, ticketKeys.balance());
+test("ticket wallets query stays idle until the account menu opens and then refetches stale data", () => {
+  const closed = ticketWalletsQueryOptions(false);
+  const open = ticketWalletsQueryOptions(true);
+  assert.deepEqual(closed.queryKey, ticketKeys.wallets());
   assert.equal(closed.enabled, false);
   assert.equal(open.enabled, true);
   assert.equal(open.staleTime, 0);
@@ -171,12 +171,16 @@ test("vocal analysis polling continues only for active jobs or retryable transpo
     createdAt: "2026-08-09T00:00:00.000Z",
     updatedAt: "2026-08-09T00:00:00.000Z",
   };
+  const policy = {
+    profileQuota: { used: 1, limit: 3, remaining: 2 },
+    analysisTickets: { balance: 4, cost: 1 },
+  };
   assert.equal(analysisJobPollingInterval(job, null), 1_500);
-  assert.equal(analysisJobsPollingInterval({ jobs: [job] }), 3_000);
+  assert.equal(analysisJobsPollingInterval({ jobs: [job], ...policy }), 3_000);
 
   const succeeded = { ...job, status: "succeeded" as const };
   assert.equal(analysisJobPollingInterval(succeeded, null), false);
-  assert.equal(analysisJobsPollingInterval({ jobs: [succeeded] }), false);
+  assert.equal(analysisJobsPollingInterval({ jobs: [succeeded], ...policy }), false);
   assert.equal(
     analysisJobPollingInterval(undefined, new ApiError("offline", { kind: "network", retryable: true })),
     1_500,

@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ticketBalanceQueryOptions } from "@/entities/ticket";
+import { ticketBalanceForKind, ticketWalletsQueryOptions } from "@/entities/ticket";
 import { Button } from "@/shared/ui/button";
 import {
   DropdownMenu,
@@ -42,7 +42,9 @@ export function UserMenu({
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [pending, setPending] = useState(false);
-  const ticketBalance = useQuery(ticketBalanceQueryOptions(open));
+  const ticketWallets = useQuery(ticketWalletsQueryOptions(open));
+  const analysisBalance = ticketBalanceForKind(ticketWallets.data?.wallets, "VOCAL_ANALYSIS");
+  const mixingBalance = ticketBalanceForKind(ticketWallets.data?.wallets, "AI_MIXING");
 
   async function signOut() {
     setPending(true);
@@ -94,20 +96,26 @@ export function UserMenu({
           )}
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56" side={side} sideOffset={8}>
-          <div
-            aria-live="polite"
-            className="mx-1 mb-1 flex items-center justify-between gap-3 rounded-md bg-muted px-3 py-2.5"
-          >
-            <span className="flex items-center gap-2 text-xs text-muted-foreground">
-              <Ticket aria-hidden="true" className="size-3.5" /> 잔여 티켓
-            </span>
-            <strong className="text-sm font-semibold tabular-nums">
-              {ticketBalance.data
-                ? `${ticketBalance.data.balance}개`
-                : ticketBalance.isError
-                  ? "확인 불가"
-                  : "확인 중…"}
-            </strong>
+          <div aria-live="polite" className="mx-1 mb-1 rounded-md bg-muted px-3 py-2.5">
+            <p className="flex items-center gap-2 text-xs text-muted-foreground">
+              <Ticket aria-hidden="true" className="size-3.5" /> 사용 가능한 티켓
+            </p>
+            {ticketWallets.isError ? (
+              <p className="mt-2 text-xs font-medium">확인 불가</p>
+            ) : ticketWallets.data ? (
+              <div className="mt-2 grid grid-cols-2 gap-3 text-xs">
+                <span>
+                  <span className="block text-muted-foreground">분석</span>
+                  <strong className="mt-0.5 block text-sm font-semibold tabular-nums">{analysisBalance}장</strong>
+                </span>
+                <span>
+                  <span className="block text-muted-foreground">믹싱</span>
+                  <strong className="mt-0.5 block text-sm font-semibold tabular-nums">{mixingBalance}장</strong>
+                </span>
+              </div>
+            ) : (
+              <p className="mt-2 text-xs text-muted-foreground">확인 중…</p>
+            )}
           </div>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>

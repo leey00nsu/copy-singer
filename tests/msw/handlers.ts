@@ -38,8 +38,8 @@ export function notificationListHandler(payload: NotificationList = notification
   return http.get("*/api/notifications", () => HttpResponse.json(payload));
 }
 
-export function ticketBalanceHandler(balance = ticketBalanceFixture.balance) {
-  return http.get("*/api/account/ticket-balance", () => HttpResponse.json({ balance }));
+export function ticketBalanceHandler(payload = ticketBalanceFixture) {
+  return http.get("*/api/account/ticket-balance", () => HttpResponse.json(payload));
 }
 
 export function adminCustomMixingPollingSequenceHandler() {

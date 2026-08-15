@@ -30,6 +30,8 @@ const meta = {
     audioDuration: null,
     audioFile: null,
     audioUrl: null,
+    profileQuota: { used: 1, limit: 3, remaining: 2 },
+    analysisTickets: { balance: 4, cost: 1 },
     onAnalyze: fn(),
     onRecordingComplete: fn(),
     onRecordingError: fn(),
@@ -242,6 +244,34 @@ export const Ready: Story = {
     await expect(canvas.getByTestId("audio-duration-notice")).toHaveAttribute("data-audio-status", "valid");
     await userEvent.click(canvas.getByRole("button", { name: "내 보컬 프로필 만들기" }));
     await expect(args.onAnalyze).toHaveBeenCalledOnce();
+  },
+};
+
+export const AnalysisTicketsEmpty: Story = {
+  args: {
+    analysisTickets: { balance: 0, cost: 1 },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("분석 티켓이 없어요")).toBeVisible();
+    await expect(canvas.getByText("분석 티켓").closest("div")).toHaveTextContent("0장");
+    await expect(canvas.queryByRole("button", { name: "녹음 시작" })).not.toBeInTheDocument();
+    await expect(canvas.queryByRole("link", { name: "보컬 프로필 관리" })).not.toBeInTheDocument();
+  },
+};
+
+export const ProfileSlotsFull: Story = {
+  args: {
+    profileQuota: { used: 3, limit: 3, remaining: 0 },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("보컬 프로필을 모두 사용하고 있어요")).toBeVisible();
+    await expect(canvas.getByRole("link", { name: "보컬 프로필 관리" })).toHaveAttribute(
+      "href",
+      "/library?tab=profiles",
+    );
+    await expect(canvas.queryByRole("button", { name: "녹음 시작" })).not.toBeInTheDocument();
   },
 };
 

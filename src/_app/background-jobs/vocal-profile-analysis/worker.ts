@@ -2,6 +2,7 @@ import "server-only";
 
 import { createHash } from "node:crypto";
 import { createNotification } from "@/entities/notification/index.server";
+import { applyTicketChange } from "@/entities/ticket/index.server";
 import {
   AnalyzerClientError,
   analyzeVocalProfileBytes,
@@ -123,6 +124,46 @@ async function markSucceeded(job: VocalProfileAnalysisJobRow, profileId: string)
   });
 }
 
+export async function refundRequiredVocalProfileAnalysisTicket(jobId: string) {
+  const job = await prisma.vocalProfileAnalysisJob.findUnique({
+    where: { id: jobId },
+    select: { id: true, userId: true, ticketCost: true, refundState: true },
+  });
+  if (!job || job.refundState !== "REQUIRED") return false;
+  if (job.ticketCost <= 0) {
+    await prisma.vocalProfileAnalysisJob.updateMany({
+      where: { id: job.id, refundState: "REQUIRED" },
+      data: { refundState: "REFUNDED" },
+    });
+    return true;
+  }
+  await applyTicketChange({
+    userId: job.userId,
+    kind: "VOCAL_ANALYSIS",
+    type: "USAGE_REFUND",
+    amount: job.ticketCost,
+    idempotencyKey: `vocal-analysis-refund:${job.id}`,
+    reason: "보컬 프로필 분석 실패 환불",
+    vocalProfileAnalysisJobId: job.id,
+  });
+  await prisma.vocalProfileAnalysisJob.updateMany({
+    where: { id: job.id, refundState: "REQUIRED" },
+    data: { refundState: "REFUNDED" },
+  });
+  return true;
+}
+
+export async function reconcileRequiredVocalProfileAnalysisRefunds(limit = 10) {
+  const jobs = await prisma.vocalProfileAnalysisJob.findMany({
+    where: { refundState: "REQUIRED" },
+    orderBy: { updatedAt: "asc" },
+    take: Math.max(1, Math.trunc(limit)),
+    select: { id: true },
+  });
+  for (const job of jobs) await refundRequiredVocalProfileAnalysisTicket(job.id);
+  return jobs.length;
+}
+
 async function releaseFailure(job: VocalProfileAnalysisJobRow, error: unknown) {
   const failure = workerError(error);
   console.error("[vocal-analysis] job failed", {
@@ -162,6 +203,7 @@ async function releaseFailure(job: VocalProfileAnalysisJobRow, error: unknown) {
         errorCode: failure.code,
         errorDetail: failure.detail.slice(0, 2_000),
         retryable: failure.retryable,
+        refundState: job.ticketCost > 0 ? "REQUIRED" : "NONE",
         completedAt: now,
         leaseOwner: null,
         leaseExpiresAt: null,
@@ -181,6 +223,13 @@ async function releaseFailure(job: VocalProfileAnalysisJobRow, error: unknown) {
     );
   });
   if (job.sourceAssetId) await discardMediaAsset(job.sourceAssetId);
+  if (job.ticketCost > 0) {
+    try {
+      await refundRequiredVocalProfileAnalysisTicket(job.id);
+    } catch (refundError) {
+      console.error("[vocal-analysis] ticket refund failed", { jobId: job.id, error: refundError });
+    }
+  }
 }
 
 export async function processClaimedVocalProfileAnalysisJob(

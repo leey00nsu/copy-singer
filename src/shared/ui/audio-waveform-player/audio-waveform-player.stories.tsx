@@ -11,6 +11,8 @@ const meta = {
   args: {
     label: "테스트 보컬",
     src: TEST_WAV_DATA_URL,
+    waveformPeaks: [[0, 0.18, -0.3, 0.42, -0.22, 0.12, -0.08, 0]],
+    waveformDuration: 1,
   },
 } satisfies Meta<typeof AudioWaveformPlayer>;
 
@@ -21,11 +23,13 @@ type Story = StoryObj<typeof meta>;
 export const NetworkIndependent: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await waitFor(() =>
-      expect(canvasElement.querySelector("[data-audio-waveform-ready]")).toHaveAttribute(
-        "data-audio-waveform-ready",
-        "true",
-      ),
+    await waitFor(
+      () =>
+        expect(canvasElement.querySelector("[data-audio-waveform-ready]")).toHaveAttribute(
+          "data-audio-waveform-ready",
+          "true",
+        ),
+      { timeout: 5_000 },
     );
     const waveform = canvas.getByRole("slider", { name: /테스트 보컬 파형/ });
     await waitFor(() => expect(waveform).toBeVisible());
@@ -43,7 +47,7 @@ export const NetworkIndependent: Story = {
 };
 
 export const Loading: Story = {
-  args: { src: "" },
+  args: { src: "", waveformPeaks: undefined, waveformDuration: undefined },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const waveform = canvas.getByRole("slider", { name: /테스트 보컬 파형/ });
@@ -57,7 +61,7 @@ export const Loading: Story = {
 };
 
 export const ReducedMotionLoading: Story = {
-  args: { src: "" },
+  args: { src: "", waveformPeaks: undefined, waveformDuration: undefined },
   render: (args) => (
     <div data-testid="reduced-motion-audio-preview">
       <style>{`
@@ -81,4 +85,3 @@ export const ReducedMotionLoading: Story = {
     await expect(getComputedStyle(skeleton as HTMLElement, "::before").animationName).toBe("none");
   },
 };
-

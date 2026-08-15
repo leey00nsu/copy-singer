@@ -8,14 +8,18 @@ const meta = {
   parameters: { layout: "fullscreen" },
   args: {
     account: {
-      balance: 2,
+      wallets: [
+        { kind: "VOCAL_ANALYSIS", balance: 4 },
+        { kind: "AI_MIXING", balance: 2 },
+      ],
       page: 1,
       pageCount: 2,
       total: 3,
       entries: [
         {
           id: "ticket-debit",
-          type: "MIXING_DEBIT",
+          kind: "AI_MIXING",
+          type: "USAGE_DEBIT",
           amount: -1,
           balanceAfter: 2,
           reason: "김광석 · 서른 즈음에 AI 믹싱",
@@ -24,6 +28,7 @@ const meta = {
         },
         {
           id: "signup-grant",
+          kind: "AI_MIXING",
           type: "SIGNUP_GRANT",
           amount: 3,
           balanceAfter: 3,
@@ -72,7 +77,16 @@ export const Admin: Story = {
 
 export const DevelopmentSessionEmpty: Story = {
   args: {
-    account: { balance: 0, page: 1, pageCount: 1, total: 0, entries: [] },
+    account: {
+      wallets: [
+        { kind: "VOCAL_ANALYSIS", balance: 0 },
+        { kind: "AI_MIXING", balance: 0 },
+      ],
+      page: 1,
+      pageCount: 1,
+      total: 0,
+      entries: [],
+    },
     authentication: { googleConnected: false, googleConnectedAt: null },
   },
   play: async ({ canvasElement }) => {

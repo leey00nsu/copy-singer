@@ -148,7 +148,8 @@ export async function ensureMixingRefund(jobId: string) {
   if (!job || job.refundState === "REFUNDED" || job.refundState !== "REQUIRED") return;
   await applyTicketChange({
     userId: job.userId,
-    type: "MIXING_REFUND",
+    kind: "AI_MIXING",
+    type: "USAGE_REFUND",
     amount: job.ticketCost,
     idempotencyKey: `mixing:refund:${job.id}`,
     mixingJobId: job.id,

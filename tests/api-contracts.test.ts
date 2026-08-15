@@ -12,7 +12,7 @@ import {
   notificationReadResponseSchema,
 } from "@/entities/notification";
 import { recommendationRunResponseSchema } from "@/entities/recommendation";
-import { ticketBalanceSchema } from "@/entities/ticket";
+import { ticketWalletsSchema } from "@/entities/ticket";
 import { vocalProfileAnalysisJobResponseSchema } from "@/entities/vocal-profile";
 import { adminCustomMixingJobSchema } from "@/features/admin-custom-mixing";
 import {
@@ -30,10 +30,24 @@ const RUN_ID = "10000000-0000-4000-8000-000000000001";
 const PROFILE_ID = "10000000-0000-4000-8000-000000000002";
 const JOB_ID = "10000000-0000-4000-8000-000000000003";
 
-test("ticket balance contract accepts only a nonnegative integer balance", () => {
-  assert.deepEqual(ticketBalanceSchema.parse({ balance: 3, ignored: true }), { balance: 3 });
-  assert.equal(ticketBalanceSchema.safeParse({ balance: -1 }).success, false);
-  assert.equal(ticketBalanceSchema.safeParse({ balance: 1.5 }).success, false);
+test("ticket wallet contract separates kinds and requires nonnegative integer balances", () => {
+  assert.deepEqual(
+    ticketWalletsSchema.parse({
+      wallets: [
+        { kind: "VOCAL_ANALYSIS", balance: 5 },
+        { kind: "AI_MIXING", balance: 1 },
+      ],
+      ignored: true,
+    }),
+    {
+      wallets: [
+        { kind: "VOCAL_ANALYSIS", balance: 5 },
+        { kind: "AI_MIXING", balance: 1 },
+      ],
+    },
+  );
+  assert.equal(ticketWalletsSchema.safeParse({ wallets: [{ kind: "VOCAL_ANALYSIS", balance: -1 }] }).success, false);
+  assert.equal(ticketWalletsSchema.safeParse({ wallets: [{ kind: "UNKNOWN", balance: 1 }] }).success, false);
 });
 
 test("owned request schemas validate UUID, idempotency, pagination, and ticket bounds", () => {
@@ -57,12 +71,23 @@ test("owned request schemas validate UUID, idempotency, pagination, and ticket b
   assert.equal(pageSearchParamSchema.parse("2.9"), 2);
   assert.equal(pageSearchParamSchema.parse("invalid"), 1);
   assert.equal(
-    ticketAdjustmentRequestSchema.safeParse({ userId: "user", amount: 0, reason: "valid", idempotencyKey: "x" })
-      .success,
+    ticketAdjustmentRequestSchema.safeParse({
+      userId: "user",
+      kind: "AI_MIXING",
+      amount: 0,
+      reason: "valid",
+      idempotencyKey: "x",
+    }).success,
     false,
   );
   assert.equal(
-    ticketAdjustmentRequestSchema.safeParse({ userId: "user", amount: 1, reason: "no", idempotencyKey: "x" }).success,
+    ticketAdjustmentRequestSchema.safeParse({
+      userId: "user",
+      kind: "VOCAL_ANALYSIS",
+      amount: 1,
+      reason: "no",
+      idempotencyKey: "x",
+    }).success,
     false,
   );
 });
@@ -341,6 +366,7 @@ test("admin custom mixing and ticket response schemas preserve their current wir
   assert.equal(
     ticketAdjustmentResponseSchema.parse({
       id: JOB_ID,
+      kind: "VOCAL_ANALYSIS",
       amount: 5,
       balanceAfter: 10,
       reason: "manual adjustment",

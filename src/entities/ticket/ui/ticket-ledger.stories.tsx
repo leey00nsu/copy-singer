@@ -6,6 +6,7 @@ import { type TicketEntryView, TicketLedger } from "@/entities/ticket";
 const LEDGER_ENTRIES: TicketEntryView[] = [
   {
     id: "signup-grant",
+    kind: "VOCAL_ANALYSIS",
     type: "SIGNUP_GRANT",
     amount: 1,
     balanceAfter: 1,
@@ -14,7 +15,8 @@ const LEDGER_ENTRIES: TicketEntryView[] = [
   },
   {
     id: "mixing-debit",
-    type: "MIXING_DEBIT",
+    kind: "AI_MIXING",
+    type: "USAGE_DEBIT",
     amount: -1,
     balanceAfter: 0,
     reason: "김광석 · 서른 즈음에 AI 믹싱",
@@ -22,7 +24,8 @@ const LEDGER_ENTRIES: TicketEntryView[] = [
   },
   {
     id: "mixing-refund",
-    type: "MIXING_REFUND",
+    kind: "AI_MIXING",
+    type: "USAGE_REFUND",
     amount: 1,
     balanceAfter: 1,
     reason: "믹싱 처리 실패 자동 환불",
@@ -51,7 +54,8 @@ export const GrantAndDebitHistory: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText("가입 지급")).toBeVisible();
-    await expect(canvas.getByText("AI 믹싱")).toBeVisible();
+    await expect(canvas.getByText("분석 티켓")).toBeVisible();
+    await expect(canvas.getAllByText("믹싱 티켓")).toHaveLength(2);
     await expect(canvas.getByText("자동 환불")).toBeVisible();
     await expect(canvas.getByText("-1")).toBeVisible();
     const creditRows = canvasElement.querySelectorAll('[data-ticket-direction="credit"]');

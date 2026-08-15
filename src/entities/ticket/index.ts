@@ -1,3 +1,3 @@
 export * from "./api/client";
-export * from "./model/contract";
+export * from "./index.model";
 export * from "./ui/ticket-ledger";

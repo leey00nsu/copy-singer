@@ -17,6 +17,7 @@ export async function ticketAdjustmentsPost(request: Request) {
     const ledger = await adjustUserTickets({
       actorUserId: access.session.user.id,
       targetUserId: body.data.userId,
+      kind: body.data.kind,
       amount: body.data.amount,
       reason: body.data.reason,
       idempotencyKey: body.data.idempotencyKey,
@@ -24,6 +25,7 @@ export async function ticketAdjustmentsPost(request: Request) {
     return Response.json(
       {
         id: ledger.id,
+        kind: ledger.kind,
         amount: ledger.amount,
         balanceAfter: ledger.balanceAfter,
         reason: ledger.reason,

@@ -1,21 +1,24 @@
 import { ArrowDownRight, ArrowUpRight, Ticket } from "lucide-react";
 import Link from "next/link";
 import { StatePanel } from "@/shared/ui/state-panel";
+import { type TicketKind, ticketKindLabel } from "../model/contract";
 
 export type TicketEntryView = {
   id: string;
-  type: "SIGNUP_GRANT" | "MIXING_DEBIT" | "MIXING_REFUND" | "ADMIN_ADJUSTMENT";
+  kind: TicketKind;
+  type: "SIGNUP_GRANT" | "USAGE_DEBIT" | "USAGE_REFUND" | "ADMIN_ADJUSTMENT";
   amount: number;
   balanceAfter: number;
   reason: string;
   mixingJobId?: string | null;
+  vocalProfileAnalysisJobId?: string | null;
   createdAt: Date;
 };
 
 const TYPE_LABELS: Record<TicketEntryView["type"], string> = {
   SIGNUP_GRANT: "가입 지급",
-  MIXING_DEBIT: "AI 믹싱",
-  MIXING_REFUND: "자동 환불",
+  USAGE_DEBIT: "사용",
+  USAGE_REFUND: "자동 환불",
   ADMIN_ADJUSTMENT: "관리자 조정",
 };
 
@@ -53,7 +56,8 @@ export function TicketLedger({ entries }: { entries: TicketEntryView[] }) {
             </span>
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <p className="text-sm font-medium">{TYPE_LABELS[entry.type]}</p>
+                <p className="text-sm font-medium">{ticketKindLabel(entry.kind)}</p>
+                <span className="text-xs text-muted-foreground">{TYPE_LABELS[entry.type]}</span>
                 <span className="text-xs text-muted-foreground">{entry.createdAt.toLocaleString("ko-KR")}</span>
               </div>
               <p className="mt-0.5 break-words text-xs leading-5 text-muted-foreground">{entry.reason}</p>
@@ -74,7 +78,7 @@ export function TicketLedger({ entries }: { entries: TicketEntryView[] }) {
                 {entry.amount}
               </p>
               <p className="flex items-center justify-end gap-1 text-xs text-muted-foreground">
-                <Ticket className="size-3" aria-hidden="true" /> {entry.balanceAfter}
+                <Ticket className="size-3" aria-hidden="true" /> 잔액 {entry.balanceAfter}장
               </p>
             </div>
           </article>

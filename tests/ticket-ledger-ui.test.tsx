@@ -10,6 +10,7 @@ test("ticket ledger renders grant, debit, balance, reason, and empty state", () 
       entries={[
         {
           id: "grant",
+          kind: "VOCAL_ANALYSIS",
           type: "SIGNUP_GRANT",
           amount: 1,
           balanceAfter: 1,
@@ -18,7 +19,8 @@ test("ticket ledger renders grant, debit, balance, reason, and empty state", () 
         },
         {
           id: "debit",
-          type: "MIXING_DEBIT",
+          kind: "AI_MIXING",
+          type: "USAGE_DEBIT",
           amount: -1,
           balanceAfter: 0,
           reason: "AI 믹싱",
@@ -28,7 +30,8 @@ test("ticket ledger renders grant, debit, balance, reason, and empty state", () 
     />,
   );
   assert.match(markup, /가입 지급/);
-  assert.match(markup, /AI 믹싱/);
+  assert.match(markup, /분석 티켓/);
+  assert.match(markup, /믹싱 티켓/);
   assert.match(markup, /\+1/);
   assert.match(markup, /-1/);
 

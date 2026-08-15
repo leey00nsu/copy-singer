@@ -10,6 +10,8 @@ type JobRow = {
   status: "PENDING" | "PROCESSING" | "SUCCEEDED" | "FAILED";
   sourceAssetId: string | null;
   vocalProfileId: string | null;
+  ticketCost: number;
+  refundState: "NONE" | "REQUIRED" | "REFUNDED";
   attempts: number;
   maxAttempts: number;
   errorCode: string | null;
@@ -69,6 +71,8 @@ async function withUser() {
   await prisma.user.create({
     data: { id: userId, name: "Analysis queue", email: `${userId}@example.test`, emailVerified: true },
   });
+  const { ensureSignupTicketGrants } = await import("../src/entities/ticket/index.server");
+  await ensureSignupTicketGrants(userId);
   return { prisma, userId };
 }
 
@@ -89,17 +93,23 @@ async function createSourceAsset(userId: string, source: Uint8Array) {
   });
 }
 
-async function insertJob(input: { userId: string; sourceAssetId: string; recordingId?: string; maxAttempts?: number }) {
+async function insertJob(input: {
+  userId: string;
+  sourceAssetId: string;
+  recordingId?: string;
+  maxAttempts?: number;
+  ticketCost?: number;
+}) {
   const { prisma } = await import("../src/shared/db/index.server");
   const id = crypto.randomUUID();
   const recordingId = input.recordingId ?? crypto.randomUUID();
   await prisma.$executeRaw`
     INSERT INTO "VocalProfileAnalysisJob" (
-      "id", "userId", "recordingId", "sourceAssetId", "status", "idempotencyKey",
+      "id", "userId", "recordingId", "sourceAssetId", "status", "idempotencyKey", "ticketCost",
       "maxAttempts", "nextAttemptAt", "createdAt", "updatedAt"
     ) VALUES (
       ${id}::uuid, ${input.userId}, ${recordingId}::uuid, ${input.sourceAssetId}::uuid,
-      'PENDING'::"VocalProfileAnalysisJobStatus", ${`test:${id}`}, ${input.maxAttempts ?? 3},
+      'PENDING'::"VocalProfileAnalysisJobStatus", ${`test:${id}`}, ${input.ticketCost ?? 0}, ${input.maxAttempts ?? 3},
       CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     )
   `;
@@ -109,7 +119,7 @@ async function insertJob(input: { userId: string; sourceAssetId: string; recordi
 async function readJob(id: string) {
   const { prisma } = await import("../src/shared/db/index.server");
   const rows = await prisma.$queryRaw<JobRow[]>`
-    SELECT "id", "status", "sourceAssetId", "vocalProfileId", "attempts", "maxAttempts", "errorCode", "retryable"
+    SELECT "id", "status", "sourceAssetId", "vocalProfileId", "ticketCost", "refundState", "attempts", "maxAttempts", "errorCode", "retryable"
     FROM "VocalProfileAnalysisJob" WHERE "id" = ${id}::uuid
   `;
   return rows[0]!;
@@ -204,6 +214,73 @@ test("enqueue is idempotent and job reads are owner-scoped", async (context) => 
     else process.env.LEEMAGE_PROJECT_ID = previousEnv.projectId;
     await cleanupUser(userId);
     await prisma.user.deleteMany({ where: { id: otherId } });
+  }
+});
+
+test("analysis admission rejects empty analysis-ticket wallets before storing media", async (context) => {
+  if (!process.env.DATABASE_URL) return context.skip("DATABASE_URL is not configured");
+  const { prisma, userId } = await withUser();
+  try {
+    await prisma.ticketWallet.update({
+      where: { userId_kind: { userId, kind: "VOCAL_ANALYSIS" } },
+      data: { balance: 0 },
+    });
+    const { enqueueVocalProfileAnalysis } = await import("../src/features/analyze-vocal-profile/index.server");
+    const { InsufficientTicketsError } = await import("../src/entities/ticket/index.server");
+    const file = new File([Uint8Array.from([1, 2, 3, 4])], "voice.wav", { type: "audio/wav" });
+    await assert.rejects(
+      () => enqueueVocalProfileAnalysis({ userId, idempotencyKey: "no-analysis-tickets", file }),
+      (error: unknown) =>
+        error instanceof InsufficientTicketsError && error.kind === "VOCAL_ANALYSIS" && error.balance === 0,
+    );
+    assert.equal(await prisma.vocalProfileAnalysisJob.count({ where: { userId } }), 0);
+    assert.equal(await prisma.mediaAsset.count({ where: { userId } }), 0);
+  } finally {
+    await cleanupUser(userId);
+  }
+});
+
+test("analysis admission rejects full profile slots before storing media", async (context) => {
+  if (!process.env.DATABASE_URL) return context.skip("DATABASE_URL is not configured");
+  const { prisma, userId } = await withUser();
+  const previousLimit = process.env.VOCAL_PROFILE_MAX_USER_PROFILES;
+  process.env.VOCAL_PROFILE_MAX_USER_PROFILES = "1";
+  try {
+    const recording = await prisma.recording.create({
+      data: {
+        kind: "USER_TEST",
+        storagePath: `slot-test-${crypto.randomUUID()}`,
+        mimeType: "audio/wav",
+        status: "READY",
+      },
+    });
+    await prisma.vocalProfile.create({
+      data: {
+        userId,
+        profileNumber: 1,
+        displayName: "보컬 프로필 1",
+        sourceType: "USER",
+        recordingId: recording.id,
+        analyzer: "test",
+        analyzerVersion: "1",
+      },
+    });
+    const { enqueueVocalProfileAnalysis, getVocalProfileAnalysisPolicy } = await import(
+      "../src/features/analyze-vocal-profile/index.server"
+    );
+    const policy = await getVocalProfileAnalysisPolicy(userId);
+    assert.deepEqual(policy.profileQuota, { used: 1, limit: 1, remaining: 0 });
+    const file = new File([Uint8Array.from([1, 2, 3, 4])], "voice.wav", { type: "audio/wav" });
+    await assert.rejects(
+      () => enqueueVocalProfileAnalysis({ userId, idempotencyKey: "full-profile-slots", file }),
+      (error: unknown) => error instanceof Error && error.message === "PROFILE_LIMIT_REACHED",
+    );
+    assert.equal(await prisma.vocalProfileAnalysisJob.count({ where: { userId } }), 0);
+    assert.equal(await prisma.mediaAsset.count({ where: { userId } }), 0);
+  } finally {
+    if (previousLimit === undefined) delete process.env.VOCAL_PROFILE_MAX_USER_PROFILES;
+    else process.env.VOCAL_PROFILE_MAX_USER_PROFILES = previousLimit;
+    await cleanupUser(userId);
   }
 });
 
@@ -401,7 +478,20 @@ test("terminal analysis failure detaches and deletes the queued source", async (
   const { prisma, userId } = await withUser();
   const bytes = Uint8Array.from([1, 2, 3]);
   const source = await createSourceAsset(userId, bytes);
-  const job = await insertJob({ userId, sourceAssetId: source.id, maxAttempts: 1 });
+  const job = await insertJob({ userId, sourceAssetId: source.id, maxAttempts: 1, ticketCost: 1 });
+  const { applyTicketChange } = await import("../src/entities/ticket/index.server");
+  const startingBalance = (
+    await prisma.ticketWallet.findUniqueOrThrow({ where: { userId_kind: { userId, kind: "VOCAL_ANALYSIS" } } })
+  ).balance;
+  await applyTicketChange({
+    userId,
+    kind: "VOCAL_ANALYSIS",
+    type: "USAGE_DEBIT",
+    amount: -1,
+    idempotencyKey: `test:analysis-debit:${job.id}`,
+    reason: "보컬 프로필 분석",
+    vocalProfileAnalysisJobId: job.id,
+  });
   const previousFetch = globalThis.fetch;
   const previous = {
     backend: process.env.VOCAL_PROFILE_ANALYZER_BACKEND,
@@ -437,6 +527,18 @@ test("terminal analysis failure detaches and deletes the queued source", async (
     assert.equal(stored.sourceAssetId, null);
     assert.equal(stored.errorCode, "TOO_SILENT");
     assert.equal(stored.retryable, false);
+    assert.equal(stored.refundState, "REFUNDED");
+    assert.equal(
+      (await prisma.ticketWallet.findUniqueOrThrow({ where: { userId_kind: { userId, kind: "VOCAL_ANALYSIS" } } }))
+        .balance,
+      startingBalance,
+    );
+    assert.equal(
+      await prisma.ticketLedger.count({
+        where: { vocalProfileAnalysisJobId: job.id, kind: "VOCAL_ANALYSIS", type: "USAGE_REFUND" },
+      }),
+      1,
+    );
     assert.equal(await prisma.mediaAsset.findUnique({ where: { id: source.id } }), null);
     const notification = await prisma.notification.findFirstOrThrow({ where: { userId } });
     assert.equal(notification.type, "VOCAL_PROFILE_FAILED");

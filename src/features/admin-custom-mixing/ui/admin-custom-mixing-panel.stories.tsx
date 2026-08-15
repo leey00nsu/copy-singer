@@ -45,8 +45,8 @@ export const Queued: Story = {
     const canvas = within(canvasElement);
     await pickProfileAndUpload(canvas);
     await userEvent.click(canvas.getByRole("button", { name: "커스텀 믹싱 시작" }));
-    await expect(canvas.getByText("믹싱 순서를 기다리고 있어요")).toBeVisible();
-    await expect(canvas.getByText("믹싱 대기 중")).toBeVisible();
+    await expect(await canvas.findByText("믹싱 순서를 기다리고 있어요")).toBeVisible();
+    await expect(await canvas.findByText("믹싱 대기 중")).toBeVisible();
   },
 };
 

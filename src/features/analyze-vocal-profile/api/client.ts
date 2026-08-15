@@ -78,11 +78,10 @@ export function vocalProfileHealthQueryOptions() {
   });
 }
 
-export function vocalProfileAnalysisJobsQueryOptions(initialJobs?: VocalProfileAnalysisJobResponse[]) {
+export function vocalProfileAnalysisJobsQueryOptions() {
   return queryOptions({
     queryKey: vocalAnalysisKeys.jobs(),
     queryFn: ({ signal }) => getVocalProfileAnalysisJobs(signal),
-    ...(initialJobs ? { initialData: { jobs: initialJobs } } : {}),
     refetchInterval: (query) => analysisJobsPollingInterval(query.state.data),
   });
 }

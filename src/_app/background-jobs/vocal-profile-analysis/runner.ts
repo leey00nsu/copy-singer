@@ -1,7 +1,7 @@
 import "server-only";
 
 import { vocalProfileAnalysisWorkerConcurrency } from "@/shared/config/index.server";
-import { runVocalProfileAnalysisWorkerOnce } from "./worker";
+import { reconcileRequiredVocalProfileAnalysisRefunds, runVocalProfileAnalysisWorkerOnce } from "./worker";
 
 function sleep(milliseconds: number) {
   return new Promise<void>((resolve) => setTimeout(resolve, milliseconds));
@@ -19,6 +19,7 @@ export async function runVocalProfileAnalysisWorker() {
   async function runLane(index: number) {
     const owner = `${process.pid}:vocal-profile:${index}:${crypto.randomUUID()}`;
     while (!stopping) {
+      await reconcileRequiredVocalProfileAnalysisRefunds(10);
       const processed = await runVocalProfileAnalysisWorkerOnce(owner);
       if (!processed) await sleep(1_000);
     }

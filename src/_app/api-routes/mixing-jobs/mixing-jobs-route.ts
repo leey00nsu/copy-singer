@@ -46,6 +46,7 @@ export async function POST(request: Request) {
           error: {
             code: "INSUFFICIENT_TICKETS",
             message: error.message,
+            kind: error.kind,
             required: error.required,
             balance: error.balance,
           },

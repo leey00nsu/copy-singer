@@ -54,7 +54,7 @@ function analysisJobCopy(job: VocalProfileAnalysisJobResponse) {
 
 function VocalProfileAnalysisJobRows({ jobs }: { jobs: VocalProfileAnalysisJobResponse[] }) {
   const router = useRouter();
-  const jobsQuery = useQuery(vocalProfileAnalysisJobsQueryOptions(jobs));
+  const jobsQuery = useQuery(vocalProfileAnalysisJobsQueryOptions());
   const currentJobs = jobsQuery.data?.jobs ?? jobs;
   const activeIds = useRef(jobs.filter(isActiveAnalysisJob).map((job) => job.id));
 

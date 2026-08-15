@@ -1,7 +1,7 @@
 import "server-only";
 
 import { MixingError } from "@/entities/mixing-job/index.server";
-import { InsufficientTicketsError } from "@/entities/ticket/index.server";
+import { applyTicketChangeInTransaction } from "@/entities/ticket/index.server";
 import { synthesisReferenceContractVersion, type VocalProfileDescriptors } from "@/entities/vocal-profile/index.model";
 import { getRecommendationItem } from "@/features/create-recommendation/index.server";
 import { mixingMaxAttempts, mixingTicketCost } from "@/shared/config/index.server";
@@ -10,6 +10,10 @@ import { selectMixingReference } from "../model/reference";
 
 function prismaErrorCode(error: unknown) {
   return error && typeof error === "object" && "code" in error && typeof error.code === "string" ? error.code : null;
+}
+
+function isTransactionWriteConflict(error: unknown) {
+  return prismaErrorCode(error) === "P2034" || (error instanceof Error && error.message === "TransactionWriteConflict");
 }
 
 export async function enqueueMixingJob(input: {
@@ -98,21 +102,6 @@ export async function enqueueMixingJob(input: {
             throw new MixingError("MIXING_REFERENCE_UNAVAILABLE", "저장된 레퍼런스 음성을 사용할 수 없어요.", 422);
           }
 
-          const debited = await tx.user.updateMany({
-            where: { id: input.userId, ticketBalance: { gte: cost } },
-            data: { ticketBalance: { decrement: cost } },
-          });
-          if (debited.count !== 1) {
-            const owner = await tx.user.findUniqueOrThrow({
-              where: { id: input.userId },
-              select: { ticketBalance: true },
-            });
-            throw new InsufficientTicketsError(cost, owner.ticketBalance);
-          }
-          const owner = await tx.user.findUniqueOrThrow({
-            where: { id: input.userId },
-            select: { ticketBalance: true },
-          });
           const job = await tx.mixingJob.create({
             data: {
               userId: input.userId,
@@ -130,23 +119,23 @@ export async function enqueueMixingJob(input: {
               maxAttempts: mixingMaxAttempts(),
             },
           });
-          await tx.ticketLedger.create({
-            data: {
+          if (cost > 0) {
+            await applyTicketChangeInTransaction(tx, {
               userId: input.userId,
-              type: "MIXING_DEBIT",
+              kind: "AI_MIXING",
+              type: "USAGE_DEBIT",
               amount: -cost,
-              balanceAfter: owner.ticketBalance,
               idempotencyKey: `mixing:debit:${job.id}`,
               mixingJobId: job.id,
               reason: "AI 믹싱",
-            },
-          });
+            });
+          }
           return job;
         },
         { isolationLevel: "Serializable" },
       );
     } catch (error) {
-      if (prismaErrorCode(error) === "P2034" && attempt < 2) continue;
+      if (isTransactionWriteConflict(error) && attempt < 2) continue;
       if (prismaErrorCode(error) === "P2002") {
         const existing = await prisma.mixingJob.findUnique({
           where: { userId_idempotencyKey: { userId: input.userId, idempotencyKey: input.idempotencyKey } },

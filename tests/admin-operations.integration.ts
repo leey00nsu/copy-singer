@@ -30,16 +30,17 @@ test("admin allowlist and ticket adjustments preserve actor, reason, and nonnega
           name: "Target singer",
           email: `${targetId}@example.test`,
           emailVerified: true,
-          ticketBalance: 1,
         },
       ],
     });
+    await prisma.ticketWallet.create({ data: { userId: targetId, kind: "AI_MIXING", balance: 1 } });
     assert.equal(isAdminEmail(adminEmail), true);
     assert.equal(isAdminEmail("viewer@example.test"), false);
 
     const granted = await adjustUserTickets({
       actorUserId: adminId,
       targetUserId: targetId,
+      kind: "AI_MIXING",
       amount: 2,
       reason: "고객 지원 지급",
       idempotencyKey: `grant-${suffix}`,
@@ -50,6 +51,7 @@ test("admin allowlist and ticket adjustments preserve actor, reason, and nonnega
     const grantedAgain = await adjustUserTickets({
       actorUserId: adminId,
       targetUserId: targetId,
+      kind: "AI_MIXING",
       amount: 2,
       reason: "고객 지원 지급",
       idempotencyKey: `grant-${suffix}`,
@@ -64,6 +66,7 @@ test("admin allowlist and ticket adjustments preserve actor, reason, and nonnega
     const removed = await adjustUserTickets({
       actorUserId: adminId,
       targetUserId: targetId,
+      kind: "AI_MIXING",
       amount: -1,
       reason: "중복 지급 회수",
       idempotencyKey: `remove-${suffix}`,
@@ -75,13 +78,18 @@ test("admin allowlist and ticket adjustments preserve actor, reason, and nonnega
         adjustUserTickets({
           actorUserId: adminId,
           targetUserId: targetId,
+          kind: "AI_MIXING",
           amount: -3,
           reason: "잔액 초과 회수",
           idempotencyKey: `invalid-${suffix}`,
         }),
       (error) => error instanceof InsufficientTicketsError,
     );
-    assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: targetId } })).ticketBalance, 2);
+    assert.equal(
+      (await prisma.ticketWallet.findUniqueOrThrow({ where: { userId_kind: { userId: targetId, kind: "AI_MIXING" } } }))
+        .balance,
+      2,
+    );
 
     const users = await listAdminUsers("Target singer", 1, 10);
     assert.equal(users.total, 1);

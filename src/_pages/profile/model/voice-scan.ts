@@ -33,6 +33,14 @@ export const ANALYSIS_ERROR_GUIDANCE: Record<string, { action: string; title: st
   ANALYZER_UNAVAILABLE: { title: "목소리를 분석할 수 없어요", action: "잠시 뒤 다시 시도해 주세요." },
   ANALYZER_NOT_CONFIGURED: { title: "현재 목소리 분석을 사용할 수 없어요", action: "잠시 뒤 다시 시도해 주세요." },
   ANALYSIS_ENQUEUE_FAILED: { title: "목소리 분석을 시작하지 못했어요", action: "잠시 뒤 다시 시도해 주세요." },
+  INSUFFICIENT_ANALYSIS_TICKETS: {
+    title: "분석 티켓이 없어요",
+    action: "새 보컬 프로필을 만들려면 분석 티켓이 필요해요.",
+  },
+  PROFILE_LIMIT_REACHED: {
+    title: "보컬 프로필을 모두 사용하고 있어요",
+    action: "기존 프로필 하나를 삭제한 뒤 다시 분석해 주세요.",
+  },
   ANALYSIS_SOURCE_UNAVAILABLE: { title: "분석할 음성을 불러오지 못했어요", action: "잠시 뒤 다시 시도해 주세요." },
   PROFILE_SAVE_FAILED: {
     title: "분석 결과를 저장하지 못했어요",

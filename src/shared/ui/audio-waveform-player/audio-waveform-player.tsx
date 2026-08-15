@@ -29,6 +29,8 @@ type AudioWaveformPlayerProps = {
   label?: string;
   className?: string;
   segments?: AudioPlaybackSegment[];
+  waveformPeaks?: Array<Float32Array | number[]>;
+  waveformDuration?: number;
 };
 
 export function AudioWaveformPlayer(props: AudioWaveformPlayerProps) {
@@ -40,6 +42,8 @@ function AudioWaveformPlayerInstance({
   label = "오디오",
   className,
   segments = EMPTY_SEGMENTS,
+  waveformPeaks,
+  waveformDuration,
 }: AudioWaveformPlayerProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [decodeFailed, setDecodeFailed] = useState(false);
@@ -73,6 +77,8 @@ function AudioWaveformPlayerInstance({
     normalize: true,
     interact: true,
     dragToSeek: true,
+    peaks: waveformPeaks,
+    duration: waveformDuration,
   });
 
   useEffect(() => {

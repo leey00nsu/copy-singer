@@ -6,7 +6,12 @@ import type { TicketAdjustmentResponse } from "@/features/manage-tickets";
 
 export const MSW_API_ORIGIN = "http://copy-singer.test";
 
-export const ticketBalanceFixture = { balance: 3 };
+export const ticketBalanceFixture = {
+  wallets: [
+    { kind: "VOCAL_ANALYSIS" as const, balance: 5 },
+    { kind: "AI_MIXING" as const, balance: 3 },
+  ],
+};
 
 export const notificationListFixture: NotificationList = {
   page: 1,
@@ -83,6 +88,7 @@ export const adminCustomMixingProfilesFixture: AdminCustomMixingProfilesResponse
 
 export const ticketAdjustmentFixture: TicketAdjustmentResponse = {
   id: "10000000-0000-4000-8000-000000000020",
+  kind: "AI_MIXING",
   amount: 2,
   balanceAfter: 4,
   reason: "support credit",

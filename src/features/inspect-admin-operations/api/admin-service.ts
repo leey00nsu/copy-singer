@@ -17,7 +17,7 @@ export async function getAdminOverview() {
   const [users, jobs, ticketTotals, recentFailures] = await Promise.all([
     prisma.user.count(),
     prisma.mixingJob.groupBy({ by: ["status"], _count: { _all: true } }),
-    prisma.ticketLedger.aggregate({ _sum: { amount: true }, _count: { _all: true } }),
+    prisma.ticketWallet.aggregate({ _sum: { balance: true }, _count: { _all: true } }),
     prisma.mixingJob.count({
       where: { status: "FAILED", completedAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1_000) } },
     }),
@@ -25,8 +25,8 @@ export async function getAdminOverview() {
   return {
     users,
     jobs: Object.fromEntries(jobs.map((entry) => [entry.status.toLowerCase(), entry._count._all])),
-    ticketNet: ticketTotals._sum.amount ?? 0,
-    ticketEvents: ticketTotals._count._all,
+    ticketNet: ticketTotals._sum.balance ?? 0,
+    ticketWallets: ticketTotals._count._all,
     recentFailures,
   };
 }
@@ -48,7 +48,7 @@ export async function listAdminUsers(query = "", page = 1, pageSize = 10) {
         id: true,
         name: true,
         email: true,
-        ticketBalance: true,
+        ticketWallets: { select: { kind: true, balance: true } },
         createdAt: true,
         _count: { select: { vocalProfiles: true, mixingJobs: true } },
       },

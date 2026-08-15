@@ -10,6 +10,7 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
+import { ticketBalanceForKind } from "@/entities/ticket/index.model";
 import { requireAdminPage } from "@/features/authentication/index.server";
 import {
   getAdminOverview,
@@ -191,7 +192,8 @@ export default async function AdminPage({
                   <tr>
                     <th className="px-4 py-2 font-medium">사용자</th>
                     <th className="font-medium">이메일</th>
-                    <th className="font-medium">티켓</th>
+                    <th className="font-medium">분석 티켓</th>
+                    <th className="font-medium">믹싱 티켓</th>
                     <th className="font-medium">프로필</th>
                     <th className="font-medium">믹싱</th>
                     <th className="font-medium">가입일</th>
@@ -202,7 +204,8 @@ export default async function AdminPage({
                     <tr key={user.id}>
                       <td className="px-4 py-3 font-medium">{user.name}</td>
                       <td className="text-[11px] text-muted-foreground">{user.email}</td>
-                      <td className="tabular-nums">{user.ticketBalance}</td>
+                      <td className="tabular-nums">{ticketBalanceForKind(user.ticketWallets, "VOCAL_ANALYSIS")}</td>
+                      <td className="tabular-nums">{ticketBalanceForKind(user.ticketWallets, "AI_MIXING")}</td>
                       <td className="tabular-nums">{user._count.vocalProfiles}</td>
                       <td className="tabular-nums">{user._count.mixingJobs}</td>
                       <td className="text-[10px] text-muted-foreground">

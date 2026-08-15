@@ -1,12 +1,13 @@
 import { LogIn, Mail, Ticket, UserRound } from "lucide-react";
 import Link from "next/link";
 import { type TicketEntryView, TicketLedger } from "@/entities/ticket";
+import { type TicketWallet, ticketBalanceForKind } from "@/entities/ticket/index.model";
 import { Button, buttonVariants } from "@/shared/ui/button";
 import { ProductPageIntro } from "@/shared/ui/product-page-intro";
 
 export type AccountOverviewProps = {
   account: {
-    balance: number;
+    wallets: TicketWallet[];
     entries: TicketEntryView[];
     page: number;
     pageCount: number;
@@ -44,6 +45,9 @@ function PaginationAction({
 }
 
 export function AccountOverview({ account, authentication, user }: AccountOverviewProps) {
+  const analysisBalance = ticketBalanceForKind(account.wallets, "VOCAL_ANALYSIS");
+  const mixingBalance = ticketBalanceForKind(account.wallets, "AI_MIXING");
+
   return (
     <div className="mx-auto w-full max-w-[72rem] px-5 py-12 sm:px-7 lg:px-8 lg:py-14">
       <ProductPageIntro
@@ -95,12 +99,21 @@ export function AccountOverview({ account, authentication, user }: AccountOvervi
           <p className="flex items-center gap-2 text-sm text-background/70">
             <Ticket aria-hidden="true" className="size-4" /> 사용 가능한 티켓
           </p>
-          <div>
-            <h2 className="text-5xl font-semibold tracking-[-0.055em] tabular-nums" id="ticket-balance-title">
-              {account.balance}개
-            </h2>
-            <p className="mt-2 text-xs leading-5 text-background/60">AI 믹싱을 시작할 때 티켓 1개를 사용해요.</p>
-          </div>
+          <dl className="grid grid-cols-2 gap-5">
+            <div>
+              <dt className="text-xs text-background/60">분석 티켓</dt>
+              <dd className="mt-1 text-4xl font-semibold tracking-[-0.05em] tabular-nums" id="analysis-ticket-balance">
+                {analysisBalance}장
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs text-background/60">믹싱 티켓</dt>
+              <dd className="mt-1 text-4xl font-semibold tracking-[-0.05em] tabular-nums" id="mixing-ticket-balance">
+                {mixingBalance}장
+              </dd>
+            </div>
+          </dl>
+          <p className="text-xs leading-5 text-background/60">목소리 분석과 AI 믹싱에 각각 사용하는 티켓이에요.</p>
         </div>
       </section>
 
@@ -111,7 +124,7 @@ export function AccountOverview({ account, authentication, user }: AccountOvervi
               티켓 변경 내역
             </h2>
             <p className="mt-1 text-xs leading-5 text-muted-foreground">
-              티켓 지급, AI 믹싱 사용, 환불과 관리자 조정 내역을 시간순으로 보여줘요.
+              분석·믹싱 티켓의 지급, 사용, 환불과 관리자 조정 내역을 시간순으로 보여줘요.
             </p>
           </div>
           <p className="text-[11px] text-muted-foreground">총 {account.total}건</p>

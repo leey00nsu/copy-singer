@@ -1,7 +1,9 @@
 import { z } from "zod";
+import { ticketKindSchema } from "@/entities/ticket/index.model";
 
 export const ticketAdjustmentRequestSchema = z.object({
   userId: z.string().min(1),
+  kind: ticketKindSchema,
   amount: z
     .number()
     .int()
@@ -15,6 +17,7 @@ export type TicketAdjustmentRequest = z.infer<typeof ticketAdjustmentRequestSche
 
 export const ticketAdjustmentResponseSchema = z.object({
   id: z.uuid(),
+  kind: ticketKindSchema,
   amount: z.number().int(),
   balanceAfter: z.number().int().nonnegative(),
   reason: z.string(),

@@ -11,12 +11,24 @@ export function integerEnv(name: string, fallback: number, options: { min?: numb
   return value;
 }
 
-export function signupTicketGrant() {
-  return integerEnv("SIGNUP_TICKET_GRANT", 1, { min: 0, max: 1_000 });
+export function signupVocalAnalysisTicketGrant() {
+  return integerEnv("SIGNUP_VOCAL_ANALYSIS_TICKET_GRANT", 5, { min: 0, max: 1_000 });
+}
+
+export function signupMixingTicketGrant() {
+  return integerEnv("SIGNUP_MIXING_TICKET_GRANT", 1, { min: 0, max: 1_000 });
 }
 
 export function mixingTicketCost() {
   return integerEnv("MIXING_TICKET_COST", 1, { min: 0, max: 1_000 });
+}
+
+export function vocalProfileAnalysisTicketCost() {
+  return integerEnv("VOCAL_PROFILE_ANALYSIS_TICKET_COST", 1, { min: 0, max: 1_000 });
+}
+
+export function vocalProfileMaxUserProfiles() {
+  return integerEnv("VOCAL_PROFILE_MAX_USER_PROFILES", 3, { min: 1, max: 1_000 });
 }
 
 export function mixingWorkerConcurrency() {

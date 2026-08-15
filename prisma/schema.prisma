@@ -84,10 +84,15 @@ enum MediaCleanupStatus {
   FAILED
 }
 
+enum TicketKind {
+  VOCAL_ANALYSIS
+  AI_MIXING
+}
+
 enum TicketLedgerType {
   SIGNUP_GRANT
-  MIXING_DEBIT
-  MIXING_REFUND
+  USAGE_DEBIT
+  USAGE_REFUND
   ADMIN_ADJUSTMENT
 }
 
@@ -344,12 +349,12 @@ model User {
   image                    String?
   createdAt                DateTime                  @default(now())
   updatedAt                DateTime                  @updatedAt
-  ticketBalance            Int                       @default(0)
   nextVocalProfileNumber   Int                       @default(1)
   sessions                 Session[]
   accounts                 Account[]
   vocalProfiles            VocalProfile[]
   mediaAssets              MediaAsset[]
+  ticketWallets            TicketWallet[]
   ticketLedgers            TicketLedger[]            @relation("TicketOwner")
   ticketActions            TicketLedger[]            @relation("TicketActor")
   mixingJobs               MixingJob[]
@@ -474,23 +479,39 @@ model MediaCleanupJob {
   @@index([status, nextAttemptAt])
 }
 
-model TicketLedger {
-  id             String           @id @default(uuid()) @db.Uuid
-  userId         String
-  type           TicketLedgerType
-  amount         Int
-  balanceAfter   Int
-  idempotencyKey String           @unique
-  mixingJobId    String?          @db.Uuid
-  actorUserId    String?
-  reason         String
-  createdAt      DateTime         @default(now())
-  user           User             @relation("TicketOwner", fields: [userId], references: [id], onDelete: Cascade)
-  actorUser      User?            @relation("TicketActor", fields: [actorUserId], references: [id], onDelete: SetNull)
-  mixingJob      MixingJob?       @relation(fields: [mixingJobId], references: [id], onDelete: SetNull)
+model TicketWallet {
+  userId    String
+  kind      TicketKind
+  balance   Int        @default(0)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId, createdAt])
+  @@id([userId, kind])
+  @@index([kind])
+}
+
+model TicketLedger {
+  id                        String                   @id @default(uuid()) @db.Uuid
+  userId                    String
+  kind                      TicketKind
+  type                      TicketLedgerType
+  amount                    Int
+  balanceAfter              Int
+  idempotencyKey            String                   @unique
+  mixingJobId               String?                  @db.Uuid
+  vocalProfileAnalysisJobId String?                  @db.Uuid
+  actorUserId               String?
+  reason                    String
+  createdAt                 DateTime                 @default(now())
+  user                      User                     @relation("TicketOwner", fields: [userId], references: [id], onDelete: Cascade)
+  actorUser                 User?                    @relation("TicketActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+  mixingJob                 MixingJob?               @relation(fields: [mixingJobId], references: [id], onDelete: SetNull)
+  vocalProfileAnalysisJob   VocalProfileAnalysisJob? @relation(fields: [vocalProfileAnalysisJobId], references: [id], onDelete: SetNull)
+
+  @@index([userId, kind, createdAt])
   @@index([mixingJobId])
+  @@index([vocalProfileAnalysisJobId])
   @@index([actorUserId, createdAt])
 }
 
@@ -519,6 +540,8 @@ model VocalProfileAnalysisJob {
   vocalProfileId String?                       @unique @db.Uuid
   status         VocalProfileAnalysisJobStatus @default(PENDING)
   idempotencyKey String
+  ticketCost     Int                           @default(0)
+  refundState    TicketRefundState             @default(NONE)
   attempts       Int                           @default(0)
   maxAttempts    Int                           @default(3)
   nextAttemptAt  DateTime                      @default(now())
@@ -535,6 +558,7 @@ model VocalProfileAnalysisJob {
   user           User                          @relation(fields: [userId], references: [id], onDelete: Cascade)
   sourceAsset    MediaAsset?                   @relation("VocalProfileAnalysisSource", fields: [sourceAssetId], references: [id], onDelete: SetNull)
   vocalProfile   VocalProfile?                 @relation(fields: [vocalProfileId], references: [id], onDelete: SetNull)
+  ticketLedgers  TicketLedger[]
 
   @@unique([userId, idempotencyKey])
   @@index([status, nextAttemptAt, leaseExpiresAt, createdAt])

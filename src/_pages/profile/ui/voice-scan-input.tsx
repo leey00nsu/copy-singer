@@ -1,10 +1,11 @@
 "use client";
 
 import { Activity, CheckCircle2, FileAudio, LoaderCircle, RotateCcw, Upload } from "lucide-react";
+import Link from "next/link";
 import { type ReactNode, useId } from "react";
 import { SUPPORTED_AUDIO_UPLOAD_ACCEPT, SUPPORTED_AUDIO_UPLOAD_FORMAT_LABEL } from "@/shared/lib/audio";
 import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
-import { Button } from "@/shared/ui/button";
+import { Button, buttonVariants } from "@/shared/ui/button";
 import { Progress, ProgressLabel, ProgressValue } from "@/shared/ui/progress";
 import { StatusNotice } from "@/shared/ui/status-notice";
 import { canAnalyzeVoiceScan, type RecorderIssue } from "../model/voice-scan";
@@ -19,6 +20,8 @@ type VoiceScanInputProps = {
   audioPreview?: ReactNode;
   audioUrl: string | null;
   inputError?: string | null;
+  profileQuota?: { used: number; limit: number; remaining: number } | null;
+  analysisTickets?: { balance: number; cost: number } | null;
   onAnalyze: () => void;
   onRecordingComplete: (file: File, durationMs: number) => void;
   onRecordingError: (error: unknown) => void;
@@ -39,6 +42,8 @@ export function VoiceScanInput({
   audioPreview,
   audioUrl,
   inputError,
+  profileQuota,
+  analysisTickets,
   onAnalyze,
   onRecordingComplete,
   onRecordingError,
@@ -54,6 +59,8 @@ export function VoiceScanInput({
   const uploadId = useId();
   const recorderActive = ["requesting_permission", "recording", "stopping"].includes(recorderState);
   const durationAccepted = canAnalyzeVoiceScan(audioDuration);
+  const analysisTicketsEmpty = analysisTickets ? analysisTickets.balance < analysisTickets.cost : false;
+  const profileSlotsFull = profileQuota ? profileQuota.remaining <= 0 : false;
 
   return (
     <section aria-labelledby="voice-scan-input-title" className="overflow-hidden rounded-xl border bg-background">
@@ -65,10 +72,45 @@ export function VoiceScanInput({
         <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
           지금 한 소절을 녹음하거나, 기존 녹음 파일을 올려주세요.
         </p>
+        {profileQuota || analysisTickets ? (
+          <dl className="mt-4 grid grid-cols-2 gap-2 rounded-lg bg-muted/35 p-3 text-xs">
+            {profileQuota ? (
+              <div>
+                <dt className="text-muted-foreground">보컬 프로필</dt>
+                <dd className="mt-1 font-semibold tabular-nums">
+                  {profileQuota.used} / {profileQuota.limit}개
+                </dd>
+              </div>
+            ) : null}
+            {analysisTickets ? (
+              <div>
+                <dt className="text-muted-foreground">분석 티켓</dt>
+                <dd className="mt-1 font-semibold tabular-nums">{analysisTickets.balance}장</dd>
+              </div>
+            ) : null}
+          </dl>
+        ) : null}
       </header>
 
       <div className="p-5 sm:p-6">
-        {preparing ? (
+        {analysisTicketsEmpty ? (
+          <StatusNotice
+            description="새 보컬 프로필을 만들려면 분석 티켓이 필요해요."
+            title="분석 티켓이 없어요"
+            tone="warning"
+          />
+        ) : profileSlotsFull ? (
+          <div>
+            <StatusNotice
+              description="새로 분석하려면 기존 프로필 하나를 삭제해 주세요."
+              title="보컬 프로필을 모두 사용하고 있어요"
+              tone="warning"
+            />
+            <Link className={`${buttonVariants({ variant: "outline" })} mt-4 w-full`} href="/library?tab=profiles">
+              보컬 프로필 관리
+            </Link>
+          </div>
+        ) : preparing ? (
           <div className="flex min-h-64 flex-col items-center justify-center px-5 py-10 text-center">
             <LoaderCircle
               aria-hidden="true"
@@ -177,6 +219,11 @@ export function VoiceScanInput({
             </p>
           </div>
         )}
+        {!analysisTicketsEmpty && !profileSlotsFull && analysisTickets && analysisTickets.cost > 0 ? (
+          <p className="mt-4 text-center text-xs text-muted-foreground">
+            분석을 시작하면 분석 티켓 {analysisTickets.cost}장을 사용해요.
+          </p>
+        ) : null}
       </div>
     </section>
   );

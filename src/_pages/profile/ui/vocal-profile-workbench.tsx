@@ -12,6 +12,7 @@ import {
   submitVocalProfileAnalysisMutationOptions,
   vocalAnalysisKeys,
   vocalProfileAnalysisJobQueryOptions,
+  vocalProfileAnalysisJobsQueryOptions,
 } from "@/features/analyze-vocal-profile";
 import { prepareProfileAudio } from "@/shared/lib/audio";
 import { StatusNotice } from "@/shared/ui/status-notice";
@@ -63,6 +64,7 @@ export function VocalProfileWorkbench() {
   const handledTerminalJob = useRef<string | null>(null);
 
   const analysisJobQuery = useQuery(vocalProfileAnalysisJobQueryOptions(analysisJobId));
+  const analysisPolicyQuery = useQuery(vocalProfileAnalysisJobsQueryOptions());
   const submitAnalysis = useMutation(submitVocalProfileAnalysisMutationOptions());
   const analysisJob = analysisJobQuery.data;
   const analysisJobRequestError = analysisJobQuery.error ? normalizeProfileError(analysisJobQuery.error) : null;
@@ -121,6 +123,7 @@ export function VocalProfileWorkbench() {
     if (handledTerminalJob.current === terminalKey) return;
     handledTerminalJob.current = terminalKey;
     analysisIdempotencyKey.current = null;
+    void queryClient.invalidateQueries({ queryKey: vocalAnalysisKeys.jobs() });
     if (analysisJob.status !== "succeeded") {
       window.localStorage.removeItem(ANALYSIS_JOB_STORAGE_KEY);
       return;
@@ -335,6 +338,7 @@ export function VocalProfileWorkbench() {
 
         <VoiceScanInput
           analysisBusy={analysisBusy}
+          analysisTickets={analysisPolicyQuery.data?.analysisTickets ?? null}
           audioDuration={audioDuration}
           audioFile={audioFile}
           audioUrl={audioUrl}
@@ -347,6 +351,7 @@ export function VocalProfileWorkbench() {
           onSelectFile={(file) => void selectFile(file)}
           preparationProgress={preparationProgress}
           preparing={preparingAudio}
+          profileQuota={analysisPolicyQuery.data?.profileQuota ?? null}
           recorderIssue={recorderIssue}
           recorderState={recorderState}
         />

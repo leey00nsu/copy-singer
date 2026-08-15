@@ -29,6 +29,8 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
   process.env.LEEMAGE_PROJECT_ID = "project";
 
   const { prisma } = await import("../src/shared/db/index.server");
+  const readMixingBalance = async (userId: string) =>
+    (await prisma.ticketWallet.findUniqueOrThrow({ where: { userId_kind: { userId, kind: "AI_MIXING" } } })).balance;
   const { enqueueMixingJob } = await import("../src/features/create-mixing/index.server");
   const { claimNextMixingJob, processClaimedMixingJob } = await import(
     "../src/_app/background-jobs/mixing/index.server"
@@ -66,7 +68,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
         name: "Mixing owner",
         email: `${userId}@example.test`,
         emailVerified: true,
-        ticketBalance: 1,
+        ticketWallets: { create: { kind: "AI_MIXING", balance: 1 } },
       },
     });
     await prisma.mediaAsset.create({
@@ -141,9 +143,9 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
         }),
       (error) => error instanceof MixingError && error.code === "MIXING_REFERENCE_UNAVAILABLE",
     );
-    assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 1);
+    assert.equal(await readMixingBalance(userId), 1);
     assert.equal(await prisma.mixingJob.count({ where: { userId, idempotencyKey: missingReferenceKey } }), 0);
-    assert.equal(await prisma.ticketLedger.count({ where: { userId, type: "MIXING_DEBIT" } }), 0);
+    assert.equal(await prisma.ticketLedger.count({ where: { userId, kind: "AI_MIXING", type: "USAGE_DEBIT" } }), 0);
 
     await prisma.vocalProfile.update({
       where: { id: profileId },
@@ -182,8 +184,11 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     assert.equal(first.scoringVersion, "key-fit-v2");
     assert.ok(Number.isInteger(first.recommendedShift));
     assert.ok(first.catalogRevision > 0);
-    assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 0);
-    assert.equal(await prisma.ticketLedger.count({ where: { mixingJobId: first.id, type: "MIXING_DEBIT" } }), 1);
+    assert.equal(await readMixingBalance(userId), 0);
+    assert.equal(
+      await prisma.ticketLedger.count({ where: { mixingJobId: first.id, kind: "AI_MIXING", type: "USAGE_DEBIT" } }),
+      1,
+    );
 
     await assert.rejects(
       () => enqueueMixingJob({ ...input, idempotencyKey: `${input.idempotencyKey}:insufficient` }),
@@ -203,7 +208,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     assert.equal(preflightFailed.status, "FAILED");
     assert.equal(preflightFailed.refundState, "REFUNDED");
     assert.equal(preflightFailed.errorCode, "REFERENCE_FETCH_FAILED");
-    assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 1);
+    assert.equal(await readMixingBalance(userId), 1);
 
     const retrying = await enqueueMixingJob({
       userId,
@@ -230,7 +235,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     assert.equal(retryPending.status, "PENDING");
     assert.equal(retryPending.errorCode, "CATALOG_TARGET_FETCH_FAILED");
     assert.equal(retryPending.refundState, "NONE");
-    assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 0);
+    assert.equal(await readMixingBalance(userId), 0);
     assert.equal((await getMixingJobForUser(userId, retrying.id))?.error, null);
     assert.equal(await claimNextMixingJob("too-early-worker", retrying.id), null);
     await prisma.$executeRaw`
@@ -248,8 +253,11 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     assert.equal(retryExhausted.errorCode, "CATALOG_TARGET_FETCH_FAILED");
     assert.equal(retryExhausted.refundState, "REFUNDED");
     assert.equal(retryExhausted.attempts, 2);
-    assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 1);
-    assert.equal(await prisma.ticketLedger.count({ where: { mixingJobId: retrying.id, type: "MIXING_REFUND" } }), 1);
+    assert.equal(await readMixingBalance(userId), 1);
+    assert.equal(
+      await prisma.ticketLedger.count({ where: { mixingJobId: retrying.id, kind: "AI_MIXING", type: "USAGE_REFUND" } }),
+      1,
+    );
 
     const submitNetworkFailure = await enqueueMixingJob({
       userId,
@@ -278,7 +286,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     assert.equal(submitNetworkFailed.status, "FAILED");
     assert.equal(submitNetworkFailed.errorCode, "MODAL_SUBMIT_FAILED");
     assert.equal(submitNetworkFailed.refundState, "REFUNDED");
-    assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 1);
+    assert.equal(await readMixingBalance(userId), 1);
 
     const submittedFailure = await enqueueMixingJob({
       userId,
@@ -319,9 +327,11 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     assert.equal(postSubmitFailed.errorCode, "MODAL_JOB_FAILED");
     assert.equal(postSubmitFailed.refundState, "NONE");
     assert.equal(postSubmitFailed.attempts, 2);
-    assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 0);
+    assert.equal(await readMixingBalance(userId), 0);
     assert.equal(
-      await prisma.ticketLedger.count({ where: { mixingJobId: submittedFailure.id, type: "MIXING_REFUND" } }),
+      await prisma.ticketLedger.count({
+        where: { mixingJobId: submittedFailure.id, kind: "AI_MIXING", type: "USAGE_REFUND" },
+      }),
       0,
     );
     assert.equal(
@@ -331,6 +341,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
 
     await applyTicketChange({
       userId,
+      kind: "AI_MIXING",
       type: "ADMIN_ADJUSTMENT",
       amount: 1,
       idempotencyKey: `test:finalization-topup:${suffix}`,
@@ -378,9 +389,11 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     assert.equal(finalizationRetrying.refundState, "NONE");
     assert.equal(finalizationRetrying.resultAssetId, null);
     assert.equal(finalizationRetrying.attempts, 1);
-    assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 0);
+    assert.equal(await readMixingBalance(userId), 0);
     assert.equal(
-      await prisma.ticketLedger.count({ where: { mixingJobId: finalizationFailure.id, type: "MIXING_REFUND" } }),
+      await prisma.ticketLedger.count({
+        where: { mixingJobId: finalizationFailure.id, kind: "AI_MIXING", type: "USAGE_REFUND" },
+      }),
       0,
     );
     assert.equal(await prisma.notification.count({ where: { sourceId: finalizationFailure.id } }), 0);
@@ -402,9 +415,11 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     assert.equal(finalizationExhausted.refundState, "NONE");
     assert.equal(finalizationExhausted.resultAssetId, null);
     assert.equal(finalizationExhausted.attempts, 2);
-    assert.equal((await prisma.user.findUniqueOrThrow({ where: { id: userId } })).ticketBalance, 0);
+    assert.equal(await readMixingBalance(userId), 0);
     assert.equal(
-      await prisma.ticketLedger.count({ where: { mixingJobId: finalizationFailure.id, type: "MIXING_REFUND" } }),
+      await prisma.ticketLedger.count({
+        where: { mixingJobId: finalizationFailure.id, kind: "AI_MIXING", type: "USAGE_REFUND" },
+      }),
       0,
     );
     assert.equal(
@@ -414,6 +429,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
 
     await applyTicketChange({
       userId,
+      kind: "AI_MIXING",
       type: "ADMIN_ADJUSTMENT",
       amount: 1,
       idempotencyKey: `test:topup:${suffix}`,
@@ -539,7 +555,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     const resultAssetId = completed.resultAsset?.id;
     assert.ok(resultAssetId);
     const debit = await prisma.ticketLedger.findFirstOrThrow({
-      where: { mixingJobId: successful.id, type: "MIXING_DEBIT" },
+      where: { mixingJobId: successful.id, kind: "AI_MIXING", type: "USAGE_DEBIT" },
     });
     globalThis.fetch = async () => new Response(null, { status: 503 });
     const deletion = await deleteMixingJobForUser(userId, successful.id);
