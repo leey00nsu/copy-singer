@@ -15,7 +15,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/analysis-insight-recommendation-clarity`
-- **대기 중 변경 요청**: -
+- **대기 중 변경 요청**: 랜딩 `어떻게 되는지 보기`를 `이용 방법 보기`로 바꾸고 `한 소절로 시작해, 내 목소리로 완성.` 섹션으로 이동
 - **스펙 승인**: 2026-08-15 사용자 응답 `자동 진행`을 workflow 승인 옵션 `A`로 기록
 - **구현 승인**: -
 - **로컬 머지 승인**: -
@@ -118,13 +118,24 @@
     - [x] 곡 상세의 `키 조정 변화` 카드를 제거하고 원키/추천 키 적합도 2열 layout으로 정리했다.
     - [x] vocal presentation 12/12, recommendation 30/30, query 32/32, targeted Storybook 9/9, TypeScript와 전체 회귀를 통과시켰다.
     - [x] spec/plan/decisions/tasks Evidence를 최종 구현과 동기화했다.
-  - Evidence: implementation commit pending; full `pnpm test` Storybook 163/163 PASS
+  - Evidence: `123e770` (`feat(F033): 사용자 피드백 기반 분석 상세 정보 정리`); full `pnpm test` Storybook 163/163 PASS
+
+- [TODO][PRD-FR-062] T-F033-analysis-insight-recommendation-clarity-07 랜딩 이용 방법 CTA 연결 수정
+  - Date: 2026-08-16
+  - Acceptance:
+    - 랜딩 hero 보조 CTA 문구가 `어떻게 되는지 보기`에서 `이용 방법 보기`로 변경된다.
+    - CTA를 클릭하면 `한 소절로 시작해, 내 목소리로 완성.` 섹션으로 이동한다.
+    - 기존 hero primary CTA와 다른 landing section 구조는 변경하지 않는다.
+  - Checklist:
+    - [ ] hero 보조 CTA의 label과 anchor를 `#product-story` 기준으로 수정한다.
+    - [ ] landing Storybook/test에서 CTA label, href, 대상 section id를 검증한다.
+    - [ ] 관련 회귀 테스트를 통과시키고 docs Evidence를 동기화한다.
 
 ---
 
 ## 완료 조건
 
-- [x] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
+- [ ] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
 - [x] 테스트 실행 및 통과 기록 완료
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
