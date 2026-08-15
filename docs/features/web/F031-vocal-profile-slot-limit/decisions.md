@@ -118,3 +118,20 @@
   - **PR**: -
   - **Test/Log**: vocal analysis queue 8/8 PASS; profile Storybook 11/11 PASS; lint/typecheck PASS; 최종 `pnpm test` PASS (Storybook 155/155).
 - **Consequences**: D001의 슬롯 정책, D004의 슬롯 환경변수, D006의 슬롯 만석 UX는 더 이상 활성 정책이 아니다. 분석 화면에는 분석 티켓 잔액/비용만 남는다.
+
+## D008: 모든 사용자 티켓 소비 mutation은 명시적 확인 dialog 뒤에서 실행한다 (2026-08-15)
+
+- **Context**: 분석 티켓과 믹싱 티켓이 실제 사용권이 되면서 버튼 오클릭이 즉시 유료성 자원 차감 작업으로 이어질 수 있다.
+- **Constraints**: 분석/믹싱마다 서로 다른 ad-hoc confirm을 만들지 않고 향후 `TicketKind` 추가에도 재사용해야 한다. 클라이언트 확인은 보안 권한으로 신뢰하지 않고 서버의 잔액·idempotency·환불 검증을 유지해야 한다.
+- **Options**: 기존 버튼 아래 비용 안내만 유지, 브라우저 `window.confirm`, 공용 접근 가능한 dialog를 비교한다.
+- **Decision**: `entities/ticket`에 `TicketConsumptionConfirmDialog`를 두고 `cost > 0`인 사용자 티켓 소비 mutation을 모두 해당 dialog의 명시적 확인 뒤에 실행한다. 분석은 `분석 시작`, AI 믹싱 최초 요청은 `AI 믹싱 시작`, 실패 후 새 job 재요청은 `다시 믹싱`으로 확인한다. `cost = 0`이면 dialog를 생략한다.
+- **Rationale**: 티켓 종류·수량·실행 시점을 한 화면에서 확인하게 하면서 기존 디자인 시스템과 접근성을 유지하고, 새로운 티켓 소비 기능에도 같은 UI 계약을 재사용할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 사용자 구현 변경 요청을 implementation approval의 request-changes로 받아 T07을 추가했다.
+  - **DONE 전 확정 시점**: `TicketConsumptionConfirmDialog`를 공용 ticket UI로 추가하고 보컬 분석, AI 믹싱 최초 시작, retry 경로를 모두 연결했다. 비용 0은 확인을 생략하고 기존 액션을 바로 실행한다.
+  - **머지 후 확인**: -
+- **Evidence**:
+  - **Commit**: -
+  - **PR**: -
+  - **Test/Log**: targeted Storybook 4 files 26/26 PASS; 관련 UI/API/query 35/35 PASS; FSD 4/4 PASS; lint/typecheck PASS; 최종 `pnpm test` PASS (Storybook 158/158).
+- **Consequences**: 분석/믹싱 버튼 자체는 서버 요청을 직접 실행하지 않고 확인 dialog를 여는 트리거가 된다. 서버 API 계약에는 신뢰용 confirmation 플래그를 추가하지 않는다.

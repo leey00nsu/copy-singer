@@ -181,6 +181,18 @@ POST 오류는 다음을 구분한다.
 - `ticket-adjustment-form`: 관리자가 ticket kind를 먼저 선택하고 수량 조정
 - 양수 관리자 지급 notification: `분석 티켓 3장이 추가됐어요.`처럼 종류 포함
 
+### 12. 티켓 소모 확인 모달
+
+`entities/ticket`에 클라이언트 전용 `TicketConsumptionConfirmDialog`를 추가한다. 입력은 최소 `kind`, `cost`, `actionLabel`, `onConfirm`으로 두고 티켓 종류 라벨은 공용 ticket model helper를 사용한다.
+
+- `cost > 0`: 트리거 클릭 → dialog open → 취소/닫기 시 아무 mutation도 실행하지 않음 → 확인 버튼에서 `onConfirm()` 한 번 실행 후 닫기
+- `cost === 0`: dialog 없이 기존 action을 바로 실행
+- 분석: 준비된 오디오의 `내 보컬 프로필 만들기`를 확인 모달 트리거로 교체하고 `analysisTickets.cost`를 전달
+- 믹싱: `RecommendationMixingAction`에 서버가 계산한 `ticketCost`를 전달하고 최초 시작과 retry 모두 확인 모달을 통과
+- 모달 문구는 `분석 티켓 1장을 사용할까요?` / `믹싱 티켓 1장을 사용할까요?`처럼 실제 kind와 cost를 포함하고 `확인하면 작업이 바로 시작돼요.`를 명시
+
+이 확인은 사용자 실수 방지용 UX 경계다. 서버 API에는 신뢰 가능한 `confirmed` 플래그를 추가하지 않고 기존 잔액 검증, idempotency, debit/refund를 그대로 권한 경계로 유지한다.
+
 ---
 
 ## 주요 변경 파일
@@ -198,7 +210,8 @@ src/shared/config/
 src/entities/ticket/
 ├── model/contract.ts                        # kind/wallet/account 계약
 ├── api/ticket-service.ts                    # kind 기반 balance/ledger
-└── ui/ticket-ledger.tsx                     # 종류 표시
+├── ui/ticket-ledger.tsx                     # 종류 표시
+└── ui/ticket-consumption-confirm-dialog.tsx # 공용 티켓 소모 확인
 
 src/features/analyze-vocal-profile/
 └── api/analysis-queue.ts                    # analysis ticket debit
@@ -263,6 +276,7 @@ tests/                                       # migration/service/queue/UI 회귀
 - 계정 화면: 두 지갑 + kind가 있는 ledger
 - 관리자: kind 선택 adjustment
 - notification: 종류별 티켓 지급 문구
+- 티켓 소모 확인: 분석/믹싱 최초 시작·retry에서 취소 시 mutation 0회, 확인 시 1회, cost=0은 modal 생략
 
 ### 5. 최종 검증
 

@@ -15,7 +15,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/vocal-profile-slot-limit`
-- **대기 중 변경 요청**: -
+- **대기 중 변경 요청**: 티켓 소모 액션을 확인 모달 뒤에 실행
 - **스펙 승인**: 2026-08-15 사용자 응답 `자동진행`을 workflow 승인 옵션 `A`로 기록
 - **구현 승인**: -
 - **로컬 머지 승인**: -
@@ -120,6 +120,21 @@
     - [x] PRD/spec/plan/decisions를 분석 티켓 단일 제한 정책으로 동기화했다.
     - [x] targeted tests, lint, typecheck, 최종 `pnpm test`를 통과했다.
 
+- [DONE][PRD-FR-063] T-F031-vocal-profile-slot-limit-07 티켓 소모 확인 모달
+  - Date: 2026-08-15
+  - Acceptance:
+    - 분석 티켓이 소모되는 보컬 분석은 확인 모달의 명시적 승인 뒤에만 mutation을 실행한다.
+    - 믹싱 티켓이 소모되는 AI 믹싱 최초 시작과 재시도는 확인 모달의 명시적 승인 뒤에만 mutation을 실행한다.
+    - 모달은 티켓 종류, 실제 비용, 확인 직후 작업이 시작된다는 의미를 명확히 보여준다.
+    - 취소/닫기에서는 mutation을 실행하지 않고, 비용이 0이면 불필요한 확인 모달을 띄우지 않는다.
+    - 서버의 기존 debit/refund/idempotency 계약은 변경하지 않는다.
+  - Checklist:
+    - [x] `entities/ticket`에 재사용 가능한 `TicketConsumptionConfirmDialog`를 추가했다.
+    - [x] 보컬 분석 버튼을 확인 dialog 뒤에 연결하고 취소 0회·확인 1회 Storybook interaction을 추가했다.
+    - [x] AI 믹싱 최초 시작과 retry를 확인 dialog 뒤에 연결하고 모든 호출부에 실제 `ticketCost`를 전달했다.
+    - [x] 분석/믹싱 Storybook에서 취소 0회·확인 1회와 `ticketCost=0` 즉시 실행을 검증했다. targeted Storybook 26/26 PASS를 확인했다.
+    - [x] 관련 정적 UI/API 테스트 35/35, FSD 4/4, lint/typecheck, 최종 `pnpm test`를 통과했다.
+
 ---
 
 ## 완료 조건
@@ -137,12 +152,13 @@
 | `pnpm run test:mixing:db` | `2026-08-15` | `PASS — 1/1` |
 | `pnpm run test:admin` | `2026-08-15` | `PASS — UI 4/4 + integration 1/1` |
 | account/API/query targeted tests | `2026-08-15` | `PASS — 24/24` |
-| targeted Storybook: profile/shell/account/ticket/admin | `2026-08-15` | `PASS — profile T06 11/11 포함` |
+| targeted Storybook: ticket confirmation/profile/recommendation/song detail | `2026-08-15` | `PASS — 4 files, 26/26` |
+| targeted UI/API/query tests | `2026-08-15` | `PASS — 35/35` |
 | FSD architecture boundaries | `2026-08-15` | `PASS — 4/4` |
 | `pnpm run lint` | `2026-08-15` | `PASS` |
 | `pnpm exec tsc --noEmit` | `2026-08-15` | `PASS` |
-| `pnpm test` | `2026-08-15` | `PASS — build + unit/integration + Storybook 155/155` |
+| `pnpm test` | `2026-08-15` | `PASS — build + unit/integration + Storybook 158/158` |
 
 - **구현 커밋**: `69c51de` (`feat(F031): 회귀 검증과 문서 동기화`), `096b43e` (`feat(F031): 보컬 프로필 상한 제거`)
 
-<!-- lee-spec-kit:workflow-sync 2026-08-15T08:52:35.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-15T09:05:50.000Z -->
