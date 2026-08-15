@@ -58,7 +58,7 @@
     - [x] 곡 상세에 사용자/곡 주요 음역 비교 정보를 추가했다.
     - [x] Library/song-detail UI tests 9/9, Storybook 8/8, TypeScript를 통과했다.
 
-- [TODO][PRD-FR-008][PRD-FR-010][PRD-FR-065] T-F033-analysis-insight-recommendation-clarity-03 key-fit scoring v3로 신뢰도 가산 분리
+- [DONE][PRD-FR-008][PRD-FR-010][PRD-FR-065] T-F033-analysis-insight-recommendation-clarity-03 key-fit scoring v3로 신뢰도 가산 분리
   - Date: 2026-08-15
   - Acceptance:
     - candidate 적합도는 symmetric 주요 음역 overlap, 주요 음역 초과 부담, 관측 극단음 초과 부담만으로 0–100점을 구성한다.
@@ -66,10 +66,10 @@
     - scoring version은 `key-fit-v3`로 분리된다.
     - `-6..+6` 정수 키 탐색, tie-break, 결정성과 100곡 CPU 목표를 유지한다.
   - Checklist:
-    - [ ] score weight를 overlap 58 / tessitura fit 26 / extreme fit 16으로 변경한다.
-    - [ ] confidence contribution을 score breakdown에서 제거하거나 호환 가능한 비가산 형태로 정리한다.
-    - [ ] `calculateProfileConfidence()`와 low-confidence reason은 유지한다.
-    - [ ] key-fit fixture/edge case/성능 테스트를 v3 의미에 맞게 갱신한다.
+    - [x] score weight를 overlap 58 / tessitura fit 26 / extreme fit 16으로 변경했다.
+    - [x] confidence contribution을 candidate score breakdown에서 제거하고 top-level diagnostic confidence는 유지했다.
+    - [x] `calculateProfileConfidence()`와 low-confidence reason을 유지했다.
+    - [x] key-fit 20/20, recommendation 30/30, query/contract 32/32와 TypeScript를 통과했다.
 
 - [TODO][PRD-FR-011][PRD-FR-012][PRD-FR-049][PRD-FR-065] T-F033-analysis-insight-recommendation-clarity-04 추천 점수·순위·정렬 기준 통일
   - Date: 2026-08-15

@@ -22,19 +22,19 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 
 ---
 
-## D001: analysis-insight-recommendation-clarity 결정 (2026-08-15)
+## D001: key-fit v3는 profile confidence를 적합도 점수에서 분리 (2026-08-15)
 
-- **Context**: 문제 상황 또는 배경
-- **Constraints**: 제약 조건 (시간/기술/운영/호환성)
-- **Options**: 고려한 대안들
-- **Decision**: 최종 선택
-- **Rationale**: 선택 이유
+- **Context**: `key-fit-v2`는 주요 음역 overlap 55점, 주요 음역 초과 fit 25점, 관측 극단음 fit 15점에 profile confidence 5점을 더한다. profile confidence는 한 사용자에 대해 모든 곡과 모든 shift 후보에 동일하므로 추천 키나 곡 사이 상대 순위에는 영향을 주지 않고, 절대 적합도 숫자만 일괄적으로 높이거나 낮춘다. 또한 confidence의 60%가 자유 가창의 `pitchStability`에서 오므로 사용자가 이해하는 곡 적합도와 입력 품질을 한 점수에 섞는다.
+- **Constraints**: `-6..+6` 정수 semitone 탐색, 기존 deterministic tie-break, symmetric 주요 음역 overlap과 초과 부담 구조, low-confidence 안내는 유지해야 한다. 기존 `key-fit-v2` 결과와 새 결과는 scoring version으로 구분되어야 한다.
+- **Options**: (1) 기존 confidence 5점 유지, (2) confidence만 제거해 최대 95점으로 유지, (3) confidence를 제거하고 기존 55:25:15 상대 비율을 100점으로 재정규화하는 방식을 비교했다.
+- **Decision**: `key-fit-v3`를 도입하고 candidate score에서 confidence contribution을 제거한다. 남은 가중치는 overlap 58, tessitura fit 26, extreme fit 16으로 재정규화한다. `calculateProfileConfidence()`와 breakdown의 top-level `confidence`, `LOW_PROFILE_CONFIDENCE` 안내는 진단 신호로 계속 유지한다.
+- **Rationale**: 58:26:16은 기존 55:25:15의 상대 중요도를 거의 그대로 유지하면서 점수의 100점 척도를 보존한다. 점수는 곡과 이번 녹음의 pitch range 관계만 나타내고, 녹음 품질은 별도 주의사항으로 분리된다.
 - **Trace**:
-  - **DOING 시작 시점**: 초기 판단/가설
-  - **DONE 전 확정 시점**: 선택 근거 최종화
-  - **머지 후 확인**: 실제 결과/영향
+  - **DOING 시작 시점**: 같은 user profile의 confidence가 모든 song/shift candidate에 동일하게 더해지는 현재 수식을 확인해 상대 ranking에는 정보량이 없음을 고정했다.
+  - **DONE 전 확정 시점**: confidence만 바꾼 두 user profile이 같은 song/shift에서 동일 score/contributions를 반환하고 confidence 값만 달라지는 회귀 테스트를 추가했다. 기존 shift 선택, tie-break, 100곡 결정성/성능은 유지됐다.
+  - **머지 후 확인**: Pending
 - **Evidence**:
-  - **Commit**: 커밋 해시 또는 링크
-  - **PR**: PR 링크
-  - **Test/Log**: 테스트 결과/로그/스크린샷 경로
-- **Consequences**: 결과 및 영향 (선택사항)
+  - **Commit**: Pending
+  - **PR**: -
+  - **Test/Log**: `pnpm run test:key-fit` 20/20 PASS; `pnpm run test:recommendation` 30/30 PASS; `pnpm run test:query` 32/32 PASS; TypeScript PASS
+- **Consequences**: 같은 profile/catalog 입력이라도 v2와 v3의 절대 적합도 값은 달라질 수 있다. 추천 cache/mixing snapshot은 `key-fit-v3` version으로 구분되며, 낮은 입력 신뢰도는 점수가 아니라 별도 warning으로 전달된다.
