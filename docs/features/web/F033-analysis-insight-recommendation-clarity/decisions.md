@@ -73,7 +73,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Test/Log**: vocal presentation 12/12 PASS; key-fit 20/20 PASS; full `pnpm test` PASS; Storybook 163/163 PASS; raw metric source audit PASS
 - **Consequences**: 저장 스키마와 analyzer response는 바뀌지 않아 기존 프로필을 재분석할 필요가 없다. 사용자 화면의 용어와 정보 밀도만 변경된다.
 
-## D004: 사용자 피드백에 따라 분석 상세은 필요한 비교 정보만 유지 (2026-08-15)
+## D004: 사용자 피드백에 따라 분석 상세은 필요한 비교 정보만 유지 (2026-08-16)
 
 - **Context**: 최초 F033 구현은 raw MIDI 숫자를 숨긴 뒤에도 `분석 용어` 각주에서 MIDI 자체를 설명했고, 보컬 프로필 요약에는 `주요 음역 폭은 약 N반음/옥타브` 문장을 남겼다. 또한 추천 곡 상세에서는 곡 프로필에만 `medianMidi`가 있어 `곡 보컬 음역`에는 중심 음이 보이지만 `내 음역`에는 중심 음이 빠졌고, 원키/추천 키 적합도 외에 `키 조정 변화`를 별도 카드로 표시했다.
 - **Constraints**: analyzer/DB/key-fit 계산에 필요한 MIDI·semitone 값은 내부 계약에 유지한다. 추천 run은 현재 사용자 프로필을 기반으로 즉시 계산되므로 새 네트워크 요청이나 별도 저장 필드를 만들지 않는다. 원키/추천 키 적합도와 추천 점수 의미는 유지한다.
@@ -82,10 +82,10 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 화면에서 직접 쓰지 않는 개념과 파생 수치를 추가 설명하지 않으면서, 실제 비교에 필요한 중심 음은 양쪽에 대칭적으로 제공할 수 있다. 사용자 프로필의 `medianMidi`는 이미 분석 결과에 존재하므로 새 계산이나 저장이 필요 없다.
 - **Trace**:
   - **DOING 시작 시점**: 사용자 변경 요청에서 MIDI 각주, 음역 폭 문장, 오디오 소유권 문구, 내 음역 중심 음 누락, 키 조정 변화 제거를 명시적으로 확인했다.
-  - **DONE 전 확정 시점**: Pending
+  - **DONE 전 확정 시점**: 분석 용어의 MIDI 설명, 음역 폭 문장, 제출 오디오 소유권 문구가 사용자-facing source에서 제거됐고, 현재 recommendation run은 사용자 `medianMidi`를 반환해 곡 상세의 양쪽 음역 카드가 모두 중심 음을 표시한다. legacy recommendation payload는 optional additive field로 계속 parse하며 `키 조정 변화` 카드는 제거됐다.
   - **머지 후 확인**: Pending
 - **Evidence**:
-  - **Commit**: Pending
+  - **Commit**: implementation commit pending
   - **PR**: -
-  - **Test/Log**: Pending
-- **Consequences**: recommendation run response의 `profile` payload에 `medianMidi`가 추가되며 기존 필드는 유지된다. 사용자-facing 정보량은 줄지만 내부 분석 및 scoring 계약은 그대로 유지된다.
+  - **Test/Log**: vocal presentation 12/12 PASS; recommendation 30/30 PASS; query 32/32 PASS; targeted Storybook 9/9 PASS; TypeScript PASS; full `pnpm test` PASS; Storybook 163/163 PASS
+- **Consequences**: 현재 recommendation run response의 `profile` payload에 `medianMidi`가 추가되며 기존 필드는 유지된다. 클라이언트 schema는 기존 cached/legacy payload를 깨지 않도록 `medianMidi`를 optional additive field로 수용하고, 새 서버 응답에서는 값을 항상 제공한다. 사용자-facing 정보량은 줄지만 내부 분석 및 scoring 계약은 그대로 유지된다.
