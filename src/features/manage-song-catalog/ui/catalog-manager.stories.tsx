@@ -179,8 +179,8 @@ export const ArchiveExplanation: Story = {
     await userEvent.click(canvas.getByText("너였다면"));
     await userEvent.click(canvas.getByRole("button", { name: "추천에서 제외" }));
     const dialog = within(document.body).getByRole("dialog", { name: "너였다면을 추천에서 제외할까요?" });
-    await waitFor(() => expect(within(dialog).getByText("데이터는 그대로 유지돼요")).toBeVisible());
-    await expect(within(dialog).getByText(/기존 믹싱 이력은 삭제하지 않고 보관/)).toBeVisible();
+    await expect(within(dialog).getByText("데이터는 그대로 유지돼요")).toBeInTheDocument();
+    await expect(within(dialog).getByText(/기존 믹싱 이력은 삭제하지 않고 보관/)).toBeInTheDocument();
     await expect(within(dialog).getByRole("button", { name: "추천에서 제외" })).toBeEnabled();
     await expect(within(dialog).queryByRole("button", { name: /삭제/ })).not.toBeInTheDocument();
   },

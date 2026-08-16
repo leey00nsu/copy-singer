@@ -346,7 +346,7 @@ function CatalogVisibilityActions({
           </DialogDescription>
         </DialogHeader>
         <StatusNotice
-          description="나중에 보관된 곡 filter에서 찾아 추천에 다시 공개할 수 있어요."
+          description="나중에 보관된 곡 상태 필터에서 찾아 추천에 다시 공개할 수 있어요."
           title="데이터는 그대로 유지돼요"
           tone="warning"
         />
