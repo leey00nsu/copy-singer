@@ -102,6 +102,21 @@
 - [ ] 한 surface에 의미 없는 여러 icon color를 섞지 않으며 색만으로 상태를 전달하지 않는다.
 - [ ] 적용 기준을 `docs/designs/design-system.md`와 관련 Storybook에 동기화한다.
 
+### US-6: 오디오를 원하는 속도와 음량으로 확인한다
+
+**As a** 녹음·분석·AI 믹싱 결과를 듣는 사용자
+**I want** 공용 waveform player에서 재생속도와 음량을 조절하고 싶다
+**So that** 빠른 비교와 세밀한 청취를 같은 player에서 수행할 수 있다
+
+**Acceptance Criteria:**
+
+- [ ] 재생속도는 `0.75×`, `1×`, `1.25×`, `1.5×` preset을 제공하고 기본값은 `1×`다.
+- [ ] 속도 변경은 보컬 pitch를 보존하며 현재 재생 위치와 play/pause 상태를 초기화하지 않는다.
+- [ ] 음량은 0–100 범위를 keyboard와 pointer로 조절하고 현재 값을 접근 가능한 이름/값으로 제공한다.
+- [ ] 음량 slider를 0보다 크게 조절하면 기존 mute 상태가 해제된다.
+- [ ] 기존 play/pause, restart, seek, mute, segment playback과 decode fallback을 유지한다.
+- [ ] mobile에서도 control이 겹치거나 최소 touch target을 침범하지 않는다.
+
 ---
 
 ## 기능 요구사항
@@ -125,6 +140,10 @@ idle/error 상태의 recorder action과 upload action은 동일한 width constra
 ### FR-5: Semantic icon color 규칙
 
 아이콘의 색은 장식이 아니라 상태 또는 도메인 의미를 보조해야 한다. 기존 semantic CSS token을 재사용하고 raw color·새 gradient·새 icon library를 추가하지 않는다. 이 Feature에서는 관련 화면과 공통 상태 컴포넌트를 감사하되 전 제품 아이콘을 일괄 재색칠하지 않는다.
+
+### FR-6: 공용 AudioWaveformPlayer 청취 조절
+
+모든 `AudioWaveformPlayer` 사용처에 같은 재생속도 selector와 음량 slider를 제공한다. Wavesurfer의 playback rate와 volume API를 사용하고 속도 변경 시 `preservePitch`를 유지한다. 사용자 선택은 player instance 단위이며 새 `src`로 player가 교체되면 기본 `1×`·100%로 초기화한다.
 
 ---
 

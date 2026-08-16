@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, waitFor, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 
 import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
 
@@ -42,6 +42,31 @@ export const NetworkIndependent: Story = {
     await waitFor(() => expect(getComputedStyle(surface as HTMLElement).backgroundColor).toBe("rgba(0, 0, 0, 0)"));
     await waitFor(() => expect(getComputedStyle(skeleton as HTMLElement).visibility).toBe("hidden"));
     await expect(canvas.getByRole("button", { name: "테스트 보컬 재생" })).toBeInTheDocument();
+    await expect(canvas.getByRole("button", { name: "테스트 보컬 음소거" })).toBeInTheDocument();
+    const player = canvasElement.querySelector<HTMLElement>("[data-audio-player]");
+    const speed = canvas.getByRole("combobox", { name: "테스트 보컬 재생 속도" });
+    const volume = canvas.getByRole("slider", { name: "테스트 보컬 음량" });
+    await expect(speed).toHaveTextContent("1×");
+    await expect(volume).toHaveAttribute("aria-valuenow", "100");
+
+    await userEvent.click(speed);
+    await userEvent.click(within(document.body).getByRole("option", { name: "1.25×" }));
+    await expect(player).toHaveAttribute("data-audio-playback-rate", "1.25");
+
+    volume.focus();
+    await userEvent.keyboard("{ArrowLeft}");
+    await expect(volume).toHaveAttribute("aria-valuenow", "95");
+    await expect(player).toHaveAttribute("data-audio-volume", "95");
+
+    await userEvent.click(canvas.getByRole("button", { name: "테스트 보컬 음소거" }));
+    await expect(player).toHaveAttribute("data-audio-muted", "true");
+    await expect(canvas.getByRole("button", { name: "테스트 보컬 음소거 해제" })).toBeInTheDocument();
+    await expect(volume).toHaveAttribute("aria-valuenow", "95");
+
+    volume.focus();
+    await userEvent.keyboard("{ArrowLeft}");
+    await expect(volume).toHaveAttribute("aria-valuenow", "90");
+    await expect(player).toHaveAttribute("data-audio-muted", "false");
     await expect(canvas.getByRole("button", { name: "테스트 보컬 음소거" })).toBeInTheDocument();
   },
 };

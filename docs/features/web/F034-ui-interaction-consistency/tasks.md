@@ -76,6 +76,21 @@
     - [x] spec/plan/tasks/decisions와 workflow sync marker를 최종 구현에 맞게 동기화했다.
   - Evidence: `dfee58d` (`feat(F034): semantic 아이콘 색상 기준 적용`); Voice Scan Storybook 13/13 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS; full `pnpm test` PASS — build + unit/integration/DB/FSD + Storybook 166/166
 
+- [DONE][PRD-FR-047][PRD-FR-050][PRD-FR-066] T-F034-ui-interaction-consistency-05 공용 오디오 player 재생속도·음량 조절 추가
+  - Date: 2026-08-16
+  - Acceptance:
+    - 모든 공용 waveform player가 pitch-preserving `0.75×`, `1×`, `1.25×`, `1.5×` 속도와 0–100 음량 조절을 제공한다.
+    - 기존 play/pause, seek, restart, mute, segment playback과 fallback 동작을 유지한다.
+    - control은 keyboard/ARIA와 mobile responsive 계약을 충족한다.
+  - Checklist:
+    - [x] player instance에 playback rate·volume state와 Wavesurfer 동기화를 추가했다.
+    - [x] responsive speed Select와 volume Slider/percentage label을 추가했다.
+    - [x] volume 변경과 mute toggle의 상호작용을 일관되게 처리했다.
+    - [x] Storybook에서 rate preset, volume keyboard, mute, loading/reduced-motion 회귀를 검증했다.
+    - [x] lint, TypeScript와 전체 `pnpm test`를 통과했다.
+    - [x] spec/plan/tasks/decisions와 workflow sync marker를 최종 구현에 맞게 동기화했다.
+  - Evidence: AudioWaveformPlayer Storybook 3/3 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS; full `pnpm test` PASS — build + unit/integration/DB/FSD + Storybook 166/166
+
 ## 완료 조건
 
 - [x] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
@@ -91,8 +106,9 @@
 | `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm run test:query` | `2026-08-16` | `PASS — 32/32` |
 | `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm exec vitest --project storybook --run src/features/manage-notifications/ui/notification-bell.stories.tsx src/_pages/notifications/ui/notifications-list.stories.tsx` | `2026-08-16` | `PASS — 4/4` |
 | `/usr/bin/arch -arm64 /usr/local/bin/node --conditions react-server --import tsx --test tests/notification-service.integration.ts` | `2026-08-16` | `PASS — 1/1` |
+| `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm exec vitest --project storybook --run src/shared/ui/audio-waveform-player/audio-waveform-player.stories.tsx` | `2026-08-16` | `PASS — 3/3` |
 | `pnpm run lint` | `2026-08-16` | `PASS` |
 | `pnpm exec tsc --noEmit` | `2026-08-16` | `PASS` |
 | `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm test` | `2026-08-16` | `PASS — build + unit/integration/DB/FSD + Storybook 166/166` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-16T09:42:55.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-16T10:01:53.000Z -->

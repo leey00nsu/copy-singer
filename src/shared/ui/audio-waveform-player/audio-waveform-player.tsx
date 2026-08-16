@@ -2,10 +2,12 @@
 
 import { useWavesurfer } from "@wavesurfer/react";
 import { Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { formatPlaybackTime } from "@/shared/lib/audio";
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
+import { Slider } from "@/shared/ui/slider";
 
 export type AudioPlaybackRange = {
   startSeconds: number;
@@ -18,6 +20,7 @@ export type AudioPlaybackSegment = {
   ranges: AudioPlaybackRange[];
 };
 const EMPTY_SEGMENTS: AudioPlaybackSegment[] = [];
+const PLAYBACK_RATES = [0.75, 1, 1.25, 1.5] as const;
 
 function themeColor(token: string, fallback: string) {
   if (typeof document === "undefined") return fallback;
@@ -46,12 +49,16 @@ function AudioWaveformPlayerInstance({
   waveformDuration,
 }: AudioWaveformPlayerProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const volumeLabelId = useId();
   const [decodeFailed, setDecodeFailed] = useState(false);
   const [duration, setDuration] = useState(0);
   const [muted, setMuted] = useState(false);
+  const [volume, setVolume] = useState(100);
+  const [playbackRate, setPlaybackRate] = useState(1);
   const [finished, setFinished] = useState(false);
   const [activeSegmentId, setActiveSegmentId] = useState<string | null>(null);
   const activeRangeRef = useRef<{ segmentId: string; rangeIndex: number } | null>(null);
+  const lastAudibleVolumeRef = useRef(100);
   const waveformColors = useMemo(() => {
     const strong = themeColor("--data-accent-foreground", "#6757c8");
     return {
@@ -140,10 +147,45 @@ function AudioWaveformPlayerInstance({
 
   const toggleMuted = useCallback(() => {
     if (!wavesurfer) return;
+    if (volume === 0) {
+      const restoredVolume = lastAudibleVolumeRef.current;
+      wavesurfer.setVolume(restoredVolume / 100);
+      wavesurfer.setMuted(false);
+      setVolume(restoredVolume);
+      setMuted(false);
+      return;
+    }
     const next = !muted;
     wavesurfer.setMuted(next);
     setMuted(next);
-  }, [muted, wavesurfer]);
+  }, [muted, volume, wavesurfer]);
+
+  const changeVolume = useCallback(
+    (values: number | readonly number[]) => {
+      if (!wavesurfer) return;
+      const nextValue = typeof values === "number" ? values : values[0];
+      const next = Math.min(100, Math.max(0, nextValue ?? volume));
+      wavesurfer.setVolume(next / 100);
+      if (next > 0) lastAudibleVolumeRef.current = next;
+      if (muted) {
+        wavesurfer.setMuted(false);
+        setMuted(false);
+      }
+      setVolume(next);
+    },
+    [muted, volume, wavesurfer],
+  );
+
+  const changePlaybackRate = useCallback(
+    (value: string | null) => {
+      if (!wavesurfer || !value) return;
+      const next = Number(value);
+      if (!PLAYBACK_RATES.includes(next as (typeof PLAYBACK_RATES)[number])) return;
+      wavesurfer.setPlaybackRate(next, true);
+      setPlaybackRate(next);
+    },
+    [wavesurfer],
+  );
 
   const playSegment = useCallback(
     (segment: AudioPlaybackSegment) => {
@@ -160,7 +202,13 @@ function AudioWaveformPlayerInstance({
   );
 
   return (
-    <div className={cn("rounded-xl border bg-background p-3", className)}>
+    <div
+      className={cn("rounded-xl border bg-background p-3", className)}
+      data-audio-muted={muted ? "true" : "false"}
+      data-audio-playback-rate={playbackRate}
+      data-audio-player="true"
+      data-audio-volume={volume}
+    >
       {decodeFailed ? (
         <div>
           <p className="mb-2 text-xs text-muted-foreground">파형을 불러오지 못해 기본 플레이어로 재생해요.</p>
@@ -248,15 +296,49 @@ function AudioWaveformPlayerInstance({
               </Button>
             ) : null}
             <Button
-              aria-label={muted ? `${label} 음소거 해제` : `${label} 음소거`}
+              aria-label={muted || volume === 0 ? `${label} 음소거 해제` : `${label} 음소거`}
               disabled={!isReady}
               onClick={toggleMuted}
               size="icon-sm"
               type="button"
               variant="ghost"
             >
-              {muted ? <VolumeX className="size-3.5" /> : <Volume2 className="size-3.5" />}
+              {muted || volume === 0 ? <VolumeX className="size-3.5" /> : <Volume2 className="size-3.5" />}
             </Button>
+          </div>
+          <div className="mt-3 grid gap-3 border-t pt-3 sm:grid-cols-[auto_minmax(12rem,1fr)] sm:items-center sm:gap-5">
+            <div className="flex items-center justify-between gap-2 sm:justify-start">
+              <span className="text-xs font-medium text-muted-foreground">재생 속도</span>
+              <Select onValueChange={changePlaybackRate} value={String(playbackRate)}>
+                <SelectTrigger aria-label={`${label} 재생 속도`} disabled={!isReady} size="sm">
+                  <SelectValue>{(value) => `${value}×`}</SelectValue>
+                </SelectTrigger>
+                <SelectContent align="end">
+                  {PLAYBACK_RATES.map((rate) => (
+                    <SelectItem key={rate} value={String(rate)}>
+                      {rate}×
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-[auto_minmax(6rem,1fr)_3rem] items-center gap-2">
+              <span className="text-xs font-medium text-muted-foreground" id={volumeLabelId}>
+                <span className="sr-only">{label} </span>음량
+              </span>
+              <Slider
+                aria-labelledby={volumeLabelId}
+                disabled={!isReady}
+                max={100}
+                min={0}
+                onValueChange={changeVolume}
+                step={5}
+                value={[volume]}
+              />
+              <span aria-live="off" className="text-right font-mono text-xs text-muted-foreground tabular-nums">
+                {volume}%
+              </span>
+            </div>
           </div>
           {segments.length > 0 ? (
             <div className="mt-3 grid gap-2 sm:grid-cols-3">

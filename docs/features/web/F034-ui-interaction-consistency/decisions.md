@@ -89,3 +89,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: -
   - **Test/Log**: Voice Scan Storybook 13/13 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS; full `pnpm test` PASS — Storybook 166/166 포함
 - **Consequences**: 디자인 시스템에 icon color 허용/비허용 기준이 추가되며 theme token과 공통 component API는 바뀌지 않는다.
+
+## D005: 오디오 속도 변경은 pitch를 보존하고 음량은 instance 단위로 관리 (2026-08-16)
+
+- **Context**: 공용 waveform player는 play/pause, seek와 mute만 제공해 분석 음성과 AI 믹싱 결과를 빠르게 비교하거나 낮은 음량으로 세밀하게 듣기 어렵다.
+- **Constraints**: 보컬·음악 청취에서 속도 변경이 음높이를 바꾸면 분석 의미가 왜곡된다. 모든 player 사용처, segment range playback과 mobile layout을 유지해야 한다.
+- **Options**: native audio controls로 교체, 연속 speed slider, 제한된 speed preset + 연속 volume slider를 비교한다.
+- **Decision**: 속도는 `0.75×`, `1×`, `1.25×`, `1.5×` preset으로 제한하고 Wavesurfer `preservePitch=true`를 사용한다. 음량은 0–100 step 5 slider로 instance state에서 관리하며 mute는 volume 값을 보존한다.
+- **Rationale**: 제한된 속도는 실수와 UI 복잡도를 줄이고 pitch 보존은 보컬 비교의 의미를 유지한다. 연속 음량은 실제 청취 환경에 필요한 세밀한 제어를 제공한다.
+- **Trace**:
+  - **DOING 시작 시점**: Wavesurfer 7.12.11의 `setPlaybackRate(rate, preservePitch)`, `setVolume()`과 기존 공용 Slider/Select 계약을 확인했다.
+  - **DONE 전 확정 시점**: 공용 player에 pitch-preserving rate Select와 step 5 volume Slider를 responsive 보조 row로 추가했다. mute는 설정 volume을 보존하고, muted 상태에서 slider를 조절하면 즉시 unmute하며, 0%에서 음소거 해제하면 마지막 audible volume을 복원한다. player의 기존 keyed `src` instance 경계와 segment playback은 유지됐다.
+  - **머지 후 확인**: Pending
+- **Evidence**:
+  - **Commit**: Pending
+  - **PR**: -
+  - **Test/Log**: AudioWaveformPlayer Storybook 3/3 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS; full `pnpm test` PASS — Storybook 166/166 포함
+- **Consequences**: 모든 공용 waveform player에 같은 보조 control row가 추가되며 새 `src`에서는 기존 keyed instance에 따라 기본 청취 설정으로 초기화된다.

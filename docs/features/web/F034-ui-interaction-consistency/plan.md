@@ -109,6 +109,19 @@ filter가 true이면 `total`은 필터된 unread 결과 수이고 `unreadCount`�
 
 새 CSS token, raw hex, icon gradient는 추가하지 않는다. Voice Scan Storybook에서 icon color가 semantic token을 사용하고 텍스트·layout을 해치지 않는지 확인한다.
 
+## 5. 공용 오디오 player 재생속도·음량 조절
+
+`src/shared/ui/audio-waveform-player/audio-waveform-player.tsx`에 player instance 단위 state를 추가한다.
+
+- playback rate: `0.75`, `1`, `1.25`, `1.5` preset Select
+- volume: `0..100`, step 5의 공용 Slider와 정수 percentage label
+- rate 변경: `wavesurfer.setPlaybackRate(rate, true)`로 pitch 보존
+- volume 변경: `wavesurfer.setVolume(value / 100)`; 0보다 큰 slider 변경은 mute 해제
+- mute button: 현재 volume 값은 보존하고 `setMuted()`만 toggle
+- 새 `src`: 기존 keyed instance 경계에 따라 1×·100%·unmuted 기본값으로 초기화
+
+기존 상단 playback/time row 아래에 responsive control row를 추가해 mobile에서 speed와 volume이 겹치지 않게 한다. decode fallback의 native audio control은 유지한다. `audio-waveform-player.stories.tsx`에서 preset 선택, keyboard volume 변경, mute 상호작용과 기존 loading/reduced-motion 상태를 검증하고 전체 회귀를 실행한다.
+
 ## 파일 구조
 
 ```text
@@ -134,9 +147,12 @@ src/
 ├── entities/notification/
 │   ├── api/notification-service.ts
 │   └── model/contract.ts
-└── features/manage-notifications/
-    ├── api/client.ts
-    └── ui/notification-bell.tsx
+├── features/manage-notifications/
+│   ├── api/client.ts
+│   └── ui/notification-bell.tsx
+└── shared/ui/audio-waveform-player/
+    ├── audio-waveform-player.tsx
+    └── audio-waveform-player.stories.tsx
 ```
 
 ## 테스트 전략
