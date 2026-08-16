@@ -85,16 +85,17 @@
     - [x] snapshot toolbar와 관련 관리자 오류의 사용자-facing target 문구를 원곡 파일로 통일한다.
   - Evidence: `b3cd57b` (`feat(F035): 추천곡 추가·영상과 원곡 교체 UI 재구성`); 추천곡 추가/영상·원곡 교체는 각각 원곡 파일 입력 1개만 제공하고, 원곡 파일 누락 revision에서만 재업로드 입력을 렌더링한다. 관리자 UI 단위 테스트 5/5, CatalogManager Storybook 7/7, ESLint, TypeScript PASS; 사용자-facing legacy target/revision/Modal 문구 검색 0건.
 
-- [TODO][PRD-FR-059] T-F035-admin-song-catalog-clarity-03 보관 영향과 명시적 복원 흐름 구현
+- [DONE][PRD-FR-059] T-F035-admin-song-catalog-clarity-03 보관 영향과 명시적 복원 흐름 구현
   - Date: 2026-08-16
   - Acceptance:
     - 추천에서 제외하면 자료와 기존 믹싱 이력을 유지한 채 새 추천에서 제외되고 실제 변경 시 catalog revision이 한 번 증가한다.
     - 보관된 곡은 준비 완료된 기존 공개 버전으로 추천에 다시 공개할 수 있으며 영구 삭제 action은 제공되지 않는다.
   - Checklist:
-    - [ ] window.confirm을 결과 설명이 있는 접근 가능한 Dialog로 교체한다.
-    - [ ] 보관 상태·filter·toast를 보관됨과 추천 제외 의미에 맞게 정리한다.
-    - [ ] 기존 publish transaction을 사용한 복원 client/UI action과 readiness 안내를 추가한다.
-    - [ ] 보관·복원·반복 요청의 active pointer 및 catalog revision 통합 테스트를 보강한다.
+    - [x] window.confirm을 결과 설명이 있는 접근 가능한 Dialog로 교체한다.
+    - [x] 보관 상태·filter·toast를 보관됨과 추천 제외 의미에 맞게 정리한다.
+    - [x] 기존 publish transaction을 사용한 복원 client/UI action과 readiness 안내를 추가한다.
+    - [x] 보관·복원·반복 요청의 active pointer 및 catalog revision 통합 테스트를 보강한다.
+  - Evidence: `967b810` (`feat(F035): 보관 영향과 명시적 복원 흐름 구현`); 보관 Dialog는 추천 제외, 곡/영상/원곡/분석/기존 믹싱 이력 유지를 설명하고 삭제 action을 제공하지 않는다. 보관된 곡은 기존 current source readiness로 복원한다. 관리자 UI 5/5, CatalogManager Storybook 9/9, admin catalog integration 2/2, ESLint, TypeScript, Biome PASS.
 
 - [TODO][PRD-FR-062] T-F035-admin-song-catalog-clarity-04 관리자 카탈로그 상태·반응형 회귀 검증
   - Date: 2026-08-16
@@ -127,6 +128,7 @@
 | `pnpm exec eslint src/features/manage-song-catalog/model/presentation.ts tests/admin-song-catalog-ui.test.tsx` | `2026-08-16` | PASS |
 | `pnpm exec tsc --noEmit` | `2026-08-16` | PASS |
 | `pnpm exec biome check src/features/manage-song-catalog/model/presentation.ts tests/admin-song-catalog-ui.test.tsx` | `2026-08-16` | PASS |
-| `pnpm exec vitest --project storybook --run src/features/manage-song-catalog/ui/catalog-manager.stories.tsx` | `2026-08-16` | PASS — 7/7 |
+| `pnpm exec vitest --project storybook --run src/features/manage-song-catalog/ui/catalog-manager.stories.tsx` | `2026-08-16` | PASS — 9/9 |
+| `node --conditions react-server --import tsx --test tests/admin-song-catalog.integration.ts` | `2026-08-16` | PASS — 2/2 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-16T20:46:58+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-16T20:53:41+09:00 -->

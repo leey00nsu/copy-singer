@@ -55,3 +55,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: 관리자 UI 5/5 PASS; CatalogManager Storybook 7/7 PASS; targeted ESLint, TypeScript PASS; legacy user-facing target/revision/Modal 검색 0건
 - **Consequences**: 관리자는 보컬 단독 파일을 준비하지 않으며, 교체가 완료될 때까지 기존 공개 버전이 유지된다는 점을 Dialog에서 확인한다.
+
+## D003: 보관은 추천 노출만 중단하고 기존 publish transaction으로 복원 (2026-08-16)
+
+- **Context**: 기존 `보관`은 확인 문구가 결과를 설명하지 않고, UI에 복원 action이 없어 삭제처럼 보였다. 실제 service는 active source·analysis·target을 유지하고 catalog entry만 `ARCHIVED`로 바꾼다.
+- **Constraints**: 기존 믹싱 작업은 immutable song/analysis/target 참조를 유지해야 하며 곡 aggregate 영구 삭제는 제품 범위에서 제외한다.
+- **Options**: 보관 후 새 revision을 요구, 별도 restore route 추가, 준비 완료 active source를 기존 publish transaction으로 다시 공개.
+- **Decision**: action은 `추천에서 제외`, 상태는 `보관됨`, filter는 `보관된 곡`으로 표현한다. Dialog에서 자료와 기존 믹싱 이력 유지를 설명하고, 보관된 곡의 current source를 기존 publish transaction으로 전달하는 `추천에 다시 공개`를 제공한다.
+- **Rationale**: publish transaction이 analysis/target readiness, active pointer 전환과 catalog revision idempotency를 이미 보장하므로 새 mutation 계약 없이 명시적 복원을 제공할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: archive service의 active pointer 유지와 publish service의 반복 요청 revision guard를 통합 테스트로 먼저 고정하기로 했다.
+  - **DONE 전 확정 시점**: 반복 보관은 revision을 추가 증가시키지 않고 source/analysis/target을 유지하며, 첫 복원만 revision을 증가시키고 반복 복원은 idempotent함을 확인했다. Dialog와 Archived Story에서 삭제 action 0건을 검증했다.
+  - **머지 후 확인**: local merge 후 기록.
+- **Evidence**:
+  - **Commit**: `967b810` (`feat(F035): 보관 영향과 명시적 복원 흐름 구현`)
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: admin catalog integration 2/2 PASS; 관리자 UI 5/5 PASS; CatalogManager Storybook 9/9 PASS; targeted ESLint, TypeScript, Biome PASS
+- **Consequences**: 관리자는 추천 제외와 데이터 삭제를 구분할 수 있고, 보관된 곡을 별도 파일 업로드 없이 readiness가 유지된 버전으로 복원할 수 있다.
