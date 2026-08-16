@@ -24,7 +24,11 @@ export const notificationKeys = {
 
 export function getNotificationList(filters: Partial<NotificationFilters>, signal?: AbortSignal) {
   const parsed = notificationFiltersSchema.parse(filters);
-  const search = new URLSearchParams({ page: String(parsed.page), pageSize: String(parsed.pageSize) });
+  const search = new URLSearchParams({
+    page: String(parsed.page),
+    pageSize: String(parsed.pageSize),
+    unreadOnly: String(parsed.unreadOnly),
+  });
   return requestJson(`/api/notifications?${search}`, {
     cache: "no-store",
     signal,

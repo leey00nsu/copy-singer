@@ -18,6 +18,10 @@ function firstSearchParam(value: unknown) {
 export const notificationFiltersSchema = z.object({
   page: z.preprocess(firstSearchParam, pageSearchParamSchema),
   pageSize: z.preprocess((value) => firstSearchParam(value) ?? 20, z.coerce.number().int().min(1).max(50).catch(20)),
+  unreadOnly: z.preprocess((value) => {
+    const normalized = firstSearchParam(value);
+    return normalized === true || normalized === "true" || normalized === "1";
+  }, z.boolean()),
 });
 
 export const notificationSchema = z.object({

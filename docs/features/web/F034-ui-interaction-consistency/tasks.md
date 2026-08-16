@@ -47,18 +47,19 @@
     - [x] 추천 관련 Storybook과 TypeScript 검사를 통과했다.
   - Evidence: `69cc4eb` (`feat(F034): 추천 행 영상 미리보기 토글`); recommendation Storybook 10/10 PASS; `pnpm exec tsc --noEmit` PASS
 
-- [TODO][PRD-FR-058][PRD-FR-066] T-F034-ui-interaction-consistency-03 Header Bell을 unread 전용 목록으로 분리
+- [DONE][PRD-FR-058][PRD-FR-066] T-F034-ui-interaction-consistency-03 Header Bell을 unread 전용 목록으로 분리
   - Date: 2026-08-16
   - Acceptance:
     - Header Bell은 최신 unread 알림만 최대 5개 표시하고 읽음 처리된 항목을 제거한다.
     - 모두 읽음 후 `새 알림이 없어요.` 상태를 표시한다.
     - 전체 알림 페이지는 읽은 알림을 포함한 전체 이력을 유지한다.
   - Checklist:
-    - [ ] notification filter schema/API/client query에 기본값 false의 `unreadOnly`를 추가한다.
-    - [ ] notification service의 where, total, unreadCount, pageCount 의미를 filter별로 검증한다.
-    - [ ] Bell query만 unread filter를 사용하고 전체 페이지 query는 history 기본값을 유지한다.
-    - [ ] 개별/모두 읽음 mutation 후 두 query cache가 올바르게 갱신되는지 검증한다.
-    - [ ] service/API test와 Bell/전체 알림 Storybook을 통과한다.
+    - [x] notification filter schema/API/client query에 기본값 false의 `unreadOnly`를 추가했다.
+    - [x] notification service의 where, total, unreadCount, pageCount 의미를 filter별로 검증했다.
+    - [x] Bell query만 unread filter를 사용하고 전체 페이지 query는 history 기본값을 유지했다.
+    - [x] 개별/모두 읽음 mutation 후 두 query cache가 올바르게 갱신되는지 검증했다.
+    - [x] service/API test와 Bell/전체 알림 Storybook을 통과했다.
+  - Evidence: `test:query` 32/32 PASS; notification Storybook 4/4 PASS; notification DB integration 1/1 PASS; `pnpm exec tsc --noEmit` PASS
 
 - [TODO][PRD-FR-045][PRD-FR-051][PRD-FR-066] T-F034-ui-interaction-consistency-04 semantic icon color 기준 적용과 전체 회귀
   - Date: 2026-08-16
@@ -86,9 +87,11 @@
 | --- | --- | --- |
 | `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm exec vitest --project storybook --run src/_pages/profile/ui/voice-scan-input.stories.tsx` | `2026-08-16` | `PASS — 12/12` |
 | `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm exec vitest --project storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx` | `2026-08-16` | `PASS — 10/10` |
-| targeted notification tests/Storybook | `-` | `PENDING` |
+| `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm run test:query` | `2026-08-16` | `PASS — 32/32` |
+| `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm exec vitest --project storybook --run src/features/manage-notifications/ui/notification-bell.stories.tsx src/_pages/notifications/ui/notifications-list.stories.tsx` | `2026-08-16` | `PASS — 4/4` |
+| `/usr/bin/arch -arm64 /usr/local/bin/node --conditions react-server --import tsx --test tests/notification-service.integration.ts` | `2026-08-16` | `PASS — 1/1` |
 | `pnpm run lint` | `-` | `PENDING` |
 | `pnpm exec tsc --noEmit` | `-` | `PENDING` |
 | `pnpm test` | `-` | `PENDING` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-16T09:32:31.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-16T09:36:40.000Z -->

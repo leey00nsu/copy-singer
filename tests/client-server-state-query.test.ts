@@ -131,10 +131,14 @@ test("notification queries poll on a bounded interval and read mutations refresh
     notifications: [],
   };
   const options = notificationListQueryOptions({ page: 1, pageSize: 5 }, initial);
-  assert.deepEqual(options.queryKey, ["notifications", "list", { page: 1, pageSize: 5 }]);
+  assert.deepEqual(options.queryKey, ["notifications", "list", { page: 1, pageSize: 5, unreadOnly: false }]);
   assert.equal(options.refetchInterval, 30_000);
   assert.equal(options.refetchOnWindowFocus, true);
   assert.notDeepEqual(notificationKeys.list({ page: 1, pageSize: 5 }), notificationKeys.list({ page: 2, pageSize: 5 }));
+  assert.notDeepEqual(
+    notificationKeys.list({ page: 1, pageSize: 5 }),
+    notificationKeys.list({ page: 1, pageSize: 5, unreadOnly: true }),
+  );
 
   const key = notificationKeys.list({ page: 1, pageSize: 5 });
   client.setQueryData(key, initial);

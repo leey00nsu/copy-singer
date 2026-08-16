@@ -3,7 +3,7 @@ import type {} from "msw-storybook-addon/types";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 import type { NotificationList } from "@/entities/notification";
 import { notificationListFixture } from "../../../../tests/msw/fixtures";
-import { notificationListHandler } from "../../../../tests/msw/handlers";
+import { notificationListHandler, notificationUnreadLifecycleHandlers } from "../../../../tests/msw/handlers";
 import { NotificationBell } from "./notification-bell";
 
 const [mixingSucceeded, vocalSucceeded, ticketCredit] = notificationListFixture.notifications;
@@ -88,5 +88,21 @@ export const OpenWithAllTypes: Story = {
     }
 
     await expect(body.getByRole("menuitem", { name: "전체 알림 보기" })).toHaveAttribute("href", "/notifications");
+  },
+};
+
+export const ReadAllClearsBellList: Story = {
+  beforeEach({ msw }) {
+    msw.use(...notificationUnreadLifecycleHandlers(notificationListFixture));
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(await canvas.findByRole("button", { name: "알림, 읽지 않은 알림 2개" }));
+    const body = within(document.body);
+    await expect(body.queryByText("티켓이 추가됐어요")).not.toBeInTheDocument();
+    await waitFor(() => expect(body.getByText("AI 믹스가 완성됐어요")).toBeVisible());
+    await userEvent.click(body.getByRole("button", { name: "모두 읽음" }));
+    await waitFor(() => expect(body.getByText("새 알림이 없어요.")).toBeVisible());
+    await expect(canvas.getByRole("button", { name: "알림" })).toBeVisible();
   },
 };

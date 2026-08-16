@@ -35,7 +35,43 @@ export const handlers = [
 ];
 
 export function notificationListHandler(payload: NotificationList = notificationListFixture) {
-  return http.get("*/api/notifications", () => HttpResponse.json(payload));
+  return http.get("*/api/notifications", ({ request }) => {
+    const unreadOnly = new URL(request.url).searchParams.get("unreadOnly") === "true";
+    if (!unreadOnly) return HttpResponse.json(payload);
+    const notifications = payload.notifications.filter((notification) => notification.readAt === null);
+    return HttpResponse.json({
+      ...payload,
+      page: 1,
+      total: notifications.length,
+      pageCount: 1,
+      unreadCount: notifications.length,
+      notifications,
+    });
+  });
+}
+
+export function notificationUnreadLifecycleHandlers(payload: NotificationList = notificationListFixture) {
+  let allRead = false;
+  return [
+    http.get("*/api/notifications", ({ request }) => {
+      const unreadOnly = new URL(request.url).searchParams.get("unreadOnly") === "true";
+      const notifications = allRead
+        ? []
+        : payload.notifications.filter((notification) => !unreadOnly || notification.readAt === null);
+      return HttpResponse.json({
+        ...payload,
+        page: 1,
+        total: notifications.length,
+        pageCount: 1,
+        unreadCount: allRead ? 0 : payload.unreadCount,
+        notifications,
+      });
+    }),
+    http.post("*/api/notifications/read-all", () => {
+      allRead = true;
+      return HttpResponse.json({ updatedCount: payload.unreadCount, unreadCount: 0 });
+    }),
+  ];
 }
 
 export function ticketBalanceHandler(payload = ticketBalanceFixture) {

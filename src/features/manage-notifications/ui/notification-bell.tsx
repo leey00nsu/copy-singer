@@ -26,7 +26,7 @@ function unreadLabel(count: number) {
 export function NotificationBell() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const list = useQuery(notificationListQueryOptions({ page: 1, pageSize: 5 }));
+  const list = useQuery(notificationListQueryOptions({ page: 1, pageSize: 5, unreadOnly: true }));
   const read = useMutation(markNotificationReadMutationOptions(queryClient));
   const readAll = useMutation(markAllNotificationsReadMutationOptions(queryClient));
   const unreadCount = list.data?.unreadCount ?? 0;

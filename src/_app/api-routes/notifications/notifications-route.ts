@@ -8,6 +8,7 @@ export async function GET(request: Request) {
   const filters = notificationFiltersSchema.parse({
     page: searchParams.get("page"),
     pageSize: searchParams.get("pageSize"),
+    unreadOnly: searchParams.get("unreadOnly"),
   });
-  return Response.json(await getNotifications(session.user.id, filters.page, filters.pageSize));
+  return Response.json(await getNotifications(session.user.id, filters.page, filters.pageSize, filters.unreadOnly));
 }

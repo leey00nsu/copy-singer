@@ -59,10 +59,18 @@ test("notifications are durable, deduplicated, paginated, and owner scoped", asy
     assert.equal((await markNotificationRead(userId, first.id))?.readAt !== null, true);
     assert.equal((await markNotificationRead(userId, first.id))?.id, first.id);
     assert.equal((await getNotifications(userId)).unreadCount, 1);
+    const unreadPage = await getNotifications(userId, 1, 5, true);
+    assert.equal(unreadPage.total, 1);
+    assert.equal(unreadPage.unreadCount, 1);
+    assert.deepEqual(
+      unreadPage.notifications.map((notification) => notification.id),
+      [second.id],
+    );
 
     assert.deepEqual(await markAllNotificationsRead(otherUserId), { updatedCount: 0, unreadCount: 0 });
     assert.deepEqual(await markAllNotificationsRead(userId), { updatedCount: 1, unreadCount: 0 });
     assert.equal((await getNotifications(userId)).unreadCount, 0);
+    assert.equal((await getNotifications(userId, 1, 5, true)).total, 0);
 
     await assert.rejects(
       () => createNotification({ ...input, userId: otherUserId }),

@@ -105,9 +105,17 @@ test("mixing history filters normalize URL values without inventing statuses", (
   assert.equal(mixingHistoryFiltersSchema.parse({ page: "1", q: "x".repeat(100) }).q.length, 80);
 });
 
-test("notification contracts keep internal links, bounded pages, and read envelopes", () => {
-  assert.deepEqual(notificationFiltersSchema.parse({ page: "2", pageSize: "5" }), { page: 2, pageSize: 5 });
-  assert.deepEqual(notificationFiltersSchema.parse({ page: "bad", pageSize: "500" }), { page: 1, pageSize: 20 });
+test("notification contracts keep internal links, bounded pages, unread filters, and read envelopes", () => {
+  assert.deepEqual(notificationFiltersSchema.parse({ page: "2", pageSize: "5", unreadOnly: "true" }), {
+    page: 2,
+    pageSize: 5,
+    unreadOnly: true,
+  });
+  assert.deepEqual(notificationFiltersSchema.parse({ page: "bad", pageSize: "500", unreadOnly: "false" }), {
+    page: 1,
+    pageSize: 20,
+    unreadOnly: false,
+  });
   const item = {
     id: JOB_ID,
     type: "mixing_succeeded" as const,

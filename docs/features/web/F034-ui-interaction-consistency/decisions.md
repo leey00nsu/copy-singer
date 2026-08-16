@@ -55,3 +55,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: -
   - **Test/Log**: recommendation Storybook 10/10 PASS; `pnpm exec tsc --noEmit` PASS
 - **Consequences**: 제목/행의 주 action 의미가 단순 선택에서 선택 + 영상 펼침으로 바뀌며 `aria-expanded`로 상태를 노출한다.
+
+## D003: Header Bell과 전체 알림 이력의 조회 계약을 분리 (2026-08-16)
+
+- **Context**: Bell은 읽지 않은 수 badge를 표시하지만 목록 query는 읽은 항목을 포함한 최신 5개를 반환해 badge와 목록의 의미가 다르다. 전체 알림 페이지는 과거 기록을 다시 확인하는 이력 surface다.
+- **Constraints**: 개별/모두 읽음 mutation, 30초 polling, pagination과 기존 전체 이력 URL을 유지해야 하며 cache key 충돌이 없어야 한다.
+- **Options**: client에서 최신 5개를 filter, Bell 전용 endpoint 추가, 공통 list query에 명시적 unread filter를 추가하는 방식을 비교한다.
+- **Decision**: 공통 notification filter에 기본값 false인 `unreadOnly`를 추가하고 Bell만 true를 사용한다. 서버가 filter된 pagination/count를 계산하며 전체 페이지는 false 기본값을 유지한다.
+- **Rationale**: 서버 pagination 이전에 정확히 필터링되고 하나의 API 계약을 재사용하며 TanStack Query key도 조회 의미를 포함할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: Bell이 `{ page: 1, pageSize: 5 }`만 요청하고 service가 `{ userId }` 전체를 pagination한 뒤 별도 unread count를 계산하는 현재 계약을 확인했다.
+  - **DONE 전 확정 시점**: `unreadOnly`를 Zod filter, URL, query key와 Prisma where에 포함했다. true일 때 total/pageCount는 필터된 unread 집합 기준이고 unreadCount와 일치하며, 전체 페이지는 URL 값과 무관하게 false를 강제한다. read-all 후 invalidation으로 Bell empty state가 갱신됨을 확인했다.
+  - **머지 후 확인**: Pending
+- **Evidence**:
+  - **Commit**: Pending
+  - **PR**: -
+  - **Test/Log**: `test:query` 32/32 PASS; notification Storybook 4/4 PASS; notification DB integration 1/1 PASS; `pnpm exec tsc --noEmit` PASS
+- **Consequences**: query key와 URL에 unread filter가 추가되지만 기본값 false라 기존 전체 이력 호출은 호환된다.

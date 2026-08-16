@@ -106,10 +106,15 @@ export async function createNotification(input: CreateNotificationInput, databas
   return serializeNotification(row);
 }
 
-export async function getNotifications(userId: string, page = 1, pageSize = 20): Promise<NotificationList> {
+export async function getNotifications(
+  userId: string,
+  page = 1,
+  pageSize = 20,
+  unreadOnly = false,
+): Promise<NotificationList> {
   const requestedPage = Math.max(1, Math.trunc(page));
   const normalizedPageSize = Math.min(50, Math.max(1, Math.trunc(pageSize)));
-  const where = { userId } satisfies Prisma.NotificationWhereInput;
+  const where = { userId, ...(unreadOnly ? { readAt: null } : {}) } satisfies Prisma.NotificationWhereInput;
   const [total, unreadCount] = await Promise.all([
     prisma.notification.count({ where }),
     prisma.notification.count({ where: { userId, readAt: null } }),

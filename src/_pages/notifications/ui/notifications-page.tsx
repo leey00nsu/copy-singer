@@ -16,8 +16,8 @@ export default async function NotificationsPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const session = await requirePageSession("/notifications");
-  const filters = notificationFiltersSchema.parse({ ...(await searchParams), pageSize: 20 });
-  const initial = await getNotifications(session.user.id, filters.page, filters.pageSize);
+  const filters = notificationFiltersSchema.parse({ ...(await searchParams), pageSize: 20, unreadOnly: false });
+  const initial = await getNotifications(session.user.id, filters.page, filters.pageSize, filters.unreadOnly);
 
   return (
     <NotificationsPageContent>
