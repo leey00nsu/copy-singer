@@ -34,7 +34,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: `audioSource`를 녹음·업로드 준비 성공 시점에 설정하고 reset에서 해제했다. 자동 녹음 준비 카드는 내부 이름 없이 크기·길이를 표시하고 업로드 카드는 기존 파일명을 유지한다. recorder button과 upload label은 같은 responsive horizontal rail과 width를 사용한다.
   - **머지 후 확인**: Pending
 - **Evidence**:
-  - **Commit**: Pending
+  - **Commit**: `12f2fe7` (`feat(F034): 녹음 입력 정보와 버튼 폭 정리`)
   - **PR**: -
   - **Test/Log**: Voice Scan Storybook 12/12 PASS; `pnpm exec tsc --noEmit` PASS
 - **Consequences**: 화면 state가 하나 추가되지만 서버·파일 업로드·분석 데이터에는 변경이 없다.

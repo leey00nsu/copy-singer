@@ -31,7 +31,7 @@
     - [x] recorder idle/error action과 upload label에 같은 width constraint를 적용했다.
     - [x] 자동 녹음·직접 업로드·error/mobile 상태 Storybook을 추가하거나 갱신했다.
     - [x] 관련 Storybook과 TypeScript 검사를 통과했다.
-  - Evidence: Voice Scan Storybook 12/12 PASS; `pnpm exec tsc --noEmit` PASS
+  - Evidence: `12f2fe7` (`feat(F034): 녹음 입력 정보와 버튼 폭 정리`); Voice Scan Storybook 12/12 PASS; `pnpm exec tsc --noEmit` PASS
 
 - [TODO][PRD-FR-049][PRD-FR-056][PRD-FR-066] T-F034-ui-interaction-consistency-02 추천 행 클릭으로 YouTube 미리보기 토글
   - Date: 2026-08-16
