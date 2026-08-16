@@ -14,6 +14,8 @@
 - **레포**: copy-singer-web
 - **브랜치**: `feat/ui-interaction-consistency`
 - **대기 중 변경 요청**: -
+- **구현 승인**: 2026-08-16 사용자 응답 `마무리처리해줘`를 최신 구현에 대한 workflow 승인 옵션 `A`로 기록
+- **로컬 머지 승인**: -
 - **PR 리뷰**: -
 - **PR 리뷰 Evidence**: -
 
@@ -132,7 +134,9 @@
 
 - [x] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
 - [x] 테스트 실행 및 통과 기록 완료
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+
+- 2026-08-16 최신 구현 승인: 재생 속도 Popover 보조 문구 제거 결과 공유 후 사용자 응답 `마무리처리해줘`를 현재 구현 전체에 대한 workflow 승인 옵션 `A`로 기록했다.
 
 ### 테스트 실행 기록
 
@@ -151,4 +155,4 @@
 | `pnpm exec tsc --noEmit` | `2026-08-16` | `PASS` |
 | `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm test` | `2026-08-16` | `Aggregate PASS across reruns — build + unit/integration/DB/FSD + Storybook 168/168; 병렬 preview 전환 2건과 DB 격리 1건의 일시 실패는 각각 affected/full suite 재실행 PASS` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-16T10:35:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-16T10:38:00.000Z -->
