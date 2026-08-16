@@ -3,7 +3,7 @@ from __future__ import annotations
 import numpy as np
 import soundfile as sf
 
-from app.reference import ReferenceCandidate, _select_candidates, build_reference_outputs, build_smart_reference
+from vocal_analysis_core.reference import ReferenceCandidate, _select_candidates, build_reference_outputs, build_smart_reference
 
 SAMPLE_RATE = 22_050
 

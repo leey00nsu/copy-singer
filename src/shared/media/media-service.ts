@@ -1,8 +1,7 @@
 import "server-only";
 
-import { vocalProfileAnalyzerUrl } from "@/shared/config/index.server";
 import { prisma } from "@/shared/db/index.server";
-import { createLeemageClient, LeemageError } from "./client";
+import { createLeemageClient } from "./client";
 
 function audioExtension(mimeType: string) {
   if (mimeType === "audio/mp4" || mimeType === "audio/aac") return "m4a";
@@ -35,60 +34,6 @@ async function storeMediaAssetBytes(input: {
       sizeBytes: BigInt(stored.sizeBytes),
       status: "READY",
     },
-  });
-}
-
-async function storeAnalyzerAsset(input: {
-  userId: string;
-  recordingId: string;
-  mimeType: string;
-  endpoint: "source" | "synthesis-reference";
-  kind: "REFERENCE" | "SYNTHESIS_REFERENCE";
-  fileName?: string;
-}) {
-  const baseUrl = vocalProfileAnalyzerUrl();
-  if (!baseUrl) throw new LeemageError("The vocal analyzer is not configured.", null, false);
-  const source = await fetch(`${baseUrl}/v1/recordings/${encodeURIComponent(input.recordingId)}/${input.endpoint}`, {
-    cache: "no-store",
-  });
-  if (!source.ok) {
-    throw new LeemageError(
-      `Analyzer reference download failed (${source.status}).`,
-      source.status,
-      source.status >= 500,
-    );
-  }
-  const bytes = new Uint8Array(await source.arrayBuffer());
-  return storeMediaAssetBytes({
-    userId: input.userId,
-    bytes,
-    mimeType: input.mimeType,
-    kind: input.kind,
-    fileName:
-      input.fileName ??
-      `${input.recordingId}${input.kind === "SYNTHESIS_REFERENCE" ? "-synthesis" : ""}.${audioExtension(input.mimeType)}`,
-  });
-}
-
-export async function storeAnalyzerReference(input: {
-  userId: string;
-  recordingId: string;
-  mimeType: string;
-  fileName?: string;
-}) {
-  return storeAnalyzerAsset({ ...input, endpoint: "source", kind: "REFERENCE" });
-}
-
-export async function storeAnalyzerSynthesisReference(input: {
-  userId: string;
-  recordingId: string;
-  fileName?: string;
-}) {
-  return storeAnalyzerAsset({
-    ...input,
-    mimeType: "audio/wav",
-    endpoint: "synthesis-reference",
-    kind: "SYNTHESIS_REFERENCE",
   });
 }
 

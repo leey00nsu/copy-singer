@@ -1,44 +1,15 @@
 import "server-only";
 
 import { hasSmartReferenceContract } from "../../model/contract";
-import { analyzeWithLocalAdapter, localAnalyzerHealth } from "./local-adapter";
 import { analyzeWithModalAdapter, modalAnalyzerHealth } from "./modal-adapter";
 import { AnalyzerClientError, type AnalyzeVocalProfileInput } from "./types";
 
-export { analyzeWithLocalAdapter } from "./local-adapter";
 export { analyzeWithModalAdapter } from "./modal-adapter";
 export type { AnalyzedRecording, AnalyzerArtifact } from "./types";
 export { AnalyzerClientError } from "./types";
 
-export type VocalProfileAnalyzerBackend = "local" | "modal";
-
-export function vocalProfileAnalyzerBackend(): VocalProfileAnalyzerBackend {
-  const value = process.env.VOCAL_PROFILE_ANALYZER_BACKEND?.trim().toLowerCase();
-  if (!value) {
-    if (process.env.NODE_ENV === "production") {
-      throw new AnalyzerClientError(
-        "ANALYZER_NOT_CONFIGURED",
-        "VOCAL_PROFILE_ANALYZER_BACKEND must be explicitly configured in production.",
-        false,
-        503,
-      );
-    }
-    return "local";
-  }
-  if (value === "local" || value === "modal") return value;
-  throw new AnalyzerClientError(
-    "ANALYZER_NOT_CONFIGURED",
-    "VOCAL_PROFILE_ANALYZER_BACKEND must be local or modal.",
-    false,
-    503,
-  );
-}
-
 export async function analyzeVocalProfile(input: AnalyzeVocalProfileInput) {
-  const analyzed =
-    vocalProfileAnalyzerBackend() === "modal"
-      ? await analyzeWithModalAdapter(input)
-      : await analyzeWithLocalAdapter(input);
+  const analyzed = await analyzeWithModalAdapter(input);
   if (analyzed.profile.recordingId !== input.recordingId) {
     throw new AnalyzerClientError("ANALYSIS_FAILED", "Analyzer returned an invalid recording ID.", true, 502);
   }
@@ -79,7 +50,5 @@ export async function analyzeVocalProfileBytes(input: {
 }
 
 export async function vocalProfileAnalyzerHealth(fetchImpl: typeof fetch = fetch) {
-  const backend = vocalProfileAnalyzerBackend();
-  const health = backend === "modal" ? await modalAnalyzerHealth(fetchImpl) : await localAnalyzerHealth(fetchImpl);
-  return { backend, health };
+  return { backend: "modal" as const, health: await modalAnalyzerHealth(fetchImpl) };
 }

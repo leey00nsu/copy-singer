@@ -72,8 +72,3 @@ export function songAnalysisModalConfig() {
   const apiKey = process.env.SONG_ANALYSIS_MODAL_API_KEY?.trim() || process.env.MODAL_API_KEY?.trim();
   return url && apiKey ? { url, apiKey } : null;
 }
-
-export function vocalProfileAnalyzerUrl() {
-  const url = process.env.VOCAL_PROFILE_API_URL?.replace(/\/$/, "");
-  return url || null;
-}

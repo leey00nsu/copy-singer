@@ -19,7 +19,7 @@ from pydantic import BaseModel
 
 
 APP_NAME = "copy-singer-vocal-profile-analyzer"
-REMOTE_ANALYZER_ROOT = Path("/opt/vocal_profile_api")
+REMOTE_ANALYSIS_CORE_PACKAGE = Path("/opt/vocal_analysis_core")
 REMOTE_SERVICE_ROOT = Path("/opt/vocal_profile_modal")
 MIN_CONTAINERS = 0
 MAX_CONTAINERS = 10
@@ -73,8 +73,8 @@ analyzer_image = (
         "yt-dlp==2026.7.4",
     )
     .add_local_dir(
-        REPO_ROOT / "services" / "vocal-profile-api" / "app",
-        remote_path=str(REMOTE_ANALYZER_ROOT / "app"),
+        REPO_ROOT / "services" / "vocal-analysis-core" / "vocal_analysis_core",
+        remote_path=str(REMOTE_ANALYSIS_CORE_PACKAGE),
     )
     .add_local_dir(
         REPO_ROOT / "services" / "vocal-profile-modal",
@@ -84,7 +84,7 @@ analyzer_image = (
 
 
 def _prepare_analyzer_imports() -> None:
-    root = REPO_ROOT / "services" / "vocal-profile-api" if modal.is_local() else REMOTE_ANALYZER_ROOT
+    root = REPO_ROOT / "services" / "vocal-analysis-core" if modal.is_local() else REMOTE_ANALYSIS_CORE_PACKAGE.parent
     root_value = str(root)
     if root_value not in sys.path:
         sys.path.insert(0, root_value)
@@ -146,7 +146,7 @@ async def health() -> dict[str, Any]:
 @web_app.post("/v1/song-target", response_model=None)
 async def song_target(request: SongTargetRequest) -> StreamingResponse | JSONResponse:
     _prepare_analyzer_imports()
-    from app.song_pipeline import SongPipelineError, download_song_target
+    from vocal_analysis_core.song_pipeline import SongPipelineError, download_song_target
 
     try:
         job_path, source_path = await asyncio.to_thread(
@@ -208,9 +208,9 @@ async def analyze(
     trim_to_max_duration: Annotated[bool, Form()] = False,
 ) -> JSONResponse:
     _prepare_analyzer_imports()
-    from app.analysis import AnalysisRejectedError
-    from app.analysis_service import analyze_recording_file, audio_suffix_for_mime_type
-    from app.config import MAX_UPLOAD_BYTES, UPLOAD_CHUNK_BYTES
+    from vocal_analysis_core.analysis import AnalysisRejectedError
+    from vocal_analysis_core.analysis_service import analyze_recording_file, audio_suffix_for_mime_type
+    from vocal_analysis_core.config import MAX_UPLOAD_BYTES, UPLOAD_CHUNK_BYTES
 
     try:
         normalized_recording_id = _normalize_recording_id(recording_id)

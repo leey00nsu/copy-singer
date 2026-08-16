@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 import soundfile as sf
 
-from app import song_pipeline
+from vocal_analysis_core import song_pipeline
 
 SAMPLE_RATE = 22_050
 VIDEO_ID = "NbKH4iZqq1Y"

@@ -4,7 +4,7 @@ F010의 사용자 보컬 프로필용 CPU-only Modal Web Function입니다.
 
 ## 역할
 
-- `services/vocal-profile-api/app`의 공유 분석 코어를 그대로 사용합니다.
+- `services/vocal-analysis-core/vocal_analysis_core`의 runtime-neutral 분석 코어를 사용합니다.
 - 최대 60초 사용자 source의 프로필 통계는 그대로 분석하고, 무음·저품질을 제외한 중음 phrase만 이어 붙인 최대 30초(더 짧아도 정상) `smart-reference-mid-v1` synthesis reference를 생성합니다.
 - 사용자 오디오는 request-scoped `TemporaryDirectory`에서만 처리합니다.
 - Modal Volume/Dict, PostgreSQL, Leemage에 사용자 데이터를 저장하지 않습니다.
@@ -67,7 +67,7 @@ pnpm run modal:vocal-profile:deploy
 
 ### `POST /v1/analyze`
 
-현재 local analyzer와 동일한 multipart 입력을 사용합니다.
+Next.js worker에서 multipart 입력을 받습니다.
 
 - header: `X-Recording-ID`
 - file: `audio`
@@ -97,7 +97,7 @@ YouTube URL을 WAV로 변환해 개발·진단할 때 사용합니다. 요청 UR
 
 - image에 고정된 `yt-dlp==2026.7.4`와 FFmpeg로 WAV를 생성합니다.
 - response는 `audio/wav` streaming이며 stream 종료 후 임시 directory를 삭제합니다.
-- production `VOCAL_PROFILE_ANALYZER_BACKEND=modal`에서는 mixing worker도 이 endpoint를 사용하므로 local `VOCAL_PROFILE_API_URL`이 필요하지 않습니다.
+- production mixing은 이 진단 endpoint 대신 사전 등록된 Leemage catalog asset을 사용합니다.
 
 ## 인증
 

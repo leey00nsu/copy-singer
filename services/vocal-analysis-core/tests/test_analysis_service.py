@@ -6,8 +6,8 @@ import numpy as np
 import pytest
 import soundfile as sf
 
-from app.analysis import AnalysisRejectedError
-from app.analysis_service import (
+from vocal_analysis_core.analysis import AnalysisRejectedError
+from vocal_analysis_core.analysis_service import (
     analyze_recording_file,
     audio_suffix_for_mime_type,
     segment_bounds_from_fields,

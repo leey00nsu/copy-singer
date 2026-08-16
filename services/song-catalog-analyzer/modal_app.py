@@ -29,7 +29,7 @@ MAJOR_KEY_PROFILE = (6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66,
 MINOR_KEY_PROFILE = (6.33, 2.68, 3.52, 5.38, 2.60, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17)
 
 REPO_ROOT = Path(__file__).resolve().parents[2] if modal.is_local() else Path("/root")
-REMOTE_ANALYZER_PACKAGE = Path("/opt/vocal_profile_app")
+REMOTE_ANALYSIS_CORE_PACKAGE = Path("/opt/vocal_analysis_core")
 
 app = modal.App(APP_NAME)
 api_secret = modal.Secret.from_name("soulx-api-secret")
@@ -49,8 +49,8 @@ analyzer_image = (
         "soundfile==0.14.0",
     )
     .add_local_dir(
-        REPO_ROOT / "services" / "vocal-profile-api" / "app",
-        remote_path=str(REMOTE_ANALYZER_PACKAGE),
+        REPO_ROOT / "services" / "vocal-analysis-core" / "vocal_analysis_core",
+        remote_path=str(REMOTE_ANALYSIS_CORE_PACKAGE),
     )
 )
 
@@ -150,9 +150,9 @@ def analyze_song(source_bytes: bytes, source_video_id: str, file_name: str) -> d
     import librosa
     import numpy as np
 
-    sys.path.insert(0, str(REMOTE_ANALYZER_PACKAGE.parent))
-    from vocal_profile_app.analysis import analyze_wav
-    from vocal_profile_app.config import SONG_ANALYSIS_CONFIG
+    sys.path.insert(0, str(REMOTE_ANALYSIS_CORE_PACKAGE.parent))
+    from vocal_analysis_core.analysis import analyze_wav
+    from vocal_analysis_core.config import SONG_ANALYSIS_CONFIG
 
     _validate_submission("modal-cpu-job", source_video_id, len(source_bytes))
     suffix = _audio_suffix(file_name)

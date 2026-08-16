@@ -1,6 +1,6 @@
 # Modal song catalog analyzer
 
-관리자가 업로드한 catalog target audio를 Modal CPU 함수에서 Demucs·librosa-pYIN으로 분석하고 chroma로 원키를 추정하는 비동기 서비스다. 곡 믹싱/합성의 GPU 함수와 resource 경계를 분리하며, 보컬 진단용 CPU app과는 별도 autoscaling 경계를 사용한다. API는 동일한 `soulx-api-secret`의 `X-API-Key` 계약을 재사용한다.
+관리자가 업로드한 catalog target audio를 Modal CPU 함수에서 Demucs·librosa-pYIN으로 분석하고 chroma로 원키를 추정하는 비동기 서비스다. 곡 믹싱/합성의 GPU 함수 및 보컬 프로필 Modal app과 별도 autoscaling 경계를 사용하며, `services/vocal-analysis-core/vocal_analysis_core`의 분석 코어를 공유한다. API는 동일한 `soulx-api-secret`의 `X-API-Key` 계약을 재사용한다.
 
 흐름은 다음과 같다.
 

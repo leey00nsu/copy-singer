@@ -440,11 +440,9 @@ test("worker persists a profile while reusing the durable source asset", async (
   const source = await createSourceAsset(userId, bytes);
   const job = await insertJob({ userId, sourceAssetId: source.id });
   const previous = {
-    backend: process.env.VOCAL_PROFILE_ANALYZER_BACKEND,
     url: process.env.VOCAL_PROFILE_MODAL_URL,
     key: process.env.VOCAL_PROFILE_MODAL_API_KEY,
   };
-  process.env.VOCAL_PROFILE_ANALYZER_BACKEND = "modal";
   process.env.VOCAL_PROFILE_MODAL_URL = "https://modal.example";
   process.env.VOCAL_PROFILE_MODAL_API_KEY = "test-key";
   const fetchImpl = (async (input) => {
@@ -475,8 +473,6 @@ test("worker persists a profile while reusing the durable source asset", async (
     assert.equal(notification.sourceId, job.id);
     assert.equal(notification.href, `/vocal-profiles/${profile.id}`);
   } finally {
-    if (previous.backend === undefined) delete process.env.VOCAL_PROFILE_ANALYZER_BACKEND;
-    else process.env.VOCAL_PROFILE_ANALYZER_BACKEND = previous.backend;
     if (previous.url === undefined) delete process.env.VOCAL_PROFILE_MODAL_URL;
     else process.env.VOCAL_PROFILE_MODAL_URL = previous.url;
     if (previous.key === undefined) delete process.env.VOCAL_PROFILE_MODAL_API_KEY;
@@ -492,11 +488,9 @@ test("transient Modal failure requeues without deleting the source", async (cont
   const source = await createSourceAsset(userId, bytes);
   const job = await insertJob({ userId, sourceAssetId: source.id, maxAttempts: 3 });
   const previous = {
-    backend: process.env.VOCAL_PROFILE_ANALYZER_BACKEND,
     url: process.env.VOCAL_PROFILE_MODAL_URL,
     key: process.env.VOCAL_PROFILE_MODAL_API_KEY,
   };
-  process.env.VOCAL_PROFILE_ANALYZER_BACKEND = "modal";
   process.env.VOCAL_PROFILE_MODAL_URL = "https://modal.example";
   process.env.VOCAL_PROFILE_MODAL_API_KEY = "test-key";
   const fetchImpl = (async (input) =>
@@ -516,8 +510,6 @@ test("transient Modal failure requeues without deleting the source", async (cont
     assert.equal(stored.retryable, true);
     assert.equal(await prisma.notification.count({ where: { userId } }), 0);
   } finally {
-    if (previous.backend === undefined) delete process.env.VOCAL_PROFILE_ANALYZER_BACKEND;
-    else process.env.VOCAL_PROFILE_ANALYZER_BACKEND = previous.backend;
     if (previous.url === undefined) delete process.env.VOCAL_PROFILE_MODAL_URL;
     else process.env.VOCAL_PROFILE_MODAL_URL = previous.url;
     if (previous.key === undefined) delete process.env.VOCAL_PROFILE_MODAL_API_KEY;
@@ -547,14 +539,12 @@ test("terminal analysis failure detaches and deletes the queued source", async (
   });
   const previousFetch = globalThis.fetch;
   const previous = {
-    backend: process.env.VOCAL_PROFILE_ANALYZER_BACKEND,
     url: process.env.VOCAL_PROFILE_MODAL_URL,
     key: process.env.VOCAL_PROFILE_MODAL_API_KEY,
     baseUrl: process.env.LEEMAGE_BASE_URL,
     leemageKey: process.env.LEEMAGE_API_KEY,
     projectId: process.env.LEEMAGE_PROJECT_ID,
   };
-  process.env.VOCAL_PROFILE_ANALYZER_BACKEND = "modal";
   process.env.VOCAL_PROFILE_MODAL_URL = "https://modal.example";
   process.env.VOCAL_PROFILE_MODAL_API_KEY = "test-key";
   process.env.LEEMAGE_BASE_URL = "https://leemage.example/api/v1";
@@ -599,8 +589,6 @@ test("terminal analysis failure detaches and deletes the queued source", async (
     assert.equal(notification.href, "/library?tab=profiles");
   } finally {
     globalThis.fetch = previousFetch;
-    if (previous.backend === undefined) delete process.env.VOCAL_PROFILE_ANALYZER_BACKEND;
-    else process.env.VOCAL_PROFILE_ANALYZER_BACKEND = previous.backend;
     if (previous.url === undefined) delete process.env.VOCAL_PROFILE_MODAL_URL;
     else process.env.VOCAL_PROFILE_MODAL_URL = previous.url;
     if (previous.key === undefined) delete process.env.VOCAL_PROFILE_MODAL_API_KEY;

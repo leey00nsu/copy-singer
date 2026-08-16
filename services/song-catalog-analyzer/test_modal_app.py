@@ -53,6 +53,9 @@ class ModalCatalogAnalyzerTest(unittest.TestCase):
         self.assertIn("chroma_cqt", source)
         self.assertIn('"fastapi==0.141.1"', source)
         self.assertNotIn("yt_dlp", source)
+        self.assertIn('"vocal-analysis-core" / "vocal_analysis_core"', source)
+        self.assertIn("from vocal_analysis_core.analysis import analyze_wav", source)
+        self.assertNotIn("vocal-profile-api", source)
 
 
 if __name__ == "__main__":

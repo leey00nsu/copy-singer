@@ -1,6 +1,5 @@
 import "server-only";
 
-import { vocalProfileAnalyzerUrl } from "@/shared/config/index.server";
 import type { VocalProfileResponse } from "../model/contract";
 
 type StoredProfile = {
@@ -72,14 +71,4 @@ export function serializeProfile(profile: StoredProfile): VocalProfileResponse {
       createdAt: profile.recording.createdAt.toISOString(),
     },
   };
-}
-
-export async function deleteAnalyzerRecording(recordingId: string) {
-  const url = vocalProfileAnalyzerUrl();
-  if (!url) return false;
-  const response = await fetch(`${url}/v1/recordings/${encodeURIComponent(recordingId)}`, {
-    method: "DELETE",
-    cache: "no-store",
-  });
-  return response.ok;
 }

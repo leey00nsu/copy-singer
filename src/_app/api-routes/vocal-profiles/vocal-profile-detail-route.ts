@@ -1,5 +1,5 @@
 import { vocalProfileRenameRequestSchema } from "@/entities/vocal-profile";
-import { deleteAnalyzerRecording, serializeProfile } from "@/entities/vocal-profile/index.server";
+import { serializeProfile } from "@/entities/vocal-profile/index.server";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 import { resourceIdSchema } from "@/shared/api";
 import { prisma } from "@/shared/db/index.server";
@@ -85,14 +85,6 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
     (asset): asset is NonNullable<typeof asset> => asset !== null,
   );
   const deletions = await Promise.all(assets.map((asset) => deleteOrScheduleMediaAsset(asset.id)));
-  const analyzerDeleted = profile.recording.mediaAsset ? true : await deleteAnalyzerRecording(profile.recordingId);
-  if (!analyzerDeleted) {
-    return Response.json(
-      { reasonCode: "ANALYZER_UNAVAILABLE", detail: "The stored recording could not be removed.", retryable: true },
-      { status: 502 },
-    );
-  }
-
   await prisma.$transaction([
     prisma.vocalProfile.delete({ where: { id: profile.id } }),
     prisma.recording.delete({ where: { id: profile.recordingId } }),

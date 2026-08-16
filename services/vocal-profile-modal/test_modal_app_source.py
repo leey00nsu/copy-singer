@@ -41,3 +41,6 @@ def test_modal_app_exposes_health_analyze_and_song_target_contract() -> None:
     assert '"transportVersion"' in text
     assert "ephemeral_working_directory" in text
     assert "build_analysis_envelope" in text
+    assert '"vocal-analysis-core" / "vocal_analysis_core"' in text
+    assert "from vocal_analysis_core.analysis_service import" in text
+    assert "vocal-profile-api" not in text

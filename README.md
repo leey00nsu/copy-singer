@@ -54,8 +54,8 @@
 pnpm install --frozen-lockfile
 cp .env.example .env.local
 
-# 2. PostgreSQL과 로컬 보컬 분석기 시작
-docker compose up -d --build
+# 2. PostgreSQL 시작
+docker compose up -d
 
 # 3. DB 준비
 pnpm run db:migrate:deploy
@@ -131,7 +131,7 @@ Browser
       ├─ Prisma ──────────────────── PostgreSQL
       ├─ Media client ────────────── Leemage
       └─ Durable background workers
-          ├─ 보컬 프로필 분석 ───── Modal 또는 local CPU analyzer
+          ├─ 보컬 프로필 분석 ───── Modal CPU analyzer
           ├─ 곡 카탈로그 분석 ───── Modal CPU analyzer
           └─ AI 믹싱 ─────────────── SoulX-Singer Modal API
 ```
@@ -157,10 +157,10 @@ Browser
 
 ### 로컬 실행
 
-`docker compose up -d --build`는 PostgreSQL과 로컬 CPU 보컬 분석기를 시작한다. 데이터베이스를 준비한 뒤 `pnpm dev`를 실행하면 Next.js와 믹싱·보컬 분석·곡 분석 worker가 함께 시작된다.
+`docker compose up -d`는 로컬 PostgreSQL을 시작한다. 데이터베이스를 준비한 뒤 `pnpm dev`를 실행하면 Next.js와 믹싱·보컬 분석·곡 분석 worker가 함께 시작된다. 두 분석 worker는 배포된 Modal CPU service를 사용한다.
 
 ```bash
-docker compose up -d --build
+docker compose up -d
 pnpm run db:migrate:deploy
 pnpm run db:generate
 pnpm dev
@@ -178,13 +178,7 @@ pnpm dev
 
 ### 분석 서비스
 
-로컬 CPU 분석기 상태는 다음과 같이 확인한다.
-
-```bash
-curl -fsS http://localhost:8001/health
-```
-
-Modal 분석 서비스는 인증을 준비한 뒤 각각 배포한다.
+보컬 프로필과 곡 카탈로그 분석 service는 인증을 준비한 뒤 각각 Modal에 배포한다.
 
 ```bash
 pnpm run modal:vocal-profile:deploy
@@ -221,7 +215,7 @@ scripts/                          worker 및 검증 script
 services/soulx-singer-svc/        Modal GPU singing voice conversion API
 services/vocal-profile-modal/     Modal 보컬 프로필 분석기
 services/song-catalog-analyzer/   Modal 곡 카탈로그 분석기
-services/vocal-profile-api/       로컬 FastAPI CPU 분석기
+services/vocal-analysis-core/     Modal 분석 service가 공유하는 Python core
 tests/                            unit, integration, UI와 boundary test
 ```
 

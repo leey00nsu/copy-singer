@@ -4,9 +4,7 @@ import test from "node:test";
 import {
   AnalyzerClientError,
   analyzeVocalProfile,
-  analyzeWithLocalAdapter,
   analyzeWithModalAdapter,
-  vocalProfileAnalyzerBackend,
 } from "../src/entities/vocal-profile/index.analyzer.server";
 
 function requestBody(bytes = [9, 8, 7]) {
@@ -70,7 +68,6 @@ async function withModalEnvironment<T>(callback: () => Promise<T>) {
   const previous = {
     url: process.env.VOCAL_PROFILE_MODAL_URL,
     apiKey: process.env.VOCAL_PROFILE_MODAL_API_KEY,
-    backend: process.env.VOCAL_PROFILE_ANALYZER_BACKEND,
   };
   process.env.VOCAL_PROFILE_MODAL_URL = "https://modal-analyzer.example";
   process.env.VOCAL_PROFILE_MODAL_API_KEY = "modal-test-key";
@@ -81,61 +78,8 @@ async function withModalEnvironment<T>(callback: () => Promise<T>) {
     else process.env.VOCAL_PROFILE_MODAL_URL = previous.url;
     if (previous.apiKey === undefined) delete process.env.VOCAL_PROFILE_MODAL_API_KEY;
     else process.env.VOCAL_PROFILE_MODAL_API_KEY = previous.apiKey;
-    if (previous.backend === undefined) delete process.env.VOCAL_PROFILE_ANALYZER_BACKEND;
-    else process.env.VOCAL_PROFILE_ANALYZER_BACKEND = previous.backend;
   }
 }
-
-test("local adapter copies analyzer artifacts then removes local temporary recording", async () => {
-  const previousUrl = process.env.VOCAL_PROFILE_API_URL;
-  process.env.VOCAL_PROFILE_API_URL = "https://local-analyzer.example";
-  const recordingId = crypto.randomUUID();
-  const deleted: string[] = [];
-  const fetchImpl = (async (input: string | URL | Request, init?: RequestInit) => {
-    const url = String(input);
-    if (url.endsWith("/v1/analyze")) {
-      assert.equal(init?.method, "POST");
-      return Response.json({
-        ...profile(recordingId),
-        storagePath: `${recordingId}/source.wav`,
-        expiresAt: "2026-08-09T00:00:00.000Z",
-        synthesisReference: {
-          ...profile(recordingId).synthesisReference,
-          storagePath: `${recordingId}/synthesis-reference.wav`,
-        },
-      });
-    }
-    if (url.endsWith(`/v1/recordings/${recordingId}/source`)) {
-      return new Response(Uint8Array.from([1, 2, 3]));
-    }
-    if (url.endsWith(`/v1/recordings/${recordingId}/synthesis-reference`)) {
-      return new Response(Uint8Array.from([4, 5, 6, 7]));
-    }
-    if (url.endsWith(`/v1/recordings/${recordingId}`) && init?.method === "DELETE") {
-      deleted.push(recordingId);
-      return Response.json({ status: "deleted" });
-    }
-    throw new Error(`Unexpected URL: ${url}`);
-  }) as typeof fetch;
-
-  try {
-    const analyzed = await analyzeWithLocalAdapter({
-      recordingId,
-      contentType: "multipart/form-data; boundary=fixture",
-      body: requestBody(),
-      fetchImpl,
-    });
-
-    assert.equal(analyzed.profile.recordingId, recordingId);
-    assert.equal("storagePath" in analyzed.profile, false);
-    assert.deepEqual([...analyzed.source.bytes], [1, 2, 3]);
-    assert.deepEqual([...analyzed.synthesisReference!.bytes], [4, 5, 6, 7]);
-    assert.deepEqual(deleted, [recordingId]);
-  } finally {
-    if (previousUrl === undefined) delete process.env.VOCAL_PROFILE_API_URL;
-    else process.env.VOCAL_PROFILE_API_URL = previousUrl;
-  }
-});
 
 test("modal adapter authenticates and validates the ephemeral envelope", async () => {
   const previous = {
@@ -288,7 +232,6 @@ test("modal adapter maps network and timeout failures without retrying inside th
 
 test("incompatible Modal capability is rejected before persistence can start", async () => {
   await withModalEnvironment(async () => {
-    process.env.VOCAL_PROFILE_ANALYZER_BACKEND = "modal";
     const recordingId = crypto.randomUUID();
     const fetchImpl = (async () =>
       Response.json({
@@ -318,23 +261,4 @@ test("incompatible Modal capability is rejected before persistence can start", a
         error.retryable === false,
     );
   });
-});
-
-test("production analyzer backend must be explicit", () => {
-  const mutableEnv = process.env as Record<string, string | undefined>;
-  const previousBackend = mutableEnv.VOCAL_PROFILE_ANALYZER_BACKEND;
-  const previousNodeEnv = mutableEnv.NODE_ENV;
-  delete mutableEnv.VOCAL_PROFILE_ANALYZER_BACKEND;
-  mutableEnv.NODE_ENV = "production";
-  try {
-    assert.throws(
-      () => vocalProfileAnalyzerBackend(),
-      (error: unknown) => error instanceof AnalyzerClientError && error.reasonCode === "ANALYZER_NOT_CONFIGURED",
-    );
-  } finally {
-    if (previousBackend === undefined) delete mutableEnv.VOCAL_PROFILE_ANALYZER_BACKEND;
-    else mutableEnv.VOCAL_PROFILE_ANALYZER_BACKEND = previousBackend;
-    if (previousNodeEnv === undefined) delete mutableEnv.NODE_ENV;
-    else mutableEnv.NODE_ENV = previousNodeEnv;
-  }
 });

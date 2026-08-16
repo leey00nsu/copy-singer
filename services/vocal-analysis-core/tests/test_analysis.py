@@ -3,8 +3,8 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from app.analysis import AnalysisRejectedError, SegmentBounds, analyze_audio
-from app.config import GUIDE_PATTERN, GUIDE_START_MIDI, MAX_PITCH_TRACK_POINTS
+from vocal_analysis_core.analysis import AnalysisRejectedError, SegmentBounds, analyze_audio
+from vocal_analysis_core.config import GUIDE_PATTERN, GUIDE_START_MIDI, MAX_PITCH_TRACK_POINTS
 
 SAMPLE_RATE = 22_050
 

@@ -1,9 +1,30 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { readFile } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
 type PackageJson = { scripts?: Record<string, string> };
+
+test("vocal analysis uses Modal without a local analyzer runtime", async () => {
+  const root = new URL("../", import.meta.url);
+  await assert.rejects(access(new URL("services/vocal-profile-api", root)));
+  await access(new URL("services/vocal-analysis-core/vocal_analysis_core/analysis.py", root));
+
+  const [environment, compose, analyzerFacade, vocalModal, catalogModal] = await Promise.all([
+    readFile(new URL(".env.example", root), "utf8"),
+    readFile(new URL("docker-compose.yml", root), "utf8"),
+    readFile(new URL("src/entities/vocal-profile/api/analyzer/index.ts", root), "utf8"),
+    readFile(new URL("services/vocal-profile-modal/modal_app.py", root), "utf8"),
+    readFile(new URL("services/song-catalog-analyzer/modal_app.py", root), "utf8"),
+  ]);
+
+  for (const source of [environment, compose, analyzerFacade]) {
+    assert.doesNotMatch(source, /VOCAL_PROFILE_ANALYZER_BACKEND|VOCAL_PROFILE_API_URL|vocal-profile-api/);
+  }
+  assert.match(analyzerFacade, /await analyzeWithModalAdapter\(input\)/);
+  assert.match(vocalModal, /services" \/ "vocal-analysis-core" \/ "vocal_analysis_core/);
+  assert.match(catalogModal, /services" \/ "vocal-analysis-core" \/ "vocal_analysis_core/);
+});
 
 test("default dev and start commands supervise web, mixing, and vocal-profile analysis workers", async () => {
   const packageJson = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8")) as PackageJson;
