@@ -106,3 +106,37 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: -
   - **Test/Log**: AudioWaveformPlayer Storybook 3/3 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS; full `pnpm test` PASS — Storybook 166/166 포함
 - **Consequences**: 모든 공용 waveform player에 같은 보조 control row가 추가되며 새 `src`에서는 기존 keyed instance에 따라 기본 청취 설정으로 초기화된다.
+
+## D006: 속도·음량은 toolbar icon Popover로 제공 (2026-08-16)
+
+- **Context**: 첫 구현은 waveform 아래에 항상 보이는 별도 speed/volume row를 추가해 player와 시각적으로 분리되어 보이고 높이를 크게 늘렸다. 사용자는 일반 오디오 player처럼 음소거 왼쪽의 icon을 눌러 조절하는 방식을 요청했다.
+- **Constraints**: 44px touch target, keyboard focus, Escape/outside close, mobile viewport와 기존 mute control을 유지해야 한다.
+- **Options**: 항상 보이는 하단 row, 하나의 설정 Dialog, speed와 volume 각각의 compact Popover를 비교한다.
+- **Decision**: playback toolbar의 mute 왼쪽에 speed icon과 volume icon을 두고 각각 preset과 Slider Popover를 연다. 일반 action icon이므로 별도 accent color 없이 toolbar foreground를 상속한다.
+- **Rationale**: player 내부 control이라는 소속이 명확하고 기본 높이를 줄이면서 두 설정을 독립적으로 빠르게 조절할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 현재 speed Select와 volume Slider가 waveform 아래 border-top row를 차지하고 공용 Popover primitive는 아직 없음을 확인했다.
+  - **DONE 전 확정 시점**: Base UI Popover wrapper를 추가하고 playback toolbar의 mute 왼쪽에 `Gauge` speed trigger와 `Volume1` volume trigger를 배치했다. speed Popover는 네 preset, volume Popover는 Slider와 percentage를 제공하며 trigger ARIA label, expanded state와 Escape close를 Storybook에서 검증했다. 두 action icon은 foreground를 상속한다.
+  - **머지 후 확인**: Pending
+- **Evidence**:
+  - **Commit**: Pending
+  - **PR**: -
+  - **Test/Log**: AudioWaveformPlayer Storybook 3/3 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS
+- **Consequences**: 공용 Popover primitive가 추가되고 player 기본 surface 높이는 줄어든다.
+
+## D007: 완료된 추천 믹싱은 Library 상세를 정본으로 사용 (2026-08-16)
+
+- **Context**: 추천 화면은 완료된 믹싱을 인라인 player와 download로 다시 렌더링하지만 `/library/mixes/{jobId}` 상세도 같은 결과의 재생·저장·작업 정보를 제공한다.
+- **Constraints**: 추천 화면은 곡 비교·생성 흐름을 유지하고 완료 결과는 사용자 소유 Library에서 다시 찾을 수 있어야 한다. synthesis jobId는 nullable legacy contract다.
+- **Options**: 인라인 player 유지, 인라인과 상세 Link 병행, 상세 Link로 단일화하는 방식을 비교한다.
+- **Decision**: jobId가 있는 완료 결과는 `믹싱 결과 보기` Link로 Library 상세에 연결하고 추천 화면의 inline player/download를 제거한다. jobId가 없으면 잘못된 URL을 만들지 않고 완료 badge만 표시한다.
+- **Rationale**: 생성 flow와 저장 결과의 책임을 분리하고 새 속도·음량 player UI를 한 정본에서 제공한다.
+- **Trace**:
+  - **DOING 시작 시점**: succeeded synthesis가 nullable `jobId`와 `audioUrl`을 갖고, 믹싱 상세가 이미 공용 player와 download를 제공함을 확인했다.
+  - **DONE 전 확정 시점**: Pending
+  - **머지 후 확인**: Pending
+- **Evidence**:
+  - **Commit**: Pending
+  - **PR**: -
+  - **Test/Log**: Pending
+- **Consequences**: 추천 화면의 component-owned `audioOpen` state와 중복 waveform/download UI가 제거된다.

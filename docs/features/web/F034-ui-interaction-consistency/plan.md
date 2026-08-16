@@ -111,16 +111,22 @@ filter가 true이면 `total`은 필터된 unread 결과 수이고 `unreadCount`�
 
 ## 5. 공용 오디오 player 재생속도·음량 조절
 
-`src/shared/ui/audio-waveform-player/audio-waveform-player.tsx`에 player instance 단위 state를 추가한다.
+`src/shared/ui/audio-waveform-player/audio-waveform-player.tsx`에 player instance 단위 state와 compact Popover control을 추가한다.
 
-- playback rate: `0.75`, `1`, `1.25`, `1.5` preset Select
-- volume: `0..100`, step 5의 공용 Slider와 정수 percentage label
+- playback rate: 음소거 왼쪽 speed icon trigger + `0.75`, `1`, `1.25`, `1.5` preset Popover
+- volume: 음소거 왼쪽 volume icon trigger + `0..100`, step 5의 공용 Slider와 정수 percentage label Popover
 - rate 변경: `wavesurfer.setPlaybackRate(rate, true)`로 pitch 보존
 - volume 변경: `wavesurfer.setVolume(value / 100)`; 0보다 큰 slider 변경은 mute 해제
 - mute button: 현재 volume 값은 보존하고 `setMuted()`만 toggle
 - 새 `src`: 기존 keyed instance 경계에 따라 1×·100%·unmuted 기본값으로 초기화
 
-기존 상단 playback/time row 아래에 responsive control row를 추가해 mobile에서 speed와 volume이 겹치지 않게 한다. decode fallback의 native audio control은 유지한다. `audio-waveform-player.stories.tsx`에서 preset 선택, keyboard volume 변경, mute 상호작용과 기존 loading/reduced-motion 상태를 검증하고 전체 회귀를 실행한다.
+기존 playback/time row 안에서 `speed → volume → mute` 순서로 compact icon trigger를 배치하고 별도 하단 control row는 제거한다. 공용 Base UI Popover wrapper를 추가해 focus, Escape와 outside click 접근성을 유지한다. decode fallback의 native audio control은 유지한다. `audio-waveform-player.stories.tsx`에서 Popover open/close, preset 선택, keyboard volume 변경, mute 상호작용과 기존 loading/reduced-motion 상태를 검증하고 전체 회귀를 실행한다.
+
+## 6. 완료된 추천 믹싱을 Library 상세로 연결
+
+`RecommendationMixingAction`의 succeeded non-compact branch에서 `synthesis.jobId`가 있으면 `mixingJobDetailHref(jobId)`를 사용한 `믹싱 결과 보기` Link를 렌더링한다. component-owned `audioOpen`, 인라인 `AudioWaveformPlayer`, download anchor를 제거한다. `jobId`가 없는 불완전 완료 payload에는 잘못된 Link 대신 완료 badge만 제공한다.
+
+Recommendation action/결과 Storybook과 정적 UI test를 `결과 듣기` 부재, 정확한 상세 href와 인라인 player 부재 기준으로 갱신한다.
 
 ## 파일 구조
 

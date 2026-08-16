@@ -1,12 +1,12 @@
 "use client";
 
 import { useWavesurfer } from "@wavesurfer/react";
-import { Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
+import { Gauge, Pause, Play, RotateCcw, Volume1, Volume2, VolumeX } from "lucide-react";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { formatPlaybackTime } from "@/shared/lib/audio";
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
+import { Popover, PopoverContent, PopoverDescription, PopoverTitle, PopoverTrigger } from "@/shared/ui/popover";
 import { Slider } from "@/shared/ui/slider";
 
 export type AudioPlaybackRange = {
@@ -295,6 +295,71 @@ function AudioWaveformPlayerInstance({
                 <RotateCcw className="size-3.5" />
               </Button>
             ) : null}
+            <Popover>
+              <PopoverTrigger
+                disabled={!isReady}
+                render={
+                  <Button
+                    aria-label={`${label} 재생 속도 ${playbackRate}배 조절`}
+                    size="icon-sm"
+                    type="button"
+                    variant="ghost"
+                  />
+                }
+              >
+                <Gauge aria-hidden="true" className="size-3.5" />
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-56" side="top">
+                <PopoverTitle>재생 속도</PopoverTitle>
+                <PopoverDescription className="mt-1">음높이를 유지한 채 속도를 바꿔요.</PopoverDescription>
+                <div className="mt-3 grid grid-cols-4 gap-1">
+                  {PLAYBACK_RATES.map((rate) => (
+                    <Button
+                      aria-pressed={playbackRate === rate}
+                      key={rate}
+                      onClick={() => changePlaybackRate(String(rate))}
+                      size="xs"
+                      type="button"
+                      variant={playbackRate === rate ? "default" : "outline"}
+                    >
+                      {rate}×
+                    </Button>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
+            <Popover>
+              <PopoverTrigger
+                disabled={!isReady}
+                render={
+                  <Button aria-label={`${label} 음량 ${volume}% 조절`} size="icon-sm" type="button" variant="ghost" />
+                }
+              >
+                <Volume1 aria-hidden="true" className="size-3.5" />
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-56" side="top">
+                <div className="flex items-center justify-between gap-3">
+                  <PopoverTitle>음량</PopoverTitle>
+                  <span aria-live="off" className="font-mono text-xs text-muted-foreground tabular-nums">
+                    {volume}%
+                  </span>
+                </div>
+                <PopoverDescription className="sr-only">0%에서 100%까지 조절할 수 있어요.</PopoverDescription>
+                <Slider
+                  aria-labelledby={volumeLabelId}
+                  className="mt-4"
+                  disabled={!isReady}
+                  max={100}
+                  min={0}
+                  onValueChange={changeVolume}
+                  step={5}
+                  value={[volume]}
+                />
+                <span className="sr-only" id={volumeLabelId}>
+                  {label} 음량
+                </span>
+              </PopoverContent>
+            </Popover>
             <Button
               aria-label={muted || volume === 0 ? `${label} 음소거 해제` : `${label} 음소거`}
               disabled={!isReady}
@@ -305,40 +370,6 @@ function AudioWaveformPlayerInstance({
             >
               {muted || volume === 0 ? <VolumeX className="size-3.5" /> : <Volume2 className="size-3.5" />}
             </Button>
-          </div>
-          <div className="mt-3 grid gap-3 border-t pt-3 sm:grid-cols-[auto_minmax(12rem,1fr)] sm:items-center sm:gap-5">
-            <div className="flex items-center justify-between gap-2 sm:justify-start">
-              <span className="text-xs font-medium text-muted-foreground">재생 속도</span>
-              <Select onValueChange={changePlaybackRate} value={String(playbackRate)}>
-                <SelectTrigger aria-label={`${label} 재생 속도`} disabled={!isReady} size="sm">
-                  <SelectValue>{(value) => `${value}×`}</SelectValue>
-                </SelectTrigger>
-                <SelectContent align="end">
-                  {PLAYBACK_RATES.map((rate) => (
-                    <SelectItem key={rate} value={String(rate)}>
-                      {rate}×
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid grid-cols-[auto_minmax(6rem,1fr)_3rem] items-center gap-2">
-              <span className="text-xs font-medium text-muted-foreground" id={volumeLabelId}>
-                <span className="sr-only">{label} </span>음량
-              </span>
-              <Slider
-                aria-labelledby={volumeLabelId}
-                disabled={!isReady}
-                max={100}
-                min={0}
-                onValueChange={changeVolume}
-                step={5}
-                value={[volume]}
-              />
-              <span aria-live="off" className="text-right font-mono text-xs text-muted-foreground tabular-nums">
-                {volume}%
-              </span>
-            </div>
           </div>
           {segments.length > 0 ? (
             <div className="mt-3 grid gap-2 sm:grid-cols-3">

@@ -113,9 +113,25 @@
 - [ ] 재생속도는 `0.75×`, `1×`, `1.25×`, `1.5×` preset을 제공하고 기본값은 `1×`다.
 - [ ] 속도 변경은 보컬 pitch를 보존하며 현재 재생 위치와 play/pause 상태를 초기화하지 않는다.
 - [ ] 음량은 0–100 범위를 keyboard와 pointer로 조절하고 현재 값을 접근 가능한 이름/값으로 제공한다.
+- [ ] 속도와 음량은 waveform 아래 별도 행을 차지하지 않고 음소거 왼쪽의 compact icon trigger에서 Popover로 연다.
+- [ ] Popover는 trigger와 keyboard focus를 보존하고 바깥 click·Escape로 닫힌다.
 - [ ] 음량 slider를 0보다 크게 조절하면 기존 mute 상태가 해제된다.
 - [ ] 기존 play/pause, restart, seek, mute, segment playback과 decode fallback을 유지한다.
 - [ ] mobile에서도 control이 겹치거나 최소 touch target을 침범하지 않는다.
+
+### US-7: 완료된 믹싱의 정본 상세로 이동한다
+
+**As a** 추천 화면에서 AI 믹싱 완료를 확인한 사용자
+**I want** 완료 action으로 저장된 믹싱 상세를 열고 싶다
+**So that** 재생·저장·작업 정보를 Library의 일관된 위치에서 확인할 수 있다
+
+**Acceptance Criteria:**
+
+- [ ] 완료된 synthesis에 `jobId`가 있으면 `믹싱 결과 보기` Link를 표시한다.
+- [ ] Link는 `/library/mixes/{jobId}`로 이동한다.
+- [ ] 추천 화면의 `결과 듣기` toggle, 인라인 waveform player와 중복 download action은 제거된다.
+- [ ] 추천 목록의 compact 완료 badge와 믹싱 상세의 재생·download 기능은 유지된다.
+- [ ] legacy 또는 불완전 payload처럼 완료 상태에 `jobId`가 없으면 잘못된 상세 URL을 만들지 않는다.
 
 ---
 
@@ -143,7 +159,11 @@ idle/error 상태의 recorder action과 upload action은 동일한 width constra
 
 ### FR-6: 공용 AudioWaveformPlayer 청취 조절
 
-모든 `AudioWaveformPlayer` 사용처에 같은 재생속도 selector와 음량 slider를 제공한다. Wavesurfer의 playback rate와 volume API를 사용하고 속도 변경 시 `preservePitch`를 유지한다. 사용자 선택은 player instance 단위이며 새 `src`로 player가 교체되면 기본 `1×`·100%로 초기화한다.
+모든 `AudioWaveformPlayer` 사용처에 같은 재생속도와 음량 Popover control을 제공한다. 두 icon trigger는 음소거 왼쪽의 playback control row에 배치한다. Wavesurfer의 playback rate와 volume API를 사용하고 속도 변경 시 `preservePitch`를 유지한다. 사용자 선택은 player instance 단위이며 새 `src`로 player가 교체되면 기본 `1×`·100%로 초기화한다.
+
+### FR-7: 완료된 추천 synthesis의 상세 이동
+
+추천 화면의 완료 action은 synthesis `jobId`를 사용해 Library 믹싱 상세로 연결한다. action label은 즉시 재생을 암시하는 `결과 듣기`가 아니라 `믹싱 결과 보기`를 사용하며 추천 화면에 공용 audio player와 download UI를 중복 렌더링하지 않는다.
 
 ---
 

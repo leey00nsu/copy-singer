@@ -91,10 +91,35 @@
     - [x] spec/plan/tasks/decisions와 workflow sync marker를 최종 구현에 맞게 동기화했다.
   - Evidence: `2d8e393` (`feat(F034): 오디오 재생속도와 음량 조절 추가`); AudioWaveformPlayer Storybook 3/3 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS; full `pnpm test` PASS — build + unit/integration/DB/FSD + Storybook 166/166
 
+- [DONE][PRD-FR-047][PRD-FR-050][PRD-FR-066] T-F034-ui-interaction-consistency-06 player 속도·음량 control을 compact Popover로 재구성
+  - Date: 2026-08-16
+  - Acceptance:
+    - 속도와 음량 icon trigger가 음소거 왼쪽에 있고 각 Popover에서 현재 값과 control을 제공한다.
+    - 별도 하단 control row가 제거되어 player border 안의 compact playback toolbar에 포함된다.
+    - 기존 pitch 보존, volume/mute 동기화와 keyboard 접근성이 유지된다.
+  - Checklist:
+    - [x] 공용 Base UI Popover wrapper와 export를 추가했다.
+    - [x] speed preset과 volume slider를 각각 icon-triggered Popover로 이동했다.
+    - [x] trigger label, expanded state, Escape/outside close와 mobile positioning을 검증했다.
+    - [x] AudioWaveformPlayer Storybook, lint와 TypeScript를 통과했다.
+  - Evidence: AudioWaveformPlayer Storybook 3/3 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS
+
+- [TODO][PRD-FR-050][PRD-FR-066] T-F034-ui-interaction-consistency-07 완료된 추천 믹싱을 Library 상세로 연결
+  - Date: 2026-08-16
+  - Acceptance:
+    - 완료 action은 `믹싱 결과 보기`이며 `/library/mixes/{jobId}`로 이동한다.
+    - 추천 화면의 인라인 result player·download와 `결과 듣기` toggle이 제거된다.
+    - compact 상태 badge와 믹싱 상세의 player/download는 유지된다.
+  - Checklist:
+    - [ ] succeeded non-compact branch를 job detail Link로 교체하고 inline audio state/import를 제거한다.
+    - [ ] jobId 누락 완료 payload의 안전한 fallback을 제공한다.
+    - [ ] recommendation action/results Storybook과 UI test를 새 href/copy 기준으로 갱신한다.
+    - [ ] 전체 `pnpm test`와 workflow docs sync를 완료한다.
+
 ## 완료 조건
 
-- [x] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
-- [x] 테스트 실행 및 통과 기록 완료
+- [ ] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
+- [ ] 테스트 실행 및 통과 기록 완료
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -111,4 +136,4 @@
 | `pnpm exec tsc --noEmit` | `2026-08-16` | `PASS` |
 | `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm test` | `2026-08-16` | `PASS — build + unit/integration/DB/FSD + Storybook 166/166` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-16T10:01:53.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-16T10:16:02.000Z -->

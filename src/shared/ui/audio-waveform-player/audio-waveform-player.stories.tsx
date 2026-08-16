@@ -44,21 +44,34 @@ export const NetworkIndependent: Story = {
     await expect(canvas.getByRole("button", { name: "테스트 보컬 재생" })).toBeInTheDocument();
     await expect(canvas.getByRole("button", { name: "테스트 보컬 음소거" })).toBeInTheDocument();
     const player = canvasElement.querySelector<HTMLElement>("[data-audio-player]");
-    const speed = canvas.getByRole("combobox", { name: "테스트 보컬 재생 속도" });
-    const volume = canvas.getByRole("slider", { name: "테스트 보컬 음량" });
-    await expect(speed).toHaveTextContent("1×");
-    await expect(volume).toHaveAttribute("aria-valuenow", "100");
+    const speedTrigger = canvas.getByRole("button", { name: "테스트 보컬 재생 속도 1배 조절" });
+    const volumeTrigger = canvas.getByRole("button", { name: "테스트 보컬 음량 100% 조절" });
+    const muteButton = canvas.getByRole("button", { name: "테스트 보컬 음소거" });
+    await expect(speedTrigger.compareDocumentPosition(volumeTrigger) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    await expect(volumeTrigger.compareDocumentPosition(muteButton) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 
-    await userEvent.click(speed);
-    await userEvent.click(within(document.body).getByRole("option", { name: "1.25×" }));
+    await userEvent.click(speedTrigger);
+    const body = within(document.body);
+    await waitFor(() => expect(body.getByText("음높이를 유지한 채 속도를 바꿔요.")).toBeVisible());
+    await userEvent.click(body.getByRole("button", { name: "1.25×" }));
     await expect(player).toHaveAttribute("data-audio-playback-rate", "1.25");
+    await expect(canvas.getByRole("button", { name: "테스트 보컬 재생 속도 1.25배 조절" })).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(body.queryByText("음높이를 유지한 채 속도를 바꿔요.")).not.toBeInTheDocument());
 
+    await userEvent.click(volumeTrigger);
+    const volume = body.getByRole("slider", { name: "테스트 보컬 음량" });
+    await expect(volume).toHaveAttribute("aria-valuenow", "100");
     volume.focus();
     await userEvent.keyboard("{ArrowLeft}");
     await expect(volume).toHaveAttribute("aria-valuenow", "95");
     await expect(player).toHaveAttribute("data-audio-volume", "95");
 
-    await userEvent.click(canvas.getByRole("button", { name: "테스트 보컬 음소거" }));
+    await userEvent.keyboard("{Escape}");
+    await userEvent.click(muteButton);
     await expect(player).toHaveAttribute("data-audio-muted", "true");
     await expect(canvas.getByRole("button", { name: "테스트 보컬 음소거 해제" })).toBeInTheDocument();
     await expect(volume).toHaveAttribute("aria-valuenow", "95");
