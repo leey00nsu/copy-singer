@@ -2,10 +2,74 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  type AdminCatalogEntryView,
   createAdminSongSchema,
+  presentAdminCatalogSources,
   replaceAdminSongSourceSchema,
   youtubeVideoIdFromUrl,
 } from "../src/features/manage-song-catalog";
+
+function catalogEntryFixture(): AdminCatalogEntryView {
+  return {
+    id: "entry-1",
+    position: 1,
+    status: "PUBLISHED",
+    song: {
+      id: "song-1",
+      title: "새 노래",
+      artist: "새 가수",
+      originalKey: "C",
+      lifecycleStatus: "ACTIVE",
+      activeSourceId: "source-2",
+      currentAnalysisId: "analysis-2",
+      targetAssetId: "target-2",
+      sources: [
+        {
+          id: "source-1",
+          revision: 1,
+          sourceUrl: "https://youtu.be/abcdefghijk",
+          sourceVideoId: "abcdefghijk",
+          sourceLabel: "관리자 업로드",
+          status: "SUPERSEDED",
+          analysisStatus: "SUCCEEDED",
+          analysisError: null,
+          analysisReady: true,
+          estimatedKey: "C",
+          keyConfidence: 0.9,
+          targetReady: true,
+        },
+        {
+          id: "source-3",
+          revision: 3,
+          sourceUrl: "https://youtu.be/lmnopqrstuv",
+          sourceVideoId: "lmnopqrstuv",
+          sourceLabel: "관리자 교체 업로드",
+          status: "DRAFT",
+          analysisStatus: "PENDING",
+          analysisError: null,
+          analysisReady: false,
+          estimatedKey: null,
+          keyConfidence: null,
+          targetReady: false,
+        },
+        {
+          id: "source-2",
+          revision: 2,
+          sourceUrl: "https://youtu.be/ABCDEFGHIJK",
+          sourceVideoId: "ABCDEFGHIJK",
+          sourceLabel: "관리자 교체 업로드",
+          status: "READY",
+          analysisStatus: "SUCCEEDED",
+          analysisError: null,
+          analysisReady: true,
+          estimatedKey: "C",
+          keyConfidence: 0.95,
+          targetReady: true,
+        },
+      ],
+    },
+  };
+}
 
 test("admin song form derives its video ID and source label from a YouTube URL", () => {
   const valid = createAdminSongSchema.safeParse({
@@ -26,6 +90,49 @@ test("admin song form derives its video ID and source label from a YouTube URL",
   assert.equal(youtubeVideoIdFromUrl("https://www.youtube.com/watch?v=ABCDEFGHIJK"), "ABCDEFGHIJK");
   assert.equal(youtubeVideoIdFromUrl("https://music.youtube.com/watch?v=abcdefghijk"), "abcdefghijk");
   assert.equal(youtubeVideoIdFromUrl("https://youtube.com/shorts/12345678901"), "12345678901");
+});
+
+test("catalog source presentation separates current, pending, and historical versions without raw states", () => {
+  const entry = catalogEntryFixture();
+  const versions = presentAdminCatalogSources(entry);
+  assert.deepEqual(
+    versions.map((version) => [version.source.id, version.role, version.stateLabel]),
+    [
+      ["source-3", "pending", "원곡 파일 필요"],
+      ["source-2", "current", "추천에 공개 중"],
+      ["source-1", "history", "이전 버전"],
+    ],
+  );
+  assert.equal(versions[0]?.needsOriginalFileRecovery, true);
+  assert.equal(versions[0]?.canPublish, false);
+  assert.match(versions[0]?.publishBlockedReason ?? "", /원곡 음원 파일/);
+  assert.equal(versions[1]?.canPublish, true);
+  assert.doesNotMatch(
+    versions.map((version) => `${version.roleLabel} ${version.stateLabel} ${version.stateDescription}`).join(" "),
+    /target ready|SUPERSEDED|SUCCEEDED/,
+  );
+});
+
+test("catalog source presentation explains archived current data and retryable analysis", () => {
+  const archived = catalogEntryFixture();
+  archived.song.lifecycleStatus = "ARCHIVED";
+  archived.status = "ARCHIVED";
+  const current = presentAdminCatalogSources(archived).find((version) => version.role === "current");
+  assert.equal(current?.stateLabel, "보관됨");
+  assert.match(current?.stateDescription ?? "", /원곡 파일은 유지/);
+
+  archived.song.sources[0] = {
+    ...archived.song.sources[0],
+    id: "source-4",
+    revision: 4,
+    status: "DRAFT",
+    analysisStatus: "FAILED",
+    analysisReady: false,
+  };
+  const failed = presentAdminCatalogSources(archived)[0];
+  assert.equal(failed?.stateLabel, "분석 실패");
+  assert.equal(failed?.canRetryAnalysis, true);
+  assert.match(failed?.publishBlockedReason ?? "", /다시 시도/);
 });
 
 test("catalog manager exposes loading, empty, error, disabled, and mobile stories", async () => {
