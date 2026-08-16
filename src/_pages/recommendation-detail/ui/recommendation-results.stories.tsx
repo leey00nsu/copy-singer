@@ -244,12 +244,15 @@ export const ActiveToTerminalPolling: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getAllByText("AI 믹싱 중").some((status) => status.getClientRects().length > 0)).toBe(true);
     await waitFor(() => expect(canvas.getByText("완료")).toBeVisible(), { timeout: 7_000 });
-    await expect(canvas.queryByRole("link", { name: "결과 확인" })).not.toBeInTheDocument();
+    await expect(canvas.getByRole("link", { name: "믹싱 결과 보기" })).toHaveAttribute(
+      "href",
+      "/library/mixes/20000000-0000-4000-8000-000000000005",
+    );
     await expect(canvas.queryAllByText("AI 믹싱 중")).toHaveLength(0);
   },
 };
 
-export const CompletedAudioIsLazy: Story = {
+export const CompletedMixingLinksToLibrary: Story = {
   args: {
     initialRun: succeededRecommendationRunFixture,
     runId: undefined,
@@ -258,18 +261,11 @@ export const CompletedAudioIsLazy: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.queryByRole("img", { name: /AI 믹싱 결과 파형/ })).not.toBeInTheDocument();
     await expect(canvas.getByText("완료")).toBeVisible();
-    await expect(canvas.queryByRole("link", { name: "결과 확인" })).not.toBeInTheDocument();
-    const listenButton = canvas.getByRole("button", { name: "결과 듣기" });
-    await expect(listenButton).toHaveClass("bg-primary", "text-primary-foreground");
-    const listenIcon = listenButton.querySelector("svg");
-    if (!(listenIcon instanceof SVGElement)) throw new Error("Result listen icon is missing");
-    await expect(getComputedStyle(listenIcon).color).toBe(getComputedStyle(listenButton).color);
-    await userEvent.click(listenButton);
-    const closeButton = canvas.getByRole("button", { name: "결과 닫기" });
-    await expect(closeButton).toHaveClass("bg-background");
-    await expect(closeButton).not.toHaveClass("bg-primary");
-    const closeIcon = closeButton.querySelector("svg");
-    if (!(closeIcon instanceof SVGElement)) throw new Error("Result close icon is missing");
-    await expect(getComputedStyle(closeIcon).color).toBe(getComputedStyle(closeButton).color);
+    await expect(canvas.getByRole("link", { name: "믹싱 결과 보기" })).toHaveAttribute(
+      "href",
+      "/library/mixes/20000000-0000-4000-8000-000000000005",
+    );
+    await expect(canvas.queryByRole("button", { name: "결과 듣기" })).not.toBeInTheDocument();
+    await expect(canvas.queryByRole("button", { name: "결과 닫기" })).not.toBeInTheDocument();
   },
 };

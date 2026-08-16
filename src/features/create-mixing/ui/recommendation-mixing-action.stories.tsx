@@ -79,3 +79,44 @@ export const ZeroCostSkipsConfirmation: Story = {
     await expect(args.onStart).toHaveBeenCalledWith(item.id);
   },
 };
+
+export const CompletedLinksToLibrary: Story = {
+  args: {
+    item: {
+      ...item,
+      synthesis: {
+        ...item.synthesis,
+        status: "succeeded",
+        jobId: "20000000-0000-4000-8000-000000000005",
+        audioUrl: "/result.wav",
+      },
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("link", { name: "믹싱 결과 보기" })).toHaveAttribute(
+      "href",
+      "/library/mixes/20000000-0000-4000-8000-000000000005",
+    );
+    await expect(canvas.queryByRole("button", { name: "결과 듣기" })).not.toBeInTheDocument();
+    await expect(canvas.queryByRole("img", { name: /AI 믹싱 결과 파형/ })).not.toBeInTheDocument();
+  },
+};
+
+export const CompletedWithoutJobId: Story = {
+  args: {
+    item: {
+      ...item,
+      synthesis: {
+        ...item.synthesis,
+        status: "succeeded",
+        audioUrl: "/result.wav",
+      },
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("완료")).toBeVisible();
+    await expect(canvas.queryByRole("link", { name: "믹싱 결과 보기" })).not.toBeInTheDocument();
+  },
+};

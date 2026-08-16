@@ -1,8 +1,7 @@
 "use client";
 
-import { AlertTriangle, Download, Headphones, Mic2, RefreshCw, Sparkles } from "lucide-react";
+import { AlertTriangle, ArrowUpRight, Mic2, RefreshCw, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 import { MixingStatusBadge, type PublicMixingJobStatus } from "@/entities/mixing-job";
 import {
   type RecommendationItemResponse,
@@ -10,9 +9,9 @@ import {
   recommendationMixingUnavailableDescription,
 } from "@/entities/recommendation";
 import { TicketConsumptionConfirmDialog } from "@/entities/ticket";
-import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
 import { Badge } from "@/shared/ui/badge";
-import { Button, buttonVariants } from "@/shared/ui/button";
+import { buttonVariants } from "@/shared/ui/button";
+import { mixingJobDetailHref } from "../api/client";
 
 export function RecommendationMixingAction({
   compact = false,
@@ -29,7 +28,6 @@ export function RecommendationMixingAction({
   onStart: (itemId: string, retry?: boolean) => void;
   ticketCost: number;
 }) {
-  const [audioOpen, setAudioOpen] = useState(false);
   const status = item.synthesis.status;
   const mixingUnavailable = mixing?.available === false;
   const unavailableDescription = recommendationMixingUnavailableDescription(mixing);
@@ -107,31 +105,13 @@ export function RecommendationMixingAction({
     return <MixingStatusBadge className="h-8 px-3" status={mixingStatus} />;
   }
 
-  if (status === "succeeded" && item.synthesis.audioUrl) {
-    return (
-      <div className="grid min-w-0 gap-2">
-        <Button
-          aria-expanded={audioOpen}
-          onClick={() => setAudioOpen((open) => !open)}
-          size="sm"
-          variant={audioOpen ? "outline" : "default"}
-        >
-          <Headphones className="size-4" aria-hidden="true" />
-          {audioOpen ? "결과 닫기" : "결과 듣기"}
-        </Button>
-        {audioOpen ? (
-          <div className="min-w-0 md:w-80">
-            <AudioWaveformPlayer label={`${item.artist} ${item.title} AI 믹싱 결과`} src={item.synthesis.audioUrl} />
-            <a
-              className={`${buttonVariants({ size: "sm", variant: "outline" })} mt-2 w-full`}
-              download
-              href={item.synthesis.audioUrl}
-            >
-              <Download className="size-4" aria-hidden="true" /> 결과 저장
-            </a>
-          </div>
-        ) : null}
-      </div>
+  if (status === "succeeded") {
+    return item.synthesis.jobId ? (
+      <Link className={buttonVariants({ size: "sm" })} href={mixingJobDetailHref(item.synthesis.jobId)}>
+        믹싱 결과 보기 <ArrowUpRight aria-hidden="true" className="size-4" />
+      </Link>
+    ) : (
+      <MixingStatusBadge className="h-8 px-3" status="succeeded" />
     );
   }
 

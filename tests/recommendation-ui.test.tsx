@@ -145,7 +145,28 @@ test("renders the full ranked recommendation list without starting synthesis", (
 });
 
 test("labels a completed synthesis as an AI mix", () => {
+  const jobId = "20000000-0000-4000-8000-000000000005";
   const succeeded = {
+    ...run,
+    items: run.items.map((item, index) =>
+      index === 0
+        ? {
+            ...item,
+            synthesis: { ...item.synthesis, status: "succeeded" as const, jobId, audioUrl: "/result.wav" },
+          }
+        : item,
+    ),
+  };
+  const html = renderRecommendation(succeeded);
+  assert.match(html, /완료/);
+  assert.match(html, new RegExp(`href="/library/mixes/${jobId}"`));
+  assert.match(html, /믹싱 결과 보기/);
+  assert.doesNotMatch(html, /결과 듣기|결과 닫기/);
+  assert.doesNotMatch(html, /AI 믹싱 결과 파형/);
+});
+
+test("does not create an invalid Library link when a completed synthesis has no job id", () => {
+  const succeededWithoutJobId = {
     ...run,
     items: run.items.map((item, index) =>
       index === 0
@@ -156,10 +177,10 @@ test("labels a completed synthesis as an AI mix", () => {
         : item,
     ),
   };
-  const html = renderRecommendation(succeeded);
+  const html = renderRecommendation(succeededWithoutJobId);
   assert.match(html, /완료/);
-  assert.doesNotMatch(html, /결과 확인/);
-  assert.doesNotMatch(html, /AI 믹싱 결과 파형/);
+  assert.doesNotMatch(html, /\/library\/mixes\//);
+  assert.doesNotMatch(html, /믹싱 결과 보기|결과 듣기/);
 });
 
 test("blocks AI mixing before a request when the mid reference is unavailable", () => {
