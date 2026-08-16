@@ -75,25 +75,26 @@
     - [x] 오래된 route·worker·환경설정 문구와 중복 설명을 제거한다.
   - Evidence: `aae9693` (`feat(F036): README 쇼케이스와 제공 이미지 구성`); 홈 2572×1850(358 KiB), 보컬 분석 결과 2644×1854(335 KiB) PNG를 repository asset으로 추가했다. README 17개 heading, 14개 anchor, 3개 asset과 10개 package script reference 정적 검증에서 누락 0건, legacy `SIGNUP_TICKET_GRANT`·`ENABLE_DEV_SVC`·제거 route 검색 0건, `git diff --check` PASS.
 
-- [TODO][NON-PRD] T-F036-readme-project-showcase-02 환경 설정 정본과 문서 회귀 검증
+- [DONE][NON-PRD] T-F036-readme-project-showcase-02 환경 설정 정본과 문서 회귀 검증
   - Date: 2026-08-16
   - Acceptance:
     - README는 환경변수 목록을 나열하지 않고 `.env.example`이 각 변수의 의미와 fallback을 설명한다.
     - 내부 anchor, 상대 링크, 이미지 경로, package script와 runtime env 계약 검증이 통과한다.
   - Checklist:
-    - [ ] `.env.example`을 로컬·운영 영역으로 구분하고 변수별 용도·필수성·기본값/fallback을 주석으로 설명한다.
-    - [ ] runtime env 사용처와 `.env.example` key를 대조하고 legacy 변수 잔존을 검사한다.
-    - [ ] README anchor·asset·script와 PNG 형식·크기를 정적 검증한다.
-    - [ ] `git diff --check`와 `pnpm run db:validate`를 실행한다.
-    - [ ] spec, plan, tasks, decisions와 workflow sync marker를 최종 결과에 맞게 동기화한다.
+    - [x] `.env.example`을 로컬·운영 영역으로 구분하고 변수별 용도·필수성·기본값/fallback을 주석으로 설명한다.
+    - [x] runtime env 사용처와 `.env.example` key를 대조하고 legacy 변수 잔존을 검사한다.
+    - [x] README anchor·asset·script와 PNG 형식·크기를 정적 검증한다.
+    - [x] `git diff --check`와 `pnpm run db:validate`를 실행한다.
+    - [x] spec, plan, tasks, decisions와 workflow sync marker를 최종 결과에 맞게 동기화한다.
+  - Evidence: `62aaf61` (`feat(F036): 환경 설정 정본과 문서 회귀 검증`); `.env.example` 39개 key의 중복·필수 목록 누락·legacy key 0건, source에서 추출한 runtime/operational env 참조의 문서 누락 0건, README 내 개별 변수명 0건을 확인했다. README anchor·asset·script 누락 0건, PNG 2개 형식/크기 PASS, `git diff --check`, `pnpm run db:validate` PASS.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -102,6 +103,10 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `{실행한 테스트 명령어}` | `-` | `{PASS/FAIL 요약}` |
+| README anchor·asset·package script 정적 검사 | `2026-08-16` | PASS — 누락 0건 |
+| `.env.example` key·runtime 참조·legacy·README 중복 검사 | `2026-08-16` | PASS — 39 keys, 누락·중복·legacy·README 변수명 0건 |
+| `sips -g pixelWidth -g pixelHeight -g format public/readme-captures/*.png` | `2026-08-16` | PASS — PNG 2개, 각각 1 MiB 이하 |
+| `git diff --check` | `2026-08-16` | PASS |
+| `pnpm run db:validate` | `2026-08-16` | PASS — Prisma schema valid |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-16T21:35:09+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-16T21:38:37+09:00 -->

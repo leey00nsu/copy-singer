@@ -48,10 +48,10 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 실행 가능한 환경 파일과 설명을 같은 위치에 두어 코드와 대조하기 쉽고 문서 중복을 줄인다.
 - **Trace**:
   - **DOING 시작 시점**: `server-env.ts`, auth/analyzer/media adapter와 package worker script를 환경 계약의 근거로 사용한다.
-  - **DONE 전 확정 시점**: 구현 후 기록.
+  - **DONE 전 확정 시점**: README에는 `.env.example` 복사 명령과 정본 링크만 남기고 개별 변수명은 0건으로 정리했다. example은 39개 key를 로컬 DB, 분석 backend, 인증, 저장소, 티켓과 세 worker 영역으로 나누고 선택 조건·기본값·공용 key fallback을 주석으로 설명한다.
   - **머지 후 확인**: local merge 후 기록.
 - **Evidence**:
-  - **Commit**: 구현 commit 후 기록
+  - **Commit**: `62aaf61` (`feat(F036): 환경 설정 정본과 문서 회귀 검증`)
   - **PR**: local workflow — 해당 없음
-  - **Test/Log**: runtime env key/source audit 후 기록
+  - **Test/Log**: `.env.example` key 중복·필수 목록 누락·legacy 0건; source runtime/operational env 참조 문서 누락 0건; README 개별 변수명 0건; Prisma validate PASS
 - **Consequences**: README가 간결해지고 새 변수 추가 시 `.env.example`만 우선 갱신하면 된다.
