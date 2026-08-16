@@ -85,7 +85,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 디자인 시스템 0.6에 허용/비허용 기준을 기록하고 Voice Scan guide를 독립 컴포넌트로 분리해 네 domain icon에 같은 `data-accent` surface/foreground를 적용했다. 알림·상태 icon의 기존 semantic color와 일반 action icon의 foreground 상속은 유지했으며 공통 UI API와 theme token 변경은 없었다.
   - **머지 후 확인**: Pending
 - **Evidence**:
-  - **Commit**: Pending
+  - **Commit**: `dfee58d` (`feat(F034): semantic 아이콘 색상 기준 적용`)
   - **PR**: -
   - **Test/Log**: Voice Scan Storybook 13/13 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS; full `pnpm test` PASS — Storybook 166/166 포함
 - **Consequences**: 디자인 시스템에 icon color 허용/비허용 기준이 추가되며 theme token과 공통 component API는 바뀌지 않는다.

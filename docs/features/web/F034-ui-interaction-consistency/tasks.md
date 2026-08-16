@@ -74,7 +74,7 @@
     - [x] 영향 받는 공통 UI API 또는 theme token이 없음을 확인하고 decisions/tasks에 기록했다.
     - [x] 관련 Storybook, lint, TypeScript, 전체 `pnpm test`를 통과했다.
     - [x] spec/plan/tasks/decisions와 workflow sync marker를 최종 구현에 맞게 동기화했다.
-  - Evidence: Voice Scan Storybook 13/13 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS; full `pnpm test` PASS — build + unit/integration/DB/FSD + Storybook 166/166
+  - Evidence: `dfee58d` (`feat(F034): semantic 아이콘 색상 기준 적용`); Voice Scan Storybook 13/13 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS; full `pnpm test` PASS — build + unit/integration/DB/FSD + Storybook 166/166
 
 ## 완료 조건
 
