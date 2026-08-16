@@ -82,10 +82,11 @@ test("analysis presentation follows durable job states without fabricated progre
 });
 
 test("voice scan components keep media cleanup and redirect completed analysis to the stored profile", async () => {
-  const [recorder, signalCore, workbench] = await Promise.all([
+  const [recorder, signalCore, workbench, guide] = await Promise.all([
     readFile("src/_pages/profile/ui/vocal-profile-recorder.tsx", "utf8"),
     readFile("src/shared/ui/voice-signal-core/voice-signal-core.tsx", "utf8"),
     readFile("src/_pages/profile/ui/vocal-profile-workbench.tsx", "utf8"),
+    readFile("src/_pages/profile/ui/voice-scan-guide.tsx", "utf8"),
   ]);
   assert.match(recorder, /requesting_permission/);
   assert.match(recorder, /stopping/);
@@ -112,7 +113,9 @@ test("voice scan components keep media cleanup and redirect completed analysis t
   assert.match(workbench, /VOICE ANALYSIS/);
   assert.match(workbench, /한 소절이면/);
   assert.match(workbench, /나에게 맞는 노래를 찾을 수 있어요/);
-  assert.match(workbench, /아는 노래 한 소절을 편하게 불러주세요/);
+  assert.match(workbench, /<VoiceScanGuide/);
+  assert.match(guide, /아는 노래 한 소절을 편하게 불러주세요/);
+  assert.match(guide, /text-data-accent-foreground/);
   assert.match(workbench, /break-keep text-balance text-\[2rem\]/);
   assert.match(workbench, /mt-8 grid gap-10 lg:mt-12/);
   assert.doesNotMatch(workbench, /Step 1|내 음역 측정|분석기 확인 중|분석기 준비됨|분석기 연결 확인 필요/);

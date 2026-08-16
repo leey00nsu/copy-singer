@@ -7,7 +7,7 @@ lee-spec-kit:
 # Copysinger Design System
 
 - **상태**: Approved
-- **버전**: 0.5
+- **버전**: 0.6
 - **최초 적용 Feature**: F018 product-ui-redesign
 - **적용 범위**: 사용자용 Web UI
 
@@ -70,6 +70,14 @@ Accent 사용 규칙:
 - 한 surface에 의미 없는 accent를 두 가지 이상 섞지 않는다.
 - 본문 문장이나 넓은 배경을 accent로 채우지 않는다.
 - Brand gradient는 연속 데이터와 active signal에만 사용한다. Primary button, badge, 작은 icon, status 의미, focus ring과 border에는 gradient 대신 기존 semantic 단색을 유지한다.
+
+Icon color 사용 규칙:
+
+- 아이콘 색은 장식이 아니라 상태 또는 도메인 의미를 보조한다. 성공·주의·오류는 각각 `success`, `warning`, `destructive` 계열을 사용한다.
+- 음성, waveform, pitch와 분석 지표처럼 Copysinger의 오디오·데이터 의미를 나타내는 작은 icon은 한 surface에서 단일 `data-accent` 계열로 제한해 강조할 수 있다.
+- 알림 유형 badge처럼 유형 구분이 반복 탐색에 직접 도움이 되는 경우 기존 semantic background/foreground 조합을 사용한다.
+- navigation, search, chevron, close, reset, upload와 일반 Button 내부의 action icon은 별도 장식색을 추가하지 않고 control의 foreground를 상속한다.
+- 한 surface에 의미 없는 여러 icon color를 섞거나 작은 icon에 brand gradient를 사용하지 않는다. 색상 외 label, 본문 또는 ARIA 상태로 같은 의미를 항상 제공한다.
 
 Light theme가 현재 디자인 정본이다. 기존 dark token을 깨뜨리지 않되 F018에서 새 theme toggle이나 독립적인 dark visual language를 만들지 않는다. Dark mode를 제품 기능으로 제공할 때 별도 Feature에서 동일한 대비·상태 기준을 검증한다.
 

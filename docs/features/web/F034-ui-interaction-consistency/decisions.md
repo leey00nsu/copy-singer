@@ -72,3 +72,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: -
   - **Test/Log**: `test:query` 32/32 PASS; notification Storybook 4/4 PASS; notification DB integration 1/1 PASS; `pnpm exec tsc --noEmit` PASS
 - **Consequences**: query key와 URL에 unread filter가 추가되지만 기본값 false라 기존 전체 이력 호출은 호환된다.
+
+## D004: 아이콘 색은 상태와 도메인 의미가 있을 때만 적용 (2026-08-16)
+
+- **Context**: 제품의 다수 Lucide icon이 단색이지만 알림 유형과 일부 상태·분석 지표는 이미 semantic color를 사용한다. 모든 아이콘에 개별 색을 추가하면 정보 위계보다 장식이 앞설 수 있다.
+- **Constraints**: 기존 light neutral 디자인, semantic token, 색상 외 label/ARIA 의미를 유지하고 새 raw color·gradient·icon library를 추가하지 않는다.
+- **Options**: 전 아이콘 재색칠, 상태 icon만 유지, 상태 + 제한된 오디오/데이터 domain icon을 semantic color로 강조하는 방식을 비교한다.
+- **Decision**: 성공·주의·오류·알림 유형과 오디오/분석 domain icon만 semantic color를 사용한다. 이번 Feature의 새 실행 변경은 Voice Scan 안내의 네 domain icon에 단일 `data-accent` 계열을 적용하는 것으로 제한한다. 일반 action/navigation glyph는 control foreground를 상속한다.
+- **Rationale**: 사용자가 의미를 빠르게 스캔할 수 있는 위치에만 색을 더하면서 제품의 절제된 중립 위계를 유지한다.
+- **Trace**:
+  - **DOING 시작 시점**: 알림 badge, `StatusNotice`, 일부 metric icon은 이미 semantic color를 사용하고 Voice Scan guide icon은 neutral border/foreground임을 확인했다.
+  - **DONE 전 확정 시점**: 디자인 시스템 0.6에 허용/비허용 기준을 기록하고 Voice Scan guide를 독립 컴포넌트로 분리해 네 domain icon에 같은 `data-accent` surface/foreground를 적용했다. 알림·상태 icon의 기존 semantic color와 일반 action icon의 foreground 상속은 유지했으며 공통 UI API와 theme token 변경은 없었다.
+  - **머지 후 확인**: Pending
+- **Evidence**:
+  - **Commit**: Pending
+  - **PR**: -
+  - **Test/Log**: Voice Scan Storybook 13/13 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS; full `pnpm test` PASS — Storybook 166/166 포함
+- **Consequences**: 디자인 시스템에 icon color 허용/비허용 기준이 추가되며 theme token과 공통 component API는 바뀌지 않는다.

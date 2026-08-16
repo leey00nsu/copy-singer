@@ -61,24 +61,25 @@
     - [x] service/API test와 Bell/전체 알림 Storybook을 통과했다.
   - Evidence: `0d74a70` (`feat(F034): 알림 목록 unread 조회 분리`); `test:query` 32/32 PASS; notification Storybook 4/4 PASS; notification DB integration 1/1 PASS; `pnpm exec tsc --noEmit` PASS
 
-- [TODO][PRD-FR-045][PRD-FR-051][PRD-FR-066] T-F034-ui-interaction-consistency-04 semantic icon color 기준 적용과 전체 회귀
+- [DONE][PRD-FR-045][PRD-FR-051][PRD-FR-066] T-F034-ui-interaction-consistency-04 semantic icon color 기준 적용과 전체 회귀
   - Date: 2026-08-16
   - Acceptance:
     - 상태·알림 유형·오디오/데이터 icon만 semantic color를 사용하고 일반 navigation/action icon은 foreground를 상속한다.
     - Voice Scan guide icon은 하나의 `data-accent` 계열로 정리되며 색 외 텍스트 의미를 유지한다.
     - 디자인 시스템, Feature 문서, 실행 코드와 Storybook이 같은 규칙을 설명한다.
   - Checklist:
-    - [ ] `docs/designs/design-system.md`에 icon color 적용/비적용 기준을 추가한다.
-    - [ ] 새 token·raw color 없이 Voice Scan guide domain icon에 기존 semantic token을 적용한다.
-    - [ ] 알림 badge·`StatusNotice`·data icon의 기존 semantic 표현과 일반 action icon의 상속을 감사한다.
-    - [ ] 영향 받는 공통 UI API 또는 theme token이 없는지 확인하고 결과를 decisions/tasks에 기록한다.
-    - [ ] 관련 Storybook, lint, TypeScript, 전체 `pnpm test`를 통과한다.
-    - [ ] spec/plan/tasks/decisions와 workflow sync marker를 최종 구현에 맞게 동기화한다.
+    - [x] `docs/designs/design-system.md`에 icon color 적용/비적용 기준을 추가했다.
+    - [x] 새 token·raw color 없이 Voice Scan guide domain icon에 기존 semantic token을 적용했다.
+    - [x] 알림 badge·`StatusNotice`·data icon의 기존 semantic 표현과 일반 action icon의 상속을 감사했다.
+    - [x] 영향 받는 공통 UI API 또는 theme token이 없음을 확인하고 decisions/tasks에 기록했다.
+    - [x] 관련 Storybook, lint, TypeScript, 전체 `pnpm test`를 통과했다.
+    - [x] spec/plan/tasks/decisions와 workflow sync marker를 최종 구현에 맞게 동기화했다.
+  - Evidence: Voice Scan Storybook 13/13 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS; full `pnpm test` PASS — build + unit/integration/DB/FSD + Storybook 166/166
 
 ## 완료 조건
 
-- [ ] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
-- [ ] 테스트 실행 및 통과 기록 완료
+- [x] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
+- [x] 테스트 실행 및 통과 기록 완료
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -90,8 +91,8 @@
 | `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm run test:query` | `2026-08-16` | `PASS — 32/32` |
 | `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm exec vitest --project storybook --run src/features/manage-notifications/ui/notification-bell.stories.tsx src/_pages/notifications/ui/notifications-list.stories.tsx` | `2026-08-16` | `PASS — 4/4` |
 | `/usr/bin/arch -arm64 /usr/local/bin/node --conditions react-server --import tsx --test tests/notification-service.integration.ts` | `2026-08-16` | `PASS — 1/1` |
-| `pnpm run lint` | `-` | `PENDING` |
-| `pnpm exec tsc --noEmit` | `-` | `PENDING` |
-| `pnpm test` | `-` | `PENDING` |
+| `pnpm run lint` | `2026-08-16` | `PASS` |
+| `pnpm exec tsc --noEmit` | `2026-08-16` | `PASS` |
+| `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm test` | `2026-08-16` | `PASS — build + unit/integration/DB/FSD + Storybook 166/166` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-16T09:36:40.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-16T09:42:55.000Z -->

@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useState } from "react";
 import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 import { RecorderSurface } from "./vocal-profile-recorder";
+import { VoiceScanGuide } from "./voice-scan-guide";
 import { VoiceScanInput } from "./voice-scan-input";
 
 const noop = fn();
@@ -277,6 +278,20 @@ export const RecordedAudioReady: Story = {
     await expect(canvas.queryByText("song-verse-vocal-profile.webm")).not.toBeInTheDocument();
     await expect(canvasElement.querySelector('[data-audio-source="recording"]')).toHaveTextContent("0.9 MB · 약 13초");
     await expect(canvas.getByText("분석할 오디오가 준비됐어요")).toBeVisible();
+  },
+};
+
+export const RecordingGuideIconColor: Story = {
+  render: () => <VoiceScanGuide />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("heading", { name: "아는 노래 한 소절을 편하게 불러주세요." })).toBeVisible();
+    const icons = canvasElement.querySelectorAll<HTMLElement>("[data-voice-guide-icon]");
+    await expect(icons).toHaveLength(4);
+    for (const icon of icons) {
+      await expect(icon).toHaveClass("text-data-accent-foreground", "bg-data-accent/[0.08]");
+      await expect(icon.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
+    }
   },
 };
 

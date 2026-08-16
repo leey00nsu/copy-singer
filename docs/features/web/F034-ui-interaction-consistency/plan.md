@@ -125,6 +125,7 @@ src/
 ├── _pages/profile/ui/
 │   ├── vocal-profile-workbench.tsx
 │   ├── voice-scan-input.tsx
+│   ├── voice-scan-guide.tsx
 │   ├── vocal-profile-recorder.tsx
 │   └── voice-scan-input.stories.tsx
 ├── _pages/recommendation-detail/ui/
