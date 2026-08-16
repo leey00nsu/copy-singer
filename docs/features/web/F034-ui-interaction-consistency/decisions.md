@@ -119,7 +119,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: Base UI Popover wrapper를 추가하고 playback toolbar의 mute 왼쪽에 `Gauge` speed trigger와 `Volume1` volume trigger를 배치했다. speed Popover는 네 preset, volume Popover는 Slider와 percentage를 제공하며 trigger ARIA label, expanded state와 Escape close를 Storybook에서 검증했다. 두 action icon은 foreground를 상속한다.
   - **머지 후 확인**: Pending
 - **Evidence**:
-  - **Commit**: Pending
+  - **Commit**: `3d51d86` (`feat(F034): 플레이어 조절 Popover 적용`)
   - **PR**: -
   - **Test/Log**: AudioWaveformPlayer Storybook 3/3 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS
 - **Consequences**: 공용 Popover primitive가 추가되고 player 기본 surface 높이는 줄어든다.

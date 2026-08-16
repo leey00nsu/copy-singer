@@ -102,7 +102,7 @@
     - [x] speed preset과 volume slider를 각각 icon-triggered Popover로 이동했다.
     - [x] trigger label, expanded state, Escape/outside close와 mobile positioning을 검증했다.
     - [x] AudioWaveformPlayer Storybook, lint와 TypeScript를 통과했다.
-  - Evidence: AudioWaveformPlayer Storybook 3/3 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS
+  - Evidence: `3d51d86` (`feat(F034): 플레이어 조절 Popover 적용`); AudioWaveformPlayer Storybook 3/3 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS
 
 - [TODO][PRD-FR-050][PRD-FR-066] T-F034-ui-interaction-consistency-07 완료된 추천 믹싱을 Library 상세로 연결
   - Date: 2026-08-16
