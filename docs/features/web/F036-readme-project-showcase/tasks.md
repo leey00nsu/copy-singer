@@ -88,27 +88,28 @@
     - [x] spec, plan, tasks, decisions와 workflow sync marker를 최종 결과에 맞게 동기화한다.
   - Evidence: `62aaf61` (`feat(F036): 환경 설정 정본과 문서 회귀 검증`); `.env.example` 39개 key의 중복·필수 목록 누락·legacy key 0건, source에서 추출한 runtime/operational env 참조의 문서 누락 0건, README 내 개별 변수명 0건을 확인했다. README anchor·asset·script 누락 0건, PNG 2개 형식/크기 PASS, `git diff --check`, `pnpm run db:validate` PASS.
 
-- [TODO][PRD-NFR-012] T-F036-readme-project-showcase-03 로컬 보컬 분석 runtime 제거와 Modal 단일화
+- [DONE][PRD-NFR-012] T-F036-readme-project-showcase-03 로컬 보컬 분석 runtime 제거와 Modal 단일화
   - Date: 2026-08-16
   - Acceptance:
     - 사용자 보컬 프로필과 곡 분석은 인증된 Modal CPU service만 사용하고 local/Modal runtime selector가 없다.
     - 로컬 FastAPI 분석 service와 Docker Compose analyzer가 제거되며 두 Modal app은 중립적인 공유 Python core를 사용한다.
     - README와 `.env.example`, 현재 아키텍처 문서가 Modal 단일 경로와 일치한다.
   - Checklist:
-    - [ ] TypeScript local adapter, backend selector와 local analyzer artifact helper를 제거한다.
-    - [ ] 공유 Python 분석 core와 단위 테스트를 `services/vocal-analysis-core`로 이동하고 local FastAPI runtime을 제거한다.
-    - [ ] 보컬·곡 Modal app의 image packaging/import와 service 문서를 새 core 경로로 갱신한다.
-    - [ ] Docker Compose, README, `.env.example`, PRD와 architecture에서 로컬 analyzer 설정·안내를 제거한다.
-    - [ ] Modal adapter/queue, Python core/Modal source, TypeScript, lint, architecture, build와 전체 회귀를 검증한다.
-    - [ ] Feature 문서와 workflow sync marker를 최종 결과에 맞게 동기화한다.
+    - [x] TypeScript local adapter, backend selector와 local analyzer artifact helper를 제거한다.
+    - [x] 공유 Python 분석 core와 단위 테스트를 `services/vocal-analysis-core`로 이동하고 local FastAPI runtime을 제거한다.
+    - [x] 보컬·곡 Modal app의 image packaging/import와 service 문서를 새 core 경로로 갱신한다.
+    - [x] Docker Compose, README, `.env.example`, PRD와 architecture에서 로컬 analyzer 설정·안내를 제거한다.
+    - [x] Modal adapter/queue, Python core/Modal source, TypeScript, lint, architecture, build와 전체 회귀를 검증한다.
+    - [x] Feature 문서와 workflow sync marker를 최종 결과에 맞게 동기화한다.
+  - Evidence: `4862369` (`feat(F036): 로컬 보컬 분석 runtime 제거와 Modal 단일화`); TypeScript 분석 facade는 Modal adapter를 직접 사용하고 local selector·adapter·artifact API helper가 제거됐다. `services/vocal-profile-api` runtime은 삭제하고 21개 core test를 `services/vocal-analysis-core`로 이동했으며 두 Modal app source/runtime test 13/13을 통과했다. Modal adapter 6/6, durable queue 8/8, media 5/5, profile history 6/6, process/static 6/6, TypeScript·lint·architecture 4/4, Docker Compose·Prisma validation, production build와 전체 `pnpm test`(Storybook 170/170) PASS.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -118,9 +119,21 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | README anchor·asset·package script 정적 검사 | `2026-08-16` | PASS — 누락 0건 |
-| `.env.example` key·runtime 참조·legacy·README 중복 검사 | `2026-08-16` | PASS — 39 keys, 누락·중복·legacy·README 변수명 0건 |
+| `.env.example` key·runtime 참조·legacy·README 중복 검사 | `2026-08-16` | PASS — 36 keys, 누락·중복·retired local analyzer·README 변수명 0건 |
 | `sips -g pixelWidth -g pixelHeight -g format public/readme-captures/*.png` | `2026-08-16` | PASS — PNG 2개, 각각 1 MiB 이하 |
 | `git diff --check` | `2026-08-16` | PASS |
 | `pnpm run db:validate` | `2026-08-16` | PASS — Prisma schema valid |
+| `uv run --with-requirements requirements-dev.txt pytest -q` (`services/vocal-analysis-core`) | `2026-08-16` | PASS — 21/21 |
+| Modal vocal-profile pytest + song-catalog unittest | `2026-08-16` | PASS — 9/9 + 4/4 |
+| `node --conditions react-server --import tsx --test tests/vocal-profile-analyzer-adapter.test.ts` | `2026-08-16` | PASS — 6/6 |
+| `pnpm run test:vocal-profile-analysis-queue` | `2026-08-16` | PASS — 8/8 |
+| `pnpm run test:media` | `2026-08-16` | PASS — 5/5 |
+| `pnpm run test:vocal-profile-history` | `2026-08-16` | PASS — 6/6 |
+| `pnpm run test:process-scripts` | `2026-08-16` | PASS — 6/6 |
+| `pnpm exec tsc --noEmit` | `2026-08-16` | PASS |
+| `pnpm run lint` | `2026-08-16` | PASS |
+| `pnpm run test:architecture-boundaries` | `2026-08-16` | PASS — 4/4 |
+| `docker compose config --quiet` | `2026-08-16` | PASS |
+| `NODE_PATH=.../lightningcss-darwin-x64@1.31.1/node_modules pnpm test` | `2026-08-16` | PASS — production build 및 전체 회귀, Storybook 170/170 포함 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-16T21:38:37+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-16T22:05:37+09:00 -->

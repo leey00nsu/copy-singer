@@ -48,7 +48,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 실행 가능한 환경 파일과 설명을 같은 위치에 두어 코드와 대조하기 쉽고 문서 중복을 줄인다.
 - **Trace**:
   - **DOING 시작 시점**: `server-env.ts`, auth/analyzer/media adapter와 package worker script를 환경 계약의 근거로 사용한다.
-  - **DONE 전 확정 시점**: README에는 `.env.example` 복사 명령과 정본 링크만 남기고 개별 변수명은 0건으로 정리했다. example은 39개 key를 로컬 DB, 분석 backend, 인증, 저장소, 티켓과 세 worker 영역으로 나누고 선택 조건·기본값·공용 key fallback을 주석으로 설명한다.
+  - **DONE 전 확정 시점**: README에는 `.env.example` 복사 명령과 정본 링크만 남기고 개별 변수명은 0건으로 정리했다. 최초 example은 39개 key를 영역별로 설명했으며, D003에서 제거된 local analyzer 설정 3개를 제외한 36개 현재 key의 선택 조건·기본값·공용 key fallback을 유지한다.
   - **머지 후 확인**: local merge 후 기록.
 - **Evidence**:
   - **Commit**: `62aaf61` (`feat(F036): 환경 설정 정본과 문서 회귀 검증`)
@@ -65,10 +65,10 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 지원하지 않는 runtime을 실제 코드와 배포 구성에서 제거하면서 분석 알고리즘의 단일 구현과 회귀 검증은 유지한다.
 - **Trace**:
   - **DOING 시작 시점**: 현재 Modal apps가 local service의 `app` package를 import하는 결합을 확인해 단순 디렉터리 삭제가 아니라 neutral core 이동이 필요하다고 판단했다.
-  - **DONE 전 확정 시점**: 구현 후 기록.
+  - **DONE 전 확정 시점**: TypeScript 분석 facade와 health는 Modal adapter를 직접 사용하고 local adapter·selector·URL config·artifact download/delete helper를 제거했다. FastAPI local service, Docker image/service와 HTTP/parity tests를 삭제하고 순수 분석·reference·media·song pipeline 및 21개 unit test를 `services/vocal-analysis-core`로 이동했다. 두 Modal app은 새 package를 image에 포함하고 `vocal_analysis_core`에서 import한다.
   - **머지 후 확인**: local merge 후 기록.
 - **Evidence**:
-  - **Commit**: 구현 commit 후 기록
+  - **Commit**: `4862369` (`feat(F036): 로컬 보컬 분석 runtime 제거와 Modal 단일화`)
   - **PR**: local workflow — 해당 없음
-  - **Test/Log**: 구현 후 기록
+  - **Test/Log**: Python core 21/21, Vocal Modal 9/9, Catalog Modal 4/4, Modal adapter 6/6, durable queue 8/8, media 5/5, profile history 6/6, process/static 6/6, TypeScript·lint·architecture 4/4, Compose·Prisma, production build와 전체 `pnpm test`/Storybook 170/170 PASS
 - **Consequences**: 로컬 오프라인 분석 서버는 더 이상 제공하지 않으며 개발·production 모두 배포된 Modal CPU analyzer와 server-only key가 필요하다.
