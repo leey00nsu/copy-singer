@@ -55,3 +55,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `.env.example` key 중복·필수 목록 누락·legacy 0건; source runtime/operational env 참조 문서 누락 0건; README 개별 변수명 0건; Prisma validate PASS
 - **Consequences**: README가 간결해지고 새 변수 추가 시 `.env.example`만 우선 갱신하면 된다.
+
+## D003: 보컬 프로필 분석 backend를 Modal CPU로 단일화 (2026-08-16)
+
+- **Context**: 운영과 현재 `.env.local`은 이미 Modal을 사용하지만 README·example·TypeScript selector·Docker Compose에는 local analyzer 경로가 남아 있어 실제 지원 경계가 모호했다. Modal app도 `services/vocal-profile-api/app`을 공유 코어처럼 패키징해 local HTTP runtime과 알고리즘 경계가 결합돼 있다.
+- **Constraints**: 보컬 분석 descriptor, smart reference와 곡 분석 결과는 유지해야 한다. 두 Modal app이 공유하는 Python 알고리즘을 삭제하면 안 되며 원격 Modal 배포 자체는 별도 승인 범위다.
+- **Options**: 문서만 Modal로 변경, local adapter만 제거하고 Python service 경로 유지, local runtime을 제거하고 공유 코어를 중립 경로로 이동.
+- **Decision**: TypeScript는 Modal adapter를 직접 사용하고 local selector·artifact API helper를 제거한다. FastAPI local service와 Docker service는 삭제하며 공유 알고리즘과 테스트는 `services/vocal-analysis-core`로 이동해 두 Modal app이 패키징한다.
+- **Rationale**: 지원하지 않는 runtime을 실제 코드와 배포 구성에서 제거하면서 분석 알고리즘의 단일 구현과 회귀 검증은 유지한다.
+- **Trace**:
+  - **DOING 시작 시점**: 현재 Modal apps가 local service의 `app` package를 import하는 결합을 확인해 단순 디렉터리 삭제가 아니라 neutral core 이동이 필요하다고 판단했다.
+  - **DONE 전 확정 시점**: 구현 후 기록.
+  - **머지 후 확인**: local merge 후 기록.
+- **Evidence**:
+  - **Commit**: 구현 commit 후 기록
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: 구현 후 기록
+- **Consequences**: 로컬 오프라인 분석 서버는 더 이상 제공하지 않으며 개발·production 모두 배포된 Modal CPU analyzer와 server-only key가 필요하다.

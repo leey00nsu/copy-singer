@@ -12,8 +12,9 @@
 | Mixing worker | `scripts/mixing-worker.ts`, `lib/mixing/` | 영속 믹싱 작업 claim, target 준비, Modal 제출·추적, 결과 저장과 정리 재시도 |
 | Vocal profile analysis worker | `scripts/vocal-profile-analysis-worker.ts`, `lib/vocal-profile/analysis-*` | durable profile-analysis job claim, Modal CPU 분석, retry/lease recovery, 결과 저장 |
 | Leemage | 외부 REST API | 사용자 reference, 권한 확인된 catalog mixing target, 성공한 믹싱 결과 저장 |
-| Local vocal analyzer | `services/vocal-profile-api/` | local Docker 개발/회귀용 FastAPI와 Modal이 공유하는 librosa/pYIN 분석 코어 |
-| Modal CPU analyzer | `services/vocal-profile-modal/modal_app.py` | 배포용 CPU-only 보컬 프로필 분석, 개발·진단용 song-target endpoint, request-scoped 임시 파일과 ephemeral handoff |
+| Vocal analysis core | `services/vocal-analysis-core/` | 두 Modal CPU analyzer가 공유하는 runtime-neutral librosa/pYIN 분석 코어와 회귀 테스트 |
+| Modal CPU analyzer | `services/vocal-profile-modal/modal_app.py` | 보컬 프로필 분석, 개발·진단용 song-target endpoint, request-scoped 임시 파일과 ephemeral handoff |
+| Modal catalog analyzer | `services/song-catalog-analyzer/modal_app.py` | 업로드된 원곡의 보컬 분리·음역·원키 분석과 durable submit/poll |
 | Modal SVC web function | `services/soulx-singer-svc/modal_app.py` | FastAPI 계약, 파일 저장, 비동기 GPU 작업 관리 |
 | Modal GPU worker | `SoulXModel` | SoulX-Singer 모델 로드, 전처리, SVC 추론, 반주 재믹스 |
 | Modal storage | Volume + Dict | 모델·작업 파일과 작업 메타데이터 보관 |
@@ -25,10 +26,10 @@
 1. 브라우저가 로그인 세션으로 최대 60초 오디오와 `Idempotency-Key`를 `POST /api/vocal-profile-analysis-jobs`에 제출한다.
 2. Next.js가 source를 Leemage `REFERENCE` asset으로 먼저 저장하고 `VocalProfileAnalysisJob(PENDING)`을 만든 뒤 `202`를 즉시 반환한다.
 3. 별도 analysis worker가 PostgreSQL lease로 job을 claim하고 source asset을 읽는다. `/profile` workbench는 진행 중 job ID를 localStorage에 보관해 이어서 확인하고, `/vocal-profiles` 히스토리는 사용자 소유 job을 DB에서 다시 조회해 pending/processing/retry/failed 카드를 표시한다. 활성 히스토리 카드는 목록 API를 polling하고 성공 시 완료 VocalProfile 카드로 전환한다.
-4. worker는 `VOCAL_PROFILE_ANALYZER_BACKEND`로 local 또는 Modal adapter를 명시적으로 선택한다. production에서는 backend 미설정을 허용하지 않는다.
-5. Modal 경로에서는 worker가 sync multipart 요청과 server-only `X-API-Key`를 CPU analyzer에 전달한다. analyzer는 request-scoped 임시 디렉터리에서 최대 60초 source의 profile 통계를 계산하고, 사람용 low/mid/high 대표 구간을 `analysisReferenceBands` descriptor로 유지하면서 무음·저품질을 제외한 중음 phrase만 사용하는 `smart-reference-mid-v1` synthesis reference를 별도 생성한다. profile + source + optional reference bytes를 한 response envelope로 반환한 뒤 임시 파일을 제거한다.
+4. worker는 sync multipart 요청과 server-only `X-API-Key`를 Modal CPU analyzer에 전달한다.
+5. analyzer는 request-scoped 임시 디렉터리에서 최대 60초 source의 profile 통계를 계산하고, 사람용 low/mid/high 대표 구간을 `analysisReferenceBands` descriptor로 유지하면서 무음·저품질을 제외한 중음 phrase만 사용하는 `smart-reference-mid-v1` synthesis reference를 별도 생성한다. profile + source + optional reference bytes를 한 response envelope로 반환한 뒤 임시 파일을 제거한다.
 6. worker가 analyzer version/capability와 source size/hash를 검증하고 queued source asset을 Recording에 재사용한다. smart reference만 추가 Leemage asset으로 저장하고 VocalProfile을 생성한 뒤 job을 `SUCCEEDED`로 완료한다.
-7. transient failure는 bounded retry/backoff와 expired lease recovery를 사용하고 expected 4xx는 terminal failure로 처리한다. terminal failure source는 cleanup하며 production Modal 장애 시 local analyzer로 자동 fallback하지 않는다.
+7. transient failure는 bounded retry/backoff와 expired lease recovery를 사용하고 expected 4xx는 terminal failure로 처리한다. terminal failure source는 cleanup하며 Modal 장애 시 로컬 서비스로 fallback하지 않는다.
 
 현재 Modal CPU baseline은 2 physical cores, 4096 MiB, `min_containers=0`, `max_containers=10`, `scaledown_window=60`, container concurrency 1의 **worker→Modal sync HTTP** 방식이다. 사용자-facing 분석 요청 lifecycle은 PostgreSQL durable queue로 비동기 처리한다.
 
@@ -68,7 +69,7 @@
 
 - 웹 앱은 공식 Next.js Node 런타임의 로컬 실행을 기준으로 하며 프로덕션 배포 대상은 아직 선택하지 않았다.
 - SoulX SVC와 보컬 프로필 Modal analyzer는 별도 Modal App으로 배포하며 repo의 Modal Python SDK는 `1.5.3`으로 고정한다.
-- 보컬 프로필 production backend는 `VOCAL_PROFILE_ANALYZER_BACKEND=modal`과 `VOCAL_PROFILE_MODAL_URL`을 명시적으로 설정해야 한다. `VOCAL_PROFILE_API_URL`은 local 분석 개발 경로 전용이며 production mixing target은 analyzer backend와 무관하게 Leemage catalog asset을 사용한다.
+- 보컬 프로필 분석은 `VOCAL_PROFILE_MODAL_URL`의 Modal CPU 서비스만 사용한다. 웹 런타임에 backend selector나 local analyzer URL은 없으며 production mixing target은 Leemage catalog asset을 사용한다.
 - Better Auth, Google, Modal과 Leemage secret은 `.env.local`에만 두고 클라이언트로 전달하지 않는다. 보컬 프로필 analyzer는 기존 `MODAL_API_KEY`를 기본 server-only `X-API-Key`로 사용하고 필요 시 `VOCAL_PROFILE_MODAL_API_KEY`로 override한다.
 - 사용자 reference/결과와 권한이 확인된 catalog mixing target은 Leemage에 저장한다. 카탈로그 원본·분리 stem은 작업 임시 디렉터리에서 제거하며, DB snapshot에는 외부 target metadata만 저장한다. 신규 등록과 DB 복원은 관리자 `/admin/songs` 경로로 단일화한다.
 - `/dev/svc`와 `/api/conversions/*`는 비프로덕션에서 `ENABLE_DEV_SVC=true`일 때만 제공한다.

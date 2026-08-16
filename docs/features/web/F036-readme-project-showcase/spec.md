@@ -49,6 +49,19 @@
 - [ ] `.env.example`은 실제 secret 없이 각 변수의 역할, 필수·선택 여부와 fallback 관계를 설명한다.
 - [ ] `SIGNUP_TICKET_GRANT`, `ENABLE_DEV_SVC`, 제거된 `/dev/svc`처럼 현재 코드와 어긋나는 안내가 없다.
 
+### US-3: Modal 단일 분석 경로
+
+**As a** Copysinger를 배포·운영하는 개발자
+**I want** 사용자 보컬과 곡 분석이 모두 Modal 경로만 사용하고
+**So that** 로컬 분석 서비스와 배포 분석 서비스 사이의 version drift와 운영 혼동을 없앨 수 있다.
+
+**Acceptance Criteria:**
+
+- [ ] TypeScript 런타임에 보컬 분석 backend selector와 local adapter가 없다.
+- [ ] Docker Compose와 저장소에 실행 가능한 로컬 FastAPI 분석 서비스가 없다.
+- [ ] Modal 보컬·곡 분석기가 중립적인 공유 Python 분석 코어를 계속 사용한다.
+- [ ] README와 `.env.example`에는 로컬 분석기 실행이나 관련 설정이 없다.
+
 ---
 
 ## 기능 요구사항
@@ -85,9 +98,19 @@
 
 - 코드에서 사용하는 현재 변수만 유지하고 제거된 `SIGNUP_TICKET_GRANT` 같은 legacy 변수는 포함하지 않는다.
 - 각 변수 또는 밀접한 변수 묶음 앞에 용도, 사용 조건, 기본값/fallback 여부를 짧은 주석으로 설명한다.
-- 로컬 전용 PostgreSQL·CPU analyzer 설정과 production server-only 설정을 구분한다.
+- 로컬 PostgreSQL 설정과 production server-only 설정을 구분한다.
 - `VOCAL_PROFILE_MODAL_API_KEY`와 `SONG_ANALYSIS_MODAL_API_KEY`가 비어 있으면 `MODAL_API_KEY`를 재사용하는 계약을 명시한다.
 - 실제 credential이나 사용자별 운영값은 추가하지 않는다.
+
+### FR-6: 로컬 분석 runtime 제거
+
+- `VOCAL_PROFILE_ANALYZER_BACKEND`, `VOCAL_PROFILE_API_URL`, `VOCAL_PROFILE_API_PORT`와 local TypeScript adapter를 제거한다.
+- 보컬 프로필 분석 facade와 health는 Modal adapter를 직접 사용한다.
+- byte 기반 Leemage 저장으로 대체된 local analyzer artifact download/delete helper를 제거한다.
+- `docker-compose.yml`에서는 PostgreSQL만 실행하고 로컬 FastAPI analyzer service와 관련 volume을 제거한다.
+- `services/vocal-profile-api`의 FastAPI route, Dockerfile과 local API 테스트는 제거한다.
+- Modal에서 공유하는 순수 분석·reference·media·song pipeline 코어와 관련 단위 테스트는 `services/vocal-analysis-core`로 이동한다.
+- 두 Modal app의 image packaging/import와 문서를 새 공유 코어 경로에 맞춘다.
 
 ---
 
@@ -103,7 +126,7 @@
 
 ## 범위 제외
 
-- 애플리케이션 UI나 제품 동작 변경
+- 애플리케이션 UI 변경
 - 제공 이미지의 시각 편집 또는 새 이미지 생성
 - 실제 배포, 외부 서비스 설정 변경 또는 원격 Git 작업
 - README를 Leemage의 문구나 내용을 그대로 복제하는 작업
@@ -114,5 +137,5 @@
 ## 관련 문서
 
 - Reference README: `https://github.com/leey00nsu/leemage`
-- PRD Refs: `NON-PRD` — 저장소 소개 및 개발 문서 개선이며 제품 동작을 변경하지 않음
+- PRD Refs: `PRD-NFR-012`, `NON-PRD` — 분석 배포 단일화와 저장소 소개·개발 문서 개선
 - Design Refs: -

@@ -3,7 +3,7 @@
 - **상태**: Baseline 확장
 - **버전**: 0.6
 - **작성일**: 2026-08-05
-- **제품 범위**: 로컬 Next.js 앱 + PostgreSQL + 분석 서비스 + Modal SoulX-Singer API
+- **제품 범위**: Next.js 앱 + PostgreSQL + Modal CPU 분석 서비스 + Modal SoulX-Singer API
 
 ## 제품 개요
 
@@ -190,7 +190,7 @@ Google OAuth 로그인
 
 - **PRD-NFR-001 보안**: DB 비밀번호, Better Auth secret, Google OAuth secret, `MODAL_API_KEY`와 Leemage API Key는 `.env.local` 또는 Secret에만 두고 Git과 클라이언트 번들에 포함하지 않는다.
 - **PRD-NFR-002 개인정보**: 녹음과 합성 결과는 삭제 가능해야 하며 보관 기간을 명시한다.
-- **PRD-NFR-003 비용**: 프로필 분석과 추천은 기본적으로 CPU에서 수행하고 합성 데모만 Modal GPU를 사용한다.
+- **PRD-NFR-003 비용**: 프로필·곡 분석은 Modal CPU에서 수행하고 합성 데모만 Modal GPU를 사용한다.
 - **PRD-NFR-004 재현성**: 보컬 프로필·카탈로그·곡 분석 revision과 scoring version으로 추천 결과를 재계산할 수 있어야 하며, 영속 믹싱 작업은 접수 시 검증한 revision 입력을 보존해야 한다.
 - **PRD-NFR-005 품질**: 변경 시 TypeScript 검사, ESLint, 프로덕션 빌드, Prisma validation과 관련 테스트를 통과해야 한다.
 - **PRD-NFR-006 책임 있는 사용**: 사용 권한이 있는 음성과 음악만 처리하도록 고지하고, 결과를 의료적 평가로 표현하지 않는다.
@@ -199,6 +199,7 @@ Google OAuth 로그인
 - **PRD-NFR-009 인증·권한**: 모든 사용자 및 관리자 API는 서버에서 세션과 리소스 소유권 또는 관리자 권한을 검증해야 하며 UI 숨김만을 접근 통제로 사용하지 않는다.
 - **PRD-NFR-010 작업 내구성**: 브라우저 종료나 웹 서버·worker 재시작 후에도 접수된 믹싱 작업, 티켓 결제 결과와 사용자 조회 상태가 소실되지 않아야 한다. 단일 인스턴스의 기본 `dev`·`start` 명령은 웹과 worker를 함께 시작해 접수된 작업이 별도 수동 실행 없이 처리되어야 한다.
 - **PRD-NFR-011 외부 저장소**: Leemage 429 응답의 `Retry-After`를 준수하고 재시도 가능한 오류에는 제한된 지수 백오프를 적용하며, 업로드 confirm과 DB 기록 간 부분 실패를 정리할 수 있어야 한다.
+- **PRD-NFR-012 분석 배포 단일화**: 사용자 보컬 프로필과 곡 카탈로그 분석은 인증된 Modal CPU 서비스만 사용해야 한다. 웹 런타임의 local/Modal 선택기, 로컬 FastAPI 분석 서비스와 Docker Compose 분석 컨테이너를 제공하지 않으며, 공유 Python 분석 코어는 Modal 서비스 패키징과 회귀 테스트를 위한 runtime-neutral 모듈로 유지해야 한다.
 
 ## 보컬 프로필 MVP 정의
 

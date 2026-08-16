@@ -20,6 +20,8 @@
 | README 표현 | GitHub Markdown + 제한적인 정렬용 HTML | Leemage README와 같은 중앙 hero·이미지 구조를 GitHub에서 안정적으로 표현 |
 | 이미지 저장 | `public/readme-captures/*.png` | 외부 URL과 만료 위험 없이 repository-relative 경로로 렌더링 |
 | 환경 설정 문서 | `.env.example` inline comment | README와 설명을 중복하지 않고 실행 가능한 예시 바로 옆에 의미를 유지 |
+| 분석 backend | Modal CPU 단일 경로 | 배포/개발 selector와 local service version drift를 제거 |
+| Python 공유 코드 | `services/vocal-analysis-core/vocal_analysis_core` | HTTP runtime과 분리된 분석 알고리즘을 두 Modal app이 함께 패키징 |
 | 검증 | Markdown link/path audit + env/source audit + `git diff --check` | 문서 전용 변경에서 실제 링크·asset·변수 계약을 직접 검증 |
 
 ---
@@ -44,10 +46,21 @@ README에는 환경변수 이름별 설명을 두지 않는다. `.env.example`�
 ```text
 README.md
 .env.example
+docker-compose.yml
 public/
 └── readme-captures/
     ├── copysinger-home.png
     └── vocal-profile-result.png
+src/entities/vocal-profile/api/analyzer/
+├── index.ts
+├── modal-adapter.ts
+└── types.ts
+services/
+├── vocal-analysis-core/
+│   ├── vocal_analysis_core/
+│   └── tests/
+├── vocal-profile-modal/
+└── song-catalog-analyzer/
 docs/features/web/F036-readme-project-showcase/
 ├── spec.md
 ├── plan.md
@@ -64,6 +77,8 @@ docs/features/web/F036-readme-project-showcase/
 3. `.env.example`의 변수별 설명을 보강하고 code env 사용처와 대조한다.
 4. 내부 anchor, 상대 링크, asset 경로, script, legacy 용어와 Markdown 형식을 정적 검증한다.
 5. Feature 문서와 workflow sync marker를 최종 결과에 맞춘다.
+6. local analyzer selector·adapter·FastAPI runtime을 제거하고 공유 Python 코어를 중립 경로로 이동한다.
+7. 두 Modal app packaging, TypeScript/Python tests와 운영 문서를 새 단일 경로에 맞춘다.
 
 ---
 
@@ -74,7 +89,8 @@ docs/features/web/F036-readme-project-showcase/
 - **환경변수**: `.env.example` key와 `src`, `scripts`, `prisma`의 runtime env 참조를 비교하고 legacy key가 없는지 확인한다.
 - **명령 정확성**: README에 기록된 `pnpm` script가 `package.json`에 존재하는지 확인한다.
 - **기본 품질**: `git diff --check`, Markdown source inspection, `pnpm run db:validate`를 실행한다.
-- **비회귀 판단**: 애플리케이션 코드와 dependency가 바뀌지 않으므로 전체 production build와 UI 회귀는 생략한다.
+- **단일 backend 회귀**: Modal adapter unit test, durable queue integration, 두 Modal app source/runtime test와 이동한 Python core unit test를 실행한다.
+- **전체 회귀**: TypeScript, lint, architecture, production build와 `pnpm test`를 실행한다.
 
 ---
 
@@ -83,6 +99,7 @@ docs/features/web/F036-readme-project-showcase/
 - GitHub anchor는 한글 제목과 기호에 따라 달라질 수 있으므로 단순한 제목을 사용하고 href를 정적으로 대조한다.
 - 운영 설명을 압축하면서 중요한 절차가 사라질 수 있으므로 migration, worker, Modal, Leemage, catalog snapshot 경계는 유지한다.
 - 환경변수 설명이 코드와 다시 어긋날 수 있으므로 fallback과 기본값은 `server-env.ts` 및 adapter 구현을 기준으로 작성한다.
+- Python core 이동 중 Modal image import가 깨질 수 있으므로 local source test와 package path assertion을 두 Modal app에 유지한다.
 
 ---
 
