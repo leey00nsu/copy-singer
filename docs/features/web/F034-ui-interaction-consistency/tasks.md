@@ -117,6 +117,17 @@
     - [x] 전체 regression과 workflow docs sync를 완료한다.
   - Evidence: `b9332f3` (`feat(F034): 완료 믹싱 결과를 Library 상세로 연결`); recommendation Storybook 15/15 PASS; `test:recommendation` PASS — 31/31; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS; full regression components PASS across reruns — build + unit/integration/DB/FSD + Storybook 168/168
 
+- [DONE][PRD-FR-047][PRD-FR-050][PRD-FR-066] T-F034-ui-interaction-consistency-08 재생 속도 Popover 보조 설명 제거
+  - Date: 2026-08-16
+  - Acceptance:
+    - 재생 속도 Popover에서 `음높이를 유지한 채 속도를 바꿔요.` 문구가 표시되지 않는다.
+    - Popover 제목, 속도 preset, pitch-preserving 동작과 접근성은 유지된다.
+  - Checklist:
+    - [x] 속도 Popover의 사용자-facing 설명을 제거한다.
+    - [x] Storybook interaction을 설명 문구에 의존하지 않도록 갱신한다.
+    - [x] AudioWaveformPlayer Storybook, lint와 TypeScript를 통과한다.
+  - Evidence: `0de0996` (`fix(F034): 재생 속도 보조 문구 제거`); AudioWaveformPlayer Storybook 3/3 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS
+
 ## 완료 조건
 
 - [x] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
@@ -140,4 +151,4 @@
 | `pnpm exec tsc --noEmit` | `2026-08-16` | `PASS` |
 | `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm test` | `2026-08-16` | `Aggregate PASS across reruns — build + unit/integration/DB/FSD + Storybook 168/168; 병렬 preview 전환 2건과 DB 격리 1건의 일시 실패는 각각 affected/full suite 재실행 PASS` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-16T10:29:00.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-16T10:35:00.000Z -->

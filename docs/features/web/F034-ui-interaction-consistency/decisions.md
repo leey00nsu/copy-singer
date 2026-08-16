@@ -140,3 +140,10 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: -
   - **Test/Log**: recommendation Storybook 15/15 PASS; `test:recommendation` 31/31 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS; full build/unit/integration/DB/FSD PASS; full Storybook rerun 168/168 PASS
 - **Consequences**: 추천 화면의 component-owned `audioOpen` state와 중복 waveform/download UI가 제거된다.
+
+## D008: 재생 속도 Popover는 조절 UI만 간결하게 제공 (2026-08-16)
+
+- **Context**: 재생 속도 Popover의 `음높이를 유지한 채 속도를 바꿔요.` 설명은 실제 pitch-preserving 동작을 알리지만, 네 개의 명확한 preset 아래에서 사용자 행동에 필수적이지 않다.
+- **Decision**: 사용자-facing 보조 설명은 제거하고 `재생 속도` 제목, preset, 접근 가능한 trigger label과 pitch-preserving 구현은 유지한다.
+- **Evidence**: `0de0996` (`fix(F034): 재생 속도 보조 문구 제거`); AudioWaveformPlayer Storybook 3/3 PASS; lint/TypeScript PASS
+- **Consequences**: Popover의 정보 밀도가 줄어들며 재생 동작 자체는 변하지 않는다.
