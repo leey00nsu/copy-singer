@@ -156,9 +156,16 @@ src/
 ├── features/manage-notifications/
 │   ├── api/client.ts
 │   └── ui/notification-bell.tsx
-└── shared/ui/audio-waveform-player/
-    ├── audio-waveform-player.tsx
-    └── audio-waveform-player.stories.tsx
+├── features/create-mixing/ui/
+│   ├── recommendation-mixing-action.tsx
+│   └── recommendation-mixing-action.stories.tsx
+└── shared/ui/
+    ├── audio-waveform-player/
+    │   ├── audio-waveform-player.tsx
+    │   └── audio-waveform-player.stories.tsx
+    └── popover/
+        ├── index.ts
+        └── popover.tsx
 ```
 
 ## 테스트 전략

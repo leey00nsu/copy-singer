@@ -133,10 +133,10 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 생성 flow와 저장 결과의 책임을 분리하고 새 속도·음량 player UI를 한 정본에서 제공한다.
 - **Trace**:
   - **DOING 시작 시점**: succeeded synthesis가 nullable `jobId`와 `audioUrl`을 갖고, 믹싱 상세가 이미 공용 player와 download를 제공함을 확인했다.
-  - **DONE 전 확정 시점**: Pending
+  - **DONE 전 확정 시점**: succeeded non-compact action을 `mixingJobDetailHref(jobId)` Link로 교체하고 component-owned inline player/download를 제거했다. `jobId` 누락 완료 payload는 완료 badge로 안전하게 fallback하며 Storybook과 정적 UI test에서 정확한 href, 이전 `결과 듣기` 부재와 waveform 미렌더링을 검증했다.
   - **머지 후 확인**: Pending
 - **Evidence**:
-  - **Commit**: Pending
+  - **Commit**: `b9332f3` (`feat(F034): 완료 믹싱 결과를 Library 상세로 연결`)
   - **PR**: -
-  - **Test/Log**: Pending
+  - **Test/Log**: recommendation Storybook 15/15 PASS; `test:recommendation` 31/31 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS; full build/unit/integration/DB/FSD PASS; full Storybook rerun 168/168 PASS
 - **Consequences**: 추천 화면의 component-owned `audioOpen` state와 중복 waveform/download UI가 제거된다.

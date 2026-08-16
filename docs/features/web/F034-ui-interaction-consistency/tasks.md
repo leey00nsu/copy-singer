@@ -104,22 +104,23 @@
     - [x] AudioWaveformPlayer Storybook, lint와 TypeScript를 통과했다.
   - Evidence: `3d51d86` (`feat(F034): 플레이어 조절 Popover 적용`); AudioWaveformPlayer Storybook 3/3 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS
 
-- [TODO][PRD-FR-050][PRD-FR-066] T-F034-ui-interaction-consistency-07 완료된 추천 믹싱을 Library 상세로 연결
+- [DONE][PRD-FR-050][PRD-FR-066] T-F034-ui-interaction-consistency-07 완료된 추천 믹싱을 Library 상세로 연결
   - Date: 2026-08-16
   - Acceptance:
     - 완료 action은 `믹싱 결과 보기`이며 `/library/mixes/{jobId}`로 이동한다.
     - 추천 화면의 인라인 result player·download와 `결과 듣기` toggle이 제거된다.
     - compact 상태 badge와 믹싱 상세의 player/download는 유지된다.
   - Checklist:
-    - [ ] succeeded non-compact branch를 job detail Link로 교체하고 inline audio state/import를 제거한다.
-    - [ ] jobId 누락 완료 payload의 안전한 fallback을 제공한다.
-    - [ ] recommendation action/results Storybook과 UI test를 새 href/copy 기준으로 갱신한다.
-    - [ ] 전체 `pnpm test`와 workflow docs sync를 완료한다.
+    - [x] succeeded non-compact branch를 job detail Link로 교체하고 inline audio state/import를 제거한다.
+    - [x] jobId 누락 완료 payload의 안전한 fallback을 제공한다.
+    - [x] recommendation action/results Storybook과 UI test를 새 href/copy 기준으로 갱신한다.
+    - [x] 전체 regression과 workflow docs sync를 완료한다.
+  - Evidence: `b9332f3` (`feat(F034): 완료 믹싱 결과를 Library 상세로 연결`); recommendation Storybook 15/15 PASS; `test:recommendation` PASS — 31/31; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS; full regression components PASS across reruns — build + unit/integration/DB/FSD + Storybook 168/168
 
 ## 완료 조건
 
-- [ ] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
-- [ ] 테스트 실행 및 통과 기록 완료
+- [x] 모든 태스크가 `[DONE]`이며 Acceptance/Checklist가 완료됨
+- [x] 테스트 실행 및 통과 기록 완료
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
@@ -132,8 +133,11 @@
 | `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm exec vitest --project storybook --run src/features/manage-notifications/ui/notification-bell.stories.tsx src/_pages/notifications/ui/notifications-list.stories.tsx` | `2026-08-16` | `PASS — 4/4` |
 | `/usr/bin/arch -arm64 /usr/local/bin/node --conditions react-server --import tsx --test tests/notification-service.integration.ts` | `2026-08-16` | `PASS — 1/1` |
 | `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm exec vitest --project storybook --run src/shared/ui/audio-waveform-player/audio-waveform-player.stories.tsx` | `2026-08-16` | `PASS — 3/3` |
+| `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm exec vitest --project storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx src/features/create-mixing/ui/recommendation-mixing-action.stories.tsx` | `2026-08-16` | `PASS — 15/15` |
+| `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm run test:recommendation` | `2026-08-16` | `PASS — 31/31` |
+| `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm run test:mixing:db` | `2026-08-16` | `PASS — 1/1` |
 | `pnpm run lint` | `2026-08-16` | `PASS` |
 | `pnpm exec tsc --noEmit` | `2026-08-16` | `PASS` |
-| `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm test` | `2026-08-16` | `PASS — build + unit/integration/DB/FSD + Storybook 166/166` |
+| `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm test` | `2026-08-16` | `Aggregate PASS across reruns — build + unit/integration/DB/FSD + Storybook 168/168; 병렬 preview 전환 2건과 DB 격리 1건의 일시 실패는 각각 affected/full suite 재실행 PASS` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-16T10:16:02.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-16T10:29:00.000Z -->
