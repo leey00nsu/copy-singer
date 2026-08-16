@@ -59,7 +59,7 @@
     - [x] Bell query만 unread filter를 사용하고 전체 페이지 query는 history 기본값을 유지했다.
     - [x] 개별/모두 읽음 mutation 후 두 query cache가 올바르게 갱신되는지 검증했다.
     - [x] service/API test와 Bell/전체 알림 Storybook을 통과했다.
-  - Evidence: `test:query` 32/32 PASS; notification Storybook 4/4 PASS; notification DB integration 1/1 PASS; `pnpm exec tsc --noEmit` PASS
+  - Evidence: `0d74a70` (`feat(F034): 알림 목록 unread 조회 분리`); `test:query` 32/32 PASS; notification Storybook 4/4 PASS; notification DB integration 1/1 PASS; `pnpm exec tsc --noEmit` PASS
 
 - [TODO][PRD-FR-045][PRD-FR-051][PRD-FR-066] T-F034-ui-interaction-consistency-04 semantic icon color 기준 적용과 전체 회귀
   - Date: 2026-08-16

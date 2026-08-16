@@ -68,7 +68,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: `unreadOnly`를 Zod filter, URL, query key와 Prisma where에 포함했다. true일 때 total/pageCount는 필터된 unread 집합 기준이고 unreadCount와 일치하며, 전체 페이지는 URL 값과 무관하게 false를 강제한다. read-all 후 invalidation으로 Bell empty state가 갱신됨을 확인했다.
   - **머지 후 확인**: Pending
 - **Evidence**:
-  - **Commit**: Pending
+  - **Commit**: `0d74a70` (`feat(F034): 알림 목록 unread 조회 분리`)
   - **PR**: -
   - **Test/Log**: `test:query` 32/32 PASS; notification Storybook 4/4 PASS; notification DB integration 1/1 PASS; `pnpm exec tsc --noEmit` PASS
 - **Consequences**: query key와 URL에 unread filter가 추가되지만 기본값 false라 기존 전체 이력 호출은 호환된다.
