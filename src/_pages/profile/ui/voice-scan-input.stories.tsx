@@ -29,6 +29,7 @@ const meta = {
   args: {
     audioDuration: null,
     audioFile: null,
+    audioSource: null,
     audioUrl: null,
     analysisTickets: { balance: 4, cost: 1 },
     onAnalyze: fn(),
@@ -65,6 +66,10 @@ export const Idle: Story = {
     await expect(canvas.getByText("한 소절이면 충분해요")).toBeVisible();
     await expect(canvas.getByText("10초 정도 편하게 불러주세요.")).toBeVisible();
     await expect(canvas.getByRole("button", { name: "녹음 시작" })).toBeVisible();
+    const recordButton = canvas.getByRole("button", { name: "녹음 시작" });
+    const uploadLabel = canvas.getByText("녹음 파일로 분석하기").closest("label");
+    if (!uploadLabel) throw new Error("Upload label is missing.");
+    await expect(recordButton.getBoundingClientRect().width).toBeCloseTo(uploadLabel.getBoundingClientRect().width, 0);
     await expect(canvas.getByText("분석 티켓").closest("div")).toHaveTextContent("4장");
     await expect(canvas.queryByText("보컬 프로필")).not.toBeInTheDocument();
     await expect(canvas.getByLabelText("녹음 파일로 분석하기")).toHaveAttribute("accept", EXPECTED_AUDIO_ACCEPT);
@@ -228,6 +233,7 @@ export const Ready: Story = {
   args: {
     audioDuration: 8.2,
     audioFile: { name: "birthday-song-voice.webm", size: 860_000 } as File,
+    audioSource: "upload",
     audioPreview: (
       <div
         aria-label="제출할 보컬 녹음 파형"
@@ -258,6 +264,22 @@ export const Ready: Story = {
   },
 };
 
+export const RecordedAudioReady: Story = {
+  args: {
+    audioDuration: 12.4,
+    audioFile: { name: "song-verse-vocal-profile.webm", size: 920_000 } as File,
+    audioPreview: <div aria-label="제출할 마이크 녹음 파형" className="mt-5 h-24 rounded-lg bg-accent/30" role="img" />,
+    audioSource: "recording",
+    audioUrl: "blob:storybook-recorded-voice-scan",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.queryByText("song-verse-vocal-profile.webm")).not.toBeInTheDocument();
+    await expect(canvasElement.querySelector('[data-audio-source="recording"]')).toHaveTextContent("0.9 MB · 약 13초");
+    await expect(canvas.getByText("분석할 오디오가 준비됐어요")).toBeVisible();
+  },
+};
+
 export const AnalysisTicketsEmpty: Story = {
   args: {
     analysisTickets: { balance: 0, cost: 1 },
@@ -275,6 +297,7 @@ export const TooShort: Story = {
   args: {
     audioDuration: 3.2,
     audioFile: { name: "short-voice.webm", size: 320_000 } as File,
+    audioSource: "upload",
     audioPreview: <div aria-label="짧은 보컬 녹음" className="mt-5 h-24 rounded-lg bg-muted/40" role="img" />,
     audioUrl: "blob:storybook-short-voice-scan",
   },

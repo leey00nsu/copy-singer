@@ -148,7 +148,7 @@ export function RecorderSurface({
         <div className="mt-7 flex flex-col items-center gap-3">
           <Button
             aria-label={state === "error" ? "마이크 다시 시도" : "녹음 시작"}
-            className="min-w-36"
+            className="w-full"
             disabled={disabled}
             onClick={onStart}
             size="lg"

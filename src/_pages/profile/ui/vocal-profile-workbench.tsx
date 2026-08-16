@@ -26,7 +26,7 @@ import {
 import { AnalysisStatus } from "./analysis-status";
 import { LongAudioDialog } from "./long-audio-dialog";
 import type { VocalProfileRecorderState } from "./vocal-profile-recorder";
-import { VoiceScanInput } from "./voice-scan-input";
+import { type VoiceScanAudioSource, VoiceScanInput } from "./voice-scan-input";
 
 const ANALYSIS_JOB_STORAGE_KEY = "copy-singer:vocal-profile-analysis-job";
 const PREPARATION_COMPLETE_HOLD_FRAMES = 8;
@@ -50,6 +50,7 @@ export function VocalProfileWorkbench() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [audioSource, setAudioSource] = useState<VoiceScanAudioSource | null>(null);
   const [audioDuration, setAudioDuration] = useState<number | null>(null);
   const [pendingLongFile, setPendingLongFile] = useState<File | null>(null);
   const [pendingLongDuration, setPendingLongDuration] = useState<number | null>(null);
@@ -149,6 +150,7 @@ export function VocalProfileWorkbench() {
 
   const resetAudio = useCallback(() => {
     setAudioFile(null);
+    setAudioSource(null);
     setAudioDuration(null);
     setPendingLongFile(null);
     setPendingLongDuration(null);
@@ -162,7 +164,7 @@ export function VocalProfileWorkbench() {
     window.localStorage.removeItem(ANALYSIS_JOB_STORAGE_KEY);
   }, []);
 
-  const prepareSelectedAudio = useCallback(async (file: File) => {
+  const prepareSelectedAudio = useCallback(async (file: File, source: VoiceScanAudioSource) => {
     setPreparingAudio(true);
     setPreparationProgress(0);
     setInputError(null);
@@ -172,6 +174,7 @@ export function VocalProfileWorkbench() {
       setPreparationProgress(1);
       await holdPreparationCompleteState();
       setAudioFile(prepared.file);
+      setAudioSource(source);
       setAudioDuration(prepared.durationSeconds);
       analysisIdempotencyKey.current = null;
       setAnalysisError(null);
@@ -185,7 +188,7 @@ export function VocalProfileWorkbench() {
 
   const completeRecording = useCallback(
     (file: File) => {
-      void prepareSelectedAudio(file);
+      void prepareSelectedAudio(file, "recording");
     },
     [prepareSelectedAudio],
   );
@@ -218,7 +221,7 @@ export function VocalProfileWorkbench() {
       setPendingLongDuration(duration);
       return;
     }
-    await prepareSelectedAudio(file);
+    await prepareSelectedAudio(file, "upload");
   };
 
   const cancelLongAudio = useCallback(() => {
@@ -231,7 +234,7 @@ export function VocalProfileWorkbench() {
     const file = pendingLongFile;
     setPendingLongFile(null);
     setPendingLongDuration(null);
-    void prepareSelectedAudio(file);
+    void prepareSelectedAudio(file, "upload");
   };
 
   const analyzeAudio = () => {
@@ -341,6 +344,7 @@ export function VocalProfileWorkbench() {
           analysisTickets={analysisPolicyQuery.data?.analysisTickets ?? null}
           audioDuration={audioDuration}
           audioFile={audioFile}
+          audioSource={audioSource}
           audioUrl={audioUrl}
           inputError={inputError}
           onAnalyze={analyzeAudio}

@@ -13,10 +13,13 @@ import { VocalProfileRecorder, type VocalProfileRecorderState } from "./vocal-pr
 
 export const ACCEPTED_VOICE_SCAN_AUDIO = SUPPORTED_AUDIO_UPLOAD_ACCEPT;
 
+export type VoiceScanAudioSource = "recording" | "upload";
+
 type VoiceScanInputProps = {
   analysisBusy?: boolean;
   audioDuration: number | null;
   audioFile: File | null;
+  audioSource: VoiceScanAudioSource | null;
   audioPreview?: ReactNode;
   audioUrl: string | null;
   inputError?: string | null;
@@ -38,6 +41,7 @@ export function VoiceScanInput({
   analysisBusy = false,
   audioDuration,
   audioFile,
+  audioSource,
   audioPreview,
   audioUrl,
   inputError,
@@ -101,13 +105,13 @@ export function VoiceScanInput({
           </div>
         ) : audioFile && audioUrl ? (
           <div>
-            <div className="flex items-center gap-3 rounded-lg bg-muted/35 p-3">
+            <div className="flex items-center gap-3 rounded-lg bg-muted/35 p-3" data-audio-source={audioSource}>
               <span className="flex size-10 items-center justify-center rounded-md border bg-muted/40">
                 <FileAudio aria-hidden="true" className="size-5" />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium">{audioFile.name}</p>
-                <p className="mt-1 text-xs text-muted-foreground">
+                {audioSource === "upload" ? <p className="truncate text-sm font-medium">{audioFile.name}</p> : null}
+                <p className={`${audioSource === "upload" ? "mt-1" : ""} text-xs text-muted-foreground`}>
                   {(audioFile.size / 1024 / 1024).toFixed(1)} MB
                   {audioDuration !== null ? ` · 약 ${Math.ceil(audioDuration)}초` : ""}
                 </p>
@@ -180,7 +184,7 @@ export function VoiceScanInput({
 
             <label
               aria-disabled={analysisBusy || recorderActive}
-              className="flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed px-4 py-3 text-sm font-medium transition-colors hover:bg-muted/30 has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50"
+              className="mx-1 flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed px-4 py-3 text-sm font-medium transition-colors hover:bg-muted/30 has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50 sm:mx-3"
               htmlFor={uploadId}
             >
               <Upload aria-hidden="true" className="size-4" /> 녹음 파일로 분석하기
