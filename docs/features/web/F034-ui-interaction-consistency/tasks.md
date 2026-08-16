@@ -45,7 +45,7 @@
     - [x] nested button·interactive `tr`·row-level click handler를 추가하지 않았다.
     - [x] mouse, keyboard, 같은 행 닫기, 다른 행 교체, 독립 control 회귀 Storybook을 검증했다.
     - [x] 추천 관련 Storybook과 TypeScript 검사를 통과했다.
-  - Evidence: recommendation Storybook 10/10 PASS; `pnpm exec tsc --noEmit` PASS
+  - Evidence: `69cc4eb` (`feat(F034): 추천 행 영상 미리보기 토글`); recommendation Storybook 10/10 PASS; `pnpm exec tsc --noEmit` PASS
 
 - [TODO][PRD-FR-058][PRD-FR-066] T-F034-ui-interaction-consistency-03 Header Bell을 unread 전용 목록으로 분리
   - Date: 2026-08-16

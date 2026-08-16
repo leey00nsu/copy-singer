@@ -51,7 +51,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 행의 stretched button이 selection 후 valid video ID가 있을 때만 단일 toggle helper를 실행하도록 확정했다. button은 `aria-expanded`/`aria-controls`를 제공하고 facade와 mixing control은 독립 layer를 유지한다. mouse·Enter·닫기·교체 회귀에서 iframe은 최대 하나였다.
   - **머지 후 확인**: Pending
 - **Evidence**:
-  - **Commit**: Pending
+  - **Commit**: `69cc4eb` (`feat(F034): 추천 행 영상 미리보기 토글`)
   - **PR**: -
   - **Test/Log**: recommendation Storybook 10/10 PASS; `pnpm exec tsc --noEmit` PASS
 - **Consequences**: 제목/행의 주 action 의미가 단순 선택에서 선택 + 영상 펼침으로 바뀌며 `aria-expanded`로 상태를 노출한다.
