@@ -52,7 +52,8 @@ export const NetworkIndependent: Story = {
 
     await userEvent.click(speedTrigger);
     const body = within(document.body);
-    await waitFor(() => expect(body.getByText("음높이를 유지한 채 속도를 바꿔요.")).toBeVisible());
+    await waitFor(() => expect(body.getByText("재생 속도")).toBeVisible());
+    await expect(body.queryByText("음높이를 유지한 채 속도를 바꿔요.")).not.toBeInTheDocument();
     await userEvent.click(body.getByRole("button", { name: "1.25×" }));
     await expect(player).toHaveAttribute("data-audio-playback-rate", "1.25");
     await expect(canvas.getByRole("button", { name: "테스트 보컬 재생 속도 1.25배 조절" })).toHaveAttribute(
@@ -60,7 +61,7 @@ export const NetworkIndependent: Story = {
       "true",
     );
     await userEvent.keyboard("{Escape}");
-    await waitFor(() => expect(body.queryByText("음높이를 유지한 채 속도를 바꿔요.")).not.toBeInTheDocument());
+    await waitFor(() => expect(body.queryByText("재생 속도")).not.toBeInTheDocument());
 
     await userEvent.click(volumeTrigger);
     const volume = body.getByRole("slider", { name: "테스트 보컬 음량" });

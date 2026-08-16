@@ -311,7 +311,6 @@ function AudioWaveformPlayerInstance({
               </PopoverTrigger>
               <PopoverContent align="end" className="w-56" side="top">
                 <PopoverTitle>재생 속도</PopoverTitle>
-                <PopoverDescription className="mt-1">음높이를 유지한 채 속도를 바꿔요.</PopoverDescription>
                 <div className="mt-3 grid grid-cols-4 gap-1">
                   {PLAYBACK_RATES.map((rate) => (
                     <Button
