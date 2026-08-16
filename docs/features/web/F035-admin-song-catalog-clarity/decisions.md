@@ -72,3 +72,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: admin catalog integration 2/2 PASS; 관리자 UI 5/5 PASS; CatalogManager Storybook 9/9 PASS; targeted ESLint, TypeScript, Biome PASS
 - **Consequences**: 관리자는 추천 제외와 데이터 삭제를 구분할 수 있고, 보관된 곡을 별도 파일 업로드 없이 readiness가 유지된 버전으로 복원할 수 있다.
+
+## D004: 핵심 상태를 Storybook과 실제 반응형 브라우저에서 함께 검증 (2026-08-16)
+
+- **Context**: 용어만 바꿔도 현재 공개 버전, 교체 준비 버전, 복구 입력과 보관 Dialog의 위계가 작은 화면에서 다시 혼동될 수 있다.
+- **Constraints**: 관리자 카탈로그는 DB 상태 조합이 많고, 정적 source 검사만으로 Dialog focus·실제 overflow·브라우저 console 오류를 확인할 수 없다.
+- **Options**: 정적 테스트만 유지, Storybook 상태만 추가, Storybook interaction과 실제 desktop/mobile 브라우저 검증을 함께 수행.
+- **Decision**: 9개 CatalogManager Story로 핵심 상태와 Dialog action을 고정하고, in-app Browser로 1280px 및 360px 화면의 목록·추가·보관 흐름을 확인한다.
+- **Rationale**: 상태 조합의 결정성과 실제 반응형/접근성 동작을 서로 다른 검증층에서 확인할 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: 공개·교체 준비·원곡 누락·분석 실패·보관/복원을 Story 단위로 분리하고 mobile overflow를 직접 측정하기로 했다.
+  - **DONE 전 확정 시점**: desktop과 360px mobile에서 정보 위계와 Dialog를 확인했고 가로 overflow와 browser console error가 0건이었다. 브라우저 검증 중 발견한 interaction assertion의 비결정성을 제거한 뒤 전체 Storybook 170/170과 전체 회귀를 통과했다.
+  - **머지 후 확인**: local merge 후 기록.
+- **Evidence**:
+  - **Commit**: `7fb5492` (`feat(F035): 관리자 카탈로그 상태·반응형 회귀 검증`)
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: 관리자 UI 5/5, CatalogManager Storybook 9/9, architecture 4/4, 전체 `pnpm test` 및 production build PASS; 1280px/360px browser visual check와 console error 0건
+- **Consequences**: 이후 상태 문구나 action을 바꿀 때 데이터 상태 회귀와 실제 작은 화면 회귀를 함께 탐지할 수 있다.

@@ -97,25 +97,26 @@
     - [x] 보관·복원·반복 요청의 active pointer 및 catalog revision 통합 테스트를 보강한다.
   - Evidence: `967b810` (`feat(F035): 보관 영향과 명시적 복원 흐름 구현`); 보관 Dialog는 추천 제외, 곡/영상/원곡/분석/기존 믹싱 이력 유지를 설명하고 삭제 action을 제공하지 않는다. 보관된 곡은 기존 current source readiness로 복원한다. 관리자 UI 5/5, CatalogManager Storybook 9/9, admin catalog integration 2/2, ESLint, TypeScript, Biome PASS.
 
-- [TODO][PRD-FR-062] T-F035-admin-song-catalog-clarity-04 관리자 카탈로그 상태·반응형 회귀 검증
+- [DONE][PRD-FR-062] T-F035-admin-song-catalog-clarity-04 관리자 카탈로그 상태·반응형 회귀 검증
   - Date: 2026-08-16
   - Acceptance:
     - 공개·교체 준비·파일 누락·분석 실패·보관·복원 상태가 desktop과 360px mobile에서 명확하고 접근 가능하다.
     - 관련 품질 검사와 전체 회귀가 통과하고 사용자-facing 내부 용어가 남지 않는다.
   - Checklist:
-    - [ ] CatalogManager Storybook을 핵심 상태와 Dialog interaction 기준으로 갱신한다.
-    - [ ] 관리자 UI 정적 테스트와 접근 가능한 label/action 검증을 갱신한다.
-    - [ ] 사용자-facing target, raw revision, raw enum 잔존 검색을 수행한다.
-    - [ ] lint, TypeScript, architecture, production build와 전체 pnpm test를 실행한다.
-    - [ ] spec, plan, tasks, decisions와 workflow sync marker를 최종 구현에 맞게 동기화한다.
+    - [x] CatalogManager Storybook을 핵심 상태와 Dialog interaction 기준으로 갱신한다.
+    - [x] 관리자 UI 정적 테스트와 접근 가능한 label/action 검증을 갱신한다.
+    - [x] 사용자-facing target, raw revision, raw enum 잔존 검색을 수행한다.
+    - [x] lint, TypeScript, architecture, production build와 전체 pnpm test를 실행한다.
+    - [x] spec, plan, tasks, decisions와 workflow sync marker를 최종 구현에 맞게 동기화한다.
+  - Evidence: CatalogManager 9개 Story와 관리자 UI 5개 테스트로 공개·교체 준비·원곡 누락·분석 실패·보관/복원을 검증했다. in-app Browser에서 1280px desktop과 360px mobile의 목록·추가 Dialog·보관 Dialog를 확인했고, mobile 가로 overflow와 browser console error가 0건이었다. 전체 `pnpm test` PASS(Storybook 170/170 포함), TypeScript, ESLint, Biome, architecture 4/4 PASS.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -130,5 +131,7 @@
 | `pnpm exec biome check src/features/manage-song-catalog/model/presentation.ts tests/admin-song-catalog-ui.test.tsx` | `2026-08-16` | PASS |
 | `pnpm exec vitest --project storybook --run src/features/manage-song-catalog/ui/catalog-manager.stories.tsx` | `2026-08-16` | PASS — 9/9 |
 | `node --conditions react-server --import tsx --test tests/admin-song-catalog.integration.ts` | `2026-08-16` | PASS — 2/2 |
+| `pnpm run test:architecture-boundaries` | `2026-08-16` | PASS — 4/4 |
+| `NODE_PATH=.../lightningcss-darwin-x64@1.31.1/node_modules pnpm test` | `2026-08-16` | PASS — production build 및 전체 회귀, Storybook 170/170 포함 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-16T20:53:41+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-16T21:06:47+09:00 -->
