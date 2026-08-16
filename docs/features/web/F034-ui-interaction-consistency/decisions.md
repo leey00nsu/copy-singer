@@ -38,3 +38,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: -
   - **Test/Log**: Voice Scan Storybook 12/12 PASS; `pnpm exec tsc --noEmit` PASS
 - **Consequences**: 화면 state가 하나 추가되지만 서버·파일 업로드·분석 데이터에는 변경이 없다.
+
+## D002: 추천 행의 기존 stretched button을 영상 trigger로 확장 (2026-08-16)
+
+- **Context**: 추천 목록은 작은 YouTube facade만 영상을 펼치고, 제목의 `ResourceRowButton`이 만든 stretched click area는 곡 선택만 수행한다.
+- **Constraints**: 행에는 YouTube facade와 AI 믹싱이라는 독립 button이 있어 interactive `tr`, 중첩 button 또는 무차별 row click handler를 만들 수 없다. iframe은 사용자 실행 전 생성하지 않고 최대 하나만 유지해야 한다.
+- **Options**: row `onClick` 추가, facade 크기만 확대, 기존 stretched button에 selection + toggle을 결합하는 방식을 비교한다.
+- **Decision**: 기존 `ResourceRowButton`을 행의 주 action으로 유지하며 click/keyboard 실행 시 곡 선택과 영상 toggle을 함께 수행한다. 독립 control은 현재 z-index interaction layer를 유지한다.
+- **Rationale**: 현재 접근 가능한 button과 focus model을 재사용하면서 행 대부분의 click target을 넓힐 수 있다.
+- **Trace**:
+  - **DOING 시작 시점**: `ResourceRowButton`의 pseudo-element가 행 전체를 덮고 facade와 mixing cell은 `z-20`으로 독립된 현재 구조를 확인했다.
+  - **DONE 전 확정 시점**: 행의 stretched button이 selection 후 valid video ID가 있을 때만 단일 toggle helper를 실행하도록 확정했다. button은 `aria-expanded`/`aria-controls`를 제공하고 facade와 mixing control은 독립 layer를 유지한다. mouse·Enter·닫기·교체 회귀에서 iframe은 최대 하나였다.
+  - **머지 후 확인**: Pending
+- **Evidence**:
+  - **Commit**: Pending
+  - **PR**: -
+  - **Test/Log**: recommendation Storybook 10/10 PASS; `pnpm exec tsc --noEmit` PASS
+- **Consequences**: 제목/행의 주 action 의미가 단순 선택에서 선택 + 영상 펼침으로 바뀌며 `aria-expanded`로 상태를 노출한다.

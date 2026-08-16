@@ -154,11 +154,24 @@ export const DenseComparisonList: Story = {
     const rowButton = hitTarget?.closest("[data-resource-row-button]");
     await expect(rowButton).toHaveAccessibleName("밤편지 3");
     await userEvent.click(rowButton as HTMLElement);
+    await expect(rowButton).toHaveAttribute("aria-expanded", "true");
+    await expect(canvas.getByTitle("밤편지 3 · 아이유 원본 YouTube 영상")).toBeVisible();
+    await expect(canvasElement.querySelectorAll("[data-youtube-player]")).toHaveLength(1);
 
     const selection = canvas.getByRole("complementary", { name: "선택한 추천곡" });
     await expect(selection).toHaveClass("lg:sticky", "lg:top-24", "lg:self-start");
     await expect(within(selection).getByRole("heading", { name: "밤편지 3" })).toBeVisible();
     await expect(within(selection).getByText("추천 3위")).toBeVisible();
+
+    await userEvent.click(rowButton as HTMLElement);
+    await expect(rowButton).toHaveAttribute("aria-expanded", "false");
+    await expect(canvasElement.querySelectorAll("[data-youtube-player]")).toHaveLength(0);
+
+    (rowButton as HTMLElement).focus();
+    await userEvent.keyboard("{Enter}");
+    await expect(rowButton).toHaveAttribute("aria-expanded", "true");
+    await expect(canvas.getByTitle("밤편지 3 · 아이유 원본 YouTube 영상")).toBeVisible();
+    await expect(canvasElement.querySelectorAll("[data-youtube-player]")).toHaveLength(1);
 
     await userEvent.click(canvas.getByRole("button", { name: "서른 즈음에 1 · 김광석 원본 영상 플레이어 열기" }));
     const expandedRow = canvasElement.querySelector("[data-youtube-expanded-row]");

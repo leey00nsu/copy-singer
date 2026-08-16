@@ -33,18 +33,19 @@
     - [x] 관련 Storybook과 TypeScript 검사를 통과했다.
   - Evidence: `12f2fe7` (`feat(F034): 녹음 입력 정보와 버튼 폭 정리`); Voice Scan Storybook 12/12 PASS; `pnpm exec tsc --noEmit` PASS
 
-- [TODO][PRD-FR-049][PRD-FR-056][PRD-FR-066] T-F034-ui-interaction-consistency-02 추천 행 클릭으로 YouTube 미리보기 토글
+- [DONE][PRD-FR-049][PRD-FR-056][PRD-FR-066] T-F034-ui-interaction-consistency-02 추천 행 클릭으로 YouTube 미리보기 토글
   - Date: 2026-08-16
   - Acceptance:
     - 추천 행의 비상호작용 영역 click/keyboard 실행이 곡 선택과 영상 미리보기를 함께 토글한다.
     - 같은 행은 닫히고 다른 행은 교체되며 iframe은 최대 하나만 존재한다.
     - YouTube facade와 AI 믹싱 control은 중복 실행 없이 기존 독립 동작을 유지한다.
   - Checklist:
-    - [ ] 영상 toggle 함수를 단일화하고 기존 `ResourceRowButton`에 selection + toggle을 연결한다.
-    - [ ] `aria-expanded`와 `aria-controls`를 실제 player row와 동기화한다.
-    - [ ] nested button·interactive `tr`·row-level click handler를 추가하지 않는다.
-    - [ ] mouse, keyboard, 같은 행 닫기, 다른 행 교체, 독립 control 회귀 Storybook을 검증한다.
-    - [ ] 추천 관련 Storybook과 TypeScript 검사를 통과한다.
+    - [x] 영상 toggle 함수를 단일화하고 기존 `ResourceRowButton`에 selection + toggle을 연결했다.
+    - [x] `aria-expanded`와 `aria-controls`를 실제 player row와 동기화했다.
+    - [x] nested button·interactive `tr`·row-level click handler를 추가하지 않았다.
+    - [x] mouse, keyboard, 같은 행 닫기, 다른 행 교체, 독립 control 회귀 Storybook을 검증했다.
+    - [x] 추천 관련 Storybook과 TypeScript 검사를 통과했다.
+  - Evidence: recommendation Storybook 10/10 PASS; `pnpm exec tsc --noEmit` PASS
 
 - [TODO][PRD-FR-058][PRD-FR-066] T-F034-ui-interaction-consistency-03 Header Bell을 unread 전용 목록으로 분리
   - Date: 2026-08-16
@@ -84,10 +85,10 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm exec vitest --project storybook --run src/_pages/profile/ui/voice-scan-input.stories.tsx` | `2026-08-16` | `PASS — 12/12` |
-| targeted recommendation Storybook | `-` | `PENDING` |
+| `/usr/bin/arch -arm64 /usr/local/bin/node /Users/leeyoonsu/.local/bin/pnpm exec vitest --project storybook --run src/_pages/recommendation-detail/ui/recommendation-results.stories.tsx` | `2026-08-16` | `PASS — 10/10` |
 | targeted notification tests/Storybook | `-` | `PENDING` |
 | `pnpm run lint` | `-` | `PENDING` |
 | `pnpm exec tsc --noEmit` | `-` | `PENDING` |
 | `pnpm test` | `-` | `PENDING` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-16T09:29:31.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-16T09:32:31.000Z -->

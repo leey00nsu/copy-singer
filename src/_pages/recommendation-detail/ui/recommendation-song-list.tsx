@@ -28,6 +28,10 @@ export function RecommendationSongList({
 }) {
   const [activeVideoItemId, setActiveVideoItemId] = useState<string | null>(null);
 
+  function toggleVideo(itemId: string) {
+    setActiveVideoItemId((currentItemId) => (currentItemId === itemId ? null : itemId));
+  }
+
   return (
     <div className="border-y">
       <table className="block w-full table-fixed border-collapse xl:table">
@@ -66,9 +70,7 @@ export function RecommendationSongList({
                         <YouTubeVideo
                           controlsId={playerId}
                           expanded={videoActive}
-                          onActivate={() =>
-                            setActiveVideoItemId((currentItemId) => (currentItemId === item.id ? null : item.id))
-                          }
+                          onActivate={() => toggleVideo(item.id)}
                           title={`${item.title} · ${item.artist}`}
                           variant="facade"
                           videoId={item.sourceVideoId}
@@ -78,9 +80,14 @@ export function RecommendationSongList({
                         <div className="flex min-w-0 items-center">
                           <h2 className="min-w-0 truncate text-sm font-semibold sm:text-base">
                             <ResourceRowButton
+                              aria-controls={item.sourceVideoId ? playerId : undefined}
+                              aria-expanded={item.sourceVideoId ? videoActive : undefined}
                               aria-pressed={selected}
                               className="max-w-full truncate text-left underline-offset-4 group-hover/resource-row:underline"
-                              onClick={() => onSelect(item.id)}
+                              onClick={() => {
+                                onSelect(item.id);
+                                if (item.sourceVideoId) toggleVideo(item.id);
+                              }}
                             >
                               {item.title}
                             </ResourceRowButton>
