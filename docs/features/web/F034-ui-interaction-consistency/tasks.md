@@ -89,7 +89,7 @@
     - [x] Storybook에서 rate preset, volume keyboard, mute, loading/reduced-motion 회귀를 검증했다.
     - [x] lint, TypeScript와 전체 `pnpm test`를 통과했다.
     - [x] spec/plan/tasks/decisions와 workflow sync marker를 최종 구현에 맞게 동기화했다.
-  - Evidence: AudioWaveformPlayer Storybook 3/3 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS; full `pnpm test` PASS — build + unit/integration/DB/FSD + Storybook 166/166
+  - Evidence: `2d8e393` (`feat(F034): 오디오 재생속도와 음량 조절 추가`); AudioWaveformPlayer Storybook 3/3 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS; full `pnpm test` PASS — build + unit/integration/DB/FSD + Storybook 166/166
 
 ## 완료 조건
 

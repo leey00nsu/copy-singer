@@ -102,7 +102,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 공용 player에 pitch-preserving rate Select와 step 5 volume Slider를 responsive 보조 row로 추가했다. mute는 설정 volume을 보존하고, muted 상태에서 slider를 조절하면 즉시 unmute하며, 0%에서 음소거 해제하면 마지막 audible volume을 복원한다. player의 기존 keyed `src` instance 경계와 segment playback은 유지됐다.
   - **머지 후 확인**: Pending
 - **Evidence**:
-  - **Commit**: Pending
+  - **Commit**: `2d8e393` (`feat(F034): 오디오 재생속도와 음량 조절 추가`)
   - **PR**: -
   - **Test/Log**: AudioWaveformPlayer Storybook 3/3 PASS; `pnpm run lint` PASS; `pnpm exec tsc --noEmit` PASS; full `pnpm test` PASS — Storybook 166/166 포함
 - **Consequences**: 모든 공용 waveform player에 같은 보조 control row가 추가되며 새 `src`에서는 기존 keyed instance에 따라 기본 청취 설정으로 초기화된다.
