@@ -1,268 +1,263 @@
-# Copysinger
+<p align="center">
+  <img src="public/brand/copy-singer-mark.svg" alt="Copysinger" width="64" />
+</p>
 
-Copysinger analyzes a signed-in user's test singing, compares the resulting vocal profile with song profiles, recommends suitable songs and karaoke keys, and provides a ticket-based SoulX-Singer voice-conversion demo. Google OAuth identifies users, Leemage stores reference and result audio, and a PostgreSQL-backed worker keeps mixing jobs running after the browser closes.
+<h1 align="center">
+  <strong>Copysinger</strong>
+</h1>
 
-## Local setup
+<p align="center">
+  <strong>한 소절의 목소리를 분석해 잘 맞는 노래와 키를 찾고, AI 믹싱까지 이어주는 보컬 추천 서비스</strong>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/node-%3E%3D22.13.0-brightgreen" alt="Node.js 22.13.0 이상" />
+  <img src="https://img.shields.io/badge/pnpm-11.9.0-f69220" alt="pnpm 11.9.0" />
+  <img src="https://img.shields.io/badge/Next.js-16.3.0-black" alt="Next.js 16.3.0" />
+  <img src="https://img.shields.io/badge/TypeScript-5.9-3178c6" alt="TypeScript 5.9" />
+</p>
+
+<p align="center">
+  <a href="#quick-start">Quick Start</a> •
+  <a href="#주요-기능">주요 기능</a> •
+  <a href="#기술-스택">기술 스택</a> •
+  <a href="#시스템-구성">시스템 구성</a> •
+  <a href="#실행과-배포">실행과 배포</a> •
+  <a href="#테스트">테스트</a>
+</p>
+
+<p align="center">
+  <img src="public/readme-captures/copysinger-home.png" alt="Copysinger 홈 화면" width="1000" />
+</p>
+
+<p align="center">
+  <img src="public/readme-captures/vocal-profile-result.png" alt="Copysinger 보컬 분석 결과 화면" width="1000" />
+</p>
+
+---
+
+## 목차
+
+- [Quick Start](#quick-start)
+- [주요 기능](#주요-기능)
+- [기술 스택](#기술-스택)
+- [시스템 구성](#시스템-구성)
+- [실행과 배포](#실행과-배포)
+- [프로젝트 구조](#프로젝트-구조)
+- [테스트](#테스트)
+- [문서 워크플로](#문서-워크플로)
+
+## Quick Start
 
 ```bash
+# 1. 의존성 및 로컬 설정 준비
 pnpm install --frozen-lockfile
 cp .env.example .env.local
-# Fill Google OAuth, Leemage, Modal, and admin values in .env.local.
+
+# 2. PostgreSQL과 로컬 보컬 분석기 시작
+docker compose up -d --build
+
+# 3. DB 준비
+pnpm run db:migrate:deploy
+pnpm run db:generate
+
+# 4. 웹과 background worker 시작
+pnpm dev
+```
+
+→ [http://localhost:3000](http://localhost:3000)에서 확인
+
+## 주요 기능
+
+### 🎙️ 목소리 분석
+
+- 브라우저 녹음 또는 오디오 파일 업로드
+- 관측 음역, 주요 음역, 중심 음과 유효 음성 구간 분석
+- 음정 분포와 시간별 피치 흐름 시각화
+- 분석한 레퍼런스 오디오와 보컬 프로필을 라이브러리에 보관
+
+### 🎵 노래와 키 추천
+
+- 공개 카탈로그 전체를 현재 보컬 프로필과 비교
+- 원키 적합도, 추천 키와 추천 이유 제공
+- 검색·정렬·필터와 곡별 상세 근거 제공
+- 원본 YouTube 영상을 privacy-enhanced player로 확인
+
+### ✨ AI 믹싱
+
+- 사용자가 선택한 곡만 티켓을 사용해 AI 믹싱
+- 보컬 분리, 자동 피치 이동과 반주 재결합
+- PostgreSQL 영속 큐와 lease 기반 worker로 재시작 후에도 작업 복구
+- 완료 결과 재생·다운로드와 믹싱 이력 관리
+
+### 📚 라이브러리와 계정
+
+- 보컬 프로필과 믹싱 결과를 한곳에서 탐색
+- 티켓 잔액과 지급·사용·환불 내역 확인
+- 분석과 믹싱 완료·실패 알림 제공
+- Google OAuth 기반 사용자별 데이터 소유권 보호
+
+### 🛠️ 관리자 운영
+
+- 사용자, 티켓과 믹싱 작업 상태 관리
+- 추천곡, YouTube 미리듣기 영상과 원곡 음원 등록·교체
+- 곡 분석 준비 상태, 공개, 추천 제외와 복원 관리
+- 카탈로그 snapshot 내보내기·가져오기
+
+## 기술 스택
+
+| 영역 | 기술 |
+| --- | --- |
+| **Framework** | Next.js 16 App Router, React 19 |
+| **Language** | TypeScript 5.9 |
+| **UI** | Tailwind CSS 4, Base UI, shadcn, Motion |
+| **Server state** | TanStack Query |
+| **Audio UI** | WaveSurfer, MediaBunny |
+| **Charts** | Recharts |
+| **Database** | PostgreSQL, Prisma 7 |
+| **Authentication** | Better Auth, Google OAuth |
+| **Media storage** | Leemage |
+| **AI processing** | Modal, SoulX-Singer, Demucs, librosa |
+| **Validation** | Zod |
+| **Test** | Node test runner, Vitest, Storybook, Playwright |
+| **Architecture** | Feature-Sliced Design, Steiger |
+
+## 시스템 구성
+
+```text
+Browser
+  └─ Next.js App Router
+      ├─ Better Auth ─────────────── Google OAuth
+      ├─ Prisma ──────────────────── PostgreSQL
+      ├─ Media client ────────────── Leemage
+      └─ Durable background workers
+          ├─ 보컬 프로필 분석 ───── Modal 또는 local CPU analyzer
+          ├─ 곡 카탈로그 분석 ───── Modal CPU analyzer
+          └─ AI 믹싱 ─────────────── SoulX-Singer Modal API
+```
+
+웹 요청은 분석과 믹싱 작업을 PostgreSQL에 접수하고 바로 응답한다. 별도 worker가 작업을 원자적으로 점유하며, 외부 작업 ID와 lease를 저장해 프로세스가 재시작돼도 같은 작업을 이어간다. 사용자 레퍼런스와 최종 결과는 Leemage에 저장하고 PostgreSQL에는 소유권과 파일 metadata만 유지한다.
+
+추천곡 카탈로그도 PostgreSQL을 runtime source of truth로 사용한다. 곡 identity, YouTube 출처 revision, 분석 revision, 공개 상태와 원곡 asset을 분리해 출처를 교체해도 기존 추천과 믹싱 근거를 보존한다.
+
+## 실행과 배포
+
+### 사전 요구사항
+
+- Node.js 22.13.0 이상
+- pnpm 11.9.0
+- Docker 20 이상
+- PostgreSQL
+- Google OAuth web client
+- Leemage project와 API key
+- 배포된 Modal 분석·믹싱 서비스
+- production 결과 오디오 변환을 위한 FFmpeg
+
+각 로컬·운영 설정의 의미와 선택 조건은 [.env.example](.env.example)에 정리되어 있다.
+
+### 로컬 실행
+
+`docker compose up -d --build`는 PostgreSQL과 로컬 CPU 보컬 분석기를 시작한다. 데이터베이스를 준비한 뒤 `pnpm dev`를 실행하면 Next.js와 믹싱·보컬 분석·곡 분석 worker가 함께 시작된다.
+
+```bash
 docker compose up -d --build
 pnpm run db:migrate:deploy
 pnpm run db:generate
-pnpm run dev
+pnpm dev
 ```
 
-`pnpm dev` starts the Next.js development server and durable mixing worker together. For production on the single instance, run `pnpm build` and then `pnpm start`; `start` also runs both processes. Use `pnpm dev:web` or `pnpm start:web` only when intentionally diagnosing the web process without a worker.
+주요 화면:
 
-Open:
+- `/` — 공개 랜딩
+- `/profile` — 목소리 녹음·업로드와 분석
+- `/library` — 보컬 프로필과 믹싱 결과
+- `/account` — 계정과 티켓 원장
+- `/admin` — 관리자 운영
+- `/admin/songs` — 추천곡 관리
+- `/admin/custom-mixing` — 관리자 커스텀 믹싱
 
-- `http://localhost:3000/` or `/profile` for the vocal-profile and recommendation flow;
-- `http://localhost:3000/account` for ticket balance and ledger;
-- `http://localhost:3000/mixing-history` for durable jobs and results;
-- `http://localhost:3000/admin` for allowlisted operators;
-- `http://localhost:3000/dev/svc` for the developer SoulX-Singer workbench when `ENABLE_DEV_SVC=true` in development.
+### 분석 서비스
 
-For voice conversion, upload:
-
-- a clean reference singing voice, ideally under 30 seconds;
-- a target vocal or full mix, up to 5 minutes.
-
-The browser calls same-origin Next.js API routes. The Modal API key stays on the server and is never sent to the browser.
-
-For a vocal profile, sing any familiar song verse for about 10–30 seconds without accompaniment—for example, the Korean national anthem or “Happy Birthday.” Recording stops when you press the button or automatically at 30 seconds. You can instead upload a WAV, MP3, M4A, or WebM file. The local analyzer accepts at most 25 MB and 60 seconds.
-
-## Local PostgreSQL and vocal analyzer
-
-PostgreSQL runs locally with Docker Compose. The default host port is `5433`; the container keeps PostgreSQL's standard `5432` port.
-
-Copy the environment example once, then keep your actual values in the ignored `.env.local` file:
+로컬 CPU 분석기 상태는 다음과 같이 확인한다.
 
 ```bash
-cp .env.example .env.local
-```
-
-If `.env.local` already contains the Modal settings, add only the PostgreSQL variables from `.env.example` instead of overwriting it.
-
-Start PostgreSQL and the CPU-only librosa/ffmpeg analyzer, then confirm both are healthy:
-
-```bash
-docker compose up -d --build
-docker compose ps
 curl -fsS http://localhost:8001/health
 ```
 
-Apply the committed migrations, generate Prisma Client, seed development fixtures, and verify the relation graph:
+Modal 분석 서비스는 인증을 준비한 뒤 각각 배포한다.
 
 ```bash
-set -a
-source .env.local
-set +a
-pnpm run db:migrate:deploy
-pnpm run db:generate
-pnpm run db:seed
-pnpm run db:verify
-pnpm run db:status
-```
-
-Create a new migration after changing `prisma/schema.prisma`:
-
-```bash
-pnpm run db:migrate -- --name describe_your_change
-```
-
-The analyzer uses `work/vocal-profiles/` only as a short-lived handoff. After analysis, Next.js uploads the standardized WAV to Leemage, stores only `MediaAsset` metadata in PostgreSQL, and deletes the analyzer copy. Deleting a profile removes the Leemage object; failed external deletion is recorded for the mixing worker to retry.
-
-## Google OAuth, Leemage, and background mixing
-
-Create a Google OAuth web client and register this local redirect URI:
-
-```text
-http://localhost:3000/api/auth/callback/google
-```
-
-Create one Leemage project and an API key with the minimum permissions required to presign/confirm uploads, read project files, and delete files. Keep the key server-side. Fill these variables in `.env.local`:
-
-```dotenv
-BETTER_AUTH_SECRET=at-least-32-random-characters
-BETTER_AUTH_URL=http://localhost:3000
-GOOGLE_CLIENT_ID=...
-GOOGLE_CLIENT_SECRET=...
-ADMIN_EMAILS=operator@example.com
-
-LEEMAGE_BASE_URL=https://leemage.leey00nsu.com/api/v1
-LEEMAGE_API_KEY=...
-LEEMAGE_PROJECT_ID=...
-
-SIGNUP_TICKET_GRANT=1
-MIXING_TICKET_COST=1
-MIXING_WORKER_CONCURRENCY=1
-MIXING_MAX_ATTEMPTS=3
-MIXING_LEASE_SECONDS=120
-MIXING_POLL_INTERVAL_MS=5000
-```
-
-Check configuration without printing secrets, then optionally upload and immediately delete one Leemage smoke file:
-
-```bash
-pnpm run verify:feature-config
-pnpm run verify:feature-config -- --leemage
-```
-
-The default single-instance commands supervise the web process and durable worker together:
-
-```bash
-pnpm dev
-# or, after pnpm build
-pnpm start
-```
-
-If either child process fails, the combined command terminates the other process so the instance supervisor can restart the complete service. `pnpm run worker:mixing` remains available for worker-only diagnostics.
-
-The web request atomically spends `MIXING_TICKET_COST` and creates a PostgreSQL job. The worker claims jobs with a lease, downloads the private reference through its stored Leemage metadata, asks the analyzer for an ephemeral allowlisted song target, submits Modal, and copies successful results back to Leemage. Failures before Modal acceptance are refunded; failures after acceptance are not. Restarting the worker lets another process reclaim an expired lease and continue polling the same Modal job.
-
-### Song catalog analysis
-
-PostgreSQL is the runtime source of truth for songs, source revisions, analysis revisions, catalog positions, and active target assets. The repository no longer contains a catalog data artifact; runtime requests read the published database catalog only.
-
-/admin/songs의 내보내기·가져오기로 현재 DB 카탈로그를 JSON 스냅샷으로 추출하고 새 배포 DB에 복원할 수 있습니다. 스냅샷에는 분석 결과와 외부 target asset metadata만 포함되며 원본 음원 bytes는 포함되지 않습니다. 가져오기는 같은 스냅샷을 반복해도 중복을 만들지 않습니다. 노래·음원 등록과 복원은 관리자 음원 관리 화면을 통해서만 진행합니다.
-
-Database catalog readiness verification remains an internal diagnostic command; operational export/import is available only from the admin page.
-
-Catalog changes are made from the admin-only `/admin/songs` page. The add/replace dialog accepts title, artist, an HTTPS YouTube URL, and an authorized audio file. The server derives the video ID and source label, stores a draft revision, and queues analysis only after the target asset is READY.
-
-Deploy the dedicated analyzer after Modal authentication:
-
-```bash
+pnpm run modal:vocal-profile:deploy
 pnpm run modal:song-catalog:deploy
 ```
 
-The analyzer uses a Modal CPU function (8 vCPU, 16 GiB): Demucs runs with `--device cpu`, followed by pYIN range analysis and chroma key estimation. GPU is reserved for the separate song mixing/synthesis service. Uploads, converted WAV files, and stems live in a job-scoped temporary directory and are removed before a successful result is returned.
+곡 분석기는 관리자에게 업로드받은 원곡 파일을 job 단위 임시 디렉터리에서 처리한다. Demucs로 보컬을 분리한 뒤 pYIN 음역 분석과 chroma 기반 원키 추정을 수행하며, 임시 음원과 stem은 결과 반환 전에 정리한다.
 
-The `demucs_models` Docker volume contains reusable model weights only. Downloading and immediate deletion do not replace the requirement to have permission to process a source. A future recommendation-to-Convert integration must use the same job-scoped cleanup boundary and must never expose the original or separated stems.
+### production
 
-Stop the local services without deleting PostgreSQL's named volume:
-
-```bash
-docker compose down
-```
-
-Deleting the named volume also deletes the local database and is intentionally not part of the normal workflow.
-
-## Environment
-
-```dotenv
-MODAL_API_URL=https://dbstndla1212--soulx-singer-svc-web.modal.run
-MODAL_API_KEY=the-value-stored-in-the-soulx-api-secret
-SONG_ANALYSIS_MODAL_URL=https://your-workspace--copy-singer-catalog-analyzer-fastapi-app.modal.run
-# Optional; MODAL_API_KEY is reused when omitted.
-SONG_ANALYSIS_MODAL_API_KEY=
-BETTER_AUTH_SECRET=at-least-32-random-characters
-BETTER_AUTH_URL=http://localhost:3000
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-ADMIN_EMAILS=operator@example.com
-LEEMAGE_BASE_URL=https://leemage.leey00nsu.com/api/v1
-LEEMAGE_API_KEY=your-leemage-api-key
-LEEMAGE_PROJECT_ID=your-leemage-project-id
-SIGNUP_TICKET_GRANT=1
-MIXING_TICKET_COST=1
-POSTGRES_DB=copy_singer
-POSTGRES_USER=copy_singer
-POSTGRES_PASSWORD=copy_singer_dev
-POSTGRES_PORT=5433
-DATABASE_URL=postgresql://copy_singer:copy_singer_dev@localhost:5433/copy_singer?schema=public
-```
-
-## Commands
+단일 인스턴스에서는 build 후 기본 start 명령을 사용한다. `pnpm start`는 웹과 세 worker를 함께 감독하며 하나가 실패하면 전체 프로세스를 종료해 배포 관리자가 인스턴스를 다시 시작할 수 있게 한다.
 
 ```bash
-pnpm run dev
-pnpm run dev:web
-pnpm start
-pnpm run start:web
-pnpm run worker:mixing
-pnpm run worker:song-analysis
-pnpm run modal:song-catalog:deploy # remote deploy; approval required
-pnpm run verify:feature-config
-pnpm run build
-pnpm test
-pnpm run lint
-pnpm run db:validate
-pnpm run db:generate
+pnpm install --frozen-lockfile
 pnpm run db:migrate:deploy
-pnpm run db:seed
-pnpm run db:verify
-pnpm run db:status
-pnpm run catalog:db:verify
-docker compose run --rm --no-deps \
-  -v "$PWD/services/vocal-profile-api:/app" \
-  vocal-profile-api sh -lc \
-  'python -m pip install --disable-pip-version-check -q -r requirements-dev.txt && pytest -q'
-curl -fsS http://localhost:8001/health
+pnpm build
+pnpm start
 ```
 
-## Layout
+새 PostgreSQL에 배포한 경우 migration 후 `/admin/songs`에서 기존 카탈로그 snapshot을 가져온다. snapshot에는 분석 결과와 외부 asset metadata가 포함되며 원본 음원 bytes는 포함되지 않는다.
+
+## 프로젝트 구조
 
 ```text
-app/                              Thin Next.js App Router adapters
-src/_app/                         FSD App layer: layout, providers, routes, workers
-src/_pages/                       FSD Pages layer: route-level UI composition
-src/widgets/                      Reusable, self-contained page sections
-src/features/                     User actions and application use cases
-src/entities/                     Domain data, behavior, and domain UI
-src/shared/                       Framework-agnostic API, config, DB, media, and UI
-prisma/                           Prisma schema, migrations, and development seed
-scripts/                          Workers and local verification/maintenance tools
-services/soulx-singer-svc/        Modal GPU singing-voice conversion API
-services/vocal-profile-modal/     Modal GPU vocal-profile analyzer
-services/song-catalog-analyzer/   Ephemeral Modal catalog benchmark
-services/vocal-profile-api/       Local FastAPI/librosa CPU analyzer
-tests/                            Node, integration, UI, Query, and boundary tests
-work/vocal-profiles/              Ignored local recording storage
+app/                              Next.js App Router adapter
+src/_app/                         FSD App layer, provider, route, worker
+src/_pages/                       FSD Pages layer
+src/widgets/                      독립적인 페이지 UI block
+src/features/                     사용자 action과 application use case
+src/entities/                     domain model과 domain UI
+src/shared/                       공통 config, DB, media, UI와 library
+prisma/                           schema, migration과 development seed
+scripts/                          worker 및 검증 script
+services/soulx-singer-svc/        Modal GPU singing voice conversion API
+services/vocal-profile-modal/     Modal 보컬 프로필 분석기
+services/song-catalog-analyzer/   Modal 곡 카탈로그 분석기
+services/vocal-profile-api/       로컬 FastAPI CPU 분석기
+tests/                            unit, integration, UI와 boundary test
 ```
 
-The root `app/` and `src/_app/` are intentionally different. Next.js requires
-route conventions such as `page.tsx`, `layout.tsx`, and `route.ts` under
-`app/`. Those files contain only Next.js route configuration and re-exports
-from an FSD public API. Application composition and Route Handler
-implementations live in `src/_app/`. Likewise, `src/_pages/` is the FSD Pages
-layer, not a second Next.js router. The `_app` and `_pages` names follow the
-[official FSD Next.js guide](https://fsd.how/docs/guides/tech/with-nextjs/)
-to avoid collisions with Next.js directories.
-
-FSD dependencies point from higher layers to lower layers:
+root `app/`은 Next.js route convention과 FSD public API re-export만 담당한다. 실제 page composition과 Route Handler 구현은 `src/_app/`과 `src/_pages/`에 있다.
 
 ```text
 _app → _pages → widgets → features → entities → shared
 ```
 
-A module may skip layers while following that direction. Code in one slice
-must not import another slice's `api/`, `model/`, `ui/`, `lib/`, or `config/`
-files directly. Import through the target slice's root public API instead.
-Relative imports within the same slice remain internal implementation details.
+slice 사이에서는 대상 slice의 root public API로만 접근한다. `index.ts`는 browser-safe API, `index.model.ts`는 runtime-neutral contract, `index.server.ts`는 DB·secret·server capability를 노출한다. 자세한 규칙은 [공식 FSD Next.js guide](https://fsd.how/docs/guides/tech/with-nextjs/)를 따른다.
 
-Public API entry points describe their runtime capability:
+## 테스트
 
-- `index.ts` exports browser-safe UI, client APIs, and pure model values.
-- `index.model.ts` exports runtime-neutral schemas, types, and value contracts
-  without pulling UI, client hooks, database access, or secrets into the graph.
-- `index.server.ts` exports database operations, server policies, secrets, and
-  other server-only capabilities.
-- More specific suffixes, when present, expose a deliberately narrower
-  capability and should be used only by the named consumer class.
+```bash
+# 전체 production build와 회귀 테스트
+pnpm test
 
-`pnpm run check:architecture` runs Steiger's standard FSD rules and the
-repository boundary tests. The narrow overrides in `steiger.config.ts` remain
-necessary because the current Steiger/FSD filesystem versions do not normalize
-underscore-prefixed App/Pages layers consistently in every rule and do not
-count some `_app` Route Handler or worker consumers. Keep exceptions limited to
-confirmed paths and re-evaluate them when those packages are upgraded.
+# 정적 품질 검사
+pnpm run check
 
-## Documentation workflow
+# 개별 검사
+pnpm run lint
+pnpm run typecheck
+pnpm run check:architecture
+pnpm run db:validate
 
-This repository uses lee-spec-kit in embedded, local-workflow mode.
+# Storybook
+pnpm storybook
+pnpm run test:storybook --run
+```
+
+전체 suite는 production build, domain/unit test, PostgreSQL integration, API contract, FSD boundary와 Storybook interaction을 순서대로 검증한다.
+
+## 문서 워크플로
+
+이 저장소는 embedded local workflow의 lee-spec-kit을 사용한다.
 
 ```bash
 npx lee-spec-kit detect --json
@@ -271,4 +266,4 @@ npx lee-spec-kit feature <name> --component web
 npx lee-spec-kit feature <name> --component modal-api
 ```
 
-Product requirements live in `docs/prd/`, while active implementation work is tracked in component feature folders under `docs/features/`.
+제품 요구사항은 `docs/prd/`, Feature별 spec·plan·tasks·decisions는 `docs/features/` 아래에서 관리한다.
