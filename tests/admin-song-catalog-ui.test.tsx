@@ -170,3 +170,21 @@ test("song management is an admin-only page with one explicit original-song file
   assert.doesNotMatch(managerSource, /name="sourceVideoId"/);
   assert.doesNotMatch(managerSource, /name="sourceLabel"/);
 });
+
+test("an empty catalog keeps first snapshot import reachable and withholds catalog-dependent actions", async () => {
+  const fs = await import("node:fs/promises");
+  const [pageSource, toolbarSource, serviceSource] = await Promise.all([
+    fs.readFile("src/_pages/admin-song-catalog/ui/admin-song-catalog-page.tsx", "utf8"),
+    fs.readFile("src/features/manage-song-catalog/ui/catalog-snapshot-toolbar.tsx", "utf8"),
+    fs.readFile("src/features/manage-song-catalog/api/admin-service.ts", "utf8"),
+  ]);
+
+  assert.match(serviceSource, /export async function findAdminCatalog/);
+  assert.match(serviceSource, /if \(!catalog\) return null/);
+  assert.match(pageSource, /await findAdminCatalog/);
+  assert.match(pageSource, /CatalogSnapshotToolbar canExport=\{result !== null\}/);
+  assert.match(pageSource, /카탈로그 스냅샷을 먼저 가져와 주세요/);
+  assert.match(pageSource, /\{result \? \(/);
+  assert.match(toolbarSource, /canExport \? \(/);
+  assert.match(toolbarSource, /mutationFn: importAdminCatalogSnapshot/);
+});

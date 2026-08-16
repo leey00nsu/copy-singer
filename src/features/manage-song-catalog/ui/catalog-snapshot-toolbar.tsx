@@ -20,7 +20,7 @@ import { Label } from "@/shared/ui/label";
 import { StatusNotice } from "@/shared/ui/status-notice";
 import { type CatalogImportResult, importAdminCatalogSnapshot } from "../api/client";
 
-export function CatalogSnapshotToolbar() {
+export function CatalogSnapshotToolbar({ canExport = true }: { canExport?: boolean }) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [open, setOpen] = useState(false);
@@ -49,9 +49,11 @@ export function CatalogSnapshotToolbar() {
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <a className={buttonVariants({ size: "sm", variant: "outline" })} download href="/api/admin/catalog/export">
-        <Download className="size-3.5" /> 내보내기
-      </a>
+      {canExport ? (
+        <a className={buttonVariants({ size: "sm", variant: "outline" })} download href="/api/admin/catalog/export">
+          <Download className="size-3.5" /> 내보내기
+        </a>
+      ) : null}
       <Dialog
         open={open}
         onOpenChange={(nextOpen) => {

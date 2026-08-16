@@ -2,10 +2,11 @@ import { ChevronLeft, ChevronRight, Music2, Search } from "lucide-react";
 import Link from "next/link";
 import { requireAdminPage } from "@/features/authentication/index.server";
 import { type AdminCatalogEntryView, CatalogManager, CatalogSnapshotToolbar } from "@/features/manage-song-catalog";
-import { listAdminCatalog } from "@/features/manage-song-catalog/index.server";
+import { findAdminCatalog, type listAdminCatalog } from "@/features/manage-song-catalog/index.server";
 import { PRIVATE_METADATA } from "@/shared/config/index.server";
 import { Button } from "@/shared/ui/button";
 import { ProductPageIntro } from "@/shared/ui/product-page-intro";
+import { StatusNotice } from "@/shared/ui/status-notice";
 import { ProductFooter, ProductHeader } from "@/widgets/product-shell";
 
 export const adminSongCatalogMetadata = PRIVATE_METADATA;
@@ -77,7 +78,7 @@ export default async function AdminSongCatalogPage({
   const status = ["DRAFT", "ACTIVE", "ARCHIVED"].includes(filters.status ?? "")
     ? (filters.status as "DRAFT" | "ACTIVE" | "ARCHIVED")
     : "";
-  const result = await listAdminCatalog({ page, q, status });
+  const result = await findAdminCatalog({ page, q, status });
 
   return (
     <div className="min-h-screen bg-background">
@@ -101,38 +102,52 @@ export default async function AdminSongCatalogPage({
               <Music2 className="size-4" /> 등록된 추천곡
             </h2>
             <div className="flex items-center gap-3">
-              <span className="text-[10px] text-muted-foreground">{result.total}곡</span>
-              <CatalogSnapshotToolbar />
+              <span className="text-[10px] text-muted-foreground">{result?.total ?? 0}곡</span>
+              <CatalogSnapshotToolbar canExport={result !== null} />
             </div>
           </div>
-          <form
-            className="mb-3 grid gap-3 rounded-xl bg-muted/20 p-4 sm:grid-cols-[minmax(0,1fr)_12rem_auto] sm:items-end"
-            method="get"
-          >
-            <label className="grid gap-1 text-[11px] font-medium">
-              곡 검색
-              <input
-                className="h-9 rounded-md border bg-background px-3 text-xs"
-                defaultValue={q}
-                name="q"
-                placeholder="곡 제목 또는 아티스트"
-              />
-            </label>
-            <label className="grid gap-1 text-[11px] font-medium">
-              공개 상태
-              <select className="h-9 rounded-md border bg-background px-3 text-xs" defaultValue={status} name="status">
-                <option value="">전체</option>
-                <option value="DRAFT">준비 중</option>
-                <option value="ACTIVE">공개</option>
-                <option value="ARCHIVED">보관된 곡</option>
-              </select>
-            </label>
-            <Button className="h-9" size="sm" type="submit">
-              <Search /> 검색
-            </Button>
-          </form>
-          <CatalogManager entries={result.entries.map(catalogEntryView)} />
-          {result.pageCount > 1 ? (
+          {result ? (
+            <>
+              <form
+                className="mb-3 grid gap-3 rounded-xl bg-muted/20 p-4 sm:grid-cols-[minmax(0,1fr)_12rem_auto] sm:items-end"
+                method="get"
+              >
+                <label className="grid gap-1 text-[11px] font-medium">
+                  곡 검색
+                  <input
+                    className="h-9 rounded-md border bg-background px-3 text-xs"
+                    defaultValue={q}
+                    name="q"
+                    placeholder="곡 제목 또는 아티스트"
+                  />
+                </label>
+                <label className="grid gap-1 text-[11px] font-medium">
+                  공개 상태
+                  <select
+                    className="h-9 rounded-md border bg-background px-3 text-xs"
+                    defaultValue={status}
+                    name="status"
+                  >
+                    <option value="">전체</option>
+                    <option value="DRAFT">준비 중</option>
+                    <option value="ACTIVE">공개</option>
+                    <option value="ARCHIVED">보관된 곡</option>
+                  </select>
+                </label>
+                <Button className="h-9" size="sm" type="submit">
+                  <Search /> 검색
+                </Button>
+              </form>
+              <CatalogManager entries={result.entries.map(catalogEntryView)} />
+            </>
+          ) : (
+            <StatusNotice
+              description="로컬이나 기존 서버에서 내보낸 JSON 스냅샷을 가져오면 곡·분석 결과·원곡 파일 연결을 복원할 수 있어요. 카탈로그를 가져온 뒤 검색, 추천곡 추가와 내보내기를 사용할 수 있어요."
+              title="카탈로그 스냅샷을 먼저 가져와 주세요"
+              tone="neutral"
+            />
+          )}
+          {result && result.pageCount > 1 ? (
             <nav aria-label="추천곡 관리 페이지" className="mt-3 flex items-center justify-center gap-1 text-xs">
               {result.page > 1 ? (
                 <Link

@@ -4,6 +4,22 @@ import { config } from "dotenv";
 
 config({ path: [".env.local", ".env"], quiet: true });
 
+test("admin page catalog lookup treats a missing catalog as an initial import state", async (context) => {
+  if (!process.env.DATABASE_URL) return context.skip("DATABASE_URL is not configured");
+  const { prisma } = await import("../src/shared/db/index.server");
+  const { findAdminCatalog } = await import("../src/features/manage-song-catalog/index.server");
+  try {
+    const result = await findAdminCatalog(
+      { page: 1, q: "", status: "" },
+      20,
+      `missing-admin-catalog-${crypto.randomUUID()}`,
+    );
+    assert.equal(result, null);
+  } finally {
+    await prisma.$disconnect();
+  }
+});
+
 test("admin catalog mutations are idempotent and publish only matching READY revisions", async (context) => {
   if (!process.env.DATABASE_URL) return context.skip("DATABASE_URL is not configured");
   const previousEnv = {

@@ -26,11 +26,13 @@ async function catalogOrThrow(tx: Prisma.TransactionClient | typeof prisma = pri
   return catalog;
 }
 
-export async function listAdminCatalog(
+export async function findAdminCatalog(
   input: { q: string; status: "" | "DRAFT" | "ACTIVE" | "ARCHIVED"; page: number },
   pageSize = 20,
+  catalogSlug = TJ_2607_CATALOG_SLUG,
 ) {
-  const catalog = await catalogOrThrow();
+  const catalog = await prisma.catalog.findUnique({ where: { slug: catalogSlug } });
+  if (!catalog) return null;
   const where: Prisma.CatalogEntryWhereInput = {
     catalogId: catalog.id,
     song: {
@@ -56,6 +58,15 @@ export async function listAdminCatalog(
     }),
   ]);
   return { catalog, entries, total, page: input.page, pageCount: Math.max(1, Math.ceil(total / pageSize)) };
+}
+
+export async function listAdminCatalog(
+  input: { q: string; status: "" | "DRAFT" | "ACTIVE" | "ARCHIVED"; page: number },
+  pageSize = 20,
+) {
+  const result = await findAdminCatalog(input, pageSize);
+  if (!result) throw new SongCatalogAdminError("CATALOG_NOT_FOUND", "카탈로그를 먼저 초기화해야 해요.", 409);
+  return result;
 }
 
 export async function createAdminSong(input: CreateAdminSongInput, adminUserId: string | null) {
