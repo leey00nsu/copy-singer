@@ -9,6 +9,7 @@ import {
   LoaderCircle,
   Plus,
   RefreshCw,
+  RotateCcw,
   Upload,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -279,29 +280,100 @@ function ReplaceSourceDialog({ songId, songTitle }: { songId: string; songTitle:
   );
 }
 
-function CatalogRow({ entry }: { entry: AdminCatalogEntryView }) {
+function CatalogVisibilityActions({
+  current,
+  entry,
+}: {
+  current: AdminCatalogSourcePresentation | undefined;
+  entry: AdminCatalogEntryView;
+}) {
   const router = useRouter();
-  const [archiving, setArchiving] = useState(false);
+  const [archiveOpen, setArchiveOpen] = useState(false);
+  const [pending, setPending] = useState<"archive" | "restore" | null>(null);
+
+  async function archive() {
+    setPending("archive");
+    try {
+      await archiveAdminSongClient(entry.song.id);
+      toast.success("추천에서 제외했어요. 곡 정보와 기존 믹싱 이력은 유지돼요.");
+      setArchiveOpen(false);
+      router.refresh();
+    } catch (error) {
+      toast.error(message(error));
+    } finally {
+      setPending(null);
+    }
+  }
+
+  async function restore() {
+    if (!current) return;
+    setPending("restore");
+    try {
+      await publishAdminSource(entry.song.id, current.source.id);
+      toast.success("추천에 다시 공개했어요.");
+      router.refresh();
+    } catch (error) {
+      toast.error(message(error));
+    } finally {
+      setPending(null);
+    }
+  }
+
+  if (entry.song.lifecycleStatus === "ARCHIVED") {
+    return (
+      <Button
+        disabled={pending !== null || !current?.canPublish}
+        onClick={() => void restore()}
+        size="xs"
+        title={current?.publishBlockedReason ?? (current ? undefined : "다시 공개할 버전을 찾을 수 없어요.")}
+      >
+        {pending === "restore" ? <LoaderCircle className="animate-spin" /> : <RotateCcw />} 추천에 다시 공개
+      </Button>
+    );
+  }
+
+  return (
+    <Dialog onOpenChange={setArchiveOpen} open={archiveOpen}>
+      <DialogTrigger render={<Button size="xs" variant="ghost" />}>
+        <Archive /> 추천에서 제외
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{entry.song.title}을 추천에서 제외할까요?</DialogTitle>
+          <DialogDescription>
+            새 추천 결과에는 이 곡이 표시되지 않아요. 곡 정보, YouTube 영상, 원곡 파일, 분석 결과와 기존 믹싱 이력은
+            삭제하지 않고 보관해요.
+          </DialogDescription>
+        </DialogHeader>
+        <StatusNotice
+          description="나중에 보관된 곡 filter에서 찾아 추천에 다시 공개할 수 있어요."
+          title="데이터는 그대로 유지돼요"
+          tone="warning"
+        />
+        <DialogFooter>
+          <DialogClose disabled={pending !== null} render={<Button variant="outline" />}>
+            취소
+          </DialogClose>
+          <Button disabled={pending !== null} onClick={() => void archive()}>
+            {pending === "archive" ? <LoaderCircle className="animate-spin" /> : <Archive />} 추천에서 제외
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function CatalogRow({ entry }: { entry: AdminCatalogEntryView }) {
   const versions = presentAdminCatalogSources(entry);
   const primaryVersions = versions
     .filter((version) => version.role !== "history")
     .sort((left, right) => Number(right.role === "current") - Number(left.role === "current"));
   const historyVersions = versions.filter((version) => version.role === "history");
-  const summaryState = primaryVersions.find((version) => version.role === "pending") ?? primaryVersions[0];
-
-  async function archive() {
-    if (!window.confirm(`${entry.song.title}을 카탈로그에서 보관 처리할까요?`)) return;
-    setArchiving(true);
-    try {
-      await archiveAdminSongClient(entry.song.id);
-      toast.success("곡을 보관 처리했어요.");
-      router.refresh();
-    } catch (error) {
-      toast.error(message(error));
-    } finally {
-      setArchiving(false);
-    }
-  }
+  const current = primaryVersions.find((version) => version.role === "current");
+  const summaryState =
+    entry.song.lifecycleStatus === "ARCHIVED"
+      ? current
+      : (primaryVersions.find((version) => version.role === "pending") ?? primaryVersions[0]);
 
   return (
     <details className="group border-b last:border-b-0">
@@ -330,11 +402,7 @@ function CatalogRow({ entry }: { entry: AdminCatalogEntryView }) {
         ) : null}
         <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
           <ReplaceSourceDialog songId={entry.song.id} songTitle={entry.song.title} />
-          {entry.song.lifecycleStatus !== "ARCHIVED" ? (
-            <Button disabled={archiving} onClick={() => void archive()} size="xs" variant="ghost">
-              {archiving ? <LoaderCircle className="animate-spin" /> : <Archive />} 추천에서 제외
-            </Button>
-          ) : null}
+          <CatalogVisibilityActions current={current} entry={entry} />
         </div>
       </div>
     </details>

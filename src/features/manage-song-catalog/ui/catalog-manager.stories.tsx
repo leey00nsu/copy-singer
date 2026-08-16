@@ -79,6 +79,18 @@ const failedEntry: AdminCatalogEntryView = {
   },
 };
 
+const archivedEntry: AdminCatalogEntryView = {
+  ...readyEntry,
+  id: "entry-archived",
+  status: "ARCHIVED",
+  song: {
+    ...readyEntry.song,
+    id: "song-archived",
+    lifecycleStatus: "ARCHIVED",
+    sources: [readyEntry.song.sources[1]],
+  },
+};
+
 const EXPECTED_AUDIO_ACCEPT =
   ".wav,.mp3,.m4a,.webm,audio/wav,audio/x-wav,audio/mpeg,audio/mp4,audio/aac,audio/x-m4a,audio/webm";
 const EXPECTED_AUDIO_FORMAT_HINT = "지원 형식: WAV · MP3 · M4A · WEBM";
@@ -157,6 +169,31 @@ export const ErrorAndRetry: Story = {
     await expect(canvas.queryByText("PIPELINE_TIMEOUT")).not.toBeInTheDocument();
     await expect(canvas.getAllByText("분석 실패")[0]).toBeVisible();
     await expect(canvas.getByRole("button", { name: "분석 다시 시도" })).toBeEnabled();
+  },
+};
+
+export const ArchiveExplanation: Story = {
+  args: { entries: [readyEntry] },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByText("너였다면"));
+    await userEvent.click(canvas.getByRole("button", { name: "추천에서 제외" }));
+    const dialog = within(document.body).getByRole("dialog", { name: "너였다면을 추천에서 제외할까요?" });
+    await waitFor(() => expect(within(dialog).getByText("데이터는 그대로 유지돼요")).toBeVisible());
+    await expect(within(dialog).getByText(/기존 믹싱 이력은 삭제하지 않고 보관/)).toBeVisible();
+    await expect(within(dialog).getByRole("button", { name: "추천에서 제외" })).toBeEnabled();
+    await expect(within(dialog).queryByRole("button", { name: /삭제/ })).not.toBeInTheDocument();
+  },
+};
+
+export const ArchivedAndRestorable: Story = {
+  args: { entries: [archivedEntry] },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getAllByText("보관됨")[0]).toBeVisible();
+    await userEvent.click(canvas.getByText("너였다면"));
+    await expect(canvas.getByRole("button", { name: "추천에 다시 공개" })).toBeEnabled();
+    await expect(canvas.queryByRole("button", { name: /삭제/ })).not.toBeInTheDocument();
   },
 };
 

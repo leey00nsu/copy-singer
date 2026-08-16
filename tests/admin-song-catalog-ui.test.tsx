@@ -141,6 +141,8 @@ test("catalog manager exposes loading, empty, error, disabled, and mobile storie
   assert.ok(stories.Empty);
   assert.ok(stories.AddAudioDialog);
   assert.ok(stories.ErrorAndRetry);
+  assert.ok(stories.ArchiveExplanation);
+  assert.ok(stories.ArchivedAndRestorable);
   assert.ok(stories.LoadingAndDisabled);
   assert.ok(stories.Mobile);
 });
@@ -161,6 +163,9 @@ test("song management is an admin-only page with one explicit original-song file
   assert.match(managerSource, /YouTube 미리듣기 영상/);
   assert.match(managerSource, /원곡 파일 다시 업로드/);
   assert.doesNotMatch(managerSource, /믹싱 target 음원|교체 음원/);
+  assert.doesNotMatch(managerSource, /window\.confirm|영구 삭제/);
+  assert.match(managerSource, /기존 믹싱[\s\S]*이력은[\s\S]*삭제하지 않고 보관/);
+  assert.match(managerSource, /추천에 다시 공개/);
   assert.doesNotMatch(managerSource, /name="originalKey"/);
   assert.doesNotMatch(managerSource, /name="sourceVideoId"/);
   assert.doesNotMatch(managerSource, /name="sourceLabel"/);
