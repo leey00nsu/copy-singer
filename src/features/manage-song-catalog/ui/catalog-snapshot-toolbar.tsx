@@ -69,7 +69,7 @@ export function CatalogSnapshotToolbar() {
           <DialogHeader>
             <DialogTitle>카탈로그 가져오기</DialogTitle>
             <DialogDescription>
-              내보낸 JSON 스냅샷을 가져오면 곡·출처·분석·target·카탈로그를 복원해요. 같은 스냅샷을 다시 가져와도
+              내보낸 JSON 스냅샷을 가져오면 곡·출처·분석·원곡 파일·카탈로그를 복원해요. 같은 스냅샷을 다시 가져와도
               중복으로 만들지 않아요.
             </DialogDescription>
           </DialogHeader>
@@ -85,7 +85,7 @@ export function CatalogSnapshotToolbar() {
             />
             {result ? (
               <StatusNotice
-                description={`${result.total}곡 중 ${result.published}곡을 공개 상태로 복원했어요. 새 항목: 곡 ${result.songsCreated} · 출처 ${result.sourcesCreated} · 분석 ${result.analysesCreated} · target ${result.targetsCreated} · 카탈로그 ${result.entriesCreated}`}
+                description={`${result.total}곡 중 ${result.published}곡을 공개 상태로 복원했어요. 새 항목: 곡 ${result.songsCreated} · 출처 ${result.sourcesCreated} · 분석 ${result.analysesCreated} · 원곡 파일 ${result.targetsCreated} · 카탈로그 ${result.entriesCreated}`}
                 title="가져오기 완료"
                 tone="success"
               />

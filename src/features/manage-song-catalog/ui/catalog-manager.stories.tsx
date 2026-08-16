@@ -59,6 +59,9 @@ const failedEntry: AdminCatalogEntryView = {
     id: "song-62",
     title: "실패한 분석 예시",
     lifecycleStatus: "DRAFT",
+    activeSourceId: null,
+    currentAnalysisId: null,
+    targetAssetId: null,
     sources: [
       {
         ...replacementSource,
@@ -70,6 +73,7 @@ const failedEntry: AdminCatalogEntryView = {
         analysisReady: false,
         estimatedKey: null,
         keyConfidence: null,
+        targetReady: true,
       },
     ],
   },
@@ -94,43 +98,54 @@ export const Default: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByText("너였다면")).toBeVisible();
     await userEvent.click(canvas.getByText("너였다면"));
-    await expect(canvas.getByText("PIPELINE_TIMEOUT")).not.toBeVisible();
-    await expect(canvas.getAllByRole("button", { name: /^공개$/ })[0]).toBeDisabled();
+    await expect(canvas.queryByText("PIPELINE_TIMEOUT")).not.toBeInTheDocument();
+    await expect(canvas.getByText("현재 공개 버전")).toBeVisible();
+    await expect(canvas.getByText("교체 준비 중")).toBeVisible();
+    await expect(canvas.getAllByRole("button", { name: "추천에 공개" })[0]).toBeDisabled();
   },
 };
 
 export const Empty: Story = {
   args: { entries: [] },
   play: async ({ canvasElement }) => {
-    await expect(within(canvasElement).getByText("조건에 맞는 곡이 없어요.")).toBeVisible();
+    await expect(within(canvasElement).getByText("조건에 맞는 추천곡이 없어요.")).toBeVisible();
   },
 };
 
 export const AddAudioDialog: Story = {
   play: async ({ canvasElement }) => {
-    await userEvent.click(within(canvasElement).getByRole("button", { name: "음원 추가" }));
-    const dialog = within(document.body).getByRole("dialog", { name: "음원 추가" });
-    const audioInput = within(dialog).getByLabelText("분석 및 믹싱용 음원");
+    await userEvent.click(within(canvasElement).getByRole("button", { name: "추천곡 추가" }));
+    const dialog = within(document.body).getByRole("dialog", { name: "추천곡 추가" });
+    const audioInput = within(dialog).getByLabelText("원곡 음원 파일");
     await expect(within(dialog).getByRole("textbox", { name: "곡 제목" })).toBeEnabled();
     await expect(within(dialog).queryByRole("textbox", { name: "원키" })).not.toBeInTheDocument();
     await expect(within(dialog).queryByRole("textbox", { name: "Video ID" })).not.toBeInTheDocument();
+    await expect(within(dialog).getByRole("textbox", { name: "YouTube 미리듣기 영상" })).toBeEnabled();
+    await expect(within(dialog).getByText("원곡 파일 하나만 필요해요")).toBeVisible();
     await expect(audioInput).toBeRequired();
     await expect(audioInput).toHaveAttribute("accept", EXPECTED_AUDIO_ACCEPT);
-    await waitFor(() => expect(within(dialog).getByText(EXPECTED_AUDIO_FORMAT_HINT)).toBeVisible());
+    await waitFor(() =>
+      expect(within(dialog).getByText((content) => content.includes(EXPECTED_AUDIO_FORMAT_HINT))).toBeVisible(),
+    );
     await expect(within(dialog).getByRole("button", { name: "등록 및 분석 요청" })).toBeEnabled();
   },
 };
 
-export const ExistingAudioInputsUseSameFormats: Story = {
+export const OriginalFileRecoveryAndReplacement: Story = {
   args: { entries: [readyEntry] },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByText("너였다면"));
 
-    const targetInputs = canvas.getAllByLabelText("믹싱 target 음원");
-    for (const input of targetInputs) await expect(input).toHaveAttribute("accept", EXPECTED_AUDIO_ACCEPT);
-    await expect(canvas.getByLabelText("교체 음원")).toHaveAttribute("accept", EXPECTED_AUDIO_ACCEPT);
-    await expect(canvas.getAllByText(EXPECTED_AUDIO_FORMAT_HINT)).toHaveLength(targetInputs.length + 1);
+    const recoveryInput = canvas.getByLabelText("원곡 파일 다시 업로드");
+    await expect(recoveryInput).toHaveAttribute("accept", EXPECTED_AUDIO_ACCEPT);
+    await expect(canvas.getAllByLabelText("원곡 파일 다시 업로드")).toHaveLength(1);
+
+    await userEvent.click(canvas.getByRole("button", { name: "영상·원곡 교체" }));
+    const dialog = within(document.body).getByRole("dialog", { name: "너였다면 영상·원곡 교체" });
+    await expect(within(dialog).getByLabelText("원곡 음원 파일")).toHaveAttribute("accept", EXPECTED_AUDIO_ACCEPT);
+    await expect(within(dialog).getByRole("textbox", { name: "YouTube 미리듣기 영상" })).toBeEnabled();
+    await expect(within(dialog).getAllByLabelText(/원곡/)).toHaveLength(1);
   },
 };
 
@@ -139,8 +154,9 @@ export const ErrorAndRetry: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByText("실패한 분석 예시"));
-    await expect(canvas.getByText("PIPELINE_TIMEOUT")).toBeVisible();
-    await expect(canvas.getByRole("button", { name: "재시도" })).toBeEnabled();
+    await expect(canvas.queryByText("PIPELINE_TIMEOUT")).not.toBeInTheDocument();
+    await expect(canvas.getAllByText("분석 실패")[0]).toBeVisible();
+    await expect(canvas.getByRole("button", { name: "분석 다시 시도" })).toBeEnabled();
   },
 };
 
@@ -148,7 +164,7 @@ export const LoadingAndDisabled: Story = {
   args: { loading: true },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("button", { name: "음원 추가" })).toBeDisabled();
+    await expect(canvas.getByRole("button", { name: "추천곡 추가" })).toBeDisabled();
   },
 };
 

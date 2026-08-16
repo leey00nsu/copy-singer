@@ -216,7 +216,7 @@ export async function publishAdminSongSource(songId: string, sourceId: string, f
       orderBy: { createdAt: "desc" },
     });
     if (!target || target.sourceVideoId !== source.sourceVideoId)
-      throw new SongCatalogAdminError("TARGET_NOT_READY", "출처와 일치하는 target 음원이 없어요.", 409);
+      throw new SongCatalogAdminError("TARGET_NOT_READY", "이 영상에 대응하는 원곡 음원 파일이 없어요.", 409);
     const entry = await tx.catalogEntry.findFirst({ where: { songId, catalog: { slug: TJ_2607_CATALOG_SLUG } } });
     if (!entry) throw new SongCatalogAdminError("CATALOG_ENTRY_NOT_FOUND", "카탈로그 항목을 찾을 수 없어요.", 404);
     const current = await tx.song.findUniqueOrThrow({ where: { id: songId } });

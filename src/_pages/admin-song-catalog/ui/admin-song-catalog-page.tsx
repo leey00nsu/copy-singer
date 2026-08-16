@@ -90,15 +90,15 @@ export default async function AdminSongCatalogPage({
           <ChevronLeft className="size-3.5" /> 운영 대시보드
         </Link>
         <ProductPageIntro
-          description="곡 정보와 음원을 등록하고 Modal 분석 상태를 확인한 뒤 추천 카탈로그에 공개할 수 있어요."
+          description="미리듣기 영상과 원곡 파일을 등록하고 음원 분석 상태를 확인한 뒤 추천에 공개할 수 있어요."
           eyebrow="Admin"
-          title="음원 관리"
+          title="추천곡 관리"
         />
 
         <section className="mt-8">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
             <h2 className="flex items-center gap-2 text-sm font-semibold">
-              <Music2 className="size-4" /> 등록된 음원
+              <Music2 className="size-4" /> 등록된 추천곡
             </h2>
             <div className="flex items-center gap-3">
               <span className="text-[10px] text-muted-foreground">{result.total}곡</span>
@@ -124,7 +124,7 @@ export default async function AdminSongCatalogPage({
                 <option value="">전체</option>
                 <option value="DRAFT">준비 중</option>
                 <option value="ACTIVE">공개</option>
-                <option value="ARCHIVED">보관</option>
+                <option value="ARCHIVED">보관된 곡</option>
               </select>
             </label>
             <Button className="h-9" size="sm" type="submit">
@@ -133,10 +133,10 @@ export default async function AdminSongCatalogPage({
           </form>
           <CatalogManager entries={result.entries.map(catalogEntryView)} />
           {result.pageCount > 1 ? (
-            <nav aria-label="음원 관리 페이지" className="mt-3 flex items-center justify-center gap-1 text-xs">
+            <nav aria-label="추천곡 관리 페이지" className="mt-3 flex items-center justify-center gap-1 text-xs">
               {result.page > 1 ? (
                 <Link
-                  aria-label="이전 음원 페이지"
+                  aria-label="이전 추천곡 페이지"
                   className="flex size-8 items-center justify-center rounded-md hover:bg-muted"
                   href={pageHref(result.page - 1, q, status)}
                 >
@@ -150,7 +150,7 @@ export default async function AdminSongCatalogPage({
               </span>
               {result.page < result.pageCount ? (
                 <Link
-                  aria-label="다음 음원 페이지"
+                  aria-label="다음 추천곡 페이지"
                   className="flex size-8 items-center justify-center rounded-md hover:bg-muted"
                   href={pageHref(result.page + 1, q, status)}
                 >

@@ -145,7 +145,7 @@ test("catalog manager exposes loading, empty, error, disabled, and mobile storie
   assert.ok(stories.Mobile);
 });
 
-test("song management is an admin-only page with an explicit audio add entry point", async () => {
+test("song management is an admin-only page with one explicit original-song file entry point", async () => {
   const pageSource = await import("node:fs/promises").then((fs) =>
     fs.readFile("src/_pages/admin-song-catalog/ui/admin-song-catalog-page.tsx", "utf8"),
   );
@@ -153,10 +153,14 @@ test("song management is an admin-only page with an explicit audio add entry poi
     fs.readFile("src/features/manage-song-catalog/ui/catalog-manager.tsx", "utf8"),
   );
   assert.match(pageSource, /await requireAdminPage\(\)/);
-  assert.match(pageSource, /title="음원 관리"/);
-  assert.match(managerSource, /> 음원 추가/);
+  assert.match(pageSource, /title="추천곡 관리"/);
+  assert.match(managerSource, /> 추천곡 추가/);
   assert.match(managerSource, /name="audio"/);
-  assert.match(managerSource, /원키는 Modal 분석/);
+  assert.match(managerSource, /원곡 파일 하나만 필요해요/);
+  assert.match(managerSource, /보컬과 반주가 함께 있는 원곡/);
+  assert.match(managerSource, /YouTube 미리듣기 영상/);
+  assert.match(managerSource, /원곡 파일 다시 업로드/);
+  assert.doesNotMatch(managerSource, /믹싱 target 음원|교체 음원/);
   assert.doesNotMatch(managerSource, /name="originalKey"/);
   assert.doesNotMatch(managerSource, /name="sourceVideoId"/);
   assert.doesNotMatch(managerSource, /name="sourceLabel"/);

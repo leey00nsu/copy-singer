@@ -1,6 +1,16 @@
 "use client";
 
-import { Archive, Check, ChevronDown, FileAudio, LoaderCircle, Plus, RefreshCw, Upload } from "lucide-react";
+import {
+  Archive,
+  Check,
+  ChevronDown,
+  ExternalLink,
+  FileAudio,
+  LoaderCircle,
+  Plus,
+  RefreshCw,
+  Upload,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
 import { toast } from "sonner";
@@ -17,6 +27,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/shared/ui/dialog";
+import { StatusNotice } from "@/shared/ui/status-notice";
 import {
   addAdminSong,
   archiveAdminSongClient,
@@ -25,20 +36,30 @@ import {
   retryAdminAnalysis,
   uploadAdminTarget,
 } from "../api/client";
-import type { AdminCatalogEntryView, AdminCatalogSourceView } from "../model/view";
+import { type AdminCatalogSourcePresentation, presentAdminCatalogSources } from "../model/presentation";
+import type { AdminCatalogEntryView } from "../model/view";
 
 const fieldClass = "h-9 min-w-0 rounded-md border bg-background px-3 text-xs";
+const originalAudioDescription =
+  "보컬과 반주가 함께 있는 원곡 파일을 선택하세요. 보컬을 분리해 음역을 분석하고 AI 믹싱의 기준 곡으로 사용해요.";
 
 type AudioFileInputProps = {
   className?: string;
+  description?: string;
   disabled: boolean;
-  label: string;
+  label?: string;
   textClassName?: string;
 };
 
-function AudioFileInput({ className, disabled, label, textClassName = "text-[10px]" }: AudioFileInputProps) {
+function AudioFileInput({
+  className,
+  description = originalAudioDescription,
+  disabled,
+  label = "원곡 음원 파일",
+  textClassName = "text-[10px]",
+}: AudioFileInputProps) {
   const inputId = useId();
-  const hintId = `${inputId}-formats`;
+  const hintId = `${inputId}-hint`;
 
   return (
     <div className={`grid gap-1 ${textClassName} ${className ?? ""}`}>
@@ -55,8 +76,30 @@ function AudioFileInput({ className, disabled, label, textClassName = "text-[10p
         required
         type="file"
       />
-      <p className="font-normal text-muted-foreground" id={hintId}>
-        지원 형식: {SUPPORTED_AUDIO_UPLOAD_FORMAT_LABEL}
+      <p className="font-normal leading-4 text-muted-foreground" id={hintId}>
+        {description} 지원 형식: {SUPPORTED_AUDIO_UPLOAD_FORMAT_LABEL}
+      </p>
+    </div>
+  );
+}
+
+function YouTubeUrlInput({ disabled }: { disabled: boolean }) {
+  const inputId = useId();
+  const hintId = `${inputId}-hint`;
+  return (
+    <div className="grid gap-1 text-[11px] font-medium sm:col-span-2">
+      <label htmlFor={inputId}>YouTube 미리듣기 영상</label>
+      <input
+        aria-describedby={hintId}
+        className={fieldClass}
+        disabled={disabled}
+        id={inputId}
+        name="sourceUrl"
+        required
+        type="url"
+      />
+      <p className="font-normal leading-4 text-muted-foreground" id={hintId}>
+        사용자가 추천곡을 미리 듣는 영상이에요. 주소에서 영상 ID를 자동으로 확인해요.
       </p>
     </div>
   );
@@ -66,32 +109,23 @@ function message(error: unknown) {
   return error instanceof Error ? error.message : "요청을 처리하지 못했어요.";
 }
 
-function StatusBadge({ value }: { value: string }) {
-  const destructive = value === "FAILED" || value === "UNAVAILABLE";
-  return (
-    <Badge
-      variant={
-        destructive
-          ? "destructive"
-          : value === "ACTIVE" || value === "PUBLISHED" || value === "READY" || value === "SUCCEEDED"
-            ? "default"
-            : "secondary"
-      }
-    >
-      {value.toLowerCase()}
-    </Badge>
-  );
+function StateBadge({ presentation }: { presentation: AdminCatalogSourcePresentation }) {
+  const variant =
+    presentation.tone === "destructive" ? "destructive" : presentation.tone === "success" ? "default" : "secondary";
+  return <Badge variant={variant}>{presentation.stateLabel}</Badge>;
 }
 
-function SourceActions({ songId, source }: { songId: string; source: AdminCatalogSourceView }) {
+function VersionActions({ presentation, songId }: { presentation: AdminCatalogSourcePresentation; songId: string }) {
   const router = useRouter();
   const [pending, setPending] = useState<string | null>(null);
+
+  if (presentation.role === "history") return null;
 
   async function run(label: string, action: () => Promise<unknown>) {
     setPending(label);
     try {
       await action();
-      toast.success(`${label}을 완료했어요.`);
+      toast.success(`${label} 작업을 완료했어요.`);
       router.refresh();
     } catch (error) {
       toast.error(message(error));
@@ -100,55 +134,103 @@ function SourceActions({ songId, source }: { songId: string; source: AdminCatalo
     }
   }
 
-  async function upload(formData: FormData) {
+  async function recoverOriginalFile(formData: FormData) {
     const file = formData.get("audio");
     if (!(file instanceof File) || file.size === 0) return;
-    await run("target 업로드", () => uploadAdminTarget(source.id, file));
+    await run("원곡 파일 업로드", () => uploadAdminTarget(presentation.source.id, file));
   }
 
-  const publishReady = source.analysisReady && source.targetReady;
+  const showPublish = presentation.role === "pending" || presentation.role === "preparing";
+  const showActions = presentation.needsOriginalFileRecovery || presentation.canRetryAnalysis || showPublish;
+  if (!showActions) return null;
+
   return (
     <div className="mt-3 grid gap-3 border-t pt-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-      <form action={upload} className="flex min-w-0 flex-wrap items-end gap-2">
-        <AudioFileInput className="min-w-52 flex-1" disabled={pending !== null} label="믹싱 target 음원" />
-        <Button disabled={pending !== null} size="xs" type="submit" variant="outline">
-          {pending === "target 업로드" ? <LoaderCircle className="animate-spin" /> : <Upload />} 업로드
-        </Button>
-      </form>
+      {presentation.needsOriginalFileRecovery ? (
+        <form action={recoverOriginalFile} className="flex min-w-0 flex-wrap items-end gap-2">
+          <AudioFileInput
+            className="min-w-52 flex-1"
+            description="이 버전에 대응하는 원곡 파일을 다시 선택하세요."
+            disabled={pending !== null}
+            label="원곡 파일 다시 업로드"
+          />
+          <Button disabled={pending !== null} size="xs" type="submit" variant="outline">
+            {pending === "원곡 파일 업로드" ? <LoaderCircle className="animate-spin" /> : <Upload />} 업로드
+          </Button>
+        </form>
+      ) : (
+        <span />
+      )}
       <div className="flex flex-wrap gap-2 lg:justify-end">
-        {source.analysisStatus === "FAILED" ? (
+        {presentation.canRetryAnalysis ? (
           <Button
             disabled={pending !== null}
-            onClick={() => void run("분석 재시도", () => retryAdminAnalysis(source.id))}
+            onClick={() => void run("음원 분석 재시도", () => retryAdminAnalysis(presentation.source.id))}
             size="xs"
             variant="outline"
           >
-            <RefreshCw /> 재시도
+            <RefreshCw /> 분석 다시 시도
           </Button>
         ) : null}
-        <Button
-          disabled={pending !== null || !publishReady}
-          onClick={() => {
-            if (window.confirm("이 출처와 분석·target을 추천 카탈로그에 공개할까요?"))
-              void run("공개", () => publishAdminSource(songId, source.id));
-          }}
-          size="xs"
-        >
-          {pending === "공개" ? <LoaderCircle className="animate-spin" /> : <Check />} 공개
-        </Button>
+        {showPublish ? (
+          <Button
+            disabled={pending !== null || !presentation.canPublish}
+            onClick={() => void run("추천 공개", () => publishAdminSource(songId, presentation.source.id))}
+            size="xs"
+            title={presentation.publishBlockedReason ?? undefined}
+          >
+            {pending === "추천 공개" ? <LoaderCircle className="animate-spin" /> : <Check />} 추천에 공개
+          </Button>
+        ) : null}
       </div>
     </div>
   );
 }
 
-function ReplaceSourceForm({ songId }: { songId: string }) {
+function VersionPanel({ presentation, songId }: { presentation: AdminCatalogSourcePresentation; songId: string }) {
+  return (
+    <section className="rounded-xl bg-background p-3 ring-1 ring-foreground/10">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="text-xs font-semibold">{presentation.roleLabel}</p>
+            <span className="text-[10px] text-muted-foreground">{presentation.versionLabel}</span>
+          </div>
+          <a
+            className="mt-1 inline-flex items-center gap-1 text-[11px] text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+            href={presentation.source.sourceUrl}
+            rel="noreferrer"
+            target="_blank"
+          >
+            YouTube 미리듣기 영상 <ExternalLink className="size-3" />
+          </a>
+          {presentation.source.estimatedKey ? (
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              분석 원키 {presentation.source.estimatedKey}
+              {presentation.source.keyConfidence === null
+                ? ""
+                : ` · 신뢰도 ${Math.round(presentation.source.keyConfidence * 100)}%`}
+            </p>
+          ) : null}
+        </div>
+        <StateBadge presentation={presentation} />
+      </div>
+      <p className="mt-2 text-[11px] leading-5 text-muted-foreground">{presentation.stateDescription}</p>
+      <VersionActions presentation={presentation} songId={songId} />
+    </section>
+  );
+}
+
+function ReplaceSourceDialog({ songId, songTitle }: { songId: string; songTitle: string }) {
   const router = useRouter();
+  const [open, setOpen] = useState(false);
   const [pending, setPending] = useState(false);
+
   async function submit(formData: FormData) {
     setPending(true);
     try {
       const audio = formData.get("audio");
-      if (!(audio instanceof File) || audio.size === 0) throw new Error("교체할 음원 파일을 선택해 주세요.");
+      if (!(audio instanceof File) || audio.size === 0) throw new Error("새 원곡 음원 파일을 선택해 주세요.");
       await replaceAdminSource(
         songId,
         {
@@ -157,7 +239,8 @@ function ReplaceSourceForm({ songId }: { songId: string }) {
         },
         audio,
       );
-      toast.success("새 출처와 음원을 저장하고 Modal 분석을 요청했어요.");
+      toast.success("새 영상과 원곡 파일을 저장하고 음원 분석을 요청했어요.");
+      setOpen(false);
       router.refresh();
     } catch (error) {
       toast.error(message(error));
@@ -165,27 +248,47 @@ function ReplaceSourceForm({ songId }: { songId: string }) {
       setPending(false);
     }
   }
+
   return (
-    <form
-      action={submit}
-      className="mt-3 grid gap-2 rounded-lg bg-muted/30 p-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] md:items-end"
-    >
-      <label className="grid gap-1 text-[10px] font-medium">
-        YouTube URL
-        <input className={fieldClass} disabled={pending} name="sourceUrl" required type="url" />
-      </label>
-      <AudioFileInput disabled={pending} label="교체 음원" />
-      <Button disabled={pending} size="xs" type="submit" variant="outline">
-        {pending ? <LoaderCircle className="animate-spin" /> : <RefreshCw />} 출처와 음원 교체
-      </Button>
-    </form>
+    <Dialog onOpenChange={setOpen} open={open}>
+      <DialogTrigger render={<Button size="xs" variant="outline" />}>
+        <RefreshCw /> 영상·원곡 교체
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-xl">
+        <DialogHeader>
+          <DialogTitle>{songTitle} 영상·원곡 교체</DialogTitle>
+          <DialogDescription>
+            새 영상과 그 영상에 대응하는 원곡 파일 하나로 교체 버전을 준비해요. 분석을 마치고 직접 공개하기 전까지 현재
+            버전이 계속 사용돼요.
+          </DialogDescription>
+        </DialogHeader>
+        <form action={submit} className="grid gap-4 sm:grid-cols-2">
+          <YouTubeUrlInput disabled={pending} />
+          <AudioFileInput className="sm:col-span-2" disabled={pending} textClassName="text-[11px]" />
+          <DialogFooter className="sm:col-span-2">
+            <DialogClose disabled={pending} render={<Button type="button" variant="outline" />}>
+              취소
+            </DialogClose>
+            <Button disabled={pending} type="submit">
+              {pending ? <LoaderCircle className="animate-spin" /> : <RefreshCw />} 교체 버전 분석 요청
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
 
 function CatalogRow({ entry }: { entry: AdminCatalogEntryView }) {
   const router = useRouter();
   const [archiving, setArchiving] = useState(false);
-  const latest = entry.song.sources[0];
+  const versions = presentAdminCatalogSources(entry);
+  const primaryVersions = versions
+    .filter((version) => version.role !== "history")
+    .sort((left, right) => Number(right.role === "current") - Number(left.role === "current"));
+  const historyVersions = versions.filter((version) => version.role === "history");
+  const summaryState = primaryVersions.find((version) => version.role === "pending") ?? primaryVersions[0];
+
   async function archive() {
     if (!window.confirm(`${entry.song.title}을 카탈로그에서 보관 처리할까요?`)) return;
     setArchiving(true);
@@ -199,6 +302,7 @@ function CatalogRow({ entry }: { entry: AdminCatalogEntryView }) {
       setArchiving(false);
     }
   }
+
   return (
     <details className="group border-b last:border-b-0">
       <summary className="grid cursor-pointer list-none gap-2 px-4 py-3 hover:bg-muted/20 sm:grid-cols-[3rem_minmax(0,1fr)_auto_auto] sm:items-center">
@@ -207,56 +311,31 @@ function CatalogRow({ entry }: { entry: AdminCatalogEntryView }) {
           <p className="truncate text-sm font-medium">{entry.song.title}</p>
           <p className="truncate text-[11px] text-muted-foreground">{entry.song.artist}</p>
         </div>
-        <div className="flex flex-wrap gap-1">
-          <StatusBadge value={entry.song.lifecycleStatus} />
-          {latest?.analysisStatus ? <StatusBadge value={latest.analysisStatus} /> : null}
-        </div>
+        {summaryState ? <StateBadge presentation={summaryState} /> : <Badge variant="secondary">버전 없음</Badge>}
         <ChevronDown className="size-4 text-muted-foreground transition-transform group-open:rotate-180" />
       </summary>
-      <div className="border-t bg-muted/10 px-4 py-4">
-        {entry.song.sources.map((source) => (
-          <div className="mb-3 rounded-xl border bg-background p-3 last:mb-0" key={source.id}>
-            <div className="flex flex-wrap items-start justify-between gap-2">
-              <div>
-                <p className="text-xs font-medium">
-                  revision {source.revision} · {source.sourceLabel}
-                </p>
-                <a
-                  className="mt-1 block text-[10px] text-muted-foreground underline-offset-2 hover:underline"
-                  href={source.sourceUrl}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  {source.sourceVideoId}
-                </a>
-                {source.analysisError ? (
-                  <p className="mt-1 text-[10px] text-destructive">{source.analysisError}</p>
-                ) : null}
-                {source.estimatedKey ? (
-                  <p className="mt-1 text-[10px] text-muted-foreground">
-                    분석 원키 {source.estimatedKey}
-                    {source.keyConfidence === null ? "" : ` · 신뢰도 ${Math.round(source.keyConfidence * 100)}%`}
-                  </p>
-                ) : null}
-              </div>
-              <div className="flex flex-wrap gap-1">
-                <StatusBadge value={source.status} />
-                <Badge variant={source.targetReady ? "default" : "secondary"}>
-                  <FileAudio /> target {source.targetReady ? "ready" : "missing"}
-                </Badge>
-              </div>
-            </div>
-            <SourceActions songId={entry.song.id} source={source} />
-          </div>
+      <div className="grid gap-3 border-t bg-muted/10 px-4 py-4">
+        {primaryVersions.map((version) => (
+          <VersionPanel key={version.source.id} presentation={version} songId={entry.song.id} />
         ))}
-        <ReplaceSourceForm songId={entry.song.id} />
-        {entry.song.lifecycleStatus !== "ARCHIVED" ? (
-          <div className="mt-3 flex justify-end">
-            <Button disabled={archiving} onClick={() => void archive()} size="xs" variant="destructive">
-              {archiving ? <LoaderCircle className="animate-spin" /> : <Archive />} 보관
-            </Button>
-          </div>
+        {historyVersions.length ? (
+          <details className="rounded-xl bg-background/60 p-3 ring-1 ring-foreground/10">
+            <summary className="cursor-pointer text-xs font-medium">이전 버전 {historyVersions.length}개</summary>
+            <div className="mt-3 grid gap-3">
+              {historyVersions.map((version) => (
+                <VersionPanel key={version.source.id} presentation={version} songId={entry.song.id} />
+              ))}
+            </div>
+          </details>
         ) : null}
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+          <ReplaceSourceDialog songId={entry.song.id} songTitle={entry.song.title} />
+          {entry.song.lifecycleStatus !== "ARCHIVED" ? (
+            <Button disabled={archiving} onClick={() => void archive()} size="xs" variant="ghost">
+              {archiving ? <LoaderCircle className="animate-spin" /> : <Archive />} 추천에서 제외
+            </Button>
+          ) : null}
+        </div>
       </div>
     </details>
   );
@@ -267,11 +346,12 @@ export function CatalogManager({ entries, loading = false }: { entries: AdminCat
   const [pending, setPending] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const adding = pending || loading;
+
   async function add(formData: FormData) {
     setPending(true);
     try {
       const audio = formData.get("audio");
-      if (!(audio instanceof File) || audio.size === 0) throw new Error("분석할 음원 파일을 선택해 주세요.");
+      if (!(audio instanceof File) || audio.size === 0) throw new Error("원곡 음원 파일을 선택해 주세요.");
       await addAdminSong(
         {
           title: String(formData.get("title") ?? ""),
@@ -281,7 +361,7 @@ export function CatalogManager({ entries, loading = false }: { entries: AdminCat
         },
         audio,
       );
-      toast.success("음원을 저장하고 Modal 분석을 요청했어요.");
+      toast.success("추천곡과 원곡 파일을 저장하고 음원 분석을 요청했어요.");
       setAddOpen(false);
       router.refresh();
     } catch (error) {
@@ -290,6 +370,7 @@ export function CatalogManager({ entries, loading = false }: { entries: AdminCat
       setPending(false);
     }
   }
+
   return (
     <div>
       <div className="mb-4 flex justify-end gap-2">
@@ -298,16 +379,22 @@ export function CatalogManager({ entries, loading = false }: { entries: AdminCat
         </Button>
         <Dialog onOpenChange={setAddOpen} open={addOpen}>
           <DialogTrigger render={<Button disabled={loading} />}>
-            <Plus /> 음원 추가
+            <Plus /> 추천곡 추가
           </DialogTrigger>
           <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-2xl">
             <DialogHeader>
-              <DialogTitle>음원 추가</DialogTitle>
+              <DialogTitle>추천곡 추가</DialogTitle>
               <DialogDescription>
-                곡 정보와 사용 권한이 있는 음원을 등록해요. Video ID는 URL에서 추출하고, 원키는 Modal 분석으로 추정해요.
+                미리듣기 영상과 보컬·반주가 함께 있는 원곡 파일 하나를 등록해요. 음원 분석이 끝난 뒤 직접 공개하기
+                전까지 추천에는 표시되지 않아요.
               </DialogDescription>
             </DialogHeader>
-            <form action={add} className="grid gap-3 sm:grid-cols-2">
+            <StatusNotice
+              description="원곡 파일에서 보컬을 분리해 음역을 분석하고, 전체 원곡으로 원키를 추정해요. 같은 파일을 AI 믹싱의 기준 곡과 반주로 사용해요."
+              icon={<FileAudio />}
+              title="원곡 파일 하나만 필요해요"
+            />
+            <form action={add} className="grid gap-4 sm:grid-cols-2">
               <label className="grid gap-1 text-[11px] font-medium">
                 곡 제목
                 <input className={fieldClass} disabled={adding} name="title" required />
@@ -316,16 +403,8 @@ export function CatalogManager({ entries, loading = false }: { entries: AdminCat
                 아티스트
                 <input className={fieldClass} disabled={adding} name="artist" required />
               </label>
-              <label className="grid gap-1 text-[11px] font-medium sm:col-span-2">
-                YouTube URL
-                <input className={fieldClass} disabled={adding} name="sourceUrl" required type="url" />
-              </label>
-              <AudioFileInput
-                className="sm:col-span-2"
-                disabled={adding}
-                label="분석 및 믹싱용 음원"
-                textClassName="text-[11px]"
-              />
+              <YouTubeUrlInput disabled={adding} />
+              <AudioFileInput className="sm:col-span-2" disabled={adding} textClassName="text-[11px]" />
               <DialogFooter className="sm:col-span-2">
                 <DialogClose disabled={adding} render={<Button type="button" variant="outline" />}>
                   취소
@@ -342,7 +421,7 @@ export function CatalogManager({ entries, loading = false }: { entries: AdminCat
         {entries.length ? (
           entries.map((entry) => <CatalogRow entry={entry} key={entry.id} />)
         ) : (
-          <div className="px-4 py-12 text-center text-sm text-muted-foreground">조건에 맞는 곡이 없어요.</div>
+          <div className="px-4 py-12 text-center text-sm text-muted-foreground">조건에 맞는 추천곡이 없어요.</div>
         )}
       </div>
     </div>
