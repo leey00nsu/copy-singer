@@ -38,3 +38,20 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: `pnpm exec tsx --test tests/admin-song-catalog-ui.test.tsx` 5/5 PASS; targeted ESLint, `pnpm exec tsc --noEmit`, targeted Biome PASS
 - **Consequences**: UI는 raw status 대신 사용자 의미를 렌더링하고, 내부 enum이나 API contract 변경 없이 정보 구조를 바꿀 수 있다.
+
+## D002: 완성 원곡 파일 하나를 등록·교체의 단일 입력으로 사용 (2026-08-16)
+
+- **Context**: 신규 등록은 파일 하나를 받지만 기존 상세에는 모든 revision의 `믹싱 target 음원` 입력과 `교체 음원` 입력이 동시에 노출돼 관리자가 서로 다른 두 파일이 필요한 것으로 오해할 수 있었다.
+- **Constraints**: 기존 multipart API는 URL과 파일 하나로 source revision·target asset·분석 job을 이미 준비하며, source 생성 후 외부 파일 업로드만 실패한 부분 성공 상태는 복구할 수 있어야 한다.
+- **Options**: 두 입력을 계속 노출하고 설명 추가, target uploader 완전 제거, 정상 상태에서 숨기고 target 누락 상태에서만 복구 입력 제공.
+- **Decision**: 추가와 교체 모두 `YouTube 미리듣기 영상`과 보컬·반주가 함께 있는 `원곡 음원 파일` 하나만 받는다. revision별 재업로드는 `targetReady=false`일 때만 `원곡 파일 다시 업로드`로 제공한다.
+- **Rationale**: 실제 server/Modal 데이터 흐름과 입력 개수를 일치시키면서 부분 업로드 실패의 운영 복구 능력은 유지한다.
+- **Trace**:
+  - **DOING 시작 시점**: 기존 target upload route는 삭제하지 않고 UI 노출 조건만 readiness로 제한하기로 했다.
+  - **DONE 전 확정 시점**: 추가/교체 Dialog, 현재·교체 준비·이전 버전 panel과 snapshot/error copy를 변경했다. 정상 공개 버전에는 파일 입력이 없고 누락 revision에는 복구 입력 하나만 있음을 Storybook으로 확인했다.
+  - **머지 후 확인**: local merge 후 기록.
+- **Evidence**:
+  - **Commit**: `b3cd57b` (`feat(F035): 추천곡 추가·영상과 원곡 교체 UI 재구성`)
+  - **PR**: local workflow — 해당 없음
+  - **Test/Log**: 관리자 UI 5/5 PASS; CatalogManager Storybook 7/7 PASS; targeted ESLint, TypeScript PASS; legacy user-facing target/revision/Modal 검색 0건
+- **Consequences**: 관리자는 보컬 단독 파일을 준비하지 않으며, 교체가 완료될 때까지 기존 공개 버전이 유지된다는 점을 Dialog에서 확인한다.

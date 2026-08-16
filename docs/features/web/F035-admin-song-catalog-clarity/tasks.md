@@ -73,16 +73,17 @@
     - [x] 내부 target/revision 상태와 사용자-facing 한국어 표현의 경계를 고정한다.
   - Evidence: `6c19966` (`feat(F035): 곡·버전 상태 presentation 모델 정리`); `presentAdminCatalogSources`가 현재·교체 준비·공개 준비·이전 버전, 한국어 상태, 공개 차단 이유와 원곡 파일 복구 필요 여부를 파생한다. 관리자 UI 단위 테스트 5/5, ESLint, TypeScript, Biome PASS.
 
-- [TODO][PRD-FR-059] T-F035-admin-song-catalog-clarity-02 추천곡 추가·영상과 원곡 교체 UI 재구성
+- [DONE][PRD-FR-059] T-F035-admin-song-catalog-clarity-02 추천곡 추가·영상과 원곡 교체 UI 재구성
   - Date: 2026-08-16
   - Acceptance:
     - 신규 등록과 교체는 각각 YouTube 미리듣기 영상과 원곡 음원 파일 하나만 요구한다.
     - 정상 revision에는 두 번째 파일 입력이 없고 원곡 파일 누락 상태에서만 다시 업로드할 수 있다.
   - Checklist:
-    - [ ] 페이지·목록·추가 Dialog의 곡 중심 용어와 helper copy를 적용한다.
-    - [ ] 교체 form을 집중형 Dialog로 바꾸고 현재 공개 버전이 유지됨을 설명한다.
-    - [ ] 현재·교체 준비·이전 버전의 정보 위계를 분리하고 raw 영문 상태를 제거한다.
-    - [ ] snapshot toolbar와 관련 관리자 오류의 사용자-facing target 문구를 원곡 파일로 통일한다.
+    - [x] 페이지·목록·추가 Dialog의 곡 중심 용어와 helper copy를 적용한다.
+    - [x] 교체 form을 집중형 Dialog로 바꾸고 현재 공개 버전이 유지됨을 설명한다.
+    - [x] 현재·교체 준비·이전 버전의 정보 위계를 분리하고 raw 영문 상태를 제거한다.
+    - [x] snapshot toolbar와 관련 관리자 오류의 사용자-facing target 문구를 원곡 파일로 통일한다.
+  - Evidence: `b3cd57b` (`feat(F035): 추천곡 추가·영상과 원곡 교체 UI 재구성`); 추천곡 추가/영상·원곡 교체는 각각 원곡 파일 입력 1개만 제공하고, 원곡 파일 누락 revision에서만 재업로드 입력을 렌더링한다. 관리자 UI 단위 테스트 5/5, CatalogManager Storybook 7/7, ESLint, TypeScript PASS; 사용자-facing legacy target/revision/Modal 문구 검색 0건.
 
 - [TODO][PRD-FR-059] T-F035-admin-song-catalog-clarity-03 보관 영향과 명시적 복원 흐름 구현
   - Date: 2026-08-16
@@ -126,5 +127,6 @@
 | `pnpm exec eslint src/features/manage-song-catalog/model/presentation.ts tests/admin-song-catalog-ui.test.tsx` | `2026-08-16` | PASS |
 | `pnpm exec tsc --noEmit` | `2026-08-16` | PASS |
 | `pnpm exec biome check src/features/manage-song-catalog/model/presentation.ts tests/admin-song-catalog-ui.test.tsx` | `2026-08-16` | PASS |
+| `pnpm exec vitest --project storybook --run src/features/manage-song-catalog/ui/catalog-manager.stories.tsx` | `2026-08-16` | PASS — 7/7 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-16T20:35:53+09:00 -->
+<!-- lee-spec-kit:workflow-sync 2026-08-16T20:46:58+09:00 -->
