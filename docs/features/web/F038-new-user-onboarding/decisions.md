@@ -48,7 +48,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **Post-merge check**: 대기 중
 - **Evidence**:
   - **Test/Log**: `pnpm run test:storybook --run src/widgets/product-shell/ui/new-user-onboarding-dialog.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx` PASS (12 tests), `pnpm run check:architecture` PASS
-- **Consequences**: onboarding snapshot 조회 장애는 인증 제품 자체를 중단하지 않지만 사용자는 다음 정상 요청까지 모달을 보지 않을 수 있다. 미완료 dialog는 명시적 완료 저장을 요구하므로 한 화면·짧은 카피를 유지해야 한다.
+- **Consequences**: onboarding snapshot 조회 장애는 인증 제품 자체를 중단하지 않지만 사용자는 다음 정상 요청까지 모달을 보지 않을 수 있다. 미완료 dialog는 명시적 완료 저장을 요구하므로 각 단계는 한 화면에 들어오는 짧은 카피를 유지해야 한다.
 
 ## D003: 최종 검증은 계약·통합·Storybook·실제 렌더링을 함께 사용한다 (2026-08-17)
 
@@ -64,3 +64,18 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**:
   - **Test/Log**: `/tmp/lee-spec-kit/pr-assets/F038-onboarding-desktop.png`, `/tmp/lee-spec-kit/pr-assets/F038-onboarding-mobile-360.png`, `pnpm run build` PASS, `pnpm run check:architecture` PASS
 - **Consequences**: 전체 `pnpm run check`는 기존 무관 Biome 오류 6건으로 계속 실패하지만 F038 변경 파일은 Biome을 통과한다. 해당 기준선 정리는 이 Feature에서 무관 파일을 수정하지 않고 별도 품질 작업으로 남긴다.
+
+## D004: 온보딩은 브랜드 마크와 공용 퍼널 stepper를 사용한다 (2026-08-17)
+
+- **Context**: 사용자는 범용 장식 아이콘을 브랜드 마크로 바꾸고 기존 3단계 생성 퍼널 UI를 재사용해 온보딩을 3단계로 나누도록 요청했다.
+- **Constraints**: ProductShell과 CreationFunnel은 서로 다른 widget이므로 직접 import할 수 없다. 단계 이동은 완료 API와 분리되어야 하고, 브랜드 마크는 기존 asset을 재사용하며 신규 이미지나 임의의 상태색을 만들지 않아야 한다.
+- **Options**: 생성 퍼널 stepper 직접 cross-widget import, 시각 복제, generic shared stepper 추출을 비교했다. 단계별 다색 icon과 오디오·데이터 `data-accent` 단일 계열도 비교했다.
+- **Decision**: 기존 stepper의 상태 계산·연결선·lifecycle marker·`aria-current` 구현을 generic `shared/ui/funnel-stepper`로 추출하고 `CreationFunnelStepper`는 기존 API를 유지하는 adapter로 둔다. 온보딩 header는 `ProductMark`를 사용하고, 단계 icon과 티켓 surface는 `data-accent` 단일 계열, 완료 step은 기존 foreground, 예정 step은 muted 규칙을 사용한다. 분석→추천→믹싱은 local state로 이동하고 마지막 `시작하기`만 완료 mutation을 호출한다.
+- **Rationale**: 기존 상태·연결선·접근성 표현을 그대로 유지하면서 widget 간 직접 의존을 피하고 브랜드·도메인 의미를 명확히 한다.
+- **Trace**:
+  - **At DOING start**: 기존 stepper를 shared generic component로 추출하고 단계 icon은 data-accent 단일 계열로 제한하는 방향을 세웠다.
+  - **Before DONE**: 기존 creation funnel 4개 story와 온보딩·ProductShell story를 합친 Chromium 17개가 통과했다. 실제 1280×800에서 분석·추천 단계를, 360×800에서 믹싱 단계를 확인해 브랜드 마크, 완료/현재/예정 색 위계, 가로 overflow 0과 모든 action 노출을 검증했다.
+  - **Post-merge check**: 대기 중
+- **Evidence**:
+  - **Test/Log**: `pnpm run test:storybook --run src/widgets/product-shell/ui/new-user-onboarding-dialog.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx src/widgets/creation-funnel/ui/creation-funnel.stories.tsx` PASS (17 tests), `/tmp/lee-spec-kit/pr-assets/F038-onboarding-3step-desktop.png`, `/tmp/lee-spec-kit/pr-assets/F038-onboarding-3step-recommendation.png`, `/tmp/lee-spec-kit/pr-assets/F038-onboarding-3step-mobile-360.png`
+- **Consequences**: 앞으로 생성 퍼널의 시각 상태 변경은 shared stepper에서 두 사용처에 함께 반영된다. 제품별 단계 목록과 카피는 각 widget이 소유한다.

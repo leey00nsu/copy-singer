@@ -96,7 +96,7 @@
     - [x] 실제 desktop/mobile 모달을 브라우저에서 확인하고 스크린샷 evidence를 남긴다.
     - [x] feature 문서와 workflow sync marker를 최종 구현에 맞게 갱신한다.
 
-- [TODO][PRD-FR-067] T-F038-new-user-onboarding-04 브랜드 아이콘과 3단계 퍼널 온보딩으로 개편
+- [DONE][PRD-FR-067] T-F038-new-user-onboarding-04 브랜드 아이콘과 3단계 퍼널 온보딩으로 개편
   - Date: 2026-08-17
   - Acceptance:
     - 모달 좌측 상단은 기존 Copysinger 브랜드 마크를 사용하고 범용 Sparkles 아이콘을 제거한다.
@@ -104,10 +104,10 @@
     - 분석·믹싱 티켓은 해당 단계에서 실제 서버 잔액과 용도를 설명하고 완료 저장은 마지막 단계에서만 실행한다.
     - 아이콘과 색은 design system의 data-accent·foreground·muted semantic token만 용도에 맞게 사용한다.
   - Checklist:
-    - [ ] PRD/spec/plan/decisions를 3단계 동작과 디자인 결정으로 동기화한다.
-    - [ ] 기존 CreationFunnelStepper 구현을 공용 stepper로 추출해 기존 퍼널과 온보딩이 함께 재사용한다.
-    - [ ] 브랜드 마크, 단계별 본문과 이전·다음·완료 상태를 구현한다.
-    - [ ] Storybook interaction과 mobile/desktop 실제 렌더링을 검증한다.
+    - [x] PRD/spec/plan/decisions를 3단계 동작과 디자인 결정으로 동기화한다.
+    - [x] 기존 CreationFunnelStepper 구현을 공용 stepper로 추출해 기존 퍼널과 온보딩이 함께 재사용한다.
+    - [x] 브랜드 마크, 단계별 본문과 이전·다음·완료 상태를 구현한다.
+    - [x] Storybook interaction과 mobile/desktop 실제 렌더링을 검증한다.
 
 ## 완료 조건
 
@@ -140,5 +140,8 @@
 | `pnpm run build` | `2026-08-17` | PASS — Next.js 16.3.0, 34 static pages, onboarding API route 포함 |
 | `pnpm run check` | `2026-08-17` | BASELINE FAIL — F038 외 기존 Biome 오류 6건; F038 scoped Biome·lint·typecheck·architecture는 PASS |
 | Browser `1280×800`, `360×800` | `2026-08-17` | PASS — 가로 overflow 0, action 노출, ESC 유지, 완료 후 닫힘; `/tmp/lee-spec-kit/pr-assets/F038-onboarding-*.png` |
+| `pnpm run test:storybook --run <onboarding, product-shell, creation-funnel stories>` | `2026-08-17` | PASS — Chromium 17 tests, 3단계 이동·티켓·loading/error·기존 퍼널 회귀 |
+| `pnpm exec biome check <T04 changed files>` | `2026-08-17` | PASS — 5 files |
+| Browser 3-step `1280×800`, `360×800` | `2026-08-17` | PASS — 브랜드 마크·3단계 색 위계·가로 overflow 0·action 노출; `/tmp/lee-spec-kit/pr-assets/F038-onboarding-3step-*.png` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-17T05:09:48.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-17T05:41:07.000Z -->
