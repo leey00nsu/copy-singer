@@ -109,6 +109,15 @@
     - [x] 브랜드 마크, 단계별 본문과 이전·다음·완료 상태를 구현한다.
     - [x] Storybook interaction과 mobile/desktop 실제 렌더링을 검증한다.
 
+- [DONE][NON-PRD] T-F038-new-user-onboarding-05 온보딩 Storybook 애니메이션 타이밍 안정화
+  - Date: 2026-08-17
+  - Acceptance:
+    - dialog 진입 애니메이션 중 브랜드 마크 가시성을 즉시 단정하지 않고 실제 표시 상태까지 기다린다.
+    - 온보딩 Storybook interaction 전체가 Chromium에서 안정적으로 통과한다.
+  - Checklist:
+    - [x] 브랜드 마크 visibility assertion을 `waitFor` 기반으로 변경한다.
+    - [x] 온보딩 story 5건과 같은 실행에서 실패했던 기존 story 25건을 각각 재실행해 통과시킨다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
@@ -143,5 +152,7 @@
 | `pnpm run test:storybook --run <onboarding, product-shell, creation-funnel stories>` | `2026-08-17` | PASS — Chromium 17 tests, 3단계 이동·티켓·loading/error·기존 퍼널 회귀 |
 | `pnpm exec biome check <T04 changed files>` | `2026-08-17` | PASS — 5 files |
 | Browser 3-step `1280×800`, `360×800` | `2026-08-17` | PASS — 브랜드 마크·3단계 색 위계·가로 overflow 0·action 노출; `/tmp/lee-spec-kit/pr-assets/F038-onboarding-3step-*.png` |
+| `pnpm run test:storybook --run <onboarding story>` | `2026-08-17` | PASS — Chromium 5 tests, dialog animation 이후 브랜드 마크 visibility 확인 |
+| `pnpm run test:storybook --run <three unrelated retry stories>` | `2026-08-17` | PASS — Chromium 25 tests, 전체 회귀에서 함께 발생한 타이밍 실패 비재현 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-17T05:41:07.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-17T06:30:00.000Z -->
