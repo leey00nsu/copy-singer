@@ -33,16 +33,30 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+export const Preview: Story = {};
+
 export const Desktop: Story = {
   globals: { viewport: { value: "desktop", isRotated: false } },
   play: async () => {
     const body = within(document.body);
     const dialog = body.getByRole("dialog", { name: "처음 만나는 Copysinger" });
-    await expect(within(dialog).getByText("목소리 분석")).toBeVisible();
-    await expect(within(dialog).getByText("노래 추천")).toBeVisible();
-    await expect(within(dialog).getByText("AI 믹싱")).toBeVisible();
-    await expect(within(dialog).getByText("분석 티켓").parentElement).toHaveTextContent("현재 5장");
-    await expect(within(dialog).getByText("믹싱 티켓").parentElement).toHaveTextContent("현재 1장");
+    const scoped = within(dialog);
+    const funnel = scoped.getByRole("navigation", { name: "온보딩 진행 단계" });
+    await expect(dialog.querySelector('img[src*="copy-singer-mark.svg"]')).toBeVisible();
+    await expect(within(funnel).getByText("목소리 분석").closest("li")).toHaveAttribute("aria-current", "step");
+    await expect(scoped.getByText("분석 티켓").parentElement).toHaveTextContent("현재 5장");
+    await expect(scoped.queryByText("믹싱 티켓")).not.toBeInTheDocument();
+
+    await userEvent.click(scoped.getByRole("button", { name: "다음" }));
+    await expect(within(funnel).getByText("노래 추천").closest("li")).toHaveAttribute("aria-current", "step");
+    await expect(scoped.getByText("노래 추천에는 티켓을 사용하지 않아요.", { exact: false })).toBeVisible();
+
+    await userEvent.click(scoped.getByRole("button", { name: "다음" }));
+    await expect(within(funnel).getByText("AI 믹싱").closest("li")).toHaveAttribute("aria-current", "step");
+    await expect(scoped.getByText("믹싱 티켓").parentElement).toHaveTextContent("현재 1장");
+    await userEvent.click(scoped.getByRole("button", { name: "이전" }));
+    await expect(within(funnel).getByText("노래 추천").closest("li")).toHaveAttribute("aria-current", "step");
+    await userEvent.click(scoped.getByRole("button", { name: "다음" }));
     await userEvent.click(within(dialog).getByRole("button", { name: "시작하기" }));
     await waitFor(() => expect(body.queryByRole("dialog", { name: "처음 만나는 Copysinger" })).not.toBeInTheDocument());
   },
@@ -53,7 +67,10 @@ export const Mobile: Story = {
   play: async () => {
     const dialog = within(document.body).getByRole("dialog", { name: "처음 만나는 Copysinger" });
     await expect(dialog.scrollWidth).toBeLessThanOrEqual(dialog.clientWidth);
-    const startButton = within(dialog).getByRole("button", { name: "시작하기" });
+    const scoped = within(dialog);
+    await userEvent.click(scoped.getByRole("button", { name: "다음" }));
+    await userEvent.click(scoped.getByRole("button", { name: "다음" }));
+    const startButton = scoped.getByRole("button", { name: "시작하기" });
     startButton.scrollIntoView({ block: "nearest" });
     await waitFor(() => expect(startButton).toBeVisible());
   },
@@ -65,8 +82,12 @@ export const Saving: Story = {
   },
   play: async () => {
     const dialog = within(document.body).getByRole("dialog", { name: "처음 만나는 Copysinger" });
-    await userEvent.click(within(dialog).getByRole("button", { name: "시작하기" }));
-    await expect(within(dialog).getByRole("button", { name: "저장 중…" })).toBeDisabled();
+    const scoped = within(dialog);
+    await userEvent.click(scoped.getByRole("button", { name: "다음" }));
+    await userEvent.click(scoped.getByRole("button", { name: "다음" }));
+    await userEvent.click(scoped.getByRole("button", { name: "시작하기" }));
+    await expect(scoped.getByRole("button", { name: "저장 중…" })).toBeDisabled();
+    await expect(scoped.getByRole("button", { name: "이전" })).toBeDisabled();
   },
 };
 
@@ -77,9 +98,12 @@ export const SaveFailure: Story = {
   play: async () => {
     const body = within(document.body);
     const dialog = body.getByRole("dialog", { name: "처음 만나는 Copysinger" });
-    await userEvent.click(within(dialog).getByRole("button", { name: "시작하기" }));
-    await expect(await within(dialog).findByRole("alert")).toHaveTextContent("완료 상태를 저장하지 못했어요");
-    await expect(within(dialog).getByRole("button", { name: "다시 시도" })).toBeEnabled();
+    const scoped = within(dialog);
+    await userEvent.click(scoped.getByRole("button", { name: "다음" }));
+    await userEvent.click(scoped.getByRole("button", { name: "다음" }));
+    await userEvent.click(scoped.getByRole("button", { name: "시작하기" }));
+    await expect(await scoped.findByRole("alert")).toHaveTextContent("완료 상태를 저장하지 못했어요");
+    await expect(scoped.getByRole("button", { name: "다시 시도" })).toBeEnabled();
     await expect(body.getByRole("dialog", { name: "처음 만나는 Copysinger" })).toBeInTheDocument();
   },
 };
