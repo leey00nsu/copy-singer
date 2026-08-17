@@ -85,7 +85,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Context**: 전체 Storybook 회귀에서 Desktop story가 dialog 진입 애니메이션 중 브랜드 마크를 찾은 직후 `toBeVisible`을 실행해 간헐적으로 실패했다. 같은 실행에서 F038 외 story 세 건도 타이밍성 실패 후 개별 재실행에서는 통과했다.
 - **Constraints**: 실제 제품 애니메이션과 브랜드 마크 렌더링은 변경하지 않고 interaction test가 사용자에게 표시되는 최종 상태를 검증해야 한다.
 - **Options**: 애니메이션 제거, 고정 sleep 추가, Testing Library `waitFor`로 visibility 완료를 기다리는 방식을 비교했다.
-- **Decision**: 브랜드 마크 element 선택은 유지하고 `waitFor` 안에서 `toBeVisible`을 평가한다.
+- **Decision**: 브랜드 마크와 dialog 안내 element 선택은 유지하고 `waitFor` 안에서 `toBeVisible`을 평가한다. 전체 회귀 부하에서 비동기 canvas 준비를 기다리는 생성 퍼널 검사는 5초의 명시적 timeout을 사용한다.
 - **Rationale**: 임의 시간 지연 없이 dialog가 실제 표시 상태에 도달했다는 조건만 기다리므로 실행 속도와 사용자 동작을 모두 보존한다.
 - **Evidence**: 온보딩 Storybook Chromium 5 tests PASS, 같은 전체 실행에서 실패했던 F038 외 story Chromium 25 tests 개별 재실행 PASS.
 - **Consequences**: dialog transition 속도에 따른 거짓 실패를 줄이며 브랜드 마크가 최종적으로 보이지 않는 실제 회귀는 계속 실패한다.

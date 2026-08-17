@@ -60,7 +60,7 @@ export const ActiveAnalysis: Story = {
     await expect(timelineCompleted).toHaveClass("bg-foreground", "text-background");
     await expect(timelineCurrent).toHaveClass("bg-data-accent/10", "text-data-accent-foreground");
     await expect(canvas.getByTestId("voice-signal-core")).toHaveAttribute("data-signal-mode", "processing");
-    await waitFor(() => expect(canvas.getByTestId("voice-orb")).toBeVisible());
+    await waitFor(() => expect(canvas.getByTestId("voice-orb")).toBeVisible(), { timeout: 5_000 });
   },
 };
 

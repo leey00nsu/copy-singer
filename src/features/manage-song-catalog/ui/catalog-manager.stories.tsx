@@ -133,7 +133,7 @@ export const AddAudioDialog: Story = {
     await expect(within(dialog).queryByRole("textbox", { name: "원키" })).not.toBeInTheDocument();
     await expect(within(dialog).queryByRole("textbox", { name: "Video ID" })).not.toBeInTheDocument();
     await expect(within(dialog).getByRole("textbox", { name: "YouTube 미리듣기 영상" })).toBeEnabled();
-    await expect(within(dialog).getByText("원곡 파일 하나만 필요해요")).toBeVisible();
+    await waitFor(() => expect(within(dialog).getByText("원곡 파일 하나만 필요해요")).toBeVisible());
     await expect(audioInput).toBeRequired();
     await expect(audioInput).toHaveAttribute("accept", EXPECTED_AUDIO_ACCEPT);
     await waitFor(() =>

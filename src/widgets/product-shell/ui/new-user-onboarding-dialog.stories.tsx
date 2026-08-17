@@ -42,7 +42,9 @@ export const Desktop: Story = {
     const dialog = body.getByRole("dialog", { name: "처음 만나는 Copysinger" });
     const scoped = within(dialog);
     const funnel = scoped.getByRole("navigation", { name: "온보딩 진행 단계" });
-    await waitFor(() => expect(dialog.querySelector('img[src*="copy-singer-mark.svg"]')).toBeVisible());
+    await waitFor(() => expect(dialog.querySelector('img[src*="copy-singer-mark.svg"]')).toBeVisible(), {
+      timeout: 5_000,
+    });
     await expect(within(funnel).getByText("목소리 분석").closest("li")).toHaveAttribute("aria-current", "step");
     await expect(scoped.getByText("분석 티켓").parentElement).toHaveTextContent("현재 5장");
     await expect(scoped.queryByText("믹싱 티켓")).not.toBeInTheDocument();
