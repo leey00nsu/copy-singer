@@ -21,6 +21,7 @@ import {
   analysisIdempotencyKeySchema,
   MAX_PROFILE_ANALYSIS_AUDIO_BYTES,
 } from "@/features/analyze-vocal-profile";
+import { onboardingCompletionSchema, onboardingSnapshotSchema } from "@/features/complete-onboarding";
 import { createMixingRequestSchema } from "@/features/create-mixing";
 import { createRecommendationRequestSchema } from "@/features/create-recommendation";
 import { ticketAdjustmentRequestSchema, ticketAdjustmentResponseSchema } from "@/features/manage-tickets";
@@ -48,6 +49,29 @@ test("ticket wallet contract separates kinds and requires nonnegative integer ba
   );
   assert.equal(ticketWalletsSchema.safeParse({ wallets: [{ kind: "VOCAL_ANALYSIS", balance: -1 }] }).success, false);
   assert.equal(ticketWalletsSchema.safeParse({ wallets: [{ kind: "UNKNOWN", balance: 1 }] }).success, false);
+});
+
+test("onboarding contracts distinguish completed users and validate server-owned balances", () => {
+  assert.deepEqual(onboardingSnapshotSchema.parse({ required: false, ignored: true }), { required: false });
+  assert.deepEqual(
+    onboardingSnapshotSchema.parse({
+      required: true,
+      wallets: [
+        { kind: "VOCAL_ANALYSIS", balance: 5 },
+        { kind: "AI_MIXING", balance: 1 },
+      ],
+    }),
+    {
+      required: true,
+      wallets: [
+        { kind: "VOCAL_ANALYSIS", balance: 5 },
+        { kind: "AI_MIXING", balance: 1 },
+      ],
+    },
+  );
+  assert.equal(onboardingSnapshotSchema.safeParse({ required: true, wallets: [] }).success, false);
+  assert.equal(onboardingCompletionSchema.safeParse({ completedAt: "2026-08-17T04:00:00.000Z" }).success, true);
+  assert.equal(onboardingCompletionSchema.safeParse({ completedAt: "not-a-date" }).success, false);
 });
 
 test("owned request schemas validate UUID, idempotency, pagination, and ticket bounds", () => {

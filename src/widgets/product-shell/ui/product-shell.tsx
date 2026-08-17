@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 
 import { UserMenu } from "@/features/authentication";
+import { NewUserOnboardingDialog, type OnboardingSnapshot } from "@/features/complete-onboarding";
 import { NotificationBell } from "@/features/manage-notifications";
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/button";
@@ -212,10 +213,11 @@ function ProductFooter() {
 type ProductShellProps = {
   admin?: boolean;
   children: ReactNode;
+  onboarding?: OnboardingSnapshot;
   user: ProductUser;
 };
 
-function ProductShell({ admin = false, children, user }: ProductShellProps) {
+function ProductShell({ admin = false, children, onboarding, user }: ProductShellProps) {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <a
@@ -229,6 +231,7 @@ function ProductShell({ admin = false, children, user }: ProductShellProps) {
         {children}
       </main>
       <ProductFooter />
+      {onboarding?.required ? <NewUserOnboardingDialog wallets={onboarding.wallets} /> : null}
     </div>
   );
 }

@@ -133,10 +133,22 @@ export const DevelopmentBypass: Story = {
     },
   },
   play: async ({ canvasElement }) => {
+    await expect(
+      within(document.body).queryByRole("dialog", { name: "처음 만나는 Copysinger" }),
+    ).not.toBeInTheDocument();
     await userEvent.click(within(canvasElement).getByRole("button", { name: "개발 사용자 계정 메뉴" }));
     const body = within(document.body);
     const bypassStatus = await body.findByRole("menuitem", { name: "개발 인증 우회 사용 중" });
     await expect(bypassStatus).toHaveAttribute("aria-disabled", "true");
+  },
+};
+
+export const CompletedOnboarding: Story = {
+  args: { onboarding: { required: false } },
+  play: async () => {
+    await expect(
+      within(document.body).queryByRole("dialog", { name: "처음 만나는 Copysinger" }),
+    ).not.toBeInTheDocument();
   },
 };
 

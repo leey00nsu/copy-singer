@@ -78,6 +78,32 @@ export function ticketBalanceHandler(payload = ticketBalanceFixture) {
   return http.get("*/api/account/ticket-balance", () => HttpResponse.json(payload));
 }
 
+export function onboardingCompletionHandler(completedAt = "2026-08-17T04:00:00.000Z") {
+  return http.post("*/api/account/onboarding/completion", () => HttpResponse.json({ completedAt }));
+}
+
+export function onboardingCompletionErrorHandler() {
+  return http.post("*/api/account/onboarding/completion", () =>
+    HttpResponse.json(
+      {
+        error: {
+          code: "ONBOARDING_COMPLETION_FAILED",
+          message: "완료 상태를 저장하지 못했어요.",
+          retryable: true,
+        },
+      },
+      { status: 500 },
+    ),
+  );
+}
+
+export function onboardingCompletionLoadingHandler() {
+  return http.post("*/api/account/onboarding/completion", async () => {
+    await delay("infinite");
+    return HttpResponse.json({ completedAt: "2026-08-17T04:00:00.000Z" });
+  });
+}
+
 export function adminCustomMixingPollingSequenceHandler() {
   const sequence = [queuedAdminCustomMixingJobFixture, succeededAdminCustomMixingJobFixture];
   let requestIndex = 0;

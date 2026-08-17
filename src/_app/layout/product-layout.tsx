@@ -5,6 +5,7 @@ import {
   isAdminEmail,
   isDevelopmentAuthBypassSession,
 } from "@/features/authentication/index.server";
+import { getOnboardingSnapshot } from "@/features/complete-onboarding/index.server";
 import { PRIVATE_METADATA } from "@/shared/config/index.server";
 import { ProductShell } from "@/widgets/product-shell";
 
@@ -17,11 +18,22 @@ async function ProductLayout({ children }: { children: ReactNode }) {
   // 요청에만 persistent shell을 더해 callback 정밀도와 URL 호환성을 보존한다.
   if (!session) return children;
 
+  const developmentBypass = isDevelopmentAuthBypassSession(session.session);
+  let onboarding: Awaited<ReturnType<typeof getOnboardingSnapshot>> | undefined;
+  if (!developmentBypass) {
+    try {
+      onboarding = await getOnboardingSnapshot(session.user.id);
+    } catch (error) {
+      console.error("Failed to load the user onboarding snapshot.", error);
+    }
+  }
+
   return (
     <ProductShell
       admin={isAdminEmail(session.user.email)}
+      onboarding={onboarding}
       user={{
-        developmentBypass: isDevelopmentAuthBypassSession(session.session),
+        developmentBypass,
         email: session.user.email,
         image: session.user.image,
         name: session.user.name,
