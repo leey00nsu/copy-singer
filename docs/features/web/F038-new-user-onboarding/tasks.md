@@ -96,6 +96,19 @@
     - [x] 실제 desktop/mobile 모달을 브라우저에서 확인하고 스크린샷 evidence를 남긴다.
     - [x] feature 문서와 workflow sync marker를 최종 구현에 맞게 갱신한다.
 
+- [TODO][PRD-FR-067] T-F038-new-user-onboarding-04 브랜드 아이콘과 3단계 퍼널 온보딩으로 개편
+  - Date: 2026-08-17
+  - Acceptance:
+    - 모달 좌측 상단은 기존 Copysinger 브랜드 마크를 사용하고 범용 Sparkles 아이콘을 제거한다.
+    - 기존 생성 퍼널과 같은 stepper UI로 목소리 분석·노래 추천·AI 믹싱을 3단계로 안내한다.
+    - 분석·믹싱 티켓은 해당 단계에서 실제 서버 잔액과 용도를 설명하고 완료 저장은 마지막 단계에서만 실행한다.
+    - 아이콘과 색은 design system의 data-accent·foreground·muted semantic token만 용도에 맞게 사용한다.
+  - Checklist:
+    - [ ] PRD/spec/plan/decisions를 3단계 동작과 디자인 결정으로 동기화한다.
+    - [ ] 기존 CreationFunnelStepper 구현을 공용 stepper로 추출해 기존 퍼널과 온보딩이 함께 재사용한다.
+    - [ ] 브랜드 마크, 단계별 본문과 이전·다음·완료 상태를 구현한다.
+    - [ ] Storybook interaction과 mobile/desktop 실제 렌더링을 검증한다.
+
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
