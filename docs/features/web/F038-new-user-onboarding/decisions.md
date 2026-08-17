@@ -32,7 +32,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: 실제 PostgreSQL migration을 적용하고 신규 사용자 두 명으로 미완료 snapshot, 현재 분석 5장·믹싱 1장, 동시 완료, 다른 사용자 미변경과 완료 후 `required: false`를 검증했다.
   - **머지 후 확인**: 대기 중
 - **Evidence**:
-  - **Test/Log**: `pnpm run test:onboarding` PASS (2 tests), `pnpm exec tsc --noEmit` PASS, `node_modules/next/dist/docs/01-app/01-getting-started/05-server-and-client-components.md`, `node_modules/next/dist/docs/01-app/01-getting-started/15-route-handlers.md`
+  - **Test/Log**: `pnpm run test:onboarding` PASS (3 tests), `pnpm exec tsc --noEmit` PASS, `node_modules/next/dist/docs/01-app/01-getting-started/05-server-and-client-components.md`, `node_modules/next/dist/docs/01-app/01-getting-started/15-route-handlers.md`
 - **Consequences**: 서버 전용 DB 모듈은 `server-only`로 보호하고 client에는 plain object/number/string/null만 전달한다. 향후 온보딩 버전별 재노출이 필요하면 별도 version 정책을 새 Feature로 추가해야 한다.
 
 ## D002: 온보딩 UI는 server snapshot을 받는 단일 client dialog로 구성한다 (2026-08-17)
@@ -44,8 +44,23 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 완료 사용자 flash와 client GET waterfall을 피하면서 interactive JavaScript 경계를 dialog로 제한할 수 있다.
 - **Trace**:
   - **At DOING start**: ProductLayout server snapshot과 단일 client dialog로 server/client 경계를 최소화하는 가설을 세웠다.
-  - **Before DONE**: Chromium Storybook에서 desktop/mobile, 저장 중 disabled, 성공 후 닫힘, 실패 후 dialog·재시도 유지, 완료 사용자와 개발 bypass 미노출을 검증했다. FSD architecture test도 public API 경계를 통과했다.
+  - **Before DONE**: Chromium Storybook에서 desktop/mobile, 저장 중 disabled, 성공 후 닫힘, 실패 후 dialog·재시도 유지, 완료 사용자와 개발 bypass 미노출을 검증했다. 최초 별도 feature slice는 ProductShell 한 곳에서만 소비돼 Steiger가 insignificant slice로 판정했으므로 widget 내부로 통합하고 app에는 client/server public API만 노출했다.
   - **Post-merge check**: 대기 중
 - **Evidence**:
-  - **Test/Log**: `pnpm run test:storybook --run src/features/complete-onboarding/ui/new-user-onboarding-dialog.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx` PASS (12 tests), `pnpm run test:architecture-boundaries` PASS
+  - **Test/Log**: `pnpm run test:storybook --run src/widgets/product-shell/ui/new-user-onboarding-dialog.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx` PASS (12 tests), `pnpm run check:architecture` PASS
 - **Consequences**: onboarding snapshot 조회 장애는 인증 제품 자체를 중단하지 않지만 사용자는 다음 정상 요청까지 모달을 보지 않을 수 있다. 미완료 dialog는 명시적 완료 저장을 요구하므로 한 화면·짧은 카피를 유지해야 한다.
+
+## D003: 최종 검증은 계약·통합·Storybook·실제 렌더링을 함께 사용한다 (2026-08-17)
+
+- **Context**: 온보딩은 DB 영속성, 인증 shell 결합, 모달 상호작용과 작은 viewport 레이아웃을 모두 바꾼다.
+- **Constraints**: 기존 저장소 전체 Biome에는 F038과 무관한 오류가 남아 있어 전체 `pnpm run check` 결과만으로 이번 변경의 품질을 판정할 수 없다. UI는 360px에서 카피·티켓·완료 action이 실제 viewport에 들어와야 한다.
+- **Options**: targeted 검사만 실행, 전체 검사만 실행, 계층별 targeted+전체 회귀+실제 렌더링을 조합하는 방식을 비교했다.
+- **Decision**: DB/API targeted tests, 인증·티켓·전체 Storybook 회귀, F038 변경 파일 Biome, 전체 ESLint·TypeScript·Steiger architecture와 production build를 통과 기준으로 사용한다. 전체 `pnpm run check`의 기존 무관 Biome 실패는 숨기지 않고 기준선으로 기록한다. 실제 Storybook은 1280×800과 360×800에서 캡처하고 완료 상호작용까지 확인한다.
+- **Rationale**: 단일 테스트 계층으로는 server-owned 상태와 브라우저 시각 회귀를 동시에 증명할 수 없다.
+- **Trace**:
+  - **At DOING start**: targeted tests 뒤 전체 정적 검사·build와 desktop/mobile 실제 렌더링을 함께 확인하기로 했다.
+  - **Before DONE**: 인증 DB 3건, 티켓 4건, 전체 Storybook 175건, onboarding DB/API 3건, API 계약 10건, ESLint·TypeScript·architecture·build가 통과했다. 360×800에서 document/dialog 가로 overflow 0, action viewport 노출, ESC 유지와 완료 후 닫힘을 확인했다.
+  - **Post-merge check**: 대기 중
+- **Evidence**:
+  - **Test/Log**: `/tmp/lee-spec-kit/pr-assets/F038-onboarding-desktop.png`, `/tmp/lee-spec-kit/pr-assets/F038-onboarding-mobile-360.png`, `pnpm run build` PASS, `pnpm run check:architecture` PASS
+- **Consequences**: 전체 `pnpm run check`는 기존 무관 Biome 오류 6건으로 계속 실패하지만 F038 변경 파일은 Biome을 통과한다. 해당 기준선 정리는 이 Feature에서 무관 파일을 수정하지 않고 별도 품질 작업으로 남긴다.

@@ -49,9 +49,9 @@
 
 snapshot은 `ProductShell`의 serializable prop으로 전달한다. 완료 사용자는 onboarding UI를 열지 않고, 미완료 사용자만 첫 server render부터 열린 모달을 받으므로 hydration 이후 flash가 없다. 조회 실패는 product route 전체를 실패시키지 않도록 server log를 남기고 이번 응답에서 onboarding을 생략하되 완료 상태는 쓰지 않는다.
 
-### 3. Feature UI 경계
+### 3. ProductShell UI 경계
 
-`features/complete-onboarding`에 contract, client mutation, server service와 `NewUserOnboardingDialog`를 둔다. `ProductShell`은 shell chrome과 main content를 그대로 렌더링하고 미완료 payload가 있을 때 dialog를 함께 mount한다.
+온보딩은 인증 제품 shell 한 곳에서만 소비되므로 별도 단일 소비 feature slice로 만들지 않고 `widgets/product-shell`에 contract, client mutation, server service와 `NewUserOnboardingDialog`를 함께 둔다. `ProductShell`은 shell chrome과 main content를 그대로 렌더링하고 미완료 payload가 있을 때 dialog를 함께 mount한다. app layout과 Route Handler는 widget의 client/server public API만 사용한다.
 
 Dialog는 한 화면 안에서 다음 위계를 사용한다.
 
@@ -124,17 +124,17 @@ src/
 │   │   ├── index.server.ts
 │   │   └── onboarding-completion-route.ts        # authenticated POST
 │   └── layout/product-layout.tsx                  # server snapshot composition
-├── features/complete-onboarding/
+└── widgets/product-shell/
 │   ├── api/
-│   │   ├── client.ts                              # completion mutation
+│   │   ├── onboarding-client.ts                   # completion mutation
 │   │   └── onboarding-service.ts                  # snapshot + idempotent persistence
-│   ├── model/contract.ts                          # Zod payload/response schemas
+│   ├── model/onboarding-contract.ts               # Zod payload/response schemas
 │   ├── ui/
 │   │   ├── new-user-onboarding-dialog.tsx
 │   │   └── new-user-onboarding-dialog.stories.tsx
 │   ├── index.ts
-│   └── index.server.ts
-└── widgets/product-shell/ui/product-shell.tsx     # optional onboarding prop/mount
+│   ├── index.server.ts
+│   └── ui/product-shell.tsx                       # optional onboarding prop/mount
 tests/
 ├── new-user-onboarding.integration.ts
 └── msw/handlers.ts                                # success/failure Storybook handlers
@@ -148,7 +148,7 @@ tests/
 - **DB 통합 테스트**: 신규 `null` 사용자에게 snapshot이 현재 두 wallet 잔액을 반환하는지, 완료가 timestamp를 한 번만 기록하는지, 반복/동시 완료가 안전한지, 다른 사용자 상태를 바꾸지 않는지 검증한다. migration SQL에는 기존 row backfill과 column default 부재를 정적/DB 검증으로 고정한다.
 - **API 테스트**: 미인증 401, session 사용자 기반 완료, 입력 user ID를 받지 않는 계약을 검증한다.
 - **Storybook interaction/a11y**: desktop과 360px에서 한 화면 정보, dialog title/description, focus, overflow 없음, `시작하기` loading, 성공 닫힘과 실패 유지/재시도를 검증한다. 완료 사용자와 development bypass의 ProductShell story에서는 dialog가 없음을 확인한다.
-- **회귀 검사**: `pnpm run test:auth:db`, `pnpm run test:tickets`, 신규 targeted test, Storybook test, `pnpm run check`, `pnpm run build`를 실행한다.
+- **회귀 검사**: `pnpm run test:auth:db`, `pnpm run test:tickets`, 신규 targeted test, Storybook test, `pnpm run lint`, `pnpm run typecheck`, `pnpm run check:architecture`, 변경 파일 Biome 검사와 `pnpm run build`를 실행한다. 저장소 전체 `pnpm run check`의 기존 무관 Biome 기준선 오류는 별도 결과로 기록한다.
 
 ---
 

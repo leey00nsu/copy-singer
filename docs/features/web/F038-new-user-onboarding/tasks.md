@@ -85,24 +85,24 @@
     - [x] desktop/mobile Storybook success·failure·완료 상태 interaction을 추가한다.
     - [x] 접근성 focus와 360px 이하 viewport의 overflow를 검증한다.
 
-- [TODO][PRD-FR-067] T-F038-new-user-onboarding-03 온보딩 회귀 검증과 문서 동기화
+- [DONE][PRD-FR-067] T-F038-new-user-onboarding-03 온보딩 회귀 검증과 문서 동기화
   - Date: 2026-08-17
   - Acceptance:
     - 인증·티켓 기존 동작과 production build가 온보딩 변경 후에도 통과한다.
     - spec·plan·tasks·decisions와 실제 구현 및 검증 evidence가 일치한다.
   - Checklist:
-    - [ ] 신규 targeted test와 auth/ticket/Storybook 회귀 검사를 실행한다.
-    - [ ] Biome, lint, typecheck, architecture와 production build를 실행한다.
-    - [ ] 실제 desktop/mobile 모달을 브라우저에서 확인하고 스크린샷 evidence를 남긴다.
-    - [ ] feature 문서와 workflow sync marker를 최종 구현에 맞게 갱신한다.
+    - [x] 신규 targeted test와 auth/ticket/Storybook 회귀 검사를 실행한다.
+    - [x] Biome, lint, typecheck, architecture와 production build를 실행한다.
+    - [x] 실제 desktop/mobile 모달을 브라우저에서 확인하고 스크린샷 evidence를 남긴다.
+    - [x] feature 문서와 workflow sync marker를 최종 구현에 맞게 갱신한다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록)
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함
 
 ### 테스트 실행 기록
 
@@ -112,11 +112,20 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | `pnpm run db:validate && pnpm run db:migrate:deploy` | `2026-08-17` | PASS — schema 유효, onboarding migration 적용 |
-| `pnpm run test:onboarding` | `2026-08-17` | PASS — 2 tests, 기존 사용자 backfill 계약과 계정 소유·멱등 완료 검증 |
+| `pnpm run test:onboarding` | `2026-08-17` | PASS — 3 tests, 기존 사용자 backfill·미인증 401·계정 소유·멱등 완료 검증 |
 | `pnpm exec biome check <F038 task 01 files>` | `2026-08-17` | PASS — 11 files |
 | `pnpm exec tsc --noEmit` | `2026-08-17` | PASS |
 | `pnpm exec tsx --test tests/api-contracts.test.ts` | `2026-08-17` | PASS — 10 tests, onboarding snapshot/completion 계약 포함 |
-| `pnpm run test:storybook --run src/features/complete-onboarding/ui/new-user-onboarding-dialog.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-17` | PASS — Chromium 12 tests, desktop/mobile/loading/error/completed/bypass |
-| `pnpm run test:architecture-boundaries` | `2026-08-17` | PASS — 4 tests |
+| `pnpm run test:storybook --run src/widgets/product-shell/ui/new-user-onboarding-dialog.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-17` | PASS — Chromium 12 tests, desktop/mobile/loading/error/completed/bypass |
+| `pnpm run test:auth:db` | `2026-08-17` | PASS — 3 tests |
+| `pnpm run test:tickets` | `2026-08-17` | PASS — 4 tests |
+| `pnpm run test:storybook --run` | `2026-08-17` | PASS — 175 tests, 2 files skipped; 기존 MSW warning만 발생 |
+| `pnpm exec biome check <F038 changed files>` | `2026-08-17` | PASS — 16 files |
+| `pnpm run lint` | `2026-08-17` | PASS |
+| `pnpm run typecheck` | `2026-08-17` | PASS |
+| `pnpm run check:architecture` | `2026-08-17` | PASS — Steiger + 4 boundary tests |
+| `pnpm run build` | `2026-08-17` | PASS — Next.js 16.3.0, 34 static pages, onboarding API route 포함 |
+| `pnpm run check` | `2026-08-17` | BASELINE FAIL — F038 외 기존 Biome 오류 6건; F038 scoped Biome·lint·typecheck·architecture는 PASS |
+| Browser `1280×800`, `360×800` | `2026-08-17` | PASS — 가로 overflow 0, action 노출, ESC 유지, 완료 후 닫힘; `/tmp/lee-spec-kit/pr-assets/F038-onboarding-*.png` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-17T05:00:53.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-17T05:09:48.000Z -->
