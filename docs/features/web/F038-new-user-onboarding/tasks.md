@@ -73,17 +73,17 @@
     - [x] onboarding contract, server snapshot/completion service와 인증 Route Handler를 구현한다.
     - [x] DB/API targeted integration tests를 추가하고 통과시킨다.
 
-- [TODO][PRD-FR-067] T-F038-new-user-onboarding-02 신규 사용자 온보딩 모달과 제품 shell 연결
+- [DONE][PRD-FR-067] T-F038-new-user-onboarding-02 신규 사용자 온보딩 모달과 제품 shell 연결
   - Date: 2026-08-17
   - Acceptance:
     - 최초 인증 제품 화면에서 한 화면 모달이 열리고 서비스 흐름과 두 티켓 용도·현재 잔액을 표시한다.
     - 시작하기 성공 후에만 모달이 닫히며 저장 실패 시 오류와 재시도 action을 유지한다.
     - 완료 사용자, 기존 사용자와 개발 인증 bypass에는 모달이 노출되지 않는다.
   - Checklist:
-    - [ ] 공용 Dialog/Button과 semantic token을 재사용해 온보딩 UI와 client mutation을 구현한다.
-    - [ ] ProductLayout snapshot을 serializable prop으로 ProductShell에 연결하고 callback 경로를 유지한다.
-    - [ ] desktop/mobile Storybook success·failure·완료 상태 interaction을 추가한다.
-    - [ ] 접근성 focus와 360px overflow를 검증한다.
+    - [x] 공용 Dialog/Button과 semantic token을 재사용해 온보딩 UI와 client mutation을 구현한다.
+    - [x] ProductLayout snapshot을 serializable prop으로 ProductShell에 연결하고 callback 경로를 유지한다.
+    - [x] desktop/mobile Storybook success·failure·완료 상태 interaction을 추가한다.
+    - [x] 접근성 focus와 360px 이하 viewport의 overflow를 검증한다.
 
 - [TODO][PRD-FR-067] T-F038-new-user-onboarding-03 온보딩 회귀 검증과 문서 동기화
   - Date: 2026-08-17
@@ -115,5 +115,8 @@
 | `pnpm run test:onboarding` | `2026-08-17` | PASS — 2 tests, 기존 사용자 backfill 계약과 계정 소유·멱등 완료 검증 |
 | `pnpm exec biome check <F038 task 01 files>` | `2026-08-17` | PASS — 11 files |
 | `pnpm exec tsc --noEmit` | `2026-08-17` | PASS |
+| `pnpm exec tsx --test tests/api-contracts.test.ts` | `2026-08-17` | PASS — 10 tests, onboarding snapshot/completion 계약 포함 |
+| `pnpm run test:storybook --run src/features/complete-onboarding/ui/new-user-onboarding-dialog.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-17` | PASS — Chromium 12 tests, desktop/mobile/loading/error/completed/bypass |
+| `pnpm run test:architecture-boundaries` | `2026-08-17` | PASS — 4 tests |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-17T04:54:08.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-17T05:00:53.000Z -->

@@ -34,3 +34,18 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Evidence**:
   - **Test/Log**: `pnpm run test:onboarding` PASS (2 tests), `pnpm exec tsc --noEmit` PASS, `node_modules/next/dist/docs/01-app/01-getting-started/05-server-and-client-components.md`, `node_modules/next/dist/docs/01-app/01-getting-started/15-route-handlers.md`
 - **Consequences**: 서버 전용 DB 모듈은 `server-only`로 보호하고 client에는 plain object/number/string/null만 전달한다. 향후 온보딩 버전별 재노출이 필요하면 별도 version 정책을 새 Feature로 추가해야 한다.
+
+## D002: 온보딩 UI는 server snapshot을 받는 단일 client dialog로 구성한다 (2026-08-17)
+
+- **Context**: 제품 shell은 이미 client component이며 인증 ProductLayout이 session을 서버에서 판정한다.
+- **Constraints**: 완료 여부와 티켓 잔액을 client 상수로 추정할 수 없고, 개발 인증 bypass는 실제 신규 계정 흐름을 막지 않아야 한다. 저장 실패를 완료로 낙관 처리하면 다시 노출하지 않는 계약을 위반한다.
+- **Options**: client mount 후 GET, ProductLayout server snapshot, 각 제품 page별 조회를 비교했다. dismissible dialog와 완료 action 전용 dialog도 비교했다.
+- **Decision**: ProductLayout이 가입 지급 이후 snapshot을 조회해 ProductShell에 plain prop으로 전달하고, `NewUserOnboardingDialog`에서만 mutation과 open state를 관리한다. 완료 action 성공만 dialog를 닫으며 close button·ESC·backdrop dismissal은 제공하지 않는다. 조회 실패는 제품 화면을 유지하면서 이번 응답의 모달만 생략한다.
+- **Rationale**: 완료 사용자 flash와 client GET waterfall을 피하면서 interactive JavaScript 경계를 dialog로 제한할 수 있다.
+- **Trace**:
+  - **At DOING start**: ProductLayout server snapshot과 단일 client dialog로 server/client 경계를 최소화하는 가설을 세웠다.
+  - **Before DONE**: Chromium Storybook에서 desktop/mobile, 저장 중 disabled, 성공 후 닫힘, 실패 후 dialog·재시도 유지, 완료 사용자와 개발 bypass 미노출을 검증했다. FSD architecture test도 public API 경계를 통과했다.
+  - **Post-merge check**: 대기 중
+- **Evidence**:
+  - **Test/Log**: `pnpm run test:storybook --run src/features/complete-onboarding/ui/new-user-onboarding-dialog.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx` PASS (12 tests), `pnpm run test:architecture-boundaries` PASS
+- **Consequences**: onboarding snapshot 조회 장애는 인증 제품 자체를 중단하지 않지만 사용자는 다음 정상 요청까지 모달을 보지 않을 수 있다. 미완료 dialog는 명시적 완료 저장을 요구하므로 한 화면·짧은 카피를 유지해야 한다.
