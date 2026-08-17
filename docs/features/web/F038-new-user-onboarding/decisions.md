@@ -87,5 +87,5 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Options**: 애니메이션 제거, 고정 sleep 추가, Testing Library `waitFor`로 visibility 완료를 기다리는 방식을 비교했다.
 - **Decision**: 브랜드 마크와 dialog 안내 element 선택은 유지하고 `waitFor` 안에서 `toBeVisible`을 평가한다. 전체 회귀 부하에서 비동기 canvas 준비를 기다리는 생성 퍼널 검사는 5초의 명시적 timeout을 사용한다.
 - **Rationale**: 임의 시간 지연 없이 dialog가 실제 표시 상태에 도달했다는 조건만 기다리므로 실행 속도와 사용자 동작을 모두 보존한다.
-- **Evidence**: 온보딩 Storybook Chromium 5 tests PASS, 같은 전체 실행에서 실패했던 F038 외 story Chromium 25 tests 개별 재실행 PASS.
+- **Evidence**: 온보딩 Storybook Chromium 5 tests PASS, 관련 표시 타이밍 story 18 tests PASS, 전체 Storybook Chromium 176 tests PASS, 최종 `pnpm test` PASS.
 - **Consequences**: dialog transition 속도에 따른 거짓 실패를 줄이며 브랜드 마크가 최종적으로 보이지 않는 실제 회귀는 계속 실패한다.

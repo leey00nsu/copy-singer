@@ -142,7 +142,7 @@
 | `pnpm run test:storybook --run src/widgets/product-shell/ui/new-user-onboarding-dialog.stories.tsx src/widgets/product-shell/ui/product-shell.stories.tsx` | `2026-08-17` | PASS — Chromium 12 tests, desktop/mobile/loading/error/completed/bypass |
 | `pnpm run test:auth:db` | `2026-08-17` | PASS — 3 tests |
 | `pnpm run test:tickets` | `2026-08-17` | PASS — 4 tests |
-| `pnpm run test:storybook --run` | `2026-08-17` | PASS — 175 tests, 2 files skipped; 기존 MSW warning만 발생 |
+| `pnpm run test:storybook --run` | `2026-08-17` | PASS — Chromium 176 tests, 2 files skipped; 기존 MSW warning만 발생 |
 | `pnpm exec biome check <F038 changed files>` | `2026-08-17` | PASS — 16 files |
 | `pnpm run lint` | `2026-08-17` | PASS |
 | `pnpm run typecheck` | `2026-08-17` | PASS |
@@ -155,5 +155,6 @@
 | Browser 3-step `1280×800`, `360×800` | `2026-08-17` | PASS — 브랜드 마크·3단계 색 위계·가로 overflow 0·action 노출; `/tmp/lee-spec-kit/pr-assets/F038-onboarding-3step-*.png` |
 | `pnpm run test:storybook --run <onboarding story>` | `2026-08-17` | PASS — Chromium 5 tests, dialog animation 이후 브랜드 마크 visibility 확인 |
 | `pnpm run test:storybook --run <three unrelated retry stories>` | `2026-08-17` | PASS — Chromium 25 tests, 전체 회귀에서 함께 발생한 타이밍 실패 비재현 |
+| `pnpm test` | `2026-08-17` | PASS — production build, DB/API/UI/architecture 회귀와 Storybook Chromium 176 tests 포함 |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-17T06:36:06.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-17T06:39:22.000Z -->
