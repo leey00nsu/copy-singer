@@ -349,6 +349,7 @@ model User {
   image                    String?
   createdAt                DateTime                  @default(now())
   updatedAt                DateTime                  @updatedAt
+  onboardingCompletedAt    DateTime?
   nextVocalProfileNumber   Int                       @default(1)
   sessions                 Session[]
   accounts                 Account[]
