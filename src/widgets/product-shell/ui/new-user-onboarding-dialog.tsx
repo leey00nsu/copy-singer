@@ -6,7 +6,7 @@ import { useState } from "react";
 import { type TicketWallet, ticketBalanceForKind } from "@/entities/ticket";
 import { Button } from "@/shared/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/shared/ui/dialog";
-import { completeOnboardingMutationOptions } from "../api/client";
+import { completeOnboardingMutationOptions } from "../api/onboarding-client";
 
 type NewUserOnboardingDialogProps = {
   wallets: TicketWallet[];

@@ -21,11 +21,11 @@ import {
   analysisIdempotencyKeySchema,
   MAX_PROFILE_ANALYSIS_AUDIO_BYTES,
 } from "@/features/analyze-vocal-profile";
-import { onboardingCompletionSchema, onboardingSnapshotSchema } from "@/features/complete-onboarding";
 import { createMixingRequestSchema } from "@/features/create-mixing";
 import { createRecommendationRequestSchema } from "@/features/create-recommendation";
 import { ticketAdjustmentRequestSchema, ticketAdjustmentResponseSchema } from "@/features/manage-tickets";
 import { pageSearchParamSchema, resourceIdSchema } from "@/shared/api";
+import { onboardingCompletionSchema, onboardingSnapshotSchema } from "@/widgets/product-shell";
 
 const RUN_ID = "10000000-0000-4000-8000-000000000001";
 const PROFILE_ID = "10000000-0000-4000-8000-000000000002";

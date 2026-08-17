@@ -7,12 +7,13 @@ import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 
 import { UserMenu } from "@/features/authentication";
-import { NewUserOnboardingDialog, type OnboardingSnapshot } from "@/features/complete-onboarding";
 import { NotificationBell } from "@/features/manage-notifications";
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/shared/ui/sheet";
+import type { OnboardingSnapshot } from "../model/onboarding-contract";
 import { isProductPathActive, productNavigation } from "../model/product-navigation";
+import { NewUserOnboardingDialog } from "./new-user-onboarding-dialog";
 import { ProductBrand } from "./product-brand";
 
 const productNavigationIcons = {

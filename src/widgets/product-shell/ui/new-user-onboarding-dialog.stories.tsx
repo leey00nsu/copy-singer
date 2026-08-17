@@ -14,7 +14,7 @@ const wallets = [
 ];
 
 const meta = {
-  title: "Features/NewUserOnboardingDialog",
+  title: "Widgets/ProductShell/NewUserOnboardingDialog",
   component: NewUserOnboardingDialog,
   parameters: { layout: "fullscreen" },
   args: { wallets },

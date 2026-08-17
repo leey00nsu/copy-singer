@@ -5,9 +5,9 @@ import {
   isAdminEmail,
   isDevelopmentAuthBypassSession,
 } from "@/features/authentication/index.server";
-import { getOnboardingSnapshot } from "@/features/complete-onboarding/index.server";
 import { PRIVATE_METADATA } from "@/shared/config/index.server";
 import { ProductShell } from "@/widgets/product-shell";
+import { getOnboardingSnapshot } from "@/widgets/product-shell/index.server";
 
 const productMetadata = PRIVATE_METADATA;
 

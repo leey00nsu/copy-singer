@@ -2,7 +2,7 @@ import "server-only";
 
 import { getTicketWallets } from "@/entities/ticket/index.server";
 import { prisma } from "@/shared/db/index.server";
-import type { OnboardingCompletion, OnboardingSnapshot } from "../model/contract";
+import type { OnboardingCompletion, OnboardingSnapshot } from "../model/onboarding-contract";
 
 export async function getOnboardingSnapshot(userId: string): Promise<OnboardingSnapshot> {
   const user = await prisma.user.findUniqueOrThrow({

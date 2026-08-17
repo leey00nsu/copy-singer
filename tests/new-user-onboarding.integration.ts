@@ -16,13 +16,27 @@ test("onboarding migration backfills existing users without a default for future
   assert.doesNotMatch(migration, /ADD COLUMN[\s\S]+DEFAULT/i);
 });
 
+test("onboarding completion route rejects unauthenticated requests", async () => {
+  const previousBypass = process.env.DEV_AUTH_BYPASS_ENABLED;
+  process.env.DEV_AUTH_BYPASS_ENABLED = "false";
+  try {
+    const { POST } = await import("@/_app/api-routes/account/onboarding-completion-route");
+    const response = await POST(new Request("http://localhost/api/account/onboarding/completion", { method: "POST" }));
+    assert.equal(response.status, 401);
+    assert.equal((await response.json()).error.code, "UNAUTHENTICATED");
+  } finally {
+    if (previousBypass === undefined) delete process.env.DEV_AUTH_BYPASS_ENABLED;
+    else process.env.DEV_AUTH_BYPASS_ENABLED = previousBypass;
+  }
+});
+
 test("onboarding snapshot and completion are account-owned and idempotent", async (context) => {
   if (!process.env.DATABASE_URL) {
     context.skip("DATABASE_URL is not configured");
     return;
   }
 
-  const { getOnboardingSnapshot, completeOnboarding } = await import("@/features/complete-onboarding/index.server");
+  const { getOnboardingSnapshot, completeOnboarding } = await import("@/widgets/product-shell/index.server");
   const { prisma } = await import("@/shared/db/index.server");
   const suffix = crypto.randomUUID();
   const userId = `onboarding-${suffix}`;

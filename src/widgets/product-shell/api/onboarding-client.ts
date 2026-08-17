@@ -1,6 +1,6 @@
 import { mutationOptions } from "@tanstack/react-query";
 import { requestJson } from "@/shared/api";
-import { onboardingCompletionSchema } from "../model/contract";
+import { onboardingCompletionSchema } from "../model/onboarding-contract";
 
 export function completeCurrentUserOnboarding() {
   return requestJson("/api/account/onboarding/completion", {
