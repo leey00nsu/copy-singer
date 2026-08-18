@@ -30,6 +30,7 @@
   - 기본 베이스라인으로 `agents/skills/create-pr.md`(`Pre-PR 기본 체크리스트`) 기준을 따르세요
 - **스펙 승인**: 2026-08-18 사용자 응답 `자동 진행해줘. 대신 실제 ihpone safari에서는 내 실 기기로 테스트할거니까 그 부분은 제외하고 진행`을 실제 iPhone Safari 검증 제외 조건이 반영된 spec 승인으로 기록
 - **실기기 검증 경계**: 실제 iPhone Safari 확인은 사용자 후속 범위이며 Feature 완료 조건과 자동화 Evidence에서 제외
+- **실기기 후속 확인**: 2026-08-18 사용자가 실제 iPhone Safari에서 canvas 흰 사각형 문제가 해결됐음을 확인
 - **PR 리뷰**: -
   - PR 리뷰 handoff를 시작하면 `Running`, 팀에서 별도 완료 상태를 추적할 때만 `Done`으로 변경
 - **PR 리뷰 Evidence**: -
@@ -121,5 +122,6 @@
 | `pnpm run lint` | `2026-08-18` | `PASS` |
 | `pnpm exec tsc --noEmit` | `2026-08-18` | `PASS` |
 | `pnpm test` | `2026-08-18` | `PASS — production build + Node/integration + Storybook 54 passed/2 skipped, 176 tests` |
+| 실제 iPhone Safari 후속 확인 | `2026-08-18` | `PASS — 사용자 확인, orb 주변 canvas 흰 사각형 미노출` |
 
-<!-- lee-spec-kit:workflow-sync 2026-08-18T08:35:30.000Z -->
+<!-- lee-spec-kit:workflow-sync 2026-08-18T09:10:00.000Z -->

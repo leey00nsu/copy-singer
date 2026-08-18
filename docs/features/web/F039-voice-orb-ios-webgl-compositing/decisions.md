@@ -32,9 +32,9 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Trace**:
   - **DOING 시작 시점**: iOS에서만 보이고 screenshot flattening 후 사라지는 현상을 별도 WebGL layer 합성 문제로 판단했다. OGL 1.0.11의 renderer 기본값이 `premultipliedAlpha=false`임을 설치 소스에서 확인했다.
   - **DONE 전 확정 시점**: alpha 0일 때 premultiplied RGB도 0이 되는 fragment output과 renderer option을 source contract로 고정했다. 두 inverse falloff는 기존 threshold 순서를 low/high로 재배치하고 외곽 `edgeMask`는 유지했다. Storybook의 실제 context attribute와 모바일 viewport live rendering을 확인해 canvas 사각형 없이 기존 orb visual이 유지됨을 검증했다.
-  - **머지 후 확인**: 현재 feature branch 검증 완료; local merge 후 통합 상태를 기록한다.
+  - **머지 후 확인**: local merge 전 사용자가 실제 iPhone Safari에서 canvas 흰 사각형이 더 이상 보이지 않음을 확인했다. 통합 상태는 local merge 후 기록한다.
 - **Evidence**:
   - **Commit**: `fbeb34c` (`feat(F039): WebGL alpha와 shader falloff 계약 수정`), `c92fcc6` (`test(F039): VoiceOrb alpha context 검증`)
   - **PR**: - (local workflow)
-  - **Test/Log**: shader contract PASS 5/5; targeted Storybook PASS 4 files/23 tests; mobile viewport 390×844 live WebGL visual PASS; lint/typecheck PASS; `pnpm test` PASS including Storybook 54 passed/2 skipped and 176 tests.
+  - **Test/Log**: shader contract PASS 5/5; targeted Storybook PASS 4 files/23 tests; mobile viewport 390×844 live WebGL visual PASS; lint/typecheck PASS; `pnpm test` PASS including Storybook 54 passed/2 skipped and 176 tests; 실제 iPhone Safari 사용자 확인 PASS.
 - **Consequences**: context 합성 계약이 명시적으로 바뀌지만 shader가 premultiplied output을 제공하므로 의도된 화면 색은 유지되어야 한다.
