@@ -87,24 +87,24 @@
     - [x] targeted Storybook 4 files / 23 tests를 실행해 통과했다.
     - [x] 모바일 390×844 viewport의 live WebGL 화면에서 canvas 사각형이 보이지 않음을 시각 확인했다.
 
-- [TODO][PRD-FR-064] T-F039-voice-orb-ios-webgl-compositing-03 전체 회귀 검증과 문서 동기화
+- [DONE][PRD-FR-064] T-F039-voice-orb-ios-webgl-compositing-03 전체 회귀 검증과 문서 동기화
   - Date: 2026-08-18
   - Acceptance:
     - 변경이 lint, typecheck, build와 전체 테스트를 깨지 않는다.
     - spec, plan, tasks, decisions와 최종 구현 및 검증 Evidence가 일치한다.
   - Checklist:
-    - [ ] lint와 typecheck를 통과한다.
-    - [ ] 전체 pnpm test를 통과한다.
-    - [ ] 최종 기술 결정과 테스트 결과를 decisions와 tasks에 기록한다.
-    - [ ] workflow sync marker와 audit를 갱신한다.
+    - [x] lint와 typecheck를 통과한다.
+    - [x] 전체 `pnpm test`를 통과했다.
+    - [x] 최종 기술 결정과 테스트 결과를 decisions와 tasks에 기록했다.
+    - [x] workflow sync marker를 갱신하고 audit 대상으로 준비했다.
 
 ## 완료 조건
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
+- [x] 사용자 자동 진행 요청 범위에서 최종 결과와 검증 Evidence를 문서화함 <!-- lee-spec-kit:completion:final-outcome -->
 
 ### 테스트 실행 기록
 
@@ -118,3 +118,8 @@
 | targeted Storybook: VoiceOrb/login/landing/voice-signal | `2026-08-18` | `PASS — 4 files / 23 tests` |
 | `pnpm exec biome check src/shared/ui/voice-orb/voice-orb.stories.tsx` | `2026-08-18` | `PASS — 1 file` |
 | mobile viewport live WebGL visual | `2026-08-18` | `PASS — 390×844, canvas 333×208 CSS px, no rectangular background` |
+| `pnpm run lint` | `2026-08-18` | `PASS` |
+| `pnpm exec tsc --noEmit` | `2026-08-18` | `PASS` |
+| `pnpm test` | `2026-08-18` | `PASS — production build + Node/integration + Storybook 54 passed/2 skipped, 176 tests` |
+
+<!-- lee-spec-kit:workflow-sync 2026-08-18T08:35:30.000Z -->
