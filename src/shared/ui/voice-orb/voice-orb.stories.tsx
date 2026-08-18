@@ -33,7 +33,10 @@ export const Default: Story = {
     await waitFor(() => expect(orb).toHaveAttribute("data-orb-ready", "true"), { timeout: 5000 });
     await expect(orb).toHaveAttribute("data-orb-motion-scale", "0.5");
     await expect(orb).toHaveAttribute("data-orb-effective-speed", "0.5");
-    await expect(orb.querySelector("canvas")).toBeInTheDocument();
+    const shaderCanvas = orb.querySelector("canvas");
+    await expect(shaderCanvas).toBeInTheDocument();
+    const gl = shaderCanvas?.getContext("webgl2") ?? shaderCanvas?.getContext("webgl");
+    await expect(gl?.getContextAttributes()?.premultipliedAlpha).toBe(true);
     await expect(getComputedStyle(orb).animationName).toBe("voice-orb-enter");
     await expect(getComputedStyle(orb).backgroundColor).toBe("rgba(0, 0, 0, 0)");
   },
