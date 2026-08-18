@@ -91,6 +91,10 @@ const fragmentShader = /* glsl */ `
   float light1(float intensity, float attenuation, float dist) { return intensity / (1.0 + dist * attenuation); }
   float light2(float intensity, float attenuation, float dist) { return intensity / (1.0 + dist * dist * attenuation); }
 
+  float inverseSmoothstep(float lowEdge, float highEdge, float value) {
+    return 1.0 - smoothstep(lowEdge, highEdge, value);
+  }
+
   vec4 draw(vec2 uv) {
     vec3 color1 = adjustHue(baseColor1, hue);
     vec3 color2 = adjustHue(baseColor2, hue);
@@ -103,7 +107,7 @@ const fragmentShader = /* glsl */ `
     float r0 = mix(mix(innerRadius, 1.0, 0.4), mix(innerRadius, 1.0, 0.6), n0);
     float d0 = distance(uv, (r0 * invLen) * uv);
     float v0 = light1(1.0, 10.0, d0);
-    v0 *= smoothstep(r0 * 1.05, r0, len);
+    v0 *= inverseSmoothstep(r0, r0 * 1.05, len);
     float innerFade = smoothstep(r0 * 0.8, r0 * 0.95, len);
     v0 *= mix(innerFade, 1.0, bgLuminance * 0.7);
     float colorWarp = snoise3(vec3(uv * 0.32, iTime * 0.1 + 7.0)) * 0.16;
@@ -114,7 +118,7 @@ const fragmentShader = /* glsl */ `
     float d = distance(uv, pos);
     float v1 = light2(1.5, 5.0, d);
     v1 *= light1(1.0, 50.0, d0);
-    float v2 = smoothstep(1.0, mix(innerRadius, 1.0, n0 * 0.5), len);
+    float v2 = inverseSmoothstep(mix(innerRadius, 1.0, n0 * 0.5), 1.0, len);
     float v3 = smoothstep(innerRadius, mix(innerRadius, 1.0, 0.5), len);
     vec3 colBase = mix(color1, color2, cl);
     float fadeAmount = mix(1.0, 0.1, bgLuminance);
@@ -138,7 +142,7 @@ const fragmentShader = /* glsl */ `
     vec4 col = draw(uv);
     float edgeMask = 1.0 - smoothstep(0.76, 0.9, length(uv));
     float alpha = col.a * edgeMask;
-    gl_FragColor = vec4(col.rgb, alpha);
+    gl_FragColor = vec4(col.rgb * alpha, alpha);
   }
 `;
 
@@ -184,7 +188,11 @@ function VoiceOrb({
 
         let renderer: InstanceType<typeof Renderer>;
         try {
-          renderer = new Renderer({ alpha: true, dpr: Math.min(window.devicePixelRatio || 1, 1.5) });
+          renderer = new Renderer({
+            alpha: true,
+            dpr: Math.min(window.devicePixelRatio || 1, 1.5),
+            premultipliedAlpha: true,
+          });
         } catch {
           container.dataset.orbFallback = "true";
           return;

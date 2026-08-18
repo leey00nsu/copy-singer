@@ -27,8 +27,21 @@ test("VoiceOrb smooths internal color normalization without changing the outer s
   assert.match(source, /light1\(1\.0, 10\.0, d0\)/);
   assert.doesNotMatch(source, /pow\(clamp\(v0, 0\.0, 1\.0\), 0\.8\)/);
 
+  assert.match(source, /float inverseSmoothstep\(float lowEdge, float highEdge, float value\)/);
+  assert.match(source, /return 1\.0 - smoothstep\(lowEdge, highEdge, value\);/);
+  assert.match(source, /inverseSmoothstep\(r0, r0 \* 1\.05, len\)/);
+  assert.match(source, /inverseSmoothstep\(mix\(innerRadius, 1\.0, n0 \* 0\.5\), 1\.0, len\)/);
+  assert.doesNotMatch(source, /smoothstep\(r0 \* 1\.05, r0, len\)/);
+  assert.doesNotMatch(source, /smoothstep\(1\.0, mix\(innerRadius, 1\.0, n0 \* 0\.5\), len\)/);
+
   assert.match(source, /float edgeMask = 1\.0 - smoothstep\(0\.76, 0\.9, length\(uv\)\);/);
   assert.match(source, /const ORB_MOTION_SPEED_SCALE = 0\.5;/);
+});
+
+test("VoiceOrb sends premultiplied colors to the page compositor", () => {
+  assert.match(source, /premultipliedAlpha: true/);
+  assert.match(source, /gl_FragColor = vec4\(col\.rgb \* alpha, alpha\);/);
+  assert.match(source, /gl\.clearColor\(0, 0, 0, 0\);/);
 });
 
 test("VoiceOrb smooth alpha does not exceed the previous hard-max density", () => {
