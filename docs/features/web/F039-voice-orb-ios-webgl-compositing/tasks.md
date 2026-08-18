@@ -76,16 +76,16 @@
     - [x] 두 역순 smoothstep을 lowEdge < highEdge인 inverse helper 호출로 교체한다.
     - [x] shader source contract를 갱신하고 targeted test 5/5를 통과한다.
 
-- [TODO][PRD-FR-064] T-F039-voice-orb-ios-webgl-compositing-02 VoiceOrb browser와 사용처 회귀 검증
+- [DONE][PRD-FR-064] T-F039-voice-orb-ios-webgl-compositing-02 VoiceOrb browser와 사용처 회귀 검증
   - Date: 2026-08-18
   - Acceptance:
     - live VoiceOrb canvas가 실제 premultiplied alpha context를 사용한다.
     - 고정 프레임과 fallback, login, landing, voice-signal-core의 기존 레이아웃과 상태 동작이 유지된다.
     - 자동화 가능한 모바일 viewport에서 canvas 직사각형 배경이 노출되지 않는다.
   - Checklist:
-    - [ ] VoiceOrb Storybook에서 실제 context attribute를 검증한다.
-    - [ ] targeted Storybook test를 실행한다.
-    - [ ] 모바일 viewport live WebGL 화면을 시각 확인한다.
+    - [x] VoiceOrb Storybook에서 실제 context attribute가 `premultipliedAlpha=true`임을 검증한다.
+    - [x] targeted Storybook 4 files / 23 tests를 실행해 통과했다.
+    - [x] 모바일 390×844 viewport의 live WebGL 화면에서 canvas 사각형이 보이지 않음을 시각 확인했다.
 
 - [TODO][PRD-FR-064] T-F039-voice-orb-ios-webgl-compositing-03 전체 회귀 검증과 문서 동기화
   - Date: 2026-08-18
@@ -115,3 +115,6 @@
 | --- | --- | --- |
 | `pnpm exec tsx --test tests/voice-orb-shader.test.ts` | `2026-08-18` | `PASS — 5/5` |
 | `pnpm exec biome check src/shared/ui/voice-orb/voice-orb.tsx tests/voice-orb-shader.test.ts` | `2026-08-18` | `PASS — 2 files` |
+| targeted Storybook: VoiceOrb/login/landing/voice-signal | `2026-08-18` | `PASS — 4 files / 23 tests` |
+| `pnpm exec biome check src/shared/ui/voice-orb/voice-orb.stories.tsx` | `2026-08-18` | `PASS — 1 file` |
+| mobile viewport live WebGL visual | `2026-08-18` | `PASS — 390×844, canvas 333×208 CSS px, no rectangular background` |
