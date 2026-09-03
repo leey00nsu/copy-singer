@@ -20,6 +20,22 @@ npx lee-spec-kit docs get agents --json
 - 코드나 feature 문서를 바꿨다면 종료 전 `npx lee-spec-kit workflow-audit --json`로 동기화 상태를 확인합니다.
 - `isLeeSpecKitProject: false`면 lee-spec-kit 전용 절차를 건너뛰고 일반 워크플로우로 진행합니다.
 
+## Knowledge Architecture
+
+[OpenWiki](../openwiki/index.md)는 신규 개발자를 위한 파생 코드베이스 가이드입니다. 세션 시작 때 전체를 필수로 읽는 문서가 아니라, 시스템 경계·도메인·런타임 흐름·테스트 위치를 찾을 때 필요한 페이지만 조회하는 탐색 evidence입니다.
+
+| 정보 | 기준 문서 또는 소스 | OpenWiki의 역할 |
+| ---- | ------------------- | --------------- |
+| 장기 제품 요구사항 | `docs/prd/` | 요구사항의 위치와 관련 코드 탐색 보조 |
+| 현재 변경 범위·설계·태스크·결정 | 활성 Feature SDD | Feature 이력과 구현 위치 탐색 보조 |
+| 프로젝트 전체 설명·정책 | 사람이 관리하는 curated docs | 관련 설명을 연결하되 대체하지 않음 |
+| 실행 가능한 런타임 사실 | tracked 코드·스키마·설정 | 구조와 흐름을 요약하고 원본 검증 경로 제공 |
+| 검증 증거 | tracked 테스트와 실행 로그 | 관련 테스트 진입점 안내 |
+
+`experimental.openwiki: true`인 프로젝트에서는 태스크 checkpoint 이후 Feature review 전에 Knowledge 동기화와 전용 커밋이 필수입니다. 생성·갱신은 `npx lee-spec-kit knowledge sync <feature-ref> --component <component> --json`로만 수행하고, `openwiki/**`를 손으로 고치지 않습니다. 생성 결과는 `openwiki visualize ./openwiki`로 읽기 전용 확인할 수 있습니다.
+
+Feature가 사람 관리 문서를 낡게 만드는지는 `plan.md`의 `Curated Documentation Impact`에서 별도로 판정합니다. OpenWiki 동기화는 이 책임을 대신하지 않습니다.
+
 ## 신규 프로젝트 시작 순서
 
 - 코드 프로젝트 스캐폴딩(예: Next.js/NestJS) 후 `lee-spec-kit init`을 실행하세요.

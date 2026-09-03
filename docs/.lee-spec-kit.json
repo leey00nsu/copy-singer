@@ -63,5 +63,8 @@
       "implementation_approve",
       "local_merge"
     ]
+  },
+  "experimental": {
+    "openwiki": true
   }
 }

@@ -23,7 +23,8 @@
   <a href="#기술-스택">기술 스택</a> •
   <a href="#시스템-구성">시스템 구성</a> •
   <a href="#실행과-배포">실행과 배포</a> •
-  <a href="#테스트">테스트</a>
+  <a href="#테스트">테스트</a> •
+  <a href="#코드베이스-knowledge">Knowledge</a>
 </p>
 
 <p align="center">
@@ -45,6 +46,7 @@
 - [실행과 배포](#실행과-배포)
 - [프로젝트 구조](#프로젝트-구조)
 - [테스트](#테스트)
+- [코드베이스 Knowledge](#코드베이스-knowledge)
 - [문서 워크플로](#문서-워크플로)
 
 ## Quick Start
@@ -248,6 +250,23 @@ pnpm run test:storybook --run
 ```
 
 전체 suite는 production build, domain/unit test, PostgreSQL integration, API contract, FSD boundary와 Storybook interaction을 순서대로 검증한다.
+
+## 코드베이스 Knowledge
+
+신규 개발자는 생성된 [OpenWiki 코드베이스 가이드](openwiki/index.md)에서 시스템 경계, 주요 도메인, 외부 서비스, 런타임 흐름과 테스트 진입점을 먼저 탐색할 수 있다.
+
+OpenWiki는 tracked 코드·스키마·설정·테스트에서 파생한 온보딩 evidence이며 정본이 아니다. 제품 요구사항은 `docs/prd/`, 현재 변경 범위와 설계 결정은 활성 Feature의 `spec.md`·`plan.md`·`tasks.md`·`decisions.md`, 사람이 관리하는 프로젝트 전체 설명과 정책은 curated docs를 기준으로 한다. 중요한 런타임 설명은 반드시 실제 코드와 테스트에서 다시 확인한다.
+
+Knowledge 생성·갱신은 활성 Feature workflow에서만 수행한다.
+
+```bash
+npx lee-spec-kit knowledge sync <feature-ref> --component <component> --json
+
+# 생성 결과를 브라우저에서 읽기 전용으로 확인
+openwiki visualize ./openwiki
+```
+
+생성된 `openwiki/**` 페이지는 직접 수정하지 않는다. 설명이 잘못됐으면 source 또는 curated docs를 고친 뒤 다시 동기화한다.
 
 ## 문서 워크플로
 
