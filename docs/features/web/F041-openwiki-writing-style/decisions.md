@@ -34,7 +34,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: `knowledge doctor`가 OpenWiki 0.5.0/OKF 0.2, `openai-chatgpt`의 `gpt-5.6-luna`, OAuth credential 준비를 확인했다. 기존 receipt는 schema 2여서 `OPENWIKI_WRITING_POLICY_STALE`로 판정됐고 전체 재생성 대상이 맞다.
   - **머지 후 확인**: 실제 결과/영향
 - **Evidence**:
-  - **Commit**: task checkpoint commit에서 확정한다.
+  - **Commit**: task checkpoint `f4c1c182df39fb7f9584c00c91bef0dc68ee9a51`.
   - **PR**: PR 링크
   - **Test/Log**: 로컬 CLI `--version`, `detect --json`, `knowledge doctor --json`; 기존 INSTRUCTIONS `sha256:6edc1607029c8f9cc3fea2683e7a56a14189c0a1917b8df70372f9cc3f7f64db`; writing skill 경로 부재 확인.
 - **Consequences**: task checkpoint 뒤 workflow의 Knowledge gate가 외부 skill 설치와 generated surface 갱신을 수행한다. 앱 코드와 curated docs는 변경하지 않는다.
@@ -60,3 +60,9 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Residual risks**:
   - `maxReviewRounds=1`이므로 remediation 결과는 두 번째 fresh 독립 리뷰를 받지 않는다. 수정 후 원문 링크 coverage와 audit을 메인 에이전트가 직접 검증한다.
   - 0.9.12 기본 writing skill은 evidence link를 권장하지만 상세 페이지별 최소 원문 링크를 보장하지 않는다. 다른 소비자에서도 같은 기준이 필요하면 후속 lee-spec-kit 버전에서 기본 policy 강화를 별도로 검토해야 한다.
+- **Remediation outcome**:
+  - `openwiki/INSTRUCTIONS.md`의 project-specific 영역에 non-index 상세 페이지마다 최소 하나의 설명형 `repo://` source/test 링크를 요구하는 규칙을 추가했다. 관리형 writing block과 기존 사용자 지침은 보존했다.
+  - 첫 update run은 기본 절대 상한 30분에 8/15 페이지를 완료하고 `OPENWIKI_ABSOLUTE_TIMEOUT`을 반환했다. 같은 run ID `97f97a25-e211-420e-b4c4-d45b76d7f509`를 idle 20분·absolute 90분으로 재개해 15/15, skipped 0으로 완료했다.
+  - 최종 receipt는 source `39e94cf4fcfae1f66ebe11b04a5740753acc9eb9`, output `sha256:2fb848800cc57126cc98decf3527328b315da1bc8b168b5ffecf74fb5dca3b64`를 기록한다. `knowledge audit`은 15 claim files, 261 claims, 623 repo-line evidence, 46 repo-file evidence를 검증했다.
+  - 최종 source-link coverage는 15개 상세 페이지 중 4개만 한 개 이상의 `repo://` Markdown 링크를 포함했다. 대표 문서 세 개는 여전히 0개여서 review finding은 해결되지 않았다.
+  - generated Markdown을 수동 수정하지 않았다. remediation Knowledge commit은 `fe26e8532d5a3ffb6442d19c02bfc715691df821`이며 review target 이후 변경이지만 최대 Round 소진 정책에 따라 별도 fresh 리뷰를 실행하지 않는다.
