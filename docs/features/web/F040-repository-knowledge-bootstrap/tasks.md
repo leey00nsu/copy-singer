@@ -15,12 +15,12 @@
 - **레포**: copy-singer 전체 (`web` component에서 추적)
 - **브랜치**: `feat/repository-knowledge-bootstrap`
 - **대기 중 변경 요청**: 기존 프로젝트의 curated 문서 baseline reconciliation과 WHY 탐색 경로를 F040에 포함한다.
-- **Feature 리뷰**: -
-- **Feature 리뷰 Evidence**: -
-- **Feature 리뷰 Decision**: -
-- **Feature 리뷰 Round**: -
-- **Feature 리뷰 Head**: -
-- **Feature 리뷰 Tree**: -
+- **Feature 리뷰**: `/root/f040_curated_feature_review_r1` (independent read-only feature reviewer, model inherit, reasoning effort high)
+- **Feature 리뷰 Evidence**: 365개 claim evidence 중 5개 stale hash, 범위를 벗어난 test citation 1개와 생성 설명의 동기/비동기·DB cardinality·상태 mapping 오류를 확인했다.
+- **Feature 리뷰 Decision**: changes_requested
+- **Feature 리뷰 Round**: 1
+- **Feature 리뷰 Head**: `a5e5e860b6c79445724c5d74b969f65c9c5ebb50`
+- **Feature 리뷰 Tree**: `05052a220c4fe4192a2e8539e1a0b03c1fcc6447`
 
 ---
 
@@ -85,7 +85,7 @@
 | --- | --- | --- |
 | `npx lee-spec-kit detect --json` | `2026-09-04` | `PASS — PROJECT_DETECTED, experimentalOpenwiki=true` |
 | `npx lee-spec-kit workflow-audit --json` | `2026-09-04` | `PASS — WORKFLOW_IN_SYNC` |
-| `npx lee-spec-kit knowledge audit F040-repository-knowledge-bootstrap --component web --json` | `2026-09-04` | `PASS — OPENWIKI_VERIFIED, source=944780e, output=sha256:95b6177e…e8d8a` |
+| `npx lee-spec-kit knowledge audit F040-repository-knowledge-bootstrap --component web --json` | `2026-09-04` | `PENDING — Feature review finding 수정 후 재생성·재검증 필요` |
 | curated 문서 baseline 정적 대조 | `2026-09-04` | `PASS — legacy 경로·고정 버전 제거, 참조 경로 존재 확인` |
 | `pnpm run check:architecture` | `2026-09-04` | `PASS — Steiger 및 FSD boundary 4 tests` |
 | `npx lee-spec-kit docs-audit --json` | `2026-09-04` | `WARN — 기존 design 문서 2개의 DOC_KIND_MISSING; F040 제외 범위` |

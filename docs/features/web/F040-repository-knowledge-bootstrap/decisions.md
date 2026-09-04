@@ -98,3 +98,27 @@
   - PRD의 장기 목표·제외 범위·요구사항 ID와 `custom.md` 전체를 현재 route, worker, service, storage 구조와 대조했다.
   - 현재 합성 경로의 mid-only reference 사용 사실은 `docs/prd/system-architecture.md`에 기록하고, 제품 요구 간 표현 차이는 이 결정에 분리했다.
 - **Consequences**: 신규 개발자는 현재 런타임 사실을 architecture/OpenWiki에서 확인하고 장기 목표는 PRD에서 확인한다. PRD의 시간 종속 문구와 reference 표현을 바꾸려면 별도 제품 판단과 `Product requirements: UPDATE`가 필요하다.
+
+---
+
+## D006: Feature review round 1의 Knowledge provenance·의미 오류를 재생성으로 교정한다 (2026-09-04)
+
+- **Review metadata**:
+  - **Reviewer**: `/root/f040_curated_feature_review_r1` (independent read-only Feature reviewer)
+  - **Configured model / effort**: `inherit` / `high` (runtime의 실제 inherited model 값은 reviewer에게 노출되지 않음)
+  - **Round**: 1 / max remediation rounds 1
+  - **Target**: `eb164d718d66b2ce3e177fc03727ae60ec0add3d..a5e5e860b6c79445724c5d74b969f65c9c5ebb50`
+  - **Tree**: `05052a220c4fe4192a2e8539e1a0b03c1fcc6447`
+  - **Decision**: `changes_requested`
+- **Findings**:
+  - **P1**: 최종 README 변경 뒤 update sync가 page 본문과 claim 파일을 다시 만들지 않아 365개 line-hash evidence 중 5개가 현재 source와 일치하지 않았다. `catalog-publishing.md`에는 실제 84줄인 test를 `#L1-L220`으로 가리키는 범위 밖 citation도 남았다.
+  - **P2**: `system-map` claim이 동기 요청을 await하는 보컬 분석과 외부 job submit/poll을 사용하는 곡 분석을 모두 비동기 외부 job 방식으로 합쳤다.
+  - **P2**: ER diagram이 `Recording`→`VocalProfile`과 `SongSource`→`CatalogTargetAsset`을 1:1처럼 표시했지만 Prisma schema는 각각 1:N이며 target의 `sourceId`는 optional이다.
+  - **P2**: recommendation 응답에만 적용되는 `SUBMITTED`→`queued`, `CANCELED`→`failed` mapping을 전체 공개 mixing 응답의 계약처럼 설명했다. mixing job API는 lowercase DB 상태를 그대로 노출한다.
+  - **P2**: task의 마지막 Knowledge audit 기록이 최종 receipt보다 이전 source/output을 가리켰다.
+- **Positive evidence**:
+  - receipt는 F040/web, base `eb164d7`, source `7daf028`, OpenWiki `0.5.0`, OKF `0.2`에 결속됐고 aggregate `knowledge audit`은 통과했다.
+  - 앱 코드·API·schema·배포 동작은 변경되지 않았고 curated 문서의 legacy 경로와 고정 lee-spec-kit 버전은 제거됐다.
+  - 로컬 링크 20개가 해석됐으며 365개 line-hash evidence 중 360개는 현재 source와 일치했다.
+- **Decision**: generated 파일을 직접 수정하지 않는다. curated source에 흐름·cardinality·공개 상태 경계를 더 명시하고 OpenWiki를 full init으로 재생성해 page와 claim evidence를 함께 교체한다. aggregate audit 뒤 line-hash와 citation range를 별도로 검사한다.
+- **Consequences**: `knowledge audit`의 aggregate 성공만으로 claim 단위 freshness와 의미 정확성을 확정하지 않는다. 이번 remediation에서는 재생성 결과에 대한 독립적인 claim 검증을 완료 evidence로 추가한다.
