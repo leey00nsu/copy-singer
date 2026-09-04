@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:a4e47239c0afd9ab9707c4a46ccb8bd371011ed864cf8bde0e5e528db2357845",
+  "pageVersion": "sha256:7caf77a56de38872f7f644135d30141d0e7eea99cba630dd26324e4a3e0cd0aa",
   "claims": [
     {
       "id": "claim_2faeec938afa4107aaab60d336caa79e",
-      "statement": "Copysinger는 Next.js App Router를 동기 웹/API 경계로 사용하고, 분석·믹싱 요청을 PostgreSQL durable job으로 접수한 뒤 세 개의 별도 Node background worker가 처리하는 비동기 구조다.",
+      "statement": "Copysinger는 Next.js 16 App Router를 동기 웹/API 경계로 사용하고, 분석·믹싱 요청을 PostgreSQL durable job으로 접수한 뒤 mixing, vocal-profile-analysis, song-analysis 세 개의 별도 Node worker가 처리하는 비동기 구조다.",
       "evidence": [
         {
           "resource": "repo://README.md#L127-L143",
-          "version": "repo-lines-v1:sha256:c7849b4a424a1c0430eb4f0fdc249c5b47bd98d5df464419b3a94ee292ccb440:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3MWZiYmRiNDBmZGIzYWQ5YmQwN2FjZDhiNmNiNThhZDgyMzcwMjY0YWVkZjMyYmM5MDIyYThjZjBjMjJhOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxN2U4ZDI2MDBjNjJlOTllMGQwNWQxNGNjNDNiNzJlNTY3YmYwYzQyOTYxMzFmOGRhMWEzNTEzMmJhMWE3ZDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3YThmYWQwM2RiYmI3NWE3OGE5OTQzOWIwOTJkOWZjNmY5Mzc2YzM4MzQ5ZjI2NjZjYzIyZTMwMmI4ZTA4ZTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlmN2IyM2ZhOTZjZmMxZDQ4MjI2MjU2ZjNkMGRmNTQ2ZTdlZmJmNmFkZGEyNTI5MDJjMWEyNDdkNzkzODgyOTIifQ"
+          "version": "repo-lines-v1:sha256:48ccf029cc7808d5db55ef8dadb584f083a854abb35fb266440368cd7a7a44b0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3MWZiYmRiNDBmZGIzYWQ5YmQwN2FjZDhiNmNiNThhZDgyMzcwMjY0YWVkZjMyYmM5MDIyYThjZjBjMjJhOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxN2U4ZDI2MDBjNjJlOTllMGQwNWQxNGNjNDNiNzJlNTY3YmYwYzQyOTYxMzFmOGRhMWEzNTEzMmJhMWE3ZDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3YThmYWQwM2RiYmI3NWE3OGE5OTQzOWIwOTJkOWZjNmY5Mzc2YzM4MzQ5ZjI2NjZjYzIyZTMwMmI4ZTA4ZTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlmN2IyM2ZhOTZjZmMxZDQ4MjI2MjU2ZjNkMGRmNTQ2ZTdlZmJmNmFkZGEyNTI5MDJjMWEyNDdkNzkzODgyOTIifQ"
         },
         {
           "resource": "repo://package.json#L9-L21",
@@ -62,15 +62,23 @@
     },
     {
       "id": "claim_f5c11d77230c432ca4cf55b8fc4c92dd",
-      "statement": "웹 요청은 작업과 입력 metadata를 PostgreSQL에 저장하고, worker는 작업을 원자적으로 claim·lease하며 Leemage에서 입력을 읽고 Modal 또는 SoulX-Singer를 호출한 뒤 결과 bytes는 Leemage에, 상태·소유권·파일 metadata·알림은 PostgreSQL에 저장한다.",
+      "statement": "웹 요청은 작업과 metadata를 PostgreSQL에 저장하고, worker는 PostgreSQL 행 잠금과 `SKIP LOCKED`로 대상 작업을 원자적으로 claim한 뒤 lease와 heartbeat를 갱신한다. 믹싱 worker는 Leemage의 입력 asset을 읽어 Modal 변환 API를 호출하고, 결과 bytes를 Leemage에 저장하며 PostgreSQL에는 상태·소유권·파일 metadata·알림을 기록한다.",
       "evidence": [
         {
           "resource": "repo://README.md#L127-L143",
-          "version": "repo-lines-v1:sha256:c7849b4a424a1c0430eb4f0fdc249c5b47bd98d5df464419b3a94ee292ccb440:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3MWZiYmRiNDBmZGIzYWQ5YmQwN2FjZDhiNmNiNThhZDgyMzcwMjY0YWVkZjMyYmM5MDIyYThjZjBjMjJhOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxN2U4ZDI2MDBjNjJlOTllMGQwNWQxNGNjNDNiNzJlNTY3YmYwYzQyOTYxMzFmOGRhMWEzNTEzMmJhMWE3ZDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3YThmYWQwM2RiYmI3NWE3OGE5OTQzOWIwOTJkOWZjNmY5Mzc2YzM4MzQ5ZjI2NjZjYzIyZTMwMmI4ZTA4ZTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlmN2IyM2ZhOTZjZmMxZDQ4MjI2MjU2ZjNkMGRmNTQ2ZTdlZmJmNmFkZGEyNTI5MDJjMWEyNDdkNzkzODgyOTIifQ"
+          "version": "repo-lines-v1:sha256:48ccf029cc7808d5db55ef8dadb584f083a854abb35fb266440368cd7a7a44b0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3MWZiYmRiNDBmZGIzYWQ5YmQwN2FjZDhiNmNiNThhZDgyMzcwMjY0YWVkZjMyYmM5MDIyYThjZjBjMjJhOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxN2U4ZDI2MDBjNjJlOTllMGQwNWQxNGNjNDNiNzJlNTY3YmYwYzQyOTYxMzFmOGRhMWEzNTEzMmJhMWE3ZDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3YThmYWQwM2RiYmI3NWE3OGE5OTQzOWIwOTJkOWZjNmY5Mzc2YzM4MzQ5ZjI2NjZjYzIyZTMwMmI4ZTA4ZTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlmN2IyM2ZhOTZjZmMxZDQ4MjI2MjU2ZjNkMGRmNTQ2ZTdlZmJmNmFkZGEyNTI5MDJjMWEyNDdkNzkzODgyOTIifQ"
         },
         {
-          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L92-L158",
-          "version": "repo-lines-v1:sha256:76a7421af13c98a9680dc343b8e3ffbb64316f4df66c41dc567b2c947d27487c:eyJzZWxlY3RlZExpbmVDb3VudCI6NjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkYTkzYWU1N2Q0ODhkMTQ2YjZmZGI4ZTg3NGY2MWFiYjcyYWQ2MmNiODZkYjM0MGM5ZDcxN2I1MmQwOWQ4ZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcyNjlkYjUwOTBkMjkyZjg3MTRhM2YxNjQwZjZkNjc0YmJlYjhmZTdmNDQwOTM0YjY3Mzg5MThhZjUyYzRiMTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5N2IyN2I0OWNjYjNlODU1YzMzM2I4NWQxNmZmM2VjZjUyZDc3ODUyYTIxY2RhMjgzMGM4NTk4ZTMwMDkyOGIifQ"
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L257-L327",
+          "version": "repo-lines-v1:sha256:c2672d56c2e4751b71d78ee525fdd78a18d871b7509f38ca7f5b7493585b1a5e:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdmNGI3YzZmZGQ0OWZjOWJkYzQyMzIwNmNhNDFkZWRlMTAwNWVlNDc1YWNkN2E0ZGI4YWQxNTYzZTY5MDBkYTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljY2M3NGNiMWFhMzgxZDFkYTcyNGMzYTU2ZTM4NDcxMDJmZDIyZjIxZjk0YjY3MGVkZjdlZDVhYjZjYzdkOWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhlOWNlYjRkMjI5YWE1OTNiZWQzOTFjZWFmNmU3N2RmZGM2MmRiYzIxYTA1NTRhZTk5NTM3NTU5YjRhMzY2NDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwNzhhODY1NDI3YjVhNTAyM2QxMDE5MzI3MGU3ODBiM2M4ZmFlYzI4MzEzNTY4OTA4M2QzMDM3MzU0OGFlYmUifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L405-L447",
+          "version": "repo-lines-v1:sha256:69c4cb8623991ed4923a3d8f34b28b30bdfd74a7370dfeb4aca8e40d1de69e78:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyMzJlYTBiMmVlM2ZlYjczOGEzMjRjNTI3ZmJkZDM5MzhlYzgyMzU5NzY4ZDgxYjk2NjA0NWY3MzRiMWRiYjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkZTZjNDE4ZDNlYmZiZDQ4NjdmNzU2MmNkYjU4NTg1M2E2OGIzMTVkMzdkZmMzMWI1NjAxNDY1ZTFiNjE5OWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMyODBjMDc2NWZhNDg3NzlkM2YwODVmNDk2NTY3NmRkODQ3ODljMDI2YWVhZjIyMmEwNzkzOGRkYjE1YWM4NzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMxY2YxMTFkNDUxOGFiNGM1YzQwZWU5YmM3NjllMDliNGJkYTgzMGUyNGY2YWM2YmJhNWYxM2QwMTJiNThjMDAifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L92-L143",
+          "version": "repo-lines-v1:sha256:e172ea831659f2c690bbf754fd513bb794095e41ff678b2d93891dfbd06db59c:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkYTkzYWU1N2Q0ODhkMTQ2YjZmZGI4ZTg3NGY2MWFiYjcyYWQ2MmNiODZkYjM0MGM5ZDcxN2I1MmQwOWQ4ZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3MmVjY2MyNjljZTA5MjJjOGIwMWIwNmFlYTZjZjY1MTExZjdlNjVjZTEwMGE4MzI2YTVmMTgxZTA1ODA0YjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFkZDE5Y2Y2MzBiN2I5MTE5NGU2ZGM1NTYyN2NlNDZmNWQ0ZjQxZGI1MDk0NTYyMjhmYmRiYzQ2MzA4MmZhZjIifQ"
         }
       ]
     },
@@ -129,10 +137,70 @@
           "version": "repo-lines-v1:sha256:a9f52eef9ec815d52befe832ee6a614b35eeb55600143b517746e05a8c2ac644:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0Mzc1MzEzZGU0ODAzZDJhNTNmNzA5MTA0NGNmZTg1NmI2NGNiNTVlNDZkM2NhYjFlNGY4YmIxYjBiYzBjZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwNjcwZDk2M2RiZjZjMDZmM2MzYzZiYWFlMTA3OTZmNGE5MDg1MGYxMWVmZGE1NDQ4M2RmZWUwZjI2OWE0ODAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRhZjU2YjdmNzE1ZTkwODI5OGExOTk4ZWFiMGFiZmI5YzgxYmJjNzg2OTEzZWE0ZGZlMjc2NmI5M2M3ZDcwNzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1NGYwYmY0YzU3YjAyNmUxYjY5YWM5NTcwZTIzZWUyNTk2N2E4MDkyNDJiYzFmZjFlN2M2M2E4NmZjNWRmM2EifQ"
         }
       ]
+    },
+    {
+      "id": "claim_7e863255da264db9acc71df92f2a5ad3",
+      "statement": "현재 주요 사용자 화면은 `/`, `/profile`, `/vocal-profiles/[id]`, `/recommendations/[id]`, `/recommendations/[id]/songs/[itemId]`, `/library`, `/library/mixes/[id]`, `/account`, `/notifications`이며 `/recommendations` 단독 화면은 존재하지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L171-L180",
+          "version": "repo-lines-v1:sha256:8caa7e72cb633cab442295cce5bf27db9650c18a9fed849f0f1ebe4a9852de13:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRkNzg2MWFmNGQwMmZhOGQ0ODQ1N2IzOGNmNDAyNDU1MDZiZmE0MTIyMTMyNWE3NGZiMGE1MjgzYTU1YTMzMGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZjOTVkOTRjMmJhZjViMGExYWFiN2RhMWU2MGExZTc5OWNlNmU3NjRiMmE2ODBkYzc1NDE0NzZmYTk2NDgxZmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiZmFmNzVhZWQxMzY5ZTkzNjljNzkyNmI1YTRjMzJhMGRjNjY5ZmNhZDI4M2M1YmJiYTZhZmM3MDVlYjYyNGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYwYjY1MWMxMWFlMGFlZGVkYThmMmRjMmEyYmEwM2Q5YmRiYjAzNTE2ZmZkZmZhNmU3MDdkNTdhYTllYzYzMWQifQ"
+        },
+        {
+          "resource": "repo://app/(product)/account/page.tsx",
+          "version": "repo-file-v1:sha256:bf6a6a8e1ca0f00a15de4235c64616e3df7b6f1899dd7de039593f0906e74e0b"
+        },
+        {
+          "resource": "repo://app/(product)/library/mixes/%5Bid%5D/page.tsx",
+          "version": "repo-file-v1:sha256:13bd08d35041fc65faa8ed0efb8bba943582d62cb38c6cb3d9660ba8147d7725"
+        },
+        {
+          "resource": "repo://app/(product)/library/page.tsx",
+          "version": "repo-file-v1:sha256:6ecc3d5dc2b255239c309ec1fb56b99aeed96f88b135667a4c7506ef8372ceb7"
+        },
+        {
+          "resource": "repo://app/(product)/notifications/page.tsx",
+          "version": "repo-file-v1:sha256:95199d3f7af272fb65389c3bd14e698dcd76a0fd1574b626add4ac3c3edb6519"
+        },
+        {
+          "resource": "repo://app/(product)/profile/page.tsx",
+          "version": "repo-file-v1:sha256:0f2b89fb4e1092b0bb76a86ab819b701e17d30ef9a33316caced70b300aca162"
+        },
+        {
+          "resource": "repo://app/(product)/recommendations/%5Bid%5D/page.tsx",
+          "version": "repo-file-v1:sha256:c0de4090a9305651cea9bb3a0b330eca51add206a948f57c0269dd12b3edaafa"
+        },
+        {
+          "resource": "repo://app/(product)/recommendations/%5Bid%5D/songs/%5BitemId%5D/page.tsx",
+          "version": "repo-file-v1:sha256:4436cdf65f055157187e16136eb1567b4b8a87ea60ac95d4445a87c9c343752b"
+        },
+        {
+          "resource": "repo://app/(public)/page.tsx",
+          "version": "repo-file-v1:sha256:50c4318c25bf758e25735d87a268c723d5573eb7d4bc5a84eb133c694b8a4eab"
+        }
+      ]
+    },
+    {
+      "id": "claim_101be8a5b4ea4ef99dc08a2e4e9ef224",
+      "statement": "Root `app`의 페이지와 API route 파일은 Next.js convention에서 FSD 구현을 export하는 adapter이며, 예를 들어 `app/api/mixing-jobs/route.ts`는 `src/_app/api-routes/mixing-jobs/index.server`의 GET·POST를 연결한다.",
+      "evidence": [
+        {
+          "resource": "repo://app/(product)/profile/page.tsx",
+          "version": "repo-file-v1:sha256:0f2b89fb4e1092b0bb76a86ab819b701e17d30ef9a33316caced70b300aca162"
+        },
+        {
+          "resource": "repo://app/(public)/page.tsx",
+          "version": "repo-file-v1:sha256:50c4318c25bf758e25735d87a268c723d5573eb7d4bc5a84eb133c694b8a4eab"
+        },
+        {
+          "resource": "repo://app/api/mixing-jobs/route.ts",
+          "version": "repo-file-v1:sha256:653ab90ac9da215869bdbbcbdbc97341cfdfd7ea8213312ff6a041bbf2c91f9f"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.5.0",
-    "at": "2026-09-03T23:57:17.994Z"
+    "at": "2026-09-04T00:46:29.331Z"
   }
 }

@@ -4,7 +4,7 @@ okf_version: "0.2"
 
 # 파일
 
-- [Copysinger Quickstart](quickstart.md) - Copysinger를 로컬에서 실행한 뒤 웹/API, PostgreSQL 큐와 worker, Modal·Leemage 통합, 핵심 사용자·관리자 흐름과 검증 문서로 이동하는 에이전트용 시작점이다. 정확한 준비 조건과 명령은 재현 가능한 순서로 제시하고 세부 설계는 도메인별 문서로 위임한다.
+- [Copysinger Quickstart](quickstart.md) - Copysinger의 로컬 설치·PostgreSQL·Prisma·worker 실행 순서와 실제 App Router 공개 표면을 안내하고, 변경 목적에 따라 아키텍처·도메인·운영·통합·워크플로·테스트 문서로 연결하는 시작점이다.
 
 # 디렉터리
 

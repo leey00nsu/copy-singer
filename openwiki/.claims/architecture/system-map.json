@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:2c0a83f470f1987c60b448bd9ed34c89a442cf57b0c786d00c0cf1db88d19f83",
+  "pageVersion": "sha256:09013497f8aef020c41c58454939ac8f480e772e24ad2c2bc4bc443f92883cbf",
   "claims": [
     {
       "id": "claim_f6074735ef7d4832a0683d4ee42e011a",
@@ -134,11 +134,11 @@
     },
     {
       "id": "claim_7959d498612f422ca632cd57fa17f245",
-      "statement": "미디어 bytes는 외부 저장소에 보관하고 PostgreSQL에는 소유권과 asset metadata를 유지하며, 외부 접수 전 실패는 환불 대상으로 기록하고 최종화 transaction이 실패하면 저장한 결과 asset을 폐기한다.",
+      "statement": "실제 media bytes는 Leemage에 저장하고 PostgreSQL에는 사용자 소유권·external URL·MIME type·file name·크기와 관계 metadata를 둔다. AI 믹싱은 Modal 접수 전 실패를 환불 대상으로 기록해 reconciliation하며, 접수 후 실패는 외부 작업이 존재할 수 있어 자동 환불하지 않는다. 결과 asset을 저장한 뒤 최종 DB transaction에서 job·asset 관계를 확정하지 못하면 해당 asset을 폐기한다.",
       "evidence": [
         {
-          "resource": "repo://README.md#L141-L143",
-          "version": "repo-lines-v1:sha256:bd64a9fdba20da01ca7eb72c66f51bab16b51628ee5908ecf8480b22f3ce3e1f:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTllZTJkMTU1OWEwYmMzM2E5NDUzNjg3M2Y4YTVmMWVlZmJkZDk2NjJjNjllZDIxMzJkMDc4MWM0ZWNkMTUzNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDE3ZThkMjYwMGM2MmU5OWUwZDA1ZDE0Y2M0M2I3MmU1NjdiZjBjNDI5NjEzMWY4ZGExYTM1MTMyYmExYTdkOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjJmYmY0NzFkNzJjOWQxOWNlNjk1ZTJhYmZjNTM2ZmEwOGU2NzRiNjUwZTBmZjNmNzYxN2U5NmZlZWM1ZTFhOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWY3YjIzZmE5NmNmYzFkNDgyMjYyNTZmM2QwZGY1NDZlN2VmYmY2YWRkYTI1MjkwMmMxYTI0N2Q3OTM4ODI5MiJ9"
+          "resource": "repo://README.md#L127-L143",
+          "version": "repo-lines-v1:sha256:48ccf029cc7808d5db55ef8dadb584f083a854abb35fb266440368cd7a7a44b0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3MWZiYmRiNDBmZGIzYWQ5YmQwN2FjZDhiNmNiNThhZDgyMzcwMjY0YWVkZjMyYmM5MDIyYThjZjBjMjJhOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxN2U4ZDI2MDBjNjJlOTllMGQwNWQxNGNjNDNiNzJlNTY3YmYwYzQyOTYxMzFmOGRhMWEzNTEzMmJhMWE3ZDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3YThmYWQwM2RiYmI3NWE3OGE5OTQzOWIwOTJkOWZjNmY5Mzc2YzM4MzQ5ZjI2NjZjYzIyZTMwMmI4ZTA4ZTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlmN2IyM2ZhOTZjZmMxZDQ4MjI2MjU2ZjNkMGRmNTQ2ZTdlZmJmNmFkZGEyNTI5MDJjMWEyNDdkNzkzODgyOTIifQ"
         },
         {
           "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L146-L159",
@@ -149,8 +149,8 @@
           "version": "repo-lines-v1:sha256:1093234f1047664f34ff984705d1339ba42dc36816ad4c5aeb3e82ae99eba783:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0ZmJjYzRiNDI5MTg3NzlmMmVmOGU4NGVlZjNlZWFmYzI2YmE5ZjU4MjhiYTA2NzgzNzM0NTIyZTJhMDM3NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2ZTUxZTBkMDA4ZjE2YzdhMmI3MDAyZThiYzQ2NTQ4N2FlMmY1YTMzYjA4ZjczZjUzNWQwMGJmMjhiODdmZTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdmNGQ4ZWVhMzM5YzRhNjllYmFmZDA4MjRlZmJkNmU0Njk2Zjg5MTU2YTU3YTAzZWU0MWRjNzQwN2NkODljNWIifQ"
         },
         {
-          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L413-L443",
-          "version": "repo-lines-v1:sha256:d0d816952b75b93fa6b75a60cc2070edd1c83adc5b343e1ddae6d9063f59bdf6:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4NzhhMDdmNWU3MGFhMjU1NTZlYTAwYWVkZmVhNGRmOWVmOTllZTg2ZDI3NDI3NWUwM2I3ZTk3YjRmY2FkNDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3MTYyMGY1NTEwZGYzOTA2ZmJjYmNjODNmMjJhMjViNzk4ZGM0YjllZjY0MGRlNjQ3NmM4MTQwMmJhYmM1YmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgxNWU4NzAxOTM1MjE5MDM4MTExYTVkN2Y1M2Y1ZGNmOTdhYWQwYzg2MmE2MmY0ODk1ZjNiNTk4ZjM4MTFlMWEifQ"
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L405-L443",
+          "version": "repo-lines-v1:sha256:25dad649ac5b519ee5057208fb01cb437c5d6383f87da66d82e406d7651b8e5b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyMzJlYTBiMmVlM2ZlYjczOGEzMjRjNTI3ZmJkZDM5MzhlYzgyMzU5NzY4ZDgxYjk2NjA0NWY3MzRiMWRiYjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMyODBjMDc2NWZhNDg3NzlkM2YwODVmNDk2NTY3NmRkODQ3ODljMDI2YWVhZjIyMmEwNzkzOGRkYjE1YWM4NzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgxNWU4NzAxOTM1MjE5MDM4MTExYTVkN2Y1M2Y1ZGNmOTdhYWQwYzg2MmE2MmY0ODk1ZjNiNTk4ZjM4MTFlMWEifQ"
         }
       ]
     },
@@ -167,10 +167,86 @@
           "version": "repo-lines-v1:sha256:2b86de62dad50e16d6cccd405474286fc18cbe7b3dc47a81cd8bb25317d1d839:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDQ3MWUyZTZjZDMyMDBjNTE5MWNlM2FhNGE5NWI4MDExNTQ0MTRhMmY0YjZhYThlZTlmZmU0MDk1NDM5ZDBkOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjZmNWI0MGIxNTg0NTdkMTc4NjRmMjE3OTA3ODZkZDVhMmVjZGI2NGI2NmE2NTFmNzg4ZDRlMjVjZDMzMDNkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTNkZjE3NzFhMGExNjAxZGE0ODVkZjRjMDM0NGQxYWM2NzEzOTZkZDdjYjM1Y2RlOWFhY2ViYzAzNjFjMDMxMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
         }
       ]
+    },
+    {
+      "id": "claim_dcd95a1cce4440e7afc1ab25d5cd2b27",
+      "statement": "`/api/mixing-jobs`의 Next.js route는 Node runtime에서 `_app/api-routes` handler를 연결하고, handler는 세션 인증과 Zod 입력 검증 뒤 job을 enqueue하며 성공은 202, 인증·입력·티켓·서버 오류를 각각 401·400·402·500 계열 응답으로 표현한다.",
+      "evidence": [
+        {
+          "resource": "repo://app/api/mixing-jobs/route.ts#L1-L3",
+          "version": "repo-lines-v1:sha256:653ab90ac9da215869bdbbcbdbc97341cfdfd7ea8213312ff6a041bbf2c91f9f:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjUwYmU5ZjIzN2U3MmRiYTc5NmU5Nzk5NDc4ZmE1NDgyMTNhMmNmOTNkYTBmODIzZjUxMmUzN2YxOTMwNDI1ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2NiMmYxNWNmYWZiMzAwMWQzMTU4MDBhYTYyM2Q4NmNlZmZmMGVhNWNiNGJlNzIwM2E5Y2MxNjJiNzczNGNjZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts#L12-L67",
+          "version": "repo-lines-v1:sha256:8896c8287d0bd66fb70bd65a8dca59a0cd29491e71592b0325c46964d328419f:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjNGFhMjExZDg5ZTY1NDM5MThlNzkzZDIxNjFmYTA2ZjdkMzJkZWU4MDlkNzkzYzdhMDFmOTE3MjEyNjAwYzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ2MDgyNDY3NDYxZDQ0YWEzOWUzZGUwZjExMzYxYzZhZmU2NWFhNzdkYTI5YjgwMWRkNTU4MDA0MzQ0MjVkMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3b42e735942d4205bcbd83e4713ceb05",
+      "statement": "Mixing worker는 `FOR UPDATE SKIP LOCKED`를 사용해 pending 또는 lease 만료 job을 원자적으로 claim하고 owner·lease·heartbeat·attempts를 함께 갱신하므로, 유효 lease를 가진 작업은 경쟁 worker가 처리하지 않고 worker 장애 뒤 만료 작업은 회수될 수 있다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L133-L144",
+          "version": "repo-lines-v1:sha256:7f1dbdacde7121b4a2e0416dc6416113ea58adac44b471427712c782ddcb626e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjZGI2MTNhODU2OThlNGMyZTkwYjQxMDM1NDBiMjQ3ZDA5NjcyYmZlOGM1NGRmMDM1ODlkODFlMjdkOWMwMWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2MjAyYzNjODU5NGNjMzVhYTUzZmI2NmIxYjEzYjk3NjY4MDEwNDY1NjM1ZjlhNGEzNmQyNTAzMTMyY2UxZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ0OGM4YmViN2ZkOWMzY2FkM2NmNDNmZjBmODgzOTM3ZWE5ZjBmMThmMmIzNzc2NGQ5NTZlNGZkYmQ2NTZhOGEifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L92-L130",
+          "version": "repo-lines-v1:sha256:b0664914d9c31b3dc59a2285f246bdb60ae643f05d330d3d3a7eceb69a254bb4:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkYTkzYWU1N2Q0ODhkMTQ2YjZmZGI4ZTg3NGY2MWFiYjcyYWQ2MmNiODZkYjM0MGM5ZDcxN2I1MmQwOWQ4ZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1Y2NhZjBhZjk4ZDA1NDU2YTZiY2Y5OWQ5MTVlODBlYTdkYmJjYjQ5NDc0MDgxMTE3ODU0NDFmYWM4NThhOGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1MWM2ODg4Y2Q0ZjQyYmZiNzk4ZmFjOWNmMzA1NzQzMDg5ZTdkNGE1NzE0MjA3NmNiMDVmNGE0YjM5NDNiZjEifQ"
+        },
+        {
+          "resource": "repo://tests/mixing-queue.integration.ts#L198-L211",
+          "version": "repo-lines-v1:sha256:2512b937e203540d450f5abeccea476daba923c03093428d15d2609b5ccd1df1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyNmY4MDQyMjMxZmMyNmZmNThhOTIyZWZjZjEzMDYwZmNmOTYzZWM3ZTFiOGE1NjlhYjQ2YWFjOGE5MjM3NTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNkNjc5MTBjMjgyM2RlMGNjMjZjODJhZjVjNDc0NzI2ODIwM2MxZDhkYjhkMzNmYWQyYmM1Njg4NWVjMWIyZTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyOGQwMDc4NDBiY2RiMmYzMzkwNzg0M2EyYTUwMjhiMDRkMWM2MmI4MmU4Njc0YWY1OGQwN2MxNGExMzcwZDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYyNzYxNmFmMjRiZmM3YjQyN2EzMmE3ZWQ2NWIyN2I1MzJiMDVjYzFmM2RkZDc1ZDZkNWFkNDUwMjZjNjU4NzMifQ"
+        },
+        {
+          "resource": "repo://tests/mixing-queue.integration.ts#L297-L303",
+          "version": "repo-lines-v1:sha256:6690aaa1e01e579feee494788c36610615e7ee16d3e1bc36249bb5304283a2e8:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDU2YTFkZmM1YzhmYTFiZWIxOTk0MDNiMzE4ZWQxNzNlZGRkNTgxM2M3NzhiNTQwMzE5N2IzY2RiYTJiMDAyYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTA0Zjc3MDM2NmZlMzlkNGE2MzFiZDg4YzU0M2JlNTMxY2FmZmIxYTkzYTJlYTc0YjVjOTYzYmUwNTVjM2YzMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTViOGZmYzhjZWUxN2M4NmZjNTQ1NDM0N2NmMjg3ZDk5YzFmYjNmNGVhMGJmZjYwZWY2NzQ3MGY4ZDJhODIxNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_253a9edfb5c346a7be2f974400ccff0e",
+      "statement": "FSD 경계 테스트는 cross-slice 내부 segment import, client runtime graph의 server 모듈 도달과 재-export를 통한 간접 도달, root `app` adapter의 public API re-export 및 정적 route config를 실제 source tree와 fixture에서 검사한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L154-L174",
+          "version": "repo-lines-v1:sha256:de64d653dad6e683d9b0a7c9f80fa04bc5cc11bc10db555b91ad3390e23a6c35:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2NGY2YzRjZGVlODRhNzY0MzBkMzQ1NzlhZTJmYTlmMjQ1ZGJjMDI1MmVlOTIyY2QwODdiN2VhOTA0ZTBkYTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1OTYzYTI5MTliYzRhOGNkNGM2YzExOGVkNTQ1NzAyYzlhMWU2ZTJiNjcwOGIzZTRiOWFhZWNlMjM5ZmRlZWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE3ODFlNDU0ZDYzYzhjYjhiMzUzMDM3ZmI3M2NhZGZlYjQyN2IzYzk2ZDJlMjg1ODM5Zjg3ZTdhNjJhNGUzOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFhMDAwZTY3ZGJmNDc5YjcyN2RmOTdjMTk4NDQ5OGM4MmRlNGQ3MmJiN2YyNjMxMjcwNjkxODkyNzlmNjAzNWYifQ"
+        },
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L201-L228",
+          "version": "repo-lines-v1:sha256:e028b63fa7ed8f8f88c1d15f9cd80d8224c5b5311d06d5e5b61c0c40f244c1da:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE1ZWExNjMzMTNiYWJjZmM3YWQwZGVjN2I1ZjE3NmI1NWNmZjI1OGMwYzdlZjE1MGQ5MDNiNDRmMmVmNDljOTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1OTYzYTI5MTliYzRhOGNkNGM2YzExOGVkNTQ1NzAyYzlhMWU2ZTJiNjcwOGIzZTRiOWFhZWNlMjM5ZmRlZWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEwYmE4Yjk4ODFkYmY5MDdlMzI3NmI5ZGM4YzUxMzU2ZjRhMTI1YTcyNGUxYzZiZGZiZGExNzMzOGE5OTU2NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBkZDViYjRlYmRhNzhiOWI0MDk3MmIzNDg4Njg5NDdhMDFhM2E2ZDBhYmRjNWVjMWU5NmVjYjA3NTBhY2IyZmUifQ"
+        },
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L278-L320",
+          "version": "repo-lines-v1:sha256:bcf5db5f7e5bb1d2f1ea20a83e4cf031fa405ef4e6141dae5436a103356bb08e:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjYjQ0ZWM4NmM0NGU5NWQ2ZTBmMTQ1ODQ2NmM0MjhkMzU0NWY1ZWM5NmE0YzczZWViZDk2ZGZlMTgxYzNhMDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhYTQ4ODJlZDg3YmZkMjJjNDk1OWVlNWVlMDY4ZDc5Y2VjNDg1MzU3NzViZjU3Yjg5NWZlNmQxNTg5MmRjMGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVmNTBmNDFlMzlkNjE2MTA1ZjZhZDdkNWMwNjNkNWNmMzIzOTVhN2JiZGNkYTFjOThlYjkyNzcxMGIyYWE3OTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJiMGU0NTMxMzMwOGMxODc2MzBlOTIxYzlhZTc0NzIxNjYzZGZmNzBlNWQ0YTk0NjYyODE5MTEzY2EzZWEzNjAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8b09186ac35e4e559c0e2c1b1f8d860a",
+      "statement": "동일 mixing 요청의 동시 enqueue는 idempotency key로 하나의 job과 하나의 ticket debit으로 수렴하고, retryable 오류는 지연 재시도하며 접수 후 Modal 실패와 finalization 실패는 각각 환불하지 않고 저장된 상태에서 재시도하거나 최종 실패한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/mixing-queue.integration.ts#L172-L191",
+          "version": "repo-lines-v1:sha256:8359de3ed197af947c3bed371d5df6b1d2c0e6dabdab692b49de3ecdcbc3c1a6:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYyYmMzNTdlODM5OWJkMWQwODNkMTFhMTQwZTFkZTY3OGFmNTAzODBiZDE2Mjk2NjljNGI4MTVlN2RhYTFmZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU0YjhjYjQ3ZDc0ODFkOGJkNjk4NTgxNDJlYjk5OGIwNmQ2MTU4MjY5NzIyZGYwZjRkNzU3OTQ0NGY3MzgxNjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1M2ZmZTg5NTJlZDdhZjI2M2RmMzQxYmIwNWIyOThkNDUyN2Q1MzM2NzA2NWNmMDE2N2U1YTIwMGU5ZWQzMDYifQ"
+        },
+        {
+          "resource": "repo://tests/mixing-queue.integration.ts#L213-L260",
+          "version": "repo-lines-v1:sha256:2a05cd4b27a0b0ef32008d1a3039cd1c540aefed21341a3c997bccfb07ba61e7:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwNDUyNDdmOTk5MWEwYTZlMWJkMzNmY2MyZGJhZjQ5Nzc4YzM4ZDgzMzNlNTIxOGEzZDFhODYxY2Y3NTU1YTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhMWVjNmUwZTY5NjVjMGRhY2JkODdhY2YxMWNmNDZhZmZiNDg4OTkwNDMyNjAyNWYyMGI0YTdjZGQ2M2I1OTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmY2MwMmU3M2M4MTY0MjQwM2U1ZjFmNGIwNTVhNjE2MzM4NGJhYzA1ZGU2Y2IwMjE2ZThhNzg5NjQ4NjczNWQifQ"
+        },
+        {
+          "resource": "repo://tests/mixing-queue.integration.ts#L291-L340",
+          "version": "repo-lines-v1:sha256:ac06b925ba8dc149c2c612bd440bae2af52fce595e7949d78c681b735ddb7b95:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5NDJjOGE1MzBiMWNlNjQ4NTUxMjJmNWNjNWQwY2EzYTE2NGY2NDZkMzJjNjIzZjE2Mjg0ZDJlZWZhMGUzOGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ0YTE5NzM4NTU1Njk3MWMyOTg3NDEyMzIxMDBkOTc0ZjRiMzFhNjI2YzAxZDU2ODJhYTBkODg3NWYyZGY2NGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdkMTVkMDBjOWJlNWUwNTMwYzMwYzRhM2MyMWIyYTI2YzA1NDdhYzNlMWM1NTkyZjEzNzAyYTE3OGJlNmEyYzcifQ"
+        },
+        {
+          "resource": "repo://tests/mixing-queue.integration.ts#L350-L418",
+          "version": "repo-lines-v1:sha256:eb311e73e144c67bdf75e3009b4a6cdc53f0609826fed494e7dbdc737e612aea:eyJzZWxlY3RlZExpbmVDb3VudCI6NjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU0ZTg1YTJkOTlkNTk0Y2M5NWE2OWE4NmU4MGI1MDIzMDdlNGUwNTFjM2NjNTQzMDYzNTc5YjhlZmFkNmY5N2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3ODZjM2Q0YjAzYzU3OWE2YWUxMDFkMjhhZDZmZDhmZjBiYmY5Y2Q1NTc1YTI5NzIxMTMxMjE5ZTA5NGJmNTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU1ZDhkZDE0YTc3YTNiMDZhNzRlNDRjYzBjZTBlZDI1ZGZlZWFhMDc1OTIxZmZlZjJkZDY0M2Y1OWRkNjU4ZTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIxMDQ3YmYyMDI1MGUwODVhMGQ3Y2FkYzA2OGQ0OWRmYzYxOWFiNWU2NmRlOGZlMmYyODU4Y2U4YjlkMjI2Y2YifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.5.0",
-    "at": "2026-09-03T23:57:17.994Z"
+    "at": "2026-09-04T00:46:29.331Z"
   }
 }
