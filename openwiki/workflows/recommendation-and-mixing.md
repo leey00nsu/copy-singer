@@ -1,21 +1,32 @@
 ---
-type: "참조"
-title: "Recommendation to AI Mixing"
-openwiki_generated: true
+type: end-to-end workflow
+title: 추천, 레퍼런스 선택과 AI 믹싱 워크플로
+description: 보컬 프로필로 곡을 랭킹하고 키 조정 근거를 설명한 뒤, 추천 결과를 검증·영속화하여 티켓 차감, 내구성 있는 믹싱 큐, SoulX 변환 제출·폴링, 결과 저장과 재생까지 연결하는 흐름을 설명한다. 실패·재시도·환불·삭제의 경계도 다룬다.
+tags: [recommendation, mixing, queue, tickets, lifecycle]
 verified:
   - by: openwiki/0.5.0
-    at: 2026-09-03T23:57:17.994Z
+    at: 2026-09-04T02:00:10.767Z
 sources:
+  - id: openwiki-source-05f2b0a95626c5ff0b19e438
+    resource: repo://src/_app/api-routes/mixing-jobs/mixing-job-detail-route.ts
   - id: openwiki-source-28cb2570db799cb0b4da1a45
     resource: repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts
   - id: openwiki-source-eaa76879de1a19c0db5c6ebb
     resource: repo://src/_app/background-jobs/mixing/worker.ts
+  - id: openwiki-source-f7e7ae3b57968136591c7619
+    resource: repo://src/entities/mixing-job/api/client.ts
+  - id: openwiki-source-dcbc6d51cb37a5fff81cb37e
+    resource: repo://src/entities/mixing-job/api/deletion.ts
+  - id: openwiki-source-3568e4d30000a244be8ea9b3
+    resource: repo://src/entities/mixing-job/api/history.ts
+  - id: openwiki-source-1050c6ce9340050c6bb46443
+    resource: repo://src/entities/mixing-job/lib/presentation.ts
   - id: openwiki-source-0d2d25b3bfb0d05fc0dafbf8
     resource: repo://src/entities/mixing-job/model/contract.ts
   - id: openwiki-source-86e7d5713aa1ec6483cc042e
     resource: repo://src/entities/recommendation/lib/key-fit-scorer.ts
-  - id: openwiki-source-d25262c1be4f6251566e1fc9
-    resource: repo://src/entities/recommendation/model/key-fit-contract.ts
+  - id: openwiki-source-65250bb561efb32b9245b30d
+    resource: repo://src/entities/vocal-profile/model/contract.ts
   - id: openwiki-source-e666cd046fb06fe25b657e92
     resource: repo://src/features/create-mixing/api/mixing-queue.ts
   - id: openwiki-source-28e6a6b450d76027eb804f2a
@@ -24,142 +35,157 @@ sources:
     resource: repo://src/features/create-recommendation/api/recommendation-service.ts
   - id: openwiki-source-792e12f25e1f0b5c9bdeab0c
     resource: repo://src/features/create-recommendation/lib/recommendation-data.ts
+  - id: openwiki-source-200291f8a1aaa391d1b68ec4
+    resource: repo://src/shared/config/server-env.ts
   - id: openwiki-source-a352a5bcdb61d2c4d362ab3e
     resource: repo://tests/key-fit-scoring.test.ts
+  - id: openwiki-source-fe8d14a1fe88197c1f519c74
+    resource: repo://tests/mixing-history-ui.test.tsx
   - id: openwiki-source-10c6a88a3297ea68ebdbf439
     resource: repo://tests/mixing-queue.integration.ts
-  - id: openwiki-source-4989636d19dad4f53bff695c
-    resource: repo://tests/mixing-reference.test.ts
-  - id: openwiki-source-35e6d9931d5f4827e7c24f6d
-    resource: repo://tests/recommendation-persistence.integration.ts
-generated: { by: "openwiki/0.5.0", at: "2026-09-03T23:57:17.994Z" }
+  - id: openwiki-source-c2092f2379cf810b24df4f56
+    resource: repo://tests/mixing-status-presentation.test.ts
+  - id: openwiki-source-8f26aeeca9968cee04abea58
+    resource: repo://tests/recommendation-ranking.test.ts
+generated: { by: "openwiki/0.5.0", at: "2026-09-04T02:00:10.767Z" }
 ---
 
+# 추천, 레퍼런스 선택과 AI 믹싱 워크플로
 
-# Recommendation to AI Mixing
+## 범위와 진입점
 
-이 기능은 **추천을 매번 계산하는 읽기 흐름**과 **믹싱을 영속적인 비동기 작업으로 만드는 쓰기 흐름**으로 나뉜다. 인증된 사용자는 `POST /api/recommendations`에 `userVocalProfileId`를 보내 추천을 얻고, 선택한 `songAnalysisId`와 고유 `idempotencyKey`로 `POST /api/mixing-jobs`를 호출한다. 두 API 모두 세션이 없으면 unauthorized 응답을 반환한다.
-
-## 1. 공개 카탈로그 검증과 추천 계산
-
-추천 서비스는 사용자 소유의 `USER` 보컬 프로필만 허용하고, MIDI 범위·분위수·tessitura·`voicedRatio`·`pitchStability`·`clippingRatio`가 유한한지 확인한다. 프로필의 분위수는 `minMidi ≤ p10Midi ≤ medianMidi ≤ p90Midi ≤ maxMidi`여야 하며 tessitura는 비어 있지 않고 전체 범위 안에 있어야 한다. 곡 쪽에서도 다음 활성 revision 정합성을 확인한다.
-
-- active source가 READY이고 `song.activeSourceId`와 일치한다.
-- current analysis가 READY이고 `currentAnalysisId`, source ID와 일치하며 cleanup이 확인됐다.
-- mixing target asset이 READY이고 활성 source에 속한다.
-- 곡 분석의 모든 스코어링 수치와 `analyzer`/`analyzerVersion`이 존재한다.
-
-발행 카탈로그가 없거나 READY 곡이 없거나 위 정합성이 깨지면 `CATALOG_NOT_READY`(503, retryable)이다. 사용자와 곡의 analyzer 계약(이름과 버전)이 다르면 `INCOMPATIBLE_ANALYZER`로 거부한다. 공개 카탈로그는 repeatable-read transaction으로 읽으므로 한 계산 안에서 catalog와 곡 행의 snapshot이 섞이지 않는다.
+사용자는 인증된 상태에서 `POST /api/mixing-jobs`에 `vocalProfileId`, `songAnalysisId`, `idempotencyKey`를 보낸다. 추천 화면의 곡은 `getRecommendationResult`가 현재 `PUBLISHED` 카탈로그를 읽고 보컬 프로필과 곡 프로필의 key-fit을 계산해 정렬한 결과다. 추천 응답은 해당 곡의 합성 상태를 별도로 투영하며, 실제 작업의 전체 상태를 숨기지 않고 믹싱 상세·이력 API가 더 풍부한 표현을 제공한다.
 
 ```mermaid
 sequenceDiagram
-    participant Client
-    participant API as Recommendations API
-    participant Service as Recommendation service
-    participant DB as Database
-    participant Scorer
-    Client->>API: POST userVocalProfileId
-    API->>Service: getRecommendationResult(profileId, userId)
-    Service->>DB: 소유자 프로필과 reference 상태 조회
-    Service->>DB: PUBLISHED catalog와 rows를 RepeatableRead로 조회
-    Service->>Service: 활성 source, analysis, target, metric 검증
-    Service->>Scorer: scoreCatalogProfiles(profile, rows)
-    Scorer-->>Service: rank + score + shift + reasons
-    Service->>DB: 해당 분석의 최신 mixing job 조회
-    Service-->>API: catalogRevision, scoringVersion, items
-    API-->>Client: 200 recommendation response
-```
+    participant User as 사용자
+    participant Rec as 추천 서비스
+    participant API as Mixing API
+    participant DB as 데이터베이스
+    participant Worker as 믹싱 워커
+    participant SoulX as SoulX 변환 서비스
+    participant Media as 미디어 저장소
+    participant Notifier as 알림 서비스
 
-위 시퀀스는 추천 검증, 계산, 현재 작업 상태를 하나의 응답으로 합치는 경계를 보여준다.
-
-### 스코어의 의미와 identity
-
-스코어러는 호환되는 두 프로필을 검증한 뒤 `shift = -6..6`의 정수 반음 후보를 모두 평가한다. 점수는 tessitura 대칭 overlap 58점, tessitura 초과 부담 26점, 극단 범위 부담 16점의 가중 합(0~100)이다. 과도한 고음·저음은 각각 최대 12반음까지 감점되며, 동점이면 고음 부담, 전체 극단 부담, 절대 shift 크기, shift 순서로 결정한다. `recommendedShift`, 원키/조정 점수, breakdown과 reason code를 함께 반환한다.
-
-`pitchStability`와 voiced 비율로 계산한 profile confidence는 진단값이다. confidence가 낮으면 `LOW_PROFILE_CONFIDENCE`를 붙일 수 있지만 후보 fit 점수 자체를 바꾸지 않는다. 현재 알고리즘의 **scoring identity**는 `key-fit-v3`이며, 카탈로그의 **catalog revision**과 별개다. 응답과 작업에는 둘 다 기록한다. revision은 어떤 공개 곡/asset snapshot인지, scoring version은 어떤 점수 계약인지 식별한다. 추천 결과 자체는 별도 추천 row로 저장하지 않고 요청 시 계산한다.
-
-## 2. 추천에서 ticketed mixing job으로
-
-클라이언트는 추천 item의 분석 ID를 그대로 쓰되 요청 키를 재사용 가능하게 생성한다. enqueue는 먼저 최신 추천을 다시 계산해 선택 항목을 찾고, 그 결과의 `catalogRevision`, `scoringVersion`, catalog position을 저장 시점에 재검증한다. 따라서 추천을 본 뒤 카탈로그가 바뀌면 `MIXING_RECOMMENDATION_STALE`(409, retryable)이고 오래된 추천으로 작업을 만들지 않는다.
-
-reference 선택은 사용자 소유·READY인 `SYNTHESIS_REFERENCE`를 우선하고, 없으면 사용자 소유·READY인 원본 `REFERENCE` media asset으로 fallback한다. synthesis contract가 지원되지 않거나 둘 다 없으면 `MIXING_REFERENCE_UNAVAILABLE`이며 job과 debit을 만들지 않는다. 선택한 `referenceAssetId`와 카탈로그의 `targetAssetId`는 작업에 고정된다.
-
-작업 생성과 티켓 debit은 `Serializable` transaction 안에서 함께 수행된다. `(userId, idempotencyKey)`가 이미 있으면 같은 profile/analysis 조합일 때 기존 job을 그대로 반환하고, 다른 조합이면 `IDEMPOTENCY_CONFLICT`(409)다. serializable write conflict는 최대 3회 재시도하며, unique race 후에도 기존 job을 조회해 반환한다. debit은 job ID 기반 ledger idempotency key로 한 번만 기록되고 잔액 부족은 402 `INSUFFICIENT_TICKETS`다.
-
-```mermaid
-sequenceDiagram
-    participant Client
-    participant API as Mixing jobs API
-    participant Queue as enqueueMixingJob
-    participant Rec as Recommendation service
-    participant DB as Serializable transaction
-    participant Tickets
-    Client->>API: POST profileId, analysisId, idempotencyKey
-    API->>Queue: enqueue request
-    Queue->>Rec: 최신 추천 item 계산
-    Queue->>DB: 기존 (user, key) job 조회
-    alt 기존 job 없음
-        Queue->>DB: profile/analysis/catalog revision 정합성 검증
-        Queue->>DB: smart reference 또는 source reference 선택
-        Queue->>DB: MixingJob 생성
-        Queue->>Tickets: AI_MIXING usage debit
-        Tickets-->>DB: transaction에 ledger 기록
-        DB-->>Queue: 새 job
-    else 같은 요청 키의 동일 대상
-        DB-->>Queue: 기존 job
-    else 키가 다른 대상에 사용됨
-        DB-->>Queue: IDEMPOTENCY_CONFLICT
+    User->>Rec: 보컬 프로필 추천 조회
+    Rec->>DB: PUBLISHED 카탈로그와 기존 job 조회
+    Rec-->>User: 순위와 key-fit 근거
+    User->>API: POST mixing-jobs
+    API->>DB: 추천 재검증과 snapshot 조회
+    API->>DB: job 생성과 티켓 debit 트랜잭션
+    API-->>User: 202와 job 상태
+    Worker->>DB: PENDING job을 lease로 claim
+    Worker->>Media: reference와 target 다운로드
+    Worker->>SoulX: POST /v1/conversions
+    SoulX-->>Worker: queued job id
+    Worker->>DB: SUBMITTED 저장
+    loop poll
+        Worker->>SoulX: conversion 상태 조회
+        SoulX-->>Worker: queued 또는 processing
     end
-    Queue-->>API: job
-    API-->>Client: 202 serialized job
+    SoulX-->>Worker: succeeded
+    Worker->>SoulX: 결과 audio 다운로드
+    Worker->>Media: 결과 asset 저장
+    Worker->>DB: SUCCEEDED와 resultAsset 연결
+    Worker->>Notifier: 성공 알림
+    User->>API: 이력 또는 상세 조회
+    API-->>User: 재생 URL /api/mixing-jobs/id/audio
 ```
 
-이 시퀀스에서 ticket debit은 job 생성과 원자적이며, reference 검증 실패는 결제 경계 이전에 끝난다.
+*그림은 추천 조회부터 SoulX 제출, 결과 영속화와 사용자 조회까지의 주요 호출 순서를 보여준다.*
 
-## 3. 워커: claim, Modal 제출·폴링, 최종화
+## 추천과 key-fit 설명
 
-`runMixingWorkerOnce`는 먼저 필요한 환불을 보정하고 media cleanup을 처리한 뒤 작업을 claim한다. claim은 `FOR UPDATE SKIP LOCKED`로 가장 오래된 eligible job 하나를 잡고 lease owner/만료, heartbeat, attempt를 갱신한다. `PENDING`은 `PREPARING`이 되고, lease가 만료된 `PREPARING`·`SUBMITTED`·`PROCESSING`도 재획득할 수 있다.
+`getRecommendationResult`는 먼저 사용자 소유이며 `sourceType: USER`인 프로필을 요구하고, MIDI 범위·tessitura·voiced ratio·pitch stability·clipping ratio 등 필수 분석값이 유한한지 검사한다. 카탈로그는 `RepeatableRead` 트랜잭션에서 공개된 하나를 고르고, 각 곡에 대해 다음을 검증한다.
 
-제출 전에는 고정된 reference URL과 target asset URL을 다운로드하고 빈 audio를 거부한다. `MODAL_API_URL`과 `MODAL_API_KEY`가 없으면 non-retryable 오류다. Modal `POST /v1/conversions`에 `prompt_audio`, `target_audio`와 `SYNTHESIS_PRESET`을 보내며 `auto_pitch_shift=false`, 추천 `pitch_shift`를 명시한다. 응답은 `queued` 상태의 job ID여야 하고, 성공하면 외부 ID와 함께 `SUBMITTED`로 저장한다.
+- 활성 source가 READY이고, 현재 분석이 그 source를 가리키며 READY이고 `cleanupConfirmed`여야 한다.
+- target asset이 현재 source에 연결되고 READY여야 한다.
+- 분석의 점수 필드와 analyzer 식별자가 존재해야 한다.
 
-그 뒤 `GET /v1/conversions/{modalJobId}`를 poll한다. Modal이 `processing`이면 내부 상태를 `PROCESSING`으로 바꾸고 heartbeat하며, queued/processing이 아니면 설정된 poll interval만큼 기다린다. `failed`는 실패로 종료한다. `succeeded`이면 `/audio`를 가져와 압축한 다음 `storeMixingResult`로 media storage에 업로드·확정한다. 결과 asset 저장과 job의 `SUCCEEDED`, `resultAssetId`, 완료 시각, 성공 notification은 transaction으로 묶으며 transaction이 실패하면 업로드한 asset을 폐기한다. 결과는 job detail/history와 추천 item의 `/api/mixing-jobs/{id}/audio` URL로 노출된다(결과 asset이 READY일 때만 audio URL을 준다).
+그 뒤 `scoreKeyFit`은 설정된 이동 범위의 모든 정수 반음 후보를 계산하고, 원키 점수(`originalKeyScore`)와 최적 이동 점수(`adjustedScore`), `recommendedShift`, confidence, reason code를 반환한다. 점수가 비슷하면 높은 tessitura 부담, 극단 음역 부담, 이동량 순으로 결정해 설명이 임의적이지 않게 한다. 따라서 추천 이유는 단순한 곡 순위가 아니라 “키를 조정하면 음역 적합도가 개선되는지”, 높은 음/낮은 음 부담이 줄었는지, 프로필 신뢰도가 낮은지를 포함한다.
+
+응답은 카탈로그 revision·scoring version과 각 항목의 `targetAssetId`, 분석 ID, 추천 이동량을 함께 보존한다. 사용자에게 이미 존재하는 최신 job이 있으면 분석별로 가장 최근 job을 골라 `synthesis.jobId`와 상태를 투영한다. 추천 조회는 새 job을 만들거나 티켓을 차감하지 않는다.
+
+### 추천 상태와 전체 믹싱 상태의 차이
+
+추천 응답의 `synthesis.status`는 UI용 축약 projection이다.
+
+| 실제 MixingJob 상태 | 추천 synthesis 상태 |
+|---|---|
+| `PENDING`, `PREPARING` | `preparing` |
+| `SUBMITTED` | `queued` |
+| `PROCESSING` | `processing` |
+| `SUCCEEDED` | `succeeded` |
+| `FAILED`, `CANCELED` | `failed` |
+| job 없음 | `not_started` |
+
+반면 `GET /api/mixing-jobs`, `GET /api/mixing-jobs/:id`와 이력 모델은 `pending`, `preparing`, `submitted`, `processing`, `succeeded`, `failed`, `canceled`를 모두 공개한다. 특히 `submitted`와 `canceled`는 추천 projection에서 각각 큐 대기와 실패로 합쳐지므로, 운영·상세 화면에서는 full API를 사용해야 한다. 활성 상태는 pending/preparing/submitted/processing이고, 나머지는 terminal이다. 성공했더라도 결과 asset이 READY가 아니면 재생 URL을 노출하지 않는다.
+
+## 생성 전 검증, snapshot과 티켓 원자성
+
+`enqueueMixingJob`은 추천 결과를 다시 계산한 뒤 다음을 한 번 더 확인한다. 사용자 프로필 소유권과 USER source type, 분석 READY, 곡 ACTIVE, 현재 분석 ID, 추천에 사용된 카탈로그의 published 상태·revision·position, target ID/source/READY가 모두 일치해야 한다. 하나라도 달라졌으면 `MIXING_RECOMMENDATION_STALE`을 반환해 오래된 추천으로 작업하지 않는다.
+
+레퍼런스는 `selectMixingReference`가 **합성용 reference만** 고른다.
+
+1. 사용자 소유의 READY `SYNTHESIS_REFERENCE`가 있으면 우선한다.
+2. 프로필 descriptor가 `smart-reference-mid-v1`이면 smart asset이 없을 때 일반 `REFERENCE`로 fallback하지 않는다. 이 계약은 mid band만 포함하는 합성 reference를 요구하며, 없으면 `missing_mid_reference`/`MIXING_REFERENCE_UNAVAILABLE`이다.
+3. 구형 `smart-reference-v1` 계약에서만 사용자 소유 READY `REFERENCE`를 fallback으로 쓴다.
+
+이 검증을 통과해야 job snapshot에 `referenceAssetId`, `targetAssetId`, catalog position/revision, scoring version, recommended shift, ticket cost가 기록된다. 외부 파일 자체를 큐에 복사하는 대신 asset ID와 당시 추천 메타데이터를 고정하므로 카탈로그가 나중에 바뀌어도 실행 입력은 변하지 않는다.
+
+job 생성과 debit은 `Serializable` Prisma 트랜잭션 안에서 수행한다. 먼저 `(userId, idempotencyKey)`로 기존 job을 찾고, 같은 키가 동일 입력이면 그 job을 반환하며 다른 프로필/분석이면 `IDEMPOTENCY_CONFLICT`다. 동시 쓰기 충돌은 제한적으로 재시도하고 unique 충돌도 기존 job을 회수한다. 새 job 생성 직후 비용(`MIXING_TICKET_COST`, 기본 1)이 양수이면 `AI_MIXING` 지갑에서 `USAGE_DEBIT`을 같은 트랜잭션으로 기록한다. 잔액 부족은 402이고 job·debit 모두 없다.
+
+## 내구성 있는 큐, lease와 SoulX 처리
+
+워커는 `runMixingWorkerOnce`에서 미처리 환불과 media cleanup을 먼저 조정한 다음 작업을 claim한다. `claimNextMixingJob`은 `FOR UPDATE SKIP LOCKED`로 가장 오래된 eligible job 하나를 잡고, `PENDING`을 `PREPARING`으로 바꾸며 owner, lease 만료 시각, heartbeat, 시작 시각을 기록하고 attempt를 증가시킨다. 만료된 lease의 PREPARING/SUBMITTED/PROCESSING도 회수할 수 있어 워커 장애 후 다른 worker가 이어받는다. heartbeat update에는 owner 조건이 있으므로 lease를 잃은 worker는 계속 진행할 수 없다.
+
+제출 전에는 snapshot reference URL과 target URL을 각각 내려받고 빈 응답을 거부한다. target은 추가로 DB status가 READY인지 확인한다. 두 파일과 `SYNTHESIS_PRESET`을 multipart로 보내며 `auto_pitch_shift=false`, snapshot의 `recommendedShift`를 `pitch_shift`로 고정한다. `MODAL_API_URL`과 `MODAL_API_KEY`가 없으면 제출하지 않는다. SoulX 경계는 다음과 같다.
+
+- `POST /v1/conversions`가 `queued` 상태와 ID를 반환해야 `modalJobId`를 저장하고 `SUBMITTED`로 전환한다.
+- 이후 `/v1/conversions/:id`를 폴링한다. 외부 `processing`이면 내부 `PROCESSING`, 그 밖의 queued 계열이면 `SUBMITTED`로 heartbeat를 갱신한다.
+- `succeeded`이면 `/audio`를 내려받아 압축/최종화한 후 결과 asset을 저장한다.
+- 결과 저장과 job의 `SUCCEEDED`, `resultAssetId`, 완료 시각 및 성공 알림은 DB 트랜잭션으로 묶는다. DB 커밋 실패 시 방금 만든 media asset은 폐기한다.
+
+워커 동시성은 `MIXING_WORKER_CONCURRENCY`(기본 1, 최대 32), 시도 횟수는 `MIXING_MAX_ATTEMPTS`(기본 3), lease는 `MIXING_LEASE_SECONDS`(기본 120초), 폴링 간격은 `MIXING_POLL_INTERVAL_MS`(기본 5초)다. 네트워크/408/425/429/5xx 같은 재시도 가능 오류는 지수형 지연(최대 30초) 후 제출 전이면 PENDING, 제출 후면 SUBMITTED로 되돌린다.
+
+## 상태와 실패·환불 경계
 
 ```mermaid
 stateDiagram-v2
-    [*] --> PENDING
-    PENDING --> PREPARING: claim
-    PREPARING --> PENDING: 제출 전 retryable 실패
-    PREPARING --> SUBMITTED: Modal queued 응답
-    SUBMITTED --> PROCESSING: Modal processing + heartbeat
-    SUBMITTED --> SUBMITTED: 상태 조회/최종화 retry
-    PROCESSING --> PROCESSING: heartbeat + poll
-    PROCESSING --> SUCCEEDED: audio 압축·저장·job finalize
-    PREPARING --> FAILED: non-retryable 또는 attempts 소진
-    SUBMITTED --> FAILED: Modal 실패 또는 attempts 소진
-    PROCESSING --> FAILED: polling 실패 attempts 소진
+    [*] --> PENDING: enqueue
+    PENDING --> PREPARING: worker claim
+    PREPARING --> SUBMITTED: SoulX queued
+    SUBMITTED --> PROCESSING: SoulX processing
+    SUBMITTED --> SUBMITTED: retryable poll or finalization error
+    PROCESSING --> PROCESSING: heartbeat and poll
+    PROCESSING --> SUCCEEDED: audio stored and transaction committed
+    PENDING --> FAILED: terminal pre-submit failure
+    PREPARING --> FAILED: terminal pre-submit failure
+    SUBMITTED --> FAILED: terminal post-submit failure
+    PROCESSING --> FAILED: terminal post-submit failure
     FAILED --> [*]
     SUCCEEDED --> [*]
+    CANCELED --> [*]
 ```
 
-상태 diagram은 내부 상태를 나타낸다. 공개 응답에서는 `PENDING`/`PREPARING`이 `preparing`, `SUBMITTED`가 `queued`, `PROCESSING`이 `processing`으로 매핑되고 `SUCCEEDED`/`FAILED`/`CANCELED`는 각각 `succeeded`/`failed`로 노출된다.
+*그림은 내부 MixingJob 상태와 제출 전·후 실패 경계를 보여준다.*
 
-## 4. 실패, 재시도, 환불과 운영 계약
+시도 횟수 소진 또는 재시도 불가 오류는 `FAILED`가 된다. 제출 여부가 핵심이다. reference/target fetch, 설정 누락, SoulX 접수 실패처럼 **SoulX에 접수되기 전** terminal failure는 `refundState: REQUIRED`로 저장한 뒤 idempotency key `mixing:refund:<jobId>`로 원래 ticket cost를 `USAGE_REFUND`한다. 환불은 재시작에 안전하며 worker 시작 시 `reconcileRequiredRefunds`가 누락된 환불을 보충한다. 반대로 SoulX job ID가 저장된 뒤의 외부 실패·최종화 실패는 이미 외부 처리가 시작된 것이므로 환불하지 않는다(`refundState: NONE`). 최종화 실패는 재시도 가능하면 SUBMITTED에 남고, 소진되면 실패·알림만 남긴다.
 
-HTTP 408·425·429·5xx와 네트워크 오류 같은 일시적 preflight 오류는 retryable일 수 있다. 남은 시도가 있으면 exponential delay(최대 30초) 후 제출 전 오류는 `PENDING`, 이미 Modal에 제출된 오류는 `SUBMITTED`로 되돌린다. Modal에 제출된 뒤에는 외부 작업을 중복 제출하지 않고 저장된 `modalJobId`를 사용해 이어서 poll한다. 시도 소진 또는 non-retryable 실패는 `FAILED`와 error code/detail, notification을 기록한다.
+실패를 terminal로 확정하면 중복 알림을 막는 dedupe key로 `MIXING_FAILED` 알림을 만든다. 성공 시에는 `MIXING_SUCCEEDED` 알림과 `/library/mixes/:id` 링크를 만든다. `CANCELED`는 데이터 모델과 공개 상태·terminal 삭제 규칙에는 포함되지만 현재 worker/API에 사용자 취소 동작은 구현되어 있지 않다. 취소 상태가 다른 운영 경로에서 기록된 경우 추천에서는 failed로 보이고, full history에서는 canceled로 필터링·표시된다.
 
-- **제출 전 실패:** job은 `refundState=REQUIRED`로 확정되고 `ensureMixingRefund`가 `USAGE_REFUND`를 ledger idempotency key `mixing:refund:{job.id}`로 기록한 뒤 `REFUNDED`로 표시한다. 환불 보정은 worker 시작 때도 재실행된다.
-- **제출 후 실패:** 외부 서비스에 이미 접수됐으므로 환불하지 않고 `refundState=NONE`을 유지한다. 최종화(압축 또는 결과 저장) 재시도도 이 규칙을 따른다.
-- **lease/동시성:** lease 만료는 작업 유실을 복구하지만, 활성 lease를 잃은 worker는 heartbeat에서 실패한다. `SKIP LOCKED`는 두 worker가 같은 job을 동시에 claim하지 않도록 한다.
-- **설정:** `MIXING_TICKET_COST`, `MIXING_MAX_ATTEMPTS`, `MIXING_LEASE_SECONDS`, `MIXING_POLL_INTERVAL_MS`, `MODAL_API_URL`, `MODAL_API_KEY`가 비용·시도·lease·poll·Modal 연결을 결정한다. worker는 `reconcileRequiredRefunds`와 media cleanup을 매 실행 전에 수행한다.
+## 이력, 재생, 다운로드와 삭제
 
-## 5. API와 검증 지점
+`GET /api/mixing-jobs`는 인증 사용자 자신의 job만 대상으로 하며 제목·아티스트·보컬 프로필 이름 검색, 상태 필터, 페이지네이션(기본 20, 최대 100)을 지원한다. 이력 row에는 곡, 프로필 이름과 분석 artwork, 비용, 오류, 제출/시작/완료 시각이 포함된다. 클라이언트는 활성 row가 있으면 5초마다 이력을 갱신하고, 상세도 활성 상태 동안 5초마다 폴링한다.
 
-- `POST /api/recommendations`: 세션과 body를 검증하고 계산된 catalog revision, scoring version, ranked item, score breakdown, synthesis 상태를 반환한다.
-- `POST /api/mixing-jobs`: 세션·profile·analysis·idempotency key를 검증하고 202를 반환한다. 잔액 부족은 402, stale recommendation/키 충돌은 409다.
-- `GET /api/mixing-jobs` 및 `GET /api/mixing-jobs/{id}`: 사용자 자신의 history/detail만 조회한다. `status`, 검색어, 페이지 필터를 지원한다.
-- `DELETE /api/mixing-jobs/{id}`: 사용자 작업을 삭제하고 필요하면 media cleanup pending을 반환한다.
-- `GET /api/mixing-jobs/{id}/audio`: 성공했고 결과 asset이 READY인 작업만 최종 오디오를 제공한다.
+성공 상태이고 결과 asset이 READY일 때만 이력·추천이 `/api/mixing-jobs/:id/audio` URL을 제공한다. 따라서 오디오 접근은 job과 asset의 사용자 소유권을 다시 확인하는 다운로드 경계에서 처리해야 하며, DB가 성공이어도 asset 준비 전에는 빈 URL을 보낸다. terminal job만 `DELETE /api/mixing-jobs/:id`로 삭제할 수 있고 진행 중 job은 409다. 결과 asset이 있으면 외부 media 삭제를 시도하며, 삭제가 즉시 되지 않으면 cleanup job을 예약하고 `mediaCleanupPending`을 반환한다. job 삭제와 asset 정리의 분리로 외부 저장소 일시 장애가 이력 삭제를 막지 않는다.
 
-## 6. 집중 테스트
+## 변경 시 지켜야 할 불변식과 테스트
 
-`tests/key-fit-scoring.test.ts`는 profile 수치/순서와 analyzer 호환성, symmetric overlap, 고·저음 부담, confidence의 진단 성격, -6..6 후보와 tie-break, reason code를 고정한다. `tests/recommendation-persistence.integration.ts`는 추천이 on-demand 계산되고 반복 호출의 snapshot identity 및 catalog revision 변경을 확인한다. `tests/mixing-queue.integration.ts`는 동시 idempotent enqueue, serializable debit, reference 우선순위, stale/preflight 실패, lease recovery, Modal 제출 후 재시도, 제출 전 환불·제출 후 무환불, finalization 실패와 성공 결과 저장까지 검증한다. `tests/compress-mixing-result.test.ts`는 최종 음원 압축 계약을, `tests/mixing-reference.test.ts`는 smart reference 우선 및 source fallback 경계를 검증한다.
+- 추천·큐 사이의 revision, current analysis, source/target identity 검증을 우회하지 않는다. 공개 카탈로그의 READY 및 cleanup 조건은 추천 계산과 enqueue 양쪽에서 방어한다.
+- debit은 job과 같은 Serializable 트랜잭션에 있고, refund/debit idempotency key는 변경하지 않는다. 동일 요청의 동시 POST가 두 job이나 두 debit을 만들면 안 된다.
+- lease owner 조건과 heartbeat를 유지한다. 외부 호출 중 lease가 만료되면 재처리될 수 있으므로 `modalJobId`가 있으면 새 제출 대신 상태 조회로 재개해야 한다.
+- 제출 전 terminal failure만 환불한다. 제출 후 실패와 결과 최종화 실패를 환불하도록 바꾸면 외부 비용과 티켓 원장이 어긋난다.
+- 결과 asset 저장 뒤 job/알림 트랜잭션이 실패하면 asset을 폐기하고, READY가 아닌 결과는 재생하지 않는다.
+
+핵심 회귀 테스트는 `tests/key-fit-scoring.test.ts`와 `tests/recommendation-ranking.test.ts`의 이동 후보·tie-break·이유 코드 검증, `tests/recommendation-persistence.integration.ts`의 catalog revision과 추천 persistence, `tests/mixing-queue.integration.ts`의 원자적 enqueue/debit, idempotency, mid-only reference, lease recovery, 제출 전/후 환불 경계, finalization 재시도와 결과 저장 검증이다. UI 계약은 `tests/mixing-status-presentation.test.ts`에서 full 상태의 표현을, `tests/mixing-history-ui.test.tsx`에서 이력·폴링·재생/삭제 흐름을 검증한다.

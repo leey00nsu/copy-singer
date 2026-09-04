@@ -1,123 +1,122 @@
 ---
-type: 도메인 데이터 모델
-title: 도메인 모델과 불변조건
-description: 사용자 보컬 프로필부터 버전이 있는 곡 카탈로그, 분석·미디어 자산, 믹싱 작업, 티켓 원장과 알림까지의 영속 모델을 설명한다. 관계, 상태 전이, 소유권, 중복 방지 규칙을 안전한 변경의 기준으로 삼는다.
-tags: [domain-model, data-model, invariants, prisma, catalog, mixing]
+type: "참조"
+title: "도메인 데이터 모델과 불변식"
+openwiki_generated: true
 verified:
   - by: openwiki/0.5.0
-    at: 2026-09-03T23:57:17.994Z
+    at: 2026-09-04T02:00:10.767Z
 sources:
+  - id: openwiki-source-de14ae907b85d4bbf155311a
+    resource: repo://prisma/migrations/migration_lock.toml
   - id: openwiki-source-2798a6200ef792b731721034
     resource: repo://prisma/schema.prisma
-  - id: openwiki-source-debc1155ede83cdd69528014
-    resource: repo://src/entities/notification/api/notification-service.ts
-  - id: openwiki-source-99eb096d7b352b1ff8e2f742
-    resource: repo://src/entities/song-catalog/api/catalog-import.ts
-  - id: openwiki-source-a85ef9e3913485aa5e4abe6c
-    resource: repo://src/entities/song-catalog/lib/readiness.ts
-  - id: openwiki-source-12b687e5e9afbf72c79b13fd
-    resource: repo://src/entities/ticket/api/ticket-service.ts
-  - id: openwiki-source-c5c93b4b4dcdabfe0bc775b2
-    resource: repo://src/entities/vocal-profile/api/persistence.ts
-  - id: openwiki-source-e666cd046fb06fe25b657e92
-    resource: repo://src/features/create-mixing/api/mixing-queue.ts
-  - id: openwiki-source-28f4827a9789f0dd61aa454e
-    resource: repo://tests/auth-ownership.integration.ts
-  - id: openwiki-source-a4fd7db225eb42908850bf04
-    resource: repo://tests/song-catalog-domain.test.ts
-  - id: openwiki-source-c2d4400c2e28b58229bc069e
-    resource: repo://tests/ticket-ledger.integration.ts
-generated: { by: "openwiki/0.5.0", at: "2026-09-03T23:57:17.994Z" }
+  - id: openwiki-source-0d2d25b3bfb0d05fc0dafbf8
+    resource: repo://src/entities/mixing-job/model/contract.ts
+  - id: openwiki-source-a033bae155fdef6136f961d9
+    resource: repo://src/entities/notification/model/contract.ts
+  - id: openwiki-source-f13e5af932c875f891c951d0
+    resource: repo://src/entities/recommendation/model/contract.ts
+  - id: openwiki-source-a824ef65c70c908bd00443fa
+    resource: repo://src/entities/ticket/model/contract.ts
+  - id: openwiki-source-65250bb561efb32b9245b30d
+    resource: repo://src/entities/vocal-profile/model/contract.ts
+  - id: openwiki-source-35e6d9931d5f4827e7c24f6d
+    resource: repo://tests/recommendation-persistence.integration.ts
+  - id: openwiki-source-828b114bfa9d25550d8d1ca2
+    resource: repo://tests/song-catalog-db.integration.ts
+generated: { by: "openwiki/0.5.0", at: "2026-09-04T02:00:10.767Z" }
 ---
 
-# 도메인 모델과 불변조건
 
-이 문서는 `prisma/schema.prisma`가 정의하고 마이그레이션으로 실제 DB에 적용하는 durable data model의 기준이다. 애플리케이션 레이어의 표시용 상태는 enum을 소문자로 직렬화할 수 있지만, 저장 값과 관계·제약은 Prisma 모델을 따른다.
+# 도메인 데이터 모델과 불변식
 
-## 핵심 관계
+이 페이지의 실행 가능한 기준은 PostgreSQL용 `prisma/schema.prisma`와 그에 적용되는 `prisma/migrations`이다. 모델을 직접 수동 수정하거나 생성된 Prisma 클라이언트를 기준으로 스키마를 바꾸지 말고, **모든 스키마 변경은 migration을 추가하고 적용**한다. 현재 모델은 초기 데이터 기반에서 미디어, 티켓, 내구성 큐, 카탈로그 revision, target revision, 알림으로 확장되어 왔다 (`prisma/migrations/`).
+
+## 한눈에 보는 핵심 관계
 
 ```mermaid
 erDiagram
+    Recording ||--o{ VocalProfile : analyzed_as
+    Recording o|--o| MediaAsset : source_asset
     User ||--o{ VocalProfile : owns
-    VocalProfile ||--|| Recording : uses
-    Recording ||--o| MediaAsset : stored_as
-    VocalProfile ||--o| MediaAsset : synthesis_reference
     Song ||--o{ SongSource : has_revisions
-    SongSource ||--o{ SongAnalysis : analyzed_as
+    SongSource ||--o{ SongAnalysis : analyzed
     Song ||--o{ SongAnalysis : contains
-    Song ||--o{ CatalogEntry : listed_in
+    Song o|--o| SongSource : active_pointer
+    Song o|--o| SongAnalysis : current_pointer
+    SongSource ||--o{ CatalogTargetAsset : produces
+    Song o|--o| CatalogTargetAsset : target_pointer
     Catalog ||--o{ CatalogEntry : publishes
-    SongSource ||--o| CatalogTargetAsset : provides
-    Song ||--o| CatalogTargetAsset : current_target
-    VocalProfile ||--o{ MixingJob : selected_for
-    SongAnalysis ||--o{ MixingJob : mixes
-    MediaAsset ||--o{ MixingJob : reference_input
-    CatalogTargetAsset ||--o{ MixingJob : target_input
-    MixingJob ||--o| MediaAsset : produces
-    MixingJob ||--o{ TicketLedger : debits
-    User ||--o{ TicketWallet : has_wallet
-    User ||--o{ TicketLedger : owns_ledger
+    Song ||--o{ CatalogEntry : listed_in
+    User ||--o{ MixingJob : requests
+    VocalProfile ||--o{ MixingJob : input_profile
+    SongAnalysis ||--o{ MixingJob : input_analysis
+    MediaAsset ||--o{ MixingJob : reference_or_result
+    CatalogTargetAsset ||--o{ MixingJob : target
+    User ||--o{ TicketWallet : has
+    User ||--o{ TicketLedger : owns_or_acts
     User ||--o{ Notification : receives
 ```
 
-위 그림은 주요 외래키 관계를 요약한다. `onDelete` 동작, 현재 revision을 가리키는 단일 포인터, 복합 unique/index는 다음 절을 함께 읽어야 한다.
+*그림은 영속 엔터티 사이의 소유, revision, 현재 포인터 및 작업 입력/결과 관계를 요약한다.*
 
-## 사용자 소유와 보컬 프로필
+### 엔터티별 책임과 비정상적으로 중요한 cardinality
 
-- `User`가 보컬 프로필, 미디어 자산, 티켓 지갑·원장, 믹싱/보컬 분석 작업, 알림의 소유자다. 인증 계정과 세션은 사용자 삭제 시 cascade되고, 생성자(`Song.createdBy`, `SongSource.createdBy`)는 사용자가 삭제되어도 `SetNull`된다. 사용자 소유 조회는 대상 ID만이 아니라 `userId`를 함께 조건으로 사용해야 한다. (`repo://prisma/schema.prisma#L344-L366`, `repo://prisma/schema.prisma#L368-L400`)
-- `VocalProfile`은 `sourceType`이 `USER` 또는 `SONG`인 분석 결과이며 MIDI 범위/분위수, tessitura, voiced/pitch/clipping/RMS 지표, `descriptors`, analyzer와 analyzer version을 보존한다. 동일 recording·analyzer·version 조합은 하나만 허용되고, 사용자별 `profileNumber`도 unique다. 번호는 사용자 행의 `nextVocalProfileNumber`를 원자적으로 증가시켜 할당하므로 표시 이름과 번호를 임의로 계산하지 않는다. (`repo://prisma/schema.prisma#L151-L186`, `repo://src/entities/vocal-profile/api/persistence.ts#L24-L32`)
-- 사용자 분석 완료 시 원본 녹음은 `Recording(kind=USER_TEST, status=READY)`로 저장되고 `MediaAsset(kind=REFERENCE)`를 가리킨다. smart synthesis reference가 있으면 별도 `MediaAsset`로 연결할 수 있지만 저장 실패 시 원본 reference를 fallback으로 유지한다. DB 트랜잭션으로 프로필 저장이 실패하면 이미 업로드한 자산을 폐기한다. (`repo://src/entities/vocal-profile/api/persistence.ts#L34-L149`)
-- 녹음은 `PENDING → READY/FAILED/DELETED` 상태와 MIME, 크기, sample rate, 만료 시각을 가진다. `VocalProfile.recordingId` 관계는 `Restrict`이므로 프로필이 참조하는 녹음을 먼저 삭제할 수 없다. 사용자 삭제는 사용자 소유 자산과 프로필을 cascade하지만, 자산과 녹음 사이의 optional pointer는 `SetNull`이다. (`repo://prisma/schema.prisma#L130-L149`, `repo://prisma/schema.prisma#L175-L180`)
+- **`Recording`**은 업로드/분석 원본의 저장 위치와 미디어 메타데이터를 담는다. `kind`는 `USER_TEST`, `SONG_SOURCE`, `SVC_REFERENCE`, `SVC_TARGET`을 구별하고 `status`는 `PENDING`, `READY`, `FAILED`, `DELETED`다. 한 recording은 여러 `VocalProfile`을 가질 수 있지만, `mediaAssetId`가 unique이므로 연결된 원본 `MediaAsset`은 최대 하나다. 프로필 삭제가 recording을 지우는 구조가 아니며, 프로필은 recording을 `Restrict`로 참조한다 (`prisma/schema.prisma#L10-L22`, `#L130-L149`).
+- **`VocalProfile`**은 한 recording에 대한 특정 `analyzer`와 `analyzerVersion`의 결과 스냅샷이다. 따라서 같은 녹음도 분석기 버전이 다르면 별도 프로필이 될 수 있고, `(recordingId, analyzer, analyzerVersion)`가 중복을 막는다. 사용자 프로필 번호는 `(userId, profileNumber)`가 unique이며 `sourceType`은 `USER` 또는 `SONG`이다. 수치 지표와 확장 가능한 `descriptors` JSON을 저장하고, 선택적으로 합성용 reference asset을 하나 연결한다 (`prisma/schema.prisma#L151-L186`). UI/API의 현재 사용자 프로필은 `sourceType: USER`와 양수 `profileNumber`를 요구하지만, 저장 모델의 `userId`는 nullable이므로 곡 분석 프로필(`SONG`)과 구별해야 한다 (`src/entities/vocal-profile/model/contract.ts#L71-L100`).
+- **`Song`–`SongSource`–`SongAnalysis`**는 곡과 그 입력 revision, 분석 결과를 분리한다. 한 곡은 여러 source revision과 여러 analysis를 가질 수 있다. source는 `(songId, revision)` unique이고 `sourceVideoId`도 전역 unique다. analysis는 source별 `pipelineContract`가 unique이므로 같은 source와 pipeline 계약을 중복 실행하지 않는다. source/analysis 상태는 각각 `DRAFT|READY|SUPERSEDED|UNAVAILABLE`, `PENDING|READY|FAILED`다 (`prisma/schema.prisma#L188-L283`).
+- `Song.activeSourceId`와 `Song.currentAnalysisId`는 각각 **현재 공개에 사용할 source와 분석 결과를 가리키는 pointer**이지 source/analysis의 생성 순서를 대신하지 않는다. `Song.targetAssetId`도 카탈로그용 target asset의 현재 pointer다. 모두 nullable이고 삭제 시 `SetNull`이므로 포인터가 없다고 행이 자동으로 복구되거나 publish-ready가 되는 것은 아니다.
+- **카탈로그 publication**은 `Catalog`와 `CatalogEntry`로 표현한다. 카탈로그는 unique `slug`, `status: DRAFT|PUBLISHED|ARCHIVED`, 증가 가능한 `revision`을 가진다. entry는 곡을 카탈로그에 배치하며 `(catalogId, position)`과 `(catalogId, songId)`가 unique라서 한 카탈로그 안에서 위치와 곡이 중복될 수 없다. catalog 삭제는 entry를 cascade하지만 song 삭제는 entry가 `Restrict`한다. publish-ready 곡은 활성 source, current analysis, target asset, 적절한 상태의 entry가 모두 일치해야 한다는 통합 조건을 코드가 검사한다 (`prisma/schema.prisma#L312-L342`, `tests/song-catalog-db.integration.ts#L85-L143`).
+- **`CatalogTargetAsset`은 `MediaAsset`과 다른 개념**이다. 이는 곡 source revision에서 만든 카탈로그 대상 파일이며 `sourceVideoId`, `sha256`, 외부 project/file 식별자와 media 상태를 가진다. 한 source에 여러 target revision이 존재할 수 있고, 곡의 `targetAssetId`만 현재 채택된 하나를 가리킨다. 반면 사용자 녹음 및 믹싱 결과는 `MediaAsset`에 저장된다. 양쪽 모두 `(externalProjectId, externalFileId)` unique라 외부 파일을 재등록하지 않는다 (`prisma/schema.prisma#L413-L467`).
 
-## 곡, revision, 분석과 catalog publishing
+## 작업 큐와 상태
 
-`Song`은 `(title, artist)`가 natural uniqueness인 논리 곡이다. lifecycle은 `DRAFT`, `ACTIVE`, `ARCHIVED`이고, `activeSourceId`, `currentAnalysisId`, `vocalProfileId`, `targetAssetId`는 현재 선택된 구성요소를 가리키는 optional unique pointer다. 곡·source·analysis를 삭제할 때 핵심 참조는 `Restrict`이며, 현재 포인터가 가리키는 행이 사라지면 `SetNull`된다. (`repo://prisma/schema.prisma#L188-L216`)
+작업 행은 단순한 UI 진행률이 아니라 재시도 가능한 durable queue다. `SongAnalysisJob`은 source당 최대 하나(`sourceId @unique`)이고 analysis를 선택적으로 연결한다. `VocalProfileAnalysisJob`은 recording당 최대 하나이며 사용자와 source asset, 생성된 profile 및 ticket ledger를 연결한다. `MixingJob`은 사용자, vocal profile, song, **선택된 `SongAnalysis`**, reference asset, target asset, 추천 시점의 `catalogPosition`·`catalogRevision`·`scoringVersion`을 함께 고정한다. 즉 나중에 곡의 current pointer나 카탈로그가 바뀌어도 이미 요청한 믹싱의 입력 맥락은 바뀌지 않는다 (`prisma/schema.prisma#L285-L310`, `#L536-L617`).
 
-`SongSource`는 곡의 immutable-ish source revision 단위다. 같은 곡에서 `revision`은 unique하고 `sourceVideoId`는 전역 unique다. source 상태는 `DRAFT`, `READY`, `SUPERSEDED`, `UNAVAILABLE`이다. 분석은 `(sourceId, pipelineContract)`별로 unique하며, `SongAnalysis`에는 원본 크기/재생시간과 분석 metrics, estimated key, analyzer identity, pipeline metadata, `cleanupConfirmed`, 오류 및 실행 시각이 함께 기록된다. 분석 작업(`SongAnalysisJob`)은 source마다 하나(`sourceId` unique), idempotency key도 unique이며 attempt/lease/heartbeat/재시도 시각으로 durable queue를 표현한다. (`repo://prisma/schema.prisma#L218-L310`)
+```mermaid
+stateDiagram-v2
+    [*] --> PENDING
+    PENDING --> PREPARING: 믹싱 preflight
+    PREPARING --> SUBMITTED: 외부 작업 제출
+    SUBMITTED --> PROCESSING: 처리 시작
+    PROCESSING --> SUCCEEDED: 결과 asset 연결
+    PENDING --> FAILED: 영구 실패
+    PREPARING --> FAILED: preflight 실패
+    SUBMITTED --> FAILED: 제출 실패
+    PROCESSING --> FAILED: 처리 실패
+    PENDING --> CANCELED: 취소
+    PREPARING --> CANCELED: 취소
+    SUBMITTED --> CANCELED: 취소
+```
 
-`Catalog`은 unique slug와 `revision`, `DRAFT/PUBLISHED/ARCHIVED` 상태를 가진 발행 단위다. `CatalogEntry`는 catalog와 song의 연결이며 catalog 안의 position과 song 중복을 각각 unique하게 막는다. catalog 삭제는 entry에 cascade하지만 song 삭제는 entry에서 restrict한다. 카탈로그 import는 snapshot 내부의 position, 곡, source video, target 외부 식별자 중복과 target/source video 불일치를 먼저 거부하고, 같은 slug에 대해 revision을 낮추지 않는다. (`repo://prisma/schema.prisma#L312-L342`, `repo://src/entities/song-catalog/api/catalog-import.ts#L22-L45`, `repo://src/entities/song-catalog/api/catalog-import.ts#L262-L300`)
+*믹싱의 저장 상태(`MixingJobStatus`)와 외부 제출 경계를 보여준다.*
 
-### 공개 가능한 곡의 readiness
+모든 큐 작업은 `status`, `attempts`, `maxAttempts`, `nextAttemptAt`, lease(`leaseOwner`, `leaseExpiresAt`), heartbeat, error code/detail, retryable, 시각 필드를 갖는다. worker는 만료 lease를 회수할 수 있고, idempotency key로 중복 요청을 방지한다. 공개 계약은 Prisma enum 대문자 상태를 소문자 `pending` 등으로 serialize한다. 따라서 DB 상태와 UI 상태를 같은 문자열로 비교하지 말고 계약 serializer를 경계로 사용한다 (`src/entities/mixing-job/model/contract.ts#L4-L16`, `#L125-L145`). vocal analysis와 song analysis는 각각 `PENDING → PROCESSING → SUCCEEDED|FAILED`이며, 믹싱만 `PREPARING`, `SUBMITTED`, `CANCELED`를 추가로 가진다 (`prisma/schema.prisma#L48-L53`, `#L99-L114`).
 
-곡을 추천/믹싱 입력으로 취급하려면 다음이 모두 동시에 참이어야 한다.
+실패 시 외부 결과를 즉시 DB에서 지우는 대신 asset을 `DELETE_PENDING`으로 두고 `MediaCleanupJob`이 `PENDING → PROCESSING → SUCCEEDED|FAILED`로 정리한다. 결과 삭제 API가 `mediaCleanupPending`을 반환할 수 있는 이유가 이것이다 (`prisma/schema.prisma#L67-L85`, `#L469-L481`; `src/entities/mixing-job/model/contract.ts#L105-L111`).
 
-1. song lifecycle이 `ACTIVE`이고 active source가 존재하며 ID가 일치하고 `READY`다.
-2. current analysis가 존재하고 ID가 일치하며 `READY`, `cleanupConfirmed=true`다.
-3. analysis의 `sourceId`가 active source와 일치한다.
-4. target asset이 존재하고 `READY`이며 같은 active source를 가리킨다.
-5. 해당 catalog entry와 catalog 자체가 발행 상태다.
+## 티켓, 사용자, 알림
 
-하나라도 어긋나면 deterministic readiness reason을 반환하며, 특히 source가 바뀐 뒤 이전 analysis/target을 재사용하지 않는다. 이 규칙은 `tests/song-catalog-domain.test.ts`에서 정상, source mismatch, 불완전 draft를 검증한다. (`repo://src/entities/song-catalog/lib/readiness.ts#L5-L44`, `repo://tests/song-catalog-domain.test.ts#L22-L61`)
+`User`는 인증 주체이자 소유권 경계다. session/account는 사용자 삭제 시 cascade되고, 사용자가 만든 song/source와 프로필·미디어·작업·알림도 각각 관계의 on-delete 정책을 따른다. 티켓은 종류별로 분리한다. `TicketWallet`의 복합 primary key `(userId, kind)`는 `VOCAL_ANALYSIS`와 `AI_MIXING` 잔액을 한 지갑 행에 섞지 못하게 한다. ledger는 immutable 성격의 거래 기록으로 amount, 거래 후 잔액, 사유, unique `idempotencyKey`를 보존하며 소유자와 관리자 actor를 별도로 기록한다. 작업과 ledger의 연결은 nullable이므로 환불·관리자 조정도 표현할 수 있다 (`prisma/schema.prisma#L344-L366`, `#L483-L517`; `src/entities/ticket/model/contract.ts#L3-L20`). API 계약은 잔액을 음수가 아닌 정수로 투영한다. 잔액 차감/환불을 추가하거나 변경할 때는 지갑 갱신과 ledger 기록의 원자성, idempotency를 함께 보장해야 한다.
 
-## 미디어 자산과 정리
+`Notification`은 사용자별 inbox 항목이다. 허용 type은 티켓 지급, vocal profile 성공/실패, mixing 성공/실패이며 `dedupeKey`가 unique라 동일 사건을 중복 알림으로 만들지 않는다. `readAt = null`이 미읽음이고, 목록은 `unreadOnly`와 `unreadCount`를 별도로 제공하며 전체 읽음 응답은 unread count 0을 보장한다. `href`는 내부 절대경로(`/`로 시작하되 `//`는 금지)여야 한다 (`prisma/schema.prisma#L519-L534`; `src/entities/notification/model/contract.ts#L4-L55`).
 
-`MediaAsset`은 사용자 소유의 provider 외부 파일 메타데이터(`externalProjectId`, `externalFileId`, URL, 파일명, MIME, 크기)와 `READY`, `DELETE_PENDING`, `DELETED`, `FAILED` 상태를 저장한다. 외부 project/file 쌍은 unique다. `CatalogTargetAsset`은 카탈로그의 target 파일로, sha256·sourceVideoId와 optional source revision을 보존하며 외부 식별자도 unique다. 두 asset 종류 모두 원시 audio bytes를 DB에 넣는 모델이 아니라 외부 저장소 참조와 검증 메타데이터를 보유한다. (`repo://prisma/schema.prisma#L413-L467`)
+## 추천과 현재성의 구분
 
-삭제는 즉시 관계를 지우는 대신 asset 상태와 `deletedAt`/`lastError`를 남기고 `MediaCleanupJob(PENDING/PROCESSING/SUCCEEDED/FAILED)`가 재시도할 수 있다. 사용자 삭제 시 MediaAsset과 그 cleanup job은 cascade되지만, 믹싱이 참조하는 일반 asset과 catalog target은 `MixingJob`에서 `Restrict`되므로 작업 이력의 입력을 먼저 무효화하지 않는다. 결과 asset만 optional이며 삭제 시 mixing job의 `resultAssetId`가 `SetNull`된다. (`repo://prisma/schema.prisma#L469-L480`, `repo://prisma/schema.prisma#L429-L435`, `repo://prisma/schema.prisma#L601-L608`)
+추천 결과는 영속 핵심 entity의 pointer를 덮어쓰는 것이 아니라 사용자 vocal profile, 공개 catalog의 `catalogRevision`, `scoringVersion`, 그리고 각 item의 `songAnalysisId`·`targetAssetId`·순위·recommended shift를 묶은 계산 결과다. 합성은 추천 item 안에서 `not_started → preparing → queued → processing → succeeded|failed`로 별도 투영된다. catalog revision이 바뀌면 캐시 identity가 달라져 다시 계산하지만, 같은 revision의 반복 계산은 같은 결과를 재사용할 수 있다 (`src/entities/recommendation/model/contract.ts#L5-L25`, `#L101-L148`; `tests/recommendation-persistence.integration.ts#L62-L90`).
 
-## 믹싱 작업과 durable job state
+프로필 데이터의 `analyzerVersion`은 단순 표시 필드가 아니라 결과의 의미를 식별하는 버전이다. `descriptors`에는 pitch histogram/track 같은 분석 확장 데이터와 합성 reference 선택 근거가 들어갈 수 있다. 중간 음역 reference가 없으면 추천은 가능해도 mixing capability를 `missing_mid_reference` 또는 `reference_unavailable`로 표시할 수 있으므로, **추천 가능성**, **합성 reference 존재**, **믹싱 가능성**을 하나의 boolean으로 합치지 않는다 (`src/entities/vocal-profile/model/contract.ts#L18-L69`; `src/entities/recommendation/model/contract.ts#L75-L99`).
 
-`MixingJob`은 사용자, 보컬 프로필, song, 특정 `SongAnalysis`, reference asset, catalog target을 모두 고정하고, 추천 position/shift, `catalogRevision`, `scoringVersion`을 snapshot으로 저장한다. 따라서 현재 catalog가 바뀌어도 실행 요청이 어떤 추천 입력을 승인받았는지 추적할 수 있다. 사용자와 idempotency key의 조합은 unique하다. enqueue는 해당 사용자 소유 `USER` profile과 READY analysis를 확인하고, catalog revision/position, current analysis, target source·상태가 추천 결과와 일치하지 않으면 `MIXING_RECOMMENDATION_STALE`로 거부한다. (`repo://src/features/create-mixing/api/mixing-queue.ts#L19-L43`, `repo://src/features/create-mixing/api/mixing-queue.ts#L45-L121`, `repo://prisma/schema.prisma#L569-L616`)
+## 운영·변경 시 체크리스트
 
-저장 상태는 `PENDING → PREPARING → SUBMITTED → PROCESSING → SUCCEEDED/FAILED/CANCELED`이며, `attempts`, `maxAttempts`, `nextAttemptAt`, lease owner/expiry, heartbeat, 외부 `modalJobId`, 오류, submitted/started/completed 시각이 worker 재시작과 재시도를 가능하게 한다. 공개 API는 상태를 소문자로 노출하고 실패 시 code/detail을 함께 준다. 작업 생성과 비용 debit은 serializable transaction 안에서 함께 처리한다. (`repo://prisma/schema.prisma#L99-L107`, `repo://prisma/schema.prisma#L569-L600`, `repo://src/entities/mixing-job/model/contract.ts#L4-L16`, `repo://src/features/create-mixing/api/mixing-queue.ts#L105-L148`)
+1. 새 source를 만들 때 `(songId, revision)`과 전역 `sourceVideoId` 충돌을 먼저 고려하고, 이전 source를 자동으로 active로 만들지 않는다.
+2. analysis나 target을 교체할 때는 `Song`의 current/active/target pointer를 같은 트랜잭션 경계에서 의도적으로 갱신하고, publish readiness를 다시 검사한다.
+3. 외부 미디어 삭제는 행 삭제와 외부 파일 삭제를 같은 순간에 가정하지 않는다. 상태를 `DELETE_PENDING`으로 남겨 cleanup job이 재시도할 수 있게 한다.
+4. queue handler는 idempotency key, lease/heartbeat, retryable과 attempts를 함께 처리한다. 외부 provider의 성공 뒤 DB 저장이 실패하는 경우를 cleanup 경로로 포함한다.
+5. Prisma 모델·enum·unique/index·onDelete를 변경할 때는 migration을 작성하고 통합 테스트를 실행한다. 핵심 회귀 테스트는 `tests/song-catalog-db.integration.ts`, `tests/recommendation-persistence.integration.ts`, `tests/vocal-profile-persistence.integration.ts`이며 `DATABASE_URL`이 없으면 skip된다.
 
-## 티켓 지갑과 원장
+## 관련 경계
 
-티켓은 `VOCAL_ANALYSIS`와 `AI_MIXING`을 섞지 않는 사용자별 지갑이다. `TicketWallet`의 primary key는 `(userId, kind)`이고 balance는 현재 잔액, `TicketLedger`는 변경량과 변경 후 balance, 유형(`SIGNUP_GRANT`, `USAGE_DEBIT`, `USAGE_REFUND`, `ADMIN_ADJUSTMENT`), 이유, 작업 연결과 actor를 immutable 기록으로 남긴다. 원장 idempotency key는 전역 unique다. (`repo://prisma/schema.prisma#L87-L97`, `repo://prisma/schema.prisma#L483-L517`)
-
-변경 적용은 idempotency key를 먼저 확인하고, 음수 debit이면 `balance >= 필요한 양` 조건부 update를 실행해 부족하면 `InsufficientTicketsError`를 낸다. wallet update와 ledger insert는 serializable transaction이며 write conflict는 제한적으로 재시도한다. 동일 요청의 동시 실행은 하나의 ledger 결과로 수렴하고, 다른 kind 잔액에는 영향을 주지 않는다. 가입 grant도 kind별 고유 key로 멱등 처리된다. (`repo://src/entities/ticket/api/ticket-service.ts#L42-L134`, `repo://tests/ticket-ledger.integration.ts#L7-L68`)
-
-작업의 `ticketCost`와 `refundState(NONE/REQUIRED/REFUNDED)`는 비용 정책과 실패 후 환불 처리를 작업에 귀속시킨다. 원장에는 `mixingJobId` 또는 `vocalProfileAnalysisJobId`를 남기되 해당 작업 삭제 시 `SetNull`하므로 사용자 원장 기록은 보존된다. (`repo://prisma/schema.prisma#L495-L516`, `repo://prisma/schema.prisma#L536-L566`, `repo://prisma/schema.prisma#L583-L608`)
-
-## 알림
-
-`Notification`은 사용자별 type, title/message, 내부 상대 경로 `href`, optional sourceId, 읽음 시각을 저장한다. type은 ticket credit, vocal profile success/failure, mixing success/failure다. dedupeKey가 unique이므로 `createMany(..., skipDuplicates: true)`로 같은 사건의 재처리를 한 번만 만들며, key를 다른 payload로 재사용하면 오류다. href는 외부 URL이 아닌 `/`로 시작하는 internal relative path만 허용한다. 읽음 처리는 `(userId, id, readAt=null)` 조건으로 본인 알림만 갱신한다. (`repo://prisma/schema.prisma#L122-L128`, `repo://prisma/schema.prisma#L519-L534`, `repo://src/entities/notification/api/notification-service.ts#L38-L106`, `repo://src/entities/notification/api/notification-service.ts#L141-L153`)
-
-## 안전한 변경 체크리스트
-
-- relation의 `onDelete`와 optional/required 여부를 먼저 확인하고, `Restrict` 참조를 soft-delete나 상태 전이로 우회하지 않는다.
-- 새 source/analysis/target을 만들 때 current pointer와 source identity를 함께 갱신하고 readiness 조건을 재검증한다.
-- catalog snapshot에 position·song·외부 asset key 중복이 없는지, revision이 이전보다 후퇴하지 않는지 검증한다.
-- queue/job 또는 티켓 변경은 idempotency key를 설계하고, wallet update·ledger insert·job insert의 transaction 경계를 유지한다.
-- 외부 media 삭제는 DB 행 삭제와 분리된 cleanup 상태/재시도를 거친다.
-- 소유 데이터 조회·변경에는 항상 `userId` 경계를 포함한다. 이 경계는 서로 다른 사용자에게 profile이 노출되지 않는 통합 테스트로 확인된다. (`repo://tests/auth-ownership.integration.ts#L7-L63`)
+- 외부 파일 업로드/확인/삭제와 provider 식별자는 `/openwiki/integrations/leemage-media.md`에서 다룬다.
+- 티켓 차감·환불과 알림의 업무 흐름은 `/openwiki/concepts/ownership-tickets-and-notifications.md`를 참조한다.
+- lease, retry, worker 운영은 `/openwiki/operations/job-processing.md`를 참조한다.

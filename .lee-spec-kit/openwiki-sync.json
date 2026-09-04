@@ -3,12 +3,12 @@
   "triggerFeatureRef": "F040-repository-knowledge-bootstrap",
   "triggerComponent": "web",
   "language": "ko",
-  "sourceHead": "7daf0280b66c5e49faac83243090958d3e1de365",
-  "sourceFingerprint": "sha256:ec90108709b8ae8e325373de0b14858ff2c31d4d2d41ee8d57513b971f31566a",
+  "sourceHead": "80a32b9c2092131aadd6b31b8f9bc10294b800d2",
+  "sourceFingerprint": "sha256:4dc57f092972737e92acf114abe382cf96f6f3ac313afac95bc8fd78dd07124d",
   "baseRef": "origin/main",
   "baseHead": "eb164d718d66b2ce3e177fc03727ae60ec0add3d",
   "openwikiVersion": "0.5.0",
   "okfVersion": "0.2",
-  "outputHash": "sha256:2b903b82fe199dc5adea3cb7b013d8cb9316145e27a277bdb78ab33be50b1c8b",
-  "verifiedAt": "2026-09-04T01:49:15.632Z"
+  "outputHash": "sha256:5cac86bb21c1f56fa64209f548c521ce6ca8c135f25eec243c2b6c0c222b0e98",
+  "verifiedAt": "2026-09-04T02:46:15.772Z"
 }

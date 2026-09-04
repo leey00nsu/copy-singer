@@ -1,78 +1,34 @@
 ---
-type: 서비스 온보딩 작업 지도
-title: Copysinger Quickstart
-description: Copysinger의 로컬 설치·PostgreSQL·Prisma·worker 실행 순서와 실제 App Router 공개 표면을 안내하고, 변경 목적에 따라 아키텍처·도메인·운영·통합·워크플로·테스트 문서로 연결하는 시작점이다.
-tags: [quickstart, onboarding, routing, operations, workflows]
+type: 온보딩 및 변경 라우팅 가이드
+title: Quickstart and change-routing guide
+description: 새 코딩 에이전트가 Copysinger를 로컬에서 실행하고, 변경 종류에 맞는 아키텍처·워크플로·운영·통합·테스트 문서로 바로 이동하도록 안내한다. 추적된 명령과 저장소 경계를 기준으로 한 짧은 시작 절차와 작업 라우팅 맵을 제공한다.
+tags: [quickstart, onboarding, routing, development, testing]
 verified:
   - by: openwiki/0.5.0
-    at: 2026-09-04T00:46:29.331Z
+    at: 2026-09-04T02:00:10.767Z
 sources:
-  - id: openwiki-source-65f9f953a411237fb5f35d5a
-    resource: repo://app/(product)/account/page.tsx
-  - id: openwiki-source-702fd8c43d08b041118eb9dc
-    resource: repo://app/(product)/library/mixes/%5Bid%5D/page.tsx
-  - id: openwiki-source-e302261d705563ff26ecd669
-    resource: repo://app/(product)/library/page.tsx
-  - id: openwiki-source-a0cea4ab02bd71d859aa226a
-    resource: repo://app/(product)/notifications/page.tsx
-  - id: openwiki-source-32949d8af662e0e73370a7c5
-    resource: repo://app/(product)/profile/page.tsx
-  - id: openwiki-source-ef3bfe98427d89b56baf0547
-    resource: repo://app/(product)/recommendations/%5Bid%5D/page.tsx
-  - id: openwiki-source-8420e9a8a67fe85a5fba630d
-    resource: repo://app/(product)/recommendations/%5Bid%5D/songs/%5BitemId%5D/page.tsx
-  - id: openwiki-source-a51a46bba4ff646eb914c57c
-    resource: repo://app/(public)/page.tsx
-  - id: openwiki-source-a94cea82e631eedd9323e1f1
-    resource: repo://app/api/mixing-jobs/route.ts
+  - id: openwiki-source-850cd942fe1e04537aa0d1df
+    resource: repo://app/layout.tsx
   - id: openwiki-source-b79fbbd921df689b4bbdc82f
     resource: repo://docker-compose.yml
   - id: openwiki-source-5b54a58d1b51cd490b0e7162
     resource: repo://package.json
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
-  - id: openwiki-source-eaa76879de1a19c0db5c6ebb
-    resource: repo://src/_app/background-jobs/mixing/worker.ts
-generated: { by: "openwiki/0.5.0", at: "2026-09-04T00:46:29.331Z" }
+  - id: openwiki-source-3fe0beab1a994cc8f1d9162f
+    resource: repo://src/_app/layout/root-layout.tsx
+  - id: openwiki-source-35cfb94022aa3d154a8651a9
+    resource: repo://src/_app/providers/query-provider.tsx
+generated: { by: "openwiki/0.5.0", at: "2026-09-04T02:00:10.767Z" }
 ---
 
-# Copysinger Quickstart
+# Copysinger 빠른 시작과 변경 라우팅
 
-## 이 페이지를 읽는 법
+Copysinger는 한 소절의 목소리를 분석해 맞는 노래와 키를 추천하고 AI 믹싱까지 제공하는 Next.js 애플리케이션이다. 웹 요청은 PostgreSQL에 작업을 접수하고, 세 개의 durable worker가 보컬 프로필 분석·곡 카탈로그 분석·AI 믹싱을 처리한다. 오디오 bytes는 Leemage에, 상태·소유권·작업 metadata는 PostgreSQL에 둔다. 전체 런타임 경계는 [시스템 지도와 런타임 경계](architecture/system-map.md)를 먼저 읽는다.
 
-Copysinger는 브라우저 요청을 즉시 처리하는 Next.js 앱이면서, 무거운 오디오 분석·변환은 PostgreSQL에 접수한 durable job을 별도 Node worker가 처리하는 서비스다. 이 문서는 폴더 목록이 아니라 **다음에 읽거나 실행할 곳을 결정하는 지도**다. 먼저 로컬 실행을 완료한 다음, 바꾸려는 책임에 맞춰 아래 관련 문서로 이동한다.
+## 1. 로컬에서 시작하기
 
-```mermaid
-flowchart TD
-    Start["시작: 로컬 환경 준비"] --> Setup["설치, PostgreSQL, Prisma, pnpm dev"]
-    Setup --> Surface["실제 App Router 화면과 API"]
-    Surface --> Profile["보컬 녹음과 분석"]
-    Surface --> Recommend["프로필 상세에서 추천과 AI 믹싱"]
-    Surface --> Admin["관리자 카탈로그 운영"]
-    Profile --> Ops["lease, retry, recovery 운영"]
-    Recommend --> Ops
-    Admin --> Ops
-    Ops --> Integrations["Modal, SoulX-Singer, Leemage 경계"]
-    Integrations --> Verify["테스트와 검증"]
-```
-
-이 그림은 로컬 설정에서 런타임 표면, 비동기 작업, 외부 통합, 검증으로 이어지는 탐색 순서를 보여준다. 추천은 `/recommendations` 단독 경로가 아니라 프로필에서 시작해 `/recommendations/[id]`로 진입한다.
-
-## 1. 로컬에서 실행하기
-
-### 사전 요구사항
-
-- Node.js `22.13.0` 이상
-- `pnpm 11.9.0`
-- Docker 20 이상과 PostgreSQL
-- Google OAuth web client
-- Leemage project와 API key
-- 배포된 Modal 분석·믹싱 서비스
-- production 결과 오디오 변환이 필요하면 FFmpeg
-
-설정 키와 선택 조건은 `.env.example`을 기준으로 확인한다. `.env.local`이나 무시되는 환경 파일의 값은 문서에 복사하지 않는다.
-
-### 재현 가능한 Quick Start
+필수 버전은 `package.json`에 정의된 Node.js `>=22.13.0`, pnpm `11.9.0`이다. 비밀값을 문서나 저장소에 복사하지 말고, `.env.example`의 변수명을 기준으로 로컬 파일을 만든다.
 
 ```bash
 pnpm install --frozen-lockfile
@@ -83,105 +39,94 @@ pnpm run db:generate
 pnpm dev
 ```
 
-`pnpm dev`는 `next dev`와 함께 mixing, vocal-profile-analysis, song-analysis worker를 `concurrently --kill-others-on-fail`로 시작한다. 기본 웹 주소는 [http://localhost:3000](http://localhost:3000)이다. Compose는 `postgres:16-alpine`을 사용하고 기본적으로 호스트 `5433`을 컨테이너 PostgreSQL `5432`에 연결하며, `postgres_data` 볼륨과 readiness healthcheck를 제공한다. 포트나 DB 기본값을 바꿔야 할 때는 Compose와 애플리케이션 설정의 환경 변수를 함께 맞춘다.
+`docker compose up -d`는 `postgres:16-alpine`을 호스트 기본 port `5433`에 노출하고 `postgres_data` volume에 데이터를 보존한다. compose의 healthcheck가 PostgreSQL 준비 상태를 확인한다. 데이터베이스와 환경 변수의 의미, migration·seed·Modal 준비는 [Configuration, local operation, and deployment](operations/configuration-and-deployment.md)에서 확인한다.
 
-DB 스키마 변경을 개발 중 만들 때는 `pnpm run db:migrate`, 상태 확인은 `pnpm run db:status`, 모델 검증은 `pnpm run db:validate`, 생성 client 갱신은 `pnpm run db:generate`를 사용한다. 기존 migration을 적용하는 초기화·배포 경로는 `pnpm run db:migrate:deploy`다.
-
-## 2. 실제 공개 표면과 변경 진입점
-
-### 주요 화면
-
-| 경로 | 역할 |
-| --- | --- |
-| `/` | 공개 랜딩 |
-| `/profile` | 목소리 녹음·업로드와 보컬 프로필 분석 |
-| `/vocal-profiles/[id]` | 보컬 프로필 상세 |
-| `/recommendations/[id]` | 프로필에서 시작한 추천 결과 (`/recommendations` 단독 화면은 없음) |
-| `/recommendations/[id]/songs/[itemId]` | 추천 곡 상세 |
-| `/library`, `/library/mixes/[id]` | 보컬 프로필과 믹싱 결과·상세 |
-| `/account`, `/notifications` | 계정·티켓 원장과 알림 |
-| `/admin`, `/admin/songs`, `/admin/custom-mixing` | 관리자 운영·카탈로그·커스텀 믹싱 |
-
-API도 동일한 App Router 경계 아래에 있다. 대표적인 공개 표면은 `/api/vocal-profiles`, `/api/vocal-profile-analysis-jobs`, `/api/recommendations`, `/api/mixing-jobs`이며, 각 리소스의 `[id]`·`audio` 하위 route가 상태 조회와 미디어 전달을 담당한다. 인증은 `/api/auth/[...all]`, 관리자 작업은 `/api/admin/*` 아래에 있다. `app/api/mixing-jobs/route.ts` 같은 root adapter는 server 구현을 export하는 얇은 연결점이므로 업무 로직은 대응하는 `src/_app/api-routes`와 FSD public API를 먼저 찾는다.
-
-| 변경 목적 | 우선 읽을 문서 | 실제 시작 표면 |
-| --- | --- | --- |
-| 전체 요청 경계, FSD 의존 방향, DB와 worker 관계 | [시스템 아키텍처와 런타임 경계](architecture/system-map.md) | `app/`, `src/_app/`, `src/_pages/` |
-| 인증, Google OAuth, 소유권, 관리자 권한 | [인증·권한·데이터 소유권](operations/auth-and-ownership.md) | `app/api/auth/`, 제품·관리자 page/API handler |
-| 녹음·업로드에서 보컬 프로필 결과까지 | [보컬 분석 워크플로](workflows/vocal-analysis.md) | `/profile`, `/api/vocal-profiles`, `/api/vocal-profile-analysis-jobs` |
-| 공개 카탈로그, 분석 revision, publish/archive | [곡 카탈로그 수집·분석·게시](workflows/catalog-publishing.md) | `/admin/songs`, `app/api/admin/catalog/` |
-| 프로필 기반 곡·키 추천과 믹싱 접수 | [추천에서 AI 믹싱까지](workflows/recommendation-and-mixing.md) | `/recommendations/[id]`, `/api/recommendations`, `/api/mixing-jobs` |
-| Modal·SoulX-Singer HTTP 계약과 모델 처리 | [Modal 처리와 SoulX-Singer 계약](integrations/modal-processing.md) | `services/`, worker adapter와 API route |
-| Leemage bytes, metadata, private proxy, 삭제 | [미디어 저장소·프록시·정리](integrations/media-storage.md) | `src/shared/media/`, media API/proxy |
-| claim, lease, heartbeat, polling, retry, refund, cleanup | [백그라운드 작업·lease·재시도·복구](operations/job-processing.md) | `scripts/*-worker.ts`, `src/_app/background-jobs/` |
-| 로컬·production 설정과 배포 절차 | [로컬·production 설정과 검증](operations/local-and-production.md) | `package.json` scripts, Docker, Modal deploy |
-| 변경 전후 테스트 범위와 실행 명령 | [테스트와 변경 안전성](testing/verification-strategy.md) | `tests/`, package scripts |
-
-Root `app` 파일은 Next.js route convention과 FSD public API를 연결하는 adapter다. 실제 페이지 조합·API handler·worker runner를 수정할 때는 대응하는 `src/_app`, `src/_pages`, `src/features`, `src/entities`, `src/shared` public API를 먼저 찾고, adapter에 업무 로직을 넣지 않는다.
-
-## 3. 런타임을 빠르게 이해하기
-
-브라우저는 화면 요청과 작업 접수·상태 조회를 Next.js App Router에 보낸다. API는 인증·입력 검증 후 PostgreSQL에 job과 metadata를 저장하고 빠르게 응답한다. worker는 DB에서 작업을 원자적으로 claim하고 lease를 갱신하면서 Leemage 입력을 읽고 Modal 분석 또는 SoulX-Singer 변환을 호출한다. 완료 결과의 bytes는 Leemage에, 상태·소유권·파일 metadata·알림은 PostgreSQL에 남긴다. 따라서 외부 작업 ID, lease, 재시도 가능성, asset 상태를 함께 보지 않고 단일 route만 바꾸면 복구·중복 처리 규칙을 깨뜨릴 수 있다.
+`pnpm dev`는 `next dev`, mixing worker, vocal-profile-analysis worker, song-analysis worker를 `concurrently --kill-others-on-fail`로 함께 시작한다. 브라우저에서 [http://localhost:3000](http://localhost:3000)을 연다. 개별 프로세스가 필요하면 `pnpm run dev:web`, `pnpm run worker:mixing`, `pnpm run worker:vocal-profile-analysis`, `pnpm run worker:song-analysis`를 사용한다.
 
 ```mermaid
-sequenceDiagram
-    participant Browser as Browser
-    participant App as Next.js App Router
-    participant DB as PostgreSQL
-    participant Worker as Node Worker
-    participant Media as Leemage
-    participant Model as Modal or SoulX-Singer
-    Browser->>App: 작업 접수 또는 상태 조회
-    App->>DB: job와 metadata 저장
-    App-->>Browser: 즉시 응답
-    Worker->>DB: 원자적 claim과 lease
-    Worker->>Media: 입력 bytes 읽기
-    Worker->>Model: 분석 또는 변환 요청
-    Model-->>Worker: 결과 bytes 또는 외부 job 상태
-    Worker->>Media: 결과 asset 저장
-    Worker->>DB: 상태, 소유권, metadata, 알림 갱신
+flowchart TD
+  Install["pnpm install --frozen-lockfile"] --> Env[".env.local 준비"]
+  Env --> DB["docker compose up -d"]
+  DB --> Migration["pnpm run db:migrate:deploy"]
+  Migration --> Generate["pnpm run db:generate"]
+  Generate --> Dev["pnpm dev"]
+  Dev --> Web["Next.js web"]
+  Dev --> Workers["세 durable workers"]
+  Web --> Queue["PostgreSQL 작업 큐"]
+  Queue --> Workers
+  Workers --> External["Modal 또는 SoulX"]
 ```
 
-이 시퀀스는 동기 API 접수와 durable worker 처리, 외부 미디어·모델 경계를 요약한다.
+이 그림은 로컬 초기화에서 웹 요청과 background worker가 외부 처리 서비스로 이어지는 기본 경로를 보여준다.
 
-## 4. 운영·통합 경계에서 확인할 것
+### 시작 후 확인
 
-- 세 worker는 `scripts/mixing-worker.ts`, `scripts/vocal-profile-analysis-worker.ts`, `scripts/song-analysis-worker.ts`에서 `.env.local`, `.env`를 읽고 각각의 server runner를 시작한다. worker가 죽으면 `pnpm dev`/`pnpm start`의 `--kill-others-on-fail` 감독 정책에 따라 전체 프로세스가 종료된다.
-- PostgreSQL은 runtime source of truth다. 분석·믹싱은 재시작을 고려한 durable queue이며, worker의 claim·lease·heartbeat·polling과 실패 시 backoff/refund 규칙은 [작업 처리 문서](operations/job-processing.md)에서 확인한다.
-- 분석 서비스를 배포하거나 계약을 바꿀 때는 다음 명령을 사용한다.
+- 공개 화면은 `/`, 녹음·업로드는 `/profile`, 프로필 기반 추천 결과는 `/recommendations/[id]`에서 확인한다. `/recommendations` 단독 화면은 없다.
+- 사용자 라이브러리는 `/library`, 계정·티켓은 `/account`, 관리자 운영은 `/admin`, 곡 관리는 `/admin/songs`다.
+- 새 데이터베이스에 fixture가 필요할 때만 migration 뒤 `pnpm run db:seed`를 실행하고 `pnpm run db:verify`로 확인한다. 카탈로그는 `pnpm run catalog:db:verify`로 별도 검증한다.
+- Modal endpoint를 개발 환경에서 사용할 경우 추적된 배포 명령은 다음과 같다.
 
 ```bash
 pnpm run modal:vocal-profile:deploy
 pnpm run modal:song-catalog:deploy
 ```
 
-Modal API key와 URL 같은 secret은 server-side 설정으로만 유지하고 이 페이지나 커밋에 값을 기록하지 않는다.
+## 2. 변경 전 공통 원칙
 
-## 5. Production 전환
+1. 현재 코드의 실제 동작을 기준으로 한다. OpenWiki는 온보딩용 evidence이며 제품 요구사항은 `docs/prd/`, 진행 중인 변경은 활성 Feature의 `spec.md`·`plan.md`·`tasks.md`·`decisions.md`가 기준이다.
+2. root `app/`은 Next.js route convention과 FSD public API re-export를 담당한다. 실제 조립과 server orchestration은 `src/_app/` 및 `src/_pages/`에 있다.
+3. 의존 방향은 `_app → _pages → widgets → features → entities → shared`다. slice 내부 파일을 직접 import하지 말고 대상 slice의 root public API를 사용한다. `index.ts`는 browser-safe API, `index.model.ts`는 runtime-neutral contract, `index.server.ts`는 DB·secret·server capability 경계다.
+4. 브라우저에 Modal, SoulX, Leemage credential을 노출하지 않는다. 사용자 소유권과 관리자 권한은 server에서 검증한다.
+
+루트 layout은 `app/layout.tsx`에서 server entrypoint를 re-export하고, 실제 `RootLayout`이 한국어 문서 언어·전역 CSS·font·`QueryProvider`·tooltip·toast를 조립한다. `QueryProvider`는 서버에서는 query client를 새로 만들고 브라우저에서는 singleton을 재사용한다. query 기본값은 30초 `staleTime`, 창 focus 시 refetch 안 함, reconnect 시 refetch, mutation retry 안 함이며 query retry와 exponential delay는 shared API 정책에 위임한다.
+
+## 3. 작업 라우팅 맵
+
+| 바꾸려는 것 | 먼저 읽을 페이지 | 실제로 찾아갈 경계 |
+| --- | --- | --- |
+| 전체 런타임, request-to-job 흐름, 저장소·외부 서비스 경계 | [시스템 지도](architecture/system-map.md) | `app/`, `src/_app/`, `src/shared/`, `scripts/*-worker.ts` |
+| FSD 의존 방향, public API, route adapter, boundary 위반 | [FSD boundaries](architecture/fsd-boundaries.md) | `src/`, `app/`, `steiger.config.ts`, architecture tests |
+| Recording, VocalProfile, Song, revision, job, asset 같은 DB 모델·상태·cardinality | [도메인 데이터 모델](concepts/domain-data-model.md) | `prisma/schema.prisma`, migration, entity/server API |
+| Google OAuth, session, 소유권, 관리자, 가입 지급·티켓·알림 | [Identity, ownership, tickets, and notifications](concepts/ownership-tickets-and-notifications.md) | auth config, server authorization, ticket ledger, notifications |
+| 녹음·분석·보컬 프로필 생성과 polling·환불 | [보컬 프로필 분석](workflows/vocal-profile-analysis.md) | profile feature, analysis queue, vocal worker, Modal analyzer |
+| 추천 ranking, key-fit, synthesis reference, AI mixing | [추천·레퍼런스·믹싱](workflows/recommendation-and-mixing.md) | recommendation feature, mixing queue/worker, history/result |
+| 관리자 곡 등록, source/target, 분석 revision, publication, snapshot | [곡 카탈로그 publishing](workflows/song-catalog-publishing.md) | admin song APIs, song-analysis queue, catalog state |
+| Leemage upload/download/proxy, protected audio, 삭제 정리 | [Leemage media](integrations/leemage-media.md) | media client, `MediaAsset`, `CatalogTargetAsset`, cleanup job |
+| Modal HTTP/auth/payload, SoulX submit·poll·result·cleanup 계약 | [Modal and SoulX](integrations/modal-and-soulx.md) | `services/`, server adapters, worker runners |
+| 환경 변수, PostgreSQL, migration/seed, Modal deploy, production startup | [Configuration and deployment](operations/configuration-and-deployment.md) | `.env.example`, `docker-compose.yml`, `package.json`, Prisma config |
+| lease, claim, retry/backoff, heartbeat, worker 복구 | [Job processing](operations/job-processing.md) | `scripts/*-worker.ts`, background job runners, PostgreSQL transaction |
+| 어떤 테스트를 어디서 실행할지, API/UI/DB/경계 계약 | [Testing strategy](testing/test-strategy-and-boundaries.md) | `tests/`, service tests, package scripts |
+
+위 맵은 현재 계획된 `architecture`, `concepts`, `integrations`, `operations`, `testing`, `workflows` 계층을 모두 반영한다. 새 페이지나 계층을 추가하면 이 표의 라우팅을 같은 변경에서 갱신한다.
+
+## 4. 검증 명령
+
+작은 변경도 먼저 범위가 좁은 테스트를 실행하고, 통합 변경은 해당 domain script와 정적 검사를 추가한다. 저장소에 정의된 대표 명령은 다음과 같다.
 
 ```bash
-pnpm install --frozen-lockfile
-pnpm run db:migrate:deploy
-pnpm build
-pnpm start
-```
-
-`pnpm start`도 웹과 세 worker를 함께 감독한다. 단일 인스턴스가 아닌 배포, 환경 변수 의미, Modal hook, process supervision과 새 PostgreSQL의 catalog snapshot 복원은 [로컬·production 설정과 검증](operations/local-and-production.md)을 정본으로 삼는다.
-
-## 6. 변경 후 검증
-
-빠른 정적 검사는 다음 순서로 실행한다.
-
-```bash
-pnpm run check
+pnpm run lint
+pnpm run typecheck
+pnpm run check:architecture
 pnpm run db:validate
-```
-
-개별 경계가 바뀌면 `pnpm run lint`, `pnpm run typecheck`, `pnpm run check:architecture`를 분리해 확인하고, 전체 회귀는 `pnpm test`를 사용한다. UI/Storybook 작업은 다음을 추가한다.
-
-```bash
-pnpm storybook
+pnpm run test:voice-scan
+pnpm run test:vocal-profile-analysis-queue
+pnpm run test:song-analysis-queue
+pnpm run test:recommendation
+pnpm run test:media
+pnpm run test:mixing:db
+pnpm run test:mixing:ui
 pnpm run test:storybook --run
+pnpm run check
+pnpm test
 ```
 
-작업 유형별로는 보컬 queue/adapter, recommendation/key-fit, auth ownership, media, tickets, mixing DB/UI, admin 통합 테스트가 각각의 위험을 보호한다. 정확한 테스트 파일과 package script 매핑은 [테스트와 변경 안전성](testing/verification-strategy.md)에서 찾는다.
+`pnpm run check`는 Biome, lint, typecheck, architecture 검사를 실행한다. `pnpm test`는 production build와 domain/unit, PostgreSQL integration, API contract, queue·media·auth·ticket·mixing, FSD boundary, Storybook 검사를 묶은 넓은 회귀 진입점이다. DB나 외부 서비스 계약을 바꿨다면 해당 통합·contract 테스트를 함께 확인하고, FSD import를 바꿨다면 `pnpm run check:architecture`를 반드시 실행한다.
+
+## 참고 기준
+
+- 프로젝트 목적·버전·시작 절차·화면·구조: [`README.md`](../README.md)
+- 실행 script와 정확한 test entrypoint: [`package.json`](../package.json)
+- 로컬 PostgreSQL container의 port, volume, healthcheck: [`docker-compose.yml`](../docker-compose.yml)
+- App Router adapter: [`app/layout.tsx`](../app/layout.tsx)
+- 전역 runtime/provider 조립: [`src/_app/layout/root-layout.tsx`](../src/_app/layout/root-layout.tsx)
+- client/server QueryClient lifecycle: [`src/_app/providers/query-provider.tsx`](../src/_app/providers/query-provider.tsx)

@@ -1,5 +1,4 @@
 # 파일
 
-- [인증, 권한 부여, 데이터 소유권](auth-and-ownership.md) - Better Auth와 Google OAuth를 통해 세션을 만들고, 서버 페이지·API 경계에서 인증과 관리자 권한을 검사하는 방법을 설명합니다. 개발 인증 우회와 운영 인증을 구분하고, 프로필·미디어·믹싱 작업·티켓의 사용자 소유권 조건을 정리합니다.
-- [Background Jobs, Leases, Retries, and Recovery](job-processing.md) - PostgreSQL 영속 큐를 사용하는 세 가지 worker의 점유, lease·heartbeat, 외부 분석/믹싱 polling, 재시도와 terminal failure 동작을 설명한다. 환불·미디어 cleanup 및 프로세스 종료 시 복구 규칙까지 운영에 필요한 관찰 필드를 함께 정리한다.
-- [로컬 설정, 구성, 배포 및 검증](local-and-production.md)
+- [Configuration, local operation, and deployment](configuration-and-deployment.md) - Node/pnpm 애플리케이션을 PostgreSQL, durable worker, Modal 분석·믹싱 서비스와 함께 로컬 및 단일 인스턴스에서 실행하는 절차를 설명한다. 환경 변수, migration·seed, 검증 스크립트와 배포 전후 순서를 한곳에서 확인할 수 있다.
+- [내구성 worker, lease, retry 및 recovery](job-processing.md) - PostgreSQL 기반 mixing, song-analysis, vocal-profile-analysis 큐의 claim·lease·heartbeat·재시도·복구 동작을 설명합니다. 외부 작업 polling, 환불·알림·미디어 정리, 프로세스 supervision의 운영 규칙과 실패 경로를 한곳에서 확인할 수 있습니다.

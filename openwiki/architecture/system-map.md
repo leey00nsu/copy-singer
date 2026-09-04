@@ -1,162 +1,126 @@
 ---
-type: 런타임 시스템 아키텍처
-title: 시스템 아키텍처와 런타임 경계
-description: Next.js App Router와 Feature-Sliced Design 경계가 PostgreSQL durable job, 별도 Node worker, Leemage 저장소, Modal 분석·믹싱 서비스로 이어지는 실행 구조를 설명한다. 요청 진입점, job lifecycle, 실패·재시도·환불 불변식과 변경 시 검증 지점을 함께 정리한다.
-tags: [architecture, runtime, nextjs, fsd, workers, modal]
+type: 시스템 아키텍처 개념
+title: 시스템 지도와 런타임 경계
+description: Next.js adapter와 Feature-Sliced Design 계층, PostgreSQL·Leemage 저장 경계, Modal/SoulX 연동, durable worker의 요청·작업 흐름을 한눈에 설명한다. 주요 진입점과 상태·lease·실패 처리, 변경 시 지켜야 할 불변식을 함께 정리한다.
+tags: [architecture, nextjs, fsd, postgresql, workers, modal, leemage]
 verified:
   - by: openwiki/0.5.0
-    at: 2026-09-04T00:46:29.331Z
+    at: 2026-09-04T02:00:10.767Z
 sources:
-  - id: openwiki-source-32949d8af662e0e73370a7c5
-    resource: repo://app/(product)/profile/page.tsx
-  - id: openwiki-source-a94cea82e631eedd9323e1f1
-    resource: repo://app/api/mixing-jobs/route.ts
-  - id: openwiki-source-850cd942fe1e04537aa0d1df
-    resource: repo://app/layout.tsx
-  - id: openwiki-source-23775c3de52f3ab95a13cb8b
-    resource: repo://README.md
-  - id: openwiki-source-cde5a775c5a691f3289b45a0
-    resource: repo://services/song-catalog-analyzer/modal_app.py
-  - id: openwiki-source-28cb2570db799cb0b4da1a45
-    resource: repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts
-  - id: openwiki-source-e746e2d352e86c69ac1ad6c4
-    resource: repo://src/_app/background-jobs/mixing/runner.ts
-  - id: openwiki-source-eaa76879de1a19c0db5c6ebb
-    resource: repo://src/_app/background-jobs/mixing/worker.ts
-  - id: openwiki-source-c4cc90d48cd4c0306be7e0c0
-    resource: repo://src/_app/background-jobs/song-analysis/worker.ts
-  - id: openwiki-source-da8b10d1e5d758ab0e1c7582
-    resource: repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts
-  - id: openwiki-source-ca359893ccdffc6465b65b58
-    resource: repo://steiger.config.ts
-  - id: openwiki-source-cdaeb36cd3badac987c47a00
-    resource: repo://tests/fsd-architecture-boundaries.test.ts
-  - id: openwiki-source-10c6a88a3297ea68ebdbf439
-    resource: repo://tests/mixing-queue.integration.ts
-generated: { by: "openwiki/0.5.0", at: "2026-09-04T00:46:29.331Z" }
+  - id: openwiki-source-cbf25751da575c9067e72947
+    resource: repo://src/_app/api-routes/vocal-profiles/vocal-profile-analysis-jobs-route.ts
+generated: { by: "openwiki/0.5.0", at: "2026-09-04T02:00:10.767Z" }
 ---
 
-# 시스템 아키텍처와 런타임 경계
+# 시스템 지도와 런타임 경계
 
-## 시스템 개요
+이 문서는 현재 추적된 코드와 schema를 기준으로 한 런타임 지도다. `docs/prd/system-architecture.md`는 방향을 설명하는 보조 문서이며, 실제 동작은 아래의 route handler·feature public API·worker·Prisma schema를 우선한다.
 
-Copysinger는 브라우저가 오디오 처리를 기다리는 구조가 아니라 **Next.js App Router를 동기 HTTP 경계로 삼고 PostgreSQL을 durable job의 기준 저장소로 삼는 비동기 시스템**이다. README가 설명하는 구성은 Better Auth·Google OAuth, Prisma·PostgreSQL, Leemage, 세 종류의 background worker와 Modal 기반 분석·믹싱 서비스의 조합이다.
+## 한눈에 보는 경계
+
+- **Next.js adapter (`app/`)**: App Router page와 Route Handler를 Next.js 규약에 맞게 노출한다. 실제 서버 orchestration은 `src/_app/`의 handler와 provider가 맡는다. 예를 들어 `app/api/vocal-profile-analysis-jobs/route.ts`는 `runtime = "nodejs"`를 선언하고 `_app`의 server entrypoint만 re-export한다.
+- **FSD 계층 (`src/`)**: `_app`은 조립·API·worker, `_pages`는 route 화면, `widgets`는 여러 use case를 묶는 UI, `features`는 use case, `entities`는 도메인 모델, `shared`는 DB·media·config·공통 API/UI다. 일반적인 의존 방향은 `_app → _pages → widgets → features → entities → shared`다.
+- **public API와 capability**: slice 바깥 소비자는 `@/features/foo`, `@/entities/foo` 같은 root public API를 사용한다. `index.model.ts`는 runtime-neutral contract, `index.ts`는 browser-safe API, `index.server.ts`와 `.server` 모듈은 DB·secret·`server-only` capability를 노출한다. `steiger.config.ts`와 `tests/fsd-architecture-boundaries.test.ts`는 내부 segment 우회와 client→server 도달을 검사한다.
+- **데이터와 파일**: 관계·상태·소유권·hash·외부 asset 식별자는 PostgreSQL(Prisma)이 소유하고, 오디오 bytes는 Leemage가 소유한다. `MediaAsset`/`CatalogTargetAsset`은 두 시스템 사이의 metadata pointer다. Leemage 삭제 실패는 `DELETE_PENDING`과 `MediaCleanupJob`으로 durable하게 남긴다.
+- **외부 분석·합성**: `services/vocal-profile-modal/`과 `services/song-catalog-analyzer/`는 CPU Modal 분석 adapter이고 `services/vocal-analysis-core/`는 공유 분석 core다. `services/soulx-singer-svc/`는 합성 경계다. 브라우저에는 외부 credential을 주지 않으며 worker가 server-only API key로 호출한다.
+
+```mermaid
+flowchart TD
+  Browser["Browser"] --> NextPage["app/ page"]
+  Browser --> NextApi["app/api Route Handler"]
+  NextPage --> Pages["src/_pages"]
+  NextApi --> AppApi["src/_app/api-routes"]
+  Pages --> Widgets["src/widgets"]
+  Widgets --> Features["src/features use case"]
+  AppApi --> Features
+  Features --> Entities["src/entities domain"]
+  Entities --> Shared["src/shared"]
+  Shared --> Postgres["PostgreSQL via Prisma"]
+  Shared --> Leemage["Leemage media"]
+  Postgres --> Workers["scripts/*-worker.ts"]
+  Workers --> JobRunners["src/_app/background-jobs"]
+  JobRunners --> Modal["Modal analyzers"]
+  JobRunners --> SoulX["SoulX synthesis service"]
+  Modal --> JobRunners
+  SoulX --> JobRunners
+  JobRunners --> Leemage
+  JobRunners --> Postgres
+```
+
+이 그림은 브라우저 요청, FSD server capability, durable worker, 외부 서비스와 저장소의 실제 경계를 보여준다.
+
+## 브라우저 요청 경로
+
+짧은 요청은 Route Handler가 `requireApiSession`으로 세션을 확인하고 feature server API를 호출한 뒤 JSON을 반환한다. 예컨대 보컬 분석 POST는 bounded multipart로 `audio`를 읽고, idempotency key·MIME·25 MB 제한을 검증한다. 통과하면 `enqueueVocalProfileAnalysis`가 job을 만들고 `202`와 job payload를 반환한다. GET은 동일한 사용자에게 보이는 job과 정책만 조회한다. mixing·recommendation·catalog·notification도 같은 adapter → `_app` handler → feature/entity → Prisma 경로를 따른다.
+
+소유권 검증은 server-side에서 한다. 따라서 client component가 DB나 secret 모듈을 runtime import하지 않도록 public API와 `.server` 경계를 유지해야 한다. UI는 내부 DB enum을 그대로 전부 재현하지 않고, recommendation 응답에서는 mixing 상태를 `preparing`·`queued`·`processing`·`succeeded`·`failed`로 축약한다. 반면 mixing job API는 `submitted`, `canceled`를 포함한 DB 상태를 소문자로 직렬화한다.
+
+## Durable job과 worker
+
+세 worker entrypoint는 dotenv를 읽은 뒤 server runner를 동적으로 import한다.
+
+- `scripts/vocal-profile-analysis-worker.ts` → vocal profile runner: PostgreSQL의 `PENDING` 또는 만료된 `PROCESSING` job을 claim하고 source asset을 읽어 Modal의 단일 동기 HTTP 분석 결과를 저장한다. 응답의 source bytes·MIME·SHA-256이 queued upload와 다르면 저장하지 않는다. 성공 시 profile metadata와 선택적 synthesis reference를 각각 PostgreSQL/Leemage에 확정하고 알림을 만든다.
+- `scripts/song-analysis-worker.ts` → song analysis runner: READY `CatalogTargetAsset`이 있는 job만 claim한다. target bytes를 Modal song analyzer에 제출하고 `externalJobId`를 저장한 뒤 terminal 상태까지 poll한다. 성공한 분석값은 pipeline contract와 함께 `SongAnalysis`에 upsert한다. 따라서 `externalJobId`가 이미 있으면 재제출하지 않고 polling을 재개할 수 있다.
+- `scripts/mixing-worker.ts` → mixing runner: reference와 READY catalog target을 Leemage에서 읽고 `SYNTHESIS_PRESET` 및 추천 pitch shift를 포함해 SoulX/Modal `/v1/conversions`에 제출한다. `modalJobId`를 저장하고 상태를 heartbeat하며, 성공 audio를 압축·Leemage에 업로드한 뒤 PostgreSQL transaction으로 job과 성공 알림을 확정한다.
+
+모든 claim은 `attempts < maxAttempts`, `nextAttemptAt` 도달, 그리고 `FOR UPDATE SKIP LOCKED`를 사용한다. 활성 lease가 있는 작업은 중복 claim하지 않으며, lease가 만료되면 다른 worker가 회수할 수 있다. song analysis는 processing 중 별도 heartbeat interval을 사용하고, mixing은 polling loop에서 heartbeat한다.
 
 ```mermaid
 sequenceDiagram
-    participant Browser
-    participant Next as Next.js App Router
-    participant DB as PostgreSQL via Prisma
-    participant Worker as Node background worker
-    participant Media as Leemage
-    participant Modal as Modal service
+  participant Br as Browser
+  participant RH as Next.js Route Handler
+  participant DB as PostgreSQL
+  participant W as Durable Worker
+  participant LM as Leemage
+  participant AN as Modal Analyzer
+  participant SX as SoulX Service
 
-    Browser->>Next: 화면 또는 API 요청
-    Next->>DB: 세션·도메인 상태 조회
-    DB-->>Next: 상태 데이터
-    Next-->>Browser: HTML 또는 JSON
-    Browser->>Next: 분석·믹싱 접수
-    Next->>DB: job과 입력 metadata 기록
-    Next-->>Browser: 202 접수 결과
-    Worker->>DB: 만료 가능 job을 원자적 claim
-    Worker->>Media: 입력 bytes 다운로드
-    Worker->>Modal: 분석 또는 변환 요청
-    Modal-->>Worker: 외부 job 상태·결과
-    Worker->>Media: 결과 asset 저장
-    Worker->>DB: 상태·asset 관계·알림 저장
-    Browser->>Next: 상태·결과 조회
-    Next->>DB: 최신 상태 조회
-    Next-->>Browser: eventual 상태
+  Br->>RH: upload or create request
+  RH->>DB: session ownership and enqueue transaction
+  DB-->>RH: job id
+  RH-->>Br: 202 accepted
+  W->>DB: claim with lease and SKIP LOCKED
+  W->>LM: read READY audio asset
+  alt vocal or song analysis
+    W->>AN: sync analyze or submit external job
+    AN-->>W: result or terminal status
+    W->>DB: persist analysis and job status
+  else AI mixing
+    W->>SX: submit conversion with audio and preset
+    SX-->>W: job status and result audio
+    W->>LM: store result bytes
+    W->>DB: atomically mark success and notify
+  end
+  W->>DB: retry, failure, or lease release
 ```
 
-*이 다이어그램은 요청 접수부터 worker 처리와 결과 조회까지의 주요 런타임 경계를 보여준다.*
+이 sequence는 일반 API 접수 후 실제 처리와 분석·합성별 외부 경계를 구분한다.
 
-## HTTP와 FSD 진입점
+## 혼합 작업의 상태와 실패 의미
 
-- `app/layout.tsx`는 `@/_app/layout/index.server`의 `RootLayout`과 metadata를 내보낸다. root layout은 `QueryProvider`, `TooltipProvider`, `Toaster`, 전역 CSS와 한국어 문서 언어를 조립하지만 도메인 업무를 소유하지 않는다.
-- 제품 layout은 인증된 요청에 `ProductShell`과 onboarding snapshot을 추가하고, 실제 페이지 구현은 `src/_pages` public API에 둔다. root `page.tsx`들은 `_pages/*/index.server`를 re-export하는 얇은 adapter다.
-- `app/api/mixing-jobs/route.ts`는 `runtime = "nodejs"`와 `GET`·`POST` re-export만 선언한다. 실제 handler는 `src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts`에 있으며 `requireApiSession`으로 인증하고, `POST` body를 Zod로 검증한 뒤 `enqueueMixingJob`을 호출한다. 성공은 `202`, 인증 실패는 `401`, 입력 오류는 `400`, 티켓 부족은 `402`, enqueue 미분류 실패는 `500`이다. `GET`은 인증된 사용자 자신의 mixing history만 조회한다.
+`MixingJob`은 `PENDING → PREPARING → SUBMITTED → PROCESSING → SUCCEEDED|FAILED`(또는 사용자 취소 `CANCELED`) 흐름을 가진다. 새 job은 추천 item의 snapshot인 `vocalProfileId`, `songAnalysisId`, `referenceAssetId`, `targetAssetId`, `catalogRevision`, `scoringVersion`, `recommendedShift`를 보존한다. 그러므로 이후 추천 결과가 바뀌어도 실행 중인 job의 입력 의미가 바뀌지 않는다.
 
-따라서 App Router adapter에 업무 로직이나 DB 접근을 넣지 않는다. 새 화면은 `_pages` 조합으로, 새 HTTP 표면은 `_app/api-routes`의 public API로 구현하고 route 파일은 연결과 정적 route config만 맡긴다.
+믹싱 preflight/다운로드/접수 단계의 일시 HTTP 오류는 bounded exponential backoff로 재시도하며, `maxAttempts`를 넘거나 비재시도 오류면 terminal `FAILED`가 된다. 접수 전에 실패한 경우에만 `refundState = REQUIRED`로 두고 idempotency key를 가진 ticket refund가 한 번 실행된다. 외부 job이 이미 접수된 뒤의 실패에는 자동 환불하지 않는다. 성공 결과 업로드 뒤 DB transaction이 실패하면 결과 asset을 폐기해 orphan bytes를 줄인다.
 
-## FSD 의존 방향
+보컬 분석 실패도 오류 code·detail·retryable과 함께 기록하고, ticket cost가 있으면 `REQUIRED → REFUNDED` 보상 경로를 사용한다. 분석 source가 없어졌거나 analyzer가 다른 bytes를 반환한 경우는 조용한 fallback 없이 실패한다. song analysis는 재시도 시 외부 제출 전 상태로 되돌릴 수 있고, 완료된 분석은 pipeline contract별 unique key로 upsert된다.
 
-현재 architecture test가 검사하는 slice는 `_pages`, `widgets`, `features`, `entities`다. 역할은 다음과 같다.
+## 저장·보안 불변식
 
-- `src/_app`: layout·provider·metadata·API entrypoint·background-job runner
-- `src/_pages`: 페이지 조합과 페이지 UI
-- `src/widgets`: 여러 기능을 묶는 화면 단위
-- `src/features`: 사용자 행동과 유스케이스
-- `src/entities`: 도메인 객체·영속성 규칙과 상태 변경 API
-- `src/shared`: DB client, config, media, audio, UI 같은 전역 기반
+1. 사용자 데이터 조회·변경은 session과 resource ownership을 server에서 검증하고, 관리자 경로는 별도 allowlist를 확인한다.
+2. 브라우저는 Modal·SoulX·Leemage credential을 직접 사용하지 않는다. key는 server와 worker 환경에만 둔다.
+3. PostgreSQL schema 변경은 `prisma/migrations/`를 통해서만 한다. job·ticket·notification 상태와 외부 asset reference는 DB가 source of truth다.
+4. Modal vocal analyzer는 request-scoped temporary directory만 사용하며 사용자 데이터를 Volume/Dict/PostgreSQL/Leemage에 보관하지 않는다. production mixing의 target은 진단용 `/v1/song-target`이 아니라 사전 등록된 READY Leemage catalog asset이다.
+5. `Recording` 하나에 analyzer/version별 여러 `VocalProfile`이 가능하고, `SongSource` 하나에도 여러 target asset이 가능하다. 현재 추천 대상은 공개 catalog entry와 active source/current analysis/target 연결로 결정된다.
 
-다른 slice는 `api`, `model`, `ui`, `lib`, `config` 같은 내부 segment가 아니라 `@/layer/slice`의 `index` 또는 `index.server` public API를 사용한다. 예외적으로 같은 slice 내부 참조는 허용된다. `src/shared/db/generated/**`는 architecture scan에서 제외되는 생성 코드다.
+## 실행·검증 포인트
 
-`"use client"`에서 시작하는 runtime import graph는 `server-only`, `next/headers`, `next/server`, `@/shared/db` 또는 `.server` entrypoint에 도달하면 안 된다. type-only import는 client runtime graph로 세지 않지만, re-export를 통한 간접 도달도 검사 대상이다.
+개발과 운영의 기본 프로세스는 `package.json`의 `dev`/`start`가 web과 세 worker를 함께 실행하는 구성이다. 개별 운영 점검은 `pnpm run worker:mixing`, `pnpm run worker:vocal-profile-analysis`, `pnpm run worker:song-analysis`를 사용한다. Modal vocal service의 현재 baseline은 CPU 2 core, 4096 MiB, timeout 120초, scale-to-zero이며 `X-API-Key` 인증을 요구한다.
 
-## PostgreSQL job과 worker lifecycle
+변경 시 특히 다음 검증을 통과해야 한다.
 
-웹 요청은 분석·믹싱을 수행하지 않고 job을 PostgreSQL에 기록한 뒤 반환한다. `scripts/mixing-worker.ts`, `scripts/song-analysis-worker.ts`, `scripts/vocal-profile-analysis-worker.ts`가 각각 runner를 별도 프로세스로 실행하며, 로컬 `pnpm dev`에서는 웹과 세 worker가 함께 시작된다. runner는 설정된 concurrency만큼 lane을 만들고 각 lane의 owner를 process ID·lane index·random UUID로 구성한다. SIGINT/SIGTERM은 새 cycle을 멈추고 lane들이 빠져나가게 한다.
+- `pnpm run test:architecture-boundaries`: FSD public API 우회와 client에서 server capability로 이어지는 runtime import를 검사한다.
+- `pnpm run test:vocal-profile-analysis-queue`, `pnpm run test:mixing:db`: enqueue transaction, idempotency, lease·상태·환불 같은 durable 경계를 검증한다.
+- `pnpm run test:media`, `pnpm run test:catalog-targets`: Leemage asset lifecycle과 READY target 전제를 검증한다.
+- `services/vocal-profile-modal/test_*.py`: analyzer transport, source envelope, runtime 계약을 검증한다.
 
-claim은 `FOR UPDATE SKIP LOCKED`와 한 번의 UPDATE로 수행된다. `attempts < maxAttempts`, `nextAttemptAt <= now`인 job 중 새 `PENDING` 또는 lease가 없거나 만료된 처리 중 job만 고른다. 유효한 lease를 가진 다른 worker의 job은 고르지 않는다. claim은 owner, lease 만료 시각, heartbeat, 시작 시각과 attempts를 갱신한다. 따라서 worker가 죽어도 lease 만료 뒤 다른 worker가 회수할 수 있고, heartbeat는 현재 owner일 때만 lease를 연장한다.
-
-```mermaid
-stateDiagram-v2
-    [*] --> PENDING: enqueue
-    PENDING --> PREPARING: mixing claim
-    PENDING --> PROCESSING: analysis claim
-    PREPARING --> SUBMITTED: Modal 접수
-    SUBMITTED --> PROCESSING: 상태 polling
-    PROCESSING --> PROCESSING: heartbeat
-    PROCESSING --> SUCCEEDED: 결과 저장 transaction
-    PREPARING --> PENDING: retryable preflight 오류
-    SUBMITTED --> SUBMITTED: retryable 외부 오류
-    PENDING --> FAILED: 재시도 소진
-    PREPARING --> FAILED: 비재시도 오류
-    SUBMITTED --> FAILED: 외부 작업 실패
-    PROCESSING --> FAILED: 재시도 소진
-    FAILED --> [*]
-    SUCCEEDED --> [*]
-```
-
-*믹싱과 분석 job에서 공통으로 관찰되는 claim·재시도·완료 흐름이다. 구체적인 enum 전이는 job 종류별로 다르다.*
-
-세 worker의 책임은 다르다.
-
-- **보컬 프로필 분석**은 사용자 `REFERENCE` asset을 owner와 함께 읽고 분석 client에 전달한다. source bytes·MIME type·SHA-256이 queued source와 일치하는지 확인한 뒤 프로필과 job 완료, 성공 알림을 transaction으로 저장한다. 최종 실패는 `FAILED`와 `refundState = REQUIRED`로 만들고 source asset을 정리한 후 idempotent 환불 reconciliation을 수행한다.
-- **곡 카탈로그 분석**은 `CatalogTargetAsset`이 `READY`인 job만 claim한다. target bytes와 YouTube metadata를 Modal analyzer에 제출하고 external job ID를 저장한 뒤 polling한다. 성공 결과는 pipeline contract와 함께 `SongAnalysis`에 upsert하고, 실패는 backoff·max attempts에 따라 `PENDING` 재시도 또는 `FAILED` 확정한다.
-- **AI 믹싱**은 reference와 catalog target을 다운로드해 `prompt_audio`, `target_audio`, preset과 추천 pitch shift를 `/v1/conversions`에 보낸다. queued external ID는 `SUBMITTED`로 저장하고 polling한다. 성공 audio는 압축 후 Leemage에 저장하고 DB transaction에서 job·결과 asset 관계·알림을 함께 확정한다.
-
-## Modal과 미디어 경계
-
-Modal은 Next.js 프로세스에 import되는 라이브러리가 아니라 HTTP 외부 서비스다. 곡 analyzer는 별도 CPU 서비스로 업로드 확장자, YouTube video ID, 빈 입력과 100 MB 제한을 검증한 뒤 FFmpeg·Demucs·librosa 기반 분석을 수행한다. 곡 worker는 `submitSongAnalysis`/`pollSongAnalysis`로 그 계약을 감싼다. 믹싱 worker는 `MODAL_API_URL`·`MODAL_API_KEY`로 `/v1/conversions`, `/v1/conversions/{id}`, `/audio`를 호출한다.
-
-실제 media bytes는 Leemage에 저장하고 PostgreSQL에는 사용자 소유권, external URL, MIME type, file name, 크기와 관계 metadata를 둔다. 외부 접수 전 실패는 mixing ticket 환불을 `REQUIRED`로 기록한 뒤 reconciliation하며, Modal job이 이미 접수된 뒤의 실패는 외부 작업이 존재할 수 있으므로 자동 환불하지 않는다.
-
-## 불변식과 실패 semantics
-
-1. job·입력 asset·결과 asset은 사용자 소유권과 함께 조회·변경한다. 인증 없는 API 요청은 허용하지 않는다.
-2. 유효 lease는 하나만 인정한다. heartbeat와 상태 갱신은 해당 `leaseOwner`를 조건으로 해야 한다.
-3. idempotency key는 중복 접수와 ticket ledger 환불을 막는다. 같은 mixing 요청을 동시에 enqueue해도 하나의 job과 하나의 debit만 남는다.
-4. retryable 네트워크·HTTP 오류는 지연 후 재시도한다. 설정 누락, 잘못된 Modal 응답, 빈 audio, 준비되지 않은 target 같은 preflight 오류는 재시도하지 않는다. 최종 실패는 error code/detail, 완료 시각, 알림을 남긴다.
-5. Modal 결과를 Leemage에 먼저 저장할 수 있으므로, 결과 asset을 DB transaction에서 연결·`SUCCEEDED`로 확정하지 못하면 `discardMediaAsset`으로 orphan을 정리한다. 이 실패는 외부 작업 이후이므로 환불하지 않는다.
-6. 장시간 처리는 HTTP timeout과 분리된다. API는 접수 결과를 반환하고 상태 조회와 notification이 eventual completion을 전달한다.
-
-## 설정과 안전한 변경 지점
-
-worker concurrency, lease seconds, polling interval, Modal endpoint/key와 Leemage 설정은 `src/shared/config` 및 환경 변수의 단일 경로를 사용한다. 운영에는 PostgreSQL, Google OAuth, Leemage, 배포된 Modal 분석·믹싱 서비스와 production audio 변환용 FFmpeg가 필요하다. 비밀값 자체나 ignored 환경 파일 값은 문서에 기록하지 않는다.
-
-안전한 변경 순서는 다음과 같다.
-
-1. HTTP 표면은 `app/api`에 정적 config와 public API re-export만 추가한다.
-2. 입력·응답 계약과 서버 유스케이스는 feature public API에 둔다.
-3. 상태 변경·transaction은 entity API에 두고 DB·media·config 접근은 shared 서버 모듈을 사용한다.
-4. 장시간 처리는 해당 DB job의 state, lease, retry, external ID, notification·환불 규칙을 먼저 정한 뒤 `_app/background-jobs` runner/worker에 연결한다.
-5. Modal API나 pipeline contract를 바꾸면 feature client, worker persistence, Python service test와 저장된 external ID 호환성을 함께 검토한다.
-6. client UI는 server-only 모듈을 runtime import하지 않고 slice public API만 참조한다.
-
-## 집중 검증 지점
-
-`tests/fsd-architecture-boundaries.test.ts`는 실제 project source tree와 fixture를 대상으로 (1) cross-slice 내부 segment import, (2) 직접·transitive server import의 client graph 유입, (3) root `app` adapter와 정적·허용된 route config를 검사한다. architecture refactor 때 첫 검증 지점이다.
-
-`tests/mixing-queue.integration.ts`는 PostgreSQL을 사용해 동시 enqueue의 idempotency와 단일 debit, `SKIP LOCKED` 경쟁 claim, 만료 lease recovery, preflight 실패 환불, retry backoff/max attempts, Modal 접수 후 실패 시 무환불, finalization 실패 시 `SUBMITTED` 재시도와 media cleanup 경계를 검증한다. worker lifecycle이나 ticket/media semantics를 바꿀 때 이 테스트를 우선 실행하고, Modal 계약을 바꿀 때는 analyzer·client 계약 테스트도 함께 갱신한다.
+새 외부 provider나 긴 작업을 추가할 때는 브라우저 호출이 아니라 server feature adapter와 PostgreSQL job/lease owner를 먼저 만들고, bytes는 Leemage pointer로 분리한다. 그 다음 `scripts/*-worker.ts`의 독립 process와 bounded retry·cleanup·notification을 연결해야 이 시스템의 내구성 경계를 보존할 수 있다.
