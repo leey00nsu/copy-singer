@@ -62,3 +62,17 @@
   - 설정된 최대 remediation round가 1이므로 수정 후 target `98a1f88360375134fa44ee66f956a83446a56ff4` / tree `b5232ec9c6aaa0ab8872d40ef6352bc2ee9153c3`는 별도 독립 재리뷰를 받지 않았다.
   - 세 finding은 모두 직접 검증해 해결했지만, 자동 생성 문서의 의미 정확성은 향후 sync에서도 claim audit만으로 완전히 보장되지 않으므로 중요한 concurrency·route 설명은 tracked source와 계속 대조해야 한다.
 - **Consequences**: audit 통과는 생성물 무결성과 provenance를 보장하지만 설명의 의미 정확성을 완전히 보장하지 않는다. 중요한 concurrency·route 사실은 curated guidance와 독립 리뷰로 보완한다.
+
+---
+
+## D004: 최초 도입 Feature에서 현재 curated 문서 기준선을 함께 복구한다 (2026-09-04)
+
+- **Context**: 구현 승인 전 결과 분석에서 `system-architecture.md`의 `components/`·`lib/` 경로, web component README의 legacy 탐색 지도, constitution의 lee-spec-kit `0.8.8` 표기가 확인됐다. lee-spec-kit Schema 2 지침도 기존 프로젝트는 Feature별 영향 판정을 신뢰하기 전에 한 번의 수동 baseline reconciliation을 요구한다.
+- **Options**: F040을 그대로 승인하고 후속 Feature로 모두 이관, 과거 F001~F039를 소급 수정, F040에 확인된 현재 기준선 복구만 추가하는 방식을 비교했다.
+- **Decision**: 사용자의 구현 변경 요청에 따라 F040에 curated baseline 태스크를 추가한다. 현재 사실과 직접 충돌하는 architecture·onboarding·agent policy를 갱신하고 WHY 탐색 경로를 연결하되, 과거 Feature 메타데이터와 제품 의도·사용자 정책은 자동 변경하지 않는다.
+- **Rationale**: OpenWiki를 파생 evidence로 제한하면서 curated docs를 SSOT라고 선언하려면 도입 시점의 알려진 모순을 그대로 둘 수 없다. 반면 PRD와 custom policy는 코드보다 상위 의도를 담으므로 별도 판단 없이 코드에 맞춰 재작성해서도 안 된다.
+- **Evidence**:
+  - `docs/prd/system-architecture.md`: 현재 존재하지 않는 `components/`, `lib/auth/`, `lib/mixing/`, `lib/vocal-profile/analysis-*` 경로가 남아 있다.
+  - `docs/features/web/README.md`: component 범위를 `components/` 중심으로 안내해 현재 FSD 구조와 다르다.
+  - `docs/agents/constitution.md`: lee-spec-kit을 `0.8.8`로 고정하지만 현재 CLI는 `0.9.11`이다.
+- **Consequences**: F040의 spec·plan·tasks와 Feature review target을 다시 열고, curated 문서 변경 후 OpenWiki를 재동기화한다. 기존 F001~F039의 이력은 보존한다.

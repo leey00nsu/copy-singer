@@ -14,13 +14,13 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer 전체 (`web` component에서 추적)
 - **브랜치**: `feat/repository-knowledge-bootstrap`
-- **대기 중 변경 요청**: 모두 해결. round 1 이후 target 변경은 재리뷰하지 않고 아래 residual risk로 보존한다.
-- **Feature 리뷰**: done
-- **Feature 리뷰 Evidence**: docs/features/web/F040-repository-knowledge-bootstrap/decisions.md
-- **Feature 리뷰 Decision**: changes_requested
-- **Feature 리뷰 Round**: 1
-- **Feature 리뷰 Head**: 7124a1f0231522362bbac03b3bc099d63eb1fd0b
-- **Feature 리뷰 Tree**: 50ad54d3d6c789a50bb6e03cba65a99edaf2f876
+- **대기 중 변경 요청**: 기존 프로젝트의 curated 문서 baseline reconciliation과 WHY 탐색 경로를 F040에 포함한다.
+- **Feature 리뷰**: -
+- **Feature 리뷰 Evidence**: -
+- **Feature 리뷰 Decision**: -
+- **Feature 리뷰 Round**: -
+- **Feature 리뷰 Head**: -
+- **Feature 리뷰 Tree**: -
 
 ---
 
@@ -42,6 +42,26 @@
     - project:README.md
     - docs:README.md
 
+- [TODO][NON-PRD] T-F040-repository-knowledge-bootstrap-02 curated 문서 기준선 복구와 WHY 탐색 연결
+  - Date: 2026-09-04
+  - Acceptance:
+    - 시스템 아키텍처와 web component 가이드에서 제거·이동된 legacy 경로가 현재 코드 탐색 경로로 교체된다.
+    - constitution은 현재 장기 원칙을 유지하고 빠르게 낡는 lee-spec-kit 고정 버전을 제거한다.
+    - PRD와 custom policy는 현재 제품 의도·운영 규칙 기준으로 검토되고 임의로 코드에 맞춰 변경되지 않는다.
+    - onboarding 문서가 OpenWiki → tracked source → Git F-ID → Feature `decisions.md`의 WHY 탐색 순서를 설명한다.
+  - Checklist:
+    - [ ] `system-architecture.md`를 현재 FSD·API·durable worker·외부 서비스 경계와 대조해 갱신한다.
+    - [ ] `docs/features/web/README.md`의 코드 탐색 지도를 현재 `app/`, `src/`, `services/`, `tests/` 구조로 갱신한다.
+    - [ ] `constitution.md`의 기술·아키텍처 원칙과 버전 표기를 현재 기준선에 맞춘다.
+    - [ ] PRD와 `custom.md`의 의도·정책 유효성을 검토하고 결과를 `decisions.md`에 기록한다.
+    - [ ] README와 docs 가이드에 질문별 SSOT 및 Git F-ID → `decisions.md` 탐색 절차를 추가한다.
+  - Docs:
+    - project:README.md
+    - docs:README.md
+    - docs:prd/system-architecture.md
+    - project:docs/features/web/README.md
+    - docs:agents/constitution.md
+
 ---
 
 ## Knowledge Sync
@@ -55,7 +75,7 @@
 
 ## 완료 조건
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
 - [ ] 테스트·CLI 검증 실행 및 통과 <!-- lee-spec-kit:completion:tests -->
 - [ ] 최종 결과를 공유했고 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
 

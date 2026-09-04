@@ -68,6 +68,9 @@ CLAUDE.md                                      # 생성되는 OpenWiki agent 안
 docs/
 ├── .lee-spec-kit.json                         # experimental.openwiki=true
 ├── README.md                                  # 문서 SSOT와 Knowledge 역할 설명
+├── agents/constitution.md                     # 장기 원칙과 에이전트 정책 기준선
+├── prd/system-architecture.md                 # 현재 시스템 경계와 런타임 흐름
+├── features/web/README.md                     # 현재 web 코드 탐색 지도
 └── features/web/F040-repository-knowledge-bootstrap/
     ├── spec.md
     ├── plan.md
@@ -85,21 +88,22 @@ openwiki/                                      # 생성된 파생 온보딩 Know
 - **Schema**: 2
 - **Assessment**: Complete
 - **Product requirements**: NONE
-- **System architecture**: NONE
+- **System architecture**: UPDATE
 - **Onboarding entrypoint**: UPDATE
-- **Operational/runtime contract**: NONE
-- **Reason**: 제품 동작과 시스템 런타임 경계는 바뀌지 않는다. 신규 개발자가 문서 권한과 OpenWiki 진입점을 찾을 수 있도록 프로젝트 README와 문서 구조 가이드를 갱신해야 한다.
-- **Targets**: project:README.md, docs:README.md
+- **Operational/runtime contract**: UPDATE
+- **Reason**: 제품 동작은 바뀌지 않지만 기존 프로젝트의 최초 Schema 2 도입에는 수동 baseline reconciliation이 필요하다. 신규 개발자가 현재 FSD 경로·durable worker 흐름·문서 권한·WHY 탐색 절차를 서로 모순 없이 찾도록 기존 architecture와 onboarding 문서를 갱신한다.
+- **Targets**: project:README.md, docs:README.md, docs:prd/system-architecture.md, project:docs/features/web/README.md
 
 ---
 
 ## Additional Curated Impacts
 
 - **Assessment**: Complete
-- **Decision**: NONE
+- **Decision**: DECLARED
 
 | Kind | Decision | Target | Reason |
 | ---- | -------- | ------ | ------ |
+| engineering-agent-policy | UPDATE | docs:agents/constitution.md | 현재 아키텍처 원칙을 유지하되 빠르게 낡는 lee-spec-kit 고정 버전과 legacy 설명을 제거한다. |
 
 `docs/.lee-spec-kit.json`, generated agent block, receipt와 `openwiki/**`는 curated 문서가 아니라 실행 설정 또는 생성·검증 산출물이므로 task와 Knowledge gate에서 별도로 추적한다.
 
@@ -121,6 +125,8 @@ openwiki/                                      # 생성된 파생 온보딩 Know
   - README와 docs 가이드가 OpenWiki 진입점 및 SSOT 권한을 일관되게 설명한다.
   - `knowledge sync`가 F040을 가리키는 schema 2 receipt와 managed Knowledge surface를 생성한다.
   - `knowledge audit`과 `workflow-stage`가 동일한 source HEAD·fingerprint·output hash를 검증한다.
+  - 기존 curated architecture·component guide·constitution이 현재 tracked source와 모순되지 않는다.
+  - onboarding 문서가 OpenWiki의 현재 설명에서 Git Feature ID와 `decisions.md`의 변경 이유로 이동하는 절차를 안내한다.
 - **전제조건**: lee-spec-kit 0.9.11, OpenWiki 0.5.0과 유효한 로컬 provider 인증이 준비되어 있다.
 - **성공 후 보장**: F039에 귀속된 OpenWiki 설정·receipt·커밋이 없고 F040 전용 Knowledge 커밋만 남는다.
 - **중요한 실패 후 보장**: 생성 실패나 중단 시 검증되지 않은 Knowledge를 커밋하지 않으며 기존 소스·curated docs는 손상되지 않는다.
@@ -134,6 +140,8 @@ openwiki/                                      # 생성된 파생 온보딩 Know
 | FR-2 온보딩·SSOT 경계 | NONE | 문서 정적 검토 | OpenWiki를 SSOT로 오해하거나 진입 링크 누락 | 승인된 spec과 built-in Knowledge Architecture 정책 |
 | FR-3 F040 기반 재생성 | NONE | 통합 CLI 검증 | stale F039 receipt 또는 잘못된 managed block 재사용 | `knowledge sync` receipt와 현재 Git HEAD |
 | FR-4 검증된 커밋 | NONE | 통합 CLI 검증 | audit 실패 결과나 범위 밖 파일 커밋 | `knowledge audit`, `workflow-stage`, `commit-audit` |
+| FR-5 curated baseline | NONE | 문서·source 대조 | 제거된 경로, 낡은 버전, 반대되는 런타임 흐름이 상위 문서에 남음 | tracked code/config/tests와 OpenWiki claim evidence |
+| FR-6 WHY 탐색 | NONE | 문서 정적 검토 | 현재 코드 설명에서 설계 결정 이력으로 이동할 수 없음 | Git commit의 F-ID와 해당 Feature `decisions.md` |
 
 ### 의도적으로 제외하는 테스트
 
@@ -144,7 +152,7 @@ openwiki/                                      # 생성된 파생 온보딩 Know
 
 ### 검증 실행
 
-- **구현 중**: `npx lee-spec-kit detect --json`, README 링크·권한 문구 정적 확인
+- **구현 중**: `npx lee-spec-kit detect --json`, README 링크·권한 문구 정적 확인, curated 문서의 경로·버전·런타임 흐름을 tracked source와 대조
 - **태스크 완료 전**: `npx lee-spec-kit workflow-audit --json`, `npx lee-spec-kit commit-audit --json`
 - **Feature 완료 전**: `npx lee-spec-kit knowledge audit F040-repository-knowledge-bootstrap --component web --json`, `npx lee-spec-kit workflow-stage F040 --component web --json`
 - **수동/UI 검증**: 필요 없음. 필요 시 `openwiki visualize ./openwiki`는 read-only 확인에만 사용한다.
@@ -154,7 +162,7 @@ openwiki/                                      # 생성된 파생 온보딩 Know
 
 ## 배포·마이그레이션
 
-애플리케이션 배포나 DB migration은 없다. 기존 F001~F039의 legacy Curated Documentation Impact는 이번 범위에서 일괄 변경하지 않는다. OpenWiki 플래그와 초기 Knowledge가 main에 통합되면 이후 Feature부터 동일한 Knowledge gate를 따른다.
+애플리케이션 배포나 DB migration은 없다. 현재 curated 문서의 수동 baseline은 F040에서 복구하지만 기존 F001~F039의 legacy Curated Documentation Impact 메타데이터는 일괄 변경하지 않는다. OpenWiki 플래그와 기준선 Knowledge가 main에 통합되면 이후 Feature부터 동일한 영향 판정과 Knowledge gate를 따른다.
 
 ---
 

@@ -21,6 +21,8 @@
 
 기존 SDD와 사람이 관리하는 프로젝트 문서는 요구사항·변경 범위·의사결정·정책의 SSOT로 유지한다. OpenWiki는 tracked 코드, 스키마, 설정과 테스트를 바탕으로 생성하는 온보딩·코드 탐색 증거로만 사용하며 직접 편집하지 않는다. 과거 F039에 잘못 귀속됐던 실험 결과와 stale receipt는 재사용하지 않고 F040 범위에서 0.9.11로 새로 생성·검증한다.
 
+기존 프로젝트에 Schema 2를 도입하는 시점의 수동 baseline reconciliation도 함께 수행한다. 현재 코드와 충돌하는 curated architecture·onboarding·agent policy의 사실 설명을 바로잡고, 코드에서 변경 이유를 찾을 때 Git의 Feature ID를 해당 `decisions.md`로 연결하는 탐색 절차를 제공한다.
+
 ---
 
 ## 사용자 스토리
@@ -49,6 +51,19 @@
 - [x] OpenWiki 생성·갱신은 `lee-spec-kit knowledge sync`로만 수행하고 생성 페이지를 손으로 수정하지 않는다.
 - [x] 검증된 receipt가 F040과 현재 source fingerprint를 가리키고 `knowledge audit`를 통과한다.
 
+### US-3: 충돌 없는 curated 문서 기준선
+
+**As a** 기존 문서와 OpenWiki를 함께 보는 신규 개발자
+**I want** 사람이 관리하는 아키텍처·코드 탐색·에이전트 정책 문서가 현재 저장소와 모순되지 않는다.
+**So that** 어느 문서를 먼저 읽었는지에 따라 서로 다른 경로와 런타임 구조를 학습하지 않는다.
+
+**Acceptance Criteria:**
+
+- [ ] `system-architecture.md`와 web component 가이드에 제거된 `components/`, `lib/` 기반 탐색 경로가 현재 구조처럼 남아 있지 않는다.
+- [ ] constitution은 장기 원칙과 현재 아키텍처를 설명하고 빠르게 낡는 lee-spec-kit 버전을 고정하지 않는다.
+- [ ] PRD와 custom policy는 코드로 자동 덮어쓰지 않고 현재 제품 의도와 운영 규칙 기준으로 검토한 결과가 기록된다.
+- [ ] 현재 코드의 변경 이유는 Git commit의 `F###`에서 해당 Feature `decisions.md`로 이동하는 절차로 찾을 수 있다.
+
 ---
 
 ## 기능 요구사항
@@ -75,6 +90,14 @@
 
 `knowledge audit`가 출력 범위, managed agent block, OpenWiki/OKF 버전, output hash와 source freshness를 모두 검증한 후에만 `workflow-stage`가 반환하는 정확한 대상과 제목으로 Knowledge 커밋을 만든다.
 
+### FR-5: 기존 curated 문서 baseline reconciliation
+
+`docs/prd/system-architecture.md`, `docs/features/web/README.md`, `docs/agents/constitution.md`를 tracked source와 검증된 OpenWiki evidence에 대조한다. 제거·이동된 경로, 현재 런타임과 반대되는 흐름, 빠르게 낡는 도구 버전은 바로잡는다. `docs/prd/copy-singer-prd.md`와 `docs/agents/custom.md`는 제품 의도·사용자 규칙 문서로 검토하되 코드만을 근거로 내용을 바꾸지 않고 결과를 `decisions.md`에 남긴다.
+
+### FR-6: 현재 코드에서 WHY로 이동하는 탐색 경로
+
+프로젝트 onboarding 문서에 질문별 SSOT를 안내하고, 코드의 역사적 이유를 찾을 때 `git log` 또는 `git blame`에서 Feature ID를 확인해 `docs/features/<component>/F###-*/decisions.md`로 이동하는 절차를 추가한다. 개별 decision 내용은 OpenWiki에 복제하지 않는다.
+
 ---
 
 ## 비기능 요구사항
@@ -89,6 +112,8 @@
 ## 제외 범위
 
 - F001~F039 전체의 Curated Documentation Impact를 일괄 마이그레이션하는 작업
+- 코드와 다르다는 이유만으로 제품 의도나 사용자 정책을 자동 변경하는 작업
+- 전체 design 문서의 일괄 재작성
 - OpenWiki를 요구사항·정책·런타임 사실의 SSOT로 승격하는 작업
 - 생성된 `openwiki/**` 페이지의 수동 편집
 - 애플리케이션 기능, API, 데이터 모델 또는 배포 구조 변경
