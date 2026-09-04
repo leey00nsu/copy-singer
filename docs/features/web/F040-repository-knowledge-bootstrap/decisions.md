@@ -53,4 +53,12 @@
   - **Tree**: `50ad54d3d6c789a50bb6e03cba65a99edaf2f876`
   - **Decision**: `changes_requested`
   - **Positive evidence**: 131개 claim evidence 참조가 tracked file과 유효 line range를 가리켰고, receipt는 F040/web, source `f11361d`, base `eb164d7`, OpenWiki `0.5.0`, OKF `0.2`와 검증된 fingerprint·output hash를 기록했다.
+- **Remediation outcome**:
+  - curated source `README.md`에 worker claim 대상이 `PENDING` 또는 lease 없음/만료 상태이고 유효 lease는 제외된다는 불변식을 추가했다.
+  - 실제 추천 화면이 `/recommendations/[id]`이며 `/recommendations` 단독 화면은 없다는 진입 경로를 추가했다.
+  - `knowledge sync`가 `system-map.md`와 `quickstart.md`를 재생성했고 두 설명이 source와 일치함을 정적 대조했다.
+  - 최신 receipt는 source `944780e7a376fcae602e2ea401c523b14e5b0630`, fingerprint `sha256:fe4c8ce3f84406383b86788d6d69a1119065f0ec7ae323a2b48e376abbcedf0b`, output `sha256:95b6177e1824addfa88f2dd4d37cabb5cc664ce36030eda217892c0e587e8d8a`를 기록하며 `OPENWIKI_VERIFIED`를 통과했다.
+- **Residual risks**:
+  - 설정된 최대 remediation round가 1이므로 수정 후 target `98a1f88360375134fa44ee66f956a83446a56ff4` / tree `b5232ec9c6aaa0ab8872d40ef6352bc2ee9153c3`는 별도 독립 재리뷰를 받지 않았다.
+  - 세 finding은 모두 직접 검증해 해결했지만, 자동 생성 문서의 의미 정확성은 향후 sync에서도 claim audit만으로 완전히 보장되지 않으므로 중요한 concurrency·route 설명은 tracked source와 계속 대조해야 한다.
 - **Consequences**: audit 통과는 생성물 무결성과 provenance를 보장하지만 설명의 의미 정확성을 완전히 보장하지 않는다. 중요한 concurrency·route 사실은 curated guidance와 독립 리뷰로 보완한다.

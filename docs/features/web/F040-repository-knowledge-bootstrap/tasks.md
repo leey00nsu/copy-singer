@@ -14,9 +14,9 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer 전체 (`web` component에서 추적)
 - **브랜치**: `feat/repository-knowledge-bootstrap`
-- **대기 중 변경 요청**: P1 lease eligibility 설명 반전, P2 존재하지 않는 `/recommendations` 진입 경로, P3 checkpoint commit subject 불일치
+- **대기 중 변경 요청**: 모두 해결. round 1 이후 target 변경은 재리뷰하지 않고 아래 residual risk로 보존한다.
 - **Feature 리뷰**: done
-- **Feature 리뷰 Evidence**: `/root/f040_feature_review_r1` (feature_reviewer, inherited model, high effort)가 131개 claim evidence 경로·line range, receipt, managed surface와 `eb164d7..7124a1f` diff를 검토했다.
+- **Feature 리뷰 Evidence**: docs/features/web/F040-repository-knowledge-bootstrap/decisions.md
 - **Feature 리뷰 Decision**: changes_requested
 - **Feature 리뷰 Round**: 1
 - **Feature 리뷰 Head**: 7124a1f0231522362bbac03b3bc099d63eb1fd0b
@@ -65,7 +65,7 @@
 | --- | --- | --- |
 | `npx lee-spec-kit detect --json` | `2026-09-04` | `PASS — PROJECT_DETECTED, experimentalOpenwiki=true` |
 | `npx lee-spec-kit workflow-audit --json` | `2026-09-04` | `PASS — WORKFLOW_IN_SYNC` |
-| `npx lee-spec-kit knowledge audit F040-repository-knowledge-bootstrap --component web --json` | `-` | `-` |
+| `npx lee-spec-kit knowledge audit F040-repository-knowledge-bootstrap --component web --json` | `2026-09-04` | `PASS — OPENWIKI_VERIFIED, source=944780e, output=sha256:95b6177e…e8d8a` |
 | local-ff post-merge checks | `-` | `-` |
 
 <!-- lee-spec-kit:workflow-sync sha256:c97edef4c4a4f1035c0e6557a761aa3e697fb3ade862d8534b65a5641e4d4b8b -->

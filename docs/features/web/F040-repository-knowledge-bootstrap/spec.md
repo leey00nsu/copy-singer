@@ -33,9 +33,9 @@
 
 **Acceptance Criteria:**
 
-- [ ] 저장소 루트의 onboarding entrypoint에서 OpenWiki의 위치와 역할을 찾을 수 있다.
-- [ ] 생성된 Knowledge가 시스템 경계, 주요 도메인·통합, 핵심 워크플로와 검증 경로를 tracked source에 근거해 설명한다.
-- [ ] 중요한 사실은 코드·스키마·설정·테스트에서 다시 검증해야 한다는 안내가 명시된다.
+- [x] 저장소 루트의 onboarding entrypoint에서 OpenWiki의 위치와 역할을 찾을 수 있다.
+- [x] 생성된 Knowledge가 시스템 경계, 주요 도메인·통합, 핵심 워크플로와 검증 경로를 tracked source에 근거해 설명한다.
+- [x] 중요한 사실은 코드·스키마·설정·테스트에서 다시 검증해야 한다는 안내가 명시된다.
 
 ### US-2: 명확한 문서 권한과 갱신 절차
 
@@ -45,9 +45,9 @@
 
 **Acceptance Criteria:**
 
-- [ ] PRD, 활성 Feature SDD, curated docs, tracked runtime facts와 OpenWiki의 역할이 onboarding 문서에 구분되어 있다.
-- [ ] OpenWiki 생성·갱신은 `lee-spec-kit knowledge sync`로만 수행하고 생성 페이지를 손으로 수정하지 않는다.
-- [ ] 검증된 receipt가 F040과 현재 source fingerprint를 가리키고 `knowledge audit`를 통과한다.
+- [x] PRD, 활성 Feature SDD, curated docs, tracked runtime facts와 OpenWiki의 역할이 onboarding 문서에 구분되어 있다.
+- [x] OpenWiki 생성·갱신은 `lee-spec-kit knowledge sync`로만 수행하고 생성 페이지를 손으로 수정하지 않는다.
+- [x] 검증된 receipt가 F040과 현재 source fingerprint를 가리키고 `knowledge audit`를 통과한다.
 
 ---
 
