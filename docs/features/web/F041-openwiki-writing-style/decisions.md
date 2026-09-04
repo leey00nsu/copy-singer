@@ -1,5 +1,21 @@
 # Decisions Log
 
+## D004: F041을 제공된 writing skill의 소비자 적용 범위로 명확히 한다 (2026-09-05)
+
+- **Context**: 이전 기록에 정책 설계와 소비자 적용 요구사항이 섞여 있었다.
+- **Decision**: Spec과 Plan은 제공된 policy의 설치·생성·검증만 정의한다. 문체·분할·편집 규칙과 adapter·검사 로직은 lee-spec-kit이 소유한다.
+- **Trace**: D001~D003은 실험 이력으로 보존한다. 이 기록의 정책 수정 내역을 CopySinger의 구현 책임으로 해석하지 않는다. 이번 검증은 제공된 adapter 1.3.0의 적용 효과를 관찰한다.
+- **Evidence**: 현재 spec.md의 제외 범위와 plan.md의 소유권 표. 검증 결과는 sync·audit 종료 후 기록한다.
+
+## D003: 한국어 문체 계약을 page worker까지 전달하고 생성 결과를 검증한다 (2026-09-05)
+
+- **Context**: 제공된 직접 윤문본과 비교하면 이전 결과에는 해요체 계약과 독자 목적별 구성 지침이 부족했다.
+- **Decision**: 로컬 lee-spec-kit 0.9.12, writing adapter 1.2.0을 사용해 전체 Knowledge를 재생성했다. 생성 문서는 직접 교정하지 않았다.
+- **Trace**: run `adb56e67-6687-4b81-bc28-54d4ab242a6d`가 9개 페이지를 완료했다. 모든 job에서 해요체·행동형 문장·출처 링크 지침 전달을 확인했다. 첫 검사는 목록의 `만료됨`을 오탐해 receipt 기록을 차단했다. lee-spec-kit에서 명사형 오탐과 중첩 경로 오류 표시를 수정한 뒤 run `b0e557e1-539a-40e6-963a-65d89cc5e85d`가 기존 페이지를 보존하는 0-page update로 검증을 완료했다.
+- **Evidence**: `knowledge sync`는 `OPENWIKI_SYNCED`, `knowledge audit`는 검증 후 커밋 대기인 `OPENWIKI_COMMIT_REQUIRED`를 반환했다. 상세 페이지 9개, 유효한 본문 출처 링크 85개, claims 93개, repo-line evidence 201개를 검증했다. Receipt는 `.lee-spec-kit/openwiki-sync.json`, output hash는 `sha256:1f185f7d4567b9b718c96681621af7270c9845d072da9bcbb62854fcfc67d2dc`다. lee-spec-kit 전체 359개 회귀 테스트와 이후 오탐/중첩 경로에 관한 표적 검사가 통과했다.
+- **Outcome**: 빠른 시작·시스템 경계·테스트 선택 표본에 해요체, 행동형 안내, 결론 우선, 본문 출처 링크가 적용됐다. 이전 D002의 출처 링크 누락은 이번 결과에서 해소됐다. 이는 메인 에이전트 검증이며 fresh 독립 Feature 리뷰를 수행했다는 뜻은 아니다.
+- **Residual risks**: OpenWiki 기본 플래너가 `architecture/concepts` 등 시스템 중심 분류를 유지했다. 일반 영문 용어와 긴 문단도 일부 남아 있으므로 제공된 윤문본과 동일한 전체 편집 품질이나 독자 목적별 정보 구조를 완전히 달성했다고 보지 않는다. 자동 문체 검사는 문장 의미·문서 누락·톤의 모든 측면을 보증하지 않는다.
+
 기술 결정과 그 이유를 기록합니다.
 canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `docs/superpowers/*`)이 있더라도, 실제로 채택한 대안과 선택 이유는 이 파일에 다시 남겨 Feature의 결정 이력을 유지합니다.
 

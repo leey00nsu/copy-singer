@@ -116,9 +116,10 @@
 | 로컬 lee-spec-kit `--version` 및 `detect --json` | `2026-09-04` | `PASS — 0.9.12, PROJECT_DETECTED, experimentalOpenwiki=true` |
 | 로컬 lee-spec-kit `knowledge doctor --json` | `2026-09-04` | `PASS — OpenWiki 0.5.0/OKF 0.2, openai-chatgpt gpt-5.6-luna OAuth ready, OPENWIKI_WRITING_POLICY_STALE` |
 | 기존 receipt·INSTRUCTIONS·writing skill 기준선 검사 | `2026-09-04` | `PASS — receipt schema 2, INSTRUCTIONS sha256:6edc1607…f64db, 같은 이름 skill 없음` |
-| 로컬 0.9.12 `knowledge sync F041-openwiki-writing-style --component web` | `2026-09-04` | `PASS — schema 3, writing policy provenance, 15/15 pages, skipped 0` |
+| 로컬 0.9.12 `knowledge sync F041-openwiki-writing-style --component web` | `2026-09-05` | `PASS — adapter 1.2.0으로 9개 재생성; 명사형 검사 오탐 수정 후 0-page 재시도에서 검증·receipt 기록 완료` |
 | remediation sync + 동일 run resume | `2026-09-04` | `PASS — 30분 상한에서 8/15 보존 후 run 97f97a25…를 재개해 15/15 완료` |
-| 로컬 0.9.12 `knowledge audit F041-openwiki-writing-style --component web --json` | `2026-09-04` | `PASS — OPENWIKI_VERIFIED, output sha256:2fb84880…a3b64, 261 claims/623 line/46 file evidence` |
-| non-index 상세 페이지 `repo://` Markdown source-link coverage | `2026-09-04` | `PARTIAL — 4/15만 링크 포함, 대표 문서 3개는 0; Round 1 미해결 finding으로 보존` |
+| 로컬 0.9.12 `knowledge audit F041-openwiki-writing-style --component web --json` | `2026-09-05` | `PASS — OPENWIKI_COMMIT_REQUIRED, output sha256:1f185f7d…7d2dc, 93 claims/201 line evidence; 검증 완료, 커밋 대기` |
+| non-index 상세 페이지 `repo://` Markdown source-link coverage | `2026-09-05` | `PASS — 9/9 상세 페이지, 유효한 본문 원문 링크 85개` |
+| 한국어 문체·planner job 전달·대표 페이지 표본 검사 | `2026-09-05` | `PASS — 해요체/행동형 문장과 job별 지침 전달 확인; 독자 목적별 디렉터리 전환과 전반적 편집 품질은 완전 충족으로 판정하지 않음` |
 
 <!-- lee-spec-kit:workflow-sync sha256:c97edef4c4a4f1035c0e6557a761aa3e697fb3ade862d8534b65a5641e4d4b8b -->
