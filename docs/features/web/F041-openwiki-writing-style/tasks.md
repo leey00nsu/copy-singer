@@ -27,16 +27,16 @@
 - **대기 중 변경 요청**: -
   - 구현 중 새로 수용한 사용자 요청을 잠시 표시하는 sync marker입니다
   - 요청을 `tasks.md`와 관련 문서에 반영한 뒤 값을 비우세요
-- **Feature 리뷰**: -
+- **Feature 리뷰**: Done
   - Feature 리뷰 handoff를 시작하면 `Running`, 리뷰 결과 기록까지 끝나면 `Done`으로 변경
-- **Feature 리뷰 Evidence**: -
-- **Feature 리뷰 Decision**: -
+- **Feature 리뷰 Evidence**: features/web/F041-openwiki-writing-style/decisions.md
+- **Feature 리뷰 Decision**: changes_requested
   - 형식: `결정: approve|changes_requested|blocked ...` (또는 `decision: ...`)
-- **Feature 리뷰 Round**: -
+- **Feature 리뷰 Round**: 1
   - `workflow-stage --json`이 반환한 양의 정수이며 첫 리뷰는 `1`
-- **Feature 리뷰 Head**: -
+- **Feature 리뷰 Head**: `1d8d703b5e80a6c7ed2c800f21e1b5454c3e2e2a`
   - Feature 리뷰가 확인한 project code commit SHA
-- **Feature 리뷰 Tree**: -
+- **Feature 리뷰 Tree**: `f76ec37fd7fa3cdc4f873fcb58265d8fc152338b`
   - Feature 리뷰가 확인한 project code tree SHA
 
 ---
