@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:0544a35365a039a6bf115aabf42db7e13994a9f0f9cc541f323b8017b1f08c96",
+  "pageVersion": "sha256:ea0994f750fd28156367d01e908d5dd1c235dc3ae06e5d1091e5f75d7ecdcab2",
   "claims": [
     {
       "id": "claim_243284962494431bbddb282039c45627",
@@ -205,10 +205,150 @@
           "version": "repo-lines-v1:sha256:a62515d5ae51cf055e6f427c5ef90e6f7e56cf11bb187d24e26582ad1feecc2b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyZDYwMzk5NzY2MWFlNWU2NjBiZTczNjJlYjFkODBkMDMyYTBmMjhjMzNhZjkyZDg5NTE5MzJhZGMzMzcxZDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxMWY2OTVjMGE2MWU5ZGZlMTQ1ZGY2ZjQzZTk2OTc3ZDk5YmIyMjJmODJjZjljODJiZDBkODI3ODRiY2E5ZDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI0ZmVjODE5MDJhZmY3ZTUyOWI3ZDg1MzBiNjc4NjA4NGZhMDRmNjc3MDU0OWJiNjQzZDg5M2IxYTdiNWJkYzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgxYTllMjAzMzc0YmFhYmRkNzQzNjhiZDI5NjNkODc4Y2U5NmNjMzBmZGU2OTBmMDNjNzBkMzk3ZDE4MjI1YzkifQ"
         }
       ]
+    },
+    {
+      "id": "claim_ef38eb6fe8c3414595605ca898a1a5af",
+      "statement": "`pnpm run check`는 Biome 검사, ESLint, TypeScript `tsc --noEmit`, 그리고 `steiger ./src`와 AST 기반 architecture-boundary test를 순서대로 실행한다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json",
+          "version": "repo-file-v1:sha256:b6176500120fdbaa12207f387e69f8ab73c6df4f20b3e31eb3c7047ccd67fc94"
+        }
+      ]
+    },
+    {
+      "id": "claim_cd0abc304d49410d91f449fee110a5a9",
+      "statement": "`pnpm run test`는 `pnpm run build`를 선행한 뒤 여러 Node/TypeScript 도메인 suite, DB·queue integration, query, architecture boundary와 Storybook browser project를 연결하므로 build 실패 시 후속 회귀 suite가 시작되지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json",
+          "version": "repo-file-v1:sha256:b6176500120fdbaa12207f387e69f8ab73c6df4f20b3e31eb3c7047ccd67fc94"
+        }
+      ]
+    },
+    {
+      "id": "claim_9730c9965cc64d2b9ef9891a787d9d89",
+      "statement": "`tests/client-server-state-query.test.ts`는 `requestJson`의 Zod 정규화와 contract 오류 비재시도, 일반 4xx와 retryable 503/network 오류의 분류, QueryClient cache·retry 기본값과 job polling 정책을 검증한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/client-server-state-query.test.ts",
+          "version": "repo-file-v1:sha256:cc05c297f6048f41dedb0b382321728726b24ee600bdd8cb6a89cde88ff2ed4c"
+        }
+      ]
+    },
+    {
+      "id": "claim_7fdc3528100949128e24096307ef2ae4",
+      "statement": "`tests/msw-query.test.ts`의 MSW fixture는 unhandled request를 오류로 취급하고 403 단회 실패, 503 후 회복, malformed 응답 비재시도, polling terminal 전환과 cache 무효화를 검증한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/msw-query.test.ts",
+          "version": "repo-file-v1:sha256:7c426f3f3f98261197b4d92c40a9d4715e8d48d3927b669c0c6eb6e1b7fbff98"
+        }
+      ]
+    },
+    {
+      "id": "claim_4e0a78a7baaf42e093a222368e015e90",
+      "statement": "`tests/fsd-architecture-boundaries.test.ts`는 AST import graph에서 cross-slice 내부 segment 접근, client 경로의 server-only·Next server·DB 유입, root `app/` 구현과 public API 규칙을 fixture와 실제 source tree에 대해 검사한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts",
+          "version": "repo-file-v1:sha256:5e9d158610682b57192a89a1640bee7717cb19c3791d30466eed160f7c2e2c6e"
+        }
+      ]
+    },
+    {
+      "id": "claim_1ab13f02e1d1490890ff9e0174c25d21",
+      "statement": "Vitest는 `storybook` project에서 Storybook 설정과 `@vitest/browser-playwright` headless Chromium을 사용해 story를 실행하며, `tests/storybook-production-boundary.test.ts`는 Storybook 도구의 devDependency 격리, MSW worker 위치, story의 server-only import 차단과 production script 분리를 검사한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/storybook-production-boundary.test.ts",
+          "version": "repo-file-v1:sha256:b066d13984a50b4c5580abf6bb392b3577c81ae32fed0ef7fd12389bf56fcc0c"
+        },
+        {
+          "resource": "repo://vitest.config.ts",
+          "version": "repo-file-v1:sha256:16d84e154aed98460b3219fd3d95dd367550e24287c0d04d25c0ec42cd638559"
+        }
+      ]
+    },
+    {
+      "id": "claim_2222a400d6154152b69b9db58ff63f26",
+      "statement": "DB integration fixture는 `DATABASE_URL`을 전제로 owner-scoped query, transaction·unique/idempotency, catalog snapshot import 정합성과 queue의 enqueue·claim·lease·ticket 상태를 실제 저장 결과로 검증하며, 환경이 없으면 일부 테스트를 skip할 수 있다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/auth-ownership.integration.ts",
+          "version": "repo-file-v1:sha256:a50078286ccfbdab14b3bfa9c3fe5a3aab8b33cbcf48eaaf79407448668fd492"
+        },
+        {
+          "resource": "repo://tests/catalog-snapshot.integration.ts",
+          "version": "repo-file-v1:sha256:75ec4c707ed9361ada812a80a771fda89b991d4ef902bc920132c3d9c0f5b07f"
+        },
+        {
+          "resource": "repo://tests/mixing-queue.integration.ts",
+          "version": "repo-file-v1:sha256:1d8c24fde8d5d32181f520d43bde20cb1e122fd7da0b89a10b6f116ef044dbea"
+        },
+        {
+          "resource": "repo://tests/vocal-profile-analysis-queue.integration.ts",
+          "version": "repo-file-v1:sha256:dba0a62ebf04ccf52767271bf7ac46c275b0b95318582363a046ebf76b81d0a5"
+        }
+      ]
+    },
+    {
+      "id": "claim_768e4dcc920a46b0954f6ce2b910e62a",
+      "statement": "`services/vocal-analysis-core/tests`는 합성 audio fixture로 segmented/unsegmented pitch 통계, 품질 거부 사유, bounded pitch track과 unvoiced gap, source·intermediate 파일 lifecycle 및 MIME 정규화를 검증한다.",
+      "evidence": [
+        {
+          "resource": "repo://services/vocal-analysis-core/README.md",
+          "version": "repo-file-v1:sha256:3d782c779852223f678e20baa95dba33aa6cf481cf1ddf74a1991b74535e9c93"
+        },
+        {
+          "resource": "repo://services/vocal-analysis-core/tests/test_analysis.py",
+          "version": "repo-file-v1:sha256:8d2198856c020cd3f6e49eb1adc716c44657f593ae03772b03e39a508c7e4658"
+        },
+        {
+          "resource": "repo://services/vocal-analysis-core/tests/test_analysis_service.py",
+          "version": "repo-file-v1:sha256:037bbe9d3ecdc30347636c6151f77a4ea7ea2619a8266abcda8c5f93347c107c"
+        }
+      ]
+    },
+    {
+      "id": "claim_741019a40b2445b4a06bcf738174503d",
+      "statement": "Python Modal adapter와 transport 테스트는 입력 identity·size·suffix allowlist, CPU spawn/poll과 request idempotency, artifact hash/size round trip, `modal-analysis-envelope-v1` optional reference와 tamper rejection을 고정하며 package.json의 Node 전체 회귀에는 포함되지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json",
+          "version": "repo-file-v1:sha256:b6176500120fdbaa12207f387e69f8ab73c6df4f20b3e31eb3c7047ccd67fc94"
+        },
+        {
+          "resource": "repo://services/song-catalog-analyzer/test_modal_app.py",
+          "version": "repo-file-v1:sha256:f9bdc58ae512a82807ae3d8eedee44588d86aca9de89015df10e1a088c4810de"
+        },
+        {
+          "resource": "repo://services/vocal-profile-modal/test_transport.py",
+          "version": "repo-file-v1:sha256:bd39b33d054481298a41561a415b23874fe42d7a71d518af477990c67d8423ac"
+        }
+      ]
+    },
+    {
+      "id": "claim_5d8b5f18e75f448a8fb101c56d799181",
+      "statement": "MSW·mock·DB integration·build는 서로 다른 증명 범위이며, 저장소 테스트는 실제 외부 provider의 가용성·네트워크·credential·production latency·backup/restore를 대신 검증하지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json",
+          "version": "repo-file-v1:sha256:b6176500120fdbaa12207f387e69f8ab73c6df4f20b3e31eb3c7047ccd67fc94"
+        },
+        {
+          "resource": "repo://tests/mixing-queue.integration.ts",
+          "version": "repo-file-v1:sha256:1d8c24fde8d5d32181f520d43bde20cb1e122fd7da0b89a10b6f116ef044dbea"
+        },
+        {
+          "resource": "repo://tests/msw-query.test.ts",
+          "version": "repo-file-v1:sha256:7c426f3f3f98261197b4d92c40a9d4715e8d48d3927b669c0c6eb6e1b7fbff98"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.5.0",
-    "at": "2026-09-04T08:11:35.711Z"
+    "at": "2026-09-04T09:11:21.096Z"
   }
 }

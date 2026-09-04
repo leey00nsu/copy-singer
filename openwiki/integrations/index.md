@@ -1,3 +1,3 @@
 # 파일
 
-- [Google·Leemage·Modal 통합 계약](external-services.md) - Google 인증, Leemage 미디어 저장소, Modal 기반 보컬·곡 분석과 SoulX-Singer 변환의 서버 책임·입출력·credential 경계·실패 처리를 비교한다. 실제 호출 순서와 재시도·보존 수명을 구현과 테스트 기준으로 정리한다.
+- [외부 서비스 연동 계약](external-services.md) - Google OAuth, Leemage, Modal 분석기, SoulX-Singer, FFmpeg가 앱 서버와 어떤 transport·job·artifact 계약으로 연결되는지 설명한다. 자격 증명 검증 경계, 외부 job ID, 재시도와 partial failure 복구 지점을 구현 기준으로 정리한다.

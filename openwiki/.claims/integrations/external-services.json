@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:276e8468611433229d9664082ca8f3319798583e9a44c029ce69123249033d17",
+  "pageVersion": "sha256:7476400c98a16ddd6a8d2e31a46fdfa5597a7e58998b3b71b7109e14b4ddcbeb",
   "claims": [
     {
       "id": "claim_40dedf5f87ba4b51a71981c0bad3a5dc",
@@ -291,10 +291,92 @@
           "version": "repo-lines-v1:sha256:9acebb914e446bb195f004e8b579b4dde39f1da1db6760adabc4513830bba8fa:eyJzZWxlY3RlZExpbmVDb3VudCI6NzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2YzdjY2UwYTcwYjM0ZWZhM2FlMzgwZWExMjA2ZTRmZjAwMzNmZjJmNzZlN2M2ZGZlNGNlM2Y3ZGNkMDg2MjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
+    },
+    {
+      "id": "claim_2b5cbb73dc5c40f9a765a5e14fbc33d2",
+      "statement": "Vocal Profile Modal과 Song Catalog Analyzer는 `services/vocal-analysis-core`를 이미지에 포함해 분석 core를 공유하지만, 현재 앱의 Vocal Profile public adapter는 Modal backend만 호출하므로 local backend와 Modal의 결과 동일성이 보장된다고 볼 수 없고 공통 profile·contract 경계까지만 parity를 주장할 수 있다.",
+      "evidence": [
+        {
+          "resource": "repo://services/song-catalog-analyzer/modal_app.py#L51-L54",
+          "version": "repo-lines-v1:sha256:c883bffd55487bc07756c87b97057f807389e237449c6b96225df254a0f71894:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGU3YjQ1OGJlZjE1ZDhhYzJlY2U2NmQwYTZkNWJkYzEwNDNlNWYzMDViODI0MTdhMTRlZTZiZmRhMWM5NzhmMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzBjMWYxODhmMTQyZWQ3YTgyNDY4MGIyMDcxNzJjNTUxOWJjNjE0YTQ4ZmRhN2NmMTY3ZWRiOGRkZjc5OTU2YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjdmZjFhZWU3ZTcxZDhlNTM4OTY3ZmRmMjM1OTFlNTAyNWVhNmQ2MmYwZTBjNjlkY2ZmYmIzNGNmMTEwN2RlMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzI5ZjQxYmM3ZTE1ZjU3ZWFjODUwMGQ3OWI3MDE1YmEyMGRmZGFiOGM0ZDM4MDU3NWJmYzJhZjAyZmRkNmFiNyJ9"
+        },
+        {
+          "resource": "repo://services/vocal-profile-modal/modal_app.py#L75-L82",
+          "version": "repo-lines-v1:sha256:2639e4a441b5b94a193c534b5f64372e3fa6a28b669ce72a8d57b9e94322b5fb:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGU3YjQ1OGJlZjE1ZDhhYzJlY2U2NmQwYTZkNWJkYzEwNDNlNWYzMDViODI0MTdhMTRlZTZiZmRhMWM5NzhmMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzBjMWYxODhmMTQyZWQ3YTgyNDY4MGIyMDcxNzJjNTUxOWJjNjE0YTQ4ZmRhN2NmMTY3ZWRiOGRkZjc5OTU2YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGY5MTFlNWVmYjA2YmNiMzYwNDAwMTNjMDg4ZGM3YTQyMjhlZmU0MzMzOTY3ODEzOTIxOWYyZTM0Njk3MjhlMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTk4YjA2M2Q5YjQ3ZTY1Mzc5NjI1NTcyY2NlMTk3NjY5ZDU3NjdlMTJjMThiZTA3NTY1MmI4Y2Q5ODFjZThkNSJ9"
+        },
+        {
+          "resource": "repo://src/entities/vocal-profile/api/analyzer/index.ts#L3-L5",
+          "version": "repo-lines-v1:sha256:ea2b9013326a7f44915c3801e4b20d1dd4278e50b2e4cec81df990d20adbefee:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDY2ZDdiY2Q2YTI5ZWVjZTFmZWQ2MDRlNTJhOGI1ZTlmZmEzZGExNmYxMDAyY2I0MDU1ZmY5ZjU0MDI2OGM5YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzFkNzgyZTczMTdkYjk0NzZmM2E2N2Q5OTI4N2RiYmY0YjM5MjBhYjFmOGQ0MTFmNjYxMTU1YzVkNWVlMmNjZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTMxYWZkYmE0MjAxYTkwNTY2NTI1MTUxYmEzYmZkZGNlNmUxOWYyZjdhN2Q3ZDIzYjI3ZWU0Zjk3MWU1ZDU0YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmNlNWFhYWI2ODY0MWMyY2Q3M2FjMzI3ZDkzZWU5M2QwMzk3MmM5OTgwMDdhYjNkYWVmN2Q4OTdlMzA3ZTUyOSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_04edb707c6e342389513cf3a24e35df8",
+      "statement": "Mixing 결과는 앱의 FFmpeg finalizer가 `clarity-normal-v1` filter chain과 loudness normalization을 적용해 metadata 없는 stereo 44.1 kHz AAC 160k `audio/mp4`/`m4a`로 만든 뒤 Leemage에 저장하며, finalizer는 임시 directory를 finally에서 삭제한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L390-L412",
+          "version": "repo-lines-v1:sha256:8f9e547fdc755c22a31de17b5cddf1913749ee92bfe65487b5bd0b702d9e389a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI0YzI5YzU3OTA4NGRkNmQzNjAwODRlMzhlYjFkYWRhMWRkNWIzNDJlZGQyMjNhOGEyMGYxOWM4ZWYwMjhiNjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5YzEzNTkwNjY1NjMyM2QxYzVlYTQxNjU0ZWU2NmFmYjU4NWFjZGNmYWVhY2ExMjFkNWUzMGJmMTkzZWVkZDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmZTNhMGI1NWUwMmJiNTQ5YzdiNmZjYjc5MTNkNDEyMDk4NTkzYmIzNTg5NzhlNDJlMGY2NGQxN2UxYzk5MGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY4NmFlMmVmYzc5ZWE5NmJkZjU0NGVlMDE0YTI1YzZiMjA3NGRkOWU4YzdkZTA4NTU4MmRhOTI3NDE0NjExZTQifQ"
+        },
+        {
+          "resource": "repo://src/shared/lib/audio/compress-mixing-result.ts#L36-L71",
+          "version": "repo-lines-v1:sha256:a0f4c248908b13bab94182349d97bfcecc9ab26e23c9ad38582c3c9cb0502144:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiZDU1ZjI2NzIwNmEwMzU5ZWIwNzUzMzc1YjAyZWI3MTgwMmJkYjdkNTAyMGRhNGM3YjRhNDk3YjIzMzk1YjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/shared/lib/audio/compress-mixing-result.ts#L6-L19",
+          "version": "repo-lines-v1:sha256:5ff6f5e826c4d42d4b8b9cd591bea75263f26d87c3e3dccfe1dd28ecd94edfbd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiNzZiODZjMjU4NmRjYTZjZGExMmE1YWYwMDdiY2Y3YmYyMTVlMjM2NzM0ZDExMjE1ZTIzMTE4M2E5MjgwMTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlMWZkMWRlZTVkMDg2MTNkM2Q0MTRmZDY3MjUyZDQ3MGJhZTM4YWQxMjY2NzkzMmU5OGFhNTU2NzhlNGQzNTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyNmY3NDdmMTQyNTJkNTQxZDY0NzJmNWZlYTAyM2QyOThmYzYwMDU2NDk4ZjkyMTBkYTA3MjU2NDk4YmY1YWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRhNDEyZDVjZmZmMTk3MWE4ZGZmMzgzYzVhNzllMmI5ZjI2ZmM5MTY5YzRlM2I1ZDcyODIwOWYyZjYwY2FjMDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f650d8d4581a41e282ddebd813dc4933",
+      "statement": "SoulX-Singer web service는 prompt 128 MB와 target 256 MB를 chunk로 persistent job Volume에 저장하고 Modal `Dict`에 job metadata를 기록하며, 24시간 TTL cron은 Volume의 입력·결과 directory와 job index를 제거한다.",
+      "evidence": [
+        {
+          "resource": "repo://services/soulx-singer-svc/modal_app.py#L168-L195",
+          "version": "repo-lines-v1:sha256:669f034a877e1619fb3df69c85addb20cce75f6e5cb5bbd3c03c62e943f2fdaf:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU3NDMzYzdmMzU2YmU5YWM1MjY2ZTM4NjRkZjFkZGEwMWI4YTFiZGRiNmQ0YjgyYjU0MDI5NDM0ZDY5ZDlhNjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEyODgwOTlmZjczZTRiY2IyMjg4Y2E4MjRiZGQ2YTJhNTYwMGRhYmYzYTUwZDBkMDUyODkxYjFhMjJkODBiYmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRjMjQ2NDhlNzliMTM5OTNiMzc4MTcyODJjNTEwNmVhMTEzOWU4MGQ0MGI3MmRhNDgzYzMwYWNlM2Y3ZjRlMjcifQ"
+        },
+        {
+          "resource": "repo://services/soulx-singer-svc/modal_app.py#L24-L32",
+          "version": "repo-lines-v1:sha256:fb93a8d93c19b26009ab5c72220893e0e4425eda4f2efeedb3974a258aa5b2d8:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDhmMzIyNTI2YWU4NDE4ODQ3OGEyMGE2ZTUwNGMyZjMwMTlhMTUzYWY5ODcyMzVmNTVlZjY5YzdkMmFmN2Q4YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2RiOWJmODc1NzI4OTVjNGJjYzY4OTc4YjQ2NGI0MDAzMTY1YmRkM2JlZDM4ZWNlZDM0NzhiYTlkZDA0MGExYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmJmZGFhYTNiMzQ5NjQ3OGYyODJlNWNhMmJhMzUzMjQ4YmFiNGFkNzY0Y2U4ZTU5ODA4OWYzYmE4NGY0ZmMxOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWZjYTlkN2UwNjA4YTk1NmJkMWQ4Y2I4NDUzZTFiMWJmY2VmMmQ2YmY4MDE3MjUwZTE5YjQ4ZWM5YmM1Yjc1YyJ9"
+        },
+        {
+          "resource": "repo://services/soulx-singer-svc/modal_app.py#L256-L310",
+          "version": "repo-lines-v1:sha256:d010019992392861104a8029725a16405b8253d6b056e790af786537ab82af23:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxM2JkYjg5NWIzNjNjYmIwNjk0YWU5YTQ4MzU2ODMyOWM2Y2Q4MWQzODk4MjcxNjgyMzdmNDA2ZmI0MmMzZTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhZTU1YzEzY2IxZGY0MTZjNzczZWM0ZGQzMjI5MzBlZWUxYzkwMzMwZDU3MmFhN2NkOTM1OGIxY2Q1N2IwOGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlhMmFjNjhlYzJmNDRjNjYwODAyY2I4MDNhNzExYmYwOTE1ZmZkMjJhMzRjZTM2MWYxMmJhMjIzNzU2MWE3MDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAyNjUxMTA5ZDk5MmRkMDcwYWJmOWM0MTFjN2M2NDM2YmIxMWJjNjAxY2E4NTMyZjcwMGYwMmM5YTViZGVkZGUifQ"
+        },
+        {
+          "resource": "repo://services/soulx-singer-svc/modal_app.py#L347-L366",
+          "version": "repo-lines-v1:sha256:4a31bf963f24699a0273e265da7f9f05c4347241fa215c3c2aeba206da47de75:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkZTNkMmEzYTU3ODM0MDQ5NDdhNDQwYWViOTY3MWM4MzViOTU4MDNlZWM4MGY3MzNmNjJlZTkzZGQ4NGIyMDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0OGU4OWE5ZGRhM2ZlYmQ1MmZiZjRjMzg1YTcxMTc5MjdkYjhlMDUwNTc2YzQ2Nzc2ZjZiYzBlOGY1OWUwOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiYjA5N2UzMDU1ZGZmYzUwNmU1Njk3ZGVhYzQ1MTkzMjkxNDkxYWI3MDAyMTUxZWU4MDE4N2RlY2ZkZGRhOTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyNGUyZjE5ODk2ZmVhMDIzNDllZWVlZmUxNWY5MmMwYWUxNTM5ZDc3NzQ1MjZmOWUxY2NiMTVhODVhZGU1ZTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c8c054a7d296485f86f088fb4b8828ad",
+      "statement": "Modal song-analysis와 Vocal Profile adapter는 각각 `SONG_ANALYSIS_MODAL_URL`/전용 key 우선 후 `MODAL_API_KEY` fallback, `VOCAL_PROFILE_MODAL_URL`/전용 key 우선 후 `MODAL_API_KEY` fallback의 서버 설정 경계를 사용하며, song-analysis 설정은 URL과 key가 모두 있어야 활성화된다.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/vocal-profile/api/analyzer/modal-adapter.ts#L34-L46",
+          "version": "repo-lines-v1:sha256:df7a20e67895ce8b80e5d4d400415c7560236d87221f7a13ae3960ef0388d888:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0Y2ViNWI5NzliMzFjNmNjMWEzMDEyMGFlMzM4ZjNmNzU1NjJhNjZiMTMwYzZkYTU1M2I3NjQ1MDJiYzkzZmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJmMzk2Y2MxMDliZWNlYjg1Yzg2YWVlOGYwNTZmM2ZjZWFjZDE5NjQ3ZGYyNmE4ZjAzYWYxZWI1NWNlODYwNmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFhNzdiMzcyM2NiYjM4YjdmYjQwNDM2MTY3ZTZjYjg2ZTk4MzQ4ZWRkMDM3ODk3NGQ2YTBiMGU4OTBjYWZiODYifQ"
+        },
+        {
+          "resource": "repo://src/shared/config/server-env.ts#L70-L74",
+          "version": "repo-lines-v1:sha256:3f8fe8bf0918dfb5ccf304feb1065022b4fabf4aa45e618e84d11ff0668e6627:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmQzMmQ0NWVkZjgwZmRmMjlhNDUwZWM2YTUzNzkxMmE3Mjk4YTRiZGE3Njk0MjExZTg3YTM5YWY3MWEwMWFhOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjI3ZTU4NWZlOWYwMDljZTE3ZmIxMGE3NGFhZGUxNDVmZWNlZDBlYjcxNzk1YjdkMTZjMWE4MDU5ZDVlOWFkNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_9cf7c64be6ee433597621866ac934bf5",
+      "statement": "Mixing worker가 외부 SoulX 결과를 받은 뒤 Leemage `MIX_RESULT` asset을 먼저 만들고 DB transaction이 실패하면 그 asset을 폐기하므로, 외부 object 저장과 내부 `MixingJob` 연결 사이의 partial failure를 보상한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L390-L443",
+          "version": "repo-lines-v1:sha256:a8dd3835e912c7be6cbc78d25b052efd317a7def85d6d5b11d03162ded86861d:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI0YzI5YzU3OTA4NGRkNmQzNjAwODRlMzhlYjFkYWRhMWRkNWIzNDJlZGQyMjNhOGEyMGYxOWM4ZWYwMjhiNjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmZTNhMGI1NWUwMmJiNTQ5YzdiNmZjYjc5MTNkNDEyMDk4NTkzYmIzNTg5NzhlNDJlMGY2NGQxN2UxYzk5MGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgxNWU4NzAxOTM1MjE5MDM4MTExYTVkN2Y1M2Y1ZGNmOTdhYWQwYzg2MmE2MmY0ODk1ZjNiNTk4ZjM4MTFlMWEifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.5.0",
-    "at": "2026-09-04T08:11:35.711Z"
+    "at": "2026-09-04T09:11:21.096Z"
   }
 }

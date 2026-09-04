@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:0f4a4de67e24a67b0fe06dc1556de8f11e234beb5349ea1081e2a98304bf5860",
+  "pageVersion": "sha256:1aeed0e20a36e0dd196b8000f74167cf26f22e598b9a9ef53cc151d32ea45722",
   "claims": [
     {
       "id": "claim_726c79b26830431e84cee41bc55245c8",
@@ -181,10 +181,112 @@
           "version": "repo-lines-v1:sha256:3ee0212726a74efdad6ddff937f29397356ed73f9ef7061549fc618995bd6e7e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkwY2JhZTY3MWQ3MzcxMjdmYTUyMGFmN2MyNWFmZWI3NGI5NTNhNWE5YTA5MDkyYjM5YjE4NGYyZWI4YWQzNjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4Y2M0MWNlNmE4OTVhZDY1ZTk0YWNmY2U3YjE3NWE2Yzc1OGVlYjhkMTE4YzlhOTM1NDAyM2NkMjA4MzA2MWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk3NTAyZTU3Njk4ODg1ZWI1ZGI2NWJiN2UyYTU3ZWI1ZjBkNjNhOTYwNzFjMjMyZGVjOWU1YTMwZTBkNDVlNzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
         }
       ]
+    },
+    {
+      "id": "claim_60f958be776048c79fa971d7a02e4a4a",
+      "statement": "관리자 catalog 등록 route는 `requireAdminApi`를 mutation 전에 통과시키며, 새 곡과 source 교체 route는 source 생성 뒤 target upload를 연속 호출하므로 target upload가 실패해도 이미 생성된 source와 분석 job을 자동 rollback하지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/admin/catalog/catalog-route.ts#L24-L43",
+          "version": "repo-lines-v1:sha256:0d7b6fa38dc546072b6cb2bae483ce381a9d7ed8fcf8202ba0e3525ff89655d4:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMzI3MTM1MDI5NzgwNjMxYzhhMWEzMDYyNjM0M2Y5YzA1NmE1YTMyNDA5ZWEyNGJmYzM3YWRjZGExNGQ5OTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3NTVhMmYxOWQ5MjFiNGNlZDIwNWI1NDg5YzZlMGQ5YjcxZGRkNTBmNjFmZWEyN2RiOGUwNzgwZDRiZTg2MjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmNzM5YTA2YzFjYmIxMjQ0ZTMzNjNkMzhiY2Y5ZmE1MGNlODRmZWQzOTljMjE5M2EzYzdmMDhkNTk5MThiMmEifQ"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/admin/catalog/source-route.ts#L10-L27",
+          "version": "repo-lines-v1:sha256:e4eac2981bce9caa73f211caef8c0e2b7257194a03958843f709df5cbc5ece38:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5MDVkNGZmY2ZjYTE1Y2UwZjkzZDlmZjk4MjE1MjAwMzExMmMyNTBiMzIyZTlmNTUzNzI5NWVhOWRjMmE4ZGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyY2Q2Y2E4ZTgxYjc2YjNhZWU4NTJiOWY3NGJlMGVmMGQ4NTY4OWE0MWMwNTI3OWYyMzYyYmQ5Mjg5YmZiMzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/features/manage-song-catalog/api/admin-service.ts#L88-L120",
+          "version": "repo-lines-v1:sha256:7a3b8ed1416787b5b2ce8a770d3a6fad1b848ed9089edc61dbb3dcc61cb548c5:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2NTk1ZjRlZTVmZjYzZDUwOTUwNDE5ZGMzNDQxNDUxMzg1MWRjOTczNmZkMTdhNGY3YmZhOTMwYjI2MWI2ZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyZDExY2FmNDNlOTdlZjM2OWU2YmVlZDFhMjY4YmQwNTgzOGYyOWI5ZGQyNTRiZjY5YmE2NDg4NDE0NzIzNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3NjA5YTY3MmNkMTkyZmYzNmUzNjZiZDFlZDMyYzc0NGIxZDU1MjE5NDM3NjBiNDRiMTIzMDVhYzc0NTM4M2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI0NmNkNWE0ZTA2OTkwNDcwOTE5ZWE1NTJkZDI2NGYxOGEzNWM2YTFjNmIzY2YxNWVlYmZiOGQ2M2MzYTI4MGIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_aae6386110804253b1a8422ce1525cbd",
+      "statement": "관리자 입력 schema는 HTTPS YouTube URL에서 `youtu.be`, `youtube.com/watch`, `shorts`, `live` 형식의 11자리 video ID를 추출하고 source label을 각각 `관리자 업로드` 또는 `관리자 교체 업로드`로 지정한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/manage-song-catalog/model/schema.ts#L3-L50",
+          "version": "repo-lines-v1:sha256:3544ad75b86b70afffec5759d9d3a6cf59d07746195657bf8cdf321c669aedeb:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc3ZjYyOGJhZjg1NjkzMTk3MjFhZWU2YWEzYmRkYTE1Yjk3NmUzMmEyNWJiNzk5ZGQ5YzgzMzI1NDUxMmIzNDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyNWM1NWZlODAyMDdlZDAxZjhiOTdlODhiNDk1NTI2MjZiZjgyNzlhZTJjYzQxMDgzZDA5NjNmYTEwNDYzMzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEyOGIwY2MwNDVkNzUyNmQxY2RiMjI1OGRhMGExNmE0NWEwZDVhYTliNjRlOGQyMmFhMWU0YTQ5ZDc4NWVkZjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAxMzk4MTQ5YmE1MDI5MjNiOGRkNmUxNWY1ZTAxYTNiOWIyYTczYWFiZjhhMTY0ZGYxZTJkZjI1NjZhZDI0YTYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1c20ae92b39a4a5abab709ddaa164bfa",
+      "statement": "staging target importer는 허용 확장자 파일 중 yt-dlp식 파일명 stem이 `[sourceVideoId]`로 끝나는 파일을 우선 선택하고, 없으면 `${zero-padded position}-${sourceVideoId}` exact stem을 선택하며, 중복 후보는 임의로 선택하지 않고 실패한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/recommendation/lib/song-catalog/target-assets.ts#L57-L110",
+          "version": "repo-lines-v1:sha256:b50b1321924b65c3e27a2cd0da53d83ca259a66cb8e697d5cb97376d81058bce:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkODMxODQzMmZjMTU1MDAxNjBkZjdlZjExOWQ3NjI5NDE2OTY5Y2I3NjlhNDQ5ODU1YzI3NGYwODIyZWEyY2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYxMDA3MzU0MThkNjU0MjU4N2ViNTBmOGRhZjgyOWNlZGEwZWY1OTNiNWMwOTA4MDUwMzkxNmM5NTlmZGRiYTYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bc3eed1a71fd477ca30ca305b7732fa0",
+      "statement": "staging target importer는 active source가 READY인지와 catalog identity를 확인한 뒤 target bytes를 검증하고 Leemage 업로드 및 DB transaction을 수행해 `Song.targetAssetId`를 연결하며, 같은 source와 SHA-256의 READY target이면 업로드를 건너뛴다.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/recommendation/lib/song-catalog/target-assets.ts#L131-L145",
+          "version": "repo-lines-v1:sha256:c797b1ea325861d6779332e612ef3ec4d9383de44333f2331380e1ad0d10eb30:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM4NjYwNDg0YTlhMDhhNTk0ZjExNDk2MWVmZGEwNTEyMGZjNjgxNjk1Mzg5OGZhMmY2MTRhNDVlNDEyOTMzNmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAyMmQ1YzIwYjM5ODVlM2M5M2U2YTQyZTYyZDVmZmE4ZmY4MDNmNTA0YjEyOGI4YjFjYjEzY2M5YjdhN2NmNDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcxYzk2MTZmM2EzNTU1ZDc3MTdhYTAyNDRlM2VhZjE3Mzk0MTA1NWRiYjU0YmFkZTJkNGQ0YmM2MTk0N2ZiOTgifQ"
+        },
+        {
+          "resource": "repo://src/entities/recommendation/lib/song-catalog/target-assets.ts#L186-L273",
+          "version": "repo-lines-v1:sha256:7180a92447622aa51dac101f0812fa0a1ce70937fda739e57fea78639a4b5296:eyJzZWxlY3RlZExpbmVDb3VudCI6ODgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiMTlkMzIyMmI0MzMzMDg1Njc2Y2JkMzA0NDkxNmQ3YzM0YzI4ZjQ1MTQ2MjEwOTMyNjkxMWM3MDA2NmRmNmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1NmMyNmFjYzYyNmRlNjA4ZjhiMzBkNDM3MGE2ZjExMzQ2OWM5ZThhYzkwZWFkZDQ2Y2RiZTYyMDgyNjJiZGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc5YzkwYjliZjMwN2YwNTMxYmI4YWRkZjg3MDYzODBhNjkwZWE0YzcxMzlhOTljYzI5ZTJiYzI2ODc2NWY3NDQifQ"
+        },
+        {
+          "resource": "repo://src/entities/recommendation/lib/song-catalog/target-assets.ts#L38-L54",
+          "version": "repo-lines-v1:sha256:191c4eaa0934e5c64f13518f46f2846c4bed7a5fa29e75433cf23171a19bc0a1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkYzA5ZmQ1ODU0N2JjNTc5NDFlNzM0MjFmZDUxZTY4OWRjYjY2ZjZkNWEzNzU5YzZhNzMyY2E4NmFkNDI1MDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc3OTMzOTMwYTcyMjVkOTNkNWQwYmU2OWRhOWM3YWY2NzEzNWJhYzBjNTIxMzk0M2EyYzY1ZGZkNzdmYzQwZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM1YjY5MWI2MDhkYzc2ZDU4YTBjNmNmN2IxZWZhNjk5NjU3NWIyMzJhNGRkNTRiYTcyMDg5NmI3OGM2MGRjNmIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b14b869780834745a266bb5ebe199143",
+      "statement": "yt-dlp song pipeline은 HTTPS YouTube URL과 expected video ID를 검증하고 `source.%(ext)s` template으로 다운로드한 뒤 `source.wav`가 실제로 생성됐는지 확인하며, 실패 시 임시 job directory를 제거한다.",
+      "evidence": [
+        {
+          "resource": "repo://services/vocal-analysis-core/vocal_analysis_core/song_pipeline.py#L123-L205",
+          "version": "repo-lines-v1:sha256:3565f28770bf18fafbbdf2d007c4425b9264691f4a9582bffc95ffab46556fd5:eyJzZWxlY3RlZExpbmVDb3VudCI6ODMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiNTlhYzRiNWU4ODQ5OWMxODliYTM5MDA2MjkyN2JjNjI0ZTQzYTRkNTU0N2JhMmIyNDVjNzQyOTMwY2E1OTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiNTgxZWFjZjlhODRlOWVjZTY4NGY5OWM5YTNhMTI3YjY4YmFjNzkyYzg4ODJjZDk2ODRlMmI0OTgyNDRjZjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM5ZWZkOWUxNzJlNTE2NDhjYzY1N2RiZWEwNDYxM2ZiNzc5M2Q2ZjZjYmViOTIyZjE2YWVkYTZmZDRhMTlmNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcyMDg1MzI5MTBjZmNlZmU1ODcwM2Q0MzQ0NWE5YzIwMmIxMjQ4NzcyZjE2ZWY1YTE2MzBlNjJmMjVkZjAyNzQifQ"
+        },
+        {
+          "resource": "repo://services/vocal-analysis-core/vocal_analysis_core/song_pipeline.py#L52-L60",
+          "version": "repo-lines-v1:sha256:49fd960ed2ba48426e3ef17ad4ef8a8990cccb8ed79aa55eea7962331d8b11d1:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzFlYzI5ZGVkNDMwNGIwMjA2ZGUyYTE0YzQyMDM3ZGU0ZWU2OWFmZDUwY2EyMDY1MWY3NTM5NzBmOTdiOWI4ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGIyYzE3YjllN2I2ZjU3YmQ1NjFiY2ZlMmY1YTg5NjFhZDIwYTkwNTc2NTJlMmYwYTU1Mzk3OWI4ODgwY2NkZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2ZiMzYzODExZWIxZmUxY2JjYjIyMjQ3MjQ2YzkwY2U5YTU5OGJiNDVlMzgyNDQ5NWY5NGU0YWIyZmI2MGZhNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzA5NzUxYzkzYTJlYTk4NDY1NTFhMmJjNWFjMGUyMzk1MTE1YjdlYzc2NGUyNTFkMjljYjI4OGNkMzFiNjBmNSJ9"
+        },
+        {
+          "resource": "repo://services/vocal-analysis-core/vocal_analysis_core/song_pipeline.py#L80-L120",
+          "version": "repo-lines-v1:sha256:d4a08b4bd5ceff4c82f69b8ba8868f90c61b6a03b6d7d97132d1a99ec0085158:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmYTYwZDcyNGVmMTUwZGJlMDBiYWUzZTc1ZjY0NTlhYjA4N2I2MTUzOWYwYTBlODk1MmYzMWZmY2EwYmM1OGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzYjIyMzQzZTljNzU1OTIzM2RjNDZkY2VhNTg5OTY1OGY2Yzg2YTczMTRmYTQ2MjA5OGYyOTI4YWY2YWQzZjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc1OTI0ZDU4MTU2MThlZmMzYWMzMjA3OWVjOTg1MWE0YmI2OGEwMDE1ZjkyMWI1NmExODdkNzM5ZmVhZDU3NjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRlNGUwZDIwNmYwYjBiYzgzNWEyMTZhZWU2MjUyNGMwYmUyZDdkZmE3N2M1MjJkOTQxNjdmMWM5ZDhiY2Q4MzQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_002fa04ba8a04159ad646a0e4543cfd8",
+      "statement": "publish 뒤 이전 target asset의 외부 삭제는 transaction 밖에서 수행되므로 삭제 실패가 성공한 publish를 rollback하지 않으며, 참조가 없을 때 삭제 실패를 `DELETE_PENDING`과 오류로 기록한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/manage-song-catalog/api/admin-service.ts#L215-L261",
+          "version": "repo-lines-v1:sha256:aeafe02692838f4f301c3a563fa8148010266d431148834d2a541064081007ae:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2NjA3NTg1NDE3MDUzNTdlMDQwZGU3YmMzMzcyYTdjMDZlMTc1MTZiMmIxNTZmOWM3YTczMjlmNDlmZWQ2NjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhOGM2MDMzYjk1MmI5MGI0ZmFmMDk3MGQzMDk4MWE4MDk2NmM1NzJlYWZhNGE1NTQyYmNiYjEzMGY0NGNjOTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwN2JjOTM5MWFlMmEyODU0ZmM0NjA3ZmU5YTYzNDhkMTY2MzlkZDJlNzBiMjk5MzBmZjFhZDRjYmNlMzFmZGQifQ"
+        },
+        {
+          "resource": "repo://src/features/manage-song-catalog/api/target-assets.ts#L69-L91",
+          "version": "repo-lines-v1:sha256:79dc7b6b25243185081470506c20d5fc104b153ff9eb5f0122aea981342e5474:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyZmUyODA3NzRhNWZkOGIzZTQ1NjE4MDFkYWJiNjc2Y2YyNTIzYzFmNjBiOWM0Y2M5MWEyYjJjMzBjZGRmYzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4d4beb52c30141e8881e91bcb258cc13",
+      "statement": "catalog readiness 검증 script는 published catalog를 검사해 row가 없거나 invalid하면 process exit code 1을 설정하고 JSON으로 invalid 결과를 출력한다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/verify-database-song-catalog.ts#L5-L13",
+          "version": "repo-lines-v1:sha256:928852aab471410c77d6aa9404ab6e67819c841cc8e1e3ada10d6bdb743e6cf5:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWJhMjY1OGIyMmZlODk2NTRmNjllYzUxM2EzMjgwZjVjNTgzZDY5ZTI3ZDE1NjI3Mzk3OTMyNDU5Yjk2ZjE1MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjIzNWNkYTI5ZGVkMjQ2NmU1MDE0ODNhMDU3MzA4ZGYxZjBmOTRiZjJiNTgwOWFmMWM5Yzc5MTFlYTVhYzkwMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjRkYjQ1ZTBiZTMxODA1NjBjZTI0NjYyY2U1MzZlYmYyZGJiYmRlNGM4ODI5NjdhZGE1NjQxMWU3ODNkYTZkZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
+        },
+        {
+          "resource": "repo://src/entities/song-catalog/api/catalog-snapshot.ts#L45-L77",
+          "version": "repo-lines-v1:sha256:16adb45694ddb2b72ca64c580757e03ddf000b29ef24ece94ae5868685afcfcf:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlZmMwZjcyZGYxZmZjZjY2YzJiMTRhZTUzMmY5MzllZTkxZTg5MTBmZmYwNDI5ZWQ1MjFlNGQwNzhlNGIyNWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNjJhN2YxNGRmNGQ2Mjk0ZTI0MDdmMDhkMjlkMDFkZTdhODVkNWQ1MDBmMDAxZjRjZTcyYWQ5ZDZlNmQyZDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRiOTJmNzUyNDgyZTc5MWUxNDFmMzI5ZTc3NGVjNTBkNDAyOTVlYTNmZTk4MWI2YzViMzVmMGI3NTlkMWU2ZGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM0MTMzYzRlMTIwNmRkZGVlN2EzNWJiNzY1NjMwODU0OTU5NWIyYWUxMGJhOTJkZmM1MzNhMDA5ODFiOTZhYTQifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.5.0",
-    "at": "2026-09-04T08:11:35.711Z"
+    "at": "2026-09-04T09:11:21.096Z"
   }
 }

@@ -5,7 +5,7 @@ description: Next.js adapter에서 FSD 계층을 거쳐 PostgreSQL과 Leemage를
 tags: [architecture, runtime-boundaries, nextjs, fsd, workers]
 verified:
   - by: openwiki/0.5.0
-    at: 2026-09-04T08:11:35.711Z
+    at: 2026-09-04T09:11:21.096Z
 sources:
   - id: openwiki-source-a94cea82e631eedd9323e1f1
     resource: repo://app/api/mixing-jobs/route.ts
@@ -19,6 +19,8 @@ sources:
     resource: repo://README.md
   - id: openwiki-source-904d8953f6839fec7c58c800
     resource: repo://scripts/mixing-worker.ts
+  - id: openwiki-source-0ef84b685ffda597389d7ab2
+    resource: repo://src/_app/api-routes/mixing-jobs/index.server.ts
   - id: openwiki-source-28cb2570db799cb0b4da1a45
     resource: repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts
   - id: openwiki-source-e746e2d352e86c69ac1ad6c4
@@ -33,7 +35,7 @@ sources:
     resource: repo://tests/fsd-architecture-boundaries.test.ts
   - id: openwiki-source-10c6a88a3297ea68ebdbf439
     resource: repo://tests/mixing-queue.integration.ts
-generated: { by: "openwiki/0.5.0", at: "2026-09-04T08:11:35.711Z" }
+generated: { by: "openwiki/0.5.0", at: "2026-09-04T09:11:21.096Z" }
 ---
 
 # 시스템 지도와 런타임 경계
@@ -46,13 +48,13 @@ generated: { by: "openwiki/0.5.0", at: "2026-09-04T08:11:35.711Z" }
 
 | 경계 | 현재 위치 | 책임과 허용 범위 |
 | --- | --- | --- |
-| Next.js adapter | `app/` | App Router의 page·Route Handler 규약을 맞춘다. FSD public API를 re-export하는 얇은 진입점이다. |
+| Next.js adapter | `app/` | App Router의 page·Route Handler 규약을 맞추는 얇은 진입점이다. API Route Handler는 Node.js runtime을 명시하고 FSD public API를 re-export한다. |
 | App 조립·서버 orchestration | `src/_app/` | layout, provider, API route 조립, background job runner를 소유한다. |
 | Pages·widgets | `src/_pages/`, `src/widgets/` | route 화면과 여러 use case를 조합한다. |
 | Features | `src/features/` | 인증, 추천, 믹싱 같은 사용자 action과 use case를 구현한다. |
 | Entities | `src/entities/` | 믹싱 작업, 티켓, 보컬 프로필, 곡 같은 domain model과 domain UI를 구현한다. |
 | Shared | `src/shared/` | PostgreSQL 접근, config, media storage, 공통 API·UI와 library를 제공한다. |
-| 비동기 실행 | `scripts/*-worker.ts`, `src/_app/background-jobs/` | DB job을 claim하고 Modal 분석기 또는 SoulX-Singer 변환 API를 호출한다. |
+| 비동기 실행 | `scripts/*-worker.ts`, `src/_app/background-jobs/` | PostgreSQL job을 claim하고 Modal CPU analyzer 또는 SoulX-Singer Modal API를 호출한다. 세 worker는 별도 script entrypoint로 실행된다. |
 | 외부 경계 | Leemage, Modal | 오디오 bytes는 Leemage에 두고, 분석·변환은 배포된 Modal 서비스에 위임한다. |
 
 ### FSD 방향과 server 경계는 별개의 규칙이다
@@ -105,7 +107,7 @@ sequenceDiagram
 4. 사용할 reference asset을 선택할 수 있는지 확인한다. 없으면 `422 MIXING_REFERENCE_UNAVAILABLE`이다.
 5. 요청 snapshot을 `MixingJob`에 저장하고, 비용이 0보다 크면 같은 transaction에서 `USAGE_DEBIT` ticket ledger를 만든다.
 
-사용자와 `idempotencyKey`의 조합은 DB unique key다. 같은 요청 키를 다시 보내면 기존 job을 반환하며, 다른 프로필·분석을 같은 키로 보내면 `409 IDEMPOTENCY_CONFLICT`다. transaction write conflict는 최대 세 번 재시도한다. 접수 성공의 HTTP status는 `202`이며, 이는 변환 완료를 뜻하지 않는다. 인증 실패는 `401`, 잔액 부족은 `402`, 분류된 `MixingError`는 해당 error status, 그 밖의 enqueue 실패는 `500`이다.
+사용자와 `idempotencyKey`의 조합은 DB unique key다. 같은 입력으로 요청 키를 다시 보내면 기존 job을 반환하며, 다른 프로필·분석을 같은 키로 보내면 `409 IDEMPOTENCY_CONFLICT`다. transaction write conflict는 최대 세 번 재시도한다. 접수 성공의 HTTP status는 `202`이며, 이는 변환 완료를 뜻하지 않는다. 인증 실패는 `401`, 잔액 부족은 `402`, 분류된 `MixingError`는 해당 error status로 응답한다. 분류되지 않은 예외는 `500 MIXING_ENQUEUE_FAILED`이고, 재시도 소진으로 만들어진 `MIXING_ENQUEUE_FAILED`는 `503`으로 응답한다.
 
 `GET /api/mixing-jobs`는 같은 session 경계를 거쳐 `page`, `q`, `status`를 검증하고 사용자 소유의 history를 반환한다. 상세·오디오·삭제 route도 `src/_app/api-routes/mixing-jobs/`의 server public API에 속한다. 외부 API credential을 요구하는 Leemage와 Modal 호출은 브라우저가 아니라 서버와 worker가 수행한다.
 

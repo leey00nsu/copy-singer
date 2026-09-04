@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:8e14886826adf3ff26e770d1d22e41b4bf22172dd781faade48a967f6bf7cb58",
+  "pageVersion": "sha256:b335e598e01949e1ee2f1210efe86593f474ea42b4626d76fa367f2a607a2255",
   "claims": [
     {
       "id": "claim_62f1a84b505c4a70a83cddcc3573135a",
@@ -121,10 +121,76 @@
           "version": "repo-lines-v1:sha256:b6ea688e9f5502aa3ba8dd1bd5dcab704a621d23912204c6e5b180e99fca443b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhZDBiOWQxMGM1Y2VkNGMyYTYwMDc1ODE3NWY5YTlkODBmZjkyNzllM2ViZDBhMTA4NDM3ZmE3MDU5N2I5Y2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5ZDI5OGMzYTE0MDZjNTM1YTM0ODJjMDJhYzI3NGFjMjJjNGI5N2Q0NWJiZWJlNjIxMWRjMDAxMmM0MDExMTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQwZDI3MTA4NDQwNGY1ZWM4NDIwMGNhYjdhZWVmN2M5NTkyZTU4MmYzOGRhYjFjMTFiYTVmMzM2YWM3ZjNiZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE2ZGNlMzNjMWY1MWIzYTFiYTBmMDFlMWZlZjg0YjBhOTM0NzlkZmY0NjZkZTExODYyZGIzOTBkYTNjOTYwZjgifQ"
         }
       ]
+    },
+    {
+      "id": "claim_6a0abb23695049a08a92b63e137a24b5",
+      "statement": "`pnpm dev`는 `concurrently --kill-others-on-fail`로 Next.js 웹과 mixing, vocal-profile-analysis, song-analysis worker를 함께 실행하며, 한 프로세스가 실패하면 나머지도 종료된다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L9-L21",
+          "version": "repo-lines-v1:sha256:43a2c543e38b90d227df8f0944d59e7796f62ef56ea5b2afc53366f83d34de4d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0ODMzZDU5NDljMDNhNDBjYTk1MjQ5MTYxMGE2NjU5NjQ0YjNhYTQ2NjM2MmY3OTkwMjBkYmYxOTgxNTQ3ZGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4NjM4ZTNlMjNmY2Y3N2RmNzg5NzMzMTA5NWFkNWM4Y2FlNGU1MDkwMTg3NGM5MjI3ZTA0YWQxNTlhMTQ1Y2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyNzAxMTI4NzM1MDNhMDc0OGU1ZWY0MGViOWZlZTUyYTZjNmRiNTdhNzMzMTI1ZjQ5NDhkMThmNGNjMTdiNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZmMThmNTBlNGM4ZThiYWQ4ZDdlZTJlZjIzZTU5MGU3ZDYwYTkxNzdlYzY5MTFkYTZmM2Y0NDlmMTAwMjBkODkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c6e891b5a5494554ad8150b7f3591226",
+      "statement": "세 worker script는 `.env.local`과 `.env`를 dotenv로 읽은 뒤 각각 `src/_app/background-jobs`의 server runner를 시작한다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/mixing-worker.ts#L1-L7",
+          "version": "repo-lines-v1:sha256:a5cf8e8fadb2cb4115419295527a79ceed7becaee6964fce668a83f6ebfd41e3:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjc5YjA3NzI2YzdlMDA3NTkxYTZmZGY2OTMyMzUzZTAyM2E1MjI2MDcwMzIwMTJmYmJkMjI0ZGVkYmVmOTJkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWExZWI3ZDc0NDY3Nzg5NDQ4NTViYzE5NTNmYjc2NmE2MGZjN2E2ZjRlYmIxNmQ4NGUyNWU2ZjFmZTVhMTM4OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://scripts/song-analysis-worker.ts#L1-L6",
+          "version": "repo-lines-v1:sha256:7aeda58a7dc0023b2038b33f683003b787bb771ee685d3278ca2f6808687cb5d:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjc5YjA3NzI2YzdlMDA3NTkxYTZmZGY2OTMyMzUzZTAyM2E1MjI2MDcwMzIwMTJmYmJkMjI0ZGVkYmVmOTJkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDBjMmQzMjk2YjkxNTg3ZmQ2MzM5ZmVlOGJlNTM2NDZiOGJhMjcwYzQ0ZWRmZDAyZDQ2ZjY3NGRjODE4YWU2NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://scripts/vocal-profile-analysis-worker.ts#L1-L8",
+          "version": "repo-lines-v1:sha256:2c4b24954f400d6d32501e1607df6f9421092111b1244fc555c2550642e431b0:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjc5YjA3NzI2YzdlMDA3NTkxYTZmZGY2OTMyMzUzZTAyM2E1MjI2MDcwMzIwMTJmYmJkMjI0ZGVkYmVmOTJkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjQ5OGYzMGJkNzYxNzIxYjEyZjdiMWRhM2ZkNzRlMTc4NDY0MDBhODM2MDFkMGZjMGRmZWQ2ZmFiNmRmNmU5MSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_45978fd0b8ac4507ad0d128c11e26128",
+      "statement": "`pnpm run verify:feature-config`는 Better Auth, Google OAuth, 관리자 이메일, Leemage 설정 키의 존재를 검사하며 키 값을 출력하지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L22-L23",
+          "version": "repo-lines-v1:sha256:76a7a4a5d0d61994410647b8a2b2332f15730db4a822d0e78c695b4f4e9ffde4:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzg5N2M2MWQ2MzcyYjUzZGY1NTNiNTBjMTI3Nzk2YzMyNzg2NTAxZDQ3MjY2ZTc5YTA1YmNmNDVkZDM1NWJjZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTdlNDNmMzI4OTk2Zjg5YjBiMzU0YTMzZDhjMWVmMmY3MGE2ZDI1YmQ0MjkzODE3MzllNzgwYzQ4ODA5MjgzZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjdiODgzZjZjNjQzNGEyMmJiMTEwMzFkNDRiZTljZGY4ODFlNGQ2ZTVmYmViOGI3YTNhMzUzZDljN2U2ZjVhYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGQyN2ZlYWI1YTMyYzcyZTdmZDJhNWJlY2Q5ZmFmMzY0ZmE2YWY5NjA2YWI2OWVjYmI2NTVjYTE1OGYzZDVkMCJ9"
+        },
+        {
+          "resource": "repo://scripts/verify-feature-config.ts#L5-L20",
+          "version": "repo-lines-v1:sha256:95f30263510893582bd4413a959e69f8b9af7354db7b7e47c0dd1b7009df1b66:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0ZGRkZGFhNzhmZmNlNGQzNmEyYzM5Zjc5NjM3ODcwZjdhNWJiYTZiNTM2NTQ2M2Q3NzQ0MGE4OGRmNTdlZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlZjNiZDA2ZWQ3NTNiOThmYTQzYjQ4OTE4ZWI2NjMxY2Q0YWZkMmRmYTQ1ODk3YjM3MDVjM2JmMjcwYTVmODUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0ZGI0NWUwYmUzMTgwNTYwY2UyNDY2MmNlNTM2ZWJmMmRiYmJkZTRjODgyOTY3YWRhNTY0MTFlNzgzZGE2ZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkzY2EzYThlYTRmMGMzNDMyNWU0ZTg2ZTkxMGJmODMyNjQ2NjBlNTViYTAzZjhmNzAwNmQ5ZGY1MGIzM2E5MTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1d08f27bc5f64cc8a04c2ead95e56cd5",
+      "statement": "`pnpm run db:verify`는 `DATABASE_URL`을 요구하고, user profile이 `USER_TEST` recording과 연결됐는지 तथा song이 vocal profile과 연결됐는지를 확인한 뒤 식별자를 출력한다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L33-L40",
+          "version": "repo-lines-v1:sha256:71d78fc21c94081aed7f84202c7ebcbedfa56f28bcd913f62c600ad9d6ad127b:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmM0Mzk0MjJlYWM5YWRlMzlkYmY4ZDAxYTQ5NTE0MGM0MGQ4ZWM2ZDc2NDE4Yzk2MGVlYWU1NGZlMTE5YTAwNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjVlYWE4MDUzZmM0YzdjNmZjYmYyNDM1MDRmNzZmOWI0MjQzMjEyZGIxZGExN2QyNzZlMThkMzdkNzk5YjQzMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTg4NjJiYjRiOTM2NzFmOTBkNmQ1OGU4ZGI5ODdhMDgzZWYxM2IxMWM0ZjFiMWFkZjczOGY0YjUxNGVmYTBjZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDkyMjA1ODVmNDJkNjU2YWFjMzhjY2E1Y2Y3YzljYTk4MzczNjFkMWY1MDFkYTJhNjU3YjM2Mzc5YTUwMThmZCJ9"
+        },
+        {
+          "resource": "repo://scripts/verify-database.ts#L4-L26",
+          "version": "repo-lines-v1:sha256:0fcaf3d4740e86b0c190fbf09cbad227b5bf6fa709eb0b15c71c082aae30e555:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkMTEzNzA2OTA2NTBmZDFjMWE5YTdhYzM4ZmJkN2E2ZWU0NDQwZWE1ZWZmOGJhOTk5NTllNDU5NmEyYzFjNzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwYjJjZGJkZGU0YzQyOGRlMTc5NDA1ZjdlNDc5NWU4MjFkOGQ2YzE2NTBlZTZjZGVhNjI5M2RkMGUyNjljZDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVmNTVlN2EyOWM1ZGE1ZDM5NzkzYTNhZjE3YzBiMTBkMTI1ZjE1OGU5YjhiYzcxMWIzMWMwNmQ5ZWExYzVlNTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_93bbc1fe21be48208546389d7214736d",
+      "statement": "서버 정수 설정은 공백을 제거하고 기본값을 적용할 수 있지만, 안전한 정수가 지정된 최소·최대 범위를 벗어나면 오류를 발생시킨다.",
+      "evidence": [
+        {
+          "resource": "repo://src/shared/config/server-env.ts#L3-L11",
+          "version": "repo-lines-v1:sha256:296cae355583a68267242033c014ffbb06937d5d81bebbdcfc211b34b2196ceb:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmM4ZTZiN2JkYTRkMjY1ZmMxMGUwN2IwNGY5NzI3YzdmZjczOWQ5NzNkNjJkZTFkY2QyYTEyYmRlOTdiM2E2NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWJmZjNhZjI1ODQ3NzQxYjhkMGUyNzA1ZTAzZTk3OGI1NmE3NWRkN2U1MzZjNjAzMzQ2Zjk0MDgyOWEyMWJhMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTMxYWZkYmE0MjAxYTkwNTY2NTI1MTUxYmEzYmZkZGNlNmUxOWYyZjdhN2Q3ZDIzYjI3ZWU0Zjk3MWU1ZDU0YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzlmODdhOWIxMWVhMjY0YjAwZDY1ZDZjN2E5ZjA3MzYzNTc4NTIxYzAwZWZmMWQyZmYxZWQxYjQ5NDRjZmE2YSJ9"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.5.0",
-    "at": "2026-09-04T08:11:35.711Z"
+    "at": "2026-09-04T09:11:21.096Z"
   }
 }

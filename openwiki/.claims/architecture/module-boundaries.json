@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:c9606508dd294f913feac5fb9e5672c9c2b77ba971d885fbd18b0a0d8b64e724",
+  "pageVersion": "sha256:e003b1a959203d52d28ef1b1326bd62f491d1944e76507444b210179f162acf0",
   "claims": [
     {
       "id": "claim_20da073378a2499385e764e1d92bb624",
@@ -111,10 +111,60 @@
           "version": "repo-file-v1:sha256:5e9d158610682b57192a89a1640bee7717cb19c3791d30466eed160f7c2e2c6e"
         }
       ]
+    },
+    {
+      "id": "claim_17d64fec12f240e08a852cfa8043f98e",
+      "statement": "worker runner는 설정된 동시성만큼 lane을 만들고, 각 lane에서 환불 정합성 조정과 작업 처리를 반복하며 신호 수신 시 반복을 중단한다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json",
+          "version": "repo-file-v1:sha256:b6176500120fdbaa12207f387e69f8ab73c6df4f20b3e31eb3c7047ccd67fc94"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/runner.ts",
+          "version": "repo-file-v1:sha256:84e735f127121fba6386fd46ee9e41320a147d7628539cb5ea5a2a99790d55bf"
+        }
+      ]
+    },
+    {
+      "id": "claim_39a0394cf26c402b9b0ba7134be7c8bd",
+      "statement": "계층의 소유권은 App에서 전역 조립과 진입점을, Pages에서 route 단위 화면 조립을, Widgets에서 재사용 가능한 화면 조합을, Features에서 사용자 업무 동작을, Entities에서 도메인 데이터와 영속화 계약을, Shared에서 도메인 비종속 자원을 맡기는 방식으로 나뉜다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_pages/profile/index.server.ts",
+          "version": "repo-file-v1:sha256:6a1adaffeda537a869791fb1725024fab998f21237c5f5f066d1d6531e60ea9c"
+        },
+        {
+          "resource": "repo://src/entities/vocal-profile/index.server.ts",
+          "version": "repo-file-v1:sha256:f38c6c08b3d11c4b4bc6853ffbd49ad36d002fabd5e4b56497ddf5b1a4a1580b"
+        },
+        {
+          "resource": "repo://src/features/analyze-vocal-profile/index.server.ts",
+          "version": "repo-file-v1:sha256:58e8aa6bdab8eed530ba0b61f75c8b44ecb9da580ce992b464277f37a2b65700"
+        },
+        {
+          "resource": "repo://src/shared/api/index.ts",
+          "version": "repo-file-v1:sha256:ce1062e48fbca5e440f150517122e4ce827787bcef0cd9e69296d12e111e4659"
+        },
+        {
+          "resource": "repo://src/widgets/product-shell/index.ts",
+          "version": "repo-file-v1:sha256:a8422a3405ddcb593f0e92c4fb287a14511aba690d86b1c4c3d4638979b41dd2"
+        }
+      ]
+    },
+    {
+      "id": "claim_8de02c83f47d4178a2a8cfc8806c4001",
+      "statement": "vocal profile 분석 API는 인증·bounded multipart·idempotency·audio 계약을 순서대로 확인하고, 오류를 `reasonCode`와 HTTP 상태로 변환하며, 성공한 enqueue 결과를 `202` job payload로 반환한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-analysis-jobs-route.ts",
+          "version": "repo-file-v1:sha256:9e39a6b124501e18567a478d2b5704a1a3b8a662416d88128fa7de4abee45a23"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.5.0",
-    "at": "2026-09-04T08:11:35.711Z"
+    "at": "2026-09-04T09:11:21.096Z"
   }
 }

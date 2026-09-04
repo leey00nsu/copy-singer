@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:e71a0ae3458a9ace986dfb34872b79b26ddb2722af6a6c1c83587ab848a57d3e",
+  "pageVersion": "sha256:f4bdc11f2ac60acb33bba75b0437f0c95481151cbecba6aa52bfd0617e20fcb1",
   "claims": [
     {
       "id": "claim_e7fa70f19b394fafafeecaa1f69d8a92",
@@ -193,10 +193,38 @@
           "version": "repo-lines-v1:sha256:67ff3c5b8f0620e76be714ce43c936c720d6b8d3664e093adfd099d7072de88b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwYWRhNjA1YzM1ZjI3NDZlMmE0Zjk2OWM3ZGQ5YjJiZWUxNjYzZDI5MWU4MzEyZGZkYTYzODA3NGJjNDZlYTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwYmJhYWUxMWQ0ODcxODEyNWRmNDM1MmEyYjI5ZjE2NGU5NDEzYzI0ZjlkZDM3NGQ4Mzg5NjgwOWY4YmJmYjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE2MWY1YWQxOTQyYzZmZGY3ODQzYmFiZGU1MmY0MDY0OGM1ZGM3ZWRjOGYzNWYyYmE1MWM2MzAyYjQzZmY0MDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZhOTkyY2EyYmY1ZGE5YTA5NmEzODYwMDRhZTVhZWMwMWIyNjY1ODIzNDFlMzRmYTBiODNlZjJiMmY1ZGE5YjgifQ"
         }
       ]
+    },
+    {
+      "id": "claim_96286524acfb48558cf1ea66b8897ae0",
+      "statement": "`app/api/mixing-jobs/route.ts`는 Node.js runtime을 선택한 App Router adapter이며, `src/_app/api-routes/mixing-jobs/index.server`의 handler를 GET·POST로 노출한다.",
+      "evidence": [
+        {
+          "resource": "repo://app/api/mixing-jobs/route.ts#L1-L3",
+          "version": "repo-lines-v1:sha256:653ab90ac9da215869bdbbcbdbc97341cfdfd7ea8213312ff6a041bbf2c91f9f:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjUwYmU5ZjIzN2U3MmRiYTc5NmU5Nzk5NDc4ZmE1NDgyMTNhMmNmOTNkYTBmODIzZjUxMmUzN2YxOTMwNDI1ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2NiMmYxNWNmYWZiMzAwMWQzMTU4MDBhYTYyM2Q4NmNlZmZmMGVhNWNiNGJlNzIwM2E5Y2MxNjJiNzczNGNjZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/mixing-jobs/index.server.ts#L1-L2",
+          "version": "repo-lines-v1:sha256:531afdba4201a90566525151ba3bfddce6e19f2f7a7d7d23b27ee4f971e5d54a:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGMwZjQ4ZTM4ZmJkYjZjMGVmZTk4N2M5ODQ1MjFlZDA3NDMyNzU1YjZiYWFjY2Y0NWQ5NzdlNTdkYjdjYmFkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWU5MTI1ZThkZGY1MWM1OWZhYWUwMmYwNDUyOGU4ZGFjZTAxMzcyMDY5Y2Y3MzViN2JkOGUwNzQyNjgwMzJkYiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_3da7484870224eea9d699d219125d835",
+      "statement": "믹싱 API는 입력 오류를 `400 MIXING_INVALID_REQUEST`가 아니라 `INVALID_REQUEST`로, 티켓 부족을 `402 INSUFFICIENT_TICKETS`로, 미분류 enqueue 예외를 `500 MIXING_ENQUEUE_FAILED`로 응답하며, 재시도 소진으로 발생한 분류된 `MIXING_ENQUEUE_FAILED`는 `503`을 사용한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts#L24-L65",
+          "version": "repo-lines-v1:sha256:b754dc6a8df9e3ee933115d179d71a18ff7303f7c8e3d4526570c78122abe338:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMzI3MTM1MDI5NzgwNjMxYzhhMWEzMDYyNjM0M2Y5YzA1NmE1YTMyNDA5ZWEyNGJmYzM3YWRjZGExNGQ5OTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRlZTk1NDQwNWJhOTE1YmI5N2U2MTRhYzlkMTI2YWE3NDdhOGYxMDQwNzdjYjhkOTMyN2MyZGU5MmQ5OThhNTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE2NWZkYWMwNGVkYTMzYTk1MzQ1YzM3YTNiZjAxZDJkYWI4Y2I1YTQzZDcxZmVhNjNhOTU0ODJjOTc2Y2QwN2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFkOWQxZjkzNjE4YTcyYWVkMDk0Nzc2OGE0YjAxOWU3YTVlMzUyY2NmNTU5YWU3M2VjZjE2ZjI3YTliMTA3YmMifQ"
+        },
+        {
+          "resource": "repo://src/features/create-mixing/api/mixing-queue.ts#L137-L148",
+          "version": "repo-lines-v1:sha256:7a2dec5d96a1893a2b3804db806cbde4c1a8aaeba2a3e1e26fd4f68653b0055f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4ZGI3NDYwODE4MmNiN2NhNGQ5ZmJhNDlhMzk0OTlhN2YzOTA3YjRlYTAzM2IxNDkyYWQ1Y2YwYmVlZWVjZWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkNzJmZmRhYTIyZWFlZDBkNTFmNmY4N2RmOGVhMDZkNWYzMGU2YjZlMDIyYzZlNDJkOWFkNzljZjIzZDYwZTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMyYjc4YWY0OTQ4NTRlNWE2OTcxZGQ5MmVhYWQ2MTQ1YzE2ODA1MDc5MTg2OTA1NTA0MTA0NGE4YmZiNDYxZDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.5.0",
-    "at": "2026-09-04T08:11:35.711Z"
+    "at": "2026-09-04T09:11:21.096Z"
   }
 }

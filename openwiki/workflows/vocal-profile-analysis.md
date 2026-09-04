@@ -1,26 +1,38 @@
 ---
 type: end-to-end workflow
-title: 보컬 프로필 분석 워크플로
-description: /profile에서 업로드한 음성이 media asset과 내구성 있는 분석 작업으로 저장되고, 별도 worker가 Modal 동기 분석을 호출해 보컬 프로필과 reference를 저장하는 전체 흐름을 설명한다. lease, 재시도, 최종 실패 시 알림과 티켓 환불의 현재 동작도 다룬다.
-tags: [vocal-profile, analysis, background-job, modal, media-storage]
+title: 보컬 프로필 생성·분석·히스토리 workflow
+description: 브라우저 녹음 또는 업로드한 음성을 60초 분석 계약, source/reference media, 내구성 있는 analysis job으로 연결하는 흐름을 설명한다. Modal analyzer adapter의 품질 gate, lease·재시도·환불, 프로필 히스토리와 비공개 재생까지 다룬다.
+tags: [vocal-profile, analysis, background-job, media-storage, modal]
 verified:
   - by: openwiki/0.5.0
-    at: 2026-09-04T08:11:35.711Z
+    at: 2026-09-04T09:11:21.096Z
 sources:
   - id: openwiki-source-2798a6200ef792b731721034
     resource: repo://prisma/schema.prisma
+  - id: openwiki-source-b696e68863f30a337d94fd70
+    resource: repo://services/vocal-analysis-core/vocal_analysis_core/analysis.py
+  - id: openwiki-source-27ee5dc602ae499939879498
+    resource: repo://services/vocal-analysis-core/vocal_analysis_core/config.py
+  - id: openwiki-source-4c43902d65813fb49403a848
+    resource: repo://services/vocal-analysis-core/vocal_analysis_core/reference.py
   - id: openwiki-source-eecc4c0c6948847690f8f665
     resource: repo://services/vocal-profile-modal/modal_app.py
   - id: openwiki-source-cbf25751da575c9067e72947
     resource: repo://src/_app/api-routes/vocal-profiles/vocal-profile-analysis-jobs-route.ts
+  - id: openwiki-source-fbba7fa6e3a5a11035b20bd2
+    resource: repo://src/_app/api-routes/vocal-profiles/vocal-profile-audio-route.ts
   - id: openwiki-source-9323b2aad36f9dea3b710fc8
     resource: repo://src/_app/background-jobs/vocal-profile-analysis/runner.ts
   - id: openwiki-source-da8b10d1e5d758ab0e1c7582
     resource: repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts
+  - id: openwiki-source-4da1ba5d326744e5a819f7ba
+    resource: repo://src/_pages/profile/ui/vocal-profile-recorder.tsx
   - id: openwiki-source-cda6ae0743fe78dbe4a5c114
     resource: repo://src/entities/vocal-profile/api/analyzer/index.ts
   - id: openwiki-source-9894762239bb4877ee0b6946
     resource: repo://src/entities/vocal-profile/api/analyzer/modal-adapter.ts
+  - id: openwiki-source-f458b4d7b8d68c1f64d23906
+    resource: repo://src/entities/vocal-profile/api/history.ts
   - id: openwiki-source-c5c93b4b4dcdabfe0bc775b2
     resource: repo://src/entities/vocal-profile/api/persistence.ts
   - id: openwiki-source-75ca813b5b73760aa12fda93
@@ -31,161 +43,165 @@ sources:
     resource: repo://src/shared/config/server-env.ts
   - id: openwiki-source-54289399e63b81ce5f0384f9
     resource: repo://src/shared/media/media-service.ts
+  - id: openwiki-source-9e829b5049be6a1ae3fd81c5
+    resource: repo://tests/long-audio-upload.test.ts
+  - id: openwiki-source-7fa4288722f051f26ea68eb5
+    resource: repo://tests/private-audio-proxy.test.ts
+  - id: openwiki-source-7424e286092fec49353726b6
+    resource: repo://tests/profile-audio-preparation.test.ts
   - id: openwiki-source-28adc6ef840aa586dc1aceef
     resource: repo://tests/vocal-profile-analysis-queue.integration.ts
-generated: { by: "openwiki/0.5.0", at: "2026-09-04T08:11:35.711Z" }
+  - id: openwiki-source-5ccd36b2cf1433a2f640e533
+    resource: repo://tests/vocal-profile-history.integration.ts
+  - id: openwiki-source-0d27dd1cb0238c550ba5194f
+    resource: repo://tests/voice-scan-state.test.ts
+generated: { by: "openwiki/0.5.0", at: "2026-09-04T09:11:21.096Z" }
 ---
 
-# 보컬 프로필 분석 워크플로
+# 보컬 프로필 생성·분석·히스토리 workflow
 
-이 워크플로는 사용자가 `/profile`에서 음성을 제출한 뒤 분석 결과를 확인할 때까지의 경로를 설명한다. HTTP 요청은 분석을 직접 수행하지 않는다. 먼저 업로드 원본을 외부 media 저장소와 `VocalProfileAnalysisJob`에 기록하고 `202`를 반환한 다음, 별도 worker가 작업을 가져가 Modal의 동기 HTTP 분석을 호출한다.
+사용자가 `/profile`에서 녹음하거나 오디오 파일을 고르면 서버는 분석을 즉시 실행하지 않는다. 인증된 API가 bounded multipart를 읽어 원본을 `REFERENCE` media asset으로 저장하고 `VocalProfileAnalysisJob`을 `PENDING`으로 만든 뒤 `202`를 반환한다. worker가 lease를 획득하고 Modal의 동기 analyzer를 호출한 다음, 결과를 `Recording`과 `VocalProfile`로 영속화한다.
 
-관련 개념은 [보컬 분석과 추천](/openwiki/concepts/vocal-analysis-and-recommendations.md), 외부 저장소와 Modal 설정은 [외부 서비스](/openwiki/integrations/external-services.md), worker 운영 관점은 [job processing](/openwiki/operations/job-processing.md)을 참고한다.
+이 페이지는 현재 구현의 경계를 설명한다. 추천 로직은 [보컬 분석과 추천](/openwiki/concepts/vocal-analysis-and-recommendations.md), Modal·Leemage 설정은 [외부 서비스](/openwiki/integrations/external-services.md), worker 운영은 [job processing](/openwiki/operations/job-processing.md)을 참고한다.
 
-## 전체 제어·데이터 흐름
+## 전체 흐름
 
 ```mermaid
 sequenceDiagram
     participant User as 사용자
-    participant Profile as /profile
+    participant Browser as /profile 브라우저
     participant API as Next API
-    participant Queue as Analysis queue
     participant Media as Leemage media
-    participant Worker as Vocal worker
-    participant Modal as Modal analyzer
     participant DB as PostgreSQL
-    participant Notify as Notification
+    participant Worker as Vocal worker
+    participant Adapter as Analyzer adapter
+    participant Modal as Modal /v1/analyze
+    participant Playback as 비공개 재생 API
 
-    User->>Profile: 음성 녹음 또는 파일 선택
-    Profile->>API: POST /api/vocal-profile-analysis-jobs multipart audio
-    API->>Queue: 세션, idempotency key, 형식, 크기, ticket 검사
-    Queue->>Media: 원본 업로드
-    Media-->>Queue: READY media asset
-    Queue->>DB: PENDING job 생성과 ticket 사용 차감
+    User->>Browser: 녹음 또는 파일 선택
+    Browser->>API: POST multipart audio
+    API->>Media: 원본 bytes 업로드
+    Media-->>API: READY REFERENCE asset
+    API->>DB: PENDING job과 usage debit 저장
     DB-->>API: job payload
-    API-->>Profile: 202 Accepted
-    Profile->>API: active job 조회 및 polling
-    Worker->>DB: lease를 획득해 PROCESSING으로 변경
-    Worker->>Media: READY 원본 다운로드
-    Worker->>Modal: POST /v1/analyze, X-Recording-ID와 X-API-Key
-    Modal-->>Worker: profile과 source artifact envelope
-    Worker->>DB: profile, recording, reference 연결 저장
-    Worker->>DB: SUCCEEDED로 변경
-    Worker->>Notify: 성공 알림 생성
-    Notify-->>Profile: 결과 링크 제공
+    API-->>Browser: 202 Accepted
+    Browser->>API: job 목록과 상세 polling
+    Worker->>DB: claim과 lease로 PROCESSING 전환
+    Worker->>Media: source asset 다운로드
+    Worker->>Adapter: bytes와 recordingId 전달
+    Adapter->>Modal: POST /v1/analyze
+    Modal-->>Adapter: profile와 source/reference envelope
+    Adapter-->>Worker: 검증된 분석 결과
+    Worker->>Media: 선택적 SYNTHESIS_REFERENCE 저장
+    Worker->>DB: READY recording/profile 저장
+    Worker->>DB: SUCCEEDED와 성공 알림 저장
+    User->>Playback: GET /api/vocal-profiles/{id}/audio
+    Playback->>Media: 인증된 private proxy
+    Media-->>Playback: 오디오 응답
 ```
 
-이 그림에서 Modal은 분석 결과를 한 번의 HTTP 응답으로 돌려주는 외부 경계다. 앱의 `VocalProfileAnalysisJob`에는 Modal job ID 필드가 없고, worker도 외부 ID를 저장하거나 외부 작업을 poll하지 않는다. worker가 보유하는 것은 자체 DB job ID와 lease뿐이며, source media를 읽고 Modal 응답을 받은 뒤 같은 실행에서 저장한다.
+그림은 앱 DB가 job lifecycle을 소유하고 Modal은 한 HTTP 요청 안에서 분석하는 경계를 보여준다. 이 흐름에는 외부 Modal job ID나 외부 job polling이 없다.
 
-## 1. 업로드 요청이 durable job이 되는 과정
+## 브라우저 입력과 서버 계약은 분리된다
 
-현재 API 진입점은 다음 두 라우트다.
+`VocalProfileRecorder`는 표현과 장치 수명을 담당한다. `MediaRecorder`가 없으면 `unsupported`, 권한 거부·장치 없음·기타 오류를 별도 상태로 보여주고, `startMic` 후 `startRecording`을 호출한다. 100ms 단위 progress로 시간을 표시하며 자동 종료 상한은 60초다. 취소와 unmount 때 `stopMic`과 plugin `destroy`를 실행한다. `VoiceSignalCore`는 녹음 중 `MediaStream`을 Web Audio `AnalyserNode`로 시각화한다. recorder 자체는 waveform 데이터를 만들지 않는다.
 
-- `POST /api/vocal-profile-analysis-jobs`는 제출과 job 목록 조회를 제공한다.
-- `POST /api/vocal-profiles`도 같은 enqueue 함수를 호출하는 호환 진입점이다.
+서버 domain contract는 브라우저의 파형·애니메이션·차트가 아니라 `File`, MIME, byte size, recording ID, 분석 결과와 job 상태다. 화면은 `pending`, `processing`, 재시도 중인 오류, 네트워크 재연결, `failed`를 durable job 응답으로 표현하며 가짜 진행률을 만들지 않는다. 성공하면 저장된 `/vocal-profiles/{profileId}`로 이동한다.
 
-두 POST 모두 API 세션을 요구하고 `audio`라는 multipart `File`을 읽는다. analysis job 라우트는 `Idempotency-Key`를 검사한다. 허용 오디오 형식은 WAV, MP3, M4A, WebM이고 최대 크기는 25 MB다. 잘못된 업로드는 `400`, 미지원 형식은 `415`, 초과 크기는 `413`으로 반환한다.
+녹음과 파일 업로드 모두 분석 가능한 최소 길이는 5초이고 10초를 권장한다. 업로드 준비 단계는 codec padding을 고려해 60초 경계보다 짧은 59.75초까지 자를 수 있다. 사용자가 선택한 음성이 60초를 초과할 때만 trim 동의가 필요하며, analyzer가 받은 실제 decoded audio가 60초를 넘으면 `TOO_LONG`으로 거부한다.
 
-`enqueueVocalProfileAnalysis`는 다음 순서를 지킨다.
+## 업로드 admission과 source asset
 
-1. 같은 사용자와 idempotency key의 job을 먼저 찾는다. 이미 있으면 새 media 업로드나 ticket 차감 없이 기존 job을 반환한다.
-2. 사용자의 `PENDING` 또는 `PROCESSING` job이 있으면 `ANALYSIS_BUSY`를 반환한다. 이미 저장된 profile 개수는 admission 제한이 아니다.
-3. `VOCAL_ANALYSIS` ticket 잔액과 현재 비용을 확인한다. 잔액이 부족하면 job과 media를 만들지 않고 `402 INSUFFICIENT_ANALYSIS_TICKETS`를 반환한다.
-4. 업로드 바이트를 Leemage에 올리고 `MediaAsset(kind: REFERENCE, status: READY)`를 만든다. 이 asset의 URL은 나중에 worker가 읽는다.
-5. Serializable transaction에서 다시 idempotency와 active job을 확인하고 `PENDING` job을 만든다. job에는 `recordingId`, `sourceAssetId`, `ticketCost`, `maxAttempts`가 들어간다.
-6. 비용이 0보다 크면 같은 transaction에서 `USAGE_DEBIT` ledger를 만든다. transaction 충돌은 최대 세 번 재시도한다.
+진입점은 두 개지만 enqueue 구현은 하나다.
 
-transaction 경쟁으로 다른 요청이 먼저 같은 key를 만들면 현재 요청의 임시 media asset을 버리고 기존 job을 반환한다. 그 밖의 enqueue 실패도 임시 media asset을 정리한 뒤 호출자에게 전달한다. job 모델은 사용자와 idempotency key의 조합을 unique로 보장하고, 사용자별 active job을 막는 DB admission 제약과 조회 index를 갖는다.
+- `POST /api/vocal-profile-analysis-jobs`: job 제출과 인증된 사용자의 job 목록·ticket policy 조회.
+- `POST /api/vocal-profiles`: 호환 제출 진입점이며 `GET`은 사용자 profile history를 반환.
 
-성공한 enqueue 응답에는 `id`, 소문자 상태(`pending`), `attempts`, `maxAttempts`, 오류 정보, 생성·수정 시각이 포함된다. 클라이언트는 active job이 있는 동안 목록을 3초마다, 상세 job을 1.5초마다 조회한다. retryable API 오류도 상세 조회 polling을 계속한다.
+두 POST는 세션과 `audio` multipart `File`을 요구한다. 요청 body는 `readBoundedMultipartFormData`와 `multipartBodyLimit`으로 먼저 제한하고, MIME은 WAV, MP3, M4A, WebM 계열만 허용한다. 파일은 비어 있지 않고 25 MB 이하여야 한다. 실패는 대체로 `400 INVALID_UPLOAD`, `415 UNSUPPORTED_AUDIO`, `413 PAYLOAD_TOO_LARGE`이며, 인증되지 않으면 unauthorized response다.
 
-## 2. worker가 lease를 소유하고 분석하는 과정
+`Idempotency-Key`는 analysis-job 라우트에서 필수이며 공백 제거 후 최대 200자다. enqueue는 다음 순서를 지킨다.
 
-운영 프로세스는 다음 명령으로 실행한다.
+1. 같은 사용자와 key의 job이 있으면 기존 job을 그대로 반환한다. 새 media 업로드와 ticket 차감은 하지 않는다.
+2. 사용자에게 `PENDING` 또는 `PROCESSING` job이 있으면 `409 ANALYSIS_BUSY`다. profile 개수는 admission 제한이 아니다.
+3. `VOCAL_ANALYSIS` wallet의 balance와 현재 cost를 확인한다. 부족하면 `402 INSUFFICIENT_ANALYSIS_TICKETS`로 끝나며 asset과 job을 만들지 않는다.
+4. 원본 bytes를 Leemage에 업로드하고 `MediaAsset(kind: REFERENCE, status: READY)`를 만든다. 이 asset이 분석 source의 durable 사본이다.
+5. Serializable transaction에서 idempotency와 active job을 다시 확인하고 job을 만든다. transaction에는 `recordingId`, `sourceAssetId`, `ticketCost`, `maxAttempts`가 저장된다.
+6. 비용이 양수면 같은 transaction에 idempotent `USAGE_DEBIT` ledger를 기록한다. write conflict는 최대 세 번 재시도한다.
 
-```bash
-pnpm worker:vocal-profile-analysis
-```
+경쟁 요청이 먼저 job을 만들면 임시 asset을 폐기하고 기존 job을 반환한다. enqueue가 실패해도 임시 asset을 폐기한다. 즉 분석 source를 먼저 외부 media에 저장하되, job 생성 실패로 고아 파일을 남기지 않는다.
 
-`scripts/vocal-profile-analysis-worker.ts`는 환경 파일을 읽고 `runVocalProfileAnalysisWorker`를 호출한다. runner는 `VOCAL_PROFILE_ANALYSIS_WORKER_CONCURRENCY`만큼 lane을 만들고, 각 lane에 `process.pid`, lane 번호, UUID를 합친 owner를 부여한다. 기본 concurrency는 1이고 허용 범위는 1–16이다. 각 반복에서 미처리 환불을 최대 10건 조정한 뒤 job 하나를 처리한다. 처리할 job이 없으면 1초 쉰다. `SIGINT`와 `SIGTERM`은 새 반복을 멈추고 현재 lane들이 끝나기를 기다린다.
+## worker lease와 분석 호출
 
-claim은 PostgreSQL transaction에서 `FOR UPDATE SKIP LOCKED`로 가장 오래된 후보 하나를 고른다. 후보 조건은 다음과 같다.
+`pnpm worker:vocal-profile-analysis`가 runner를 시작한다. concurrency는 `VOCAL_PROFILE_ANALYSIS_WORKER_CONCURRENCY`로 정하고 기본값은 1, 허용 범위는 1–16이다. lane은 process ID·lane 번호·UUID를 합친 owner를 사용한다. 각 반복은 미처리 환불을 최대 10건 조정하고 job을 하나 처리한다. 처리할 job이 없으면 1초 쉰다. SIGINT/SIGTERM은 새 반복을 멈추고 현재 lane의 작업을 기다린다.
 
-- `attempts < maxAttempts`
-- `nextAttemptAt <= now`
-- `PENDING`이거나, `PROCESSING`이면서 `leaseExpiresAt`이 없거나 만료됨
+claim은 PostgreSQL transaction의 `FOR UPDATE SKIP LOCKED`로 가장 오래된 후보를 고른다. `attempts < maxAttempts`, `nextAttemptAt <= now`이고 `PENDING`이거나 만료된 `PROCESSING`이어야 한다. claim 시 `PROCESSING`, `leaseOwner`, `leaseExpiresAt`, `heartbeatAt`, `startedAt`을 기록하고 attempts를 증가시킨다. lease 기본값은 300초이며 `VOCAL_PROFILE_ANALYSIS_LEASE_SECONDS`로 180–3,600초 범위에서 설정한다. 별도 heartbeat loop는 없으므로 긴 실행이나 프로세스 사망 뒤 lease가 만료되면 다른 worker가 재처리할 수 있다.
 
-claim 순간 상태를 `PROCESSING`으로 바꾸고 owner, lease 만료 시각, heartbeat 시각, 최초 시작 시각을 기록하며 `attempts`를 1 증가시킨다. lease 기본값은 300초이고 `VOCAL_PROFILE_ANALYSIS_LEASE_SECONDS`로 180–3,600초 범위에서 설정한다. heartbeat는 claim과 완료 시 기록된다. 별도 heartbeat loop는 없다. 따라서 실행이 lease보다 오래 걸리거나 프로세스가 죽으면 lease 만료 뒤 다른 worker가 같은 job을 다시 claim할 수 있다. integration test는 만료 전에는 두 번째 worker가 claim하지 못하고, 만료 후에는 두 번째 시도가 가능함을 검증한다.
+worker는 먼저 같은 사용자와 `recordingId`의 profile을 찾는다. 이미 있으면 분석을 반복하지 않고 job을 성공 처리한다. 없으면 소유자·`REFERENCE`·`READY` 조건을 만족하는 source asset을 확인하고, 외부 URL을 `cache: no-store`와 60초 timeout으로 읽는다. source 다운로드의 429와 5xx는 retryable이고 나머지는 실패다. adapter에 원본 bytes, MIME, filename, recording ID를 전달한다.
 
-처리 worker는 먼저 같은 사용자와 `recordingId`의 profile이 이미 있는지 확인한다. 있으면 분석을 반복하지 않고 job을 성공 처리한다. 그렇지 않으면 다음을 수행한다.
+## analyzer adapter와 품질 gate
 
-1. job의 `sourceAssetId`가 존재하고, 사용자 소유이며, `REFERENCE`이고 `READY`인지 확인한다. 없으면 retry 불가능한 `ANALYSIS_SOURCE_MISSING`이다.
-2. media asset의 `externalUrl`을 60초 timeout과 `no-store`로 다운로드한다. 429와 5xx는 재시도 가능하고, 그 밖의 다운로드 오류는 실패로 분류한다.
-3. 받은 바이트를 `analyzeVocalProfileBytes`에 전달한다. 이 함수는 multipart body를 만들어 Modal adapter에 넘긴다.
-4. 응답의 source 바이트 길이, MIME type, SHA-256을 큐에 넣은 원본과 비교한다. 다르면 `ANALYZER_SOURCE_MISMATCH`로 즉시 종료한다.
-5. 검증된 결과를 durable source asset을 재사용하는 `persistQueuedAnalyzedVocalProfile`에 전달한다.
+앱 adapter는 `VOCAL_PROFILE_MODAL_URL`과 `VOCAL_PROFILE_MODAL_API_KEY`(또는 `MODAL_API_KEY`)를 요구한다. `${url}/v1/analyze`에 `POST`하고 `Content-Type`, `X-Recording-ID`, `X-API-Key`를 보낸다. timeout은 120초다. 401/403은 `ANALYZER_AUTH_FAILED`(비재시도), 429는 `ANALYZER_BUSY`, 5xx는 `ANALYZER_UNAVAILABLE`, timeout은 `ANALYZER_TIMEOUT`으로 매핑한다.
 
-## 3. Modal 동기 분석과 응답 경계
+Modal endpoint는 API key를 검증하고 upload를 1 MiB chunk로 임시 디렉터리에 쓰면서 25 MB를 다시 제한한다. `librosa-pyin` 기반 분석 후 profile과 artifact를 `modal-analysis-envelope-v1` JSON envelope으로 반환하고, 임시 디렉터리 cleanup을 끝낸 뒤 `cleanupConfirmed: true`를 표시한다. Modal 배포는 GPU 없이 CPU 2개·메모리 4096 MiB, 최대 10 container, container당 동시 입력 1개로 설정되어 있다.
 
-Modal adapter는 `VOCAL_PROFILE_MODAL_URL`과 `VOCAL_PROFILE_MODAL_API_KEY`를 요구하며, API key가 없으면 `ANALYZER_NOT_CONFIGURED`를 반환한다. worker는 `${url}/v1/analyze`로 `POST`하고 원본 multipart의 `Content-Type`, `X-Recording-ID`, `X-API-Key`를 보낸다. 요청 timeout은 120초다.
+analyzer core의 기본 profile 분석 gate는 다음과 같다.
 
-Modal의 `/v1/analyze`는 업로드를 임시 작업 디렉터리에 chunk 단위로 받고 25 MB를 다시 제한한다. `librosa-pyin` 분석 후 profile과 source, 선택적 smart synthesis reference artifact를 base64 envelope으로 직렬화하고 임시 디렉터리 cleanup을 확인한 뒤 응답한다. API key는 `X-API-Key`로 검증한다.
+| gate | 현재 기준 | 실패 코드 |
+| --- | --- | --- |
+| decoded duration | 5초 이상, 60초 이하 | `TOO_SHORT`, `TOO_LONG` |
+| 음량 | RMS -45 dB 이상 | `TOO_SILENT` |
+| clipping | clipping ratio 1% 이하 | `EXCESSIVE_CLIPPING` |
+| 명확한 pitch | voiced ratio 25% 이상 | `LOW_VOICED_RATIO` |
+| 입력 구조 | mono, non-empty | `UNSUPPORTED_AUDIO` |
 
-앱 adapter는 다음 계약을 검증한다.
+분석 결과에는 pitch 범위와 tessitura, median, voiced ratio, pitch stability, clipping ratio, RMS, analyzer/version, pitch histogram과 최대 720점 pitch track이 들어간다. 구간을 전달하면 guide preset(`low`, `medium`, `high`)과 melody/glissando timestamp를 검증하고, 두 구간 각각 최소 20개의 유효 voiced frame이 필요하다.
 
-- `transportVersion`은 `modal-analysis-envelope-v1`이고 `cleanupConfirmed`는 `true`여야 한다.
-- profile의 `recordingId`가 요청 ID와 같아야 한다.
-- artifact의 파일명, MIME type, 크기, SHA-256, base64 바이트가 유효해야 한다.
-- source metadata가 profile과 일치해야 하며, profile이 synthesis reference를 선언하면 해당 artifact도 있어야 한다.
-- profile은 smart reference contract를 만족해야 한다.
+adapter는 응답의 recording ID, transport version, cleanup flag, source/reference의 filename·MIME·크기·SHA-256·base64 bytes를 검증한다. worker는 source artifact를 queued source와 byte length·MIME·SHA-256으로 다시 비교한다. 불일치는 `ANALYZER_SOURCE_MISMATCH`로 즉시 terminal failure가 된다. 이 검증 때문에 외부 analyzer가 다른 파일을 분석한 결과를 사용자 source에 연결할 수 없다.
 
-이 경계에는 비동기 외부 job lifecycle이 없다. Modal endpoint는 요청 안에서 분석하고 JSON을 반환하며, 앱 코드는 응답을 해석한 뒤 계속한다. `VocalProfileAnalysisJob`의 상태와 재시도는 앱 DB가 소유한다. 반면 비교 대상인 다른 mixing job의 `modalJobId`를 이 흐름에 재사용하거나 추가해서는 안 된다.
+## source와 reference의 수명 및 저장
 
-## 4. profile과 reference 저장
+용어를 구분해야 한다.
 
-`persistQueuedAnalyzedVocalProfile`은 queued `REFERENCE` asset의 사용자, 상태, MIME type, 바이트 크기를 다시 확인한다. source가 queued source와 다르면 retry 불가능한 `ANALYZER_SOURCE_MISMATCH`다. 분석 결과에 smart synthesis reference가 있으면 별도의 `SYNTHESIS_REFERENCE` media asset을 저장한다. 이 부가 asset 저장이 실패해도 source fallback을 남기고 profile 저장은 계속한다.
+- **analysis source**: 사용자가 올린 원본이다. enqueue 때 `REFERENCE` asset으로 먼저 저장하고, 성공 후 `USER_TEST` `Recording`에 연결한다. profile 상세의 기본 오디오다.
+- **smart synthesis reference**: analyzer가 선택적으로 만든 별도 artifact다. 있으면 `SYNTHESIS_REFERENCE` asset으로 저장하고 profile에 연결한다. source를 대체하는 필수 결과가 아니다.
+- **analysis reference bands**: analyzer core가 pitch 후보를 low/mid/high band로 설명하는 descriptor다. 현재 smart synthesis selection은 mid 후보를 최대 30초, 최소 후보 0.5초 단위로 선택하며 후보 자체는 최대 4초다. 분석용 band allocation은 band별 10초 목표를 사용한다.
 
-이후 transaction에서 사용자별 profile 번호를 원자적으로 할당하고 다음을 기록한다.
+`persistQueuedAnalyzedVocalProfile`은 queued source의 사용자·kind·status·MIME·크기를 재확인한다. smart synthesis reference 저장이 실패하면 source fallback을 남기고 profile 저장은 계속한다. source 저장 또는 profile transaction이 실패하면 생성한 asset을 정리하고 retryable persistence error를 반환한다.
 
-- `Recording(kind: USER_TEST, status: READY)`
-- recording과 queued `REFERENCE` media asset의 연결
-- profile의 pitch 범위, tessitura, voiced ratio, 안정성, clipping, RMS, analyzer와 version, descriptors
-- 저장에 성공한 `SYNTHESIS_REFERENCE` asset이 있으면 profile 연결
+profile 저장 transaction은 사용자별 profile number를 원자적으로 할당하고 `sourceType: USER`, pitch metrics, quality metrics, descriptors, analyzer/version을 저장한다. `Recording(kind: USER_TEST, status: READY)`에는 duration, size, sample rate와 `leemage://...` storage path가 들어가며 source media asset과 연결된다. 동시 실행으로 같은 recording profile이 먼저 생기면 기존 profile을 반환해 중복을 피한다. 성공 시 job에 profile ID를 연결하고 lease를 해제한다.
 
-동시 저장 경쟁으로 이미 같은 recording의 profile이 생기면 기존 profile을 반환한다. 정상 저장 후 worker는 job에 `vocalProfileId`를 연결하고 `SUCCEEDED`로 바꾸며 lease를 해제하고 완료 시각을 기록한다. 같은 transaction에서 dedupe key `vocal-analysis:{job.id}:succeeded`인 성공 알림을 만들고 `/vocal-profiles/{profileId}` 링크를 제공한다.
+## 실패, 재시도, 환불
 
-## 5. 재시도, terminal failure, 환불과 알림
+retryable 오류이고 attempts가 남아 있으면 job은 `PENDING`으로 돌아간다. source asset은 유지하고 `errorCode`, 최대 2,000자의 `errorDetail`, `retryable: true`, `nextAttemptAt`을 저장한다. delay는 `min(30, 2 ** (attempts - 1))`초다. Modal unavailable/busy/timeout, source 429·5xx, 일시적인 profile 저장 오류가 이 경로에 속한다. terminal notification은 재시도 중 만들지 않는다.
 
-실패 분류는 `AnalyzerClientError`, `VocalProfilePersistenceError`, source mismatch, 그 밖의 예외에서 나온다. retryable 실패이고 `attempts < maxAttempts`이면 job은 `PENDING`으로 돌아가고 source asset은 유지된다. 다음 시각은 지수 backoff를 사용한다.
+비재시도 오류이거나 최대 시도 횟수에 도달하면 다음 순서다.
 
-- 시도 간 지연: `min(30, 2 ** (attempts - 1))`초
-- `errorCode`, 최대 2,000자의 `errorDetail`, `retryable: true` 저장
-- lease owner와 만료 시각 해제
+1. job을 `FAILED`로 만들고 오류·완료 시각을 기록하며 `sourceAssetId`를 null로 detach한다.
+2. `VOCAL_PROFILE_FAILED` notification을 transaction 안에서 만들고 `/library?tab=profiles`로 연결한다.
+3. 기존 source asset을 삭제한다. 외부 삭제 실패 시 `DELETE_PENDING` asset과 후속 `mediaCleanupJob`을 만든다.
+4. ticket cost가 양수면 `refundState: REQUIRED`로 두고 `vocal-analysis-refund:{job.id}` key의 `USAGE_REFUND`를 적용한다. 성공하면 `REFUNDED`다.
 
-Modal 5xx, 429, timeout, 일시적 profile 저장 오류가 이 경로에 해당한다. 이때 terminal notification은 만들지 않는다. integration test는 `ANALYZER_UNAVAILABLE`이 `PENDING`으로 재큐잉되고 source가 삭제되지 않음을 확인한다.
+환불이 실패해도 FAILED job과 실패 알림은 이미 남는다. runner는 매 반복 시작에 `REQUIRED` 환불을 최대 10건 보상 처리하므로 운영자는 job status, refundState, media cleanup 상태를 함께 확인해야 한다.
 
-retryable이 아니거나 최대 시도 횟수에 도달하면 terminal failure다.
+## 히스토리와 비공개 재생
 
-1. job을 `FAILED`로 바꾸고 오류 코드·상세·retryable·완료 시각을 기록한다.
-2. `sourceAssetId`를 null로 detach한다.
-3. 같은 transaction에서 `VOCAL_PROFILE_FAILED` 알림을 만든다. 메시지는 새 음성으로 다시 분석하라는 내용이고 링크는 `/library?tab=profiles`다.
-4. 기존 source media asset을 `discardMediaAsset`으로 삭제한다. 외부 삭제가 실패하면 asset은 `DELETE_PENDING`이 되고 media cleanup job으로 후속 처리된다.
-5. ticket cost가 있으면 `refundState`를 `REQUIRED`로 두고 `USAGE_REFUND`를 idempotency key `vocal-analysis-refund:{job.id}`로 적용한 뒤 `REFUNDED`로 바꾼다. 비용이 0이면 ledger 없이 바로 `REFUNDED`로 표시한다.
+`GET /api/vocal-profiles`는 현재 사용자이며 `sourceType: USER`인 profile만 최신순으로 반환한다. 기본 page size는 12, 최대 50이고 summary에는 range/tessitura, quality metrics, recording duration·MIME, mixing count, 생성 시각이 포함된다. 상세 조회도 user ownership과 `sourceType: USER`를 검사하고 profile, recording, mixing count, `/api/vocal-profiles/{id}/audio` URL을 반환한다.
 
-환불 자체가 실패해도 terminal job과 실패 알림은 이미 기록된다. worker runner는 매 lane 반복의 시작에서 `refundState: REQUIRED` job을 최대 10건 보상 처리하므로, 다음 worker 실행에서도 환불을 재개할 수 있다. 환불과 실패 정리는 별개이므로 운영자는 `FAILED`, `refundState`, media cleanup 상태를 함께 확인해야 한다.
+오디오 URL은 public Leemage URL을 화면에 직접 노출하는 링크가 아니다. audio route는 세션을 요구하고, profile recording에 연결된 asset이 같은 사용자·`REFERENCE`·`READY`인지 확인한 뒤 `proxyPrivateAudio`로 외부 응답을 중계한다. synthesis reference도 별도 route에서 같은 ownership·kind·status 조건을 검사한다. asset이 없거나 조건을 만족하지 않으면 404, proxy 실패는 502다.
 
-## 확인해야 할 테스트
-
-변경 후 최소한 다음 테스트를 기준으로 동작을 확인한다.
+## 변경 시 확인할 테스트
 
 ```bash
+pnpm exec tsx --test tests/long-audio-upload.test.ts tests/profile-audio-preparation.test.ts tests/voice-scan-state.test.ts
 pnpm exec tsx --test tests/vocal-profile-analysis-queue.integration.ts
-pnpm exec vitest run tests/vocal-profile-analyzer-adapter.test.ts
-pnpm exec tsx --test tests/vocal-profile-persistence.integration.ts
+pnpm exec tsx --test tests/vocal-profile-history.integration.ts
+pnpm exec vitest run tests/private-audio-proxy.test.ts
 ```
 
-- `tests/vocal-profile-analysis-queue.integration.ts`: idempotency, 사용자별 active job 단일성, ticket 선검사, lease 만료 복구, source asset 재사용, transient retry, terminal cleanup·환불·알림을 검증한다. DB가 없으면 integration test가 skip될 수 있다.
-- `tests/vocal-profile-analyzer-adapter.test.ts`: Modal URL/API key 설정, 요청 헤더와 endpoint, timeout·HTTP 오류 매핑, envelope과 artifact 무결성, cleanup contract를 검증한다.
-- `tests/vocal-profile-persistence.integration.ts`: profile·recording·reference 저장과 smart synthesis reference의 성공·fallback·실패 정리를 검증한다.
+- `long-audio-upload.test.ts`, `profile-audio-preparation.test.ts`: 60초 초과 판정과 59.75초 codec headroom을 고정한다.
+- `voice-scan-state.test.ts`: 5초 최소·10초 권장, recorder 오류 분류, durable job 상태 표현, media cleanup과 성공 redirect를 확인한다.
+- `vocal-profile-analysis-queue.integration.ts`: idempotency, active job 단일성, ticket admission/debit, lease 만료, source 재사용, transient retry, terminal cleanup·환불·알림을 검증한다.
+- `vocal-profile-history.integration.ts`, `private-audio-proxy.test.ts`: 사용자별 history와 private audio ownership/proxy 경계를 검증한다.
+- analyzer core 및 Modal adapter 테스트는 `TOO_LONG`, 품질 gate, segmented analysis, envelope/artifact 무결성, timeout·HTTP 오류 매핑, cleanup contract를 함께 확인해야 한다.
 
-profile 화면을 바꾸는 경우에는 API의 job payload와 클라이언트 polling 계약도 함께 확인한다. worker를 확장할 때는 외부 Modal job ID를 도입하기보다, 현재처럼 앱 job의 lease와 상태 전이를 먼저 명확히 유지해야 한다.
+worker를 확장할 때는 Modal 외부 job lifecycle을 새로 가정하지 말고 앱 DB의 `PENDING → PROCESSING → SUCCEEDED/FAILED` 전이와 lease를 유지한다. 브라우저 waveform이나 chart를 바꿀 때는 server domain contract와 분리된 UI 변경인지 먼저 확인한다.

@@ -1,12 +1,14 @@
 ---
 type: 추천 기반 AI 믹싱 사용자 여정
-title: 추천에서 AI 믹싱 결과까지
-description: 추천 항목을 현재 카탈로그와 보컬 프로필로 다시 검증한 뒤, 티켓 차감과 중복 방지를 거쳐 SoulX 믹싱 작업을 제출하고 결과 음원을 저장·재생하는 흐름을 설명한다. 실패 시 외부 접수 전 환불과 재시도 경계를 함께 다룬다.
-tags: [recommendation, mixing, idempotency, tickets, SoulX]
+title: 추천 선택에서 AI 믹싱 결과까지
+description: 보컬 프로필 분석이 끝난 뒤 추천 snapshot에서 곡 상세와 추천 키를 확인하고, 티켓 차감·durable queue·SoulX 변환·최종 음원 저장을 거쳐 결과를 재생·다운로드하는 사용자 workflow를 설명한다.
+tags: [recommendation, mixing, tickets, queue, SoulX]
 verified:
   - by: openwiki/0.5.0
-    at: 2026-09-04T08:11:35.711Z
+    at: 2026-09-04T09:11:21.096Z
 sources:
+  - id: openwiki-source-8420e9a8a67fe85a5fba630d
+    resource: repo://app/(product)/recommendations/%5Bid%5D/songs/%5BitemId%5D/page.tsx
   - id: openwiki-source-eb31588f5d34f4fa288a58d8
     resource: repo://app/api/mixing-jobs/%5Bid%5D/audio/route.ts
   - id: openwiki-source-a94cea82e631eedd9323e1f1
@@ -19,14 +21,20 @@ sources:
     resource: repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts
   - id: openwiki-source-eaa76879de1a19c0db5c6ebb
     resource: repo://src/_app/background-jobs/mixing/worker.ts
+  - id: openwiki-source-767d208d57e2c281d46e36de
+    resource: repo://src/_pages/recommendation-detail/ui/recommendation-results.tsx
   - id: openwiki-source-1050c6ce9340050c6bb46443
     resource: repo://src/entities/mixing-job/lib/presentation.ts
   - id: openwiki-source-0d2d25b3bfb0d05fc0dafbf8
     resource: repo://src/entities/mixing-job/model/contract.ts
   - id: openwiki-source-12b687e5e9afbf72c79b13fd
     resource: repo://src/entities/ticket/api/ticket-service.ts
+  - id: openwiki-source-11e31c0e609ccb25856d6e9a
+    resource: repo://src/features/create-mixing/api/client.ts
   - id: openwiki-source-e666cd046fb06fe25b657e92
     resource: repo://src/features/create-mixing/api/mixing-queue.ts
+  - id: openwiki-source-f6a22306dfc798b407000d3c
+    resource: repo://src/features/create-mixing/api/use-recommendation-mixing.ts
   - id: openwiki-source-28e6a6b450d76027eb804f2a
     resource: repo://src/features/create-mixing/model/reference.ts
   - id: openwiki-source-4ad5bcda7a4959929e165508
@@ -35,134 +43,137 @@ sources:
     resource: repo://tests/compress-mixing-result.test.ts
   - id: openwiki-source-10c6a88a3297ea68ebdbf439
     resource: repo://tests/mixing-queue.integration.ts
-generated: { by: "openwiki/0.5.0", at: "2026-09-04T08:11:35.711Z" }
+generated: { by: "openwiki/0.5.0", at: "2026-09-04T09:11:21.096Z" }
 ---
 
-# 추천에서 AI 믹싱 결과까지
+# 추천 선택에서 AI 믹싱 결과까지
 
-이 문서는 추천 화면에서 곡을 선택한 사용자가 AI 믹싱 결과를 듣기까지의 현재 구현을 설명한다. 추천 결과는 화면에 표시된 순간부터 고정된 주문서가 아니다. `POST /api/mixing-jobs`가 추천을 다시 계산하고 현재 카탈로그를 검증하므로, 카탈로그가 바뀌면 티켓을 차감하지 않고 요청을 거절한다.
+이 페이지는 보컬 프로필 분석 완료 handoff 이후의 한 작업을 설명한다. 사용자는 추천 결과에서 곡을 고르고, 곡 상세에서 **원키와 추천 shift를 비교**한 뒤 AI 믹싱을 시작한다. 실제 믹싱 요청은 화면의 점수나 키를 그대로 믿지 않고 서버가 현재 추천과 catalog를 다시 검증한다.
 
-추천 계산의 입력과 점수 체계는 [카탈로그와 추천](../concepts/catalog-and-recommendations.md), 보컬 분석 결과는 [보컬 분석과 추천](../concepts/vocal-analysis-and-recommendations.md)을 참고한다. 외부 변환 서비스의 운영 경계는 [외부 서비스](../integrations/external-services.md), 워커 운영은 [작업 처리](../operations/job-processing.md), 티켓 원장은 [계정과 티켓](./account-and-tickets.md)에서 이어서 확인할 수 있다.
+추천 계산과 보컬 분석의 의미는 [보컬 분석과 추천](../concepts/vocal-analysis-and-recommendations.md), 외부 서비스 경계는 [외부 서비스](../integrations/external-services.md), worker 운영은 [작업 처리](../operations/job-processing.md), 티켓 원장은 [계정과 티켓](./account-and-tickets.md)에서 이어서 확인한다.
 
-## 전체 흐름
+## 한눈에 보는 cross-system sequence
 
 ```mermaid
 sequenceDiagram
     participant User as 사용자
-    participant Screen as 추천 화면
-    participant API as mixing job API
-    participant Queue as enqueueMixingJob
-    participant DB as Serializable DB transaction
+    participant Recommendation as 추천 화면과 곡 상세
+    participant API as POST /api/mixing-jobs
+    participant DB as Prisma DB
+    participant Queue as durable MixingJob queue
     participant Worker as mixing worker
-    participant Storage as media storage
     participant SoulX as SoulX conversion API
-    participant Audio as audio API
+    participant Storage as media storage
+    participant Audio as GET /api/mixing-jobs/id/audio
 
-    User->>Screen: 추천 항목과 vocal profile 선택
-    Screen->>API: POST /api/mixing-jobs with idempotencyKey
-    API->>Queue: 요청 검증과 추천 항목 재조회
-    Queue->>DB: 최신 catalog and READY assets 검증
-    DB->>DB: MixingJob 생성 and ticket debit
-    API-->>Screen: 202 serialized job
-    Worker->>DB: claim job with lease
-    Worker->>Storage: reference and target audio fetch
+    User->>Recommendation: 프로필 handoff 후 추천 snapshot 조회
+    User->>Recommendation: 곡과 추천 shift 확인
+    Recommendation->>API: vocalProfileId songAnalysisId idempotencyKey
+    API->>DB: 현재 catalog와 READY asset 재검증
+    DB->>DB: MixingJob 생성과 AI_MIXING debit을 한 트랜잭션으로 커밋
+    API-->>Recommendation: 202 serialized job
+    Queue->>Worker: lease로 job claim
+    Worker->>Storage: reference와 catalog target fetch
     Worker->>SoulX: POST /v1/conversions
-    SoulX-->>Worker: queued job id
+    SoulX-->>Worker: queued conversion id
     Worker->>DB: SUBMITTED 저장
-    loop status polling
+    loop queued 또는 processing
         Worker->>SoulX: GET /v1/conversions/id
-        SoulX-->>Worker: queued or processing
-        Worker->>DB: heartbeat and status update
+        SoulX-->>Worker: 상태 반환
+        Worker->>DB: heartbeat와 상태 갱신
     end
-    SoulX-->>Worker: succeeded
     Worker->>SoulX: GET /v1/conversions/id/audio
-    Worker->>Worker: compressMixingResult
-    Worker->>Storage: storeMixingResult
-    Worker->>DB: SUCCEEDED and resultAssetId 저장
-    User->>Audio: GET /api/mixing-jobs/id/audio
-    Audio->>Storage: private audio fetch with Range
-    Storage-->>Audio: media bytes
-    Audio-->>User: 재생 가능한 audio response
+    Worker->>Worker: finalizer 압축과 보정
+    Worker->>Storage: 결과 asset 저장
+    Worker->>DB: SUCCEEDED와 resultAssetId 커밋
+    User->>Audio: 재생 또는 다운로드 요청
+    Audio->>Storage: 소유권과 READY 확인 후 Range fetch
+    Audio-->>User: private audio response
 ```
 
-*그림은 요청 접수부터 SoulX 외부 job, 결과 media 저장, 사용자 재생까지의 호출 순서를 보여준다.*
+*그림은 추천 완료부터 ticket mutation, durable queue, SoulX/finalizer, terminal result와 사용자 재생까지의 호출 순서를 보여준다.*
 
-## 1. 추천 항목을 다시 확인한다
+## 1. 추천 완료 handoff: snapshot은 선택 근거다
 
-추천 서비스 `getRecommendationResult`는 로그인한 프로필을 소유권과 함께 읽고 `sourceType === "USER"` 및 분석 지표의 유효성을 확인한다. 게시된 카탈로그를 `RepeatableRead` 트랜잭션에서 읽어 점수를 계산하고, 각 항목에 카탈로그 순서·revision·`songAnalysisId`·`targetAssetId`·`recommendedShift`를 포함한다. `getRecommendationItem`은 그 결과에서 요청한 분석 ID를 찾아 믹싱 요청의 근거로 반환한다.
+`getRecommendationResult`는 로그인한 `USER` 프로필의 분석 지표를 확인하고, `PUBLISHED` catalog를 `RepeatableRead` 트랜잭션에서 읽어 순위를 계산한다. 각 item에는 `songAnalysisId`, catalog 순서, `catalogRevision`, `targetAssetId`, `scoringVersion`, `recommendedShift`가 포함된다. 추천 화면은 이 응답을 `recommendationDetailQueryOptions`로 보관하며, 현재 선택한 item은 목록의 `id`로 곡 상세 `/recommendations/<id>/songs/<itemId>`에 전달된다.
 
-따라서 믹싱 enqueue는 클라이언트가 보낸 점수나 shift를 신뢰하지 않는다. 다음 조건을 하나라도 만족하지 않으면 `MIXING_RECOMMENDATION_STALE`(409)를 반환한다.
+추천 키를 다음처럼 구분한다.
 
-- 곡의 `lifecycleStatus`가 `ACTIVE`이고 분석 ID가 곡의 `currentAnalysisId`여야 한다.
-- 추천의 `catalogId`, `catalogRevision`, 카탈로그 순서가 현재 게시된 catalog entry와 일치해야 한다.
-- 추천의 target asset ID가 곡의 target asset과 같고, target asset의 `sourceId`가 분석의 source와 같아야 한다.
-- catalog와 target asset 모두 현재 게시 상태이며 target asset은 `READY`여야 한다.
+| 값 | 의미 | 사용 위치 |
+| --- | --- | --- |
+| 원키 | 곡 metadata의 `originalKey` | 곡 상세의 원키 배지와 원키 적합도 비교 |
+| 추천 shift | 음역 적합도 계산이 제안한 반음 이동량 `recommendedShift` | 추천 키 표시, job snapshot, SoulX의 `pitch_shift` |
+| 사용자가 선택한 곡 | `songAnalysisId`로 식별한 catalog item | `POST /api/mixing-jobs` 입력 |
+| profile의 mid-only reference | profile의 `SYNTHESIS_REFERENCE` asset 또는 원본 `REFERENCE` asset | SoulX `prompt_audio` 입력 |
 
-이 검증은 티켓 차감과 같은 트랜잭션 안에서 수행되므로, 오래된 추천을 최신 곡으로 바꾸어 처리하지 않는다. 사용자는 최신 추천 결과를 다시 조회한 뒤 재시도해야 한다.
+현재 UI에는 임의의 키 입력 컨트롤이 없다. 사용자가 곡을 선택한다는 것은 추천 item을 선택하는 것이며, 믹싱 worker는 생성된 job의 `recommendedShift`를 사용한다. 즉 원키, 추천 shift, profile reference를 서로 바꾸어 해석하면 안 된다. `recommendedShift`는 pitch 변환 파라미터이고 vocal balance나 final audio 품질 점수가 아니다.
 
-## 2. reference와 target을 선택한다
+곡 상세는 원본 영상, 원키, 추천 shift, 원키 적합도·shift 적용 적합도, 사용자와 곡의 주요 음역을 함께 보여준다. `profile.mixing.available`이 false이면 reference contract 또는 READY asset이 부족하므로 시작 버튼 대신 프로필 재분석 안내를 표시한다.
 
-믹싱 job은 `referenceAssetId`와 `targetAssetId`를 생성 시점에 스냅샷처럼 저장한다. reference 선택 우선순위는 다음과 같다.
+## 2. 시작 버튼은 API mutation을 만든다
 
-1. 같은 사용자 소유이고 `kind === "SYNTHESIS_REFERENCE"`, `status === "READY"`인 smart reference
-2. 같은 사용자 소유이고 `kind === "REFERENCE"`, `status === "READY"`인 원본 recording asset
+`RecommendationMixingAction`의 확인 대화상자를 통과해야 `useRecommendationMixing.startMixing`이 실행된다. 클라이언트는 `crypto.randomUUID()`로 `idempotencyKey`를 만들고 `vocalProfileId`, `songAnalysisId`를 `POST /api/mixing-jobs`에 보낸다. `catalogRevision`과 `scoringVersion`은 클라이언트 타입에도 있지만, enqueue 서버는 추천 서비스를 다시 호출해 얻은 값을 기준으로 검증한다.
 
-둘 다 없으면 `MIXING_REFERENCE_UNAVAILABLE`(422)로 끝나며 job을 만들지 않는다. target은 추천 항목에 연결된 catalog target이어야 하며 enqueue 검증과 워커 preflight 모두 `READY` 조건을 확인한다. 즉, 화면에서 믹싱 가능으로 보였더라도 실제 파일이 준비되지 않았다면 외부 서비스에 제출하지 않는다.
+`app/api/mixing-jobs/route.ts`는 세션을 요구한다. 요청이 유효하면 `enqueueMixingJob`을 호출하고 `serializeMixingJob` 결과를 HTTP `202`로 반환한다. 응답 계약은 DB enum을 소문자 public status로 바꾸고, `Date`를 ISO 문자열로 직렬화한다. `ticketCost`, `error`, `createdAt`, `updatedAt`, `completedAt`도 이 계약에 포함된다.
 
-## 3. idempotent enqueue와 티켓 차감
+## 3. enqueue가 snapshot과 ticket mutation을 원자적으로 만든다
 
-진입점은 `app/api/mixing-jobs/route.ts`의 `POST`이며 세션을 요구한다. 요청 본문은 `vocalProfileId`, `songAnalysisId`, `idempotencyKey`를 포함해야 하고 키는 공백이 아니며 200자를 넘지 않아야 한다. 성공 응답은 HTTP `202`이고 `serializeMixingJob`이 공개 job 상태와 ISO 시각만 반환한다.
+`enqueueMixingJob`은 `Serializable` Prisma transaction 안에서 다음을 수행한다.
 
-`enqueueMixingJob`은 다음 작업을 하나의 `Serializable` Prisma 트랜잭션으로 묶는다.
+1. `(userId, idempotencyKey)`로 기존 job을 조회한다. 같은 프로필·분석이면 기존 job을 반환하고, 다른 요청에 재사용하면 `IDEMPOTENCY_CONFLICT`(409)다.
+2. 사용자 소유의 `USER` profile과 `READY` 분석을 읽는다.
+3. 현재 게시 catalog의 revision·position, 곡의 `ACTIVE` 상태와 current analysis, target asset의 ID·source·`READY` 상태를 추천 결과와 대조한다.
+4. profile reference를 선택한다. `SYNTHESIS_REFERENCE`가 우선이고, 없으면 같은 소유자의 `REFERENCE` asset을 사용한다. 둘 다 없으면 `MIXING_REFERENCE_UNAVAILABLE`(422)이며 job과 차감은 생기지 않는다.
+5. job에 reference/target ID, catalog position·revision, scoring version, `recommendedShift`, ticket cost, 최대 시도 횟수를 snapshot으로 저장한다.
+6. 비용이 양수이면 `AI_MIXING` wallet에 `USAGE_DEBIT`를 `-cost`로 기록한다. ledger idempotency key는 `mixing:debit:<job id>`다.
 
-1. 사용자·프로필·분석·현재 카탈로그·READY asset을 검증한다.
-2. `(userId, idempotencyKey)`로 기존 job을 조회한다. 같은 키가 같은 프로필·분석에 이미 쓰였다면 기존 job을 그대로 반환한다. 다른 요청에 재사용하면 `IDEMPOTENCY_CONFLICT`(409)다.
-3. job을 생성하고 당시의 reference, target, 카탈로그 revision, scoring version, 추천 shift, 티켓 비용, 최대 시도 횟수를 기록한다.
-4. 비용이 0보다 크면 `AI_MIXING` 원장의 `USAGE_DEBIT`를 `-cost`로 기록한다. 원장 키는 `mixing:debit:<job id>`다.
+추천 결과가 오래됐으면 `MIXING_RECOMMENDATION_STALE`(409)다. 서버는 오래된 item을 현재 곡으로 대체하지 않는다. 잔액이 부족하면 `INSUFFICIENT_TICKETS`(402)이며 job 생성 전이므로 wallet과 ledger가 바뀌지 않는다. Serializable write conflict는 최대 세 번 재시도하고 unique 충돌에서도 동일 key의 job을 반환한다.
 
-동시 요청에서 Serializable write conflict는 최대 3회 재시도한다. unique 충돌이 나도 이미 생성된 동일한 idempotency key의 job을 돌려주므로 중복 job이나 중복 차감이 생기지 않는다. 잔액이 부족하면 `INSUFFICIENT_TICKETS`(402)이고, job 생성 전에 실패하므로 잔액과 원장은 변하지 않는다.
+> **불변식:** 한 사용자와 idempotency key 조합에는 한 job만 존재하며 debit ledger도 중복되지 않는다. 외부 변환 서비스에 접수되기 전 최종 실패만 자동 환불 대상이다.
 
-> **불변식:** 한 idempotency key에는 한 job만 존재하고, 한 job의 debit ledger entry는 최대 하나다. 접수 전 실패한 job은 비용을 최종적으로 사용자에게 돌려주며, 외부 변환 서비스에 접수된 뒤의 실패에는 자동 환불하지 않는다.
+## 4. durable queue와 SoulX worker
 
-## 4. 워커가 SoulX job을 제출하고 polling한다
+DB의 `MixingJob`은 `PENDING → PREPARING → SUBMITTED → PROCESSING → SUCCEEDED` 또는 `FAILED`/`CANCELED` lifecycle을 가진다. `claimNextMixingJob`은 `FOR UPDATE SKIP LOCKED`로 한 worker만 claim하고 `leaseOwner`, 만료 시각, heartbeat, attempts를 기록한다. lease가 만료된 준비·접수·처리 job은 다른 worker가 회수할 수 있다.
 
-`runMixingWorkerOnce`는 먼저 `REQUIRED` 환불을 보정하고 media cleanup을 처리한 뒤 다음 job을 claim한다. `claimNextMixingJob`은 `FOR UPDATE SKIP LOCKED`로 경쟁 워커 중 하나만 선택하고 lease owner·만료 시각·heartbeat·시도 횟수를 갱신한다. 만료된 `PREPARING`, `SUBMITTED`, `PROCESSING` lease는 회수할 수 있다.
+`modalJobId`가 없을 때만 worker가 제출한다. 저장된 reference URL을 `prompt_audio`, catalog target을 `target_audio`로 보내고 `SYNTHESIS_PRESET`을 적용한다. `auto_pitch_shift`는 `false`이며 job snapshot의 `recommendedShift`를 `pitch_shift`로 보낸다. SoulX가 `queued` 상태와 ID를 돌려줘야 `modalJobId`와 `submittedAt`을 저장하고 `SUBMITTED`로 전환한다. lease 회수 뒤 `modalJobId`가 이미 있으면 새 변환을 만들지 않고 기존 SoulX job을 polling한다.
 
-아직 `modalJobId`가 없으면 워커는 저장된 reference URL과 target URL을 각각 가져온다. target이 `READY`가 아니거나 파일이 비어 있으면 preflight 실패다. 이후 `MODAL_API_URL`과 `MODAL_API_KEY`가 필요하며, `POST ${MODAL_API_URL}/v1/conversions`에 다음을 보낸다.
+Polling은 `GET /v1/conversions/<modalJobId>`로 수행한다. `queued`와 `processing` 동안 heartbeat를 갱신한다. `succeeded`가 되면 `/audio`에서 결과를 받고, `failed`는 worker 실패로 기록한다. fetch와 polling에는 timeout이 있고 네트워크 및 408·425·429·5xx는 단계별 retry 정책을 따른다. 제출 POST는 429만 retryable이다.
 
-- reference는 `prompt_audio`로 보낸다.
-- catalog target은 `target_audio`로 보낸다.
-- `SYNTHESIS_PRESET`을 적용한다.
-- `auto_pitch_shift`는 `false`, `pitch_shift`는 job에 저장된 `recommendedShift`다.
+- 접수 전 retryable 실패: backoff 후 `PENDING`으로 되돌린다.
+- 접수 후 retryable 실패: `SUBMITTED`로 남겨 같은 SoulX ID를 다시 조회한다.
+- 최대 attempts 도달 또는 비재시도 실패: `FAILED`로 terminal 처리한다.
+- 접수 전 terminal 실패: `refundState = REQUIRED`를 거쳐 `USAGE_REFUND`를 한 번 기록한다.
+- 접수 후 실패: 자동 환불하지 않고 `refundState = NONE`으로 둔다.
 
-SoulX가 `status === "queued"`와 job ID를 반환해야만 `modalJobId`와 `submittedAt`을 저장하고 job을 `SUBMITTED`로 바꾼다. 응답이 잘못되면 `MODAL_SUBMIT_INVALID_RESPONSE`다. 그 뒤 `GET /v1/conversions/<modalJobId>`를 polling한다. `queued`/`processing` 중에는 lease heartbeat를 갱신하고, `succeeded`가 되면 audio endpoint에서 결과를 가져온다. 외부 상태 조회와 결과 다운로드에는 timeout과 HTTP/network 재시도 판정이 적용된다.
+worker run은 먼저 `REQUIRED` 환불을 reconcile하고 media cleanup을 처리한 뒤 job을 claim한다. 따라서 worker 중단은 메모리 큐의 유실이 아니라 lease 만료 후 재처리 경계로 다뤄진다.
 
-외부 접수 전의 retryable 실패는 job을 `PENDING`으로 되돌리고 backoff 후 재시도한다. 접수 후 retryable 실패는 `SUBMITTED`로 남겨 같은 SoulX job을 다시 조회한다. 최대 시도 횟수에 도달하거나 비재시도 실패면 `FAILED`가 된다. 접수 전 최종 실패는 `refundState = REQUIRED`로 표시한 다음 환불하고, 접수 후 실패는 `refundState = NONE`으로 둔다.
+## 5. finalizer와 terminal result
 
-## 5. 결과 media를 저장하고 재생한다
+SoulX audio를 받으면 `compressMixingResult`가 최종 audio의 압축·MIME·확장자를 정한다. 그 다음 `storeMixingResult`가 media storage에 `MIX_RESULT` asset을 만들고, DB transaction이 `resultAssetId`, `SUCCEEDED`, 완료 시각과 `MIXING_SUCCEEDED` notification을 함께 커밋한다. 이 transaction이 실패하면 새 asset을 폐기해 고아 결과를 남기지 않는다. 실패 notification도 job별 dedupe key를 사용한다.
 
-성공한 외부 audio는 `compressMixingResult`로 보정·압축한 뒤 `storeMixingResult`로 media storage에 저장한다. 저장된 asset ID를 `MixingJob.resultAssetId`에 연결하고 job을 `SUCCEEDED`로 바꾸는 DB 트랜잭션을 알림(`MIXING_SUCCEEDED`)과 함께 커밋한다. 이 커밋이 실패하면 새 media asset을 폐기하여 고아 결과를 남기지 않는다. 실패 알림도 dedupe key로 한 번만 만든다.
+`GET /api/mixing-jobs/[id]/audio`는 세션 사용자가 소유한 `SUCCEEDED` job과 `resultAsset.status === READY` 결과만 허용한다. 결과가 없거나 아직 READY가 아니면 404, storage upstream 실패는 502다. 요청의 `Range`를 upstream에 전달하고 `Content-Range`, `Accept-Ranges` 등을 보존하므로 브라우저 재생과 부분 다운로드를 지원한다. 응답은 `Content-Disposition: inline`, `Cache-Control: private, no-store`를 사용한다.
 
-`GET /api/mixing-jobs/[id]/audio`는 세션 사용자 소유의 `SUCCEEDED` job과 `resultAsset.status === "READY"`인 결과만 허용한다. 결과가 없거나 준비되지 않았으면 404다. storage 응답이 실패하면 502다. 요청의 `Range` 헤더를 upstream에 전달하고 `Content-Range`, `Accept-Ranges` 등을 보존하므로 부분 재생을 지원한다. 응답은 `Content-Disposition: inline`과 `Cache-Control: private, no-store`를 사용한다.
+상세 화면의 public status는 `pending`, `preparing`, `submitted`, `processing`, `succeeded`, `failed`, `canceled`를 구분하고, `presentMixingJob`은 이 값과 `submittedAt`·`startedAt`·`resultReady`로 실제 timeline을 만든다. 임의의 진행률을 표시하지 않는다. 결과가 READY일 때만 audio URL을 노출한다.
 
-## 화면 상태와 API 상태는 다르다
+## 6. 화면·API·DB 상태 동기화
 
-추천 화면의 `synthesis.status`는 사용자 경험을 위한 축약 상태다. job이 없으면 `not_started`, 내부 `PENDING`/`PREPARING`은 `preparing`, `SUBMITTED`는 `queued`, 나머지는 `processing`·`succeeded`·`failed`로 매핑된다. 결과 asset이 READY일 때만 `audioUrl`을 `/api/mixing-jobs/<id>/audio`로 채운다.
+추천 응답의 `synthesis.status`는 화면용 축약 상태다. DB의 `PENDING`/`PREPARING`은 `preparing`, `SUBMITTED`는 `queued`, `PROCESSING`은 `processing`, `SUCCEEDED`는 `succeeded`, `FAILED`와 `CANCELED`는 `failed`로 매핑된다. 반대로 mixing job API는 `submitted`를 별도 public 상태로 직렬화한다. 따라서 추천 화면의 `queued`와 API의 `submitted`를 같은 문자열이라고 가정하지 않는다.
 
-반면 mixing job API의 `serializeMixingJob`은 `pending`, `preparing`, `submitted`, `processing`, `succeeded`, `failed`, `canceled`를 구분하고 `ticketCost`, 구조화된 error, 생성·갱신·완료 시각을 직렬화한다. 상세/이력 화면은 이 상태를 바탕으로 `presentMixingJob`의 타임라인과 설명을 표시한다. 따라서 추천 화면의 `queued`를 API의 `submitted`와 같은 문자열이라고 가정하거나, 추천 화면의 축약 상태만으로 운영 상태를 판단하면 안 된다.
+mutation의 동기화 순서는 다음과 같다.
 
-## 실패·환불 운영 규칙
+1. `onMutate`가 recommendation query의 해당 item을 낙관적으로 `preparing`으로 바꾼다.
+2. 성공하면 recommendation profile query와 mixing history query를 invalidate한다.
+3. API가 반환한 job ID로 `/library/mixes/<jobId>`로 이동한다.
+4. 실패하면 recommendation cache에 구조화된 error와 `retryable`을 기록해 재시도 버튼을 결정한다.
 
-- `MODAL_NOT_CONFIGURED`, 잘못된 제출 응답, 비재시도 외부 실패는 자동 재시도 대상이 아니다.
-- reference/target fetch, polling, 결과 fetch처럼 일시적일 수 있는 네트워크 또는 408·425·429·5xx 응답은 설정된 최대 시도 전 재시도할 수 있다. 제출 POST는 429만 retryable로 판정한다.
-- 워커가 중단되어 lease가 만료되면 다른 워커가 job을 claim한다. `modalJobId`가 저장된 job은 다시 제출하지 않고 기존 외부 job을 polling한다.
-- 최종 실패 시 `ensureMixingRefund`는 `refundState === "REQUIRED"`인 job에 `USAGE_REFUND`를 한 번 기록하고 `REFUNDED`로 바꾼다. 환불 원장 키는 `mixing:refund:<job id>`다. `reconcileRequiredRefunds`가 다음 worker run에서도 미완료 환불을 회수한다.
+추천 filter는 recommendation route의 URL query에 저장되며 `replaceState`와 custom event로 같은 화면의 컴포넌트를 동기화한다. 새 route나 query cache key를 추가할 때는 이 URL 상태, `recommendationKeys`, mixing history invalidation을 함께 확인해야 한다.
 
-## 변경 시 확인할 테스트
+## 변경 시 집중해서 볼 테스트
 
-- `tests/mixing-reference.test.ts`: smart reference 우선순위, 소유자·kind·READY 검증, contract capability 조건을 확인한다.
-- `tests/mixing-queue.integration.ts`: 동시 enqueue idempotency, Serializable 경쟁, lease 회수, preflight/제출 전 환불, retry backoff와 접수 후 경계를 데이터베이스로 검증한다.
-- `tests/mixing-status-presentation.test.ts`: 추천 축약 상태와 상세 타임라인·실패 문구의 표시 규칙을 검증한다.
-- `tests/compress-mixing-result.test.ts`: 외부 결과의 압축·MIME·확장자 계약을 검증한다.
+- `tests/recommendation-synthesis.test.ts`: recommendation 응답의 synthesis 상태, job 연결, READY 결과의 `audioUrl`과 profile mixing capability를 확인한다.
+- `tests/mixing-detail-ui.test.tsx`: owner-scoped 상세 route, 실제 timeline, terminal action과 임의 진행률 미표시를 확인한다.
+- `tests/mixing-queue.integration.ts`: 동시 enqueue idempotency, Serializable 경쟁, lease 회수, preflight·접수 전 환불, retry backoff와 접수 후 경계를 DB로 검증한다.
+- `tests/admin-custom-mixing.integration.ts`: 관리자 custom mixing 경로가 사용자 추천 enqueue와 섞이지 않으면서 동일한 job/티켓 경계를 지키는지 확인할 때 사용한다.
+- `tests/compress-mixing-result.test.ts`: finalizer의 압축·MIME·확장자 계약을 확인한다.
 
-큐 입력이나 상태를 추가할 때는 enqueue의 스냅샷 검증, 원장 idempotency key, `submitted` 경계를 함께 갱신해야 한다. 외부 API 계약을 바꿀 때는 환경 변수와 timeout·retry 판정뿐 아니라 결과 저장 트랜잭션과 audio route의 READY 검증도 함께 확인한다.
+외부 입력 계약을 바꾸면 `createMixingRequestSchema`, `serializeMixingJob`, worker의 제출·polling·finalizer, audio route의 owner/READY 검증을 한 변경으로 다룬다. 특히 추천 키를 수정할 때는 추천 계산의 shift와 job snapshot의 `pitch_shift`만 바꾸고, profile reference와 final audio 변환의 책임을 혼동하지 않는다.

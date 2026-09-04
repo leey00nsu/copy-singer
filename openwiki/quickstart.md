@@ -1,11 +1,11 @@
 ---
-type: 로컬 온보딩과 탐색 안내
-title: 빠른 시작과 탐색 경로
-description: Copysinger를 로컬에서 실행하기 위한 버전·서비스 전제, PostgreSQL 초기화, 웹과 worker 실행 순서를 안내한다. 실행 뒤 시스템 지도, 도메인, 워크플로, 운영, 테스트 문서로 이동할 수 있는 작업 중심 경로를 제공한다.
-tags: [quickstart, onboarding, local-development, navigation]
+type: 로컬 온보딩과 작업 경로
+title: Copysinger 빠른 시작과 작업 경로
+description: Node.js·pnpm·PostgreSQL을 준비해 Next.js와 세 durable worker를 함께 실행하고, 데이터베이스·설정·정적 검사를 확인하는 최소 절차를 안내한다. 인증, 보컬 분석, 추천, 믹싱, 관리자 작업의 코드와 심화 문서로 이어지는 탐색 경로도 제공한다.
+tags: [quickstart, onboarding, local-development, task-routing]
 verified:
   - by: openwiki/0.5.0
-    at: 2026-09-04T08:11:35.711Z
+    at: 2026-09-04T09:11:21.096Z
 sources:
   - id: openwiki-source-b79fbbd921df689b4bbdc82f
     resource: repo://docker-compose.yml
@@ -15,36 +15,48 @@ sources:
     resource: repo://prisma/schema.prisma
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
+  - id: openwiki-source-904d8953f6839fec7c58c800
+    resource: repo://scripts/mixing-worker.ts
+  - id: openwiki-source-932d9872d5647bdfeb9f5cd7
+    resource: repo://scripts/song-analysis-worker.ts
+  - id: openwiki-source-f1adf7db889a7f8493008153
+    resource: repo://scripts/verify-database.ts
+  - id: openwiki-source-3e61fbe0b48f056b7e7ac181
+    resource: repo://scripts/verify-feature-config.ts
+  - id: openwiki-source-4190e707c6ec6879dbd06e87
+    resource: repo://scripts/vocal-profile-analysis-worker.ts
   - id: openwiki-source-1e6e6f1135b9a641599ec77e
     resource: repo://src/_app/layout/index.server.ts
   - id: openwiki-source-3fe0beab1a994cc8f1d9162f
     resource: repo://src/_app/layout/root-layout.tsx
-generated: { by: "openwiki/0.5.0", at: "2026-09-04T08:11:35.711Z" }
+  - id: openwiki-source-200291f8a1aaa391d1b68ec4
+    resource: repo://src/shared/config/server-env.ts
+generated: { by: "openwiki/0.5.0", at: "2026-09-04T09:11:21.096Z" }
 ---
 
-# 빠른 시작과 탐색 경로
+# Copysinger 빠른 시작과 작업 경로
 
-이 페이지의 목표는 로컬에서 Copysinger를 띄우고 다음에 읽을 문서를 바로 고르는 것이다. **Node.js와 pnpm을 확인한 뒤 의존성·환경 설정을 준비하고, PostgreSQL을 시작하고, migration과 Prisma Client를 준비한 다음 `pnpm dev`를 실행한다.** 앱은 `http://localhost:3000`에서 확인한다.
+이 페이지의 목표는 로컬에서 Copysinger를 실행한 뒤 **무엇을 확인하고 어느 코드로 이동할지** 결정하는 것이다. 현재 개발 명령은 Next.js 웹 앱과 `worker:mixing`, `worker:vocal-profile-analysis`, `worker:song-analysis`를 한 번에 시작한다. 기본 웹 주소는 `http://localhost:3000`이다.
 
-## 1. 실행 전 전제 확인
+## 시작 전 준비
 
-다음 도구와 외부 서비스가 필요하다.
+`package.json`이 요구하는 런타임은 Node.js `>=22.13.0`과 pnpm `11.9.0`이다. 로컬 데이터베이스에는 Docker가 필요하다. 기능을 실제로 사용하려면 설정 키의 의미에 맞는 다음 준비도 필요하다.
 
-- Node.js `>=22.13.0`
-- pnpm `11.9.0`
-- Docker 20 이상
-- Google OAuth web client
-- Leemage project와 API key
-- 배포된 Modal 분석·믹싱 서비스
-- production 결과 오디오 변환이 필요할 때 FFmpeg
+- `DATABASE_URL`: Prisma가 접속할 PostgreSQL 연결 문자열
+- `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`: Better Auth 세션 서명과 애플리케이션 URL
+- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`: Google OAuth web client
+- `ADMIN_EMAILS`: 관리자 계정으로 허용할 이메일 목록
+- `LEEMAGE_API_KEY`, `LEEMAGE_PROJECT_ID`: 사용자 오디오와 결과 파일을 저장할 Leemage project
+- Modal 분석·믹싱 endpoint와 인증 키: 보컬 프로필 분석, 곡 분석, AI 믹싱 worker가 호출할 외부 서비스
+- FFmpeg: production 결과 오디오 변환이 필요한 실행 환경
 
-버전과 package script는 `package.json`에 정의되어 있다. 서버 credential은 공개 문서나 browser 코드에 넣지 않는다. 저장소의 Quick Start는 `.env.example`을 `.env.local`로 복사하도록 안내하므로, 실제 환경 변수는 해당 예시와 운영 문서의 조건에 맞춰 별도로 준비한다.
+실제 값은 `.env.example`의 설명과 운영 문서의 조건을 보고 `.env.local`에 준비한다. 비밀값이나 ignored 환경 파일의 내용은 문서에 복사하지 않는다. 서버 전용 설정은 `src/shared/config/server-env.ts`에서 정수 범위와 기본값을 검증한다. 예를 들어 티켓 수량은 0 이상, worker concurrency는 각 worker별 허용 범위 안의 정수여야 하며 잘못된 값이면 서버 설정 로딩이 실패한다.
 
-## 2. PostgreSQL과 애플리케이션 초기화
+## PostgreSQL부터 통합 개발 실행까지
 
-저장소가 제공하는 Compose 설정은 `postgres:16-alpine`을 실행한다. 호스트 포트는 `POSTGRES_PORT`이며 기본값은 `5433`, 컨테이너 포트는 `5432`다. Compose의 개발 기본값은 데이터베이스 `copy_singer`, 사용자 `copy_singer`, 비밀번호 `copy_singer_dev`다. 애플리케이션이 사용하는 `DATABASE_URL`이 이 PostgreSQL을 가리키는지 먼저 확인한다.
+Compose는 `postgres:16-alpine`을 실행하고, 호스트 포트 `${POSTGRES_PORT:-5433}`을 컨테이너의 `5432`에 연결한다. 데이터베이스·사용자·비밀번호의 Compose 기본값은 각각 `copy_singer`, `copy_singer`, `copy_singer_dev`지만, 애플리케이션의 `DATABASE_URL`이 실제 선택한 값과 일치하는지 확인한다. 데이터는 `postgres_data` named volume에 남는다.
 
-명령은 다음 순서를 지킨다.
+다음 순서를 그대로 실행한다.
 
 ```bash
 pnpm install --frozen-lockfile
@@ -55,75 +67,76 @@ pnpm run db:generate
 pnpm dev
 ```
 
-`docker compose up -d`가 PostgreSQL을 백그라운드에서 시작하고 healthcheck를 수행한다. `pnpm run db:migrate:deploy`가 migration을 적용한 뒤 `pnpm run db:generate`가 `src/shared/db/generated/prisma`에 Prisma Client를 생성한다. 이미 초기화된 데이터베이스에서도 migration 적용과 client 생성은 실행 가능한 확인 단계다.
+`pnpm dev`의 `concurrently --kill-others-on-fail` 정책 때문에 웹 또는 worker 하나가 실패하면 나머지도 종료된다. 각 worker entrypoint는 `.env.local`과 `.env`를 dotenv로 읽은 뒤 `src/_app/background-jobs/`의 server runner를 동적으로 시작한다. 따라서 브라우저에서 웹이 열리는 것만으로 외부 분석·믹싱까지 준비됐다고 판단하지 않는다.
 
-```mermaid
+<!-- openwiki: mermaid parse failed and this diagram was converted to a text fence so it does not break rendering. Fix the diagram source and restore the mermaid fence. Parser error: Heuristic: an unescaped angle bracket inside a label breaks rendering; rephrase the label. -->
+```text
 flowchart TD
-    A["Node.js와 pnpm 확인"] --> B["pnpm install --frozen-lockfile"]
+    A["Node.js >=22.13.0와 pnpm 11.9.0"] --> B["pnpm install --frozen-lockfile"]
     B --> C[".env.local 준비"]
     C --> D["docker compose up -d"]
     D --> E["pnpm run db:migrate:deploy"]
     E --> F["pnpm run db:generate"]
     F --> G["pnpm dev"]
-    G --> H["http://localhost:3000 확인"]
+    G --> H["Next.js와 세 worker 확인"]
+    H --> I["http://localhost:3000 확인"]
 ```
 
-이 그림은 로컬 초기화 명령의 의존 순서를 보여준다.
+이 흐름은 의존성, 설정, PostgreSQL, Prisma, 통합 프로세스의 의존 순서를 보여준다.
 
 ### 실행 확인 지점
 
-- 브라우저에서 `http://localhost:3000`이 열리는지 확인한다.
-- `pnpm dev`는 `dev:web`, `worker:mixing`, `worker:vocal-profile-analysis`, `worker:song-analysis`를 함께 시작한다.
-- 데이터 모델과 상태 enum은 `prisma/schema.prisma`가 기준이다. 예를 들어 녹음은 `PENDING`, `READY`, `FAILED`, `DELETED` 상태를 사용하고, 곡 분석 작업은 `PENDING`, `PROCESSING`, `SUCCEEDED`, `FAILED` 수명주기를 가진다.
-- 외부 분석 서비스가 준비되지 않으면 웹 프로세스가 떠도 분석 작업이 성공하지 않을 수 있다. worker는 PostgreSQL에 저장된 durable job을 처리하므로 작업 흐름을 점검할 때 웹 로그만 보지 않는다.
+1. `http://localhost:3000`이 열리는지 확인한다.
+2. 터미널에 `web`, `mixing`, `analysis`, `songs` 프로세스가 모두 살아 있는지 확인한다.
+3. 로그인·파일 저장·외부 분석을 사용할 때는 `pnpm run verify:feature-config`로 인증·관리자·Leemage 키가 설정됐는지 검사한다. 이 명령은 값 자체를 출력하지 않는다.
+4. seed 또는 fixture 데이터의 관계 그래프까지 확인하려면 PostgreSQL이 준비된 상태에서 다음을 실행한다.
 
-## 3. 화면과 작업별 진입점
+```bash
+pnpm run db:verify
+```
 
-| 하려는 일 | 먼저 열 경로 | 이어서 읽을 문서 |
-| --- | --- | --- |
-| 공개 서비스와 로그인 확인 | `/`, `/login` | [인증·소유권·관리자 접근 제어](concepts/access-control.md) |
-| 녹음·업로드 후 보컬 분석 | `/profile` | [보컬 프로필 분석 워크플로](workflows/vocal-profile-analysis.md), [보컬 분석과 추천 도메인](concepts/vocal-analysis-and-recommendations.md) |
-| 추천 결과와 키 적합도 이해 | `/recommendations/[id]` | [곡 카탈로그와 추천 대상 수명주기](concepts/catalog-and-recommendations.md), [보컬 분석과 추천 도메인](concepts/vocal-analysis-and-recommendations.md) |
-| 추천곡 선택 후 AI 믹싱 | 추천 결과 화면 | [추천에서 AI 믹싱 결과까지](workflows/recommendation-to-mixing.md) |
-| 라이브러리·계정·티켓 확인 | `/library`, `/account`, `/notifications` | [계정·티켓·알림 흐름](workflows/account-and-tickets.md) |
-| 관리자 카탈로그 운영 | `/admin`, `/admin/songs`, `/admin/custom-mixing` | [관리자 카탈로그 운영 워크플로](workflows/catalog-management.md) |
+`db:verify`는 `DATABASE_URL`이 없으면 실패한다. 있으면 user `VocalProfile`이 `USER_TEST` recording과 연결됐는지, song이 vocal profile과 연결됐는지를 확인하고 ID를 출력한다. 이는 앱이 뜨는지와 별개로 데이터베이스 관계가 온전한지 확인하는 smoke check다.
 
-`/recommendations` 단독 화면은 없으며, 보컬 프로필 상세에서 추천을 시작한 뒤 프로필 ID가 포함된 `/recommendations/[id]`로 이동한다. 사용자 audio와 최종 결과 bytes는 Leemage에 저장하고, PostgreSQL에는 소유권과 파일 metadata를 보관한다.
+분석과 믹싱은 웹 요청이 PostgreSQL에 durable job을 접수한 뒤 worker가 처리한다. worker가 처리 중인 작업의 lease를 저장하므로 재시작·만료·재시도 동작을 조사할 때는 웹 로그만 보지 않는다. 상세한 claim, lease, retry 규칙은 [Durable worker와 작업 lifecycle](operations/job-processing.md)에서 확인한다.
 
-## 4. 구조를 파악한 뒤 변경하기
+## 기능별 task-routing map
 
-처음 코드를 찾을 때는 [시스템 지도와 런타임 경계](architecture/system-map.md)를 먼저 읽는다. 이 서비스는 Next.js App Router adapter, FSD 계층, PostgreSQL, Leemage, Modal 및 SoulX-Singer 경계로 나뉜다. root `app/`은 route convention과 FSD public API 재노출을 맡고, 실제 조합과 server capability는 `src/_app/` 및 하위 계층에 있다. `src/_app/layout/index.server.ts`는 `ProductLayout`, `productMetadata`, `RootLayout`, `generateMetadata`를 server entrypoint로 재노출한다. root layout은 `lang="ko"`, `QueryProvider`, `TooltipProvider`, `Toaster`를 애플리케이션 경계에 배치한다.
+| 하려는 일 | 화면 진입점 | 먼저 찾을 코드 | 다음 문서 |
+| --- | --- | --- | --- |
+| 인증·사용자 소유권·관리자 접근 확인 | `/login`, `/account`, `/admin` | `src/features/authentication`, `src/shared/auth`, `src/_app` | [인증과 사용자 데이터 소유권](concepts/access-control.md) |
+| 녹음·업로드와 보컬 분석 | `/profile`, `/vocal-profiles/[id]` | `src/features/analyze-vocal-profile`, `src/entities/vocal-profile`, `src/_app/background-jobs/vocal-profile-analysis`, `scripts/vocal-profile-analysis-worker.ts` | [보컬 프로필 분석 workflow](workflows/vocal-profile-analysis.md) · [보컬 분석과 추천](concepts/vocal-analysis-and-recommendations.md) |
+| 곡 카탈로그·추천·키 적합도 | `/recommendations/[id]`, `/recommendations/[id]/songs/[itemId]` | `src/features/create-recommendation`, `src/entities/recommendation`, `src/entities/song-catalog`, `src/_app/background-jobs/song-analysis` | [곡 카탈로그와 추천 snapshot](concepts/catalog-and-recommendations.md) |
+| 추천곡을 AI 믹싱으로 연결 | 추천곡 상세, `/library/mixes/[id]` | `src/features/create-mixing`, `src/entities/mixing-job`, `src/_app/background-jobs/mixing`, `scripts/mixing-worker.ts` | [추천 선택에서 AI 믹싱 결과까지](workflows/recommendation-to-mixing.md) |
+| 관리자 곡·asset·분석 운영 | `/admin/songs`, `/admin/custom-mixing` | `src/features/manage-song-catalog`, `src/features/inspect-admin-operations`, `src/_pages/admin-song-catalog`, `src/_app/background-jobs/song-analysis` | [관리자 카탈로그 관리 workflow](workflows/catalog-management.md) |
 
-변경 목적에 따라 다음 경로를 선택한다.
+공통 구조를 먼저 파악해야 한다면 [시스템 지도와 런타임 경계](architecture/system-map.md)와 [Feature-Sliced 모듈과 공개 API 경계](architecture/module-boundaries.md)를 읽는다. `app/`은 Next.js route adapter이고, 실제 조합은 `src/_app/`·`src/_pages/`와 FSD 계층에 있다. 계층은 `_app → _pages → widgets → features → entities → shared` 방향으로 내려가며, slice 간 참조는 대상 slice의 public API를 사용한다. DB·secret을 다루는 server API와 browser-safe API를 섞지 않는 것이 안전한 변경의 기본 경계다.
 
-- 데이터 관계·상태·영속성: [도메인 데이터 모델과 영속성](architecture/data-model.md)
-- FSD layer와 browser-safe·model·server public API: [모듈 경계와 서버 역량](architecture/module-boundaries.md)
-- Google·Leemage·Modal 계약: [Google·Leemage·Modal 통합 계약](integrations/external-services.md)
-- 환경 변수, 배포, migration, worker 운영: [설정·로컬 실행·배포 운영](operations/configuration-and-deployment.md)
-- job claim, lease, retry, 재시작 복구: [Durable job 처리와 장애 복구](operations/job-processing.md)
+## 변경 후 검증
 
-## 5. 변경 후 검증
-
-빠른 정적 확인은 다음 명령으로 시작한다.
+먼저 변경 범위에 맞는 정적 검사를 실행한다.
 
 ```bash
 pnpm run check
 pnpm run db:validate
 ```
 
-`pnpm run check`는 Biome, ESLint, TypeScript 검사와 FSD architecture 검사를 실행한다. 데이터베이스 schema를 바꿨다면 `pnpm run db:validate`와 migration 상태를 함께 확인한다. 전체 회귀 검증은 build, domain/unit, PostgreSQL integration, API contract, FSD boundary 및 Storybook 검사를 포함하므로 다음 명령을 사용한다.
+`pnpm run check`는 Biome, ESLint, TypeScript, Steiger 기반 architecture 검사를 순서대로 실행한다. Prisma schema를 바꿨다면 `db:validate`와 migration 상태를 함께 확인하고, 로컬 데이터베이스에 migration을 만들 때는 `pnpm run db:migrate`를 사용한다. 배포·기존 데이터베이스에는 `pnpm run db:migrate:deploy`를 사용한다.
+
+전체 회귀 검증은 build, domain/unit, PostgreSQL integration, API contract, FSD boundary, Storybook 검사를 포함한다.
 
 ```bash
 pnpm test
 ```
 
-변경 영역에 맞춘 좁은 진입점은 [검증 전략과 변경 안전망](testing/test-strategy.md)에서 고른다. worker나 큐를 바꿨다면 job processing과 해당 integration suite를, 추천·믹싱·인증·media를 바꿨다면 각 도메인 suite를 함께 실행한다.
+좁은 검증 진입점은 [검증 전략과 회귀 경계](testing/test-strategy.md)에서 고른다. 인증은 `pnpm run test:auth:db`, 보컬 분석 queue는 `pnpm run test:vocal-profile-analysis-queue`, 추천은 `pnpm run test:recommendation`, 믹싱 queue는 `pnpm run test:mixing:db`, 관리자 작업은 `pnpm run test:admin`처럼 변경한 경계에 맞춰 실행한다. 외부 저장소 연동을 바꿨다면 `pnpm run test:media`도 포함한다.
 
-## 다음 읽기 순서
+## 운영으로 확장할 때
 
-1. 전체 요청·비동기 경계가 필요하면 [시스템 지도와 런타임 경계](architecture/system-map.md)를 읽는다.
-2. 기능을 수정하려면 해당 [도메인](concepts/catalog-and-recommendations.md)과 [워크플로](workflows/recommendation-to-mixing.md)를 선택한다.
-3. 환경 변수와 배포 또는 장애 복구가 목적이면 [운영 문서](operations/configuration-and-deployment.md)와 [job 처리 문서](operations/job-processing.md)로 이동한다.
-4. 마지막으로 변경 유형에 맞는 [테스트 전략](testing/test-strategy.md)에서 검증 명령을 고른다.
+로컬 실행과 배포 설정을 분리해야 할 때는 [설정·로컬 실행·배포 운영](operations/configuration-and-deployment.md)을 기준으로 삼는다. Modal 분석기를 직접 배포하는 script는 다음과 같다.
 
-이 페이지의 명령과 경로는 현재 `README.md`, `package.json`, `docker-compose.yml`, `prisma/schema.prisma`, `src/_app/layout/index.server.ts` 및 route 구조를 기준으로 한다. 외부 credential의 실제 값은 기록하지 않는다.
+```bash
+pnpm run modal:vocal-profile:deploy
+pnpm run modal:song-catalog:deploy
+```
+
+외부 서비스 adapter와 artifact 계약은 [외부 서비스 연동 계약](integrations/external-services.md)에서, 데이터 관계와 revision·소유권 불변식은 [도메인 데이터 모델과 영속성 불변식](architecture/data-model.md)에서 확인한다. 로컬 PostgreSQL을 중지할 때는 `docker compose down`을 사용하며, named volume까지 삭제하는 명령은 기존 데이터를 지우므로 초기화가 목적일 때만 선택한다.

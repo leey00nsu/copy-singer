@@ -9,6 +9,7 @@ Generate a code-grounded onboarding wiki for the current repository.
 - Prefer relative Markdown links. Repository-root links such as `/openwiki/concepts/example.md` are allowed, but host filesystem paths are not.
 - Feature workflow documents describe change history; do not present their pending status metadata as current runtime facts.
 - Use PRD for durable requirements, the active Feature SDD for change scope and decisions, curated docs for project-wide explanations and policy, and tracked code/schema/config for executable runtime facts. OpenWiki remains derived evidence.
+- Give every non-index reader-facing page at least one descriptive Markdown link to the most important tracked source or test using `repo://path` and a line range when stable. Machine claim metadata alone is not a reader-facing navigation path.
 
 <!-- lee-spec-kit:writing-policy:begin -->
 ## Writing policy managed by lee-spec-kit

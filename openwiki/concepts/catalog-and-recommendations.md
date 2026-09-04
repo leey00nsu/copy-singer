@@ -1,14 +1,20 @@
 ---
-type: catalog lifecycle concept
-title: 곡 카탈로그와 추천 대상 수명주기
-description: 곡의 식별자, 출처 revision, 분석 revision, 추천·믹싱용 target asset, 카탈로그 공개 상태가 왜 분리되는지 설명한다. 관리자 변경이 추천 결과와 믹싱 작업의 snapshot을 어떻게 무효화하는지도 다룬다.
-tags: [catalog, recommendations, lifecycle, snapshot, mixing]
+type: catalog and recommendation concept
+title: 곡 카탈로그와 추천 스냅샷
+description: 곡 identity, YouTube source revision, 분석 결과, target asset, 공개 entry와 profile별 추천 결과가 서로 다른 수명주기를 갖는 이유를 설명한다. source 교체와 target 업로드가 PostgreSQL의 current 포인터, catalog revision, 기존 믹싱 근거에 미치는 영향도 다룬다.
+tags: [catalog, recommendations, snapshot, revision, mixing]
 verified:
   - by: openwiki/0.5.0
-    at: 2026-09-04T08:11:35.711Z
+    at: 2026-09-04T09:11:21.096Z
 sources:
   - id: openwiki-source-2798a6200ef792b731721034
     resource: repo://prisma/schema.prisma
+  - id: openwiki-source-cde5a775c5a691f3289b45a0
+    resource: repo://services/song-catalog-analyzer/modal_app.py
+  - id: openwiki-source-a52697f001c320f396711a5c
+    resource: repo://src/_app/api-routes/recommendations/recommendations-route.ts
+  - id: openwiki-source-41b6d16ddfce1d7367366fd3
+    resource: repo://src/_pages/admin-song-catalog/ui/admin-song-catalog-page.tsx
   - id: openwiki-source-99eb096d7b352b1ff8e2f742
     resource: repo://src/entities/song-catalog/api/catalog-import.ts
   - id: openwiki-source-eb3d61d7e6a4647651cc0369
@@ -31,91 +37,116 @@ sources:
     resource: repo://tests/catalog-snapshot.integration.ts
   - id: openwiki-source-52390daa8cb0afc771977ac4
     resource: repo://tests/catalog-target-assets.integration.ts
-generated: { by: "openwiki/0.5.0", at: "2026-09-04T08:11:35.711Z" }
+  - id: openwiki-source-35e6d9931d5f4827e7c24f6d
+    resource: repo://tests/recommendation-persistence.integration.ts
+generated: { by: "openwiki/0.5.0", at: "2026-09-04T09:11:21.096Z" }
 ---
 
-# 곡 카탈로그와 추천 대상 수명주기
+# 곡 카탈로그와 추천 스냅샷
 
-이 문서의 핵심은 **곡을 공개한다는 것**이 하나의 플래그를 바꾸는 일이 아니라는 점이다. `Song`은 곡의 정체성과 현재 가리키는 revision을 소유하고, `SongSource`는 출처 revision을, `SongAnalysis`는 특정 출처와 pipeline 계약의 분석 결과를, `CatalogTargetAsset`은 믹싱에 사용할 외부 음원 파일의 metadata를 소유한다. `CatalogEntry`와 `Catalog`는 사용자에게 보이는 공개 경로를 소유한다.
+이 페이지는 “추천에 보이는 곡”을 하나의 레코드로 취급하지 않는 이유를 설명한다. 시스템은 곡의 identity, YouTube 출처 revision, 해당 출처의 분석, 믹싱용 target asset, 카탈로그 공개 entry를 분리한다. 추천 API는 이 공개 조합과 사용자 vocal profile을 읽어 **profile별 결과 snapshot을 요청 시 계산**하고, 믹싱을 시작할 때 그 snapshot이 아직 유효한지 다시 확인한다.
 
-따라서 관리자가 새 출처를 등록하거나 분석·target을 교체해도 과거 분석과 이미 생성된 믹싱 작업의 참조를 함부로 덮어쓰지 않는다. 추천은 공개된 한 카탈로그 revision을 읽고, 믹싱 enqueue는 그 revision과 ID 연결을 다시 검증한다. 자세한 데이터 모델 배경은 [데이터 모델](/openwiki/architecture/data-model.md), 추천 계산은 [보컬 분석과 추천](/openwiki/concepts/vocal-analysis-and-recommendations.md)을 함께 본다.
+현재 runtime의 기준 데이터는 관리자 화면이 아니라 PostgreSQL이다. 관리자 UI는 PostgreSQL 행을 검색하고 상태를 표시하는 운영 도구이며, UI에 “공개”로 보이는 `Song.lifecycleStatus`만으로 추천 가능 여부를 판단하면 안 된다. 실제 공개는 `Catalog`, `CatalogEntry`, `Song`, 현재 source·analysis·target의 조건을 함께 만족해야 한다. 데이터 모델의 전체 관계는 [데이터 모델](/openwiki/architecture/data-model.md), 분석과 점수화의 배경은 [보컬 분석과 추천](/openwiki/concepts/vocal-analysis-and-recommendations.md)에서 이어서 설명한다.
 
-## 다섯 개의 분리된 책임
+## 다섯 경계를 한눈에 보기
 
-| 개념 | 저장 주체 | 의미 | 바뀔 때 보존되는 것 |
-| --- | --- | --- | --- |
-| 곡 identity | `Song.id`, `title`, `artist` | 사용자에게 같은 곡으로 인식되는 논리적 곡. `title`+`artist`가 unique다. | 기존 source·analysis·mixing job |
-| source revision | `SongSource.revision`, `sourceVideoId` | 원본 출처와 그 revision. 같은 곡에 revision을 추가하며 기존 행은 남는다. | 이전 출처와 그 출처의 분석 |
-| analysis revision | `SongAnalysis`의 `sourceId`+`pipelineContract` | 특정 source를 분석한 수치와 analyzer 계약. `currentAnalysisId`가 현재 선택을 가리킨다. | 다른 pipeline 계약의 결과, 과거 믹싱 참조 |
-| target asset | `CatalogTargetAsset` | 외부 provider의 파일 ID·URL·크기·`sha256`·`sourceVideoId` metadata. 원본 bytes 자체가 아니다. | asset row와 이를 참조하는 mixing job |
-| 공개 상태 | `Catalog.status`, `CatalogEntry.status`, `Song.lifecycleStatus` | 전체 카탈로그, 항목, 곡이 공개 경로에 포함될지 결정한다. | identity와 revision 행 |
+```mermaid
+flowchart LR
+    S[Song identity\nSong.id · title · artist]
+    SRC[SongSource\nrevision · sourceVideoId]
+    AN[SongAnalysis\nsourceId · pipelineContract · 수치]
+    TA[CatalogTargetAsset\n외부 file metadata · sha256]
+    CE[CatalogEntry\nposition · status]
+    C[Catalog\nstatus · revision]
+    R[추천 결과 snapshot\nprofile + catalogId/revision\nanalysisId · targetAssetId]
+    M[MixingJob\n생성 당시 snapshot 입력]
 
-`Song`은 `activeSourceId`, `currentAnalysisId`, `targetAssetId`를 별도로 보유한다. 즉 “현재 공개에 사용 중인 조합”을 가리키는 포인터와 각 revision의 실제 데이터가 분리된다. `MixingJob`은 다시 `songId`, `songAnalysisId`, `targetAssetId`, `catalogPosition`, `catalogRevision`, `scoringVersion`을 저장하므로, 생성 당시의 추천·믹싱 입력을 추적할 수 있다. ([`prisma/schema.prisma`](repo://prisma/schema.prisma#L188-L239), [`prisma/schema.prisma`](repo://prisma/schema.prisma#L241-L283), [`prisma/schema.prisma`](repo://prisma/schema.prisma#L312-L342), [`prisma/schema.prisma`](repo://prisma/schema.prisma#L442-L467), [`prisma/schema.prisma`](repo://prisma/schema.prisma#L639-L681))
+    S -->|sources| SRC
+    SRC -->|분석 대상| AN
+    SRC -->|source 연결| TA
+    S -->|catalogEntries| CE
+    CE --> C
+    S -->|active/current/target 포인터| AN
+    S -->|targetAssetId| TA
+    C -->|PUBLISHED catalog 조회| R
+    CE -->|PUBLISHED position| R
+    AN --> R
+    TA --> R
+    R -->|유효성 재검증 후 enqueue| M
+```
 
-> **bytes와 metadata의 경계**
->
-> `CatalogTargetAsset`과 snapshot은 외부 asset의 metadata를 저장·운반한다. snapshot export는 `externalProjectId`, `externalFileId`, URL, 파일명, MIME type, 크기, `sha256`, source video ID와 분석 수치를 내보내지만 원본 음원 bytes를 내보내지 않는다. descriptor와 pipeline metadata에서도 `audioBytes`, base64, 임시 경로, `storagePath` 같은 키를 제거하거나 거부한다. 실제 업로드는 관리자가 파일을 제출할 때 Leemage에 보내고, 동일 source의 동일 `sha256` READY asset이 있으면 재사용한다. ([`src/entities/song-catalog/api/catalog-snapshot.ts`](repo://src/entities/song-catalog/api/catalog-snapshot.ts#L7-L39), [`src/entities/song-catalog/api/catalog-snapshot.ts`](repo://src/entities/song-catalog/api/catalog-snapshot.ts#L80-L189), [`src/features/manage-song-catalog/api/target-assets.ts`](repo://src/features/manage-song-catalog/api/target-assets.ts#L17-L67))
+`Song`의 `activeSourceId`, `currentAnalysisId`, `targetAssetId`는 현재 공개 조합을 가리키는 포인터다. 실제 revision 행은 삭제하거나 덮어쓰지 않고 남는다. `MixingJob`은 `songAnalysisId`, `targetAssetId`, `catalogPosition`, `catalogRevision`, `scoringVersion`을 자체 저장하므로 생성 당시 어떤 입력으로 작업했는지 추적할 수 있다. ([`prisma/schema.prisma`](repo://prisma/schema.prisma#L188-L239), [`prisma/schema.prisma`](repo://prisma/schema.prisma#L241-L283), [`prisma/schema.prisma`](repo://prisma/schema.prisma#L312-L342), [`prisma/schema.prisma`](repo://prisma/schema.prisma#L442-L467), [`prisma/schema.prisma`](repo://prisma/schema.prisma#L569-L617))
 
-## 공개 조건과 상태 diagram
+| 경계 | 책임 | 변경의 의미 |
+| --- | --- | --- |
+| 곡 identity | `Song.id`, `title`, `artist` | 사용자에게 같은 곡으로 인식되는 논리적 곡이다. `title`+`artist`가 unique다. |
+| source revision | `SongSource.revision`, `sourceVideoId` | 미리듣기 출처의 특정 버전이다. 같은 곡에 새 revision을 추가한다. |
+| song analysis | `SongAnalysis.sourceId`, `pipelineContract` | 특정 source에 대해 계산한 음역·키·품질 수치다. `currentAnalysisId`가 선택된 결과를 가리킨다. analyzer는 ffmpeg 변환, Demucs vocal 분리, `analyze_wav`를 거쳐 결과와 analyzer version을 만든다. ([`modal_app.py`](repo://services/song-catalog-analyzer/modal_app.py#L141-L149), [`modal_app.py`](repo://services/song-catalog-analyzer/modal_app.py#L161-L218)) |
+| target asset | `CatalogTargetAsset` | Leemage 외부 파일의 project/file ID, URL, 크기, `sha256`, `sourceVideoId` metadata다. 원본 bytes 자체가 아니다. |
+| published entry | `Catalog` + `CatalogEntry` | 카탈로그에 노출할 곡의 position과 공개 상태다. `Catalog.revision`은 공개 조합이 바뀔 때의 invalidation 포인터다. |
 
-현재 추천에 들어가는 행은 `loadPublishedCatalog`의 단일 조건으로 결정된다. 카탈로그와 항목이 각각 `PUBLISHED`이고, 곡이 `ACTIVE`이며, active source가 `READY`, current analysis가 `READY`이고 `cleanupConfirmed === true`, target asset이 `READY`여야 한다. 분석은 active source와 같은 `sourceId`여야 하고 target도 active source에 연결돼야 한다. `catalogReadiness`는 이 조건을 ID 일치까지 포함해 검사한다. ([`src/entities/song-catalog/api/published-catalog.ts`](repo://src/entities/song-catalog/api/published-catalog.ts#L6-L61), [`src/entities/song-catalog/lib/readiness.ts`](repo://src/entities/song-catalog/lib/readiness.ts#L3-L44))
+## 공개는 조합의 상태 검사다
+
+추천 조회의 `loadPublishedCatalog`는 `Catalog`와 `CatalogEntry`가 `PUBLISHED`이고, 곡이 `ACTIVE`이며, active source가 `READY`, current analysis가 `READY`이고 `cleanupConfirmed === true`, target이 `READY`인 행만 읽는다. 결과는 position 순서로 정렬된다. 별도의 `catalogReadiness`는 포인터 ID가 실제 연결 행과 같은지, analysis와 target이 active source에 연결됐는지, entry가 published인지까지 진단한다. 따라서 `Song.lifecycleStatus = ACTIVE`만으로는 공개 가능하다고 볼 수 없다. ([`published-catalog.ts`](repo://src/entities/song-catalog/api/published-catalog.ts#L6-L61), [`readiness.ts`](repo://src/entities/song-catalog/lib/readiness.ts#L5-L44))
 
 ```mermaid
 stateDiagram-v2
-    [*] --> DRAFT: 곡·source·entry 생성
-    DRAFT --> 분석대기: SongAnalysisJob PENDING/PROCESSING
-    분석대기 --> DRAFT: 분석 실패 또는 cleanup 미확인
-    분석대기 --> 공개검증: analysis READY + cleanupConfirmed
-    공개검증 --> DRAFT: target 없음/UNAVAILABLE 또는 source 불일치
-    공개검증 --> PUBLISHED: source·analysis·target READY
-    PUBLISHED --> PUBLISHED: 같은 조합 재공개
-    PUBLISHED --> 새revision검증: 새 source/analysis/target 선택
-    새revision검증 --> PUBLISHED: 포인터 갱신 + catalog revision 증가
-    PUBLISHED --> ARCHIVED: 관리자 곡 archive
-    DRAFT --> ARCHIVED: 관리자 곡 archive
-    ARCHIVED --> [*]
+    [*] --> DRAFT: identity/source/entry 생성
+    DRAFT --> ANALYZING: SongAnalysisJob PENDING/PROCESSING
+    ANALYZING --> DRAFT: 실패 또는 cleanup 미확인
+    ANALYZING --> READY_CHECK: analysis READY + cleanupConfirmed
+    READY_CHECK --> DRAFT: target 없음 또는 source 불일치
+    READY_CHECK --> PUBLISHED: source·analysis·target READY
+    PUBLISHED --> REVISION_CHECK: 새 source/analysis/target 선택
+    REVISION_CHECK --> PUBLISHED: current 포인터 갱신 + Catalog.revision 증가
+    PUBLISHED --> ARCHIVED: 곡 archive
+    DRAFT --> ARCHIVED: 곡 archive
 ```
 
-상태 이름은 서로 다른 모델의 enum을 합쳐 표현한 것이다. `Song`은 `DRAFT → ACTIVE → ARCHIVED`, `SongSource`는 `DRAFT → READY → SUPERSEDED/UNAVAILABLE`, `Catalog`와 `CatalogEntry`는 각각 `DRAFT → PUBLISHED → ARCHIVED`를 사용한다. diagram의 `PUBLISHED`는 이 세 계층의 공개 조건이 동시에 충족된 상태를 뜻한다. 개별 모델 enum과 관계는 schema에서 확인할 수 있다. ([`prisma/schema.prisma`](repo://prisma/schema.prisma#L29-L65))
+이 diagram은 여러 모델의 상태를 합친 운영 경로다. `Song`은 `DRAFT → ACTIVE → ARCHIVED`, source는 `DRAFT → READY → SUPERSEDED/UNAVAILABLE`, catalog와 entry는 `DRAFT → PUBLISHED → ARCHIVED` enum을 사용한다. `PUBLISHED`는 하나의 enum 값이 아니라 공개 조건이 동시에 충족된 결과다. ([`prisma/schema.prisma`](repo://prisma/schema.prisma#L29-L65))
 
-### 관리자 변경 흐름
+## source 교체와 target 선행 업로드
 
-관리자 API는 `/api/admin/catalog`에서 목록·곡 생성 요청을 받고, 하위 route를 통해 source 등록, 분석 retry, publish, archive, target 업로드, snapshot import/export를 제공한다. 새 곡 생성은 하나의 transaction에서 `Song(DRAFT)`, revision 1의 `SongSource(DRAFT)`, `CatalogEntry(DRAFT)`, `SongAnalysisJob(PENDING)`을 함께 만든다. 기존 곡의 source 교체는 기존 행을 수정하지 않고 다음 `revision`의 source와 분석 job을 만든다. idempotency key가 다른 곡·출처에 재사용되면 conflict를 반환한다. ([`src/_app/api-routes/admin/catalog/index.server.ts`](repo://src/_app/api-routes/admin/catalog/index.server.ts#L1-L10), [`src/features/manage-song-catalog/api/admin-service.ts`](repo://src/features/manage-song-catalog/api/admin-service.ts#L72-L137), [`src/features/manage-song-catalog/api/admin-service.ts`](repo://src/features/manage-song-catalog/api/admin-service.ts#L139-L190))
+관리자 곡 생성은 한 transaction에서 DRAFT `Song`, revision 1의 DRAFT `SongSource`, DRAFT `CatalogEntry`, PENDING `SongAnalysisJob`을 만든다. source 교체도 기존 source를 수정하지 않고 마지막 revision보다 1 큰 source와 새 분석 job을 만든다. idempotency key를 다른 곡이나 출처에 재사용하면 conflict가 난다. ([`admin-service.ts`](repo://src/features/manage-song-catalog/api/admin-service.ts#L72-L137), [`admin-service.ts`](repo://src/features/manage-song-catalog/api/admin-service.ts#L139-L190))
 
-publish는 source에 맞는 pipeline contract의 READY 분석과 cleanup 확인, 같은 `sourceVideoId`의 READY target, 카탈로그 entry를 transaction 안에서 확인한다. 통과하면 기존 READY source를 `SUPERSEDED`로 만들고, entry를 `PUBLISHED`로 만들며, `Song.activeSourceId`, `currentAnalysisId`, `targetAssetId`를 함께 갱신하고 `Song`을 `ACTIVE`로 만든다. 공개 조합이 실제로 바뀐 경우에만 `Catalog.revision`을 증가시킨다. 이전 target이 더 이상 `Song`이나 mixing job에서 참조되지 않으면 외부 파일을 삭제하고, 삭제 실패는 `DELETE_PENDING`으로 남긴다. ([`src/features/manage-song-catalog/api/admin-service.ts`](repo://src/features/manage-song-catalog/api/admin-service.ts#L215-L261), [`src/features/manage-song-catalog/api/target-assets.ts`](repo://src/features/manage-song-catalog/api/target-assets.ts#L69-L92))
+target은 분석 완료 전에도 source에 대해 사전 업로드할 수 있다. 업로드 API는 49MB 이하의 지원 audio를 검증하고 파일 bytes의 SHA-256을 계산한다. 동일 `sourceId`와 digest의 READY asset이 있으면 Leemage를 다시 호출하지 않고 그 행을 재사용한다. target의 `sourceVideoId`는 source와 같아야 publish에 사용할 수 있다. ([`target-assets.ts`](repo://src/features/manage-song-catalog/api/target-assets.ts#L10-L67), [`admin-service.ts`](repo://src/features/manage-song-catalog/api/admin-service.ts#L215-L230))
 
-archive는 해당 곡의 아직 archive되지 않은 모든 `CatalogEntry`를 archive하고 각 관련 카탈로그의 revision을 증가시킨 뒤 `Song.lifecycleStatus`를 `ARCHIVED`로 만든다. 이는 entry만 숨기는 것과 곡 identity를 archive하는 것을 한 transaction으로 묶는다. ([`src/features/manage-song-catalog/api/admin-service.ts`](repo://src/features/manage-song-catalog/api/admin-service.ts#L264-L275))
+publish는 transaction 안에서 선택한 source의 pipeline contract 분석이 READY이고 cleanup이 확인됐는지, 같은 source video의 READY target이 있는지 검사한다. 통과하면 이전 READY source를 `SUPERSEDED`로 만들고 entry를 PUBLISHED로 바꾸며, `activeSourceId`, `currentAnalysisId`, `targetAssetId`, lifecycle status를 함께 갱신한다. 공개 조합이 실제로 달라질 때만 `Catalog.revision`을 증가시킨다. 이전 target이 더 이상 `Song`이나 `MixingJob`에서 참조되지 않으면 외부 파일 삭제를 시도하고, 삭제 실패는 `DELETE_PENDING`으로 남긴다. ([`admin-service.ts`](repo://src/features/manage-song-catalog/api/admin-service.ts#L215-L261), [`target-assets.ts`](repo://src/features/manage-song-catalog/api/target-assets.ts#L69-L92))
 
-## 추천 snapshot과 믹싱의 안전한 경계
+결과적으로 source를 교체해도 기존 source·analysis 행과 이미 생성된 mixing job의 근거는 보존된다. 다만 새 source를 publish하면 새 추천은 새 current 조합과 증가한 catalog revision을 읽는다. 오래된 추천으로 새 믹싱을 요청하는 경우에는 아래의 revision 및 ID 검증이 요청을 막는다.
 
-추천 요청은 사용자 `USER` vocal profile을 검증한 뒤, `PUBLISHED` 카탈로그를 transaction의 `RepeatableRead` 격리 수준에서 선택하고 `loadPublishedCatalog` 결과를 점수화한다. 응답에는 `catalogId`, `catalogRevision`, `scoringVersion`, 각 항목의 `songAnalysisId`와 `targetAssetId`가 포함된다. 따라서 추천 결과는 단순히 곡 제목 목록이 아니라 특정 카탈로그 revision과 analysis/target 조합을 담은 snapshot이다. 공개 카탈로그가 없거나 행이 점수화되지 않으면 retryable `503`을 반환한다. ([`src/features/create-recommendation/api/recommendation-service.ts`](repo://src/features/create-recommendation/api/recommendation-service.ts#L84-L119), [`src/features/create-recommendation/api/recommendation-service.ts`](repo://src/features/create-recommendation/api/recommendation-service.ts#L152-L236))
+## profile별 추천 snapshot은 무엇을 고정하는가
 
-사용자가 믹싱을 요청하면 `enqueueMixingJob`은 추천 항목을 다시 읽고 `Serializable` transaction에서 다음을 확인한다.
+`POST /api/recommendations`는 로그인 세션과 `userVocalProfileId`를 확인한 뒤 `getRecommendationResult`를 호출한다. `USER` vocal profile만 허용하며 필수 음역·품질 필드가 없으면 422다. 서비스는 `RepeatableRead` transaction에서 최초 PUBLISHED catalog를 고르고 그 slug의 공개 행을 읽은 다음 점수화한다. 응답에는 `catalogId`, `catalogRevision`, `scoringVersion`, 각 항목의 `songAnalysisId`, `targetAssetId`, position, 추천 shift와 점수가 들어간다. 이는 profile별 계산 결과를 구성하는 snapshot이지만, 별도 Recommendation snapshot 테이블에 저장하는 영속 캐시가 아니다. catalog가 없거나 점수화할 수 없으면 retryable 503을 반환한다. ([`recommendations-route.ts`](repo://src/_app/api-routes/recommendations/recommendations-route.ts#L27-L49), [`recommendation-service.ts`](repo://src/features/create-recommendation/api/recommendation-service.ts#L84-L119), [`recommendation-service.ts`](repo://src/features/create-recommendation/api/recommendation-service.ts#L152-L236))
 
-1. song이 `ACTIVE`이고 현재 analysis ID가 요청 analysis ID와 같다.
-2. 추천의 `catalogId`에 대한 entry와 catalog가 `PUBLISHED`이고 catalog revision·position이 snapshot과 같다.
-3. target ID가 추천 항목의 ID와 같고, analysis의 source에 연결되어 있으며 `READY`다.
-4. 사용자 소유의 `USER` vocal profile에서 사용할 reference asset을 선택할 수 있다.
+profile마다 결과가 분리되는 이유는 점수화 입력이 사용자 profile이고, 응답에 해당 profile의 mixing reference capability와 기존 `MixingJob` 상태도 포함되기 때문이다. 같은 catalog revision이라도 profile 수치나 reference asset이 다르면 결과와 믹싱 가능 상태가 달라질 수 있다.
 
-하나라도 달라지면 티켓을 차감하거나 job을 만들기 전에 `MIXING_RECOMMENDATION_STALE`(409, retryable)을 반환한다. 검증 후 생성하는 `MixingJob`에는 snapshot의 position, revision, scoring version과 analysis/target ID가 기록된다. transaction write conflict는 최대 3회 재시도하고, idempotency key 재사용은 기존 동일 job을 반환한다. ([`src/features/create-mixing/api/mixing-queue.ts`](repo://src/features/create-mixing/api/mixing-queue.ts#L19-L43), [`src/features/create-mixing/api/mixing-queue.ts`](repo://src/features/create-mixing/api/mixing-queue.ts#L52-L121), [`src/features/create-mixing/api/mixing-queue.ts`](repo://src/features/create-mixing/api/mixing-queue.ts#L122-L148))
+## 믹싱 enqueue가 snapshot을 다시 검증하는 이유
 
-이 설계의 운영상 의미는 명확하다. publish 직후 새 추천은 새 revision을 읽지만, 이미 생성된 `MixingJob`은 자기 `songAnalysisId`와 `targetAssetId`를 계속 참조한다. 반대로 사용자가 오래된 추천으로 새 믹싱을 시작하면 catalog revision 또는 ID 검증이 실패해 최신 추천을 다시 받게 된다. target cleanup도 과거 mixing job이 참조하는 동안에는 외부 파일을 지우지 않는다.
+사용자가 추천 항목을 믹싱하면 `enqueueMixingJob`은 추천 결과를 다시 계산한 뒤 `Serializable` transaction에서 다음을 확인한다.
 
-## snapshot export/import와 불변식
+1. 요청 profile이 해당 사용자의 `USER` profile이고, analysis가 READY다.
+2. 곡이 ACTIVE이고 current analysis ID가 추천 항목의 analysis ID와 같다.
+3. 해당 catalog의 entry와 catalog가 PUBLISHED이며 revision과 position이 추천 snapshot과 같다.
+4. target ID가 추천 항목과 같고 analysis source에 연결되어 있으며 READY다.
+5. 사용자 소유의 reference asset을 선택할 수 있다.
 
-`exportDatabaseSongCatalog`는 먼저 전체 published entry 수와 실제 readiness 행 수가 같은지, position이 양의 정수이며 중복되지 않는지 확인한다. 불완전한 카탈로그는 export하지 않는다. snapshot에는 카탈로그 revision과 순서가 포함되며, import는 다음을 검증·보장한다.
+하나라도 바뀌면 ticket debit이나 job 생성 전에 `MIXING_RECOMMENDATION_STALE` 409와 retryable flag를 반환한다. 검증을 통과한 `MixingJob`에는 snapshot의 position, revision, scoring version과 analysis/target ID가 기록된다. transaction write conflict는 최대 세 번 재시도하고, 같은 사용자와 idempotency key의 재요청은 기존 job을 반환한다. ([`mixing-queue.ts`](repo://src/features/create-mixing/api/mixing-queue.ts#L19-L43), [`mixing-queue.ts`](repo://src/features/create-mixing/api/mixing-queue.ts#L45-L90), [`mixing-queue.ts`](repo://src/features/create-mixing/api/mixing-queue.ts#L105-L148))
 
-- position, 곡 identity, source video ID, 외부 target key가 snapshot 안에서 중복되지 않는다.
-- target의 `sourceVideoId`가 source의 `sourceVideoId`와 같아야 한다.
-- 곡은 `title`+`artist`, source는 `sourceVideoId`, 분석은 `sourceId`+`pipelineContract`, target은 외부 project/file ID로 upsert되어 반복 import가 새 행을 만들지 않는다.
-- source·analysis·target이 모두 READY이고 analysis cleanup이 확인되며 source 연결이 맞을 때만 entry를 `PUBLISHED`로 만들고 곡 포인터를 ACTIVE 조합으로 갱신한다.
-- import는 snapshot revision보다 기존 revision을 낮추지 않는다.
+따라서 publish 직후의 새 추천은 새 revision을 반영하지만, publish 전에 만들어진 `MixingJob`은 자신이 저장한 analysis와 target을 계속 참조한다. 반대로 target 교체 직후 오래된 추천으로 enqueue하면 target ID 또는 catalog revision이 맞지 않아 stale로 거부된다. cleanup도 과거 mixing job이 target을 참조하는 동안에는 외부 파일을 삭제하지 않는다.
 
-Import는 이 작업을 transaction으로 수행하고, 충돌하는 position·source·target 연결은 오류로 중단한다. snapshot은 외부 파일을 다시 업로드하지 않는다. target metadata를 복원할 뿐이므로, 외부 provider의 file ID가 실제로 존재하고 접근 가능한지는 별도 운영 검증이 필요하다. ([`src/entities/song-catalog/api/catalog-snapshot.ts`](repo://src/entities/song-catalog/api/catalog-snapshot.ts#L45-L77), [`src/entities/song-catalog/api/catalog-import.ts`](repo://src/entities/song-catalog/api/catalog-import.ts#L22-L45), [`src/entities/song-catalog/api/catalog-import.ts`](repo://src/entities/song-catalog/api/catalog-import.ts#L93-L161), [`src/entities/song-catalog/api/catalog-import.ts`](repo://src/entities/song-catalog/api/catalog-import.ts#L164-L257), [`src/entities/song-catalog/api/catalog-import.ts`](repo://src/entities/song-catalog/api/catalog-import.ts#L262-L300))
+## snapshot export/import와 운영 불변식
 
-## 변경 시 확인할 테스트
+카탈로그 snapshot은 추천 응답과 다른 운영 snapshot이다. export는 published entry 수와 readiness 행 수, position의 양의 정수·중복 여부를 검사한 뒤 catalog revision, 곡/source/analysis 정보와 target의 외부 metadata를 JSON으로 내보낸다. audio bytes, base64, 임시 경로, `storagePath`는 내보내지 않는다. import는 position·곡·source video·외부 target key 중복과 source-target video 불일치를 거부하고, identity key별 upsert를 transaction으로 수행한다. 반복 import는 새 행을 만들지 않으며 기존 catalog revision을 snapshot보다 낮추지 않는다. 외부 provider file ID의 실제 존재와 접근성은 import 이후 별도로 확인해야 한다. ([`catalog-snapshot.ts`](repo://src/entities/song-catalog/api/catalog-snapshot.ts#L7-L39), [`catalog-snapshot.ts`](repo://src/entities/song-catalog/api/catalog-snapshot.ts#L45-L189), [`catalog-import.ts`](repo://src/entities/song-catalog/api/catalog-import.ts#L22-L45), [`catalog-import.ts`](repo://src/entities/song-catalog/api/catalog-import.ts#L93-L161), [`catalog-import.ts`](repo://src/entities/song-catalog/api/catalog-import.ts#L164-L300))
 
-- `tests/catalog-snapshot.integration.ts`는 fresh catalog 복원, 두 번 import해도 생성 수가 0인 idempotency, revision 하향 방지, source URL 불일치·금지 metadata·중복 position/video/target을 검증한다. 직렬화된 snapshot에 raw bytes·base64·임시 경로가 없는지도 확인한다. ([`tests/catalog-snapshot.integration.ts`](repo://tests/catalog-snapshot.integration.ts#L8-L120), [`tests/catalog-snapshot.integration.ts`](repo://tests/catalog-snapshot.integration.ts#L173-L212))
-- `tests/catalog-target-assets.integration.ts`는 target upload가 source video ID와 연결되고 SHA-256 동일 파일의 두 번째 요청에서 외부 presign을 다시 호출하지 않는지 확인한다. ([`tests/catalog-target-assets.integration.ts`](repo://tests/catalog-target-assets.integration.ts#L10-L92))
-- `tests/admin-song-catalog.integration.ts`는 관리자 생성·source 교체·분석 완료 후 publish·archive와 공개 조합의 변경을 검증하는 통합 경계다. 관리자 lifecycle 규칙을 바꿀 때 이 테스트와 publish readiness를 함께 갱신한다.
-- 추천·믹싱 snapshot을 바꾸려면 `catalogRevision`, `songAnalysisId`, `targetAssetId`를 함께 추적하고, 오래된 추천을 409로 거부하는 경로를 우선 회귀 테스트해야 한다. 관련 사용자 흐름은 [카탈로그 관리](/openwiki/workflows/catalog-management.md)와 [추천에서 믹싱까지](/openwiki/workflows/recommendation-to-mixing.md)를 참조한다.
+## 관리자 UI를 확인할 때의 주의점
+
+`/admin/songs` 페이지는 `findAdminCatalog`가 반환한 PostgreSQL 데이터를 `CatalogManager`용 view로 변환한다. UI는 source별 분석 준비 여부와 source video가 같은 READY target인지 계산해 표시하고, lifecycle 필터의 `ACTIVE`를 “공개”로 보여준다. 그러나 runtime 추천은 UI의 표시값을 읽지 않고 `loadPublishedCatalog`와 transaction 검증을 직접 수행한다. 운영자는 화면 상태와 실제 `Catalog.status`, `CatalogEntry.status`, current 포인터 및 asset status를 함께 확인해야 한다. ([`admin-song-catalog-page.tsx`](repo://src/_pages/admin-song-catalog/ui/admin-song-catalog-page.tsx#L28-L66), [`admin-song-catalog-page.tsx`](repo://src/_pages/admin-song-catalog/ui/admin-song-catalog-page.tsx#L69-L106), [`admin-service.ts`](repo://src/features/manage-song-catalog/api/admin-service.ts#L29-L60))
+
+## 변경 전 확인할 테스트
+
+- `tests/catalog-snapshot.integration.ts`: fresh 복원, 반복 import의 idempotency, revision 하향 방지, 중복 position/video/target, source URL 불일치와 금지 metadata를 검증한다. raw bytes와 base64가 snapshot에 들어가지 않는지도 확인한다. ([`catalog-snapshot.integration.ts`](repo://tests/catalog-snapshot.integration.ts#L8-L120), [`catalog-snapshot.integration.ts`](repo://tests/catalog-snapshot.integration.ts#L173-L212))
+- `tests/catalog-target-assets.integration.ts`: source video 연결과 동일 SHA-256 파일의 target 재사용으로 외부 presign/upload가 중복되지 않는지 검증한다. ([`catalog-target-assets.integration.ts`](repo://tests/catalog-target-assets.integration.ts#L10-L92))
+- `tests/recommendation-persistence.integration.ts`: 추천을 요청 시 계산하고, 같은 revision에서는 결과가 반복되며 catalog revision을 올리면 반환 snapshot의 revision이 바뀌는지 검증한다. ([`recommendation-persistence.integration.ts`](repo://tests/recommendation-persistence.integration.ts#L8-L97))
+- `tests/recommendation-song-detail.test.tsx`와 `tests/catalog-target-assets.integration.ts`: 추천 항목 상세와 target 연결을 바꿀 때 응답의 analysis/target ID 계약을 함께 회귀시킨다.
+- 관리자 lifecycle을 바꿀 때는 `tests/admin-song-catalog.integration.ts`와 publish readiness를 함께 확인하고, 추천·믹싱 snapshot 계약을 바꿀 때는 revision, analysis ID, target ID와 stale 409 경로를 우선 테스트한다. 자세한 작업 순서는 [카탈로그 관리](/openwiki/workflows/catalog-management.md), 다음 단계는 [추천에서 믹싱까지](/openwiki/workflows/recommendation-to-mixing.md)다.

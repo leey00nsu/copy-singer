@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:36f3161e10b4b47cbe599fcd5951b5f5350a0bf068dc285935bcef426157c82d",
+  "pageVersion": "sha256:fb46c5bbfc4b03b62f490aa50a96c1c3715edd169f4082bfda5d8f959ab99f6a",
   "claims": [
     {
       "id": "claim_5501b5994b1149bf9c89488cad77b870",
@@ -199,10 +199,134 @@
           "version": "repo-lines-v1:sha256:5a2e36997fb0452cbd915668285d9ab6a50103679393249ad3ef40cddf07b2c4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmNWFlYWM1ZWQ5NzIwNTJjMzU2M2UyMDc3ZDc4NjJkMTk4NGI0ZjU2NTVjNGE5NGFkMWU1ZGUwNjI2YmIxZDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjOTRkODRlYWUyYzRmZjE0NTE3YWExYTViMTU4YjFhOWFhMzNhOTk0YjFkNTNjYmUyYWM4NjNkMWNmNWQ2M2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkOWE5M2FlZTU2MWRjMmY3MTJlMTAzNjg1M2ZkNmUxY2MyNmE5Y2Y2MDE4N2YwNWFjZDM5MTQzM2JjNTg4M2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYyMWYyNjM2MjYxYmQ5MGYzYTEyZjM0MDhiN2UxNTY2YTc3MWU1MmZhZTRiNDc1NDFkOTJhNDRlM2ZlNjNiYzYifQ"
         }
       ]
+    },
+    {
+      "id": "claim_f432e438c81f4b8da7ad2f7b82421397",
+      "statement": "추천 응답은 현재 게시 catalog에서 계산한 item별 songAnalysisId, catalog 순서·revision, targetAssetId, scoringVersion, recommendedShift를 포함하며, 곡 상세 route는 선택한 item ID로 해당 분석을 표시한다.",
+      "evidence": [
+        {
+          "resource": "repo://app/(product)/recommendations/%5Bid%5D/songs/%5BitemId%5D/page.tsx#L1-L1",
+          "version": "repo-lines-v1:sha256:4436cdf65f055157187e16136eb1567b4b8a87ea60ac95d4445a87c9c343752b:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDQzNmNkZjY1ZjA1NTE1NzE4N2UxNjEzNmViMTU2N2I0YjhhODdlYTYwYWM5NWQ0NDQ1YTg3YzljMzQzNzUyYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDQzNmNkZjY1ZjA1NTE1NzE4N2UxNjEzNmViMTU2N2I0YjhhODdlYTYwYWM5NWQ0NDQ1YTg3YzljMzQzNzUyYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/features/create-recommendation/api/recommendation-service.ts#L152-L184",
+          "version": "repo-lines-v1:sha256:8c58b1171781dad95a868606206f53eef1d776ab8298ce10d647b38f0f6f7f96:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyNGJiODI3YWI3YjQ0OWIxODQzOGQ5MDliY2UxZTE2ZjhmZDI0N2UyYWNmZTBmMzg2OGQ0ZTNlOTI2ZjBkMDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0ZjYxNzA1YTI4NzFmZWIyMGUxOGExNDRjZGExNTRiZjI0ZDI2NzBjNDljMWQyZjllZTAzMjAzOTIyZTdiYTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg5YjJjOWI5NTQ5NzJiNGMwNDc2NTY3MGUwM2YzMzZjZDJhN2UwMzEyMTMzYzIwNDY3ZjJkYjliMmFjZjdlZDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3ZGE2YjdkZDc2YWU1MjA0ZDUxYjUwNGVjYjA2ZmZiODQ5NWU5ZTg1MGU3YjViYjUyYmY2NmU1YzRjNjY0MmUifQ"
+        },
+        {
+          "resource": "repo://src/features/create-recommendation/api/recommendation-service.ts#L99-L112",
+          "version": "repo-lines-v1:sha256:805d95652bebc9ddd031e405e07dbb22fcc7552b2260c7853dfe08aa7d99a30b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE5ZDYxZTM1YmJkOGUxZDAzNDhmYTViMjUxNWZmYTRiZTIyNmRjNjMyMGVjZDhiMzQxMWUyYzQwMGVkODVkMjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFjZGRlOTU3MjcxYzEzMTlkOTgxMGQ1MDU2ZDkxY2M3MWRlZDRiNjRiNjRjYTdiNWMyMDEwYzg3OTEzYWEzOTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVmN2MzZjQ4YzJiODY2MjBiZTZlMDVhOTcxOTc1ZjZlYzA4ZGI1MzY4NGQ1ODQ0ZmJlOTYwNTFlNDAwYjI2ZGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAxMGRiYTUyMGUyYzVmNTFjNjBkYmMyNDQzZmY3OWNjZGRkNjdlZTdkNzc5ZjcyZmFkODliNjBhYzkyNjRlNWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_806b68013bee4aafb98ac17d7465625b",
+      "statement": "추천 화면의 AI 믹싱 mutation은 idempotency key를 생성하고, 성공 시 recommendation profile·mixing history query를 무효화한 뒤 생성된 job 상세 route로 이동하며, 실패 시 recommendation cache에 구조화된 재시도 가능 오류를 기록한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/create-mixing/api/client.ts#L37-L55",
+          "version": "repo-lines-v1:sha256:201895d0bbfec835145913ec53b5649887886d6937c5f3839941d176310e82de:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhZGVkNDhmZDc1M2I0MzhiZGVhYjIwM2FjYTE0M2NhNDgxNGRjYTE4MDIxZDQ4MmM0OGFiNjUwZWY2NzUzOTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZWYwMWJjMDhkYmMzYjYzZTRlNzVlYTNkMjZhNWI5NDE4OTE4NzdlMjdhZDg5MTMyOWM4NDExZDdkOGRjNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFkYjA3Y2YwNGRmZTczYjM2NTNlMTE2MzY5MTE2ZWI1MWE1NDZiYjk1ZTc5N2NhY2VlYmJkMWJlNzdmMWVjYjMifQ"
+        },
+        {
+          "resource": "repo://src/features/create-mixing/api/use-recommendation-mixing.ts#L16-L46",
+          "version": "repo-lines-v1:sha256:a1076035f825d616c1651db353e7dba10828272aa32cf4d866a4d2778c57e0dc:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyNjIxYzc2ZjE4MzY4ZTE5ZWI1YTNiODM4NGI4YmE4ODg3ZTE3MDU2MWRlMzUzNTA0ZDZmMGQxOWNkNDZmZWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdjMzU4MWE5YWRlOGQwNGQ0MzAzOTEyNDY1NGRjOTg4ZWY1NTUzNmZjMGExZjE4Y2IwNmQwMGJmMDU1NmY0OTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI0NTYwNTZiY2E1YmU3MDBlYmVlM2VjODcyOTk2MjJmY2MwNzE0OWQ5OGMxNmE3M2UzZDM1MDJmODAwNzk5Y2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5Y2QzM2E0OWNjY2FjYWQyN2VmMWI0MWMyMmQ2MmMyMjliY2I3NGM0N2MyNzc0OTJkYjgzNDVjZGRkYjhhMjgifQ"
+        },
+        {
+          "resource": "repo://src/features/create-mixing/api/use-recommendation-mixing.ts#L50-L66",
+          "version": "repo-lines-v1:sha256:ddd6385aef620332a63fc88c4d158fca4b835e1479a7509a20371e6432cb1eba:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImExODExMWQ3NmIwODAxMTgwODE0YTgyNTllOTNlYWMzZDBlNmJhMzQ2YTZlMGUxYzQzZGRhZDY5YTg3YTc3ZjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1OTM2MmMwYmRkYmY2N2EzZjI4Njk1MTEzYmY2NWI1NTgzOTQyYjgwMWU1ODU2NzA0M2IxYTNiMDdkNWNkODkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ5Y2QzM2E0OWNjY2FjYWQyN2VmMWI0MWMyMmQ2MmMyMjliY2I3NGM0N2MyNzc0OTJkYjgzNDVjZGRkYjhhMjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_03fd519e20a44cd1a55b027d8f4f20ad",
+      "statement": "MixingJob은 추천 시점의 reference·target asset, catalog 위치·revision, scoring version, recommendedShift와 ticket cost를 snapshot으로 저장하고, 생성과 AI_MIXING 사용 차감을 Serializable transaction으로 원자화한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/create-mixing/api/mixing-queue.ts#L105-L135",
+          "version": "repo-lines-v1:sha256:267b72cd511e65690bc0ee6c353d3b7bac401208dc8972e56ec5f48d1737ba79:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3NTJkMjcwMjE4MTRkNmMzYzU2ZGNiNjhjYmUwZjZmNDg1NDZhZDcyNTk2NjNmMWNhNmU4MWM1OWMyNzc2MDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMWU0OTQzM2NjZmU0NDk5YTc0NmNlNWQ4NjUxYzBkMjI2NjFjNjJiMTMxZDk2ZmZjMTJkM2FjOWQwMmEyNDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA0NDVmMjFlZTU1MzljODg1MmM1NDc2NTNkN2JlZWU3YjM0YTAxYTUwY2MzZDhmZGMzOTc0OTRkZDNjMzJjZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRhNGI3MDE0NDVkMDBmNGNiOTNkNDRmODkwY2UyMWMyMWRmZDZjMjY3MDJiMDAyYjAyZDMxNzA3ODhiMWE5YmYifQ"
+        },
+        {
+          "resource": "repo://src/features/create-mixing/api/mixing-queue.ts#L31-L43",
+          "version": "repo-lines-v1:sha256:ddc919aa8282bac7d8fa6615b083d20775d5ebb3cd3964acf1d93426eac96fe3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJkZTI1MjYzYjdhZjA1NzEwOTcwN2U1NjYxNzFkNjFhZDA3MWY5ZGRiOTg4OWFjNmViM2U3YmU4OWQ0YTY4ZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4MDA1ZDU3MTA2YTM2MmViMDAwZGFmM2RhNDY3NGM4MmI1MThmZjVhMmUyZjY3ZWU4ZTc1N2EzMzNjMmFmNjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQwMWViY2MzYzdjZmIwOTVjYWYyMjRiZGJiMGViZjQ5NTNmMDc4MDk2NWUyYzRjOTlmMThhM2Y5M2U1YjU1MzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1N2YwYThhNWM5OTU4ZjZiY2RkOWM4YmIxOGQ1ZDg5N2I2ZjZhMTkwOWUyZGYyNTY3OWEzMTkxNTA2YTk3YjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4dea376620dc4745bf0be33990f31d9b",
+      "statement": "Mixing worker는 lease와 FOR UPDATE SKIP LOCKED로 단일 job을 claim하며, modalJobId가 저장된 job은 새 SoulX 변환을 제출하지 않고 기존 외부 job을 polling한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L257-L271",
+          "version": "repo-lines-v1:sha256:ca37e67cbc1f6a0f3ffea68bf0dc54acc07c22cfbc0d1dd34b4f4afc5f7a3690:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdmNGI3YzZmZGQ0OWZjOWJkYzQyMzIwNmNhNDFkZWRlMTAwNWVlNDc1YWNkN2E0ZGI4YWQxNTYzZTY5MDBkYTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwMjBhYTMxZmNhNmUwYjIwMWQyZmUzZGIzNTdmYTE4YjRiMGY0MmExZmY3NDNlNTkzMTg2NDlmYjdkYmFkYjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhlOWNlYjRkMjI5YWE1OTNiZWQzOTFjZWFmNmU3N2RmZGM2MmRiYzIxYTA1NTRhZTk5NTM3NTU5YjRhMzY2NDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNhYzkwYTExNWZkMzZiOTE1MmQ4NTk0Y2RlNTgzMDQyOWNiNDgyYWVhOTQzODNlN2MxODcxMTg2MWIzNzE5MzkifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L92-L130",
+          "version": "repo-lines-v1:sha256:b0664914d9c31b3dc59a2285f246bdb60ae643f05d330d3d3a7eceb69a254bb4:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkYTkzYWU1N2Q0ODhkMTQ2YjZmZGI4ZTg3NGY2MWFiYjcyYWQ2MmNiODZkYjM0MGM5ZDcxN2I1MmQwOWQ4ZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1Y2NhZjBhZjk4ZDA1NDU2YTZiY2Y5OWQ5MTVlODBlYTdkYmJjYjQ5NDc0MDgxMTE3ODU0NDFmYWM4NThhOGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1MWM2ODg4Y2Q0ZjQyYmZiNzk4ZmFjOWNmMzA1NzQzMDg5ZTdkNGE1NzE0MjA3NmNiMDVmNGE0YjM5NDNiZjEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8ce4d81f12f3464292e5cdf79954e4fd",
+      "statement": "SoulX 제출은 auto_pitch_shift를 false로 고정하고 job에 snapshot된 recommendedShift를 pitch_shift로 전달하며, 성공한 외부 audio는 압축·최종화 후 결과 asset과 SUCCEEDED 상태·성공 notification을 함께 커밋한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L309-L350",
+          "version": "repo-lines-v1:sha256:b8437877691b9a835ecaabb0190290218490674fd9b71648c8ce45d1c92b11c6:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwZThmYjljOWQ5MzI5YjAwZDJmYzQzNmY2YWRlZTcxMmNlMGRiNzBlYTEwOWEzZjBmY2NkNmY0M2ZiNzc4MzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwYTY2Mzc1OThhMWM2NDcyODQ2NDBkOTJlZTRjYzhhY2U2YWUxNWUxZTBhMzNjMmJlMTI4YzM4NTRlMzY1NjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM5YzI1YjMzNzg1YmY1MGFlNjU4MWE2YzQ2NTkzNDVhNTFhYzJlNzBkMjEyYjI3YTc0OWRjNmRiYmI2MWZkZmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM2ZTc5OWY4NGRlODdjNTgzZjk3M2RlMDI0NDFmNzhkNjAwZGQwYzVmZWZlMGVlNmY3M2YwY2NlYzg3MDAxNTIifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L375-L446",
+          "version": "repo-lines-v1:sha256:bf0dbfaed9407566b4ad9c9faabd056c2452d9f97177ef2141e5efbecc5be1e0:eyJzZWxlY3RlZExpbmVDb3VudCI6NzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjNjcyZDBjMWZjNDJkYmJiOGFjMWU1NzIwZjdjYzY1YWI5NmQzZjZjYzBiODJmOTc0ODk4OGJiNzhlZmUyYTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0YTBlODJlNjc1YWI3YjM4MWYxODY1ZjZiODUxYmJhZDgwYTBlMzAwYmJiZDlhNzY4YjczN2RmNmU1MWFkNWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkYTc2YmVjNDY1MTU5NzJjNDAxYWRiMTljNDAwNzAxYzAxY2JkOTM5OTUxNGI4NjdkNWY3MTJlN2E1YzZjZGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM0ZDYzZGVjYzQ0MjhkMTVhMWY3ZjMyZjViM2U5ZjIwYTMxMjEzYWEzYTNiYTcyOWZhMTk4ODVjNDliZTA2YmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c7d261004e094a5b8a42c7a85a22e43e",
+      "statement": "Mixing job API는 DB 상태를 소문자 public status와 ISO 시각으로 직렬화하고, audio endpoint는 소유자의 SUCCEEDED job과 READY 결과 asset만 허용하며 Range 헤더를 upstream에 전달한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/mixing-jobs/mixing-job-audio-route.ts#L1-L1",
+          "version": "repo-lines-v1:sha256:edce3afca93a614ee0a1d3d0d6192ac14aa07697c61d9f6ce1a53be2a905b75f:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWRjZTNhZmNhOTNhNjE0ZWUwYTFkM2QwZDYxOTJhYzE0YWEwNzY5N2M2MWQ5ZjZjZTFhNTNiZTJhOTA1Yjc1ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWRjZTNhZmNhOTNhNjE0ZWUwYTFkM2QwZDYxOTJhYzE0YWEwNzY5N2M2MWQ5ZjZjZTFhNTNiZTJhOTA1Yjc1ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTI1NjI2ZTRjMzc4M2Q5MDJjN2UxNzEwNTcxNjczNzE5NWVjYTNlNzY3OGY1NmNlNWY1MTA3ODhmNzRhNzgwMiJ9"
+        },
+        {
+          "resource": "repo://src/entities/mixing-job/model/contract.ts#L125-L145",
+          "version": "repo-lines-v1:sha256:1cd8bbb6c7620a70435785e014cf9a1c6f23f7f51d93e82b25e7ea21fa957733:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjNTEwYWVkNjRkNGNmNmRlZTQ1MTlhNTM2YjFjOGYwYjczZWZhYzYzYjMzYTVmZGFkMzY4MzYxZDQyYmZlNzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/entities/mixing-job/model/contract.ts#L46-L57",
+          "version": "repo-lines-v1:sha256:700b048588743eb4e91cd675b8e0700dc040a80c4a1e7bb8ba4eb7cd10ef79d2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4MmM1Zjg2Y2MwNzRhZjM2M2RiNmM4ZTBkNTc1NTUzZjljZDg5NzUyMWI2MmMzZmY5MDdhMWJmODg2NmFiN2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRiNzczYjQ4MTNjYjZkNTA2NDQyZjE2ZjRhZDcwYTYyNzFlZGUwZTYwZDJlYjRhZTA5YjM2ZTMxNzU0NzliNzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM0ZTVlMDkzYWU1OTgwMjVhNzlmNzkzMzY1YmI4NGUyZmI4NjViZTY4MGFkYTJiZWQ5MmUzZjQ5Yzc1YWY1YTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImViOTk4NGFlZTgyN2U2NWZlNWY1ZmI2MDViMmJjY2Q3Yzc2ZDA2N2E4N2Y0NDI2NGM5ZWI5YzI0ZmZjYTc3MjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4d967a4c69ab44a2aeda5fbf05463c36",
+      "statement": "추천 화면은 DB mixing status를 preparing·queued·processing·succeeded·failed로 축약하지만 mixing job 상세 API는 submitted를 별도 상태로 유지하고, 상세 presentation은 임의 진행률 대신 timeline을 계산한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/mixing-job/lib/presentation.ts#L3-L13",
+          "version": "repo-lines-v1:sha256:34601fb04b824bec13ebaab6de422d327f7cec8ccaeccbef657a7f8164b49b1e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZiMDRjYjcyYzIxMmY5YTE3MWQ2OGZiMGVkYTg4Mjg2NDU4OGIzMmEzZjVhNWNhZGJhMTYyNTBlZDgxYTllMDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMWQxYTYzMzkwMjI5Yzc5ODM0N2U4M2EwNDA1NDQxYzk0MDAwMzUyODRhZDE2OGMxYmY2Y2RmMWQ3MGEzNzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY2MDU3MGU4OGMwZGUyNTVmZGM1YWY5ZGQzYWQ1ZmM4YzMyMTRiYzlhMzk4ZmE0YTZkZTFiNmRiNWZiMTgyYjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg0MDEyNGIzMjNhNWIwY2E1MTgyYzA5YzM0YjM3ODI3Nzc2YTA1YjBlZTcyMmU0NjRmOGFkOTMwNzIyYmUzNTAifQ"
+        },
+        {
+          "resource": "repo://src/entities/mixing-job/lib/presentation.ts#L56-L125",
+          "version": "repo-lines-v1:sha256:2dd0f83843ae01c6c5040444d9dea9916476cd86217daf9138436cb29ddf6502:eyJzZWxlY3RlZExpbmVDb3VudCI6NzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmMDBkMzU5YThkZmQ0MTUxNWQzMTg4MWI3MzBhMmRkM2Q1ZDBiODg2MzFkNmM0ZmI4NTYyMjY3NzMxODNlMzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU0ZDUwMjllMGM3NzVhMmY5OTgyNDk5OTY0NGUzMTUwOGRmZWE4MWQwN2FlMmRlN2IwYjJjZDQ5YTA3ZTg3ZDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/features/create-recommendation/api/recommendation-service.ts#L70-L81",
+          "version": "repo-lines-v1:sha256:5a2e36997fb0452cbd915668285d9ab6a50103679393249ad3ef40cddf07b2c4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmNWFlYWM1ZWQ5NzIwNTJjMzU2M2UyMDc3ZDc4NjJkMTk4NGI0ZjU2NTVjNGE5NGFkMWU1ZGUwNjI2YmIxZDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjOTRkODRlYWUyYzRmZjE0NTE3YWExYTViMTU4YjFhOWFhMzNhOTk0YjFkNTNjYmUyYWM4NjNkMWNmNWQ2M2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkOWE5M2FlZTU2MWRjMmY3MTJlMTAzNjg1M2ZkNmUxY2MyNmE5Y2Y2MDE4N2YwNWFjZDM5MTQzM2JjNTg4M2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYyMWYyNjM2MjYxYmQ5MGYzYTEyZjM0MDhiN2UxNTY2YTc3MWU1MmZhZTRiNDc1NDFkOTJhNDRlM2ZlNjNiYzYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_831cec45d08e4866a08ae62939777033",
+      "statement": "추천 filter 상태는 recommendation route의 URL query에 replaceState로 기록되고 popstate와 custom event를 통해 화면을 갱신한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_pages/recommendation-detail/ui/recommendation-results.tsx#L29-L75",
+          "version": "repo-lines-v1:sha256:ddfd4084a04504f3480659aa17fe0cc6bf312220270c23db22cdbf1492777aa0:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkNmE5YWVhY2Q0YjgyMDc3NGJhOTkyNjljYjM5OWQ0Y2Y3OTAxZThiYmU2MjZjOTBlNTA3Y2VmNzlhMzgxYTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkYzUyZjA4YjM5YjA4YjAxYzhkMzA4YmY4ODBiMGJlZjAyZmQxZGZjYzlkOWFhOTNhNGQxYjVmNGQ1OGI2Y2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQwYjYwYzMwMDYzYzY3NzBlOGFlMzY3MjkxNDNiNDYwNjk3N2Q4NDFmMjg0YzA2Njk2Y2ZjMzZhNTQ3OWEyMGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI1MWU4ZjYyNjJjNGM0NWMyYzAzMzY0N2JlZjcwZWIxZTAyMDJkMWY5NWE4NzI4MTY1NTI2YjU1ODhhYjA3MmMifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.5.0",
-    "at": "2026-09-04T08:11:35.711Z"
+    "at": "2026-09-04T09:11:21.096Z"
   }
 }
