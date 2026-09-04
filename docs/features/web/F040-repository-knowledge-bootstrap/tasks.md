@@ -14,7 +14,7 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer 전체 (`web` component에서 추적)
 - **브랜치**: `feat/repository-knowledge-bootstrap`
-- **대기 중 변경 요청**: 기존 프로젝트의 curated 문서 baseline reconciliation과 WHY 탐색 경로를 F040에 포함한다.
+- **대기 중 변경 요청**: -
 - **Feature 리뷰**: Done
 - **Feature 리뷰 Evidence**: features/web/F040-repository-knowledge-bootstrap/decisions.md
 - **Feature 리뷰 Decision**: changes_requested
@@ -77,7 +77,7 @@
 
 - [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
 - [x] 테스트·CLI 검증 실행 및 통과 <!-- lee-spec-kit:completion:tests -->
-- [ ] 최종 결과를 공유했고 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
+- [x] 최종 결과를 공유했고 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
 
 ### 테스트 실행 기록
 
