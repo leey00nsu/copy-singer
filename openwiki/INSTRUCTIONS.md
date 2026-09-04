@@ -18,5 +18,8 @@ Generate a code-grounded onboarding wiki for the current repository.
 - Apply that skill to information architecture, page structure, headings, sentences, links, and the final readability review.
 - Write reader-facing content in Korean. Keep code identifiers, commands, paths, and public API names exact.
 - Repository evidence and technical accuracy outrank writing style. Never smooth over uncertainty or invent missing facts.
+- Every generated reader-facing page except the index must include at least one descriptive Markdown link to a tracked source file using `repo://path` or `repo://path#Lx-Ly`. Reserve `repo://` for source files included in the repository fingerprint; link Knowledge pages with `/openwiki/...` instead. Claim sidecars and inline code citations do not replace this reader navigation link.
+- Knowledge cross-links must use an exact planned page path, including the `.md` suffix. Never guess a shortened slug or omit the suffix.
+- Write Markdown URL targets with literal forward slashes. Never insert backslashes before forward slashes.
 - This block is managed by lee-spec-kit. Put project-specific writing instructions outside the managed markers.
 <!-- lee-spec-kit:writing-policy:end -->

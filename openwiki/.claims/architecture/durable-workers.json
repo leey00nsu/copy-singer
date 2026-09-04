@@ -1,0 +1,188 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:0c2a406868ca0f20bfe67d1e8a46cb6c45ecb1b4496897646725063fcde89df2",
+  "claims": [
+    {
+      "id": "claim_67c755c8ca2a4600b27f6abf75b56987",
+      "statement": "세 background worker는 PostgreSQL job row를 durable source of truth로 사용하며, `attempts`, `maxAttempts`, `nextAttemptAt`, lease 필드와 상태를 함께 갱신한다.",
+      "evidence": [
+        {
+          "resource": "repo://prisma/schema.prisma#L536-L617",
+          "version": "repo-lines-v1:sha256:d2d632b0ceaf09d0b3f52294886ce5ac1e85e5e0138da7f9f22978d515d5ecb0:eyJzZWxlY3RlZExpbmVDb3VudCI6ODIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ2ZDE1NDdkNmFjODE2YzJhZDk5ZDJlNzEzNDcxNTNlY2Q4ZmE1ZmQwOWU2N2E3YmFjZmMzYWM4Y2NmOGY0NzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBlODI5NzRkOGVkNWM3NjlmNmJlM2EzN2FiYTI1YjhlZmUzMmUwNGQ1NzcwOTVjM2U3M2ZhNzNkYjlkY2E5OTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L92-L130",
+          "version": "repo-lines-v1:sha256:b0664914d9c31b3dc59a2285f246bdb60ae643f05d330d3d3a7eceb69a254bb4:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkYTkzYWU1N2Q0ODhkMTQ2YjZmZGI4ZTg3NGY2MWFiYjcyYWQ2MmNiODZkYjM0MGM5ZDcxN2I1MmQwOWQ4ZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1Y2NhZjBhZjk4ZDA1NDU2YTZiY2Y5OWQ5MTVlODBlYTdkYmJjYjQ5NDc0MDgxMTE3ODU0NDFmYWM4NThhOGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1MWM2ODg4Y2Q0ZjQyYmZiNzk4ZmFjOWNmMzA1NzQzMDg5ZTdkNGE1NzE0MjA3NmNiMDVmNGE0YjM5NDNiZjEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5dc7eb241d034a2aaf22cc57d3244a45",
+      "statement": "세 worker의 claim은 `FOR UPDATE SKIP LOCKED`로 가장 오래된 실행 가능 job을 한 건 선택하고, 같은 update에서 owner·lease 만료 시각·heartbeat·attempt를 기록한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L92-L130",
+          "version": "repo-lines-v1:sha256:b0664914d9c31b3dc59a2285f246bdb60ae643f05d330d3d3a7eceb69a254bb4:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkYTkzYWU1N2Q0ODhkMTQ2YjZmZGI4ZTg3NGY2MWFiYjcyYWQ2MmNiODZkYjM0MGM5ZDcxN2I1MmQwOWQ4ZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1Y2NhZjBhZjk4ZDA1NDU2YTZiY2Y5OWQ5MTVlODBlYTdkYmJjYjQ5NDc0MDgxMTE3ODU0NDFmYWM4NThhOGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1MWM2ODg4Y2Q0ZjQyYmZiNzk4ZmFjOWNmMzA1NzQzMDg5ZTdkNGE1NzE0MjA3NmNiMDVmNGE0YjM5NDNiZjEifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L30-L60",
+          "version": "repo-lines-v1:sha256:9fec35b24a62c3a39921b922ec33fbe95420620bf8265ba10eb06afece8f34b0:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiNDZiYjJhYjk0YWI2YjEzOTVkOGYwMmM1ZDQwYzczZjcxOGZkNzFhZWMyNmY0NjYxNTg3NmU0ZTkzYTk0OTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1Y2NhZjBhZjk4ZDA1NDU2YTZiY2Y5OWQ5MTVlODBlYTdkYmJjYjQ5NDc0MDgxMTE3ODU0NDFmYWM4NThhOGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkMTRlZmE5YTI5ZDJjNDg4ODRmOTJlZGJhMTFkM2RjM2Q0YTA4NmQ2Yjk2M2ZkNjlhODhkMmViNTM1NWE1MDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImViYTAxMzMxZWNlMmVhNTA5ODI3ODliZTBkMWQwZTgwYTJjNTlhYmVkYWFiODVjYzJhODA5MmNlM2RhMWU4YTIifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L43-L79",
+          "version": "repo-lines-v1:sha256:bfbe6fde2901c7fec4d964d81606865e37f71970fbcbd819e251175e8fa208ea:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEwODQ3ZTE4MzNiZjRjMzQwYTgwM2QwNDIxMjMzNDhlOTRhZjQ1YWNiN2JkYTIxNmQ3MjM0NzI3NmVlZTdhYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3ZGE0MDBlM2IzODVlYzg1NGI5OGZkNGZiOGE1MTRmYmJiZTk2ZWFjZDAyMjViYzQ2YjRmMmQ2MWE4NDk4YmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_814ce34506ee4b95a12b1d038dfbae7e",
+      "statement": "lease가 만료된 진행 job은 다음 worker가 재점유할 수 있고, runner는 lane별 고유 owner를 사용하며 SIGINT/SIGTERM 뒤 새 반복을 멈춘다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/runner.ts#L10-L24",
+          "version": "repo-lines-v1:sha256:556958ef636cd03e29879cbb1a612aea6c47e72db2ba4ed6c4271577ae4e7324:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjNmQxZGM2MWNlMmNlNDQ3Y2ZiZWVlYmQ4N2FlOTYwNmUyYzM4MGFmMWI0OTRjZTZjYTczMTc4ODVhMDkwYmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1NmJhOWNiYjIwMWZmNWNmOGVhOWQ2ZTAzOGUxYmFmOTVmNzdiZDgxNmVjMDgyMGNkNzMyYzE4ODg0MWU3ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L45-L57",
+          "version": "repo-lines-v1:sha256:ee092223eeb823adb7960c8eb44acfdd5426c79035cfadda841f20dac2c3f511:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhYmM2MDAzMWQ1NGE3ZTA4YTlkMzBhY2QwMjIwYTQ2M2NiZWExN2M3ODQzOTg2YjgxOTYwYzJkOGI2MGQ2YWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY0NjhkZWM1Y2EzMzE5ZmZmZjhjZWZiN2M0MWQzZWIxNGU4N2UyMmY3NGFmNjVmM2Y0MjM0NDg2MWEzODMyOWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxMWMxZWQ4M2U4MjQ2YjlmNDE2MmU1Njk2NDZiMDk1YTliNDk3ZjVkN2UwNjVlMzc1MTljOGI5OTRjMmEyMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4NTAwMWM5MGQwY2FhODlmMjM2MDM3NTRjOTMzNDlmZTBlMzlkNWQ1OTkwMzdiYjFmYTNiMTk3Nzk0MTM4ZTYifQ"
+        },
+        {
+          "resource": "repo://tests/song-analysis-queue.integration.ts#L75-L80",
+          "version": "repo-lines-v1:sha256:4f1c8f3f88958d915ce69fdefc65c1bc885025ff636ef1a1edb30c2ec67be93a:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDY1OTVmNGVlNWZmNjNkNTA5NTA0MTlkYzM0NDE0NTEzODUxZGM5NzM2ZmQxN2E0ZjdiZmE5MzBiMjYxYjZmMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2U1ZGRiZDcwOGQzMjI3YzE3ODE3ZDUxZWJjNWJhZGUwZjVkZmIyNWU1MzNjZDU5ZDA3OTYzYjc2YmUwN2U1ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTI3MDYwNjM4MmFmYWI4ZWU4YjhkYTExMTVjMmVlYTcxYWE3YWQ1ZjU1ZWEwODUwZWNiYzAwYWE5OWM4MTY3OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWJiZmYyMGE5OGE4ZWI0ODA5MDY0ZjNiNGE5YTAwMjEzMGI2ZjQzMTY3ZjE5M2Q2ODYyZGMyNmFlYTE4YzFkNiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_ab0436bed13c4fb18cfe9a355bd6e1e9",
+      "statement": "믹싱은 `PREPARING`에서 외부 Modal conversion을 submit하고 `modalJobId`를 저장한 뒤 `SUBMITTED`/`PROCESSING`을 poll하며, 재시작 후 저장된 ID가 있으면 재submit하지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L257-L353",
+          "version": "repo-lines-v1:sha256:dbe45d151fdbf23b056ee65c7177039f72bb2939d855a09ff4a5da3ffae666a4:eyJzZWxlY3RlZExpbmVDb3VudCI6OTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdmNGI3YzZmZGQ0OWZjOWJkYzQyMzIwNmNhNDFkZWRlMTAwNWVlNDc1YWNkN2E0ZGI4YWQxNTYzZTY5MDBkYTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhlOWNlYjRkMjI5YWE1OTNiZWQzOTFjZWFmNmU3N2RmZGM2MmRiYzIxYTA1NTRhZTk5NTM3NTU5YjRhMzY2NDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNkMDNkNGIzMDFjMWM3NzZkM2JjMWRhMTk5YjIyNzU4ODNiZjA0MDkzOWEyNTRlMTU2ZjIwODAwYjRjNWE5YjgifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L355-L448",
+          "version": "repo-lines-v1:sha256:a77104355881b60eccbec4e11d352d1c7443efae400f773af3f0c6d53a2fd241:eyJzZWxlY3RlZExpbmVDb3VudCI6OTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiMmU1YWZiODkxNzNhYmIyMTM1MTIxYzRlZGIyYzUwNmZhNGQzODZiZDUxZjAwOWU3MTY3Y2M5NjM2OTJlN2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwNjNiZjJlNzlmMDBjMDliZmUwNGExMzVkZmRjNmY4NTk1ZjUyODU2MmIzMWFlNDIzY2ZkN2MxNGI2MDlhNWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAwMjQxOTFlZTRkNjhkZDNlYmM1YmY3YTIyYjc4YWE3ZGNhYTI2MDdhNjA5ZTg4OWVhNjY1NTNlNmFkZjAxODkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_573bd907a45f40d3bb11d5f9caad11cd",
+      "statement": "곡 분석은 READY catalog target이 있어야 claim하며, analyzer `/v1/jobs`에 request ID를 포함해 submit하고 `externalJobId`를 저장한 뒤 poll 결과를 pipeline contract의 `SongAnalysis`로 upsert한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L139-L199",
+          "version": "repo-lines-v1:sha256:1daf3e66f8f6bb569c0467bc91f510f2706107d73c68f7823eea952d37914cc6:eyJzZWxlY3RlZExpbmVDb3VudCI6NjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVjZDFmNTc4MzNiMjE3ZDk0ZDNlZDE0OWNiZWEwMTY1M2UxZjYxMDZlNzg0NDBhNjY3MWY5ZjRhMjM2MTBjNTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI3ODI0MTczYzE3M2VjOWQ0ZGIzZTk1YTk2MTNiNWVkYzc0OGU0ZDg5ZWJkYWJlZjUxZjM3MjZmZGJjMjc3MmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdhOGE4ZmNjZjIxOWM0NGFjNGQ0NTRjNjhhYjEwYWIzM2RhOWFlMmExY2M1OWFlZjQyZjlhMThlMDNkMjUwNTQifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L200-L289",
+          "version": "repo-lines-v1:sha256:b5def2755929b2af1994743630f389d01d185c549334b832b1fde16ffff785a6:eyJzZWxlY3RlZExpbmVDb3VudCI6OTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ2ZjZkMGVjYTkxMjZjNTM5ZGJkYzNhZjQxMzU2ZDBkYTJkMDM0OTdlNTBiZDdkNDc2N2JmYWNkZDk5NWZjNjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyZDExY2FmNDNlOTdlZjM2OWU2YmVlZDFhMjY4YmQwNTgzOGYyOWI5ZGQyNTRiZjY5YmE2NDg4NDE0NzIzNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ1YjNmYWVlOWMwMzc3NTk0NzhhMzQ3NTg1NjA1NGIwYzQ0MTY2OWU3NmQ2NmM0YjUyNzg0ZmJjZGI4NDFkNGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNlZmQ4ZTUzODFmODYxODA4MzhjN2I4MTc4ZjEyODQ3OGI3NjhjMGVhYTEyMDAyOWRlZjQyM2VmMDkwYjdmM2IifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L30-L60",
+          "version": "repo-lines-v1:sha256:9fec35b24a62c3a39921b922ec33fbe95420620bf8265ba10eb06afece8f34b0:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiNDZiYjJhYjk0YWI2YjEzOTVkOGYwMmM1ZDQwYzczZjcxOGZkNzFhZWMyNmY0NjYxNTg3NmU0ZTkzYTk0OTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1Y2NhZjBhZjk4ZDA1NDU2YTZiY2Y5OWQ5MTVlODBlYTdkYmJjYjQ5NDc0MDgxMTE3ODU0NDFmYWM4NThhOGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkMTRlZmE5YTI5ZDJjNDg4ODRmOTJlZGJhMTFkM2RjM2Q0YTA4NmQ2Yjk2M2ZkNjlhODhkMmViNTM1NWE1MDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImViYTAxMzMxZWNlMmVhNTA5ODI3ODliZTBkMWQwZTgwYTJjNTlhYmVkYWFiODVjYzJhODA5MmNlM2RhMWU4YTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d6866c1eb0d444698d085118e2881a52",
+      "statement": "보컬 프로필 분석은 외부 job submit/poll 없이 queued reference bytes를 동기 analyzer에 한 번 전달하고, 반환 source의 hash·크기·MIME을 원본과 검증한 뒤 profile을 저장한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L235-L317",
+          "version": "repo-lines-v1:sha256:2e8a12771459733aa127d2152cc97bcf57d6ba5b44e63df3b09fdba077a83f65:eyJzZWxlY3RlZExpbmVDb3VudCI6ODMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkZmJiNGYzYmUwMWEwYjQ5OGQ4ZTI1OTFjYjE4YTJhNzVmNTMzNDhiNDY2YjY1YjljYzQ3MDFjODA4MGNiMTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg5NjI0ZDc5MTYyMTBiNWFjZDUzZTNkODk2ZjExYTdiNDMyOTc2Mjg1ZjgyYjgzOTVjOTExNzg5MTkyZDVhM2IifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5e4219cae9d840dba29e82a70f9026b9",
+      "statement": "곡 분석은 60초 주기 heartbeat를 실행하고 믹싱은 polling 중 heartbeat하며, 보컬 프로필 분석은 claim 시 lease를 기록하지만 worker 내부 주기 heartbeat를 실행하지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L133-L144",
+          "version": "repo-lines-v1:sha256:7f1dbdacde7121b4a2e0416dc6416113ea58adac44b471427712c782ddcb626e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjZGI2MTNhODU2OThlNGMyZTkwYjQxMDM1NDBiMjQ3ZDA5NjcyYmZlOGM1NGRmMDM1ODlkODFlMjdkOWMwMWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2MjAyYzNjODU5NGNjMzVhYTUzZmI2NmIxYjEzYjk3NjY4MDEwNDY1NjM1ZjlhNGEzNmQyNTAzMTMyY2UxZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ0OGM4YmViN2ZkOWMzY2FkM2NmNDNmZjBmODgzOTM3ZWE5ZjBmMThmMmIzNzc2NGQ5NTZlNGZkYmQ2NTZhOGEifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L446-L447",
+          "version": "repo-lines-v1:sha256:09c3f9111116507f5c22bebfa94f1c9aa11782f76a5506045143afab85f0f7b8:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzRhMGU4MmU2NzVhYjdiMzgxZjE4NjVmNmI4NTFiYmFkODBhMGUzMDBiYmJkOWE3NjhiNzM3ZGY2ZTUxYWQ1YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWRlNmM0MThkM2ViZmJkNDg2N2Y3NTYyY2RiNTg1ODUzYTY4YjMxNWQzN2RmYzMxYjU2MDE0NjVlMWI2MTk5YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmZlZjdlNTM1ZGJjZjI3ZDIzZTIyYjhhMTk0NzJjNjE5MWUzYzIzMjdkYjA1Mjg2NjJiZjZkZmZiYWI5OGRmNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzFjZjExMWQ0NTE4YWI0YzVjNDBlZTliYzc2OWUwOWI0YmRhODMwZTI0ZjZhYzZiYmE1ZjEzZDAxMmI1OGMwMCJ9"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L63-L76",
+          "version": "repo-lines-v1:sha256:71ff6d60b05fa5980a671ca9608a1b98d64f2fa69d8bbaffe181c495ddd8b870:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2ODZiNDk2Yzk0NTdhODVjNGU0MWZkOGNlN2I2MjkwMjE3NDFlOTljMmZhMTg4OTU0MDRiN2JlYzI5NmMzMzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2MjAyYzNjODU5NGNjMzVhYTUzZmI2NmIxYjEzYjk3NjY4MDEwNDY1NjM1ZjlhNGEzNmQyNTAzMTMyY2UxZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1MGNhNjNjZWFhMmQ0MmU4MTYyMjYxOWJiODExN2QzM2MyZDY1ZDkyNzJlNTFmMjk1YTE1MWZhY2VmZmQxMmQifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L43-L79",
+          "version": "repo-lines-v1:sha256:bfbe6fde2901c7fec4d964d81606865e37f71970fbcbd819e251175e8fa208ea:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEwODQ3ZTE4MzNiZjRjMzQwYTgwM2QwNDIxMjMzNDhlOTRhZjQ1YWNiN2JkYTIxNmQ3MjM0NzI3NmVlZTdhYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3ZGE0MDBlM2IzODVlYzg1NGI5OGZkNGZiOGE1MTRmYmJiZTk2ZWFjZDAyMjViYzQ2YjRmMmQ2MWE4NDk4YmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0d8e80b3c5b0406db8066b208dad3aaf",
+      "statement": "retryable 오류이고 attempt가 남아 있으면 곡 분석과 보컬 분석은 지수 backoff 후 `PENDING`으로, 믹싱은 submit 전 `PENDING` 또는 submit 후 `SUBMITTED`로 lease를 해제해 재시도한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L172-L224",
+          "version": "repo-lines-v1:sha256:851681f204416fefa6c36772dd4fff3d4ef1b763eb4a858dfb8549273bdb8e11:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1NTk4YzU4NmY2ZGE3YmMxMjljZTRiYjgzMGFhYmRiNzIxZjgwZmY1YTI0NDIyYmZlZjczOGE4MDI1YzA0OTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljNWUzYmZhMjNkNDdkODExOTVjMTIxMGIyZDFhNDBmNGEyMmU0MDY2NTc5YTczZmYwYzNmMmZhYTZjMjExZjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzYmVlMWViOWQ5ZjU3NTg3MjExOWU4YzM0MTgxNjgyNTk0Zjk2MDkzYzdhOTI2MDU0YzNkYmNlNDMwYWVlMTQifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L78-L125",
+          "version": "repo-lines-v1:sha256:e42594ffe164442ab4b6ca7b9d8d1a0ecf0f7fc3300fbfce9a52bf2e58ae3844:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc1MjM5ODI4YWE3YTQ2YjExNzk2YTUyMGYwYjE5ZWJlZTkxOTk4NGVjZjAwNGIyMDk5NWVmZTZhNTE3YmNkZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMzMzc4YmE4MTQzMzQ2NTY4M2FmZjYyMTdiN2YyYTgyZWUzZGI2ZmI3YzM0Yzc5MzQyOGVlYmU4YTYxZjQ2NzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg1Yjg2ZGU1MGEzOTA0OGI5MTA3ZjJmOWUzZjhiNTlmNGYyMWMzOTNlNjY1ZjgzM2MzZjgyZjZhOTM0Y2JhY2IifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L167-L195",
+          "version": "repo-lines-v1:sha256:81043887a6cf4e11559440ab243b5f360379016686e52757f04baf0ee2949c32:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2N2I1N2Y4ODNiNGIyZGFlNTczMGEyMjdiOWFiYzA3ZmVmMTljYzkwOWQ4YzI2YThmYjhlZTlkNWM4N2E1Y2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNlMWRkNDYxZDliMjVjZDYwYmNiM2YyMzZkMWQ1NDhjMTBlNTY4MzdlZGVkNzBjYTMxNzFlYmNmZGExYzk2MjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI1NjUwODhmNDdlMjVmZjNkMDViZGM0YjkzNzZjYmNkYjM1ZjJmYzQ2OTM4YzRjZGU4ODEyMzczMzQ3NzVhODAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bd0a2b92811a4ac7a932aca153e5c321",
+      "statement": "최종 실패 시 보컬 프로필 분석은 알림·source asset 정리·필요한 ticket 환불을 수행하고, 믹싱은 submit 전에 실패한 경우에만 refund를 요구하며 submit 후 실패는 환불하지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L227-L255",
+          "version": "repo-lines-v1:sha256:1093234f1047664f34ff984705d1339ba42dc36816ad4c5aeb3e82ae99eba783:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0ZmJjYzRiNDI5MTg3NzlmMmVmOGU4NGVlZjNlZWFmYzI2YmE5ZjU4MjhiYTA2NzgzNzM0NTIyZTJhMDM3NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2ZTUxZTBkMDA4ZjE2YzdhMmI3MDAyZThiYzQ2NTQ4N2FlMmY1YTMzYjA4ZjczZjUzNWQwMGJmMjhiODdmZTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdmNGQ4ZWVhMzM5YzRhNjllYmFmZDA4MjRlZmJkNmU0Njk2Zjg5MTU2YTU3YTAzZWU0MWRjNzQwN2NkODljNWIifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L127-L165",
+          "version": "repo-lines-v1:sha256:34b007f6e9cefb13828812a8ee80cb6ec2c929c2ffb5d144e6c6b38f9a7bc4c7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmU2NThkYTU2Y2IzM2E3YmQ1MGYzMGVmOGVkMTA0ZjI3NmZmZGY4ZTIyYjc4N2MzMGIwZjljOGI0NGY3YmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNiMzUwNjA5NmRlMDJlMzdhNjRkNjljOGU2ODU4MjIwYWE1YzdmYzM4ZjFmMTM4MjYxYzg0ZTgyZDc2NzYwMjMifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L197-L233",
+          "version": "repo-lines-v1:sha256:855873ed5f71558a79249a22b62a4393c3e2d9314b7c802ca34b7e91d919a15c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0ZmJjYzRiNDI5MTg3NzlmMmVmOGU4NGVlZjNlZWFmYzI2YmE5ZjU4MjhiYTA2NzgzNzM0NTIyZTJhMDM3NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2ZTUxZTBkMDA4ZjE2YzdhMmI3MDAyZThiYzQ2NTQ4N2FlMmY1YTMzYjA4ZjczZjUzNWQwMGJmMjhiODdmZTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJiZTUzNmJjYTdmMWEzOWQzMmY3YjU0NWM0YjY0NjYxYjRiNDliYzhiMGRhZWQyMjRjYWM3OGQ0MTY2NDQwZTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c34e6f00a9a94b2b92512fb656c2baf6",
+      "statement": "worker별 concurrency, lease, poll 주기는 환경 변수로 범위 검증되며, 기본값은 믹싱 1/120초/5000ms, 곡 분석 1/300초/2500ms, 보컬 분석 1/300초다.",
+      "evidence": [
+        {
+          "resource": "repo://src/shared/config/server-env.ts#L30-L74",
+          "version": "repo-lines-v1:sha256:1b2fb3d1d41d4d0e6db7d46a244641f0fd526f8b66e18d87861def9c40bec564:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzOWM2NjNlNGY4MThhMTIzY2YyZTljNGQyYmQwY2UwMTlhMmQ2MjI3Nzc4NzAzZmUxM2I5NGM2NWEwYzQyNGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQxNjIyOGMzY2ExMzM0YzlhZjAxNTdjMzE2NGVlODQ1MjM0MjI3YTZhOTNkMmRlNzMzNzhjMDQ3NDdjZmUzOWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bc0f6a2300274791b01820154d1e3dbf",
+      "statement": "세 queue 통합 테스트는 동시 claim 배제와 lease recovery를 검증하고, 곡 분석 테스트는 retryable 503의 `PENDING` 복귀와 READY 분석 저장을, 믹싱 테스트는 enqueue·refund 경계를, 보컬 테스트 명령은 보컬 queue 통합 검증을 담당한다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L44-L50",
+          "version": "repo-lines-v1:sha256:748c8d481a7dc4f3e8bfe821a89123115574fcad8b337d14a25e57453a00464e:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTA4N2JmN2VhODUwYjg0NmExOGE1MDBhNjE1ZTMzMjRjZDEyYzQ5ZWI2MDU3ZWQzZDQ2NzA2M2YwMTg3ZDVkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTQ3ZDE0MTcyN2ZhMzE1NmUxNzdkMTdlZTgzZGZiNmMyOGJmYTY3MjkyZThiYmFkMmMxNjc2MWIyZmFiNTljMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDkyMjA1ODVmNDJkNjU2YWFjMzhjY2E1Y2Y3YzljYTk4MzczNjFkMWY1MDFkYTJhNjU3YjM2Mzc5YTUwMThmZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGY4OTlkYjk5YmI2MDI4OTMzNGIwOWI5ODA2YjMwNzM3MTAwMDE5N2NjYTkyMzE0ZGQ0MTJkMTNkYmUyY2NjMSJ9"
+        },
+        {
+          "resource": "repo://tests/mixing-queue.integration.ts#L7-L40",
+          "version": "repo-lines-v1:sha256:abd443fde0e8f7a620ac542e71243f408b25c85ac9e269c2a2c7df4ee70e333d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0MDgxZWQ4MmZiYWJmZTVkNjQxZWNmZjYyM2Y1NDA4YTM4MGQ3MGZjNmEzYzgwZTc1ODcxMDEwM2I0YmU2OTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhmMDExMDllZjM0ODFmZTQ0ZTk1MDM1ODVkOTNiZDIzYjFiZTVhY2QxOGEyYmM4Nzg0ZjhmODY4ZTdmNWIwYmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0ZGI0NWUwYmUzMTgwNTYwY2UyNDY2MmNlNTM2ZWJmMmRiYmJkZTRjODgyOTY3YWRhNTY0MTFlNzgzZGE2ZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkzZjEyODBhNzIxODc0YWMzYjQ0ZTMzMzlhYTcxOThlYjczOTkyZGQ4NTFmMmVhY2Q1NWE5NWYxMjlkYzBhMDEifQ"
+        },
+        {
+          "resource": "repo://tests/song-analysis-queue.integration.ts#L36-L187",
+          "version": "repo-lines-v1:sha256:01f1055e0f639c253cd83c40565f758564f6669fbaaca72f4580bb2bcd2438f8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIyN2ZlYjVlZWY2ZjIwYzBhM2M5MjhiY2M1ZDQ2ZDY0YmJiMzgzNzYyMDNiZGRhZDgzMzQ3NWVlNGJkZjFkNTgzIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNmY1YjQwYjE1ODQ1N2QxNzg2NGYyMTc5MDc4NmRkNWEyZWNkYjY0YjY2YTY1MWY3ODhkNGUyNWNkMzMwM2QyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI5MjA0MGUwOTVhOTRlMmFkYTc0ZTQyMWYzNzE4NzUxYTkxYTgxMGJmZDY2ZjQ4ZjRlOTM5YzdiNzQ4MGViNjcwIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-04T16:09:12.723Z"
+  }
+}

@@ -4,7 +4,7 @@ okf_version: "0.2"
 
 # 파일
 
-- [Copysinger 빠른 시작과 작업 경로](quickstart.md) - Node.js·pnpm·PostgreSQL을 준비해 Next.js와 세 durable worker를 함께 실행하고, 데이터베이스·설정·정적 검사를 확인하는 최소 절차를 안내한다. 인증, 보컬 분석, 추천, 믹싱, 관리자 작업의 코드와 심화 문서로 이어지는 탐색 경로도 제공한다.
+- [빠른 시작과 작업 경로](quickstart.md) - 로컬에서 Next.js 웹, PostgreSQL, 세 background worker를 실행하고 정상 동작을 확인하는 진입점입니다. 사용자 기능, 카탈로그 운영, 인증·과금, 미디어 수명주기를 변경할 때 읽어야 할 정본 문서로 작업 질문을 연결합니다.
 
 # 디렉터리
 

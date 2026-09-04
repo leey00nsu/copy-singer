@@ -1,4 +1,5 @@
 # 파일
 
-- [설정·로컬 실행·배포 운영](configuration-and-deployment.md) - Node.js, pnpm, Docker PostgreSQL과 Modal·Leemage·OAuth·FFmpeg를 설정하고 Copysinger의 웹과 background worker를 로컬 및 production에서 실행하는 순서를 설명한다. migration, seed, 환경 변수 검증, 배포 후 점검 명령을 함께 제공한다.
-- [Durable worker와 작업 lifecycle](job-processing.md) - 보컬 프로필 분석·곡 분석·믹싱 queue가 요청을 durable job row로 저장하고, 원자적으로 claim한 뒤 lease와 외부 작업을 통해 terminal 결과로 수렴하는 과정을 설명한다. 재시작 복구, retry/backoff, ticket 환불·알림, 화면 상태와 DB/API 상태의 차이를 운영 관점에서 정리한다.
+- [곡 카탈로그 수집·분석·게시 운영](catalog-ingestion-and-publishing.md) - 관리자가 YouTube 출처와 target asset을 등록·교체하고 PostgreSQL 큐와 Modal 분석기가 분석 결과를 저장하는 흐름을 설명한다. source revision, analysis revision, asset, catalog revision을 분리해 검증한 뒤 게시하는 안전 기준과 실패 복구 방법을 다룬다.
+- [미디어 저장·프록시·정리 수명주기](media-lifecycle.md) - 사용자 reference, synthesis reference, mixing result와 카탈로그 target asset이 Leemage의 외부 파일과 PostgreSQL 포인터로 연결되는 흐름을 설명한다. private audio의 인증 경계와 삭제 실패를 MediaCleanupJob이 복구하는 경로, 참조 중인 카탈로그 asset을 보존하는 규칙을 함께 다룬다.
+- [실행·설정·배포와 운영 복구](runtime-configuration.md) - 로컬 PostgreSQL, Next.js와 세 background worker를 실행하고 Prisma 데이터베이스를 준비하는 절차를 정리한다. Modal 분석기 배포, production start, 환경변수 검증, concurrency·lease 조정과 실패 작업 복구 기준을 함께 설명한다.

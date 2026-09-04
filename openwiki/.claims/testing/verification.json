@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:d4f2ede35b3308674deb44d7427d6cb26d38564b83cde82bc4a649419d946105",
+  "claims": [
+    {
+      "id": "claim_55df1721787b448caac4ad87063eff99",
+      "statement": "`pnpm run check`는 Biome, ESLint, TypeScript typecheck, `steiger ./src` 및 FSD architecture boundary test를 순서대로 실행하고, `pnpm run test`는 Next.js build 뒤 기능별 Node 테스트·통합 테스트·UI 테스트·architecture boundary·Storybook 테스트를 실행한다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L23-L33",
+          "version": "repo-lines-v1:sha256:b2b525213a0c4ebee44a4f27b5e90db4e75ba6a09490758143a0005723537469:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3ZTQzZjMyODk5NmY4OWIwYjM1NGEzM2Q4YzFlZjJmNzBhNmQyNWJkNDI5MzgxNzM5ZTc4MGM0ODgwOTI4M2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjNDM5NDIyZWFjOWFkZTM5ZGJmOGQwMWE0OTUxNDBjNDBkOGVjNmQ3NjQxOGM5NjBlZWFlNTRmZTExOWEwMDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIwM2EzY2U1ZTNmMDdjN2U4NTQ2ZDQ2MTE2N2UxMGI5NmQ1YWM1MDlkNWQ3ZDZmY2U3ODliYzQyNTFiOGZjMTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEwOGE3NGY4ZDFjNzAzNWM2NzlmM2FiMTMwNTE5YTM1NTVjMzBhZmFhOGY2OTZmYThhNjRlZGI0ODEzZTYzNzQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4476fa7dc31a4d3284e86746e987de05",
+      "statement": "Vitest는 Storybook 프로젝트를 Playwright Chromium headless 브라우저에서 실행하도록 구성되어 있다.",
+      "evidence": [
+        {
+          "resource": "repo://vitest.config.ts#L38-L52",
+          "version": "repo-lines-v1:sha256:a6f8e8fd9f6ccf007eab846246721d203638ee2f998730497aa401c474a22584:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MzZkZjdhNWEzYWFmMTgwY2ZmZDFkNjVjNjQ2ZWY2YWVhMzUyY2MyNzc3NDY4NjE5OWNkOGZiM2U4OTljN2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5NzhlMjUwM2I4Y2YzN2EwNmY3ZDZmMGEzYTZiNmZlMzU2OTFmYmNhYjUwYjg3NzVjYWI2ZmFiYzcxYzU5MmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZjMjY2MmFiYTY2ODAwZTNlZjI4MWE4OWY1MjU1ZDkzYTkzYTkxNTM0Yjg4YzY2MWYwZWQ1MmE1OThhYWNmYmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmZmFhNjQ1NzcwZTJkN2UyODgzOTNhZGQwMjJjMTI1NzJjYjYzZjAwZDI3MTM0YWMwYjZlYzAxYjBmYThmOTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_07bde1b1ec364c6c9e1f9f1e8f3314df",
+      "statement": "API 계약 테스트는 wallet 종류와 잔액, UUID·idempotency·pagination·ticket bounds, 내부 알림 링크, mixing 삭제 envelope, 허용 MIME 및 최대 오디오 크기를 검증한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/api-contracts.test.ts#L34-L212",
+          "version": "repo-lines-v1:sha256:73d736330c7788a30edae0c514602b7fab974b6538b09f5ab4fba1fedd2e984b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTc5LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIyYzg1NzBiYTFiN2E2YTVkODEzMjg4N2QzODQwOTkzODU3ZTJmOTJiMzJkOTZlZjQzYjkwNjY2OGM4NDcyYTg1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNmY1YjQwYjE1ODQ1N2QxNzg2NGYyMTc5MDc4NmRkNWEyZWNkYjY0YjY2YTY1MWY3ODhkNGUyNWNkMzMwM2QyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIyNjg5YTc5MjhkYmU4NzUwM2EwMzM0NGQ0NGEwMWNmMGU1ZGRkNzJiY2NmMTdkMjMwMzdhYzU0OGUwOWFkN2EzIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIwN2IwOTIzOTgwMDI4YjdiODhlMTc5YzFlYjJmNzgzYTY4YTIwMDVjNDY1YTk2MDA0NDc5Y2EwOTJjNDlmMmRjIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_64a1aaf45418403a8dc9fa2b1a1c9c73",
+      "statement": "`requestJson` 계약 테스트는 Zod 검증 성공 payload에서 미지 필드를 제거하고 malformed success를 재시도 불가능한 contract 오류로 처리하며, retryable 5xx·네트워크 오류와 재시도하지 않는 일반 4xx를 구분한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/client-server-state-query.test.ts#L40-L121",
+          "version": "repo-lines-v1:sha256:e81e04ff3e2f329dc9392f78309904f0058bf0f571024ede4521d1ff4b024469:eyJzZWxlY3RlZExpbmVDb3VudCI6ODIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3NjgzMGVlNGRhNWJiMTNjZGYzNjEzZjMyODEwOTYyOGY5N2I0Y2Q1MmNhZWZhM2M2NmY1NWFkNjQwYWEyYTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE5ZTZhNGEyYTZlMmY1MTljOTM2NjI1YzQxNzEwZDBjYzcxYjNhNmMxYTQ3YWFkMjQ3ZjA5N2MwZjk3Y2M3ODEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBhNGQ0MTZiN2RlNDQ1ZWU2YmQ4ZThhYjZhNzJmNjcxODA4ZjNmYTZiNmY0NmY0ODQzY2MwZTE0YWVlZWU2NzYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_433148187e8447ee923bc2711a1b3f34",
+      "statement": "DB 통합 테스트는 `.env.local`과 `.env`의 `DATABASE_URL`을 사용하며, 값이 없으면 `DATABASE_URL is not configured` 사유로 skip한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/auth-ownership.integration.ts#L3-L11",
+          "version": "repo-lines-v1:sha256:e578c31113279504bdf38248ece4c29b7bebe742cda5ab8b5ffd115293c23fed:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjc5YjA3NzI2YzdlMDA3NTkxYTZmZGY2OTMyMzUzZTAyM2E1MjI2MDcwMzIwMTJmYmJkMjI0ZGVkYmVmOTJkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2FjMzkyNTg1ZWI1OTRhNmQ4MzAzOGNmNjAxNGNlNDEyOGRmZjAzMTYzOGJhMzcyZDM2MDEyMzVhYzQyMGY4NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjA2ZGYwNTJkOWJiOWEwMzA0NWM3ODQwZTk3NGM1NTg2MDI1MDUwMDAyZmU0Nzg1MjgyNGQ5MDVmNzk3MjhhNSJ9"
+        },
+        {
+          "resource": "repo://tests/catalog-snapshot.integration.ts#L3-L11",
+          "version": "repo-lines-v1:sha256:80ffdc6d2b8ded079d600a4f550b8075d3ba5c9a10e5f1d9a472b7f90c56eb65:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTk4NjViY2MwYjk1Nzk2YmNkMTUyNGIzMGQ3MWJmYWE3Yzk1NjcwNDdiMDYyODY1ZGIyZDQ5MDYwZTkyZTMyYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWM1ZTNiZmEyM2Q0N2Q4MTE5NWMxMjEwYjJkMWE0MGY0YTIyZTQwNjY1NzlhNzNmZjBjM2YyZmFhNmMyMTFmNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWY2YWE1MzgzNDFmMDJiNjczNWY4MDBlMjBkMDEzY2JmYjU0MWUxZDE0ZWZmZDBhY2Q3OGUwZTg2NzY2MTE2NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWNmNTNkNThhNjQxNzY0ZjE1NTFjMTc0ZmE4ZGM0NjBjMzZlZTllODM5MjI0YzM3NDRhYmIxNDAyZWFmYjA3MyJ9"
+        },
+        {
+          "resource": "repo://tests/mixing-queue.integration.ts#L3-L11",
+          "version": "repo-lines-v1:sha256:a0b45a400dbeab5ed14aab070a17088c877fed1c418108a48da92f0093861eac:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjc5YjA3NzI2YzdlMDA3NTkxYTZmZGY2OTMyMzUzZTAyM2E1MjI2MDcwMzIwMTJmYmJkMjI0ZGVkYmVmOTJkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2FjMzkyNTg1ZWI1OTRhNmQ4MzAzOGNmNjAxNGNlNDEyOGRmZjAzMTYzOGJhMzcyZDM2MDEyMzVhYzQyMGY4NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjEzMTAxMzEzMmFjNTU4MWIxNGIxZjJjNmZiMzkwMTk2NzU1MmU1MjVmMDcyNzgxYmE3MTQ1Nzc5MGJiZTQ3MSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_618ac3a7605d47debe556b9d3992db2b",
+      "statement": "인증 소유권 통합 테스트는 한 사용자의 vocal profile과 Google account 연결 요약이 다른 사용자에게 노출되지 않는지 검증한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/auth-ownership.integration.ts#L21-L65",
+          "version": "repo-lines-v1:sha256:5f6528116109512166c35f06f8d47de863756914811313f1dc6c48a8941f8de6:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2NTk1ZjRlZTVmZjYzZDUwOTUwNDE5ZGMzNDQxNDUxMzg1MWRjOTczNmZkMTdhNGY3YmZhOTMwYjI2MWI2ZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZjOTFhNjViOTQyMzM5OTg5MWE1NjZkMTQzMzBiMjY5OTNjYTY0ZTIwMDQxMmQ4ZDI0ZjNjYTAyYTAxNWU0MTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6c2e860cd0e348feb0ec69fdc93a9de2",
+      "statement": "Mixing queue 통합 테스트는 idempotent 동시 enqueue의 단일 job·단일 ticket debit, 단일 worker claim, lease recovery, 단계별 retry/failure 및 환불 상태를 검증한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/mixing-queue.integration.ts#L172-L260",
+          "version": "repo-lines-v1:sha256:7cf161e30931779bec11ec65e5f603248c91d04af7562f200d7d141ae6b59122:eyJzZWxlY3RlZExpbmVDb3VudCI6ODksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYyYmMzNTdlODM5OWJkMWQwODNkMTFhMTQwZTFkZTY3OGFmNTAzODBiZDE2Mjk2NjljNGI4MTVlN2RhYTFmZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU0YjhjYjQ3ZDc0ODFkOGJkNjk4NTgxNDJlYjk5OGIwNmQ2MTU4MjY5NzIyZGYwZjRkNzU3OTQ0NGY3MzgxNjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmY2MwMmU3M2M4MTY0MjQwM2U1ZjFmNGIwNTVhNjE2MzM4NGJhYzA1ZGU2Y2IwMjE2ZThhNzg5NjQ4NjczNWQifQ"
+        },
+        {
+          "resource": "repo://tests/mixing-queue.integration.ts#L262-L339",
+          "version": "repo-lines-v1:sha256:e63d6e98ef653ba7af81abaee3c889ec3d8ee3cd4edc76d3964e8fe0def5fbf8:eyJzZWxlY3RlZExpbmVDb3VudCI6NzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlMTVmYjgwNTk5NDE2YmRlNTEzMmY2MTc3NDU4NmQ3OWI5YWExNjYyMGJjMTRlOGM2NGU3MGIzMzMzMjhhNGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwMTAzZThlY2I0ODA5YTViMmEyYTIxYzQ2ZjAzNjY4MzcwNDlhMWU4OWMzZTFhM2UxYjg4ODU5NDJlYTg1YTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFiMzVmZWZlMGZjNTlkZGE3NjVkZGVlMmM1MTg3YTgwZTFlNzA5OTAzYzdkOGQ1YWVhNmVhNTM4ZjIxOTlhYWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJjNmYyZDVkZTEwMTU4ZTI0OWEzOWFlMDExOTVjMGNiOTI2MDRkYjE3MTMzNDljNmM4NDE2NTNiYmIxYjA4NTYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a46bf61568c944388e3377d36e005185",
+      "statement": "Song analysis queue 통합 테스트는 target asset이 준비되기 전 claim을 막고, lease를 단일 worker에 배정하며 만료 후 재획득을 허용하고, 성공 시 job을 `SUCCEEDED`, analysis를 `READY`로 저장하며 retryable 오류를 `PENDING`으로 되돌린다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/song-analysis-queue.integration.ts#L125-L177",
+          "version": "repo-lines-v1:sha256:60999aca208816e43478b60504c45594d683d84cfadde6865352dd91ddebe906:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVjODUxMTcxYjA0MjQwYTJmZTg2MzMzZDA0YTJmZDMxNWEyYzc2MzVkOWFmMDk2OTA4Mzc4YzUzYjc5NDhlMTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiZWE1N2RmYTBlNDM0N2RkZTUyNGNjMWQzODM1NzM3YTA3MmE3NDNmYjFkN2I5ODljZjdjMDhlYmNlYzQzZWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViMWVhMTVhMGY3YjFkNzc0MWMwOTJkZTgwMmQzOWZkYTQ0MzRlY2YwNWY5NDM1OGM2ZjM2OWNhOTExNmUyMmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQxMTg0MmUwMDdlYWNjYmRjOTA4MDdiMmYwMGY4MDEwMzE5Y2E4YzhkNDQ3ZWRiYzFmZGU4YWEwMjFmMTlmYzgifQ"
+        },
+        {
+          "resource": "repo://tests/song-analysis-queue.integration.ts#L36-L123",
+          "version": "repo-lines-v1:sha256:33dba7cb7b8a29df8f3639bd8d6f290cc75d12d1fbb0c42aff4e094c776b6475:eyJzZWxlY3RlZExpbmVDb3VudCI6ODgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZmViNWVlZjZmMjBjMGEzYzkyOGJjYzVkNDZkNjRiYmIzODM3NjIwM2JkZGFkODMzNDc1ZWU0YmRmMWQ1ODMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhmNWMxMzkxMjA1ZTc1OGM3OTVjMzhiYTk3MjU4Y2VjYThmNTE5NDUwNGNjZTI4ZGI1ZTMxMTJkMTA1ZTI4YWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_92296749376145cb9123d87c37fd7a2d",
+      "statement": "Vocal profile analysis enqueue는 같은 idempotency key의 요청을 같은 job과 단일 presign으로 재사용하고, 별도 활성 요청은 `ANALYSIS_BUSY`로 거부하며 job 조회를 owner scope으로 제한한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/vocal-profile-analysis-queue.integration.ts#L140-L191",
+          "version": "repo-lines-v1:sha256:ac0e0a5530955a8bc93a42dfa12fde70da8801c73f06c6574b371fa3e903da98:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlMjVlNzJlOWRkNmVjOTExYWQxMTA0YTczY2QwM2ViM2RmMDEwMWM3Mjk0NDJjMGEzN2Q1MWZiNjY1MzIwYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwMTAzZThlY2I0ODA5YTViMmEyYTIxYzQ2ZjAzNjY4MzcwNDlhMWU4OWMzZTFhM2UxYjg4ODU5NDJlYTg1YTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZjMjk3MWI3MGM1NGVkOGE2MTJlYzY0ODQwODIzZmIzZmUyOWRjNWNlNGFjMzY1MTY2Y2U4OTNlNDIzZWU0YTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVhYWQwYTc0YjQwZDRmNmE0NmQ3MGM3NTVjYTZkODEzNzE0MjMwNzk5ZGU4NDQyNTM5NDRkZWMxZTU5NjA1NmIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0976224dfbe940f7a543900c9a46956c",
+      "statement": "Catalog snapshot 통합 테스트는 export에서 raw bytes·base64·임시 경로를 배제하고 metadata allowlist와 source URL/video ID 일치를 검증하며, import의 idempotency와 기존 catalog revision 하향 방지를 확인한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/catalog-snapshot.integration.ts#L173-L211",
+          "version": "repo-lines-v1:sha256:eff11302b2c2ef2b8102c3224780903a23de0fc916fd865b6dbafae1405f7e80:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2NTZlMjlhNThhY2FhNGM0MjM0NDhlMzU0MDI4NmJkN2E3N2RiZDFhODQ2MzY4M2MxMjIyMjFkYjk1OTNmNDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjM2Q2NzY2ZjE3OWU1MTViNjhkMGNmMmExYjMzODMzNzc0YTVkNTliYWE0ZTY4NDFiYTY4ZDg0ZThhNTFjZWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViMWVhMTVhMGY3YjFkNzc0MWMwOTJkZTgwMmQzOWZkYTQ0MzRlY2YwNWY5NDM1OGM2ZjM2OWNhOTExNmUyMmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNkMDJjNWUyYTcxNGMxZGZiYzIyZjNmYzA2NWI0NjI3NDI3NjQzZDNhN2ExZDNhNzIyZmRkMjQzMDcwMzcxOTkifQ"
+        },
+        {
+          "resource": "repo://tests/catalog-snapshot.integration.ts#L63-L120",
+          "version": "repo-lines-v1:sha256:f55016280c6e9e68ee1448eae89a4181efc1120a7c79f8b23780e9368d0ab4db:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2NTk1ZjRlZTVmZjYzZDUwOTUwNDE5ZGMzNDQxNDUxMzg1MWRjOTczNmZkMTdhNGY3YmZhOTMwYjI2MWI2ZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiNmQ3ZDc0N2I2Njg1YTEzMDU5MGVlZTc0NjE1NDdjYmQwNDZmNDQwMzU3NWI5NmJiODI0YzIxNTRmMjRlZmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzNzFhM2I1NTA1MTA2Mjk5NmM0ZTM3ZWUwMTIzYTFjZTY3MWI1ZWY2YjQ4OWU5OTA4NGU0ZGEzYWRhN2M0OGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ4YWY2YmI0MWRjNjYyMDBjMGJmZTMwZTc4NzU4MDBhMmI0ODkyY2Y5ZjE2NWQyMDI2Y2ZiOTM2YWI3ZTBiN2EifQ"
+        },
+        {
+          "resource": "repo://tests/catalog-snapshot.integration.ts#L8-L40",
+          "version": "repo-lines-v1:sha256:73564dea4409d7198e9a823517a8b54813c670e0c64b7bf848dfb4a464bc539e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1OGI4ZTQzOWNhNmNkZmZjNDAxNTc4ZDJlMGVhZGQxNTI4MWNjNWY0NTZjYzA1Y2FkMzg2ZTA5OGE1ODExMGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5NjkwYjNlZTBhMDU3ZGIwYzA0ZmZjYzJjNTZhYTI2NDUwZjk1MWM5MmUwOGEyMGNmY2YyZGQyODk2N2EzZmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0ZGI0NWUwYmUzMTgwNTYwY2UyNDY2MmNlNTM2ZWJmMmRiYmJkZTRjODgyOTY3YWRhNTY0MTFlNzgzZGE2ZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIyYjFhNDY5YWVkNGU2MDljNTY2MDhhM2M4ZGUyYmY0ZmQ1OTc3MzY5ZDdhYjM3Mzk3Njg2MDFkMjc2OTVmNDMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7a67ccb05a7244f2ac247a581bdd498a",
+      "statement": "FSD architecture boundary test는 `app`, `src`, `scripts`의 TypeScript AST를 분석해 다른 slice의 내부 `api/model/ui/lib/config` 세그먼트 참조를 거부하고, runtime import가 server-only·DB·Next server 모듈에 도달하는 client-server 위반을 탐지한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L154-L220",
+          "version": "repo-lines-v1:sha256:bfe3b12914ab5c93cc9d82609192eff47712f069f9b3b527a335a6becd57451f:eyJzZWxlY3RlZExpbmVDb3VudCI6NjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2NGY2YzRjZGVlODRhNzY0MzBkMzQ1NzlhZTJmYTlmMjQ1ZGJjMDI1MmVlOTIyY2QwODdiN2VhOTA0ZTBkYTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE3ODFlNDU0ZDYzYzhjYjhiMzUzMDM3ZmI3M2NhZGZlYjQyN2IzYzk2ZDJlMjg1ODM5Zjg3ZTdhNjJhNGUzOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVmZmM0Zjk2NjJmODdhMWMwN2IzMWJhZTI5NmEwMDI5ZDA5NDNlOGVjNzZjOGExNmM5MmJhOTMzOThhY2ZmODcifQ"
+        },
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L24-L45",
+          "version": "repo-lines-v1:sha256:946ad9443d2b3b3dd32199f8b98aff24b16a559e0649b780107fdec4484c7e10:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiZmJiNDE0ZGM1YjBkOTgwZDk5MTE5NDA5NjNhYzE4NTQwMzRiOTE4MmJhMTQxNGJhNWI5YjlmM2JlYjRhNmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwYmQ4OGU4MTNhYzBlNGJkYjI1Yjg5NDFmMmQ1ODNlMjFlNWViMmE1NDMzNGI4MzVhNjAwM2YyOTIxMWUxMzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkzNzY1YTY2OTI2M2FkMTBmZmNmOGZkM2Y2ODllOTA1NWI5NGQ1YTFlMzJmZWE2MzY1YTJhMTM0MTExMmZlYmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3ZTA2ZmYwYTc3OTdjMjhkYmZjMjU4YmM4NTA5OTAzZTlhMjIxYjFmY2ExNzViMjBhYWJhNWNhZDVjMzY0YmMifQ"
+        },
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L95-L112",
+          "version": "repo-lines-v1:sha256:7e7435591b89cf4cc759b70a8d8b519babd467e3e8f917cea782311fed62c445:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjZGMyNzdhZWQ1ZjlmZmQ3NGU1MDU2YmJhZGU3NWIzYjc0ZDE3M2U5ZmI3MDdjNjBlNWY2YmE1MmFlNmZiY2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwZTkyYWE4ZWU0ZGNhMDVmNDFlNTYwZWRjNTgyZGRkNzc2ZDQ3MjFmNmY2MGFkMTA1OWNjOGZiOGM4MzAyZWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg0NjM3ZDFkNDYxZjk5MDYwMjllYWRkODY3MDA3MzUxODY2NmZkYTFmYzg5YTE3ZTRlOTUxMGU5NjRjZWMzMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZlZDQ2MzRmNDI1ZjE5OTJiOTFjYWM0OGY0Zjg4ZGFiNjA1YzliZjdjYzNjYjk0Yjc3ZDBiNTZiYTI0MTIyMjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9fe0014c8ed24b9cb1b4149ba82955c0",
+      "statement": "Process script 테스트는 `dev`와 `start`가 웹·mixing·vocal-profile-analysis·song-analysis 프로세스를 `concurrently --kill-others-on-fail`로 함께 감독하고, 자식 하나가 실패하면 형제 프로세스를 종료하는지 검증한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/process-scripts.test.ts#L29-L81",
+          "version": "repo-lines-v1:sha256:82a9410a6f7a016849b9e235f16a5528543b61c26cf8f6f8e29d4ca359cd3b72:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjOWY4ZDk0NzU2MmVhYTFjMzNkZmU3ZjJmYjE0ODQ3YmVhOWI2NWViOWMwMTZiNTBiYTFkY2U3ZWEyMTIzNDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3MWEzZGZhYzEzZWFlMDAzZDNlYjE3MzA2Y2MwNWZlMjY5MWU2YTAwYzE5NjE3NjBlNGQzNDdhNGYwYTIwMzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI1MjM2ZDI1ZjVlZTQ4NDZmY2RiZTQ0MTk0MTQ3NDk2ZjFhMzFkOGQzNDgwNTg0YjI4OTExNTgxYjc5NGI3OGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_aeeeb2ff592c4510b30363d14e8acaa7",
+      "statement": "집중 테스트는 Modal, Leemage/object storage, 실제 analyzer/provider, 운영 DB·migration·네트워크, 실제 브라우저·오디오 장치와 외부 서비스의 인증·quota·rate limit·장애 복구를 실제로 보장하지 않으며, 외부 호출은 fixture로 대체된다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/mixing-queue.integration.ts#L221-L232",
+          "version": "repo-lines-v1:sha256:f30beb079204e4b5f8b290a75b5e27f91d71dce5daf204e9a8ccd6774c1fb9aa:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwMjZmODRkMWJjYThiMDY2NWYyZTM1YTE5MTg1NDQzYzIzOGIxNmU1ZWE4ODkwOWZjOWNhMGU4NzNkNDUzMzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwNDJlNzhmNGVhN2JkZWUzMTFjYzRiNzJmYTI5ZmUzNTlmYzNmM2I2N2YwYjQ1ZjgxOWQ2ZDQ2NjUwYzU3YTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEzNDIyNTA3Yzk2MGQwZWM1OWM3ZTRmNzk3ZmU2YzAxNjYzOWJlY2IxZDA3NWI2MWNiMjBlNTFiZjdmNWI3YWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgxYzRhYzYwODFkNDU0OTZiNmE0YmZhYmJkYzc2ZWYyNDRiNTU3ZGJkYTc4NDk5OGM3NzlmMzAxMDE5Y2ZkNmIifQ"
+        },
+        {
+          "resource": "repo://tests/process-scripts.test.ts#L8-L27",
+          "version": "repo-lines-v1:sha256:acd519ca4e57b9cc3b147e82b0445a6aafcb93ae53c322b0df63dd834fb8c380:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkODc1YTU0NDM2YmE2NTg4YmNmMjQ2MDM4MzhiYjRlNTViZDZhMTU3NDc3ZmU0MTBmZTliNWUwOTk2OTVmOWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJlZDU1MTIzMWJlMjA0NzI5N2U1YjQ3NzMzZTJmMDFhZTg0M2JjN2I1MWQ0NGY5NzEwNmY4NDgwMDhmZDYyMDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ2ZGE3NzJlZjAxODI3MzdhNTc1NWVlMWQwZmQ4ZTUwNWU0MjM1ODMxMTM4YzdiOTE2OWZiZWQ5MTlkYTk2NDcifQ"
+        },
+        {
+          "resource": "repo://tests/song-analysis-queue.integration.ts#L80-L100",
+          "version": "repo-lines-v1:sha256:8a823a3b710ce6fdc69017d143c81f579e978842d8eaf2b0dfabdffaa0bb9e64:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlNWRkYmQ3MDhkMzIyN2MxNzgxN2Q1MWViYzViYWRlMGY1ZGZiMjVlNTMzY2Q1OWQwNzk2M2I3NmJlMDdlNWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyZDExY2FmNDNlOTdlZjM2OWU2YmVlZDFhMjY4YmQwNTgzOGYyOWI5ZGQyNTRiZjY5YmE2NDg4NDE0NzIzNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc1ZTJkMzk5ZTVkYjg4NWI4OTJmZDgxM2ZhMjk4NDgxNTY3ZTg1YjRjZmY1YzdhYmJjMWFlY2Y2YTgyYWRlYmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgyZmIxMDhmMWY2YWUyMzVhZTU4M2ZlMjVmYzkwNDNlYjIzNjI2YWU1NTI1MWJkNzE4NmM1NDE1OWUwODBkMTcifQ"
+        },
+        {
+          "resource": "repo://tests/vocal-profile-analysis-queue.integration.ts#L150-L172",
+          "version": "repo-lines-v1:sha256:a62515d5ae51cf055e6f427c5ef90e6f7e56cf11bb187d24e26582ad1feecc2b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyZDYwMzk5NzY2MWFlNWU2NjBiZTczNjJlYjFkODBkMDMyYTBmMjhjMzNhZjkyZDg5NTE5MzJhZGMzMzcxZDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxMWY2OTVjMGE2MWU5ZGZlMTQ1ZGY2ZjQzZTk2OTc3ZDk5YmIyMjJmODJjZjljODJiZDBkODI3ODRiY2E5ZDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI0ZmVjODE5MDJhZmY3ZTUyOWI3ZDg1MzBiNjc4NjA4NGZhMDRmNjc3MDU0OWJiNjQzZDg5M2IxYTdiNWJkYzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgxYTllMjAzMzc0YmFhYmRkNzQzNjhiZDI5NjNkODc4Y2U5NmNjMzBmZGU2OTBmMDNjNzBkMzk3ZDE4MjI1YzkifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-04T16:09:12.723Z"
+  }
+}
