@@ -75,4 +75,26 @@
   - `docs/prd/system-architecture.md`: 현재 존재하지 않는 `components/`, `lib/auth/`, `lib/mixing/`, `lib/vocal-profile/analysis-*` 경로가 남아 있다.
   - `docs/features/web/README.md`: component 범위를 `components/` 중심으로 안내해 현재 FSD 구조와 다르다.
   - `docs/agents/constitution.md`: lee-spec-kit을 `0.8.8`로 고정하지만 현재 CLI는 `0.9.11`이다.
+- **Implementation outcome**:
+  - architecture와 web guide를 현재 `app/`, `src/`, `prisma/`, `scripts/`, `services/`, `tests/` 구조와 세 durable worker 흐름에 맞췄다.
+  - constitution에서 도구의 고정 버전을 제거하고 장기 원칙, Curated Documentation Impact, OpenWiki 갱신 책임을 명시했다.
+  - README와 docs 가이드에 질문별 SSOT 및 Git `F###` → Feature `decisions.md` 탐색 절차를 추가했다.
+  - 정적 baseline assertion과 `pnpm run check:architecture`가 통과했다. `docs-audit`의 기존 design 문서 2개 `DOC_KIND_MISSING` 경고는 전체 design 정리가 아닌 별도 문서 taxonomy 부채로 남긴다.
 - **Consequences**: F040의 spec·plan·tasks와 Feature review target을 다시 열고, curated 문서 변경 후 OpenWiki를 재동기화한다. 기존 F001~F039의 이력은 보존한다.
+
+---
+
+## D005: PRD와 custom policy는 의도 문서로 검토하고 자동 정합화하지 않는다 (2026-09-04)
+
+- **Context**: curated 기준선을 복구하면서 코드에서 확인할 수 있는 현재 사실과 제품·사용자 의도를 구분해야 했다. 아키텍처 문서처럼 코드와 직접 대조할 수 있는 자료는 바로잡을 수 있지만 PRD와 `custom.md`를 현재 구현에 맞춰 축소하면 아직 구현하지 않은 요구와 운영 제약을 잃는다.
+- **Review result**:
+  - `docs/agents/custom.md`의 로컬 Next.js 원칙, 필요할 때만 수행하는 Modal 배포, 사용자 제공 음원만 사용하는 검증, component ownership, GPU 비용과 음원 권리·보관 정책은 현재 운영 규칙과 충돌하지 않아 변경하지 않는다.
+  - `docs/prd/copy-singer-prd.md`의 100곡 목표는 미구현 여부와 무관한 장기 제품 의도이므로 유지한다.
+  - PRD 서두의 "다음 구현" 순서 문구는 현재 완료 상태를 안정적으로 나타내지 못하는 시간 종속 표현이다.
+  - `PRD-FR-016`의 "원본 테스트 녹음" reference 표현과 더 구체적인 `PRD-FR-042`의 mid-only synthesis reference 계약은 신규 독자가 상충한다고 읽을 수 있다.
+- **Decision**: F040에서는 PRD와 custom policy를 수정하지 않는다. 확인된 두 PRD 항목은 코드 사실로 임의 결정하지 않고 제품 의도를 재확인할 때 정리할 잔여 문서 부채로 남긴다.
+- **Rationale**: F040의 목적은 현재 코드 탐색 기준선과 문서 권한을 복구하는 것이다. 제품 roadmap 상태나 합성 reference 요구의 우선순위를 추정해 바꾸는 것은 `Product requirements: NONE` 범위를 넘는다.
+- **Evidence**:
+  - PRD의 장기 목표·제외 범위·요구사항 ID와 `custom.md` 전체를 현재 route, worker, service, storage 구조와 대조했다.
+  - 현재 합성 경로의 mid-only reference 사용 사실은 `docs/prd/system-architecture.md`에 기록하고, 제품 요구 간 표현 차이는 이 결정에 분리했다.
+- **Consequences**: 신규 개발자는 현재 런타임 사실을 architecture/OpenWiki에서 확인하고 장기 목표는 PRD에서 확인한다. PRD의 시간 종속 문구와 reference 표현을 바꾸려면 별도 제품 판단과 `Product requirements: UPDATE`가 필요하다.

@@ -59,10 +59,10 @@
 
 **Acceptance Criteria:**
 
-- [ ] `system-architecture.md`와 web component 가이드에 제거된 `components/`, `lib/` 기반 탐색 경로가 현재 구조처럼 남아 있지 않는다.
-- [ ] constitution은 장기 원칙과 현재 아키텍처를 설명하고 빠르게 낡는 lee-spec-kit 버전을 고정하지 않는다.
-- [ ] PRD와 custom policy는 코드로 자동 덮어쓰지 않고 현재 제품 의도와 운영 규칙 기준으로 검토한 결과가 기록된다.
-- [ ] 현재 코드의 변경 이유는 Git commit의 `F###`에서 해당 Feature `decisions.md`로 이동하는 절차로 찾을 수 있다.
+- [x] `system-architecture.md`와 web component 가이드에 제거된 `components/`, `lib/` 기반 탐색 경로가 현재 구조처럼 남아 있지 않는다.
+- [x] constitution은 장기 원칙과 현재 아키텍처를 설명하고 빠르게 낡는 lee-spec-kit 버전을 고정하지 않는다.
+- [x] PRD와 custom policy는 코드로 자동 덮어쓰지 않고 현재 제품 의도와 운영 규칙 기준으로 검토한 결과가 기록된다.
+- [x] 현재 코드의 변경 이유는 Git commit의 `F###`에서 해당 Feature `decisions.md`로 이동하는 절차로 찾을 수 있다.
 
 ---
 

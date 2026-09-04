@@ -42,7 +42,7 @@
     - project:README.md
     - docs:README.md
 
-- [TODO][NON-PRD] T-F040-repository-knowledge-bootstrap-02 curated 문서 기준선 복구와 WHY 탐색 연결
+- [DONE][NON-PRD] T-F040-repository-knowledge-bootstrap-02 curated 문서 기준선 복구와 WHY 탐색 연결
   - Date: 2026-09-04
   - Acceptance:
     - 시스템 아키텍처와 web component 가이드에서 제거·이동된 legacy 경로가 현재 코드 탐색 경로로 교체된다.
@@ -50,11 +50,11 @@
     - PRD와 custom policy는 현재 제품 의도·운영 규칙 기준으로 검토되고 임의로 코드에 맞춰 변경되지 않는다.
     - onboarding 문서가 OpenWiki → tracked source → Git F-ID → Feature `decisions.md`의 WHY 탐색 순서를 설명한다.
   - Checklist:
-    - [ ] `system-architecture.md`를 현재 FSD·API·durable worker·외부 서비스 경계와 대조해 갱신한다.
-    - [ ] `docs/features/web/README.md`의 코드 탐색 지도를 현재 `app/`, `src/`, `services/`, `tests/` 구조로 갱신한다.
-    - [ ] `constitution.md`의 기술·아키텍처 원칙과 버전 표기를 현재 기준선에 맞춘다.
-    - [ ] PRD와 `custom.md`의 의도·정책 유효성을 검토하고 결과를 `decisions.md`에 기록한다.
-    - [ ] README와 docs 가이드에 질문별 SSOT 및 Git F-ID → `decisions.md` 탐색 절차를 추가한다.
+    - [x] `system-architecture.md`를 현재 FSD·API·durable worker·외부 서비스 경계와 대조해 갱신한다.
+    - [x] `docs/features/web/README.md`의 코드 탐색 지도를 현재 `app/`, `src/`, `services/`, `tests/` 구조로 갱신한다.
+    - [x] `constitution.md`의 기술·아키텍처 원칙과 버전 표기를 현재 기준선에 맞춘다.
+    - [x] PRD와 `custom.md`의 의도·정책 유효성을 검토하고 결과를 `decisions.md`에 기록한다.
+    - [x] README와 docs 가이드에 질문별 SSOT 및 Git F-ID → `decisions.md` 탐색 절차를 추가한다.
   - Docs:
     - project:README.md
     - docs:README.md
@@ -75,7 +75,7 @@
 
 ## 완료 조건
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
 - [ ] 테스트·CLI 검증 실행 및 통과 <!-- lee-spec-kit:completion:tests -->
 - [ ] 최종 결과를 공유했고 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
 
@@ -86,6 +86,9 @@
 | `npx lee-spec-kit detect --json` | `2026-09-04` | `PASS — PROJECT_DETECTED, experimentalOpenwiki=true` |
 | `npx lee-spec-kit workflow-audit --json` | `2026-09-04` | `PASS — WORKFLOW_IN_SYNC` |
 | `npx lee-spec-kit knowledge audit F040-repository-knowledge-bootstrap --component web --json` | `2026-09-04` | `PASS — OPENWIKI_VERIFIED, source=944780e, output=sha256:95b6177e…e8d8a` |
+| curated 문서 baseline 정적 대조 | `2026-09-04` | `PASS — legacy 경로·고정 버전 제거, 참조 경로 존재 확인` |
+| `pnpm run check:architecture` | `2026-09-04` | `PASS — Steiger 및 FSD boundary 4 tests` |
+| `npx lee-spec-kit docs-audit --json` | `2026-09-04` | `WARN — 기존 design 문서 2개의 DOC_KIND_MISSING; F040 제외 범위` |
 | local-ff post-merge checks | `-` | `-` |
 
 <!-- lee-spec-kit:workflow-sync sha256:c97edef4c4a4f1035c0e6557a761aa3e697fb3ade862d8534b65a5641e4d4b8b -->
