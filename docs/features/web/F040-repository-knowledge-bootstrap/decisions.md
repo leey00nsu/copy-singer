@@ -12,7 +12,7 @@
   - **DONE 전 확정 시점**: OpenWiki 설정과 onboarding 문서 변경은 F040 단일 태스크에 연결했다. F040 receipt와 Knowledge audit 결과는 Knowledge gate 완료 후 기록한다.
   - **머지 후 확인**: local integration 뒤 기록한다.
 - **Evidence**:
-  - **Commit**: `chore(F040): OpenWiki 설정과 온보딩 진입점 정리` checkpoint에서 확정한다.
+  - **Commit**: `feat(F040): OpenWiki 설정과 온보딩 진입점 정리` (`f11361d`) checkpoint에서 확정했다.
   - **PR**: - (local workflow)
   - **Test/Log**: `git status` 기준 `main == origin/main` 복원 확인; F040 workflow 검증은 완료 시 기록한다.
 - **Consequences**: OpenWiki 도입 이력은 F040에만 남고, F039는 VoiceOrb iOS WebGL 합성 수정 범위로 유지된다.
@@ -31,7 +31,26 @@
   - **DONE 전 확정 시점**: `README.md`와 `docs/README.md`가 OpenWiki를 파생 evidence로 제한하고 source 재검증 및 `knowledge sync` 전용 갱신 원칙을 안내하도록 맞췄다. 생성된 index·receipt·audit의 일치는 Knowledge gate에서 확인한다.
   - **머지 후 확인**: local integration 뒤 기록한다.
 - **Evidence**:
-  - **Commit**: `chore(F040): OpenWiki 설정과 온보딩 진입점 정리` checkpoint에서 확정한다.
+  - **Commit**: `feat(F040): OpenWiki 설정과 온보딩 진입점 정리` (`f11361d`) checkpoint에서 확정했다.
   - **PR**: - (local workflow)
   - **Test/Log**: `knowledge audit` 및 onboarding 문서 정적 검토 결과를 완료 시 기록한다.
 - **Consequences**: Feature마다 Curated Documentation Impact는 계속 필요하며 OpenWiki 동기화가 사람 관리 문서의 갱신 책임을 대체하지 않는다.
+
+---
+
+## D003: Feature review round 1의 생성 오류를 source guidance에서 교정한다 (2026-09-04)
+
+- **Context**: 최초 F040 Knowledge는 audit과 receipt 검증을 통과했지만 독립 Feature review에서 코드 근거와 어긋나는 설명 두 건이 발견됐다.
+- **Decision**: generated OpenWiki를 직접 편집하지 않는다. worker lease eligibility와 recommendation 진입 경로를 사람이 관리하는 onboarding guidance에 명확히 기록한 뒤 `knowledge sync`로 전체 파생 Knowledge와 receipt를 다시 생성한다.
+- **Review findings**:
+  - **P1**: `openwiki/architecture/system-map.md`가 worker가 "만료되지 않은 작업"을 claim한다고 설명해, 실제 `PENDING` 또는 lease가 없거나 만료된 processing job만 claim하는 동시성 조건을 반대로 안내했다.
+  - **P2**: `openwiki/quickstart.md`가 존재하지 않는 `/recommendations` 경로를 안내했다. 실제 route는 `/recommendations/[id]`이며 제품 흐름은 프로필에서 해당 경로로 진입한다.
+  - **P3**: D001·D002의 checkpoint subject를 `chore(F040)`으로 잘못 기록했으나 실제 커밋 `f11361d`는 `feat(F040)`이다.
+- **Review evidence**:
+  - **Reviewer**: `/root/f040_feature_review_r1` (`feature_reviewer`, inherited model, reasoning effort `high`)
+  - **Round**: 1 / max remediation rounds 1
+  - **Target**: `eb164d718d66b2ce3e177fc03727ae60ec0add3d..7124a1f0231522362bbac03b3bc099d63eb1fd0b`
+  - **Tree**: `50ad54d3d6c789a50bb6e03cba65a99edaf2f876`
+  - **Decision**: `changes_requested`
+  - **Positive evidence**: 131개 claim evidence 참조가 tracked file과 유효 line range를 가리켰고, receipt는 F040/web, source `f11361d`, base `eb164d7`, OpenWiki `0.5.0`, OKF `0.2`와 검증된 fingerprint·output hash를 기록했다.
+- **Consequences**: audit 통과는 생성물 무결성과 provenance를 보장하지만 설명의 의미 정확성을 완전히 보장하지 않는다. 중요한 concurrency·route 사실은 curated guidance와 독립 리뷰로 보완한다.

@@ -14,13 +14,13 @@
 - **문서 상태**: Approved
 - **레포**: copy-singer 전체 (`web` component에서 추적)
 - **브랜치**: `feat/repository-knowledge-bootstrap`
-- **대기 중 변경 요청**: -
-- **Feature 리뷰**: -
-- **Feature 리뷰 Evidence**: -
-- **Feature 리뷰 Decision**: -
-- **Feature 리뷰 Round**: -
-- **Feature 리뷰 Head**: -
-- **Feature 리뷰 Tree**: -
+- **대기 중 변경 요청**: P1 lease eligibility 설명 반전, P2 존재하지 않는 `/recommendations` 진입 경로, P3 checkpoint commit subject 불일치
+- **Feature 리뷰**: done
+- **Feature 리뷰 Evidence**: `/root/f040_feature_review_r1` (feature_reviewer, inherited model, high effort)가 131개 claim evidence 경로·line range, receipt, managed surface와 `eb164d7..7124a1f` diff를 검토했다.
+- **Feature 리뷰 Decision**: changes_requested
+- **Feature 리뷰 Round**: 1
+- **Feature 리뷰 Head**: 7124a1f0231522362bbac03b3bc099d63eb1fd0b
+- **Feature 리뷰 Tree**: 50ad54d3d6c789a50bb6e03cba65a99edaf2f876
 
 ---
 
