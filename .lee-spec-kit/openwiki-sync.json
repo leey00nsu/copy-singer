@@ -1,14 +1,21 @@
 {
-  "schemaVersion": 2,
-  "triggerFeatureRef": "F040-repository-knowledge-bootstrap",
+  "schemaVersion": 3,
+  "triggerFeatureRef": "F041-openwiki-writing-style",
   "triggerComponent": "web",
   "language": "ko",
-  "sourceHead": "80a32b9c2092131aadd6b31b8f9bc10294b800d2",
+  "sourceHead": "f4c1c182df39fb7f9584c00c91bef0dc68ee9a51",
   "sourceFingerprint": "sha256:4dc57f092972737e92acf114abe382cf96f6f3ac313afac95bc8fd78dd07124d",
   "baseRef": "origin/main",
   "baseHead": "eb164d718d66b2ce3e177fc03727ae60ec0add3d",
   "openwikiVersion": "0.5.0",
   "okfVersion": "0.2",
-  "outputHash": "sha256:5cac86bb21c1f56fa64209f548c521ce6ca8c135f25eec243c2b6c0c222b0e98",
-  "verifiedAt": "2026-09-04T02:46:15.772Z"
+  "outputHash": "sha256:c441406616b7f2e3f2c60c86d54dee4577e735ccc6ac4ab68ad95559daa73b8e",
+  "verifiedAt": "2026-09-04T09:03:59.469Z",
+  "writingPolicy": {
+    "adapterId": "lee-spec-kit.technical-writing",
+    "adapterVersion": "1.0.0",
+    "skillName": "lee-spec-kit-technical-writing",
+    "skillHash": "sha256:a933d8352d5bdbec839b109e45748f231b8a9b209d6cafd7e4a9625fe8311d0b",
+    "instructionHash": "sha256:ccdeb91ff696878e968dbe7a4ca525eee9cf7d4b512b56fc61d9dac5275a165a"
+  }
 }

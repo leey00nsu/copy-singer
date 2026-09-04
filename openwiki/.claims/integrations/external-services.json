@@ -1,0 +1,300 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:276e8468611433229d9664082ca8f3319798583e9a44c029ce69123249033d17",
+  "claims": [
+    {
+      "id": "claim_40dedf5f87ba4b51a71981c0bad3a5dc",
+      "statement": "브라우저는 credential-bearing 외부 API를 직접 호출하지 않으며, Google OAuth와 Leemage·Modal 호출의 자격 증명은 서버 인증 구성 또는 server-only/background worker 경계에서 관리된다.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/vocal-profile/api/analyzer/modal-adapter.ts#L34-L46",
+          "version": "repo-lines-v1:sha256:df7a20e67895ce8b80e5d4d400415c7560236d87221f7a13ae3960ef0388d888:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0Y2ViNWI5NzliMzFjNmNjMWEzMDEyMGFlMzM4ZjNmNzU1NjJhNjZiMTMwYzZkYTU1M2I3NjQ1MDJiYzkzZmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJmMzk2Y2MxMDliZWNlYjg1Yzg2YWVlOGYwNTZmM2ZjZWFjZDE5NjQ3ZGYyNmE4ZjAzYWYxZWI1NWNlODYwNmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFhNzdiMzcyM2NiYjM4YjdmYjQwNDM2MTY3ZTZjYjg2ZTk4MzQ4ZWRkMDM3ODk3NGQ2YTBiMGU4OTBjYWZiODYifQ"
+        },
+        {
+          "resource": "repo://src/features/authentication/api/auth.ts#L1-L23",
+          "version": "repo-lines-v1:sha256:d7ba4c0191a0d1fc70751d4ff680a1424f0ca3fc7cf90bfa77fd22b02061b2ec:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjMGY0OGUzOGZiZGI2YzBlZmU5ODdjOTg0NTIxZWQwNzQzMjc1NWI2YmFhY2NmNDVkOTc3ZTU3ZGI3Y2JhZDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEyZGM0ODUyMDU5YmYzMzc3NDk2MWQwZDIxY2UzMDBmMzEwMmMyMmE0ZjJlZTc0OTEwZjNmODMxNmYzMjQxNGQifQ"
+        },
+        {
+          "resource": "repo://src/features/authentication/ui/google-sign-in.tsx#L1-L18",
+          "version": "repo-lines-v1:sha256:bf3031c3f935b427eccbd59c5d0f8fd52b4279f5bc755f65f86a1d86036c97ea:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1ZmYzZTg1ZDY3MTVhN2E5ZDBmNmMxYjMyZjMwY2Q4Y2IxNDRjYzc5YzhhYmFlOTUzZWExMzc4ODlmYWUyZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3Mjk5MWQyYTBhYjU4MWE3Y2JlZWJlZjBiZGZmOTc4MmE0MmJkNGNiNGFkNDc5YjVhZWFiMDVkOWEzZGQwNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk3ZDg2MzJlNTRlOTI5OGFiYjk1ODcyN2UyZDUxNDA4YWJhZjEzNjYwMzUzNzkxMDE0MGFiZjY1YjMwYWI2MTMifQ"
+        },
+        {
+          "resource": "repo://src/shared/media/client.ts#L1-L7",
+          "version": "repo-lines-v1:sha256:ae2ab0013390bb99959cc9ddee12c5910dad34c1a71d3efe19e9cdd64c1b7262:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGMwZjQ4ZTM4ZmJkYjZjMGVmZTk4N2M5ODQ1MjFlZDA3NDMyNzU1YjZiYWFjY2Y0NWQ5NzdlNTdkYjdjYmFkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWExZDFhNjMzOTAyMjljNzk4MzQ3ZTgzYTA0MDU0NDFjOTQwMDAzNTI4NGFkMTY4YzFiZjZjZGYxZDcwYTM3MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmU1MzZmODMwNWZmODdlMjk4MWNmMTVlY2ExZjkxOGRkZWZmZWQ0MjU3NDAyNWZhN2IwYjBlNzAzZjQzMDg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_586732d8f9754f6ca21ca464f6cf884c",
+      "statement": "Google 인증은 PostgreSQL Prisma adapter를 사용하는 Better Auth social provider이며 openid·email·profile scope를 요청하고, 새 사용자 생성 후 가입 ticket grant를 실행한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/authentication/api/auth.ts#L11-L32",
+          "version": "repo-lines-v1:sha256:06e7034cbc2ddce3bc7fec820cf7318985a7893bb89c10a1e99f22a143b07560:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0NGQ5ZDYwZDllNzZhOTlkNTQxNGJiMzc4MTQyNGI4NGM2NjM2OTcwMmU5ZGFhZDgxZGU3M2ViNzNjYjk1ZWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcxMzNiM2E3OTY5ZDA1NWIyNTUxNzMxZGI0M2ZlYjQ2MzA0NGJlMWVkY2ZhOTJmYWQxYzhiNDc4ODUwMjEwZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkNmM3MjliNTM3NmZmYjI1N2ZiYzM4NWUzZDA3ODMwMjkxNzlmYmY2N2JjM2NiNzE3NjQ0Y2NkOWJjNjAwMzYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d0c068753a524c71812c86ae461a29f2",
+      "statement": "Google 로그인은 BETTER_AUTH_SECRET, BETTER_AUTH_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET가 모두 설정된 경우에만 구성 완료로 판정되며 UI는 미구성 상태에서 버튼을 비활성화한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/authentication/api/auth.ts#L35-L42",
+          "version": "repo-lines-v1:sha256:f60c2e557c3d4cc160eb4c1c5d65d5db3ff54b0fd80e2a7eb2748a37e422e54d:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjU4NDE1OWY3Y2FjZTg5ZDNhYTYwZDUxZmExNDU3NzhkZjhmNzE0YjI3MDMwYzk3OGRiNjVkM2UyNjgzYTliZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTM4M2FjMTk5OGFkODgyODg0NWM3MGVkZmY5ZDI1ZmNjNzg5NTdmNTUzMGE3OTgzOGQ1MTg0YTFlMTcwZmU0MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/features/authentication/ui/google-sign-in.tsx#L8-L35",
+          "version": "repo-lines-v1:sha256:780161c8b901f1acf45d5256805476882175201c5719da9e62abc554901f3b84:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdmZTM1ZmQzMDJlZjg5OTA4MmY0NjUzYzU4MWU3YjhlOGQ1NDk0YzZkYjJmMzRjMDgzZWFmNzFkOTYwZGY4MzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwMDhlYWM3NTAyNTk5ODkwZDNkYWVmMjI3ODU4OGEzZTIwYTVlYWJiYTA3YTZkNTU2MjQ0YjNkYjhkOWZlZDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM1NGVmZWFkNDJjYzgxZWE3ZDkxNzhjM2Q5ZDFjMDQzOTBjZTA5MDg4MDk4NDUyNjQzYjQ5OWViNzU2NzhkNzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZiNjgxMTAwMDFjYjAxZmM5NzAxYzQ5YmE2NWEyMDJiZGU1OTA4ZmY0NzRlOGY0YzlhZDMwNmU1MzcyZDRjN2UifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_de0bb653cd4d4d8eada0771493827c41",
+      "statement": "Leemage 파일 업로드는 서버 API에 presign 요청, presigned URL 객체 PUT, 서버 API confirm의 3단계이며 성공 후 MediaAsset에 외부 project/file 식별자와 URL을 READY로 저장한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/shared/media/client.ts#L101-L158",
+          "version": "repo-lines-v1:sha256:865e983a74fc22f6f3f2a6574ce4b3fef355687d5b038e5d151e2d2eb1a44e92:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5ZDRlN2QyYWJjYjlkOWM3OWNlYTBlZWNjY2M2ZmRiOWY3YTNmZWI5MzA2ZWY4NmE1YTdmNGY3MjU3NmM3MDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVmOGI3YzFjZGM3MmVhMTY0ZWU5YTk2ZjE5MGU0MjM1NTkyYWNiNzhiMjRiMmMwMTIzOTMzODdlYjk0MTVmMjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ0MTc4YmQwMzdjMGVjZTAzZmZiMTJjZjFlYmE4YTBiN2UzNGUxNTA5NDNhMTkzZGViYjY1NDA1YmFhNTRjMDMifQ"
+        },
+        {
+          "resource": "repo://src/shared/media/media-service.ts#L13-L37",
+          "version": "repo-lines-v1:sha256:05cb6226cb06b71c700998aa9decacea0bdb82e6ca3ce0256b836089ed78a257:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwMTUyNjg0OTE4MmQzZGJiMTczMDdiZTA3OGM4OTNhYjNkMDdjNjk2NTFlZjM5YjhhYzk2NzQ4YzAyMjVmM2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc0MjEwNmE3MWU5NzYzNjExODY4MTllNDc2ZjI4YzY0ZGEzOGZiYTNkNjc0NWFlY2U4YmJkMzJhZGIxMmU1ZjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlNDUwNTlmOTZkNmQ4OWY0NjkxNmU4OTg3YmZlOWQxNGE2Mzc3NTdiZmRmNmU0ZGE5YTZhODQ4MDk1NDFiZTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9d3dfe5f56fa4e8d87dccd6953a52111",
+      "statement": "Leemage API 요청은 네트워크 오류와 429/5xx를 최대 3회 시도하며 Retry-After 또는 제한된 지수 backoff를 사용하고, 삭제 실패는 MediaAsset을 DELETE_PENDING으로 남기면서 PENDING MediaCleanupJob을 생성한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/shared/media/client.ts#L45-L99",
+          "version": "repo-lines-v1:sha256:9047cafa80bb5b55bcbb5e385d94500ec1ca146bd00f84590c83ff52014b42d4:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhYWQwMjFkMjE2OGZlZTg2ZjgwMzRiNDA2MDdiNWE2ZDM5NjM0MzQwMmIxMTIxNjMyYzBhMTY1MmVmYTU5MDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQyZjFlMGUwYTdmMTczOGFhNTBlOTZhMWJjNDg4N2I3ODQxZDgxYzE2MTdkODViOGUzZDA0NGEwM2FmNTY5ZDkifQ"
+        },
+        {
+          "resource": "repo://src/shared/media/media-service.ts#L72-L95",
+          "version": "repo-lines-v1:sha256:90c9efc0c75814e9d6c1eef34aaf8dad0fb22d6c5e1536d2f8fda87e4b4cebc7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwNDE3YzVkODZjZjYwZTE0ZjQ5MDNmMmM0YjU5NzI4MTJlOGNmMGU1ZTM2ODhkMWZjZTJmNGQxOTQyNjViNWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzOGEzN2VkOWQyZjVlYTMyNTBjNTBjODFkNGM3YTg2YWE3ZTU1MmI3YTk4YzI0YjI2NDNiM2I1ZTdhZTdiYzYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_24617bf90ae540f5a27318b7bea93bcc",
+      "statement": "private audio proxy는 서버에서 upstream URL을 no-store로 읽고 Range 및 허용된 Content 헤더를 전달·복사하며 private no-store 응답을 반환하고, upstream이 성공 또는 206이 아니면 null을 반환한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/shared/media/audio-proxy.ts#L3-L27",
+          "version": "repo-lines-v1:sha256:2c1da972bba6efcacb830d41834877c42faed4868aea49724dc11d76ae073146:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhYjk5ZmVkMjBjNGRjZWQ3OGJiMjQwZmUyYzQ1YmIwYjAzZjgxZWU1YTEzYTk5YzZkNGFkMjk2M2U2NjFhNjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUzMWFmZGJhNDIwMWE5MDU2NjUyNTE1MWJhM2JmZGRjZTZlMTlmMmY3YTdkN2QyM2IyN2VlNGY5NzFlNWQ1NGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c9c6febb96964351bd55324404942966",
+      "statement": "Vocal Profile Modal adapter는 multipart audio를 X-Recording-ID와 X-API-Key로 /v1/analyze에 보내고 120초 timeout을 적용하며, 응답의 transport version·cleanupConfirmed·recording ID·artifact SHA-256·크기·profile metadata와 smart reference contract를 검증한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/vocal-profile/api/analyzer/index.ts#L11-L24",
+          "version": "repo-lines-v1:sha256:14575e00bc17a19296c232f491500cc00a1d14a62bcfa5bcc0003eb0cac1ed06:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE5ODIzNjFmNTQ1MjJmYjk4ZjNhYzA1YjgxOTNjZmI2NWRkMmQ3NmFjMTZmZGMyNDhlOGIxNjc3ZGFkNGQ2MmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyNWM2ZDVkNjdhZDRlNjQyOGFlM2EwYjJlNjkxYWNmOGYzMGJjNmU5MmFkZGY1N2IyYWFhYmM0MzE1YzEwZWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYxYzY4ODc2ZWIxNjE5MTcyODYyMWU3ZjUxODg2N2FlYTEzNTcyMGE4NDlhYTA0MjlmYTExODExZjc2N2Q2NzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJjNTk3ODljMDI3ZjQ0MzJmNzZhMGJhZDU1Y2IwNTI5YzY5ZjEwY2I0MzU3ZTllMDZlMWUwNDg3ZmJkYTEzMzAifQ"
+        },
+        {
+          "resource": "repo://src/entities/vocal-profile/api/analyzer/modal-adapter.ts#L169-L196",
+          "version": "repo-lines-v1:sha256:5e51918c094e0f3752d554bada9f2feb1444cb47363ff2c2dc8e34ecd292b04f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUzNmYwMjRmYjlkODY4ZWRkYzRjNzUzZTU1NGMwNmEzYjU3OGZhNjBmMTc5Y2E1MDljOTc5MjM0OWJhZTkxYjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5ZjFiZmNiZGUyMzdhMTIxNDEyMDUyNDRhOWNhNDAzM2I4OGVkYzAwNTlmNmQ1YzAzM2U0MTcxMmRhYTEyMWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY1ZGI1YjkzMGQyNTNjMzlkOTdhNWFiMTExZjI5YzJkYWYyNDM0YjdlODcwY2U3OWY5YjdkODViZTJkYmY2MjIifQ"
+        },
+        {
+          "resource": "repo://src/entities/vocal-profile/api/analyzer/modal-adapter.ts#L88-L142",
+          "version": "repo-lines-v1:sha256:5f8df91b1e39e12ac5fb89cfac1e185c1cc93d9ee68c69474f0b630e73cec58a:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2NDUyYmMyZTEyYTExMTg0OWQ4NjYxODVkNTcyZjA1ZDc0MDdlZDNlZjNlOGRhMGMyMGEyY2Q5MGM1NzE2NjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1NTEzOWI4YmYwNDEzYzdkZTE2MmY4OGIzYTIxYmQzNWZhOTQ4ZTA5Y2I0Y2QxNmUzMjNlNzI0NjQxOTA5MWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJlNDQzODQwYTI1NDJlZmE2ZmE0ODIwMmEwY2VjZjkwYzNkNzBhOTRmYWI0ZDAzM2RhNzhlN2EyZDRkNTBhODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE0NDdiNDc4MDBkMzNkN2Q0NWI2YjgxMzk2YmNmYmY0NTE2NTE4ZTViMDJhMTgzNGQxMDY3ZjQ3MGQ4ODMzOTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4fadd743339643e7aedaf372924bbda8",
+      "statement": "Vocal Profile Modal은 입력을 임시 디렉터리에 chunk 저장해 분석하고 profile 및 source/synthesis reference artifact envelope을 반환한 뒤 cleanupConfirmed를 true로 설정한다.",
+      "evidence": [
+        {
+          "resource": "repo://services/vocal-profile-modal/modal_app.py#L199-L304",
+          "version": "repo-lines-v1:sha256:a7883fab180dad0873592baf6ee21e361cfce7f534bfab67a034149dd91e8884:eyJzZWxlY3RlZExpbmVDb3VudCI6MTA2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjN2ViZWIzNThmMmFiZmE3NGFjZGYwOTgzMzZlMjFhM2IxOTA3ZDE4NjYwY2E1OWIzZjQ0YjVhMWJjMmNhZjExIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI4NTE1N2RlMDk0YjkxYWFiMzEyZjJhOTE0MzFhYmQ4YjZmN2Y2MjdiYzc1YTk1NTAwY2RkNDc4MDA0YWVmNmNmIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI4Y2M0YTdkMWNjNzk2YWJhM2U0NjcyMzMyN2Y1MTdlOWY4MTE5ODJkMjUwZjA3MDI5ODZlNGI1NzY0YWQ5NTg5IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJkYzI0NjQ4ZTc5YjEzOTkzYjM3ODE3MjgyYzUxMDZlYTExMzllODBkNDBiNzJkYTQ4M2MzMGFjZTNmN2Y0ZTI3In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_f78889bcec6745a5953408a939d4e147",
+      "statement": "Vocal analyzer의 401/403은 비재시도 인증 실패로, 429·5xx·timeout·네트워크 오류는 retryable 오류로 매핑되며 명시적 422 분석 거부는 한 번만 호출된다.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/vocal-profile/api/analyzer/modal-adapter.ts#L145-L195",
+          "version": "repo-lines-v1:sha256:c6a1d21a694dbc90ab2e9064d82207edf315ffae3d9958fd53a02ca115af9db0:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0NTE4OWM0NGM4OGEwYTBmMzQ0NjkyMjE5ZmJjZjNmMjllODY3MWJkMzg1NDQyYTAwMjcxZmFjNjRkZDBjZDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmZjdmMDU1NWIxM2RjNTUwYTFmMTM4NmQ4YjNlOWU4MGU5ZjRkOWU5OWVhMWMwOGYyZWY3Njk5ODRkNGE1YmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhmOTUyZTgxZGNlMzk1N2FiZjdiM2Y0ZGUyNGNhM2E5N2YyZDY0YmJkZTRlMzJiNTM2NmM1ZDA2NzEzNTJjMzgifQ"
+        },
+        {
+          "resource": "repo://tests/vocal-profile-analyzer-adapter.test.ts#L124-L205",
+          "version": "repo-lines-v1:sha256:482f531653a8b9f2326e9ce56609f6442b0fa881dc5d1599f60d4500d9069563:eyJzZWxlY3RlZExpbmVDb3VudCI6ODIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4MTg0YWM0MmUyZTkzMDIyZWZmYmEyYzhmYzAxZjIwNjRiNjRkNTJmYmU4MzcwMmE2MmQ1MDA4Y2E4ZjdhZTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViMWVhMTVhMGY3YjFkNzc0MWMwOTJkZTgwMmQzOWZkYTQ0MzRlY2YwNWY5NDM1OGM2ZjM2OWNhOTExNmUyMmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhmNzhjZmI3NmRkMzcxMWIxZTlmN2M3MzAxNmRiMjJiNjljMjMxOTgyYjMyYjk0MDVjZjMyY2QyY2FiZjNlM2UifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9c5232cc616340dbae6bc23aae417909",
+      "statement": "Song Catalog Analyzer는 requestId로 Modal job을 idempotently 재사용하고, worker가 Leemage target을 내려받아 multipart /v1/jobs에 제출한 뒤 externalJobId를 저장하고 polling한다.",
+      "evidence": [
+        {
+          "resource": "repo://services/song-catalog-analyzer/modal_app.py#L247-L279",
+          "version": "repo-lines-v1:sha256:5760a15ea3147d85bf8b5649127e504b9e0555cd12069dce5c5503cf8c9d1fec:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4ZWNlZWVhMzZmZmE5YzYyMTJkMDQ4Yzc3MjdkMDc0NGNjZmJkMDA4ZDQ2MzUzNGJmMTdkMTBkN2I2MGMxYjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwYzFmMTg4ZjE0MmVkN2E4MjQ2ODBiMjA3MTcyYzU1MTliYzYxNGE0OGZkYTdjZjE2N2VkYjhkZGY3OTk1NmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRmYmQwMDkzMTRiYzI3MDg0MTY3MzRhMDJhZTVmZjM5YTFlNDhhMDUwYmU5MWY0M2IyZmFhOTIwMDJjNjJiZmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzOTIzZGUxYzIxMDg5MjlmOTM1ZGE0MDAzM2EzMzY1ODY3MTY5ZWNjNmIzOTNiNGM2ZDU0YzA2OTgxM2Q2NjgifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L144-L198",
+          "version": "repo-lines-v1:sha256:0a34838b0540d75d4a0cf80113a54324f077553f08ddfd27a1f8794346d5db5d:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0MzdiNDdkYzJkMzFjZmQ1OGY2NDQ5MmRiZTZjNTZmN2RhZDgyNjJjMTI2ZTA4M2Q1ODQxMDhmODc4YjI3NTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4Mjc4ZTc5YTk3MGQ4ZWQwNjRjZGMxMjhiMWVjNDA4MTY3MTg5MDJkNzFhZTdhNTRiZDU3NmU5NWVjYjhlYjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIxODY1Y2IwNDQ3M2RlYmMyN2JhOTYyNGQwOWRjNWVmYjYyYmNkYjkzYTVmNjk4NWJlZWE1YzA0NzZmZTBhMTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM2NDUzNjE0MDg5YmI4ODkzOGVjMGQxZDU0ZGI1MzYyY2QyMmYxYjliNTkxODIzZWIyZDRiNmNlNDk3NGQ2ZDMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1c8014badbc649a4af394fe4f9093497",
+      "statement": "Song Catalog Analyzer Modal은 최대 100 MB와 제한된 audio suffix를 검증하고 ffmpeg 변환, Demucs htdemucs vocal separation, vocal_analysis_core 분석을 수행하며 임시 파일 cleanup 실패를 오류로 처리한다.",
+      "evidence": [
+        {
+          "resource": "repo://services/song-catalog-analyzer/modal_app.py#L149-L228",
+          "version": "repo-lines-v1:sha256:390a25796ccf5aec42ac6387532f285eb2501b3abb9e01e45e9a9c9a796a6082:eyJzZWxlY3RlZExpbmVDb3VudCI6ODAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcyZWQ3ZmM4M2MzYjFkMjc4MzkwNDFkMjdmZDI4OWQ3NjAyYzlkMmI5YjllNWY0YTA0ZWFmMGU3MWUzYzJjOWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxYzE3ODg4OWFkZDVjYTQzNmE5ZmU0YmVhY2RhMTI1NzcwZDEzZDg5NDNlMDZhNWE4NWQxYWEzYjMyNzE3N2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM1NzdjM2JmZGYzYmQ2OTBmZDMzMzEzZTQxZTJkOTEyZGQ1NTZiNTJjNjNiMzM5Mjc4OGY1ZTI0NjQ1YzFjNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcyODZlYzc4ZGNhN2IxZDY4NjA2ZjRmY2UxMzlkOTkwN2I3ZDBiZGIwNmRmYzU4YmJmNzA5YjE4NjIxMmRkZGEifQ"
+        },
+        {
+          "resource": "repo://services/song-catalog-analyzer/modal_app.py#L19-L27",
+          "version": "repo-lines-v1:sha256:3dd572fb7650f2a3b07cfe2dbc3a618291bb7e5e2b8b0b212cb7f1f8c0829ff6:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDQxMDkwODQzYjE2YWYyZmJmZmRkMGZlNGRiYzViZjJhMDYxZTU2MDM2ZDcwMGRlMmFjNzU3OWJkMzVmZmNiOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmRiMGEwNWJiNThjZjhmZjc0YWVjY2Q2ZTIxNzUzNjE4NTczNDgwNGJkYTdkMzk2NWViNDM1ZDhiMmI1YzE4OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDE2ZWM2OWMwYjE0MjAyNjczNTE3NDNlZjU4M2MxNWNhNTEwZGYzZTllYjU0MjBiMDA2MzVkYWQzYTI1MTA1ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzZjMTVhMWNhM2MyMTFjYTAxMTM4ZTYzZjcxNTdkNmYwOGZiNDMwN2NkYWY5ZjAyOTA4NDc0M2IyZmI2OGIzYyJ9"
+        },
+        {
+          "resource": "repo://services/song-catalog-analyzer/modal_app.py#L71-L102",
+          "version": "repo-lines-v1:sha256:1699ab5a62531dc01ef02b976d0c17e06493896dac8c4d7bb74133ecc64d7391:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNmM2I3ZjA3YWIyYWRiZmQxNDdjNTVhYTMwMThhYTYyOTljNGE4MTQwNDc0MTk5ZTM4NmU3Zjg4Nzg4YzgzYTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlZGM1ZThiZDc0ODFhZmU0ZWVhMGY0MWQ0MWFjNjhhMWVkMzY0ZmU0YTljOTE2Y2ViZWIzMmNmNWMzNDE1MTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM2YjExOGZiZTBmMmExMWE5NDZmMThhMTMxMjMxZmNkOTU2NzBkYWQ4ZmUyOWY3NjkwMjBiMTU0MWQxNTcwOWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFjYmU3NzA3MGZjMjgyMDNkNjZlYzliZDFlMzE1NjI2MDE0NGZiOWJkMDEzODM0MjhlOTJkMjFkOGI0NGMxMzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c0bfd0a312ac4c928d08b91981d0337b",
+      "statement": "Song analysis worker는 attempts/maxAttempts·nextAttemptAt와 lease/heartbeat를 사용해 job을 claim하고, retryable 실패를 지수 지연 후 PENDING으로 되돌리며 최종 실패는 FAILED로 기록하고 성공 시 SongAnalysis를 pipeline contract와 함께 upsert한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L200-L280",
+          "version": "repo-lines-v1:sha256:f5f1d3384123bee777204a5170b80bcb0a2bee03d96fde95b122e18219443cd3:eyJzZWxlY3RlZExpbmVDb3VudCI6ODEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ2ZjZkMGVjYTkxMjZjNTM5ZGJkYzNhZjQxMzU2ZDBkYTJkMDM0OTdlNTBiZDdkNDc2N2JmYWNkZDk5NWZjNjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhMjFkOTg0MTY1NDMzZmY5M2Q5NGJmNzBmNDc5ZGYxYzE3MGU0ODM1ZTg4NDMwNTI2ODdlNWZkZDA0MmFmNjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ1YjNmYWVlOWMwMzc3NTk0NzhhMzQ3NTg1NjA1NGIwYzQ0MTY2OWU3NmQ2NmM0YjUyNzg0ZmJjZGI4NDFkNGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA3ZTliYzgzMTJhMjczZDgyZjVhZThhZDdmZTIyZDI3OTQzNTMzMjUwNjAyYTNjYzA0YWNjMzg4ZDI4ZGU2MzMifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L30-L75",
+          "version": "repo-lines-v1:sha256:390730df64b2b05f657452367699d4f57ce8d4e427569cfd3dc17fbdb4d56cef:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiNDZiYjJhYjk0YWI2YjEzOTVkOGYwMmM1ZDQwYzczZjcxOGZkNzFhZWMyNmY0NjYxNTg3NmU0ZTkzYTk0OTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyZDE5ZTllMWUwZjFmODY4ZjRiNDEyYjg5NjcwOWFjNzgyYmM1Y2QzMTVjNTYzMDAwYTFkYzQ2OTBmZDg1ZTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkMTRlZmE5YTI5ZDJjNDg4ODRmOTJlZGJhMTFkM2RjM2Q0YTA4NmQ2Yjk2M2ZkNjlhODhkMmViNTM1NWE1MDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNjOTQyMzY4ZTVmOGJlYjliN2FmZmY2NjZlNjY0N2IzYmVhZjdjOThiYTQ3YjNiOWRmN2YyY2E3MmE2MGM0NTYifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L78-L125",
+          "version": "repo-lines-v1:sha256:e42594ffe164442ab4b6ca7b9d8d1a0ecf0f7fc3300fbfce9a52bf2e58ae3844:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc1MjM5ODI4YWE3YTQ2YjExNzk2YTUyMGYwYjE5ZWJlZTkxOTk4NGVjZjAwNGIyMDk5NWVmZTZhNTE3YmNkZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMzMzc4YmE4MTQzMzQ2NTY4M2FmZjYyMTdiN2YyYTgyZWUzZGI2ZmI3YzM0Yzc5MzQyOGVlYmU4YTYxZjQ2NzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg1Yjg2ZGU1MGEzOTA0OGI5MTA3ZjJmOWUzZjhiNTlmNGYyMWMzOTNlNjY1ZjgzM2MzZjgyZjZhOTM0Y2JhY2IifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b86e8b9f9ccf4a0c8791510e84c2bfe1",
+      "statement": "SoulX-Singer Modal은 prompt와 target audio를 persistent Volume에 저장하고 queued conversion job을 반환하며 GPU 모델이 임시 작업 디렉터리에서 변환한 result.wav를 Volume에 기록한다.",
+      "evidence": [
+        {
+          "resource": "repo://services/soulx-singer-svc/modal_app.py#L104-L159",
+          "version": "repo-lines-v1:sha256:fab393dda014386495b6eb11e2287c70bf11eef640d2db48d121db08e0223d6a:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2YWUyYzI4MjUyOGM4ZGRlNTU1NjExZDIyYWY1ZDcwOTI5YjlhNDA2YzQ3ZWFlYjFkOGIwZTE0ODk0ZWQ0ZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM2ODgyOTk3ZTc2NDk2OTE3ZjFlNjA2ZGIzN2Y1YTMzYWM0NTNjYjBmZDE2ODUyZDJhNzk0MWI5N2Q0NDcwOTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMzMzk4Zjk3OWY4OWM0YWRmODdjYjNiZjllOTA1YjdiOTdjMDA4MmI4ZDM0OWI2MDE1NjRhMmY3MTAyYjU3ZDkifQ"
+        },
+        {
+          "resource": "repo://services/soulx-singer-svc/modal_app.py#L256-L310",
+          "version": "repo-lines-v1:sha256:d010019992392861104a8029725a16405b8253d6b056e790af786537ab82af23:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxM2JkYjg5NWIzNjNjYmIwNjk0YWU5YTQ4MzU2ODMyOWM2Y2Q4MWQzODk4MjcxNjgyMzdmNDA2ZmI0MmMzZTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhZTU1YzEzY2IxZGY0MTZjNzczZWM0ZGQzMjI5MzBlZWUxYzkwMzMwZDU3MmFhN2NkOTM1OGIxY2Q1N2IwOGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlhMmFjNjhlYzJmNDRjNjYwODAyY2I4MDNhNzExYmYwOTE1ZmZkMjJhMzRjZTM2MWYxMmJhMjIzNzU2MWE3MDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAyNjUxMTA5ZDk5MmRkMDcwYWJmOWM0MTFjN2M2NDM2YmIxMWJjNjAxY2E4NTMyZjcwMGYwMmM5YTViZGVkZGUifQ"
+        },
+        {
+          "resource": "repo://services/soulx-singer-svc/modal_app.py#L28-L32",
+          "version": "repo-lines-v1:sha256:522642c10ecf949d02384edd296799827a74b8f7c11cb82491f26b5069e8f8a0:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzBiYjljNmRjNmJhOWQ5M2FlNDVjM2Y3MTMyYjRkMTIyOGE2YzliMjNmZjc2ZjMxZjRjNzk0Y2YwZmMxMDkyZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2RiOWJmODc1NzI4OTVjNGJjYzY4OTc4YjQ2NGI0MDAzMTY1YmRkM2JlZDM4ZWNlZDM0NzhiYTlkZDA0MGExYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDE1ZmM1M2MwMGJlZjI5MjEwY2FlMjdkYmI1ZmNmNmViYTA5YzI2ZTI5ZGI2NDc2NWFmMTI4MjNjOGVjNjc5MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWZjYTlkN2UwNjA4YTk1NmJkMWQ4Y2I4NDUzZTFiMWJmY2VmMmQ2YmY4MDE3MjUwZTE5YjQ4ZWM5YmM1Yjc1YyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_d7e9c467ec4f421bb1700ed3e309d0a3",
+      "statement": "Mixing worker는 Leemage reference·target을 읽어 SoulX conversion을 제출하고 polling한 뒤 결과를 압축해 Leemage MIX_RESULT로 저장하고 DB transaction에서 mixing job을 SUCCEEDED로 전환한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L257-L353",
+          "version": "repo-lines-v1:sha256:dbe45d151fdbf23b056ee65c7177039f72bb2939d855a09ff4a5da3ffae666a4:eyJzZWxlY3RlZExpbmVDb3VudCI6OTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdmNGI3YzZmZGQ0OWZjOWJkYzQyMzIwNmNhNDFkZWRlMTAwNWVlNDc1YWNkN2E0ZGI4YWQxNTYzZTY5MDBkYTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhlOWNlYjRkMjI5YWE1OTNiZWQzOTFjZWFmNmU3N2RmZGM2MmRiYzIxYTA1NTRhZTk5NTM3NTU5YjRhMzY2NDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNkMDNkNGIzMDFjMWM3NzZkM2JjMWRhMTk5YjIyNzU4ODNiZjA0MDkzOWEyNTRlMTU2ZjIwODAwYjRjNWE5YjgifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L355-L448",
+          "version": "repo-lines-v1:sha256:a77104355881b60eccbec4e11d352d1c7443efae400f773af3f0c6d53a2fd241:eyJzZWxlY3RlZExpbmVDb3VudCI6OTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiMmU1YWZiODkxNzNhYmIyMTM1MTIxYzRlZGIyYzUwNmZhNGQzODZiZDUxZjAwOWU3MTY3Y2M5NjM2OTJlN2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwNjNiZjJlNzlmMDBjMDliZmUwNGExMzVkZmRjNmY4NTk1ZjUyODU2MmIzMWFlNDIzY2ZkN2MxNGI2MDlhNWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAwMjQxOTFlZTRkNjhkZDNlYmM1YmY3YTIyYjc4YWE3ZGNhYTI2MDdhNjA5ZTg4OWVhNjY1NTNlNmFkZjAxODkifQ"
+        },
+        {
+          "resource": "repo://src/shared/media/media-service.ts#L103-L129",
+          "version": "repo-lines-v1:sha256:0de1cc3624a83838dea1c681513882181beeb1e126602a7c7f098dd59d23b298:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg2NzdlOTExYjdmZTE0OGVhMzQxNjYxYTQyY2FlMDZjMDFlNTNhYjc4N2FjNmM3ODZlZWViZDQwMTI2MDIzNTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ1YjY2ODNmMmUxYTBjNTNmYzMyZGVjZWJhM2VlNjM0ZTgwNTAzMmRjMGI3OTM3ZTNhOWM0NDFmOWUwMWRjNWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_250d91901969438e8aec261c8463a59e",
+      "statement": "Mixing 실패는 제출 전이면 retryable 정책에 따라 재시도하고 최종 실패 시 환불을 요구하며, Modal 제출 후에는 기존 modalJobId를 보존하는 SUBMITTED 재시도 경로를 사용하고 자동 환불하지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L146-L255",
+          "version": "repo-lines-v1:sha256:35e4aefae174af33dc39d12c16ef5203fd54f946a2c85f9811444e3f7c35b91c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJmZjdlNmExNjIwZTQ4ODU3ZDRkOGJmZDMxODA4MjUyMTBkMWM1OGU1MDVmOTAyODQ5Zjk1ZDQxZDVmNjFkMTA3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJiNzhlMmFmMGY5ZWViNjRiYzA3NDVhY2RkMjM5YmU3ZTM2ZGQwMjNlZWRkMWJmMDE5MDEzZGEyY2RkZGEzZGMzIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI3ZjRkOGVlYTMzOWM0YTY5ZWJhZmQwODI0ZWZiZDZlNDY5NmY4OTE1NmE1N2EwM2VlNDFkYzc0MDdjZDg5YzViIn0"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L264-L353",
+          "version": "repo-lines-v1:sha256:9c2971917175e8face4236d451e55b406c7ec4e41930e552e3bb0a42e0e7fe5a:eyJzZWxlY3RlZExpbmVDb3VudCI6OTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2NzNkYmEwOTFhMmI2MjY5MGRjNGMzYzdiNzdlYjE2YzY5MzQ4ZDIzMjMyNjIwMWFmZTU4NTRiNGU2YWQ0YjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA0NGEwY2I2ODYwYzcyZjVkMWE1NWU4YmRlMzg0NDBhOGY2NDcxNjBmODJlMjQ3OTdkMjU3NWZkYzAwOGU1MmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNkMDNkNGIzMDFjMWM3NzZkM2JjMWRhMTk5YjIyNzU4ODNiZjA0MDkzOWEyNTRlMTU2ZjIwODAwYjRjNWE5YjgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a2b53fc5bdd44c95ae68e8906d97dcfd",
+      "statement": "SoulX job 입력·결과는 24시간 TTL cleanup cron으로 제거되며 결과 audio가 사라지면 API는 410을 반환한다.",
+      "evidence": [
+        {
+          "resource": "repo://services/soulx-singer-svc/modal_app.py#L322-L366",
+          "version": "repo-lines-v1:sha256:0be433e7285990cf803a28a508a4a62a7d9c4065c97f84df5bf30d5fad0b2524:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3ZjVlMGQ0MTBjMTQyNmFiYzc3NzU0YTI2MDRjMWU3NmFlMWQ4ZTUzZmM3MDViMmNiMTk2NDljNmM5NjgyYjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0OGU4OWE5ZGRhM2ZlYmQ1MmZiZjRjMzg1YTcxMTc5MjdkYjhlMDUwNTc2YzQ2Nzc2ZjZiYzBlOGY1OWUwOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI2MzQyNzY1NzZhN2RhYjQzZjYxM2I5MTg2NDc0NGMwYWY3NDlmZTdlMGI1MDA2ZWIxOTZmNGI3MzFhYzBiZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyNGUyZjE5ODk2ZmVhMDIzNDllZWVlZmUxNWY5MmMwYWUxNTM5ZDc3NzQ1MjZmOWUxY2NiMTVhODVhZGU1ZTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c2194b6766364917b0875f2d628bd9f0",
+      "statement": "Leemage 통합 테스트는 사용자 소유 자산 저장, 429 삭제 실패의 DELETE_PENDING/PENDING 기록, 성공 cleanup retry의 자산·job 제거를 검증한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/leemage-media.integration.ts#L143-L194",
+          "version": "repo-lines-v1:sha256:ac0672a21109e5513d2201a3757e409492b2be05f3e8f6fd85040b3703e20f65:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3NmY4YmM5Y2Y1Njk5MDY4N2QzMzEwOTgwNTJmY2U3NmE2MTBlMjE4YjA5ZDdmYzlkYjU1ZWJkMTNjZmYxOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViMWVhMTVhMGY3YjFkNzc0MWMwOTJkZTgwMmQzOWZkYTQ0MzRlY2YwNWY5NDM1OGM2ZjM2OWNhOTExNmUyMmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+        },
+        {
+          "resource": "repo://tests/leemage-media.integration.ts#L7-L83",
+          "version": "repo-lines-v1:sha256:a5585dce3b0411af3adccc0db83aba7f600f62299b87cd3cd345a40008357c54:eyJzZWxlY3RlZExpbmVDb3VudCI6NzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5NjY3ZjFjYzdiZGZhNGI2NTkyNDM1MjRkMzhiOTlmOWIzNmExN2RmMTI1ZTYxMjdiOWQwOGM3NDA3ZDEyNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0ZGI0NWUwYmUzMTgwNTYwY2UyNDY2MmNlNTM2ZWJmMmRiYmJkZTRjODgyOTY3YWRhNTY0MTFlNzgzZGE2ZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVlZWE2ZmY5ZmE1ZDM5MDdiNjc2M2RhOTUwNTA2YzRlZjEwYTExMjc3YTk5MTZiNDFmZmIwMWM0MmZjOTExNDkifQ"
+        },
+        {
+          "resource": "repo://tests/leemage-media.integration.ts#L85-L141",
+          "version": "repo-lines-v1:sha256:b650329804a714252e6888275d3c3450d36a50d7d66fbf5edbb9f111e90cd653:eyJzZWxlY3RlZExpbmVDb3VudCI6NTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2NzdkNWY0NDM2NjMyNGFiMTY4N2RiNTM2NmJkNzZlOGY2NTM1NjJmMjRiNmE3ZjNlY2RlZDMwMGI4ODYxYTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViMWVhMTVhMGY3YjFkNzc0MWMwOTJkZTgwMmQzOWZkYTQ0MzRlY2YwNWY5NDM1OGM2ZjM2OWNhOTExNmUyMmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkNTQzYjliOWE0M2ViZjMxOTVjNTRiMTk5ZGNhM2I2NTZmYzA4ZTM4MTc1MTNmOTZlMDk3ZGE0OWNiNTJmMTYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_555072bd5a3240caaeeb55f20903d0c5",
+      "statement": "Vocal profile adapter 테스트는 API key 전달, envelope artifact integrity, 인증 실패·명시적 분석 거부·429/5xx·network/timeout의 오류 매핑을 검증한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/vocal-profile-analyzer-adapter.test.ts#L124-L205",
+          "version": "repo-lines-v1:sha256:482f531653a8b9f2326e9ce56609f6442b0fa881dc5d1599f60d4500d9069563:eyJzZWxlY3RlZExpbmVDb3VudCI6ODIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4MTg0YWM0MmUyZTkzMDIyZWZmYmEyYzhmYzAxZjIwNjRiNjRkNTJmYmU4MzcwMmE2MmQ1MDA4Y2E4ZjdhZTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViMWVhMTVhMGY3YjFkNzc0MWMwOTJkZTgwMmQzOWZkYTQ0MzRlY2YwNWY5NDM1OGM2ZjM2OWNhOTExNmUyMmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhmNzhjZmI3NmRkMzcxMWIxZTlmN2M3MzAxNmRiMjJiNjljMjMxOTgyYjMyYjk0MDVjZjMyY2QyY2FiZjNlM2UifQ"
+        },
+        {
+          "resource": "repo://tests/vocal-profile-analyzer-adapter.test.ts#L207-L220",
+          "version": "repo-lines-v1:sha256:9f4d6b937e03f1b11f7180a058b943aab0d5a2c88e6a5cd11493a93c3685cbea:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjNWZiNDdhOGJkNDZlNTRiMTQ3ODE4M2E4YjlhMGMwZDI1OTM0YmNkZjdkYjJlM2M1N2JmNjMwYjkxM2NkNWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1NDAyODg0NmZiM2VkMDM2ZWIxZjhlMGYxYjE4OWM5NzBlMWU3OGZmNjQ3OTAwMjIyN2RjNzEwZGZlOTRiNGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI3NzlkMTE4ZDZlM2NiZjQ1MDUzOTc0OGRlZTdhNDMwN2FjYmU2NDQ2Y2JhMjk3ZjI3NjBmYTVkMGJiYTFiYzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZlNzVjY2ZjMjExYzY3M2JmMTVkMjhjNDFjYTU3MjM1ZWUyMGQ1ZjdjODhmZGQ4MmNiNmFhYTAzZTU5MTE1ZmIifQ"
+        },
+        {
+          "resource": "repo://tests/vocal-profile-analyzer-adapter.test.ts#L84-L122",
+          "version": "repo-lines-v1:sha256:f7c074baf3f839e38acdf0e77b6b85f29f87a8bec0cdd17f6e24064ab56a7608:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlOGNmMDQ5ODdhZTE1MzI0NzI2NjhiN2RjMmEzNTAxMjQzODJkZTNlZjRiZTlhYjMyZDFkODRjYTlkZmQ0MjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE5YzVjNjQ1MjYxZTc5NDdhODc4MmUwYjhiYjY0OTFkMzdkOGM3YTc0N2NiMTc1YmUwMGZkNzM5YmZmMmJjODcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4b6fb2113adc479ab09a3e728f9360c2",
+      "statement": "Song analysis adapter는 submit/poll 응답을 schema로 검증하고 API key를 서버 헤더로 전달하며 처리 중·성공·실패 상태를 구분한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/manage-song-catalog/api/analyzer.ts#L27-L42",
+          "version": "repo-lines-v1:sha256:589ba28ecde629085de151dfcbda7c1f347e2241d7846b4e81c3e068fe91f19e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzY2FmM2EzMTRlZjE4NGJkYTgyNjUzMDI5ODExODEzNDczNTVmZGZmZDM0M2M2ZWE3MGRlNjNiYWFmZmIyZTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1ZTI2Y2Q5MjM2NmY2MGQ4ZWQ5MmQwMjM5ZjA3ZmVmNzRjYWMxNGFhNjlhZGRmOWMyY2MwZDExZWIwMGE0NjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYTg1MWMwNjQ4MTliM2Q0ZjE5NWFlNjZmMzRhOTExZWZjZjE5ZmQwZTUzNzM1MTIyNDU0NTI5YWMwZjgxMGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2NTBhODYzMWJiYjJhNjEwMTYwNjY3MTg3NTE0N2Y3ZjZhZmI2YTExYjhlZDMxNWIxMTUyOGQ5ZjJiNWY3ZjAifQ"
+        },
+        {
+          "resource": "repo://src/features/manage-song-catalog/api/analyzer.ts#L81-L138",
+          "version": "repo-lines-v1:sha256:e97a4e9067d56260a6a48f29c5422cc9eecb0af105eb968e3b8053d4e55d9748:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE3NWNlZTc0OTE4YzY1MjAwOTUzN2Q4YmExNWRmMzg1ZGZlNDYzZTBiMmZkM2ZiOGE5OGRjZjk5ZmNkMTIxZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5NGZjMGMxNzNkMWVjM2ZjNTAxZDdkZmE5Mjg1NTAxYzUyN2NmYjQ3MTI1ODNkYTNjYzM2MTgwNTY2YjRiZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://tests/song-analysis-modal-adapter.test.ts#L1-L70",
+          "version": "repo-lines-v1:sha256:9acebb914e446bb195f004e8b579b4dde39f1da1db6760adabc4513830bba8fa:eyJzZWxlY3RlZExpbmVDb3VudCI6NzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2YzdjY2UwYTcwYjM0ZWZhM2FlMzgwZWExMjA2ZTRmZjAwMzNmZjJmNzZlN2M2ZGZlNGNlM2Y3ZGNkMDg2MjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-04T08:11:35.711Z"
+  }
+}

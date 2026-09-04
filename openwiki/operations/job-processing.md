@@ -1,16 +1,18 @@
 ---
-type: 내구성 백그라운드 작업 처리 개념
-title: 내구성 worker, lease, retry 및 recovery
-description: PostgreSQL 기반 mixing, song-analysis, vocal-profile-analysis 큐의 claim·lease·heartbeat·재시도·복구 동작을 설명합니다. 외부 작업 polling, 환불·알림·미디어 정리, 프로세스 supervision의 운영 규칙과 실패 경로를 한곳에서 확인할 수 있습니다.
-tags: [background-jobs, postgresql, workers, leases, retries, operations]
+type: durable job 운영 가이드
+title: Durable job 처리와 장애 복구
+description: 세 background worker의 entrypoint, 원자적 claim, lease·heartbeat, 외부 요청과 polling, retry/backoff, terminal failure와 media cleanup을 비교한다. 프로세스 재시작 뒤 어떤 작업이 다시 처리되는지와 운영 설정·검증 테스트를 설명한다.
+tags: [operations, background-jobs, reliability, workers, recovery]
 verified:
   - by: openwiki/0.5.0
-    at: 2026-09-04T02:00:10.767Z
+    at: 2026-09-04T08:11:35.711Z
 sources:
-  - id: openwiki-source-5b54a58d1b51cd490b0e7162
-    resource: repo://package.json
-  - id: openwiki-source-2798a6200ef792b731721034
-    resource: repo://prisma/schema.prisma
+  - id: openwiki-source-904d8953f6839fec7c58c800
+    resource: repo://scripts/mixing-worker.ts
+  - id: openwiki-source-932d9872d5647bdfeb9f5cd7
+    resource: repo://scripts/song-analysis-worker.ts
+  - id: openwiki-source-4190e707c6ec6879dbd06e87
+    resource: repo://scripts/vocal-profile-analysis-worker.ts
   - id: openwiki-source-e746e2d352e86c69ac1ad6c4
     resource: repo://src/_app/background-jobs/mixing/runner.ts
   - id: openwiki-source-eaa76879de1a19c0db5c6ebb
@@ -23,167 +25,125 @@ sources:
     resource: repo://src/_app/background-jobs/vocal-profile-analysis/runner.ts
   - id: openwiki-source-da8b10d1e5d758ab0e1c7582
     resource: repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts
-  - id: openwiki-source-cda6ae0743fe78dbe4a5c114
-    resource: repo://src/entities/vocal-profile/api/analyzer/index.ts
   - id: openwiki-source-200291f8a1aaa391d1b68ec4
     resource: repo://src/shared/config/server-env.ts
   - id: openwiki-source-f7f91388e9d9faeb71baf3b2
     resource: repo://src/shared/media/cleanup.ts
-  - id: openwiki-source-8b825c1fe06f865eec32c966
-    resource: repo://tests/process-scripts.test.ts
-generated: { by: "openwiki/0.5.0", at: "2026-09-04T02:00:10.767Z" }
+  - id: openwiki-source-10c6a88a3297ea68ebdbf439
+    resource: repo://tests/mixing-queue.integration.ts
+  - id: openwiki-source-249f5aec0954c413fd6ca6e0
+    resource: repo://tests/song-analysis-queue.integration.ts
+  - id: openwiki-source-28adc6ef840aa586dc1aceef
+    resource: repo://tests/vocal-profile-analysis-queue.integration.ts
+generated: { by: "openwiki/0.5.0", at: "2026-09-04T08:11:35.711Z" }
 ---
 
-# Durable workers, leases, retries, and recovery
+# Durable job 처리와 장애 복구
 
-이 시스템에는 PostgreSQL 행을 작업의 내구성 있는 큐로 사용하는 세 큐가 있습니다.
+이 페이지는 `mixing`, `song-analysis`, `vocal-profile-analysis` worker를 운영하거나 변경할 때 확인할 기준이다. 세 worker 모두 PostgreSQL job row를 source of truth로 사용하고, lane마다 고유한 `leaseOwner`를 만든다. 프로세스가 죽어도 `PENDING` 작업과 lease가 만료된 처리 중 작업은 다음 worker가 다시 claim할 수 있다. 유효한 lease가 있는 작업은 다른 lane이 가져가지 않는다.
 
-- `SongAnalysisJob`: 카탈로그 target asset이 `READY`가 된 곡의 분석을 외부 Modal 분석기에 제출하고 결과를 polling합니다.
-- `MixingJob`: 레퍼런스와 카탈로그 target을 외부 변환 서비스에 제출하고 결과 음원을 저장합니다.
-- `VocalProfileAnalysisJob`: 업로드된 레퍼런스 asset을 읽어 애플리케이션이 Modal 기반 분석을 동기 호출하고 프로필을 저장합니다. 별도의 로컬 analyzer API 런타임은 없습니다.
+웹 요청과 worker의 경계, 환경 변수 준비는 [설정·로컬 실행·배포 운영](/openwiki/operations/configuration-and-deployment.md)을 먼저 참고한다.
 
-각 작업에는 `attempts`, `maxAttempts`, `nextAttemptAt`, 오류 정보, lease 소유자와 만료 시각이 저장됩니다. 따라서 프로세스가 죽거나 네트워크 호출 중단으로 lease가 만료되면 새 lane이 같은 행을 다시 가져갈 수 있습니다. 작업별 idempotency key와 완료 시의 upsert/기존 결과 확인은 재실행이 이미 저장된 결과를 중복 생성하지 않도록 하는 경계입니다.
+## 실행 entrypoint와 polling 방식
 
-## Claim과 lease의 공통 불변식
+세 개의 `scripts/*-worker.ts`는 `.env.local`, `.env`를 로드한 뒤 서버 전용 runner를 동적으로 import한다. runner는 `SIGINT`와 `SIGTERM`을 받으면 새 loop를 멈추고, 설정된 concurrency만큼 lane을 병렬 실행한다. claim할 작업이 없으면 1초 쉰다.
 
-세 worker의 claim은 하나의 SQL 문에서 candidate를 고릅니다. candidate 선택은 `FOR UPDATE SKIP LOCKED`를 사용하므로 다른 lane이 잠근 행을 기다리지 않고 건너뛰며, 생성 시각 순으로 한 번에 하나만 선택합니다. `attempts < maxAttempts`이고 `nextAttemptAt <= now`인 행만 대상입니다. `PENDING` 행 또는 `PROCESSING`/`PREPARING`/`SUBMITTED` 상태이면서 `leaseExpiresAt`가 없거나 현재 시각보다 과거인 행만 reclaim됩니다. 즉 활성 lease가 있는 작업은 claim 대상에서 제외됩니다.
+| worker | script → runner | 외부 동작 | worker loop의 추가 동작 |
+| --- | --- | --- | --- |
+| 믹싱 | `scripts/mixing-worker.ts` → `runMixingWorker` | reference·target을 내려받고 `POST /v1/conversions`로 외부 job을 접수한 뒤 `GET /v1/conversions/:id`를 polling한다. 성공하면 audio도 별도로 내려받는다. | 매 회 refund 보정과 media cleanup을 먼저 한 뒤 claim한다. poll 중 매 응답마다 lease를 heartbeat한다. |
+| 곡 분석 | `scripts/song-analysis-worker.ts` → `runSongAnalysisWorker` | catalog target을 내려받고 `submitSongAnalysis`로 외부 분석 job을 접수한 뒤 `pollSongAnalysis`로 상태와 결과를 polling한다. | 처리 중 별도 60초 heartbeat timer를 둔다. 외부 job id를 DB에 저장하므로 재시작 후 submit을 반복하지 않는다. |
+| 보컬 프로필 분석 | `scripts/vocal-profile-analysis-worker.ts` → `runVocalProfileAnalysisWorker` | reference asset을 내려받아 `analyzeVocalProfileBytes`에 한 번 전달하는 외부 동기 응답 방식이다. 외부 job polling은 없다. | 매 loop refund 보정을 먼저 한다. claim 뒤 별도 heartbeat가 없으므로 긴 분석이 lease보다 길어지지 않도록 운영해야 한다. |
 
-claim은 owner, `leaseExpiresAt`, `heartbeatAt`, `startedAt`(최초 실행 시), attempts를 함께 갱신합니다. mixing은 `PENDING`을 `PREPARING`으로 바꾸고, 나머지 두 큐는 `PROCESSING`으로 바꿉니다. 처리 중 갱신은 owner 조건을 포함해야 합니다. song analysis는 `PROCESSING` 및 owner인 경우에만 heartbeat하고, mixing은 owner가 일치하지 않으면 lease 상실 오류를 냅니다. vocal profile은 명시적인 주기 heartbeat 없이 짧은 처리 경계를 사용하지만 claim 행에는 같은 lease 필드가 있습니다. 만료된 lease의 reclaim은 이전 프로세스가 다시 완료를 쓰는 것을 자동으로 막는 fencing token은 아니므로, 변경 시에는 모든 외부 제출 후 DB 갱신에 owner 조건을 유지해야 합니다.
+`MIXING_*`, `SONG_ANALYSIS_*`, `VOCAL_PROFILE_ANALYSIS_*` concurrency·lease·poll 설정의 기본값과 허용 범위는 [configuration-and-deployment.md](/openwiki/operations/configuration-and-deployment.md#환경-변수-비용과-worker-제어)와 `src/shared/config/server-env.ts`에 있다. 현재 기본값은 믹싱 `1 lane / 120초 / 5000ms`, 곡 분석 `1 lane / 300초 / 2500ms`, 보컬 분석 `1 lane / 300초`다.
 
-```mermaid
-stateDiagram-v2
-    [*] --> PENDING
-    PENDING --> PROCESSING: song analysis 또는 vocal claim
-    PENDING --> PREPARING: mixing claim
-    PREPARING --> SUBMITTED: Modal conversion 접수
-    SUBMITTED --> PROCESSING: poll 결과 processing
-    PROCESSING --> PROCESSING: heartbeat 또는 poll
-    PROCESSING --> PENDING: retryable 실패와 attempts 여유
-    PREPARING --> PENDING: retryable preflight 실패
-    SUBMITTED --> SUBMITTED: retryable polling 실패
-    PROCESSING --> SUCCEEDED: 결과 저장과 transaction 완료
-    SUBMITTED --> SUCCEEDED: conversion 성공과 결과 저장
-    PREPARING --> FAILED: terminal 실패
-    PROCESSING --> FAILED: terminal 실패 또는 횟수 소진
-    SUBMITTED --> FAILED: terminal 실패 또는 횟수 소진
-    FAILED --> [*]
-    SUCCEEDED --> [*]
-```
+## claim과 lease 불변식
 
-그림은 세 큐에 공통인 대기·처리·재시도·종료 구조와 mixing의 외부 제출 단계를 합쳐 표현한 것입니다.
+각 `claimNext*Job`은 하나의 SQL statement 안에서 candidate를 고른다. `FOR UPDATE SKIP LOCKED`가 동시 lane의 같은 row 선택을 직렬화하고, 다음 조건을 동시에 확인한다.
 
-## 큐별 실행과 lifecycle
+- `attempts < maxAttempts`
+- `nextAttemptAt <= now`
+- 상태가 `PENDING`이거나, 처리 중이며 `leaseExpiresAt`가 없거나 현재 시각보다 과거임
+- 곡 분석은 추가로 연결된 `CatalogTargetAsset`이 `READY`임
 
-### Song analysis: 외부 제출 후 polling
+claim은 `attempts`를 1 증가시키고 `leaseOwner`, `leaseExpiresAt`, `heartbeatAt`, `startedAt`을 기록한다. 믹싱의 `PENDING`은 `PREPARING`으로, 나머지 두 worker의 `PENDING`은 `PROCESSING`으로 바뀐다. heartbeat는 owner를 조건으로 lease를 연장한다. 믹싱은 owner가 바뀌었거나 사라지면 즉시 lease lost 오류를 내고, 곡 분석은 update 대상이 없으면 조용히 무시한다. 보컬 worker는 처리 중 heartbeat를 호출하지 않는다.
 
-`claimNextSongAnalysisJob`은 연결된 `CatalogTargetAsset` 중 `READY`가 존재하는 작업만 claim합니다. worker는 target을 다운로드한 뒤 `submitSongAnalysis`에 작업 ID를 request ID로 넘기고, 반환된 `externalJobId`와 제출 시각을 owner 확인과 함께 저장합니다. 이미 `externalJobId`가 있으면 재제출하지 않고 바로 `pollSongAnalysis`를 호출합니다. `PROCESSING`이면 설정된 간격만큼 기다리며, 이 동안 별도 60초 heartbeat timer가 lease를 갱신합니다. 외부 `FAILED`는 외부 reason code와 retryable 판정을 반영하고 external ID를 비워 재시도 시 새 제출을 하게 합니다. 성공하면 분석 값을 `SongAnalysis`에 upsert하고 job을 `SUCCEEDED`로 같은 transaction에서 완료합니다.
-
-```mermaid
-stateDiagram-v2
-    [*] --> PENDING
-    PENDING --> PROCESSING: target READY 및 claim
-    PROCESSING --> PROCESSING: 외부 제출
-    PROCESSING --> PROCESSING: poll processing와 heartbeat
-    PROCESSING --> PENDING: retryable 오류
-    PROCESSING --> FAILED: non-retryable 또는 maxAttempts
-    PROCESSING --> SUCCEEDED: SongAnalysis upsert
-    PENDING --> [*]
-    FAILED --> [*]
-    SUCCEEDED --> [*]
-```
-
-Song analysis의 외부 제출·poll·결과 upsert lifecycle을 보여줍니다.
-
-### Mixing: 제출 전과 제출 후를 구분
-
-`MixingJob`은 먼저 레퍼런스와 `READY` target을 내려받아 multipart payload를 만들고 `/v1/conversions`에 제출합니다. 응답이 `queued`와 ID를 함께 주어야 `SUBMITTED`로 기록됩니다. `modalJobId`가 이미 있으면 이 준비·제출 단계를 건너뛰어 외부 작업을 중복 제출하지 않습니다. 이후 `/v1/conversions/:id`를 polling하며 외부 상태에 따라 `SUBMITTED` 또는 `PROCESSING`으로 heartbeat/lease를 갱신하고, 성공 시 audio를 받아 압축한 뒤 `storeMixingResult`로 asset을 저장합니다. DB 완료 transaction이 실패하면 방금 만든 result asset을 `discardMediaAsset`으로 폐기합니다.
-
-HTTP 408, 425, 429, 5xx 및 네트워크 오류는 일반적으로 retryable이지만, conversion 제출은 네트워크 오류를 재시도하지 않고 429만 retryable로 취급합니다. 설정 누락, 잘못된 외부 응답, 빈 audio, target 미준비와 외부 job `failed`는 terminal 오류입니다. 제출 전 retry는 `PENDING`, 제출 후 retry는 `SUBMITTED`로 돌아가며 `nextAttemptAt`과 lease를 초기화합니다.
-
-### Vocal profile: 외부 job이 없는 동기 분석
-
-이 큐는 claim 후 source asset을 가져와 `analyzeVocalProfileBytes`를 한 번 호출합니다. 이 facade는 multipart 요청을 구성해 Modal adapter를 호출하며, 별도의 `externalJobId` 저장이나 polling loop가 없습니다. 반환된 source bytes의 길이·MIME type·SHA-256이 queued upload와 다르면 `ANALYZER_SOURCE_MISMATCH`로 즉시 terminal 처리합니다. 같은 recording/user의 프로필이 이미 있으면 분석을 다시 하지 않고 성공으로 표시합니다.
-
-성공은 프로필 저장과 job 상태 변경, 성공 알림을 transaction으로 묶습니다. terminal 실패는 source asset을 `null`로 만들고, 외부에 보관된 원본 asset을 정리 대상으로 넘기며, 비용이 있으면 환불합니다. retryable 실패는 `PENDING`으로 되돌리고 lease를 해제합니다.
+따라서 재시작 복구는 “프로세스가 재시작되었다”는 이벤트를 별도로 기록하는 방식이 아니다. 다음 worker가 같은 DB를 보고 `nextAttemptAt`가 도래한 미완료 row를 claim한다. 외부 job id가 이미 저장된 곡 분석과 `modalJobId`가 저장된 믹싱은 기존 외부 job을 polling하는 경로로 들어가 중복 submit을 피한다. 다만 외부 접수 직후 DB 저장 전에 프로세스가 죽으면 외부 요청의 exactly-once는 보장되지 않는다.
 
 ```mermaid
 stateDiagram-v2
     [*] --> PENDING
     PENDING --> PROCESSING: claim
-    PROCESSING --> SUCCEEDED: 동기 분석과 프로필 저장
-    PROCESSING --> PENDING: retryable 실패와 attempts 여유
-    PROCESSING --> FAILED: mismatch, source missing 또는 횟수 소진
-    PENDING --> [*]
+    PENDING --> PREPARING: mixing claim
+    PREPARING --> SUBMITTED: external job accepted
+    SUBMITTED --> PROCESSING: external job processing
+    PROCESSING --> SUCCEEDED: result persisted
+    PREPARING --> PENDING: retryable preflight failure
+    PROCESSING --> PENDING: retryable failure before submit
+    SUBMITTED --> SUBMITTED: retryable poll or finalization failure
+    PENDING --> FAILED: terminal error or attempts exhausted
+    PREPARING --> FAILED: terminal error or attempts exhausted
+    PROCESSING --> FAILED: terminal error or attempts exhausted
+    SUBMITTED --> FAILED: terminal external failure
+    PROCESSING --> PROCESSING: heartbeat extends lease
+    PREPARING --> PROCESSING: lease expires and another worker reclaims
+    SUBMITTED --> SUBMITTED: lease expires and another worker reclaims
     FAILED --> [*]
     SUCCEEDED --> [*]
 ```
 
-Vocal profile 분석은 외부 작업을 제출해 polling하지 않고 한 처리 호출 안에서 완료되는 lifecycle입니다.
+이 그림은 세 worker의 공통 durable lifecycle과 믹싱의 세부 상태를 합쳐, retry·lease 만료·terminal 전이를 보여준다.
 
-## heartbeat, 재시도, terminal 처리
+## worker별 처리와 상태 소유권
 
-실패 정규화는 analyzer가 제공한 `reasonCode`, 상세, retryable 플래그를 보존하고, 예상 밖 예외는 큐별 worker 오류로 기록합니다. retryable이고 `attempts < maxAttempts`이면 lease를 해제하고 `PENDING`으로 돌립니다. mixing과 vocal profile의 backoff는 `min(30초, 2^(attempts-1))`, song analysis는 `min(60초, 5 × 2^(attempts-1))`입니다. `nextAttemptAt`이 지나기 전에는 다시 claim되지 않습니다. 최대 시도 횟수에 도달하거나 non-retryable이면 `FAILED`, 오류 코드·상세(최대 2,000자), 완료 시각을 기록하고 lease를 지웁니다.
+### 믹싱: 접수 전과 접수 후를 구분한다
 
-```mermaid
-sequenceDiagram
-    participant Lane as Worker lane
-    participant DB as PostgreSQL queue
-    participant External as Modal or analyzer
-    participant Store as Media or result store
-    participant User as Notification and ticket
+`runMixingWorkerOnce`는 `reconcileRequiredRefunds()`와 `processOneMediaCleanup()`을 실행한 후 job을 claim한다. `processClaimedMixingJob`은 먼저 reference audio와 catalog target을 검증하고, 준비가 끝나면 `SYNTHESIS_PRESET`과 추천 pitch shift를 multipart form으로 만들어 Modal conversion을 접수한다. 응답이 `queued`이고 id가 있어야 `modalJobId`와 `SUBMITTED`를 저장한다.
 
-    Lane->>DB: claim with FOR UPDATE SKIP LOCKED
-    DB-->>Lane: owner and lease
-    Lane->>External: submit or synchronous analyze
-    loop long work
-        Lane->>External: poll when external job
-        Lane->>DB: heartbeat with owner
-    end
-    alt retryable failure and attempts remain
-        Lane->>DB: PENDING or SUBMITTED plus backoff
-    else terminal failure
-        Lane->>DB: FAILED and clear lease
-        Lane->>User: failure notification
-        Lane->>User: refund when required
-    else success
-        External-->>Lane: result
-        Lane->>Store: persist result asset or profile
-        Lane->>DB: SUCCEEDED and clear lease
-        Lane->>User: success notification
-    end
-```
+그 뒤 상태를 계속 조회한다. 외부 상태가 `processing`이면 DB status를 `PROCESSING`으로 바꾸고, 그 밖의 미완료 상태는 `SUBMITTED`로 유지하며 heartbeat 후 설정된 간격만큼 쉰다. `failed`는 terminal `MODAL_JOB_FAILED`다. `succeeded`이면 결과 audio를 내려받아 압축하고 결과 asset을 저장한 뒤, job 성공·lease 해제·성공 알림을 한 transaction으로 확정한다. transaction이 실패하면 방금 만든 result asset을 `discardMediaAsset`으로 폐기한다.
 
-claim부터 heartbeat, 재시도, 성공·terminal 처리를 잇는 대표 제어 순서입니다.
+접수 전 실패는 retry 가능한 network/HTTP 오류라면 `PENDING`으로 돌아가고, 접수 후 retry 가능한 오류는 `SUBMITTED`를 유지한다. backoff는 믹싱에서 최대 30초인 `2 ** (attempts - 1)`초다. `408`, `425`, `429`, `5xx`는 일반적으로 retry 가능하지만 submit endpoint는 `429`만 retry 가능하고 network 오류는 retry하지 않는다. 접수 전 terminal 실패는 `refundState = REQUIRED`로 기록한 후 환불하고, 접수 후 실패는 외부 실행이 이미 소비되었으므로 환불하지 않는다.
 
-## 환불, 알림, cleanup 복구
+### 곡 분석: durable external job id를 이어받는다
 
-- Mixing은 변환 서비스에 제출되기 전 최종 실패만 `refundState = REQUIRED`가 됩니다. 제출 후 실패는 외부 작업이 접수되었으므로 `NONE`이며 환불하지 않습니다. `ensureMixingRefund`는 `AI_MIXING` usage refund를 `mixing:refund:<jobId>` idempotency key로 적용한 뒤 `REFUNDED`로 표시합니다.
-- Vocal profile은 terminal 실패 시 ticket cost가 양수이면 `REQUIRED`로 만들고 `VOCAL_ANALYSIS` refund를 적용합니다. 비용이 0이면 바로 `REFUNDED`로 표시하며, 환불 오류가 작업 실패 자체를 가리지 않도록 로그에 남깁니다. 환불 함수는 `REQUIRED`만 처리하고, runner가 오래된 `REQUIRED` 작업을 매 lane 반복마다 최대 10개씩 reconcile합니다. mixing은 매 worker iteration 시작 시 최대 10개를 reconcile합니다.
-- 성공·terminal 실패 알림은 상태 변경 transaction 안에서 생성되고 dedupe key를 사용합니다. mixing은 `MIXING_SUCCEEDED`/`MIXING_FAILED`, vocal profile은 `VOCAL_PROFILE_SUCCEEDED`/`VOCAL_PROFILE_FAILED`를 보냅니다. song analysis worker에는 notification이나 ticket refund 로직이 없습니다.
-- mixing 결과 transaction 이전에 만들어진 asset은 transaction 실패 시 폐기합니다. mixing worker는 매 iteration에 `processOneMediaCleanup`도 실행합니다. cleanup queue는 `PENDING`/`FAILED`이고 `nextAttemptAt`이 지난 행, 또는 5분 이상 갱신되지 않은 `PROCESSING` 행을 `FOR UPDATE SKIP LOCKED`로 하나 claim합니다. 외부 파일 삭제와 DB asset 삭제가 성공하면 완료되며, 외부 404도 이미 삭제된 것으로 보고 asset을 삭제합니다. 그 밖의 오류는 cleanup job을 `FAILED`로 하고 asset을 `DELETE_PENDING`으로 남기며 backoff는 `min(2^attempts 분, 360분)`입니다.
+claim은 `READY` catalog target이 없으면 작업을 선택하지 않는다. 처리 시 target bytes를 내려받고 `submitSongAnalysis`에 `requestId = job.id`와 source video id를 전달한다. submit 성공 후 `externalJobId`를 owner 조건부 update로 저장한다. 저장이 실패하면 중복 접수 위험을 나타내는 lease-lost 오류가 발생한다.
 
-## 프로세스 supervision과 설정
+`pollSongAnalysis`가 `PROCESSING`을 반환하면 `SONG_ANALYSIS_POLL_INTERVAL_MS`만큼 기다린다. `FAILED`이면 외부 job id를 지워 다음 재시도가 새 요청을 만들게 하고, analyzer가 표시한 `reasonCode`, detail, retryable을 job에 보존한다. 성공 결과는 `SongAnalysis`를 pipeline contract 기준으로 upsert하고 job과 함께 `SUCCEEDED`로 확정한다. 성공 결과에는 분석 수치와 `cleanupConfirmed`가 저장되며 별도 사용자 media asset을 삭제하지 않는다.
 
-각 `scripts/*-worker.ts` entrypoint는 `.env.local`, `.env`를 읽은 뒤 해당 runner를 import해 실행합니다. runner는 설정된 concurrency만큼 lane을 만들고 각 lane에 PID·lane 번호·random UUID 기반 owner를 부여합니다. claim할 일이 없으면 1초 쉬고 반복합니다. `SIGINT`와 `SIGTERM`은 새 claim loop를 멈추게 하고 모든 lane이 끝날 때까지 기다립니다.
+분석기 오류는 명시된 retryable 값과 시도 횟수로 분기한다. retry 시 `PENDING`, 실패 시 `FAILED`이고 backoff는 최대 60초인 `5 * 2 ** (attempts - 1)`초다. 일반 미분류 worker 오류는 retry 가능으로 취급된다. 실패한 분석 revision도 `SongAnalysis`에 `FAILED` 상태와 오류를 남긴다.
 
-`dev`와 `start` 명령은 `concurrently --kill-others-on-fail`로 web, mixing, vocal-profile-analysis, song-analysis를 함께 감독합니다. 한 child가 실패하면 supervisor가 sibling에 `SIGTERM`을 보내므로 일부 worker만 살아 있는 상태를 피합니다. 운영 시 concurrency를 늘리더라도 DB의 row lock과 active lease exclusion이 중복 claim을 막지만, 외부 provider rate limit과 lease 길이가 충분한지 함께 조정해야 합니다.
+### 보컬 프로필 분석: 동기 외부 응답과 idempotent 완료
 
-주요 기본값은 다음과 같습니다.
+보컬 worker는 queue row의 `sourceAssetId`가 가리키는 사용자 소유 `REFERENCE` asset을 내려받고, bytes·mime type·file name을 `analyzeVocalProfileBytes`에 전달한다. 분석 함수가 반환한 source bytes의 길이·mime type·SHA-256이 원본과 다르면 `ANALYZER_SOURCE_MISMATCH` terminal 오류다. 외부 분석은 하나의 요청-응답이므로 `externalJobId`나 polling loop가 없다.
 
-| 영역 | 환경 변수 | 기본값 | 허용 범위 |
-|---|---|---:|---:|
-| mixing | `MIXING_WORKER_CONCURRENCY` | 1 | 1–32 |
-| mixing | `MIXING_MAX_ATTEMPTS` | 3 | 1–20 |
-| mixing | `MIXING_LEASE_SECONDS` | 120초 | 30–3,600초 |
-| mixing | `MIXING_POLL_INTERVAL_MS` | 5,000ms | 100–60,000ms |
-| song analysis | `SONG_ANALYSIS_WORKER_CONCURRENCY` | 1 | 1–8 |
-| song analysis | `SONG_ANALYSIS_LEASE_SECONDS` | 300초 | 180–3,600초 |
-| song analysis | `SONG_ANALYSIS_POLL_INTERVAL_MS` | 2,500ms | 250–30,000ms |
-| vocal profile | `VOCAL_PROFILE_ANALYSIS_WORKER_CONCURRENCY` | 1 | 1–16 |
-| vocal profile | `VOCAL_PROFILE_ANALYSIS_LEASE_SECONDS` | 300초 | 180–3,600초 |
+처리 전 이미 같은 `recordingId`와 user의 profile이 있으면 job을 성공으로 마킹한다. 처리 중 race로 profile이 먼저 저장되어도 catch에서 다시 찾아 성공으로 마킹한다. 정상 결과는 queued profile persistence와 job 성공, 알림을 transaction으로 확정한다.
 
-song analysis의 endpoint는 `SONG_ANALYSIS_MODAL_URL`, API key는 `SONG_ANALYSIS_MODAL_API_KEY`이며 후자가 없으면 `MODAL_API_KEY`를 fallback으로 사용합니다. mixing은 `MODAL_API_URL`과 `MODAL_API_KEY`가 모두 필요합니다. worker를 변경할 때는 timeout, poll interval, lease가 장시간 외부 호출과 충돌하지 않는지 확인해야 합니다.
+retry 가능한 analyzer/client 또는 persistence 오류는 source asset을 유지한 채 `PENDING`으로 돌린다. backoff는 최대 30초인 `2 ** (attempts - 1)`초다. terminal 실패는 job을 `FAILED`로 만들고 `sourceAssetId = NULL`로 분리한 뒤 실패 알림을 만든다. 원래 source asset은 `discardMediaAsset`으로 삭제하고, ticket cost가 있으면 idempotency key를 사용해 환불한다. 환불 실패는 로그로 남지만 job failure 자체는 유지되며 다음 runner loop의 refund reconciliation이 재시도한다.
 
-## 운영상 확인할 테스트
+## terminal failure와 media cleanup
 
-`tests/mixing-queue.integration.ts`, `tests/song-analysis-queue.integration.ts`, `tests/vocal-profile-analysis-queue.integration.ts`는 각각 claim 경쟁, lease 만료 reclaim, 성공·실패·retry 경계를 실제 DB 큐에 대해 검증하는 핵심 회귀 테스트입니다. 특히 mixing에서는 제출 전/후 실패와 환불 차이를, song analysis에서는 외부 ID 보존·polling을, vocal profile에서는 동기 분석과 source mismatch·환불을 확인해야 합니다. `tests/process-scripts.test.ts`는 로컬 analyzer API가 없고 Modal facade를 사용한다는 전제, 세 worker를 `dev`/`start`에 포함하는지, child 실패 시 `concurrently`가 sibling을 종료하는지를 검증합니다.
+media 삭제는 worker가 직접 모든 삭제를 끝냈다고 가정하지 않는다. 믹싱 worker는 매 iteration `processOneMediaCleanup`을 호출한다. cleanup queue는 `PENDING`·재시도 시각이 된 `FAILED`·5분 이상 갱신되지 않은 `PROCESSING` row를 `SKIP LOCKED`로 claim한다. Leemage 삭제 성공 또는 404면 asset과 cleanup row를 제거한다. 다른 오류는 cleanup row를 exponential delay로 `FAILED`에 남기고 asset을 `DELETE_PENDING`으로 표시한다.
+
+세 worker의 cleanup 정책은 다르다.
+
+| 대상 | 성공 | retryable 실패 | terminal 실패 |
+| --- | --- | --- | --- |
+| 믹싱 결과 asset | DB 성공 transaction 뒤 job이 `SUCCEEDED`; transaction 실패 시 결과 asset 폐기 | 결과 finalization은 `SUBMITTED`로 재시도하고 asset은 만들지 않음 | 접수 전이면 refund, 접수 후면 환불 없음 |
+| 곡 분석 catalog target | 분석 결과와 revision metadata를 DB에 저장 | job만 `PENDING`; catalog asset은 보존 | `SongAnalysis`와 job에 실패 기록 |
+| 보컬 queued source asset | profile이 source asset을 재사용 | source asset 보존 | job에서 detach 후 Leemage 삭제를 queue하고 환불 |
+
+## 운영 점검과 집중 테스트
+
+운영자는 다음을 우선 확인한다.
+
+1. 각 worker의 endpoint/key와 concurrency·lease·poll 값이 `server-env.ts` 허용 범위 안인지 확인한다.
+2. `PROCESSING`, `PREPARING`, `SUBMITTED`가 lease 만료 없이 오래 남는지 확인한다. 특히 보컬 분석에는 처리 중 heartbeat가 없으므로 lease와 실제 동기 분석 시간의 여유를 둔다.
+3. `FAILED` job의 `errorCode`, `retryable`, `attempts`, `refundState`를 함께 확인한다. `refundState = REQUIRED`가 남으면 worker가 다음 loop에서 보정한다.
+4. `DELETE_PENDING` asset과 `MediaCleanupJob.FAILED`의 `lastError`, `nextAttemptAt`를 확인한다.
+
+핵심 integration test는 다음 경계를 검증한다.
+
+- `tests/mixing-queue.integration.ts`: 두 worker의 동시 claim은 한 건만 성공하고, 만료 lease가 재점유된다. reference fetch·target fetch·submit·외부 job 실패·finalization 오류를 접수 전/후로 나누어 retry, backoff, 환불 경계, 알림, 결과 asset rollback을 확인한다.
+- `tests/song-analysis-queue.integration.ts`: target이 `READY`가 아니면 claim하지 않고, 동시에 claim한 두 번째 worker는 거절된다. 만료 lease 후 두 번째 worker가 이어받아 external job을 polling하고 `READY` revision을 만든다. `503` analyzer 오류는 `PENDING`과 retryable 상태로 남는다.
+- `tests/vocal-profile-analysis-queue.integration.ts`: 만료 lease 재점유, source asset 재사용, transient Modal 오류 시 source 보존, terminal 오류 시 source detach·삭제와 ticket 환불을 확인한다.
+
+코드를 변경할 때는 먼저 claim SQL의 선택 조건과 상태 enum을 함께 확인하고, 외부 접수 뒤 DB에 id를 저장하는 경계와 terminal cleanup/refund의 idempotency를 integration test로 고정한다.

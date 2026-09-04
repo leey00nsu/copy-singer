@@ -1,5 +1,6 @@
 # 파일
 
-- [추천, 레퍼런스 선택과 AI 믹싱 워크플로](recommendation-and-mixing.md) - 보컬 프로필로 곡을 랭킹하고 키 조정 근거를 설명한 뒤, 추천 결과를 검증·영속화하여 티켓 차감, 내구성 있는 믹싱 큐, SoulX 변환 제출·폴링, 결과 저장과 재생까지 연결하는 흐름을 설명한다. 실패·재시도·환불·삭제의 경계도 다룬다.
-- [Song catalog analysis and publication workflow](song-catalog-publishing.md) - 관리자가 곡과 YouTube 출처, 분석 작업, target asset을 등록하고 Modal 분석 결과를 검증한 뒤 카탈로그를 명시적으로 공개하는 절차를 설명합니다. 공개 카탈로그의 스냅샷과 추천·믹싱 소비 경계도 다룹니다.
-- [보컬 프로필 캡처 및 분석 워크플로](vocal-profile-analysis.md)
+- [계정·티켓·알림 흐름](account-and-tickets.md)
+- [관리자 카탈로그 운영 워크플로](catalog-management.md)
+- [추천에서 AI 믹싱 결과까지](recommendation-to-mixing.md) - 추천 항목을 현재 카탈로그와 보컬 프로필로 다시 검증한 뒤, 티켓 차감과 중복 방지를 거쳐 SoulX 믹싱 작업을 제출하고 결과 음원을 저장·재생하는 흐름을 설명한다. 실패 시 외부 접수 전 환불과 재시도 경계를 함께 다룬다.
+- [보컬 프로필 분석 워크플로](vocal-profile-analysis.md) - /profile에서 업로드한 음성이 media asset과 내구성 있는 분석 작업으로 저장되고, 별도 worker가 Modal 동기 분석을 호출해 보컬 프로필과 reference를 저장하는 전체 흐름을 설명한다. lease, 재시도, 최종 실패 시 알림과 티켓 환불의 현재 동작도 다룬다.

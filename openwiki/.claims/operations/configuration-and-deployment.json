@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:f50bebb95a05c0d751771007488fe06214e6cd82a1d91a14c578795ae182c151",
+  "pageVersion": "sha256:96a8442ff2f60a2da18fa9364bf341e6b30e3cf929d695509cac9427bebf5c50",
   "claims": [
     {
-      "id": "claim_9c74dd0d40ff422f8f0edcd4d3b1dc56",
-      "statement": "프로젝트의 Node/pnpm 실행 진입점은 `package.json`에 정의되어 있으며 `pnpm dev`는 Next.js와 mixing·vocal-profile-analysis·song-analysis worker를 함께 실행하고, `pnpm start`도 같은 네 프로세스를 `concurrently --kill-others-on-fail`로 감독한다.",
+      "id": "claim_331a9f805e4445e0b158776b2c4d85ae",
+      "statement": "애플리케이션은 Node.js 22.13.0 이상과 pnpm 11.9.0을 요구하며, `dev`와 `start` script는 Next.js 웹과 mixing·vocal-profile-analysis·song-analysis 세 worker를 `concurrently --kill-others-on-fail`로 함께 실행한다.",
       "evidence": [
         {
           "resource": "repo://package.json#L5-L21",
@@ -13,146 +13,166 @@
       ]
     },
     {
-      "id": "claim_966cbd22ee934a4190cd01eba0e85c39",
-      "statement": "Prisma는 `.env.local`을 `.env`보다 먼저 읽고 `DATABASE_URL`을 datasource로 사용하며, migration 경로는 `prisma/migrations`, seed 명령은 `tsx prisma/seed.ts`이다.",
+      "id": "claim_ea8b0380c813457fbfb4d27b6a53c633",
+      "statement": "Docker Compose는 `postgres:16-alpine` PostgreSQL을 호스트 `POSTGRES_PORT`(기본 5433)에서 실행하고, `POSTGRES_DB`·`POSTGRES_USER`·`POSTGRES_PASSWORD` 기본값과 영속 volume 및 readiness healthcheck를 제공한다.",
+      "evidence": [
+        {
+          "resource": "repo://docker-compose.yml#L2-L20",
+          "version": "repo-lines-v1:sha256:a2fb381937c34be6e5993ebaf74510ea7e5c7380643490800fe1123cc4b17c14:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwZjhkYzgzYTlkMTA3NzQxZTUzNjRhZTBjZjZmNDg1OTU3MDIyMDkwMzExMjIwYWFmOTAxOGI4NzcwZmUxNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyZWRkODUzMTM2ZTliOTZiYmY4OTIwMjVjMzc3NzJhMDQxZWE2NGFlNGY3M2ViYjE2YTEwMzU1OTIxM2UzZGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoxLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZhNzNmY2NkYzk5ZWE4MzU5NjdjN2RlZTdlZmJlZDFmM2NhODcyNjBkOTI5MzE4NTBmZGQ2NmRhOGNiMTJmMWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU3YTIzZjkwMzZkNzYwYmJjNDA5NDNmZTJlZTkwMzNiZjM0ZTg0ZGE1MzBiNmUwN2MxNzBjNzJiMWM3Y2ZkZWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9ba9be49ab2d4d6f89fd2c76d47cef0e",
+      "statement": "Prisma는 `DATABASE_URL`을 datasource로 사용하고 migration seed entrypoint를 `tsx prisma/seed.ts`로 정의한다.",
       "evidence": [
         {
           "resource": "repo://prisma.config.ts#L2-L14",
           "version": "repo-lines-v1:sha256:04fbee3587a92ba88dd88b40feb093da7c49ac264e46fc84f966e8f39384a164:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxNWQ1MDExNWNkM2E1Y2JjNjAxN2FmNmFlNTkzYmFlYzBlYTU4MDZmNTBmMDg1MzQwYzAyZjc3OTE3Nzc4NjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoxLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI3OWIwNzcyNmM3ZTAwNzU5MWE2ZmRmNjkzMjM1M2UwMjNhNTIyNjA3MDMyMDEyZmJiZDIyNGRlZGJlZjkyZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+        },
+        {
+          "resource": "repo://prisma/seed.ts#L18-L30",
+          "version": "repo-lines-v1:sha256:282b6f02c24afc38d410777140faf41aeffc97092874372b84fd7ce21d97eac0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRmYTAzNDRmZTJmNDRiNDZjOGYxMGJhNjBkZDgzMTZiOWUxNTM0ZTVhMGNhNTk2ZTZkOWIxZWM3MDJjM2MwOWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3MTFkOGUzOWYwMDc0YmVlODk5ZTE2MTJmMmZhMzNlMDcxZTg3MzE4NDZiZDQ2YjI1YjkyZDhkN2NkYWU2YTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIxNzdhZWM0NzI4ZjY2MzUzNjA3OWM4MzM5OGZlOTZiMDQxODQ4ZDQ3OTU3ZTlkM2Y2MDkwYjM2M2YzYzE1MTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk4N2I3ZTY3ZDI5MWRhMDFlNzFkYmE5YzZkZmMwZWVkMjdlZDdlNDRiZDE3NzczMzQzOTJmMTg0ZmViNzUwN2QifQ"
         }
       ]
     },
     {
-      "id": "claim_3e3b1478e21e49e3aeef68d8400e2c8a",
-      "statement": "로컬 PostgreSQL은 `postgres:16-alpine` 컨테이너, 기본 호스트 포트 5433→컨테이너 포트 5432 매핑, `postgres_data` volume 및 `pg_isready` healthcheck로 구성된다.",
+      "id": "claim_64348b37420a49a68424357d3b8ff6c6",
+      "statement": "database 운영 script는 개발 migration 생성·적용(`db:migrate`), 배포 migration 적용(`db:migrate:deploy`), 상태·schema 검증, seed 및 관계 검증을 서로 다른 명령으로 제공한다.",
       "evidence": [
         {
-          "resource": "repo://docker-compose.yml#L2-L23",
-          "version": "repo-lines-v1:sha256:bb333c422548225af1c562db77b56d8e1f19eaf4822f6cf68ab5b6347db10b0b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwZjhkYzgzYTlkMTA3NzQxZTUzNjRhZTBjZjZmNDg1OTU3MDIyMDkwMzExMjIwYWFmOTAxOGI4NzcwZmUxNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4NTFlNzA4MjkyNjFjOWNkYmRmMWM3YTBiZGViOTM1NzBmZjljNmY1MmU4YmFmMGMxZDA4OWMxNDExOWYzMTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoxLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZhNzNmY2NkYzk5ZWE4MzU5NjdjN2RlZTdlZmJlZDFmM2NhODcyNjBkOTI5MzE4NTBmZGQ2NmRhOGNiMTJmMWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://package.json#L33-L42",
+          "version": "repo-lines-v1:sha256:6810c9c7066d6794aca942c9a923df46c3444fc0a65c82d84fef6ca264ad501b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjNDM5NDIyZWFjOWFkZTM5ZGJmOGQwMWE0OTUxNDBjNDBkOGVjNmQ3NjQxOGM5NjBlZWFlNTRmZTExOWEwMDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmYzVjZjNkZjBlYzA3ZjYxNDQ3YTQ4NzY4NTc2NGIyOTk4YzUzODY1YzA0YjMzNzBhYzcxNzYxYjdhZTM1NjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE4ODYyYmI0YjkzNjcxZjkwZDZkNThlOGRiOTg3YTA4M2VmMTNiMTFjNGYxYjFhZGY3MzhmNGI1MTRlZmEwY2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3MDMwNGExOTAwYWZmYTNkMzFkYjYzNjE3YzhlOWIzNGQ2ZDc2ZDM4YzJhZDcwZGRlNzA0MDI3MDFiN2NlMDIifQ"
+        },
+        {
+          "resource": "repo://scripts/verify-database.ts#L4-L26",
+          "version": "repo-lines-v1:sha256:0fcaf3d4740e86b0c190fbf09cbad227b5bf6fa709eb0b15c71c082aae30e555:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkMTEzNzA2OTA2NTBmZDFjMWE5YTdhYzM4ZmJkN2E2ZWU0NDQwZWE1ZWZmOGJhOTk5NTllNDU5NmEyYzFjNzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwYjJjZGJkZGU0YzQyOGRlMTc5NDA1ZjdlNDc5NWU4MjFkOGQ2YzE2NTBlZTZjZGVhNjI5M2RkMGUyNjljZDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVmNTVlN2EyOWM1ZGE1ZDM5NzkzYTNhZjE3YzBiMTBkMTI1ZjE1OGU5YjhiYzcxMWIzMWMwNmQ5ZWExYzVlNTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjcifQ"
         }
       ]
     },
     {
-      "id": "claim_8fa53807989649b38ca9e67a8c5057f5",
-      "statement": "애플리케이션 startup 전에 `prisma migrate deploy`를 실행해야 하며, repository의 migration·generate·status·validate·seed·database verification을 위한 명령은 package scripts로 제공된다.",
+      "id": "claim_254ccb82b97547a08d2ce40e871e9cc2",
+      "statement": "정수형 ticket·worker 설정은 환경 변수가 없으면 코드 기본값을 사용하고, 안전한 정수 및 선언된 min/max 범위를 벗어나면 오류를 발생시킨다.",
+      "evidence": [
+        {
+          "resource": "repo://src/shared/config/server-env.ts#L3-L11",
+          "version": "repo-lines-v1:sha256:296cae355583a68267242033c014ffbb06937d5d81bebbdcfc211b34b2196ceb:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmM4ZTZiN2JkYTRkMjY1ZmMxMGUwN2IwNGY5NzI3YzdmZjczOWQ5NzNkNjJkZTFkY2QyYTEyYmRlOTdiM2E2NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWJmZjNhZjI1ODQ3NzQxYjhkMGUyNzA1ZTAzZTk3OGI1NmE3NWRkN2U1MzZjNjAzMzQ2Zjk0MDgyOWEyMWJhMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTMxYWZkYmE0MjAxYTkwNTY2NTI1MTUxYmEzYmZkZGNlNmUxOWYyZjdhN2Q3ZDIzYjI3ZWU0Zjk3MWU1ZDU0YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzlmODdhOWIxMWVhMjY0YjAwZDY1ZDZjN2E5ZjA3MzYzNTc4NTIxYzAwZWZmMWQyZmYxZWQxYjQ5NDRjZmE2YSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_0e1d8eb2836a4ecc8884009e41ae4f69",
+      "statement": "worker 설정은 mixing, vocal-profile analysis, song analysis별 동시성·최대 시도·lease·poll 간격을 별도 환경 변수로 제어하며 각 항목에 독립된 기본값과 범위가 있다.",
+      "evidence": [
+        {
+          "resource": "repo://src/shared/config/server-env.ts#L14-L67",
+          "version": "repo-lines-v1:sha256:4eeaaa93961e55da8a4e995bc32b8609fc096ca4d6b160f79ae3b1baa27b8464:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2OWM4YjYxYWYyODNlMmVlNGNjMWYyOTAxOWFhNzIyNDRlNDI2MDZkYmQ0YTQ0NWNiNDhkYWUyZjNlOGIxMDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5ZDIzNDA2YmM5NWVlZmIxMzM5NjBmNjI3MjBhM2FhYTA3NGNmZTBkYjMzNDliNGJlNTdmMzJiMGY1N2Y4MzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcxODg3MGE4MDQwOWY4YzRjOTk0ODA3YWY4MjU5Y2MwNGJkMGM1Y2EyZTlmMWMzYjEzZGVmMTBiMTYyNzg2ZDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmMjhkNGI3NTY2NjU5MjlhZGI0OTgyNGU5Yjc3YWQ1NWU5MTE1ZjkyODdlOWFlNTA3MWZkNTNmOGM4MDA1YmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_15147bafddc34d2a9bb022d313e908f4",
+      "statement": "SoulX 믹싱은 `MODAL_API_URL`과 서버 전용 `MODAL_API_KEY`를 사용하고, 보컬 프로필과 곡 분석 API는 서비스별 URL·key를 우선하되 key가 없으면 `MODAL_API_KEY`를 fallback으로 사용한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L74-L80",
+          "version": "repo-lines-v1:sha256:cf9bc243884dd77020b80673e0d99299f5fe3506589f15c31ae9c30a519e4a77:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTRmYWFlODAwNjcxYTQwOWQ5ZDJhZWQ3MGUyODcxZjI5OWMxNWFjM2MyNjhmMGZjOTAzMTQ2MWZhNWI3ZGYyYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzk1Y2EzNDVmNmMwZDYwMzMxMTY2YTAwMWUxZjI3YzAyMTMxOTg0ZmE5MzMzOGYyYTI0MmJlOTAxZDRlM2E1MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGI2NWZhZWJlM2Q3YmRiMDU3MWE2NzI4YjI4YWVlYjdkNGQwNDM2ZmM5ZWRiY2U5YjgwNWE4OWNjYjQ3Y2QxOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmUzMmQ2NTg1ZjgyYmQ2MDRmOGJjOTdjYjIwOTM4Zjc1M2I1MTgyYjJjZmM0NDQ4YmRmYTA5MjI3YzIzYTQxNSJ9"
+        },
+        {
+          "resource": "repo://src/entities/vocal-profile/api/analyzer/modal-adapter.ts#L30-L42",
+          "version": "repo-lines-v1:sha256:bc100f114870bd4fb8b643a6d052ea74da0320183e2ec7ba0a1f9f4bfa754815:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4NTYxMjEzZGJhYjg4NmI5YTY1MDZhZGE4ODUxZDBmOTMyOTAwNjQxM2RkZmY2ZTIxM2MzZDdkOWY4ZTFiMTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQyNzdlM2E2MDYyZTMzMTRiNjI4OTc5ZDhlY2UxNGRhMDU2ZWM4MDcyMzdmOWZiYjEyNjU5ZmViYmYxMWM3NmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY5NjkzYWY2YTE1MjY1MDE2MmVkZDhjNzU2MWI0ZmNiNTBhZWFlZTJlN2Y0YTU2OTg2ZDMyZDFiZTA2NTEyNWUifQ"
+        },
+        {
+          "resource": "repo://src/shared/config/server-env.ts#L70-L74",
+          "version": "repo-lines-v1:sha256:3f8fe8bf0918dfb5ccf304feb1065022b4fabf4aa45e618e84d11ff0668e6627:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmQzMmQ0NWVkZjgwZmRmMjlhNDUwZWM2YTUzNzkxMmE3Mjk4YTRiZGE3Njk0MjExZTg3YTM5YWY3MWEwMWFhOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjI3ZTU4NWZlOWYwMDljZTE3ZmIxMGE3NGFhZGUxNDVmZWNlZDBlYjcxNzk1YjdkMTZjMWE4MDU5ZDVlOWFkNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_c6e3c0321f264c068ffb88271260bab8",
+      "statement": "웹 요청은 작업을 PostgreSQL durable queue에 접수하고, worker는 `FOR UPDATE SKIP LOCKED`로 새 PENDING 또는 lease가 없거나 만료된 처리 중 작업만 원자적으로 claim하며 lease owner·expiry·heartbeat·attempts를 갱신한다.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L141-L141",
+          "version": "repo-lines-v1:sha256:bd3de1a6b663c7d85adc95208e62286ea9224e619c557012e21ece0052d478db:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmQzZGUxYTZiNjYzYzdkODVhZGM5NTIwOGU2MjI4NmVhOTIyNGU2MTljNTU3MDEyZTIxZWNlMDA1MmQ0NzhkYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmQzZGUxYTZiNjYzYzdkODVhZGM5NTIwOGU2MjI4NmVhOTIyNGU2MTljNTU3MDEyZTIxZWNlMDA1MmQ0NzhkYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjJmYmY0NzFkNzJjOWQxOWNlNjk1ZTJhYmZjNTM2ZmEwOGU2NzRiNjUwZTBmZjNmNzYxN2U5NmZlZWM1ZTFhOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjNlZGI2NWEwYzAxM2ViNzI3Y2FhNGY0ZGNkNGRhNjM4MjZmM2VlMDM3Y2ZkZDhkNTljMzg5ZWRjMmQxZjNiZCJ9"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L92-L130",
+          "version": "repo-lines-v1:sha256:b0664914d9c31b3dc59a2285f246bdb60ae643f05d330d3d3a7eceb69a254bb4:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkYTkzYWU1N2Q0ODhkMTQ2YjZmZGI4ZTg3NGY2MWFiYjcyYWQ2MmNiODZkYjM0MGM5ZDcxN2I1MmQwOWQ4ZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1Y2NhZjBhZjk4ZDA1NDU2YTZiY2Y5OWQ5MTVlODBlYTdkYmJjYjQ5NDc0MDgxMTE3ODU0NDFmYWM4NThhOGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1MWM2ODg4Y2Q0ZjQyYmZiNzk4ZmFjOWNmMzA1NzQzMDg5ZTdkNGE1NzE0MjA3NmNiMDVmNGE0YjM5NDNiZjEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8af84b6ecdaf4361936b6b8ce0896956",
+      "statement": "보컬 프로필 분석은 단일 동기 HTTP 응답을 기다리고 외부 job ID를 poll하지 않지만, 곡 분석은 `/v1/jobs` 제출 후 external job ID를 저장하고 `/v1/jobs/{externalJobId}`를 poll하며, SoulX 믹싱도 job ID의 상태·결과를 poll한다.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L141-L141",
+          "version": "repo-lines-v1:sha256:bd3de1a6b663c7d85adc95208e62286ea9224e619c557012e21ece0052d478db:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmQzZGUxYTZiNjYzYzdkODVhZGM5NTIwOGU2MjI4NmVhOTIyNGU2MTljNTU3MDEyZTIxZWNlMDA1MmQ0NzhkYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmQzZGUxYTZiNjYzYzdkODVhZGM5NTIwOGU2MjI4NmVhOTIyNGU2MTljNTU3MDEyZTIxZWNlMDA1MmQ0NzhkYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjJmYmY0NzFkNzJjOWQxOWNlNjk1ZTJhYmZjNTM2ZmEwOGU2NzRiNjUwZTBmZjNmNzYxN2U5NmZlZWM1ZTFhOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjNlZGI2NWEwYzAxM2ViNzI3Y2FhNGY0ZGNkNGRhNjM4MjZmM2VlMDM3Y2ZkZDhkNTljMzg5ZWRjMmQxZjNiZCJ9"
+        },
+        {
+          "resource": "repo://services/song-catalog-analyzer/README.md#L5-L10",
+          "version": "repo-lines-v1:sha256:cbddd9d8579de1418639c4e92873a652b19fdac4f15dde19898948183e87b29a:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmNmNTZhZmFkM2RlNjQ4MDRjMThjOTlkNWViZTYxZjM0MGQ3NzQ0ZTVkZjIwZjA5N2NjNjA0YTA1NDU5MmRlZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2M1YjA0OGQzM2EzMDUyYjI2Nzc5NmEzNmU5NGIzNjg0ODU1YjE4MzhhZjZmMGZjOGYyZTkxYTJkZTBmMzY3MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWU3M2YxZGQ4YzgwODNkNzkyNTk2N2ZmYTE5N2ZlY2NmNGVkOTY4YjI3NTNjZmExMTg4ZDYxNzI3MTVhMzMwNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDQ0YWVkMTk2N2U5ZWJiNGExNTQ4OWYyMjlmMzBiMDA0Y2ZkMTM5N2YyMGUyOTQxZTUzMjgzNDRlMmJlOWY5ZSJ9"
+        },
+        {
+          "resource": "repo://services/soulx-singer-svc/README.md#L5-L17",
+          "version": "repo-lines-v1:sha256:7edebd9ce38c6e107e5b79d2d46313e8026a11c521efd34a9f8786e755052a74:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljNTRjYzUzNWFlODc4NzllYjRmMDJjNGY5MTAyZmI5MmQzMTM1Mzk5ZDNmNzVlYWU1N2E0NzM3MDYzZDZiYTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhmODJiOGQ0NGIxMDhmMDE1MzVlZjE0OTI0ODFmNTZiZjZjYzJkMWIwYWU0YWY3MTQwMmYyNzhmMGQ3MGNhYWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmYzQzY2VkOGY1Nzk1YTQ1MTYyN2Y2ZmU5NWM1NzEzNWU1MTBjNWZhOWI2OTAxZWFjNjgzYTk2ZmQyZDgxNzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU2YmMwODRhMmVmMmVjMmJlOTY4Yjg2OTkwNmMyNzczNmE4NmYxZTk1MWE1NDYwNTE3ZmEyOTNlYzIwNmM2MzcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e01b01931c324ffbbd5eab1c4b1db2c4",
+      "statement": "production 단일 인스턴스 배포는 frozen install → `db:migrate:deploy` → `build` → `start` 순서이며, `start`에서 웹 또는 worker 하나가 실패하면 supervisor가 전체 프로세스를 종료한다.",
       "evidence": [
         {
           "resource": "repo://README.md#L197-L208",
           "version": "repo-lines-v1:sha256:eb3773efa8b0885af734c93c30f4300a0f5eac15606058a9ffa6a64db3ffd407:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2NDM4NmZiZTkzMzBiZTM2NmVhYmYwNzhmNDgwZGMxNjIxNzYyM2I3ODBlOGIxZjc4NDI1OTk4NzE1M2EyNTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4OTNiNGZkNmZhNWYwODhiN2IwY2YxMDkzOTc2NDY2NzRkN2Y4MmFhMTkxYWVhNDE2NjU4Y2UxMmYwNjI0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI4ZWM1MTUxN2VhZmM4MGUwMjAzNTZmNjAzZDE4MjVlOTc4NWI1MWQ4YWEyNmVjYjRjMTYzN2VmZjQwYmUyNWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkxMTEzYmVmMDdkNWY5ZWRhNTEyZjJhNzdlNDU2ZTY4YjI3ZmUzZGZlZTVmNTk0NWNlZDRmOTM1NjYxOWZlYTQifQ"
         },
         {
-          "resource": "repo://package.json#L33-L42",
-          "version": "repo-lines-v1:sha256:6810c9c7066d6794aca942c9a923df46c3444fc0a65c82d84fef6ca264ad501b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjNDM5NDIyZWFjOWFkZTM5ZGJmOGQwMWE0OTUxNDBjNDBkOGVjNmQ3NjQxOGM5NjBlZWFlNTRmZTExOWEwMDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmYzVjZjNkZjBlYzA3ZjYxNDQ3YTQ4NzY4NTc2NGIyOTk4YzUzODY1YzA0YjMzNzBhYzcxNzYxYjdhZTM1NjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE4ODYyYmI0YjkzNjcxZjkwZDZkNThlOGRiOTg3YTA4M2VmMTNiMTFjNGYxYjFhZGY3MzhmNGI1MTRlZmEwY2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3MDMwNGExOTAwYWZmYTNkMzFkYjYzNjE3YzhlOWIzNGQ2ZDc2ZDM4YzJhZDcwZGRlNzA0MDI3MDFiN2NlMDIifQ"
+          "resource": "repo://package.json#L15-L21",
+          "version": "repo-lines-v1:sha256:622cfcfb97c17cbd35806a96db2e50753b06aefffef20eb8cfc1dff7a19639db:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjk3NGRjMjI0ZmYzZmQ3NWE0MjU3MjRjMGNlYjA5MTQxZWRiMmMyNzQyM2MzOTljNGY3OTdlZDljN2NlYTAzNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjg2MzhlM2UyM2ZjZjc3ZGY3ODk3MzMxMDk1YWQ1YzhjYWU0ZTUwOTAxODc0YzkyMjdlMDRhZDE1OWExNDVjZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzUzM2ZjYjJhZDc1MWU5MGNjNjYyZGVkYjFkOGY4MzAxYTdkZjY1MmE3ZGM5MTg2YTE5NzU3Zjk5YjYxNWI5NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmYxOGY1MGU0YzhlOGJhZDhkN2VlMmVmMjNlNTkwZTdkNjBhOTE3N2VjNjkxMWRhNmYzZjQ0OWYxMDAyMGQ4OSJ9"
         }
       ]
     },
     {
-      "id": "claim_0ff6ba27a6044c9a82481e5557e84e18",
-      "statement": "`db:verify`는 seed된 USER vocal profile이 USER_TEST recording과 연결됐는지와 song vocal profile 관계를 확인하고, 조건이 깨지면 exit code 1로 실패한다.",
+      "id": "claim_587ef51dfccc4105b0697f1fd6917041",
+      "statement": "Modal 보컬 프로필·곡 분석 서비스의 tracked 배포 명령은 각각의 `requirements-local.txt`를 사용하며, 곡 분석 service는 작업별 임시 디렉터리의 upload·WAV·stem을 정리하고 원본 음원이나 stem을 API 응답으로 제공하지 않는다.",
       "evidence": [
         {
-          "resource": "repo://scripts/verify-database.ts#L9-L27",
-          "version": "repo-lines-v1:sha256:3415b3e49ed065495df23997cc685542eeefb0d07e4aef9beb635100d3e30690:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlODIwMGViZDE3MDliNmE2NzViZWNiM2JlOWYzOWU1M2JiYWMwMmNjOTI3MjM0NjJjMDU0NjhlYjBkYTZhMTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQxOTRkNTVjNjIyOWVmYTFkZmYzMDc3NmViMGQ4NzI1YjU0ZWZmMmUzZDc2OWEwOTQ5ZWY4ZWU0NjNkOTMxMWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
-        }
-      ]
-    },
-    {
-      "id": "claim_94fc2e84b50240d9925b6091dbed851a",
-      "statement": "카탈로그 database verification은 카탈로그 total이 0이거나 invalid 항목이 있으면 exit code 1을 설정하고 결과 상태를 `invalid` 또는 `ready`로 출력한다.",
-      "evidence": [
-        {
-          "resource": "repo://scripts/verify-database-song-catalog.ts#L5-L14",
-          "version": "repo-lines-v1:sha256:8f7a38f759d0b8ec8bd1c36c4baf5be52116a82d31ac5bfd10d5d113f580bec9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImViYTI2NThiMjJmZTg5NjU0ZjY5ZWM1MTNhMzI4MGY1YzU4M2Q2OWUyN2QxNTYyNzM5NzkzMjQ1OWI5NmYxNTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0ZGI0NWUwYmUzMTgwNTYwY2UyNDY2MmNlNTM2ZWJmMmRiYmJkZTRjODgyOTY3YWRhNTY0MTFlNzgzZGE2ZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
-        }
-      ]
-    },
-    {
-      "id": "claim_9cc89f4f1c824a8ebcfc5d5e3cb2b4fa",
-      "statement": "인증·관리자·Leemage 운영 설정은 `verify:feature-config`가 `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, Google OAuth 두 변수, `ADMIN_EMAILS`, `LEEMAGE_API_KEY`, `LEEMAGE_PROJECT_ID`의 존재를 검사하며 `--leemage`에서는 업로드 후 smoke file을 삭제한다.",
-      "evidence": [
-        {
-          "resource": "repo://scripts/verify-feature-config.ts#L5-L39",
-          "version": "repo-lines-v1:sha256:4337efbdf3be77bfa44fb2ad1f35aabf3d88e0916f18cbc1f25bcfd5baf4a0db:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0ZGRkZGFhNzhmZmNlNGQzNmEyYzM5Zjc5NjM3ODcwZjdhNWJiYTZiNTM2NTQ2M2Q3NzQ0MGE4OGRmNTdlZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0ZGI0NWUwYmUzMTgwNTYwY2UyNDY2MmNlNTM2ZWJmMmRiYmJkZTRjODgyOTY3YWRhNTY0MTFlNzgzZGE2ZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
-        }
-      ]
-    },
-    {
-      "id": "claim_83c335e306dc425790d4daf3a6f8ab11",
-      "statement": "worker runner들은 SIGINT/SIGTERM에 정지하고 concurrency 설정만큼 lane을 실행하며, 작업이 없으면 1초 대기한다. mixing·vocal-profile·song-analysis worker의 기본 concurrency와 lease/poll 설정은 정수 범위 검증을 거친다.",
-      "evidence": [
-        {
-          "resource": "repo://src/_app/background-jobs/mixing/runner.ts#L10-L28",
-          "version": "repo-lines-v1:sha256:d53a135cfcdefda70c577c2c330a1ba71ec96b33f5719c5d52214198abd527c6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzMDk2ZjdkNDYwM2FkMjAxNDg1YWE5MzczNWMwMTQxZWY3MDIwOTc0NDI2NzUzNjVkYzFjYTI5OTNkMThkNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1NmJhOWNiYjIwMWZmNWNmOGVhOWQ2ZTAzOGUxYmFmOTVmNzdiZDgxNmVjMDgyMGNkNzMyYzE4ODg0MWU3ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://package.json#L41-L42",
+          "version": "repo-lines-v1:sha256:b21bb8e8b1d9a5b990588966a5d029cf95eda4c193bf8a67e0547dc666768932:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWIzYjM2YTRiYzJmMTBmOTJjMzlkZTQ0NmQ1YzBjMmY4YjA0YjdmZjg4NGI1YmEwOTljMDI1YmExZjMzMzAzNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWZjNWNmM2RmMGVjMDdmNjE0NDdhNDg3Njg1NzY0YjI5OThjNTM4NjVjMDRiMzM3MGFjNzE3NjFiN2FlMzU2NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWEwMDBkY2IxMDNkYjZjOGJhMDhhMjU1ODg3ZTljMzc5MTYzNWI3MjIwMGEyNjQ3NThhYzMyYzAyYzFiZDM5NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzcwMzA0YTE5MDBhZmZhM2QzMWRiNjM2MTdjOGU5YjM0ZDZkNzZkMzhjMmFkNzBkZGU3MDQwMjcwMWI3Y2UwMiJ9"
         },
         {
-          "resource": "repo://src/_app/background-jobs/song-analysis/runner.ts#L10-L24",
-          "version": "repo-lines-v1:sha256:556958ef636cd03e29879cbb1a612aea6c47e72db2ba4ed6c4271577ae4e7324:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjNmQxZGM2MWNlMmNlNDQ3Y2ZiZWVlYmQ4N2FlOTYwNmUyYzM4MGFmMWI0OTRjZTZjYTczMTc4ODVhMDkwYmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1NmJhOWNiYjIwMWZmNWNmOGVhOWQ2ZTAzOGUxYmFmOTVmNzdiZDgxNmVjMDgyMGNkNzMyYzE4ODg0MWU3ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://services/song-catalog-analyzer/README.md#L7-L25",
+          "version": "repo-lines-v1:sha256:ffe40736fd0b5cc9841665a56e21656ed77b595add500e34e6760e9efcd5db1a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmMGIxZjRhYWRmM2QzODVmZTg1MjQzZTFkNmIyM2I1ZmZhNzllNTQ3NmFkMWU1YjlhZmYxZmNiZDhiM2NjM2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmYTAyMjIxYTE0NzFkYWI2NWJmYjYyMWMyNGIyYWRlOTc2MjA3Zjg4NWFlZTczMTI4ODBjMTI0ZDllZDg5NjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZjNWViNjg3OGUzOGI1NTgyYmIxYTAxNTVmMDk3Njk5NmZmMmNiMWJjZGY4YzQ0M2I4MTI0NDAxNzdiMmFjZjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/runner.ts#L10-L28",
-          "version": "repo-lines-v1:sha256:f86eb03ba9abcc4d25978134e82741bd95516c466f65d567732151598461fb2a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3YzVlMGVlZjMyNjcxYzI1NmU3ZTJiMmMyZTdmOTIwOWU0OTgzOWU2MGM4MWRlYzEzOTZhODQ2MTA4YjcwYWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1MGVlNGM5NDMxNmVkOGY1MWE1NWZhYzM0ZTJmZDY4ZDhkMmFiOWI2NDY0M2RjODM5ZjcyMTI4YTlhOTQ0MjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1NmJhOWNiYjIwMWZmNWNmOGVhOWQ2ZTAzOGUxYmFmOTVmNzdiZDgxNmVjMDgyMGNkNzMyYzE4ODg0MWU3ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
-        },
-        {
-          "resource": "repo://src/shared/config/server-env.ts#L3-L73",
-          "version": "repo-lines-v1:sha256:400d23c67ba14467c8bb8d623bda46ecabe3c81d2bd5373e09b639843150f1cb:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZjOGU2YjdiZGE0ZDI2NWZjMTBlMDdiMDRmOTcyN2M3ZmY3MzlkOTczZDYyZGUxZGNkMmExMmJkZTk3YjNhNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4Y2M0MWNlNmE4OTVhZDY1ZTk0YWNmY2U3YjE3NWE2Yzc1OGVlYjhkMTE4YzlhOTM1NDAyM2NkMjA4MzA2MWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUzMWFmZGJhNDIwMWE5MDU2NjUyNTE1MWJhM2JmZGRjZTZlMTlmMmY3YTdkN2QyM2IyN2VlNGY5NzFlNWQ1NGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+          "resource": "repo://services/vocal-profile-modal/README.md#L7-L13",
+          "version": "repo-lines-v1:sha256:29dc7c1861ad3190e524a3bc86ac381cfe4dd8d38515d705c2518f05c531c58a:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGI3OGJiMzlmMjBmZWI3NWZlOTM3NmViMzQxZjE1NzUxNzFjZmNiODI4NDRiYjhmM2YyOGQ5NzA5ZWFjMTYzMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODc1M2M2NjhkYTc2MGNjODEwMDEwZjk1NDI5N2RjOGY4ZWFlOTE2Zjk4MjM0NTg1OWEwZDgyNzBmOTMxMTNkZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzM4MjVhMTcwMGMxNWU5MzJhZDRlYWIwNmEzY2Q1Yzg2Y2IxZGY5NDJiODdjYTEyOWViNzBkNjU0MmFiNDNkOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2M0Y2Y5ZjM4YWNmYTM3NmMxMzExMjI3MzQ1NzQ4YmVlNzI2OGRkMDVkY2M5N2JmZmQ2MzhkMmM2YmNiNjU5YSJ9"
         }
       ]
     },
     {
-      "id": "claim_0284a5a24f504bc28751d2c570ebf0e2",
-      "statement": "보컬 프로필 Modal 서비스는 CPU-only request-scoped 임시 처리 endpoint이며 사용자 데이터를 Modal 저장소·PostgreSQL·Leemage에 저장하지 않고, `X-API-Key` 인증과 `VOCAL_PROFILE_MODAL_API_KEY` 우선·`MODAL_API_KEY` fallback 계약을 사용한다.",
+      "id": "claim_8589cf1bdb6442a3a3694d10c7bef9f0",
+      "statement": "SoulX-Singer 호출 credential은 브라우저가 아닌 Next.js 서버에만 두어야 하며, 서비스 README는 Modal API key를 `X-API-Key`로 전달하고 브라우저가 Modal URL을 직접 호출하지 않도록 요구한다.",
       "evidence": [
+        {
+          "resource": "repo://services/soulx-singer-svc/README.md#L111-L122",
+          "version": "repo-lines-v1:sha256:0302f07bd61de9c2e7d13c0a7da9bbbd1398fe9f5b1ec6bcfdd21be9a0599aa7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU0OThkMTcxZWM4ZDI5Y2MwODJhYTJmZTcwYmRkN2ViZjA1NjYxNGVkMzUwYjY5ZDEyYjM0ZDcxNmZhZmYxMDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2ODJlZGM3NjAwYmM5ZWU0MGMzOTcyYjU0ZTZmYmEzMmNkZGI3MjYxNzFjZDI1NWEwMmE4ZjZjMDU4MGI0ZDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg4MzhhOTg4ZjEzODAzNTRiNjMwYTNjMWQ1ODBjMTkyM2VkMGFmYjI4MDM0OWZhNzdkZWVmY2M4ZTMxODdmMjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk4OTNhMjljMmZjNDI3OThhYzE5Nzc4ZDliNDhlZWE2ZDUzOGFiZmI5YTIzNjBlZTMzYzEzOGY1YjVmNjMzYzEifQ"
+        },
+        {
+          "resource": "repo://services/soulx-singer-svc/README.md#L73-L85",
+          "version": "repo-lines-v1:sha256:bc93e7e07f819f64ba167d1d796eec4b7657319bb40fc4713d76732caea3cb46:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiZTlmZmE0MzNjY2RmNDY1MTRkMDMyNDkxNTkzMDViMTgwY2EyZWFlOGRiMWEyZjAxNjU1MjNlZDI3MGZiNWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxYTFhY2RiZmUzMjU4MmM0ZjI0NmY4M2VjZjVkMmI4NGViZWRiZjY1OTk4ZGNhM2M1ZTgxOWJlOGQxOWVlNmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgxOWJmMDFhNTcwYTM3MGJiYWFiN2VhMTkyYjQzODMyYWNlOGNmZjM5N2U0Mjk4NTY3M2VhMWQ5MjdmOWM2NGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU3NmU4Yjg0N2Q4Y2VhOWMxZTk5MzkyZGZlZmExNDk2OGE0ODkxYjVmMWU3ODEwZDk0ZDc4Y2Y3NjczNjE5NmQifQ"
+        },
         {
           "resource": "repo://services/vocal-profile-modal/README.md#L102-L110",
           "version": "repo-lines-v1:sha256:1cc9b3239e229fbcc2033269940660d370ab1a8705f07d7666529e25d65e45a2:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzY3M2U2YmI0NTkwOWUyMDkzMGQ3Nzc2NTcwZmY3NjcyOTRiNjNiZTRjYjcwNGFhMzY4Yjg4ZTdlOGJlNTkwZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzE5NzA1MTcwMDBlMjFhODE0MDc0MTY3YjhmNmZjYWVhNjI4MGE3ZmNlN2Y5OGFkNjJlNzcwNDBkMTMwNGVmZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDhkOWUwMDBjODQ3NjhjNDYyNTQxYTRiYmNjNjIzMDJmODY5ZmMzNTUyMzNiMjM1M2I5OGU5MDFhNTdjMDExMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
-        },
-        {
-          "resource": "repo://services/vocal-profile-modal/README.md#L3-L13",
-          "version": "repo-lines-v1:sha256:caf311828f08ebbb683570329809c7cc0f4f40e58e8f869d7c5a4beeeb92e630:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk0MThlNzAyZDBhYzQ4YjkwNjZkNTE5OGE1YmI2MzY3MjQxN2U5MDJlZGNiZDI1YjIyOTVkZWM1ZmQ2ZTA0ZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3NTNjNjY4ZGE3NjBjYzgxMDAxMGY5NTQyOTdkYzhmOGVhZTkxNmY5ODIzNDU4NTlhMGQ4MjcwZjkzMTEzZGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwMTg4NWVhYjUzOTNjOWZhNjMyODE4YzhmYzc2YTk5OWU2NmNkMGI0MmNmMzYxZTFmODZmMGMzNWY4ZTAyMzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNjNGNmOWYzOGFjZmEzNzZjMTMxMTIyNzM0NTc0OGJlZTcyNjhkZDA1ZGNjOTdiZmZkNjM4ZDJjNmJjYjY1OWEifQ"
-        },
-        {
-          "resource": "repo://services/vocal-profile-modal/README.md#L68-L85",
-          "version": "repo-lines-v1:sha256:32e4a79dbfb25dce63973000985f9cedf63f1204bbe22a9b7eb7c92e192e6968:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUzNmJhZmQ0ODUyNzk3MDI5ZTg2NDJmOTJhZmU2ZGMzODI2NGEwNGE4OWU4Yjg4ODNlM2M1MjdmMzI0ZjViYjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwODg4NGIxYjk0YzRmNWViMWViNTdlZWU2NmEwMmFkYzFjZGJhZTM5MGE1MDI5YWZjOTcyMWY2MTI5MTdmYTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc5YWNkNmY4NWM5NWRhOWVlNTc2Y2I0ZmIwMzcyMDcxYTA5Mjg2NzFiODRlOTNhZWZkNWFjYTAyY2U0ZWQ4MGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc5MzRmNjUzNGEzZWNhODIyZGUyYjFkZmQ5OWUyNGUxZDNlMDAxYTIzMjg3MjYzM2U3Y2RkMmQ2YTgwOTRmM2YifQ"
-        }
-      ]
-    },
-    {
-      "id": "claim_44dc5dfbc66643f18dfbc8a45b187dc5",
-      "statement": "곡 카탈로그 analyzer는 worker의 `POST /v1/jobs` 제출과 외부 job ID polling으로 비동기 분석을 수행하고, 결과를 SongAnalysis revision에 저장하며 작업별 임시 audio·WAV·stem을 삭제한다.",
-      "evidence": [
-        {
-          "resource": "repo://services/song-catalog-analyzer/README.md#L2-L10",
-          "version": "repo-lines-v1:sha256:0c2d7ae2bcdfc8d0c0864889e3fa6da0125803a5ae8e45d9eb24de57bf6a18ae:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2M1YjA0OGQzM2EzMDUyYjI2Nzc5NmEzNmU5NGIzNjg0ODU1YjE4MzhhZjZmMGZjOGYyZTkxYTJkZTBmMzY3MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjEsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODExMTYxNDhlMTczOWU0ODUwNDA3Y2IxNWNmZjY5ZTYxNjBmMDY1ZmVjODExMjRmNmE2YTJkM2Q2Nzg5YzY0NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDQ0YWVkMTk2N2U5ZWJiNGExNTQ4OWYyMjlmMzBiMDA0Y2ZkMTM5N2YyMGUyOTQxZTUzMjgzNDRlMmJlOWY5ZSJ9"
-        }
-      ]
-    },
-    {
-      "id": "claim_c1ce78aecc8148399f573e9c43e3fc4d",
-      "statement": "SoulX-Singer 운영 흐름은 CPU FastAPI function이 오디오를 Modal Volume에 저장하고 GPU function을 비동기 실행한 뒤 FunctionCall ID를 job ID로 연결하며, 상태 polling 후 audio를 다운로드하는 API 계약을 제공한다.",
-      "evidence": [
-        {
-          "resource": "repo://services/soulx-singer-svc/README.md#L3-L17",
-          "version": "repo-lines-v1:sha256:80eaae25c4dc3ed0645c14cbac8f9dd46854b96d8fbe25376fe237fe9ba73772:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiOTc3ODg5YWQxMGJiZWM1MGYzZTI4NWZjZWUxNzU0YWYzYWVhNWIxNmU4OWU2NDQ5NDQxMjkyMmM1OTc0MDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhmODJiOGQ0NGIxMDhmMDE1MzVlZjE0OTI0ODFmNTZiZjZjYzJkMWIwYWU0YWY3MTQwMmYyNzhmMGQ3MGNhYWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBiY2U5NzIzNDYzM2FlNWI3MzNiZTQwMGYxNmQxNDU0N2QyNTVkZjQ3YTRmM2RjNWFlNTM2YzgyMjllYmUyMGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU2YmMwODRhMmVmMmVjMmJlOTY4Yjg2OTkwNmMyNzczNmE4NmYxZTk1MWE1NDYwNTE3ZmEyOTNlYzIwNmM2MzcifQ"
-        },
-        {
-          "resource": "repo://services/soulx-singer-svc/README.md#L73-L97",
-          "version": "repo-lines-v1:sha256:7432f0a6f7b135496fca084216530f6c912cbaca6a601be24a5336b03852498e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiZTlmZmE0MzNjY2RmNDY1MTRkMDMyNDkxNTkzMDViMTgwY2EyZWFlOGRiMWEyZjAxNjU1MjNlZDI3MGZiNWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgxOWJmMDFhNTcwYTM3MGJiYWFiN2VhMTkyYjQzODMyYWNlOGNmZjM5N2U0Mjk4NTY3M2VhMWQ5MjdmOWM2NGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc2ZWM1ZmQ0ZmMwNmMxNjg3MGY0YjlmYWFlYjBmNGI1NDM3OWY3N2EzMzVmYTQ3YWY0MzM4Y2U1YmEwYTM3ZWYifQ"
-        }
-      ]
-    },
-    {
-      "id": "claim_bc39f739390946de80eea46db069c258",
-      "statement": "Next.js Server Actions의 body size limit은 large audio 처리를 위해 300mb로 설정되어 있다.",
-      "evidence": [
-        {
-          "resource": "repo://next.config.ts#L3-L10",
-          "version": "repo-lines-v1:sha256:54f181db2021e9fb2aa942c01566d23c8a0136915fd38c5989708981b3ebcd10:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWRjMzEyM2Q4NzBkZDA2ODkyYTZhNWQxMjcxYmIyOWRkNjdiMjhkMzM2Njk1YjQyMzJhNmUzNTFmMTY4OTQ2OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWExZDFhNjMzOTAyMjljNzk4MzQ3ZTgzYTA0MDU0NDFjOTQwMDAzNTI4NGFkMTY4YzFiZjZjZGYxZDcwYTM3MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzI1YjM1ZDMxZjRlMjhiYzQzNWMzNjdkZjdiYjVkZDAyOWMzMzdhZTI1MzQ3OWM5ZmZmNjU1YzdkNGEwOTVhZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjIsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDMxM2I3OWNmZjc4OTc2YmRjYWY0N2Q0YzhjODQ0YjQwZTEzMTEzNTdkMGYyOWRjZDJjMjJmNjBkNTYzOTQ5OSJ9"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.5.0",
-    "at": "2026-09-04T02:00:10.767Z"
+    "at": "2026-09-04T08:11:35.711Z"
   }
 }

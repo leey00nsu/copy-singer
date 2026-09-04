@@ -1,4 +1,4 @@
 # 파일
 
-- [Configuration, local operation, and deployment](configuration-and-deployment.md) - Node/pnpm 애플리케이션을 PostgreSQL, durable worker, Modal 분석·믹싱 서비스와 함께 로컬 및 단일 인스턴스에서 실행하는 절차를 설명한다. 환경 변수, migration·seed, 검증 스크립트와 배포 전후 순서를 한곳에서 확인할 수 있다.
-- [내구성 worker, lease, retry 및 recovery](job-processing.md) - PostgreSQL 기반 mixing, song-analysis, vocal-profile-analysis 큐의 claim·lease·heartbeat·재시도·복구 동작을 설명합니다. 외부 작업 polling, 환불·알림·미디어 정리, 프로세스 supervision의 운영 규칙과 실패 경로를 한곳에서 확인할 수 있습니다.
+- [설정·로컬 실행·배포 운영](configuration-and-deployment.md) - Node.js, pnpm, Docker PostgreSQL과 외부 분석·믹싱 서비스를 준비하고 Copysinger의 웹·worker를 로컬 또는 production에서 실행하는 절차를 설명한다. 환경 변수, 비용·동시성·lease·poll 정책, migration·seed·검증 명령을 함께 정리한다.
+- [Durable job 처리와 장애 복구](job-processing.md) - 세 background worker의 entrypoint, 원자적 claim, lease·heartbeat, 외부 요청과 polling, retry/backoff, terminal failure와 media cleanup을 비교한다. 프로세스 재시작 뒤 어떤 작업이 다시 처리되는지와 운영 설정·검증 테스트를 설명한다.

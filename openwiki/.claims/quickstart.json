@@ -1,28 +1,20 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:e230b635805f0bf17db003ca5a21cfc5774d3b9d8df687b737ad85129a3d5f54",
+  "pageVersion": "sha256:8e14886826adf3ff26e770d1d22e41b4bf22172dd781faade48a967f6bf7cb58",
   "claims": [
     {
-      "id": "claim_55c8ee3d019744bea1aaa57a805861da",
-      "statement": "Copysinger의 로컬 시작 순서는 의존성 설치와 `.env.example` 기반 `.env.local` 생성, PostgreSQL 시작, Prisma migration 적용과 client 생성, `pnpm dev` 실행이며 웹은 `http://localhost:3000`에서 확인한다.",
+      "id": "claim_62f1a84b505c4a70a83cddcc3573135a",
+      "statement": "로컬 초기화의 검증된 순서는 `pnpm install --frozen-lockfile`, `.env.example`을 `.env.local`로 복사, `docker compose up -d`, `pnpm run db:migrate:deploy`, `pnpm run db:generate`, `pnpm dev`이며 웹은 `http://localhost:3000`에서 확인한다.",
       "evidence": [
         {
           "resource": "repo://README.md#L52-L70",
           "version": "repo-lines-v1:sha256:f0d464ac6c855ffbf73eb4bc552312ec9fc5257269a9d9fca184bdd8764da0da:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyOWE0OTAwZTI5MmM0NTU0YTQwNTliOWRkMThmOTY1YzgxYzJmMWUxMmZjNDhlODY4MmFlMzI2MzAyOWNiYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmYjg4NzZjNzM4ZjhkZGU2MDQzYmY4YWM3MGNjYTcyNTk5ODM0YmU5MGFjODIwOTVhZTZkMWE1MDQxZjNkMDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAwZmFhY2FiMDM3YzI2ODE1ZTY5MWUxMjJiNzJmNWNiMTM2NTcyYzhiZmY3MGNmNDU5M2ZmMzU4Yjg1ZGM5YWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1YTE1YTNlODZiNjFkYzJhZGJiNjAyYzU1ZDNlOGU4NGE2MjA4YmNmMzVkN2FiMjUzMmRjOWE5ZDc2MzcxZTUifQ"
-        },
-        {
-          "resource": "repo://docker-compose.yml#L1-L20",
-          "version": "repo-lines-v1:sha256:82f3e18d7813dc19f0f55e30530726dfc6f69c52f3e17aeb018ad249d4c0b489:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhNzNmY2NkYzk5ZWE4MzU5NjdjN2RlZTdlZmJlZDFmM2NhODcyNjBkOTI5MzE4NTBmZGQ2NmRhOGNiMTJmMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyZWRkODUzMTM2ZTliOTZiYmY4OTIwMjVjMzc3NzJhMDQxZWE2NGFlNGY3M2ViYjE2YTEwMzU1OTIxM2UzZGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU3YTIzZjkwMzZkNzYwYmJjNDA5NDNmZTJlZTkwMzNiZjM0ZTg0ZGE1MzBiNmUwN2MxNzBjNzJiMWM3Y2ZkZWYifQ"
-        },
-        {
-          "resource": "repo://package.json#L9-L21",
-          "version": "repo-lines-v1:sha256:43a2c543e38b90d227df8f0944d59e7796f62ef56ea5b2afc53366f83d34de4d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0ODMzZDU5NDljMDNhNDBjYTk1MjQ5MTYxMGE2NjU5NjQ0YjNhYTQ2NjM2MmY3OTkwMjBkYmYxOTgxNTQ3ZGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4NjM4ZTNlMjNmY2Y3N2RmNzg5NzMzMTA5NWFkNWM4Y2FlNGU1MDkwMTg3NGM5MjI3ZTA0YWQxNTlhMTQ1Y2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyNzAxMTI4NzM1MDNhMDc0OGU1ZWY0MGViOWZlZTUyYTZjNmRiNTdhNzMzMTI1ZjQ5NDhkMThmNGNjMTdiNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZmMThmNTBlNGM4ZThiYWQ4ZDdlZTJlZjIzZTU5MGU3ZDYwYTkxNzdlYzY5MTFkYTZmM2Y0NDlmMTAwMjBkODkifQ"
         }
       ]
     },
     {
-      "id": "claim_c2b7bc26ad564d0ba856e08a9621f135",
-      "statement": "`pnpm dev`와 `pnpm start`는 `concurrently --kill-others-on-fail`로 Next.js 웹, mixing worker, vocal-profile-analysis worker, song-analysis worker를 함께 감독한다.",
+      "id": "claim_6c697f87ae1f4044b1df7a2da4253647",
+      "statement": "저장소의 package scripts에서 `pnpm dev`와 `pnpm start`는 웹 프로세스와 mixing, vocal-profile-analysis, song-analysis 세 worker를 `concurrently --kill-others-on-fail`로 함께 감독하며, 각 worker의 실행 진입점은 `scripts/` 아래 Node 명령이다.",
       "evidence": [
         {
           "resource": "repo://package.json#L9-L21",
@@ -31,76 +23,84 @@
       ]
     },
     {
-      "id": "claim_63b10eb166ff473b94106bca1b9894f5",
-      "statement": "로컬 Docker Compose PostgreSQL은 `postgres:16-alpine`을 사용하고 기본 호스트 port `5433`을 컨테이너 port `5432`에 매핑하며 `postgres_data` named volume과 `pg_isready` healthcheck를 사용한다.",
+      "id": "claim_28dac92a21b8498e82dd36ae17251422",
+      "statement": "로컬 Compose는 `postgres:16-alpine` PostgreSQL을 실행하고, `POSTGRES_PORT` 기본값 `5433`을 컨테이너의 `5432`에 매핑하며, 데이터베이스·사용자·개발 비밀번호 기본값은 각각 `copy_singer`, `copy_singer`, `copy_singer_dev`이다.",
       "evidence": [
         {
-          "resource": "repo://docker-compose.yml#L1-L23",
-          "version": "repo-lines-v1:sha256:c0d6e38545cbcfafe9f5a9ea7337633310c3f8978c514da5df01c1ffcbdc9575:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhNzNmY2NkYzk5ZWE4MzU5NjdjN2RlZTdlZmJlZDFmM2NhODcyNjBkOTI5MzE4NTBmZGQ2NmRhOGNiMTJmMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4NTFlNzA4MjkyNjFjOWNkYmRmMWM3YTBiZGViOTM1NzBmZjljNmY1MmU4YmFmMGMxZDA4OWMxNDExOWYzMTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://docker-compose.yml#L2-L20",
+          "version": "repo-lines-v1:sha256:a2fb381937c34be6e5993ebaf74510ea7e5c7380643490800fe1123cc4b17c14:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwZjhkYzgzYTlkMTA3NzQxZTUzNjRhZTBjZjZmNDg1OTU3MDIyMDkwMzExMjIwYWFmOTAxOGI4NzcwZmUxNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyZWRkODUzMTM2ZTliOTZiYmY4OTIwMjVjMzc3NzJhMDQxZWE2NGFlNGY3M2ViYjE2YTEwMzU1OTIxM2UzZGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoxLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZhNzNmY2NkYzk5ZWE4MzU5NjdjN2RlZTdlZmJlZDFmM2NhODcyNjBkOTI5MzE4NTBmZGQ2NmRhOGNiMTJmMWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU3YTIzZjkwMzZkNzYwYmJjNDA5NDNmZTJlZTkwMzNiZjM0ZTg0ZGE1MzBiNmUwN2MxNzBjNzJiMWM3Y2ZkZWYifQ"
         }
       ]
     },
     {
-      "id": "claim_2cca43a789bb47068759d47798375d05",
-      "statement": "애플리케이션의 root App Router layout은 `app/layout.tsx`의 server entrypoint re-export를 통해 FSD `_app` 구현을 노출하고, 실제 layout은 한국어 HTML 언어, 전역 CSS와 font, TanStack Query provider, tooltip provider, toast를 조립한다.",
+      "id": "claim_874f4ab0b9e440cca8a925b8ce40e977",
+      "statement": "애플리케이션의 데이터베이스는 PostgreSQL을 사용하고 Prisma Client 생성 출력 경로는 `src/shared/db/generated/prisma`이며, schema는 녹음·곡 분석 작업·곡 lifecycle·catalog entry 등에 명시적인 상태 enum을 둔다.",
       "evidence": [
         {
-          "resource": "repo://app/layout.tsx#L1-L1",
-          "version": "repo-lines-v1:sha256:02ec4f0a8316ce5c2240d6f073404a54baeb1ce02b39549cbd22d0c20836f8eb:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDJlYzRmMGE4MzE2Y2U1YzIyNDBkNmYwNzM0MDRhNTRiYWViMWNlMDJiMzk1NDljYmQyMmQwYzIwODM2ZjhlYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDJlYzRmMGE4MzE2Y2U1YzIyNDBkNmYwNzM0MDRhNTRiYWViMWNlMDJiMzk1NDljYmQyMmQwYzIwODM2ZjhlYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+          "resource": "repo://prisma/schema.prisma#L17-L22",
+          "version": "repo-lines-v1:sha256:f8604b1964d6e0e5aea04cfbd5abf96df70e75ba959863fe9597a38741f5cd92:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWVhMmM3MGM2ODBlMGVhYmZiNWQ5Njg2NDljMDYwNDliNGIxZTEyMjM4YjVhMTZhZTZiNjZhYWUyNjk2YWE0ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWY3YjQwYzhiZTc0NzJiYjQyNjViNjkyMjlmNmEwM2IzMTVkMTgxOGNmOGIwMjQ5ZDNlMzlkMzk3NWU4M2JmYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjYxMzFmMmVlZjJjYWQ0ODA2MDE5ODlmMWU2M2M4MGMzYjlmOTJjNmUzMDlkMmZlZTdhNWQ0NmVhMDBmODk4YiJ9"
         },
         {
-          "resource": "repo://src/_app/layout/root-layout.tsx#L1-L35",
-          "version": "repo-lines-v1:sha256:08d8dd0b1cffa6b07e6d7996c8ff4d3b76400d55fa16f06da3a239c4c6c875ea:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZlZDAzOWNiMWM0MzA0OTlkYzkyNDZiZTdhNDIyMWYwMDM4NTU4ODhjMjk5YzMzMTk2MmQ1MDAxMWNjZjczM2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
-        }
-      ]
-    },
-    {
-      "id": "claim_69f2fed753d4467398d9a8c82a2ef17f",
-      "statement": "`QueryProvider`는 서버 요청마다 query client를 만들고 브라우저에서는 singleton을 재사용하며, query에 30초 stale time·focus refetch 비활성화·reconnect refetch·정책 기반 retry와 최대 30초 exponential delay를 적용하고 mutation retry는 비활성화한다.",
-      "evidence": [
+          "resource": "repo://prisma/schema.prisma#L2-L7",
+          "version": "repo-lines-v1:sha256:56ad6f1e0d383ae98826cd47802073663a890023e18f3ef454e5ca22cdc3c301:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmQ5YTM0N2MzYmQ3YmFhMTc0ZTlkZDBjMGNmNjg3YTQwNzBiNTFjYzY0NTUxMGNhM2IyZTcwOTFhNmMzZjg0MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDc5YTQ5OGZkM2ZiNGJkM2ZmZTJmNTQ4OWVjZGIwNDcxZjFjMDYzNTk1ZWE3YTI3ZGQyNDgyNWViODExY2I3YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjEsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWJjODgzZDM1MjBiYjhiODFjMmMyMDNhOWQxMTE0NmY3ODZhMWExZWIzZGE1ZTc5OWY0YmY1NGNmMTMxYmNjZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjRjMmUwNzY2ODkzYWU2Y2I2ZDZlYmM5OWZiMWJjM2Y4ZDE5YWMxODEyNGEyZWVkMTYzMDY5OTM2N2I5NzJhNCJ9"
+        },
         {
-          "resource": "repo://src/_app/providers/query-provider.tsx#L1-L34",
-          "version": "repo-lines-v1:sha256:194d7adfc97491f286718d1cb5544d82798b9ac64743978eede008de6bcc3ae5:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1ZmYzZTg1ZDY3MTVhN2E5ZDBmNmMxYjMyZjMwY2Q4Y2IxNDRjYzc5YzhhYmFlOTUzZWExMzc4ODlmYWUyZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://prisma/schema.prisma#L29-L65",
+          "version": "repo-lines-v1:sha256:256afd2598886cc751654a2571d469483d2909de9bbdbea1924f0b9112e2972c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdjZTA5N2ZkMWY3NTI3ZWQwNDRiOTBkZWVjMjdiNWZhODRmMTA4NjhmMjU2ZjljODI1YTdhMzIwOTQzMDYxYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ2NzVhOGI0NTMwOTU2Y2MwNzhlMDdiYzQxOWExYmQ2M2U4Y2Q0ZjJjZGQ1ODQ1NTAyZGNhYzczOGNlMmEwM2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAyY2I4MDI2N2Y5OTBkMDM4NmZiMGIxMGU3MWJmZjkwNDBhNDUwZmU1ZWEwMGZkOGZhN2Y1NmQ5ZGEwMTQwZWUifQ"
         }
       ]
     },
     {
-      "id": "claim_3e7068339b564c008bdd79ef3f508075",
-      "statement": "변경 시 FSD 의존 방향은 `_app → _pages → widgets → features → entities → shared`이며 slice 외부 소비자는 root public API를 사용하고 `index.ts`, `index.model.ts`, `index.server.ts`가 browser-safe·runtime-neutral·server capability 경계를 구분한다.",
-      "evidence": [
-        {
-          "resource": "repo://README.md#L210-L235",
-          "version": "repo-lines-v1:sha256:20320bf1f70b59c9e968d8ccd6f5fd2e0655cdb7032f3d4fc3a24ccdaa83e10a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxOTg3NmVhNTEwODAwZmFkNjZiYjdkYWI2YzM1NmNiNjAwNGNmMGUzZjJmOGY3NzY1Mzk5ZTg2NWZlMzNkY2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkwMDYzM2M0M2ViZDZiMDExNTlhMWYxZDU2N2ZlZjZkZWVjMTc0ZWRjMDc1YjRlMWVkMjQ5ODZkZTVmZmE0OWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM5ZjI0Yzk0Y2M0MDE4ZDI5YzQ0NDhhMTBhMDk1N2MyMDVlNjIwODc2ZjEyYWIzYTE4MGZmNTgyMDE4ZTU2MzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVlNmVkY2VjMDlkMzQxNmEwN2FkMmE5NDBiMGNhNzBkZDgyNDBlMDE0ZDEzYWZjYWNhNDdlOGM1YTIzMjE3OTUifQ"
-        }
-      ]
-    },
-    {
-      "id": "claim_d7d4e99d21604077bb24c14f83ed84e9",
-      "statement": "Copysinger는 관계·상태·소유권·외부 asset metadata를 PostgreSQL에 두고 오디오 bytes를 Leemage에 두며, 세 durable worker가 PostgreSQL 작업을 처리해 Modal 분석기 또는 SoulX 합성 서비스와 통신한다.",
+      "id": "claim_026fd2b599bb4aceb59985dde8a07518",
+      "statement": "현재 로컬 개발 명령은 Next.js 웹과 세 durable worker를 함께 시작하고, worker는 PostgreSQL에 저장된 작업을 처리하므로 외부 분석 서비스가 준비되지 않으면 웹이 실행되어도 분석 작업 성공은 보장되지 않는다.",
       "evidence": [
         {
           "resource": "repo://README.md#L127-L147",
           "version": "repo-lines-v1:sha256:2c070020b474946b08cdcdbc51d57094c291de758230b084642787bb3975af5c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3MWZiYmRiNDBmZGIzYWQ5YmQwN2FjZDhiNmNiNThhZDgyMzcwMjY0YWVkZjMyYmM5MDIyYThjZjBjMjJhOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5NWViNjE3YjFkNmVlZDVjY2Y3ZDU2MmE5MzAyZjBhMDkzMWM3NzZiZGQwZTVjZDg5NmZjOTE2ZTk5MWEwNmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3YThmYWQwM2RiYmI3NWE3OGE5OTQzOWIwOTJkOWZjNmY5Mzc2YzM4MzQ5ZjI2NjZjYzIyZTMwMmI4ZTA4ZTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlmN2IyM2ZhOTZjZmMxZDQ4MjI2MjU2ZjNkMGRmNTQ2ZTdlZmJmNmFkZGEyNTI5MDJjMWEyNDdkNzkzODgyOTIifQ"
         },
         {
-          "resource": "repo://README.md#L210-L226",
-          "version": "repo-lines-v1:sha256:53d1c6bdd6198595e920b8fa2befdb30c1c64ecc82c17112593cb70aba463b4c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxOTg3NmVhNTEwODAwZmFkNjZiYjdkYWI2YzM1NmNiNjAwNGNmMGUzZjJmOGY3NzY1Mzk5ZTg2NWZlMzNkY2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYzczYTJkZTRlNTg0NDk5NTYyZjBlYTM0YWU3MGMxNjM3ZDI4YTY3ZTQ4Mzg0YjA4N2VhZmM4ZDkxNjA4MDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM5ZjI0Yzk0Y2M0MDE4ZDI5YzQ0NDhhMTBhMDk1N2MyMDVlNjIwODc2ZjEyYWIzYTE4MGZmNTgyMDE4ZTU2MzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2ZGViNDRiZDU0OWYwYTY5ZmJkNWI5Y2IzM2M4MzA2YzU5ZTViNmM1ZDQ3YWI0YWVmMDM0NWYyZDQ5YjFiNTgifQ"
+          "resource": "repo://package.json#L9-L21",
+          "version": "repo-lines-v1:sha256:43a2c543e38b90d227df8f0944d59e7796f62ef56ea5b2afc53366f83d34de4d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0ODMzZDU5NDljMDNhNDBjYTk1MjQ5MTYxMGE2NjU5NjQ0YjNhYTQ2NjM2MmY3OTkwMjBkYmYxOTgxNTQ3ZGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4NjM4ZTNlMjNmY2Y3N2RmNzg5NzMzMTA5NWFkNWM4Y2FlNGU1MDkwMTg3NGM5MjI3ZTA0YWQxNTlhMTQ1Y2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyNzAxMTI4NzM1MDNhMDc0OGU1ZWY0MGViOWZlZTUyYTZjNmRiNTdhNzMzMTI1ZjQ5NDhkMThmNGNjMTdiNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZmMThmNTBlNGM4ZThiYWQ4ZDdlZTJlZjIzZTU5MGU3ZDYwYTkxNzdlYzY5MTFkYTZmM2Y0NDlmMTAwMjBkODkifQ"
         }
       ]
     },
     {
-      "id": "claim_296f7c65b2584146a063c997a27bf799",
-      "statement": "환경 설정은 `.env.example`의 변수명을 기준으로 준비하며 서버 전용 인증정보를 브라우저에 노출하지 않는다. PostgreSQL 연결, Better Auth·Google OAuth, Leemage, Modal endpoint/key, FFmpeg, worker tuning과 ticket 설정은 운영 환경의 입력이다.",
+      "id": "claim_6b0d840a4fb94df18fa77a78a7f73eff",
+      "statement": "주요 사용자 진입 경로는 `/`, `/profile`, `/recommendations/[id]`, `/library`, `/account`, `/admin`, `/admin/songs`, `/admin/custom-mixing`이며 `/recommendations` 단독 화면은 없다.",
       "evidence": [
         {
-          "resource": "repo://README.md#L149-L162",
-          "version": "repo-lines-v1:sha256:b6ea688e9f5502aa3ba8dd1bd5dcab704a621d23912204c6e5b180e99fca443b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhZDBiOWQxMGM1Y2VkNGMyYTYwMDc1ODE3NWY5YTlkODBmZjkyNzllM2ViZDBhMTA4NDM3ZmE3MDU5N2I5Y2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5ZDI5OGMzYTE0MDZjNTM1YTM0ODJjMDJhYzI3NGFjMjJjNGI5N2Q0NWJiZWJlNjIxMWRjMDAxMmM0MDExMTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQwZDI3MTA4NDQwNGY1ZWM4NDIwMGNhYjdhZWVmN2M5NTkyZTU4MmYzOGRhYjFjMTFiYTVmMzM2YWM3ZjNiZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE2ZGNlMzNjMWY1MWIzYTFiYTBmMDFlMWZlZjg0YjBhOTM0NzlkZmY0NjZkZTExODYyZGIzOTBkYTNjOTYwZjgifQ"
+          "resource": "repo://README.md#L175-L184",
+          "version": "repo-lines-v1:sha256:8caa7e72cb633cab442295cce5bf27db9650c18a9fed849f0f1ebe4a9852de13:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRkNzg2MWFmNGQwMmZhOGQ0ODQ1N2IzOGNmNDAyNDU1MDZiZmE0MTIyMTMyNWE3NGZiMGE1MjgzYTU1YTMzMGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZjOTVkOTRjMmJhZjViMGExYWFiN2RhMWU2MGExZTc5OWNlNmU3NjRiMmE2ODBkYzc1NDE0NzZmYTk2NDgxZmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiZmFmNzVhZWQxMzY5ZTkzNjljNzkyNmI1YTRjMzJhMGRjNjY5ZmNhZDI4M2M1YmJiYTZhZmM3MDVlYjYyNGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYwYjY1MWMxMWFlMGFlZGVkYThmMmRjMmEyYmEwM2Q5YmRiYjAzNTE2ZmZkZmZhNmU3MDdkNTdhYTllYzYzMWQifQ"
         }
       ]
     },
     {
-      "id": "claim_9f53ad8ec4c94e83b0e8bb85c4ec70f8",
-      "statement": "프로젝트의 대표 정적 검증은 `pnpm run check`이며 Biome·lint·typecheck·architecture 검사를 실행하고, `pnpm test`는 production build와 domain/unit, PostgreSQL integration, API contract, FSD boundary 및 Storybook을 포함한 넓은 회귀 suite를 실행한다.",
+      "id": "claim_33de8fa8295d476ba8147902a575e55b",
+      "statement": "root `app/`은 Next.js App Router adapter와 FSD public API 재노출 경계이고, `src/_app/layout/index.server.ts`는 `ProductLayout`, `productMetadata`, `RootLayout`, `generateMetadata`를 server entrypoint로 재노출한다.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L210-L235",
+          "version": "repo-lines-v1:sha256:20320bf1f70b59c9e968d8ccd6f5fd2e0655cdb7032f3d4fc3a24ccdaa83e10a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxOTg3NmVhNTEwODAwZmFkNjZiYjdkYWI2YzM1NmNiNjAwNGNmMGUzZjJmOGY3NzY1Mzk5ZTg2NWZlMzNkY2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkwMDYzM2M0M2ViZDZiMDExNTlhMWYxZDU2N2ZlZjZkZWVjMTc0ZWRjMDc1YjRlMWVkMjQ5ODZkZTVmZmE0OWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM5ZjI0Yzk0Y2M0MDE4ZDI5YzQ0NDhhMTBhMDk1N2MyMDVlNjIwODc2ZjEyYWIzYTE4MGZmNTgyMDE4ZTU2MzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVlNmVkY2VjMDlkMzQxNmEwN2FkMmE5NDBiMGNhNzBkZDgyNDBlMDE0ZDEzYWZjYWNhNDdlOGM1YTIzMjE3OTUifQ"
+        },
+        {
+          "resource": "repo://src/_app/layout/index.server.ts#L1-L4",
+          "version": "repo-lines-v1:sha256:8fa469bea48c78a3d26f89ea2a543c90e7b3cc5eb1bcd70a1c85e46634b40f12:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGMwZjQ4ZTM4ZmJkYjZjMGVmZTk4N2M5ODQ1MjFlZDA3NDMyNzU1YjZiYWFjY2Y0NWQ5NzdlNTdkYjdjYmFkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGY1YWFiZjk4ZTg1NGI4OGNlODgxOWM0NmUwYzIzMWUxYTVhODg0MjU1NWZlMGZiZjczNWIzNjdhZTcxMTViMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_a9eebf976afa44e5a3b0f37ebd2025cf",
+      "statement": "root layout은 문서 언어를 `ko`로 설정하고 `QueryProvider`, `TooltipProvider`, `Toaster`를 애플리케이션 경계에 배치한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/layout/root-layout.tsx#L20-L35",
+          "version": "repo-lines-v1:sha256:531ca238013a7303b19e9991a6b686dd3f58afcdb49cca78df4386c4790a7d0a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA0MDIwOTgwNzA2OTc3YTZiZDU0NGI1OTVhYWQ4ZjgwYTc1M2IyMTNmMmI3NzVjNzgxZGFiZTQ0NmFmN2YzYTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjljYTNmN2RjNGJmNThjNmY5M2Q5NzdhMzgwMzZkNzQ2Y2EwZmQxNjM5N2JiMzc1MTFiYjM2Y2Q0MzU0OWZlMGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_33989f1927504d86a253a3d37a9c168b",
+      "statement": "`pnpm run check`는 Biome, ESLint, TypeScript, FSD architecture 검사를 실행하고, `pnpm test`는 production build와 domain/unit, PostgreSQL integration, API contract, FSD boundary, Storybook 검사를 포함한 회귀 검증을 실행한다.",
       "evidence": [
         {
           "resource": "repo://README.md#L237-L257",
@@ -113,18 +113,18 @@
       ]
     },
     {
-      "id": "claim_4aa694854e98421fb5933c377d09fcdd",
-      "statement": "프로젝트 구조는 Next.js App Router adapter, FSD `_app`·`_pages`·widgets·features·entities·shared 계층, Prisma, worker scripts, 세 Python service와 tests로 나뉘어 있어 변경을 architecture·workflow·integration·operations·testing 문서로 라우팅할 수 있다.",
+      "id": "claim_371378c583c543358379c9762ef36fbd",
+      "statement": "로컬·production 실행에는 Node.js `>=22.13.0`, pnpm `11.9.0`, Docker 20 이상, Google OAuth web client, Leemage project와 API key, 배포된 Modal 분석·믹싱 서비스가 필요하며 production 오디오 변환에는 FFmpeg가 필요하다.",
       "evidence": [
         {
-          "resource": "repo://README.md#L210-L235",
-          "version": "repo-lines-v1:sha256:20320bf1f70b59c9e968d8ccd6f5fd2e0655cdb7032f3d4fc3a24ccdaa83e10a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxOTg3NmVhNTEwODAwZmFkNjZiYjdkYWI2YzM1NmNiNjAwNGNmMGUzZjJmOGY3NzY1Mzk5ZTg2NWZlMzNkY2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkwMDYzM2M0M2ViZDZiMDExNTlhMWYxZDU2N2ZlZjZkZWVjMTc0ZWRjMDc1YjRlMWVkMjQ5ODZkZTVmZmE0OWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM5ZjI0Yzk0Y2M0MDE4ZDI5YzQ0NDhhMTBhMDk1N2MyMDVlNjIwODc2ZjEyYWIzYTE4MGZmNTgyMDE4ZTU2MzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVlNmVkY2VjMDlkMzQxNmEwN2FkMmE5NDBiMGNhNzBkZDgyNDBlMDE0ZDEzYWZjYWNhNDdlOGM1YTIzMjE3OTUifQ"
+          "resource": "repo://README.md#L149-L162",
+          "version": "repo-lines-v1:sha256:b6ea688e9f5502aa3ba8dd1bd5dcab704a621d23912204c6e5b180e99fca443b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhZDBiOWQxMGM1Y2VkNGMyYTYwMDc1ODE3NWY5YTlkODBmZjkyNzllM2ViZDBhMTA4NDM3ZmE3MDU5N2I5Y2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5ZDI5OGMzYTE0MDZjNTM1YTM0ODJjMDJhYzI3NGFjMjJjNGI5N2Q0NWJiZWJlNjIxMWRjMDAxMmM0MDExMTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQwZDI3MTA4NDQwNGY1ZWM4NDIwMGNhYjdhZWVmN2M5NTkyZTU4MmYzOGRhYjFjMTFiYTVmMzM2YWM3ZjNiZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE2ZGNlMzNjMWY1MWIzYTFiYTBmMDFlMWZlZjg0YjBhOTM0NzlkZmY0NjZkZTExODYyZGIzOTBkYTNjOTYwZjgifQ"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.5.0",
-    "at": "2026-09-04T02:00:10.767Z"
+    "at": "2026-09-04T08:11:35.711Z"
   }
 }

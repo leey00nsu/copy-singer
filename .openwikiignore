@@ -16,4 +16,5 @@
 **/secrets/
 **/.secrets/
 **/service-account*.json
+docs/features/
 # lee-spec-kit:openwiki-ignore:end
