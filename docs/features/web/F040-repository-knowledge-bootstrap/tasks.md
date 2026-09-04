@@ -16,7 +16,7 @@
 - **브랜치**: `feat/repository-knowledge-bootstrap`
 - **대기 중 변경 요청**: 기존 프로젝트의 curated 문서 baseline reconciliation과 WHY 탐색 경로를 F040에 포함한다.
 - **Feature 리뷰**: `/root/f040_curated_feature_review_r1` (independent read-only feature reviewer, model inherit, reasoning effort high)
-- **Feature 리뷰 Evidence**: 365개 claim evidence 중 5개 stale hash, 범위를 벗어난 test citation 1개와 생성 설명의 동기/비동기·DB cardinality·상태 mapping 오류를 확인했다.
+- **Feature 리뷰 Evidence**: 365개 claim evidence 중 5개 stale hash, 범위를 벗어난 test citation 1개와 생성 설명의 동기/비동기·DB cardinality·상태 mapping 오류를 확인했다. Round 1 remediation 후 full init 13/13, 372개 claim hash와 21개 Markdown citation range 전수 검사가 모두 통과했으며 post-review target 변경은 D006의 residual risk로 기록했다.
 - **Feature 리뷰 Decision**: changes_requested
 - **Feature 리뷰 Round**: 1
 - **Feature 리뷰 Head**: `a5e5e860b6c79445724c5d74b969f65c9c5ebb50`
@@ -76,7 +76,7 @@
 ## 완료 조건
 
 - [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
-- [ ] 테스트·CLI 검증 실행 및 통과 <!-- lee-spec-kit:completion:tests -->
+- [x] 테스트·CLI 검증 실행 및 통과 <!-- lee-spec-kit:completion:tests -->
 - [ ] 최종 결과를 공유했고 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
 
 ### 테스트 실행 기록
@@ -85,7 +85,8 @@
 | --- | --- | --- |
 | `npx lee-spec-kit detect --json` | `2026-09-04` | `PASS — PROJECT_DETECTED, experimentalOpenwiki=true` |
 | `npx lee-spec-kit workflow-audit --json` | `2026-09-04` | `PASS — WORKFLOW_IN_SYNC` |
-| `npx lee-spec-kit knowledge audit F040-repository-knowledge-bootstrap --component web --json` | `2026-09-04` | `PENDING — Feature review finding 수정 후 재생성·재검증 필요` |
+| `npx lee-spec-kit knowledge audit F040-repository-knowledge-bootstrap --component web --json` | `2026-09-04` | `PASS — OPENWIKI_VERIFIED, source=80a32b9, output=sha256:5cac86bb…b0e98` |
+| OpenWiki claim hash·citation range 전수 검사 | `2026-09-04` | `PASS — 13 claim files, 372 evidence, 21 Markdown files, failures=0` |
 | curated 문서 baseline 정적 대조 | `2026-09-04` | `PASS — legacy 경로·고정 버전 제거, 참조 경로 존재 확인` |
 | `pnpm run check:architecture` | `2026-09-04` | `PASS — Steiger 및 FSD boundary 4 tests` |
 | `npx lee-spec-kit docs-audit --json` | `2026-09-04` | `WARN — 기존 design 문서 2개의 DOC_KIND_MISSING; F040 제외 범위` |

@@ -121,4 +121,14 @@
   - 앱 코드·API·schema·배포 동작은 변경되지 않았고 curated 문서의 legacy 경로와 고정 lee-spec-kit 버전은 제거됐다.
   - 로컬 링크 20개가 해석됐으며 365개 line-hash evidence 중 360개는 현재 source와 일치했다.
 - **Decision**: generated 파일을 직접 수정하지 않는다. curated source에 흐름·cardinality·공개 상태 경계를 더 명시하고 OpenWiki를 full init으로 재생성해 page와 claim evidence를 함께 교체한다. aggregate audit 뒤 line-hash와 citation range를 별도로 검사한다.
+- **Remediation outcome**:
+  - `README.md`와 `system-architecture.md`에 보컬 분석의 단일 동기 HTTP 호출, 곡 분석·믹싱의 외부 job polling, Prisma의 `Recording`→`VocalProfile` 및 `SongSource`→`CatalogTargetAsset` 1:N 관계, recommendation 전용 상태 projection과 mixing API 전체 상태를 명시했다 (`80a32b9`).
+  - 기존 generated surface를 `/tmp/copy-singer-openwiki-review-fix-20260904-1105`에 가역 백업한 뒤 full init을 수행했다. 첫 run은 2/13에서 interrupted됐으나 같은 run을 `--idle-timeout-ms 1200000 --absolute-timeout-ms 3600000`으로 재개해 13/13, skipped 0으로 완료했다.
+  - 재생성된 `system-map`, `domain-data-model`, `job-processing`, `recommendation-and-mixing`, `vocal-profile-analysis`가 네 의미 finding을 현재 tracked source와 일치하게 설명하는지 대조했다.
+  - source `80a32b9c2092131aadd6b31b8f9bc10294b800d2`, fingerprint `sha256:4dc57f092972737e92acf114abe382cf96f6f3ac313afac95bc8fd78dd07124d`, output `sha256:5cac86bb21c1f56fa64209f548c521ce6ca8c135f25eec243c2b6c0c222b0e98`의 receipt를 전용 Knowledge commit `965c8c5`로 확정하고 `OPENWIKI_VERIFIED`를 통과했다.
+  - 13개 claim JSON의 `repo-lines-v1` evidence 372개를 receipt source commit에서 다시 hash하고, 생성 Markdown 21개의 human-facing `repo://...#Lx-Ly` 범위를 검사한 결과 실패가 0건이었다.
+- **Residual risks**:
+  - 설정된 최대 remediation round가 1이므로 수정 후 target `965c8c5956b61bf6926f40536cd85a4d421d9472` / tree `014982487d17dd0a2154f7d5d417cadeb1dc471d`는 두 번째 독립 리뷰를 받지 않는다. 최초 reviewer의 `changes_requested` 결정을 보존하고 자동 gate 완료 규칙을 따른다.
+  - claim 전수 검사는 이번 remediation에서 독립 실행한 검증이며 lee-spec-kit `knowledge audit`에 내장된 durable 검사로 추가하지 않았다. 향후 OpenWiki가 line-hash를 갱신하지 않는 문제가 반복되면 generator 또는 lee-spec-kit의 별도 개선 대상이다.
+  - `docs-audit`의 기존 design 문서 2개 `DOC_KIND_MISSING` 경고와 D005의 PRD 표현 부채는 F040 승인 범위 밖으로 남는다.
 - **Consequences**: `knowledge audit`의 aggregate 성공만으로 claim 단위 freshness와 의미 정확성을 확정하지 않는다. 이번 remediation에서는 재생성 결과에 대한 독립적인 claim 검증을 완료 evidence로 추가한다.
