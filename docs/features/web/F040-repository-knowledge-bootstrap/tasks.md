@@ -15,8 +15,8 @@
 - **레포**: copy-singer 전체 (`web` component에서 추적)
 - **브랜치**: `feat/repository-knowledge-bootstrap`
 - **대기 중 변경 요청**: 기존 프로젝트의 curated 문서 baseline reconciliation과 WHY 탐색 경로를 F040에 포함한다.
-- **Feature 리뷰**: `/root/f040_curated_feature_review_r1` (independent read-only feature reviewer, model inherit, reasoning effort high)
-- **Feature 리뷰 Evidence**: 365개 claim evidence 중 5개 stale hash, 범위를 벗어난 test citation 1개와 생성 설명의 동기/비동기·DB cardinality·상태 mapping 오류를 확인했다. Round 1 remediation 후 full init 13/13, 372개 claim hash와 21개 Markdown citation range 전수 검사가 모두 통과했으며 post-review target 변경은 D006의 residual risk로 기록했다.
+- **Feature 리뷰**: Done
+- **Feature 리뷰 Evidence**: `docs/features/web/F040-repository-knowledge-bootstrap/decisions.md` D006 — `/root/f040_curated_feature_review_r1`, model inherit, reasoning effort high. 365개 claim evidence 중 5개 stale hash, 범위를 벗어난 test citation 1개와 생성 설명의 동기/비동기·DB cardinality·상태 mapping 오류를 확인했다. Round 1 remediation 후 full init 13/13, 372개 claim hash와 21개 Markdown citation range 전수 검사가 모두 통과했으며 post-review target 변경은 residual risk로 기록했다.
 - **Feature 리뷰 Decision**: changes_requested
 - **Feature 리뷰 Round**: 1
 - **Feature 리뷰 Head**: `a5e5e860b6c79445724c5d74b969f65c9c5ebb50`
