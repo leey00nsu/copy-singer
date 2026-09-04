@@ -1,75 +1,90 @@
 # 시스템 아키텍처 개요
 
-이 문서는 여러 Feature가 공유하는 현재 시스템 경계와 상위 요청 흐름을 정의한다. Feature별 상세 구현 설계는 해당 Feature의 `plan.md`, 기술 선택 근거는 `decisions.md`를 SSOT로 사용한다.
+이 문서는 여러 Feature가 공유하는 현재 시스템 경계와 핵심 런타임 흐름을 설명하는 curated 문서다. 제품 요구사항은 `copy-singer-prd.md`, 활성 변경의 범위와 설계는 해당 Feature의 `spec.md`·`plan.md`, 선택 근거는 `decisions.md`를 기준으로 한다. 더 세밀한 코드 탐색은 생성된 `openwiki/`를 이용하되 중요한 사실은 tracked source에서 다시 확인한다.
 
-## 구성요소
+## 코드와 시스템 경계
 
-| 컴포넌트 | 경로 | 역할 |
-| --- | --- | --- |
-| Web UI | `app/`, `components/` | 오디오 선택, 설정, 상태 폴링, 결과 재생 |
-| Next.js Node API proxy | `app/api/` | 서버 전용 인증, PostgreSQL 접근, 업로드 스트리밍, 응답 프록시 |
-| Better Auth | `lib/auth/`, PostgreSQL | Google OAuth 세션, 사용자 소유권과 관리자 allowlist 검증 |
-| Mixing worker | `scripts/mixing-worker.ts`, `lib/mixing/` | 영속 믹싱 작업 claim, target 준비, Modal 제출·추적, 결과 저장과 정리 재시도 |
-| Vocal profile analysis worker | `scripts/vocal-profile-analysis-worker.ts`, `lib/vocal-profile/analysis-*` | durable profile-analysis job claim, Modal CPU 분석, retry/lease recovery, 결과 저장 |
-| Leemage | 외부 REST API | 사용자 reference, 권한 확인된 catalog mixing target, 성공한 믹싱 결과 저장 |
-| Vocal analysis core | `services/vocal-analysis-core/` | 두 Modal CPU analyzer가 공유하는 runtime-neutral librosa/pYIN 분석 코어와 회귀 테스트 |
-| Modal CPU analyzer | `services/vocal-profile-modal/modal_app.py` | 보컬 프로필 분석, 개발·진단용 song-target endpoint, request-scoped 임시 파일과 ephemeral handoff |
-| Modal catalog analyzer | `services/song-catalog-analyzer/modal_app.py` | 업로드된 원곡의 보컬 분리·음역·원키 분석과 durable submit/poll |
-| Modal SVC web function | `services/soulx-singer-svc/modal_app.py` | FastAPI 계약, 파일 저장, 비동기 GPU 작업 관리 |
-| Modal GPU worker | `SoulXModel` | SoulX-Singer 모델 로드, 전처리, SVC 추론, 반주 재믹스 |
-| Modal storage | Volume + Dict | 모델·작업 파일과 작업 메타데이터 보관 |
-| PostgreSQL | Docker Compose | 인증, 사용자 프로필, 추천, 믹싱 큐, 티켓 원장과 파일 메타데이터 영속 저장 |
-| Prisma | Next.js server | schema, migration, 타입 안전 DB 접근 |
+| 경계 | 현재 경로 | 책임 |
+| ---- | --------- | ---- |
+| Next.js 진입점 | `app/` | App Router page·Route Handler 규약을 맞추고 FSD public API를 호출하는 얇은 adapter |
+| App 조립과 서버 orchestration | `src/_app/` | layout, provider, metadata, API handler, durable background worker |
+| 화면 조립 | `src/_pages/`, `src/widgets/` | route별 화면 구성과 여러 use case를 묶는 UI |
+| Use case | `src/features/` | 인증, 보컬 분석, 추천, 믹싱, 카탈로그·티켓·알림 관리 |
+| Domain model | `src/entities/` | 보컬 프로필, 추천, 곡 카탈로그, 믹싱 작업, 티켓, 알림 |
+| 공통 기반 | `src/shared/` | DB, media, config, API·UI와 범용 library |
+| 데이터 모델 | `prisma/schema.prisma`, `prisma/migrations/` | PostgreSQL schema와 migration 이력 |
+| Worker entrypoint | `scripts/*-worker.ts` | 믹싱, 보컬 프로필 분석, 곡 분석 worker process 시작 |
+| Python 분석 서비스 | `services/vocal-profile-modal/`, `services/song-catalog-analyzer/`, `services/vocal-analysis-core/` | Modal CPU 분석 adapter와 공유 분석 core |
+| 음성 합성 서비스 | `services/soulx-singer-svc/` | Modal 기반 SoulX-Singer 합성 |
+| Media storage | Leemage, `src/shared/media/` | 권한이 확인된 오디오 bytes 저장과 server-side 접근 |
 
-## 보컬 프로필 분석 요청 흐름
+Web 코드는 다음 의존 방향을 따른다.
 
-1. 브라우저가 로그인 세션으로 최대 60초 오디오와 `Idempotency-Key`를 `POST /api/vocal-profile-analysis-jobs`에 제출한다.
-2. Next.js가 source를 Leemage `REFERENCE` asset으로 먼저 저장하고 `VocalProfileAnalysisJob(PENDING)`을 만든 뒤 `202`를 즉시 반환한다.
-3. 별도 analysis worker가 PostgreSQL lease로 job을 claim하고 source asset을 읽는다. `/profile` workbench는 진행 중 job ID를 localStorage에 보관해 이어서 확인하고, `/vocal-profiles` 히스토리는 사용자 소유 job을 DB에서 다시 조회해 pending/processing/retry/failed 카드를 표시한다. 활성 히스토리 카드는 목록 API를 polling하고 성공 시 완료 VocalProfile 카드로 전환한다.
-4. worker는 sync multipart 요청과 server-only `X-API-Key`를 Modal CPU analyzer에 전달한다.
-5. analyzer는 request-scoped 임시 디렉터리에서 최대 60초 source의 profile 통계를 계산하고, 사람용 low/mid/high 대표 구간을 `analysisReferenceBands` descriptor로 유지하면서 무음·저품질을 제외한 중음 phrase만 사용하는 `smart-reference-mid-v1` synthesis reference를 별도 생성한다. profile + source + optional reference bytes를 한 response envelope로 반환한 뒤 임시 파일을 제거한다.
-6. worker가 analyzer version/capability와 source size/hash를 검증하고 queued source asset을 Recording에 재사용한다. smart reference만 추가 Leemage asset으로 저장하고 VocalProfile을 생성한 뒤 job을 `SUCCEEDED`로 완료한다.
-7. transient failure는 bounded retry/backoff와 expired lease recovery를 사용하고 expected 4xx는 terminal failure로 처리한다. terminal failure source는 cleanup하며 Modal 장애 시 로컬 서비스로 fallback하지 않는다.
+```text
+_app -> _pages -> widgets -> features -> entities -> shared
+```
 
-현재 Modal CPU baseline은 2 physical cores, 4096 MiB, `min_containers=0`, `max_containers=10`, `scaledown_window=60`, container concurrency 1의 **worker→Modal sync HTTP** 방식이다. 사용자-facing 분석 요청 lifecycle은 PostgreSQL durable queue로 비동기 처리한다.
+slice 외부에서는 root public API를 사용한다. `index.ts`는 browser-safe API, `index.model.ts`는 runtime-neutral contract, `index.server.ts`와 이름에 `.server`가 붙은 entrypoint는 DB·secret 같은 server capability를 노출한다. 실제 경계는 `steiger.config.ts`와 `tests/fsd-architecture-boundaries.test.ts`가 검증한다.
 
-## SVC 요청 흐름
+## 핵심 런타임 구조
 
-1. 브라우저가 두 오디오와 advanced settings를 `POST /api/conversions`로 전송한다.
-2. Next.js가 multipart boundary를 유지한 채 요청 body를 Modal로 스트리밍한다.
-3. Modal web function이 입력 파일을 작업 Volume에 저장하고 GPU FunctionCall을 spawn한다.
-4. 브라우저가 Next.js를 통해 상태를 폴링한다.
-5. GPU worker가 정규화, 선택적 보컬 분리, F0 추출, SVC 추론과 선택적 반주 믹스를 수행한다.
-6. 완료되면 브라우저가 결과 WAV를 Next.js 프록시를 통해 재생하거나 다운로드한다.
+```text
+Browser
+  -> app/ page 또는 app/api/ adapter
+  -> src/_pages 또는 src/_app/api-routes
+  -> src/features use case
+  -> PostgreSQL / Leemage
 
-## SVC API 계약
+PostgreSQL durable job
+  -> scripts/*-worker.ts
+  -> src/_app/background-jobs/*
+  -> Modal CPU analyzer 또는 SoulX service
+  -> Leemage bytes + PostgreSQL metadata/status
+```
 
-| Method | Next.js | Modal | 설명 |
-| --- | --- | --- | --- |
-| GET | `/api/health` | `/health` | 연결 상태 |
-| POST | `/api/conversions` | `/v1/conversions` | 변환 생성 |
-| GET | `/api/conversions/{id}` | `/v1/conversions/{id}` | 상태 조회 |
-| GET | `/api/conversions/{id}/audio` | `/v1/conversions/{id}/audio` | 결과 WAV |
-| DELETE | `/api/conversions/{id}` | `/v1/conversions/{id}` | 취소 및 삭제 |
+브라우저는 credential이 필요한 Modal·Leemage API를 직접 호출하지 않는다. 짧은 읽기·쓰기 요청은 Next.js server에서 처리하고, 긴 분석·믹싱 작업은 PostgreSQL에 먼저 기록한 뒤 별도 worker가 처리한다.
 
-## 인증·추천·믹싱 파이프라인
+## 보컬 프로필 분석
 
-1. 사용자가 Google OAuth로 로그인하고 신규 계정에 설정된 가입 티켓을 한 번 지급한다.
-2. 브라우저가 테스트 가창을 녹음하거나 업로드한다.
-3. CPU 분석기가 보컬 프로필을 계산하고 표준 reference를 Leemage에 옮긴 뒤 임시본을 제거한다.
-4. PostgreSQL에는 사용자 소유 프로필, Leemage 파일 ID와 분석 버전만 저장한다.
-5. 같은 분석기로 미리 생성한 곡 프로필과 semitone 후보별 적합도를 계산하고 전체 순위를 반환한다.
-6. 관리자는 관리자 전용 `/admin/songs`에서 곡 메타데이터·HTTPS YouTube URL·target audio를 등록한다. 서버가 video ID와 source label을 파생하고, READY source·analysis·target만 명시적 공개 transaction으로 CatalogEntry에 연결한다. DB를 이동할 때는 같은 화면의 schema 고정 JSON snapshot export/import를 사용하며 snapshot에는 분석 결과와 외부 target metadata만 포함하고 원본 음원 bytes는 포함하지 않는다. SoulX는 합성 시작 시 입력을 내부 44.1kHz mono로 정규화한다.
-7. 사용자가 `AI 믹싱`을 누르면 READY mid-only reference와 READY catalog target을 확인하고 각각 `referenceAssetId`, `targetAssetId`로 snapshot한 뒤 티켓 차감과 PENDING job 생성을 한 DB 트랜잭션에서 수행한다. target이 없으면 티켓 차감 전에 거부한다.
-8. 별도 worker가 lease로 job을 claim하고 snapshot된 reference/target asset을 Leemage에서 읽어 SoulX Modal에 제출한다. production mixing은 런타임 YouTube/yt-dlp `/v1/song-target`을 호출하지 않는다.
-9. reference/catalog-target의 transient network·429·5xx와 이미 생성된 SoulX job의 status/result GET failure는 `nextAttemptAt` exponential backoff로 `maxAttempts` 안에서 재시도한다. 단계별 오류는 `REFERENCE_FETCH_FAILED`, `CATALOG_TARGET_FETCH_FAILED`, `MODAL_SUBMIT_FAILED`, `MODAL_STATUS_FETCH_FAILED`, `MODAL_RESULT_FETCH_FAILED` 등 stable code로 기록한다. SoulX submit의 네트워크 단절은 idempotency 부재로 중복 생성 가능성이 있어 자동 재시도하지 않는다.
-10. SoulX 접수 전 terminal failure에서만 티켓을 한 번 환불하고, 성공 결과를 Leemage에 confirm한 뒤 job을 SUCCEEDED로 만들며 사용자는 재접속 후 히스토리에서 결과를 듣는다.
+1. 로그인한 사용자가 `/profile`에서 오디오를 제출하면 `app/api/vocal-profile-analysis-jobs/` adapter가 `src/_app/api-routes/`의 handler를 호출한다.
+2. server는 source를 Leemage asset으로 저장하고 PostgreSQL에 `PENDING` 분석 job을 만든 뒤 job ID를 반환한다.
+3. `scripts/vocal-profile-analysis-worker.ts`가 `src/_app/background-jobs/vocal-profile-analysis/` runner를 시작한다.
+4. worker는 시도 횟수와 `nextAttemptAt` 조건을 만족하는 `PENDING` job 또는 lease가 없거나 만료된 `PROCESSING` job만 `FOR UPDATE SKIP LOCKED`로 claim한다. 아직 유효한 lease는 대상에서 제외한다.
+5. worker가 Modal CPU analyzer를 호출하고 결과를 검증한 뒤 프로필 metadata는 PostgreSQL, synthesis reference bytes는 Leemage에 저장한다.
+6. 일시 오류는 bounded retry와 backoff를 사용하고, 복구할 수 없는 오류는 terminal failure로 기록한다.
 
-## 운영 경계
+## 곡 카탈로그 분석과 공개
 
-- 웹 앱은 공식 Next.js Node 런타임의 로컬 실행을 기준으로 하며 프로덕션 배포 대상은 아직 선택하지 않았다.
-- SoulX SVC와 보컬 프로필 Modal analyzer는 별도 Modal App으로 배포하며 repo의 Modal Python SDK는 `1.5.3`으로 고정한다.
-- 보컬 프로필 분석은 `VOCAL_PROFILE_MODAL_URL`의 Modal CPU 서비스만 사용한다. 웹 런타임에 backend selector나 local analyzer URL은 없으며 production mixing target은 Leemage catalog asset을 사용한다.
-- Better Auth, Google, Modal과 Leemage secret은 `.env.local`에만 두고 클라이언트로 전달하지 않는다. 보컬 프로필 analyzer는 기존 `MODAL_API_KEY`를 기본 server-only `X-API-Key`로 사용하고 필요 시 `VOCAL_PROFILE_MODAL_API_KEY`로 override한다.
-- 사용자 reference/결과와 권한이 확인된 catalog mixing target은 Leemage에 저장한다. 카탈로그 원본·분리 stem은 작업 임시 디렉터리에서 제거하며, DB snapshot에는 외부 target metadata만 저장한다. 신규 등록과 DB 복원은 관리자 `/admin/songs` 경로로 단일화한다.
-- `/dev/svc`와 `/api/conversions/*`는 비프로덕션에서 `ENABLE_DEV_SVC=true`일 때만 제공한다.
+1. 관리자는 `/admin/songs`에서 곡과 권한이 있는 target audio를 등록한다.
+2. server는 source와 분석 job을 PostgreSQL에 기록하며, `scripts/song-analysis-worker.ts`가 durable job을 claim한다.
+3. worker는 `services/song-catalog-analyzer/`의 Modal CPU service를 호출한다. 분석 로직의 공통 부분은 `services/vocal-analysis-core/`를 사용한다.
+4. 관리자가 준비된 source·analysis·target을 명시적으로 공개할 때만 추천 가능한 catalog entry에 연결한다.
+5. 원본과 분리 stem은 임시 작업 경로에서 제거하고, 장기 보관이 허용된 target bytes만 Leemage에 둔다.
+
+## 추천과 AI 믹싱
+
+1. 추천 생성은 저장된 사용자 보컬 프로필과 공개된 곡 분석값을 비교해 PostgreSQL에 순위와 설명을 저장한다.
+2. 제품 화면은 `/recommendations/[id]`에서 시작하며 단독 `/recommendations` page는 없다. 곡 상세는 `/recommendations/[id]/songs/[itemId]`다.
+3. 사용자가 AI 믹싱을 요청하면 server는 READY mid-only reference와 READY catalog target을 확인하고, 티켓 차감과 `PENDING` mixing job 생성을 한 DB transaction에서 수행한다.
+4. `scripts/mixing-worker.ts`와 `src/_app/background-jobs/mixing/`이 job을 claim하고 snapshot된 asset을 Leemage에서 읽어 SoulX service에 제출한다.
+5. 성공 결과 bytes는 Leemage, 상태·소유권·외부 job ID·오류·asset reference는 PostgreSQL에 저장한다. 접수 전 terminal failure에서만 티켓을 한 번 환불한다.
+6. 사용자는 `/library`와 `/library/mixes/[id]`에서 재접속 후에도 상태와 결과를 확인한다.
+
+## 운영 불변식
+
+- 모든 사용자 데이터 접근은 server-side session과 resource ownership을 검증한다. 관리자 기능은 별도 allowlist를 확인한다.
+- 장시간 작업은 PostgreSQL durable queue와 독립 worker를 사용한다. worker는 활성 lease를 중복 claim하지 않는다.
+- 오디오 bytes는 Leemage에, 관계·상태·소유권·hash와 외부 asset reference는 PostgreSQL에 둔다.
+- PostgreSQL schema는 `prisma/migrations/`를 통해서만 변경한다.
+- secret은 server와 worker에만 두고 source, 문서 예시 값, client bundle에 포함하지 않는다.
+- 앱 코드는 Modal 장애 시 검증되지 않은 local analyzer로 조용히 fallback하지 않는다.
+- 개발·운영 명령의 현재 계약은 root `package.json` scripts와 각 `services/*/README.md`에서 확인한다.
+
+## 상세 탐색과 변경 이유
+
+- 현재 구조와 흐름: [`openwiki/index.md`](../../openwiki/index.md)
+- 코드 시작점: [`openwiki/quickstart.md`](../../openwiki/quickstart.md)
+- 시스템 지도: [`openwiki/architecture/system-map.md`](../../openwiki/architecture/system-map.md)
+- Job 처리: [`openwiki/operations/job-processing.md`](../../openwiki/operations/job-processing.md)
+
+OpenWiki는 생성된 탐색 evidence이므로 직접 수정하지 않는다. 특정 코드가 왜 현재 모습이 되었는지는 해당 파일의 Git 이력에서 `F###`를 확인한 뒤 `docs/features/<component>/F###-*/decisions.md`를 읽는다.

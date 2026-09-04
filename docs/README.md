@@ -36,6 +36,17 @@ npx lee-spec-kit docs get agents --json
 
 Feature가 사람 관리 문서를 낡게 만드는지는 `plan.md`의 `Curated Documentation Impact`에서 별도로 판정합니다. OpenWiki 동기화는 이 책임을 대신하지 않습니다.
 
+### 현재 코드에서 변경 이유 찾기
+
+OpenWiki는 현재 상태를 설명하고, Feature `decisions.md`는 그 상태가 된 이유를 보존합니다. 특정 코드의 WHY가 필요하면 다음 순서로 탐색합니다.
+
+```bash
+git log --oneline -- path/to/file
+git blame path/to/file
+```
+
+관련 commit subject의 `F###`를 확인한 뒤 `docs/features/<component>/F###-*/decisions.md`를 읽습니다. 아직 진행 중인 변경이라면 같은 Feature의 `spec.md`, `plan.md`, `tasks.md`를 함께 확인합니다. 결정 내용을 OpenWiki에 복제하지 않습니다.
+
 ## 신규 프로젝트 시작 순서
 
 - 코드 프로젝트 스캐폴딩(예: Next.js/NestJS) 후 `lee-spec-kit init`을 실행하세요.
@@ -61,7 +72,7 @@ Feature가 사람 관리 문서를 낡게 만드는지는 `plan.md`의 `Curated 
 | 문서 내용                                    | 위치                          |
 | -------------------------------------------- | ----------------------------- |
 | 제품 요구사항·사용자 스토리·제품 로드맵      | `docs/prd/`                   |
-| 여러 Feature가 공유하는 시스템 아키텍처 개요 | `docs/prd/*-overview.md`      |
+| 여러 Feature가 공유하는 시스템 아키텍처 개요 | `docs/prd/system-architecture.md` |
 | 변경하기 어려운 아키텍처 원칙                | `docs/agents/constitution.md` |
 | Feature 승격 전 기술 조사·후보 비교          | 해당 `docs/ideas/I###-*.md`   |
 | 활성 Feature의 구현 설계                     | 해당 Feature의 `plan.md`      |

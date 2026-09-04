@@ -258,6 +258,16 @@ pnpm run test:storybook --run
 
 OpenWiki는 tracked 코드·스키마·설정·테스트에서 파생한 온보딩 evidence이며 정본이 아니다. 제품 요구사항은 `docs/prd/`, 현재 변경 범위와 설계 결정은 활성 Feature의 `spec.md`·`plan.md`·`tasks.md`·`decisions.md`, 사람이 관리하는 프로젝트 전체 설명과 정책은 curated docs를 기준으로 한다. 중요한 런타임 설명은 반드시 실제 코드와 테스트에서 다시 확인한다.
 
+질문에 따라 기준을 다음처럼 선택한다.
+
+| 질문 | 먼저 볼 곳 |
+| ---- | ---------- |
+| 제품이 무엇을 해야 하는가 | `docs/prd/copy-singer-prd.md` |
+| 지금 Feature가 무엇을 바꾸는가 | 활성 Feature의 `spec.md`, `plan.md`, `tasks.md` |
+| 프로젝트 전체 원칙과 상위 경계는 무엇인가 | `docs/agents/constitution.md`, `docs/prd/system-architecture.md` |
+| 현재 코드가 어디에 있고 어떻게 연결되는가 | `openwiki/`에서 탐색 후 tracked source·테스트로 검증 |
+| 특정 코드가 왜 이렇게 바뀌었는가 | Git 이력의 `F###`와 해당 Feature의 `decisions.md` |
+
 Knowledge 생성·갱신은 활성 Feature workflow에서만 수행한다.
 
 ```bash
@@ -268,6 +278,15 @@ openwiki visualize ./openwiki
 ```
 
 생성된 `openwiki/**` 페이지는 직접 수정하지 않는다. 설명이 잘못됐으면 source 또는 curated docs를 고친 뒤 다시 동기화한다.
+
+현재 코드에서 과거 결정의 이유를 찾을 때는 파일 이력에서 Feature ID를 확인한다.
+
+```bash
+git log --oneline -- path/to/file
+git blame path/to/file
+```
+
+관련 commit subject의 `F###`를 찾은 뒤 `docs/features/<component>/F###-*/decisions.md`로 이동한다. OpenWiki에는 현재 구조 설명만 유지하고 개별 Feature의 결정 내용을 복제하지 않는다.
 
 ## 문서 워크플로
 
