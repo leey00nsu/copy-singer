@@ -138,9 +138,13 @@ Browser
           └─ AI 믹싱 ─────────────── SoulX-Singer Modal API
 ```
 
-웹 요청은 분석과 믹싱 작업을 PostgreSQL에 접수하고 바로 응답한다. 별도 worker가 작업을 원자적으로 점유하며, 외부 작업 ID와 lease를 저장해 프로세스가 재시작돼도 같은 작업을 이어간다. worker가 점유할 수 있는 대상은 새 `PENDING` 작업 또는 처리 중이지만 lease가 없거나 이미 만료된 작업이다. 아직 유효한 lease로 다른 worker가 처리 중인 작업은 점유 대상에서 제외한다. 사용자 레퍼런스와 최종 결과는 Leemage에 저장하고 PostgreSQL에는 소유권과 파일 metadata만 유지한다.
+웹 요청은 분석과 믹싱 작업을 PostgreSQL에 접수하고 바로 응답한다. 별도 worker가 작업을 원자적으로 점유하고 lease를 저장해 프로세스가 재시작돼도 작업을 이어간다. 보컬 프로필 worker는 Modal analyzer의 단일 동기 HTTP 응답을 기다리며 외부 job ID를 저장하거나 poll하지 않는다. 곡 분석 worker는 Modal에 외부 job을 제출해 ID를 저장하고 완료까지 poll하며, 믹싱 worker도 SoulX job ID를 저장해 상태와 결과를 poll한다. worker가 점유할 수 있는 대상은 새 `PENDING` 작업 또는 처리 중이지만 lease가 없거나 이미 만료된 작업이다. 아직 유효한 lease로 다른 worker가 처리 중인 작업은 점유 대상에서 제외한다. 사용자 레퍼런스와 최종 결과는 Leemage에 저장하고 PostgreSQL에는 소유권과 파일 metadata만 유지한다.
 
 추천곡 카탈로그도 PostgreSQL을 runtime source of truth로 사용한다. 곡 identity, YouTube 출처 revision, 분석 revision, 공개 상태와 원곡 asset을 분리해 출처를 교체해도 기존 추천과 믹싱 근거를 보존한다.
+
+주요 데이터 관계는 Prisma schema를 따른다. 한 `Recording`에는 analyzer/version별 여러 `VocalProfile`이 연결될 수 있다. 한 `SongSource`에도 여러 `CatalogTargetAsset`이 연결될 수 있고 target의 `sourceId`는 optional이며, `Song.targetAssetId`가 현재 선택된 target을 별도로 가리킨다.
+
+추천 item의 synthesis 상태는 화면용으로 `preparing`·`queued`·`processing`·`succeeded`·`failed`에 축약한다. 반면 mixing job 생성·상세·히스토리 API는 DB 상태를 소문자로 직렬화하므로 `submitted`와 `canceled`도 그대로 노출한다.
 
 ## 실행과 배포
 

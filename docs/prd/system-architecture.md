@@ -50,14 +50,15 @@ PostgreSQL durable job
 2. server는 source를 Leemage asset으로 저장하고 PostgreSQL에 `PENDING` 분석 job을 만든 뒤 job ID를 반환한다.
 3. `scripts/vocal-profile-analysis-worker.ts`가 `src/_app/background-jobs/vocal-profile-analysis/` runner를 시작한다.
 4. worker는 시도 횟수와 `nextAttemptAt` 조건을 만족하는 `PENDING` job 또는 lease가 없거나 만료된 `PROCESSING` job만 `FOR UPDATE SKIP LOCKED`로 claim한다. 아직 유효한 lease는 대상에서 제외한다.
-5. worker가 Modal CPU analyzer를 호출하고 결과를 검증한 뒤 프로필 metadata는 PostgreSQL, synthesis reference bytes는 Leemage에 저장한다.
-6. 일시 오류는 bounded retry와 backoff를 사용하고, 복구할 수 없는 오류는 terminal failure로 기록한다.
+5. worker는 `analyzeVocalProfileBytes`로 Modal CPU analyzer의 단일 동기 HTTP 응답을 `await`한다. 이 경로는 외부 job ID를 저장하거나 상태를 poll하지 않는다.
+6. worker가 결과를 검증한 뒤 프로필 metadata는 PostgreSQL, synthesis reference bytes는 Leemage에 저장한다.
+7. 일시 오류는 bounded retry와 backoff를 사용하고, 복구할 수 없는 오류는 terminal failure로 기록한다.
 
 ## 곡 카탈로그 분석과 공개
 
 1. 관리자는 `/admin/songs`에서 곡과 권한이 있는 target audio를 등록한다.
 2. server는 source와 분석 job을 PostgreSQL에 기록하며, `scripts/song-analysis-worker.ts`가 durable job을 claim한다.
-3. worker는 `services/song-catalog-analyzer/`의 Modal CPU service를 호출한다. 분석 로직의 공통 부분은 `services/vocal-analysis-core/`를 사용한다.
+3. worker는 `services/song-catalog-analyzer/`의 Modal CPU service에 외부 job을 제출하고 `externalJobId`를 PostgreSQL에 저장한 뒤 terminal 상태까지 poll한다. 분석 로직의 공통 부분은 `services/vocal-analysis-core/`를 사용한다.
 4. 관리자가 준비된 source·analysis·target을 명시적으로 공개할 때만 추천 가능한 catalog entry에 연결한다.
 5. 원본과 분리 stem은 임시 작업 경로에서 제거하고, 장기 보관이 허용된 target bytes만 Leemage에 둔다.
 
@@ -69,6 +70,14 @@ PostgreSQL durable job
 4. `scripts/mixing-worker.ts`와 `src/_app/background-jobs/mixing/`이 job을 claim하고 snapshot된 asset을 Leemage에서 읽어 SoulX service에 제출한다.
 5. 성공 결과 bytes는 Leemage, 상태·소유권·외부 job ID·오류·asset reference는 PostgreSQL에 저장한다. 접수 전 terminal failure에서만 티켓을 한 번 환불한다.
 6. 사용자는 `/library`와 `/library/mixes/[id]`에서 재접속 후에도 상태와 결과를 확인한다.
+
+추천 item은 내부 mixing 상태를 화면용 `preparing`·`queued`·`processing`·`succeeded`·`failed`로 축약한다. 이 mapping은 recommendation 응답에만 적용된다. mixing job 생성·상세·히스토리 API는 DB 상태를 소문자로 직렬화하므로 `submitted`와 `canceled`를 포함한 상태를 그대로 노출한다.
+
+## 주요 데이터 관계
+
+- `Recording` 하나에는 analyzer/version 조합별로 여러 `VocalProfile`이 연결될 수 있다. `@@unique([recordingId, analyzer, analyzerVersion])`는 전체 관계를 1:1로 만들지 않는다.
+- `SongSource` 하나에는 여러 `CatalogTargetAsset`이 연결될 수 있다. target의 `sourceId`는 optional이고, `Song.targetAssetId`는 현재 선택된 target을 별도로 가리킨다.
+- 현재 추천 대상은 공개된 `CatalogEntry`와 그 Song의 active source/current analysis/target 연결을 통해 결정한다.
 
 ## 운영 불변식
 
