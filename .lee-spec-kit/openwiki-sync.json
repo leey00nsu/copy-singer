@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 2,
+  "triggerFeatureRef": "F040-repository-knowledge-bootstrap",
+  "triggerComponent": "web",
+  "language": "ko",
+  "sourceHead": "f11361deb3f547ecb454a407ebd94d36df1d2bb8",
+  "sourceFingerprint": "sha256:005586fa9d58f7cbbfd1a0b1c725c9e5015546d2912cd10ccd94afd006bf84ca",
+  "baseRef": "origin/main",
+  "baseHead": "eb164d718d66b2ce3e177fc03727ae60ec0add3d",
+  "openwikiVersion": "0.5.0",
+  "okfVersion": "0.2",
+  "outputHash": "sha256:65e71e53730f81c6df25c21c250b42492d1ca8b7575268ce17935f959024657f",
+  "verifiedAt": "2026-09-04T00:36:05.165Z"
+}

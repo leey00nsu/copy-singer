@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:2c0a83f470f1987c60b448bd9ed34c89a442cf57b0c786d00c0cf1db88d19f83",
+  "claims": [
+    {
+      "id": "claim_f6074735ef7d4832a0683d4ee42e011a",
+      "statement": "Next.js App Router의 root `app` 파일은 구현을 소유하지 않는 얇은 adapter로서 `_app` 및 `_pages` public API를 re-export하고, API route는 정적 route config와 `_app/api-routes` handler 연결만 담당한다.",
+      "evidence": [
+        {
+          "resource": "repo://app/(product)/profile/page.tsx#L1-L1",
+          "version": "repo-lines-v1:sha256:0f2b89fb4e1092b0bb76a86ab819b701e17d30ef9a33316caced70b300aca162:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGYyYjg5ZmI0ZTEwOTJiMGJiNzZhODZhYjgxOWI3MDFlMTdkMzBlZjlhMzMzMTZjYWNlZDcwYjMwMGFjYTE2MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGYyYjg5ZmI0ZTEwOTJiMGJiNzZhODZhYjgxOWI3MDFlMTdkMzBlZjlhMzMzMTZjYWNlZDcwYjMwMGFjYTE2MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://app/api/mixing-jobs/route.ts#L1-L3",
+          "version": "repo-lines-v1:sha256:653ab90ac9da215869bdbbcbdbc97341cfdfd7ea8213312ff6a041bbf2c91f9f:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjUwYmU5ZjIzN2U3MmRiYTc5NmU5Nzk5NDc4ZmE1NDgyMTNhMmNmOTNkYTBmODIzZjUxMmUzN2YxOTMwNDI1ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2NiMmYxNWNmYWZiMzAwMWQzMTU4MDBhYTYyM2Q4NmNlZmZmMGVhNWNiNGJlNzIwM2E5Y2MxNjJiNzczNGNjZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://app/layout.tsx#L1-L1",
+          "version": "repo-lines-v1:sha256:02ec4f0a8316ce5c2240d6f073404a54baeb1ce02b39549cbd22d0c20836f8eb:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDJlYzRmMGE4MzE2Y2U1YzIyNDBkNmYwNzM0MDRhNTRiYWViMWNlMDJiMzk1NDljYmQyMmQwYzIwODM2ZjhlYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDJlYzRmMGE4MzE2Y2U1YzIyNDBkNmYwNzM0MDRhNTRiYWViMWNlMDJiMzk1NDljYmQyMmQwYzIwODM2ZjhlYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L278-L310",
+          "version": "repo-lines-v1:sha256:e5cc390bbe1cbd005e8a11317f694bc5dd9cc26f875c83ab36af9fc5b11738df:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjYjQ0ZWM4NmM0NGU5NWQ2ZTBmMTQ1ODQ2NmM0MjhkMzU0NWY1ZWM5NmE0YzczZWViZDk2ZGZlMTgxYzNhMDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVmNTBmNDFlMzlkNjE2MTA1ZjZhZDdkNWMwNjNkNWNmMzIzOTVhN2JiZGNkYTFjOThlYjkyNzcxMGIyYWE3OTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkwNWEzYThjMzhiNGEwMzdiM2Q0MTNkMDU3YmZkOTg5MzMxZjc3NzVjZGI5N2FiYWRkZjA3MDdmYWNjN2MxMDcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bd11e4ac7b544d998e75436a7dd256c4",
+      "statement": "현재 아키텍처의 FSD 의존 방향은 Steiger 설정과 boundary test로 강제되며, slice 간에는 `api`, `model`, `ui`, `lib`, `config` 내부 segment 대신 `@/layer/slice` public API를 사용해야 한다.",
+      "evidence": [
+        {
+          "resource": "repo://steiger.config.ts#L4-L9",
+          "version": "repo-lines-v1:sha256:745ecc7b1f4d93f5c4d246b6c7f0fcd55c53d478d2ed82b6e6a997cbbf9d2b1d:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2E0OGE3YTc5NjI3YTZlMDU2OWQyMGI2ZGFjMTJlNTc0OTk2OWIwZWUyYTZlMTQ1ZDc2MWMxN2UyZmI0MWYwMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDk1OTBmYWI4MmUzZDFmZDBhNDRiNTc3YTM2MTVlNzEwMzMyMWEzNWYxMTU2ZmU5NjcyM2QxZWY4NjgyNTZlZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2EzYzRmNWU2MjNjODdlNjNkZTNkZDU2ZGQzZWNiZTNiNDg2NGI4ZjBiNDJhMmU4YWNjNDZhNTJjZGIyNDYyNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWE3NDBhMTk1NjY0MDJiNzM2N2E0MmM2MmUwODA3YjA2NTkxN2IyMDg3MzVjNjk5NDcwM2E4YjEyMTFjZDMzYiJ9"
+        },
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L154-L175",
+          "version": "repo-lines-v1:sha256:18286db21f7ede18afb0fc5d6c339d7c7b6de70cd3f179512246cfedf7f2cee0:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2NGY2YzRjZGVlODRhNzY0MzBkMzQ1NzlhZTJmYTlmMjQ1ZGJjMDI1MmVlOTIyY2QwODdiN2VhOTA0ZTBkYTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE3ODFlNDU0ZDYzYzhjYjhiMzUzMDM3ZmI3M2NhZGZlYjQyN2IzYzk2ZDJlMjg1ODM5Zjg3ZTdhNjJhNGUzOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ2ZjQ5Zjc3ZDM4YmEyOTQ3ZjUwY2I5ODUwNTI0NTk2YmFhY2M4ODY4NTI3MmM1MDFmYmM5ODFkZTlhNTUyYzQifQ"
+        },
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L381-L386",
+          "version": "repo-lines-v1:sha256:2b86de62dad50e16d6cccd405474286fc18cbe7b3dc47a81cd8bb25317d1d839:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDQ3MWUyZTZjZDMyMDBjNTE5MWNlM2FhNGE5NWI4MDExNTQ0MTRhMmY0YjZhYThlZTlmZmU0MDk1NDM5ZDBkOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjZmNWI0MGIxNTg0NTdkMTc4NjRmMjE3OTA3ODZkZDVhMmVjZGI2NGI2NmE2NTFmNzg4ZDRlMjVjZDMzMDNkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTNkZjE3NzFhMGExNjAxZGE0ODVkZjRjMDM0NGQxYWM2NzEzOTZkZDdjYjM1Y2RlOWFhY2ViYzAzNjFjMDMxMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_97a2a91867674ba0ba6e47a3e7fad6c7",
+      "statement": "`\"use client\"`로 시작하는 runtime import graph는 `server-only`, request/server 모듈, 또는 Shared DB 모듈에 도달할 수 없으며, 이 검사는 transitive runtime import를 검사하고 type-only import는 제외한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L177-L228",
+          "version": "repo-lines-v1:sha256:718e663154a48adeb976830b6c071769a028c51f2213c33bb12f1625a71babed:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhmOTlmN2M5YjljNDM4NjRkMDJlYTYxZDgxMTRhODU1OTI2MTg4NGI3ODAyMTRiY2RlZDdlOWFjMTZhYzQ4ZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1OTYzYTI5MTliYzRhOGNkNGM2YzExOGVkNTQ1NzAyYzlhMWU2ZTJiNjcwOGIzZTRiOWFhZWNlMjM5ZmRlZWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk1ZWIxMzgzNmU2YTQ1MzY0Mjg3OTZkYmM3OTJhMWIwMmNhYWZhMGE2ZWM1YzliYWZjZTcwODM2YzdhMGRlYjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBkZDViYjRlYmRhNzhiOWI0MDk3MmIzNDg4Njg5NDdhMDFhM2E2ZDBhYmRjNWVjMWU5NmVjYjA3NTBhY2IyZmUifQ"
+        },
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L333-L358",
+          "version": "repo-lines-v1:sha256:6491f5b806ce3f2ef5b5e023669f51db3713b4fe82c224e145ec12e5aded5c0e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyYTc0OTRlN2I2YzY1MmU1NjIyMGFhY2ZlMDg3NGU3ZDIyYzExNjBkOWNiZjk5OWMwNzM5NWIzZDdjMjgwZDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBlMmQzMmRiODA3ZGUyMjgxMDE5ZjU4OGVmNGVkYzFkM2U2NGY4MTVmYzQ5YTk2NGViZTZhN2I5YTVmYTVlZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZiNjI2ODY0M2QxZjMzOWFiZTVjNzhlZGVhN2Q4ZWUzNjVmOTkxMWFjN2RkNmNhNzI3NTg0MjkyMDBjNmNjMmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_446a673521b848a2bc9d3050c41bc155",
+      "statement": "믹싱 API는 세션과 Zod 요청을 검증한 뒤 PostgreSQL 기반 enqueue만 수행하고 `202`를 반환하며, 티켓 부족·잘못된 요청·enqueue 오류를 각각 외부 HTTP 오류로 구분한다.",
+      "evidence": [
+        {
+          "resource": "repo://app/api/mixing-jobs/route.ts#L1-L3",
+          "version": "repo-lines-v1:sha256:653ab90ac9da215869bdbbcbdbc97341cfdfd7ea8213312ff6a041bbf2c91f9f:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjUwYmU5ZjIzN2U3MmRiYTc5NmU5Nzk5NDc4ZmE1NDgyMTNhMmNmOTNkYTBmODIzZjUxMmUzN2YxOTMwNDI1ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2NiMmYxNWNmYWZiMzAwMWQzMTU4MDBhYTYyM2Q4NmNlZmZmMGVhNWNiNGJlNzIwM2E5Y2MxNjJiNzczNGNjZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts#L12-L67",
+          "version": "repo-lines-v1:sha256:8896c8287d0bd66fb70bd65a8dca59a0cd29491e71592b0325c46964d328419f:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjNGFhMjExZDg5ZTY1NDM5MThlNzkzZDIxNjFmYTA2ZjdkMzJkZWU4MDlkNzkzYzdhMDFmOTE3MjEyNjAwYzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ2MDgyNDY3NDYxZDQ0YWEzOWUzZGUwZjExMzYxYzZhZmU2NWFhNzdkYTI5YjgwMWRkNTU4MDA0MzQ0MjVkMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_99b0beb30864472496f21d2f874e6a50",
+      "statement": "분석과 믹싱 worker는 PostgreSQL job을 `FOR UPDATE SKIP LOCKED`와 lease로 원자적으로 claim하고 owner, heartbeat, attempts, next-attempt 조건을 사용해 재시작 후 lease 만료 작업을 회수한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/runner.ts#L10-L28",
+          "version": "repo-lines-v1:sha256:d53a135cfcdefda70c577c2c330a1ba71ec96b33f5719c5d52214198abd527c6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzMDk2ZjdkNDYwM2FkMjAxNDg1YWE5MzczNWMwMTQxZWY3MDIwOTc0NDI2NzUzNjVkYzFjYTI5OTNkMThkNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1NmJhOWNiYjIwMWZmNWNmOGVhOWQ2ZTAzOGUxYmFmOTVmNzdiZDgxNmVjMDgyMGNkNzMyYzE4ODg0MWU3ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L92-L143",
+          "version": "repo-lines-v1:sha256:e172ea831659f2c690bbf754fd513bb794095e41ff678b2d93891dfbd06db59c:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkYTkzYWU1N2Q0ODhkMTQ2YjZmZGI4ZTg3NGY2MWFiYjcyYWQ2MmNiODZkYjM0MGM5ZDcxN2I1MmQwOWQ4ZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3MmVjY2MyNjljZTA5MjJjOGIwMWIwNmFlYTZjZjY1MTExZjdlNjVjZTEwMGE4MzI2YTVmMTgxZTA1ODA0YjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFkZDE5Y2Y2MzBiN2I5MTE5NGU2ZGM1NTYyN2NlNDZmNWQ0ZjQxZGI1MDk0NTYyMjhmYmRiYzQ2MzA4MmZhZjIifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L30-L70",
+          "version": "repo-lines-v1:sha256:27ba0475b6a0ba774cf523b00da113b141f6762d5a1b6fa9642732d0ae855797:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiNDZiYjJhYjk0YWI2YjEzOTVkOGYwMmM1ZDQwYzczZjcxOGZkNzFhZWMyNmY0NjYxNTg3NmU0ZTkzYTk0OTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkMTRlZmE5YTI5ZDJjNDg4ODRmOTJlZGJhMTFkM2RjM2Q0YTA4NmQ2Yjk2M2ZkNjlhODhkMmViNTM1NWE1MDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3NjExZmZmOGZmYTg0NTY0MTg5NWIwMDc3NTY1MjhjMGFjNTZiNWEyOTIyMjA0YjkyMjRhMGE5ZWUzNWRjYmIifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L43-L79",
+          "version": "repo-lines-v1:sha256:bfbe6fde2901c7fec4d964d81606865e37f71970fbcbd819e251175e8fa208ea:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEwODQ3ZTE4MzNiZjRjMzQwYTgwM2QwNDIxMjMzNDhlOTRhZjQ1YWNiN2JkYTIxNmQ3MjM0NzI3NmVlZTdhYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3ZGE0MDBlM2IzODVlYzg1NGI5OGZkNGZiOGE1MTRmYmJiZTk2ZWFjZDAyMjViYzQ2YjRmMmQ2MWE4NDk4YmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_95747afff5364818945e8501e26ef874",
+      "statement": "보컬 프로필 분석과 곡 카탈로그 분석은 외부 Modal analyzer에 비동기로 제출하고 외부 job 상태를 polling한 뒤 성공 결과를 PostgreSQL에 기록하며, retryable 실패는 backoff로 재시도하고 최종 실패는 상태와 오류를 영속화한다.",
+      "evidence": [
+        {
+          "resource": "repo://services/song-catalog-analyzer/modal_app.py#L141-L149",
+          "version": "repo-lines-v1:sha256:71673924ac793d607a03f7c3edf6a6da8d161af16ec31f74721fc7143cebf195:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGRlM2QyYTNhNTc4MzQwNDk0N2E0NDBhZWI5NjcxYzgzNWI5NTgwM2VlYzgwZjczM2Y2MmVlOTNkZDg0YjIwOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzJlZDdmYzgzYzNiMWQyNzgzOTA0MWQyN2ZkMjg5ZDc2MDJjOWQyYjliOWU1ZjRhMDRlYWYwZTcxZTNjMmM5ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjgwM2ZlNzAyZWYyNzJlNjY5NWU1NDFjMWJlZGIwOGJkMGRjYWNmZmVmMTEwYzMwZmZhMDgzOWM4Y2ExZmZkYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODZlOTE3MjZmMjlhOTZiZTA0ZTJhMmIyNjM3Zjc4MjY2NWFhOTZiYjZlNzFiYWY1MjcxYzg3ZmY2ZDkzYTg5YiJ9"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L127-L199",
+          "version": "repo-lines-v1:sha256:1d1725c8f331a716838aa38b8add74fe8be87825dcfa54675f72d0dc8cfe4502:eyJzZWxlY3RlZExpbmVDb3VudCI6NzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3ZTYyY2YxMjA2NTg3OTNmNjI3MmVjY2VkY2Y1YjEyYWY3Y2ZlZGIzMTZiMzVjZTEzY2YyMmQxMzRiOThhMDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdhOGE4ZmNjZjIxOWM0NGFjNGQ0NTRjNjhhYjEwYWIzM2RhOWFlMmExY2M1OWFlZjQyZjlhMThlMDNkMjUwNTQifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L200-L260",
+          "version": "repo-lines-v1:sha256:7bdc5dbe70c3e1d6817f845fbe669c3b093cc92c4f7db0dfdc46942bfbca8278:eyJzZWxlY3RlZExpbmVDb3VudCI6NjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ2ZjZkMGVjYTkxMjZjNTM5ZGJkYzNhZjQxMzU2ZDBkYTJkMDM0OTdlNTBiZDdkNDc2N2JmYWNkZDk5NWZjNjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyMjFjOWI2ODAzNDdiN2E5MmNhY2E1ZDNjOWQxZGFmY2Q3YWFiN2MxN2FmZTUwZTY4ZDk0YWRjMmQyN2FmMWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ1YjNmYWVlOWMwMzc3NTk0NzhhMzQ3NTg1NjA1NGIwYzQ0MTY2OWU3NmQ2NmM0YjUyNzg0ZmJjZGI4NDFkNGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYxZTM3OTBkOTgzYzRiNjBjYzdjZDY1NjliMTFjODUzY2VkNDVkOTcyN2NiNTkwYjE2NjI5NzFhODA5ODM3Y2QifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L167-L220",
+          "version": "repo-lines-v1:sha256:4c62a9177682d91bc70bd7fa4a0fe699e93965afaeb163ff942edef6673ac5b0:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2N2I1N2Y4ODNiNGIyZGFlNTczMGEyMjdiOWFiYzA3ZmVmMTljYzkwOWQ4YzI2YThmYjhlZTlkNWM4N2E1Y2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiYzcwOTg5YTczMGExZGI1ODg5ZjcwYmZkZTE5YzQ0NzU1YzQ2ZWFlOWU1NTliY2Q3YTIzZWUyN2ViMzg5MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNlMWRkNDYxZDliMjVjZDYwYmNiM2YyMzZkMWQ1NDhjMTBlNTY4MzdlZGVkNzBjYTMxNzFlYmNmZGExYzk2MjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU5MDM5NDBiNTViZjhlMzgyMWU0MTNkZjYwNGQyYTBiMTRlMGJiZGU5NWE4OTdhZjUxNWU2NjVkOGQ2MzYxNTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_040eac7d488a444cad0b1423bac7f29a",
+      "statement": "AI 믹싱 worker는 Leemage의 레퍼런스와 catalog target을 내려받아 Modal conversion API에 preset 및 추천 pitch shift와 함께 제출하고, 성공 audio를 압축해 Leemage에 저장한 뒤 DB transaction으로 결과 상태와 알림을 함께 확정한다.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L88-L93",
+          "version": "repo-lines-v1:sha256:46f1e7b325e9d4300d40491aebf4c2e5c91164c1589cf12ec4b1944564d30727:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTFjODNlNTU1YTgyZjFiZWI1N2I5N2EyNzVhN2NhODY1Zjk0NmI1NTE4Yjk5MTdhZTkwNDE1N2FkNDU0ZjNjNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWI0MzAzYjVlY2JiNWY5Y2RjMWMwMTJiZDBlNGE3YThjMmYwYjU0Nzk5ZjQ0YTcyZTQwMzIzNzc0YTllMjlhMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmNjOWY0ZGRiOWU1YjkxYjIzNGZlOTNlNmQyNGZkNjIzOWZiMjA4YzA4ZjJlNTM2M2RmYjdkODg4YjM2NDhiMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGYwZDViN2U2Yzg5YWZlMGY2ZTBmZTQ1MTU1NzNjNzc1MDU0NzBlNGRmZjMxNmZkZDkzOTNkYWNiODVlOThjYiJ9"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L257-L353",
+          "version": "repo-lines-v1:sha256:dbe45d151fdbf23b056ee65c7177039f72bb2939d855a09ff4a5da3ffae666a4:eyJzZWxlY3RlZExpbmVDb3VudCI6OTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdmNGI3YzZmZGQ0OWZjOWJkYzQyMzIwNmNhNDFkZWRlMTAwNWVlNDc1YWNkN2E0ZGI4YWQxNTYzZTY5MDBkYTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhlOWNlYjRkMjI5YWE1OTNiZWQzOTFjZWFmNmU3N2RmZGM2MmRiYzIxYTA1NTRhZTk5NTM3NTU5YjRhMzY2NDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNkMDNkNGIzMDFjMWM3NzZkM2JjMWRhMTk5YjIyNzU4ODNiZjA0MDkzOWEyNTRlMTU2ZjIwODAwYjRjNWE5YjgifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L355-L448",
+          "version": "repo-lines-v1:sha256:a77104355881b60eccbec4e11d352d1c7443efae400f773af3f0c6d53a2fd241:eyJzZWxlY3RlZExpbmVDb3VudCI6OTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiMmU1YWZiODkxNzNhYmIyMTM1MTIxYzRlZGIyYzUwNmZhNGQzODZiZDUxZjAwOWU3MTY3Y2M5NjM2OTJlN2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwNjNiZjJlNzlmMDBjMDliZmUwNGExMzVkZmRjNmY4NTk1ZjUyODU2MmIzMWFlNDIzY2ZkN2MxNGI2MDlhNWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAwMjQxOTFlZTRkNjhkZDNlYmM1YmY3YTIyYjc4YWE3ZGNhYTI2MDdhNjA5ZTg4OWVhNjY1NTNlNmFkZjAxODkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7959d498612f422ca632cd57fa17f245",
+      "statement": "미디어 bytes는 외부 저장소에 보관하고 PostgreSQL에는 소유권과 asset metadata를 유지하며, 외부 접수 전 실패는 환불 대상으로 기록하고 최종화 transaction이 실패하면 저장한 결과 asset을 폐기한다.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L141-L143",
+          "version": "repo-lines-v1:sha256:bd64a9fdba20da01ca7eb72c66f51bab16b51628ee5908ecf8480b22f3ce3e1f:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTllZTJkMTU1OWEwYmMzM2E5NDUzNjg3M2Y4YTVmMWVlZmJkZDk2NjJjNjllZDIxMzJkMDc4MWM0ZWNkMTUzNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDE3ZThkMjYwMGM2MmU5OWUwZDA1ZDE0Y2M0M2I3MmU1NjdiZjBjNDI5NjEzMWY4ZGExYTM1MTMyYmExYTdkOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjJmYmY0NzFkNzJjOWQxOWNlNjk1ZTJhYmZjNTM2ZmEwOGU2NzRiNjUwZTBmZjNmNzYxN2U5NmZlZWM1ZTFhOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWY3YjIzZmE5NmNmYzFkNDgyMjYyNTZmM2QwZGY1NDZlN2VmYmY2YWRkYTI1MjkwMmMxYTI0N2Q3OTM4ODI5MiJ9"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L146-L159",
+          "version": "repo-lines-v1:sha256:1063145e08acc0bcb762c14c732c2bad72f4bba327d03ed799a29f006d2b0010:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmN2U2YTE2MjBlNDg4NTdkNGQ4YmZkMzE4MDgyNTIxMGQxYzU4ZTUwNWY5MDI4NDlmOTVkNDFkNWY2MWQxMDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI3OGUyYWYwZjllZWI2NGJjMDc0NWFjZGQyMzliZTdlMzZkZDAyM2VlZGQxYmYwMTkwMTNkYTJjZGRkYTNkYzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY1MDFkNTQyY2Q4Zjk2OTY2NTFjMmFmNTlkZDdjZjc3MzU5NWQ4YTU3YjZjNjM0ZTFlOTY1YzU0YmEzYTcxODEifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L227-L255",
+          "version": "repo-lines-v1:sha256:1093234f1047664f34ff984705d1339ba42dc36816ad4c5aeb3e82ae99eba783:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0ZmJjYzRiNDI5MTg3NzlmMmVmOGU4NGVlZjNlZWFmYzI2YmE5ZjU4MjhiYTA2NzgzNzM0NTIyZTJhMDM3NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2ZTUxZTBkMDA4ZjE2YzdhMmI3MDAyZThiYzQ2NTQ4N2FlMmY1YTMzYjA4ZjczZjUzNWQwMGJmMjhiODdmZTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdmNGQ4ZWVhMzM5YzRhNjllYmFmZDA4MjRlZmJkNmU0Njk2Zjg5MTU2YTU3YTAzZWU0MWRjNzQwN2NkODljNWIifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L413-L443",
+          "version": "repo-lines-v1:sha256:d0d816952b75b93fa6b75a60cc2070edd1c83adc5b343e1ddae6d9063f59bdf6:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4NzhhMDdmNWU3MGFhMjU1NTZlYTAwYWVkZmVhNGRmOWVmOTllZTg2ZDI3NDI3NWUwM2I3ZTk3YjRmY2FkNDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3MTYyMGY1NTEwZGYzOTA2ZmJjYmNjODNmMjJhMjViNzk4ZGM0YjllZjY0MGRlNjQ3NmM4MTQwMmJhYmM1YmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgxNWU4NzAxOTM1MjE5MDM4MTExYTVkN2Y1M2Y1ZGNmOTdhYWQwYzg2MmE2MmY0ODk1ZjNiNTk4ZjM4MTFlMWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bac7cbebd5744fd28a4627554c839503",
+      "statement": "`tests/fsd-architecture-boundaries.test.ts`는 실제 `app`, `src`, `scripts` source tree에 대해 FSD public API, client/server 경계, root App adapter 규칙을 모두 검사하므로 아키텍처 변경의 실행 가능한 회귀 계약이다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L108-L112",
+          "version": "repo-lines-v1:sha256:e6e4b8ac25da5b435e875f7e1e30d28382c82c3e164397ee4c6bb3c3ce0268aa:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDc3ZDI0Yzk0OGYyYTQ1NDgyOTk3MWM5NjQzNTE3NDI2YjZkZjk0MzYxMmY4MTEwNWI1ZTZiMWJhMzExYTk5ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjBlOTJhYThlZTRkY2EwNWY0MWU1NjBlZGM1ODJkZGQ3NzZkNDcyMWY2ZjYwYWQxMDU5Y2M4ZmI4YzgzMDJlZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmQwZjJkM2EzYWFkYTI3NTg2NDU3OGQwYTQzOTE1NjM4ZDU0M2ZlY2EyYzk0ODU4ZGI5NDEyMTFlODZjZWYyYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmVkNDYzNGY0MjVmMTk5MmI5MWNhYzQ4ZjRmODhkYWI2MDVjOWJmN2NjM2NiOTRiNzdkMGI1NmJhMjQxMjIyNSJ9"
+        },
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L381-L386",
+          "version": "repo-lines-v1:sha256:2b86de62dad50e16d6cccd405474286fc18cbe7b3dc47a81cd8bb25317d1d839:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDQ3MWUyZTZjZDMyMDBjNTE5MWNlM2FhNGE5NWI4MDExNTQ0MTRhMmY0YjZhYThlZTlmZmU0MDk1NDM5ZDBkOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjZmNWI0MGIxNTg0NTdkMTc4NjRmMjE3OTA3ODZkZDVhMmVjZGI2NGI2NmE2NTFmNzg4ZDRlMjVjZDMzMDNkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTNkZjE3NzFhMGExNjAxZGE0ODVkZjRjMDM0NGQxYWM2NzEzOTZkZDdjYjM1Y2RlOWFhY2ViYzAzNjFjMDMxMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-03T23:57:17.994Z"
+  }
+}

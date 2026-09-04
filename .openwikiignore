@@ -1,0 +1,19 @@
+# lee-spec-kit:openwiki-ignore:begin
+.lee-spec-kit/openwiki-run.json
+.env
+.env.*
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx
+**/id_rsa
+**/id_ed25519
+**/.aws/
+**/.ssh/
+**/credentials/
+**/.credentials/
+**/credentials*.json
+**/secrets/
+**/.secrets/
+**/service-account*.json
+# lee-spec-kit:openwiki-ignore:end
