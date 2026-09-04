@@ -138,7 +138,7 @@ Browser
           └─ AI 믹싱 ─────────────── SoulX-Singer Modal API
 ```
 
-웹 요청은 분석과 믹싱 작업을 PostgreSQL에 접수하고 바로 응답한다. 별도 worker가 작업을 원자적으로 점유하며, 외부 작업 ID와 lease를 저장해 프로세스가 재시작돼도 같은 작업을 이어간다. 사용자 레퍼런스와 최종 결과는 Leemage에 저장하고 PostgreSQL에는 소유권과 파일 metadata만 유지한다.
+웹 요청은 분석과 믹싱 작업을 PostgreSQL에 접수하고 바로 응답한다. 별도 worker가 작업을 원자적으로 점유하며, 외부 작업 ID와 lease를 저장해 프로세스가 재시작돼도 같은 작업을 이어간다. worker가 점유할 수 있는 대상은 새 `PENDING` 작업 또는 처리 중이지만 lease가 없거나 이미 만료된 작업이다. 아직 유효한 lease로 다른 worker가 처리 중인 작업은 점유 대상에서 제외한다. 사용자 레퍼런스와 최종 결과는 Leemage에 저장하고 PostgreSQL에는 소유권과 파일 metadata만 유지한다.
 
 추천곡 카탈로그도 PostgreSQL을 runtime source of truth로 사용한다. 곡 identity, YouTube 출처 revision, 분석 revision, 공개 상태와 원곡 asset을 분리해 출처를 교체해도 기존 추천과 믹싱 근거를 보존한다.
 
@@ -172,6 +172,7 @@ pnpm dev
 
 - `/` — 공개 랜딩
 - `/profile` — 목소리 녹음·업로드와 분석
+- `/recommendations/[id]` — 보컬 프로필 상세에서 추천을 시작한 뒤 프로필 ID로 진입하는 결과 화면 (`/recommendations` 단독 화면은 없음)
 - `/library` — 보컬 프로필과 믹싱 결과
 - `/account` — 계정과 티켓 원장
 - `/admin` — 관리자 운영
