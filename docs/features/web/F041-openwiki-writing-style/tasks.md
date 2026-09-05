@@ -116,7 +116,7 @@
 | 로컬 lee-spec-kit `--version` 및 `detect --json` | `2026-09-04` | `PASS — 0.9.12, PROJECT_DETECTED, experimentalOpenwiki=true` |
 | 로컬 lee-spec-kit `knowledge doctor --json` | `2026-09-04` | `PASS — OpenWiki 0.5.0/OKF 0.2, openai-chatgpt gpt-5.6-luna OAuth ready, OPENWIKI_WRITING_POLICY_STALE` |
 | 기존 receipt·INSTRUCTIONS·writing skill 기준선 검사 | `2026-09-04` | `PASS — receipt schema 2, INSTRUCTIONS sha256:6edc1607…f64db, 같은 이름 skill 없음` |
-| 로컬 0.9.12 `knowledge sync F041-openwiki-writing-style --component web` | `2026-09-05` | `FAIL — adapter 1.4.0 생성 interrupted, 후속 run 계획 단계 OPENWIKI_SYNC_FAILED 반복; 공급자 사용량·요청 제한 계열 신호, 부분 상태 보존, 새 성공 receipt 없음. D004 참조` |
+| 로컬 0.9.12 `knowledge sync F041-openwiki-writing-style --component web` | `2026-09-05` | `FAIL — 재인증 후 생성 재개, 상세 문서 8개; 존재하지 않는 workflows/vocal-analysis.md 링크가 자동 복구 후에도 남아 OPENWIKI_OUTPUT_INVALID. 새 성공 receipt 없음. D004 참조` |
 | remediation sync + 동일 run resume | `2026-09-04` | `PASS — 30분 상한에서 8/15 보존 후 run 97f97a25…를 재개해 15/15 완료` |
 | 로컬 0.9.12 `knowledge audit F041-openwiki-writing-style --component web --json` | `2026-09-05` | `SYNC_REQUIRED — OPENWIKI_RUN_INCOMPLETE; 생성 후 검증 미완료. 남아 있는 1.2.0 receipt는 이전 실행의 결과` |
 | non-index 상세 페이지 `repo://` Markdown source-link coverage | `2026-09-05` | `PARTIAL — 9/9 상세 페이지에 총 73개 본문 링크 후보; 디렉터리 링크 오류로 유효성 전체 통과 아님` |
