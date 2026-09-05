@@ -116,10 +116,10 @@
 | 로컬 lee-spec-kit `--version` 및 `detect --json` | `2026-09-04` | `PASS — 0.9.12, PROJECT_DETECTED, experimentalOpenwiki=true` |
 | 로컬 lee-spec-kit `knowledge doctor --json` | `2026-09-04` | `PASS — OpenWiki 0.5.0/OKF 0.2, openai-chatgpt gpt-5.6-luna OAuth ready, OPENWIKI_WRITING_POLICY_STALE` |
 | 기존 receipt·INSTRUCTIONS·writing skill 기준선 검사 | `2026-09-04` | `PASS — receipt schema 2, INSTRUCTIONS sha256:6edc1607…f64db, 같은 이름 skill 없음` |
-| 로컬 0.9.12 `knowledge sync F041-openwiki-writing-style --component web` | `2026-09-05` | `FAIL — 구조화 진단으로 analysis-services.md 복원, 복구 2/2 complete·skipped 0. 최종 evidence_integrity 검사에서 change-validation.md:187의 vitest.config.ts L38-L57 범위 초과(실제 55줄). 새 성공 receipt 없음. D004 참조` |
+| 로컬 0.9.12 `knowledge sync F041-openwiki-writing-style --component web` | `2026-09-05` | `PASS — OPENWIKI_SYNCED, 일반 update 13/13·skipped 0, adapter 1.4.0 새 receipt 생성. 추가 진단 복구 pass는 불필요했고 통합 교정은 toolkit 회귀 테스트로 검증. D004 참조` |
 | remediation sync + 동일 run resume | `2026-09-04` | `PASS — 30분 상한에서 8/15 보존 후 run 97f97a25…를 재개해 15/15 완료` |
-| 로컬 0.9.12 `knowledge audit F041-openwiki-writing-style --component web --json` | `2026-09-05` | `SYNC_REQUIRED — POST_GENERATION_VALIDATION_PENDING. 큐 삭제 후에도 동일 run의 2/2·skipped 0 관측값 유지 확인. 1.2.0 receipt는 이전 실행의 결과` |
-| non-index 상세 페이지 `repo://` Markdown source-link coverage | `2026-09-05` | `PARTIAL — 11/11 상세 페이지에 총 111개 본문 링크 후보. 내부 링크 누락 0건이지만 source 인용 범위 오류로 전체 검증 미통과` |
-| 한국어 문체·planner job 전달·대표 페이지 표본 검사 | `2026-09-05` | `PARTIAL — 누락 target과 모든 참조 위치 전달·계획 반영 확인. 분석 서비스 문서에 해요체·출처·흐름도 적용. 일반 영문 용어와 곡 분석 중심 설명의 보컬 분석 연결 적합성은 잔여 품질 위험. D004 참조` |
+| 로컬 0.9.12 `knowledge audit F041-openwiki-writing-style --component web --json` | `2026-09-05` | `PASS — 검증 후 OPENWIKI_COMMIT_REQUIRED. manifest/Claim 파일 13개, Claims 164개, line evidence 342개, file evidence 25개. 성공 후 owner·queue 제거 확인` |
+| non-index 상세 페이지 `repo://` Markdown source-link coverage | `2026-09-05` | `PASS — 13/13개 문서에서 본문 source 링크 141개 검증. 이전 vitest.config.ts 인용이 L38-L55로 교정되고 내부 링크·출처 검증 통과` |
+| 한국어 문체·planner job 전달·대표 페이지 표본 검사 | `2026-09-05` | `표본 확인 — 빠른 시작 단계 안내, 분석 서비스의 보컬·곡 분석 계약 비교 확인. 일반 영문 용어·혼합 설명은 잔여 편집 품질 문제이며 자동 검증과 구분. D004 참조` |
 
 <!-- lee-spec-kit:workflow-sync sha256:c97edef4c4a4f1035c0e6557a761aa3e697fb3ade862d8534b65a5641e4d4b8b -->
