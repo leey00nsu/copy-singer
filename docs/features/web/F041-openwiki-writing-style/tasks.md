@@ -103,10 +103,12 @@
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
 - [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
+- [x] Feature 범위 Knowledge 계약 검증 통과 (통합 전 전체 검증은 별도 `local verify` 결과를 따름) <!-- lee-spec-kit:completion:tests -->
 - [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
 
 구현 승인: 2026-09-05 사용자가 `A`로 F041 적용·생성·검증 결과를 승인했다. 위 테스트 체크는 아래 Knowledge 계약 검증 결과를 가리키며, 통합 전 전체 검증은 `local verify`에서 별도로 실행한다. main 통합은 별도 `local_merge` 승인 전에는 수행하지 않는다. 생성물은 `6dc4494`에 커밋했으며 기존 리뷰 Round 이후의 수정은 D004에 기록한 메인 검증 결과로 남긴다.
+
+재개 승인: 2026-09-05 사용자가 CopySinger DB 복구 후 `A`로 재승인했다. 전체 검증의 이전 실패는 아래 로그에 보존하며 재실행 전 통과로 처리하지 않는다.
 
 ### 테스트 실행 기록
 
