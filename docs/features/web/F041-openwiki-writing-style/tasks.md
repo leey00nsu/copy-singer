@@ -103,7 +103,7 @@
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
 - [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
 - [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
 
 구현 승인: 2026-09-05 사용자가 `A`로 F041 적용·생성·검증 결과를 승인했다. 위 테스트 체크는 아래 Knowledge 계약 검증 결과를 가리키며, 통합 전 전체 검증은 `local verify`에서 별도로 실행한다. main 통합은 별도 `local_merge` 승인 전에는 수행하지 않는다. 생성물은 `6dc4494`에 커밋했으며 기존 리뷰 Round 이후의 수정은 D004에 기록한 메인 검증 결과로 남긴다.
@@ -115,6 +115,7 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
+| 로컬 0.9.12 `local verify F041-openwiki-writing-style --component web --json` | `2026-09-05` | `FAIL — target 9909831. pnpm test의 build 통과 후 vocal-profile-persistence DB 인증 실패. CopySinger PostgreSQL 컨테이너는 중지 상태이며 .env.local의 localhost:5433을 실행 중인 leemage 컨테이너가 점유한다. 다른 프로젝트를 중지하거나 접속 설정을 임의 변경하지 않음. main 통합 전 DB 환경 복구와 재검증 필요` |
 | 로컬 lee-spec-kit `--version` 및 `detect --json` | `2026-09-04` | `PASS — 0.9.12, PROJECT_DETECTED, experimentalOpenwiki=true` |
 | 로컬 lee-spec-kit `knowledge doctor --json` | `2026-09-04` | `PASS — OpenWiki 0.5.0/OKF 0.2, openai-chatgpt gpt-5.6-luna OAuth ready, OPENWIKI_WRITING_POLICY_STALE` |
 | 기존 receipt·INSTRUCTIONS·writing skill 기준선 검사 | `2026-09-04` | `PASS — receipt schema 2, INSTRUCTIONS sha256:6edc1607…f64db, 같은 이름 skill 없음` |
