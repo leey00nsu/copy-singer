@@ -4,7 +4,7 @@ okf_version: "0.2"
 
 # 파일
 
-- [빠른 시작과 작업 경로](quickstart.md) - 로컬에서 Next.js 웹, PostgreSQL, 세 background worker를 실행하고 정상 동작을 확인하는 진입점입니다. 사용자 기능, 카탈로그 운영, 인증·과금, 미디어 수명주기를 변경할 때 읽어야 할 정본 문서로 작업 질문을 연결합니다.
+- [Copysinger 로컬 실행과 코드 탐색 시작하기](quickstart.md) - Copysinger를 로컬 PostgreSQL과 함께 실행하고, 웹 요청과 세 워커의 흐름을 확인한 뒤 첫 변경에 필요한 시스템 문서를 목적별 순서로 찾아가도록 안내해요.
 
 # 디렉터리
 

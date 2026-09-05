@@ -1,4 +1,5 @@
 # 파일
 
-- [추천에서 AI 믹싱 결과까지](recommendation-and-mixing.md) - 저장된 사용자 보컬 프로필을 published catalog와 대조해 추천 snapshot을 만들고, 최신성·레퍼런스·티켓을 검증한 뒤 SoulX-Singer 변환 결과를 저장하고 재생하는 흐름을 설명한다. 화면용 상태와 mixing API가 반환하는 DB 상태의 차이, 실패·재시도·환불 경계도 함께 다룬다.
-- [보컬 녹음에서 프로필까지](vocal-analysis.md) - 브라우저에서 녹음하거나 오디오 파일을 업로드하면 media asset과 분석 job으로 접수되고, Modal의 분석 결과가 VocalProfile과 Recording으로 저장되는 흐름을 설명한다. 큐의 중복 방지, lease 기반 재시도, 알림, 원본 정리와 ticket 환불의 경계도 함께 다룬다.
+- [티켓 접수부터 AI 믹싱 완료·복구까지](mixing-and-recovery.md) - 사용자가 AI 믹싱을 요청하면 요청 검증과 티켓 차감 뒤 PostgreSQL lease 워커가 Modal 변환 작업을 제출하고 결과를 저장해요. 이 페이지는 상태 직렬화, lease 복구, 재시도·환불·취소·알림 규칙을 한 흐름으로 설명해요.
+- [곡 카탈로그 분석과 보컬 기반 추천](recommendations-and-catalog.md)
+- [보컬 업로드에서 분석 결과와 프로필 저장까지](vocal-analysis.md) - 사용자의 오디오 업로드가 소유자 범위의 PostgreSQL 작업 큐와 Leemage 미디어 저장소를 거쳐 Modal 분석기와 VocalProfile 저장으로 이어지는 현재 흐름을 설명해요. 재시도, 소유권, 미디어 정리, 티켓 환불과 알림이 갈리는 지점도 확인할 수 있어요.

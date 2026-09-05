@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:8200e53de443b576f2afc92ce73a4baecc66905c8086ed06aaf61e43d963e9ec",
+  "claims": [
+    {
+      "id": "claim_ea738507d8e24313b68bce50176989be",
+      "statement": "관리자 카탈로그 생성은 Song을 DRAFT로 만들고 SongSource revision, DRAFT CatalogEntry, SongAnalysisJob을 하나의 트랜잭션으로 생성하며, 기존 곡의 새 출처 등록은 revision을 증가시키지만 activeSourceId를 즉시 바꾸지 않아요.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/manage-song-catalog/api/admin-service.ts#L139-L176",
+          "version": "repo-lines-v1:sha256:c672fb2104bad31bc96eb86505c728bf84a148ddd99102e7007bec78b598b4d8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE3NTMwMjFhYmZhZTdmODNiNWMxMGIwMzFmODk1NWYzY2UzYzM2ZGI5NDlhNDcxYTJkM2Q5ZGZmZWQ5ZGM3NDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY0ZWM5M2VkOTVlYTc5YzZjNGQyOTFjMGQ5YzQwMmFiMjQ0NTAxOGFmNGQyMTFlNmVmMDcwMDZhMWM3MmQyNDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc2MjUwNWMxYTIyMmJjOWQyODQyOGRjNTQzOGZhNTFmODA0YjdjMDAxZDFhY2E1ZWJmMGQ0ZDAyOTE0MDFiODUifQ"
+        },
+        {
+          "resource": "repo://src/features/manage-song-catalog/api/admin-service.ts#L72-L119",
+          "version": "repo-lines-v1:sha256:226fd574041679e1654fd91eb717bacf87acd565e88c732acbd4c51c3d584e80:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzNTFlMjlkYjM3ZmY0YzkwOWExNDFhOTM5NjY5MDhmZTY4MWMyNDUzYzIxMjA2NTM5YTg4ZDI2NzQ0NjRkZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI0NDUxNTZkOThhNDliNzM5NDQ2YmVlNTk2MTUwMTE5OWY3MzU0NGQ5MjI0MmRkZWRkYzZmYWQ2M2M1YTdkNDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRhNDYxNjgxNzhiYzEwNzAxMzY4NjEwOTBlOTc1ZjBkMzU5ZDdmYzdiMTMxNzQ4NGNlNzVhYzM1ZGU1MTAyMjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5NTQxOGM2ZmNjZWZjYTI0MGU4NjAzN2I4ODgzM2ViOGJmZTc2OTg0ZjkzYjcyNDllZDk0ZjkyMzk4ZTdiOTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a52a931f5f2340cfa59ea65097377c5b",
+      "statement": "출처를 공개하려면 해당 곡의 출처에 대한 현재 파이프라인 계약 분석이 READY이고 cleanupConfirmed가 true이며, 같은 출처·sourceVideoId의 READY target이 있어야 해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/manage-song-catalog/api/admin-service.ts#L215-L230",
+          "version": "repo-lines-v1:sha256:60994b7addc3d80f4948467b563d20daf54b7052decf2efe6919b8efd11e93a0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2NjA3NTg1NDE3MDUzNTdlMDQwZGU3YmMzMzcyYTdjMDZlMTc1MTZiMmIxNTZmOWM3YTczMjlmNDlmZWQ2NjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzZWVkNzMzZDY1N2YxNmFiNTBjZDQ4NzE3OTU5YWFkNjUwMGM3YmEyZmZmMGIwYzEzMGJkNTIxZDU2N2JlYTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE2YTdmNWI4ODY5MTdiZTNkYTJiYmFmYzJjZjk2ZGM4ODUxNTQzZTM0MGU4NDJjMWZhMDk0MjA2OGNiNWM5NTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2635bf8bee7d4ef69302227da6a964fe",
+      "statement": "출처 공개는 이전 READY 출처를 SUPERSEDED로 만들고 Song의 activeSourceId·currentAnalysisId·targetAssetId·originalKey와 lifecycleStatus를 갱신하며 CatalogEntry를 PUBLISHED로 만들고, 공개 결과가 바뀔 때만 Catalog.revision을 증가시켜요.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/manage-song-catalog/api/admin-service.ts#L234-L261",
+          "version": "repo-lines-v1:sha256:af08bf20c604e5c60721fa7798168306ced21078b4374e06707351439ab769d8:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU3NjZlOWU4OTJmNzg4ZGEyZWZhMGE4ZGYzZjM1MjE3NDBmZjg0MzFkMmZiNzk1MGZmZjM5MTU5YTQ1Y2IxNjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhOGM2MDMzYjk1MmI5MGI0ZmFmMDk3MGQzMDk4MWE4MDk2NmM1NzJlYWZhNGE1NTQyYmNiYjEzMGY0NGNjOTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE2YTdmNWI4ODY5MTdiZTNkYTJiYmFmYzJjZjk2ZGM4ODUxNTQzZTM0MGU4NDJjMWZhMDk0MjA2OGNiNWM5NTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwN2JjOTM5MWFlMmEyODU0ZmM0NjA3ZmU5YTYzNDhkMTY2MzlkZDJlNzBiMjk5MzBmZjFhZDRjYmNlMzFmZGQifQ"
+        },
+        {
+          "resource": "repo://tests/admin-song-catalog.integration.ts#L124-L171",
+          "version": "repo-lines-v1:sha256:68d42f3c6717b5516505581bf01557f30b614ef1a611c7991e81080ca7702960:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4NjhlMzI3YmUwYTdkNzE3NWQ4NzBlMDk1ZmZlOGQzMjc2YTI3NGEyODViYmM3NDhmZjMyMTBmZjk1YTQ0ZmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVjNjFjNTBmZGE1NzBiNzgxMWNjOWVkNzc1Nzc1MGY2YWJlODc5MWIyODdmNDRlODVjNjIwZWJhOTU4ZjM2OGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZkM2I2Yzk2NzZkZjNhMTQ5NDM4OGVjYmExMjJlMGVkNzY2N2RkMTM3ZmQ1ZTVmZjMxYWQ3Zjc1MmIxMDRhYjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk5OWZkNTRiZWRhNThkM2VhYjgyYmI4YjI5NTllZjkyM2UxNmIxNWFkMzY0NmRjMmVmNjU0MTFhYjY5M2IxOTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c93b7b9f9015451abef26280df494ad3",
+      "statement": "곡 분석 워커는 잠금 건너뛰기 방식으로 처리 가능한 job을 claim하고 lease와 heartbeat를 관리하며, Modal 분석 성공 결과를 파이프라인 계약별 SongAnalysis로 저장하고 cleanupConfirmed를 true로 기록해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L127-L179",
+          "version": "repo-lines-v1:sha256:6a1198f492b6671d85e3877e1f925f29d44ae2e8644076d850ecfaf11847cc6a:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3ZTYyY2YxMjA2NTg3OTNmNjI3MmVjY2VkY2Y1YjEyYWY3Y2ZlZGIzMTZiMzVjZTEzY2YyMmQxMzRiOThhMDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIwMTg1ZmRkZjY3MjliMTg3YTcyZWRkNmZhNWViZmFkOTcxMjMxZjRmMDYwYTlhMmI2MjRjMGE1YWExMTBhNjMifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L200-L289",
+          "version": "repo-lines-v1:sha256:b5def2755929b2af1994743630f389d01d185c549334b832b1fde16ffff785a6:eyJzZWxlY3RlZExpbmVDb3VudCI6OTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ2ZjZkMGVjYTkxMjZjNTM5ZGJkYzNhZjQxMzU2ZDBkYTJkMDM0OTdlNTBiZDdkNDc2N2JmYWNkZDk5NWZjNjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyZDExY2FmNDNlOTdlZjM2OWU2YmVlZDFhMjY4YmQwNTgzOGYyOWI5ZGQyNTRiZjY5YmE2NDg4NDE0NzIzNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ1YjNmYWVlOWMwMzc3NTk0NzhhMzQ3NTg1NjA1NGIwYzQ0MTY2OWU3NmQ2NmM0YjUyNzg0ZmJjZGI4NDFkNGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNlZmQ4ZTUzODFmODYxODA4MzhjN2I4MTc4ZjEyODQ3OGI3NjhjMGVhYTEyMDAyOWRlZjQyM2VmMDkwYjdmM2IifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L30-L70",
+          "version": "repo-lines-v1:sha256:27ba0475b6a0ba774cf523b00da113b141f6762d5a1b6fa9642732d0ae855797:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiNDZiYjJhYjk0YWI2YjEzOTVkOGYwMmM1ZDQwYzczZjcxOGZkNzFhZWMyNmY0NjYxNTg3NmU0ZTkzYTk0OTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkMTRlZmE5YTI5ZDJjNDg4ODRmOTJlZGJhMTFkM2RjM2Q0YTA4NmQ2Yjk2M2ZkNjlhODhkMmViNTM1NWE1MDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3NjExZmZmOGZmYTg0NTY0MTg5NWIwMDc3NTY1MjhjMGFjNTZiNWEyOTIyMjA0YjkyMjRhMGE5ZWUzNWRjYmIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fb8983fbbb8340caae624fddbb6a8699",
+      "statement": "추천 서비스는 사용자 소유의 USER VocalProfile과 PUBLISHED 카탈로그를 RepeatableRead 트랜잭션에서 읽고, 활성 source·READY analysis·READY target 및 source 연결이 맞지 않으면 CATALOG_NOT_READY 재시도 가능 503으로 중단해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/song-catalog/api/published-catalog.ts#L6-L61",
+          "version": "repo-lines-v1:sha256:fee6e7c4ee9c1643325b329d00231a04f8078f32fee8db8ff9e145d5b13e19b0:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjM2YxMjlhYjUyNmM3MDIwYmY5ZTA4NmUyZjI5MDU2Nzc2ZmQxZjRjYjMwMTI3N2NlZWYxNGE3NzkyZjI4YjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjMDE5ZTAyMjE3ZWY2M2JjMzBmYTdlZDc0MzdkYzgyZmU3Mjk5MzMzYWFlZmRmMjUzOWE3NjczMzAyMjZjMzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAyMjc0NWM3YmMyNTU2NDNkYzYzNjJmODgyMzgwODk1NjdmMzk2OTRiOTVkYTU4NGNiMWYyOTFjYjNlODQ4ZWQifQ"
+        },
+        {
+          "resource": "repo://src/features/create-recommendation/api/recommendation-service.ts#L84-L112",
+          "version": "repo-lines-v1:sha256:132de97f8ca39ddde1d1dc34ababe992ac3e19243dfb02a8c915d7b3f15c8e78:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1N2ZmOTkzMjZmZjk5MmZlZGE0OWVkN2RmMDFjZjI3N2I5MjA2OTE0NjJhYTk3YmM0NGNjZmU0ZTM1N2JjZTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFjZGRlOTU3MjcxYzEzMTlkOTgxMGQ1MDU2ZDkxY2M3MWRlZDRiNjRiNjRjYTdiNWMyMDEwYzg3OTEzYWEzOTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBmOGMzOWZlODNlZDdhNWQ2ZWFiMDU5MzczMzQ5MGRhYzA3Y2M5YmQ5MTE3OWM1NDU0MmVjNmJmMTQwYzE5NmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAxMGRiYTUyMGUyYzVmNTFjNjBkYmMyNDQzZmY3OWNjZGRkNjdlZTdkNzc5ZjcyZmFkODliNjBhYzkyNjRlNWUifQ"
+        },
+        {
+          "resource": "repo://src/features/create-recommendation/lib/recommendation-data.ts#L17-L67",
+          "version": "repo-lines-v1:sha256:8d3d9d3315416ac616594f846359b313b2d8050b10dd9d44ee05d4a7fdec7ae4:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2N2Y4YWY0ZTFmMGE4Y2RjYzY2ZTI1NGNmNjI1ODUxZWExYTNjOTU3MWVkOTVjMDdmZjc4N2QwMTJiZjA4MTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkZjcxZTIxNGI5MTcwY2JiZTRmOTliZjU2MTRhOTk0MjU0OTRiYmRhNjZjNjYxZjVmZGE1MTRkZDdhYTk5NjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNiNTY3ZDdiYmRlMGQyNjQ3Y2YwNzE1YTU2ZWE2ZTEyMDM4MTZlZTY1NWY4ZmRmYzAzN2ZiYzk2ZjZiNjgyNWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f2f6694c68bc456099f284949ad21dc5",
+      "statement": "key-fit 점수는 모든 설정된 정수 반음 이동 후보를 평가하고 tessitura 겹침 58, tessitura 적합도 26, 극단 음역 적합도 16의 가중치를 사용하며, 사용자와 곡의 analyzer와 analyzerVersion이 같아야 해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/recommendation/lib/key-fit-scorer.ts#L12-L16",
+          "version": "repo-lines-v1:sha256:9547fe53e1199d5d5d2783ab64e8ee7ff9ebbff482ad7dbc5d154b14d0af5d62:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTlkMjI2YTZmN2VlYjgyMGNlNmYxZDk2NWQ3MjRiNTY1MTlkYjg3MGU1ZGJjMjc2NDAxZGVkYmNkYjM4YTI1ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTc0ZWU4YThkMWFhODQ1MzkxYmM2NzllYjcwY2U3ZjQ2YTNjZDZmYjJkMTZmY2NhNjdmYTE3OGY0ZjhjMWUwZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWM2ZTkxN2Q2YWYzN2YxNzIxOWZlODI1OGE3MDMyNzg5OTkzYjI5NTkzOWM0ZDk1ODhkOWY1ZGY1MTE4ZjBkNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWMzMmUwODAwMDQ2MGNjYmQ4MzE0MzA0YTc4ZDM5NWRjNGNmM2IyMDIxZTJiMzdkODUxZGJlOTlmNjlhNzk1OSJ9"
+        },
+        {
+          "resource": "repo://src/entities/recommendation/lib/key-fit-scorer.ts#L135-L189",
+          "version": "repo-lines-v1:sha256:bec3ce59130e8559f1821c2bcaad16474a25d20871ddef519f76f40554526123:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlhOGVmZDRkOGIzYTgyMDM1ZGFlZDgwNWE3NGViNzViNDBmNzE5ZGI3ZDcxMTM5OTQxNWFhNDg2ZWM1ZTNiZTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmYzFiMGE3YzkzYWY0ZjA1ODMzYzhmMDZmOWUzZGU0NjhjYmFlZThhZGNiNTk4ZjJkNTdjMTI5NmE4YjY4ODgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMxNDJmNzg4MzlhMzQxOTc5YmYyOGM5Y2RkZjViOTJlODUzMWU0OTIwNmIyMzMwZmQ2MjYwOWQ4YTFiNGJmN2IifQ"
+        },
+        {
+          "resource": "repo://src/entities/recommendation/lib/key-fit-scorer.ts#L239-L263",
+          "version": "repo-lines-v1:sha256:13647bc4f8bffc830aa327ff93653c86225b7412d7a7484be2c8d38b8fa222a9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiZTEwMGJlN2M2ZTgyYmZiMzdhYTg5ZjU4ODVkYmY2ZDk4YWI1MTA5ZTNmMDI3NDg4OWY3ZTU2NWZkMmVkZjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3M2IxMTI1MTEwYjFjYzE2YzZkYmI2ODBjMWI3ZTc2NjE2YzMzNDdhZTIyZWEzZmQ0ZjBjMjE0MjQ5NWNmZDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/entities/recommendation/lib/key-fit-scorer.ts#L90-L106",
+          "version": "repo-lines-v1:sha256:95ed9e9d53cf3ffdf1a889e90962f62d752fc1d61b0b450f8baf6b5bc528d74e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExMjIwNTk5ZWIwNGQ5YzE3NjA4OWIxZGJiZmYyMjE0Mjc5YzZjOTAxOTE2MWZkNTE2ZWE2MzBlMmQ3YjcwOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwOTg4YmE5NjdlN2YwNzk4NmNkZTBjYmZkNzc2ZGMxNTFmZDQwNjBiYWJjZWY3NDc5OTk4YmM2YTlmZjQ2NjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fd042959c58542b3825457a2ad8cafd0",
+      "statement": "추천 selectionScore는 원키 점수 65%와 조정 점수 35%의 합에서 추천 키 이동량별 penalty를 차감하고, 동점이면 원키 점수·조정 점수·이동량 절댓값·catalog position 순으로 정렬해 rank를 부여해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/recommendation/lib/ranking.ts#L34-L85",
+          "version": "repo-lines-v1:sha256:cc77d42ff6c4f595b6758871b8907599112ccbefac46fa0053c42b04556e6d3f:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZDU1MmE4NzY5Nzg5MDRhZDIzZTY5NmQxNGI5YmRkNTdlMTJjMDhiOTRlYmQ0MGM2NWI0YzNkMWFkYzZiM2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5NGZjMGMxNzNkMWVjM2ZjNTAxZDdkZmE5Mjg1NTAxYzUyN2NmYjQ3MTI1ODNkYTNjYzM2MTgwNTY2YjRiZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU4Yzg1MDU1ZDAxYWExMjE0YmVmMjVhMzJkZTM2MGJmZjlmNTA4Njk5ZmFlMGEzZmIwMjBiY2U0NjNlNmZkNjYifQ"
+        },
+        {
+          "resource": "repo://src/entities/recommendation/lib/ranking.ts#L7-L31",
+          "version": "repo-lines-v1:sha256:e3f04c14e2c243bdf89928c793f09c8819008b02eb04f4eff5d8eedda9d77cb7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4N2JjNmNiYjk4MzEzOTAzYjU2M2YyZjgyOWUzZjMzNTgxN2MzNzJlNzcyODllZTJkNGRjZDNmOTNkNzYyOTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZWYwMWJjMDhkYmMzYjYzZTRlNzVlYTNkMjZhNWI5NDE4OTE4NzdlMjdhZDg5MTMyOWM4NDExZDdkOGRjNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA3YzFhNTMyMDFmNjc2N2VhOTM1NjNjYTc1MTZmODZlYWY5NzhkOWUwOTA5OTk1ZDljNWYxMzliZTNjNWEzMmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFiYzVlNDg2MDVmZjVkMDIzMWI1ZDc1NjJiZDY1ZDJhMDE5ODdmNTEzNjQ4YzJhZmVmMmJmNjU4MmYwYTQ3ZmQifQ"
+        },
+        {
+          "resource": "repo://tests/recommendation-ranking.test.ts#L53-L86",
+          "version": "repo-lines-v1:sha256:5ed1b5a6c09c7bea84aa355be7bb8e88097eb973c893f24239b66cd15682e8dc:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmNmVmODg0Y2I2MzI2YzRlZWM2YzUzNmYwZTIzZGQ1YTU4NGI1NTMwNGE4MjI4NWExYTNkYWU0ZWM3MmM1OWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzMjYyNDlhZDVjMjNkNWFmNDYzZmQzYjVlOGUxNDdhZGFkZTVhOTRkMzY4YTBiNzM3YzBiYWYyYzRhODU0NGQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b1cbfff3ce344b45a7d018b4bdb904c4",
+      "statement": "관리자 통합 테스트와 추천 ranking 테스트는 idempotency, 분석·target 선행 조건, 공개 포인터와 catalog revision, 결정적 순위, 빈 카탈로그 및 active revision 불일치 실패를 검증해요.",
+      "evidence": [
+        {
+          "resource": "repo://tests/admin-song-catalog.integration.ts#L23-L172",
+          "version": "repo-lines-v1:sha256:8043167099c3625b010500a134c0b7327169984f261a78f8c756b703f1bcca2f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIxZWRlNmIxNDhlZjI4MzQ4ZjQ4NzNkYTQwZWVmMTMxYTQxMmFlMWI5YmYwYmJiZjExMWFhYTY0MTNjNTM5NDQ4IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI4NGU0MjA4Y2Q2ZmZiOGM0YTM1NDdiMmY1NGFkYTE5OTc4YzNmMzY1ZTc4Zjk1MDJlZjUxNDVjZGQyYWE4NTQzIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlYjFlYTE1YTBmN2IxZDc3NDFjMDkyZGU4MDJkMzlmZGE0NDM0ZWNmMDVmOTQzNThjNmYzNjljYTkxMTZlMjJmIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJmMzFkNjI2MGZiODQ0Y2ZmM2QyY2U3YjBmNjA2OWI5N2M4NGY1ZmQ1NzJiNmY0NTFkYWMyMDZhY2MxMjkxNjE3In0"
+        },
+        {
+          "resource": "repo://tests/recommendation-ranking.test.ts#L227-L251",
+          "version": "repo-lines-v1:sha256:06dfe483c6582b63e346f3e2d94d9e61b0b363becb95e2c148cc3518e7bf0d86:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5NWIxNTUwZTNkMzAzYmNiZmEwY2Y3Mzk4YWFlYTQ4ODBmODUyZTk3NzA2NDUyNTlhNDRhN2Q5NzA0NzQxYTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUxZGRlMGEyNmI2MWQzOWY4ZjhiOWQzNzYxOGQ4YWFmNTJlZTMyMDdkYmVkNWJjNWJiNDg4MGM1MDhlNmY5MWYifQ"
+        },
+        {
+          "resource": "repo://tests/recommendation-ranking.test.ts#L88-L102",
+          "version": "repo-lines-v1:sha256:177e53217ed79389a8a329b11bf6156798ad1a120b82dbcd55aabfaa0844d103:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwNGYwY2QzYjMzMmExY2ZkYWYwYjNkYWNhNDgyMWVlZWY0YTZlNzkxNWU2MzQ4YzkzOWYyMGEyZDgwMzA0ZTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY4MGQyZGQ0ZjI4OWQyNmRjNzU3YzJiNjVhMDZjMzkyMjdhNjcxN2M0YjQ4YjVhMzk3OTJjOWYxMWU0MWFlYTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU0ODA3ZjQzOTQ5MzVkZmQ1MDg0ZjQzMWY2MGUzYmNjZjAxN2E5MWNjZmEwY2Q2MWEyODcwYjM4MWU4NDNhYWMifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-05T04:28:19.819Z"
+  }
+}

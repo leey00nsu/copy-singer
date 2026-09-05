@@ -1,11 +1,11 @@
 ---
-type: 빠른 시작 안내
-title: 빠른 시작과 작업 경로
-description: 로컬에서 Next.js 웹, PostgreSQL, 세 background worker를 실행하고 정상 동작을 확인하는 진입점입니다. 사용자 기능, 카탈로그 운영, 인증·과금, 미디어 수명주기를 변경할 때 읽어야 할 정본 문서로 작업 질문을 연결합니다.
-tags: [quickstart, onboarding, runtime, task-routing]
+type: 로컬 실행 튜토리얼
+title: Copysinger 로컬 실행과 코드 탐색 시작하기
+description: Copysinger를 로컬 PostgreSQL과 함께 실행하고, 웹 요청과 세 워커의 흐름을 확인한 뒤 첫 변경에 필요한 시스템 문서를 목적별 순서로 찾아가도록 안내해요.
+tags: [onboarding, quickstart, runtime, workers]
 verified:
   - by: openwiki/0.5.0
-    at: 2026-09-04T16:46:07.057Z
+    at: 2026-09-05T04:28:19.819Z
 sources:
   - id: openwiki-source-b79fbbd921df689b4bbdc82f
     resource: repo://docker-compose.yml
@@ -17,118 +17,86 @@ sources:
     resource: repo://scripts/mixing-worker.ts
   - id: openwiki-source-932d9872d5647bdfeb9f5cd7
     resource: repo://scripts/song-analysis-worker.ts
-  - id: openwiki-source-f1adf7db889a7f8493008153
-    resource: repo://scripts/verify-database.ts
   - id: openwiki-source-4190e707c6ec6879dbd06e87
     resource: repo://scripts/vocal-profile-analysis-worker.ts
-  - id: openwiki-source-eaa76879de1a19c0db5c6ebb
-    resource: repo://src/_app/background-jobs/mixing/worker.ts
-  - id: openwiki-source-200291f8a1aaa391d1b68ec4
-    resource: repo://src/shared/config/server-env.ts
-  - id: openwiki-source-40f066ec25259d78385397d2
-    resource: repo://src/shared/db/prisma.ts
-generated: { by: "openwiki/0.5.0", at: "2026-09-04T16:46:07.057Z" }
+  - id: openwiki-source-e746e2d352e86c69ac1ad6c4
+    resource: repo://src/_app/background-jobs/mixing/runner.ts
+  - id: openwiki-source-9e8a0aed489d44bc2fbea993
+    resource: repo://src/_app/background-jobs/song-analysis/runner.ts
+  - id: openwiki-source-9323b2aad36f9dea3b710fc8
+    resource: repo://src/_app/background-jobs/vocal-profile-analysis/runner.ts
+generated: { by: "openwiki/0.5.0", at: "2026-09-05T04:28:19.819Z" }
 ---
 
-# 빠른 시작과 작업 경로
+`pnpm dev`까지 실행하면 Copysinger의 Next.js 웹과 믹싱·보컬 프로필 분석·곡 분석 워커가 함께 시작돼요. 먼저 로컬 데이터베이스를 준비하고, 브라우저에서 `http://localhost:3000`을 확인하세요. 그다음 바꾸려는 영역에 맞춰 시스템 경계, 런타임 설정, 워크플로, 테스트 문서를 순서대로 읽으면 안전한 첫 변경 경로를 잡을 수 있어요.
 
-이 페이지는 저장소를 처음 실행하는 개발자가 **웹·PostgreSQL·세 background worker가 함께 동작하는지 확인한 뒤**, 변경할 영역의 정본 문서로 이동하도록 돕는다. 브라우저 요청은 Next.js가 받고, 분석·믹싱 작업은 PostgreSQL에 기록하며, 별도 worker가 처리한다. [README의 실행 요구사항과 로컬 절차](repo://README.md#L149-L184)를 기준으로 시작한다.
+## 로컬에서 동작하는 상태 만들기
 
-## 로컬 실행
+저장소가 요구하는 기본 도구는 Node.js `>=22.13.0`, pnpm `11.9.0`, Docker 20 이상이에요. 외부 분석·인증·미디어 기능을 실제로 사용하려면 Google OAuth, Leemage, 배포된 Modal 서비스와 필요한 환경 설정도 준비해야 해요. 이 페이지에서는 비밀값을 복사하지 않아요.
 
-### 필요한 도구와 설정
-
-- Node.js `22.13.0` 이상
-- `pnpm 11.9.0`
-- Docker 20 이상
-- 실제 인증·미디어·분석 기능에 필요한 Google OAuth web client, Leemage project/API key, 배포된 Modal 분석·믹싱 service, FFmpeg
-
-비밀값이나 ignored 환경 파일의 값은 문서와 명령에 복사하지 않는다. 애플리케이션은 `DATABASE_URL`을 필수로 읽고, 외부 service 설정은 환경변수로 읽는다. 값의 필수 여부와 허용 범위는 [서버 환경 설정](repo://src/shared/config/server-env.ts#L3-L74), Prisma 연결은 [Prisma client 설정](repo://src/shared/db/prisma.ts#L8-L16)에서 확인한다.
-
-### 권장 실행 순서
-
-저장소 루트에서 실행한다.
+`.env.example`을 복사하는 명령은 README에 있지만, 현재 추적 파일 메타데이터에서는 `.env.example`을 확인할 수 없어요. 따라서 그 파일의 실제 제공 여부와 환경 변수 목록은 이 생성 입력에서 확정할 수 없어요. 파일이 제공되는 작업 트리에서만 다음 명령을 실행하고, 값은 각 개발 환경의 비밀 관리 방식으로 채우세요.
 
 ```bash
 pnpm install --frozen-lockfile
+cp .env.example .env.local
 docker compose up -d
 pnpm run db:migrate:deploy
 pnpm run db:generate
 pnpm dev
 ```
 
-`docker compose up -d`는 `postgres:16-alpine`을 시작하고 기본적으로 호스트 `5433`을 컨테이너의 PostgreSQL `5432`에 연결한다. `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_PORT`는 환경변수로 덮어쓸 수 있으므로 `DATABASE_URL`이 같은 데이터베이스를 가리키는지 확인한다. Compose는 `pg_isready` healthcheck를 사용한다. [Compose 정의](repo://docker-compose.yml#L2-L20)에 포트, volume, healthcheck가 있다.
+`docker compose up -d`는 `postgres:16-alpine`을 실행하고 호스트의 `5433` 포트를 컨테이너의 `5432` 포트에 연결해요. `postgres_data` 볼륨은 데이터베이스 데이터를 유지하고, Compose healthcheck는 `pg_isready`를 사용해요. `DATABASE_URL`이 로컬 PostgreSQL을 가리키는지 확인한 뒤 migration과 Prisma Client 생성을 실행하세요.
 
-`db:migrate:deploy`는 migration을 적용하고 `db:generate`는 Prisma client를 만든다. 스키마를 변경하는 개발 작업에는 `pnpm run db:migrate`, migration 상태에는 `pnpm run db:status`, 연결·관계 확인에는 `pnpm run db:verify`를 사용한다. seed 데이터가 필요할 때만 `pnpm run db:seed`를 실행한다. 명령의 정본은 [package.json scripts](repo://package.json#L9-L44)다.
+실행이 끝나면 `http://localhost:3000`을 열어 웹이 응답하는지 확인하세요. `pnpm dev`는 `concurrently --kill-others-on-fail`로 네 프로세스를 감독해요. 웹이나 워커 하나가 실패하면 나머지도 종료되므로, 터미널의 해당 프로세스 로그를 먼저 확인하세요.
 
-### 실행 확인 지점
+## 웹 요청과 워커의 경계 이해하기
 
-- 웹: <http://localhost:3000>
-- 공개 랜딩: `/`
-- 녹음·업로드와 보컬 분석: `/profile`
-- 추천 결과: `/recommendations/[id]` (`/recommendations` 단독 화면은 없다)
-- 보컬 프로필·믹싱 결과: `/library`
-- 계정·티켓 원장: `/account`
-- 관리자와 곡 카탈로그: `/admin`, `/admin/songs`
-- 관리자 커스텀 믹싱: `/admin/custom-mixing`
-
-`pnpm dev`는 `concurrently --kill-others-on-fail`로 웹과 다음 세 worker를 함께 실행한다. 따라서 한 프로세스가 실패하면 나머지도 종료된다.
-
-| 프로세스 | 실행 명령 | 책임 |
-| --- | --- | --- |
-| 웹 | `pnpm run dev:web` | Next.js App Router와 Route Handler 제공 |
-| 믹싱 worker | `pnpm run worker:mixing` | SoulX-Singer/Modal 믹싱 job 처리 |
-| 보컬 분석 worker | `pnpm run worker:vocal-profile-analysis` | 사용자 녹음의 보컬 프로필 분석 처리 |
-| 곡 분석 worker | `pnpm run worker:song-analysis` | 관리자 카탈로그 곡 분석 처리 |
-
-`pnpm start`도 `start:web`과 같은 세 worker를 감독한다. 이 묶음은 단일 인스턴스에서 하나의 실패를 전체 재시작 신호로 전달하는 운영 전제다. 실제 명령 묶음은 [package.json의 dev/start scripts](repo://package.json#L9-L21)에서 확인한다.
+웹은 오래 걸리는 분석·믹싱을 직접 기다리지 않고 PostgreSQL 작업 큐에 접수해요. 워커는 큐에서 작업을 점유하고, 필요한 외부 분석 또는 믹싱 서비스를 호출한 뒤 상태와 결과를 데이터베이스에 저장해요.
 
 ```mermaid
 flowchart LR
-    B[브라우저] --> W[Next.js 웹]
-    W --> DB[(PostgreSQL)]
-    DB --> V[보컬 분석 worker]
-    DB --> S[곡 분석 worker]
-    DB --> M[믹싱 worker]
-    V --> A[Modal 분석 service]
-    S --> A
-    M --> X[SoulX-Singer/Modal 믹싱 service]
+  Browser[브라우저] --> Web[Next.js 웹]
+  Web --> Queue[(PostgreSQL 작업 큐)]
+  Queue --> Mixing[믹싱 워커]
+  Queue --> Vocal[보컬 프로필 분석 워커]
+  Queue --> Song[곡 분석 워커]
+  Mixing --> Modal[Modal SoulX 서비스]
+  Song --> Analyzer[Modal 곡 분석 서비스]
+  Vocal --> VocalAnalyzer[Modal 보컬 분석 서비스]
+  Mixing --> Queue
+  Song --> Queue
+  Vocal --> Queue
 ```
 
-웹은 작업을 PostgreSQL에 접수하고 즉시 응답한다. worker는 새 `PENDING` 작업 또는 lease가 없거나 만료된 처리 중 작업을 원자적으로 점유한다. 유효한 lease를 가진 다른 worker의 작업은 점유하지 않는다. 따라서 worker 재시작 뒤 만료 작업을 다시 처리할 수 있지만, 같은 작업을 동시에 처리하도록 만드는 구성은 피해야 한다. claim·lease·외부 job ID·재시도 semantics는 [durable worker 아키텍처](/openwiki/architecture/durable-workers.md)에서 확인한다.
+세 워커의 추적 가능한 시작점은 [`package.json`의 worker scripts](repo://package.json#L9-L23)예요. 각 스크립트는 `.env.local`을 `.env`보다 먼저 읽고, 대응하는 `run...Worker()` 런처를 호출해요. [믹싱 워커 엔트리포인트](repo://scripts/mixing-worker.ts#L3-L7), [곡 분석 워커 엔트리포인트](repo://scripts/song-analysis-worker.ts#L3-L6), [보컬 프로필 분석 워커 엔트리포인트](repo://scripts/vocal-profile-analysis-worker.ts#L3-L8)에서 이 연결을 직접 따라가세요.
 
-## 작업 질문별 정본 문서
+워커 런처는 설정된 동시성만큼 lane을 만들고 각 lane에 고유한 소유자 문자열을 부여해요. 처리할 작업이 없으면 1초 쉬며 다시 확인하고, `SIGINT`나 `SIGTERM`을 받으면 새 polling을 멈춰요. 실제 lease, 재시도, 외부 job polling 규칙은 실행 명령과 분리된 운영 계약이므로 [로컬·운영 실행과 워커 설정 레퍼런스](operations/configuration-and-runtime.md)를 먼저 참고하세요.
 
-아래 표에서 질문에 가장 가까운 행을 먼저 읽는다. 이 페이지는 실행 진입점이고, 각 문서가 해당 영역의 소유권·상태·변경 경계를 설명한다.
+세 워커의 외부 호출 방식은 같지 않아요. 믹싱과 곡 분석은 외부 job ID를 저장하고 상태를 polling하지만, 보컬 프로필 분석은 하나의 동기 analyzer 응답을 기다려요. 이 차이를 무시하고 워커를 수정하면 재시작과 실패 처리가 달라질 수 있으니, 도메인 변경 전에 해당 워크플로를 읽으세요.
 
-| 작업 질문 | 먼저 읽을 정본 | 여기서 확인할 것 |
-| --- | --- | --- |
-| 사용자가 녹음하고 분석·추천·믹싱 결과를 확인하는 흐름은 어디에 있는가? | [사용자 기능: 도메인 데이터 모델](/openwiki/concepts/domain-data-model.md) | `Recording`, `VocalProfile`, `Song`, job와 결과의 영속 관계 |
-| 관리자가 곡과 YouTube 출처를 등록·분석·게시하려면 무엇을 지켜야 하는가? | [카탈로그 수집·분석·게시 운영](/openwiki/operations/catalog-ingestion-and-publishing.md) | PostgreSQL 큐, 분석 결과, target asset, 검증·게시 순서 |
-| Google OAuth, 관리자 접근, 사용자 소유권, signup grant와 티켓 차감은 어떻게 이어지는가? | [인증·데이터 소유권·티켓과 알림](/openwiki/concepts/identity-ownership-and-entitlements.md) | 세션 경계, 소유권 검사, 티켓 원장과 작업 실패 시 비용 의미 |
-| reference와 결과 audio는 어디에 저장되고 언제 정리되는가? | [미디어 저장·프록시·정리 수명주기](/openwiki/operations/media-lifecycle.md) | Leemage 파일과 PostgreSQL metadata, private audio proxy, cleanup 복구 |
+## 첫 변경을 위한 문서 읽기 순서
 
-구조 경계를 바꾸는 작업은 [시스템 경계와 요청 표면](/openwiki/architecture/system-boundaries.md), worker의 점유·lease를 바꾸는 작업은 [durable worker 아키텍처](/openwiki/architecture/durable-workers.md)를 함께 읽는다. 외부 API 인증과 파일 경계를 바꿀 때는 [외부 service 연동 문서](/openwiki/integrations/external-services.md)를 참고한다.
+변경 목적을 먼저 정하고 아래 순서로 이동하세요. 각 문서는 현재 코드와 테스트를 함께 확인할 때 사용할 목적별 안내서예요.
 
-## 변경 후 확인
+1. **호출 위치와 public API 경계가 궁금하면** [Next.js와 Feature-Sliced 시스템 경계 이해하기](architecture/system-boundaries.md)를 읽으세요. `app/` route adapter에서 `src/_app/`과 FSD 레이어로 들어가는 경계를 먼저 확인하세요.
+2. **환경 변수, migration, 워커 수명 주기를 확인하려면** [로컬·운영 실행과 워커 설정 레퍼런스](operations/configuration-and-runtime.md)를 읽으세요. 동시성·lease·poll 간격의 현재 계약과 로컬/운영 명령을 여기서 확인하세요.
+3. **보컬 업로드와 분석을 바꾸려면** [보컬 업로드에서 분석 결과와 프로필 저장까지](workflows/vocal-analysis.md)를 읽으세요. 큐 접수부터 외부 분석, 저장, 실패·환불 경계를 따라가세요.
+4. **믹싱 접수나 복구를 바꾸려면** [티켓 접수부터 AI 믹싱 완료·복구까지](workflows/mixing-and-recovery.md)를 읽으세요. lease, 외부 job polling, 재시도와 결과 저장의 순서를 확인하세요.
+5. **곡 카탈로그나 추천을 바꾸려면** [곡 카탈로그 분석과 보컬 기반 추천](workflows/recommendations-and-catalog.md)을 읽으세요. 분석 결과가 공개 카탈로그와 추천 결과로 이어지는 경계를 확인하세요.
+6. **인증·미디어·Modal 호출을 바꾸려면** [Google OAuth·Leemage·Modal 연동 계약](integrations/external-services.md)을 읽으세요. 입력, 인증 설정, 결과와 실패 계약을 확인하세요.
+7. **변경 후 검증 방법을 고르려면** [변경 범위별 테스트와 아키텍처 검증 선택하기](testing/change-validation.md)를 읽으세요. 변경 범위 테스트를 먼저 고르고 필요한 전체 검증을 추가하세요.
 
-빠른 정적 검사는 다음과 같다.
+## 변경 후 확인할 명령
+
+작은 변경은 관련된 변경 범위 테스트부터 실행하세요. 전체 회귀와 production build까지 확인하려면 다음 명령을 사용하세요.
 
 ```bash
+pnpm test
 pnpm run check
-pnpm run db:validate
 ```
 
-기능을 바꿀 때는 전체 `pnpm test`보다 먼저 관련 검사를 고른다. 인증·소유권은 `pnpm run test:auth:db`, 티켓은 `pnpm run test:tickets`, 미디어는 `pnpm run test:media`, 카탈로그는 `pnpm run test:catalog-targets`와 `pnpm run test:song-analysis-queue`, worker 큐는 `pnpm run test:vocal-profile-analysis-queue`와 `pnpm run test:mixing:db`가 초점이다. 명령과 전체 회귀 구성은 [package.json 테스트 scripts](repo://package.json#L23-L67)에서 확인한다.
+`pnpm test`는 build와 도메인·통합·API·경계·Storybook 검증을 포함해요. `pnpm run check`는 Biome, lint, TypeScript, FSD architecture 검사를 실행해요. 변경 범위별 명령과 실패 시 분기 기준은 [변경 범위별 테스트와 아키텍처 검증 선택하기](testing/change-validation.md)에서 확인하세요.
 
-전체 회귀 묶음은 `pnpm test`다. 이 명령은 production build, 도메인·DB integration, API contract, FSD boundary, Storybook interaction까지 실행하므로 PostgreSQL과 외부 service가 필요한 검사의 전제조건을 먼저 확인한다.
+## 다음 탐색 지점
 
-## 문제 발생 시 확인 순서
-
-1. PostgreSQL 컨테이너 상태와 Compose 노출 포트가 `DATABASE_URL`과 일치하는지 확인한다.
-2. `pnpm run db:status`로 migration 상태를 확인하고 필요하면 `pnpm run db:migrate:deploy`를 다시 실행한다.
-3. `pnpm run db:verify`로 데이터베이스 연결과 관계를 확인한다. `DATABASE_URL`이 없으면 이 검사는 실패한다.
-4. 외부 API를 사용하는 시나리오라면 service URL과 key가 설정되었는지 확인한다. worker가 `.env.local`, `.env`를 읽더라도 비밀값을 로그나 문서에 남기지 않는다.
-5. 한 worker만 재현하려면 웹을 중지하고 표의 해당 `pnpm run worker:*` 명령을 실행한다. lease 만료·재시도·외부 job ID 복구는 [durable worker 아키텍처](/openwiki/architecture/durable-workers.md)의 failure semantics를 따른다.
-
-실행이 정상화된 뒤에는 작업 질문별 정본으로 이동한다. 사용자 기능의 데이터 관계는 [도메인 데이터 모델](/openwiki/concepts/domain-data-model.md), 운영 수명주기는 [미디어 수명주기](/openwiki/operations/media-lifecycle.md), 접근·과금은 [인증·소유권·entitlement](/openwiki/concepts/identity-ownership-and-entitlements.md)에서 계속 확인한다.
+실행만 확인했다면 [Next.js와 Feature-Sliced 시스템 경계 이해하기](architecture/system-boundaries.md)에서 실제 코드의 첫 호출 경계를 추적하세요. 워커 설정을 조정하거나 로컬 장애를 조사할 때는 [로컬·운영 실행과 워커 설정 레퍼런스](operations/configuration-and-runtime.md)로 돌아오세요.
