@@ -116,10 +116,10 @@
 | 로컬 lee-spec-kit `--version` 및 `detect --json` | `2026-09-04` | `PASS — 0.9.12, PROJECT_DETECTED, experimentalOpenwiki=true` |
 | 로컬 lee-spec-kit `knowledge doctor --json` | `2026-09-04` | `PASS — OpenWiki 0.5.0/OKF 0.2, openai-chatgpt gpt-5.6-luna OAuth ready, OPENWIKI_WRITING_POLICY_STALE` |
 | 기존 receipt·INSTRUCTIONS·writing skill 기준선 검사 | `2026-09-04` | `PASS — receipt schema 2, INSTRUCTIONS sha256:6edc1607…f64db, 같은 이름 skill 없음` |
-| 로컬 0.9.12 `knowledge sync F041-openwiki-writing-style --component web` | `2026-09-05` | `FAIL — 내부 링크 진단 전달 확인; 복구 계획 6 complete/3 skipped, OPENWIKI_RUN_INCOMPLETE 및 OPENWIKI_SKIPPED_PAGES_OBSERVED. 보컬 분석·추천/믹싱 복원 후 상세 문서 10개지만 analysis-services.md 누락 링크 4건 잔존. 새 성공 receipt 없음. D004 참조` |
+| 로컬 0.9.12 `knowledge sync F041-openwiki-writing-style --component web` | `2026-09-05` | `FAIL — 구조화 진단으로 analysis-services.md 복원, 복구 2/2 complete·skipped 0. 최종 evidence_integrity 검사에서 change-validation.md:187의 vitest.config.ts L38-L57 범위 초과(실제 55줄). 새 성공 receipt 없음. D004 참조` |
 | remediation sync + 동일 run resume | `2026-09-04` | `PASS — 30분 상한에서 8/15 보존 후 run 97f97a25…를 재개해 15/15 완료` |
-| 로컬 0.9.12 `knowledge audit F041-openwiki-writing-style --component web --json` | `2026-09-05` | `SYNC_REQUIRED — OPENWIKI_RUN_INCOMPLETE; 별도 audit은 큐 삭제 후 skipped 관측값을 잃고 SOURCE_DRIFT_OR_SKIPPED_PAGES로 안내. 1.2.0 receipt는 이전 실행의 결과` |
-| non-index 상세 페이지 `repo://` Markdown source-link coverage | `2026-09-05` | `PARTIAL — 10/10 상세 페이지에 총 109개 본문 링크 후보; 생성 중단과 내부 링크 4건 때문에 전체 검증 통과 아님` |
-| 한국어 문체·planner job 전달·대표 페이지 표본 검사 | `2026-09-05` | `PARTIAL — 9개 job에 지침 전달, 해요체·용어·빠른 시작 탐색 개선; 혼합 문서 유형·영문·긴 문단과 .env.example 존재 설명 문제 잔존. D004 참조` |
+| 로컬 0.9.12 `knowledge audit F041-openwiki-writing-style --component web --json` | `2026-09-05` | `SYNC_REQUIRED — POST_GENERATION_VALIDATION_PENDING. 큐 삭제 후에도 동일 run의 2/2·skipped 0 관측값 유지 확인. 1.2.0 receipt는 이전 실행의 결과` |
+| non-index 상세 페이지 `repo://` Markdown source-link coverage | `2026-09-05` | `PARTIAL — 11/11 상세 페이지에 총 111개 본문 링크 후보. 내부 링크 누락 0건이지만 source 인용 범위 오류로 전체 검증 미통과` |
+| 한국어 문체·planner job 전달·대표 페이지 표본 검사 | `2026-09-05` | `PARTIAL — 누락 target과 모든 참조 위치 전달·계획 반영 확인. 분석 서비스 문서에 해요체·출처·흐름도 적용. 일반 영문 용어와 곡 분석 중심 설명의 보컬 분석 연결 적합성은 잔여 품질 위험. D004 참조` |
 
 <!-- lee-spec-kit:workflow-sync sha256:c97edef4c4a4f1035c0e6557a761aa3e697fb3ade862d8534b65a5641e4d4b8b -->
