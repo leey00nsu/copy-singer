@@ -116,10 +116,10 @@
 | 로컬 lee-spec-kit `--version` 및 `detect --json` | `2026-09-04` | `PASS — 0.9.12, PROJECT_DETECTED, experimentalOpenwiki=true` |
 | 로컬 lee-spec-kit `knowledge doctor --json` | `2026-09-04` | `PASS — OpenWiki 0.5.0/OKF 0.2, openai-chatgpt gpt-5.6-luna OAuth ready, OPENWIKI_WRITING_POLICY_STALE` |
 | 기존 receipt·INSTRUCTIONS·writing skill 기준선 검사 | `2026-09-04` | `PASS — receipt schema 2, INSTRUCTIONS sha256:6edc1607…f64db, 같은 이름 skill 없음` |
-| 로컬 0.9.12 `knowledge sync F041-openwiki-writing-style --component web` | `2026-09-05` | `FAIL — 재인증 후 생성 재개, 상세 문서 8개; 존재하지 않는 workflows/vocal-analysis.md 링크가 자동 복구 후에도 남아 OPENWIKI_OUTPUT_INVALID. 새 성공 receipt 없음. D004 참조` |
+| 로컬 0.9.12 `knowledge sync F041-openwiki-writing-style --component web` | `2026-09-05` | `FAIL — 내부 링크 진단 전달 확인; 복구 계획 6 complete/3 skipped, OPENWIKI_RUN_INCOMPLETE 및 OPENWIKI_SKIPPED_PAGES_OBSERVED. 보컬 분석·추천/믹싱 복원 후 상세 문서 10개지만 analysis-services.md 누락 링크 4건 잔존. 새 성공 receipt 없음. D004 참조` |
 | remediation sync + 동일 run resume | `2026-09-04` | `PASS — 30분 상한에서 8/15 보존 후 run 97f97a25…를 재개해 15/15 완료` |
-| 로컬 0.9.12 `knowledge audit F041-openwiki-writing-style --component web --json` | `2026-09-05` | `SYNC_REQUIRED — OPENWIKI_RUN_INCOMPLETE; 생성 후 검증 미완료. 남아 있는 1.2.0 receipt는 이전 실행의 결과` |
-| non-index 상세 페이지 `repo://` Markdown source-link coverage | `2026-09-05` | `PARTIAL — 9/9 상세 페이지에 총 73개 본문 링크 후보; 디렉터리 링크 오류로 유효성 전체 통과 아님` |
+| 로컬 0.9.12 `knowledge audit F041-openwiki-writing-style --component web --json` | `2026-09-05` | `SYNC_REQUIRED — OPENWIKI_RUN_INCOMPLETE; 별도 audit은 큐 삭제 후 skipped 관측값을 잃고 SOURCE_DRIFT_OR_SKIPPED_PAGES로 안내. 1.2.0 receipt는 이전 실행의 결과` |
+| non-index 상세 페이지 `repo://` Markdown source-link coverage | `2026-09-05` | `PARTIAL — 10/10 상세 페이지에 총 109개 본문 링크 후보; 생성 중단과 내부 링크 4건 때문에 전체 검증 통과 아님` |
 | 한국어 문체·planner job 전달·대표 페이지 표본 검사 | `2026-09-05` | `PARTIAL — 9개 job에 지침 전달, 해요체·용어·빠른 시작 탐색 개선; 혼합 문서 유형·영문·긴 문단과 .env.example 존재 설명 문제 잔존. D004 참조` |
 
 <!-- lee-spec-kit:workflow-sync sha256:c97edef4c4a4f1035c0e6557a761aa3e697fb3ade862d8534b65a5641e4d4b8b -->
