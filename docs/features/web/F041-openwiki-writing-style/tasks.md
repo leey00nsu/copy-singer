@@ -117,7 +117,7 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| 로컬 0.9.12 `local verify F041-openwiki-writing-style --component web --json` | `2026-09-05` | `FAIL — target 9909831. pnpm test의 build 통과 후 vocal-profile-persistence DB 인증 실패. CopySinger PostgreSQL 컨테이너는 중지 상태이며 .env.local의 localhost:5433을 실행 중인 leemage 컨테이너가 점유한다. 다른 프로젝트를 중지하거나 접속 설정을 임의 변경하지 않음. main 통합 전 DB 환경 복구와 재검증 필요` |
+| 로컬 0.9.12 `local verify F041-openwiki-writing-style --component web --json` | `2026-09-05` | `PASS — target b6538c0에서 pnpm test(전체 DB·Storybook 포함), pnpm run lint, pnpm exec tsc --noEmit 모두 exit 0. 이전 target 9909831의 DB 인증 실패는 사용자 컨테이너 복구 후 해소됐다. 이 기록 커밋 후 최종 SHA를 다시 검증하며 정확한 타깃과 로그는 .git/lee-spec-kit/local-integrations에 보존한다` |
 | 로컬 lee-spec-kit `--version` 및 `detect --json` | `2026-09-04` | `PASS — 0.9.12, PROJECT_DETECTED, experimentalOpenwiki=true` |
 | 로컬 lee-spec-kit `knowledge doctor --json` | `2026-09-04` | `PASS — OpenWiki 0.5.0/OKF 0.2, openai-chatgpt gpt-5.6-luna OAuth ready, OPENWIKI_WRITING_POLICY_STALE` |
 | 기존 receipt·INSTRUCTIONS·writing skill 기준선 검사 | `2026-09-04` | `PASS — receipt schema 2, INSTRUCTIONS sha256:6edc1607…f64db, 같은 이름 skill 없음` |
