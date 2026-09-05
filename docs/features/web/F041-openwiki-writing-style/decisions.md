@@ -83,6 +83,8 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 
 ## D004: F041을 제공된 writing skill의 소비자 적용 범위로 명확히 한다 (2026-09-05)
 
+- **상대 링크 정책 최종 적용 결과 (2026-09-05)**: 문서 checkpoint `ae1ea42091038660b46e5f0cd011e6205e5e902f` 뒤 로컬 lee-spec-kit 0.9.12 수정본의 writing adapter 1.5.0으로 재생성했다. Run `02d40be8-79aa-425e-a769-9add5ae94ac4`는 9/9 complete, skipped 0으로 `OPENWIKI_SYNCED`를 반환했다. 추가 진단 교정 없이 일반 생성에서 상대 링크 규칙이 적용됐다. 별도 audit도 상세 문서 9개, Claims 87개, repo-line evidence 196개, 본문 source 링크 54개를 검증하고 `OPENWIKI_COMMIT_REQUIRED`를 반환했다. 새 receipt의 output hash는 `sha256:d9a70ffbfe48a07bc7afcfb00602a1792886bcc3e191436a44df332248c35af2`, verifiedAt은 `2026-09-05T04:57:03.126Z`다. OpenWiki 0.5.0의 실제 buildGraph 및 visualize HTTP API에서 노드 16개·연결선 43개를 확인했으며, 무방향 연결 그룹은 이전 7개에서 1개로 줄었다. 본문 `/openwiki/...` 링크는 0개다. 이전 20개 노드·13개 연결선과 달리 이번 계획은 상세 문서 9개로 주제를 통합했으므로 연결선 수만으로 내용 커버리지 향상을 주장하지 않는다. 빠른 시작에서 시스템 경계·운영 설정·보컬 분석·믹싱·추천/카탈로그·외부 연동·변경 검증으로 이동하는 목적별 상대 링크를 확인했다. 문체의 일반 영문 용어와 생성 입력 가시성 표현은 여전히 표본 품질 한계이며, 전체 의미 정확성이나 fresh 독립 리뷰 통과를 뜻하지 않는다. 앱·curated 문서·OpenWiki 자체와 생성 Markdown은 직접 수정하지 않았다. 이번 재생성·시각화 확인 범위에서 Knowledge commit·Feature 완료·통합·배포는 수행하지 않는다.
+
 - **Context**: 이전 기록에 정책 설계와 소비자 적용 요구사항이 섞여 있었다.
 - **Decision**: Spec과 Plan은 제공된 policy의 설치·생성·검증만 정의한다. 문체·분할·편집 규칙과 adapter·검사 로직은 lee-spec-kit이 소유한다.
 - **Trace**: D001~D003은 실험 이력으로 보존한다. 이 기록의 정책 수정 내역을 CopySinger의 구현 책임으로 해석하지 않는다. 이번 검증은 제공된 adapter 1.3.0의 적용 효과를 관찰한다.
