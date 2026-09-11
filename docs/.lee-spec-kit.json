@@ -14,19 +14,11 @@
     "requireWorktree": false,
     "codeDirtyScope": "auto",
     "taskCommitGate": "warn",
-    "prePrReview": {
-      "evidenceMode": "path_required",
-      "reviewer": {
-        "type": "subagent",
-        "model": "inherit",
-        "reasoningEffort": "high",
-        "onUnavailable": "inherit"
-      }
-    },
     "baseBranch": "main",
     "completionStrategy": "local-ff",
     "deleteFeatureBranchAfterMerge": true,
-    "postMergeChecks": [
+    "postMergeChecks": [],
+    "featureChecks": [
       {
         "command": "pnpm",
         "args": [
@@ -48,7 +40,49 @@
           "--noEmit"
         ]
       }
-    ]
+    ],
+    "agentExecution": {
+      "task": {
+        "enabled": false,
+        "type": "subagent",
+        "model": "inherit",
+        "reasoningEffort": "high",
+        "onUnavailable": "inherit"
+      }
+    },
+    "agentReview": {
+      "maxRounds": 1,
+      "plan": {
+        "enabled": false,
+        "evidenceMode": "path_required",
+        "reviewer": {
+          "type": "subagent",
+          "model": "inherit",
+          "reasoningEffort": "high",
+          "onUnavailable": "inherit"
+        }
+      },
+      "task": {
+        "enabled": false,
+        "evidenceMode": "path_required",
+        "reviewer": {
+          "type": "subagent",
+          "model": "inherit",
+          "reasoningEffort": "high",
+          "onUnavailable": "inherit"
+        }
+      },
+      "feature": {
+        "evidenceMode": "path_required",
+        "reviewer": {
+          "type": "subagent",
+          "model": "inherit",
+          "reasoningEffort": "high",
+          "onUnavailable": "inherit"
+        },
+        "enabled": false
+      }
+    }
   },
   "pr": {
     "screenshots": {
