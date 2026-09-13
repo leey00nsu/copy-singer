@@ -190,6 +190,19 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
+- [TODO][PRD-NFR-010] T-JCXFBTGYM8R3-production-readiness-core-10 E2E 리뷰 검증 공백 수정
+  - Date: 2026-09-13
+  - Acceptance:
+    - 미업로드 파일 confirm/GET 거부 및 관리자 검색 결과 포함·제외 검증
+  - Checklist:
+    - [ ] 스토리지 예약/업로드 분리, 검색 UI/API 결과 assertion, fixture 부정 경로 및 변경 전후 E2E 실행
+  - Docs:
+    - project:tests/e2e/TESTING.md
+  - Review Evidence: -
+  - Review Decision: -
+  - Reviewed Head: -
+  - Reviewed Tree: -
+
 ## Knowledge Publication
 
 - **Policy**: `.lee-spec-kit.json`의 `experimental.openwiki`에서 파생
@@ -202,8 +215,8 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
 
 ### 테스트 실행 기록

@@ -129,3 +129,8 @@
 - 최종 commit 검사에서 Biome check --write가 만든 method chain 줄바꿈을 재검사 formatter가 다르게 요구했다. 커밋에 필요한 공백 포맷만 정리했다. 동작 변경은 없으며 전체 비교 당시 suite hash는 위 값을 그대로 보존한다. T09에서 최종 포맷 검사를 별도로 닫는다.
 
 - T09 최종 pnpm exec biome check tests/e2e exit 0, 커밋 hook 검사도 통과했다. 기존 경고 2개·info 1개는 남으며 formatter 오류는 해소됐다. 최종 비교 이후 변경은 method chain 공백뿐이라 브라우저 비교를 반복하지 않는다.
+
+## D014: 사용자 요청 리뷰 지적 수정
+
+- reviewer /root/e2e_review가 feb113d에 대해 changes_requested(P2 2개)를 반환했다. provider presign의 선행 WAV 생성 및 관리자 검색 결과 assertion 누락을 확인했으며 사용자가 “ㅇㅇ 수정”으로 보완을 요청했다. 정식 Feature review gate나 구현/병합 승인으로 기록하지 않는다.
+- 완료 태스크는 유지하고 T10으로 테스트 공백만 보완한다. 기존 E2E 6/6은 해당 공백까지 검증했다는 의미가 아니며 개선한 suite로 다시 비교한다.

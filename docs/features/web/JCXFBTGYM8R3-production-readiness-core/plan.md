@@ -134,3 +134,8 @@
 - Decision: UPDATE — 기존 E2E suite/seed/provider를 보강한다. 앱 코드는 우선 유지한다.
 - 별도 계정과 제어 가능한 provider 진행 상태를 사용한다. 실제 HTTP 응답, 화면, 잔액 및 provider 호출 수를 oracle로 삼는다. 관리자 주요 동작은 사용자 조회와 티켓 조정으로 한정한다.
 - 동일 suite를 b333d64와 candidate에서 실행한다. 기존 결함은 실패로 기록하고 새 코드의 의도적 변경과 구분한다. 정적 검사와 production build는 비교 runner에 포함하며 앱 수정이 없으면 이미 통과한 전체 단위 suite를 반복하지 않는다.
+
+## T10 리뷰 지적 보완
+
+- UPDATE: 기존 provider를 예약과 업로드 완료 상태로 분리한다. 잘못된 ID PUT과 미업로드 confirm/GET을 거절한다. 일회성 로컬 HTTP 검증으로 부정 경로와 업로드 원문 반환을 확인한다.
+- UPDATE: 기존 관리자 E2E에서 검색 입력·제출 후 사용자 표의 일치/불일치와 API users/total을 검사한다. 같은 suite로 baseline/candidate를 재실행하고 lint/typecheck/format을 확인한다. 제품 소스와 README는 유지한다.
