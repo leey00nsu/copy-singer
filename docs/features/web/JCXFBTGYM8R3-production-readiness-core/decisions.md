@@ -139,3 +139,7 @@
 - 관리자 E2E는 검색 전 owner 사용자 존재, 실제 검색 입력·제출 후 표의 행 1개/empty 표시/owner 제외, API total=1 및 정확한 사용자 ID를 검사한다. lint·tsc와 변경 파일 Biome는 통과했다.
 
 - 수정 후 pnpm run test:e2e:compare b333d64 exit 0: baseline b333d64 6/6 (54.5초), candidate 앱 코드 91cafca 6/6 (58.9초), skipped/flaky/unexpected 0. 동일 suite hash a1854fc256ec4e8606ea0e563111e32711f0809877492da8c049d0d5d24825ee. 양쪽 production build 포함. 제품 코드 변경 없이 tests/e2e 두 파일과 검증 문서만 수정했으며 README는 main과 동일하다. 기존 전체 pnpm test는 제품 변경이 없어 반복하지 않았다.
+
+## D015: 구현 승인
+
+- 사용자가 리뷰 수정 결과와 검증을 확인한 뒤 A로 구현을 승인했다. 승인 대상 구현 HEAD는 5892a8f이며 local verify를 진행한다. main 병합 승인은 별도 경계에서 받는다.
