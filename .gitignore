@@ -58,3 +58,6 @@ yarn-error.log*
 **/.pytest_cache/
 **/.ruff_cache/
 *.py[cod]
+
+# Isolated browser E2E reports and fixture sessions
+/artifacts/e2e/
