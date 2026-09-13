@@ -108,7 +108,7 @@
   - Checklist:
     - [x] 업로드 단계 기록·catalog cleanup·참조 보호 integration (프로필/믹싱 전체 경쟁 회귀는 T06 추가 확인)
   - Docs:
-    - project:README.md
+    - docs:prd/system-architecture.md
   - Review Evidence: -
   - Review Decision: -
   - Reviewed Head: -
@@ -147,7 +147,7 @@
   - Checklist:
     - [x] 전체 configured checks·배포/rollback/복구 절차 동기화 (추가 check의 baseline Biome 6개 오류는 D009 기록)
   - Docs:
-    - project:README.md
+    - docs:prd/system-architecture.md
   - Review Evidence: -
   - Review Decision: -
   - Reviewed Head: -

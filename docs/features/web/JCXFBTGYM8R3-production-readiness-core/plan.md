@@ -50,7 +50,7 @@
 - src/shared/media, catalog asset 서비스, 프로필·믹싱 삭제: intent/cleanup.
 - src/_app/background-jobs, features enqueue, services/*/modal_app.py: queue fencing/제출 계약.
 - src/_app/api-routes: 인증 후 body 전 admission wrapper.
-- tests, scripts, README.md, .env.example, services README: 회귀·부하 시나리오·운영 계약.
+- tests, scripts, .env.example, Feature 문서: 회귀·부하 시나리오·운영 계약.
 
 ## 배포 및 rollback
 
@@ -62,17 +62,17 @@
 - **Assessment**: Complete
 - **Product requirements**: UPDATE
 - **System architecture**: UPDATE
-- **Onboarding entrypoint**: UPDATE
+- **Onboarding entrypoint**: NONE — 사용자 요청으로 루트 README 변경 제외
 - **Operational/runtime contract**: UPDATE
 - **Reason**: 승인한 운영 안정성 요구와 신규 intent/timeout/admission/복구·배포 계약을 상위 문서에 반영한다.
-- **Targets**: docs:prd/copy-singer-prd.md, docs:prd/system-architecture.md, project:README.md, project:.env.example
+- **Targets**: docs:prd/copy-singer-prd.md, docs:prd/system-architecture.md, project:.env.example
 
 ## Additional Curated Impacts
 
 - **Assessment**: Complete
 - **Decision**: NONE
 
-별도 정책·디자인·보안 문서의 변경은 범위에 없으며 이번 운영 변경은 위 architecture/README/env에 포함한다. 확인한 constitution/custom 원칙은 유지한다.
+별도 정책·디자인·보안 문서의 변경은 범위에 없으며 이번 운영 변경은 위 architecture/env 및 Feature 문서에 포함한다. 확인한 constitution/custom 원칙은 유지한다.
 
 ## Verification Contract
 

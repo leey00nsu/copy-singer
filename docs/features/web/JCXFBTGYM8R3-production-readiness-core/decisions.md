@@ -87,3 +87,10 @@
 - 정상 동작은 기존 회귀 assertion으로 검증한다. 과부하 429/503, 접수 불명 작업 삭제 409, deadline 실패/환불 정책은 승인한 의도적 변경이다. 이번 5개 구현이 전체 감사의 미포함 보안/백업 항목까지 해결했다는 의미는 아니다.
 
 - 최종 pnpm test exit 0: production build, 기존 API/권한/티켓/큐 회귀, Storybook 176, readiness 13 + Python 4 통과. spec AC01–18은 이 로컬 검증 범위와 명시된 provider 한계 안에서 확인했다. 구현 승인과 local merge 승인은 아직 받지 않았다.
+
+
+## D010: 사용자 요청으로 README 변경 제거
+
+- 사용자가 이번 Feature의 README 수정 제거를 요청했다. 루트 README.md를 Feature 분기 기준 내용으로 복원했다.
+- plan의 onboarding 변경 판정과 tasks의 README 문서 대상을 정정했다. D006/D009의 README 작성 기록은 당시 이력이며 최종 결과에서는 철회됐다.
+- 구현 코드와 테스트, migration, 부하 스크립트는 변경하지 않았다. README가 기준 브랜치와 동일한지 및 문서 diff를 검증하며, 문서만 변경되어 전체 테스트는 반복하지 않는다.
