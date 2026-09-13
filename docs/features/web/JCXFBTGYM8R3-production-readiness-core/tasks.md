@@ -166,14 +166,25 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
-- [TODO][PRD-NFR-010] T-JCXFBTGYM8R3-production-readiness-core-08 잔액·환불·재접속·권한 E2E 보강
+- [DONE][PRD-NFR-010] T-JCXFBTGYM8R3-production-readiness-core-08 잔액·환불·재접속·권한 E2E 보강
   - Date: 2026-09-13
   - Acceptance:
     - 다섯 위험 경계의 실제 브라우저/API 결과를 baseline과 candidate에서 검증하고 차이를 명시한다
   - Checklist:
-    - [ ] 격리 fixture와 E2E 보강, 비교 실행, lint/typecheck 및 검증 범위 문서 갱신
+    - [x] 격리 fixture와 E2E 보강, 비교 실행, lint/typecheck 및 검증 범위 문서 갱신 (baseline/candidate 각 6/6; 429 정책 차이는 D013)
   - Docs:
     - project:tests/e2e/TESTING.md
+  - Review Evidence: -
+  - Review Decision: -
+  - Reviewed Head: -
+  - Reviewed Tree: -
+
+- [TODO][NON-PRD] T-JCXFBTGYM8R3-production-readiness-core-09 E2E 최종 포맷 검사 정리
+  - Date: 2026-09-13
+  - Acceptance:
+    - 동작 변경 없이 신규 E2E 파일의 최종 formatter 검사 통과
+  - Checklist:
+    - [ ] Biome 포맷 정리와 재검사 및 기존 비교 evidence의 공백 변경 명시
   - Review Evidence: -
   - Review Decision: -
   - Reviewed Head: -
@@ -192,7 +203,7 @@
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
 - [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
 
 ### 테스트 실행 기록
@@ -211,15 +222,15 @@
 | admission/bounded-multipart tests | 2026-09-13 | PASS 7 |
 | admission + worker recovery integration | 2026-09-13 | PASS 3; 관리자 재시도 identity 포함 |
 | queue/admin API regression --test-concurrency=1 | 2026-09-13 | PASS 13 |
-| pnpm exec tsc --noEmit | 2026-09-13 | PASS (E2E 추가 후 포함) |
+| pnpm exec tsc --noEmit | 2026-09-13 | PASS (T08 E2E 보강 후 포함) |
 | prisma migrate deploy / generate | 2026-09-13 | PASS 23개 기존 + additive 2개 migration |
 | pnpm test (격리 DB/fake dependency) | 2026-09-13 | PASS E2E 추가 후 재실행: production build, 기존 회귀, Storybook 176, readiness 13 + Python 4; exit 0 |
-| pnpm run lint | 2026-09-13 | PASS (E2E 추가 후 포함) |
+| pnpm run lint | 2026-09-13 | PASS (T08 E2E 보강 후 포함) |
 | pnpm run check:architecture | 2026-09-13 | PASS steiger 및 boundary 4 |
 | pnpm run check / biome check . | 2026-09-13 | FAIL baseline과 동일한 변경 없는 6개 파일 format/import 정렬 오류; D009. 변경 파일 biome PASS |
 | profile-deletion-race / private-audio-proxy / worker-recovery | 2026-09-13 | PASS 삭제 우선/접수 우선, client abort, 기존 저장 결과 복구·cleanup 적체 |
 | legacy fixture schema upgrade (docker psql, rollback) | 2026-09-13 | PASS 기존 원장·잔액·active 상태·partial unique 유지 |
 | k6 config mock runtime / remote target guard | 2026-09-13 | PASS 4 scenarios; k6 미설치로 실제 부하 미실행 |
-| pnpm run test:e2e:compare b333d64 | 2026-09-13 | PASS baseline 2/2, candidate 2/2; 동일 suite hash, exit 0; D012 |
+| pnpm run test:e2e:compare b333d64 | 2026-09-13 | PASS baseline 6/6 (54.1초), candidate 6/6 (60.5초); 동일 suite hash, exit 0; 429/Retry-After 차이 D013 |
 
 완료 기록에는 테스트뿐 아니라 build·typecheck·lint 등 Plan에서 정한 검증과 수동 검증 증거를 포함합니다. 자동 검사의 기준은 실제 `workflow.featureChecks`이며, 검사 생략은 통과로 기록하지 않고 명시적인 사유를 남깁니다.

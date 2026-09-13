@@ -42,7 +42,7 @@
 - Leemage 미확인 POST 재시도는 제거하고 DELETE 재시도/404 성공을 유지했다. Modal 및 runner deadline 연결은 T04 범위다.
 - runtime 4 tests, media/FFmpeg 포함 10 tests 및 typecheck 통과. 공급자 계약 근거와 자동 정리 한계는 plan에 기록했다.
 
-<!-- lee-spec-kit:workflow-sync sha256:1e10a6298ba07a992ec5170441d542696f7d948c4fa7f91767b5663d706e36d0 -->
+<!-- lee-spec-kit:workflow-sync sha256:631a1d88f9d72b380f5c209eec4ebf0a67a2d1e7a43dc344b5cece8b4baa3df4 -->
 
 ## D005: 가입 지급과 세션 분리
 
@@ -118,3 +118,12 @@
 ## D013: 사용자 요청 E2E 보강
 
 - 사용자의 “ㅇㅇ 보강해봐”는 제안한 다섯 경계 테스트 추가 요청이다. 완료한 T07은 유지하고 T08로 추적한다. 구현 수락 또는 병합 승인으로 간주하지 않는다. README는 유지한다.
+
+- T08은 production 소스를 바꾸지 않고 E2E suite/fixture만 보강한다. 최초 baseline 실행에서 5개 통과 후 관리자 select의 exact label 탐색이 실패했다. 기존 label은 option 텍스트를 포함하므로 명시적인 form field name으로 선택자를 고쳤다. 앱 권한/티켓 동작 실패로 분류하지 않는다. 최종 비교 실행 결과는 아래에 별도 기록한다.
+
+- 비교 2차 실행: baseline 6/6, candidate 5/6. 분석 1회+믹싱 1회+재전송 2회가 동일 사용자 submission bucket(분당 6, burst 3)을 공유하여 candidate의 마지막 재전송이 RATE_LIMITED/429였다. 이는 T05의 승인된 제한 정책이며 기존 normal 성공 응답 회귀가 아니다. 테스트에서 429 코드와 Retry-After(1–10초)를 엄격히 확인하고 한 번 재시도해 같은 job/차감 불변을 검증한다. 해당 실행은 JSON annotation으로 구분한다. 완료된 믹싱의 소유자 오디오 200 대비 타인 상세/오디오/삭제 404도 추가해 진행 상태 때문의 404와 구분한다.
+
+- 최종 비교 exit 0: baseline b333d64b7f769c093ffde424ea406f9e89b315ef 6/6 (54.1초), candidate 앱 코드 78cf6e6e89af32c09195e9dae24179dad7e89b6d 6/6 (60.5초). suite SHA-256 ce73cbae9126a8629b09406a544bfb47b50aa872975d84525ad68e3d736a0534, skipped/flaky/unexpected 0. candidate는 429/Retry-After=6초 annotation을 남겼고 재전송 성공·외부 변환 한 번·잔액 4를 확인했다. 이는 정책 차이를 포함한 계약 검증이며 모든 HTTP 응답 동일성을 주장하지 않는다.
+- production build/typecheck는 양쪽 runner에서 통과했고 pnpm run lint, 별도 tsc --noEmit, diff check도 통과했다. 제품 소스 변경이 없어 이전 T07 전체 pnpm test 통과를 재사용하며 이번에 전체 단위 suite를 재실행한 것으로 기록하지 않는다. 루트 README는 main과 동일하다. 실제 Google/원격 GPU·스토리지/다중 브라우저·모바일, 관리자 카탈로그 전체 동작은 미검증이다.
+
+- 최종 commit 검사에서 Biome check --write가 만든 method chain 줄바꿈을 재검사 formatter가 다르게 요구했다. 커밋에 필요한 공백 포맷만 정리했다. 동작 변경은 없으며 전체 비교 당시 suite hash는 위 값을 그대로 보존한다. T09에서 최종 포맷 검사를 별도로 닫는다.
