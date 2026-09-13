@@ -179,12 +179,12 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
-- [TODO][NON-PRD] T-JCXFBTGYM8R3-production-readiness-core-09 E2E 최종 포맷 검사 정리
+- [DONE][NON-PRD] T-JCXFBTGYM8R3-production-readiness-core-09 E2E 최종 포맷 검사 정리
   - Date: 2026-09-13
   - Acceptance:
     - 동작 변경 없이 신규 E2E 파일의 최종 formatter 검사 통과
   - Checklist:
-    - [ ] Biome 포맷 정리와 재검사 및 기존 비교 evidence의 공백 변경 명시
+    - [x] Biome 포맷 정리와 재검사 및 기존 비교 evidence의 공백 변경 명시 (exit 0, 기존 warning 2/info 1)
   - Review Evidence: -
   - Review Decision: -
   - Reviewed Head: -
@@ -202,7 +202,7 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
 - [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
 

@@ -127,3 +127,5 @@
 - production build/typecheck는 양쪽 runner에서 통과했고 pnpm run lint, 별도 tsc --noEmit, diff check도 통과했다. 제품 소스 변경이 없어 이전 T07 전체 pnpm test 통과를 재사용하며 이번에 전체 단위 suite를 재실행한 것으로 기록하지 않는다. 루트 README는 main과 동일하다. 실제 Google/원격 GPU·스토리지/다중 브라우저·모바일, 관리자 카탈로그 전체 동작은 미검증이다.
 
 - 최종 commit 검사에서 Biome check --write가 만든 method chain 줄바꿈을 재검사 formatter가 다르게 요구했다. 커밋에 필요한 공백 포맷만 정리했다. 동작 변경은 없으며 전체 비교 당시 suite hash는 위 값을 그대로 보존한다. T09에서 최종 포맷 검사를 별도로 닫는다.
+
+- T09 최종 pnpm exec biome check tests/e2e exit 0, 커밋 hook 검사도 통과했다. 기존 경고 2개·info 1개는 남으며 formatter 오류는 해소됐다. 최종 비교 이후 변경은 method chain 공백뿐이라 브라우저 비교를 반복하지 않는다.
