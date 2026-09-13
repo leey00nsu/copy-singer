@@ -1,13 +1,13 @@
 import "server-only";
 
 import { MixingJobStatus, prisma } from "@/shared/db/index.server";
-import { deleteOrScheduleMediaAsset } from "@/shared/media/index.server";
+import { processMediaOperation, scheduleAssetDeletion } from "@/shared/media/index.server";
 import { MixingError } from "../model/contract";
 
 const TERMINAL_STATUSES = [MixingJobStatus.SUCCEEDED, MixingJobStatus.FAILED, MixingJobStatus.CANCELED] as const;
 
 export async function deleteMixingJobForUser(userId: string, id: string) {
-  const resultAssetId = await prisma.$transaction(async (transaction) => {
+  const cleanupId = await prisma.$transaction(async (transaction) => {
     const job = await transaction.mixingJob.findFirst({
       where: { id, userId },
       select: {
@@ -29,18 +29,14 @@ export async function deleteMixingJobForUser(userId: string, id: string) {
     if (deleted.count !== 1) {
       throw new MixingError("MIXING_DELETE_CONFLICT", "믹싱 작업 상태가 바뀌어 삭제하지 못했어요.", 409);
     }
-    return job.resultAsset?.id ?? null;
+    return job.resultAsset ? scheduleAssetDeletion(transaction, job.resultAsset.id) : null;
   });
 
   let mediaCleanupPending = false;
-  if (resultAssetId) {
-    const outcome = await deleteOrScheduleMediaAsset(resultAssetId);
-    mediaCleanupPending = !outcome.deleted;
-    if (outcome.deleted) {
-      await prisma.mediaAsset.deleteMany({
-        where: { id: resultAssetId, userId, kind: "MIX_RESULT", status: "DELETED" },
-      });
-    }
+  if (cleanupId) {
+    await processMediaOperation(cleanupId);
+    mediaCleanupPending =
+      (await prisma.mediaOperation.findUniqueOrThrow({ where: { id: cleanupId } })).status !== "COMPLETED";
   }
 
   return { status: "deleted" as const, id, mediaCleanupPending };

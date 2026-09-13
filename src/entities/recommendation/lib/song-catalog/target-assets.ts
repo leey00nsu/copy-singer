@@ -5,7 +5,7 @@ import { mkdir, readdir, readFile, stat, unlink } from "node:fs/promises";
 import path from "node:path";
 import { TJ_2607_CATALOG_SLUG } from "@/shared/config/index.server";
 import { prisma } from "@/shared/db/index.server";
-import { createLeemageClient } from "@/shared/media/index.server";
+import { processMediaOperation, scheduleAssetDeletion, uploadTrackedAsset } from "@/shared/media/index.server";
 
 const SUPPORTED_SOURCE_EXTENSIONS = ["wav", "mp3", "m4a", "aac", "webm", "flac"] as const;
 const CATALOG_TARGET_MAX_UPLOAD_BYTES = 49_000_000;
@@ -165,21 +165,11 @@ async function cleanupSupersededAsset(
   },
   fetchImpl?: typeof fetch,
 ) {
-  const references = await prisma.mixingJob.count({ where: { targetAssetId: asset.id } });
-  if (references > 0) return;
   try {
-    await createLeemageClient(fetchImpl).deleteFile(asset.externalProjectId, asset.externalFileId);
-    await prisma.catalogTargetAsset.delete({ where: { id: asset.id } });
+    const operationId = await prisma.$transaction((tx) => scheduleAssetDeletion(tx, asset.id, "CATALOG"));
+    if (operationId) await processMediaOperation(operationId, fetchImpl);
   } catch (error) {
-    await prisma.catalogTargetAsset
-      .update({
-        where: { id: asset.id },
-        data: {
-          status: "DELETE_PENDING",
-          lastError: error instanceof Error ? error.message.slice(0, 2_000) : "Catalog target cleanup failed.",
-        },
-      })
-      .catch(() => undefined);
+    if (!(error instanceof Error && error.message === "MEDIA_ASSET_IN_USE")) throw error;
   }
 }
 
@@ -233,15 +223,15 @@ export async function importCatalogTargetAsset(input: {
   }
 
   const extension = path.extname(sourcePath).toLowerCase();
-  const stored = await createLeemageClient(input.fetchImpl).uploadFile({
-    fileName: `catalog-target-${catalogTargetStem(input.catalogOrder, catalog.sourceVideoId)}${extension}`,
-    mimeType,
-    bytes,
-  });
-
-  let assetId: string | null = null;
-  try {
-    const created = await prisma.$transaction(async (tx) => {
+  const created = await uploadTrackedAsset(
+    {
+      fileName: `catalog-target-${catalogTargetStem(input.catalogOrder, catalog.sourceVideoId)}${extension}`,
+      mimeType,
+      bytes,
+      assetType: "CATALOG",
+      fetchImpl: input.fetchImpl,
+    },
+    async (tx, stored) => {
       const asset = await tx.catalogTargetAsset.create({
         data: {
           externalProjectId: stored.projectId,
@@ -258,14 +248,9 @@ export async function importCatalogTargetAsset(input: {
       });
       await tx.song.update({ where: { id: song.id }, data: { targetAssetId: asset.id } });
       return asset;
-    });
-    assetId = created.id;
-  } catch (error) {
-    await createLeemageClient(input.fetchImpl)
-      .deleteFile(stored.projectId, stored.fileId)
-      .catch(() => undefined);
-    throw error;
-  }
+    },
+  );
+  const assetId = created.id;
 
   if (song.targetAsset && song.targetAsset.id !== assetId) {
     await cleanupSupersededAsset(song.targetAsset, input.fetchImpl);
@@ -281,7 +266,7 @@ export async function importCatalogTargetAsset(input: {
     uploadPath,
     mimeType,
     assetId,
-    sizeBytes: stored.sizeBytes,
+    sizeBytes: Number(created.sizeBytes),
     sha256: digest,
     skipped: false,
   };

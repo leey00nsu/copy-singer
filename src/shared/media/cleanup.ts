@@ -1,7 +1,7 @@
 import "server-only";
 
 import { prisma } from "@/shared/db/index.server";
-import { createLeemageClient, LeemageError } from "./client";
+import { processMediaOperation, scheduleAssetDeletion } from "./operations";
 
 export async function processOneMediaCleanup(fetchImpl: typeof fetch = fetch) {
   const now = new Date();
@@ -25,30 +25,25 @@ export async function processOneMediaCleanup(fetchImpl: typeof fetch = fetch) {
     RETURNING cleanup."id", cleanup."mediaAssetId"
   `;
   const claimed = rows[0];
-  if (!claimed) return false;
+  if (!claimed) return processMediaOperation(undefined, fetchImpl);
   const asset = await prisma.mediaAsset.findUnique({ where: { id: claimed.mediaAssetId } });
   if (!asset) {
     await prisma.mediaCleanupJob.deleteMany({ where: { id: claimed.id } });
     return true;
   }
+  // Migrate old cleanup records into independent durable operations before external deletion.
   try {
-    await createLeemageClient(fetchImpl).deleteFile(asset.externalProjectId, asset.externalFileId);
-    await prisma.mediaAsset.delete({ where: { id: asset.id } });
-  } catch (error) {
-    if (error instanceof LeemageError && error.status === 404) {
-      await prisma.mediaAsset.delete({ where: { id: asset.id } });
-      return true;
-    }
-    const message = error instanceof Error ? error.message : "Media cleanup failed.";
-    const cleanup = await prisma.mediaCleanupJob.findUniqueOrThrow({ where: { id: claimed.id } });
-    const delayMinutes = Math.min(2 ** Math.min(cleanup.attempts, 8), 360);
-    await prisma.$transaction([
-      prisma.mediaCleanupJob.update({
-        where: { id: cleanup.id },
-        data: { status: "FAILED", lastError: message, nextAttemptAt: new Date(Date.now() + delayMinutes * 60_000) },
-      }),
-      prisma.mediaAsset.update({ where: { id: asset.id }, data: { status: "DELETE_PENDING", lastError: message } }),
-    ]);
+    const operationId = await prisma.$transaction((tx) => scheduleAssetDeletion(tx, asset.id));
+    if (operationId) await processMediaOperation(operationId, fetchImpl);
+  } catch {
+    await prisma.mediaCleanupJob.updateMany({
+      where: { id: claimed.id },
+      data: {
+        status: "FAILED",
+        lastError: "MEDIA_ASSET_IN_USE_OR_DB_UNAVAILABLE",
+        nextAttemptAt: new Date(Date.now() + 60_000),
+      },
+    });
   }
   return true;
 }

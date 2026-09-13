@@ -122,9 +122,11 @@ test("failed Leemage deletion leaves a retryable cleanup record", async (context
     assetId = asset.id;
 
     assert.deepEqual((await deleteOrScheduleMediaAsset(asset.id)).deleted, false);
-    const stored = await prisma.mediaAsset.findUniqueOrThrow({ where: { id: asset.id } });
-    assert.equal(stored.status, "DELETE_PENDING");
-    assert.equal(await prisma.mediaCleanupJob.count({ where: { mediaAssetId: asset.id, status: "PENDING" } }), 1);
+    assert.equal(await prisma.mediaAsset.findUnique({ where: { id: asset.id } }), null);
+    assert.equal(
+      await prisma.mediaOperation.count({ where: { assetId: asset.id, operation: "DELETE", status: "RECOVER" } }),
+      1,
+    );
   } finally {
     globalThis.fetch = previousFetch;
     if (previousEnv.baseUrl === undefined) delete process.env.LEEMAGE_BASE_URL;

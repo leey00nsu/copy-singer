@@ -42,6 +42,7 @@ export async function enqueueMixingJob(input: {
             return existing;
           }
 
+          await tx.$queryRaw`SELECT id FROM "VocalProfile" WHERE id = ${input.vocalProfileId}::uuid FOR UPDATE`;
           const profile = await tx.vocalProfile.findFirst({
             where: { id: input.vocalProfileId, userId: input.userId, sourceType: "USER" },
             include: {

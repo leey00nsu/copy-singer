@@ -4,7 +4,7 @@ import { createHash } from "node:crypto";
 import path from "node:path";
 import { prisma } from "@/shared/db/index.server";
 import { isSupportedAudioUploadMimeType, normalizeAudioUploadMimeType } from "@/shared/lib/audio";
-import { createLeemageClient } from "@/shared/media/index.server";
+import { processMediaOperation, scheduleAssetDeletion, uploadTrackedAsset } from "@/shared/media/index.server";
 import { SongCatalogAdminError } from "../model/error";
 
 export const ADMIN_CATALOG_TARGET_MAX_UPLOAD_BYTES = 49_000_000;
@@ -39,54 +39,43 @@ export async function uploadAdminCatalogTarget(input: { sourceId: string; file: 
   });
   if (existing) return existing;
 
-  const client = createLeemageClient(input.fetchImpl);
-  const stored = await client.uploadFile({
-    fileName: `catalog-target-${source.sourceVideoId}${safeExtension(input.file.name)}`,
-    mimeType,
-    bytes,
-  });
-  try {
-    return await prisma.catalogTargetAsset.create({
-      data: {
-        externalProjectId: stored.projectId,
-        externalFileId: stored.fileId,
-        externalUrl: stored.url,
-        fileName: stored.fileName,
-        mimeType,
-        sizeBytes: BigInt(stored.sizeBytes),
-        sha256: digest,
-        sourceVideoId: source.sourceVideoId,
-        sourceId: source.id,
-        status: "READY",
-      },
-    });
-  } catch (error) {
-    await client.deleteFile(stored.projectId, stored.fileId).catch(() => undefined);
-    throw error;
-  }
+  return uploadTrackedAsset(
+    {
+      fileName: `catalog-target-${source.sourceVideoId}${safeExtension(input.file.name)}`,
+      mimeType,
+      bytes,
+      assetType: "CATALOG",
+      fetchImpl: input.fetchImpl,
+    },
+    (tx, stored) =>
+      tx.catalogTargetAsset.create({
+        data: {
+          externalProjectId: stored.projectId,
+          externalFileId: stored.fileId,
+          externalUrl: stored.url,
+          fileName: stored.fileName,
+          mimeType,
+          sizeBytes: BigInt(stored.sizeBytes),
+          sha256: digest,
+          sourceVideoId: source.sourceVideoId,
+          sourceId: source.id,
+          status: "READY",
+        },
+      }),
+  );
 }
 
 export async function cleanupUnreferencedCatalogTarget(
   asset: { id: string; externalProjectId: string; externalFileId: string },
   fetchImpl?: typeof fetch,
 ) {
-  const references = await prisma.mixingJob.count({ where: { targetAssetId: asset.id } });
-  const activeReference = await prisma.song.count({ where: { targetAssetId: asset.id } });
-  if (references > 0 || activeReference > 0) return false;
   try {
-    await createLeemageClient(fetchImpl).deleteFile(asset.externalProjectId, asset.externalFileId);
-    await prisma.catalogTargetAsset.delete({ where: { id: asset.id } });
-    return true;
+    const operationId = await prisma.$transaction((tx) => scheduleAssetDeletion(tx, asset.id, "CATALOG"));
+    if (!operationId) return true;
+    await processMediaOperation(operationId, fetchImpl);
+    return (await prisma.mediaOperation.findUniqueOrThrow({ where: { id: operationId } })).status === "COMPLETED";
   } catch (error) {
-    await prisma.catalogTargetAsset
-      .update({
-        where: { id: asset.id },
-        data: {
-          status: "DELETE_PENDING",
-          lastError: error instanceof Error ? error.message.slice(0, 2_000) : "Target cleanup failed.",
-        },
-      })
-      .catch(() => undefined);
-    return false;
+    if (error instanceof Error && error.message === "MEDIA_ASSET_IN_USE") return false;
+    throw error;
   }
 }

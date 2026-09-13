@@ -3,7 +3,7 @@ import { serializeProfile } from "@/entities/vocal-profile/index.server";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 import { resourceIdSchema } from "@/shared/api";
 import { prisma } from "@/shared/db/index.server";
-import { deleteOrScheduleMediaAsset } from "@/shared/media/index.server";
+import { processMediaOperation, scheduleAssetDeletion } from "@/shared/media/index.server";
 
 function profileNotFoundResponse() {
   return Response.json(
@@ -63,36 +63,41 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
   const parsedId = resourceIdSchema.safeParse((await context.params).id);
   if (!parsedId.success) return profileNotFoundResponse();
   const id = parsedId.data;
-  const profile = await prisma.vocalProfile.findFirst({
-    where: { id, userId: session.user.id },
-    include: {
-      recording: { include: { mediaAsset: true } },
-      synthesisReferenceAsset: true,
-      _count: { select: { mixingJobs: true } },
-    },
+  const result = await prisma.$transaction(async (tx) => {
+    await tx.$queryRaw`SELECT id FROM "VocalProfile" WHERE id = ${id}::uuid AND "userId" = ${session.user.id} FOR UPDATE`;
+    const profile = await tx.vocalProfile.findFirst({
+      where: { id, userId: session.user.id, sourceType: "USER" },
+      include: { recording: true, _count: { select: { mixingJobs: true } } },
+    });
+    if (!profile) return { error: "NOT_FOUND" as const };
+    if (profile._count.mixingJobs > 0) return { error: "IN_USE" as const };
+    const assets = [profile.recording.mediaAssetId, profile.synthesisReferenceAssetId].filter(
+      (asset): asset is string => Boolean(asset),
+    );
+    await tx.vocalProfile.delete({ where: { id } });
+    await tx.recording.delete({ where: { id: profile.recordingId } });
+    await tx.vocalProfileAnalysisJob.updateMany({
+      where: { recordingId: profile.recordingId, status: { in: ["SUCCEEDED", "FAILED"] } },
+      data: { sourceAssetId: null },
+    });
+    const operations: string[] = [];
+    for (const assetId of new Set(assets)) {
+      const operationId = await scheduleAssetDeletion(tx, assetId);
+      if (operationId) operations.push(operationId);
+    }
+    return { operations };
   });
-  if (profile?.sourceType !== "USER") {
-    return profileNotFoundResponse();
-  }
-  if (profile._count.mixingJobs > 0) {
+  if (result.error === "NOT_FOUND") return profileNotFoundResponse();
+  if (result.error === "IN_USE")
     return Response.json(
       { reasonCode: "PROFILE_IN_USE", detail: "Delete related mixing jobs before this profile.", retryable: false },
       { status: 409 },
     );
-  }
-
-  const assets = [profile.recording.mediaAsset, profile.synthesisReferenceAsset].filter(
-    (asset): asset is NonNullable<typeof asset> => asset !== null,
-  );
-  const deletions = await Promise.all(assets.map((asset) => deleteOrScheduleMediaAsset(asset.id)));
-  await prisma.$transaction([
-    prisma.vocalProfile.delete({ where: { id: profile.id } }),
-    prisma.recording.delete({ where: { id: profile.recordingId } }),
-    prisma.mediaAsset.deleteMany({
-      where: { id: { in: assets.filter((_, index) => deletions[index].deleted).map((asset) => asset.id) } },
-    }),
-  ]);
-  const cleanupPending = deletions.some((deletion) => !deletion.deleted);
+  for (const operationId of result.operations ?? []) await processMediaOperation(operationId);
+  const cleanupPending =
+    (await prisma.mediaOperation.count({
+      where: { id: { in: result.operations ?? [] }, status: { not: "COMPLETED" } },
+    })) > 0;
   return Response.json(
     { status: "deleted", id, mediaCleanupPending: cleanupPending },
     { status: cleanupPending ? 202 : 200 },

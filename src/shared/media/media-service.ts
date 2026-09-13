@@ -1,7 +1,7 @@
 import "server-only";
 
 import { prisma } from "@/shared/db/index.server";
-import { createLeemageClient } from "./client";
+import { processMediaOperation, scheduleAssetDeletion, uploadTrackedAsset } from "./operations";
 
 function audioExtension(mimeType: string) {
   if (mimeType === "audio/mp4" || mimeType === "audio/aac") return "m4a";
@@ -14,27 +14,26 @@ async function storeMediaAssetBytes(input: {
   userId: string;
   bytes: Uint8Array;
   mimeType: string;
-  kind: "REFERENCE" | "SYNTHESIS_REFERENCE";
+  kind: "REFERENCE" | "SYNTHESIS_REFERENCE" | "MIX_RESULT";
+  fetchImpl?: typeof fetch;
+  signal?: AbortSignal;
   fileName: string;
 }) {
-  const stored = await createLeemageClient().uploadFile({
-    fileName: input.fileName,
-    mimeType: input.mimeType,
-    bytes: input.bytes,
-  });
-  return prisma.mediaAsset.create({
-    data: {
-      userId: input.userId,
-      kind: input.kind,
-      externalProjectId: stored.projectId,
-      externalFileId: stored.fileId,
-      externalUrl: stored.url,
-      fileName: stored.fileName,
-      mimeType: stored.mimeType,
-      sizeBytes: BigInt(stored.sizeBytes),
-      status: "READY",
-    },
-  });
+  return uploadTrackedAsset({ ...input, assetType: "MEDIA" }, (tx, stored) =>
+    tx.mediaAsset.create({
+      data: {
+        userId: input.userId,
+        kind: input.kind,
+        externalProjectId: stored.projectId,
+        externalFileId: stored.fileId,
+        externalUrl: stored.url,
+        fileName: stored.fileName,
+        mimeType: stored.mimeType,
+        sizeBytes: BigInt(stored.sizeBytes),
+        status: "READY",
+      },
+    }),
+  );
 }
 
 export async function storeAnalyzerReferenceBytes(input: {
@@ -70,34 +69,15 @@ export async function storeAnalyzerSynthesisReferenceBytes(input: {
 }
 
 export async function deleteOrScheduleMediaAsset(mediaAssetId: string) {
-  const asset = await prisma.mediaAsset.findUnique({ where: { id: mediaAssetId } });
-  if (!asset) return { deleted: true as const };
-  try {
-    await createLeemageClient().deleteFile(asset.externalProjectId, asset.externalFileId);
-    await prisma.mediaAsset.update({
-      where: { id: asset.id },
-      data: { status: "DELETED", deletedAt: new Date(), lastError: null },
-    });
-    return { deleted: true as const };
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Media file deletion failed.";
-    await prisma.$transaction([
-      prisma.mediaAsset.update({
-        where: { id: asset.id },
-        data: { status: "DELETE_PENDING", lastError: message },
-      }),
-      prisma.mediaCleanupJob.create({
-        data: { mediaAssetId: asset.id, status: "PENDING", lastError: message },
-      }),
-    ]);
-    return { deleted: false as const, error: message };
-  }
+  const operationId = await prisma.$transaction((tx) => scheduleAssetDeletion(tx, mediaAssetId));
+  if (!operationId) return { deleted: true as const };
+  await processMediaOperation(operationId);
+  const operation = await prisma.mediaOperation.findUniqueOrThrow({ where: { id: operationId } });
+  return { deleted: operation.status === "COMPLETED" };
 }
 
 export async function discardMediaAsset(mediaAssetId: string) {
-  const outcome = await deleteOrScheduleMediaAsset(mediaAssetId);
-  if (outcome.deleted) await prisma.mediaAsset.deleteMany({ where: { id: mediaAssetId } });
-  return outcome;
+  return deleteOrScheduleMediaAsset(mediaAssetId);
 }
 
 export async function storeMixingResult(input: {
@@ -108,22 +88,9 @@ export async function storeMixingResult(input: {
   extension: string;
   fetchImpl?: typeof fetch;
 }) {
-  const stored = await createLeemageClient(input.fetchImpl).uploadFile({
+  return storeMediaAssetBytes({
+    ...input,
+    kind: "MIX_RESULT",
     fileName: `copy-singer-${input.mixingJobId}.${input.extension}`,
-    mimeType: input.mimeType,
-    bytes: input.bytes,
-  });
-  return prisma.mediaAsset.create({
-    data: {
-      userId: input.userId,
-      kind: "MIX_RESULT",
-      externalProjectId: stored.projectId,
-      externalFileId: stored.fileId,
-      externalUrl: stored.url,
-      fileName: stored.fileName,
-      mimeType: stored.mimeType,
-      sizeBytes: BigInt(stored.sizeBytes),
-      status: "READY",
-    },
   });
 }

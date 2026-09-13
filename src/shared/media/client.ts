@@ -7,6 +7,8 @@ export type LeemageConfig = {
   projectId: string;
 };
 
+export type UploadAllocation = { fileId: string; objectName: string };
+
 export type LeemageStoredFile = {
   projectId: string;
   fileId: string;
@@ -108,12 +110,18 @@ export class LeemageClient {
     mimeType: string;
     bytes: Uint8Array;
     signal?: AbortSignal;
+    onAllocated?: (allocation: UploadAllocation) => Promise<void>;
   }): Promise<LeemageStoredFile> {
     return withDeadline(runtimeLimits().uploadMs, (signal) => this.uploadWithinDeadline(input, signal), input.signal);
   }
 
   private async uploadWithinDeadline(
-    input: { fileName: string; mimeType: string; bytes: Uint8Array },
+    input: {
+      fileName: string;
+      mimeType: string;
+      bytes: Uint8Array;
+      onAllocated?: (allocation: UploadAllocation) => Promise<void>;
+    },
     signal: AbortSignal,
   ): Promise<LeemageStoredFile> {
     const presign = await this.apiRequest(`/projects/${encodeURIComponent(this.config.projectId)}/files/presign`, {
@@ -138,6 +146,8 @@ export class LeemageClient {
       throw new LeemageError("Media storage returned an invalid presign response.", 502, false);
     }
 
+    await input.onAllocated?.({ fileId: allocation.fileId, objectName: allocation.objectName });
+    signal.throwIfAborted();
     const uploaded = await this.fetchImpl(allocation.presignedUrl, {
       method: "PUT",
       signal: AbortSignal.any([signal, AbortSignal.timeout(runtimeLimits().fileMs)]),
@@ -167,6 +177,8 @@ export class LeemageClient {
     if (typeof confirmation.file?.id !== "string" || typeof confirmation.file.url !== "string") {
       throw new LeemageError("Media storage returned an invalid confirm response.", 502, false);
     }
+    if (confirmation.file.id !== allocation.fileId)
+      throw new LeemageError("Media confirmation identity mismatch.", 502, false);
     return {
       projectId: this.config.projectId,
       fileId: confirmation.file.id,

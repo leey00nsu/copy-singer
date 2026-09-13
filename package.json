@@ -65,8 +65,9 @@
     "test:mixing:db": "node --conditions react-server --import tsx --test tests/mixing-queue.integration.ts",
     "test:mixing:ui": "tsx --test tests/mixing-history-ui.test.tsx tests/mixing-status-presentation.test.ts tests/mixing-detail-ui.test.tsx",
     "test:admin": "tsx --test tests/admin-ui.test.tsx tests/admin-song-catalog-ui.test.tsx && node --conditions react-server --import tsx --test tests/admin-operations.integration.ts",
-    "test:readiness": "node --conditions react-server --import tsx --test tests/runtime-timeouts.test.ts tests/runtime-db.integration.ts tests/signup-recovery.integration.ts",
-    "tickets:recover-signup": "node --conditions react-server --import tsx scripts/recover-signup-grant.ts"
+    "test:readiness": "node --conditions react-server --import tsx --test tests/runtime-timeouts.test.ts tests/runtime-db.integration.ts tests/signup-recovery.integration.ts tests/media-recovery.integration.ts",
+    "tickets:recover-signup": "node --conditions react-server --import tsx scripts/recover-signup-grant.ts",
+    "media:reconcile": "node --conditions react-server --import tsx scripts/reconcile-media.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

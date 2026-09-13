@@ -42,10 +42,17 @@
 - Leemage 미확인 POST 재시도는 제거하고 DELETE 재시도/404 성공을 유지했다. Modal 및 runner deadline 연결은 T04 범위다.
 - runtime 4 tests, media/FFmpeg 포함 10 tests 및 typecheck 통과. 공급자 계약 근거와 자동 정리 한계는 plan에 기록했다.
 
-<!-- lee-spec-kit:workflow-sync sha256:7a8696348aecb20a20b2c0d547f3531617d57b06edd9c7e1e030d813972e29c6 -->
+<!-- lee-spec-kit:workflow-sync sha256:8600bb6536b4a187c9a2d98e7e42904bd064b7091946498f157028b6f43298ca -->
 
 ## D005: 가입 지급과 세션 분리
 
 - getRequestSession에서 가입 지급 호출을 제거했다. 신규 hook은 양쪽 금액 intent를 먼저 기록하고 사용자 row lock 아래 종류별 지급한다. 기존 가입 원장을 덮어쓰지 않는다.
 - tickets:recover-signup CLI는 user/kind/amount/operator/reason 필수, 기본 dry-run, --apply만 지급한다. intent/원장 금액 충돌을 거부한다.
 - 격리 DB에서 정책 변경 후 세션·원장 불변, 동시 signup/복구, legacy 부분 지급, dry-run 무변경을 검증했다. 테스트의 bypass 변수 오타를 고친 뒤 통과했다.
+
+## D006: 미디어 영속 intent와 선행 DB 삭제
+
+- 사용자 asset·관리자/CLI catalog upload 모두 intent를 생성하고 identity를 PUT 전에 기록한다. 저장 후 연결 crash는 15분 뒤 참조 검사로 처리한다.
+- domain 삭제와 독립 cleanup 기록을 transaction으로 확정한다. 참조 중 삭제는 거부하며 프로필 DELETE와 믹싱 접수는 같은 profile lock을 사용한다. 기존 cleanup은 새 operation으로 변환한다.
+- cleanup은 최대 10회 재시도하고 미해결 상태/운영자 CLI를 제공한다. DB 중단 때문에 실패 기록 갱신도 실패하면 최초 UPLOADING intent가 만료 후 회수된다.
+- 격리 미디어 회귀 6개 통과. catalog 테스트는 초기 fixture 누락으로 실패한 뒤 localhost 전용 합성 seed를 추가해 재검증했다. 기존 내부 테스트의 DELETE_PENDING asset 기대값은 domain row 삭제+독립 RECOVER intent로 갱신했다. 정상 API 응답 shape는 유지한다. 전체 프로필/믹싱 race 검증은 T06까지 추적한다.

@@ -304,3 +304,11 @@ npx lee-spec-kit feature <name> --component modal-api
 ```
 
 제품 요구사항은 `docs/prd/`, Feature별 spec·plan·tasks·decisions는 `docs/features/` 아래에서 관리한다.
+
+### 파일 정리 복구
+
+업로드 전 MediaOperation intent를 기록하고 presign identity는 PUT 전에 저장한다. 삭제는 domain row 제거와 독립 cleanup 예약을 한 DB transaction으로 확정한 뒤 수행한다. 알려진 identity 삭제는 최대 10회 재시도하며 실패/identity 불명은 UNRESOLVED로 남는다. 업로드 후 연결되지 않은 asset은 15분 뒤 참조를 재검사한다. 기존 MediaCleanupJob도 worker가 새 cleanup 예약으로 전환한다.
+
+`pnpm run media:reconcile`은 미해결 intent를 100개까지 조회한다. `--id UUID --operator NAME --reason TEXT`로 dry-run하고 `--apply`를 붙이면 운영자 확인 근거를 기록한다. 공급자에서 identity를 확인했다면 `--file-id ID`로 삭제 재시도를 예약한다. 서명 URL/음성 bytes/키를 사유에 넣지 않는다. 삭제 예약은 반드시 올바른 project/file identity를 공급자에서 확인한 뒤 적용한다.
+
+Leemage의 예약 조회·client idempotency·미확정 object TTL은 확인 불가다. presign 응답 유실로 identity를 받지 못한 파일을 자동 제거했다고 표시하지 않는다. 운영자 해결 상태도 공급자의 실제 제거 증거를 대신하지 않는다.

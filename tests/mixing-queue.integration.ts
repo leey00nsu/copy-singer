@@ -564,11 +564,11 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     assert.equal(await prisma.mixingJob.findUnique({ where: { id: successful.id } }), null);
     assert.equal(await getMixingJobForUser(userId, successful.id), null);
     assert.equal((await prisma.ticketLedger.findUniqueOrThrow({ where: { id: debit.id } })).mixingJobId, null);
+    assert.equal(await prisma.mediaAsset.findUnique({ where: { id: resultAssetId } }), null);
     assert.equal(
-      (await prisma.mediaAsset.findUniqueOrThrow({ where: { id: resultAssetId } })).status,
-      "DELETE_PENDING",
+      await prisma.mediaOperation.count({ where: { assetId: resultAssetId, operation: "DELETE", status: "RECOVER" } }),
+      1,
     );
-    assert.equal(await prisma.mediaCleanupJob.count({ where: { mediaAssetId: resultAssetId, status: "PENDING" } }), 1);
   } finally {
     globalThis.fetch = originalFetch;
     for (const [name, value] of Object.entries({

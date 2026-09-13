@@ -101,12 +101,12 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
-- [TODO][PRD-NFR-016] T-JCXFBTGYM8R3-production-readiness-core-03 미디어 intent·삭제 예약과 참조 경쟁 보호
+- [DONE][PRD-NFR-016] T-JCXFBTGYM8R3-production-readiness-core-03 미디어 intent·삭제 예약과 참조 경쟁 보호
   - Date: 2026-09-13
   - Acceptance:
     - AC10–12/17 파일 보존·알려진 identity cleanup·불명 추적
   - Checklist:
-    - [ ] 업로드 단계 기록·catalog cleanup·삭제 경쟁 integration
+    - [x] 업로드 단계 기록·catalog cleanup·참조 보호 integration (프로필/믹싱 전체 경쟁 회귀는 T06 추가 확인)
   - Docs:
     - project:README.md
   - Review Evidence: -
@@ -179,6 +179,7 @@
 | runtime-timeouts/leemage-client/compress-mixing-result tests | 2026-09-13 | PASS 10 |
 | pnpm run test:readiness (격리 DB) | 2026-09-13 | PASS 4 |
 | signup-recovery / ticket-ledger / dev-auth-bypass integration | 2026-09-13 | PASS 4 (격리 DB) |
+| media-recovery / leemage-media / history / catalog-target integration | 2026-09-13 | PASS 6; 격리 catalog fixture 생성 후 재검증 |
 | pnpm exec tsc --noEmit | 2026-09-13 | PASS |
 | prisma migrate deploy / generate | 2026-09-13 | PASS 23개 기존 + additive migration |
 
