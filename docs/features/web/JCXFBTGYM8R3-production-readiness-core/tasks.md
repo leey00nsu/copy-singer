@@ -88,12 +88,12 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
-- [TODO][PRD-NFR-017] T-JCXFBTGYM8R3-production-readiness-core-02 세션과 가입 지급 분리 및 복구 CLI
+- [DONE][PRD-NFR-017] T-JCXFBTGYM8R3-production-readiness-core-02 세션과 가입 지급 분리 및 복구 CLI
   - Date: 2026-09-13
   - Acceptance:
     - AC13–15/18 정책 변경·동시 복구 원장 불변
   - Checklist:
-    - [ ] 가입 snapshot·운영 dry-run/apply 및 회귀 integration
+    - [x] 가입 snapshot·운영 dry-run/apply 및 회귀 integration
   - Docs:
     - docs:prd/copy-singer-prd.md
   - Review Evidence: -
@@ -178,6 +178,7 @@
 | --- | --- | --- |
 | runtime-timeouts/leemage-client/compress-mixing-result tests | 2026-09-13 | PASS 10 |
 | pnpm run test:readiness (격리 DB) | 2026-09-13 | PASS 4 |
+| signup-recovery / ticket-ledger / dev-auth-bypass integration | 2026-09-13 | PASS 4 (격리 DB) |
 | pnpm exec tsc --noEmit | 2026-09-13 | PASS |
 | prisma migrate deploy / generate | 2026-09-13 | PASS 23개 기존 + additive migration |
 

@@ -1,6 +1,5 @@
 import "server-only";
 
-import { ensureSignupTicketGrants } from "@/entities/ticket/index.server";
 import { auth } from "./auth";
 import { getDevelopmentAuthBypassSession } from "./dev-bypass";
 
@@ -10,7 +9,6 @@ export async function getRequestSession(request?: Request) {
   const requestHeaders = request?.headers ?? (await import("next/headers")).headers();
   const session =
     (await getDevelopmentAuthBypassSession()) ?? (await auth.api.getSession({ headers: await requestHeaders }));
-  if (session) await ensureSignupTicketGrants(session.user.id);
   return session;
 }
 

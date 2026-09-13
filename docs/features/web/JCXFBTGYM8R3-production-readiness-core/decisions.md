@@ -42,4 +42,10 @@
 - Leemage 미확인 POST 재시도는 제거하고 DELETE 재시도/404 성공을 유지했다. Modal 및 runner deadline 연결은 T04 범위다.
 - runtime 4 tests, media/FFmpeg 포함 10 tests 및 typecheck 통과. 공급자 계약 근거와 자동 정리 한계는 plan에 기록했다.
 
-<!-- lee-spec-kit:workflow-sync sha256:b78083de9ac0047c1e284563e14d2fb777910e9ff0660636768371baea0ca08b -->
+<!-- lee-spec-kit:workflow-sync sha256:7a8696348aecb20a20b2c0d547f3531617d57b06edd9c7e1e030d813972e29c6 -->
+
+## D005: 가입 지급과 세션 분리
+
+- getRequestSession에서 가입 지급 호출을 제거했다. 신규 hook은 양쪽 금액 intent를 먼저 기록하고 사용자 row lock 아래 종류별 지급한다. 기존 가입 원장을 덮어쓰지 않는다.
+- tickets:recover-signup CLI는 user/kind/amount/operator/reason 필수, 기본 dry-run, --apply만 지급한다. intent/원장 금액 충돌을 거부한다.
+- 격리 DB에서 정책 변경 후 세션·원장 불변, 동시 signup/복구, legacy 부분 지급, dry-run 무변경을 검증했다. 테스트의 bypass 변수 오타를 고친 뒤 통과했다.

@@ -133,50 +133,93 @@ export async function applyTicketChange(input: TicketChange) {
   throw new Error("Ticket transaction exhausted its retry limit.");
 }
 
-async function ensureSignupGrantForKind(input: {
-  userId: string;
-  kind: TicketKind;
-  amount: number;
-  idempotencyKey: string;
-  reason: string;
-  reuseExistingSignupGrant?: boolean;
-}) {
-  if (input.reuseExistingSignupGrant) {
-    const existing = await prisma.ticketLedger.findFirst({
-      where: { userId: input.userId, kind: input.kind, type: "SIGNUP_GRANT" },
-      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
-    });
-    if (existing) return existing;
-  }
-  return applyTicketChange({
-    userId: input.userId,
-    kind: input.kind,
-    type: "SIGNUP_GRANT",
-    amount: input.amount,
-    idempotencyKey: input.idempotencyKey,
-    reason: input.reason,
-  });
+function signupKey(userId: string, kind: TicketKind) {
+  return `signup:${kind === "VOCAL_ANALYSIS" ? "vocal-analysis" : "ai-mixing"}:${userId}`;
+}
+
+async function lockSignupUser(tx: Prisma.TransactionClient, userId: string) {
+  const users = await tx.$queryRaw<Array<{ id: string }>>`SELECT id FROM "User" WHERE id = ${userId} FOR UPDATE`;
+  if (users.length !== 1) throw new Error("Signup user does not exist.");
 }
 
 export async function ensureSignupTicketGrants(userId: string) {
-  const [vocalAnalysis, aiMixing] = await Promise.all([
-    ensureSignupGrantForKind({
-      userId,
-      kind: "VOCAL_ANALYSIS",
-      amount: signupVocalAnalysisTicketGrant(),
-      idempotencyKey: `signup:vocal-analysis:${userId}`,
-      reason: "회원가입 무료 분석 티켓",
-    }),
-    ensureSignupGrantForKind({
-      userId,
-      kind: "AI_MIXING",
-      amount: signupMixingTicketGrant(),
-      idempotencyKey: `signup:ai-mixing:${userId}`,
-      reason: "회원가입 무료 믹싱 티켓",
-      reuseExistingSignupGrant: true,
-    }),
-  ]);
+  // Persist both amounts before either grant, so later configuration changes cannot alter recovery.
+  await prisma.$transaction(async (tx) => {
+    await lockSignupUser(tx, userId);
+    for (const [kind, configuredAmount] of [
+      ["VOCAL_ANALYSIS", signupVocalAnalysisTicketGrant()],
+      ["AI_MIXING", signupMixingTicketGrant()],
+    ] as const) {
+      const existing = await tx.ticketLedger.findFirst({ where: { userId, kind, type: "SIGNUP_GRANT" } });
+      await tx.signupGrantIntent.upsert({
+        where: { userId_kind: { userId, kind } },
+        create: { userId, kind, amount: existing?.amount ?? configuredAmount, reason: "회원가입 무료 티켓" },
+        update: {},
+      });
+    }
+  });
+  const grant = (kind: TicketKind) =>
+    prisma.$transaction(async (tx) => {
+      await lockSignupUser(tx, userId);
+      const intent = await tx.signupGrantIntent.findUniqueOrThrow({ where: { userId_kind: { userId, kind } } });
+      const existing = await tx.ticketLedger.findFirst({ where: { userId, kind, type: "SIGNUP_GRANT" } });
+      if (existing) return existing;
+      return applyTicketChangeInTransaction(tx, {
+        userId,
+        kind,
+        type: "SIGNUP_GRANT",
+        amount: intent.amount,
+        idempotencyKey: signupKey(userId, kind),
+        reason: intent.reason,
+      });
+    });
+  const vocalAnalysis = await grant("VOCAL_ANALYSIS");
+  const aiMixing = await grant("AI_MIXING");
   return { vocalAnalysis, aiMixing };
+}
+
+export async function recoverSignupGrant(input: {
+  userId: string;
+  kind: TicketKind;
+  amount: number;
+  operator: string;
+  reason: string;
+  apply?: boolean;
+}) {
+  if (
+    !["VOCAL_ANALYSIS", "AI_MIXING"].includes(input.kind) ||
+    !Number.isSafeInteger(input.amount) ||
+    input.amount < 0 ||
+    input.amount > 1_000_000
+  ) {
+    throw new Error("An explicit valid ticket kind and amount (0..1000000) are required.");
+  }
+  if (!input.userId.trim() || !input.operator.trim() || !input.reason.trim())
+    throw new Error("user, operator and reason are required.");
+  return prisma.$transaction(async (tx) => {
+    await lockSignupUser(tx, input.userId);
+    const { userId, kind, amount } = input;
+    const intent = await tx.signupGrantIntent.findUnique({ where: { userId_kind: { userId, kind } } });
+    const existing = await tx.ticketLedger.findFirst({ where: { userId, kind, type: "SIGNUP_GRANT" } });
+    if ((intent && intent.amount !== amount) || (existing && existing.amount !== amount))
+      throw new Error("Signup amount conflicts with the recorded intent or ledger.");
+    if (existing) return { action: "NOOP", userId, kind, amount, ledgerId: existing.id };
+    if (!input.apply) return { action: "WOULD_GRANT", userId, kind, amount };
+    await tx.signupGrantIntent.upsert({
+      where: { userId_kind: { userId, kind } },
+      create: { userId, kind, amount, operator: input.operator, reason: input.reason },
+      update: {},
+    });
+    const ledger = await applyTicketChangeInTransaction(tx, {
+      userId,
+      kind,
+      amount,
+      type: "SIGNUP_GRANT",
+      idempotencyKey: signupKey(userId, kind),
+      reason: `가입 지급 복구 (${input.operator}): ${input.reason}`,
+    });
+    return { action: "GRANTED", userId, kind, amount, ledgerId: ledger.id };
+  });
 }
 
 export async function getTicketWallets(userId: string) {
