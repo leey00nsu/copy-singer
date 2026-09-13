@@ -1,3 +1,5 @@
+import hashlib
+import json
 import hmac
 import os
 import shutil
@@ -28,6 +30,7 @@ JOB_TTL_SECONDS = 24 * 60 * 60
 app = modal.App(APP_NAME)
 model_volume = modal.Volume.from_name("soulx-singer-models", create_if_missing=True)
 job_volume = modal.Volume.from_name("soulx-singer-jobs", create_if_missing=True)
+request_index = modal.Dict.from_name("soulx-singer-submission-claims", create_if_missing=True)
 job_store = modal.Dict.from_name("soulx-singer-job-index", create_if_missing=True)
 api_secret = modal.Secret.from_name("soulx-api-secret")
 
@@ -159,6 +162,23 @@ class SoulXModel:
         }
 
 
+async def _claim_submission(index, key: str, fingerprint: str, candidate: dict):
+    candidate = {**candidate, "fingerprint": fingerprint}
+    won = await index.put.aio(key, candidate, skip_if_exists=True)
+    entry = candidate if won else await index.get.aio(key)
+    if not isinstance(entry, dict) or entry.get("fingerprint") != fingerprint:
+        raise ValueError("IDEMPOTENCY_CONFLICT")
+    return entry, won
+
+
+def _file_digest(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as source:
+        for chunk in iter(lambda: source.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def _safe_audio_filename(prefix: str, original: str | None) -> str:
     allowed = {".wav", ".mp3", ".flac", ".m4a", ".ogg", ".aac", ".webm", ".mp4"}
     suffix = Path(original or "").suffix.lower()
@@ -265,6 +285,7 @@ def web():
         steps: int = Form(32, ge=1, le=100),
         cfg: float = Form(1.0, ge=0.0, le=10.0),
         seed: int = Form(42, ge=0, le=2_147_483_647),
+        request_id: str | None = Form(None, max_length=200),
     ) -> dict:
         job_id = uuid.uuid4().hex
         job_dir = JOB_MOUNT / job_id
@@ -298,6 +319,24 @@ def web():
             "cfg": cfg,
             "seed": seed,
         }
+        if request_id:
+            fingerprint = hashlib.sha256(json.dumps({
+                "params": params, "prompt": _file_digest(job_dir / prompt_filename),
+                "target": _file_digest(job_dir / target_filename),
+            }, sort_keys=True).encode()).hexdigest()
+            try:
+                entry, won = await _claim_submission(request_index, request_id, fingerprint,
+                    {"job_id": job_id, "created_at": time.time()})
+            except ValueError:
+                shutil.rmtree(job_dir, ignore_errors=True)
+                raise HTTPException(status_code=409, detail="IDEMPOTENCY_CONFLICT")
+            if not won:
+                shutil.rmtree(job_dir, ignore_errors=True)
+                existing = await job_store.get.aio(entry["job_id"])
+                if existing is None:
+                    raise HTTPException(status_code=503, detail="SUBMISSION_UNKNOWN", headers={"Retry-After": "5"})
+                return _public_job(entry["job_id"], existing["status"], existing["created_at"], existing.get("error"))
+        # Never remove the claim on spawn/metadata response loss: execution may have started.
         call = await SoulXModel().convert.spawn.aio(job_id, params)
         metadata = {
             "id": job_id,

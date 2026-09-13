@@ -312,3 +312,13 @@ npx lee-spec-kit feature <name> --component modal-api
 `pnpm run media:reconcile`은 미해결 intent를 100개까지 조회한다. `--id UUID --operator NAME --reason TEXT`로 dry-run하고 `--apply`를 붙이면 운영자 확인 근거를 기록한다. 공급자에서 identity를 확인했다면 `--file-id ID`로 삭제 재시도를 예약한다. 서명 URL/음성 bytes/키를 사유에 넣지 않는다. 삭제 예약은 반드시 올바른 project/file identity를 공급자에서 확인한 뒤 적용한다.
 
 Leemage의 예약 조회·client idempotency·미확정 object TTL은 확인 불가다. presign 응답 유실로 identity를 받지 못한 파일을 자동 제거했다고 표시하지 않는다. 운영자 해결 상태도 공급자의 실제 제거 증거를 대신하지 않는다.
+
+### Worker 복구와 접수 불명
+
+보컬 job 예산은 15분, 믹싱/곡 분석은 75분이며 시작 시 DB에 고정한다. lease는 최대 30초 간격으로 갱신한다. 마지막 시도 중 종료된 job도 다음 worker가 회수하여 종료한다. 외부 제출 불명은 최대 3회/5분 이내만 자동 확인한다. 믹싱 미접수 확정은 원래 비용으로 환불하고 접수 확정/불명은 자동 환불하지 않는다. 보컬 terminal failure는 원래 분석 비용을 환불한다.
+
+`pnpm run jobs:reconcile`로 미해결 기록을 확인한다. `--id UUID --outcome submitted|not-submitted|cleaned --operator NAME --reason EVIDENCE`는 dry-run이고 `--apply`만 변경한다. 공급자 증거로 미접수를 확인한 믹싱은 원래 환불 key로 한 번 환불한다. 환불 처리 중/접수 불명인 믹싱의 기록 삭제는 확인 완료까지 409로 보류하지만 새 job 접수 슬롯은 반환한다.
+
+Modal은 web보다 먼저 새 계약으로 배포해야 한다. SoulX/곡 분석은 claim 뒤 spawn하고 응답 유실 시 재-spawn하지 않는다. 보컬 동기 분석도 recording ID별 metadata claim만 남긴다. 보컬 결과 응답 유실은 자동 재연산 없이 실패·환불로 끝내며 사용자가 새 요청을 만들 수 있다. 음성 bytes/결과는 7일 TTL의 Modal Dict에 캐시하지 않는다. Dict는 7일 미접근 만료이므로 영구 idempotency 저장소가 아니다. terminal DB job은 다시 제출하지 않는다.
+
+외부 job 정리는 terminal 확인 뒤 15초 timeout으로 시도하고 실패하면 UNRESOLVED로 남긴다. 운영자가 원인을 확인해 위 CLI로 해결한다. SIGTERM/SIGINT 이후 신규 claim을 멈추고 진행 job의 제한된 예산 내 정리가 끝나면 DB 연결을 닫는다. 즉시 강제 종료하더라도 다음 worker가 lease 만료 후 회수한다.

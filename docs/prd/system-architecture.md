@@ -97,3 +97,9 @@ PostgreSQL durable job
 - Job 처리: [`openwiki/operations/job-processing.md`](../../openwiki/operations/job-processing.md)
 
 OpenWiki는 생성된 탐색 evidence이므로 직접 수정하지 않는다. 특정 코드가 왜 현재 모습이 되었는지는 해당 파일의 Git 이력에서 `F###`를 확인한 뒤 `docs/features/<component>/F###-*/decisions.md`를 읽는다.
+
+## 운영 복구 계약
+
+worker는 주기 heartbeat와 transaction 내부 lease fencing으로 결과·알림·실패를 확정한다. 만료된 최종 시도도 회수해 제한된 deadline 안에 종료한다. 가입 지급 intent는 양쪽 금액을 보존하고 일반 세션 조회는 지급을 수행하지 않는다.
+
+MediaOperation은 domain row와 독립된 업로드·삭제 intent다. DB 삭제와 cleanup 예약은 원자적으로 확정한다. Modal 접수는 조건부 claim으로 중복 실행을 막고 spawn 응답 유실 구간은 재실행 대신 미확인 상태로 추적한다. ExternalJobReconciliation이 terminal 이후 취소·정리/운영자 확인을 담당한다. 실제 bytes는 Dict에 저장하지 않는다.

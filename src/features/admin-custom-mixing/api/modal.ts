@@ -1,6 +1,7 @@
 import "server-only";
 
 import { SYNTHESIS_PRESET } from "@/entities/recommendation/index.model";
+import { boundedFetch } from "@/shared/lib/runtime/index.server";
 import { ADMIN_CUSTOM_MIXING_LIMITS } from "../model/contract";
 
 type ModalConfig = { url: string; key: string };
@@ -18,7 +19,7 @@ export function modalUnavailableResponse() {
 async function fetchReference(reference: { externalUrl: string; mimeType: string; fileName: string }) {
   let response: Response;
   try {
-    response = await fetch(reference.externalUrl, { cache: "no-store", signal: AbortSignal.timeout(60_000) });
+    response = await boundedFetch(reference.externalUrl, { cache: "no-store", signal: AbortSignal.timeout(60_000) });
   } catch {
     return {
       error: Response.json({ detail: "보컬 reference를 불러오지 못했어요." }, { status: 502 }),
@@ -56,13 +57,17 @@ export async function submitAdminCustomMixing(
 
   let response: Response;
   try {
-    response = await fetch(`${config.url}/v1/conversions`, {
-      method: "POST",
-      headers: { "X-API-Key": config.key },
-      body: form,
-      cache: "no-store",
-      signal: AbortSignal.timeout(15 * 60_000),
-    });
+    response = await boundedFetch(
+      `${config.url}/v1/conversions`,
+      {
+        method: "POST",
+        headers: { "X-API-Key": config.key },
+        body: form,
+        cache: "no-store",
+        signal: AbortSignal.timeout(120_000),
+      },
+      120_000,
+    );
   } catch {
     return Response.json({ detail: "커스텀 믹싱을 시작하지 못했어요." }, { status: 502 });
   }
@@ -72,11 +77,12 @@ export async function submitAdminCustomMixing(
   });
 }
 
-async function proxyConversion(_request: Request, id: string, method: "GET" | "DELETE") {
+async function proxyConversion(request: Request, id: string, method: "GET" | "DELETE") {
   const config = modalConfig();
   if (!config) return modalUnavailableResponse();
-  const response = await fetch(`${config.url}/v1/conversions/${encodeURIComponent(id)}`, {
+  const response = await boundedFetch(`${config.url}/v1/conversions/${encodeURIComponent(id)}`, {
     method,
+    signal: request.signal,
     headers: { "X-API-Key": config.key },
     cache: "no-store",
   });
@@ -98,10 +104,15 @@ export async function getAdminCustomMixingAudio(request: Request, id: string) {
   const config = modalConfig();
   if (!config) return modalUnavailableResponse();
   const range = request.headers.get("Range");
-  const response = await fetch(`${config.url}/v1/conversions/${encodeURIComponent(id)}/audio`, {
-    headers: { "X-API-Key": config.key, ...(range ? { Range: range } : {}) },
-    cache: "no-store",
-  });
+  const response = await boundedFetch(
+    `${config.url}/v1/conversions/${encodeURIComponent(id)}/audio`,
+    {
+      signal: request.signal,
+      headers: { "X-API-Key": config.key, ...(range ? { Range: range } : {}) },
+      cache: "no-store",
+    },
+    120_000,
+  );
   const headers = new Headers();
   for (const name of ["Content-Type", "Content-Length", "Content-Range", "Accept-Ranges", "Content-Disposition"]) {
     const value = response.headers.get(name);

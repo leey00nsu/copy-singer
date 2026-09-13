@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import hashlib
+import json
+import time
 import hmac
 import importlib.metadata
 import math
@@ -58,6 +61,15 @@ web_image = modal.Image.debian_slim(python_version="3.12").pip_install(
     "fastapi==0.141.1",
     "python-multipart==0.0.32",
 )
+
+
+async def _claim_submission(index, key: str, fingerprint: str, candidate: dict):
+    candidate = {**candidate, "fingerprint": fingerprint}
+    won = await index.put.aio(key, candidate, skip_if_exists=True)
+    entry = candidate if won else await index.get.aio(key)
+    if not isinstance(entry, dict) or entry.get("fingerprint") != fingerprint:
+        raise ValueError("IDEMPOTENCY_CONFLICT")
+    return entry, won
 
 
 def require_api_key(x_api_key: str | None = Header(default=None)) -> None:
@@ -250,14 +262,6 @@ async def submit_job(
     request_id: Annotated[str, Form(alias="requestId")],
     source_video_id: Annotated[str, Form(alias="sourceVideoId")],
 ) -> JSONResponse:
-    existing_call_id = await job_index.get.aio(request_id, None)
-    if isinstance(existing_call_id, str) and existing_call_id:
-        await audio.close()
-        return JSONResponse(
-            status_code=202,
-            content={"status": "PROCESSING", "externalJobId": existing_call_id, "reused": True},
-        )
-
     source = await audio.read(MAX_UPLOAD_BYTES + 1)
     await audio.close()
     try:
@@ -271,12 +275,19 @@ async def submit_job(
             content={"reasonCode": reason_code, "detail": detail, "retryable": False},
         )
 
+    fingerprint = hashlib.sha256(json.dumps({"source": hashlib.sha256(source).hexdigest(),
+        "source_video_id": source_video_id, "filename": audio.filename, "pipeline": "yt-dlp-demucs-librosa-pyin-v1"}, sort_keys=True).encode()).hexdigest()
+    try:
+        entry, won = await _claim_submission(job_index, request_id, fingerprint, {"created_at": time.time()})
+    except ValueError:
+        return JSONResponse(status_code=409, content={"reasonCode": "IDEMPOTENCY_CONFLICT", "detail": "Request identity has different or unverifiable input.", "retryable": False})
+    if not won:
+        if not entry.get("call_id"):
+            return JSONResponse(status_code=503, headers={"Retry-After": "5"}, content={"reasonCode": "SUBMISSION_UNKNOWN", "detail": "Submission is not yet confirmed.", "retryable": True})
+        return JSONResponse(status_code=202, content={"status": "PROCESSING", "externalJobId": entry["call_id"], "reused": True})
     call = await analyze_song.spawn.aio(source, source_video_id, audio.filename or "source.m4a")
-    await job_index.put.aio(request_id, call.object_id)
-    return JSONResponse(
-        status_code=202,
-        content={"status": "PROCESSING", "externalJobId": call.object_id, "reused": False},
-    )
+    await job_index.put.aio(request_id, {**entry, "call_id": call.object_id})
+    return JSONResponse(status_code=202, content={"status": "PROCESSING", "externalJobId": call.object_id, "reused": False})
 
 
 @web_app.get("/v1/jobs/{external_job_id}")
@@ -307,6 +318,12 @@ async def poll_job(external_job_id: str) -> JSONResponse:
             },
         )
     return JSONResponse(status_code=200, content={"status": "SUCCEEDED", "result": result})
+
+
+@web_app.delete("/v1/jobs/{external_job_id}", status_code=204)
+async def cancel_job(external_job_id: str):
+    call = modal.FunctionCall.from_id(external_job_id)
+    await call.cancel.aio(terminate_containers=True)
 
 
 @app.function(

@@ -9,6 +9,7 @@ import {
 } from "@/shared/config/index.server";
 import type { Prisma } from "@/shared/db/index.server";
 import { prisma } from "@/shared/db/index.server";
+import { fenceJob, JobDeadlineError, LeaseLostError, startJobLease } from "@/shared/lib/runtime/index.server";
 
 type JobRow = {
   id: string;
@@ -22,6 +23,7 @@ type JobRow = {
 
 export type SongAnalysisWorkerDependencies = {
   fetchImpl?: typeof fetch;
+  signal?: AbortSignal;
   analyzerUrl?: string;
   analyzerApiKey?: string;
   pollIntervalMs?: number;
@@ -33,14 +35,13 @@ export async function claimNextSongAnalysisJob(owner: string, candidateJobId: st
   const rows = await prisma.$queryRaw<Array<{ id: string }>>`
     WITH candidate AS (
       SELECT job."id" FROM "SongAnalysisJob" AS job
-      WHERE job."attempts" < job."maxAttempts"
-        AND job."nextAttemptAt" <= ${now}
+      WHERE job."nextAttemptAt" <= ${now}
         AND (${candidateJobId}::uuid IS NULL OR job."id" = ${candidateJobId}::uuid)
-        AND EXISTS (
+        AND (job."attempts" >= job."maxAttempts" OR job."deadlineAt" <= ${now} OR EXISTS (
           SELECT 1 FROM "CatalogTargetAsset" AS target
           WHERE target."sourceId" = job."sourceId"
             AND target."status" = 'READY'::"MediaAssetStatus"
-        )
+        ))
         AND (
           job."status" = 'PENDING'::"SongAnalysisJobStatus"
           OR (job."status" = 'PROCESSING'::"SongAnalysisJobStatus" AND (job."leaseExpiresAt" IS NULL OR job."leaseExpiresAt" < ${now}))
@@ -52,27 +53,13 @@ export async function claimNextSongAnalysisJob(owner: string, candidateJobId: st
     UPDATE "SongAnalysisJob" AS job
     SET "status" = 'PROCESSING'::"SongAnalysisJobStatus",
         "leaseOwner" = ${owner}, "leaseExpiresAt" = ${leaseUntil}, "heartbeatAt" = ${now},
-        "startedAt" = COALESCE(job."startedAt", ${now}), "attempts" = job."attempts" + 1,
+        "deadlineAt" = COALESCE(job."deadlineAt", COALESCE(job."startedAt", ${now}) + interval '75 minutes'),
+      "startedAt" = COALESCE(job."startedAt", ${now}), "attempts" = job."attempts" + 1,
         "updatedAt" = ${now}
     FROM candidate WHERE job."id" = candidate."id"
     RETURNING job."id"
   `;
   return rows[0]?.id ?? null;
-}
-
-async function heartbeat(jobId: string, owner: string) {
-  const now = new Date();
-  const leaseUntil = new Date(now.getTime() + songAnalysisLeaseSeconds() * 1_000);
-  await prisma.songAnalysisJob.updateMany({
-    where: { id: jobId, status: "PROCESSING", leaseOwner: owner },
-    data: { heartbeatAt: now, leaseExpiresAt: leaseUntil },
-  });
-}
-
-function startHeartbeat(jobId: string, owner: string) {
-  const interval = setInterval(() => void heartbeat(jobId, owner).catch(() => undefined), 60_000);
-  interval.unref();
-  return () => clearInterval(interval);
 }
 
 async function failure(job: JobRow, error: unknown) {
@@ -84,10 +71,22 @@ async function failure(job: JobRow, error: unknown) {
           detail: error instanceof Error ? error.message : "Song analysis failed.",
           retryable: true,
         };
-  const retry = normalized.retryable && job.attempts < job.maxAttempts;
+  const retry = !(error instanceof JobDeadlineError) && normalized.retryable && job.attempts < job.maxAttempts;
   const now = new Date();
   const nextAttemptAt = new Date(now.getTime() + Math.min(60, 5 * 2 ** Math.max(0, job.attempts - 1)) * 1_000);
   await prisma.$transaction(async (tx) => {
+    await fenceJob(tx, "SongAnalysisJob", job.id, job.leaseOwner, true);
+    if (!retry)
+      await tx.externalJobReconciliation.upsert({
+        where: { jobType_jobId: { jobType: "SONG", jobId: job.id } },
+        create: {
+          jobType: "SONG",
+          jobId: job.id,
+          externalJobId: job.externalJobId,
+          reason: "TERMINAL_EXTERNAL_RECONCILIATION",
+        },
+        update: {},
+      });
     await tx.songAnalysis.upsert({
       where: {
         sourceId_pipelineContract: { sourceId: job.sourceId, pipelineContract: SONG_ANALYSIS_PIPELINE_CONTRACT },
@@ -134,8 +133,14 @@ export async function processClaimedSongAnalysisJob(
     include: { source: true },
   });
   if (!job) throw new Error("Claimed song analysis job was not found.");
-  const stopHeartbeat = startHeartbeat(jobId, owner);
+  const lease = await startJobLease("SongAnalysisJob", jobId, owner, songAnalysisLeaseSeconds(), dependencies.signal);
   try {
+    lease.check();
+    if (
+      job.attempts > job.maxAttempts ||
+      (!job.externalJobId && job.submissionStartedAt && Date.now() - job.submissionStartedAt.getTime() > 300_000)
+    )
+      throw new JobDeadlineError();
     const configured = songAnalysisModalConfig();
     const analyzerUrl = dependencies.analyzerUrl ?? configured?.url;
     const analyzerApiKey = dependencies.analyzerApiKey ?? configured?.apiKey;
@@ -146,7 +151,7 @@ export async function processClaimedSongAnalysisJob(
       orderBy: { createdAt: "desc" },
     });
     if (!target) throw new SongAnalyzerError("ANALYSIS_SOURCE_NOT_READY", "Catalog target is not ready.", true);
-    const fetchImpl = dependencies.fetchImpl ?? fetch;
+    const fetchImpl = lease.fetch(dependencies.fetchImpl ?? fetch);
     let externalJobId = job.externalJobId;
     if (!externalJobId) {
       const sourceResponse = await fetchImpl(target.externalUrl, {
@@ -160,6 +165,13 @@ export async function processClaimedSongAnalysisJob(
           sourceResponse.status === 429 || sourceResponse.status >= 500,
         );
       }
+      await prisma.$transaction(async (tx) => {
+        await fenceJob(tx, "SongAnalysisJob", jobId, owner);
+        await tx.songAnalysisJob.update({
+          where: { id: jobId },
+          data: { submissionState: "UNKNOWN", submissionStartedAt: job.submissionStartedAt ?? new Date() },
+        });
+      });
       const submitted = await submitSongAnalysis({
         analyzerUrl,
         apiKey: analyzerApiKey,
@@ -171,15 +183,22 @@ export async function processClaimedSongAnalysisJob(
         fetchImpl,
       });
       externalJobId = submitted.externalJobId;
+      job.externalJobId = externalJobId;
+      await prisma.externalJobReconciliation.upsert({
+        where: { jobType_jobId: { jobType: "SONG", jobId } },
+        create: { jobType: "SONG", jobId, externalJobId, reason: "OBSERVED_SUBMISSION" },
+        update: { externalJobId },
+      });
       const persisted = await prisma.songAnalysisJob.updateMany({
-        where: { id: job.id, status: "PROCESSING", leaseOwner: owner },
-        data: { externalJobId, externalSubmittedAt: new Date() },
+        where: { id: job.id, status: "PROCESSING", leaseOwner: owner, leaseExpiresAt: { gt: new Date() } },
+        data: { externalJobId, submissionState: "SUBMITTED", externalSubmittedAt: new Date() },
       });
       if (persisted.count !== 1) throw new Error("Song analysis lease was lost after Modal submission.");
     }
 
     let result: Extract<Awaited<ReturnType<typeof pollSongAnalysis>>, { status: "SUCCEEDED" }>["result"];
     for (;;) {
+      lease.check();
       const polled = await pollSongAnalysis({ analyzerUrl, apiKey: analyzerApiKey, externalJobId, fetchImpl });
       if (polled.status === "PROCESSING") {
         await new Promise((resolve) =>
@@ -188,17 +207,14 @@ export async function processClaimedSongAnalysisJob(
         continue;
       }
       if (polled.status === "FAILED") {
-        await prisma.songAnalysisJob.updateMany({
-          where: { id: job.id, status: "PROCESSING", leaseOwner: owner },
-          data: { externalJobId: null, externalSubmittedAt: null },
-        });
-        throw new SongAnalyzerError(polled.reasonCode, polled.detail, polled.retryable);
+        throw new SongAnalyzerError(polled.reasonCode, polled.detail, false);
       }
       result = polled.result;
       break;
     }
     const completedAt = new Date();
     await prisma.$transaction(async (tx) => {
+      await fenceJob(tx, "SongAnalysisJob", job.id, owner);
       const analysis = await tx.songAnalysis.upsert({
         where: {
           sourceId_pipelineContract: { sourceId: job.sourceId, pipelineContract: SONG_ANALYSIS_PIPELINE_CONTRACT },
@@ -288,9 +304,15 @@ export async function processClaimedSongAnalysisJob(
       });
     });
   } catch (error) {
-    await failure(job, error);
+    if (!(error instanceof LeaseLostError) && !(lease.signal.reason instanceof LeaseLostError)) {
+      try {
+        await failure(job, lease.signal.reason instanceof JobDeadlineError ? lease.signal.reason : error);
+      } catch (failure) {
+        if (!(failure instanceof LeaseLostError)) throw failure;
+      }
+    }
   } finally {
-    stopHeartbeat();
+    await lease.stop();
   }
 }
 

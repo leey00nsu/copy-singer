@@ -265,6 +265,7 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
       songAnalysisId: analysisId,
       idempotencyKey: `submit-network-${suffix}`,
     });
+    await prisma.mixingJob.update({ where: { id: submitNetworkFailure.id }, data: { maxAttempts: 1 } });
     assert.equal(await claimNextMixingJob("submit-network-worker", submitNetworkFailure.id), submitNetworkFailure.id);
     const submitNetworkFetch: typeof fetch = async (request) => {
       const url = String(request);
@@ -284,9 +285,23 @@ test("mixing enqueue, claim, lease recovery, and refund boundary are durable", a
     });
     const submitNetworkFailed = await prisma.mixingJob.findUniqueOrThrow({ where: { id: submitNetworkFailure.id } });
     assert.equal(submitNetworkFailed.status, "FAILED");
-    assert.equal(submitNetworkFailed.errorCode, "MODAL_SUBMIT_FAILED");
-    assert.equal(submitNetworkFailed.refundState, "REFUNDED");
-    assert.equal(await readMixingBalance(userId), 1);
+    assert.equal(submitNetworkFailed.errorCode, "MODAL_SUBMISSION_UNCONFIRMED");
+    assert.equal(submitNetworkFailed.refundState, "NONE");
+    assert.equal(await readMixingBalance(userId), 0);
+    assert.equal(
+      await prisma.externalJobReconciliation.count({
+        where: { jobId: submitNetworkFailure.id, reason: "SUBMISSION_UNKNOWN_REFUND_HELD" },
+      }),
+      1,
+    );
+    await applyTicketChange({
+      userId,
+      kind: "AI_MIXING",
+      type: "ADMIN_ADJUSTMENT",
+      amount: 1,
+      idempotencyKey: `test-after-unknown:${suffix}`,
+      reason: "Next independent test case",
+    });
 
     const submittedFailure = await enqueueMixingJob({
       userId,

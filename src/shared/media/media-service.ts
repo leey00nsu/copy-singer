@@ -42,10 +42,12 @@ export async function storeAnalyzerReferenceBytes(input: {
   mimeType: string;
   bytes: Uint8Array;
   fileName?: string;
+  signal?: AbortSignal;
 }) {
   return storeMediaAssetBytes({
     userId: input.userId,
     bytes: input.bytes,
+    signal: input.signal,
     mimeType: input.mimeType,
     kind: "REFERENCE",
     fileName: input.fileName ?? `${input.recordingId}.${audioExtension(input.mimeType)}`,
@@ -58,10 +60,12 @@ export async function storeAnalyzerSynthesisReferenceBytes(input: {
   mimeType: string;
   bytes: Uint8Array;
   fileName?: string;
+  signal?: AbortSignal;
 }) {
   return storeMediaAssetBytes({
     userId: input.userId,
     bytes: input.bytes,
+    signal: input.signal,
     mimeType: input.mimeType,
     kind: "SYNTHESIS_REFERENCE",
     fileName: input.fileName ?? `${input.recordingId}-synthesis.${audioExtension(input.mimeType)}`,

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
+import json
 import hmac
 import importlib.metadata
 import logging
@@ -43,6 +45,7 @@ CONTAINER_INSTANCE_ID = uuid4().hex
 CONTAINER_STARTED_AT_MS = round(time.time() * 1000)
 
 app = modal.App(APP_NAME)
+analysis_claims = modal.Dict.from_name("copy-singer-vocal-analysis-claims", create_if_missing=True)
 api_secret = modal.Secret.from_name("soulx-api-secret")
 
 
@@ -243,6 +246,21 @@ async def analyze(
                         )
                     output.write(chunk)
 
+            fingerprint = hashlib.sha256(json.dumps({
+                "audio": hashlib.sha256(upload_path.read_bytes()).hexdigest(), "mime": mime_type,
+                "preset": preset, "melody": [melody_start_ms, melody_end_ms],
+                "glissando": [glissando_start_ms, glissando_end_ms], "trim": trim_to_max_duration,
+            }, sort_keys=True).encode()).hexdigest()
+            won = await analysis_claims.put.aio(normalized_recording_id, {"fingerprint": fingerprint}, skip_if_exists=True)
+            if not won:
+                existing = await analysis_claims.get.aio(normalized_recording_id)
+                same_input = isinstance(existing, dict) and existing.get("fingerprint") == fingerprint
+                return JSONResponse(status_code=409, content={
+                    "reasonCode": "ANALYSIS_ALREADY_SUBMITTED" if same_input else "IDEMPOTENCY_CONFLICT",
+                    "detail": "This recording was already submitted; automatic re-execution is disabled.",
+                    "retryable": False,
+                })
+            # Claims contain metadata only. Audio/results are never retained in the seven-day Dict.
             analysis_started = time.perf_counter()
             analyzed = await analyze_recording_file(
                 upload_path=upload_path,

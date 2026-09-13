@@ -2,7 +2,7 @@ import "server-only";
 
 import { createHash } from "node:crypto";
 import { createNotification } from "@/entities/notification/index.server";
-import { applyTicketChange } from "@/entities/ticket/index.server";
+import { applyTicketChangeInTransaction } from "@/entities/ticket/index.server";
 import {
   AnalyzerClientError,
   analyzeVocalProfileBytes,
@@ -11,11 +11,13 @@ import {
 } from "@/entities/vocal-profile/index.server";
 import type { VocalProfileAnalysisJobRow } from "@/features/analyze-vocal-profile/index.server";
 import { vocalProfileAnalysisLeaseSeconds } from "@/shared/config/index.server";
-import { prisma } from "@/shared/db/index.server";
-import { discardMediaAsset } from "@/shared/media/index.server";
+import { type Prisma, prisma } from "@/shared/db/index.server";
+import { fenceJob, JobDeadlineError, LeaseLostError, startJobLease } from "@/shared/lib/runtime/index.server";
+import { scheduleAssetDeletion } from "@/shared/media/index.server";
 
 export type VocalProfileAnalysisWorkerDependencies = {
   fetchImpl?: typeof fetch;
+  signal?: AbortSignal;
 };
 
 function sha256(bytes: Uint8Array) {
@@ -23,6 +25,8 @@ function sha256(bytes: Uint8Array) {
 }
 
 function workerError(error: unknown) {
+  if (error instanceof JobDeadlineError)
+    return { code: "JOB_DEADLINE_EXCEEDED", detail: "Analysis recovery budget exhausted.", retryable: false };
   if (error instanceof AnalyzerClientError || error instanceof VocalProfilePersistenceError) {
     return { code: error.reasonCode, detail: error.detail, retryable: error.retryable };
   }
@@ -48,8 +52,7 @@ export async function claimNextVocalProfileAnalysisJob(owner: string, candidateJ
       SELECT "id"
       FROM "VocalProfileAnalysisJob"
       WHERE
-        "attempts" < "maxAttempts"
-        AND "nextAttemptAt" <= ${now}
+        "nextAttemptAt" <= ${now}
         AND (${candidateJobId}::uuid IS NULL OR "id" = ${candidateJobId}::uuid)
         AND (
           "status" = 'PENDING'::"VocalProfileAnalysisJobStatus"
@@ -68,6 +71,7 @@ export async function claimNextVocalProfileAnalysisJob(owner: string, candidateJ
       "leaseOwner" = ${owner},
       "leaseExpiresAt" = ${leaseUntil},
       "heartbeatAt" = ${now},
+      "deadlineAt" = COALESCE(job."deadlineAt", COALESCE(job."startedAt", ${now}) + interval '15 minutes'),
       "startedAt" = COALESCE(job."startedAt", ${now}),
       "attempts" = job."attempts" + 1,
       "updatedAt" = ${now}
@@ -87,9 +91,10 @@ async function loadClaimedJob(jobId: string, owner: string) {
   return rows[0] ?? null;
 }
 
-async function markSucceeded(job: VocalProfileAnalysisJobRow, profileId: string) {
+async function markSucceeded(job: VocalProfileAnalysisJobRow, profileId: string, tx?: Prisma.TransactionClient) {
   const now = new Date();
-  await prisma.$transaction(async (transaction) => {
+  const commit = async (transaction: Prisma.TransactionClient) => {
+    await fenceJob(transaction, "VocalProfileAnalysisJob", job.id, job.leaseOwner);
     const profile = await transaction.vocalProfile.findUniqueOrThrow({
       where: { id: profileId },
       select: { profileNumber: true, displayName: true },
@@ -121,36 +126,29 @@ async function markSucceeded(job: VocalProfileAnalysisJobRow, profileId: string)
       },
       transaction,
     );
-  });
+  };
+  if (tx) await commit(tx);
+  else await prisma.$transaction(commit);
 }
 
 export async function refundRequiredVocalProfileAnalysisTicket(jobId: string) {
-  const job = await prisma.vocalProfileAnalysisJob.findUnique({
-    where: { id: jobId },
-    select: { id: true, userId: true, ticketCost: true, refundState: true },
-  });
-  if (!job || job.refundState !== "REQUIRED") return false;
-  if (job.ticketCost <= 0) {
-    await prisma.vocalProfileAnalysisJob.updateMany({
-      where: { id: job.id, refundState: "REQUIRED" },
-      data: { refundState: "REFUNDED" },
-    });
+  return prisma.$transaction(async (tx) => {
+    await tx.$queryRaw`SELECT id FROM "VocalProfileAnalysisJob" WHERE id = ${jobId}::uuid FOR UPDATE`;
+    const job = await tx.vocalProfileAnalysisJob.findUnique({ where: { id: jobId } });
+    if (!job || job.status !== "FAILED" || job.refundState !== "REQUIRED") return false;
+    if (job.ticketCost > 0)
+      await applyTicketChangeInTransaction(tx, {
+        userId: job.userId,
+        kind: "VOCAL_ANALYSIS",
+        type: "USAGE_REFUND",
+        amount: job.ticketCost,
+        idempotencyKey: `vocal-analysis-refund:${job.id}`,
+        vocalProfileAnalysisJobId: job.id,
+        reason: "보컬 프로필 분석 실패 환불",
+      });
+    await tx.vocalProfileAnalysisJob.update({ where: { id: jobId }, data: { refundState: "REFUNDED" } });
     return true;
-  }
-  await applyTicketChange({
-    userId: job.userId,
-    kind: "VOCAL_ANALYSIS",
-    type: "USAGE_REFUND",
-    amount: job.ticketCost,
-    idempotencyKey: `vocal-analysis-refund:${job.id}`,
-    reason: "보컬 프로필 분석 실패 환불",
-    vocalProfileAnalysisJobId: job.id,
   });
-  await prisma.vocalProfileAnalysisJob.updateMany({
-    where: { id: job.id, refundState: "REQUIRED" },
-    data: { refundState: "REFUNDED" },
-  });
-  return true;
 }
 
 export async function reconcileRequiredVocalProfileAnalysisRefunds(limit = 10) {
@@ -173,7 +171,7 @@ async function releaseFailure(job: VocalProfileAnalysisJobRow, error: unknown) {
     attempts: job.attempts,
     detail: failure.detail.slice(0, 500),
   });
-  const retry = failure.retryable && job.attempts < job.maxAttempts;
+  const retry = !(error instanceof JobDeadlineError) && failure.retryable && job.attempts < job.maxAttempts;
   const now = new Date();
   if (retry) {
     const delaySeconds = Math.min(30, 2 ** Math.max(0, job.attempts - 1));
@@ -189,12 +187,13 @@ async function releaseFailure(job: VocalProfileAnalysisJobRow, error: unknown) {
         "leaseOwner" = NULL,
         "leaseExpiresAt" = NULL,
         "updatedAt" = ${now}
-      WHERE "id" = ${job.id}::uuid
+      WHERE "id" = ${job.id}::uuid AND "leaseOwner" = ${job.leaseOwner} AND "leaseExpiresAt" > clock_timestamp() AND "status" = 'PROCESSING'
     `;
     return;
   }
 
   await prisma.$transaction(async (transaction) => {
+    await fenceJob(transaction, "VocalProfileAnalysisJob", job.id, job.leaseOwner, true);
     await transaction.vocalProfileAnalysisJob.update({
       where: { id: job.id },
       data: {
@@ -209,6 +208,7 @@ async function releaseFailure(job: VocalProfileAnalysisJobRow, error: unknown) {
         leaseExpiresAt: null,
       },
     });
+    if (job.sourceAssetId) await scheduleAssetDeletion(transaction, job.sourceAssetId);
     await createNotification(
       {
         userId: job.userId,
@@ -222,7 +222,6 @@ async function releaseFailure(job: VocalProfileAnalysisJobRow, error: unknown) {
       transaction,
     );
   });
-  if (job.sourceAssetId) await discardMediaAsset(job.sourceAssetId);
   if (job.ticketCost > 0) {
     try {
       await refundRequiredVocalProfileAnalysisTicket(job.id);
@@ -240,16 +239,25 @@ export async function processClaimedVocalProfileAnalysisJob(
   const job = await loadClaimedJob(jobId, owner);
   if (!job) throw new Error("Claimed vocal profile analysis job was not found.");
 
-  const alreadyStored = await prisma.vocalProfile.findFirst({
-    where: { recordingId: job.recordingId, userId: job.userId },
-    select: { id: true },
-  });
-  if (alreadyStored) {
-    await markSucceeded(job, alreadyStored.id);
-    return;
-  }
-
+  const lease = await startJobLease(
+    "VocalProfileAnalysisJob",
+    jobId,
+    owner,
+    vocalProfileAnalysisLeaseSeconds(),
+    dependencies.signal,
+  );
   try {
+    lease.check();
+    if (job.attempts > job.maxAttempts) throw new JobDeadlineError();
+    const alreadyStored = await prisma.vocalProfile.findFirst({
+      where: { recordingId: job.recordingId, userId: job.userId },
+      select: { id: true },
+    });
+    if (alreadyStored) {
+      await markSucceeded(job, alreadyStored.id);
+      return;
+    }
+
     if (!job.sourceAssetId)
       throw new VocalProfilePersistenceError(
         "ANALYSIS_SOURCE_MISSING",
@@ -268,7 +276,7 @@ export async function processClaimedVocalProfileAnalysisJob(
         410,
       );
 
-    const fetchImpl = dependencies.fetchImpl ?? fetch;
+    const fetchImpl = lease.fetch(dependencies.fetchImpl ?? fetch);
     const sourceResponse = await fetchImpl(sourceAsset.externalUrl, {
       cache: "no-store",
       signal: AbortSignal.timeout(60_000),
@@ -297,23 +305,33 @@ export async function processClaimedVocalProfileAnalysisJob(
       throw new Error("ANALYZER_SOURCE_MISMATCH");
     }
 
-    const profile = await persistQueuedAnalyzedVocalProfile({
+    lease.check();
+    await persistQueuedAnalyzedVocalProfile({
       userId: job.userId,
       recordingId: job.recordingId,
       sourceAssetId: sourceAsset.id,
       analyzed,
+      signal: lease.signal,
+      beforePersist: (tx) => fenceJob(tx, "VocalProfileAnalysisJob", job.id, owner),
+      onStored: (tx, id) => markSucceeded(job, id, tx),
     });
-    await markSucceeded(job, profile.id);
   } catch (error) {
+    if (error instanceof LeaseLostError || lease.signal.reason instanceof LeaseLostError) return;
     const existing = await prisma.vocalProfile.findFirst({
       where: { recordingId: job.recordingId, userId: job.userId },
       select: { id: true },
     });
-    if (existing) {
+    if (existing && !(error instanceof JobDeadlineError)) {
       await markSucceeded(job, existing.id);
       return;
     }
-    await releaseFailure(job, error);
+    try {
+      await releaseFailure(job, lease.signal.reason instanceof JobDeadlineError ? lease.signal.reason : error);
+    } catch (failure) {
+      if (!(failure instanceof LeaseLostError)) throw failure;
+    }
+  } finally {
+    await lease.stop();
   }
 }
 

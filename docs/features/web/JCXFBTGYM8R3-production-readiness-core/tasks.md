@@ -114,12 +114,12 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
-- [TODO][PRD-NFR-013] T-JCXFBTGYM8R3-production-readiness-core-04 worker lease 복구와 Modal 중복 제출 방어
+- [DONE][PRD-NFR-013] T-JCXFBTGYM8R3-production-readiness-core-04 worker lease 복구와 Modal 중복 제출 방어
   - Date: 2026-09-13
   - Acceptance:
     - AC01–03/16 stale lease·마지막 crash·불명 종료·환불 표
   - Checklist:
-    - [ ] 세 worker fencing/heartbeat/deadline·Modal claim·DB/Python 검증
+    - [x] 세 worker fencing/heartbeat/deadline·Modal claim·DB/Python 검증
   - Docs:
     - docs:prd/system-architecture.md
   - Review Evidence: -
@@ -180,6 +180,8 @@
 | pnpm run test:readiness (격리 DB) | 2026-09-13 | PASS 4 |
 | signup-recovery / ticket-ledger / dev-auth-bypass integration | 2026-09-13 | PASS 4 (격리 DB) |
 | media-recovery / leemage-media / history / catalog-target integration | 2026-09-13 | PASS 6; 격리 catalog fixture 생성 후 재검증 |
+| worker-recovery + vocal/song/mixing queue integration | 2026-09-13 | PASS 12 (격리 DB) |
+| python3 tests/modal-submission-contract.py / py_compile 3 services | 2026-09-13 | PASS 2 / compile |
 | pnpm exec tsc --noEmit | 2026-09-13 | PASS |
 | prisma migrate deploy / generate | 2026-09-13 | PASS 23개 기존 + additive migration |
 

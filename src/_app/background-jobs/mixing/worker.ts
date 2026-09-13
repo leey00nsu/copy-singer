@@ -2,11 +2,13 @@ import "server-only";
 
 import { createNotification } from "@/entities/notification/index.server";
 import { SYNTHESIS_PRESET } from "@/entities/recommendation/index.model";
-import { applyTicketChange } from "@/entities/ticket/index.server";
+import { applyTicketChangeInTransaction } from "@/entities/ticket/index.server";
 import { mixingLeaseSeconds, mixingPollIntervalMs } from "@/shared/config/index.server";
 import { prisma } from "@/shared/db/index.server";
 import { type CompressedMixingAudio, compressMixingResult } from "@/shared/lib/audio/index.server";
+import { fenceJob, JobDeadlineError, LeaseLostError, startJobLease } from "@/shared/lib/runtime/index.server";
 import { discardMediaAsset, processOneMediaCleanup, storeMixingResult } from "@/shared/media/index.server";
+import { reconcileExternalJobs } from "./reconciliation";
 
 type ModalJob = {
   id: string;
@@ -16,6 +18,7 @@ type ModalJob = {
 
 type WorkerDependencies = {
   fetchImpl?: typeof fetch;
+  signal?: AbortSignal;
   sleep?: (milliseconds: number) => Promise<void>;
   pollIntervalMs?: number;
   compressResult?: (bytes: Uint8Array) => Promise<CompressedMixingAudio>;
@@ -30,6 +33,7 @@ class MixingStageError extends Error {
     readonly code: string,
     message: string,
     readonly retryable: boolean,
+    readonly httpStatus?: number,
   ) {
     super(message);
     this.name = "MixingStageError";
@@ -66,6 +70,7 @@ async function stageFetch(
       options.code,
       `${options.message} (${response.status})`,
       options.retryableStatus ? options.retryableStatus(response.status) : retryableHttpStatus(response.status),
+      response.status,
     );
   }
   return response;
@@ -97,8 +102,7 @@ export async function claimNextMixingJob(owner: string, candidateJobId: string |
       SELECT "id"
       FROM "MixingJob"
       WHERE
-        "attempts" < "maxAttempts"
-        AND "nextAttemptAt" <= ${now}
+        "nextAttemptAt" <= ${now}
         AND (${candidateJobId}::uuid IS NULL OR "id" = ${candidateJobId}::uuid)
         AND (
           "status" = 'PENDING'::"MixingJobStatus"
@@ -117,6 +121,7 @@ export async function claimNextMixingJob(owner: string, candidateJobId: string |
       "leaseOwner" = ${owner},
       "leaseExpiresAt" = ${leaseUntil},
       "heartbeatAt" = ${now},
+      "deadlineAt" = COALESCE(job."deadlineAt", COALESCE(job."startedAt", ${now}) + interval '75 minutes'),
       "startedAt" = COALESCE(job."startedAt", ${now}),
       "attempts" = job."attempts" + 1,
       "errorCode" = NULL,
@@ -133,7 +138,12 @@ export async function claimNextMixingJob(owner: string, candidateJobId: string |
 async function heartbeat(jobId: string, owner: string, status?: "SUBMITTED" | "PROCESSING") {
   const now = new Date();
   const updated = await prisma.mixingJob.updateMany({
-    where: { id: jobId, leaseOwner: owner },
+    where: {
+      id: jobId,
+      leaseOwner: owner,
+      leaseExpiresAt: { gt: new Date() },
+      status: { in: ["PREPARING", "SUBMITTED", "PROCESSING"] },
+    },
     data: {
       ...(status ? { status } : {}),
       heartbeatAt: now,
@@ -144,21 +154,26 @@ async function heartbeat(jobId: string, owner: string, status?: "SUBMITTED" | "P
 }
 
 export async function ensureMixingRefund(jobId: string) {
-  const job = await prisma.mixingJob.findUnique({ where: { id: jobId } });
-  if (!job || job.refundState === "REFUNDED" || job.refundState !== "REQUIRED") return;
-  await applyTicketChange({
-    userId: job.userId,
-    kind: "AI_MIXING",
-    type: "USAGE_REFUND",
-    amount: job.ticketCost,
-    idempotencyKey: `mixing:refund:${job.id}`,
-    mixingJobId: job.id,
-    reason: "변환 서비스 접수 전 믹싱 실패 자동 환불",
+  await prisma.$transaction(async (tx) => {
+    await tx.$queryRaw`SELECT id FROM "MixingJob" WHERE id = ${jobId}::uuid FOR UPDATE`;
+    const job = await tx.mixingJob.findUnique({ where: { id: jobId } });
+    if (!job || job.status !== "FAILED" || job.refundState !== "REQUIRED") return;
+    await applyTicketChangeInTransaction(tx, {
+      userId: job.userId,
+      kind: "AI_MIXING",
+      type: "USAGE_REFUND",
+      amount: job.ticketCost,
+      idempotencyKey: `mixing:refund:${job.id}`,
+      mixingJobId: job.id,
+      reason: "변환 서비스 접수 전 믹싱 실패 자동 환불",
+    });
+    await tx.mixingJob.update({ where: { id: jobId }, data: { refundState: "REFUNDED" } });
   });
-  await prisma.mixingJob.update({ where: { id: job.id }, data: { refundState: "REFUNDED" } });
 }
 
 function mixingFailure(error: unknown, submitted: boolean) {
+  if (error instanceof JobDeadlineError)
+    return { code: "JOB_DEADLINE_EXCEEDED", detail: "작업 복구 시간 또는 시도 횟수를 초과했습니다.", retryable: false };
   if (error instanceof MixingStageError) {
     return { code: error.code, detail: error.message, retryable: error.retryable };
   }
@@ -169,7 +184,7 @@ function mixingFailure(error: unknown, submitted: boolean) {
   };
 }
 
-async function releaseMixingFailure(jobId: string, error: unknown, submitted: boolean) {
+async function releaseMixingFailure(jobId: string, owner: string, error: unknown, submitted: boolean) {
   const failure = mixingFailure(error, submitted);
   console.error("[mixing] job failed", {
     jobId,
@@ -180,12 +195,21 @@ async function releaseMixingFailure(jobId: string, error: unknown, submitted: bo
   });
   const job = await prisma.mixingJob.findUnique({
     where: { id: jobId },
-    select: { attempts: true, maxAttempts: true, userId: true, song: { select: { title: true } } },
+    select: {
+      attempts: true,
+      maxAttempts: true,
+      userId: true,
+      submissionState: true,
+      modalJobId: true,
+      song: { select: { title: true } },
+    },
   });
   if (!job) return;
 
+  submitted = submitted || job.submissionState !== "NOT_SUBMITTED" || Boolean(job.modalJobId);
+  const unknown = submitted && !job.modalJobId;
   const now = new Date();
-  if (failure.retryable && job.attempts < job.maxAttempts) {
+  if (!(error instanceof JobDeadlineError) && (failure.retryable || unknown) && job.attempts < job.maxAttempts) {
     const delaySeconds = Math.min(30, 2 ** Math.max(0, job.attempts - 1));
     const nextAttemptAt = new Date(now.getTime() + delaySeconds * 1_000);
     if (submitted) {
@@ -202,7 +226,7 @@ async function releaseMixingFailure(jobId: string, error: unknown, submitted: bo
           "leaseExpiresAt" = NULL,
           "heartbeatAt" = ${now},
           "updatedAt" = ${now}
-        WHERE "id" = ${jobId}::uuid
+        WHERE "id" = ${jobId}::uuid AND "leaseOwner" = ${owner} AND "leaseExpiresAt" > clock_timestamp() AND "status"::text IN ('PREPARING', 'SUBMITTED', 'PROCESSING')
       `;
     } else {
       await prisma.$executeRaw`
@@ -218,19 +242,31 @@ async function releaseMixingFailure(jobId: string, error: unknown, submitted: bo
           "leaseExpiresAt" = NULL,
           "heartbeatAt" = ${now},
           "updatedAt" = ${now}
-        WHERE "id" = ${jobId}::uuid
+        WHERE "id" = ${jobId}::uuid AND "leaseOwner" = ${owner} AND "leaseExpiresAt" > clock_timestamp() AND "status"::text IN ('PREPARING', 'SUBMITTED', 'PROCESSING')
       `;
     }
     return;
   }
 
   await prisma.$transaction(async (transaction) => {
+    await fenceJob(transaction, "MixingJob", jobId, owner, true);
+    if (submitted)
+      await transaction.externalJobReconciliation.upsert({
+        where: { jobType_jobId: { jobType: "MIXING", jobId } },
+        create: {
+          jobType: "MIXING",
+          jobId,
+          externalJobId: job.modalJobId,
+          reason: unknown ? "SUBMISSION_UNKNOWN_REFUND_HELD" : "TERMINAL_EXTERNAL_CLEANUP",
+        },
+        update: {},
+      });
     await transaction.mixingJob.update({
       where: { id: jobId },
       data: {
         status: "FAILED",
         refundState: submitted ? "NONE" : "REQUIRED",
-        errorCode: failure.code,
+        errorCode: unknown ? "MODAL_SUBMISSION_UNCONFIRMED" : failure.code,
         errorDetail: failure.detail.slice(0, 2_000),
         retryable: failure.retryable,
         completedAt: now,
@@ -255,18 +291,31 @@ async function releaseMixingFailure(jobId: string, error: unknown, submitted: bo
 }
 
 export async function processClaimedMixingJob(jobId: string, owner: string, dependencies: WorkerDependencies = {}) {
-  const fetchImpl = dependencies.fetchImpl ?? fetch;
+  const lease = await startJobLease("MixingJob", jobId, owner, mixingLeaseSeconds(), dependencies.signal);
+  const fetchImpl = lease.fetch(dependencies.fetchImpl ?? fetch);
   const sleep = dependencies.sleep ?? defaultSleep;
   const pollInterval = dependencies.pollIntervalMs ?? mixingPollIntervalMs();
-  const compressResult = dependencies.compressResult ?? compressMixingResult;
+  const compressResult =
+    dependencies.compressResult ?? ((bytes: Uint8Array) => compressMixingResult(bytes, lease.signal));
   let submitted = false;
   try {
     let job = await prisma.mixingJob.findFirst({
-      where: { id: jobId, leaseOwner: owner },
+      where: {
+        id: jobId,
+        leaseOwner: owner,
+        leaseExpiresAt: { gt: new Date() },
+        status: { in: ["PREPARING", "SUBMITTED", "PROCESSING"] },
+      },
       include: { referenceAsset: true, targetAsset: true, song: true },
     });
     if (!job) throw new Error("Claimed mixing job was not found.");
-    submitted = Boolean(job.modalJobId);
+    submitted = Boolean(job.modalJobId) || job.submissionState !== "NOT_SUBMITTED";
+    lease.check();
+    if (
+      job.attempts > job.maxAttempts ||
+      (!job.modalJobId && job.submissionStartedAt && Date.now() - job.submissionStartedAt.getTime() > 300_000)
+    )
+      throw new JobDeadlineError();
 
     if (!job.modalJobId) {
       const referenceResponse = await stageFetch(
@@ -318,25 +367,53 @@ export async function processClaimedMixingJob(jobId: string, owner: string, depe
       form.set("pitch_shift", String(job.recommendedShift));
 
       const modal = modalConfig();
-      const response = await stageFetch(
-        fetchImpl,
-        `${modal.url}/v1/conversions`,
-        {
-          method: "POST",
-          headers: { "X-API-Key": modal.key },
-          body: form,
-          cache: "no-store",
-          signal: AbortSignal.timeout(15 * 60_000),
-        },
-        {
-          code: "MODAL_SUBMIT_FAILED",
-          message: "변환 서비스가 합성 요청을 접수하지 못했습니다",
-          networkRetryable: false,
-          retryableStatus: (status) => status === 429,
-        },
-      );
+      form.set("request_id", job.id);
+      await prisma.$transaction(async (tx) => {
+        await fenceJob(tx, "MixingJob", jobId, owner);
+        await tx.mixingJob.update({
+          where: { id: jobId },
+          data: { submissionState: "UNKNOWN", submissionStartedAt: job?.submissionStartedAt ?? new Date() },
+        });
+      });
+      submitted = true;
+      let response: Response;
+      try {
+        response = await stageFetch(
+          fetchImpl,
+          `${modal.url}/v1/conversions`,
+          {
+            method: "POST",
+            headers: { "X-API-Key": modal.key },
+            body: form,
+            cache: "no-store",
+            signal: AbortSignal.timeout(120_000),
+          },
+          {
+            code: "MODAL_SUBMIT_FAILED",
+            message: "변환 서비스가 합성 요청을 접수하지 못했습니다",
+            networkRetryable: false,
+            retryableStatus: (status) => status === 429,
+          },
+        );
+      } catch (error) {
+        if (
+          error instanceof MixingStageError &&
+          error.httpStatus &&
+          [400, 401, 403, 413, 415, 422, 429].includes(error.httpStatus)
+        ) {
+          await prisma.$transaction(async (tx) => {
+            await fenceJob(tx, "MixingJob", jobId, owner);
+            await tx.mixingJob.update({
+              where: { id: jobId },
+              data: { submissionState: "NOT_SUBMITTED", submissionStartedAt: null },
+            });
+          });
+          submitted = false;
+        }
+        throw error;
+      }
       const modalJob = (await response.json()) as ModalJob;
-      if (!modalJob.id || modalJob.status !== "queued") {
+      if (!modalJob.id || !["queued", "processing", "succeeded", "failed"].includes(modalJob.status)) {
         throw new MixingStageError(
           "MODAL_SUBMIT_INVALID_RESPONSE",
           "변환 서비스가 올바른 job 정보를 반환하지 않았습니다.",
@@ -344,16 +421,33 @@ export async function processClaimedMixingJob(jobId: string, owner: string, depe
         );
       }
       submitted = true;
+      await prisma.externalJobReconciliation.upsert({
+        where: { jobType_jobId: { jobType: "MIXING", jobId } },
+        create: { jobType: "MIXING", jobId, externalJobId: modalJob.id, reason: "OBSERVED_SUBMISSION" },
+        update: { externalJobId: modalJob.id },
+      });
       const now = new Date();
       job = await prisma.mixingJob.update({
-        where: { id: job.id },
-        data: { status: "SUBMITTED", modalJobId: modalJob.id, submittedAt: now, heartbeatAt: now },
+        where: {
+          id: job.id,
+          leaseOwner: owner,
+          leaseExpiresAt: { gt: new Date() },
+          status: { in: ["PREPARING", "SUBMITTED", "PROCESSING"] },
+        },
+        data: {
+          status: "SUBMITTED",
+          submissionState: "SUBMITTED",
+          modalJobId: modalJob.id,
+          submittedAt: now,
+          heartbeatAt: now,
+        },
         include: { referenceAsset: true, targetAsset: true, song: true },
       });
     }
 
     const modal = modalConfig();
     while (true) {
+      lease.check();
       const response = await stageFetch(
         fetchImpl,
         `${modal.url}/v1/conversions/${encodeURIComponent(job.modalJobId!)}`,
@@ -411,7 +505,9 @@ export async function processClaimedMixingJob(jobId: string, owner: string, depe
           fetchImpl,
         });
         try {
+          lease.check();
           await prisma.$transaction(async (transaction) => {
+            await fenceJob(transaction, "MixingJob", jobId, owner);
             await transaction.mixingJob.update({
               where: { id: job.id },
               data: {
@@ -447,7 +543,20 @@ export async function processClaimedMixingJob(jobId: string, owner: string, depe
       await sleep(pollInterval);
     }
   } catch (error) {
-    await releaseMixingFailure(jobId, error, submitted);
+    if (!(error instanceof LeaseLostError) && !(lease.signal.reason instanceof LeaseLostError)) {
+      try {
+        await releaseMixingFailure(
+          jobId,
+          owner,
+          lease.signal.reason instanceof JobDeadlineError ? lease.signal.reason : error,
+          submitted,
+        );
+      } catch (failure) {
+        if (!(failure instanceof LeaseLostError)) throw failure;
+      }
+    }
+  } finally {
+    await lease.stop();
   }
 }
 
@@ -463,6 +572,7 @@ export async function reconcileRequiredRefunds(limit = 10) {
 
 export async function runMixingWorkerOnce(owner: string, dependencies: WorkerDependencies = {}) {
   await reconcileRequiredRefunds();
+  await reconcileExternalJobs(dependencies.fetchImpl);
   await processOneMediaCleanup(dependencies.fetchImpl);
   const jobId = await claimNextMixingJob(owner);
   if (!jobId) return false;

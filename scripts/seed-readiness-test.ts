@@ -7,6 +7,16 @@ if (url.hostname !== "127.0.0.1" || url.pathname !== "/readiness")
   throw new Error("Only isolated localhost /readiness DB is supported.");
 try {
   const snapshot = syntheticCatalogSnapshot(100);
+  for (const song of snapshot.songs)
+    Object.assign(song.analysis, {
+      minMidi: 45,
+      p10Midi: 50,
+      medianMidi: 60,
+      p90Midi: 70,
+      maxMidi: 75,
+      tessituraLowMidi: 53,
+      tessituraHighMidi: 67,
+    });
   const last = snapshot.songs[99];
   last.source.sourceVideoId = "5x_CM7x5BQA";
   last.source.sourceUrl = "https://www.youtube.com/watch?v=5x_CM7x5BQA";

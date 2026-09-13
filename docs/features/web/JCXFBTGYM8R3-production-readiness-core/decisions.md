@@ -42,7 +42,7 @@
 - Leemage 미확인 POST 재시도는 제거하고 DELETE 재시도/404 성공을 유지했다. Modal 및 runner deadline 연결은 T04 범위다.
 - runtime 4 tests, media/FFmpeg 포함 10 tests 및 typecheck 통과. 공급자 계약 근거와 자동 정리 한계는 plan에 기록했다.
 
-<!-- lee-spec-kit:workflow-sync sha256:8600bb6536b4a187c9a2d98e7e42904bd064b7091946498f157028b6f43298ca -->
+<!-- lee-spec-kit:workflow-sync sha256:7be7e8190772db28f9f48aface06b43fb36b4561e06fd18cea92a2778e459ec1 -->
 
 ## D005: 가입 지급과 세션 분리
 
@@ -56,3 +56,11 @@
 - domain 삭제와 독립 cleanup 기록을 transaction으로 확정한다. 참조 중 삭제는 거부하며 프로필 DELETE와 믹싱 접수는 같은 profile lock을 사용한다. 기존 cleanup은 새 operation으로 변환한다.
 - cleanup은 최대 10회 재시도하고 미해결 상태/운영자 CLI를 제공한다. DB 중단 때문에 실패 기록 갱신도 실패하면 최초 UPLOADING intent가 만료 후 회수된다.
 - 격리 미디어 회귀 6개 통과. catalog 테스트는 초기 fixture 누락으로 실패한 뒤 localhost 전용 합성 seed를 추가해 재검증했다. 기존 내부 테스트의 DELETE_PENDING asset 기대값은 domain row 삭제+독립 RECOVER intent로 갱신했다. 정상 API 응답 shape는 유지한다. 전체 프로필/믹싱 race 검증은 T06까지 추적한다.
+
+## D007: worker와 외부 실행의 실패 경계
+
+- 세 worker claim은 소진된 마지막 시도도 회수하고 deadline을 영속한다. 주기 heartbeat·시작 시 소유권 검사·transaction 내부 fencing을 적용했다. 보컬 profile와 성공 알림은 같은 transaction에서 확정한다.
+- 환불은 terminal 결정 이후 row lock과 ledger 변경을 같은 transaction에 둔다. 소스 삭제는 실패 transaction 안에서 예약한다. 접수 불명 또는 환불 대기 믹싱은 확인 완료 전 기록 삭제를 409로 보류한다(신규 작업 슬롯은 해제).
+- Modal 조건부 metadata claim이 동시 spawn을 막는다. 보컬 동기 결과를 Dict에 캐시하면 음성 보관 정책이 변하므로 metadata claim만 사용한다. 동일 recording 재전송은 재연산 없이 실패로 수렴/분석 환불하고 새 사용자 요청은 새 recording identity를 사용한다. 기존 정상 성공 경로는 유지한다.
+- 알려진 외부 identity는 stale 응답 후에도 별도 reconciliation에 남기고 terminal 이후 정리를 시도한다. 정리 실패는 운영자가 jobs:reconcile CLI의 dry-run/apply와 근거로 처리한다. 실제 Modal은 배포하지 않았다.
+- 격리 큐 회귀 12 tests, Python 실제 song 제출 route+두 claim 계약 2 tests, 세 service compile, typecheck 통과. 테스트가 공유 catalog를 오염시키는 문제를 전용 recovery source fixture로 수정했다. SoulX 전체 HTTP 런타임과 vocal claim end-to-end는 로컬 계약 테스트의 잔여 확인 범위다.

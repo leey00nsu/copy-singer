@@ -155,6 +155,9 @@ export async function persistQueuedAnalyzedVocalProfile(input: {
   recordingId: string;
   sourceAssetId: string;
   analyzed: AnalyzedRecording;
+  signal?: AbortSignal;
+  beforePersist?: (tx: Prisma.TransactionClient) => Promise<void>;
+  onStored?: (tx: Prisma.TransactionClient, id: string) => Promise<void>;
 }) {
   const existing = await prisma.vocalProfile.findFirst({
     where: { recordingId: input.recordingId, userId: input.userId },
@@ -201,6 +204,7 @@ export async function persistQueuedAnalyzedVocalProfile(input: {
         mimeType: synthesisReference.mimeType,
         bytes: synthesisReference.bytes,
         fileName: synthesisReference.fileName,
+        signal: input.signal,
       });
       profile.descriptors.synthesisReferenceStorage = { status: "ready", kind: "SYNTHESIS_REFERENCE" };
     } catch (error) {
@@ -214,11 +218,16 @@ export async function persistQueuedAnalyzedVocalProfile(input: {
 
   try {
     await prisma.$transaction(async (tx) => {
+      input.signal?.throwIfAborted();
+      await input.beforePersist?.(tx);
       const raced = await tx.vocalProfile.findFirst({
         where: { recordingId: input.recordingId, userId: input.userId },
         select: { id: true },
       });
-      if (raced) return;
+      if (raced) {
+        await input.onStored?.(tx, raced.id);
+        return;
+      }
       const identity = await allocateVocalProfileIdentity(tx, input.userId);
       await tx.recording.create({
         data: {
@@ -234,7 +243,7 @@ export async function persistQueuedAnalyzedVocalProfile(input: {
           mediaAsset: { connect: { id: sourceAsset.id } },
         },
       });
-      await tx.vocalProfile.create({
+      const created = await tx.vocalProfile.create({
         data: {
           ...identity,
           user: { connect: { id: input.userId } },
@@ -259,6 +268,7 @@ export async function persistQueuedAnalyzedVocalProfile(input: {
             : {}),
         },
       });
+      await input.onStored?.(tx, created.id);
     });
     const stored = await prisma.vocalProfile.findFirstOrThrow({
       where: { recordingId: input.recordingId, userId: input.userId },

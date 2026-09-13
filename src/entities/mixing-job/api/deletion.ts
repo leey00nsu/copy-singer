@@ -8,16 +8,22 @@ const TERMINAL_STATUSES = [MixingJobStatus.SUCCEEDED, MixingJobStatus.FAILED, Mi
 
 export async function deleteMixingJobForUser(userId: string, id: string) {
   const cleanupId = await prisma.$transaction(async (transaction) => {
+    await transaction.$queryRaw`SELECT id FROM "MixingJob" WHERE id = ${id}::uuid AND "userId" = ${userId} FOR UPDATE`;
     const job = await transaction.mixingJob.findFirst({
       where: { id, userId },
       select: {
         status: true,
+        refundState: true,
+        errorCode: true,
         resultAsset: { select: { id: true, userId: true, kind: true } },
       },
     });
     if (!job) throw new MixingError("MIXING_NOT_FOUND", "믹싱 작업을 찾을 수 없어요.", 404);
     if (!TERMINAL_STATUSES.includes(job.status as (typeof TERMINAL_STATUSES)[number])) {
       throw new MixingError("MIXING_ACTIVE", "진행 중인 믹싱 작업은 삭제할 수 없어요.", 409);
+    }
+    if (job.refundState === "REQUIRED" || job.errorCode === "MODAL_SUBMISSION_UNCONFIRMED") {
+      throw new MixingError("MIXING_RECONCILIATION_PENDING", "티켓 확인이 끝난 뒤 삭제할 수 있어요.", 409);
     }
     if (job.resultAsset && (job.resultAsset.userId !== userId || job.resultAsset.kind !== "MIX_RESULT")) {
       throw new MixingError("MIXING_RESULT_INVALID", "믹싱 결과 파일을 확인할 수 없어요.", 500);
