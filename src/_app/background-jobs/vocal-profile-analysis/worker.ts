@@ -91,10 +91,15 @@ async function loadClaimedJob(jobId: string, owner: string) {
   return rows[0] ?? null;
 }
 
-async function markSucceeded(job: VocalProfileAnalysisJobRow, profileId: string, tx?: Prisma.TransactionClient) {
+async function markSucceeded(
+  job: VocalProfileAnalysisJobRow,
+  profileId: string,
+  tx?: Prisma.TransactionClient,
+  recoverStored = false,
+) {
   const now = new Date();
   const commit = async (transaction: Prisma.TransactionClient) => {
-    await fenceJob(transaction, "VocalProfileAnalysisJob", job.id, job.leaseOwner);
+    await fenceJob(transaction, "VocalProfileAnalysisJob", job.id, job.leaseOwner, recoverStored);
     const profile = await transaction.vocalProfile.findUniqueOrThrow({
       where: { id: profileId },
       select: { profileNumber: true, displayName: true },
@@ -247,16 +252,17 @@ export async function processClaimedVocalProfileAnalysisJob(
     dependencies.signal,
   );
   try {
-    lease.check();
-    if (job.attempts > job.maxAttempts) throw new JobDeadlineError();
     const alreadyStored = await prisma.vocalProfile.findFirst({
       where: { recordingId: job.recordingId, userId: job.userId },
       select: { id: true },
     });
     if (alreadyStored) {
-      await markSucceeded(job, alreadyStored.id);
+      await markSucceeded(job, alreadyStored.id, undefined, true);
       return;
     }
+
+    lease.check();
+    if (job.attempts > job.maxAttempts) throw new JobDeadlineError();
 
     if (!job.sourceAssetId)
       throw new VocalProfilePersistenceError(

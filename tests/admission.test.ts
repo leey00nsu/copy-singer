@@ -21,6 +21,7 @@ test("burst admission is bounded and normal polling can continue", () => {
     now += 1500;
   }
   assert.equal(requestPolicy("/api/vocal-profiles/one/audio", "GET").group, "audio");
+  assert.equal(requestPolicy("/api/vocal-profile-analysis-jobs", "POST").group, "submission");
   const response = admissionResponse(new AdmissionError("RATE_LIMITED", 429, 10));
   assert.equal(response.status, 429);
   assert.equal(response.headers.get("Retry-After"), "10");

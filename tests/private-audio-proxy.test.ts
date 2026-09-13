@@ -44,3 +44,23 @@ test("private audio proxy reports an unavailable upstream without forwarding its
   });
   assert.equal(response, null);
 });
+
+test("private audio proxy cancels upstream when the client disconnects", async () => {
+  const controller = new AbortController();
+  let upstreamSignal: AbortSignal | null = null;
+  const pending = proxyPrivateAudio({
+    request: new Request("http://localhost/audio", { signal: controller.signal }),
+    externalUrl: "https://objects.example/private.wav",
+    mimeType: "audio/wav",
+    fileName: "profile.wav",
+    fetchImpl: async (_url, init) => {
+      upstreamSignal = init?.signal ?? null;
+      return new Promise<Response>((_resolve, reject) => {
+        init?.signal?.addEventListener("abort", () => reject(init.signal?.reason), { once: true });
+      });
+    },
+  });
+  controller.abort(new Error("client disconnected"));
+  await assert.rejects(pending, /client disconnected/);
+  assert.equal((upstreamSignal as AbortSignal | null)?.aborted, true);
+});

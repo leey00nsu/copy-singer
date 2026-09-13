@@ -132,6 +132,44 @@ test("expired final claims converge and stale leases cannot commit", async () =>
       assert.equal(rows[0]?.status, "FAILED");
       assert.equal(await claim("again", id), null);
     }
+
+    const activeIds = Array.from({ length: 20 }, () => crypto.randomUUID());
+    await prisma.mixingJob.createMany({
+      data: activeIds.map((id) => ({
+        ...mix,
+        id,
+        idempotencyKey: id,
+        status: "PREPARING" as const,
+      })),
+    });
+    const orphanId = crypto.randomUUID();
+    await prisma.externalJobReconciliation.createMany({
+      data: [
+        ...activeIds.map((id) => ({ jobType: "MIXING", jobId: id, reason: "fixture", createdAt: new Date(0) })),
+        { jobType: "MIXING", jobId: orphanId, reason: "fixture", createdAt: new Date(1) },
+      ],
+    });
+    try {
+      const { reconcileExternalJobs } = await import("../src/_app/background-jobs/mixing/reconciliation");
+      await reconcileExternalJobs(neverFetch);
+      assert.equal(
+        (
+          await prisma.externalJobReconciliation.findUniqueOrThrow({
+            where: { jobType_jobId: { jobType: "MIXING", jobId: orphanId } },
+          })
+        ).status,
+        "UNRESOLVED",
+      );
+      assert.equal(
+        await prisma.externalJobReconciliation.count({
+          where: { jobId: { in: activeIds }, status: "PENDING" },
+        }),
+        20,
+      );
+    } finally {
+      await prisma.externalJobReconciliation.deleteMany({ where: { jobId: { in: [...activeIds, orphanId] } } });
+      await prisma.mixingJob.deleteMany({ where: { id: { in: activeIds } } });
+    }
     const { retryAdminSongAnalysis } = await import("../src/features/manage-song-catalog/index.server");
     const retries = await Promise.allSettled([
       retryAdminSongAnalysis(recoverySource.id),
@@ -142,6 +180,28 @@ test("expired final claims converge and stale leases cannot commit", async () =>
     assert.ok(retried.externalRequestId);
     assert.equal(retried.deadlineAt, null);
     assert.equal(retried.submissionState, "NOT_SUBMITTED");
+
+    // A legacy worker may have stored the profile before crashing before job success.
+    const storedJob = await prisma.vocalProfileAnalysisJob.create({
+      data: {
+        userId,
+        recordingId: recording.id,
+        sourceAssetId: asset.id,
+        idempotencyKey: crypto.randomUUID(),
+        status: "PROCESSING",
+        attempts: 1,
+        maxAttempts: 1,
+        leaseOwner: "crashed",
+        leaseExpiresAt: new Date(0),
+        deadlineAt: new Date(0),
+      },
+    });
+    assert.equal(await vocal.claimNextVocalProfileAnalysisJob("recovery", storedJob.id), storedJob.id);
+    await vocal.processClaimedVocalProfileAnalysisJob(storedJob.id, "recovery", { fetchImpl: neverFetch });
+    const recovered = await prisma.vocalProfileAnalysisJob.findUniqueOrThrow({ where: { id: storedJob.id } });
+    assert.equal(recovered.status, "SUCCEEDED");
+    assert.equal(recovered.vocalProfileId, profile.id);
+    assert.ok(await prisma.mediaAsset.findUnique({ where: { id: asset.id } }));
     const heartbeatJob = await prisma.vocalProfileAnalysisJob.create({
       data: {
         userId,

@@ -332,3 +332,50 @@ Modal은 web보다 먼저 새 계약으로 배포해야 한다. SoulX/곡 분석
 X-Forwarded-For는 기본 신뢰하지 않는다. TRUST_PROXY_CLIENT_IP=true는 직접 앱 접근이 막히고 ingress가 TRUSTED_CLIENT_IP_HEADER를 항상 덮어쓰는 환경에서만 사용한다. 헤더를 임의 전달하는 proxy 구성에는 사용하지 않는다. IP와 별개로 사용자 제한은 유지한다. 다중 웹 인스턴스로 늘리면 local token bucket은 공유되지 않으므로 shared limiter 또는 ingress 제한이 필요하다. DB 큐 상한은 여러 인스턴스에서도 공유된다.
 
 곡 분석의 명시적 관리자 재시도는 job ID를 유지하면서 별도 externalRequestId를 새로 발급한다. 일반 transport 재시도는 동일 externalRequestId를 사용한다. 구 시도의 정리 기록은 별도로 남겨 새 시도와 혼동하지 않는다.
+
+### 가입 티켓 복구
+
+일반 세션 조회는 가입 지급을 실행하지 않는다. 신규 가입은 두 종류의 지급량을 SignupGrantIntent에 먼저 저장하므로 환경값을 바꿔도 이미 가입한 사용자의 원장과 잔액은 변하지 않는다. 과거 가입자의 누락분은 현재 환경값으로 추측하지 않고 당시 지급량을 확인해 지정한다.
+
+```bash
+# DB 접근 권한이 있는 운영 환경에서 대상/금액/근거를 검토한다(기본 dry-run).
+pnpm run tickets:recover-signup --user USER_ID --kind VOCAL_ANALYSIS --amount 5 --operator OPERATOR --reason '당시 가입 정책 확인'
+# 검토한 동일 명령에 --apply를 추가해야 지급한다.
+```
+
+AI_MIXING도 같은 방법을 사용한다. intent 또는 기존 가입 원장과 금액이 다르면 거부하며, 같은 금액의 반복 적용은 추가 지급하지 않는다. 추가 보상은 기존 관리자 티켓 조정 기능을 사용한다.
+
+### 적용 순서와 되돌리기
+
+1. 운영 DB 백업과 복원 가능성을 별도로 확인하고, 운영 복제본에서 migration을 검증한다. 이 Feature는 백업 시스템을 구축하지 않는다.
+2. 신규 접수를 닫고 구 worker를 drain/정지한다. SIGTERM 뒤 최장 작업 예산은 75분이므로 배포 도구의 종료 유예를 맞추거나 lease 복구를 전제로 종료한다. 구·신 worker가 같은 큐를 동시에 처리하지 않게 한다.
+3. `pnpm install --frozen-lockfile`, `pnpm run db:migrate:deploy`, `pnpm run db:generate`를 실행한다. 이번 migration은 기존 표에 컬럼과 별도 복구 표/인덱스를 추가한다. 실패하면 접수를 열지 않고 `pnpm run db:status`와 DB 오류를 확인한다. 실제 적용 상태 확인 없이 migration을 resolve 처리하지 않는다.
+4. 세 Modal 서비스를 새 소스로 먼저 배포하고 제출 key 중복/충돌 계약을 검증한다. 그다음 새 웹과 worker를 배포한다. 구 Modal에서는 새 웹의 외부 중복 실행 방어를 보장할 수 없다.
+5. 인증된 읽기·Range 재생, 큐 접수/완료, lease 갱신, 복구 표 적체와 오류를 확인한 뒤 접수를 연다. 설정 예시는 `.env.example`을 따른다. 비밀값은 이미지/로그에 넣지 않는다.
+
+되돌릴 때도 먼저 접수를 닫고 신 worker를 정지한다. 추가 DB 컬럼/표는 보존하며 이전 앱을 적용한다. 이전 앱은 intent 정리·fencing·접수 제한을 처리하지 않으므로 미완료 작업/cleanup을 확인한 뒤 제한적으로 재개한다. 새 Modal 계약은 유지하는 편이 안전하며 외부 idempotency metadata를 초기화하지 않는다. 이전 앱으로 되돌렸다고 새 복구 기록이 자동 처리되지는 않는다.
+
+이 Feature의 검증은 로컬 격리 DB와 fake dependency 기준이다. 실제 Modal 배포·유료 AI 호출·운영 트래픽 테스트는 수행하지 않았다.
+
+### 로컬 부하 시나리오
+
+`scripts/load/readiness.k6.js`는 테스트 계정으로 티켓 잔액·알림·프로필·믹싱 목록만 읽는다. localhost 이외 주소 및 리다이렉트는 허용하지 않는다. localhost라도 운영 DB에 연결될 수 있으므로 **격리 DB를 쓰는 별도 웹 프로세스인지 확인**한 뒤 실행한다. k6를 설치한 환경이 필요하다. 테스트 계정 Cookie 값은 환경변수로 주입하고 파일에 커밋하지 않는다.
+
+```bash
+# COOKIES_JSON은 테스트 계정 Cookie 헤더 문자열의 JSON 배열.
+CONFIRM_ISOLATED=yes SCENARIO=10 k6 run scripts/load/readiness.k6.js
+CONFIRM_ISOLATED=yes SCENARIO=50 k6 run scripts/load/readiness.k6.js
+CONFIRM_ISOLATED=yes SCENARIO=100 k6 run scripts/load/readiness.k6.js
+CONFIRM_ISOLATED=yes SCENARIO=burst k6 run scripts/load/readiness.k6.js
+```
+
+10/50/100은 60초간 도착률, burst는 100 VU로 총 500개를 최대 30초 동안 보내는 시나리오다(500개를 모두 동시에 연결한다는 뜻은 아니다). BASE_URL 기본값은 http://127.0.0.1:3000이다. 200/429/503 비율, endpoint별 latency, dropped_iterations를 함께 확인한다. p95 2초는 목표 임계값이며 처리량 보장이 아니다. 429/503은 Retry-After가 있어야 한다. 제한 응답만 빨라도 용량이 충분한 것은 아니므로 admitted_200을 반드시 함께 본다.
+
+| 상황 | 현재 코드 기준 예상 병목·해석 |
+| --- | --- |
+| 10 RPS | 단일 계정은 일반 조회 3 RPS와 burst 60을 소진한 뒤 429가 증가한다. 여러 계정은 DB 왕복·인증 조회 지연을 먼저 관찰한다. |
+| 50 RPS | 계정별 제한을 분산하면 웹 DB pool 5개의 대기가 먼저 후보가 된다. 요청당 DB 점유 100ms라면 단순 pool 예산은 약 50 DB 작업/초이며 API당 여러 쿼리를 구분해야 한다. 이는 실측 API 처리량이 아니다. |
+| 100 RPS | 계정 수와 DB 지연에 따라 pool 대기·연결/쿼리 timeout·응답 지연이 늘 수 있다. 5xx와 dropped_iterations를 확인한다. |
+| 500 burst | 계정별 burst를 먼저 소진할 수 있다. 여러 계정이면 DB pool과 웹 CPU/메모리가 후보다. 업로드/AI는 이 스크립트가 호출하지 않는다. |
+
+업로드 부하는 별도 합성 fixture와 fake provider에서 검증한다. 동시 업로드는 프로세스당 기본 2개, 보컬/믹싱 큐는 전체 각 20개가 먼저 수용을 제한한다. GPU 처리량은 이 읽기 테스트로 산정할 수 없다. 다중 계정으로 읽기 처리량을 측정하려면 목표 RPS/3 이상의 계정을 준비하되, limiter 검증 목적이면 적은 계정도 유효하다. 이번 로컬 환경에는 k6 실행기가 없어 실제 RPS 결과는 없으며 실행 시나리오만 제공한다.

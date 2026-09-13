@@ -1,5 +1,5 @@
 import { withApiAdmission } from "@/_app/api-routes/admission";
-import { vocalProfileRenameRequestSchema } from "@/entities/vocal-profile";
+import { vocalProfileRenameRequestSchema } from "@/entities/vocal-profile/index.model";
 import { serializeProfile } from "@/entities/vocal-profile/index.server";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 import { resourceIdSchema } from "@/shared/api";

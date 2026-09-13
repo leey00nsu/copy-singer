@@ -3,11 +3,25 @@ import { songAnalysisModalConfig } from "@/shared/config/index.server";
 import { prisma } from "@/shared/db/index.server";
 
 export async function reconcileExternalJobs(fetchImpl: typeof fetch = fetch) {
-  const records = await prisma.externalJobReconciliation.findMany({
-    where: { status: "PENDING" },
-    take: 20,
-    orderBy: { createdAt: "asc" },
-  });
+  // Filter before LIMIT so long-running jobs cannot starve terminal cleanup.
+  const records = await prisma.$queryRaw<
+    { id: string; jobId: string; jobType: string; externalJobId: string | null }[]
+  >`
+    SELECT r."id", r."jobId", r."jobType", r."externalJobId"
+    FROM "ExternalJobReconciliation" r
+    WHERE r."status" = 'PENDING'
+      AND NOT EXISTS (
+        SELECT 1 FROM "MixingJob" m WHERE r."jobType" = 'MIXING'
+          AND m."id" = r."jobId"
+          AND m."status" IN ('PENDING', 'PREPARING', 'PROCESSING', 'SUBMITTED')
+      )
+      AND NOT EXISTS (
+        SELECT 1 FROM "SongAnalysisJob" s WHERE r."jobType" LIKE 'SONG%'
+          AND s."id" = r."jobId"
+          AND s."status" IN ('PENDING', 'PROCESSING')
+      )
+    ORDER BY r."createdAt" ASC LIMIT 20
+  `;
   for (const record of records) {
     const job =
       record.jobType === "MIXING"

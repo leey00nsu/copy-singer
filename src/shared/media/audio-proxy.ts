@@ -11,9 +11,12 @@ export async function proxyPrivateAudio(input: {
   const upstream = await (input.fetchImpl ?? fetch)(input.externalUrl, {
     headers: range ? { Range: range } : undefined,
     cache: "no-store",
-    signal: AbortSignal.timeout(60_000),
+    signal: AbortSignal.any([input.request.signal, AbortSignal.timeout(60_000)]),
   });
-  if (!upstream.ok && upstream.status !== 206) return null;
+  if (!upstream.ok && upstream.status !== 206) {
+    await upstream.body?.cancel();
+    return null;
+  }
 
   const headers = new Headers();
   for (const name of ["Content-Type", "Content-Length", "Content-Range", "Accept-Ranges"]) {

@@ -56,7 +56,7 @@ test("invalid key is rejected before upload body and timeout releases the upload
     let reads = 0;
     let canceled = false;
     const request = (key?: string) =>
-      new Request("http://localhost/api/vocal-profiles/analysis-jobs", {
+      new Request("http://localhost/api/vocal-profile-analysis-jobs", {
         method: "POST",
         headers: { "Content-Type": "multipart/form-data; boundary=test", ...(key ? { "Idempotency-Key": key } : {}) },
         body: new ReadableStream(

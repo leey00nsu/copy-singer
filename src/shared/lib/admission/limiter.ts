@@ -59,7 +59,8 @@ export const uploadSlots = new UploadSlots();
 
 export function requestPolicy(path: string, method: string) {
   if (/\/audio$|\/reference$|\/synthesis-reference$/.test(path)) return { group: "audio", rate: 240, burst: 60 };
-  if (method === "POST" && /mixing-jobs|vocal-profiles/.test(path)) return { group: "submission", rate: 6, burst: 3 };
+  if (method === "POST" && /mixing-jobs|vocal-profiles|vocal-profile-analysis-jobs/.test(path))
+    return { group: "submission", rate: 6, burst: 3 };
   if (path.startsWith("/api/admin/") && !["GET", "HEAD"].includes(method))
     return { group: "admin-write", rate: 10, burst: 3 };
   if (path.startsWith("/api/recommendations")) return { group: "recommendation", rate: 30, burst: 10 };
