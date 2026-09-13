@@ -190,12 +190,12 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
-- [TODO][PRD-NFR-010] T-JCXFBTGYM8R3-production-readiness-core-10 E2E 리뷰 검증 공백 수정
+- [DONE][PRD-NFR-010] T-JCXFBTGYM8R3-production-readiness-core-10 E2E 리뷰 검증 공백 수정
   - Date: 2026-09-13
   - Acceptance:
     - 미업로드 파일 confirm/GET 거부 및 관리자 검색 결과 포함·제외 검증
   - Checklist:
-    - [ ] 스토리지 예약/업로드 분리, 검색 UI/API 결과 assertion, fixture 부정 경로 및 변경 전후 E2E 실행
+    - [x] 스토리지 예약/업로드 분리, 검색 UI/API 결과 assertion, fixture 부정 경로 및 변경 전후 E2E 실행 (각 6/6, D014)
   - Docs:
     - project:tests/e2e/TESTING.md
   - Review Evidence: -
@@ -215,8 +215,8 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
 
 ### 테스트 실행 기록
@@ -235,15 +235,15 @@
 | admission/bounded-multipart tests | 2026-09-13 | PASS 7 |
 | admission + worker recovery integration | 2026-09-13 | PASS 3; 관리자 재시도 identity 포함 |
 | queue/admin API regression --test-concurrency=1 | 2026-09-13 | PASS 13 |
-| pnpm exec tsc --noEmit | 2026-09-13 | PASS (T08 E2E 보강 후 포함) |
+| pnpm exec tsc --noEmit | 2026-09-13 | PASS (T10 리뷰 수정 후 포함) |
 | prisma migrate deploy / generate | 2026-09-13 | PASS 23개 기존 + additive 2개 migration |
 | pnpm test (격리 DB/fake dependency) | 2026-09-13 | PASS E2E 추가 후 재실행: production build, 기존 회귀, Storybook 176, readiness 13 + Python 4; exit 0 |
-| pnpm run lint | 2026-09-13 | PASS (T08 E2E 보강 후 포함) |
+| pnpm run lint | 2026-09-13 | PASS (T10 리뷰 수정 후 포함) |
 | pnpm run check:architecture | 2026-09-13 | PASS steiger 및 boundary 4 |
 | pnpm run check / biome check . | 2026-09-13 | FAIL baseline과 동일한 변경 없는 6개 파일 format/import 정렬 오류; D009. 변경 파일 biome PASS |
 | profile-deletion-race / private-audio-proxy / worker-recovery | 2026-09-13 | PASS 삭제 우선/접수 우선, client abort, 기존 저장 결과 복구·cleanup 적체 |
 | legacy fixture schema upgrade (docker psql, rollback) | 2026-09-13 | PASS 기존 원장·잔액·active 상태·partial unique 유지 |
 | k6 config mock runtime / remote target guard | 2026-09-13 | PASS 4 scenarios; k6 미설치로 실제 부하 미실행 |
-| pnpm run test:e2e:compare b333d64 | 2026-09-13 | PASS baseline 6/6 (54.1초), candidate 6/6 (60.5초); 동일 suite hash, exit 0; 429/Retry-After 차이 D013 |
+| pnpm run test:e2e:compare b333d64 | 2026-09-13 | PASS baseline 6/6 (54.5초), candidate 6/6 (58.9초); 리뷰 수정 후 동일 suite hash, exit 0; D014 |
 
 완료 기록에는 테스트뿐 아니라 build·typecheck·lint 등 Plan에서 정한 검증과 수동 검증 증거를 포함합니다. 자동 검사의 기준은 실제 `workflow.featureChecks`이며, 검사 생략은 통과로 기록하지 않고 명시적인 사유를 남깁니다.

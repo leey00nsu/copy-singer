@@ -42,7 +42,7 @@
 - Leemage 미확인 POST 재시도는 제거하고 DELETE 재시도/404 성공을 유지했다. Modal 및 runner deadline 연결은 T04 범위다.
 - runtime 4 tests, media/FFmpeg 포함 10 tests 및 typecheck 통과. 공급자 계약 근거와 자동 정리 한계는 plan에 기록했다.
 
-<!-- lee-spec-kit:workflow-sync sha256:631a1d88f9d72b380f5c209eec4ebf0a67a2d1e7a43dc344b5cece8b4baa3df4 -->
+<!-- lee-spec-kit:workflow-sync sha256:3d1a0eb8a0548f13a517fbf052c9470dcc9f7f2f41cdc16ba40661ec6dd6c8dc -->
 
 ## D005: 가입 지급과 세션 분리
 
@@ -134,3 +134,8 @@
 
 - reviewer /root/e2e_review가 feb113d에 대해 changes_requested(P2 2개)를 반환했다. provider presign의 선행 WAV 생성 및 관리자 검색 결과 assertion 누락을 확인했으며 사용자가 “ㅇㅇ 수정”으로 보완을 요청했다. 정식 Feature review gate나 구현/병합 승인으로 기록하지 않는다.
 - 완료 태스크는 유지하고 T10으로 테스트 공백만 보완한다. 기존 E2E 6/6은 해당 공백까지 검증했다는 의미가 아니며 개선한 suite로 다시 비교한다.
+
+- fixture의 예약 Set과 실제 파일 Map을 분리했다. 일회성 HTTP 검증에서 미업로드 confirm 409/GET 404, 잘못된 ID PUT 404, 빈 PUT 400, 정상 업로드 원문·MIME 반환, 삭제 후 confirm/GET 404를 확인했다. 외부 provider의 미지원 기능을 가정하지 않고 기존 presign→PUT→confirm의 테스트 계약만 강제한다.
+- 관리자 E2E는 검색 전 owner 사용자 존재, 실제 검색 입력·제출 후 표의 행 1개/empty 표시/owner 제외, API total=1 및 정확한 사용자 ID를 검사한다. lint·tsc와 변경 파일 Biome는 통과했다.
+
+- 수정 후 pnpm run test:e2e:compare b333d64 exit 0: baseline b333d64 6/6 (54.5초), candidate 앱 코드 91cafca 6/6 (58.9초), skipped/flaky/unexpected 0. 동일 suite hash a1854fc256ec4e8606ea0e563111e32711f0809877492da8c049d0d5d24825ee. 양쪽 production build 포함. 제품 코드 변경 없이 tests/e2e 두 파일과 검증 문서만 수정했으며 README는 main과 동일하다. 기존 전체 pnpm test는 제품 변경이 없어 반복하지 않았다.
