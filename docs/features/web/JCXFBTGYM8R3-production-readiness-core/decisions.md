@@ -42,7 +42,7 @@
 - Leemage 미확인 POST 재시도는 제거하고 DELETE 재시도/404 성공을 유지했다. Modal 및 runner deadline 연결은 T04 범위다.
 - runtime 4 tests, media/FFmpeg 포함 10 tests 및 typecheck 통과. 공급자 계약 근거와 자동 정리 한계는 plan에 기록했다.
 
-<!-- lee-spec-kit:workflow-sync sha256:60a82996d308a487bf9f1aaecf0ce0789c8bf1240548f38c5cd053559dad87ae -->
+<!-- lee-spec-kit:workflow-sync sha256:1e10a6298ba07a992ec5170441d542696f7d948c4fa7f91767b5663d706e36d0 -->
 
 ## D005: 가입 지급과 세션 분리
 
@@ -100,3 +100,17 @@
 
 - 사용자가 제안한 핵심 E2E 추가를 진행하도록 요청했으며 이전 코드에서 먼저 작성한 동일 테스트를 변경 코드에 실행하는 방식을 질문했다. 정상 계약의 차등 회귀로 적용하고 100% 전체 동등성 주장과 구분한다.
 - 기존 Feature 안의 추가 검증 태스크로 수행한다. 구현 승인/병합 승인은 보류 상태를 유지한다. 로그인은 Google 외부 동의/콜백이 아닌 실제 서명 세션·로그아웃·권한 경계부터 검증한다.
+
+
+## D012: 동일 브라우저 suite의 변경 전후 검증
+
+- 실제 Chromium, Next production build/server, Vocal/Mixing worker, 임시 PostgreSQL 및 로컬 HTTP provider로 E2E를 추가했다. 기존 playwright 의존성을 재사용했다. 앱 API는 mock하지 않으며 Google 외부 동의/콜백 대신 DB 서명 session fixture를 준비하고 실제 session 검증·로그아웃·권한을 확인한다.
+- 정상 연속 흐름: 비로그인 401/로그인 화면 → 업로드·확인창·분석 job → 프로필·차감 1장 → 이름 변경·새로고침 → 타인 조회/수정/삭제 404 → 추천·믹싱 접수 → 실제 FFmpeg 결과 저장 → Range 206/100 bytes 및 브라우저 재생 → 라이브러리 유지 → 믹싱/프로필 삭제 → 로그아웃 후 401을 검증했다.
+- 실패 흐름: 로컬 provider의 명시적 분석 거부 → 오류 안내 → 기존 잔액으로 환불 → 새로고침에도 잔액 불변 → 새 업로드 성공·차감 1장을 검증했다. 장애/과부하의 의도적 새 정책은 기존 코드와 같아야 하는 조건에 포함하지 않는다.
+- baseline b333d64b7f769c093ffde424ea406f9e89b315ef는 git archive source snapshot에서 자기 migration 23개/lockfile로 실행했다. candidate 7a415cbfe3d1ae6014b114db6fd826621849d051의 앱 코드에 같은 suite를 실행했고 신규 migration 2개도 적용했다. 두 실행 사이 test/provider/seed/config/HTTP guard 소스 해시를 재검사한다.
+- 최종 `pnpm run test:e2e:compare b333d64` exit 0: baseline 2/2 (20.5초), candidate 2/2 (21.5초), skipped/flaky 0. 공통 suite SHA-256은 4fa6bf23a322c929f66b18a804fa182926366e2c4a5f7f2a856458af6593093d다. 실행 시간은 성능 벤치마크가 아니다. 선정한 assertion에서 차이를 관찰하지 않았다는 의미이며 전체 시스템의 100% 동등성 증명은 아니다.
+- E2E 작성 중 provider의 필수 sourceRanges/원본 MIME/analyzerVersion 누락과 SSR hydration 이전 파일 이벤트, 실제 믹싱 접수 후 상세 이동을 반영하지 않은 테스트 기대값을 수정했다. baseline 앱 코드를 테스트 통과용으로 수정하지 않았고, E2E 추가 과정에서 production 코드는 변경하지 않았다.
+- `test:e2e`, `test:e2e:compare`와 PR용 Browser E2E workflow를 추가했다. 실행 안내는 tests/e2e/TESTING.md이며 루트 README는 변경하지 않았다. 실제 GitHub CI 실행과 required check 설정은 미수행이다.
+- artifacts/e2e의 JSON/로그/실패 trace는 무시 대상이다. 종료/실패 시 이번 runner가 만든 worker/웹·DB 컨테이너 및 임시 baseline snapshot을 정리한다. 최종 실행 후 E2E 컨테이너가 남지 않음을 확인했다.
+
+- E2E 추가 후 전체 pnpm test도 exit 0으로 재통과했다(build/기존 회귀/Storybook 176/readiness 13/Python 4). lint·tsc와 새 E2E 파일 Biome도 통과했다. 기존 전역 Biome 6개 오류는 D009와 동일한 별도 잔여 항목이다.
