@@ -1,7 +1,8 @@
+import { withApiAdmission } from "@/_app/api-routes/admission";
 import { getTicketAccount } from "@/entities/ticket/index.server";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 
-export async function GET(request: Request) {
+async function handleGET(request: Request) {
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
   const url = new URL(request.url);
@@ -12,3 +13,5 @@ export async function GET(request: Request) {
     entries: account.entries.map((entry) => ({ ...entry, createdAt: entry.createdAt.toISOString() })),
   });
 }
+
+export const GET = withApiAdmission(handleGET);

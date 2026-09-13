@@ -8,6 +8,7 @@ import {
   multipartBodyLimit,
   readBoundedMultipartFormData,
 } from "@/shared/api/index.server";
+import { AdmissionError, admissionResponse } from "@/shared/lib/admission/index.server";
 
 export async function adminCatalogAudioFormData(request: Request) {
   try {
@@ -31,6 +32,7 @@ export function adminCatalogJson(value: unknown, status = 200) {
 }
 
 export function adminCatalogError(error: unknown) {
+  if (error instanceof AdmissionError) return admissionResponse(error);
   if (error instanceof SongCatalogAdminError) {
     return adminCatalogJson({ error: { code: error.code, message: error.message } }, error.status);
   }

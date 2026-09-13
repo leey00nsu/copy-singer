@@ -4,6 +4,7 @@ import { applyTicketChangeInTransaction, InsufficientTicketsError } from "@/enti
 import { serializeProfile } from "@/entities/vocal-profile/index.server";
 import { vocalProfileAnalysisMaxAttempts, vocalProfileAnalysisTicketCost } from "@/shared/config/index.server";
 import { prisma } from "@/shared/db/index.server";
+import { checkQueueCapacity, lockQueueAdmission } from "@/shared/lib/admission/index.server";
 import { isSupportedAudioUploadMimeType, normalizeAudioUploadMimeType } from "@/shared/lib/audio";
 import { discardMediaAsset, storeAnalyzerReferenceBytes } from "@/shared/media/index.server";
 
@@ -92,13 +93,22 @@ export async function getVocalProfileAnalysisPolicy(userId: string) {
   };
 }
 
+export async function preflightVocalProfileAnalysis(userId: string, idempotencyKey: string) {
+  const key = idempotencyKey.trim();
+  if (!key || key.length > 200) throw new Error("INVALID_IDEMPOTENCY_KEY");
+  const existing = await findByIdempotency(userId, key);
+  if (existing) return existing;
+  if (await hasActiveAnalysisJob(userId)) throw new Error("ANALYSIS_BUSY");
+  const policy = await getVocalProfileAnalysisPolicy(userId);
+  if (policy.analysisTickets.balance < policy.analysisTickets.cost)
+    throw new InsufficientTicketsError("VOCAL_ANALYSIS", policy.analysisTickets.cost, policy.analysisTickets.balance);
+  return null;
+}
+
 export async function enqueueVocalProfileAnalysis(input: { userId: string; idempotencyKey: string; file: File }) {
   const key = input.idempotencyKey.trim();
-  if (!key || key.length > 200) throw new Error("INVALID_IDEMPOTENCY_KEY");
-  const existing = await findByIdempotency(input.userId, key);
+  const existing = await preflightVocalProfileAnalysis(input.userId, key);
   if (existing) return existing;
-  if (await hasActiveAnalysisJob(input.userId)) throw new Error("ANALYSIS_BUSY");
-
   const policy = await getVocalProfileAnalysisPolicy(input.userId);
 
   const mimeType = normalizeAudioUploadMimeType(input.file.type);
@@ -124,6 +134,7 @@ export async function enqueueVocalProfileAnalysis(input: { userId: string; idemp
       try {
         const result = await prisma.$transaction(
           async (tx) => {
+            await lockQueueAdmission(tx, "VOCAL");
             const raced = await tx.vocalProfileAnalysisJob.findUnique({
               where: { userId_idempotencyKey: { userId: input.userId, idempotencyKey: key } },
             });
@@ -134,6 +145,7 @@ export async function enqueueVocalProfileAnalysis(input: { userId: string; idemp
             });
             if (active > 0) throw new Error("ANALYSIS_BUSY");
 
+            await checkQueueCapacity(tx, "VOCAL", input.userId);
             const job = await tx.vocalProfileAnalysisJob.create({
               data: {
                 id,

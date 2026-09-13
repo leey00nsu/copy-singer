@@ -19,6 +19,7 @@ type JobRow = {
   maxAttempts: number;
   leaseOwner: string | null;
   externalJobId: string | null;
+  externalRequestId: string | null;
 };
 
 export type SongAnalysisWorkerDependencies = {
@@ -78,9 +79,11 @@ async function failure(job: JobRow, error: unknown) {
     await fenceJob(tx, "SongAnalysisJob", job.id, job.leaseOwner, true);
     if (!retry)
       await tx.externalJobReconciliation.upsert({
-        where: { jobType_jobId: { jobType: "SONG", jobId: job.id } },
+        where: {
+          jobType_jobId: { jobType: job.externalRequestId ? `SONG:${job.externalRequestId}` : "SONG", jobId: job.id },
+        },
         create: {
-          jobType: "SONG",
+          jobType: job.externalRequestId ? `SONG:${job.externalRequestId}` : "SONG",
           jobId: job.id,
           externalJobId: job.externalJobId,
           reason: "TERMINAL_EXTERNAL_RECONCILIATION",
@@ -175,7 +178,7 @@ export async function processClaimedSongAnalysisJob(
       const submitted = await submitSongAnalysis({
         analyzerUrl,
         apiKey: analyzerApiKey,
-        requestId: job.id,
+        requestId: job.externalRequestId ?? job.id,
         sourceVideoId: job.source.sourceVideoId,
         bytes: new Uint8Array(await sourceResponse.arrayBuffer()),
         fileName: target.fileName,
@@ -185,8 +188,13 @@ export async function processClaimedSongAnalysisJob(
       externalJobId = submitted.externalJobId;
       job.externalJobId = externalJobId;
       await prisma.externalJobReconciliation.upsert({
-        where: { jobType_jobId: { jobType: "SONG", jobId } },
-        create: { jobType: "SONG", jobId, externalJobId, reason: "OBSERVED_SUBMISSION" },
+        where: { jobType_jobId: { jobType: job.externalRequestId ? `SONG:${job.externalRequestId}` : "SONG", jobId } },
+        create: {
+          jobType: job.externalRequestId ? `SONG:${job.externalRequestId}` : "SONG",
+          jobId,
+          externalJobId,
+          reason: "OBSERVED_SUBMISSION",
+        },
         update: { externalJobId },
       });
       const persisted = await prisma.songAnalysisJob.updateMany({

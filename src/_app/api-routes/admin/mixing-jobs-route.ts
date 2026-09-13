@@ -1,7 +1,8 @@
+import { withApiAdmission } from "@/_app/api-routes/admission";
 import { requireAdminApi } from "@/features/authentication/index.server";
 import { listAdminMixingJobs } from "@/features/inspect-admin-operations/index.server";
 
-export async function GET(request: Request) {
+async function handleGET(request: Request) {
   const access = await requireAdminApi(request);
   if (access.response) return access.response;
   const url = new URL(request.url);
@@ -19,3 +20,5 @@ export async function GET(request: Request) {
     })),
   });
 }
+
+export const GET = withApiAdmission(handleGET);

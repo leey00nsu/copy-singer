@@ -1,7 +1,9 @@
+import { withApiAdmission } from "@/_app/api-routes/admission";
 import { RecommendationError } from "@/entities/recommendation/index.model";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 import { createRecommendationRequestSchema } from "@/features/create-recommendation/index.model";
 import { getRecommendationResult } from "@/features/create-recommendation/index.server";
+import { readBoundedJson } from "@/shared/api/index.server";
 
 function errorResponse(error: unknown) {
   if (error instanceof RecommendationError) {
@@ -24,13 +26,13 @@ function errorResponse(error: unknown) {
   );
 }
 
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
 
   let body: unknown;
   try {
-    body = await request.json();
+    body = await readBoundedJson(request);
   } catch {
     return errorResponse(new RecommendationError("INVALID_REQUEST", "A JSON body is required.", { status: 400 }));
   }
@@ -48,3 +50,5 @@ export async function POST(request: Request) {
     return errorResponse(error);
   }
 }
+
+export const POST = withApiAdmission(handlePOST);

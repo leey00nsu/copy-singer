@@ -1,7 +1,8 @@
+import { withApiAdmission } from "@/_app/api-routes/admission";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 import { prisma } from "@/shared/db/index.server";
 
-export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
+async function handleGET(request: Request, context: { params: Promise<{ id: string }> }) {
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
   const job = await prisma.mixingJob.findFirst({
@@ -35,3 +36,5 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
   headers.set("Cache-Control", "private, no-store");
   return new Response(upstream.body, { status: upstream.status, headers });
 }
+
+export const GET = withApiAdmission(handleGET);

@@ -322,3 +322,13 @@ Leemage의 예약 조회·client idempotency·미확정 object TTL은 확인 불
 Modal은 web보다 먼저 새 계약으로 배포해야 한다. SoulX/곡 분석은 claim 뒤 spawn하고 응답 유실 시 재-spawn하지 않는다. 보컬 동기 분석도 recording ID별 metadata claim만 남긴다. 보컬 결과 응답 유실은 자동 재연산 없이 실패·환불로 끝내며 사용자가 새 요청을 만들 수 있다. 음성 bytes/결과는 7일 TTL의 Modal Dict에 캐시하지 않는다. Dict는 7일 미접근 만료이므로 영구 idempotency 저장소가 아니다. terminal DB job은 다시 제출하지 않는다.
 
 외부 job 정리는 terminal 확인 뒤 15초 timeout으로 시도하고 실패하면 UNRESOLVED로 남긴다. 운영자가 원인을 확인해 위 CLI로 해결한다. SIGTERM/SIGINT 이후 신규 claim을 멈추고 진행 job의 제한된 예산 내 정리가 끝나면 DB 연결을 닫는다. 즉시 강제 종료하더라도 다음 worker가 lease 만료 후 회수한다.
+
+### 요청·큐 제한
+
+요청 token bucket은 웹 프로세스별 사용자 기준으로 적용한다. 접수는 분당 6/burst 3, 추천 30/10, 일반 조회 180/60, 오디오 240/60, 관리자 쓰기 10/3이다. 공개 health/auth는 신뢰 IP가 없으면 전체 120/30 제한을 공유한다. 429/503은 Retry-After를 제공한다. 일반적인 1.5~3초 분석 polling, 5초 믹싱 polling, 30초 알림 polling은 수용한다. 기존 공개 health endpoint는 공개 상태를 유지한다.
+
+업로드는 사용자당 1개, 프로세스당 UPLOAD_CONCURRENCY(기본 2개)다. key/기존 분석/잔액 사전 검사는 multipart 읽기 전에, 최종 큐 상한·티켓 차감은 DB transaction에서 처리한다. 보컬 전체 20/사용자 1, 믹싱 전체 20/사용자 3, 곡 분석 전체 50이 기본이다. 큐 상한과 worker lane 수는 다르다. 기존 활성 분석의 추가 접수도 429로 안내한다.
+
+X-Forwarded-For는 기본 신뢰하지 않는다. TRUST_PROXY_CLIENT_IP=true는 직접 앱 접근이 막히고 ingress가 TRUSTED_CLIENT_IP_HEADER를 항상 덮어쓰는 환경에서만 사용한다. 헤더를 임의 전달하는 proxy 구성에는 사용하지 않는다. IP와 별개로 사용자 제한은 유지한다. 다중 웹 인스턴스로 늘리면 local token bucket은 공유되지 않으므로 shared limiter 또는 ingress 제한이 필요하다. DB 큐 상한은 여러 인스턴스에서도 공유된다.
+
+곡 분석의 명시적 관리자 재시도는 job ID를 유지하면서 별도 externalRequestId를 새로 발급한다. 일반 transport 재시도는 동일 externalRequestId를 사용한다. 구 시도의 정리 기록은 별도로 남겨 새 시도와 혼동하지 않는다.

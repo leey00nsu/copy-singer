@@ -127,12 +127,12 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
-- [TODO][PRD-NFR-015] T-JCXFBTGYM8R3-production-readiness-core-05 API 요청 및 큐 수용량 제한
+- [DONE][PRD-NFR-015] T-JCXFBTGYM8R3-production-readiness-core-05 API 요청 및 큐 수용량 제한
   - Date: 2026-09-13
   - Acceptance:
     - AC06–09 body 전 보호·원자 cap·정상 polling
   - Checklist:
-    - [ ] 사용자 limiter/upload slot/preflight·DB cap 및 경쟁 검증
+    - [x] 사용자 limiter/upload slot/preflight·DB cap 및 경쟁 검증
   - Docs:
     - project:.env.example
   - Review Evidence: -
@@ -182,6 +182,9 @@
 | media-recovery / leemage-media / history / catalog-target integration | 2026-09-13 | PASS 6; 격리 catalog fixture 생성 후 재검증 |
 | worker-recovery + vocal/song/mixing queue integration | 2026-09-13 | PASS 12 (격리 DB) |
 | python3 tests/modal-submission-contract.py / py_compile 3 services | 2026-09-13 | PASS 2 / compile |
+| admission/bounded-multipart tests | 2026-09-13 | PASS 7 |
+| admission + worker recovery integration | 2026-09-13 | PASS 3; 관리자 재시도 identity 포함 |
+| queue/admin API regression --test-concurrency=1 | 2026-09-13 | PASS 13 |
 | pnpm exec tsc --noEmit | 2026-09-13 | PASS |
 | prisma migrate deploy / generate | 2026-09-13 | PASS 23개 기존 + additive migration |
 

@@ -1,3 +1,4 @@
+import { checkQueueCapacity, lockQueueAdmission } from "@/shared/lib/admission/index.server";
 import "server-only";
 
 import { SONG_ANALYSIS_PIPELINE_CONTRACT, TJ_2607_CATALOG_SLUG } from "@/shared/config/index.server";
@@ -87,6 +88,7 @@ export async function createAdminSong(input: CreateAdminSongInput, adminUserId: 
   }
   try {
     return await prisma.$transaction(async (tx) => {
+      await lockQueueAdmission(tx, "SONG");
       const catalog = await catalogOrThrow(tx);
       const lastEntry = await tx.catalogEntry.findFirst({
         where: { catalogId: catalog.id },
@@ -115,6 +117,7 @@ export async function createAdminSong(input: CreateAdminSongInput, adminUserId: 
         },
       });
       await tx.catalogEntry.create({ data: { catalogId: catalog.id, songId: song.id, position, status: "DRAFT" } });
+      await checkQueueCapacity(tx, "SONG");
       await tx.songAnalysisJob.create({ data: { sourceId: source.id, idempotencyKey: input.idempotencyKey } });
       return tx.song.findUniqueOrThrow({ where: { id: song.id }, include: songInclude() });
     });
@@ -154,6 +157,7 @@ export async function replaceAdminSongSource(
   }
   try {
     return await prisma.$transaction(async (tx) => {
+      await lockQueueAdmission(tx, "SONG");
       const song = await tx.song.findUnique({ where: { id: songId }, select: { id: true } });
       if (!song) throw new SongCatalogAdminError("SONG_NOT_FOUND", "곡을 찾을 수 없어요.", 404);
       const last = await tx.songSource.findFirst({
@@ -172,6 +176,7 @@ export async function replaceAdminSongSource(
           createdByUserId: adminUserId,
         },
       });
+      await checkQueueCapacity(tx, "SONG");
       await tx.songAnalysisJob.create({ data: { sourceId: source.id, idempotencyKey: input.idempotencyKey } });
       return source;
     });
@@ -190,25 +195,34 @@ export async function replaceAdminSongSource(
 }
 
 export async function retryAdminSongAnalysis(sourceId: string) {
-  const job = await prisma.songAnalysisJob.findUnique({ where: { sourceId } });
-  if (!job) throw new SongCatalogAdminError("ANALYSIS_JOB_NOT_FOUND", "분석 작업을 찾을 수 없어요.", 404);
-  if (job.status !== "FAILED")
-    throw new SongCatalogAdminError("ANALYSIS_JOB_NOT_FAILED", "실패한 분석 작업만 다시 시도할 수 있어요.", 409);
-  return prisma.songAnalysisJob.update({
-    where: { id: job.id },
-    data: {
-      status: "PENDING",
-      attempts: 0,
-      nextAttemptAt: new Date(),
-      errorCode: null,
-      errorDetail: null,
-      retryable: null,
-      completedAt: null,
-      leaseOwner: null,
-      leaseExpiresAt: null,
-      externalJobId: null,
-      externalSubmittedAt: null,
-    },
+  return prisma.$transaction(async (tx) => {
+    await lockQueueAdmission(tx, "SONG");
+    const job = await tx.songAnalysisJob.findUnique({ where: { sourceId } });
+    if (!job) throw new SongCatalogAdminError("ANALYSIS_JOB_NOT_FOUND", "분석 작업을 찾을 수 없어요.", 404);
+    if (job.status !== "FAILED")
+      throw new SongCatalogAdminError("ANALYSIS_JOB_NOT_FAILED", "실패한 분석 작업만 다시 시도할 수 있어요.", 409);
+    await checkQueueCapacity(tx, "SONG");
+    return tx.songAnalysisJob.update({
+      where: { id: job.id, status: "FAILED" },
+      data: {
+        status: "PENDING",
+        attempts: 0,
+        nextAttemptAt: new Date(),
+        errorCode: null,
+        errorDetail: null,
+        retryable: null,
+        completedAt: null,
+        leaseOwner: null,
+        leaseExpiresAt: null,
+        externalJobId: null,
+        externalSubmittedAt: null,
+        externalRequestId: crypto.randomUUID(),
+        submissionState: "NOT_SUBMITTED",
+        submissionStartedAt: null,
+        startedAt: null,
+        deadlineAt: null,
+      },
+    });
   });
 }
 

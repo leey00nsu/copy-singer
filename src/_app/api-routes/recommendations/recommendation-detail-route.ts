@@ -1,3 +1,4 @@
+import { withApiAdmission } from "@/_app/api-routes/admission";
 import { RecommendationError } from "@/entities/recommendation/index.model";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 import { getRecommendationResult } from "@/features/create-recommendation/index.server";
@@ -18,7 +19,7 @@ function errorResponse(error: unknown) {
   );
 }
 
-export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
+async function handleGET(request: Request, context: { params: Promise<{ id: string }> }) {
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
   try {
@@ -31,3 +32,5 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
     return errorResponse(error);
   }
 }
+
+export const GET = withApiAdmission(handleGET);

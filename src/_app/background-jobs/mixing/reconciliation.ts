@@ -21,7 +21,7 @@ export async function reconcileExternalJobs(fetchImpl: typeof fetch = fetch) {
       });
       continue;
     }
-    const song = record.jobType === "SONG" ? songAnalysisModalConfig() : null;
+    const song = record.jobType.startsWith("SONG") ? songAnalysisModalConfig() : null;
     const url = record.jobType === "MIXING" ? process.env.MODAL_API_URL : song?.url;
     const key = record.jobType === "MIXING" ? process.env.MODAL_API_KEY : song?.apiKey;
     try {

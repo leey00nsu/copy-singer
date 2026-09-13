@@ -1,3 +1,4 @@
+import { withApiAdmission } from "@/_app/api-routes/admission";
 import { requireAdminApi } from "@/features/authentication/index.server";
 import {
   adminCatalogQuerySchema,
@@ -9,7 +10,7 @@ import {
 } from "@/features/manage-song-catalog/index.server";
 import { adminCatalogAudioFormData, adminCatalogError, adminCatalogJson } from "./http";
 
-export async function GET(request: Request) {
+async function handleGET(request: Request) {
   const access = await requireAdminApi(request);
   if (access.response) return access.response;
   try {
@@ -21,7 +22,7 @@ export async function GET(request: Request) {
   }
 }
 
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
   const access = await requireAdminApi(request);
   if (access.response) return access.response;
   try {
@@ -43,3 +44,7 @@ export async function POST(request: Request) {
     return adminCatalogError(error);
   }
 }
+
+export const GET = withApiAdmission(handleGET);
+
+export const POST = withApiAdmission(handlePOST);

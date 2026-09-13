@@ -1,7 +1,8 @@
+import { withAuthAdmission } from "@/_app/api-routes/admission";
 import { vocalProfileAnalyzerHealth } from "@/entities/vocal-profile/index.server";
 import { prisma } from "@/shared/db/index.server";
 
-export async function GET() {
+async function handleGET() {
   const [analyzer, database] = await Promise.allSettled([vocalProfileAnalyzerHealth(), prisma.$queryRaw`SELECT 1`]);
 
   const healthy = analyzer.status === "fulfilled" && database.status === "fulfilled";
@@ -15,3 +16,5 @@ export async function GET() {
     { status: healthy ? 200 : 503 },
   );
 }
+
+export const GET = withAuthAdmission(handleGET);

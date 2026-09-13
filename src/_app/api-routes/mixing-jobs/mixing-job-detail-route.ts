@@ -1,8 +1,9 @@
+import { withApiAdmission } from "@/_app/api-routes/admission";
 import { deleteMixingJobForUser, getMixingJobForUser, MixingError } from "@/entities/mixing-job/index.server";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 import { resourceIdSchema } from "@/shared/api";
 
-export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
+async function handleGET(request: Request, context: { params: Promise<{ id: string }> }) {
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
   const id = resourceIdSchema.safeParse((await context.params).id);
@@ -12,7 +13,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
     : Response.json({ error: { code: "MIXING_NOT_FOUND", message: "믹싱 작업을 찾을 수 없어요." } }, { status: 404 });
 }
 
-export async function DELETE(request: Request, context: { params: Promise<{ id: string }> }) {
+async function handleDELETE(request: Request, context: { params: Promise<{ id: string }> }) {
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
   const id = resourceIdSchema.safeParse((await context.params).id);
@@ -43,3 +44,7 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
     );
   }
 }
+
+export const GET = withApiAdmission(handleGET);
+
+export const DELETE = withApiAdmission(handleDELETE);

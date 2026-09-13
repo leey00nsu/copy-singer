@@ -1,8 +1,9 @@
+import { withApiAdmission } from "@/_app/api-routes/admission";
 import { getVocalProfileSynthesisReference } from "@/entities/vocal-profile/index.server";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 import { proxyPrivateAudio } from "@/shared/media/index.server";
 
-export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
+async function handleGET(request: Request, context: { params: Promise<{ id: string }> }) {
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
   const reference = await getVocalProfileSynthesisReference(session.user.id, (await context.params).id);
@@ -36,3 +37,5 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
     )
   );
 }
+
+export const GET = withApiAdmission(handleGET);

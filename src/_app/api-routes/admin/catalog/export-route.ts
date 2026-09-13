@@ -1,8 +1,9 @@
+import { withApiAdmission } from "@/_app/api-routes/admission";
 import { exportDatabaseSongCatalog } from "@/entities/song-catalog/index.server";
 import { requireAdminApi } from "@/features/authentication/index.server";
 import { adminCatalogError } from "./http";
 
-export async function GET(request: Request) {
+async function handleGET(request: Request) {
   const access = await requireAdminApi(request);
   if (access.response) return access.response;
   try {
@@ -19,3 +20,5 @@ export async function GET(request: Request) {
     return adminCatalogError(error);
   }
 }
+
+export const GET = withApiAdmission(handleGET);

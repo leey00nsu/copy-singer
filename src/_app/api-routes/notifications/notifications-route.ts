@@ -1,7 +1,8 @@
+import { withApiAdmission } from "@/_app/api-routes/admission";
 import { getNotifications, notificationFiltersSchema } from "@/entities/notification/index.server";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 
-export async function GET(request: Request) {
+async function handleGET(request: Request) {
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
   const searchParams = new URL(request.url).searchParams;
@@ -12,3 +13,5 @@ export async function GET(request: Request) {
   });
   return Response.json(await getNotifications(session.user.id, filters.page, filters.pageSize, filters.unreadOnly));
 }
+
+export const GET = withApiAdmission(handleGET);

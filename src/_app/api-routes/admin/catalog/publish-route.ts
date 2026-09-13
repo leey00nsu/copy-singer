@@ -1,8 +1,9 @@
+import { withApiAdmission } from "@/_app/api-routes/admission";
 import { requireAdminApi } from "@/features/authentication/index.server";
 import { publishAdminSongSource } from "@/features/manage-song-catalog/index.server";
 import { adminCatalogError, adminCatalogJson } from "./http";
 
-export async function POST(request: Request, context: { params: Promise<{ songId: string; sourceId: string }> }) {
+async function handlePOST(request: Request, context: { params: Promise<{ songId: string; sourceId: string }> }) {
   const access = await requireAdminApi(request);
   if (access.response) return access.response;
   try {
@@ -12,3 +13,5 @@ export async function POST(request: Request, context: { params: Promise<{ songId
     return adminCatalogError(error);
   }
 }
+
+export const POST = withApiAdmission(handlePOST);

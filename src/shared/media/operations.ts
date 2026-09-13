@@ -62,6 +62,14 @@ export async function uploadTrackedAsset<T extends { id: string }>(
 
 async function hasReferences(tx: Prisma.TransactionClient, id: string, assetType: string) {
   if (assetType === "CATALOG") {
+    const asset = await tx.catalogTargetAsset.findUnique({ where: { id }, select: { sourceId: true } });
+    if (
+      asset?.sourceId &&
+      (await tx.songAnalysisJob.count({
+        where: { sourceId: asset.sourceId, status: { in: ["PENDING", "PROCESSING"] } },
+      }))
+    )
+      return true;
     return (
       (await tx.song.count({ where: { targetAssetId: id } })) > 0 ||
       (await tx.mixingJob.count({ where: { targetAssetId: id } })) > 0

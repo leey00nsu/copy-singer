@@ -1,7 +1,9 @@
+import { withApiAdmission } from "@/_app/api-routes/admission";
 import { vocalProfileRenameRequestSchema } from "@/entities/vocal-profile";
 import { serializeProfile } from "@/entities/vocal-profile/index.server";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 import { resourceIdSchema } from "@/shared/api";
+import { readBoundedJson } from "@/shared/api/index.server";
 import { prisma } from "@/shared/db/index.server";
 import { processMediaOperation, scheduleAssetDeletion } from "@/shared/media/index.server";
 
@@ -12,7 +14,7 @@ function profileNotFoundResponse() {
   );
 }
 
-export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
+async function handleGET(request: Request, context: { params: Promise<{ id: string }> }) {
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
   const parsedId = resourceIdSchema.safeParse((await context.params).id);
@@ -28,12 +30,12 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
   return Response.json(serializeProfile(profile));
 }
 
-export async function PATCH(request: Request, context: { params: Promise<{ id: string }> }) {
+async function handlePATCH(request: Request, context: { params: Promise<{ id: string }> }) {
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
   const parsedId = resourceIdSchema.safeParse((await context.params).id);
   if (!parsedId.success) return profileNotFoundResponse();
-  const parsedBody = vocalProfileRenameRequestSchema.safeParse(await request.json().catch(() => null));
+  const parsedBody = vocalProfileRenameRequestSchema.safeParse(await readBoundedJson(request).catch(() => null));
   if (!parsedBody.success) {
     return Response.json(
       {
@@ -57,7 +59,7 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
   return Response.json({ id: updated.id, displayName: parsedBody.data.displayName });
 }
 
-export async function DELETE(request: Request, context: { params: Promise<{ id: string }> }) {
+async function handleDELETE(request: Request, context: { params: Promise<{ id: string }> }) {
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
   const parsedId = resourceIdSchema.safeParse((await context.params).id);
@@ -103,3 +105,9 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
     { status: cleanupPending ? 202 : 200 },
   );
 }
+
+export const GET = withApiAdmission(handleGET);
+
+export const PATCH = withApiAdmission(handlePATCH);
+
+export const DELETE = withApiAdmission(handleDELETE);

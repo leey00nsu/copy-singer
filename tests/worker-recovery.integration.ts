@@ -132,6 +132,16 @@ test("expired final claims converge and stale leases cannot commit", async () =>
       assert.equal(rows[0]?.status, "FAILED");
       assert.equal(await claim("again", id), null);
     }
+    const { retryAdminSongAnalysis } = await import("../src/features/manage-song-catalog/index.server");
+    const retries = await Promise.allSettled([
+      retryAdminSongAnalysis(recoverySource.id),
+      retryAdminSongAnalysis(recoverySource.id),
+    ]);
+    assert.equal(retries.filter((result) => result.status === "fulfilled").length, 1);
+    const retried = await prisma.songAnalysisJob.findUniqueOrThrow({ where: { id: s.id } });
+    assert.ok(retried.externalRequestId);
+    assert.equal(retried.deadlineAt, null);
+    assert.equal(retried.submissionState, "NOT_SUBMITTED");
     const heartbeatJob = await prisma.vocalProfileAnalysisJob.create({
       data: {
         userId,

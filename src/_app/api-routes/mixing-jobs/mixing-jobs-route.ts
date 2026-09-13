@@ -1,3 +1,4 @@
+import { withApiAdmission } from "@/_app/api-routes/admission";
 import {
   getMixingHistory,
   MixingError,
@@ -8,8 +9,10 @@ import { InsufficientTicketsError } from "@/entities/ticket/index.server";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 import { createMixingRequestSchema } from "@/features/create-mixing/index.model";
 import { enqueueMixingJob } from "@/features/create-mixing/index.server";
+import { readBoundedJson } from "@/shared/api/index.server";
+import { AdmissionError, admissionResponse } from "@/shared/lib/admission/index.server";
 
-export async function GET(request: Request) {
+async function handleGET(request: Request) {
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
   const searchParams = new URL(request.url).searchParams;
@@ -21,10 +24,10 @@ export async function GET(request: Request) {
   return Response.json(await getMixingHistory(session.user.id, filters));
 }
 
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
-  const body = createMixingRequestSchema.safeParse(await request.json().catch(() => null));
+  const body = createMixingRequestSchema.safeParse(await readBoundedJson(request).catch(() => null));
   if (!body.success) {
     return Response.json(
       { error: { code: "INVALID_REQUEST", message: "추천 곡과 요청 키가 필요해요." } },
@@ -40,6 +43,7 @@ export async function POST(request: Request) {
     });
     return Response.json(serializeMixingJob(job), { status: 202 });
   } catch (error) {
+    if (error instanceof AdmissionError) return admissionResponse(error);
     if (error instanceof InsufficientTicketsError) {
       return Response.json(
         {
@@ -66,3 +70,7 @@ export async function POST(request: Request) {
     );
   }
 }
+
+export const GET = withApiAdmission(handleGET);
+
+export const POST = withApiAdmission(handlePOST);

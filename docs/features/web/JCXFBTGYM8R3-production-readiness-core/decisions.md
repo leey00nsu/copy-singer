@@ -42,7 +42,7 @@
 - Leemage 미확인 POST 재시도는 제거하고 DELETE 재시도/404 성공을 유지했다. Modal 및 runner deadline 연결은 T04 범위다.
 - runtime 4 tests, media/FFmpeg 포함 10 tests 및 typecheck 통과. 공급자 계약 근거와 자동 정리 한계는 plan에 기록했다.
 
-<!-- lee-spec-kit:workflow-sync sha256:7be7e8190772db28f9f48aface06b43fb36b4561e06fd18cea92a2778e459ec1 -->
+<!-- lee-spec-kit:workflow-sync sha256:8e833df31642e48d6f3936ed9358dea9aab13d41c98bc8ef7225ff856b56bd20 -->
 
 ## D005: 가입 지급과 세션 분리
 
@@ -64,3 +64,11 @@
 - Modal 조건부 metadata claim이 동시 spawn을 막는다. 보컬 동기 결과를 Dict에 캐시하면 음성 보관 정책이 변하므로 metadata claim만 사용한다. 동일 recording 재전송은 재연산 없이 실패로 수렴/분석 환불하고 새 사용자 요청은 새 recording identity를 사용한다. 기존 정상 성공 경로는 유지한다.
 - 알려진 외부 identity는 stale 응답 후에도 별도 reconciliation에 남기고 terminal 이후 정리를 시도한다. 정리 실패는 운영자가 jobs:reconcile CLI의 dry-run/apply와 근거로 처리한다. 실제 Modal은 배포하지 않았다.
 - 격리 큐 회귀 12 tests, Python 실제 song 제출 route+두 claim 계약 2 tests, 세 service compile, typecheck 통과. 테스트가 공유 catalog를 오염시키는 문제를 전용 recovery source fixture로 수정했다. SoulX 전체 HTTP 런타임과 vocal claim end-to-end는 로컬 계약 테스트의 잔여 확인 범위다.
+
+## D008: API·큐 admission과 명시적 관리자 재시도
+
+- 사용자/비용별 bounded token bucket, upload slot, 모든 제품 API의 조립 wrapper를 추가했다. 공개 health는 인증 요구를 추가하지 않고 익명 limiter를 적용했다. 인증은 같은 Request에서만 memoize하여 중복 session 조회를 피한다.
+- 보컬 2개 접수 API는 key/기존 job/잔액/활성 작업을 body 전에 검사한다. multipart와 JSON에 읽기 시간·크기 한도를 두고 취소 시 slot을 반환한다.
+- 큐 advisory lock 아래 count/idempotency/생성/차감을 처리한다. mixing/vocal SERIALIZABLE conflict retry를 유지하고 관리자 READ COMMITTED transaction도 같은 lock을 사용한다. enum status index를 활용할 수 있는 조건을 사용한다.
+- 곡 분석의 명시적 retry에서 이전 외부 키 재사용을 발견해 externalRequestId additive migration을 추가했다. DB job identity는 유지하고 retry 요청만 외부 identity/deadline을 갱신한다. 동시 관리자 retry 2개는 하나만 성공한다.
+- admission/multipart 7 tests, 추가 DB 3 tests, 기존 큐/관리자 회귀 13 tests와 typecheck 통과. 카탈로그 revision을 바꾸는 테스트는 동시 파일 실행 시 정상 stale 방어에 걸려 기존 suite와 같이 순차 검증했다.

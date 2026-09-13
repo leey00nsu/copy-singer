@@ -10,6 +10,14 @@ const baseURL = process.env.BETTER_AUTH_URL ?? "http://localhost:3000";
 
 export const auth = betterAuth({
   appName: "Copysinger",
+  advanced: {
+    ipAddress: {
+      ipAddressHeaders:
+        process.env.TRUST_PROXY_CLIENT_IP === "true" && process.env.TRUSTED_CLIENT_IP_HEADER
+          ? [process.env.TRUSTED_CLIENT_IP_HEADER]
+          : [],
+    },
+  },
   baseURL,
   secret: resolveAuthSecret(process.env),
   database: prismaAdapter(prisma, { provider: "postgresql" }),

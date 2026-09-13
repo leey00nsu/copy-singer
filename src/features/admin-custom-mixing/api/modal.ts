@@ -48,7 +48,7 @@ export async function submitAdminCustomMixing(
   const config = modalConfig();
   if (!config) return modalUnavailableResponse();
   const fetched = await fetchReference(reference);
-  if ("error" in fetched) return fetched.error;
+  if ("error" in fetched) return fetched.error ?? modalUnavailableResponse();
 
   const form = new FormData();
   form.append("prompt_audio", new Blob([fetched.bytes], { type: fetched.mimeType }), fetched.fileName);

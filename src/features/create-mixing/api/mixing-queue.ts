@@ -6,6 +6,7 @@ import { synthesisReferenceContractVersion, type VocalProfileDescriptors } from 
 import { getRecommendationItem } from "@/features/create-recommendation/index.server";
 import { mixingMaxAttempts, mixingTicketCost } from "@/shared/config/index.server";
 import { prisma } from "@/shared/db/index.server";
+import { checkQueueCapacity, lockQueueAdmission } from "@/shared/lib/admission/index.server";
 import { selectMixingReference } from "../model/reference";
 
 function prismaErrorCode(error: unknown) {
@@ -25,6 +26,14 @@ export async function enqueueMixingJob(input: {
   if (!input.idempotencyKey.trim() || input.idempotencyKey.length > 200) {
     throw new MixingError("INVALID_REQUEST", "올바른 요청 키가 필요해요.", 400);
   }
+  const previous = await prisma.mixingJob.findUnique({
+    where: { userId_idempotencyKey: { userId: input.userId, idempotencyKey: input.idempotencyKey } },
+  });
+  if (previous) {
+    if (previous.vocalProfileId !== input.vocalProfileId || previous.songAnalysisId !== input.songAnalysisId)
+      throw new MixingError("IDEMPOTENCY_CONFLICT", "다른 입력에 사용된 요청 키예요.", 409);
+    return previous;
+  }
   const { result, item } = await getRecommendationItem(input.vocalProfileId, input.songAnalysisId, input.userId);
   const cost = mixingTicketCost();
 
@@ -32,6 +41,7 @@ export async function enqueueMixingJob(input: {
     try {
       return await prisma.$transaction(
         async (tx) => {
+          await lockQueueAdmission(tx, "MIXING");
           const existing = await tx.mixingJob.findUnique({
             where: { userId_idempotencyKey: { userId: input.userId, idempotencyKey: input.idempotencyKey } },
           });
@@ -103,6 +113,7 @@ export async function enqueueMixingJob(input: {
             throw new MixingError("MIXING_REFERENCE_UNAVAILABLE", "저장된 레퍼런스 음성을 사용할 수 없어요.", 422);
           }
 
+          await checkQueueCapacity(tx, "MIXING", input.userId);
           const job = await tx.mixingJob.create({
             data: {
               userId: input.userId,
@@ -141,7 +152,11 @@ export async function enqueueMixingJob(input: {
         const existing = await prisma.mixingJob.findUnique({
           where: { userId_idempotencyKey: { userId: input.userId, idempotencyKey: input.idempotencyKey } },
         });
-        if (existing) return existing;
+        if (existing) {
+          if (existing.vocalProfileId !== input.vocalProfileId || existing.songAnalysisId !== input.songAnalysisId)
+            throw new MixingError("IDEMPOTENCY_CONFLICT", "다른 입력에 사용된 요청 키예요.", 409);
+          return existing;
+        }
       }
       throw error;
     }

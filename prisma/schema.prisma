@@ -283,6 +283,7 @@ model SongAnalysis {
 }
 
 model SongAnalysisJob {
+  externalRequestId   String?               @db.Uuid
   id                  String                @id @default(uuid()) @db.Uuid
   sourceId            String                @unique @db.Uuid
   analysisId          String?               @unique @db.Uuid

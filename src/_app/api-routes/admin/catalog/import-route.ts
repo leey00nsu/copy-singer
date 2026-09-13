@@ -1,3 +1,4 @@
+import { withApiAdmission } from "@/_app/api-routes/admission";
 import { importDatabaseSongCatalog, parseCatalogSnapshot } from "@/entities/song-catalog/index.server";
 import { requireAdminApi } from "@/features/authentication/index.server";
 import {
@@ -10,7 +11,7 @@ import { adminCatalogError, adminCatalogJson } from "./http";
 
 const MAX_SNAPSHOT_BYTES = 20 * 1024 * 1024;
 
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
   const access = await requireAdminApi(request);
   if (access.response) return access.response;
   try {
@@ -61,3 +62,5 @@ export async function POST(request: Request) {
     return adminCatalogError(error);
   }
 }
+
+export const POST = withApiAdmission(handlePOST);

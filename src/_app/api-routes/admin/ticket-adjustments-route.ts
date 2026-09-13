@@ -2,11 +2,12 @@ import { InsufficientTicketsError } from "@/entities/ticket/index.server";
 import { requireAdminApi } from "@/features/authentication/index.server";
 import { ticketAdjustmentRequestSchema } from "@/features/manage-tickets/index.model";
 import { adjustUserTickets } from "@/features/manage-tickets/index.server";
+import { readBoundedJson } from "@/shared/api/index.server";
 
 export async function ticketAdjustmentsPost(request: Request) {
   const access = await requireAdminApi(request);
   if (access.response) return access.response;
-  const body = ticketAdjustmentRequestSchema.safeParse(await request.json().catch(() => null));
+  const body = ticketAdjustmentRequestSchema.safeParse(await readBoundedJson(request).catch(() => null));
   if (!body.success) {
     return Response.json(
       { error: { code: "INVALID_REQUEST", message: "사용자, 조정량, 사유와 요청 키가 필요해요." } },

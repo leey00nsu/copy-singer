@@ -1,3 +1,4 @@
+import { withApiAdmission } from "@/_app/api-routes/admission";
 import {
   ADMIN_CUSTOM_MIXING_LIMITS,
   getAdminCustomMixingReference,
@@ -18,7 +19,7 @@ function profileNotFoundResponse() {
   return Response.json({ detail: "선택한 보컬 프로필을 찾을 수 없거나 사용할 수 없어요." }, { status: 404 });
 }
 
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
   const access = await requireAdminApi(request);
   if (access.response) return access.response;
 
@@ -54,3 +55,5 @@ export async function POST(request: Request) {
 
   return submitAdminCustomMixing(reference, target);
 }
+
+export const POST = withApiAdmission(handlePOST);

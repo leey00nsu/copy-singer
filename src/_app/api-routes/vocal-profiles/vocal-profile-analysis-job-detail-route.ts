@@ -1,8 +1,9 @@
+import { withApiAdmission } from "@/_app/api-routes/admission";
 import { analysisJobPayload, getVocalProfileAnalysisJob } from "@/features/analyze-vocal-profile/index.server";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 import { resourceIdSchema } from "@/shared/api";
 
-export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
+async function handleGET(request: Request, context: { params: Promise<{ id: string }> }) {
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
   const id = resourceIdSchema.safeParse((await context.params).id);
@@ -15,3 +16,5 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
   }
   return Response.json({ ...analysisJobPayload(result.job), profile: result.profile });
 }
+
+export const GET = withApiAdmission(handleGET);

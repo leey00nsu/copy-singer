@@ -1,3 +1,4 @@
+import { withApiAdmission } from "@/_app/api-routes/admission";
 import { InsufficientTicketsError } from "@/entities/ticket/index.server";
 import {
   ANALYSIS_AUDIO_MIME_TYPES,
@@ -10,6 +11,7 @@ import {
   enqueueVocalProfileAnalysis,
   getVocalProfileAnalysisPolicy,
   listVisibleVocalProfileAnalysisJobs,
+  preflightVocalProfileAnalysis,
 } from "@/features/analyze-vocal-profile/index.server";
 import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 import {
@@ -17,8 +19,10 @@ import {
   multipartBodyLimit,
   readBoundedMultipartFormData,
 } from "@/shared/api/index.server";
+import { AdmissionError, admissionResponse } from "@/shared/lib/admission/index.server";
 
 function enqueueError(error: unknown) {
+  if (error instanceof AdmissionError) return admissionResponse(error);
   const code = error instanceof Error ? error.message : "ANALYSIS_ENQUEUE_FAILED";
   if (code === "INVALID_IDEMPOTENCY_KEY") {
     return Response.json(
@@ -55,7 +59,7 @@ function enqueueError(error: unknown) {
         detail: "Wait for the active vocal analysis to finish before starting another.",
         retryable: true,
       },
-      { status: 409 },
+      { status: 429, headers: { "Retry-After": "10" } },
     );
   }
   return Response.json(
@@ -64,7 +68,7 @@ function enqueueError(error: unknown) {
   );
 }
 
-export async function GET(request: Request) {
+async function handleGET(request: Request) {
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
   const [jobs, policy] = await Promise.all([
@@ -74,10 +78,16 @@ export async function GET(request: Request) {
   return Response.json({ jobs: jobs.map(analysisJobPayload), ...policy });
 }
 
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
   const session = await requireApiSession(request);
   if (!session) return unauthorizedResponse();
   const idempotencyKey = request.headers.get("Idempotency-Key")?.trim() ?? "";
+  try {
+    const existing = await preflightVocalProfileAnalysis(session.user.id, idempotencyKey);
+    if (existing) return Response.json(analysisJobPayload(existing), { status: 202 });
+  } catch (error) {
+    return enqueueError(error);
+  }
   let form: FormData;
   try {
     form = await readBoundedMultipartFormData(request, multipartBodyLimit(MAX_PROFILE_ANALYSIS_AUDIO_BYTES));
@@ -117,3 +127,7 @@ export async function POST(request: Request) {
     return enqueueError(error);
   }
 }
+
+export const GET = withApiAdmission(handleGET);
+
+export const POST = withApiAdmission(handlePOST);

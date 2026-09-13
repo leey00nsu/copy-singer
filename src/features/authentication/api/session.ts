@@ -5,7 +5,19 @@ import { getDevelopmentAuthBypassSession } from "./dev-bypass";
 
 export type AuthSession = typeof auth.$Infer.Session;
 
-export async function getRequestSession(request?: Request) {
+const requestSessions = new WeakMap<Request, Promise<AuthSession | null>>();
+
+export function getRequestSession(request?: Request) {
+  if (!request) return resolveRequestSession();
+  let session = requestSessions.get(request);
+  if (!session) {
+    session = resolveRequestSession(request);
+    requestSessions.set(request, session);
+  }
+  return session;
+}
+
+async function resolveRequestSession(request?: Request) {
   const requestHeaders = request?.headers ?? (await import("next/headers")).headers();
   const session =
     (await getDevelopmentAuthBypassSession()) ?? (await auth.api.getSession({ headers: await requestHeaders }));
