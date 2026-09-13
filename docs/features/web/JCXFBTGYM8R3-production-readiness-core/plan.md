@@ -128,3 +128,9 @@
 - 초기 세션만 DB fixture 및 서명 cookie로 준비하고 이후 auth/session/로그아웃은 실제 구현을 거친다. Google OAuth, 실제 GPU/스토리지 신뢰성은 이 E2E로 검증했다고 기록하지 않는다.
 - localhost 전용 테스트 DB/HTTP, 별도 포트, 프로세스 정리, 실패 trace/screenshot/report를 제공한다. artifact에 fixture 정보만 포함한다.
 - CI는 PR마다 핵심 E2E를 실행한다. 새 테스트/fixture/CI/실행 도구에 대한 정적 검사와 양쪽 실행 결과를 검증한다. 운영 안내는 tests/e2e 문서로 두고 README는 유지한다.
+
+## T08 검증 확장 (사용자 요청)
+
+- Decision: UPDATE — 기존 E2E suite/seed/provider를 보강한다. 앱 코드는 우선 유지한다.
+- 별도 계정과 제어 가능한 provider 진행 상태를 사용한다. 실제 HTTP 응답, 화면, 잔액 및 provider 호출 수를 oracle로 삼는다. 관리자 주요 동작은 사용자 조회와 티켓 조정으로 한정한다.
+- 동일 suite를 b333d64와 candidate에서 실행한다. 기존 결함은 실패로 기록하고 새 코드의 의도적 변경과 구분한다. 정적 검사와 production build는 비교 runner에 포함하며 앱 수정이 없으면 이미 통과한 전체 단위 suite를 반복하지 않는다.

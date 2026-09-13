@@ -114,3 +114,7 @@
 - artifacts/e2e의 JSON/로그/실패 trace는 무시 대상이다. 종료/실패 시 이번 runner가 만든 worker/웹·DB 컨테이너 및 임시 baseline snapshot을 정리한다. 최종 실행 후 E2E 컨테이너가 남지 않음을 확인했다.
 
 - E2E 추가 후 전체 pnpm test도 exit 0으로 재통과했다(build/기존 회귀/Storybook 176/readiness 13/Python 4). lint·tsc와 새 E2E 파일 Biome도 통과했다. 기존 전역 Biome 6개 오류는 D009와 동일한 별도 잔여 항목이다.
+
+## D013: 사용자 요청 E2E 보강
+
+- 사용자의 “ㅇㅇ 보강해봐”는 제안한 다섯 경계 테스트 추가 요청이다. 완료한 T07은 유지하고 T08로 추적한다. 구현 수락 또는 병합 승인으로 간주하지 않는다. README는 유지한다.

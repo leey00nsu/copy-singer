@@ -140,3 +140,7 @@ Production Readiness Audit에서 선정한 5개 개선을 하나의 Feature로 �
 - Architecture: [system-architecture.md](../../../prd/system-architecture.md)
 - Decisions: [decisions.md](./decisions.md)
 - Design Refs: 없음 — UI/디자인 변경 Feature가 아니다.
+
+## E2E 보강 인수 조건
+
+- [ ] AC-22: 잔액 부족·동일 요청 재전송의 차감 불변, 믹싱 제출 전/후 실패 환불, 진행 중 새로고침/이탈 후 복귀, 만료 세션·타인 믹싱 접근 거부, 관리자 접근·티켓 조정의 사용자 결과를 검증한다.

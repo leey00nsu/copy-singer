@@ -166,6 +166,19 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
+- [TODO][PRD-NFR-010] T-JCXFBTGYM8R3-production-readiness-core-08 잔액·환불·재접속·권한 E2E 보강
+  - Date: 2026-09-13
+  - Acceptance:
+    - 다섯 위험 경계의 실제 브라우저/API 결과를 baseline과 candidate에서 검증하고 차이를 명시한다
+  - Checklist:
+    - [ ] 격리 fixture와 E2E 보강, 비교 실행, lint/typecheck 및 검증 범위 문서 갱신
+  - Docs:
+    - project:tests/e2e/TESTING.md
+  - Review Evidence: -
+  - Review Decision: -
+  - Reviewed Head: -
+  - Reviewed Tree: -
+
 ## Knowledge Publication
 
 - **Policy**: `.lee-spec-kit.json`의 `experimental.openwiki`에서 파생
@@ -178,8 +191,8 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
 
 ### 테스트 실행 기록
