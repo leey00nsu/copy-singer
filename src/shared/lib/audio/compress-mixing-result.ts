@@ -2,6 +2,7 @@ import { spawn } from "node:child_process";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { runtimeLimits } from "../runtime/limits";
 
 export type CompressedMixingAudio = { bytes: Uint8Array; mimeType: "audio/mp4"; extension: "m4a" };
 
@@ -18,52 +19,74 @@ export const CLARITY_NORMAL_FILTER_CHAIN = [
   "loudnorm=I=-14:LRA=11:TP=-1.0",
 ].join(",");
 
-function run(command: string, args: string[]) {
+function run(command: string, args: string[], signal?: AbortSignal) {
   return new Promise<void>((resolve, reject) => {
     const child = spawn(command, args, { stdio: ["ignore", "ignore", "pipe"] });
+    let timedOut = false;
+    const stop = () => {
+      timedOut = true;
+      child.kill("SIGKILL");
+    };
+    const timer = setTimeout(stop, runtimeLimits().ffmpegMs);
+    signal?.addEventListener("abort", stop, { once: true });
+    if (signal?.aborted) stop();
+    const cleanup = () => {
+      clearTimeout(timer);
+      signal?.removeEventListener("abort", stop);
+    };
     let stderr = "";
     child.stderr.setEncoding("utf8");
     child.stderr.on("data", (chunk: string) => {
-      stderr += chunk;
+      stderr = (stderr + chunk).slice(-800);
     });
-    child.once("error", reject);
-    child.once("close", (code) =>
-      code === 0 ? resolve() : reject(new Error(`FFmpeg mixing finalization failed (${code}): ${stderr.slice(-800)}`)),
-    );
+    child.once("error", (error) => {
+      cleanup();
+      reject(error);
+    });
+    child.once("close", (code) => {
+      cleanup();
+      if (timedOut) reject(new Error("FFmpeg mixing finalization canceled or timed out."));
+      else if (code === 0) resolve();
+      else reject(new Error(`FFmpeg mixing finalization failed (${code}): ${stderr}`));
+    });
   });
 }
 
-export async function compressMixingResult(bytes: Uint8Array): Promise<CompressedMixingAudio> {
+export async function compressMixingResult(bytes: Uint8Array, signal?: AbortSignal): Promise<CompressedMixingAudio> {
   const directory = await mkdtemp(join(tmpdir(), "copy-singer-mix-"));
   const input = join(directory, "input.audio");
   const output = join(directory, "output.m4a");
   try {
     await writeFile(input, bytes);
-    await run(process.env.FFMPEG_BIN || "ffmpeg", [
-      "-hide_banner",
-      "-loglevel",
-      "error",
-      "-nostdin",
-      "-y",
-      "-i",
-      input,
-      "-vn",
-      "-af",
-      CLARITY_NORMAL_FILTER_CHAIN,
-      "-map_metadata",
-      "-1",
-      "-ac",
-      "2",
-      "-ar",
-      "44100",
-      "-c:a",
-      "aac",
-      "-b:a",
-      "160k",
-      "-movflags",
-      "+faststart",
-      output,
-    ]);
+    await run(
+      process.env.FFMPEG_BIN || "ffmpeg",
+      [
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-i",
+        input,
+        "-vn",
+        "-af",
+        CLARITY_NORMAL_FILTER_CHAIN,
+        "-map_metadata",
+        "-1",
+        "-ac",
+        "2",
+        "-ar",
+        "44100",
+        "-c:a",
+        "aac",
+        "-b:a",
+        "160k",
+        "-movflags",
+        "+faststart",
+        output,
+      ],
+      signal,
+    );
     return { bytes: new Uint8Array(await readFile(output)), mimeType: "audio/mp4", extension: "m4a" };
   } finally {
     await rm(directory, { recursive: true, force: true });

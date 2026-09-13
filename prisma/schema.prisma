@@ -305,6 +305,9 @@ model SongAnalysisJob {
   updatedAt           DateTime              @updatedAt
   source              SongSource            @relation(fields: [sourceId], references: [id], onDelete: Restrict)
   analysis            SongAnalysis?         @relation(fields: [analysisId], references: [id], onDelete: SetNull)
+  deadlineAt          DateTime?
+  submissionStartedAt DateTime?
+  submissionState     String                @default("NOT_SUBMITTED")
 
   @@index([status, nextAttemptAt, leaseExpiresAt, createdAt])
 }
@@ -534,32 +537,35 @@ model Notification {
 }
 
 model VocalProfileAnalysisJob {
-  id             String                        @id @default(uuid()) @db.Uuid
-  userId         String
-  recordingId    String                        @unique @db.Uuid
-  sourceAssetId  String?                       @db.Uuid
-  vocalProfileId String?                       @unique @db.Uuid
-  status         VocalProfileAnalysisJobStatus @default(PENDING)
-  idempotencyKey String
-  ticketCost     Int                           @default(0)
-  refundState    TicketRefundState             @default(NONE)
-  attempts       Int                           @default(0)
-  maxAttempts    Int                           @default(3)
-  nextAttemptAt  DateTime                      @default(now())
-  leaseOwner     String?
-  leaseExpiresAt DateTime?
-  heartbeatAt    DateTime?
-  errorCode      String?
-  errorDetail    String?
-  retryable      Boolean?
-  startedAt      DateTime?
-  completedAt    DateTime?
-  createdAt      DateTime                      @default(now())
-  updatedAt      DateTime                      @updatedAt
-  user           User                          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  sourceAsset    MediaAsset?                   @relation("VocalProfileAnalysisSource", fields: [sourceAssetId], references: [id], onDelete: SetNull)
-  vocalProfile   VocalProfile?                 @relation(fields: [vocalProfileId], references: [id], onDelete: SetNull)
-  ticketLedgers  TicketLedger[]
+  id                  String                        @id @default(uuid()) @db.Uuid
+  userId              String
+  recordingId         String                        @unique @db.Uuid
+  sourceAssetId       String?                       @db.Uuid
+  vocalProfileId      String?                       @unique @db.Uuid
+  status              VocalProfileAnalysisJobStatus @default(PENDING)
+  idempotencyKey      String
+  ticketCost          Int                           @default(0)
+  refundState         TicketRefundState             @default(NONE)
+  attempts            Int                           @default(0)
+  maxAttempts         Int                           @default(3)
+  nextAttemptAt       DateTime                      @default(now())
+  leaseOwner          String?
+  leaseExpiresAt      DateTime?
+  heartbeatAt         DateTime?
+  errorCode           String?
+  errorDetail         String?
+  retryable           Boolean?
+  startedAt           DateTime?
+  completedAt         DateTime?
+  createdAt           DateTime                      @default(now())
+  updatedAt           DateTime                      @updatedAt
+  user                User                          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sourceAsset         MediaAsset?                   @relation("VocalProfileAnalysisSource", fields: [sourceAssetId], references: [id], onDelete: SetNull)
+  vocalProfile        VocalProfile?                 @relation(fields: [vocalProfileId], references: [id], onDelete: SetNull)
+  ticketLedgers       TicketLedger[]
+  deadlineAt          DateTime?
+  submissionStartedAt DateTime?
+  submissionState     String                        @default("NOT_SUBMITTED")
 
   @@unique([userId, idempotencyKey])
   @@index([status, nextAttemptAt, leaseExpiresAt, createdAt])
@@ -567,45 +573,48 @@ model VocalProfileAnalysisJob {
 }
 
 model MixingJob {
-  id               String             @id @default(uuid()) @db.Uuid
-  userId           String
-  vocalProfileId   String             @db.Uuid
-  songId           String             @db.Uuid
-  songAnalysisId   String             @db.Uuid
-  referenceAssetId String             @db.Uuid
-  targetAssetId    String             @db.Uuid
-  resultAssetId    String?            @db.Uuid
-  catalogPosition  Int
-  recommendedShift Int
-  catalogRevision  Int
-  scoringVersion   String
-  status           MixingJobStatus    @default(PENDING)
-  ticketCost       Int
-  refundState      TicketRefundState  @default(NONE)
-  idempotencyKey   String
-  modalJobId       String?
-  attempts         Int                @default(0)
-  maxAttempts      Int                @default(3)
-  nextAttemptAt    DateTime           @default(now())
-  retryable        Boolean?
-  leaseOwner       String?
-  leaseExpiresAt   DateTime?
-  heartbeatAt      DateTime?
-  errorCode        String?
-  errorDetail      String?
-  submittedAt      DateTime?
-  startedAt        DateTime?
-  completedAt      DateTime?
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  vocalProfile     VocalProfile       @relation(fields: [vocalProfileId], references: [id], onDelete: Restrict)
-  song             Song               @relation(fields: [songId], references: [id], onDelete: Restrict)
-  songAnalysis     SongAnalysis       @relation(fields: [songAnalysisId], references: [id], onDelete: Restrict)
-  referenceAsset   MediaAsset         @relation("MixingReference", fields: [referenceAssetId], references: [id], onDelete: Restrict)
-  targetAsset      CatalogTargetAsset @relation("MixingTarget", fields: [targetAssetId], references: [id], onDelete: Restrict)
-  resultAsset      MediaAsset?        @relation("MixingResult", fields: [resultAssetId], references: [id], onDelete: SetNull)
-  ticketEntries    TicketLedger[]
+  id                  String             @id @default(uuid()) @db.Uuid
+  userId              String
+  vocalProfileId      String             @db.Uuid
+  songId              String             @db.Uuid
+  songAnalysisId      String             @db.Uuid
+  referenceAssetId    String             @db.Uuid
+  targetAssetId       String             @db.Uuid
+  resultAssetId       String?            @db.Uuid
+  catalogPosition     Int
+  recommendedShift    Int
+  catalogRevision     Int
+  scoringVersion      String
+  status              MixingJobStatus    @default(PENDING)
+  ticketCost          Int
+  refundState         TicketRefundState  @default(NONE)
+  idempotencyKey      String
+  modalJobId          String?
+  attempts            Int                @default(0)
+  maxAttempts         Int                @default(3)
+  nextAttemptAt       DateTime           @default(now())
+  retryable           Boolean?
+  leaseOwner          String?
+  leaseExpiresAt      DateTime?
+  heartbeatAt         DateTime?
+  errorCode           String?
+  errorDetail         String?
+  submittedAt         DateTime?
+  startedAt           DateTime?
+  completedAt         DateTime?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  user                User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vocalProfile        VocalProfile       @relation(fields: [vocalProfileId], references: [id], onDelete: Restrict)
+  song                Song               @relation(fields: [songId], references: [id], onDelete: Restrict)
+  songAnalysis        SongAnalysis       @relation(fields: [songAnalysisId], references: [id], onDelete: Restrict)
+  referenceAsset      MediaAsset         @relation("MixingReference", fields: [referenceAssetId], references: [id], onDelete: Restrict)
+  targetAsset         CatalogTargetAsset @relation("MixingTarget", fields: [targetAssetId], references: [id], onDelete: Restrict)
+  resultAsset         MediaAsset?        @relation("MixingResult", fields: [resultAssetId], references: [id], onDelete: SetNull)
+  ticketEntries       TicketLedger[]
+  deadlineAt          DateTime?
+  submissionStartedAt DateTime?
+  submissionState     String             @default("NOT_SUBMITTED")
 
   @@unique([userId, idempotencyKey])
   @@index([status, nextAttemptAt, leaseExpiresAt, createdAt])
@@ -614,4 +623,54 @@ model MixingJob {
   @@index([songAnalysisId])
   @@index([targetAssetId])
   @@index([modalJobId])
+}
+
+// Independent intents survive deletion of the originating domain row.
+model MediaOperation {
+  id                String    @id @default(uuid()) @db.Uuid
+  operation         String
+  status            String    @default("PENDING")
+  userId            String?
+  assetId           String?   @db.Uuid
+  assetType         String?
+  externalProjectId String
+  externalFileId    String?
+  objectName        String?
+  attempts          Int       @default(0)
+  nextAttemptAt     DateTime  @default(now())
+  leaseOwner        String?
+  leaseExpiresAt    DateTime?
+  lastError         String?
+  resolution        String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([status, nextAttemptAt])
+  @@index([assetId])
+}
+
+model SignupGrantIntent {
+  userId    String
+  kind      TicketKind
+  amount    Int
+  operator  String?
+  reason    String
+  createdAt DateTime   @default(now())
+
+  @@id([userId, kind])
+}
+
+model ExternalJobReconciliation {
+  id            String   @id @default(uuid()) @db.Uuid
+  jobType       String
+  jobId         String   @db.Uuid
+  externalJobId String?
+  status        String   @default("PENDING")
+  reason        String
+  resolution    String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([jobType, jobId])
+  @@index([status, createdAt])
 }

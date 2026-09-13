@@ -70,3 +70,24 @@ test("LeemageClient honors retryable 429 responses before deleting", async () =>
   await client.deleteFile("project", "file-1");
   assert.equal(attempts, 2);
 });
+
+test("presign response loss is not retried without a provider idempotency contract", async () => {
+  let calls = 0;
+  const client = new LeemageClient(
+    { baseUrl: "https://example.invalid", apiKey: "test", projectId: "test" },
+    async () => {
+      calls += 1;
+      throw new Error("response lost");
+    },
+  );
+  await assert.rejects(client.uploadFile({ fileName: "test.wav", mimeType: "audio/wav", bytes: new Uint8Array([1]) }));
+  assert.equal(calls, 1);
+});
+
+test("delete 404 is idempotent success", async () => {
+  const client = new LeemageClient(
+    { baseUrl: "https://example.invalid", apiKey: "test", projectId: "test" },
+    async () => new Response(null, { status: 404 }),
+  );
+  await client.deleteFile("test", "absent");
+});

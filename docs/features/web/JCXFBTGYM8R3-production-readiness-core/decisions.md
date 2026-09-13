@@ -34,3 +34,12 @@
 - **Decision**: 수정 spec을 Approved로 전환하고 plan/tasks를 작성한다.
 - **Rationale**: 구체 스펙과 변경 동작에 대한 사용자 승인이다. 구현 결과 승인과 local merge 승인은 별도 경계로 유지한다.
 - **Trace/Evidence**: 현재 대화의 사용자 승인 메시지 및 workflow-stage spec_approve.
+
+## D004: T01 공통 기반 검증
+
+- DB pool/연결·쿼리 예산, HTTP 전체/개별 deadline, FFmpeg SIGKILL 후 close 대기와 stderr 상한을 구현했다.
+- additive schema는 기존 23 migration을 적용한 격리 PostgreSQL에 적용했다. 기존 사용자 데이터는 접근하지 않았다.
+- Leemage 미확인 POST 재시도는 제거하고 DELETE 재시도/404 성공을 유지했다. Modal 및 runner deadline 연결은 T04 범위다.
+- runtime 4 tests, media/FFmpeg 포함 10 tests 및 typecheck 통과. 공급자 계약 근거와 자동 정리 한계는 plan에 기록했다.
+
+<!-- lee-spec-kit:workflow-sync sha256:b78083de9ac0047c1e284563e14d2fb777910e9ff0660636768371baea0ca08b -->

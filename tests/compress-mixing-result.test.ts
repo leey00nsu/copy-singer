@@ -94,3 +94,9 @@ test("finalizes a WAV mixing result to 44.1 kHz stereo AAC/M4A", async () => {
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+test("an aborted finalization terminates its subprocess", async () => {
+  const controller = new AbortController();
+  controller.abort();
+  await assert.rejects(compressMixingResult(toneWav(2), controller.signal), /canceled|timed out/);
+});

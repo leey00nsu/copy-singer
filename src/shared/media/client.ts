@@ -1,4 +1,5 @@
 import "server-only";
+import { runtimeLimits, withDeadline } from "@/shared/lib/runtime/index.server";
 
 export type LeemageConfig = {
   baseUrl: string;
@@ -66,12 +67,15 @@ export class LeemageClient {
     private readonly fetchImpl: FetchLike = fetch,
   ) {}
 
-  private async apiRequest(path: string, init: RequestInit, maxAttempts = 3) {
+  private async apiRequest(path: string, init: RequestInit, maxAttempts = init.method === "POST" ? 1 : 3) {
     for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
       let response: Response;
       try {
         response = await this.fetchImpl(`${this.config.baseUrl}${path}`, {
           ...init,
+          signal: init.signal
+            ? AbortSignal.any([init.signal, AbortSignal.timeout(runtimeLimits().metadataMs)])
+            : AbortSignal.timeout(runtimeLimits().metadataMs),
           headers: {
             Authorization: `Bearer ${this.config.apiKey}`,
             ...(init.body ? { "Content-Type": "application/json" } : {}),
@@ -80,7 +84,7 @@ export class LeemageClient {
           cache: "no-store",
         });
       } catch (error) {
-        if (attempt + 1 < maxAttempts) {
+        if (!init.signal?.aborted && attempt + 1 < maxAttempts) {
           await sleep(200 * 2 ** attempt);
           continue;
         }
@@ -90,6 +94,7 @@ export class LeemageClient {
       if (response.ok) return response;
       const retryable = response.status === 429 || response.status >= 500;
       if (retryable && attempt + 1 < maxAttempts) {
+        await response.body?.cancel();
         await sleep(retryDelay(response, attempt));
         continue;
       }
@@ -98,9 +103,22 @@ export class LeemageClient {
     throw new LeemageError("Media storage request exhausted its retry limit.", null, true);
   }
 
-  async uploadFile(input: { fileName: string; mimeType: string; bytes: Uint8Array }): Promise<LeemageStoredFile> {
+  async uploadFile(input: {
+    fileName: string;
+    mimeType: string;
+    bytes: Uint8Array;
+    signal?: AbortSignal;
+  }): Promise<LeemageStoredFile> {
+    return withDeadline(runtimeLimits().uploadMs, (signal) => this.uploadWithinDeadline(input, signal), input.signal);
+  }
+
+  private async uploadWithinDeadline(
+    input: { fileName: string; mimeType: string; bytes: Uint8Array },
+    signal: AbortSignal,
+  ): Promise<LeemageStoredFile> {
     const presign = await this.apiRequest(`/projects/${encodeURIComponent(this.config.projectId)}/files/presign`, {
       method: "POST",
+      signal,
       body: JSON.stringify({
         fileName: input.fileName,
         contentType: input.mimeType,
@@ -122,6 +140,7 @@ export class LeemageClient {
 
     const uploaded = await this.fetchImpl(allocation.presignedUrl, {
       method: "PUT",
+      signal: AbortSignal.any([signal, AbortSignal.timeout(runtimeLimits().fileMs)]),
       headers: { "Content-Type": input.mimeType },
       body: Uint8Array.from(input.bytes).buffer,
     });
@@ -135,6 +154,7 @@ export class LeemageClient {
 
     const confirmed = await this.apiRequest(`/projects/${encodeURIComponent(this.config.projectId)}/files/confirm`, {
       method: "POST",
+      signal,
       body: JSON.stringify({
         fileId: allocation.fileId,
         objectName: allocation.objectName,
@@ -158,9 +178,17 @@ export class LeemageClient {
   }
 
   async deleteFile(projectId: string, fileId: string) {
-    await this.apiRequest(`/projects/${encodeURIComponent(projectId)}/files/${encodeURIComponent(fileId)}`, {
-      method: "DELETE",
-    });
+    try {
+      const response = await this.apiRequest(
+        `/projects/${encodeURIComponent(projectId)}/files/${encodeURIComponent(fileId)}`,
+        {
+          method: "DELETE",
+        },
+      );
+      await response.body?.cancel();
+    } catch (error) {
+      if (!(error instanceof LeemageError && error.status === 404)) throw error;
+    }
   }
 }
 

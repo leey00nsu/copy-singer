@@ -75,12 +75,12 @@
 
 ---
 
-- [TODO][PRD-NFR-014] T-JCXFBTGYM8R3-production-readiness-core-01 공통 시간 예산과 영속 복구 schema
+- [DONE][PRD-NFR-014] T-JCXFBTGYM8R3-production-readiness-core-01 공통 시간 예산과 영속 복구 schema
   - Date: 2026-09-13
   - Acceptance:
     - AC04/05의 DB·HTTP·subprocess 예산 및 additive migration 검증
   - Checklist:
-    - [ ] pool/timeout/intent schema 구현과 격리 migration·취소 테스트
+    - [x] pool/timeout/intent schema 구현과 격리 migration·취소 테스트
   - Docs:
     - project:.env.example
   - Review Evidence: -
@@ -176,6 +176,9 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `{실행한 테스트 명령어}` | `-` | `{PASS/FAIL 요약}` |
+| runtime-timeouts/leemage-client/compress-mixing-result tests | 2026-09-13 | PASS 10 |
+| pnpm run test:readiness (격리 DB) | 2026-09-13 | PASS 4 |
+| pnpm exec tsc --noEmit | 2026-09-13 | PASS |
+| prisma migrate deploy / generate | 2026-09-13 | PASS 23개 기존 + additive migration |
 
 완료 기록에는 테스트뿐 아니라 build·typecheck·lint 등 Plan에서 정한 검증과 수동 검증 증거를 포함합니다. 자동 검사의 기준은 실제 `workflow.featureChecks`이며, 검사 생략은 통과로 기록하지 않고 명시적인 사유를 남깁니다.
