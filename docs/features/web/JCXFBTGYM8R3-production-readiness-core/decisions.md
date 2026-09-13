@@ -42,7 +42,7 @@
 - Leemage 미확인 POST 재시도는 제거하고 DELETE 재시도/404 성공을 유지했다. Modal 및 runner deadline 연결은 T04 범위다.
 - runtime 4 tests, media/FFmpeg 포함 10 tests 및 typecheck 통과. 공급자 계약 근거와 자동 정리 한계는 plan에 기록했다.
 
-<!-- lee-spec-kit:workflow-sync sha256:8e833df31642e48d6f3936ed9358dea9aab13d41c98bc8ef7225ff856b56bd20 -->
+<!-- lee-spec-kit:workflow-sync sha256:60a82996d308a487bf9f1aaecf0ce0789c8bf1240548f38c5cd053559dad87ae -->
 
 ## D005: 가입 지급과 세션 분리
 
@@ -72,3 +72,18 @@
 - 큐 advisory lock 아래 count/idempotency/생성/차감을 처리한다. mixing/vocal SERIALIZABLE conflict retry를 유지하고 관리자 READ COMMITTED transaction도 같은 lock을 사용한다. enum status index를 활용할 수 있는 조건을 사용한다.
 - 곡 분석의 명시적 retry에서 이전 외부 키 재사용을 발견해 externalRequestId additive migration을 추가했다. DB job identity는 유지하고 retry 요청만 외부 identity/deadline을 갱신한다. 동시 관리자 retry 2개는 하나만 성공한다.
 - admission/multipart 7 tests, 추가 DB 3 tests, 기존 큐/관리자 회귀 13 tests와 typecheck 통과. 카탈로그 revision을 바꾸는 테스트는 동시 파일 실행 시 정상 stale 방어에 걸려 기존 suite와 같이 순차 검증했다.
+
+
+## D009: 통합 검증과 운영 인계
+
+- 실제 프로필 DELETE와 enqueueMixingJob을 격리 DB에서 경쟁시켰다. 삭제가 먼저 확정되면 job/차감 없이 독립 삭제 intent 2개가 남고, 믹싱이 먼저 확정되면 DELETE 409와 참조 파일 2개 보존을 확인했다. route의 schema import는 runtime-neutral public API로 정리했다.
+- 기존 worker가 profile 저장 후 성공 상태 기록 전에 종료했던 데이터를 고려해, 살아 있는 새 lease 소유자가 이미 저장된 결과만 복구할 수 있게 했다. 처리 예산이 소진되어도 재연산/재업로드하지 않으며 terminal job은 재활성화하지 않는다.
+- 외부 reconciliation은 active job을 LIMIT 전에 제외한다. 오래된 active record 20개가 있어도 뒤 terminal 기록이 처리되는 DB 회귀를 추가했다. 실제 분석 접수 URL의 limiter 분류와 오디오 client abort/실패 body 정리도 보완했다.
+- Python 검증은 세 서비스의 실제 route/claim 함수를 AST로 추출하여 실행한다. Modal/model runtime과 I/O를 fake로 대체하며 SoulX·곡 분석의 동시 20개 요청/입력 충돌/spawn 응답 유실, 보컬의 동시 claim/입력 충돌을 확인했다. 4개 통과. 실제 provider 런타임/원격 배포 검증으로 간주하지 않는다.
+- 기존 23 migration을 별도 schema에 적용하고 가입 원장·잔액 5·PROCESSING 분석 fixture를 넣은 뒤 신규 2 migration을 적용했다. 원장 JSON 동일, 잔액/상태 불변, 신규 기본값 및 기존 partial unique index 존속을 확인하고 검증 transaction을 rollback했다. 운영 DB는 접근하지 않았다.
+- README에 지급 복구 CLI, migration→Modal→웹/worker 적용 순서, 구 worker drain, rollback 시 새 intent 처리 제약, 제한 정책과 부하 시나리오를 명시했다.
+- k6 실행기가 없어 실측 부하는 수행하지 않았다. localhost opt-in, 10/50/100 RPS 및 100 VU로 총 500개 요청 시나리오를 작성했다. Node mock runtime으로 네 설정/요청과 원격 주소 거부를 확인했다. API별 200/429/503 비율과 latency를 함께 해석해야 하며 임계값 통과만으로 GPU/전체 서비스 처리량을 보장하지 않는다.
+- pnpm run check는 baseline b333d64에서도 동일한, 변경하지 않은 6개 파일의 Biome 포맷/정렬 오류로 실패한다. 대상: src/_pages/account/index.ts, src/_pages/recommendation-detail/index.ts, src/entities/mixing-job/api/client.ts, src/entities/recommendation/api/client.ts, src/shared/ui/skeleton/skeletons.stories.tsx, steiger.config.ts. 각 파일 원문 동일성과 baseline stdin Biome exit 1을 확인했다. Feature 변경 파일 Biome, lint, typecheck 및 architecture 검사는 통과했다. 관련 없는 UI 포맷 변경은 이 Feature에 포함하지 않았다.
+- 정상 동작은 기존 회귀 assertion으로 검증한다. 과부하 429/503, 접수 불명 작업 삭제 409, deadline 실패/환불 정책은 승인한 의도적 변경이다. 이번 5개 구현이 전체 감사의 미포함 보안/백업 항목까지 해결했다는 의미는 아니다.
+
+- 최종 pnpm test exit 0: production build, 기존 API/권한/티켓/큐 회귀, Storybook 176, readiness 13 + Python 4 통과. spec AC01–18은 이 로컬 검증 범위와 명시된 provider 한계 안에서 확인했다. 구현 승인과 local merge 승인은 아직 받지 않았다.

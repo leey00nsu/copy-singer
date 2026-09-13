@@ -140,12 +140,12 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
-- [TODO][PRD-NFR-010] T-JCXFBTGYM8R3-production-readiness-core-06 통합 회귀·부하 시나리오·운영 문서
+- [DONE][PRD-NFR-010] T-JCXFBTGYM8R3-production-readiness-core-06 통합 회귀·부하 시나리오·운영 문서
   - Date: 2026-09-13
   - Acceptance:
     - 전체 AC 검증 증거 및 로컬 실행 가능한 10/50/100 RPS·500 burst 시나리오
   - Checklist:
-    - [ ] 전체 configured checks·배포/rollback/복구 절차 동기화
+    - [x] 전체 configured checks·배포/rollback/복구 절차 동기화 (추가 check의 baseline Biome 6개 오류는 D009 기록)
   - Docs:
     - project:README.md
   - Review Evidence: -
@@ -165,8 +165,8 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
 
 ### 테스트 실행 기록
@@ -177,15 +177,22 @@
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
 | runtime-timeouts/leemage-client/compress-mixing-result tests | 2026-09-13 | PASS 10 |
-| pnpm run test:readiness (격리 DB) | 2026-09-13 | PASS 4 |
+| pnpm run test:readiness (격리 DB) | 2026-09-13 | PASS DB/TS 13 + Python 4 |
 | signup-recovery / ticket-ledger / dev-auth-bypass integration | 2026-09-13 | PASS 4 (격리 DB) |
 | media-recovery / leemage-media / history / catalog-target integration | 2026-09-13 | PASS 6; 격리 catalog fixture 생성 후 재검증 |
 | worker-recovery + vocal/song/mixing queue integration | 2026-09-13 | PASS 12 (격리 DB) |
-| python3 tests/modal-submission-contract.py / py_compile 3 services | 2026-09-13 | PASS 2 / compile |
+| python3 tests/modal-submission-contract.py / py_compile 3 services | 2026-09-13 | PASS 4 / compile |
 | admission/bounded-multipart tests | 2026-09-13 | PASS 7 |
 | admission + worker recovery integration | 2026-09-13 | PASS 3; 관리자 재시도 identity 포함 |
 | queue/admin API regression --test-concurrency=1 | 2026-09-13 | PASS 13 |
 | pnpm exec tsc --noEmit | 2026-09-13 | PASS |
-| prisma migrate deploy / generate | 2026-09-13 | PASS 23개 기존 + additive migration |
+| prisma migrate deploy / generate | 2026-09-13 | PASS 23개 기존 + additive 2개 migration |
+| pnpm test (격리 DB/fake dependency) | 2026-09-13 | PASS production build, 기존 회귀, Storybook 176, readiness 13 + Python 4; exit 0 |
+| pnpm run lint | 2026-09-13 | PASS |
+| pnpm run check:architecture | 2026-09-13 | PASS steiger 및 boundary 4 |
+| pnpm run check / biome check . | 2026-09-13 | FAIL baseline과 동일한 변경 없는 6개 파일 format/import 정렬 오류; D009. 변경 파일 biome PASS |
+| profile-deletion-race / private-audio-proxy / worker-recovery | 2026-09-13 | PASS 삭제 우선/접수 우선, client abort, 기존 저장 결과 복구·cleanup 적체 |
+| legacy fixture schema upgrade (docker psql, rollback) | 2026-09-13 | PASS 기존 원장·잔액·active 상태·partial unique 유지 |
+| k6 config mock runtime / remote target guard | 2026-09-13 | PASS 4 scenarios; k6 미설치로 실제 부하 미실행 |
 
 완료 기록에는 테스트뿐 아니라 build·typecheck·lint 등 Plan에서 정한 검증과 수동 검증 증거를 포함합니다. 자동 검사의 기준은 실제 `workflow.featureChecks`이며, 검사 생략은 통과로 기록하지 않고 명시적인 사유를 남깁니다.
