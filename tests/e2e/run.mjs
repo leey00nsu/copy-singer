@@ -168,6 +168,7 @@ try {
       GOOGLE_CLIENT_ID: "e2e-unused",
       GOOGLE_CLIENT_SECRET: "e2e-unused",
       DEV_AUTH_BYPASS_ENABLED: "false",
+      ADMIN_EMAILS: "admin@example.test",
       TRUST_PROXY_CLIENT_IP: "false",
       LEEMAGE_BASE_URL: provider.origin,
       LEEMAGE_API_KEY: "e2e-only",

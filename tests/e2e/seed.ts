@@ -25,7 +25,7 @@ try {
   }
   await importDatabaseSongCatalog(prisma, snapshot);
   const accounts: Record<string, { cookie: string; id: string }> = {};
-  for (const name of ["owner", "other", "failure"]) {
+  for (const name of ["owner", "other", "failure", "resumed", "preflight", "submitted", "empty", "admin", "expired"]) {
     const id = `e2e-${name}`,
       token = `e2e-session-${name}`;
     await prisma.user.create({
@@ -39,7 +39,12 @@ try {
     });
     await ensureSignupTicketGrants(id);
     await prisma.session.create({
-      data: { id: crypto.randomUUID(), userId: id, token, expiresAt: new Date(Date.now() + 3600_000) },
+      data: {
+        id: crypto.randomUUID(),
+        userId: id,
+        token,
+        expiresAt: new Date(Date.now() + (name === "expired" ? -3600_000 : 3600_000)),
+      },
     });
     const signature = createHmac("sha256", process.env.BETTER_AUTH_SECRET!).update(token).digest("base64");
     accounts[name] = { id, cookie: encodeURIComponent(`${token}.${signature}`) };

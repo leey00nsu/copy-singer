@@ -24,6 +24,9 @@ export async function startProvider() {
   const files = new Map(),
     jobs = new Map();
   const stats = { analyses: 0, conversions: 0, deletes: 0 };
+  let holdMixing = false,
+    failMixing = false,
+    failTarget = false;
   let failAnalysis = false,
     origin;
   const artifact = (bytes, mimeType = "audio/wav") => ({
@@ -44,7 +47,11 @@ export async function startProvider() {
       for await (const chunk of req) chunks.push(chunk);
       const body = Buffer.concat(chunks);
       if (url.pathname === "/control" && req.method === "POST") {
-        failAnalysis = JSON.parse(body).failAnalysis === true;
+        const control = JSON.parse(body);
+        failAnalysis = control.failAnalysis === true;
+        holdMixing = control.holdMixing === true;
+        failMixing = control.failMixing === true;
+        failTarget = control.failTarget === true;
         return json({ ok: true });
       }
       if (url.pathname === "/stats") return json(stats);
@@ -128,9 +135,16 @@ export async function startProvider() {
       }
       if (/\/v1\/conversions\/[^/]+$/.test(url.pathname)) {
         const id = url.pathname.split("/").at(-1);
-        return jobs.has(id) ? json({ id, status: "succeeded" }) : json({ error: "Not found" }, 404);
+        return jobs.has(id)
+          ? json({
+              id,
+              status: holdMixing ? "processing" : failMixing ? "failed" : "succeeded",
+              error: failMixing ? "E2E synthesis failed" : null,
+            })
+          : json({ error: "Not found" }, 404);
       }
       if (url.pathname.startsWith("/files/") || url.pathname.endsWith("/audio") || url.pathname === "/catalog.wav") {
+        if (url.pathname === "/catalog.wav" && failTarget) return json({ error: "Invalid target" }, 422);
         const file = files.get(url.pathname.split("/").at(-1));
         if (url.pathname.startsWith("/files/") && !file) return json({ error: "Not found" }, 404);
         const bytes = file?.bytes ?? wav();
