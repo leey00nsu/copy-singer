@@ -153,6 +153,19 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
+- [TODO][PRD-NFR-010] T-JCXFBTGYM8R3-production-readiness-core-07 브라우저 E2E와 변경 전후 동일 계약 검증
+  - Date: 2026-09-13
+  - Acceptance:
+    - AC19–21 실제 웹·worker·DB E2E 및 baseline/candidate 동일 suite 실행 결과
+  - Checklist:
+    - [ ] 격리 harness·핵심 흐름·CI 구현 및 변경 전후 비교
+  - Docs:
+    - project:tests/e2e/TESTING.md
+  - Review Evidence: -
+  - Review Decision: -
+  - Reviewed Head: -
+  - Reviewed Tree: -
+
 ## Knowledge Publication
 
 - **Policy**: `.lee-spec-kit.json`의 `experimental.openwiki`에서 파생
@@ -165,8 +178,8 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
 
 ### 테스트 실행 기록

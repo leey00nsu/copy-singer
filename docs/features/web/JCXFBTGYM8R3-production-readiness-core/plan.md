@@ -62,17 +62,18 @@
 - **Assessment**: Complete
 - **Product requirements**: UPDATE
 - **System architecture**: UPDATE
-- **Onboarding entrypoint**: NONE — 사용자 요청으로 루트 README 변경 제외
+- **Onboarding entrypoint**: NONE
 - **Operational/runtime contract**: UPDATE
 - **Reason**: 승인한 운영 안정성 요구와 신규 intent/timeout/admission/복구·배포 계약을 상위 문서에 반영한다.
-- **Targets**: docs:prd/copy-singer-prd.md, docs:prd/system-architecture.md, project:.env.example
+- **Targets**: docs:prd/copy-singer-prd.md, docs:prd/system-architecture.md, project:.env.example, project:tests/e2e/TESTING.md
 
 ## Additional Curated Impacts
 
 - **Assessment**: Complete
 - **Decision**: NONE
 
-별도 정책·디자인·보안 문서의 변경은 범위에 없으며 이번 운영 변경은 위 architecture/env 및 Feature 문서에 포함한다. 확인한 constitution/custom 원칙은 유지한다.
+
+사용자 요청에 따라 루트 README는 변경하지 않는다. E2E 실행 문서만 추가한다. 별도 정책·디자인·보안 문서의 변경은 범위에 없으며 이번 운영 변경은 위 architecture/env 및 Feature 문서에 포함한다. 확인한 constitution/custom 원칙은 유지한다.
 
 ## Verification Contract
 
@@ -117,3 +118,13 @@
 
 - Spec: [spec.md](./spec.md)
 - Decisions: [decisions.md](./decisions.md)
+
+
+## 사용자 요청 추가: 동일 E2E의 변경 전후 비교
+
+- 기존 승인된 Feature의 검증을 확장하는 T07로 관리한다. production 기능 변경을 목적으로 하지 않으며 E2E에서 회귀를 발견하면 근거와 함께 범위 내 수정한다.
+- Playwright Chromium, 실제 Next production server 및 worker, 전용 임시 DB, 로컬 HTTP provider를 사용한다. 기존 playwright 패키지를 활용하고 앱 API route mocking은 금지한다.
+- b333d64의 source snapshot과 현재 Feature를 같은 테스트/fixture로 순차 실행한다. 변경 전 앱 코드를 테스트 통과용으로 수정하지 않는다. baseline과 candidate 결과를 구분하고 기존 결함을 동일성 기준으로 고착하지 않는다.
+- 초기 세션만 DB fixture 및 서명 cookie로 준비하고 이후 auth/session/로그아웃은 실제 구현을 거친다. Google OAuth, 실제 GPU/스토리지 신뢰성은 이 E2E로 검증했다고 기록하지 않는다.
+- localhost 전용 테스트 DB/HTTP, 별도 포트, 프로세스 정리, 실패 trace/screenshot/report를 제공한다. artifact에 fixture 정보만 포함한다.
+- CI는 PR마다 핵심 E2E를 실행한다. 새 테스트/fixture/CI/실행 도구에 대한 정적 검사와 양쪽 실행 결과를 검증한다. 운영 안내는 tests/e2e 문서로 두고 README는 유지한다.
