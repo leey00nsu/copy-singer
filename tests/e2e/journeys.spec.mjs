@@ -286,9 +286,23 @@ test("expired sessions and ordinary users cannot operate admin; admin adjustment
   try {
     await session(admin, "admin");
     const adminPage = await admin.newPage();
-    await adminPage.goto("/admin?q=empty%40example.test");
+    await adminPage.goto("/admin");
     await expect(adminPage.getByRole("heading", { name: "Copysinger 운영", exact: true })).toBeVisible();
-    expect((await admin.request.get("/api/admin/users?q=empty%40example.test")).status()).toBe(200);
+    const usersTable = adminPage
+      .getByRole("table")
+      .filter({ has: adminPage.getByRole("columnheader", { name: "이메일", exact: true }) });
+    await expect(usersTable.getByRole("cell", { name: "owner@example.test", exact: true })).toBeVisible();
+    await adminPage.getByLabel("검색", { exact: true }).fill("empty@example.test");
+    await adminPage.getByRole("button", { name: "검색", exact: true }).click();
+    await expect(adminPage).toHaveURL(/q=empty%40example.test/);
+    await expect(usersTable.locator("tbody tr")).toHaveCount(1);
+    await expect(usersTable.getByRole("cell", { name: "empty@example.test", exact: true })).toBeVisible();
+    await expect(usersTable.getByRole("cell", { name: "owner@example.test", exact: true })).toHaveCount(0);
+    const search = await admin.request.get("/api/admin/users?q=empty%40example.test");
+    expect(search.status()).toBe(200);
+    const result = await search.json();
+    expect(result.total).toBe(1);
+    expect(result.users.map((user) => user.id)).toEqual([accounts.empty.id]);
     await adminPage.locator('select[name="userId"]').selectOption(accounts.empty.id);
     await adminPage.locator('select[name="kind"]').selectOption("AI_MIXING");
     await adminPage.getByLabel("조정량", { exact: true }).fill("-5");

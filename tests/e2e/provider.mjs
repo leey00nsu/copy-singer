@@ -21,6 +21,7 @@ export function wav() {
   return b;
 }
 export async function startProvider() {
+  const reservations = new Set();
   const files = new Map(),
     jobs = new Map();
   const stats = { analyses: 0, conversions: 0, deletes: 0 };
@@ -57,15 +58,21 @@ export async function startProvider() {
       if (url.pathname === "/stats") return json(stats);
       if (url.pathname.endsWith("/presign")) {
         const id = randomUUID();
-        files.set(id, { bytes: wav() });
+        reservations.add(id);
         return json({ fileId: id, objectName: id, presignedUrl: `${origin}/files/${id}` });
       }
       if (url.pathname.endsWith("/confirm")) {
         const data = JSON.parse(body);
+        if (!reservations.has(data.fileId)) return json({ error: "Unknown reservation" }, 404);
+        if (!files.has(data.fileId)) return json({ error: "Upload not completed" }, 409);
         return json({ file: { id: data.fileId, url: `${origin}/files/${data.fileId}` } });
       }
       if (req.method === "PUT") {
-        files.set(url.pathname.split("/").at(-1), { bytes: body, mimeType: req.headers["content-type"] });
+        const id = url.pathname.split("/").at(-1);
+        if (!url.pathname.startsWith("/files/") || !reservations.has(id))
+          return json({ error: "Unknown reservation" }, 404);
+        if (!body.length) return json({ error: "Empty upload" }, 400);
+        files.set(id, { bytes: body, mimeType: req.headers["content-type"] });
         res.writeHead(200);
         return res.end();
       }
@@ -73,6 +80,7 @@ export async function startProvider() {
         stats.deletes++;
         const id = url.pathname.split("/").at(-1);
         files.delete(id);
+        reservations.delete(id);
         jobs.delete(id);
         res.writeHead(204);
         return res.end();
