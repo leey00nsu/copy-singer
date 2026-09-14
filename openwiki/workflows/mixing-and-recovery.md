@@ -1,11 +1,8 @@
 ---
 type: 믹싱 작업 수명 주기 설명
-title: 티켓 접수부터 AI 믹싱 완료·복구까지
-description: 사용자가 AI 믹싱을 요청하면 요청 검증과 티켓 차감 뒤 PostgreSQL lease 워커가 Modal 변환 작업을 제출하고 결과를 저장해요. 이 페이지는 상태 직렬화, lease 복구, 재시도·환불·취소·알림 규칙을 한 흐름으로 설명해요.
+title: 믹싱 작업 접수와 외부 실패 복구 이해하기
+description: 믹싱 요청이 티켓 원장과 `MixingJob`에 어떻게 원자적으로 접수되는지, lease 워커가 Leemage asset과 SoulX-Singer 작업을 어떻게 처리하는지 설명해요. 제출 불확실성, lease 손실, 재시도·환불·reconciliation 경계를 확인할 수 있어요.
 tags: [mixing, background-jobs, recovery, modal]
-verified:
-  - by: openwiki/0.5.0
-    at: 2026-09-05T04:28:19.819Z
 sources:
   - id: openwiki-source-2798a6200ef792b731721034
     resource: repo://prisma/schema.prisma
@@ -25,95 +22,112 @@ sources:
     resource: repo://tests/mixing-queue.integration.ts
   - id: openwiki-source-c2092f2379cf810b24df4f56
     resource: repo://tests/mixing-status-presentation.test.ts
-generated: { by: "openwiki/0.5.0", at: "2026-09-05T04:28:19.819Z" }
+verified:
+  - by: openwiki/0.5.0
+    at: 2026-09-14T00:18:32.821Z
+generated: { by: "openwiki/0.5.0", at: "2026-09-14T00:18:32.821Z" }
 ---
 
-믹싱 요청은 웹 요청이 오래 걸리는 변환을 직접 수행하지 않고 `MixingJob`으로 저장한 뒤 `202`를 반환해요. 워커는 PostgreSQL에서 한 작업의 소유권을 lease로 확보하고, Modal의 외부 job ID가 있으면 그 작업을 다시 조회해요. 따라서 장애가 나도 **제출 전 실패만 환불**하고, Modal에 제출한 뒤의 실패는 환불하지 않아요.
+이 페이지의 질문은 **“믹싱 작업이 어떻게 접수되고 외부 실패·lease 손실·재시작에서 안전하게 복구되나요?”**예요. 핵심 결론은 웹 요청과 긴 외부 변환을 분리하고, `MixingJob`의 `modalJobId`와 lease 소유권을 복구 기준으로 삼는다는 점이에요. 그래서 Modal 제출 여부가 확실하지 않은 실패는 일반 실패와 다르게 다뤄지고, 제출 전 최종 실패만 환불 대상이 돼요.
 
-새 요청을 만들거나 결과 상태를 확인하려면 인증된 세션으로 `POST /api/mixing-jobs`와 `GET /api/mixing-jobs/[id]`를 사용하세요. 구현을 따라갈 때는 [믹싱 워커의 claim·poll·복구 코드](repo://src/_app/background-jobs/mixing/worker.ts#L92-L145)를 가장 먼저 확인하세요. `MixingJob`의 저장 필드와 관계는 [Prisma 모델](repo://prisma/schema.prisma#L569-L617)에서 확인할 수 있어요.
+새 작업은 인증된 세션에서 `POST /api/mixing-jobs`로 만들고, 응답의 소문자 상태는 `GET /api/mixing-jobs/[id]` 또는 이력 API에서 확인하세요. 구현을 추적하려면 [믹싱 워커의 claim·poll·복구 코드](repo://src/_app/background-jobs/mixing/worker.ts#L97-L170)와 [`MixingJob` 저장 모델](repo://prisma/schema.prisma#L577-L627)을 먼저 읽으세요.
 
-## 요청 접수와 티켓 차감
+## 접수: 검증과 차감을 한 트랜잭션으로 묶어요
 
-`POST /api/mixing-jobs`는 세션을 확인하고 `vocalProfileId`, `songAnalysisId`, `idempotencyKey`를 검증해요. 요청 키가 비어 있거나 200자를 넘으면 `400`을 반환해요. 유효한 요청은 `enqueueMixingJob`으로 넘어가요.
+`POST /api/mixing-jobs`는 세션과 JSON 입력을 확인해요. `vocalProfileId`, `songAnalysisId`, `idempotencyKey`가 유효하지 않으면 `400`을 반환하고, 티켓이 부족하면 `402 INSUFFICIENT_TICKETS`를 반환해요.
 
-`enqueueMixingJob`은 추천 결과와 분석이 최신인지 먼저 확인해요. 분석 상태가 `READY`이고 곡이 `ACTIVE`여야 하며, 추천의 카탈로그 revision·순서·target asset이 현재 곡과 일치하고 target asset 상태가 `READY`여야 해요. 저장된 사용자 보컬 레퍼런스도 선택할 수 있어야 해요. 하나라도 맞지 않으면 작업을 만들거나 티켓을 차감하지 않고 `MIXING_SOURCE_NOT_FOUND`, `MIXING_RECOMMENDATION_STALE`, `MIXING_REFERENCE_UNAVAILABLE` 같은 오류를 반환해요.
+`enqueueMixingJob`은 최신 추천과 분석을 다시 확인해요. 분석은 `READY`여야 하고 곡은 `ACTIVE`여야 해요. 카탈로그의 `PUBLISHED` 상태, revision, 순서, 추천의 `targetAssetId`와 실제 target asset의 source가 모두 일치해야 하며 target asset은 `READY`여야 해요. 사용자 보컬 프로필에서 선택 가능한 레퍼런스가 없으면 접수하지 않아요.
 
-작업 생성과 티켓 차감은 `Serializable` 트랜잭션 안에서 함께 일어나요. `(userId, idempotencyKey)`가 이미 있으면 같은 입력의 기존 작업을 돌려주고, 다른 입력이 같은 키를 쓰면 `IDEMPOTENCY_CONFLICT`를 반환해요. 동시 요청으로 쓰기 충돌이 나면 최대 세 번 트랜잭션을 다시 시도해요. 비용이 0보다 클 때만 `AI_MIXING` 사용 차감 ledger를 한 번 기록하고, 잔액이 부족하면 `402 INSUFFICIENT_TICKETS`를 반환해요. 자세한 입력 경계와 원자적 저장은 [믹싱 큐 구현](repo://src/features/create-mixing/api/mixing-queue.ts#L19-L148)을 확인하세요.
+작업 생성과 `AI_MIXING` 사용 차감은 `Serializable` 트랜잭션에서 함께 수행해요. 비용이 0보다 클 때만 `mixing:debit:{job.id}` 키를 가진 차감 ledger를 기록해요. `(userId, idempotencyKey)`가 이미 같은 입력에 쓰였다면 기존 작업을 반환하고, 다른 입력에 쓰였다면 `IDEMPOTENCY_CONFLICT`를 반환해요. 동시 쓰기 충돌은 최대 세 번 재시도해요. 이 원자성의 구현은 [믹싱 큐](repo://src/features/create-mixing/api/mixing-queue.ts#L20-L164)에서 확인하세요.
 
-## 상태와 외부 호출 순서
+## 워커가 외부 작업을 처리하는 순서
 
-내부 상태는 `PENDING → PREPARING → SUBMITTED → PROCESSING → SUCCEEDED` 흐름을 따라가요. 실패하면 `FAILED`가 되고, `CANCELED`도 종료 상태로 정의돼요. 다만 현재 사용자 삭제 코드는 종료 작업을 삭제할 뿐 상태를 `CANCELED`로 바꾸지는 않아요. API는 내부 대문자 상태를 소문자 `pending`, `preparing`, `submitted`, `processing`, `succeeded`, `failed`, `canceled`로 직렬화해요. API 응답에는 작업 ID, 티켓 비용, 오류 코드·상세, 생성·갱신·완료 시각이 포함돼요.
+`MixingJob`은 보통 `PENDING → PREPARING → SUBMITTED → PROCESSING → SUCCEEDED`로 이동해요. 실패는 `FAILED`, 취소는 모델에 정의된 종료 상태 `CANCELED`예요. 공개 계약은 내부 대문자 상태를 `pending`, `preparing`, `submitted`, `processing`, `succeeded`, `failed`, `canceled`로 직렬화해요. 응답에는 작업 ID, 티켓 비용, 오류 정보와 생성·갱신·완료 시각이 포함돼요.
 
 ```mermaid
 stateDiagram-v2
     [*] --> PENDING: enqueueMixingJob
     PENDING --> PREPARING: lease claim
-    PREPARING --> SUBMITTED: Modal POST 성공
-    SUBMITTED --> PROCESSING: Modal 상태가 processing
-    SUBMITTED --> SUBMITTED: lease 만료 후 재조회
-    PROCESSING --> PROCESSING: heartbeat + poll
-    PROCESSING --> SUCCEEDED: audio 저장·트랜잭션 성공
-    PREPARING --> PENDING: 제출 전 재시도 가능
-    SUBMITTED --> SUBMITTED: 제출 후 재시도 가능
+    PREPARING --> SUBMITTED: 외부 job ID 확인
+    SUBMITTED --> PROCESSING: Modal processing
+    SUBMITTED --> SUBMITTED: queued 또는 lease 복구 후 재조회
+    PROCESSING --> PROCESSING: poll + heartbeat
+    PROCESSING --> SUCCEEDED: 결과 저장 트랜잭션
+    PREPARING --> PENDING: 제출 전 재시도
+    SUBMITTED --> SUBMITTED: 제출 후 재시도
     PREPARING --> FAILED: 제출 전 최종 실패
     SUBMITTED --> FAILED: 제출 후 최종 실패
     PROCESSING --> FAILED: 제출 후 최종 실패
-    CANCELED --> [*]: 모델에 정의된 종료 상태
-    SUCCEEDED --> [*]: 사용자 삭제
-    FAILED --> [*]: 사용자 삭제
+    FAILED --> FAILED: 제출 전 환불 보정
+    SUCCEEDED --> [*]
+    FAILED --> [*]
+    CANCELED --> [*]
 ```
 
-워커는 제출 전 `referenceAsset.externalUrl`과 `targetAsset.externalUrl`에서 음성을 받아요. target asset이 없거나 `READY`가 아니면 제출하지 않아요. 두 파일과 `SYNTHESIS_PRESET`을 multipart form으로 묶고 `auto_pitch_shift=false`, 추천 `pitch_shift`를 넣어 `POST {MODAL_API_URL}/v1/conversions`에 `X-API-Key`로 제출해요. Modal이 `queued` 상태와 job ID를 돌려준 뒤에만 내부 작업을 `SUBMITTED`로 저장해요.
+워커는 제출 전 저장된 레퍼런스와 `READY` target asset을 내려받아요. 두 파일과 `SYNTHESIS_PRESET`을 multipart로 묶고 `auto_pitch_shift=false`, 추천 `pitch_shift`, `request_id=job.id`를 넣어 `POST {MODAL_API_URL}/v1/conversions`에 `X-API-Key`로 보내요. Modal이 유효한 `queued`·`processing`·`succeeded`·`failed` 응답과 외부 job ID를 반환한 뒤에 `modalJobId`와 `SUBMITTED`를 저장해요.
 
-이후 워커는 외부 job ID로 `GET /v1/conversions/{id}`를 반복 조회해요. 외부 상태가 `processing`이면 내부 상태도 `PROCESSING`으로 바꾸고 heartbeat를 갱신해요. 아직 `queued`이면 내부 상태는 `SUBMITTED`로 유지해요. `succeeded`가 되면 `/audio`에서 결과를 받아 압축하고 media 저장소에 `MIX_RESULT` asset으로 저장한 뒤, 같은 데이터베이스 트랜잭션에서 `SUCCEEDED`와 `resultAssetId`를 기록하고 성공 알림을 만들어요. 저장 후 상태 트랜잭션이 실패하면 방금 만든 media asset을 폐기해요.
+Modal은 API key를 확인하고 업로드 파일을 job volume에 저장한 뒤 `SoulXModel.convert.spawn`으로 비동기 실행을 큐에 넣어요. 상태 조회의 `queued`는 `SUBMITTED`로, `processing`은 `PROCESSING`으로 관찰돼요. `succeeded`가 되면 워커가 `/audio`를 내려받고 결과를 압축한 뒤 media 저장소에 `MIX_RESULT` asset으로 저장해요. 같은 데이터베이스 트랜잭션에서 `resultAssetId`, `SUCCEEDED`, 성공 알림을 기록하고, 그 트랜잭션이 실패하면 방금 만든 media asset을 폐기해요. 외부 입력과 결과 파일은 24시간 TTL 정리 대상이에요. 실제 endpoint 계약은 [SoulX-Singer Modal 애플리케이션](repo://services/soulx-singer-svc/modal_app.py#L233-L380)에서 확인하세요.
 
 ```mermaid
 sequenceDiagram
-    participant API as API
-    participant DB as PostgreSQL
+    participant C as 클라이언트
+    participant A as Mixing API
+    participant D as PostgreSQL
     participant W as 믹싱 워커
-    participant M as Modal API
+    participant M as SoulX-Singer Modal
     participant S as media 저장소
     participant N as 알림
 
-    API->>DB: MixingJob 생성 + 티켓 차감
-    API-->>API: 202 + 직렬화된 pending
-    W->>DB: FOR UPDATE SKIP LOCKED로 claim
-    W->>M: 입력 음성 fetch 후 POST /v1/conversions
-    M-->>W: queued + 외부 job ID
-    W->>DB: SUBMITTED + modalJobId 저장
-    loop pollIntervalMs마다
-        W->>M: GET /v1/conversions/{id}
-        M-->>W: queued 또는 processing
-        W->>DB: heartbeat·lease 갱신
+    C->>A: POST /api/mixing-jobs
+    A->>D: 검증 + MixingJob 생성 + 티켓 차감
+    D-->>A: PENDING
+    A-->>C: 202 + 직렬화된 pending
+    W->>D: lease claim (FOR UPDATE SKIP LOCKED)
+    W->>D: submissionState=UNKNOWN 저장
+    W->>M: 입력 asset fetch + POST /v1/conversions
+    alt 응답에 외부 job ID가 있음
+        M-->>W: queued + modalJobId
+        W->>D: SUBMITTED + modalJobId 저장
+        loop pollIntervalMs마다
+            W->>M: GET /v1/conversions/{id}
+            M-->>W: queued 또는 processing
+            W->>D: 상태 + heartbeat + lease 갱신
+        end
+        M-->>W: succeeded
+        W->>M: GET /audio
+        W->>S: 압축 결과 저장
+        W->>D: SUCCEEDED + resultAssetId
+        W->>N: MIXING_SUCCEEDED (dedupe key)
+    else 제출 또는 응답이 불확실함
+        M-->>W: 네트워크 오류 또는 응답 손실
+        W->>D: SUBMITTED 재시도 또는 FAILED
+        W->>D: 환불 보류 + ExternalJobReconciliation 기록
     end
-    M-->>W: succeeded
-    W->>M: GET /audio
-    W->>S: 압축 결과 media 저장
-    W->>DB: SUCCEEDED + resultAssetId
-    W->>N: MIXING_SUCCEEDED 알림
+    W->>D: 재시작 시 external job 재조회·정리
 ```
 
-Modal 서비스는 API key를 검사하고 입력을 `/jobs/{job_id}`에 저장한 다음 `SoulXModel.convert.spawn`으로 GPU 작업을 큐에 넣어요. 외부 서비스의 상태 조회가 Modal 호출을 `timeout`으로 만나면 `processing`으로 보고, 결과는 24시간 TTL 뒤 정리돼요. 제출·상태·오디오 endpoint의 실제 계약은 [Modal 애플리케이션](repo://services/soulx-singer-svc/modal_app.py#L220-L341)을 확인하세요.
+## lease 손실과 재시작을 안전하게 처리해요
 
-## lease와 워커 복구
+`claimNextMixingJob`은 `nextAttemptAt`이 지난 작업 중 `PENDING` 또는 lease가 만료된 `PREPARING`, `SUBMITTED`, `PROCESSING` 작업을 생성 시각 순서로 골라요. `FOR UPDATE SKIP LOCKED`로 다른 워커가 잠근 행을 건너뛰고, claim 때 `leaseOwner`, `leaseExpiresAt`, `heartbeatAt`, `startedAt`, `deadlineAt`과 `attempts`를 갱신해요.
 
-`claimNextMixingJob`은 `attempts < maxAttempts`, `nextAttemptAt <= 현재 시각`인 작업 중 `PENDING` 또는 lease가 만료된 `PREPARING`·`SUBMITTED`·`PROCESSING` 작업을 오래된 순서로 고르고, `FOR UPDATE SKIP LOCKED`로 다른 워커가 잠근 행을 건너뛰어요. claim은 `leaseOwner`, `leaseExpiresAt`, `heartbeatAt`, `startedAt`을 갱신하고 시도 횟수를 1 증가시켜요. 여러 워커가 동시에 실행돼도 한 행을 동시에 처리하지 않는 경계예요.
+heartbeat 갱신은 현재 `leaseOwner`이고 lease가 아직 만료되지 않았다는 조건을 사용해요. 갱신된 행이 하나가 아니면 워커는 `Mixing job lease was lost.` 오류로 중단해요. lease를 잃은 워커는 실패 처리를 덮어쓰지 않아요. 다음 워커는 이미 저장된 `modalJobId`를 사용해 외부 상태를 다시 조회하므로, 확인된 외부 작업을 다시 제출하지 않아요.
 
-외부 조회가 계속되는 동안 `heartbeat`는 소유 워커인지 `leaseOwner`로 확인하면서 heartbeat와 lease 만료 시각을 연장해요. 갱신 행 수가 1이 아니면 lease를 잃은 것으로 보고 오류를 내요. 워커 한 번의 실행은 먼저 `REQUIRED` 환불을 보정하고 media 정리를 처리한 뒤 작업을 claim해요. lease가 만료되면 다음 실행이 같은 `modalJobId`를 사용해 재제출하지 않고 외부 job을 다시 poll해요.
+단, POST를 시작하기 직전에 `submissionState=UNKNOWN`을 저장하기 때문에 외부 응답을 잃으면 `modalJobId`가 없을 수 있어요. 이 `submission unknown`은 제출되지 않았다고 단정하면 안 되는 경계예요. 재시도 가능한 동안에는 제출 후 경로인 `SUBMITTED`로 재시도하고, 최종화하면 `MODAL_SUBMISSION_UNCONFIRMED`와 `SUBMISSION_UNKNOWN_REFUND_HELD` reconciliation 기록을 남겨 환불을 보류해요.
 
-## 재시도와 환불 경계
+워커 한 번의 실행은 먼저 `REQUIRED` 환불을 보정하고, 외부 job reconciliation과 media cleanup을 처리한 뒤 새 작업을 claim해요. [reconciliation 구현](repo://src/_app/background-jobs/mixing/reconciliation.ts#L5-L63)은 종료된 내부 작업의 외부 job ID를 최대 20개씩 골라 Modal DELETE를 호출해요. 외부 job ID가 없으면 `UNRESOLVED`로 남기고, 정리가 실패해도 `UNRESOLVED`와 `AUTO_CLEANUP_FAILED_REQUIRES_OPERATOR`를 기록해 운영자 확인 대상으로 남겨요.
 
-네트워크 오류와 기본 HTTP 상태 `408`, `425`, `429`, `5xx`는 재시도 가능해요. 다만 Modal 제출 endpoint는 `429`만 재시도 가능하고, 외부 job이 `failed`가 된 경우나 잘못된 응답·설정 누락은 재시도하지 않아요. 결과 압축 실패는 재시도 가능하지만 이미 제출된 작업으로 취급해요.
+## 재시도와 환불의 경계
 
-재시도 가능하고 `maxAttempts`에 도달하지 않았다면 제출 전 작업은 `PENDING`, 제출 후 작업은 `SUBMITTED`로 돌려요. 다음 시각은 `min(30초, 2 ** (attempts - 1)초)` 뒤로 설정해요. 이때 lease 소유권을 비우고 오류 코드를 저장하지만 완료 시각은 비워 둬요.
+네트워크 오류와 일반 단계의 `408`, `425`, `429`, `5xx`는 재시도 가능해요. Modal 제출 단계는 네트워크 오류를 자동 재시도하지 않고 `429`만 재시도 가능으로 분류해요. Modal이 `failed`를 반환하거나 잘못된 응답·설정 누락이 발생하면 재시도하지 않아요. 결과 압축 실패는 재시도 가능하지만 이미 제출된 경로로 처리해요.
 
-최종 실패는 `FAILED`로 저장하고 오류 코드·상세, 재시도 가능 여부, 완료 시각을 기록해요. 제출 전 최종 실패는 `refundState=REQUIRED`로 표시한 뒤 `mixing:refund:{job.id}` idempotency key를 사용해 티켓을 환불하고 `REFUNDED`로 바꿔요. 제출 후 최종 실패는 `refundState=NONE`으로 남기고 환불하지 않아요. `MIXING_FAILED` 알림은 최종 실패 때 한 번 만들어요. 별도 보정 루틴은 `REQUIRED` 작업을 오래된 순서로 최대 10개씩 환불해요.
+재시도 횟수가 남아 있으면 제출 전 작업은 `PENDING`, 제출 후 작업은 `SUBMITTED`로 되돌려요. 다음 시각은 `min(30초, 2 ** (attempts - 1)초)` 뒤로 설정하고 lease 소유권을 비워요. `maxAttempts`를 넘거나 deadline에 도달하면 `FAILED`로 저장해요.
 
-## 삭제와 확인할 테스트
+제출 전 최종 실패는 `refundState=REQUIRED`로 저장한 뒤 `mixing:refund:{job.id}` idempotency key로 티켓을 환불하고 `REFUNDED`로 바꿔요. 제출 후 최종 실패는 `refundState=NONE`으로 남겨 환불하지 않아요. 제출 여부가 불확실한 최종 실패도 외부 작업이 실행됐을 가능성이 있어 환불을 보류해요. 최종 실패와 성공 알림에는 각각 `mixing:{jobId}:failed`, `mixing:{job.id}:succeeded` 중복 방지 키를 사용해요.
 
-사용자는 작업이 종료 상태(`SUCCEEDED`, `FAILED`, `CANCELED`)일 때만 삭제할 수 있어요. 진행 중인 작업은 `409 MIXING_ACTIVE`예요. 삭제는 결과 asset을 정리하고, 즉시 삭제하지 못하면 `mediaCleanupPending=true`로 반환해 다음 워커의 media 정리가 이어지게 해요. 이 경계는 [사용자 작업 삭제 코드](repo://src/entities/mixing-job/api/deletion.ts#L7-L47)에 있어요.
+## 삭제와 변경 확인
 
-변경 뒤에는 [믹싱 큐 통합 테스트](repo://tests/mixing-queue.integration.ts#L7-L40)를 변경 범위 테스트로 실행하세요. 이 테스트는 동시 idempotency, 단일 lease claim, 만료 lease 복구, 제출 전 환불, 지수 지연 재시도, 제출 후 무환불, 결과 압축 실패, 알림을 함께 확인해요. 화면은 서버가 관찰한 상태만 표시하고 진행률 퍼센트를 만들어 내지 않으므로, 상태 표시를 바꾸는 변경은 [상태 표시 테스트](repo://tests/mixing-status-presentation.test.ts#L25-L89)를 함께 확인하세요. 결과 압축 계약은 [압축 결과 테스트](repo://tests/compress-mixing-result.test.ts)를 기준으로 삼으세요.
+사용자 삭제는 `SUCCEEDED`, `FAILED`, `CANCELED` 같은 종료 상태에서만 허용돼요. 진행 중인 작업은 `409 MIXING_ACTIVE`예요. 결과 media를 즉시 지우지 못하면 `mediaCleanupPending=true`를 반환하고, 다음 워커 실행의 media cleanup이 이어가요. 이 경계는 [믹싱 작업 삭제 API](repo://src/entities/mixing-job/api/deletion.ts#L7-L47)에서 확인하세요.
 
-다음으로 작업의 관계와 티켓 ledger를 이해하려면 [도메인 데이터 모델](../concepts/domain-data-model.md)을 읽고, Modal·media 경계를 운영하려면 [외부 서비스 연동](../integrations/external-services.md)과 [런타임 설정](../operations/configuration-and-runtime.md)을 이어서 확인하세요.
+변경 뒤에는 [믹싱 큐 통합 테스트](repo://tests/mixing-queue.integration.ts#L193-L399)를 변경 범위 테스트로 실행하세요. 동시 idempotency, 단일 lease claim, 만료 lease 복구, 제출 전·후 환불 차이, 지연 재시도, 결과 압축 실패와 알림을 확인해요. 상태 표시를 바꾸면 서버가 관찰한 상태만 사용하고 관찰되지 않은 진행률을 만들지 않는지 [상태 표시 테스트](repo://tests/mixing-status-presentation.test.ts#L25-L89)도 확인하세요.
+
+작업과 티켓 ledger의 관계는 [도메인 데이터 모델](../concepts/domain-data-model.md)에서, Modal·media 운영 경계는 [외부 서비스 연동](../integrations/external-services.md)과 [런타임 설정](../operations/configuration-and-runtime.md)에서 이어서 확인하세요.

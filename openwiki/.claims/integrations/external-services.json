@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:118bf48ca9290239d3cea8e654c461eee30a7aa274f2d07cc71117be39bdf960",
+  "pageVersion": "sha256:8ba006f1bc3a5abe70f97cddd4780bf3f1c39e0d01c4d6528cdb622dc75fdbdb",
   "claims": [
     {
       "id": "claim_715a02122ef84c15950d8c3d35ce3412",
       "statement": "Better Auth는 PostgreSQL Prisma 어댑터와 함께 Google 소셜 로그인만 활성화하고, `openid`, `email`, `profile` 범위를 요청하며, 새 사용자 생성 후 가입 티켓 지급 훅을 실행해요.",
       "evidence": [
         {
-          "resource": "repo://src/features/authentication/api/auth.ts#L11-L31",
-          "version": "repo-lines-v1:sha256:619774b1901d195039b100199603a538f87d9d7cb5f9d01661f6e61f9d8608e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0NGQ5ZDYwZDllNzZhOTlkNTQxNGJiMzc4MTQyNGI4NGM2NjM2OTcwMmU5ZGFhZDgxZGU3M2ViNzNjYjk1ZWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmMGNkYjk3MmE3YmZiN2VkMjQ2ZjlmZjY3MjM4NWU1NWY0OTY4ZmMxMTA0M2RjNWI2ODRkNTFkZmEzMWRiY2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcxMzNiM2E3OTY5ZDA1NWIyNTUxNzMxZGI0M2ZlYjQ2MzA0NGJlMWVkY2ZhOTJmYWQxYzhiNDc4ODUwMjEwZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEzODNhYzE5OThhZDg4Mjg4NDVjNzBlZGZmOWQyNWZjYzc4OTU3ZjU1MzBhNzk4MzhkNTE4NGExZTE3MGZlNDIifQ"
+          "resource": "repo://src/features/authentication/api/auth.ts",
+          "version": "repo-file-v1:sha256:a18707b68cefc4b856b4c97cc4e9f673eaed7d129f414befb228b4bb4b2c2618"
         }
       ]
     },
@@ -17,12 +17,12 @@
       "statement": "Google 인증은 `BETTER_AUTH_URL`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`의 실제 설정 여부를 `googleAuthConfigured()`로 확인하고, `BETTER_AUTH_SECRET`은 development·test에서만 개발용 fallback을 허용하며 그 밖의 환경에서는 필수예요.",
       "evidence": [
         {
-          "resource": "repo://src/features/authentication/api/auth.ts#L9-L41",
-          "version": "repo-lines-v1:sha256:2222050f1fef3571f4224c85826071661ad0559962172d6b50f0b29045f85ebf:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU4MDlmODU1NzY2NzFlNjNmN2Y0ODUwMmM5NTBhZTQ5N2RiNmY2Mzg4Y2UyMjgzMDI5MDZlMDYyNzBmNDZmODMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZWYwMWJjMDhkYmMzYjYzZTRlNzVlYTNkMjZhNWI5NDE4OTE4NzdlMjdhZDg5MTMyOWM4NDExZDdkOGRjNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE2ZDU0NWYzYjM0MjQ3ZjlmNDIwY2U5NmI1OGZiNTAxMGYzNTlmZmQ2ZGQ1ZWE1YzVmYjVlNTZjZjIwOThjMTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+          "resource": "repo://src/features/authentication/api/auth.ts",
+          "version": "repo-file-v1:sha256:a18707b68cefc4b856b4c97cc4e9f673eaed7d129f414befb228b4bb4b2c2618"
         },
         {
-          "resource": "repo://src/features/authentication/model/auth-secret-policy.ts#L1-L12",
-          "version": "repo-lines-v1:sha256:c16312b1b0f335b8a0e6b2b261d405247d702740f8b2d99ac6c4bcde7f1d1bd4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzYjQ2MTVhYTMzNDc3MTBmYzgwYTZmZDJmMjQ1MjVkNWE3Y2VlOTIxNTY2MTAxYjk3NDk3YTY0ZjIxN2U2MGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyZmZjYTRjNDE5OTc2YzczZTIwZDJiYjE2MmI5OGQ4M2YyZTFlMWQ0YTFlYmY5NDQ4NjI0ZmYzMzRjOTRlMzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+          "resource": "repo://src/features/authentication/model/auth-secret-policy.ts",
+          "version": "repo-file-v1:sha256:a10634f6bbb2568e81e18c687542f61685cb16886fa9d94115f0b5ebe08fcb31"
         }
       ]
     },
@@ -31,22 +31,22 @@
       "statement": "Leemage 파일 업로드는 presign API 호출, presigned URL에 대한 인증 없는 PUT, confirm API 호출의 세 단계이며, 성공 결과로 프로젝트·파일 식별자와 URL·파일 메타데이터를 반환해요.",
       "evidence": [
         {
-          "resource": "repo://src/shared/media/client.ts#L101-L164",
-          "version": "repo-lines-v1:sha256:9e11d9fdac8a34603f239f40a342dd05bd3cfeed7d1044812ccca6bc3c689949:eyJzZWxlY3RlZExpbmVDb3VudCI6NjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5ZDRlN2QyYWJjYjlkOWM3OWNlYTBlZWNjY2M2ZmRiOWY3YTNmZWI5MzA2ZWY4NmE1YTdmNGY3MjU3NmM3MDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVmOGI3YzFjZGM3MmVhMTY0ZWU5YTk2ZjE5MGU0MjM1NTkyYWNiNzhiMjRiMmMwMTIzOTMzODdlYjk0MTVmMjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY1NWM5NGFhYmYwMGVmNmIyNjcwMzhlOWE4YmE0YjZmZWRiOTgxN2RjNmU1YzY4YTQ5YTlhOTA4NTAzMjM4ZjIifQ"
+          "resource": "repo://src/shared/media/client.ts",
+          "version": "repo-file-v1:sha256:c2a5ed9fc6535c2eaba25c92fba533dab9de740836b710d87f00ae80f10366f4"
         },
         {
-          "resource": "repo://tests/leemage-client.test.ts#L6-L56",
-          "version": "repo-lines-v1:sha256:b64a80c3e94a9cb86a1acd915f2fb8339f31cd258548a7a50d57a0ad38c27bae:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM2YTQ2YTAyOGQyMjA4M2FjZDYzMGExOThlNTQ0ZmE1NDVkZWNiYjhhY2EyM2FlZWI0MGM5NWE0MmZmYzc4YTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg5OWFhOTAxN2NkZGQwYjAzZTNhZjk1ZTZmODA0ODgyZTRjOWNmMzNmYmQyNWNmMDQwZGI0NTEwZWUwZDM1ZGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIyMThhOWNmYjFiY2I4MGZlYzkxZGJlYTBkMjNkNDE3YzllZmUzYzk5MmZhM2RkY2IyNDlhNTE5YjNiYmY2M2UifQ"
+          "resource": "repo://tests/leemage-client.test.ts",
+          "version": "repo-file-v1:sha256:3b157a82b3eabdb10d850c7af2a1de31c5f4bb74202d4fb791dc5f76fcacef2b"
         }
       ]
     },
     {
       "id": "claim_16e12f27e30c41ffb62c22324fc5cd75",
-      "statement": "Leemage API 요청은 `LEEMAGE_BASE_URL` fallback과 필수 `LEEMAGE_API_KEY`, `LEEMAGE_PROJECT_ID`로 구성하고, 네트워크 오류·429·5xx를 최대 3회 재시도하며 최종 실패를 `LeemageError`의 상태와 `retryable`로 전달해요.",
+      "statement": "Leemage API 요청은 `LEEMAGE_BASE_URL` fallback과 필수 `LEEMAGE_API_KEY`, `LEEMAGE_PROJECT_ID`로 구성해요. 네트워크 오류와 429·5xx는 최대 3회까지 재시도하지만 POST presign·confirm 요청은 최대 1회예요. 최종 실패를 `LeemageError`의 상태와 `retryable`로 전달해요.",
       "evidence": [
         {
-          "resource": "repo://src/shared/media/client.ts#L31-L99",
-          "version": "repo-lines-v1:sha256:9943a43c4391ed502e41a5b98ed185d2aafe11838805cbbc742b88fc6511b25c:eyJzZWxlY3RlZExpbmVDb3VudCI6NjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2NjMyMTk2MWFkYjg4YmEwMTU0ZTA4ZTg2NjdkZjRiZmMzYzljMjA0ZmE2NWU2NzE1N2M2ZTRhOGVjYjNmNzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI3YTA1ZGQxMmMxMzViYThhYmMwZDM0ZDE0NGMzMzhkOWM5MTk3NjU2ZGYwNzRmNzJmNzRmODM4NWE0NWU1YTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQyZjFlMGUwYTdmMTczOGFhNTBlOTZhMWJjNDg4N2I3ODQxZDgxYzE2MTdkODViOGUzZDA0NGEwM2FmNTY5ZDkifQ"
+          "resource": "repo://src/shared/media/client.ts",
+          "version": "repo-file-v1:sha256:c2a5ed9fc6535c2eaba25c92fba533dab9de740836b710d87f00ae80f10366f4"
         }
       ]
     },
@@ -55,8 +55,8 @@
       "statement": "Modal 보컬 분석 서비스는 `SOULX_API_KEY`와 요청의 `X-API-Key`를 비교하고, 키 미설정은 503, 불일치는 401로 거부해요.",
       "evidence": [
         {
-          "resource": "repo://services/vocal-profile-modal/modal_app.py#L45-L60",
-          "version": "repo-lines-v1:sha256:2a1095f6a4f85d69f5833bb3e7881e80f794af8752c0a1ed781346bc6802dcf6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwYmI5YzZkYzZiYTlkOTNhZTQ1YzNmNzEzMmI0ZDEyMjhhNmM5YjIzZmY3NmYzMWY0Yzc5NGNmMGZjMTA5MmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlNWY4NjkyMzMyNjg4MmRkYTk1YzRjZjQ3ZDRlYThiM2NhZjM5OWEwNzUzZGI1M2VjOTdjMGRkMjg1YTFhZWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM2NGNkMjE2NjFiNDY1YTI5YzBkZjIwN2YyNzFhZWQ3YzFlOGUwMzQ5MGQxNDliNTRmYTJlNDFjY2U1YjU3ZDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcxNTRjNzJmNjA0OGQ0ZjdmMGNjOTI0MzA4OWJiZGViZTFmZGEzMDVjYjNlMmJkNzVjZDE0NGVkYzhiNDdiNGQifQ"
+          "resource": "repo://services/vocal-profile-modal/modal_app.py",
+          "version": "repo-file-v1:sha256:40a9de424ebb4ea1f8988c60ff7654da2ce82f8b16b9466d7bba4b28391f62f5"
         }
       ]
     },
@@ -80,15 +80,15 @@
     },
     {
       "id": "claim_b86faf95e87f4af780d3a08e0b8987f7",
-      "statement": "곡 분석은 Leemage의 READY target을 내려받아 Modal `/v1/jobs`에 비동기 제출하고 `externalJobId`를 저장한 뒤 polling으로 완료를 확인하며, 중복 `requestId`는 기존 작업을 재사용할 수 있어요.",
+      "statement": "곡 분석은 Leemage의 READY target을 내려받아 Modal `/v1/jobs`에 비동기 제출하고 `externalJobId`를 저장한 뒤 polling으로 완료를 확인하며, 중복 `requestId`는 입력 지문이 같을 때 기존 작업을 재사용할 수 있어요.",
       "evidence": [
         {
-          "resource": "repo://services/song-catalog-analyzer/modal_app.py#L247-L309",
-          "version": "repo-lines-v1:sha256:9c27f23a9df084243cc03c3263b1a325bd4bd8fdd9a0edde9c7ac62e3ca2407a:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4ZWNlZWVhMzZmZmE5YzYyMTJkMDQ4Yzc3MjdkMDc0NGNjZmJkMDA4ZDQ2MzUzNGJmMTdkMTBkN2I2MGMxYjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNkYmYxOGYzYmQ0N2Q5ZDNjZDM3NmI1YjcwOWJlNzA4Nzc5YTJmZGZlZDM1ZGQzN2Q2MjBhNGM5OGUwYTgzZTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRmYmQwMDkzMTRiYzI3MDg0MTY3MzRhMDJhZTVmZjM5YTFlNDhhMDUwYmU5MWY0M2IyZmFhOTIwMDJjNjJiZmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRjMjQ2NDhlNzliMTM5OTNiMzc4MTcyODJjNTEwNmVhMTEzOWU4MGQ0MGI3MmRhNDgzYzMwYWNlM2Y3ZjRlMjcifQ"
+          "resource": "repo://services/song-catalog-analyzer/modal_app.py",
+          "version": "repo-file-v1:sha256:01578ca4c65c32159295dd712fc998fea0af4d86ed980121793c718e150d1eb3"
         },
         {
-          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L139-L197",
-          "version": "repo-lines-v1:sha256:8d0934bd73c7af89c35f6e1af0115d4b7ae2a17c38966e89fc3cd0f3c12be811:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVjZDFmNTc4MzNiMjE3ZDk0ZDNlZDE0OWNiZWEwMTY1M2UxZjYxMDZlNzg0NDBhNjY3MWY5ZjRhMjM2MTBjNTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlYzBmODAwZTRiM2QzNDg2ZmRkOWFmMmM3N2MzYTUxYjc1OWU4MDY0YWNiMTViZDA3YjM0MTc4NThlNGY0ZDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI3ODI0MTczYzE3M2VjOWQ0ZGIzZTk1YTk2MTNiNWVkYzc0OGU0ZDg5ZWJkYWJlZjUxZjM3MjZmZGJjMjc3MmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk5NmUxMDhlMjVmMmFmY2MwZTZlNGJiMDYyMTk1OWVhMDI1M2M0NTBjZmYxN2I0NmQyYjk0ZTc5MTkxNzQ2ZGYifQ"
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts",
+          "version": "repo-file-v1:sha256:7f1001b72164ea3a4abc541d2c0670f7831650cdc8d4fde47ef9b01bc17b113b"
         }
       ]
     },
@@ -97,20 +97,12 @@
       "statement": "곡 분석 Modal API는 오디오를 100 MB 이하의 지정 확장자로 제한하고, 처리 중 202, 성공 200, 결과 만료 410 `MODAL_RESULT_EXPIRED`, 분석 예외 200 `MODAL_ANALYSIS_FAILED`를 반환하며 실패 응답에 재시도 가능 여부를 포함해요.",
       "evidence": [
         {
-          "resource": "repo://services/song-catalog-analyzer/modal_app.py#L19-L27",
-          "version": "repo-lines-v1:sha256:3dd572fb7650f2a3b07cfe2dbc3a618291bb7e5e2b8b0b212cb7f1f8c0829ff6:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDQxMDkwODQzYjE2YWYyZmJmZmRkMGZlNGRiYzViZjJhMDYxZTU2MDM2ZDcwMGRlMmFjNzU3OWJkMzVmZmNiOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmRiMGEwNWJiNThjZjhmZjc0YWVjY2Q2ZTIxNzUzNjE4NTczNDgwNGJkYTdkMzk2NWViNDM1ZDhiMmI1YzE4OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDE2ZWM2OWMwYjE0MjAyNjczNTE3NDNlZjU4M2MxNWNhNTEwZGYzZTllYjU0MjBiMDA2MzVkYWQzYTI1MTA1ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzZjMTVhMWNhM2MyMTFjYTAxMTM4ZTYzZjcxNTdkNmYwOGZiNDMwN2NkYWY5ZjAyOTA4NDc0M2IyZmI2OGIzYyJ9"
+          "resource": "repo://services/song-catalog-analyzer/modal_app.py",
+          "version": "repo-file-v1:sha256:01578ca4c65c32159295dd712fc998fea0af4d86ed980121793c718e150d1eb3"
         },
         {
-          "resource": "repo://services/song-catalog-analyzer/modal_app.py#L263-L309",
-          "version": "repo-lines-v1:sha256:e2c78888501ef0d3812fe229b653a1b19efab5120c4c65f2b2a2f520875c6be8:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkYTVjNjZlMTdiMTQ1Mzk3ODM0YjhjODU0ZGM0MTkzZTIxMjUxODBhODk5NmExNGMzMTg4MzMyNmIyZWZiY2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNkYmYxOGYzYmQ0N2Q5ZDNjZDM3NmI1YjcwOWJlNzA4Nzc5YTJmZGZlZDM1ZGQzN2Q2MjBhNGM5OGUwYTgzZTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNhYjc0MzI1YTc2MTRjMjdjMDUwMTZkMTBiNTEzNTBhNDQ2MzM3OTZmNGY0YzkyMTg2NjQ2NGU1OTRiOGY3NWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRjMjQ2NDhlNzliMTM5OTNiMzc4MTcyODJjNTEwNmVhMTEzOWU4MGQ0MGI3MmRhNDgzYzMwYWNlM2Y3ZjRlMjcifQ"
-        },
-        {
-          "resource": "repo://services/song-catalog-analyzer/modal_app.py#L78-L86",
-          "version": "repo-lines-v1:sha256:da0338636aa42306f1d1a37d6a634a442d675e0bf507e2cc8c1dc61bdfe2798d:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDRmM2M1YTdlZjRjNGRiZDUyMzMwMjU4OGNmMzBlNmU4NDU0N2JkY2JjMjk0ZTczODFkM2YzOGMxZjljY2NjMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODhlNTZjZmNmZWZlZDk1ODljZDNlMDYxZTI0NzgxM2JjMDg0YzM2ZTMwNTVmMjNhYjE2NDkzMTA2MDA4ZjM1MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDgxNzgzNGEzMWM2ODI2MmE5OTM2ODJjMGJmYjgzMmJhYmY2MDAxZGVlZGMwMDcyNzdiYTgxMjk4MzBkMmQ2MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzA5NzUxYzkzYTJlYTk4NDY1NTFhMmJjNWFjMGUyMzk1MTE1YjdlYzc2NGUyNTFkMjljYjI4OGNkMzFiNjBmNSJ9"
-        },
-        {
-          "resource": "repo://src/features/manage-song-catalog/api/analyzer.ts#L27-L78",
-          "version": "repo-lines-v1:sha256:fe0210c0552417e69bf7218dc4d81125e83f23bcc52f6d63baa2fcf5226a6ee4:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzY2FmM2EzMTRlZjE4NGJkYTgyNjUzMDI5ODExODEzNDczNTVmZGZmZDM0M2M2ZWE3MGRlNjNiYWFmZmIyZTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZWYwMWJjMDhkYmMzYjYzZTRlNzVlYTNkMjZhNWI5NDE4OTE4NzdlMjdhZDg5MTMyOWM4NDExZDdkOGRjNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYTg1MWMwNjQ4MTliM2Q0ZjE5NWFlNjZmMzRhOTExZWZjZjE5ZmQwZTUzNzM1MTIyNDU0NTI5YWMwZjgxMGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3YmQ0ZTczZGRmOTVjOTdiMTQ5YTZiYzRlMmIyNmI5YjY5NmYyMzlmNWMwNjZlYTM3NWMxYmUxNTM4NmYxODgifQ"
+          "resource": "repo://src/features/manage-song-catalog/api/analyzer.ts",
+          "version": "repo-file-v1:sha256:509a04619fbb8eb9ad404a4d404536f8d496504124328bfc9210498bbc93fc95"
         }
       ]
     },
@@ -119,12 +111,12 @@
       "statement": "SoulX 믹싱은 서버가 vocal reference를 먼저 내려받고 `prompt_audio`, `target_audio`와 preset 값을 Modal `/v1/conversions`에 보내며, 작업·상태·WAV 오디오 조회와 삭제 API를 제공해요.",
       "evidence": [
         {
-          "resource": "repo://services/soulx-singer-svc/modal_app.py#L256-L344",
-          "version": "repo-lines-v1:sha256:3e9f20583bd6caad864eff3ee50de5c4c82f8255afd410238ebd0ef6b555351b:eyJzZWxlY3RlZExpbmVDb3VudCI6ODksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxM2JkYjg5NWIzNjNjYmIwNjk0YWU5YTQ4MzU2ODMyOWM2Y2Q4MWQzODk4MjcxNjgyMzdmNDA2ZmI0MmMzZTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAwYTM3YTg0OWE4NmZmMjlhYmYxYjVhZjQ1MGYxMjZiNjJlZjdjYzNmYTZmMTViOGQwZTAxZmE3NTFmZWJhYjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlhMmFjNjhlYzJmNDRjNjYwODAyY2I4MDNhNzExYmYwOTE1ZmZkMjJhMzRjZTM2MWYxMmJhMjIzNzU2MWE3MDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRjMjQ2NDhlNzliMTM5OTNiMzc4MTcyODJjNTEwNmVhMTEzOWU4MGQ0MGI3MmRhNDgzYzMwYWNlM2Y3ZjRlMjcifQ"
+          "resource": "repo://services/soulx-singer-svc/modal_app.py",
+          "version": "repo-file-v1:sha256:84ad905ef7fcda139799d1a9cfb0402d86d34d648e09f0015651f14c7712ee74"
         },
         {
-          "resource": "repo://src/features/admin-custom-mixing/api/modal.ts#L18-L111",
-          "version": "repo-lines-v1:sha256:680f24932c10e027a5b3897a05761650d353f33a96b4b11d97b8a154de66b657:eyJzZWxlY3RlZExpbmVDb3VudCI6OTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwYjRhNDZkZTE1M2I1ZGI4ODE5OGVlYTIyMmFhYjFkZjFiNmQ3MDRkNTdkYTc0MjE4MGY5Yjc0OTM3ZWFjNDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhMmMzYmM1OTgyZTY1OGRkODIxMTNhMjhjYWFiNDU4ZWVkMmNlMTU2MTE0OWUxMTJlNzQ2MWU2NzU0MWE0ODQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/features/admin-custom-mixing/api/modal.ts",
+          "version": "repo-file-v1:sha256:d86d3483e8176f53294502e25cfe694d48f6902f673d6ad0296e64790d95faf8"
         }
       ]
     },
@@ -133,22 +125,14 @@
       "statement": "SoulX 작업 입력은 prompt 128 MB, target 256 MB까지 허용하고, 작업·결과 파일은 Modal Volume에 저장되며 24시간이 지난 작업은 예약 정리 함수가 삭제해요.",
       "evidence": [
         {
-          "resource": "repo://services/soulx-singer-svc/modal_app.py#L168-L185",
-          "version": "repo-lines-v1:sha256:9fbd94e31e85b8cff40de97f7b7fb346516c1be43e745a5a17cbc642ccbf3e94:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU3NDMzYzdmMzU2YmU5YWM1MjY2ZTM4NjRkZjFkZGEwMWI4YTFiZGRiNmQ0YjgyYjU0MDI5NDM0ZDY5ZDlhNjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3NDQ2NmZkNTYyMTgwZDJiYzg3YzQyYWMwMjQ4MWMzYzg3Y2RhNjVkM2E5NjkzYzU2Mzc1MzlkZDk0OTQzOTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEyODgwOTlmZjczZTRiY2IyMjg4Y2E4MjRiZGQ2YTJhNTYwMGRhYmYzYTUwZDBkMDUyODkxYjFhMjJkODBiYmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjViNWNmZWExMTU0NzUyMzM1YmZmMTVhNzJkOGU3ODNjZTc4NThhNmY3ZGJmMTViZDNiYjk5YmExNWY5OGY2MmYifQ"
-        },
-        {
-          "resource": "repo://services/soulx-singer-svc/modal_app.py#L17-L31",
-          "version": "repo-lines-v1:sha256:33b61a08ab643421c2738380ab4b8b56112930945288c8bc6d53a22796425160:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRmNTU0ZDc2ZTg3ZjcyNjAzNTM0NTFlNmYwNTQ0NzA3YjQxYzk1NDQ2YTU0N2M3NWU5MjRhOTcxYjY3MDc5ZmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzNDVmYjUyMzU3YTk3ZDYyZDVlZjM5ZjY2YjIxZWVhZmFhM2ViMzQ4NGQ5NDJmMDkxZTk2MTZlMDFiYjkyZTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImExOTg3NmE4MDNhYWRmMzQ5NzRiZDE3ZjRjYWE5YTMxYWVmMTZjOGZjNjg1MGRhZTc5ODk0ZmFjYzRlMjMxYjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmMTZjMTNlZjBjMDE0YmNiYzVhMzk5ZmM1Nzc1M2MxMzE0M2FjN2JkNTRmY2Y4MTI3MGZkOWI4OWIzYzBmM2IifQ"
-        },
-        {
-          "resource": "repo://services/soulx-singer-svc/modal_app.py#L347-L366",
-          "version": "repo-lines-v1:sha256:4a31bf963f24699a0273e265da7f9f05c4347241fa215c3c2aeba206da47de75:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkZTNkMmEzYTU3ODM0MDQ5NDdhNDQwYWViOTY3MWM4MzViOTU4MDNlZWM4MGY3MzNmNjJlZTkzZGQ4NGIyMDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0OGU4OWE5ZGRhM2ZlYmQ1MmZiZjRjMzg1YTcxMTc5MjdkYjhlMDUwNTc2YzQ2Nzc2ZjZiYzBlOGY1OWUwOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiYjA5N2UzMDU1ZGZmYzUwNmU1Njk3ZGVhYzQ1MTkzMjkxNDkxYWI3MDAyMTUxZWU4MDE4N2RlY2ZkZGRhOTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyNGUyZjE5ODk2ZmVhMDIzNDllZWVlZmUxNWY5MmMwYWUxNTM5ZDc3NzQ1MjZmOWUxY2NiMTVhODVhZGU1ZTcifQ"
+          "resource": "repo://services/soulx-singer-svc/modal_app.py",
+          "version": "repo-file-v1:sha256:84ad905ef7fcda139799d1a9cfb0402d86d34d648e09f0015651f14c7712ee74"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.5.0",
-    "at": "2026-09-05T04:28:19.819Z"
+    "at": "2026-09-14T00:18:32.821Z"
   }
 }

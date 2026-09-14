@@ -1,18 +1,18 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:8200e53de443b576f2afc92ce73a4baecc66905c8086ed06aaf61e43d963e9ec",
+  "pageVersion": "sha256:3a78b022f69061b21fab47f500f17a81134faed988de226d23269737fbaa2815",
   "claims": [
     {
       "id": "claim_ea738507d8e24313b68bce50176989be",
-      "statement": "관리자 카탈로그 생성은 Song을 DRAFT로 만들고 SongSource revision, DRAFT CatalogEntry, SongAnalysisJob을 하나의 트랜잭션으로 생성하며, 기존 곡의 새 출처 등록은 revision을 증가시키지만 activeSourceId를 즉시 바꾸지 않아요.",
+      "statement": "관리자 카탈로그 생성은 `Song`을 `DRAFT`로 만들고 `SongSource` revision 1, `DRAFT` `CatalogEntry`, `SongAnalysisJob`을 하나의 트랜잭션으로 생성하며, 기존 곡의 새 출처 등록은 가장 큰 revision에 1을 더하지만 `activeSourceId`는 즉시 바꾸지 않아요. 동일한 idempotency 입력은 기존 결과를 재사용하고 충돌 입력은 거부해요.",
       "evidence": [
         {
-          "resource": "repo://src/features/manage-song-catalog/api/admin-service.ts#L139-L176",
-          "version": "repo-lines-v1:sha256:c672fb2104bad31bc96eb86505c728bf84a148ddd99102e7007bec78b598b4d8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE3NTMwMjFhYmZhZTdmODNiNWMxMGIwMzFmODk1NWYzY2UzYzM2ZGI5NDlhNDcxYTJkM2Q5ZGZmZWQ5ZGM3NDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY0ZWM5M2VkOTVlYTc5YzZjNGQyOTFjMGQ5YzQwMmFiMjQ0NTAxOGFmNGQyMTFlNmVmMDcwMDZhMWM3MmQyNDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc2MjUwNWMxYTIyMmJjOWQyODQyOGRjNTQzOGZhNTFmODA0YjdjMDAxZDFhY2E1ZWJmMGQ0ZDAyOTE0MDFiODUifQ"
+          "resource": "repo://src/features/manage-song-catalog/api/admin-service.ts#L142-L181",
+          "version": "repo-lines-v1:sha256:e3e09a8d0a1842672ee207034a6f4aa757ea3d2a1f5114ef4cb0b821a3eaa2e8:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE3NTMwMjFhYmZhZTdmODNiNWMxMGIwMzFmODk1NWYzY2UzYzM2ZGI5NDlhNDcxYTJkM2Q5ZGZmZWQ5ZGM3NDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY0ZWM5M2VkOTVlYTc5YzZjNGQyOTFjMGQ5YzQwMmFiMjQ0NTAxOGFmNGQyMTFlNmVmMDcwMDZhMWM3MmQyNDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc2MjUwNWMxYTIyMmJjOWQyODQyOGRjNTQzOGZhNTFmODA0YjdjMDAxZDFhY2E1ZWJmMGQ0ZDAyOTE0MDFiODUifQ"
         },
         {
-          "resource": "repo://src/features/manage-song-catalog/api/admin-service.ts#L72-L119",
-          "version": "repo-lines-v1:sha256:226fd574041679e1654fd91eb717bacf87acd565e88c732acbd4c51c3d584e80:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzNTFlMjlkYjM3ZmY0YzkwOWExNDFhOTM5NjY5MDhmZTY4MWMyNDUzYzIxMjA2NTM5YTg4ZDI2NzQ0NjRkZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI0NDUxNTZkOThhNDliNzM5NDQ2YmVlNTk2MTUwMTE5OWY3MzU0NGQ5MjI0MmRkZWRkYzZmYWQ2M2M1YTdkNDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRhNDYxNjgxNzhiYzEwNzAxMzY4NjEwOTBlOTc1ZjBkMzU5ZDdmYzdiMTMxNzQ4NGNlNzVhYzM1ZGU1MTAyMjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5NTQxOGM2ZmNjZWZjYTI0MGU4NjAzN2I4ODgzM2ViOGJmZTc2OTg0ZjkzYjcyNDllZDk0ZjkyMzk4ZTdiOTQifQ"
+          "resource": "repo://src/features/manage-song-catalog/api/admin-service.ts#L73-L123",
+          "version": "repo-lines-v1:sha256:9fb3164e15dd5ae981c65f0e6841ee983b4495796bde0e6cb8542ca9fa9d9daf:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzNTFlMjlkYjM3ZmY0YzkwOWExNDFhOTM5NjY5MDhmZTY4MWMyNDUzYzIxMjA2NTM5YTg4ZDI2NzQ0NjRkZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyZDExY2FmNDNlOTdlZjM2OWU2YmVlZDFhMjY4YmQwNTgzOGYyOWI5ZGQyNTRiZjY5YmE2NDg4NDE0NzIzNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRhNDYxNjgxNzhiYzEwNzAxMzY4NjEwOTBlOTc1ZjBkMzU5ZDdmYzdiMTMxNzQ4NGNlNzVhYzM1ZGU1MTAyMjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI0NmNkNWE0ZTA2OTkwNDcwOTE5ZWE1NTJkZDI2NGYxOGEzNWM2YTFjNmIzY2YxNWVlYmZiOGQ2M2MzYTI4MGIifQ"
         }
       ]
     },
@@ -42,19 +42,19 @@
     },
     {
       "id": "claim_c93b7b9f9015451abef26280df494ad3",
-      "statement": "곡 분석 워커는 잠금 건너뛰기 방식으로 처리 가능한 job을 claim하고 lease와 heartbeat를 관리하며, Modal 분석 성공 결과를 파이프라인 계약별 SongAnalysis로 저장하고 cleanupConfirmed를 true로 기록해요.",
+      "statement": "곡 분석 워커는 `PENDING` 또는 lease가 만료된 `PROCESSING` job을 `FOR UPDATE SKIP LOCKED`로 claim하고 lease·heartbeat를 관리해요. Modal 분석을 제출·poll한 성공 결과는 source와 pipeline contract별 `SongAnalysis`로 upsert하고 `READY`, `cleanupConfirmed: true`로 저장한 뒤 job을 `SUCCEEDED`로 끝내요.",
       "evidence": [
         {
-          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L127-L179",
-          "version": "repo-lines-v1:sha256:6a1198f492b6671d85e3877e1f925f29d44ae2e8644076d850ecfaf11847cc6a:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3ZTYyY2YxMjA2NTg3OTNmNjI3MmVjY2VkY2Y1YjEyYWY3Y2ZlZGIzMTZiMzVjZTEzY2YyMmQxMzRiOThhMDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIwMTg1ZmRkZjY3MjliMTg3YTcyZWRkNmZhNWViZmFkOTcxMjMxZjRmMDYwYTlhMmI2MjRjMGE1YWExMTBhNjMifQ"
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L129-L225",
+          "version": "repo-lines-v1:sha256:09ce4f68ba56383121bd33fbfa013fe18bcb6f246c71b0670fd2f1628bb935d9:eyJzZWxlY3RlZExpbmVDb3VudCI6OTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3ZTYyY2YxMjA2NTg3OTNmNjI3MmVjY2VkY2Y1YjEyYWY3Y2ZlZGIzMTZiMzVjZTEzY2YyMmQxMzRiOThhMDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE3OTU2OGNmOTA3YjQwMjU1NjcxZDdlYmE0NWQzYWZhOTUzM2FiZDI3MzA3N2FkM2YzZWRjNjY4ZTliZWE1ZDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAxNzEyN2VlYjAzODlmZTU3YmNiMThmMjI4MjE3N2FjNWQ2YzY1ZDM0MGQ1NjRiMGU2MDJhNjIyN2JkMTJjNGUifQ"
         },
         {
-          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L200-L289",
-          "version": "repo-lines-v1:sha256:b5def2755929b2af1994743630f389d01d185c549334b832b1fde16ffff785a6:eyJzZWxlY3RlZExpbmVDb3VudCI6OTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ2ZjZkMGVjYTkxMjZjNTM5ZGJkYzNhZjQxMzU2ZDBkYTJkMDM0OTdlNTBiZDdkNDc2N2JmYWNkZDk5NWZjNjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyZDExY2FmNDNlOTdlZjM2OWU2YmVlZDFhMjY4YmQwNTgzOGYyOWI5ZGQyNTRiZjY5YmE2NDg4NDE0NzIzNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ1YjNmYWVlOWMwMzc3NTk0NzhhMzQ3NTg1NjA1NGIwYzQ0MTY2OWU3NmQ2NmM0YjUyNzg0ZmJjZGI4NDFkNGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNlZmQ4ZTUzODFmODYxODA4MzhjN2I4MTc4ZjEyODQ3OGI3NjhjMGVhYTEyMDAyOWRlZjQyM2VmMDkwYjdmM2IifQ"
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L223-L313",
+          "version": "repo-lines-v1:sha256:80ac39e6d47096015929e1e71536b5a87de50c02257e645e8690adaf2df9ebb8:eyJzZWxlY3RlZExpbmVDb3VudCI6OTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ2ZjZkMGVjYTkxMjZjNTM5ZGJkYzNhZjQxMzU2ZDBkYTJkMDM0OTdlNTBiZDdkNDc2N2JmYWNkZDk5NWZjNjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyZDExY2FmNDNlOTdlZjM2OWU2YmVlZDFhMjY4YmQwNTgzOGYyOWI5ZGQyNTRiZjY5YmE2NDg4NDE0NzIzNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ1YjNmYWVlOWMwMzc3NTk0NzhhMzQ3NTg1NjA1NGIwYzQ0MTY2OWU3NmQ2NmM0YjUyNzg0ZmJjZGI4NDFkNGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjllODQ3YjNlZGIxZmViY2FmMzljZjM3OGFiZDg5N2U3NzU3YjU0NmVmMTVhMjQ3NTQ3MjkxNTJlZjJmZWZlMmMifQ"
         },
         {
-          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L30-L70",
-          "version": "repo-lines-v1:sha256:27ba0475b6a0ba774cf523b00da113b141f6762d5a1b6fa9642732d0ae855797:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiNDZiYjJhYjk0YWI2YjEzOTVkOGYwMmM1ZDQwYzczZjcxOGZkNzFhZWMyNmY0NjYxNTg3NmU0ZTkzYTk0OTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkMTRlZmE5YTI5ZDJjNDg4ODRmOTJlZGJhMTFkM2RjM2Q0YTA4NmQ2Yjk2M2ZkNjlhODhkMmViNTM1NWE1MDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3NjExZmZmOGZmYTg0NTY0MTg5NWIwMDc3NTY1MjhjMGFjNTZiNWEyOTIyMjA0YjkyMjRhMGE5ZWUzNWRjYmIifQ"
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L33-L64",
+          "version": "repo-lines-v1:sha256:606c6f9fa26912b89f9e6b61e2e2cfd93191053bb2e94d6fd34a0453b5751441:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiNDZiYjJhYjk0YWI2YjEzOTVkOGYwMmM1ZDQwYzczZjcxOGZkNzFhZWMyNmY0NjYxNTg3NmU0ZTkzYTk0OTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkMTRlZmE5YTI5ZDJjNDg4ODRmOTJlZGJhMTFkM2RjM2Q0YTA4NmQ2Yjk2M2ZkNjlhODhkMmViNTM1NWE1MDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1MGNhNjNjZWFhMmQ0MmU4MTYyMjYxOWJiODExN2QzM2MyZDY1ZDkyNzJlNTFmMjk1YTE1MWZhY2VmZmQxMmQifQ"
         }
       ]
     },
@@ -133,10 +133,56 @@
           "version": "repo-lines-v1:sha256:177e53217ed79389a8a329b11bf6156798ad1a120b82dbcd55aabfaa0844d103:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwNGYwY2QzYjMzMmExY2ZkYWYwYjNkYWNhNDgyMWVlZWY0YTZlNzkxNWU2MzQ4YzkzOWYyMGEyZDgwMzA0ZTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY4MGQyZGQ0ZjI4OWQyNmRjNzU3YzJiNjVhMDZjMzkyMjdhNjcxN2M0YjQ4YjVhMzk3OTJjOWYxMWU0MWFlYTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU0ODA3ZjQzOTQ5MzVkZmQ1MDg0ZjQzMWY2MGUzYmNjZjAxN2E5MWNjZmEwY2Q2MWEyODcwYjM4MWU4NDNhYWMifQ"
         }
       ]
+    },
+    {
+      "id": "claim_88900724885f47ed844402803613e0bf",
+      "statement": "target asset import는 승인된 source의 `sourceVideoId`에 맞는 staging 파일을 검증하고 SHA-256·source 연결과 함께 `READY` asset으로 저장하며, 같은 digest와 source 연결의 기존 READY asset이면 업로드를 건너뛰어요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/recommendation/lib/song-catalog/target-assets.ts#L176-L258",
+          "version": "repo-lines-v1:sha256:e2c3d936d03dd2bcac29b156197b128c2bfcfa9b35d5ff762469ca5aa0abd3d3:eyJzZWxlY3RlZExpbmVDb3VudCI6ODMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiMTlkMzIyMmI0MzMzMDg1Njc2Y2JkMzA0NDkxNmQ3YzM0YzI4ZjQ1MTQ2MjEwOTMyNjkxMWM3MDA2NmRmNmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1NmMyNmFjYzYyNmRlNjA4ZjhiMzBkNDM3MGE2ZjExMzQ2OWM5ZThhYzkwZWFkZDQ2Y2RiZTYyMDgyNjJiZGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc5YzkwYjliZjMwN2YwNTMxYmI4YWRkZjg3MDYzODBhNjkwZWE0YzcxMzlhOTljYzI5ZTJiYzI2ODc2NWY3NDQifQ"
+        },
+        {
+          "resource": "repo://src/entities/recommendation/lib/song-catalog/target-assets.ts#L38-L72",
+          "version": "repo-lines-v1:sha256:83e81027dfe72b47151862e585bba255b8915c8bba75894253033cce03c45413:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkYzA5ZmQ1ODU0N2JjNTc5NDFlNzM0MjFmZDUxZTY4OWRjYjY2ZjZkNWEzNzU5YzZhNzMyY2E4NmFkNDI1MDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhNmFhMGIyOTI1MDM5NTg1YWZhOTY0YWE5ZjZkODZiMGU3MDJjYWE3MDZmMmQzNDc2OGI0OWQxZWMyYmI1ODQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc3OTMzOTMwYTcyMjVkOTNkNWQwYmU2OWRhOWM3YWY2NzEzNWJhYzBjNTIxMzk0M2EyYzY1ZGZkNzdmYzQwZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEzMmU1Yzg4ZmFiNGE1NGE2YzQzZTA1ODNlMDc4MWNjZGJmMjc0ZDE2ODRkMjg1ZjJmYTViYjU1ODc4MWY2ZjcifQ"
+        },
+        {
+          "resource": "repo://tests/catalog-target-assets.integration.ts#L69-L92",
+          "version": "repo-lines-v1:sha256:13eeed7f774489fe870fb6012fa871abd00f097ebe58bd35fa057a3949f85904:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2MTIyMzYwZDA2ZDkwMjA3MTEwNjA4YjllZDUzODI2MWFiNDhiMjk0MGE0ODc0NjBiYzU5NzE5OTcwYzQ5OTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjllZDgwYWRjMTdkOWEyNGJhYjQ5OGE0ODU1OTNkNTc4ZThkNmFjZTFhMTBlMzI5YjM5NjkzMjFiMWZkY2NmNjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcwNDEwMGMxZmFhNmUzYzM4NzZhMDUzMDBiNzQxNThjMjI2NDUxMGEwNzRiZDNjNzY5ZjZhYzViOWYxN2ExZmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY5YmU2YjM2NDU3ZDFmYjQyM2E2MWQ1ZjkzNjliNmIwYTI2OGRhNjY3Njg4NmI1ZDJkM2EwYjVlZjQxYTdkYTkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ac81cefdc14f43b39055e63ec43d0d8a",
+      "statement": "추천 응답은 믹싱 접수에 필요한 `songAnalysisId`, `targetAssetId`, `recommendedShift`, `catalogRevision`, `scoringVersion`을 제공하고, 믹싱 큐는 해당 revision·분석·target 연결을 다시 검증해 오래된 추천이면 `MIXING_RECOMMENDATION_STALE`을 반환해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/create-mixing/api/mixing-queue.ts#L81-L128",
+          "version": "repo-lines-v1:sha256:a18a881139b4b8a51a4219d56c319ab431a06d132fbe008635e0eb540ad25cb8:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA0YzA1MWU5YzcxZDQzNDAwMmNlYTI2MWZiYWJhOGI3Nzg0NzhmMDYxODYwMTFlZWI4OTUzMjhhNTg1OWRkZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiYzVmNTczYTc5ZWZhNmZkNTk4NjVmZDRmYzkwMTdlNDJhM2Q1YWZhZmM4NjEzOGYxODg3YmVlNDk2YWEzZDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI0ZWRjZWY5OGU4ODM0MjNmZTgxMmFlN2JlM2M2Y2Y0ZjU3N2JmZTBiMWIxODA0NDdhMTdlZmM3YTcyZDY3YmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZiODY3ZTdkNjY4ZWVlZDc2NTVkY2NjNDhmNGEzM2YzMGJhOGM4OGU3NjMyN2IzMjIyYjM1MjdkMWFhMDU3ZjQifQ"
+        },
+        {
+          "resource": "repo://src/features/create-recommendation/api/recommendation-service.ts#L152-L223",
+          "version": "repo-lines-v1:sha256:8e5fcd5aa40c3636588bb8ce3c37a6a7dd501dd8eca9096b4db58bc2789e57de:eyJzZWxlY3RlZExpbmVDb3VudCI6NzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyNGJiODI3YWI3YjQ0OWIxODQzOGQ5MDliY2UxZTE2ZjhmZDI0N2UyYWNmZTBmMzg2OGQ0ZTNlOTI2ZjBkMDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjYjcxMmQzNzlhNzYxZjYzYzRhZjNiMTY3MDJlMTY3MzA4MjgyY2I4N2IxMTY1ODAxODU0NWM4MDljOGNjYTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg5YjJjOWI5NTQ5NzJiNGMwNDc2NTY3MGUwM2YzMzZjZDJhN2UwMzEyMTMzYzIwNDY3ZjJkYjliMmFjZjdlZDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA3ZTI4MjJmMGNlODcxYzhkZTkyMjMyOWUwMzM1MzhiYjE1NjRkZGU0M2FlMDRiNjZmMTUyZTc5ZWFhNTJlMmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3d8453c6c4d44cc299cc51bf3df126f7",
+      "statement": "추천 응답은 믹싱 job의 DB 대문자 상태를 화면용 소문자 상태로 축약하고, job이 없으면 `not_started`를 반환해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/create-recommendation/api/recommendation-service.ts#L164-L211",
+          "version": "repo-lines-v1:sha256:cee1afd883ab51d99ac7fe24ca6b1bf482a365d2df9a5db40d4318d040273c63:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2YzViOTIxNzRmZGEzNWI3ODM1YTdmMGE2OGEwYzE1ZmI2NTA2YTIyNTFhYjYyODUyNjU2NWRjODk2ODczNmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5NzhlMjUwM2I4Y2YzN2EwNmY3ZDZmMGEzYTZiNmZlMzU2OTFmYmNhYjUwYjg3NzVjYWI2ZmFiYzcxYzU5MmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEzZTBmZDczNTk5MDYxNTM0N2M5MGUwNThlNGY2MmU1MDM3Zjk3N2ViZDU5M2Y2NTE5ODEwMTk2YTAzYzMxNzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3M2Y3YWExNDAyYjk4NzU5MzA1MWQ3ODQ3ZDkyMzdiMzIxOGYyOGUwYTZlMzM2NmJlNjNlM2NkZmJiMzMxZjkifQ"
+        },
+        {
+          "resource": "repo://src/features/create-recommendation/api/recommendation-service.ts#L70-L81",
+          "version": "repo-lines-v1:sha256:5a2e36997fb0452cbd915668285d9ab6a50103679393249ad3ef40cddf07b2c4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmNWFlYWM1ZWQ5NzIwNTJjMzU2M2UyMDc3ZDc4NjJkMTk4NGI0ZjU2NTVjNGE5NGFkMWU1ZGUwNjI2YmIxZDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjOTRkODRlYWUyYzRmZjE0NTE3YWExYTViMTU4YjFhOWFhMzNhOTk0YjFkNTNjYmUyYWM4NjNkMWNmNWQ2M2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkOWE5M2FlZTU2MWRjMmY3MTJlMTAzNjg1M2ZkNmUxY2MyNmE5Y2Y2MDE4N2YwNWFjZDM5MTQzM2JjNTg4M2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYyMWYyNjM2MjYxYmQ5MGYzYTEyZjM0MDhiN2UxNTY2YTc3MWU1MmZhZTRiNDc1NDFkOTJhNDRlM2ZlNjNiYzYifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.5.0",
-    "at": "2026-09-05T04:28:19.819Z"
+    "at": "2026-09-14T00:18:32.821Z"
   }
 }

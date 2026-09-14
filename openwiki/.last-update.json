@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-09-05T04:57:01.173Z",
+  "updatedAt": "2026-09-14T01:35:07.033Z",
   "command": "update",
-  "gitHead": "ae1ea42091038660b46e5f0cd011e6205e5e902f",
+  "gitHead": "095bd890f3d999501b318618602e1f80d3b8eb06",
   "model": "gpt-5.6-luna",
   "status": "complete",
   "language": "ko"

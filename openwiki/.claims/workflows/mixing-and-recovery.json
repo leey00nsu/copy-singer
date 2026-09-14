@@ -1,128 +1,136 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:d2d939884def64167c4628bf7859fb3f79f16c373527b4ce9d7808fbeabfdd74",
+  "pageVersion": "sha256:f4b64e7617ef81fc234d526723b219d3cb105caafdfd9d922039356f7172fd27",
   "claims": [
     {
       "id": "claim_9f5f4fa8c34046d1b1123df2d2a7daeb",
-      "statement": "`POST /api/mixing-jobs`는 인증된 요청의 믹싱 입력을 검증하고, `enqueueMixingJob`은 최신 추천·분석·target asset·레퍼런스 조건을 확인한 뒤 작업을 저장해요. 작업 생성과 AI 믹싱 티켓 차감은 `Serializable` 트랜잭션에서 원자적으로 수행되며 `(userId, idempotencyKey)` 중복 요청은 기존 작업을 재사용해요.",
+      "statement": "인증된 `POST /api/mixing-jobs`는 입력을 검증하고 `enqueueMixingJob`은 최신 분석·추천, 카탈로그 revision·순서, `READY` target asset과 사용자 레퍼런스를 확인한 뒤 `MixingJob` 생성과 `AI_MIXING` 티켓 차감을 `Serializable` 트랜잭션에서 함께 수행해요. `(userId, idempotencyKey)`가 같은 입력에 이미 사용됐으면 기존 작업을 반환하고 다른 입력이면 충돌을 반환해요.",
       "evidence": [
         {
-          "resource": "repo://prisma/schema.prisma#L582-L615",
-          "version": "repo-lines-v1:sha256:3b1d4ebc3025c667e8da271c68b467d10acab7c8e4f9e7ae93067491b87e548a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3NjZhZGRhN2ZmYmVjYzQzZWZlN2EyMGE4M2E3ZDNmMmQyYmJjY2MzZDNjM2NhYzliZTVjYjYxMzRlZTllZjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1MGE5ZDAxODY5YTg5NjczNDg2NTRjMzNhNjk0NGIyMzFkYjVlY2ZhODFmZTJjZTU2MzYxNDE3YmI4ZTNlZmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzYzNiOTY4OWNjYmI5Mzg5ZjBhNWJlMThmODY1MTcwYWFlYTJhZjVhMzM2MjFmY2JkOWYwYjNiZTZiYzhmZWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc2MmQ3ZDkwZTI5NDUyM2FjMjBlMTU3ZGNiZjY0NGRlOGNkYzljOGFlZTU1YWNkNGUxYWVlYzYzNmZlZjUyYzIifQ"
+          "resource": "repo://prisma/schema.prisma#L577-L627",
+          "version": "repo-lines-v1:sha256:b2d4b4d6289cc92bd37acea392d8f6a9212a75b48cdfc66bcf598139a379eee5:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzZTAwYTc4M2MxZGZiNjllNjhlOTdiZjM1YjMyZTIzYzQxMzE2ODI3MjgwODlhM2ZlYmZlNjMyYTE5MDc2OTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5NjFiOGU3ZjcxYmYwNDZiYzQ5MzE4MjJiNGM3NmVhYmY3OTE5MGY4MGY4ODA1ZTY5Mjc4OGFlZGM0ZTlhMTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI3YjI5ZjdmYjg0OTVmMWZhNjNlMjUzZmYzNDZiMzdhMWI2MWQ4MDUxNjM4NjdkYTQ2NTA0MWIyZDhjNDcyMWYifQ"
         },
         {
-          "resource": "repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts#L24-L66",
-          "version": "repo-lines-v1:sha256:592c95dcbda757af11e69a9b4daa541154dd2225975871d494d5e042741e5c40:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMzI3MTM1MDI5NzgwNjMxYzhhMWEzMDYyNjM0M2Y5YzA1NmE1YTMyNDA5ZWEyNGJmYzM3YWRjZGExNGQ5OTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE2NWZkYWMwNGVkYTMzYTk1MzQ1YzM3YTNiZjAxZDJkYWI4Y2I1YTQzZDcxZmVhNjNhOTU0ODJjOTc2Y2QwN2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmNzM5YTA2YzFjYmIxMjQ0ZTMzNjNkMzhiY2Y5ZmE1MGNlODRmZWQzOTljMjE5M2EzYzdmMDhkNTk5MThiMmEifQ"
+          "resource": "repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts#L27-L69",
+          "version": "repo-lines-v1:sha256:fb62117d0180aad207bc4020a591a006de4e33352e3186abe91437154d750c72:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzZDk0OWFlNTlmMjE5YjE3NzVjYjMxYmMxYzc4ZDQwMGZhOTY4MTRlZjY1MDVmYzRhZGYwNjNhM2ViNjMzODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRlZTk1NDQwNWJhOTE1YmI5N2U2MTRhYzlkMTI2YWE3NDdhOGYxMDQwNzdjYjhkOTMyN2MyZGU5MmQ5OThhNTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE2NWZkYWMwNGVkYTMzYTk1MzQ1YzM3YTNiZjAxZDJkYWI4Y2I1YTQzZDcxZmVhNjNhOTU0ODJjOTc2Y2QwN2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFkOWQxZjkzNjE4YTcyYWVkMDk0Nzc2OGE0YjAxOWU3YTVlMzUyY2NmNTU5YWU3M2VjZjE2ZjI3YTliMTA3YmMifQ"
         },
         {
-          "resource": "repo://src/features/create-mixing/api/mixing-queue.ts#L19-L148",
-          "version": "repo-lines-v1:sha256:3680ec195f7bfa25c50d24663bd40af75daf984fffd5fb7df322010abc02bd84:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwYTYwZTZhNDhjMzc4YWFmMDM0YzQzMzdmMTQ5M2NkNWU5MTU5YzA1NDQ1MDg3YzNlOGRlYTFlOTlmNjkxMzdjIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJlZDcyZmZkYWEyMmVhZWQwZDUxZjZmODdkZjhlYTA2ZDVmMzBlNmI2ZTAyMmM2ZTQyZDlhZDc5Y2YyM2Q2MGU3IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI1YjEyZGVlNzU0MmRlMTI2N2VjZDVmYzg4NzZlMGMzMTA0MDdkOTFjYWQzOTU1YWM3NmViOGQ3MDI1NmVhNWQ2IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MSwiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIn0"
+          "resource": "repo://src/features/create-mixing/api/mixing-queue.ts#L20-L164",
+          "version": "repo-lines-v1:sha256:5aad345d4624608a804583bf995d41803f96396342ee5fd7a714c4975c999ebf:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQ1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwYTYwZTZhNDhjMzc4YWFmMDM0YzQzMzdmMTQ5M2NkNWU5MTU5YzA1NDQ1MDg3YzNlOGRlYTFlOTlmNjkxMzdjIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJlZDcyZmZkYWEyMmVhZWQwZDUxZjZmODdkZjhlYTA2ZDVmMzBlNmI2ZTAyMmM2ZTQyZDlhZDc5Y2YyM2Q2MGU3IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI1YjEyZGVlNzU0MmRlMTI2N2VjZDVmYzg4NzZlMGMzMTA0MDdkOTFjYWQzOTU1YWM3NmViOGQ3MDI1NmVhNWQ2IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MSwiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIn0"
         }
       ]
     },
     {
       "id": "claim_0915361998364661af9cec2ac0d5d8a0",
-      "statement": "믹싱 워커는 `FOR UPDATE SKIP LOCKED`로 실행 가능한 작업 하나를 lease claim하고, 만료된 `PREPARING`·`SUBMITTED`·`PROCESSING` 작업도 회수해요. claim은 소유 워커, lease 만료 시각, heartbeat, 시작 시각을 기록하고 시도 횟수를 증가시켜요.",
+      "statement": "믹싱 워커는 `FOR UPDATE SKIP LOCKED`로 실행 가능한 `PENDING` 작업 또는 lease가 만료된 `PREPARING`·`SUBMITTED`·`PROCESSING` 작업 하나를 claim해요. claim은 `leaseOwner`, lease 만료 시각, heartbeat, 시작·deadline 시각을 기록하고 `attempts`를 증가시켜요.",
       "evidence": [
         {
-          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L92-L130",
-          "version": "repo-lines-v1:sha256:b0664914d9c31b3dc59a2285f246bdb60ae643f05d330d3d3a7eceb69a254bb4:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkYTkzYWU1N2Q0ODhkMTQ2YjZmZGI4ZTg3NGY2MWFiYjcyYWQ2MmNiODZkYjM0MGM5ZDcxN2I1MmQwOWQ4ZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1Y2NhZjBhZjk4ZDA1NDU2YTZiY2Y5OWQ5MTVlODBlYTdkYmJjYjQ5NDc0MDgxMTE3ODU0NDFmYWM4NThhOGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1MWM2ODg4Y2Q0ZjQyYmZiNzk4ZmFjOWNmMzA1NzQzMDg5ZTdkNGE1NzE0MjA3NmNiMDVmNGE0YjM5NDNiZjEifQ"
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L97-L136",
+          "version": "repo-lines-v1:sha256:4adb064c41e1d67d7b40813384716c486270d0661af96164c53c72f62134e3ce:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkYTkzYWU1N2Q0ODhkMTQ2YjZmZGI4ZTg3NGY2MWFiYjcyYWQ2MmNiODZkYjM0MGM5ZDcxN2I1MmQwOWQ4ZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE5MmFkNjRhMWU0N2MzYjJhMWE3NjQ5NWM1MDVjZjA4OWJjM2Q2ZmFiOTRmNzRiNjlmYzk4YzVhNGZmNmIyZjAifQ"
         }
       ]
     },
     {
       "id": "claim_b29204c0fd5e431aae31e183c3d99fcb",
-      "statement": "워커는 제출 전에 저장된 레퍼런스와 `READY` target asset을 내려받아 Modal `/v1/conversions`에 multipart 요청을 보내고, `queued` 응답의 외부 job ID를 `modalJobId`와 함께 `SUBMITTED`로 저장해요. 이후 외부 job 상태를 poll하며 `processing`이면 내부 상태와 heartbeat를 갱신하고, 성공하면 오디오를 내려받아 압축·media 저장 후 `resultAssetId`와 `SUCCEEDED`를 기록해요.",
+      "statement": "워커는 제출 전에 레퍼런스와 `READY` target asset을 내려받아 Modal `/v1/conversions`에 multipart 요청을 보내고, 유효한 외부 job ID를 `modalJobId`와 함께 `SUBMITTED`로 저장해요. 이후 외부 상태를 poll하고, 성공하면 오디오를 내려받아 압축·media 저장 후 `resultAssetId`와 `SUCCEEDED` 및 성공 알림을 기록해요.",
       "evidence": [
         {
-          "resource": "repo://services/soulx-singer-svc/modal_app.py#L220-L331",
-          "version": "repo-lines-v1:sha256:5d349e233ef7a74b304af9b33547abdde47e96d08d93c5b80099611325f08ca4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI5MzM3M2IxNWIxNzMwOTMxOWUyNjYwMjYyZmI0OWMyY2VjNGUwYTJkM2EyNGI5OWNmNWE4ZmZjNDJkYWZiY2JlIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJhOWRhNDEwMDZjMDE4NzU0MmU0NWRiYWFkNjY4YjYyMTE3YTIyMjMxNzBjNmY5NWI0Yzg0MjlkNTNiYjdlYTEyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIyOWQxNTIwYmI3M2M2M2FkYmU3Njk3NTM4ZDk1YzQ2YTJmODlkNmI1YjcxNmI2OGZlODkwYTNmMmFhNzczMzdkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIwYjgzZDdhOWY2MjBjNDIzMDgyNjZmNTNlZTE5ZDZmMDMzZmNhZGZlMDRkYzJlYzNmZTg1NDY0MzhjOWJiZDM1In0"
+          "resource": "repo://services/soulx-singer-svc/modal_app.py#L276-L370",
+          "version": "repo-lines-v1:sha256:8e09475ec5e59055930a436e67c093fde90e748c19677b60b1377cf6b7f64d19:eyJzZWxlY3RlZExpbmVDb3VudCI6OTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxM2JkYjg5NWIzNjNjYmIwNjk0YWU5YTQ4MzU2ODMyOWM2Y2Q4MWQzODk4MjcxNjgyMzdmNDA2ZmI0MmMzZTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5ZGE0MTAwNmMwMTg3NTQyZTQ1ZGJhYWQ2NjhiNjIxMTdhMjIyMzE3MGM2Zjk1YjRjODQyOWQ1M2JiN2VhMTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlhMmFjNjhlYzJmNDRjNjYwODAyY2I4MDNhNzExYmYwOTE1ZmZkMjJhMzRjZTM2MWYxMmJhMjIzNzU2MWE3MDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBiODNkN2E5ZjYyMGM0MjMwODI2NmY1M2VlMTlkNmYwMzNmY2FkZmUwNGRjMmVjM2ZlODU0NjQzOGM5YmJkMzUifQ"
         },
         {
-          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L257-L353",
-          "version": "repo-lines-v1:sha256:dbe45d151fdbf23b056ee65c7177039f72bb2939d855a09ff4a5da3ffae666a4:eyJzZWxlY3RlZExpbmVDb3VudCI6OTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdmNGI3YzZmZGQ0OWZjOWJkYzQyMzIwNmNhNDFkZWRlMTAwNWVlNDc1YWNkN2E0ZGI4YWQxNTYzZTY5MDBkYTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhlOWNlYjRkMjI5YWE1OTNiZWQzOTFjZWFmNmU3N2RmZGM2MmRiYzIxYTA1NTRhZTk5NTM3NTU5YjRhMzY2NDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNkMDNkNGIzMDFjMWM3NzZkM2JjMWRhMTk5YjIyNzU4ODNiZjA0MDkzOWEyNTRlMTU2ZjIwODAwYjRjNWE5YjgifQ"
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L320-L445",
+          "version": "repo-lines-v1:sha256:d4144c028883ec5dd75d3f5c45fb55da651ff0038ed02b0a015fc86329f72335:eyJzZWxlY3RlZExpbmVDb3VudCI6MTI2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI3MDIwYWEzMWZjYTZlMGIyMDFkMmZlM2RiMzU3ZmExOGI0YjBmNDJhMWZmNzQzZTU5MzE4NjQ5ZmI3ZGJhZGI1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI3MTdhZjExMDFjOTdiN2MyZjUyNTQwNzgyZTYzNGNjNDQ0MGYwZTk3MDM0MWU1MmY5NzUyMzExZDc4YjdkN2QwIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI0OGQwNTNiZWFmMjI0YTRhMjQ4MzFjYTRiNjg1NWIwOTQ4YWQ4NmZlZTEwYzdiNDI2NmI1YmE2MjM1NWRhOTdlIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJiMzAxOTcxZGM4MGQ5NmQ0MTliMjM5NmNiNTcyYzRlZWYzOWRkNDlkNGViNGUyNzgzNzlhMjUxZTQwM2FlMjJjIn0"
         },
         {
-          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L355-L448",
-          "version": "repo-lines-v1:sha256:a77104355881b60eccbec4e11d352d1c7443efae400f773af3f0c6d53a2fd241:eyJzZWxlY3RlZExpbmVDb3VudCI6OTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiMmU1YWZiODkxNzNhYmIyMTM1MTIxYzRlZGIyYzUwNmZhNGQzODZiZDUxZjAwOWU3MTY3Y2M5NjM2OTJlN2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwNjNiZjJlNzlmMDBjMDliZmUwNGExMzVkZmRjNmY4NTk1ZjUyODU2MmIzMWFlNDIzY2ZkN2MxNGI2MDlhNWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAwMjQxOTFlZTRkNjhkZDNlYmM1YmY3YTIyYjc4YWE3ZGNhYTI2MDdhNjA5ZTg4OWVhNjY1NTNlNmFkZjAxODkifQ"
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L448-L544",
+          "version": "repo-lines-v1:sha256:b55eb5b43a2c42c1281eee937c3109d2fe43a860d81819b5e868e595532ba005:eyJzZWxlY3RlZExpbmVDb3VudCI6OTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiMmU1YWZiODkxNzNhYmIyMTM1MTIxYzRlZGIyYzUwNmZhNGQzODZiZDUxZjAwOWU3MTY3Y2M5NjM2OTJlN2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwNjNiZjJlNzlmMDBjMDliZmUwNGExMzVkZmRjNmY4NTk1ZjUyODU2MmIzMWFlNDIzY2ZkN2MxNGI2MDlhNWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjllODQ3YjNlZGIxZmViY2FmMzljZjM3OGFiZDg5N2U3NzU3YjU0NmVmMTVhMjQ3NTQ3MjkxNTJlZjJmZWZlMmMifQ"
         }
       ]
     },
     {
       "id": "claim_19ce5c43f6f2468c9452a0e7281a7051",
-      "statement": "lease heartbeat는 `leaseOwner`를 조건으로 갱신되고, 갱신된 행이 하나가 아니면 lease를 잃은 것으로 처리해요. lease가 만료된 작업은 기존 `modalJobId`를 기준으로 외부 작업을 다시 조회하므로 Modal 작업을 재제출하지 않아요.",
+      "statement": "heartbeat는 유효한 `leaseOwner`와 만료되지 않은 lease를 조건으로 갱신하고, 갱신 행이 하나가 아니면 lease 손실로 중단해요. 외부 제출 직전에 `submissionState=UNKNOWN`을 저장하며, lease가 만료된 작업은 저장된 `modalJobId`를 기준으로 외부 작업을 다시 조회해 확인된 Modal 작업을 재제출하지 않아요.",
       "evidence": [
         {
-          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L133-L144",
-          "version": "repo-lines-v1:sha256:7f1dbdacde7121b4a2e0416dc6416113ea58adac44b471427712c782ddcb626e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjZGI2MTNhODU2OThlNGMyZTkwYjQxMDM1NDBiMjQ3ZDA5NjcyYmZlOGM1NGRmMDM1ODlkODFlMjdkOWMwMWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2MjAyYzNjODU5NGNjMzVhYTUzZmI2NmIxYjEzYjk3NjY4MDEwNDY1NjM1ZjlhNGEzNmQyNTAzMTMyY2UxZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ0OGM4YmViN2ZkOWMzY2FkM2NmNDNmZjBmODgzOTM3ZWE5ZjBmMThmMmIzNzc2NGQ5NTZlNGZkYmQ2NTZhOGEifQ"
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L138-L154",
+          "version": "repo-lines-v1:sha256:459d93a19e08be4e1ce8d83d29fe3bd0074c6f41f62675e4f32fc070fb2f4de0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjZGI2MTNhODU2OThlNGMyZTkwYjQxMDM1NDBiMjQ3ZDA5NjcyYmZlOGM1NGRmMDM1ODlkODFlMjdkOWMwMWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2MjAyYzNjODU5NGNjMzVhYTUzZmI2NmIxYjEzYjk3NjY4MDEwNDY1NjM1ZjlhNGEzNmQyNTAzMTMyY2UxZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBjMGNkZjRjMWE3MDQ5MDY3ZjVhODM3NzFhNWI2MWYzY2FkY2Y2NjUxOTJiOTdjNjZhMDg4OTQ3ZTBmNmU0ZjQifQ"
         },
         {
-          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L264-L271",
-          "version": "repo-lines-v1:sha256:f25cda209bbea354ef73b2f3338b05c43cd3788c3cd2093deb7ff1daad910d79:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTY3M2RiYTA5MWEyYjYyNjkwZGM0YzNjN2I3N2ViMTZjNjkzNDhkMjMyMzI2MjAxYWZlNTg1NGI0ZTZhZDRiOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzAyMGFhMzFmY2E2ZTBiMjAxZDJmZTNkYjM1N2ZhMThiNGIwZjQyYTFmZjc0M2U1OTMxODY0OWZiN2RiYWRiNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDQ0YTBjYjY4NjBjNzJmNWQxYTU1ZThiZGUzODQ0MGE4ZjY0NzE2MGY4MmUyNDc5N2QyNTc1ZmRjMDA4ZTUyZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2FjOTBhMTE1ZmQzNmI5MTUyZDg1OTRjZGU1ODMwNDI5Y2I0ODJhZWE5NDM4M2U3YzE4NzExODYxYjM3MTkzOSJ9"
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L369-L445",
+          "version": "repo-lines-v1:sha256:aa96d0c90a7eb803c3c8794da0e8c5d34ed8daf0de6113c506b9a3155367d2e2:eyJzZWxlY3RlZExpbmVDb3VudCI6NzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxYzgzZWUzNzNiZDM3NzQ0MDNiYTBlNjMwODY4MWM0OTg3YjQ1ZjA2MGM5NGZkM2UyOTljYmNlY2FkYmM0MjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxN2FmMTEwMWM5N2I3YzJmNTI1NDA3ODJlNjM0Y2M0NDQwZjBlOTcwMzQxZTUyZjk3NTIzMTFkNzhiN2Q3ZDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY5ZTk1YTY3YmY2ZmU3NWNmNWEwMGU2ZDczZDk0OGQ3OWY1ZGFmNTEwNmFmZTQ0YTg0YzVmZjVlMDM4ZWU5ODQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzMDE5NzFkYzgwZDk2ZDQxOWIyMzk2Y2I1NzJjNGVlZjM5ZGQ0OWQ0ZWI0ZTI3ODM3OWEyNTFlNDAzYWUyMmMifQ"
         },
         {
-          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L355-L377",
-          "version": "repo-lines-v1:sha256:e4d5a57a9c41ac8ddfa6a14b181caad084c72b7539548f1a62d0d50979f60822:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiMmU1YWZiODkxNzNhYmIyMTM1MTIxYzRlZGIyYzUwNmZhNGQzODZiZDUxZjAwOWU3MTY3Y2M5NjM2OTJlN2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjMmIyNTE4NWE5MGFiZGI5NDE0OTRiYzY3YWMyNzFmNTBkYzc4ZGE4ZDNlNzVkNzVjYWM3M2M2NTdhOTNjYjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwNjNiZjJlNzlmMDBjMDliZmUwNGExMzVkZmRjNmY4NTk1ZjUyODU2MmIzMWFlNDIzY2ZkN2MxNGI2MDlhNWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIwY2FmM2MzYWZiNjdkMzA5MDZkYzI1OTk2MzFkZmZhOWFjYzNjMjRkNWExODgyNTg5YWMxMGZjM2QyMmFhZmUifQ"
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L448-L467",
+          "version": "repo-lines-v1:sha256:767e8959000cfe6c206692c91a7f423c5ff393935c8bf67605dd31628d772abf:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiMmU1YWZiODkxNzNhYmIyMTM1MTIxYzRlZGIyYzUwNmZhNGQzODZiZDUxZjAwOWU3MTY3Y2M5NjM2OTJlN2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1MzE0YmFhODk3OTRmZmI2MjExZDRmMzBjMzg3MDg3NzExZjIzOWEyMzY3Y2VlOGY0MGIwNzc0ZmJmY2I1MTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwNjNiZjJlNzlmMDBjMDliZmUwNGExMzVkZmRjNmY4NTk1ZjUyODU2MmIzMWFlNDIzY2ZkN2MxNGI2MDlhNWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE0Njg0NzYyMTZjNTE0YjcxMGU0ODE0ZTM0MWRiMjRmYmY5YzI0YWFjMmQ2YmNlYzE1NzNlMGFjNzgxNTViYmYifQ"
         }
       ]
     },
     {
       "id": "claim_36bab73df84a40af97a21c30309214b9",
-      "statement": "네트워크 오류와 기본 HTTP `408`, `425`, `429`, `5xx`는 재시도 가능하지만 Modal 제출 단계는 `429`만 재시도 가능해요. 재시도는 최대 시도 횟수 전까지 제출 전에는 `PENDING`, 제출 후에는 `SUBMITTED`로 되돌리고, 지연은 `min(30초, 2 ** (attempts - 1)초)`로 계산해요.",
+      "statement": "일반 단계의 네트워크 오류와 HTTP `408`, `425`, `429`, `5xx`는 재시도 가능하지만 Modal 제출 단계는 `429`만 재시도 가능으로 분류해요. 재시도는 `maxAttempts` 전까지 제출 전에는 `PENDING`, 제출 후에는 `SUBMITTED`로 되돌리고 `min(30초, 2 ** (attempts - 1)초)` 지연을 적용해요.",
       "evidence": [
         {
-          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L172-L224",
-          "version": "repo-lines-v1:sha256:851681f204416fefa6c36772dd4fff3d4ef1b763eb4a858dfb8549273bdb8e11:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1NTk4YzU4NmY2ZGE3YmMxMjljZTRiYjgzMGFhYmRiNzIxZjgwZmY1YTI0NDIyYmZlZjczOGE4MDI1YzA0OTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljNWUzYmZhMjNkNDdkODExOTVjMTIxMGIyZDFhNDBmNGEyMmU0MDY2NTc5YTczZmYwYzNmMmZhYTZjMjExZjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzYmVlMWViOWQ5ZjU3NTg3MjExOWU4YzM0MTgxNjgyNTk0Zjk2MDkzYzdhOTI2MDU0YzNkYmNlNDMwYWVlMTQifQ"
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L174-L185",
+          "version": "repo-lines-v1:sha256:cb1e24eae35cfb132034d560d2a39e70026f683c3ece090445b0cbfd44fa8e40:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2NTdhMjI3OThmZWVhNzA3ZDBhOGFiMTg1NWY3Njk1MjBhMTgxOTkyMGNjNjFmMjIzODg4ZjFiMmNhMTQwZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY4NTNiZDRhOGZlYTUwM2Y1ZjNkYjM3ZjlkNTUwODA2N2I1ZTRjMzZlOTFkZTZlODBiZmQwMDI2MmNjZDU2MGUifQ"
         },
         {
-          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L39-L71",
-          "version": "repo-lines-v1:sha256:e5ba528314d0735a8ec6a14b5daa67542045a5e42a8ee823fc42d7416cd89483:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYxZWNhN2YyMDQ4NmUyY2Y2N2YyZmM3OTgwZjljYTFhNzkxYWRhOGEwMmFmYzkzNDQyMDVkNzEwZjhkYmIyM2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjMGU3NzM3NDEwMTQ0OGRmYzU1NTQzMGVjMmFlMmYyZDJiMjk3YjdlNjAyMjZmNjAwZDZhNTE4YzEyZjdmYjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA3ZGM5M2NkNjU0ZGJlOGNjZTllZTBlOTRhOWI0MjVjMmQ5MDZjYmQyY2U0ODhkZjEzOWQzMjYwYWU5OWI3NjkifQ"
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L187-L249",
+          "version": "repo-lines-v1:sha256:d886017a367cdcb958107473a997288b402744a90dbddefe25675e6000e9b651:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExNDRmYjhhN2E2MDc0ZDAyM2ExYTNlZmQ5OTlmMmZmZjJiZDJlYThjNzZiMTllMzY0MmZkM2Y2ZDBjMGVkNDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3NTM1ZTk0NjQ3Y2QxYjI5NjNiZGE3NDNlNDIzZTNkMGUzMDVhNGIzZjMyNzAxYjI0OWI1ZDg2M2EzZjZkNjYifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L381-L413",
+          "version": "repo-lines-v1:sha256:763126a412d58556da05a0aa992561e2833270d3c102f8c87515f8093a0c8478:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxYTM3N2FiYmY4ZTM1Mzc5OGZjN2I1YTY1MzkzYzEwMzc2ZWQxZGQ3MDViZDFhNTQyZTUzNzc5Y2RjZDQ0NmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYyNWMyMzVlZDU5ZmI1OGYwMDcwMDAwOWYzYTE1ZTViNzY4YmYwMmVlYTQyZjZmMGRhM2YyODljY2YxZDQwZjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIxYTk3MmZmZGFjZmVjMDdjMzY5MGJiNGJkNTMxMGQxZGU3MTQ2ZDJjNjY1YzM1YTEzN2Y0MTU2MjE3MDU0YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI4ZTA2NDFkY2Y0N2ZiNmJjZDM1NmEyYzk0MmMyYTlhOGU1YzljODcwNjM2MjFlMWM1MzZiZDM0YmYxMmQ3YTQifQ"
         }
       ]
     },
     {
       "id": "claim_88cc8346f0fb4e4083140855314a21d7",
-      "statement": "최종 실패는 제출 여부에 따라 환불 경계가 달라요. 제출 전 실패는 `refundState=REQUIRED`에서 idempotency key `mixing:refund:{job.id}`로 티켓을 환불한 뒤 `REFUNDED`가 되고, Modal에 제출한 뒤의 최종 실패는 `refundState=NONE`으로 남아 환불하지 않아요. 최종 실패와 성공에는 각각 중복 방지 키가 있는 알림이 생성돼요.",
+      "statement": "최종 실패의 환불 경계는 제출 여부예요. 제출 전 실패는 `refundState=REQUIRED`로 저장하고 `mixing:refund:{job.id}` 키로 환불한 뒤 `REFUNDED`로 바꾸지만, 제출 후 실패와 `MODAL_SUBMISSION_UNCONFIRMED` 상태는 `refundState=NONE`으로 남기고 환불을 보류해요. 성공·최종 실패 알림에는 작업별 중복 방지 키를 사용해요.",
       "evidence": [
         {
-          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L146-L158",
-          "version": "repo-lines-v1:sha256:faa2720f5cec12b390366f110a4b147cf20054a4bb0a98732014e72ad7be9447:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmN2U2YTE2MjBlNDg4NTdkNGQ4YmZkMzE4MDgyNTIxMGQxYzU4ZTUwNWY5MDI4NDlmOTVkNDFkNWY2MWQxMDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcyNjlkYjUwOTBkMjkyZjg3MTRhM2YxNjQwZjZkNjc0YmJlYjhmZTdmNDQwOTM0YjY3Mzg5MThhZjUyYzRiMTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI3OGUyYWYwZjllZWI2NGJjMDc0NWFjZGQyMzliZTdlMzZkZDAyM2VlZGQxYmYwMTkwMTNkYTJjZGRkYTNkYzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5N2IyN2I0OWNjYjNlODU1YzMzM2I4NWQxNmZmM2VjZjUyZDc3ODUyYTIxY2RhMjgzMGM4NTk4ZTMwMDkyOGIifQ"
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L156-L172",
+          "version": "repo-lines-v1:sha256:eb2839f9b300c1a31c134df1e3eba15047c86ba8f0438acf169f0bb2ea8110ff:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmN2U2YTE2MjBlNDg4NTdkNGQ4YmZkMzE4MDgyNTIxMGQxYzU4ZTUwNWY5MDI4NDlmOTVkNDFkNWY2MWQxMDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI3OGUyYWYwZjllZWI2NGJjMDc0NWFjZGQyMzliZTdlMzZkZDAyM2VlZGQxYmYwMTkwMTNkYTJjZGRkYTNkYzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5ODM3NzA1Yzg0MTAyYTFmNGUzZDVkYWRhODQxMjcwY2Q5MGZkZDFiYjMxYzM5NDc3NTNhZjJlZTZlMGMwYmQifQ"
         },
         {
-          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L227-L255",
-          "version": "repo-lines-v1:sha256:1093234f1047664f34ff984705d1339ba42dc36816ad4c5aeb3e82ae99eba783:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0ZmJjYzRiNDI5MTg3NzlmMmVmOGU4NGVlZjNlZWFmYzI2YmE5ZjU4MjhiYTA2NzgzNzM0NTIyZTJhMDM3NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2ZTUxZTBkMDA4ZjE2YzdhMmI3MDAyZThiYzQ2NTQ4N2FlMmY1YTMzYjA4ZjczZjUzNWQwMGJmMjhiODdmZTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdmNGQ4ZWVhMzM5YzRhNjllYmFmZDA4MjRlZmJkNmU0Njk2Zjg5MTU2YTU3YTAzZWU0MWRjNzQwN2NkODljNWIifQ"
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L209-L290",
+          "version": "repo-lines-v1:sha256:b67900d4fc8f7db9a6c57b33bcf80ec1ad47eb87f26a029a19d50d333d5ca13f:eyJzZWxlY3RlZExpbmVDb3VudCI6ODIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3OTVmOWQ4ZjM4MmYyODk2YjJjNTIyOWZlZmQ3ZDhiNzlmNGYxNmU3MmMzNDViZDg3ZjFiNTQ3Y2QwMGI3MDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUxYWJiZDc2YTFjMWNkOWI3NDE1NTM5MzU5OGYzNzRkMDMzM2U5YTFhZmQxNjU4NDhhOGY5ZmUzYmRjYjg5MGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiYzNiOWNiMmUxZTkxYzc0MzJjYmZiYzM2NzlhNGQ5NDI1YWFiNWE2NDhiZTg2NGM3OTJlYWIwMDdhYzBiYzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFlNzg2M2E2N2VkYmI5NjI0YzlkOTRiY2QyMWM0MDkwNGQwNjlmNDY5ZmY5MjgyNTk0OGZiNDM2ZWQ4M2FkNmYifQ"
         },
         {
-          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L414-L438",
-          "version": "repo-lines-v1:sha256:73437d81ca6a7d1ed4eec4e7a3d150ae9f90b69748a1a11b4f63e2c0b296811a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhMDZlOTlmMGZhNTFlZDRjZjk2OTA0ZTE5NGRjNjdkM2VmZTFlZTM0MDg1ZjBkZGQ1ZTM5NDEyYmVjMGU5MjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzYjA1OTc4OTYyMWM0YjJhYTk2NTk3ZGJkNTQ0MWY1MjEwNmU0OWY1YmZiN2FiZjVlNzdjODlhNDQ0M2VjMDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM1NmE5YzBmNDI4YWRmYjQ5YjcwZjM0MjM0NzkwYzUwMDU3ZjkxODQ5ZjkxM2Q2MzRkODQzZjdkMzNlYjNmMGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5M2NmNmQxMDg3Mzc3MjM4Yjk3MGU1ZjhlMWJjZmY4YmFiMTE0N2M0Y2MxYTQzMjA2ZWRiOGRmOTlmNjllM2UifQ"
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L507-L535",
+          "version": "repo-lines-v1:sha256:38a6da28e13fdeeeb1929da564e391ce4f04e4b1d6751e063e3c49aa91d3e28a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4NzhhMDdmNWU3MGFhMjU1NTZlYTAwYWVkZmVhNGRmOWVmOTllZTg2ZDI3NDI3NWUwM2I3ZTk3YjRmY2FkNDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhMzdlM2MwOTQxZDE1NzdjMDM5OGUzYjY3ODRlZjNiM2YwMTI4OGJjZGVjOWE0YmJhMWFiZmFhNzQwYWI2ZjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3MTYyMGY1NTEwZGYzOTA2ZmJjYmNjODNmMjJhMjViNzk4ZGM0YjllZjY0MGRlNjQ3NmM4MTQwMmJhYmM1YmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgwMjUzYzRlNWJjZmZmNmI4MDBlN2JhYTkxZGIzNDIxZDc0YTczYzExOTIwZGE5MjZmZTEyYjFlYjFmZjViNzEifQ"
         }
       ]
     },
     {
       "id": "claim_d3fde4a1a1e348c2a9f1caee3378dbd4",
-      "statement": "외부 Modal 서비스는 API key를 검사하고 업로드 파일을 job volume에 저장한 뒤 `SoulXModel.convert.spawn`으로 비동기 작업을 큐에 넣어요. 상태 조회는 Modal 호출 결과를 `queued`·`processing`·`succeeded`·`failed`로 관리하고, 입력·결과 파일은 24시간 TTL 정리 대상이에요.",
+      "statement": "SoulX-Singer Modal endpoint는 API key를 검사하고 업로드 파일을 job volume에 저장한 뒤 `SoulXModel.convert.spawn`으로 비동기 작업을 큐에 넣어요. 상태 조회는 `queued`·`processing`·`succeeded`·`failed`를 반환하고, 입력·결과 파일은 24시간 TTL 정리 대상이에요.",
       "evidence": [
         {
-          "resource": "repo://services/soulx-singer-svc/modal_app.py#L213-L250",
-          "version": "repo-lines-v1:sha256:c5e1be09e70fa000c594e2fa746e61babf5c6c2caf19a1f26dff08e523a68e2e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjYzJmOWNhMTQwN2M1MmMzNjM1MjE3M2E5OGQ0ZTFiN2RlNmVmNmFkNGNhYzM2ZDdhYWFhYjZiM2QyODNiNjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhiYWNlYmE3YjVkZDhhNDRmOTkxNmYyMjFjZTQxYTg3MzA2MzNiN2E2MjhjOTZjMzdjNzRjZmExNjMxYjMyYTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhmNTEzODFlOTRjYzY1ZjMzMjRhMmUzMzY2Y2Y2OTE1OWVlMjhiZmEzNTE0ZDcwMmIzMDUwNzVjMWIxN2RlNzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI4YTMwNWU0NDIyMjc4YWVmYzY1OTI4ZmE4Mzk0ZTlkMjE5NzFkYjE1M2E2ZTM1OWM1OWM5YjBiOTZhZTViZDIifQ"
+          "resource": "repo://services/soulx-singer-svc/modal_app.py#L218-L265",
+          "version": "repo-lines-v1:sha256:07e759c63cb847bc756040bbb17101270114e91a87f03f781287f374277c4d2c:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkZTNkMmEzYTU3ODM0MDQ5NDdhNDQwYWViOTY3MWM4MzViOTU4MDNlZWM4MGY3MzNmNjJlZTkzZGQ4NGIyMDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjN2U1YjgwNDBkZjIzNWFhMTU5YTI2Yjc1MzA4OWVlZTdmMDBkNGM1ODliYmZkM2NiZGU4MjAwM2QzOTFkZTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRmYmQwMDkzMTRiYzI3MDg0MTY3MzRhMDJhZTVmZjM5YTFlNDhhMDUwYmU5MWY0M2IyZmFhOTIwMDJjNjJiZmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyMjliMjg1M2QzOWJmMjVlZWFkMTliOGEwYWFiMDBiMWYzODM0YTQ0ZTQ3OGM5ZWE5NGY3MDViMzI1MzhkNWYifQ"
         },
         {
-          "resource": "repo://services/soulx-singer-svc/modal_app.py#L256-L341",
-          "version": "repo-lines-v1:sha256:356960de3b524da1ecbfa8dafb3a613576cbee780e454a43b09b15ab5b7f8e66:eyJzZWxlY3RlZExpbmVDb3VudCI6ODYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxM2JkYjg5NWIzNjNjYmIwNjk0YWU5YTQ4MzU2ODMyOWM2Y2Q4MWQzODk4MjcxNjgyMzdmNDA2ZmI0MmMzZTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwMjQ1MmQwZTgyMzMzNDNkYTk3MDY4Y2M0MzAxZjQ5MDg5YmZjOTY2ZTM0OTk1YTc1MjVmYjE5ZDUxNTY4M2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlhMmFjNjhlYzJmNDRjNjYwODAyY2I4MDNhNzExYmYwOTE1ZmZkMjJhMzRjZTM2MWYxMmJhMjIzNzU2MWE3MDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZhOTEyMzBkOWVkNThiNjAwYzBjZWQxM2NmOWJhYTI0YTQ0ZGQ5MzIwN2Y3MTM3MjYwOTkyODQyYTdhNjg2OGQifQ"
+          "resource": "repo://services/soulx-singer-svc/modal_app.py#L276-L349",
+          "version": "repo-lines-v1:sha256:7f65f871f299423595bd833ec5ac18ca26ab86671a829f1354f408eabf016fc1:eyJzZWxlY3RlZExpbmVDb3VudCI6NzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxM2JkYjg5NWIzNjNjYmIwNjk0YWU5YTQ4MzU2ODMyOWM2Y2Q4MWQzODk4MjcxNjgyMzdmNDA2ZmI0MmMzZTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhZTU1YzEzY2IxZGY0MTZjNzczZWM0ZGQzMjI5MzBlZWUxYzkwMzMwZDU3MmFhN2NkOTM1OGIxY2Q1N2IwOGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlhMmFjNjhlYzJmNDRjNjYwODAyY2I4MDNhNzExYmYwOTE1ZmZkMjJhMzRjZTM2MWYxMmJhMjIzNzU2MWE3MDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAyNjUxMTA5ZDk5MmRkMDcwYWJmOWM0MTFjN2M2NDM2YmIxMWJjNjAxY2E4NTMyZjcwMGYwMmM5YTViZGVkZGUifQ"
         },
         {
-          "resource": "repo://services/soulx-singer-svc/modal_app.py#L347-L366",
-          "version": "repo-lines-v1:sha256:4a31bf963f24699a0273e265da7f9f05c4347241fa215c3c2aeba206da47de75:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkZTNkMmEzYTU3ODM0MDQ5NDdhNDQwYWViOTY3MWM4MzViOTU4MDNlZWM4MGY3MzNmNjJlZTkzZGQ4NGIyMDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0OGU4OWE5ZGRhM2ZlYmQ1MmZiZjRjMzg1YTcxMTc5MjdkYjhlMDUwNTc2YzQ2Nzc2ZjZiYzBlOGY1OWUwOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiYjA5N2UzMDU1ZGZmYzUwNmU1Njk3ZGVhYzQ1MTkzMjkxNDkxYWI3MDAyMTUxZWU4MDE4N2RlY2ZkZGRhOTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyNGUyZjE5ODk2ZmVhMDIzNDllZWVlZmUxNWY5MmMwYWUxNTM5ZDc3NzQ1MjZmOWUxY2NiMTVhODVhZGU1ZTcifQ"
+          "resource": "repo://services/soulx-singer-svc/modal_app.py#L351-L380",
+          "version": "repo-lines-v1:sha256:73c0f72c4e1147d02c82ebc0b0fe26ce2a4bb35780d83aa2c06eaac956997678:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI1ZWUzZDQ0YTE4ZDdlM2VhNjI3MGU3MTdkM2ZhZjA0ZTAzODIzOWI0ZTYzNGZjZDljMDEzZWIwZjFlYjY2ODQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwMjQ1MmQwZTgyMzMzNDNkYTk3MDY4Y2M0MzAxZjQ5MDg5YmZjOTY2ZTM0OTk1YTc1MjVmYjE5ZDUxNTY4M2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlhMWQ0YWNjZDYyNjI1OGEyMzFhNzI0NTVjMDRlODVlODc3NTIxMTIyNjA1Njg1YzE2ZjEyMmRhMjhjYjkzMGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZhOTEyMzBkOWVkNThiNjAwYzBjZWQxM2NmOWJhYTI0YTQ0ZGQ5MzIwN2Y3MTM3MjYwOTkyODQyYTdhNjg2OGQifQ"
+        },
+        {
+          "resource": "repo://services/soulx-singer-svc/modal_app.py#L393-L393",
+          "version": "repo-lines-v1:sha256:aa8ecb1d512e6395a182eaece837a81f7187ef49082962ad6c9ac9de8459016e:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWE4ZWNiMWQ1MTJlNjM5NWExODJlYWVjZTgzN2E4MWY3MTg3ZWY0OTA4Mjk2MmFkNmM5YWM5ZGU4NDU5MDE2ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWE4ZWNiMWQ1MTJlNjM5NWExODJlYWVjZTgzN2E4MWY3MTg3ZWY0OTA4Mjk2MmFkNmM5YWM5ZGU4NDU5MDE2ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDhkNGRiYjQxNzg1ZGM5YTY0NWNiMGY3MjNkYWU4MmRiNWI1NWQ0NWViMGVmMTRhODlkZGU4ZjA3YjVjZGQ2ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTM2NTE1NDBjNjIxODQ0MGQzMGRkYWVjMGNjMDY1MzcyOGMyYzRmNWFmNTVjM2U2ZTRmNDIzNTJlM2ViZmNhZCJ9"
         }
       ]
     },
     {
       "id": "claim_69a4116f879a4e51a9a9f314688b2dd7",
-      "statement": "공개 믹싱 API는 내부 상태를 소문자 상태로 직렬화하고 작업 ID·티켓 비용·오류·생성·갱신·완료 시각을 반환해요. 사용자 삭제는 `SUCCEEDED`, `FAILED`, `CANCELED` 같은 종료 상태에서만 허용되며, 결과 media를 즉시 지우지 못하면 `mediaCleanupPending=true`를 반환해요.",
+      "statement": "공개 믹싱 API는 내부 상태를 소문자 상태로 직렬화하고 작업 ID·티켓 비용·오류·생성·갱신·완료 시각을 반환해요. 사용자 삭제는 `SUCCEEDED`, `FAILED`, `CANCELED` 같은 종료 상태에서만 허용되고, 결과 media를 즉시 지우지 못하면 `mediaCleanupPending=true`를 반환해요.",
       "evidence": [
         {
-          "resource": "repo://src/entities/mixing-job/api/deletion.ts#L7-L47",
-          "version": "repo-lines-v1:sha256:c7629e3f7992a501cd8475d857dcd60f42b1b563da44d39a44daa0b855a47458:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzZjc1ZjRiMDJiZTU4YjE3YzAyY2MwMTZjZGQ5OWVmMzE1YjRiZGQwMmQyMDExN2ZjNjJlMjI0ZjdjYmFjOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc2YmNkOGIyNTZhZTMwM2M0YjI3ODQ1YjUyYTAwNTg4OWRhNmRiYTgxNmE2ZGE5MTZkYzY1ZGI0MzJjMzc4ZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/entities/mixing-job/api/deletion.ts",
+          "version": "repo-file-v1:sha256:2aa4cb570b7ded1c3cb30c21cdfc2d0dec06c2a5e5a04ceed417be7b4a4f9134"
         },
         {
           "resource": "repo://src/entities/mixing-job/model/contract.ts#L125-L145",
@@ -140,19 +148,11 @@
     },
     {
       "id": "claim_60f8d3a0d521420180169aca8c3cef0f",
-      "statement": "믹싱 통합 테스트는 동시 idempotency, 단일 lease claim, 만료 lease 복구, 제출 전·후 환불 차이, 지연 재시도, 결과 압축 실패와 알림을 검증하고, 상태 표시 테스트는 서버 상태만 사용하며 관찰되지 않은 진행률 퍼센트를 만들지 않는 동작을 검증해요.",
+      "statement": "믹싱 통합 테스트는 동시 idempotency, 단일 lease claim, 만료 lease 복구, 제출 전·후 환불 차이, 지연 재시도, 결과 압축 실패와 알림을 검증하고, 상태 표시 테스트는 서버가 관찰한 상태만 사용해 관찰되지 않은 진행률 퍼센트를 만들지 않는 동작을 검증해요.",
       "evidence": [
         {
-          "resource": "repo://tests/mixing-queue.integration.ts#L193-L340",
-          "version": "repo-lines-v1:sha256:083ce05ee68701107147a2cf3a0a4790ba14f18ec3726916288c9ec83f8e3498:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQ4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjYzQzNzZhMWY0ZWViNzk3N2EwNWNkNmU1NDcyZjViMzZmMGY1MDFjMjBlNjc3Zjk4ZTAzNDlkNDM5ZjBjM2ZkIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI4NGU0MjA4Y2Q2ZmZiOGM0YTM1NDdiMmY1NGFkYTE5OTc4YzNmMzY1ZTc4Zjk1MDJlZjUxNDVjZGQyYWE4NTQzIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJhYjM1ZmVmZTBmYzU5ZGRhNzY1ZGRlZTJjNTE4N2E4MGUxZTcwOTkwM2M3ZDhkNWFlYTZlYTUzOGYyMTk5YWFhIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI3ZDE1ZDAwYzliZTVlMDUzMGMzMGM0YTNjMjFiMmEyNmMwNTQ3YWMzZTFjNTU5MmYxMzcwMmExNzhiZTZhMmM3In0"
-        },
-        {
-          "resource": "repo://tests/mixing-queue.integration.ts#L350-L399",
-          "version": "repo-lines-v1:sha256:62aea784324e27386ca5eee2c2242d258f9ec6cc8a4557e913d028cf747ef224:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU0ZTg1YTJkOTlkNTk0Y2M5NWE2OWE4NmU4MGI1MDIzMDdlNGUwNTFjM2NjNTQzMDYzNTc5YjhlZmFkNmY5N2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYyZjg0NGYzYmI2YjQ2OWI2ZTEyNDRhOTM1MTY4MmNiOTUxNjcxNGM2Y2MzYjc4YWQ2NTQ4MzY3YTIzY2QyMGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU1ZDhkZDE0YTc3YTNiMDZhNzRlNDRjYzBjZTBlZDI1ZGZlZWFhMDc1OTIxZmZlZjJkZDY0M2Y1OWRkNjU4ZTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk0YTQ4ZjU1OTI4MzdmNzI0MzM3MWYzNTZjMWI1MGE4Mjg3Zjc4ZjEyYWNhNTgyZTllNmRkNGRiNDM0YTBjYjIifQ"
-        },
-        {
-          "resource": "repo://tests/mixing-queue.integration.ts#L7-L40",
-          "version": "repo-lines-v1:sha256:abd443fde0e8f7a620ac542e71243f408b25c85ac9e269c2a2c7df4ee70e333d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0MDgxZWQ4MmZiYWJmZTVkNjQxZWNmZjYyM2Y1NDA4YTM4MGQ3MGZjNmEzYzgwZTc1ODcxMDEwM2I0YmU2OTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhmMDExMDllZjM0ODFmZTQ0ZTk1MDM1ODVkOTNiZDIzYjFiZTVhY2QxOGEyYmM4Nzg0ZjhmODY4ZTdmNWIwYmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0ZGI0NWUwYmUzMTgwNTYwY2UyNDY2MmNlNTM2ZWJmMmRiYmJkZTRjODgyOTY3YWRhNTY0MTFlNzgzZGE2ZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkzZjEyODBhNzIxODc0YWMzYjQ0ZTMzMzlhYTcxOThlYjczOTkyZGQ4NTFmMmVhY2Q1NWE5NWYxMjlkYzBhMDEifQ"
+          "resource": "repo://tests/mixing-queue.integration.ts#L193-L399",
+          "version": "repo-lines-v1:sha256:6a73c232d0d014441d045ee7386c548410fa198b308de52284f14f90261c0370:eyJzZWxlY3RlZExpbmVDb3VudCI6MjA3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjYzQzNzZhMWY0ZWViNzk3N2EwNWNkNmU1NDcyZjViMzZmMGY1MDFjMjBlNjc3Zjk4ZTAzNDlkNDM5ZjBjM2ZkIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI5NzViMTI0MzU4MjY2ZDI4NmRhYTNiYmZlNjRmNjYyY2IwMTc5OGRjYTE2ZmE3ODk0NTc5ZTc3YTM3NzM5NTc3IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJhYjM1ZmVmZTBmYzU5ZGRhNzY1ZGRlZTJjNTE4N2E4MGUxZTcwOTkwM2M3ZDhkNWFlYTZlYTUzOGYyMTk5YWFhIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJhMzA1Y2I1MWE4ZjgzYTE4OWE3ZGU1NGNmNTE4MGRkNjU4NzYxZGY5YWQ5Y2RhODhiMTc3YmU1OTY0YjU2MDZkIn0"
         },
         {
           "resource": "repo://tests/mixing-status-presentation.test.ts#L25-L89",
@@ -163,6 +163,6 @@
   ],
   "verification": {
     "by": "openwiki/0.5.0",
-    "at": "2026-09-05T04:28:19.819Z"
+    "at": "2026-09-14T00:18:32.821Z"
   }
 }

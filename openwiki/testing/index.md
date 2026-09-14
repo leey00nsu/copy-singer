@@ -1,3 +1,3 @@
 # 파일
 
-- [변경 범위별 테스트와 아키텍처 검증 선택하기](change-validation.md) - 기능·워커·외부 어댑터·UI·DB 스키마 변경에 맞는 저장소 테스트 명령을 고르고, DATABASE_URL 조건과 외부 호출 mock 경계를 확인하는 방법을 안내해요. 전체 검증에서 build, 정적 검사, 아키텍처 경계, Storybook 검증이 어떤 역할을 하는지도 설명해요.
+- [변경 범위에 맞는 테스트와 readiness 검증](change-validation.md) - 변경한 경계를 기준으로 focused test, 통합·DB·UI·Storybook·E2E와 readiness 검증을 선택하고, 실제 package script와 fixture 결과를 해석하는 방법을 안내해요.

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:ee579e372ba80f7711fd7875afb5af708ee7930ead4f3adc7bd861f314c3cfd7",
+  "pageVersion": "sha256:36c53ecca0e7546373ae8566912f98a5806febd2bf55bd91f5dfeb67b47eafff",
   "claims": [
     {
       "id": "claim_fd572e81337f49baa5b64b770798902a",
@@ -94,7 +94,7 @@
     },
     {
       "id": "claim_fa16e293bb0744c282412d3c08cbc702",
-      "statement": "`/api/mixing-jobs` route adapter는 `_app/api-routes/mixing-jobs/index.server`의 GET·POST handler를 re-export하고, handler는 세션 확인과 요청 검증 후 믹싱 작업을 큐에 넣어요.",
+      "statement": "`/api/mixing-jobs` route adapter는 `runtime = \"nodejs\"`를 지정하고 `_app/api-routes/mixing-jobs/index.server`의 `mixingJobsGet`·`mixingJobsPost`를 각각 GET·POST로 re-export해요. 실제 handler는 `withApiAdmission`으로 감싸져 세션을 확인하고, POST body를 `createMixingRequestSchema`로 검증한 뒤 `enqueueMixingJob`을 호출해요.",
       "evidence": [
         {
           "resource": "repo://app/api/mixing-jobs/route.ts#L1-L3",
@@ -105,18 +105,26 @@
           "version": "repo-lines-v1:sha256:75b4592e8f6a79727935ae7594636e57be25dabfc02aad1d30ef16fce5c6a489:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGMwZjQ4ZTM4ZmJkYjZjMGVmZTk4N2M5ODQ1MjFlZDA3NDMyNzU1YjZiYWFjY2Y0NWQ5NzdlNTdkYjdjYmFkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDYxNmZmZTg1ZTE2OTBmMTAyNzM2NDM4ZTVhNTkwNzQ3MjBjYjRhY2QxOTgwMWVhNGZlM2I2OTI5ZTYzNjg2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
         },
         {
-          "resource": "repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts#L12-L41",
-          "version": "repo-lines-v1:sha256:97b5359ceb285fbdb37367c65a7d3fa56d90d0eec1f760a84e6b4d94c5306db7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjNGFhMjExZDg5ZTY1NDM5MThlNzkzZDIxNjFmYTA2ZjdkMzJkZWU4MDlkNzkzYzdhMDFmOTE3MjEyNjAwYzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwMDEzNzhiYWY5NjkxYWQ0Mjk4ODY0MGQzNzUxMzIwMzIzYTY0NjY5NTNjNzJiZDZlYjZkOWFjYTA3ODFjMTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ2MDgyNDY3NDYxZDQ0YWEzOWUzZGUwZjExMzYxYzZhZmU2NWFhNzdkYTI5YjgwMWRkNTU4MDA0MzQ0MjVkMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIwMTllYTlmZTNlNGRkZWJhNGNkNzJhN2YwN2UzOGNlMWQ0MTM4NDMyNzI4ODY2MWRmNzJhZThlYzk3NmY2ZTAifQ"
+          "resource": "repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts#L1-L44",
+          "version": "repo-lines-v1:sha256:8eed9d51609d81ab6923d47e8874007577c56d4fc4d3418d6c707f79228a1cbf:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVjNTIzOGIwYTYxNTZhZjljMjY5ODE5OTkwZjkyNjJmYjQwYWVkYzk3NjU3M2M3YTJhZjg2ZWY0ZjBiZjA3ZmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwMDEzNzhiYWY5NjkxYWQ0Mjk4ODY0MGQzNzUxMzIwMzIzYTY0NjY5NTNjNzJiZDZlYjZkOWFjYTA3ODFjMTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNhYzY1NzAxZDEyYjc0M2UwZTFiYWNhMWUwZDJiOGNlYTQwMDY4NWY5YzUyNjU3NDQ5Y2U4MTA1OWQ3ZDI5NzIifQ"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts#L74-L76",
+          "version": "repo-lines-v1:sha256:37cc2ae5e989ee37c87207d891d8c82a6e08d003902f5e80d643d6fbc65ff0ac:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmVkM2Y1MDg2NTllNDhmNzU2M2VhNTMwNjBkY2NjM2FkZWFkYmEwMjJiZGQyZjU4ZTljOThmM2Y2MDhlODFiZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmQ5MzIzNDlkNTE1ODg1Yzk1MjE2YjMwYmFlYTZhZTk0MmQ3N2Q1ZTFjZjQwZTNiMjA3MTJhN2Y4Y2M5NjlhZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmI1ODBlOTY0ZjgzYTQ3M2Y0M2Q0NDM4NDYyOTQ5ZDY4YjU2MDBmZGE3ODdmMTYzNzQ1ZDAwZGU4OWNiZjM2YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
         }
       ]
     },
     {
       "id": "claim_7dab6cf4ac884f208b2755f319540c28",
-      "statement": "믹싱 API는 인증 실패를 401, 잘못된 요청을 400, 티켓 부족을 402로 응답하고, 성공적인 POST 큐 등록은 202를 반환해요.",
+      "statement": "믹싱 API는 인증되지 않은 요청을 401로, 잘못된 JSON 또는 요청 계약을 400으로, 티켓 부족을 `INSUFFICIENT_TICKETS`와 함께 402로 응답해요. 정상적인 POST 큐 등록은 직렬화한 작업과 함께 202를 반환하고, `MixingError`는 오류의 status와 retryable을 응답에 반영하며 그 밖의 enqueue 실패는 500으로 변환해요.",
       "evidence": [
         {
-          "resource": "repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts#L12-L67",
-          "version": "repo-lines-v1:sha256:8896c8287d0bd66fb70bd65a8dca59a0cd29491e71592b0325c46964d328419f:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjNGFhMjExZDg5ZTY1NDM5MThlNzkzZDIxNjFmYTA2ZjdkMzJkZWU4MDlkNzkzYzdhMDFmOTE3MjEyNjAwYzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ2MDgyNDY3NDYxZDQ0YWEzOWUzZGUwZjExMzYxYzZhZmU2NWFhNzdkYTI5YjgwMWRkNTU4MDA0MzQ0MjVkMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+          "resource": "repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts#L15-L35",
+          "version": "repo-lines-v1:sha256:f922d2be8f58c4f61068845aae01ea921f5082aaaa1a2165e889776fcf7de11c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyZWIwMTM1YzcwZTY5YzliZGZkZDkyYTMyYTFhNTVjOTdhMWRjNzYyNmMyMTg4ZGJiODQ1Y2IwYmU0NDBjYjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyNjBkN2NlNDdmZTliZWRhZWRjNzRmN2E0M2NhNjYyMmE4ODRkMDdjMGUzYmE2ODU1MTgxMjNiYWRiN2YxYzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZmMDg0ZDBiY2ZhYWYwNDJkMGFmNGRjMjkxZjdhZjNjN2RlMTg2NGIyM2QyYzdkMGM0MWNmY2JkM2ZjZjk0OGIifQ"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts#L37-L70",
+          "version": "repo-lines-v1:sha256:37c558fc223dfb691aa26aba407732e780614bfc16647b05269711a234b60eb0:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2NTk1ZjRlZTVmZjYzZDUwOTUwNDE5ZGMzNDQxNDUxMzg1MWRjOTczNmZkMTdhNGY3YmZhOTMwYjI2MWI2ZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRmMDIwNDYzMThlZTkwNDZiMmU4YWQ2MjQzMzVmZGI3MGIyYjMzMzdkM2YyZGEyZWEyNjUwMTY3MjMwMWM3OTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEifQ"
         }
       ]
     },
@@ -147,10 +155,62 @@
           "version": "repo-lines-v1:sha256:7e7435591b89cf4cc759b70a8d8b519babd467e3e8f917cea782311fed62c445:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjZGMyNzdhZWQ1ZjlmZmQ3NGU1MDU2YmJhZGU3NWIzYjc0ZDE3M2U5ZmI3MDdjNjBlNWY2YmE1MmFlNmZiY2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwZTkyYWE4ZWU0ZGNhMDVmNDFlNTYwZWRjNTgyZGRkNzc2ZDQ3MjFmNmY2MGFkMTA1OWNjOGZiOGM4MzAyZWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg0NjM3ZDFkNDYxZjk5MDYwMjllYWRkODY3MDA3MzUxODY2NmZkYTFmYzg5YTE3ZTRlOTUxMGU5NjRjZWMzMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZlZDQ2MzRmNDI1ZjE5OTJiOTFjYWM0OGY0Zjg4ZGFiNjA1YzliZjdjYzNjYjk0Yjc3ZDBiNTZiYTI0MTIyMjUifQ"
         }
       ]
+    },
+    {
+      "id": "claim_9c07a64bca14447ba5a1982ab5b2d637",
+      "statement": "믹싱 워커는 PostgreSQL의 `PENDING` 또는 lease가 없거나 만료된 `PREPARING`·`SUBMITTED`·`PROCESSING` 작업을 `FOR UPDATE SKIP LOCKED`로 원자적으로 점유하고, `leaseOwner`·만료 시각·heartbeat·시도 횟수를 갱신해요. 유효한 lease를 가진 작업은 점유하지 않아요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L97-L135",
+          "version": "repo-lines-v1:sha256:b0ee22b5f9a1d1005d2367e7941834479878ac7b2470e79de00a78dfaf0d187c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkYTkzYWU1N2Q0ODhkMTQ2YjZmZGI4ZTg3NGY2MWFiYjcyYWQ2MmNiODZkYjM0MGM5ZDcxN2I1MmQwOWQ4ZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1Y2NhZjBhZjk4ZDA1NDU2YTZiY2Y5OWQ5MTVlODBlYTdkYmJjYjQ5NDc0MDgxMTE3ODU0NDFmYWM4NThhOGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1MWM2ODg4Y2Q0ZjQyYmZiNzk4ZmFjOWNmMzA1NzQzMDg5ZTdkNGE1NzE0MjA3NmNiMDVmNGE0YjM5NDNiZjEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e540cce405344ca8bc10e35981bf559b",
+      "statement": "믹싱 워커는 외부 제출 전에 `submissionState = UNKNOWN`을 저장하고 Modal `/v1/conversions`에 요청한 뒤 외부 job ID를 PostgreSQL에 기록해요. 이후 상태와 audio를 polling하고, 결과를 Leemage에 업로드한 다음 DB transaction에서 작업을 `SUCCEEDED`로 바꾸고 result asset과 알림을 연결해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L369-L445",
+          "version": "repo-lines-v1:sha256:aa96d0c90a7eb803c3c8794da0e8c5d34ed8daf0de6113c506b9a3155367d2e2:eyJzZWxlY3RlZExpbmVDb3VudCI6NzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxYzgzZWUzNzNiZDM3NzQ0MDNiYTBlNjMwODY4MWM0OTg3YjQ1ZjA2MGM5NGZkM2UyOTljYmNlY2FkYmM0MjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxN2FmMTEwMWM5N2I3YzJmNTI1NDA3ODJlNjM0Y2M0NDQwZjBlOTcwMzQxZTUyZjk3NTIzMTFkNzhiN2Q3ZDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY5ZTk1YTY3YmY2ZmU3NWNmNWEwMGU2ZDczZDk0OGQ3OWY1ZGFmNTEwNmFmZTQ0YTg0YzVmZjVlMDM4ZWU5ODQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzMDE5NzFkYzgwZDk2ZDQxOWIyMzk2Y2I1NzJjNGVlZjM5ZGQ0OWQ0ZWI0ZTI3ODM3OWEyNTFlNDAzYWUyMmMifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L448-L545",
+          "version": "repo-lines-v1:sha256:9e7b7014eac03e4fcaa4bbf447f9950ad70f7485cc1ddab39e9665807a747955:eyJzZWxlY3RlZExpbmVDb3VudCI6OTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiMmU1YWZiODkxNzNhYmIyMTM1MTIxYzRlZGIyYzUwNmZhNGQzODZiZDUxZjAwOWU3MTY3Y2M5NjM2OTJlN2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlZGJmODM4NzUzNjg5NjZmMzEzYWU2Mzk1MzljNDAzNzAwNDViYTUzZTJlMmNlZTkzYmI2N2Q1ZGExN2I5ODAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwNjNiZjJlNzlmMDBjMDliZmUwNGExMzVkZmRjNmY4NTk1ZjUyODU2MmIzMWFlNDIzY2ZkN2MxNGI2MDlhNWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcwOThhOGJiOWZiNjdiY2Y1YzQ3ZmVhMDhiZTFmNDZmZDUxNTExNGM3ZWFhZWU4NzlkMjc3M2RiMmM4N2E3YWMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b0f149ff89d744bbaf9c63bbf23af648",
+      "statement": "미디어 업로드는 먼저 PostgreSQL에 `MediaOperation` 의도를 `UPLOADING`으로 기록하고 외부 저장소에 업로드한 뒤, DB transaction에서 domain asset과 operation을 함께 저장해요. 업로드 또는 저장이 실패하면 operation을 `RECOVER`로 남겨 후속 복구 대상으로 삼아요.",
+      "evidence": [
+        {
+          "resource": "repo://src/shared/media/operations.ts#L6-L61",
+          "version": "repo-lines-v1:sha256:579d379edf2a94859af5f0e83a9c528f6e81d9149a2771a3fbdcec516d40f583:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5MTE4MjU3MjhjNmY1Zjc2YmE1MWZhODY4NDQyZDAwZTQ1OTAxMWUxYjAwNGNiNjg0MGQwZTE5NmQ4OTVkNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRhODgwNjMzMzBjMWIyNDRjODVkODRjOTc3YjkxMTY3YjIyZDA5ZmEwMzVkOTVmOGFkOGJhODQwMTcwNTk2YWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYmU1MDExNWQzZjAyODkyOTEzNDQ3MWZmYmYyNDRkNjY0NTEyODVmMDM5NGYwNDlkMjM5YmJiNzljYzNjNDUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_52de8c15700f4891886c45e07ee1db31",
+      "statement": "보컬 프로필 분석 워커는 DB lease를 점유한 뒤 외부 analyzer의 동기 응답을 처리하고, 곡 분석 워커는 외부 job ID를 저장한 뒤 완료까지 polling하는 서로 다른 외부 처리 수명 주기를 사용해요.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L127-L147",
+          "version": "repo-lines-v1:sha256:2c070020b474946b08cdcdbc51d57094c291de758230b084642787bb3975af5c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3MWZiYmRiNDBmZGIzYWQ5YmQwN2FjZDhiNmNiNThhZDgyMzcwMjY0YWVkZjMyYmM5MDIyYThjZjBjMjJhOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5NWViNjE3YjFkNmVlZDVjY2Y3ZDU2MmE5MzAyZjBhMDkzMWM3NzZiZGQwZTVjZDg5NmZjOTE2ZTk5MWEwNmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3YThmYWQwM2RiYmI3NWE3OGE5OTQzOWIwOTJkOWZjNmY5Mzc2YzM4MzQ5ZjI2NjZjYzIyZTMwMmI4ZTA4ZTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlmN2IyM2ZhOTZjZmMxZDQ4MjI2MjU2ZjNkMGRmNTQ2ZTdlZmJmNmFkZGEyNTI5MDJjMWEyNDdkNzkzODgyOTIifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L129-L140",
+          "version": "repo-lines-v1:sha256:b5c7763b2005d729e62e13785cd46f434b16b440e46753a521072c315a469a24:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3ZTYyY2YxMjA2NTg3OTNmNjI3MmVjY2VkY2Y1YjEyYWY3Y2ZlZGIzMTZiMzVjZTEzY2YyMmQxMzRiOThhMDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2NTk1ZjRlZTVmZjYzZDUwOTUwNDE5ZGMzNDQxNDUxMzg1MWRjOTczNmZkMTdhNGY3YmZhOTMwYjI2MWI2ZjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc2ZWQ2NzUwN2RiMmYxNmY1Yjk3YTQ1NDMzODEzMTAwNDAzYjA4ZGZmZjY5YTZhODM5NDUxM2Y0Y2NjMzcwN2UifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L47-L83",
+          "version": "repo-lines-v1:sha256:d6f844d2f3788cd6fce3536de6f0d29c2e5df235197831def5772310390e3645:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEwODQ3ZTE4MzNiZjRjMzQwYTgwM2QwNDIxMjMzNDhlOTRhZjQ1YWNiN2JkYTIxNmQ3MjM0NzI3NmVlZTdhYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3ZGE0MDBlM2IzODVlYzg1NGI5OGZkNGZiOGE1MTRmYmJiZTk2ZWFjZDAyMjViYzQ2YjRmMmQ2MWE4NDk4YmUifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.5.0",
-    "at": "2026-09-05T04:28:19.819Z"
+    "at": "2026-09-14T00:18:32.821Z"
   }
 }

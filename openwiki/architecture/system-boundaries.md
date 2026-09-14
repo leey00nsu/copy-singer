@@ -1,11 +1,11 @@
 ---
 type: 아키텍처 설명
-title: Next.js와 Feature-Sliced 시스템 경계 이해하기
-description: Next.js App Router의 얇은 어댑터에서 FSD 레이어와 서버 기능으로 요청이 흐르는 방식, 그리고 안전한 변경을 위해 지켜야 할 public API와 클라이언트·서버 경계를 설명해요.
-tags: [architecture, fsd, nextjs, boundaries]
+title: 웹 요청·DB·워커·외부 처리의 시스템 경계 이해하기
+description: 어떤 책임이 Next.js API, Prisma/PostgreSQL, 영속 워커, 미디어 저장소, Modal 서비스에 속하는지와 요청이 큐·저장·외부 시스템을 가로질러 흐르는 방식을 설명해요.
+tags: [architecture, boundaries, workers, persistence, integrations]
 verified:
   - by: openwiki/0.5.0
-    at: 2026-09-05T04:28:19.819Z
+    at: 2026-09-14T00:18:32.821Z
 sources:
   - id: openwiki-source-a94cea82e631eedd9323e1f1
     resource: repo://app/api/mixing-jobs/route.ts
@@ -19,90 +19,118 @@ sources:
     resource: repo://src/_app/api-routes/mixing-jobs/index.server.ts
   - id: openwiki-source-28cb2570db799cb0b4da1a45
     resource: repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts
+  - id: openwiki-source-eaa76879de1a19c0db5c6ebb
+    resource: repo://src/_app/background-jobs/mixing/worker.ts
+  - id: openwiki-source-c4cc90d48cd4c0306be7e0c0
+    resource: repo://src/_app/background-jobs/song-analysis/worker.ts
+  - id: openwiki-source-da8b10d1e5d758ab0e1c7582
+    resource: repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts
   - id: openwiki-source-722f6f189a35faa5fdb7046b
     resource: repo://src/features/create-mixing/index.model.ts
   - id: openwiki-source-8721bb2121d4a23e8df9cc1f
     resource: repo://src/features/create-mixing/index.server.ts
   - id: openwiki-source-70100f14087bf5ddac69ba2f
     resource: repo://src/features/create-mixing/index.ts
+  - id: openwiki-source-323e8f5970873ebe5a0d5d5d
+    resource: repo://src/shared/media/operations.ts
   - id: openwiki-source-cdaeb36cd3badac987c47a00
     resource: repo://tests/fsd-architecture-boundaries.test.ts
-generated: { by: "openwiki/0.5.0", at: "2026-09-05T04:28:19.819Z" }
+generated: { by: "openwiki/0.5.0", at: "2026-09-14T00:18:32.821Z" }
 ---
 
-# Next.js와 Feature-Sliced 시스템 경계 이해하기
+# 웹 요청·DB·워커·외부 처리의 시스템 경계 이해하기
 
-새 기능을 넣거나 기존 동작을 바꿀 때는 `app/`에 로직을 추가하지 말고, 요청을 소유한 FSD slice의 public API 뒤에 구현하세요. 브라우저 요청은 Next.js App Router의 route adapter를 거쳐 `src/_app/`의 서버 진입점으로 들어가고, 그 진입점이 `features`, `entities`, `shared`의 공개 API를 조합해요. 이 규칙을 지키면 라우팅 규약과 도메인·서버 기능을 서로 다른 변경으로 검증할 수 있어요.
+## 이 페이지의 결론
 
-## 경계의 핵심 규칙
+짧은 HTTP 요청과 오래 걸리는 외부 처리를 분리해요. Next.js API는 인증·입력 검증과 작업 접수를 맡고, Prisma/PostgreSQL은 작업 상태·lease·파일 metadata의 저장소가 돼요. 영속 워커는 DB에서 작업을 원자적으로 점유한 뒤 미디어 저장소와 Modal을 호출하고, 각 결과를 다시 DB에 기록해요.
 
-레이어 방향은 아래쪽으로만 흐르는 단방향 구조예요.
+그래서 믹싱이나 분석을 바꿀 때는 API route만 고치지 말고, **큐 상태를 소유한 DB 모델**, **lease를 갱신하는 워커**, **외부 호출과 결과 저장을 연결하는 경계**를 함께 확인하세요. 현재 구현을 기준으로 한 다음 흐름이 이 페이지의 독자 질문인 “요청부터 저장·워커·외부 서비스까지 책임 경계가 어디인가요?”에 대한 답이에요.
 
-```text
-_app → _pages → widgets → features → entities → shared
+```mermaid
+flowchart LR
+    B[브라우저] --> A[Next.js API adapter]
+    A --> H[_app API handler]
+    H -->|인증·검증| D[(Prisma / PostgreSQL)]
+    H -->|202 접수 결과| B
+    D -->|PENDING 작업| W[영속 워커]
+    W -->|lease·상태·결과 metadata| D
+    W --> M[Modal 서비스]
+    W --> S[Leemage 미디어 저장소]
+    S -->|파일 URL·provider ID| D
 ```
 
-`_app`은 애플리케이션 조립과 외부 진입점을 담당하고, `_pages`는 화면을 구성해요. `widgets`는 독립적인 페이지 UI 블록을, `features`는 사용자 동작과 애플리케이션 사용 사례를, `entities`는 도메인 모델과 도메인 UI를 소유해요. `shared`는 특정 도메인에 종속되지 않는 공통 라이브러리와 인프라를 제공해요. 상위 레이어가 하위 레이어를 사용할 수는 있지만, 하위 레이어가 상위 레이어를 참조하거나 같은 레이어의 다른 slice 내부를 직접 찌르면 안 돼요.
+## 각 경계가 소유하는 것
 
-slice 사이의 import는 대상 slice의 root public API만 사용하세요. 예를 들어 `@/features/create-mixing`은 브라우저에서 안전한 API와 모델 계약을 내보내고, `@/features/create-mixing/index.server`는 서버 전용 큐 기능까지 내보내요. `api/`, `model/`, `ui/`, `lib/` 같은 내부 segment를 다른 slice에서 직접 import하면 boundary test가 위반으로 보고해요. 실제 공개 표면은 [`create-mixing`의 세 진입점](repo://src/features/create-mixing/index.ts#L1-L4)에서 비교할 수 있어요.
+| 경계 | 현재 코드가 맡는 책임 | 맡지 않는 책임 |
+| --- | --- | --- |
+| Next.js `app/` adapter | route convention과 `runtime = "nodejs"`를 `_app` public API에 연결해요 | 인증, DB 접근, 외부 처리 구현을 넣지 않아요 |
+| `_app` API handler와 feature | 세션 확인, 요청 계약 검증, 사용 사례 호출, HTTP 응답 변환을 맡아요 | 오래 걸리는 믹싱·분석을 요청 수명 안에서 기다리지 않아요 |
+| Prisma/PostgreSQL | `MixingJob`과 분석 작업, 상태·시도 횟수·lease·외부 job ID·파일 metadata를 저장해요 | 음원 바이트나 Modal 실행 자체를 소유하지 않아요 |
+| 영속 워커 | 작업 점유, lease heartbeat, 재시도·복구, 외부 호출, 성공·실패 기록을 맡아요 | 브라우저에 직접 HTTP 응답을 만들지 않아요 |
+| Leemage | 업로드한 사용자 레퍼런스와 최종 결과 파일을 보관해요 | 애플리케이션의 작업 상태를 대체하지 않아요 |
+| Modal | 보컬·곡 분석 또는 SoulX-Singer 믹싱 같은 외부 AI 처리를 실행해요 | 내부 작업의 최종 상태와 사용자 알림을 소유하지 않아요 |
 
-`index.ts`는 browser-safe API, `index.model.ts`는 실행 환경에 중립적인 계약, `index.server.ts`는 DB·secret·서버 capability를 구분해요. 이 구분은 파일 이름만의 약속이 아니에요. boundary test는 `.server.ts` 파일과 `server-only`, `next/headers`, `next/server`, `@/shared/db`에 이르는 runtime import를 서버 모듈로 판정해요. 따라서 `"use client"` 파일은 서버 모듈을 직접 또는 다른 모듈을 통해 간접적으로 import하면 안 돼요. 타입 전용 import는 runtime 의존성으로 세지 않지만, 실행 코드가 서버 capability를 끌어오지 않는지 확인하세요.
+README의 시스템 구성도 [Next.js, Prisma/PostgreSQL, Leemage, durable background workers, Modal의 연결](repo://README.md#L127-L147)을 한눈에 보여줘요. PostgreSQL에는 파일 자체가 아니라 외부 project·file ID와 URL 같은 metadata를 남기는 구조예요.
 
-## Next.js 요청이 서버 기능으로 흐르는 과정
+## 믹싱 요청이 접수되고 끝나는 과정
 
-root `app/`은 Next.js가 요구하는 파일과 FSD public API를 연결하는 어댑터예요. `app/layout.tsx`는 `@/_app/layout/index.server`에서 `RootLayout`과 `generateMetadata`를 re-export하고, 제품 layout도 같은 public API에서 `ProductLayout`과 `productMetadata`를 가져와요. 페이지 어댑터도 같은 방식으로 `@/_pages/profile/index.server`의 `ProfilePage`와 `metadata`를 노출해요. root App 파일에는 이런 export와 정적인 Next.js route config 외의 구현을 두지 마세요.
+`app/api/mixing-jobs/route.ts`는 `GET`과 `POST`를 `_app/api-routes/mixing-jobs/index.server`에서 가져오는 얇은 adapter예요. 실제 handler는 `withApiAdmission`으로 감싼 뒤 세션을 확인해요. `POST`는 제한된 JSON body를 `createMixingRequestSchema`로 검증하고, `enqueueMixingJob`에 `userId`, `vocalProfileId`, `songAnalysisId`, `idempotencyKey`를 전달해요. 이 호출자와 응답 계약은 [`mixing-jobs-route.ts`](repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts#L15-L76)에서 확인하세요.
 
-대표적인 믹싱 요청은 다음 순서로 처리돼요.
+- 인증 세션이 없으면 `unauthorizedResponse()`로 401을 반환해요.
+- body를 읽지 못하거나 schema가 맞지 않으면 `INVALID_REQUEST`와 400을 반환해요.
+- 티켓이 부족하면 `INSUFFICIENT_TICKETS`와 티켓 정보가 담긴 402를 반환해요.
+- 정상적으로 작업을 저장하면 직렬화한 작업과 함께 202를 반환해요.
+- `MixingError`는 오류의 `status`와 `retryable`을 응답에 반영하고, 그 밖의 enqueue 실패는 500으로 변환해요.
+
+`GET`은 인증된 사용자의 `page`, `q`, `status` 필터로 믹싱 이력을 조회해요. API의 성공 응답은 “외부 처리가 끝났다”는 뜻이 아니라 “DB에 작업이 접수됐다”는 뜻이에요. 실제 `POST` adapter와 server export는 [`route.ts`](repo://app/api/mixing-jobs/route.ts#L1-L3)와 [`index.server.ts`](repo://src/_app/api-routes/mixing-jobs/index.server.ts#L1-L5)를 함께 읽어야 정확해요.
+
+## DB가 큐와 소유권을 유지하는 방식
+
+`enqueueMixingJob`이 만든 작업은 PostgreSQL의 `PENDING` 상태에서 시작해요. 믹싱 워커의 `claimNextMixingJob`은 `FOR UPDATE SKIP LOCKED`로 후보 하나를 원자적으로 고르고, `leaseOwner`, `leaseExpiresAt`, `heartbeatAt`, `attempts`를 함께 갱신해요. 새 작업은 `PREPARING`으로 바뀌고, 이미 외부 처리 중이던 작업은 만료한 lease를 가진 경우에만 다시 점유할 수 있어요. 아직 유효한 lease를 가진 작업은 다른 워커가 가져가지 않아요.
+
+Prisma client는 `DATABASE_URL`로 PostgreSQL에 연결하고 DB pool·connection timeout·query timeout을 runtime limits로 설정해요. 개발 환경에서는 `globalThis`에 client를 보관해 재생성도 막아요. DB 연결 생성과 이 경계의 설정은 [`prisma.ts`](repo://src/shared/db/prisma.ts#L11-L35)에서 확인하세요.
+
+## 워커가 외부 시스템을 호출하는 순서
+
+영속 워커는 DB를 작업 큐이자 복구 기준으로 사용해요. 믹싱의 한 번의 실행은 환불·외부 job reconciliation·미디어 정리를 먼저 시도한 다음 작업을 점유하고 처리해요.
 
 ```mermaid
 sequenceDiagram
-    participant Browser as 브라우저
-    participant Adapter as app API adapter
-    participant Route as _app API route
-    participant Feature as create-mixing feature
-    participant Entity as mixing-job entity
-    participant Database as PostgreSQL
-    participant Worker as 믹싱 워커
+    participant W as 믹싱 워커
+    participant DB as PostgreSQL
+    participant L as Leemage
+    participant X as Modal
 
-    Browser->>Adapter: GET 또는 POST /api/mixing-jobs
-    Adapter->>Route: mixingJobsGet 또는 mixingJobsPost
-    Route->>Route: API session 확인
-    alt 인증 없음
-        Route-->>Browser: 401 unauthorizedResponse
-    else 인증됨
-        Route->>Feature: 요청 계약 검증 및 enqueueMixingJob
-        Feature->>Entity: 믹싱 작업 모델과 상태 사용
-        Feature->>Database: 작업과 티켓 변경 저장
-        Database-->>Feature: 저장된 작업
-        Feature-->>Route: 작업 결과
-        Route-->>Browser: GET 200 또는 POST 202 JSON
-        Worker->>Database: PENDING 또는 만료 lease 작업 점유
-        Worker->>Database: 진행 상태와 결과 metadata 저장
+    W->>DB: PENDING 또는 만료 lease 작업 claim
+    W->>L: reference와 catalog target 다운로드
+    W->>DB: submissionState = UNKNOWN 저장
+    W->>X: POST /v1/conversions (X-API-Key)
+    X-->>W: 외부 job id와 queued/processing 상태
+    W->>DB: 외부 job id·SUBMITTED 저장
+    loop 완료까지 polling
+        W->>X: GET /v1/conversions/{id}
+        X-->>W: 상태 조회
     end
+    X-->>W: 성공 시 audio
+    W->>L: 결과 업로드
+    W->>DB: SUCCEEDED·resultAssetId·알림 저장
 ```
 
-이 다이어그램은 [`app/api/mixing-jobs/route.ts`](repo://app/api/mixing-jobs/route.ts#L1-L3)가 route convention을 `_app` 서버 public API에 위임하고, 실제 handler가 인증·검증·큐 등록을 수행하는 현재 흐름을 요약해요. `POST`는 JSON body를 `createMixingRequestSchema`로 검증해요. 잘못된 요청은 400, 인증이 없으면 401, 티켓이 부족하면 402를 반환하고, 정상적으로 큐에 넣으면 직렬화한 작업과 함께 202를 반환해요. `GET`은 인증된 사용자의 `page`, `q`, `status` 필터로 이력을 조회해요. 상세한 응답과 예외 변환은 [`mixing-jobs-route.ts`](repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts#L12-L68)에서 확인하세요.
+믹싱 워커는 Modal 설정이 없거나 다운로드·제출·상태 조회·결과 다운로드에 실패하면 오류 코드를 정규화해요. 네트워크와 5xx 등은 재시도 가능한 실패가 될 수 있지만, deadline·시도 횟수 초과나 잘못된 응답은 종료 실패가 될 수 있어요. 제출 직전에는 `submissionState = UNKNOWN`을 저장해 제출 결과를 모르는 장애를 구분해요. 외부 job ID를 확인하기 전 실패하면 `PENDING`으로 재시도하거나 필요한 환불을 기록하고, 제출을 확인한 뒤 실패하면 `SUBMITTED` 재시도 또는 reconciliation 대상으로 남겨요. 이 흐름의 실제 상태 전환은 [`mixing worker`](repo://src/_app/background-jobs/mixing/worker.ts#L187-L290)와 [`외부 제출·polling·결과 저장`](repo://src/_app/background-jobs/mixing/worker.ts#L293-L561)에 있어요.
 
-HTTP 요청이 끝난 뒤의 오래 걸리는 처리는 route handler가 직접 수행하지 않아요. `enqueueMixingJob`이 PostgreSQL에 작업을 기록하면 믹싱 워커가 새 `PENDING` 작업 또는 lease가 없거나 만료된 작업을 원자적으로 점유해요. 아직 유효한 lease를 가진 작업은 다른 워커가 처리 중인 것으로 보고 점유하지 않아요. 이 수명 주기와 재시작 후 복구를 바꿀 때는 [믹싱과 복구 흐름](../workflows/mixing-and-recovery.md)과 [외부 서비스 경계](../integrations/external-services.md)를 함께 확인하세요.
+보컬 프로필 분석은 믹싱과 외부 수명 주기가 달라요. 워커가 DB lease를 점유하고 analyzer에 파일 바이트를 보내 단일 동기 HTTP 응답을 기다린 뒤 결과를 DB에 저장해요. 곡 카탈로그 분석은 외부 job ID를 저장하고 완료까지 polling해요. 두 분석 워커도 만료 lease를 다시 점유하고, 실패를 retryable 여부와 attempt 한도에 따라 DB에 기록해요. 따라서 외부 서비스의 “동기 응답”과 “외부 job polling”을 같은 계약으로 취급하면 안 돼요. 대표적인 점유·실패 경계는 [`song-analysis worker`](repo://src/_app/background-jobs/song-analysis/worker.ts#L33-L127)와 [`vocal-profile-analysis worker`](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L47-L83)에서 확인하세요.
 
-## public API를 지키며 변경하는 방법
+## 미디어 저장과 DB 저장의 경계
 
-### 화면이나 위젯을 바꿀 때
+미디어 저장소는 파일 바이트를 보관하고, PostgreSQL은 애플리케이션이 그 파일을 참조할 수 있는 metadata를 보관해요. `uploadTrackedAsset`은 먼저 `MediaOperation` 의도를 DB에 만들고 Leemage에 업로드해요. 업로드가 끝나면 하나의 DB transaction에서 domain asset과 `STORED` operation을 기록해요. 업로드 또는 후속 저장이 실패하면 operation을 `RECOVER`로 남겨 나중에 복구할 수 있어요. 이 흐름은 [`media operations`](repo://src/shared/media/operations.ts#L6-L61)에서 확인하세요.
 
-1. 먼저 변경의 소유자를 정하세요. 화면 조합이면 `_pages`, 재사용 가능한 화면 블록이면 `widgets`, 사용자 동작이면 `features`, 도메인 표현이나 모델이면 `entities`에 둬요.
-2. 같은 slice 안에서는 내부 segment를 사용할 수 있지만, 다른 slice에서 필요하면 root `index.ts`, `index.model.ts`, 또는 `index.server.ts`에 의도한 공개 항목을 re-export하세요.
-3. 클라이언트 컴포넌트가 서버 데이터나 secret을 필요로 한다면 직접 import하지 말고 서버 page·API와 browser-safe 계약을 사이에 두세요.
-4. root `app/`에서는 `_app` 또는 `_pages`의 `index` 계열 public API만 re-export하세요. 실제 조합 로직과 Route Handler 구현은 `src/`에 유지하세요.
+삭제도 외부 I/O보다 먼저 DB transaction에서 참조 여부를 확인하고 cleanup operation을 만든 뒤 domain row를 삭제해요. 워커가 외부 파일 삭제를 완료하면 operation을 `COMPLETED`로 바꾸고, 실패가 반복되면 `RECOVER`를 거쳐 `UNRESOLVED`가 될 수 있어요. 그래서 파일 업로드·삭제를 domain transaction 안에서 직접 완료됐다고 가정하지 말고 `MediaOperation` 수명 주기도 확인하세요.
 
-`index.server.ts`는 단순히 “서버에서 먼저 실행되는 index”가 아니라 서버 capability의 경계예요. Route Handler나 서버 page가 DB와 인증을 사용해야 할 때 이 진입점을 선택하고, 클라이언트 UI가 공유해야 하는 schema·presentation·타입은 browser-safe 또는 model 진입점에서 가져오세요. 서버 전용 진입점을 `index.ts`에서 다시 내보내면 클라이언트 그래프에 서버 의존성이 전이될 수 있으니 피하세요.
+## 코드를 바꿀 때 경계를 찾는 방법
 
-### root `app/` 파일을 바꿀 때
+레이어 방향은 `_app → _pages → widgets → features → entities → shared`로 아래쪽만 향해요. slice 사이 import는 대상 slice의 root public API를 사용하세요. `index.ts`는 browser-safe API, `index.model.ts`는 실행 환경 중립 계약, `index.server.ts`는 DB·secret·서버 capability를 구분해요. 실제 공개 표면은 [`create-mixing public API`](repo://src/features/create-mixing/index.ts#L1-L4)에서 비교할 수 있어요.
 
-root App adapter는 import/export와 정적 Next.js route config만 포함할 수 있어요. boundary test는 구현 선언을 발견하면 “FSD public API 뒤로 옮기라”고 실패하고, `_app`·`_pages`가 아닌 경로 또는 내부 segment로 import하면 실패해요. 새 route는 `app/<route>/route.ts`에 어댑터를 만들고, handler는 `src/_app/api-routes/<slice>/index.server.ts`에서 공개하세요. 새 화면은 `app/<route>/page.tsx`에서 `src/_pages/<slice>/index.server.ts`를 연결하는 형태를 우선하세요.
-
-## 변경 전후에 확인할 검사
-
-경계만 바꿨다면 전체 suite보다 먼저 변경 범위 테스트를 실행하세요.
+`"use client"` 파일이 서버 전용 모듈을 직접 또는 전이 runtime import로 끌어오면 안 돼요. root `app/` 파일도 `_app` 또는 `_pages`의 public API를 연결하는 adapter로 유지하세요. 경계 규칙을 바꿀 때는 [`FSD 경계 테스트`](repo://tests/fsd-architecture-boundaries.test.ts#L154-L229)와 실제 트리 통합 검사를 먼저 실행하세요.
 
 ```bash
 pnpm run test:architecture-boundaries
@@ -110,12 +138,12 @@ pnpm run check:architecture
 pnpm run typecheck
 ```
 
-`tests/fsd-architecture-boundaries.test.ts`는 세 가지를 함께 검사해요. slice 간 내부 segment 우회, 클라이언트에서 서버 모듈로 이어지는 직접·전이 runtime import, root `app/` adapter의 구현과 잘못된 import를 fixture로 거부해요. 마지막 통합 테스트는 현재 `app`, `src`, `scripts` 트리를 실제로 수집해 세 경계가 모두 위반 없이 유지되는지 확인해요. 테스트의 판정 로직과 fixture는 [`FSD 경계 테스트`](repo://tests/fsd-architecture-boundaries.test.ts#L154-L229)와 [`root App adapter 테스트`](repo://tests/fsd-architecture-boundaries.test.ts#L272-L385)에서 읽을 수 있어요.
-
-검사가 실패하면 import 경로를 짧게 고치는 데서 끝내지 말고, 잘못된 소유권을 먼저 바로잡으세요. 다른 slice가 내부 segment를 요구한다면 public API를 설계해 필요한 계약만 공개하세요. 클라이언트 그래프가 서버에 닿는다면 `index.ts`와 `index.server.ts`의 export를 분리하세요. root `app/`에 구현이 생겼다면 해당 코드를 `_app` 또는 `_pages`로 옮기고 adapter를 re-export로 줄이세요.
+검사가 실패하면 import 경로만 줄이지 말고 소유권을 다시 정하세요. API 계약을 바꾸면 route handler와 enqueue feature, DB 상태를 함께 확인하세요. 워커의 외부 호출을 바꾸면 lease·재시도·reconciliation·미디어 operation을 함께 확인하세요. DB 모델이나 상태를 바꾸면 해당 워커와 조회 API가 같은 상태를 해석하는지 확인하세요.
 
 ## 다음에 읽을 곳
 
-- 도메인 모델과 데이터 소유권은 [도메인 데이터 모델](../concepts/domain-data-model.md)에서 확인하세요.
-- 로컬 실행과 진입점은 [빠른 시작](../quickstart.md)에서 확인하세요.
-- 변경에 맞는 검사 선택은 [변경 검증](../testing/change-validation.md)에서 이어서 읽으세요.
+- 작업 상태와 도메인 소유권은 [도메인 데이터 모델](../concepts/domain-data-model.md)에서 확인하세요.
+- Modal·Leemage 같은 외부 시스템 계약은 [외부 서비스 경계](../integrations/external-services.md)에서 이어서 읽으세요.
+- lease와 실패 복구를 실제 운영 관점에서 보려면 [믹싱과 복구 흐름](../workflows/mixing-and-recovery.md)을 확인하세요.
+- 분석별 수명 주기는 [보컬 분석](../workflows/vocal-analysis.md)과 [추천곡 카탈로그](../workflows/recommendations-and-catalog.md)를 참고하세요.
+- timeout과 worker runtime 설정은 [구성과 런타임](../operations/configuration-and-runtime.md)에서 찾으세요.
