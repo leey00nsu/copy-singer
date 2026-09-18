@@ -1,0 +1,336 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:2252df55d5a7a93924e5eb126ab44edcf6037e6b03a6fe584161a1ad5fcf3d45",
+  "claims": [
+    {
+      "id": "claim_3031d79038194443b09a9d1590d4779a",
+      "statement": "pre-commit 훅은 staged 파일 대상 `pnpm run check:staged` 하나만 실행하고, 이는 `biome check --staged --no-errors-on-unmatched`이므로 포맷과 lint만 검사하며 typecheck나 테스트는 실행하지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://.husky/pre-commit#L1-L1",
+          "version": "repo-lines-v1:sha256:483e1f0d257adaea836bddb1e2f2ab4ea880d9b54e6e0f2d860d97d50c7b07ea:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDgzZTFmMGQyNTdhZGFlYTgzNmJkZGIxZTJmMmFiNGVhODgwZDliNTRlNmUwZjJkODYwZDk3ZDUwYzdiMDdlYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDgzZTFmMGQyNTdhZGFlYTgzNmJkZGIxZTJmMmFiNGVhODgwZDliNTRlNmUwZjJkODYwZDk3ZDUwYzdiMDdlYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://biome.json#L9-L22",
+          "version": "repo-lines-v1:sha256:c4f818bc5fc4cf40e08c03afce144b9d9d2d7dd8799fb8eee2165473d4cd65d0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2MDBmNmRkOGVkZDRlNzU2NzlmYjEwZWE4NjI5OTg2ZTg3N2E4NGJlMDdiN2UyODgyM2YzMTQxZTRkZjRhNWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM5ZWEzOTA2NDk0MGYxM2YyYzg2NjMwZDRhMWNlY2M2NWU3NmJiNThkZjRiNjY4ZjQyYzA1YzE0ZTMxNTU5Y2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzZTFjMzlkNzNmN2U0MGRmZGZhZjI3YWUzZDllNGM3OTg2MzM2NjNmNjAzOWNlZTdkZWM2ZWZlNjE1Y2I1YTMifQ"
+        },
+        {
+          "resource": "repo://package.json#L30-L30",
+          "version": "repo-lines-v1:sha256:1aab1d47bff9b30ce056d7eeed43f0b242ffdc3d3aaefeed926d0f179ac10838:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWFhYjFkNDdiZmY5YjMwY2UwNTZkN2VlZWQ0M2YwYjI0MmZmZGMzZDNhYWVmZWVkOTI2ZDBmMTc5YWMxMDgzOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWFhYjFkNDdiZmY5YjMwY2UwNTZkN2VlZWQ0M2YwYjI0MmZmZGMzZDNhYWVmZWVkOTI2ZDBmMTc5YWMxMDgzOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzE2YWRmNzFhNzlmYmMyNGZkNDJmNGRiMDRjZDNiMTQ1MDk0NTZiZWMwMTg2YjAxZjVjNzVhYjhlYjNmNWU3ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTg4NWZlYTBhMTc4ZDQ1ODMwZWZlNzM0ZmU1MDc1Y2QxZjMxMmZmN2Y1NDY1Y2Y3OTMxOWIxMTY4MTFjYmJhNiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_31b09f4cfeca4536896a9ee14e39386e",
+      "statement": "이 저장소의 `.github/workflows/`에는 Browser E2E workflow 하나만 있고, `pull_request`와 수동 `workflow_dispatch`에서 Node.js 22·pnpm·Chromium·ffmpeg를 준비한 뒤 `pnpm run test:e2e`를 실행하고 `artifacts/e2e`를 7일간 보관한다. `pnpm test`와 `pnpm run check`는 이 workflow에 포함되지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/e2e.yml#L1-L29",
+          "version": "repo-lines-v1:sha256:b6427e5fe7c1e4143f1967f0f3c603f56a9883a30116cd33d02143aa40e094ae:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVhOTc2YzFiYjU0M2JjNTExYzFhYWI2OTdkZjFjYzBjMDkyNDkxNDIyNDE4MTMyNTRhOTczZjJjNTYzMmVkODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhYWU4N2QwMmZkYzljNjFkYmFmMTE3OWJhMTNlNTVmM2YzOTk1YTkzODlhODI0MDYxMWQ1MjE5YTg4NmEzZDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjliZjQ1ZDJiYzIxMDg5NWU2N2JkMWQyMGRhYWFjMWI1OTgyYTc2NjQwODI5ZmQxZjFiYjRhNjk5NTUyOTI5NDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_92918cfaacf544109cd05b8b576f5ebd",
+      "statement": "`pnpm test`는 `&&` 사슬로 `pnpm run build`와 `pnpm run test:brand-icons`에서 시작해 여러 도메인·통합·query script를 지나 `pnpm run test:architecture-boundaries`, `pnpm run test:storybook --run`, `pnpm run test:readiness` 순으로 끝난다. 이 사슬에는 브라우저 E2E와 `steiger ./src`가 없으므로 그 둘은 별도 명령으로 확인해야 한다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L23-L24",
+          "version": "repo-lines-v1:sha256:8650830a178c80348058e4ace0d6d95a0b301c7ee3c2804be700d9750b72570b:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWZhNzRiYmE5OThhMzg4ZmM5ZThmMzg2MzNhZThjYmY5MjM4YjNlNWFlMzQ1NTIyMTg4NDM2NGIxOWU3ZWQ3MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTEwNGFkM2NlM2RjMzEyMWFjMWI5NDQ5NTU3YjdmMzdmNjlmZGQyYzllZDQ5OWE1YzgwNjAyNmZiZWNmZDZlMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjAzYTNjZTVlM2YwN2M3ZTg1NDZkNDYxMTY3ZTEwYjk2ZDVhYzUwOWQ1ZDdkNmZjZTc4OWJjNDI1MWI4ZmMxNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTNmYTdiZWE2ODc0NjYxNTYxYjAzN2UyMzY4MTE5YjBmZmYxNjI3MWMwMjZkNWRiNzU2NjhlMzBmMzQxZTkwNyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1e7483a0b6f148deb8251f048e42d04f",
+      "statement": "`pnpm run test:readiness`는 8개 TypeScript 파일을 `--test-concurrency=1`로 하나씩 실행한 뒤 `python3 tests/modal-submission-contract.py`를 마지막 단계로 붙인다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L70-L70",
+          "version": "repo-lines-v1:sha256:ea73897a5411cae79ff1745ec0523235a8796d7d0066e05e0a0bd712e9aa41f8:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE3Mzg5N2E1NDExY2FlNzlmZjE3NDVlYzA1MjMyMzVhODc5NmQ3ZDAwNjZlMDVlMGEwYmQ3MTJlOWFhNDFmOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE3Mzg5N2E1NDExY2FlNzlmZjE3NDVlYzA1MjMyMzVhODc5NmQ3ZDAwNjZlMDVlMGEwYmQ3MTJlOWFhNDFmOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDAzZDg2NWY0Yzc5MmI3OGVmZmMxNzU1M2ZlNmY1NjI2YzVlOGQxZmE1NmRhNDYzOWUxNWJiOWNhYjU2MDNlMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODIzNjQ4MmM4ZDI3N2MyOGUzMjdjNjNkYjdiMjU2M2Q3Y2ZlNjI1ODQzNjA0ZDM2NmFkYzUzOTkwNzU5OTA4NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_681f7b061051405498f6b7e310bb0df1",
+      "statement": "`pnpm run check:architecture`는 `steiger ./src`를 실행한 뒤 `test:architecture-boundaries`를 실행하고, 그 스크립트의 FSD 경계 테스트는 실제 `src/` 트리에서 public API 위반, client/server 위반, root App adapter 위반 목록이 모두 비어 있는지 확인한다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L31-L31",
+          "version": "repo-lines-v1:sha256:fa28bb3ccf48a0cb156ae8df92e7cf954d9b4cc994ebbe26ac10f6fcb711103d:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmEyOGJiM2NjZjQ4YTBjYjE1NmFlOGRmOTJlN2NmOTU0ZDliNGNjOTk0ZWJiZTI2YWMxMGY2ZmNiNzExMTAzZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmEyOGJiM2NjZjQ4YTBjYjE1NmFlOGRmOTJlN2NmOTU0ZDliNGNjOTk0ZWJiZTI2YWMxMGY2ZmNiNzExMTAzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmQxYTU5NjYzNWViNTUxNzNkNzlhYTg2MjgzOTEwMGE2MzY0MjA1ZTNlNWE4ZjhkZTEzNmNiNzM4YTBjNjFkMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTg4NjJiYjRiOTM2NzFmOTBkNmQ1OGU4ZGI5ODdhMDgzZWYxM2IxMWM0ZjFiMWFkZjczOGY0YjUxNGVmYTBjZSJ9"
+        },
+        {
+          "resource": "repo://steiger.config.ts#L4-L66",
+          "version": "repo-lines-v1:sha256:a4f36f80d56f51673dbf218f19fe251658fc1bbb1dce173d6242c47e9550bc07:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhNDhhN2E3OTYyN2E2ZTA1NjlkMjBiNmRhYzEyZTU3NDk5NjliMGVlMmE2ZTE0NWQ3NjFjMTdlMmZiNDFmMDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1ZTI2Y2Q5MjM2NmY2MGQ4ZWQ5MmQwMjM5ZjA3ZmVmNzRjYWMxNGFhNjlhZGRmOWMyY2MwZDExZWIwMGE0NjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNhM2M0ZjVlNjIzYzg3ZTYzZGUzZGQ1NmRkM2VjYmUzYjQ4NjRiOGYwYjQyYTJlOGFjYzQ2YTUyY2RiMjQ2MjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZhM2NmNTE5MjM1NGY3MTYxNWFjNTEwMzRiM2U5N2MyMGVkYTk5NjQzZmNhZjViYmU2ZDQxYWQ1OWJkMTIxNjcifQ"
+        },
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L381-L386",
+          "version": "repo-lines-v1:sha256:2b86de62dad50e16d6cccd405474286fc18cbe7b3dc47a81cd8bb25317d1d839:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDQ3MWUyZTZjZDMyMDBjNTE5MWNlM2FhNGE5NWI4MDExNTQ0MTRhMmY0YjZhYThlZTlmZmU0MDk1NDM5ZDBkOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjZmNWI0MGIxNTg0NTdkMTc4NjRmMjE3OTA3ODZkZDVhMmVjZGI2NGI2NmE2NTFmNzg4ZDRlMjVjZDMzMDNkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTNkZjE3NzFhMGExNjAxZGE0ODVkZjRjMDM0NGQxYWM2NzEzOTZkZDdjYjM1Y2RlOWFhY2ViYzAzNjFjMDMxMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_747b2d462f8a41159a9377b7c5975cf0",
+      "statement": "`DATABASE_URL`이 설정되지 않으면 대부분의 `*.integration.ts` 파일이 `DATABASE_URL is not configured`로 스스로 건너뛰므로, 통합 script의 통과가 실제 DB 동작 확인을 뜻하지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/admin-operations.integration.ts#L7-L11",
+          "version": "repo-lines-v1:sha256:9fda648596696acaad7bce22ce150d80c2586221e5d13189d1e34f6052516957:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTI4MmI3NWE5ODcxZjQ0NTBhNmRkN2Q2NDc1YmRlZmMwNjQ3YWUyMjdiODdmZjFjOTA4NjdjMzhhMjRjNGVhNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjRkYjQ1ZTBiZTMxODA1NjBjZTI0NjYyY2U1MzZlYmYyZGJiYmRlNGM4ODI5NjdhZGE1NjQxMWU3ODNkYTZkZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzUxZjlhZjM2NTgxYTc2NGY3MWFhNGM2NDI4NDM0NzllNWI5OGI0ZjczNDQ5YTg4NGQxOTBmNDA4YjE5YTg3MCJ9"
+        },
+        {
+          "resource": "repo://tests/mixing-queue.integration.ts#L7-L11",
+          "version": "repo-lines-v1:sha256:16bcd6b48f93423b8607525c5cbff53b157ab26bbc5041cdf3cbd8fc2454ed48:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODQwODFlZDgyZmJhYmZlNWQ2NDFlY2ZmNjIzZjU0MDhhMzgwZDcwZmM2YTNjODBlNzU4NzEwMTAzYjRiZTY5NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjRkYjQ1ZTBiZTMxODA1NjBjZTI0NjYyY2U1MzZlYmYyZGJiYmRlNGM4ODI5NjdhZGE1NjQxMWU3ODNkYTZkZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjEzMTAxMzEzMmFjNTU4MWIxNGIxZjJjNmZiMzkwMTk2NzU1MmU1MjVmMDcyNzgxYmE3MTQ1Nzc5MGJiZTQ3MSJ9"
+        },
+        {
+          "resource": "repo://tests/vocal-profile-persistence.integration.ts#L211-L218",
+          "version": "repo-lines-v1:sha256:1c00c61fec7448c930ae8661be7d82378b4268757eff216cea0a08dff1a03113:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2FiODZmZTk0MDc3MTgxNTI0MTk4NzY4ZDQ0ODA3NDlmYTE3YTk1ZjJlNWQ4OGViNWIyNzc1Y2E3NTc4MDAwMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2EzZTQ2Zjk0Mjc2YjZmNmY0ZWQxZjAyYWY3OGJlZjZhMmVlMWM0MzlkZDU1ODRiOTczOTQ4MzEzMjE0ZDJiNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmI1ODBlOTY0ZjgzYTQ3M2Y0M2Q0NDM4NDYyOTQ5ZDY4YjU2MDBmZGE3ODdmMTYzNzQ1ZDAwZGU4OWNiZjM2YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_ec14254d239649e2baaa26dd7f9756c0",
+      "statement": "`pnpm run test:query`는 MSW fixture 기반 클라이언트 계약·쿼리 테스트 세 파일과, 실제 DB를 쓰는 `conversion-stream-upload.test.ts`, `admin-custom-mixing.integration.ts`, `bounded-multipart.test.ts`를 한 명령에 묶는다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L26-L26",
+          "version": "repo-lines-v1:sha256:aa9637ce14322f3c3f8aef7ece8a7191cf941ed341edf4e9c934cc6bd050cd85:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWE5NjM3Y2UxNDMyMmYzYzNmOGFlZjdlY2U4YTcxOTFjZjk0MWVkMzQxZWRmNGU5YzkzNGNjNmJkMDUwY2Q4NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWE5NjM3Y2UxNDMyMmYzYzNmOGFlZjdlY2U4YTcxOTFjZjk0MWVkMzQxZWRmNGU5YzkzNGNjNmJkMDUwY2Q4NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGE1N2RhMzBjMzlmNTA3MDFlZDY1MGJjMDc0NDdlMWJkYjZlYmM4MzkzY2IxZDBjODY3Y2I2OTgxMWEwNzk0NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzE2YWRmNzFhNzlmYmMyNGZkNDJmNGRiMDRjZDNiMTQ1MDk0NTZiZWMwMTg2YjAxZjVjNzVhYjhlYjNmNWU3ZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1909474efcf74a8bb9508930a6183453",
+      "statement": "MSW 기반 테스트는 `onUnhandledRequest: \"error\"`로 등록되지 않은 요청을 즉시 실패시키고, `tests/msw/handlers.ts`의 handler와 fixture를 재사용해 Zod 스키마·오류 분류·재시도 한도를 확인하므로 실제 Route Handler 응답과 네트워크 실패는 검증하지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/msw-query.test.ts#L33-L35",
+          "version": "repo-lines-v1:sha256:aeed391b7a4a606a3e366801ac53bffda996016b019c6154f65b5a7ec0a79f37:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGYyOGFmOWU1MmEyNTFmYzc5Zjk5YzE1ZTY3YjJlZTQ1ZTkzNDAwMDQxYmNiNWZlYzk4Yjg5NzI3YjFlZGYxNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjcyOWYwOWJjMDVkMmM2ZmNjYWUzNGE3NGQ3MTU2ZWU3OGVkMzc0NTdiNzg3MmYzOWM0OTRiZWQzZWMyMWJlNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmQwZjJkM2EzYWFkYTI3NTg2NDU3OGQwYTQzOTE1NjM4ZDU0M2ZlY2EyYzk0ODU4ZGI5NDEyMTFlODZjZWYyYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWJiYjkyMTRjYzZhMmIwMDI3YzY0ZmJiNTg4M2U1MTQwNjUyYmM5YTFlYjQxMjM4N2MzYzE2NTM3MDhmOTA1OSJ9"
+        },
+        {
+          "resource": "repo://tests/msw/handlers.ts#L19-L35",
+          "version": "repo-lines-v1:sha256:e61cbb5e53e0d4d66c730870a03e79de791ce8470fd4a70fc6ac2de1e649a9a7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0OWE5ZTVhMTlhY2U0NDBmYjZmODA3NjFhNWJjZjNiZDA0NTdmYjc2ODIzOTMxMzk3MGEzYTQ4NmYwMDA4YTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJlNjQxNTJjZTk2ZWY5OTA0ZGUxODE2ZDFjMGJlNzIyMTI3YmJmOWI3ZmNkZjY2Njg2NjQ1M2ViOWU5NDQxYTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM2MDQ2MzkwOWEzZmNhOWM1NDhkY2Y2ZDJkYzdhMDBmZGQ3N2NiNDQ0NzlkNTJlOTUxNTEzMGFkZjcyZGQ4YjUifQ"
+        },
+        {
+          "resource": "repo://tests/msw/server.ts#L1-L4",
+          "version": "repo-lines-v1:sha256:0d2447061027b257045f3ef64fd7c12f12696b103572bcffa60a72810d4455e4:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGJkZjRkZWYzYTZjNTE5ZDhmOTBkOGRmYmRhMTNlMGRhZDA3MThhY2VlNmFiNTljNWE2M2RiMzQ0ODVkYTY2YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTdhMzdkNTAxYTQ4Y2VlMjZjNWRmOWIwODZlN2Y1NWZmNzI3Y2FlNTdhYzZhZjRmODEyMDgxMDY4ZTdmOGMyMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1ca219d5f4a344beb28e80fc1873763a",
+      "statement": "`pnpm run test:storybook --run`은 `vitest.config.ts`의 `storybook` project를 watch 없이 실행하며, 이 project는 `storybookTest` 플러그인에 `.storybook`을 넘기고 Playwright provider의 headless chromium에서 돈다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L59-L59",
+          "version": "repo-lines-v1:sha256:a4375313de4803d2a53f7091044cfe856b64cb55e46d3cab1e4f8bb1b0bc0cd8:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTQzNzUzMTNkZTQ4MDNkMmE1M2Y3MDkxMDQ0Y2ZlODU2YjY0Y2I1NWU0NmQzY2FiMWU0ZjhiYjFiMGJjMGNkOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTQzNzUzMTNkZTQ4MDNkMmE1M2Y3MDkxMDQ0Y2ZlODU2YjY0Y2I1NWU0NmQzY2FiMWU0ZjhiYjFiMGJjMGNkOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGFmNTZiN2Y3MTVlOTA4Mjk4YTE5OThlYWIwYWJmYjljODFiYmM3ODY5MTNlYTRkZmUyNzY2YjkzYzdkNzA3NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2I2ZDNhOWZhZDY3Yzk2MjNjN2VjYmZhYTIwMWI0YzFkNmFmNjgyNjJlMmJkYmEwMjA5ZGFmMzhjMDkyNTk4YiJ9"
+        },
+        {
+          "resource": "repo://vitest.config.ts#L38-L54",
+          "version": "repo-lines-v1:sha256:c75f6368222f87aec2aeb64cb43441c02a9a0209139a72fa65c6682efc6a9585:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MzZkZjdhNWEzYWFmMTgwY2ZmZDFkNjVjNjQ2ZWY2YWVhMzUyY2MyNzc3NDY4NjE5OWNkOGZiM2U4OTljN2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZjMjY2MmFiYTY2ODAwZTNlZjI4MWE4OWY1MjU1ZDkzYTkzYTkxNTM0Yjg4YzY2MWYwZWQ1MmE1OThhYWNmYmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fa43abdd8e9f4b7aa122ce522ee19cd9",
+      "statement": "Playwright E2E 설정은 `workers: 1`, `retries: 0`, `forbidOnly: true`로 자동 재시도 없이 한 번만 실행하고, 실패할 때만 trace와 screenshot을 남기며 결과 JSON을 `results.json`에 쓴다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/e2e/playwright.config.mjs#L2-L20",
+          "version": "repo-lines-v1:sha256:cc272b98ba27fce4e85d89043d4909c575b8c360f1fb8415318293c5f457e8e0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyY2VjYjE0NGE0NmY1ZGNmMTJhNjE2OWZjZWVkNzY5NWU4Mjk0YjA5MGRlNzZmMzY2MWNkZDAyNDkzMDAxNDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoxLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmMzY5YzdiZGM3YTlhZTkwZGNjZDZhOGQ5Zjc5YzI3ZjFlODhhOWM1ZGE4YjI4OWZiNGNmZDNiMzk2MjU0NGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_58130676a5714b199022cca6d744897e",
+      "statement": "E2E runner는 임시 PostgreSQL 컨테이너와 target별 별도 DB, 로컬 provider 서버, 별도 웹 포트를 만들고 `DATABASE_URL`·provider 환경값을 테스트 값으로 덮어쓰며 `DEV_AUTH_BYPASS_ENABLED`를 끈다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/e2e/TESTING.md#L17-L17",
+          "version": "repo-lines-v1:sha256:2b44002a6e8b77cd99d082f7b74d3bee2e76772b961143a6ffb0e8f98c765a75:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmI0NDAwMmE2ZThiNzdjZDk5ZDA4MmY3Yjc0ZDNiZWUyZTc2NzcyYjk2MTE0M2E2ZmZiMGU4Zjk4Yzc2NWE3NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMmI0NDAwMmE2ZThiNzdjZDk5ZDA4MmY3Yjc0ZDNiZWUyZTc2NzcyYjk2MTE0M2E2ZmZiMGU4Zjk4Yzc2NWE3NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzg3NDZiMjhhZTliYzQ3YmFkZWMwMzZmZTBkN2Q4N2VlZTNkOGE5OTY4MWI3YTFhNWRkMmRhZjQwYmE3OTg0NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjJkMTBkODhhNTllOGM0OTlhNTNhNjAxNDkzZjM3OGQ4N2ZkMTFlMWYyMGQxMDFiMzUxNWI2Mjk1OWIxZmRmZSJ9"
+        },
+        {
+          "resource": "repo://tests/e2e/run.mjs#L158-L191",
+          "version": "repo-lines-v1:sha256:78bdc80fdaa2d24641f587a8a77c58c081657ce3037ac674724b25a8b3a4fdfd:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM2MjMzNjliZWZmYzQ3MzdkMGJmMmY4ODk3Mzc2ZTc0NzE0YjRlNWVjZjlkOTFhNzg2NzRlNzVlZmUzZTQ4N2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkOWUxMjU0NjQyNTU3NmQzZGVhZThjOWI5ZGJmMTI4ZDVkNmRkYWY1ZDdmZTg1NzkzNDkyN2RlZmZhM2I5ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5NzcwZTExYjdmOGEzYjljMjA2ZDVmYTk2OTRjYTEyOWJlNzQyNzQzZjJlZDhmMjUzZTVhNzM4MTczMDk3MDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJjNjI2ZjY1MGRjMjcwYjhlNzk1NTlmNzEzZTRjNzA5NjRjYzcwZTNiNGQ1ZDA0ZTNlZGM2Y2VjZDJjNmE3ZmQifQ"
+        },
+        {
+          "resource": "repo://tests/e2e/run.mjs#L96-L114",
+          "version": "repo-lines-v1:sha256:22bb21eeabfa6d798059035d3bc763a4f872d488bdde3fe8d51df26addf1d9d7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhNTNiYTM1MDk2Njc2YzUyNDBjYzA4NDQ4M2ZlMDM1NjE3Zjk0ZjA5MGMyYTA5YTI4NjdjMDQwYWEzNjE5ZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZWYwMWJjMDhkYmMzYjYzZTRlNzVlYTNkMjZhNWI5NDE4OTE4NzdlMjdhZDg5MTMyOWM4NDExZDdkOGRjNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJiMDJmYzY4MDhlNzVlOWI4ZmIxMWIwZjcxZjA0NDIxODg0YTkxNjIyY2VkZWEyZDc1MDhjYzIxZTIyNDk4ZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlOWMzZmEwNzY5ZThjN2I4NmVkZTFiMmQ5MmY3MDYxNGRiYzY3NTZmNzY2ZGFmZjU5OTg4NGFhNjEyYTZhYWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_468484b59acd4b53ac616166f2cb82da",
+      "statement": "E2E runner는 결과를 `artifacts/e2e/<target>/`에 실행 로그와 `results.json`으로, `artifacts/e2e/comparison.json`에 baseline·candidate 비교 요약으로 남기고, 이 디렉터리는 `.gitignore`로 제외되며 로컬 생성 fixture 세션 값을 포함한다.",
+      "evidence": [
+        {
+          "resource": "repo://.gitignore#L63-L63",
+          "version": "repo-lines-v1:sha256:c178f483c1b03ea55f3241483e00df1c39e211e858e990c8b19b326c7ff035cf:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzE3OGY0ODNjMWIwM2VhNTVmMzI0MTQ4M2UwMGRmMWMzOWUyMTFlODU4ZTk5MGM4YjE5YjMyNmM3ZmYwMzVjZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzE3OGY0ODNjMWIwM2VhNTVmMzI0MTQ4M2UwMGRmMWMzOWUyMTFlODU4ZTk5MGM4YjE5YjMyNmM3ZmYwMzVjZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGYwZDk4ZDc4M2VhZGQwNjJmODljYzQwNGNlNjgzMTY3MGI1ZDI0NDQ2YWJiOTUxZDliNWJlMzc2NWRkOTEyNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://tests/e2e/run.mjs#L153-L157",
+          "version": "repo-lines-v1:sha256:73654b2731b4c845669112579f9f8ec43b9e3fed174e469cdbc74ae23c4f8c48:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2E5MzM4MTM1MDZmOTM5NWY2ZjFlZmE1Y2I3NjkyZTA1Y2JhNjUzMWJjOGViM2NiOGJjYTBmZjI0ZDMxZGQyMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTgzMDg4OGZlNjYyYTVkYWNlMGEyNTJmYzY1ZDNiYWI5MjY3MDcyMmFiOTg3NzgzNDI3OWM0YWNlNjk1MDc4YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2NlOTU4OTUxN2M0YmRjNzczYzJkMmQ0ODZmMzdhMjA0M2IwNDEzMDVhMjFjZTk3NmJlY2M5MzljNWU1ZWQyYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjliYTU3YzRkZWQxZjJiNzA5OWJkYWU2MmQwN2IxMDRlMTU4MzY4MWM3ZmFiYzQ1MjU5ODY0NzliNjlmMGY1NiJ9"
+        },
+        {
+          "resource": "repo://tests/e2e/run.mjs#L20-L21",
+          "version": "repo-lines-v1:sha256:0e66e221ca821574a080386b194425f00202b511d7a0df8d9563f09fd1046f49:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmQ5ZWVkMTYxN2Q1NjdmNjkxMjdhMWExMDRiM2VmYzM5MWE5YzU0YzA0YWU2ZDU3MTNhYzllMjZiMTI3Mzc4YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTc1N2FiOWIzOGFlOWZkZmU5MzMyNzdkNGQyNDM2ODI0YTBjMzljZThlMWMxNzY3NzYxZDRiYWNiYmU0MDNiYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWQzNDhlMjRhZmQ1M2FkNDBlMmZkZTM2NWJlNGJmOGU5NWZjOWRjMjYwN2VlNWViYzAwNWEyMzdkN2QwNjAzZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDA3ZjhkMjU2ZWMxYjQyN2VjOTNjMmEyZTBlYzNiYWMwYWVkMjM1NGJiNzlkN2EwOTE1NTNiOWI3OWI0YzliMyJ9"
+        },
+        {
+          "resource": "repo://tests/e2e/run.mjs#L258-L261",
+          "version": "repo-lines-v1:sha256:650233673ecea3aa8bb6e93f4966f640a83e59f5792c6ea42e3d43110f9165e7:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDAzNDkzZTBhMGViZTI2ZjVlZTA1ZmVmZTdiYTQ5MjI3ZmI1MzIxMDBjYzAxOThjZWYxMDU0ZjU4ODNiOTJhMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTVlZjAxYmMwOGRiYzNiNjNlNGU3NWVhM2QyNmE1Yjk0MTg5MTg3N2UyN2FkODkxMzI5Yzg0MTFkN2Q4ZGM0ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjhmMzM3MjFhYTI5ODZhZTBjZDliNTRmNjYxNjczZmJmOGIzOTk0NjllNjMzMzJhNDFhNTQ5NjE4ZTdkZGJmNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWM5Mjk3MGViNjE3MjQyOTc3YWM5YzliM2QzZDk3OWQ0OGI4NWExY2YwNmQyYjdlMzc1OWQwM2QyMWY3MWFkNyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_4e84f98be9da4da4af7580d359f039d8",
+      "statement": "`pnpm run test:e2e:compare <revision>`은 `git archive`로 baseline 소스를 추출하고 seed 도구만 추가하며 앱 코드를 수정하지 않고, suite 파일 다섯 개의 해시가 실행 중에 바뀌면 오류로 중단한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/e2e/run.mjs#L127-L144",
+          "version": "repo-lines-v1:sha256:cd5f4f702c6a48fa9bbb5c8c3722d187daa960300fa2e8df090d84e98b0fafcc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyYmUyZTk1NmJiZWI3ODg5YjZlYTViNWM4YTA3NjU3ZTQ2ZjI2ZWM3NGZjM2Y3N2QzZWUyOWJmZTMyNTVjYzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlhYWM5OTEyNmY0NDdjYmY5NWVkMmNlNWJjNmQxY2FmZDg3OWQwM2JlNDFiNTdmOThkOTlhNDkxMmI1YmMwMGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc5ZDMyMGM4NGJlMDUzNGY5NDU5OGQzODE0MmUxYzQ5MDk5ZTI3MGYxZjk4NmNjMmI2NjFkMjRhMmYwOTg2NWQifQ"
+        },
+        {
+          "resource": "repo://tests/e2e/run.mjs#L150-L152",
+          "version": "repo-lines-v1:sha256:7ce9589517c4bdc773c2d2d486f37a2043b041305a21ce976becc939c5e5ed2a:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjJmOTdmNzMyMzk4YTk2NzBlOGQ4YzU5NzI2NWZjNTc2MGNlOTBkNjk3Y2E0Nzc5YWFjOGM4ZGM2ZTc0ODNmYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWRjMThiMDI1YjQ5MTFjNjM2MmZmYmRjZGJhYzc0M2NkMWRiMzBjODgwYmE0YmMzZDdmNzAzNWU2MmQ4OGJkNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2NmYTgyYjZlYTM1ZDdlZGMyMTgyODc1ZjJmNTEyMjNmYjI1MzAyNTc3MjhjM2ZmYmUzYTBiNTYyZDMxZTU2NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDZmOTZhMjc2OGE3YzA0YjkyZWJmZWYyYmZkYjUxNGMwMzkxNWM1NGM4YmU4NTFhMjE3MDFiOGQ5NWNmYTdkMSJ9"
+        },
+        {
+          "resource": "repo://tests/e2e/run.mjs#L25-L33",
+          "version": "repo-lines-v1:sha256:f7e3459c608988f0ed1f846a7f9aa3c11892c53d9a45252f3455232a10bb4f5a:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjBjNmRhMTBmOWU2Y2EzODBlMWVhMGM3ZjkwMGFmODQzYjUxZDgyMmVjMTUyYzcyMmZlMWFiMDNlZjFlYjIxYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDk1YTdkOTE5YmVkOTAyNTIzNmUwMTZmNGYxZDQ5NDM1MjA0YTJmM2NiMjM5MjUwNmIyZGNjMjljM2M1NGNmYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDA3ZjhkMjU2ZWMxYjQyN2VjOTNjMmEyZTBlYzNiYWMwYWVkMjM1NGJiNzlkN2EwOTE1NTNiOWI3OWI0YzliMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGM0MmY2MmRkMTBhY2JkMGQ0MThjZGVkZTljZTFmNjg0NDZjYjE3ZWJmODA1Njc4ODgzYzE1NDZiODQzMWZiNyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_b97b60b72eab4aab8995a4dcc2cd2969",
+      "statement": "E2E가 증명하는 것은 같은 fixture와 같은 assertion으로 실행한 계약의 회귀가 관찰되지 않았다는 뜻이며 전체 서비스의 동등성을 증명하지 않는다. 실제 Google 로그인·신규 가입, 실제 Modal GPU·Leemage 장애, 여러 브라우저·기기, 네트워크 품질, 실제 부하, 관리자 카탈로그 편집·커스텀 믹싱, 모든 파일 형식은 검증 대상이 아니고, 로그인은 DB session 행과 서명 cookie를 미리 넣는 방식이다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/e2e/TESTING.md#L28-L30",
+          "version": "repo-lines-v1:sha256:6bed0a87f346d87da3861856307bbfd66b0ac5214023a8e738fb2b914a88dfba:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODg3YjE1OGI3OWZkZjVlZDc5OTY0NGFmMWY4MGEyZDQ3OWZkNzZjYjhiZTMwYjQ4MGY0ODBkMDZmY2UwYmE4NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjhhMmY3NjU3NmU0YjA1MjRhZWZhMzE3N2Q2ZjFjYWRmZGNkNWE3MTdhODdlYzRiY2I5ZTk4ZDAxZWIwNDg2NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzA3MjZiOTI2NWY3MDYxZTU5YTM1Y2JhYmU0ODEyZmFhNzRjZGEzNGEzODFmNDdiNjBkYThmNmQ2ZDYzZTYyZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzc1NzA2MjVhYzkwYTM5ZDA2NTdiMzA2ODAyMDA5M2VlZDU2ZmQ3N2RmYmZjOWYyYmY3OGJlMDQxNzMyZTBkNyJ9"
+        },
+        {
+          "resource": "repo://tests/e2e/seed.ts#L41-L50",
+          "version": "repo-lines-v1:sha256:b60d5971eb5af59efc4391168126f7874bd8e1d408732da2ff9a7c628cae9bfb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlZjM3MmUxMTExOWNlYWU5M2IxYjZhY2M3OTYwZWMzNDFjYTJhNWUzZWJmNmRhNzlmNDA2MjQzYzQwOWU3YjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxMTAyNDBjYjc5Y2YwZWNjYzg3MzFkZTM3ODlkZmEzZjYwZTYzOWIwMTBkOWE1NmQwOTk1NDY0MTQ2YmM4NjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM2MjY3YzE1OTdmOTQ0NjZjYjlhZDdkY2FiY2Q2OTI4NmQ4OTVhYzQxODA3YTUxNzFhZDBiYmZjNTIxMDkyYWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdlYThlNDBhNWQzNDBlYWY5NGYzMzUzNThmNDY1Zjk1OWY4YjFjNzc1ZGQ5NGQxMDU4OTQ0MzJjYWEwOTM3ODYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6ef7b2c8731742edac21718b6c4fd5ed",
+      "statement": "k6 부하 harness는 `BASE_URL`이 격리된 localhost여야 하고 `CONFIRM_ISOLATED=yes`와 테스트 계정 Cookie 값이 있어야 실행되며, 200 또는 `Retry-After`가 양수인 429·503만 통과로 세고 check 성공률 99% 초과와 p95 지연 2000ms 미만을 threshold로 둔다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/load/readiness.k6.js#L16-L33",
+          "version": "repo-lines-v1:sha256:b5fe36f9e974409c80a2db74e73ec91ed55c6c293cf819d8747d4415b2640987:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5ZDMzMzYwZjU1YzU0ODNlMmVhNjBjMzQ4ZjVmZTljNDI2YmM5YTlhNDc4ODI5MzMyOTAxYmY3YWVkNTMyMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMWQxYTYzMzkwMjI5Yzc5ODM0N2U4M2EwNDA1NDQxYzk0MDAwMzUyODRhZDE2OGMxYmY2Y2RmMWQ3MGEzNzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY4ZGUxZmM4MDMzYTEzYjE5ZmRjOWY1N2Y3ZWNmOWNmNjMyMDg1YTk4MmUyYmUzYzUzZWQ3MTRkYzYzYmQ2MGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEwY2YzODFhMDljMDQxNWUzYWM2NGZmMWEyOGJmZGYzNjNkZjBlOWFlMDIwMDY3NTk5ZTcwZTUwNGFlYzJhMDAifQ"
+        },
+        {
+          "resource": "repo://scripts/load/readiness.k6.js#L34-L58",
+          "version": "repo-lines-v1:sha256:6dae03ef5175ee04d63a0e916d65088c75aee4f3bd408ec32de566539e38e49a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwNGM3YjNmMTU5MjNiMTU5Yjg1ZWZkZTZmZmI5YjZmZTYwOGNiNGNjNzc0NTNhZTY3NGQwZDFlZDE3YWRmYTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFkZWQwMmExMTkzMzA5NzAzMDUwYjJlYWQyY2NmODI0MTU1OGExMTIwMDExOWRmNmNjMjhlYTRkMDVmMjA2NjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://scripts/load/readiness.k6.js#L6-L15",
+          "version": "repo-lines-v1:sha256:1d0650aa196e578843578f36b84ada9db566e01c3465d7243bed12985d28b92f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5Yjg5MmRjNGFiNmNjMjEyMzgwZDQyMmY3MjUwN2JjNTk5Yjc1NjJiZGQzZTRjYzgyNDViYjgyMWMyMTMwYWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlOTExNDVlNjc1MGViMDhlYzcyZjVkOTJmYzc5M2YxNjRmMDIzZDZhOGMyZGQxOWVhODIwOTkzNDM3MzQyNjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhhYTY1MmVjM2NmZmFiMWM1MTA0OWFiMGNlMDJiZTI1MTQ3N2M2YWY4OTE0ZmIyZThmZmM1ODg5OTBhNDBhOGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA2YTIxNzI5NWYxYmVhMmMzYmMxNzcxOTYwZDNkNjgwZDBmODU4MTIzNWNlMzJkOGNhMmNkNmI5OWVhNzNhYWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c2a43f5eefd74c3491e0d559ede9deb1",
+      "statement": "`scripts/load/readiness.k6.js`는 `package.json`의 어떤 script에도, `.github/workflows/e2e.yml`의 어떤 단계에도 연결되어 있지 않아 k6 런타임에서 별도로 실행해야 한다.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/e2e.yml#L14-L29",
+          "version": "repo-lines-v1:sha256:a0b4cc6d1db2c7669dd4b9344d24f4563cb96a2ea501fca0f8f9a94a52cbe97f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4OTk5MTEwM2Y2YmE4ODhlM2RlNzY1MWM1YTMwNWM3N2U1NTQ3Njc3M2FiYTgzOTU5MWVjYzViZDBmMmFiMWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhYWU4N2QwMmZkYzljNjFkYmFmMTE3OWJhMTNlNTVmM2YzOTk1YTkzODlhODI0MDYxMWQ1MjE5YTg4NmEzZDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVlMWNkMjllYTRhMzdlOGM0MjdiYmU5OWI4NDEwNDI5NjJmZjUxZTg2ZWNiZDZkNTQ3ZWY0ZmYxNjNiNWQ5NjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjliZjQ1ZDJiYzIxMDg5NWU2N2JkMWQyMGRhYWFjMWI1OTgyYTc2NjQwODI5ZmQxZjFiYjRhNjk5NTUyOTI5NDIifQ"
+        },
+        {
+          "resource": "repo://package.json#L9-L73",
+          "version": "repo-lines-v1:sha256:ec63fc93050b32d85da7268893b401d4d84c691607027b80a2cf58b1acaa31df:eyJzZWxlY3RlZExpbmVDb3VudCI6NjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0ODMzZDU5NDljMDNhNDBjYTk1MjQ5MTYxMGE2NjU5NjQ0YjNhYTQ2NjM2MmY3OTkwMjBkYmYxOTgxNTQ3ZGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5ZTc3ZTU2ZmJjZmY1ZTFkOWY1OGQzNzVjYTQzNTVmOWRjNjJlZjBiYzFjMTJkYTdlZjExOGZmZmRhMGMxM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyNzAxMTI4NzM1MDNhMDc0OGU1ZWY0MGViOWZlZTUyYTZjNmRiNTdhNzMzMTI1ZjQ5NDhkMThmNGNjMTdiNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1NGYwYmY0YzU3YjAyNmUxYjY5YWM5NTcwZTIzZWUyNTk2N2E4MDkyNDJiYzFmZjFlN2M2M2E4NmZjNWRmM2EifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_96ad5bd9aba94ddeade3f0de0b629651",
+      "statement": "E2E는 실제 HTTP를 거치는 동시 재전송 멱등성(같은 접수 본문 재전송 시 동일 job ID, 1회 차감)과 잔액 0 사용자의 402 `INSUFFICIENT_TICKETS` 거절은 검증 대상으로 남기고, 429와 `Retry-After` 1–10초는 의도적 정책 차이로 report annotation에 기록한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/e2e/TESTING.md#L52-L52",
+          "version": "repo-lines-v1:sha256:5a035d529fe244fad10fdc73b2d7f74ffcc48c9204242d70628ce2bb3c5876b1:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWEwMzVkNTI5ZmUyNDRmYWQxMGZkYzczYjJkN2Y3NGZmY2M0OGM5MjA0MjQyZDcwNjI4Y2UyYmIzYzU4NzZiMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWEwMzVkNTI5ZmUyNDRmYWQxMGZkYzczYjJkN2Y3NGZmY2M0OGM5MjA0MjQyZDcwNjI4Y2UyYmIzYzU4NzZiMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTU4ZWQ2MzU5MTRlMWJlOGUzYjI2MmM5ZjM4ZDY3OTMyMThlOWJmNmE5MWViNjhjY2IxZjMxY2EzOWM2MzU0MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjIsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjIwMGUzMTI0OGNmZWI2ZmMxZWMyMDM2NmJkODM5MDMwMTdlOTJiODEwNTg0ZWYxMTk1NDJiNTdjNTZkMTliNSJ9"
+        },
+        {
+          "resource": "repo://tests/e2e/journeys.spec.mjs#L170-L208",
+          "version": "repo-lines-v1:sha256:9f9df0ff672478bd65b17816bc65ab92142919c8bcb4815a57dc4c37476fe6e0:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxZTJmN2M1ZGMyNmQ0YmViMTg4YzQ2YzMzYWVkMTExYmE0NTlhNjRmM2VjMzY5ZGMxYmY3ZWExZWRjOWJiYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhNzlkODM5NTA1N2Q3NWVhMmFjNjk4NWRiNTg1ODY1YWVhYmM2MDBhZjRjYWFhZThkMGE5MWFlOTZkM2U1MzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4NjUzYTgyM2U0ZDMwZGYxODY3Y2VkNzMwZTFkOWVmMTM5OTVjNjNhOTc2NzgwMmRjMDJmNzM2MTk3OTI5NmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM4N2RhNzJjODVlOGI3OWRjZTc0OTZhYWZhOTc2NDE3YmZjNzI4OTVkZmQzNTc4Nzk0M2I2MjIxOTc2NzA2ODIifQ"
+        },
+        {
+          "resource": "repo://tests/e2e/journeys.spec.mjs#L325-L336",
+          "version": "repo-lines-v1:sha256:c401cebccbaf98723593e733d0acfca36826606368efe0470b1bcdf52c533fd9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0MWI2MzEyNDRmMWI0ZGZhNjQwYWMwMjAwYTAxYWQ1MTVhYzZlODdmMjdiMDc1ZGY5NDNhOGQ2MjJhZDdhYzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAyOTdmZjE0NDgxNzBlNTMyNjkxODI0MWQ3YWNkMDAyMmJmMTRiNDFmNmQwNGYwNWU1N2IzYzU5ODM2OWUwZTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk3ZWVhZDUzNzAxOTExYTI0OTUyNzBmOGU3MDA3ZDk4OTFlZGQ5OTEyMDQ0MjFjYzczNGRjYWFiZTc3YTc4MWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f87a1b75b70c439ba4f0dace2da03a32",
+      "statement": "`pnpm run check`는 `check:biome`, `lint`, `typecheck`, `check:architecture`만 `&&`로 이어 붙인 정적 품질 명령이라서 도메인·통합·브라우저 테스트를 실행하지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L29-L32",
+          "version": "repo-lines-v1:sha256:e8ba2b05fb93de2641c8b1a686fe3b313c56055a17505c23590c323a9f6b2fae:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmI3YjA1ZTIwZTI5Njk1ODUwMTU3M2QyMzMxNGViZjg4YmViYzBkNGUzYWY1MWY4NGEwOGE3NDc4ZDk5Y2ZhYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjI1MDEwYWYzZDkzNjFiOTliZDI2MTc5Y2ZkMjQwM2JmYWJkMTNjNzQ2ZTRhODZkZWFiNTAwZjNiNWNlZjAyMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGQyN2ZlYWI1YTMyYzcyZTdmZDJhNWJlY2Q5ZmFmMzY0ZmE2YWY5NjA2YWI2OWVjYmI2NTVjYTE1OGYzZDVkMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGQyMzU2ODE4ODljM2ZhNWQ3MDM1MTg0YjYzNjRjNjJkNTlkOGYzNmUwZDgwN2U2YWU1ODMyZmJkOWZmODNkMiJ9"
+        },
+        {
+          "resource": "repo://package.json#L34-L34",
+          "version": "repo-lines-v1:sha256:d4e0325b7d82a9b18b8cb0818cdc0d114c83d4ab5bdfc7886be4677081cffb7b:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDRlMDMyNWI3ZDgyYTliMThiOGNiMDgxOGNkYzBkMTE0YzgzZDRhYjViZGZjNzg4NmJlNDY3NzA4MWNmZmI3YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDRlMDMyNWI3ZDgyYTliMThiOGNiMDgxOGNkYzBkMTE0YzgzZDRhYjViZGZjNzg4NmJlNDY3NzA4MWNmZmI3YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTg4NWZlYTBhMTc4ZDQ1ODMwZWZlNzM0ZmU1MDc1Y2QxZjMxMmZmN2Y1NDY1Y2Y3OTMxOWIxMTY4MTFjYmJhNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWMwYzRiOTk1ZjdiYTM4NDIzNDRmZGViYzVhNjY4OWYzZTJlNTQ4NWU0ODUzYmJhOWI5NDFlMjkyY2RhNmJmNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_fe61b3fb56ad49cd9a0d7ab82601eac4",
+      "statement": "E2E runner는 target마다 `prisma migrate deploy`, `prisma generate`, `tests/e2e/seed.ts`, `pnpm run build`를 실행하고 Next.js production server와 `mixing`·`vocal-profile-analysis` 워커를 띄운 뒤에야 Playwright suite를 실행하므로, 제품 build나 워커 시작 코드가 깨지면 첫 시나리오에 닿기 전에 실패한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/e2e/run.mjs#L198-L214",
+          "version": "repo-lines-v1:sha256:c8bb4b049310d022d09b63897c0a67a1825fa629eb467bc754388a9d7f2db8ce:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiNDYwMGM2NzcwN2E3MDBlMzMyMjZkNTY4MDg2NGRiZTUyZWNhYjk1NmRiOGE0MWY0N2ZjM2M2N2U0MDAyNzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYyOWU1NjhhYjRjYmIxNGJkYmVjNjk2NDlkYmU5NzE5ZmNmMDczNTdhMTRmOTUzZGM1M2QxNDM0NzIzMzA2ZmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU0YzFhNjVmNzMwYmU4OTkxMDFiZjI0YTQ1MTg3MGEyZTQ2MTIwODQxM2U1YmJmN2U3ZDQ5NjkxYTM4ZDZkNmQifQ"
+        },
+        {
+          "resource": "repo://tests/e2e/run.mjs#L230-L246",
+          "version": "repo-lines-v1:sha256:90e04de3e433d75c6e8ee4dd3077726dc8a4ea104f7ba21efdbcea62a0f5b530:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyMDQwMDhjMTZhOTliY2YzOWVmNzlhODVhZGFjNzFjNDc1NmZjYjFlNzQzZGMxZGQwZDllZDBlZTkxOTliNzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlZjY5MDA3YTdlNzVjY2RiMmMxOWVmYTlkOTVjNDNiZjc4N2YzM2EyYjljODI2NWM0YTVjZTY0MmZlNmRiZWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVkMWE4Y2UzY2U0ZmIyZjM3MmE5OWUxY2MzZjdhYWM3MzFlODU2OTJhNjZmYjk0NDRiZmE4OWM1YTFjNDUzNTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZiMDUzOTFmNGMxM2ViYmM1ZDJmZjllODdjZWRhY2QyNDU1MmEwMmRiYzEwNDdhM2YzODliYjlmYzZjMjc4Y2EifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_eb16affe8f6247f488b6d2baf957cc10",
+      "statement": "E2E runner는 target별 디렉터리(`artifacts/e2e/baseline`, `artifacts/e2e/candidate`)에 실행 로그를 단계별로 나눠 남긴다. `setup.log`에는 `prisma migrate deploy`, `prisma generate`, `tests/e2e/seed.ts`, `pnpm run build` 같은 시나리오 이전 준비 명령이, `web.log`에는 Next.js production server가, `vocal-profile-analysis.log`와 `mixing.log`에는 각 워커 프로세스가, `playwright.log`에는 Playwright suite가 기록된다. 각 target을 시작할 때 이 로그 파일들은 빈 파일로 다시 만든다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/e2e/run.mjs#L153-L157",
+          "version": "repo-lines-v1:sha256:73654b2731b4c845669112579f9f8ec43b9e3fed174e469cdbc74ae23c4f8c48:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2E5MzM4MTM1MDZmOTM5NWY2ZjFlZmE1Y2I3NjkyZTA1Y2JhNjUzMWJjOGViM2NiOGJjYTBmZjI0ZDMxZGQyMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTgzMDg4OGZlNjYyYTVkYWNlMGEyNTJmYzY1ZDNiYWI5MjY3MDcyMmFiOTg3NzgzNDI3OWM0YWNlNjk1MDc4YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2NlOTU4OTUxN2M0YmRjNzczYzJkMmQ0ODZmMzdhMjA0M2IwNDEzMDVhMjFjZTk3NmJlY2M5MzljNWU1ZWQyYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjliYTU3YzRkZWQxZjJiNzA5OWJkYWU2MmQwN2IxMDRlMTU4MzY4MWM3ZmFiYzQ1MjU5ODY0NzliNjlmMGY1NiJ9"
+        },
+        {
+          "resource": "repo://tests/e2e/run.mjs#L192-L207",
+          "version": "repo-lines-v1:sha256:120222d8899c9006b02629e8fd197a6423f50feeeddf0eab21927d90876b8789:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdmNGRjYmZlNTU0YzI0YTlmODE5NmI3ZGYyZDU4MjlkZmEzNTkyNjNkNzc3ZDhiNDZjZjg0MDBjYzRiNjg4NDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiNjViYzRjNDZmNWU5N2NmODE2NWNkYjQyMmI5MGU3ZWQ0ODFjYzAzODVlNzQyNTZiZTY3MmY2MGFiZWUzMzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNlZjk3MDE2NWUzMjU0N2QzYzk4MWYzZjMxOGFmZjlhNDdlNjBmMzA5MmUyYmE0NzI0ZWVmOWQyMjc4MzA2YjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBlMGI5OTNlOWI5Y2ZhNTFjMWUxOWJkMGYwMGRiZmQ5OGZlMmMzNTRmYjZiYmUxMmYwNmFlNTVlMmRiM2U4NDcifQ"
+        },
+        {
+          "resource": "repo://tests/e2e/run.mjs#L208-L229",
+          "version": "repo-lines-v1:sha256:15b3519eeca30d990004219ae77fb19fdbbec94ffe0252049ae8106281f9ddbf:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwMjNiM2UwODgwNWJkMWM1OWQ4MWY2MjAxMTNlN2UxZmFiYjhjNzc3N2Y3OGMzMmZlYzY4YzA4MDc4ZDljNDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhYzE3ZmZkNzBhMjVlYjgzZGNlMThhYzM1YmZhNzQ5YzdmZTMzMDA5ZTJlYzllMjFhZjRkYTI1NmNhN2IxZTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRiMjg0N2VlNjViM2Q3ZTEzZGQ3M2U2OWViOTdhZmY5Mjg4OGU4NmM5MzI0ZWRkOWVmNDJhODA3MDE3MTFlMTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4YzQzOWY4ZTFlNjc0ZDhkMzYwY2VlODY0MmZkMDdmZjEyOTZiMjdjZWY0NTVhMWJjMTA0M2QwMjhkNzBjZDMifQ"
+        },
+        {
+          "resource": "repo://tests/e2e/run.mjs#L230-L237",
+          "version": "repo-lines-v1:sha256:e43f7783d8bcd1bbcbfe70296b504656bc38317ca43a5be9e3e81bb33b631025:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjIwNDAwOGMxNmE5OWJjZjM5ZWY3OWE4NWFkYWM3MWM0NzU2ZmNiMWU3NDNkYzFkZDBkOWVkMGVlOTE5OWI3NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmVmNjkwMDdhN2U3NWNjZGIyYzE5ZWZhOWQ5NWM0M2JmNzg3ZjMzYTJiOWM4MjY1YzRhNWNlNjQyZmU2ZGJlYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWQxYThjZTNjZTRmYjJmMzcyYTk5ZTFjYzNmN2FhYzczMWU4NTY5MmE2NmZiOTQ0NGJmYTg5YzVhMWM0NTM1OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTYxY2Y3NjE1YWFhNjlkNjliYmY2MWE3ZTM1MWExMjViZDdlYjZkM2MzNjY2ZThkNGZjYTQyYmVmMWM2MDYzMSJ9"
+        },
+        {
+          "resource": "repo://tests/e2e/run.mjs#L240-L246",
+          "version": "repo-lines-v1:sha256:74a7099f9fceb8014536ed54fcf6ea66aa41cd84a6579e4fbdbe68cd8b321fd1:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzA2MWVmNWI0OTViY2QxZWMyOWExMWE3ZWI4ZGEwOThiMzNiYzU1NmQ3NmFiYmMyZDJlN2U4NDQ3ZGU3ZWNhOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmVmNjkwMDdhN2U3NWNjZGIyYzE5ZWZhOWQ5NWM0M2JmNzg3ZjMzYTJiOWM4MjY1YzRhNWNlNjQyZmU2ZGJlYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjc0NzJlYzI4NjAxNTI1ODZhNDk0ZDdmZmJkMjZiNjFiOGJiMTI1MThmOTQ4YzlkZjUyZTdmMDViMjY4ODNkYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmIwNTM5MWY0YzEzZWJiYzVkMmZmOWU4N2NlZGFjZDI0NTUyYTAyZGJjMTA0N2EzZjM4OWJiOWZjNmMyNzhjYSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f69ce2277b134642a0df9fcb28699b89",
+      "statement": "실패한 시나리오의 trace와 screenshot은 `artifacts/e2e/<target>/test-results/` 아래에 남고, `pnpm exec playwright show-trace artifacts/e2e/candidate/test-results/TEST_DIRECTORY/trace.zip`으로 trace를 열어 실패 원인을 확인한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/e2e/TESTING.md#L34-L38",
+          "version": "repo-lines-v1:sha256:86fca4ffc6a1a395f7832429c7e111fa148947dd5efa4d54d3d6dc45cabe3915:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTUwMzFjYmVjZTNkNTMxNjRiMTViZTczZWY1N2NhN2YwM2UzNzg1ZWVjZTE0ZmM4MWE2YzQyMmY2MGE5ZDEzZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMDZjNTYxZDVjMzI3MzQzNjg1MjY4YTQ2YjMzOTFmMzk5OGVlZTg5MGQyYmU1MWYwZDIxY2M0YTUzYWU2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzc1NzA2MjVhYzkwYTM5ZDA2NTdiMzA2ODAyMDA5M2VlZDU2ZmQ3N2RmYmZjOWYyYmY3OGJlMDQxNzMyZTBkNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzYyNGU2OTY3ZWI0NTUyNTA5YjlkYzczYmUwMjg4YjgwZDc2NTcwYzI2NDgyNjYxNGY4NDc2YmZmMmU1YjQzYyJ9"
+        },
+        {
+          "resource": "repo://tests/e2e/playwright.config.mjs#L9-L19",
+          "version": "repo-lines-v1:sha256:d09c12d24b1d93d67d6373bbff88c4bca39404ea3aaf0c57782d84f134a69bfc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4MTEwNzNiNzViYTg1NjE5NDc3MmMyMTM3ZjMyN2E5N2EwOTVkOTYxZmY4ZDA1YTBlMzdjODU1ZTUxNzg4MDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhYjI5MDBiNjVhZGEzNGU0ZDJmMDhlYTVlODg3ODQxZDRkMDUzZTgyZDUzOTRhYWI3NzhjZDZkMjI5YWRhZDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNiZWYzODFiZjIyMzE5YTJkNTliOGVjMWVkMTBlOGMzOWNkNGQ5NmIzNGE2N2Y4MzE3MjEwZGRiZjE1ZWEwMWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI4M2MwM2ZiZGY5YjM0NmFhNTUyNzg2YjVlZWJiM2FhZDRmYWM4M2FiOWU1YzZiNWQ1MTVhM2ViNTljZWVkNTIifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-18T16:47:52.081Z"
+  }
+}

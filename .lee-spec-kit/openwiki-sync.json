@@ -3,19 +3,19 @@
   "triggerFeatureRef": "JCXFBTGYM8R3-production-readiness-core",
   "triggerComponent": "web",
   "language": "ko",
-  "sourceHead": "095bd890f3d999501b318618602e1f80d3b8eb06",
+  "sourceHead": "8dfd0a02fe572f7fc3473a9a59eade92763dfcf5",
   "sourceFingerprint": "sha256:747dc5ea12cf33d4b14fd59f3a2464b02736eb82462d149a1e1b1c7872ab9fb8",
   "baseRef": "refs/heads/main",
-  "baseHead": "095bd890f3d999501b318618602e1f80d3b8eb06",
-  "openwikiVersion": "0.5.0",
+  "baseHead": "8dfd0a02fe572f7fc3473a9a59eade92763dfcf5",
+  "openwikiVersion": "0.5.2",
   "okfVersion": "0.2",
-  "outputHash": "sha256:2c07c143cda9df08d73c3b87a128752134d26a0d702e2315add81088d29de324",
-  "verifiedAt": "2026-09-14T01:48:07.436Z",
+  "outputHash": "sha256:4215649bdf3e916ba9a264edaafa95e717cf9685477a660c44759b6e235b4733",
+  "verifiedAt": "2026-09-18T17:39:44.400Z",
   "writingPolicy": {
     "adapterId": "lee-spec-kit.technical-writing",
-    "adapterVersion": "1.5.0",
+    "adapterVersion": "1.6.0",
     "skillName": "lee-spec-kit-technical-writing",
-    "skillHash": "sha256:51841e0ad7a793f20b2a8910d22917a24e8e2b9345c2bd14536a09282b1bf0c4",
-    "instructionHash": "sha256:9c300045564c91e328fd9d817f416973c5c15bcc25f36f980bc2da95559cc77b"
+    "skillHash": "sha256:3d32de4563748b157b77a7e28e3b8a8c3f8afeac682ad1bc4b68925841714344",
+    "instructionHash": "sha256:0e70cad38f3e48ee26b996341ebc3fad2cf7b93e7ac619fe15770d42480a5668"
   }
 }

@@ -1,3 +1,3 @@
 # 파일
 
-- [변경 범위에 맞는 테스트와 readiness 검증](change-validation.md) - 변경한 경계를 기준으로 focused test, 통합·DB·UI·Storybook·E2E와 readiness 검증을 선택하고, 실제 package script와 fixture 결과를 해석하는 방법을 안내해요.
+- [변경 검증 경로](verification.md) - 바꾼 범위에 따라 어떤 검사 명령을 어떤 순서로 돌릴지 고르는 표와, 도메인 단위·PostgreSQL 통합·MSW 계약·Storybook 브라우저·Playwright E2E(end-to-end)·k6 부하 계층이 각각 무엇을 증명하고 무엇을 증명하지 않는지 정리한 문서예요.

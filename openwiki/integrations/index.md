@@ -1,3 +1,4 @@
 # 파일
 
-- [Better Auth·Leemage·Modal 외부 서비스 계약](external-services.md) - 외부 서비스와의 계약을 바꿀 때 어떤 인증·payload·상태·실패 규칙을 확인해야 하는지 정리해요. Google OAuth, Leemage 파일 수명 주기, Modal 보컬·곡 분석과 SoulX 믹싱의 서버 경계를 빠르게 확인할 수 있어요.
+- [인증과 소유권 경계](auth-and-ownership.md) - 세션·관리자 권한·자원 소유권이 각각 어느 계층에서 검증되는지 설명하고, 새 API를 추가할 때 지켜야 할 순서와 체크리스트를 알려줘요.
+- [Modal 서비스와 외부 계약](modal-services.md) - 보컬 프로필·곡 카탈로그 분석과 SoulX 음성 변환을 제공하는 Modal 서비스 세 개와 공유 분석 코어의 endpoint, 입력 상한, 인증 헤더, 응답 형태를 정리한 참조 문서예요.

@@ -1,0 +1,440 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:6827d893a8ec2a1e725f6c817c3859d36d8d6196b9f6275bf8bfd0c1ceb2cb5c",
+  "claims": [
+    {
+      "id": "claim_3bca11ebfd2a49e6a2f500df468ed89f",
+      "statement": "운영자 복구 명령은 package.json의 `jobs:reconcile`, `media:reconcile`, `tickets:recover-signup` 스크립트가 각각 scripts/reconcile-external-job.ts, scripts/reconcile-media.ts, scripts/recover-signup-grant.ts를 실행해 운영자가 자동 경로가 풀지 못한 행을 해소하는 절차를 제공한다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L70-L73",
+          "version": "repo-lines-v1:sha256:4141553e72e01c541324eb09b3013fd3e955413cd50d60422c3afd589dc3cb81:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE3Mzg5N2E1NDExY2FlNzlmZjE3NDVlYzA1MjMyMzVhODc5NmQ3ZDAwNjZlMDVlMGEwYmQ3MTJlOWFhNDFmOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTllNzdlNTZmYmNmZjVlMWQ5ZjU4ZDM3NWNhNDM1NWY5ZGM2MmVmMGJjMWMxMmRhN2VmMTE4ZmZmZGEwYzEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDAzZDg2NWY0Yzc5MmI3OGVmZmMxNzU1M2ZlNmY1NjI2YzVlOGQxZmE1NmRhNDYzOWUxNWJiOWNhYjU2MDNlMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDU0ZjBiZjRjNTdiMDI2ZTFiNjlhYzk1NzBlMjNlZTI1OTY3YTgwOTI0MmJjMWZmMWU3YzYzYTg2ZmM1ZGYzYSJ9"
+        },
+        {
+          "resource": "repo://scripts/reconcile-external-job.ts#L5-L85",
+          "version": "repo-lines-v1:sha256:2b4e2771a4db6dd336083fbaf39462319f5bb6eafe56d89ccd40475af87fb96c:eyJzZWxlY3RlZExpbmVDb3VudCI6ODEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlZTQ0YzhmZWU1ZTcxNDNmMTU4NjI3MGZmMWFmMDc0NzQ0Y2QxOWFiODJlNDQ0MGE5MGE0YzM1OGUzYWRhZWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImExNTYxMmY5YTQzNTdiZjFhZGQ5M2RjYTY5MTRkZTE3NmNiNGE4ZDAxOTFjNzIyZTdiZGFjNGQ5NzBlMzA0MmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIyZDdhNjhiMmRkNDM4OWQ5YmEyMjk1NzlkODlhZjMzMGE0Njc3M2U2ODkyODY3ZjBlYzUyODBhNjcxZDYyNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU2MTBmMDVlN2U0YzhkZTQ3ZDFjOWUyY2Q0YTNkMjhkOWI3YjVhMjJkZTJmYzQ0MzBkYzYwMzNjYTYzY2I1YTkifQ"
+        },
+        {
+          "resource": "repo://scripts/reconcile-media.ts#L5-L53",
+          "version": "repo-lines-v1:sha256:1e11071146cf11d4270c9e9eddfc5f56d6c1a5757289fc28ad2bddef9468f009:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlZTQ0YzhmZWU1ZTcxNDNmMTU4NjI3MGZmMWFmMDc0NzQ0Y2QxOWFiODJlNDQ0MGE5MGE0YzM1OGUzYWRhZWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIyZDdhNjhiMmRkNDM4OWQ5YmEyMjk1NzlkODlhZjMzMGE0Njc3M2U2ODkyODY3ZjBlYzUyODBhNjcxZDYyNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNlZTk1ODczMDRhYmM3MjhkMDhjZDViNDk5ZWEwZGEyYTE0NThlZDVmYTk5NmQ1NWRmZTNmZDIzZjRlZjM3YTQifQ"
+        },
+        {
+          "resource": "repo://scripts/recover-signup-grant.ts#L16-L35",
+          "version": "repo-lines-v1:sha256:5ef0e812ada540f2c00c578125b91e717c8a4a33ccf823620216c1ea77691023:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhNTNiYTM1MDk2Njc2YzUyNDBjYzA4NDQ4M2ZlMDM1NjE3Zjk0ZjA5MGMyYTA5YTI4NjdjMDQwYWEzNjE5ZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZWYwMWJjMDhkYmMzYjYzZTRlNzVlYTNkMjZhNWI5NDE4OTE4NzdlMjdhZDg5MTMyOWM4NDExZDdkOGRjNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcxNDAyYzQxOWVkNjdhZjE4OTk5NjZkZmEzMDgwNzMzZDEzMzkxOGQwOTI5MjdkMTJiMWM1ZTY4YWZmMWIzN2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY5NjhjNzE3Yjc2NTkzMjg4ODk2NjA0Y2E5Y2EzYjdlOTZlOTJhZWQyMTU4MDkzZjZkYjcwNWM1MTYxNDhlOTkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_08baee0b76984d2ca5fb3aaf514045ec",
+      "statement": "세 복구 스크립트는 모두 `--apply`가 없으면 DB를 바꾸지 않는 dry-run 계약을 따르고, `--operator`·`--reason`을 `{operator}: {reason}` 형식으로 resolution에 기록하며, 오류 시 메시지를 표준 오류로 출력하고 종료 코드를 1로 세운다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/reconcile-external-job.ts#L53-L54",
+          "version": "repo-lines-v1:sha256:a73a0b204ac38ac534ae602b5e24452d44d62a479b4c1925640255c66a999e22:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWU0YjEyODU4OTc4MGQ2YmZkMjc2ZjgxZGE4OTA3NmI0NzcwY2IwYjEzN2Y4ZmRjN2Q3MDE3ZmY4MGJmZThmNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTIwMjcwZWQ4YWM2NTk4NmU3ZmNhOGEzYTIzM2YwOGY0Y2U4MmYyYTM3NmZiNTE4NjM1OTJmMWQ4MTIxY2I3MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODIyMGI1MjgwNGEyMWQwNWE1NzQzMjJhNTYzOGZhODE1YWQwZTFlMTY3ZjQ4ODA4YzQxYmZiNzFlZTE3OTRhYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTljZGYzMjJmMDI4N2M1MmE4ZTIxZGFiM2EyNjA2MzY2N2EwODEzMjdlYzA0Njc1MTcwMzE0OGI2Mjc2NTNiYyJ9"
+        },
+        {
+          "resource": "repo://scripts/reconcile-external-job.ts#L79-L83",
+          "version": "repo-lines-v1:sha256:e4392d074e758f40c6a6a59e34addc70f2594afdf77810a50da49484b54c640a:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjBjZmZiMTFhMDdmNjg0ZWQ5NjkzMDk1YjBjZTQzYzgyZTIyMzk2MDBkZWRhNzQ1ZjA5NTAzYjZkNjM0MmViYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWU0NmZhYzAyZmRhMGYwNGI0ZDkwMTllYmFhNzY1N2NjNDZmNmQ3NWM2OTNjOTgzZWFiODZhYzNhM2ZiNTRmYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTU5MDY4NjFmZTI0OGRkMWVkZjgyNmEyYTljZDA3NWE5MmUxYTZmMjQyZDkwZDJjMTU0YzY0MWQyNjNmZjVkOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzVjMGI4YzA1NGM4MzVmNjEyZDMwNWJkNTY3NTNhZmUwYjk1ZWY5NDNkZjY2ZGI4YjBjNTU1MjYzNDc2Njk0YiJ9"
+        },
+        {
+          "resource": "repo://scripts/reconcile-media.ts#L38-L52",
+          "version": "repo-lines-v1:sha256:febf4fd1dd031fa653e078bd4dc452ea7bd62de0c84f1ac7ff23dbc0183b8b21:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MjdlOWQ1NWFkNWM2NDk1YTllZDYzZDFmYWJhMmI1ZDdmN2Y3ZjJiMGRmYzExOTM3ZjJmMTM4NTBhYjFhZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRlYzVkMWFjMjJjNzdiZTIwNTQ4ZTY4ZjU0MGNjMWUzZDc1ODY4OTk5ODJmMDkyYjkyNTM0ZDUyOTUzN2I2OTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5OTJlOTYyYWQ1MDVmMTViOTZiYmQwNWEyYjdkODFjNzMyNzUxODk5MjQ4NjVlYWU4MDFiODE0NWZiMjE4NTEifQ"
+        },
+        {
+          "resource": "repo://scripts/recover-signup-grant.ts#L17-L38",
+          "version": "repo-lines-v1:sha256:a55c6298e7cd758b28e92ab750664b10fab4dab62d6568b6799306320b010b74:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhMDJlNWViZjVjYjRjMGZlMjRhZmU2N2Q2NWY1MGZlNGViY2RiN2JiYWEwMjM5OWRiZWEzYzYyYzBlZGI3Y2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwNWE3MzA5N2Y2YjFkYjYzOTIzNWU5M2VjZWM3MzcxNjZlMjM2NTRjNDg3ZGViMWNiYmQ2YTUwZmIyNTdlNWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEwNGI4OTQzZmNlYzM2YjQxMWVmM2Q5ZDVjYTAzYmRhYTJmZjRjN2UxZjdkMTUzZGNkMDEyZjg5MTk3MDU1OTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEwYzIwZTU5ODRjMTIyMzY4ZDU1MGE2ZGMxMDgyNDg0MGViYTkwYTA4MGQyYzFhNTE1YzI3NTMzZWI5MTE1YmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_95e9a868ab8b4a7590b3f9df6191831a",
+      "statement": "`pnpm run jobs:reconcile`과 `pnpm run media:reconcile`은 인자 없이 실행하면 각각 ExternalJobReconciliation의 PENDING·UNRESOLVED 행과 MediaOperation의 UNRESOLVED 행을 최대 100건 조회만 하고, `--id`를 주면 그 한 건을 처리하는 이중 모드를 가진다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/reconcile-external-job.ts#L16-L26",
+          "version": "repo-lines-v1:sha256:5bc964eccacf8c251d4aeb1906afae57882038532820adf0647775bd217f3024:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxYmNmMDAwZTc4NjFhOGZkMmRhYWE3ZmJiYmM0ZTlmODIxNDk4OGVlMjA0NmI0NDAzMjJhOTQ5ODM0OTE5ZTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2OWRlMTE2YWExOTRlZDE0Y2ZhNzE4OGEwYmYyMGE4ZWU5YjA2OGM0ZmZjOWQ1M2M5MGVhZjU1ZTI5NTM5MDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEwNGI4OTQzZmNlYzM2YjQxMWVmM2Q5ZDVjYTAzYmRhYTJmZjRjN2UxZjdkMTUzZGNkMDEyZjg5MTk3MDU1OTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ2MjUyMjIzNDM1ZTNkZTllNzM0NmIwODMwMmQxNzQ2ZTc3Y2M0YjlhMzAyOTQ5YzMxYWRlYzc5ZDMzYjk4YjUifQ"
+        },
+        {
+          "resource": "repo://scripts/reconcile-media.ts#L16-L37",
+          "version": "repo-lines-v1:sha256:ab2a3b9420e726c393abcf52da00d792bceb621aafc8e685aa195a48b6753ce6:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxYmNmMDAwZTc4NjFhOGZkMmRhYWE3ZmJiYmM0ZTlmODIxNDk4OGVlMjA0NmI0NDAzMjJhOTQ5ODM0OTE5ZTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwYjJhMGNkNDA2MzA3ZGJiNTg3MGM2NGY5OGFmNGI0ODAxNDgyOWViYTZkYTZmM2M0MTFiMzlhNmRjMDIyZTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEwNGI4OTQzZmNlYzM2YjQxMWVmM2Q5ZDVjYTAzYmRhYTJmZjRjN2UxZjdkMTUzZGNkMDEyZjg5MTk3MDU1OTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhMGIwN2EyOGY3MmQ5MTUwMmE4MGNmM2JmNDMxODQ1NGMyMjNhNDc0M2RkYTM5MzhjNWM0YzI4YzU4ZDk3YTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bb442287b498420d8ada7492ecc4e495",
+      "statement": "jobs:reconcile 단건 처리는 `--outcome submitted|not-submitted|cleaned`와 `--operator`, `--reason`을 모두 요구하며, 하나라도 없거나 허용값이 아니면 Required 오류로 중단한다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/reconcile-external-job.ts#L29-L35",
+          "version": "repo-lines-v1:sha256:8a1a10b696d9c9293cebd4587acc5efb19b2e2a32ba2db08df7522267e0a73d0:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmY4ZGQ0MTIzMGM1N2QzOGMxM2QyNmIxMGIwNzE3MDEyYzI2ZWIyYTY0OTg0MjYzNzEwMGFjN2NmZDBiNDg1YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTc0MzA1MjZiZjkxN2YyYjZiZWMzZjA4ZTg3YmUzMzdhZGU1MGQ1MDc0YmQ3OWEzZWFiYTRmMTFjMTg5MjVjZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmFkZjE4ZWIwNDdiMmE0ZWMzMGZhYzRhZTU1MDgzNGEzMWM4ZjAwZWM4ZTQ2ZDU3OWFhYWU4NDQ5M2JiN2Q2NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjRkMzgzOWUyYTQwMzRmOTk4NjcwZjYzNzJiMmU0M2ZiMjk1YzAwY2EzMzExZjNkZjM4MjhhYmQzOTYyOGMwOSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_85dd71aa784642a48af8d50564b2b314",
+      "statement": "`--outcome not-submitted`로 확정하면 스크립트가 반드시 접수 흔적을 먼저 검사해, 작업이 FAILED이고 modalJobId가 없고 submissionState가 SUBMITTED가 아닐 때만 처리하며 그 밖의 경우 'Missing/confirmed job cannot be treated as not submitted.'로 거부한다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/reconcile-external-job.ts#L47-L52",
+          "version": "repo-lines-v1:sha256:27a9661b1896014d0db75deabcb930c13df0497af4160ae6b32c2615711c824c:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDhkYTdlOTNhNTU3ODQ5YWViOGM0NGM2ZmY5MDU2NGQ5NzFjMTg3MDEwNWRjYTNjMjVkMTRjNDQ0ZmM4MGFiNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2Q4OGZjNjFjNTY1YzliNjU4NGEzYzUxMTBkZjljNzgwNWFjMzIxOGY3YmRhNGJlNjVmYzVlYzVmNDA0NjlmNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTk4YTk2Zjk0ZTQ1NDFmZWQyYzkwYWVhMWViZmZhNTc0NTg5ZmMzMTZkNDY1M2I0YWVjNTAxYTBhNDgxNmMwMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjFmOWIyN2ZhYTcwNDA3OTg2NTg0ZTJmYmM3ZTk3NDc1ODQwNmI3NmQyNGQ0MTRiYjA4ZWNlZmVkNjE0MzAyMCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_50b330431f2947d9a0f7e4efad5fa8ee",
+      "statement": "jobs:reconcile은 반드시 작업이 FAILED·SUCCEEDED·CANCELED 중 하나일 때만 처리하고, 그 밖의 진행 중 상태는 'Active jobs cannot be reconciled.'로 거부하며, 이미 RESOLVED_*로 닫힌 행은 같은 outcome이면 NOOP을 반환하고 다른 outcome이면 'Conflicting prior resolution' 오류를 던져 재실행이 안전하다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/reconcile-external-job.ts#L40-L46",
+          "version": "repo-lines-v1:sha256:e1bb72708c8e1cbba710e02e91447df935c8628ee6613237b5e1e5fabff871c9:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjIzYTk0YjJhYmQ2MjY5ZjUyMDc4YmI0MmJhY2FiZTVlYjNlZmVlZWM5ZWQxNWE2YjY2ZDVjZjc2ZjRmOGU4YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzBhY2RlM2ZhYWRhZjY1NDI2ZTVjN2Q4NmNkMzk1YTY1N2RmNjVmMTJhZTk1NjljNzNmYTc2ZWFiM2EzNTQzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDg1YzEwYmFlYTg1ZmQ3NDI2YzE2NjViOTBmMjBjNjNiZWY3MTc4NjlmMzZmNjJlYzYzYTA1MThjZDM2Y2JkZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjUzZjI1NWJhMjBjMmJjODUxZTllNmQ5YTI4NmMyMmU3MTI3MzFiZjc3NWExNjE1ZmViZmYzNTA0NGRmZGFhYyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_b24178a4fefa4cb3a90baa980d06b158",
+      "statement": "`--outcome not-submitted`를 `--apply`로 확정하면 `mixing:refund:{jobId}` idempotency key로 ticketCost만큼 USAGE_REFUND를 기록하고 작업을 refundState = REFUNDED, submissionState = NOT_SUBMITTED, errorCode = MODAL_NOT_SUBMITTED_CONFIRMED로 갱신해, 워커 자동 환불과 키가 같아도 원장 행은 하나만 생긴다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/reconcile-external-job.ts#L55-L72",
+          "version": "repo-lines-v1:sha256:d95675e6fb6e0a878a8eec5c7a2d1a4877f58acac12f461d016220449a8efa5b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRiMzNkNGU4ODcwOWUxZjliZTkyZmU5MmJlOGE2OTU5MjRjZDEwMDlhYTVkOWViMmE3ZWUzZDJkZDJlZTc0YmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5YzEzNTkwNjY1NjMyM2QxYzVlYTQxNjU0ZWU2NmFmYjU4NWFjZGNmYWVhY2ExMjFkNWUzMGJmMTkzZWVkZDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVjNmQyZWMwMTkzMTc1ZGI3NDcyYTZkN2Q0NzYzZDc0NDRkY2VlMjg0OTMxMDRkN2NmNWFmM2E3Y2Q1NjA0YzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM2NDY5ZTg2MmNhMjU2MTk3OGFhZDQyZWI2ZjA4ZWUxOTZmYjY5ODNiY2UyYmVhY2YxYzZhMDVlZjVlOGVmYjMifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L156-L172",
+          "version": "repo-lines-v1:sha256:eb2839f9b300c1a31c134df1e3eba15047c86ba8f0438acf169f0bb2ea8110ff:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmN2U2YTE2MjBlNDg4NTdkNGQ4YmZkMzE4MDgyNTIxMGQxYzU4ZTUwNWY5MDI4NDlmOTVkNDFkNWY2MWQxMDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI3OGUyYWYwZjllZWI2NGJjMDc0NWFjZGQyMzliZTdlMzZkZDAyM2VlZGQxYmYwMTkwMTNkYTJjZGRkYTNkYzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5ODM3NzA1Yzg0MTAyYTFmNGUzZDVkYWRhODQxMjcwY2Q5MGZkZDFiYjMxYzM5NDc3NTNhZjJlZTZlMGMwYmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_09c85840c86b4c12af6a51bc7bac77a1",
+      "statement": "jobs:reconcile은 MIXING 레코드만 작업 상태를 조회하고 SONG 또는 SONG:{externalRequestId} 레코드는 작업 상태 확인 없이 닫으므로, 곡 분석 작업이 진행 중일 때 실행하면 진행 중 작업의 정리 기록이 조기에 종결될 수 있다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/reconcile-external-job.ts#L44-L52",
+          "version": "repo-lines-v1:sha256:a6a4551995c03c87bb4d7a639fe7dd734a1a12d6f8f6d0d700c6e03fe0176610:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjk2YTE1YWM2ZjYzOGE1NjUxNjM0YjEwNTViZGNmZTVlYmUwNDRmNjkxNDlmNzY4MDkyYmMwMWEzOGE3N2RiYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2Q4OGZjNjFjNTY1YzliNjU4NGEzYzUxMTBkZjljNzgwNWFjMzIxOGY3YmRhNGJlNjVmYzVlYzVmNDA0NjlmNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWZkZDg0MTU0ZWZiZDM5NGJlNWM1YThmNDE4ZTdlYjFlYTY1ZGQyYzBhNzljNTczZDgwMmZhMzc3YjI2OWIwNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjFmOWIyN2ZhYTcwNDA3OTg2NTg0ZTJmYmM3ZTk3NDc1ODQwNmI3NmQyNGQ0MTRiYjA4ZWNlZmVkNjE0MzAyMCJ9"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L80-L92",
+          "version": "repo-lines-v1:sha256:3010a74d33cf9bcf83b7b39b7243a6ebcbcb8426c5e162ad8a9bb1c3d8b0159b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjNTYxYTFhYjg0YzczNTg0NmE0ZTUxNTlhZjBiN2FmZTQyNzczMzIyNDI4N2I5N2Q5ZmFhZjljMGM0ZDE0MzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxN2FmMTEwMWM5N2I3YzJmNTI1NDA3ODJlNjM0Y2M0NDQwZjBlOTcwMzQxZTUyZjk3NTIzMTFkNzhiN2Q3ZDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVkNWJhNjMxZmU0ZjQwNGQ4MzBjNWEwYjhiNzgwMWE4ZWExMmNkNTc0NTAyZTRjNjkwMGFiNjUxNjY2OTVhMWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVkZmJmMzk2YjZmMDI2MDc5YzI2MDJkNDk0YjI0MDZjODMwYWNjOGQ4M2Y4NTdjMGI3MzQyMGU1ZjE5ZDdhMWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6ea2fbe7811c492bbb7aa3850d8f1474",
+      "statement": "ExternalJobReconciliation 조회 출력에서 자동 정리 실패로 넘겨진 행은 resolution이 AUTO_CLEANUP_FAILED_REQUIRES_OPERATOR이고, 접수했지만 외부 job id를 확보하지 못해 환불이 보류된 작업의 행은 reason이 SUBMISSION_UNKNOWN_REFUND_HELD다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/reconciliation.ts#L58-L63",
+          "version": "repo-lines-v1:sha256:f5547a57c67684e68a93415798ff3f808b9403db12baf0ce067842cab98bf041:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDJkZjg2YjQ3NmIwZDZkYmJkMTZmYTE5ZmUxN2E4YmU3NzUxYWJlM2VlODA3YjUxMGZiNWY4Y2RkMGRhZDE0ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDczMzBhZWFjMGMxNGJhMzUyNGQ0MjMzMTFhYWJhOTE4M2I5YzRkODU4NjU2ZTFmOTMwYzE0ZGRjZTBkZjc1OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjIsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGY3MzlhMDZjMWNiYjEyNDRlMzM2M2QzOGJjZjlmYTUwY2U4NGZlZDM5OWMyMTkzYTNjN2YwOGQ1OTkxOGIyYSJ9"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L253-L263",
+          "version": "repo-lines-v1:sha256:83e65b30f4599e17d8ae74cffb6d822d25ada007f281993823716087cec75c91:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2MTdjM2FhOWViNTM3OGY5OWFiYzE1OTE2ZDM2ODUxZTdhNjQ5Y2UyMDNhZTBiNWRlM2E2NjI5NTAxZjc3MTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxN2FmMTEwMWM5N2I3YzJmNTI1NDA3ODJlNjM0Y2M0NDQwZjBlOTcwMzQxZTUyZjk3NTIzMTFkNzhiN2Q3ZDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3NTM1ZTk0NjQ3Y2QxYjI5NjNiZGE3NDNlNDIzZTNkMGUzMDVhNGIzZjMyNzAxYjI0OWI1ZDg2M2EzZjZkNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY5MDE0NWU1ZjZlOGQ4OTNmZWVhMWViNzE5YTA3OTcxZjI4MGYyZWI4MDYzOTFlYWZlNTU2ZWVlODE2MTY5OTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fc2d8eb4765e41b5ab560bd28407b6c6",
+      "statement": "`pnpm run media:reconcile` 단건 처리는 대상이 UNRESOLVED일 때만 허용하고 'Only unresolved operations can be reconciled.'로 그 밖의 상태를 거부하며, `--file-id` 없이 `--apply`하면 status = RESOLVED_BY_OPERATOR로 닫고 `--file-id`를 주면 externalFileId를 채우고 operation = DELETE, status = RECOVER, nextAttemptAt = now, attempts = 0으로 되돌려 삭제 재시도를 예약한다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/reconcile-media.ts#L35-L51",
+          "version": "repo-lines-v1:sha256:4fcea3f0b58921d21b889247b572f1510c2fcff821a17d589e3154e11b3db7ec:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1YTljZjFhZjIzZTAwMGQ5MTgwYTFmNzhjYjA3NmJlZjNmNjU0ZTcwYTAwMGYwYjZmZDZlZTMyNzdiNjViNmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2OGM0NWMwMmVhMDhkZTVhODYxYmExYjNiOGQwM2YyYTE3MjBhY2I2ZmQ0NTM5YzJhNTRkOGM0N2I3YjRmYTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc3ZDczMzIzYmMyMDllNTEyNzVlZDNhMDRkNDBiODRkZTRhOTFlMjk5ZmU1ZmVhZjA4NzhlZDFkMjM4ZTVmODIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY1NGU5MzhhNzYxNTdhMzBjZDFlYzUwNjE3MTQzODMyYTAxYWMxYjA5MDYxYmM5YzFhMzY5OGEyMzUxZGYyZTcifQ"
+        },
+        {
+          "resource": "repo://src/shared/media/operations.ts#L117-L127",
+          "version": "repo-lines-v1:sha256:f1fc8532a4ab6345a02a20c88aaa1c45f406e10c95b29d71645d625c3be8e367:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc3MjY2MTA4MmQ1ZjdhNDVkOGM2OGE2YjljZjlmYjA4ODM2ZjE5NjFjYjc0MzYyZDJmMjY4YzU2NDYzZTk1ZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU3YzNjZTY5YWUyYzFmMDUyNmNlMTNkNDYwN2QzODNkMTY0YzkzMGEwNjE4ZmEwOGM0ZTk5NzdiNWNhZTQxNTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkwMDFlNzQ5M2E4ZWNmMjc4MGM1YzE1NTgzNDM2MzExYmMzNWExYzdhNThmZmIwY2VhMjNkODY2MWE5OTYxMTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFmZDNkZjI1NmJiMzQ0ZjkzODMwMmY3M2U0ZGYwMjNkNzYzZmM1ZGJhOWY1MzhmMjk5N2FlY2NiZGE4YjAyODQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fd135a74a81e4b66a4895d716e61cc83",
+      "statement": "media:reconcile의 갱신은 status = UNRESOLVED 조건을 다시 걸고 실행되므로, 그 사이 워커나 다른 운영자가 먼저 처리해 갱신 행 수가 1이 아니면 'Reconciliation conflict.' 오류로 끝나고 아무 값도 바뀌지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/reconcile-media.ts#L40-L52",
+          "version": "repo-lines-v1:sha256:e4d196e28d69070b983151dd4d909c5f2968983e93573026e7e5cde83746335d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwMWFlODcyZGY2NzBlNjVjZjVmZmE3NDQ4ZDczNTIxYjBkYTFjMTViZWM4ZTdjZTk2YmQ4N2QxZjk0ODZmMGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEwYjk2MTI2MjEyYTFjNWNmNDFiOGQxOTUwNmFiZWVjOTA5NWI5YWIzZGI1ZmQ3Y2Q2NDY5YTE4MDg2ZWZhM2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5OTJlOTYyYWQ1MDVmMTViOTZiYmQwNWEyYjdkODFjNzMyNzUxODk5MjQ4NjVlYWU4MDFiODE0NWZiMjE4NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f47a65a7923145bdbf794ad62fcbb73a",
+      "statement": "jobs:reconcile과 media:reconcile은 resolution에 기록된 운영자 판단만 갱신하는 조건부 쓰기를 사용하므로, 워커가 같은 DB를 사용하는 동안 실행해도 상태 경합에서 밀리면 NOOP이나 충돌 오류로 안전하게 끝난다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/reconcile-external-job.ts#L40-L54",
+          "version": "repo-lines-v1:sha256:2dd60b7cbbcb67a24a99a1eb7c771fbc05aea07b564f40450a1cbce0828f0fb7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyM2E5NGIyYWJkNjI2OWY1MjA3OGJiNDJiYWNhYmU1ZWIzZWZlZWVjOWVkMTVhNmI2NmQ1Y2Y3NmY0ZjhlOGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEyMDI3MGVkOGFjNjU5ODZlN2ZjYThhM2EyMzNmMDhmNGNlODJmMmEzNzZmYjUxODYzNTkyZjFkODEyMWNiNzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ4NWMxMGJhZWE4NWZkNzQyNmMxNjY1YjkwZjIwYzYzYmVmNzE3ODY5ZjM2ZjYyZWM2M2EwNTE4Y2QzNmNiZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU5Y2RmMzIyZjAyODdjNTJhOGUyMWRhYjNhMjYwNjM2NjdhMDgxMzI3ZWMwNDY3NTE3MDMxNDhiNjI3NjUzYmMifQ"
+        },
+        {
+          "resource": "repo://scripts/reconcile-media.ts#L40-L51",
+          "version": "repo-lines-v1:sha256:d73b9bcce7074a5ea8e16ebcca174204c3c23aa4c73695acd5644d23267fe4ae:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwMWFlODcyZGY2NzBlNjVjZjVmZmE3NDQ4ZDczNTIxYjBkYTFjMTViZWM4ZTdjZTk2YmQ4N2QxZjk0ODZmMGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2OGM0NWMwMmVhMDhkZTVhODYxYmExYjNiOGQwM2YyYTE3MjBhY2I2ZmQ0NTM5YzJhNTRkOGM0N2I3YjRmYTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEwYjk2MTI2MjEyYTFjNWNmNDFiOGQxOTUwNmFiZWVjOTA5NWI5YWIzZGI1ZmQ3Y2Q2NDY5YTE4MDg2ZWZhM2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY1NGU5MzhhNzYxNTdhMzBjZDFlYzUwNjE3MTQzODMyYTAxYWMxYjA5MDYxYmM5YzFhMzY5OGEyMzUxZGYyZTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5863bf134f834dd9ae689bef6c87c712",
+      "statement": "`pnpm run tickets:recover-signup`은 `--user`, `--kind VOCAL_ANALYSIS|AI_MIXING`, `--amount`, `--operator`, `--reason`을 모두 요구하고, 금액은 안전한 정수이면서 0 이상 1,000,000 이하일 때만 통과한다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/recover-signup-grant.ts#L16-L22",
+          "version": "repo-lines-v1:sha256:11481320e0b77c45ae66ccca9a812c69f6e8455056f351ac6972677d6438198d:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2E1M2JhMzUwOTY2NzZjNTI0MGNjMDg0NDgzZmUwMzU2MTdmOTRmMDkwYzJhMDlhMjg2N2MwNDBhYTM2MTllOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzllNTk1NzllNTNlODUyZDc4NDk5YTZkOGFlM2MwN2QyYjJjMjc0ZGE2MDJiY2QzYTNlMGRjODVhMGVhZmI3OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzE0MDJjNDE5ZWQ2N2FmMTg5OTk2NmRmYTMwODA3MzNkMTMzOTE4ZDA5MjkyN2QxMmIxYzVlNjhhZmYxYjM3ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmY3ZDRlZDBiY2QwMTY5MjI4YWRlMDM0YzgxOWQ3MTczMDdhZWYyMzUxYzMyZDA5NDQ2YjIzYzIxYWIzZmI3MiJ9"
+        },
+        {
+          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L189-L197",
+          "version": "repo-lines-v1:sha256:a55cbeb06ece7e2dff64bd38bd05f5df5a0b71c8e93c9d8f077cf85fb488b279:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjg3NjUzNzFhZWExY2M3ZDQ2ZWM2ZWZjY2JiZTllOWU3M2M5MTg5NGYwZDA2YzcxZjEyNWFjOGJlMjU1YjdiYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDIwZWZlZjE0OTI5YTYxM2YzMzc5YjA1ODA4ZDRiMDFkY2Y3NzllNWIwM2NjODE3YmY1N2I4YmUyMDczMTU5ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGUwYTdhMzY5MjZkM2NjMjJjOWRiNjgzZjM3YTZmYTM4Yzg2N2RmMDliMzgwMDNhMmE2N2Y0YmIwZTk2ZDViZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDMzOGM1YTIwNjdmOGVlOWUwM2U1MjRjYTI3MzhlMjA2NGJhYzY3ZGM0OTMzMDRiYjE4YTBiZGIyOTY1ZjM1YiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_d71ab959e5dc406bb3f1ff3233ff25ef",
+      "statement": "recoverSignupGrant는 기록된 SignupGrantIntent.amount나 기존 SIGNUP_GRANT 원장 금액이 요청 금액과 다르면 'Signup amount conflicts with the recorded intent or ledger.'로 실패하므로, 설정 변경으로 달라진 금액을 임의로 지급할 수 없다.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L202-L206",
+          "version": "repo-lines-v1:sha256:8b3294c3c4c24ae43e012e84b2f36dbe11bad6eae74d6ec3eb057bff2148fafd:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWFkYTZlMTkzMDJkZWY3ODU4OGEyNjljMmRhMjI0MTM3YzU3MzExNGY2ZmIwMTZlODNjZTdlMzc4YzhkYjQxYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMmViNmI3ZWMwOWFkNzZkNWUxMDU0ODU3YWY1ZjY2YzE1MTViMmUyM2JhMjhlNmY5ZDc2Y2M1OTNiMTYzZWNhNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmY4NmUxNWY1MzlkMDI2YzQ2YjBiZTFkOTM0M2MyOTJlMTM1ZTdlM2QyZWI1MTMzMjVkY2Y0NzEyMzYwODc1NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjZkZTA3YjkxNDBiYTUwYjAwZTExZjViZTIxMmFjYWU3NWJkNjZiZWY2MzRkMzgzMjM5ZmM3ZjYyZWM1YWFmYSJ9"
+        },
+        {
+          "resource": "repo://tests/signup-recovery.integration.ts#L50-L56",
+          "version": "repo-lines-v1:sha256:2362ac4fc31499b6f9191bd0288181f0975955d954784af051dc9efda1537264:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDVhYThiMjg4NzRiYmJhNDg2ODZiNDY4NmI0MTdkZGU3MTc5MDQ5NTcyZjlkMjUzNGJjY2I1NTE5YjNjMDU2ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzdiM2M0ZWQ5YTYyMjViNDY1ZTRlODg4MDZjZWYyMjQ1YjRkZDgyNGM5YTgxZDRiNTdmMGY0MTA3ZDcxYWQxZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWYxZWVhM2ZiMzIzZWYwMzkxNWYyMDBmZTI5ODNiZWQxYThhOTE3YWFiMzAxZDdkY2M2Zjg3NjFlNjI5ZDUwNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjAyNWQ5MDA4NmFjY2Y4YjZlY2I4ZThkOGIwNzMwMTYxZjdjODc4ZDZlMzY4NTdlYzcwY2M2Yjg0ZDczNWZiOCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_9cc42f636435400996495c20346bcabe",
+      "statement": "recoverSignupGrant는 이미 SIGNUP_GRANT 원장 행이 있으면 --apply 없이도 NOOP을 반환하고, 원장 행이 없을 때 --apply 유무에 따라 WOULD_GRANT 또는 GRANTED를 반환하며, 지급은 정상 가입과 같은 signup:{kind}:{userId} idempotency key를 쓰고 User 행을 FOR UPDATE로 잠근 상태에서 실행된다.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L136-L143",
+          "version": "repo-lines-v1:sha256:db5431f726fa2acb6f9b2f5bce548a7e37b8d7bca84e1c04632a4198d896c3b0:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzVjZGVhYTEyYzMzMjZjZGY1YjdlMTRjODYzNzhjN2MyNzczMWQ1ZjdmN2FjZjk1OTY4MmVhYTBjNTJjNzMxMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmJiOTNjZTU1NmVkZjE1YTZlNTFjYTYxZjI1MDEyMWVmZTE1M2FiMmUwYmE5OWM1MGUxZGE1ZmU4YjdiYzU2NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWQ3ZjFmZmM0Y2ZlNzAyOTUwMTU1ZGUxM2M5NDYzYmY5YjYxMDFmNGIzZDdhNjhjNDNkZmQ3ZTFlNTdjYjQ1NCJ9"
+        },
+        {
+          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L199-L222",
+          "version": "repo-lines-v1:sha256:d5984e2e909ed20560f1363305fa11a1916aba449e8d48cc1c82c63f6e2a4913:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4NWMxMWNlNDcyZTcwZjIwOWI1NjIwODkzYWQ1MzYwNjQwZDRmMTIzZjRmZDdkMzNiZDYzNmQxZTI2YzlmZjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVkOTUwN2ZiNjc1YzFiMzAwOWI4OTQwNTkzYWQzNjA2NWI0YzAzMDE5NThmMmQ1ODYxN2UzZTJmOWI1MzAxYzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVmYzIzOWY2NDUwMGRiOGE1NDY2MjdiNzBjZWY4MGFjNGE4ZmFkOWNlMGY5NzAyY2EyOTA0YjcyNDMwMzMxNmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_658140e698234f7188775e6b239903f5",
+      "statement": "`--amount 0`도 recoverSignupGrant의 검증을 통과해 amount가 0인 SIGNUP_GRANT 원장 행을 만들 수 있으며, 그 뒤에는 같은 금액도 NOOP이 되고 다른 금액은 금액 충돌로 거부된다.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L189-L206",
+          "version": "repo-lines-v1:sha256:c519a721e8a5d5ff5033e5e955a9b03ac377755c6405220e593f8b2a67ec1289:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4NzY1MzcxYWVhMWNjN2Q0NmVjNmVmY2NiYmU5ZTllNzNjOTE4OTRmMGQwNmM3MWYxMjVhYzhiZTI1NWI3YmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlYjZiN2VjMDlhZDc2ZDVlMTA1NDg1N2FmNWY2NmMxNTE1YjJlMjNiYTI4ZTZmOWQ3NmNjNTkzYjE2M2VjYTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlMGE3YTM2OTI2ZDNjYzIyYzlkYjY4M2YzN2E2ZmEzOGM4NjdkZjA5YjM4MDAzYTJhNjdmNGJiMGU5NmQ1YmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZGUwN2I5MTQwYmE1MGIwMGUxMWY1YmUyMTJhY2FlNzViZDY2YmVmNjM0ZDM4MzIzOWZjN2Y2MmVjNWFhZmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8343f151d9e445588c87dc865cd2303d",
+      "statement": "reconcile-external-job.ts, reconcile-media.ts, recover-signup-grant.ts, verify-database-song-catalog.ts, verify-feature-config.ts는 dotenv로 .env.local과 .env를 이 순서로 읽어 DATABASE_URL과 외부 자격 증명을 process.env에 채운다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/reconcile-external-job.ts#L1-L4",
+          "version": "repo-lines-v1:sha256:4c65b56159c7d161e337eb072de7d162e6229dc6c5392f81f86fbfd84c5938c1:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmFmZWQ0ZTI1ZWI2NWZjNzI4MWNiYjdhMjBhNGE2ZWQ5Njg5ZDRlODcwNTBlZjYxM2Q5ZGUzNWViY2Y3M2U2MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzFhMzNmYzU0OTYyMmRmZjgxZTAyNWMyY2FkMDEyNWVjN2I2MjY3NzQxYTYzOTZhYjJkZDM2ODVjN2VmYTExNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjRkMjM3ZDY4ZDA5MzUwNmNhNTY5OGFhYzM4ZjA4Y2NmMDVmMDczMTE0YzE2YTQ0YzdjZTc3YWVmMzA4M2I4YSJ9"
+        },
+        {
+          "resource": "repo://scripts/reconcile-media.ts#L1-L4",
+          "version": "repo-lines-v1:sha256:4c65b56159c7d161e337eb072de7d162e6229dc6c5392f81f86fbfd84c5938c1:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmFmZWQ0ZTI1ZWI2NWZjNzI4MWNiYjdhMjBhNGE2ZWQ5Njg5ZDRlODcwNTBlZjYxM2Q5ZGUzNWViY2Y3M2U2MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzFhMzNmYzU0OTYyMmRmZjgxZTAyNWMyY2FkMDEyNWVjN2I2MjY3NzQxYTYzOTZhYjJkZDM2ODVjN2VmYTExNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjRkMjM3ZDY4ZDA5MzUwNmNhNTY5OGFhYzM4ZjA4Y2NmMDVmMDczMTE0YzE2YTQ0YzdjZTc3YWVmMzA4M2I4YSJ9"
+        },
+        {
+          "resource": "repo://scripts/recover-signup-grant.ts#L1-L4",
+          "version": "repo-lines-v1:sha256:4c65b56159c7d161e337eb072de7d162e6229dc6c5392f81f86fbfd84c5938c1:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmFmZWQ0ZTI1ZWI2NWZjNzI4MWNiYjdhMjBhNGE2ZWQ5Njg5ZDRlODcwNTBlZjYxM2Q5ZGUzNWViY2Y3M2U2MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzFhMzNmYzU0OTYyMmRmZjgxZTAyNWMyY2FkMDEyNWVjN2I2MjY3NzQxYTYzOTZhYjJkZDM2ODVjN2VmYTExNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzU3ZjJhZDUwMWRiZjUwNjAwNmJmYWFmNTRhNGY2NmNkNzQ5ZmY1ZDFjNzU2ZWI0MGFjOTg3YTdlMTE1MDM1OCJ9"
+        },
+        {
+          "resource": "repo://scripts/verify-database-song-catalog.ts#L1-L3",
+          "version": "repo-lines-v1:sha256:b2d7a68b2dd4389d9ba229579d89af330a46773e6892867f0ec5280a671d6266:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjc5YjA3NzI2YzdlMDA3NTkxYTZmZGY2OTMyMzUzZTAyM2E1MjI2MDcwMzIwMTJmYmJkMjI0ZGVkYmVmOTJkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzFhMzNmYzU0OTYyMmRmZjgxZTAyNWMyY2FkMDEyNWVjN2I2MjY3NzQxYTYzOTZhYjJkZDM2ODVjN2VmYTExNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTRjMjdmMTU1M2FmMDY3NDJiNGJlMzQ2ZDFkZGViMTk0Yzk2MTVjNzgzZGY3MDk3NzBiNGRlOTAxZDFlZDQwYiJ9"
+        },
+        {
+          "resource": "repo://scripts/verify-feature-config.ts#L1-L3",
+          "version": "repo-lines-v1:sha256:b2d7a68b2dd4389d9ba229579d89af330a46773e6892867f0ec5280a671d6266:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjc5YjA3NzI2YzdlMDA3NTkxYTZmZGY2OTMyMzUzZTAyM2E1MjI2MDcwMzIwMTJmYmJkMjI0ZGVkYmVmOTJkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzFhMzNmYzU0OTYyMmRmZjgxZTAyNWMyY2FkMDEyNWVjN2I2MjY3NzQxYTYzOTZhYjJkZDM2ODVjN2VmYTExNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmY1ZjlmZTg3ZmQ4Y2IyNmMzMzRlN2NjYWQ1MzNhMzY5Mjc3YTBmOTQwODI5ZTgyOTc4MGJhMGU4ZDdiNGI0ZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_32106a3da9af46f297e527c53df6d36e",
+      "statement": "`pnpm run db:verify`만 dotenv를 호출하지 않고 process.env.DATABASE_URL을 직접 읽어, 값이 없으면 'DATABASE_URL is required to verify the database.'로 실패한다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/verify-database.ts#L4-L7",
+          "version": "repo-lines-v1:sha256:7c901c11f4d58b0c9c30bc415ac9a9229e921e235d0fbf3de1b219f3a69cd9a2:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWQxMTM3MDY5MDY1MGZkMWMxYTlhN2FjMzhmYmQ3YTZlZTQ0NDBlYTVlZmY4YmE5OTk1OWU0NTk2YTJjMWM3NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTcxMmU5NDBjM2VkZDE3YWYzMzU3NTBjY2M4YWViY2NkY2ExMzUyODkwMDQ5YTQzMDc5OWE1MDIwY2IwZmQ2ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWY1NWU3YTI5YzVkYTVkMzk3OTNhM2FmMTdjMGIxMGQxMjVmMTU4ZTliOGJjNzExYjMxYzA2ZDllYTFjNWU1NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWI2ZGY4NGNhOTZlMmNiNGIwNDU4NDIwOGI2MDExODNjZjUwMTI5MDcwMmVmMTk3ZTBkYmU2YjEyZTEyMGQzMSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_6f0d32e8ad00470ea748c479ff0693b0",
+      "statement": "`pnpm run db:verify`는 시드된 USER 보컬 프로필의 recording.kind가 USER_TEST인지와 곡에 보컬 프로필이 연결됐는지만 확인하고, 관계 그래프가 비어 있으면 'Seeded user profile relation graph is incomplete.' 또는 'Seeded song profile relation graph is incomplete.'로 실패한다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/verify-database.ts#L9-L20",
+          "version": "repo-lines-v1:sha256:23085a5bddcde5e319daacda4ccdd5e6413ecdf711ceafd123f0d6d83e9cac9b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlODIwMGViZDE3MDliNmE2NzViZWNiM2JlOWYzOWU1M2JiYWMwMmNjOTI3MjM0NjJjMDU0NjhlYjBkYTZhMTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQxOTRkNTVjNjIyOWVmYTFkZmYzMDc3NmViMGQ4NzI1YjU0ZWZmMmUzZDc2OWEwOTQ5ZWY4ZWU0NjNkOTMxMWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZhYWFiNmZhOWYwYjhlYmE3OGQ0Y2EzN2QwZjQ3YTIwMDhiY2U0MzMyN2FlYjZkMDdjYjBjZGFhOTZkYzBmZTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1424ad703dd44228a7ada496fd8a6e81",
+      "statement": "`pnpm run catalog:db:verify`는 기본 카탈로그 slug에 대해 verifyDatabaseSongCatalog를 실행하고, 공개 행이 0건이거나 invalid 항목이 하나라도 있으면 status를 invalid로 출력하며 종료 코드를 1로 세운다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/verify-database-song-catalog.ts#L5-L13",
+          "version": "repo-lines-v1:sha256:928852aab471410c77d6aa9404ab6e67819c841cc8e1e3ada10d6bdb743e6cf5:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWJhMjY1OGIyMmZlODk2NTRmNjllYzUxM2EzMjgwZjVjNTgzZDY5ZTI3ZDE1NjI3Mzk3OTMyNDU5Yjk2ZjE1MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjIzNWNkYTI5ZGVkMjQ2NmU1MDE0ODNhMDU3MzA4ZGYxZjBmOTRiZjJiNTgwOWFmMWM5Yzc5MTFlYTVhYzkwMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjRkYjQ1ZTBiZTMxODA1NjBjZTI0NjYyY2U1MzZlYmYyZGJiYmRlNGM4ODI5NjdhZGE1NjQxMWU3ODNkYTZkZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
+        },
+        {
+          "resource": "repo://src/entities/song-catalog/api/catalog-snapshot.ts#L45-L78",
+          "version": "repo-lines-v1:sha256:7b448d8f8d1ab0de2955924ace2879b3d25cc89b9893a3e3626e3d0dc04d913e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlZmMwZjcyZGYxZmZjZjY2YzJiMTRhZTUzMmY5MzllZTkxZTg5MTBmZmYwNDI5ZWQ1MjFlNGQwNzhlNGIyNWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRiOTJmNzUyNDgyZTc5MWUxNDFmMzI5ZTc3NGVjNTBkNDAyOTVlYTNmZTk4MWI2YzViMzVmMGI3NTlkMWU2ZGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgyMGJlYjIxYzI4ODZiZTIxNWMyODUxMGVkYWNiYmU2M2Q4MGJmODViYjdjNjU5NWEyY2FjM2U0MmJjM2RlN2MifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_778d4727402c45129420a9f434eaf1ea",
+      "statement": "`pnpm run verify:feature-config`는 BETTER_AUTH_SECRET, BETTER_AUTH_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, ADMIN_EMAILS, LEEMAGE_API_KEY, LEEMAGE_PROJECT_ID 중 비어 있는 이름만 나열하고 값을 출력하지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/verify-feature-config.ts#L5-L21",
+          "version": "repo-lines-v1:sha256:9601e8caf08d7a63d770c2b08c2eab5690e3f5d30fae8d8938ea968b8f5653e6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0ZGRkZGFhNzhmZmNlNGQzNmEyYzM5Zjc5NjM3ODcwZjdhNWJiYTZiNTM2NTQ2M2Q3NzQ0MGE4OGRmNTdlZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0ZGI0NWUwYmUzMTgwNTYwY2UyNDY2MmNlNTM2ZWJmMmRiYmJkZTRjODgyOTY3YWRhNTY0MTFlNzgzZGE2ZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZiMThlMDk1ODhlNDMwNTBlY2FmMjUwN2QwMGY2ZTY2ZjM4MDE1ZjBhMzc1MDNlNWJhNjkxZTlkNmU2NDNkMzEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_398baff9f0f54dcdb24656ce240b4899",
+      "statement": "verify:feature-config에 `--leemage`를 주면 Leemage 클라이언트로 텍스트 파일을 올렸다가 finally에서 같은 파일을 지우는 저장소 스모크 테스트까지 실행하고, LEEMAGE_ 변수가 비어 있으면 'Configure Leemage variables before running the storage smoke test.'로 중단한다. package.json의 스크립트는 이 인자를 넘기지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L22-L22",
+          "version": "repo-lines-v1:sha256:c897c61d6372b53df553b50c127796c32786501d47266e79a05bcf45dd355bce:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzg5N2M2MWQ2MzcyYjUzZGY1NTNiNTBjMTI3Nzk2YzMyNzg2NTAxZDQ3MjY2ZTc5YTA1YmNmNDVkZDM1NWJjZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzg5N2M2MWQ2MzcyYjUzZGY1NTNiNTBjMTI3Nzk2YzMyNzg2NTAxZDQ3MjY2ZTc5YTA1YmNmNDVkZDM1NWJjZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjdiODgzZjZjNjQzNGEyMmJiMTEwMzFkNDRiZTljZGY4ODFlNGQ2ZTVmYmViOGI3YTNhMzUzZDljN2U2ZjVhYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGE1N2RhMzBjMzlmNTA3MDFlZDY1MGJjMDc0NDdlMWJkYjZlYmM4MzkzY2IxZDBjODY3Y2I2OTgxMWEwNzk0NCJ9"
+        },
+        {
+          "resource": "repo://scripts/verify-feature-config.ts#L23-L39",
+          "version": "repo-lines-v1:sha256:a6cd98f86caf6bec436459fccf5812b0d1a25c12dd117e078448407356e79ab8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmZWZiYzdjNDI4OTcyNDEzMWRmZTVlMWNmNjRhMDY1MTM2NGJlZGNhZmJiNzAwNTMyMjliNThmYTNlMzNiZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVkZTNhZDlmNjEyMDVlOWY1ZWRlYTgyMDg3M2U4NWNkMGJmYjI0ZDU1OTRiYzc3YTRjZTI4ZjgyNWY1OTE0NDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8789262fc29a42f284d50e77247587a1",
+      "statement": "복구 명령의 자동 경로는 미디어 정리를 최대 10회 실패 후 UNRESOLVED로 넘기고 그 행을 다시 점유하지 않으며, 외부 작업 정리는 status = 'PENDING'인 행만 후보로 삼으므로 UNRESOLVED 행은 운영자가 개입할 때까지 남는다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/reconciliation.ts#L7-L24",
+          "version": "repo-lines-v1:sha256:15971eccef9d602bb7793b51dfc1efaf660382fb49017cba671bda1997c5a1cf:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzZDU1OGRmNzEyYWVkYWQ0YzMyZmE1ZTExZThkM2E2MTZjNDFjM2Q0ODUwNmQ5YjAyNTczMTA1ZDY1NmNlYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI0ZTdmZTk1NWQ5MDZmM2NmZWRlOGI4MDg5NDFjYzM4YTI0ZTJiNTA2YWZlZTRiZjEzNWQ2YzI1ZTRmYzg5ZWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyMDcwNDc0ODM2M2I1MGI2N2U3ODRmMzk4NTQxYTFjYTYwNGY3MjhkMjUwNzI1MDQxZmNkNDE4N2U3MGQ1ZGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1OGExZTA0ZTZkOTViYTUxNDAxYTFjYTc1ZmViMTY4M2U3NjJjZTk3YTJmYWFjMjNjNTUwOWIyZjdkZGZhMGQifQ"
+        },
+        {
+          "resource": "repo://src/shared/media/operations.ts#L166-L177",
+          "version": "repo-lines-v1:sha256:c67e889a22e9fd29ff1cdfce5a21fd59f26f48bfbe87c93fae42181e7a7bfe07:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzODIxZDRhM2Q0ODc0YzE1MTY3MzI4MTlhNjJhMjk4YjRjOTU1N2JiNjQzNTQxYjQxNzNjODUxNTVkZWY5YmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNiMzc1ZTAyYWM2NTg4NjBjMzYwMDY0YzIzNjlmMzlkMDljZDM0NTcyMDg3ZTMyM2EyYjMzMWM5NDhmZWM2MjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjllOGI2ZWRmODJhYzk2ZjZhOTYyYTU1YmI3MGY5OWYzNTdhOGM4NGE2NjU5MWFmODdhYzIxZWE3NDcwMjBjYzIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a64b0c1478784788827402b8ce5f4af0",
+      "statement": "믹싱 워커 한 반복은 작업 점유 전에 환불 재처리, 사용자 확인이 필요한 외부 작업 정리, 미디어 정리 하나를 순서대로 실행하므로, 큐가 비어 있어도 운영자 확인 대기 행 외의 정리는 계속 진행된다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L563-L571",
+          "version": "repo-lines-v1:sha256:025210d7e970aa1df2e18c61aff55be54213483bc3e000286cc896f3e4fa92a9:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjcxNGM5MWFmZmJiYjU2ZGY5YmMzYjY3MDkyYTlkZTE3MzY4YjU5M2Q3NzVhODJmMmIzZjlkN2E2YTJhNzZlMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmI1ODBlOTY0ZjgzYTQ3M2Y0M2Q0NDM4NDYyOTQ5ZDY4YjU2MDBmZGE3ODdmMTYzNzQ1ZDAwZGU4OWNiZjM2YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzMxZjJhNmVjZjBiZDY5MDNmNzFkMGU4OTAzOGU3NzdiNjIyY2RmZWJjMWM0MTMwY2RlMjI2ZWRiZmEwM2VlOCJ9"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L573-L581",
+          "version": "repo-lines-v1:sha256:954c73a9e23c7077f91163b59162b6e9c87a941b90c9d1610bea471f9016c92e:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGM0YWI3ZWU5ZGVjMDdlZWVmMWQ3ZWNlMWQ3M2RjM2U1ZmJkYjU2ZWEwNjMxMDAwNDQ2OThkNTVmNTJkYmY1NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmRiYTdkMTY5OGM5MGExMDg2NTBiMzkzZGYxZGRjOTE3ZmRmZDQxNzAwMjBiNTBmOTk2OWIzNGM1OWYzYzI0ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_4a2eb13cc7fb4258bbb77c1b9d0f5896",
+      "statement": "이 복구 경로들은 `pnpm run test:readiness`에 포함된 tests/worker-recovery.integration.ts, tests/media-recovery.integration.ts, tests/signup-recovery.integration.ts가 만료 lease 회수, MEDIA_ASSET_IN_USE 거부, 미확인 삭제 의도의 UNRESOLVED 잔류, 가입 지급 복구의 금액 충돌 거부로 고정한다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L70-L70",
+          "version": "repo-lines-v1:sha256:ea73897a5411cae79ff1745ec0523235a8796d7d0066e05e0a0bd712e9aa41f8:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE3Mzg5N2E1NDExY2FlNzlmZjE3NDVlYzA1MjMyMzVhODc5NmQ3ZDAwNjZlMDVlMGEwYmQ3MTJlOWFhNDFmOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE3Mzg5N2E1NDExY2FlNzlmZjE3NDVlYzA1MjMyMzVhODc5NmQ3ZDAwNjZlMDVlMGEwYmQ3MTJlOWFhNDFmOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDAzZDg2NWY0Yzc5MmI3OGVmZmMxNzU1M2ZlNmY1NjI2YzVlOGQxZmE1NmRhNDYzOWUxNWJiOWNhYjU2MDNlMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODIzNjQ4MmM4ZDI3N2MyOGUzMjdjNjNkYjdiMjU2M2Q3Y2ZlNjI1ODQzNjA0ZDM2NmFkYzUzOTkwNzU5OTA4NSJ9"
+        },
+        {
+          "resource": "repo://tests/media-recovery.integration.ts#L89-L108",
+          "version": "repo-lines-v1:sha256:b49109a278b2de8270f6e9a96b5d67abfb2a62fb3bd68af35b6cadaf65bd2716:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjNDM3NmExZjRlZWI3OTc3YTA1Y2Q2ZTU0NzJmNWIzNmYwZjUwMWMyMGU2NzdmOThlMDM0OWQ0MzlmMGMzZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiMjc5OTA3NDAwZmJjMWJiMDgwYzFkNjk4OTQ5NWE2YzQ2MzdmY2RkNjZlYWIzYzMxMWRiMDI1MjhiZmI0NGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZmYzI5NGM5MjIyY2IzY2NjODY5MGJhMTU1OGIxMWQ2OWNkYTJiMDAzNDczZTU3Y2JjYWUzOGIzMzZlMGNiMGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRjM2E4M2M3ZDU3OWJkN2ZkNjk3OTE5N2M3MWFjNjFkNzNiNjVkNDkyNDM3ZWFjNmY2ZDAyNTcxMTIyOTUxNjYifQ"
+        },
+        {
+          "resource": "repo://tests/signup-recovery.integration.ts#L40-L56",
+          "version": "repo-lines-v1:sha256:a936d82883c88ab70107ae4438959af6437d25b3415e6b3334e4abe7c77430e1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmYWU5ZmQ3YzM0Nzg1MGUwM2JjNjU2ZTgwZGJlZTkwOTYxMDAzZGVmZGMzYTUyMzM2YmRjNjFiZGMzYzEyZTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc3YjNjNGVkOWE2MjI1YjQ2NWU0ZTg4ODA2Y2VmMjI0NWI0ZGQ4MjRjOWE4MWQ0YjU3ZjBmNDEwN2Q3MWFkMWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJmMzlkMTZjOGM3M2UyYWM2ZGMxNWJmMDM4ODMxNmE2ZjUwOWU0YzViYjNjYTk1ZmNlZDk5NGIwYTNjYTcyYTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIwMjVkOTAwODZhY2NmOGI2ZWNiOGU4ZDhiMDczMDE2MWY3Yzg3OGQ2ZTM2ODU3ZWM3MGNjNmI4NGQ3MzVmYjgifQ"
+        },
+        {
+          "resource": "repo://tests/worker-recovery.integration.ts#L112-L134",
+          "version": "repo-lines-v1:sha256:64fa7fa8eee2a5343a979b29658391b702a807fb35fd6eae33285d3c9952c70b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVjMzFmMTYyNGY4MzM2YWZiNTc0MzY2YzVlNTkwMDM1MDMxOGM0ZWFjZmMxYTY2NWQ5ZDBmZmU3MmViMmYzNmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkNGY5MGE3MTViYmQ1YzVmZDE2ZjU2N2RjNjE3YTk5YjY2ZmRjZmQ3OGFkMDRkOWE3NjM2MTI3NzIwMzNlNjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNjN2IxNWIwM2QwOWM5YjE1OGQ2NWE4MjI0OWNhNTI4YTJjYjVjOWJhMWZhZmI4MzYxMzQzMjkxNDVlMmZmMDMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9ee67997a565409cb3e43d47c4e76932",
+      "statement": "복구·검증 명령이 쓰는 Prisma 클라이언트는 src/shared/db/generated/prisma/에 생성되고 .gitignore가 이 경로를 제외하므로, 새 작업 디렉터리에서는 `pnpm run db:generate`를 먼저 실행해야 한다.",
+      "evidence": [
+        {
+          "resource": "repo://.gitignore#L46-L47",
+          "version": "repo-lines-v1:sha256:9f058cd7d2d1f5dd22fd0babb536363afd227f3642bef55bc03b9a46998490b0:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTg1MmY4OGFiYzkyZTlhMDU1YzFmZmE5YmVhNWE1N2IwMzU3NWMzMGExYTFmNjMyYzYyODNmMzNiY2RjODU3OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdmY2FjZjE2YzVmMzU5ZTc3OWY2YzU0MGU0ZmQxOTc3YWEzOGI5ZTNlOTc5MzZmNGMyNWQ5MWUzNGRmNDZkZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjY5ZGNjZmJkYTRkMzA3MDYyZTUzZmI2NjRiM2Y1M2U4MmNlZmRkY2EyYzg0MTI5N2Q1NjUyMzhkYzlkMmI2NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTI2YmI3YjIxZjUxNDZjNGI5YzgzYzBkM2UyNDlkMTVlZDRjNjMxNmNiY2UyOTEwMThhZmZkNDQ5NWM2NzYwMiJ9"
+        },
+        {
+          "resource": "repo://package.json#L36-L36",
+          "version": "repo-lines-v1:sha256:54db4c21fd03a0e92991626fa67fb14755372c53200660206d19f77d97d0908c:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTRkYjRjMjFmZDAzYTBlOTI5OTE2MjZmYTY3ZmIxNDc1NTM3MmM1MzIwMDY2MDIwNmQxOWY3N2Q5N2QwOTA4YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTRkYjRjMjFmZDAzYTBlOTI5OTE2MjZmYTY3ZmIxNDc1NTM3MmM1MzIwMDY2MDIwNmQxOWY3N2Q5N2QwOTA4YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGQyMzU2ODE4ODljM2ZhNWQ3MDM1MTg0YjYzNjRjNjJkNTlkOGYzNmUwZDgwN2U2YWU1ODMyZmJkOWZmODNkMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWM1M2EyMjI1MTQ5Y2ZlYzUwZjM1ZGM4MzlhNzM4MDE0YWIzMjE0MmE2NWJiMWQ0ZjFiOTMzYTVlMjdhZWQ4MCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e133f7f82dcc41959166ca42e00f9735",
+      "statement": "`pnpm run tickets:recover-signup`에는 `jobs:reconcile`·`media:reconcile`과 달리 대상 사용자를 훑어보는 조회 모드가 없어서, `--user`·`--kind`·`--amount`·`--operator`·`--reason`을 모두 주지 않으면 Required 오류로 멈추고 지급 대상 사용자를 이 명령만으로 열거할 수는 없다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L71-L71",
+          "version": "repo-lines-v1:sha256:6f26544b04abf5f783a97e2e4942642d2f594ce87b9c4b252edb2ede32d03568:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmYyNjU0NGIwNGFiZjVmNzgzYTk3ZTJlNDk0MjY0MmQyZjU5NGNlODdiOWM0YjI1MmVkYjJlZGUzMmQwMzU2OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmYyNjU0NGIwNGFiZjVmNzgzYTk3ZTJlNDk0MjY0MmQyZjU5NGNlODdiOWM0YjI1MmVkYjJlZGUzMmQwMzU2OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODdjMzQ1M2NjNzAyM2JjZTc3Mjc3ZDViYzA0NTAzZWQ1OTZlNjhhZTEyZDhiODZkYTFmNDI5NTlkOWJhZmFiYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmVjYzc5OTFmYzZkYjM1NTNlMGEyNTRjNWMyNzEwYjUwNGIyZjgxZjE3NTYzYzIzMGUxYmZmNGQ2NGFhZjM3ZCJ9"
+        },
+        {
+          "resource": "repo://scripts/recover-signup-grant.ts#L16-L22",
+          "version": "repo-lines-v1:sha256:11481320e0b77c45ae66ccca9a812c69f6e8455056f351ac6972677d6438198d:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2E1M2JhMzUwOTY2NzZjNTI0MGNjMDg0NDgzZmUwMzU2MTdmOTRmMDkwYzJhMDlhMjg2N2MwNDBhYTM2MTllOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzllNTk1NzllNTNlODUyZDc4NDk5YTZkOGFlM2MwN2QyYjJjMjc0ZGE2MDJiY2QzYTNlMGRjODVhMGVhZmI3OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzE0MDJjNDE5ZWQ2N2FmMTg5OTk2NmRmYTMwODA3MzNkMTMzOTE4ZDA5MjkyN2QxMmIxYzVlNjhhZmYxYjM3ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmY3ZDRlZDBiY2QwMTY5MjI4YWRlMDM0YzgxOWQ3MTczMDdhZWYyMzUxYzMyZDA5NDQ2YjIzYzIxYWIzZmI3MiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_146b1ce882f241b3a093c87a282838bd",
+      "statement": "`--outcome submitted`와 `--outcome cleaned`는 환불 원장 행을 만들지 않고 작업의 `errorCode`가 `MODAL_SUBMISSION_UNCONFIRMED`일 때만 `MODAL_SUBMISSION_REVIEWED`로 정리하며, `RESOLVED_*`로 닫힌 행은 자동 정리 후보에서 빠져 남은 외부 자원 정리 책임이 운영자에게 넘어간다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/reconcile-external-job.ts#L55-L83",
+          "version": "repo-lines-v1:sha256:3357f695e3b0ae2fe5e90bc5c04d36683e114e3bedf37e35d537db9a75cb3e26:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRiMzNkNGU4ODcwOWUxZjliZTkyZmU5MmJlOGE2OTU5MjRjZDEwMDlhYTVkOWViMmE3ZWUzZDJkZDJlZTc0YmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlNDZmYWMwMmZkYTBmMDRiNGQ5MDE5ZWJhYTc2NTdjYzQ2ZjZkNzVjNjkzYzk4M2VhYjg2YWMzYTNmYjU0ZmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVjNmQyZWMwMTkzMTc1ZGI3NDcyYTZkN2Q0NzYzZDc0NDRkY2VlMjg0OTMxMDRkN2NmNWFmM2E3Y2Q1NjA0YzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc1YzBiOGMwNTRjODM1ZjYxMmQzMDViZDU2NzUzYWZlMGI5NWVmOTQzZGY2NmRiOGIwYzU1NTI2MzQ3NjY5NGIifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/reconciliation.ts#L7-L24",
+          "version": "repo-lines-v1:sha256:15971eccef9d602bb7793b51dfc1efaf660382fb49017cba671bda1997c5a1cf:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzZDU1OGRmNzEyYWVkYWQ0YzMyZmE1ZTExZThkM2E2MTZjNDFjM2Q0ODUwNmQ5YjAyNTczMTA1ZDY1NmNlYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI0ZTdmZTk1NWQ5MDZmM2NmZWRlOGI4MDg5NDFjYzM4YTI0ZTJiNTA2YWZlZTRiZjEzNWQ2YzI1ZTRmYzg5ZWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyMDcwNDc0ODM2M2I1MGI2N2U3ODRmMzk4NTQxYTFjYTYwNGY3MjhkMjUwNzI1MDQxZmNkNDE4N2U3MGQ1ZGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1OGExZTA0ZTZkOTViYTUxNDAxYTFjYTc1ZmViMTY4M2U3NjJjZTk3YTJmYWFjMjNjNTUwOWIyZjdkZGZhMGQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4daf0617b7f34f4489e7b69e8c96ac1e",
+      "statement": "`pnpm run media:reconcile`을 인자 없이 실행하면 status = UNRESOLVED인 MediaOperation을 createdAt 오름차순으로 최대 100건 조회하고, id·operation·externalProjectId·externalFileId·lastError·createdAt 여섯 필드만 골라 JSON으로 출력하므로 운영자는 이 표에서 externalFileId 유무부터 확인할 수 있다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/reconcile-media.ts#L16-L33",
+          "version": "repo-lines-v1:sha256:c2d9fc4e4709fc4d3739398c0518cf6b6e54cec93c301b3cd527056f9c09e498:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxYmNmMDAwZTc4NjFhOGZkMmRhYWE3ZmJiYmM0ZTlmODIxNDk4OGVlMjA0NmI0NDAzMjJhOTQ5ODM0OTE5ZTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEwNGI4OTQzZmNlYzM2YjQxMWVmM2Q5ZDVjYTAzYmRhYTJmZjRjN2UxZjdkMTUzZGNkMDEyZjg5MTk3MDU1OTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNjMDk5MDcxYTk0NzJkNTIwZmQ0MTQ2ODdjZDM1NzA2M2IwZDNhMDY0YzkyOWZhMWUxMzIwZTZiNDAzZDRhNmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4bcd022b604a49b890dad97d223199e4",
+      "statement": "미디어 정리 워커가 externalFileId 없이 점유한 의도는 lastError를 PROVIDER_IDENTITY_UNKNOWN으로 남기고 UNRESOLVED로 되돌리므로, media:reconcile 조회 출력에서 이 행들은 외부 파일 id를 아직 알 수 없는 대상이다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/reconcile-media.ts#L16-L33",
+          "version": "repo-lines-v1:sha256:c2d9fc4e4709fc4d3739398c0518cf6b6e54cec93c301b3cd527056f9c09e498:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxYmNmMDAwZTc4NjFhOGZkMmRhYWE3ZmJiYmM0ZTlmODIxNDk4OGVlMjA0NmI0NDAzMjJhOTQ5ODM0OTE5ZTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEwNGI4OTQzZmNlYzM2YjQxMWVmM2Q5ZDVjYTAzYmRhYTJmZjRjN2UxZjdkMTUzZGNkMDEyZjg5MTk3MDU1OTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNjMDk5MDcxYTk0NzJkNTIwZmQ0MTQ2ODdjZDM1NzA2M2IwZDNhMDY0YzkyOWZhMWUxMzIwZTZiNDAzZDRhNmUifQ"
+        },
+        {
+          "resource": "repo://src/shared/media/operations.ts#L130-L135",
+          "version": "repo-lines-v1:sha256:509539547a222ff7d4384e010696ef6e60f8f761e69748f8bc2364d652f4a7a8:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDFlNGYxNGIxZWM2ZTNkZDVkOTIzMWVjYWI0NzNkY2IzZmI1NmEyZWMyNjMzODEwMTc0ODAwOTI2MGFmZTE5MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGZhYzRlNDM2MzBhYmY2OGMzYTRhNzU3M2ZkNGM0MzAwOGJhNzk4ZGQ3NmMzNzU5ZWVlZjUzZTZjZmY4ZDJlNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWJhZTdlZDVmNTVhMGZiMmE2M2JmNWE4MWYwMjNjYzdiZDRjZTg4YTg0NGMzZWRhNTllM2RmMGI2ZmM1YzVlNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjk5MGM4YzQwNDNjNzkxOGU3YzJlNzcwYmI4ODg0MzUxYTllMzM5OTJjNDAwYjNmZmY3OTk4ZTg2MGE5Y2UwYiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e620886c98264e49a2eaf88bcad93016",
+      "statement": "`pnpm run tickets:recover-signup`은 `--kind`가 VOCAL_ANALYSIS나 AI_MIXING 중 하나가 아니면 'Invalid ticket kind.' 오류로 멈춰 지급을 시작하지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/recover-signup-grant.ts#L17-L22",
+          "version": "repo-lines-v1:sha256:031fc6d5eedea5d8961fa7ea244852db9340b69dd8339a1994d478b682c9bca9:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGEwMmU1ZWJmNWNiNGMwZmUyNGFmZTY3ZDY1ZjUwZmU0ZWJjZGI3YmJhYTAyMzk5ZGJlYTNjNjJjMGVkYjdjZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzllNTk1NzllNTNlODUyZDc4NDk5YTZkOGFlM2MwN2QyYjJjMjc0ZGE2MDJiY2QzYTNlMGRjODVhMGVhZmI3OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTA0Yjg5NDNmY2VjMzZiNDExZWYzZDlkNWNhMDNiZGFhMmZmNGM3ZTFmN2QxNTNkY2QwMTJmODkxOTcwNTU5OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmY3ZDRlZDBiY2QwMTY5MjI4YWRlMDM0YzgxOWQ3MTczMDdhZWYyMzUxYzMyZDA5NDQ2YjIzYzIxYWIzZmI3MiJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-18T16:47:52.081Z"
+  }
+}

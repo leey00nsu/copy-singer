@@ -1,0 +1,478 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:72d2c35368d30aa526857cc0aa8c16c56e41ff5e61d8ab75f53a24b67e3d3f74",
+  "claims": [
+    {
+      "id": "claim_5dc9c169aad14516be9b47d390bc8ace",
+      "statement": "세 워커(MixingJob, VocalProfileAnalysisJob, SongAnalysisJob)의 점유 함수는 CTE에서 후보 한 행을 FOR UPDATE SKIP LOCKED LIMIT 1로 고르고 같은 문장의 UPDATE ... RETURNING으로 leaseOwner·leaseExpiresAt·heartbeatAt를 기록하고 attempts를 1 증가시킨다. 후보 조건은 nextAttemptAt <= now 이면서 PENDING이거나 lease가 없거나 만료된 진행 상태이고, deadlineAt은 COALESCE(deadlineAt, COALESCE(startedAt, now) + 작업별 간격)으로 처음 한 번만 채워져 재시도가 반복돼도 예산 창이 늘어나지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L97-L136",
+          "version": "repo-lines-v1:sha256:4adb064c41e1d67d7b40813384716c486270d0661af96164c53c72f62134e3ce:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkYTkzYWU1N2Q0ODhkMTQ2YjZmZGI4ZTg3NGY2MWFiYjcyYWQ2MmNiODZkYjM0MGM5ZDcxN2I1MmQwOWQ4ZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE5MmFkNjRhMWU0N2MzYjJhMWE3NjQ5NWM1MDVjZjA4OWJjM2Q2ZmFiOTRmNzRiNjlmYzk4YzVhNGZmNmIyZjAifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L33-L64",
+          "version": "repo-lines-v1:sha256:606c6f9fa26912b89f9e6b61e2e2cfd93191053bb2e94d6fd34a0453b5751441:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiNDZiYjJhYjk0YWI2YjEzOTVkOGYwMmM1ZDQwYzczZjcxOGZkNzFhZWMyNmY0NjYxNTg3NmU0ZTkzYTk0OTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkMTRlZmE5YTI5ZDJjNDg4ODRmOTJlZGJhMTFkM2RjM2Q0YTA4NmQ2Yjk2M2ZkNjlhODhkMmViNTM1NWE1MDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1MGNhNjNjZWFhMmQ0MmU4MTYyMjYxOWJiODExN2QzM2MyZDY1ZDkyNzJlNTFmMjk1YTE1MWZhY2VmZmQxMmQifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L47-L83",
+          "version": "repo-lines-v1:sha256:d6f844d2f3788cd6fce3536de6f0d29c2e5df235197831def5772310390e3645:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEwODQ3ZTE4MzNiZjRjMzQwYTgwM2QwNDIxMjMzNDhlOTRhZjQ1YWNiN2JkYTIxNmQ3MjM0NzI3NmVlZTdhYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3ZGE0MDBlM2IzODVlYzg1NGI5OGZkNGZiOGE1MTRmYmJiZTk2ZWFjZDAyMjViYzQ2YjRmMmQ2MWE4NDk4YmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3e0eaaa1d86e4dcaa7be9e7bce84e51a",
+      "statement": "곡 분석 점유만 후보 조건에 'attempts >= maxAttempts 또는 deadlineAt 초과 또는 READY인 CatalogTargetAsset 존재'를 추가한다. 그래서 이미 예산을 소진한 곡 분석 작업도 외부 호출 없이 FAILED로 확정될 수 있고, 원곡 자산이 준비되지 않은 작업은 점유되지 않고 PENDING으로 남는다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L33-L64",
+          "version": "repo-lines-v1:sha256:606c6f9fa26912b89f9e6b61e2e2cfd93191053bb2e94d6fd34a0453b5751441:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiNDZiYjJhYjk0YWI2YjEzOTVkOGYwMmM1ZDQwYzczZjcxOGZkNzFhZWMyNmY0NjYxNTg3NmU0ZTkzYTk0OTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkMTRlZmE5YTI5ZDJjNDg4ODRmOTJlZGJhMTFkM2RjM2Q0YTA4NmQ2Yjk2M2ZkNjlhODhkMmViNTM1NWE1MDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1MGNhNjNjZWFhMmQ0MmU4MTYyMjYxOWJiODExN2QzM2MyZDY1ZDkyNzJlNTFmMjk1YTE1MWZhY2VmZmQxMmQifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L66-L127",
+          "version": "repo-lines-v1:sha256:a89422797facab89cad07cf6695a4c47fc0dec4ffeea07b5accfc12085d3fd18:eyJzZWxlY3RlZExpbmVDb3VudCI6NjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc1MjM5ODI4YWE3YTQ2YjExNzk2YTUyMGYwYjE5ZWJlZTkxOTk4NGVjZjAwNGIyMDk5NWVmZTZhNTE3YmNkZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2MjAyYzNjODU5NGNjMzVhYTUzZmI2NmIxYjEzYjk3NjY4MDEwNDY1NjM1ZjlhNGEzNmQyNTAzMTMyY2UxZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg1Yjg2ZGU1MGEzOTA0OGI5MTA3ZjJmOWUzZjhiNTlmNGYyMWMzOTNlNjY1ZjgzM2MzZjgyZjZhOTM0Y2JhY2IifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8a86aadb174c4c8b8e3c89defe3cbba2",
+      "statement": "startJobLease는 fenceJob(allowDeadline=true)을 먼저 실행한 뒤 heartbeat 갱신 setInterval, deadline 타이머, 외부 호출에 전파되는 AbortSignal을 함께 관리하는 lease 객체를 만든다. 갱신 주기는 min(30초, lease초/3)이고 이전 갱신이 끝난 뒤에만 다음 갱신을 실행하며, 갱신 UPDATE가 1행이 아니면 controller를 LeaseLostError로 중단하고 진행 중인 외부 호출도 끊는다.",
+      "evidence": [
+        {
+          "resource": "repo://src/shared/lib/runtime/lease.ts#L38-L97",
+          "version": "repo-lines-v1:sha256:ab3100d4f01a3aa7ea0c39e51af8065465e6479185bb20aba0f514f885a4ce7e:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyOGZkNjMzOGFmODdkNmY2ZTY3MTJkMTE0YWZhNzI5ODJjZDNmYjU5ZDM4MTRiNzlhNDkzMGY0OGE1YTQ1YjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5NGJhODk4ODMzMGFjOTUxNmZhYjA3ZjViNDAxMWVmYmJmYzU3ZTQzODc5NTBmNzM4MzM4ODc5MjdjYTJjYjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_10e328151cf14a19a0f4317e130ecdd1",
+      "statement": "fenceJob은 트랜잭션 안에서 SELECT id ... FOR UPDATE로 leaseOwner 일치, leaseExpiresAt > clock_timestamp(), status가 PENDING·PREPARING·SUBMITTED·PROCESSING 중 하나, allowDeadline=false일 때 deadline 미도과 조건이 모두 맞아 1행이 나올 때만 통과시키고, 아니면 LeaseLostError(JOB_LEASE_LOST)를 던진다. 접수 시도 표시와 성공 확정은 allowDeadline=false, 실패 확정과 이미 저장된 보컬 프로필 복구는 true를 쓴다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L507-L535",
+          "version": "repo-lines-v1:sha256:38a6da28e13fdeeeb1929da564e391ce4f04e4b1d6751e063e3c49aa91d3e28a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4NzhhMDdmNWU3MGFhMjU1NTZlYTAwYWVkZmVhNGRmOWVmOTllZTg2ZDI3NDI3NWUwM2I3ZTk3YjRmY2FkNDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhMzdlM2MwOTQxZDE1NzdjMDM5OGUzYjY3ODRlZjNiM2YwMTI4OGJjZGVjOWE0YmJhMWFiZmFhNzQwYWI2ZjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3MTYyMGY1NTEwZGYzOTA2ZmJjYmNjODNmMjJhMjViNzk4ZGM0YjllZjY0MGRlNjQ3NmM4MTQwMmJhYmM1YmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgwMjUzYzRlNWJjZmZmNmI4MDBlN2JhYTkxZGIzNDIxZDc0YTczYzExOTIwZGE5MjZmZTEyYjFlYjFmZjViNzEifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L78-L112",
+          "version": "repo-lines-v1:sha256:ef3d0fc404cf002f87578075bccd25b4625d893ffc8b9d0a8bf0b31b995239b0:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhN2U1OWFlNzUyZmIzNWQyN2I5YmI5MTcwNDkyODMwYjdlMzQzYjc3MjQ4ZjJiMmM5MzZhMTZhNTNkN2ZlMjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyZDExY2FmNDNlOTdlZjM2OWU2YmVlZDFhMjY4YmQwNTgzOGYyOWI5ZGQyNTRiZjY5YmE2NDg4NDE0NzIzNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMwNjk2ZGEwOTk4MmU3Y2NiZGNmMWVlMDE5ZjQ2NmU2ZTVlOTJmYzFlZTE0NzkzNGJhY2E2YmU4NzNiOTZlNzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI1ZDVlYTE4Zjg4ZTg2ZDg3ZjUxY2QwM2Q2MjdmM2Q1ZjJhYzMwODA2MGFiZDViODE1MDk3ZTkwNDgwMWM3ZmMifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L94-L102",
+          "version": "repo-lines-v1:sha256:321c1b5284392229d742ab23740d6854fd9842527078b17b65f4946f86797db4:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWQ2ZjRhMjczZTExYjc4ZTE2MmNjMjc0Y2E1MjBkZWY4ODg4MjE1ZWQwYzhmMWU3MzIzZDJjMDJiYjMyZGQ0ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjg4YTBhNzE1ZjIyMzAxNmNjODFlM2YwMmFhNThhMzE4YWM0MTQ4ZjcwOTZiYmZiNzdkYWNjNzNjYWRiYmFlMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmQ2NGM5OTg2MjkxZTExYTBmZDdmYzE5Yzg2ZjZiZjAxMjc4NjYwNzI0YTBkODA4M2RmNjYxOTdmYmMwMDcwMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjU2NTQ5NDY4MDkxOTNmZTNhZDQwMzExOGI2OWI4YjJhNWE3MTRhOWFjMTA0OTI2ODQ3NDhlMzg0MzA2NTk1NyJ9"
+        },
+        {
+          "resource": "repo://src/shared/lib/runtime/lease.ts#L22-L36",
+          "version": "repo-lines-v1:sha256:43fd079e209cdbe21a6de03764b08fd92a614b6ca8b9fe1f33e1ebffca1fafa1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjViNmZjN2Y4Zjg4ODkzNjJkZGZlNDdlODY3MTZmMjc0NzgyZjFjM2UzNTI3OTk2NTIzYjJmMmJjNDBiNjRkNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRhNTc2YTg3MTEzY2FjMmVhYjk2ZTZmNjVkZTcwNWI3NzFjYTBhMDRmMDM4NmE0NDE5NGNhZGJhYTljYTgzYTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_af5f87bfb8444fb2b99fa1e1f296ffea",
+      "statement": "LeaseLostError와 JobDeadlineError는 처리 방향이 반대다. 세 워커 모두 LeaseLostError(또는 lease.signal.reason이 LeaseLostError)이면 실패 확정을 건너뛰고 조용히 반복을 끝내 남의 작업에 FAILED를 덮어쓰지 않고, JobDeadlineError는 내 lease가 유효한 채 예산만 끝난 상태로 보아 FAILED 확정으로 이어간다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L545-L560",
+          "version": "repo-lines-v1:sha256:db276df3ff9ba9de5507cc42a33f5fcacf8b460bccad0774d082eae0f22c0107:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlZGJmODM4NzUzNjg5NjZmMzEzYWU2Mzk1MzljNDAzNzAwNDViYTUzZTJlMmNlZTkzYmI2N2Q1ZGExN2I5ODAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYwMDY4NzQ1ZjU2ZDE3NjJlM2JhN2NhZjk1NWZlZDA1ZmNjMDA0MDAzZjY0ZThjN2M0ODU0NzdiYjg3ODlmNWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRjYzhjM2Y1NDBlYjUwYWE4N2VlZmQ0ZTkwYzNlNTBiNjlmYTRlNWE0OTJiNmM1ZTFmNWVlOTc1MjUxMjgyNWIifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L314-L324",
+          "version": "repo-lines-v1:sha256:fcd3904bd6052f0564c432bb34dd50757a71942ace4974ba59000d5eea701f1e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlZGJmODM4NzUzNjg5NjZmMzEzYWU2Mzk1MzljNDAzNzAwNDViYTUzZTJlMmNlZTkzYmI2N2Q1ZGExN2I5ODAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMzNzczOTBiYjRmZjdkZTMyNWMxZDA4ZmJmZjg1Zjc5NDIwN2E5NTA3YjNlNzM4OTczNDU5NTA3MGFmZmIwYzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdmNTA3YzY1NTdkOGUzOTAzZmM5ZGQ2OWRmNmVhMjEzOWQ5YjQwNGI0MjdhODJhOWE2Nzg1MDI1M2EyYzI2NDcifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L324-L341",
+          "version": "repo-lines-v1:sha256:96dad5da6149e00181869cd5133091406e7580fb09cbdba324a58e27c5d2c4d2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlZGJmODM4NzUzNjg5NjZmMzEzYWU2Mzk1MzljNDAzNzAwNDViYTUzZTJlMmNlZTkzYmI2N2Q1ZGExN2I5ODAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZlMDA5OTRiYWZlNjQ4ZTg2NjdkOGRkMjY2ZDMxNzE0MWZlMDM4MjQxNmYwZTc1MDQ5ZTEyNGVkMzQyNGNmOWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg5NjI0ZDc5MTYyMTBiNWFjZDUzZTNkODk2ZjExYTdiNDMyOTc2Mjg1ZjgyYjgzOTVjOTExNzg5MTkyZDVhM2IifQ"
+        },
+        {
+          "resource": "repo://src/shared/lib/runtime/lease.ts#L11-L20",
+          "version": "repo-lines-v1:sha256:8ead842a757b36c3132c89639450a84f06bf973e2ba0b29cb975d52b300d2d0d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExNjVmMjQ3NTEzZGM1NDhlNGUwMjllZDFlODI3NzY1ZTlkOWNkZDdmY2QyYWM5NjFjNjI4MWJhNjliZjdlNGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI0Njk1MmU2MTBjZWIwMzJlYjhhM2UxZjdlMWI0NzhlODIyOWM1NzY0NGY0MmY5NDRiZGM1Yzc3YjQ4YTA1MDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk0YjRmMWFkZTc5NWRhNTM0MTA1ODBiMDNjMGY2N2JjMjY4MzJkMmE3NGNkZWQxYjZjMjVlOWUxZjUyMmYyYjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d9baea07974d4e3e82c1a15482fec794",
+      "statement": "재시도를 열 때는 fenceJob 대신 leaseOwner 일치와 leaseExpiresAt > clock_timestamp() 조건을 WHERE 절에 넣은 조건부 UPDATE를 써서, 그 사이 lease를 잃은 워커의 갱신은 0행이 되어 상태가 바뀌지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L216-L247",
+          "version": "repo-lines-v1:sha256:c4b4daf2eb62e232e823c1d2b51859b4973e55cd1ea2b947f55f02b01200b027:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzNjFkNWU3MGM0ZTE4NTkyYTBmYjI3MTg1ZTE2NWI4Y2U1OTdjMzNhYTQwMjFkYzBkOTIzOWUwNWUxYTA0NTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI2ZTJkOGQ5NGVjMzhlNDBhNzk2MzE0ZjY4NTMxNmQwNDE1YWJkMjNjMDAyMWVhN2YxZTNlYWUyZWZlNWE1OGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM2ZTUxZTBkMDA4ZjE2YzdhMmI3MDAyZThiYzQ2NTQ4N2FlMmY1YTMzYjA4ZjczZjUzNWQwMGJmMjhiODdmZTIifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L184-L196",
+          "version": "repo-lines-v1:sha256:d3080f699c0ac2244e8fb1bf10792a0b000830800688eec65e4e9889cb2b41dc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4OGRmMDI5Y2M5NGE2NzA1N2I0YWZhNzk3MDczZWRiYjQ2MzkxYmE2N2Q1MDM0NzhkZDMwNmIzZTliZmRhMzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhMWFkOThkNmUxZmFjZmE0NDM3ZGNkMjZjNDZiNGQ0NmZlZTJjOWMwNjc0YzIwMmU0YjhmNDJmNDhmNjFkZTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyYjE4OTJhNzRjZWZjODFmMzJjZjM2ZGMzOTNiZDVlYjBkOWNmNDI0NzkzODYwMDE2YTc4OWIzNjE4N2VlYzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM2ZTUxZTBkMDA4ZjE2YzdhMmI3MDAyZThiYzQ2NTQ4N2FlMmY1YTMzYjA4ZjczZjUzNWQwMGJmMjhiODdmZTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_70169625d3c046adb46e21c8c8d28741",
+      "statement": "재시도 백오프와 복귀 상태는 작업별로 다르다. 믹싱은 min(30초, 2^(attempts-1)) 후 접수 전이면 PENDING, 접수 후면 SUBMITTED로 돌리고, 보컬 분석은 같은 backoff로 PENDING, 곡 분석은 min(60초, 5 * 2^(attempts-1))로 PENDING에 복귀한다. JobDeadlineError는 어느 작업에서도 재시도되지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L212-L249",
+          "version": "repo-lines-v1:sha256:424e288ad13c86a751b2924670e749d73fd30c3cc83ff300667cc3166a0c4c53:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxNTExNzQ4ZDJjYjFkNGUwNDRjOTEyZTI2N2UwNTU1ZmExYWVlZjQyYWUxM2UwOWI4MjI0OTIyNWVjNzA1ZDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBmM2ViNjJjMjk0MjA3YTYxNDkxYTY1OTc2YjA4N2RlOWNkYWVlMmUzY2E2NDkxOTk0YjY5NDY3YjE0Zjc1ZWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3NTM1ZTk0NjQ3Y2QxYjI5NjNiZGE3NDNlNDIzZTNkMGUzMDVhNGIzZjMyNzAxYjI0OWI1ZDg2M2EzZjZkNjYifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L75-L77",
+          "version": "repo-lines-v1:sha256:c0696da09982e7ccbdcf1ee019f466e6e5e92fc1ee147934baca6be873b96e75:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjQ5MzRiYzkzNDgzYzBjYTM5YWQ5ODQyMGFkYTYxNzVmMTNmOTg1NzE1Y2RhNGFmY2Q1Mjg5N2Y3OWQxZTQ3ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWYzY2M4YzJlODk4ZWJkOGY5ZjdmYThlN2Y5NjAzZmMwYzk3M2I5ZDY3MGFmNzkxZTU4YjczMjk3NTE5MjU1ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGI0NjlhZDQ3ZmY3ZmQ1YTRkNTgxMjlhMDFkZjdmOTdhNTc3YzljMGI0NGU5YzhiMzAwMDI4NGJjZGQyODg0ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGEwYjFiNTc5ZjIzNjM2Mzg0N2E1NjExYTAxYWZjNWMyMTZiNGQ2M2UxZTZkMmViMTMwOTI1MzYwNTFmODVlNSJ9"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L179-L196",
+          "version": "repo-lines-v1:sha256:ead9bb7ec609b977005d794cf479a5816a9ff5d0b1834abce065bfc5c78cd890:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzZjNlZjMxZWY2OTUwYzM2YThjYzcwNWE0ZjdhOTY2YWM1MThkMDBkZjUzMDhiNTMwYjU1MzE4ZjY3MTRmNTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhMWFkOThkNmUxZmFjZmE0NDM3ZGNkMjZjNDZiNGQ0NmZlZTJjOWMwNjc0YzIwMmU0YjhmNDJmNDhmNjFkZTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwYzA0ZDA0NGI0NGY5ZDIyYjc4MDE4YTcyZmNjMzgxMjUxM2Q1M2Y0OTkzMzAyNmIxMmI5YTQ1YTdlYTIwY2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM2ZTUxZTBkMDA4ZjE2YzdhMmI3MDAyZThiYzQ2NTQ4N2FlMmY1YTMzYjA4ZjczZjUzNWQwMGJmMjhiODdmZTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ac0a9c853a0c4671b0d39c75852b400c",
+      "statement": "믹싱은 오류가 retryable이 아니어도 외부 제출을 시도한 표시가 있는데 외부 job id가 없는 상태(접수 불확실)면 재시도 대상으로 삼는다. 이때 접수 흔적 유무에 따라 PENDING 또는 SUBMITTED로 되돌리고 lease를 비운다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L209-L249",
+          "version": "repo-lines-v1:sha256:99eca20b81a62c617deb385fe945784ea917545cfde5c57e950e5b4b40fa65c5:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3OTVmOWQ4ZjM4MmYyODk2YjJjNTIyOWZlZmQ3ZDhiNzlmNGYxNmU3MmMzNDViZDg3ZjFiNTQ3Y2QwMGI3MDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiYzNiOWNiMmUxZTkxYzc0MzJjYmZiYzM2NzlhNGQ5NDI1YWFiNWE2NDhiZTg2NGM3OTJlYWIwMDdhYzBiYzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3NTM1ZTk0NjQ3Y2QxYjI5NjNiZGE3NDNlNDIzZTNkMGUzMDVhNGIzZjMyNzAxYjI0OWI1ZDg2M2EzZjZkNjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_860cd6442cc249e4816858bd3bee34fe",
+      "statement": "JobDeadlineError의 실패 기록이 작업마다 다르다. 믹싱과 보컬 분석은 JOB_DEADLINE_EXCEEDED와 retryable: false를 남기지만, 곡 분석은 JobDeadlineError를 SongAnalyzerError로 분류하지 않아 SONG_ANALYSIS_WORKER_FAILED와 retryable: true를 남긴다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L174-L185",
+          "version": "repo-lines-v1:sha256:cb1e24eae35cfb132034d560d2a39e70026f683c3ece090445b0cbfd44fa8e40:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2NTdhMjI3OThmZWVhNzA3ZDBhOGFiMTg1NWY3Njk1MjBhMTgxOTkyMGNjNjFmMjIzODg4ZjFiMmNhMTQwZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY4NTNiZDRhOGZlYTUwM2Y1ZjNkYjM3ZjlkNTUwODA2N2I1ZTRjMzZlOTFkZTZlODBiZmQwMDI2MmNjZDU2MGUifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L66-L75",
+          "version": "repo-lines-v1:sha256:3eab75caf518a7df06fb0677ea69ddab0ce7aff37751cb778920f8e2a3d3518b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc1MjM5ODI4YWE3YTQ2YjExNzk2YTUyMGYwYjE5ZWJlZTkxOTk4NGVjZjAwNGIyMDk5NWVmZTZhNTE3YmNkZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY0OTM0YmM5MzQ4M2MwY2EzOWFkOTg0MjBhZGE2MTc1ZjEzZjk4NTcxNWNkYTRhZmNkNTI4OTdmNzlkMWU0N2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2MjAyYzNjODU5NGNjMzVhYTUzZmI2NmIxYjEzYjk3NjY4MDEwNDY1NjM1ZjlhNGEzNmQyNTAzMTMyY2UxZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzNjk3YWM3NzY2ZjhhNmU2YjU1YjM0ZWUxODU1ODg3MmE2Y2ViYzkwYTJmMjI0YTBkODBkMGIxNGE3ODY0MDQifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L27-L45",
+          "version": "repo-lines-v1:sha256:4c52587f05618db386d696ac9663ada0925e80b57eb7d23b028d6df7ae2a0570:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzZTczNGRjNDEzNGIzYjgxZTY1MTNjNGYxOTliOTFhOTgxODk3NjNlOGFiZDE2YWQ5NjEyYWJlMGI4NzczN2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1ZGMzNjc4NDEzYjM4YThiY2NiN2Y4YzM5M2U0NWEwNzdiOWY3OWRlMGNkZTg2YmNjMDhhYjIzMzMyMzRiZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdmOGIzNTY4ZWY0MDUwMzdlMDBhNDk5OGQwNDU2MWFhMGU1OTQ1YzIxNmEzNTIzNjU5NGJiMjNmMWQyZGI4ZDMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_01fd1bd1eb634db581d6656407ed56b5",
+      "statement": "JobDeadlineError는 deadline 타이머의 controller 중단, lease.check()에서 Date.now() >= deadline, 그리고 워커가 처리를 시작하기 전 예산 검사에서 발생한다. 예산 검사는 attempts > maxAttempts를 보고, 믹싱과 곡 분석은 외부 job id 없이 접수를 시도한 지 300초가 넘은 경우도 포함한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L312-L318",
+          "version": "repo-lines-v1:sha256:2805e8ea7418f55134b8f7102f1d0fe45817341313ec2a86a55b41f39998e899:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2Y0ZDAzNDQ2NTQxOGE5NGRjOWQ0OTk2ZmEwYmI2NjNmMzY3NDdkM2E1YzVmZDE4ZWNjZjdkZDU1YjVlZDUzZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzNmOWI1Y2M3NzY5MmE4YjExMTMyYTRjYmY2N2EzYTU0OGI5OTk1N2Y0MTNhYjhkOTgyYTBiNWJiMGY0YjgyMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmNjNmQ4ODI0MzI5NjQ3Y2ZlN2I5OWU0YjE3YjMzZWMxNjEyYWRlZjkxMTFiMTA5YzBlNmJmOTY4M2U5MjcwMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjE5YmEyYzhkYTNhMjAxNjI0NjM2ZWQxMjU3MzhmMGY5NTQyNGE1ZWE0ZDdiNGYxOGY1ZmEwOTAyM2RiZjVlNSJ9"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L141-L146",
+          "version": "repo-lines-v1:sha256:dbe2f21381aa8c69affc9f6940497db9a7ca528e0148a01290a8803b1bd36cdf:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDYyZGJlMDBhNTMyZTJiZTE0Nzc3MzUzODM5Zjk5NWE0NzY3YjdlMzAzYWM3YjRmNWRhYjAxNGE0YzBmMmJmNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzNmOWI1Y2M3NzY5MmE4YjExMTMyYTRjYmY2N2EzYTU0OGI5OTk1N2Y0MTNhYjhkOTgyYTBiNWJiMGY0YjgyMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2QxYzBmNjBiYzdiYTJlNDZlNTFkMjljYzgxN2I1MGRjYTVmOWU1OTRkNjZkMmU3M2JjMmI4NjEzMDhjODgwMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzc1YTk4ODVhYTk5OTQ5NGU5NzllYzQ3MDMzOTE3ZDlmNzVkNjEyNWNkY2YyNDVmMDBiZjA4OGEyMTZkMTI2YyJ9"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L264-L265",
+          "version": "repo-lines-v1:sha256:a77ab09f4511054114813cf232ae2772ec2bf4cb60e4152f687026abcf148d4b:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDYyZGJlMDBhNTMyZTJiZTE0Nzc3MzUzODM5Zjk5NWE0NzY3YjdlMzAzYWM3YjRmNWRhYjAxNGE0YzBmMmJmNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTE4M2RkYTA2NDBmNWY4ZDAxMTJiMzdiZDA3NmEyMWZlNTIyNTZjOWJmYjc3NmRiNWE4OWU1OWUwNzkwNzkyNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmE0MWQ3M2M0NTIyYmVhMzlmZjgxNWUyNGJjZjEzMTE4NTMxZDY3MWViM2NmNTMxMjE4ODVlMTFhMWM0NzI0ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjVmZGFlNGJlZGRlZWE2NGQ0MmU2MzUzMjMyMmRmZjZmNmI0YjE4NWUyYTgxMmI4NjFiNTRjODY2NzA2ZTZmNCJ9"
+        },
+        {
+          "resource": "repo://src/shared/lib/runtime/lease.ts#L50-L52",
+          "version": "repo-lines-v1:sha256:c51797c2daa4b660972e93962a783f34438cabc80589285cc013a557ce675bf3:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjI3NzIyNzYxOWVhY2E5MWI2ODNjOTQ2MTI3ZjI2N2FhNGY0NjNlZDYwOWFmNWJhODU4Y2Y3YzhhMmY3YThhYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDc2ZjFlZjkyYjJhNGU5ZTBlOThiYzRiN2NjMmIxOGMzM2MwOWNhM2IzMDUxZGI0MDU0ZGMzMmJiZjYwNDNkMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDRmOWQ4ZGQ5Nzk4YjFkMGU5NGYyNWI0NTAwMDdkN2U3MGU3YWYyMGU0ZWE3ZTI0NzAwZGZiZTZhZGVkOTY1OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTkwYzU1OGMxM2Y5YTI4YzU2Zjg1MmU4YjJkYTZhZmRkODcxODFhZDYzYzFhNzljZjdlMGE2NzY4Yjc3MzBlYiJ9"
+        },
+        {
+          "resource": "repo://src/shared/lib/runtime/lease.ts#L76-L79",
+          "version": "repo-lines-v1:sha256:4c7e1021f6278488c259ec5f3263da450a7657875b4fb035a3485fb6a9846fb8:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2M1MzljY2RiNmRlYjE3N2Y3MDg2NzU4MDM4YTRjMDhmM2Q5OTU2ZjEyODgzODI1MGVmNGZkNTRkYzc1MWEzYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGI5YWY1MWI3MmQyNTI4YWQyZDQzNGExODEyYjgxMjViY2NkOWU3ZGMwMTgxMTRlYzg5MDM5ZWQ4YWE3NTViYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWU3YzhiMmZjZTVhMmNmODY5NTNlYjY4NjNjNWQ2ZWUxNTE4ZTAzMGJkYWMxYzYxZDQ0NDljYjFhOGVkNWU5OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjY0MjU1MmYxOWQ3YjBlZDkwNDEyZjg5MGI3NWU4YjJkZTIyZmE5NTU5MDBjNGI1MzQ0YjAxOGNhMmYyNThjMCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_2d91b030ea484771aa8c078ef597db4b",
+      "statement": "SUCCEEDED나 FAILED를 쓰는 종료 확정 트랜잭션에는 같은 문장 안에서 createNotification 호출도 들어간다. 믹싱과 보컬 프로필 분석은 성공·실패 확정에서 각각 알림을 만들고, 곡 분석 확정에는 사용자 알림이 붙지 않는다. 그래서 상태만 바뀌고 알림이 빠지거나 알림만 남고 상태가 그대로인 커밋이 생기지 않는다. 각 알림의 type·dedupeKey·문구와 createNotification의 중복 처리 규칙은 concepts/notifications.md가 소유한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L277-L288",
+          "version": "repo-lines-v1:sha256:7c96eab624d59e9a8630d65b0da03a7af356e38629ec1542fd5756af7e198364:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlMmUxZTRmNGI2MGUyZTUwM2YxNzg3NTVmMzMzMjFjNmYwM2FhNTRiNzU0ZTUyZmU4M2QxZDU1M2RlZjVlZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUwMDkwZTgyNjhlODdjOWJlZGZhMTc0NTdlMzI2MzFjOTI1OWQ1MmI0Y2M0ODk0MGQ5OTg3MDQwZGQ1NjI5ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBiMWQ5YWQ4NjVkMzgxYjUyZGEzYmVhOTk4NWM4OWQzNzY1OGE1YjhhYmVkYTM5MDAwM2E5ZjViOTI5M2RlNWUifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L507-L535",
+          "version": "repo-lines-v1:sha256:38a6da28e13fdeeeb1929da564e391ce4f04e4b1d6751e063e3c49aa91d3e28a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4NzhhMDdmNWU3MGFhMjU1NTZlYTAwYWVkZmVhNGRmOWVmOTllZTg2ZDI3NDI3NWUwM2I3ZTk3YjRmY2FkNDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhMzdlM2MwOTQxZDE1NzdjMDM5OGUzYjY3ODRlZjNiM2YwMTI4OGJjZGVjOWE0YmJhMWFiZmFhNzQwYWI2ZjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3MTYyMGY1NTEwZGYzOTA2ZmJjYmNjODNmMjJhMjViNzk4ZGM0YjllZjY0MGRlNjQ3NmM4MTQwMmJhYmM1YmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgwMjUzYzRlNWJjZmZmNmI4MDBlN2JhYTkxZGIzNDIxZDc0YTczYzExOTIwZGE5MjZmZTEyYjFlYjFmZjViNzEifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L224-L313",
+          "version": "repo-lines-v1:sha256:86b6b3eb49a817f91429c2d33596cc76cf6cddcfdd61d76a79ddbb57de76633b:eyJzZWxlY3RlZExpbmVDb3VudCI6OTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhZjJjZDBiNzk0MTM4YzljOTM3Y2U5Yzk4NDQ1NTEzOTcwZDRhMTlhYmFhZGI3MjUzNDU5NzMxMWI2MzJhYjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyZDExY2FmNDNlOTdlZjM2OWU2YmVlZDFhMjY4YmQwNTgzOGYyOWI5ZGQyNTRiZjY5YmE2NDg4NDE0NzIzNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5NmUxMDhlMjVmMmFmY2MwZTZlNGJiMDYyMTk1OWVhMDI1M2M0NTBjZmYxN2I0NmQyYjk0ZTc5MTkxNzQ2ZGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjllODQ3YjNlZGIxZmViY2FmMzljZjM3OGFiZDg5N2U3NzU3YjU0NmVmMTVhMjQ3NTQ3MjkxNTJlZjJmZWZlMmMifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L122-L133",
+          "version": "repo-lines-v1:sha256:1fa82cdbf0301a49b5937482f78fae3d4628722be87b781c510b4d0720cf5aca:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlMmUxZTRmNGI2MGUyZTUwM2YxNzg3NTVmMzMzMjFjNmYwM2FhNTRiNzU0ZTUyZmU4M2QxZDU1M2RlZjVlZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFlYWZjMWYyNWE3ZmI1YjJmYzc5YTVkNGM4ZjFkZjJiOTIxMjNjZDQ1YjAzNzM0NzA3N2Y2NWYzNDdlYzAwZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ0Mjk4NzlmNjFkOTgzOGI5ODg2OTc3ZDk1ZmRkYmMyYTI0MDdiMTU0NzI1YmZkNmU3NzVjOWQ3MWY1MjBjMDkifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L217-L228",
+          "version": "repo-lines-v1:sha256:bc1a1cc5ea6a772836fcce24cd693d70a962fd922f4bb5cba01c0e5d66dbc616:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlMmUxZTRmNGI2MGUyZTUwM2YxNzg3NTVmMzMzMjFjNmYwM2FhNTRiNzU0ZTUyZmU4M2QxZDU1M2RlZjVlZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEzNDNmZDdkNDA5NDAzMTYxODc3NDc0OGVkYzNlYTFjYmYwM2E1OGYzMTgwZjNjMWQxYjFkNzY3Y2QyMzRmYjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ0ODMyNDA3NTdmY2Y4NDU4MmY3Mjk2OTI2ZmE4MTIzMmVjNGQ2OWUyNzk2NDFhMDg4ZDhmZjBkMjY4NGM3MmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_90049d2db31a4097a7c85e956d19d4a8",
+      "statement": "실패 확정과 티켓 환불은 분리되어 있다. 확정 트랜잭션은 refundState를 REQUIRED로 표시하고, 환불은 확정 밖에서 고정 idempotency key(믹싱 mixing:refund:{jobId}, 보컬 분석 vocal-analysis-refund:{jobId})로 실행되므로 그 사이 프로세스가 죽어도 다음 반복이 REQUIRED 행을 다시 처리한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L156-L172",
+          "version": "repo-lines-v1:sha256:eb2839f9b300c1a31c134df1e3eba15047c86ba8f0438acf169f0bb2ea8110ff:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmN2U2YTE2MjBlNDg4NTdkNGQ4YmZkMzE4MDgyNTIxMGQxYzU4ZTUwNWY5MDI4NDlmOTVkNDFkNWY2MWQxMDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI3OGUyYWYwZjllZWI2NGJjMDc0NWFjZGQyMzliZTdlMzZkZDAyM2VlZGQxYmYwMTkwMTNkYTJjZGRkYTNkYzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5ODM3NzA1Yzg0MTAyYTFmNGUzZDVkYWRhODQxMjcwY2Q5MGZkZDFiYjMxYzM5NDc3NTNhZjJlZTZlMGMwYmQifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L563-L571",
+          "version": "repo-lines-v1:sha256:025210d7e970aa1df2e18c61aff55be54213483bc3e000286cc896f3e4fa92a9:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjcxNGM5MWFmZmJiYjU2ZGY5YmMzYjY3MDkyYTlkZTE3MzY4YjU5M2Q3NzVhODJmMmIzZjlkN2E2YTJhNzZlMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmI1ODBlOTY0ZjgzYTQ3M2Y0M2Q0NDM4NDYyOTQ5ZDY4YjU2MDBmZGE3ODdmMTYzNzQ1ZDAwZGU4OWNiZjM2YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzMxZjJhNmVjZjBiZDY5MDNmNzFkMGU4OTAzOGU3NzdiNjIyY2RmZWJjMWM0MTMwY2RlMjI2ZWRiZmEwM2VlOCJ9"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L139-L168",
+          "version": "repo-lines-v1:sha256:1fbfcb8b2a15f65b4f06893d35bb88f2cd3daafdec5442840351988ba4665808:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmU2NThkYTU2Y2IzM2E3YmQ1MGYzMGVmOGVkMTA0ZjI3NmZmZGY4ZTIyYjc4N2MzMGIwZjljOGI0NGY3YmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhiZWIwMzAzYmVlYjc4ZTU4ZTJhNjExNTQzMGFhZTc1NjMwM2E0YmY5ZTQ5ODlhZDhjMWFlNjg0OTFhMDQwZmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNiMzUwNjA5NmRlMDJlMzdhNjRkNjljOGU2ODU4MjIwYWE1YzdmYzM4ZjFmMTM4MjYxYzg0ZTgyZDc2NzYwMjMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_15019a8aea884bf7825e3cfad9806702",
+      "statement": "믹싱은 접수 흔적이 있으면 refundState를 NONE으로 두어 환불을 보류하지만, 보컬 분석은 접수 개념이 없어 ticketCost > 0이면 실패 확정에서 refundState를 REQUIRED로 표시한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L264-L275",
+          "version": "repo-lines-v1:sha256:b2b54dc29533dd3eb0375d94ba315d72a835c1fa61af00e1a12585da98434bc7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRiZTAxMzI5YWQzM2JmZThmYTM2NjgxNzMyMDY2MDg5ZjE4NjczZWNiNzI1NWQ5ZTllODFmMjFlODcxNmQ1ZDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5NzhlMjUwM2I4Y2YzN2EwNmY3ZDZmMGEzYTZiNmZlMzU2OTFmYmNhYjUwYjg3NzVjYWI2ZmFiYzcxYzU5MmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQzNzEyOWFiYWU0NjE3YjFmNTgxMGZkNWY0MDk5ODRmZWI0MjJkNDhkZDkxNmQzZjJkMzM0ZjRlZTczYjAwZWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJmN2RiYjczNDY2ZDVjYThiYzVjYTRmZTg2MWZlNDQwY2ZjY2NhNWEzNjZiNTgzZjFlMjE2ZjY1NWNlYzY1YjYifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L200-L215",
+          "version": "repo-lines-v1:sha256:4205f496fb20e06eaa981d7277da927fb6fa349caa69d351d45d3e82869d01ae:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0ZmJjYzRiNDI5MTg3NzlmMmVmOGU4NGVlZjNlZWFmYzI2YmE5ZjU4MjhiYTA2NzgzNzM0NTIyZTJhMDM3NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyZDExY2FmNDNlOTdlZjM2OWU2YmVlZDFhMjY4YmQwNTgzOGYyOWI5ZGQyNTRiZjY5YmE2NDg4NDE0NzIzNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2ZTUxZTBkMDA4ZjE2YzdhMmI3MDAyZThiYzQ2NTQ4N2FlMmY1YTMzYjA4ZjczZjUzNWQwMGJmMjhiODdmZTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3NTM0ZTZiMTM1NWY5NjY0MGQyODA2OWNiNGY5NDUwZmVhMzlmMjA4Njc1MjQ4MmMyZWQ1ZDRmOTkwNjg1YmIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5cf552955d554d24aab849fa18fa026e",
+      "statement": "외부 작업 정리는 reconcileExternalJobs가 담당한다. status = 'PENDING'이면서 참조한 MixingJob 또는 SongAnalysisJob이 더 이상 진행 중이 아닌 행을 createdAt 오름차순 최대 20건 고르고(상태 필터를 LIMIT 앞에 적용해 종료된 행의 정리가 굶지 않게 한다), 작업 상태가 FAILED·SUCCEEDED·CANCELED인지 재확인한 뒤 외부 취소 DELETE를 15초 타임아웃으로 호출한다. 404·410도 정리 성공으로 보고 CLEANED, 실패나 외부 job id 부재는 UNRESOLVED(resolution = AUTO_CLEANUP_FAILED_REQUIRES_OPERATOR)로 남겨 운영자 확인 대상이 된다.",
+      "evidence": [
+        {
+          "resource": "repo://prisma/schema.prisma#L664-L677",
+          "version": "repo-lines-v1:sha256:175017abd1c61b03e7d06a1e563c0235e809575fa99b4cafb80b7dee428664d2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRmNTI1MzliMGMxYzRlMzdjODhkOWQ1ZDRiZTk2ZTgzMTQ0NjJiNWQyZDc0ZWEwY2VkMDRkMzczMWQwZWY2NDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE4M2QxZDYwNjIzZmE2MzkxMDg1MjMyN2M4MTYwNmZhZWJhZmYxNjhhYTRkYTdjNmI2NzAxMDIwNDc4OTJlODEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/reconciliation.ts#L5-L64",
+          "version": "repo-lines-v1:sha256:f39c157baee6ac35412d0b1766ec90eb57579fd3131c947adcac3f85bb3e57f2:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxM2IyM2QzOGMyYjg3YmUxMGI1ODU3NDQwOTc5MmFhMTI2MzM2NzdiMWZlZTM2YWViZDc2MTJjNzM2NTQ0ZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJjYjAwYmQwY2Y1NTAyNzc2MDRhNjc5OGZmMjMyNjE0YzI2NWU0NDg1M2ZjOWU3YjAzZGI3YWZjOTU1YjhkYTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6ea2acf7404545e9b76e44882ca9f225",
+      "statement": "외부 정리 대상 키는 작업 종류별로 만들어진다. 믹싱은 jobType 'MIXING', 곡 분석은 externalRequestId가 있으면 'SONG:{externalRequestId}', 없으면 'SONG'이다. 믹싱과 곡 분석 워커가 접수를 관찰한 시점(OBSERVED_SUBMISSION)과 종료로 마감한 시점(TERMINAL_*)에 ExternalJobReconciliation 행을 upsert하고, 보컬 프로필 분석은 이 테이블에 행을 만들지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L251-L263",
+          "version": "repo-lines-v1:sha256:fa1b05ca1bf71ddd4a288c7c3168a526335093457b8437980fc63421b74e7152:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0ZmJjYzRiNDI5MTg3NzlmMmVmOGU4NGVlZjNlZWFmYzI2YmE5ZjU4MjhiYTA2NzgzNzM0NTIyZTJhMDM3NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxN2FmMTEwMWM5N2I3YzJmNTI1NDA3ODJlNjM0Y2M0NDQwZjBlOTcwMzQxZTUyZjk3NTIzMTFkNzhiN2Q3ZDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2ZTUxZTBkMDA4ZjE2YzdhMmI3MDAyZThiYzQ2NTQ4N2FlMmY1YTMzYjA4ZjczZjUzNWQwMGJmMjhiODdmZTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY5MDE0NWU1ZjZlOGQ4OTNmZWVhMWViNzE5YTA3OTcxZjI4MGYyZWI4MDYzOTFlYWZlNTU2ZWVlODE2MTY5OTAifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L424-L428",
+          "version": "repo-lines-v1:sha256:91025f2bab3cb1d1ceebe8b54a6cdba22715b07494cecf5ca5717ec7674d4a07:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTY5ZDc3YWI0MmFjMjlhYThiZWMxNjY2MWQxY2M0NzQ1MGY2OWQ3ODRkNWExMmQwNzY3MzJhMmE5YzIwNDQxYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzE3YWYxMTAxYzk3YjdjMmY1MjU0MDc4MmU2MzRjYzQ0NDBmMGU5NzAzNDFlNTJmOTc1MjMxMWQ3OGI3ZDdkMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWY5NzJjYTU4ZWQzN2UyMTIzNzRjMjlmOWMzMWQwODVkMWIzOWNlNmZhNDY3ZWExNjdkZjlkM2FjMTBiM2M3NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWRlNzgzNmFmNTAyMzRkMWMyNGQ1NWQ2N2U2NTUxMTIzN2Q1ZGM0MTk2MmJiZDlkYzRhOGE5ZDgwZjgxMGUxZiJ9"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L190-L199",
+          "version": "repo-lines-v1:sha256:91283b6533993ce17be9702b744fef920252995f89adf8ba8e29e268de0196f0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2OWQ3N2FiNDJhYzI5YWE4YmVjMTY2NjFkMWNjNDc0NTBmNjlkNzg0ZDVhMTJkMDc2NzMyYTJhOWMyMDQ0MWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxN2FmMTEwMWM5N2I3YzJmNTI1NDA3ODJlNjM0Y2M0NDQwZjBlOTcwMzQxZTUyZjk3NTIzMTFkNzhiN2Q3ZDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg5MWFjM2U5YWI4ODUwZGRkMWUzZTdiMWVlM2FkYmQwOTMxNWI4ZWNmNDM0NjlhMjdkZDdjNzk4NWM5Yjk0ZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzNjAwZmMzNTQ2ZTQ1M2M1YTJlNDQwYTgwMTc1MzRiZGJmYjZiOWQ4YWY5OWMyNGI4MjBhOWM5M2IyMDc0MDYifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L80-L92",
+          "version": "repo-lines-v1:sha256:3010a74d33cf9bcf83b7b39b7243a6ebcbcb8426c5e162ad8a9bb1c3d8b0159b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjNTYxYTFhYjg0YzczNTg0NmE0ZTUxNTlhZjBiN2FmZTQyNzczMzIyNDI4N2I5N2Q5ZmFhZjljMGM0ZDE0MzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxN2FmMTEwMWM5N2I3YzJmNTI1NDA3ODJlNjM0Y2M0NDQwZjBlOTcwMzQxZTUyZjk3NTIzMTFkNzhiN2Q3ZDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVkNWJhNjMxZmU0ZjQwNGQ4MzBjNWEwYjhiNzgwMWE4ZWExMmNkNTc0NTAyZTRjNjkwMGFiNjUxNjY2OTVhMWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVkZmJmMzk2YjZmMDI2MDc5YzI2MDJkNDk0YjI0MDZjODMwYWNjOGQ4M2Y4NTdjMGI3MzQyMGU1ZjE5ZDdhMWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c46093498da54218915e32ba9b98e086",
+      "statement": "세 러너는 같은 supervisor 구조를 쓴다. SIGINT·SIGTERM을 받으면 stopping 플래그만 세우고 진행 중인 반복이 끝난 뒤 루프를 빠져나가며, finally에서 시그널 리스너를 제거하고 prisma.$disconnect()를 실행한다. 레인 수는 작업별 동시성 환경 변수로 정하고, 점유 결과가 없으면 1초 대기하며, 반복이 예외로 끝나면 min(30초, 1000 * 2^(min(errors-1, 5))) 지수 backoff로 대기하고 worker_iteration_failed 이벤트를 로그로 남긴 뒤 성공 시 errors를 0으로 되돌린다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/runner.ts#L11-L49",
+          "version": "repo-lines-v1:sha256:a15bb0eaec9dac2b85ab402b06b9538867941e7e9059c513c77142b47df24e56:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzMDk2ZjdkNDYwM2FkMjAxNDg1YWE5MzczNWMwMTQxZWY3MDIwOTc0NDI2NzUzNjVkYzFjYTI5OTNkMThkNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1NmJhOWNiYjIwMWZmNWNmOGVhOWQ2ZTAzOGUxYmFmOTVmNzdiZDgxNmVjMDgyMGNkNzMyYzE4ODg0MWU3ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/runner.ts#L11-L45",
+          "version": "repo-lines-v1:sha256:7cfeb384048a20e177a763aa3518bf7098715ff10c7700c3e27ab824915b4816:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjNmQxZGM2MWNlMmNlNDQ3Y2ZiZWVlYmQ4N2FlOTYwNmUyYzM4MGFmMWI0OTRjZTZjYTczMTc4ODVhMDkwYmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1NmJhOWNiYjIwMWZmNWNmOGVhOWQ2ZTAzOGUxYmFmOTVmNzdiZDgxNmVjMDgyMGNkNzMyYzE4ODg0MWU3ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/runner.ts#L11-L50",
+          "version": "repo-lines-v1:sha256:d6b59d97152cfd4e84974aa0b3023fca904e6db5cbed6ecb667ddb935b69a36e:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3YzVlMGVlZjMyNjcxYzI1NmU3ZTJiMmMyZTdmOTIwOWU0OTgzOWU2MGM4MWRlYzEzOTZhODQ2MTA4YjcwYWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1NmJhOWNiYjIwMWZmNWNmOGVhOWQ2ZTAzOGUxYmFmOTVmNzdiZDgxNmVjMDgyMGNkNzMyYzE4ODg0MWU3ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e2f21020b97249e8bc7b21edc63a3253",
+      "statement": "믹싱 러너의 한 반복은 작업을 점유하기 전에 환불 재처리(reconcileRequiredRefunds), 외부 작업 정리(reconcileExternalJobs), 미디어 정리 하나(processOneMediaCleanup)를 순서대로 실행하고, 보컬 러너는 반복마다 reconcileRequiredVocalProfileAnalysisRefunds(10)을 먼저 실행한다. 그래서 정리 작업은 큐가 비어 있어도 계속 진행된다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L573-L581",
+          "version": "repo-lines-v1:sha256:954c73a9e23c7077f91163b59162b6e9c87a941b90c9d1610bea471f9016c92e:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGM0YWI3ZWU5ZGVjMDdlZWVmMWQ3ZWNlMWQ3M2RjM2U1ZmJkYjU2ZWEwNjMxMDAwNDQ2OThkNTVmNTJkYmY1NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmRiYTdkMTY5OGM5MGExMDg2NTBiMzkzZGYxZGRjOTE3ZmRmZDQxNzAwMjBiNTBmOTk2OWIzNGM1OWYzYzI0ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/runner.ts#L20-L28",
+          "version": "repo-lines-v1:sha256:0f52099651c1bf9b23442c57ee3177f73c7f81a0a99ea6ac36ee0443b7cdbe71:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDNlN2I0YzJlOTRhMDJjNTgwZjg1NDExYjhhNDk5MDI3Mjc3YTk1MWMwNTA4OTMxNjVjNWRjN2M1NDZjZDc4NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2RjOTZiNjE3N2RlZDRmZDQ2M2U1Y2RmMDFhNmM4ZWNiYjdjMTI2OTZmNzcyM2VkZjc4YzkxYWUyYTZiOTY0NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2VlZDkyMmY2M2NhZjVhNDM5YjEyOGNkODZiYmY3ZWZjZmI0OTAxOWZiNzA2ODZkM2EzOGU4NzI2NjIzNTYwOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2E2M2IwZjhkMzUxMTM4YWE2YjY1YzgzMGNjYzI0MDRkN2MwNjU2Yzc5ZjkwYzhmMGJkNzI3NWFhZjQ4ZDRlMSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_888954b757a84351acf65f5bb722a130",
+      "statement": "큐 용량 검사는 워커가 아니라 작업을 접수하는 트랜잭션 안에서 실행된다. lockQueueAdmission이 pg_advisory_xact_lock(hashtextextended('copy-singer:admission:{kind}', 0))을 먼저 잡고 그다음 행 수를 세므로, 동시에 들어온 접수가 같은 시점 개수를 보고 중복 생성하지 않는다. lock은 큐 종류별로 달라 서로 다른 큐의 접수는 기다리지 않고, 같은 큐 종류에서는 접수와 관리자 재시도가 같은 lock을 공유한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/manage-song-catalog/api/admin-service.ts#L197-L204",
+          "version": "repo-lines-v1:sha256:30da64e9e8273df4ed2eadc352c9235e49fc917cda2819af5f14a70bc0e7a8bd:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzBmYmE5ZWI4YWQ0MDIyODE2NmRmMjU1ODk5Mjg2ZjM2YjEzNDNhNGZkNDhhMmY1YWI0OGI2MzQ3NDFhOGRkMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDhiYzZmY2UxMDM4OTkzYTgzZGY5MTI0ZmI2ZWZmODVjODBhOTFlZWM5OWM5ZTUyZjE4MmY3NDA0MjkzZDcwNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmI1ODBlOTY0ZjgzYTQ3M2Y0M2Q0NDM4NDYyOTQ5ZDY4YjU2MDBmZGE3ODdmMTYzNzQ1ZDAwZGU4OWNiZjM2YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGUyNDE3MGI0MWIwMDVjZWFmZDIyMjE1Y2IwMDFlY2FlZTQzNTQ4ZDVkNWQ5ZWE3M2UwODIzZTBiY2Q2NGUxZSJ9"
+        },
+        {
+          "resource": "repo://src/shared/lib/admission/queue.ts#L7-L23",
+          "version": "repo-lines-v1:sha256:09136bb9e2c95d3541d3a5cb85bd36e5bf78f1be840ae4c60c50c10616a3e4fa:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmN2VjMzI1ZmVhOTQ2YzFkMGQzZjIwNTM2YzQ3MTk1N2FiYWY5N2M0MDA0YTRkM2I4YzIzMGQ2MjZlZWQ3OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmMjI3MjRlNmNhZjY0YzAyMTVkYzFlOTM2MzE1M2JlNzdlYTI5M2M0YjZhYzdhZGU0NGI0NmI4NGQ4ZmJjZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_39585987b4da404299b33d65af411496",
+      "statement": "checkQueueCapacity는 전역 한도(*_QUEUE_CAPACITY, VOCAL·MIXING 기본 20, SONG 기본 50)와 사용자별 한도(*_USER_QUEUE_CAPACITY, VOCAL 기본 1, MIXING·SONG 기본 3)를 비교한다. 진행 중으로 세는 상태 집합은 MIXING이 PENDING·PREPARING·SUBMITTED·PROCESSING, VOCAL과 SONG은 PENDING·PROCESSING이고, SONG은 소유자 수를 항상 FALSE로 세어 사용자 한도가 실제로 걸리지 않는다. 사용자 한도 초과는 USER_QUEUE_CAPACITY 429, 전역 한도 초과는 QUEUE_CAPACITY 503(Retry-After 30)이다.",
+      "evidence": [
+        {
+          "resource": "repo://src/shared/lib/admission/queue.ts#L11-L23",
+          "version": "repo-lines-v1:sha256:be46260facca026bf35e4ae73ee416b7f8a57188a3491ba0800fc3c4dc7c7a54:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyMzQ3ZDE1ZmU5YTRmYzlkMTcyZDk3OTA2OWZmODYyNThlOGUzYmIxNThlODczYzcyMGFiOWU3YzgyOTA0OTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjNmZlNDVjMThjNTg3MGU2NTkzYzNjNTE4OTVlYTc2OGFkOWRlMmRjNzIyYjdhODk4NDk3NmQ4Y2JkN2QwOWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9d5398711d6b4ad395fe8bbd79bed340",
+      "statement": "큐 한도 초과로 던진 AdmissionError는 handler의 admissionResponse가 error 객체와 최상위 reasonCode·retryable을 함께 담고 Retry-After와 Cache-Control: no-store를 붙인 응답으로 바꾼다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts#L46-L46",
+          "version": "repo-lines-v1:sha256:9c6ea810cc7a6fa4ccd6ca5d0025505135442f584f4d72968870e2d4a589380a:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWM2ZWE4MTBjYzdhNmZhNGNjZDZjYTVkMDAyNTUwNTEzNTQ0MmY1ODRmNGQ3Mjk2ODg3MGUyZDRhNTg5MzgwYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWM2ZWE4MTBjYzdhNmZhNGNjZDZjYTVkMDAyNTUwNTEzNTQ0MmY1ODRmNGQ3Mjk2ODg3MGUyZDRhNTg5MzgwYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTM0NmJiNjJkZjIyNzFlZWFmMTY0NDM0ZjUyZDEzNDcwZTA0YjdhMTE0NmRlM2Y0MmI1NDE4ODVjYWU3YzQwMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODViOTVlOGFhNjNmMjQ5MjFjMzhkYzFiNTM3YTkwMzVmOTQ2MDQ3YTlmZDlkZTE4M2IyMWU0M2FjMjc2NWQ0NCJ9"
+        },
+        {
+          "resource": "repo://src/shared/lib/admission/limiter.ts#L70-L79",
+          "version": "repo-lines-v1:sha256:162a2a78f2169cfd58fd05482213dfe7b7a8c61d9e8d07bf541881976ef0e355:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjMzQ4YjQ5Y2FjNWQ1OWRjNTJmNmYyMjg4NWYyZGRhYmFiMmExNmM4ZmVhZjlmODU2NGU0NzBkNGViMWYzYTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk0OTYzYThlMWMwOWFjNGQ5MmVlOThmMjUwMzgwZDUxMzNiNTc1MDhmYjkzYjQ4NzU1YzEyNTc1M2NhZjhkN2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ced156eedcbc4f698f06ad7a4c29aa36",
+      "statement": "믹싱과 보컬 분석 접수는 Serializable 격리 수준 트랜잭션에서 실행하고 스냅샷·쓰기 충돌(P2034 또는 TransactionWriteConflict)이면 최대 3회까지 다시 시도한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/analyze-vocal-profile/api/analysis-queue.ts#L133-L137",
+          "version": "repo-lines-v1:sha256:262cfdc42ee3a8d1871112931f89815074531306583c75d6cd81cd4c6923db5d:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWMxMjQ0ZWEyMGJkMGEyMzNmMDYyM2EzMzVjYzg2ZGIyNGQ4OWM5MjU3NGE1ODM4YTIxZTNmYzUzMzZmZjNkYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTQ1YjRiMmM0YzFmNjU5NDQ3MmJmZTA1Mzk2YzFhYWE3OTcwNzNhODU0YWU1YmFlMjhkOTE1MWRiZjE2ZDZmZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmRmN2Q1ZTI3MzNkZTZjNDg5MTcyZTU3YjIxNDkwNTFmZDQ2YjUzMGZmNTA3MWMxYzc0YjVhNDk3NGZjNjQ3YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTQyN2U4M2FkZjNlZWQwZTE5ZjE0OTIxOTk4M2YwNGFiNTJlNDhkOTYzMGQ0NzNhNWUyMThkOTM3NWFjYzllNyJ9"
+        },
+        {
+          "resource": "repo://src/features/analyze-vocal-profile/api/analysis-queue.ts#L173-L179",
+          "version": "repo-lines-v1:sha256:28eda8ec882defed9a643c566ac4db466ddc7f13bca162220a76573861a00e39:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmU3MGU1YmY0MDg0YmYxNjU2ODZkMDI2MzExM2ZkY2M1YjI1NjA5NTRmODg2MjU0ZGYzZGVmNDY0ZDMxMDU1YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODA3NTVlYTFjMDdkOGQ2NzdhOWFmYWMyYWE2NmM0NjdjMmYxZmJmZjBlNTg5MTJmMmIxMGE1NGRhYzQ1MDhlOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2RhYzI4YzQyMGY5ZTU1OTQxNjc0ZjJlNmI1ODAyZGFiODM2YWMxZjkxNjE2Y2NkYTFkMDU3MmUwOGFhNDFkNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDY5ZTdlNTAxNDc3MWY1MTAzNmQwMzk1ZGZiMzEwOWZkNmQzYjM3ZGI5NjZlODA1ZDIyNDM0NjQxZjYwNGQ3MCJ9"
+        },
+        {
+          "resource": "repo://src/features/create-mixing/api/mixing-queue.ts#L147-L164",
+          "version": "repo-lines-v1:sha256:7b4ed3d4f1d8d571e110a7574478317d738c09dc08b4e417447a0caa9472bae3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMWU0OTQzM2NjZmU0NDk5YTc0NmNlNWQ4NjUxYzBkMjI2NjFjNjJiMTMxZDk2ZmZjMTJkM2FjOWQwMmEyNDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkNzJmZmRhYTIyZWFlZDBkNTFmNmY4N2RmOGVhMDZkNWYzMGU2YjZlMDIyYzZlNDJkOWFkNzljZjIzZDYwZTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA2YWZiM2U4NWY4NzRmOGE3ZWRjZDliZTM2MWRhM2Y1ZDA4NTYxMTY3M2MzOTE3YjUzMzVmNjcyMTU4ZGViODciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/features/create-mixing/api/mixing-queue.ts#L40-L44",
+          "version": "repo-lines-v1:sha256:850e48a9bc69e29acd5a9211a1bcb500050dffd71c24f4126f69562bc011624b:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmRlMjUyNjNiN2FmMDU3MTA5NzA3ZTU2NjE3MWQ2MWFkMDcxZjlkZGI5ODg5YWM2ZWIzZTdiZTg5ZDRhNjhmZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTQ1YTJlMDEyN2ExY2M4ZWMwNTVkYjM0N2YzNjJmMzEyNjlmOWQyMDc0NzU2MmFhNjA3NzBjZDc0MWUwZmIyMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDAxZWJjYzNjN2NmYjA5NWNhZjIyNGJkYmIwZWJmNDk1M2YwNzgwOTY1ZTJjNGM5OWYxOGEzZjkzZTViNTUzMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjhlYTRhMDM3NDljZmVjMDVmODhlNGZjMDk1MzBkYmVhZDU0NGY4MjE1ODc5ZTU2ZWRjNzgyYzE4OGFmMTAzZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_65c7f42c4a78467a95a302adc863165e",
+      "statement": "곡 분석에서 FAILED로 끝난 작업을 운영자가 다시 열 때는 관리자 재시도가 status를 PENDING, attempts를 0으로 되돌리고 externalRequestId를 새로 발급하며 submissionState를 NOT_SUBMITTED, submissionStartedAt·externalJobId·deadlineAt을 NULL로 지운다. 이 트랜잭션은 SONG 큐의 advisory lock과 용량 검사를 먼저 통과해야 한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/manage-song-catalog/api/admin-service.ts#L197-L227",
+          "version": "repo-lines-v1:sha256:fd73af03830060c0275435b6eef3b2624edb65a640ddbdb563db090aa3476d73:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwZmJhOWViOGFkNDAyMjgxNjZkZjI1NTg5OTI4NmYzNmIxMzQzYTRmZDQ4YTJmNWFiNDhiNjM0NzQxYThkZDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM1NzY0N2YyNWE4NWI3OWY4YTljODczZmNjYjNiMDAyYjkwMTY4ODk3YzhhZGVjZWM5ODc3NDVjNDE1NTFjM2UifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c33860e26e94427a866c5ff552f69e4a",
+      "statement": "믹싱은 폴링 루프에서 lease 객체와 별개인 heartbeat 함수로 lease를 연장하면서 외부 상태에 맞춰 status를 SUBMITTED 또는 PROCESSING으로 함께 바꾸고, 갱신 행이 1개가 아니면 'Mixing job lease was lost.' 오류를 던진다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L138-L154",
+          "version": "repo-lines-v1:sha256:459d93a19e08be4e1ce8d83d29fe3bd0074c6f41f62675e4f32fc070fb2f4de0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjZGI2MTNhODU2OThlNGMyZTkwYjQxMDM1NDBiMjQ3ZDA5NjcyYmZlOGM1NGRmMDM1ODlkODFlMjdkOWMwMWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2MjAyYzNjODU5NGNjMzVhYTUzZmI2NmIxYjEzYjk3NjY4MDEwNDY1NjM1ZjlhNGEzNmQyNTAzMTMyY2UxZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBjMGNkZjRjMWE3MDQ5MDY3ZjVhODM3NzFhNWI2MWYzY2FkY2Y2NjUxOTJiOTdjNjZhMDg4OTQ3ZTBmNmU0ZjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f6a42909624f4b87bb2cd2f480c570e8",
+      "statement": "보컬 분석 실패 확정은 sourceAssetId를 비우고 그 자산의 삭제를 예약하며, 믹싱은 결과 자산을 저장한 뒤 확정 트랜잭션이 실패하면 그 자산을 폐기하고 오류를 다시 던진다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L499-L539",
+          "version": "repo-lines-v1:sha256:d7cc7d3d1b2d879b5f058c73ae6bcb836c3ae8c2e0a897c27938097187fb7648:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyMzJlYTBiMmVlM2ZlYjczOGEzMjRjNTI3ZmJkZDM5MzhlYzgyMzU5NzY4ZDgxYjk2NjA0NWY3MzRiMWRiYjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMyODBjMDc2NWZhNDg3NzlkM2YwODVmNDk2NTY3NmRkODQ3ODljMDI2YWVhZjIyMmEwNzkzOGRkYjE1YWM4NzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgxNWU4NzAxOTM1MjE5MDM4MTExYTVkN2Y1M2Y1ZGNmOTdhYWQwYzg2MmE2MmY0ODk1ZjNiNTk4ZjM4MTFlMWEifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L200-L216",
+          "version": "repo-lines-v1:sha256:0c117853756a456f43f93be1d2f5616dc0215f94036cbf78dfc200811596d77c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0ZmJjYzRiNDI5MTg3NzlmMmVmOGU4NGVlZjNlZWFmYzI2YmE5ZjU4MjhiYTA2NzgzNzM0NTIyZTJhMDM3NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyOWE3NDMzNTZjYjBkYzI0ZWE1MjBhOTA1MjUzNTU1N2Q5MjNiZmE4MDRhYmNhNzc1MGE0MmZhYTg4ZTE1OTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2ZTUxZTBkMDA4ZjE2YzdhMmI3MDAyZThiYzQ2NTQ4N2FlMmY1YTMzYjA4ZjczZjUzNWQwMGJmMjhiODdmZTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFmYjYzMjA3ZmM4MjMxNTY0ZDhjYzYxZjBlOGQwYjY3ZDlkYThiMWIyMjQwMjk1ZTIwZmYxYmFjZjYyY2U3YWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9e226a1a485742eb835305bdba56ffc1",
+      "statement": "tests/worker-recovery.integration.ts는 만료된 lease를 세 테이블에서 재점유하고 이전 owner의 fenceJob이 LEASE_LOST로 거부되는지, 예산이 끝난 작업이 FAILED로 수렴해 다시 점유되지 않는지, deadline이 지난 채 저장된 보컬 프로필이 SUCCEEDED로 복구되는지, owner가 바뀌면 lease.signal이 중단되는지, 그리고 진행 중인 작업보다 고아 PENDING 정리 행이 먼저 UNRESOLVED로 처리되는지를 검증한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/worker-recovery.integration.ts#L112-L134",
+          "version": "repo-lines-v1:sha256:64fa7fa8eee2a5343a979b29658391b702a807fb35fd6eae33285d3c9952c70b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVjMzFmMTYyNGY4MzM2YWZiNTc0MzY2YzVlNTkwMDM1MDMxOGM0ZWFjZmMxYTY2NWQ5ZDBmZmU3MmViMmYzNmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkNGY5MGE3MTViYmQ1YzVmZDE2ZjU2N2RjNjE3YTk5YjY2ZmRjZmQ3OGFkMDRkOWE3NjM2MTI3NzIwMzNlNjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNjN2IxNWIwM2QwOWM5YjE1OGQ2NWE4MjI0OWNhNTI4YTJjYjVjOWJhMWZhZmI4MzYxMzQzMjkxNDVlMmZmMDMifQ"
+        },
+        {
+          "resource": "repo://tests/worker-recovery.integration.ts#L136-L172",
+          "version": "repo-lines-v1:sha256:abe0adf675ad1e696e419213c96be66aebad6aeebc19b15745e108e84cef5456:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMjM5MDQ2Y2UyNDAxMmI2ZWQzMGIzM2RiOTRkMDgyNmU3NzI3YTI2Yjc3MWM5YWJiNmY0M2IyOTdiOTUxZWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE5MmRmZDA0ZWU4MDczZTU2NWUzNjI4MzA3NDY4NjBlZDkwZDJiMjljMWUyNzE5YWU5YzI4NDViNDkzMWJlMTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM2YzI0NmFhZDU1MjVkMTcyZjMzMjNkOTJhZDAwNjZhMzgwMzJiNmE2MTViMGQ2OWE3MDUyNDhiYzUyYTkwYzkifQ"
+        },
+        {
+          "resource": "repo://tests/worker-recovery.integration.ts#L184-L230",
+          "version": "repo-lines-v1:sha256:d560ed1ee6ea98668fd8d029792dbc84b0508d031e26fa6b105913f6c590dc51:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwN2U0OGUwOTRiNDc5NTViZTVlNzBhNGQ4OTdlNTgwYWFmNmVjMDQ3MjljM2FmNWMyOTVhZDJlZDY0M2ExMGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFiNTVlYWI1YjhlZjQ4NTVkYWY3MTA2YTMzZDllZDU1Njg5NDkwNGQ1MjlkZDc4MzBmNzA4N2E1NTg1MWEzMzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzOTUxNGE3OTMwNjEwYmViMDI3ZWY1MzNhNDRiOTVmOGNiZDMyNjAzOTViY2Y3ZTRkY2YzNzA4MDI5ZGM3YTYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4d0a8d70ce584e1f931fcbea1a5e2539",
+      "statement": "tests/admission.integration.ts는 VOCAL_QUEUE_CAPACITY=2 상태에서 동시에 실행한 접수 8건 중 정확히 2건만 작업 행을 만들고 나머지는 AdmissionError로 실패하며 티켓 원장에는 아무 행도 남지 않는 것을 검증한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/admission.integration.ts#L7-L39",
+          "version": "repo-lines-v1:sha256:4b0f3dd4ae2ea54d4bca70857ef63f504619e74e7a765cb7f70f9aff5ec6b385:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI2NDVlNjJjMWRjY2NjMjNkZGY4NDhjODI4MzBmNGUyOWFjMDM4MzBjZWRjMzZjYTExODY0OWVlMDg0OWM2MzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0ZGI0NWUwYmUzMTgwNTYwY2UyNDY2MmNlNTM2ZWJmMmRiYmJkZTRjODgyOTY3YWRhNTY0MTFlNzgzZGE2ZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRkODdiZjI5MWUxNGU3ZDBjM2ZiNjgxZDBhYzRjZjY3ZjU0YTkyMTBjYjc4YzQxYWJmZGIxMTk5ZGZlZDA5ZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1fda389c96884f268291dce8ea094eef",
+      "statement": "tests/runtime-timeouts.test.ts는 withDeadline이 대기 중 작업을 TimeoutError로 중단하고 부모 abort를 전파하는지, boundedFetch가 헤더 이후 응답 본문 읽기도 중단하는지, 범위 밖 정수 설정이 예외가 되는지를 검증한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/runtime-timeouts.test.ts#L7-L42",
+          "version": "repo-lines-v1:sha256:5f7cbe47c05f2d7e3191bbf1bd3037e3df32628335adc306913a2d0021ba117e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcyM2RkYzEwZjAzMDczN2IxZGNhYWY1YmIyOTQxNDk5MmRhZGExZmRkY2FiMTlhYTc1MDA2MDkzYTY2ZTZmYjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQyOGVkNDljZTNmMGEwMGNkNGJlMmMxNjhhYTM4MzM5MDJjZGQxOTNjNzIyMWFiODA3MDRlMjlhMGMxYTZkOTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3ab733650c3845a58c80da037c927de8",
+      "statement": "이 페이지가 인용한 점유·lease·재시도·정리 계약 테스트는 pnpm run test:readiness에 포함되어 --test-concurrency=1로 실행된다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L70-L70",
+          "version": "repo-lines-v1:sha256:ea73897a5411cae79ff1745ec0523235a8796d7d0066e05e0a0bd712e9aa41f8:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE3Mzg5N2E1NDExY2FlNzlmZjE3NDVlYzA1MjMyMzVhODc5NmQ3ZDAwNjZlMDVlMGEwYmQ3MTJlOWFhNDFmOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE3Mzg5N2E1NDExY2FlNzlmZjE3NDVlYzA1MjMyMzVhODc5NmQ3ZDAwNjZlMDVlMGEwYmQ3MTJlOWFhNDFmOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDAzZDg2NWY0Yzc5MmI3OGVmZmMxNzU1M2ZlNmY1NjI2YzVlOGQxZmE1NmRhNDYzOWUxNWJiOWNhYjU2MDNlMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODIzNjQ4MmM4ZDI3N2MyOGUzMjdjNjNkYjdiMjU2M2Q3Y2ZlNjI1ODQzNjA0ZDM2NmFkYzUzOTkwNzU5OTA4NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_32d5bc260c1a4375987b846362154095",
+      "statement": "실패를 errorCode·retryable로 기록하는 분류는 작업마다 다르다. 믹싱은 MixingStageError면 그 오류의 code·retryable을 쓰고, 그 밖에는 접수 흔적이 있으면 MODAL_JOB_FAILED, 없으면 MIXING_PREFLIGHT_FAILED에 retryable: false를 남긴다. 보컬 프로필 분석은 AnalyzerClientError·VocalProfilePersistenceError면 그 오류의 reasonCode·retryable을 쓰고, \"ANALYZER_SOURCE_MISMATCH\" 메시지면 ANALYZER_SOURCE_MISMATCH에 false, 그 밖에는 ANALYSIS_WORKER_FAILED에 true를 남긴다. 곡 분석은 SongAnalyzerError면 그 오류의 reasonCode·retryable을 쓰고, 그 밖에도 SONG_ANALYSIS_WORKER_FAILED에 true를 남긴다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L174-L185",
+          "version": "repo-lines-v1:sha256:cb1e24eae35cfb132034d560d2a39e70026f683c3ece090445b0cbfd44fa8e40:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2NTdhMjI3OThmZWVhNzA3ZDBhOGFiMTg1NWY3Njk1MjBhMTgxOTkyMGNjNjFmMjIzODg4ZjFiMmNhMTQwZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY4NTNiZDRhOGZlYTUwM2Y1ZjNkYjM3ZjlkNTUwODA2N2I1ZTRjMzZlOTFkZTZlODBiZmQwMDI2MmNjZDU2MGUifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L66-L75",
+          "version": "repo-lines-v1:sha256:3eab75caf518a7df06fb0677ea69ddab0ce7aff37751cb778920f8e2a3d3518b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc1MjM5ODI4YWE3YTQ2YjExNzk2YTUyMGYwYjE5ZWJlZTkxOTk4NGVjZjAwNGIyMDk5NWVmZTZhNTE3YmNkZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY0OTM0YmM5MzQ4M2MwY2EzOWFkOTg0MjBhZGE2MTc1ZjEzZjk4NTcxNWNkYTRhZmNkNTI4OTdmNzlkMWU0N2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2MjAyYzNjODU5NGNjMzVhYTUzZmI2NmIxYjEzYjk3NjY4MDEwNDY1NjM1ZjlhNGEzNmQyNTAzMTMyY2UxZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzNjk3YWM3NzY2ZjhhNmU2YjU1YjM0ZWUxODU1ODg3MmE2Y2ViYzkwYTJmMjI0YTBkODBkMGIxNGE3ODY0MDQifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L27-L45",
+          "version": "repo-lines-v1:sha256:4c52587f05618db386d696ac9663ada0925e80b57eb7d23b028d6df7ae2a0570:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzZTczNGRjNDEzNGIzYjgxZTY1MTNjNGYxOTliOTFhOTgxODk3NjNlOGFiZDE2YWQ5NjEyYWJlMGI4NzczN2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1ZGMzNjc4NDEzYjM4YThiY2NiN2Y4YzM5M2U0NWEwNzdiOWY3OWRlMGNkZTg2YmNjMDhhYjIzMzMyMzRiZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdmOGIzNTY4ZWY0MDUwMzdlMDBhNDk5OGQwNDU2MWFhMGU1OTQ1YzIxNmEzNTIzNjU5NGJiMjNmMWQyZGI4ZDMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2a664ce3674142af848860c154656679",
+      "statement": "믹싱에서 외부 제출을 시도한 표시는 있는데 외부 job id가 없고 재시도도 할 수 없으면, 실패 확정의 errorCode를 MODAL_JOB_FAILED 대신 MODAL_SUBMISSION_UNCONFIRMED로 남기고 refundState를 NONE으로 두어 환불을 보류한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L209-L276",
+          "version": "repo-lines-v1:sha256:aff241d2d85de4152ed15fa83c5d70adefaf9ecca47814de2d40185e125aed4d:eyJzZWxlY3RlZExpbmVDb3VudCI6NjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3OTVmOWQ4ZjM4MmYyODk2YjJjNTIyOWZlZmQ3ZDhiNzlmNGYxNmU3MmMzNDViZDg3ZjFiNTQ3Y2QwMGI3MDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyZDExY2FmNDNlOTdlZjM2OWU2YmVlZDFhMjY4YmQwNTgzOGYyOWI5ZGQyNTRiZjY5YmE2NDg4NDE0NzIzNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiYzNiOWNiMmUxZTkxYzc0MzJjYmZiYzM2NzlhNGQ5NDI1YWFiNWE2NDhiZTg2NGM3OTJlYWIwMDdhYzBiYzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFmYjYzMjA3ZmM4MjMxNTY0ZDhjYzYxZjBlOGQwYjY3ZDlkYThiMWIyMjQwMjk1ZTIwZmYxYmFjZjYyY2U3YWYifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-18T16:47:52.081Z"
+  }
+}

@@ -1,0 +1,364 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:d1cd9aa070c30d773f80205e401b45893b7f3745f01d6b4ab46932fe63c821d9",
+  "claims": [
+    {
+      "id": "claim_e705d39836e747d4a3054496a1d63710",
+      "statement": "관리자 화면은 `app/admin/**/page.tsx`와 `loading.tsx`가 `src/_pages/admin*`의 구현만 re-export하고, 관리자 API는 `app/api/admin/**/route.ts`가 `src/_app/api-routes/admin/**`의 handler만 re-export해요. 그래서 화면·API 로직을 바꿀 때는 `app/`이 아니라 `src/_pages/admin*/ui/`와 `src/_app/api-routes/admin/`을 열어야 해요.",
+      "evidence": [
+        {
+          "resource": "repo://app/admin/page.tsx#L1-L1",
+          "version": "repo-lines-v1:sha256:052deb25c8ce22fd9d52e3dbdc9249be0cd18b2702305114a2f6bb2c311842ac:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDUyZGViMjVjOGNlMjJmZDlkNTJlM2RiZGM5MjQ5YmUwY2QxOGIyNzAyMzA1MTE0YTJmNmJiMmMzMTE4NDJhYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDUyZGViMjVjOGNlMjJmZDlkNTJlM2RiZGM5MjQ5YmUwY2QxOGIyNzAyMzA1MTE0YTJmNmJiMmMzMTE4NDJhYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://app/admin/songs/page.tsx#L1-L4",
+          "version": "repo-lines-v1:sha256:7eb6f5e9450130682de5df9a1c0b78157b7a8d2e7836cee79fea99efbcdb3de4:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTE3NDQyOTA5ODcwM2U2MzRjYzY2NGU0OTc1ZDE0YWM0OTEyNzQ5ZTUxNjI0YWIxYTM1M2JlMjQ3M2Y5YzEwYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzY4NTkwZjhiNzZjMTNmNmRmYWIzZGNjMGZkOWI2MzU1ODYwYTdmMTE3ZjMwZTc4YzU0YzQyNDQ4NTZjNjgwOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://app/api/admin/ticket-adjustments/route.ts#L1-L3",
+          "version": "repo-lines-v1:sha256:1ea24da9979d3386c5405226d6afdb2cf54832dc61e41c00b850a8da96cf36ca:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjUwYmU5ZjIzN2U3MmRiYTc5NmU5Nzk5NDc4ZmE1NDgyMTNhMmNmOTNkYTBmODIzZjUxMmUzN2YxOTMwNDI1ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjJmN2ZlYzdhY2NkZTgyMGQxYWUwYzA0MmRmY2FhMmE0NTg3NzJjMjEyOWRmMThmY2Y3MmI4OGEwMDE0OWM2MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/admin/index.server.ts#L1-L7",
+          "version": "repo-lines-v1:sha256:43ed4e2ff9a421c9d1a03a25d4a9aa6271d3ec518930705d90434401cb6d7523:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGMwZjQ4ZTM4ZmJkYjZjMGVmZTk4N2M5ODQ1MjFlZDA3NDMyNzU1YjZiYWFjY2Y0NWQ5NzdlNTdkYjdjYmFkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGEzMzYxOGFkYTA1NWFkOTdlMDVhYjlhZTUxZjQ3ZmVmMjIxM2EzZTgwYjUzZDY5YmM4MjMzZGFmNTMzNzFhZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_a2afbb405cce41f1a4fbbc0ba2c3e430",
+      "statement": "세 관리자 화면(`/admin`, `/admin/songs`, `/admin/custom-mixing`)은 본문을 그리기 전에 `requireAdminPage()`를 호출하고, 이 함수는 세션이 없거나 이메일이 allowlist에 없으면 `notFound()`를 태워 화면 존재를 감춰요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_pages/admin-custom-mixing/ui/admin-custom-mixing-page.tsx#L11-L12",
+          "version": "repo-lines-v1:sha256:1018590fc484d6817101223883841b4ea22c2eefe1446f7f944e3e861a4a25a8:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGY0MTUxMjBkNTg2ODRlMTE2NzcwMGRlZDUzOGNmZGQxYTk0ODczNmE1NGFlNGUyYzA4ODQzYzc2NmE4MzUxZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWVhZWViMTYzMWNlY2NlNWZjNjdiMGRiYmZlNDE0YmVlNzIxZWE3MjMyMmZmZTFjYWQ2OGUyYWM0ZjNhYTUwZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTA3NmYyMzAwYWVlYmI5ZGYzNDE5ZmZlYWI1YWU0OTNjMGY3Y2E3ZmI5M2IwMDMyNTJmMThhNGU0YzNlYmIyOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTNhZjlmNjY2OGMzY2QwMzViNWJiNDEzZWIzNGE1ZGU4N2YxMmRjZDMyN2ExNmZlOTBhMmFkNDdlNDU1MTJjNyJ9"
+        },
+        {
+          "resource": "repo://src/_pages/admin-song-catalog/ui/admin-song-catalog-page.tsx#L74-L74",
+          "version": "repo-lines-v1:sha256:aeaeeb1631cecce5fc67b0dbbfe414bee721ea72322ffe1cad68e2ac4f3aa50f:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWVhZWViMTYzMWNlY2NlNWZjNjdiMGRiYmZlNDE0YmVlNzIxZWE3MjMyMmZmZTFjYWQ2OGUyYWM0ZjNhYTUwZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWVhZWViMTYzMWNlY2NlNWZjNjdiMGRiYmZlNDE0YmVlNzIxZWE3MjMyMmZmZTFjYWQ2OGUyYWM0ZjNhYTUwZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGM5MjhjNDExY2RlZWYyZmNhN2U4NDllZTdhYjBjMDAxY2M0OGM3YzhkOGM2MWNmOTc1ZjU4OWYxMGExYzA1ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2M4NmRjNjk4ZjE4OGEwNjVhNGQ4MWQ0ZGQ1YjJmMDBhM2MxZWEyMGVkMDVjMTI1YTVjZTNkMjRhNWI4ZjAzMyJ9"
+        },
+        {
+          "resource": "repo://src/_pages/admin/ui/admin-page.tsx#L65-L66",
+          "version": "repo-lines-v1:sha256:6333edd435dfae725a53177095d5e7e3ad8d2d117eb2b998a6fe4f603f2f8b31:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWVhZWViMTYzMWNlY2NlNWZjNjdiMGRiYmZlNDE0YmVlNzIxZWE3MjMyMmZmZTFjYWQ2OGUyYWM0ZjNhYTUwZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzIwYmM1ZDQyYjk3MjdjZjI3OGM0NGQ5ZTVkYjdkMzA3ZGI1ZGJhZmMzOTcyNWI2OTA4Mjg2OTQ5NmRmNTM1OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmYxZjEzODRlMmVkNGQ4NzdkZjc0NTBiZjFhMTJhZGQ0ZGIyZTk3Mzc3YjE4MjA4NWJkYWRjYzE4ZDAyOGYxOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjU1YjAzMDNiYjZkZjY2MjcyMWI4MzlhMDA2YzZlNDAyOTNkZDBhY2M0YzRhZDAyOGUxYTdmM2JlZTQyNTRhMyJ9"
+        },
+        {
+          "resource": "repo://src/features/authentication/api/admin.ts#L8-L15",
+          "version": "repo-lines-v1:sha256:45fc642a868bd94704b0361c06e26cf2b73e36ede311bce6cd132353a8db88a6:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDRiNjZhM2MxMDUyZDE4YTRjMWIxYTBlODI2YjU4YjJkMzRiMGYzOWI4ZGQ1NzUzMmIzZDA3YjczODJmYzBjNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTVmZTY0ZDIzZmY2YzgxODY2YjZlNTg3ZWNkMjEzZjc3ODQ5YTY3ZDE2ZjRmYjg5MzZhZGYyMmQ0N2Q2MWYzYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTEyZjI4ZDVjMWI4NzMxNGM3ZTNiNTEwYTcxNTQyN2E5Y2M5YjgxYTkyMGJlZDcyM2JlYWMxOTM0NGE2ODg1YiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_40c060ba64c34d1ab987e5efd4ed884a",
+      "statement": "모든 관리자 API handler는 자기 본문에서 `requireAdminApi(request)`를 호출하고 `access.response`가 있으면 그대로 반환해요. 이때 세션 없음은 `UNAUTHENTICATED` 401, 관리자 아님은 `FORBIDDEN` 403이 돼요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/admin/catalog/catalog-route.ts#L13-L23",
+          "version": "repo-lines-v1:sha256:0aa6848f5abebccf1e8e0a776300fabad8169392a119a1bd249464f6e2693e5e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyZWIwMTM1YzcwZTY5YzliZGZkZDkyYTMyYTFhNTVjOTdhMWRjNzYyNmMyMTg4ZGJiODQ1Y2IwYmU0NDBjYjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyY2Q2Y2E4ZTgxYjc2YjNhZWU4NTJiOWY3NGJlMGVmMGQ4NTY4OWE0MWMwNTI3OWYyMzYyYmQ5Mjg5YmZiMzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU3ZGZmNGQ3MmE3NTQ1YTA1MWJiNzE2ZWEwZjY5ZTg4MWM5Yzk5NjhmNmFlZmJjMTE3NzU3Y2Q0ZjFkYjBjZjQifQ"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/admin/custom-mixing/custom-mixing-route.ts#L22-L24",
+          "version": "repo-lines-v1:sha256:3f70f907ded7cd0f2ab088cfac9a4ff6bd874570c361f8fc0399dff17480ffb8:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTNkOTQ5YWU1OWYyMTliMTc3NWNiMzFiYzFjNzhkNDAwZmE5NjgxNGVmNjUwNWZjNGFkZjA2M2EzZWI2MzM4NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjBlMzUyMjlhYTBmODVkNTg3MGQ0MmUzOWY5YmU0N2Q3MzM5YmNiMDRlODgyMDBhN2VhMDQwMDdmY2JkMjNiMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjAzODQ5OGMyNjNkNDc0OWIxZTUxZWY0ZTg3YWI2MDJhZTUwN2YwMzUzMTBkNGQxZWQ4ZmM3N2FjODQ1ZGQwMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWYxYzVkYzg5Y2NkNzhjM2I5YjQ1MDIxNTIxZWUxMWY2MWViN2M3NDcxZjY0M2E5M2Q1NDVhYWExOThjZDYwZiJ9"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/admin/overview-route.ts#L5-L8",
+          "version": "repo-lines-v1:sha256:4a616d39fea70b287f92aac0b03aabdd62caa42d926c28ae3d2958a622e130da:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzJlYjAxMzVjNzBlNjljOWJkZmRkOTJhMzJhMWE1NWM5N2ExZGM3NjI2YzIxODhkYmI4NDVjYjBiZTQ0MGNiOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDAzMTQ3NDEyODU2MzRjZmQxNjFlZDkwMWVjMGJjNDliYjQyNmQyMmEyM2RkNDRmNWFmMTA1ZDdmYjE4NzYzOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWUyYzY5MWM0ZTFkNGU3YWYxZDQ3ZWE0OTRjZjFiYTNkNGM2M2E1Njk3ZWQ5MGNhMGYyNGYwZjYxYTU4Zjc2NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmE4YjljOGZkYjUwYWVjNDQ4NTdlZDRiYzVjNzNjNGQ1MDcxZmI5NDJhMDAwNjg5MmFmNDJlYWE3NmVmNDQ2NiJ9"
+        },
+        {
+          "resource": "repo://src/features/authentication/api/admin.ts#L17-L26",
+          "version": "repo-lines-v1:sha256:c27db166193a9637001c92f1726688b1504aecf9cfaddaf1c9ed6e383d6ff0fc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiNmE1ZWJmY2E3NjUwMWIzMmUxMWYwNzJjOGE3MTJmZTdiZTdjMjY3ZTEwYjU3OTM3YmEwMzdiZWM5ODY0M2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1YWNlM2NmOWNjYjJlYmZlZDc0ZDVlYjU2MmMzNjA4ZjE3ZTI3NjhkZTc1YjlmYzA1MTUzOWYxNDBmNjdjZjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFmZWQ1YmMyODEyODg1ZjY0YTc5YWVhNjI2ZjliZjY3Zjg1ODI0MGMwOTcxNDI2ZjY0YzRmMmVmMTAwZTMwMDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_be0f987db23c41118a5eff3e6ba71c62",
+      "statement": "관리자 API 요청은 `withApiAdmission` 래퍼를 먼저 통과해 IP 버킷, 세션, 경로 그룹 버킷, multipart 업로드 슬롯을 거친 뒤 handler로 들어가요. 다만 `/api/admin/ticket-adjustments` POST만 래퍼 없이 `requireAdminApi`를 직접 불러서 관리자 그룹 버킷을 거치지 않아요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/admin/overview-route.ts#L9-L9",
+          "version": "repo-lines-v1:sha256:412ca345ccf75bf9c0806bce695be8de808b79984251a7a54d202cf6101dd451:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzhiMGMwMzU1YTY2NTZjMjRlNDc2ZmJlYzg5NGUzOTBkZTQxZjlkMTcyZDU0MzIyMmVhYWQxNjc5MTU2ODZhZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjIsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTAwYjIxZDRkYzkxMjYyMDdmZjM1NmVmMTg4OGE0MWMzMDYwMzhjZjA3ODMzYmUzZmVhZWY2MGRlNDJmZTBkZiJ9"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/admin/ticket-adjustments-route.ts#L7-L9",
+          "version": "repo-lines-v1:sha256:6522a4b8a8090650b1b86a5a0367c1ac2ece0c67b27fed15de7363ed6d7a92c3:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWMyYWEzMGY2NzhiNmY1OWM5MWZhNDljMDhjNzdjN2NmOTk5YzM1ZDRhYTIzYzllNGRkZDYyMjZlOTY5MWRjNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjBlMzUyMjlhYTBmODVkNTg3MGQ0MmUzOWY5YmU0N2Q3MzM5YmNiMDRlODgyMDBhN2VhMDQwMDdmY2JkMjNiMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzg5MDQ2MTM1Y2MzZjg4ZWJmNmMwYzk3ZmYxMThlYzZhNGUyNjYyNTEwNzVhODcyOWY5NzE0YjlhMzMwMmE4ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2M3NjYxNTI5YTc3NmEyOGMwODkzMzgzZjhjNjM1MjNlOTgzYTliY2FjZTNkNjMwMGIyN2ZiMWZiYjZhOTE5NyJ9"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/admission.ts#L11-L33",
+          "version": "repo-lines-v1:sha256:e8e1f93ff57bc58b80f479f41e4a9e1d49073ebcd36503c669479bd143d20d4a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ZjY0Y2I4M2JmNWMxZDJkYTAyNzgxZDMxNGYzNmEwNGFlM2I1NmNlYjcwNzhlMmRmYmVmZWNjZjBlMDI1YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhMjI1YjkyYTAwNGZiMjczMzlmOWJmYTdmN2RkMjI3MTAzZWY5YjA4MDdlMTVjMjU1YTk4ODMwNWM1YTVlMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1N2VmZmM4NDhmNjQ5ZGRmMDEzODZlZjc2YjM5NzMyZWQ3ODBkMzUzZmMyMDZjMGM0M2U0OTg4NTc0YTNiZWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5db130b4cf654039bd6cb14802477824",
+      "statement": "관리자 API route 어댑터 대부분은 `export const runtime = \"nodejs\"`를 선언하지만, `app/api/admin/custom-mixing/` 아래 네 파일(`route.ts`, `profiles/route.ts`, `[id]/route.ts`, `[id]/audio/route.ts`)은 그 선언이 없어요.",
+      "evidence": [
+        {
+          "resource": "repo://app/api/admin/custom-mixing/%5Bid%5D/route.ts#L1-L4",
+          "version": "repo-lines-v1:sha256:ef7e897ec58a9f2093ee9dbfdcc0e86edf96775c1d0e91ef47a71a2f01adcade:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTE3NDQyOTA5ODcwM2U2MzRjYzY2NGU0OTc1ZDE0YWM0OTEyNzQ5ZTUxNjI0YWIxYTM1M2JlMjQ3M2Y5YzEwYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTlhOTdjN2E2YTg2OGUxZTE4NTI3MjM0MDgzNTFkYTZmYmViODdiZTkxZDIxMWIyM2U2ZDIzZGE2MDlmZGI2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://app/api/admin/custom-mixing/route.ts#L1-L1",
+          "version": "repo-lines-v1:sha256:4e94a5fa198e7c63acd009b3a54e5ea72c4df6ac02f106e82c714ac5ff63ab5f:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGU5NGE1ZmExOThlN2M2M2FjZDAwOWIzYTU0ZTVlYTcyYzRkZjZhYzAyZjEwNmU4MmM3MTRhYzVmZjYzYWI1ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGU5NGE1ZmExOThlN2M2M2FjZDAwOWIzYTU0ZTVlYTcyYzRkZjZhYzAyZjEwNmU4MmM3MTRhYzVmZjYzYWI1ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://app/api/admin/overview/route.ts#L1-L3",
+          "version": "repo-lines-v1:sha256:c54ccb4b94e1195dbcd9fc14ed45eb7ba30be26ac6d6d6086de21a23c40adeb8:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjUwYmU5ZjIzN2U3MmRiYTc5NmU5Nzk5NDc4ZmE1NDgyMTNhMmNmOTNkYTBmODIzZjUxMmUzN2YxOTMwNDI1ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDlmZmZkMzMwMWY3MDBhMzAwNWJhN2IzNmU2MWM0ZjlmNDA5NGNkYWYwZjc5OTM3N2UxODhmN2EwMjZlOWUzMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_a9c4feea11b1472086f88de34b13a229",
+      "statement": "대시보드 조회 함수(`getAdminOverview`, `listAdminUsers`, `listAdminMixingJobs`)는 `src/features/inspect-admin-operations/api/admin-service.ts` 한 곳에 있고 화면과 API handler가 함께 써요. 화면은 표마다 `usersPage`·`jobsPage`를 쓰고 API는 `page`를 읽어서, 페이지 파라미터 이름이 두 표면에서 달라요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/admin/mixing-jobs-route.ts#L8-L13",
+          "version": "repo-lines-v1:sha256:9eddeb9ceb3846c31f288103d6a19c6ca7fe2ab082a37996da0eaa534ebf7f9b:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTcxNzgzZGNjMjI5OWVkMDU2OWM5NTQ3ZmMzODMwNDc3ZDUxZDU3NmUxZGFlYTFhNzVlOGViOTI5ZTliZGUzNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTVlZjAxYmMwOGRiYzNiNjNlNGU3NWVhM2QyNmE1Yjk0MTg5MTg3N2UyN2FkODkxMzI5Yzg0MTFkN2Q4ZGM0ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjE3OTlmYzgwZTllYjBhMmUwYzJiMjY3ZWZhN2ZiZWZiY2ZkYzQ5MjQ0MDYxZDRiZDMzYmUxNjU4ODZmZWE0YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzBhYTUzNWNlYjI1NDZhMjdhMWMwOGJkODllOWRjY2IwNzE5YWVlNWU3YjI2MWI5ZjMwYzk1MjA1ZmE1NTFhNyJ9"
+        },
+        {
+          "resource": "repo://src/_pages/admin/ui/admin-page.tsx#L35-L53",
+          "version": "repo-lines-v1:sha256:27b5d8be54076d3b7a0d9cd7e870b6e117d6cf6cdbfc46c7c24f275f3dd5e3bb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2NDdiMDFkZDMyNDg5ZjJlMWQ1Yzk2MWVjYTFmN2FkZDAxMDAxMzdkMDhlZjdjM2Q5NDQyNWQ5Y2RiNTQ1MGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQxZWE5MTVjMGJhYTU4NTk4YzZjOGE5NDk3MGYxYTc2YzZkN2NiN2JlMjdmOTQxOTA4YzE5Y2IyNDBlMTI5NjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzYzZhNWQwYWFlMDA5ZTRiYTRhYThiODZhZDNlZDY4NzFkNjhjMGNjOGQ2MGVmNWQ4MDc1Y2NmNmVhMmQ2NjEifQ"
+        },
+        {
+          "resource": "repo://src/features/inspect-admin-operations/api/admin-service.ts#L16-L32",
+          "version": "repo-lines-v1:sha256:e5872ce3567a73143edbf7da3007ada34fc6e18e54c7e075e23952646a9e171f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiYWQyODdiZTlkMmNhMmJhMjUxZDFiZjc3MDhlMDNhODI4MTEyMDU3Nzk0ZDI2OWUxY2FkYWI5N2UxMmI3MjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEwZGZiNDIzZjdiZGEzZGNlMWRlZTgxNjVmYWY2YjNhODhiZWE1OTE5ZTZkMjc0NzAxMjVmYjZiODVmYWMzNWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1MjJkMTY2YTdmNDc2YTJjYzQ4NDhlNDZiNDE5ZGYzODk2ZDNiOWFkOWViZTQzOTA0ZGRkMmM2N2Q2NDRiMGMifQ"
+        },
+        {
+          "resource": "repo://src/features/inspect-admin-operations/api/admin-service.ts#L34-L58",
+          "version": "repo-lines-v1:sha256:151742c5515c83b27c68c2aa804172189a2f8a9c43d00066a06a3ab59ad9e48f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1MTI2YzdmZTE0ODNhMTMzMTY2ZDk3ZjI4ODEwYWE5ODQ2MDhhYjNmMzNhODc4MDBlMDIzOGQ3NWFjMDU4MmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE5YTYxYWJhNjFhNTQyZTVkN2NmY2MxMTgxZTRiZWNmZDA3ZjRhNTdkZjgzZTVkOTg5OTY4MjM2YjEwNzYxZWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_17e4bb150b5e4718a8ab81235e53acea",
+      "statement": "커스텀 믹싱 제출은 DB에 작업 행을 만들지 않고 Modal 변환을 중계해요. 서버가 보컬 프로필의 reference bytes를 내려받아 `prompt_audio`로, 관리자가 올린 파일을 `target_audio`로 붙이고 `SYNTHESIS_PRESET` 값을 덧붙여 `POST {MODAL_API_URL}/v1/conversions`에 `X-API-Key` 헤더로 보낸 뒤 Modal의 상태 코드와 본문을 그대로 돌려줘요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/recommendation/model/synthesis-state.ts#L1-L9",
+          "version": "repo-lines-v1:sha256:5e81c201d8589e97d502d23b0143bd8e195bbb8c20b98ed23e83f54669bf34f0:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmQyYmVkZDU3OThjN2FhMDgyNWZkMjBhMjU5ZTUyODNkMTM4YTU0Y2UxOGIwZTcwMDM0NzNlMmQ0MzhjZjBlNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjljYjFmYWZmMjdhNjY0ZTE4ZDU5YmZmMWNhMjI0MzliMWJlMTdkNTg0MTU2OWIzNmIwODRiMGJjMWU1NGI1YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjZmNWI0MGIxNTg0NTdkMTc4NjRmMjE3OTA3ODZkZDVhMmVjZGI2NGI2NmE2NTFmNzg4ZDRlMjVjZDMzMDNkMiJ9"
+        },
+        {
+          "resource": "repo://src/features/admin-custom-mixing/api/modal.ts#L19-L38",
+          "version": "repo-lines-v1:sha256:002e9f0d99a0881697b7d5d0ad1c6a6802f967170d18330e7dcfe68513b16895:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwYjRhNDZkZTE1M2I1ZGI4ODE5OGVlYTIyMmFhYjFkZjFiNmQ3MDRkNTdkYTc0MjE4MGY5Yjc0OTM3ZWFjNDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhMmMzYmM1OTgyZTY1OGRkODIxMTNhMjhjYWFiNDU4ZWVkMmNlMTU2MTE0OWUxMTJlNzQ2MWU2NzU0MWE0ODQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFmNzZhMDM1NzliNjVjMThmODQ4NWViNGIzMTdmODhkZjcxYzliMWVhMzRhNTVkYTlhYjYxOGQyODViZjQxODYifQ"
+        },
+        {
+          "resource": "repo://src/features/admin-custom-mixing/api/modal.ts#L44-L78",
+          "version": "repo-lines-v1:sha256:ab0b2eb8246eef08397add612e6c1958448a3b9979de2826a55beb8d40e47ea7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhZGRlZTg5Y2Q3Nzk3Y2NkZGUzODM0MjExYjNkYjNlNTQ3Yzk0MTQyZmE5MzhlMWNkNzU2MmNmMGI1MmM0ZjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2ZGE4NzQyOTNiMjAxNTg4ZWFkNmM4ODQ3YzBjMmQ0NTljYzk2N2FjYjE2ZTJjMWVjYzVlNTI5NTRjMmQzZjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1NDI3MzIyNmFkMmI4YWFhYWQxOTMyYzQ3OTcxZTZlNjNlYTg5NTkwY2ZjZTEyZTFmNTcwM2YxNzdjM2E2N2YifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9149a45a82694a93a5855669367602ef",
+      "statement": "커스텀 믹싱 제출은 `profileId`와 `target_audio` 두 multipart 필드를 받고, target 파일이 0바이트거나 `ADMIN_CUSTOM_MIXING_LIMITS.targetBytes`(256MiB)를 넘거나 `audio/*`도 허용 확장자도 아니면 400으로 거절해요. 요청 본문 상한은 target 상한에 1MiB를 더한 값이에요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/admin/custom-mixing/custom-mixing-route.ts#L26-L51",
+          "version": "repo-lines-v1:sha256:7bd2894aabf25ff25bd3d08806c20cd39b8c6bbedd4f960262387d5a88794a70:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMjM5YjA5NzY0Mzk5NjFiZjkyMWVlMGE5Zjk5NzkwNWY5NjZlOGIxMzczOTc1YWEyZDk0NzMyZDA1YzUzZDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg3ODgxOTE1NzEyNGFiYTQzOTYwNDAwZDI4OGMwODBjNjJmNTQ5Mzc0NDQ3MTAwNTJmMjg3ZGJlNTg3MmQ0NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcxMDY2MzNkMzY0ZDY4ZGZhOTgyODEzOWM4YmIzNDg2YjllMjJmOTU0NWNmMjZiYzkyMDFhYjY5N2JjZjVkODYifQ"
+        },
+        {
+          "resource": "repo://src/features/admin-custom-mixing/model/contract.ts#L3-L7",
+          "version": "repo-lines-v1:sha256:d4a1649ac0e88b24f0bf498ce84209212e83e0ca882ea1402bca19cb2f20ac56:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjViODUxZjZlNWEyMWY2OTc4NDQ3ODEyYzA5ZDE0YWIyMTZmMjA3MzFhY2ZhZTNiZTgzY2M4Y2YzMzVkNmUzZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjZmNWI0MGIxNTg0NTdkMTc4NjRmMjE3OTA3ODZkZDVhMmVjZGI2NGI2NmE2NTFmNzg4ZDRlMjVjZDMzMDNkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTI4YjBjYzA0NWQ3NTI2ZDFjZGIyMjU4ZGEwYTE2YTQ1YTBkNWFhOWI2NGU4ZDIyYWExZTRhNDlkNzg1ZWRmOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2YxOGU5MDI5NGVkOWYyOTYzMjA2YmE5ZDQwODBhYzE1ZDFlNjkwNTYxNTA0ZTQ3YTJjMWEwZjUxYTYxMjJjMCJ9"
+        },
+        {
+          "resource": "repo://src/shared/api/multipart.server.ts#L13-L25",
+          "version": "repo-lines-v1:sha256:d08568bcf5e84f2289649a4ff8988b44e47066fbd516f781b905bc5e8c81d760:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmYWYyZmE3YzY5NmRmZDhkMGM5MGQzZjUwNjE2ZWFiNmY5YWJiMWNhODY1NDJlMGNiODFkYzMyZGExNGExZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY1NWQyNTQxOTEwYmNkMzE3NDAxOGE5YWZlN2EzMTQyOTM0MzdiNTVkNWQ1Y2U4MmJhMTIwYjhiNDQ5OWU4NjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE5ZjU1NWNhMjM2NjQ3N2Y5MTFmMjA0Njg3MWI0N2Q0MGVlNmYxMTY4OTlhMjNlNGQyNzYxNjY2ZDQ5MWE3NGYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b924f3a2087a4cffb905f65bfb6a4b4c",
+      "statement": "`ADMIN_CUSTOM_MIXING_LIMITS.targetDurationSeconds`(300초)는 관리자 서버 경로가 검사하지 않아요. 5분을 넘는 target은 거부되지 않고, Modal 엔진의 `Settings(target_max_seconds=300)`와 `_normalize`가 그 지점 이후를 잘라내요.",
+      "evidence": [
+        {
+          "resource": "repo://services/soulx-singer-svc/api/engine.py#L84-L90",
+          "version": "repo-lines-v1:sha256:eb0444f25eb3a1ade2f9feb2e1fd6c94f9488a155186f4cb447b1a8cf5d042f8:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWEyMGIwZmY5MDNkMDk5OTA1Mzc2ZjkxODc1NDYwMzExZjJiZTJhZjE5ZDU2ZTY3YjZlN2Y3ZTcxMzI1ODI1YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTg1NjFiOWEyOGE2ZGM0OTQ4MTk3NThiMmM2YTk4NTdiMWNmYzJlYTZkZTJlN2ZhY2RlNTg1M2JmYzhhOWYzNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGQ2MDhhNTQ5M2RjOTAwYjZhNzdmODUwNGY3YjM5NDBmNzA2MzIwYWJjYWUxYjU1YmU0Njc5ZmMxNjUwMzJhNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWNmY2ZkNDlmYmYzMjAyNTc2N2M0MGZlYzVkYzlkODE5ZTE3YjFmNjBjMzE3OWI5Nzg3NDFkZmZhZTZjN2FlNCJ9"
+        },
+        {
+          "resource": "repo://services/soulx-singer-svc/modal_app.py#L114-L124",
+          "version": "repo-lines-v1:sha256:c6f0355594a8bcf39520ffe5082ddb8a112ab4bd1912eda03cdb430bd9af9fe2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzZDEyMTdlNjUwZmJjMmFjY2ZjN2MwMjNmYjlkNmE2Y2ZmNDEyYjIzYjMxYWQyYTY1NmY4M2FhNWQxMGI0NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MDlhNTNhNjE4ZDAyOGUxZDMwMDBjMGE3YWJjZWVjYmU1ZmIzN2Y0ZTUxMWVmZTQ2NjQzZmFkNmU2Njg3MmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNlMzdlZWQ0MWQxNDY5NTkwNjNkNDdmODcwNWZjMzM2MWYyOGZmYjJlNjNkZGE5NWZkYzg0NzgxMTVjZDUyYmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk0NjE3MGFhN2RmMjNmMWViOGQyNWYyMDUyMGI4ODM4MDA3NDU5ZGRlMTdlYzM2ZTYyMzM1YmY4MWRhNjc2ZDgifQ"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/admin/custom-mixing/custom-mixing-route.ts#L43-L51",
+          "version": "repo-lines-v1:sha256:4c7a358a866c243e67e041fd7a5e150a9fa236b47d0d69c222ef2f030a70c5b7:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzEyMWMwMDQ0YjU5ZDYxOTk0NDgwOTYwY2YzNmZjZmExMDc1MDMwMGQ4ZjYxMzZjYzgxZDkxNDY3ZmNmZDA3MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmZhOTEwNjA2ZGRmZTYxZWQyYzBmMmNlYjViMThhNGNlZDY1ODNhYTIzYjFiN2VjMTgwYmZiNTFjMzg2YTIzYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzEwNjYzM2QzNjRkNjhkZmE5ODI4MTM5YzhiYjM0ODZiOWUyMmY5NTQ1Y2YyNmJjOTIwMWFiNjk3YmNmNWQ4NiJ9"
+        },
+        {
+          "resource": "repo://src/features/admin-custom-mixing/model/contract.ts#L3-L7",
+          "version": "repo-lines-v1:sha256:d4a1649ac0e88b24f0bf498ce84209212e83e0ca882ea1402bca19cb2f20ac56:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjViODUxZjZlNWEyMWY2OTc4NDQ3ODEyYzA5ZDE0YWIyMTZmMjA3MzFhY2ZhZTNiZTgzY2M4Y2YzMzVkNmUzZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjZmNWI0MGIxNTg0NTdkMTc4NjRmMjE3OTA3ODZkZDVhMmVjZGI2NGI2NmE2NTFmNzg4ZDRlMjVjZDMzMDNkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTI4YjBjYzA0NWQ3NTI2ZDFjZGIyMjU4ZGEwYTE2YTQ1YTBkNWFhOWI2NGU4ZDIyYWExZTRhNDlkNzg1ZWRmOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2YxOGU5MDI5NGVkOWYyOTYzMjA2YmE5ZDQwODBhYzE1ZDFlNjkwNTYxNTA0ZTQ3YTJjMWEwZjUxYTYxMjJjMCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_978a91aaaf8e4c0799b88e98cac5ddac",
+      "statement": "커스텀 믹싱 프로필 목록과 reference 해석은 호출한 관리자 본인의 `sourceType: \"USER\"` 프로필로만 좁혀져요. `READY`인 `SYNTHESIS_REFERENCE`를 먼저 쓰고, 없으면 `READY`인 `REFERENCE`를 쓰며, 둘 다 없으면 `null`이라 route가 404로 응답해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/admin/custom-mixing/custom-mixing-route.ts#L53-L54",
+          "version": "repo-lines-v1:sha256:60d4d814f8bdd361ef85e568c93653ebf71cf3abed6b493cd3fc8a1075530410:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2U3MTA0YWE5MmJkM2U3OWE0YWMyOGIxNzYwZTBiOTcwYmQ3M2UxODZmMmEwYWRhZmZkZGRiZWM5NmE1NjhiNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDQ0ZDIwNjhlMzZiMDhlMjU3NTc3ZmY2YTdjM2IyYzY3MDc2NWJhZmNiYjNmYjk3MTRjNjJlYmRiMjAyYjA1YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDQxNjQyNTVmMGJkMmI2MzlkNTY5YTExMDhmN2Y2NWMxNTMzMzJjZGM4OTFiOGJhZjgwMzllNmRlMTM4Nzg5YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTE0YzVlYTdmNTc4YmRkZWNkYTU4NjM1N2MzMjc0ZWQwNDk0ZWQxOGEyNDdjNWQ0OGY5M2EyNmQyYzhiYTM1YiJ9"
+        },
+        {
+          "resource": "repo://src/features/admin-custom-mixing/api/profiles.ts#L37-L70",
+          "version": "repo-lines-v1:sha256:6c77f4c697b0669111a3e7c62c59a0216178b11b20dc644ef499bf8518b12022:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxZWFkYWU0MTM5ZWM0YmQyNWIxNmFmYTY1MGJhMmYyOGVlN2RlMzQzMmI1YWYzODJmMzJmMWE2NWM5Mzc0MzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://tests/admin-custom-mixing.integration.ts#L105-L118",
+          "version": "repo-lines-v1:sha256:446a9ce361688d0e613c6a0ad302a1de97af4503ad3d8472d3f750e1944f03d1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU4NjcwNjY5YzdmODJlZDM1NmUzM2VlMTI4YTk1MWJjYzg4NTdiYTZiMTQ5YTgwN2ZmYWU2ZWM3MTdjOTg5MjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2YTRiMWVhYTAxZDAyOWM5ZTg4NDE2MjE1MjUwM2IzNDNkN2U4NzY4ZGQ5ZTkzYTFiOWE0OGZlYWEzZDE3ODEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI2OTQwMTc1OGFiZjE4MWJmNmYwODQ0Yjk2ODg0MjQ3NGEyMDg2ZTdmN2E3OGEwM2NhYTU1Nzk2NTZjNzQ4YjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM1ZDY2NDU1ZjFkOGE2NjBlYmZmNTgxNjMxMTU3YTQ1YjAxZGYxMDFkNWMyMzYwNjk3NDcwZTg1ZWM5ZWZmMDkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9706bfb81a4d47988fe5e9bfb7f827bb",
+      "statement": "커스텀 믹싱은 결과를 저장하지 않고 Modal 변환 endpoint를 그대로 중계해요. 결과 WAV는 `/api/admin/custom-mixing/{id}/audio`가 요청의 `Range` 헤더를 있으면 그대로 넘기고, `Content-Type`·`Content-Length`·`Content-Range`·`Accept-Ranges`·`Content-Disposition` 중 값이 있는 응답 헤더만 복사해 전달하며, 이 경로는 `MediaAsset`·`CatalogTargetAsset`·`MixingJob` 행을 만들지 않아요.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/admin-custom-mixing/api/modal.ts#L103-L122",
+          "version": "repo-lines-v1:sha256:c697708da4e4d65f4db53abb6f2cd36f3c9dcdc639fe6f35fb18a8ac573e79fd:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1NjAxNjUyMzU1ZmJhNjI4Zjk4OTRiNGQ5OTRiMGJiOTg0MTRmMWQxYzU3MjcyYWY1MjZmNmE3NmRkYTQ3OWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2YzM5MDVmMWM5NTdlZmRmZDlhYmQwMDI3Y2EwODJlZmE0Mzg3ODIzYmM0ODNkYTM3MzI2MDZkOTkxNTFkMmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://tests/admin-custom-mixing.integration.ts#L120-L152",
+          "version": "repo-lines-v1:sha256:f74c918afe9c60d7642b3b5c495c23f1776a867a9c96778d3f7264f4a2add7cf:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM4ZDY5MTZkODQ0NGFmMjQ1N2UzYWJjYmQwZDRiNDFhYWIzZThjMzVhZjJkNjJlZjFjZDQ4NzJhZjljYWQ5MjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjMjNmODg4MzVlMGY0ZDc0MjlhZTJkZDI4YzRhNTE3N2Q3Y2JlZjgyNmJiZTM5NzRlODI0MzQxYWRiYmZhYjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUyZTAxNjA4N2UwYjUxMDQ1YTU2Mjk4MDM1YWVmOTNkNjQ4YjQxYThhOWM1ZDExYjUxYjc5YzBlMjM4OTUyOTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ0NTUyNmI1OGQzMWJiNzYyOWQ5MGViMmZkOTViMTdhNjJkOGM5YjYzYjEzNzI3ZjEzZDdiZmM2YTY4NWNlOWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_90b259c054c644a1a46bcd4db8395140",
+      "statement": "티켓 조정 handler는 `actorUserId`를 요청 본문이 아니라 세션에서 채우고, 요청 키를 `admin:{actorUserId}:{요청 키}`로 바꿔 원장에 넘겨요. 그래서 같은 조정을 다시 보내도 원장 행 하나와 잔액 변화 한 번만 남아요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/admin/ticket-adjustments-route.ts#L17-L25",
+          "version": "repo-lines-v1:sha256:ecf1374b67f2fa47577631b5a1375031d4cdfa43c05d6487ce3a5cb2e9aaef36:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDY1OTVmNGVlNWZmNjNkNTA5NTA0MTlkYzM0NDE0NTEzODUxZGM5NzM2ZmQxN2E0ZjdiZmE5MzBiMjYxYjZmMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjJkMTFjYWY0M2U5N2VmMzY5ZTZiZWVkMWEyNjhiZDA1ODM4ZjI5YjlkZDI1NGJmNjliYTY0ODg0MTQ3MjM0YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGYwMjA0NjMxOGVlOTA0NmIyZThhZDYyNDMzNWZkYjcwYjJiMzMzN2QzZjJkYTJlYTI2NTAxNjcyMzAxYzc5NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWE4MmNkMjIzNzYxODg0MjEyMGY2MjUzNjE0YTI0MDE5MjYyOTdlNDIxNWMxZGJmNzNhODY5NGFmNDg5ODE0MSJ9"
+        },
+        {
+          "resource": "repo://src/features/manage-tickets/api/adjust-user-tickets.ts#L21-L29",
+          "version": "repo-lines-v1:sha256:3c29dd93ff1dbbbaae18365e77cbbfe9e90fb00a9b7ebfec2d4692bfee3c0c8e:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWNmNDllODJmOTZmNTdhNTdkODNmMWQ5ZjU0NzFiNWZhZjM4ZmNkYWMzY2M0MmQ2MzViNDA4ODFmMjg5N2I5MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2EzZTQ2Zjk0Mjc2YjZmNmY0ZWQxZjAyYWY3OGJlZjZhMmVlMWM0MzlkZDU1ODRiOTczOTQ4MzEzMjE0ZDJiNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGYyZTI5MWMxNTBiZGUxNDRkMGJlOTYwOTViNzM4MTQ2YWU1ZDBjOTMwN2M5MTVlNWU3ZjEzNzdhOTdmMTAzYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmMyOTlhZDU4Y2Q5YjJiYTNjNDEyZmJiMzk1MmExMTBmMzg1M2M3MWIzODVkMWRkODJhOGNlODZlNDZiNTU0OCJ9"
+        },
+        {
+          "resource": "repo://tests/admin-operations.integration.ts#L40-L59",
+          "version": "repo-lines-v1:sha256:6e9985074a2fce11ffa8d9de6fd1252ca35b5f3c3032517a5b39218926e2606e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNmNjA1MDM3YjVkMWY2OWY5ZjhmYjZiOGViOTFkYTk1YTMwN2FiZDNjNTlkZjczYzE1ZGIyYzJjY2YyMGI3MjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5NDk4OWM1ODlmMjJmYzRmODYwNDI4MTMxMDJmZTU0MjNmZWZlZTUwYmY1MmVlYzZlNGFlMjA2N2NhYzhlZmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM2Mzg2ZjkwNmZmYzJmZGJiNjAxZjg1OWIzODhjYjc3YmM2NTZhZWQ1ZmE0NDg1NzJmMjY4NjM0N2M5YjAwOGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI0ZTlkNzk0NTI5YThiOTRkMDU5YTIzZjlmM2I3MjYzNGU0OWE3Y2JiOTUyZDRlYjk5OWNmNzk0NWI5MmE4MWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8826528620f74076afbf859e0335391f",
+      "statement": "티켓 조정의 실패 응답은 본문 검증 실패 `INVALID_REQUEST` 400, 잔액보다 큰 차감 `INSUFFICIENT_TICKETS` 409, 그 밖의 조정 오류 `TICKET_ADJUSTMENT_FAILED` 400이고, 양수 조정이면 대상 사용자에게 `TICKET_CREDIT` 알림을 원장 행 id를 dedupe 키로 한 건 만들어요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/admin/ticket-adjustments-route.ts#L10-L48",
+          "version": "repo-lines-v1:sha256:826e99d97b617c89a1659a5c981c77715dfbec36818c12460ac9b5f6739df992:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5OTI3OTBjZWVjZjI4Y2IzNzkxZDllM2Q2NmJmOWM3YTgzYzYwZTE2ZWJkNjhkZjMwZmM2YjkyODA3ZDcxNTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1MjJhNGI4YTgwOTA2NTBiMWI4NmE1YTAzNjdjMWFjMmVjZTBjNjdiMjdmZWQxNWRlNzM2M2VkNmQ3YTkyYzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/features/manage-tickets/api/adjust-user-tickets.ts#L30-L41",
+          "version": "repo-lines-v1:sha256:1691cc22beba906cb44ce5df7967852c5929fcd2135122f46b5573d399b9447d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIzZWE4NjBiNThlODQ3ZGM5MDk5ZjJkYzIzMjlkNmJmNWFiNDYxOTQ5ZjRlMTI3YzdiNTVkMmQyZGRmNmU2M2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyMjNkY2NlYjAyNTc0MTdlZjcwOWZkMzRjYTYxZTdkZWJiZWI2Yjc3NmRjNTUyM2U4ODgyN2EyM2QyZDQ2ZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMwOGE4MWJjYzE5NjQ2MmY1NzNhODcyMTE1MTE0NGEyYTEzYWNmNTNkMzBlNTBkMTVmNzUxMWY1NTExZmRhYmIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7222ceb866084168a42fd1b325daa1b2",
+      "statement": "catalog 관리자 handler는 `SongCatalogAdminError`를 자기 `code`와 `status`로, Zod 검증 실패를 `INVALID_INPUT` 400, JSON 파싱 실패를 `INVALID_JSON` 400, 그 밖의 오류를 `INTERNAL_ERROR` 500으로 한 곳에서 봉투로 바꿔요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/admin/catalog/http.ts#L34-L49",
+          "version": "repo-lines-v1:sha256:74ef501b4bb563fe53645fde6f1b7b729506ad44286b98966a54fc7d0009f3dd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5MmI0NDZiODVlNTc3NjZiZTM4ZmE5NTA0NWZhNTM4MzEwZTkxZThjMTcyMDNhMDVmZWE1OTYwNzQ4NzY0M2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5NGZjMGMxNzNkMWVjM2ZjNTAxZDdkZmE5Mjg1NTAxYzUyN2NmYjQ3MTI1ODNkYTNjYzM2MTgwNTY2YjRiZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/features/manage-song-catalog/model/error.ts#L1-L9",
+          "version": "repo-lines-v1:sha256:41e98d7e596520aed0549014784b452be572cdc701b163d6fbdeac754cdef3c6:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDcyNTRmMGZhYmFhMTg4ODgzMjZmMjFiYzM0MGU1NmY5Y2M2YzNjNzg3ODgwMDEzMzI0MzhjMGI1ZjQxNWQ1MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_8d59ffc1b45f44bab431ce2ec362702d",
+      "statement": "카탈로그 스냅샷은 방향이 비대칭이에요. 내보내기는 `Content-Disposition: attachment`가 붙은 JSON 파일로 응답하고, 가져오기는 파일이 없으면 `SNAPSHOT_REQUIRED` 400, 20MiB 초과면 `SNAPSHOT_TOO_LARGE` 400, JSON이 아니면 `INVALID_JSON` 400, 형식이 맞지 않으면 `INVALID_SNAPSHOT` 400으로 거절해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/admin/catalog/export-route.ts#L6-L21",
+          "version": "repo-lines-v1:sha256:e461d80a6d2b39ebba764910071a0a0224960fbebb06edbb6c9bbfd87d8db41c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyZWIwMTM1YzcwZTY5YzliZGZkZDkyYTMyYTFhNTVjOTdhMWRjNzYyNmMyMTg4ZGJiODQ1Y2IwYmU0NDBjYjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1MmE4ZGMzNzA2YzEwZjRjODcwMzk2MTYwYzI4YTgxN2Y2YTQ5Zjg2NjA5OGJiMmIyNzllNGJmZDNkOTEzMDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJhOGI5YzhmZGI1MGFlYzQ0ODU3ZWQ0YmM1YzczYzRkNTA3MWZiOTQyYTAwMDY4OTJhZjQyZWFhNzZlZjQ0NjYifQ"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/admin/catalog/import-route.ts#L12-L60",
+          "version": "repo-lines-v1:sha256:2a5c1112756d8165549eb86cd562b1714268b60ce95271e3b9214bf62d968795:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhkZWNhMjQ4MmNkY2MzZWE2ZjE4YTQyNTliMDk2NzUyOTUyYjliN2Y4ZjkyMDc5NGNmNDNiNjhmNjBiY2I5ZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3Mzk3NWQ3OTkxZTkxNDNjNjkzOTE0NzEyZDlhOGE0ZjIxMGFjZTQwNzhlM2NkM2JkYWMzZDhiOTgzODMxYzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFhMzVkOGZhMDFjM2MzZjgzYTg0MjlkMjBhZWEyNzUzMTQ2YTBlNTY3NDdjMGVkMGQzNmQ4OTE5NWUxNzU5YWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZiZjc0NmIwN2VlODhhYTlkYzc2NWMwNDE1ZTc5YzhhZmJhMjIwODk2YzllNWNmMzc4ZWI3ZTczNjUxZmJhZTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b7ad557cc6084625b94129107cd1db1e",
+      "statement": "관리자 화면은 사용자 레퍼런스 오디오 재생·다운로드와 저장소 URL을 제공하지 않아요. 이 제한은 화면 문구뿐 아니라 조정 폼에 `<audio>`가 없고 사용자 목록 응답에 `externalUrl`이 없어야 한다는 테스트로 고정돼 있어요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_pages/admin/ui/admin-page.tsx#L334-L336",
+          "version": "repo-lines-v1:sha256:0f7691b75d1f4cb1f10a1624cac93484cdc1de6917488fb7eb1aad6769c4b594:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzBhMTZiNmEzMjMwOWI4MjRmNTI4NjNkODhiMzcyZWUzNjIxNTZhZWI1OGNjZDMwZDdlYjc3NzFkZDlhZDkzNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTAwMGVkMjk0ZWQ4ZDU3MjYxYjJmNzQ1NzM1YmQxZGU4OGJjOWI3YjRlNzk0NGVkYTE5ZjAwMDBjMzQ1YzZkYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzk4NTZiYjQxYWJlYTdjZjY0NDExYWI3NTRlZWMyYzQwYzFlOWQ1YzFlZTM0MTYwMmEwZWRkNzczZWRhYjVkYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzdjOWIxOWUwNjhhMDc3YWNjODQzZDM1NzgxOTNkMTcxOGVhODdlMTg0YWIzMmEzN2FhODI0NzQ4NzM5YzgxZSJ9"
+        },
+        {
+          "resource": "repo://tests/admin-operations.integration.ts#L94-L97",
+          "version": "repo-lines-v1:sha256:05c25ea5c6ba70d120e7bcddd28c547f5a08dcbefd3d8760a0ab5b9bb891f582:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjQ2MGFiYjFiNTk4ZTc1YzNhNzFiMzJiOTZlOWMyZWNmZWFmZDNiZDMwYzJjNWViYjI4ZDYxZjRhNmE3MzYzMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTQwMWY3NThiM2E0ZDJlZmVkMDlkZDY1NzE4OTdlZDI4ZmVjMjA2NjA3MmM4ODgwMTEwZTA0ZWY2YTNmMzk0OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDY1YzViZWE1N2Y3ZjU1NGZjZTNhODU2NGNiOTMyNWYzZmE2MDFmMzkxYWFiNjIxZTY5MDM0NjlhOTYwZWE4OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2UzMjFkZThhM2EyODBjOWQ5MDg2NDE4ODA4MmNjOGViZDNiMjAzNWJmNDEyMmMzNzgwZjQ2Y2Q3MTMwZjJkNiJ9"
+        },
+        {
+          "resource": "repo://tests/admin-ui.test.tsx#L30-L31",
+          "version": "repo-lines-v1:sha256:9743c53128984b355906699180f3638c6e8bb2beeda0fd77ec666d309b7bd8b6:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzNhOTUwOWE0ZDMxODg5YzRiZjRkOGM2MTA0YTQ5NWUyNDdjNGE4ZjE0MmJjMDY1Mzg2MWI4ZWJkZjRmNzI5NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTFjOTI2NmVkZGI4NjYxMjgyYzI3ZDc4NjQxYmIzZjJmODM0MmQwZmRiMDlkNmEyYjJlMmNiODM0MGRhZTFiYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2IwOTliMDVjOTIzNTVhNjNlZGYzYzgwMWYyY2IyZDVjNDVkYmE2YzBhMzdlMDE5OTczNTg4OTFlZTllYjUxZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjZmNWI0MGIxNTg0NTdkMTc4NjRmMjE3OTA3ODZkZDVhMmVjZGI2NGI2NmE2NTFmNzg4ZDRlMjVjZDMzMDNkMiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e8c4f8bc9ccf46c281d2970f38c7dd6e",
+      "statement": "세 관리자 화면의 `metadata`는 모두 `PRIVATE_METADATA`라서 `robots`가 `index: false`, `follow: false`로 고정되고 검색 노출이 막혀요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_pages/admin-custom-mixing/ui/admin-custom-mixing-page.tsx#L9-L9",
+          "version": "repo-lines-v1:sha256:8afe5f3ef72978c44b06cdc17715d8e62d8f31692313adb471db01bf8b185fae:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGFmZTVmM2VmNzI5NzhjNDRiMDZjZGMxNzcxNWQ4ZTYyZDhmMzE2OTIzMTNhZGI0NzFkYjAxYmY4YjE4NWZhZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGFmZTVmM2VmNzI5NzhjNDRiMDZjZGMxNzcxNWQ4ZTYyZDhmMzE2OTIzMTNhZGI0NzFkYjAxYmY4YjE4NWZhZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzViODA0MjkxYjllZTJmZWI3ZjA5ZjhhYzg4Mzk3NWU0YzVkMTQwMDcwOTlhNTdkZjk3NDA1ZDExZDk3Y2RkNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTIwNWRkMDMxMjQyMTIzODlmM2E2MDJjMDUxODlkMjJiMTY0Y2VkNDljYjcyOWEwNDg4YjBiMDQ2M2IzNmJmNSJ9"
+        },
+        {
+          "resource": "repo://src/_pages/admin/ui/admin-page.tsx#L28-L28",
+          "version": "repo-lines-v1:sha256:90f6b542fc55b88398c7499914a5034b983554087a37e5a46d26f462893a9f62:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTBmNmI1NDJmYzU1Yjg4Mzk4Yzc0OTk5MTRhNTAzNGI5ODM1NTQwODdhMzdlNWE0NmQyNmY0NjI4OTNhOWY2MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTBmNmI1NDJmYzU1Yjg4Mzk4Yzc0OTk5MTRhNTAzNGI5ODM1NTQwODdhMzdlNWE0NmQyNmY0NjI4OTNhOWY2MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzVlNjdhMmEzNjg5OTUxOGM0YTU1ZGY3MWFlNzE5NmYwMjEzMGU1NWJhNTg4ODBlNjIwNWQ3Mjc0ODUyNWQ4OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTExYmYwNWFhNzI5OWFiNTEzZjE3NjZjM2NkNzU5ZDA2MTVmZjc1ZjY1YmNjYTZjNTMzZDI0NmY3ODI5YWEzYyJ9"
+        },
+        {
+          "resource": "repo://src/shared/config/site-metadata.ts#L8-L17",
+          "version": "repo-lines-v1:sha256:93db7cd64aa1d00692bc90c40cb19d285bdbc03e72eb3cb2578dccd5957eba42:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImExMmUwNTZhYTNhMjQ4Y2VjMTc5YzFlZTZjMGQ3YzQ5ZjBmZTI3M2MxMTBjNTJhYTkzZTdiZjk3ZTJlYTBkMWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0NDlmODQ1MDQyYmEwODRiNzkzOWU3OGJhZGVkZTYxMGVlYmI3Y2Q4NzNiNTAwZmRhNmZkY2IyMmE0NWEyOTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFhYTkwYjI4N2JmZmYzMWRhNzk4NDJiNTc3MmE0ZDJiNTkxMWIzYmIyMzhjOWJmY2I5ZGNjN2FlYjliNzIxZjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg0YTkwNzYwZjAzNzEyOGNkMjEzZGMyMjVjMDdjNWU3Mzk0YWQ0YmNkODA1MGJiZGY4OWNmMmRmMWViNDM3MzEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_763e249bf77943b3990d739ecf204661",
+      "statement": "관리자 변경을 확인하는 명령은 `pnpm run test:admin`(관리자 UI 렌더링과 조회·티켓 조정 통합), `pnpm run test:query`(그중 custom-mixing 프로필 소유권·reference 해석), `pnpm run check:architecture`(slice 경계), `pnpm run test:e2e`(비관리자 403과 조정 멱등성)예요.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L26-L26",
+          "version": "repo-lines-v1:sha256:aa9637ce14322f3c3f8aef7ece8a7191cf941ed341edf4e9c934cc6bd050cd85:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWE5NjM3Y2UxNDMyMmYzYzNmOGFlZjdlY2U4YTcxOTFjZjk0MWVkMzQxZWRmNGU5YzkzNGNjNmJkMDUwY2Q4NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWE5NjM3Y2UxNDMyMmYzYzNmOGFlZjdlY2U4YTcxOTFjZjk0MWVkMzQxZWRmNGU5YzkzNGNjNmJkMDUwY2Q4NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGE1N2RhMzBjMzlmNTA3MDFlZDY1MGJjMDc0NDdlMWJkYjZlYmM4MzkzY2IxZDBjODY3Y2I2OTgxMWEwNzk0NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzE2YWRmNzFhNzlmYmMyNGZkNDJmNGRiMDRjZDNiMTQ1MDk0NTZiZWMwMTg2YjAxZjVjNzVhYjhlYjNmNWU3ZSJ9"
+        },
+        {
+          "resource": "repo://package.json#L31-L31",
+          "version": "repo-lines-v1:sha256:fa28bb3ccf48a0cb156ae8df92e7cf954d9b4cc994ebbe26ac10f6fcb711103d:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmEyOGJiM2NjZjQ4YTBjYjE1NmFlOGRmOTJlN2NmOTU0ZDliNGNjOTk0ZWJiZTI2YWMxMGY2ZmNiNzExMTAzZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmEyOGJiM2NjZjQ4YTBjYjE1NmFlOGRmOTJlN2NmOTU0ZDliNGNjOTk0ZWJiZTI2YWMxMGY2ZmNiNzExMTAzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmQxYTU5NjYzNWViNTUxNzNkNzlhYTg2MjgzOTEwMGE2MzY0MjA1ZTNlNWE4ZjhkZTEzNmNiNzM4YTBjNjFkMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTg4NjJiYjRiOTM2NzFmOTBkNmQ1OGU4ZGI5ODdhMDgzZWYxM2IxMWM0ZjFiMWFkZjczOGY0YjUxNGVmYTBjZSJ9"
+        },
+        {
+          "resource": "repo://package.json#L69-L69",
+          "version": "repo-lines-v1:sha256:d86ae4382a7cf9dbc40f02bc6f5985b0324bde76ef193c0b88f2a780fe1f2cd2:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDg2YWU0MzgyYTdjZjlkYmM0MGYwMmJjNmY1OTg1YjAzMjRiZGU3NmVmMTkzYzBiODhmMmE3ODBmZTFmMmNkMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDg2YWU0MzgyYTdjZjlkYmM0MGYwMmJjNmY1OTg1YjAzMjRiZGU3NmVmMTkzYzBiODhmMmE3ODBmZTFmMmNkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmI2NDk5ODEwMTQxNDc1MjNjNTZlMjRhMWY3MTNhMjJjNTZkOTUzMmM1YWY4ZTlmNGZjMDI0NmViNThhYmMwMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2U3ZmY0M2IzMjc2MmJlNzcwMzljYzU4NTViZDU0Y2I3ZDM4ZDg0ZmI0ZTM4ZjA5ZTFlMTgxNWU4MTE3ZTE4MiJ9"
+        },
+        {
+          "resource": "repo://tests/e2e/journeys.spec.mjs#L267-L321",
+          "version": "repo-lines-v1:sha256:93d6a4fd0c6108b644678e01be3b281f3bbddf8ef4fac026bee8b170626901e5:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5MGM3MTNmYWUyNGI0M2Y0OTczNGE0NjE2MmM5NGYyYWFjZmIyMzUzYjE3NWFhZTBkMzA3MDJjZDg3ODQyNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2MmU5MzQ5MWUzODlmMWU0ZTAwYjUzMDkxYzJjMzAwYjJjMjZhZDY5ODQ5ZjIxOWRiMzU4ZTY2NzJkMWIwMDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc3ZTY2OWY1MmE5MjkyNzU1Y2E4OWZmZDI0ODAxMTNiOTkwOTVkZjVmNWY2N2E3MDU2YTAzZDkxNjU2ZmQxMGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk3ZWVhZDUzNzAxOTExYTI0OTUyNzBmOGU3MDA3ZDk4OTFlZGQ5OTEyMDQ0MjFjYzczNGRjYWFiZTc3YTc4MWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6345ce5412fa4b47b1e6e4c806f6f190",
+      "statement": "관리자 커스텀 믹싱 화면은 변환 상태가 `queued`이거나 `processing`인 동안에만 상세를 폴링하고(간격 2,500ms, 그 밖의 상태에서는 폴링하지 않음), 제출이 성공하면 그 응답을 상세 쿼리 키 `adminCustomMixingKeys.conversion(id)`에 직접 써서 다음 조회를 기다리지 않아요.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/admin-custom-mixing/api/client.ts#L14-L14",
+          "version": "repo-lines-v1:sha256:c27fbeb9a6030e7bd66a8a863cf296ec1ecc6fa7d1b76940d0f888bd150886d5:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzI3ZmJlYjlhNjAzMGU3YmQ2NmE4YTg2M2NmMjk2ZWMxZWNjNmZhN2QxYjc2OTQwZDBmODg4YmQxNTA4ODZkNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzI3ZmJlYjlhNjAzMGU3YmQ2NmE4YTg2M2NmMjk2ZWMxZWNjNmZhN2QxYjc2OTQwZDBmODg4YmQxNTA4ODZkNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjg5MTJhMDAwZjA3MjE3NjQxMWU5Mzc3YzliNWUwMWU2Y2MwZTEzNWJkOWY4NzQwZGY0OGNmNWEwZWExYjM0YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2IwNmQwZDNmZWMwYTMyNWNjNDRjZWZkMzE0ZTM4Yzc4YTkzOWExNjQ2OWI4N2NlODA3ZGIyNzIzYzk0NmRlNiJ9"
+        },
+        {
+          "resource": "repo://src/features/admin-custom-mixing/api/client.ts#L24-L30",
+          "version": "repo-lines-v1:sha256:8bbd70a8cf5d08c8427c9186a8fc57c72f549c294d5a732bc7a6f4fc42cc8f76:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2E1NDQ0MWYyNTk4MjBjMTM1MzEzMjUzYWEyODczNjdiZGIzMTliYjA1OGNjNWIzOWMwNGJjNmE4YjNiYzBmNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWNlYzAxYjIyYWVjYzExN2NiNGM5YmQ3MjJkYzRjMGMxNWEzYjY1YTllZDU1NmMyYjVmODdmNWQ1ZTE3MzkxZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWMwZjIwMmNkNTIxYzM2MmQxZTNjN2FlZWE1ODhhMjJhZWViOTlhNjEzOGEwZjA3MjhiYTczODE0MzM1ZDAxOSJ9"
+        },
+        {
+          "resource": "repo://src/features/admin-custom-mixing/api/client.ts#L87-L87",
+          "version": "repo-lines-v1:sha256:dc667f0d3eac42c16909e2c423b9fe8b02b876e1d4eb10fb30658ac507f0ac85:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGM2NjdmMGQzZWFjNDJjMTY5MDllMmM0MjNiOWZlOGIwMmI4NzZlMWQ0ZWIxMGZiMzA2NThhYzUwN2YwYWM4NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGM2NjdmMGQzZWFjNDJjMTY5MDllMmM0MjNiOWZlOGIwMmI4NzZlMWQ0ZWIxMGZiMzA2NThhYzUwN2YwYWM4NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzYwOTJhNTE1NzBlYzI5NzhkNDYyOTE2MTk5YjhiZGIxMTYzOWUxYjA5NWRjYmE4MzJlOGRkZGMwZmExODE4NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmQwZjJkM2EzYWFkYTI3NTg2NDU3OGQwYTQzOTE1NjM4ZDU0M2ZlY2EyYzk0ODU4ZGI5NDEyMTFlODZjZWYyYiJ9"
+        },
+        {
+          "resource": "repo://src/features/admin-custom-mixing/ui/admin-custom-mixing-panel.tsx#L124-L134",
+          "version": "repo-lines-v1:sha256:af8368b994f022b50d2dbe389fc9d14de3bac154f9594101bab67daf67ccda89:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNkZWVhZjEzOTIzYWJiM2Q3NTgyNTBkMzRlZmRkYmY4Y2U2ODZjZWJiMTZlY2U5OWM2ZTE5MDYwMTAwOWIyZDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE1MjY1YWI1ZDU3MzVkMjZmMjkwNzkxYzQ3YzU3MWM4MmJkOGQ1MzUxMTc5ZDQ5NThkMmYwNmVhNjZkNDRjMmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM1YzFhMzE2YWI3NGRjZmQ3Mjg0MmVhMTdjNzA1MGYyZWQ2NDBmYTgyODg3YmU4OTI3MTc2MzUzZWQ3YWUyYjYifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-18T16:47:52.081Z"
+  }
+}

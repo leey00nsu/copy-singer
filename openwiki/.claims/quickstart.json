@@ -1,114 +1,94 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:ba3b3e86081875de53291a0d9e095c20aa9e5f6f9f7e510709edc863b561ea98",
+  "pageVersion": "sha256:9f99755cf86cb6fd69729940ef36e3a8cbaa37339c39e82802a6a919671f24ad",
   "claims": [
     {
-      "id": "claim_d3e4b06d4c48419a9a1e167d1194ca4e",
-      "statement": "`pnpm dev`는 `concurrently --kill-others-on-fail`로 Next.js 웹, 믹싱 워커, 보컬 프로필 분석 워커, 곡 분석 워커를 함께 실행하며 한 프로세스가 실패하면 나머지도 종료한다.",
+      "id": "claim_d0c86454b50b4287bc6edeca4a81e202",
+      "statement": "`pnpm dev`와 `pnpm start`는 웹과 워커 세 개(mixing, vocal-profile-analysis, song-analysis)를 하나의 `concurrently --kill-others-on-fail` 묶음으로 감독해요. 그래서 자식 프로세스 하나가 실패하면 나머지도 함께 종료되고, 운영에서는 배포 관리자가 인스턴스를 다시 시작해야 해요.",
       "evidence": [
         {
-          "resource": "repo://package.json#L9-L21",
-          "version": "repo-lines-v1:sha256:43a2c543e38b90d227df8f0944d59e7796f62ef56ea5b2afc53366f83d34de4d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0ODMzZDU5NDljMDNhNDBjYTk1MjQ5MTYxMGE2NjU5NjQ0YjNhYTQ2NjM2MmY3OTkwMjBkYmYxOTgxNTQ3ZGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4NjM4ZTNlMjNmY2Y3N2RmNzg5NzMzMTA5NWFkNWM4Y2FlNGU1MDkwMTg3NGM5MjI3ZTA0YWQxNTlhMTQ1Y2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyNzAxMTI4NzM1MDNhMDc0OGU1ZWY0MGViOWZlZTUyYTZjNmRiNTdhNzMzMTI1ZjQ5NDhkMThmNGNjMTdiNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZmMThmNTBlNGM4ZThiYWQ4ZDdlZTJlZjIzZTU5MGU3ZDYwYTkxNzdlYzY5MTFkYTZmM2Y0NDlmMTAwMjBkODkifQ"
-        }
-      ]
-    },
-    {
-      "id": "claim_7bea378872454f3db7e403fac12eafee",
-      "statement": "로컬 실행의 저장소 정의 순서는 의존성 설치, `.env.example`을 `.env.local`로 복사, Docker Compose PostgreSQL 시작, `db:migrate:deploy`, `db:generate`, `pnpm dev` 실행이다.",
-      "evidence": [
-        {
-          "resource": "repo://README.md#L52-L70",
-          "version": "repo-lines-v1:sha256:f0d464ac6c855ffbf73eb4bc552312ec9fc5257269a9d9fca184bdd8764da0da:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyOWE0OTAwZTI5MmM0NTU0YTQwNTliOWRkMThmOTY1YzgxYzJmMWUxMmZjNDhlODY4MmFlMzI2MzAyOWNiYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmYjg4NzZjNzM4ZjhkZGU2MDQzYmY4YWM3MGNjYTcyNTk5ODM0YmU5MGFjODIwOTVhZTZkMWE1MDQxZjNkMDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAwZmFhY2FiMDM3YzI2ODE1ZTY5MWUxMjJiNzJmNWNiMTM2NTcyYzhiZmY3MGNmNDU5M2ZmMzU4Yjg1ZGM5YWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1YTE1YTNlODZiNjFkYzJhZGJiNjAyYzU1ZDNlOGU4NGE2MjA4YmNmMzVkN2FiMjUzMmRjOWE5ZDc2MzcxZTUifQ"
-        }
-      ]
-    },
-    {
-      "id": "claim_100641acf1df44aa91bc9d78f34f1f33",
-      "statement": "Docker Compose는 `postgres:16-alpine`을 사용하고 호스트 기본 포트 `5433`을 컨테이너 `5432`에 연결하며, `postgres_data` 볼륨과 `pg_isready` healthcheck를 정의한다.",
-      "evidence": [
-        {
-          "resource": "repo://docker-compose.yml#L1-L20",
-          "version": "repo-lines-v1:sha256:82f3e18d7813dc19f0f55e30530726dfc6f69c52f3e17aeb018ad249d4c0b489:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhNzNmY2NkYzk5ZWE4MzU5NjdjN2RlZTdlZmJlZDFmM2NhODcyNjBkOTI5MzE4NTBmZGQ2NmRhOGNiMTJmMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyZWRkODUzMTM2ZTliOTZiYmY4OTIwMjVjMzc3NzJhMDQxZWE2NGFlNGY3M2ViYjE2YTEwMzU1OTIxM2UzZGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU3YTIzZjkwMzZkNzYwYmJjNDA5NDNmZTJlZTkwMzNiZjM0ZTg0ZGE1MzBiNmUwN2MxNzBjNzJiMWM3Y2ZkZWYifQ"
-        }
-      ]
-    },
-    {
-      "id": "claim_150e4b52600a4e06aa09efd7cd3b1695",
-      "statement": "세 워커의 스크립트 엔트리포인트는 `.env.local`을 `.env`보다 먼저 읽고 각각 `runMixingWorker`, `runSongAnalysisWorker`, `runVocalProfileAnalysisWorker`를 호출한다.",
-      "evidence": [
-        {
-          "resource": "repo://scripts/mixing-worker.ts#L3-L7",
-          "version": "repo-lines-v1:sha256:8b4cf65406ae8dce675a5fa3adf8e7aa89028568ac0c9b7efe2f6ea1f5c9da82:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzFhMzNmYzU0OTYyMmRmZjgxZTAyNWMyY2FkMDEyNWVjN2I2MjY3NzQxYTYzOTZhYjJkZDM2ODVjN2VmYTExNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWExZWI3ZDc0NDY3Nzg5NDQ4NTViYzE5NTNmYjc2NmE2MGZjN2E2ZjRlYmIxNmQ4NGUyNWU2ZjFmZTVhMTM4OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjA2NzI5NzI4ZjE4ZjQxZmJjMDAzZTRlYjNiNDY4ZGY2MWNlZjZmNzU0ZDc4NGZkZDJhNTExMzNlMTYzNTFkZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+          "resource": "repo://package.json#L10-L21",
+          "version": "repo-lines-v1:sha256:d8833d67a8d213713c50c625346712a56f6b9b29aca55b524bf4eb60deff0740:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI1NTc2YzNjOWQ2YmUwNGE0NzllOWI5MzU3YWNmMTRlZjZlOGYwNzQzYWM2MzMzMDMwNmY2ZTJhMWEyZWM5ZjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4NjM4ZTNlMjNmY2Y3N2RmNzg5NzMzMTA5NWFkNWM4Y2FlNGU1MDkwMTg3NGM5MjI3ZTA0YWQxNTlhMTQ1Y2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1MjQwOGU4NzQ0NDFkYWI3OGNiY2U4YzBkYTM0NjA4NjU2NjhhYWE3YzMzNDJjMDYyMmJkMDZiZTg0ODE0YWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIyZjU3ODUzZWRkYzc4MzY2MjM3OTVhMmFhOGY0M2M3YjQ5NGU0ZWY2OWEzMjgwNTEwZmMyZDcwNDlkM2Y5MDQifQ"
         },
         {
-          "resource": "repo://scripts/song-analysis-worker.ts#L3-L6",
-          "version": "repo-lines-v1:sha256:8af418baa098f1e25134f3bd065c51cd002a3e117e7ec3271e46ad94d19538a7:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzFhMzNmYzU0OTYyMmRmZjgxZTAyNWMyY2FkMDEyNWVjN2I2MjY3NzQxYTYzOTZhYjJkZDM2ODVjN2VmYTExNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDBjMmQzMjk2YjkxNTg3ZmQ2MzM5ZmVlOGJlNTM2NDZiOGJhMjcwYzQ0ZWRmZDAyZDQ2ZjY3NGRjODE4YWU2NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjA2NzI5NzI4ZjE4ZjQxZmJjMDAzZTRlYjNiNDY4ZGY2MWNlZjZmNzU0ZDc4NGZkZDJhNTExMzNlMTYzNTFkZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
-        },
-        {
-          "resource": "repo://scripts/vocal-profile-analysis-worker.ts#L3-L8",
-          "version": "repo-lines-v1:sha256:2946691d023b2a402c100a0a0d77d373136f011bb039303d4f1811d7df939509:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzFhMzNmYzU0OTYyMmRmZjgxZTAyNWMyY2FkMDEyNWVjN2I2MjY3NzQxYTYzOTZhYjJkZDM2ODVjN2VmYTExNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjA2NzI5NzI4ZjE4ZjQxZmJjMDAzZTRlYjNiNDY4ZGY2MWNlZjZmNzU0ZDc4NGZkZDJhNTExMzNlMTYzNTFkZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjQ5OGYzMGJkNzYxNzIxYjEyZjdiMWRhM2ZkNzRlMTc4NDY0MDBhODM2MDFkMGZjMGRmZWQ2ZmFiNmRmNmU5MSJ9"
+          "resource": "repo://tests/process-scripts.test.ts#L29-L44",
+          "version": "repo-lines-v1:sha256:5055452b9fb999de3b874831bad4acda68e3953c272b51f74daf22f7d4c7a617:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjOWY4ZDk0NzU2MmVhYTFjMzNkZmU3ZjJmYjE0ODQ3YmVhOWI2NWViOWMwMTZiNTBiYTFkY2U3ZWEyMTIzNDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI1MjM2ZDI1ZjVlZTQ4NDZmY2RiZTQ0MTk0MTQ3NDk2ZjFhMzFkOGQzNDgwNTg0YjI4OTExNTgxYjc5NGI3OGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU2MzIwZjE2M2UyNDM3OWU3MmU1OWEzMzc5ZTNhNDc2MTUwNTVlMjg2Njg3NTEyY2Y3M2UwNmQ0NWVlMDgzNmYifQ"
         }
       ]
     },
     {
-      "id": "claim_e8c28b32878c41d8a1a9fae2ac788e2d",
-      "statement": "믹싱·곡 분석 워커는 외부 job ID를 저장해 polling을 이어가고, 보컬 프로필 분석 워커는 외부 analyzer의 단일 동기 HTTP 응답을 기다린다.",
+      "id": "claim_0b9d34a94a934385804dad7ea754e693",
+      "statement": "세 워커 entrypoint(scripts/mixing-worker.ts, scripts/vocal-profile-analysis-worker.ts, scripts/song-analysis-worker.ts)는 모두 dotenv로 `.env.local`과 `.env`를 읽은 뒤 `src/_app/background-jobs/**`의 실행 함수를 import해서 시작해요.",
       "evidence": [
         {
-          "resource": "repo://README.md#L127-L143",
-          "version": "repo-lines-v1:sha256:504f44c983599f1f63f23a2e903aa2cc569d3ed95e5aa53981b8962049edc97b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3MWZiYmRiNDBmZGIzYWQ5YmQwN2FjZDhiNmNiNThhZDgyMzcwMjY0YWVkZjMyYmM5MDIyYThjZjBjMjJhOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxN2U4ZDI2MDBjNjJlOTllMGQwNWQxNGNjNDNiNzJlNTY3YmYwYzQyOTYxMzFmOGRhMWEzNTEzMmJhMWE3ZDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3YThmYWQwM2RiYmI3NWE3OGE5OTQzOWIwOTJkOWZjNmY5Mzc2YzM4MzQ5ZjI2NjZjYzIyZTMwMmI4ZTA4ZTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU3ZWM2YTJhYTFkM2JhYTBjYWI2ODQzYjUzODU2NGM1YzczNTk5ODEzZjJiODY0ZWUyNDRjOTgwNzg2NTc1OGMifQ"
+          "resource": "repo://scripts/mixing-worker.ts#L1-L7",
+          "version": "repo-lines-v1:sha256:a5cf8e8fadb2cb4115419295527a79ceed7becaee6964fce668a83f6ebfd41e3:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjc5YjA3NzI2YzdlMDA3NTkxYTZmZGY2OTMyMzUzZTAyM2E1MjI2MDcwMzIwMTJmYmJkMjI0ZGVkYmVmOTJkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWExZWI3ZDc0NDY3Nzg5NDQ4NTViYzE5NTNmYjc2NmE2MGZjN2E2ZjRlYmIxNmQ4NGUyNWU2ZjFmZTVhMTM4OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://scripts/song-analysis-worker.ts#L1-L6",
+          "version": "repo-lines-v1:sha256:7aeda58a7dc0023b2038b33f683003b787bb771ee685d3278ca2f6808687cb5d:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjc5YjA3NzI2YzdlMDA3NTkxYTZmZGY2OTMyMzUzZTAyM2E1MjI2MDcwMzIwMTJmYmJkMjI0ZGVkYmVmOTJkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDBjMmQzMjk2YjkxNTg3ZmQ2MzM5ZmVlOGJlNTM2NDZiOGJhMjcwYzQ0ZWRmZDAyZDQ2ZjY3NGRjODE4YWU2NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://scripts/vocal-profile-analysis-worker.ts#L1-L9",
+          "version": "repo-lines-v1:sha256:cbb3ec1802a3534efff853afd19a9f67a9fdd07f6ce3a8e761fa908b6ed665ee:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjc5YjA3NzI2YzdlMDA3NTkxYTZmZGY2OTMyMzUzZTAyM2E1MjI2MDcwMzIwMTJmYmJkMjI0ZGVkYmVmOTJkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjQ5OGYzMGJkNzYxNzIxYjEyZjdiMWRhM2ZkNzRlMTc4NDY0MDBhODM2MDFkMGZjMGRmZWQ2ZmFiNmRmNmU5MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
         }
       ]
     },
     {
-      "id": "claim_e96dadebe1b640fabb89a0c0dde16070",
-      "statement": "각 워커 런처는 설정된 concurrency만큼 lane을 만들고 lane별 고유 owner를 사용하며, 작업이 없으면 1초 쉬고 `SIGINT`·`SIGTERM`을 받으면 중단해요.",
+      "id": "claim_23b9767fe7bb483cb96d64ee4370770f",
+      "statement": "브라우저는 자기가 속한 서버의 경로만 호출하고, 짧은 읽기·쓰기는 Next.js 서버가 그 자리에서 처리해요. 오래 걸리는 분석·믹싱은 PostgreSQL에 작업 행으로 접수한 뒤 독립 워커가 이어받아 Modal을 호출하므로, 자격 증명이 필요한 외부 API가 브라우저에 노출되지 않아요.",
       "evidence": [
         {
-          "resource": "repo://src/_app/background-jobs/mixing/runner.ts#L11-L49",
-          "version": "repo-lines-v1:sha256:a15bb0eaec9dac2b85ab402b06b9538867941e7e9059c513c77142b47df24e56:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzMDk2ZjdkNDYwM2FkMjAxNDg1YWE5MzczNWMwMTQxZWY3MDIwOTc0NDI2NzUzNjVkYzFjYTI5OTNkMThkNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1NmJhOWNiYjIwMWZmNWNmOGVhOWQ2ZTAzOGUxYmFmOTVmNzdiZDgxNmVjMDgyMGNkNzMyYzE4ODg0MWU3ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://docs/prd/system-architecture.md#L29-L45",
+          "version": "repo-lines-v1:sha256:6f31b0e1a6f8101ae98b64c213503d1cfe984479933df8673eb901728ecbad4d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhYzI4MTg0ZjZmMzU0NDYwNTcwODE4N2NkMDgyNDU3ODYwZjg3OWMzZmQzNDM1NTAwMzdjNjQxMWMwOTEzYjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3ODdiZjFmODAzNzE0ODU4M2U5NGVmN2E0ZTAyZmYwYWJhY2ZkYjI5YTQwZDJjZWZhZDI2MjQxODJlMWQxM2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJmMGUxY2U2M2I4NGYwYWM0ODAyNGU5NGQ4MThkYjA2MWM2YmI4MWMwNmFlNTVmNzNiODk1ZWIxOWJhYTEwODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlMmI0OTYzMmFjMzJmYTZlZTU5YTZlYWQ3YWU3MzQwMWFhMzg3ODY1NjQwNWNmMGQ5ZGIxMzg0N2I3Yzg1YzYifQ"
         },
         {
-          "resource": "repo://src/_app/background-jobs/song-analysis/runner.ts#L11-L45",
-          "version": "repo-lines-v1:sha256:7cfeb384048a20e177a763aa3518bf7098715ff10c7700c3e27ab824915b4816:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjNmQxZGM2MWNlMmNlNDQ3Y2ZiZWVlYmQ4N2FlOTYwNmUyYzM4MGFmMWI0OTRjZTZjYTczMTc4ODVhMDkwYmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1NmJhOWNiYjIwMWZmNWNmOGVhOWQ2ZTAzOGUxYmFmOTVmNzdiZDgxNmVjMDgyMGNkNzMyYzE4ODg0MWU3ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
-        },
-        {
-          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/runner.ts#L11-L49",
-          "version": "repo-lines-v1:sha256:513356ecd037ab7eac63e7a63f8637cadfd97507a0365f0b6191a808d6f5ef82:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3YzVlMGVlZjMyNjcxYzI1NmU3ZTJiMmMyZTdmOTIwOWU0OTgzOWU2MGM4MWRlYzEzOTZhODQ2MTA4YjcwYWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1NmJhOWNiYjIwMWZmNWNmOGVhOWQ2ZTAzOGUxYmFmOTVmNzdiZDgxNmVjMDgyMGNkNzMyYzE4ODg0MWU3ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+          "resource": "repo://src/_app/api-routes/admission.ts#L11-L33",
+          "version": "repo-lines-v1:sha256:e8e1f93ff57bc58b80f479f41e4a9e1d49073ebcd36503c669479bd143d20d4a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ZjY0Y2I4M2JmNWMxZDJkYTAyNzgxZDMxNGYzNmEwNGFlM2I1NmNlYjcwNzhlMmRmYmVmZWNjZjBlMDI1YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhMjI1YjkyYTAwNGZiMjczMzlmOWJmYTdmN2RkMjI3MTAzZWY5YjA4MDdlMTVjMjU1YTk4ODMwNWM1YTVlMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1N2VmZmM4NDhmNjQ5ZGRmMDEzODZlZjc2YjM5NzMyZWQ3ODBkMzUzZmMyMDZjMGM0M2U0OTg4NTc0YTNiZWUifQ"
         }
       ]
     },
     {
-      "id": "claim_eecd1b34da374c6996cf63dd0ad46ac1",
-      "statement": "현재 `pnpm test`는 `pnpm run build`부터 UI·도메인·통합·API·아키텍처·Storybook 검증과 `pnpm run test:readiness`까지 여러 검증 script를 순서대로 실행하고, `pnpm run check`는 Biome, ESLint, TypeScript, FSD architecture 검사를 실행해요.",
+      "id": "claim_3fa8588bfc374ded90f301be4a8c2c63",
+      "statement": "`app/api/**/route.ts`로 들어오는 보호 API 요청은 `withApiAdmission` 래퍼를 먼저 지나요. 이 래퍼가 handler 호출 전에 IP 버킷, 세션 확인(없으면 401), 사용자 그룹별 요청 제한, multipart 업로드 슬롯 획득을 순서대로 적용해요.",
       "evidence": [
         {
-          "resource": "repo://README.md#L237-L257",
-          "version": "repo-lines-v1:sha256:382001015f81dc50757915682044cf4a674be5b49d5ec20ed0c69d0f60d53832:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljMTM2YmI4MTk0ODNlZDk4ZjVjZjJiYjc4NDNlODYwYTRlNWVmMzQ5OTIyZTM2ZDM3NWZlYmQ0NmNkNjgzMzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkOWY4MTRmZjM2N2UxMWQ5ZjkxOTBhODNhNWY0NjAwYTM1ZGI0MzZhZTVjZDNjMWE4MjEwOGFiMjhkYjFhYjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRiMzAxMzJkNWY1ODUyOTc1M2U2OTAwNzMxNjM5MzE0YzUyN2I3YWRhNGZjOTFmOTViZTY3YmE2NDhjYzMwOGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk2ZTA5ZDc2YTI1M2QzOTk5MGUxNjlhZjkzN2JmNjhhNzU3MTg3ZTg4MmUwMzc5OTc1M2UxOGRjYTYwNTI2MTMifQ"
-        },
-        {
-          "resource": "repo://package.json#L23-L34",
-          "version": "repo-lines-v1:sha256:32d70877cb6e34a41802952d2ca814a2ca74fed4b1c17a0241a60e3a674d29b5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmYTc0YmJhOTk4YTM4OGZjOWU4ZjM4NjMzYWU4Y2JmOTIzOGIzZTVhZTM0NTUyMjE4ODQzNjRiMTllN2VkNzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0ZTAzMjViN2Q4MmE5YjE4YjhjYjA4MThjZGMwZDExNGM4M2Q0YWI1YmRmYzc4ODZiZTQ2NzcwODFjZmZiN2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIwM2EzY2U1ZTNmMDdjN2U4NTQ2ZDQ2MTE2N2UxMGI5NmQ1YWM1MDlkNWQ3ZDZmY2U3ODliYzQyNTFiOGZjMTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjljMGM0Yjk5NWY3YmEzODQyMzQ0ZmRlYmM1YTY2ODlmM2UyZTU0ODVlNDg1M2JiYTliOTQxZTI5MmNkYTZiZjUifQ"
+          "resource": "repo://src/_app/api-routes/admission.ts#L11-L33",
+          "version": "repo-lines-v1:sha256:e8e1f93ff57bc58b80f479f41e4a9e1d49073ebcd36503c669479bd143d20d4a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ZjY0Y2I4M2JmNWMxZDJkYTAyNzgxZDMxNGYzNmEwNGFlM2I1NmNlYjcwNzhlMmRmYmVmZWNjZjBlMDI1YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhMjI1YjkyYTAwNGZiMjczMzlmOWJmYTdmN2RkMjI3MTAzZWY5YjA4MDdlMTVjMjU1YTk4ODMwNWM1YTVlMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1N2VmZmM4NDhmNjQ5ZGRmMDEzODZlZjc2YjM5NzMyZWQ3ODBkMzUzZmMyMDZjMGM0M2U0OTg4NTc0YTNiZWUifQ"
         }
       ]
     },
     {
-      "id": "claim_2ece9cb69e15405aa08c15117b754407",
-      "statement": "첫 변경의 탐색 기준은 시스템 경계, 런타임 설정, 도메인 워크플로, 외부 연동, 변경 범위 테스트 순으로 목적에 맞는 Knowledge 문서를 확인하는 것이다.",
+      "id": "claim_a60b4ff166324c249a19abade6869068",
+      "statement": "Browser E2E workflow는 pull request와 수동 `workflow_dispatch` 실행에서 `pnpm run test:e2e`로 Playwright journey suite를 돌리고, 결과물 `artifacts/e2e`(baseline/candidate 리포트, 로그, 실패 trace)를 7일간 artifact로 보관해요.",
       "evidence": [
         {
-          "resource": "repo://README.md#L210-L235",
-          "version": "repo-lines-v1:sha256:20320bf1f70b59c9e968d8ccd6f5fd2e0655cdb7032f3d4fc3a24ccdaa83e10a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxOTg3NmVhNTEwODAwZmFkNjZiYjdkYWI2YzM1NmNiNjAwNGNmMGUzZjJmOGY3NzY1Mzk5ZTg2NWZlMzNkY2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkwMDYzM2M0M2ViZDZiMDExNTlhMWYxZDU2N2ZlZjZkZWVjMTc0ZWRjMDc1YjRlMWVkMjQ5ODZkZTVmZmE0OWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM5ZjI0Yzk0Y2M0MDE4ZDI5YzQ0NDhhMTBhMDk1N2MyMDVlNjIwODc2ZjEyYWIzYTE4MGZmNTgyMDE4ZTU2MzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVlNmVkY2VjMDlkMzQxNmEwN2FkMmE5NDBiMGNhNzBkZDgyNDBlMDE0ZDEzYWZjYWNhNDdlOGM1YTIzMjE3OTUifQ"
+          "resource": "repo://.github/workflows/e2e.yml#L10-L29",
+          "version": "repo-lines-v1:sha256:1aad8119e134ba3d1e11f28ad05ee6914b880f6374cb0fc6dcb06686fa53e316:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5ZDgwMTU0ZWQ0MmZjNWM3NzliMTMzMTU3OGI1OGI4OWM4MDFlYWNlNzRmMjRjZDQ4ZWI0YTIzNTc5NDBhOTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhYWU4N2QwMmZkYzljNjFkYmFmMTE3OWJhMTNlNTVmM2YzOTk1YTkzODlhODI0MDYxMWQ1MjE5YTg4NmEzZDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY2NjI5NjU2N2RkYjU3MDM2MzhkNjFmMjRiMjgwNWIyMDQ3NmY3Zjg3ZmQ0YTIyMTgyMjA4ODU1ZGNhOTBhYTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjliZjQ1ZDJiYzIxMDg5NWU2N2JkMWQyMGRhYWFjMWI1OTgyYTc2NjQwODI5ZmQxZjFiYjRhNjk5NTUyOTI5NDIifQ"
         },
         {
-          "resource": "repo://README.md#L259-L284",
-          "version": "repo-lines-v1:sha256:287dd6292b3411797d513bd102315a9c2952cc9939ac9ef35781b74c7c001855:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3OGVhNjI5MWViMDk5OTIxNzNiOTA3YzZiNTAzNWIwMmU0MTc1NTBmZWUzMzI4MWJlMGZhMmQ3MWNhY2YxZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYxYjllY2ExYzYzOTUyN2MzMWMxMThjYThiYzY4Njc4Yjc3ZDUzMjk1NTQ3ZmVlMTVlYjZkZjljMTY0MjExNGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAxZmRjM2Y0NjIyY2I1MGQ5ZTI2Y2UzMTUzNTU4NGY5YzM4YWU2YWQ3NDgxMTU2NDEzZDQzYWNkNzU1YzJmYWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY1MDk2OTMzMTNhNWZlMDU1ZmY3ZmVlYzA4NzQzNWQ0MjE3MjFmMGVlMzZjMmY5NmQyODFlNzk3ZDJkNGI5MDIifQ"
+          "resource": "repo://tests/e2e/TESTING.md#L19-L30",
+          "version": "repo-lines-v1:sha256:d50422ece1cb35155a087d5948a13018013161bb8309a964ac69e4b070894838:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyMGRkODFiYTg0YTIyMzEyOWUxZDJhZTJlZjcwMjMxOGE5OGZkY2FhMGY2YWU4MWRhZDk2NGZlYjA2NDMzMjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4YTJmNzY1NzZlNGIwNTI0YWVmYTMxNzdkNmYxY2FkZmRjZDVhNzE3YTg3ZWM0YmNiOWU5OGQwMWViMDQ4NjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzMmYyOWFlNTMyYWNjY2I2NmUxNjgwMzY1ZDRkOGQ2NjdjMTNiZDRiODVhNjIxYzdmYzZkOGM4M2M1ZDgxZTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3NTcwNjI1YWM5MGEzOWQwNjU3YjMwNjgwMjAwOTNlZWQ1NmZkNzdkZmJmYzlmMmJmNzhiZTA0MTczMmUwZDcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b45975df30aa495393c41cc89fa0100f",
+      "statement": "OpenWiki 페이지는 tracked 코드·스키마·설정·테스트에서 파생한 온보딩 evidence이고 정본이 아니에요. 제품 요구사항은 `docs/prd/`, 현재 변경 범위와 설계 결정은 활성 Feature SDD(`docs/features/`), 프로젝트 전체 설명과 정책은 사람이 관리하는 curated docs가 기준이며, 런타임 사실은 tracked 코드와 테스트에서 다시 확인해야 해요.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L259-L275",
+          "version": "repo-lines-v1:sha256:327f3b22b080c5e8b7f9e480909029c22309e8f33dc6377d5cee4edd820baf2c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3OGVhNjI5MWViMDk5OTIxNzNiOTA3YzZiNTAzNWIwMmU0MTc1NTBmZWUzMzI4MWJlMGZhMmQ3MWNhY2YxZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZiNDI1ZmZiODJhNDViYzAwMmM2MTNhMzMzOTgxNWY4YzQ5ZDY0OTg2YjEyY2NjZWJkZjRjMTg3YmM0NThlOWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAxZmRjM2Y0NjIyY2I1MGQ5ZTI2Y2UzMTUzNTU4NGY5YzM4YWU2YWQ3NDgxMTU2NDEzZDQzYWNkNzU1YzJmYWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjExNzdlMzM1YjI4ZDk3YjMxYzhiMjVjMDA4NGFjODE3YWExZjFjMzZkY2FhMjVjODdmOGU1NmZiYmU1MTg3NTYifQ"
+        },
+        {
+          "resource": "repo://docs/README.md#L23-L37",
+          "version": "repo-lines-v1:sha256:8bbdb08561472d912b4f56ff351b342b6d097d79352dd281642f3938e2d15631:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwYjU0YmIzOTljYzBhNzk2ZmM1MjljMzhlMDlkMGIzNjc5YzU1N2U1OGY3NmRjODg1MmY4ODkyZDBjNDZiN2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1NWViMGRkMjM1ZDAxZjExYTg3OTBlMzEwZGIzOTVkNTFkYzA5MjMyNzNmNGIwMTkxNGI1MmQ2MGMwODg1YWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgxYjg1YzVlOTNmNWMzNmFlYzYyZDFjMDhhNmM5Zjk5ZTg3YzM1ZTA0NmYxOWUxOTZjY2VjMjBhZTAwMTJlZWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkNWEzOWY0OWMyY2RlZjE1MWUxMDM3NzRkNDAwODEzODcyMWMxMTU4ZmQzZGU3OGJlMDBiOTQ2ZjQ4Y2QzYjcifQ"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.5.0",
-    "at": "2026-09-14T00:18:32.821Z"
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-18T16:01:53.629Z"
   }
 }

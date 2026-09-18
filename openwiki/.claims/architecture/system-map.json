@@ -1,0 +1,306 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:575ec925924681d36dd27f545557ac6d9f2131fe27fc7548877a8d12b0e96473",
+  "claims": [
+    {
+      "id": "claim_2a026950528948a5a557e141e14fd4d7",
+      "statement": "저장소 루트 `app/`는 Next.js App Router 어댑터이고, `src/_app`·`src/_pages`의 `index*` public API re-export와 정적 route config 변수 선언만 담을 수 있어요. 구현 로직이나 그 밖의 내부 모듈 import는 경계 위반이에요.",
+      "evidence": [
+        {
+          "resource": "repo://app/admin/page.tsx#L1-L1",
+          "version": "repo-lines-v1:sha256:052deb25c8ce22fd9d52e3dbdc9249be0cd18b2702305114a2f6bb2c311842ac:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDUyZGViMjVjOGNlMjJmZDlkNTJlM2RiZGM5MjQ5YmUwY2QxOGIyNzAyMzA1MTE0YTJmNmJiMmMzMTE4NDJhYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDUyZGViMjVjOGNlMjJmZDlkNTJlM2RiZGM5MjQ5YmUwY2QxOGIyNzAyMzA1MTE0YTJmNmJiMmMzMTE4NDJhYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://app/api/mixing-jobs/route.ts#L1-L3",
+          "version": "repo-lines-v1:sha256:653ab90ac9da215869bdbbcbdbc97341cfdfd7ea8213312ff6a041bbf2c91f9f:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjUwYmU5ZjIzN2U3MmRiYTc5NmU5Nzk5NDc4ZmE1NDgyMTNhMmNmOTNkYTBmODIzZjUxMmUzN2YxOTMwNDI1ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2NiMmYxNWNmYWZiMzAwMWQzMTU4MDBhYTYyM2Q4NmNlZmZmMGVhNWNiNGJlNzIwM2E5Y2MxNjJiNzczNGNjZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L272-L310",
+          "version": "repo-lines-v1:sha256:6317ce7afb5c5bd44ac024055b01be437437aae1b68147e2aed17635e999b973:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2NTVkYjA2NTkxNjMxMWMzNDkzOWQ0ZmNjNzViYTNmMmQ2Yzc5YTFhZGExYWJhODk2ZGQ2Y2Y0NjNkZmMzMzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJlMzk5NzgwMjA2OTM2OTVhY2Y4NGM5Mzg0NTIyZDIyM2M5Mjk5NjZhMmQwZTY3MWI3MzgzYzQ2ODRlMGUzM2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkwNWEzYThjMzhiNGEwMzdiM2Q0MTNkMDU3YmZkOTg5MzMxZjc3NzVjZGI5N2FiYWRkZjA3MDdmYWNjN2MxMDcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_871814d85cc5495fae626da1e9ba1a20",
+      "statement": "웹 코드의 FSD 계층 의존 방향은 `_app → _pages → widgets → features → entities → shared` 한 방향이고, 아래 계층이 위 계층을 import하면 위반이지만 화살표 방향으로 중간 계층을 건너뛰는 것은 허용돼요. 예를 들어 `src/_app`의 layout은 `_pages`를 거치지 않고 `@/widgets/product-shell`과 `@/features/authentication/index.server`를 함께 써요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/layout/product-layout.tsx#L1-L10",
+          "version": "repo-lines-v1:sha256:7aec37a5112b2b40ada14933e3204de501e0ee1218a22262c923a1526143923f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzMWZmMTBlYWQ3ZGJiNDJkZTc4NzhiMmViMWYzNDU2NzE4NTM5MDI0MGUyMzA5NWI4NGQyZjBhODQ1MGI1YjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxOWVhMDExYjdkNThmNWY4NjgxOWFlMDEwMWFlODE3MjIwYjA5ZWJmMTI4YWE4MjMwN2UzYTExZDQ3MDM4NGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBkNzM4Y2ZlMDJkZWVhZmEyMDcxN2UyZDFiNzMwY2EwODhlNThmMTk5OTFjYWJiMGNhOWFhNTVmMThhOTVkNzgifQ"
+        },
+        {
+          "resource": "repo://src/features/create-mixing/api/mixing-queue.ts#L1-L10",
+          "version": "repo-lines-v1:sha256:35b41e9ae8146f6a58eb89af4e02f32c24c4d515d6568351e36b0bf113f6a8b2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjMGY0OGUzOGZiZGI2YzBlZmU5ODdjOTg0NTIxZWQwNzQzMjc1NWI2YmFhY2NmNDVkOTc3ZTU3ZGI3Y2JhZDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2MzcyY2E5ZmNkNGFhMTE0MGQ3N2UxMTRhY2UxNDZiYjFlYzk1YmQ4YWJiNWQyOWU1N2MxYjhjMTRmMmMyOWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI0ZGI1MGFlZjZkMmMxYzUwMmY1N2NmN2EzNDkzOGE1MTc0YTM5MzA5ZjE1YmEyNmNkMmFkNzU0NDdhOTYyYzgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e7ea3cb7def64e4eb9a2bb38e173a566",
+      "statement": "slice 밖에서는 내부 segment를 직접 import하지 않고 `index` 이름 entrypoint를 쓰며, entrypoint 이름이 노출 범위를 정해요. `index.ts`는 browser-safe API, `index.model.ts`는 런타임 중립 Zod 계약, `index.server.ts`는 `server-only`를 먼저 import한 server capability, `<name>.server.ts`는 이름별로 나눈 server capability예요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/vocal-profile/index.analyzer.server.ts#L1-L3",
+          "version": "repo-lines-v1:sha256:4923a959434f5ee0b83383fbc39de77da233fbdad727679054138b9f1e4b7df6:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGMwZjQ4ZTM4ZmJkYjZjMGVmZTk4N2M5ODQ1MjFlZDA3NDMyNzU1YjZiYWFjY2Y0NWQ5NzdlNTdkYjdjYmFkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2IyMGNkZGE5MzcwMmIzYWRlZTAyZjU0MDgwN2M0ZWE4YTM1YzJiZjBkNDI3MmQ2ZTQzNTU2MWIxOTAwN2JkYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/entities/vocal-profile/index.model.ts#L1-L8",
+          "version": "repo-lines-v1:sha256:cd6098b24ae97ec4dbeb2bcf3cd5ab75ba56272e357572b7f0fe048a2629c4bb:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjM2NWZkYjZmMDMyZTA2NDk0NGZlNzNiOWQ0YjU5NmE2YWI2NTExNDAxNjg1ZDM2MDFlOTc3NDE5NTQ2ZmQ3ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmFhYmE3ZDFlYTBkNDMxOTRmMWMzZDU1OWQzMTgyOTA0MmUyNzgxNWU5MGYxZmI4MDk3YWYwNDAxMTU4MTA0MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/entities/vocal-profile/index.server.ts#L1-L6",
+          "version": "repo-lines-v1:sha256:f38c6c08b3d11c4b4bc6853ffbd49ad36d002fabd5e4b56497ddf5b1a4a1580b:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGMwZjQ4ZTM4ZmJkYjZjMGVmZTk4N2M5ODQ1MjFlZDA3NDMyNzU1YjZiYWFjY2Y0NWQ5NzdlNTdkYjdjYmFkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDZkNjUwZjQwYjBhNTFiZmFkM2E0MmE0MWZkNDIwMTkyZGI0MGIyZmYyYTE1YmE0MzI2NDgyYTc4NjIwYjhjYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/widgets/product-shell/index.ts#L1-L6",
+          "version": "repo-lines-v1:sha256:a8422a3405ddcb593f0e92c4fb287a14511aba690d86b1c4c3d4638979b41dd2:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODMwZjE3ZWVjMmI5NWY2ZjBiOTZkNTdjNzJhMDI0MTlmOTRlZGJjMzAxM2E0NjU5YzM4ODRlZGM4YzViZmQyYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDA0MzFmMjBiNjc3NmYzODdkNTdlMDNjMWMzMzA0YmVkYjQ2ZmViNmI5YjE3ZmY1NmFjZjgwY2Y4ZWU4YWU4NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_306b12048e884b128bf45ba9348de857",
+      "statement": "슬라이스가 있는 `_pages`·`widgets`·`features`·`entities`와 달리 `src/shared`는 slice 없이 `api`·`config`·`db`·`lib`·`media`·`ui` segment로만 나뉘므로 import는 `@/shared/media/index.server`처럼 segment와 entrypoint까지 지정해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/create-mixing/api/mixing-queue.ts#L1-L10",
+          "version": "repo-lines-v1:sha256:35b41e9ae8146f6a58eb89af4e02f32c24c4d515d6568351e36b0bf113f6a8b2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjMGY0OGUzOGZiZGI2YzBlZmU5ODdjOTg0NTIxZWQwNzQzMjc1NWI2YmFhY2NmNDVkOTc3ZTU3ZGI3Y2JhZDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2MzcyY2E5ZmNkNGFhMTE0MGQ3N2UxMTRhY2UxNDZiYjFlYzk1YmQ4YWJiNWQyOWU1N2MxYjhjMTRmMmMyOWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI0ZGI1MGFlZjZkMmMxYzUwMmY1N2NmN2EzNDkzOGE1MTc0YTM5MzA5ZjE1YmEyNmNkMmFkNzU0NDdhOTYyYzgifQ"
+        },
+        {
+          "resource": "repo://src/shared/media/index.server.ts#L1-L8",
+          "version": "repo-lines-v1:sha256:39ada80344851f1e7a14a3050345c0c101744228ffa81ab4931474d44ac39f35:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGMwZjQ4ZTM4ZmJkYjZjMGVmZTk4N2M5ODQ1MjFlZDA3NDMyNzU1YjZiYWFjY2Y0NWQ5NzdlNTdkYjdjYmFkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjE2ODZlNjY2NjgyNWQ1OTk2ZmZlN2NmYzcxNjVmNzg2YzdkMmRjOGUwODc3MWRmZTE1OTBlZWI1NzFkZmFjMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_52bd57afa2544f07acf8cfec9634931b",
+      "statement": "런타임은 두 갈래예요. 브라우저 요청은 `app/` 어댑터에서 시작해 FSD 계층을 지나 PostgreSQL·Leemage까지 그 자리에서 처리되고, 오래 걸리는 작업은 PostgreSQL에 행으로 접수된 뒤 `scripts/*-worker.ts` entrypoint와 `src/_app/background-jobs/**` runner가 이어받아 Modal 서비스를 호출하고 결과를 같은 두 저장소에 저장해요.",
+      "evidence": [
+        {
+          "resource": "repo://docs/prd/system-architecture.md#L29-L45",
+          "version": "repo-lines-v1:sha256:6f31b0e1a6f8101ae98b64c213503d1cfe984479933df8673eb901728ecbad4d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhYzI4MTg0ZjZmMzU0NDYwNTcwODE4N2NkMDgyNDU3ODYwZjg3OWMzZmQzNDM1NTAwMzdjNjQxMWMwOTEzYjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3ODdiZjFmODAzNzE0ODU4M2U5NGVmN2E0ZTAyZmYwYWJhY2ZkYjI5YTQwZDJjZWZhZDI2MjQxODJlMWQxM2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJmMGUxY2U2M2I4NGYwYWM0ODAyNGU5NGQ4MThkYjA2MWM2YmI4MWMwNmFlNTVmNzNiODk1ZWIxOWJhYTEwODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlMmI0OTYzMmFjMzJmYTZlZTU5YTZlYWQ3YWU3MzQwMWFhMzg3ODY1NjQwNWNmMGQ5ZGIxMzg0N2I3Yzg1YzYifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L1-L11",
+          "version": "repo-lines-v1:sha256:6b00598501a5c65b173442c2d4dc6e2509416778c0b56f3cc72dd4bd2913024e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjMGY0OGUzOGZiZGI2YzBlZmU5ODdjOTg0NTIxZWQwNzQzMjc1NWI2YmFhY2NmNDVkOTc3ZTU3ZGI3Y2JhZDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlNWFiOGE0ZmQ2M2I5ZGYwOGVmOTg3MDg5NGJkYzVhZTlhMzgyN2I5NjIyYTlmMWU4MzYyYTEwODJmYTRmOTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJhNmQ4YTAyY2NiZDk5MzFhNWNmYmVmMTYzZGNiMzZiZDhkMWJlZDIwNjE2MzViMWVkYTA0YWE0ZWM1M2M5MTkifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L1-L16",
+          "version": "repo-lines-v1:sha256:d0f15783f93449b75bead345c2bab914b7cd86b1c9044cef92cedeb50ed3e467:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjMGY0OGUzOGZiZGI2YzBlZmU5ODdjOTg0NTIxZWQwNzQzMjc1NWI2YmFhY2NmNDVkOTc3ZTU3ZGI3Y2JhZDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczY2NiZDJkZGE1NDQ2MDk2ZWNiMTQ1NmI3NGI0MjViMjc0NGU3ZjU4Y2ZkMDQwODdhNGI1YTEwYmQ0MmM0ZjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ2OGYwNDY3MGJlMjQxODQ1MTEwODc2MTEwZmVlYzBhMTYxNjMyYTJmMWZlMWIzN2RlNWQwNzcyZjYyMjRlMzQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d6a95f27014249368e5bc210c0f226a7",
+      "statement": "`pnpm dev`와 `pnpm start`는 `concurrently --kill-others-on-fail`로 웹과 워커 세 개(믹싱·보컬 프로필 분석·곡 분석)를 함께 감독하므로 자식 프로세스 하나가 실패하면 프로세스 묶음 전체가 종료돼요.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L10-L21",
+          "version": "repo-lines-v1:sha256:d8833d67a8d213713c50c625346712a56f6b9b29aca55b524bf4eb60deff0740:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI1NTc2YzNjOWQ2YmUwNGE0NzllOWI5MzU3YWNmMTRlZjZlOGYwNzQzYWM2MzMzMDMwNmY2ZTJhMWEyZWM5ZjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4NjM4ZTNlMjNmY2Y3N2RmNzg5NzMzMTA5NWFkNWM4Y2FlNGU1MDkwMTg3NGM5MjI3ZTA0YWQxNTlhMTQ1Y2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1MjQwOGU4NzQ0NDFkYWI3OGNiY2U4YzBkYTM0NjA4NjU2NjhhYWE3YzMzNDJjMDYyMmJkMDZiZTg0ODE0YWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIyZjU3ODUzZWRkYzc4MzY2MjM3OTVhMmFhOGY0M2M3YjQ5NGU0ZWY2OWEzMjgwNTEwZmMyZDcwNDlkM2Y5MDQifQ"
+        },
+        {
+          "resource": "repo://tests/process-scripts.test.ts#L29-L44",
+          "version": "repo-lines-v1:sha256:5055452b9fb999de3b874831bad4acda68e3953c272b51f74daf22f7d4c7a617:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjOWY4ZDk0NzU2MmVhYTFjMzNkZmU3ZjJmYjE0ODQ3YmVhOWI2NWViOWMwMTZiNTBiYTFkY2U3ZWEyMTIzNDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI1MjM2ZDI1ZjVlZTQ4NDZmY2RiZTQ0MTk0MTQ3NDk2ZjFhMzFkOGQzNDgwNTg0YjI4OTExNTgxYjc5NGI3OGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU2MzIwZjE2M2UyNDM3OWU3MmU1OWEzMzc5ZTNhNDc2MTUwNTVlMjg2Njg3NTEyY2Y3M2UwNmQ0NWVlMDgzNmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f8dfa76a19274d62a17c234a6d892b4c",
+      "statement": "세 워커 entrypoint는 dotenv로 `.env.local`과 `.env`를 읽은 뒤 `src/_app/background-jobs/**`의 실행 함수를 import해서 시작하고, 동시성·lease 초 단위 값은 `src/shared/config`의 server 전용 설정에서 읽어요.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/mixing-worker.ts#L1-L7",
+          "version": "repo-lines-v1:sha256:a5cf8e8fadb2cb4115419295527a79ceed7becaee6964fce668a83f6ebfd41e3:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjc5YjA3NzI2YzdlMDA3NTkxYTZmZGY2OTMyMzUzZTAyM2E1MjI2MDcwMzIwMTJmYmJkMjI0ZGVkYmVmOTJkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWExZWI3ZDc0NDY3Nzg5NDQ4NTViYzE5NTNmYjc2NmE2MGZjN2E2ZjRlYmIxNmQ4NGUyNWU2ZjFmZTVhMTM4OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://scripts/song-analysis-worker.ts#L1-L6",
+          "version": "repo-lines-v1:sha256:7aeda58a7dc0023b2038b33f683003b787bb771ee685d3278ca2f6808687cb5d:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjc5YjA3NzI2YzdlMDA3NTkxYTZmZGY2OTMyMzUzZTAyM2E1MjI2MDcwMzIwMTJmYmJkMjI0ZGVkYmVmOTJkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDBjMmQzMjk2YjkxNTg3ZmQ2MzM5ZmVlOGJlNTM2NDZiOGJhMjcwYzQ0ZWRmZDAyZDQ2ZjY3NGRjODE4YWU2NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://scripts/vocal-profile-analysis-worker.ts#L1-L9",
+          "version": "repo-lines-v1:sha256:cbb3ec1802a3534efff853afd19a9f67a9fdd07f6ce3a8e761fa908b6ed665ee:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjc5YjA3NzI2YzdlMDA3NTkxYTZmZGY2OTMyMzUzZTAyM2E1MjI2MDcwMzIwMTJmYmJkMjI0ZGVkYmVmOTJkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjQ5OGYzMGJkNzYxNzIxYjEyZjdiMWRhM2ZkNzRlMTc4NDY0MDBhODM2MDFkMGZjMGRmZWQ2ZmFiNmRmNmU5MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_2a1ec0bbfb3e4f27ad75d43a5416538b",
+      "statement": "워커 runner는 설정된 동시성만큼 lane을 열어 작업 실행 함수를 반복 호출하고, 반복이 비면 1초 쉬며 예외가 나면 최대 30초까지 지수 backoff로 물러나요. `pnpm run check:architecture`는 `steiger ./src`와 `pnpm run test:architecture-boundaries`를 차례로 실행해요.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L31-L31",
+          "version": "repo-lines-v1:sha256:fa28bb3ccf48a0cb156ae8df92e7cf954d9b4cc994ebbe26ac10f6fcb711103d:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmEyOGJiM2NjZjQ4YTBjYjE1NmFlOGRmOTJlN2NmOTU0ZDliNGNjOTk0ZWJiZTI2YWMxMGY2ZmNiNzExMTAzZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmEyOGJiM2NjZjQ4YTBjYjE1NmFlOGRmOTJlN2NmOTU0ZDliNGNjOTk0ZWJiZTI2YWMxMGY2ZmNiNzExMTAzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmQxYTU5NjYzNWViNTUxNzNkNzlhYTg2MjgzOTEwMGE2MzY0MjA1ZTNlNWE4ZjhkZTEzNmNiNzM4YTBjNjFkMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTg4NjJiYjRiOTM2NzFmOTBkNmQ1OGU4ZGI5ODdhMDgzZWYxM2IxMWM0ZjFiMWFkZjczOGY0YjUxNGVmYTBjZSJ9"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/runner.ts#L11-L48",
+          "version": "repo-lines-v1:sha256:765cf616e36c627fb2dc84a1ad1882f2fa1502556233b2db60454cc8b6ddeac7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzMDk2ZjdkNDYwM2FkMjAxNDg1YWE5MzczNWMwMTQxZWY3MDIwOTc0NDI2NzUzNjVkYzFjYTI5OTNkMThkNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1NmJhOWNiYjIwMWZmNWNmOGVhOWQ2ZTAzOGUxYmFmOTVmNzdiZDgxNmVjMDgyMGNkNzMyYzE4ODg0MWU3ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/runner.ts#L11-L45",
+          "version": "repo-lines-v1:sha256:7cfeb384048a20e177a763aa3518bf7098715ff10c7700c3e27ab824915b4816:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjNmQxZGM2MWNlMmNlNDQ3Y2ZiZWVlYmQ4N2FlOTYwNmUyYzM4MGFmMWI0OTRjZTZjYTczMTc4ODVhMDkwYmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1NmJhOWNiYjIwMWZmNWNmOGVhOWQ2ZTAzOGUxYmFmOTVmNzdiZDgxNmVjMDgyMGNkNzMyYzE4ODg0MWU3ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0b1b08f25246461695fc9b97be231216",
+      "statement": "`steiger.config.ts`는 FSD recommended 규칙에 생성 Prisma client 제외, `_app`·`_pages` layer 이름 규칙 예외, story fixture와 create-mixing queue의 import 규칙 예외, 그리고 App endpoint·워커가 소비하는 slice 목록의 `fsd/insignificant-slice` 예외를 더해요. 이 예외 목록은 손으로 관리하므로 실제 트리에 없는 경로가 남을 수 있어요.",
+      "evidence": [
+        {
+          "resource": "repo://steiger.config.ts#L4-L66",
+          "version": "repo-lines-v1:sha256:a4f36f80d56f51673dbf218f19fe251658fc1bbb1dce173d6242c47e9550bc07:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhNDhhN2E3OTYyN2E2ZTA1NjlkMjBiNmRhYzEyZTU3NDk5NjliMGVlMmE2ZTE0NWQ3NjFjMTdlMmZiNDFmMDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1ZTI2Y2Q5MjM2NmY2MGQ4ZWQ5MmQwMjM5ZjA3ZmVmNzRjYWMxNGFhNjlhZGRmOWMyY2MwZDExZWIwMGE0NjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNhM2M0ZjVlNjIzYzg3ZTYzZGUzZGQ1NmRkM2VjYmUzYjQ4NjRiOGYwYjQyYTJlOGFjYzQ2YTUyY2RiMjQ2MjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZhM2NmNTE5MjM1NGY3MTYxNWFjNTEwMzRiM2U5N2MyMGVkYTk5NjQzZmNhZjViYmU2ZDQxYWQ1OWJkMTIxNjcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bb495d01596e4aeea27cf2438ab7117e",
+      "statement": "`tests/fsd-architecture-boundaries.test.ts`는 steiger와 별개로 TypeScript AST로 세 규칙을 강제해요. slice public API 경유, client graph에서 `server-only`·`next/headers`·`next/server`·`@/shared/db`·`.server` entrypoint·`src/shared/db/**` 도달 금지(type-only import는 허용), 그리고 root `app/` 파일의 `_app`·`_pages` public API 밖 import와 문장 종류 제한이에요.",
+      "evidence": [
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L154-L175",
+          "version": "repo-lines-v1:sha256:18286db21f7ede18afb0fc5d6c339d7c7b6de70cd3f179512246cfedf7f2cee0:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2NGY2YzRjZGVlODRhNzY0MzBkMzQ1NzlhZTJmYTlmMjQ1ZGJjMDI1MmVlOTIyY2QwODdiN2VhOTA0ZTBkYTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE3ODFlNDU0ZDYzYzhjYjhiMzUzMDM3ZmI3M2NhZGZlYjQyN2IzYzk2ZDJlMjg1ODM5Zjg3ZTdhNjJhNGUzOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ2ZjQ5Zjc3ZDM4YmEyOTQ3ZjUwY2I5ODUwNTI0NTk2YmFhY2M4ODY4NTI3MmM1MDFmYmM5ODFkZTlhNTUyYzQifQ"
+        },
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L185-L229",
+          "version": "repo-lines-v1:sha256:f448b77716847cde5e61669b1c27ffd52c9e4e00330f7cef638d37f7faa7b404:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFjYzZjNDk1NWMzZDFmN2JjNzY4ODhiZDI2NDZlNGUwYzNlOTliNmIzZmVlNzY0ZTQyYTExZmJjZjRlM2Q1ZWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI2MmM0ZmZlZGM1NzYzNTZmYzllZGE5N2E2NTY3MzU1YTFiOTZkNzQ3NTk0MTEyMWM0ZTcxMDY5ODYyZDQ4NjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEzMmYyMmYyNGJhYzg3NWI3NTRjYjZkMWNlYzYxYTExMWQ1NTI2NDMyMmE4YjgzZjZlZmM5ZTJhMDkyNjc4ZDEifQ"
+        },
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L278-L310",
+          "version": "repo-lines-v1:sha256:e5cc390bbe1cbd005e8a11317f694bc5dd9cc26f875c83ab36af9fc5b11738df:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjYjQ0ZWM4NmM0NGU5NWQ2ZTBmMTQ1ODQ2NmM0MjhkMzU0NWY1ZWM5NmE0YzczZWViZDk2ZGZlMTgxYzNhMDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVmNTBmNDFlMzlkNjE2MTA1ZjZhZDdkNWMwNjNkNWNmMzIzOTVhN2JiZGNkYTFjOThlYjkyNzcxMGIyYWE3OTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkwNWEzYThjMzhiNGEwMzdiM2Q0MTNkMDU3YmZkOTg5MzMxZjc3NzVjZGI5N2FiYWRkZjA3MDdmYWNjN2MxMDcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fe7490e90c34472aa928fa9551aee756",
+      "statement": "경계 테스트는 virtual fixture로 위반 검출 자체를 먼저 확인한 뒤, 실제 `app/`·`src/`·`scripts/` 트리 전체가 위반 0건인지 단언해요.",
+      "evidence": [
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L316-L386",
+          "version": "repo-lines-v1:sha256:618a2402ebe65e4cde7c1a80f3d76091263187c659283ad030d6f5fba3d63e20:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3MGIxNzQyODQ0MTVhNmY3YzdhYmQzMjk5ZmJlMTMyODFmNGJlNjk2NDdiOTBlODMwNTdlOTQ3MzIxZDVkNTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyOGZkYzAzNzE5MGRhZGYxZWQ2OGY4Yjg5NWJkODQ5MmQ4NjhiNzViNDYwMTNmOTY1OWZjN2I3ZGE3ODFhOTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c44f62efee1843d2aa26ca5484a3681f",
+      "statement": "PostgreSQL schema와 migration은 `prisma/`에만 두고, `prisma/schema.prisma`의 generator가 Prisma client를 `src/shared/db/generated/prisma`로 출력하며 그 경로는 Git에 커밋하지 않아요. `src/shared/db/index.server.ts`만이 Prisma client와 `prisma` 인스턴스를 노출해요.",
+      "evidence": [
+        {
+          "resource": "repo://.gitignore#L46-L47",
+          "version": "repo-lines-v1:sha256:9f058cd7d2d1f5dd22fd0babb536363afd227f3642bef55bc03b9a46998490b0:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTg1MmY4OGFiYzkyZTlhMDU1YzFmZmE5YmVhNWE1N2IwMzU3NWMzMGExYTFmNjMyYzYyODNmMzNiY2RjODU3OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdmY2FjZjE2YzVmMzU5ZTc3OWY2YzU0MGU0ZmQxOTc3YWEzOGI5ZTNlOTc5MzZmNGMyNWQ5MWUzNGRmNDZkZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjY5ZGNjZmJkYTRkMzA3MDYyZTUzZmI2NjRiM2Y1M2U4MmNlZmRkY2EyYzg0MTI5N2Q1NjUyMzhkYzlkMmI2NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTI2YmI3YjIxZjUxNDZjNGI5YzgzYzBkM2UyNDlkMTVlZDRjNjMxNmNiY2UyOTEwMThhZmZkNDQ5NWM2NzYwMiJ9"
+        },
+        {
+          "resource": "repo://prisma.config.ts#L6-L15",
+          "version": "repo-lines-v1:sha256:2765c4dfde4044c33609ae08eefc3ba68b8c6c9c3e3c004894cfd53071d4d990:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyY2VjYjE0NGE0NmY1ZGNmMTJhNjE2OWZjZWVkNzY5NWU4Mjk0YjA5MGRlNzZmMzY2MWNkZDAyNDkzMDAxNDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0ZGI0NWUwYmUzMTgwNTYwY2UyNDY2MmNlNTM2ZWJmMmRiYmJkZTRjODgyOTY3YWRhNTY0MTFlNzgzZGE2ZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://prisma/schema.prisma#L1-L8",
+          "version": "repo-lines-v1:sha256:05a1c03f2dd0c3f56382b44aa3fe88a13493ebfee1b9315aa6623cebd475aab8:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWJjODgzZDM1MjBiYjhiODFjMmMyMDNhOWQxMTE0NmY3ODZhMWExZWIzZGE1ZTc5OWY0YmY1NGNmMTMxYmNjZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWUxOTU4YWM0NzZkYWRhMzQ0ZTZiMGEzZTk3MjlmMDU5ZjRkOGZhZDQ2ODM3ZDkzN2I5NzdkYjgwYWZlM2ZiNCJ9"
+        },
+        {
+          "resource": "repo://src/shared/db/index.server.ts#L1-L14",
+          "version": "repo-lines-v1:sha256:eb7d7ab89d8df779554b79971943deddd0c5f8bfc497285bebfd0958aac48791:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjMGY0OGUzOGZiZGI2YzBlZmU5ODdjOTg0NTIxZWQwNzQzMjc1NWI2YmFhY2NmNDVkOTc3ZTU3ZGI3Y2JhZDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY2OTIzOGUzNTk4NGJhZjcwNTI5MjEyZjBhM2FiNjBiNjNjOTRkMzRiMGViNmFhZmNhMGZmNGVhZmI2YzljZGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bdc5921aa0564b09952a103832d58593",
+      "statement": "`services/`는 Node.js 코드와 분리된 Python Modal 런타임이에요. `services/vocal-analysis-core/`는 두 인증된 Modal CPU 서비스가 이미지에 함께 패키징하는 librosa·pYIN 분석 package이고 HTTP 서버도 로컬 분석 런타임도 제공하지 않아요.",
+      "evidence": [
+        {
+          "resource": "repo://services/vocal-analysis-core/README.md#L1-L7",
+          "version": "repo-lines-v1:sha256:8d1ab965fec56983dd524ae72f47f1c169c6acbc2cc02e53216e21314e7064ff:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmFkNjBhZjMyNmIzMjAwNTZhMTRlNGQ3ZDgzNDNlNjk1MDJmZDQzMmMwOTJmNDViODAzYzg3NjgwZWRmYTU5OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGQ1MDVhN2FjOTMzZDdkN2I2YWU3YTg5NDQxMDc0MmZlMTRhMGJlZDE3OWViMzM5MDVmMjE3NjAxNDA3NDE3MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTE2ZTMyOTE3ZmFhMjQ1ZDgzMDlmM2ZlNzVlZDNiOWI0MzYyNmIzNWI2Y2Y2ZmZiNmZjZWI0OGU0Yjg1MzllNiJ9"
+        },
+        {
+          "resource": "repo://tests/process-scripts.test.ts#L8-L27",
+          "version": "repo-lines-v1:sha256:acd519ca4e57b9cc3b147e82b0445a6aafcb93ae53c322b0df63dd834fb8c380:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkODc1YTU0NDM2YmE2NTg4YmNmMjQ2MDM4MzhiYjRlNTViZDZhMTU3NDc3ZmU0MTBmZTliNWUwOTk2OTVmOWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJlZDU1MTIzMWJlMjA0NzI5N2U1YjQ3NzMzZTJmMDFhZTg0M2JjN2I1MWQ0NGY5NzEwNmY4NDgwMDhmZDYyMDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ2ZGE3NzJlZjAxODI3MzdhNTc1NWVlMWQwZmQ4ZTUwNWU0MjM1ODMxMTM4YzdiOTE2OWZiZWQ5MTlkYTk2NDcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5340ae772c60417e92fb851ae625cdef",
+      "statement": "오디오 바이트는 외부 미디어 저장소인 Leemage에 두고, 관계·상태·소유권·해시·외부 자산 참조는 PostgreSQL에 남겨요. 미디어 접근은 `src/shared/media/**`의 server entrypoint를 통해서만 이뤄져요.",
+      "evidence": [
+        {
+          "resource": "repo://docs/prd/system-architecture.md#L82-L90",
+          "version": "repo-lines-v1:sha256:6c1cbfe3a89541c40660b3e7422d437c4ce13e89ba7ff2dc4e81ebcc173bec27:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODFkMGM1MzVhOTQ1YzU4OTNiNDgxYjNhZjhmMDZhZTU2ZWIwN2QwMjMyMDQ5ODM1YmRkZGViMWM4MDI3MGVkMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTZkZGZkMzY0MjNiMmRjN2NiMzg5ZGRjYjEyMmE5ZmE1YzA4YWVhZjk5ZmQ5YzVmZjZhZWM3MmIzMWY5MGQ4MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTY4MTJlZGQzOWIxM2UzOTk5ZGEzNDBjOGVlNzZiZDQwZDdhNjZhOWY4ZWE5NDcwODNlNTgwMTE5NzI5MjY5OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGZjZjZmYTY2NDFhZjE3MGU4NjAzMzNmZDAzYTRiNDhhMzNlYzQ5Zjg3MzRhNjU2ZTYxMWViNzg2NGI0NGRhMSJ9"
+        },
+        {
+          "resource": "repo://src/shared/media/index.server.ts#L1-L8",
+          "version": "repo-lines-v1:sha256:39ada80344851f1e7a14a3050345c0c101744228ffa81ab4931474d44ac39f35:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGMwZjQ4ZTM4ZmJkYjZjMGVmZTk4N2M5ODQ1MjFlZDA3NDMyNzU1YjZiYWFjY2Y0NWQ5NzdlNTdkYjdjYmFkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjE2ODZlNjY2NjgyNWQ1OTk2ZmZlN2NmYzcxNjVmNzg2YzdkMmRjOGUwODc3MWRmZTE1OTBlZWI1NzFkZmFjMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_3848154ace6c49248d77b6594521d225",
+      "statement": "`tests/fsd-architecture-boundaries.test.ts`의 slice public API 검사는 내부 segment를 `api`·`model`·`ui`·`lib`·`config` 다섯 이름으로 한정하고, slice가 있는 layer를 `_pages`·`widgets`·`features`·`entities`로만 봐요. 같은 layer·같은 slice 안의 내부 import는 허용하고, 그 밖에서 내부 segment를 가져오면 `@/<layer>/<slice>` root public API를 쓰라는 위반으로 보고해요.",
+      "evidence": [
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L154-L175",
+          "version": "repo-lines-v1:sha256:18286db21f7ede18afb0fc5d6c339d7c7b6de70cd3f179512246cfedf7f2cee0:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2NGY2YzRjZGVlODRhNzY0MzBkMzQ1NzlhZTJmYTlmMjQ1ZGJjMDI1MmVlOTIyY2QwODdiN2VhOTA0ZTBkYTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE3ODFlNDU0ZDYzYzhjYjhiMzUzMDM3ZmI3M2NhZGZlYjQyN2IzYzk2ZDJlMjg1ODM5Zjg3ZTdhNjJhNGUzOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ2ZjQ5Zjc3ZDM4YmEyOTQ3ZjUwY2I5ODUwNTI0NTk2YmFhY2M4ODY4NTI3MmM1MDFmYmM5ODFkZTlhNTUyYzQifQ"
+        },
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L26-L27",
+          "version": "repo-lines-v1:sha256:589396c8cc11ecbb6970e546dfd70d2add4ca6f11babd13e7db05a2811e5d8f0:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2QwY2NiYWFhNDEwNGVjNTFkYTQ2NWQ2YTI4NGYwODNlODVmOWZkMTU3ZGQ4M2MxY2EzNDJmYTM3YTQ4ZWM2MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDk2Y2Y0NjY1NjYwMzI4ZjcwZjNiMzA4ZDE4NzE0NmE4NmRhMTY2ZjhmYTFiNWEzMzgzYTAyOTZmMGMzZWFiZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTRjODE0OThjMDMyMDhjOTY0YjExMTIzNDcwZGU1NjQyY2RlYjA4NzFhMWQ2YzMzZjY0ZDJkNjRlNTE4NzMwYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTRiYzNjMmIyMjJiY2Y3N2UzYjlmODMzMzNhNmNiNThkNDE1NmVhMzU1MmYyZjVlNjg4NGY1NTcyMzMyMjBmMiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_7f047b13ac55469fb6e11130b772de80",
+      "statement": "`src/shared`는 slice 없이 `api`·`config`·`db`·`lib`·`media`·`ui` segment로만 나뉘고, 소비자는 segment 이름 뒤에 그 segment가 여는 entrypoint 이름을 붙여 가져와요. `api`는 브라우저용 `index.ts`와 server용 `index.server.ts`, `db`는 `index.server.ts`, `lib`는 하위 디렉터리별 `index` 파일, `ui`는 컴포넌트 디렉터리별 `index.ts`, `media`는 대표 `index.server.ts`와 capability별 `index.<name>.server.ts`, `config`는 `index.server.ts`와 파일 직접 지정(`site-metadata.ts`)을 써요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/metadata/robots.ts#L1-L3",
+          "version": "repo-lines-v1:sha256:4107be46107e75177f374015abebf0eefde95e8eab5162f43da3634d7b250ba9:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDJiZWY5ZTJiOTQ1MzE2Yzc1Yjk5YjkzMjk1MWM2NzAxYTM3ZDBlM2ZkY2E5ZGM3YmJjNzUwZjg2M2FkOTMzNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjhiOTFiNTlmYTdkYWQ3MTI2MzgzMjM0YjgxNTQxNmJmNjE2Y2Q5MTEyZDc3NDQxYjJhMzcwNWFjYWI3YmM0MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWU4MDI4OWJiMjg4MjIyOTA5YjM2N2Q1NjUyYzU1NjgzODU2MWJkYzNjMjljYzhkNzFhNTE4ZDBiNDUwYTc1MSJ9"
+        },
+        {
+          "resource": "repo://src/shared/api/index.server.ts#L1-L3",
+          "version": "repo-lines-v1:sha256:3a231555db66973329c965ab9d822859b9882d428844c57fcbbcf3ee6f97d9a5:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGMwZjQ4ZTM4ZmJkYjZjMGVmZTk4N2M5ODQ1MjFlZDA3NDMyNzU1YjZiYWFjY2Y0NWQ5NzdlNTdkYjdjYmFkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzczNzg3NDFkNWVkMDQzOWJiYmVhZDg1M2E2MjU0ZWM3N2E5NDYyMTNkMDkwMDRhNDgzYjA5ZGU0YjA4NjBiNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/shared/api/index.ts#L1-L3",
+          "version": "repo-lines-v1:sha256:ce1062e48fbca5e440f150517122e4ce827787bcef0cd9e69296d12e111e4659:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWQ4YTkwM2M1YzU2ZTlkY2MzMThlZmQ3Njg5MDlmZjBiYjQ0ZjAzYzRkNGNlZTk2YjM3MWI4YWYzNjQwNDljNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWJlYTdjYzFlZTUwZDAyZmRiMTc4NGQ5Mzc3Y2ZmYTc3OWY3Zjc1NzY0YzgyNGJhYmQyN2FmYzA1YmZkMmE0NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/shared/config/index.server.ts#L1-L3",
+          "version": "repo-lines-v1:sha256:3c1c895c6a4274c34c5b44e978c8b15d987d26a9096d9318a42c99ecb8039135:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTA0YzJjMTJmM2M1ZWQ4OTQyNzVlN2JlMThhYTZjZTU5NGU2ZWRmNzQxZmFiYmVjNDVmNzU4MDQ5YzFjNjJlMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQzNGE3OTYxZGQwOTk4ODVkOWU2YmEyZGQ1ODViNjk1ZmNmOWY4NmNmNTA0ODY3N2RhNDk4MjI0YTA2ODI5OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/shared/db/index.server.ts#L1-L14",
+          "version": "repo-lines-v1:sha256:eb7d7ab89d8df779554b79971943deddd0c5f8bfc497285bebfd0958aac48791:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjMGY0OGUzOGZiZGI2YzBlZmU5ODdjOTg0NTIxZWQwNzQzMjc1NWI2YmFhY2NmNDVkOTc3ZTU3ZGI3Y2JhZDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY2OTIzOGUzNTk4NGJhZjcwNTI5MjEyZjBhM2FiNjBiNjNjOTRkMzRiMGViNmFhZmNhMGZmNGVhZmI2YzljZGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/shared/lib/admission/index.server.ts#L1-L4",
+          "version": "repo-lines-v1:sha256:6491b6b86e9bcfbc03f2dc6282978e170c803030c518902cb221447d1e8a5c32:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGMwZjQ4ZTM4ZmJkYjZjMGVmZTk4N2M5ODQ1MjFlZDA3NDMyNzU1YjZiYWFjY2Y0NWQ5NzdlNTdkYjdjYmFkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTQ0OTI2MjQ3NzM5N2ZmMDRkMTI0OGM1YjJmZDQ4OGI3ZjU4MmFlYTRmNzUwMjk1NDRjOTliM2ZmMzMxNzk2ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/shared/lib/cn/index.ts#L1-L1",
+          "version": "repo-lines-v1:sha256:618683504bb0c2d59481629a31cf3d5cab9d29fbe91f68c2f288dcc2d1dcf5db:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjE4NjgzNTA0YmIwYzJkNTk0ODE2MjlhMzFjZjNkNWNhYjlkMjlmYmU5MWY2OGMyZjI4OGRjYzJkMWRjZjVkYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjE4NjgzNTA0YmIwYzJkNTk0ODE2MjlhMzFjZjNkNWNhYjlkMjlmYmU5MWY2OGMyZjI4OGRjYzJkMWRjZjVkYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/shared/lib/runtime/index.server.ts#L1-L5",
+          "version": "repo-lines-v1:sha256:b56736d22b2c08c36813c01c3cce4e4af66cd734f2f21ffb3cf547ac6a47d482:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGMwZjQ4ZTM4ZmJkYjZjMGVmZTk4N2M5ODQ1MjFlZDA3NDMyNzU1YjZiYWFjY2Y0NWQ5NzdlNTdkYjdjYmFkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmE0ZDMzODI3Mzc1NWNiYWU1OGViM2IzMzgzNTc4YzA5NDBkZjYxOWEzOTZhNGNhYTliZmQ3NWM2MDU5OTkyOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/shared/media/index.audio-proxy.server.ts#L1-L3",
+          "version": "repo-lines-v1:sha256:692ee3f6497c16abae56102bff01efbe10171f9301458edffe96740a2abb514d:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGMwZjQ4ZTM4ZmJkYjZjMGVmZTk4N2M5ODQ1MjFlZDA3NDMyNzU1YjZiYWFjY2Y0NWQ5NzdlNTdkYjdjYmFkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODU1YjMxZDQzYTM1MzEwZmM2ZjE1NTNhMjk2YThhZWYwMmU3M2NkY2E2ZWY5YWYyYWU0ZDQ3NDg4N2U5ZWE3MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/shared/media/index.leemage-client.server.ts#L1-L3",
+          "version": "repo-lines-v1:sha256:04c06d7151638089125bab39d572c7e9a26b84254be2156c19cde3a1fbdb04f5:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGMwZjQ4ZTM4ZmJkYjZjMGVmZTk4N2M5ODQ1MjFlZDA3NDMyNzU1YjZiYWFjY2Y0NWQ5NzdlNTdkYjdjYmFkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTJkZTY2YTQzOTk1MWUxMjRiNDA5MTU2YjFiZGFlMDQ2MzkzY2FjN2QyM2UzNDE5MzNiNjI0YmFhMTU1ODhjNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/shared/media/index.server.ts#L1-L8",
+          "version": "repo-lines-v1:sha256:39ada80344851f1e7a14a3050345c0c101744228ffa81ab4931474d44ac39f35:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGMwZjQ4ZTM4ZmJkYjZjMGVmZTk4N2M5ODQ1MjFlZDA3NDMyNzU1YjZiYWFjY2Y0NWQ5NzdlNTdkYjdjYmFkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjE2ODZlNjY2NjgyNWQ1OTk2ZmZlN2NmYzcxNjVmNzg2YzdkMmRjOGUwODc3MWRmZTE1OTBlZWI1NzFkZmFjMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/shared/ui/button/index.ts#L1-L1",
+          "version": "repo-lines-v1:sha256:ba9130d2ead921ef44b042091f1d2f339696771aed8e8ebada07646b5cdd375b:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmE5MTMwZDJlYWQ5MjFlZjQ0YjA0MjA5MWYxZDJmMzM5Njk2NzcxYWVkOGU4ZWJhZGEwNzY0NmI1Y2RkMzc1YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmE5MTMwZDJlYWQ5MjFlZjQ0YjA0MjA5MWYxZDJmMzM5Njk2NzcxYWVkOGU4ZWJhZGEwNzY0NmI1Y2RkMzc1YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/shared/ui/status-notice/index.ts#L1-L1",
+          "version": "repo-lines-v1:sha256:b417c15ca349dc114ac64380b270652db5be998e6ec0e4807362083313796505:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjQxN2MxNWNhMzQ5ZGMxMTRhYzY0MzgwYjI3MDY1MmRiNWJlOTk4ZTZlYzBlNDgwNzM2MjA4MzMxMzc5NjUwNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjQxN2MxNWNhMzQ5ZGMxMTRhYzY0MzgwYjI3MDY1MmRiNWJlOTk4ZTZlYzBlNDgwNzM2MjA4MzMxMzc5NjUwNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-18T17:37:48.408Z"
+  }
+}

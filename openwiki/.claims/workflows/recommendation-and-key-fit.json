@@ -1,0 +1,260 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:fbb64329f678d46878bee18020db8a70032e30cd2f8759fa2798c47f16cd9d28",
+  "claims": [
+    {
+      "id": "claim_d1b809cb8d89498a8abb59ed57d67073",
+      "statement": "추천 결과는 DB에 저장되지 않고 요청마다 다시 계산돼요. getRecommendationResult는 저장된 프로필과 공개 카탈로그를 읽어 순위를 만들고 응답에 catalogRevision과 scoringVersion을 함께 실어 보내며, 같은 입력으로 다시 호출하면 동일한 항목 목록이 나오고 카탈로그 revision만 올리면 catalogRevision만 바뀌어요.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/create-recommendation/api/recommendation-service.ts#L84-L237",
+          "version": "repo-lines-v1:sha256:b8e4d55c2bc2cfe87a7e11d6e7bde3ce36b426abd2cd03403aa18ddeff5f78e1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTU0LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwNTdmZjk5MzI2ZmY5OTJmZWRhNDllZDdkZjAxY2YyNzdiOTIwNjkxNDYyYWE5N2JjNDRjY2ZlNGUzNTdiY2UwIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIwZjhjMzlmZTgzZWQ3YTVkNmVhYjA1OTM3MzM0OTBkYWMwN2NjOWJkOTExNzljNTQ1NDJlYzZiZjE0MGMxOTZiIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI3MDllZDJmMmJhMzQ3NTUyNWIxNzM5NWJjNzNjYWI1MTE2YThhZWUyMjgxOTBiZDJjN2VmNDZlMWE4NmI2YWJiIn0"
+        },
+        {
+          "resource": "repo://tests/recommendation-persistence.integration.ts#L62-L90",
+          "version": "repo-lines-v1:sha256:9a51bfb04ca78641a1dacaa95c2714e9fb0046208790892cfe594810131ec207:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5MzE2OWU3YTU2MGVkMDFmOTI5N2I3ZjNhMTU3ZTMzN2Y4MWMwNjcwMzg1OTg1NzRiMzJhZDA4MmZmNDk5NjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2NzI4NjI5YmQ2MDZmMzY2NDQwZWIwNTYzMzJmYmRiOGM2OGI2YzNiZDhiNDc1NDRiYmZkNmNhZjk3NDQ5N2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc1YWNkNjZiMTlkOGY5YTg0NjY3M2RjYzNmYjlmNzIyNTRjYzhkNzIxZmRmNDkzYWFiZmJhZmU2YzJkNWM5ZDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFmYmEyNDczMzNmYzNlZTViYjRjMDE3NWQ0M2M0NzQ1MzRhODZjMDFjN2E4Y2U4MTk4Mjk1NDRiMzFmYmYyYzMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ff780aa897d844e59fdc37b62ad8e68b",
+      "statement": "추천 입력 프로필은 sourceType이 USER여야 하고 minMidi, maxMidi, p10Midi, medianMidi, p90Midi, tessituraLowMidi, tessituraHighMidi, voicedRatio, pitchStability, clippingRatio가 모두 유한해야 해요. 둘 중 하나라도 어긋나면 RecommendationError INVALID_PROFILE 422로 거절돼요.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/create-recommendation/api/recommendation-service.ts#L27-L68",
+          "version": "repo-lines-v1:sha256:73c5305f8057e732a849cb9a05cd03f2c7871f385c865776c59318fcc42f80b4:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjNmQ0MGU1YmEyZTcxNWFmN2E1YTc0MjU3ZjM2YzRjMjdmMzNhNmY3ZmRkOTIwNTQxMDUzZWMwOGE3ZWE3MDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFhNTdhNDkwODk1MzY3MTNmNTIwNGUwYzdhNDdkNzk5M2U3MTg3NWYwOGZmYzMwZmU1OWU2MzM3ZGY5ZTYyODUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcyZDAyMzhkYTVmODYwZmRhN2Y1NGZkMmFjNTM5NWU1NWY3ZWIzZjhhODZkMGYxY2Q5YTg2ZTkzNTZhZDA1NmIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2078ab0085f74e239c8ade3af088f1dd",
+      "statement": "채점 계층은 계산 직전에 사용자·곡 프로필의 수치 유한성, voicedRatio·pitchStability·clippingRatio의 0~1 범위, 백분위 순서, 비어 있지 않은 주요 음역, analyzer·analyzerVersion 존재, 두 프로필의 analyzer 계약 일치를 확인하고, 위반 시 KeyFitScoringError의 INVALID_PROFILE 또는 INCOMPATIBLE_ANALYZER를 던져요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/recommendation/lib/key-fit-scorer.ts#L47-L106",
+          "version": "repo-lines-v1:sha256:ab268b2e9b23f61004562f84390114107d9351c08fc1e5a6e98bdba63e4303a6:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxNTQwZjRkZGNjNjA0OGQyOGM1NDg1NTM2MjA4OWI5M2VkNzMxMjJiMDQ3MTc4MmM0NmExYjNhNTk3MDJjY2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwOTg4YmE5NjdlN2YwNzk4NmNkZTBjYmZkNzc2ZGMxNTFmZDQwNjBiYWJjZWY3NDc5OTk4YmM2YTlmZjQ2NjYifQ"
+        },
+        {
+          "resource": "repo://src/entities/recommendation/model/key-fit-contract.ts#L74-L86",
+          "version": "repo-lines-v1:sha256:c0fa398f7f90e8924c286a8b2895e24eef24940eaabf5f4ff4a85d47af3a02b2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwOWQzNjlhY2Y3YjEyZjgxMjA0MDJhMDI3Y2M1OTRlM2I3YmM1Y2NmZGNkM2YyNjM3YmE2MjMwZTBhMGQ0OGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlmZDgxMTFhMTQyOWM4ZTk3MjFiZGUyMzIwMTNmZWRmN2JlYzYzZWE4YjcyMmE1YzU1MGYxZjYzZTM3OGU1MGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_36301c39386441ffa15b269efd044a51",
+      "statement": "scoreKeyFit은 -6반음부터 +6반음까지 13개 키 이동 후보를 채점하고, 후보 점수를 58*tessituraOverlapRatio + 26*tessituraFit + 16*extremeFit을 0~100으로 자른 값으로 계산해요. 부담 성분은 12반음에서 포화되고, 겹침 비율은 두 구간 길이 합 대비 대칭으로 계산돼 폭이 좁은 곡이 포함된다는 이유만으로 만점을 받지 않아요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/recommendation/lib/key-fit-scorer.ts#L135-L190",
+          "version": "repo-lines-v1:sha256:e9f2337335ae2eba28ecc304c8e8cd89295b20870e13533cf27b7071cccbd94c:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlhOGVmZDRkOGIzYTgyMDM1ZGFlZDgwNWE3NGViNzViNDBmNzE5ZGI3ZDcxMTM5OTQxNWFhNDg2ZWM1ZTNiZTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmYzFiMGE3YzkzYWY0ZjA1ODMzYzhmMDZmOWUzZGU0NjhjYmFlZThhZGNiNTk4ZjJkNTdjMTI5NmE4YjY4ODgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRkNjJkYTAyZjQ5YzlkYTlkNjE0NGYwOThiZWIyMmM3ZDgxNGNhNTc0ZTM1ODk3YzY3OWZkNzgwM2E2OWQwOGMifQ"
+        },
+        {
+          "resource": "repo://src/entities/recommendation/lib/key-fit-scorer.ts#L239-L264",
+          "version": "repo-lines-v1:sha256:3c3c14ef41a3abc4ff35234068202d04167a7213066670f0f795453dc91df5dd:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiZTEwMGJlN2M2ZTgyYmZiMzdhYTg5ZjU4ODVkYmY2ZDk4YWI1MTA5ZTNmMDI3NDg4OWY3ZTU2NWZkMmVkZjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3M2IxMTI1MTEwYjFjYzE2YzZkYmI2ODBjMWI3ZTc2NjE2YzMzNDdhZTIyZWEzZmQ0ZjBjMjE0MjQ5NWNmZDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://tests/key-fit-scoring.test.ts#L103-L121",
+          "version": "repo-lines-v1:sha256:013d63b9ca83b2e05145596acf1363a024014f10ffeae8d7660f0345b5820879:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY0ODljNGJlMWU0YWQ2YWQ1ZTA3NDAzOTdmMzRkZmFjZThmMDk1ZDIxYzZhNDlhNGFhNGFlMWRmOWMyNDhmZWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFlZmE5YzFkYzFlNzVmNGZjYmYwOTVhOGFkMTY3MThmMzkwOGEwZjkwMGZhYmNmNWEzOGNkZjI1M2E3NTI4YTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNmNWRmZTAwN2EzY2RiNTQ3Y2NmY2RkZGZlZDg2MjVkMGNkODA0MTg4NGI4NDU1ZTA0ZDFjZmUyOGYzZjk0M2UifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fd6fba2886e847debad84675703c6e44",
+      "statement": "추천 키는 13개 후보 중 compareCandidates 순서(rawScore 큰 값, highTessituraExcess 작은 값, highExtremeExcess+lowExtremeExcess 작은 값, |shift| 작은 값, shift 작은 값)로 고르고, 1e-9 이내 차이는 동률로 처리해요. 그래서 평평한 동률 구간에서는 원키 쪽이 선택돼요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/recommendation/lib/key-fit-scorer.ts#L192-L208",
+          "version": "repo-lines-v1:sha256:28b4201e5db727efc9d401952f418c195500c9ef291f2c087a0c82c2bc0e67aa:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkNDQ1OGViY2FlOTFjMjcyMDI0NDMwZjFiMDU5OWMyZjQ4Mjk2NWRmNmQ4NzZlYTZhZDE0Njg1MzAzMTFhMWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMzOTQxOTYxNDQ3ZTZmN2I5MzBlZjk4ZGUzODg2MDU1ZTI4MzM1NjhiOWQ5M2E1NWE4MTE5YzlmYjNjNjZjMWMifQ"
+        },
+        {
+          "resource": "repo://tests/key-fit-scoring.test.ts#L213-L236",
+          "version": "repo-lines-v1:sha256:1acb855bb044c98b4f3c712c9e449e782033840baee75d059691cd3a3a189853:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5ZjFiN2E4MTU3Mjg5ODRlNjg4NDgzNTFlOGI2YTM4ODcxMTlmNzdmMzJiOTIyMzRjMzI3N2E4YmYwZjlhMzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwZjRkZGU5MjVjNzNiOWVjYmZlNmJmODI4YTE0NmY0NzE3NjdmZTM1Mzg5ZjUwNTIzMzVhNTdhOTA4NTAwODQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJjNTMwOTJhNDg3ODYxMjNiNjc2OGE1ODk3OTllYmQyOGQ4ZGU5ZjFmNGIxN2E0N2Y5ZmY3N2Q2YWM0OGFjNGIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2b600408bd5d4450b23bade639c4171f",
+      "statement": "confidence는 0.6*pitchStability + 0.4*clamp((voicedRatio-0.25)/0.5, 0, 1)로 사용자 프로필만 보고 계산되며 후보 점수 성분을 바꾸지 않아요. 모든 곡이 같은 사용자 프로필을 쓰므로 응답의 profileConfidence는 첫 항목 값이고, 0.6 미만이면 lowConfidence가 true이자 LOW_PROFILE_CONFIDENCE 이유 코드가 붙어요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/recommendation/lib/key-fit-scorer.ts#L129-L133",
+          "version": "repo-lines-v1:sha256:f207545cacbeaf9e6e87cefae538f38ce3642761ea540572e88dbf3e72d76f2d:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDQzNWUwYWZkZDlhNmQwMmRhNjgxNjYyY2FlODRjMmExNmU0NDI5ZmZhYmE0NmJmN2I5NzMwNTg2NGQ0ZTRkMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTJmN2Y2NGVjY2E2YTAzMzU1ZTk5ODlkZjVkNDJiMGI1NjFmNTM0YzMyYjM2YzA0MzAzNTdmMjk0NGQxNTRmOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTU4NzhhNWNhMTI3NmY2N2RkMDRiN2Q3NDQ3MTE3NTUwNmY5YTYyYzA0Y2FjMWM3ZjkzZjZmZDk0ZTVkMDczMyJ9"
+        },
+        {
+          "resource": "repo://src/features/create-recommendation/api/recommendation-service.ts#L215-L224",
+          "version": "repo-lines-v1:sha256:20b343190ff895091729709218475ea6606c6475c85fbc403f8ed5ae4e9111c8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwZDdmYmFjMGEzNWU3NGE3MGIyNzdiZmE2NTdmYzE2ZTE5MDAxZjNhMmIyMGQwZjVhNjdkZTUwMjMxNDI5NDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiYWU4ODE4YjljZDE3MzIyOTBiYjI4MTE1YzVkY2E3ZjQ3YjE4YzVjM2E3MDY5ZDkzYjA4YmZjYjBiYjYwNjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg3M2Y3YWExNDAyYjk4NzU5MzA1MWQ3ODQ3ZDkyMzdiMzIxOGYyOGUwYTZlMzM2NmJlNjNlM2NkZmJiMzMxZjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA5N2M3MTAzNjdiOTM1MDMyNTkzZDhiN2EzMWQ5NDk5N2E1ZGMyYTAyN2MyZjkzZDdjZWY2NDUxMWY5ZGI0ZGQifQ"
+        },
+        {
+          "resource": "repo://tests/key-fit-scoring.test.ts#L156-L171",
+          "version": "repo-lines-v1:sha256:37ae8479b3ce9aedaec399964e4f208b9eeade0e5e83ebfa604b41b4e32ac987:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2YThlYTgxNjU4NjYwN2JiMTEyMmEwODc2ODc0NjFjNjVlZGIwMTdhMjk3YTZjYzMxMWQxZjAzZWMwMWRlM2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY4MGQyZGQ0ZjI4OWQyNmRjNzU3YzJiNjVhMDZjMzkyMjdhNjcxN2M0YjQ4YjVhMzk3OTJjOWYxMWU0MWFlYTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQwM2E2OWQ5NDQ2YmQzZTA4YzZiMDkzYzc1NGQwMWI0MWZmNWZkMjYwYWE1NjMyZWVhZWZlMzc4NGZkZDJkZmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6c06217e248d4ff38c81365948baf9d0",
+      "statement": "selectionScore는 max(0, 0.65*originalKeyScore + 0.35*adjustedScore - KEY_SHIFT_SELECTION_PENALTIES[|recommendedShift|])이고, 패널티 배열은 [0, 1, 3, 7, 12, 20, 30]이에요. |recommendedShift|가 배열 범위를 넘으면 RecommendationError CATALOG_NOT_READY 503(retryable)으로 실패해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/recommendation/lib/ranking.ts#L7-L32",
+          "version": "repo-lines-v1:sha256:fca98402047a430dd30b017a2ba89ddfbcdf539e11b2f1a7d74c2e467d47df71:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4N2JjNmNiYjk4MzEzOTAzYjU2M2YyZjgyOWUzZjMzNTgxN2MzNzJlNzcyODllZTJkNGRjZDNmOTNkNzYyOTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA3YzFhNTMyMDFmNjc2N2VhOTM1NjNjYTc1MTZmODZlYWY5NzhkOWUwOTA5OTk1ZDljNWYxMzliZTNjNWEzMmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVmZDQ5MDc3Nzg0OGZlZjkwMmFiMDIwNTM2OTU1ODVlZDEyOTU5ODU1NDQ4MDI1ODEwMjNmNWM2NzZlNmUxOTUifQ"
+        },
+        {
+          "resource": "repo://tests/recommendation-ranking.test.ts#L79-L86",
+          "version": "repo-lines-v1:sha256:46aa9db2b2779912ec28d6496741dd7499506bd10b00d4f4844830b00fe03dfe:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTA1ODJhZjI0MGE2YzQ5ZGEyMzRmYzM3YTYwNTk5MGU2NDZlMTQyY2Q2ZTIxOWQ4MjIxZDM0MzA5ZTA0YTJmMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjZmNWI0MGIxNTg0NTdkMTc4NjRmMjE3OTA3ODZkZDVhMmVjZGI2NGI2NmE2NTFmNzg4ZDRlMjVjZDMzMDNkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjgwZDJkZDRmMjg5ZDI2ZGM3NTdjMmI2NWEwNmMzOTIyN2E2NzE3YzRiNDhiNWEzOTc5MmM5ZjExZTQxYWVhNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjMyNjI0OWFkNWMyM2Q1YWY0NjNmZDNiNWU4ZTE0N2FkYWRlNWE5NGQzNjhhMGI3MzdjMGJhZjJjNGE4NTQ0ZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1ea0eff5af464182af770788b35a06d9",
+      "statement": "rankRecommendations는 목록을 selectionScore, originalKeyScore, adjustedScore 내림차순, |recommendedShift| 오름차순, catalogOrder 오름차순 순서로 정렬한 뒤 index+1로 rank를 붙이고 selectionScore를 소수 둘째 자리로 반올림해요. 빈 목록, 정수가 아니거나 중복된 catalogOrder, 유한하지 않은 점수는 CATALOG_NOT_READY 503으로 거절해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/recommendation/lib/ranking.ts#L34-L85",
+          "version": "repo-lines-v1:sha256:cc77d42ff6c4f595b6758871b8907599112ccbefac46fa0053c42b04556e6d3f:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZDU1MmE4NzY5Nzg5MDRhZDIzZTY5NmQxNGI5YmRkNTdlMTJjMDhiOTRlYmQ0MGM2NWI0YzNkMWFkYzZiM2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5NGZjMGMxNzNkMWVjM2ZjNTAxZDdkZmE5Mjg1NTAxYzUyN2NmYjQ3MTI1ODNkYTNjYzM2MTgwNTY2YjRiZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU4Yzg1MDU1ZDAxYWExMjE0YmVmMjVhMzJkZTM2MGJmZjlmNTA4Njk5ZmFlMGEzZmIwMjBiY2U0NjNlNmZkNjYifQ"
+        },
+        {
+          "resource": "repo://tests/recommendation-ranking.test.ts#L53-L77",
+          "version": "repo-lines-v1:sha256:3ade8806e6a535765a8e3b04d70453daa194383677cf42bc2c29da6d3ca9e29c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmNmVmODg0Y2I2MzI2YzRlZWM2YzUzNmYwZTIzZGQ1YTU4NGI1NTMwNGE4MjI4NWExYTNkYWU0ZWM3MmM1OWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFmMWViYTQzZTdmYThjZTNmMWFkN2FiOGExMDM5MzMyODA3ODI1ODFkOTFlNjlkNGJmODI0MTMyNDVmMjMzNTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_34d7ee0666fb4bf0af39d75143b232d0",
+      "statement": "추천 가능 여부는 catalog readiness에 달려 있어요. catalogReadiness는 곡 lifecycleStatus가 ACTIVE이고, active source가 READY이고, 현재 분석이 READY이면서 cleanupConfirmed이고, 타깃 자산이 READY이며 각 포인터와 sourceId 연결이 맞고, 카탈로그 항목이 PUBLISHED인지 판정해 SONG_NOT_ACTIVE, SOURCE_NOT_READY, ANALYSIS_NOT_READY, ANALYSIS_SOURCE_MISMATCH, TARGET_NOT_READY, TARGET_SOURCE_MISMATCH, CATALOG_ENTRY_NOT_PUBLISHED 이유 코드로 돌려줘요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/song-catalog/lib/readiness.ts#L5-L45",
+          "version": "repo-lines-v1:sha256:75dc79b2dffc0aa83ac2ea1f583ddfb9a85a34cad3fe2f439693c2ec6b1c8e76:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUzMTM0ZmVjOTgwYTRlOTQ5MmJlMzY4MmUwNGRkOTBiOWMyYjU3ZDFkNjdhNzZjZTYzNzZiOTIxZWEzODE3N2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ2ODNjOTRmMzhlMGE1Mjc5MzYwOTZhYjNiZmFiYTVmNjhjNzBmMDQ4YjZiZGZiNTQ4ZDEzZjFkMzU4ZTk2Y2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/entities/song-catalog/model/contract.ts#L55-L63",
+          "version": "repo-lines-v1:sha256:0e35b4a07def00429c20e990e4f8d48d03c2d043aaff9316d8c188587d7e30d2:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTk1ZWUzZDU5ZDQyMzJiMGYyZDdhODA3ODA3MGU0ZjAxN2EwZTljMmJmODdiMTQ5ZmU3NmI0ODFjZDkwZTUyOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTVlMjZjZDkyMzY2ZjYwZDhlZDkyZDAyMzlmMDdmZWY3NGNhYzE0YWE2OWFkZGY5YzJjYzBkMTFlYjAwYTQ2MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWI0NGFkNzMwNjdmMzEyNTdhNjkwMmI3ODk0ZWZiNjMxNzk0MzNlZmJkMGIyY2JkOGVhOWMxNmI5YzE0OGE5OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjIsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjE4NDgwZjU0MTU4ZWQ5NWQwNWYzYWYxZTdkZWIxMGNkMDJkY2VjMDZlN2IxYjlkNzA1ZDA4OWE2NWE3ZWUzMyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_744aeafe3b224ee09ddf7fc993c53775",
+      "statement": "loadPublishedCatalog는 같은 준비 조건을 조회 술어로 걸어 PUBLISHED 카탈로그의 PUBLISHED 항목을 position 오름차순으로 가져오고, buildRankedDatabaseRecommendations가 포인터 일치와 지표 유한성, 분석기 신원을 다시 확인해 어긋나면 CATALOG_NOT_READY 503(retryable)을 던져요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/song-catalog/api/published-catalog.ts#L6-L21",
+          "version": "repo-lines-v1:sha256:46ddd80573d67c85c62592d887d7fddd9ed9b1c45f5c212890a8e1270cc428a2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjM2YxMjlhYjUyNmM3MDIwYmY5ZTA4NmUyZjI5MDU2Nzc2ZmQxZjRjYjMwMTI3N2NlZWYxNGE3NzkyZjI4YjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNTJkMGM0YmVkNTI4NGUyNjFiMGYwNTk3YjY1OGRiOWM3Y2I4YmNkZjE3ZWFhMDNhNDcyY2ZlYmE4MjZkYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjMDE5ZTAyMjE3ZWY2M2JjMzBmYTdlZDc0MzdkYzgyZmU3Mjk5MzMzYWFlZmRmMjUzOWE3NjczMzAyMjZjMzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZiMWE0YzdlYTUzOGNiYzUyNDRiZTMwYzdiY2ExODhkNjA1MzE5YWI1OTlhNzYxYzhmZWU3YmFlZGVhODUxMDMifQ"
+        },
+        {
+          "resource": "repo://src/features/create-recommendation/lib/recommendation-data.ts#L17-L68",
+          "version": "repo-lines-v1:sha256:56949116f37e01bf638c95cc9dc26cbd376badd3ce1e74a735b49c964ba45afc:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2N2Y4YWY0ZTFmMGE4Y2RjYzY2ZTI1NGNmNjI1ODUxZWExYTNjOTU3MWVkOTVjMDdmZjc4N2QwMTJiZjA4MTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMyNDdiM2E2NmNmOTU5ZGRjY2ZiNWU0ZTJiOGE5ZmFhNTI3NGYzMmY3ZDIzMTQ4ODgyNzY0M2EzNzBjMDkzNTMifQ"
+        },
+        {
+          "resource": "repo://tests/recommendation-ranking.test.ts#L238-L251",
+          "version": "repo-lines-v1:sha256:ce178e776876505e51a82f655f70ed41f63e34c967421a37522f0246952c2e14:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4YThhMDhiNjM1Y2NjYTI2YzYzMDc4MDkxNjdhZjY1MTYwYjQyYmZjZDI0NjExYjVmMDVlYzUzMzA5ZGJkZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc4ZjZhMWEwMmZiMWU2ZWQ5YTRkMjg0ODcxZjVmNWE5NjZlYWNiOTg2ZDYzMDc3Zjg3NjZhMDRhZjI2NzQwZWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUxZGRlMGEyNmI2MWQzOWY4ZjhiOWQzNzYxOGQ4YWFmNTJlZTMyMDdkYmVkNWJjNWJiNDg4MGM1MDhlNmY5MWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_429e182e446048688fc814d6416296e6",
+      "statement": "오프라인 아티팩트 채점 경로 scoreCatalogKeyFits는 status가 READY가 아니거나 profile이 없는 곡을 건너뛰지 않고 SONG_PROFILE_NOT_READY로 실패시켜요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/recommendation/lib/key-fit-catalog.ts#L18-L42",
+          "version": "repo-lines-v1:sha256:4e142d4aa22269febc4f4263108f5ca5cec6c743835572cefb47d5ca51b074e9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmNjQ0ZDVlNWJkY2IwMGMyMTk5MjYwZmZmNmViZGVmMmVmMTIyZjM1YTJjMzAxYjMxOWM5OTgwMDU0MGFmOGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU2ODQ3OTdkMTQ3MGE4YmZmN2JkNWE2YTAyMTRlOTViOWYzMzMwNzg4MWU2NmMzNWZmNzAwNTgxYzcyMDhiZGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://tests/key-fit-scoring.test.ts#L275-L289",
+          "version": "repo-lines-v1:sha256:8af0febfd032e664da1b4e1e28e19cce7c59b5e8ef5dad31c000e561d5b6bd4d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhZjFhODcxZWU2YmFkNWFhNWRmMTNiMmMyMzQ0MDYxNDcwYWFjZGI2YTUzYmY2OTcyNjEzMWNjZGIxM2YxMGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY4MGQyZGQ0ZjI4OWQyNmRjNzU3YzJiNjVhMDZjMzkyMjdhNjcxN2M0YjQ4YjVhMzk3OTJjOWYxMWU0MWFlYTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJlNjE2NWM0YTUyYmI2MjljZGE2MGMxZGExZWUwZGVmOGNjMTlmOTBlYmNiZTQ3NjAxZDRkODk0MTFlNmE2ZjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ce38e7f539304ff593f7e4064de7315a",
+      "statement": "추천 이유 코드는 추천 키와 원키 후보의 차이로만 만들어지고(ORIGINAL_KEY_BEST, KEY_SHIFT_IMPROVES_FIT, HIGH_TESSITURA_OVERLAP, HIGH_RANGE_BURDEN, LOW_RANGE_BURDEN, HIGH_NOTES_REDUCED, LOW_NOTES_REDUCED, LOW_PROFILE_CONFIDENCE) formatRecommendationReasons가 고정된 한국어 문구로 바꿔요. 응답은 reasonCodes와 reasons를 같은 순서로 담고, 화면은 그중 다섯 코드를 숨겨 ORIGINAL_KEY_BEST·HIGH_TESSITURA_OVERLAP·LOW_PROFILE_CONFIDENCE만 노출해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/recommendation/lib/key-fit-scorer.ts#L210-L237",
+          "version": "repo-lines-v1:sha256:e389107edb5f5beb75c44dc13bfb33b2b4dbd60fa91108df6920587c1d33bd1e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmZTU0ZWMyZmFiZTk4MmVkZDNkOTFlMzU2MTZhMmM3MjFkYzdkNDUwNThkNGE5MjlkMWNhMTc3YTg2ZmQ4NjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU1MjQwMDQ1ODQ4OWZmM2ZjNmY3Nzk1YWI5OGNlOWFmYmVhYTBjNThiZDEyYjlmMTA1NzM2YmRkZGFlMjY0NjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA0ODRmYjE5YTNiYmFmNGMwMjE5YzY2NzQxM2ViNTRmMThkYjg5NjU0ZjNiZWEwY2QzZTZlZmE5YzE5MmEwODEifQ"
+        },
+        {
+          "resource": "repo://src/entities/recommendation/lib/presentation.ts#L15-L21",
+          "version": "repo-lines-v1:sha256:5c57b1ee5df0f90b7d726ede58b6a00c173737c1312eefafae10c20941ad206e:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmM0YWZlMzZjOWUzZjA1ZDI0ODQ3MGM1MTg2Mjc3NWZlZjJjMTdjYjQxZDdiMzIwNDQ1NDI1ZTUzOWMwNThmMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTVlMjZjZDkyMzY2ZjYwZDhlZDkyZDAyMzlmMDdmZWY3NGNhYzE0YWE2OWFkZGY5YzJjYzBkMTFlYjAwYTQ2MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTA5ZjU1OGZkNWM5MTY4OGQ3MGI2NzM0ZWM0OGYwYTNhOTNmOWExYzVmMzA0MmRjMGIwMDZkZDY2ZWE2YzIyOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGUyYTUwNzYwZmRiMTJhNmEzNzM1MjBjM2VjNmQ3ZTAyMWU2OGI1MjMwMjc4NDhmZWJlYTBkZjg4NTI3MzRkZCJ9"
+        },
+        {
+          "resource": "repo://src/entities/recommendation/lib/ranking.ts#L93-L141",
+          "version": "repo-lines-v1:sha256:d7a83fc0698738335308e5488a61f8e4642970f09875da642cba93cf18be3672:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4NTlmNjY1YTFkZmEwMDE1NGZhNTljMGY0M2JlMDIwN2QxNGFlY2IyNjk4YTlmOGNjYWVjYzVhMDM1YmZiY2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU5NmM0NTY5ZmRkNjdlOTlkMTZlYzQwODE5ZDM5MzdiYmIzNDI4OGFmY2NiMTVjNjNjZTZlZDk5Mzg1NzRjMmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8ad01e4fbd334c2780e37120a522d273",
+      "statement": "추천 응답의 catalogRevision, catalogOrder(position), targetAssetId, scoringVersion, recommendedShift는 이후 믹싱 접수의 staleness 검증 기준이 돼요. 믹싱 접수는 공개 항목·카탈로그 revision·position·타깃 자산과 분석 sourceId 연결을 다시 대조해 어긋나면 MIXING_RECOMMENDATION_STALE 409(retryable)로 거절하고, 통과하면 이 스냅샷 값을 MixingJob 행에 복사해 접수 뒤 카탈로그가 바뀌어도 작업의 키 이동값이 흔들리지 않아요.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/create-mixing/api/mixing-queue.ts#L81-L133",
+          "version": "repo-lines-v1:sha256:ec5e4323e23b372a16f888c9d2cc511e803810fd0b7eda9619d40588ef0a7706:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA0YzA1MWU5YzcxZDQzNDAwMmNlYTI2MWZiYWJhOGI3Nzg0NzhmMDYxODYwMTFlZWI4OTUzMjhhNTg1OWRkZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhMzdlM2MwOTQxZDE1NzdjMDM5OGUzYjY3ODRlZjNiM2YwMTI4OGJjZGVjOWE0YmJhMWFiZmFhNzQwYWI2ZjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI0ZWRjZWY5OGU4ODM0MjNmZTgxMmFlN2JlM2M2Y2Y0ZjU3N2JmZTBiMWIxODA0NDdhMTdlZmM3YTcyZDY3YmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE5ZmE4OGZiYzZkNTNjYTEzZTVlMzY2OWRiYzJiNjg0ZTZjNWJmMWEyOWUxODRjMDc2OGNmOTRmYTJkMDRlNjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_aa48eaca059f46a981d955d377102c56",
+      "statement": "추천 응답의 synthesis.status는 MixingJob DB 상태를 축약한 값이에요. PENDING·PREPARING은 preparing, SUBMITTED는 queued, PROCESSING·SUCCEEDED·FAILED는 그대로, CANCELED는 failed로 접히고 작업이 없으면 not_started이므로 취소와 실패를 구분할 수 없어요. 반면 mixing job API는 pending, preparing, submitted, processing, succeeded, failed, canceled 일곱 상태를 소문자로 직렬화해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/mixing-job/model/contract.ts#L125-L146",
+          "version": "repo-lines-v1:sha256:ea2a22ffc7966a33fd6d3feab29ab9a9ee8dbb1993e7cc6bd60d268fdc221673:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjNTEwYWVkNjRkNGNmNmRlZTQ1MTlhNTM2YjFjOGYwYjczZWZhYzYzYjMzYTVmZGFkMzY4MzYxZDQyYmZlNzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/entities/mixing-job/model/contract.ts#L4-L20",
+          "version": "repo-lines-v1:sha256:237069036f8041c3b96f0432bccf4f863f4e86b5dd830ddab52c6df73df66ca6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxMzcyYTFiZjNmMWMyZGQwMmJjOGUwOTRlY2FmNDQ5MDA3NDhjMjhjMWMyYjIzZGU3MjgyZDQzN2RlM2Y2NjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzZDAxMTZhYzdkNzdmZTZkYWJiY2ZlYjVlNTI1MjViY2QzMzBiMWU1NjM3YzZhM2Y0ZWFjMDc4M2Q0M2JhODciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjNmU2NDRmM2UzN2U3N2FhMDI0ZGNlZGQ1MjMzMTViODYzNDdhY2VjZWFkNDdkYmNkYzJlNGVlODBmYWVjZWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzOWMyMmFkZWNjMTcwZTZiMTM5NDRkOTJjMzcxYjg1NDI3ZWJjNWEzZjYzYTg3NTNhZWVkZjIxZGI3NDUwMTcifQ"
+        },
+        {
+          "resource": "repo://src/features/create-recommendation/api/recommendation-service.ts#L70-L82",
+          "version": "repo-lines-v1:sha256:94898ab981f97104d71e5e6b13e9140df7bcc1b11611bdc09eece460291d6a8f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmNWFlYWM1ZWQ5NzIwNTJjMzU2M2UyMDc3ZDc4NjJkMTk4NGI0ZjU2NTVjNGE5NGFkMWU1ZGUwNjI2YmIxZDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkOWE5M2FlZTU2MWRjMmY3MTJlMTAzNjg1M2ZkNmUxY2MyNmE5Y2Y2MDE4N2YwNWFjZDM5MTQzM2JjNTg4M2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNkOWVjZDdmMDM5NDYwOTVkZTg3NzViNWQ1M2EwNjY3NjNlYjYyNWEzZGExMzA2MGIzODZkZmZhODUzNDc4YjMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7f6d2347f5a04f2e83019392f941b5df",
+      "statement": "KeyFitScoringError(INVALID_PROFILE, INCOMPATIBLE_ANALYZER, SONG_PROFILE_NOT_READY)는 추천 라우트의 오류 처리기가 RecommendationError만 상태 코드로 매핑하므로 HTTP 응답에서는 RECOMMENDATION_CALCULATION_FAILED 500(retryable: true)으로 바뀌어요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/recommendations/recommendations-route.ts#L8-L27",
+          "version": "repo-lines-v1:sha256:f0d9445567057bc699882f982796849e6632589d025a22776fbf3d2c5db9e2f2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4NzllYTUzMjc1ZWQ0ODA0Y2E3ZWQ4ZTEwOGQ5MjQwNGViMjk4MTZhNDRlNzEwYjUwYmQ0ZjlkZDEzY2M3NjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU2MzI4ZDVkMjJiNjc5OGUwNDRhZDgxYThlZDc2MzczZTFkOTFiMTRkODU2OGYwNjg1NTkwNWMxOTY5MTAwNzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3MGY4Njk5NjAxMTI2YTk4MTY2YjA5NjQ5ZGM2ZjFjYTU0N2M2NzU3MzE4ZWVlYzAxMGNmZmNiZjM3MDAyZDcifQ"
+        },
+        {
+          "resource": "repo://src/entities/recommendation/model/key-fit-contract.ts#L74-L86",
+          "version": "repo-lines-v1:sha256:c0fa398f7f90e8924c286a8b2895e24eef24940eaabf5f4ff4a85d47af3a02b2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwOWQzNjlhY2Y3YjEyZjgxMjA0MDJhMDI3Y2M1OTRlM2I3YmM1Y2NmZGNkM2YyNjM3YmE2MjMwZTBhMGQ0OGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlmZDgxMTFhMTQyOWM4ZTk3MjFiZGUyMzIwMTNmZWRmN2JlYzYzZWE4YjcyMmE1YzU1MGYxZjYzZTM3OGU1MGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0f7f0c11ea994066bf4048a918cce89f",
+      "statement": "브라우저 추천 쿼리 키에는 catalogRevision과 scoringVersion이 들어가고, 진행 중인 합성 상태(preparing, queued, processing)가 하나라도 있으면 5초 간격으로 추천을 다시 조회해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/recommendation/api/client.ts#L31-L51",
+          "version": "repo-lines-v1:sha256:ee33f44acf3993dc50ba52df3a64047cf3633aec32930ff37f67157109055e45:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyN2JmNWQwNDE2ZWRmOWYwMGQ1ODlmMTkwNDQyMjA2ZjExNGNjZTI1Y2YxZjkyMjU1ZDRjYWUyN2M0MWMyZDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIifQ"
+        },
+        {
+          "resource": "repo://src/entities/recommendation/api/client.ts#L5-L21",
+          "version": "repo-lines-v1:sha256:374afa0f25eb28dcebd208ad600cecc5f6fb862a106995b816dbf1a40bf156de:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRkNGI4NDBiZDZkYjZiMjhjMzIzNGI1MzlmOTNkNzI1M2IzNDg2NjI3NjdhMGNiMzQ2OTkyOWZiNjQ4MjY3MjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE5YTE0YjdmODA0MjM1YzhmNWNjZGIyYTM1YjJjZWE2MmE5YWZhMjZlZTk5N2Q5N2RkMmNhYTZjNGZmMWM1YWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmZDJkODg5MTk3MmVlOTAwMjg1ODk1NWZkYzRhNGRjNDViNzMwOTFkYjI1MjY1YWY3MmIwZWNkODYyYmMyZTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_66347ca47c1e44cf992f83acd68593a3",
+      "statement": "getRecommendationResult는 순위 결과를 항목마다 rank, selectionScore, originalKeyScore, adjustedScore, recommendedShift, reasonCodes와 같은 순서로 짝지어진 reasons, metrics.original·metrics.recommended 상세 분해, catalogOrder(=공개 카탈로그 position), targetAssetId, songAnalysisId(항목 id와 동일)로 투영하고, 응답 전체에는 catalogId, catalogRevision, scoringVersion, calculatedAt, profileConfidence(첫 항목의 metrics.confidence), lowConfidence(profileConfidence가 0.6 미만)를 담아요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/recommendation/model/key-fit-contract.ts#L3-L3",
+          "version": "repo-lines-v1:sha256:e4e9dbdd0c22929046b6537e70abe717d89cfeb7f04c2481fd0e26872f6c64c6:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTRlOWRiZGQwYzIyOTI5MDQ2YjY1MzdlNzBhYmU3MTdkODljZmViN2YwNGMyNDgxZmQwZTI2ODcyZjZjNjRjNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTRlOWRiZGQwYzIyOTI5MDQ2YjY1MzdlNzBhYmU3MTdkODljZmViN2YwNGMyNDgxZmQwZTI2ODcyZjZjNjRjNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTI4YjBjYzA0NWQ3NTI2ZDFjZGIyMjU4ZGEwYTE2YTQ1YTBkNWFhOWI2NGU4ZDIyYWExZTRhNDlkNzg1ZWRmOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTgxZmRiZjk0OTUxZTdiNGZiMzYyNjZhMzkzZTVjN2YzOWUwYzQyZTliOWNhZjgzYmU2MzkxNTcxNTE4M2U4MiJ9"
+        },
+        {
+          "resource": "repo://src/features/create-recommendation/api/recommendation-service.ts#L84-L237",
+          "version": "repo-lines-v1:sha256:b8e4d55c2bc2cfe87a7e11d6e7bde3ce36b426abd2cd03403aa18ddeff5f78e1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTU0LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwNTdmZjk5MzI2ZmY5OTJmZWRhNDllZDdkZjAxY2YyNzdiOTIwNjkxNDYyYWE5N2JjNDRjY2ZlNGUzNTdiY2UwIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIwZjhjMzlmZTgzZWQ3YTVkNmVhYjA1OTM3MzM0OTBkYWMwN2NjOWJkOTExNzljNTQ1NDJlYzZiZjE0MGMxOTZiIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI3MDllZDJmMmJhMzQ3NTUyNWIxNzM5NWJjNzNjYWI1MTE2YThhZWUyMjgxOTBiZDJjN2VmNDZlMWE4NmI2YWJiIn0"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-18T16:47:52.081Z"
+  }
+}

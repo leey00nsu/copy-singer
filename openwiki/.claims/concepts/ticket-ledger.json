@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:1ed3003b5ea77443633cae2454db1d54c270cceb886a8afdf47d5c93de123153",
+  "claims": [
+    {
+      "id": "claim_96831ad163ff456dad25f352782cce62",
+      "statement": "모든 티켓 변화는 `applyTicketChangeInTransaction`을 통과하며, 이 함수가 같은 트랜잭션 안에서 `TicketWallet` 잔액 갱신과 `TicketLedger` 행 생성을 함께 처리하고 `balanceAfter`에 갱신 직후 잔액을 기록한다.",
+      "evidence": [
+        {
+          "resource": "repo://prisma/schema.prisma#L499-L521",
+          "version": "repo-lines-v1:sha256:337592a125cbf723ed6af6b8e03209bb149e6b6a710edc6d1d962c7a8ce4c13d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmZWM2ZmI5NDgwY2JmNzk2OWRlZTRkODE0MDM2NDgwODgwYzY1Nzc3YzEzYjhjMDYxZWFiYTQ0YmQxMmNmMTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ2OWY4MmQ0NWE5NDRjZDk4OTg2NzkyMzg5Mzk2MDY4ZGRmYTM0MWFjZGRkZWVhN2Y1ZTA5OTEwZTZhMTE1NzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5NTc1ZmQ5M2Y4NzI4M2RhYThhZDA1MmY1MzUxZmQyMzMyOTQzMWExMzIxYmQ1ZTc4ZGE3NjAwZjMyMmQ1MTIifQ"
+        },
+        {
+          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L48-L105",
+          "version": "repo-lines-v1:sha256:fc29c6fd4e84797deba153c20b42587304265b4537ac1e5af72423e0fed98a60:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwZWQ1YWFmYTVjMTFkNGNlOThmMWZkZTk1NWI4MGRhYjVjZDljMmE2NzI2MmQzY2U0ZTQ5YWQ5Mzc4MzBkODgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQxYzYzMDgwMzNmMTkwYzMxZTI3ZTkzOGJhN2MxYzU1MzBhYTJlZTNhODFjOWU2NTdiMTZjNjY5YTA1M2EzMWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk4NTNiN2UyN2ZlYzk4MjY5M2RmNGYwNzQ1MWNjMGUxOGQ4Mjg3ZGE4OTBkYTNlOWIyOGU2MTIxMTRkYzA5MDUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e0d3620790f74e9db926d310fc74abe7",
+      "statement": "`applyTicketChangeInTransaction`은 같은 `idempotencyKey`의 기존 원장 행이 있으면 `userId`, `kind`, `type`, `amount`를 비교해 모두 같으면 그 행을 그대로 반환하고, 하나라도 다르면 \"Ticket idempotency key was reused with different input.\" 예외를 던진다. 기존 원장 행을 수정하는 경로는 없다.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L50-L61",
+          "version": "repo-lines-v1:sha256:15c59b0f64c292eb1dba4f57fd22f031b997369d513b1f2dd08a92c83ac80ddb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5Yzk0NGFhNTg5NmNmNDI5MDNhYjY0NDhlNTcyMzQyZmY1MjdiMTVjYWM3OTk3NWY1NzEyMzk4OGU2MDE1ODAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNlMGU3NzBmMjRhYzhlNGE4N2JiMDEyYjZlODA3NGMzMWY1YzE3ZTMzMWRkNjlhMjdiZDlkNmU5YWYwZTljMjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEyYzM5MzM2MmYyOGY2NjUzNTExYjkyYmI3ZmE5OWFjNjFiOWEwYjk4Y2Q0MjRkMjRlZjYxMmIwOTI2YmFjOWMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_26f22b6f6392459d82d5a022d97ad5f0",
+      "statement": "차감(`amount < 0`)은 `balance: { gte: Math.abs(amount) }` 조건이 붙은 `updateMany`로 처리해 동시 요청 중 하나만 성공하게 하고, 갱신 건수가 1이 아니면 현재 잔액을 읽어 `kind`, `required`, `balance`를 담은 `InsufficientTicketsError`를 던진다. 지급(`amount >= 0`)은 `increment`를 쓰고, 두 경로 모두 지갑 행이 없을 수 있으므로 `upsert`로 `balance: 0` 행을 먼저 보장한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L63-L86",
+          "version": "repo-lines-v1:sha256:9f3a5ba701be1c2cbb54e51a396773199a97b1444e717b7eb2ca96595aee4d81:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhNGI0YjE2MzkzMDJiZDE1MjViZWQxYjg1MmRkYjJhODFhMDAxNDA4MjRmNzBlZTk1MzdmZmU2YTVjN2MwNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlmMWU2MWQxOTM5ZmY4MTkzZmMwZTJhNjBhOWRlNDhlNzQ4ODIxOGNjMDMyNjk0YzdmNjA2NGE0MzE2Nzg5YjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU0ODU4NGRmMDI5ZWU5NDQ3ODI3MDdjYjU1NmJkODViOWQ3ODQxZDk5M2VmMjgzM2RiOTI5OGYwYTIxMDc1NmYifQ"
+        },
+        {
+          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L7-L17",
+          "version": "repo-lines-v1:sha256:fe49365ec971ddeb9a129bbe9d7d95ad9fa6b8ee79667b9f67e12fc952303e85:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkYWVkNmY2ZWRjY2E2ZTQ4MDcwMTAzZTEwNzcyNGI1MWI2YTZkZTMzNDk0NzIyNzA4ZjRjYWQwNWI1NWQ4ZTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg1YjMzN2JkODUxNmJlNzAwZWNiM2FiODlmMGZiMTRjZWEwNjdlODNhODdkNDYyOTc3NGEzNmI4MjBiYjUzYTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU3Zjk1OGMyZmMyYTgyMmE4NGE2NzkwMWJjODA1NzExNzIyZGExOGJjYjA1ZDdkZTlhZmQxNDc5YzRlNjM5NmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5f59de8af70d4aceaf1ecf9c4fd9401d",
+      "statement": "`applyTicketChange`는 `Serializable` 격리 수준으로 트랜잭션을 열고 최대 3회 시도하며, Prisma 코드 `P2034`나 `TransactionWriteConflict`·`deadlock` 메시지에서 재시도하고, unique 충돌(`P2002`)에서는 입력이 일치하는 기존 원장 행을 결과로 반환한다. 세 번을 소진하면 \"Ticket transaction exhausted its retry limit.\"으로 실패한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L107-L134",
+          "version": "repo-lines-v1:sha256:38e3f03df37bf90846078909b43ef10b90db7b573a56f79c713466c5363abadf:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MmU3YmMwMmMzMDUxNGMzMWNiZjA3ZThlYTY0Y2MwNzNlNDVkMjYxZDlhNzY2Zjk2ZWI4NGJiODEwMjA5MGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM4NzU1M2M0ZjZlN2NlYzc1NDE3Y2Q0YzRkM2E1MDg3MmE3MDYzZDRhNjI2ZWVhOWY0NDBiNGZmNTE4YzcwY2YifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3c260f585d2347919809e45a71c3f5ea",
+      "statement": "티켓 변화의 idempotencyKey는 `signup:vocal-analysis:{userId}`, `signup:ai-mixing:{userId}`, `vocal-analysis:debit:{userId}:{요청키}`, `vocal-analysis-refund:{jobId}`, `mixing:debit:{jobId}`, `mixing:refund:{jobId}`, `admin:{actorUserId}:{요청키}` 형식으로 각각의 생성 지점에서 만들어진다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L156-L172",
+          "version": "repo-lines-v1:sha256:eb2839f9b300c1a31c134df1e3eba15047c86ba8f0438acf169f0bb2ea8110ff:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmN2U2YTE2MjBlNDg4NTdkNGQ4YmZkMzE4MDgyNTIxMGQxYzU4ZTUwNWY5MDI4NDlmOTVkNDFkNWY2MWQxMDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI3OGUyYWYwZjllZWI2NGJjMDc0NWFjZGQyMzliZTdlMzZkZDAyM2VlZGQxYmYwMTkwMTNkYTJjZGRkYTNkYzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5ODM3NzA1Yzg0MTAyYTFmNGUzZDVkYWRhODQxMjcwY2Q5MGZkZDFiYjMxYzM5NDc3NTNhZjJlZTZlMGMwYmQifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L139-L157",
+          "version": "repo-lines-v1:sha256:03afad4859979c5a92a374f375afa39bcea65ae2e921f19d68e9fa41d65716eb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmU2NThkYTU2Y2IzM2E3YmQ1MGYzMGVmOGVkMTA0ZjI3NmZmZGY4ZTIyYjc4N2MzMGIwZjljOGI0NGY3YmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhiZWIwMzAzYmVlYjc4ZTU4ZTJhNjExNTQzMGFhZTc1NjMwM2E0YmY5ZTQ5ODlhZDhjMWFlNjg0OTFhMDQwZmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ0MjI0NjJiOWI5YzZkYjBhMWJlNDY5YTg1ODFjY2UwYjIzNTU0Mzk1YmMzNTAyNTJkNDY2NmU3OGI3Y2ZhYTgifQ"
+        },
+        {
+          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L136-L138",
+          "version": "repo-lines-v1:sha256:29d8cabb16f6a20b154caa6296830a90c86c4baefbb4eff12357b47e38aba540:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzVjZGVhYTEyYzMzMjZjZGY1YjdlMTRjODYzNzhjN2MyNzczMWQ1ZjdmN2FjZjk1OTY4MmVhYTBjNTJjNzMxMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmJiOTNjZTU1NmVkZjE1YTZlNTFjYTYxZjI1MDEyMWVmZTE1M2FiMmUwYmE5OWM1MGUxZGE1ZmU4YjdiYzU2NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTQwYmZhOGQ0ZDVlMmQwMTU3NzUxZDNlNWZiMWRmMGZhMzdlZTQzNzIyMGNmODgxZmEyZWRkMmE3ZmI5ZWVhNCJ9"
+        },
+        {
+          "resource": "repo://src/features/analyze-vocal-profile/api/analysis-queue.ts#L160-L170",
+          "version": "repo-lines-v1:sha256:297287679a5bc5434e6fa1fee8729878ad0e72e63322dd9524a25e7cc35b9c7b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxODVmMWMwOTMxMDg0ODJmMGYwNzgyMzg5ZDE2ZjJkZWJhNjgzN2M3Y2I1MWMyZWY5YzBlMTFmMmJiNmMxZDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MjJjNDJjZDE5YzZkMDNkODA4YzQ1MjcyMDU1MjgyNWI3ZWExYzViNDkxYjIxODUxMWNhYzc0MTVjZjlkOWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZiODQ4MjA3ZDhkMzY1NjM1NTc3ZGI3ZmNlZjRmMzg2MTJkMzJlZTVkZmUwY2NjMGEzNWQ3OTAyNWQ5NTRmYmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM2NzcyYmQ1NTZjMjUxZmFkMDlmYjY2M2ZhNTMzODhiODY3NjZmOTk5ZDRiYzExNDFmZDlhZTY0ZmZhN2VhZDAifQ"
+        },
+        {
+          "resource": "repo://src/features/create-mixing/api/mixing-queue.ts#L134-L144",
+          "version": "repo-lines-v1:sha256:6f15571c74fbfe6198a6d76a6f69d00e1520ba396fbffe20b745d3699f609022:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5MjgxMTdlZmM0ZmI4Yzk5NzEwNmRiNDQ1M2IwYmQyZWNjZDliZTFhNzczYWQzMDIwOWMyYzAyOTgyNjhhNTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4MDA1ZDU3MTA2YTM2MmViMDAwZGFmM2RhNDY3NGM4MmI1MThmZjVhMmUyZjY3ZWU4ZTc1N2EzMzNjMmFmNjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3MGMwODA5ZGU4ZjMzM2RiOTI3YThjZjEzZjY5ZWNhOWE4MDc4MTRjOTczMjI2NjhhYmQxY2VjZTg5ZWRjYWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA2NWVmYzQwNGJkZDg1YWE2OTc4NWQ5ZDEzNDQzYTMzYTI4YmMwNDU1MDcwYjNhMGFlNmIyNTM2ZDBhYzEyOTUifQ"
+        },
+        {
+          "resource": "repo://src/features/manage-tickets/api/adjust-user-tickets.ts#L21-L29",
+          "version": "repo-lines-v1:sha256:3c29dd93ff1dbbbaae18365e77cbbfe9e90fb00a9b7ebfec2d4692bfee3c0c8e:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWNmNDllODJmOTZmNTdhNTdkODNmMWQ5ZjU0NzFiNWZhZjM4ZmNkYWMzY2M0MmQ2MzViNDA4ODFmMjg5N2I5MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2EzZTQ2Zjk0Mjc2YjZmNmY0ZWQxZjAyYWY3OGJlZjZhMmVlMWM0MzlkZDU1ODRiOTczOTQ4MzEzMjE0ZDJiNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGYyZTI5MWMxNTBiZGUxNDRkMGJlOTYwOTViNzM4MTQ2YWU1ZDBjOTMwN2M5MTVlNWU3ZjEzNzdhOTdmMTAzYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmMyOTlhZDU4Y2Q5YjJiYTNjNDEyZmJiMzk1MmExMTBmMzg1M2M3MWIzODVkMWRkODJhOGNlODZlNDZiNTU0OCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_9b9756a46a5543349db85266a9f50492",
+      "statement": "`mixing:refund:{jobId}`는 워커 자동 환불과 운영자 복구 스크립트가 동일한 문자열로 만들기 때문에, 두 경로가 겹쳐 실행돼도 `USAGE_REFUND` 원장 행은 하나만 생긴다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/reconcile-external-job.ts#L55-L72",
+          "version": "repo-lines-v1:sha256:d95675e6fb6e0a878a8eec5c7a2d1a4877f58acac12f461d016220449a8efa5b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRiMzNkNGU4ODcwOWUxZjliZTkyZmU5MmJlOGE2OTU5MjRjZDEwMDlhYTVkOWViMmE3ZWUzZDJkZDJlZTc0YmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5YzEzNTkwNjY1NjMyM2QxYzVlYTQxNjU0ZWU2NmFmYjU4NWFjZGNmYWVhY2ExMjFkNWUzMGJmMTkzZWVkZDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVjNmQyZWMwMTkzMTc1ZGI3NDcyYTZkN2Q0NzYzZDc0NDRkY2VlMjg0OTMxMDRkN2NmNWFmM2E3Y2Q1NjA0YzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM2NDY5ZTg2MmNhMjU2MTk3OGFhZDQyZWI2ZjA4ZWUxOTZmYjY5ODNiY2UyYmVhY2YxYzZhMDVlZjVlOGVmYjMifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L156-L172",
+          "version": "repo-lines-v1:sha256:eb2839f9b300c1a31c134df1e3eba15047c86ba8f0438acf169f0bb2ea8110ff:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmN2U2YTE2MjBlNDg4NTdkNGQ4YmZkMzE4MDgyNTIxMGQxYzU4ZTUwNWY5MDI4NDlmOTVkNDFkNWY2MWQxMDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI3OGUyYWYwZjllZWI2NGJjMDc0NWFjZGQyMzliZTdlMzZkZDAyM2VlZGQxYmYwMTkwMTNkYTJjZGRkYTNkYzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5ODM3NzA1Yzg0MTAyYTFmNGUzZDVkYWRhODQxMjcwY2Q5MGZkZDFiYjMxYzM5NDc3NTNhZjJlZTZlMGMwYmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bcf1ca0a70ac4478a59f49bfa3a612da",
+      "statement": "가입 지급은 2단계 구조로, `ensureSignupTicketGrants`가 지급 전에 `SignupGrantIntent`에 `VOCAL_ANALYSIS`·`AI_MIXING` 양쪽 금액을 기록한 뒤 intent의 `amount`로 지급하므로 이후 환경 변수 변경이 복구 결과를 바꾸지 않는다. 이 함수는 `SELECT ... FOR UPDATE`로 `User` 행을 잠그고 해당 `kind`의 `SIGNUP_GRANT` 원장 행이 이미 있으면 지급을 건너뛰어 동시 호출에도 안전하다.",
+      "evidence": [
+        {
+          "resource": "repo://prisma/schema.prisma#L653-L662",
+          "version": "repo-lines-v1:sha256:bfd428ab661cdb576efca1b997bd263fd70a02e13b72edbf55fbdaa9094c9a48:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjOWUxYjUxYmEyYTllMDRlNzBkOGQ0OGFmYWVmNDg0NzczNzRjZDRkNjI2NTAxY2E4NmVjOWQwNzI3ZDc5MTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBhNzlhMjU0NTY1NmRmMWUzYjIzZmYxMmQyOTVmMzM2OGQxMDMzNzMwNzEyN2M4YTI1Y2IwOWRjMmU2YTMxYTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA2MTU2MjJjZWQ0M2U5OTBlMzk5ZWEwM2NjNjM5NjAzNmI0MmVhNmY2Nzc3Mjk2MmQ5ZWZlNWExMzNkNTI2MzIifQ"
+        },
+        {
+          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L140-L179",
+          "version": "repo-lines-v1:sha256:58015aa580b4f3ee3fa9e10fa59d5e7fdafcf75ab272e8d76f415cfc6217cda1:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmYmI0M2NlMDhiMGFhNDQ2Mzc4MGViZjUyYmJmZWU2N2NmNjk4NTMxOWYyYzc5YWQ3Yjg0ZjYxODA2ODYxMDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyNTRlYWJiMTlkZjdhMjg0MGRjM2Y4OTVlNDJiOGVlMTQ4MjRlZjBkZWY2NzVhMzJmNjA3N2Y0OWQ0Y2UxZTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgwODhhYjAxYThiZjRiZDE4Yjk0YjA5OWM2YjNmNzBkYzFjNTBkNzg5ZWZmM2Y5OWIzOGYxNmM2NmJlZjMyYjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ad6b4841cba54c8f8d250533ca963674",
+      "statement": "`recoverSignupGrant`는 요청 금액이 기록된 intent나 기존 원장 금액과 다르면 실패하고, 기존 행이 있으면 `NOOP`, `--apply` 없이 호출하면 `WOULD_GRANT`, 실제 지급까지 하면 `GRANTED`를 반환한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L181-L223",
+          "version": "repo-lines-v1:sha256:e3e9a697ab6b6872a3efb1714dc204f70002840807dffb14df5a1bfb24c0be68:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRmNGFiN2Q4NGM1ZDFiYjE1YTBjNDlmZDdlOWU1OGJhM2UwYmQ3MWQ5ZjE1MTlmNTkwZGUzYWMxMjRiYjU1ZDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg1NTM4Zjk3YzNmZmQxZjc0NGM2NGFmNDU1MDJmMWU1MDg3YTRmODc1MWRhOTg4OWE2YzNkZTUwMDg4NGY0MGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBhYTY1MjRkYzNjNWUyZDliMDE0ZWY5NzJkMjhiZDY1MzFiZTc2N2Q2ZjkzZjZkNjA0ZjZmNjE5YjM1NjI2ZjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cd855863c2b04124831f5e844c7a9095",
+      "statement": "`TicketKind`는 `VOCAL_ANALYSIS`·`AI_MIXING`, `TicketLedgerType`은 `SIGNUP_GRANT`·`USAGE_DEBIT`·`USAGE_REFUND`·`ADMIN_ADJUSTMENT`이며, `TicketWallet`은 `@@id([userId, kind])`로 종류별 잔액을 분리하고 `TicketLedger`는 unique `idempotencyKey`와 필수 `balanceAfter`를 가지며 소유자 `User`는 `Cascade`, `actorUserId`와 작업 참조 두 개는 `SetNull`이다.",
+      "evidence": [
+        {
+          "resource": "repo://prisma/schema.prisma#L487-L521",
+          "version": "repo-lines-v1:sha256:2e5082a327f0f336dd627d9a969021d33bf81654e129c7fd04e1e49ad2cb0fc2:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3YWE5MzFhMjYwMzg4MTA4ZGEwNDFlYzI2MWFiYzMzZjFlNTMxNmYzN2ZmMWMxOWYxMTlhOTNmNTc5OWUyZDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUxNTE4YzM2OTgwNjU4NjdjYjFkNTk2ZGYxODdjMTQzZTdjMzZiNzA2ZTQ1ZjYxOWJjZjE0YmE5ZDk4MmQ3NmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5NTc1ZmQ5M2Y4NzI4M2RhYThhZDA1MmY1MzUxZmQyMzMyOTQzMWExMzIxYmQ1ZTc4ZGE3NjAwZjMyMmQ1MTIifQ"
+        },
+        {
+          "resource": "repo://prisma/schema.prisma#L87-L97",
+          "version": "repo-lines-v1:sha256:3a343829f215ebfd514cf83bb84097b0531601f826e03058af73333f06ae3b8c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzNzgyNGFlOGFkZmI1NWRiNDBkODBlZTJlYWVkOTc1MzBkMjZhZjNlNTE3Yzc4YThkZDg5NjQ5NDQxMmI3YWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE2NDZmZWI4NDVlODZlMWUyNmJhMjlmMjdlN2ZkNmM3ZWEwYmFkNTE3OWZkYzg5NjcwMThjNGI1ZjY4MTk0OWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY0YTk1Nzc4YzYzYTFlYmQ5YzJkNTVkYzU0NTVmZmYyYzRkM2I2YjAzZWQwODk1NjI5YTY2Nzc3NzllMWU1ZTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_557b6fb9822640dbae7a4f74aaebc44c",
+      "statement": "환불은 `refundState = REQUIRED`인 작업에만 실행되어 작업 상태 확정과 분리돼 있고, 분석 작업 실패는 환불 대상이지만 믹싱은 외부 접수 전 실패에만 환불하며 접수 여부가 불확실하면 `MODAL_SUBMISSION_UNCONFIRMED`로 두고 운영자 확인까지 환불을 보류한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L156-L172",
+          "version": "repo-lines-v1:sha256:eb2839f9b300c1a31c134df1e3eba15047c86ba8f0438acf169f0bb2ea8110ff:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmN2U2YTE2MjBlNDg4NTdkNGQ4YmZkMzE4MDgyNTIxMGQxYzU4ZTUwNWY5MDI4NDlmOTVkNDFkNWY2MWQxMDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI3OGUyYWYwZjllZWI2NGJjMDc0NWFjZGQyMzliZTdlMzZkZDAyM2VlZGQxYmYwMTkwMTNkYTJjZGRkYTNkYzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5ODM3NzA1Yzg0MTAyYTFmNGUzZDVkYWRhODQxMjcwY2Q5MGZkZDFiYjMxYzM5NDc3NTNhZjJlZTZlMGMwYmQifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L251-L291",
+          "version": "repo-lines-v1:sha256:44bcbee74d73927f8804a439db92e4c07293f16c7c624f1b82a5dcca4b2d0cd1:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0ZmJjYzRiNDI5MTg3NzlmMmVmOGU4NGVlZjNlZWFmYzI2YmE5ZjU4MjhiYTA2NzgzNzM0NTIyZTJhMDM3NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2ZTUxZTBkMDA4ZjE2YzdhMmI3MDAyZThiYzQ2NTQ4N2FlMmY1YTMzYjA4ZjczZjUzNWQwMGJmMjhiODdmZTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY3ODIyZTFmYTJjZTZiY2I2N2ZkMTczOWFjMmMwMzI0MTUxNWUxZmE1OTU1ZTQwMmUxN2JiOTdmMGJiZWRkZGQifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L139-L157",
+          "version": "repo-lines-v1:sha256:03afad4859979c5a92a374f375afa39bcea65ae2e921f19d68e9fa41d65716eb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmU2NThkYTU2Y2IzM2E3YmQ1MGYzMGVmOGVkMTA0ZjI3NmZmZGY4ZTIyYjc4N2MzMGIwZjljOGI0NGY3YmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhiZWIwMzAzYmVlYjc4ZTU4ZTJhNjExNTQzMGFhZTc1NjMwM2E0YmY5ZTQ5ODlhZDhjMWFlNjg0OTFhMDQwZmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ0MjI0NjJiOWI5YzZkYjBhMWJlNDY5YTg1ODFjY2UwYjIzNTU0Mzk1YmMzNTAyNTJkNDY2NmU3OGI3Y2ZhYTgifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L200-L236",
+          "version": "repo-lines-v1:sha256:7b4ff1854603d66a2dcb7aebae25f9d60a899ad486c5fba68406a5848acc2b75:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0ZmJjYzRiNDI5MTg3NzlmMmVmOGU4NGVlZjNlZWFmYzI2YmE5ZjU4MjhiYTA2NzgzNzM0NTIyZTJhMDM3NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2ZTUxZTBkMDA4ZjE2YzdhMmI3MDAyZThiYzQ2NTQ4N2FlMmY1YTMzYjA4ZjczZjUzNWQwMGJmMjhiODdmZTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM5ZGIwZjViNjc2YzA1ODBkNGIzMDJlNDc5MmYyMzlmNjU2N2IwNzMxOTZjMjI2NzJjMDU3NmJkZTA5ZjkwYmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5695359a5d0a453482b53746e45c1463",
+      "statement": "관리자 조정은 `ADMIN_ADJUSTMENT` 원장 행을 남기고 요청 스키마가 `amount`를 0이 아니고 `±10000` 이내인 정수, `reason`을 trim 후 3~500자, `idempotencyKey`를 1~200자로 제한하며, `amount > 0`일 때만 `ticket-ledger:{ledger.id}`를 dedupe key로 하는 알림을 만든다.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/manage-tickets/api/adjust-user-tickets.ts#L15-L41",
+          "version": "repo-lines-v1:sha256:8efed23c928baa69c2d413887ae105b6b5763e5c3c5fc2f26a02f4ace57e04b0:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwYTQ4YmY5YjFiZDE5ZGVjYzUzNGU2MjA1ZDI1YWY2NWQ2N2YxYTljOWIwYjlmNTM4OThhYmE2OWE5ODViNDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc0NzMzNmE0MjlhYTMyMzJhMzEzYmQzMTE0M2ViZjNjOGNjYzZiZmNlYzYwNTg2ZjA4YzFmYTA3YTZkMzI4ZTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMwOGE4MWJjYzE5NjQ2MmY1NzNhODcyMTE1MTE0NGEyYTEzYWNmNTNkMzBlNTBkMTVmNzUxMWY1NTExZmRhYmIifQ"
+        },
+        {
+          "resource": "repo://src/features/manage-tickets/model/contract.ts#L4-L14",
+          "version": "repo-lines-v1:sha256:79d58d24cd3c37302ad17e8169933f2608d2306fc78f57cef5fd3ece05a865b8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljYWQyZWY2Zjc5MmM4MmNjNjZhZTYzZWM2NmNhZWZjZWM4NTE1ODYzMDEwZjI2NzU5ZjlmYzA0NWI3MmFhOGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhZjM1OTQzOGI1OThlM2VhMzAzNzY0MmVmMmVhMDQ4MTQ0MzM1YWEyZWM0N2E4Yjg4YjRlZTAzNmZhYjdmNzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZhOTQ0YTg4Y2IwY2EyODQzY2RlZGFjNzUxMjZhYjMyZTRjYTkwMGFiMDI4YmJhMjI3N2QzZTRjNmRhM2MzNjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5b6d69059f1b4b07b9334007cd4b4980",
+      "statement": "관리자 조정 API는 성공 시 `201`과 `balanceAfter`를 포함한 행을 반환하고, 본문 검증 실패는 `400 INVALID_REQUEST`, 잔액 부족은 `409 INSUFFICIENT_TICKETS`, 그 밖의 실패는 `400 TICKET_ADJUSTMENT_FAILED`로 응답한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/admin/ticket-adjustments-route.ts#L7-L48",
+          "version": "repo-lines-v1:sha256:749385e592cfb0ac0bdc6bdc863500299eb8bf8008d4c0adb1c48a87a04dc2df:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFjMmFhMzBmNjc4YjZmNTljOTFmYTQ5YzA4Yzc3YzdjZjk5OWMzNWQ0YWEyM2M5ZTRkZGQ2MjI2ZTk2OTFkYzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM4OTA0NjEzNWNjM2Y4OGViZjZjMGM5N2ZmMTE4ZWM2YTRlMjY2MjUxMDc1YTg3MjlmOTcxNGI5YTMzMDJhOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_27f4528d477c4ea8a2a37869d9f85563",
+      "statement": "사용자 조회는 `GET /api/account/tickets`가 페이지 단위 원장을, `GET /api/account/ticket-balance`가 `kind`별 잔액을 돌려주며, 지갑 행이 없는 `kind`도 잔액 0으로 채워 두 종류를 항상 같은 순서로 반환한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/account/tickets-route.ts#L5-L17",
+          "version": "repo-lines-v1:sha256:11759ab0250f5e5c12c28bb28869ea5746536f8057f8a45bfcfb7659f337d6d2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyZWIwMTM1YzcwZTY5YzliZGZkZDkyYTMyYTFhNTVjOTdhMWRjNzYyNmMyMTg4ZGJiODQ1Y2IwYmU0NDBjYjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlZDNmNTA4NjU5ZTQ4Zjc1NjNlYTUzMDYwZGNjYzNhZGVhZGJhMDIyYmRkMmY1OGU5Yzk4ZjNmNjA4ZTgxYmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3ODMwYTg1ZDkzN2Q2ZWU0NGQ5YjgwMjJjMzdhNzY5NGI0MTg5M2Y3OTdhMzFiNGE5YWI5OTMxMDM4YmY4ZWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L225-L282",
+          "version": "repo-lines-v1:sha256:625c956159f1b31deb4862584f878d99865b9030dea0a719072c4187e97d6668:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5ZDY1NjI4MmY3ZTNmMGRmZTVmMTg4NjYxM2M2MzlhNTRiYWUwMGNmZmRhOTJhOTQ1MDJmMjQyNjRiYmYzYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/entities/ticket/model/contract.ts#L1-L25",
+          "version": "repo-lines-v1:sha256:6843dfa2e051fc9d447503dda8c35219548ed6ad9fba7de2c491cba4e8a3602d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxNDUyODY0YjBkOTZlZmU4NjkxNmZmNzQ1YTBmNzdhYzcwYjMyNjU4NWMwZWFmNWMzNGY5ZTRhNGY2ZmJmNjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d06da873bf72476489f797c371967d38",
+      "statement": "`pnpm run test:tickets`로 실행하는 변경 범위 테스트는 가입 지급 동시 호출의 원장 중복 방지, 같은 키 재호출의 동일 원장 id 반환, 다른 키 추가 차감의 `InsufficientTicketsError`, 설정 변경 후에도 흔들리지 않는 복구 금액, 그리고 믹싱·분석 실패 경로의 `USAGE_REFUND` 행 개수를 검증한다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L66-L66",
+          "version": "repo-lines-v1:sha256:6a520a388f6f5a19f30d8ef4223b4ab29aa3fa556ae4e1b69a0572d306d1d34c:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmE1MjBhMzg4ZjZmNWExOWYzMGQ4ZWY0MjIzYjRhYjI5YWEzZmE1NTZhZTRlMWI2OWEwNTcyZDMwNmQxZDM0YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmE1MjBhMzg4ZjZmNWExOWYzMGQ4ZWY0MjIzYjRhYjI5YWEzZmE1NTZhZTRlMWI2OWEwNTcyZDMwNmQxZDM0YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjgwNGEyYTUzMzMxMTlhYzA4MGZmNzQ4ZDczM2Y5MWNjYzNiYWYxOTFlYTU4ZWE3YjgzMzY5NzUzYzIzZDkyMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDAzZDg2NWY0Yzc5MmI3OGVmZmMxNzU1M2ZlNmY1NjI2YzVlOGQxZmE1NmRhNDYzOWUxNWJiOWNhYjU2MDNlMSJ9"
+        },
+        {
+          "resource": "repo://tests/mixing-queue.integration.ts#L335-L355",
+          "version": "repo-lines-v1:sha256:889076fc5ca15325353df2145dd3999885b1b088d0e6058da3753c695aea426d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmNWFhMWU4NDllMTY3ZDY5ZDVlOTEwZDRlY2E3Y2U0MzNkYmRiOWU2YjY1ODQzZWUzNzljZDQ2ZWRkMjhiYWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc3NzhmOGVlYzljMDdlN2VlZDMzY2MxNjRhY2JiNzBhZjFjZDQ1NGZjZjRlMDJmZDQ3ZTcyYjg0MmMzNTUyNWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdkMTVkMDBjOWJlNWUwNTMwYzMwYzRhM2MyMWIyYTI2YzA1NDdhYzNlMWM1NTkyZjEzNzAyYTE3OGJlNmEyYzcifQ"
+        },
+        {
+          "resource": "repo://tests/signup-recovery.integration.ts#L17-L56",
+          "version": "repo-lines-v1:sha256:72e6f221ac647b92190ad0bc9a2a4d3af783e6426e132758d90c1460490644f0:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0ZTFjZDhlZjIxYzU2ZDlhMzk1MGJiZjljZGY0MDc1ZDJhYWIyYjdlODVhZmUzZjgxMmI4YmYyOTkzOWFkZmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc3YjNjNGVkOWE2MjI1YjQ2NWU0ZTg4ODA2Y2VmMjI0NWI0ZGQ4MjRjOWE4MWQ0YjU3ZjBmNDEwN2Q3MWFkMWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZmNTU1YTY0MTY5ZmZkNmM1NjBlMjZkNmE1MTAxYWVmMmZkODZjMzE4MjFhM2RhNGE3M2FjMzk0YTJmYmVhMWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIwMjVkOTAwODZhY2NmOGI2ZWNiOGU4ZDhiMDczMDE2MWY3Yzg3OGQ2ZTM2ODU3ZWM3MGNjNmI4NGQ3MzVmYjgifQ"
+        },
+        {
+          "resource": "repo://tests/ticket-ledger.integration.ts#L7-L77",
+          "version": "repo-lines-v1:sha256:083e75f91a843170113aed39abd8120ea3eee139e01c32b44f3408bf180adfd5:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmNGZlNjQ2N2MzMTZlZjIwMDE3YTE0ZmU4MTU1ZmUyMWIwNjI3MTZjNjNmMzA3ZDNmZjY2ZmY1NDM0NGQ3MTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0ZGI0NWUwYmUzMTgwNTYwY2UyNDY2MmNlNTM2ZWJmMmRiYmJkZTRjODgyOTY3YWRhNTY0MTFlNzgzZGE2ZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+        },
+        {
+          "resource": "repo://tests/vocal-profile-analysis-queue.integration.ts#L575-L585",
+          "version": "repo-lines-v1:sha256:810dbdd77218e1d12dd6af2b47fc1212e983d5d0dfc5da3cdb593ddb32358766:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3Y2YwZTI5NjhiZWU2MWQ5ZTU5MjMxMjQxNGUyZWJjOTFkZmE3YzEyODEyMDVjNDAyYTljNDQyN2ViYjQ4MmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1OTQwNzdkN2Y3YTgyOTBkYjZiYjA1ZDUxNTgxMjZmMWY0MzFiOTllYmU2MTQzZWZjNzUxNjhhYzNkNjBmYTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRiMDhhN2M1YTBlYzBkNGJhYTFiYmU3ZTJkNjdjZmY4MmU5NGE2ZjVlN2IwNmNhOWRhMGUxNmVhM2ZhYTdjODMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQwZTY4YzY3YjJlZDM2YmY0OTIzMjUyYjM2MWY5NDcxOGZiYzc1YTE1ZTNlYmI4MmEzNjFjOGJlYjBhNjgwYTMifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-18T10:11:56.372Z"
+  }
+}

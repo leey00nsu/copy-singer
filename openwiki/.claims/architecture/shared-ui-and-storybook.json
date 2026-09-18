@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:55888a87f061fcd330e16c05207aa1b98b3d02f1a5cebac2ffb86636b36e5b49",
+  "claims": [
+    {
+      "id": "claim_97ab65368ae846a78531f499840fde13",
+      "statement": "공용 UI 컴포넌트는 `src/shared/ui/<name>/`에 두고 각 폴더의 `index.ts`로 public API를 노출해요. `components.json`의 `components`·`ui` alias가 `@/shared/ui`를, `utils` alias가 `@/shared/lib/cn`을 가리키므로 shadcn CLI가 만드는 primitive도 같은 위치에 생기고 여러 slice가 함께 쓰는 계약만 그곳에 남아요.",
+      "evidence": [
+        {
+          "resource": "repo://components.json#L15-L21",
+          "version": "repo-lines-v1:sha256:e19314aca06f6a613abd33f9ec796249ae0850b2243d0c63922f234a5c5d0fad:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjgwOThjYWM5ZTVjMjgyY2I0MTNlNWEyOTFiMDZiN2QxZTQxNTI2YzQwNTA2Zjc4YjdmOTZkNDczYmM5ZGNkMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGQ1Y2QyZmI0ZjNkZjg4NDUxNTI1NWIzOTUyM2YyZjhiNTQ3MmJlZWE5ZjU2NmZmY2EyMDRkYjgwMjU2MTA0MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjA0Yjk1NTNmMjQ3OWEyNjE5MjMzMTFjMmU5ZTczNzYyYjFhYmZjNWU3M2M5ZmQ3MmM2MjQzMTVhM2ZlNDMwYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmQ3MWI5OTk2YzRkNGZhNTVlNWY0OTc5ZWZiOTEwM2I3YWQ4Zjc4YmVlNjY4MDgzYmViZDgzNmZhZDJjYjU4MCJ9"
+        },
+        {
+          "resource": "repo://src/shared/ui/button/button.tsx#L1-L6",
+          "version": "repo-lines-v1:sha256:76fc9469a61fc501b8a9674725c79979405b51228068891cc6b308cac1befcd0:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTM0ZjdjZWY4NTM3OWU5NDViNTlmNTM1NTU2N2Y5YjI4Zjk3ZDhiMDMwZjM3N2U4NTY2ODU2MzIxM2IwYjJhNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODEzNDA1OTAyMjI2ZjBlYTVhZWEyN2ZjODM3NmY2OGE2MmU2MWExZTczZjM0MDBmOTY5YTFmODBlYjU5NDM3MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWE2ZjI0YTAyYjJmMDIwMzBiNDBlMzUxYWVjMGJjYTAwN2Y1NTZjODVmNWI4MzhlMGY2NzQ4ZDZhNjUxNjY5NSJ9"
+        },
+        {
+          "resource": "repo://src/shared/ui/button/index.ts#L1-L1",
+          "version": "repo-lines-v1:sha256:ba9130d2ead921ef44b042091f1d2f339696771aed8e8ebada07646b5cdd375b:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmE5MTMwZDJlYWQ5MjFlZjQ0YjA0MjA5MWYxZDJmMzM5Njk2NzcxYWVkOGU4ZWJhZGEwNzY0NmI1Y2RkMzc1YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmE5MTMwZDJlYWQ5MjFlZjQ0YjA0MjA5MWYxZDJmMzM5Njk2NzcxYWVkOGU4ZWJhZGEwNzY0NmI1Y2RkMzc1YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_c96ab2ec8fe640de99be5500efed5f89",
+      "statement": "특정 slice의 데이터·상태에 묶인 화면 조각은 그 slice의 `ui` segment에 두고, slice 밖에서는 public API만 import해요. FSD 경계 테스트는 `_pages`, `widgets`, `features`, `entities` slice에서 다른 slice의 `api`·`model`·`ui`·`lib`·`config` segment를 직접 참조하면 위반으로 모으고, `pnpm run check:architecture`가 그 결과가 비어 있는지 확인해요.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L31-L31",
+          "version": "repo-lines-v1:sha256:fa28bb3ccf48a0cb156ae8df92e7cf954d9b4cc994ebbe26ac10f6fcb711103d:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmEyOGJiM2NjZjQ4YTBjYjE1NmFlOGRmOTJlN2NmOTU0ZDliNGNjOTk0ZWJiZTI2YWMxMGY2ZmNiNzExMTAzZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmEyOGJiM2NjZjQ4YTBjYjE1NmFlOGRmOTJlN2NmOTU0ZDliNGNjOTk0ZWJiZTI2YWMxMGY2ZmNiNzExMTAzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmQxYTU5NjYzNWViNTUxNzNkNzlhYTg2MjgzOTEwMGE2MzY0MjA1ZTNlNWE4ZjhkZTEzNmNiNzM4YTBjNjFkMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTg4NjJiYjRiOTM2NzFmOTBkNmQ1OGU4ZGI5ODdhMDgzZWYxM2IxMWM0ZjFiMWFkZjczOGY0YjUxNGVmYTBjZSJ9"
+        },
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L154-L175",
+          "version": "repo-lines-v1:sha256:18286db21f7ede18afb0fc5d6c339d7c7b6de70cd3f179512246cfedf7f2cee0:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2NGY2YzRjZGVlODRhNzY0MzBkMzQ1NzlhZTJmYTlmMjQ1ZGJjMDI1MmVlOTIyY2QwODdiN2VhOTA0ZTBkYTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE3ODFlNDU0ZDYzYzhjYjhiMzUzMDM3ZmI3M2NhZGZlYjQyN2IzYzk2ZDJlMjg1ODM5Zjg3ZTdhNjJhNGUzOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ2ZjQ5Zjc3ZDM4YmEyOTQ3ZjUwY2I5ODUwNTI0NTk2YmFhY2M4ODY4NTI3MmM1MDFmYmM5ODFkZTlhNTUyYzQifQ"
+        },
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L26-L27",
+          "version": "repo-lines-v1:sha256:589396c8cc11ecbb6970e546dfd70d2add4ca6f11babd13e7db05a2811e5d8f0:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2QwY2NiYWFhNDEwNGVjNTFkYTQ2NWQ2YTI4NGYwODNlODVmOWZkMTU3ZGQ4M2MxY2EzNDJmYTM3YTQ4ZWM2MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDk2Y2Y0NjY1NjYwMzI4ZjcwZjNiMzA4ZDE4NzE0NmE4NmRhMTY2ZjhmYTFiNWEzMzgzYTAyOTZmMGMzZWFiZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTRjODE0OThjMDMyMDhjOTY0YjExMTIzNDcwZGU1NjQyY2RlYjA4NzFhMWQ2YzMzZjY0ZDJkNjRlNTE4NzMwYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTRiYzNjMmIyMjJiY2Y3N2UzYjlmODMzMzNhNmNiNThkNDE1NmVhMzU1MmYyZjVlNjg4NGY1NTcyMzMyMjBmMiJ9"
+        },
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L381-L386",
+          "version": "repo-lines-v1:sha256:2b86de62dad50e16d6cccd405474286fc18cbe7b3dc47a81cd8bb25317d1d839:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDQ3MWUyZTZjZDMyMDBjNTE5MWNlM2FhNGE5NWI4MDExNTQ0MTRhMmY0YjZhYThlZTlmZmU0MDk1NDM5ZDBkOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjZmNWI0MGIxNTg0NTdkMTc4NjRmMjE3OTA3ODZkZDVhMmVjZGI2NGI2NmE2NTFmNzg4ZDRlMjVjZDMzMDNkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTNkZjE3NzFhMGExNjAxZGE0ODVkZjRjMDM0NGQxYWM2NzEzOTZkZDdjYjM1Y2RlOWFhY2ViYzAzNjFjMDMxMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_c14a994f18074d2cba1d784ccfb42dbe",
+      "statement": "Storybook이 수집하는 story는 `src` 트리 아래의 `.stories.*` 파일뿐이에요. `.storybook/main.ts`의 glob이 `../src/**/*.stories.@(js|jsx|mjs|ts|tsx)`이고 production 경계 테스트도 파일 이름에 `.stories.`가 들어간 파일만 story로 인식하므로, 새 story는 대상 컴포넌트와 같은 디렉터리에 둬요. `app/` 트리는 이 glob에 포함되지 않아요.",
+      "evidence": [
+        {
+          "resource": "repo://.storybook/main.ts#L3-L11",
+          "version": "repo-lines-v1:sha256:8dcde79cd8e588eac8cd260c59229901be54b57e57b7cc2da67cc767896efb52:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTZkMmRlNmRiZjcyNGMyZDQ1ODRjZGVkM2IzY2I4M2NiM2E5YmJmNzIwZTBiYjM3NDZkYmFkY2I5MDA2NWQ1MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjY1NDc1ZDMwOGQ4ZTZjZDAxMTUxNzNiODk5MjY1ZjA0ZjhhNGI3NTdiZWMwZjFmZmYzMjg1NTIzMDhjYTM2NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzQwYjZlNGQxMjlmOGEyYjk4YmEyOWU1MTc5YzI1MDM2OGU5NGNjZGJlNDc5NDk1MjhiNzQ2YzJhYzYyZTljMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjIsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGE5OWI3NDMyMGRhNGVhNGM4NTQyMTExMmE3ZGU2ZmUzYmIxYjM1NGY3YWIxY2Q4N2JlNjg4ZTE3NDlhYTM2ZCJ9"
+        },
+        {
+          "resource": "repo://tests/storybook-production-boundary.test.ts#L51-L57",
+          "version": "repo-lines-v1:sha256:6476bc0973a650d9e1e3267f6b1c26a2cdebb2f0772413318d901a59de969ab9:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWU1ZjU5YmEyOGRiMDM4Yzc2OGRiNjlhNTVkN2MxZTZkZGY5NmRjNTVkYWQ5ODBlN2E4OTg3MjU0YWE1ZTY2NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWMyYzI2MmJmMGQwMTAxMDg5ZDQ1MTZjNTk3M2Q3ZTM4YmZkMGYwY2VlMDNiZjNhOWIzNzhlYTVlMzE3MDZjNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjU4OTU1M2ZhZTlkZjdkYjJkN2QwZDgxOTM5ZjcyMjg1NTQzZDQxNzlmZDQzNDgwY2Q3MjBiMzdiMDc5NjZhYyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_abf3905b9fc64b03ab8522d8e9c5675f",
+      "statement": "story 실행 환경은 `.storybook/preview.tsx`의 decorator가 story마다 `createQueryClient(false)`로 만든 새 `QueryClientProvider`와 `TooltipProvider`, `Toaster`를 씌우고, `addonMsw()`를 addon으로 붙이며, `a11y: { test: \"error\" }`라서 접근성 위반이 있으면 story 테스트가 실패하는 구조예요. 제품 토큰은 `../src/_app/styles/globals.css`를 import해 그대로 써요.",
+      "evidence": [
+        {
+          "resource": "repo://.storybook/preview.tsx#L10-L33",
+          "version": "repo-lines-v1:sha256:31a030149fd1532e0ba439ec755034c568071c78c5ed0a952f041bfd0d980a06:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRiYzIwYzBjN2E1NzU4NTY3N2Q4NGQwMDM0NTNhYWE1YWRkNjUyYTk3NjliOGZkNTY5NDQ0NTZlMTcwMzIzYWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2NGQ4YzA3MzQyOTg5MzEwMTU3NmQ4OGQ5OTEyN2U4OWQ2ODkxZDNiMTdlODlkZjAyZWM5YWU3MDcwNWQ4YmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU1NTM0OThhOTRiZjY4NmVmNDM0ZGM4MjhkODA4ZDc0Y2U5Zjk4OWVmNjJhMWMxY2M4OGQ4NGRlMDU2OThhNTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA5YjFmZTVkYmY0MzdlNGY5OWVhYmY1NTc3MTc4ZTE4YmNmNzdlMTM5ZTJkZTBhYmY0OTVhMjE2ZWJlZjk3NmUifQ"
+        },
+        {
+          "resource": "repo://.storybook/preview.tsx#L34-L49",
+          "version": "repo-lines-v1:sha256:c6d20e29550ae1d6574691d864b76e3c22af688be04d2ad2a3756cea9157c812:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2MjA4YWM2Zjg4ZTliODgzZjQzMzgwMjljM2U3ODBkZjk0OWZlOGU1MTE2Yjg3MzUwMGU3MjY3YWNiNDViMmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUwMDNlYzQyZjU1MGE5Njk3OGVjOTY1NGQ1YTUwNTc5NGNkYzI5NWJkN2VjYmU5NDQ2N2IwMjQ1NTZiZDFiZjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE4MTI2ZWM3YjRmZWRmZjY3YjQ0YjhkMzcwMjQ2NWM5NjEwODM4YThiNzQ3MzJjYmY4M2Q4YzJlNGY5MzBkMDUifQ"
+        },
+        {
+          "resource": "repo://src/_app/providers/query-provider.tsx#L6-L22",
+          "version": "repo-lines-v1:sha256:a6670e78b6ba05b8a77919e520ebe58d8346b94ac79826e3eab6e452ff8f4137:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU0MGRmNDcyMDlhNGU1ODYyOTg4MjY2MWM3Zjc4NDY2ZmU2MmVlYmRmMDI1ZmU3YWNlMjBiMzA3NzhkZjkyYzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU4ZTdkNjAxNGU2NWU5NmM1YTg5OTg4MTYzNzY0OWE5MjM3YjhiYmNkNzZlNjZlNzkxNGFhYThjNGM2YTM4MmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY0ZDNlYWE4NTAyZWZjOGE4YzY1ZmNiNzU1ZWM2MzQ3MjM5MjBlYzdiODMzMTQwYTIzM2Q3ZGViNmUzYmRmNjcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_800f501b6c7740f987033ef57e54bbe5",
+      "statement": "story 검사는 `vitest.config.ts`의 `storybook` project가 `@vitest/browser-playwright` provider와 headless `chromium` instance로 실행하고, plugin `storybookTest({ configDir: \".storybook\" })`으로 `.storybook` 설정을 읽어요. 명령은 `pnpm run test:storybook --run`이고 `pnpm run storybook`은 6006 포트에서 직접 확인할 때 써요.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L12-L13",
+          "version": "repo-lines-v1:sha256:aa9d59ea815fb8c2c20cb0703b7bb16b30297c249391d8a5fe223542df320cc5:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTBiMzM4OGYzYjQwYzkzNTkwZmQwNmRlOTJlNzcyMTEyODUxOTgwYjQ5OGU2ZGRjMDM0NTJhN2FiYjljOTFjNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2FhZDY3YTU2NmU5ODE1MmEzNDlkNjJlNzZlY2NjYjE5Nzk2NzQwNGUzZmVlYTY3ZjlkY2M2ZjAyNDA2MmNiMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzA0MzYyNWQ5YTcwMjc2Y2ZkOTc2ZmIyMWJjODMxMGVlYTIyYzYyOTE2MmE4Y2ZmYmZlNTM0Yjc5NmE1ZDM3OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDc5MTNiMWJiNGJiYWQ3ZGI3NDZlNzIwNDdiODM4YWI1MWU0MjM3ODc3MTBkNWJjYjZlYWQxYTBhY2ZlNTNjYSJ9"
+        },
+        {
+          "resource": "repo://package.json#L59-L59",
+          "version": "repo-lines-v1:sha256:a4375313de4803d2a53f7091044cfe856b64cb55e46d3cab1e4f8bb1b0bc0cd8:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTQzNzUzMTNkZTQ4MDNkMmE1M2Y3MDkxMDQ0Y2ZlODU2YjY0Y2I1NWU0NmQzY2FiMWU0ZjhiYjFiMGJjMGNkOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTQzNzUzMTNkZTQ4MDNkMmE1M2Y3MDkxMDQ0Y2ZlODU2YjY0Y2I1NWU0NmQzY2FiMWU0ZjhiYjFiMGJjMGNkOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGFmNTZiN2Y3MTVlOTA4Mjk4YTE5OThlYWIwYWJmYjljODFiYmM3ODY5MTNlYTRkZmUyNzY2YjkzYzdkNzA3NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2I2ZDNhOWZhZDY3Yzk2MjNjN2VjYmZhYTIwMWI0YzFkNmFmNjgyNjJlMmJkYmEwMjA5ZGFmMzhjMDkyNTk4YiJ9"
+        },
+        {
+          "resource": "repo://vitest.config.ts#L38-L54",
+          "version": "repo-lines-v1:sha256:c75f6368222f87aec2aeb64cb43441c02a9a0209139a72fa65c6682efc6a9585:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MzZkZjdhNWEzYWFmMTgwY2ZmZDFkNjVjNjQ2ZWY2YWVhMzUyY2MyNzc3NDY4NjE5OWNkOGZiM2U4OTljN2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZjMjY2MmFiYTY2ODAwZTNlZjI4MWE4OWY1MjU1ZDkzYTkzYTkxNTM0Yjg4YzY2MWYwZWQ1MmE1OThhYWNmYmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+        },
+        {
+          "resource": "repo://vitest.config.ts#L4-L6",
+          "version": "repo-lines-v1:sha256:b449502229d46244bb201c8c974d3bfc4457ce20854c6b6934c7206b47c27481:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmUwM2VjYWRjZDdjZTVkMmUzMDJlYjRkOWZiOGRlNzU4NGJhZTYzM2U0Y2U4YWMxOGMxZjA1MmJiMGFiYThmZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODE3NGU5ZTkwMDM4ZWIzYTBkZDM0ZDMxMzNmODg4ZmEyZWU1MTNkMjI3Y2Y5OTNlMzZlM2M1NzVkNWU5OGRjMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmY4YjhmZmNiOTI1OTZmZTEyZmQzZTllMTEzNTZkMDY0YmIyMjliYjY4Yjk2NTk2Mzg0ZGI2NTFiNTlkNzJiYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDc5MTM5ZmU1MzBmNmRmMzIzMWNhNGNjZTY4YWUwNzQ3ZmY1NjU2YzY2MDI3ZTMzNGQ2MmIyNzcxOGU0ZjU2YiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_a2126248bc5649109a3a70c8e92337f1",
+      "statement": "서버 응답이 필요한 story는 `beforeEach({ msw })`에서 `msw.use(...)`로 handler를 등록해요. 공용 handler와 fixture는 `tests/msw/handlers.ts`와 `tests/msw/fixtures.ts`에 모여 있어 여러 story가 재사용하고, 거기에 없는 응답은 story 파일 안에서 `msw`의 `http.get`·`http.post`로 정의해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/widgets/library/ui/mixing-library.stories.tsx#L4-L31",
+          "version": "repo-lines-v1:sha256:02b1cd01a9c8cb7f6a40fda657bf404391ac239751cb5d33a7f08d80c62af24b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0YjNiYjA2NzZiYTljOWY1OTA5NzdkOGM3MzAwYTM4NzcyYzA4YTU0OTQzZmNlNzg5Njc3NDEwMzRkOGI3OTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlYzI1MDkyYWJkNTUxN2M0YjMxM2UwNmU3NThkNTU0ODcxMTJjZDQ2NGEwNmE3NjBhNTEyYTliMmE5NmE5YTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3OGE3NTBhYTk0ZGY1NGY2NjY0YmQ2NjFkOTU3ZTZiNjMyYWI4Mzk0MzdjOTFhOTU4MzgxYjFhNmNmZjAwNzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBkYTAyNWM1MDM0YTJmZGY1YmNlZTk5YmU3NjAxYTRjODUzNDMwODE1YzNjOGFlNzAxMTRlOWUxYzU3ZTNhY2IifQ"
+        },
+        {
+          "resource": "repo://src/widgets/library/ui/vocal-profile-library.stories.tsx#L140-L147",
+          "version": "repo-lines-v1:sha256:c18f4f76825130333f879a85a74232155fb5824224e7f7689ca5d1b4f1599529:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzllMWNmNWI4N2JiNjQ2ZWY2OGZhYjhiZWRiYzFmODg1N2RhZDVlZDU1MWZmZjU1OTRlMTg2YjJkNzk0ODNiYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGQ1Y2QyZmI0ZjNkZjg4NDUxNTI1NWIzOTUyM2YyZjhiNTQ3MmJlZWE5ZjU2NmZmY2EyMDRkYjgwMjU2MTA0MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmEzOGVlOWNjNzNjOWYxZjJjOGY4YzU2ZDAwYmQwMGRlNWIwNzM2OWYxMmUwODBhYmJkNzljOGM0Mzc1NmMxNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjNmODMwMjUwODJkYTdlYmJhZTQ2MjhhNzQ4N2MwOWI3ZjVhNjA5NzJmZjcwZTk3ODlhMmUwMzgwZmFkYjM4ZCJ9"
+        },
+        {
+          "resource": "repo://src/widgets/library/ui/vocal-profile-library.stories.tsx#L70-L72",
+          "version": "repo-lines-v1:sha256:893e28ff5a0af814da0c97e304027da7c687197a2140eaf21cef1ab2f8fefdbf:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzFlOTFhOTEzYWI3NGJjMjJhYmJjODhiMGJkMzNmZjVlOWIzNTg1ZWVlMWVlOGQ1ZTA0YjVhNjBiZTM4MTM4NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDMzZDgzOTY1MDU5OTdhNzQyZjE3ODQ0ZDY4OTQ3MGNmZGNlYTE3YjE5ODc1ZGM2MTYxNjAxZTVhZDA0ODE1NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjczZTJlMTE5ZTEzZDE3YjBiZTUzZWFmNzgwMjE4MmY3ZjZkOTk4NTFkMTc0YmMyOTFlYzhiZmFjNzFkYmY3ZiJ9"
+        },
+        {
+          "resource": "repo://tests/msw/fixtures.ts#L7-L14",
+          "version": "repo-lines-v1:sha256:cbe747c16aab951e6b6b54b109fdfffda54a95a454761e0823faff1c9d30c1f7:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTQ1YzZjMjRhNDEzZmYwYzM4YzhlZWYxYjdjNjJlZWUzODMzNjlhZDc4NGUwM2FiYTIzOGMwMzQyMmFhNjM2ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWExZDFhNjMzOTAyMjljNzk4MzQ3ZTgzYTA0MDU0NDFjOTQwMDAzNTI4NGFkMTY4YzFiZjZjZGYxZDcwYTM3MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTgwOGMwNjdiZGRlZmI2Zjk2ZmQ0MTNhZWY2MGY3NTA3NzY5ZTIxNjc5YjY5ODhiZjg5NzhkYWNhMTA5N2E0YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjVmYmRkM2Y3ZDVmMDMxOTlhNmYyOTljOWUzODQ5YmU2NThhNDZlYTJlOTkxYmJjOTRjYThkNDI1OGI0OTRmNiJ9"
+        },
+        {
+          "resource": "repo://tests/msw/handlers.ts#L19-L35",
+          "version": "repo-lines-v1:sha256:e61cbb5e53e0d4d66c730870a03e79de791ce8470fd4a70fc6ac2de1e649a9a7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0OWE5ZTVhMTlhY2U0NDBmYjZmODA3NjFhNWJjZjNiZDA0NTdmYjc2ODIzOTMxMzk3MGEzYTQ4NmYwMDA4YTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJlNjQxNTJjZTk2ZWY5OTA0ZGUxODE2ZDFjMGJlNzIyMTI3YmJmOWI3ZmNkZjY2Njg2NjQ1M2ViOWU5NDQxYTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM2MDQ2MzkwOWEzZmNhOWM1NDhkY2Y2ZDJkYzdhMDBmZGQ3N2NiNDQ0NzlkNTJlOTUxNTEzMGFkZjcyZGQ4YjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_717e87ac0b554c4a83063f3087f727f0",
+      "statement": "MSW service worker 스크립트는 `.storybook/public/mockServiceWorker.js`에만 있고, `.storybook/main.ts`의 `staticDirs: [\"./public\"]`이 그 디렉터리를 정적 자산으로 서빙하며 `package.json`의 `msw.workerDirectory`도 같은 경로를 가리켜요. 제품 앱이 서빙하는 `public/`에는 이 파일이 없어요.",
+      "evidence": [
+        {
+          "resource": "repo://.storybook/main.ts#L10-L10",
+          "version": "repo-lines-v1:sha256:738b3edbc5c8bc45f3a6eefb0222cc0221829a860f4780e08b65a6211cad646b:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzM4YjNlZGJjNWM4YmM0NWYzYTZlZWZiMDIyMmNjMDIyMTgyOWE4NjBmNDc4MGUwOGI2NWE2MjExY2FkNjQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzM4YjNlZGJjNWM4YmM0NWYzYTZlZWZiMDIyMmNjMDIyMTgyOWE4NjBmNDc4MGUwOGI2NWE2MjExY2FkNjQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjkzZmZiYjNhNWMxYTgxY2VkNThjYTIxZWFlYmZjODNiNGI5YmVkMDg3YzI0YzIyMTQzOTM4YTNkZmJiZGQ4ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzEyNzQ4OGM5YmNmZDM0Yjk2MGNlZTVmYThkMjI2NzA3MjZjNWEyN2FjZTAyNWI4MWQ4ZTM4MjQzNzNhMTdlMSJ9"
+        },
+        {
+          "resource": "repo://package.json#L142-L146",
+          "version": "repo-lines-v1:sha256:cd0722fdd4c600981ae2f9cfe9c682fc256424690fe879ad0d7a0ed3cfa48344:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODNhZDU5MWY3OTEyNjgyN2ExODJhYjgzOTE5MDM4NGY0MTVkOWRmODYxMmVjOTMxYmE1ZjljNWE2NzM4MDFkNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWZmZjEzZjgxY2IyODJlN2ZkNGU0MzhiNDcxYTEzM2MxOThhMjZhZDEzOTA4YmRkYmNjNTMyODE4NWMyMzllNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
+        },
+        {
+          "resource": "repo://tests/storybook-production-boundary.test.ts#L43-L49",
+          "version": "repo-lines-v1:sha256:c73adaa6091729ad2fbe51134844a581c38e0a2c90436f2c0cd2060eb77334f3:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmJlY2E3YjY0YWRhOGEyNDA3Yjk2NGIxY2FiZDZlOTQ0MzBkMDY3NTgyMDgyNjg1YWUyOGZkMWQwZWM1ZDM2OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjZmNWI0MGIxNTg0NTdkMTc4NjRmMjE3OTA3ODZkZDVhMmVjZGI2NGI2NmE2NTFmNzg4ZDRlMjVjZDMzMDNkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDU5YzQyYTJlMWIyZGViNzNiMTNlMTA2NmNhOGFmMjAxMDkxZGYwZTVmNzYzNTZhN2YxN2U4ODkxYzIzNTQxNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzU0NTlkODM3NjljYjUwNTNmZDE2NWJhODMwYzhhMTM5NmExNTFkY2U4MDY2NjUwYzQ4N2E3YTAyYjdlNjJkZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_24e84164ed874c5cace04501ebc24db7",
+      "statement": "Storybook 개발 전용 경계는 `tests/storybook-production-boundary.test.ts`가 네 조건으로 강제해요. Storybook·Vitest·MSW·Playwright·Vite 계열 패키지가 `dependencies`에 없고 `devDependencies`에만 있을 것, `build`·`start`·`start:web` script 문자열에 `storybook`이 들어가지 않을 것, MSW worker 파일이 `.storybook/public/`에만 있을 것, 그리고 `src` 아래 모든 story 파일이 `server-only`, `next/headers`, `next/server`, `index.server`, `@/shared/db`, `@prisma/*`를 import하지 않을 것이에요. 이 검사는 `pnpm run test:process-scripts`에 묶여 있어요.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L57-L57",
+          "version": "repo-lines-v1:sha256:bbfe6b79b6ac7afa33e7569f7c7d3d2247292a19341695321a820a07809909ce:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmJmZTZiNzliNmFjN2FmYTMzZTc1NjlmN2M3ZDNkMjI0NzI5MmExOTM0MTY5NTMyMWE4MjBhMDc4MDk5MDljZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmJmZTZiNzliNmFjN2FmYTMzZTc1NjlmN2M3ZDNkMjI0NzI5MmExOTM0MTY5NTMyMWE4MjBhMDc4MDk5MDljZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmZkMGQyM2IzZDg0N2YxYmVlYmM5ZGQ3NGRjNzZhZjg5NmU4YjA4N2U4MTBhMzVlNGRlNjY1ZTU4OWJmZGQyOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjM2ZjE4MTc2ZjNlNTZjMGRhZDNhNmZjOWY2YmVjMjg4ZDBhNTc2MDNkMDk1YjVlMmI3YzUzNmE3NDRmMTQwMCJ9"
+        },
+        {
+          "resource": "repo://tests/storybook-production-boundary.test.ts#L13-L41",
+          "version": "repo-lines-v1:sha256:dfef1e3d01404d3ddac82262e5fef37798f81ae39363691d773e3990439deb8f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU0OThkOTUzNDg4ODQxY2ZmYzAyNzNhNmIzMDVjMWZiNzQ0NzJkMDFkNTIwYjk0MTYzYWIxYzM5ZmNjZmMzYjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAxN2Q1ZDQ3YjIyNjBlMDUyZjFlOThjYzA4Zjg3YzhjYWEwMTc1YjU1NTZmOGE5ZGU2Mjk4ZmZmMDFjM2E0ZjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIxYzFhNTU2YmUzODZjMDcwZmE2MTAwMTFjOWJjODVhOTkwNDRmNTFmYWYzN2M2ZjgzMmQ1Y2FjMzk2YzQwN2UifQ"
+        },
+        {
+          "resource": "repo://tests/storybook-production-boundary.test.ts#L43-L49",
+          "version": "repo-lines-v1:sha256:c73adaa6091729ad2fbe51134844a581c38e0a2c90436f2c0cd2060eb77334f3:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmJlY2E3YjY0YWRhOGEyNDA3Yjk2NGIxY2FiZDZlOTQ0MzBkMDY3NTgyMDgyNjg1YWUyOGZkMWQwZWM1ZDM2OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjZmNWI0MGIxNTg0NTdkMTc4NjRmMjE3OTA3ODZkZDVhMmVjZGI2NGI2NmE2NTFmNzg4ZDRlMjVjZDMzMDNkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDU5YzQyYTJlMWIyZGViNzNiMTNlMTA2NmNhOGFmMjAxMDkxZGYwZTVmNzYzNTZhN2YxN2U4ODkxYzIzNTQxNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzU0NTlkODM3NjljYjUwNTNmZDE2NWJhODMwYzhhMTM5NmExNTFkY2U4MDY2NjUwYzQ4N2E3YTAyYjdlNjJkZCJ9"
+        },
+        {
+          "resource": "repo://tests/storybook-production-boundary.test.ts#L59-L74",
+          "version": "repo-lines-v1:sha256:5604462a5457febbff51ab81ec477e727924fcb46f06ba0bba84b2f06448ed32:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlhMmY3NmU5YjAzYWE3NTg4MDNjNjcyOWUyYTYzOGEzYTZlYjdmNWU4MzQyN2UzY2U1MjlkOTdjNmU4MzFiMmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_78a00de24fee49bfba8cbd5042288997",
+      "statement": "Base UI 컨트롤의 `render` prop에 Next.js `Link`를 넘길 때는 `nativeButton={false}`를 함께 붙여야 해요. `tests/base-ui-link-button.test.ts`가 `app/`과 `src/`의 `.tsx` 파일을 TypeScript AST로 훑어 `Button`, `DropdownMenuItem`, `TabsTrigger`가 `render={<Link ... />}`를 쓰면서 `nativeButton={false}`를 선언하지 않으면 실패하고, 그런 컨트롤이 10개 이상인지도 확인해요. 직접 실행하는 명령은 `pnpm run test:base-ui`예요.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L55-L55",
+          "version": "repo-lines-v1:sha256:7aa645491ec9006798c8708d0420955207f7eb28e5bfa1af3cf3b167899c20e4:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2FhNjQ1NDkxZWM5MDA2Nzk4Yzg3MDhkMDQyMDk1NTIwN2Y3ZWIyOGU1YmZhMWFmM2NmM2IxNjc4OTljMjBlNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2FhNjQ1NDkxZWM5MDA2Nzk4Yzg3MDhkMDQyMDk1NTIwN2Y3ZWIyOGU1YmZhMWFmM2NmM2IxNjc4OTljMjBlNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTYwYjA0MmIxYWY1YjU5OWJkMjdhM2RhNGQ3YTk2M2QwOTM1ZWU0ZTdhNTRiZmIwOGE4YmM1MmY4MjYwNTU5NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGFmNTZiN2Y3MTVlOTA4Mjk4YTE5OThlYWIwYWJmYjljODFiYmM3ODY5MTNlYTRkZmUyNzY2YjkzYzdkNzA3NCJ9"
+        },
+        {
+          "resource": "repo://src/_pages/admin/ui/admin-page.tsx#L110-L128",
+          "version": "repo-lines-v1:sha256:abfb42421cf91219f9d1ae76a537af4c4b7ce9ab36644d23355196922558ef6a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxNWZmZWUzMDE0NjQ3MmEyY2ViNDIzMjg1MDkwZjdmY2Q0YzlmYjZiOGRhZWRhNGU5MTdiZTdkMTg4MjUxM2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjNGJhM2EzZjQ4ODQxOTM2NmU4NDBiMTQ2ODJhMjQzYWI5MzNiNjg0NGMxYjBlY2UzM2QxYzg4NmMzNTFmOTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA2MTQxMzA5Zjg0YjI1M2FlNzE1MWQ0ZTYxYzNhMDg1MmI1ODdmMDUxNzE0ZjEyMTdlMjQwNThmZTc2ZTBhN2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY0NWE1Y2FjNDg2OGMyOGUzNjk2MjhjNzBlMjQ0YmNkOTA5YWI1YzZlYTliNDk5YzFkMWVkOTUwZTRhMGJlOTEifQ"
+        },
+        {
+          "resource": "repo://tests/base-ui-link-button.test.ts#L41-L68",
+          "version": "repo-lines-v1:sha256:b5ce17fa367bfaabe7a1c9ce0f48699f2fd256bb0fc6d434ce37bacf1989c456:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiYTkzMDlhOGViMmY3ZGM1M2JjYzczZjEwMjFlZmM2YWI2NGNhNTVlOTNlOWJiM2Q1MjM3YmIyYWU4YzRjZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5NGZjMGMxNzNkMWVjM2ZjNTAxZDdkZmE5Mjg1NTAxYzUyN2NmYjQ3MTI1ODNkYTNjYzM2MTgwNTY2YjRiZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_80b849229d0f4ef69042db138711cc83",
+      "statement": "story 파일은 `src` 트리에 있으므로 FSD 경계 테스트가 수집하는 소스에 포함되지만 그 테스트는 `app`, `src`, `scripts`만 스캔해요. 그래서 story가 `tests/msw/handlers.ts` 같은 `tests/` 파일을 상대 경로로 import하는 것은 계층 위반으로 잡히지 않아요.",
+      "evidence": [
+        {
+          "resource": "repo://src/widgets/library/ui/mixing-library.stories.tsx#L5-L6",
+          "version": "repo-lines-v1:sha256:ee3ca3c3107dcaef294021fe5d592fbc0494121fce0e3cc7f3e6b6e453b9117c:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmRiZTc0MDNiZWRiYzYwYWNmZDA4NjhiNzg2YjUxMzA2ZTFiNGE4NTMxMDlkNjJiZGIxMzdkZTE3NTFhZmZmYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDY3NTA3NzY1OGQzNTBlMzc1MDI3MzJmNmE3MzJhMTBlYzUxYzEwYzVmMzAyMWU1NDE5MmNkMjVhNjBiZTlkZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzgxOWFlNTczYjAyMzM5Y2MyYjNjYzg4YTZkNDQxMTgwMGJhNzM2YmI5MDBmYWM3MDk2NTliZDExNjdhYjQ3ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTBmODIyNGZlYTg2NjUyMTNhOWZmM2NlYTk2Y2FhMWI4MmZlNzU2ZjU5MDM3MmQ3ZThlMzk4YTVlY2MwNzhhYSJ9"
+        },
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L95-L113",
+          "version": "repo-lines-v1:sha256:5d0915c49a61b21ca47e06528b00f95a055ed1b1cb6f4847d50d6c21cfc55a55:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjZGMyNzdhZWQ1ZjlmZmQ3NGU1MDU2YmJhZGU3NWIzYjc0ZDE3M2U5ZmI3MDdjNjBlNWY2YmE1MmFlNmZiY2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg0NjM3ZDFkNDYxZjk5MDYwMjllYWRkODY3MDA3MzUxODY2NmZkYTFmYzg5YTE3ZTRlOTUxMGU5NjRjZWMzMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZjZWVlZmVkMTdiZmI4ZjBmOTRkMDVlNmZkZTVlYmQzMzM2ZmE1OTA4MmY5OTM3MTExZjZiZDM3NjQwOTg1MDEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bfa39bf8976544469c4917bb1be459dd",
+      "statement": "`src/shared/ui/skeleton/skeletons.stories.tsx`는 `src/shared/ui`에 있으면서 `@/_pages/*`의 loading 컴포넌트를 import해 계층 의존 방향을 거스르므로, `steiger.config.ts`가 이 파일 하나에 한해 `fsd/no-public-api-sidestep`과 `fsd/forbidden-imports`를 꺼 둬요. 다른 story에는 이 예외가 적용되지 않아요.",
+      "evidence": [
+        {
+          "resource": "repo://src/shared/ui/skeleton/skeletons.stories.tsx#L4-L19",
+          "version": "repo-lines-v1:sha256:76fbf35746cb600c2b6a5ee8b2153977f3a2dcf15b56dfb4f48a2a0cb369a9e8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJkZTdkNzYxMDgyNmFhZDcxNzBjYTMyNmZlZmI3NGM0ZjZhNTliOGU1NjY0MDhhMjVmYWQ5NzJkOTZjMzk3YzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkMmQxZmFlYzJiODk0YjNhYjIyNTE5YzAwYjQ0Mjc0MGQ1MDllZjA5ODFmZmRiOWYyYzMzZWZhNTY2YjFlNzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI5ZTc0ZmE1NjYxZGU3MDI5YzY0MTJhNjNmZGNhZGVlYjNjMjczYWNhMzYxZmZlMmJkY2FkMjhkY2JjY2E4NzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIxYjk2ZWQ5ODlmMDRlMzZiOTU4ZjI0YWVlNGI4ZjBjYzdjZTU1N2E1NzY3NzFjM2IxMDBlYTNlYjJmMmU0MGEifQ"
+        },
+        {
+          "resource": "repo://steiger.config.ts#L27-L34",
+          "version": "repo-lines-v1:sha256:a0036e1696dd9d337c59fb1b0985da78689b2befe32e8aa04248245ac389de64:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjExMWYyMzlhYzY1YzlmZWNkNGY3OTc1ZDRlZTBjNjc3YjU4YThlYTY3ODUyZWEyNWQyNzkyMzkyNTE4ZDJmOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGQ1Y2QyZmI0ZjNkZjg4NDUxNTI1NWIzOTUyM2YyZjhiNTQ3MmJlZWE5ZjU2NmZmY2EyMDRkYjgwMjU2MTA0MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODhjZjQxMDhlNjNkNTg4ZTFlM2JkODJjZmViZmUyMzQ4Mjc0NDA2YzY0NGNkMWRkNzVlYmQ2YjE0YjJmZTM4OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzdhZjQzM2NkMDgyOTlhMDA0MmYwMDNkN2JhODcxZTI2NzA0NzRiOWViZDZlYjc1YzY3Nzg3NzZjOTk0YjY2ZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_3c58cc7d22354b6a9039aa225226a7eb",
+      "statement": "`src/shared/ui/voice-orb/voice-orb.tsx`의 GLSL 셰이더와 premultiplied alpha 렌더링 세부는 `tests/voice-orb-shader.test.ts`가 소스 문자열 검사로 고정하지만, 이 파일은 `package.json`의 어떤 script에도 묶여 있지 않아서 `pnpm test`나 다른 검사 명령이 대신 실행해 주지 않아요.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L23-L23",
+          "version": "repo-lines-v1:sha256:efa74bba998a388fc9e8f38633ae8cbf9238b3e5ae3455221884364b19e7ed72:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWZhNzRiYmE5OThhMzg4ZmM5ZThmMzg2MzNhZThjYmY5MjM4YjNlNWFlMzQ1NTIyMTg4NDM2NGIxOWU3ZWQ3MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWZhNzRiYmE5OThhMzg4ZmM5ZThmMzg2MzNhZThjYmY5MjM4YjNlNWFlMzQ1NTIyMTg4NDM2NGIxOWU3ZWQ3MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjAzYTNjZTVlM2YwN2M3ZTg1NDZkNDYxMTY3ZTEwYjk2ZDVhYzUwOWQ1ZDdkNmZjZTc4OWJjNDI1MWI4ZmMxNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWM1MDM1MmQ5YjhmNGY3OGE2OTI3NzgxOWU0NDIzMTcwNTcyNTE0YTUzNmIzZjI0YTY3OGJkYTk0ODM5MDZmNCJ9"
+        },
+        {
+          "resource": "repo://src/shared/ui/voice-orb/voice-orb.tsx#L41-L45",
+          "version": "repo-lines-v1:sha256:314f92faab576fd92e08ed171ef892817df5b9bfdfdb1790a5301dea33b37f13:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGM3MjI3YjJkYTMxZTc2Y2RkZmYxNzhjMjZmYWU2ZDNiZmMwODFlMDQwZmI3OWRkZDc2OGExNmE4YzQ0YjRhYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmI0NDhhNmZjZWY5NjM2NDM5YzI0NTUwZTMxNmUwZDE4NWQ5YTk5NDZiOWFlZWVmNTk2ZTlkMzFkNTBkN2ExZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGQ2MDVhZDc0MjExNWE2MzdmODU3NTBiZTZmM2U5MDExOTU3YmQwZjYyMGNiNDIxYjNkYWI0NGZjYmE1ZWFmMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmYyYjQ0YzgyZmJjODhjMzAyYmRlNDhmMmRkODE0Zjg4NTA2ZWM4MWQ2NTMyNTljY2I1ZmNkNWY5YzliNTk3ZiJ9"
+        },
+        {
+          "resource": "repo://tests/voice-orb-shader.test.ts#L1-L45",
+          "version": "repo-lines-v1:sha256:ed3e548f4aeaecebcfc4b2c9412fa4c0cba16a87f02718cf3d9191f72810acf0:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2YzdjY2UwYTcwYjM0ZWZhM2FlMzgwZWExMjA2ZTRmZjAwMzNmZjJmNzZlN2M2ZGZlNGNlM2Y3ZGNkMDg2MjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMxN2YzZGViMjQxZWVhMjRmYzQ2MWQ2NWI3M2I5MjRiNzUxMjk3ZDA2NzkzZDgxNDBmODlhMTgzNmIyMTE1MDkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_10cc29bec08b4697932fa0b8f6f30a97",
+      "statement": "slice 안쪽은 `api`·`model`·`ui`·`lib`·`config` 다섯 segment로 나뉘고, 각 segment의 책임이 달라요. `api`는 서버·외부 시스템 호출과 그 query·mutation 옵션, `model`은 Zod 계약과 상태·타입, `ui`는 그 slice의 데이터·상태를 쓰는 화면 조각, `lib`은 UI 없이 도는 표시 변환·점수 계산, `config`는 그 slice 전용 설정 상수를 담아요. 이 입력에서 확인한 slice에는 아직 `config` segment 예가 없고 공용 설정은 `src/shared/config/`에 있어요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/mixing-job/api/client.ts#L41-L66",
+          "version": "repo-lines-v1:sha256:bed23449dca92194c9f04be6873ed2487e2c7cde602a53d5944b0c55b893f528:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzMjM2YmI1YzQ1OTI5NTRjOTkyM2RjMjQ3MTIzOGNlOGEzY2UyMzI2YWExZGY1OWNiOTc4Yzc1Mjc1YzlhNzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwNmFlOTYyZGE1YTk4NWM1NGE2ZDhiNjJlZjRiOWEwMGMyNzM2YTU1NTg1ZmNmMTIwMmIwYzM4YmFlOGZmZTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI3Njg1M2JlNzg0ZmUzMjY4NDVmYTRmNDYzM2E0YTg4ZDYxNzg4Y2RlNzUxYTk2ZmFhZjNjZjk5OTdkN2E2ZTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNmNGY0ODZkMjNlMjc3NTY3YWEyYzA3MGJlODNhMWU5NjBkYWU3N2U3NWYxMjUyNDllYjM2ZDcyOTA2M2JjMWYifQ"
+        },
+        {
+          "resource": "repo://src/entities/mixing-job/lib/presentation.ts#L1-L13",
+          "version": "repo-lines-v1:sha256:915f78fe2afe396e695c21ab16af3fa215c58813991e11023327d79a72a0f03f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNkNGJhMDdkMzU5OThiOGQxY2JjOGZmZjBkNmJiNzA2MTNkNTFjZDBhMzJmZTc0ODFhYjcwOTcyM2IwYWM4MTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMWQxYTYzMzkwMjI5Yzc5ODM0N2U4M2EwNDA1NDQxYzk0MDAwMzUyODRhZDE2OGMxYmY2Y2RmMWQ3MGEzNzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg0MDEyNGIzMjNhNWIwY2E1MTgyYzA5YzM0YjM3ODI3Nzc2YTA1YjBlZTcyMmU0NjRmOGFkOTMwNzIyYmUzNTAifQ"
+        },
+        {
+          "resource": "repo://src/entities/mixing-job/model/contract.ts#L1-L16",
+          "version": "repo-lines-v1:sha256:7ba5e3f04a064f6929e04de1b0313b76bf9297796dbcd3482c7f99c18f8ee775:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxNDUyODY0YjBkOTZlZmU4NjkxNmZmNzQ1YTBmNzdhYzcwYjMyNjU4NWMwZWFmNWMzNGY5ZTRhNGY2ZmJmNjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmMGJiZjNjYjgwNTg4MzA3NWEzMTdmNGQzY2RiMGY3N2MxNWU5YWE5YzdiMTNlODgxMjdjODZlYTg0MDQ0YjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE0ZWYzYWU2NDkzNjg4M2MyZDRkZDA2NjNjZWEzNWU3ODIyOGZjZTkzM2NmZTgyYThmZGVlZWUyMDgzN2NmYWYifQ"
+        },
+        {
+          "resource": "repo://src/entities/mixing-job/ui/mixing-status-badge.tsx#L1-L16",
+          "version": "repo-lines-v1:sha256:138b5084feaa3c075eab3459cfdabef5049871027448d420b6edada0a0212f3b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyOWI0YTBkNGRlNzNmNWFjYTYxYjExMDY2YjJmNDU2MDFhZjdiMmUwMzNmZDM5MjdmMTU1YjQ2NzJmMzliYjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxZTE2YTcwYzBhMGZjY2EyZmE3YWI1MTkyZTUzYWM2NjI2YWVjMzBiMGNlYzg1NmU4YWU0NjYxNjAyOGNiNjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRlYTM1ZGIxNzBhYmYxMWRmMWIwODUxMjJkZDIzMjY4ODBiNmFhMzE5ZTRmMzYxYzcwZDkwMjcyZTQ0MzYxNjgifQ"
+        },
+        {
+          "resource": "repo://src/entities/recommendation/lib/ranking.ts#L1-L9",
+          "version": "repo-lines-v1:sha256:30a2a6f3794d2ea2b293d25f5bc2571c1503d5f0759945dc4a6b39c91d826f2f:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTY4NDQ3MTUzNjBmZmY5OTY4ZDIzZGVkNGMxMzY1MTdlN2U2ZDA1MzZhZGMyMWZlZWY2Zjc4NDM4YTQ0NjFkMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzM1MGE1MjUwY2E1OTI3MzAyM2ViMWIyYzRjY2ZhZTMzNjE5ZTk1NTM4MDc5YmJlM2U5NjUwNGJiNjM3ODNiNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTA5MjY1ZjA3ZGY0NGI5ZmI4ZjQ3YTQ4MTU4ZGJmMmQ0ODY2YjUzNDE1ZjZjYTViNDJlNjY1NmM2MmY5NGY3OSJ9"
+        },
+        {
+          "resource": "repo://src/shared/config/catalog.ts",
+          "version": "repo-file-v1:sha256:6d88670e24e5e79a92da6d2a62540c9d842a9bc93d13852cb2d93e3a8d189c0d"
+        },
+        {
+          "resource": "repo://tests/fsd-architecture-boundaries.test.ts#L26-L27",
+          "version": "repo-lines-v1:sha256:589396c8cc11ecbb6970e546dfd70d2add4ca6f11babd13e7db05a2811e5d8f0:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2QwY2NiYWFhNDEwNGVjNTFkYTQ2NWQ2YTI4NGYwODNlODVmOWZkMTU3ZGQ4M2MxY2EzNDJmYTM3YTQ4ZWM2MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDk2Y2Y0NjY1NjYwMzI4ZjcwZjNiMzA4ZDE4NzE0NmE4NmRhMTY2ZjhmYTFiNWEzMzgzYTAyOTZmMGMzZWFiZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTRjODE0OThjMDMyMDhjOTY0YjExMTIzNDcwZGU1NjQyY2RlYjA4NzFhMWQ2YzMzZjY0ZDJkNjRlNTE4NzMwYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTRiYzNjMmIyMjJiY2Y3N2UzYjlmODMzMzNhNmNiNThkNDE1NmVhMzU1MmYyZjVlNjg4NGY1NTcyMzMyMjBmMiJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-18T16:47:52.081Z"
+  }
+}

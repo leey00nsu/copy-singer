@@ -1,0 +1,276 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:bdafc10cad88710baf542f7f3ef3d034b622197d1cc50d60d9e8009213ed8c16",
+  "claims": [
+    {
+      "id": "claim_2f126148a1304743b587c3563a1380f3",
+      "statement": "`Notification.dedupeKey`는 전역 unique이고 `type`은 `TICKET_CREDIT`·`VOCAL_PROFILE_SUCCEEDED`·`VOCAL_PROFILE_FAILED`·`MIXING_SUCCEEDED`·`MIXING_FAILED` 다섯 값뿐이라, 같은 사건을 두 번 확정해도 알림은 한 행만 남아요.",
+      "evidence": [
+        {
+          "resource": "repo://prisma/schema.prisma#L122-L128",
+          "version": "repo-lines-v1:sha256:99b430974ae364872f4a489ca39815ab589e81e889ee2daddaaa845769b868ac:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmQ5NzNlZmRmMzVhMmJiMDczZGRlMTE5MDc1NGViNjlmZDE4NDY2ZTE0ZjhiZWU3MGJkYzdhMmUyMjQxNTEwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2RjMjAyZTk4M2YyMDE2OGE4ZWU2MmYwOGFlMDQyYTRlMTFhY2RkYTdkYWQwZmZlMDJkNmNmOWFkYjU5OGI2ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWU2ZjIwZTUwY2Q1MDliMGIyNmU3MDlhNmViZmY5ZWYzY2Y4MmQyOTY5YzcxYWEzMTk5OGM2OWMwOGFjMTQ4ZSJ9"
+        },
+        {
+          "resource": "repo://prisma/schema.prisma#L523-L538",
+          "version": "repo-lines-v1:sha256:ce6006f41cab22083740a376440ec5ce2e77328bc56d66f20f810b406020d4ea:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlZjY2YjhlN2U0MDc0MTA2MDU5NmUwNzRlMWJiMDljZDQ3MWNjZGMxZDIwOWI2MTQ5Yzk2MWRjYmRmOWM3ZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1YzA4YmRkZTVkN2NkZGNmYWNmYzcxNmQ3YjRhNjk0NmUwNDQ3OWIwYTMxZDExYjIyMGZjZDM2Njc2MjI0ZGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYxZWYzOGRjNmZiNmFkZWQ4Zjg0ZGI3YWI2NTZlNjU2YjVmYTA0MmJlZjZmOTNhNGU4OGIwMTU0M2UwMzRhMzEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d204ada7c98142ad8d07fe555239a5b9",
+      "statement": "`createNotification`은 입력을 먼저 정규화하고 제한을 검사해요. `title`은 trim 후 1~120자, `message`는 1~500자, `dedupeKey`는 1~200자, `href`는 `/^/(?!/)/`를 만족하는 500자 이하 내부 상대 경로, `sourceId`는 비면 `null`이고 값이 있으면 100자 이하예요. 위반하면 DB에 쓰기 전에 오류를 던져요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/notification/api/notification-service.ts#L30-L78",
+          "version": "repo-lines-v1:sha256:47aa306764fb860df6a550fc08dcdb12522b88a6c4e84f4de497b397d7c15447:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0MmU1ZWQ2ZDc2ZmJiNGI4MGMwYmJmZmFkNmIxNjU5Mzc0ZDlkYTA0ZjdkZDE4MzEyOGJlYWZlMjFhOGZjOGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY4ZjZlMmEzMjdkMDI4NDQwNTc5OGRkZmIzM2E0MmFhODBlYTdhZGM3MDdiZDFkMzE4Y2Q3YWI4MTU0MjFiYjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMzZDk1OGM0YjI4MDMwYWUyYWZjOThiNTJiNmJlOWI0NWM2ZjkxMWMzODJkMjk4ZmQ5NDg3NTIwODJhNmI5MjAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_abd6caa216504212955dbb1d715484ec",
+      "statement": "`createNotification`은 `createMany`에 `skipDuplicates: true`를 걸어 insert한 뒤 같은 `dedupeKey` 행을 다시 읽어 `userId`, `type`, `title`, `message`, `href`, `sourceId`를 요청과 비교하고, 모두 같으면 그 행을 직렬화해 반환해요. 다른 내용으로 같은 키를 재사용하면 `\"Notification dedupe key was reused with different input.\"` 오류를 던져요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/notification/api/notification-service.ts#L80-L107",
+          "version": "repo-lines-v1:sha256:424aea0f859c81ae7b6cbaed60bcd69b0b8c370c222f3b6ab7ccea170eb6bbcb:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzN2JkZGUzMjM0NDMzOTk0YjhiMWU1NzcxNjZhMTI4ZWY3NTRiMWFmZDdkOWNlOWE1ZDVlZWExMjg3MTE5YjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJmMzE1OWFmZWQzNzA3YjM1YThjYjg4MDY4OGQ4YzQ0N2ZkZWViYjY4Nzc0MjgzMzFkMDYxODJiMzkyZjM3MGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAzY2ZjNDIyNWMzNjU5Y2E2MjgyODdhOGU0ZjU1ZTE4OTI1MDExNjc5OWQ1YmQ1NTU5NTM4M2I4Njk1YjZhNGQifQ"
+        },
+        {
+          "resource": "repo://tests/notification-service.integration.ts#L36-L38",
+          "version": "repo-lines-v1:sha256:02dcf65c73222cd7c374b23d6080484f20e4e89ef8be0061755fe3a0c2e1c47d:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTgwZDhkMmE4MjM0MGNiN2Q5NWIxZjc0ZGZmODFhZDFiM2M0ZDliZWQyNGU0ZjA4ZjgzZWQ4MTc1ZGI1YzNjNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjcxMTg2OTQ1OTg0MDQ1NzczYWExOTAxM2Y2NmJmMDhhOWMxZWQ0OThhOTRhZWZkM2U5MDA3MmNkYWFiZTRhMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWEzZjI5OWNkNDJjYmViYjJlNjRiMzJkNzdkOTU2NGZlMjE4NzEwOGM1N2Q2NDZhODM4ZjgyMmI2N2EwNTMwOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWZlMDY1NjJiNGMxMDBjOTdmMTJmNTA4ODdkNWFmMDkzNDA1MjU4YWM1Y2RhZDc5YjczMjZhMWM0OGRmNmQ0NCJ9"
+        },
+        {
+          "resource": "repo://tests/notification-service.integration.ts#L75-L78",
+          "version": "repo-lines-v1:sha256:1b89368876cbaa32fbdf387c99953a0029046cee470264622eceac5f44e0109d:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2M0Mzc2YTFmNGVlYjc5NzdhMDVjZDZlNTQ3MmY1YjM2ZjBmNTAxYzIwZTY3N2Y5OGUwMzQ5ZDQzOWYwYzNmZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODRlNDIwOGNkNmZmYjhjNGEzNTQ3YjJmNTRhZGExOTk3OGMzZjM2NWU3OGY5NTAyZWY1MTQ1Y2RkMmFhODU0MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjhjMDk0MTg3OTY0NmUyMmZlZWQzYjA5NDE3MzhhYTk1ZGMzNjUzOTc2NzcyM2NlOTUxZjY5MjJkNDc0ZWIwMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjJkZTBjNWFiZGIyNjE2OTVmMDI5OTQwY2RjOTRjMGI5OTIzZWRkYWU0MzM0ZWM2YjA5YjAwYmU5NGNlMzg5MyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_cdd619c0be1a45df9a0de244c3074118",
+      "statement": "작업 알림 네 종류는 `dedupeKey`가 `mixing:{jobId}:succeeded`·`mixing:{jobId}:failed`·`vocal-analysis:{jobId}:succeeded`·`vocal-analysis:{jobId}:failed`이고, `MIXING_SUCCEEDED`·`MIXING_FAILED`는 `href`가 `/library/mixes/{jobId}`, `VOCAL_PROFILE_SUCCEEDED`는 결과 프로필 id로 `/vocal-profiles/{profileId}`, `VOCAL_PROFILE_FAILED`는 `/library?tab=profiles`예요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L277-L288",
+          "version": "repo-lines-v1:sha256:7c96eab624d59e9a8630d65b0da03a7af356e38629ec1542fd5756af7e198364:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlMmUxZTRmNGI2MGUyZTUwM2YxNzg3NTVmMzMzMjFjNmYwM2FhNTRiNzU0ZTUyZmU4M2QxZDU1M2RlZjVlZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUwMDkwZTgyNjhlODdjOWJlZGZhMTc0NTdlMzI2MzFjOTI1OWQ1MmI0Y2M0ODk0MGQ5OTg3MDQwZGQ1NjI5ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBiMWQ5YWQ4NjVkMzgxYjUyZGEzYmVhOTk4NWM4OWQzNzY1OGE1YjhhYmVkYTM5MDAwM2E5ZjViOTI5M2RlNWUifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L523-L534",
+          "version": "repo-lines-v1:sha256:332778a837e37ab1d381a7a4c54dc46de03ef7a39a7a933922bbfbb9f2ff310e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkZGI4YjYzNmFhZjRmODY2YjVkNmM2NjFiMjI4ZjVmMGUzZjFmNWUzZWRmZTA1ZmRiNGMyZGFjNzRlMDhjYjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzYjA1OTc4OTYyMWM0YjJhYTk2NTk3ZGJkNTQ0MWY1MjEwNmU0OWY1YmZiN2FiZjVlNzdjODlhNDQ0M2VjMDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYwODdiN2E5MmQ4NTU0MDg5NjAzZjk2Y2YyOWQ4NTFmNjY1MDNmOTE1OTI4ZmFlMTg0YTk5MjM3NTFiMDU5MjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5M2NmNmQxMDg3Mzc3MjM4Yjk3MGU1ZjhlMWJjZmY4YmFiMTE0N2M0Y2MxYTQzMjA2ZWRiOGRmOTlmNjllM2UifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L122-L133",
+          "version": "repo-lines-v1:sha256:1fa82cdbf0301a49b5937482f78fae3d4628722be87b781c510b4d0720cf5aca:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlMmUxZTRmNGI2MGUyZTUwM2YxNzg3NTVmMzMzMjFjNmYwM2FhNTRiNzU0ZTUyZmU4M2QxZDU1M2RlZjVlZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFlYWZjMWYyNWE3ZmI1YjJmYzc5YTVkNGM4ZjFkZjJiOTIxMjNjZDQ1YjAzNzM0NzA3N2Y2NWYzNDdlYzAwZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ0Mjk4NzlmNjFkOTgzOGI5ODg2OTc3ZDk1ZmRkYmMyYTI0MDdiMTU0NzI1YmZkNmU3NzVjOWQ3MWY1MjBjMDkifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L217-L228",
+          "version": "repo-lines-v1:sha256:bc1a1cc5ea6a772836fcce24cd693d70a962fd922f4bb5cba01c0e5d66dbc616:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlMmUxZTRmNGI2MGUyZTUwM2YxNzg3NTVmMzMzMjFjNmYwM2FhNTRiNzU0ZTUyZmU4M2QxZDU1M2RlZjVlZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEzNDNmZDdkNDA5NDAzMTYxODc3NDc0OGVkYzNlYTFjYmYwM2E1OGYzMTgwZjNjMWQxYjFkNzY3Y2QyMzRmYjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ0ODMyNDA3NTdmY2Y4NDU4MmY3Mjk2OTI2ZmE4MTIzMmVjNGQ2OWUyNzk2NDFhMDg4ZDhmZjBkMjY4NGM3MmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2a84c6033e814f16841457fd907c1a7e",
+      "statement": "네 개의 작업 알림은 `SUCCEEDED`나 `FAILED`를 쓰는 같은 트랜잭션 안에서 만들어져요. 그래서 알림만 남고 상태가 그대로이거나 상태만 바뀌고 알림이 빠진 커밋이 생길 수 없어요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L509-L535",
+          "version": "repo-lines-v1:sha256:f2e14804bc9d5a3281f8774b616fa61e2bfdfbac94f427500a341b1fde473bd1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhMDZlOTlmMGZhNTFlZDRjZjk2OTA0ZTE5NGRjNjdkM2VmZTFlZTM0MDg1ZjBkZGQ1ZTM5NDEyYmVjMGU5MjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhMzdlM2MwOTQxZDE1NzdjMDM5OGUzYjY3ODRlZjNiM2YwMTI4OGJjZGVjOWE0YmJhMWFiZmFhNzQwYWI2ZjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwZDY3M2Q3MjFmODljMTY3NjkzZWMwNzhmYTNmZGFmMWMwNTI5ZjZjNzYyOWE0OTYzZjk2OTEwZDM0ZWNhZWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgwMjUzYzRlNWJjZmZmNmI4MDBlN2JhYTkxZGIzNDIxZDc0YTczYzExOTIwZGE5MjZmZTEyYjFlYjFmZjViNzEifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L101-L136",
+          "version": "repo-lines-v1:sha256:d5516cec190051fa7e0dff6a996191ac1cfed9a9413c3842611e84885e47fe98:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhZGE3Njc3ODlmNzAwYjQ1NzQ3MWNiYTlhOGU3YzhiNjY5YzgxM2RlOWYzNzYyOGM5MGE0ODliODhhYjcwOTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2OGY2MTlkNjBiZDI3YmM5MzQ3YjFkZWMxOTBkYjAxYjRiZjNiNGRlZTNkODIxMjQ1YTg4NTU1NDk0MWMyYmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE2OWM5NDA0ZWU4MjdmYjc4ZjM2ZTUzYzVkMmQ3NzBmNWM0MTA2N2YwNDllNDE5YmZjNWRiZmVhODk0NjA1ODgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM1YjQ4ZGRkOGQxMmVjZDNiOTkwYzRkMzE5YTEwMzIwNzlmMWY1MzdjYmMxMmViZmVhNDQ5ZjQ1NzEzNjUwZmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_05c56204caa6487fae15c04b80edabf3",
+      "statement": "재시도 중에는 알림이 만들어지지 않아요. 작업 실패 알림은 재시도 예산을 다 쓰고 `FAILED`로 확정될 때 한 건만 남고, 일시적 실패로 `PENDING`으로 되돌아간 동안에는 그 사용자의 알림이 0건이에요.",
+      "evidence": [
+        {
+          "resource": "repo://tests/mixing-queue.integration.ts#L400-L414",
+          "version": "repo-lines-v1:sha256:e0a593b7215a967671e6d960b12da39a77adccb71f5dd4f35901ac860d0af6fc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyZDExY2FmNDNlOTdlZjM2OWU2YmVlZDFhMjY4YmQwNTgzOGYyOWI5ZGQyNTRiZjY5YmE2NDg4NDE0NzIzNGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYyZjg0NGYzYmI2YjQ2OWI2ZTEyNDRhOTM1MTY4MmNiOTUxNjcxNGM2Y2MzYjc4YWQ2NTQ4MzY3YTIzY2QyMGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRkODY1N2Y3MGMyMzhhOGZlMTgyNDk5YjU4MGE2Y2E1NWM3MDgyOWU0ZTkzMGNmNmI0NWJjZTJjNDNlYTUyY2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk0YTQ4ZjU1OTI4MzdmNzI0MzM3MWYzNTZjMWI1MGE4Mjg3Zjc4ZjEyYWNhNTgyZTllNmRkNGRiNDM0YTBjYjIifQ"
+        },
+        {
+          "resource": "repo://tests/mixing-queue.integration.ts#L427-L443",
+          "version": "repo-lines-v1:sha256:7d0ebd9ad2f06020d2376a5abd521ca3c7244294866f1f0c608008b003f9979b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRhM2FhMDQzNmRlNDFlYmJiNjM2YmE5NWQyYzY3NzZjODJhMzM2NzIyNTJjMTY5NzdmOGU4MTY1NmQ3Yzk0ODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI1YzJmODYyMzQ3NTE0YmJjZTQzYTBiNjU4MDViZTIxMDFmYjIxOTIyN2M3ZjIzNWUwMjdlNzAwNDNiMDU2ZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdkMTVkMDBjOWJlNWUwNTMwYzMwYzRhM2MyMWIyYTI2YzA1NDdhYzNlMWM1NTkyZjEzNzAyYTE3OGJlNmEyYzcifQ"
+        },
+        {
+          "resource": "repo://tests/vocal-profile-analysis-queue.integration.ts#L500-L511",
+          "version": "repo-lines-v1:sha256:aaf31e06d5bc4d8dd6960ba7e9edb15ba0414750d09ef9305bc71d578b7fa561:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2NTk1ZjRlZTVmZjYzZDUwOTUwNDE5ZGMzNDQxNDUxMzg1MWRjOTczNmZkMTdhNGY3YmZhOTMwYjI2MWI2ZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2NDU3MWViMDI1ZDk5ZTZmOGUzMWY4NDMxYzU3YTFlYTQwMjQ4OGY0Njg0YTBmYWM4YzlhMTg2NDc5M2JmYWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE1OWE1NzdhNzZkYTg5ZGMyOTA4ZDM1NTQ4YmExNTQyY2E2MTZmOGI4ZThjNzJmZGMyODIxM2NiYTEzYTM4YzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY1ZDk2ZjY3YjMxMjg5NTc2ZjQxNGVlZTU0MjNiYzQ4MzdmYTk2M2RlMDMwNTM0ZGE1ODNjMTVlMDA4ZGQ1NTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8641e7023443455e9b9a9842fbd469b9",
+      "statement": "곡 분석 확정에는 사용자 알림이 붙지 않아요. 곡 분석 워커는 `createNotification`을 쓰지 않고 `READY`로 끝나는 트랜잭션은 `SongAnalysis`와 `SongAnalysisJob` 행만 갱신해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/worker.ts#L224-L313",
+          "version": "repo-lines-v1:sha256:86b6b3eb49a817f91429c2d33596cc76cf6cddcfdd61d76a79ddbb57de76633b:eyJzZWxlY3RlZExpbmVDb3VudCI6OTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhZjJjZDBiNzk0MTM4YzljOTM3Y2U5Yzk4NDQ1NTEzOTcwZDRhMTlhYmFhZGI3MjUzNDU5NzMxMWI2MzJhYjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyZDExY2FmNDNlOTdlZjM2OWU2YmVlZDFhMjY4YmQwNTgzOGYyOWI5ZGQyNTRiZjY5YmE2NDg4NDE0NzIzNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5NmUxMDhlMjVmMmFmY2MwZTZlNGJiMDYyMTk1OWVhMDI1M2M0NTBjZmYxN2I0NmQyYjk0ZTc5MTkxNzQ2ZGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjllODQ3YjNlZGIxZmViY2FmMzljZjM3OGFiZDg5N2U3NzU3YjU0NmVmMTVhMjQ3NTQ3MjkxNTJlZjJmZWZlMmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e9de04332c594d199932a2ba08a8736c",
+      "statement": "티켓 지급 알림만 작업 확정 트랜잭션 밖에서 만들어져요. `adjustUserTickets`는 `applyTicketChange`로 원장 행을 확정한 뒤 `amount > 0`일 때만 `TICKET_CREDIT` 알림을 만들고, `dedupeKey`가 `ticket-ledger:{ledger.id}`, `href`가 `/account`예요. 차감 조정(`amount < 0`)은 알림을 만들지 않아요.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/manage-tickets/api/adjust-user-tickets.ts#L21-L42",
+          "version": "repo-lines-v1:sha256:99caff3f82340d2ed1a8bd9d460cf8c8bb399172c39581111acfea82ec9059e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjZjQ5ZTgyZjk2ZjU3YTU3ZDgzZjFkOWY1NDcxYjVmYWYzOGZjZGFjM2NjNDJkNjM1YjQwODgxZjI4OTdiOTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwM2M2NGEyOTMyNzdlMjA3YzFmOTg1MmNmMDYzYmU4YmE3YWY5ZjZkNWYzNGIyMjBjNzAyYWZjZmQyZmFkZWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRmMmUyOTFjMTUwYmRlMTQ0ZDBiZTk2MDk1YjczODE0NmFlNWQwYzkzMDdjOTE1ZTVlN2YxMzc3YTk3ZjEwM2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://tests/admin-operations.integration.ts#L51-L75",
+          "version": "repo-lines-v1:sha256:26813aa8f805f88b296d27f765e95772df7ebfd14249e7ff4c3d76dbbb55976a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4ZDNkNDBjZjM4YmY2ODdkZWUzOGZlYWI1Mjk0ODFhYzk5NmUwNmY5YWZmZjBlMzdlNzVlNzgzODBhYjU5NzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2NjlmM2ZjNjY2NmFlNzU3MGUyYjJiZmY3MTc4YzMyOGMxODgxNTI4MjI2NDNlYzMzZDBiNWNlOWQ3MmE0NmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFlMGZhZGZjZmMwZWFmY2ViNzg3MmNhYTY4MzkxNmU5YTJmMGU0NzA5Mjk2NGNlNjZlYTdlMGJmZmRlOTU5MjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc1NzAxMGFlMjU1MTY3NTY2OGYzYjVmMzQwOGNiNDFkMmY0NzJmNjY2YWRlMzQ3YTgwZGZmMTJjMjZlZDUyNWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_be3c42b1f37843a2b86a033d793258ae",
+      "statement": "관리자가 같은 `idempotencyKey`로 지급 조정을 다시 보내면 `applyTicketChange`가 기존 원장 행을 반환하고 코드는 그 id로 알림 생성을 다시 시도하지만, `dedupeKey`가 같아 결과는 여전히 한 건이에요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L48-L61",
+          "version": "repo-lines-v1:sha256:d4ebca97890dc72706b5ec865d99a758739161086d5fc2830d9bafb0988de34e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwZWQ1YWFmYTVjMTFkNGNlOThmMWZkZTk1NWI4MGRhYjVjZDljMmE2NzI2MmQzY2U0ZTQ5YWQ5Mzc4MzBkODgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQxYzYzMDgwMzNmMTkwYzMxZTI3ZTkzOGJhN2MxYzU1MzBhYTJlZTNhODFjOWU2NTdiMTZjNjY5YTA1M2EzMWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEyYzM5MzM2MmYyOGY2NjUzNTExYjkyYmI3ZmE5OWFjNjFiOWEwYjk4Y2Q0MjRkMjRlZjYxMmIwOTI2YmFjOWMifQ"
+        },
+        {
+          "resource": "repo://src/features/manage-tickets/api/adjust-user-tickets.ts#L21-L42",
+          "version": "repo-lines-v1:sha256:99caff3f82340d2ed1a8bd9d460cf8c8bb399172c39581111acfea82ec9059e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjZjQ5ZTgyZjk2ZjU3YTU3ZDgzZjFkOWY1NDcxYjVmYWYzOGZjZGFjM2NjNDJkNjM1YjQwODgxZjI4OTdiOTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwM2M2NGEyOTMyNzdlMjA3YzFmOTg1MmNmMDYzYmU4YmE3YWY5ZjZkNWYzNGIyMjBjNzAyYWZjZmQyZmFkZWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRmMmUyOTFjMTUwYmRlMTQ0ZDBiZTk2MDk1YjczODE0NmFlNWQwYzkzMDdjOTE1ZTVlN2YxMzc3YTk3ZjEwM2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://tests/admin-operations.integration.ts#L51-L64",
+          "version": "repo-lines-v1:sha256:5d9bef9dc8074b8626dcbf880409449ae0038c59f9c4c3dc6c88928ecb88d8e1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4ZDNkNDBjZjM4YmY2ODdkZWUzOGZlYWI1Mjk0ODFhYzk5NmUwNmY5YWZmZjBlMzdlNzVlNzgzODBhYjU5NzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxODQzNDA1NjFlMzQ1OGY4MzRlYTAxMmFjMTM4NzhhMmM4NDllNmE2YWU4NDU3NmRiNzNiYTUwNzZiZTA2ZWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFlMGZhZGZjZmMwZWFmY2ViNzg3MmNhYTY4MzkxNmU5YTJmMGU0NzA5Mjk2NGNlNjZlYTdlMGJmZmRlOTU5MjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU4NTg3YjNmZGYzOTk4MGM5MGQxZDZkZmVhNTMyODRhYjJhMDQzNzBkZmM0Yzk4NzE1NWUxZWRjZjUyMjI2YmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_31372ae119154233a63998992a67aa28",
+      "statement": "알림 읽기 경로는 세 경로뿐이고 모두 세션 사용자로 범위가 고정돼요. `GET /api/notifications`는 목록 한 페이지, `PATCH /api/notifications/{id}`는 그 알림을 읽음으로 표시, `POST /api/notifications/read-all`은 읽지 않은 알림을 모두 읽음으로 표시하고 `{ updatedCount, unreadCount: 0 }`을 돌려줘요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/notifications/notification-read-route.ts#L6-L19",
+          "version": "repo-lines-v1:sha256:acd418be83046844d86fd0e35523d004446dc7917eafc17e6f7e34c65a347a17:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJkODQwZTIwOWI5ZWRkY2I2ODA1YWFjZWViNTU0ZDJiMjBiOTk4ODUxNDM2YTM1ZTUwNWVkY2ZjMjQ5NDgzYTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkNGE4MzcxNzcxMDdmZTg1MDRiMzk2NWMzYzMyZjc2NWI3N2NkYmI4NmNlYjQ1Mjk0N2NiNGFiMDFlNmE2ZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU4MmZkYWFhMjc5ZmY4ZmM3Mjk5MTQwYTM0MGIzZDFkNmI2ZDM0YjdkMmM0YzUyZWYzNTQ5YjBiMjYzZDZlYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/notifications/notifications-read-all-route.ts#L5-L11",
+          "version": "repo-lines-v1:sha256:fa27d85da8e902363e883f32b87bffed83c302806a5f5c202642e7d67f09c5b0:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTNkOTQ5YWU1OWYyMTliMTc3NWNiMzFiYzFjNzhkNDAwZmE5NjgxNGVmNjUwNWZjNGFkZjA2M2EzZWI2MzM4NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmQ5MzIzNDlkNTE1ODg1Yzk1MjE2YjMwYmFlYTZhZTk0MmQ3N2Q1ZTFjZjQwZTNiMjA3MTJhN2Y4Y2M5NjlhZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTc1OTdlZjAxN2M3OThmZGMxZmI2ZmFkMTg1YmI0ODFlZGMzMGVjMDA2MDkxZmU4NDdkYjkwOTJkYjdiNTg3MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/notifications/notifications-route.ts#L5-L17",
+          "version": "repo-lines-v1:sha256:be9cdd218827f3e6f3fcf4b803e8071600963243607c9eedcfd2bf7f76cd7b6e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyZWIwMTM1YzcwZTY5YzliZGZkZDkyYTMyYTFhNTVjOTdhMWRjNzYyNmMyMTg4ZGJiODQ1Y2IwYmU0NDBjYjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlZDNmNTA4NjU5ZTQ4Zjc1NjNlYTUzMDYwZGNjYzNhZGVhZGJhMDIyYmRkMmY1OGU5Yzk4ZjNmNjA4ZTgxYmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNlMDdhMzUwOGQ1ZTY0M2NlNmFlOThhM2I1ZGUwMmU1OGRiZGNhOWI4ZjY3ZTFhYTAzNmVjYmQ3OGVjMjZhOGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_dea8747c5e534de091a537765c506d8c",
+      "statement": "`markNotificationRead`는 `id`·`userId`·`readAt: null` 조건으로 갱신한 뒤 `id`·`userId`로 다시 조회해요. 그래서 이미 읽은 알림을 다시 눌러도 갱신 건수는 0이고, 없는 id나 다른 사용자의 알림은 `null`이 되어 라우트가 `NOTIFICATION_NOT_FOUND`(`\"알림을 찾을 수 없어요.\"`, `retryable: false`) 404를 반환해요. `uuid`가 아닌 id도 같은 404예요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/notifications/notification-read-route.ts#L6-L17",
+          "version": "repo-lines-v1:sha256:ca6794470de84d36376d619dc8af5ddd523074ddd36f9d87f54fbd17e90cae32:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJkODQwZTIwOWI5ZWRkY2I2ODA1YWFjZWViNTU0ZDJiMjBiOTk4ODUxNDM2YTM1ZTUwNWVkY2ZjMjQ5NDgzYTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU4MmZkYWFhMjc5ZmY4ZmM3Mjk5MTQwYTM0MGIzZDFkNmI2ZDM0YjdkMmM0YzUyZWYzNTQ5YjBiMjYzZDZlYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk5YWJiYTE2OWZlOTk1MmM0MDRlNTAzZTUwNjFhOTQzMDkxYzE3MTVkYmIyNTdiYmJiODlhMGFlNjJmYTVmZGIifQ"
+        },
+        {
+          "resource": "repo://src/entities/notification/api/notification-service.ts#L141-L146",
+          "version": "repo-lines-v1:sha256:9d6503b5ccd9c2ee1753e379487d814dd8dc4e19bcbd2efd78c3cffa263b0d6b:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWY2ZjJhMjAxN2JiMDMyNGZmODliZTY1NDBkNDBlNmIwYzIxMDRkMWQ0MmNmZTJlNjI4MmU5ZjczZTk3MjYxMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTIwNDBlMDk1YTk0ZTJhZGE3NGU0MjFmMzcxODc1MWE5MWE4MTBiZmQ2NmY0OGY0ZTkzOWM3Yjc0ODBlYjY3MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTE2MWZhNjE4ZDBkMzYzMWY2YWNjODgyN2I2YjQ4MGU5NWRlMGQ5MDhlMDkzNTU1ZTk5NTgyNGQ0ODRiM2UxZiJ9"
+        },
+        {
+          "resource": "repo://tests/notification-routes.integration.ts#L76-L93",
+          "version": "repo-lines-v1:sha256:86913dec11520d784d14d939f2e106d8b1c586ed91e78e2eba54b09c3442f89c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwOWViNWNlOTgyY2E0MGZjNGZkNzJiMDI4ZTYzNGNlYjA1ZmRjZDA5MWVmNmZkOTdmMjE4YjAwYWEyODZlMTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRmOWM4ODAzNTJjNGVlMmEzMDcyNjZmYzI3ZjA5Y2MwZTdkYTJmMmNiNzE2NDQzNTBiZTViYTBhMDczNTE3YzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU1NzBlZjFiODY1MmRiMWVmNDZjODI1OWUyZDY2MGIzMmFkODYxMzRhN2M3NjkzMjc5OWUxZmExNWE4MDlhMmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY4ZGZhNzVkMjAzMTdiNTMyNDkwODdmN2UwYWFmYTYzZDc1OGMxYTg0NWYwZGM4NmMwZDY3YjFiMTUyZDFmYTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f5bd5f0516014532a2196cb94b049c0f",
+      "statement": "알림 목록 필터는 `page` 기본 1(숫자가 아니면 1, 소수는 버림, 0 이하는 1), `pageSize` 기본 20(1~50 밖이면 50으로 자르지 않고 20으로 대체), `unreadOnly`가 `true`인 값만 참이고, 정렬은 `createdAt` 내림차순 뒤 `id` 내림차순이에요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/notification/api/notification-service.ts#L109-L131",
+          "version": "repo-lines-v1:sha256:781ea56778e7e826992dd5b697810bcc4c521c4428b2bbb546d890454ca946e3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzZTNiMmM2ZThjOGFkMjljZTc1YmU3YzA4NWRhMWNiYzQwMmE2OWJjMjIyMDhiZjUwZjA5MDZjNzZhOGMyOWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5NWZhMGYxMTE3YjVlYTQwNDM0MTQwZGRlMWEzNDBjNzIwZGRiZjMyNjIxMmUxOTE4MzhkNGIxNTZkMzE2YmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY5Zjc2MDQ4NDJiMTczYjE2Mjk2YjAwNmJiMmYzNGMwMDM3NmNjMjkzNWY1MGM5MGZlMzNlMThlNjhhOWE3MzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI1Yzc5MjQzZDY5ZTdlNWViNmY3MjJiMTdkMmUyZmY0OTY4NTdiMzBlNWM2MTU5MTg2MjRiYzQ2YTUyYmZmMWIifQ"
+        },
+        {
+          "resource": "repo://src/entities/notification/model/contract.ts#L18-L25",
+          "version": "repo-lines-v1:sha256:f29d94634217b33d295d13eed625cb6df0f17e208d658af9db868cb665fe21df:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjkwMzdjODEwYjZjYzk0NTliYTQxZmY0ZmQxODkxY2YwZWJjYmJkNzM2MTZlY2Y0Y2I0NDRjNjJjYmE5YmM0MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjZmNWI0MGIxNTg0NTdkMTc4NjRmMjE3OTA3ODZkZDVhMmVjZGI2NGI2NmE2NTFmNzg4ZDRlMjVjZDMzMDNkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmQyZDMyYjQ3YmRiN2Y5OGFmMjU0OWE0YjljY2E5MGNjNWFiZGZlNzkzNjI5NGEwMGZmODQxNGIwNGNmNjAzOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGVlNDM4MThkM2M5NWFjNDFmNzdlZWZlYTcxZDI4ZTU1MjdhMjUzZDA2MGI3MDQzNGQ0Mzg2ZTdhMjc3YmY1ZSJ9"
+        },
+        {
+          "resource": "repo://tests/api-contracts.test.ts#L132-L142",
+          "version": "repo-lines-v1:sha256:49db5b915a50f7165e44c1d741e57bec89df5ae26c16fd74eb02bef5e91094ab:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiNjcwZDgyMmQyZTIxYWE1ZTQ0ZGNhMTU3YTM4NGJiY2NmNTA2YzYwYjg5NmE5ZTk1YTI2MzE1MGYxYmQ0MWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVhZjIzNGM1YzE0MzFlYTViNmFkODNmNmYzMTk1M2U1OTYyYWFiODU3ZDliYzUxYmM0MWFiODg2MzY4NTJlNmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE5MjZkNWM1MDhmMjQxNjVhOWY1MGFjY2E1NGNiMGY2YTY1YTBmNmFhMDU0OTFkYzFiNWE1MmQ5ZDAzODNjOWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8706c91526e34095857f093877ad1550",
+      "statement": "목록 응답의 `pageCount`는 `max(1, ceil(total / pageSize))`이고 요청 페이지가 더 크면 `pageCount`로 맞춰요. `total`은 필터를 적용한 건수지만 `unreadCount`는 필터와 무관하게 그 사용자의 읽지 않은 알림 전체 건수예요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/notification/api/notification-service.ts#L115-L139",
+          "version": "repo-lines-v1:sha256:ea86f8ce8446569783673f0e30bdba160aa64d862f11dbb1e8930ff91c15a035:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiOWViNjExNzhjZTliYmNkMzBlNGQ5ZTUwMjlmNzUzNjc0NDU2MTNiYTUzNGRhMTdiYjQ3ZDViNjQyYWQzMDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM1NmQ0YjllMmY1NzQ3NmMyZmRlZTAxNjQzNzEyMTc2YWQyZTk5NjY5NTgzZmI0NzRmNjEwMDBmODY0MzkwMDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA0Yjc5YWFiYjZlNTc4M2JlZDEzY2JiZjQ2NjM5YWU3MjIwODJiOWEyNDVmM2U3MTEyMGEyZGFkOGQzN2VmYjIifQ"
+        },
+        {
+          "resource": "repo://tests/notification-service.integration.ts#L49-L73",
+          "version": "repo-lines-v1:sha256:c51c41de985bc268cb69d9bc1679a6fa312ba21afc081abe8a944f358bf99ab2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4NDQyNzczNjA5YWRkYmQzZDFiMDQwNjEzM2M5NjM0MTY4NTNjZDA1ZDVhZmQ5MTIyM2JiMjg3OWE1MGIyMzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlZTg3NDU2MzFjOWIwMTAyMWY3NWQ4MjBlZjU5MmM4NzUzYmRiYmJkMDI4OGVhOGUyOTYzMmE1YmQ3M2MxNTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE0OTIyYzRjNGUzNjcxNWFhZDE3YmI5OGIwZTdhODZlNDRmOTA0M2EzYTdmZmFkMWRlZDVjYzRkZjgyODg2NzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE0ZGFmOWNlNTk3N2EwN2IwOGI0ODhlOTA4MDFkOGJmMDgwMTE0YzU3NmRjYjQ3MjFmZTI2ZDMzNjQ5MDFjNDQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c91030039e1a47b2a62c7c061b734e14",
+      "statement": "화면은 두 경로로 알림을 읽어요. 헤더의 알림 벨은 `{ page: 1, pageSize: 5, unreadOnly: true }`를 조회해 배지 숫자를 그리고, 알림 페이지는 서버 컴포넌트가 `pageSize: 20`, `unreadOnly: false`로 첫 페이지를 조회한 결과를 클라이언트 목록의 초기 데이터로 넘겨요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_pages/notifications/ui/notifications-page.tsx#L13-L26",
+          "version": "repo-lines-v1:sha256:f71841c420d82badca32454b46bc35519f627c4ed55b9d7d8cdd47a1bfb27a17:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNGI0ODllZGExMTgxYjQ3NDkwZjQyYTMxZjkzZDkxN2FlZjczM2ZmNDYyYjY1ODk5MDRlMTg5YmY1MmM1OTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZWYwMWJjMDhkYmMzYjYzZTRlNzVlYTNkMjZhNWI5NDE4OTE4NzdlMjdhZDg5MTMyOWM4NDExZDdkOGRjNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQyNjZlZTdkNzMzM2ZhZTdmYjQ1YzNhNWFiMzYxZGI4YTdjNzcyNTNkNGM4ZTZlMDhmNThmZWM3MWZhMWEwNzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/features/manage-notifications/ui/notification-bell.tsx#L26-L32",
+          "version": "repo-lines-v1:sha256:4cfcf4c25c703cd0a508936dca5f2f9ccbc574b81d7571fecd636c4ac607a7c1:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjRiOWFhNzY2MjI3YzU4ZDVhOWE4MjljN2Q3MWQ5ODg2Yzc2MGQyYzg2YzY3MGUwYWYwODM2ZjA1ZTc4N2FiZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmZkMTA5N2QwMzY0NDFhM2JkOTlmMzc0YTliN2VlZDA1MmMyYTZlZjVkZjZjNWUwMGFlNjg5Njg5NWI3ODMzYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzk4MjczODkwZmY3MzJjN2VmOTkwOTAyYzdjMDAwNTljMzhmNTk5NDBlYjZlZjFkODYzMDc5NDc5ZjU0YTA5NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDU5ZDJhOTJlNzU3OTI3MTI0NzJiN2Y4ZDNiMGM0ZWU0M2IzZjlkZTY4YWNmODg5NTBhYmE0YjgwZDczYzM1MyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_98d3179123ef4de796f650216d5e8473",
+      "statement": "알림 항목을 누르면 `PATCH`로 읽음 처리를 시도하고 `finally`에서 `href`로 이동해요. 그래서 읽음 요청이 실패해도 사용자는 알림이 가리키는 화면으로 이동해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_pages/notifications/ui/notifications-list.tsx#L26-L32",
+          "version": "repo-lines-v1:sha256:70a9a0a61c8e448fae94b3c2ea165b9256a54ba429c2a15b1211be8c0c87f0c9:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGNiZWRlODc3YWMzM2UxZWQ2ZmE3OGUzYzdiNTFlNTgwNTAzYTNjYThlNTdiMGRkZDBkMGRmNTRmZmQ2YjJmYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjYzOWUzMjAzMzAyOGNlNjgxNzIyZmZlNmIxZTJhNTMxNjRkM2MwNzkxNDI4MmNiNGUyMjk4MGE5ODQwOWJkZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzFjMTI5NDA1MWU1ZTJiY2E5ZTk4OTM0YjhiMTE0MjEyZTljNWZmOWY4YjkwNTVmMGM4MjkwMGI5NTRiMmFhZiJ9"
+        },
+        {
+          "resource": "repo://src/features/manage-notifications/ui/notification-bell.tsx#L34-L40",
+          "version": "repo-lines-v1:sha256:70a9a0a61c8e448fae94b3c2ea165b9256a54ba429c2a15b1211be8c0c87f0c9:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGNiZWRlODc3YWMzM2UxZWQ2ZmE3OGUzYzdiNTFlNTgwNTAzYTNjYThlNTdiMGRkZDBkMGRmNTRmZmQ2YjJmYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGI0NDFjYTdjOTY4ZDIwNTlhYjY1N2Y4MDQzNjU3NDY0M2UwNmZjNWZlMzJhNjcwODRkYzU0ZWNiZTVmYmZhZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDE5YjE2MWJkYmM1YzNlNTVhYjQ5MzMxMjVmYmM1MWQyNGJjOTRlMGI2NWRkNjE0ZmE2MTc3YTIxYTEyZTc5MCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_94d655cc8b6444ecbe984db861e60775",
+      "statement": "`type`은 DB에 대문자 enum으로 저장되고 API 응답에서는 소문자 문자열로 직렬화돼요. 화면은 소문자 값을 키로 아이콘과 배지 색을 고르고, `readAt === null`인 항목에만 읽지 않음 표시를 붙여요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/notification/api/notification-service.ts#L46-L66",
+          "version": "repo-lines-v1:sha256:4cc1ac4f8fe61462d300be64d0a8362caef74ad71fb2bb1e6c2e38c7b769ae9e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5ODlmMGRjZjFmNWIyNzBjYjYyMmEwZGQ1ODRlZTE0NjU5ODVkOTVhNGFiMjQ3NTAzNDMxYjU4YTliNTM5NjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQxMGM4NjIwNGJmNDE2YWNmNzVlMzhmZGNkNzA0Njc4YWJkYzhmOWVjODQyNjM5MWVhNzRmZjYwZmFjNjE1ZGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2YTkxZTdlNGY4NzJmNDRiNjAwZDliOWUwODRhZjA3NTA2OGVjYmI1MGY5OGJkNzhhZGIzODZkMDI0MDhmZjMifQ"
+        },
+        {
+          "resource": "repo://src/entities/notification/ui/notification-item-content.tsx#L42-L72",
+          "version": "repo-lines-v1:sha256:6e879940fa03e24e5d563dfdad03fb2d11e9b3506d45fff51b2a5b63c328ccd6:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmMzdlMGMyYzM5NWZhMDFlN2MxOThjNzRkZDhkZTY2MDA5N2VjM2Q0MzEzODcwMDM5Y2Y2ZjE3MzEyZmNmNWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjZmRkODhmNzZjNzAxMTE5MWNkOWIyNGE1YmM2M2FkYTRjNmUwYzlkOGFiZTg4OGU5NmU1ODQzMGU3M2ZlMDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ5M2JhMGVjZWU4NzhlNDY4MzgxYTcyOTE4ZDBkYzE0NTE4YzBjYTkzMjI0ZWRjOGU3N2E1NmIwOTY2ZjM3NTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiOGI2MDBhNWI0NDhiMWU0ZDAyZGYwOTc0NmVkM2NhMzE3MmY3NWM0YWFiYjAxZGRlMDgwZTM2Y2FiMDc0YjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e2c38d55d276499382562f3a627710ca",
+      "statement": "두 변경 범위 테스트 파일이 알림 계약을 지켜요. `tests/notification-service.integration.ts`는 중복 삽입·페이지 잘림·`unreadOnly` 필터·`read-all` 응답·소유권 범위·`href` 검증을, `tests/notification-routes.integration.ts`는 세션 사용자 목록 범위·404·401을 확인해요. 두 파일 모두 `DATABASE_URL`이 없으면 스스로 건너뛰고, 현재 `package.json`의 어떤 스크립트도 이 두 파일을 직접 지정하지 않아요.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L23-L23",
+          "version": "repo-lines-v1:sha256:efa74bba998a388fc9e8f38633ae8cbf9238b3e5ae3455221884364b19e7ed72:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWZhNzRiYmE5OThhMzg4ZmM5ZThmMzg2MzNhZThjYmY5MjM4YjNlNWFlMzQ1NTIyMTg4NDM2NGIxOWU3ZWQ3MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWZhNzRiYmE5OThhMzg4ZmM5ZThmMzg2MzNhZThjYmY5MjM4YjNlNWFlMzQ1NTIyMTg4NDM2NGIxOWU3ZWQ3MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjAzYTNjZTVlM2YwN2M3ZTg1NDZkNDYxMTY3ZTEwYjk2ZDVhYzUwOWQ1ZDdkNmZjZTc4OWJjNDI1MWI4ZmMxNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWM1MDM1MmQ5YjhmNGY3OGE2OTI3NzgxOWU0NDIzMTcwNTcyNTE0YTUzNmIzZjI0YTY3OGJkYTk0ODM5MDZmNCJ9"
+        },
+        {
+          "resource": "repo://tests/notification-routes.integration.ts#L7-L118",
+          "version": "repo-lines-v1:sha256:9b910bdd53b8eccbe2c0c077e5b8ce2a97f16753356e794cee0921d29c64b515:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI2MzMyY2UwNmQyZjcyN2NjYjAwYmM3NTYyMzhhNjNlNDM5NGNhNTFkNzA1OTJjYTBkOGY4OTdjYTFiYjQ5ODIyIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI4MGY3ODhhNTcyN2Q1ZGQ0ZTlhYjVhYTU4YWYyNzM0NTM3ZDdlYjA1NTYyOWU5NDJlMTlhZjk3OTkxMWI1Y2NlIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJmNGRiNDVlMGJlMzE4MDU2MGNlMjQ2NjJjZTUzNmViZjJkYmJiZGU0Yzg4Mjk2N2FkYTU2NDExZTc4M2RhNmRkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIzODczODE1ZGJmZDQ4MjFhMmI1ODQ5NjNmNjRjNWZlNTM5MTkxMGE2ZjM1ZDNlMWVhYzE5NGMyMDk5YTlhMWYxIn0"
+        },
+        {
+          "resource": "repo://tests/notification-service.integration.ts#L7-L87",
+          "version": "repo-lines-v1:sha256:4b1249e61739e5cd66af2abfbcaf4e9b6b0a309d2806f0dc176f837e5d125ff3:eyJzZWxlY3RlZExpbmVDb3VudCI6ODEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3NmI5OTcwYjUyZTZiYTJkNmRjZTIxNTY5YjNlMTg2YzViZTE5ZWNiMzY5YzJmNjQzYmYwNWU0N2VlNmYzYjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0ZGI0NWUwYmUzMTgwNTYwY2UyNDY2MmNlNTM2ZWJmMmRiYmJkZTRjODgyOTY3YWRhNTY0MTFlNzgzZGE2ZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-18T16:47:52.081Z"
+  }
+}
