@@ -39,3 +39,5 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **PR**: -
   - **Test/Log**: `pnpm test` exit 0, `pnpm exec tsc --noEmit`, `pnpm run lint`, 통합 테스트 1 test pass
 - **Consequences**: 운영자가 dry-run 한 번으로 잔액 변화를 확인할 수 있다. 원장·지갑 스키마와 지급 규칙은 그대로다.
+
+<!-- lee-spec-kit:workflow-sync sha256:49ead9ac2da4c3a9a6d082a46dc3f4b3553a003af67402750c43b95f5ede6256 -->
