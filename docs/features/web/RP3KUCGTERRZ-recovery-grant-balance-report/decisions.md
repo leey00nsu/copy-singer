@@ -41,3 +41,9 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Consequences**: 운영자가 dry-run 한 번으로 잔액 변화를 확인할 수 있다. 원장·지갑 스키마와 지급 규칙은 그대로다.
 
 <!-- lee-spec-kit:workflow-sync sha256:49ead9ac2da4c3a9a6d082a46dc3f4b3553a003af67402750c43b95f5ede6256 -->
+
+## D002: 구현 승인 (2026-09-19)
+
+- 사용자가 변경 결과(dry-run·NOOP·GRANTED 잔액 필드)와 검증(tsc·lint·통합 테스트·`pnpm test` exit 0)을 확인한 뒤 A로 구현을 승인했다.
+- 승인 대상 구현 HEAD는 f25694a(`ticket-service.ts` + 통합 테스트)다. 이어서 local verify를 진행하고, main fast-forward 병합은 별도 local_merge 승인 경계에서 받는다.
+- Knowledge 게시에서 `operations/recovery-runbook.md`가 결과 필드 변경을 반영하는지 확인한다.
