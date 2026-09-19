@@ -203,8 +203,30 @@ export async function recoverSignupGrant(input: {
     const existing = await tx.ticketLedger.findFirst({ where: { userId, kind, type: "SIGNUP_GRANT" } });
     if ((intent && intent.amount !== amount) || (existing && existing.amount !== amount))
       throw new Error("Signup amount conflicts with the recorded intent or ledger.");
-    if (existing) return { action: "NOOP", userId, kind, amount, ledgerId: existing.id };
-    if (!input.apply) return { action: "WOULD_GRANT", userId, kind, amount };
+    const wallet = await tx.ticketWallet.findUnique({
+      where: { userId_kind: { userId, kind } },
+      select: { balance: true },
+    });
+    const balanceBefore = wallet?.balance ?? 0;
+    if (existing)
+      return {
+        action: "NOOP",
+        userId,
+        kind,
+        amount,
+        ledgerId: existing.id,
+        balanceBefore,
+        balanceAfter: balanceBefore,
+      };
+    if (!input.apply)
+      return {
+        action: "WOULD_GRANT",
+        userId,
+        kind,
+        amount,
+        balanceBefore,
+        balanceAfter: balanceBefore + amount,
+      };
     await tx.signupGrantIntent.upsert({
       where: { userId_kind: { userId, kind } },
       create: { userId, kind, amount, operator: input.operator, reason: input.reason },
@@ -218,7 +240,15 @@ export async function recoverSignupGrant(input: {
       idempotencyKey: signupKey(userId, kind),
       reason: `가입 지급 복구 (${input.operator}): ${input.reason}`,
     });
-    return { action: "GRANTED", userId, kind, amount, ledgerId: ledger.id };
+    return {
+      action: "GRANTED",
+      userId,
+      kind,
+      amount,
+      ledgerId: ledger.id,
+      balanceBefore,
+      balanceAfter: ledger.balanceAfter,
+    };
   });
 }
 

@@ -44,12 +44,52 @@ test("signup snapshots, legacy partial grants and session reads preserve the led
       operator: "test-operator",
       reason: "verified old amount",
     };
-    assert.equal((await recoverSignupGrant(recovery)).action, "WOULD_GRANT");
+    const dryRun = await recoverSignupGrant(recovery);
+    assert.equal(dryRun.action, "WOULD_GRANT");
+    assert.deepEqual(
+      { balanceBefore: dryRun.balanceBefore, balanceAfter: dryRun.balanceAfter },
+      { balanceBefore: 0, balanceAfter: 7 },
+    );
     assert.equal(await prisma.signupGrantIntent.count({ where: { userId: legacy } }), 0);
-    await Promise.all([
+    const applied = await Promise.all([
       recoverSignupGrant({ ...recovery, apply: true }),
       recoverSignupGrant({ ...recovery, apply: true }),
     ]);
+    const granted = applied.filter((result) => result.action === "GRANTED");
+    const duplicate = applied.filter((result) => result.action === "NOOP");
+    assert.equal(granted.length, 1);
+    assert.equal(duplicate.length, 1);
+    assert.deepEqual(
+      {
+        balanceBefore: granted[0]?.balanceBefore,
+        balanceAfter: granted[0]?.balanceAfter,
+      },
+      { balanceBefore: 0, balanceAfter: 7 },
+    );
+    assert.deepEqual(
+      {
+        balanceBefore: duplicate[0]?.balanceBefore,
+        balanceAfter: duplicate[0]?.balanceAfter,
+      },
+      { balanceBefore: 7, balanceAfter: 7 },
+    );
+    assert.equal(
+      (
+        await prisma.ticketWallet.findUniqueOrThrow({
+          where: { userId_kind: { userId: legacy, kind: "VOCAL_ANALYSIS" } },
+        })
+      ).balance,
+      7,
+    );
+    const settled = await recoverSignupGrant(recovery);
+    assert.equal(settled.action, "NOOP");
+    assert.deepEqual(
+      {
+        balanceBefore: settled.balanceBefore,
+        balanceAfter: settled.balanceAfter,
+      },
+      { balanceBefore: 7, balanceAfter: 7 },
+    );
     assert.equal(await prisma.ticketLedger.count({ where: { userId: legacy } }), 2);
     assert.deepEqual(await prisma.ticketLedger.findMany({ where: { id: before[0].id } }), before);
     await assert.rejects(recoverSignupGrant({ ...recovery, amount: 3, apply: true }), /conflicts/);
