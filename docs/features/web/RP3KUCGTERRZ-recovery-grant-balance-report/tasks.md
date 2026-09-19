@@ -75,18 +75,18 @@
 
 ---
 
-- [TODO][PRD-NFR-017] T-RP3KUCGTERRZ-01 복구 결과에 지갑 잔액 포함
+- [DONE][PRD-NFR-017] T-RP3KUCGTERRZ-01 복구 결과에 지갑 잔액 포함
   - Date: 2026-09-19
   - Acceptance:
-    - `--apply` 없는 dry-run이 `balanceBefore`와 지급 후 예상 `balanceAfter`를 반환하고, 지갑 행이 없으면 0에서 시작한다(AC-01).
-    - `NOOP`은 `balanceBefore == balanceAfter`, `GRANTED`는 원장에 기록된 잔액을 반환하며 dry-run은 DB를 바꾸지 않는다(AC-02).
-    - 지급 로직·멱등 키·충돌 검사·원장 스키마·기존 필드가 그대로다(AC-03).
-    - `pnpm test`, `pnpm run lint`, `pnpm exec tsc --noEmit`가 통과한다(AC-04).
+    - [x] `--apply` 없는 dry-run이 `balanceBefore`와 지급 후 예상 `balanceAfter`를 반환하고, 지갑 행이 없으면 0에서 시작한다(AC-01). 통합 테스트가 `0 → 7`을 단언한다.
+    - [x] `NOOP`은 `balanceBefore == balanceAfter`, `GRANTED`는 원장에 기록된 잔액을 반환하며 dry-run은 DB를 바꾸지 않는다(AC-02). 동시 실행에서 `GRANTED`(0→7)와 `NOOP`(7→7)를 각각 확인했다.
+    - [x] 지급 로직·멱등 키·충돌 검사·원장 스키마·기존 필드가 그대로다(AC-03). 추가된 필드는 `balanceBefore`·`balanceAfter`뿐이다.
+    - [x] `pnpm test`, `pnpm run lint`, `pnpm exec tsc --noEmit`가 통과한다(AC-04).
   - Checklist:
-    - [ ] `recoverSignupGrant`가 트랜잭션 안에서 지갑을 읽어 세 결과에 `balanceBefore`·`balanceAfter`를 담는다.
-    - [ ] `tests/signup-recovery.integration.ts`에 dry-run·NOOP·GRANTED 잔액 단언을 추가한다.
-    - [ ] `pnpm exec tsc --noEmit`, `pnpm run lint`, 해당 통합 테스트를 통과시킨다.
-    - [ ] `pnpm test`를 실행해 전체 회귀를 확인한다.
+    - [x] `recoverSignupGrant`가 트랜잭션 안에서 지갑을 읽어 세 결과에 `balanceBefore`·`balanceAfter`를 담는다.
+    - [x] `tests/signup-recovery.integration.ts`에 dry-run·NOOP·GRANTED 잔액 단언을 추가한다.
+    - [x] `pnpm exec tsc --noEmit`, `pnpm run lint`, 해당 통합 테스트를 통과시킨다.
+    - [x] `pnpm test`를 실행해 전체 회귀를 확인한다(exit 0).
   - Review Evidence: -
   - Review Decision: -
   - Review Round: -
@@ -105,9 +105,9 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
-- [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
+- [x] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
 
 ### 테스트 실행 기록
 
@@ -116,6 +116,9 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `{실행한 테스트 명령어}` | `-` | `{PASS/FAIL 요약}` |
+| `pnpm exec tsc --noEmit` | `2026-09-19` | `PASS (exit 0)` |
+| `pnpm run lint` | `2026-09-19` | `PASS (exit 0)` |
+| `node --conditions react-server --import tsx --test tests/signup-recovery.integration.ts` | `2026-09-19` | `PASS 1 test: dry-run 0 → 7, GRANTED 0 → 7, NOOP 7 → 7 단언 포함` |
+| `pnpm test` | `2026-09-19` | `PASS exit 0: production build, 기존 회귀, Storybook, readiness 포함` |
 
 완료 기록에는 테스트뿐 아니라 build·typecheck·lint 등 Plan에서 정한 검증과 수동 검증 증거를 포함합니다. 자동 검사의 기준은 실제 `workflow.featureChecks`이며, 검사 생략은 통과로 기록하지 않고 명시적인 사유를 남깁니다.

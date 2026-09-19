@@ -32,10 +32,10 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: (A)는 검토 단계를 줄이지 못한다. (B)는 운영 절차를 한 번 더 늘리고 dry-run 결과와 조회 결과가 어긋날 여지를 만든다. (C)는 같은 트랜잭션에서 읽어 값이 일관되고, additive 필드라 기존 소비자를 깨지 않는다.
 - **Trace**:
   - **DOING 시작 시점**: 잔액은 이미 원장 행의 `balanceAfter`로 저장되고 있어 지갑 조회 1회만 추가하면 된다고 판단했다. 지갑 행이 없는 사용자는 0으로 처리한다.
-  - **DONE 전 확정 시점**: dry-run·NOOP·GRANTED 세 경로를 모두 테스트로 고정하고, 전체 검사 통과를 확인한 뒤 확정한다.
+  - **DONE 전 확정 시점**: 통합 테스트에 dry-run(`0 → 7`), 동시 실행의 `GRANTED`(`0 → 7`)·`NOOP`(`7 → 7`), 지급 후 재실행의 `NOOP`(`7 → 7`)을 고정했다. `pnpm exec tsc --noEmit`, `pnpm run lint`, 해당 통합 테스트, `pnpm test`(exit 0)가 모두 통과했다.
   - **머지 후 확인**: Knowledge 게시에서 `operations/recovery-runbook.md`가 결과 필드 변경을 반영하는지 확인한다.
 - **Evidence**:
-  - **Commit**: 태스크 커밋(ticket-service + 통합 테스트)
+  - **Commit**: 태스크 커밋(`src/entities/ticket/api/ticket-service.ts` + `tests/signup-recovery.integration.ts`)
   - **PR**: -
-  - **Test/Log**: `tests/signup-recovery.integration.ts`, `pnpm test`
+  - **Test/Log**: `pnpm test` exit 0, `pnpm exec tsc --noEmit`, `pnpm run lint`, 통합 테스트 1 test pass
 - **Consequences**: 운영자가 dry-run 한 번으로 잔액 변화를 확인할 수 있다. 원장·지갑 스키마와 지급 규칙은 그대로다.
