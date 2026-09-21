@@ -75,16 +75,16 @@
 
 ---
 
-- [TODO][NON-PRD] T-SRLN6KB2TCLV-01 GitHub Actions Browser E2E 제거
+- [DONE][NON-PRD] T-SRLN6KB2TCLV-01 GitHub Actions Browser E2E 제거
   - Date: 2026-09-21
   - Acceptance:
-    - [ ] `.github/workflows/e2e.yml`이 삭제되고 다른 workflow는 추가·변경되지 않는다.
-    - [ ] Coolify·애플리케이션 코드·로컬 E2E 명령과 테스트 자산은 변경되지 않는다.
-    - [ ] E2E 운영 문서가 CI 제거 후의 로컬 수동 실행 경계를 정확히 설명한다.
+    - [x] `.github/workflows/e2e.yml`이 삭제되고 다른 workflow는 추가·변경되지 않는다.
+    - [x] Coolify·애플리케이션 코드·로컬 E2E 명령과 테스트 자산은 변경되지 않는다.
+    - [x] E2E 운영 문서가 CI 제거 후의 로컬 수동 실행 경계를 정확히 설명한다.
   - Checklist:
-    - [ ] Browser E2E workflow 파일을 삭제한다.
-    - [ ] `tests/e2e/TESTING.md`의 GitHub Actions 설명을 정정한다.
-    - [ ] 삭제 범위와 로컬 E2E 자산 보존을 검사한다.
+    - [x] Browser E2E workflow 파일을 삭제한다.
+    - [x] `tests/e2e/TESTING.md`의 GitHub Actions 설명을 정정한다.
+    - [x] 삭제 범위와 로컬 E2E 자산 보존을 검사한다.
   - Docs:
     - project:tests/e2e/TESTING.md
   - Review Evidence: -
@@ -116,6 +116,9 @@
 
 | 명령어 | 마지막 실행(로컬, YYYY-MM-DD) | 결과 |
 | --- | --- | --- |
-| `{실행한 테스트 명령어}` | `-` | `{PASS/FAIL 요약}` |
+| `test ! -e .github/workflows/e2e.yml` | `2026-09-21` | `PASS` |
+| `find .github/workflows -maxdepth 1 -type f -print` | `2026-09-21` | `PASS: 남은 workflow 없음` |
+| `package.json test:e2e scripts 및 tests/e2e 주요 파일 존재 검사` | `2026-09-21` | `PASS` |
+| `git diff --check` | `2026-09-21` | `PASS` |
 
 완료 기록에는 테스트뿐 아니라 build·typecheck·lint 등 Plan에서 정한 검증과 수동 검증 증거를 포함합니다. 자동 검사의 기준은 실제 `workflow.featureChecks`이며, 검사 생략은 통과로 기록하지 않고 명시적인 사유를 남깁니다.

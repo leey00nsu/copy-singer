@@ -32,10 +32,10 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
 - **Rationale**: 현재 운영 책임을 Coolify 한 경로로 유지하면서 중복 CI 운영을 없앤다.
 - **Trace**:
   - **DOING 시작 시점**: 저장소의 유일한 workflow가 Browser E2E이며 Coolify 설정은 저장소 안에서 변경할 대상이 아님을 확인했다.
-  - **DONE 전 확정 시점**: 대기 중
+  - **DONE 전 확정 시점**: `.github/workflows/e2e.yml`만 삭제했고 `tests/e2e/TESTING.md`는 Coolify 자동 배포와 로컬 수동 검증의 경계를 설명하도록 정정했다. 앱 코드와 로컬 E2E 자산은 변경하지 않았다.
   - **머지 후 확인**: 대기 중
 - **Evidence**:
   - **Commit**: local workflow checkpoint 예정
   - **PR**: local workflow — 해당 없음
-  - **Test/Log**: Verification Contract의 파일 구조 검사 예정
+  - **Test/Log**: workflow 부재, E2E script·runner·journey 존재, stale CI 문구 부재 및 `git diff --check` PASS
 - **Consequences**: GitHub Actions는 배포 게이트가 아니며, 배포 전 품질 검증은 로컬 검사와 Coolify 운영 절차에 의존한다.
