@@ -29,7 +29,7 @@ runner가 임시 PostgreSQL 컨테이너·별도 DB·로컬 provider·별도 웹
 
 로그인은 테스트 전 DB session과 서명 cookie를 넣는 방식이다. 실제 Google 동의 화면/콜백·신규 가입은 이 E2E의 검증 대상이 아니다. 인증 bypass 없이 session 검증과 로그아웃을 실행한다. 실제 Modal GPU·Leemage 장애, 여러 브라우저/기기, 네트워크 품질, 실제 부하는 검증하지 않는다. worker crash/race/timeout/idempotency는 기존 통합 테스트가 보완한다. 과부하 429/503 등 승인된 의도적 변경은 이전 코드와 같아야 하는 계약으로 고정하지 않는다.
 
-## 결과와 CI
+## 결과와 수동 검증
 
 `artifacts/e2e/`에 baseline/candidate JSON report, 실행 로그, 실패 screenshot/trace와 비교 요약을 남긴다. 로컬 생성 fixture 세션만 포함하며 해당 디렉터리는 Git에서 제외한다. 실패 trace는 다음과 같이 확인한다.
 
@@ -37,7 +37,7 @@ runner가 임시 PostgreSQL 컨테이너·별도 DB·로컬 provider·별도 웹
 pnpm exec playwright show-trace artifacts/e2e/candidate/test-results/TEST_DIRECTORY/trace.zip
 ```
 
-GitHub Actions의 Browser E2E workflow가 PR마다 현재 코드의 suite를 실행한다. 최초 변경 전후 비교 이후에는 현재 suite를 지속 실행한다. 브랜치 보호의 required check 지정은 저장소 운영 설정에서 별도로 관리한다. 불안정한 테스트를 자동 retry로 숨기지 않으며 실패하면 로그/trace로 테스트 결함, 기존 앱 결함, 신규 회귀를 구분한다.
+운영 배포는 Coolify의 기존 자동 배포를 사용하며 Browser E2E는 GitHub Actions 배포 게이트로 실행하지 않는다. 배포 전 또는 회귀 확인이 필요할 때 운영자가 위 로컬 명령으로 현재 suite를 실행한다. 불안정한 테스트를 자동 retry로 숨기지 않으며 실패하면 로그/trace로 테스트 결함, 기존 앱 결함, 신규 회귀를 구분한다.
 
 ## 추가 회귀 경계
 
