@@ -122,3 +122,5 @@
 | `git diff --check` | `2026-09-21` | `PASS` |
 
 완료 기록에는 테스트뿐 아니라 build·typecheck·lint 등 Plan에서 정한 검증과 수동 검증 증거를 포함합니다. 자동 검사의 기준은 실제 `workflow.featureChecks`이며, 검사 생략은 통과로 기록하지 않고 명시적인 사유를 남깁니다.
+
+<!-- lee-spec-kit:workflow-sync sha256:c991b9229b28c8271b8c2d01c82f18788a5e12df20048920aca2eaa6144dbcfc -->

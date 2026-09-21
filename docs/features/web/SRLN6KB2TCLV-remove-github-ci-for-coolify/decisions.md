@@ -35,7 +35,7 @@ canonical docs surface 밖의 unmanaged docs 산출물(예: `docs/plans/*`, `doc
   - **DONE 전 확정 시점**: `.github/workflows/e2e.yml`만 삭제했고 `tests/e2e/TESTING.md`는 Coolify 자동 배포와 로컬 수동 검증의 경계를 설명하도록 정정했다. 앱 코드와 로컬 E2E 자산은 변경하지 않았다.
   - **머지 후 확인**: 대기 중
 - **Evidence**:
-  - **Commit**: local workflow checkpoint 예정
+  - **Commit**: `4d03336` (`feat(SRLN6KB2TCLV): GitHub Actions Browser E2E 제거`)
   - **PR**: local workflow — 해당 없음
   - **Test/Log**: workflow 부재, E2E script·runner·journey 존재, stale CI 문구 부재 및 `git diff --check` PASS
 - **Consequences**: GitHub Actions는 배포 게이트가 아니며, 배포 전 품질 검증은 로컬 검사와 Coolify 운영 절차에 의존한다.
