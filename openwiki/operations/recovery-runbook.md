@@ -3,9 +3,6 @@ type: how-to
 title: 복구 스크립트 운영 절차
 description: 접수가 확인되지 않은 외부 제출, 미정리 미디어 의도, 가입 지급 누락을 어떤 명령으로 조회하고 어떤 인자로 해소하며, 각 단계가 실제로 바꾸는 값이 무엇인지 정리한 운영 절차예요.
 tags: [operations, recovery, runbook, reconciliation, tickets, media]
-verified:
-  - by: openwiki/0.5.2
-    at: 2026-09-18T16:47:52.081Z
 sources:
   - id: openwiki-source-ea70eb6c045047448e446296
     resource: repo://.gitignore
@@ -41,7 +38,10 @@ sources:
     resource: repo://tests/signup-recovery.integration.ts
   - id: openwiki-source-d6b6d9cc70a3fbd449772f18
     resource: repo://tests/worker-recovery.integration.ts
-generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:47:52.081Z" }
+generated: { by: "openwiki/0.5.2", at: "2026-09-23T03:43:13.909Z" }
+verified:
+  - by: openwiki/0.5.2
+    at: 2026-09-23T03:43:13.909Z
 ---
 
 # 복구 스크립트 운영 절차
@@ -101,13 +101,13 @@ flowchart TD
 | --- | --- |
 | 조회와 처리의 구분 | `jobs:reconcile`과 `media:reconcile`은 인자 없이 실행하면 대상 행을 JSON으로 출력하고 아무것도 바꾸지 않아요. `--id`를 주면 그 행 하나를 처리해요. `tickets:recover-signup`에는 조회 모드가 없어서 인자를 다 주지 않으면 `Required:` 오류로 멈춰요 |
 | dry-run | `--apply`가 없으면 복구 스크립트 셋 중 어느 것도 DB를 바꾸지 않아요 |
-| 근거 기록 | `--operator`와 `--reason`은 `resolution` 값에 `{operator}: {reason}` 형식으로 남아요. 값이 비어 있으면 단건 처리와 가입 복구가 거부돼요 |
+| 근거 기록 | `jobs:reconcile`과 `media:reconcile`은 `--operator`와 `--reason`을 `resolution` 값에 `{operator}: {reason}` 형식으로 남기고, 가입 복구는 원장 `reason`에 `가입 지급 복구 ({operator}): {reason}`으로 남겨요. 값이 비어 있으면 셋 다 거부돼요 |
 | 실패 표시 | 오류가 나면 메시지를 표준 오류로 출력하고 종료 코드를 `1`로 세워요. 검증 스크립트도 같은 방식이에요([scripts/verify-database-song-catalog.ts](repo://scripts/verify-database-song-catalog.ts#L9-L11)) |
 | 남은 작업의 주체 | 믹싱 워커는 매 반복에서 환불 재처리, 외부 작업 정리, 미디어 정리를 차례로 실행해요. 이 자동 경로가 처리하지 못한 `UNRESOLVED` 행이 운영자 몫이에요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L573-L581)) |
 
 자동 정리 쿼리는 `status = 'PENDING'`인 행만 대상으로 삼고, 미디어 점유도 `PENDING`·`RECOVER`·`UPLOADING`·`STORED`와 lease가 만료된 `PROCESSING`만 후보로 봐요. 그래서 `UNRESOLVED` 행은 아무리 오래 두어도 자동으로 풀리지 않아요([mixing/reconciliation.ts](repo://src/_app/background-jobs/mixing/reconciliation.ts#L7-L24), [src/shared/media/operations.ts](repo://src/shared/media/operations.ts#L117-L127)). 왜 이 행들이 생기는지의 상태 기계는 [Job 큐와 lease 복구 계약](job-processing.md)과 [미디어 저장과 정리 의도](media-storage.md)가 설명해요.
 
-이 스크립트들이 기대는 복구 경로는 `pnpm run test:readiness`에 포함된 통합 테스트가 고정해요([package.json](repo://package.json#L70)). 그중 [tests/worker-recovery.integration.ts](repo://tests/worker-recovery.integration.ts#L112-L134)는 만료된 lease 회수와 예산 소진 작업의 종료 수렴을, [tests/media-recovery.integration.ts](repo://tests/media-recovery.integration.ts#L89-L108)는 사용 중 자산 삭제 거부(`MEDIA_ASSET_IN_USE`)와 신원 미확인 삭제 의도의 `UNRESOLVED` 잔류를, [tests/signup-recovery.integration.ts](repo://tests/signup-recovery.integration.ts#L40-L56)는 가입 지급 복구의 금액 충돌 거부를 확인해요. 이 명령이 함께 실행하는 나머지 파일과 복구 후 돌릴 검사 선택은 [변경 검증 경로](../testing/verification.md)가 정리해요.
+이 스크립트들이 기대는 복구 경로는 `pnpm run test:readiness`에 포함된 통합 테스트가 고정해요([package.json](repo://package.json#L70)). 그중 [tests/worker-recovery.integration.ts](repo://tests/worker-recovery.integration.ts#L112-L134)는 만료된 lease 회수와 예산 소진 작업의 종료 수렴을, [tests/media-recovery.integration.ts](repo://tests/media-recovery.integration.ts#L89-L108)는 사용 중 자산 삭제 거부(`MEDIA_ASSET_IN_USE`)와 커밋 전에 죽은 삭제 의도가 남지 않는 창을 고정해요. 같은 파일 [L68-L73](repo://tests/media-recovery.integration.ts#L68-L73)은 외부 파일 id를 모르는 업로드 의도가 `UNRESOLVED`로 남는 것을 확인해요. [tests/signup-recovery.integration.ts](repo://tests/signup-recovery.integration.ts#L54-L96)는 가입 지급 복구의 금액 충돌 거부와 중복 실행 수렴을 고정하고요. 그 내용은 아래 '가입 지급 누락 복구하기'에서 다뤄요. 이 명령이 함께 실행하는 나머지 파일과 복구 후 돌릴 검사 선택은 [변경 검증 경로](../testing/verification.md)가 정리해요.
 
 ## 접수가 확인되지 않은 외부 제출 해소하기
 
@@ -195,7 +195,7 @@ pnpm run media:reconcile --id <MEDIA_OPERATION_ID> --operator <NAME> --reason '<
 
 ## 가입 지급 누락 복구하기
 
-가입 지급 복구는 지급할 금액을 운영자가 명시하는 방식이에요. 아래 다섯 인자가 모두 있어야 실행돼요.
+가입 지급 복구는 지급할 금액을 운영자가 직접 명시하는 방식이에요. 아래 다섯 인자가 모두 있어야 실행돼요.
 
 | 인자 | 값 |
 | --- | --- |
@@ -205,16 +205,17 @@ pnpm run media:reconcile --id <MEDIA_OPERATION_ID> --operator <NAME> --reason '<
 | `--operator` | 확인한 사람 이름이에요 |
 | `--reason` | 확인 근거를 적어요 |
 
-하나라도 빠지면 `Required: --user ID --kind VOCAL_ANALYSIS|AI_MIXING --amount N --operator NAME --reason TEXT [--apply]` 오류로 멈추고, `--kind`가 두 값이 아니면 `Invalid ticket kind.`로 멈춰요([scripts/recover-signup-grant.ts](repo://scripts/recover-signup-grant.ts#L17-L22)).
+다섯 값 중 하나라도 없으면 스크립트가 `Required: --user ID --kind VOCAL_ANALYSIS|AI_MIXING --amount N --operator NAME --reason TEXT [--apply]` 오류로 멈추고, `--kind`가 두 값이 아니면 `Invalid ticket kind.`로 멈춰요([scripts/recover-signup-grant.ts](repo://scripts/recover-signup-grant.ts#L16-L35)).
+
+스크립트가 넘긴 값을 받는 [recoverSignupGrant](repo://src/entities/ticket/api/ticket-service.ts#L181-L253)는 같은 값을 한 번 더 검사해요. `kind`가 `VOCAL_ANALYSIS`·`AI_MIXING`이 아니거나 `amount`가 안전한 정수가 아니거나 `0` 미만 `1,000,000` 초과면 `An explicit valid ticket kind and amount (0..1000000) are required.` 오류가 나고, `userId`·`operator`·`reason`이 trim 후 비어 있으면 `user, operator and reason are required.` 오류가 나요([src/entities/ticket/api/ticket-service.ts](repo://src/entities/ticket/api/ticket-service.ts#L189-L198)).
 
 지급이 통과하려면 대상 사용자와 금액이 아래 계약도 만족해야 해요.
 
 | 항목 | 계약 |
 | --- | --- |
-| `--amount` 허용 범위 | 안전한 정수이면서 `0` 이상 `1,000,000` 이하예요 |
-| 대상 사용자 | `User` 행을 `FOR UPDATE`로 잠그고 확인해요. 없으면 `Signup user does not exist.`로 실패해요 |
-| 지급 금액의 기준 | 이미 기록된 `SignupGrantIntent.amount`가 있으면 그 값과 `--amount`가 같아야 해요 |
-| 멱등 키 | `signup:ai-mixing:{userId}`, `signup:vocal-analysis:{userId}`로 정상 가입 지급과 같은 키를 써요 |
+| `--amount` 허용 범위 | 안전한 정수이면서 `0` 이상 `1,000,000` 이하예요. `0`도 통과해요 |
+| 대상 사용자 | `User` 행을 `FOR UPDATE`로 잠근 뒤 확인해요. 잠근 행이 정확히 하나가 아니면 `Signup user does not exist.`로 실패해요([lockSignupUser](repo://src/entities/ticket/api/ticket-service.ts#L140-L143)) |
+| 멱등 키 | `signup:vocal-analysis:{userId}`, `signup:ai-mixing:{userId}`로 정상 가입 지급과 같은 키를 써요 |
 
 ```bash
 # 금액과 결과만 먼저 확인해요
@@ -224,15 +225,17 @@ pnpm run tickets:recover-signup --user <USER_ID> --kind VOCAL_ANALYSIS --amount 
 pnpm run tickets:recover-signup --user <USER_ID> --kind VOCAL_ANALYSIS --amount <AMOUNT> --operator <NAME> --reason '<EVIDENCE>' --apply
 ```
 
-`--apply` 유무와 기존 행의 존재 여부에 따라 세 가지 결과가 나와요([src/entities/ticket/api/ticket-service.ts](repo://src/entities/ticket/api/ticket-service.ts#L199-L222)).
+지급 대상과 금액을 확인한 뒤에는 `--apply` 유무와 기존 원장 행의 존재 여부에 따라 세 가지 결과 중 하나가 나와요. 세 결과 모두 지급 전 잔액(`balanceBefore`)을 함께 돌려주므로, 계획과 실제 반영을 금액으로 대조할 수 있어요([recoverSignupGrant](repo://src/entities/ticket/api/ticket-service.ts#L206-L252)).
 
-| 결과 | 조건 | 바뀌는 것 |
+| 결과 | 조건 | 바뀌는 값 |
 | --- | --- | --- |
-| `NOOP` | 같은 `kind`의 `SIGNUP_GRANT` 원장 행이 이미 있어요 | 없어요. `--apply`가 없어도 `NOOP`이에요 |
-| `WOULD_GRANT` | 원장 행이 없고 `--apply`를 주지 않았어요 | 없어요 |
-| `GRANTED` | 원장 행이 없고 `--apply`를 줬어요 | 기존 intent가 없으면 `SignupGrantIntent`를 만들고, `가입 지급 복구 ({operator}): {reason}` 사유로 원장 행을 추가해요 |
+| `NOOP` | 같은 `kind`의 `SIGNUP_GRANT` 원장 행이 이미 있어요 | 없어요. `--apply`가 없어도 `NOOP`이에요. `ledgerId`와 지급 전후 잔액(둘이 같아요)을 함께 돌려줘요 |
+| `WOULD_GRANT` | 원장 행이 없고 `--apply`를 주지 않았어요 | 없어요. `balanceAfter`가 `balanceBefore + amount`인 계획만 보여줘요 |
+| `GRANTED` | 원장 행이 없고 `--apply`를 줬어요 | 기존 intent가 없으면 `SignupGrantIntent`를 만들고, 지갑 잔액을 `amount`만큼 늘린 뒤 `가입 지급 복구 ({operator}): {reason}` 사유의 원장 행을 추가하고 그 `balanceAfter`를 돌려줘요 |
 
-요청 금액이 기록된 intent나 기존 원장 금액과 다르면 복구는 실패해요. 이때는 `Signup amount conflicts with the recorded intent or ledger.` 오류가 나오니, 먼저 실제 지급액을 확인하고 그 값을 `--amount`에 넣으세요([src/entities/ticket/api/ticket-service.ts](repo://src/entities/ticket/api/ticket-service.ts#L202-L206)). 지급 키가 정상 가입 경로와 같아서 복구가 두 번 실행돼도 원장 행은 하나만 생겨요. 원장 규칙 전체는 [티켓 원장과 멱등성](../concepts/ticket-ledger.md)이 소유해요.
+요청 금액이 기록된 `SignupGrantIntent.amount`나 기존 `SIGNUP_GRANT` 원장 금액과 다르면 복구는 실패해요. 원장 행이 이미 있어도 `NOOP`이 아니라 `Signup amount conflicts with the recorded intent or ledger.` 오류로 멈춰요([src/entities/ticket/api/ticket-service.ts](repo://src/entities/ticket/api/ticket-service.ts#L202-L205)). 그래서 설정이 바뀐 뒤에도 복구로 다른 금액을 임의 지급할 수 없어요. 먼저 실제 지급액을 확인하고 그 값을 `--amount`에 넣으세요. 원장과 멱등 키 규칙 전체는 [티켓 원장과 멱등성](../concepts/ticket-ledger.md)이 소유해요.
+
+통합 테스트가 고정하는 것은 두 가지예요. [tests/signup-recovery.integration.ts](repo://tests/signup-recovery.integration.ts#L95-L96)는 원장 금액이 7장인 사용자와 가입 지급 금액이 5장인 사용자에게 3장을 요청하면 둘 다 `/conflicts/` 오류로 거부되는지 확인해요. 같은 파일 [L54-L83](repo://tests/signup-recovery.integration.ts#L54-L83)은 7장 복구를 동시에 두 번 실행했을 때 `GRANTED`가 정확히 1건, `NOOP`이 1건 나오고 `GRANTED` 쪽 잔액이 0장에서 7장으로, `NOOP` 쪽 잔액이 7장에서 7장으로 돌아오며, 끝난 뒤 지갑 잔액이 7장인지 확인해요.
 
 `--amount 0`은 검증을 통과해서 `amount`가 0인 지급 행을 만들어요. 그 뒤에는 같은 금액도 `NOOP`이 되고 다른 금액은 충돌로 거부되니, 확인된 지급액이 0장이 아닌 한 0을 넣지 마세요.
 

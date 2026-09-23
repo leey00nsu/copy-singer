@@ -1,14 +1,11 @@
 ---
 type: explanation
 title: 코드베이스 시작 지도
-description: 저장소를 처음 여는 개발자가 바꾸려는 대상에 따라 어떤 문서를 어떤 순서로 읽을지 고르는 라우터 문서예요. 목적별 표가 저장소 구조·공용 UI·로컬 실행·변경 검증·도메인 흐름 문서로 이어주고, 웹과 세 워커가 함께 도는 구조와 요청 경로·작업 경로의 분리를 안내해요.
+description: 저장소를 처음 여는 개발자가 바꾸려는 대상에 따라 어떤 문서를 어떤 순서로 읽을지 고르는 라우터 문서예요. 목적별 표가 저장소 구조·공용 UI·로컬 실행·변경 검증·티켓 원장 문서로 이어주고, 웹과 세 워커가 함께 도는 구조, 요청 경로와 작업 경로의 분리, Browser E2E를 자동 실행하는 workflow가 없다는 사실을 안내해요.
 tags: [quickstart, navigation, onboarding, explanation]
-verified:
-  - by: openwiki/0.5.2
-    at: 2026-09-18T16:01:53.629Z
 sources:
-  - id: openwiki-source-ca04911f6e4b45f5834a6f2e
-    resource: repo://.github/workflows/e2e.yml
+  - id: openwiki-source-3dc25b286bcb30bfd66698fa
+    resource: repo://.github/workflows/lee-spec-kit-knowledge.yml
   - id: openwiki-source-3d35c21faa6ab50a26f535e0
     resource: repo://docs/prd/system-architecture.md
   - id: openwiki-source-196170e31ff8ec60a116165b
@@ -29,7 +26,10 @@ sources:
     resource: repo://tests/e2e/TESTING.md
   - id: openwiki-source-8b825c1fe06f865eec32c966
     resource: repo://tests/process-scripts.test.ts
-generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:01:53.629Z" }
+generated: { by: "openwiki/0.5.2", at: "2026-09-23T03:43:13.909Z" }
+verified:
+  - by: openwiki/0.5.2
+    at: 2026-09-23T03:43:13.909Z
 ---
 
 바꾸려는 대상이 이미 정해져 있다면 아래 표에서 그 줄만 따라가세요. 목표가 아직 없다면 저장소 전체 구조를 다루는 [시스템 지도와 경계](architecture/system-map.md)부터 읽고, 나머지 줄은 필요해질 때 다시 찾아오면 돼요.
@@ -48,6 +48,7 @@ generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:01:53.629Z" }
 | 업로드한 목소리 분석 흐름 | [보컬 프로필 분석 흐름](workflows/vocal-profile-analysis.md) → [Modal 서비스와 외부 계약](integrations/modal-services.md) |
 | 추천 점수와 추천 키 계산 | [추천과 키 적합도 계산](workflows/recommendation-and-key-fit.md) |
 | AI 믹싱 접수와 결과 저장 | [AI 믹싱 작업 흐름](workflows/ai-mixing.md) → [티켓 원장과 멱등성](concepts/ticket-ledger.md) |
+| 가입 지급 누락 복구와 티켓 원장 규칙 | [티켓 원장과 멱등성](concepts/ticket-ledger.md) → [복구 스크립트 운영 절차](operations/recovery-runbook.md) |
 | 곡 카탈로그 등록과 공개 | [곡 카탈로그 등록과 공개](workflows/song-catalog-lifecycle.md) |
 | 관리자 콘솔 화면과 관리자 API 변경 | [관리자 콘솔과 커스텀 믹싱](operations/admin-console.md) → [인증과 소유권 경계](integrations/auth-and-ownership.md) |
 | 작업 완료·실패 알림 | [알림과 중복 방지](concepts/notifications.md) → [Job 큐와 lease 복구 계약](operations/job-processing.md) |
@@ -82,9 +83,11 @@ generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:01:53.629Z" }
 
 `app/api/**/route.ts`로 들어오는 요청은 공통 래퍼를 먼저 지나요. [admission.ts](repo://src/_app/api-routes/admission.ts#L11-L33)의 `withApiAdmission`이 IP 버킷, 세션 확인, 사용자 그룹별 요청 제한, multipart 업로드 슬롯을 handler 호출 전에 적용해요. 판정 기준과 예외는 [HTTP API 표면과 요청 접수 규칙](architecture/http-api-surface.md)과 [인증과 소유권 경계](integrations/auth-and-ownership.md)에서 확인하세요.
 
-## 브라우저 E2E는 PR마다 돌아요
+## 브라우저 E2E는 자동 게이트가 아니에요
 
-[.github/workflows/e2e.yml](repo://.github/workflows/e2e.yml#L10-L29)이 pull request와 수동 `workflow_dispatch` 실행마다 `pnpm run test:e2e`를 돌리고 `artifacts/e2e` 결과를 7일간 보관해요. 이 suite가 고정하는 사용자 계약과 검증하지 않는 범위는 [tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L19-L30)에 정리돼 있고, 내 변경에 어떤 검사를 돌릴지는 [변경 검증 경로](testing/verification.md)에서 고르세요.
+Browser E2E를 자동 실행하는 workflow는 없어요. 이번 생성 입력에서 확인된 `.github/workflows/`의 추적 파일은 `openwiki-test` 브랜치에 이 workflow 파일 자체가 바뀌어 push될 때만 도는 [lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L4-L10) 하나뿐이고, 이 파일 안에는 `pnpm run test:e2e`를 실행하는 단계가 없어요. 그래서 pull request마다 이 suite가 대신 돌아간다고 기대하지 마세요.
+
+배포 전이나 회귀 확인이 필요할 때는 운영자가 로컬에서 현재 suite를 직접 돌려요. 준비물, 실행 명령, 결과 위치, 실패 trace 확인 방법은 [tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L5-L40)에 정리돼 있고, 같은 문서는 운영 배포가 Coolify의 기존 자동 배포를 쓰고 Browser E2E를 GitHub Actions 배포 게이트로 실행하지 않는다고 밝혀요. 자동 실행이 없다는 사실이 이 suite가 불필요하다는 뜻은 아니니, 바꾼 범위가 사용자 여정에 닿으면 [변경 검증 경로](testing/verification.md)에서 확인 대상을 고른 뒤 직접 실행하세요.
 
 ## OpenWiki와 정본 문서의 관계
 

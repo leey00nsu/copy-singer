@@ -3,12 +3,9 @@ type: how-to
 title: 변경 검증 경로
 description: 바꾼 범위에 따라 어떤 검사 명령을 어떤 순서로 돌릴지 고르는 표와, 도메인 단위·PostgreSQL 통합·MSW 계약·Storybook 브라우저·Playwright E2E(end-to-end)·k6 부하 계층이 각각 무엇을 증명하고 무엇을 증명하지 않는지 정리한 문서예요.
 tags: [verification, testing, e2e, storybook, how-to]
-verified:
-  - by: openwiki/0.5.2
-    at: 2026-09-18T16:47:52.081Z
 sources:
-  - id: openwiki-source-ca04911f6e4b45f5834a6f2e
-    resource: repo://.github/workflows/e2e.yml
+  - id: openwiki-source-3dc25b286bcb30bfd66698fa
+    resource: repo://.github/workflows/lee-spec-kit-knowledge.yml
   - id: openwiki-source-ea70eb6c045047448e446296
     resource: repo://.gitignore
   - id: openwiki-source-43c41f18d49c25a86be5e9ae
@@ -43,11 +40,16 @@ sources:
     resource: repo://tests/msw/handlers.ts
   - id: openwiki-source-5cd61f3caaf2b973c6ed5203
     resource: repo://tests/msw/server.ts
+  - id: openwiki-source-30f5c0a878cc81b6aac4a043
+    resource: repo://tests/signup-recovery.integration.ts
   - id: openwiki-source-5b5f7a2bf648dd7d69385229
     resource: repo://tests/vocal-profile-persistence.integration.ts
   - id: openwiki-source-fbadcd8591b65031efaaedce
     resource: repo://vitest.config.ts
-generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:47:52.081Z" }
+generated: { by: "openwiki/0.5.2", at: "2026-09-23T03:43:13.909Z" }
+verified:
+  - by: openwiki/0.5.2
+    at: 2026-09-23T03:43:13.909Z
 ---
 
 바꾼 파일이 어느 계층에 닿는지 정한 뒤 아래 표에서 그 줄의 명령만 먼저 돌리면 돼요. 검사 명령은 [package.json](repo://package.json#L9-L73)에 정의된 script 중에서만 고르세요.
@@ -101,8 +103,8 @@ flowchart TD
 | PostgreSQL 통합 테스트 | `pnpm run test:readiness`, `pnpm run test:mixing:db`, `pnpm run test:tickets`, `pnpm run test:media` 등 | 실제 PostgreSQL에서 트랜잭션·상태 전이·실패 창을 확인해요([tests/mixing-queue.integration.ts](repo://tests/mixing-queue.integration.ts#L7-L11)) | `DATABASE_URL`이 없으면 각 파일이 `DATABASE_URL is not configured`로 스스로 건너뛰므로, 초록불이 DB 동작을 확인했다는 뜻이 아니에요. 브라우저·워커 프로세스·외부 서비스 응답도 아니에요 |
 | MSW(Mock Service Worker) fixture 기반 API 계약·쿼리 테스트 | `pnpm run test:query` | 클라이언트 Zod 스키마, 오류 분류, 재시도·폴링 판단을 fixture로 확인해요([tests/api-contracts.test.ts](repo://tests/api-contracts.test.ts#L34-L52), [tests/msw-query.test.ts](repo://tests/msw-query.test.ts#L37-L69)) | MSW 부분은 fixture를 돌려주므로 실제 Route Handler 응답 형식과 네트워크 실패는 확인하지 않아요. 등록하지 않은 요청은 `onUnhandledRequest: "error"`로 즉시 실패해요([tests/msw-query.test.ts](repo://tests/msw-query.test.ts#L33-L33)) |
 | Storybook 브라우저 검사 | `pnpm run test:storybook --run` | headless chromium에서 story의 `play` assertion과 접근성 검사를 돌려요([vitest.config.ts](repo://vitest.config.ts#L38-L54)) | 서버 데이터·인증·DB 경로는 확인하지 않아요. story가 등록한 MSW 응답만 봐요 |
-| Playwright E2E | `pnpm run test:e2e` | 실제 Chromium → Next.js production server → 제품 API → PostgreSQL → 워커를 지나는 사용자 계약을 확인해요([tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L19-L26)) | 실제 Google 로그인, 실제 Modal GPU·Leemage 장애, 여러 브라우저·기기, 네트워크 품질, 실제 부하, 관리자 카탈로그 편집·커스텀 믹싱, 모든 파일 형식([tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L28-L30)) |
-| k6 부하 harness | `package.json` script에 없어요. k6 런타임에서 [scripts/load/readiness.k6.js](repo://scripts/load/readiness.k6.js)를 직접 실행해요 | 격리된 localhost 대상에 200 또는 명시적 429·503만 통과로 세고, check 성공률 99%와 p95 지연 2000ms 미만을 threshold로 둬요([scripts/load/readiness.k6.js](repo://scripts/load/readiness.k6.js#L16-L58)) | 기능 정확성과 데이터 정합성. `pnpm test`의 단계 목록([package.json](repo://package.json#L23-L23))과 E2E workflow([.github/workflows/e2e.yml](repo://.github/workflows/e2e.yml#L14-L24)) 어느 쪽에도 묶여 있지 않아요 |
+| Playwright E2E | `pnpm run test:e2e` | runner가 세운 임시 DB·로컬 provider 위에서 실제 Chromium → Next.js production server → 제품 API → PostgreSQL → 워커를 지나는 사용자 계약을 확인해요([tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L3-L26), [tests/e2e/run.mjs](repo://tests/e2e/run.mjs#L96-L124), [tests/e2e/run.mjs](repo://tests/e2e/run.mjs#L145-L191)) | 실제 Google 로그인, 실제 Modal GPU·Leemage 장애, 여러 브라우저·기기, 네트워크 품질, 실제 부하, 관리자 카탈로그 편집·커스텀 믹싱, 모든 파일 형식([tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L28-L30)) |
+| k6 부하 harness | `package.json` script에 없어요. k6 런타임에서 [scripts/load/readiness.k6.js](repo://scripts/load/readiness.k6.js)를 직접 실행해요 | 격리된 localhost 대상에만 붙고, 200 또는 `Retry-After`가 양수인 429·503만 통과로 세며, check 성공률 99% 초과와 p95 지연 2000ms 미만을 threshold로 둬요([scripts/load/readiness.k6.js](repo://scripts/load/readiness.k6.js#L6-L58)) | 기능 정확성과 데이터 정합성. `pnpm test` 사슬에도([package.json](repo://package.json#L23-L23)), [package.json](repo://package.json#L9-L73)의 어떤 script에도 부하 실행 단계가 없어요. 브라우저 계층의 실행 방법과 덮지 않는 범위는 [tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L3-L30)와 [tests/e2e/run.mjs](repo://tests/e2e/run.mjs#L96-L124)를 보세요 |
 
 증명하지 않는 범위를 문장으로 가장 분명하게 적어 둔 곳은 E2E 문서예요. 같은 fixture와 같은 assertion으로 baseline과 candidate를 실행했을 때 "두 실행의 모든 assertion이 통과했다는 것은 이 계약의 회귀가 관찰되지 않았다는 뜻이며, 전체 서비스의 100% 동등성을 증명하지 않는다"고 밝혀요([tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L28-L28)).
 
@@ -110,22 +112,26 @@ flowchart TD
 
 | 명령 | 묶여 있는 파일 |
 | --- | --- |
-| `pnpm run test:readiness` | `runtime-timeouts.test.ts`, `runtime-db.integration.ts`, `signup-recovery.integration.ts`, `media-recovery.integration.ts`, `worker-recovery.integration.ts`, `admission.test.ts`, `admission.integration.ts`, `profile-deletion-race.integration.ts`, 그리고 마지막 단계의 `modal-submission-contract.py` |
+| `pnpm run test:readiness` | `runtime-timeouts.test.ts`, `runtime-db.integration.ts`, [tests/signup-recovery.integration.ts](repo://tests/signup-recovery.integration.ts), `media-recovery.integration.ts`, `worker-recovery.integration.ts`, `admission.test.ts`, `admission.integration.ts`, `profile-deletion-race.integration.ts`, 그리고 마지막 단계의 `modal-submission-contract.py` |
 | `pnpm run test:query` | `client-server-state-query.test.ts`, `api-contracts.test.ts`, `msw-query.test.ts`, `conversion-stream-upload.test.ts`, `admin-custom-mixing.integration.ts`, `bounded-multipart.test.ts` |
 | `pnpm run check:architecture` | `steiger ./src`와 `fsd-architecture-boundaries.test.ts` |
 | `pnpm run test:process-scripts` | `process-scripts.test.ts`, `storybook-production-boundary.test.ts` |
 | `pnpm run test:storybook --run` | `vitest --project storybook`가 찾는 story 파일 전체 |
 | `pnpm run test:e2e` | `run.mjs`가 세우는 suite, 즉 `journeys.spec.mjs`, `provider.mjs`, `seed.ts`, `playwright.config.mjs`, `deny-external.mjs` |
 
-`pnpm run test:readiness`는 `--test-concurrency=1`로 파일을 하나씩 실행한 뒤 Python 계약 검사를 붙여요([package.json](repo://package.json#L70-L70)). 그래서 PostgreSQL을 공유하는 복구 시나리오가 서로 간섭하지 않아요. `pnpm run check:architecture`는 steiger 검사 뒤 FSD 경계 테스트를 실행하고, 그 테스트는 실제 `src/` 트리에서 public API 위반, client/server 위반, root App adapter 위반이 모두 비어 있는지 확인해요([package.json](repo://package.json#L31-L31), [tests/fsd-architecture-boundaries.test.ts](repo://tests/fsd-architecture-boundaries.test.ts#L381-L386)). steiger 설정에는 소수의 파일별 예외가 있으니, 새 코드를 그 목록에 추가하기 전에 왜 예외인지 먼저 읽으세요([steiger.config.ts](repo://steiger.config.ts#L4-L66)).
+`pnpm run test:readiness`는 `--test-concurrency=1`로 파일을 하나씩 실행한 뒤 Python 계약 검사를 붙여요([package.json](repo://package.json#L70-L70)). 그래서 PostgreSQL을 공유하는 복구 시나리오가 서로 간섭하지 않아요. 이 명령에 포함되는 [tests/signup-recovery.integration.ts](repo://tests/signup-recovery.integration.ts#L7-L19)는 가입 지급 스냅샷과 legacy 부분 지급 복구를 고정하고, 같은 복구 요청을 동시에 두 번 적용해도 한 번만 `GRANTED`이고 나머지는 `NOOP`인 멱등성, 그리고 지급 금액이나 사용자가 어긋난 요청이 `/conflicts/`로 거절되는지까지 확인해요([tests/signup-recovery.integration.ts](repo://tests/signup-recovery.integration.ts#L54-L96)). 원장 규칙 자체는 [티켓 원장과 멱등성](../concepts/ticket-ledger.md)이 소유해요.
+
+`pnpm run check:architecture`는 steiger 검사 뒤 FSD 경계 테스트를 실행하고, 그 테스트는 실제 `src/` 트리에서 public API 위반, client/server 위반, root App adapter 위반이 모두 비어 있는지 확인해요([package.json](repo://package.json#L31-L31), [tests/fsd-architecture-boundaries.test.ts](repo://tests/fsd-architecture-boundaries.test.ts#L381-L386)). steiger 설정에는 소수의 파일별 예외가 있으니, 새 코드를 그 목록에 추가하기 전에 왜 예외인지 먼저 읽으세요([steiger.config.ts](repo://steiger.config.ts#L4-L66)).
 
 `pnpm run test:e2e`는 suite 파일만 돌리는 게 아니에요. runner가 target마다 `prisma migrate deploy`, `prisma generate`, `tests/e2e/seed.ts`, `pnpm run build`를 거친 뒤 Next.js production server와 `mixing`·`vocal-profile-analysis` 워커를 띄우고 나서 Playwright를 실행해요([tests/e2e/run.mjs](repo://tests/e2e/run.mjs#L198-L246), [tests/e2e/run.mjs](repo://tests/e2e/run.mjs#L230-L237)). 그래서 제품 build나 워커 시작 코드가 깨지면 첫 시나리오에 닿기 전에 이미 실패해요.
 
-## 커밋 전과 CI에서 자동으로 도는 검사
+## 커밋 훅과 CI가 실제로 실행하는 것
 
 커밋 훅이 실행하는 것은 staged 파일 대상 Biome 검사 하나예요. `pnpm run check:staged`는 `biome check --staged --no-errors-on-unmatched`이므로 포맷과 lint만 보고, typecheck나 테스트는 돌리지 않아요([package.json](repo://package.json#L30-L30), [biome.json](repo://biome.json#L9-L22)).
 
-CI 쪽은 범위가 더 좁아요. 이 저장소의 `.github/workflows/`에는 Browser E2E workflow 하나가 있고, `pull_request`와 수동 `workflow_dispatch`에서만 돌아요. 이 workflow는 Node.js 22를 준비하고 `pnpm install --frozen-lockfile`, `pnpm exec playwright install --with-deps chromium`, ffmpeg 설치를 거친 뒤 `pnpm run test:e2e`를 실행하고, 결과를 `artifacts/e2e`에서 7일간 보관해요([.github/workflows/e2e.yml](repo://.github/workflows/e2e.yml#L1-L29)). `pnpm test`와 `pnpm run check`는 이 workflow에 없으니 로컬에서 직접 돌려야 해요.
+CI도 이 페이지의 검사 계층을 대신 돌려주지 않아요. 이번 생성 입력에서 확인된 `.github/workflows/`의 추적 파일은 `lee-spec-kit-knowledge.yml` 하나이고, 그 workflow는 `openwiki-test` 브랜치에 이 workflow 파일 자체가 바뀌어 push될 때만 돌아요([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L4-L10)). 이 workflow의 일은 Node.js 22를 준비하고 `openwiki@0.5.2`와 `lee-spec-kit@0.9.18`을 설치해 `openwiki code --update --print --language ko`로 Knowledge 문서를 갱신한 뒤, `openwiki/`, `AGENTS.md`, `CLAUDE.md` 밖의 파일이 바뀌지 않았는지 확인하고 Knowledge 브랜치의 PR을 draft 또는 ready로 발행하는 것이에요([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L29-L37), [.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L57-L65), [.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L70-L91), [.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L229-L265)). 이 단계 목록에는 프로젝트 의존성 설치와 테스트 실행이 없어요.
+
+그래서 `pnpm test`, `pnpm run check`, `pnpm run test:e2e`가 CI에서 자동으로 돈다고 가정하지 마세요. 테스트나 검사를 실행하는 CI workflow 파일은 이번 생성 입력에서 확인되지 않았어요. 그 자리를 대신하는 운영 규칙은 문서에 있어요. 운영 배포는 Coolify의 기존 자동 배포를 쓰고 Browser E2E는 GitHub Actions 배포 게이트로 실행하지 않으며, 배포 전이나 회귀 확인이 필요할 때 운영자가 로컬 명령으로 현재 suite를 돌려요([tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L40-L40)).
 
 E2E 설정은 불안정한 테스트를 자동 재시도로 감추지 않아요. Playwright 설정이 `workers: 1`, `retries: 0`, `forbidOnly: true`이고 실패할 때만 trace와 screenshot을 남겨요([tests/e2e/playwright.config.mjs](repo://tests/e2e/playwright.config.mjs#L2-L20)). 실패하면 로그와 trace를 보고 테스트 결함, 기존 앱 결함, 신규 회귀를 구분한 뒤 고치세요([tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L40-L40)).
 

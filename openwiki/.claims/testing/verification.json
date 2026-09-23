@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:2252df55d5a7a93924e5eb126ab44edcf6037e6b03a6fe584161a1ad5fcf3d45",
+  "pageVersion": "sha256:6f0970db7025b0981482ae7859eb5fda6074594b6233629366aef99dc21601df",
   "claims": [
     {
       "id": "claim_3031d79038194443b09a9d1590d4779a",
@@ -17,16 +17,6 @@
         {
           "resource": "repo://package.json#L30-L30",
           "version": "repo-lines-v1:sha256:1aab1d47bff9b30ce056d7eeed43f0b242ffdc3d3aaefeed926d0f179ac10838:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWFhYjFkNDdiZmY5YjMwY2UwNTZkN2VlZWQ0M2YwYjI0MmZmZGMzZDNhYWVmZWVkOTI2ZDBmMTc5YWMxMDgzOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWFhYjFkNDdiZmY5YjMwY2UwNTZkN2VlZWQ0M2YwYjI0MmZmZGMzZDNhYWVmZWVkOTI2ZDBmMTc5YWMxMDgzOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzE2YWRmNzFhNzlmYmMyNGZkNDJmNGRiMDRjZDNiMTQ1MDk0NTZiZWMwMTg2YjAxZjVjNzVhYjhlYjNmNWU3ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTg4NWZlYTBhMTc4ZDQ1ODMwZWZlNzM0ZmU1MDc1Y2QxZjMxMmZmN2Y1NDY1Y2Y3OTMxOWIxMTY4MTFjYmJhNiJ9"
-        }
-      ]
-    },
-    {
-      "id": "claim_31b09f4cfeca4536896a9ee14e39386e",
-      "statement": "이 저장소의 `.github/workflows/`에는 Browser E2E workflow 하나만 있고, `pull_request`와 수동 `workflow_dispatch`에서 Node.js 22·pnpm·Chromium·ffmpeg를 준비한 뒤 `pnpm run test:e2e`를 실행하고 `artifacts/e2e`를 7일간 보관한다. `pnpm test`와 `pnpm run check`는 이 workflow에 포함되지 않는다.",
-      "evidence": [
-        {
-          "resource": "repo://.github/workflows/e2e.yml#L1-L29",
-          "version": "repo-lines-v1:sha256:b6427e5fe7c1e4143f1967f0f3c603f56a9883a30116cd33d02143aa40e094ae:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVhOTc2YzFiYjU0M2JjNTExYzFhYWI2OTdkZjFjYzBjMDkyNDkxNDIyNDE4MTMyNTRhOTczZjJjNTYzMmVkODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhYWU4N2QwMmZkYzljNjFkYmFmMTE3OWJhMTNlNTVmM2YzOTk1YTkzODlhODI0MDYxMWQ1MjE5YTg4NmEzZDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjliZjQ1ZDJiYzIxMDg5NWU2N2JkMWQyMGRhYWFjMWI1OTgyYTc2NjQwODI5ZmQxZjFiYjRhNjk5NTUyOTI5NDIifQ"
         }
       ]
     },
@@ -230,11 +220,11 @@
     },
     {
       "id": "claim_c2a43f5eefd74c3491e0d559ede9deb1",
-      "statement": "`scripts/load/readiness.k6.js`는 `package.json`의 어떤 script에도, `.github/workflows/e2e.yml`의 어떤 단계에도 연결되어 있지 않아 k6 런타임에서 별도로 실행해야 한다.",
+      "statement": "`scripts/load/readiness.k6.js`는 `package.json`의 어떤 script에도 연결되어 있지 않고, 이번 생성 입력에서 확인된 `.github/workflows/`의 추적 파일은 Knowledge 생성 workflow뿐이라 테스트를 실행하는 CI 단계에도 묶여 있지 않아 k6 런타임에서 별도로 실행해야 한다.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/e2e.yml#L14-L29",
-          "version": "repo-lines-v1:sha256:a0b4cc6d1db2c7669dd4b9344d24f4563cb96a2ea501fca0f8f9a94a52cbe97f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4OTk5MTEwM2Y2YmE4ODhlM2RlNzY1MWM1YTMwNWM3N2U1NTQ3Njc3M2FiYTgzOTU5MWVjYzViZDBmMmFiMWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhYWU4N2QwMmZkYzljNjFkYmFmMTE3OWJhMTNlNTVmM2YzOTk1YTkzODlhODI0MDYxMWQ1MjE5YTg4NmEzZDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVlMWNkMjllYTRhMzdlOGM0MjdiYmU5OWI4NDEwNDI5NjJmZjUxZTg2ZWNiZDZkNTQ3ZWY0ZmYxNjNiNWQ5NjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjliZjQ1ZDJiYzIxMDg5NWU2N2JkMWQyMGRhYWFjMWI1OTgyYTc2NjQwODI5ZmQxZjFiYjRhNjk5NTUyOTI5NDIifQ"
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L17-L37",
+          "version": "repo-lines-v1:sha256:8b668e7f2f6a18b82124aba1090be2b393c5bae5017eb481df3d440c0307925b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5ZDgwMTU0ZWQ0MmZjNWM3NzliMTMzMTU3OGI1OGI4OWM4MDFlYWNlNzRmMjRjZDQ4ZWI0YTIzNTc5NDBhOTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExOWM2YWM3NDEyYzU0NjZhZTAyMzA3MzJiMGJjY2E4YjE3MDNmMTA0OWY2OWJmMjA5MTcyYjlkZTM0NGZjODEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFmNDdmYTdkNDZiNjE2M2Q0ZWQxZmIzZTBiOGQ3YTBhOGYzNjc2YmZkNmI0MTRhZTU4ODNjMjRhMDM0OWE0YjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhlMDFhMWQxZWJlYTIwYmM1MGUxZDg5OGYyNWUwMGUzNGRmZGMxMTYxYmE2MjM0MGE3MjkxOWVmZGMwNWQ0ZmMifQ"
         },
         {
           "resource": "repo://package.json#L9-L73",
@@ -327,10 +317,86 @@
           "version": "repo-lines-v1:sha256:d09c12d24b1d93d67d6373bbff88c4bca39404ea3aaf0c57782d84f134a69bfc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4MTEwNzNiNzViYTg1NjE5NDc3MmMyMTM3ZjMyN2E5N2EwOTVkOTYxZmY4ZDA1YTBlMzdjODU1ZTUxNzg4MDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhYjI5MDBiNjVhZGEzNGU0ZDJmMDhlYTVlODg3ODQxZDRkMDUzZTgyZDUzOTRhYWI3NzhjZDZkMjI5YWRhZDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNiZWYzODFiZjIyMzE5YTJkNTliOGVjMWVkMTBlOGMzOWNkNGQ5NmIzNGE2N2Y4MzE3MjEwZGRiZjE1ZWEwMWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI4M2MwM2ZiZGY5YjM0NmFhNTUyNzg2YjVlZWJiM2FhZDRmYWM4M2FiOWU1YzZiNWQ1MTVhM2ViNTljZWVkNTIifQ"
         }
       ]
+    },
+    {
+      "id": "claim_2603e00f2ece42d6aab157a3ac3dc05e",
+      "statement": "이번 생성 입력에서 확인된 `.github/workflows/`의 추적 파일은 `lee-spec-kit-knowledge.yml` 하나이고, 이 workflow는 `openwiki-test` 브랜치에서 자기 파일이 바뀌어 push될 때만 돌면서 Node.js 22와 `openwiki@0.5.2`·`lee-spec-kit@0.9.18`을 설치해 `openwiki code --update --print --language ko`로 Knowledge 문서를 다시 만들고, `openwiki/`·`AGENTS.md`·`CLAUDE.md` 밖의 변경이 없는지 확인한 뒤 Knowledge 브랜치 PR을 draft 또는 ready로 발행한다. 프로젝트 의존성 설치와 테스트 실행 단계는 없다.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L229-L265",
+          "version": "repo-lines-v1:sha256:52e73aae436dabf8d522fddf56a33235c6d926ccd8aa37d62f6b24f80df0f220:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMWU3ZWJlNjJkMzM3ZjQ0MWViNmI0OGEwNzIxODFiOWQxZTBkYjE4ZWQ4YzNiMzAyY2E2ZGYxMDFhNDdkYTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhYTFiZjQ2ZjNkZWIzZmE5ZGVhYjUyN2UwZjc1MTc5NjViMmVkMDk4OWRlMjRkN2VjNzZkMTUzM2Y3ZmYzY2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNiMjBhOTI0YzZiZmMxOGRlNzExZTExOWUxMjk2YzQ4NTNjNzY4YmUzMmJkNzEzNGNiMTU5MTkzMjgwODc2M2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4MDQ3OWYwZDMzZjA4N2QwZWI1M2FhOWNhMzkzYTgzYzAxYTVlMGJlNjE3ODM0NDBhZjMwZDYwOTMxMzdmZGIifQ"
+        },
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L29-L37",
+          "version": "repo-lines-v1:sha256:91ab5b1470fc75a1143b06558499d50ffc3c4d2bcd3122b25b654fbf7a379211:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDJiMDI1NDRkMWIzZTdhMDQ5NjdmY2E3YmNlNjVkZjZmY2EyNzQ2ZTNiMjA3YTJjZTU0YzRhOGUxZTU1MDA2OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTE5YzZhYzc0MTJjNTQ2NmFlMDIzMDczMmIwYmNjYThiMTcwM2YxMDQ5ZjY5YmYyMDkxNzJiOWRlMzQ0ZmM4MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTUyZDU1OGQ5OWEwNGJhNjhjMGE5NTIwOTY2YTJmNDlmZTBkYTEzMzY0YmQ0ZWNkZDc5ZmQ4Y2JlNmU1MmU2OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGUwMWExZDFlYmVhMjBiYzUwZTFkODk4ZjI1ZTAwZTM0ZGZkYzExNjFiYTYyMzQwYTcyOTE5ZWZkYzA1ZDRmYyJ9"
+        },
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L4-L10",
+          "version": "repo-lines-v1:sha256:a48ae26a940a0c69a98763f77bec65398a332b2ec8807f2bc3b56daff008a8a4:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODhlMzQxNWI1MDgyMTc3YWNjNWJlZDZmZWVkYWQ2NDcyMWM5NmM0Zjc2NTBkZGY4ZDg5ZjQ2NTcxYTZjNWY5MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDY1MTI5NjgyYWFhNmMzNmY4MzNmMTUyMDJjYzRhYzllZTdmYmU2MDVmYTMyOWE3YzMxOTZjNGVlNzkwNzdlYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzBmOGNiMmI5ZTc2ODczY2Y4MzI3MDBjMDQ3OTRkM2JiMzZjYTBjZTQyN2FjMDhiOTk0YmNlYjNlMTY0ODA4OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGNjNGJiNzlmNmViYzg1NTU5NzVmODdjMWJiZmFkYjQ0ODFmNzBiMDNjMWE3YjBjOWNjYjRlZTNkYWM3N2Q2MSJ9"
+        },
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L57-L65",
+          "version": "repo-lines-v1:sha256:e814c2700e86d4e553cd132917f51ade1258f01f30f3ccf9f0b634ed42db0e1d:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2JjZjlkNzI0MjYwNDA4MGJkNDZiY2E1ZTJiODE0OWEwNWMzMzE4OGI1NDBiY2ZlMTQ2MjdmOWE3OTg4YTIwYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjgwYjc1YWI1ODQ5ZDZmMmFiNTdlZGVmODBjNmUyMGUwN2VlYTcxNWY0OWNjZTkxNWRlOTRjYmU1YmJkY2MzYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjI0MmMwZDY0YjU2YzZjMzc1YjJiMjBjOGY4NzAyYTYzOTc4ZGUxN2M2YjA5ODZiNDM1NzNjN2NkMmMyMThjNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmI2MDFjZmE1ZTdiM2M3YWZjZDllNWJkMTk4YzJjYmI1NGJhZGYyZmI1MGQ0ZWY0NGU0MTgwMDYxYzEwYjAyOSJ9"
+        },
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L70-L91",
+          "version": "repo-lines-v1:sha256:73a5b1526f88ee12317ea5ffe6c5e55e7c0fd7465c79be1d2d14cc037ae58adb:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjY2UwZjIzNTk5ZjVhNzczMWMxNTZhMjA3ZGJkMmYwOWY2YjEwZjhjZjA1MWQ2NTExN2Y5ODlmYTdmMDY3NzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwYzE2ZTg3YmQxNmMwYmJmN2IwNTVkMGU0Nzc4NGYzNGYzZDY3MDYyMzgxMGIwZDQ1ZDE5ZTFhZGY0N2RlNmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVlZTkyN2I3NDRhMWRiNWEwMTQ1ZDc1MDM5NTgzZjYxZGFkNjZhYzBiN2JlMmJiZjI4MmYzMWI1MmMxMjY2NTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM2ZDQ5MThiMjI4YTg2Y2M1ZWFmMmI1YTY1NDkwNmYzNzQyZTI2YzIxMjI5MGE1NGU4ZjRiN2YyYjZhYTUyOWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d08556e0bec14bd18d5ab80712b297b9",
+      "statement": "테스트나 검사를 실행하는 CI workflow 파일은 이번 생성 입력에서 확인되지 않았고, 저장소 문서는 운영 배포가 Coolify의 기존 자동 배포를 쓰며 Browser E2E를 GitHub Actions 배포 게이트로 실행하지 않고 배포 전·회귀 확인 시 운영자가 로컬 명령으로 suite를 돌린다고 밝힌다.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L4-L10",
+          "version": "repo-lines-v1:sha256:a48ae26a940a0c69a98763f77bec65398a332b2ec8807f2bc3b56daff008a8a4:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODhlMzQxNWI1MDgyMTc3YWNjNWJlZDZmZWVkYWQ2NDcyMWM5NmM0Zjc2NTBkZGY4ZDg5ZjQ2NTcxYTZjNWY5MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDY1MTI5NjgyYWFhNmMzNmY4MzNmMTUyMDJjYzRhYzllZTdmYmU2MDVmYTMyOWE3YzMxOTZjNGVlNzkwNzdlYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzBmOGNiMmI5ZTc2ODczY2Y4MzI3MDBjMDQ3OTRkM2JiMzZjYTBjZTQyN2FjMDhiOTk0YmNlYjNlMTY0ODA4OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGNjNGJiNzlmNmViYzg1NTU5NzVmODdjMWJiZmFkYjQ0ODFmNzBiMDNjMWE3YjBjOWNjYjRlZTNkYWM3N2Q2MSJ9"
+        },
+        {
+          "resource": "repo://tests/e2e/TESTING.md#L38-L40",
+          "version": "repo-lines-v1:sha256:b951f5486ce834886bf2195497abb9e1b53e1be9657a41c2a2dfcd1a49c1670a:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMDZjNTYxZDVjMzI3MzQzNjg1MjY4YTQ2YjMzOTFmMzk5OGVlZTg5MGQyYmU1MWYwZDIxY2M0YTUzYWU2ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTQ4ZjY0NTRjYzBlMWEwYjAyYjhmYjdkMzk3Nzc3MGU1ZjJhMzU2NWM5ZDIyZTIzNTkyZjBlN2FiZWU1NzZmNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTZkMGJjNzU4YTBjYWU4MmQ5MDE0NTc3ZTdjODUzNmQ1MDAxZTUyMmE4OTJmYjlmOTY0MjM1M2VlZTU2ZDhjZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGU2OGM2OTdiNjIzNDRlMThmZmFiYWZlMDE4Mzk5Njc5NzE1ZGJmMjAxNWYzMmVhY2FlZjEwNDFkYjU1Njc5MyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_278600ef3ba54b13acc6a52002cfdc5e",
+      "statement": "`pnpm run test:readiness`에 포함된 `tests/signup-recovery.integration.ts`는 가입 지급 스냅샷과 legacy 부분 지급 복구를 고정하고, 같은 복구 요청을 동시에 두 번 적용해도 한 번만 `GRANTED`이고 나머지는 `NOOP`인 멱등성과 금액·사용자가 어긋난 요청의 `conflicts` 거절까지 확인한다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L70-L70",
+          "version": "repo-lines-v1:sha256:ea73897a5411cae79ff1745ec0523235a8796d7d0066e05e0a0bd712e9aa41f8:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE3Mzg5N2E1NDExY2FlNzlmZjE3NDVlYzA1MjMyMzVhODc5NmQ3ZDAwNjZlMDVlMGEwYmQ3MTJlOWFhNDFmOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE3Mzg5N2E1NDExY2FlNzlmZjE3NDVlYzA1MjMyMzVhODc5NmQ3ZDAwNjZlMDVlMGEwYmQ3MTJlOWFhNDFmOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDAzZDg2NWY0Yzc5MmI3OGVmZmMxNzU1M2ZlNmY1NjI2YzVlOGQxZmE1NmRhNDYzOWUxNWJiOWNhYjU2MDNlMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODIzNjQ4MmM4ZDI3N2MyOGUzMjdjNjNkYjdiMjU2M2Q3Y2ZlNjI1ODQzNjA0ZDM2NmFkYzUzOTkwNzU5OTA4NSJ9"
+        },
+        {
+          "resource": "repo://tests/signup-recovery.integration.ts#L54-L96",
+          "version": "repo-lines-v1:sha256:a3fb066dc84dfeecbaeea90d1e8c0afdc283895cee1590bab7e5ac66cdae9645:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhNTIyODM5NDRlNWU0MzY4OTE5Yjk2NDFkYzM0MDBiMDIzMzE4YWI5N2IzN2MwYWFlOWU2Yjc3NWM5NmUwYzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc3YjNjNGVkOWE2MjI1YjQ2NWU0ZTg4ODA2Y2VmMjI0NWI0ZGQ4MjRjOWE4MWQ0YjU3ZjBmNDEwN2Q3MWFkMWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJkNDc4MGY2NGQ4NWUxNWJhYjg1ZTliNjQ5NjAwOTdlOWM4NzA3ODdiMTliMGFlZDgxZjg4ZjgzNGRmOTM0MjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIwMjVkOTAwODZhY2NmOGI2ZWNiOGU4ZDhiMDczMDE2MWY3Yzg3OGQ2ZTM2ODU3ZWM3MGNjNmI4NGQ3MzVmYjgifQ"
+        },
+        {
+          "resource": "repo://tests/signup-recovery.integration.ts#L7-L19",
+          "version": "repo-lines-v1:sha256:9647166eba806ace797b7cf770178c97d6a18b2377b8b384a6c1d18f84ec58d4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmYjgxN2VjMTM0ZWRlMDRkNWFmMTZjOWNmZGNiZGFlMzk5NDU5YjUzODM1NzE1MDc1YzU1NjUyYWVkYzEzOTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZjMWVmOTUxMjA1Y2QzMDRjNDVkMzA1ZDYyN2UwNzE3ZDkwNGVhZTE0NTZlODI3NjUyYzVlN2QwNThiMDdkZDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0ZGI0NWUwYmUzMTgwNTYwY2UyNDY2MmNlNTM2ZWJmMmRiYmJkZTRjODgyOTY3YWRhNTY0MTFlNzgzZGE2ZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzY2E4MTg1ZGMzNjMyYjc5YzM2ZmIyMjcyYWU1OTMwNzVmNzJmNzJhZWQzMTc0NmY3YjFjZjRhMWI2YjU3MDkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1e32269678764d0b926d7c515d741e4c",
+      "statement": "`pnpm run test:e2e`는 runner가 세운 임시 PostgreSQL DB와 로컬 provider 위에서 실제 Chromium → Next.js production server → 제품 API → PostgreSQL → 워커를 지나는 사용자 계약을 검증한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/e2e/TESTING.md#L3-L3",
+          "version": "repo-lines-v1:sha256:8c88a1fd8d93ee7ef188fa3227bccbca1f0d2c0334d1298f3c9aa1eedb40a95f:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGM4OGExZmQ4ZDkzZWU3ZWYxODhmYTMyMjdiY2NiY2ExZjBkMmMwMzM0ZDEyOThmM2M5YWExZWVkYjQwYTk1ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGM4OGExZmQ4ZDkzZWU3ZWYxODhmYTMyMjdiY2NiY2ExZjBkMmMwMzM0ZDEyOThmM2M5YWExZWVkYjQwYTk1ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjk1ODE3MWJmZjVjMWQ1YjgxMGVkZjNjOGQ4NjI3ZjFmNWNhM2NiNWM1MGM1OTY0OTFlYmQ4OTc1OGQ0NDFmNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmYwNmI1YzVlYWI2YzgxYWI2YjNhOWUwNTdhYWRhNzY3MDdkZTkxYjY0OTEzNzhiMzc2OTdiYTVjMTcxNzE0NyJ9"
+        },
+        {
+          "resource": "repo://tests/e2e/run.mjs#L145-L191",
+          "version": "repo-lines-v1:sha256:c49d1aa20813f1010d3f2033553cc4bbc4ab9deaf233998915a3a984d6f31db6:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmNzRkYjkzNGZiYWVjZTY4OWNlYWJjYjZjNTRhOWI1ZTExNzM4ZDcxN2QxMDZiNzExZmY4NDJlZWQzY2U0MzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkOWUxMjU0NjQyNTU3NmQzZGVhZThjOWI5ZGJmMTI4ZDVkNmRkYWY1ZDdmZTg1NzkzNDkyN2RlZmZhM2I5ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYyYmIzZDFiMTRhMjVkMGYwYTNjMDNjMzRlZmQ0MTg0ZjMwZjVmZGE1ODMzZjhiODAyMTRhNDc1MDM5YTlhMDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJjNjI2ZjY1MGRjMjcwYjhlNzk1NTlmNzEzZTRjNzA5NjRjYzcwZTNiNGQ1ZDA0ZTNlZGM2Y2VjZDJjNmE3ZmQifQ"
+        },
+        {
+          "resource": "repo://tests/e2e/run.mjs#L96-L124",
+          "version": "repo-lines-v1:sha256:b468346cc7356ecc7d2d6b8ae592504018e0ff0426b2f145180fdc42d72c5b48:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhNTNiYTM1MDk2Njc2YzUyNDBjYzA4NDQ4M2ZlMDM1NjE3Zjk0ZjA5MGMyYTA5YTI4NjdjMDQwYWEzNjE5ZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJiMDJmYzY4MDhlNzVlOWI4ZmIxMWIwZjcxZjA0NDIxODg0YTkxNjIyY2VkZWEyZDc1MDhjYzIxZTIyNDk4ZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZhZmIzMDYxYzg1OTBkYjQwOTAyYTc5N2ZhMzVlZWI5NGQzZTA5ZjZjMGJlMGY0ODFlMGU1NTk1YWI0NjZhNGIifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.5.2",
-    "at": "2026-09-18T16:47:52.081Z"
+    "at": "2026-09-23T03:43:13.909Z"
   }
 }
