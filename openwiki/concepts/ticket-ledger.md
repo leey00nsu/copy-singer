@@ -4,8 +4,8 @@ title: 티켓 원장과 멱등성
 description: 티켓 차감·환불·가입 지급·관리자 조정이 TicketWallet과 TicketLedger에 함께 기록되는 방식과, idempotencyKey 규칙이 중복 반영을 막는 원리를 설명해요.
 tags: [tickets, ledger, idempotency, invariants, prisma]
 verified:
-  - by: openwiki/0.5.0
-    at: 2026-09-18T10:11:56.372Z
+  - by: openwiki/0.5.2
+    at: 2026-09-24T05:05:13.816Z
 sources:
   - id: openwiki-source-5b54a58d1b51cd490b0e7162
     resource: repo://package.json
@@ -41,7 +41,7 @@ sources:
     resource: repo://tests/ticket-ledger.integration.ts
   - id: openwiki-source-28adc6ef840aa586dc1aceef
     resource: repo://tests/vocal-profile-analysis-queue.integration.ts
-generated: { by: "openwiki/0.5.0", at: "2026-09-18T10:11:56.372Z" }
+generated: { by: "openwiki/0.5.2", at: "2026-09-24T05:05:13.816Z" }
 ---
 
 티켓 원장은 "지갑 잔액"과 "변경 내역"을 같은 트랜잭션에서 함께 움직여요. 티켓을 건드리는 코드는 모두 `applyTicketChangeInTransaction`을 통과하고, 그 함수가 잔액 갱신과 `TicketLedger` 행 생성을 한 번에 처리해요.
@@ -115,7 +115,17 @@ flowchart TD
 
 같은 함수가 두 번 동시에 불려도 안전해요. `SELECT ... FOR UPDATE`로 `User` 행을 잠그고, 해당 `kind`의 `SIGNUP_GRANT` 원장 행이 이미 있으면 지급을 건너뛰어요. 지급 금액의 기본값과 허용 범위는 [operations/configuration.md](../operations/configuration.md)가 다뤄요.
 
-운영자 복구인 `recoverSignupGrant`는 기록된 intent나 기존 원장 금액과 요청 금액이 다르면 `"Signup amount conflicts with the recorded intent or ledger."`로 실패해요. 기존 행이 있으면 `NOOP`, `--apply` 없이 호출하면 `WOULD_GRANT`, 실제 지급까지 하면 `GRANTED`를 반환해요. 실행 절차는 [operations/recovery-runbook.md](../operations/recovery-runbook.md)를 보세요.
+운영자 복구인 `recoverSignupGrant`는 트랜잭션을 열기 전에 요청 인자를 먼저 검증해요. `kind`는 `VOCAL_ANALYSIS`·`AI_MIXING` 중 하나여야 하고, `amount`는 0 이상 1,000,000 이하의 안전한 정수여야 하며, `user`·`operator`·`reason`이 비어 있으면 거부해요. 통과하면 그다음 `User` 행을 잠그고 진행해요([ticket-service.ts](repo://src/entities/ticket/api/ticket-service.ts#L189-L205)).
+
+기록된 금액과 요청 금액이 어긋나면 아무것도 바꾸지 않아요. `SignupGrantIntent.amount`나 기존 `SIGNUP_GRANT` 원장 금액이 `amount`와 다르면 `"Signup amount conflicts with the recorded intent or ledger."`로 실패해요. 그래서 실제 지급액을 먼저 확인하고 그 값을 넣어야 해요.
+
+| 결과 | 조건 | 담는 값 |
+| --- | --- | --- |
+| `NOOP` | 같은 `kind`의 `SIGNUP_GRANT` 원장 행이 이미 있어요 | 기존 행의 `ledgerId`, `balanceBefore`·`balanceAfter`는 현재 잔액 |
+| `WOULD_GRANT` | 원장 행이 없고 `apply`가 없어요 | `balanceBefore`는 현재 잔액, `balanceAfter`는 `balanceBefore + amount` |
+| `GRANTED` | 원장 행이 없고 `apply`가 있어요 | 새 원장 행의 `ledgerId`, `balanceBefore`는 지급 전 잔액, `balanceAfter`는 새 행의 `balanceAfter` |
+
+`GRANTED` 경로는 intent가 없으면 `operator`·`reason`과 함께 `SignupGrantIntent`를 만들고, 위 명명 표의 정상 가입 지급과 같은 `signup:*` 키로 `SIGNUP_GRANT` 행을 추가해요. 사유는 `가입 지급 복구 ({operator}): {reason}`으로 남아요. 실행 절차와 명령 인자는 [operations/recovery-runbook.md](../operations/recovery-runbook.md)를 보세요.
 
 ## 모델 관계와 열거형
 
@@ -162,11 +172,21 @@ HTTP 계약은 [ticket-adjustments-route.ts](repo://src/_app/api-routes/admin/ti
 
 ## 원장 동작을 증명하는 테스트
 
-변경 범위 테스트는 `pnpm run test:tickets`로 실행해요.
+검사 명령마다 묶여 있는 파일이 달라요. 원장 자체는 `pnpm run test:tickets`가, 가입 복구는 `pnpm run test:readiness`가, 환불 경로는 큐 통합 script가 각각 실행해요.
 
-- [tests/ticket-ledger.integration.ts](repo://tests/ticket-ledger.integration.ts#L7-L77)는 `ensureSignupTicketGrants`를 동시에 두 번 불러도 종류별 `SIGNUP_GRANT` 행이 하나씩만 생기는지, 같은 키의 `applyTicketChange` 두 번이 같은 원장 id를 돌려주는지, 다른 키로 한 번 더 차감하면 `InsufficientTicketsError`가 나는지 확인해요.
-- [tests/signup-recovery.integration.ts](repo://tests/signup-recovery.integration.ts#L17-L56)는 지급 후 설정 값을 바꿔도 복구 금액이 흔들리지 않는지, 기록된 금액과 다른 복구 요청이 거부되는지 확인해요.
-- 환불 경로는 [tests/mixing-queue.integration.ts](repo://tests/mixing-queue.integration.ts#L335-L355)와 [tests/vocal-profile-analysis-queue.integration.ts](repo://tests/vocal-profile-analysis-queue.integration.ts#L575-L585)가 `USAGE_REFUND` 행 개수로 검증해요.
+`pnpm run test:tickets`가 실행하는 [tests/ticket-ledger.integration.ts](repo://tests/ticket-ledger.integration.ts#L7-L77)는 `ensureSignupTicketGrants`를 동시에 두 번 불러도 종류별 `SIGNUP_GRANT` 행이 하나씩만 생기는지, 같은 키의 `applyTicketChange` 두 번이 같은 원장 id를 돌려주는지, 다른 키로 한 번 더 차감하면 `InsufficientTicketsError`가 나는지 확인해요.
+
+`pnpm run test:readiness`가 실행하는 [tests/signup-recovery.integration.ts](repo://tests/signup-recovery.integration.ts#L17-L103)는 가입 지급과 복구 계약을 다섯 갈래로 나눠 확인해요.
+
+| 확인하는 것 | 근거 구간 |
+| --- | --- |
+| 지급 뒤 `SIGNUP_VOCAL_ANALYSIS_TICKET_GRANT`를 5에서 3으로 바꾸고 `ensureSignupTicketGrants`를 다시 불러도 잔액은 최초 지급액 5이고 원장 행은 2개로 남아요 | [L17-L30](repo://tests/signup-recovery.integration.ts#L17-L30) |
+| 다른 키로 만든 레거시 지급만 있는 사용자에게 `recoverSignupGrant`를 `apply` 없이 부르면 `WOULD_GRANT`와 `balanceBefore: 0`, `balanceAfter: 7`이 나오고 `SignupGrantIntent`는 생기지 않아요 | [L31-L53](repo://tests/signup-recovery.integration.ts#L31-L53) |
+| 같은 요청을 `apply: true`로 동시에 두 번 보내면 `GRANTED` 하나(`balanceBefore: 0`, `balanceAfter: 7`)와 `NOOP` 하나(`balanceBefore: 7`, `balanceAfter: 7`)로 수렴하고, 이후 다시 부르면 `NOOP`이며 잔액은 7로 남아요 | [L54-L93](repo://tests/signup-recovery.integration.ts#L54-L93) |
+| 기록된 원장 금액 7과 다른 `amount: 3` 요청도, intent 금액이 5인 다른 사용자에게 `amount: 3`을 요청하는 경우도 `/conflicts/` 오류로 거부되고 기존 원장 행은 그대로 남아요 | [L94-L96](repo://tests/signup-recovery.integration.ts#L94-L96) |
+| 세션 조회(`getRequestSession`) 전후의 원장 행이 완전히 같아요. 조회가 원장을 바꾸지 않는다는 뜻이에요 | [L97-L103](repo://tests/signup-recovery.integration.ts#L97-L103) |
+
+환불은 `pnpm run test:mixing:db`가 실행하는 [tests/mixing-queue.integration.ts](repo://tests/mixing-queue.integration.ts#L335-L355)와 `pnpm run test:vocal-profile-analysis-queue`가 실행하는 [tests/vocal-profile-analysis-queue.integration.ts](repo://tests/vocal-profile-analysis-queue.integration.ts#L569-L584)가 `USAGE_REFUND` 행 개수와 `refundState`로 검증해요. 접수 후 실패는 환불 행이 0개, 분석 작업 실패는 정확히 1개예요.
 
 ## 다음에 읽을 페이지
 
