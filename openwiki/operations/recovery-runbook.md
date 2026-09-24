@@ -3,9 +3,6 @@ type: how-to
 title: 복구 스크립트 운영 절차
 description: 접수가 확인되지 않은 외부 제출, 미정리 미디어 의도, 가입 지급 누락을 어떤 명령으로 조회하고 어떤 인자로 해소하며, 각 단계가 실제로 바꾸는 값이 무엇인지 정리한 운영 절차예요.
 tags: [operations, recovery, runbook, reconciliation, tickets, media]
-verified:
-  - by: openwiki/0.5.2
-    at: 2026-09-18T16:47:52.081Z
 sources:
   - id: openwiki-source-ea70eb6c045047448e446296
     resource: repo://.gitignore
@@ -41,7 +38,10 @@ sources:
     resource: repo://tests/signup-recovery.integration.ts
   - id: openwiki-source-d6b6d9cc70a3fbd449772f18
     resource: repo://tests/worker-recovery.integration.ts
-generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:47:52.081Z" }
+generated: { by: "openwiki/0.5.2", at: "2026-09-24T05:05:13.816Z" }
+verified:
+  - by: openwiki/0.5.2
+    at: 2026-09-24T05:05:13.816Z
 ---
 
 # 복구 스크립트 운영 절차
@@ -52,7 +52,7 @@ generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:47:52.081Z" }
 
 1. `pnpm run jobs:reconcile`이나 `pnpm run media:reconcile`을 인자 없이 실행하면 대상 행과 id가 JSON으로 나와요. `tickets:recover-signup`에는 이 조회 모드가 없어요.
 2. 같은 명령에 대상을 지정하는 인자(`--id`, 또는 가입 복구의 `--user`·`--kind`·`--amount`)와 확인 근거를 붙여 실행하세요. `--apply`가 없으니 스크립트가 예정한 결과만 보이고 DB는 그대로예요.
-3. 외부 서비스와 화면에서 실제 상태를 먼저 확인하고, 그 판단이 2단계에서 본 계획과 같은지 대조하세요.
+3. 외부 서비스·화면·기록에서 실제 상태(제출 접수 여부, 외부 파일 id, 지급해야 할 장 수)를 먼저 확인하고, 그 판단이 2단계에서 본 계획과 같은지 대조하세요.
 4. 판단이 맞으면 같은 인자에 `--apply`만 더해 실행하세요. 이때 처음으로 값이 바뀌어요.
 
 ```mermaid
@@ -61,8 +61,8 @@ flowchart TD
   B -->|"예"| C["pnpm run jobs:reconcile"]
   B -->|"아니오"| D{"MediaOperation에 UNRESOLVED 행이 있나요"}
   D -->|"예"| E["pnpm run media:reconcile"]
-  D -->|"아니오"| F{"SIGNUP_GRANT 원장 행 없이 가입한 사용자가 있나요"}
-  F -->|"예"| G["pnpm run tickets:recover-signup"]
+  D -->|"아니오"| F{"가입 지급 누락이 의심되는 사용자가 있나요"}
+  F -->|"예"| G["지급액을 확인한 뒤 pnpm run tickets:recover-signup 실행"]
   F -->|"아니오"| H["pnpm run verify:feature-config, catalog:db:verify, db:verify"]
 ```
 
@@ -101,13 +101,13 @@ flowchart TD
 | --- | --- |
 | 조회와 처리의 구분 | `jobs:reconcile`과 `media:reconcile`은 인자 없이 실행하면 대상 행을 JSON으로 출력하고 아무것도 바꾸지 않아요. `--id`를 주면 그 행 하나를 처리해요. `tickets:recover-signup`에는 조회 모드가 없어서 인자를 다 주지 않으면 `Required:` 오류로 멈춰요 |
 | dry-run | `--apply`가 없으면 복구 스크립트 셋 중 어느 것도 DB를 바꾸지 않아요 |
-| 근거 기록 | `--operator`와 `--reason`은 `resolution` 값에 `{operator}: {reason}` 형식으로 남아요. 값이 비어 있으면 단건 처리와 가입 복구가 거부돼요 |
+| 근거 기록 | `jobs:reconcile`과 `media:reconcile`은 `--operator`와 `--reason`을 `resolution` 값에 `{operator}: {reason}` 형식으로 남겨요. 가입 복구는 `SignupGrantIntent`가 아직 없을 때 그 행에 `operator`·`reason`을 넣고, 원장 사유를 `가입 지급 복구 ({operator}): {reason}`로 써요. 값이 비어 있으면 세 명령 모두 거부돼요 |
 | 실패 표시 | 오류가 나면 메시지를 표준 오류로 출력하고 종료 코드를 `1`로 세워요. 검증 스크립트도 같은 방식이에요([scripts/verify-database-song-catalog.ts](repo://scripts/verify-database-song-catalog.ts#L9-L11)) |
 | 남은 작업의 주체 | 믹싱 워커는 매 반복에서 환불 재처리, 외부 작업 정리, 미디어 정리를 차례로 실행해요. 이 자동 경로가 처리하지 못한 `UNRESOLVED` 행이 운영자 몫이에요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L573-L581)) |
 
 자동 정리 쿼리는 `status = 'PENDING'`인 행만 대상으로 삼고, 미디어 점유도 `PENDING`·`RECOVER`·`UPLOADING`·`STORED`와 lease가 만료된 `PROCESSING`만 후보로 봐요. 그래서 `UNRESOLVED` 행은 아무리 오래 두어도 자동으로 풀리지 않아요([mixing/reconciliation.ts](repo://src/_app/background-jobs/mixing/reconciliation.ts#L7-L24), [src/shared/media/operations.ts](repo://src/shared/media/operations.ts#L117-L127)). 왜 이 행들이 생기는지의 상태 기계는 [Job 큐와 lease 복구 계약](job-processing.md)과 [미디어 저장과 정리 의도](media-storage.md)가 설명해요.
 
-이 스크립트들이 기대는 복구 경로는 `pnpm run test:readiness`에 포함된 통합 테스트가 고정해요([package.json](repo://package.json#L70)). 그중 [tests/worker-recovery.integration.ts](repo://tests/worker-recovery.integration.ts#L112-L134)는 만료된 lease 회수와 예산 소진 작업의 종료 수렴을, [tests/media-recovery.integration.ts](repo://tests/media-recovery.integration.ts#L89-L108)는 사용 중 자산 삭제 거부(`MEDIA_ASSET_IN_USE`)와 신원 미확인 삭제 의도의 `UNRESOLVED` 잔류를, [tests/signup-recovery.integration.ts](repo://tests/signup-recovery.integration.ts#L40-L56)는 가입 지급 복구의 금액 충돌 거부를 확인해요. 이 명령이 함께 실행하는 나머지 파일과 복구 후 돌릴 검사 선택은 [변경 검증 경로](../testing/verification.md)가 정리해요.
+이 스크립트들이 기대는 복구 경로는 `pnpm run test:readiness`에 포함된 통합 테스트가 고정해요([package.json](repo://package.json#L70)). 그중 [tests/worker-recovery.integration.ts](repo://tests/worker-recovery.integration.ts#L112-L134)는 만료된 lease를 가진 작업을 다시 점유한 뒤 옛 owner의 확정 시도가 `LEASE_LOST`로 막히고 작업이 `FAILED`로 수렴해 다시는 점유되지 않는 흐름을 확인해요. [tests/media-recovery.integration.ts](repo://tests/media-recovery.integration.ts#L57-L108)는 신원 미확인 삭제 의도가 `UNRESOLVED`로 남고 외부 삭제가 일어나지 않는지와, 사용 중 자산 삭제가 `MEDIA_ASSET_IN_USE`로 거부되는지를 확인해요. [tests/signup-recovery.integration.ts](repo://tests/signup-recovery.integration.ts#L47-L96)는 dry run이 `WOULD_GRANT`와 예상 잔액만 돌려주고 `SignupGrantIntent`는 만들지 않는지, `apply: true` 두 번이 `GRANTED` 하나와 `NOOP` 하나로 수렴하는지, 기록된 금액과 다른 요청이 충돌 오류로 거부되는지를 확인해요. 이 명령이 함께 실행하는 나머지 파일과 복구 후 돌릴 검사 선택은 [변경 검증 경로](../testing/verification.md)가 정리해요.
 
 ## 접수가 확인되지 않은 외부 제출 해소하기
 
@@ -195,7 +195,7 @@ pnpm run media:reconcile --id <MEDIA_OPERATION_ID> --operator <NAME> --reason '<
 
 ## 가입 지급 누락 복구하기
 
-가입 지급 복구는 지급할 금액을 운영자가 명시하는 방식이에요. 아래 다섯 인자가 모두 있어야 실행돼요.
+가입 지급 복구에는 조회 모드가 없어요. 운영자가 지급할 금액을 직접 확인해서 명시해야 하고, 아래 다섯 인자가 모두 있어야 실행돼요.
 
 | 인자 | 값 |
 | --- | --- |
@@ -207,14 +207,9 @@ pnpm run media:reconcile --id <MEDIA_OPERATION_ID> --operator <NAME> --reason '<
 
 하나라도 빠지면 `Required: --user ID --kind VOCAL_ANALYSIS|AI_MIXING --amount N --operator NAME --reason TEXT [--apply]` 오류로 멈추고, `--kind`가 두 값이 아니면 `Invalid ticket kind.`로 멈춰요([scripts/recover-signup-grant.ts](repo://scripts/recover-signup-grant.ts#L17-L22)).
 
-지급이 통과하려면 대상 사용자와 금액이 아래 계약도 만족해야 해요.
+`recoverSignupGrant`는 트랜잭션을 열기 전에 인자를 한 번 더 검증해요. `--kind`가 `VOCAL_ANALYSIS`·`AI_MIXING` 중 하나이고 `--amount`가 안전한 정수이면서 `0` 이상 `1,000,000` 이하가 아니면 `An explicit valid ticket kind and amount (0..1000000) are required.`로, `userId`·`operator`·`reason`이 비어 있으면 `user, operator and reason are required.`로 거부해요([src/entities/ticket/api/ticket-service.ts](repo://src/entities/ticket/api/ticket-service.ts#L189-L198)).
 
-| 항목 | 계약 |
-| --- | --- |
-| `--amount` 허용 범위 | 안전한 정수이면서 `0` 이상 `1,000,000` 이하예요 |
-| 대상 사용자 | `User` 행을 `FOR UPDATE`로 잠그고 확인해요. 없으면 `Signup user does not exist.`로 실패해요 |
-| 지급 금액의 기준 | 이미 기록된 `SignupGrantIntent.amount`가 있으면 그 값과 `--amount`가 같아야 해요 |
-| 멱등 키 | `signup:ai-mixing:{userId}`, `signup:vocal-analysis:{userId}`로 정상 가입 지급과 같은 키를 써요 |
+검증을 통과하면 트랜잭션 안에서 대상 `User` 행을 `SELECT ... FOR UPDATE`로 잠그고, 행이 정확히 하나가 아니면 `Signup user does not exist.`로 실패해요([lockSignupUser](repo://src/entities/ticket/api/ticket-service.ts#L140-L143)). 잠금 덕분에 정상 가입 지급과 복구가 동시에 들어와도 한쪽씩 차례로 진행해요.
 
 ```bash
 # 금액과 결과만 먼저 확인해요
@@ -224,17 +219,19 @@ pnpm run tickets:recover-signup --user <USER_ID> --kind VOCAL_ANALYSIS --amount 
 pnpm run tickets:recover-signup --user <USER_ID> --kind VOCAL_ANALYSIS --amount <AMOUNT> --operator <NAME> --reason '<EVIDENCE>' --apply
 ```
 
-`--apply` 유무와 기존 행의 존재 여부에 따라 세 가지 결과가 나와요([src/entities/ticket/api/ticket-service.ts](repo://src/entities/ticket/api/ticket-service.ts#L199-L222)).
+잠금 뒤에는 그 `(userId, kind)`의 `SignupGrantIntent`와 기존 `SIGNUP_GRANT` 원장 행을 읽어 금액을 대조해요. 기록된 intent 금액이나 기존 원장 금액이 `--amount`와 다르면 `Signup amount conflicts with the recorded intent or ledger.`로 실패하고 아무 값도 바뀌지 않아요. 설정 변경으로 달라진 금액을 임의로 지급할 수 없다는 뜻이니, 먼저 실제 지급액을 확인해 그 값을 `--amount`에 넣으세요([src/entities/ticket/api/ticket-service.ts](repo://src/entities/ticket/api/ticket-service.ts#L202-L205), [tests/signup-recovery.integration.ts](repo://tests/signup-recovery.integration.ts#L84-L96)).
 
-| 결과 | 조건 | 바뀌는 것 |
+금액 대조를 통과하면 세 가지 결과 중 하나를 돌려줘요([src/entities/ticket/api/ticket-service.ts](repo://src/entities/ticket/api/ticket-service.ts#L206-L252)).
+
+| 결과 | 조건 | 바뀌는 것과 돌려주는 값 |
 | --- | --- | --- |
-| `NOOP` | 같은 `kind`의 `SIGNUP_GRANT` 원장 행이 이미 있어요 | 없어요. `--apply`가 없어도 `NOOP`이에요 |
-| `WOULD_GRANT` | 원장 행이 없고 `--apply`를 주지 않았어요 | 없어요 |
-| `GRANTED` | 원장 행이 없고 `--apply`를 줬어요 | 기존 intent가 없으면 `SignupGrantIntent`를 만들고, `가입 지급 복구 ({operator}): {reason}` 사유로 원장 행을 추가해요 |
+| `NOOP` | 같은 `kind`의 `SIGNUP_GRANT` 원장 행이 이미 있어요. `--apply`가 없어도 이 결과예요 | 아무것도 바뀌지 않아요. 기존 행의 `ledgerId`와 현재 잔액을 `balanceBefore`·`balanceAfter`로 돌려줘요 |
+| `WOULD_GRANT` | 원장 행이 없고 `--apply`를 주지 않았어요 | 아무것도 바뀌지 않아요. `SignupGrantIntent`도 만들지 않아요. `balanceBefore`는 현재 잔액, `balanceAfter`는 `balanceBefore + amount`예요 |
+| `GRANTED` | 원장 행이 없고 `--apply`를 줬어요 | `SignupGrantIntent`가 아직 없으면 `operator`·`reason`과 함께 만들고, `가입 지급 복구 ({operator}): {reason}` 사유로 원장 행을 추가해요. 새 행의 `ledgerId`와 지급 전 잔액, 지급 후 잔액을 돌려줘요 |
 
-요청 금액이 기록된 intent나 기존 원장 금액과 다르면 복구는 실패해요. 이때는 `Signup amount conflicts with the recorded intent or ledger.` 오류가 나오니, 먼저 실제 지급액을 확인하고 그 값을 `--amount`에 넣으세요([src/entities/ticket/api/ticket-service.ts](repo://src/entities/ticket/api/ticket-service.ts#L202-L206)). 지급 키가 정상 가입 경로와 같아서 복구가 두 번 실행돼도 원장 행은 하나만 생겨요. 원장 규칙 전체는 [티켓 원장과 멱등성](../concepts/ticket-ledger.md)이 소유해요.
+`GRANTED`가 쓰는 멱등 키는 정상 가입 지급과 같은 `signup:ai-mixing:{userId}`, `signup:vocal-analysis:{userId}`예요([signupKey](repo://src/entities/ticket/api/ticket-service.ts#L136-L138)). 그래서 복구가 두 번 겹쳐 실행돼도 원장 행은 하나만 생기고 두 번째 호출은 `NOOP`이 돼요([tests/signup-recovery.integration.ts](repo://tests/signup-recovery.integration.ts#L54-L85)). 지급 자체는 정상 가입 경로와 같은 `applyTicketChangeInTransaction`을 거치므로 잔액과 `balanceAfter`가 어긋난 상태로 커밋되지 않아요. 원장 규칙 전체는 [티켓 원장과 멱등성](../concepts/ticket-ledger.md)이 소유해요.
 
-`--amount 0`은 검증을 통과해서 `amount`가 0인 지급 행을 만들어요. 그 뒤에는 같은 금액도 `NOOP`이 되고 다른 금액은 충돌로 거부되니, 확인된 지급액이 0장이 아닌 한 0을 넣지 마세요.
+`--amount 0`도 검증을 통과해서 `amount`가 0인 `SIGNUP_GRANT` 원장 행을 만들어요. 금액 검증이 `0`을 허용하고, 지급 경로도 0을 막지 않기 때문이에요([src/entities/ticket/api/ticket-service.ts](repo://src/entities/ticket/api/ticket-service.ts#L189-L205), [src/entities/ticket/api/ticket-service.ts](repo://src/entities/ticket/api/ticket-service.ts#L230-L242)). 한 번 0으로 기록되면 그 뒤에는 같은 금액도 `NOOP`이 되고 다른 금액은 금액 충돌로 거부되니, 확인된 지급액이 0장이 아닌 한 0을 넣지 마세요.
 
 ## 실행 전에 설정과 준비 상태 검증하기
 
