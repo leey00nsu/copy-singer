@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:2252df55d5a7a93924e5eb126ab44edcf6037e6b03a6fe584161a1ad5fcf3d45",
+  "pageVersion": "sha256:bea3d1e1cc4d52084fc2bca77256a3f1ff5a1a54878c2617470b176972f41769",
   "claims": [
     {
       "id": "claim_3031d79038194443b09a9d1590d4779a",
@@ -22,11 +22,15 @@
     },
     {
       "id": "claim_31b09f4cfeca4536896a9ee14e39386e",
-      "statement": "이 저장소의 `.github/workflows/`에는 Browser E2E workflow 하나만 있고, `pull_request`와 수동 `workflow_dispatch`에서 Node.js 22·pnpm·Chromium·ffmpeg를 준비한 뒤 `pnpm run test:e2e`를 실행하고 `artifacts/e2e`를 7일간 보관한다. `pnpm test`와 `pnpm run check`는 이 workflow에 포함되지 않는다.",
+      "statement": "이 저장소의 tracked `.github/workflows/`에는 Knowledge 생성용 `lee-spec-kit-knowledge.yml` 하나만 있고, 그 안에 `pnpm test`·`pnpm run check`·`pnpm run test:e2e`를 실행하는 단계가 없다. `knowledge` 작업은 OpenWiki를 설치해 문서를 생성·게시하고, `pull_request`에서 도는 `verify-knowledge-pr` 작업은 생성 문서 PR의 변경 범위와 완료 메타데이터만 검사한다.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/e2e.yml#L1-L29",
-          "version": "repo-lines-v1:sha256:b6427e5fe7c1e4143f1967f0f3c603f56a9883a30116cd33d02143aa40e094ae:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVhOTc2YzFiYjU0M2JjNTExYzFhYWI2OTdkZjFjYzBjMDkyNDkxNDIyNDE4MTMyNTRhOTczZjJjNTYzMmVkODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhYWU4N2QwMmZkYzljNjFkYmFmMTE3OWJhMTNlNTVmM2YzOTk1YTkzODlhODI0MDYxMWQ1MjE5YTg4NmEzZDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjliZjQ1ZDJiYzIxMDg5NWU2N2JkMWQyMGRhYWFjMWI1OTgyYTc2NjQwODI5ZmQxZjFiYjRhNjk5NTUyOTI5NDIifQ"
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L22-L71",
+          "version": "repo-lines-v1:sha256:a386e9a9e92aa413ffbd8e8ca45782be8fedb62c13eb649a77b27e0f926b3f9d:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5ZDgwMTU0ZWQ0MmZjNWM3NzliMTMzMTU3OGI1OGI4OWM4MDFlYWNlNzRmMjRjZDQ4ZWI0YTIzNTc5NDBhOTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4MGI3NWFiNTg0OWQ2ZjJhYjU3ZWRlZjgwYzZlMjBlMDdlZWE3MTVmNDljY2U5MTVkZTk0Y2JlNWJiZGNjM2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI0YzMwNzJmZTZlMGFjYmQyNGRkNDg4NjQ0NjU1YjNjMDY5M2E3YjI5Y2M2NmIzY2QxZTYxOGQzMjJiZDgwOTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFhMDcxNzBjZTg1YTUxNGFkOTA4YWRlYTQyMDExM2Q4ZDJlNDhjOTAxNzYzNmRiZDVhNGY2OWQ4YzU5ZWFlM2UifQ"
+        },
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L409-L471",
+          "version": "repo-lines-v1:sha256:17f226a5e6b3fa4d9b3796c61089e00e1a5ce778907faf1018fcfbcafc5b5192:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1YTBlZGFjMzk3ZGZkZjg0ZTBjOWU1N2Y0NjczMWViOTgyMmI4OWU4MzM1NjFlNTdhMDA4NDEwZmZkYTVmMDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4MDA1ZDU3MTA2YTM2MmViMDAwZGFmM2RhNDY3NGM4MmI1MThmZjVhMmUyZjY3ZWU4ZTc1N2EzMzNjMmFmNjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxMDJhYjFkY2I4YjEzNzFiZDRjZmIzMzA0ODA3ZDEyYjhkZDAzMDgxZmFmNTgzMTYyMTI5NmRhZWE3MTNiNDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIwYzE2ZTg3YmQxNmMwYmJmN2IwNTVkMGU0Nzc4NGYzNGYzZDY3MDYyMzgxMGIwZDQ1ZDE5ZTFhZGY0N2RlNmIifQ"
         }
       ]
     },
@@ -230,11 +234,11 @@
     },
     {
       "id": "claim_c2a43f5eefd74c3491e0d559ede9deb1",
-      "statement": "`scripts/load/readiness.k6.js`는 `package.json`의 어떤 script에도, `.github/workflows/e2e.yml`의 어떤 단계에도 연결되어 있지 않아 k6 런타임에서 별도로 실행해야 한다.",
+      "statement": "`scripts/load/readiness.k6.js`는 `package.json`의 어떤 script에도, tracked 워크플로 `.github/workflows/lee-spec-kit-knowledge.yml`의 어떤 단계에도 연결되어 있지 않아 k6 런타임에서 별도로 실행해야 한다.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/e2e.yml#L14-L29",
-          "version": "repo-lines-v1:sha256:a0b4cc6d1db2c7669dd4b9344d24f4563cb96a2ea501fca0f8f9a94a52cbe97f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4OTk5MTEwM2Y2YmE4ODhlM2RlNzY1MWM1YTMwNWM3N2U1NTQ3Njc3M2FiYTgzOTU5MWVjYzViZDBmMmFiMWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhYWU4N2QwMmZkYzljNjFkYmFmMTE3OWJhMTNlNTVmM2YzOTk1YTkzODlhODI0MDYxMWQ1MjE5YTg4NmEzZDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVlMWNkMjllYTRhMzdlOGM0MjdiYmU5OWI4NDEwNDI5NjJmZjUxZTg2ZWNiZDZkNTQ3ZWY0ZmYxNjNiNWQ5NjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjliZjQ1ZDJiYzIxMDg5NWU2N2JkMWQyMGRhYWFjMWI1OTgyYTc2NjQwODI5ZmQxZjFiYjRhNjk5NTUyOTI5NDIifQ"
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml",
+          "version": "repo-file-v1:sha256:1d6c2807485ff0ea192cf4990747e3121b7057d799a1573531c3f5aa9990a1df"
         },
         {
           "resource": "repo://package.json#L9-L73",
@@ -327,10 +331,24 @@
           "version": "repo-lines-v1:sha256:d09c12d24b1d93d67d6373bbff88c4bca39404ea3aaf0c57782d84f134a69bfc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4MTEwNzNiNzViYTg1NjE5NDc3MmMyMTM3ZjMyN2E5N2EwOTVkOTYxZmY4ZDA1YTBlMzdjODU1ZTUxNzg4MDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhYjI5MDBiNjVhZGEzNGU0ZDJmMDhlYTVlODg3ODQxZDRkMDUzZTgyZDUzOTRhYWI3NzhjZDZkMjI5YWRhZDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNiZWYzODFiZjIyMzE5YTJkNTliOGVjMWVkMTBlOGMzOWNkNGQ5NmIzNGE2N2Y4MzE3MjEwZGRiZjE1ZWEwMWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI4M2MwM2ZiZGY5YjM0NmFhNTUyNzg2YjVlZWJiM2FhZDRmYWM4M2FiOWU1YzZiNWQ1MTVhM2ViNTljZWVkNTIifQ"
         }
       ]
+    },
+    {
+      "id": "claim_a33c02c783774117978f1936069c2e88",
+      "statement": "Browser E2E는 GitHub Actions 배포 게이트로 실행하지 않으며, 배포 전이나 회귀 확인이 필요할 때 운영자가 macOS 또는 Linux에서 Node.js 22 이상, 프로젝트 pnpm 버전, 실행 중인 Docker, ffmpeg, Chromium을 준비하고 `pnpm install --frozen-lockfile`, `pnpm exec playwright install chromium`, `pnpm run test:e2e`를 직접 실행한다.",
+      "evidence": [
+        {
+          "resource": "repo://tests/e2e/TESTING.md#L40-L40",
+          "version": "repo-lines-v1:sha256:e48f6454cc0e1a0b02b8fb7d3977770e5f2a3565c9d22e23592f0e7abee576f6:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTQ4ZjY0NTRjYzBlMWEwYjAyYjhmYjdkMzk3Nzc3MGU1ZjJhMzU2NWM5ZDIyZTIzNTkyZjBlN2FiZWU1NzZmNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTQ4ZjY0NTRjYzBlMWEwYjAyYjhmYjdkMzk3Nzc3MGU1ZjJhMzU2NWM5ZDIyZTIzNTkyZjBlN2FiZWU1NzZmNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTJlYjI0NzRkMWZhOTY2ZWFlNDU2Y2IxMTNlZjc5ODhhZWIwNmJhNWY3MDhhZDI2MmI3NmExYTIwNTI3MGRlYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGU2OGM2OTdiNjIzNDRlMThmZmFiYWZlMDE4Mzk5Njc5NzE1ZGJmMjAxNWYzMmVhY2FlZjEwNDFkYjU1Njc5MyJ9"
+        },
+        {
+          "resource": "repo://tests/e2e/TESTING.md#L5-L15",
+          "version": "repo-lines-v1:sha256:829193e2456bf1880f2933f386ceab6990977f6ce11fd14e5ebd9df4ab085127:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzODY1MzBlNjE4YmMyNmU2ZWM4NmYzYzEzZDlmNjQ1MzI4ZmNiOTUwYTIwNWFjNTRkMjUwMGY2MTMzZjhlOWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwMjcyYTE3MjAwYjBmMzBjZGEwM2FmMWYyMDRmYTAzODRmM2MyMTgxZjI3OWZkYTMwNjA5ZWMzNDM1YWI4ZTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzMmYyOWFlNTMyYWNjY2I2NmUxNjgwMzY1ZDRkOGQ2NjdjMTNiZDRiODVhNjIxYzdmYzZkOGM4M2M1ZDgxZTUifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.5.2",
-    "at": "2026-09-18T16:47:52.081Z"
+    "at": "2026-09-25T04:42:33.305Z"
   }
 }

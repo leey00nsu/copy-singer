@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:6827d893a8ec2a1e725f6c817c3859d36d8d6196b9f6275bf8bfd0c1ceb2cb5c",
+  "pageVersion": "sha256:add5c7d6ec7243e3f843401655b40c0cb0e0dca8b18125199cc3d13a946f28ba",
   "claims": [
     {
       "id": "claim_3bca11ebfd2a49e6a2f500df468ed89f",
@@ -26,7 +26,7 @@
     },
     {
       "id": "claim_08baee0b76984d2ca5fb3aaf514045ec",
-      "statement": "세 복구 스크립트는 모두 `--apply`가 없으면 DB를 바꾸지 않는 dry-run 계약을 따르고, `--operator`·`--reason`을 `{operator}: {reason}` 형식으로 resolution에 기록하며, 오류 시 메시지를 표준 오류로 출력하고 종료 코드를 1로 세운다.",
+      "statement": "세 복구 스크립트는 모두 --apply가 없으면 DB를 바꾸지 않고, 오류 메시지를 표준 오류로 출력하며 종료 코드를 1로 세운다. jobs:reconcile과 media:reconcile은 --operator·--reason을 resolution에 `{operator}: {reason}`으로 남기고, tickets:recover-signup은 실제로 지급할 때만 SignupGrantIntent에 operator·reason을 쓰고 원장 사유를 `가입 지급 복구 ({operator}): {reason}`으로 남긴다.",
       "evidence": [
         {
           "resource": "repo://scripts/reconcile-external-job.ts#L53-L54",
@@ -41,8 +41,12 @@
           "version": "repo-lines-v1:sha256:febf4fd1dd031fa653e078bd4dc452ea7bd62de0c84f1ac7ff23dbc0183b8b21:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MjdlOWQ1NWFkNWM2NDk1YTllZDYzZDFmYWJhMmI1ZDdmN2Y3ZjJiMGRmYzExOTM3ZjJmMTM4NTBhYjFhZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRlYzVkMWFjMjJjNzdiZTIwNTQ4ZTY4ZjU0MGNjMWUzZDc1ODY4OTk5ODJmMDkyYjkyNTM0ZDUyOTUzN2I2OTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5OTJlOTYyYWQ1MDVmMTViOTZiYmQwNWEyYjdkODFjNzMyNzUxODk5MjQ4NjVlYWU4MDFiODE0NWZiMjE4NTEifQ"
         },
         {
-          "resource": "repo://scripts/recover-signup-grant.ts#L17-L38",
-          "version": "repo-lines-v1:sha256:a55c6298e7cd758b28e92ab750664b10fab4dab62d6568b6799306320b010b74:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhMDJlNWViZjVjYjRjMGZlMjRhZmU2N2Q2NWY1MGZlNGViY2RiN2JiYWEwMjM5OWRiZWEzYzYyYzBlZGI3Y2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwNWE3MzA5N2Y2YjFkYjYzOTIzNWU5M2VjZWM3MzcxNjZlMjM2NTRjNDg3ZGViMWNiYmQ2YTUwZmIyNTdlNWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEwNGI4OTQzZmNlYzM2YjQxMWVmM2Q5ZDVjYTAzYmRhYTJmZjRjN2UxZjdkMTUzZGNkMDEyZjg5MTk3MDU1OTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEwYzIwZTU5ODRjMTIyMzY4ZDU1MGE2ZGMxMDgyNDg0MGViYTkwYTA4MGQyYzFhNTE1YzI3NTMzZWI5MTE1YmUifQ"
+          "resource": "repo://scripts/recover-signup-grant.ts#L26-L38",
+          "version": "repo-lines-v1:sha256:e5383238d82eab54bd03744f28401059f11f6c5e55640e99a3ad24b4d1d70d0f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmNWFhMTYyNzg1YzhiZDY2ZTgyMmEyMWQwOGIwODI4MzQwNjgyZDA1MWFhYzIzZWE3ZDJmM2I4MjZlMGU4MDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwNWE3MzA5N2Y2YjFkYjYzOTIzNWU5M2VjZWM3MzcxNjZlMjM2NTRjNDg3ZGViMWNiYmQ2YTUwZmIyNTdlNWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZmN2Q0ZWQwYmNkMDE2OTIyOGFkZTAzNGM4MTlkNzE3MzA3YWVmMjM1MWMzMmQwOTQ0NmIyM2MyMWFiM2ZiNzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEwYzIwZTU5ODRjMTIyMzY4ZDU1MGE2ZGMxMDgyNDg0MGViYTkwYTA4MGQyYzFhNTE1YzI3NTMzZWI5MTE1YmUifQ"
+        },
+        {
+          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L230-L242",
+          "version": "repo-lines-v1:sha256:f0210b55c0b8a137c4d4bf9458a36ca5fa5d05a81f19ed3718c4bb226de9a359:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUzNjRiNTdiZDljYzA3ZTk4MWFhYjhhYjk5YmI4NGFmOGZhNTJkOWNiZDYxZGE0ZjY3NzI5YjdlNzA1ZTE2NWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyZDExY2FmNDNlOTdlZjM2OWU2YmVlZDFhMjY4YmQwNTgzOGYyOWI5ZGQyNTRiZjY5YmE2NDg4NDE0NzIzNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYyYjFlMmUzNWVkNzU1ZDQzYzYyYmI2N2NhNWZjMTJmYjJhOWIxMTBkNjljZTVkYWQ4Y2JhODBkODgwNDdkOTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5OTE5YzU4M2FjODMwZWRlNTJjMzY3OGRhNmQ0MDI5ZmE3YjVmODhhNmFmMDQ0MzAwNjgyOWQyN2JhZDMwOTAifQ"
         }
       ]
     },
@@ -186,29 +190,33 @@
     },
     {
       "id": "claim_d71ab959e5dc406bb3f1ff3233ff25ef",
-      "statement": "recoverSignupGrant는 기록된 SignupGrantIntent.amount나 기존 SIGNUP_GRANT 원장 금액이 요청 금액과 다르면 'Signup amount conflicts with the recorded intent or ledger.'로 실패하므로, 설정 변경으로 달라진 금액을 임의로 지급할 수 없다.",
+      "statement": "recoverSignupGrant는 같은 kind에 기록된 SignupGrantIntent.amount나 기존 SIGNUP_GRANT 원장 금액이 요청 금액과 다르면 'Signup amount conflicts with the recorded intent or ledger.'로 실패하므로, 설정 변경으로 달라진 금액을 임의로 지급할 수 없다.",
       "evidence": [
         {
-          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L202-L206",
-          "version": "repo-lines-v1:sha256:8b3294c3c4c24ae43e012e84b2f36dbe11bad6eae74d6ec3eb057bff2148fafd:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWFkYTZlMTkzMDJkZWY3ODU4OGEyNjljMmRhMjI0MTM3YzU3MzExNGY2ZmIwMTZlODNjZTdlMzc4YzhkYjQxYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMmViNmI3ZWMwOWFkNzZkNWUxMDU0ODU3YWY1ZjY2YzE1MTViMmUyM2JhMjhlNmY5ZDc2Y2M1OTNiMTYzZWNhNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmY4NmUxNWY1MzlkMDI2YzQ2YjBiZTFkOTM0M2MyOTJlMTM1ZTdlM2QyZWI1MTMzMjVkY2Y0NzEyMzYwODc1NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjZkZTA3YjkxNDBiYTUwYjAwZTExZjViZTIxMmFjYWU3NWJkNjZiZWY2MzRkMzgzMjM5ZmM3ZjYyZWM1YWFmYSJ9"
+          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L202-L205",
+          "version": "repo-lines-v1:sha256:e0f475d12cc7228532b056faf06f05ec6f442ea24e2c4b2f114a4c8668edc32e:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWFkYTZlMTkzMDJkZWY3ODU4OGEyNjljMmRhMjI0MTM3YzU3MzExNGY2ZmIwMTZlODNjZTdlMzc4YzhkYjQxYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmZhNzg3Y2Y0NWUwZWY5MGFlMzBjOTBiMzM3OTdiOGIxYjM4NzhkNjA5ODg4Yjg0ODQ0YjgxMTBlMzI0MzI0ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmY4NmUxNWY1MzlkMDI2YzQ2YjBiZTFkOTM0M2MyOTJlMTM1ZTdlM2QyZWI1MTMzMjVkY2Y0NzEyMzYwODc1NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWMzNzRhZjkxMzZhN2M1NDVjOTRhNzU2NDgzMTE2YmE2NzNkMDg4ZmNlZjQzZGNmZDJkMmRjZWI1ZDJmYzQ0YSJ9"
         },
         {
-          "resource": "repo://tests/signup-recovery.integration.ts#L50-L56",
-          "version": "repo-lines-v1:sha256:2362ac4fc31499b6f9191bd0288181f0975955d954784af051dc9efda1537264:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDVhYThiMjg4NzRiYmJhNDg2ODZiNDY4NmI0MTdkZGU3MTc5MDQ5NTcyZjlkMjUzNGJjY2I1NTE5YjNjMDU2ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzdiM2M0ZWQ5YTYyMjViNDY1ZTRlODg4MDZjZWYyMjQ1YjRkZDgyNGM5YTgxZDRiNTdmMGY0MTA3ZDcxYWQxZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWYxZWVhM2ZiMzIzZWYwMzkxNWYyMDBmZTI5ODNiZWQxYThhOTE3YWFiMzAxZDdkY2M2Zjg3NjFlNjI5ZDUwNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjAyNWQ5MDA4NmFjY2Y4YjZlY2I4ZThkOGIwNzMwMTYxZjdjODc4ZDZlMzY4NTdlYzcwY2M2Yjg0ZDczNWZiOCJ9"
+          "resource": "repo://tests/signup-recovery.integration.ts#L95-L96",
+          "version": "repo-lines-v1:sha256:bda1c0e57f7706973adc4594efe569d47411eebfc93ac5eba14634989f12a279:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTZhYzIyMDUxZWI2N2NlOWIyN2MwM2ZkMzlhZDQwY2JhMTZkNzllNDExMjMyMzNkNWMyMTg0MTZhMmE2ZDE0ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzdiM2M0ZWQ5YTYyMjViNDY1ZTRlODg4MDZjZWYyMjQ1YjRkZDgyNGM5YTgxZDRiNTdmMGY0MTA3ZDcxYWQxZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjQ5NDNjYTNiYWRiZjFhYmRlOGFlOWRhY2EyMjYyNGVhZDYyMGM0OGIyZmM3NjYzMDhiMDhhYjBlOGRiMDA3ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjAyNWQ5MDA4NmFjY2Y4YjZlY2I4ZThkOGIwNzMwMTYxZjdjODc4ZDZlMzY4NTdlYzcwY2M2Yjg0ZDczNWZiOCJ9"
         }
       ]
     },
     {
       "id": "claim_9cc42f636435400996495c20346bcabe",
-      "statement": "recoverSignupGrant는 이미 SIGNUP_GRANT 원장 행이 있으면 --apply 없이도 NOOP을 반환하고, 원장 행이 없을 때 --apply 유무에 따라 WOULD_GRANT 또는 GRANTED를 반환하며, 지급은 정상 가입과 같은 signup:{kind}:{userId} idempotency key를 쓰고 User 행을 FOR UPDATE로 잠근 상태에서 실행된다.",
+      "statement": "recoverSignupGrant는 기존 SIGNUP_GRANT 원장 행이 있으면 --apply 없이도 NOOP을, 없고 --apply가 없으면 WOULD_GRANT를, 없고 --apply가 있으면 GRANTED를 반환하고 세 결과 모두 지갑 잔액을 함께 돌려준다. 지급은 정상 가입과 같은 signup:{kind}:{userId} idempotency key를 쓰고 User 행을 FOR UPDATE로 잠근 트랜잭션 안에서 실행되며, dry-run은 SignupGrantIntent를 만들지 않는다.",
       "evidence": [
         {
           "resource": "repo://src/entities/ticket/api/ticket-service.ts#L136-L143",
           "version": "repo-lines-v1:sha256:db5431f726fa2acb6f9b2f5bce548a7e37b8d7bca84e1c04632a4198d896c3b0:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzVjZGVhYTEyYzMzMjZjZGY1YjdlMTRjODYzNzhjN2MyNzczMWQ1ZjdmN2FjZjk1OTY4MmVhYTBjNTJjNzMxMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmJiOTNjZTU1NmVkZjE1YTZlNTFjYTYxZjI1MDEyMWVmZTE1M2FiMmUwYmE5OWM1MGUxZGE1ZmU4YjdiYzU2NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWQ3ZjFmZmM0Y2ZlNzAyOTUwMTU1ZGUxM2M5NDYzYmY5YjYxMDFmNGIzZDdhNjhjNDNkZmQ3ZTFlNTdjYjQ1NCJ9"
         },
         {
-          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L199-L222",
-          "version": "repo-lines-v1:sha256:d5984e2e909ed20560f1363305fa11a1916aba449e8d48cc1c82c63f6e2a4913:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4NWMxMWNlNDcyZTcwZjIwOWI1NjIwODkzYWQ1MzYwNjQwZDRmMTIzZjRmZDdkMzNiZDYzNmQxZTI2YzlmZjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVkOTUwN2ZiNjc1YzFiMzAwOWI4OTQwNTkzYWQzNjA2NWI0YzAzMDE5NThmMmQ1ODYxN2UzZTJmOWI1MzAxYzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVmYzIzOWY2NDUwMGRiOGE1NDY2MjdiNzBjZWY4MGFjNGE4ZmFkOWNlMGY5NzAyY2EyOTA0YjcyNDMwMzMxNmYifQ"
+          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L199-L251",
+          "version": "repo-lines-v1:sha256:90b75cf82a4e5d0fdcf1054ced179682ad9d2ef9bf1facb8f7f87004c954ef5f:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4NWMxMWNlNDcyZTcwZjIwOWI1NjIwODkzYWQ1MzYwNjQwZDRmMTIzZjRmZDdkMzNiZDYzNmQxZTI2YzlmZjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkOWUxMjU0NjQyNTU3NmQzZGVhZThjOWI5ZGJmMTI4ZDVkNmRkYWY1ZDdmZTg1NzkzNDkyN2RlZmZhM2I5ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVkOTUwN2ZiNjc1YzFiMzAwOWI4OTQwNTkzYWQzNjA2NWI0YzAzMDE5NThmMmQ1ODYxN2UzZTJmOWI1MzAxYzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIifQ"
+        },
+        {
+          "resource": "repo://tests/signup-recovery.integration.ts#L47-L61",
+          "version": "repo-lines-v1:sha256:e3b7d6569886d13cef86c5b9839ae4e12e3afd63e25763fccf5b621e1af15c32:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAwOGE4ZDhjZDE5NzUyZjk5MmFjZDBhNDc5Nzc4YWE3ZDY4ZDQ1ZjI2NTQzZjY2YmY4M2MzNjJlM2ZlNWZlM2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhM2UyMDcxOTQ1MjkzMjNiMDY5NTVjYzMwZDlkYzg2ZTY1MzIwYzQ3ODA0OGI3ZjQzOWU3OWFhZDUxYjI0MWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNlZTQ3YTBkNjFiYWRhNmJmOWViNWYzMjE4ODA1YzFiZTE3NjU5NDA2YjUzZDhmMDNhNDVmNzE5MjllYjg2YWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlkNDAwZTNmMGY0YjkzYTAyMWVmMmQ2N2EyZDEwZGFkNGUwMTQwYmMxOTEzMzFjOTc4NmZhOTNjYTNhMDkxODUifQ"
         }
       ]
     },
@@ -217,8 +225,12 @@
       "statement": "`--amount 0`도 recoverSignupGrant의 검증을 통과해 amount가 0인 SIGNUP_GRANT 원장 행을 만들 수 있으며, 그 뒤에는 같은 금액도 NOOP이 되고 다른 금액은 금액 충돌로 거부된다.",
       "evidence": [
         {
-          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L189-L206",
-          "version": "repo-lines-v1:sha256:c519a721e8a5d5ff5033e5e955a9b03ac377755c6405220e593f8b2a67ec1289:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4NzY1MzcxYWVhMWNjN2Q0NmVjNmVmY2NiYmU5ZTllNzNjOTE4OTRmMGQwNmM3MWYxMjVhYzhiZTI1NWI3YmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlYjZiN2VjMDlhZDc2ZDVlMTA1NDg1N2FmNWY2NmMxNTE1YjJlMjNiYTI4ZTZmOWQ3NmNjNTkzYjE2M2VjYTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlMGE3YTM2OTI2ZDNjYzIyYzlkYjY4M2YzN2E2ZmEzOGM4NjdkZjA5YjM4MDAzYTJhNjdmNGJiMGU5NmQ1YmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZGUwN2I5MTQwYmE1MGIwMGUxMWY1YmUyMTJhY2FlNzViZDY2YmVmNjM0ZDM4MzIzOWZjN2Y2MmVjNWFhZmEifQ"
+          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L189-L205",
+          "version": "repo-lines-v1:sha256:76e0b5be0af4e8d2477328e595be76a7b0808af4db8cecdb82eef89260fc614b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4NzY1MzcxYWVhMWNjN2Q0NmVjNmVmY2NiYmU5ZTllNzNjOTE4OTRmMGQwNmM3MWYxMjVhYzhiZTI1NWI3YmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmYTc4N2NmNDVlMGVmOTBhZTMwYzkwYjMzNzk3YjhiMWIzODc4ZDYwOTg4OGI4NDg0NGI4MTEwZTMyNDMyNGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlMGE3YTM2OTI2ZDNjYzIyYzlkYjY4M2YzN2E2ZmEzOGM4NjdkZjA5YjM4MDAzYTJhNjdmNGJiMGU5NmQ1YmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFjMzc0YWY5MTM2YTdjNTQ1Yzk0YTc1NjQ4MzExNmJhNjczZDA4OGZjZWY0M2RjZmQyZDJkY2ViNWQyZmM0NGEifQ"
+        },
+        {
+          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L230-L251",
+          "version": "repo-lines-v1:sha256:815c0a4b691e947961ad2e360f4db1bc06b78e63e4bbdc035598d8959ea41f07:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUzNjRiNTdiZDljYzA3ZTk4MWFhYjhhYjk5YmI4NGFmOGZhNTJkOWNiZDYxZGE0ZjY3NzI5YjdlNzA1ZTE2NWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkOWUxMjU0NjQyNTU3NmQzZGVhZThjOWI5ZGJmMTI4ZDVkNmRkYWY1ZDdmZTg1NzkzNDkyN2RlZmZhM2I5ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYyYjFlMmUzNWVkNzU1ZDQzYzYyYmI2N2NhNWZjMTJmYjJhOWIxMTBkNjljZTVkYWQ4Y2JhODBkODgwNDdkOTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIifQ"
         }
       ]
     },
@@ -336,19 +348,23 @@
     },
     {
       "id": "claim_4a2eb13cc7fb4258bbb77c1b9d0f5896",
-      "statement": "이 복구 경로들은 `pnpm run test:readiness`에 포함된 tests/worker-recovery.integration.ts, tests/media-recovery.integration.ts, tests/signup-recovery.integration.ts가 만료 lease 회수, MEDIA_ASSET_IN_USE 거부, 미확인 삭제 의도의 UNRESOLVED 잔류, 가입 지급 복구의 금액 충돌 거부로 고정한다.",
+      "statement": "복구 경로는 pnpm run test:readiness에 포함된 통합 테스트가 고정한다. tests/worker-recovery.integration.ts는 만료된 lease 작업을 재점유하면 FAILED로 수렴하고 이전 소유자의 확정 시도가 LEASE_LOST로 막히는지를, tests/media-recovery.integration.ts는 외부 파일 id를 확인하지 못한 MediaOperation 행의 UNRESOLVED 잔류와 MEDIA_ASSET_IN_USE 삭제 거부를, tests/signup-recovery.integration.ts는 dry-run의 WOULD_GRANT 결과와 intent 미생성, apply: true 동시 두 번의 GRANTED/NOOP 분기, 기록된 금액과 다른 amount의 conflicts 거부를 확인한다.",
       "evidence": [
         {
           "resource": "repo://package.json#L70-L70",
           "version": "repo-lines-v1:sha256:ea73897a5411cae79ff1745ec0523235a8796d7d0066e05e0a0bd712e9aa41f8:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE3Mzg5N2E1NDExY2FlNzlmZjE3NDVlYzA1MjMyMzVhODc5NmQ3ZDAwNjZlMDVlMGEwYmQ3MTJlOWFhNDFmOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE3Mzg5N2E1NDExY2FlNzlmZjE3NDVlYzA1MjMyMzVhODc5NmQ3ZDAwNjZlMDVlMGEwYmQ3MTJlOWFhNDFmOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDAzZDg2NWY0Yzc5MmI3OGVmZmMxNzU1M2ZlNmY1NjI2YzVlOGQxZmE1NmRhNDYzOWUxNWJiOWNhYjU2MDNlMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODIzNjQ4MmM4ZDI3N2MyOGUzMjdjNjNkYjdiMjU2M2Q3Y2ZlNjI1ODQzNjA0ZDM2NmFkYzUzOTkwNzU5OTA4NSJ9"
         },
         {
-          "resource": "repo://tests/media-recovery.integration.ts#L89-L108",
-          "version": "repo-lines-v1:sha256:b49109a278b2de8270f6e9a96b5d67abfb2a62fb3bd68af35b6cadaf65bd2716:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjNDM3NmExZjRlZWI3OTc3YTA1Y2Q2ZTU0NzJmNWIzNmYwZjUwMWMyMGU2NzdmOThlMDM0OWQ0MzlmMGMzZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiMjc5OTA3NDAwZmJjMWJiMDgwYzFkNjk4OTQ5NWE2YzQ2MzdmY2RkNjZlYWIzYzMxMWRiMDI1MjhiZmI0NGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZmYzI5NGM5MjIyY2IzY2NjODY5MGJhMTU1OGIxMWQ2OWNkYTJiMDAzNDczZTU3Y2JjYWUzOGIzMzZlMGNiMGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRjM2E4M2M3ZDU3OWJkN2ZkNjk3OTE5N2M3MWFjNjFkNzNiNjVkNDkyNDM3ZWFjNmY2ZDAyNTcxMTIyOTUxNjYifQ"
+          "resource": "repo://tests/media-recovery.integration.ts#L68-L73",
+          "version": "repo-lines-v1:sha256:f337203d41f596639fe246fecefc20250ddd59b4e181b4b1141d4791892b1ebb:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTFhZTI3YjdhYTdlNDE0N2RjOTI3ZTI1MGJhZTdiYTYxNTI4Mzg0MWMzYzlkNjE5OTg5OTNmYTQyYTY3MDY5MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDAxOGRhNzA2ZjQ3M2U5OTZkOTE1M2ZmZTZhMTJlNzViMzY3NTg1MjYzYTVkZDViMzQ0OTFlZTI0ODYzNmRhZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjNhNDU4OGZiYjRjNzNjYjkzOWRhMTA3MDBhNzJmZTE3YzhiNWQyZjFiNGU3MjczZTg4ZmRiZDUxYmIzNjQ1YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTVmMDE5MmEwNDEyMGZmOGM4YzI1NjU3YjU4YmU3OGIwMzM0OWViNDI1NTI2ZjEyZmZmYzViYzk1NGIwZDk5MCJ9"
         },
         {
-          "resource": "repo://tests/signup-recovery.integration.ts#L40-L56",
-          "version": "repo-lines-v1:sha256:a936d82883c88ab70107ae4438959af6437d25b3415e6b3334e4abe7c77430e1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmYWU5ZmQ3YzM0Nzg1MGUwM2JjNjU2ZTgwZGJlZTkwOTYxMDAzZGVmZGMzYTUyMzM2YmRjNjFiZGMzYzEyZTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc3YjNjNGVkOWE2MjI1YjQ2NWU0ZTg4ODA2Y2VmMjI0NWI0ZGQ4MjRjOWE4MWQ0YjU3ZjBmNDEwN2Q3MWFkMWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJmMzlkMTZjOGM3M2UyYWM2ZGMxNWJmMDM4ODMxNmE2ZjUwOWU0YzViYjNjYTk1ZmNlZDk5NGIwYTNjYTcyYTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIwMjVkOTAwODZhY2NmOGI2ZWNiOGU4ZDhiMDczMDE2MWY3Yzg3OGQ2ZTM2ODU3ZWM3MGNjNmI4NGQ3MzVmYjgifQ"
+          "resource": "repo://tests/media-recovery.integration.ts#L89-L92",
+          "version": "repo-lines-v1:sha256:ab1526921cebb33674df10c0ea7ce91d9c57d66bc6b84f95cdba192e64ed82c2:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2M0Mzc2YTFmNGVlYjc5NzdhMDVjZDZlNTQ3MmY1YjM2ZjBmNTAxYzIwZTY3N2Y5OGUwMzQ5ZDQzOWYwYzNmZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODRlNDIwOGNkNmZmYjhjNGEzNTQ3YjJmNTRhZGExOTk3OGMzZjM2NWU3OGY5NTAyZWY1MTQ1Y2RkMmFhODU0MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmZjMjk0YzkyMjJjYjNjY2M4NjkwYmExNTU4YjExZDY5Y2RhMmIwMDM0NzNlNTdjYmNhZTM4YjMzNmUwY2IwZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTZjMWE3ZDlkOGViZThlMmViNjA2OGZkNTI1Mjc1ZWI0ODRjODdlMGFmNzE4ODg4YTFmOWNhNTg1Y2Q5MmJkZiJ9"
+        },
+        {
+          "resource": "repo://tests/signup-recovery.integration.ts#L47-L96",
+          "version": "repo-lines-v1:sha256:dacc5682994d8fdad4218b95869658b5e7d0f6e075f1388ca4622a0cecffd681:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAwOGE4ZDhjZDE5NzUyZjk5MmFjZDBhNDc5Nzc4YWE3ZDY4ZDQ1ZjI2NTQzZjY2YmY4M2MzNjJlM2ZlNWZlM2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc3YjNjNGVkOWE2MjI1YjQ2NWU0ZTg4ODA2Y2VmMjI0NWI0ZGQ4MjRjOWE4MWQ0YjU3ZjBmNDEwN2Q3MWFkMWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNlZTQ3YTBkNjFiYWRhNmJmOWViNWYzMjE4ODA1YzFiZTE3NjU5NDA2YjUzZDhmMDNhNDVmNzE5MjllYjg2YWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIwMjVkOTAwODZhY2NmOGI2ZWNiOGU4ZDhiMDczMDE2MWY3Yzg3OGQ2ZTM2ODU3ZWM3MGNjNmI4NGQ3MzVmYjgifQ"
         },
         {
           "resource": "repo://tests/worker-recovery.integration.ts#L112-L134",
@@ -431,10 +447,20 @@
           "version": "repo-lines-v1:sha256:031fc6d5eedea5d8961fa7ea244852db9340b69dd8339a1994d478b682c9bca9:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGEwMmU1ZWJmNWNiNGMwZmUyNGFmZTY3ZDY1ZjUwZmU0ZWJjZGI3YmJhYTAyMzk5ZGJlYTNjNjJjMGVkYjdjZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzllNTk1NzllNTNlODUyZDc4NDk5YTZkOGFlM2MwN2QyYjJjMjc0ZGE2MDJiY2QzYTNlMGRjODVhMGVhZmI3OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTA0Yjg5NDNmY2VjMzZiNDExZWYzZDlkNWNhMDNiZGFhMmZmNGM3ZTFmN2QxNTNkY2QwMTJmODkxOTcwNTU5OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmY3ZDRlZDBiY2QwMTY5MjI4YWRlMDM0YzgxOWQ3MTczMDdhZWYyMzUxYzMyZDA5NDQ2YjIzYzIxYWIzZmI3MiJ9"
         }
       ]
+    },
+    {
+      "id": "claim_89dd93609674495eaeef9814a17096e1",
+      "statement": "jobs:reconcile 단건 처리는 대상 ExternalJobReconciliation 행을 SELECT ... FOR UPDATE로 잠그고 같은 트랜잭션 안에서 상태를 다시 읽으므로, 두 운영자가 같은 행을 동시에 처리해도 한 건만 반영되고 나머지는 NOOP 또는 'Conflicting prior resolution' 오류로 끝난다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/reconcile-external-job.ts#L37-L46",
+          "version": "repo-lines-v1:sha256:b4710e5d6f6b79ed7f340d96f7f89e2a1ad37fde0dd7f33939152ab2ae688a3a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4YzcxNWM1ZjZlYWFlOGMwMjI4MDkwNjA2NmUwOWU4N2EwMTQ2MDgyODQ1YjUxN2E5N2E2YWUyNTNmZjQ1YjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwYWNkZTNmYWFkYWY2NTQyNmU1YzdkODZjZDM5NWE2NTdkZjY1ZjEyYWU5NTY5YzczZmE3NmVhYjNhMzU0M2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc0NmRjNzM3NWRmZmM1MTQzYzM2NmJkZWMzMzVlYTkyMzFiZmZiNjUzZjExZTMzNzU0MTE0MGM5Y2YzMjFlYzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI1M2YyNTViYTIwYzJiYzg1MWU5ZTZkOWEyODZjMjJlNzEyNzMxYmY3NzVhMTYxNWZlYmZmMzUwNDRkZmRhYWMifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.5.2",
-    "at": "2026-09-18T16:47:52.081Z"
+    "at": "2026-09-25T04:42:33.305Z"
   }
 }

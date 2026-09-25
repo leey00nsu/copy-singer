@@ -3,12 +3,9 @@ type: how-to
 title: 변경 검증 경로
 description: 바꾼 범위에 따라 어떤 검사 명령을 어떤 순서로 돌릴지 고르는 표와, 도메인 단위·PostgreSQL 통합·MSW 계약·Storybook 브라우저·Playwright E2E(end-to-end)·k6 부하 계층이 각각 무엇을 증명하고 무엇을 증명하지 않는지 정리한 문서예요.
 tags: [verification, testing, e2e, storybook, how-to]
-verified:
-  - by: openwiki/0.5.2
-    at: 2026-09-18T16:47:52.081Z
 sources:
-  - id: openwiki-source-ca04911f6e4b45f5834a6f2e
-    resource: repo://.github/workflows/e2e.yml
+  - id: openwiki-source-3dc25b286bcb30bfd66698fa
+    resource: repo://.github/workflows/lee-spec-kit-knowledge.yml
   - id: openwiki-source-ea70eb6c045047448e446296
     resource: repo://.gitignore
   - id: openwiki-source-43c41f18d49c25a86be5e9ae
@@ -47,10 +44,13 @@ sources:
     resource: repo://tests/vocal-profile-persistence.integration.ts
   - id: openwiki-source-fbadcd8591b65031efaaedce
     resource: repo://vitest.config.ts
-generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:47:52.081Z" }
+generated: { by: "openwiki/0.5.2", at: "2026-09-25T04:42:33.305Z" }
+verified:
+  - by: openwiki/0.5.2
+    at: 2026-09-25T04:42:33.305Z
 ---
 
-바꾼 파일이 어느 계층에 닿는지 정한 뒤 아래 표에서 그 줄의 명령만 먼저 돌리면 돼요. 검사 명령은 [package.json](repo://package.json#L9-L73)에 정의된 script 중에서만 고르세요.
+바꾼 파일이 어느 계층에 닿는지 정한 뒤 아래 표에서 그 줄의 명령만 먼저 돌리면 돼요. 표에 적힌 명령은 [package.json](repo://package.json#L9-L73)에 정의된 script 중에서 고르고, k6 행만 예외로 k6 런타임에서 직접 실행해요.
 
 ## 바꾼 범위에 먼저 돌릴 명령
 
@@ -102,7 +102,7 @@ flowchart TD
 | MSW(Mock Service Worker) fixture 기반 API 계약·쿼리 테스트 | `pnpm run test:query` | 클라이언트 Zod 스키마, 오류 분류, 재시도·폴링 판단을 fixture로 확인해요([tests/api-contracts.test.ts](repo://tests/api-contracts.test.ts#L34-L52), [tests/msw-query.test.ts](repo://tests/msw-query.test.ts#L37-L69)) | MSW 부분은 fixture를 돌려주므로 실제 Route Handler 응답 형식과 네트워크 실패는 확인하지 않아요. 등록하지 않은 요청은 `onUnhandledRequest: "error"`로 즉시 실패해요([tests/msw-query.test.ts](repo://tests/msw-query.test.ts#L33-L33)) |
 | Storybook 브라우저 검사 | `pnpm run test:storybook --run` | headless chromium에서 story의 `play` assertion과 접근성 검사를 돌려요([vitest.config.ts](repo://vitest.config.ts#L38-L54)) | 서버 데이터·인증·DB 경로는 확인하지 않아요. story가 등록한 MSW 응답만 봐요 |
 | Playwright E2E | `pnpm run test:e2e` | 실제 Chromium → Next.js production server → 제품 API → PostgreSQL → 워커를 지나는 사용자 계약을 확인해요([tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L19-L26)) | 실제 Google 로그인, 실제 Modal GPU·Leemage 장애, 여러 브라우저·기기, 네트워크 품질, 실제 부하, 관리자 카탈로그 편집·커스텀 믹싱, 모든 파일 형식([tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L28-L30)) |
-| k6 부하 harness | `package.json` script에 없어요. k6 런타임에서 [scripts/load/readiness.k6.js](repo://scripts/load/readiness.k6.js)를 직접 실행해요 | 격리된 localhost 대상에 200 또는 명시적 429·503만 통과로 세고, check 성공률 99%와 p95 지연 2000ms 미만을 threshold로 둬요([scripts/load/readiness.k6.js](repo://scripts/load/readiness.k6.js#L16-L58)) | 기능 정확성과 데이터 정합성. `pnpm test`의 단계 목록([package.json](repo://package.json#L23-L23))과 E2E workflow([.github/workflows/e2e.yml](repo://.github/workflows/e2e.yml#L14-L24)) 어느 쪽에도 묶여 있지 않아요 |
+| k6 부하 harness | `package.json` script에 없어요. k6 런타임에서 [scripts/load/readiness.k6.js](repo://scripts/load/readiness.k6.js)를 직접 실행해요 | 격리된 localhost 대상에 200 또는 명시적 429·503만 통과로 세고, check 성공률 99%와 p95 지연 2000ms 미만을 threshold로 둬요([scripts/load/readiness.k6.js](repo://scripts/load/readiness.k6.js#L16-L58)) | 기능 정확성과 데이터 정합성. `pnpm test`의 단계 목록([package.json](repo://package.json#L23-L23))에도, tracked 워크플로 [.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml)의 어느 단계에도 묶여 있지 않아요 |
 
 증명하지 않는 범위를 문장으로 가장 분명하게 적어 둔 곳은 E2E 문서예요. 같은 fixture와 같은 assertion으로 baseline과 candidate를 실행했을 때 "두 실행의 모든 assertion이 통과했다는 것은 이 계약의 회귀가 관찰되지 않았다는 뜻이며, 전체 서비스의 100% 동등성을 증명하지 않는다"고 밝혀요([tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L28-L28)).
 
@@ -121,11 +121,13 @@ flowchart TD
 
 `pnpm run test:e2e`는 suite 파일만 돌리는 게 아니에요. runner가 target마다 `prisma migrate deploy`, `prisma generate`, `tests/e2e/seed.ts`, `pnpm run build`를 거친 뒤 Next.js production server와 `mixing`·`vocal-profile-analysis` 워커를 띄우고 나서 Playwright를 실행해요([tests/e2e/run.mjs](repo://tests/e2e/run.mjs#L198-L246), [tests/e2e/run.mjs](repo://tests/e2e/run.mjs#L230-L237)). 그래서 제품 build나 워커 시작 코드가 깨지면 첫 시나리오에 닿기 전에 이미 실패해요.
 
-## 커밋 전과 CI에서 자동으로 도는 검사
+## 커밋 훅과 CI가 대신 돌려 주는 범위
 
 커밋 훅이 실행하는 것은 staged 파일 대상 Biome 검사 하나예요. `pnpm run check:staged`는 `biome check --staged --no-errors-on-unmatched`이므로 포맷과 lint만 보고, typecheck나 테스트는 돌리지 않아요([package.json](repo://package.json#L30-L30), [biome.json](repo://biome.json#L9-L22)).
 
-CI 쪽은 범위가 더 좁아요. 이 저장소의 `.github/workflows/`에는 Browser E2E workflow 하나가 있고, `pull_request`와 수동 `workflow_dispatch`에서만 돌아요. 이 workflow는 Node.js 22를 준비하고 `pnpm install --frozen-lockfile`, `pnpm exec playwright install --with-deps chromium`, ffmpeg 설치를 거친 뒤 `pnpm run test:e2e`를 실행하고, 결과를 `artifacts/e2e`에서 7일간 보관해요([.github/workflows/e2e.yml](repo://.github/workflows/e2e.yml#L1-L29)). `pnpm test`와 `pnpm run check`는 이 workflow에 없으니 로컬에서 직접 돌려야 해요.
+CI 쪽은 범위가 더 좁아요. 이번 생성 입력에서 `.github/workflows/` 아래 tracked 상태로 확인되는 워크플로는 Knowledge 생성용 `lee-spec-kit-knowledge.yml` 하나뿐이에요. 그 `knowledge` 작업의 단계는 OpenWiki 설치와 생성이고([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L22-L71)), `pull_request`에서 도는 `verify-knowledge-pr` 작업은 생성 문서 PR의 범위와 완료 메타데이터만 검사해요([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L409-L471)). 어느 작업에도 `pnpm test`·`pnpm run check`·`pnpm run test:e2e`를 실행하는 단계가 없으니, 표의 검사는 워크플로가 대신 돌려 주지 않고 커밋 전에 직접 실행해야 해요. 이 워크플로의 판정 규칙과 게이트 위치는 [Knowledge 생성과 CI 자동화](../operations/knowledge-automation.md)가 소유해요.
+
+Browser E2E도 예외가 아니에요. 운영 배포는 Coolify의 기존 자동 배포를 쓰고, Browser E2E는 GitHub Actions 배포 게이트로 실행하지 않아요. 배포 전이거나 회귀 확인이 필요할 때 운영자가 macOS 또는 Linux에서 Node.js 22 이상, 프로젝트 pnpm 버전, 실행 중인 Docker, ffmpeg, Chromium을 준비하고 `pnpm install --frozen-lockfile`, `pnpm exec playwright install chromium`, `pnpm run test:e2e`를 직접 돌려요([tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L5-L15), [tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L40-L40)).
 
 E2E 설정은 불안정한 테스트를 자동 재시도로 감추지 않아요. Playwright 설정이 `workers: 1`, `retries: 0`, `forbidOnly: true`이고 실패할 때만 trace와 screenshot을 남겨요([tests/e2e/playwright.config.mjs](repo://tests/e2e/playwright.config.mjs#L2-L20)). 실패하면 로그와 trace를 보고 테스트 결함, 기존 앱 결함, 신규 회귀를 구분한 뒤 고치세요([tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L40-L40)).
 
