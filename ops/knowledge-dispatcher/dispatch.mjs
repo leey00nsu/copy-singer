@@ -23,7 +23,7 @@ export function koreanCycle(now) {
   );
   return {
     date: `${parts.year}-${parts.month}-${parts.day}`,
-    due: Number(parts.hour) > 1 || (Number(parts.hour) === 1 && Number(parts.minute) >= 17),
+    due: Number(parts.hour) >= 1,
   };
 }
 

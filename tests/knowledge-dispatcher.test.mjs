@@ -5,12 +5,16 @@ import { dispatchKnowledge, koreanCycle } from "../ops/knowledge-dispatcher/disp
 const due = new Date("2026-09-25T04:30:00Z");
 const response = (value, status = 200) => ({ ok: status < 400, status, json: async () => value });
 
-test("uses the Korean calendar date and waits until 01:17", async () => {
-  assert.deepEqual(koreanCycle(new Date("2026-09-24T16:16:00Z")), {
+test("uses the Korean calendar date and waits until 01:00", async () => {
+  assert.deepEqual(koreanCycle(new Date("2026-09-24T15:59:00Z")), {
     date: "2026-09-25",
     due: false,
   });
-  assert.deepEqual(await dispatchKnowledge({ now: new Date("2026-09-24T16:16:00Z") }), {
+  assert.deepEqual(koreanCycle(new Date("2026-09-24T16:00:00Z")), {
+    date: "2026-09-25",
+    due: true,
+  });
+  assert.deepEqual(await dispatchKnowledge({ now: new Date("2026-09-24T15:59:00Z") }), {
     outcome: "before-due",
     cycle: "2026-09-25",
   });
