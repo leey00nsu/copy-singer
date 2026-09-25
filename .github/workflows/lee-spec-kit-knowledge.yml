@@ -4,7 +4,9 @@
 name: Scheduled OpenWiki Knowledge
 on:
   schedule:
-    - cron: '40 12 * * *'
+    - cron: '17 1 * * *'
+      timezone: Asia/Seoul
+    - cron: '40 12 25 9 *'
       timezone: Asia/Seoul
   workflow_dispatch:
   pull_request:
