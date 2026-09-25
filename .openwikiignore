@@ -18,3 +18,8 @@
 **/service-account*.json
 docs/features/
 # lee-spec-kit:openwiki-ignore:end
+
+# lee-spec-kit:knowledge-source-ignore:begin
+/AGENTS.md
+/CLAUDE.md
+# lee-spec-kit:knowledge-source-ignore:end
