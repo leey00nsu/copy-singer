@@ -41,7 +41,17 @@ export async function dispatchKnowledge({ now = new Date(), token, request = fet
   };
   const call = async (url, init = {}) => {
     const response = await request(url, { ...init, headers, signal: AbortSignal.timeout(15000) });
-    if (!response.ok) throw new Error(`GitHub Actions API returned HTTP ${response.status}`);
+    if (!response.ok) {
+      let reason = "";
+      try {
+        const body = await response.json();
+        if (typeof body.message === "string") reason = `: ${body.message.slice(0, 200)}`;
+      } catch {
+        // The HTTP status and request path still identify the failed operation.
+      }
+      const operation = `${init.method || "GET"} ${new URL(url).pathname}`;
+      throw new Error(`GitHub Actions API ${operation} returned HTTP ${response.status}${reason}`);
+    }
     return response.json();
   };
   const runs = await call(`${base}/runs?per_page=100`);
