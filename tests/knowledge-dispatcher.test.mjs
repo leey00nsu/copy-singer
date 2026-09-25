@@ -62,6 +62,28 @@ test("does not duplicate an existing cycle or overlap an active run", async () =
   }
 });
 
+test("treats a successful empty dispatch response as accepted", async () => {
+  let calls = 0;
+  const result = await dispatchKnowledge({
+    now: due,
+    token: "test-token",
+    request: async () => {
+      calls += 1;
+      return calls === 1
+        ? response({ workflow_runs: [] })
+        : {
+            ok: true,
+            status: 204,
+            json: async () => {
+              throw new Error("no body");
+            },
+          };
+    },
+  });
+  assert.deepEqual(result, { outcome: "accepted", cycle: "2026-09-25" });
+  assert.equal(calls, 2);
+});
+
 test("fails visibly when GitHub does not accept the dispatch", async () => {
   let calls = 0;
   await assert.rejects(
