@@ -1,11 +1,8 @@
 ---
 type: concept
 title: 티켓 원장과 멱등성
-description: 티켓 차감·환불·가입 지급·관리자 조정이 TicketWallet과 TicketLedger에 함께 기록되는 방식과, idempotencyKey 규칙이 중복 반영을 막는 원리를 설명해요.
+description: 티켓 차감·환불·가입 지급·관리자 조정이 TicketWallet과 TicketLedger에 함께 기록되는 방식과, idempotencyKey 규칙이 중복 반영을 막는 원리, 가입 지급 복구가 금액 충돌을 거부하는 조건을 설명해요.
 tags: [tickets, ledger, idempotency, invariants, prisma]
-verified:
-  - by: openwiki/0.5.0
-    at: 2026-09-18T10:11:56.372Z
 sources:
   - id: openwiki-source-5b54a58d1b51cd490b0e7162
     resource: repo://package.json
@@ -13,6 +10,8 @@ sources:
     resource: repo://prisma/schema.prisma
   - id: openwiki-source-5141a6008af8b86496520333
     resource: repo://scripts/reconcile-external-job.ts
+  - id: openwiki-source-6d119c4213bbb6a218fde503
+    resource: repo://scripts/recover-signup-grant.ts
   - id: openwiki-source-53e53c476f7a3683548b96d2
     resource: repo://src/_app/api-routes/account/tickets-route.ts
   - id: openwiki-source-d18632eb47e711120ea541db
@@ -33,6 +32,8 @@ sources:
     resource: repo://src/features/manage-tickets/api/adjust-user-tickets.ts
   - id: openwiki-source-44e7e2d6b4bac7fa4187bbf9
     resource: repo://src/features/manage-tickets/model/contract.ts
+  - id: openwiki-source-6edd08b73d3742b7c03556bd
+    resource: repo://tests/e2e/journeys.spec.mjs
   - id: openwiki-source-10c6a88a3297ea68ebdbf439
     resource: repo://tests/mixing-queue.integration.ts
   - id: openwiki-source-30f5c0a878cc81b6aac4a043
@@ -41,7 +42,10 @@ sources:
     resource: repo://tests/ticket-ledger.integration.ts
   - id: openwiki-source-28adc6ef840aa586dc1aceef
     resource: repo://tests/vocal-profile-analysis-queue.integration.ts
-generated: { by: "openwiki/0.5.0", at: "2026-09-18T10:11:56.372Z" }
+generated: { by: "openwiki/0.5.2", at: "2026-09-25T04:42:33.305Z" }
+verified:
+  - by: openwiki/0.5.2
+    at: 2026-09-25T04:42:33.305Z
 ---
 
 티켓 원장은 "지갑 잔액"과 "변경 내역"을 같은 트랜잭션에서 함께 움직여요. 티켓을 건드리는 코드는 모두 `applyTicketChangeInTransaction`을 통과하고, 그 함수가 잔액 갱신과 `TicketLedger` 행 생성을 한 번에 처리해요.
@@ -111,11 +115,38 @@ flowchart TD
 
 ## 가입 지급과 복구 가능성
 
-가입 지급은 금액을 먼저 확정해 두는 2단계 구조예요. `ensureSignupTicketGrants`는 지급 전에 `SignupGrantIntent`에 두 종류의 금액을 모두 기록해요. 지급 자체는 그 intent의 `amount`를 읽어서 실행해요. 나중에 `SIGNUP_VOCAL_ANALYSIS_TICKET_GRANT` 같은 환경 변수를 바꿔도 이미 기록된 금액이 우선이라, 복구 결과가 설정 변경에 흔들리지 않아요([src/entities/ticket/api/ticket-service.ts](repo://src/entities/ticket/api/ticket-service.ts#L136-L179)).
+가입 지급은 금액을 먼저 확정해 두는 2단계 구조예요. `ensureSignupTicketGrants`는 지급 전에 `SignupGrantIntent`에 두 종류의 금액을 모두 기록해요. 지급 자체는 그 intent의 `amount`를 읽어서 실행해요. 나중에 `SIGNUP_VOCAL_ANALYSIS_TICKET_GRANT` 같은 환경 변수를 바꿔도 이미 기록된 금액이 우선이라, 복구 결과가 설정 변경에 흔들리지 않아요([src/entities/ticket/api/ticket-service.ts](repo://src/entities/ticket/api/ticket-service.ts#L136-L179)). intent는 `(userId, kind)`를 복합 기본 키로 쓰는 별도 모델이라 종류마다 한 행만 남아요([prisma/schema.prisma](repo://prisma/schema.prisma#L653-L662)).
 
 같은 함수가 두 번 동시에 불려도 안전해요. `SELECT ... FOR UPDATE`로 `User` 행을 잠그고, 해당 `kind`의 `SIGNUP_GRANT` 원장 행이 이미 있으면 지급을 건너뛰어요. 지급 금액의 기본값과 허용 범위는 [operations/configuration.md](../operations/configuration.md)가 다뤄요.
 
-운영자 복구인 `recoverSignupGrant`는 기록된 intent나 기존 원장 금액과 요청 금액이 다르면 `"Signup amount conflicts with the recorded intent or ledger."`로 실패해요. 기존 행이 있으면 `NOOP`, `--apply` 없이 호출하면 `WOULD_GRANT`, 실제 지급까지 하면 `GRANTED`를 반환해요. 실행 절차는 [operations/recovery-runbook.md](../operations/recovery-runbook.md)를 보세요.
+운영자 복구인 `recoverSignupGrant`는 DB를 건드리기 전에 입력을 먼저 검증하고, 기록된 금액과 요청 금액이 어긋나면 지급을 거부해요([src/entities/ticket/api/ticket-service.ts](repo://src/entities/ticket/api/ticket-service.ts#L181-L253)).
+
+| 검사 | 통과 조건 | 실패했을 때 |
+| --- | --- | --- |
+| `kind` | `VOCAL_ANALYSIS` 또는 `AI_MIXING`이에요 | `An explicit valid ticket kind and amount (0..1000000) are required.` |
+| `amount` | 안전한 정수이고 `0` 이상 `1,000,000` 이하예요. `0`도 통과해요 | 같은 메시지예요 |
+| `userId`, `operator`, `reason` | 각각 trim 후 비어 있지 않아요 | `user, operator and reason are required.` |
+| 대상 사용자 | `User` 행이 `FOR UPDATE` 잠금으로 정확히 1건 잡혀요 | `Signup user does not exist.` |
+| 기록된 금액 | 같은 `kind`의 `SignupGrantIntent` 금액과 기존 `SIGNUP_GRANT` 원장 금액이 요청 금액과 같아요 | `Signup amount conflicts with the recorded intent or ledger.` |
+
+검증을 통과하면 기존 `SIGNUP_GRANT` 행이 있을 때는 `NOOP`(기존 행 id와 현재 잔액을 담아요), 없고 `apply`를 주지 않았을 때는 `WOULD_GRANT`, 없고 `apply`를 줬을 때는 `GRANTED`를 반환해요. 실제 지급까지 간 경우에만 `SignupGrantIntent`가 없으면 `operator`·`reason`과 함께 만들고, 원장 사유는 `가입 지급 복구 ({operator}): {reason}`이 돼요. 금액 `0`도 검증을 통과하므로 `amount`가 0인 지급 행이 생길 수 있어요. 실행 인자와 결과 표, `--amount 0`의 함정은 [복구 스크립트 운영 절차](../operations/recovery-runbook.md)가 다뤄요.
+
+```mermaid
+flowchart TD
+  A["recoverSignupGrant 호출"] --> B{"종류·금액·필수 문자열이 유효한가"}
+  B -->|"아니오"| C["검증 오류"]
+  B -->|"예"| D["User 행 FOR UPDATE 잠금"]
+  D --> E{"기록된 금액과 요청 금액이 다른가"}
+  E -->|"예"| F["금액 충돌 오류"]
+  E -->|"아니오"| G{"SIGNUP_GRANT 행이 있는가"}
+  G -->|"예"| H["NOOP"]
+  G -->|"아니오"| I{"apply가 참인가"}
+  I -->|"아니오"| J["WOULD_GRANT"]
+  I -->|"예"| K["intent upsert 후 원장 create"]
+  K --> L["GRANTED"]
+```
+
+복구 한 번의 분기 순서예요. 검증과 금액 충돌 거부가 모두 지급보다 앞에 있어서, 잘못된 인자나 다른 금액은 잔액을 건드리지 않아요.
 
 ## 모델 관계와 열거형
 
@@ -162,11 +193,20 @@ HTTP 계약은 [ticket-adjustments-route.ts](repo://src/_app/api-routes/admin/ti
 
 ## 원장 동작을 증명하는 테스트
 
-변경 범위 테스트는 `pnpm run test:tickets`로 실행해요.
+원장 변경을 확인하는 테스트는 명령마다 대상 파일이 달라요. 아래 표는 DB 동작을 고정하는 통합 테스트만 모았어요.
 
-- [tests/ticket-ledger.integration.ts](repo://tests/ticket-ledger.integration.ts#L7-L77)는 `ensureSignupTicketGrants`를 동시에 두 번 불러도 종류별 `SIGNUP_GRANT` 행이 하나씩만 생기는지, 같은 키의 `applyTicketChange` 두 번이 같은 원장 id를 돌려주는지, 다른 키로 한 번 더 차감하면 `InsufficientTicketsError`가 나는지 확인해요.
-- [tests/signup-recovery.integration.ts](repo://tests/signup-recovery.integration.ts#L17-L56)는 지급 후 설정 값을 바꿔도 복구 금액이 흔들리지 않는지, 기록된 금액과 다른 복구 요청이 거부되는지 확인해요.
-- 환불 경로는 [tests/mixing-queue.integration.ts](repo://tests/mixing-queue.integration.ts#L335-L355)와 [tests/vocal-profile-analysis-queue.integration.ts](repo://tests/vocal-profile-analysis-queue.integration.ts#L575-L585)가 `USAGE_REFUND` 행 개수로 검증해요.
+| 명령 | 대표 테스트 | 확인하는 것 |
+| --- | --- | --- |
+| `pnpm run test:tickets` | [tests/ticket-ledger.integration.ts](repo://tests/ticket-ledger.integration.ts#L7-L77) | 가입 지급을 동시에 두 번 불러도 종류별 `SIGNUP_GRANT` 행이 하나씩만 생기는지, 같은 키의 `applyTicketChange` 두 번이 같은 원장 id를 돌려주는지, 다른 키로 한 번 더 차감하면 `InsufficientTicketsError`가 나는지 확인해요 |
+| `pnpm run test:readiness` | [tests/signup-recovery.integration.ts](repo://tests/signup-recovery.integration.ts#L7-L99) | 가입 지급 복구의 금액 고정, 동시 실행 수렴, 금액 충돌 거부를 확인해요 |
+| `pnpm run test:mixing:db` | [tests/mixing-queue.integration.ts](repo://tests/mixing-queue.integration.ts#L250-L260) | 접수 전 실패가 `refundState = REFUNDED`와 `USAGE_REFUND` 행 하나를 남기고, [접수 후 실패](repo://tests/mixing-queue.integration.ts#L340-L351)는 `refundState = NONE`과 환불 행 0건으로 남는지 확인해요 |
+| `pnpm run test:vocal-profile-analysis-queue` | [tests/vocal-profile-analysis-queue.integration.ts](repo://tests/vocal-profile-analysis-queue.integration.ts#L569-L584) | 분석 실패 환불이 잔액을 되돌리고 `USAGE_REFUND` 행을 하나만 남기는지 확인해요 |
+
+`pnpm run test:tickets`는 위 통합 테스트와 함께 `tests/ticket-ledger-ui.test.tsx`와 `tests/account-ui.test.tsx`도 실행해요. 각 명령의 전체 파일 목록은 [package.json](repo://package.json#L50-L70)에 있어요.
+
+실제 HTTP 경로의 멱등성은 `pnpm run test:e2e`가 확인해요. 같은 접수 본문을 동시에 두 번 보내면 한 번만 차감되고 두 응답이 같은 작업 id를 돌려줘요. 접수 제한에 걸린 요청은 `Retry-After`만큼 기다린 뒤 다시 보내고, 그 재전송도 같은 작업을 돌려줘야 해요([tests/e2e/journeys.spec.mjs](repo://tests/e2e/journeys.spec.mjs#L188-L208)). 잔액이 0인 사용자의 접수는 `402`와 `INSUFFICIENT_TICKETS`로 거절되는지도 같은 여정에서 봐요([tests/e2e/journeys.spec.mjs](repo://tests/e2e/journeys.spec.mjs#L326-L336)). 명령 선택 기준은 [변경 검증 경로](../testing/verification.md)를 보세요.
+
+[tests/signup-recovery.integration.ts](repo://tests/signup-recovery.integration.ts#L7-L99)가 고정하는 복구 계약은 이래요. `SIGNUP_VOCAL_ANALYSIS_TICKET_GRANT`를 `5`에서 `3`으로 바꾸고 `ensureSignupTicketGrants`를 다시 불러도 지갑 잔액은 `5`로 남아요. 대상 `kind`의 `SIGNUP_GRANT` 행이 없는 사용자에게 `amount: 7`로 `apply` 없이 호출하면 `WOULD_GRANT`와 `balanceBefore: 0`, `balanceAfter: 7`이 나오고, 이때 그 사용자의 `SignupGrantIntent` 행 수는 0이에요. 같은 인자로 `apply: true`를 동시에 두 번 호출하면 `GRANTED` 한 건과 `NOOP` 한 건으로 갈리고, 잔액은 `7`, 그 사용자의 원장 행은 `2`건이 돼요. 이미 지급된 뒤에는 `NOOP`이 잔액 `7`을 그대로 돌려주고, 앞서 만든 원장 행을 id로 다시 읽은 값은 복구 전과 같아요. 기록된 금액과 다른 `amount`는 거부돼요([tests/signup-recovery.integration.ts](repo://tests/signup-recovery.integration.ts#L17-L96)).
 
 ## 다음에 읽을 페이지
 

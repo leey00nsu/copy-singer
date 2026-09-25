@@ -1,12 +1,14 @@
 ---
 type: explanation
 title: 시스템 지도와 경계
-description: 이 저장소의 런타임 경계와 FSD(Feature-Sliced Design) 계층 의존 방향을 설명하고, 새 API·화면·slice·워커·migration을 어느 디렉터리에 두어야 하는지 정리한 지도 문서예요.
+description: 이 저장소의 런타임 경계와 FSD(Feature-Sliced Design) 계층 의존 방향을 설명하고, 새 API·화면·slice·워커·migration을 어느 디렉터리에 두어야 하는지 정리한 지도 문서예요. 애플리케이션 런타임 밖의 최상위 `ops/` 디스패처 컨테이너와 `.github/workflows/` 자동화 위치도 함께 표시해요.
 tags: [architecture, fsd, boundary, layering, explanation]
 verified:
   - by: openwiki/0.5.2
-    at: 2026-09-18T17:37:48.408Z
+    at: 2026-09-25T04:42:33.305Z
 sources:
+  - id: openwiki-source-3dc25b286bcb30bfd66698fa
+    resource: repo://.github/workflows/lee-spec-kit-knowledge.yml
   - id: openwiki-source-ea70eb6c045047448e446296
     resource: repo://.gitignore
   - id: openwiki-source-ab4eb7c868fefa4061d9a8bd
@@ -15,6 +17,10 @@ sources:
     resource: repo://app/api/mixing-jobs/route.ts
   - id: openwiki-source-3d35c21faa6ab50a26f535e0
     resource: repo://docs/prd/system-architecture.md
+  - id: openwiki-source-c39ec033bc09bb24305f83ea
+    resource: repo://ops/knowledge-dispatcher/dispatch.mjs
+  - id: openwiki-source-bf433497f146df96933d74a3
+    resource: repo://ops/knowledge-dispatcher/Dockerfile
   - id: openwiki-source-5b54a58d1b51cd490b0e7162
     resource: repo://package.json
   - id: openwiki-source-ec5bee4673a3944c181edd71
@@ -81,12 +87,12 @@ sources:
     resource: repo://tests/fsd-architecture-boundaries.test.ts
   - id: openwiki-source-8b825c1fe06f865eec32c966
     resource: repo://tests/process-scripts.test.ts
-generated: { by: "openwiki/0.5.2", at: "2026-09-18T17:37:48.408Z" }
+generated: { by: "openwiki/0.5.2", at: "2026-09-25T04:42:33.305Z" }
 ---
 
-이 저장소에는 런타임이 두 갈래로 있어요. 브라우저 요청을 그 자리에서 처리하는 Next.js 서버와, PostgreSQL에 접수된 오래 걸리는 작업을 이어받는 독립 워커 프로세스예요. 그래서 새 코드의 자리를 정하는 첫 질문은 "이 코드가 어느 런타임에서 도는가"이고, 두 번째 질문은 "웹 코드라면 FSD(Feature-Sliced Design) 계층 중 어느 책임인가"예요.
+이 저장소에는 런타임이 두 갈래로 있어요. 브라우저 요청을 그 자리에서 처리하는 Next.js 서버와, PostgreSQL에 접수된 오래 걸리는 작업을 이어받는 독립 워커 프로세스예요. 그래서 새 코드의 자리를 정하는 첫 질문은 "이 코드가 어느 런타임에서 도는가"이고, 두 번째 질문은 "웹 코드라면 FSD(Feature-Sliced Design) 계층 중 어느 책임인가"예요. 애플리케이션 밖에는 Knowledge 문서 자동화를 돌리는 `ops/`와 `.github/workflows/`가 따로 있어요.
 
-두 축이 정해지면 디렉터리와 import 대상까지 함께 정해져요. 바로 아래 표가 각 경계가 무엇을 소유하고 무엇을 거부하는지 답하고, 그다음 두 절이 경계를 만든 런타임 분리와 계층 의존 방향을 설명해요. 사람이 관리하는 상위 경계 설명은 [docs/prd/system-architecture.md](repo://docs/prd/system-architecture.md#L7-L27)와 [docs/agents/constitution.md](repo://docs/agents/constitution.md#L22-L31)에 있고, 이 페이지는 tracked 코드·설정·테스트에서 그 내용을 다시 확인한 결과예요.
+두 축이 정해지면 디렉터리와 import 대상까지 함께 정해져요. 바로 아래 표가 각 경계가 무엇을 소유하고 무엇을 거부하는지 답하고, 애플리케이션 밖에 있는 `ops/`와 `.github/workflows/`도 같은 표에 넣었어요. 그다음 두 절이 경계를 만든 런타임 분리와 계층 의존 방향을 설명해요. 사람이 관리하는 상위 경계 설명은 [docs/prd/system-architecture.md](repo://docs/prd/system-architecture.md#L7-L27)와 [docs/agents/constitution.md](repo://docs/agents/constitution.md#L22-L31)에 있고, 이 페이지는 tracked 코드·설정·테스트에서 그 내용을 다시 확인한 결과예요.
 
 ## 경계마다 두는 것과 두지 않는 것
 
@@ -102,6 +108,8 @@ generated: { by: "openwiki/0.5.2", at: "2026-09-18T17:37:48.408Z" }
 | `prisma/` | `schema.prisma`, `migrations/`, development seed | 애플리케이션 조회 로직. 생성된 Prisma client는 `src/shared/db/generated/prisma`로 출력되고 Git에 커밋하지 않아요 |
 | `scripts/*-worker.ts` | 워커 프로세스 entrypoint(믹싱·보컬 프로필 분석·곡 분석)와 운영·검증 script(`reconcile-*`, `recover-*`, `verify-*`, `benchmark-*`) | 재사용되는 domain 로직. entrypoint는 환경 변수를 읽고 `src/_app/background-jobs/`의 실행 함수를 import하는 짧은 파일이에요 |
 | `services/` (Python Modal 서비스) | HTTP 계약을 가진 Modal app(`vocal-profile-modal`, `song-catalog-analyzer`, `soulx-singer-svc`)과 두 분석 서비스가 이미지에 함께 패키징하는 공유 core(`vocal-analysis-core`) | Node.js 코드, DB 직접 접근, 검증되지 않은 로컬 분석 fallback |
+| `ops/knowledge-dispatcher/` | Coolify가 스케줄하는 작은 Node 컨테이너. 한국 시간 기준 사이클을 판정하고 GitHub Actions API로 Knowledge 워크플로를 디스패치하는 코드와 그 이미지 정의 | 애플리케이션 런타임 코드. DB·`src/`·`app/`에 의존하지 않고 GitHub Actions API만 호출해요 |
+| `.github/workflows/` | 이번 생성 입력에서 확인된 tracked 워크플로 파일. 현재 Knowledge 생성용 `lee-spec-kit-knowledge.yml` 하나예요 | 애플리케이션 빌드·테스트를 실행하는 워크플로. 그런 워크플로는 확인되지 않았어요 |
 | 외부 미디어 저장소(Leemage) | 권한이 확인된 오디오 바이트 | 관계·상태·소유권·해시·외부 자산 참조. 그 값들은 PostgreSQL에 남아요 |
 
 `app/` 행은 실제 파일에서 그대로 확인돼요. [app/api/mixing-jobs/route.ts](repo://app/api/mixing-jobs/route.ts#L1-L3)는 `runtime` 선언과 handler re-export 두 문장으로 끝나고, [app/admin/page.tsx](repo://app/admin/page.tsx#L1-L1)와 [app/robots.ts](repo://app/robots.ts#L1-L1)도 re-export 한 줄이에요. `src/_app/`은 이 adapter 뒤의 실제 조립을 맡아요 — [layout/index.server.ts](repo://src/_app/layout/index.server.ts#L1-L4)가 root·product layout과 metadata를, [api-routes/mixing-jobs/index.server.ts](repo://src/_app/api-routes/mixing-jobs/index.server.ts#L1-L5)가 HTTP handler 묶음을 내보내요.
@@ -109,6 +117,10 @@ generated: { by: "openwiki/0.5.2", at: "2026-09-18T17:37:48.408Z" }
 `prisma/` 경계는 스키마와 migration이 한 곳에 있어야 한다는 규칙이에요. [prisma/schema.prisma](repo://prisma/schema.prisma#L1-L8)의 generator가 client를 `src/shared/db/generated/prisma`로 출력하고, 그 경로는 [.gitignore](repo://.gitignore#L46-L47)에 들어 있어요. seed와 migration 경로는 [prisma.config.ts](repo://prisma.config.ts#L6-L15)가 정해요.
 
 `services/`는 웹 트리 밖의 Python 런타임이에요. [services/vocal-analysis-core/README.md](repo://services/vocal-analysis-core/README.md#L1-L7)가 밝히듯 이 core는 두 인증된 Modal CPU 서비스가 함께 패키징하는 librosa·pYIN 분석 package이고, HTTP 서버도 로컬 분석 런타임도 제공하지 않아요.
+
+최상위 `ops/`는 웹·워커가 아닌 운영 자동화 코드를 두는 자리예요. 이번 생성 입력에서 확인되는 항목은 Coolify가 스케줄하는 작은 Node 컨테이너 `ops/knowledge-dispatcher/` 하나이고, 이 컨테이너가 [dispatch.mjs](repo://ops/knowledge-dispatcher/dispatch.mjs#L30-L78)로 Knowledge 워크플로 실행을 디스패치해요. 스케줄링 주체가 Coolify라는 책임 구분은 워크플로 헤더 주석에도 적혀 있고([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L1-L5)), 컨테이너 환경은 [Dockerfile](repo://ops/knowledge-dispatcher/Dockerfile#L1-L6)이 `node:22-alpine` 이미지에 이 파일을 복사하도록 정의해요. 이 코드는 애플리케이션 DB나 `src/`·`app/` 코드를 쓰지 않으므로 두 런타임 갈래에는 속하지 않아요.
+
+`.github/workflows/`에는 이번 생성 입력에서 [.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L1-L30) 하나만 tracked 상태로 확인돼요. 애플리케이션 빌드·테스트를 실행하는 워크플로는 확인되지 않았고, 그 검증 명령은 [package.json](repo://package.json#L23-L34)의 `test`·`check` script로 돌려요. 디스패처 판정 규칙과 워크플로 트리거·게이트는 [Knowledge 생성과 CI 자동화](../operations/knowledge-automation.md)가 소유하니 그 페이지에서 확인하세요.
 
 ## 브라우저 요청 경로와 워커 경로가 갈라져요
 
@@ -209,6 +221,7 @@ entrypoint 네 종류를 모든 slice가 다 갖는 것은 아니에요. `src/en
 | PostgreSQL schema 변경 | `prisma/schema.prisma` 수정 후 `prisma/migrations/`에 migration 추가 | [데이터 모델과 수명 주기 상태](data-model.md) |
 | 오래 걸리는 새 작업 | `src/_app/background-jobs/<job>/`에 러너·워커, `scripts/<job>-worker.ts` 진입점, `package.json` 스크립트 | [Job 큐와 lease 복구 계약](../operations/job-processing.md) |
 | 분석 알고리즘 변경 | 해당 Modal app과 `services/vocal-analysis-core/` | [Modal 서비스와 외부 계약](../integrations/modal-services.md) |
+| Knowledge 자동화 스케줄·게이트 변경 | `ops/knowledge-dispatcher/`의 디스패처와 `.github/workflows/lee-spec-kit-knowledge.yml` | [Knowledge 생성과 CI 자동화](../operations/knowledge-automation.md) |
 
 워커 코드도 같은 public API를 소비자로 써요. [src/_app/background-jobs/vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L1-L16)는 `@/entities/*/index.server`와 `@/shared/*/index.server`만 import하고, `src/entities`의 내부 파일을 직접 열지 않아요.
 
@@ -245,5 +258,6 @@ entrypoint 네 종류를 모든 slice가 다 갖는 것은 아니에요. `src/en
 - 브라우저 캐시·재시도 판단: [브라우저 상태와 API 오류 계약](client-data-flow.md)
 - 세션·소유권·관리자 권한: [인증과 소유권 경계](../integrations/auth-and-ownership.md)
 - 로컬 실행과 배포: [로컬 실행과 배포](../operations/local-runtime.md)
+- Knowledge 문서 생성·CI 자동화: [Knowledge 생성과 CI 자동화](../operations/knowledge-automation.md)
 
 이 페이지는 tracked 코드·스키마·설정·테스트에서 파생한 온보딩 evidence이고 정본이 아니에요. 제품 요구사항은 `docs/prd/`, 프로젝트 정책은 사람이 관리하는 curated docs, 실행 가능한 런타임 사실은 tracked 코드·설정·테스트가 기준이에요. `docs/features/`는 이 생성 입력에서 제외되어 있어서 그 내용은 확인하지 못했어요.
