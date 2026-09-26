@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:fd9c2eaed8788f01aa3532a0f85183a0ad72e18bf0f965fc39799956073940ac",
+  "claims": [
+    {
+      "id": "claim_da536a5233a447c492723ae8be265c4a",
+      "statement": "디스패처는 사이클 날짜를 Asia/Seoul 기준 YYYY-MM-DD로 계산하고, 그 날 01시 17분 이후에만 해당 사이클을 due로 판정해요. due가 아니면 GitHub API를 호출하지 않고 before-due 결과를 돌려줘요.",
+      "evidence": [
+        {
+          "resource": "repo://ops/knowledge-dispatcher/dispatch.mjs#L10-L32",
+          "version": "repo-lines-v1:sha256:986505f79600516dfea52122989fd342ac1a5a7ff783f9691282b8c6b37abbb8:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwODE0N2E0MWQxNWYzOTIwNTJiMWUxOGU0NGVhY2Q5NjUzMzZlOWNiOWJiMDVlMzJjOWEwYjczMWQzN2IzNjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmM2NiNWQ3OWIyZWUwNWRlMjhlZGVlOWVhYTE3MzQ5NjUyYjQ0MzhhYmNkYTBmOTEzMDc1YzJiYzNlY2I3MzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVlMmM5Mzk1MGI2MmJkMGRjY2Y1NjBhNjQ4ZDBhODZkMDVkOWIzNmVkNTM0YjZjOTlkYmU4ZTdiYjhmYmIxNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYzYTcyMDY5ZGM4MTU3NzZjYmFmNWI3OTc3YjQ1NDg3YTczN2I3N2M1ZDhmMTJhOWYxYmNlZGY0ZmU0ZjQyNTgifQ"
+        },
+        {
+          "resource": "repo://tests/knowledge-dispatcher.test.mjs#L8-L17",
+          "version": "repo-lines-v1:sha256:22799c1d1b10bb687576d0f8f8b3d8062f02361a23833098d57c40490bf4a37b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAyNTE0NjIxZmVmMjA2NTkxM2I2MWMxYTQ4YTE0ZjI5ODNmMTQyN2E2NzBlNmE5NTM3MzllZDliYzM4YzJiMGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3ZTFiZGE3Njk0NDM3YTkyY2Q5MzAwMjRiNzRlY2FiM2QzN2EzYzMyNDM0NzVkZTc4OGE3ZWNhYzBhZjk4OWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVkZWMyNDFlMWE0ZjMyMmJjZmUyZjZmZGQ5NjIxZWQ3OWYxZTVhNmNmNDA2YzM1MWYyZWY0YmNkYWI2N2MyYzgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_756af844eb6f4bce866c94b89ac8f5f9",
+      "statement": "디스패처는 GitHub Actions API를 GET runs?per_page=100 조회 → 진행 중 실행/같은 사이클 제목 확인 → POST dispatches(ref main, inputs.cycle) 순서로 호출하고, 디스패치가 성공하면 runId와 url을 함께 돌려줘요. 같은 사이클 제목은 워크플로의 run-name 규칙과 맞물려 중복 실행을 막아요.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L4-L15",
+          "version": "repo-lines-v1:sha256:f2ec9289b34ff37bc08e65a512d07e5520b6f7a5aec3a5d5169ce6c2f5fd08f9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3NGFlNzgwZmNjMWIxMmNiMDIwNTBmZTg2ZmI5NTA0ODJlNzZiYTRhNmYzNDg5ZWRjMTNjYzYxYTY2ODU3MTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY2NWJkODA2Njg5NDAyOWQyZWIwZWU3MGYwM2QyMTdlMjM1YmQ0NjkyOGJjMTg4OGE1YWFlOTMzNjJmZDI1YzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk0YjNhYzIyYTM1MWIxY2M0YTU0MDk4NDllOTIwOGUwNDk5MGIxODYxYTBmMmMwMTA4ZjdkOWU2NTk0ZmNmYTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRjYzRiYjc5ZjZlYmM4NTU1OTc1Zjg3YzFiYmZhZGI0NDgxZjcwYjAzYzFhN2IwYzljY2I0ZWUzZGFjNzdkNjEifQ"
+        },
+        {
+          "resource": "repo://ops/knowledge-dispatcher/dispatch.mjs#L57-L68",
+          "version": "repo-lines-v1:sha256:c0663feba621c01b61c90a3dca528d6267a3fdd860e3e9eb8d190091763d2cf9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4NjQwNmY1ZDNlM2NkNmM3NDVjYzE5MDBlMDFkODUwYzlhN2E4NDY1ZGQxNzBhZmU3MDc4MDgyOTBiODkxOWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMyM2UwNTk0NzM2NmEyOTE3YTk3MzlhYTYxZjMzN2Y4OThiMzNhN2ZlZjE4NTEzZjA4MzUyZjZjZmZkMzBjOGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVjOWY1NWNlM2RmZGQxMWVmZDg4MjIxNmNiODA2ZmY4YThjNWE2M2Q3MjExNjg4MTFlNGI4MDc3YjM5NWM4OGYifQ"
+        },
+        {
+          "resource": "repo://ops/knowledge-dispatcher/dispatch.mjs#L70-L77",
+          "version": "repo-lines-v1:sha256:cacf109cbd165b636a3aa40129e8bdfcccb3164429397f5e0f45444a30240565:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDMxNDdhODU0OTIwZmM0YzQyOGM3ZjkzZDFhYWNlNmU0NWRmMWUwNDIzNDgxNzUyMTNjMDQ3NTg3NDViZmM3NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjY4YzNhMDY0ZWZmYzIzYzNkZTZmMWNhMGVjMzg1MjA5NzA0MTNhNTFhY2I5NDVhNzQ1MDg1ZDE1NTkzM2JlYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzQ3MWVjNGRhODE5Y2E5ODMzNmZmMGMwMjQ5ZmRjMWYwYzM0ODUxNmUxNDM5MmEyYWJkMmE4ZjBhNTFmNjcwNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzU5YTU0MDViYWIzYWMwNWM0Mzk1NmZmOGJhNjU1MjM1NGZhNDJkNTJjYWQzYjBjYjlhODNmMmQ0NmY0NzRjNiJ9"
+        },
+        {
+          "resource": "repo://tests/knowledge-dispatcher.test.mjs#L19-L63",
+          "version": "repo-lines-v1:sha256:cafbebfc4387e555f2ca2fbf4609bae9d900b3b43c669472261783cecb15b7fa:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmOTk3ZmYxMDI3OGRiNTBhNjA5ZTlmYTNkMjJhNGZlNGRjMDcxY2MxYjQ0YWU0Yjk0ZDVmOTQwNDQ1YTFkMTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI3NzlkMTE4ZDZlM2NiZjQ1MDUzOTc0OGRlZTdhNDMwN2FjYmU2NDQ2Y2JhMjk3ZjI3NjBmYTVkMGJiYTFiYzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ3Mjk5MmRiMWJhODExNTVjNGUwNTQ3OGUyOTdhZmJjYTZiNzE1M2Y4M2VkZWFjYWFhZDlkNDM2NjcwMGJlNzcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_41685229a85f459794daf1bcc4235fba",
+      "statement": "디스패처는 실패를 숨기지 않아요. 토큰 환경 변수 GH_ACTIONS_DISPATCH_TOKEN이 없으면 오류를 던지고, GitHub 응답이 실패하면 메서드·요청 경로·HTTP 상태·응답 message 일부를 담은 오류를 던지며, 요청에는 15초 타임아웃이 걸려 있고 실행 목록이나 디스패치 응답 형식이 예상과 다르면 그 자리에서 오류를 던져요. 그래서 HTTP 503 같은 실패가 드러나요.",
+      "evidence": [
+        {
+          "resource": "repo://ops/knowledge-dispatcher/dispatch.mjs#L33-L58",
+          "version": "repo-lines-v1:sha256:778a7f4ac43a4dda1c967a21a572e6aeb384f22bd5b3a5fda038a78039f70a8b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmYzVhZTBjOWU5ZjE4NTVjZGRmYjg5NWE0ZmM2NTNlYWQyYzI0NDdiODM1Y2U5OTFjZjU5NTc3YzI4NTJlMTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlOGVjNjdhZGIyOWI2MjcyOTkyYzI2NjgyYmYxNTRlZDg4NDAwZTc5M2ZjYzNiMWRhNjU0MWJhOTNmNmJlNDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM4ZWQyNTc2OTIzMzBhZDA3N2ExZDkzNjlkMzYzYzYxNzQ2NDNmNjBhMjMwODIxMGUzZmQ4YWQ5NTRiNTUwMjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU4OTU5NmNmYjM5NzIzMGJmYjhkOWI5ZWRkMzBkODU2ZTVjNDhkNzhjYTBjOTM2Y2JhODMzOTFjMDEyZThmZGYifQ"
+        },
+        {
+          "resource": "repo://ops/knowledge-dispatcher/dispatch.mjs#L74-L77",
+          "version": "repo-lines-v1:sha256:8855889e1403765c1d53bc2c8ccf58155adef55abe974917b7a29fcd764e485a:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTZkZGZiMzEzOGIwOTg3MmY2MjliNGMxMDhmYzkyZWM1MmQ3MTkxOTQ3OTFhYWI4MzMxYTAxYzc5NzkzYzI3YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjY4YzNhMDY0ZWZmYzIzYzNkZTZmMWNhMGVjMzg1MjA5NzA0MTNhNTFhY2I5NDVhNzQ1MDg1ZDE1NTkzM2JlYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWUyOWI1MTRiMDkzNWU0ZTNkMWM1MWYzNjdhMTExYmY1YmM1ZTNiNGMyYmU0NGEyY2I2MjNhMTM5OWIzNmExYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzU5YTU0MDViYWIzYWMwNWM0Mzk1NmZmOGJhNjU1MjM1NGZhNDJkNTJjYWQzYjBjYjlhODNmMmQ0NmY0NzRjNiJ9"
+        },
+        {
+          "resource": "repo://tests/knowledge-dispatcher.test.mjs#L65-L78",
+          "version": "repo-lines-v1:sha256:c907c61ca7dac2a7b1cb461d32f457ef078ede7010385faab5cf8ae7d213c137:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1NTE2OTFlNjBjNTcxMmFmMTEyYzY2ZmMyY2FkMTJkNGI5ZDc1MjE5ZjRkOWNiM2YyOWY5MzdiNDNlMjBjZDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViMWVhMTVhMGY3YjFkNzc0MWMwOTJkZTgwMmQzOWZkYTQ0MzRlY2YwNWY5NDM1OGM2ZjM2OWNhOTExNmUyMmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cc2ed5c1adb84de6b6dca64af021940d",
+      "statement": "디스패처 컨테이너는 node:22-alpine 이미지에 dispatch.mjs를 복사하고 8080 포트를 노출해요. 인자 없이 실행하면 디스패치 없이 0.0.0.0:8080에서 ok를 응답하는 헬스 서버만 띄우고, --dispatch를 주면 디스패치를 실행해 결과 JSON을 표준 출력으로 내보내며 실패 시 'Knowledge dispatch failed: ...'를 표준 오류로 내보내고 종료 코드를 1로 세워요.",
+      "evidence": [
+        {
+          "resource": "repo://ops/knowledge-dispatcher/Dockerfile#L1-L6",
+          "version": "repo-lines-v1:sha256:6039e1957d32133e073c0f3322ddf839ee4afa76a3e0fac8fb68dd8808e67e52:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDZlMTBkOWU4NDkyMTI0NjVhNjExODBlNWFkZjUzYWE0NTE2MWU0MTllNGUzMjcxMTcxYjYzOTAwYzk5ZDM5MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg1YjRhZGI0ZDUwMGU0NzU3NDc0MTk5ZDFmZjNiMDdlMjYzYTg3N2UwNWQ2ZTM2YmMyMWFiZGJkODI5ZGZhNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://ops/knowledge-dispatcher/dispatch.mjs#L80-L97",
+          "version": "repo-lines-v1:sha256:1253e13ba4e431a091ad3e7a010494b89cf5907033571bb5103b2cb869bee912:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2OWYyNjhjODVkYjc4ODYzMWI4YjgyYmUzMjRlZmNhYjM5OTU5NmU1NzgyZTc3ZGM2NGQ0YTAyZDc5NzJmYWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJmY2ZhMTIzNjBlZGJiMjRhZDg3ZjkyNzFmMGQyOTU2M2RkNzk4MDUxNmMwMzQzZmViNjY0NjlmN2ZkM2JmMmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4d9fa709f3ee42ada7f3f7d8f39c80da",
+      "statement": "Knowledge 워크플로는 workflow_dispatch(선택 입력 cycle)와 main 대상 pull_request 두 트리거를 가져요. workflow_dispatch에서만 knowledge 작업이 돌고, pull_request에서는 verify-knowledge-pr 작업이 head 브랜치가 lee-spec-kit/knowledge-main인 경우에만 검사를 적용하며 다른 PR은 통과시켜요. 동시성 그룹 openwiki-knowledge-main은 cancel-in-progress가 꺼져 있어 진행 중 실행을 끊지 않아요.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L4-L27",
+          "version": "repo-lines-v1:sha256:21fbcca4636f556f7a08bb8b4d48f2e93e555757b9c61f5950db71eb02f6082a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3NGFlNzgwZmNjMWIxMmNiMDIwNTBmZTg2ZmI5NTA0ODJlNzZiYTRhNmYzNDg5ZWRjMTNjYzYxYTY2ODU3MTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFjNGRjYjY4OGUwN2I2MjAxZDMyMmVkNWI1NGIyMWQ5ZDM1OTM0NDRhODM4MzMyZDJlNTE2ODgzODI2MzkwOWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk0YjNhYzIyYTM1MWIxY2M0YTU0MDk4NDllOTIwOGUwNDk5MGIxODYxYTBmMmMwMTA4ZjdkOWU2NTk0ZmNmYTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIwYmFmMDc2YTc3MGFjY2JmYjY3MDExYTVhOWRlMGUzODQ4OGY3MTJmNDJlN2RmMDhlYzQ0YWJmN2EyMGQzN2QifQ"
+        },
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L409-L421",
+          "version": "repo-lines-v1:sha256:0489050a8c8c4487930c4b2873da777c7a26b06d6f7b3d4bc893e7629715ab01:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1YTBlZGFjMzk3ZGZkZjg0ZTBjOWU1N2Y0NjczMWViOTgyMmI4OWU4MzM1NjFlNTdhMDA4NDEwZmZkYTVmMDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzNzI4MDljMjRiNzkwZWM4ZTU1ZmQ3ODM0NTQ4OTc0NjQ5MGQ3Yzk2YmJkYmZjMjllZGE1MWVlMGIyNzViNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxMDJhYjFkY2I4YjEzNzFiZDRjZmIzMzA0ODA3ZDEyYjhkZDAzMDgxZmFmNTgzMTYyMTI5NmRhZWE3MTNiNDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZhYTA5Yzk4MjkzM2FjOTE2MTQyMGRjNjJkNWMzMTBjMWQ2Y2U0OGEzYWRkYTg1OWQ2NTQxNDE1ZDE4NWE1NTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6aff1f4f431741068ee2c25fc541281e",
+      "statement": "knowledge 작업은 별도 체크포인트 브랜치 lee-spec-kit/knowledge-main을 사용해요. 그 브랜치의 openwiki/ 디렉터리를 복원해 --update 입력으로 쓰고 openwiki/INSTRUCTIONS.md는 복원 뒤 다시 채우며, Node.js 22에 openwiki@0.5.2와 lee-spec-kit@0.9.19를 전역 설치해 작성 정책 skill을 config 디렉터리로 복사한 뒤 생성하고, 완료된 페이지를 별도 커밋으로 그 브랜치에 보존해요.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L26-L55",
+          "version": "repo-lines-v1:sha256:39804e5420cd8a4b79c1821d69f72dc5b8748545e40b37f9641807f867cff46f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRiNmY5ZTZjNWQ4ZTVmZmE3MmNmMGIwNGM5MWYxYjE0Nzc1OWM0ZWI0NDY0MzM2MzFhNDkwNzFjMmUzZWI5OWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmNTU5NzljZTczMDIwMzNlNmIyZmQ3ZDg4ZjUzN2EzYjhlMDkxZWEzMDVjODExZmZhMTI3NGJmNTc2NGVhNWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZlYWRhYmRmOTA3N2M0ZmQzOWQzODgyNTFiYzQ3ZGJkNjhjNWY1M2U1Y2NiMDNiNWIzNDZlNTk2NTk3YTJlMDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzZTkyOWFhNmY5MWMyZGVkZjMyZmZhOWM0ZWQ2NzE5MmI5NWJhZGJiZTkzNmNjMmI4NTY0MTU0ODUyODc1ZDkifQ"
+        },
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L317-L333",
+          "version": "repo-lines-v1:sha256:29b5a4da0994f1ddff795db39c9684aae7cfa1fab46bddf526b9fb63442df5a8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjMDc4MGFkZmU1YzAwMTM3ZWYwZjFjMmYxZDEwNWM3NTQ0NDQyMDQwZDlhZDdjNGY0YTZjMDljZWY2Zjc0NmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmNTU5NzljZTczMDIwMzNlNmIyZmQ3ZDg4ZjUzN2EzYjhlMDkxZWEzMDVjODExZmZhMTI3NGJmNTc2NGVhNWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5OGVjODhmNmVhZWFjMDYwYWUwNDQ3MjY2MGNiYWRkMWE2MmYzZTMwMjE2ZmI2MjViNDdlMjc5YjI4YmQ4MWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZhMTIzNzcyYTE4ZGI1Yjc4ZDY1OGEzMmZhY2E2OTIzMzQ2Mjk3NTBmNDA4NjU5MzQ1Mzc1ZDYxZmQyNDNjYjgifQ"
+        },
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L35-L71",
+          "version": "repo-lines-v1:sha256:de6a4d8c85a67af381dc7ca2fbe562548816407c046b201765333e1751f3a08d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyYjAyNTQ0ZDFiM2U3YTA0OTY3ZmNhN2JjZTY1ZGY2ZmNhMjc0NmUzYjIwN2EyY2U1NGM0YThlMWU1NTAwNjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4MGI3NWFiNTg0OWQ2ZjJhYjU3ZWRlZjgwYzZlMjBlMDdlZWE3MTVmNDljY2U5MTVkZTk0Y2JlNWJiZGNjM2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1MmQ1NThkOTlhMDRiYTY4YzBhOTUyMDk2NmEyZjQ5ZmUwZGExMzM2NGJkNGVjZGQ3OWZkOGNiZTZlNTJlNjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFhMDcxNzBjZTg1YTUxNGFkOTA4YWRlYTQyMDExM2Q4ZDJlNDhjOTAxNzYzNmRiZDVhNGY2OWQ4YzU5ZWFlM2UifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3a160aa238114ce5bb44b5cda51f9fca",
+      "statement": "완료 메타데이터 검사는 openwiki/.last-update.json의 status가 complete이고 gitHead가 그 실행이 기록한 source revision과 같으며 openwiki/.run.json이 없을 때만 완료로 인정해요. 게시 전에는 남아 있는 openwiki/.run.json을 삭제해 초안 체크포인트에 실행 중 컨텍스트를 남기지 않아요.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L38-L39",
+          "version": "repo-lines-v1:sha256:413ef7750f57b7c2b1653944b13126a9847f9c35cf830feb27d8416615efcc6d:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzYwMGJhZjQ0MDNjNzJjMWI3ZjEzYmJhNzRhM2M4ZjJlZTJjMWRhZWU0MDg4MTQyOGZiN2Q5ZWM0YWY3N2Y5YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTMzODc1MmE2NjE4YTRmZDY3OWM3ZTAxM2I0NWFmMmVhZDA2Y2EzNDc3MjhjYmExMDAwYzcxNjNkNDRhMjhkZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjM0MTA2NTYyOWFmMjBmYmM4NDU4YWU2ZTYyY2E0Yzg2MDAxNjE2NDkyZTk5MzI2MzlmMDk2YmIxNWVmMWUyMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGIwMTFkYzk1YTZhNjllNGMyZTk0MjEzNDRiMjY0NGZkYzJiYzJhZWY4ZDc2MzdlNDc5MWJhZDFlMDM5MjQwMCJ9"
+        },
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L72-L92",
+          "version": "repo-lines-v1:sha256:14cbe0b3aa425fa082ea8f1ae154834468f99eab142ff2c64d7be8fe11467939:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4ODUyNjNlOGRkYzZlZGVjY2RkNjFlZThhMzg0MGFhNzVmMGE5ZDBlYTU1MGMzYTViNmIwMTFiZWRmYTY1N2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhN2Q2ODhkZmE4YzQ4MzFmZGMxOTJmM2ZkMjBmNDM0MGJlMzI2YWQ1ZDhkNTdlMDAzZTc4MzMxN2NjYjg4M2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhhODQ2NDA4MzM3YTIxODM5NGY1ZmMwYTZmZTBkNDg1MmU1MTUyOTg5M2JkMDExN2ZkZGM0YThjMjhhNTUzODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY5MTg3NzM5ZTRhMmQxZjgyYzBlMmU3YjU0MmY5NWFjYzBjNWJhMjNmNmJjZTQxN2Q0ZDE3MTJlYzYzMTJmNDUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cd2ffae8998f45f1aa71163a810b0121",
+      "statement": "워크플로는 OpenWiki가 문서 출력 표면 밖 경로를 바꾸지 않았는지 검사해서 위반 파일이 있으면 작업을 실패시켜요. 허용 경로는 openwiki 디렉터리 자체와 openwiki/**이고, AGENTS.md와 CLAUDE.md는 OPENWIKI:START와 OPENWIKI:END 사이 관리 블록을 제거한 뒤 비교해 관리 블록 밖 변경만 위반으로 잡아요.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L444-L462",
+          "version": "repo-lines-v1:sha256:7f152f613272896ca89f251bfadcc82bff5fa7cc9bae4f2d635bb35aec3bc1a4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjllMTEzNDI5ZjNmYTUzODI5MGE2ZTg0OTYzMjczNmI3NzI3MWQwYzgyNGYwMWFjNjk4Y2IwMDM5NzYxMTIzZjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4MDA1ZDU3MTA2YTM2MmViMDAwZGFmM2RhNDY3NGM4MmI1MThmZjVhMmUyZjY3ZWU4ZTc1N2EzMzNjMmFmNjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ2ZjlhZjUyNTBiZjI3NmQyYjMxMTZlMzQzZDQ4MjRiM2E1NGQyNTk3YmVhMThkMDY0OThmMWU4ZjBiYWU0YmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkYWMwZGIwZjAwYjNjYjk0OGI3OWExOGNjNzRkMWI1YWRmY2VjOGQ3MzEyMDFjZjU5Zjc1NTdhYzg4NWZkODkifQ"
+        },
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L93-L124",
+          "version": "repo-lines-v1:sha256:4883d9432f9e32d74fb489532df7dd1c002e44046ddd657c03788f6e674ed201:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjY2UwZjIzNTk5ZjVhNzczMWMxNTZhMjA3ZGJkMmYwOWY2YjEwZjhjZjA1MWQ2NTExN2Y5ODlmYTdmMDY3NzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwYzE2ZTg3YmQxNmMwYmJmN2IwNTVkMGU0Nzc4NGYzNGYzZDY3MDYyMzgxMGIwZDQ1ZDE5ZTFhZGY0N2RlNmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVlZTkyN2I3NDRhMWRiNWEwMTQ1ZDc1MDM5NTgzZjYxZGFkNjZhYzBiN2JlMmJiZjI4MmYzMWI1MmMxMjY2NTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM2ZDQ5MThiMjI4YTg2Y2M1ZWFmMmI1YTY1NDkwNmYzNzQyZTI2YzIxMjI5MGE1NGU4ZjRiN2YyYjZhYTUyOWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2bebb9e509294d2aa6d24879d7aafcc1",
+      "statement": "리뷰 PR이 준비 상태가 되려면 생성 단계 성공, 완료 메타데이터 통과, 그리고 게시 시점의 main revision이 실행 시작 시점과 같아야 해요. 이 조건이 맞으면 PR이 준비 상태로 전환되고 head 커밋에 묶은 squash auto-merge가 걸리며, 아니면 초안으로 남고 마지막 단계가 종료 코드 1로 실패를 알려줘요.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L202-L203",
+          "version": "repo-lines-v1:sha256:4b21baab5e9afeab1fcb10a7dade503e4e1a70eb48a4212fbe29306e85a74b24:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTdiMTExMmNjMDBhNWQ3ZGM2OTBmYTA0MGZhMjhkYzFmNTM5YmUyMDhhNzhlMTMzOWMyYTEyM2Y0NTRkNWYxOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTc1ODg3NDQ1NDI4YTU3N2M1ZGM3MTk1MDI4YThmODQyMzljYzc4MmNjMTkxOTNiNDdmYjhiODNjYTlkYmVjOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWZjMWI4OThjNWM0YWVhOGIyMzViZjE2NmYyZDIwNTk4ZTEzNDY3ODcwNGIxMzUxYzg3ODE3MzYxNmYwZDc4NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDVmNjE0OTdhYTA4NjI5MWZjYzM5NzA2ODgzY2RjZjZkZTkwNTUyMDVkNDA2NzFmZGVhZGQzNjViMmM3N2FhOSJ9"
+        },
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L337-L345",
+          "version": "repo-lines-v1:sha256:b81cb9fd7aef7ed039caf2dd59c220825ec8a3dfb00b6e09c03a95d699a35edb:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmU0NGQ2OThhNWYxN2Y5ZmNmMGI3ZGYzZjQ2YzI1ZWVhNWQwNzBiOTdhOGRiNWNiYTAyODMxNjk3YTRmNmUxOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmY1NTk3OWNlNzMwMjAzM2U2YjJmZDdkODhmNTM3YTNiOGUwOTFlYTMwNWM4MTFmZmExMjc0YmY1NzY0ZWE1ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmExMjM3NzJhMThkYjViNzhkNjU4YTMyZmFjYTY5MjMzNDYyOTc1MGY0MDg2NTkzNDUzNzVkNjFmZDI0M2NiOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjViY2VlZTMyNzgxM2I3NTA5NTlhMjY5YTVjYmQ4ZjdjOTk2MGEwZDRkZGY2ZmUzNGRkOWM5NjAyMGM5M2I2NiJ9"
+        },
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L397-L408",
+          "version": "repo-lines-v1:sha256:1462abc1a5729f3be5bd8f31462865e18961f03971ab80ab6718711f4c2b5090:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlMGM5OWI0NDVjMTU2ZTkyYjMzOWJiNDFmMDRiYzI5MzU0MzI3YzY0YWYwNjNlYjY2OWE0MzA5YzRkYTdkZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxODdjZTRmMDJhYjRmY2Y3Y2Q4MTc2ODMxNTgzNDVjN2ZjNTI0OTc5MzEwMWMxYWVkNWM4NGMxNGViMjg3ZmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhlY2UxNDBkZmJiY2RlMGZkMThkMWVkYzQwZWNlZjBjYWNhODJkMTI0MmJmNzM0YWJmNjRlMDliZmRjMjc2YzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE4MTA4YThiMmUxMmE0NDY4YWY3ZWRjNzk0ZWY3YjlhNzdmZDQzNzBhOTY2ZmYyMDlhNmRkYzJiYmJjZjhkNTkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_469a9abaa5264f2cbff6c797cab557eb",
+      "statement": "워크플로는 브랜치를 갱신하기 전에 그 브랜치에 준비 상태로 열린 PR이 있으면 다시 초안으로 되돌려 auto-merge 경합을 닫고, 게시 도중 오류가 나면 이전 Knowledge 브랜치 커밋과 PR 준비 상태를 복원한 뒤 실패 코드로 끝내요.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L258-L304",
+          "version": "repo-lines-v1:sha256:d3db848896d102357b981bc2467f438fcb19ed61a6ecb77464f9f039c0ef7fa5:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyNTRkZGQ3YjQ3ZTIxNDBjMThkMWY1ODIwNDViMDhjMTY5MThmNjYxMjNmZTA5ZjA1ODMzMTM1YzNiMjg3YTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmNTU5NzljZTczMDIwMzNlNmIyZmQ3ZDg4ZjUzN2EzYjhlMDkxZWEzMDVjODExZmZhMTI3NGJmNTc2NGVhNWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyY2IxMjkxODY2NzYyYjc3M2YzNzQ1NWE1Mjc0YjE0NjM5OGI4Mzc2OWIxYWRkZjY3ZGY2OGU2MDhmYzk2ZDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlZDFlY2VkYzk5MWMxMTIzNDk1OTU1NTRjZDM4YzVjZTI0Yjg5ZTI0ZmVhMmI0MTU4ZjljYjIzNTA1MjY1ZmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_099712d9303149cab200e297f031ee5e",
+      "statement": "게시할 source·문서 변경이 없고 열린 PR도 없다고 증명되면 워크플로는 PR을 만들지 않고 changed=false로 끝나요. 반대로 브랜치에 main 대비 남은 변경이 없는데 PR이 있으면 그 PR을 닫고, 남은 변경이 있고 PR이 없으면 초안 PR을 새로 만들어요.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L306-L315",
+          "version": "repo-lines-v1:sha256:0b6295289d5af09716933283d82c1220054357e868e1011dec3f59ca5cf3df96:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkMGYxYTA0MzE5NTFkZmE1YjkwZGY4YTBiM2VkZmQxOGU5ZGI1MjFkNGZjMTNmZTdmMTJkYTc0OWVhODAwNDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmNTU5NzljZTczMDIwMzNlNmIyZmQ3ZDg4ZjUzN2EzYjhlMDkxZWEzMDVjODExZmZhMTI3NGJmNTc2NGVhNWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk1ZWQzZTZjY2ZlZWZlMjY2OGY1ZGRjMjhiNzkxOWVlZDc2ZTNjOTkwYTgxZThkNzIyODNmOTkzMzRhNmU1M2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVhMzA2NDE5OTYyNzIzN2VjZDMzZDczNWMyYjgxZmVjY2U3MjJkZjg4NTIwNzQ5M2I2ODQ1MzNiNDQzNTZhOTAifQ"
+        },
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L347-L366",
+          "version": "repo-lines-v1:sha256:9ddd947ad5dfbe51903855887d06cc989a1d4e681901c545bf3d3f082f1e1166:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzZDFjZjg3NGFiYmM2YmZlYzQ0MzI2YzlkYTExZTliZDUyNTkzZjE0ZmYyYzQ3ZGZlNTJiNTk4NzcxZjkwNTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmNTU5NzljZTczMDIwMzNlNmIyZmQ3ZDg4ZjUzN2EzYjhlMDkxZWEzMDVjODExZmZhMTI3NGJmNTc2NGVhNWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZjMjhjMGYwNDMwNzhhOWZlY2I4NzljYzExOWQ5MWEwODQ3N2RiOGU4ZmIxZWRhMWRlNGRkMWU3Nzg0ZmJhNmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI3NGQwZTE2MGI0ODU5OTcyMjM4NDA0Y2Q1ODkwMDU1ZDA5YzZlZWQ2MDZjNTMyNGE2Y2ZkNjQ3ZDU1ZWNkZDgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f13a2ea3a8a14b05ba30a196cb2897fe",
+      "statement": "pull_request 검사는 관리 브랜치 PR에 대해 PR base revision이 head의 조상인지, 변경 경로가 openwiki/**와 관리 블록 안의 AGENTS.md·CLAUDE.md를 벗어나지 않는지, 그리고 PR이 담은 openwiki/.last-update.json의 gitHead가 PR base revision과 같고 openwiki/.run.json이 없는지를 다시 확인해 어긋나면 실패시켜요.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L428-L471",
+          "version": "repo-lines-v1:sha256:9c5eb80cdf986fa79b5b0cd09bf97a47110b9d623feea8f449da45e592fec933:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdkZTRjOWYwZjcyYzVkNDYyMmVhZTk5OThmNWJkZmQ3ZWZkMjhhZmMxMmM0NjIzY2IzZTcxOTljMzdhMjU4NGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4MDA1ZDU3MTA2YTM2MmViMDAwZGFmM2RhNDY3NGM4MmI1MThmZjVhMmUyZjY3ZWU4ZTc1N2EzMzNjMmFmNjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg1ZGQyYWYyN2E1MWY1ZDA5NzFkMTYzZDAzMWUyM2FhMmViOGJjYmRlMTRkODNjNWViMWYwYTAzMzNiOTQ5ZTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIwYzE2ZTg3YmQxNmMwYmJmN2IwNTVkMGU0Nzc4NGYzNGYzZDY3MDYyMzgxMGIwZDQ1ZDE5ZTFhZGY0N2RlNmIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2259cd5a2f3d490d96afd782279b71b3",
+      "statement": ".openwikiignore는 생성 입력에서 .env와 .env.*, 키·인증서 패턴과 자격 증명 디렉터리, docs/features/, 그리고 루트 AGENTS.md·CLAUDE.md를 제외해요. 그래서 Feature SDD 문서 내용과 에이전트 지침 파일은 Knowledge 생성 근거가 되지 않아요.",
+      "evidence": [
+        {
+          "resource": "repo://.openwikiignore#L1-L25",
+          "version": "repo-lines-v1:sha256:78a00be41a9f39ee55c1106fb5515bf4a285bd233f57572fa6833225bab61382:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjZWQxNmNjMWEwYzZhZTUwMjRmMjc5MmUzOWJkZjRhNDQ1NzFlOWQ1NTA4MTM1YmE2ZDc4NzM4Y2U1MzBlOTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzZmI2ZGE3MTNiMjQwODdmMjEzNDA0ZGYxNWI2ZmE2MTMwNWRlNTIxZjg4OGVjZmRkMDE2NWM0MjVjMTc0MDQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_40d54278d418450e9e827cd9682906ce",
+      "statement": "생성 설정은 tracked 파일 .lee-spec-kit/openwiki-sync.json에 남아요. language ko, sourceHead/baseHead/baseRef, openwikiVersion 0.5.2와 okfVersion 0.2, 입력 지문과 출력 해시, 적용된 기술 문서 작성 adapter·skill 이름과 해시를 기록해 어떤 입력과 정책으로 생성됐는지 추적할 수 있어요.",
+      "evidence": [
+        {
+          "resource": "repo://.lee-spec-kit/openwiki-sync.json#L1-L21",
+          "version": "repo-lines-v1:sha256:bef875413f7b0e54c716de1c63a9298ca790278f1d899e9c97a0a715e2222960:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZmIwOGZkYTFhY2I5NTdiNjExNmJkMzc4MTFhMWZlNDFhMDE2MTFjMDYzMWVkYmY3ODZkNjg4OWEyN2E1NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a99a6481a8d94ce9bcace0712730e725",
+      "statement": "로컬에서 문서를 갱신하고 확인하는 경로는 npx lee-spec-kit knowledge sync <feature-ref> --component <component> --json과 openwiki visualize ./openwiki 두 가지예요. 생성된 openwiki/** 페이지는 손으로 고치지 않고 source 또는 curated docs를 고친 뒤 다시 동기화하는 것이 저장소 정책이고, 활성 Feature workflow에서는 Feature review 전에 이 동기화와 전용 커밋이 필수예요.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L259-L284",
+          "version": "repo-lines-v1:sha256:287dd6292b3411797d513bd102315a9c2952cc9939ac9ef35781b74c7c001855:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3OGVhNjI5MWViMDk5OTIxNzNiOTA3YzZiNTAzNWIwMmU0MTc1NTBmZWUzMzI4MWJlMGZhMmQ3MWNhY2YxZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYxYjllY2ExYzYzOTUyN2MzMWMxMThjYThiYzY4Njc4Yjc3ZDUzMjk1NTQ3ZmVlMTVlYjZkZjljMTY0MjExNGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAxZmRjM2Y0NjIyY2I1MGQ5ZTI2Y2UzMTUzNTU4NGY5YzM4YWU2YWQ3NDgxMTU2NDEzZDQzYWNkNzU1YzJmYWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY1MDk2OTMzMTNhNWZlMDU1ZmY3ZmVlYzA4NzQzNWQ0MjE3MjFmMGVlMzZjMmY5NmQyODFlNzk3ZDJkNGI5MDIifQ"
+        },
+        {
+          "resource": "repo://docs/README.md#L23-L37",
+          "version": "repo-lines-v1:sha256:8bbdb08561472d912b4f56ff351b342b6d097d79352dd281642f3938e2d15631:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwYjU0YmIzOTljYzBhNzk2ZmM1MjljMzhlMDlkMGIzNjc5YzU1N2U1OGY3NmRjODg1MmY4ODkyZDBjNDZiN2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1NWViMGRkMjM1ZDAxZjExYTg3OTBlMzEwZGIzOTVkNTFkYzA5MjMyNzNmNGIwMTkxNGI1MmQ2MGMwODg1YWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgxYjg1YzVlOTNmNWMzNmFlYzYyZDFjMDhhNmM5Zjk5ZTg3YzM1ZTA0NmYxOWUxOTZjY2VjMjBhZTAwMTJlZWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkNWEzOWY0OWMyY2RlZjE1MWUxMDM3NzRkNDAwODEzODcyMWMxMTU4ZmQzZGU3OGJlMDBiOTQ2ZjQ4Y2QzYjcifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-25T04:42:33.305Z"
+  }
+}
