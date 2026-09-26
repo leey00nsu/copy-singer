@@ -23,7 +23,7 @@ export function koreanCycle(now) {
   );
   return {
     date: `${parts.year}-${parts.month}-${parts.day}`,
-    due: Number(parts.hour) > 1 || (Number(parts.hour) === 1 && Number(parts.minute) >= 17),
+    due: Number(parts.hour) >= 1,
   };
 }
 
@@ -52,6 +52,7 @@ export async function dispatchKnowledge({ now = new Date(), token, request = fet
       const operation = `${init.method || "GET"} ${new URL(url).pathname}`;
       throw new Error(`GitHub Actions API ${operation} returned HTTP ${response.status}${reason}`);
     }
+    if (response.status === 204) return null;
     return response.json();
   };
   const runs = await call(`${base}/runs?per_page=100`);
@@ -71,6 +72,7 @@ export async function dispatchKnowledge({ now = new Date(), token, request = fet
     method: "POST",
     body: JSON.stringify({ ref: "main", inputs: { cycle: cycle.date } }),
   });
+  if (result === null) return { outcome: "accepted", cycle: cycle.date };
   if (!result.workflow_run_id || !result.html_url) {
     throw new Error("GitHub accepted the dispatch without returning a run ID");
   }
