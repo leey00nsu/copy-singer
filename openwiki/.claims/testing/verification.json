@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:bea3d1e1cc4d52084fc2bca77256a3f1ff5a1a54878c2617470b176972f41769",
+  "pageVersion": "sha256:fce78cbf5cd9b64f250f1d0607ef84fd74fe779c3303c951192ccdbb1d7e178c",
   "claims": [
     {
       "id": "claim_3031d79038194443b09a9d1590d4779a",
@@ -22,15 +22,19 @@
     },
     {
       "id": "claim_31b09f4cfeca4536896a9ee14e39386e",
-      "statement": "이 저장소의 tracked `.github/workflows/`에는 Knowledge 생성용 `lee-spec-kit-knowledge.yml` 하나만 있고, 그 안에 `pnpm test`·`pnpm run check`·`pnpm run test:e2e`를 실행하는 단계가 없다. `knowledge` 작업은 OpenWiki를 설치해 문서를 생성·게시하고, `pull_request`에서 도는 `verify-knowledge-pr` 작업은 생성 문서 PR의 변경 범위와 완료 메타데이터만 검사한다.",
+      "statement": "이 저장소의 tracked `.github/workflows/`에는 Knowledge 문서 생성용 `lee-spec-kit-knowledge.yml` 하나만 있고, 그 안에 `pnpm test`·`pnpm run check`·`pnpm run test:e2e`를 실행하는 단계가 없다. `knowledge` 작업(정의 `#L23-L27`, OpenWiki 설치·생성 단계 `#L35-L71`)은 OpenWiki를 설치해 문서를 생성·게시하고, `pull_request`에서 도는 `verify-knowledge-pr` 작업(`#L411-L474`)은 생성 문서 PR의 변경 범위와 완료 메타데이터만 검사한다.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L22-L71",
-          "version": "repo-lines-v1:sha256:a386e9a9e92aa413ffbd8e8ca45782be8fedb62c13eb649a77b27e0f926b3f9d:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5ZDgwMTU0ZWQ0MmZjNWM3NzliMTMzMTU3OGI1OGI4OWM4MDFlYWNlNzRmMjRjZDQ4ZWI0YTIzNTc5NDBhOTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4MGI3NWFiNTg0OWQ2ZjJhYjU3ZWRlZjgwYzZlMjBlMDdlZWE3MTVmNDljY2U5MTVkZTk0Y2JlNWJiZGNjM2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI0YzMwNzJmZTZlMGFjYmQyNGRkNDg4NjQ0NjU1YjNjMDY5M2E3YjI5Y2M2NmIzY2QxZTYxOGQzMjJiZDgwOTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFhMDcxNzBjZTg1YTUxNGFkOTA4YWRlYTQyMDExM2Q4ZDJlNDhjOTAxNzYzNmRiZDVhNGY2OWQ4YzU5ZWFlM2UifQ"
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L23-L27",
+          "version": "repo-lines-v1:sha256:9e71a23d59b2567d8caaf6e6e3214149e78bbb5ef0d21fb0c153ef754b3831f6:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdhNDRhM2RjOTkxZWQwOGExNjNkNGY3MzE0MjFkMDE3YWFjNmM4MTBiMmVlNjQxY2VlMmMyMzZmNzkxNGJiNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWM0ZGNiNjg4ZTA3YjYyMDFkMzIyZWQ1YjU0YjIxZDlkMzU5MzQ0NGE4MzgzMzJkMmU1MTY4ODM4MjYzOTA5ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDgwNmVhMzcwYjdkODMzNWJlZGJhZmEzZTIxNDhkYzg4MDRkNjdmMGY1MDliOWY2MzhlM2E5NGRjMjVhNDQ4OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjBiYWYwNzZhNzcwYWNjYmZiNjcwMTFhNWE5ZGUwZTM4NDg4ZjcxMmY0MmU3ZGYwOGVjNDRhYmY3YTIwZDM3ZCJ9"
         },
         {
-          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L409-L471",
-          "version": "repo-lines-v1:sha256:17f226a5e6b3fa4d9b3796c61089e00e1a5ce778907faf1018fcfbcafc5b5192:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1YTBlZGFjMzk3ZGZkZjg0ZTBjOWU1N2Y0NjczMWViOTgyMmI4OWU4MzM1NjFlNTdhMDA4NDEwZmZkYTVmMDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4MDA1ZDU3MTA2YTM2MmViMDAwZGFmM2RhNDY3NGM4MmI1MThmZjVhMmUyZjY3ZWU4ZTc1N2EzMzNjMmFmNjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxMDJhYjFkY2I4YjEzNzFiZDRjZmIzMzA0ODA3ZDEyYjhkZDAzMDgxZmFmNTgzMTYyMTI5NmRhZWE3MTNiNDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIwYzE2ZTg3YmQxNmMwYmJmN2IwNTVkMGU0Nzc4NGYzNGYzZDY3MDYyMzgxMGIwZDQ1ZDE5ZTFhZGY0N2RlNmIifQ"
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L35-L71",
+          "version": "repo-lines-v1:sha256:de6a4d8c85a67af381dc7ca2fbe562548816407c046b201765333e1751f3a08d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyYjAyNTQ0ZDFiM2U3YTA0OTY3ZmNhN2JjZTY1ZGY2ZmNhMjc0NmUzYjIwN2EyY2U1NGM0YThlMWU1NTAwNjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4MGI3NWFiNTg0OWQ2ZjJhYjU3ZWRlZjgwYzZlMjBlMDdlZWE3MTVmNDljY2U5MTVkZTk0Y2JlNWJiZGNjM2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1MmQ1NThkOTlhMDRiYTY4YzBhOTUyMDk2NmEyZjQ5ZmUwZGExMzM2NGJkNGVjZGQ3OWZkOGNiZTZlNTJlNjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFhMDcxNzBjZTg1YTUxNGFkOTA4YWRlYTQyMDExM2Q4ZDJlNDhjOTAxNzYzNmRiZDVhNGY2OWQ4YzU5ZWFlM2UifQ"
+        },
+        {
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L411-L474",
+          "version": "repo-lines-v1:sha256:07e291bb263171713b91e2ac9c7fcb6462a6b4d0b2a2f7b5742a1aba5aedf056:eyJzZWxlY3RlZExpbmVDb3VudCI6NjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1YTBlZGFjMzk3ZGZkZjg0ZTBjOWU1N2Y0NjczMWViOTgyMmI4OWU4MzM1NjFlNTdhMDA4NDEwZmZkYTVmMDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwYzE2ZTg3YmQxNmMwYmJmN2IwNTVkMGU0Nzc4NGYzNGYzZDY3MDYyMzgxMGIwZDQ1ZDE5ZTFhZGY0N2RlNmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxMDJhYjFkY2I4YjEzNzFiZDRjZmIzMzA0ODA3ZDEyYjhkZDAzMDgxZmFmNTgzMTYyMTI5NmRhZWE3MTNiNDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -238,7 +242,7 @@
       "evidence": [
         {
           "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml",
-          "version": "repo-file-v1:sha256:1d6c2807485ff0ea192cf4990747e3121b7057d799a1573531c3f5aa9990a1df"
+          "version": "repo-file-v1:sha256:20f7be33cff5e41ac9845633751c08dd20b4bcb3c7875928bbbb7a38ee054665"
         },
         {
           "resource": "repo://package.json#L9-L73",
@@ -345,10 +349,24 @@
           "version": "repo-lines-v1:sha256:829193e2456bf1880f2933f386ceab6990977f6ce11fd14e5ebd9df4ab085127:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzODY1MzBlNjE4YmMyNmU2ZWM4NmYzYzEzZDlmNjQ1MzI4ZmNiOTUwYTIwNWFjNTRkMjUwMGY2MTMzZjhlOWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwMjcyYTE3MjAwYjBmMzBjZGEwM2FmMWYyMDRmYTAzODRmM2MyMTgxZjI3OWZkYTMwNjA5ZWMzNDM1YWI4ZTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzMmYyOWFlNTMyYWNjY2I2NmUxNjgwMzY1ZDRkOGQ2NjdjMTNiZDRiODVhNjIxYzdmYzZkOGM4M2M1ZDgxZTUifQ"
         }
       ]
+    },
+    {
+      "id": "claim_59422ae42b8e426da2fd19f4d23a587f",
+      "statement": "`ops/knowledge-dispatcher/`의 디스패치 판정을 고정하는 `tests/knowledge-dispatcher.test.mjs`는 `package.json`의 어떤 script에도 묶여 있지 않으므로, 디스패처를 바꾼 사람은 이 변경 범위 테스트를 커밋 전에 직접 실행해야 하고 그 실행 명령은 저장소 script가 정해 주지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L9-L73",
+          "version": "repo-lines-v1:sha256:ec63fc93050b32d85da7268893b401d4d84c691607027b80a2cf58b1acaa31df:eyJzZWxlY3RlZExpbmVDb3VudCI6NjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0ODMzZDU5NDljMDNhNDBjYTk1MjQ5MTYxMGE2NjU5NjQ0YjNhYTQ2NjM2MmY3OTkwMjBkYmYxOTgxNTQ3ZGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5ZTc3ZTU2ZmJjZmY1ZTFkOWY1OGQzNzVjYTQzNTVmOWRjNjJlZjBiYzFjMTJkYTdlZjExOGZmZmRhMGMxM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyNzAxMTI4NzM1MDNhMDc0OGU1ZWY0MGViOWZlZTUyYTZjNmRiNTdhNzMzMTI1ZjQ5NDhkMThmNGNjMTdiNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1NGYwYmY0YzU3YjAyNmUxYjY5YWM5NTcwZTIzZWUyNTk2N2E4MDkyNDJiYzFmZjFlN2M2M2E4NmZjNWRmM2EifQ"
+        },
+        {
+          "resource": "repo://tests/knowledge-dispatcher.test.mjs#L8-L104",
+          "version": "repo-lines-v1:sha256:03b0f2ac345f85c3efa894c74f9dfb8eaf3692c8eee534ef6762f251a252e0f9:eyJzZWxlY3RlZExpbmVDb3VudCI6OTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwZTNlNmFjYTJjYWQ1NzI1ZTk5YzVkNGVhZWQ5NDNjYjIyNjBmMjRlZWQ4OWJkZTI3NjlkODhhMWQ1ZWJhZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3ZTFiZGE3Njk0NDM3YTkyY2Q5MzAwMjRiNzRlY2FiM2QzN2EzYzMyNDM0NzVkZTc4OGE3ZWNhYzBhZjk4OWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.5.2",
-    "at": "2026-09-25T04:42:33.305Z"
+    "at": "2026-09-26T16:30:19.500Z"
   }
 }

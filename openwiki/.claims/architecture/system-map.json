@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:1cea2a1746a52ba5cc6d19664d0f61e771b9a117191334c2a0d6d42b0001782e",
+  "pageVersion": "sha256:465c641319fc80aa685e8bedc01e65ad02a4d588e9b1e48d615ffebdf6ac4a82",
   "claims": [
     {
       "id": "claim_2a026950528948a5a557e141e14fd4d7",
@@ -300,7 +300,7 @@
     },
     {
       "id": "claim_336e24b0c8e44f4185ae1f36e27ae0ff",
-      "statement": "최상위 `ops/knowledge-dispatcher/`는 애플리케이션 런타임 밖의 운영 자동화로, Coolify가 스케줄하는 작은 Node 컨테이너가 Knowledge 워크플로 실행을 디스패치해요. `dispatch.mjs`의 `dispatchKnowledge`가 한국 시간 기준 사이클을 판정하고 GitHub Actions API로 워크플로 실행을 요청하며, `Dockerfile`이 `node:22-alpine` 이미지에 그 파일을 복사해 컨테이너 환경을 정의해요.",
+      "statement": "최상위 `ops/knowledge-dispatcher/`는 애플리케이션 런타임 밖의 운영 자동화로, Coolify가 스케줄하는 작은 Node 컨테이너가 Knowledge 워크플로 실행을 디스패치해요. `dispatch.mjs`의 `dispatchKnowledge`가 한국 시간 기준 사이클을 판정하고 GitHub Actions API로 워크플로 실행을 요청하며, 이 코드의 import는 `node:http`·`node:path`·`node:url` 세 내장 모듈뿐이라 애플리케이션 DB나 `src/`·`app/`에 의존하지 않아요. `Dockerfile`이 `node:22-alpine` 이미지에 그 파일을 복사하고 8080 포트를 노출해 컨테이너 환경을 정의해요.",
       "evidence": [
         {
           "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L1-L5",
@@ -311,14 +311,18 @@
           "version": "repo-lines-v1:sha256:6039e1957d32133e073c0f3322ddf839ee4afa76a3e0fac8fb68dd8808e67e52:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDZlMTBkOWU4NDkyMTI0NjVhNjExODBlNWFkZjUzYWE0NTE2MWU0MTllNGUzMjcxMTcxYjYzOTAwYzk5ZDM5MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg1YjRhZGI0ZDUwMGU0NzU3NDc0MTk5ZDFmZjNiMDdlMjYzYTg3N2UwNWQ2ZTM2YmMyMWFiZGJkODI5ZGZhNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
         },
         {
-          "resource": "repo://ops/knowledge-dispatcher/dispatch.mjs#L30-L78",
-          "version": "repo-lines-v1:sha256:a04daab70b8d56b41e595d253584825c1d10113b5fb334ed597317c68522dc89:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4MjYyNzhkN2MyZGMzZWNjMDlhMDVkYTFmNzJmNGUwY2RiOWIyNDQ5ZGJmODU0YmY0YmM1YzFkMjUzYTk2NmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzN2U0OWFjM2FhMTkzMmMzZDhkM2MxNGQwMmM3ZWYyNjdjODU1NWIzNmJlMzY0YmFjNTVmZTU0YTk1MmRlZTIifQ"
+          "resource": "repo://ops/knowledge-dispatcher/dispatch.mjs#L1-L3",
+          "version": "repo-lines-v1:sha256:9911085a1b5e4c11393ad364f9287caf2282f1c163b1a20d37f748af1503de4b:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDI2MmQ0NjAxMzYwYzg4YzE5YTkzYjllNmQ2YzI5Y2M5N2U5MmI4YjZhNzhhOWYwMjI0NThmZmZlNDllMjZhMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjBhY2JhZmI3ODc0YzM0OWUxNGVjODY0OTdiMjNkMmY5NTdlM2VkNjFmYzM1ZDRkNmZhYTE3MzkzMDFhZDJjNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjhiYjMyNmViYmI0MjA1YjIyOWEwNzNiNmU4MzFmMzVhMzk3MmY0MjNiNzViOWU5NjNiMzNhNTY1ZTA0MzY0ZiJ9"
+        },
+        {
+          "resource": "repo://ops/knowledge-dispatcher/dispatch.mjs#L30-L80",
+          "version": "repo-lines-v1:sha256:93987e09ae7157002f160373e2e3b3cc8942c895a39b3a34e4f23312b5eb7427:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4MjYyNzhkN2MyZGMzZWNjMDlhMDVkYTFmNzJmNGUwY2RiOWIyNDQ5ZGJmODU0YmY0YmM1YzFkMjUzYTk2NmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzN2U0OWFjM2FhMTkzMmMzZDhkM2MxNGQwMmM3ZWYyNjdjODU1NWIzNmJlMzY0YmFjNTVmZTU0YTk1MmRlZTIifQ"
         }
       ]
     },
     {
       "id": "claim_4322003186f34ae5b4aec42b3358d357",
-      "statement": "이 생성 입력에서 확인되는 tracked 워크플로는 `.github/workflows/lee-spec-kit-knowledge.yml` 하나뿐이고, 이 파일은 Knowledge 생성 실행과 그 결과의 검증·리뷰 PR 발행만 담당해요. 애플리케이션 빌드·테스트를 실행하는 워크플로는 없고, 그 검증 명령은 `package.json`의 `test`·`check` script로 돌려요.",
+      "statement": "이 생성 입력에서 확인되는 tracked 워크플로는 `.github/workflows/lee-spec-kit-knowledge.yml` 하나뿐이고, 그 작업은 Knowledge 생성을 맡는 `knowledge`와 Knowledge PR 안전 검사를 맡는 `verify-knowledge-pr` 둘로 나뉘어요. 애플리케이션 빌드·테스트를 실행하는 워크플로는 없고, 그 검증 명령은 `package.json`의 `test`·`check` script로 돌려요.",
       "evidence": [
         {
           "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L1-L30",
@@ -337,6 +341,6 @@
   ],
   "verification": {
     "by": "openwiki/0.5.2",
-    "at": "2026-09-25T04:42:33.305Z"
+    "at": "2026-09-26T16:30:19.500Z"
   }
 }

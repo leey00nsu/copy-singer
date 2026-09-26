@@ -5,7 +5,7 @@ description: 이 저장소의 런타임 경계와 FSD(Feature-Sliced Design) 계
 tags: [architecture, fsd, boundary, layering, explanation]
 verified:
   - by: openwiki/0.5.2
-    at: 2026-09-25T04:42:33.305Z
+    at: 2026-09-26T16:30:19.500Z
 sources:
   - id: openwiki-source-3dc25b286bcb30bfd66698fa
     resource: repo://.github/workflows/lee-spec-kit-knowledge.yml
@@ -87,7 +87,7 @@ sources:
     resource: repo://tests/fsd-architecture-boundaries.test.ts
   - id: openwiki-source-8b825c1fe06f865eec32c966
     resource: repo://tests/process-scripts.test.ts
-generated: { by: "openwiki/0.5.2", at: "2026-09-25T04:42:33.305Z" }
+generated: { by: "openwiki/0.5.2", at: "2026-09-26T16:30:19.500Z" }
 ---
 
 이 저장소에는 런타임이 두 갈래로 있어요. 브라우저 요청을 그 자리에서 처리하는 Next.js 서버와, PostgreSQL에 접수된 오래 걸리는 작업을 이어받는 독립 워커 프로세스예요. 그래서 새 코드의 자리를 정하는 첫 질문은 "이 코드가 어느 런타임에서 도는가"이고, 두 번째 질문은 "웹 코드라면 FSD(Feature-Sliced Design) 계층 중 어느 책임인가"예요. 애플리케이션 밖에는 Knowledge 문서 자동화를 돌리는 `ops/`와 `.github/workflows/`가 따로 있어요.
@@ -108,7 +108,7 @@ generated: { by: "openwiki/0.5.2", at: "2026-09-25T04:42:33.305Z" }
 | `prisma/` | `schema.prisma`, `migrations/`, development seed | 애플리케이션 조회 로직. 생성된 Prisma client는 `src/shared/db/generated/prisma`로 출력되고 Git에 커밋하지 않아요 |
 | `scripts/*-worker.ts` | 워커 프로세스 entrypoint(믹싱·보컬 프로필 분석·곡 분석)와 운영·검증 script(`reconcile-*`, `recover-*`, `verify-*`, `benchmark-*`) | 재사용되는 domain 로직. entrypoint는 환경 변수를 읽고 `src/_app/background-jobs/`의 실행 함수를 import하는 짧은 파일이에요 |
 | `services/` (Python Modal 서비스) | HTTP 계약을 가진 Modal app(`vocal-profile-modal`, `song-catalog-analyzer`, `soulx-singer-svc`)과 두 분석 서비스가 이미지에 함께 패키징하는 공유 core(`vocal-analysis-core`) | Node.js 코드, DB 직접 접근, 검증되지 않은 로컬 분석 fallback |
-| `ops/knowledge-dispatcher/` | Coolify가 스케줄하는 작은 Node 컨테이너. 한국 시간 기준 사이클을 판정하고 GitHub Actions API로 Knowledge 워크플로를 디스패치하는 코드와 그 이미지 정의 | 애플리케이션 런타임 코드. DB·`src/`·`app/`에 의존하지 않고 GitHub Actions API만 호출해요 |
+| `ops/knowledge-dispatcher/` | Coolify가 스케줄하는 작은 Node 컨테이너. 한국 시간 기준 사이클을 판정하고 GitHub Actions API로 Knowledge 워크플로를 디스패치하는 `dispatch.mjs`와 그 파일을 담아 8080 포트를 노출하는 이미지 정의 | 애플리케이션 런타임 코드. DB·`src/`·`app/`에 의존하지 않고 GitHub Actions API만 호출해요 |
 | `.github/workflows/` | 이번 생성 입력에서 확인된 tracked 워크플로 파일. 현재 Knowledge 생성용 `lee-spec-kit-knowledge.yml` 하나예요 | 애플리케이션 빌드·테스트를 실행하는 워크플로. 그런 워크플로는 확인되지 않았어요 |
 | 외부 미디어 저장소(Leemage) | 권한이 확인된 오디오 바이트 | 관계·상태·소유권·해시·외부 자산 참조. 그 값들은 PostgreSQL에 남아요 |
 
@@ -118,9 +118,9 @@ generated: { by: "openwiki/0.5.2", at: "2026-09-25T04:42:33.305Z" }
 
 `services/`는 웹 트리 밖의 Python 런타임이에요. [services/vocal-analysis-core/README.md](repo://services/vocal-analysis-core/README.md#L1-L7)가 밝히듯 이 core는 두 인증된 Modal CPU 서비스가 함께 패키징하는 librosa·pYIN 분석 package이고, HTTP 서버도 로컬 분석 런타임도 제공하지 않아요.
 
-최상위 `ops/`는 웹·워커가 아닌 운영 자동화 코드를 두는 자리예요. 이번 생성 입력에서 확인되는 항목은 Coolify가 스케줄하는 작은 Node 컨테이너 `ops/knowledge-dispatcher/` 하나이고, 이 컨테이너가 [dispatch.mjs](repo://ops/knowledge-dispatcher/dispatch.mjs#L30-L78)로 Knowledge 워크플로 실행을 디스패치해요. 스케줄링 주체가 Coolify라는 책임 구분은 워크플로 헤더 주석에도 적혀 있고([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L1-L5)), 컨테이너 환경은 [Dockerfile](repo://ops/knowledge-dispatcher/Dockerfile#L1-L6)이 `node:22-alpine` 이미지에 이 파일을 복사하도록 정의해요. 이 코드는 애플리케이션 DB나 `src/`·`app/` 코드를 쓰지 않으므로 두 런타임 갈래에는 속하지 않아요.
+최상위 `ops/`는 웹·워커가 아닌 운영 자동화 코드를 두는 자리예요. 이번 생성 입력에서 확인되는 항목은 Coolify가 스케줄하는 작은 Node 컨테이너 `ops/knowledge-dispatcher/` 하나이고, 이 컨테이너가 [dispatch.mjs](repo://ops/knowledge-dispatcher/dispatch.mjs#L30-L80)로 Knowledge 워크플로 실행을 디스패치해요. 스케줄링 주체가 Coolify라는 책임 구분은 워크플로 헤더 주석에도 적혀 있고([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L1-L5)), 컨테이너 환경은 [Dockerfile](repo://ops/knowledge-dispatcher/Dockerfile#L1-L6)이 `node:22-alpine` 이미지에 이 파일을 복사하고 8080 포트를 노출하도록 정의해요. 컨테이너가 돌리는 코드의 import는 Node 내장 모듈 `node:http`·`node:path`·`node:url` 세 개뿐이고([dispatch.mjs](repo://ops/knowledge-dispatcher/dispatch.mjs#L1-L3)), 애플리케이션 DB나 `src/`·`app/` 코드에는 손대지 않으므로 두 런타임 갈래에는 속하지 않아요.
 
-`.github/workflows/`에는 이번 생성 입력에서 [.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L1-L30) 하나만 tracked 상태로 확인돼요. 애플리케이션 빌드·테스트를 실행하는 워크플로는 확인되지 않았고, 그 검증 명령은 [package.json](repo://package.json#L23-L34)의 `test`·`check` script로 돌려요. 디스패처 판정 규칙과 워크플로 트리거·게이트는 [Knowledge 생성과 CI 자동화](../operations/knowledge-automation.md)가 소유하니 그 페이지에서 확인하세요.
+`.github/workflows/`에는 이번 생성 입력에서 [.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L1-L27) 하나만 tracked 상태로 확인돼요. 이 파일의 작업은 Knowledge 생성을 맡는 `knowledge`([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L23-L24))와 Knowledge PR 안전 검사를 맡는 `verify-knowledge-pr`([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L411-L412)) 두 개이고, 애플리케이션 빌드·테스트를 실행하는 워크플로는 확인되지 않았어요. 그 검증 명령은 [package.json](repo://package.json#L23-L34)의 `test`·`check` script로 돌려요. 디스패처 판정 규칙과 워크플로 트리거·게이트는 [Knowledge 생성과 CI 자동화](../operations/knowledge-automation.md)가 소유하니 그 페이지에서 확인하세요.
 
 ## 브라우저 요청 경로와 워커 경로가 갈라져요
 
