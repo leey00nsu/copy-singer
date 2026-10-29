@@ -137,3 +137,11 @@
 - 현재 배포 v6의 commit 2b92e0e와 수정 전 HEAD 사이에서 services/soulx-singer-svc의 차이는 없었다. 따라서 이 서비스의 배포 범위는 GPU 선택을 바꾸는 2개 hunk뿐이다. 기존 endpoint·workspace·모델·job volume을 유지하는 재배포를 준비했으며 실제 원격 배포는 아직 하지 않았다.
 - 배포 v6에 사용된 전역 CLI의 SDK 1.2.4에서도 실제 App.cls가 default/L4의 두 후보와 A10/T4의 기존 단일 지정을 수용하고 max_containers=1을 유지함을 확인했다. SDK 업그레이드 없이 배포할 수 있다.
 - 준비한 배포 명령은 services/soulx-singer-svc에서 `MODAL_PROFILE=dbstndla1212 SOULX_GPU=L4 SOULX_MAX_CONTAINERS=1 SOULX_SCALEDOWN_WINDOW=60 modal deploy modal_app.py`다. 실제 GPU 추론은 실행하지 않았으므로 A10의 처리 시간·품질·비용은 실측값으로 보고하지 않는다.
+
+### 승인된 Modal 재배포와 반영 확인 (2026-10-29)
+
+- 사용자는 `우선 modal 재배포해봐. 그리고 내가 직접 테스트해볼게`라고 지시했다. 이 승인은 이번 Modal 배포에 한정하며 Feature 전체의 구현 최종 승인·local merge 승인으로 기록하지 않는다.
+- 준비한 명령으로 dbstndla1212 workspace의 soulx-singer-svc를 재배포했다. CLI exit 0, 배포 이력 v7, 2026-10-29 13:21:54 KST, client 1.2.4, commit 4a9536e를 확인했다. 기존 endpoint `https://dbstndla1212--soulx-singer-svc-web.modal.run`을 유지했다.
+- 배포 후 실제 SoulXModel의 Details에서 `GPUs L4 or A10G`, `Max containers 1`, `Scaledown window 60 secs`를 확인했다. 새 설정이 실제 serving function에 적용됐다.
+- 기존 endpoint의 GET /health는 HTTP 200, status ok를 반환했다. 기존 gpu 필드의 L4는 우선 설정이며 GPU 실행 상태나 실제 할당 기종을 뜻하지 않는다.
+- 배포 전 GPU backlog 0·runner 0을 확인했고, 배포 검증 중 새 합성 요청은 생성하지 않았다. 실제 A10 합성·완료·오디오 품질 검증은 사용자 수동 테스트 대기다. Next.js 배포·Git push·main 통합은 수행하지 않았다.

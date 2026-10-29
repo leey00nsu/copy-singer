@@ -221,6 +221,7 @@
 | `python3 -m unittest discover -s services/soulx-singer-svc/tests` | `2026-10-29` | PASS: 2 |
 | `python3 tests/modal-submission-contract.py` | `2026-10-29` | PASS: 4 |
 | `Modal SDK 로컬 정의 검사 (1.5.3 / 1.2.4, 일회성 Python)` | `2026-10-29` | PASS: 각 4개 GPU 설정 case, 기존 단일 지정·동시성 보존. build/RPC 없음 |
+| `Modal deploy / app history / GPU Details / GET health` | `2026-10-29` | PASS: 사용자 승인 후 v7(4a9536e) 배포, 실제 L4 or A10G·최대 1개 확인, HTTP 200. 실제 합성은 사용자 테스트 대기 |
 
 완료 기록에는 테스트뿐 아니라 build·typecheck·lint 등 Plan에서 정한 검증과 수동 검증 증거를 포함합니다. 자동 검사의 기준은 실제 `workflow.featureChecks`이며, 검사 생략은 통과로 기록하지 않고 명시적인 사유를 남깁니다.
 
