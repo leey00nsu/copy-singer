@@ -1,4 +1,5 @@
 import { Skeleton } from "@/shared/ui/skeleton";
+import { AdminNavigationLoading } from "@/widgets/admin-navigation";
 
 export default function AdminSongCatalogLoading() {
   return (
@@ -8,22 +9,27 @@ export default function AdminSongCatalogLoading() {
       className="mx-auto w-full max-w-[72rem] px-6 py-8 lg:px-8 lg:py-10"
       role="status"
     >
-      <div className="flex flex-wrap items-end justify-between gap-6">
-        <div className="space-y-3">
-          <Skeleton className="h-3 w-16" />
-          <Skeleton className="h-8 w-40" />
-          <Skeleton className="h-4 w-96 max-w-full" />
-        </div>
-        <Skeleton className="h-9 w-28 rounded-md" />
+      <div className="space-y-3">
+        <Skeleton className="h-3 w-16" />
+        <Skeleton className="h-8 w-40" />
+        <Skeleton className="h-4 w-96 max-w-full" />
+      </div>
+      <AdminNavigationLoading />
+
+      <div className="mt-8 mb-3 flex flex-wrap items-center justify-between gap-3">
+        <Skeleton className="h-5 w-32" />
+        <Skeleton className="h-8 w-40 rounded-md" />
+      </div>
+      <div className="mb-3 grid gap-3 rounded-xl bg-muted/20 p-4 sm:grid-cols-[minmax(0,1fr)_12rem_auto] sm:items-end">
+        {["w-full", "w-full", "w-20"].map((width, i) => (
+          <div key={i} className="space-y-1">
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className={`h-9 rounded-md ${width}`} />
+          </div>
+        ))}
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center gap-3 rounded-xl border p-4">
-        <Skeleton className="h-9 flex-1 rounded-md" />
-        <Skeleton className="h-9 w-32 rounded-md" />
-        <Skeleton className="h-9 w-20 rounded-md" />
-      </div>
-
-      <div className="mt-6 rounded-xl border">
+      <div className="rounded-xl border">
         <div className="flex items-center justify-between border-b px-4 py-3">
           <Skeleton className="h-4 w-20" />
           <Skeleton className="h-3 w-16" />

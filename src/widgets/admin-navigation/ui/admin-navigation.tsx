@@ -1,4 +1,15 @@
 import Link from "next/link";
+import { Skeleton } from "@/shared/ui/skeleton";
+
+export function AdminNavigationLoading() {
+  return (
+    <div aria-hidden="true" className="mt-8 flex gap-6 overflow-hidden border-b pb-3">
+      {Array.from({ length: 4 }, (_, i) => (
+        <Skeleton key={i} className="h-5 w-20 shrink-0" />
+      ))}
+    </div>
+  );
+}
 
 export function AdminNavigation({
   current,

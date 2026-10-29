@@ -1,4 +1,5 @@
 import { Skeleton } from "@/shared/ui/skeleton";
+import { AdminNavigationLoading } from "@/widgets/admin-navigation";
 
 export default function AdminLoading() {
   return (
@@ -13,11 +14,7 @@ export default function AdminLoading() {
         <Skeleton className="h-8 w-40" />
         <Skeleton className="h-4 w-96 max-w-full" />
       </div>
-      <div className="mt-8 flex gap-6 border-b pb-4">
-        {Array.from({ length: 4 }, (_, i) => (
-          <Skeleton key={i} className="h-4 w-20" />
-        ))}
-      </div>
+      <AdminNavigationLoading />
       <div className="mt-7 flex gap-3">
         <Skeleton className="h-10 w-20" />
         <Skeleton className="h-10 w-28" />

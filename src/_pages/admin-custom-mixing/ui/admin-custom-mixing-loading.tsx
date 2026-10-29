@@ -1,4 +1,5 @@
 import { Skeleton } from "@/shared/ui/skeleton";
+import { AdminNavigationLoading } from "@/widgets/admin-navigation";
 
 export default function AdminCustomMixingLoading() {
   return (
@@ -8,12 +9,12 @@ export default function AdminCustomMixingLoading() {
       className="mx-auto w-full max-w-[72rem] px-6 py-8 lg:px-8 lg:py-10"
       role="status"
     >
-      <Skeleton className="h-4 w-24" />
-      <div className="mt-6 space-y-3">
+      <div className="space-y-3">
         <Skeleton className="h-3 w-16" />
         <Skeleton className="h-8 w-40" />
         <Skeleton className="h-4 w-full max-w-2xl" />
       </div>
+      <AdminNavigationLoading />
       <div className="mt-8 rounded-xl border p-5">
         <Skeleton className="h-5 w-32" />
         <Skeleton className="mt-3 h-4 w-full max-w-xl" />
