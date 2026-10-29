@@ -181,6 +181,42 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
+- [TODO][PRD-FR-ADMIN-WORKSPACE] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-07 관리자 회원·체험 조회와 집계 분리
+  - Date: 2026-10-29
+  - Acceptance:
+    - 정식 회원만 회원 목록과 회원 수에 포함하고 체험은 저장 회원·만료 상태·검색/필터/페이지로 안전하게 조회한다.
+    - guest 대상 티켓 조정을 서버에서도 거부하고 기존 회원 원장·권한·알림 계약을 보존한다.
+  - Checklist:
+    - [ ] 관리자 조회/집계와 bounded pagination 및 guest ticket target 경계를 구현한다.
+    - [ ] DB 통합에서 구분·관계·필터·페이지·민감 필드 비노출·기존 티켓 회귀를 검증한다.
+  - Docs:
+    - docs:prd/copy-singer-prd.md
+    - docs:prd/system-architecture.md
+  - Review Evidence: -
+  - Review Decision: -
+  - Review Round: -
+  - Reviewed Head: -
+  - Reviewed Tree: -
+
+- [TODO][PRD-FR-ADMIN-WORKSPACE] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-08 관리자 공통 메뉴와 단일 목록 및 회원 티켓 Sheet 적용
+  - Date: 2026-10-29
+  - Acceptance:
+    - 승인 시안의 네 메뉴·회원/체험 Tabs·독립 검색/페이지와 단일 테이블을 제공하고 운영 설명은 기존 문구를 정확히 유지한다.
+    - 티켓 Sheet의 고정 대상·확인·안전한 retry와 기존 음원/custom 기능·권한·모바일/접근성을 보존한다.
+  - Checklist:
+    - [ ] 공통 navigation과 관리자 page/loading·테이블·상세/티켓 Sheet를 기존 primitive로 구현한다.
+    - [ ] URL/UI/Storybook·관리/티켓/카탈로그 및 전체 회귀와 정적 검사·문서 감사를 완료한다.
+  - Docs:
+    - docs:prd/copy-singer-prd.md
+    - docs:prd/system-architecture.md
+    - docs:designs/admin-navigation.md
+    - docs:designs/references/copy-singer/admin-navigation-proposal.png
+  - Review Evidence: -
+  - Review Decision: -
+  - Review Round: -
+  - Reviewed Head: -
+  - Reviewed Tree: -
+
 ## Repository Knowledge (완료 비차단)
 
 - **Policy**: `.lee-spec-kit.json`의 `experimental.openwiki`에서 파생
@@ -193,8 +229,8 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
 
 ### 테스트 실행 기록

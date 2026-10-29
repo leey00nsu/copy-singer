@@ -145,3 +145,11 @@
 - 배포 후 실제 SoulXModel의 Details에서 `GPUs L4 or A10G`, `Max containers 1`, `Scaledown window 60 secs`를 확인했다. 새 설정이 실제 serving function에 적용됐다.
 - 기존 endpoint의 GET /health는 HTTP 200, status ok를 반환했다. 기존 gpu 필드의 L4는 우선 설정이며 GPU 실행 상태나 실제 할당 기종을 뜻하지 않는다.
 - 배포 전 GPU backlog 0·runner 0을 확인했고, 배포 검증 중 새 합성 요청은 생성하지 않았다. 실제 A10 합성·완료·오디오 품질 검증은 사용자 수동 테스트 대기다. Next.js 배포·Git push·main 통합은 수행하지 않았다.
+
+
+## D006: 관리자 메뉴·조회·티켓 조정을 작업 단위로 분리 (2026-10-29)
+
+- **Approval**: 사용자는 비교 시안의 나머지를 반영하고 기존 운영 설명 문구를 유지하도록 명시했다. 진행 중 Feature의 새 task 07/08로 구현하며 기존 DONE 작업은 수정하지 않는다.
+- **Decision**: 네 개 공통 메뉴, 회원/체험 Tabs, 선택한 테이블 하나, 독립 검색·필터·페이지, 고정 회원의 티켓 Sheet를 제공한다. DB의 체험/회원 구조는 유지하고 isGuest와 GuestAnalysisTrial의 실제 저장 관계로 관리자 조회·집계를 구분한다.
+- **Scope**: 기존 음원 관리·custom mixing의 기능/경로와 관리자 서버 권한·티켓 원장·멱등성·알림·오디오 비노출을 보존한다. 운영 문구는 정확히 “서비스 사용 현황과 티켓, 작업 상태를 확인하고 관리할 수 있어요.”다. schema/env와 원격 배포는 변경하지 않는다.
+- **Reference**: 승인 시안은 docs/designs/admin-navigation.md와 repo 내부 reference PNG에 고정한다. 개인 경로의 HTML 시안은 구현 의존성으로 사용하지 않는다. global 디자인 token·primitive 변경이 없어 design-system.md는 재사용한다.

@@ -126,5 +126,16 @@ Google 로그인 전에 실제 보컬 분석 결과를 확인할 수 있게 하�
 ## 관련 문서
 
 - PRD: [copy-singer-prd.md](../../../prd/copy-singer-prd.md)
-- PRD Refs: PRD-NFR-GPU-FALLBACK, PRD-FR-GUEST-RECOMMENDATIONS, PRD-US-GUEST-ANALYSIS, PRD-FR-GUEST-ANALYSIS-TRIAL, PRD-FR-GUEST-DAILY-LIMIT, PRD-FR-GUEST-ACCOUNT-LINK, PRD-FR-GUEST-RETENTION, PRD-FR-023, PRD-FR-024, PRD-FR-025, PRD-FR-046, PRD-FR-053, PRD-FR-063, PRD-FR-067, PRD-NFR-009, PRD-NFR-013, PRD-NFR-015, PRD-NFR-016, PRD-NFR-017
-- Design Refs: -
+- PRD Refs: PRD-FR-ADMIN-WORKSPACE, PRD-NFR-GPU-FALLBACK, PRD-FR-GUEST-RECOMMENDATIONS, PRD-US-GUEST-ANALYSIS, PRD-FR-GUEST-ANALYSIS-TRIAL, PRD-FR-GUEST-DAILY-LIMIT, PRD-FR-GUEST-ACCOUNT-LINK, PRD-FR-GUEST-RETENTION, PRD-FR-023, PRD-FR-024, PRD-FR-025, PRD-FR-046, PRD-FR-053, PRD-FR-063, PRD-FR-067, PRD-NFR-009, PRD-NFR-013, PRD-NFR-015, PRD-NFR-016, PRD-NFR-017
+- Design Refs: docs/designs/design-system.md, docs/designs/admin-navigation.md
+
+
+## 후속 범위: 관리자 메뉴와 체험 구분
+
+사용자는 2026-10-29 As-is/To-be 시안의 나머지 변경을 승인하고 운영 설명 문구 “서비스 사용 현황과 티켓, 작업 상태를 확인하고 관리할 수 있어요.”의 유지를 명시했다. PRD-FR-ADMIN-WORKSPACE를 따른다.
+
+- 회원·체험 / 믹싱 작업 / 음원 관리 / 커스텀 믹싱의 공통 메뉴를 제공하고 기존 경로를 보존한다.
+- 회원/체험은 Tabs UI로 전환하며 선택한 사용자 종류 또는 믹싱 목록만 조회·표시한다. 각 검색·필터·페이지 값은 독립적으로 보존하고 검색 시 해당 페이지를 초기화한다.
+- 회원 집계·목록은 정식 회원만 포함한다. 체험 목록은 별도 건수·안전한 식별 ID·분석 상태·만료·저장 회원 링크를 제공하며 tokenHash·오디오·저장소 URL을 반환하지 않는다. 저장 완료를 가입 전환으로 표시하지 않는다.
+- 티켓 조정은 회원 행의 Sheet에서 고정 대상을 확인하고 기존 두 종류·검증·원장·알림·멱등성 계약을 재사용한다. 확인 전 mutation은 없으며 실패 재시도는 같은 요청 키를 유지한다. 체험 계정은 조정 대상에서 서버도 거부한다.
+- 모바일은 페이지 가로 넘침 없이 주요 행 데이터와 action을 제공한다. loading/empty/error와 기존 음원·커스텀 기능을 유지한다.

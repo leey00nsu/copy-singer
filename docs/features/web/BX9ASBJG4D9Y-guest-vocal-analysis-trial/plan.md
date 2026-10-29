@@ -70,7 +70,7 @@ VoiceScanInput은 guest일 때 무료 분석 1회·24시간 임시 보관·약�
 - **Onboarding entrypoint**: NONE
 - **Operational/runtime contract**: UPDATE
 - **Reason**: 익명 분석 예외·일일 한도·소유권 이전·보관 계약을 PRD와 아키텍처에 반영한다. 운영 설정은 .env.example에 추가한다. README는 사용자 수정 요청이 없어 보호하며 기존 문서 정책 위반은 decisions.md의 기록에 따라 보류한다.
-- **Targets**: docs:prd/copy-singer-prd.md, docs:prd/system-architecture.md, project:.env.example
+- **Targets**: docs:prd/copy-singer-prd.md, docs:prd/system-architecture.md, project:.env.example, docs:designs/admin-navigation.md, docs:designs/references/copy-singer/admin-navigation-proposal.png
 
 ## Additional Curated Impacts
 
@@ -151,3 +151,14 @@ PRD의 기존 F032 참조도 과거 작업 ID 대신 유지해야 할 시각 요
 - Curated Documentation Impact: UPDATE docs:prd/copy-singer-prd.md, docs:prd/system-architecture.md. 신규 환경 변수·스키마·UI·개인정보·온보딩 영향은 NONE. services/soulx-singer-svc/README.md의 기본 L4 설명은 사용자 수정 요청이 없어 보호하고 보류 근거를 decisions.md에 남긴다.
 - Verification Contract: NO_NEW_TEST — 되돌릴 수 있는 GPU 설정 변경에 영구 테스트를 추가하지 않는다. Python compile, 기존 mix-balance unit과 modal-submission-contract 검사, 실제 Modal SDK의 로컬 함수 정의에서 기본/L4/A10/기존 단일 지정의 GPU 선택과 max_containers 유지 여부를 확인한다. 이미지 build·원격 함수 호출 없이 검사한다. 이 변경만으로 웹 코드와 schema는 바뀌지 않으므로 이미 통과한 전체 웹 suite를 반복하지 않는다. Feature 완료 시 설정된 featureChecks는 별도 workflow 계약을 따른다.
 - 원격 반영은 검증한 코드의 별도 Modal 배포 승인 이후 dbstndla1212 workspace의 기존 soulx-singer-svc endpoint에 적용한다. Next.js 배포·main 통합은 이번 수정 요청에 포함하지 않는다.
+
+
+## 후속 범위: 관리자 작업 화면 분리
+
+- 사용자 승인: 시안 적용 + 기존 운영 description 문구 그대로 유지. 이 승인은 후속 구현 범위이며 최종 구현/병합/배포 승인으로 간주하지 않는다. 기존 DONE task는 유지하고 task 07(조회/집계), 08(UI/검증)을 추가한다.
+- Server page는 설치된 Next.js의 async searchParams·Server/Client Components·useRouter 가이드에 따라 requireAdminPage 후 선택한 목록만 조회한다. 회원/체험/믹싱의 검색·필터·page와 저장회원 필터를 서로 다른 URL key로 유지한다. 기존 q/status URL은 가능한 범위에서 수용한다.
+- inspect-admin-operations는 정식 회원 목록·집계, 체험 기록/저장 관계 조회, 상태 필터와 bounded pagination을 제공한다. select는 관리자에게 필요한 최소 필드로 한정하고 schema는 변경하지 않는다. manage-tickets의 서버 조정도 guest target을 거절한다.
+- 공통 AdminNavigation widget을 기존 세 경로에서 공유한다. /admin에서는 회원·체험 Tabs와 테이블 하나, 또는 믹싱 테이블 하나를 렌더한다. 음원·custom 경로의 기존 기능과 경로를 유지한다. loading도 같은 단일 목록 구조로 정리한다.
+- 회원 행의 TicketAdjustmentSheet는 기존 mutation을 사용한다. fixed user, 종류/조정량/사유, 변경 전후 잔액, 확인 화면, pending/error/retry와 동일 payload의 멱등 키를 제공한다. 믹싱 상세 Sheet는 기존 상태·오류 코드·시도/시각만 노출한다.
+- Curated Documentation Impact: UPDATE docs:prd/copy-singer-prd.md, docs:prd/system-architecture.md; ADD docs:designs/admin-navigation.md, docs:designs/references/copy-singer/admin-navigation-proposal.png. 디자인 시스템 token/primitive 계약·운영 env·schema·법률 안내·README·OpenWiki 영향은 NONE. 시안 원본을 repo visual reference로 보관하고 기존 디자인 시스템을 재사용한다.
+- Verification Contract: UPDATE tests/admin-operations.integration.ts에 회원/guest 분리·저장 관계·만료/미저장 필터·검색·pagination·민감 필드 제외·guest ticket target 거절을 추가한다. UPDATE tests/admin-ui.test.tsx와 ADD tests/admin-navigation.test.ts에서 독립 URL 상태·caption·단일 테이블·empty·공통 메뉴와 안전한 관계 링크를 검증한다. ADD Storybook 관리자 목록/Sheet 상호작용에서 탭 전환, 고정 대상, 확인 전 무요청, 정상 적용, 실패 retry 멱등 키, 키보드/닫기 및 모바일을 확인한다. 기존 관리/티켓/카탈로그/커스텀 suite와 lint·tsc·architecture 및 설정된 전체 pnpm test를 실행한다. 실제 OAuth/유료 GPU 호출과 원격 배포는 하지 않는다.
