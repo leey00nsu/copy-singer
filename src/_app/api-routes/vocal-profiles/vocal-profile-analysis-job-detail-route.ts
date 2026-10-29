@@ -1,13 +1,16 @@
 import { withApiAdmission } from "@/_app/api-routes/admission";
+import { canReadGuestResource } from "@/entities/guest-analysis/index.server";
 import { analysisJobPayload, getVocalProfileAnalysisJob } from "@/features/analyze-vocal-profile/index.server";
-import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
+import { getAnalysisActor, unauthorizedResponse } from "@/features/authentication/index.server";
 import { resourceIdSchema } from "@/shared/api";
 
 async function handleGET(request: Request, context: { params: Promise<{ id: string }> }) {
-  const session = await requireApiSession(request);
-  if (!session) return unauthorizedResponse();
+  const actor = await getAnalysisActor(request);
+  if (!actor) return unauthorizedResponse();
   const id = resourceIdSchema.safeParse((await context.params).id);
-  const result = id.success ? await getVocalProfileAnalysisJob(session.user.id, id.data).catch(() => null) : null;
+  if (actor.guest && (!id.success || !(await canReadGuestResource(actor.userId, { jobId: id.data }))))
+    return Response.json({ reasonCode: "ANALYSIS_JOB_NOT_FOUND" }, { status: 404 });
+  const result = id.success ? await getVocalProfileAnalysisJob(actor.userId, id.data).catch(() => null) : null;
   if (!result) {
     return Response.json(
       { reasonCode: "ANALYSIS_JOB_NOT_FOUND", detail: "Vocal profile analysis job was not found.", retryable: false },
@@ -17,4 +20,4 @@ async function handleGET(request: Request, context: { params: Promise<{ id: stri
   return Response.json({ ...analysisJobPayload(result.job), profile: result.profile });
 }
 
-export const GET = withApiAdmission(handleGET);
+export const GET = withApiAdmission(handleGET, { allowGuest: true });

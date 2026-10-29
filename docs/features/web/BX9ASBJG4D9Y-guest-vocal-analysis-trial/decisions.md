@@ -60,3 +60,11 @@
 - quota 3건과 DB/API 2건 검증 및 tsc를 통과했다. 회원 API는 기존 인증 helper를 유지하여 체험 cookie로 접근할 수 없다.
 - localhost DB에 Prisma migration을 적용했다. 기존 User에 기본 false 컬럼을 추가하고 새 테이블만 생성한다.
 - PRD의 기존 Feature 번호 참조를 durable 시각 요구사항으로 정규화했다. 기존 디자인 문서 감사 위반은 마지막 task에서 정리한다.
+
+## 구현 기록: 분석·저장·만료
+
+- queue 접수는 guest 자격을 row lock 아래 확인하고 ticketCost=0으로 처리한다. worker terminal transaction은 개인 소비 이력·24시간 만료를 함께 기록한다.
+- 기존 회원 저장은 trial lock 아래 프로필 번호 배정·job·미디어 소유권을 이전하고 같은 요청은 같은 결과를 반환한다. 기존 회원 wallet·ledger는 변경하지 않는다.
+- 공개 policy만 비인증 GET을 허용하고 결과·오디오는 소유자 및 만료를 확인한다. 만료 정리는 media deletion intent를 예약하고 소비 기록을 남긴다.
+- 마지막 1개 자리의 multipart 접수·잘못된 업로드의 예약 반환·한도 소진 후 동일 job 재전송을 실제 route로 검증했다. quota 3 + guest 통합 7, 기존 회원 분석 queue 8, FSD boundary 4 및 tsc 통과.
+- Steiger가 App route/worker 소비자를 slice reference로 세지 않아 기존 예외 패턴에 guest-analysis만 추가했다.

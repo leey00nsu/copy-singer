@@ -43,6 +43,7 @@ export default defineConfig([
   {
     files: [
       "./src/entities/mixing-job/**",
+      "./src/entities/guest-analysis/**",
       "./src/features/analyze-vocal-profile/**",
       "./src/features/create-mixing/**",
       "./src/features/create-recommendation/**",
@@ -64,6 +65,3 @@ export default defineConfig([
     },
   },
 ]);
-
-
-

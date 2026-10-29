@@ -46,13 +46,23 @@ PostgreSQL durable job
 
 ## 보컬 프로필 분석
 
-1. 로그인한 사용자가 `/profile`에서 오디오를 제출하면 `app/api/vocal-profile-analysis-jobs/` adapter가 `src/_app/api-routes/`의 handler를 호출한다.
+1. 정식 회원 또는 체험 가능한 익명 방문자가 `/profile`에서 오디오를 제출하면 `app/api/vocal-profile-analysis-jobs/` adapter가 `src/_app/api-routes/`의 handler를 호출한다.
 2. server는 source를 Leemage asset으로 저장하고 PostgreSQL에 `PENDING` 분석 job을 만든 뒤 job ID를 반환한다.
 3. `scripts/vocal-profile-analysis-worker.ts`가 `src/_app/background-jobs/vocal-profile-analysis/` runner를 시작한다.
 4. worker는 시도 횟수와 `nextAttemptAt` 조건을 만족하는 `PENDING` job 또는 lease가 없거나 만료된 `PROCESSING` job만 `FOR UPDATE SKIP LOCKED`로 claim한다. 아직 유효한 lease는 대상에서 제외한다.
 5. worker는 `analyzeVocalProfileBytes`로 Modal CPU analyzer의 단일 동기 HTTP 응답을 `await`한다. 이 경로는 외부 job ID를 저장하거나 상태를 poll하지 않는다.
 6. worker가 결과를 검증한 뒤 프로필 metadata는 PostgreSQL, synthesis reference bytes는 Leemage에 저장한다.
 7. 일시 오류는 bounded retry와 backoff를 사용하고, 복구할 수 없는 오류는 terminal failure로 기록한다.
+
+## 비로그인 분석 체험
+
+정식 회원은 기존 Better Auth Google 세션을 사용한다. 비로그인 방문자는 분석 제출 시 생성한 별도 HttpOnly·SameSite=Lax 체험 cookie로 제한된 분석 권한을 증명한다. token 원문은 cookie로만 전달하고 DB에는 SHA-256을 저장한다. guest User·GuestAnalysisTrial은 분석 job·프로필·미디어의 소유자를 유지하지만 회원 세션이나 가입 이용권·회원 온보딩을 만들지 않는다. 회원 전용 API는 기존 인증 검사를 유지한다.
+
+일일 전체 접수량은 단일 웹 프로세스의 메모리 예약 카운터로 제한한다. `GUEST_ANALYSIS_DAILY_LIMIT`은 기본 10이며 0이면 신규 체험을 중지한다. Asia/Seoul 자정 또는 웹 프로세스 재시작에 초기화되며 worker와 메모리를 공유하지 않는다. 접수 전 실패는 예약을 반환하고 영속 job 생성 뒤에는 최종 실패여도 전체 사용량을 반환하지 않는다. 재전송과 worker 재시도는 새 접수로 세지 않는다. 개인의 최초 성공 사용 기록은 DB에 남아 재시작·삭제로 복구되지 않는다.
+
+worker는 terminal transaction에서 성공 소비 이력과 24시간 임시 만료 시각을 기록한다. 실패는 개인 체험을 복구한다. 결과·오디오 조회는 정리 실행 전에도 만료를 확인한다. 주기적인 만료 정리는 trial row lock을 확보한 뒤 domain 참조를 해제하고 기존 durable media deletion을 예약한다.
+
+결과 저장은 Google 로그인 후 회원 세션과 체험 cookie를 함께 확인하는 POST로 실행한다. 같은 trial lock 아래 완료된 프로필·job·관련 미디어를 새 계정 또는 기존 본인 계정으로 옮기고 회원 번호를 원자적으로 부여한다. 반복 저장은 같은 결과를 반환하며 실패 시 원본을 보존한다. 이전 후에는 기존 회원 보관 정책을 적용한다. 추천과 AI 믹싱은 정식 회원에게만 제공한다.
 
 ## 곡 카탈로그 분석과 공개
 
@@ -64,7 +74,7 @@ PostgreSQL durable job
 
 ## 추천과 AI 믹싱
 
-1. 추천 생성은 저장된 사용자 보컬 프로필과 공개된 곡 분석값을 비교해 PostgreSQL에 순위와 설명을 저장한다.
+1. 추천은 정식 회원이 소유한 보컬 프로필과 공개된 곡 분석값을 요청 시 비교해 계산한다. 추천 순위·설명을 별도의 결과 snapshot으로 영속하지 않는다.
 2. 제품 화면은 `/recommendations/[id]`에서 시작하며 단독 `/recommendations` page는 없다. 곡 상세는 `/recommendations/[id]/songs/[itemId]`다.
 3. 사용자가 AI 믹싱을 요청하면 server는 READY mid-only reference와 READY catalog target을 확인하고, 티켓 차감과 `PENDING` mixing job 생성을 한 DB transaction에서 수행한다.
 4. `scripts/mixing-worker.ts`와 `src/_app/background-jobs/mixing/`이 job을 claim하고 snapshot된 asset을 Leemage에서 읽어 SoulX service에 제출한다.

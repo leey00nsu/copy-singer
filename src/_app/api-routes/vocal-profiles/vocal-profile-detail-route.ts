@@ -1,7 +1,8 @@
 import { withApiAdmission } from "@/_app/api-routes/admission";
+import { canReadGuestResource, deleteGuestResult, GuestAnalysisError } from "@/entities/guest-analysis/index.server";
 import { vocalProfileRenameRequestSchema } from "@/entities/vocal-profile/index.model";
 import { serializeProfile } from "@/entities/vocal-profile/index.server";
-import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
+import { getAnalysisActor, requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
 import { resourceIdSchema } from "@/shared/api";
 import { readBoundedJson } from "@/shared/api/index.server";
 import { prisma } from "@/shared/db/index.server";
@@ -15,13 +16,14 @@ function profileNotFoundResponse() {
 }
 
 async function handleGET(request: Request, context: { params: Promise<{ id: string }> }) {
-  const session = await requireApiSession(request);
-  if (!session) return unauthorizedResponse();
+  const actor = await getAnalysisActor(request);
+  if (!actor) return unauthorizedResponse();
   const parsedId = resourceIdSchema.safeParse((await context.params).id);
   if (!parsedId.success) return profileNotFoundResponse();
   const id = parsedId.data;
+  if (actor.guest && !(await canReadGuestResource(actor.userId, { profileId: id }))) return profileNotFoundResponse();
   const profile = await prisma.vocalProfile.findFirst({
-    where: { id, userId: session.user.id },
+    where: { id, userId: actor.userId },
     include: { recording: true },
   });
   if (profile?.sourceType !== "USER") {
@@ -60,15 +62,24 @@ async function handlePATCH(request: Request, context: { params: Promise<{ id: st
 }
 
 async function handleDELETE(request: Request, context: { params: Promise<{ id: string }> }) {
-  const session = await requireApiSession(request);
-  if (!session) return unauthorizedResponse();
+  const actor = await getAnalysisActor(request);
+  if (!actor) return unauthorizedResponse();
   const parsedId = resourceIdSchema.safeParse((await context.params).id);
   if (!parsedId.success) return profileNotFoundResponse();
   const id = parsedId.data;
+  if (actor.guest) {
+    try {
+      await deleteGuestResult(actor.userId, id);
+      return Response.json({ status: "deleted", id, mediaCleanupPending: true }, { status: 202 });
+    } catch (error) {
+      if (error instanceof GuestAnalysisError) return profileNotFoundResponse();
+      throw error;
+    }
+  }
   const result = await prisma.$transaction(async (tx) => {
-    await tx.$queryRaw`SELECT id FROM "VocalProfile" WHERE id = ${id}::uuid AND "userId" = ${session.user.id} FOR UPDATE`;
+    await tx.$queryRaw`SELECT id FROM "VocalProfile" WHERE id = ${id}::uuid AND "userId" = ${actor.userId} FOR UPDATE`;
     const profile = await tx.vocalProfile.findFirst({
-      where: { id, userId: session.user.id, sourceType: "USER" },
+      where: { id, userId: actor.userId, sourceType: "USER" },
       include: { recording: true, _count: { select: { mixingJobs: true } } },
     });
     if (!profile) return { error: "NOT_FOUND" as const };
@@ -106,8 +117,8 @@ async function handleDELETE(request: Request, context: { params: Promise<{ id: s
   );
 }
 
-export const GET = withApiAdmission(handleGET);
+export const GET = withApiAdmission(handleGET, { allowGuest: true });
 
 export const PATCH = withApiAdmission(handlePATCH);
 
-export const DELETE = withApiAdmission(handleDELETE);
+export const DELETE = withApiAdmission(handleDELETE, { allowGuest: true });

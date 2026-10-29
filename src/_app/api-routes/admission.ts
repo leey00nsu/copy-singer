@@ -1,4 +1,4 @@
-import { getRequestSession, unauthorizedResponse } from "@/features/authentication/index.server";
+import { getAnalysisActor, getRequestSession, unauthorizedResponse } from "@/features/authentication/index.server";
 import {
   AdmissionError,
   admissionResponse,
@@ -10,6 +10,7 @@ import {
 
 export function withApiAdmission<Args extends unknown[]>(
   handler: (request: Request, ...args: Args) => Promise<Response>,
+  options: { allowGuest?: boolean; allowPublic?: boolean } = {},
 ) {
   return async (request: Request, ...args: Args): Promise<Response> => {
     let release: (() => void) | undefined;
@@ -17,11 +18,16 @@ export function withApiAdmission<Args extends unknown[]>(
       const ip = trustedClientIp(request.headers);
       if (ip) requestBuckets.take(`ip:${ip}`, 600, 120);
       const session = await getRequestSession(request);
-      if (!session) return unauthorizedResponse();
+      const actor = session ? { userId: session.user.id } : options.allowGuest ? await getAnalysisActor(request) : null;
+      if (!actor && !options.allowPublic) return unauthorizedResponse();
       const policy = requestPolicy(new URL(request.url).pathname, request.method);
-      requestBuckets.take(`user:${session.user.id}:${policy.group}`, policy.rate, policy.burst);
+      requestBuckets.take(
+        actor ? `user:${actor.userId}:${policy.group}` : `public:${ip ?? "untrusted-ingress"}:${policy.group}`,
+        policy.rate,
+        policy.burst,
+      );
       if (request.headers.get("Content-Type")?.toLowerCase().startsWith("multipart/form-data"))
-        release = uploadSlots.acquire(session.user.id);
+        release = uploadSlots.acquire(actor?.userId ?? `public:${ip ?? "untrusted-ingress"}`);
       return await handler(request, ...args);
     } catch (error) {
       if (error instanceof AdmissionError) return admissionResponse(error);

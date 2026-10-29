@@ -1,3 +1,4 @@
+import { markGuestAnalysisTerminal } from "@/entities/guest-analysis/index.server";
 import "server-only";
 
 import { createHash } from "node:crypto";
@@ -118,6 +119,8 @@ async function markSucceeded(
         heartbeatAt: now,
       },
     });
+    const guest = await markGuestAnalysisTerminal(transaction, job.userId, job.id, true, now);
+    if (guest) return;
     const displayName = profile.displayName?.trim() || `보컬 프로필 ${profile.profileNumber ?? 1}`;
     await createNotification(
       {
@@ -214,6 +217,8 @@ async function releaseFailure(job: VocalProfileAnalysisJobRow, error: unknown) {
       },
     });
     if (job.sourceAssetId) await scheduleAssetDeletion(transaction, job.sourceAssetId);
+    const guest = await markGuestAnalysisTerminal(transaction, job.userId, job.id, false, now);
+    if (guest) return;
     await createNotification(
       {
         userId: job.userId,

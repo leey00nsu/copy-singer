@@ -1,10 +1,25 @@
 import "server-only";
 
+import {
+  assertGuestCanSubmit,
+  canReadGuestResource,
+  GuestAnalysisError,
+  guestAnalysisPolicy,
+} from "@/entities/guest-analysis/index.server";
 import { applyTicketChangeInTransaction, InsufficientTicketsError } from "@/entities/ticket/index.server";
 import { serializeProfile } from "@/entities/vocal-profile/index.server";
-import { vocalProfileAnalysisMaxAttempts, vocalProfileAnalysisTicketCost } from "@/shared/config/index.server";
+import {
+  guestAnalysisDailyLimit,
+  vocalProfileAnalysisMaxAttempts,
+  vocalProfileAnalysisTicketCost,
+} from "@/shared/config/index.server";
 import { prisma } from "@/shared/db/index.server";
-import { checkQueueCapacity, lockQueueAdmission } from "@/shared/lib/admission/index.server";
+import {
+  AdmissionError,
+  checkQueueCapacity,
+  guestAnalysisQuota,
+  lockQueueAdmission,
+} from "@/shared/lib/admission/index.server";
 import { isSupportedAudioUploadMimeType, normalizeAudioUploadMimeType } from "@/shared/lib/audio";
 import { discardMediaAsset, storeAnalyzerReferenceBytes } from "@/shared/media/index.server";
 
@@ -83,6 +98,14 @@ function isTransactionWriteConflict(error: unknown) {
 }
 
 export async function getVocalProfileAnalysisPolicy(userId: string) {
+  const user = await prisma.user.findUniqueOrThrow({ where: { id: userId }, select: { isGuest: true } });
+  if (user.isGuest) {
+    const trial = await prisma.guestAnalysisTrial.findUnique({ where: { userId }, include: { job: true } });
+    return {
+      analysisTickets: { balance: 0, cost: 0 },
+      guest: guestAnalysisPolicy(trial, guestAnalysisQuota.policy(guestAnalysisDailyLimit()).available),
+    };
+  }
   const cost = vocalProfileAnalysisTicketCost();
   const wallet = await prisma.ticketWallet.findUnique({
     where: { userId_kind: { userId, kind: "VOCAL_ANALYSIS" } },
@@ -93,43 +116,57 @@ export async function getVocalProfileAnalysisPolicy(userId: string) {
   };
 }
 
-export async function preflightVocalProfileAnalysis(userId: string, idempotencyKey: string) {
+export async function preflightVocalProfileAnalysis(userId: string, idempotencyKey: string, hasReservation = false) {
   const key = idempotencyKey.trim();
   if (!key || key.length > 200) throw new Error("INVALID_IDEMPOTENCY_KEY");
   const existing = await findByIdempotency(userId, key);
-  if (existing) return existing;
+  if (existing) {
+    const user = await prisma.user.findUniqueOrThrow({ where: { id: userId }, select: { isGuest: true } });
+    if (user.isGuest && !(await canReadGuestResource(userId, { jobId: existing.id })))
+      throw new GuestAnalysisError("GUEST_RESULT_EXPIRED", 410);
+    return existing;
+  }
   if (await hasActiveAnalysisJob(userId)) throw new Error("ANALYSIS_BUSY");
   const policy = await getVocalProfileAnalysisPolicy(userId);
+  if (policy.guest?.state === "used") throw new GuestAnalysisError("GUEST_ANALYSIS_USED");
+  if (policy.guest?.state === "full" && !hasReservation) {
+    const quota = guestAnalysisQuota.policy(guestAnalysisDailyLimit());
+    throw new AdmissionError("GUEST_ANALYSIS_DAILY_LIMIT", 429, quota.retryAfter);
+  }
   if (policy.analysisTickets.balance < policy.analysisTickets.cost)
     throw new InsufficientTicketsError("VOCAL_ANALYSIS", policy.analysisTickets.cost, policy.analysisTickets.balance);
   return null;
 }
 
-export async function enqueueVocalProfileAnalysis(input: { userId: string; idempotencyKey: string; file: File }) {
+export async function enqueueVocalProfileAnalysis(input: {
+  userId: string;
+  idempotencyKey: string;
+  file: File;
+  guestReservation?: ReturnType<typeof guestAnalysisQuota.reserve>;
+}) {
   const key = input.idempotencyKey.trim();
-  const existing = await preflightVocalProfileAnalysis(input.userId, key);
+  const existing = await preflightVocalProfileAnalysis(input.userId, key, Boolean(input.guestReservation));
   if (existing) return existing;
   const policy = await getVocalProfileAnalysisPolicy(input.userId);
-
   const mimeType = normalizeAudioUploadMimeType(input.file.type);
   if (!isSupportedAudioUploadMimeType(mimeType)) throw new Error("UNSUPPORTED_AUDIO");
   if (input.file.size <= 0 || input.file.size > MAX_AUDIO_BYTES) throw new Error("PAYLOAD_TOO_LARGE");
-  if (policy.analysisTickets.balance < policy.analysisTickets.cost) {
-    throw new InsufficientTicketsError("VOCAL_ANALYSIS", policy.analysisTickets.cost, policy.analysisTickets.balance);
-  }
-
-  const recordingId = crypto.randomUUID();
-  const sourceAsset = await storeAnalyzerReferenceBytes({
-    userId: input.userId,
-    recordingId,
-    mimeType,
-    bytes: new Uint8Array(await input.file.arrayBuffer()),
-    fileName: input.file.name || `${recordingId}.audio`,
-  });
-
-  const id = crypto.randomUUID();
-  const ticketCost = policy.analysisTickets.cost;
+  const reservation = policy.guest
+    ? (input.guestReservation ?? guestAnalysisQuota.reserve(guestAnalysisDailyLimit()))
+    : null;
+  let sourceAsset: Awaited<ReturnType<typeof storeAnalyzerReferenceBytes>> | null = null;
   try {
+    const recordingId = crypto.randomUUID();
+    sourceAsset = await storeAnalyzerReferenceBytes({
+      userId: input.userId,
+      recordingId,
+      mimeType,
+      bytes: new Uint8Array(await input.file.arrayBuffer()),
+      fileName: input.file.name || `${recordingId}.audio`,
+    });
+    const sourceAssetId = sourceAsset.id;
+    const id = crypto.randomUUID();
+    const ticketCost = policy.analysisTickets.cost;
     for (let attempt = 0; attempt < 3; attempt += 1) {
       try {
         const result = await prisma.$transaction(
@@ -139,25 +176,29 @@ export async function enqueueVocalProfileAnalysis(input: { userId: string; idemp
               where: { userId_idempotencyKey: { userId: input.userId, idempotencyKey: key } },
             });
             if (raced) return { job: raced, created: false };
-
+            if (policy.guest) await assertGuestCanSubmit(tx, input.userId);
             const active = await tx.vocalProfileAnalysisJob.count({
               where: { userId: input.userId, status: { in: ["PENDING", "PROCESSING"] } },
             });
             if (active > 0) throw new Error("ANALYSIS_BUSY");
-
             await checkQueueCapacity(tx, "VOCAL", input.userId);
             const job = await tx.vocalProfileAnalysisJob.create({
               data: {
                 id,
                 userId: input.userId,
                 recordingId,
-                sourceAssetId: sourceAsset.id,
+                sourceAssetId,
                 idempotencyKey: key,
                 ticketCost,
                 maxAttempts: vocalProfileAnalysisMaxAttempts(),
               },
             });
-            if (ticketCost > 0) {
+            if (policy.guest)
+              await tx.guestAnalysisTrial.update({
+                where: { userId: input.userId },
+                data: { jobId: job.id, expiresAt: null },
+              });
+            else if (ticketCost > 0)
               await applyTicketChangeInTransaction(tx, {
                 userId: input.userId,
                 kind: "VOCAL_ANALYSIS",
@@ -167,20 +208,19 @@ export async function enqueueVocalProfileAnalysis(input: { userId: string; idemp
                 reason: "보컬 프로필 분석",
                 vocalProfileAnalysisJobId: job.id,
               });
-            }
             return { job, created: true };
           },
           { isolationLevel: "Serializable" },
         );
-        if (!result.created) await discardMediaAsset(sourceAsset.id);
+        if (result.created) reservation?.commit();
+        else await discardMediaAsset(sourceAssetId);
         return result.job;
       } catch (error) {
-        const code = prismaErrorCode(error);
         if (isTransactionWriteConflict(error) && attempt < 2) continue;
-        if (code === "P2002") {
+        if (prismaErrorCode(error) === "P2002") {
           const raced = await findByIdempotency(input.userId, key);
           if (raced) {
-            await discardMediaAsset(sourceAsset.id);
+            await discardMediaAsset(sourceAssetId);
             return raced;
           }
         }
@@ -189,8 +229,10 @@ export async function enqueueVocalProfileAnalysis(input: { userId: string; idemp
     }
     throw new Error("ANALYSIS_ENQUEUE_FAILED");
   } catch (error) {
-    await discardMediaAsset(sourceAsset.id);
+    if (sourceAsset) await discardMediaAsset(sourceAsset.id);
     throw error;
+  } finally {
+    reservation?.release();
   }
 }
 

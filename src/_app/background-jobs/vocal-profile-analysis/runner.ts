@@ -1,3 +1,5 @@
+import { cleanupExpiredGuestAnalysis } from "@/entities/guest-analysis/index.server";
+import { processOneMediaCleanup } from "@/shared/media/index.server";
 import "server-only";
 
 import { vocalProfileAnalysisWorkerConcurrency } from "@/shared/config/index.server";
@@ -20,8 +22,14 @@ export async function runVocalProfileAnalysisWorker() {
   async function runLane(index: number) {
     const owner = `${process.pid}:vocal-profile:${index}:${crypto.randomUUID()}`;
     let errors = 0;
+    let nextCleanupAt = 0;
     while (!stopping) {
       try {
+        if (index === 0 && Date.now() >= nextCleanupAt) {
+          await cleanupExpiredGuestAnalysis();
+          await processOneMediaCleanup();
+          nextCleanupAt = Date.now() + 5_000;
+        }
         await reconcileRequiredVocalProfileAnalysisRefunds(10);
         const processed = await runVocalProfileAnalysisWorkerOnce(owner);
         if (!processed) await sleep(1_000);

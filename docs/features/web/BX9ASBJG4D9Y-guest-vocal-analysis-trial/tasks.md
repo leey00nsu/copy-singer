@@ -92,14 +92,14 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
-- [TODO][PRD-FR-GUEST-ANALYSIS-TRIAL] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-02 분석 큐·성공 기록·계정 저장·만료 정리 연결
+- [DONE][PRD-FR-GUEST-ANALYSIS-TRIAL] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-02 분석 큐·성공 기록·계정 저장·만료 정리 연결
   - Date: 2026-10-29
   - Acceptance:
     - guest 분석은 이용권 없이 한 번 성공하며 실패하면 개인 기회를 복구한다.
     - 다른 사용자 접근·만료 결과 접근을 거부하고 기존 회원 저장은 번호와 원장을 보존하며 멱등적이다.
   - Checklist:
-    - [ ] queue/worker와 제한된 결과·오디오 route 및 claim API를 연결한다.
-    - [ ] guest pipeline·이전·삭제·만료 및 기존 queue/소유권 회귀를 검사한다.
+    - [x] queue/worker와 제한된 결과·오디오 route 및 claim API를 연결한다.
+    - [x] guest pipeline·이전·삭제·만료 및 기존 queue/소유권 회귀를 검사한다.
   - Docs:
     - docs:prd/system-architecture.md
   - Review Evidence: -
@@ -170,7 +170,9 @@
 | 명령어                   | 마지막 실행(로컬, YYYY-MM-DD) | 결과               |
 | ------------------------ | ----------------------------- | ------------------ |
 | `pnpm exec prisma validate / generate / migrate deploy` | `2026-10-29` | PASS: localhost migration 적용 |
-| `pnpm run test:guest-analysis` | `2026-10-29` | PASS: quota 3 + identity/API 2 |
+| `pnpm run test:guest-analysis` | `2026-10-29` | PASS: quota 3 + guest pipeline/API 7 |
+| `pnpm run test:vocal-profile-analysis-queue` | `2026-10-29` | PASS: member regression 8 |
+| `pnpm run test:architecture-boundaries` | `2026-10-29` | PASS: 4 |
 | `pnpm exec tsc --noEmit` | `2026-10-29` | PASS |
 
 완료 기록에는 테스트뿐 아니라 build·typecheck·lint 등 Plan에서 정한 검증과 수동 검증 증거를 포함합니다. 자동 검사의 기준은 실제 `workflow.featureChecks`이며, 검사 생략은 통과로 기록하지 않고 명시적인 사유를 남깁니다.
