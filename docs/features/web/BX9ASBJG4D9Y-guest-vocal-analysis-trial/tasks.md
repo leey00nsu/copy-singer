@@ -164,14 +164,14 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
-- [TODO][PRD-NFR-GPU-FALLBACK] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-06 합성 GPU의 L4 우선·A10 대체 설정 추가
+- [DONE][PRD-NFR-GPU-FALLBACK] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-06 합성 GPU의 L4 우선·A10 대체 설정 추가
   - Date: 2026-10-29
   - Acceptance:
     - 기본 및 명시 L4는 L4→A10만 요청하고 기존 다른 단일 GPU 지정과 최대 컨테이너 수를 보존한다.
     - Python compile·기존 unit·제출 계약과 실제 SDK 로컬 함수 정의를 검증하고 원격 배포 전 승인 경계를 유지한다.
   - Checklist:
-    - [ ] SoulXModel의 GPU preference 목록에 A10만 추가하고 PRD·아키텍처·Feature 문서를 동기화한다.
-    - [ ] 추가 영구 테스트 없이 계획된 Python/SDK 검사를 수행하고 결과·배포 한계를 기록한다.
+    - [x] SoulXModel의 GPU preference 목록에 A10만 추가하고 PRD·아키텍처·Feature 문서를 동기화한다.
+    - [x] 추가 영구 테스트 없이 계획된 Python/SDK 검사를 수행하고 결과·배포 한계를 기록한다.
   - Docs:
     - docs:prd/copy-singer-prd.md
     - docs:prd/system-architecture.md
@@ -193,7 +193,7 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
 - [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
 
@@ -217,7 +217,11 @@
 | `npx lee-spec-kit docs-audit --json --enforce` | `2026-10-29` | 기존 보호 README 1건 잔존. decisions.md에 보류 근거 기록 |
 | `pnpm run test:architecture-boundaries` | `2026-10-29` | PASS: 4 |
 | `pnpm exec tsc --noEmit` | `2026-10-29` | PASS |
+| `python3 -m py_compile services/soulx-singer-svc/modal_app.py` | `2026-10-29` | PASS: pycache는 /tmp에 저장 |
+| `python3 -m unittest discover -s services/soulx-singer-svc/tests` | `2026-10-29` | PASS: 2 |
+| `python3 tests/modal-submission-contract.py` | `2026-10-29` | PASS: 4 |
+| `Modal SDK 로컬 정의 검사 (1.5.3 / 1.2.4, 일회성 Python)` | `2026-10-29` | PASS: 각 4개 GPU 설정 case, 기존 단일 지정·동시성 보존. build/RPC 없음 |
 
 완료 기록에는 테스트뿐 아니라 build·typecheck·lint 등 Plan에서 정한 검증과 수동 검증 증거를 포함합니다. 자동 검사의 기준은 실제 `workflow.featureChecks`이며, 검사 생략은 통과로 기록하지 않고 명시적인 사유를 남깁니다.
 
-<!-- lee-spec-kit:workflow-sync sha256:720c55f69dbe3e60af3af5740e7c23c52c0e45e4618ff5219896229278b9d81f -->
+<!-- lee-spec-kit:workflow-sync sha256:06c2e073abe03965d8f86f280b43d61e8d1e8fa0efb6ca1a7e5b6814a5e25a88 -->

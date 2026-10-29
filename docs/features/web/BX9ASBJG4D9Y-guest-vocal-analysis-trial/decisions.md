@@ -128,3 +128,12 @@
 - **Scope/authority**: 이 요청은 후속 수정 승인이다. 이전 체험 구현의 최종 승인·main 병합·원격 배포 승인으로 해석하지 않는다. 실제 배포는 검증 결과와 변경 범위를 공유한 뒤 별도 승인을 받는다.
 - **Curated docs**: PRD-NFR-GPU-FALLBACK과 system-architecture.md에 기본 가용성 정책을 반영한다. services/soulx-singer-svc/README.md의 기본 L4 안내는 대체 설정 설명이 없어지지만 사용자 README 수정 요청이 없어 보류한다. `.env.example`은 새 변수가 없어 변경하지 않는다.
 - **Verification**: 변경은 Modal 설정 경계로 한정한다. 새 영구 테스트 없이 Python compile·기존 unit/제출 계약·실제 SDK의 로컬 함수 정의를 검증하고 실제 GPU 합성 호출은 하지 않는다. 실제 A10 추론 품질·완료 시간은 배포 후 별도 관찰 대상이다.
+
+### A10 대체 구현 검증
+
+- `GPU_OPTIONS`를 기본 및 명시 L4에서만 `['L4', 'A10']`으로 만들고 실제 SoulXModel decorator의 gpu에 전달했다. 기존 SOULX_GPU override와 health gpu 문자열, max_containers·접수·변환 본문은 유지했다.
+- Python compile, 기존 mix-balance unittest 2개, modal-submission-contract 4개가 통과했다. 원격 함수 호출이나 이미지 build는 하지 않았다.
+- 고정 SDK 1.5.3의 실제 App.cls 및 함수 spec에서 default/L4는 순서 있는 두 후보, 명시 A10/T4는 기존 단일 문자열이고 max_containers 기본 1·명시 3이 유지됨을 확인했다. SDK가 단일 GPU를 문자열로 보존하므로 초기 임시 검사에서 배열로 기대한 단언을 바로잡은 뒤 4개 case가 통과했다. 새 영구 테스트는 추가하지 않았다.
+- 현재 배포 v6의 commit 2b92e0e와 수정 전 HEAD 사이에서 services/soulx-singer-svc의 차이는 없었다. 따라서 이 서비스의 배포 범위는 GPU 선택을 바꾸는 2개 hunk뿐이다. 기존 endpoint·workspace·모델·job volume을 유지하는 재배포를 준비했으며 실제 원격 배포는 아직 하지 않았다.
+- 배포 v6에 사용된 전역 CLI의 SDK 1.2.4에서도 실제 App.cls가 default/L4의 두 후보와 A10/T4의 기존 단일 지정을 수용하고 max_containers=1을 유지함을 확인했다. SDK 업그레이드 없이 배포할 수 있다.
+- 준비한 배포 명령은 services/soulx-singer-svc에서 `MODAL_PROFILE=dbstndla1212 SOULX_GPU=L4 SOULX_MAX_CONTAINERS=1 SOULX_SCALEDOWN_WINDOW=60 modal deploy modal_app.py`다. 실제 GPU 추론은 실행하지 않았으므로 A10의 처리 시간·품질·비용은 실측값으로 보고하지 않는다.

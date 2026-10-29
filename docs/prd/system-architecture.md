@@ -81,6 +81,8 @@ worker는 terminal transaction에서 성공 소비 이력과 24시간 임시 만
 5. 성공 결과 bytes는 Leemage, 상태·소유권·외부 job ID·오류·asset reference는 PostgreSQL에 저장한다. 접수 전 terminal failure에서만 티켓을 한 번 환불한다.
 6. 사용자는 `/library`와 `/library/mixes/[id]`에서 재접속 후에도 상태와 결과를 확인한다.
 
+SoulXModel의 기본 GPU 요청은 L4 우선·A10 대체 순서로 Modal에 전달한다. 자원 배정 시의 GPU 선택이며 별도 합성 job이나 application retry를 생성하지 않는다. SOULX_GPU로 L4 이외의 단일 GPU를 지정하면 해당 설정을 사용한다. 동시 컨테이너 제한과 입력·출력·이용권 계약은 GPU 선택과 독립적으로 유지한다.
+
 추천 item은 내부 mixing 상태를 화면용 `preparing`·`queued`·`processing`·`succeeded`·`failed`로 축약한다. 이 mapping은 recommendation 응답에만 적용된다. mixing job 생성·상세·히스토리 API는 DB 상태를 소문자로 직렬화하므로 `submitted`와 `canceled`를 포함한 상태를 그대로 노출한다.
 
 ## 주요 데이터 관계

@@ -21,6 +21,7 @@ JOB_MOUNT = Path("/jobs")
 SOULX_ROOT = Path("/opt/SoulX-Singer")
 
 GPU_TYPE = os.getenv("SOULX_GPU", "L4")
+GPU_OPTIONS = ["L4", "A10"] if GPU_TYPE == "L4" else GPU_TYPE
 MAX_CONTAINERS = int(os.getenv("SOULX_MAX_CONTAINERS", "1"))
 SCALEDOWN_WINDOW = int(os.getenv("SOULX_SCALEDOWN_WINDOW", "60"))
 PROMPT_MAX_UPLOAD_BYTES = 128 * 1024 * 1024
@@ -98,7 +99,7 @@ def _link_model_directories() -> None:
 
 @app.cls(
     image=gpu_image,
-    gpu=GPU_TYPE,
+    gpu=GPU_OPTIONS,
     volumes={MODEL_MOUNT: model_volume, JOB_MOUNT: job_volume},
     timeout=3600,
     max_containers=MAX_CONTAINERS,
