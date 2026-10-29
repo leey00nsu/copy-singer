@@ -230,6 +230,21 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
+- [TODO][PRD-FR-041] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-10 오디오 완료 상태의 중복 다시 재생 버튼 제거
+  - Date: 2026-10-29
+  - Acceptance:
+    - 일반 오디오와 구간 재생이 끝나도 다시 재생은 맨 왼쪽 버튼 하나만 제공하며 해당 버튼은 처음부터 재생한다.
+  - Checklist:
+    - [ ] 오른쪽 완료 전용 중복 버튼과 불필요한 handler를 제거하고 왼쪽 버튼의 접근 가능한 완료 라벨을 제공한다.
+    - [ ] 기존 플레이어 Storybook·오디오 단위·타입·lint와 완료 후 재생 확인 및 문서 감사를 실행한다.
+  - Docs:
+    - docs:prd/copy-singer-prd.md
+  - Review Evidence: -
+  - Review Decision: -
+  - Review Round: -
+  - Reviewed Head: -
+  - Reviewed Tree: -
+
 ## Repository Knowledge (완료 비차단)
 
 - **Policy**: `.lee-spec-kit.json`의 `experimental.openwiki`에서 파생
@@ -242,8 +257,8 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
 
 ### 테스트 실행 기록

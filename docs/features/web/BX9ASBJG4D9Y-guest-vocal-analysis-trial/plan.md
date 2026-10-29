@@ -173,3 +173,9 @@ PRD의 기존 F032 참조도 과거 작업 ID 대신 유지해야 할 시각 요
 - AdminNavigationLoading을 기존 공통 메뉴 widget에서 제공해 세 loading이 같은 메뉴 자리·반응형 overflow 처리를 공유한다. 음원 loading은 메뉴 뒤 목록 도구 영역을 두고 커스텀 loading은 뒤로가기 자리를 제거한다. Next.js 설치본 loading 가이드를 확인했으며 route adapter와 인증/조회·검색 동작은 바꾸지 않는다.
 - Curated Documentation Impact: NONE — 기존 PRD-FR-ADMIN-WORKSPACE와 docs/designs/admin-navigation.md가 이미 loading의 새 화면 정합성을 요구하며 정책 변경이나 알려진 추가 공용 문서 불일치는 없다. README 보호 보류는 기존 decisions 기록을 따른다.
 - Verification Contract: NO_NEW_TEST — 되돌릴 수 있는 정적 skeleton 배치 변경이다. 일회성 SSR에서 세 화면 status/메뉴 자리와 단일 목록·폼 유지 및 어댑터 연결을 확인하고 기존 관리자 UI/URL 검사·tsc·변경 파일 lint·Biome·아키텍처·diff와 문서 감사를 실행한다. runtime 데이터/권한/worker 동작 변경이 없어 직전 전체 pnpm test 성공을 반복하지 않으며, 통합 시 설정된 featureChecks는 기존 workflow를 따른다.
+
+## 후속 범위: 완료 후 다시 재생 중복 제거
+
+- AudioWaveformPlayer의 togglePlayback은 이미 finished에서 setTime(0)+play를 실행한다. 중복 restart callback과 오른쪽 조건부 버튼만 제거하고 왼쪽 버튼의 완료 aria-label을 처음부터 재생으로 정정한다. 다른 재생 제어와 버튼 크기는 유지한다.
+- Curated Documentation Impact: UPDATE docs:prd/copy-singer-prd.md의 PRD-FR-041에 완료 후 한 버튼만 제공하는 요구를 명시한다. 데이터/아키텍처·디자인 시스템·schema/env·법률·README 영향 NONE.
+- Verification Contract: NO_NEW_TEST — 되돌릴 수 있는 중복 UI 제거로 새 영구 테스트를 만들지 않는다. 기존 audio-waveform-player 단위·Storybook과 타입·변경 파일 lint/Biome·FSD를 실행하고 로컬 fixture를 이용한 일회성 브라우저 확인으로 전체/구간 완료 후 다시 재생 버튼 하나·맨 왼쪽 위치·클릭 후 처음부터 재생·좁은 화면을 확인한다. 유료 외부 호출·실제 사용자 자료·전체 suite 반복은 필요하지 않으며 통합 시 featureChecks는 기존 workflow를 따른다.

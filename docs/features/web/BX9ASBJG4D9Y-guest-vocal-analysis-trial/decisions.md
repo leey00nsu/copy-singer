@@ -184,3 +184,7 @@
 
 - 구현: AdminNavigationLoading을 세 loading에서 공유하고 메뉴 뒤 컨텐츠 간격과 음원 검색/필터 영역을 현재 화면에 맞췄다. 로딩은 Next.js 계약상 searchParams를 받지 않아 /admin의 단일 목록 공통 fallback을 유지한다.
 - 검증: 일회성 SSR 3화면 및 공유 메뉴 4자리, 관리자 UI/URL 8개, tsc·변경 파일 lint/Biome·Steiger/FSD 4개·diff 검사 통과. 새 영구 테스트를 추가하지 않았고 이미 성공한 전체 suite를 반복하지 않았다. 이번 변경은 정적 placeholder에 한정되며 데이터 조회·권한·설명 문구·route adapter는 바꾸지 않았다.
+
+## D008: 완료 후 다시 재생 버튼을 맨 왼쪽 하나로 유지
+
+사용자가 첨부한 파형 플레이어에서 완료 시 좌측 버튼이 RotateCcw로 바뀌고 우측에 같은 버튼이 추가되어 control이 넘치는 원인을 확인했다. 기존 좌측 togglePlayback의 finished 분기를 사용하고 우측 완료 전용 버튼과 restart callback을 제거한다. 새 디자인이나 재생 정책 변경 없이 요청한 중복 제거에 한정하며, 최종 구현/병합 승인은 별도다.
