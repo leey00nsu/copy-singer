@@ -8,7 +8,7 @@ import { type TicketWallet, ticketBalanceForKind, ticketKindLabel } from "@/enti
 import { Button } from "@/shared/ui/button";
 import { adjustTicketsMutationOptions } from "../api/client";
 
-type TicketAdjustmentUser = { id: string; name: string; email: string; ticketWallets: TicketWallet[] };
+export type TicketAdjustmentUser = { id: string; name: string; email: string; ticketWallets: TicketWallet[] };
 
 export function TicketAdjustmentForm({ users }: { users: TicketAdjustmentUser[] }) {
   const router = useRouter();

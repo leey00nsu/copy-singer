@@ -334,7 +334,8 @@ test("existing member saves exactly one new numbered profile, all assets and no 
       assert.deepEqual(await prisma.ticketWallet.findMany({ where: { userId: memberId } }), before);
       assert.equal(await prisma.ticketLedger.count({ where: { userId: memberId } }), 0);
       await assert.rejects(() => claimGuestAnalysis(headers, otherId), /GUEST_TRIAL_ALREADY_SAVED/);
-      assert.equal(await cleanupExpiredGuestAnalysis(new Date(Date.now() + 2 * 86_400_000)), false);
+      await cleanupExpiredGuestAnalysis(new Date(Date.now() + 2 * 86_400_000));
+      assert.equal(await prisma.vocalProfile.count({ where: { id: profile.id, userId: memberId } }), 1);
     } finally {
       await cleanupFixture([trial.userId, memberId, otherId]);
     }

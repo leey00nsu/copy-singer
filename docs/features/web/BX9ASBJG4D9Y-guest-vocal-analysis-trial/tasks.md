@@ -198,14 +198,14 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
-- [TODO][PRD-FR-ADMIN-WORKSPACE] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-08 관리자 공통 메뉴와 단일 목록 및 회원 티켓 Sheet 적용
+- [DONE][PRD-FR-ADMIN-WORKSPACE] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-08 관리자 공통 메뉴와 단일 목록 및 회원 티켓 Sheet 적용
   - Date: 2026-10-29
   - Acceptance:
     - 승인 시안의 네 메뉴·회원/체험 Tabs·독립 검색/페이지와 단일 테이블을 제공하고 운영 설명은 기존 문구를 정확히 유지한다.
     - 티켓 Sheet의 고정 대상·확인·안전한 retry와 기존 음원/custom 기능·권한·모바일/접근성을 보존한다.
   - Checklist:
-    - [ ] 공통 navigation과 관리자 page/loading·테이블·상세/티켓 Sheet를 기존 primitive로 구현한다.
-    - [ ] URL/UI/Storybook·관리/티켓/카탈로그 및 전체 회귀와 정적 검사·문서 감사를 완료한다.
+    - [x] 공통 navigation과 관리자 page/loading·테이블·상세/티켓 Sheet를 기존 primitive로 구현한다.
+    - [x] URL/UI/Storybook·관리/티켓/카탈로그 및 전체 회귀와 정적 검사·문서 감사를 완료한다.
   - Docs:
     - docs:prd/copy-singer-prd.md
     - docs:prd/system-architecture.md
@@ -229,8 +229,8 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
 
 ### 테스트 실행 기록
@@ -246,7 +246,7 @@
 | `focused Storybook: 추천/곡상세/저장/믹싱/프로필` | `2026-10-29` | PASS: 28 |
 | `focused Storybook: profile/detail/landing` | `2026-10-29` | PASS: 25 |
 | `pnpm run lint` | `2026-10-29` | PASS |
-| `pnpm test` (dotenv로 `.env.local` 선로드) | `2026-10-29` | PASS: build, 모든 unit/DB/API suite, Storybook 189, guest 18, readiness 13 + Python 4 |
+| `pnpm test` (dotenv로 `.env.local` 선로드) | `2026-10-29` | PASS: 관리자 변경 후 build, 모든 unit/DB/API suite, Storybook 197, guest 18, readiness 13 + Python 4 (exit 0, /tmp/copy-singer-admin-complete-test.log) |
 | `pnpm test` (환경 선로드 없이 최초 실행) | `2026-10-29` | FAIL: 기존 leemage-client test의 DATABASE_URL 초기화 누락. 전체 출력 /tmp/copy-singer-guest-full-test.log 보존 |
 | `npx lee-spec-kit workflow-audit --json` | `2026-10-29` | PASS: WORKFLOW_IN_SYNC |
 | `npx lee-spec-kit feature-audit --json --enforce` | `2026-10-29` | PASS |
@@ -261,6 +261,8 @@
 
 완료 기록에는 테스트뿐 아니라 build·typecheck·lint 등 Plan에서 정한 검증과 수동 검증 증거를 포함합니다. 자동 검사의 기준은 실제 `workflow.featureChecks`이며, 검사 생략은 통과로 기록하지 않고 명시적인 사유를 남깁니다.
 
-<!-- lee-spec-kit:workflow-sync sha256:4c83b0996863ea64eb729f85b4104c097bcea360f74d64eda2dfdc9185d0192a -->
+<!-- lee-spec-kit:workflow-sync sha256:01685826ee13285f1bf3f3efa9dd3c781a6aa67e31c73db0471de977d8e681fa -->
 
 관리자 task 07 검증: `node --conditions react-server --import tsx --test tests/admin-operations.integration.ts` 2개 통과. 기존 회원 조정/원장/알림과 신규 guest 분리/저장 관계/만료 필터/페이지 상한/민감 필드 제외/guest 조정 차단을 확인했다. tsc와 변경 파일 ESLint도 통과했다.
+
+관리자 task 08 검증: 운영 설명 원문 유지, 네 공통 메뉴·회원/체험 Tabs·선택 목록 하나·독립 URL 상태·고정 회원 티켓 Sheet를 구현했다. URL/SSR 8개·신규 Storybook 8개, 전체 Storybook 197개와 pnpm test exit 0을 확인했다. tsc·lint·Steiger/FSD 4개·diff 검사 통과. 390px 브라우저에서 페이지/Sheet의 가로 넘침 없음·키보드 닫기와 실제 컴포넌트의 목록/문구를 확인했다. 비인증 로컬 /admin은 관리자 권한 검사에서 404로 차단됨을 확인했다. 실제 OAuth/유료 GPU 호출은 실행하지 않았다.

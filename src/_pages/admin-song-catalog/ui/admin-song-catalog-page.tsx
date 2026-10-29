@@ -7,6 +7,7 @@ import { PRIVATE_METADATA } from "@/shared/config/index.server";
 import { Button } from "@/shared/ui/button";
 import { ProductPageIntro } from "@/shared/ui/product-page-intro";
 import { StatusNotice } from "@/shared/ui/status-notice";
+import { AdminNavigation } from "@/widgets/admin-navigation";
 import { ProductFooter, ProductHeader } from "@/widgets/product-shell";
 
 export const adminSongCatalogMetadata = PRIVATE_METADATA;
@@ -84,18 +85,13 @@ export default async function AdminSongCatalogPage({
     <div className="min-h-screen bg-background">
       <ProductHeader admin user={{ email: session.user.email, image: session.user.image, name: session.user.name }} />
       <main className="mx-auto w-full max-w-[72rem] px-6 py-8 lg:px-8 lg:py-10">
-        <Link
-          className="mb-6 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
-          href="/admin"
-        >
-          <ChevronLeft className="size-3.5" /> 운영 대시보드
-        </Link>
         <ProductPageIntro
           description="미리듣기 영상과 원곡 파일을 등록하고 음원 분석 상태를 확인한 뒤 추천에 공개할 수 있어요."
           eyebrow="Admin"
           title="추천곡 관리"
         />
 
+        <AdminNavigation current="songs" />
         <section className="mt-8">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
             <h2 className="flex items-center gap-2 text-sm font-semibold">

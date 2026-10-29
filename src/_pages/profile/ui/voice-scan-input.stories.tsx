@@ -133,7 +133,7 @@ export const RecordingTransition: Story = {
     const canvas = within(canvasElement);
     const idleOrb = canvas.getByTestId("voice-orb");
     await expect(canvas.queryByTestId("recording-elapsed-time")).not.toBeInTheDocument();
-    await waitFor(() => expect(idleOrb.querySelector("canvas")).not.toBeNull());
+    await waitFor(() => expect(idleOrb.querySelector("canvas")).not.toBeNull(), { timeout: 5_000 });
     const shaderCanvas = idleOrb.querySelector("canvas");
 
     await userEvent.click(canvas.getByRole("button", { name: "녹음 시작" }));

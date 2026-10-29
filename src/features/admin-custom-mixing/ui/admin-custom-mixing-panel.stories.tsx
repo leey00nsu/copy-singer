@@ -58,7 +58,7 @@ export const Succeeded: Story = {
     const canvas = within(canvasElement);
     await pickProfileAndUpload(canvas);
     await userEvent.click(canvas.getByRole("button", { name: "커스텀 믹싱 시작" }));
-    await expect(canvas.getByText("믹싱 결과가 준비됐어요")).toBeVisible();
-    await expect(canvas.getByRole("link", { name: /결과 WAV 다운로드/ })).toBeVisible();
+    await expect(await canvas.findByText("믹싱 결과가 준비됐어요")).toBeVisible();
+    await expect(await canvas.findByRole("link", { name: /결과 WAV 다운로드/ })).toBeVisible();
   },
 };

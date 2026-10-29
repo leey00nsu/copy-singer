@@ -162,3 +162,7 @@ PRD의 기존 F032 참조도 과거 작업 ID 대신 유지해야 할 시각 요
 - 회원 행의 TicketAdjustmentSheet는 기존 mutation을 사용한다. fixed user, 종류/조정량/사유, 변경 전후 잔액, 확인 화면, pending/error/retry와 동일 payload의 멱등 키를 제공한다. 믹싱 상세 Sheet는 기존 상태·오류 코드·시도/시각만 노출한다.
 - Curated Documentation Impact: UPDATE docs:prd/copy-singer-prd.md, docs:prd/system-architecture.md; ADD docs:designs/admin-navigation.md, docs:designs/references/copy-singer/admin-navigation-proposal.png. 디자인 시스템 token/primitive 계약·운영 env·schema·법률 안내·README·OpenWiki 영향은 NONE. 시안 원본을 repo visual reference로 보관하고 기존 디자인 시스템을 재사용한다.
 - Verification Contract: UPDATE tests/admin-operations.integration.ts에 회원/guest 분리·저장 관계·만료/미저장 필터·검색·pagination·민감 필드 제외·guest ticket target 거절을 추가한다. UPDATE tests/admin-ui.test.tsx와 ADD tests/admin-navigation.test.ts에서 독립 URL 상태·caption·단일 테이블·empty·공통 메뉴와 안전한 관계 링크를 검증한다. ADD Storybook 관리자 목록/Sheet 상호작용에서 탭 전환, 고정 대상, 확인 전 무요청, 정상 적용, 실패 retry 멱등 키, 키보드/닫기 및 모바일을 확인한다. 기존 관리/티켓/카탈로그/커스텀 suite와 lint·tsc·architecture 및 설정된 전체 pnpm test를 실행한다. 실제 OAuth/유료 GPU 호출과 원격 배포는 하지 않는다.
+
+- 전체 suite에서 관찰된 기존 Storybook 비동기 대기 실패에 한해 UPDATE voice-scan-input.stories.tsx의 lazy WebGL 초기화 대기를 5초로 명시하고 admin-custom-mixing-panel.stories.tsx의 성공 응답 검증을 findBy 기반으로 정정한다. 기존 assertion·기능·skip 여부는 유지한다. 새 테스트 case나 제품 동작을 추가하지 않는다.
+
+- UPDATE tests/guest-analysis.integration.ts의 저장 후 만료 정리 검사는 공유 DB 전체에 만료 대상이 없다는 전제 대신, 본 fixture에서 저장한 회원 프로필이 유지됨을 직접 확인한다. 기존 정리 호출과 회원 저장 보존 계약은 유지하고 runtime 변경은 하지 않는다.

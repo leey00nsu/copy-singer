@@ -159,3 +159,21 @@
 - 회원/체험 집계와 조회를 분리하고 결과 저장 관계를 최소 select로 제공했다. 상태별 만료 조건과 검색을 함께 적용하며 page/pageSize를 유한하고 유효한 범위로 정규화한다.
 - guest 대상 조정은 wallet/ledger 생성 전에 서버에서 거부한다. 기존 정식 회원의 멱등 지급·사유·알림·잔액 제한은 DB 통합에서 보존됐다.
 - 관리자 DB 통합 2개·tsc·변경 파일 ESLint 통과. UI는 다음 task에서 연결한다.
+
+### 관리자 UI 구현과 1차 검증
+
+- 공통 네 메뉴와 회원/체험 Tabs, 선택 목록 하나, 독립 URL 검색/필터/페이지, 저장회원 링크와 고정 회원 Ticket Sheet를 연결했다. 운영 설명은 원문을 유지한다.
+- 변경 관리 UI/URL 8개·신규 Storybook 8개와 기존 관리자 DB 통합 2개, tsc·lint·architecture/Steiger가 통과했다. 최초 신규 Storybook의 Sheet 등장 직후 opacity assertion은 transition 완료 대기로 정정했고 SSR fixture에는 기존 AppRouter provider 패턴을 적용했다. 최초 출력은 /tmp/copy-singer-admin-focused-storybook.log, 수정 후 통과는 /tmp/copy-singer-admin-focused-storybook-retry.log에 보관한다.
+- 별도 브라우저에서 실제 UI 컴포넌트의 회원/체험/믹싱 목록·원문 caption, 390px page/Sheet의 가로 넘침 없음·Escape 닫기를 확인했다. QA 이미지는 /tmp/copy-singer-admin-*.png이며 runtime/public 또는 Feature reference로 추가하지 않는다.
+- 전체 pnpm test의 production build와 앞선 unit/DB/API suite는 통과했으나 기존 녹음 전환(WebGL lazy import 1초 대기)과 custom mixing 성공(비동기 응답 전 즉시 단언)에서 실패했다. 전체 출력은 /tmp/copy-singer-admin-full-test.log에 보존한다. 해당 기존 assertion은 유지하고 실제 async 완료를 기다리도록 대기 방식만 정정한 뒤 재검증한다. 제품 합성·녹음 동작은 수정하지 않는다.
+
+- 두 번째 전체 검사는 build·선행 suite·Storybook 197개를 통과한 뒤 guest 저장 검사에서 실패했다(/tmp/copy-singer-admin-full-test-verified.log). 정리 함수의 반환값은 DB 전체 만료 후보 존재 여부인데 기존 단언은 다른 만료 데이터가 없다고 가정했다. 단언을 해당 저장 프로필의 회원 소유권·존속으로 바꿔 실제 계약을 검증한다. 관리자 변경으로 체험 저장 동작이 바뀐 것은 아니다.
+
+- 세 번째 전체 검사는 신규 티켓 retry Storybook에서 Sheet의 등장 전환이 끝나기 전 visible을 단언해 실패했다(/tmp/copy-singer-admin-full-test-final.log). 공통 review helper도 transition 완료를 기다리도록 정정했다. 첫 focused 검사 이후 전체 병렬 실행에서 관찰된 테스트 동기화 문제이며, 제품 Sheet의 동작을 바꾸거나 assertion/테스트를 제외하지 않았다.
+
+### 관리자 화면 변경 검증 완료
+
+- 최종 dotenv 선로드 pnpm test가 exit 0으로 완료됐다. production build·모든 unit/DB/API suite·Storybook 197개·guest 18개·readiness 13개와 Python 4개가 통과했다. 전체 출력은 /tmp/copy-singer-admin-complete-test.log에 보존한다. 기존 skipped Storybook 두 파일은 그대로이며 검사를 새로 제외하지 않았다.
+- 최종 tsc·lint·Steiger 및 FSD 4개·diff 검사가 통과했다. Biome의 import 정렬 세 곳을 적용했고 기존 guest test의 non-null 경고는 runtime 수정을 하지 않고 유지했다.
+- 원문 운영 설명·네 메뉴·단일 목록·독립 검색과 페이지·결과 저장 회원 관계·확인 전 무요청·재시도 멱등 키·회원/체험 집계와 서버 조정 대상 검증을 확인했다. 음원·커스텀 믹싱의 기존 기능/경로·원장·알림·권한은 보존했다.
+- 로컬 개발 서버는 http://localhost:3001 에서 계속 실행 중이다. 비인증 /admin의 권한 차단을 확인했고 실제 관리자 OAuth 로그인은 사용자의 확인 대상으로 남긴다. 실제 유료 GPU 요청·Next.js 배포·원격 push·main 병합은 실행하지 않았다. 구현 최종 승인 및 별도 local merge 승인은 대기한다.
