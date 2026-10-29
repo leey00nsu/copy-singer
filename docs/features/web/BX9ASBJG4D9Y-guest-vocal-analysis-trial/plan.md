@@ -47,7 +47,7 @@ guest 조회·오디오·삭제는 trial의 미이전·소유권·만료 상태�
 
 /profile은 공개 진입을 허용하고 정식 회원 세션이 없는 제품 화면에도 기존 ProductShell의 로그인 header/footer를 제공한다. 공개 policy GET에서 used/full/available 및 진행 중 job을 알려 녹음 전에 차단 상태를 표시한다. 실제 분석 제출 시에만 체험 POST로 cookie를 만들며 단순 랜딩/화면 렌더에서 guest row를 만들지 않는다. 기존 회원 API 응답은 유지하고 분석 job list의 optional guest policy를 확장한다.
 
-VoiceScanInput은 guest일 때 무료 분석 1회·24시간 임시 보관·약관/개인정보 안내 및 무료로 분석하기를 표시한다. 결과 본문/차트/오디오는 재사용하고 회원용 rename·추천·mixing count·library 링크 대신 저장 CTA와 체험 삭제를 제공한다. 회원 저장 후 기존 결과 화면으로 복귀한다. 오류·한도 변경·로그인 취소·저장 재시도에서 준비한 결과를 유지한다.
+VoiceScanInput은 guest일 때 무료 분석 1회·24시간 임시 보관·약관/개인정보 안내 및 무료로 분석하기를 표시한다. 결과 본문/차트/오디오는 재사용하고 회원용 rename·mixing count·library 링크 대신 추천 열람·저장 CTA와 체험 삭제를 제공한다. 회원 저장 후 기존 결과 화면으로 복귀한다. 오류·한도 변경·로그인 취소·저장 재시도에서 준비한 결과를 유지한다.
 
 ## 파일 구조
 
@@ -132,3 +132,12 @@ PRD의 기존 F032 참조도 과거 작업 ID 대신 유지해야 할 시각 요
 
 - Spec: [spec.md](./spec.md)
 - Decisions: [decisions.md](./decisions.md)
+
+## 후속 범위: 체험 추천 열람
+
+- 사용자 범위 승인: 2026-10-29 `진행해줘`. 기존 DONE task는 보존하고 task 05로 추적한다.
+- 추천 GET/POST와 추천/곡 상세 page는 명시적 resource actor로 회원 또는 본인 체험 소유자를 해석한다. getRecommendationResult의 guest owner 검증에서 만료를 확인해 initial render·polling 모두 차단한다. guest 조회에는 외부 서비스/큐/티켓 mutation을 추가하지 않는다.
+- RecommendationResults·Selection·SongDetail·MixingAction에 명시적인 guest/signedIn 상태를 전달한다. guest 믹싱 action은 실행 mutation 대신 저장·로그인 링크를 렌더하며 회원용 TicketConsumptionConfirmDialog를 유지한다. 프로필 결과에는 추천 결과 보기 버튼을 추가한다.
+- browser-safe 체험 navigation helper는 저장 callback과 선택 곡을 생성한다. SaveTrialPage는 로그인 전에도 next를 callback에 보존하고, claim 완료 후 helper가 저장한 profile UUID와 일치하는 추천 목록·UUID 곡 상세만 허용한다. 외부 주소·다른 프로필·인코딩 우회·재귀를 거부한다. 추천 cache를 저장 후 무효화하고 필요 시 guest/member audience를 분리한다. 자동 믹싱은 하지 않는다.
+- 문서 영향: UPDATE docs:prd/copy-singer-prd.md, docs:prd/system-architecture.md, project:src/_pages/legal/ui/terms-page.tsx. 개인정보 안내는 이미 추천 계산과 임시 보관을 설명하므로 추가 변경 NONE. 새로운 runtime env/schema는 NONE.
+- Verification Contract 추가: ADD guest 추천 API/서비스 소유권·만료·무쿠키 거절·본인 전체 결과·외부 fetch/원장/job 불변성 통합 검사. ADD callback 단위 검증(같은 profile/곡 허용, 외부/다른 profile/재귀/encoded 우회 거부). UPDATE guest UI/추천·곡 상세 Storybook·SSR(추천 열람, 로그인 믹싱 CTA, 회원 티켓 확인 유지, 저장 이후 선택곡 복귀). 기존 guest·추천 suite와 전체 pnpm test·lint·tsc를 실행한다. 외부 Google OAuth·실제 유료 믹싱은 실행하지 않는다.

@@ -94,3 +94,11 @@
 - 임시 자료는 만료 즉시 조회를 거부하고 외부 bytes 삭제는 기존 durable cleanup의 재시도 정책을 따른다. cookie 삭제·다른 기기 우회와 웹 재시작에 따른 총량 초기화는 승인된 운영 제약이다.
 - 문서 감사의 남은 1건은 보호된 `docs/designs/README.md:9`의 기존 Feature 참조다. 수정 요청이 없어 보류하며, workflow-audit는 보호 README 정책에 따라 정상 통과한다.
 - 원격 배포·push·merge는 수행하지 않았다. 구현 승인을 받은 뒤 정확한 local verify / 별도 merge 승인 / local merge / cleanup 절차를 이어간다.
+
+## D004: 체험 범위를 추천과 곡별 적합도까지 확장 (2026-10-29)
+
+- **Context**: 사용자는 분석 후 추천까지 제공해도 괜찮은지 문의하고, 현재 추천이 저장 데이터 비교 계산이며 외부 AI/GPU 호출을 만들지 않는다는 설명과 로그인 복귀 흐름을 확인한 뒤 `진행해줘`로 승인했다.
+- **Decision**: 같은 Feature에 새 task로 추천 목록·검색/정렬/필터·곡별 상세를 개방한다. 본인 guest cookie와 24시간 만료 검증은 유지하고 AI 믹싱은 로그인·저장 후 선택곡 상세에서 기존 비용 확인을 거쳐 실행한다.
+- **Rationale**: 기존 추천 계산과 UI를 재사용하여 제품의 실제 효용을 체험하게 하며, 비싼 외부 합성과 이용권 권한은 기존 회원 경계를 유지한다.
+- **Trace**: recommendation-service.ts는 DB와 로컬 scoring으로 계산하며 신규 job·외부 fetch를 만들지 않는다. 기존 DONE task 01~04는 다시 쓰지 않고 후속 task 05로 실행한다. 이번 요청은 최종 구현 승인이나 병합 승인으로 기록하지 않는다.
+- **Evidence**: 기존 checkpoint `5acf6ee`, `2002c10`; 사용자 제안 승인 대화와 갱신한 Spec FR-6 / Plan 후속 범위.

@@ -146,6 +146,24 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
+- [TODO][PRD-FR-GUEST-RECOMMENDATIONS] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-05 체험 추천과 곡 상세 열람 및 로그인 후 선택곡 복귀
+  - Date: 2026-10-29
+  - Acceptance:
+    - 본인 미만료 체험의 전체 추천·검색·정렬·곡별 상세를 외부 AI 호출·추가 차감 없이 제공하고 타인·만료·무쿠키 접근을 거부한다.
+    - 믹싱 CTA는 로그인·프로필 저장 후 선택 곡으로 복귀하며 외부·다른 프로필 복귀는 거부하고 자동 믹싱을 실행하지 않는다.
+  - Checklist:
+    - [ ] 추천 route/page 권한과 guest UI 및 안전한 저장 복귀 helper를 연결한다.
+    - [ ] 권한·만료·부작용·복귀 URL·guest/회원 UI 회귀와 전체 test/lint/tsc를 검증하고 문서를 동기화한다.
+  - Docs:
+    - docs:prd/copy-singer-prd.md
+    - docs:prd/system-architecture.md
+    - project:src/_pages/legal/ui/terms-page.tsx
+  - Review Evidence: -
+  - Review Decision: -
+  - Review Round: -
+  - Reviewed Head: -
+  - Reviewed Tree: -
+
 ## Repository Knowledge (완료 비차단)
 
 - **Policy**: `.lee-spec-kit.json`의 `experimental.openwiki`에서 파생
