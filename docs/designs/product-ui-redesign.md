@@ -6,7 +6,7 @@ lee-spec-kit:
 
 # Copysinger Product UI Redesign
 
-F018과 후속 제품 UI Feature가 공유하는 화면 디자인 정본이다.
+제품 UI가 공유하는 화면 디자인 정본이다.
 
 ## Visual source of truth
 
@@ -31,7 +31,7 @@ F018과 후속 제품 UI Feature가 공유하는 화면 디자인 정본이다.
 
 최종 4보드의 외곽 번호·설명과 presentation frame은 제품 UI가 아니다. **보드 안의 Copysinger app frame만 구현 대상으로 본다.**
 
-F022 이후 `01-landing-voice-scan.*`의 오른쪽 Voice Scan frame은 계속 유효하지만, 왼쪽 Landing frame의 좌우 분할 Hero와 crystal CTA는 아래 `Landing` 계약으로 대체한다. Landing의 최신 검증 surface는 `Pages/Landing` Storybook의 signed-out, signed-in, mobile과 reduced-motion 상태다.
+`01-landing-voice-scan.*`의 오른쪽 Voice Scan frame은 계속 유효하지만, 왼쪽 Landing frame의 좌우 분할 Hero와 crystal CTA는 아래 `Landing` 계약으로 대체한다. Landing의 최신 검증 surface는 `Pages/Landing` Storybook의 signed-out, signed-in, mobile과 reduced-motion 상태다.
 
 ## 공통 화면 언어
 

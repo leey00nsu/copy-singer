@@ -1,4 +1,10 @@
-# Deprecated: F018 Page Redesign Gap Analysis
+---
+lee-spec-kit:
+  kind: visual-reference
+  scope: project
+---
+
+# Deprecated: Page Redesign Gap Analysis
 
 이 문서는 2026-08-10 이전의 current capture와 generated V2 concept를 비교하던 중간 산출물이었다.
 

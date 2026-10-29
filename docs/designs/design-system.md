@@ -8,7 +8,6 @@ lee-spec-kit:
 
 - **상태**: Approved
 - **버전**: 0.6
-- **최초 적용 Feature**: F018 product-ui-redesign
 - **적용 범위**: 사용자용 Web UI
 
 Copysinger의 화면이 Feature와 route가 늘어나도 하나의 제품처럼 보이고 동작하도록 만드는 장기 규칙이다. 이 문서는 시각·상호작용의 의도와 사용 기준을 정의한다. 정확한 CSS 값, 실제 컴포넌트 계약과 렌더 결과를 복제해서 문서에 고정하지 않고 각각의 실행 가능한 소스와 함께 관리한다.
@@ -18,7 +17,7 @@ Copysinger의 화면이 Feature와 route가 늘어나도 하나의 제품처럼 
 | 정본 | 책임 | 변경 시 함께 확인할 대상 |
 | --- | --- | --- |
 | `docs/designs/design-system.md` | 전 제품에 적용되는 시각·상호작용 규칙 | PRD, Feature spec/plan/decisions |
-| `docs/designs/product-ui-redesign.md` | F018 디자인 보드와 화면별 경험 방향 | 원본 이미지 자산, F018 acceptance |
+| `docs/designs/product-ui-redesign.md` | 제품 디자인 보드와 화면별 경험 방향 | 원본 이미지 자산, 화면별 인수 조건 |
 | `src/_app/styles/globals.css` | semantic color, radius 등 실제 CSS token 값 | Design System의 의미와 대비 기준 |
 | `src/shared/ui` | 공통 primitive와 제품 UI component 계약 | public API, accessibility, Storybook |
 | Storybook | variant, 상태와 responsive 조합의 실행 가능한 예시 | 컴포넌트 구현, interaction/browser test |
@@ -79,7 +78,7 @@ Icon color 사용 규칙:
 - navigation, search, chevron, close, reset, upload와 일반 Button 내부의 action icon은 별도 장식색을 추가하지 않고 control의 foreground를 상속한다.
 - 한 surface에 의미 없는 여러 icon color를 섞거나 작은 icon에 brand gradient를 사용하지 않는다. 색상 외 label, 본문 또는 ARIA 상태로 같은 의미를 항상 제공한다.
 
-Light theme가 현재 디자인 정본이다. 기존 dark token을 깨뜨리지 않되 F018에서 새 theme toggle이나 독립적인 dark visual language를 만들지 않는다. Dark mode를 제품 기능으로 제공할 때 별도 Feature에서 동일한 대비·상태 기준을 검증한다.
+Light theme가 현재 디자인 정본이다. 기존 dark token을 깨뜨리지 않되 새 theme toggle이나 독립적인 dark visual language는 별도로 설계·검증한다. Dark mode를 제품 기능으로 제공할 때 별도 Feature에서 동일한 대비·상태 기준을 검증한다.
 
 Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface와 sidebar도 neutral gray scale 안에서만 명도를 달리하며, 넓은 배경에 hue 75–80 계열의 warm chroma를 넣지 않는다. 원본 보드의 미세한 촬영·압축 색은 제품 token으로 해석하지 않는다.
 
@@ -323,6 +322,5 @@ Light canvas는 `#FFFFFF`에 가까운 무채색을 사용한다. quiet surface�
 ## 관련 문서
 
 - [Product UI Redesign](./product-ui-redesign.md)
-- [F018 Spec](../features/web/F018-product-ui-redesign/spec.md)
 - [Copysinger PRD](../prd/copy-singer-prd.md)
 - [Visual references](./references/copy-singer/README.md)

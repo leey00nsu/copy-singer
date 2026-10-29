@@ -35,8 +35,8 @@
 ## 진행 상태
 
 - Feature ID: BX9ASBJG4D9Y
-- 현재 단계: Spec Approved → Plan 작성. 2026-10-29 사용자 `진행해줘`를 명세 승인으로 기록했다.
-- 구현 코드 변경: 없음.
+- 현재 단계: 구현·검증 완료, 구현 승인 checkpoint 대기. 2026-10-29 사용자 `진행해줘`를 명세 승인으로 기록했다.
+- 구현 코드 변경: 체험 기반, queue/worker/이전/만료, 입력/결과/저장 UI를 구현하고 task별 checkpoint로 커밋했다.
 
 ## 문서 검증 기록
 
@@ -77,3 +77,20 @@
 - 로그인 직후 아직 저장하지 않은 체험 결과는 회원 세션과 본인 체험 cookie로 열람·삭제할 수 있다. 명시적인 resource actor helper로만 이 예외를 허용한다. 회원/guest policy query key를 분리하여 로그인 전환 시 기존 이용권 policy가 섞이지 않는다.
 - 약관·개인정보 안내를 실제 체험 cookie·보관·저장 동작에 맞춰 갱신했다.
 - focused Storybook 25개·guest quota/UI/API 14개·인증 navigation 8개·lint·tsc·FSD 검사가 통과했다. Google 제공자에 대한 실제 OAuth 로그인은 자동 실행하지 않았다.
+
+## 공용 문서 감사 정리
+
+- Plan과 task 04에 지정한 디자인 문서는 시각 규칙을 바꾸지 않고 과거 Feature 추적 문구·역링크와 kind metadata만 정규화했다.
+- `docs/designs/README.md:9`에는 기존 Feature 번호 참조가 남아 있다. 사용자에게 README 수정 요청을 받지 않아 저장소 보호 정책에 따라 미수정한다. 이 영역의 onboarding entrypoint 영향은 NONE이며 해당 불일치가 해결됐다고 주장하지 않는다. 별도 README 수정 승인이나 후속 Feature 생성을 완료 조건으로 추가하지 않는다.
+- 시스템 아키텍처의 추천 snapshot 저장 설명은 기존 코드와 PRD-FR-057에 맞게 요청 시 계산 계약으로 정정했다.
+
+## 최종 검증과 알려진 한계
+
+- 최초 `pnpm test`는 build와 분석·인증 등 선행 suite를 통과한 후 기존 DB 환경변수 미로딩 문제로 `tests/leemage-client.test.ts` 시작 시 실패했다. 전체 실패 출력은 `/tmp/copy-singer-guest-full-test.log`에 보존했다.
+- 같은 `.env.local`을 dotenv로 부모 프로세스에 로드한 뒤 `pnpm test`를 실행하여 전체 suite가 exit 0으로 완료됐다. 별도 제품 변경 없이 환경을 맞춘 재검사이며 최초 실패를 통과로 덮어쓰지 않는다.
+- 전체 검사는 production build, 기존 unit/DB/API/worker/오디오/권한 suite, Storybook 182개, guest quota/UI 6개 + DB/API 8개, readiness 13개 + Python 4개를 포함한다. 기존 Storybook 파일 2개는 suite 기본 skip 상태이며 새로 skip하지 않았다.
+- 최종 `pnpm run lint`, `pnpm exec tsc --noEmit`, `git diff --check`, `workflow-audit`, `feature-audit --enforce` 통과.
+- Google OAuth 제공자의 실제 로그인·취소는 자동 실행하지 않았다. 기존 회원 세션 fixture·신규 회원 가입 지급 fixture로 저장/중복/번호/원장 보존과 로그인 직후 임시 오디오 접근을 검증했다.
+- 임시 자료는 만료 즉시 조회를 거부하고 외부 bytes 삭제는 기존 durable cleanup의 재시도 정책을 따른다. cookie 삭제·다른 기기 우회와 웹 재시작에 따른 총량 초기화는 승인된 운영 제약이다.
+- 문서 감사의 남은 1건은 보호된 `docs/designs/README.md:9`의 기존 Feature 참조다. 수정 요청이 없어 보류하며, workflow-audit는 보호 README 정책에 따라 정상 통과한다.
+- 원격 배포·push·merge는 수행하지 않았다. 구현 승인을 받은 뒤 정확한 local verify / 별도 merge 승인 / local merge / cleanup 절차를 이어간다.

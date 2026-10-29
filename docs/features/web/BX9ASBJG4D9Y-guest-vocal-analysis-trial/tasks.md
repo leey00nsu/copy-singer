@@ -125,14 +125,14 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
-- [TODO][PRD-FR-GUEST-RETENTION] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-04 문서 감사 정규화 및 전체 회귀 검증
+- [DONE][PRD-FR-GUEST-RETENTION] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-04 문서 감사 정규화 및 전체 회귀 검증
   - Date: 2026-10-29
   - Acceptance:
     - 보호된 README를 제외한 기존 감사 위반을 정규화하고 전체 회귀 결과와 실제 검증 한계를 기록한다.
     - Feature 문서와 runtime 동작을 동기화하고 현재 코드 fingerprint marker를 한 개만 기록한다.
   - Checklist:
-    - [ ] 지정된 공용 문서의 작업 추적 참조·kind metadata만 정리하고 README 보류 근거를 남긴다.
-    - [ ] pnpm test·lint·tsc 및 workflow/feature/commit audit를 실행한다.
+    - [x] 지정된 공용 문서의 작업 추적 참조·kind metadata만 정리하고 README 보류 근거를 남긴다.
+    - [x] pnpm test·lint·tsc 및 workflow/feature/commit audit를 실행한다.
   - Docs:
     - docs:prd/copy-singer-prd.md
     - docs:prd/system-architecture.md
@@ -159,7 +159,7 @@
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
 - [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
 
 ### 테스트 실행 기록
@@ -174,7 +174,14 @@
 | `pnpm run test:vocal-profile-analysis-queue` | `2026-10-29` | PASS: member regression 8 |
 | `focused Storybook: profile/detail/landing` | `2026-10-29` | PASS: 25 |
 | `pnpm run lint` | `2026-10-29` | PASS |
+| `pnpm test` (dotenv로 `.env.local` 선로드) | `2026-10-29` | PASS: build, 모든 unit/DB/API suite, Storybook 182, guest 14, readiness 13 + Python 4 |
+| `pnpm test` (환경 선로드 없이 최초 실행) | `2026-10-29` | FAIL: 기존 leemage-client test의 DATABASE_URL 초기화 누락. 전체 출력 /tmp/copy-singer-guest-full-test.log 보존 |
+| `npx lee-spec-kit workflow-audit --json` | `2026-10-29` | PASS: WORKFLOW_IN_SYNC |
+| `npx lee-spec-kit feature-audit --json --enforce` | `2026-10-29` | PASS |
+| `npx lee-spec-kit docs-audit --json --enforce` | `2026-10-29` | 기존 보호 README 1건 잔존. decisions.md에 보류 근거 기록 |
 | `pnpm run test:architecture-boundaries` | `2026-10-29` | PASS: 4 |
 | `pnpm exec tsc --noEmit` | `2026-10-29` | PASS |
 
 완료 기록에는 테스트뿐 아니라 build·typecheck·lint 등 Plan에서 정한 검증과 수동 검증 증거를 포함합니다. 자동 검사의 기준은 실제 `workflow.featureChecks`이며, 검사 생략은 통과로 기록하지 않고 명시적인 사유를 남깁니다.
+
+<!-- lee-spec-kit:workflow-sync sha256:713973ed8fda0959755521aafa5e74549267131eb24e75e713ffb47bca4dc3e5 -->

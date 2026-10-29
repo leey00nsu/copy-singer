@@ -1,3 +1,9 @@
+---
+lee-spec-kit:
+  kind: visual-reference
+  scope: project
+---
+
 # Deprecated: V2 Style Lock
 
 이 문서는 generated V2 concept를 만들 때 사용한 과거 prompt/style lock 기록이다.
