@@ -3,6 +3,7 @@ import "server-only";
 import { createNotification } from "@/entities/notification/index.server";
 import { type TicketKind, ticketKindLabel } from "@/entities/ticket/index.model";
 import { applyTicketChange } from "@/entities/ticket/index.server";
+import { prisma } from "@/shared/db/index.server";
 
 export async function adjustUserTickets(input: {
   actorUserId: string;
@@ -18,6 +19,8 @@ export async function adjustUserTickets(input: {
   if (input.reason.trim().length < 3 || input.reason.trim().length > 500) {
     throw new Error("조정 사유를 3~500자로 입력해 주세요.");
   }
+  const target = await prisma.user.findUnique({ where: { id: input.targetUserId }, select: { isGuest: true } });
+  if (!target || target.isGuest) throw new Error("정식 회원에게만 티켓을 조정할 수 있어요.");
   const ledger = await applyTicketChange({
     userId: input.targetUserId,
     kind: input.kind,

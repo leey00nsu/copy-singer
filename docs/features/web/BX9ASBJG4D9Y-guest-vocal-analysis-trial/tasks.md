@@ -181,14 +181,14 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
-- [TODO][PRD-FR-ADMIN-WORKSPACE] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-07 관리자 회원·체험 조회와 집계 분리
+- [DONE][PRD-FR-ADMIN-WORKSPACE] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-07 관리자 회원·체험 조회와 집계 분리
   - Date: 2026-10-29
   - Acceptance:
     - 정식 회원만 회원 목록과 회원 수에 포함하고 체험은 저장 회원·만료 상태·검색/필터/페이지로 안전하게 조회한다.
     - guest 대상 티켓 조정을 서버에서도 거부하고 기존 회원 원장·권한·알림 계약을 보존한다.
   - Checklist:
-    - [ ] 관리자 조회/집계와 bounded pagination 및 guest ticket target 경계를 구현한다.
-    - [ ] DB 통합에서 구분·관계·필터·페이지·민감 필드 비노출·기존 티켓 회귀를 검증한다.
+    - [x] 관리자 조회/집계와 bounded pagination 및 guest ticket target 경계를 구현한다.
+    - [x] DB 통합에서 구분·관계·필터·페이지·민감 필드 비노출·기존 티켓 회귀를 검증한다.
   - Docs:
     - docs:prd/copy-singer-prd.md
     - docs:prd/system-architecture.md
@@ -261,4 +261,6 @@
 
 완료 기록에는 테스트뿐 아니라 build·typecheck·lint 등 Plan에서 정한 검증과 수동 검증 증거를 포함합니다. 자동 검사의 기준은 실제 `workflow.featureChecks`이며, 검사 생략은 통과로 기록하지 않고 명시적인 사유를 남깁니다.
 
-<!-- lee-spec-kit:workflow-sync sha256:06c2e073abe03965d8f86f280b43d61e8d1e8fa0efb6ca1a7e5b6814a5e25a88 -->
+<!-- lee-spec-kit:workflow-sync sha256:4c83b0996863ea64eb729f85b4104c097bcea360f74d64eda2dfdc9185d0192a -->
+
+관리자 task 07 검증: `node --conditions react-server --import tsx --test tests/admin-operations.integration.ts` 2개 통과. 기존 회원 조정/원장/알림과 신규 guest 분리/저장 관계/만료 필터/페이지 상한/민감 필드 제외/guest 조정 차단을 확인했다. tsc와 변경 파일 ESLint도 통과했다.

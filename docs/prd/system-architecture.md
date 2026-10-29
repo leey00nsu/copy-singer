@@ -93,6 +93,8 @@ SoulXModel의 기본 GPU 요청은 L4 우선·A10 대체 순서로 Modal에 전�
 
 ## 운영 불변식
 
+관리자 회원 조회와 회원 수는 isGuest=false만 포함한다. 체험은 GuestAnalysisTrial을 별도로 조회하며 분석 상태·보관기한·실제 결과 저장 회원을 최소 필드로 제공한다. tokenHash·오디오·저장소 URL은 관리자 목록에 포함하지 않는다. 결과 저장은 신규 가입과 구분하고, 티켓 조정은 서버에서도 체험 계정을 대상으로 허용하지 않는다. 목록 검색·필터와 bounded pagination은 관리자 서버 권한이 확인된 화면에서 사용한다.
+
 - 모든 사용자 데이터 접근은 server-side session과 resource ownership을 검증한다. 관리자 기능은 별도 allowlist를 확인한다.
 - 장시간 작업은 PostgreSQL durable queue와 독립 worker를 사용한다. worker는 활성 lease를 중복 claim하지 않는다.
 - 오디오 bytes는 Leemage에, 관계·상태·소유권·hash와 외부 asset reference는 PostgreSQL에 둔다.

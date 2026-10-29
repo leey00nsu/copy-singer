@@ -153,3 +153,9 @@
 - **Decision**: 네 개 공통 메뉴, 회원/체험 Tabs, 선택한 테이블 하나, 독립 검색·필터·페이지, 고정 회원의 티켓 Sheet를 제공한다. DB의 체험/회원 구조는 유지하고 isGuest와 GuestAnalysisTrial의 실제 저장 관계로 관리자 조회·집계를 구분한다.
 - **Scope**: 기존 음원 관리·custom mixing의 기능/경로와 관리자 서버 권한·티켓 원장·멱등성·알림·오디오 비노출을 보존한다. 운영 문구는 정확히 “서비스 사용 현황과 티켓, 작업 상태를 확인하고 관리할 수 있어요.”다. schema/env와 원격 배포는 변경하지 않는다.
 - **Reference**: 승인 시안은 docs/designs/admin-navigation.md와 repo 내부 reference PNG에 고정한다. 개인 경로의 HTML 시안은 구현 의존성으로 사용하지 않는다. global 디자인 token·primitive 변경이 없어 design-system.md는 재사용한다.
+
+### 관리자 조회 분리 구현
+
+- 회원/체험 집계와 조회를 분리하고 결과 저장 관계를 최소 select로 제공했다. 상태별 만료 조건과 검색을 함께 적용하며 page/pageSize를 유한하고 유효한 범위로 정규화한다.
+- guest 대상 조정은 wallet/ledger 생성 전에 서버에서 거부한다. 기존 정식 회원의 멱등 지급·사유·알림·잔액 제한은 DB 통합에서 보존됐다.
+- 관리자 DB 통합 2개·tsc·변경 파일 ESLint 통과. UI는 다음 task에서 연결한다.
