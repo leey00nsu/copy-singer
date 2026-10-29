@@ -217,6 +217,19 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
+- [TODO][PRD-FR-ADMIN-WORKSPACE] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-09 관리자 하위 화면 스켈레톤을 공통 메뉴 구조에 정렬
+  - Date: 2026-10-29
+  - Acceptance:
+    - 운영·음원·커스텀 로딩 화면에 동일한 네 메뉴 자리와 현재 페이지의 본문 구조를 제공하고 제거한 뒤로가기 자리를 표시하지 않는다.
+  - Checklist:
+    - [ ] 세 loading 어댑터와 최종 UI를 대조하고 공유 메뉴 스켈레톤 및 하위 화면 간격을 조정한다.
+    - [ ] 새 영구 테스트 없이 SSR 렌더·타입·lint·아키텍처·문서 감사를 확인한다.
+  - Review Evidence: -
+  - Review Decision: -
+  - Review Round: -
+  - Reviewed Head: -
+  - Reviewed Tree: -
+
 ## Repository Knowledge (완료 비차단)
 
 - **Policy**: `.lee-spec-kit.json`의 `experimental.openwiki`에서 파생
@@ -229,8 +242,8 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
-- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
+- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
 
 ### 테스트 실행 기록

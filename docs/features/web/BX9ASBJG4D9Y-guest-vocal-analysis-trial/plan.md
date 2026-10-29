@@ -166,3 +166,10 @@ PRD의 기존 F032 참조도 과거 작업 ID 대신 유지해야 할 시각 요
 - 전체 suite에서 관찰된 기존 Storybook 비동기 대기 실패에 한해 UPDATE voice-scan-input.stories.tsx의 lazy WebGL 초기화 대기를 5초로 명시하고 admin-custom-mixing-panel.stories.tsx의 성공 응답 검증을 findBy 기반으로 정정한다. 기존 assertion·기능·skip 여부는 유지한다. 새 테스트 case나 제품 동작을 추가하지 않는다.
 
 - UPDATE tests/guest-analysis.integration.ts의 저장 후 만료 정리 검사는 공유 DB 전체에 만료 대상이 없다는 전제 대신, 본 fixture에서 저장한 회원 프로필이 유지됨을 직접 확인한다. 기존 정리 호출과 회원 저장 보존 계약은 유지하고 runtime 변경은 하지 않는다.
+
+## 후속 범위: 관리자 로딩 확인 및 누락 보완
+
+- 메인 관리자 loading은 단일 목록으로 갱신돼 있으나 음원·커스텀 loading에 새 공통 메뉴가 없고 커스텀에는 제거된 뒤로가기 자리가 남았다. 기존 Feature의 새 task 09에서 UI와 세 loading을 대조하여 수정한다.
+- AdminNavigationLoading을 기존 공통 메뉴 widget에서 제공해 세 loading이 같은 메뉴 자리·반응형 overflow 처리를 공유한다. 음원 loading은 메뉴 뒤 목록 도구 영역을 두고 커스텀 loading은 뒤로가기 자리를 제거한다. Next.js 설치본 loading 가이드를 확인했으며 route adapter와 인증/조회·검색 동작은 바꾸지 않는다.
+- Curated Documentation Impact: NONE — 기존 PRD-FR-ADMIN-WORKSPACE와 docs/designs/admin-navigation.md가 이미 loading의 새 화면 정합성을 요구하며 정책 변경이나 알려진 추가 공용 문서 불일치는 없다. README 보호 보류는 기존 decisions 기록을 따른다.
+- Verification Contract: NO_NEW_TEST — 되돌릴 수 있는 정적 skeleton 배치 변경이다. 일회성 SSR에서 세 화면 status/메뉴 자리와 단일 목록·폼 유지 및 어댑터 연결을 확인하고 기존 관리자 UI/URL 검사·tsc·변경 파일 lint·Biome·아키텍처·diff와 문서 감사를 실행한다. runtime 데이터/권한/worker 동작 변경이 없어 직전 전체 pnpm test 성공을 반복하지 않으며, 통합 시 설정된 featureChecks는 기존 workflow를 따른다.
