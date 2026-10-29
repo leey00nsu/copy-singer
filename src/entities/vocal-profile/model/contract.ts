@@ -155,6 +155,9 @@ export const vocalProfileAnalysisJobResponseSchema = z.object({
 export type VocalProfileAnalysisJobResponse = z.infer<typeof vocalProfileAnalysisJobResponseSchema>;
 
 export const vocalProfileAnalysisJobListSchema = z.object({
+  guest: z
+    .object({ state: z.enum(["available", "used", "full", "processing"]), profileId: z.uuid().nullable() })
+    .optional(),
   jobs: z.array(vocalProfileAnalysisJobResponseSchema),
   analysisTickets: z.object({
     balance: z.number().int().nonnegative(),

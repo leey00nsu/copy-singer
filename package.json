@@ -71,7 +71,7 @@
     "tickets:recover-signup": "node --conditions react-server --import tsx scripts/recover-signup-grant.ts",
     "media:reconcile": "node --conditions react-server --import tsx scripts/reconcile-media.ts",
     "jobs:reconcile": "node --conditions react-server --import tsx scripts/reconcile-external-job.ts",
-    "test:guest-analysis": "tsx --test tests/guest-analysis-quota.test.ts && node --conditions react-server --import tsx --test --test-concurrency=1 tests/guest-analysis.integration.ts"
+    "test:guest-analysis": "tsx --test tests/guest-analysis-quota.test.ts tests/guest-analysis-ui.test.tsx && node --conditions react-server --import tsx --test --test-concurrency=1 tests/guest-analysis.integration.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

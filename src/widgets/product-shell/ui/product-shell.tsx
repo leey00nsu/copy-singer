@@ -38,7 +38,7 @@ type ProductNavigationProps = {
 };
 
 function navigationHref(href: string, authenticated: boolean) {
-  if (authenticated) return href;
+  if (authenticated || href === "/profile") return href;
   return `/login?callbackURL=${encodeURIComponent(href)}`;
 }
 
@@ -57,7 +57,7 @@ function ProductNavigation({
     <nav aria-label="제품 메뉴" className={cn(mobile ? "grid gap-1" : "flex h-16 items-stretch gap-9")}>
       {items.map(({ href, icon, label }) => {
         const Icon = productNavigationIcons[icon];
-        const active = authenticated && isProductPathActive(pathname, href);
+        const active = (authenticated || href === "/profile") && isProductPathActive(pathname, href);
         return (
           <Link
             aria-current={active ? "page" : undefined}
@@ -215,10 +215,10 @@ type ProductShellProps = {
   admin?: boolean;
   children: ReactNode;
   onboarding?: OnboardingSnapshot;
-  user: ProductUser;
+  user?: ProductUser | null;
 };
 
-function ProductShell({ admin = false, children, onboarding, user }: ProductShellProps) {
+function ProductShell({ admin = false, children, onboarding, user = null }: ProductShellProps) {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <a

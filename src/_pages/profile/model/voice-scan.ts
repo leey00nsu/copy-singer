@@ -19,6 +19,15 @@ export type RecorderIssue = {
 };
 
 export const ANALYSIS_ERROR_GUIDANCE: Record<string, { action: string; title: string }> = {
+  GUEST_ANALYSIS_DAILY_LIMIT: {
+    title: "오늘의 무료 체험이 마감됐어요.",
+    action: "로그인하고 분석하거나 내일 다시 방문해 주세요.",
+  },
+  GUEST_ANALYSIS_USED: { title: "무료 분석을 사용했어요.", action: "로그인하고 보컬 분석을 계속할 수 있어요." },
+  GUEST_RESULT_EXPIRED: {
+    title: "무료 분석 결과의 보관 기간이 지났어요.",
+    action: "로그인하고 새 보컬 프로필을 만들어 주세요.",
+  },
   TOO_SHORT: { title: "녹음이 너무 짧아요", action: "5초 이상 노래한 뒤 다시 시도해 주세요." },
   TOO_LONG: { title: "녹음이 너무 길어요", action: "파일을 다시 선택한 뒤 60초 자르기를 선택해 주세요." },
   TOO_SILENT: { title: "목소리가 너무 작아요", action: "마이크에 조금 가까이 다가가 반주 없이 더 크게 불러 주세요." },

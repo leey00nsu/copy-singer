@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { requirePageSession } from "@/features/authentication/index.server";
+import { getRequestSession } from "@/features/authentication/index.server";
 import { VocalProfileWorkbench } from "./vocal-profile-workbench";
 
 export const metadata: Metadata = {
@@ -8,6 +8,6 @@ export const metadata: Metadata = {
 };
 
 export default async function ProfilePage() {
-  await requirePageSession("/profile");
-  return <VocalProfileWorkbench />;
+  const session = await getRequestSession();
+  return <VocalProfileWorkbench guest={!session} />;
 }

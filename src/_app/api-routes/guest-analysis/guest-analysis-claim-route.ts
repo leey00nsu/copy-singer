@@ -13,8 +13,14 @@ async function handlePOST(request: Request) {
     });
   } catch (error) {
     if (error instanceof GuestAnalysisError)
-      return Response.json({ reasonCode: error.code, retryable: false }, { status: error.status });
-    return Response.json({ reasonCode: "GUEST_RESULT_SAVE_FAILED", retryable: true }, { status: 503 });
+      return Response.json(
+        { reasonCode: error.code, detail: error.message, retryable: false },
+        { status: error.status },
+      );
+    return Response.json(
+      { reasonCode: "GUEST_RESULT_SAVE_FAILED", detail: "결과를 저장하지 못했어요.", retryable: true },
+      { status: 503 },
+    );
   }
 }
 

@@ -1,7 +1,9 @@
 "use client";
 
 import { Activity, CheckCircle2, FileAudio, LoaderCircle, RotateCcw, Upload } from "lucide-react";
+import Link from "next/link";
 import { type ReactNode, useId } from "react";
+import type { GuestAnalysisPolicy } from "@/entities/guest-analysis/index.model";
 import { TicketConsumptionConfirmDialog } from "@/entities/ticket";
 import { SUPPORTED_AUDIO_UPLOAD_ACCEPT, SUPPORTED_AUDIO_UPLOAD_FORMAT_LABEL } from "@/shared/lib/audio";
 import { AudioWaveformPlayer } from "@/shared/ui/audio-waveform-player";
@@ -16,6 +18,10 @@ export const ACCEPTED_VOICE_SCAN_AUDIO = SUPPORTED_AUDIO_UPLOAD_ACCEPT;
 export type VoiceScanAudioSource = "recording" | "upload";
 
 type VoiceScanInputProps = {
+  guestPolicy?: GuestAnalysisPolicy;
+  guestLoading?: boolean;
+  guestPolicyError?: boolean;
+  onReloadPolicy?: () => void;
   analysisBusy?: boolean;
   audioDuration: number | null;
   audioFile: File | null;
@@ -38,6 +44,10 @@ type VoiceScanInputProps = {
 };
 
 export function VoiceScanInput({
+  guestPolicy,
+  guestLoading = false,
+  guestPolicyError = false,
+  onReloadPolicy,
   analysisBusy = false,
   audioDuration,
   audioFile,
@@ -73,7 +83,26 @@ export function VoiceScanInput({
         <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
           지금 한 소절을 녹음하거나, 기존 녹음 파일을 올려주세요.
         </p>
-        {analysisTickets ? (
+        {guestPolicy ? (
+          <div className="mt-4 rounded-lg bg-muted/35 p-3 text-xs">
+            <p className="font-semibold">무료 분석 1회</p>
+            <p className="mt-2 leading-5 text-muted-foreground">
+              결과는 24시간 동안 보관돼요. 로그인하면 계정에 저장할 수 있어요.
+            </p>
+            <p className="mt-2 leading-5 text-muted-foreground">
+              사용 권한이 있는 음성을 올려주세요. 분석에는 외부 처리·저장 서비스가 사용돼요.{" "}
+              <Link className="underline" href="/terms">
+                이용 약관
+              </Link>
+              과{" "}
+              <Link className="underline" href="/privacy">
+                개인정보 처리방침
+              </Link>
+              을 확인해 주세요.
+            </p>
+          </div>
+        ) : null}
+        {!guestPolicy && analysisTickets ? (
           <dl className="mt-4 rounded-lg bg-muted/35 p-3 text-xs">
             <div>
               <dt className="text-muted-foreground">분석 티켓</dt>
@@ -84,7 +113,46 @@ export function VoiceScanInput({
       </header>
 
       <div className="p-5 sm:p-6">
-        {analysisTicketsEmpty ? (
+        {guestLoading || guestPolicyError ? (
+          <div aria-live="polite" className="grid gap-4">
+            <StatusNotice
+              title={guestLoading ? "무료 체험 상태를 확인하고 있어요" : "무료 체험 상태를 확인하지 못했어요"}
+              description={guestLoading ? "잠시만 기다려 주세요." : "잠시 뒤 다시 시도해 주세요."}
+              tone="neutral"
+            />
+            {guestPolicyError ? (
+              <Button onClick={onReloadPolicy} variant="outline">
+                다시 확인하기
+              </Button>
+            ) : null}
+          </div>
+        ) : guestPolicy && guestPolicy.state !== "available" ? (
+          <div className="grid gap-4" aria-live="polite">
+            <StatusNotice
+              title={
+                guestPolicy.state === "full"
+                  ? "오늘의 무료 체험이 마감됐어요."
+                  : guestPolicy.state === "processing"
+                    ? "목소리를 분석하고 있어요."
+                    : "무료 분석을 사용했어요."
+              }
+              description={
+                guestPolicy.state === "processing"
+                  ? "진행 중인 분석이 끝날 때까지 기다려 주세요."
+                  : "로그인하고 보컬 분석을 계속할 수 있어요."
+              }
+              tone="neutral"
+            />
+            {guestPolicy.profileId ? (
+              <Button nativeButton={false} render={<Link href={`/vocal-profiles/${guestPolicy.profileId}`} />}>
+                분석 결과 보기
+              </Button>
+            ) : null}
+            <Button nativeButton={false} render={<Link href="/login?callbackURL=%2Fprofile" />} variant="outline">
+              로그인하고 계속하기
+            </Button>
+          </div>
+        ) : analysisTicketsEmpty ? (
           <StatusNotice
             description="새 보컬 프로필을 만들려면 분석 티켓이 필요해요."
             title="분석 티켓이 없어요"
@@ -151,7 +219,7 @@ export function VoiceScanInput({
                 ) : (
                   <Activity aria-hidden="true" className="size-4" />
                 )}
-                {analysisBusy ? "분석 작업 확인 중…" : "내 보컬 프로필 만들기"}
+                {analysisBusy ? "분석 작업 확인 중…" : guestPolicy ? "무료로 분석하기" : "내 보컬 프로필 만들기"}
               </TicketConsumptionConfirmDialog>
               <Button disabled={analysisBusy} onClick={onReset} size="lg" variant="outline">
                 <RotateCcw aria-hidden="true" className="size-4" /> 다시 선택

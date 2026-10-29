@@ -26,7 +26,7 @@ import { AdmissionError, admissionResponse, guestAnalysisQuota } from "@/shared/
 function enqueueError(error: unknown) {
   if (error instanceof AdmissionError) return admissionResponse(error);
   if (error instanceof GuestAnalysisError)
-    return Response.json({ reasonCode: error.code, retryable: false }, { status: error.status });
+    return Response.json({ reasonCode: error.code, detail: error.message, retryable: false }, { status: error.status });
   const code = error instanceof Error ? error.message : "ANALYSIS_ENQUEUE_FAILED";
   if (code === "INVALID_IDEMPOTENCY_KEY") {
     return Response.json(

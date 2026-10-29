@@ -13,7 +13,7 @@ function TermsPage() {
   return (
     <LegalDocumentLayout
       description="Copysinger의 Google 계정 로그인, 보컬 분석, 노래 추천과 티켓 기반 AI 믹싱 기능을 이용할 때 적용되는 조건입니다."
-      effectiveDate="2026년 8월 13일"
+      effectiveDate="2026년 10월 29일"
       title="이용 약관"
     >
       <LegalSection title="1. 목적과 적용 범위">
@@ -27,6 +27,7 @@ function TermsPage() {
       <LegalSection title="2. 서비스가 제공하는 기능">
         <LegalList>
           <li>Google OAuth를 통한 계정 생성과 로그인</li>
+          <li>로그인 없이 최초 1회 보컬 분석과 결과 확인. 하루 제공량이 소진되면 체험이 마감됩니다.</li>
           <li>이용자가 녹음하거나 업로드한 노래 음성의 음역·음정 분포 등 보컬 특성 분석</li>
           <li>분석 결과를 바탕으로 한 노래와 권장 키 추천</li>
           <li>이용자가 선택한 보컬 프로필과 사전 등록된 곡을 이용한 AI 음성 변환·믹싱 결과 생성</li>
@@ -37,7 +38,14 @@ function TermsPage() {
 
       <LegalSection title="3. 계정과 이용 자격">
         <LegalList>
-          <li>이용자는 본인이 정당하게 사용할 수 있는 Google 계정으로 로그인해야 합니다.</li>
+          <li>회원 기능은 본인이 정당하게 사용할 수 있는 Google 계정으로 로그인하여 이용합니다.</li>
+          <li>
+            비로그인 체험은 브라우저의 체험 쿠키를 기준으로 제공하며, 추가 분석·추천·AI 믹싱은 로그인이 필요합니다.
+          </li>
+          <li>
+            체험 결과와 관련 음성은 분석 완료 또는 최종 실패 후 24시간 동안만 임시 보관합니다. 로그인 후 결과 저장을
+            완료하면 해당 계정의 자료로 관리합니다.
+          </li>
           <li>계정에서 발생한 활동과 인증 수단의 안전한 관리 책임은 이용자에게 있습니다.</li>
           <li>
             만 14세 미만 이용자를 대상으로 설계된 서비스가 아니며, 해당 이용자는 법정대리인 동의 없이 이용할 수

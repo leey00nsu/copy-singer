@@ -324,3 +324,56 @@ export const TooShort: Story = {
     await expect(canvas.getByRole("button", { name: "내 보컬 프로필 만들기" })).toBeDisabled();
   },
 };
+
+export const GuestAvailable: Story = {
+  args: { analysisTickets: undefined, guestPolicy: { state: "available", profileId: null } },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("무료 분석 1회")).toBeVisible();
+    await expect(canvas.queryByText("분석 티켓")).not.toBeInTheDocument();
+    await expect(canvas.getByRole("button", { name: "녹음 시작" })).toBeVisible();
+    await expect(canvas.getByRole("link", { name: "개인정보 처리방침" })).toHaveAttribute("href", "/privacy");
+  },
+};
+
+export const GuestDailyLimit: Story = {
+  args: { analysisTickets: undefined, guestPolicy: { state: "full", profileId: null } },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("오늘의 무료 체험이 마감됐어요.")).toBeVisible();
+    await expect(canvas.queryByRole("button", { name: "녹음 시작" })).not.toBeInTheDocument();
+    await expect(canvas.queryByLabelText("녹음 파일로 분석하기")).not.toBeInTheDocument();
+    await expect(canvas.getByRole("button", { name: "로그인하고 계속하기" })).toBeVisible();
+  },
+};
+
+export const GuestAlreadyUsed: Story = {
+  args: {
+    analysisTickets: undefined,
+    guestPolicy: { state: "used", profileId: "0198be62-667c-7a90-87a5-57d65f245c13" },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("무료 분석을 사용했어요.")).toBeVisible();
+    await expect(canvas.getByRole("button", { name: "분석 결과 보기" })).toBeVisible();
+    await expect(canvas.queryByRole("button", { name: "녹음 시작" })).not.toBeInTheDocument();
+  },
+};
+
+export const GuestPrepared: Story = {
+  args: {
+    analysisTickets: undefined,
+    guestPolicy: { state: "available", profileId: null },
+    audioFile: new File(["voice"], "voice.wav", { type: "audio/wav" }),
+    audioSource: "recording",
+    audioDuration: 10,
+    audioUrl: "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=",
+    audioPreview: <div>제출할 음성 미리 듣기</div>,
+  },
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: "무료로 분석하기" }));
+    await expect(args.onAnalyze).toHaveBeenCalledOnce();
+    await expect(within(document.body).queryByRole("dialog")).not.toBeInTheDocument();
+  },
+};

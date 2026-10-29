@@ -1,4 +1,5 @@
 import { mutationOptions, queryOptions } from "@tanstack/react-query";
+import { z } from "zod";
 import {
   type VocalProfileAnalysisJobList,
   type VocalProfileAnalysisJobResponse,
@@ -57,10 +58,16 @@ export function getVocalProfileAnalysisJob(id: string, signal?: AbortSignal): Pr
   });
 }
 
-export function submitVocalProfileAnalysis(input: {
+export async function submitVocalProfileAnalysis(input: {
+  guest?: boolean;
   file: File;
   idempotencyKey: string;
 }): Promise<VocalProfileAnalysisJobResponse> {
+  if (input.guest)
+    await requestJson("/api/guest-analysis", {
+      method: "POST",
+      schema: z.object({ status: z.enum(["ready", "member"]) }),
+    });
   const body = new FormData();
   body.append("audio", input.file, input.file.name);
   return requestJson("/api/vocal-profile-analysis-jobs", {
@@ -78,9 +85,9 @@ export function vocalProfileHealthQueryOptions() {
   });
 }
 
-export function vocalProfileAnalysisJobsQueryOptions() {
+export function vocalProfileAnalysisJobsQueryOptions(audience?: "guest" | "member") {
   return queryOptions({
-    queryKey: vocalAnalysisKeys.jobs(),
+    queryKey: audience ? ([...vocalAnalysisKeys.jobs(), audience] as const) : vocalAnalysisKeys.jobs(),
     queryFn: ({ signal }) => getVocalProfileAnalysisJobs(signal),
     refetchInterval: (query) => analysisJobsPollingInterval(query.state.data),
   });

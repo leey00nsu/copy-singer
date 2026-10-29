@@ -14,7 +14,7 @@ function PrivacyPage() {
   return (
     <LegalDocumentLayout
       description="Copysinger가 Google 로그인 정보, 음성 파일과 분석·추천·AI 믹싱 기록을 어떤 목적으로 처리하고 삭제하는지 설명합니다."
-      effectiveDate="2026년 8월 13일"
+      effectiveDate="2026년 10월 29일"
       title="개인정보 처리방침"
     >
       <LegalSection title="1. 처리 원칙">
@@ -29,6 +29,10 @@ function PrivacyPage() {
         <LegalDataList>
           <LegalDataItem term="계정정보">
             Google 계정 식별자, 이름, 이메일, 프로필 정보와 Google 계정 연결 정보를 계정 생성과 로그인에 사용합니다.
+          </LegalDataItem>
+          <LegalDataItem term="비로그인 체험">
+            체험 식별자와 쿠키 검증값, 분석 작업·결과, 사용 및 만료 시각을 최초 1회 체험 제공과 본인 결과 확인에
+            사용합니다. 결과 저장을 선택하여 Google 로그인을 마치면 해당 계정에 결과와 관련 음성을 연결합니다.
           </LegalDataItem>
           <LegalDataItem term="접속정보">
             세션 정보, IP 주소와 브라우저 정보를 로그인 유지, 보안, 오용 방지와 오류 대응에 사용합니다.
@@ -63,6 +67,11 @@ function PrivacyPage() {
         <LegalDataList>
           <LegalDataItem term="계정·OAuth">
             회원 탈퇴 또는 전체 삭제 요청 완료 시까지. 개별 session은 만료 또는 로그아웃 시까지 보유합니다.
+          </LegalDataItem>
+          <LegalDataItem term="체험 자료">
+            계정에 저장하지 않은 음성·분석 결과는 작업 완료 또는 최종 실패 후 24시간 동안만 열람할 수 있고 이후 삭제
+            절차로 정리합니다. 쿠키는 최대 1년간 유지하며, 음성을 삭제한 뒤에도 최소한의 체험 식별자·사용 기록은 반복
+            체험 방지를 위해 보관합니다. 계정에 저장한 자료에는 회원 보관 기준이 적용됩니다.
           </LegalDataItem>
           <LegalDataItem term="음성·보컬 프로필">
             이용자가 해당 프로필을 삭제하거나 계정 전체 삭제를 요청할 때까지 보유합니다.
@@ -103,8 +112,9 @@ function PrivacyPage() {
 
       <LegalSection title="7. cookie와 자동 수집 정보">
         <p>
-          서비스는 로그인 유지와 보안을 위한 필수 session cookie를 사용합니다. 현재 별도 광고·행태 분석 tracker는
-          구현되어 있지 않습니다. 브라우저에서 필수 cookie를 차단하면 로그인이 필요한 기능을 이용할 수 없습니다.
+          서비스는 로그인 유지와 보안을 위한 필수 session cookie와 비로그인 분석의 소유권·사용 여부를 확인하는 체험
+          쿠키를 사용합니다. 현재 별도 광고·행태 분석 tracker는 구현되어 있지 않습니다. 브라우저에서 필수 cookie를
+          차단하면 로그인이 필요한 기능을 이용할 수 없습니다.
         </p>
       </LegalSection>
 

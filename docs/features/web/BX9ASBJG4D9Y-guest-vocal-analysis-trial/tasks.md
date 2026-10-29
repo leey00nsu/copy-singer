@@ -108,14 +108,14 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
-- [TODO][PRD-FR-GUEST-ACCOUNT-LINK] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-03 체험 입력·결과·로그인 저장 화면 제공
+- [DONE][PRD-FR-GUEST-ACCOUNT-LINK] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-03 체험 입력·결과·로그인 저장 화면 제공
   - Date: 2026-10-29
   - Acceptance:
     - 녹음 전에 available/full/used 상태를 표시하고 분석 결과 전체를 로그인 없이 제공한다.
     - 기존·신규 Google 로그인 후 저장 화면에서 같은 결과로 복귀하며 실패 시 재시도할 수 있다.
   - Checklist:
-    - [ ] 랜딩/입력/결과/shell/저장 UI와 guest policy query를 연결한다.
-    - [ ] 약관·개인정보 안내와 guest UI/Storybook·SSR 검증을 동기화한다.
+    - [x] 랜딩/입력/결과/shell/저장 UI와 guest policy query를 연결한다.
+    - [x] 약관·개인정보 안내와 guest UI/Storybook·SSR 검증을 동기화한다.
   - Docs:
     - project:src/_pages/legal/ui/privacy-page.tsx
     - project:src/_pages/legal/ui/terms-page.tsx
@@ -170,8 +170,10 @@
 | 명령어                   | 마지막 실행(로컬, YYYY-MM-DD) | 결과               |
 | ------------------------ | ----------------------------- | ------------------ |
 | `pnpm exec prisma validate / generate / migrate deploy` | `2026-10-29` | PASS: localhost migration 적용 |
-| `pnpm run test:guest-analysis` | `2026-10-29` | PASS: quota 3 + guest pipeline/API 7 |
+| `pnpm run test:guest-analysis` | `2026-10-29` | PASS: quota 3 + UI 3 + guest pipeline/API 8 |
 | `pnpm run test:vocal-profile-analysis-queue` | `2026-10-29` | PASS: member regression 8 |
+| `focused Storybook: profile/detail/landing` | `2026-10-29` | PASS: 25 |
+| `pnpm run lint` | `2026-10-29` | PASS |
 | `pnpm run test:architecture-boundaries` | `2026-10-29` | PASS: 4 |
 | `pnpm exec tsc --noEmit` | `2026-10-29` | PASS |
 

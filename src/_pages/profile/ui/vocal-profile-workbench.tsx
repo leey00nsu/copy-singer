@@ -47,7 +47,7 @@ function holdPreparationCompleteState() {
   });
 }
 
-export function VocalProfileWorkbench() {
+export function VocalProfileWorkbench({ guest = false }: { guest?: boolean }) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [audioFile, setAudioFile] = useState<File | null>(null);
@@ -66,7 +66,7 @@ export function VocalProfileWorkbench() {
   const handledTerminalJob = useRef<string | null>(null);
 
   const analysisJobQuery = useQuery(vocalProfileAnalysisJobQueryOptions(analysisJobId));
-  const analysisPolicyQuery = useQuery(vocalProfileAnalysisJobsQueryOptions());
+  const analysisPolicyQuery = useQuery(vocalProfileAnalysisJobsQueryOptions(guest ? "guest" : "member"));
   const submitAnalysis = useMutation(submitVocalProfileAnalysisMutationOptions());
   const analysisJob = analysisJobQuery.data;
   const analysisJobRequestError = analysisJobQuery.error ? normalizeProfileError(analysisJobQuery.error) : null;
@@ -148,6 +148,12 @@ export function VocalProfileWorkbench() {
     analysisIdempotencyKey.current = null;
     window.localStorage.removeItem(ANALYSIS_JOB_STORAGE_KEY);
   }, [analysisJobId, analysisJobQuery.error]);
+
+  useEffect(() => {
+    if (analysisJobId) return;
+    const active = analysisPolicyQuery.data?.jobs.find(isActiveAnalysisJob);
+    if (active) queueMicrotask(() => setAnalysisJobId(active.id));
+  }, [analysisJobId, analysisPolicyQuery.data]);
 
   const resetAudio = useCallback(() => {
     setAudioFile(null);
@@ -245,7 +251,7 @@ export function VocalProfileWorkbench() {
     const idempotencyKey = analysisIdempotencyKey.current ?? crypto.randomUUID();
     analysisIdempotencyKey.current = idempotencyKey;
     submitAnalysis.mutate(
-      { file: audioFile, idempotencyKey },
+      { file: audioFile, idempotencyKey, guest: Boolean(analysisPolicyQuery.data?.guest) },
       {
         onSuccess: (job) => {
           handledTerminalJob.current = null;
@@ -255,7 +261,10 @@ export function VocalProfileWorkbench() {
           void queryClient.invalidateQueries({ queryKey: vocalAnalysisKeys.jobs() });
           toast.success("목소리 분석을 시작했어요.");
         },
-        onError: (error) => setAnalysisError(normalizeProfileError(error)),
+        onError: (error) => {
+          setAnalysisError(normalizeProfileError(error));
+          void queryClient.invalidateQueries({ queryKey: vocalAnalysisKeys.jobs() });
+        },
       },
     );
   };
@@ -311,7 +320,13 @@ export function VocalProfileWorkbench() {
 
         <VoiceScanInput
           analysisBusy={analysisBusy}
-          analysisTickets={analysisPolicyQuery.data?.analysisTickets ?? null}
+          analysisTickets={
+            analysisPolicyQuery.data?.guest ? undefined : (analysisPolicyQuery.data?.analysisTickets ?? null)
+          }
+          guestPolicy={analysisPolicyQuery.data?.guest}
+          guestLoading={guest && analysisPolicyQuery.isPending}
+          guestPolicyError={guest && analysisPolicyQuery.isError}
+          onReloadPolicy={() => void analysisPolicyQuery.refetch()}
           audioDuration={audioDuration}
           audioFile={audioFile}
           audioSource={audioSource}

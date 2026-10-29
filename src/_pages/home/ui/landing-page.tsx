@@ -71,16 +71,16 @@ const metrics = [
 
 function LandingPage({ admin = false, user = null }: { admin?: boolean; user?: ProductUser | null }) {
   const authenticated = Boolean(user);
-  const profileHref = authenticated ? "/profile" : "/login?callbackURL=%2Fprofile";
+  const profileHref = "/profile";
   const libraryHref = authenticated ? "/library" : "/login?callbackURL=%2Flibrary";
-  const primaryLabel = "내 목소리 분석하기";
+  const primaryLabel = authenticated ? "내 목소리 분석하기" : "로그인 없이 분석하기";
 
   return (
     <div className="min-h-screen bg-background">
       <ProductHeader admin={admin} user={user} />
 
       <main>
-        <LandingHero primaryLabel={primaryLabel} profileHref={profileHref} />
+        <LandingHero guest={!authenticated} primaryLabel={primaryLabel} profileHref={profileHref} />
         <LandingProductStory />
 
         <section className={`${railClass} py-24 sm:py-32 lg:py-44`} id="product-story">

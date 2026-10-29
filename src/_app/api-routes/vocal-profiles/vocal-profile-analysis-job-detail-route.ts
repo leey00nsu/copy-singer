@@ -1,11 +1,11 @@
 import { withApiAdmission } from "@/_app/api-routes/admission";
 import { canReadGuestResource } from "@/entities/guest-analysis/index.server";
 import { analysisJobPayload, getVocalProfileAnalysisJob } from "@/features/analyze-vocal-profile/index.server";
-import { getAnalysisActor, unauthorizedResponse } from "@/features/authentication/index.server";
+import { getAnalysisResourceActor, unauthorizedResponse } from "@/features/authentication/index.server";
 import { resourceIdSchema } from "@/shared/api";
 
 async function handleGET(request: Request, context: { params: Promise<{ id: string }> }) {
-  const actor = await getAnalysisActor(request);
+  const actor = await getAnalysisResourceActor(request, { jobId: (await context.params).id });
   if (!actor) return unauthorizedResponse();
   const id = resourceIdSchema.safeParse((await context.params).id);
   if (actor.guest && (!id.success || !(await canReadGuestResource(actor.userId, { jobId: id.data }))))

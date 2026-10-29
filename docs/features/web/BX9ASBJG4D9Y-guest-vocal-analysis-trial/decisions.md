@@ -68,3 +68,12 @@
 - 공개 policy만 비인증 GET을 허용하고 결과·오디오는 소유자 및 만료를 확인한다. 만료 정리는 media deletion intent를 예약하고 소비 기록을 남긴다.
 - 마지막 1개 자리의 multipart 접수·잘못된 업로드의 예약 반환·한도 소진 후 동일 job 재전송을 실제 route로 검증했다. quota 3 + guest 통합 7, 기존 회원 분석 queue 8, FSD boundary 4 및 tsc 통과.
 - Steiger가 App route/worker 소비자를 slice reference로 세지 않아 기존 예외 패턴에 guest-analysis만 추가했다.
+
+## 구현 기록: 체험 UI
+
+- 랜딩 CTA에서 공개 /profile로 진입하고 체험 상태를 확인한 뒤 녹음·업로드를 제공한다. 무료 1회·24시간·음성 사용 권한과 약관/개인정보 안내를 표시한다.
+- guest 입력은 ticket 확인 모달을 열지 않는다. used/full은 녹음·업로드를 숨기고 기존 결과 또는 로그인으로 연결한다. 서버 오류는 정책을 다시 확인할 수 있다.
+- 결과의 기존 차트·오디오는 그대로 제공하고 하단에 계정 저장 CTA를 배치한다. 로그인 후 /profile/save-trial의 명시적 claim POST가 성공하면 같은 profile ID로 복귀한다. 실패는 재시도 경로를 유지한다.
+- 로그인 직후 아직 저장하지 않은 체험 결과는 회원 세션과 본인 체험 cookie로 열람·삭제할 수 있다. 명시적인 resource actor helper로만 이 예외를 허용한다. 회원/guest policy query key를 분리하여 로그인 전환 시 기존 이용권 policy가 섞이지 않는다.
+- 약관·개인정보 안내를 실제 체험 cookie·보관·저장 동작에 맞춰 갱신했다.
+- focused Storybook 25개·guest quota/UI/API 14개·인증 navigation 8개·lint·tsc·FSD 검사가 통과했다. Google 제공자에 대한 실제 OAuth 로그인은 자동 실행하지 않았다.

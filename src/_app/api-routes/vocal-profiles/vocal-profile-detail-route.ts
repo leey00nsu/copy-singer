@@ -2,7 +2,11 @@ import { withApiAdmission } from "@/_app/api-routes/admission";
 import { canReadGuestResource, deleteGuestResult, GuestAnalysisError } from "@/entities/guest-analysis/index.server";
 import { vocalProfileRenameRequestSchema } from "@/entities/vocal-profile/index.model";
 import { serializeProfile } from "@/entities/vocal-profile/index.server";
-import { getAnalysisActor, requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
+import {
+  getAnalysisResourceActor,
+  requireApiSession,
+  unauthorizedResponse,
+} from "@/features/authentication/index.server";
 import { resourceIdSchema } from "@/shared/api";
 import { readBoundedJson } from "@/shared/api/index.server";
 import { prisma } from "@/shared/db/index.server";
@@ -16,7 +20,7 @@ function profileNotFoundResponse() {
 }
 
 async function handleGET(request: Request, context: { params: Promise<{ id: string }> }) {
-  const actor = await getAnalysisActor(request);
+  const actor = await getAnalysisResourceActor(request, { profileId: (await context.params).id });
   if (!actor) return unauthorizedResponse();
   const parsedId = resourceIdSchema.safeParse((await context.params).id);
   if (!parsedId.success) return profileNotFoundResponse();
@@ -62,7 +66,7 @@ async function handlePATCH(request: Request, context: { params: Promise<{ id: st
 }
 
 async function handleDELETE(request: Request, context: { params: Promise<{ id: string }> }) {
-  const actor = await getAnalysisActor(request);
+  const actor = await getAnalysisResourceActor(request, { profileId: (await context.params).id });
   if (!actor) return unauthorizedResponse();
   const parsedId = resourceIdSchema.safeParse((await context.params).id);
   if (!parsedId.success) return profileNotFoundResponse();

@@ -116,9 +116,9 @@ async function expectLandingStructure(canvasElement: HTMLElement) {
 export const SignedOut: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("button", { name: "내 목소리 분석하기: 목소리 분석 시작" })).toHaveAttribute(
+    await expect(canvas.getByRole("button", { name: "로그인 없이 분석하기: 목소리 분석 시작" })).toHaveAttribute(
       "href",
-      "/login?callbackURL=%2Fprofile",
+      "/profile",
     );
     await expect(canvas.getByLabelText("Copysinger 제품 흐름 미리보기")).toBeInTheDocument();
     await expect(canvas.getByRole("link", { name: "라이브러리 보기" })).toHaveAttribute(
@@ -139,7 +139,7 @@ export const Mobile: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("heading", { level: 1 })).toBeVisible();
     await waitFor(
-      () => expect(canvas.getByRole("button", { name: "내 목소리 분석하기: 목소리 분석 시작" })).toBeVisible(),
+      () => expect(canvas.getByRole("button", { name: "로그인 없이 분석하기: 목소리 분석 시작" })).toBeVisible(),
       { timeout: 2500 },
     );
     await expect(canvas.getByLabelText("Copysinger 제품 흐름 미리보기")).toBeInTheDocument();
@@ -170,7 +170,7 @@ export const ReducedMotion: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByTestId("reduced-motion-preview")).toBeVisible();
     await expect(canvas.getByRole("heading", { level: 1 })).toBeVisible();
-    await expect(canvas.getByRole("button", { name: "내 목소리 분석하기: 목소리 분석 시작" })).toBeVisible();
+    await expect(canvas.getByRole("button", { name: "로그인 없이 분석하기: 목소리 분석 시작" })).toBeVisible();
     await expect(canvas.getByLabelText("Copysinger 제품 흐름 미리보기")).toBeInTheDocument();
     await expectLandingStructure(canvasElement);
   },

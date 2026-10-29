@@ -69,8 +69,10 @@ const meta = {
     },
   },
   decorators: [
-    (Story) => (
-      <ProductShell user={{ email: "jieun@copysinger.test", name: "지은" }}>
+    (Story, context) => (
+      <ProductShell
+        user={context.args.guest && !context.args.signedIn ? null : { email: "jieun@copysinger.test", name: "지은" }}
+      >
         <Story />
       </ProductShell>
     ),
@@ -112,5 +114,31 @@ export const Mobile: Story = {
     await expect(canvas.getByRole("heading", { name: "보컬 프로필 13" })).toBeVisible();
     await expect(canvas.getByText("믹싱 3")).toBeVisible();
     await expect(canvas.getByRole("heading", { name: "제출한 보컬" })).toBeVisible();
+  },
+};
+
+export const GuestResult: Story = {
+  args: { guest: true },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("heading", { name: "내 목소리 분석 결과" })).toBeVisible();
+    await expect(canvas.getByRole("heading", { name: "보컬 분석 결과" })).toBeVisible();
+    await expect(canvas.getByRole("link", { name: "로그인하고 결과 저장하기" })).toHaveAttribute(
+      "href",
+      "/login?callbackURL=%2Fprofile%2Fsave-trial",
+    );
+    await expect(canvas.queryByRole("link", { name: "추천 결과 보기" })).not.toBeInTheDocument();
+    await expect(canvas.queryByRole("button", { name: "이름 변경" })).not.toBeInTheDocument();
+  },
+};
+
+export const UnsavedGuestResultAfterLogin: Story = {
+  args: { guest: true, signedIn: true },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("link", { name: "계정에 결과 저장하기" })).toHaveAttribute(
+      "href",
+      "/profile/save-trial",
+    );
   },
 };

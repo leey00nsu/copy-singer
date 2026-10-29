@@ -118,7 +118,17 @@ function RenameVocalProfileAction({
   );
 }
 
-export function VocalProfileActions({ displayName, profileId }: { displayName: string; profileId: string }) {
+export function VocalProfileActions({
+  displayName,
+  profileId,
+  guest = false,
+  signedIn = false,
+}: {
+  displayName: string;
+  profileId: string;
+  guest?: boolean;
+  signedIn?: boolean;
+}) {
   const router = useRouter();
   const deleteProfile = useMutation(deleteVocalProfileMutationOptions());
 
@@ -126,7 +136,7 @@ export function VocalProfileActions({ displayName, profileId }: { displayName: s
     deleteProfile.mutate(profileId, {
       onSuccess: () => {
         toast.success("보컬 프로필을 삭제했어요.");
-        router.push("/library?tab=profiles");
+        router.push(guest ? "/profile" : "/library?tab=profiles");
         router.refresh();
       },
       onError: () => toast.error("보컬 프로필을 삭제하지 못했어요. 잠시 뒤 다시 시도해 주세요."),
@@ -135,10 +145,25 @@ export function VocalProfileActions({ displayName, profileId }: { displayName: s
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <RenameVocalProfileAction disabled={deleteProfile.isPending} displayName={displayName} profileId={profileId} />
-      <Link className={buttonVariants()} href={`/recommendations/${profileId}`}>
-        <Sparkles className="size-4" aria-hidden="true" /> 추천 결과 보기
-      </Link>
+      {guest ? (
+        <Link
+          className={buttonVariants()}
+          href={signedIn ? "/profile/save-trial" : "/login?callbackURL=%2Fprofile%2Fsave-trial"}
+        >
+          {signedIn ? "계정에 결과 저장하기" : "로그인하고 결과 저장하기"}
+        </Link>
+      ) : (
+        <>
+          <RenameVocalProfileAction
+            disabled={deleteProfile.isPending}
+            displayName={displayName}
+            profileId={profileId}
+          />
+          <Link className={buttonVariants()} href={`/recommendations/${profileId}`}>
+            <Sparkles className="size-4" aria-hidden="true" /> 추천 결과 보기
+          </Link>
+        </>
+      )}
       <Dialog>
         <DialogTrigger render={<Button disabled={deleteProfile.isPending} variant="ghost" />}>
           <Trash2 className="size-4" aria-hidden="true" /> 삭제
@@ -147,7 +172,9 @@ export function VocalProfileActions({ displayName, profileId }: { displayName: s
           <DialogHeader>
             <DialogTitle>이 보컬 프로필을 삭제할까요?</DialogTitle>
             <DialogDescription>
-              연결된 AI 믹스가 있으면 먼저 삭제해 주세요. 삭제한 보컬 프로필은 복구할 수 없어요.
+              {guest
+                ? "분석 결과와 관련 음성이 삭제돼요. 무료 분석 기회는 복구되지 않아요."
+                : "연결된 AI 믹스가 있으면 먼저 삭제해 주세요. 삭제한 보컬 프로필은 복구할 수 없어요."}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

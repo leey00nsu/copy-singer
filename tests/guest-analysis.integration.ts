@@ -292,6 +292,26 @@ test("existing member saves exactly one new numbered profile, all assets and no 
       const job = await enqueueVocalProfileAnalysis({ userId: trial.userId, idempotencyKey: "save-me", file });
       await assert.rejects(() => claimGuestAnalysis(headers, memberId), /GUEST_ANALYSIS_PROCESSING/);
       await completeGuestJob(job);
+      await assert.rejects(() => claimGuestAnalysis(headers, "missing-member"));
+      assert.equal(
+        (await prisma.vocalProfileAnalysisJob.findUniqueOrThrow({ where: { id: job.id } })).userId,
+        trial.userId,
+      );
+      Object.assign(process.env, {
+        NODE_ENV: "test",
+        DEV_AUTH_BYPASS_ENABLED: "true",
+        DEV_AUTH_BYPASS_USER_ID: memberId,
+      });
+      const { GET: audio } = await import("../src/_app/api-routes/vocal-profiles/vocal-profile-audio-route");
+      const unsaved = await prisma.vocalProfileAnalysisJob.findUniqueOrThrow({ where: { id: job.id } });
+      assert.equal(
+        (
+          await audio(new Request("http://localhost/audio", { headers }), {
+            params: Promise.resolve({ id: unsaved.vocalProfileId! }),
+          })
+        ).status,
+        200,
+      );
       const before = await prisma.ticketWallet.findMany({ where: { userId: memberId } });
       const claims = await Promise.all([claimGuestAnalysis(headers, memberId), claimGuestAnalysis(headers, memberId)]);
       assert.equal(claims[0]!.profileId, claims[1]!.profileId);
@@ -432,5 +452,35 @@ test("last daily slot accepts one multipart submission, invalid uploads release 
     } finally {
       for (const reservation of held) reservation.release();
       await cleanupFixture([trial.userId]);
+    }
+  }));
+
+test("a new member keeps signup grants unchanged when claiming a trial", async () =>
+  withFakeMedia(async () => {
+    const { prisma, trial, headers, file } = await guestFixture();
+    const memberId = `new-member-${crypto.randomUUID()}`;
+    const { enqueueVocalProfileAnalysis } = await import("../src/features/analyze-vocal-profile/index.server");
+    const { ensureSignupTicketGrants } = await import("../src/entities/ticket/index.server");
+    const { claimGuestAnalysis } = await import("../src/entities/guest-analysis/index.server");
+    try {
+      await prisma.user.create({ data: { id: memberId, name: "New member", email: `${memberId}@example.test` } });
+      await ensureSignupTicketGrants(memberId);
+      const before = await prisma.ticketLedger.findMany({ where: { userId: memberId }, orderBy: { id: "asc" } });
+      const wallets = await prisma.ticketWallet.findMany({ where: { userId: memberId }, orderBy: { kind: "asc" } });
+      const job = await enqueueVocalProfileAnalysis({ userId: trial.userId, idempotencyKey: "new-member", file });
+      await completeGuestJob(job);
+      const saved = await claimGuestAnalysis(headers, memberId);
+      await claimGuestAnalysis(headers, memberId);
+      assert.equal((await prisma.vocalProfile.findUniqueOrThrow({ where: { id: saved.profileId } })).profileNumber, 1);
+      assert.deepEqual(
+        await prisma.ticketLedger.findMany({ where: { userId: memberId }, orderBy: { id: "asc" } }),
+        before,
+      );
+      assert.deepEqual(
+        await prisma.ticketWallet.findMany({ where: { userId: memberId }, orderBy: { kind: "asc" } }),
+        wallets,
+      );
+    } finally {
+      await cleanupFixture([trial.userId, memberId]);
     }
   }));

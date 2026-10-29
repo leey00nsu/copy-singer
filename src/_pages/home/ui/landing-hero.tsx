@@ -11,6 +11,7 @@ import { GradientText } from "@/shared/ui/gradient-text";
 import styles from "./landing-hero.module.css";
 
 type LandingHeroProps = {
+  guest?: boolean;
   primaryLabel: string;
   profileHref: string;
 };
@@ -53,7 +54,7 @@ function entryMotion(delay: number, reduced: boolean) {
   } as const;
 }
 
-function LandingHero({ primaryLabel, profileHref }: LandingHeroProps) {
+function LandingHero({ guest = false, primaryLabel, profileHref }: LandingHeroProps) {
   const reduced = Boolean(useReducedMotion());
 
   const handleUsageNavigation = (event: MouseEvent<HTMLAnchorElement>) => {
@@ -106,7 +107,9 @@ function LandingHero({ primaryLabel, profileHref }: LandingHeroProps) {
             {...entryMotion(0.76, reduced)}
             className={`${styles.heroEntry} mx-auto mt-6 max-w-[38rem] text-sm leading-7 text-muted-foreground sm:text-[15px]`}
           >
-            한 소절을 들려주면 음역과 보컬 특성을 분석해, 잘 맞는 노래와 키를 추천하고 AI 믹싱까지 이어드려요.
+            {guest
+              ? "내 목소리를 한 번 무료로 분석해 보세요. 로그인하면 노래 추천과 AI 믹싱으로 이어갈 수 있어요."
+              : "한 소절을 들려주면 음역과 보컬 특성을 분석해, 잘 맞는 노래와 키를 추천하고 AI 믹싱까지 이어드려요."}
           </motion.p>
           <motion.div
             {...entryMotion(0.94, reduced)}

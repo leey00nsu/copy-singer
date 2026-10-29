@@ -14,9 +14,8 @@ const productMetadata = PRIVATE_METADATA;
 async function ProductLayout({ children }: { children: ReactNode }) {
   const session = await getRequestSession();
 
-  // 각 Page가 자신의 정확한 callback URL로 인증을 요구한다. Layout은 인증된
-  // 요청에만 persistent shell을 더해 callback 정밀도와 URL 호환성을 보존한다.
-  if (!session) return children;
+  // Each page owns its authentication boundary; public trials share the same shell.
+  if (!session) return <ProductShell user={null}>{children}</ProductShell>;
 
   const developmentBypass = isDevelopmentAuthBypassSession(session.session);
   let onboarding: Awaited<ReturnType<typeof getOnboardingSnapshot>> | undefined;
