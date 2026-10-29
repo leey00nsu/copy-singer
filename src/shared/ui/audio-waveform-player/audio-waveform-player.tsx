@@ -139,12 +139,6 @@ function AudioWaveformPlayerInstance({
     void wavesurfer.playPause();
   }, [finished, wavesurfer]);
 
-  const restart = useCallback(() => {
-    if (!wavesurfer) return;
-    wavesurfer.setTime(0);
-    void wavesurfer.play();
-  }, [wavesurfer]);
-
   const toggleMuted = useCallback(() => {
     if (!wavesurfer) return;
     if (volume === 0) {
@@ -265,7 +259,7 @@ function AudioWaveformPlayerInstance({
           </div>
           <div className="mt-3 flex items-center gap-2">
             <Button
-              aria-label={isPlaying ? `${label} 일시정지` : `${label} 재생`}
+              aria-label={isPlaying ? `${label} 일시정지` : finished ? `${label} 처음부터 재생` : `${label} 재생`}
               disabled={!isReady}
               onClick={togglePlayback}
               size="icon-sm"
@@ -284,17 +278,6 @@ function AudioWaveformPlayerInstance({
               {formatPlaybackTime(currentTime)} / {formatPlaybackTime(Math.round(duration))}
             </span>
             <span className="h-px flex-1 bg-border" />
-            {finished ? (
-              <Button
-                aria-label={`${label} 처음부터 재생`}
-                onClick={restart}
-                size="icon-sm"
-                type="button"
-                variant="ghost"
-              >
-                <RotateCcw className="size-3.5" />
-              </Button>
-            ) : null}
             <Popover>
               <PopoverTrigger
                 disabled={!isReady}

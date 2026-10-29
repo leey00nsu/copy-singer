@@ -230,13 +230,13 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
-- [TODO][PRD-FR-041] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-10 오디오 완료 상태의 중복 다시 재생 버튼 제거
+- [DONE][PRD-FR-041] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-10 오디오 완료 상태의 중복 다시 재생 버튼 제거
   - Date: 2026-10-29
   - Acceptance:
     - 일반 오디오와 구간 재생이 끝나도 다시 재생은 맨 왼쪽 버튼 하나만 제공하며 해당 버튼은 처음부터 재생한다.
   - Checklist:
-    - [ ] 오른쪽 완료 전용 중복 버튼과 불필요한 handler를 제거하고 왼쪽 버튼의 접근 가능한 완료 라벨을 제공한다.
-    - [ ] 기존 플레이어 Storybook·오디오 단위·타입·lint와 완료 후 재생 확인 및 문서 감사를 실행한다.
+    - [x] 오른쪽 완료 전용 중복 버튼과 불필요한 handler를 제거하고 왼쪽 버튼의 접근 가능한 완료 라벨을 제공한다.
+    - [x] 기존 플레이어 Storybook·오디오 단위·타입·lint와 완료 후 재생 확인 및 문서 감사를 실행한다.
   - Docs:
     - docs:prd/copy-singer-prd.md
   - Review Evidence: -
@@ -257,8 +257,8 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
-- [ ] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
+- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
+- [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
 
 ### 테스트 실행 기록
@@ -289,10 +289,12 @@
 
 완료 기록에는 테스트뿐 아니라 build·typecheck·lint 등 Plan에서 정한 검증과 수동 검증 증거를 포함합니다. 자동 검사의 기준은 실제 `workflow.featureChecks`이며, 검사 생략은 통과로 기록하지 않고 명시적인 사유를 남깁니다.
 
-<!-- lee-spec-kit:workflow-sync sha256:dc96c9a833f21bcb7d55bc7cf3f40b512a0c335b54c550760f7b2f21701c4f32 -->
+<!-- lee-spec-kit:workflow-sync sha256:44df95e7ba9f1917956927ac0ad37b778d44c866f16eadf7aea6ba023f89d43a -->
 
 관리자 task 07 검증: `node --conditions react-server --import tsx --test tests/admin-operations.integration.ts` 2개 통과. 기존 회원 조정/원장/알림과 신규 guest 분리/저장 관계/만료 필터/페이지 상한/민감 필드 제외/guest 조정 차단을 확인했다. tsc와 변경 파일 ESLint도 통과했다.
 
 관리자 task 08 검증: 운영 설명 원문 유지, 네 공통 메뉴·회원/체험 Tabs·선택 목록 하나·독립 URL 상태·고정 회원 티켓 Sheet를 구현했다. URL/SSR 8개·신규 Storybook 8개, 전체 Storybook 197개와 pnpm test exit 0을 확인했다. tsc·lint·Steiger/FSD 4개·diff 검사 통과. 390px 브라우저에서 페이지/Sheet의 가로 넘침 없음·키보드 닫기와 실제 컴포넌트의 목록/문구를 확인했다. 비인증 로컬 /admin은 관리자 권한 검사에서 404로 차단됨을 확인했다. 실제 OAuth/유료 GPU 호출은 실행하지 않았다.
 
 관리자 task 09 검증: 세 loading adapter의 실제 연결과 화면 구조를 대조했다. 메인은 이미 단일 목록이었고 음원·커스텀의 공통 메뉴 누락과 커스텀 뒤로가기 자리를 보완했다. 공유 메뉴 skeleton 4개·세 SSR의 aria-busy/status/공통 컨테이너·비활성 placeholder를 확인했고 기존 관리자 UI/URL 8개, tsc·변경 파일 ESLint/Biome·Steiger/FSD 4개·diff 검사와 문서 감사가 통과했다. 직전 40bf0df의 전체 pnpm test 성공 이후 정적 skeleton만 변경하여 전체 suite는 반복하지 않았다.
+
+플레이어 task 10 검증: 기존 오디오 단위 3개·플레이어 Storybook 3개, tsc·변경 파일 ESLint/Biome·Steiger/FSD 4개·diff 검사 통과. 일회성 Chromium QA에서 일반 완료 후 다시 재생 한 개·toolbar 네 버튼·첫 위치와 실제 play 시작 시각 [0,0], 구간 완료와 다시 재생 시각 [0.05,0]을 확인했다. 폭 320px에서 player.scrollWidth=clientWidth 및 모든 버튼이 player 경계 안에 있음을 확인하고 /tmp/copy-singer-player-replay-fixed.png로 시각 확인했다. 새 영구 테스트·유료 호출·전체 suite 반복은 하지 않았다.

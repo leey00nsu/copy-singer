@@ -188,3 +188,5 @@
 ## D008: 완료 후 다시 재생 버튼을 맨 왼쪽 하나로 유지
 
 사용자가 첨부한 파형 플레이어에서 완료 시 좌측 버튼이 RotateCcw로 바뀌고 우측에 같은 버튼이 추가되어 control이 넘치는 원인을 확인했다. 기존 좌측 togglePlayback의 finished 분기를 사용하고 우측 완료 전용 버튼과 restart callback을 제거한다. 새 디자인이나 재생 정책 변경 없이 요청한 중복 제거에 한정하며, 최종 구현/병합 승인은 별도다.
+
+- 구현/검증: 오른쪽 조건부 replay와 restart callback을 제거하고 왼쪽 완료 라벨을 처음부터 재생으로 맞췄다. 기존 단위 3·Storybook 3·tsc·lint/Biome·Steiger/FSD 4·diff가 통과했다. 실제 Chromium에서 일반/구간 완료 후 replay 한 개·좌측 첫 위치와 재시작 0초를 확인했고 폭 320px에서 overflow가 없었다. QA는 합성한 로컬 WAV fixture만 사용했다. 사용자 음성이나 외부 GPU/DB mutation은 사용하지 않았다.
