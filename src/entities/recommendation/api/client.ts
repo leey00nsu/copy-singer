@@ -28,13 +28,18 @@ export function getRecommendation(profileId: string, signal?: AbortSignal): Prom
   });
 }
 
-export function recommendationDetailQueryOptions(profileId: string | null, initialData?: RecommendationRunResponse) {
+export function recommendationDetailQueryOptions(
+  profileId: string | null,
+  initialData?: RecommendationRunResponse,
+  audience?: "guest" | "member",
+) {
+  const identity = recommendationKeys.detail(
+    profileId,
+    initialData?.catalogRevision ?? "current",
+    initialData?.scoringVersion ?? "current",
+  );
   return queryOptions({
-    queryKey: recommendationKeys.detail(
-      profileId,
-      initialData?.catalogRevision ?? "current",
-      initialData?.scoringVersion ?? "current",
-    ),
+    queryKey: audience ? ([...identity, audience] as const) : identity,
     enabled: profileId !== null,
     queryFn: ({ signal }) => {
       if (profileId === null) {
@@ -45,8 +50,7 @@ export function recommendationDetailQueryOptions(profileId: string | null, initi
       }
       return getRecommendation(profileId, signal);
     },
-    ...(initialData ? { initialData, staleTime: 30_000 } : {}),
+    ...(initialData ? { initialData, staleTime: audience === "guest" ? 0 : 30_000 } : {}),
     refetchInterval: (query) => recommendationPollingInterval(query.state.data),
   });
 }
-

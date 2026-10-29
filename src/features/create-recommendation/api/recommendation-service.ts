@@ -1,5 +1,6 @@
 import "server-only";
 
+import { canReadGuestResource } from "@/entities/guest-analysis/index.server";
 import {
   formatRecommendationReasons,
   type KeyFitProfile,
@@ -93,6 +94,15 @@ export async function getRecommendationResult(
     throw new RecommendationError("RECOMMENDATION_NOT_FOUND", "Recommendation profile was not found.", {
       status: 404,
     });
+  }
+
+  if (profileRow.userId) {
+    const owner = await prisma.user.findUnique({ where: { id: profileRow.userId }, select: { isGuest: true } });
+    if (owner?.isGuest && !(await canReadGuestResource(profileRow.userId, { profileId: profileRow.id }))) {
+      throw new RecommendationError("RECOMMENDATION_NOT_FOUND", "Recommendation profile was not found.", {
+        status: 404,
+      });
+    }
   }
 
   const profile = requiredProfile(profileRow);

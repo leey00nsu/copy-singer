@@ -127,7 +127,10 @@ export const GuestResult: Story = {
       "href",
       "/login?callbackURL=%2Fprofile%2Fsave-trial",
     );
-    await expect(canvas.queryByRole("link", { name: "추천 결과 보기" })).not.toBeInTheDocument();
+    await expect(canvas.getByRole("link", { name: "추천 결과 보기" })).toHaveAttribute(
+      "href",
+      `/recommendations/${profile.id}`,
+    );
     await expect(canvas.queryByRole("button", { name: "이름 변경" })).not.toBeInTheDocument();
   },
 };

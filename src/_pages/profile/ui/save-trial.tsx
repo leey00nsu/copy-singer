@@ -6,11 +6,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { z } from "zod";
+import { guestRecommendationReturn } from "@/entities/guest-analysis/index.model";
 import { ApiError, requestJson } from "@/shared/api";
 import { Button } from "@/shared/ui/button";
 import { StatusNotice } from "@/shared/ui/status-notice";
 
-export function SaveTrial() {
+export function SaveTrial({ next }: { next?: string }) {
   const router = useRouter();
   const queries = useQueryClient();
   const started = useRef(false);
@@ -19,8 +20,9 @@ export function SaveTrial() {
       requestJson("/api/guest-analysis/claim", { method: "POST", schema: z.object({ profileId: z.uuid() }) }),
     onSuccess: ({ profileId }) => {
       queries.removeQueries({ queryKey: ["vocal-analysis"] });
+      queries.removeQueries({ queryKey: ["recommendation"] });
       void queries.invalidateQueries({ queryKey: ["vocal-profile"] });
-      router.replace(`/vocal-profiles/${profileId}`);
+      router.replace(guestRecommendationReturn(profileId, next));
       router.refresh();
     },
   });

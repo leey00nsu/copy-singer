@@ -120,3 +120,15 @@ export const CompletedWithoutJobId: Story = {
     await expect(canvas.queryByRole("link", { name: "믹싱 결과 보기" })).not.toBeInTheDocument();
   },
 };
+
+export const GuestLoginDoesNotStartMixing: Story = {
+  args: { guestSaveHref: "/login?callbackURL=%2Fprofile%2Fsave-trial", onStart: fn() },
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    const link = canvas.getByRole("link", { name: "로그인하고 AI 믹싱하기" });
+    link.addEventListener("click", (event) => event.preventDefault(), { once: true });
+    await userEvent.click(link);
+    await expect(args.onStart).not.toHaveBeenCalled();
+    await expect(within(document.body).queryByRole("dialog")).not.toBeInTheDocument();
+  },
+};

@@ -1,6 +1,6 @@
 import { withApiAdmission } from "@/_app/api-routes/admission";
 import { RecommendationError } from "@/entities/recommendation/index.model";
-import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
+import { getAnalysisResourceActor, unauthorizedResponse } from "@/features/authentication/index.server";
 import { createRecommendationRequestSchema } from "@/features/create-recommendation/index.model";
 import { getRecommendationResult } from "@/features/create-recommendation/index.server";
 import { readBoundedJson } from "@/shared/api/index.server";
@@ -27,9 +27,6 @@ function errorResponse(error: unknown) {
 }
 
 async function handlePOST(request: Request) {
-  const session = await requireApiSession(request);
-  if (!session) return unauthorizedResponse();
-
   let body: unknown;
   try {
     body = await readBoundedJson(request);
@@ -42,8 +39,10 @@ async function handlePOST(request: Request) {
       new RecommendationError("INVALID_REQUEST", "A valid userVocalProfileId is required.", { status: 400 }),
     );
   }
+  const actor = await getAnalysisResourceActor(request, { profileId: parsed.data.userVocalProfileId });
+  if (!actor) return unauthorizedResponse();
   try {
-    return Response.json(await getRecommendationResult(parsed.data.userVocalProfileId, session.user.id), {
+    return Response.json(await getRecommendationResult(parsed.data.userVocalProfileId, actor.userId), {
       status: 200,
     });
   } catch (error) {
@@ -51,4 +50,4 @@ async function handlePOST(request: Request) {
   }
 }
 
-export const POST = withApiAdmission(handlePOST);
+export const POST = withApiAdmission(handlePOST, { allowGuest: true });

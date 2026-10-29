@@ -14,6 +14,8 @@ import { buttonVariants } from "@/shared/ui/button";
 import { mixingJobDetailHref } from "../api/client";
 
 export function RecommendationMixingAction({
+  guestSaveHref,
+  guestSignedIn = false,
   compact = false,
   idleLabel = "AI 믹싱",
   item,
@@ -21,6 +23,8 @@ export function RecommendationMixingAction({
   onStart,
   ticketCost,
 }: {
+  guestSaveHref?: string;
+  guestSignedIn?: boolean;
   compact?: boolean;
   idleLabel?: string;
   item: RecommendationItemResponse;
@@ -31,6 +35,26 @@ export function RecommendationMixingAction({
   const status = item.synthesis.status;
   const mixingUnavailable = mixing?.available === false;
   const unavailableDescription = recommendationMixingUnavailableDescription(mixing);
+  if (guestSaveHref)
+    return compact ? (
+      <Badge variant="secondary">{mixingUnavailable ? "믹싱 불가" : "로그인 후 믹싱"}</Badge>
+    ) : (
+      <div className="grid gap-2">
+        {mixingUnavailable ? (
+          <p className="text-xs leading-5 text-muted-foreground" role="status">
+            {unavailableDescription}
+          </p>
+        ) : null}
+        <Link className={buttonVariants({ size: "sm" })} href={guestSaveHref}>
+          <Sparkles className="size-4" aria-hidden="true" />{" "}
+          {guestSignedIn
+            ? "계정에 저장하고 계속하기"
+            : mixingUnavailable
+              ? "로그인하고 결과 저장하기"
+              : "로그인하고 AI 믹싱하기"}
+        </Link>
+      </div>
+    );
 
   const mixingStatus = (() => {
     if (status === "preparing") return "preparing";

@@ -1,6 +1,6 @@
 import { withApiAdmission } from "@/_app/api-routes/admission";
 import { RecommendationError } from "@/entities/recommendation/index.model";
-import { requireApiSession, unauthorizedResponse } from "@/features/authentication/index.server";
+import { getAnalysisResourceActor, unauthorizedResponse } from "@/features/authentication/index.server";
 import { getRecommendationResult } from "@/features/create-recommendation/index.server";
 import { resourceIdSchema } from "@/shared/api";
 
@@ -20,17 +20,19 @@ function errorResponse(error: unknown) {
 }
 
 async function handleGET(request: Request, context: { params: Promise<{ id: string }> }) {
-  const session = await requireApiSession(request);
-  if (!session) return unauthorizedResponse();
   try {
     const parsedId = resourceIdSchema.safeParse((await context.params).id);
     if (!parsedId.success) {
       throw new RecommendationError("RECOMMENDATION_NOT_FOUND", "Recommendation was not found.", { status: 404 });
     }
-    return Response.json(await getRecommendationResult(parsedId.data, session.user.id));
+    const actor = await getAnalysisResourceActor(request, { profileId: parsedId.data });
+    if (!actor) return unauthorizedResponse();
+    return Response.json(await getRecommendationResult(parsedId.data, actor.userId), {
+      headers: { "Cache-Control": "no-store" },
+    });
   } catch (error) {
     return errorResponse(error);
   }
 }
 
-export const GET = withApiAdmission(handleGET);
+export const GET = withApiAdmission(handleGET, { allowGuest: true });

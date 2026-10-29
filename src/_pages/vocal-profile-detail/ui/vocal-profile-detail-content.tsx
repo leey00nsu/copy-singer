@@ -95,7 +95,8 @@ export function VocalProfileDetailContent({ detail, guest = false, signedIn = fa
         <section aria-label="분석 결과 저장" className="mt-10 grid gap-4 rounded-xl border p-5 sm:p-6">
           <h2 className="text-lg font-semibold">내 분석 결과를 저장해 보세요.</h2>
           <p className="text-sm leading-6 text-muted-foreground">
-            결과는 분석 완료 후 24시간 동안 보관돼요. 계정에 저장한 프로필로 노래 추천과 AI 믹싱을 이용할 수 있어요.
+            결과는 분석 완료 후 24시간 동안 보관돼요. 로그인 없이 추천을 확인하고, 계정에 저장하면 AI 믹싱으로 이어갈 수
+            있어요.
           </p>
           <VocalProfileActions
             displayName={detail.profile.displayName}

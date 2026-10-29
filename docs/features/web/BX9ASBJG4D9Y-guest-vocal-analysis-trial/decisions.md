@@ -102,3 +102,21 @@
 - **Rationale**: 기존 추천 계산과 UI를 재사용하여 제품의 실제 효용을 체험하게 하며, 비싼 외부 합성과 이용권 권한은 기존 회원 경계를 유지한다.
 - **Trace**: recommendation-service.ts는 DB와 로컬 scoring으로 계산하며 신규 job·외부 fetch를 만들지 않는다. 기존 DONE task 01~04는 다시 쓰지 않고 후속 task 05로 실행한다. 이번 요청은 최종 구현 승인이나 병합 승인으로 기록하지 않는다.
 - **Evidence**: 기존 checkpoint `5acf6ee`, `2002c10`; 사용자 제안 승인 대화와 갱신한 Spec FR-6 / Plan 후속 범위.
+
+## 후속 구현 기록: 추천 체험
+
+- task 05에서 추천 GET/POST·추천 목록·곡 상세에 resource actor를 연결했다. getRecommendationResult는 guest 소유 프로필에 대해 만료/체험 연결을 확인하여 페이지 최초 렌더와 API 재조회 모두 같은 권한을 적용한다.
+- 체험 추천의 전체 목록·검색·정렬·키/이유와 곡 상세를 제공한다. 추천 조회는 카탈로그/프로필 계산만 수행하고 외부 AI·분석 접수·티켓 원장·믹싱 job을 생성하지 않는다. 일일 신규 분석을 0으로 중지한 상태에서도 기존 체험의 추천이 열리는 것을 검증했다.
+- guest action은 회원 mutation 대신 로그인·저장 링크다. callback은 선택 곡을 보존하고 저장 이후 저장한 profile의 추천 목록/UUID 곡 상세만 허용한다. 외부·다른 profile·재귀·encoded 경로와 제어 문자는 fallback 처리한다. 저장 retry도 같은 next를 유지하며 자동 믹싱하지 않는다.
+- 추천 cache는 guest/member audience를 분리하고 저장 완료 시 이전 추천 cache를 제거한다. 기존 회원의 ticket 확인/믹싱 실행 계약은 유지한다. 믹싱 reference가 없는 체험에는 제한 사유를 표시한다.
+- focused Storybook 28개가 통과했으며 저장 성공 복귀·실패 후 retry·잘못된 외부 next와 guest 믹싱 클릭의 무작업 동작을 포함한다. guest quota/복귀/UI 9개 + DB/API 9개가 통과했다.
+- 첫 전체 build에서 곡 상세 파일의 use-client 선언이 import 뒤로 이동한 오류를 발견해 수정했다. 전체 실패 출력은 `/tmp/copy-singer-guest-recommendation-full-test.log`에 보존했다. 수정 후 lint·tsc·architecture 4개는 통과했고 전체 suite를 재실행 중이다.
+
+- 기존 `recommendation-song-detail`의 회원 세션 변수명을 고정한 소스 단언을 새 resource actor 계약으로 갱신했다. 최초 재검사의 전체 출력은 `/tmp/copy-singer-guest-recommendation-full-retry.log`에 보존했고, 해당 suite 6개가 통과한 뒤 전체 suite를 다시 실행했다. 실제 제품 권한/만료는 guest API 통합 검사로 보호한다.
+
+## 추천 확장 검증 완료
+
+- `.env.local`을 dotenv로 로드한 `pnpm test` 전체가 exit 0으로 완료됐다. production build, 모든 기존 unit/DB/API/권한/worker suite, Storybook 189개, guest 18개, readiness 13개 + Python 4개가 통과했다. 전체 출력은 `/tmp/copy-singer-guest-recommendation-verified.log`에 보존했다. 기존 skipped Storybook 2개는 유지했다.
+- 최종 runtime 수정 이후 lint·tsc·architecture·git diff --check가 통과했다. 추가 source assertion 수정은 권한 계약에 맞춘 테스트 갱신이며 제품 변경이 아니다.
+- 본인 체험 추천과 곡 상세, 무쿠키/타인/만료 차단, 일일 마감 중 기존 추천 열람, 외부 호출 없음, job/티켓 불변, 선택곡 callback·안전한 복귀·retry·guest action 무작업을 검증했다. 실제 Google OAuth와 유료 Modal 믹싱은 실행하지 않았다.
+- user scope 승인과 별개로 확장된 구현 결과의 최종 승인 및 local merge 승인은 아직 대기한다. main 병합·원격 push·배포는 수행하지 않았다.

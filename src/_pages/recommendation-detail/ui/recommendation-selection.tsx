@@ -1,5 +1,6 @@
 import { ArrowUpRight, Gauge, Music2, Ticket } from "lucide-react";
 import Link from "next/link";
+import { guestRecommendationSaveHref } from "@/entities/guest-analysis/index.model";
 import {
   formatRecommendedShift,
   type RecommendationItemResponse,
@@ -15,6 +16,8 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { FunnelActionBar } from "@/widgets/creation-funnel";
 
 function SelectionDetails({
+  guest = false,
+  signedIn = false,
   idPrefix,
   item,
   matchRank,
@@ -23,6 +26,8 @@ function SelectionDetails({
   runId,
   ticketCost,
 }: {
+  guest?: boolean;
+  signedIn?: boolean;
   idPrefix: string;
   item: RecommendationItemResponse;
   matchRank: number | null;
@@ -77,11 +82,19 @@ function SelectionDetails({
         </section>
       ) : null}
 
-      <div className="mt-6 flex items-center gap-2 text-sm font-medium">
-        <Ticket aria-hidden="true" className="size-4" /> 티켓 {ticketCost}개 사용
-      </div>
+      {!guest ? (
+        <div className="mt-6 flex items-center gap-2 text-sm font-medium">
+          <Ticket aria-hidden="true" className="size-4" /> 티켓 {ticketCost}개 사용
+        </div>
+      ) : (
+        <p className="mt-6 text-xs leading-5 text-muted-foreground">
+          로그인 후 프로필을 저장하고 믹싱 가능 여부와 비용을 확인해 주세요. 작업은 직접 시작할 때만 생성돼요.
+        </p>
+      )}
       <div className="mt-4 grid gap-2">
         <RecommendationMixingAction
+          guestSaveHref={guest ? guestRecommendationSaveHref(runId, item.id, signedIn) : undefined}
+          guestSignedIn={signedIn}
           idleLabel="이 곡으로 AI 믹싱"
           item={item}
           mixing={mixing}
@@ -97,6 +110,8 @@ function SelectionDetails({
 }
 
 export function RecommendationSelection({
+  guest = false,
+  signedIn = false,
   item,
   matchRank,
   mixing,
@@ -104,6 +119,8 @@ export function RecommendationSelection({
   runId,
   ticketCost,
 }: {
+  guest?: boolean;
+  signedIn?: boolean;
   item: RecommendationItemResponse;
   matchRank: number | null;
   mixing?: RecommendationMixingCapability;
@@ -120,6 +137,8 @@ export function RecommendationSelection({
       >
         <div className="rounded-xl border p-6">
           <SelectionDetails
+            guest={guest}
+            signedIn={signedIn}
             idPrefix="desktop-selection"
             item={item}
             matchRank={matchRank}
@@ -139,17 +158,23 @@ export function RecommendationSelection({
                 <Music2 aria-hidden="true" className="size-4" /> 선택한 곡 확인
               </SheetTrigger>
             }
-            description={`${formatRecommendedShift(item.recommendedShift)} · 티켓 ${ticketCost}개`}
+            description={`${formatRecommendedShift(item.recommendedShift)} · ${guest ? "로그인 후 믹싱" : `티켓 ${ticketCost}개`}`}
             eyebrow="선택한 곡"
             title={`${item.title} · ${item.artist}`}
           />
           <SheetContent aria-label="선택한 추천곡" className="max-h-[90dvh] overflow-y-auto" side="bottom">
             <SheetHeader>
               <SheetTitle>선택한 추천곡</SheetTitle>
-              <SheetDescription>추천 근거와 티켓 비용을 확인한 뒤 AI 믹싱을 시작하세요.</SheetDescription>
+              <SheetDescription>
+                {guest
+                  ? "추천 근거를 확인하고 로그인하면 선택한 곡으로 이어갈 수 있어요."
+                  : "추천 근거와 티켓 비용을 확인한 뒤 AI 믹싱을 시작하세요."}
+              </SheetDescription>
             </SheetHeader>
             <div className="border-t px-5 pt-5 pb-7">
               <SelectionDetails
+                guest={guest}
+                signedIn={signedIn}
                 idPrefix="mobile-selection"
                 item={item}
                 matchRank={matchRank}

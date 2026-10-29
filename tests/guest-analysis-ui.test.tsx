@@ -4,9 +4,13 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { AppRouterContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createQueryClient } from "@/_app/providers";
+import { guestRecommendationSaveHref } from "@/entities/guest-analysis/index.model";
 import type { VocalProfileResponse } from "@/entities/vocal-profile";
 import { VoiceScanInput } from "../src/_pages/profile/ui/voice-scan-input";
+import { RecommendationResults } from "../src/_pages/recommendation-detail/ui/recommendation-results";
+import { SongDetail } from "../src/_pages/song-detail/ui/song-detail";
 import { VocalProfileDetailContent } from "../src/_pages/vocal-profile-detail/ui/vocal-profile-detail-content";
+import { recommendationRunFixture } from "./msw/fixtures";
 
 const router = { back() {}, bfcacheId: "guest-ui", forward() {}, prefetch() {}, push() {}, refresh() {}, replace() {} };
 function render(ui: React.ReactNode) {
@@ -101,8 +105,32 @@ test("trial result exposes analysis and audio, then offers saving to a new or ex
   assert.match(html, /제출한 보컬/);
   assert.match(html, /로그인하고 결과 저장하기/);
   assert.match(html, /callbackURL=%2Fprofile%2Fsave-trial/);
-  assert.doesNotMatch(html, /추천 결과 보기|이름 변경|새 프로필 분석하기/);
+  assert.match(html, /추천 결과 보기/);
+  assert.doesNotMatch(html, /이름 변경|새 프로필 분석하기/);
   const signedIn = render(<VocalProfileDetailContent detail={detail} guest signedIn />);
   assert.match(signedIn, /계정에 결과 저장하기/);
   assert.match(signedIn, /href="\/profile\/save-trial"/);
+});
+
+test("guest recommendations show the full comparison and a login link carrying the selected song", () => {
+  const html = render(<RecommendationResults initialRun={recommendationRunFixture} guest />);
+  assert.match(html, /내 목소리에 맞는 노래/);
+  assert.match(html, /추천 키/);
+  assert.match(html, /전체 분석 결과 보기/);
+  assert.match(html, /로그인하고 AI 믹싱하기/);
+  assert.ok(
+    html.includes(guestRecommendationSaveHref(recommendationRunFixture.id, recommendationRunFixture.items[0]!.id)),
+  );
+  assert.doesNotMatch(html, /티켓 1개 사용/);
+  const detail = render(
+    <SongDetail
+      initialRun={recommendationRunFixture}
+      itemId={recommendationRunFixture.items[0]!.id}
+      ticketCost={1}
+      guest
+    />,
+  );
+  assert.match(detail, /주요 음역 비교/);
+  assert.match(detail, /로그인하고 AI 믹싱하기/);
+  assert.doesNotMatch(detail, /티켓 1개 사용/);
 });

@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Music2, Ticket } from "lucide-react";
 import Link from "next/link";
+import { guestRecommendationSaveHref } from "@/entities/guest-analysis/index.model";
 import {
   formatRecommendedShift,
   type RecommendationRunResponse,
@@ -19,20 +20,24 @@ import { buttonVariants } from "@/shared/ui/button";
 import { StatePanel } from "@/shared/ui/state-panel";
 
 export function SongDetail({
+  guest = false,
+  signedIn = false,
   initialRun,
   itemId,
   ticketCost,
 }: {
+  guest?: boolean;
+  signedIn?: boolean;
   initialRun: RecommendationRunResponse;
   itemId: string;
   ticketCost: number;
 }) {
-  const runQuery = useQuery(recommendationDetailQueryOptions(initialRun.id, initialRun));
+  const runQuery = useQuery(recommendationDetailQueryOptions(initialRun.id, initialRun, guest ? "guest" : "member"));
   const run = runQuery.data ?? initialRun;
   const item = selectRecommendationItem(run, itemId);
   const { startMixing } = useRecommendationMixing();
 
-  if (!item) {
+  if (!item || (guest && runQuery.isError)) {
     return (
       <StatePanel
         action={
@@ -41,7 +46,11 @@ export function SongDetail({
           </Link>
         }
         className="min-h-[60vh]"
-        description="추천 목록이 바뀌었거나 현재 결과에 없는 곡이에요."
+        description={
+          guest && runQuery.isError
+            ? "체험 결과의 보관 기간이 지났거나 결과를 불러오지 못했어요."
+            : "추천 목록이 바뀌었거나 현재 결과에 없는 곡이에요."
+        }
         icon={<Music2 />}
         title="추천 곡을 찾을 수 없어요."
       />
@@ -157,16 +166,28 @@ export function SongDetail({
             이 곡으로 AI 믹싱
           </h2>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            이 곡과 보컬 프로필로 AI 믹싱을 만들어요. 아래 버튼을 눌러야 작업이 시작돼요.
+            {guest
+              ? "추천을 확인한 뒤 로그인하면 이 프로필을 계정에 저장하고 선택한 곡으로 이어갈 수 있어요."
+              : "이 곡과 보컬 프로필로 AI 믹싱을 만들어요. 아래 버튼을 눌러야 작업이 시작돼요."}
           </p>
-          <p className="mt-4 flex items-center gap-2 text-sm font-medium">
-            <Ticket className="size-4" aria-hidden="true" /> 티켓 {ticketCost}개 사용
-          </p>
+          {guest ? (
+            <p className="mt-4 text-xs leading-5 text-muted-foreground">
+              로그인하면 프로필을 저장하고 이 곡으로 돌아와요. 믹싱은 비용 확인 후 직접 시작할 수 있어요.
+            </p>
+          ) : (
+            <p className="mt-4 flex items-center gap-2 text-sm font-medium">
+              <Ticket className="size-4" aria-hidden="true" /> 티켓 {ticketCost}개 사용
+            </p>
+          )}
           <div className="mt-5">
             <RecommendationMixingAction
+              guestSaveHref={guest ? guestRecommendationSaveHref(run.id, item.id, signedIn) : undefined}
+              guestSignedIn={signedIn}
               item={item}
               mixing={run.profile.mixing}
-              onStart={(selectedItemId, retry) => startMixing(run, selectedItemId, retry)}
+              onStart={(selectedItemId, retry) => {
+                if (!guest) startMixing(run, selectedItemId, retry);
+              }}
               ticketCost={ticketCost}
             />
           </div>

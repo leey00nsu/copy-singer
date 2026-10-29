@@ -12,6 +12,7 @@ import { RecommendationMixingAction } from "@/features/create-mixing";
 import { ResourceRowButton, resourceRowInteractiveClassName } from "@/shared/ui/resource-row-link";
 
 export function RecommendationSongList({
+  guest = false,
   items,
   mixing,
   onStart,
@@ -19,6 +20,7 @@ export function RecommendationSongList({
   selectedItemId,
   ticketCost,
 }: {
+  guest?: boolean;
   items: RecommendationItemResponse[];
   mixing?: RecommendationMixingCapability;
   onStart: (itemId: string, retry?: boolean) => void;
@@ -113,13 +115,19 @@ export function RecommendationSongList({
                     </p>
                   </td>
                   <td className="relative z-20 min-w-0 self-end text-right align-middle xl:px-3 xl:py-3 xl:text-left">
-                    <RecommendationMixingAction
-                      compact
-                      item={item}
-                      mixing={mixing}
-                      onStart={onStart}
-                      ticketCost={ticketCost}
-                    />
+                    {guest ? (
+                      <span className="text-xs text-muted-foreground">
+                        {mixing?.available === false ? "믹싱 불가" : "로그인 후 믹싱"}
+                      </span>
+                    ) : (
+                      <RecommendationMixingAction
+                        compact
+                        item={item}
+                        mixing={mixing}
+                        onStart={onStart}
+                        ticketCost={ticketCost}
+                      />
+                    )}
                   </td>
                 </tr>
                 {videoActive ? (

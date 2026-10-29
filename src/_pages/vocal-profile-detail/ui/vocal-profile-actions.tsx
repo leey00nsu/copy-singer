@@ -146,6 +146,12 @@ export function VocalProfileActions({
   return (
     <div className="flex flex-wrap items-center gap-2">
       {guest ? (
+        <Link className={buttonVariants({ variant: "outline" })} href={`/recommendations/${profileId}`}>
+          <Sparkles className="size-4" aria-hidden="true" />
+          추천 결과 보기
+        </Link>
+      ) : null}
+      {guest ? (
         <Link
           className={buttonVariants()}
           href={signedIn ? "/profile/save-trial" : "/login?callbackURL=%2Fprofile%2Fsave-trial"}

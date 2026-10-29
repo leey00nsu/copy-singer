@@ -62,7 +62,7 @@ PostgreSQL durable job
 
 worker는 terminal transaction에서 성공 소비 이력과 24시간 임시 만료 시각을 기록한다. 실패는 개인 체험을 복구한다. 결과·오디오 조회는 정리 실행 전에도 만료를 확인한다. 주기적인 만료 정리는 trial row lock을 확보한 뒤 domain 참조를 해제하고 기존 durable media deletion을 예약한다.
 
-결과 저장은 Google 로그인 후 회원 세션과 체험 cookie를 함께 확인하는 POST로 실행한다. 같은 trial lock 아래 완료된 프로필·job·관련 미디어를 새 계정 또는 기존 본인 계정으로 옮기고 회원 번호를 원자적으로 부여한다. 반복 저장은 같은 결과를 반환하며 실패 시 원본을 보존한다. 이전 후에는 기존 회원 보관 정책을 적용한다. 추천과 AI 믹싱은 정식 회원에게만 제공한다.
+결과 저장은 Google 로그인 후 회원 세션과 체험 cookie를 함께 확인하는 POST로 실행한다. 같은 trial lock 아래 완료된 프로필·job·관련 미디어를 새 계정 또는 기존 본인 계정으로 옮기고 회원 번호를 원자적으로 부여한다. 반복 저장은 같은 결과를 반환하며 실패 시 원본을 보존한다. 이전 후에는 기존 회원 보관 정책을 적용한다. 추천 목록·추천 키·이유와 곡별 상세는 본인 체험의 미만료 프로필에도 제공한다. 추천은 DB 조회와 저장된 분석값의 비교 계산으로만 처리하며 추가 분석·일일 총량 소비·외부 AI/GPU 호출을 만들지 않는다. AI 믹싱은 정식 회원에게만 제공한다. 체험 추천의 믹싱 진입은 로그인과 프로필 저장을 거쳐 선택한 곡 상세로 돌아오고, 비용 확인과 명시적 실행 전에는 작업을 만들지 않는다. 복귀 경로는 저장한 프로필의 추천 경로로 제한한다.
 
 ## 곡 카탈로그 분석과 공개
 
@@ -74,7 +74,7 @@ worker는 terminal transaction에서 성공 소비 이력과 24시간 임시 만
 
 ## 추천과 AI 믹싱
 
-1. 추천은 정식 회원이 소유한 보컬 프로필과 공개된 곡 분석값을 요청 시 비교해 계산한다. 추천 순위·설명을 별도의 결과 snapshot으로 영속하지 않는다.
+1. 추천은 정식 회원 또는 소유권·만료가 검증된 체험 보컬 프로필과 공개된 곡 분석값을 요청 시 비교해 계산한다. 추천 순위·설명을 별도의 결과 snapshot으로 영속하지 않는다.
 2. 제품 화면은 `/recommendations/[id]`에서 시작하며 단독 `/recommendations` page는 없다. 곡 상세는 `/recommendations/[id]/songs/[itemId]`다.
 3. 사용자가 AI 믹싱을 요청하면 server는 READY mid-only reference와 READY catalog target을 확인하고, 티켓 차감과 `PENDING` mixing job 생성을 한 DB transaction에서 수행한다.
 4. `scripts/mixing-worker.ts`와 `src/_app/background-jobs/mixing/`이 job을 claim하고 snapshot된 asset을 Leemage에서 읽어 SoulX service에 제출한다.

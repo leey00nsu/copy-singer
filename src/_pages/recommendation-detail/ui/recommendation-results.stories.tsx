@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import type {} from "msw-storybook-addon/types";
 import { expect, userEvent, waitFor, within } from "storybook/test";
+import { guestRecommendationSaveHref } from "@/entities/guest-analysis/index.model";
 
 import {
   activeRecommendationRunFixture,
@@ -267,5 +268,36 @@ export const CompletedMixingLinksToLibrary: Story = {
     );
     await expect(canvas.queryByRole("button", { name: "결과 듣기" })).not.toBeInTheDocument();
     await expect(canvas.queryByRole("button", { name: "결과 닫기" })).not.toBeInTheDocument();
+  },
+};
+
+export const GuestRecommendations: Story = {
+  args: { initialRun: recommendationRunFixture, guest: true },
+  beforeEach({ msw }) {
+    msw.use(recommendationHandler());
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("추천까지 로그인 없이 확인할 수 있어요.")).toBeVisible();
+    await expect(canvas.getByRole("link", { name: "로그인하고 AI 믹싱하기" })).toHaveAttribute(
+      "href",
+      guestRecommendationSaveHref(recommendationRunFixture.id, recommendationRunFixture.items[0]!.id),
+    );
+    await expect(canvas.queryByText("티켓 1개 사용")).not.toBeInTheDocument();
+    await expect(canvas.getByRole("link", { name: /전체 분석 결과 보기/ })).toBeVisible();
+  },
+};
+
+export const GuestRecommendationsMobile: Story = {
+  ...GuestRecommendations,
+  globals: { viewport: { value: "mobile1", isRotated: false } },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: "선택한 곡 확인" }));
+    const body = within(document.body);
+    await expect(body.getByRole("link", { name: "로그인하고 AI 믹싱하기" })).toHaveAttribute(
+      "href",
+      guestRecommendationSaveHref(recommendationRunFixture.id, recommendationRunFixture.items[0]!.id),
+    );
   },
 };

@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { RecommendationError, selectRecommendationItem } from "@/entities/recommendation";
-import { requirePageSession } from "@/features/authentication/index.server";
+import {
+  getAnalysisResourceActor,
+  getRequestSession,
+  requirePageSession,
+} from "@/features/authentication/index.server";
 import { getRecommendationResult } from "@/features/create-recommendation/index.server";
 import { resourceIdSchema } from "@/shared/api";
 import { mixingTicketCost } from "@/shared/config/index.server";
@@ -15,18 +19,30 @@ export const metadata: Metadata = {
 export default async function SongDetailPage({ params }: { params: Promise<{ id: string; itemId: string }> }) {
   const { id, itemId } = await params;
   const returnTo = `/recommendations/${id}/songs/${itemId}`;
-  const session = await requirePageSession(returnTo);
+  const actor = await getAnalysisResourceActor(undefined, { profileId: id });
+  if (!actor) {
+    await requirePageSession(returnTo);
+    notFound();
+  }
   const parsedRunId = resourceIdSchema.safeParse(id);
   const parsedItemId = resourceIdSchema.safeParse(itemId);
   if (!parsedRunId.success || !parsedItemId.success) notFound();
 
   let run: Awaited<ReturnType<typeof getRecommendationResult>>;
   try {
-    run = await getRecommendationResult(parsedRunId.data, session.user.id);
+    run = await getRecommendationResult(parsedRunId.data, actor.userId);
   } catch (error) {
     if (error instanceof RecommendationError && error.status === 404) notFound();
     throw error;
   }
   if (!selectRecommendationItem(run, parsedItemId.data)) notFound();
-  return <SongDetail initialRun={run} itemId={parsedItemId.data} ticketCost={mixingTicketCost()} />;
+  return (
+    <SongDetail
+      initialRun={run}
+      itemId={parsedItemId.data}
+      ticketCost={mixingTicketCost()}
+      guest={actor.guest}
+      signedIn={Boolean(await getRequestSession())}
+    />
+  );
 }

@@ -146,14 +146,14 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
-- [TODO][PRD-FR-GUEST-RECOMMENDATIONS] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-05 체험 추천과 곡 상세 열람 및 로그인 후 선택곡 복귀
+- [DONE][PRD-FR-GUEST-RECOMMENDATIONS] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-05 체험 추천과 곡 상세 열람 및 로그인 후 선택곡 복귀
   - Date: 2026-10-29
   - Acceptance:
     - 본인 미만료 체험의 전체 추천·검색·정렬·곡별 상세를 외부 AI 호출·추가 차감 없이 제공하고 타인·만료·무쿠키 접근을 거부한다.
     - 믹싱 CTA는 로그인·프로필 저장 후 선택 곡으로 복귀하며 외부·다른 프로필 복귀는 거부하고 자동 믹싱을 실행하지 않는다.
   - Checklist:
-    - [ ] 추천 route/page 권한과 guest UI 및 안전한 저장 복귀 helper를 연결한다.
-    - [ ] 권한·만료·부작용·복귀 URL·guest/회원 UI 회귀와 전체 test/lint/tsc를 검증하고 문서를 동기화한다.
+    - [x] 추천 route/page 권한과 guest UI 및 안전한 저장 복귀 helper를 연결한다.
+    - [x] 권한·만료·부작용·복귀 URL·guest/회원 UI 회귀와 전체 test/lint/tsc를 검증하고 문서를 동기화한다.
   - Docs:
     - docs:prd/copy-singer-prd.md
     - docs:prd/system-architecture.md
@@ -188,11 +188,12 @@
 | 명령어                   | 마지막 실행(로컬, YYYY-MM-DD) | 결과               |
 | ------------------------ | ----------------------------- | ------------------ |
 | `pnpm exec prisma validate / generate / migrate deploy` | `2026-10-29` | PASS: localhost migration 적용 |
-| `pnpm run test:guest-analysis` | `2026-10-29` | PASS: quota 3 + UI 3 + guest pipeline/API 8 |
+| `pnpm run test:guest-analysis` | `2026-10-29` | PASS: quota/navigation/UI 9 + guest pipeline/API 9 |
 | `pnpm run test:vocal-profile-analysis-queue` | `2026-10-29` | PASS: member regression 8 |
+| `focused Storybook: 추천/곡상세/저장/믹싱/프로필` | `2026-10-29` | PASS: 28 |
 | `focused Storybook: profile/detail/landing` | `2026-10-29` | PASS: 25 |
 | `pnpm run lint` | `2026-10-29` | PASS |
-| `pnpm test` (dotenv로 `.env.local` 선로드) | `2026-10-29` | PASS: build, 모든 unit/DB/API suite, Storybook 182, guest 14, readiness 13 + Python 4 |
+| `pnpm test` (dotenv로 `.env.local` 선로드) | `2026-10-29` | PASS: build, 모든 unit/DB/API suite, Storybook 189, guest 18, readiness 13 + Python 4 |
 | `pnpm test` (환경 선로드 없이 최초 실행) | `2026-10-29` | FAIL: 기존 leemage-client test의 DATABASE_URL 초기화 누락. 전체 출력 /tmp/copy-singer-guest-full-test.log 보존 |
 | `npx lee-spec-kit workflow-audit --json` | `2026-10-29` | PASS: WORKFLOW_IN_SYNC |
 | `npx lee-spec-kit feature-audit --json --enforce` | `2026-10-29` | PASS |
@@ -202,4 +203,4 @@
 
 완료 기록에는 테스트뿐 아니라 build·typecheck·lint 등 Plan에서 정한 검증과 수동 검증 증거를 포함합니다. 자동 검사의 기준은 실제 `workflow.featureChecks`이며, 검사 생략은 통과로 기록하지 않고 명시적인 사유를 남깁니다.
 
-<!-- lee-spec-kit:workflow-sync sha256:713973ed8fda0959755521aafa5e74549267131eb24e75e713ffb47bca4dc3e5 -->
+<!-- lee-spec-kit:workflow-sync sha256:720c55f69dbe3e60af3af5740e7c23c52c0e45e4618ff5219896229278b9d81f -->

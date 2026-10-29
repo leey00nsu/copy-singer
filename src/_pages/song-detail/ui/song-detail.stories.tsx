@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import type {} from "msw-storybook-addon/types";
 import { expect, within } from "storybook/test";
+import { guestRecommendationSaveHref } from "@/entities/guest-analysis/index.model";
 import { recommendationRunFixture } from "../../../../tests/msw/fixtures";
+import { recommendationHandler } from "../../../../tests/msw/handlers";
 import { SongDetail } from "./song-detail";
 
 const item = recommendationRunFixture.items[0];
@@ -58,5 +61,21 @@ export const MixingUnavailable: Story = {
     await expect(canvas.getByText(/안정적인 중앙 음역 구간을 찾지 못해/)).toBeVisible();
     await expect(canvas.getByRole("link", { name: "새 프로필 분석하기" })).toHaveAttribute("href", "/profile");
     await expect(canvas.queryByRole("button", { name: "AI 믹싱" })).not.toBeInTheDocument();
+  },
+};
+
+export const GuestSongDetail: Story = {
+  args: { guest: true },
+  beforeEach({ msw }) {
+    msw.use(recommendationHandler());
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("주요 음역 비교")).toBeVisible();
+    await expect(canvas.getByRole("link", { name: "로그인하고 AI 믹싱하기" })).toHaveAttribute(
+      "href",
+      guestRecommendationSaveHref(recommendationRunFixture.id, item.id),
+    );
+    await expect(canvas.queryByText("티켓 1개 사용")).not.toBeInTheDocument();
   },
 };

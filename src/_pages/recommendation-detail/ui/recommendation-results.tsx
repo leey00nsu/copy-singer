@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, Clock3, LoaderCircle, Mic2, Music2 } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
+import { guestRecommendationSaveHref } from "@/entities/guest-analysis/index.model";
 import {
   DEFAULT_RECOMMENDATION_FILTERS,
   parseRecommendationFilters,
@@ -80,13 +81,17 @@ export function RecommendationResults({
   initialRun,
   runId,
   ticketCost = 1,
+  guest = false,
+  signedIn = false,
 }: {
   initialRun?: RecommendationRunResponse;
   runId?: string;
   ticketCost?: number;
+  guest?: boolean;
+  signedIn?: boolean;
 }) {
   const resolvedRunId = initialRun?.id ?? runId ?? null;
-  const runQuery = useQuery(recommendationDetailQueryOptions(resolvedRunId, initialRun));
+  const runQuery = useQuery(recommendationDetailQueryOptions(resolvedRunId, initialRun, guest ? "guest" : "member"));
   const { filters, resetFilters, updateFilters } = useRecommendationFilters();
   const { startMixing } = useRecommendationMixing();
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
@@ -99,7 +104,7 @@ export function RecommendationResults({
       : null;
 
   const startItem = (itemId: string, retry = false) => {
-    if (!run || run.profile.mixing?.available === false) return;
+    if (guest || !run || run.profile.mixing?.available === false) return;
     startMixing(run, itemId, retry);
   };
 
@@ -107,7 +112,7 @@ export function RecommendationResults({
     return (
       <StatePanel
         action={
-          <Link className={buttonVariants()} href="/library?tab=profiles">
+          <Link className={buttonVariants()} href={guest ? "/profile" : "/library?tab=profiles"}>
             보컬 프로필로 이동
           </Link>
         }
@@ -162,6 +167,21 @@ export function RecommendationResults({
         variant="task"
       />
 
+      {guest ? (
+        <StatusNotice
+          className="mt-5"
+          title="추천까지 로그인 없이 확인할 수 있어요."
+          description="체험 결과는 분석 완료 후 24시간 동안 보관돼요. 프로필 저장과 AI 믹싱은 로그인 후 이용할 수 있어요."
+          action={
+            <Link
+              className={buttonVariants({ size: "sm", variant: "outline" })}
+              href={guestRecommendationSaveHref(run.id, undefined, signedIn)}
+            >
+              {signedIn ? "계정에 결과 저장하기" : "로그인하고 결과 저장하기"}
+            </Link>
+          }
+        />
+      ) : null}
       {run.lowConfidence ? (
         <StatusNotice
           className="mt-8"
@@ -171,7 +191,7 @@ export function RecommendationResults({
         />
       ) : null}
 
-      {run.profile.mixing?.available === false ? (
+      {!guest && run.profile.mixing?.available === false ? (
         <StatusNotice
           action={
             <Link className={buttonVariants({ size: "sm", variant: "outline" })} href="/profile">
@@ -199,6 +219,7 @@ export function RecommendationResults({
         <section aria-label="추천 노래 비교 목록">
           {visibleItems.length > 0 && selectedItem ? (
             <RecommendationSongList
+              guest={guest}
               items={visibleItems}
               mixing={run.profile.mixing}
               onSelect={setSelectedItemId}
@@ -221,6 +242,8 @@ export function RecommendationResults({
         </section>
         {selectedItem ? (
           <RecommendationSelection
+            guest={guest}
+            signedIn={signedIn}
             item={selectedItem}
             matchRank={selectedMatchRank}
             mixing={run.profile.mixing}

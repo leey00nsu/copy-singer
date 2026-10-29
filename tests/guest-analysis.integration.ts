@@ -484,3 +484,104 @@ test("a new member keeps signup grants unchanged when claiming a trial", async (
       await cleanupFixture([trial.userId, memberId]);
     }
   }));
+
+test("guest recommendation reads remain owner-scoped and expire without external calls or quota/ledger/job mutations", async () =>
+  withFakeMedia(async () => {
+    const { prisma, trial, headers, file } = await guestFixture();
+    const other = await guestFixture();
+    const { enqueueVocalProfileAnalysis } = await import("../src/features/analyze-vocal-profile/index.server");
+    const { GET } = await import("../src/_app/api-routes/recommendations/recommendation-detail-route");
+    const { POST } = await import("../src/_app/api-routes/recommendations/recommendations-route");
+    const { getRecommendationResult } = await import("../src/features/create-recommendation/index.server");
+    const { guestAnalysisQuota } = await import("../src/shared/lib/admission/index.server");
+    try {
+      const job = await enqueueVocalProfileAnalysis({ userId: trial.userId, idempotencyKey: "recommend", file });
+      await completeGuestJob(job);
+      const profileId = (await prisma.vocalProfileAnalysisJob.findUniqueOrThrow({ where: { id: job.id } }))
+        .vocalProfileId!;
+      const context = { params: Promise.resolve({ id: profileId }) };
+      const before = {
+        jobs: await prisma.vocalProfileAnalysisJob.count({ where: { userId: trial.userId } }),
+        mixing: await prisma.mixingJob.count({ where: { userId: trial.userId } }),
+        ledger: await prisma.ticketLedger.count({ where: { userId: trial.userId } }),
+        quota: guestAnalysisQuota.policy(100).available,
+      };
+      const priorFetch = globalThis.fetch;
+      let externalCalls = 0;
+      globalThis.fetch = (async () => {
+        externalCalls += 1;
+        throw new Error("Recommendation must not call external services");
+      }) as typeof fetch;
+      // Closing new daily admissions must not close recommendations for an existing trial.
+      process.env.GUEST_ANALYSIS_DAILY_LIMIT = "0";
+      try {
+        const response = await GET(
+          new Request(`http://localhost/api/recommendations/${profileId}`, { headers }),
+          context,
+        );
+        assert.equal(response.status, 200);
+        const run = await response.json();
+        assert.ok(run.items.length > 0);
+        assert.equal(run.items.length, (await getRecommendationResult(profileId, trial.userId)).items.length);
+        assert.equal(run.userVocalProfileId, profileId);
+        assert.ok(
+          run.items.every((item: { synthesis: { status: string } }) => item.synthesis.status === "not_started"),
+        );
+        const jsonHeaders = new Headers(headers);
+        jsonHeaders.set("Content-Type", "application/json");
+        assert.equal(
+          (
+            await POST(
+              new Request("http://localhost/api/recommendations", {
+                method: "POST",
+                headers: jsonHeaders,
+                body: JSON.stringify({ userVocalProfileId: profileId }),
+              }),
+            )
+          ).status,
+          200,
+        );
+        assert.equal(
+          (
+            await GET(
+              new Request(`http://localhost/api/recommendations/${profileId}`, { headers: other.headers }),
+              context,
+            )
+          ).status,
+          404,
+        );
+        assert.equal(
+          (await GET(new Request(`http://localhost/api/recommendations/${profileId}`), context)).status,
+          401,
+        );
+        await prisma.guestAnalysisTrial.update({
+          where: { id: trial.id },
+          data: { expiresAt: new Date(Date.now() - 1000) },
+        });
+        assert.equal(
+          (await GET(new Request(`http://localhost/api/recommendations/${profileId}`, { headers }), context)).status,
+          404,
+        );
+        await assert.rejects(() => getRecommendationResult(profileId, trial.userId), /not found/);
+        assert.equal(externalCalls, 0);
+      } finally {
+        globalThis.fetch = priorFetch;
+      }
+      assert.deepEqual(
+        {
+          jobs: await prisma.vocalProfileAnalysisJob.count({ where: { userId: trial.userId } }),
+          mixing: await prisma.mixingJob.count({ where: { userId: trial.userId } }),
+          ledger: await prisma.ticketLedger.count({ where: { userId: trial.userId } }),
+          quota: guestAnalysisQuota.policy(100).available,
+        },
+        before,
+      );
+      const { POST: mix } = await import("../src/_app/api-routes/mixing-jobs/mixing-jobs-route");
+      assert.equal(
+        (await mix(new Request("http://localhost/api/mixing-jobs", { method: "POST", headers }))).status,
+        401,
+      );
+    } finally {
+      await cleanupFixture([trial.userId, other.trial.userId]);
+    }
+  }));
