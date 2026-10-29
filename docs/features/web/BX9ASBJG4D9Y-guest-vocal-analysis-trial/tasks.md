@@ -21,7 +21,7 @@
 ---
 
 ## 로컬 추적 정보
-- **문서 상태**: -
+- **문서 상태**: Approved
 - **레포**: copy-singer-web
 - **브랜치**: `feat/BX9ASBJG4D9Y-guest-vocal-analysis-trial`
 - **대기 중 변경 요청**: -
@@ -75,6 +75,77 @@
 
 ---
 
+- [DONE][PRD-FR-GUEST-DAILY-LIMIT] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-01 체험 소유권·쿠키·일일 예약 기반 추가
+  - Date: 2026-10-29
+  - Acceptance:
+    - guest 자격 생성은 회원 세션·가입 지급과 분리되고 회원 API를 열지 않는다.
+    - 10건·0건·동시 예약·KST 자정·이전 날짜 해제·새 프로세스 초기화를 검증한다.
+  - Checklist:
+    - [x] Prisma migration과 guest token/actor/start API를 추가한다.
+    - [x] 일일 quota 단위 및 guest cookie/권한 통합 검사를 수행한다.
+  - Docs:
+    - docs:prd/copy-singer-prd.md
+    - project:.env.example
+  - Review Evidence: -
+  - Review Decision: -
+  - Review Round: -
+  - Reviewed Head: -
+  - Reviewed Tree: -
+
+- [TODO][PRD-FR-GUEST-ANALYSIS-TRIAL] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-02 분석 큐·성공 기록·계정 저장·만료 정리 연결
+  - Date: 2026-10-29
+  - Acceptance:
+    - guest 분석은 이용권 없이 한 번 성공하며 실패하면 개인 기회를 복구한다.
+    - 다른 사용자 접근·만료 결과 접근을 거부하고 기존 회원 저장은 번호와 원장을 보존하며 멱등적이다.
+  - Checklist:
+    - [ ] queue/worker와 제한된 결과·오디오 route 및 claim API를 연결한다.
+    - [ ] guest pipeline·이전·삭제·만료 및 기존 queue/소유권 회귀를 검사한다.
+  - Docs:
+    - docs:prd/system-architecture.md
+  - Review Evidence: -
+  - Review Decision: -
+  - Review Round: -
+  - Reviewed Head: -
+  - Reviewed Tree: -
+
+- [TODO][PRD-FR-GUEST-ACCOUNT-LINK] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-03 체험 입력·결과·로그인 저장 화면 제공
+  - Date: 2026-10-29
+  - Acceptance:
+    - 녹음 전에 available/full/used 상태를 표시하고 분석 결과 전체를 로그인 없이 제공한다.
+    - 기존·신규 Google 로그인 후 저장 화면에서 같은 결과로 복귀하며 실패 시 재시도할 수 있다.
+  - Checklist:
+    - [ ] 랜딩/입력/결과/shell/저장 UI와 guest policy query를 연결한다.
+    - [ ] 약관·개인정보 안내와 guest UI/Storybook·SSR 검증을 동기화한다.
+  - Docs:
+    - project:src/_pages/legal/ui/privacy-page.tsx
+    - project:src/_pages/legal/ui/terms-page.tsx
+  - Review Evidence: -
+  - Review Decision: -
+  - Review Round: -
+  - Reviewed Head: -
+  - Reviewed Tree: -
+
+- [TODO][PRD-FR-GUEST-RETENTION] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-04 문서 감사 정규화 및 전체 회귀 검증
+  - Date: 2026-10-29
+  - Acceptance:
+    - 보호된 README를 제외한 기존 감사 위반을 정규화하고 전체 회귀 결과와 실제 검증 한계를 기록한다.
+    - Feature 문서와 runtime 동작을 동기화하고 현재 코드 fingerprint marker를 한 개만 기록한다.
+  - Checklist:
+    - [ ] 지정된 공용 문서의 작업 추적 참조·kind metadata만 정리하고 README 보류 근거를 남긴다.
+    - [ ] pnpm test·lint·tsc 및 workflow/feature/commit audit를 실행한다.
+  - Docs:
+    - docs:prd/copy-singer-prd.md
+    - docs:prd/system-architecture.md
+    - docs:designs/design-system.md
+    - docs:designs/page-redesign-analysis.md
+    - docs:designs/product-ui-redesign.md
+    - docs:designs/generated/page-redesigns/v2-style-lock.md
+  - Review Evidence: -
+  - Review Decision: -
+  - Review Round: -
+  - Reviewed Head: -
+  - Reviewed Tree: -
+
 ## Repository Knowledge (완료 비차단)
 
 - **Policy**: `.lee-spec-kit.json`의 `experimental.openwiki`에서 파생
@@ -98,6 +169,8 @@
 
 | 명령어                   | 마지막 실행(로컬, YYYY-MM-DD) | 결과               |
 | ------------------------ | ----------------------------- | ------------------ |
-| `{실행한 테스트 명령어}` | `-`                           | `{PASS/FAIL 요약}` |
+| `pnpm exec prisma validate / generate / migrate deploy` | `2026-10-29` | PASS: localhost migration 적용 |
+| `pnpm run test:guest-analysis` | `2026-10-29` | PASS: quota 3 + identity/API 2 |
+| `pnpm exec tsc --noEmit` | `2026-10-29` | PASS |
 
 완료 기록에는 테스트뿐 아니라 build·typecheck·lint 등 Plan에서 정한 검증과 수동 검증 증거를 포함합니다. 자동 검사의 기준은 실제 `workflow.featureChecks`이며, 검사 생략은 통과로 기록하지 않고 명시적인 사유를 남깁니다.

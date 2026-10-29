@@ -2,6 +2,7 @@ import "server-only";
 
 export * from "./api/account-summary";
 export * from "./api/admin";
+export * from "./api/analysis-actor";
 export * from "./api/auth";
 export * from "./api/dev-bypass";
 export * from "./api/session";

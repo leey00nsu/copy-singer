@@ -27,6 +27,10 @@ export function vocalProfileAnalysisTicketCost() {
   return integerEnv("VOCAL_PROFILE_ANALYSIS_TICKET_COST", 1, { min: 0, max: 1_000 });
 }
 
+export function guestAnalysisDailyLimit() {
+  return integerEnv("GUEST_ANALYSIS_DAILY_LIMIT", 10, { min: 0, max: 10_000 });
+}
+
 export function mixingWorkerConcurrency() {
   return integerEnv("MIXING_WORKER_CONCURRENCY", 1, { min: 1, max: 32 });
 }
