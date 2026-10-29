@@ -1,0 +1,65 @@
+# Feature Spec: guest-vocal-analysis-trial
+
+> 기술 스택은 plan.md에서 다룹니다.
+
+---
+
+## 개요
+
+- **기능 ID**: BX9ASBJG4D9Y
+- **기능명**: guest-vocal-analysis-trial
+- **대상 레포**: copy-singer-web
+- **작성일**: 2026-10-29
+- **상태**: -
+  - 값: Draft | Review | Approved
+
+---
+
+## 목적
+
+로그인 없이 익명 방문자별 최초 1회 보컬 분석과 결과 열람을 제공한다. 비로그인 체험 하루 총량은 단일 웹 프로세스 메모리에서 관리하며 한국 시간 자정 또는 서버 재시작 시 초기화한다. 추가 분석과 AI 믹싱은 Google 로그인 후 제공한다.
+
+(이 기능이 왜 필요한지, 어떤 문제를 해결하는지)
+
+---
+
+## 사용자 스토리
+
+### US-1: {스토리 제목}
+
+**As a** {사용자 유형}
+**I want** {원하는 것}
+**So that** {이유/가치}
+
+**Acceptance Criteria:**
+
+- [ ] (검증 조건)
+
+---
+
+## 기능 요구사항
+
+### FR-1: {요구사항 제목}
+
+(상세 설명)
+
+---
+
+## 비기능 요구사항
+
+- **성능**:
+- **보안**:
+
+---
+
+## 관련 문서
+
+- PRD: `../../prd/`
+- PRD Refs: - (예: `PRD-FR-001`, `PRD-US-002`, `PRD-SCOPE-V1-DESKTOP-EDITOR`)
+  - 이미 원문 요구사항 문서에 정의된 ID만 적으세요. `spec.md`나 `tasks.md`에서 임의로 PRD ID를 만들지 않습니다.
+  - 레거시 요구사항 문서에 아직 PRD ID가 없다면, 먼저 원문에 ID를 backfill한 뒤 이 필드와 `tasks.md` 태스크 태그를 함께 갱신하세요.
+  - 요구사항/스코프 변경 시 PRD 문서 + 이 필드 + `tasks.md` 태스크 태그를 함께 갱신하세요.
+  - 구현 중 더 나은 사용자 동작이 발견되어 최종 요구사항이 바뀌었다면, 이를 영구적인 `[NON-PRD]` 예외로 두지 말고 PRD 업데이트로 취급하세요.
+- Design Refs: - (선택 사항, 명시적인 UI/UX 디자인 작업에만 프로젝트 루트 기준 경로 사용)
+  - Design System: - (예: `docs/designs/design-system.md`)
+  - Visual Brief: - (예: `docs/designs/<feature-visual-brief>.md`)
