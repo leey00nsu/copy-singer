@@ -204,6 +204,7 @@ Copysinger는 로그인 전 최초 1회의 제한된 보컬 분석 체험을 제
 - **PRD-NFR-001 보안**: DB 비밀번호, Better Auth secret, Google OAuth secret, `MODAL_API_KEY`와 Leemage API Key는 `.env.local` 또는 Secret에만 두고 Git과 클라이언트 번들에 포함하지 않는다.
 - **PRD-NFR-002 개인정보**: 녹음과 합성 결과는 삭제 가능해야 하며 보관 기간을 명시한다.
 - **PRD-NFR-003 비용**: 프로필·곡 분석은 Modal CPU에서 수행하고 합성 데모만 Modal GPU를 사용한다.
+- **PRD-NFR-GPU-FALLBACK 합성 가용성**: 기본 음성 합성은 L4를 우선 요청하고 배정이 어려우면 A10만 대체 GPU로 허용한다. GPU 대체는 같은 합성 요청 안에서 처리하며 기존 동시성·티켓·중복 접수 방지 계약을 유지한다. 명시적으로 GPU를 지정한 운영 설정은 보존한다.
 - **PRD-NFR-004 재현성**: 보컬 프로필·카탈로그·곡 분석 revision과 scoring version으로 추천 결과를 재계산할 수 있어야 하며, 영속 믹싱 작업은 접수 시 검증한 revision 입력을 보존해야 한다.
 - **PRD-NFR-005 품질**: 변경 시 TypeScript 검사, ESLint, 프로덕션 빌드, Prisma validation과 관련 테스트를 통과해야 한다.
 - **PRD-NFR-006 책임 있는 사용**: 사용 권한이 있는 음성과 음악만 처리하도록 고지하고, 결과를 의료적 평가로 표현하지 않는다.

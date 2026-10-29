@@ -120,3 +120,11 @@
 - 최종 runtime 수정 이후 lint·tsc·architecture·git diff --check가 통과했다. 추가 source assertion 수정은 권한 계약에 맞춘 테스트 갱신이며 제품 변경이 아니다.
 - 본인 체험 추천과 곡 상세, 무쿠키/타인/만료 차단, 일일 마감 중 기존 추천 열람, 외부 호출 없음, job/티켓 불변, 선택곡 callback·안전한 복귀·retry·guest action 무작업을 검증했다. 실제 Google OAuth와 유료 Modal 믹싱은 실행하지 않았다.
 - user scope 승인과 별개로 확장된 구현 결과의 최종 승인 및 local merge 승인은 아직 대기한다. main 병합·원격 push·배포는 수행하지 않았다.
+
+## D005: L4 공급 부족에 A10만 대체 허용 (2026-10-29)
+
+- **Context**: Modal L4 요청이 0 GPU runner·Pending·Waiting for a container 상태에 머물렀다. Modal Community의 담당자 답변에서 L4 공급 부족과 A10 대체 성공을 확인했고 사용자는 `대체로 A10만 추가할 수 있을까?`라고 요청했다.
+- **Decision**: 기존 Feature의 task 06으로 합성 GPU에 기본 L4 우선·A10 대체만 추가한다. L4 이외의 SOULX_GPU 단일 지정은 보존한다. T4·L40S나 다른 GPU를 자동 추가하지 않는다.
+- **Scope/authority**: 이 요청은 후속 수정 승인이다. 이전 체험 구현의 최종 승인·main 병합·원격 배포 승인으로 해석하지 않는다. 실제 배포는 검증 결과와 변경 범위를 공유한 뒤 별도 승인을 받는다.
+- **Curated docs**: PRD-NFR-GPU-FALLBACK과 system-architecture.md에 기본 가용성 정책을 반영한다. services/soulx-singer-svc/README.md의 기본 L4 안내는 대체 설정 설명이 없어지지만 사용자 README 수정 요청이 없어 보류한다. `.env.example`은 새 변수가 없어 변경하지 않는다.
+- **Verification**: 변경은 Modal 설정 경계로 한정한다. 새 영구 테스트 없이 Python compile·기존 unit/제출 계약·실제 SDK의 로컬 함수 정의를 검증하고 실제 GPU 합성 호출은 하지 않는다. 실제 A10 추론 품질·완료 시간은 배포 후 별도 관찰 대상이다.

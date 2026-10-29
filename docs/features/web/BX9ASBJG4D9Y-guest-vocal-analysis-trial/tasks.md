@@ -164,6 +164,23 @@
   - Reviewed Head: -
   - Reviewed Tree: -
 
+- [TODO][PRD-NFR-GPU-FALLBACK] T-BX9ASBJG4D9Y-guest-vocal-analysis-trial-06 합성 GPU의 L4 우선·A10 대체 설정 추가
+  - Date: 2026-10-29
+  - Acceptance:
+    - 기본 및 명시 L4는 L4→A10만 요청하고 기존 다른 단일 GPU 지정과 최대 컨테이너 수를 보존한다.
+    - Python compile·기존 unit·제출 계약과 실제 SDK 로컬 함수 정의를 검증하고 원격 배포 전 승인 경계를 유지한다.
+  - Checklist:
+    - [ ] SoulXModel의 GPU preference 목록에 A10만 추가하고 PRD·아키텍처·Feature 문서를 동기화한다.
+    - [ ] 추가 영구 테스트 없이 계획된 Python/SDK 검사를 수행하고 결과·배포 한계를 기록한다.
+  - Docs:
+    - docs:prd/copy-singer-prd.md
+    - docs:prd/system-architecture.md
+  - Review Evidence: -
+  - Review Decision: -
+  - Review Round: -
+  - Reviewed Head: -
+  - Reviewed Tree: -
+
 ## Repository Knowledge (완료 비차단)
 
 - **Policy**: `.lee-spec-kit.json`의 `experimental.openwiki`에서 파생
@@ -176,7 +193,7 @@
 
 > ⚠️ 아래 항목은 **최종 확인 체크리스트**입니다. 실제로 확인/실행한 뒤에만 체크하세요.
 
-- [x] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
+- [ ] 모든 태스크가 `[DONE]`이며, 각 태스크의 `Acceptance` 검증 및 `Checklist` 체크 완료 <!-- lee-spec-kit:completion:all-tasks -->
 - [x] 테스트 실행 및 통과 (아래에 명령어/결과 기록) <!-- lee-spec-kit:completion:tests -->
 - [ ] 최종 결과를 공유했고, 필요한 사용자 확인을 문서화된 workflow checkpoint 기준으로 기록함 <!-- lee-spec-kit:completion:final-outcome -->
 

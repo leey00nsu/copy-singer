@@ -130,6 +130,7 @@ PRD의 기존 F032 참조도 과거 작업 ID 대신 유지해야 할 시각 요
 
 ## 관련 문서
 
+- 추가 PRD Ref: PRD-NFR-GPU-FALLBACK.
 - Spec: [spec.md](./spec.md)
 - Decisions: [decisions.md](./decisions.md)
 
@@ -141,3 +142,12 @@ PRD의 기존 F032 참조도 과거 작업 ID 대신 유지해야 할 시각 요
 - browser-safe 체험 navigation helper는 저장 callback과 선택 곡을 생성한다. SaveTrialPage는 로그인 전에도 next를 callback에 보존하고, claim 완료 후 helper가 저장한 profile UUID와 일치하는 추천 목록·UUID 곡 상세만 허용한다. 외부 주소·다른 프로필·인코딩 우회·재귀를 거부한다. 추천 cache를 저장 후 무효화하고 필요 시 guest/member audience를 분리한다. 자동 믹싱은 하지 않는다.
 - 문서 영향: UPDATE docs:prd/copy-singer-prd.md, docs:prd/system-architecture.md, project:src/_pages/legal/ui/terms-page.tsx. 개인정보 안내는 이미 추천 계산과 임시 보관을 설명하므로 추가 변경 NONE. 새로운 runtime env/schema는 NONE.
 - Verification Contract 추가: ADD guest 추천 API/서비스 소유권·만료·무쿠키 거절·본인 전체 결과·외부 fetch/원장/job 불변성 통합 검사. ADD callback 단위 검증(같은 profile/곡 허용, 외부/다른 profile/재귀/encoded 우회 거부). UPDATE guest UI/추천·곡 상세 Storybook·SSR(추천 열람, 로그인 믹싱 CTA, 회원 티켓 확인 유지, 저장 이후 선택곡 복귀). 기존 guest·추천 suite와 전체 pnpm test·lint·tsc를 실행한다. 외부 Google OAuth·실제 유료 믹싱은 실행하지 않는다.
+
+## 후속 범위: 합성 GPU A10 대체
+
+- 사용자 요청: 2026-10-29 L4의 대체 GPU에 A10만 추가. web Feature 안의 modal-api 교차 수정으로 task 06을 추가하며 기존 DONE task는 보존한다.
+- services/soulx-singer-svc/modal_app.py의 SoulXModel GPU 요청에 기본 L4 우선·A10 대체 목록을 전달한다. SOULX_GPU가 L4 이외의 단일 GPU이면 기존 명시 설정을 유지하고 중복 후보를 추가하지 않는다. health의 기존 gpu 문자열은 우선 GPU 설정을 의미하며 형식을 유지한다.
+- 가용성 대체는 Modal의 GPU preference 목록에 맡기며 application retry·새 job·티켓 차감·동시 컨테이너 수를 변경하지 않는다. GPU 목록을 health에 추가하는 부수 변경은 하지 않는다.
+- Curated Documentation Impact: UPDATE docs:prd/copy-singer-prd.md, docs:prd/system-architecture.md. 신규 환경 변수·스키마·UI·개인정보·온보딩 영향은 NONE. services/soulx-singer-svc/README.md의 기본 L4 설명은 사용자 수정 요청이 없어 보호하고 보류 근거를 decisions.md에 남긴다.
+- Verification Contract: NO_NEW_TEST — 되돌릴 수 있는 GPU 설정 변경에 영구 테스트를 추가하지 않는다. Python compile, 기존 mix-balance unit과 modal-submission-contract 검사, 실제 Modal SDK의 로컬 함수 정의에서 기본/L4/A10/기존 단일 지정의 GPU 선택과 max_containers 유지 여부를 확인한다. 이미지 build·원격 함수 호출 없이 검사한다. 이 변경만으로 웹 코드와 schema는 바뀌지 않으므로 이미 통과한 전체 웹 suite를 반복하지 않는다. Feature 완료 시 설정된 featureChecks는 별도 workflow 계약을 따른다.
+- 원격 반영은 검증한 코드의 별도 Modal 배포 승인 이후 dbstndla1212 workspace의 기존 soulx-singer-svc endpoint에 적용한다. Next.js 배포·main 통합은 이번 수정 요청에 포함하지 않는다.

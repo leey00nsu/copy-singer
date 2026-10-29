@@ -13,6 +13,8 @@
 
 ## 목적
 
+2026-10-29 사용자 `대체로 A10만 추가할 수 있을까?` 요청을 후속 운영 수정 범위로 수용한다. 기본 합성의 L4 공급 부족에 대응해 A10만 대체 후보로 추가하며, 기존 구현의 최종 승인이나 병합 승인으로 해석하지 않는다.
+
 Google 로그인 전에 실제 보컬 분석 결과를 확인할 수 있게 하여 첫 사용의 부담을 줄인다. 익명 방문자에게 최초 1회 분석을 제공하고, 하루 전체 체험 수량은 단일 웹 프로세스 메모리에서 10건으로 제한한다. 웹 서버 재시작에 따른 전체 한도 초기화는 허용한다.
 
 ## 사용자 스토리
@@ -106,6 +108,7 @@ Google 로그인 전에 실제 보컬 분석 결과를 확인할 수 있게 하�
 
 ## 비기능 요구사항
 
+- **합성 GPU 가용성**: 기본 설정은 L4 우선·A10 대체만 허용한다. 기존 SOULX_GPU 단일 지정은 유지하며 L4를 지정한 경우에도 A10 대체를 적용한다. 동시 컨테이너 수·접수 멱등성·티켓 계약은 유지한다. 실제 반영은 별도 승인한 Modal 재배포가 필요하다. 요구사항: PRD-NFR-GPU-FALLBACK.
 - **보안**: 추측 가능한 job/profile ID만으로 결과를 공개하지 않는다. 익명 세션도 서버에서 소유권을 검증하며 정식 회원 전용 route의 권한을 넓히지 않는다.
 - **동시성**: 마지막 체험 자리에 여러 요청이 도착해도 접수 총량은 한도 이하다. 중복 클릭·독립 idempotency key·다중 탭의 개인 체험 경쟁도 검증한다.
 - **복구**: 기존 영속 job·lease·deadline·retry·미디어 정리 계약을 유지한다. 총량 카운터만 재시작 시 소실된다.
@@ -123,5 +126,5 @@ Google 로그인 전에 실제 보컬 분석 결과를 확인할 수 있게 하�
 ## 관련 문서
 
 - PRD: [copy-singer-prd.md](../../../prd/copy-singer-prd.md)
-- PRD Refs: PRD-FR-GUEST-RECOMMENDATIONS, PRD-US-GUEST-ANALYSIS, PRD-FR-GUEST-ANALYSIS-TRIAL, PRD-FR-GUEST-DAILY-LIMIT, PRD-FR-GUEST-ACCOUNT-LINK, PRD-FR-GUEST-RETENTION, PRD-FR-023, PRD-FR-024, PRD-FR-025, PRD-FR-046, PRD-FR-053, PRD-FR-063, PRD-FR-067, PRD-NFR-009, PRD-NFR-013, PRD-NFR-015, PRD-NFR-016, PRD-NFR-017
+- PRD Refs: PRD-NFR-GPU-FALLBACK, PRD-FR-GUEST-RECOMMENDATIONS, PRD-US-GUEST-ANALYSIS, PRD-FR-GUEST-ANALYSIS-TRIAL, PRD-FR-GUEST-DAILY-LIMIT, PRD-FR-GUEST-ACCOUNT-LINK, PRD-FR-GUEST-RETENTION, PRD-FR-023, PRD-FR-024, PRD-FR-025, PRD-FR-046, PRD-FR-053, PRD-FR-063, PRD-FR-067, PRD-NFR-009, PRD-NFR-013, PRD-NFR-015, PRD-NFR-016, PRD-NFR-017
 - Design Refs: -
