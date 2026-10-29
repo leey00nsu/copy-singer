@@ -40,7 +40,7 @@ jobs:
       - name: Set the OpenWiki configuration directory
         run: echo "OPENWIKI_CONFIG_DIR=$RUNNER_TEMP/openwiki-config" >> "$GITHUB_ENV"
       - name: Install OpenWiki and the optional writing-policy bundle
-        run: npm install --global openwiki@0.5.2 lee-spec-kit@0.9.19
+        run: npm install --global openwiki@0.7.2 lee-spec-kit@0.9.22
       - name: Restore the OpenWiki working checkpoint
         run: |
           if git ls-remote --exit-code --heads origin "refs/heads/$KNOWLEDGE_BRANCH" >/dev/null 2>&1; then
@@ -65,7 +65,9 @@ jobs:
         continue-on-error: true
         env:
           OPENWIKI_PROVIDER: openai-compatible
-          OPENWIKI_MODEL_ID: deepseek/deepseek-v4.1-flash
+          OPENWIKI_MODEL_ID: deepseek-ai/deepseek-v4.1-flash-1017
+          OPENWIKI_OPENAI_COMPATIBLE_STREAMING: "true"
+          OPENWIKI_OPENAI_COMPATIBLE_USE_RESPONSES_API: "false"
           OPENAI_COMPATIBLE_API_KEY: ${{ secrets.OPENAI_COMPATIBLE_API_KEY }}
           OPENAI_COMPATIBLE_BASE_URL: ${{ secrets.OPENAI_COMPATIBLE_BASE_URL }}
         run: openwiki code --update --print --language ko
