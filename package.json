@@ -55,6 +55,7 @@
     "test:base-ui": "tsx --test tests/base-ui-link-button.test.ts",
     "test:brand-icons": "tsx --test tests/brand-icon-assets.test.ts tests/metadata-seo.test.ts",
     "test:process-scripts": "tsx --test tests/process-scripts.test.ts tests/storybook-production-boundary.test.ts",
+    "test:openwiki": "node --test tests/knowledge-dispatcher.test.mjs",
     "test:architecture-boundaries": "tsx --test tests/fsd-architecture-boundaries.test.ts",
     "test:storybook": "vitest --project storybook",
     "test:recommendation": "node --conditions react-server --import tsx --test tests/recommendation-ranking.test.ts && tsx --test tests/recommendation-presentation.test.ts tests/recommendation-synthesis.test.ts tests/recommendation-ui.test.tsx tests/recommendation-song-detail.test.tsx",
