@@ -1,11 +1,8 @@
 ---
 type: explanation
 title: 시스템 지도와 경계
-description: 이 저장소의 런타임 경계와 FSD(Feature-Sliced Design) 계층 의존 방향을 설명하고, 새 API·화면·slice·워커·migration을 어느 디렉터리에 두어야 하는지 정리한 지도 문서예요. 애플리케이션 런타임 밖의 최상위 `ops/` 디스패처 컨테이너와 `.github/workflows/` 자동화 위치도 함께 표시해요.
-tags: [architecture, fsd, boundary, layering, explanation]
-verified:
-  - by: openwiki/0.5.2
-    at: 2026-09-26T16:30:19.500Z
+description: 이 저장소의 런타임 경계와 FSD(Feature-Sliced Design) 계층 의존 방향을 설명하고, 새 API·화면·slice·워커·migration을 어느 디렉터리에 두어야 하는지 정리한 지도 문서예요. 비회원 체험 도메인(`src/entities/guest-analysis`)이 웹 요청과 워커 양쪽에서 소비되는 위치, 애플리케이션 런타임 밖의 최상위 `ops/` 디스패처 컨테이너와 `.github/workflows/` 자동화 위치도 함께 표시해요.
+tags: [architecture, fsd, boundary, layering, guest-analysis, explanation]
 sources:
   - id: openwiki-source-3dc25b286bcb30bfd66698fa
     resource: repo://.github/workflows/lee-spec-kit-knowledge.yml
@@ -35,26 +32,46 @@ sources:
     resource: repo://scripts/vocal-profile-analysis-worker.ts
   - id: openwiki-source-e815dcdea7ad4ee29fa67eab
     resource: repo://services/vocal-analysis-core/README.md
+  - id: openwiki-source-79a7413d1517d8cc7fef6fee
+    resource: repo://src/_app/api-routes/admission.ts
+  - id: openwiki-source-d2f7c12bb94f4e7eae6c4e75
+    resource: repo://src/_app/api-routes/guest-analysis/guest-analysis-route.ts
   - id: openwiki-source-e746e2d352e86c69ac1ad6c4
     resource: repo://src/_app/background-jobs/mixing/runner.ts
   - id: openwiki-source-eaa76879de1a19c0db5c6ebb
     resource: repo://src/_app/background-jobs/mixing/worker.ts
   - id: openwiki-source-9e8a0aed489d44bc2fbea993
     resource: repo://src/_app/background-jobs/song-analysis/runner.ts
+  - id: openwiki-source-9323b2aad36f9dea3b710fc8
+    resource: repo://src/_app/background-jobs/vocal-profile-analysis/runner.ts
   - id: openwiki-source-da8b10d1e5d758ab0e1c7582
     resource: repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts
   - id: openwiki-source-6eb0f897450932367334aa8b
     resource: repo://src/_app/layout/product-layout.tsx
   - id: openwiki-source-817bfc379cf80171f76de73f
     resource: repo://src/_app/metadata/robots.ts
+  - id: openwiki-source-1bd9182239534afc68f91117
+    resource: repo://src/_pages/admin/ui/admin-page.tsx
+  - id: openwiki-source-37055abf050f6159b42c001a
+    resource: repo://src/entities/guest-analysis/api/lifecycle.ts
+  - id: openwiki-source-adc75b111b5c4e9aea9a5417
+    resource: repo://src/entities/guest-analysis/index.model.ts
+  - id: openwiki-source-da4fb96ef0b110681d6d1d08
+    resource: repo://src/entities/guest-analysis/index.server.ts
+  - id: openwiki-source-4c121aeea18cb3bf3d1c99d1
+    resource: repo://src/entities/guest-analysis/model/contract.ts
   - id: openwiki-source-19e48caea81a928a9be19af4
     resource: repo://src/entities/vocal-profile/index.analyzer.server.ts
   - id: openwiki-source-de2e67923afcb74cff5a14e8
     resource: repo://src/entities/vocal-profile/index.model.ts
   - id: openwiki-source-5699df1b4b97c7d05b448339
     resource: repo://src/entities/vocal-profile/index.server.ts
+  - id: openwiki-source-75ca813b5b73760aa12fda93
+    resource: repo://src/features/analyze-vocal-profile/api/analysis-queue.ts
   - id: openwiki-source-e666cd046fb06fe25b657e92
     resource: repo://src/features/create-mixing/api/mixing-queue.ts
+  - id: openwiki-source-84f3d3f78f8f2c5ec2344815
+    resource: repo://src/features/inspect-admin-operations/api/admin-service.ts
   - id: openwiki-source-ecafdcb1d0333ee023639faa
     resource: repo://src/shared/api/index.server.ts
   - id: openwiki-source-71cde1e4f07dd6d060694c2f
@@ -65,6 +82,10 @@ sources:
     resource: repo://src/shared/db/index.server.ts
   - id: openwiki-source-f4f0ed43d86145a15e11c8bc
     resource: repo://src/shared/lib/admission/index.server.ts
+  - id: openwiki-source-f0632008f6a87113b45fc0f3
+    resource: repo://src/shared/lib/audio/index.server.ts
+  - id: openwiki-source-185df214edaea5198417d5a0
+    resource: repo://src/shared/lib/audio/index.ts
   - id: openwiki-source-a0846268348c0a10d6e8cb4c
     resource: repo://src/shared/lib/cn/index.ts
   - id: openwiki-source-85404dd513e83139a27a79b5
@@ -87,12 +108,15 @@ sources:
     resource: repo://tests/fsd-architecture-boundaries.test.ts
   - id: openwiki-source-8b825c1fe06f865eec32c966
     resource: repo://tests/process-scripts.test.ts
-generated: { by: "openwiki/0.5.2", at: "2026-09-26T16:30:19.500Z" }
+generated: { by: "openwiki/0.7.2", at: "2026-11-01T16:00:39.866Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-11-01T16:00:39.866Z
 ---
 
 이 저장소에는 런타임이 두 갈래로 있어요. 브라우저 요청을 그 자리에서 처리하는 Next.js 서버와, PostgreSQL에 접수된 오래 걸리는 작업을 이어받는 독립 워커 프로세스예요. 그래서 새 코드의 자리를 정하는 첫 질문은 "이 코드가 어느 런타임에서 도는가"이고, 두 번째 질문은 "웹 코드라면 FSD(Feature-Sliced Design) 계층 중 어느 책임인가"예요. 애플리케이션 밖에는 Knowledge 문서 자동화를 돌리는 `ops/`와 `.github/workflows/`가 따로 있어요.
 
-두 축이 정해지면 디렉터리와 import 대상까지 함께 정해져요. 바로 아래 표가 각 경계가 무엇을 소유하고 무엇을 거부하는지 답하고, 애플리케이션 밖에 있는 `ops/`와 `.github/workflows/`도 같은 표에 넣었어요. 그다음 두 절이 경계를 만든 런타임 분리와 계층 의존 방향을 설명해요. 사람이 관리하는 상위 경계 설명은 [docs/prd/system-architecture.md](repo://docs/prd/system-architecture.md#L7-L27)와 [docs/agents/constitution.md](repo://docs/agents/constitution.md#L22-L31)에 있고, 이 페이지는 tracked 코드·설정·테스트에서 그 내용을 다시 확인한 결과예요.
+두 축이 정해지면 디렉터리와 import 대상까지 함께 정해져요. 바로 아래 표가 각 경계가 무엇을 소유하고 무엇을 거부하는지 답하고, 애플리케이션 밖에 있는 `ops/`와 `.github/workflows/`도 같은 표에 넣었어요. `src/entities/`와 `src/features/`, `src/shared/` 행에는 이번에 새로 들어온 비회원 체험 책임도 함께 적었어요. 그다음 두 절이 경계를 만든 런타임 분리와 계층 의존 방향을 설명해요. 사람이 관리하는 상위 경계 설명은 [docs/prd/system-architecture.md](repo://docs/prd/system-architecture.md#L7-L27)와 [docs/agents/constitution.md](repo://docs/agents/constitution.md#L22-L31)에 있고, 이 페이지는 tracked 코드·설정·테스트에서 그 내용을 다시 확인한 결과예요.
 
 ## 경계마다 두는 것과 두지 않는 것
 
@@ -102,25 +126,32 @@ generated: { by: "openwiki/0.5.2", at: "2026-09-26T16:30:19.500Z" }
 | `src/_app/` (App layer) | root·product layout, provider, `robots`·`sitemap` metadata, 폰트·전역 스타일, HTTP handler(`api-routes/`), 오래 걸리는 백그라운드 작업 러너와 워커(`background-jobs/`) | 특정 도메인의 계산·조회 규칙. 그 규칙은 `features`·`entities`가 소유하고 여기서는 호출만 해요 |
 | `src/_pages/` | URL 하나에 대응하는 화면 조립과 route별 metadata·loading·not-found 컴포넌트 | 재사용 가능한 use case, DB 접근, 여러 화면이 공유하는 순수 로직 |
 | `src/widgets/` | 독립적으로 재사용되는 화면 block(제품 shell, 라이브러리 목록, 생성 funnel)과 그 block이 필요로 하는 client·server public API | 특정 route의 URL·metadata 결정, 도메인 영속 로직 |
-| `src/features/` | 사용자 action과 application use case(인증, 보컬 분석 접수, 추천 생성, 믹싱 접수, 관리자 조작) | HTTP 응답 형태 결정(`src/_app/api-routes/` 책임), Next.js route 규약, 도메인 테이블의 단독 소유 |
-| `src/entities/` | 도메인 model·계약·표시 로직과 도메인 API(보컬 프로필, 추천, 곡 카탈로그, 믹싱 작업, 티켓, 알림) | 여러 도메인을 조합한 use case, 화면 조립 |
-| `src/shared/` | 도메인을 모르는 공통 기반 — DB client, Leemage 미디어, config와 환경 변수, API 오류·요청 파싱, admission limiter, 공용 UI와 범용 library | 특정 도메인의 규칙. 도메인 이름이 들어가면 `entities`나 `features`로 올라가요 |
+| `src/features/` | 사용자 action과 application use case(인증, 보컬 분석 접수, 추천 생성, 믹싱 접수, 관리자 회원·체험·작업 조회와 티켓 조정). 관리자 체험 목록 조회는 `inspect-admin-operations`가 맡아요 | HTTP 응답 형태 결정(`src/_app/api-routes/` 책임), Next.js route 규약, 도메인 테이블의 단독 소유 |
+| `src/entities/` | 도메인 model·계약·표시 로직과 도메인 API(보컬 프로필, 추천, 곡 카탈로그, 믹싱 작업, 티켓, 알림, 비회원 체험) | 여러 도메인을 조합한 use case, 화면 조립 |
+| `src/shared/` | 도메인을 모르는 공통 기반 — DB client, Leemage 미디어, config와 환경 변수, API 오류·요청 파싱, admission limiter, 공용 UI와 범용 library | 특정 도메인의 규칙. 도메인 이름이 들어가면 `entities`나 `features`로 올라가요. 다만 체험 일일 총량 카운터처럼 DB를 읽지 않고 프로세스 메모리만 다루는 limiter는 `src/shared/lib/admission/`에 남아요 |
+| `src/entities/guest-analysis/` (비회원 체험) | 체험 cookie의 token 해시 조회, `consumedAt`·`expiresAt`·`claimedAt`·`claimedByUserId`로 표현되는 trial 계약, 결과를 회원 계정으로 옮기는 소유권 이전, 만료 정리. DB 근거는 `GuestAnalysisTrial` 모델과 `User.isGuest` 컬럼이에요 | 회원 세션·온보딩·가입 이용권 대체. trial 증명은 `requireApiSession`·`requirePageSession`을 만족하지 못하고, 체험 상태 전이는 [비회원 체험 분석 흐름](../workflows/guest-analysis-trial.md)이 소유해요 |
 | `prisma/` | `schema.prisma`, `migrations/`, development seed | 애플리케이션 조회 로직. 생성된 Prisma client는 `src/shared/db/generated/prisma`로 출력되고 Git에 커밋하지 않아요 |
 | `scripts/*-worker.ts` | 워커 프로세스 entrypoint(믹싱·보컬 프로필 분석·곡 분석)와 운영·검증 script(`reconcile-*`, `recover-*`, `verify-*`, `benchmark-*`) | 재사용되는 domain 로직. entrypoint는 환경 변수를 읽고 `src/_app/background-jobs/`의 실행 함수를 import하는 짧은 파일이에요 |
 | `services/` (Python Modal 서비스) | HTTP 계약을 가진 Modal app(`vocal-profile-modal`, `song-catalog-analyzer`, `soulx-singer-svc`)과 두 분석 서비스가 이미지에 함께 패키징하는 공유 core(`vocal-analysis-core`) | Node.js 코드, DB 직접 접근, 검증되지 않은 로컬 분석 fallback |
 | `ops/knowledge-dispatcher/` | Coolify가 스케줄하는 작은 Node 컨테이너. 한국 시간 기준 사이클을 판정하고 GitHub Actions API로 Knowledge 워크플로를 디스패치하는 `dispatch.mjs`와 그 파일을 담아 8080 포트를 노출하는 이미지 정의 | 애플리케이션 런타임 코드. DB·`src/`·`app/`에 의존하지 않고 GitHub Actions API만 호출해요 |
-| `.github/workflows/` | 이번 생성 입력에서 확인된 tracked 워크플로 파일. 현재 Knowledge 생성용 `lee-spec-kit-knowledge.yml` 하나예요 | 애플리케이션 빌드·테스트를 실행하는 워크플로. 그런 워크플로는 확인되지 않았어요 |
+| `.github/workflows/` | 이번 생성 입력에서 확인된 tracked 워크플로 파일. 현재 Knowledge 자동화용 `lee-spec-kit-knowledge.yml` 하나예요 | 애플리케이션 빌드·테스트를 실행하는 워크플로. 그런 워크플로는 확인되지 않았어요 |
 | 외부 미디어 저장소(Leemage) | 권한이 확인된 오디오 바이트 | 관계·상태·소유권·해시·외부 자산 참조. 그 값들은 PostgreSQL에 남아요 |
 
 `app/` 행은 실제 파일에서 그대로 확인돼요. [app/api/mixing-jobs/route.ts](repo://app/api/mixing-jobs/route.ts#L1-L3)는 `runtime` 선언과 handler re-export 두 문장으로 끝나고, [app/admin/page.tsx](repo://app/admin/page.tsx#L1-L1)와 [app/robots.ts](repo://app/robots.ts#L1-L1)도 re-export 한 줄이에요. `src/_app/`은 이 adapter 뒤의 실제 조립을 맡아요 — [layout/index.server.ts](repo://src/_app/layout/index.server.ts#L1-L4)가 root·product layout과 metadata를, [api-routes/mixing-jobs/index.server.ts](repo://src/_app/api-routes/mixing-jobs/index.server.ts#L1-L5)가 HTTP handler 묶음을 내보내요.
 
 `prisma/` 경계는 스키마와 migration이 한 곳에 있어야 한다는 규칙이에요. [prisma/schema.prisma](repo://prisma/schema.prisma#L1-L8)의 generator가 client를 `src/shared/db/generated/prisma`로 출력하고, 그 경로는 [.gitignore](repo://.gitignore#L46-L47)에 들어 있어요. seed와 migration 경로는 [prisma.config.ts](repo://prisma.config.ts#L6-L15)가 정해요.
 
+비회원 체험은 slice 단위로 소유권이 명확한 경계예요. `src/entities/guest-analysis/`가 trial 계약을 소유하고, [model/contract.ts](repo://src/entities/guest-analysis/model/contract.ts#L1-L8)가 cookie 이름, 365일 cookie 수명, 24시간 결과 보관 기간, `available`·`used`·`full`·`processing` 상태 type을 정해요. [index.model.ts](repo://src/entities/guest-analysis/index.model.ts#L1-L2)는 그 계약과 복귀 경로 도우미를 브라우저에 안전하게 다시 내보내고, [index.server.ts](repo://src/entities/guest-analysis/index.server.ts#L1-L4)는 `server-only`를 먼저 import한 뒤 `api/lifecycle`·`api/trial`을 내보내요.
+
+이 slice의 소비자는 계층마다 이름이 달라요. 화면은 `index.model.ts`만 쓰고(`guestRecommendationSaveHref`, `GuestAnalysisPolicy` type), `src/_app/api-routes/guest-analysis/`·`vocal-profiles/`와 `src/features/analyze-vocal-profile/`·`create-recommendation/`·`authentication/`은 `index.server.ts`를 쓰며, 워커는 `markGuestAnalysisTerminal`과 `cleanupExpiredGuestAnalysis`를 가져다 써요. 상태 전이와 일일 쿼터 규칙은 [비회원 체험 분석 흐름](../workflows/guest-analysis-trial.md)이 소유하니 여기서 다시 쓰지 않아요.
+
+이 경계의 DB 근거는 스키마예요. [prisma/schema.prisma](repo://prisma/schema.prisma#L375-L390)의 `GuestAnalysisTrial`이 `tokenHash`·`userId`·`jobId`에 unique를 걸고 `claimedAt`·`expiresAt` 인덱스를 두며, [prisma/schema.prisma](repo://prisma/schema.prisma#L350-L350)의 `User.isGuest`가 체험 계정과 회원 계정을 구분해요. 관리자 체험 조회는 이 테이블을 [inspect-admin-operations의 `listAdminGuests`](repo://src/features/inspect-admin-operations/api/admin-service.ts#L78-L130)로 직접 읽고, 회원 목록·회원 수는 `isGuest: false`로 걸러요([admin-service.ts](repo://src/features/inspect-admin-operations/api/admin-service.ts#L16-L36)).
+
 `services/`는 웹 트리 밖의 Python 런타임이에요. [services/vocal-analysis-core/README.md](repo://services/vocal-analysis-core/README.md#L1-L7)가 밝히듯 이 core는 두 인증된 Modal CPU 서비스가 함께 패키징하는 librosa·pYIN 분석 package이고, HTTP 서버도 로컬 분석 런타임도 제공하지 않아요.
 
-최상위 `ops/`는 웹·워커가 아닌 운영 자동화 코드를 두는 자리예요. 이번 생성 입력에서 확인되는 항목은 Coolify가 스케줄하는 작은 Node 컨테이너 `ops/knowledge-dispatcher/` 하나이고, 이 컨테이너가 [dispatch.mjs](repo://ops/knowledge-dispatcher/dispatch.mjs#L30-L80)로 Knowledge 워크플로 실행을 디스패치해요. 스케줄링 주체가 Coolify라는 책임 구분은 워크플로 헤더 주석에도 적혀 있고([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L1-L5)), 컨테이너 환경은 [Dockerfile](repo://ops/knowledge-dispatcher/Dockerfile#L1-L6)이 `node:22-alpine` 이미지에 이 파일을 복사하고 8080 포트를 노출하도록 정의해요. 컨테이너가 돌리는 코드의 import는 Node 내장 모듈 `node:http`·`node:path`·`node:url` 세 개뿐이고([dispatch.mjs](repo://ops/knowledge-dispatcher/dispatch.mjs#L1-L3)), 애플리케이션 DB나 `src/`·`app/` 코드에는 손대지 않으므로 두 런타임 갈래에는 속하지 않아요.
+최상위 `ops/`는 웹·워커가 아닌 운영 자동화 코드를 두는 자리예요. 이번 생성 입력에서 확인되는 항목은 Coolify가 스케줄하는 작은 Node 컨테이너 `ops/knowledge-dispatcher/` 하나이고, 이 컨테이너가 [dispatch.mjs](repo://ops/knowledge-dispatcher/dispatch.mjs#L30-L80)로 Knowledge 워크플로 실행을 디스패치해요. 스케줄링 주체가 Coolify라는 책임 구분은 워크플로 헤더 주석에도 적혀 있고([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L1-L2)), 컨테이너 환경은 [Dockerfile](repo://ops/knowledge-dispatcher/Dockerfile#L1-L6)이 `node:22-alpine` 이미지에 이 파일을 복사하고 8080 포트를 노출하도록 정의해요. 컨테이너가 돌리는 코드의 import는 Node 내장 모듈 `node:http`·`node:path`·`node:url` 세 개뿐이고([dispatch.mjs](repo://ops/knowledge-dispatcher/dispatch.mjs#L1-L3)), 애플리케이션 DB나 `src/`·`app/` 코드에는 손대지 않으므로 두 런타임 갈래에는 속하지 않아요.
 
-`.github/workflows/`에는 이번 생성 입력에서 [.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L1-L27) 하나만 tracked 상태로 확인돼요. 이 파일의 작업은 Knowledge 생성을 맡는 `knowledge`([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L23-L24))와 Knowledge PR 안전 검사를 맡는 `verify-knowledge-pr`([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L411-L412)) 두 개이고, 애플리케이션 빌드·테스트를 실행하는 워크플로는 확인되지 않았어요. 그 검증 명령은 [package.json](repo://package.json#L23-L34)의 `test`·`check` script로 돌려요. 디스패처 판정 규칙과 워크플로 트리거·게이트는 [Knowledge 생성과 CI 자동화](../operations/knowledge-automation.md)가 소유하니 그 페이지에서 확인하세요.
+`.github/workflows/`에는 이번 생성 입력에서 [.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L1-L19) 하나만 tracked 상태로 확인돼요. 이 파일의 작업은 Knowledge 생성과 게시를 맡는 `knowledge`(디스패처가 보내는 `workflow_dispatch`일 때만 실행, [.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L21-L25))와 Knowledge PR 안전 검사를 맡는 `verify-knowledge-pr`([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L485-L490)) 두 개이고, 애플리케이션 빌드·테스트를 실행하는 워크플로는 확인되지 않았어요. 그 검증 명령은 [package.json](repo://package.json#L23-L34)의 `test`·`check` script로 돌려요. 디스패처 판정 규칙과 워크플로 트리거·게이트는 [Knowledge 생성과 CI 자동화](../operations/knowledge-automation.md)가 소유하니 그 페이지에서 확인하세요.
 
 ## 브라우저 요청 경로와 워커 경로가 갈라져요
 
@@ -147,9 +178,9 @@ flowchart TD
     Runner --> Leemage
 ```
 
-브라우저 요청은 `app/` adapter에서 시작해 FSD 계층을 내려가 PostgreSQL·Leemage에서 끝나고, 오래 걸리는 작업은 같은 두 저장소를 워커 경로로 다시 돈다는 뜻이에요.
+브라우저 요청은 `app/` adapter에서 시작해 FSD 계층을 내려가 PostgreSQL·Leemage에서 끝나고, 오래 걸리는 작업은 같은 두 저장소를 워커 경로로 다시 돈다는 뜻이에요. 두 경로는 `GuestAnalysisTrial` 행에서 만나요 — 웹 요청이 trial과 분석 작업을 만들고, 워커가 그 작업을 끝내며 trial을 terminal 상태로 닫아요. 그래서 `src/entities/guest-analysis/`는 런타임이 둘로 갈린 뒤에도 한 slice가 두 경로의 계약을 함께 소유하는 예예요.
 
-요청 쪽에서는 [src/_app/api-routes/admission.ts](repo://src/_app/api-routes/admission.ts#L11-L33)의 `withApiAdmission`이 handler 호출 전에 IP 버킷, 세션 확인, 사용자 그룹별 요청 제한, multipart 업로드 슬롯을 적용해요. 경로별 rate·burst 수치와 오류 봉투 계약은 [HTTP API 표면과 요청 접수 규칙](http-api-surface.md)이 소유해요.
+요청 쪽에서는 [src/_app/api-routes/admission.ts](repo://src/_app/api-routes/admission.ts#L11-L39)의 `withApiAdmission`이 handler 호출 전에 IP 버킷, 세션 확인, 사용자 그룹별 요청 제한, multipart 업로드 슬롯을 적용해요. 세션이 없는 요청도 `allowGuest` 옵션이 있으면 체험 trial 증명으로 actor를 만들고, `allowPublic`이면 actor 없이 통과해요. 경로별 rate·burst 수치와 오류 봉투 계약은 [HTTP API 표면과 요청 접수 규칙](http-api-surface.md)이 소유해요.
 
 작업 쪽에서는 [src/_app/background-jobs/mixing/runner.ts](repo://src/_app/background-jobs/mixing/runner.ts#L11-L48)가 동시성 설정만큼 lane을 열고 `runMixingWorkerOnce`를 반복 호출하며 실패 시 지수 backoff로 쉬어요. 점유·lease·heartbeat·deadline 규칙은 [Job 큐와 lease 복구 계약](../operations/job-processing.md)이 소유하니 여기서는 다시 그리지 않아요.
 
@@ -197,7 +228,7 @@ entrypoint가 무엇을 노출할 수 있는지는 이름으로 구분돼요.
 | `api` | 브라우저용 `index.ts`, server용 `index.server.ts` | `@/shared/api` | [index.ts](repo://src/shared/api/index.ts#L1-L3), [index.server.ts](repo://src/shared/api/index.server.ts#L1-L3) |
 | `config` | `index.server.ts`. origin·metadata 도우미는 `site-metadata.ts` | `@/shared/config/index.server`, `@/shared/config/site-metadata` | [index.server.ts](repo://src/shared/config/index.server.ts#L1-L3), [robots.ts](repo://src/_app/metadata/robots.ts#L1-L3) |
 | `db` | `index.server.ts` 하나 | `@/shared/db/index.server` | [index.server.ts](repo://src/shared/db/index.server.ts#L1-L14) |
-| `lib` | 그 아래 디렉터리마다 자체 `index` 이름 파일 | `@/shared/lib/runtime/index.server`, `@/shared/lib/admission/index.server`, `@/shared/lib/cn` | [runtime](repo://src/shared/lib/runtime/index.server.ts#L1-L5), [admission](repo://src/shared/lib/admission/index.server.ts#L1-L4), [cn/index.ts](repo://src/shared/lib/cn/index.ts#L1-L1), [cn.ts](repo://src/shared/lib/cn/cn.ts#L1-L5) |
+| `lib` | 그 아래 디렉터리마다 자체 `index` 이름 파일. 브라우저·server 양쪽 이름을 가진 디렉터리도 있어요 | `@/shared/lib/runtime/index.server`, `@/shared/lib/admission/index.server`, `@/shared/lib/audio`, `@/shared/lib/audio/index.server`, `@/shared/lib/cn` | [runtime](repo://src/shared/lib/runtime/index.server.ts#L1-L5), [admission](repo://src/shared/lib/admission/index.server.ts#L1-L5), [audio/index.ts](repo://src/shared/lib/audio/index.ts#L1-L4), [audio/index.server.ts](repo://src/shared/lib/audio/index.server.ts#L1-L3), [cn/index.ts](repo://src/shared/lib/cn/index.ts#L1-L1) |
 | `media` | `index.server.ts`가 대표이고 capability별 server 이름이 따로 있어요 | `@/shared/media/index.server` | [index.server.ts](repo://src/shared/media/index.server.ts#L1-L8), [index.leemage-client.server.ts](repo://src/shared/media/index.leemage-client.server.ts#L1-L3), [index.audio-proxy.server.ts](repo://src/shared/media/index.audio-proxy.server.ts#L1-L3) |
 | `ui` | 컴포넌트 디렉터리마다 자체 `index.ts` | `@/shared/ui/button`, `@/shared/ui/status-notice` | [button/index.ts](repo://src/shared/ui/button/index.ts#L1-L1), [status-notice/index.ts](repo://src/shared/ui/status-notice/index.ts#L1-L1) |
 
@@ -216,14 +247,15 @@ entrypoint 네 종류를 모든 slice가 다 갖는 것은 아니에요. `src/en
 | 여러 화면이 쓰는 UI block | `src/widgets/<slice>/` | [공용 UI와 Storybook 경계](shared-ui-and-storybook.md) |
 | 새 사용자 action·use case | `src/features/<slice>/` | — |
 | 새 도메인 규칙·표시 로직 | `src/entities/<slice>/` | [데이터 모델과 수명 주기 상태](data-model.md) |
-| 관리자 화면과 관리자 API | `app/admin`·`app/api/admin`은 re-export만, 화면은 `src/_pages/admin*`, handler는 `src/_app/api-routes/admin/`, 로직은 `src/features/*` | [관리자 콘솔과 커스텀 믹싱](../operations/admin-console.md) |
+| 비회원 체험 동작 변경 | trial 계약·읽기 권한·소유권 이전은 `src/entities/guest-analysis/`, 진입 handler는 `src/_app/api-routes/guest-analysis/`, 일일 총량 카운터는 `src/shared/lib/admission/guest-quota.ts` | [비회원 체험 분석 흐름](../workflows/guest-analysis-trial.md) |
+| 관리자 화면과 관리자 API | `app/admin`·`app/api/admin`은 re-export만, 화면은 `src/_pages/admin*`, handler는 `src/_app/api-routes/admin/`, 로직은 `src/features/inspect-admin-operations/`처럼 `src/features/*`. 관리자 체험 목록은 별도 API가 아니라 이 조회 slice가 `GuestAnalysisTrial`을 직접 읽어 채워요 | [관리자 콘솔과 커스텀 믹싱](../operations/admin-console.md) |
 | 두 곳 이상이 쓰는 공용 컴포넌트 | `src/shared/ui/<name>/`과 그 `index.ts` | [공용 UI와 Storybook 경계](shared-ui-and-storybook.md) |
 | PostgreSQL schema 변경 | `prisma/schema.prisma` 수정 후 `prisma/migrations/`에 migration 추가 | [데이터 모델과 수명 주기 상태](data-model.md) |
 | 오래 걸리는 새 작업 | `src/_app/background-jobs/<job>/`에 러너·워커, `scripts/<job>-worker.ts` 진입점, `package.json` 스크립트 | [Job 큐와 lease 복구 계약](../operations/job-processing.md) |
 | 분석 알고리즘 변경 | 해당 Modal app과 `services/vocal-analysis-core/` | [Modal 서비스와 외부 계약](../integrations/modal-services.md) |
 | Knowledge 자동화 스케줄·게이트 변경 | `ops/knowledge-dispatcher/`의 디스패처와 `.github/workflows/lee-spec-kit-knowledge.yml` | [Knowledge 생성과 CI 자동화](../operations/knowledge-automation.md) |
 
-워커 코드도 같은 public API를 소비자로 써요. [src/_app/background-jobs/vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L1-L16)는 `@/entities/*/index.server`와 `@/shared/*/index.server`만 import하고, `src/entities`의 내부 파일을 직접 열지 않아요.
+워커 코드도 같은 public API를 소비자로 써요. [src/_app/background-jobs/vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L1-L16)는 `@/entities/*/index.server`와 `@/shared/*/index.server`만 import하고, `src/entities`의 내부 파일을 직접 열지 않아요. 체험 trial도 같은 방식으로 [worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L122-L123)가 `@/entities/guest-analysis/index.server`의 `markGuestAnalysisTerminal`만 호출해 분석 성공을 기록하고, 그때는 알림을 만들지 않고 일찍 반환해요.
 
 ## 경계를 강제하는 설정과 테스트
 
@@ -236,9 +268,9 @@ entrypoint 네 종류를 모든 slice가 다 갖는 것은 아니에요. `src/en
 | `./src/_pages/**` | `fsd/typo-in-layer-name` | 같은 prefixed-layer 이름 문제예요 |
 | `src/shared/ui/skeleton/skeletons.stories.tsx` | `fsd/no-public-api-sidestep`, `fsd/forbidden-imports` | 페이지 loading UI를 시각 회귀로 확인하는 테스트 fixture예요 |
 | `src/features/create-mixing/api/mixing-queue.ts` | `fsd/forbidden-imports` | queue가 추천 read model을 데이터로 소비해요 |
-| `src/entities/mixing-job/**`, `src/features/analyze-vocal-profile/**`, `src/features/create-mixing/**`, `src/features/create-recommendation/**`, `src/features/development-conversion/**`, `src/features/inspect-admin-operations/**`, `src/features/manage-tickets/**`, `src/entities/song-catalog/**`, `src/features/admin-custom-mixing/**`, `src/features/manage-song-catalog/**`, `src/widgets/library/**` | `fsd/insignificant-slice` | Steiger가 `_app` Route Handler와 워커 소비자를 slice 참조로 세지 않아요. create-mixing 예외가 함께 가리는 MixingJob Entity도 같은 목록에 있어요 |
+| `src/entities/mixing-job/**`, `src/entities/guest-analysis/**`, `src/features/analyze-vocal-profile/**`, `src/features/create-mixing/**`, `src/features/create-recommendation/**`, `src/features/development-conversion/**`, `src/features/inspect-admin-operations/**`, `src/features/manage-tickets/**`, `src/entities/song-catalog/**`, `src/features/admin-custom-mixing/**`, `src/features/manage-song-catalog/**`, `src/widgets/library/**` | `fsd/insignificant-slice` | Steiger가 `_app` Route Handler와 워커 소비자를 slice 참조로 세지 않아요. create-mixing 예외가 함께 가리는 MixingJob Entity와, 워커·Route Handler만 소비하는 GuestAnalysis Entity도 같은 목록에 있어요 |
 
-이 예외 목록은 손으로 관리하니 실제 트리와 어긋난 항목이 남기도 해요. `fsd/insignificant-slice` 목록에 있는 `./src/features/development-conversion/**`는 이 생성 입력에서 확인된 `src/features/`의 디렉터리 목록에는 나타나지 않아요.
+이 예외 목록은 손으로 관리하니 실제 트리와 어긋난 항목이 남기도 해요. `fsd/insignificant-slice` 목록에 있는 `./src/features/development-conversion/**`는 이 생성 입력에서 확인된 `src/features/`의 디렉터리 목록에는 나타나지 않아요. 반대로 `src/entities/guest-analysis/**`는 [steiger.config.ts](repo://steiger.config.ts#L44-L57)에 실제로 들어 있고 `src/entities/`에도 존재해요. 이 slice의 주 소비자는 `_app` Route Handler와 워커라서, Steiger가 그 소비자를 세지 않는 동안에는 같은 목록에 남아 있어야 해요.
 
 `tests/fsd-architecture-boundaries.test.ts`는 FSD plugin과 별개로 세 가지 규칙을 TypeScript AST로 직접 검사해요.
 
@@ -253,6 +285,7 @@ entrypoint 네 종류를 모든 slice가 다 갖는 것은 아니에요. `src/en
 ## 다음에 볼 문서
 
 - 요청 접수 순서와 오류 응답: [HTTP API 표면과 요청 접수 규칙](http-api-surface.md)
+- 비회원 체험 식별·쿼터·결과 저장·만료: [비회원 체험 분석 흐름](../workflows/guest-analysis-trial.md)
 - 작업 점유·lease·복구: [Job 큐와 lease 복구 계약](../operations/job-processing.md)
 - 테이블 관계와 상태 전이: [데이터 모델과 수명 주기 상태](data-model.md)
 - 브라우저 캐시·재시도 판단: [브라우저 상태와 API 오류 계약](client-data-flow.md)

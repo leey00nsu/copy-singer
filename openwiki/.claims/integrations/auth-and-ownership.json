@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:9b909e1908529e39e1b18cfe7b0f1ff4141193fd205294c04303d4bd7503ca97",
+  "pageVersion": "sha256:1998fac9c8d306e56ec6fbd3f1d6b5aa892f41aad67ab444e0454fe5b353a6af",
   "claims": [
     {
       "id": "claim_1a812b2a81574b18ac24cfcf7d6a5f4c",
-      "statement": "`withApiAdmission`은 handler 호출 전에 IP 버킷 적용 → `getRequestSession` 세션 확인 → 사용자 그룹 버킷 적용 → multipart 요청의 업로드 슬롯 획득 순서로 통과시키고, 세션이 없으면 handler를 부르지 않고 `unauthorizedResponse()` 401을 반환하며 슬롯은 `finally`에서 해제한다.",
+      "statement": "`withApiAdmission`은 handler 호출 전에 IP 버킷 → `getRequestSession` 세션 확인 → 액터 결정(세션이 없으면 `allowGuest`일 때만 `getAnalysisActor`) → 그룹 버킷 → multipart 업로드 슬롯 순서로 통과시키고, 액터도 없고 `allowPublic`도 아니면 handler를 부르지 않고 `unauthorizedResponse()` 401을 반환하며, 슬롯은 `finally`에서 해제한다. 그룹 버킷 키는 액터가 있으면 `user:${userId}:${group}`, 없으면 `public:${ip ?? \"untrusted-ingress\"}:${group}`이다.",
       "evidence": [
         {
-          "resource": "repo://src/_app/api-routes/admission.ts#L11-L33",
-          "version": "repo-lines-v1:sha256:e8e1f93ff57bc58b80f479f41e4a9e1d49073ebcd36503c669479bd143d20d4a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ZjY0Y2I4M2JmNWMxZDJkYTAyNzgxZDMxNGYzNmEwNGFlM2I1NmNlYjcwNzhlMmRmYmVmZWNjZjBlMDI1YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhMjI1YjkyYTAwNGZiMjczMzlmOWJmYTdmN2RkMjI3MTAzZWY5YjA4MDdlMTVjMjU1YTk4ODMwNWM1YTVlMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1N2VmZmM4NDhmNjQ5ZGRmMDEzODZlZjc2YjM5NzMyZWQ3ODBkMzUzZmMyMDZjMGM0M2U0OTg4NTc0YTNiZWUifQ"
+          "resource": "repo://src/_app/api-routes/admission.ts#L11-L39",
+          "version": "repo-lines-v1:sha256:a75955a8b6d8a0b945d58c257b7d726787e4ca925738c399fab30dbd302f39f2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ZjY0Y2I4M2JmNWMxZDJkYTAyNzgxZDMxNGYzNmEwNGFlM2I1NmNlYjcwNzhlMmRmYmVmZWNjZjBlMDI1YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhMjI1YjkyYTAwNGZiMjczMzlmOWJmYTdmN2RkMjI3MTAzZWY5YjA4MDdlMTVjMjU1YTk4ODMwNWM1YTVlMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1N2VmZmM4NDhmNjQ5ZGRmMDEzODZlZjc2YjM5NzMyZWQ3ODBkMzUzZmMyMDZjMGM0M2U0OTg4NTc0YTNiZWUifQ"
         },
         {
           "resource": "repo://src/features/authentication/api/session.ts#L40-L44",
@@ -100,11 +100,11 @@
     },
     {
       "id": "claim_3fe41e539dee410c86c9c363cbd381ba",
-      "statement": "공용 product layout은 인증을 강제하지 않고 세션이 있는 요청에만 shell을 덧붙이므로, 각 페이지가 자기 경로를 `requirePageSession`의 `returnTo`로 넘겨 callback URL 정밀도를 유지한다.",
+      "statement": "공용 `ProductLayout`은 인증을 강제하지 않아서 세션이 없으면 `user={null}`인 `ProductShell`을 그대로 렌더링하고, 세션이 있을 때만 관리자 여부·온보딩 스냅샷·사용자 정보를 덧붙인다. 그래서 각 page가 자기 경로를 `requirePageSession`의 `returnTo`로 넘겨 callback URL 정밀도를 유지한다.",
       "evidence": [
         {
-          "resource": "repo://src/_app/layout/product-layout.tsx#L14-L21",
-          "version": "repo-lines-v1:sha256:c015b3fa095d186bb7fca888d1b895ae3d78c813c5b9bbe172d355c18943aeac:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTk5YTQwYTRlNzI1M2RlZGY2MWNmZDBiODdlMTBkMGE3NDI2Yjk3YTNlYWQ5MjRlMWJiNDVhZmY1NzE5MGY0YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGZhM2YyYTc0ODA0ZDk1OTFmZWYzMjliNzBlMDBlNWNjMWUwZTk2ZTE4NWUxNmU3YzkzYzUzNDU5OWZhODcwYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGQ3MzhjZmUwMmRlZWFmYTIwNzE3ZTJkMWI3MzBjYTA4OGU1OGYxOTk5MWNhYmIwY2E5YWE1NWYxOGE5NWQ3OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmQ4ZmJhYzljOWFmNGU3ZjM0ZDM0ZTI2OWU1MzA1NGRkODljYmI4NDZlNTFjZDlkZDA2MzRkZTljMDMyYTYxNiJ9"
+          "resource": "repo://src/_app/layout/product-layout.tsx#L14-L43",
+          "version": "repo-lines-v1:sha256:5689a5cea13e86db61944a40fc154c77178bf20e862f30374756daffed428a94:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5OWE0MGE0ZTcyNTNkZWRmNjFjZmQwYjg3ZTEwZDBhNzQyNmI5N2EzZWFkOTI0ZTFiYjQ1YWZmNTcxOTBmNGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZWYwMWJjMDhkYmMzYjYzZTRlNzVlYTNkMjZhNWI5NDE4OTE4NzdlMjdhZDg5MTMyOWM4NDExZDdkOGRjNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBkNzM4Y2ZlMDJkZWVhZmEyMDcxN2UyZDFiNzMwY2EwODhlNThmMTk5OTFjYWJiMGNhOWFhNTVmMThhOTVkNzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk5YmRhZGE4ZDllZDQyYjQ4Njc3NDZkYmM2NTk5M2E5ZTA2M2RjM2I2NjA2OGZkNzBhYzQ2MDk3YWIzZjA2NjUifQ"
         },
         {
           "resource": "repo://src/_pages/account/ui/account-page.tsx#L17-L22",
@@ -159,7 +159,7 @@
       "statement": "`isDevelopmentAuthBypassSession`은 token이 `dev-auth-bypass`인 세션을 구분해, 계정 메뉴에 로그아웃 대신 우회 사용 표시를 띄우고 레이아웃이 온보딩 스냅샷 조회를 건너뛰게 한다.",
       "evidence": [
         {
-          "resource": "repo://src/_app/layout/product-layout.tsx#L21-L29",
+          "resource": "repo://src/_app/layout/product-layout.tsx#L20-L28",
           "version": "repo-lines-v1:sha256:3575c28b5b7a4678af09150fc61bada7866d48051f618d9ef29cf5677ddff80b:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGZhM2YyYTc0ODA0ZDk1OTFmZWYzMjliNzBlMDBlNWNjMWUwZTk2ZTE4NWUxNmU3YzkzYzUzNDU5OWZhODcwYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDk4MWU0NDRmNTAyZjhmZGNjMjk5OTY3ZmVmZDk0NGMxNjAxNTlhMmQzNjhmN2U0MjYxMDNjODFlMDE4MDNhZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjEzMzczNTA5NTQxMDAwOWZkNDc0M2NiZmNmMDkxZDViMzQ0YjE3MGYyZGFiYzE3MTU0MDJlN2ZmMDVhYTFmYiJ9"
         },
         {
@@ -212,11 +212,11 @@
     },
     {
       "id": "claim_b43d7e1c941c40d099f9d64323e070c6",
-      "statement": "관리자 페이지는 데이터 조회 전에 `requireAdminPage()`를 호출해 권한 없는 세션을 404로 처리하고, 계정 메뉴의 관리 링크는 `isAdminEmail`로 렌더 여부만 바꾸는 편의 장치일 뿐 인가 근거가 아니다.",
+      "statement": "관리자 페이지는 `AdminPage` 본문 첫 단계에서 `requireAdminPage()`를 호출해 권한 없는 세션을 404로 처리하고, 계정 메뉴의 관리 링크는 `isAdminEmail` 결과로 렌더 여부만 바꾸는 편의 장치일 뿐 인가 근거가 아니다.",
       "evidence": [
         {
-          "resource": "repo://src/_pages/admin/ui/admin-page.tsx#L65-L76",
-          "version": "repo-lines-v1:sha256:19f753dc889578402fa39322185ef302381854d7318f4ce142f2ce9443afe5d1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlYWVlYjE2MzFjZWNjZTVmYzY3YjBkYmJmZTQxNGJlZTcyMWVhNzIzMjJmZmUxY2FkNjhlMmFjNGYzYWE1MGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmOWRiYzdmMmYyNGI1Mjg0MzU3Zjk4NjMwNmZlZjA0MTdjYzZmODFhODNhMDJiZjgxNTBmNzExMmY4ODNiMDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmMWYxMzg0ZTJlZDRkODc3ZGY3NDUwYmYxYTEyYWRkNGRiMmU5NzM3N2IxODIwODViZGFkY2MxOGQwMjhmMTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwODM1YjEyZjYzNGZiZDFhN2E4MDNjYTM5Y2U4NmFkNzEzMjU4Y2M1MjhlODY3Njg3NTc4OTk2NTY4NTE4ZDUifQ"
+          "resource": "repo://src/_pages/admin/ui/admin-page.tsx#L173-L180",
+          "version": "repo-lines-v1:sha256:b68c675213088bd39ef6621bc19ce2427fdc7044739166d2b2089f5899bbfc29:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjkyODA0ZDE5MDQ0OWEyOWYxNmFiOTk3YTY2MzhkMzgxMDc1OWUxYzQwZmYwMzRjM2MzNjE0MTIxYjQ2YWI3NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGVlYjNhY2FiNTFlNjU5MTY0M2UyOTc2NDYyMmU5MzE5NDJjZjk1OGVmY2I2YTcwMDk1ODJjZTBiYzA2Y2IxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDk0ZmMwYzE3M2QxZWMzZmM1MDFkN2RmYTkyODU1MDFjNTI3Y2ZiNDcxMjU4M2RhM2NjMzYxODA1NjZiNGJlMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmRiYzU3OWMxYTdkMDBlZmVjNjVkMTg1NTdjOWRkZTc5YmIzZjdmNDk5MDVhMTIyYzkyM2U2MmMxY2U0MGRkZCJ9"
         },
         {
           "resource": "repo://src/features/authentication/ui/user-menu.tsx#L126-L130",
@@ -247,8 +247,8 @@
       "statement": "삭제처럼 경합이 있는 경로는 트랜잭션 안에서 `SELECT ... WHERE id = ... AND \"userId\" = ... FOR UPDATE`로 대상 행을 먼저 잠그고 소유권을 다시 확인한다.",
       "evidence": [
         {
-          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-detail-route.ts#L62-L97",
-          "version": "repo-lines-v1:sha256:70e3a34cfcf624b3ff8e8f09df275a84e32a037acedc2c4de4fab057841898dd:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkNDZmOTQ2ZWZmZmE4OTBjZmFiYjU3NjhkMWRlMzA3MzNiOWQ2NmI3MTFjZDM0MDk0OTUzMzQ4NjI0ZTFlMGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU2NTE2MjEwODhiMmU5ODgxNTBiNTczMjRmMjlhNzliOTQzM2E1ZGM3Y2NkMTE4NjlhMGM3M2NjZTM4NzI3ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUxYmY4MjZhMDI0YWE2ZjdlZGI5MmNlMzk1MTVhMDBkNDgyODgyZjRiM2Y0YjYxNWFkMWQ1YTQ3NTBhZmU2NzYifQ"
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-detail-route.ts#L83-L106",
+          "version": "repo-lines-v1:sha256:014d2ca9fecd557fe1f452b0e33ac2b82ed7f822ba256fa19bf0a8f97800255e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZjMzA1MWE1ZDBkZjE5NDJkZWMzMWZlNzc1NmRiZjEwODBmMDdiZWNiMjM0Yjc2ZThjODA2MGVhNjM1ZTVjYTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNiNTllYTEwNDNlMDYwOTEyNDE2ZGVlZTdlNWU2NjdiZDM2ZWIwZjE2MzY0N2RiOWY4NDA2Nzc5MThkM2IwZGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU1Y2MzMThmODNlY2M1NWNhYjk3OTJmMGExYjgyMGQ0NWI3ZTgyM2E3MWExNzBhOTMwNDdhNmMzZDFhZjdkZWMifQ"
         },
         {
           "resource": "repo://src/entities/mixing-job/api/deletion.ts#L9-L39",
@@ -306,11 +306,15 @@
     },
     {
       "id": "claim_a531ada690844996b519b622dbbc833b",
-      "statement": "새 API를 추가할 때는 admission 래퍼로 감싸고, handler에서 `requireApiSession`으로 세션을 얻고, 쿼리에 `userId` 조건을 넣고, 관리자 경로는 `requireAdminApi`/`requireAdminPage`로 경계를 세우고, 같은 그룹의 기존 오류 봉투를 따르고, 워커 경로는 `leaseOwner` 조건을 넣어야 한다.",
+      "statement": "새 API를 추가할 때는 handler를 admission 래퍼로 감싸고, 체험이 필요한 메서드에만 `allowGuest`/`allowPublic`을 주고, 회원 전용 handler는 `requireApiSession`으로 세션을 얻고, 체험 액터가 자원을 요청하면 `canReadGuestResource`로 다시 확인하고, 쿼리에 `userId`(프로필이면 `sourceType`) 조건을 넣고, 관리자 경로는 `requireAdminApi`/`requireAdminPage`로 경계를 세우고, 요청 주체 값은 세션에서 채우고, 워커 경로는 `leaseOwner` 조건을 넣어야 한다.",
       "evidence": [
         {
-          "resource": "repo://src/_app/api-routes/admission.ts#L11-L33",
-          "version": "repo-lines-v1:sha256:e8e1f93ff57bc58b80f479f41e4a9e1d49073ebcd36503c669479bd143d20d4a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ZjY0Y2I4M2JmNWMxZDJkYTAyNzgxZDMxNGYzNmEwNGFlM2I1NmNlYjcwNzhlMmRmYmVmZWNjZjBlMDI1YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhMjI1YjkyYTAwNGZiMjczMzlmOWJmYTdmN2RkMjI3MTAzZWY5YjA4MDdlMTVjMjU1YTk4ODMwNWM1YTVlMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1N2VmZmM4NDhmNjQ5ZGRmMDEzODZlZjc2YjM5NzMyZWQ3ODBkMzUzZmMyMDZjMGM0M2U0OTg4NTc0YTNiZWUifQ"
+          "resource": "repo://src/_app/api-routes/admission.ts#L11-L39",
+          "version": "repo-lines-v1:sha256:a75955a8b6d8a0b945d58c257b7d726787e4ca925738c399fab30dbd302f39f2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ZjY0Y2I4M2JmNWMxZDJkYTAyNzgxZDMxNGYzNmEwNGFlM2I1NmNlYjcwNzhlMmRmYmVmZWNjZjBlMDI1YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhMjI1YjkyYTAwNGZiMjczMzlmOWJmYTdmN2RkMjI3MTAzZWY5YjA4MDdlMTVjMjU1YTk4ODMwNWM1YTVlMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1N2VmZmM4NDhmNjQ5ZGRmMDEzODZlZjc2YjM5NzMyZWQ3ODBkMzUzZmMyMDZjMGM0M2U0OTg4NTc0YTNiZWUifQ"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/api/trial.ts#L45-L56",
+          "version": "repo-lines-v1:sha256:c7ef35b4517352761e61d134c9b1af866e8111613e28640195d4cf9a23669905:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4MjRmZWY3ZDYxNzE1NjMyYjNiNDM2ZTA3MTVmYWNjOWQ1NTEzYmFkNTkxNDEwNTI2NzBiZDdhZjFhYjY3ODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFlNjM5Yjk0Mjc4YTM4ZDQ1NjFjNzlmNTJkMzlhZDVhMjU4ODYyMWJiNzdhZjExNDkxYTQ5MDBiZDkwNDNhNDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
           "resource": "repo://src/features/authentication/api/admin.ts#L8-L27",
@@ -325,10 +329,116 @@
           "version": "repo-lines-v1:sha256:43fd079e209cdbe21a6de03764b08fd92a614b6ca8b9fe1f33e1ebffca1fafa1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjViNmZjN2Y4Zjg4ODkzNjJkZGZlNDdlODY3MTZmMjc0NzgyZjFjM2UzNTI3OTk2NTIzYjJmMmJjNDBiNjRkNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRhNTc2YTg3MTEzY2FjMmVhYjk2ZTZmNjVkZTcwNWI3NzFjYTBhMDRmMDM4NmE0NDE5NGNhZGJhYTljYTgzYTEifQ"
         }
       ]
+    },
+    {
+      "id": "claim_5f3de38fb342445598f4355857f54661",
+      "statement": "비회원 체험 증명은 `getAnalysisActor`만 통과시킨다. 이 함수는 세션이 있으면 회원 액터를, 없으면 체험 쿠키의 trial이 있고 아직 `claimedAt`이 없을 때 그 trial의 `userId`를 체험 액터로 돌려주며, 같은 요청에 대해 `requireApiSession`은 `null`을 반환하고 회원 전용 route는 401이 된다.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/authentication/api/analysis-actor.ts#L7-L13",
+          "version": "repo-lines-v1:sha256:85e97b28f604d8c7019beefae0d9cc3807fceb700481a7c97b9412fce2ec243e:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTM4MTYyNjgyMzY1ZWJhZTc3ZTdmNjM5YjcyMTMxZTE5NWQ1Zjc1MDUxMWQ5MzUzMjI1NjI2Mzc2YmY2Y2U3ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjY0YjYyNTc4YzY3OWUxZTAxNzJiMzliMjZjNjA1ZTRmOTY3OTZlZTEwYzA3NzJmOTY4NmMyMWZjMmM1ZjViYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODBlNTc3MWFkMThmYmQ4N2U2NTU0NjkzNjA5MDE4MmIxYzhlMmUzMDg4MmM5MTBjNmJmZjNiOGU2OWI0ZmY1YiJ9"
+        },
+        {
+          "resource": "repo://tests/guest-analysis.integration.ts#L24-L28",
+          "version": "repo-lines-v1:sha256:67f15ed5ea748b114fcb1674c0afc5ccb2a1c310c222d266d57c826dfa37a12b:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmU1MjYxMmIxZWMzMTYzMWVmNDI2Yzc4MmU0Yzg4MzFiMjY3YzVkN2I3Yjc1OTM2N2Y5NGEyNjE1ZTA1YzNiYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzdjYTI0Nzc1MmMzNzU1ODg0NDI1MWMyZTJlYTFmODQ4NGY1YThlYWFmNDUwYzk1ODFiOGE3MjFiODRlMjUxMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzQwMDIyYWQ0NWRhOWE1OTQ1MjAyZmU3ZjAxYmYyZDA0ZjEzNzk4NjQyYmRkYWMyNGJkMzJjMDI4Y2FlMjAxOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDg3MDM3ZTZiNTQ1MDhlMmNmZjI2YTRkYTYzYThmNDg2OWMwZTJiODdmNTY3M2UwZTM3NThkMmI2YzVlZWM5ZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_da99ad0ce83840f29e465bc64d039400",
+      "statement": "`getAnalysisResourceActor`는 액터가 없거나 이미 체험이면 그대로 반환하고, 회원 세션에서도 요청한 `jobId`·`profileId`가 아직 저장되지 않은 체험 trial의 작업과 일치하면 회원 액터 대신 체험 액터를 반환해 저장 전 체험 결과의 열람·삭제가 체험 분기로 처리되게 한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/authentication/api/analysis-actor.ts#L15-L26",
+          "version": "repo-lines-v1:sha256:592bf6de376703a7995e6d92d33afdb2e8a73c02f2f1462ef03db28687039063:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5MjQ5NTRmZmJmZDJlNTdiZGFkM2JkNjdiYzc3N2QwOThkNjM1ZTQ0Yzc0MmI0ODQ2ZjkyYjNjNzc5ZDg3YjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmMjM5M2EzZTk1YzllMDMzNTZlYTQxODQ5NzdkNGVhNmIwZThhM2I4ZmViYzE1ZjZhMmIxNDliZWM0MmJhMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_15e46d7d7798432e913e8f6faa5870d1",
+      "statement": "admission의 액터 판정은 trial의 `claimedAt`만 보고 만료를 보지 않으므로, 체험 액터로 자원을 내려주는 handler는 `canReadGuestResource`를 따로 호출해야 한다. 이 함수는 `guestTrialIsReadable`(미저장이고 `expiresAt`이 지나지 않음)과 요청한 `jobId`·`profileId` 일치를 함께 확인한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-audio-route.ts#L7-L12",
+          "version": "repo-lines-v1:sha256:3b17339ca8c8ace633e2638282a82c405992e722e3862ea683cbe7f2473ae1fe:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWUwNmI3NDcwMTA4M2E3ODFhYzJhZTMyNmRmN2M1OWM0MWUwNTlmYTVhMmFmNDU0Y2I0M2I0MmY5YzJjNzU1MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2I5NTBmNDJjZDA2MzM5YzgwYTE1MmY1ZWJlM2ZhMmVmYmNiNmRlMjExZmU0N2NhNjU0OGUwOTBiZjg4NDQ1YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWVmYWFmNGEwM2MwMDE4ODhiMTg1ZTIxYjU1YjYxNmQ3NTFjNTFhODM5MmIyMWRmNzVhODAzYWFmYzEwNmFmNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzdkMmZjMzYxMGJkN2Q5YmQ2MTBkZmZlYjMzYjM3OTZlNjljMWFlZGI3YWQ0MDQzNzQ2YTg5ZDMyMTU1ZTczNiJ9"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/api/trial.ts#L45-L56",
+          "version": "repo-lines-v1:sha256:c7ef35b4517352761e61d134c9b1af866e8111613e28640195d4cf9a23669905:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4MjRmZWY3ZDYxNzE1NjMyYjNiNDM2ZTA3MTVmYWNjOWQ1NTEzYmFkNTkxNDEwNTI2NzBiZDdhZjFhYjY3ODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFlNjM5Yjk0Mjc4YTM4ZDQ1NjFjNzlmNTJkMzlhZDVhMjU4ODYyMWJiNzdhZjExNDkxYTQ5MDBiZDkwNDNhNDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/features/authentication/api/analysis-actor.ts#L10-L12",
+          "version": "repo-lines-v1:sha256:29a35538ef0fd7c04c2881af66db655e109b4ffde4e65fe45a1f7030e00eb144:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzhmMGRmZjg5ODZjNjcwMzBlZDM1MzU3ZDQwOTczMTcwNGZjMTEzMmI5MmNjMGEzMDg1OGJiZDZjODU2MzFhMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTllMDVjMTFlNWRjOWU3M2Q1MTc4YmE0NWE4NTIxOWExZGY2OTc5Yjk1NDIwMTZjMDJiNDUzZjcyYTY3Y2I3MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTA4ODQyNDUwNjM3MTA2ODVmZmJkOWExMTc3OTk1ZjU1MGJkOTVmNTcwZjVmZjMxOGY5OTEwYTljOGQwODkwNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2IwMjQ2MzdhYTA4NjdiZWIyZmEzNjQ0ZmNkZTU1OWUzMjk0ZGU4OGE3NDExMzRkNGJhNjc5MWU1ZTliOGIyZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_05544f47ea674792a5e8bf2af6312852",
+      "statement": "프로필 상세 route는 메서드마다 다른 증명을 받는다. GET과 DELETE는 `allowGuest: true`와 `getAnalysisResourceActor`를 쓰고, PATCH는 래퍼 옵션 없이 `requireApiSession`만 써서 체험 trial 프로필의 이름 변경을 401로 막는다. 세 경로 모두 `sourceType: \"USER\"`가 아닌 행을 404로 숨긴다.",
+      "evidence": [
+        {
+          "resource": "repo://prisma/schema.prisma#L24-L27",
+          "version": "repo-lines-v1:sha256:75d79c73b1ff3b1e3aac620e5e7454b43bbcdaa20c30a57159af3bb9d3d52c03:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODhlZmE5ZGRjMjJhZDZjZmE1Njg1NmFhZWJiYWQ5ZjE2ZjU2OWU1ZWM2NDNkMDhmZDg5YWVkMWNjMzQ0OWUwZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2U1MDMzMmZhZjhmNzhkODY4NjY1OGVhYzUxNzg1OWY0NDgwYzc5ZmVhMWE3ODhiYTZiNzBhOGYwNDMwYTk5NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzdkNTRhOGUzOTkxMzA4YjEzYzgxNDQzMjkwMTQ0NjgxYzcyNDAzNDQ2ZGI2MWYzNTBkYTRhYzlhM2NjNjBmNSJ9"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-detail-route.ts#L124-L128",
+          "version": "repo-lines-v1:sha256:1be51588f043cf1d0e72035b6a024fe06e125b32ac10d67a44702343f8a65d38:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjNkMmY1MzcwN2Q1MDQ5YjM2ZDNlNzJmOWVkNjVhM2QzNDk2NjY4ZGE3YjNmYTlmMzYzOWY3MGFmNTZmOGEyYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTc3ZWZiYmQ5MTFiOTA0NmQ5YTdjN2IxYzAwMzc2MWExNGE3ZmZiMzZkZGU2NTZhY2YxZjVlNDVlNGI2YjdiZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDk0ZmMwYzE3M2QxZWMzZmM1MDFkN2RmYTkyODU1MDFjNTI3Y2ZiNDcxMjU4M2RhM2NjMzYxODA1NjZiNGJlMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-detail-route.ts#L22-L66",
+          "version": "repo-lines-v1:sha256:33593b471e72634daa53384837bf44819cb600d3c767bc8e51f08d216c7f23bb:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlMDZiNzQ3MDEwODNhNzgxYWMyYWUzMjZkZjdjNTljNDFlMDU5ZmE1YTJhZjQ1NGNiNDNiNDJmOWMyYzc1NTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5NGZjMGMxNzNkMWVjM2ZjNTAxZDdkZmE5Mjg1NTAxYzUyN2NmYjQ3MTI1ODNkYTNjYzM2MTgwNTY2YjRiZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJiZTZkMWJjN2U5MTA5ZTVlYmI3NWNjZGU4YWIyN2NlMzA4MGNiNjUyMzBmYjZjYmNjNmNmYThiMGYzYTQ3MDQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2c4de8d8aab84a8b9c9f9c935e4d70f7",
+      "statement": "체험 소유 프로필의 DELETE는 `deleteGuestResult`에 위임한다. 이 함수는 트랜잭션 안에서 `GuestAnalysisTrial` 행을 `userId`로 잠그고 trial이 읽기 가능하며 `trial.job.vocalProfileId`가 요청한 id와 같을 때만 결과를 정리하고, 어긋나면 `GuestAnalysisError(\"GUEST_RESULT_NOT_FOUND\", 404)`를 던져 route가 404로 바꾼다. 회원 소유 프로필은 행을 `FOR UPDATE`로 잠근 뒤 믹싱 작업이 연결돼 있으면 `PROFILE_IN_USE` 409로 멈춘다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-detail-route.ts#L68-L121",
+          "version": "repo-lines-v1:sha256:26eac3ed9dcdd8acf2ed7685529604b449246ba8eaf23f2abcc58ac16b45a3a5:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkNDZmOTQ2ZWZmZmE4OTBjZmFiYjU3NjhkMWRlMzA3MzNiOWQ2NmI3MTFjZDM0MDk0OTUzMzQ4NjI0ZTFlMGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZWYwMWJjMDhkYmMzYjYzZTRlNzVlYTNkMjZhNWI5NDE4OTE4NzdlMjdhZDg5MTMyOWM4NDExZDdkOGRjNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU2NTE2MjEwODhiMmU5ODgxNTBiNTczMjRmMjlhNzliOTQzM2E1ZGM3Y2NkMTE4NjlhMGM3M2NjZTM4NzI3ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVkYzdhNzI2YTAyMDkzODU3MzM2MWI3MGFiYzc4MDI0NDgwNzBlNDBjYWI2ODAyNzUwYTZjNjhkNTRkYjJkYzQifQ"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/api/lifecycle.ts#L134-L142",
+          "version": "repo-lines-v1:sha256:c610ce599b890057a7712b557bb7ad46dba4506f1a2c4b7dcfa4188606985fbe:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2EwMDc0ZDQ3YmEwZTk5ZDdiZGY2OTM1ZDcwZGM3NDcyNzI5OWRkZDhjOWY1ZjYzNmU0YWI1YjFiYTg0ZDU2YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2U2Y2UwOGRiZGExN2RjNWQ2ZDE1ZjQxNmRiYmRlOTI3MzJkNDU5NTIzNDJhMTFiNTc3YzlhYTA3MDJhNTBjNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDIxMTgyNjc4MjU0MWM4MjE5OTQzMWY3OWE1ZTVkMzcwNzIwYWZiMmUyZGUxOWJiZDZiNjRmYmUzMGMxZTVmZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_fd3cd27ad3f2496ebdb9f1341b35143f",
+      "statement": "`allowPublic: true`는 지금 분석 작업 목록 GET 하나에만 적용돼 있다. 그 route는 증명이 없어도 체험 정책과 빈 작업 목록을 응답하고, 체험 증명이 있으면 그 trial의 작업만 노출한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-analysis-jobs-route.ts#L160-L162",
+          "version": "repo-lines-v1:sha256:ca12cbdf58a7e0d7ebc4a634d5148e3d49f476d62cdbebfc87f62105503d4cbc:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDdmYTNhZDc2NTFjNzA5YTUyZTY4OTM1YWNlZWZkOWZhNjMwMDkxZTQ2ZjllMTk4NDA1OTY3MDZmNzRhOTQzZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGJiZjgwZWRkYjMyM2ExODRiYzE4MDllYzg4ZmMzMjQ1YTgxNTIwMjlkNDJiNjUzMmU0NjQ2NmY2MTdiODIzNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmI1ODBlOTY0ZjgzYTQ3M2Y0M2Q0NDM4NDYyOTQ5ZDY4YjU2MDBmZGE3ODdmMTYzNzQ1ZDAwZGU4OWNiZjM2YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-analysis-jobs-route.ts#L75-L87",
+          "version": "repo-lines-v1:sha256:110ba7b6d98722d5774dca1c89edd756046aa5bc1bfef9856ceed780d7d8651b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyZWIwMTM1YzcwZTY5YzliZGZkZDkyYTMyYTFhNTVjOTdhMWRjNzYyNmMyMTg4ZGJiODQ1Y2IwYmU0NDBjYjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5NGZjMGMxNzNkMWVjM2ZjNTAxZDdkZmE5Mjg1NTAxYzUyN2NmYjQ3MTI1ODNkYTNjYzM2MTgwNTY2YjRiZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIyOTQ4ZjM2NTllNGRmYjNiMDdmZGY0YTg0Y2YxMzYyMDM5NGIzMjliZjc3ZGQyNzBhMjQ3YTZkOTcwZDkxMjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_144d0dfaa147436b8dd430cdfaea7500",
+      "statement": "인증·소유권 변경을 검증하는 script는 현재 `package.json`에서 `test:auth:db`(L64, `tests/auth-ownership.integration.ts`와 `tests/dev-auth-bypass.integration.ts`), `test:onboarding`(L65, `tests/new-user-onboarding.integration.ts`), `test:guest-analysis`(L75, 체험 통합 파일 포함) 그리고 `test:readiness`(L71, `tests/profile-deletion-race.integration.ts` 포함)로 정의돼 있다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L64-L65",
+          "version": "repo-lines-v1:sha256:2a2622fb7b2a220fcb7ffa93320ca3c0115effe6c814e7a031e33975523798bb:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTRjOGE5ZGY5MzFmNzYzMzE2OTU4MGI0ZTM0NzliMDU4YmZjNTEzMDU1YzEzNjY3NjUzYzZiODYwMmJiNDM0ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjczYjhmZWI4ZWQ3YmVmNWU2MzJkMjE2MzdlNjM1YTk2ZjZmZmUxYzc3NTAyZjBjMGQ0ZDlkM2E3ZDk0NGNhMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2I2ZDNhOWZhZDY3Yzk2MjNjN2VjYmZhYTIwMWI0YzFkNmFmNjgyNjJlMmJkYmEwMjA5ZGFmMzhjMDkyNTk4YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzM4YzNmOTc2ZDgxNDA2MjU0MDRmOTYxMWI2ODk4NmUxNTc5MmViYWRjNmZlOGZkYjFmNGU2YzdiZTJiNmVlNSJ9"
+        },
+        {
+          "resource": "repo://package.json#L71-L71",
+          "version": "repo-lines-v1:sha256:ea73897a5411cae79ff1745ec0523235a8796d7d0066e05e0a0bd712e9aa41f8:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE3Mzg5N2E1NDExY2FlNzlmZjE3NDVlYzA1MjMyMzVhODc5NmQ3ZDAwNjZlMDVlMGEwYmQ3MTJlOWFhNDFmOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE3Mzg5N2E1NDExY2FlNzlmZjE3NDVlYzA1MjMyMzVhODc5NmQ3ZDAwNjZlMDVlMGEwYmQ3MTJlOWFhNDFmOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjYwOGNlZTQ1ZGQ3MmU1ZTFlNGE4MDZlZTgxMmZiYjk3ZDRjNjdmYTEzZmY5NjI4MjA3Mzc1OGFlN2Y5MGQ1OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjU0OWZkOTQ3NDZjMGVmOWRjMmM4NmE1MzQ2ZTA1MmE4N2IzZDUxZTM0MzQzNDIwMjVkZjMxMTY4OGQ0YzVmNSJ9"
+        },
+        {
+          "resource": "repo://package.json#L75-L75",
+          "version": "repo-lines-v1:sha256:61d9ff4324b3e7dfd541d5d38542ef4adf4fae9577ba746f1c8a4f57cc8c63c6:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjFkOWZmNDMyNGIzZTdkZmQ1NDFkNWQzODU0MmVmNGFkZjRmYWU5NTc3YmE3NDZmMWM4YTRmNTdjYzhjNjNjNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjFkOWZmNDMyNGIzZTdkZmQ1NDFkNWQzODU0MmVmNGFkZjRmYWU5NTc3YmE3NDZmMWM4YTRmNTdjYzhjNjNjNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjU0OWZkOTQ3NDZjMGVmOWRjMmM4NmE1MzQ2ZTA1MmE4N2IzZDUxZTM0MzQzNDIwMjVkZjMxMTY4OGQ0YzVmNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDU0ZjBiZjRjNTdiMDI2ZTFiNjlhYzk1NzBlMjNlZTI1OTY3YTgwOTI0MmJjMWZmMWU3YzYzYTg2ZmM1ZGYzYSJ9"
+        }
+      ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.5.0",
-    "at": "2026-09-18T10:11:56.372Z"
+    "by": "openwiki/0.7.2",
+    "at": "2026-11-01T16:00:39.866Z"
   }
 }

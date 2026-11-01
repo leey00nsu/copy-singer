@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:d1cd9aa070c30d773f80205e401b45893b7f3745f01d6b4ab46932fe63c821d9",
+  "pageVersion": "sha256:e84eb7ccc7d730ca9126281205b8cf1fa604aa4b6acf29e81e3c71521eb36d85",
   "claims": [
     {
       "id": "claim_e705d39836e747d4a3054496a1d63710",
@@ -29,16 +29,16 @@
       "statement": "세 관리자 화면(`/admin`, `/admin/songs`, `/admin/custom-mixing`)은 본문을 그리기 전에 `requireAdminPage()`를 호출하고, 이 함수는 세션이 없거나 이메일이 allowlist에 없으면 `notFound()`를 태워 화면 존재를 감춰요.",
       "evidence": [
         {
-          "resource": "repo://src/_pages/admin-custom-mixing/ui/admin-custom-mixing-page.tsx#L11-L12",
-          "version": "repo-lines-v1:sha256:1018590fc484d6817101223883841b4ea22c2eefe1446f7f944e3e861a4a25a8:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGY0MTUxMjBkNTg2ODRlMTE2NzcwMGRlZDUzOGNmZGQxYTk0ODczNmE1NGFlNGUyYzA4ODQzYzc2NmE4MzUxZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWVhZWViMTYzMWNlY2NlNWZjNjdiMGRiYmZlNDE0YmVlNzIxZWE3MjMyMmZmZTFjYWQ2OGUyYWM0ZjNhYTUwZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTA3NmYyMzAwYWVlYmI5ZGYzNDE5ZmZlYWI1YWU0OTNjMGY3Y2E3ZmI5M2IwMDMyNTJmMThhNGU0YzNlYmIyOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTNhZjlmNjY2OGMzY2QwMzViNWJiNDEzZWIzNGE1ZGU4N2YxMmRjZDMyN2ExNmZlOTBhMmFkNDdlNDU1MTJjNyJ9"
+          "resource": "repo://src/_pages/admin-custom-mixing/ui/admin-custom-mixing-page.tsx#L11-L11",
+          "version": "repo-lines-v1:sha256:aeaeeb1631cecce5fc67b0dbbfe414bee721ea72322ffe1cad68e2ac4f3aa50f:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWVhZWViMTYzMWNlY2NlNWZjNjdiMGRiYmZlNDE0YmVlNzIxZWE3MjMyMmZmZTFjYWQ2OGUyYWM0ZjNhYTUwZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWVhZWViMTYzMWNlY2NlNWZjNjdiMGRiYmZlNDE0YmVlNzIxZWE3MjMyMmZmZTFjYWQ2OGUyYWM0ZjNhYTUwZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTU1ZjRjNGNhNzBhNWIyNTA1M2U0NjEzMmUyMDE2MTdkZDliOWQzMmYwNDY5MTBjZDZiNjY4N2ExOTVhZWE2NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTNhZjlmNjY2OGMzY2QwMzViNWJiNDEzZWIzNGE1ZGU4N2YxMmRjZDMyN2ExNmZlOTBhMmFkNDdlNDU1MTJjNyJ9"
         },
         {
-          "resource": "repo://src/_pages/admin-song-catalog/ui/admin-song-catalog-page.tsx#L74-L74",
+          "resource": "repo://src/_pages/admin-song-catalog/ui/admin-song-catalog-page.tsx#L75-L75",
           "version": "repo-lines-v1:sha256:aeaeeb1631cecce5fc67b0dbbfe414bee721ea72322ffe1cad68e2ac4f3aa50f:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWVhZWViMTYzMWNlY2NlNWZjNjdiMGRiYmZlNDE0YmVlNzIxZWE3MjMyMmZmZTFjYWQ2OGUyYWM0ZjNhYTUwZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWVhZWViMTYzMWNlY2NlNWZjNjdiMGRiYmZlNDE0YmVlNzIxZWE3MjMyMmZmZTFjYWQ2OGUyYWM0ZjNhYTUwZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGM5MjhjNDExY2RlZWYyZmNhN2U4NDllZTdhYjBjMDAxY2M0OGM3YzhkOGM2MWNmOTc1ZjU4OWYxMGExYzA1ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2M4NmRjNjk4ZjE4OGEwNjVhNGQ4MWQ0ZGQ1YjJmMDBhM2MxZWEyMGVkMDVjMTI1YTVjZTNkMjRhNWI4ZjAzMyJ9"
         },
         {
-          "resource": "repo://src/_pages/admin/ui/admin-page.tsx#L65-L66",
-          "version": "repo-lines-v1:sha256:6333edd435dfae725a53177095d5e7e3ad8d2d117eb2b998a6fe4f603f2f8b31:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWVhZWViMTYzMWNlY2NlNWZjNjdiMGRiYmZlNDE0YmVlNzIxZWE3MjMyMmZmZTFjYWQ2OGUyYWM0ZjNhYTUwZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzIwYmM1ZDQyYjk3MjdjZjI3OGM0NGQ5ZTVkYjdkMzA3ZGI1ZGJhZmMzOTcyNWI2OTA4Mjg2OTQ5NmRmNTM1OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmYxZjEzODRlMmVkNGQ4NzdkZjc0NTBiZjFhMTJhZGQ0ZGIyZTk3Mzc3YjE4MjA4NWJkYWRjYzE4ZDAyOGYxOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjU1YjAzMDNiYjZkZjY2MjcyMWI4MzlhMDA2YzZlNDAyOTNkZDBhY2M0YzRhZDAyOGUxYTdmM2JlZTQyNTRhMyJ9"
+          "resource": "repo://src/_pages/admin/ui/admin-page.tsx#L178-L178",
+          "version": "repo-lines-v1:sha256:aeaeeb1631cecce5fc67b0dbbfe414bee721ea72322ffe1cad68e2ac4f3aa50f:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWVhZWViMTYzMWNlY2NlNWZjNjdiMGRiYmZlNDE0YmVlNzIxZWE3MjMyMmZmZTFjYWQ2OGUyYWM0ZjNhYTUwZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWVhZWViMTYzMWNlY2NlNWZjNjdiMGRiYmZlNDE0YmVlNzIxZWE3MjMyMmZmZTFjYWQ2OGUyYWM0ZjNhYTUwZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTRhODcxOWY4NmE0NjBlZTkyM2ExMjJhMWVkMTRlNjFkMzNhMmU5YWQ3NGUyODUwYTc5MTI1YWI0OTFhZjAwNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTBlNjFkNWVlYzBkOWY1N2FhOTU3NWE4M2JlZWRkNzU0OWI3YjVlZmQ3N2M5M2I2OTE2ZTNmODMxZTVlYjdhNSJ9"
         },
         {
           "resource": "repo://src/features/authentication/api/admin.ts#L8-L15",
@@ -73,16 +73,16 @@
       "statement": "관리자 API 요청은 `withApiAdmission` 래퍼를 먼저 통과해 IP 버킷, 세션, 경로 그룹 버킷, multipart 업로드 슬롯을 거친 뒤 handler로 들어가요. 다만 `/api/admin/ticket-adjustments` POST만 래퍼 없이 `requireAdminApi`를 직접 불러서 관리자 그룹 버킷을 거치지 않아요.",
       "evidence": [
         {
-          "resource": "repo://src/_app/api-routes/admin/overview-route.ts#L9-L9",
-          "version": "repo-lines-v1:sha256:412ca345ccf75bf9c0806bce695be8de808b79984251a7a54d202cf6101dd451:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzhiMGMwMzU1YTY2NTZjMjRlNDc2ZmJlYzg5NGUzOTBkZTQxZjlkMTcyZDU0MzIyMmVhYWQxNjc5MTU2ODZhZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjIsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTAwYjIxZDRkYzkxMjYyMDdmZjM1NmVmMTg4OGE0MWMzMDYwMzhjZjA3ODMzYmUzZmVhZWY2MGRlNDJmZTBkZiJ9"
+          "resource": "repo://src/_app/api-routes/admin/overview-route.ts#L11-L11",
+          "version": "repo-lines-v1:sha256:fed3f508659e48f7563ea53060dccc3adeadba022bdd2f58e9c98f3f608e81be:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmVkM2Y1MDg2NTllNDhmNzU2M2VhNTMwNjBkY2NjM2FkZWFkYmEwMjJiZGQyZjU4ZTljOThmM2Y2MDhlODFiZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmVkM2Y1MDg2NTllNDhmNzU2M2VhNTMwNjBkY2NjM2FkZWFkYmEwMjJiZGQyZjU4ZTljOThmM2Y2MDhlODFiZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTg2ODNlYjlkNmVkZDgyYmFlOGRmYjlkNTI1YzAwYTE1MmE5ZjljNjJlNGIyMmFkY2IwZjM1MmZmZmM2YjRkYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
         },
         {
           "resource": "repo://src/_app/api-routes/admin/ticket-adjustments-route.ts#L7-L9",
           "version": "repo-lines-v1:sha256:6522a4b8a8090650b1b86a5a0367c1ac2ece0c67b27fed15de7363ed6d7a92c3:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWMyYWEzMGY2NzhiNmY1OWM5MWZhNDljMDhjNzdjN2NmOTk5YzM1ZDRhYTIzYzllNGRkZDYyMjZlOTY5MWRjNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjBlMzUyMjlhYTBmODVkNTg3MGQ0MmUzOWY5YmU0N2Q3MzM5YmNiMDRlODgyMDBhN2VhMDQwMDdmY2JkMjNiMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzg5MDQ2MTM1Y2MzZjg4ZWJmNmMwYzk3ZmYxMThlYzZhNGUyNjYyNTEwNzVhODcyOWY5NzE0YjlhMzMwMmE4ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2M3NjYxNTI5YTc3NmEyOGMwODkzMzgzZjhjNjM1MjNlOTgzYTliY2FjZTNkNjMwMGIyN2ZiMWZiYjZhOTE5NyJ9"
         },
         {
-          "resource": "repo://src/_app/api-routes/admission.ts#L11-L33",
-          "version": "repo-lines-v1:sha256:e8e1f93ff57bc58b80f479f41e4a9e1d49073ebcd36503c669479bd143d20d4a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ZjY0Y2I4M2JmNWMxZDJkYTAyNzgxZDMxNGYzNmEwNGFlM2I1NmNlYjcwNzhlMmRmYmVmZWNjZjBlMDI1YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhMjI1YjkyYTAwNGZiMjczMzlmOWJmYTdmN2RkMjI3MTAzZWY5YjA4MDdlMTVjMjU1YTk4ODMwNWM1YTVlMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1N2VmZmM4NDhmNjQ5ZGRmMDEzODZlZjc2YjM5NzMyZWQ3ODBkMzUzZmMyMDZjMGM0M2U0OTg4NTc0YTNiZWUifQ"
+          "resource": "repo://src/_app/api-routes/admission.ts#L11-L39",
+          "version": "repo-lines-v1:sha256:a75955a8b6d8a0b945d58c257b7d726787e4ca925738c399fab30dbd302f39f2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ZjY0Y2I4M2JmNWMxZDJkYTAyNzgxZDMxNGYzNmEwNGFlM2I1NmNlYjcwNzhlMmRmYmVmZWNjZjBlMDI1YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhMjI1YjkyYTAwNGZiMjczMzlmOWJmYTdmN2RkMjI3MTAzZWY5YjA4MDdlMTVjMjU1YTk4ODMwNWM1YTVlMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1N2VmZmM4NDhmNjQ5ZGRmMDEzODZlZjc2YjM5NzMyZWQ3ODBkMzUzZmMyMDZjMGM0M2U0OTg4NTc0YTNiZWUifQ"
         }
       ]
     },
@@ -106,23 +106,27 @@
     },
     {
       "id": "claim_a9c4feea11b1472086f88de34b13a229",
-      "statement": "대시보드 조회 함수(`getAdminOverview`, `listAdminUsers`, `listAdminMixingJobs`)는 `src/features/inspect-admin-operations/api/admin-service.ts` 한 곳에 있고 화면과 API handler가 함께 써요. 화면은 표마다 `usersPage`·`jobsPage`를 쓰고 API는 `page`를 읽어서, 페이지 파라미터 이름이 두 표면에서 달라요.",
+      "statement": "대시보드 조회 함수(`getAdminOverview`, `listAdminUsers`, `listAdminGuests`, `listAdminMixingJobs`)는 `src/features/inspect-admin-operations/api/admin-service.ts` 한 곳에 있고 화면과 API handler가 함께 써요. 화면은 목록별 페이지 키 `usersPage`·`guestsPage`·`jobsPage`를 쓰고 API는 `page`를 읽어서, 페이지 파라미터 이름이 두 표면에서 달라요.",
       "evidence": [
         {
           "resource": "repo://src/_app/api-routes/admin/mixing-jobs-route.ts#L8-L13",
           "version": "repo-lines-v1:sha256:9eddeb9ceb3846c31f288103d6a19c6ca7fe2ab082a37996da0eaa534ebf7f9b:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTcxNzgzZGNjMjI5OWVkMDU2OWM5NTQ3ZmMzODMwNDc3ZDUxZDU3NmUxZGFlYTFhNzVlOGViOTI5ZTliZGUzNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTVlZjAxYmMwOGRiYzNiNjNlNGU3NWVhM2QyNmE1Yjk0MTg5MTg3N2UyN2FkODkxMzI5Yzg0MTFkN2Q4ZGM0ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjE3OTlmYzgwZTllYjBhMmUwYzJiMjY3ZWZhN2ZiZWZiY2ZkYzQ5MjQ0MDYxZDRiZDMzYmUxNjU4ODZmZWE0YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzBhYTUzNWNlYjI1NDZhMjdhMWMwOGJkODllOWRjY2IwNzE5YWVlNWU3YjI2MWI5ZjMwYzk1MjA1ZmE1NTFhNyJ9"
         },
         {
-          "resource": "repo://src/_pages/admin/ui/admin-page.tsx#L35-L53",
-          "version": "repo-lines-v1:sha256:27b5d8be54076d3b7a0d9cd7e870b6e117d6cf6cdbfc46c7c24f275f3dd5e3bb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2NDdiMDFkZDMyNDg5ZjJlMWQ1Yzk2MWVjYTFmN2FkZDAxMDAxMzdkMDhlZjdjM2Q5NDQyNWQ5Y2RiNTQ1MGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQxZWE5MTVjMGJhYTU4NTk4YzZjOGE5NDk3MGYxYTc2YzZkN2NiN2JlMjdmOTQxOTA4YzE5Y2IyNDBlMTI5NjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzYzZhNWQwYWFlMDA5ZTRiYTRhYThiODZhZDNlZDY4NzFkNjhjMGNjOGQ2MGVmNWQ4MDc1Y2NmNmVhMmQ2NjEifQ"
+          "resource": "repo://src/_pages/admin/model/filters.ts#L51-L53",
+          "version": "repo-lines-v1:sha256:de724ba2ed8b536fbaf90db2fa73bcd4884ef28ff928f4b6af39966eeaaefb81:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDI2OTIzNDJkNGNlM2NlZjNmOWQ1YmYxMmUyN2M3YTRlMjBiN2IyMTM2YzM2OWM0Yzc4ODc4OTMxODQwMTAyZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjExZjM4NmVmMzk1NjY5YjVlOTIxODhkMjhjYTA5ZjY3MGQyYTljNmFmYTNiZjkxMGZmYzVkMDgxYWQ5NWM2NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjE2ZjY1NDliNGE2OTc0MWRkNjc2YWNkYzBlNjkwZTk5ODc1ZWNlZGEwODNlMWMwYWYwMzc1MDI5MzhkNjBiOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjNlNzc3ODhiYmIzMWZhNjIxYzZmMDFjNmZjOTgxOTFlMWYwMTkwNTgwYjBiYzY5NzY3ZGVjZGM2ZDM4MTMyYSJ9"
         },
         {
-          "resource": "repo://src/features/inspect-admin-operations/api/admin-service.ts#L16-L32",
-          "version": "repo-lines-v1:sha256:e5872ce3567a73143edbf7da3007ada34fc6e18e54c7e075e23952646a9e171f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiYWQyODdiZTlkMmNhMmJhMjUxZDFiZjc3MDhlMDNhODI4MTEyMDU3Nzk0ZDI2OWUxY2FkYWI5N2UxMmI3MjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEwZGZiNDIzZjdiZGEzZGNlMWRlZTgxNjVmYWY2YjNhODhiZWE1OTE5ZTZkMjc0NzAxMjVmYjZiODVmYWMzNWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1MjJkMTY2YTdmNDc2YTJjYzQ4NDhlNDZiNDE5ZGYzODk2ZDNiOWFkOWViZTQzOTA0ZGRkMmM2N2Q2NDRiMGMifQ"
+          "resource": "repo://src/_pages/admin/ui/admin-page.tsx#L98-L103",
+          "version": "repo-lines-v1:sha256:bf25c1a019a0765553cc059b8d2de5349528c0d9e761cd92dc2e288fb033e160:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmIyMjZiYzM1ZDk0M2IxYzJhNDAwZjFhOTY1ODE3YzM3M2Q2MzUxNTE0NTJkZWFhODkzODk2ZmEwZWQ0MTU4MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWIxMDYzYzRkZWE2OGEzODE2NjExMGJhZDJkMzM4YjRkNzJlMDJkMzdiZTA4MTVhNzg0NTFlOTkzMzJkNmRmZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWQ3MGFiZjkzMmUwNmNkZGY0MjI1NGQwN2RkZWZiYWEzMmRmYjRiZjViNzVhNTM4M2ZkZDdkYjk0NzEyNThiNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjQ4ODEyZjhhYWM1NGFjZDFhYTc4YzhjYjY3MGQ5MTY4MmM2MGY4MWQ1ZmIyZTM0OTZiMDgyMGM5ZGVjYTY5NSJ9"
         },
         {
-          "resource": "repo://src/features/inspect-admin-operations/api/admin-service.ts#L34-L58",
-          "version": "repo-lines-v1:sha256:151742c5515c83b27c68c2aa804172189a2f8a9c43d00066a06a3ab59ad9e48f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1MTI2YzdmZTE0ODNhMTMzMTY2ZDk3ZjI4ODEwYWE5ODQ2MDhhYjNmMzNhODc4MDBlMDIzOGQ3NWFjMDU4MmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE5YTYxYWJhNjFhNTQyZTVkN2NmY2MxMTgxZTRiZWNmZDA3ZjRhNTdkZjgzZTVkOTg5OTY4MjM2YjEwNzYxZWYifQ"
+          "resource": "repo://src/features/inspect-admin-operations/api/admin-service.ts#L16-L36",
+          "version": "repo-lines-v1:sha256:bd3f81c0c274098322c34ba5deeb59cd06fb35aef4a514e52cf2a996c4c957d1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiYWQyODdiZTlkMmNhMmJhMjUxZDFiZjc3MDhlMDNhODI4MTEyMDU3Nzk0ZDI2OWUxY2FkYWI5N2UxMmI3MjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEwZGZiNDIzZjdiZGEzZGNlMWRlZTgxNjVmYWY2YjNhODhiZWE1OTE5ZTZkMjc0NzAxMjVmYjZiODVmYWMzNWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFlZWUyMzk2ZTc1ZDVmZTgyN2ZmYTAwYjA5MDM0YzIzZmU4MDU4YWYwNDc4YjM1NTAxZWVhNDYzNjAxZWI2NTkifQ"
+        },
+        {
+          "resource": "repo://src/features/inspect-admin-operations/api/admin-service.ts#L45-L76",
+          "version": "repo-lines-v1:sha256:d7c44bcf5e579c2458d8021c86e1c7868e62d119a477c31be9eb780de722c8f5:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlhYmYyMzRhMzk5NzNjMjcyODNiYmEyMzhmYTlkOGM1MDc4NmY3ZGIzNTAzOGI5OTQzNzExYmI0OTIyOWNhY2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhY2JjNzExZjIxMGUzMWZmYjBiNGJlMWZhZjlkZGE2NGIwOWI1N2NiMTYwYTBmOGI2NGQ3NGY1ZWNiOGM3NjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE0NTE1ODIxMTU2NjUzOGMwMDlmMWE5MjA0YjQ4YjMwNzUwNjAyYjlhOTk3MmQxYzE0N2M1YjRiZDk1NDcyNzIifQ"
         }
       ]
     },
@@ -171,7 +175,7 @@
           "version": "repo-lines-v1:sha256:eb0444f25eb3a1ade2f9feb2e1fd6c94f9488a155186f4cb447b1a8cf5d042f8:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWEyMGIwZmY5MDNkMDk5OTA1Mzc2ZjkxODc1NDYwMzExZjJiZTJhZjE5ZDU2ZTY3YjZlN2Y3ZTcxMzI1ODI1YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTg1NjFiOWEyOGE2ZGM0OTQ4MTk3NThiMmM2YTk4NTdiMWNmYzJlYTZkZTJlN2ZhY2RlNTg1M2JmYzhhOWYzNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGQ2MDhhNTQ5M2RjOTAwYjZhNzdmODUwNGY3YjM5NDBmNzA2MzIwYWJjYWUxYjU1YmU0Njc5ZmMxNjUwMzJhNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWNmY2ZkNDlmYmYzMjAyNTc2N2M0MGZlYzVkYzlkODE5ZTE3YjFmNjBjMzE3OWI5Nzg3NDFkZmZhZTZjN2FlNCJ9"
         },
         {
-          "resource": "repo://services/soulx-singer-svc/modal_app.py#L114-L124",
+          "resource": "repo://services/soulx-singer-svc/modal_app.py#L115-L125",
           "version": "repo-lines-v1:sha256:c6f0355594a8bcf39520ffe5082ddb8a112ab4bd1912eda03cdb430bd9af9fe2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzZDEyMTdlNjUwZmJjMmFjY2ZjN2MwMjNmYjlkNmE2Y2ZmNDEyYjIzYjMxYWQyYTY1NmY4M2FhNWQxMGI0NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MDlhNTNhNjE4ZDAyOGUxZDMwMDBjMGE3YWJjZWVjYmU1ZmIzN2Y0ZTUxMWVmZTQ2NjQzZmFkNmU2Njg3MmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNlMzdlZWQ0MWQxNDY5NTkwNjNkNDdmODcwNWZjMzM2MWYyOGZmYjJlNjNkZGE5NWZkYzg0NzgxMTVjZDUyYmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk0NjE3MGFhN2RmMjNmMWViOGQyNWYyMDUyMGI4ODM4MDA3NDU5ZGRlMTdlYzM2ZTYyMzM1YmY4MWRhNjc2ZDgifQ"
         },
         {
@@ -225,7 +229,7 @@
           "version": "repo-lines-v1:sha256:ecf1374b67f2fa47577631b5a1375031d4cdfa43c05d6487ce3a5cb2e9aaef36:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDY1OTVmNGVlNWZmNjNkNTA5NTA0MTlkYzM0NDE0NTEzODUxZGM5NzM2ZmQxN2E0ZjdiZmE5MzBiMjYxYjZmMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjJkMTFjYWY0M2U5N2VmMzY5ZTZiZWVkMWEyNjhiZDA1ODM4ZjI5YjlkZDI1NGJmNjliYTY0ODg0MTQ3MjM0YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGYwMjA0NjMxOGVlOTA0NmIyZThhZDYyNDMzNWZkYjcwYjJiMzMzN2QzZjJkYTJlYTI2NTAxNjcyMzAxYzc5NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWE4MmNkMjIzNzYxODg0MjEyMGY2MjUzNjE0YTI0MDE5MjYyOTdlNDIxNWMxZGJmNzNhODY5NGFmNDg5ODE0MSJ9"
         },
         {
-          "resource": "repo://src/features/manage-tickets/api/adjust-user-tickets.ts#L21-L29",
+          "resource": "repo://src/features/manage-tickets/api/adjust-user-tickets.ts#L24-L32",
           "version": "repo-lines-v1:sha256:3c29dd93ff1dbbbaae18365e77cbbfe9e90fb00a9b7ebfec2d4692bfee3c0c8e:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWNmNDllODJmOTZmNTdhNTdkODNmMWQ5ZjU0NzFiNWZhZjM4ZmNkYWMzY2M0MmQ2MzViNDA4ODFmMjg5N2I5MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2EzZTQ2Zjk0Mjc2YjZmNmY0ZWQxZjAyYWY3OGJlZjZhMmVlMWM0MzlkZDU1ODRiOTczOTQ4MzEzMjE0ZDJiNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGYyZTI5MWMxNTBiZGUxNDRkMGJlOTYwOTViNzM4MTQ2YWU1ZDBjOTMwN2M5MTVlNWU3ZjEzNzdhOTdmMTAzYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmMyOTlhZDU4Y2Q5YjJiYTNjNDEyZmJiMzk1MmExMTBmMzg1M2M3MWIzODVkMWRkODJhOGNlODZlNDZiNTU0OCJ9"
         },
         {
@@ -243,7 +247,7 @@
           "version": "repo-lines-v1:sha256:826e99d97b617c89a1659a5c981c77715dfbec36818c12460ac9b5f6739df992:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5OTI3OTBjZWVjZjI4Y2IzNzkxZDllM2Q2NmJmOWM3YTgzYzYwZTE2ZWJkNjhkZjMwZmM2YjkyODA3ZDcxNTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1MjJhNGI4YTgwOTA2NTBiMWI4NmE1YTAzNjdjMWFjMmVjZTBjNjdiMjdmZWQxNWRlNzM2M2VkNmQ3YTkyYzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
         },
         {
-          "resource": "repo://src/features/manage-tickets/api/adjust-user-tickets.ts#L30-L41",
+          "resource": "repo://src/features/manage-tickets/api/adjust-user-tickets.ts#L33-L44",
           "version": "repo-lines-v1:sha256:1691cc22beba906cb44ce5df7967852c5929fcd2135122f46b5573d399b9447d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIzZWE4NjBiNThlODQ3ZGM5MDk5ZjJkYzIzMjlkNmJmNWFiNDYxOTQ5ZjRlMTI3YzdiNTVkMmQyZGRmNmU2M2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyMjNkY2NlYjAyNTc0MTdlZjcwOWZkMzRjYTYxZTdkZWJiZWI2Yjc3NmRjNTUyM2U4ODgyN2EyM2QyZDQ2ZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMwOGE4MWJjYzE5NjQ2MmY1NzNhODcyMTE1MTE0NGEyYTEzYWNmNTNkMzBlNTBkMTVmNzUxMWY1NTExZmRhYmIifQ"
         }
       ]
@@ -278,19 +282,19 @@
     },
     {
       "id": "claim_b7ad557cc6084625b94129107cd1db1e",
-      "statement": "관리자 화면은 사용자 레퍼런스 오디오 재생·다운로드와 저장소 URL을 제공하지 않아요. 이 제한은 화면 문구뿐 아니라 조정 폼에 `<audio>`가 없고 사용자 목록 응답에 `externalUrl`이 없어야 한다는 테스트로 고정돼 있어요.",
+      "statement": "관리자 화면은 사용자 레퍼런스 오디오 재생·다운로드와 저장소 URL을 제공하지 않아요. 이 제한은 화면 문구뿐 아니라 조정 폼에 `<audio>`와 `externalUrl`이 없어야 하고 사용자 목록 응답 직렬화에도 `externalUrl`이 없어야 한다는 테스트로 고정돼 있어요.",
       "evidence": [
         {
-          "resource": "repo://src/_pages/admin/ui/admin-page.tsx#L334-L336",
-          "version": "repo-lines-v1:sha256:0f7691b75d1f4cb1f10a1624cac93484cdc1de6917488fb7eb1aad6769c4b594:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzBhMTZiNmEzMjMwOWI4MjRmNTI4NjNkODhiMzcyZWUzNjIxNTZhZWI1OGNjZDMwZDdlYjc3NzFkZDlhZDkzNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTAwMGVkMjk0ZWQ4ZDU3MjYxYjJmNzQ1NzM1YmQxZGU4OGJjOWI3YjRlNzk0NGVkYTE5ZjAwMDBjMzQ1YzZkYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzk4NTZiYjQxYWJlYTdjZjY0NDExYWI3NTRlZWMyYzQwYzFlOWQ1YzFlZTM0MTYwMmEwZWRkNzczZWRhYjVkYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzdjOWIxOWUwNjhhMDc3YWNjODQzZDM1NzgxOTNkMTcxOGVhODdlMTg0YWIzMmEzN2FhODI0NzQ4NzM5YzgxZSJ9"
+          "resource": "repo://src/_pages/admin/ui/admin-page.tsx#L212-L214",
+          "version": "repo-lines-v1:sha256:0469574854661b67d6edbe4f0c7a49a5ad680879d4e6afd9c61f641f32d7049b:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2Q0ZjU3NDIwMzZkZDE2Yzg3ZjRkYmRlOTI5MGI1NDBmMGZlYzY0ZjUwY2NjZTQ3NDczMjBiNTY3YWViNTdlNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTAwMGVkMjk0ZWQ4ZDU3MjYxYjJmNzQ1NzM1YmQxZGU4OGJjOWI3YjRlNzk0NGVkYTE5ZjAwMDBjMzQ1YzZkYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjAxMDA5YTdlMGEwNjAxNmE4NDAzODYwMzU2MzM1YWJjNTMyYTZjOGJkYWViMjk2OWNmMmYwZGJiMTI2NzM2MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWQxNmU4YWM0ZTc4YjVlYmRjNjFiMDY1NDc0NDc1ZDJjZDc5MzYyODlhODJhNTE4MzFkZDc0NDk4YzQ2ZDJjNiJ9"
         },
         {
           "resource": "repo://tests/admin-operations.integration.ts#L94-L97",
           "version": "repo-lines-v1:sha256:05c25ea5c6ba70d120e7bcddd28c547f5a08dcbefd3d8760a0ab5b9bb891f582:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjQ2MGFiYjFiNTk4ZTc1YzNhNzFiMzJiOTZlOWMyZWNmZWFmZDNiZDMwYzJjNWViYjI4ZDYxZjRhNmE3MzYzMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTQwMWY3NThiM2E0ZDJlZmVkMDlkZDY1NzE4OTdlZDI4ZmVjMjA2NjA3MmM4ODgwMTEwZTA0ZWY2YTNmMzk0OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDY1YzViZWE1N2Y3ZjU1NGZjZTNhODU2NGNiOTMyNWYzZmE2MDFmMzkxYWFiNjIxZTY5MDM0NjlhOTYwZWE4OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2UzMjFkZThhM2EyODBjOWQ5MDg2NDE4ODA4MmNjOGViZDNiMjAzNWJmNDEyMmMzNzgwZjQ2Y2Q3MTMwZjJkNiJ9"
         },
         {
-          "resource": "repo://tests/admin-ui.test.tsx#L30-L31",
-          "version": "repo-lines-v1:sha256:9743c53128984b355906699180f3638c6e8bb2beeda0fd77ec666d309b7bd8b6:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzNhOTUwOWE0ZDMxODg5YzRiZjRkOGM2MTA0YTQ5NWUyNDdjNGE4ZjE0MmJjMDY1Mzg2MWI4ZWJkZjRmNzI5NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTFjOTI2NmVkZGI4NjYxMjgyYzI3ZDc4NjQxYmIzZjJmODM0MmQwZmRiMDlkNmEyYjJlMmNiODM0MGRhZTFiYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2IwOTliMDVjOTIzNTVhNjNlZGYzYzgwMWYyY2IyZDVjNDVkYmE2YzBhMzdlMDE5OTczNTg4OTFlZTllYjUxZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjZmNWI0MGIxNTg0NTdkMTc4NjRmMjE3OTA3ODZkZDVhMmVjZGI2NGI2NmE2NTFmNzg4ZDRlMjVjZDMzMDNkMiJ9"
+          "resource": "repo://tests/admin-ui.test.tsx#L34-L35",
+          "version": "repo-lines-v1:sha256:9743c53128984b355906699180f3638c6e8bb2beeda0fd77ec666d309b7bd8b6:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzNhOTUwOWE0ZDMxODg5YzRiZjRkOGM2MTA0YTQ5NWUyNDdjNGE4ZjE0MmJjMDY1Mzg2MWI4ZWJkZjRmNzI5NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTFjOTI2NmVkZGI4NjYxMjgyYzI3ZDc4NjQxYmIzZjJmODM0MmQwZmRiMDlkNmEyYjJlMmNiODM0MGRhZTFiYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2IwOTliMDVjOTIzNTVhNjNlZGYzYzgwMWYyY2IyZDVjNDVkYmE2YzBhMzdlMDE5OTczNTg4OTFlZTllYjUxZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGNjOWQ1YTQ2ODEwZmM3YmFkMjEwZDczMzVlM2M2ZWQzMGFlNjQ1OTIyODYxNDFhOTdiNTcyNGYwZWY3ODI1OCJ9"
         }
       ]
     },
@@ -299,7 +303,7 @@
       "statement": "세 관리자 화면의 `metadata`는 모두 `PRIVATE_METADATA`라서 `robots`가 `index: false`, `follow: false`로 고정되고 검색 노출이 막혀요.",
       "evidence": [
         {
-          "resource": "repo://src/_pages/admin-custom-mixing/ui/admin-custom-mixing-page.tsx#L9-L9",
+          "resource": "repo://src/_pages/admin-custom-mixing/ui/admin-custom-mixing-page.tsx#L8-L8",
           "version": "repo-lines-v1:sha256:8afe5f3ef72978c44b06cdc17715d8e62d8f31692313adb471db01bf8b185fae:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGFmZTVmM2VmNzI5NzhjNDRiMDZjZGMxNzcxNWQ4ZTYyZDhmMzE2OTIzMTNhZGI0NzFkYjAxYmY4YjE4NWZhZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGFmZTVmM2VmNzI5NzhjNDRiMDZjZGMxNzcxNWQ4ZTYyZDhmMzE2OTIzMTNhZGI0NzFkYjAxYmY4YjE4NWZhZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzViODA0MjkxYjllZTJmZWI3ZjA5ZjhhYzg4Mzk3NWU0YzVkMTQwMDcwOTlhNTdkZjk3NDA1ZDExZDk3Y2RkNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTIwNWRkMDMxMjQyMTIzODlmM2E2MDJjMDUxODlkMjJiMTY0Y2VkNDljYjcyOWEwNDg4YjBiMDQ2M2IzNmJmNSJ9"
         },
         {
@@ -318,15 +322,15 @@
       "evidence": [
         {
           "resource": "repo://package.json#L26-L26",
-          "version": "repo-lines-v1:sha256:aa9637ce14322f3c3f8aef7ece8a7191cf941ed341edf4e9c934cc6bd050cd85:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWE5NjM3Y2UxNDMyMmYzYzNmOGFlZjdlY2U4YTcxOTFjZjk0MWVkMzQxZWRmNGU5YzkzNGNjNmJkMDUwY2Q4NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWE5NjM3Y2UxNDMyMmYzYzNmOGFlZjdlY2U4YTcxOTFjZjk0MWVkMzQxZWRmNGU5YzkzNGNjNmJkMDUwY2Q4NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGE1N2RhMzBjMzlmNTA3MDFlZDY1MGJjMDc0NDdlMWJkYjZlYmM4MzkzY2IxZDBjODY3Y2I2OTgxMWEwNzk0NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzE2YWRmNzFhNzlmYmMyNGZkNDJmNGRiMDRjZDNiMTQ1MDk0NTZiZWMwMTg2YjAxZjVjNzVhYjhlYjNmNWU3ZSJ9"
+          "version": "repo-lines-v1:sha256:aa9637ce14322f3c3f8aef7ece8a7191cf941ed341edf4e9c934cc6bd050cd85:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWE5NjM3Y2UxNDMyMmYzYzNmOGFlZjdlY2U4YTcxOTFjZjk0MWVkMzQxZWRmNGU5YzkzNGNjNmJkMDUwY2Q4NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWE5NjM3Y2UxNDMyMmYzYzNmOGFlZjdlY2U4YTcxOTFjZjk0MWVkMzQxZWRmNGU5YzkzNGNjNmJkMDUwY2Q4NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzEzNDcxZDE3NGU2NDc4NzU4NDE3Yzg5Mzg1ZmI1ZGQxMDI0YjYxM2JlNWQwNGNlYjZiYWNmZGIxYjg2ODMzYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzE2YWRmNzFhNzlmYmMyNGZkNDJmNGRiMDRjZDNiMTQ1MDk0NTZiZWMwMTg2YjAxZjVjNzVhYjhlYjNmNWU3ZSJ9"
         },
         {
           "resource": "repo://package.json#L31-L31",
           "version": "repo-lines-v1:sha256:fa28bb3ccf48a0cb156ae8df92e7cf954d9b4cc994ebbe26ac10f6fcb711103d:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmEyOGJiM2NjZjQ4YTBjYjE1NmFlOGRmOTJlN2NmOTU0ZDliNGNjOTk0ZWJiZTI2YWMxMGY2ZmNiNzExMTAzZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmEyOGJiM2NjZjQ4YTBjYjE1NmFlOGRmOTJlN2NmOTU0ZDliNGNjOTk0ZWJiZTI2YWMxMGY2ZmNiNzExMTAzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmQxYTU5NjYzNWViNTUxNzNkNzlhYTg2MjgzOTEwMGE2MzY0MjA1ZTNlNWE4ZjhkZTEzNmNiNzM4YTBjNjFkMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTg4NjJiYjRiOTM2NzFmOTBkNmQ1OGU4ZGI5ODdhMDgzZWYxM2IxMWM0ZjFiMWFkZjczOGY0YjUxNGVmYTBjZSJ9"
         },
         {
-          "resource": "repo://package.json#L69-L69",
-          "version": "repo-lines-v1:sha256:d86ae4382a7cf9dbc40f02bc6f5985b0324bde76ef193c0b88f2a780fe1f2cd2:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDg2YWU0MzgyYTdjZjlkYmM0MGYwMmJjNmY1OTg1YjAzMjRiZGU3NmVmMTkzYzBiODhmMmE3ODBmZTFmMmNkMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDg2YWU0MzgyYTdjZjlkYmM0MGYwMmJjNmY1OTg1YjAzMjRiZGU3NmVmMTkzYzBiODhmMmE3ODBmZTFmMmNkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmI2NDk5ODEwMTQxNDc1MjNjNTZlMjRhMWY3MTNhMjJjNTZkOTUzMmM1YWY4ZTlmNGZjMDI0NmViNThhYmMwMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2U3ZmY0M2IzMjc2MmJlNzcwMzljYzU4NTViZDU0Y2I3ZDM4ZDg0ZmI0ZTM4ZjA5ZTFlMTgxNWU4MTE3ZTE4MiJ9"
+          "resource": "repo://package.json#L70-L70",
+          "version": "repo-lines-v1:sha256:23fe60f9ddb4a8ee16ca9e6193d1aeb2725bd76d48c6180cf427b3348b266629:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjNmZTYwZjlkZGI0YThlZTE2Y2E5ZTYxOTNkMWFlYjI3MjViZDc2ZDQ4YzYxODBjZjQyN2IzMzQ4YjI2NjYyOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjNmZTYwZjlkZGI0YThlZTE2Y2E5ZTYxOTNkMWFlYjI3MjViZDc2ZDQ4YzYxODBjZjQyN2IzMzQ4YjI2NjYyOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmI2NDk5ODEwMTQxNDc1MjNjNTZlMjRhMWY3MTNhMjJjNTZkOTUzMmM1YWY4ZTlmNGZjMDI0NmViNThhYmMwMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2U3ZmY0M2IzMjc2MmJlNzcwMzljYzU4NTViZDU0Y2I3ZDM4ZDg0ZmI0ZTM4ZjA5ZTFlMTgxNWU4MTE3ZTE4MiJ9"
         },
         {
           "resource": "repo://tests/e2e/journeys.spec.mjs#L267-L321",
@@ -355,10 +359,174 @@
           "version": "repo-lines-v1:sha256:af8368b994f022b50d2dbe389fc9d14de3bac154f9594101bab67daf67ccda89:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNkZWVhZjEzOTIzYWJiM2Q3NTgyNTBkMzRlZmRkYmY4Y2U2ODZjZWJiMTZlY2U5OWM2ZTE5MDYwMTAwOWIyZDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE1MjY1YWI1ZDU3MzVkMjZmMjkwNzkxYzQ3YzU3MWM4MmJkOGQ1MzUxMTc5ZDQ5NThkMmYwNmVhNjZkNDRjMmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM1YzFhMzE2YWI3NGRjZmQ3Mjg0MmVhMTdjNzA1MGYyZWQ2NDBmYTgyODg3YmU4OTI3MTc2MzUzZWQ3YWUyYjYifQ"
         }
       ]
+    },
+    {
+      "id": "claim_8843a9c34888476b9c025e70a9e0b3d2",
+      "statement": "관리자 화면은 `회원·체험`·`믹싱 작업`·`음원 관리`·`커스텀 믹싱` 네 메뉴를 `/admin`, `/admin?tab=mixing`, `/admin/songs`, `/admin/custom-mixing` 링크로 보여 주고 현재 메뉴 하나에만 `aria-current=\"page\"`를 붙여요. `/admin` 안의 목록 선택은 `tab`·`audience` 쿼리로 하고, 검색어·페이지·상태 필터는 `usersQ`/`guestsQ`/`jobsQ`, `usersPage`/`guestsPage`/`jobsPage`, `guestStatus`/`jobStatus`처럼 목록별 키로 나뉘어 한 목록에서 검색해도 다른 목록의 조건이 유지돼요. 기본값(`tab=users`, `audience=members`, 페이지 1, 빈 검색어)은 URL에서 생략돼요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_pages/admin/model/filters.ts#L20-L79",
+          "version": "repo-lines-v1:sha256:0ab81be489a071cf92024a7f3c50743f63253eaad70d6884d31b79bbdfcd21a9:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkN2Q0ODg2MjFlNTVjNzQ0ZWIwZWE0NTllNWMwMDE2YzMxM2U5N2MyYmFjZTE5MDQyMzBjZmIzNmZkMjU1NzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFmN2E2ZTNkMzAzZDhlZjY1YmE4MjM1NzBhNTdlZTYyMTk2Y2IyZjBkYWE4Mjc2MTMwNDZkMDMyODQ2YTU0YjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA3YzE3OWQ5MTA1OTRiZGE5MmM5OTA1NTA5MTAzZDliODdlOTc5MjAwYzg1OTQ1MTAyYWYxY2Q0YzRjZTU5YjUifQ"
+        },
+        {
+          "resource": "repo://src/widgets/admin-navigation/ui/admin-navigation.tsx#L23-L41",
+          "version": "repo-lines-v1:sha256:0fe81fcbd2905adb67f730f5d5fa564b64ab818098cb54f5d6ca9e2fc00b5bec:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2YWY4MGMzODE3OWE1MWM5MDdmZGQ4NjRlMTJhYjlhNDNkNTExZTdhYzMzMTAzYzZkYzUyMTliM2M5YTlhMTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlNTkyMDhjZGJmYzliOGM3YzgwNTA2ZmY0NzNmNzNlZThjN2NhYTI5Mzc4MTQ1YTE4MTQxM2U4MmE1OTc0MTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdiYzhlNDA2YzQ3NTAyNTk3MTJjOTM0ZTU1OTAyZTNkMmRmZjU0NjY3NDU2YTgyZjc0YjBiMGMzZGFlN2I3YmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYxM2ZjY2EwZDJhYmE1NjkyZjMzNDMwYjI1ZThkYzJiZjNkOGM0YjBiMzk2MGJhMTZkMWE0NmQ3NzM1MzA3ZjkifQ"
+        },
+        {
+          "resource": "repo://tests/admin-navigation.test.ts#L11-L37",
+          "version": "repo-lines-v1:sha256:df6d75ec0fdbbc0cd509cc2b9f572f1c692dc99f6a4a457f5bfc967294fb290e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiOGY0ZmZlZjA3NmExOWQ1ZjFiMjVhNWJhZDliZDg4MGUyNDFmMjNlNTQxZWE4YzIyZTdhOWQ1NjNkZjQwNmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2YmE4ODZlNjk4YzgyYTdiZGEyMzIxMWQ3NDU2OGQxZWVjODdiYzExMTIyOWViYjk3OTkxMzVkMzcwMGQ3NDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk0NzFjMDc5OTQzZmNiNjRjNmJhODllOWMxOTk0N2MzYzIyMjIxOWViMzQyNTUwOTA2ZGYxNThkMGRlYTY5MWYifQ"
+        },
+        {
+          "resource": "repo://tests/admin-ui.test.tsx#L38-L44",
+          "version": "repo-lines-v1:sha256:8fc45bf0ddf3563001809892c1ff6a6680bcbf2ab050fa90fe610d3495cba7c4:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzFiMzFiNmViZDczYWUyNDkxNDEzYWVhYmMzNDMxN2NhNjY2MzM1MWZlNzVjN2JlODRkZThmMWM3ZmZjMDRiOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjZmNWI0MGIxNTg0NTdkMTc4NjRmMjE3OTA3ODZkZDVhMmVjZGI2NGI2NmE2NTFmNzg4ZDRlMjVjZDMzMDNkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDdiOWZiY2E3ODMwOTAzN2RlMzA0YmJkZTgzNjE1MjJiZmEyNjc3Y2EyODIzOGVhZDk5MTg3MGIxMWMxMjZkYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTZmNDZiNDRmN2NjYzI4NWUyZDMwNTE3ZDQwN2FkODNhZjgyYTczMTkwZmQyZTNlZmViNzg4ZjhhOTY3NDhmYiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_abb5222361f64a329eb74fafe21d685c",
+      "statement": "체험 표는 회원 표와 별도 조회인 `listAdminGuests`만 쓰고, 이 조회는 `id`·`userId`·`createdAt`·`consumedAt`·`expiresAt`·`claimedAt`·`claimedBy`·`job`만 선택해 `tokenHash`와 미디어·저장소 URL이 화면으로 나가지 않아요. 화면은 `userId`에서 `guest-`를 떼고 12자만 보여 주며, 마크업에 `tokenHash`·`externalUrl`·`<audio>`가 없어야 한다는 테스트가 이를 고정해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_pages/admin/ui/admin-tables.tsx#L107-L113",
+          "version": "repo-lines-v1:sha256:c9e23dee493f4ce1d8fa7edea91cedb5f9bcfb07cc4cf3e248cbb6bec2dff402:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWZjMWQyMzUwYTRlMzA3ZTU1MDI4MThiN2Y5YmU0ZWZkNjFlN2UzNmM1OGJjMzhhYzAyYjdhNmU3NjMzMDNiMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGU0NzkwN2JmZjk2OGY1ZDljMDNiYzliNjg1ZjQ3ZDFmYjBjNjMxOTI2YjVkZWQwYzAxMzA4ZTY3ZDEzOWZlMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2E5YzZiOWFhNGY3YzBiODgwMjE2ZGM4ZTk5MzIxNGE4ODcyYjU1NzUxOTg5YzIxOWJjOGIxZDUxMDE4MjAwMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODgyMDFlMDg2ZGMwMGY1M2ZlM2VjYWI5OGQ4ODE2ZmY3Yzk5OTdmYTk3NmQ4YWU5NmYyOGUzNzZlY2VjYzQ3NSJ9"
+        },
+        {
+          "resource": "repo://src/features/inspect-admin-operations/api/admin-service.ts#L92-L129",
+          "version": "repo-lines-v1:sha256:3dfe1680acce19ae2333e5de92473b843a0cb108f42c47335177b12314f4a48a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmNWYyMzE5MWM5YTA2NWVhMzFkN2RjZDExZWZkMGVhYWRhMDJkYjNiOGZiMDQxN2U3YjA5ZDE3YTBlZmZlNjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyN2ZjYjZlZGZkZjAxYWNhYTg2NTllNzM2NzMwMzMyZjNlYWE1MTc3N2U5NzY2MTdlYzAwMDdlOWZkYzM1MmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzYzM1YmNkMzdkMjhjNjhkNzBiNDVlYWMwNzg0ZjhiMTYwNmExNTRiMjgxNGZmYTFlMGNjOTBjYTM1MjM0ZmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY3OTUwYTA2ZTJhNjRjOTk2NTNhMTE1ZjkxMDhjODRjYTE2NzA5YWU3YzY1ZmNmNzI5ZjllMDJkNDlhZDcyODAifQ"
+        },
+        {
+          "resource": "repo://tests/admin-operations.integration.ts#L157-L159",
+          "version": "repo-lines-v1:sha256:a71d8090c76d40f8154776ea1766213f34de43968a300384e6adf584fe3baebf:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTMyZWYyOTA4NTJlNWQ0YWQzMjJiNzlhYmM3OWNiMzY0MTA5MDI5MmJkNTk1MWRlMjcyNDY4MzEyYzFiMTEzZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTk2OThiMjBkOWUxZTM3NDNkNDg2NWMyNmQzYTNiNTJjYjE5ZjUyNzdjMzBjYmUxNTU1OTVjMWY4NWRkZjMwOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTA1MmNkMTcwZWJlZWU4MzA4YWZjMjVjYjRiOWExNTJmNTQ2YmRhMDMwYzc0Nzc1NTA5MWNiOWVjOWUyMzBiMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTMyMGFjYTg1YzBjN2Q4MmIyODA4NmI1YjJmNTdkNTQ5NmE1OTUwZDY0MzI2Y2YzNGFlM2M2NDNjZWFlNzBlOSJ9"
+        },
+        {
+          "resource": "repo://tests/admin-ui.test.tsx#L93-L93",
+          "version": "repo-lines-v1:sha256:6a5be01aecc156e7460f5d0a9ab36d0011c0e433ba59bb5bedff8f36f6a90d45:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmE1YmUwMWFlY2MxNTZlNzQ2MGY1ZDBhOWFiMzZkMDAxMWMwZTQzM2JhNTliYjViZWRmZjhmMzZmNmE5MGQ0NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmE1YmUwMWFlY2MxNTZlNzQ2MGY1ZDBhOWFiMzZkMDAxMWMwZTQzM2JhNTliYjViZWRmZjhmMzZmNmE5MGQ0NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTE1YzBmMTVmNzYyYjQ5ZjMyYmJhNGIxOGE3ZWUxMjEyYjc5MGQyNjU4YTNiZWU2OWE5MzcxZmMwMWE5YjZkMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjRlODg4YjNmNmQzMjc2NTVjMDM5ZmJiNjZmOWEzMWYxMmIzMGQzM2VjY2ZhNGRkOGRkZDU1Y2E0MTc3ODJiZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_b7adac2ffc664be889cb7784ec0b9992",
+      "statement": "체험 결과 저장 상태는 `claimedAt`이 있으면 `claimed`, 없고 `expiresAt`이 현재 시각 이하이면 `expired`, 그 밖에는 `unclaimed`로 판정해요. 조회 필터 `claimed`·`expired`·`unclaimed`도 같은 조건을 쿼리에 옮겨 쓰기 때문에 저장된 기록이 만료보다 우선해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_pages/admin/model/filters.ts#L81-L83",
+          "version": "repo-lines-v1:sha256:6e4167a00fc19317117f0bac113b5333555876fc268dc2cbc9e7eb5d2e339ffe:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGM0MGM0MTE5NzMwNGMxYzdhNzVjMDEwNjJjNTAyMWRhMDdiMzlkMTdjNTNmMGI4ZjVkZTFmMTk1ZGFlZjA5YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWQyMTQyZTM0NmNiNWM1ZGM5YjE3NmI3ZDc0MzQ1NDI4YmMzMDI0MzJhNGE1ODMxZmVjOTlmNmYxYjIzMmYyMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGRlMDE2Y2Q5ODc5YTI4ZTViM2NkYTk0MzQwNDE1MjlhMzlhNWYwMmUxMTQzNzBhYmNlMGJlMWNiNmZmZmE2YiJ9"
+        },
+        {
+          "resource": "repo://src/features/inspect-admin-operations/api/admin-service.ts#L92-L96",
+          "version": "repo-lines-v1:sha256:eaf8c0b22a18363310fa0897cf9bad31c667e6bd700bc5d8e29a4c207fbe983f:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2Y1ZjIzMTkxYzlhMDY1ZWEzMWQ3ZGNkMTFlZmQwZWFhZGEwMmRiM2I4ZmIwNDE3ZTdiMDlkMTdhMGVmZmU2MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjJlNjE1OTQ0YTY0ZjNmZWQ2OWZhYzkyM2RkZjFmYzIwNGQ3OTg1NjYwZDc0MmE1YzE3YjQ4Y2U0MWU2NTM5YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODNjMzViY2QzN2QyOGM2OGQ3MGI0NWVhYzA3ODRmOGIxNjA2YTE1NGIyODE0ZmZhMWUwY2M5MGNhMzUyMzRmZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODIyNzcyYTgwNjY5OTg5YTRmMDQzMWY5N2QwZDAxNjI5NWVmYTEzYzdlOGJlMzRlMTg0ZDAzZDM5NzBjMjFlOCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_0948874dedc746959ae47e62609ff8e5",
+      "statement": "관리자 API에는 개요·회원·작업·티켓 조정과 카탈로그 경로만 있고 체험 목록 endpoint는 없어요. 체험 목록은 `/admin` server component가 `listAdminGuests`를 직접 부르므로, 화면 없이 API로 노출하려면 `src/_app/api-routes/admin/`에 handler를 만들고 `index.server.ts`와 `app/api/admin/` 어댑터를 함께 추가해야 해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/admin/index.server.ts#L1-L7",
+          "version": "repo-lines-v1:sha256:43ed4e2ff9a421c9d1a03a25d4a9aa6271d3ec518930705d90434401cb6d7523:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGMwZjQ4ZTM4ZmJkYjZjMGVmZTk4N2M5ODQ1MjFlZDA3NDMyNzU1YjZiYWFjY2Y0NWQ5NzdlNTdkYjdjYmFkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGEzMzYxOGFkYTA1NWFkOTdlMDVhYjlhZTUxZjQ3ZmVmMjIxM2EzZTgwYjUzZDY5YmM4MjMzZGFmNTMzNzFhZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/_pages/admin/ui/admin-page.tsx#L109-L116",
+          "version": "repo-lines-v1:sha256:8cf4b3fe7898c7540da81059ae451b143508994b18883fb1cbc7ee3fe6ba04cc:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTc2MDNhYTdhMWE0NWI3Y2U2Njg0NGFhNDVhZTk0MzJmMzZlZjRiOTcwN2Q0YzZlOTRmNDdhZjc3ZDg5OWRhZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2EzZTQ2Zjk0Mjc2YjZmNmY0ZWQxZjAyYWY3OGJlZjZhMmVlMWM0MzlkZDU1ODRiOTczOTQ4MzEzMjE0ZDJiNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDk0ZmMwYzE3M2QxZWMzZmM1MDFkN2RmYTkyODU1MDFjNTI3Y2ZiNDcxMjU4M2RhM2NjMzYxODA1NjZiNGJlMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjczMTc2Nzc2YzFjNzU0MTM4OTAwZjFmNmE5MDEyMWZkODA5ZDNhMDhiNWVjMDliZDdmODllY2FiZmY0YzE2NyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_2f69c37b07bb436fadf1a596044e27d1",
+      "statement": "`getAdminOverview()`는 `users`·`guests`·`claimedTrials`·`jobs`(상태별 개수)·`ticketNet`·`ticketWallets`·`recentFailures`를 돌려주지만, `/admin` 화면이 실제로 쓰는 값은 회원·체험 탭의 `users`·`guests`·`claimedTrials`와 믹싱 탭의 세 수치(`jobs` 합계, `pending`+`preparing`+`submitted`+`processing`, `recentFailures`)예요. `AdminMetricBand`는 스토리에서만 쓰이고 실제 화면에는 붙어 있지 않아요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_pages/admin/ui/admin-metric-band.tsx#L12-L30",
+          "version": "repo-lines-v1:sha256:d4638c219a43349fd3f74e68fa6aa3b2cd0156c89c18a8f77505788ae716af24:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyZmI2MmRmYzBhMGZlMzYyZjY0Y2MwZjhkM2JkMGYzMjk2ZWFhYzhlMjFkYTU5Mzg2ZjhhYWIyNmE4OWE3NTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjViNmFhMjFmNjExZGJjNzgyZjg0NDNiMmIzYzI0NjQ3NTJkNzgyMzRhZWRjNWVkMTlhOWIyYTI5OTEyOGM1M2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlkOTY3OWMzMWU3NmU5NDcxNjRiNWY1YzlmNTVjYjlmOWM4YzQ5NDYwMzg2ZTI4MzE2NGRlMzllYzVmNGU1NzgifQ"
+        },
+        {
+          "resource": "repo://src/_pages/admin/ui/admin-page.tsx#L141-L160",
+          "version": "repo-lines-v1:sha256:7af4df3a0aeb96b0e8687eca31a3dc1d5e81b7c03124d721c7c88c46276a9791:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhMjg4NmY3MTRjODFhZWI1MDJmZjc2ZjlmZDgyNjRjOWQwYjc4ODU1ODk1N2RhNGIwZTA3ZDE4OGUzZjFkMGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlZTYyMzA2YWUxYmEzNDllMDRjMmMxMDk5YWU4ZWQxZGQ4NDE1MWVhZmRhYzhmYTVmZDE4YjJhNzNiYzRmZTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRiZTYyNDdlNjVmMzQyM2FmNjk2OWUzMDEyOWNkMzQyNzQ2NjEzYzk0YzJlZTkwZTEzMjdhMDliYzY1NjFmMTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2NDM3MzgyN2RjMDQ1NTRjMzliOTJiYWNlYTI4OTliMGJlYzg1NGFmNmQwMjVlOTgwM2Y5NDYyZGM3MzQzMTEifQ"
+        },
+        {
+          "resource": "repo://src/features/inspect-admin-operations/api/admin-service.ts#L16-L36",
+          "version": "repo-lines-v1:sha256:bd3f81c0c274098322c34ba5deeb59cd06fb35aef4a514e52cf2a996c4c957d1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiYWQyODdiZTlkMmNhMmJhMjUxZDFiZjc3MDhlMDNhODI4MTEyMDU3Nzk0ZDI2OWUxY2FkYWI5N2UxMmI3MjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEwZGZiNDIzZjdiZGEzZGNlMWRlZTgxNjVmYWY2YjNhODhiZWE1OTE5ZTZkMjc0NzAxMjVmYjZiODVmYWMzNWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFlZWUyMzk2ZTc1ZDVmZTgyN2ZmYTAwYjA5MDM0YzIzZmU4MDU4YWYwNDc4YjM1NTAxZWVhNDYzNjAxZWI2NTkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f69e58d0b74348e4ba3bde6542a3a7bf",
+      "statement": "`pagination()`이 페이지 크기를 1~100(기본 10)으로 자르고 페이지 번호를 1과 마지막 페이지 사이로 맞추므로, 범위를 넘는 `page`나 숫자가 아닌 값이 와도 빈 표가 아니라 마지막 페이지(또는 1페이지)가 돌아와요.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/inspect-admin-operations/api/admin-service.ts#L38-L43",
+          "version": "repo-lines-v1:sha256:da36602d1643ab48f0c761840fc687d9056aa9d0629cde7c2d43fde35ac7cdbd:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWRjMzFjNGYxYzdkYmE5ZDY2MzM2MmMyZWU1YjA1ODFhZWU4MmI2NjcwZGIxNjk0Y2Q2ZTQwYzU3ODFmMGE0ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTIwNDBlMDk1YTk0ZTJhZGE3NGU0MjFmMzcxODc1MWE5MWE4MTBiZmQ2NmY0OGY0ZTkzOWM3Yjc0ODBlYjY3MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzgxY2U1M2MzNDc3OTE3NDQ0YjMyMTIxZTI1MjcyMzg5MGZkMDdlM2E0MzkwMjkwZDkxMWJiMTg3OGFkNTRiOSJ9"
+        },
+        {
+          "resource": "repo://tests/admin-operations.integration.ts#L144-L156",
+          "version": "repo-lines-v1:sha256:fcd6f76abdba93fcd104a401acb2a3c1da03a4db8742d856bad386a30507015c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OGYyYzNkZWY1YjkzNGRjNTE4NzY0MDQ4NDU3MjUwOTAzNDVjMDA1NDdiMjE1ZDVkNmQzZmE0Mjg0Yzk4OTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyMjM2ZDgxMDM4NTE3NDhhOWIwYzNmM2U2NTUxMjc3Y2JkZTY0ZGY3NDYzNTc3ZTJjNjljZmI1Mzc5YjQ5ZGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjliOTkwZWVkMjA3MzgxNjFiZTIxNzRmZmJhNTg0N2M1YjVkNGI5MDdiNWNjZmQ1ZWVmMDgyNjI5ODhjNjVhNWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3MWQ4MDkwYzc2ZDQwZjgxNTQ3NzZlYTE3NjYyMTNmMzRkZTQzOTY4YTMwMDM4NGU2YWRmNTg0ZmUzYmFlYmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9077aef31b2244179f2cb49df12d1661",
+      "statement": "티켓 조정은 회원 행의 Sheet에서 열리고, 확인 단계에서 요청 본문과 `crypto.randomUUID()` 요청 키를 한 번 만들어 두었다가 같은 입력으로 다시 확인하면 그 키를 재사용해요. 그래서 확인과 적용을 반복해도 서버가 받는 멱등 키가 바뀌지 않아요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_pages/admin/ui/admin-tables.tsx#L57-L61",
+          "version": "repo-lines-v1:sha256:2cdb4208fd9542b3109c420eb4d2ab77706d3a4531e7c2f8601c914030b0621c:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTE1YjU2ZDY1MDMwNzM5OWJmYWZjNmVmZTVkMDJkZTcyNWQxZjU3NGVhMzYyM2E2OGE5ZmU3MTM1NzQ1ZmM1ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzQ3NmY0Nzc1Mjc1MTU3OTc0MjM5MWVhZGEzNTViZjJlZjVkMmE5OTgxM2UxMTI3ZTMwZjEzOTZkYTk3OTc5NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTg2MDNmZmI4ZWYzYTljZjQwZDUxOGEyNWI1NzAyMzBjYmFkNmMwYzc3NjMzZDExYzVmZTA5YmY0OGQwNTJmMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjBhOWJjNjZmNzlkOWZlM2EzMWQwNDlhODI3NzE1OGIwNjI5ODFkZDE0MjYyYTlkOGM5Y2ZiMTlhY2ZjZDMxNiJ9"
+        },
+        {
+          "resource": "repo://src/features/manage-tickets/ui/ticket-adjustment-sheet.tsx#L43-L65",
+          "version": "repo-lines-v1:sha256:a89ca3ec2ad42772d03f4d45eec5285bf181fbd5d5dc1f4b116b5173fdd72a66:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5MDhkMTExYzQ2MmFlNmVjYzg0NDJhODIzZjcwZTk1MjEwNzE5OGQzNWYyMWZjMGMyNjBkMDU4ZGYzODIwNTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk3ZDg2MzJlNTRlOTI5OGFiYjk1ODcyN2UyZDUxNDA4YWJhZjEzNjYwMzUzNzkxMDE0MGFiZjY1YjMwYWI2MTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY0OGRlMmM2MTQ2Nzc5OWVmMTc1NjEzY2Y2NjI2ZmU4ZjM4NmUyMjFhNGJhNTMwMWViOWZlMmFhZmFmZDM3Y2QifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3b1f1fdffd54401fabaaa1fa95ac1b74",
+      "statement": "`adjustUserTickets`는 대상 사용자가 없거나 `isGuest`면 정식 회원에게만 조정할 수 있다는 오류를 던지므로, 체험 계정에는 지갑도 원장 행도 생기지 않아요.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/manage-tickets/api/adjust-user-tickets.ts#L22-L23",
+          "version": "repo-lines-v1:sha256:40ea0d2d7b1dd4534fd96a3e4a000e9c6324a27a6bfa138ace162185d2f9a77a:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDc5MzhiMzQ5MjQxNWE2NjI1N2I1NWY3OGVhZDRkYzU4YjU4ZTBkOTdjNGQyNjRmZGQ1MTI3N2Q3YTM4MDY4ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTY3NDY0YWJhZDM2NTAzYmE1YzVjYjE4YTk5YTQwZWJiYzc5MDBjY2MyNzQyZmVlMWIxYzQ2NGRkZGQ0MGI3MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGYyZTI5MWMxNTBiZGUxNDRkMGJlOTYwOTViNzM4MTQ2YWU1ZDBjOTMwN2M5MTVlNWU3ZjEzNzdhOTdmMTAzYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWNiN2U0ZjFhYzdiNjZiYzQ5YWJjYzliZDJlZDZmZjZkMDUyMzIxMzdmMTY4OWE5NDNjMjU3YzZlZGQwZTkxYiJ9"
+        },
+        {
+          "resource": "repo://tests/admin-operations.integration.ts#L168-L180",
+          "version": "repo-lines-v1:sha256:7a506f3b4fbc478f883df100ac656d6dbda6ebe6b1193ac4ca3544d27c680b22:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjNDM3NmExZjRlZWI3OTc3YTA1Y2Q2ZTU0NzJmNWIzNmYwZjUwMWMyMGU2NzdmOThlMDM0OWQ0MzlmMGMzZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiOTYwNDBkMDg3ZmJjYzQ1YmI4N2I2ZWQ4MzMxNmY3MWZlNTMyNzQ4YWFjZmY2MzA0NTczNzc3M2YyYjlkMzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg4NTA0NGUzYjU1ZTJiNTgzNGZjOTE3MjllMGFmOGEyNDM1NGE5NDZkZjIzNDM4N2U5ZmIxZGQwZmYzMTA1YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjljMDUwMzRiMzU1N2M4YTIxM2RkYzBjNGFjNGM4ZGJmMzBjZTgyYmE3OTlmMGZiYzllMDViY2NiNzY4MDRkNjgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c068ea1aeeb440158b042d311fbaaab3",
+      "statement": "E2E 관리자 시나리오의 브라우저 단계는 현재 마크업과 맞지 않아요. 시나리오는 `Copysinger 운영` 제목, `이메일` 컬럼, `검색` 라벨과 페이지 최상위 `select[name=\"userId\"]`를 찾지만, 화면 제목은 `운영 관리`이고 회원 표 헤더는 `회원`·`보유 티켓`·`프로필`·`가입일`·`관리`이며 조정 폼은 회원 행의 Sheet를 열어야 나타나요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_pages/admin/ui/admin-page.tsx#L203-L203",
+          "version": "repo-lines-v1:sha256:af5ad8011cbe1ec6f886173a1ec1c509bbce2597b0bc6807b441170d8f1cd1c0:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWY1YWQ4MDExY2JlMWVjNmY4ODYxNzNhMWVjMWM1MDliYmNlMjU5N2IwYmM2ODA3YjQ0MTE3MGQ4ZjFjZDFjMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWY1YWQ4MDExY2JlMWVjNmY4ODYxNzNhMWVjMWM1MDliYmNlMjU5N2IwYmM2ODA3YjQ0MTE3MGQ4ZjFjZDFjMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDhhYTZkYzMyZjlhZDRlODlhMjRlMDc4M2NlOTVjNzJjMWM1MDc3NDgyMWY5NzVlYWY5MzdjYTMwMmI4NDdmYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmM4YTkwMDlhNjM5YmQ2NzViN2QyNmZiMGYxODUwOTk5M2IzNDM4Mzg3Y2Y0Y2EyMzBiNTFkMDZmMDM3ODdmNSJ9"
+        },
+        {
+          "resource": "repo://src/_pages/admin/ui/admin-tables.tsx#L23-L28",
+          "version": "repo-lines-v1:sha256:e6bff188025cc14cf0c655e96efc4d39d2bf29220674052589a741a3e7131308:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTRiMjc0MjhmZmM0M2YwZGMxNDEyN2RkNDMzN2QxODc3MjZlOTI3MzhjOTY3N2Y3NjhiOTY3OGIwYTFlODI0YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzVmMjA5ZGJkMjgyZDRlZTQyOTFkOGNjZDE2MjIxZWU2YzM2ZjE3MzVhZTE4NjQ0ODQ1NDNmN2M2MWZmMzA0YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjRhYmJmMjY5MGZlYjQ0NzE5Y2Y5MWYyY2U5YzE0M2FhMDhlYTE1OTI2MmJlMjI0ZjA1NzI3NmU1NmVmY2E2ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWY5YzM0MWU3ZWQ4MzM4ZjU5MGViNTFlMTQzYTNjNWMxY2U1OTUxMzFhMmJhYWRhYWU4MjdlNzY3MGI0MWQwMiJ9"
+        },
+        {
+          "resource": "repo://src/_pages/admin/ui/admin-tables.tsx#L57-L61",
+          "version": "repo-lines-v1:sha256:2cdb4208fd9542b3109c420eb4d2ab77706d3a4531e7c2f8601c914030b0621c:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTE1YjU2ZDY1MDMwNzM5OWJmYWZjNmVmZTVkMDJkZTcyNWQxZjU3NGVhMzYyM2E2OGE5ZmU3MTM1NzQ1ZmM1ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzQ3NmY0Nzc1Mjc1MTU3OTc0MjM5MWVhZGEzNTViZjJlZjVkMmE5OTgxM2UxMTI3ZTMwZjEzOTZkYTk3OTc5NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTg2MDNmZmI4ZWYzYTljZjQwZDUxOGEyNWI1NzAyMzBjYmFkNmMwYzc3NjMzZDExYzVmZTA5YmY0OGQwNTJmMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjBhOWJjNjZmNzlkOWZlM2EzMWQwNDlhODI3NzE1OGIwNjI5ODFkZDE0MjYyYTlkOGM5Y2ZiMTlhY2ZjZDMxNiJ9"
+        },
+        {
+          "resource": "repo://tests/e2e/journeys.spec.mjs#L289-L310",
+          "version": "repo-lines-v1:sha256:a3cfc98cec614ef24c46ad33118d61d720499b6b11cbfc1543d53687660cd9cc:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImViNGIxN2FlOTI1OThhYTk3ODk5NGQ2ODZmMjYwYWI5NzA5ZDY0OTc3YmI5NWY2OGI2YzVhNmEzYjA1ZDY3NmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiNzk0NDBlNzgyYjc4NDllMmFmMzU0ZjJjYjI0NjQ1NzQ0MjVlOWRlYTEwMWZiZmRiYWVjYzJlYmRhN2JkODkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU1MWVjNmViNzAwYmRjYmIyNWQ2MWZjMGM1OTgzODAzOTZkMGJiNjVkOWQ2NTI0MzU3NzZlNDczYmNmYjdkNmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlY2ZhMzI3MjFiYTQyNGU4M2Y5MzQ0Yjk4YWFmMDUwZGI5ODc0MGNhMjU0NDMxNWY3NTE4ZDZiYmQ2MTVhM2MifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_79fd7df0073149e2a8e88f53381108dd",
+      "statement": "`/admin/songs`는 카탈로그 행이 없어 `findAdminCatalog`가 `null`을 돌려주면 검색 폼과 곡 추가·내보내기 도구 대신 스냅샷을 먼저 가져오라는 안내만 보여 줘요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_pages/admin-song-catalog/ui/admin-song-catalog-page.tsx#L105-L145",
+          "version": "repo-lines-v1:sha256:f19b2c3977ee491b64cf3c5e33fd3827f5c06b052611e8454f7ca4e5b08fde06:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmYzYwYzE1NjMzNGIyNTlhMDhiMjUyY2YxZTAwNzFhNDAxNThiZWI2MGY1MWZhNWVkMzc3Y2Q4NmM3OGViMzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4ODNlODNhNjM2NzFlMjhjOTVmZmVmZjA2NTA3ODE3MzU1Mzk3OTBlNTU4MTU1YTk1ZGZiYzJlYjA0ZTQ2NTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM5ZmFiMzkxNzIzZThjNjE1ZjA0MjFkZWZlMWRlNGE0Y2E1MjIzNjQ4NDU0NmU5ODNmNWNkNTIzZDI0OGQzZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzMjUxZGE1ODkwMTBjMDBjODc5NTE3YjFmNWEyOTRjMTJhNzEzYzUxZTVjNGViZDdiNzZkYjdhMDhlY2M0NmEifQ"
+        }
+      ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.5.2",
-    "at": "2026-09-18T16:47:52.081Z"
+    "by": "openwiki/0.7.2",
+    "at": "2026-11-01T16:00:39.866Z"
   }
 }

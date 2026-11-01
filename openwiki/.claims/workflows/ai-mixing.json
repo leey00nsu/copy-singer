@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:745b2af76eb30539da5a2207ecd00713a7cac3a4dd0ec5c50f7a831b20da6bff",
+  "pageVersion": "sha256:c31c3f82742ce445d9f3352b0f5345ff41f8486049a618283fd57b77b1052a70",
   "claims": [
     {
       "id": "claim_e36b19dfaaa14feabf77a253f6d0be5b",
@@ -25,7 +25,7 @@
       "statement": "접수 시점에 곡 `lifecycleStatus`가 `ACTIVE`인지, `song.currentAnalysisId`가 요청한 분석과 같은 `READY` 분석인지, `PUBLISHED` 카탈로그 항목의 `catalogId`·`revision`·`position`이 추천 결과와 같은지, 타깃 자산의 id·출처·`READY` 상태가 추천과 맞는지를 다시 검사하고, 하나라도 어긋나면 `MIXING_RECOMMENDATION_STALE` 409(`retryable: true`)로 거절한다. 통과하면 `songAnalysisId`, `referenceAssetId`, `targetAssetId`, `catalogPosition`, `catalogRevision`, `recommendedShift`, `scoringVersion`을 작업 행에 고정해 이후 카탈로그 개정과 무관하게 그 근거를 유지한다.",
       "evidence": [
         {
-          "resource": "repo://prisma/schema.prisma#L576-L627",
+          "resource": "repo://prisma/schema.prisma#L597-L648",
           "version": "repo-lines-v1:sha256:a749be8dde8bf3407afa6b4d9ccb9bc8d2ac6de43a052065779a203310b76f9e:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3MTViNDIwOWYyYmFmNWY3MTk3NDE4NGI2OWI0Y2UxYzhlYjI0NGVhNjdlMWNhZjVkNWZmNzhmMzRlNzU3NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJlMWMzMDcxMDU4YzJlZmY4Y2NhYzEyODEzOThmY2U3MGUxYzZhMDM5YzlmZTQzOWJjYjk5YTNkYWJmY2YzODUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI3YjI5ZjdmYjg0OTVmMWZhNjNlMjUzZmYzNDZiMzdhMWI2MWQ4MDUxNjM4NjdkYTQ2NTA0MWIyZDhjNDcyMWYifQ"
         },
         {
@@ -39,7 +39,7 @@
       "statement": "레퍼런스는 `SYNTHESIS_REFERENCE`(`READY`이고 소유자가 요청자와 같음)를 우선 쓰고, 없으면 `REFERENCE`(`READY`, 소유자 일치)로 내려간다. 다만 프로필 계약 버전이 `smart-reference-mid-v1`이면 스마트 레퍼런스가 준비되지 않았을 때 소스 대체를 금지하고 `MIXING_REFERENCE_UNAVAILABLE` 422로 거절한다.",
       "evidence": [
         {
-          "resource": "repo://src/entities/vocal-profile/model/contract.ts#L201-L212",
+          "resource": "repo://src/entities/vocal-profile/model/contract.ts#L204-L215",
           "version": "repo-lines-v1:sha256:7d64893186a788de981de200d5e5bbf6606b5e95fca94b432be1db0d6522c1ce:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiYjc4NzNhMDA3ZWY5ZTgwYmNhZWYzYTFjMTk4MGI2N2IxYzYzMmRmMDdlNmZlMGY0OTQ5OTc3Njc2NDJlNDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE0NDkxNGMyOTRjMDE4ZWRhMWJjZGZiNjNmYjU5NzcwZDViMWQ3OTAwZjJjM2JkYjc3MDY3YTJmOWQyNjFiYjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc0MWI3ZWM4NDNjYjhmNTM5YWQ2NzZjZDRmNTVjYWFkMGY4MmM2NTQ2MjI0MzU4YTg2OTYyODY1MDViYmM0OWIifQ"
         },
         {
@@ -57,7 +57,7 @@
       "statement": "`MixingJob.submissionState`는 `NOT_SUBMITTED`(기본값)에서 제출 직전 `UNKNOWN`으로 커밋되고, 외부 job id를 받으면 `SUBMITTED`가 된다. 400·401·403·413·415·422·429처럼 접수되지 않았음이 명확한 응답에서는 `NOT_SUBMITTED`로 되돌아가며, 연결 실패나 응답 유실처럼 접수 여부가 불확실한 경우에는 `UNKNOWN`인 채로 남아 재시도가 열리고 시도를 소진하면 `refundState = NONE`과 `errorCode = MODAL_SUBMISSION_UNCONFIRMED`로 마감되어 운영자 확인 전까지 환불이 보류된다.",
       "evidence": [
         {
-          "resource": "repo://prisma/schema.prisma#L616-L618",
+          "resource": "repo://prisma/schema.prisma#L637-L639",
           "version": "repo-lines-v1:sha256:b9e87124b86ad52f99155b27dd7c4368a1885ca49704f4f008d7da4e322ca0d0:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDQ2MThkY2E0YTNkZTgwYWY3MTFhZDIyNjQ1YTYwN2NmODBkMTY1ZWEyNmZhOWM3YmRhNWY4M2MzZDI4NDZmNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzcwNDIzOTFkYmFmOWZjNmNkN2ZhMTc5Y2M5MGZhMjdiMDdhYjQwNzA2ZjJiMjAwYzFkOGM2ZjdhNmM5NmNmYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2FiZTMwNGU4MWY2OWMwZmFiOTNkNGUzNTA1NWZkODYyZjJhMWIwZmVmMmEzZjE5NjEyMDg1YzRkNDE2ZGYxYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGM5ZmI4YzBlZjY1NmUxNTc5OGQzZmE0ZDRkZDFiMmI2ODRmZTBiYWNlZWZiODFlOWE4NDkzM2FmNDQ0M2Y5NyJ9"
         },
         {
@@ -197,7 +197,7 @@
           "version": "repo-lines-v1:sha256:237069036f8041c3b96f0432bccf4f863f4e86b5dd830ddab52c6df73df66ca6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxMzcyYTFiZjNmMWMyZGQwMmJjOGUwOTRlY2FmNDQ5MDA3NDhjMjhjMWMyYjIzZGU3MjgyZDQzN2RlM2Y2NjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzZDAxMTZhYzdkNzdmZTZkYWJiY2ZlYjVlNTI1MjViY2QzMzBiMWU1NjM3YzZhM2Y0ZWFjMDc4M2Q0M2JhODciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjNmU2NDRmM2UzN2U3N2FhMDI0ZGNlZGQ1MjMzMTViODYzNDdhY2VjZWFkNDdkYmNkYzJlNGVlODBmYWVjZWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzOWMyMmFkZWNjMTcwZTZiMTM5NDRkOTJjMzcxYjg1NDI3ZWJjNWEzZjYzYTg3NTNhZWVkZjIxZGI3NDUwMTcifQ"
         },
         {
-          "resource": "repo://src/features/create-recommendation/api/recommendation-service.ts#L70-L82",
+          "resource": "repo://src/features/create-recommendation/api/recommendation-service.ts#L71-L83",
           "version": "repo-lines-v1:sha256:94898ab981f97104d71e5e6b13e9140df7bcc1b11611bdc09eece460291d6a8f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmNWFlYWM1ZWQ5NzIwNTJjMzU2M2UyMDc3ZDc4NjJkMTk4NGI0ZjU2NTVjNGE5NGFkMWU1ZGUwNjI2YmIxZDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkOWE5M2FlZTU2MWRjMmY3MTJlMTAzNjg1M2ZkNmUxY2MyNmE5Y2Y2MDE4N2YwNWFjZDM5MTQzM2JjNTg4M2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNkOWVjZDdmMDM5NDYwOTVkZTg3NzViNWQ1M2EwNjY3NjNlYjYyNWEzZGExMzA2MGIzODZkZmZhODUzNDc4YjMifQ"
         }
       ]
@@ -237,10 +237,122 @@
           "version": "repo-lines-v1:sha256:c7a63fcd1ab371abe7ff66e2a49babc73a48fc7d5c2aadc7be6eeef6187c972e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYxZWNhN2YyMDQ4NmUyY2Y2N2YyZmM3OTgwZjljYTFhNzkxYWRhOGEwMmFmYzkzNDQyMDVkNzEwZjhkYmIyM2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMzMmMzZGQ0OWIxZGNmZTg3OGNkNDcwYjg5NTY2NWRlZGM5MTlmYzk0ZTZlNDhkZTg5Zjc4ODE4MTdjMWExYzEifQ"
         }
       ]
+    },
+    {
+      "id": "claim_b8305b7bcf4e484caf82d75d922d49d2",
+      "statement": "AI 믹싱은 회원 화면에서만 시작한다. `RecommendationMixingAction`은 `guestSaveHref`가 주어지면 티켓 확인 버튼 대신 `guestRecommendationSaveHref`가 만든 로그인·저장 링크를 그리고, 체험 화면의 `startItem`은 `onStart`를 호출하지 않아 작업 행과 티켓 차감이 만들어지지 않는다. 서버에서도 `POST /api/mixing-jobs`가 세션을 요구하고 세션이 없으면 401 `UNAUTHENTICATED`로 끝난다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts#L27-L29",
+          "version": "repo-lines-v1:sha256:44e7b71b3c00ad0d0ce4a8e751e8f5cc088db7f590132c297c8a2ee4ef4ce82e:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTNkOTQ5YWU1OWYyMTliMTc3NWNiMzFiYzFjNzhkNDAwZmE5NjgxNGVmNjUwNWZjNGFkZjA2M2EzZWI2MzM4NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWMyODNmMTVhYjcyMDBmYmZmOTQ0ZWYyOTQ5MGNlN2ZlZTQzZjQ4Y2Q5NDIzMzFkMjZmMmQ2ZjE2YjVhMzU0OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTY1ZmRhYzA0ZWRhMzNhOTUzNDVjMzdhM2JmMDFkMmRhYjhjYjVhNDNkNzFmZWE2M2E5NTQ4MmM5NzZjZDA3ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDYzYmE3Mjk0ZDU2ZWU2MGUwOWNhNmJmZDEwMWEzYzlhYmMzM2FjMzliMGQ5YmVlODlhMDI3MTg5ZmU2ODk1OSJ9"
+        },
+        {
+          "resource": "repo://src/_pages/recommendation-detail/ui/recommendation-results.tsx#L106-L109",
+          "version": "repo-lines-v1:sha256:1b4fd675d370ed0dce97c0086e33f1bc5be95592bcccbbb7250fe4ba054c5583:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTVhYTVhOTY4OTU2MGExZGQ1MjAzYjlmNWVkNWNjZWQxYjk5ODE4ZTk2YWM4ZDdkNTIzZTcwM2JmYWJhMzBhNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDJhMmNiMjVhMTIyYjQ0MjIxYTYyMzRlYzY2MGE3YjVmYjdmOWJkZTdiM2I5ZTJiM2M1NTlhMGQ5NmZhYzczOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDFiNDU1MGZmNmU3NjFmZDAyZjcxMTIwYTI1NjY5ZWQ2YjZlZDYxODQ3M2I0ZmFlZTc2OWI3ZDRkMDY0Mjk1ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGFhNjg4NzVjODRiMzI1ZWM2MWExNTQxZjE4OGE5NGJiZTYzZTY5MjJjZDI1YjY2MjY0ODlmNThkODVlZjdiMSJ9"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/model/navigation.ts#L12-L19",
+          "version": "repo-lines-v1:sha256:f89f8688078c048307fc996b3c84d7c1dbeb9215ff47378101c7603ba7226aa9:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjhlNjc5ZDM5Y2ZhNjdjM2Q5Y2Y5ZGIxYjZmMTI2YjA4MmNjZDNhMzI0OWQzNGQzYWRkMmE5NzVjNTRiMjRiNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGQ0MjEyZjEwM2U3MzU5MDI5ZGIwZWUxYThkYWMwZjAyZTE4MzYyZjY0OWNlMTZhMWIzNTFmMzc3YjM1NzhkZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/features/create-mixing/ui/recommendation-mixing-action.tsx#L38-L57",
+          "version": "repo-lines-v1:sha256:982e8c5febb958d448b2fdb5916b7af4930b992375557b8206b853d3db842045:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2ODcwZTI2MDhjNjdiMzQ2ZjFjNzM0MWFkMjg1OTRhM2RiODRlOWYyZGIwNTVmZmRmYzc1NDJlYTJlNjVkODgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmYjg0NzcxNDQ3ZGZmZWE4ODBjNGQ2ZmMxMjJlNWRkYTYzODRiYTY3ZjUwODdiMzRkNjllYjk0ZTExOWNjNGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3ZjVkZjYyNmY0MmE3Njk0ZDk0ZDg2YzQyMGY3MDYwZDk5MjJhMTkzZWEzZjhjMzJmNzk3M2MxNWFhZmY1YTkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_727e173904ce443c8f67e3884f17faa4",
+      "statement": "접수 시 차감량은 `MIXING_TICKET_COST`(기본값 1, 최대 1000)에서 오고, 이 값이 0이면 `applyTicketChangeInTransaction` 호출 자체를 건너뛰어 원장 행을 만들지 않는다. 작업 행의 `ticketCost`에는 그 값이 저장되며, 화면의 티켓 확인 대화상자도 비용이 0 이하면 대화상자 없이 버튼 클릭으로 바로 시작한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/ticket/ui/ticket-consumption-confirm-dialog.tsx#L37-L43",
+          "version": "repo-lines-v1:sha256:f53504c4a39d9e4ed89ca44d3dc4ac397000d75399442c75ee76da4b664b7006:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODk1MmUzYTVmNThiMTBiNzFhYTQzYTg4ZGMzYjEyMTlkNGU2ZTdlYjEzMDUyN2RmOGNkNjgyZWUxN2IyMGYwNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2FmMGFiMWQ1ZDBkMTU0NDZmYTRjNmMxNzIyNjMwMjdhNDExZDQxNDBlYTUwM2E4Mzk4ZGQ5NzU5ODk5ODkyZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmE2ZjdhMTlhNmRjOTcyMmQ4Yjg4MzQ2MjNiOGJlZGJiYjIxNDU3MmJkZjVjNWFlMjhjYTc5YmM2NGYxOWIyZCJ9"
+        },
+        {
+          "resource": "repo://src/features/create-mixing/api/mixing-queue.ts#L117-L144",
+          "version": "repo-lines-v1:sha256:1aaf5d225b525435e3ce6bb80ba0937b9bbfcc7437ec5936ee2a708afdc52dff:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3NTJkMjcwMjE4MTRkNmMzYzU2ZGNiNjhjYmUwZjZmNDg1NDZhZDcyNTk2NjNmMWNhNmU4MWM1OWMyNzc2MDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4MDA1ZDU3MTA2YTM2MmViMDAwZGFmM2RhNDY3NGM4MmI1MThmZjVhMmUyZjY3ZWU4ZTc1N2EzMzNjMmFmNjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM0YTA3NTQyM2MwNDQzYTU5ZmI3MTRmNDU3MTkzMDNmMjJkNWJkYWU3MDRhNDE1MmQ1ZDM1MmMwMjM0NWNkNmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA2NWVmYzQwNGJkZDg1YWE2OTc4NWQ5ZDEzNDQzYTMzYTI4YmMwNDU1MDcwYjNhMGFlNmIyNTM2ZDBhYzEyOTUifQ"
+        },
+        {
+          "resource": "repo://src/shared/config/server-env.ts#L22-L24",
+          "version": "repo-lines-v1:sha256:91544def3a7af98f40f3eae969e9f03958f92c5af0955ca0a5696e2353024ca8:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWE5MjBlNmVlZGNiODY4ZDE5NzVlY2IzYzAzNTVmZDA2NWRlZWM1YWNkZTU1NjU1ZDljNTljOWI1ZTA5NzcwMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjVlNDAwNjBlMTYwMTY1MjA4MTAxYTdiNTE5MGIwYzVjNzZmOTdjZmIyYjZkODUyMzdkOGNiNWIwNzNmMjE5ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2ZmY2FkYzk0OWVlOGEyOGUyNTIwZTRkNDNhOTFkNGFjYjIxY2EyMDJjOWVlN2Y2ZjMyOWFjOGYzZmU3NDBmNiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f7bba6a8bd064a0ab8bf3f0af0710b83",
+      "statement": "`mixingReferenceCapability`는 레퍼런스 선택 가능 여부를 판정하는 단일 규칙으로, 추천 응답은 같은 판정을 `profile.mixing`으로 미리 내려 화면이 불가 사유를 안내하고, 접수는 같은 판정을 통과하지 못한 요청을 `MIXING_REFERENCE_UNAVAILABLE` 422로 거절한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/vocal-profile/model/contract.ts#L204-L215",
+          "version": "repo-lines-v1:sha256:7d64893186a788de981de200d5e5bbf6606b5e95fca94b432be1db0d6522c1ce:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiYjc4NzNhMDA3ZWY5ZTgwYmNhZWYzYTFjMTk4MGI2N2IxYzYzMmRmMDdlNmZlMGY0OTQ5OTc3Njc2NDJlNDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE0NDkxNGMyOTRjMDE4ZWRhMWJjZGZiNjNmYjU5NzcwZDViMWQ3OTAwZjJjM2JkYjc3MDY3YTJmOWQyNjFiYjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc0MWI3ZWM4NDNjYjhmNTM5YWQ2NzZjZDRmNTVjYWFkMGY4MmM2NTQ2MjI0MzU4YTg2OTYyODY1MDViYmM0OWIifQ"
+        },
+        {
+          "resource": "repo://src/features/create-mixing/api/mixing-queue.ts#L103-L114",
+          "version": "repo-lines-v1:sha256:8e2db274f254b2de53d0717caae954a7a22920ac1b13a75b6a0c903c8e2243e8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwOGYzN2FjODljMmYyNzk1N2I4MDA5YTkzMWY3ZTNjZGQ5MDc4YjA0M2VlNjRjOWY0YWNhNTU0OWUyODlhYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4MDA1ZDU3MTA2YTM2MmViMDAwZGFmM2RhNDY3NGM4MmI1MThmZjVhMmUyZjY3ZWU4ZTc1N2EzMzNjMmFmNjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3ZDRmZmFlNTUyMDNjZDk0OGEwNDcxOWVjMmQ5OGFlODdjM2Q0MGNlYTQzYWVkYTA0ZWYxNzJjMjQyZmI3ZDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgyNmMxMzk3MGNkZTRhNDUxNWNiMjJhYmFhYTVlNWVmNTljYjk5NzdkYWI4YmY1ODJmNTliNjliYzU4MGQ2NzMifQ"
+        },
+        {
+          "resource": "repo://src/features/create-mixing/ui/recommendation-mixing-action.tsx#L100-L113",
+          "version": "repo-lines-v1:sha256:780f45ec8ba99c6f82204ec9adc7c9a2b76a85afa3193455aa61c77a6e1d9d8b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRhOGFmMGNjMjdjNmJlMmNmYTNhZmUxNzIyODliNTEwYmIxNDJmNmI1ODVkZTA5ZTQ0ODNjZWIyMmQ3Y2UyMzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkYjNlN2NkMGMzYTYyMzA0NzY2ODE2MWQxMDRlOTlkODYyMDljYTNlNzc1NGEyNWIxMTlhNDkwNzg3ODA0MjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU1YzQ3ODMwYjNmYzBlMTI4ODhmNDZmZmExYmMyNGMxZTExMmZmYTNiNWVmN2MyMWM5MTU5M2RhNjQ1ZTIxM2QifQ"
+        },
+        {
+          "resource": "repo://src/features/create-recommendation/api/recommendation-service.ts#L148-L160",
+          "version": "repo-lines-v1:sha256:ff6d12cd8165f272bbc6e399a40f927d362261050b6aa8368a01bc2767c7d781:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxNWI0NWI4MDNjYjI1ZDI4YWE3MzJhMzIzYmQ1YWJhNTgxZTNmNmZiMjgxY2NhMGQzOTMyNDE1ZTM3Yjg0ZTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI0YmRmZmEzNzU0MWYyMmI2M2M3Mzg4ODEyMDg1MzVlOTA3NDhlMWQxNmNmZDZjNjE0Mjc5N2U3Y2EwODBjNzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYzMzUzNGE3NTk2OWRiZjNlYmMzNjBiNWZmZDMyNjZlYmI3Y2IyZGYzOTk5ZTdkZWE4YTUxMzdiNzcxNzgzMjkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0c2056507a0646a7801509d9f6f5a0fb",
+      "statement": "믹싱 워커의 폴링 간격은 `MIXING_POLL_INTERVAL_MS`에서 오며 기본값 5000ms, 허용 범위는 100ms~60000ms다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L297-L297",
+          "version": "repo-lines-v1:sha256:faea07d002e7b05d717a15f2f3453c83b7e31967e6ee91ea69b12d3932ecfa44:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmFlYTA3ZDAwMmU3YjA1ZDcxN2ExNWYyZjM0NTNjODNiN2UzMTk2N2U2ZWU5MWVhNjliMTJkMzkzMmVjZmE0NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmFlYTA3ZDAwMmU3YjA1ZDcxN2ExNWYyZjM0NTNjODNiN2UzMTk2N2U2ZWU5MWVhNjliMTJkMzkzMmVjZmE0NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmE0YTE5YWU5ODZlYmJlOTUxYTVlOTQ3ZThmOTk4ZjJiNDFjYzEwOTYxZGM1YTgwOWYzZmY5MjlmYjcyZTU2NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGE4ZjdlZjgyN2I1NmFlOTUxN2M0YTE2NzE0ODE4ZjlmNmNmZTBjYzE1MzcxYzk0NDA0ZjM2YWI5NGE5YzFiMiJ9"
+        },
+        {
+          "resource": "repo://src/shared/config/server-env.ts#L46-L48",
+          "version": "repo-lines-v1:sha256:69ee50709bafb81a058dd1288bf0be439f917f989f99e5c0812ed504dfc702ad:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGEzMTI1NmI2ZTBkYzNlM2FjYTNkZGNjY2UxNzcxNzExNmRjZjA2YjcxOTc0NTEwODdhOTEwNGQwYjJjOTQ5YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTYxNDNkZTM1YmI2NDJiNmE0YTllNTVkYzhhOThhYWQyMTFkMGU5MDEyNzNhODRiMWQxNGNjZTAyMDE4N2NmYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmU2NzdmMzZjMjJkN2EzMTJiYjg1ZWRmZTM0NmE0NTg3Y2RmMDc0MDVlNmU1ODNiMzhmYzQ0OTYwMjQ5NzY0MCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e356c91900d748a8878f00d0db3a9513",
+      "statement": "체험 화면이 티켓 버튼 대신 `로그인하고 AI 믹싱하기` 링크와 선택 곡이 담긴 저장 목적지를 보여 주는 동작은 `pnpm run test:guest-analysis`(tests/guest-analysis-ui.test.tsx 포함)가, 믹싱 이력·상태·상세 화면 표현은 `pnpm run test:mixing:ui`가 확인하며, 두 script 모두 `pnpm test` 체인에 포함된다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L23-L23",
+          "version": "repo-lines-v1:sha256:a0030c66741224958a640b971c4f738e9eeb55534d1a6e82d0b2706e8db66a16:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTAwMzBjNjY3NDEyMjQ5NThhNjQwYjk3MWM0ZjczOGU5ZWViNTU1MzRkMWE2ZTgyZDBiMjcwNmU4ZGI2NmExNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTAwMzBjNjY3NDEyMjQ5NThhNjQwYjk3MWM0ZjczOGU5ZWViNTU1MzRkMWE2ZTgyZDBiMjcwNmU4ZGI2NmExNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjAzYTNjZTVlM2YwN2M3ZTg1NDZkNDYxMTY3ZTEwYjk2ZDVhYzUwOWQ1ZDdkNmZjZTc4OWJjNDI1MWI4ZmMxNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWM1MDM1MmQ5YjhmNGY3OGE2OTI3NzgxOWU0NDIzMTcwNTcyNTE0YTUzNmIzZjI0YTY3OGJkYTk0ODM5MDZmNCJ9"
+        },
+        {
+          "resource": "repo://package.json#L69-L69",
+          "version": "repo-lines-v1:sha256:cef7bcae7d6d9de86d41dbb212174f127b5ee6b8c4b0b42ffcd1e3c56bdc0c80:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2VmN2JjYWU3ZDZkOWRlODZkNDFkYmIyMTIxNzRmMTI3YjVlZTZiOGM0YjBiNDJmZmNkMWUzYzU2YmRjMGM4MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2VmN2JjYWU3ZDZkOWRlODZkNDFkYmIyMTIxNzRmMTI3YjVlZTZiOGM0YjBiNDJmZmNkMWUzYzU2YmRjMGM4MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzM4YzNmOTc2ZDgxNDA2MjU0MDRmOTYxMWI2ODk4NmUxNTc5MmViYWRjNmZlOGZkYjFmNGU2YzdiZTJiNmVlNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmE5NzgxZDdjNDhlMTUyY2U1NTZiYjBiYzM3NWE4OTYwNmFiMjkwZWEwMTJkZjU5MDYwYjdjY2IzZmE4NGRkNiJ9"
+        },
+        {
+          "resource": "repo://package.json#L75-L75",
+          "version": "repo-lines-v1:sha256:61d9ff4324b3e7dfd541d5d38542ef4adf4fae9577ba746f1c8a4f57cc8c63c6:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjFkOWZmNDMyNGIzZTdkZmQ1NDFkNWQzODU0MmVmNGFkZjRmYWU5NTc3YmE3NDZmMWM4YTRmNTdjYzhjNjNjNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjFkOWZmNDMyNGIzZTdkZmQ1NDFkNWQzODU0MmVmNGFkZjRmYWU5NTc3YmE3NDZmMWM4YTRmNTdjYzhjNjNjNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjU0OWZkOTQ3NDZjMGVmOWRjMmM4NmE1MzQ2ZTA1MmE4N2IzZDUxZTM0MzQzNDIwMjVkZjMxMTY4OGQ0YzVmNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDU0ZjBiZjRjNTdiMDI2ZTFiNjlhYzk1NzBlMjNlZTI1OTY3YTgwOTI0MmJjMWZmMWU3YzYzYTg2ZmM1ZGYzYSJ9"
+        },
+        {
+          "resource": "repo://tests/guest-analysis-ui.test.tsx#L115-L135",
+          "version": "repo-lines-v1:sha256:f45d33343a9f835fa07486542ca1fe10328df56a0485b63ab4299b9fd7aa68b6:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiNTk5ZGI3MmMzYTBiOGU3ZWQzNDk0ZmUwYjVjNGJhYTQ1NmIxMWYwMmNlOTJlODUzYTFmZjIyNTFlYmI1YmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiOWE1YzVlNjJhZTZiODg0ZmUzZjdjMTZmZTgzODY4MmM4NGQ5MjdmODBjYzQzY2NkNmZiYTM3MGI2YmZlNzEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjliYjI3OWVlNjczYjVkYWM2YjEwMWQ5MDRhZWFhOTI5NTNjYjZhZmIzZjhhMWFhYzIyYmFkNjg3NDAzMjg1ZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_55ef6be01e5d4be1aa576eae1a2c986e",
+      "statement": "`tests/mixing-history-ui.test.tsx`는 믹싱 이력 목록이 진행 중·완료 작업에 상세 링크를 하나씩 붙이고 결과 재생 URL을 목록에 노출하지 않는지, `succeeded`이지만 결과 자산이 아직 `READY`가 아닌 작업을 `결과 확인 중`으로 표시하는지, 실패 행이 상류 오류 문구를 드러내지 않는지, 빈 결과에서 `조건에 맞는 AI 믹스가 없어요`와 `모든 AI 믹스 보기`를 안내하는지 확인한다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L69-L69",
+          "version": "repo-lines-v1:sha256:cef7bcae7d6d9de86d41dbb212174f127b5ee6b8c4b0b42ffcd1e3c56bdc0c80:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2VmN2JjYWU3ZDZkOWRlODZkNDFkYmIyMTIxNzRmMTI3YjVlZTZiOGM0YjBiNDJmZmNkMWUzYzU2YmRjMGM4MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2VmN2JjYWU3ZDZkOWRlODZkNDFkYmIyMTIxNzRmMTI3YjVlZTZiOGM0YjBiNDJmZmNkMWUzYzU2YmRjMGM4MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzM4YzNmOTc2ZDgxNDA2MjU0MDRmOTYxMWI2ODk4NmUxNTc5MmViYWRjNmZlOGZkYjFmNGU2YzdiZTJiNmVlNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmE5NzgxZDdjNDhlMTUyY2U1NTZiYjBiYzM3NWE4OTYwNmFiMjkwZWEwMTJkZjU5MDYwYjdjY2IzZmE4NGRkNiJ9"
+        },
+        {
+          "resource": "repo://tests/mixing-history-ui.test.tsx#L14-L147",
+          "version": "repo-lines-v1:sha256:d408b25d4d8d65b0bad5a5ef9f2436e6add2160cfb19927ae803fde6903c91ae:eyJzZWxlY3RlZExpbmVDb3VudCI6MTM0LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI5MmZhNDlhNDA4MTlmMTU1ZjcyYWJhMTg5YmNiMWVjMDhlN2ZiOTg4MTBiN2E1NTgwYzZiMDhhNTQxMjhjN2EwIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNmY1YjQwYjE1ODQ1N2QxNzg2NGYyMTc5MDc4NmRkNWEyZWNkYjY0YjY2YTY1MWY3ODhkNGUyNWNkMzMwM2QyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIxMTM3YjJkMDNhMGY4ZDc5NmY4ZDg5MDBiMzM1YjdjYWEzMDkwNmUzNTBhYjgzMDIyMGFkNmFjMGU1ZWVmZWI0IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIyZjIyY2UxM2NmNWI0NGJjZGI0MTc5ZTM0ZGE2M2ZjMDQyY2ZkN2ZmOWUyN2M1ZGQ4ZGY5ODcwMTFlYmFjODBjIn0"
+        }
+      ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.5.2",
-    "at": "2026-09-18T16:47:52.081Z"
+    "by": "openwiki/0.7.2",
+    "at": "2026-11-01T16:00:39.866Z"
   }
 }

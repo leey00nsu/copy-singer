@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:53a196cce0899ce9a8219b9f88cae34f0d9cf1538c81746d621edc6fad0a45ab",
+  "pageVersion": "sha256:5df6c10ba781e298d3e5d63daacbfc64df2625c655839b6441dd70aa2b74efac",
   "claims": [
     {
       "id": "claim_d0c86454b50b4287bc6edeca4a81e202",
@@ -39,22 +39,22 @@
       "statement": "브라우저는 자기가 속한 서버의 경로만 호출하고, 짧은 읽기·쓰기는 Next.js 서버가 그 자리에서 처리해요. 오래 걸리는 분석·믹싱은 PostgreSQL에 작업 행으로 접수한 뒤 독립 워커가 이어받아 Modal을 호출하므로, 자격 증명이 필요한 외부 API가 브라우저에 노출되지 않아요.",
       "evidence": [
         {
-          "resource": "repo://docs/prd/system-architecture.md#L29-L45",
-          "version": "repo-lines-v1:sha256:6f31b0e1a6f8101ae98b64c213503d1cfe984479933df8673eb901728ecbad4d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhYzI4MTg0ZjZmMzU0NDYwNTcwODE4N2NkMDgyNDU3ODYwZjg3OWMzZmQzNDM1NTAwMzdjNjQxMWMwOTEzYjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3ODdiZjFmODAzNzE0ODU4M2U5NGVmN2E0ZTAyZmYwYWJhY2ZkYjI5YTQwZDJjZWZhZDI2MjQxODJlMWQxM2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJmMGUxY2U2M2I4NGYwYWM0ODAyNGU5NGQ4MThkYjA2MWM2YmI4MWMwNmFlNTVmNzNiODk1ZWIxOWJhYTEwODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlMmI0OTYzMmFjMzJmYTZlZTU5YTZlYWQ3YWU3MzQwMWFhMzg3ODY1NjQwNWNmMGQ5ZGIxMzg0N2I3Yzg1YzYifQ"
+          "resource": "repo://README.md#L129-L141",
+          "version": "repo-lines-v1:sha256:6d905b54629b0c054deb9b5052f6bab7236679b128f2e425909e94a921232721:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2ZjFmYTdiNTczMzdhZmJiNjY3NTRmMmVkMWU3ZWI3YzFhZmI4MzBlOWVmZWY1MGIzMzgxMDViZjk0OGJhYzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJkM2RlMWE2YjY2M2M3ZDg1YWRjOTUyMDhlNjIyODZlYTkyMjRlNjE5YzU1NzAxMmUyMWVjZTAwNTJkNDc4ZGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM4YWNjNTAwZDhhYmRmMjdmNDNiN2JhMmVlZmZjYjQxYmNmM2QxZTMwZGNkOTAxYTEwYTNiZDgxODRlY2NhZTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYzZWRiNjVhMGMwMTNlYjcyN2NhYTRmNGRjZDRkYTYzODI2ZjNlZTAzN2NmZGQ4ZDU5YzM4OWVkYzJkMWYzYmQifQ"
         },
         {
-          "resource": "repo://src/_app/api-routes/admission.ts#L11-L33",
-          "version": "repo-lines-v1:sha256:e8e1f93ff57bc58b80f479f41e4a9e1d49073ebcd36503c669479bd143d20d4a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ZjY0Y2I4M2JmNWMxZDJkYTAyNzgxZDMxNGYzNmEwNGFlM2I1NmNlYjcwNzhlMmRmYmVmZWNjZjBlMDI1YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhMjI1YjkyYTAwNGZiMjczMzlmOWJmYTdmN2RkMjI3MTAzZWY5YjA4MDdlMTVjMjU1YTk4ODMwNWM1YTVlMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1N2VmZmM4NDhmNjQ5ZGRmMDEzODZlZjc2YjM5NzMyZWQ3ODBkMzUzZmMyMDZjMGM0M2U0OTg4NTc0YTNiZWUifQ"
+          "resource": "repo://docs/prd/system-architecture.md#L29-L45",
+          "version": "repo-lines-v1:sha256:6f31b0e1a6f8101ae98b64c213503d1cfe984479933df8673eb901728ecbad4d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhYzI4MTg0ZjZmMzU0NDYwNTcwODE4N2NkMDgyNDU3ODYwZjg3OWMzZmQzNDM1NTAwMzdjNjQxMWMwOTEzYjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3ODdiZjFmODAzNzE0ODU4M2U5NGVmN2E0ZTAyZmYwYWJhY2ZkYjI5YTQwZDJjZWZhZDI2MjQxODJlMWQxM2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJmMGUxY2U2M2I4NGYwYWM0ODAyNGU5NGQ4MThkYjA2MWM2YmI4MWMwNmFlNTVmNzNiODk1ZWIxOWJhYTEwODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlMmI0OTYzMmFjMzJmYTZlZTU5YTZlYWQ3YWU3MzQwMWFhMzg3ODY1NjQwNWNmMGQ5ZGIxMzg0N2I3Yzg1YzYifQ"
         }
       ]
     },
     {
       "id": "claim_3fa8588bfc374ded90f301be4a8c2c63",
-      "statement": "`app/api/**/route.ts`로 들어오는 보호 API 요청은 `withApiAdmission` 래퍼를 먼저 지나요. 이 래퍼가 handler 호출 전에 IP 버킷, 세션 확인(없으면 401), 사용자 그룹별 요청 제한, multipart 업로드 슬롯 획득을 순서대로 적용해요.",
+      "statement": "`app/api/**/route.ts`로 들어오는 보호 API 요청은 `withApiAdmission` 래퍼를 먼저 지나요. 이 래퍼는 handler 호출 전에 IP 버킷, 세션 확인과 `allowGuest` 체험 actor 판정(actor도 없고 `allowPublic`도 아니면 401), 사용자 그룹별 요청 제한, multipart 업로드 슬롯 획득을 순서대로 적용하고 `finally`에서 슬롯을 해제해요.",
       "evidence": [
         {
-          "resource": "repo://src/_app/api-routes/admission.ts#L11-L33",
-          "version": "repo-lines-v1:sha256:e8e1f93ff57bc58b80f479f41e4a9e1d49073ebcd36503c669479bd143d20d4a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ZjY0Y2I4M2JmNWMxZDJkYTAyNzgxZDMxNGYzNmEwNGFlM2I1NmNlYjcwNzhlMmRmYmVmZWNjZjBlMDI1YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhMjI1YjkyYTAwNGZiMjczMzlmOWJmYTdmN2RkMjI3MTAzZWY5YjA4MDdlMTVjMjU1YTk4ODMwNWM1YTVlMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1N2VmZmM4NDhmNjQ5ZGRmMDEzODZlZjc2YjM5NzMyZWQ3ODBkMzUzZmMyMDZjMGM0M2U0OTg4NTc0YTNiZWUifQ"
+          "resource": "repo://src/_app/api-routes/admission.ts#L11-L39",
+          "version": "repo-lines-v1:sha256:a75955a8b6d8a0b945d58c257b7d726787e4ca925738c399fab30dbd302f39f2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ZjY0Y2I4M2JmNWMxZDJkYTAyNzgxZDMxNGYzNmEwNGFlM2I1NmNlYjcwNzhlMmRmYmVmZWNjZjBlMDI1YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhMjI1YjkyYTAwNGZiMjczMzlmOWJmYTdmN2RkMjI3MTAzZWY5YjA4MDdlMTVjMjU1YTk4ODMwNWM1YTVlMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1N2VmZmM4NDhmNjQ5ZGRmMDEzODZlZjc2YjM5NzMyZWQ3ODBkMzUzZmMyMDZjMGM0M2U0OTg4NTc0YTNiZWUifQ"
         }
       ]
     },
@@ -74,19 +74,19 @@
     },
     {
       "id": "claim_ceef898e42ee4b79a8e7b62a11e93f37",
-      "statement": "이번 생성 입력에서 `.github/workflows/` 아래 tracked 파일로 확인되는 워크플로는 Knowledge 생성·검증용 `.github/workflows/lee-spec-kit-knowledge.yml` 하나뿐이에요. `knowledge` 작업은 OpenWiki 문서 생성을 돌리고, `pull_request`에서 도는 `verify-knowledge-pr` 작업은 Knowledge 브랜치 PR의 변경 범위와 완료 메타데이터만 검사하므로, `pnpm test`·`pnpm run check`·`pnpm run test:e2e` 같은 검사는 워크플로가 대신 돌려 주지 않고 커밋 전에 직접 실행해야 해요.",
+      "statement": "이번 생성 입력에서 `.github/workflows/` 아래 tracked 파일로 확인되는 워크플로는 Knowledge 생성·검증용 `.github/workflows/lee-spec-kit-knowledge.yml` 하나뿐이에요. `knowledge` 작업은 `workflow_dispatch`에서만 돌아 OpenWiki 문서 생성을 수행하고, `pull_request`에서 도는 `verify-knowledge-pr` 작업은 Knowledge 브랜치(`lee-spec-kit/knowledge-main`) PR의 변경 범위와 `openwiki/.last-update.json` 완료 메타데이터만 검사하므로, `pnpm test`·`pnpm run check`·`pnpm run test:e2e` 같은 검사는 워크플로가 대신 돌려 주지 않고 커밋 전에 직접 실행해야 해요.",
       "evidence": [
         {
           "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L1-L27",
-          "version": "repo-lines-v1:sha256:c182ba1c2c2a62c2d0a9c8500933851baad8d2881e580434ed6b1aa786b80cec:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4ZDUxZmVlZTQxODdlNjE3M2ZiMTIxZTFmNWE1NWIyYTIyYTk0ZDRmMzY1MmJmOGU1MzEyOWI0MDlhMTRiMDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFjNGRjYjY4OGUwN2I2MjAxZDMyMmVkNWI1NGIyMWQ5ZDM1OTM0NDRhODM4MzMyZDJlNTE2ODgzODI2MzkwOWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIwYmFmMDc2YTc3MGFjY2JmYjY3MDExYTVhOWRlMGUzODQ4OGY3MTJmNDJlN2RmMDhlYzQ0YWJmN2EyMGQzN2QifQ"
+          "version": "repo-lines-v1:sha256:03a0cf9d9956003bac790c5f0f90fa8f569cc39a90fc0caff75a992483707fc2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4ODQyZWNiMTA2NDcxOTdjZWUxNDg2OWU1MTMxZDM1ODJjYTcyYWRlMmFjMDRhYTg0YjRhMGZkZTY3YTEzMzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3ZjUyZmRjYjc3MjNkNTRiZTJjYTNlMDI0NDJmYjIyMTM5N2EyZjBlODQyMzgwN2JmMTg0ZTA2OWI4Y2Q5MzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQwNTU1ODFiZDIzYTJlNmJiMTZlYTYxOGM1NWZhZWFkOTAyNDY4ZmY3NjQ1OTJlZTgyMmNiNzg3NWIyZTRlMjEifQ"
         },
         {
-          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L409-L471",
-          "version": "repo-lines-v1:sha256:17f226a5e6b3fa4d9b3796c61089e00e1a5ce778907faf1018fcfbcafc5b5192:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1YTBlZGFjMzk3ZGZkZjg0ZTBjOWU1N2Y0NjczMWViOTgyMmI4OWU4MzM1NjFlNTdhMDA4NDEwZmZkYTVmMDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4MDA1ZDU3MTA2YTM2MmViMDAwZGFmM2RhNDY3NGM4MmI1MThmZjVhMmUyZjY3ZWU4ZTc1N2EzMzNjMmFmNjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxMDJhYjFkY2I4YjEzNzFiZDRjZmIzMzA0ODA3ZDEyYjhkZDAzMDgxZmFmNTgzMTYyMTI5NmRhZWE3MTNiNDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIwYzE2ZTg3YmQxNmMwYmJmN2IwNTVkMGU0Nzc4NGYzNGYzZDY3MDYyMzgxMGIwZDQ1ZDE5ZTFhZGY0N2RlNmIifQ"
+          "resource": "repo://.github/workflows/lee-spec-kit-knowledge.yml#L485-L548",
+          "version": "repo-lines-v1:sha256:2ed651ab905c5967449dca1c611094a5016550f9ec46725e9604b2a780a8d7da:eyJzZWxlY3RlZExpbmVDb3VudCI6NjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1YTBlZGFjMzk3ZGZkZjg0ZTBjOWU1N2Y0NjczMWViOTgyMmI4OWU4MzM1NjFlNTdhMDA4NDEwZmZkYTVmMDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwYzE2ZTg3YmQxNmMwYmJmN2IwNTVkMGU0Nzc4NGYzNGYzZDY3MDYyMzgxMGIwZDQ1ZDE5ZTFhZGY0N2RlNmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxMDJhYjFkY2I4YjEzNzFiZDRjZmIzMzA0ODA3ZDEyYjhkZDAzMDgxZmFmNTgzMTYyMTI5NmRhZWE3MTNiNDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYzNGU2YmZlOGEzYzkwNzc4NDY0Y2I3M2EzYWJiZDA0ZmFiZGYxZDU5ZTYzY2VhNWIwMjA0N2UwZmM1MzVlMzMifQ"
         },
         {
           "resource": "repo://package.json#L23-L34",
-          "version": "repo-lines-v1:sha256:32d70877cb6e34a41802952d2ca814a2ca74fed4b1c17a0241a60e3a674d29b5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmYTc0YmJhOTk4YTM4OGZjOWU4ZjM4NjMzYWU4Y2JmOTIzOGIzZTVhZTM0NTUyMjE4ODQzNjRiMTllN2VkNzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0ZTAzMjViN2Q4MmE5YjE4YjhjYjA4MThjZGMwZDExNGM4M2Q0YWI1YmRmYzc4ODZiZTQ2NzcwODFjZmZiN2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIwM2EzY2U1ZTNmMDdjN2U4NTQ2ZDQ2MTE2N2UxMGI5NmQ1YWM1MDlkNWQ3ZDZmY2U3ODliYzQyNTFiOGZjMTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjljMGM0Yjk5NWY3YmEzODQyMzQ0ZmRlYmM1YTY2ODlmM2UyZTU0ODVlNDg1M2JiYTliOTQxZTI5MmNkYTZiZjUifQ"
+          "version": "repo-lines-v1:sha256:8d77acf4e519da8e495794aab3ad3c389a3571f604750f8767a96d8f442d2595:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEwMDMwYzY2NzQxMjI0OTU4YTY0MGI5NzFjNGY3MzhlOWVlYjU1NTM0ZDFhNmU4MmQwYjI3MDZlOGRiNjZhMTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0ZTAzMjViN2Q4MmE5YjE4YjhjYjA4MThjZGMwZDExNGM4M2Q0YWI1YmRmYzc4ODZiZTQ2NzcwODFjZmZiN2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIwM2EzY2U1ZTNmMDdjN2U4NTQ2ZDQ2MTE2N2UxMGI5NmQ1YWM1MDlkNWQ3ZDZmY2U3ODliYzQyNTFiOGZjMTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjljMGM0Yjk5NWY3YmEzODQyMzQ0ZmRlYmM1YTY2ODlmM2UyZTU0ODVlNDg1M2JiYTliOTQxZTI5MmNkYTZiZjUifQ"
         }
       ]
     },
@@ -107,10 +107,66 @@
           "version": "repo-lines-v1:sha256:829193e2456bf1880f2933f386ceab6990977f6ce11fd14e5ebd9df4ab085127:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzODY1MzBlNjE4YmMyNmU2ZWM4NmYzYzEzZDlmNjQ1MzI4ZmNiOTUwYTIwNWFjNTRkMjUwMGY2MTMzZjhlOWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwMjcyYTE3MjAwYjBmMzBjZGEwM2FmMWYyMDRmYTAzODRmM2MyMTgxZjI3OWZkYTMwNjA5ZWMzNDM1YWI4ZTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzMmYyOWFlNTMyYWNjY2I2NmUxNjgwMzY1ZDRkOGQ2NjdjMTNiZDRiODVhNjIxYzdmYzZkOGM4M2M1ZDgxZTUifQ"
         }
       ]
+    },
+    {
+      "id": "claim_cd311ed81d6545bb8a0a74093a22d139",
+      "statement": "비회원 체험의 신원은 `copy-singer.guest-trial` 쿠키와 `GuestAnalysisTrial` 행 하나로 표현돼요. 쿠키 수명은 365일, 결과 보관 기간은 24시간이고, 서버는 쿠키 원문 대신 토큰의 SHA-256 해시를 unique로 저장하며 trial 행이 소유자·연결 작업·소비·만료 시각을 모두 들고 있어요.",
+      "evidence": [
+        {
+          "resource": "repo://prisma/migrations/20261029000000_guest_analysis_trial/migration.sql#L4-L29",
+          "version": "repo-lines-v1:sha256:ce3fa9d7c3c2791eda4e129cb2e64773c873daad4ae8b46f9e3f8a580cd39163:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmYjVlOWY4ZTYwYWMyMTdiNmI3NzMzZWU1OTJmNjE3NDc0NjU3OTA3Y2I0OTY2ZDMzZTEzYjc4ZGMzYjA5MTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyNDg5MTVlNjlhYmU5NDM4OTlkZjk3ODIwMDliMzljYjhiODIzMjI4NTE0YWE4YmVjMzFkNjgzZjg2OWFkN2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMyODUyMDhjZDQ4MzliMzIwYzRlMzA1NTNkODdhNGI4ODNkMjYzMTllZDUxYWU3NTgzNjk0ZTdiZmNiOTFjOGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZlMjgyNDYyZDEzZjljMWRhNGI2ZDIzYWY3YzEzYmFlNWY4NjgxOGI2NTk1ZjUzODhkZGMzYzhmM2FiYTlkMWUifQ"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/model/contract.ts#L1-L3",
+          "version": "repo-lines-v1:sha256:9e22199fbbbc7763cea2f6f8b9c88f0212559fd64ea1d0c00e4282fa656e7972:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTRkOWVmNDRmYjkyYzRhZjQxN2YwOWE2ZTFmZTE3YWE4NDI0MGU5NGZhMTBjZWRmZTRkZmViMGI0NTBiNDhmZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzQ0ZTE1YmY0NGZlZjcwMTE2NjBmMDUyMGU3NDQ3OTU2MzAzZWNlYmQ5M2JkYjZkNzU2OTdkMTc1ZTg2YjNkNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTliZDBmOGFhMDc4YjZjNDAwZWY1MzQwMjViNjY2ZjJjNjQzMWRiZWQyMWRiYTVkYmM3NWE1NDQ0MzA3Yzc2YyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_330678de9b5442f5a81821fdfc48723b",
+      "statement": "체험 시작 경로인 `POST /api/guest-analysis`는 `withApiAdmission`을 쓰지 않고 같은 출처(`Origin`·`Sec-Fetch-Site`) 검사와 자체 `guest-start:` 토큰 버킷으로 처리하며, 세션이 있으면 `member`, 이미 trial이 있으면 `ready`를 돌려주고 그 외에는 일일 쿼터를 확인한 뒤 새 trial을 만들어요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/guest-analysis/guest-analysis-route.ts#L13-L44",
+          "version": "repo-lines-v1:sha256:e653262c177c587fadae99f3e6904183e2c4f4dc2fa6d696520b2ea824168211:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4ZDAwZDQ0ZmNkMjYzZTgwZGJkMmM3MWQ5MzEzMjhkNzFjZjAyZmRjYTE4YTY4ZjM2ZWIzMzNmNzJlNTE1OWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA2YjQzZjFmNGQxOGQ0OGZkYzIyZjc2OGIyZTRlZTQxYmM5MTlkN2IyYzI4MTEwMmE1ZDFhNzU0NGEyM2FmNGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_13d5e25111114e5484b2aec6386ab3fe",
+      "statement": "`pnpm test`는 `pnpm run build` 뒤에 영역별 script를 `&&`로 잇고, 마지막에 `pnpm run test:guest-analysis`와 `pnpm run test:readiness`를 실행해요. 그래서 비회원 체험을 바꾼 변경도 이 사슬 하나에 포함되지만, 어떤 검사가 DB와 브라우저를 준비해야 하는지는 검증 문서에서 따로 확인해야 해요.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L23-L23",
+          "version": "repo-lines-v1:sha256:a0030c66741224958a640b971c4f738e9eeb55534d1a6e82d0b2706e8db66a16:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTAwMzBjNjY3NDEyMjQ5NThhNjQwYjk3MWM0ZjczOGU5ZWViNTU1MzRkMWE2ZTgyZDBiMjcwNmU4ZGI2NmExNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTAwMzBjNjY3NDEyMjQ5NThhNjQwYjk3MWM0ZjczOGU5ZWViNTU1MzRkMWE2ZTgyZDBiMjcwNmU4ZGI2NmExNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjAzYTNjZTVlM2YwN2M3ZTg1NDZkNDYxMTY3ZTEwYjk2ZDVhYzUwOWQ1ZDdkNmZjZTc4OWJjNDI1MWI4ZmMxNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWM1MDM1MmQ5YjhmNGY3OGE2OTI3NzgxOWU0NDIzMTcwNTcyNTE0YTUzNmIzZjI0YTY3OGJkYTk0ODM5MDZmNCJ9"
+        },
+        {
+          "resource": "repo://package.json#L71-L75",
+          "version": "repo-lines-v1:sha256:d1899985423fbae44ff1ea4fdeb9bed38609e01c6337f0fb15da8e83c33ffc3c:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE3Mzg5N2E1NDExY2FlNzlmZjE3NDVlYzA1MjMyMzVhODc5NmQ3ZDAwNjZlMDVlMGEwYmQ3MTJlOWFhNDFmOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjFkOWZmNDMyNGIzZTdkZmQ1NDFkNWQzODU0MmVmNGFkZjRmYWU5NTc3YmE3NDZmMWM4YTRmNTdjYzhjNjNjNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjYwOGNlZTQ1ZGQ3MmU1ZTFlNGE4MDZlZTgxMmZiYjk3ZDRjNjdmYTEzZmY5NjI4MjA3Mzc1OGFlN2Y5MGQ1OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDU0ZjBiZjRjNTdiMDI2ZTFiNjlhYzk1NzBlMjNlZTI1OTY3YTgwOTI0MmJjMWZmMWU3YzYzYTg2ZmM1ZGYzYSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f199c982d952492f81e3410b2bc4b4ff",
+      "statement": "`pnpm run test:openwiki`는 `node --test tests/knowledge-dispatcher.test.mjs`로 Knowledge 디스패처 판정을 검사하고, `pnpm run test:onboarding`은 `tests/new-user-onboarding.integration.ts`로 신규 사용자 온보딩 계약을 검사해요. 두 script는 별도 항목으로 존재하지만 `pnpm test` 사슬과 `pnpm run check` 어디에도 포함되지 않으므로, 디스패처나 온보딩을 바꾼 개발자가 직접 실행해야 해요.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L23-L23",
+          "version": "repo-lines-v1:sha256:a0030c66741224958a640b971c4f738e9eeb55534d1a6e82d0b2706e8db66a16:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTAwMzBjNjY3NDEyMjQ5NThhNjQwYjk3MWM0ZjczOGU5ZWViNTU1MzRkMWE2ZTgyZDBiMjcwNmU4ZGI2NmExNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTAwMzBjNjY3NDEyMjQ5NThhNjQwYjk3MWM0ZjczOGU5ZWViNTU1MzRkMWE2ZTgyZDBiMjcwNmU4ZGI2NmExNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjAzYTNjZTVlM2YwN2M3ZTg1NDZkNDYxMTY3ZTEwYjk2ZDVhYzUwOWQ1ZDdkNmZjZTc4OWJjNDI1MWI4ZmMxNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWM1MDM1MmQ5YjhmNGY3OGE2OTI3NzgxOWU0NDIzMTcwNTcyNTE0YTUzNmIzZjI0YTY3OGJkYTk0ODM5MDZmNCJ9"
+        },
+        {
+          "resource": "repo://package.json#L34-L34",
+          "version": "repo-lines-v1:sha256:d4e0325b7d82a9b18b8cb0818cdc0d114c83d4ab5bdfc7886be4677081cffb7b:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDRlMDMyNWI3ZDgyYTliMThiOGNiMDgxOGNkYzBkMTE0YzgzZDRhYjViZGZjNzg4NmJlNDY3NzA4MWNmZmI3YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDRlMDMyNWI3ZDgyYTliMThiOGNiMDgxOGNkYzBkMTE0YzgzZDRhYjViZGZjNzg4NmJlNDY3NzA4MWNmZmI3YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTg4NWZlYTBhMTc4ZDQ1ODMwZWZlNzM0ZmU1MDc1Y2QxZjMxMmZmN2Y1NDY1Y2Y3OTMxOWIxMTY4MTFjYmJhNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWMwYzRiOTk1ZjdiYTM4NDIzNDRmZGViYzVhNjY4OWYzZTJlNTQ4NWU0ODUzYmJhOWI5NDFlMjkyY2RhNmJmNSJ9"
+        },
+        {
+          "resource": "repo://package.json#L58-L65",
+          "version": "repo-lines-v1:sha256:e28d15873dc811f73597e27ce1d5c75d6d57628fbc25a168a86218c1c37b177b:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzA5ZjVhMzI3NDIxMDBmODQzNDM3N2MzMzNiMmI3OGU0N2Q3ODE3M2Y0YzFhZjA1MThhZGQzMzg0Mjk4NzhkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjczYjhmZWI4ZWQ3YmVmNWU2MzJkMjE2MzdlNjM1YTk2ZjZmZmUxYzc3NTAyZjBjMGQ0ZDlkM2E3ZDk0NGNhMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTZmYjRlNjA3NGQ5OTI4MmRlNGQxNGQ1OGFiNTFkZTU3NjA2NzZlM2UwN2E4NzgxNThjMzQxMGYwMzdjY2Q5ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzM4YzNmOTc2ZDgxNDA2MjU0MDRmOTYxMWI2ODk4NmUxNTc5MmViYWRjNmZlOGZkYjFmNGU2YzdiZTJiNmVlNSJ9"
+        }
+      ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.5.2",
-    "at": "2026-09-25T04:42:33.305Z"
+    "by": "openwiki/0.7.2",
+    "at": "2026-11-01T16:00:39.866Z"
   }
 }

@@ -1,11 +1,8 @@
 ---
 type: explanation
 title: 알림과 중복 방지
-description: 작업 종료 확정과 티켓 지급 조정에서 알림이 만들어지는 지점, `dedupeKey` unique 제약이 중복을 지우는 방식, 그리고 세션 사용자 기준 읽기 경로와 화면 표시를 설명해요.
+description: 작업 종료 확정과 티켓 지급 조정에서 알림이 만들어지는 지점, 체험 trial·곡 분석·티켓 차감처럼 알림이 만들어지지 않는 경우, `dedupeKey` unique 제약이 중복을 지우는 방식, 그리고 세션 사용자 기준 읽기 경로를 설명해요.
 tags: [notifications, dedupe, ticket-credit, read-state, explanation]
-verified:
-  - by: openwiki/0.5.2
-    at: 2026-09-18T16:47:52.081Z
 sources:
   - id: openwiki-source-5b54a58d1b51cd490b0e7162
     resource: repo://package.json
@@ -27,6 +24,8 @@ sources:
     resource: repo://src/_pages/notifications/ui/notifications-list.tsx
   - id: openwiki-source-7860048addd24542c3f9b6a4
     resource: repo://src/_pages/notifications/ui/notifications-page.tsx
+  - id: openwiki-source-37055abf050f6159b42c001a
+    resource: repo://src/entities/guest-analysis/api/lifecycle.ts
   - id: openwiki-source-debc1155ede83cdd69528014
     resource: repo://src/entities/notification/api/notification-service.ts
   - id: openwiki-source-a033bae155fdef6136f961d9
@@ -43,6 +42,8 @@ sources:
     resource: repo://tests/admin-operations.integration.ts
   - id: openwiki-source-84b3a965db3a2a220bcea10f
     resource: repo://tests/api-contracts.test.ts
+  - id: openwiki-source-8133b36f4de23f03ce979d19
+    resource: repo://tests/guest-analysis.integration.ts
   - id: openwiki-source-10c6a88a3297ea68ebdbf439
     resource: repo://tests/mixing-queue.integration.ts
   - id: openwiki-source-afcc17db649f224476aa69ad
@@ -51,12 +52,15 @@ sources:
     resource: repo://tests/notification-service.integration.ts
   - id: openwiki-source-28adc6ef840aa586dc1aceef
     resource: repo://tests/vocal-profile-analysis-queue.integration.ts
-generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:47:52.081Z" }
+generated: { by: "openwiki/0.7.2", at: "2026-11-01T16:00:39.866Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-11-01T16:00:39.866Z
 ---
 
-알림은 "이 사용자에게 이 사건이 일어났다"를 남기는 `Notification` 행 하나예요. 사건의 종류는 다섯 가지뿐이고, 모든 행이 `dedupeKey`라는 전역 unique 문자열을 함께 가져요. 그래서 같은 확정이 두 번 실행돼도 두 번째 insert는 무시되고, 먼저 만들어진 행이 그대로 반환돼요([prisma/schema.prisma](repo://prisma/schema.prisma#L523-L538)).
+알림은 "이 사용자에게 이 사건이 일어났다"를 남기는 `Notification` 행 하나예요. 사건의 종류는 다섯 가지뿐이고, 모든 행이 `dedupeKey`라는 전역 unique 문자열을 함께 가져요. 그래서 같은 확정이 두 번 실행돼도 두 번째 insert는 무시되고, 먼저 만들어진 행이 그대로 반환돼요([prisma/schema.prisma](repo://prisma/schema.prisma#L543-L558)).
 
-문구·링크·중복 규칙을 바꾸려면 알림을 만드는 다섯 지점과 그것들이 공유하는 `createNotification` 하나만 보면 돼요. 알림 생성이 작업 종료 확정 트랜잭션 안에 들어 있다는 점과, 티켓 지급 알림만 그 트랜잭션 밖에서 만들어진다는 차이가 가장 중요한 경계예요. 확정 트랜잭션 자체의 규칙은 [Job 큐와 lease 복구 계약](../operations/job-processing.md)이 소유하니 여기서는 다시 그리지 않아요.
+문구·링크·중복 규칙을 바꾸려면 알림을 만드는 다섯 지점과 그것들이 공유하는 `createNotification` 하나만 보면 돼요. 알림 생성이 작업 종료 확정 트랜잭션 안에 들어 있다는 점과, 티켓 지급 알림만 그 트랜잭션 밖에서 만들어진다는 차이가 가장 중요한 경계예요. 알림이 아예 만들어지지 않는 확정도 있으므로 그 조건까지 함께 확인하세요. 확정 트랜잭션 자체의 규칙은 [Job 큐와 lease 복구 계약](../operations/job-processing.md)이 소유하니 여기서는 다시 그리지 않아요.
 
 ## 입력 검증과 중복 확인 순서
 
@@ -96,7 +100,7 @@ flowchart TD
 | 보컬 분석 실패 확정 | `VOCAL_PROFILE_FAILED` | `vocal-analysis:{jobId}:failed` | `/library?tab=profiles` |
 | 관리자 티켓 지급 | `TICKET_CREDIT` | `ticket-ledger:{ledgerId}` | `/account` |
 
-보컬 분석 성공 알림의 `href`만 작업 id가 아니라 결과 프로필 id를 써요. 사용자가 열어야 하는 화면이 작업 상세가 아니라 프로필이기 때문이에요([vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L122-L133)).
+보컬 분석 성공 알림의 `href`만 작업 id가 아니라 결과 프로필 id를 써요. 사용자가 열어야 하는 화면이 작업 상세가 아니라 프로필이기 때문이에요([vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L122-L136)).
 
 `sourceId`는 알림을 낳은 행을 가리켜요. 작업 알림 네 종류는 작업 id를, 티켓 지급 알림은 원장 행 id를 넣어요. 이 값은 unique가 아니고 화면 문구에도 쓰이지 않으므로, 알림과 원본 행을 잇는 추적용 필드로 보세요. 알림 규칙을 검증하는 통합 테스트도 이 값으로 대상을 찾아요([tests/mixing-queue.integration.ts](repo://tests/mixing-queue.integration.ts#L516-L520)).
 
@@ -114,19 +118,31 @@ flowchart TD
 
 ## 작업 확정과 알림은 같은 트랜잭션이에요
 
-네 개의 작업 알림은 `SUCCEEDED`나 `FAILED`를 쓰는 트랜잭션 안에서 만들어져요. 그래서 상태만 바뀌고 알림이 빠지거나, 알림만 남고 상태가 그대로인 커밋이 생길 수 없어요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L523-L534), [mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L277-L288), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L217-L228)).
+네 개의 작업 알림은 `SUCCEEDED`나 `FAILED`를 쓰는 트랜잭션 안에서 만들어져요. 그래서 알림을 남기는 확정에서는 상태만 바뀌고 알림이 빠진 커밋이나, 알림만 남고 상태가 그대로인 커밋이 생기지 않아요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L509-L535), [mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L251-L289), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L101-L137), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L203-L234)).
 
 재시도 중에는 알림이 생기지 않아요. 알림은 종료 상태를 확정할 때만 만들어지므로, 일시적 실패가 반복되는 동안에는 그 사용자의 알림 수가 0이에요([tests/vocal-profile-analysis-queue.integration.ts](repo://tests/vocal-profile-analysis-queue.integration.ts#L500-L511), [tests/mixing-queue.integration.ts](repo://tests/mixing-queue.integration.ts#L400-L414)). 마지막 시도에서 `FAILED`가 확정될 때 비로소 실패 알림 한 건이 남아요([tests/mixing-queue.integration.ts](repo://tests/mixing-queue.integration.ts#L427-L443)).
 
-곡 분석 확정에는 사용자 알림이 붙지 않아요. 곡 분석 워커는 `createNotification`을 import하지 않고, `READY`로 끝나는 트랜잭션은 `SongAnalysis`와 `SongAnalysisJob` 행만 갱신해요([song-analysis/worker.ts](repo://src/_app/background-jobs/song-analysis/worker.ts#L224-L313)). 그래서 같은 다섯 종류 중 어느 것도 곡 등록·분석에는 쓰이지 않아요. 사용자에게 알리는 대상은 자기가 요청한 보컬 분석과 AI 믹싱, 그리고 자기 지갑에 들어온 티켓뿐이에요.
-
 ## 티켓 지급 알림만 트랜잭션 밖에서 만들어져요
 
-`adjustUserTickets`는 `applyTicketChange`로 원장 행을 먼저 확정하고, 그 결과의 `amount`가 양수일 때만 `createNotification`을 따로 불러요([adjust-user-tickets.ts](repo://src/features/manage-tickets/api/adjust-user-tickets.ts#L21-L42)). 두 호출은 같은 트랜잭션이 아니에요. 그래서 원장 행은 남았는데 알림이 없는 상태로 프로세스가 끝날 수 있어요.
+`adjustUserTickets`는 `applyTicketChange`로 원장 행을 먼저 확정하고, 그 결과의 `amount`가 양수일 때만 `createNotification`을 따로 불러요([adjust-user-tickets.ts](repo://src/features/manage-tickets/api/adjust-user-tickets.ts#L21-L42)). 두 호출은 같은 트랜잭션이 아니에요. 그래서 원장 행은 남았는데 알림이 없는 상태로 프로세스가 끝날 수 있어요. 차감 조정(`amount < 0`)은 이 조건에 걸리지 않아 알림을 만들지 않아요.
 
-이 경로의 안전장치는 `dedupeKey`가 `ledger.id`를 포함한다는 점이에요. 관리자가 같은 `idempotencyKey`로 요청을 다시 보내면 `applyTicketChange`가 기존 원장 행을 그대로 반환하고, 코드는 그 행의 id로 `ticket-ledger:{ledgerId}` 알림 생성을 다시 시도해요. 이미 그 키의 행이 있으면 insert가 무시되므로 결과는 여전히 한 건이에요([tests/admin-operations.integration.ts](repo://tests/admin-operations.integration.ts#L51-L64)). 차감 조정(`amount < 0`)은 알림을 만들지 않아요.
+이 경로의 안전장치는 `dedupeKey`가 `ledger.id`를 포함한다는 점이에요. 관리자가 같은 `idempotencyKey`로 요청을 다시 보내면 `applyTicketChange`가 기존 원장 행을 그대로 반환하고, 코드는 그 행의 id로 `ticket-ledger:{ledgerId}` 알림 생성을 다시 시도해요. 이미 그 키의 행이 있으면 insert가 무시되므로 결과는 여전히 한 건이에요([tests/admin-operations.integration.ts](repo://tests/admin-operations.integration.ts#L51-L64)).
 
 원장의 멱등 규칙 자체는 [티켓 원장과 멱등성](ticket-ledger.md)이 소유해요. 작업 알림과 달리 티켓 지급 알림을 다시 만드는 경로는 관리자가 같은 요청 키를 다시 보내는 것뿐이고, 이 생성 입력에서 확인한 운영 스크립트 중에는 그 역할을 하는 것이 없어요. 그래서 이 호출을 지원 스크립트로 복구할 계획을 세운다면 `createNotification`을 직접 부를 수 있는지 먼저 확인하세요.
+
+## 알림 없이 끝나는 확정도 있어요
+
+알림 지점이 다섯이어도 모든 확정이 알림을 남기지는 않아요. 아래 세 경우는 상태가 바뀌어도 `Notification` 행이 생기지 않아요.
+
+| 확정되는 사건 | 알림이 없는 이유 |
+| --- | --- |
+| 체험 trial이 붙은 보컬 분석 작업 | `markGuestAnalysisTerminal`이 trial을 갱신하면 `createNotification` 전에 반환해요 |
+| 곡 분석 작업의 성공·실패 | 곡 분석 워커에 알림 생성 호출 자체가 없어요 |
+| 관리자 티켓 차감 조정 | `ledger.amount > 0`일 때만 알림을 만들어요 |
+
+체험 trial 판정은 `GuestAnalysisTrial`에서 `userId`·`jobId`가 그 작업과 같고 `claimedAt`이 비어 있는 행을 갱신하는 방식이에요. 갱신된 행이 하나라도 있으면 `createNotification`을 부르지 않고 반환해요. 이 판정이 성공·실패 두 확정 경로 모두에서 알림 생성보다 먼저 실행되므로, 같은 작업이 `FAILED`로 끝나도 체험 사용자에게는 실패 알림이 가지 않아요([lifecycle.ts](repo://src/entities/guest-analysis/api/lifecycle.ts#L43-L55), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L122-L123), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L220-L221), [tests/guest-analysis.integration.ts](repo://tests/guest-analysis.integration.ts#L253-L258)). 체험 사용자가 결과를 확인하는 경로와 알림을 남기지 않는 이유는 [비회원 체험 분석 흐름](../workflows/guest-analysis-trial.md)이 소유해요.
+
+곡 분석 워커는 `createNotification`을 import하지 않고, `READY`로 끝나는 트랜잭션은 `SongAnalysis`와 `SongAnalysisJob` 행만 갱신해요([song-analysis/worker.ts](repo://src/_app/background-jobs/song-analysis/worker.ts#L224-L313)). 그래서 같은 다섯 종류 중 어느 것도 곡 등록·분석에는 쓰이지 않아요. 사용자에게 알리는 대상은 자기가 요청한 보컬 분석과 AI 믹싱, 그리고 자기 지갑에 들어온 티켓뿐이에요.
 
 ## 같은 키를 다른 내용으로 쓰면 오류예요
 
@@ -146,6 +162,8 @@ flowchart TD
 이 비교에는 두 가지 효과가 있어요. 같은 사건의 재실행은 먼저 만든 행을 그대로 돌려주고, 다른 사용자에게 같은 키를 쓰려는 시도는 조용히 넘어가지 않고 실패해요([tests/notification-service.integration.ts](repo://tests/notification-service.integration.ts#L36-L38), [tests/notification-service.integration.ts](repo://tests/notification-service.integration.ts#L75-L78)).
 
 새 알림 지점을 추가할 때는 키 문자열에 그 사건을 유일하게 만드는 값을 넣으세요. 다섯 개의 기존 키는 모두 `{도메인}:{행 id}:{결과}` 또는 `{행 종류}:{행 id}` 형태예요.
+
+새 알림 종류를 추가할 때는 한 파일만 고쳐서는 끝나지 않아요. DB enum에 값을 넣는 migration과 `prisma/schema.prisma`의 `NotificationType`, API 계약의 `NOTIFICATION_TYPES` 목록, 그리고 화면의 아이콘·배지 매핑을 함께 갱신하세요. `Notification.dedupeKey`가 전역 unique이므로 그대로 두고 새 키 규칙만 정하면 돼요([prisma/schema.prisma](repo://prisma/schema.prisma#L122-L128), [contract.ts](repo://src/entities/notification/model/contract.ts#L4-L12), [notification-item-content.tsx](repo://src/entities/notification/ui/notification-item-content.tsx#L4-L17)).
 
 ## 읽기 경로는 세션 사용자로 고정돼요
 
@@ -212,14 +230,19 @@ sequenceDiagram
 
 ## 알림 규칙을 바꿀 때 확인할 것
 
-변경 범위 테스트는 두 축으로 나뉘어 있어요. 스키마·서비스 동작은 `tests/notification-service.integration.ts`가, 세션 범위와 HTTP 응답은 `tests/notification-routes.integration.ts`가 검증해요.
+변경 범위 테스트는 스키마·서비스 동작과 세션 범위·HTTP 응답으로 나뉘어 있어요. 알림 지점을 바꿨다면 워커·관리자 통합 테스트까지 함께 확인하세요.
 
 - [tests/notification-service.integration.ts](repo://tests/notification-service.integration.ts#L7-L87)는 같은 입력을 동시에 두 번 넣어 같은 id가 나오고 행이 하나만 남는지, 다른 사용자의 알림을 읽으려 하면 `null`인지, `pageSize`를 넘긴 페이지 요청이 `pageCount`로 잘리는지, `unreadOnly` 필터와 `read-all` 응답이 계약대로인지, 같은 키를 다른 입력으로 재사용하면 거부되는지 확인해요.
 - [tests/notification-routes.integration.ts](repo://tests/notification-routes.integration.ts#L71-L118)는 세션 사용자의 목록만 보이는지, 다른 사용자의 알림 id와 `uuid`가 아닌 id가 모두 404인지, 세션이 없으면 401인지 확인해요.
-- 알림 생성 지점은 워커·관리자 통합 테스트가 함께 지켜요. 성공·실패 알림의 `type`, `sourceId`, `href` 값과 재시도 중 0건, 종료 확정 시 1건을 확인해요([vocal-profile-analysis-queue.integration.ts](repo://tests/vocal-profile-analysis-queue.integration.ts#L471-L474), [mixing-queue.integration.ts](repo://tests/mixing-queue.integration.ts#L516-L520), [admin-operations.integration.ts](repo://tests/admin-operations.integration.ts#L60-L64)).
+- 알림 생성 지점은 워커·관리자 통합 테스트가 함께 지켜요. 성공·실패 알림의 `type`, `sourceId`, `href` 값과 재시도 중 0건, 종료 확정 시 1건을 확인해요([vocal-profile-analysis-queue.integration.ts](repo://tests/vocal-profile-analysis-queue.integration.ts#L471-L474), [vocal-profile-analysis-queue.integration.ts](repo://tests/vocal-profile-analysis-queue.integration.ts#L586-L589), [mixing-queue.integration.ts](repo://tests/mixing-queue.integration.ts#L516-L520), [admin-operations.integration.ts](repo://tests/admin-operations.integration.ts#L60-L64)).
+- 알림이 없는 경로도 테스트가 지켜요. 재시도 대기로 되돌아간 실패와 체험 trial로 끝난 분석은 0건이에요([mixing-queue.integration.ts](repo://tests/mixing-queue.integration.ts#L408-L414), [vocal-profile-analysis-queue.integration.ts](repo://tests/vocal-profile-analysis-queue.integration.ts#L506-L511), [tests/guest-analysis.integration.ts](repo://tests/guest-analysis.integration.ts#L253-L258)).
 - 계약 스키마와 캐시 동작은 `pnpm run test:query`가 [tests/api-contracts.test.ts](repo://tests/api-contracts.test.ts#L132-L180)와 [tests/client-server-state-query.test.ts](repo://tests/client-server-state-query.test.ts#L123-L155)로 확인해요([package.json](repo://package.json#L26-L26)).
 
-두 통합 테스트 파일은 `DATABASE_URL`이 없으면 스스로 건너뛰고, 현재 `package.json`의 어떤 스크립트도 이 두 파일을 지정하지 않아요. 알림 서비스나 라우트를 고쳤다면 이 파일들을 직접 지정해 실행하세요.
+두 통합 테스트 파일은 `DATABASE_URL`이 없으면 스스로 건너뛰어요([tests/notification-service.integration.ts](repo://tests/notification-service.integration.ts#L7-L11), [tests/notification-routes.integration.ts](repo://tests/notification-routes.integration.ts#L7-L11)). 현재 `package.json`의 `scripts` 블록 전체([package.json](repo://package.json#L9-L76))를 끝까지 봐도 이 두 파일을 직접 지정하는 항목은 없어요. 그래서 `pnpm test` 사슬로도 이 검사는 돌지 않아요([package.json](repo://package.json#L23-L23)). 알림 서비스나 라우트를 고쳤다면 DB 통합 테스트 스크립트가 쓰는 것과 같은 형태로 두 파일을 직접 지정해 실행하세요.
+
+```bash
+node --conditions react-server --import tsx --test tests/notification-service.integration.ts tests/notification-routes.integration.ts
+```
 
 ## 다음에 읽을 페이지
 
@@ -227,4 +250,5 @@ sequenceDiagram
 - `Notification` 테이블의 관계와 enum: [데이터 모델과 수명 주기 상태](../architecture/data-model.md)
 - 세션·소유권 검증 순서: [인증과 소유권 경계](../integrations/auth-and-ownership.md)
 - 티켓 지급 알림의 근거가 되는 원장: [티켓 원장과 멱등성](ticket-ledger.md)
+- 알림이 만들어지지 않는 체험 분석 확정의 배경: [비회원 체험 분석 흐름](../workflows/guest-analysis-trial.md)
 - 믹싱·보컬 분석 작업의 전체 흐름: [AI 믹싱 작업 흐름](../workflows/ai-mixing.md), [보컬 프로필 분석 흐름](../workflows/vocal-profile-analysis.md)

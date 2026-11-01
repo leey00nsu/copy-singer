@@ -1,18 +1,23 @@
 ---
 type: explanation
 title: AI 믹싱 작업 흐름
-description: 추천 곡에서 시작한 AI 믹싱 요청이 스냅샷을 고정한 MixingJob 행으로 저장되고, 입력 fetch·Modal 제출·poll·FFmpeg 최종화·결과 저장·알림 확정을 거치며, 접수 확실성에 따라 환불 여부가 갈리는 방식을 설명해요.
+description: 추천 곡에서 시작한 AI 믹싱 요청이 회원 화면에서만 접수되어 스냅샷을 고정한 MixingJob 행으로 저장되고, 입력 fetch·Modal 제출·poll·FFmpeg 최종화·결과 저장·알림 확정을 거치며, 접수 확실성에 따라 환불 여부가 갈리는 방식을 설명해요.
 tags: [mixing, workflow, modal, lifecycle, explanation]
-verified:
-  - by: openwiki/0.5.2
-    at: 2026-09-18T16:47:52.081Z
 sources:
+  - id: openwiki-source-5b54a58d1b51cd490b0e7162
+    resource: repo://package.json
   - id: openwiki-source-2798a6200ef792b731721034
     resource: repo://prisma/schema.prisma
   - id: openwiki-source-1fb103e64314a1133a03a696
     resource: repo://src/_app/api-routes/mixing-jobs/mixing-job-audio-route.ts
+  - id: openwiki-source-28cb2570db799cb0b4da1a45
+    resource: repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts
   - id: openwiki-source-eaa76879de1a19c0db5c6ebb
     resource: repo://src/_app/background-jobs/mixing/worker.ts
+  - id: openwiki-source-767d208d57e2c281d46e36de
+    resource: repo://src/_pages/recommendation-detail/ui/recommendation-results.tsx
+  - id: openwiki-source-fc511db0e66d5f3404758b1c
+    resource: repo://src/entities/guest-analysis/model/navigation.ts
   - id: openwiki-source-dcbc6d51cb37a5fff81cb37e
     resource: repo://src/entities/mixing-job/api/deletion.ts
   - id: openwiki-source-3568e4d30000a244be8ea9b3
@@ -21,14 +26,20 @@ sources:
     resource: repo://src/entities/mixing-job/model/contract.ts
   - id: openwiki-source-ffca89bdd15e2c745a625d6c
     resource: repo://src/entities/recommendation/model/synthesis-state.ts
+  - id: openwiki-source-ea88c57a312b01c4cb36d1a3
+    resource: repo://src/entities/ticket/ui/ticket-consumption-confirm-dialog.tsx
   - id: openwiki-source-65250bb561efb32b9245b30d
     resource: repo://src/entities/vocal-profile/model/contract.ts
   - id: openwiki-source-e666cd046fb06fe25b657e92
     resource: repo://src/features/create-mixing/api/mixing-queue.ts
   - id: openwiki-source-28e6a6b450d76027eb804f2a
     resource: repo://src/features/create-mixing/model/reference.ts
+  - id: openwiki-source-8200e2d698d5328a3edb8273
+    resource: repo://src/features/create-mixing/ui/recommendation-mixing-action.tsx
   - id: openwiki-source-4ad5bcda7a4959929e165508
     resource: repo://src/features/create-recommendation/api/recommendation-service.ts
+  - id: openwiki-source-200291f8a1aaa391d1b68ec4
+    resource: repo://src/shared/config/server-env.ts
   - id: openwiki-source-a7cc3d96a7c8be410030b460
     resource: repo://src/shared/lib/admission/queue.ts
   - id: openwiki-source-040370852205e0b755f2e46d
@@ -37,11 +48,18 @@ sources:
     resource: repo://src/shared/media/media-service.ts
   - id: openwiki-source-acfd2d9685fd54c639680425
     resource: repo://tests/compress-mixing-result.test.ts
+  - id: openwiki-source-f2067e3b1f1b17bd52d88731
+    resource: repo://tests/guest-analysis-ui.test.tsx
+  - id: openwiki-source-fe8d14a1fe88197c1f519c74
+    resource: repo://tests/mixing-history-ui.test.tsx
   - id: openwiki-source-10c6a88a3297ea68ebdbf439
     resource: repo://tests/mixing-queue.integration.ts
   - id: openwiki-source-4989636d19dad4f53bff695c
     resource: repo://tests/mixing-reference.test.ts
-generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:47:52.081Z" }
+generated: { by: "openwiki/0.7.2", at: "2026-11-01T16:00:39.866Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-11-01T16:00:39.866Z
 ---
 
 # AI 믹싱 작업 흐름
@@ -60,7 +78,26 @@ generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:47:52.081Z" }
 
 티켓 원장과 멱등성 규칙 자체는 [티켓 원장과 멱등성](../concepts/ticket-ledger.md)이, 점유·lease·재시도 알고리즘은 [Job 큐와 lease 복구 계약](../operations/job-processing.md)이 소유해요. 이 페이지는 믹싱 요청 하나가 어떤 순서와 조건으로 그 규칙을 지나가는지를 설명해요.
 
+## 시작 지점: 체험 화면은 믹싱 대신 로그인으로 안내해요
+
+믹싱 작업은 회원 화면에서만 시작해요. 체험 화면에서도 추천 카드는 그대로 보이지만, `RecommendationMixingAction`은 `guestSaveHref`가 있으면 티켓 확인 버튼 대신 로그인·저장 링크를 그려요([recommendation-mixing-action.tsx](repo://src/features/create-mixing/ui/recommendation-mixing-action.tsx#L38-L57)).
+
+| 화면 조건 | 버튼 대신 보이는 것 |
+| --- | --- |
+| 믹싱 가능한 체험 화면 | `로그인하고 AI 믹싱하기` 링크 |
+| `mixing.available`이 `false`인 체험 화면 | 불가 사유 문구와 `로그인하고 결과 저장하기` 링크 |
+| 이미 로그인한 체험 사용자 | `계정에 저장하고 계속하기` 링크 |
+| compact 목록 | `로그인 후 믹싱` 또는 `믹싱 불가` 배지 |
+
+링크 목적지는 `guestRecommendationSaveHref`가 만들어요. 로그인 상태면 `/profile/save-trial?next=...`, 아니면 `/login?callbackURL=...`이고, 두 경우 모두 저장이 끝나면 보던 추천 경로로 돌아오도록 목적지가 인코딩돼 있어요([navigation.ts](repo://src/entities/guest-analysis/model/navigation.ts#L12-L19)).
+
+그래서 이 화면에서는 `onStart`가 불리지 않아 작업 행도 티켓 차감도 만들어지지 않아요([recommendation-results.tsx](repo://src/_pages/recommendation-detail/ui/recommendation-results.tsx#L106-L109)). 서버 경계도 같아서 `POST /api/mixing-jobs`는 세션을 요구하고, 세션이 없으면 401 `UNAUTHENTICATED`로 끝나요([mixing-jobs-route.ts](repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts#L27-L29), [session.ts](repo://src/features/authentication/api/session.ts#L36-L44)).
+
+체험이 언제 결과를 저장하고 언제 만료되는지는 [비회원 체험 분석 흐름](guest-analysis-trial.md)이 소유해요. 여기서는 "믹싱 접수는 회원 프로필에서 시작한다"는 경계만 확인하면 돼요.
+
 ## 접수: 추천 결과를 스냅샷 작업 행으로 고정해요
+
+추천 화면에서 시작을 누르면 `TicketConsumptionConfirmDialog`가 `ticketCost`를 보여 주고, 확인한 뒤에 요청을 보내요([recommendation-mixing-action.tsx](repo://src/features/create-mixing/ui/recommendation-mixing-action.tsx#L114-L125)). 호출마다 `crypto.randomUUID()`로 새 `idempotencyKey`를 만들고, 성공하면 그 항목을 `preparing`으로 낙관 반영한 뒤 작업 상세로 이동해요([use-recommendation-mixing.ts](repo://src/features/create-mixing/api/use-recommendation-mixing.ts#L18-L32), [use-recommendation-mixing.ts](repo://src/features/create-mixing/api/use-recommendation-mixing.ts#L50-L60)). 그래서 화면의 "다시 시도"는 이전 작업을 이어 붙이는 것이 아니라 새 키로 새 작업과 새 차감을 만들어요.
 
 브라우저는 `POST /api/mixing-jobs`에 `vocalProfileId`, `songAnalysisId`, `idempotencyKey`를 보내고, 성공하면 `202`와 소문자 상태로 직렬화한 작업을 받아요([mixing-jobs-route.ts](repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts#L27-L44)). 접수 함수 `enqueueMixingJob`은 이 순서로 진행해요([mixing-queue.ts](repo://src/features/create-mixing/api/mixing-queue.ts#L40-L148)).
 
@@ -71,6 +108,8 @@ generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:47:52.081Z" }
 5. 큐 용량을 확인하고 `MixingJob`을 만든 뒤, 같은 트랜잭션에서 `mixing:debit:{jobId}` 키로 티켓을 차감해요.
 
 트랜잭션은 `Serializable`로 열고, 스냅샷·쓰기 충돌이면 최대 3회 다시 시도해요. 3회를 다 쓰면 `MIXING_ENQUEUE_FAILED` 503(`retryable: true`)로 끝나요.
+
+차감량은 `MIXING_TICKET_COST`(기본값 1)에서 오고, 이 값이 0이면 차감 호출 자체를 건너뛰어 원장 행도 만들지 않아요([server-env.ts](repo://src/shared/config/server-env.ts#L22-L24), [mixing-queue.ts](repo://src/features/create-mixing/api/mixing-queue.ts#L134-L144)). 작업 행에 저장되는 `ticketCost`와 `maxAttempts`도 이때 확정돼요. 같은 이유로 화면의 확인 대화상자는 비용이 0이면 열리지 않고 버튼이 바로 시작해요([ticket-consumption-confirm-dialog.tsx](repo://src/entities/ticket/ui/ticket-consumption-confirm-dialog.tsx#L37-L43)).
 
 ### 다시 확인하는 카탈로그 조건
 
@@ -104,7 +143,9 @@ generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:47:52.081Z" }
 | 2 | `REFERENCE` | `status`가 `READY`이고 소유자가 요청자와 같아요 | 그 자산을 써요 |
 | — | 둘 다 없음 | 계약 버전이 `smart-reference-mid-v1`이면 2순위로 내려가지 않아요 | `MIXING_REFERENCE_UNAVAILABLE` |
 
-스마트 레퍼런스 계약이 중음 구간 전용인 프로필에서는 2순위 대체를 막아요. 대체하면 합성 품질 계약이 깨지기 때문이에요([contract.ts](repo://src/entities/vocal-profile/model/contract.ts#L201-L212)). 이 규칙은 [tests/mixing-reference.test.ts](repo://tests/mixing-reference.test.ts#L24-L68)가 검증해요.
+스마트 레퍼런스 계약이 중음 구간 전용인 프로필에서는 2순위 대체를 막아요. 대체하면 합성 품질 계약이 깨지기 때문이에요([contract.ts](repo://src/entities/vocal-profile/model/contract.ts#L204-L215)). 이 규칙은 [tests/mixing-reference.test.ts](repo://tests/mixing-reference.test.ts#L24-L68)가 검증해요.
+
+같은 `mixingReferenceCapability` 판정을 추천 응답도 미리 계산해 `profile.mixing`으로 내려줘요. 그래서 화면이 "믹싱 불가"를 먼저 보여 주고, 그 판정을 통과하지 못한 요청은 접수 단계에서 422로 거절돼요([recommendation-service.ts](repo://src/features/create-recommendation/api/recommendation-service.ts#L148-L160), [recommendation-mixing-action.tsx](repo://src/features/create-mixing/ui/recommendation-mixing-action.tsx#L100-L113)). 화면 안내와 접수가 같은 헬퍼를 쓰므로, 불가 사유 규칙을 고칠 때는 두 호출부를 함께 확인하세요.
 
 ### 접수가 실패할 때 남는 것
 
@@ -172,7 +213,7 @@ multipart 본문에는 `SYNTHESIS_PRESET`을 그대로 붙이고, 그 위에 `au
 
 ### poll과 결과 저장
 
-poll 루프는 `GET {MODAL_API_URL}/v1/conversions/{modalJobId}`를 30초 타임아웃으로 호출하고, 외부 상태가 `processing`이면 작업을 `PROCESSING`으로, 아니면 `SUBMITTED`로 맞추면서 heartbeat을 갱신해요([worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L448-L465), [worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L542-L543)). 폴링 간격은 `MIXING_POLL_INTERVAL_MS` 기본 5초예요.
+poll 루프는 `GET {MODAL_API_URL}/v1/conversions/{modalJobId}`를 30초 타임아웃으로 호출하고, 외부 상태가 `processing`이면 작업을 `PROCESSING`으로, 아니면 `SUBMITTED`로 맞추면서 heartbeat을 갱신해요([worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L448-L465), [worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L542-L543)). 폴링 간격은 `MIXING_POLL_INTERVAL_MS` 기본 5초이고 100ms~60초 범위로만 설정할 수 있어요([server-env.ts](repo://src/shared/config/server-env.ts#L46-L48)).
 
 외부 상태가 `failed`면 `MODAL_JOB_FAILED`로 실패해요. `succeeded`면 결과 오디오를 내려받아 FFmpeg으로 최종화하고, 그 결과를 `MIX_RESULT` 자산으로 Leemage에 올려요([worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L466-L506)). 최종화는 `clarity-normal-v1` 체인을 고정한 필터 그래프로 AAC 44.1kHz 스테레오 m4a를 만들고, `FFMPEG_TIMEOUT_MS`를 넘기거나 lease가 끊기면 하위 프로세스를 종료해요([compress-mixing-result.ts](repo://src/shared/lib/audio/compress-mixing-result.ts#L9-L90)). 최종화가 실패하면 `MIXING_FINALIZATION_FAILED`(`retryable: true`)가 되고, 결과 자산은 아직 만들어지지 않아요.
 
@@ -237,7 +278,7 @@ stateDiagram-v2
 
 결과 음원은 `GET /api/mixing-jobs/[id]/audio`로 받아요. 이 handler는 세션과 소유권을 확인하고 `SUCCEEDED` 작업의 `READY` 결과 자산만 프록시해요. 요청에 `Range` 헤더가 있으면 그대로 전달하고, 응답에는 `Content-Range`·`Accept-Ranges` 같은 헤더를 옮긴 뒤 `Cache-Control: private, no-store`를 붙여요([mixing-job-audio-route.ts](repo://src/_app/api-routes/mixing-jobs/mixing-job-audio-route.ts#L5-L38)). 조건이 맞지 않으면 `MIXING_RESULT_NOT_FOUND` 404, 외부 저장소가 응답하지 않으면 `MIXING_RESULT_UNAVAILABLE` 502예요.
 
-작업 이력은 `GET /api/mixing-jobs`가 페이지 단위로 돌려줘요. 직렬화할 때 DB 상태를 소문자로 바꾸고, `SUCCEEDED`이면서 결과 자산이 `READY`일 때만 `audioUrl`을 채워요([history.ts](repo://src/entities/mixing-job/api/history.ts#L47-L91)). 추천 응답에 들어가는 화면용 상태는 이 DB 상태를 `pending`·`preparing` → `preparing`, `submitted` → `queued`로 축약한 값이라, API의 `submitted`와 표기가 달라요([recommendation-service.ts](repo://src/features/create-recommendation/api/recommendation-service.ts#L70-L82), [contract.ts](repo://src/entities/mixing-job/model/contract.ts#L4-L20)). 화면이 이 상태를 어떤 주기로 다시 받고 언제 폴링을 멈추는지는 [브라우저 상태와 API 오류 계약](../architecture/client-data-flow.md)이 정리해요.
+작업 이력은 `GET /api/mixing-jobs`가 페이지 단위로 돌려줘요. 직렬화할 때 DB 상태를 소문자로 바꾸고, `SUCCEEDED`이면서 결과 자산이 `READY`일 때만 `audioUrl`을 채워요([history.ts](repo://src/entities/mixing-job/api/history.ts#L47-L91)). 추천 응답에 들어가는 화면용 상태는 이 DB 상태를 `pending`·`preparing` → `preparing`, `submitted` → `queued`로 축약한 값이라, API의 `submitted`와 표기가 달라요([recommendation-service.ts](repo://src/features/create-recommendation/api/recommendation-service.ts#L71-L83), [contract.ts](repo://src/entities/mixing-job/model/contract.ts#L4-L20)). 화면이 이 상태를 어떤 주기로 다시 받고 언제 폴링을 멈추는지는 [브라우저 상태와 API 오류 계약](../architecture/client-data-flow.md)이 정리해요.
 
 삭제는 `DELETE /api/mixing-jobs/[id]`이고, 종료 상태인 작업만 지울 수 있어요. 결과 자산이 있으면 그 삭제 의도를 작업 행 삭제와 같은 트랜잭션에서 예약하고, 커밋한 뒤 외부 삭제를 시도해요([deletion.ts](repo://src/entities/mixing-job/api/deletion.ts#L9-L48)).
 
@@ -251,14 +292,18 @@ stateDiagram-v2
 
 ## 이 흐름을 확인하는 테스트
 
-`pnpm run test:mixing:db`가 믹싱 통합 시나리오 전체를 돌려요([package.json](repo://package.json#L67-L67)). 한 파일에서 접수·점유·환불 경계·최종화·결과 저장·삭제를 순서대로 재현해요.
+`pnpm run test:mixing:db`가 믹싱 통합 시나리오 전체를 돌려요([package.json](repo://package.json#L68-L68)). 한 파일에서 접수·점유·환불 경계·최종화·결과 저장·삭제를 순서대로 재현해요.
 
-- 동시 접수 두 건이 같은 행을 돌려주고 원장 행이 하나만 생기는지, 레퍼런스가 없으면 차감 없이 거절되는지 ([tests/mixing-queue.integration.ts](repo://tests/mixing-queue.integration.ts#L178-L196))
+- 동시 접수 두 건이 같은 행을 돌려주고 원장 행이 하나만 생기는지, 레퍼런스가 없으면 차감 없이 거절되는지 ([tests/mixing-queue.integration.ts](repo://tests/mixing-queue.integration.ts#L135-L196))
 - preflight 실패와 재시도 소진이 각각 환불로 이어지고, 접수 후 실패는 환불되지 않는지 ([tests/mixing-queue.integration.ts](repo://tests/mixing-queue.integration.ts#L202-L355))
 - 접수 응답을 놓친 작업이 `MODAL_SUBMISSION_UNCONFIRMED`와 `SUBMISSION_UNKNOWN_REFUND_HELD` 기록으로 남는지 ([tests/mixing-queue.integration.ts](repo://tests/mixing-queue.integration.ts#L262-L296))
 - 최종화 실패가 재시도되고, 성공 경로가 `MIX_RESULT` 자산과 알림을 남기며, 삭제가 `mediaCleanupPending`을 돌려주는지 ([tests/mixing-queue.integration.ts](repo://tests/mixing-queue.integration.ts#L395-L586))
 
-FFmpeg 최종화 계약은 [tests/compress-mixing-result.test.ts](repo://tests/compress-mixing-result.test.ts#L42-L101)가 필터 체인 고정, AAC 44.1kHz 스테레오 출력, 중단 시 하위 프로세스 종료를 확인해요. 이 파일들은 `pnpm test`에 포함돼 있어요. 변경 범위에 맞는 명령 선택은 [변경 검증 경로](../testing/verification.md)를 보세요.
+FFmpeg 최종화 계약은 [tests/compress-mixing-result.test.ts](repo://tests/compress-mixing-result.test.ts#L42-L101)가 필터 체인 고정, AAC 44.1kHz 스테레오 출력, 중단 시 하위 프로세스 종료를 확인해요. 체험 화면이 티켓 버튼 대신 `로그인하고 AI 믹싱하기` 링크와 추천 경로가 담긴 저장 목적지를 보여 주는지는 [tests/guest-analysis-ui.test.tsx](repo://tests/guest-analysis-ui.test.tsx#L115-L135)가 `pnpm run test:guest-analysis`에서 확인해요([package.json](repo://package.json#L75-L75)).
+
+믹싱 화면 쪽은 `pnpm run test:mixing:ui`가 이력·상태 표시·상세 세 테스트 파일을 함께 돌려요([package.json](repo://package.json#L69-L69)). 그중 [tests/mixing-history-ui.test.tsx](repo://tests/mixing-history-ui.test.tsx#L14-L147)는 진행 중·완료 작업에 상세 링크를 붙이면서 재생 URL은 목록에 노출하지 않는지, `succeeded`이지만 결과 자산이 아직 `READY`가 아닌 작업을 `결과 확인 중`으로 보여 주는지, 실패 행이 상류 오류 문구를 드러내지 않는지, 빈 결과에서 `조건에 맞는 AI 믹스가 없어요`와 `모든 AI 믹스 보기`를 안내하는지 확인해요.
+
+이 파일들은 `pnpm test`에 포함돼 있어요. 변경 범위에 맞는 명령 선택은 [변경 검증 경로](../testing/verification.md)를 보세요.
 
 ## 다음에 볼 문서
 

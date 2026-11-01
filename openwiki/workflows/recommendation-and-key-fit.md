@@ -1,14 +1,17 @@
 ---
 type: explanation
 title: 추천과 키 적합도 계산
-description: 저장된 USER 보컬 프로필과 공개 카탈로그의 곡 분석값이 13개 키 이동 후보 채점, 가중 합산 순위, 추천 키와 이유 문구로 바뀌는 계산 계약을 설명해요. 추천 응답이 이후 AI 믹싱 요청의 스냅샷 근거가 되는 지점까지 다뤄요.
+description: 저장된 USER 보컬 프로필과 공개 카탈로그의 곡 분석값이 13개 키 이동 후보 채점, 가중 합산 순위, 추천 키와 이유 문구로 바뀌는 계산 계약을 설명해요. 체험 소유 프로필의 접근 조건과, 응답 값이 이후 AI 믹싱 요청의 스냅샷 근거가 되는 지점까지 다뤄요.
 tags: [recommendation, scoring, ranking, key-fit, explanation]
-verified:
-  - by: openwiki/0.5.2
-    at: 2026-09-18T16:47:52.081Z
 sources:
+  - id: openwiki-source-5b54a58d1b51cd490b0e7162
+    resource: repo://package.json
   - id: openwiki-source-a52697f001c320f396711a5c
     resource: repo://src/_app/api-routes/recommendations/recommendations-route.ts
+  - id: openwiki-source-37055abf050f6159b42c001a
+    resource: repo://src/entities/guest-analysis/api/lifecycle.ts
+  - id: openwiki-source-07cb359a0eaaf05133895441
+    resource: repo://src/entities/guest-analysis/api/trial.ts
   - id: openwiki-source-0d2d25b3bfb0d05fc0dafbf8
     resource: repo://src/entities/mixing-job/model/contract.ts
   - id: openwiki-source-20b87d8b8e4a8edca9f5149e
@@ -29,8 +32,14 @@ sources:
     resource: repo://src/entities/song-catalog/lib/readiness.ts
   - id: openwiki-source-9496b5c40a7586240008e9df
     resource: repo://src/entities/song-catalog/model/contract.ts
+  - id: openwiki-source-65250bb561efb32b9245b30d
+    resource: repo://src/entities/vocal-profile/model/contract.ts
+  - id: openwiki-source-033e8130910426b3729c16b5
+    resource: repo://src/features/authentication/api/analysis-actor.ts
   - id: openwiki-source-e666cd046fb06fe25b657e92
     resource: repo://src/features/create-mixing/api/mixing-queue.ts
+  - id: openwiki-source-2abfe99b0173f2c8c771a80b
+    resource: repo://src/features/create-mixing/model/contract.ts
   - id: openwiki-source-4ad5bcda7a4959929e165508
     resource: repo://src/features/create-recommendation/api/recommendation-service.ts
   - id: openwiki-source-792e12f25e1f0b5c9bdeab0c
@@ -41,12 +50,15 @@ sources:
     resource: repo://tests/recommendation-persistence.integration.ts
   - id: openwiki-source-8f26aeeca9968cee04abea58
     resource: repo://tests/recommendation-ranking.test.ts
-generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:47:52.081Z" }
+generated: { by: "openwiki/0.7.2", at: "2026-11-01T16:00:39.866Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-11-01T16:00:39.866Z
 ---
 
 # 추천과 키 적합도 계산
 
-추천 결과는 DB에 저장되지 않아요. 요청이 들어올 때마다 저장된 USER 보컬 프로필과 공개 카탈로그의 곡 분석값을 읽어, 곡마다 13개 키 이동 후보를 채점하고 점수·순위·추천 키·이유 문구를 그 자리에서 만들어요. 그래서 독자가 알아야 할 것은 "어떤 입력이 허용되고, 어떤 산식과 가중치로 순위가 정해지는가"예요. 핵심 구현은 [key-fit-scorer.ts](repo://src/entities/recommendation/lib/key-fit-scorer.ts#L135-L264)와 [ranking.ts](repo://src/entities/recommendation/lib/ranking.ts#L7-L85)에 있어요.
+추천 결과는 DB에 저장되지 않아요. 요청이 들어올 때마다 저장된 USER 보컬 프로필과 공개 카탈로그의 곡 분석값을 읽어, 곡마다 13개 키 이동 후보를 채점하고 점수·순위·추천 키·이유 문구를 그 자리에서 만들어요. 그래서 독자가 알아야 할 것은 "어떤 입력이 허용되고, 어떤 산식과 가중치로 순위가 정해지는가"예요. 핵심 구현은 [key-fit-scorer.ts](repo://src/entities/recommendation/lib/key-fit-scorer.ts#L135-L264)와 [ranking.ts](repo://src/entities/recommendation/lib/ranking.ts#L7-L85)에 있어요. 점수나 정렬 기준을 바꾸려면 마지막 절의 "함께 고칠 곳" 표에서 상수·스키마·테스트를 한 번에 확인하세요.
 
 ```mermaid
 flowchart TD
@@ -60,11 +72,19 @@ flowchart TD
 
 그림: 저장된 프로필과 공개 카탈로그 행이 추천 응답 항목이 되기까지의 계산 순서예요.
 
+## 체험 소유 프로필도 같은 계산으로 추천을 받아요
+
+추천 엔드포인트 두 개는 모두 게스트 입장을 허용해요. `POST /api/recommendations`와 `GET /api/recommendations/{id}`는 `withApiAdmission(..., { allowGuest: true })`로 열려 있고, 요청자 판정은 `getAnalysisResourceActor`가 맡아요. 회원 세션이 있으면 그 사용자 ID를, 없으면 체험 쿠키의 체험 사용자 ID를 돌려주고, 로그인한 방문자라도 같은 프로필의 미저장 체험 증명을 함께 보내면 체험 사용자로 판정해요. 그래서 체험 소유 프로필도 같은 계산으로 추천을 받아요([recommendations-route.ts](repo://src/_app/api-routes/recommendations/recommendations-route.ts#L29-L53), [recommendation-detail-route.ts](repo://src/_app/api-routes/recommendations/recommendation-detail-route.ts#L22-L38), [analysis-actor.ts](repo://src/features/authentication/api/analysis-actor.ts#L16-L26)).
+
+[getRecommendationResult](repo://src/features/create-recommendation/api/recommendation-service.ts#L85-L108)는 프로필을 `id`와 요청자 `userId`로 함께 조회하고, 행이 없으면 `RECOMMENDATION_NOT_FOUND` 404로 끝나요. 행이 있는데 그 소유자가 `isGuest`이면 `canReadGuestResource(소유자 ID, { profileId })`를 한 번 더 통과해야 하고, 실패하면 프로필 부재와 똑같이 `RECOMMENDATION_NOT_FOUND` 404로 숨겨요([trial.ts](repo://src/entities/guest-analysis/api/trial.ts#L45-L56)).
+
+이 검사는 체험 trial이 아직 읽을 수 있는 상태이고, 그 trial의 `job.vocalProfileId`가 요청한 프로필일 때만 참이에요. 그래서 trial이 만료됐거나 정리된 뒤에는 프로필 행이 남아 있어도 추천이 `RECOMMENDATION_NOT_FOUND` 404가 돼요. 반대로 결과를 회원 계정으로 저장(claim)하면 프로필 소유자가 그 회원으로 바뀌므로, 저장한 회원은 추천을 계속 받을 수 있고 체험 쿠키 쪽은 더 이상 그 프로필을 찾지 못해요([lifecycle.ts](repo://src/entities/guest-analysis/api/lifecycle.ts#L79-L110)). 체험 상태 전이와 만료 정리는 [비회원 체험 분석 흐름](guest-analysis-trial.md)이 소유해요.
+
 ## 입력 검증: 어떤 프로필이 점수를 만들 수 있어요
 
 추천은 두 층에서 입력을 검사해요. 서비스 계층은 저장된 행에서 점수 입력을 꺼낼 때, 채점 계층은 실제 계산 직전에 값을 다시 확인해요.
 
-[requiredProfile](repo://src/features/create-recommendation/api/recommendation-service.ts#L27-L68)이 먼저 거르는 규칙은 두 가지예요. `sourceType`이 `USER`인 프로필만 추천을 만들 수 있고, 누락되거나 무한한 수치가 하나라도 있으면 `INVALID_PROFILE` 422로 끝나요. 그 프로필의 수치를 어떤 분석기가 채우는지는 [보컬 프로필 분석 흐름](vocal-profile-analysis.md)이 설명해요.
+[requiredProfile](repo://src/features/create-recommendation/api/recommendation-service.ts#L28-L69)이 먼저 거르는 규칙은 두 가지예요. `sourceType`이 `USER`인 프로필만 추천을 만들 수 있고, 누락되거나 무한한 수치가 하나라도 있으면 `INVALID_PROFILE` 422로 끝나요. 그 프로필의 수치를 어떤 분석기가 채우는지는 [보컬 프로필 분석 흐름](vocal-profile-analysis.md)이 설명해요.
 
 | 검증 대상 | 규칙 |
 | --- | --- |
@@ -76,7 +96,7 @@ flowchart TD
 | 분석기 신원 | `analyzer`와 `analyzerVersion`이 비어 있지 않은 문자열이어야 해요 |
 | 분석기 계약 | 사용자 프로필과 곡 프로필의 `analyzer`·`analyzerVersion`이 서로 같아야 해요 |
 
-뒤의 다섯 규칙은 [validateKeyFitProfile](repo://src/entities/recommendation/lib/key-fit-scorer.ts#L47-L106)이 채점 직전에 확인해요. 곡 프로필의 유한성은 그 전에 [requiredCatalogProfile](repo://src/features/create-recommendation/lib/recommendation-data.ts#L17-L68)이 공개 카탈로그 행을 순회하며 확인해요.
+뒤의 다섯 규칙 중 네 개는 [validateKeyFitProfile](repo://src/entities/recommendation/lib/key-fit-scorer.ts#L47-L88)이 채점 직전에 확인하고, 분석기 계약 일치는 [validateCompatibleKeyFitProfiles](repo://src/entities/recommendation/lib/key-fit-scorer.ts#L90-L106)가 두 프로필을 각각 검증한 뒤 비교해요. 곡 프로필의 유한성은 그 전에 [requiredCatalogProfile](repo://src/features/create-recommendation/lib/recommendation-data.ts#L17-L68)이 공개 카탈로그 행을 순회하며 확인해요.
 
 오류 코드가 두 계층에서 다르게 나타나는 점을 구분하세요. 서비스 계층 위반은 `RecommendationError`의 `INVALID_PROFILE` 422로 응답에 실려요. 반면 채점 계층의 `INVALID_PROFILE`, `INCOMPATIBLE_ANALYZER`, `SONG_PROFILE_NOT_READY`는 [KeyFitScoringError](repo://src/entities/recommendation/model/key-fit-contract.ts#L74-L86)로 던져지고, 추천 라우트의 오류 처리기는 `RecommendationError`만 상태 코드로 매핑해요([recommendations-route.ts](repo://src/_app/api-routes/recommendations/recommendations-route.ts#L8-L27)). 그래서 이 오류들은 HTTP 응답에서 `RECOMMENDATION_CALCULATION_FAILED` 500(`retryable: true`)으로 바뀌어요.
 
@@ -112,7 +132,7 @@ flowchart TD
 
 `confidence`는 후보 점수에 들어가지 않아요. [calculateProfileConfidence](repo://src/entities/recommendation/lib/key-fit-scorer.ts#L129-L133)가 `0.6 * pitchStability + 0.4 * clamp((voicedRatio - 0.25) / 0.5, 0, 1)`로 사용자 프로필만 보고 계산하고, 후보의 점수 성분은 그대로 둬요. 같은 음역이라도 `voicedRatio`와 `pitchStability`가 낮으면 `confidence`만 내려가고 `rawScore`는 변하지 않아요([tests/key-fit-scoring.test.ts](repo://tests/key-fit-scoring.test.ts#L156-L171)).
 
-입력이 사용자 프로필뿐이므로 한 요청의 모든 곡이 같은 `confidence`를 가져요. 그래서 응답 전체의 `profileConfidence`는 첫 항목 값으로 정하고, 0.6 미만이면 `lowConfidence`가 `true`예요([recommendation-service.ts](repo://src/features/create-recommendation/api/recommendation-service.ts#L215-L224)). 추천 이유 쪽에서도 같은 값이 0.6 미만일 때 `LOW_PROFILE_CONFIDENCE`가 붙어요.
+입력이 사용자 프로필뿐이므로 한 요청의 모든 곡이 같은 `confidence`를 가져요. 그래서 응답 전체의 `profileConfidence`는 첫 항목 값으로 정하고, 0.6 미만이면 `lowConfidence`가 `true`예요([recommendation-service.ts](repo://src/features/create-recommendation/api/recommendation-service.ts#L225-L234)). 추천 이유 쪽에서도 같은 값이 0.6 미만일 때 `LOW_PROFILE_CONFIDENCE`가 붙어요.
 
 ## selectionScore 계약과 카탈로그 순위
 
@@ -144,6 +164,8 @@ flowchart TD
 원키 점수 50, 조정 키 점수 100, 추천 키 이동 0이면 `0.65 * 50 + 0.35 * 100 = 67.5`예요. 같은 점수 조합에 이동 4가 붙으면 패널티 12를 빼서 55.5가 돼요([tests/recommendation-ranking.test.ts](repo://tests/recommendation-ranking.test.ts#L79-L86)).
 
 ## 추천할 수 있는 곡은 공개 카탈로그 조건을 통과한 곡뿐이에요
+
+어느 카탈로그를 채점할지는 서비스가 정해요. [getRecommendationResult](repo://src/features/create-recommendation/api/recommendation-service.ts#L109-L121)는 `PUBLISHED` 카탈로그 중 `createdAt`이 가장 이른 행을 고르고, 그 `slug`로 항목을 조회해요. 해당 카탈로그가 없으면 `CATALOG_NOT_READY` 503(`retryable: true`)이에요. 카탈로그 선택과 항목 조회는 `RepeatableRead` 트랜잭션 안에서 일어나므로, 같은 응답의 `revision`과 항목 목록은 한 스냅샷에서 나와요.
 
 [loadPublishedCatalog](repo://src/entities/song-catalog/api/published-catalog.ts#L6-L21)가 조회 단계에서 `PUBLISHED` 항목, `PUBLISHED` 카탈로그, `ACTIVE` 곡, `READY` active source, `READY`이면서 `cleanupConfirmed`인 현재 분석, `READY` 타깃 자산을 모두 요구하고 `position` 오름차순으로 돌려줘요. 조회를 통과한 행도 [buildRankedDatabaseRecommendations](repo://src/features/create-recommendation/lib/recommendation-data.ts#L70-L97)가 포인터 일치(`activeSourceId`, `currentAnalysisId`, `targetAssetId`와 `sourceId` 연결), 지표 유한성, 분석기 신원을 다시 확인해요. 하나라도 어긋나면 `CATALOG_NOT_READY` 503(`retryable: true`)이에요([recommendation-data.ts](repo://src/features/create-recommendation/lib/recommendation-data.ts#L17-L68)).
 
@@ -197,7 +219,7 @@ flowchart TD
 
 ## 응답이 되는 순간: 어떤 값이 이후 믹싱 검증 기준이 돼요
 
-[getRecommendationResult](repo://src/features/create-recommendation/api/recommendation-service.ts#L84-L237)는 순위 결과를 항목 목록으로 투영해요. 항목은 곡 단위 값과 응답 전체 값으로 나뉘어요.
+[getRecommendationResult](repo://src/features/create-recommendation/api/recommendation-service.ts#L162-L247)는 순위 결과를 항목 목록으로 투영해요. 항목은 곡 단위 값과 응답 전체 값으로 나뉘어요.
 
 | 항목 값 | 담기는 내용 |
 | --- | --- |
@@ -207,10 +229,13 @@ flowchart TD
 | `adjustedScore` | 가장 좋은 후보의 점수예요 |
 | `recommendedShift` | 추천 키 이동 반음 수예요 |
 | `reasonCodes`·`reasons` | 같은 순서로 짝지어진 이유 코드와 문구예요 |
+| `metrics.confidence`·`metrics.selectionScore` | 사용자 프로필 신뢰도와 선택 점수를 항목 안에 다시 담은 값이에요 |
 | `metrics.original`·`metrics.recommended` | 원키와 추천 키의 상세 분해예요 |
-| `catalogOrder` | 공개 카탈로그의 `position`이에요 |
+| `catalogOrder` | 공개 카탈로그의 `position`이에요. 정렬된 항목의 `position`을 다시 찾지 못하면 `CATALOG_NOT_READY` 503으로 끝나요 |
 | `targetAssetId` | 믹싱 대상 자산의 ID예요 |
 | `songAnalysisId` | 현재 분석의 ID이며 항목 `id`이기도 해요 |
+| `songProfile` | 곡 분석에서 다섯 음역 값만 투영한 값이고, 값이 없거나 순서가 어긋나면 `null`이에요 |
+| `synthesis` | 최신 믹싱 작업을 축약한 상태 블록이에요 |
 
 | 응답 값 | 담기는 내용 |
 | --- | --- |
@@ -221,33 +246,54 @@ flowchart TD
 | `profileConfidence` | 첫 항목의 `metrics.confidence`예요 |
 | `lowConfidence` | `profileConfidence`가 0.6 미만인지 여부예요 |
 
-여기서 만들어진 값이 다음 요청의 검증 기준이 돼요. 믹싱 접수는 `catalogId`로 공개 항목을 찾고, `catalogRevision`, `position`, `targetAssetId`, 분석의 `sourceId` 연결을 다시 대조해요. 어긋나면 `MIXING_RECOMMENDATION_STALE` 409(`retryable: true`)로 거절하고, 통과하면 `catalogPosition`, `catalogRevision`, `scoringVersion`, `recommendedShift`를 `MixingJob` 행에 복사해요([mixing-queue.ts](repo://src/features/create-mixing/api/mixing-queue.ts#L81-L133)). 그래야 접수 뒤에 카탈로그가 개정돼도 진행 중인 작업의 키 이동값이 흔들리지 않아요. 이 흐름 전체는 [AI 믹싱 작업 흐름](ai-mixing.md)이, 스냅샷 컬럼의 제약은 [데이터 모델과 수명 주기 상태](../architecture/data-model.md)가 설명해요.
+`scoringVersion`은 별도 상수를 다시 읽지 않고 채점 결과의 첫 항목에서 가져와요. 순위 결과가 비었거나 버전이 없으면 `CATALOG_NOT_READY` 503으로 끝나요. 그래서 `key-fit-v3` 문자열을 새 버전으로 올리면 채점 결과와 브라우저 캐시 키가 한 번에 갈라져요.
 
-추천 자체는 저장되지 않으므로 같은 입력이면 매번 같은 결과를 다시 계산해요. 같은 프로필로 두 번 호출하면 항목 목록이 완전히 같고, 카탈로그 `revision`을 올리면 `catalogRevision`만 바뀌어요([tests/recommendation-persistence.integration.ts](repo://tests/recommendation-persistence.integration.ts#L62-L90)). 브라우저 캐시 키에도 `catalogRevision`과 `scoringVersion`이 들어가서, 둘 중 하나가 바뀌면 새 계산 결과를 받아요([client.ts](repo://src/entities/recommendation/api/client.ts#L7-L13)).
+응답에는 요청자별 믹싱 가능 여부가 `profile.mixing`으로 함께 담겨요. 서비스는 스마트 합성 레퍼런스와 원본 녹음 자산의 소유자·`kind`·`status`를 보고 [mixingReferenceCapability](repo://src/entities/vocal-profile/model/contract.ts#L204-L215)로 `available`과 `unavailableReason`을 정해요([recommendation-service.ts](repo://src/features/create-recommendation/api/recommendation-service.ts#L145-L160)). 이 값은 순위 계산에 들어가지 않고, 레퍼런스 선택 규칙 자체는 [AI 믹싱 작업 흐름](ai-mixing.md)이 소유해요.
 
-## 화면용 상태 축약과 mixing job API 상태
+여기서 만들어진 값이 다음 요청의 검증 기준이 돼요. 믹싱 접수 본문에는 `vocalProfileId`, `songAnalysisId`, `idempotencyKey`만 실리고, 서버는 [getRecommendationItem](repo://src/features/create-recommendation/api/recommendation-service.ts#L249-L256)으로 추천을 그 자리에서 다시 계산해요. 그 결과로 `catalogId`에 해당하는 공개 항목을 찾아 `catalogRevision`, `position`, `targetAssetId`, 분석의 `sourceId` 연결을 대조해요. 어긋나면 `MIXING_RECOMMENDATION_STALE` 409(`retryable: true`)로 거절하고, 통과하면 `catalogPosition`, `catalogRevision`, `scoringVersion`, `recommendedShift`를 `MixingJob` 행에 복사해요([mixing-queue.ts](repo://src/features/create-mixing/api/mixing-queue.ts#L37-L133)). 그래야 접수 뒤에 카탈로그가 개정돼도 진행 중인 작업의 키 이동값이 흔들리지 않아요. 이 흐름 전체는 [AI 믹싱 작업 흐름](ai-mixing.md)이, 스냅샷 컬럼의 제약은 [데이터 모델과 수명 주기 상태](../architecture/data-model.md)가 설명해요.
 
-응답 항목의 `synthesis.status`는 `MixingJob` DB 상태를 축약한 값이에요. 같은 DB 상태를 믹싱 job API는 더 자세한 소문자 상태로 직렬화하므로 두 표면의 값이 같지 않아요. 작업이 아예 없으면 추천 응답은 `not_started`예요.
+추천 자체는 저장되지 않으므로 같은 입력이면 매번 같은 결과를 다시 계산해요. 같은 프로필로 두 번 호출하면 항목 목록이 완전히 같고, 카탈로그 `revision`을 올리면 `catalogRevision`만 바뀌어요([tests/recommendation-persistence.integration.ts](repo://tests/recommendation-persistence.integration.ts#L62-L90)). 브라우저 캐시 키에도 `catalogRevision`과 `scoringVersion`이 들어가서, 둘 중 하나가 바뀌면 새 계산 결과를 받아요([client.ts](repo://src/entities/recommendation/api/client.ts#L7-L13)). 캐시 키 조합과 무효화 규칙은 [브라우저 상태와 API 오류 계약](../architecture/client-data-flow.md)이 정리해요.
 
-| DB 상태 | 추천 응답 `synthesis.status` | mixing job API `status` |
-| --- | --- | --- |
-| 작업 없음 | `not_started` | 해당 없음 |
-| `PENDING` | `preparing` | `pending` |
-| `PREPARING` | `preparing` | `preparing` |
-| `SUBMITTED` | `queued` | `submitted` |
-| `PROCESSING` | `processing` | `processing` |
-| `SUCCEEDED` | `succeeded` | `succeeded` |
-| `FAILED` | `failed` | `failed` |
-| `CANCELED` | `failed` | `canceled` |
+## 믹싱이 진행 중이면 화면이 5초마다 다시 조회해요
 
-축약 규칙은 [publicMixingStatus](repo://src/features/create-recommendation/api/recommendation-service.ts#L70-L82)에 있고, 응답 스키마는 `not_started`에 5개 상태를 더한 목록이에요([recommendation/model/contract.ts](repo://src/entities/recommendation/model/contract.ts#L5-L27)). 믹싱 job API 쪽은 7개 상태를 정의하고 DB 값을 `toLowerCase()`로 직렬화해요([mixing-job/model/contract.ts](repo://src/entities/mixing-job/model/contract.ts#L4-L20), [contract.ts](repo://src/entities/mixing-job/model/contract.ts#L125-L146)). 추천 응답에서는 `CANCELED`가 `failed`로 접히므로 취소와 실패를 구분할 수 없어요. 그 대신 프런트는 `preparing`, `queued`, `processing`이 하나라도 있으면 5초 간격으로 추천을 다시 조회해요([client.ts](repo://src/entities/recommendation/api/client.ts#L5-L21)).
+응답 항목의 `synthesis.status`는 그 곡의 최신 `MixingJob` DB 상태를 축약한 값이에요. 같은 DB 상태를 다른 표면에서 어떤 값으로 노출하는지는 [AI 믹싱 작업 흐름](ai-mixing.md)이 소유하고, 추천 응답 쪽 대응은 아래와 같아요.
+
+| DB 상태 | 추천 응답 `synthesis.status` |
+| --- | --- |
+| 작업 없음 | `not_started` |
+| `PENDING` | `preparing` |
+| `PREPARING` | `preparing` |
+| `SUBMITTED` | `queued` |
+| `PROCESSING` | `processing` |
+| `SUCCEEDED` | `succeeded` |
+| `FAILED` | `failed` |
+| `CANCELED` | `failed` |
+
+`CANCELED`가 `failed`로 접히므로 추천 응답만으로는 취소와 실패를 구분할 수 없어요. 축약 규칙은 [publicMixingStatus](repo://src/features/create-recommendation/api/recommendation-service.ts#L71-L83)에 있고, 응답 스키마는 `not_started`에 5개 상태를 더한 목록이에요([recommendation/model/contract.ts](repo://src/entities/recommendation/model/contract.ts#L5-L27)).
+
+이 축약값이 화면의 폴링 조건이에요. `preparing`, `queued`, `processing` 중 하나라도 있는 항목이 있으면 5초 간격으로 추천을 다시 조회하고, 모두 종료 상태가 되면 폴링을 멈춰요([client.ts](repo://src/entities/recommendation/api/client.ts#L5-L21)). 폴링 주기 상수는 `RECOMMENDATION_POLL_INTERVAL_MS = 5_000`이에요.
 
 ## 이 계산을 검증하는 테스트
 
-계산 계약을 바꿀 때는 아래 변경 범위 테스트로 결과를 확인하세요. 실행 명령과 전체 테스트 계층은 [변경 검증 경로](../testing/verification.md)에 있어요.
+계산 계약을 바꿀 때는 먼저 바꾸려는 값이 어느 상수·함수에 있는지 확인하고, 같은 계약을 읽는 응답 스키마와 테스트를 함께 고치세요. 실행 명령과 전체 테스트 계층은 [변경 검증 경로](../testing/verification.md)에 있어요.
+
+| 바꾸려는 것 | 함께 고칠 곳 |
+| --- | --- |
+| 후보 점수 성분이나 12반음 포화 | `SCORE_WEIGHTS`·`EXCESS_PENALTY_CAP_SEMITONES`와 `scoreKeyFitCandidate`([key-fit-scorer.ts](repo://src/entities/recommendation/lib/key-fit-scorer.ts#L12-L19), [key-fit-scorer.ts](repo://src/entities/recommendation/lib/key-fit-scorer.ts#L135-L190)) |
+| 추천 키 선택 순서 | `compareCandidates`([key-fit-scorer.ts](repo://src/entities/recommendation/lib/key-fit-scorer.ts#L192-L208)) |
+| 선택 점수 가중치·패널티 | `ORIGINAL_KEY_SELECTION_WEIGHT`·`KEY_SHIFT_SELECTION_PENALTIES`([ranking.ts](repo://src/entities/recommendation/lib/ranking.ts#L7-L32)) |
+| 카탈로그 정렬 기준 | `compareRecommendations`와 `rankRecommendations`([ranking.ts](repo://src/entities/recommendation/lib/ranking.ts#L34-L85)) |
+| 이유 코드 조건이나 문구 | `buildReasonCodes`·`formatReason`과 `HIDDEN_RECOMMENDATION_REASON_CODES`([key-fit-scorer.ts](repo://src/entities/recommendation/lib/key-fit-scorer.ts#L210-L237), [ranking.ts](repo://src/entities/recommendation/lib/ranking.ts#L93-L132), [presentation.ts](repo://src/entities/recommendation/lib/presentation.ts#L15-L21)) |
+| 응답 필드 구성 | `recommendationItemResponseSchema`·`recommendationRunResponseSchema`와 서비스의 투영 코드([contract.ts](repo://src/entities/recommendation/model/contract.ts#L101-L146), [recommendation-service.ts](repo://src/features/create-recommendation/api/recommendation-service.ts#L162-L247)) |
+| 점수 계약 버전 | `KEY_FIT_SCORING_VERSION`([key-fit-contract.ts](repo://src/entities/recommendation/model/key-fit-contract.ts#L3-L3)). 값을 올리면 응답과 브라우저 캐시 키가 함께 갈라져요 |
+
+점수 계산만 바꿨다면 `pnpm run test:key-fit`으로 확인하세요. 정렬·이유·응답 스키마까지 건드렸다면 `pnpm run test:recommendation`이 `tests/recommendation-ranking.test.ts`와 표시·합성 상태·화면 테스트를 함께 돌려요. 저장소를 실제로 호출하는 변화는 `pnpm run test:recommendation:db`로 확인하고, 이 명령은 `DATABASE_URL`이 없으면 스스로 건너뛰어요([package.json](repo://package.json#L47-L62), [recommendation-persistence.integration.ts](repo://tests/recommendation-persistence.integration.ts#L8-L12)).
+
+응답 스키마를 넓히는 변경은 [tests/api-contracts.test.ts](repo://tests/api-contracts.test.ts#L227-L251)와 [tests/api-contracts.test.ts](repo://tests/api-contracts.test.ts#L278-L384)도 함께 확인하세요. 앞 구간은 `profile.mixing`이 응답 스키마를 통과하는지, 뒤 구간은 `originalKey`와 `songProfile`이 없는 기존 payload·추가된 payload·정렬이 어긋난 payload를 각각 어떻게 받아들이는지 검사해요.
 
 - [tests/key-fit-scoring.test.ts](repo://tests/key-fit-scoring.test.ts#L103-L171): 대칭 겹침, 부담이 점수를 올리지 않는 성질, `confidence`가 점수를 바꾸지 않는 성질을 확인해요.
 - [tests/key-fit-scoring.test.ts](repo://tests/key-fit-scoring.test.ts#L251-L289): 합성 카탈로그 100곡을 100ms 이내에 결정적으로 채점하고, 준비 안 된 곡을 `SONG_PROFILE_NOT_READY`로 거부해요.
 - [tests/recommendation-ranking.test.ts](repo://tests/recommendation-ranking.test.ts#L53-L86): 다섯 단계 tie-break, 패널티 적용, 지원 범위를 벗어난 이동의 `CATALOG_NOT_READY`를 확인해요.
 - [tests/recommendation-ranking.test.ts](repo://tests/recommendation-ranking.test.ts#L146-L251): 빈 입력·중복 `catalogOrder`, active 개정 불일치를 순위 생성 전에 거부해요.
-- [tests/recommendation-presentation.test.ts](repo://tests/recommendation-presentation.test.ts#L143-L163): 노출되는 이유 코드와 점수 상한·하한을 확인해요.
+- [tests/recommendation-presentation.test.ts](repo://tests/recommendation-presentation.test.ts#L114-L163): 화면에 쓰는 점수의 상한·하한과, 노출되는 이유 코드만 남기는 필터를 확인해요.
+- [tests/recommendation-persistence.integration.ts](repo://tests/recommendation-persistence.integration.ts#L62-L90): 두 번 호출의 항목 동일성과 `revision`만 올렸을 때의 `catalogRevision` 변화를 확인해요.

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:55888a87f061fcd330e16c05207aa1b98b3d02f1a5cebac2ffb86636b36e5b49",
+  "pageVersion": "sha256:eed3e65cdc52dfeca1bda2f8d633b169e19f1b8268ff8084f30e407dd3f1cf44",
   "claims": [
     {
       "id": "claim_97ab65368ae846a78531f499840fde13",
@@ -79,12 +79,12 @@
       "statement": "story 검사는 `vitest.config.ts`의 `storybook` project가 `@vitest/browser-playwright` provider와 headless `chromium` instance로 실행하고, plugin `storybookTest({ configDir: \".storybook\" })`으로 `.storybook` 설정을 읽어요. 명령은 `pnpm run test:storybook --run`이고 `pnpm run storybook`은 6006 포트에서 직접 확인할 때 써요.",
       "evidence": [
         {
-          "resource": "repo://package.json#L12-L13",
-          "version": "repo-lines-v1:sha256:aa9d59ea815fb8c2c20cb0703b7bb16b30297c249391d8a5fe223542df320cc5:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTBiMzM4OGYzYjQwYzkzNTkwZmQwNmRlOTJlNzcyMTEyODUxOTgwYjQ5OGU2ZGRjMDM0NTJhN2FiYjljOTFjNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2FhZDY3YTU2NmU5ODE1MmEzNDlkNjJlNzZlY2NjYjE5Nzk2NzQwNGUzZmVlYTY3ZjlkY2M2ZjAyNDA2MmNiMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzA0MzYyNWQ5YTcwMjc2Y2ZkOTc2ZmIyMWJjODMxMGVlYTIyYzYyOTE2MmE4Y2ZmYmZlNTM0Yjc5NmE1ZDM3OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDc5MTNiMWJiNGJiYWQ3ZGI3NDZlNzIwNDdiODM4YWI1MWU0MjM3ODc3MTBkNWJjYjZlYWQxYTBhY2ZlNTNjYSJ9"
+          "resource": "repo://package.json#L12-L12",
+          "version": "repo-lines-v1:sha256:90b3388f3b40c93590fd06de92e772112851980b498e6ddc03452a7abb9c91c4:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTBiMzM4OGYzYjQwYzkzNTkwZmQwNmRlOTJlNzcyMTEyODUxOTgwYjQ5OGU2ZGRjMDM0NTJhN2FiYjljOTFjNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTBiMzM4OGYzYjQwYzkzNTkwZmQwNmRlOTJlNzcyMTEyODUxOTgwYjQ5OGU2ZGRjMDM0NTJhN2FiYjljOTFjNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzA0MzYyNWQ5YTcwMjc2Y2ZkOTc2ZmIyMWJjODMxMGVlYTIyYzYyOTE2MmE4Y2ZmYmZlNTM0Yjc5NmE1ZDM3OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzdiMjU5ZTk4YjU0Yjg5OThmMjIxZmEwY2U1N2FhZjEwNDNhMWQxMmE3MDYzZTY2ODlhZDkwMTdkMDgyZTQ4MiJ9"
         },
         {
-          "resource": "repo://package.json#L59-L59",
-          "version": "repo-lines-v1:sha256:a4375313de4803d2a53f7091044cfe856b64cb55e46d3cab1e4f8bb1b0bc0cd8:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTQzNzUzMTNkZTQ4MDNkMmE1M2Y3MDkxMDQ0Y2ZlODU2YjY0Y2I1NWU0NmQzY2FiMWU0ZjhiYjFiMGJjMGNkOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTQzNzUzMTNkZTQ4MDNkMmE1M2Y3MDkxMDQ0Y2ZlODU2YjY0Y2I1NWU0NmQzY2FiMWU0ZjhiYjFiMGJjMGNkOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGFmNTZiN2Y3MTVlOTA4Mjk4YTE5OThlYWIwYWJmYjljODFiYmM3ODY5MTNlYTRkZmUyNzY2YjkzYzdkNzA3NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2I2ZDNhOWZhZDY3Yzk2MjNjN2VjYmZhYTIwMWI0YzFkNmFmNjgyNjJlMmJkYmEwMjA5ZGFmMzhjMDkyNTk4YiJ9"
+          "resource": "repo://package.json#L60-L60",
+          "version": "repo-lines-v1:sha256:a4375313de4803d2a53f7091044cfe856b64cb55e46d3cab1e4f8bb1b0bc0cd8:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTQzNzUzMTNkZTQ4MDNkMmE1M2Y3MDkxMDQ0Y2ZlODU2YjY0Y2I1NWU0NmQzY2FiMWU0ZjhiYjFiMGJjMGNkOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTQzNzUzMTNkZTQ4MDNkMmE1M2Y3MDkxMDQ0Y2ZlODU2YjY0Y2I1NWU0NmQzY2FiMWU0ZjhiYjFiMGJjMGNkOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjNlMDcxZmNhZDJiY2Y1OTMyZDdlNmY4OWY2YTEzNzIyNjY3NzIzMmI3ZjE1OWEzYTU2NzA4YjQyMDgyYTFiNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2I2ZDNhOWZhZDY3Yzk2MjNjN2VjYmZhYTIwMWI0YzFkNmFmNjgyNjJlMmJkYmEwMjA5ZGFmMzhjMDkyNTk4YiJ9"
         },
         {
           "resource": "repo://vitest.config.ts#L38-L54",
@@ -131,7 +131,7 @@
           "version": "repo-lines-v1:sha256:738b3edbc5c8bc45f3a6eefb0222cc0221829a860f4780e08b65a6211cad646b:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzM4YjNlZGJjNWM4YmM0NWYzYTZlZWZiMDIyMmNjMDIyMTgyOWE4NjBmNDc4MGUwOGI2NWE2MjExY2FkNjQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzM4YjNlZGJjNWM4YmM0NWYzYTZlZWZiMDIyMmNjMDIyMTgyOWE4NjBmNDc4MGUwOGI2NWE2MjExY2FkNjQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjkzZmZiYjNhNWMxYTgxY2VkNThjYTIxZWFlYmZjODNiNGI5YmVkMDg3YzI0YzIyMTQzOTM4YTNkZmJiZGQ4ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzEyNzQ4OGM5YmNmZDM0Yjk2MGNlZTVmYThkMjI2NzA3MjZjNWEyN2FjZTAyNWI4MWQ4ZTM4MjQzNzNhMTdlMSJ9"
         },
         {
-          "resource": "repo://package.json#L142-L146",
+          "resource": "repo://package.json#L144-L148",
           "version": "repo-lines-v1:sha256:cd0722fdd4c600981ae2f9cfe9c682fc256424690fe879ad0d7a0ed3cfa48344:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODNhZDU5MWY3OTEyNjgyN2ExODJhYjgzOTE5MDM4NGY0MTVkOWRmODYxMmVjOTMxYmE1ZjljNWE2NzM4MDFkNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWZmZjEzZjgxY2IyODJlN2ZkNGU0MzhiNDcxYTEzM2MxOThhMjZhZDEzOTA4YmRkYmNjNTMyODE4NWMyMzllNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
         },
         {
@@ -171,8 +171,16 @@
           "version": "repo-lines-v1:sha256:7aa645491ec9006798c8708d0420955207f7eb28e5bfa1af3cf3b167899c20e4:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2FhNjQ1NDkxZWM5MDA2Nzk4Yzg3MDhkMDQyMDk1NTIwN2Y3ZWIyOGU1YmZhMWFmM2NmM2IxNjc4OTljMjBlNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2FhNjQ1NDkxZWM5MDA2Nzk4Yzg3MDhkMDQyMDk1NTIwN2Y3ZWIyOGU1YmZhMWFmM2NmM2IxNjc4OTljMjBlNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTYwYjA0MmIxYWY1YjU5OWJkMjdhM2RhNGQ3YTk2M2QwOTM1ZWU0ZTdhNTRiZmIwOGE4YmM1MmY4MjYwNTU5NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGFmNTZiN2Y3MTVlOTA4Mjk4YTE5OThlYWIwYWJmYjljODFiYmM3ODY5MTNlYTRkZmUyNzY2YjkzYzdkNzA3NCJ9"
         },
         {
-          "resource": "repo://src/_pages/admin/ui/admin-page.tsx#L110-L128",
-          "version": "repo-lines-v1:sha256:abfb42421cf91219f9d1ae76a537af4c4b7ce9ab36644d23355196922558ef6a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxNWZmZWUzMDE0NjQ3MmEyY2ViNDIzMjg1MDkwZjdmY2Q0YzlmYjZiOGRhZWRhNGU5MTdiZTdkMTg4MjUxM2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjNGJhM2EzZjQ4ODQxOTM2NmU4NDBiMTQ2ODJhMjQzYWI5MzNiNjg0NGMxYjBlY2UzM2QxYzg4NmMzNTFmOTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA2MTQxMzA5Zjg0YjI1M2FlNzE1MWQ0ZTYxYzNhMDg1MmI1ODdmMDUxNzE0ZjEyMTdlMjQwNThmZTc2ZTBhN2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY0NWE1Y2FjNDg2OGMyOGUzNjk2MjhjNzBlMjQ0YmNkOTA5YWI1YzZlYTliNDk5YzFkMWVkOTUwZTRhMGJlOTEifQ"
+          "resource": "repo://src/_pages/profile/ui/save-trial.tsx#L64-L66",
+          "version": "repo-lines-v1:sha256:e32e01876d20df2e8c3020488836b20a18a6ea8aabf4d0676ee4088af10b09fa:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWI2NWU0YWJkNTExNjljY2VlYTI5MmQyNTViMzFiYjI5MWM5MzFmZDQwM2UzNjc0ZDg5ZTQ0ZGQxOGQwYmQ2MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTY4NmY3NGMxOWU5OGUwNTRkODZkNjA3MGFhMWY2ODBlOTNkMWI2MTM0MzUxNGU4MWE5NTg2ZTBjMjE2MWUzYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmZjMzIzNDJmYTYzZGRlOTAxMGMyMmNmNjViNGYxMjkyZDNkN2U1MWZhYjlhYTRmMWU4MDNmOTk4NWIwMThkZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmNiZjFjYzczMzdlNzg4ZmFjNWMwYjk1NjZjMTVjOWNhOWZlY2MwYmU2NzM0OGQ0NDEwZjgwYWY3ODk3NDU0YiJ9"
+        },
+        {
+          "resource": "repo://src/features/authentication/ui/user-menu.tsx#L123-L130",
+          "version": "repo-lines-v1:sha256:85fbd34117326152e3278b8ec04c89576b48523042779458e547a7aee47b7342:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTU0NzFkMDZiODE3ZjVlMzk1YTczMTYxZTk1YzZkZmVhZWNmMDZkZDFmNTZkNTgyZWU0NzM0ZWRhODc2ZGMzYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2ZjNGVlMDU2NGY5NGM0NjM3MTc4OGRkNTEwOTliYzZlMThjZDRhYTVkZmJhMDZjNWRhMTE0YmIzMmY5ODQ1ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWIzYjhkMDQ0MDg4MjY4OGNlNjI3NDZmMmEzOWZhYTA1OTQwZWZmMWNlNWUwYTRkZTBlZTY1NzUzMGY0NzZkZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDg3MGYzZGZlZmM4NzJhOWU3NTE3YmIyOGZkZDU5MmUzOTVkNDk3MmU0ZDYzOTkxZWMwZGZjMWNkODZjNjU0ZiJ9"
+        },
+        {
+          "resource": "repo://src/widgets/library/ui/library-tabs.tsx#L11-L26",
+          "version": "repo-lines-v1:sha256:0850abf04b13d0f812b957763f02ad7d9555c1c4b18307e87453c5bdef1c75f1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1ZGRjMjE2YzU3ZjRkZjRmZTA3NmY2NjM0ZmI4YTFkZjhkYzBkMmM1MzYyOTY4MmVhMWMzYzc5MzBlZTQ0NjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5ZjZiZTVhMzE1OGU0YjY0OGU2MGVjZjIzNDgxYTVlMmExNGE3ZDBlZTU0M2FlNjgxNTc0NjRkODNjMmFhNDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA0NDY0NGYxMzdjOGIzYjMxODczOTRiMGU5NjFjMmEzNTU4NTExNzUyNGU0ZGEyMTAxNzFjM2ViOGQ0ZWJmZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJhNmU3OWQwNGYxZmE3OTZkNDgyNzhiMzRmODAxOTY5ZWFjMDdkZjllMmY0ZWI3MGMxNWJhMzVmYzg5NGExOGQifQ"
         },
         {
           "resource": "repo://tests/base-ui-link-button.test.ts#L41-L68",
@@ -210,19 +218,19 @@
     },
     {
       "id": "claim_3c58cc7d22354b6a9039aa225226a7eb",
-      "statement": "`src/shared/ui/voice-orb/voice-orb.tsx`의 GLSL 셰이더와 premultiplied alpha 렌더링 세부는 `tests/voice-orb-shader.test.ts`가 소스 문자열 검사로 고정하지만, 이 파일은 `package.json`의 어떤 script에도 묶여 있지 않아서 `pnpm test`나 다른 검사 명령이 대신 실행해 주지 않아요.",
+      "statement": "`src/shared/ui/voice-orb/voice-orb.tsx`의 `smoothMax3` 셰이더 함수, `premultipliedAlpha: true` 렌더러 설정과 premultiplied 출력, 폴백 CSS 그라디언트는 `tests/voice-orb-shader.test.ts`가 소스 문자열 정규식으로 고정하지만, 이 파일은 `package.json`의 어떤 script에도 묶여 있지 않아서 `pnpm test`나 다른 검사 명령이 대신 실행해 주지 않아요.",
       "evidence": [
         {
-          "resource": "repo://package.json#L23-L23",
-          "version": "repo-lines-v1:sha256:efa74bba998a388fc9e8f38633ae8cbf9238b3e5ae3455221884364b19e7ed72:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWZhNzRiYmE5OThhMzg4ZmM5ZThmMzg2MzNhZThjYmY5MjM4YjNlNWFlMzQ1NTIyMTg4NDM2NGIxOWU3ZWQ3MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWZhNzRiYmE5OThhMzg4ZmM5ZThmMzg2MzNhZThjYmY5MjM4YjNlNWFlMzQ1NTIyMTg4NDM2NGIxOWU3ZWQ3MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjAzYTNjZTVlM2YwN2M3ZTg1NDZkNDYxMTY3ZTEwYjk2ZDVhYzUwOWQ1ZDdkNmZjZTc4OWJjNDI1MWI4ZmMxNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWM1MDM1MmQ5YjhmNGY3OGE2OTI3NzgxOWU0NDIzMTcwNTcyNTE0YTUzNmIzZjI0YTY3OGJkYTk0ODM5MDZmNCJ9"
+          "resource": "repo://package.json#L9-L76",
+          "version": "repo-lines-v1:sha256:c861917c86df54704c7fcd161375c52e31172874a21349e55609db1e07555e8d:eyJzZWxlY3RlZExpbmVDb3VudCI6NjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0ODMzZDU5NDljMDNhNDBjYTk1MjQ5MTYxMGE2NjU5NjQ0YjNhYTQ2NjM2MmY3OTkwMjBkYmYxOTgxNTQ3ZGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyNzAxMTI4NzM1MDNhMDc0OGU1ZWY0MGViOWZlZTUyYTZjNmRiNTdhNzMzMTI1ZjQ5NDhkMThmNGNjMTdiNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZjYzU4YzQwMmIzMDI3MDY5MWJjNDJmZjlhN2I1OTNhZTFlMTNjMzIzNWMxYTYyMDcxOTZjZTgzNjBjZWY5MTAifQ"
         },
         {
-          "resource": "repo://src/shared/ui/voice-orb/voice-orb.tsx#L41-L45",
-          "version": "repo-lines-v1:sha256:314f92faab576fd92e08ed171ef892817df5b9bfdfdb1790a5301dea33b37f13:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGM3MjI3YjJkYTMxZTc2Y2RkZmYxNzhjMjZmYWU2ZDNiZmMwODFlMDQwZmI3OWRkZDc2OGExNmE4YzQ0YjRhYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmI0NDhhNmZjZWY5NjM2NDM5YzI0NTUwZTMxNmUwZDE4NWQ5YTk5NDZiOWFlZWVmNTk2ZTlkMzFkNTBkN2ExZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGQ2MDVhZDc0MjExNWE2MzdmODU3NTBiZTZmM2U5MDExOTU3YmQwZjYyMGNiNDIxYjNkYWI0NGZjYmE1ZWFmMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmYyYjQ0YzgyZmJjODhjMzAyYmRlNDhmMmRkODE0Zjg4NTA2ZWM4MWQ2NTMyNTljY2I1ZmNkNWY5YzliNTk3ZiJ9"
+          "resource": "repo://src/shared/ui/voice-orb/voice-orb.tsx#L191-L195",
+          "version": "repo-lines-v1:sha256:8516bb20e2d23197434d623c0c748f8362aca004f02cfe258caa1a3d0db6aa88:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWRhODc1MzJjMTE5MTg1ZGIxMTEyYTQ3ZTg0ZWU2ZjBmNWZmMzA0ZjEzNjlhYmZjNjJkYmE4ODcyYzU5OWUwNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWEzN2UzYzA5NDFkMTU3N2MwMzk4ZTNiNjc4NGVmM2IzZjAxMjg4YmNkZWM5YTRiYmExYWJmYWE3NDBhYjZmNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGY3NzNjYmJlNzNmNzFlNDkyMmEzZjg0Mjk0NjFjMDMyOWY0MjNkY2NjNTI4YjkxY2YzY2U0NzFmMWIzMjcyZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDI1NTFhOTAxZDlhYjAxZjE2NmRhODBlNjAxZjZmZDBhYzllZWY1MjBjZDY2MDFlMjEyNGZlZDI4Y2ZhNDMwMSJ9"
         },
         {
-          "resource": "repo://tests/voice-orb-shader.test.ts#L1-L45",
-          "version": "repo-lines-v1:sha256:ed3e548f4aeaecebcfc4b2c9412fa4c0cba16a87f02718cf3d9191f72810acf0:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2YzdjY2UwYTcwYjM0ZWZhM2FlMzgwZWExMjA2ZTRmZjAwMzNmZjJmNzZlN2M2ZGZlNGNlM2Y3ZGNkMDg2MjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMxN2YzZGViMjQxZWVhMjRmYzQ2MWQ2NWI3M2I5MjRiNzUxMjk3ZDA2NzkzZDgxNDBmODlhMTgzNmIyMTE1MDkifQ"
+          "resource": "repo://tests/voice-orb-shader.test.ts#L16-L68",
+          "version": "repo-lines-v1:sha256:862b4d23c108fe4bd721210f1cb68a34b547627ee1ebb5c81c0531cb592742ff:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxYTZiMWI2YjNkZTc5MzI2MGRhNDhiNzM5OWE5NjBhNDFiZTg4YmQ1ZGI5ODIyNjIxYTE1YjM4NjY2YjgyZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE1MmRjYzgxODkwZjBkNzUyZTc0MjQyZDBiM2Q4M2Q0OWE0YWQ0MGI4NTA2MjdmZmRjYTNiMWU4ZDQxNDdiOGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA3ZDU2NDE0OTEyY2ViNDdhYjY4NjBkMGRhNzZkZjk5NjlmZDYzYzMxNDc4YTgwZjY5ZDYzNjNiYTkyYTU0OGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFlNWZiMTAyMDMyZTc0ZjhkYWYyNTU3MDU0ZmRiNDIxYjhlZDU0NGVkYmU4ZjQ3ZDMwODUzMWY4MTExMDEyNTAifQ"
         }
       ]
     },
@@ -259,10 +267,64 @@
           "version": "repo-lines-v1:sha256:589396c8cc11ecbb6970e546dfd70d2add4ca6f11babd13e7db05a2811e5d8f0:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2QwY2NiYWFhNDEwNGVjNTFkYTQ2NWQ2YTI4NGYwODNlODVmOWZkMTU3ZGQ4M2MxY2EzNDJmYTM3YTQ4ZWM2MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDk2Y2Y0NjY1NjYwMzI4ZjcwZjNiMzA4ZDE4NzE0NmE4NmRhMTY2ZjhmYTFiNWEzMzgzYTAyOTZmMGMzZWFiZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTRjODE0OThjMDMyMDhjOTY0YjExMTIzNDcwZGU1NjQyY2RlYjA4NzFhMWQ2YzMzZjY0ZDJkNjRlNTE4NzMwYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTRiYzNjMmIyMjJiY2Y3N2UzYjlmODMzMzNhNmNiNThkNDE1NmVhMzU1MmYyZjVlNjg4NGY1NTcyMzMyMjBmMiJ9"
         }
       ]
+    },
+    {
+      "id": "claim_f4696dc049e84200858f40b9ace755a9",
+      "statement": "story가 마운트 직후 호출하는 엔드포인트의 handler는 `meta.beforeEach`에 등록하고, 한 story에서만 실패를 재현할 때는 그 story의 `beforeEach`에서 같은 경로 handler를 다시 등록해 덮어써요. `save-trial.stories.tsx`는 `/api/guest-analysis/claim` 성공 응답을 meta에 두고, `RetryKeepsSelectedSong`에서 첫 호출 503 실패 후 성공으로 바꿔 재시도 버튼 동작을 검증해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_pages/profile/ui/save-trial.stories.tsx#L11-L19",
+          "version": "repo-lines-v1:sha256:f5a939554b756f22aad41528e70fa244120843e85062f887947ce8b6b88b7e93:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzgxOTVjZWRlZGE1N2E0OTI0MWFiNTcxNjk3ZTY3ZDFmZDhlOWY4NjVhMDllMGJlMWI5ZmFmMjdlOGVhYjIyOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2E2NjYxNDUzNWQwYTU5MzY0NWYwZGZiZWI1ODg4NGU5YTZiODY0MjIyNDA1MDM3OWNjYzRmOTc1NTY3MWZkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjE0NzI3N2U3YTZlNTdmMTMwYTc1MDEzYzQwNDhlZjUwNWVmMzc0MzRiNmZjYWFmMDA5NGZjNmZmMDMxY2NhOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjQ2ZWRjNGI1MjM3ZmFiMzVkMzJmZWY4OTE5NzY4MTFiMDk2M2VkMDY2MzFhN2JmYmMzZTViNjFlMjdmYjc2MCJ9"
+        },
+        {
+          "resource": "repo://src/_pages/profile/ui/save-trial.stories.tsx#L37-L51",
+          "version": "repo-lines-v1:sha256:69e32461c196ec28233f7eccd6ea943930cddb5593ba4b3d7274349a3461b083:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNkNjU5OTM5NmZiMjI5NGEzNWQxMThjOTEzYjM0MTk2NGFmM2E2ZTNlOWQyOGQzZGRjNGNkZGY1MTRlMWU2YWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJhMzhlZTljYzczYzlmMWYyYzhmOGM1NmQwMGJkMDBkZTViMDczNjlmMTJlMDgwYWJiZDc5YzhjNDM3NTZjMTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZmMmFiMjk5YTQ1ZDI0MTFiMDI2YTc5NWZjNTk2YWVlNTgxMDk2MDNjMmQ3NjA0NGQyODQyZWM3ZmFiNmFjYzkifQ"
+        },
+        {
+          "resource": "repo://src/_pages/profile/ui/save-trial.tsx#L18-L34",
+          "version": "repo-lines-v1:sha256:d63117dd88e90acf51c46d8f4245de0c7083dbd10d9cc6133851f58c6d86a03b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEwODI4NWE5YTA5OTBkNzQ4NmZjOWIxYzQ5ZTM2ZGM4ZWQwOWE5NzM4ZGU4YTY5MTg2ZGJhMjU0OWU1NTAyMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlZjAyMDY4MWMzNGYzOWQ5N2IzZTAxZTk3MTNiMWIwOTVkNDk5ZDI3MTBiMzIwNjY5ZjZmNzNlMjMxM2VjOGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMyYzRkMTMyNmI4MmIwYmFhZDNhZGE4OThjYzcxYmQ5ZTg1ZjJiZWViZDU4ODNhMTRmZjE0ZjNmNDA3MmU2NjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM4N2Q3MjJiMWQ4MDk4OTFhZWU0OWJhYmRhYWRhNTM4NTE1MzY1MmZkZWQ3NWRlNDc4ZDk2MTNiY2I5NWFhMTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_26a1bb6bdd6b438b8743157025abb660",
+      "statement": "story는 `@storybook/nextjs-vite/navigation.mock`의 `getRouter()`로 Next.js 라우터 이동을 단언해요. `save-trial` story는 저장 성공 뒤 `replace`의 목적지와 `push` 미호출을, `admin-tables` story는 탭 클릭 뒤 `push`가 `/admin?audience=guests`와 `{ scroll: false }`로 호출됐는지 확인해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_pages/admin/ui/admin-audience-tabs.tsx#L22-L30",
+          "version": "repo-lines-v1:sha256:927c61a4feb8a906f01694ff88fcf3bd80b11c9bfd6371392cf3cd115fbc77f1:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2ZmZWYwM2VlZTA5ODY3NTZjZjczYjRiODY3ZWQ4OThhMjQ4MTY0YWQ5MTU3ZGY0ZGFmMDVhOTQyZjk3OGJiZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjkwNmM4MTJlZGEwMTdlZTAzNzA2Y2ZmNDQ3Y2YyODZiZjMxOWQ4YzNhMThlMGU3OGU3MjgyYWM2NjczOTgxOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTA2OWIyZTY3N2MzM2Y1NjE3YTlkNzcwODVlNDNmOTVhNTBiNDM1MzRlMjAzOTU1NmEyNWRlMGM4MjE2OGY3MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzQ3NzZjYjgyODM0YTk2YjM3OWVlNzVjYmQ0NDAyMjQ1ZDAxNDUyNWRjYTMwZDU1NGI0NzMwYTM1Njc5ZGIwNCJ9"
+        },
+        {
+          "resource": "repo://src/_pages/admin/ui/admin-tables.stories.tsx#L66-L73",
+          "version": "repo-lines-v1:sha256:673124949bbc3897420375bb5221c43f1d63fc0fd2de1d8db1bc04fee813fcd7:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTI3YWJlNzI5MGRjN2U1MTVkZTE4MDBiNGFkZjY4ZDMwYjU0MDQ2YWRhNzA5MjIxOTgzOTFiODZiZjIyZTc2OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGQ1Y2QyZmI0ZjNkZjg4NDUxNTI1NWIzOTUyM2YyZjhiNTQ3MmJlZWE5ZjU2NmZmY2EyMDRkYjgwMjU2MTA0MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjg5MjNlYzJlMDU4MTdhMjhjZWYzN2VkYjhjMDJjMDc5NjdkM2YzMTJhY2FhNGRiZDljNmNhNDFiZTYyY2EyMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjU0MWI1NDUyYmY5MTY5NjJkNTY1ODQyYWY0NmZmZDgyNTEyMDJmZWIzMDU5MWJlZDZiMDg0MjkzZDZiOTljOSJ9"
+        },
+        {
+          "resource": "repo://src/_pages/profile/ui/save-trial.stories.tsx#L23-L28",
+          "version": "repo-lines-v1:sha256:36457b97d3790c613671848d851f86db2ee1c5764542f7945c490249ddd33fc9:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjg1ODA0NmFlZmFmMjY4MjAwMWM4MTA4MWJkOGRlOWY4MDJkY2JhMDUwMzFlYzY3YjEzMDhmZjYwMjgzZGZmMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWExZDFhNjMzOTAyMjljNzk4MzQ3ZTgzYTA0MDU0NDFjOTQwMDAzNTI4NGFkMTY4YzFiZjZjZGYxZDcwYTM3MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjQ2ZWRjNGI1MjM3ZmFiMzVkMzJmZWY4OTE5NzY4MTFiMDk2M2VkMDY2MzFhN2JmYmMzZTViNjFlMjdmYjc2MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGNjNmRhOThkYTBiYjhiMGEwMTQxMWRiZTM5ZTg5ODRmOTA4MjA1MTY2NTZmZjQyMzc3MjdmNGNkYzlhOGY0OCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_3649a83575584142af3f81587842f098",
+      "statement": "데이터를 prop으로 받는 화면 조각은 MSW 없이 story 파일 안에서 행 fixture를 만들어 검증할 수 있어요. `admin-tables.stories.tsx`는 회원·체험·믹싱 행 객체를 파일 안에서 정의하고 `AdminNavigation`·`AdminAudienceTabs`를 조합해 실제 배치를 재현하며, `Sheet`가 `document.body`에 그리는 dialog는 `within(document.body)`로 찾아 단언해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_pages/admin/ui/admin-mixing-job-details.tsx#L18-L23",
+          "version": "repo-lines-v1:sha256:f71bf8d4b813f274c67676731f8d2633722cc2c06369cf88bc7e8360dc8819ef:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODMxM2I0NDNjN2E5NjBhOTg4NzAyZTgyZDFmNTMwYmU2NmFhZDY5NjViYmNiNDJjMmQ2OGFlMzhlNmY4OGEzNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzYyNGY5YWM4M2Q5Nzg5MzU4ZDU0YzJhNjM5Y2I1ZDFhMDNjMGEwZDJjNDU1YWVmZmY1YmNkYzRhNWE4OWY0ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzdjZmQwNjVmMGZhNTc4MDM4ZjI2ZTJlMmQxNDQzYjBjMDJlNmVmNmE3YzNmMGM1NzI2ZDVmMDMyNzYxY2I2NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTVjMDZkZTRjZWQ4YzRiZDNjNGNiMmM1Mzc4NmE0MGNiNzlkMTBmMDAwOTg0ZTEzYmU5OTY3NGIyNzYwOTEzNiJ9"
+        },
+        {
+          "resource": "repo://src/_pages/admin/ui/admin-tables.stories.tsx#L11-L74",
+          "version": "repo-lines-v1:sha256:6f201c9ce6246cdc18993a3e42c573fa7f35106f98557fffdf23b4ae86f980a0:eyJzZWxlY3RlZExpbmVDb3VudCI6NjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4ZWMzY2U1ZTBmNjAzNzcwYzYzMGFkM2QyOGQ0Y2QzNGFkODZlOTZjNGUzMmZiYTI0ZDhkY2JiMmEzOTU0MDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMWQxYTYzMzkwMjI5Yzc5ODM0N2U4M2EwNDA1NDQxYzk0MDAwMzUyODRhZDE2OGMxYmY2Y2RmMWQ3MGEzNzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmZDdhNTFhYzAzNDI1ZjQ5NTU4NmM4NGZmYzViN2U3YTQwZmEwOGQ2YWE3ZmQyMzc2NGM4M2Q4ZjVhM2FmOTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyZWY3NDdjMzRkY2UxY2ExZDk3NzlkZjNlNDEyNDVjY2M2ZWNkZmJkNzgxMWUyZWZjYWUzMWVmZTBjMzkzZDYifQ"
+        },
+        {
+          "resource": "repo://src/_pages/admin/ui/admin-tables.stories.tsx#L126-L155",
+          "version": "repo-lines-v1:sha256:5aa53da447b3b1c2cd008604b1b18435f09b8731e8df31b52802767ab7b298d6:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3ZTIxMTJlODYyYWNjZDU0OTI2MGQwZDM2YjA3YzVhNzcwNmVjZGM1ZDQxZjIxYjk1NTMwOWY4ZTA1YThiZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMWQxYTYzMzkwMjI5Yzc5ODM0N2U4M2EwNDA1NDQxYzk0MDAwMzUyODRhZDE2OGMxYmY2Y2RmMWQ3MGEzNzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUyNmQzZDMxYjkxNGY3NWJjODRiNDhjYWFmZGJlNWYzYjliOTQ1MGYyYjhkMmRiYjhlN2Q0MWViMTljNWMwZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBhYzc3ZmY0ZGRjZmRhMmJkNmQ1NWU2N2RkNjMzODk1OGY0OWFhOGY0MDUwNDZkOTljMTEzNzA3M2QyNzBjYTgifQ"
+        }
+      ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.5.2",
-    "at": "2026-09-18T16:47:52.081Z"
+    "by": "openwiki/0.7.2",
+    "at": "2026-11-01T16:00:39.866Z"
   }
 }

@@ -1,11 +1,8 @@
 ---
 type: reference
 title: Modal 서비스와 외부 계약
-description: 보컬 프로필·곡 카탈로그 분석과 SoulX 음성 변환을 제공하는 Modal 서비스 세 개와 공유 분석 코어의 endpoint, 입력 상한, 인증 헤더, 응답 형태를 정리한 참조 문서예요.
+description: 보컬 프로필·곡 카탈로그 분석과 SoulX 음성 변환을 제공하는 Modal 서비스 세 개의 endpoint, 입력 상한, 인증 헤더, 응답 형태와 계약 변경 시 함께 고치는 Python entrypoint·Node 호출 지점·테스트 파일을 정리한 참조 문서예요.
 tags: [modal, integration, api-contract, python, reference]
-verified:
-  - by: openwiki/0.5.2
-    at: 2026-09-18T16:47:52.081Z
 sources:
   - id: openwiki-source-5b54a58d1b51cd490b0e7162
     resource: repo://package.json
@@ -53,49 +50,50 @@ sources:
     resource: repo://src/entities/vocal-profile/api/analyzer/modal-adapter.ts
   - id: openwiki-source-454bff5a8121f63a2e97318a
     resource: repo://src/features/admin-custom-mixing/api/modal.ts
+  - id: openwiki-source-3fbbc4d1ce032d81c6252e16
+    resource: repo://src/features/manage-song-catalog/api/analyzer.ts
   - id: openwiki-source-200291f8a1aaa391d1b68ec4
     resource: repo://src/shared/config/server-env.ts
   - id: openwiki-source-10c6a88a3297ea68ebdbf439
     resource: repo://tests/mixing-queue.integration.ts
   - id: openwiki-source-a24800931309d4fcb3b16c6c
     resource: repo://tests/modal-submission-contract.py
-generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:47:52.081Z" }
+  - id: openwiki-source-2d9b52d3b195bbe68e90131c
+    resource: repo://tests/song-analysis-modal-adapter.test.ts
+  - id: openwiki-source-162c7a1c7fa332c2d706332c
+    resource: repo://tests/vocal-profile-analyzer-adapter.test.ts
+generated: { by: "openwiki/0.7.2", at: "2026-11-01T16:00:39.866Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-11-01T16:00:39.866Z
 ---
 
-호출할 endpoint를 정하기 전에 응답 형태부터 확인하세요. 보컬 프로필 분석은 HTTP 요청 하나에 대한 동기 envelope로 끝나고, 곡 카탈로그 분석과 믹싱은 외부 작업 ID를 받아 poll하는 비동기 계약이에요. 세 서비스 모두 Python으로 작성해 Modal에 배포하고, 같은 Modal Secret `soulx-api-secret`의 `X-API-Key` 헤더로 인증해요.
+계약을 바꿀 때는 Python entrypoint, Node 호출 지점, 두 쪽 테스트를 한 변경에 묶으세요. 이 페이지는 세 Modal 서비스의 응답 형태를 계약 단위로 나눠 정리해요. 보컬 프로필 분석은 HTTP 요청 하나에 대한 동기 envelope로 끝나고, 곡 카탈로그 분석과 믹싱은 외부 작업 ID를 받아 poll하는 비동기 계약이에요. 세 서비스 모두 Python으로 작성해 Modal에 배포하고, 같은 Modal Secret `soulx-api-secret`의 `X-API-Key` 헤더로 인증해요.
 
 ## 서비스 한눈에 보기
 
 | 서비스 | 컴퓨트 | endpoint | 배포·테스트 진입점 |
 | --- | --- | --- | --- |
-| `vocal-profile-modal` | CPU 전용. 2 core, 4096 MiB, timeout 120초, `min_containers` 0, `max_containers` 10, container당 동시 요청 1개([modal_app.py](repo://services/vocal-profile-modal/modal_app.py#L26-L32), [README.md](repo://services/vocal-profile-modal/README.md#L46-L55)) | `GET /health`, `POST /v1/analyze`, 진단용 `POST /v1/song-target`([modal_app.py](repo://services/vocal-profile-modal/modal_app.py#L125-L202)) | `pnpm run modal:vocal-profile:deploy`([package.json](repo://package.json#L43-L43)) |
+| `vocal-profile-modal` | CPU 전용. 2 core, 4096 MiB, timeout 120초, `min_containers` 0, `max_containers` 10, container당 동시 요청 1개([modal_app.py](repo://services/vocal-profile-modal/modal_app.py#L26-L32), [README.md](repo://services/vocal-profile-modal/README.md#L46-L55)) | `GET /health`([modal_app.py](repo://services/vocal-profile-modal/modal_app.py#L125-L146)), `POST /v1/analyze`([modal_app.py](repo://services/vocal-profile-modal/modal_app.py#L202-L212)), 진단용 `POST /v1/song-target`([modal_app.py](repo://services/vocal-profile-modal/modal_app.py#L149-L151)) | `pnpm run modal:vocal-profile:deploy`([package.json](repo://package.json#L43-L43)) |
 | `song-catalog-analyzer` | CPU 전용. 분석 함수 8 vCPU·16384 MB·timeout 3600초([modal_app.py](repo://services/song-catalog-analyzer/modal_app.py#L153-L160)), 웹 함수 1 CPU·512 MB·timeout 120초([modal_app.py](repo://services/song-catalog-analyzer/modal_app.py#L329-L338)) | `GET /health`, `POST /v1/jobs`, `GET /v1/jobs/{externalJobId}`, `DELETE /v1/jobs/{externalJobId}`([modal_app.py](repo://services/song-catalog-analyzer/modal_app.py#L250-L326)) | `pnpm run modal:song-catalog:deploy`, `python -m unittest services/song-catalog-analyzer/test_modal_app.py`([README.md](repo://services/song-catalog-analyzer/README.md#L12-L23)) |
-| `soulx-singer-svc` | GPU. 기본 `L4`, container 1개, idle 유지 60초, timeout 3600초([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L23-L25), [modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L99-L106)) | `GET /health`, `POST /v1/conversions`, `GET /v1/conversions/{id}`, `GET /v1/conversions/{id}/audio`, `DELETE /v1/conversions/{id}`([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L272-L381)) | `modal deploy modal_app.py`([README.md](repo://services/soulx-singer-svc/README.md#L47-L57)) |
+| `soulx-singer-svc` | GPU. `gpu` 값은 기본 `["L4", "A10"]` 리스트, container 1개, idle 유지 60초, timeout 3600초([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L23-L26), [modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L100-L107)) | `GET /health`, `POST /v1/conversions`, `GET /v1/conversions/{id}`, `GET /v1/conversions/{id}/audio`, `DELETE /v1/conversions/{id}`([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L273-L382)) | `modal deploy modal_app.py`([README.md](repo://services/soulx-singer-svc/README.md#L47-L57)) |
 | `vocal-analysis-core` | HTTP 서버 없음. 두 CPU 이미지에 함께 패키징되는 Python 분석 패키지 | endpoint 없음([README.md](repo://services/vocal-analysis-core/README.md#L1-L7)) | `python -m pytest -q services/vocal-analysis-core/tests`([README.md](repo://services/vocal-analysis-core/README.md#L9-L14)) |
 
 `soulx-singer-svc`만 배포 명령이 `package.json` script가 아니에요. `services/soulx-singer-svc` 안에서 `modal deploy modal_app.py`를 직접 실행하고, 배포 전에 `modal run modal_app.py::setup`으로 모델 가중치를 Volume에 한 번 내려받아요([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L58-L78), [README.md](repo://services/soulx-singer-svc/README.md#L39-L55)).
 
 ## 인증 계약
 
-세 Web Function은 모두 Modal Secret `soulx-api-secret`을 주입받고, FastAPI 의존성이 `SOULX_API_KEY` 환경 변수와 요청 헤더 `X-API-Key`를 constant-time으로 비교해요([vocal-profile-modal](repo://services/vocal-profile-modal/modal_app.py#L49-L57), [song-catalog-analyzer](repo://services/song-catalog-analyzer/modal_app.py#L35-L39), [soulx-singer-svc](repo://services/soulx-singer-svc/modal_app.py#L30-L35)). 세 서비스의 key 검사 함수는 같은 모양이고, 헤더 이름도 셋 다 `X-API-Key`예요([song-catalog-analyzer](repo://services/song-catalog-analyzer/modal_app.py#L75-L80), [soulx-singer-svc](repo://services/soulx-singer-svc/modal_app.py#L233-L238)).
+세 Web Function은 모두 Modal Secret `soulx-api-secret`을 주입받고, FastAPI 의존성이 `SOULX_API_KEY` 환경 변수와 요청 헤더 `X-API-Key`를 constant-time으로 비교해요([vocal-profile-modal](repo://services/vocal-profile-modal/modal_app.py#L49-L57), [song-catalog-analyzer](repo://services/song-catalog-analyzer/modal_app.py#L35-L39), [soulx-singer-svc](repo://services/soulx-singer-svc/modal_app.py#L36-L36)). 세 서비스의 key 검사 함수는 같은 모양이고, 헤더 이름도 셋 다 `X-API-Key`예요([song-catalog-analyzer](repo://services/song-catalog-analyzer/modal_app.py#L75-L80), [soulx-singer-svc](repo://services/soulx-singer-svc/modal_app.py#L233-L239)).
 
 - `SOULX_API_KEY`가 비어 있으면 서버가 503 `Server API key is not configured`로 응답해요.
 - 헤더가 없거나 값이 다르면 401 `Invalid API key`예요.
-- `vocal-profile-modal`과 `song-catalog-analyzer`는 FastAPI 앱 전체에 인증 의존성을 걸어서 `/health`도 키가 필요해요([vocal-profile-modal](repo://services/vocal-profile-modal/modal_app.py#L60-L64), [song-catalog-analyzer](repo://services/song-catalog-analyzer/modal_app.py#L243-L247)). `soulx-singer-svc`의 `/health`에는 의존성이 없어 키 없이 호출할 수 있어요([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L272-L274)).
+- `vocal-profile-modal`과 `song-catalog-analyzer`는 FastAPI 앱 전체에 인증 의존성을 걸어서 `/health`도 키가 필요해요([vocal-profile-modal](repo://services/vocal-profile-modal/modal_app.py#L60-L64), [song-catalog-analyzer](repo://services/song-catalog-analyzer/modal_app.py#L243-L247)). `soulx-singer-svc`의 `/health`에는 의존성이 없어 키 없이 호출할 수 있어요([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L273-L276)).
 
-서버 쪽 credential은 전용 환경 변수를 먼저 보고, 없으면 `MODAL_API_KEY`를 재사용해요.
-
-| 호출 주체 | URL 변수 | API key 우선순위 | 근거 |
-| --- | --- | --- | --- |
-| 보컬 프로필 분석 워커 | `VOCAL_PROFILE_MODAL_URL` | `VOCAL_PROFILE_MODAL_API_KEY` → `MODAL_API_KEY` | [modal-adapter.ts](repo://src/entities/vocal-profile/api/analyzer/modal-adapter.ts#L34-L46) |
-| 곡 카탈로그 분석 워커 | `SONG_ANALYSIS_MODAL_URL` | `SONG_ANALYSIS_MODAL_API_KEY` → `MODAL_API_KEY` | [server-env.ts](repo://src/shared/config/server-env.ts#L70-L74) |
-| 믹싱 워커·관리자 커스텀 믹싱 | `MODAL_API_URL` | `MODAL_API_KEY` | [worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L79-L86), [modal.ts](repo://src/features/admin-custom-mixing/api/modal.ts#L9-L13) |
-
-키가 없으면 서버는 호출을 시도하지 않고 `ANALYZER_NOT_CONFIGURED`, `MODAL_NOT_CONFIGURED` 같은 설정 오류를 돌려줘요. 키 값 자체는 이 문서에 적지 않아요.
+서버 credential은 `VOCAL_PROFILE_MODAL_URL`·`SONG_ANALYSIS_MODAL_URL`·`MODAL_API_URL`을 읽고, `VOCAL_PROFILE_MODAL_API_KEY`나 `SONG_ANALYSIS_MODAL_API_KEY`가 없으면 `MODAL_API_KEY`를 재사용해요. 믹싱 경로는 `MODAL_API_KEY`만 써요. 변수 이름 전체와 미설정 시 오류 코드는 [환경 변수와 런타임 한도](../operations/configuration.md)가 표로 소유하니 그쪽에서 확인하세요. 키가 없으면 서버는 호출을 시도하지 않고 `ANALYZER_NOT_CONFIGURED`, `MODAL_NOT_CONFIGURED` 같은 설정 오류를 돌려주고, 키 값 자체는 이 문서에 적지 않아요.
 
 ## 응답 형태: 동기 envelope와 작업 ID
 
-세 서비스의 가장 큰 계약 차이는 "호출이 끝날 때까지 기다리는가"예요. 보컬 프로필 분석만 단일 동기 응답이고, 나머지 둘은 `externalJobId`를 돌려주고 상태를 조회해요.
+세 서비스의 가장 큰 계약 차이는 "호출이 끝날 때까지 기다리는가"예요. 보컬 프로필 분석만 단일 동기 응답이고, 나머지 둘은 202와 작업 ID를 돌려준 뒤 상태를 조회해요. 작업 ID 필드 이름은 곡 분석이 `externalJobId`, 믹싱이 `id`로 달라요.
 
 ```mermaid
 flowchart TD
@@ -106,18 +104,22 @@ flowchart TD
   Dir --> Env["modal-analysis-envelope-v1 동기 응답"]
   J --> Spawn["Modal 함수 spawn"]
   C --> Spawn
-  Spawn --> Id["202와 externalJobId"]
+  Spawn --> Id["202와 작업 ID"]
   Id --> Poll["GET 상태 조회 반복"]
   Poll --> Done["GET 결과 오디오 또는 DELETE 취소"]
 ```
 
 첫 번째 갈래가 `POST /v1/analyze`의 단일 응답 경로이고, 두 번째·세 번째 갈래가 spawn 뒤 `externalJobId`를 저장하고 상태를 조회하는 경로예요.
 
-| 서비스 | 외부 작업 ID 처리 | 완료 확인 방법 |
-| --- | --- | --- |
-| `vocal-profile-modal` | 저장하지 않아요. 워커가 `analyzeVocalProfileBytes` 결과를 그 자리에서 써요([worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L299-L312)). `VocalProfileAnalysisJob`에는 `externalJobId` 컬럼이 없어요([schema.prisma](repo://prisma/schema.prisma#L540-L569)) | 응답 본문의 `transportVersion`과 `cleanupConfirmed`를 검증해 그 자리에서 결과를 사용해요 |
-| `song-catalog-analyzer` | `SongAnalysisJob.externalJobId`에 저장해요([schema.prisma](repo://prisma/schema.prisma#L286-L311)) | `GET /v1/jobs/{externalJobId}`를 반복 호출해요 |
-| `soulx-singer-svc` | 응답의 `id`를 `MixingJob.modalJobId`로 저장해요([schema.prisma](repo://prisma/schema.prisma#L593-L593), [worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L415-L445)) | `GET /v1/conversions/{id}`를 반복 호출하고, 완료 후 `/audio`를 내려받아요 |
+| 서비스 | 응답 계약 | 외부 작업 ID 저장 위치 | Python entrypoint | Node 호출 지점 | 작업 수명 주기 |
+| --- | --- | --- | --- | --- | --- |
+| `vocal-profile-modal` | 동기 단일 응답. `transportVersion`·`cleanupConfirmed`를 검증해 그 자리에서 결과를 써요 | 없어요. `VocalProfileAnalysisJob`에 `externalJobId` 컬럼이 없어요([schema.prisma](repo://prisma/schema.prisma#L560-L595)) | `analyze`([modal_app.py](repo://services/vocal-profile-modal/modal_app.py#L202-L322)) | `analyzeVocalProfileBytes`가 `analyzeWithModalAdapter`를 불러요([index.ts](repo://src/entities/vocal-profile/api/analyzer/index.ts#L27-L27), [worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L304-L317)) | [보컬 프로필 분석 흐름](../workflows/vocal-profile-analysis.md) |
+| `song-catalog-analyzer` | 제출 시 202와 `externalJobId`, 이후 `GET /v1/jobs/{externalJobId}`를 반복 호출해요 | `SongAnalysisJob.externalJobId`([schema.prisma](repo://prisma/schema.prisma#L285-L314)) | `submit_job`, `poll_job`([modal_app.py](repo://services/song-catalog-analyzer/modal_app.py#L259-L320)) | `submitSongAnalysis`, `pollSongAnalysis`([analyzer.ts](repo://src/features/manage-song-catalog/api/analyzer.ts#L81-L138))를 곡 분석 워커가 호출해요([worker.ts](repo://src/_app/background-jobs/song-analysis/worker.ts#L178-L222)) | [곡 카탈로그 등록과 공개](../workflows/song-catalog-lifecycle.md) |
+| `soulx-singer-svc` | 제출 시 202와 `id`, 이후 `GET /v1/conversions/{id}` 후 완료되면 `/audio`를 내려받아요 | `MixingJob.modalJobId`([schema.prisma](repo://prisma/schema.prisma#L614-L614)) | `create_conversion`, `conversion_status`, `conversion_audio`([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L277-L371)) | 믹싱 워커가 폼을 만들어 제출하고 poll해요([worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L358-L483)). 관리자 커스텀 믹싱도 같은 endpoint를 프록시해요([modal.ts](repo://src/features/admin-custom-mixing/api/modal.ts#L44-L78)) | [AI 믹싱 작업 흐름](../workflows/ai-mixing.md) |
+
+각 계약의 상태 전이, 점유, heartbeat, 재시도, 종료 확정 규칙은 위 수명 주기 문서가 소유해요. 이 페이지는 요청·응답 형태만 정리해요.
+
+두 비동기 서비스의 `DELETE` endpoint는 외부 작업 정리 작업이 함께 소비해요. `MixingJob` 행이면 `MODAL_API_URL`로 `/v1/conversions/{id}`, `SongAnalysisJob` 행이면 `SONG_ANALYSIS_MODAL_URL`로 `/v1/jobs/{id}`에 `DELETE`를 보내고, 404와 410은 이미 정리된 것으로 인정해요. 그 밖의 실패는 `UNRESOLVED`와 `AUTO_CLEANUP_FAILED_REQUIRES_OPERATOR`로 남겨요([reconciliation.ts](repo://src/_app/background-jobs/mixing/reconciliation.ts#L38-L63)). 정리 작업의 재시도 주기는 [Job 큐와 lease 복구 계약](../operations/job-processing.md)을 보세요.
 
 ### 보컬 프로필 분석 envelope
 
@@ -154,7 +156,7 @@ flowchart TD
 
 ### 믹싱(SoulX-Singer) job 계약
 
-`POST /v1/conversions`는 두 오디오를 Volume에 저장한 뒤 GPU 클래스 함수를 spawn하고 202로 job을 돌려줘요([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L276-L349)). 폼 필드 기본값과 허용 범위는 다음과 같아요.
+`POST /v1/conversions`는 두 오디오를 Volume에 저장한 뒤 GPU 클래스 함수를 spawn하고 202로 job을 돌려줘요([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L277-L351)). 폼 필드 기본값과 허용 범위는 다음과 같아요.
 
 | 필드 | 기본값·범위 | 설명 |
 | --- | --- | --- |
@@ -170,13 +172,17 @@ flowchart TD
 | `seed` | `42`, `0`~`2147483647` | 난수 시드 |
 | `request_id` | 선택, 최대 200자 | 주면 제출 멱등 키로 사용해요 |
 
-값과 범위는 [modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L276-L289), 업로드 상한은 [modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L26-L27)에서 확인할 수 있어요. 업로드가 상한을 넘으면 413과 `exceeds the N MB limit` 상세를 돌려주고, 저장에 실패하면 작업 디렉터리를 지워요([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L188-L308)).
+값과 범위는 [modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L278-L290), 업로드 상한은 [modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L27-L28)에서 확인할 수 있어요. 업로드가 상한을 넘으면 413과 `exceeds the N MB limit` 상세를 돌려주고, 저장에 실패하면 작업 디렉터리를 지워요([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L189-L206), [modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L295-L309)).
 
-응답의 `id`로 `GET /v1/conversions/{id}`를 호출하면 `queued`, `processing`, `succeeded`, `failed` 중 하나의 상태와 `result_url`을 받아요([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L208-L215), [modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L351-L359)). `succeeded`가 아니면 `/audio`는 409, 결과 파일이 지워졌으면 410이에요. `DELETE /v1/conversions/{id}`는 실행 중이면 `FunctionCall`을 취소하고 저장된 입력·결과와 job metadata를 지운 뒤 204로 응답해요([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L361-L381)). 저장된 입력과 결과는 `modal.Cron("17 3 * * *")`로 도는 정리 함수가 24시간(`JOB_TTL_SECONDS`)이 지난 작업 디렉터리를 삭제해요([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L28-L28), [modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L386-L405)).
+응답의 `id`로 `GET /v1/conversions/{id}`를 호출하면 `queued`, `processing`, `succeeded`, `failed` 중 하나의 상태와 `result_url`을 받아요([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L209-L216), [modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L352-L360)). `succeeded`가 아니면 `/audio`는 409, 결과 파일이 지워졌으면 410이에요. `DELETE /v1/conversions/{id}`는 실행 중이면 `FunctionCall`을 취소하고 저장된 입력·결과와 job metadata를 지운 뒤 204로 응답해요([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L373-L382)). 저장된 입력과 결과는 `modal.Cron("17 3 * * *")`로 도는 정리 함수가 24시간(`JOB_TTL_SECONDS`)이 지난 작업 디렉터리를 삭제해요([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L29-L29), [modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L387-L406)).
 
-엔진은 `prompt`를 30초, `target`을 300초로 잘라 써요. `Settings`에 그 값이 있고 엔진의 `_normalize`가 `max_seconds * sample_rate` 이후를 버려요([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L114-L124), [engine.py](repo://services/soulx-singer-svc/api/engine.py#L84-L90)). README의 입력 기준(prompt 최대 30초, target 최대 300초·256 MB, prompt 업로드 128 MB)과 코드 값이 일치해요([README.md](repo://services/soulx-singer-svc/README.md#L99-L109)).
+Node 쪽 믹싱 워커는 응답의 `id`와 `status`를 검사해 `queued`, `processing`, `succeeded`, `failed` 밖의 값이면 `MODAL_SUBMIT_INVALID_RESPONSE`로 제출을 실패 처리해요([worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L415-L422)). 호출별 타임아웃 값은 [환경 변수와 런타임 한도](../operations/configuration.md)에 정리돼 있어요.
 
-`max_containers=1`이 기본이라 여러 요청은 Modal 안에서 순차 대기해요. `SOULX_GPU`, `SOULX_MAX_CONTAINERS`, `SOULX_SCALEDOWN_WINDOW`로 배포 시 바꿀 수 있어요([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L23-L25), [README.md](repo://services/soulx-singer-svc/README.md#L59-L65)).
+엔진은 `prompt`를 30초, `target`을 300초로 잘라 써요. `Settings`에 그 값이 있고 엔진의 `_normalize`가 `max_seconds * sample_rate` 이후를 버려요([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L115-L125), [engine.py](repo://services/soulx-singer-svc/api/engine.py#L84-L90)). README의 입력 기준(prompt 최대 30초, target 최대 300초·256 MB, prompt 업로드 128 MB)과 코드 값이 일치해요([README.md](repo://services/soulx-singer-svc/README.md#L99-L109)).
+
+`max_containers=1`이 기본이라 여러 요청은 Modal 안에서 순차 대기해요. `SOULX_GPU`, `SOULX_MAX_CONTAINERS`, `SOULX_SCALEDOWN_WINDOW`로 배포 시 바꿀 수 있어요([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L23-L26), [README.md](repo://services/soulx-singer-svc/README.md#L59-L65)).
+
+`SOULX_GPU` 처리에는 주의할 점이 있어요. 값이 기본값 `L4`일 때만 `gpu` 인자에 리스트 `["L4", "A10"]`이 들어가고, 그 밖의 값은 문자열 그대로 전달돼요([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L23-L24)). README가 예로 드는 `SOULX_GPU=T4`는 단일 GPU 지정이 되고, `L4`와 `A10`을 함께 넘기는 동작은 기본값을 유지할 때만 적용돼요. `/health`가 돌려주는 `gpu` 필드도 리스트가 아니라 `SOULX_GPU` 원값이에요([modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L273-L276)).
 
 ## 믹싱 요청의 고정 preset
 
@@ -207,10 +213,14 @@ production 믹싱 워커는 preset을 붙인 뒤 `auto_pitch_shift`를 `"false"`
 
 ## 변경 범위 테스트
 
+계약을 바꿀 때는 Python 쪽과 Node 쪽을 같은 변경에 넣으세요. 동기 envelope는 [transport.py](repo://services/vocal-profile-modal/transport.py#L9-L105)와 [modal-adapter.ts](repo://src/entities/vocal-profile/api/analyzer/modal-adapter.ts#L13-L143)가 짝이고, 곡 분석 제출·poll 형태는 [song-catalog-analyzer/modal_app.py](repo://services/song-catalog-analyzer/modal_app.py#L259-L320)와 [analyzer.ts](repo://src/features/manage-song-catalog/api/analyzer.ts#L6-L138)가 짝이에요. 믹싱 폼 필드는 [soulx-singer-svc/modal_app.py](repo://services/soulx-singer-svc/modal_app.py#L277-L289)와 `SYNTHESIS_PRESET`·믹싱 워커가 짝이에요.
+
+- `node --conditions react-server --import tsx --test tests/song-analysis-modal-adapter.test.ts` — 곡 분석 제출이 `X-API-Key`와 multipart `requestId`·`sourceVideoId`·`audio`를 보내는지, poll이 `PROCESSING`과 말단 `FAILED`를 구분하는지 확인해요([song-analysis-modal-adapter.test.ts](repo://tests/song-analysis-modal-adapter.test.ts#L6-L69)). 이 파일은 `pnpm run test:song-analysis-queue`에 들어 있어요([package.json](repo://package.json#L51-L51)).
+- `node --conditions react-server --import tsx --test tests/vocal-profile-analyzer-adapter.test.ts` — 동기 envelope의 `X-API-Key` 인증, artifact 무결성 검증, 401 `ANALYZER_AUTH_FAILED`, 429 `ANALYZER_BUSY`, 타임아웃 `ANALYZER_TIMEOUT`, 구버전 응답 `ANALYZER_UPDATE_REQUIRED`를 확인해요([vocal-profile-analyzer-adapter.test.ts](repo://tests/vocal-profile-analyzer-adapter.test.ts#L84-L263)). `pnpm run test:vocal-profile-analyzer`가 같은 명령을 실행해요([package.json](repo://package.json#L48-L48)).
 - `python -m unittest services/song-catalog-analyzer/test_modal_app.py` — 제출 검증, 확장자 allowlist, key 추정, CPU spawn·poll 구조를 확인해요. README는 의존성을 맞추기 위해 `uv run --with-requirements services/song-catalog-analyzer/requirements-local.txt`로 감싸 실행하도록 안내해요([test_modal_app.py](repo://services/song-catalog-analyzer/test_modal_app.py#L12-L58), [README.md](repo://services/song-catalog-analyzer/README.md#L12-L17)).
 - `python -m pytest -q services/vocal-analysis-core/tests` — 분석, 참조 생성, song pipeline 테스트를 돌려요. 먼저 `python -m pip install -r services/vocal-analysis-core/requirements-dev.txt`로 `pytest`를 설치하세요([README.md](repo://services/vocal-analysis-core/README.md#L9-L14)).
-- `python3 tests/modal-submission-contract.py` — 세 서비스의 `_claim_submission`, `submit_job`, `create_conversion`, `analyze`를 AST로 추출해 동시 claim 원자성, 입력 지문 불일치 409, spawn 응답 유실 후 503, 보컬 분석 재실행 금지를 검사해요([modal-submission-contract.py](repo://tests/modal-submission-contract.py#L39-L60), [modal-submission-contract.py](repo://tests/modal-submission-contract.py#L128-L168)). 이 파일은 `pnpm run test:readiness`의 마지막 단계로 연결돼 있어요([package.json](repo://package.json#L70-L70)).
-- `services/vocal-profile-modal`에는 소스 문자열과 transport 직렬화를 검사하는 pytest 파일(`test_modal_app_source.py`, `test_transport.py`, `test_runtime.py`)이 있어요([test_modal_app_source.py](repo://services/vocal-profile-modal/test_modal_app_source.py#L10-L46)). 다만 이 입력에서 그 디렉터리를 실행하는 `package.json` script나 `requirements-local.txt`의 `pytest` 의존성은 확인하지 못했어요.
+- `python3 tests/modal-submission-contract.py` — 세 서비스의 `_claim_submission`, `submit_job`, `create_conversion`, `analyze`를 AST로 추출해 동시 claim 원자성, 입력 지문 불일치 409, spawn 응답 유실 후 503, 보컬 분석 재실행 금지를 검사해요([modal-submission-contract.py](repo://tests/modal-submission-contract.py#L39-L60), [modal-submission-contract.py](repo://tests/modal-submission-contract.py#L128-L168)). 이 파일은 `pnpm run test:readiness`의 마지막 단계로 연결돼 있어요([package.json](repo://package.json#L71-L71)).
+- `services/vocal-profile-modal`에는 소스 문자열과 transport 직렬화를 검사하는 pytest 파일(`test_modal_app_source.py`, `test_transport.py`, `test_runtime.py`)이 있어요([test_modal_app_source.py](repo://services/vocal-profile-modal/test_modal_app_source.py#L10-L46), [test_transport.py](repo://services/vocal-profile-modal/test_transport.py#L73-L98)). `pytest` 의존성은 `services/vocal-analysis-core/requirements-dev.txt`에만 있고, 이 디렉터리의 테스트를 실행하는 `package.json` script는 확인하지 못했어요.
 
 ## 더 볼 문서
 
