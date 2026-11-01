@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:4d01aec629143b52ef85cc87a605780c0b252187d700e151499af6cfcbea8259",
+  "pageVersion": "sha256:50a444e23c8383ca0e31ebac7a430ca460295f6c885438244f35725792c270dc",
   "claims": [
     {
       "id": "claim_e244de2c16c847308acc6b3d0e7985f6",
       "statement": "미디어 저장 책임은 둘로 나뉘어요. 오디오 bytes와 외부 식별자(externalProjectId/externalFileId/externalUrl)는 Leemage가 갖고, PostgreSQL의 MediaAsset·CatalogTargetAsset 행은 소유권(userId), 다른 도메인 행과의 FK 관계, 상태, 파일 이름·MIME 타입·크기, 원곡 자산의 sha256을 가져요. 그래서 외부 저장소를 조회하지 않고도 DB 안에서 자산 참조 여부를 판정할 수 있어요.",
       "evidence": [
         {
-          "resource": "repo://prisma/schema.prisma#L417-L471",
-          "version": "repo-lines-v1:sha256:f481fa257246a4b002aaa1c35f9c15affecda40f11affa25d8711b3cd1e39621:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjOTFjM2YxYjY1NjkxNjkzMGRjYTNiNDI1OTRhYmFmYzg2N2RkZDIyMWZjN2MzMTBiYjMyZWUyYmIwOWRmY2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNkYjRkYjZlZTU3ZjU3M2YwM2UzMGExNDVmNDg1Yjg0NTUzNjVkYjQ1MDk4YTRiZGU1ZjU0NDZiNzExOGQ2MDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZlY2M2NWI0NjQ2MjBlOTlmMDIyZDAxZjllYjkxM2FmNjI2YjQ2OWY2MzhhNDhhZTUwN2Y3MmFlZGFkNzc2ZTYifQ"
+          "resource": "repo://prisma/schema.prisma#L437-L490",
+          "version": "repo-lines-v1:sha256:6116593db018ba138311df900a6a5398dee933cb4abae0e4e0a81cfe884f167e:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjOTFjM2YxYjY1NjkxNjkzMGRjYTNiNDI1OTRhYmFmYzg2N2RkZDIyMWZjN2MzMTBiYjMyZWUyYmIwOWRmY2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjMWNkYjhhMjYxODEwNjc1OWY2OWE4NTAyNGEwMTVlYzhjMzI2MjYxOTY5YWRlMmIxMTlmMjcyZDJjOTNjMWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNkYjRkYjZlZTU3ZjU3M2YwM2UzMGExNDVmNDg1Yjg0NTUzNjVkYjQ1MDk4YTRiZGU1ZjU0NDZiNzExOGQ2MDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3ZmI1NDFjYmY0ZDg2MDY2YWVjMjg3NTdhMmFjODIwZjM5YzA5ZGQxMzI0MWI4YmU5NjExZjYwODJkYzk2ZDYifQ"
         },
         {
           "resource": "repo://src/shared/media/media-service.ts#L13-L37",
@@ -21,7 +21,7 @@
       "statement": "자산 행은 두 종류예요. MediaAsset은 kind = REFERENCE(Recording.mediaAssetId), SYNTHESIS_REFERENCE(VocalProfile.synthesisReferenceAssetId), MIX_RESULT(MixingJob.resultAssetId)로 사용자 소유 자산을 나타내고, CatalogTargetAsset은 사용자 소유 컬럼 없이 sha256·sourceVideoId를 가지며 SongSource.sourceId(선택)에 묶여 Song.targetAssetId와 MixingJob.targetAssetId가 참조해요. 같은 출처·같은 내용의 원곡을 다시 올리면 업로드를 건너뛰고 기존 행을 재사용해요.",
       "evidence": [
         {
-          "resource": "repo://prisma/schema.prisma#L417-L471",
+          "resource": "repo://prisma/schema.prisma#L437-L491",
           "version": "repo-lines-v1:sha256:f481fa257246a4b002aaa1c35f9c15affecda40f11affa25d8711b3cd1e39621:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjOTFjM2YxYjY1NjkxNjkzMGRjYTNiNDI1OTRhYmFmYzg2N2RkZDIyMWZjN2MzMTBiYjMyZWUyYmIwOWRmY2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNkYjRkYjZlZTU3ZjU3M2YwM2UzMGExNDVmNDg1Yjg0NTUzNjVkYjQ1MDk4YTRiZGU1ZjU0NDZiNzExOGQ2MDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZlY2M2NWI0NjQ2MjBlOTlmMDIyZDAxZjllYjkxM2FmNjI2YjQ2OWY2MzhhNDhhZTUwN2Y3MmFlZGFkNzc2ZTYifQ"
         },
         {
@@ -35,12 +35,12 @@
       "statement": "두 자산 테이블 모두 @@unique([externalProjectId, externalFileId])로 같은 외부 파일이 두 행으로 등록되는 것을 막아요.",
       "evidence": [
         {
-          "resource": "repo://prisma/schema.prisma#L441-L443",
-          "version": "repo-lines-v1:sha256:e624af677819b198d5f0b6c5e06a96c8aaee080b7d33239afa54cc4c903e75d1:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2FhMTU4YTk1MTA3N2UwNGFkMWM2NmFlNTFmYTZlMzE3Mzg4Nzk0OTZhYTI3MTJjMTI5ZTc0NmI3NjEzODYyZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmJiYTgxNzczMmY5MWNkNWJjMDZmZjkyYTQxMmYzYmUyYzhlOGJlZDY5M2RiODIwZGQ2NjcwMWRlMGNmMzEzNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjgxMGQ2NGNiNzI4Y2QxNDhiYmE3ZWY2ZjBhZjU4NDUxOGFjNDcyMWUwM2NkZDEwNmFmNWY2ZDcyOTIwYTQwMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzEzNTk2NmI4MWE3YjI1Y2FlMmNiZWY0YTFhMTQ5NmJmZGMxZmZhYTkwZDA5YTFiNGE2ODUxY2MzNDI0YjNiOCJ9"
+          "resource": "repo://prisma/schema.prisma#L461-L461",
+          "version": "repo-lines-v1:sha256:caa158a951077e04ad1c66ae51fa6e31738879496aa2712c129e746b7613862f:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2FhMTU4YTk1MTA3N2UwNGFkMWM2NmFlNTFmYTZlMzE3Mzg4Nzk0OTZhYTI3MTJjMTI5ZTc0NmI3NjEzODYyZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2FhMTU4YTk1MTA3N2UwNGFkMWM2NmFlNTFmYTZlMzE3Mzg4Nzk0OTZhYTI3MTJjMTI5ZTc0NmI3NjEzODYyZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjgxMGQ2NGNiNzI4Y2QxNDhiYmE3ZWY2ZjBhZjU4NDUxOGFjNDcyMWUwM2NkZDEwNmFmNWY2ZDcyOTIwYTQwMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjgwNzI5YTJkYjg1MTk2YTNmNWYxOTY2NDlmMmZjOTJmNTlkZDE3YTMwYmExZDE5NTNjNDhkMDExOWFkYzVmYSJ9"
         },
         {
-          "resource": "repo://prisma/schema.prisma#L467-L470",
-          "version": "repo-lines-v1:sha256:622e3f20259518cf01a618e9a3bce870cd0048db70a1a8daae02d7c3d77e0d65:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2FhMTU4YTk1MTA3N2UwNGFkMWM2NmFlNTFmYTZlMzE3Mzg4Nzk0OTZhYTI3MTJjMTI5ZTc0NmI3NjEzODYyZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGMxY2RiOGEyNjE4MTA2NzU5ZjY5YTg1MDI0YTAxNWVjOGMzMjYyNjE5NjlhZGUyYjExOWYyNzJkMmM5M2MxZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzNkNjI1Y2EzOTc5MzhjMTcwMjk0MTRjNDczOWM0MTUxZDg3YjFlMTBmOTViMTIwMTNhYjkyZjJmYTNkNzkwYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzdmYjU0MWNiZjRkODYwNjZhZWMyODc1N2EyYWM4MjBmMzljMDlkZDEzMjQxYjhiZTk2MTFmNjA4MmRjOTZkNiJ9"
+          "resource": "repo://prisma/schema.prisma#L487-L487",
+          "version": "repo-lines-v1:sha256:caa158a951077e04ad1c66ae51fa6e31738879496aa2712c129e746b7613862f:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2FhMTU4YTk1MTA3N2UwNGFkMWM2NmFlNTFmYTZlMzE3Mzg4Nzk0OTZhYTI3MTJjMTI5ZTc0NmI3NjEzODYyZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2FhMTU4YTk1MTA3N2UwNGFkMWM2NmFlNTFmYTZlMzE3Mzg4Nzk0OTZhYTI3MTJjMTI5ZTc0NmI3NjEzODYyZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzNkNjI1Y2EzOTc5MzhjMTcwMjk0MTRjNDczOWM0MTUxZDg3YjFlMTBmOTViMTIwMTNhYjkyZjJmYTNkNzkwYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzFhZmFjOTNjMzZiY2IwYzAwZDgwMmMzY2I5Njc2MzJhNDRmZTNkZjQzNTYyZDIzM2Y3ODk0YWViNWUyZGU4OSJ9"
         }
       ]
     },
@@ -84,7 +84,7 @@
     },
     {
       "id": "claim_d81e12c979774ea783c45cfcbc93ad8e",
-      "statement": "삭제는 도메인 행을 지우는 트랜잭션 안에서 DELETE 의도를 만들고 자산 행을 삭제해 확정한 뒤, 커밋 이후에 외부 삭제를 실행해요. 트랜잭션이 커밋 전에 실패하면 자산 행과 의도가 모두 남지 않고 외부 삭제도 나가지 않아요.",
+      "statement": "삭제는 도메인 행을 지우는 트랜잭션 안에서 DELETE 의도를 만들고 자산 행을 삭제해 확정한 뒤, 커밋 이후에 외부 삭제를 실행해요. 트랜잭션이 커밋 전에 실패하면 전체가 롤백되어 자산 행은 그대로 남고 DELETE 의도는 생기지 않으며 외부 삭제도 나가지 않아요.",
       "evidence": [
         {
           "resource": "repo://src/shared/media/operations.ts#L86-L112",
@@ -118,11 +118,15 @@
     },
     {
       "id": "claim_0bf5a5331d1b4476b76b6866b84c9dc7",
-      "statement": "외부 삭제 실패는 DB 삭제를 되돌리지 않아요. deleteOrScheduleMediaAsset은 트랜잭션으로 의도를 확정하고 외부 삭제를 시도한 뒤 { deleted: status === \"COMPLETED\" }를 돌려주므로, Leemage가 실패하면 자산 행은 이미 없는 채 RECOVER 의도만 남고 deleted: false가 반환돼요.",
+      "statement": "외부 삭제 실패는 DB 삭제를 되돌리지 않아요. deleteOrScheduleMediaAsset은 트랜잭션으로 의도를 확정하고 외부 삭제를 시도한 뒤 { deleted: operation.status === \"COMPLETED\" }를 돌려주므로, Leemage가 실패하면 자산 행은 이미 없는 채 RECOVER 의도만 남고 deleted: false가 반환돼요. 자산 행이 이미 없어 scheduleAssetDeletion이 null을 돌려주면 외부 호출 없이 { deleted: true }예요.",
       "evidence": [
         {
           "resource": "repo://src/shared/media/media-service.ts#L75-L81",
           "version": "repo-lines-v1:sha256:683eea6103c3148b70129ad593810847add0ff1b1f0b93108b4b82c2cda32a8c:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjA0MTdjNWQ4NmNmNjBlMTRmNDkwM2YyYzRiNTk3MjgxMmU4Y2YwZTVlMzY4OGQxZmNlMmY0ZDE5NDI2NWI1YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmQwZjJkM2EzYWFkYTI3NTg2NDU3OGQwYTQzOTE1NjM4ZDU0M2ZlY2EyYzk0ODU4ZGI5NDEyMTFlODZjZWYyYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTE0NDIyZTkwZjllMWY2YjY1YTBlZDgxZmRlNGIzNTMyYmRkZWM0ZjY3MTFlMjdkMjgwNzdmMmE4OGM1ZTA4MCJ9"
+        },
+        {
+          "resource": "repo://src/shared/media/operations.ts#L94-L99",
+          "version": "repo-lines-v1:sha256:0e3dc0c8773da15ac506420d6d83f65c0fa5a98341843d2427a800cb2fc59c76:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDMzMTkwYmY4Y2I2ZWU5N2NjNzUzOWNkYzVjMWNhYTVmOWMxZGNiMGZhMzMzYjRmNTA0YzBkY2I4NTZmMDdmYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGE2NjIzMDlhYmEyNDIxZTBmYThkYzQyNGE5YzgyY2UwYzc2ZTEwMWMxYTQ1YTMyMmVkOGY5NWFkZDA1NDFmOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTUxZDE3OTI0ZWZlMTk3ZmFlM2U0NmYzOTllNzhjZmM0OWM1ZTQ3ODE3MDA5MjFiMWU3ZjEwMDMzNjUzYjA1MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODhmZDgzOTk0NzQ0NjNjODNjOTcxZjQ1YWU1YzhlMDg0MGU1ODdmYTBhMjAyNGYyZjU1YmRiNmJmZjAyYjhmMCJ9"
         },
         {
           "resource": "repo://tests/leemage-media.integration.ts#L124-L129",
@@ -135,8 +139,8 @@
       "statement": "요청 경로는 남은 정리 의도를 응답에 드러내요. 보컬 프로필 삭제는 완료되지 않은 의도가 있으면 mediaCleanupPending: true와 202를, 모두 COMPLETED면 200을 돌려주고, 믹싱 작업 삭제도 같은 플래그를 담아요.",
       "evidence": [
         {
-          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-detail-route.ts#L98-L106",
-          "version": "repo-lines-v1:sha256:1f81ea322bf67e5fa8a6a867bdaa21abbc1550452264b605aff815c20c9e9a63:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDhhZGJmODkyZDlkNDIzM2I4NzFhN2U0MDQwYTgwNzM1ZDQ0MWQwNDIxNWMyYTdiMWM4MTUxYzhhOGZlZWZmZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTVlZjAxYmMwOGRiYzNiNjNlNGU3NWVhM2QyNmE1Yjk0MTg5MTg3N2UyN2FkODkxMzI5Yzg0MTFkN2Q4ZGM0ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTI5NGYwMTZlMmZmYzNlYzc5YmRkN2I1NTE0NTA4YzQzMTE4ZmNkY2UzNjAwZjI1MTc0OTgzMjk3YzRlZmVkZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmE4YjljOGZkYjUwYWVjNDQ4NTdlZDRiYzVjNzNjNGQ1MDcxZmI5NDJhMDAwNjg5MmFmNDJlYWE3NmVmNDQ2NiJ9"
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-detail-route.ts#L113-L121",
+          "version": "repo-lines-v1:sha256:1f81ea322bf67e5fa8a6a867bdaa21abbc1550452264b605aff815c20c9e9a63:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDhhZGJmODkyZDlkNDIzM2I4NzFhN2U0MDQwYTgwNzM1ZDQ0MWQwNDIxNWMyYTdiMWM4MTUxYzhhOGZlZWZmZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTVlZjAxYmMwOGRiYzNiNjNlNGU3NWVhM2QyNmE1Yjk0MTg5MTg3N2UyN2FkODkxMzI5Yzg0MTFkN2Q4ZGM0ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTI5NGYwMTZlMmZmYzNlYzc5YmRkN2I1NTE0NTA4YzQzMTE4ZmNkY2UzNjAwZjI1MTc0OTgzMjk3YzRlZmVkZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWRjN2E3MjZhMDIwOTM4NTczMzYxYjcwYWJjNzgwMjQ0ODA3MGU0MGNhYjY4MDI3NTBhNmM2OGQ1NGRiMmRjNCJ9"
         },
         {
           "resource": "repo://src/entities/mixing-job/api/deletion.ts#L41-L48",
@@ -149,7 +153,7 @@
       "statement": "MediaOperation은 User나 자산 행에 FK를 걸지 않고 userId·assetId를 문자열 참조로만 갖기 때문에, 원인이 된 도메인 행을 지워도 정리 의도가 남아요. 상태는 문자열 컬럼이고 기본값은 PENDING이에요.",
       "evidence": [
         {
-          "resource": "repo://prisma/schema.prisma#L629-L651",
+          "resource": "repo://prisma/schema.prisma#L650-L672",
           "version": "repo-lines-v1:sha256:29f295f7c30b0fa23716b606d38532bc519d0e1469e57afd8a8eb470c517d46d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhODM3NTJmMDZiN2ZkNGIzYWRhNTkwNTI3ZGE5OGU4YTlhZTg5ZWM1ZmU0ODQ5YzBiM2NmOWE1NzY2MjM5ZmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY5ZDZkM2Y3YTRjNTFiZTZhOWNmMmU5Y2NmMDFlNTA5Yzg5NmQxMzBjNDYxOTVkN2VkMjZmNThlZDIyYWFhYTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJjNzc5MTgzYjgyMjMyMWEzYzY0ZmIwZmQxNDgwOGY0OTVhMmNiZGVhY2I4MmUzMTIwMzQ5M2RiZWRmZTI3OTIifQ"
         }
       ]
@@ -184,11 +188,15 @@
     },
     {
       "id": "claim_111ff25a6f8642459d4bb922e8942637",
-      "statement": "정리 실행 주체는 두 갈래예요. 삭제를 요청한 경로는 커밋 직후 processMediaOperation을 직접 호출해 그 자리에서 시도하고 실패분만 남기며, 워커는 매 반복마다 processOneMediaCleanup을 한 번 호출해 MediaCleanupJob 후보를 MediaOperation으로 옮기거나 MediaOperation 한 건을 처리해요. MediaCleanupJob은 이전 구조의 흔적으로, 현재 소스에 새 행을 만드는 코드는 없고 남은 행을 옮기는 경로만 있어요.",
+      "statement": "정리 실행 주체는 여러 갈래예요. 삭제를 요청한 경로는 커밋 직후 processMediaOperation을 직접 호출해 그 자리에서 시도하고 실패분만 남기며, 믹싱 워커는 매 반복마다, 보컬 프로필 분석 워커의 레인 0은 5초 간격으로 processOneMediaCleanup을 호출해요. 이 함수는 MediaCleanupJob 후보를 MediaOperation으로 옮기거나 MediaOperation 한 건을 처리하고, MediaCleanupJob은 이전 구조의 흔적으로 현재 소스에 새 행을 만드는 코드는 없어요.",
       "evidence": [
         {
-          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L573-L581",
-          "version": "repo-lines-v1:sha256:954c73a9e23c7077f91163b59162b6e9c87a941b90c9d1610bea471f9016c92e:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGM0YWI3ZWU5ZGVjMDdlZWVmMWQ3ZWNlMWQ3M2RjM2U1ZmJkYjU2ZWEwNjMxMDAwNDQ2OThkNTVmNTJkYmY1NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmRiYTdkMTY5OGM5MGExMDg2NTBiMzkzZGYxZGRjOTE3ZmRmZDQxNzAwMjBiNTBmOTk2OWIzNGM1OWYzYzI0ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L573-L580",
+          "version": "repo-lines-v1:sha256:ad2cebf54097236bf092c9d193e235542f80c1abbaeea40a834bc154f9181bac:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGM0YWI3ZWU5ZGVjMDdlZWVmMWQ3ZWNlMWQ3M2RjM2U1ZmJkYjU2ZWEwNjMxMDAwNDQ2OThkNTVmNTJkYmY1NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2RkODJiOWI2NmVkY2QwNDQ0NTFjNjkwNGEyMmU0OTQ0ZGQ0OGNlYWM4ZTE4ZDcxZmRkZDJmMWMzOWYyYzgzNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmRiYTdkMTY5OGM5MGExMDg2NTBiMzkzZGYxZGRjOTE3ZmRmZDQxNzAwMjBiNTBmOTk2OWIzNGM1OWYzYzI0ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/runner.ts#L26-L32",
+          "version": "repo-lines-v1:sha256:e1ce64d513bbcebb7a423b8cb2530ebf57d071ae134b390228ebbe83b851d375:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTQ2ZjgxODEwMTUyMjQ2Y2NhYTMwOGZmYzE1YTUxYmQ3YzczMTA0MjZhZTRmODAzZjY3NDVkMGM1MzU5YjgyMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTZiMDQ0OTE0Njk3MjJlODM2M2E5NGU0MDQ0NTM4ZTAxM2EyYTIxN2UzNmIxZTU2OGJhNjBhY2I3YjRjOGYyZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGExMThiZTk1ZTUwZTExM2VmZGIxNTRhYWMxZDQ5NGMxMzg2MDdkYzcyNTc2NTE2YWVmMGI4ZjI0Mzk2MTQ4YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGMwMjIxMjc3NjYzMjI5NmY0MDZhM2EwZDRiMzE3YjM5MGMzNzA1NTIwM2UyMjA2ZjI2NTg0MDNkYmMxYzE0MSJ9"
         },
         {
           "resource": "repo://src/shared/media/cleanup.ts#L6-L48",
@@ -264,11 +272,15 @@
     },
     {
       "id": "claim_ca0c448d4acb42f79513ebc7f598ed91",
-      "statement": "믹싱 결과 bytes는 업로드 전에 FFmpeg으로 AAC 44.1kHz 스테레오로 다시 인코딩되고, 자산에 기록되는 sizeBytes는 원본 응답 크기가 아니라 실제 업로드한 bytes 길이예요. 파일 이름은 자산 종류별 규칙으로 만들어져요.",
+      "statement": "믹싱 결과 bytes는 업로드 전에 FFmpeg으로 AAC 44.1kHz 스테레오로 다시 인코딩되고, 자산에 기록되는 sizeBytes는 원본 응답 크기가 아니라 실제 업로드한 bytes 길이예요. 파일 이름은 자산 종류별 규칙으로 만들고, 호출자가 fileName을 주지 않으면 확장자를 mime 타입에서 정해요(audio/mp4·audio/aac는 m4a, audio/webm은 webm, audio/mpeg는 mp3, 그 밖은 wav).",
       "evidence": [
         {
           "resource": "repo://src/shared/lib/audio/compress-mixing-result.ts#L55-L90",
           "version": "repo-lines-v1:sha256:e0aa9dd6e317dd2976541b22cda1b6b8efad66b1726237beae6f78edd4dc024b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlMTRlNTRjMTQ5YjE3ZGJjODM3ODIwODM3YmU5OWM5NTFlNDA3N2QyZjYyNTEwZGUwNmIxNzBkZjBjN2ZhMzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiZGRjMGVlNzljMTVlNGFiZTRhZTg1NTg1ZTQ2YjZhYWRkNWE0ODEyNDUxMjlhMmRmYWY1MGEwYjdlNzY3MDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3NTBmZTA3NjhlMjM1NjcwZmM2YmNiMThjMzAyZjg3NDA4YTA1YjIyZDE0NmNhNzhlZDkxMTQxMmEwYWRkMzIifQ"
+        },
+        {
+          "resource": "repo://src/shared/media/media-service.ts#L6-L11",
+          "version": "repo-lines-v1:sha256:e84a67894f05039bf0ee410e85d85c5562a3cbed2b357279d68e1f7f70a49483:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzU3ZTQxMzFhNjA1YTFhZWYyNmEzZDYzZmQ2YjRkYzliNWQ5ZGE5ZmM2YzFlNjVmNTIyOWZkM2Q0MjgxYzI3YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjM4ZDRkMzYxOTMyOTEzNjYxNGExNTNiMjg4NjhkZGVhOWFjMzI0ZTNlNjQzZWZiODEzZDcwY2MxYTk2MDkxZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmViYzI0ZDdiMTUzODI3MjBmYTZiY2ZhZmM5OGIzOTJlM2QzNTM4OTlhYmU1NTk1ZWM2Y2IwYjVlNTA2OGFkZCJ9"
         },
         {
           "resource": "repo://src/shared/media/media-service.ts#L87-L100",
@@ -278,39 +290,205 @@
     },
     {
       "id": "claim_ea81acc553e441dcb6ca4ec25a63152b",
-      "statement": "미디어 정합성 회귀는 테스트 명령으로 나뉘어 있어요. pnpm run test:media가 Leemage client 계약과 저장 통합 테스트를, pnpm run test:readiness가 커밋과 외부 호출 사이 실패 창을 재현하는 tests/media-recovery.integration.ts를, pnpm run test:vocal-profile-history가 프록시 헤더 계약 테스트를 실행해요.",
+      "statement": "미디어 정합성 회귀는 테스트 명령으로 나뉘어 있어요. pnpm run test:media(package.json L66)가 Leemage client 계약(tests/leemage-client.test.ts)과 tests/leemage-media.integration.ts를, pnpm run test:readiness(L71)가 커밋과 외부 호출 사이 실패 창을 재현하는 tests/media-recovery.integration.ts를 --test-concurrency=1로 직렬 실행하며, pnpm run test:vocal-profile-history(L53)가 프록시 헤더 계약 테스트를 실행해요.",
       "evidence": [
         {
-          "resource": "repo://package.json#L65-L70",
-          "version": "repo-lines-v1:sha256:fbe05d7d36cb1eb45d714f7f2f0aacd33dfd6011b24b9476f09dccd13d9b1c1b:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDcwYTU2OTYyNzQ0ZTkxY2MxMzNhOWJiZGM3NzQ4NjdlZmYxNWFkOGVkZTI3ZjAwZTEyYjIzZDI1YjFjMWMxNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE3Mzg5N2E1NDExY2FlNzlmZjE3NDVlYzA1MjMyMzVhODc5NmQ3ZDAwNjZlMDVlMGEwYmQ3MTJlOWFhNDFmOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjQxZWNjOGY1MTc2NDU3ZjdiMzNkOTcwNTBlM2FmNjgzNDNkMTY3YzAwOGRkYTliOGE1ZmFmMjIyMGQ0NGU5MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODIzNjQ4MmM4ZDI3N2MyOGUzMjdjNjNkYjdiMjU2M2Q3Y2ZlNjI1ODQzNjA0ZDM2NmFkYzUzOTkwNzU5OTA4NSJ9"
+          "resource": "repo://package.json#L53-L53",
+          "version": "repo-lines-v1:sha256:a7eea84457477b221db4448b36163d4afb6f7fbdd5829b8c1b3060dd7e8db83d:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTdlZWE4NDQ1NzQ3N2IyMjFkYjQ0NDhiMzYxNjNkNGFmYjZmN2ZiZGQ1ODI5YjhjMWIzMDYwZGQ3ZThkYjgzZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTdlZWE4NDQ1NzQ3N2IyMjFkYjQ0NDhiMzYxNjNkNGFmYjZmN2ZiZGQ1ODI5YjhjMWIzMDYwZGQ3ZThkYjgzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmQ1Y2Y2N2U3ZGIzMTU1MmJkYWY1MjE4OGE3ZWRkMmRhZWQ4YmIxMjJkMjA1OTVhOGVmODcyMWI2NjZkMTlmNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmZkMGQyM2IzZDg0N2YxYmVlYmM5ZGQ3NGRjNzZhZjg5NmU4YjA4N2U4MTBhMzVlNGRlNjY1ZTU4OWJmZGQyOSJ9"
         },
         {
-          "resource": "repo://tests/leemage-media.integration.ts#L7-L143",
-          "version": "repo-lines-v1:sha256:bd266e77b824ba7029d9d32b4fd2517d34747fb847ec2887efca30d81b7b1414:eyJzZWxlY3RlZExpbmVDb3VudCI6MTM3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlOTY2N2YxY2M3YmRmYTRiNjU5MjQzNTI0ZDM4Yjk5ZjliMzZhMTdkZjEyNWU2MTI3YjlkMDhjNzQwN2QxMjY1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNmY1YjQwYjE1ODQ1N2QxNzg2NGYyMTc5MDc4NmRkNWEyZWNkYjY0YjY2YTY1MWY3ODhkNGUyNWNkMzMwM2QyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJmNGRiNDVlMGJlMzE4MDU2MGNlMjQ2NjJjZTUzNmViZjJkYmJiZGU0Yzg4Mjk2N2FkYTU2NDExZTc4M2RhNmRkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJmZDU0M2I5YjlhNDNlYmYzMTk1YzU0YjE5OWRjYTNiNjU2ZmMwOGUzODE3NTEzZjk2ZTA5N2RhNDljYjUyZjE2In0"
+          "resource": "repo://package.json#L66-L66",
+          "version": "repo-lines-v1:sha256:470a56962744e91cc133a9bbdc774867eff15ad8ede27f00e12b23d25b1c1c17:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDcwYTU2OTYyNzQ0ZTkxY2MxMzNhOWJiZGM3NzQ4NjdlZmYxNWFkOGVkZTI3ZjAwZTEyYjIzZDI1YjFjMWMxNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDcwYTU2OTYyNzQ0ZTkxY2MxMzNhOWJiZGM3NzQ4NjdlZmYxNWFkOGVkZTI3ZjAwZTEyYjIzZDI1YjFjMWMxNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjQxZWNjOGY1MTc2NDU3ZjdiMzNkOTcwNTBlM2FmNjgzNDNkMTY3YzAwOGRkYTliOGE1ZmFmMjIyMGQ0NGU5MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmI2NDk5ODEwMTQxNDc1MjNjNTZlMjRhMWY3MTNhMjJjNTZkOTUzMmM1YWY4ZTlmNGZjMDI0NmViNThhYmMwMCJ9"
         },
         {
-          "resource": "repo://tests/media-recovery.integration.ts#L7-L117",
-          "version": "repo-lines-v1:sha256:5dcddd2a4dc257ca30b871d13782fc3381aaeeec63d0f2c1216c9c5fed32522e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTExLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI0MmQ4MGEzODAzYzBlNmY5NDMxMGEzNTBhYjlmMjNlODUwMmI0OTM3M2RkMzRjYzIxYjU5NjcwNzA3MGIxNWMyIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIyN2U1Nzg4ZDVkOWQ3M2QyNGE4MWRiYzBhNWE3NGJmYTgyYzljM2IzYWY5OWU1MmFmNzk2ZTkwYjQ2OGE4YTNkIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJmNGRiNDVlMGJlMzE4MDU2MGNlMjQ2NjJjZTUzNmViZjJkYmJiZGU0Yzg4Mjk2N2FkYTU2NDExZTc4M2RhNmRkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MSwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJmNmY1YjQwYjE1ODQ1N2QxNzg2NGYyMTc5MDc4NmRkNWEyZWNkYjY0YjY2YTY1MWY3ODhkNGUyNWNkMzMwM2QyIn0"
+          "resource": "repo://package.json#L71-L71",
+          "version": "repo-lines-v1:sha256:ea73897a5411cae79ff1745ec0523235a8796d7d0066e05e0a0bd712e9aa41f8:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE3Mzg5N2E1NDExY2FlNzlmZjE3NDVlYzA1MjMyMzVhODc5NmQ3ZDAwNjZlMDVlMGEwYmQ3MTJlOWFhNDFmOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE3Mzg5N2E1NDExY2FlNzlmZjE3NDVlYzA1MjMyMzVhODc5NmQ3ZDAwNjZlMDVlMGEwYmQ3MTJlOWFhNDFmOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjYwOGNlZTQ1ZGQ3MmU1ZTFlNGE4MDZlZTgxMmZiYjk3ZDRjNjdmYTEzZmY5NjI4MjA3Mzc1OGFlN2Y5MGQ1OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjU0OWZkOTQ3NDZjMGVmOWRjMmM4NmE1MzQ2ZTA1MmE4N2IzZDUxZTM0MzQzNDIwMjVkZjMxMTY4OGQ0YzVmNSJ9"
+        },
+        {
+          "resource": "repo://tests/leemage-media.integration.ts#L7-L197",
+          "version": "repo-lines-v1:sha256:17b8722eb8b09fbeffadf1b23177cc1cf5be2dc33bde26ddc0bbd3965f482e06:eyJzZWxlY3RlZExpbmVDb3VudCI6MTkxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlOTY2N2YxY2M3YmRmYTRiNjU5MjQzNTI0ZDM4Yjk5ZjliMzZhMTdkZjEyNWU2MTI3YjlkMDhjNzQwN2QxMjY1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNmY1YjQwYjE1ODQ1N2QxNzg2NGYyMTc5MDc4NmRkNWEyZWNkYjY0YjY2YTY1MWY3ODhkNGUyNWNkMzMwM2QyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJmNGRiNDVlMGJlMzE4MDU2MGNlMjQ2NjJjZTUzNmViZjJkYmJiZGU0Yzg4Mjk2N2FkYTU2NDExZTc4M2RhNmRkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        },
+        {
+          "resource": "repo://tests/media-recovery.integration.ts#L7-L118",
+          "version": "repo-lines-v1:sha256:6fe884a99232a7a623287ca2165ed046acfb1b1fd08a07aea15e93227bfc287f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI0MmQ4MGEzODAzYzBlNmY5NDMxMGEzNTBhYjlmMjNlODUwMmI0OTM3M2RkMzRjYzIxYjU5NjcwNzA3MGIxNWMyIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNmY1YjQwYjE1ODQ1N2QxNzg2NGYyMTc5MDc4NmRkNWEyZWNkYjY0YjY2YTY1MWY3ODhkNGUyNWNkMzMwM2QyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJmNGRiNDVlMGJlMzE4MDU2MGNlMjQ2NjJjZTUzNmViZjJkYmJiZGU0Yzg4Mjk2N2FkYTU2NDExZTc4M2RhNmRkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
     {
       "id": "claim_afe3fd205d5d416a9bd06a3df7a21c70",
-      "statement": "업로드 뒤 도메인 저장에 실패하거나 워커 트랜잭션이 롤백되면 호출자가 discardMediaAsset(내부적으로 deleteOrScheduleMediaAsset을 호출)으로 방금 만든 자산을 되돌려요.",
+      "statement": "업로드 뒤 도메인 저장이나 확정 트랜잭션에 실패하면 호출자가 discardMediaAsset(내부적으로 deleteOrScheduleMediaAsset을 호출)으로 방금 만든 자산을 되돌려요.",
       "evidence": [
         {
-          "resource": "repo://src/features/analyze-vocal-profile/api/analysis-queue.ts#L175-L194",
-          "version": "repo-lines-v1:sha256:90e0be5c503b64adc85a40f45386a64b5f138167c5115cd0e9440ce8c7157a3b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmOTAxMTY1NWUzY2NjODYzZWJiNDhjN2Q1ZmJjNWFjN2NkOTVjMjM4NzJlMzliODgyYmVhODg0MzM5MTA5ZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU0NDE5N2RmYTAyYTA5NDYyZWEyZjYxMzRmODg0MGYwZTNmMmM2N2FlZTU4MjNjM2IwNmU0ZmU1YWVmNTIzOGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE0YjM5MjFiMThlOGM4YzliMGI1MWExOTczNmQwNGRhODdmOTg1MTY1NDJhMWFhMDE0ZmVmOWY5OGQ0MzA4MGQifQ"
+          "resource": "repo://src/features/analyze-vocal-profile/api/analysis-queue.ts#L215-L236",
+          "version": "repo-lines-v1:sha256:996a0da5d0454449838002acf8b4a05c7035a6b73ebda2b598b1223aa7ba87d3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhNzdiZDEwOWVlNDAxYjdlMWE5NDM4YjY3ZGJmYjRhZmE2ODZhZmY4OTcwMTY0NDVlZDQ1YmE4NjkyM2ZiMzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU0NDE5N2RmYTAyYTA5NDYyZWEyZjYxMzRmODg0MGYwZTNmMmM2N2FlZTU4MjNjM2IwNmU0ZmU1YWVmNTIzOGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE0YjM5MjFiMThlOGM4YzliMGI1MWExOTczNmQwNGRhODdmOTg1MTY1NDJhMWFhMDE0ZmVmOWY5OGQ0MzA4MGQifQ"
         },
         {
           "resource": "repo://src/shared/media/media-service.ts#L83-L85",
           "version": "repo-lines-v1:sha256:6c4b6f83ac3b1e6b54e7cd6725ef445d5304b1ca65ea29daa8382ce364b22993:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzBhZTU5OWM4M2RkZjgxZjQxMTNjM2YwNzdmZjBkMTMxMjRjMDgxZTU3YmQ1NDcwYTI1NjMxNTY5YWQ2YTE3YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjg0MGNiODRkYWUyNzlhZmE3MDhmMmUzNWE5ZGM3MjllODhlMTIwZTYxYjdkYTNmMTBhYzZhYmFmMjY1Zjg1NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjFlZWI3ZjMyNjI2MjU1NzE5MTFmYThiMDk3N2I1OGZkMDY5ZWUzMmU5MTc5YmNjNGE2OTljZjk2YWI4MmU1MyJ9"
         }
       ]
+    },
+    {
+      "id": "claim_66c8f78c68eb4b8e86266effd9dcac9d",
+      "statement": "자산을 되돌리는 호출 지점은 상황별로 나뉘어요. enqueueVocalProfileAnalysis는 트랜잭션 안에서 같은 idempotency key의 작업을 찾았을 때, P2002 경쟁으로 기존 작업을 다시 찾았을 때, 바깥 catch에서 방금 올린 REFERENCE를 버리고, persistAnalyzedVocalProfile은 합성 레퍼런스 bytes가 빠졌을 때 REFERENCE를, 프로필 저장 트랜잭션이 실패했을 때 REFERENCE와 SYNTHESIS_REFERENCE를 버리며, 믹싱 워커는 성공 확정 트랜잭션이 실패하면 MIX_RESULT를 버려요. 반면 persistQueuedAnalyzedVocalProfile은 자기가 새로 올린 SYNTHESIS_REFERENCE만 버리고, 원본 자산 삭제는 워커의 실패 확정에 맡겨요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L536-L539",
+          "version": "repo-lines-v1:sha256:3e32374e6f5fd861c9704f969217307ddc92ee88d6837bb463a74fa791fb7532:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjgzZDYxNzUxY2VjNDJhZjY2N2I5ZDIwYmNjNDQyYWU1M2VlM2VlZTgzYjNiMzQxN2IyOGQ2MzI3ODA0M2ViNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTZiMDQ0OTE0Njk3MjJlODM2M2E5NGU0MDQ0NTM4ZTAxM2EyYTIxN2UzNmIxZTU2OGJhNjBhY2I3YjRjOGYyZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTcwZWYyODc1MjkzNTBlZGE2YTkwYmZiMDJjMmM1YmMwMGJjMmJhNzJhYWU0YjNmMDAxNWM4MGM1OTUwODNkYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODE1ZTg3MDE5MzUyMTkwMzgxMTFhNWQ3ZjUzZjVkY2Y5N2FhZDBjODYyYTYyZjQ4OTVmM2I1OThmMzgxMWUxYSJ9"
+        },
+        {
+          "resource": "repo://src/entities/vocal-profile/api/persistence.ts#L138-L143",
+          "version": "repo-lines-v1:sha256:c3a1b9a42c6c51dc7353df135c9747408e198ea1bceac6dfa8c59cef3fdb15ca:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGVkYmY4Mzg3NTM2ODk2NmYzMTNhZTYzOTUzOWM0MDM3MDA0NWJhNTNlMmUyY2VlOTNiYjY3ZDVkYTE3Yjk4MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTA5M2UxMjkwNmE2MWZkNWMwODlmZWU4ZmNhZmQ5NTJlNTdhNTkwOWEyNDlkZDEyNTA5NDk4ZDI3MWE3MWM5NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2E2ODdjY2FhYWYwNjVmYjQ2NGI4NmIxZmQwMjhlYWU1NzZhYTdiMGU5MGRlOWFmZjdlMTk1Yjk0ODlkNmRlMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjc5NjkxMmY1ZGE4YzE1YTE5N2FhNzc4MGJlY2ViN2ZiOTI3NzQ3MjkxMDM4MjlkYWZiNzg2Mzk1MTVmMTAyZSJ9"
+        },
+        {
+          "resource": "repo://src/entities/vocal-profile/api/persistence.ts#L278-L279",
+          "version": "repo-lines-v1:sha256:a3087519a178a2105e0f4e696ca648e4e70111196ecee2ea7dc15f3bf26731b7:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzM4MjFkNGEzZDQ4NzRjMTUxNjczMjgxOWE2MmEyOThiNGM5NTU3YmI2NDM1NDFiNDE3M2M4NTE1NWRlZjliZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjFiMGVhMGE0OTUxYjBhODI2YjUxMjZjODRkMTU3ZjI3NGI0NTE3ODVkOGRlNDIwMzI5YjJmYTljNTUxNDkyNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2YxNzZkYmY0NmU0MzUyOWUxNWIxMzQ0YjFhNTJiNmI1YzFhNGQ2ZjA4ZGYwM2Y5NTA4OWNmZmE4NTQ0NmJlNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTU4OWM1NTA2OTMzMWVlMDZhNmI1ZGMyMmYyNDdlMTdmNDBjMGNiM2E1OWU0MTk0NmY0YTQ4NGI2MDViNzZjNiJ9"
+        },
+        {
+          "resource": "repo://src/entities/vocal-profile/api/persistence.ts#L60-L89",
+          "version": "repo-lines-v1:sha256:5eeae0438f5e2c7c2f49fdff0076032399142d7d69c4b60e4c17f649c1849a83:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyMDcyMDRkNDUzMjMwYWEzZjg0NjA5M2Y2NTI4MTg5YmE2MjA2N2I2OWZmMzE3MzI3MmJjOTVmODZhNmI3MjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkYjNlN2NkMGMzYTYyMzA0NzY2ODE2MWQxMDRlOTlkODYyMDljYTNlNzc1NGEyNWIxMTlhNDkwNzg3ODA0MjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAzMDY3M2ZhMDYzYjhhM2M1ZTM1YjU3MmRmYmVmOThhYzc1NDkzMzU5YjMxYjdiMThmOWIxZGYyZjM4MWIzNmEifQ"
+        },
+        {
+          "resource": "repo://src/features/analyze-vocal-profile/api/analysis-queue.ts#L215-L236",
+          "version": "repo-lines-v1:sha256:996a0da5d0454449838002acf8b4a05c7035a6b73ebda2b598b1223aa7ba87d3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhNzdiZDEwOWVlNDAxYjdlMWE5NDM4YjY3ZGJmYjRhZmE2ODZhZmY4OTcwMTY0NDVlZDQ1YmE4NjkyM2ZiMzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU0NDE5N2RmYTAyYTA5NDYyZWEyZjYxMzRmODg0MGYwZTNmMmM2N2FlZTU4MjNjM2IwNmU0ZmU1YWVmNTIzOGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE0YjM5MjFiMThlOGM4YzliMGI1MWExOTczNmQwNGRhODdmOTg1MTY1NDJhMWFhMDE0ZmVmOWY5OGQ0MzA4MGQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3e0d2dc5dd1c4c16948dbe5f750ccdc6",
+      "statement": "보컬 프로필 분석 워커는 실패를 확정할 때 job.sourceAssetId를 null로 바꾸고 scheduleAssetDeletion으로 원본 자산 삭제를 예약해요. 자산이 이미 작업 행에 붙은 뒤의 실패를 워커가 이어받는 구조예요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L203-L220",
+          "version": "repo-lines-v1:sha256:311978519b82a289e21cf7651a4a22b6ac89a5965bc4ea5db3773d445124a3ec:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0ZmJjYzRiNDI5MTg3NzlmMmVmOGU4NGVlZjNlZWFmYzI2YmE5ZjU4MjhiYTA2NzgzNzM0NTIyZTJhMDM3NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhMjIzY2Q2ODQyMTNlMmM0NDZhZjM2YzI1NGFiMDZiYWQ4OTdjYWNkNDlmNjZjMWE0MTA5NTdiZjQwZGRiYTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2ZTUxZTBkMDA4ZjE2YzdhMmI3MDAyZThiYzQ2NTQ4N2FlMmY1YTMzYjA4ZjczZjUzNWQwMGJmMjhiODdmZTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlkZDJjNjgyYTNkYzRlMWM0NGU1ZDVjZDMwNWJjYWRmYTgxYzcyZTA3MDdkMmU5NTg4NjJkNDc4OGZiZGU0NjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7c670d88efd44dc082020f4fc158470c",
+      "statement": "업로드 의도의 실패 표시는 best-effort예요. RECOVER 갱신 자체가 실패해도 원래 UPLOADING 의도가 생성 시점에 잡아 둔 15분 뒤 nextAttemptAt으로 정리 후보에 남아요.",
+      "evidence": [
+        {
+          "resource": "repo://src/shared/media/operations.ts#L47-L60",
+          "version": "repo-lines-v1:sha256:1c0ea83c0f3f4d1bfeec181f8df988834368b950c78ca523e6d15036c2133c79:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlZGJmODM4NzUzNjg5NjZmMzEzYWU2Mzk1MzljNDAzNzAwNDViYTUzZTJlMmNlZTkzYmI2N2Q1ZGExN2I5ODAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFhYTU0ZDgzZTQ3NzZjNDVhNTg0ZDI2MzZmYWQyZTM1Y2ViZGI4NTY0OWE2YWNhMjdmMDBkZjE3MGFjNWRjZTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2YzJmMzMyNTUwOTEwMWYwOGMyZWIyMGIzZmYyNGFkMGI0MGIzZGU2YWQ3ZDUyZjNlMjVkMTViZWFiZDYwODIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d0a54ab55a904a7bb9cd4ce2e4daa083",
+      "statement": "비회원 체험 결과 삭제는 새 정리 절차를 만들지 않아요. purgeGuestResult가 지울 자산마다 scheduleAssetDeletion을 호출해 같은 예약 경로를 재사용하고 외부 파일 삭제는 다음 워커 반복으로 넘기며, 체험용 보컬 프로필 DELETE 라우트는 외부 삭제를 시도하지 않고 곧바로 202와 mediaCleanupPending: true를 돌려줘요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-detail-route.ts#L74-L82",
+          "version": "repo-lines-v1:sha256:18c6dbba64a4b02b131c1a2e8c60236561099011af425dc4eb382c27481ea7c4:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDY2MDllMzJjYzkwMGRlODY4YjMwODdmYTczOTIzYjM2YzQ2ZjFiNTM0MTA2OTY4MDM1Nzg5OWY5MDdmZWZmZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzdlOWJjMjU2ZDFkMjQxYjQwMmYyZjg2YzA3MmRlOTFkZGMwODZhMmY3ZWZiYTE4N2Y1ODNlNDQ1ZDg2MGE4YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTdiYjE0NDIwZWMwMjBhMmM3MGQzYzZmZGZiYjQwNjk3ZGY3Y2EzYzY4M2JhZTJmODA0YzdlNDlkYzUzZmI3YyJ9"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/api/lifecycle.ts#L114-L132",
+          "version": "repo-lines-v1:sha256:8edc4313a832478558c7df3f849652109bee648667719b8639b5b3249929881b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwMDVjMmE2NDU1YzZkYzJkNTVmODk4NzBkY2YzMjMzNmU4ZDc3MmY4OGE3NzMyOWI2NDZiNTRlMjRmMjAzODgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBhNjJiN2Y3MmRmNzZmYzZjMTY0MjRlZDNiYTE3YWJlYjgxOTE5MmYzZjY2N2M1MzJjOWViNjRiMjM2OTZjZTkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_92023fa8d10347d1b6f6155da192d6c0",
+      "statement": "체험 결과를 회원이 저장하면 소유권 이전 트랜잭션이 그 자산 행의 userId와 assetId로 묶인 MediaOperation의 userId도 함께 새 회원으로 옮겨요.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/guest-analysis/api/lifecycle.ts#L98-L105",
+          "version": "repo-lines-v1:sha256:9e601fc2c78ecd2c74b46a8cd2185b861f4d1b457fa4f37e1e67839944a0080e:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzY5Mzk3NWJhODJiMzk0YjVhNGI2Yzk5OGY2Yzc2NWQzOTAwMmU1MDFhNDM3Yjc1MjUxNzliOTMxY2Q2Zjg4YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjJkMTFjYWY0M2U5N2VmMzY5ZTZiZWVkMWEyNjhiZDA1ODM4ZjI5YjlkZDI1NGJmNjliYTY0ODg0MTQ3MjM0YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDk4MmM2OTk2YmQ1OTA2MjAwMmE2ZTk5YTZlODk0ZGRhYTUxMTEzMzYzZmE1ZWM0YzRkN2RmMjYxMWE1OWNlNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjk1YTY1MDdhOTZmYThkMWNjYjM5MGY3MzAwMWM0OGEzMDMwZmEzMjk3NDZmNjM1NDI3MjQ4OTFiMjk1NjFjZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_b0643c7001e14034af79b984b17f4231",
+      "statement": "비공개 오디오 중계 헬퍼 proxyPrivateAudio를 부르는 곳은 보컬 프로필 원본 음성 라우트와 합성 레퍼런스 라우트이고, 두 라우트 모두 소유권과 체험 읽기 권한을 먼저 확인한 뒤에 externalUrl을 넘겨요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-audio-route.ts#L7-L34",
+          "version": "repo-lines-v1:sha256:acb9221fdb0c3270b0930c32c8b8ed4f67eacf0b2281e6ec8d623f40647e4ce9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlMDZiNzQ3MDEwODNhNzgxYWMyYWUzMjZkZjdjNTljNDFlMDU5ZmE1YTJhZjQ1NGNiNDNiNDJmOWMyYzc1NTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzZDJmNTM3MDdkNTA0OWIzNmQzZTcyZjllZDY1YTNkMzQ5NjY2OGRhN2IzZmE5ZjM2MzlmNzBhZjU2ZjhhMmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFlZmFhZjRhMDNjMDAxODg4YjE4NWUyMWI1NWI2MTZkNzUxYzUxYTgzOTJiMjFkZjc1YTgwM2FhZmMxMDZhZjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-synthesis-reference-audio-route.ts#L7-L42",
+          "version": "repo-lines-v1:sha256:7d7cf2816cbc698148b4d60b3780fcf5f9278211218e6724adbdb8d2fad88250:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlMDZiNzQ3MDEwODNhNzgxYWMyYWUzMjZkZjdjNTljNDFlMDU5ZmE1YTJhZjQ1NGNiNDNiNDJmOWMyYzc1NTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFlZmFhZjRhMDNjMDAxODg4YjE4NWUyMWI1NWI2MTZkNzUxYzUxYTgzOTJiMjFkZjc1YTgwM2FhZmMxMDZhZjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRkZWYxMDdhMDczMzg3MThlZDZmYmZlNzdjYWIzODk3NTE4NjU0NzE0Y2U2MjMzODQwY2ZkZjVjMTgxYzQxYjEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cc27ce559d3f4b458bfec96c0e7f43ae",
+      "statement": "tests/leemage-media.integration.ts는 DATABASE_URL이 없으면 건너뛰고 stub fetch로 네트워크를 대체하며, 마지막 테스트는 소스에 새 행을 만드는 코드가 없는 MediaCleanupJob 후보를 fixture로 직접 만들고 processOneMediaCleanup이 자산 행과 정리 행을 함께 지우는지 확인해요.",
+      "evidence": [
+        {
+          "resource": "repo://tests/leemage-media.integration.ts#L145-L197",
+          "version": "repo-lines-v1:sha256:ea3d7aa0fbbe783d33175a0494eaa487ec36f517cecdf80b22f42013f5f8d944:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3NmY4YmM5Y2Y1Njk5MDY4N2QzMzEwOTgwNTJmY2U3NmE2MTBlMjE4YjA5ZDdmYzlkYjU1ZWJkMTNjZmYxOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViMWVhMTVhMGY3YjFkNzc0MWMwOTJkZTgwMmQzOWZkYTQ0MzRlY2YwNWY5NDM1OGM2ZjM2OWNhOTExNmUyMmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3797c073280742e68a9f1482cbb4b376",
+      "statement": "Leemage 호출 타임아웃 기본값은 src/shared/lib/runtime/limits.ts의 런타임 한도에서 오고, 각 값은 1 이상의 정수여야 해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/shared/lib/runtime/limits.ts#L10-L19",
+          "version": "repo-lines-v1:sha256:028e629fd3f67da510b2da557f59c6cea6ad582cd2c1e2c213bb6f4f1c16d7d8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZjZjU1NWY5Y2VkZjEyMzNiYTY0Y2Y3Mzk1YzBlOGFiOGY3ZjA1OWYwMzIyMjAwMWY3NmY5YjI2NjFiYmZhNzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcxODg3MGE4MDQwOWY4YzRjOTk0ODA3YWY4MjU5Y2MwNGJkMGM1Y2EyZTlmMWMzYjEzZGVmMTBiMTYyNzg2ZDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_749b088266f74e42aedcd42ea1aad6a5",
+      "statement": "서버 코드는 src/shared/media/index.server.ts barrel을 통해 미디어 모듈을 가져와요. 이 barrel은 audio-proxy·cleanup·client·media-service를 다시 내보내고 operations에서는 processMediaOperation·scheduleAssetDeletion·uploadTrackedAsset 세 함수만 공개해요. 반면 단위 테스트는 server-only 표시가 붙은 더 좁은 진입점 index.audio-proxy.server.ts와 index.leemage-client.server.ts를 써요.",
+      "evidence": [
+        {
+          "resource": "repo://src/shared/media/index.audio-proxy.server.ts#L1-L3",
+          "version": "repo-lines-v1:sha256:692ee3f6497c16abae56102bff01efbe10171f9301458edffe96740a2abb514d:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGMwZjQ4ZTM4ZmJkYjZjMGVmZTk4N2M5ODQ1MjFlZDA3NDMyNzU1YjZiYWFjY2Y0NWQ5NzdlNTdkYjdjYmFkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODU1YjMxZDQzYTM1MzEwZmM2ZjE1NTNhMjk2YThhZWYwMmU3M2NkY2E2ZWY5YWYyYWU0ZDQ3NDg4N2U5ZWE3MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/shared/media/index.leemage-client.server.ts#L1-L3",
+          "version": "repo-lines-v1:sha256:04c06d7151638089125bab39d572c7e9a26b84254be2156c19cde3a1fbdb04f5:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGMwZjQ4ZTM4ZmJkYjZjMGVmZTk4N2M5ODQ1MjFlZDA3NDMyNzU1YjZiYWFjY2Y0NWQ5NzdlNTdkYjdjYmFkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTJkZTY2YTQzOTk1MWUxMjRiNDA5MTU2YjFiZGFlMDQ2MzkzY2FjN2QyM2UzNDE5MzNiNjI0YmFhMTU1ODhjNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/shared/media/index.server.ts#L1-L8",
+          "version": "repo-lines-v1:sha256:39ada80344851f1e7a14a3050345c0c101744228ffa81ab4931474d44ac39f35:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGMwZjQ4ZTM4ZmJkYjZjMGVmZTk4N2M5ODQ1MjFlZDA3NDMyNzU1YjZiYWFjY2Y0NWQ5NzdlNTdkYjdjYmFkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjE2ODZlNjY2NjgyNWQ1OTk2ZmZlN2NmYzcxNjVmNzg2YzdkMmRjOGUwODc3MWRmZTE1OTBlZWI1NzFkZmFjMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://tests/leemage-client.test.ts#L1-L4",
+          "version": "repo-lines-v1:sha256:3aeae22a5abaa7f28ec2997fb1588dc9a650e710a3dc363185fdf8344ff85a0b:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzZjN2NjZTBhNzBiMzRlZmEzYWUzODBlYTEyMDZlNGZmMDAzM2ZmMmY3NmU3YzZkZmU0Y2UzZjdkY2QwODYyMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmJhODAzZWNjYWMyMDdjYThjNzJlMDJhODdiM2U1MGVhZmM2ODZlMjJkYTY1ZDI5NGFlZjEwMGQ2MmFmMDUyYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDE2MThmZGY4ODE5ZWE2M2EyOTczNGQ5MDZkOTBkMjA5ZjY4N2EwMTNiNDZlNmI2OWI4ODVmOWFhODA1N2EyYyJ9"
+        },
+        {
+          "resource": "repo://tests/private-audio-proxy.test.ts#L1-L4",
+          "version": "repo-lines-v1:sha256:ac88c24a5b5c176651022182d9ec0b2db2453e5adc90a758879683b678cc53f8:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzZjN2NjZTBhNzBiMzRlZmEzYWUzODBlYTEyMDZlNGZmMDAzM2ZmMmY3NmU3YzZkZmU0Y2UzZjdkY2QwODYyMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWI1NmFhZWZlYzVkZDE4YjhiZGZiOTM5YzJjYWYxZDYyODUxNWFhYTgzMWE4MWJkNTdmYmQ1M2RiNGYwNWJjZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjcyYzExNWIxZTk4MDYxY2MzMWNkZWMyMGZlNTM2Mzk3NWE5ZDRlNTJkN2JmN2Q3MTczODg2MGQxNGYyM2I5MCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_5a70245fb3e546ddbc6eebbcb091b8ad",
+      "statement": "uploadTrackedAsset은 업로드 의도를 만들기 전에 leemageConfigFromEnv()로 설정을 읽어요. 그래서 LEEMAGE_API_KEY나 LEEMAGE_PROJECT_ID가 비어 있으면 LeemageError가 먼저 나고 UPLOADING 의도나 externalProjectId가 남지 않아요.",
+      "evidence": [
+        {
+          "resource": "repo://src/shared/media/client.ts#L34-L46",
+          "version": "repo-lines-v1:sha256:b16fb70f4e9e6ac2d2803b3782d591bcc2ccc4add10c4976f2ad96e6f8c77315:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2NjMyMTk2MWFkYjg4YmEwMTU0ZTA4ZTg2NjdkZjRiZmMzYzljMjA0ZmE2NWU2NzE1N2M2ZTRhOGVjYjNmNzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI3YTA1ZGQxMmMxMzViYThhYmMwZDM0ZDE0NGMzMzhkOWM5MTk3NjU2ZGYwNzRmNzJmNzRmODM4NWE0NWU1YTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ3MjA0NGYzNjljOWRkNDIyOWQ3NTcyNDNiMWQyYjE4OGU2YmIyNWMzYmQ1ZDJmOTU0YTZjNzdlMWMyY2MxZjEifQ"
+        },
+        {
+          "resource": "repo://src/shared/media/operations.ts#L18-L28",
+          "version": "repo-lines-v1:sha256:de4f181af94d951c44b209d9e47d6c7eaecaf21caf1908ff2806bfd661105bcc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyN2E0MzMxYTVkYzEzOTFkYmY2MWYwYjU2Yzc0MjY0YjYyNGNmNmRjZTMxNmU4YmNmZjk0YWJhNGY2OTg0YmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmNmQxMjI5OWQ4ZDBhMDhkYzZjY2M5YWM0NTQ0ZDA4MDkzOWMwZWU1MTQ4MTkwNTZiY2NhNWY4YzQ3N2JmNmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU1NWNhZjI0ZDAwMWVjYTRjYzYyNjk0YWVlYzIzMTk4ZDczNGVlZTE4OWI2MGRkNzBhMmJmODU1MmQ1NDdiMGUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_61f31b11376a4cf3b8e0e33a969dd6d0",
+      "statement": "호출자는 참조 때문에 삭제가 막히는 경우를 미리 사용자 오류로 바꿔요. 보컬 프로필 삭제 라우트는 프로필을 FOR UPDATE로 잠그고 읽은 뒤 연결된 믹싱 작업 수가 1 이상이면 PROFILE_IN_USE 409로 끝내 자산 정리 단계에 들어가지 않고, 곡 원곡 자산 정리 함수는 MEDIA_ASSET_IN_USE를 잡아 지우지 못함을 뜻하는 false로 돌려주고 그 밖의 오류는 다시 던져요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-detail-route.ts#L83-L112",
+          "version": "repo-lines-v1:sha256:aa54dc5d609d533ea11fddd8ebb5654c34876b0ceb74dfc4ff8aad818850e05b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZjMzA1MWE1ZDBkZjE5NDJkZWMzMWZlNzc1NmRiZjEwODBmMDdiZWNiMjM0Yjc2ZThjODA2MGVhNjM1ZTVjYTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNiNTllYTEwNDNlMDYwOTEyNDE2ZGVlZTdlNWU2NjdiZDM2ZWIwZjE2MzY0N2RiOWY4NDA2Nzc5MThkM2IwZGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUxYmY4MjZhMDI0YWE2ZjdlZGI5MmNlMzk1MTVhMDBkNDgyODgyZjRiM2Y0YjYxNWFkMWQ1YTQ3NTBhZmU2NzYifQ"
+        },
+        {
+          "resource": "repo://src/features/manage-song-catalog/api/target-assets.ts#L68-L81",
+          "version": "repo-lines-v1:sha256:48b4ecd29d684e5e01a698dd2f7aad5010e78233e26689ddf5f3623c64c27f02:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyZmUyODA3NzRhNWZkOGIzZTQ1NjE4MDFkYWJiNjc2Y2YyNTIzYzFmNjBiOWM0Y2M5MWEyYjJjMzBjZGRmYzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5NGZjMGMxNzNkMWVjM2ZjNTAxZDdkZmE5Mjg1NTAxYzUyN2NmYjQ3MTI1ODNkYTNjYzM2MTgwNTY2YjRiZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.5.0",
-    "at": "2026-09-18T10:11:56.372Z"
+    "by": "openwiki/0.7.2",
+    "at": "2026-11-01T16:00:39.866Z"
   }
 }

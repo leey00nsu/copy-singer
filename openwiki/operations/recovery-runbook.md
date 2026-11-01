@@ -26,6 +26,10 @@ sources:
     resource: repo://src/_app/background-jobs/mixing/worker.ts
   - id: openwiki-source-c4cc90d48cd4c0306be7e0c0
     resource: repo://src/_app/background-jobs/song-analysis/worker.ts
+  - id: openwiki-source-9323b2aad36f9dea3b710fc8
+    resource: repo://src/_app/background-jobs/vocal-profile-analysis/runner.ts
+  - id: openwiki-source-37055abf050f6159b42c001a
+    resource: repo://src/entities/guest-analysis/api/lifecycle.ts
   - id: openwiki-source-eb3d61d7e6a4647651cc0369
     resource: repo://src/entities/song-catalog/api/catalog-snapshot.ts
   - id: openwiki-source-12b687e5e9afbf72c79b13fd
@@ -38,17 +42,29 @@ sources:
     resource: repo://tests/signup-recovery.integration.ts
   - id: openwiki-source-d6b6d9cc70a3fbd449772f18
     resource: repo://tests/worker-recovery.integration.ts
-generated: { by: "openwiki/0.5.2", at: "2026-09-25T04:42:33.305Z" }
+generated: { by: "openwiki/0.7.2", at: "2026-11-01T16:00:39.866Z" }
 verified:
-  - by: openwiki/0.5.2
-    at: 2026-09-25T04:42:33.305Z
+  - by: openwiki/0.7.2
+    at: 2026-11-01T16:00:39.866Z
 ---
 
 # 복구 스크립트 운영 절차
 
 자동 반복이 끝내 풀지 못한 행은 운영자가 명령으로 해소해요. 남는 대상은 세 가지예요. 접수가 확인되지 않은 외부 제출은 `ExternalJobReconciliation`의 `PENDING`·`UNRESOLVED` 행으로, 미정리 미디어 파일은 `MediaOperation`의 `UNRESOLVED` 행으로, 가입 지급 누락은 `SIGNUP_GRANT` 원장 행이 없는 사용자로 남아요. 설정·시드 데이터·공개 카탈로그의 이상은 검증 명령이 알려줘요.
 
-세 복구 명령은 모두 "먼저 보기, 그다음 확정하기" 순서를 따라요.
+## 실행 전에 확인할 것
+
+세 명령 모두 `--apply`를 붙여야 값을 바꾸는 경로로 들어가요. 같은 판단을 다시 실행하면 값을 또 쓰지 않고 `NOOP`이나 거부 오류로 끝나요. 그래서 실행 전에 세 가지를 먼저 확인하세요.
+
+- **대상 DB**: 복구 명령은 [scripts/reconcile-external-job.ts](repo://scripts/reconcile-external-job.ts#L1-L4)처럼 dotenv로 `.env.local` → `.env` 순서로 읽어요. 그 파일들의 `DATABASE_URL`과 외부 자격 증명이 지금 다루려는 환경을 가리키는지 확인하세요. 실제 값은 이 문서에 적지 않아요.
+- **생성된 Prisma 클라이언트**: 복구 명령과 DB 검증 명령은 Prisma 클라이언트로 DB에 붙어요. 그 클라이언트는 `src/shared/db/generated/prisma/`에 생성되고 이 경로는 `.gitignore`가 제외하는 대상이라 추적되지 않아요([.gitignore](repo://.gitignore#L46-L47)). 새로 받은 작업 디렉터리에서는 `pnpm run db:generate`를 먼저 실행하세요.
+- **현재 상태**: `jobs:reconcile`과 `media:reconcile`은 조회 모드로 대상을 다시 확인할 수 있어요. 이미 `RESOLVED_*`로 닫힌 행을 다시 지정하면 `jobs:reconcile`은 같은 `--outcome`일 때 `NOOP`, 다른 `--outcome`일 때 `Conflicting prior resolution`으로 끝나요. `media:reconcile`은 대상이 `UNRESOLVED`가 아니면 `--apply` 유무와 상관없이 `Only unresolved operations can be reconciled.`로 멈춰요.
+
+`db:verify`만 예외예요. [scripts/verify-database.ts](repo://scripts/verify-database.ts#L4-L7)는 dotenv를 부르지 않고 `process.env.DATABASE_URL`을 그대로 읽은 뒤, 값이 없으면 `DATABASE_URL is required to verify the database.`로 멈춰요. 그래서 이 명령은 셸에 값이 이미 있을 때만 쓸 수 있어요.
+
+## 먼저 보기, 그다음 확정하기
+
+세 복구 명령은 같은 순서를 따라요.
 
 1. `pnpm run jobs:reconcile`이나 `pnpm run media:reconcile`을 인자 없이 실행하면 대상 행과 id가 JSON으로 나와요. `tickets:recover-signup`에는 이 조회 모드가 없어요.
 2. 같은 명령에 대상을 지정하는 인자(`--id`, 또는 가입 복구의 `--user`·`--kind`·`--amount`)와 확인 근거를 붙여 실행하세요. `--apply`가 없으니 스크립트가 예정한 결과만 보이고 DB는 그대로예요.
@@ -68,60 +84,53 @@ flowchart TD
 
 남은 행의 종류에 따라 실행할 명령을 고르는 흐름이에요.
 
-## 복구 명령과 실행하는 스크립트
+## 복구 명령의 인자와 부작용
 
-| 명령 | 실행하는 스크립트 | 확인·복구 대상 | dotenv로 읽는 환경 파일 |
+아래 표는 복구 명령 세 개를 한눈에 비교한 것이에요. 세 명령은 `package.json`에 `tickets:recover-signup`, `media:reconcile`, `jobs:reconcile`로 정의돼 있어요([package.json](repo://package.json#L72-L74)). 상태별로 갈리는 조건과 거부 메시지는 뒤의 명령별 절이 자세히 설명해요.
+
+| 명령 | 실행하는 스크립트 | 확인·복구 대상 | 필수 인자 | `--apply` 없이 출력하는 것 | `--apply`가 바꾸는 값 |
+| --- | --- | --- | --- | --- | --- |
+| `pnpm run jobs:reconcile` | [scripts/reconcile-external-job.ts](repo://scripts/reconcile-external-job.ts#L5-L85) | `ExternalJobReconciliation`의 `PENDING`·`UNRESOLVED` 행과 접수 미확인 작업 | `--id`, `--outcome`(`submitted`·`not-submitted`·`cleaned`), `--operator`, `--reason` | `{"action":"DRY_RUN",…,"refund":…}`이고, 이미 같은 결과로 닫힌 행은 `NOOP`이에요 | `status = RESOLVED_{outcome}`, `resolution = {operator}: {reason}`, `not-submitted`면 환불 원장 행과 작업 상태까지 |
+| `pnpm run media:reconcile` | [scripts/reconcile-media.ts](repo://scripts/reconcile-media.ts#L5-L53) | `MediaOperation`의 `UNRESOLVED` 행 | `--id`, `--operator`, `--reason`, 선택 `--file-id` | `{"id":…,"action":…,"apply":false}`예요. `--apply`를 붙여도 같은 모양에 `"apply":true`만 달라져요 | `RESOLVED_BY_OPERATOR`로 닫거나, `externalFileId`·`operation = DELETE`·`attempts = 0`을 채워 `RECOVER`로 되돌려요 |
+| `pnpm run tickets:recover-signup` | [scripts/recover-signup-grant.ts](repo://scripts/recover-signup-grant.ts#L16-L35) | `SIGNUP_GRANT` 원장 행이 없는 사용자의 가입 지급 | `--user`, `--kind`, `--amount`, `--operator`, `--reason` | `NOOP` 또는 `WOULD_GRANT`와 지급 전후 잔액이에요 | `GRANTED`와 `SIGNUP_GRANT` 원장 행이고, intent가 없을 때만 `SignupGrantIntent`도 만들어요 |
+
+검증 명령은 대상을 바꾸지 않고 상태만 알려줘요.
+
+| 명령 | 실행하는 스크립트 | 확인 대상 | dotenv로 읽는 환경 파일 |
 | --- | --- | --- | --- |
-| `pnpm run jobs:reconcile` | [scripts/reconcile-external-job.ts](repo://scripts/reconcile-external-job.ts#L5-L85) | `ExternalJobReconciliation`의 `PENDING`·`UNRESOLVED` 행과 접수 미확인 작업 | `.env.local`, `.env` |
-| `pnpm run media:reconcile` | [scripts/reconcile-media.ts](repo://scripts/reconcile-media.ts#L5-L53) | `MediaOperation`의 `UNRESOLVED` 행 | `.env.local`, `.env` |
-| `pnpm run tickets:recover-signup` | [scripts/recover-signup-grant.ts](repo://scripts/recover-signup-grant.ts#L16-L35) | `SIGNUP_GRANT` 행이 없는 사용자의 가입 지급 | `.env.local`, `.env` |
-| `pnpm run db:verify` | [scripts/verify-database.ts](repo://scripts/verify-database.ts#L4-L20) | 시드된 관계 그래프 | 없어요. 셸 환경의 `DATABASE_URL`을 써요 |
+| `pnpm run db:verify` | [scripts/verify-database.ts](repo://scripts/verify-database.ts#L9-L20) | 시드된 관계 그래프 | 없어요. 셸 환경의 `DATABASE_URL`을 써요 |
 | `pnpm run catalog:db:verify` | [scripts/verify-database-song-catalog.ts](repo://scripts/verify-database-song-catalog.ts#L5-L13) | 공개 카탈로그의 준비 상태 | `.env.local`, `.env` |
-| `pnpm run verify:feature-config` | [scripts/verify-feature-config.ts](repo://scripts/verify-feature-config.ts#L5-L21) | 필수 환경 변수, `--leemage`를 붙이면 저장소 스모크 테스트 | `.env.local`, `.env` |
+| `pnpm run verify:feature-config` | [scripts/verify-feature-config.ts](repo://scripts/verify-feature-config.ts#L5-L26) | 필수 환경 변수, `--leemage`를 붙이면 저장소 스모크 테스트 | `.env.local`, `.env` |
 
-값이 어디에서 왔는지 확인해야 할 때는 아래 표로 명령과 읽는 순서를 대조하세요.
+복구 스크립트 셋도 같은 순서(`.env.local` → `.env`)로 dotenv를 불러요([scripts/reconcile-media.ts](repo://scripts/reconcile-media.ts#L1-L4), [scripts/recover-signup-grant.ts](repo://scripts/recover-signup-grant.ts#L1-L4)). 그래서 `.env.local`에 적어 둔 `DATABASE_URL`과 외부 서비스 자격 증명이 스크립트의 `process.env`에 들어와요.
 
-| 명령 | dotenv로 읽는 순서 | 근거 |
-| --- | --- | --- |
-| `pnpm run jobs:reconcile` | `.env.local`, `.env` | [scripts/reconcile-external-job.ts](repo://scripts/reconcile-external-job.ts#L1-L4) |
-| `pnpm run media:reconcile` | `.env.local`, `.env` | [scripts/reconcile-media.ts](repo://scripts/reconcile-media.ts#L1-L4) |
-| `pnpm run tickets:recover-signup` | `.env.local`, `.env` | [scripts/recover-signup-grant.ts](repo://scripts/recover-signup-grant.ts#L1-L4) |
-| `pnpm run catalog:db:verify` | `.env.local`, `.env` | [scripts/verify-database-song-catalog.ts](repo://scripts/verify-database-song-catalog.ts#L1-L3) |
-| `pnpm run verify:feature-config` | `.env.local`, `.env` | [scripts/verify-feature-config.ts](repo://scripts/verify-feature-config.ts#L1-L3) |
-
-그래서 `.env.local`에 적어 둔 `DATABASE_URL`과 외부 서비스 자격 증명이 스크립트의 `process.env`에 들어와요. 실제 값은 이 문서에 적지 않아요. `db:verify`만 예외예요. [scripts/verify-database.ts](repo://scripts/verify-database.ts#L4-L7)는 dotenv를 부르지 않고 `process.env.DATABASE_URL`을 그대로 읽은 뒤, 값이 없으면 `DATABASE_URL is required to verify the database.`로 멈춰요. 그래서 이 명령은 셸에 값이 이미 있을 때만 쓸 수 있어요.
-
-`jobs:reconcile`과 `media:reconcile`은 워커가 같은 데이터베이스를 쓰는 동안에도 안전하게 실행할 수 있어요. `jobs:reconcile`은 대상 행을 `SELECT ... FOR UPDATE`로 잠근 트랜잭션 안에서 상태를 다시 읽고, `media:reconcile`은 `status = UNRESOLVED` 조건을 건 갱신을 실행해요. 그래서 그 사이 워커나 다른 운영자가 먼저 처리했으면 `NOOP`이나 충돌 오류로 끝나요. 실행 전에 대상 `DATABASE_URL`이 맞는지 확인하세요. 값을 바꾸는 환경 변수의 이름과 기본값은 [환경 변수와 런타임 한도](configuration.md)가 소유하고, 이 페이지는 값 자체를 다루지 않아요.
-
-복구 명령과 DB 검증 명령은 Prisma 클라이언트로 DB에 붙어요. 그 클라이언트는 `src/shared/db/generated/prisma/`에 생성되고, 이 경로는 `.gitignore`가 제외하는 대상이라 추적되지 않아요([.gitignore](repo://.gitignore#L46-L47)). 그래서 새로 받은 작업 디렉터리에서는 `pnpm run db:generate`를 먼저 실행하세요.
+`jobs:reconcile`과 `media:reconcile`은 워커가 같은 데이터베이스를 쓰는 동안에도 실행할 수 있어요. 두 스크립트 모두 대상을 잠그거나 `status = UNRESOLVED` 조건을 다시 걸어 갱신하므로, 그 사이 워커나 다른 운영자가 먼저 처리했으면 `NOOP`이나 충돌 오류로 끝나요. 값을 바꾸는 환경 변수의 이름과 기본값은 [환경 변수와 런타임 한도](configuration.md)가 소유하고, 이 페이지는 값 자체를 다루지 않아요.
 
 ## 모든 명령에 공통인 실행 규칙
 
 | 규칙 | 내용 |
 | --- | --- |
 | 조회와 처리의 구분 | `jobs:reconcile`과 `media:reconcile`은 인자 없이 실행하면 대상 행을 JSON으로 출력하고 아무것도 바꾸지 않아요. `--id`를 주면 그 행 하나를 처리해요. `tickets:recover-signup`에는 조회 모드가 없어서 인자를 다 주지 않으면 `Required:` 오류로 멈춰요 |
-| dry-run | `--apply`가 없으면 복구 스크립트 셋 중 어느 것도 DB를 바꾸지 않아요 |
-| 근거 기록 | 두 정리 명령은 `--operator`와 `--reason`을 `resolution`에 `{operator}: {reason}` 형식으로 남겨요. 가입 복구는 실제로 지급할 때만 값을 쓰는데, `SignupGrantIntent`는 아직 없을 때만 `operator`·`reason`과 함께 만들고, 원장 사유는 `가입 지급 복구 ({operator}): {reason}`이 돼요([scripts/recover-signup-grant.ts](repo://scripts/recover-signup-grant.ts#L26-L34), [ticket-service.ts](repo://src/entities/ticket/api/ticket-service.ts#L230-L242)). 값이 비거나 공백뿐이면 어느 명령이든 거부돼요 |
-| 실패 표시 | 오류가 나면 메시지를 표준 오류로 출력하고 종료 코드를 `1`로 세워요. 검증 스크립트도 같은 방식이에요([scripts/verify-database-song-catalog.ts](repo://scripts/verify-database-song-catalog.ts#L9-L11)) |
+| dry-run 경계 | 세 스크립트 모두 `--apply`의 기본값이 `false`이고, 이 플래그 없이는 DB를 바꾸지 않아요([scripts/reconcile-external-job.ts](repo://scripts/reconcile-external-job.ts#L11-L11), [scripts/reconcile-media.ts](repo://scripts/reconcile-media.ts#L11-L11), [scripts/recover-signup-grant.ts](repo://scripts/recover-signup-grant.ts#L12-L12)) |
+| 근거 기록 | `jobs:reconcile`과 `media:reconcile`은 `--operator`·`--reason`이 비어 있지 않은지 확인한 뒤 `resolution`에 `{operator}: {reason}` 형식으로 남겨요([scripts/reconcile-external-job.ts](repo://scripts/reconcile-external-job.ts#L29-L35), [scripts/reconcile-media.ts](repo://scripts/reconcile-media.ts#L35-L35), [scripts/reconcile-media.ts](repo://scripts/reconcile-media.ts#L48-L48)). 가입 복구는 스크립트가 두 인자의 유무를 보고, 서비스가 `trim()` 결과로 공백뿐인 값을 다시 걸러요. 실제로 지급할 때만 `SignupGrantIntent`를 아직 없을 때 `operator`·`reason`과 함께 만들고, 원장 사유는 `가입 지급 복구 ({operator}): {reason}`이 돼요([scripts/recover-signup-grant.ts](repo://scripts/recover-signup-grant.ts#L17-L21), [ticket-service.ts](repo://src/entities/ticket/api/ticket-service.ts#L197-L198), [같은 파일](repo://src/entities/ticket/api/ticket-service.ts#L230-L242)) |
+| 실패 표시 | 세 복구 스크립트 모두 오류 메시지를 표준 오류로 출력하고 종료 코드를 `1`로 세워요([scripts/reconcile-external-job.ts](repo://scripts/reconcile-external-job.ts#L87-L90), [scripts/reconcile-media.ts](repo://scripts/reconcile-media.ts#L54-L57), [scripts/recover-signup-grant.ts](repo://scripts/recover-signup-grant.ts#L36-L39)). 검증 스크립트도 실패하면 종료 코드를 `1`로 세워요([scripts/verify-database-song-catalog.ts](repo://scripts/verify-database-song-catalog.ts#L8-L12), [scripts/verify-database.ts](repo://scripts/verify-database.ts#L22-L27)) |
 | 남은 작업의 주체 | 믹싱 워커는 매 반복에서 환불 재처리, 외부 작업 정리, 미디어 정리를 차례로 실행해요. 이 자동 경로가 처리하지 못한 `UNRESOLVED` 행이 운영자 몫이에요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L573-L581)) |
 
 자동 정리 쿼리는 `status = 'PENDING'`인 행만 대상으로 삼고, 미디어 점유도 `PENDING`·`RECOVER`·`UPLOADING`·`STORED`와 lease가 만료된 `PROCESSING`만 후보로 봐요. 그래서 `UNRESOLVED` 행은 아무리 오래 두어도 자동으로 풀리지 않아요([mixing/reconciliation.ts](repo://src/_app/background-jobs/mixing/reconciliation.ts#L7-L24), [src/shared/media/operations.ts](repo://src/shared/media/operations.ts#L117-L127)). 왜 이 행들이 생기는지의 상태 기계는 [Job 큐와 lease 복구 계약](job-processing.md)과 [미디어 저장과 정리 의도](media-storage.md)가 설명해요.
 
-이 스크립트들이 기대는 복구 경로는 `pnpm run test:readiness`에 포함된 통합 테스트가 고정해요([package.json](repo://package.json#L70)). 그중 [tests/worker-recovery.integration.ts](repo://tests/worker-recovery.integration.ts#L112-L134)는 만료된 lease를 가진 작업을 다시 점유하면 작업이 `FAILED`로 수렴하고 이전 소유자의 확정 시도는 `LEASE_LOST`로 막히는지를 확인해요. [tests/media-recovery.integration.ts](repo://tests/media-recovery.integration.ts#L68-L73)는 외부 파일 id를 확인하지 못한 `MediaOperation` 행이 외부 삭제 호출 없이 `UNRESOLVED`로 남는지를, [같은 파일](repo://tests/media-recovery.integration.ts#L89-L92)은 사용 중인 자산의 삭제 예약이 `MEDIA_ASSET_IN_USE`로 거부되는지를 고정해요. [tests/signup-recovery.integration.ts](repo://tests/signup-recovery.integration.ts#L47-L96)는 dry-run이 `WOULD_GRANT`와 지급 후 잔액을 알려주고 그 시점에 intent를 만들지 않는지, `apply: true`를 동시에 두 번 호출하면 `GRANTED` 한 건과 `NOOP` 한 건으로 갈리는지, 기록된 금액과 다른 `amount`가 `conflicts`로 거부되는지를 확인해요. 이 명령이 함께 실행하는 나머지 파일과 복구 후 돌릴 검사 선택은 [변경 검증 경로](../testing/verification.md)가 정리해요.
+이 스크립트들이 기대는 복구 경로는 `pnpm run test:readiness`에 포함된 통합 테스트가 고정해요([package.json](repo://package.json#L71)). 다만 이 테스트들은 CLI 스크립트를 직접 실행하지 않고, 스크립트가 전제하는 서비스 함수와 상태를 다뤄요([signup-recovery.integration.ts](repo://tests/signup-recovery.integration.ts#L9-L11), [media-recovery.integration.ts](repo://tests/media-recovery.integration.ts#L8-L11)). 그래서 인자 파싱과 출력 형식은 스크립트 본문으로 확인해야 해요. 그중 [tests/worker-recovery.integration.ts](repo://tests/worker-recovery.integration.ts#L112-L134)는 만료된 lease를 가진 작업을 다시 점유하면 작업이 `FAILED`로 수렴하고 이전 소유자의 확정 시도는 `LEASE_LOST`로 막히는지를 확인해요. [tests/media-recovery.integration.ts](repo://tests/media-recovery.integration.ts#L68-L73)는 외부 파일 id를 확인하지 못한 `MediaOperation` 행이 외부 삭제 호출 없이 `UNRESOLVED`로 남는지를, [같은 파일](repo://tests/media-recovery.integration.ts#L89-L92)은 사용 중인 자산의 삭제 예약이 `MEDIA_ASSET_IN_USE`로 거부되는지를 고정해요. [tests/signup-recovery.integration.ts](repo://tests/signup-recovery.integration.ts#L47-L96)는 dry-run이 `WOULD_GRANT`와 지급 후 잔액을 알려주고 그 시점에 intent를 만들지 않는지, `apply: true`를 동시에 두 번 호출하면 `GRANTED` 한 건과 `NOOP` 한 건으로 갈리는지, 기록된 금액과 다른 `amount`가 `conflicts`로 거부되는지를 확인해요. 이 명령들이 함께 실행하는 나머지 파일과 복구 후 돌릴 검사 선택은 [변경 검증 경로](../testing/verification.md)가 정리해요.
+
+## 워커가 대신 처리하는 정리
+
+체험 분석 결과 만료 정리는 운영자 명령이 아니라 워커가 주기적으로 호출해요. [vocal-profile-analysis/runner.ts](repo://src/_app/background-jobs/vocal-profile-analysis/runner.ts#L22-L36)는 0번 레인에서 5초 간격으로 `cleanupExpiredGuestAnalysis()`와 `processOneMediaCleanup()`을 차례로 불러요. 그래서 체험 결과 정리를 위해 따로 실행할 script는 없어요.
+
+`cleanupExpiredGuestAnalysis`는 `claimedAt`이 없고 `expiresAt`이 지난 `GuestAnalysisTrial` 한 건을 `FOR UPDATE SKIP LOCKED`로 골라, 연결된 보컬 프로필과 녹음을 지우고 남은 미디어 자산의 삭제를 예약한 뒤 `expiresAt`을 비워요([guest-analysis/api/lifecycle.ts](repo://src/entities/guest-analysis/api/lifecycle.ts#L144-L158)). 그 사용자에게 진행 중인 분석 작업이 남아 있으면 정리는 `GUEST_ANALYSIS_PROCESSING`으로 거부돼요([같은 파일](repo://src/entities/guest-analysis/api/lifecycle.ts#L114-L118)). 이 오류는 반복 전체를 실패로 만들어 같은 주기의 `processOneMediaCleanup()`까지 건너뛰고, 워커는 백오프를 두고 다시 시도해요([runner.ts](repo://src/_app/background-jobs/vocal-profile-analysis/runner.ts#L26-L47)). 체험 결과의 보관 기간과 읽기 조건은 [체험 분석 흐름](../workflows/guest-analysis-trial.md)이 소유해요.
 
 ## 접수가 확인되지 않은 외부 제출 해소하기
 
 인자 없이 실행하면 `status`가 `PENDING`이거나 `UNRESOLVED`인 `ExternalJobReconciliation` 행을 `createdAt` 오름차순으로 최대 100건, 행 전체를 JSON으로 출력해요. 그래서 `reason`과 `resolution`, `externalJobId`를 함께 볼 수 있어요. 자동 정리가 실패해 넘긴 행은 `resolution`이 `AUTO_CLEANUP_FAILED_REQUIRES_OPERATOR`이고, 접수는 했지만 외부 job id를 확인하지 못해 환불이 보류된 작업은 `reason`이 `SUBMISSION_UNKNOWN_REFUND_HELD`예요([mixing/reconciliation.ts](repo://src/_app/background-jobs/mixing/reconciliation.ts#L58-L63), [mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L251-L263)).
 
-단건 처리는 `--id`와 함께 세 인자가 필요해요. 하나라도 빠지거나 `--outcome`이 허용값이 아니면 `Required: --outcome submitted|not-submitted|cleaned --operator NAME --reason VERIFIED_EVIDENCE` 오류로 멈춰요([scripts/reconcile-external-job.ts](repo://scripts/reconcile-external-job.ts#L26-L35)). 어떤 결과로 닫을지는 운영자가 외부 서비스에서 직접 확인한 내용으로 정하세요.
-
-| 인자 | 값 |
-| --- | --- |
-| `--id` | 처리할 `ExternalJobReconciliation` 행의 id예요 |
-| `--outcome` | `submitted`, `not-submitted`, `cleaned` 중 하나예요 |
-| `--operator` | 확인한 사람 이름이에요 |
-| `--reason` | 확인 근거를 적어요. `resolution`에 남아요 |
-| `--apply` | 없으면 `{"action":"DRY_RUN", ...}`만 출력해요 |
+단건 처리는 `--id`와 함께 세 인자가 필요해요. 하나라도 빠지거나 `--outcome`이 허용값이 아니면 `Required: --outcome submitted|not-submitted|cleaned --operator NAME --reason VERIFIED_EVIDENCE` 오류로 멈춰요([scripts/reconcile-external-job.ts](repo://scripts/reconcile-external-job.ts#L26-L35)). 어떤 결과로 닫을지는 운영자가 외부 서비스에서 직접 확인한 내용으로 정하세요. `--operator`와 `--reason`은 `resolution`에 `{operator}: {reason}`으로 남아요. 아직 닫히지 않은 행에 `--apply`를 빼면 `{"action":"DRY_RUN", ...}`만 출력하고, 이미 같은 결과로 닫힌 행은 `--apply`를 붙여도 `{"action":"NOOP","id"}`만 돌려주고 값을 다시 쓰지 않아요([같은 파일](repo://scripts/reconcile-external-job.ts#L40-L54)).
 
 ```bash
 # 남은 접수 미확인 항목 조회
@@ -167,7 +176,7 @@ pnpm run jobs:reconcile --id <RECONCILIATION_ID> --outcome not-submitted --opera
 | `lastError` | 왜 정리하지 못했는지 남아 있어요 |
 | `createdAt` | 오래된 행부터 확인해요 |
 
-외부 파일 id를 알 수 있는지부터 확인하세요. 파일 id가 없는 행은 워커가 `lastError`에 `PROVIDER_IDENTITY_UNKNOWN`을 남긴 행이에요([src/shared/media/operations.ts](repo://src/shared/media/operations.ts#L130-L135), [scripts/reconcile-media.ts](repo://scripts/reconcile-media.ts#L16-L33)).
+외부 파일 id를 알 수 있는지부터 확인하세요. 파일 id가 없는 행은 워커가 `lastError`에 `PROVIDER_IDENTITY_UNKNOWN`을 남긴 행이에요([src/shared/media/operations.ts](repo://src/shared/media/operations.ts#L130-L135), [scripts/reconcile-media.ts](repo://scripts/reconcile-media.ts#L16-L33)). 파일 id가 있어도 외부 삭제 호출이 반복 실패해 `attempts`가 10 이상이 되면 `lastError = MEDIA_CLEANUP_FAILED`로 `UNRESOLVED`가 돼요([같은 파일](repo://src/shared/media/operations.ts#L166-L177)).
 
 단건 처리는 `--id`와 `--operator`, `--reason`을 요구하고, 대상이 `UNRESOLVED`가 아니면 `Only unresolved operations can be reconciled.`로 거부해요. 상태가 `UNRESOLVED`인 행만 다룰 수 있다는 조건은 워커가 점유하지 않는 행만 운영자가 풀 수 있다는 뜻이에요([src/shared/media/operations.ts](repo://src/shared/media/operations.ts#L117-L127)). 실제로 바뀌는 값은 `--file-id`를 주는지에 따라 갈려요.
 
@@ -195,23 +204,13 @@ pnpm run media:reconcile --id <MEDIA_OPERATION_ID> --operator <NAME> --reason '<
 
 ## 가입 지급 누락 복구하기
 
-가입 지급 복구는 지급할 금액을 운영자가 명시하는 방식이에요. 아래 다섯 인자가 모두 있어야 실행돼요.
-
-| 인자 | 값 |
-| --- | --- |
-| `--user` | 지급 대상 `User`의 id예요 |
-| `--kind` | `VOCAL_ANALYSIS` 또는 `AI_MIXING`이에요 |
-| `--amount` | 지급할 장 수예요 |
-| `--operator` | 확인한 사람 이름이에요 |
-| `--reason` | 확인 근거를 적어요 |
-
-하나라도 빠지면 `Required: --user ID --kind VOCAL_ANALYSIS|AI_MIXING --amount N --operator NAME --reason TEXT [--apply]` 오류로 멈추고, `--kind`가 두 값이 아니면 `Invalid ticket kind.`로 멈춰요([scripts/recover-signup-grant.ts](repo://scripts/recover-signup-grant.ts#L17-L22)).
+가입 지급 복구는 지급할 금액을 운영자가 명시하는 방식이에요. `--user`에는 지급 대상 `User`의 id를, `--kind`에는 `VOCAL_ANALYSIS`나 `AI_MIXING`을, `--amount`에는 지급할 장 수를 넣어요([scripts/recover-signup-grant.ts](repo://scripts/recover-signup-grant.ts#L5-L22)). 인자가 하나라도 빠지면 `Required: --user ID --kind VOCAL_ANALYSIS|AI_MIXING --amount N --operator NAME --reason TEXT [--apply]` 오류로 멈추고, `--kind`가 두 값이 아니면 `Invalid ticket kind.`로 멈춰요.
 
 지급이 통과하려면 대상 사용자와 금액이 아래 계약도 만족해야 해요.
 
 | 항목 | 계약 |
 | --- | --- |
-| `--amount` 허용 범위 | 안전한 정수이면서 `0` 이상 `1,000,000` 이하예요([src/entities/ticket/api/ticket-service.ts](repo://src/entities/ticket/api/ticket-service.ts#L189-L196)) |
+| `--amount` 허용 범위 | 안전한 정수이면서 `0` 이상 `1,000,000` 이하예요. 벗어나면 `An explicit valid ticket kind and amount (0..1000000) are required.`로 거부해요. 스크립트는 `--amount` 문자열을 `Number()`로 바꿔 넘기므로 숫자가 아닌 값도 같은 오류로 끝나요([scripts/recover-signup-grant.ts](repo://scripts/recover-signup-grant.ts#L26-L33), [src/entities/ticket/api/ticket-service.ts](repo://src/entities/ticket/api/ticket-service.ts#L189-L196)) |
 | 대상 사용자 | `User` 행을 `FOR UPDATE`로 잠그고, 잠긴 행이 정확히 1건이 아니면 `Signup user does not exist.`로 실패해요([lockSignupUser](repo://src/entities/ticket/api/ticket-service.ts#L140-L143)) |
 | 지급 금액의 기준 | 같은 `kind`에 기록된 `SignupGrantIntent.amount`나 기존 `SIGNUP_GRANT` 원장 금액이 `--amount`와 다르면 거부해요([같은 파일](repo://src/entities/ticket/api/ticket-service.ts#L202-L205)) |
 | 멱등 키 | `signup:vocal-analysis:{userId}`, `signup:ai-mixing:{userId}`로 정상 가입 지급과 같은 키를 써요([signupKey](repo://src/entities/ticket/api/ticket-service.ts#L136-L138)) |
@@ -238,12 +237,12 @@ pnpm run tickets:recover-signup --user <USER_ID> --kind VOCAL_ANALYSIS --amount 
 
 `--amount 0`은 금액 검증을 통과해서 `amount`가 0인 `SIGNUP_GRANT` 원장 행을 만들 수 있어요. 그 뒤에는 같은 `kind`에 대한 같은 금액 요청도 `NOOP`이 되고 다른 금액은 금액 충돌로 거부되니, 확인된 지급액이 0장이 아닌 한 0을 넣지 마세요([금액 검증과 충돌 거부](repo://src/entities/ticket/api/ticket-service.ts#L189-L205)).
 
-## 실행 전에 설정과 준비 상태 검증하기
+## 설정과 준비 상태 검증 명령
 
 | 명령 | 확인하는 것 | 실패 신호 |
 | --- | --- | --- |
 | `pnpm run db:verify` | 시드된 관계 그래프예요. `USER` 보컬 프로필의 `recording.kind`가 `USER_TEST`인지, 곡에 보컬 프로필이 붙었는지 봐요 | `Seeded user profile relation graph is incomplete.` 또는 `Seeded song profile relation graph is incomplete.`([scripts/verify-database.ts](repo://scripts/verify-database.ts#L10-L19)) |
-| `pnpm run catalog:db:verify` | `TJ_2607_CATALOG_SLUG` 카탈로그의 공개 행이 모두 준비 조건을 만족하는지 봐요 | `status`가 `invalid`로 출력되고 종료 코드가 1이에요. 공개 행이 0건이어도 실패예요 |
+| `pnpm run catalog:db:verify` | `TJ_2607_CATALOG_SLUG` 카탈로그의 공개 행이 모두 준비 조건을 만족하는지 봐요 | `status`가 `invalid`로 출력되고 종료 코드가 1이에요. 공개 행이 0건이어도 실패예요([scripts/verify-database-song-catalog.ts](repo://scripts/verify-database-song-catalog.ts#L8-L11)) |
 | `pnpm run verify:feature-config` | 필수 환경 변수의 존재만 봐요. 값은 출력하지 않아요 | `Missing feature environment variables: ...`로 없는 이름만 나열하고 종료 코드가 1이에요 |
 
 `catalog:db:verify`의 출력은 `catalogSlug`, `total`, `ready`, `invalid`를 담은 JSON이에요. `invalid` 배열의 각 항목은 `songId`, `position`, `reasons`를 갖고, `reasons`에는 준비 조건 코드나 `INVALID_POSITION`, `PUBLISHED_ROW_NOT_READY`가 들어가요([src/entities/song-catalog/api/catalog-snapshot.ts](repo://src/entities/song-catalog/api/catalog-snapshot.ts#L45-L78)). 각 코드의 의미와 준비 판정 규칙은 [곡 카탈로그 등록과 공개](../workflows/song-catalog-lifecycle.md)가 설명해요.

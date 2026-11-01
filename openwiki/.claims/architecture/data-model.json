@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:7d9895762b8970aa7b6016412bc24837a7a038c640e7821a8ec2d74df88d1142",
+  "pageVersion": "sha256:f7fd8918d3c15b53ff67b71a48e717a2a654c09c5b3ef63b20af009ba8677c10",
   "claims": [
     {
       "id": "claim_3d1aa3ae640540879fa8b2c6f058fd67",
@@ -113,7 +113,7 @@
           "version": "repo-lines-v1:sha256:da46972c57a904c064b1861dcb9d5547c66e16d8e5010666d0871480957c19a2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkMDkzNDhlN2QwMWE1YjEyZGUzMjM2YWY0NTNmOGRkM2RmYWIzNzgzMzQyMDAzM2VlNDhjNDg4YmNjZjcwZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ2ZWUyODY4NGZkNmJhYjk3NDBkMDFiMmVjMmVkZTA3NmEwODEyZDdiYTUzMzVlZjg0MjAwOWQ4NWNhMTIzNmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZlM2FlNDJmMjNkNjgxODA3ODQ5NTE5MjY4OGIzNDk3ZjRmZWEzZDhlZDcxNjAxMGQwODFlNTY1ODgzNDU3M2EifQ"
         },
         {
-          "resource": "repo://prisma/schema.prisma#L446-L471",
+          "resource": "repo://prisma/schema.prisma#L466-L491",
           "version": "repo-lines-v1:sha256:998d8cfc19c959b1a731d14d8e980b7c70ed51f6e058b8f88cccc96dd41c6f72:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiMjRmNzllNTMyNGZlYzAyZTYzOGY2MWJiZWIyNWY5NzIyNGFmYmVmMzEyMGQxZjE2ZGQ4MTU1ZGJhNjQ1NjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjViMmFkODU3NmU3MGU3MmVkNjQ2YTJlNjhlYzMxNmUxZjZhMzU0NTg2NjU4NGNmYTViODc2ZTVlYmM0ZDFlODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZlY2M2NWI0NjQ2MjBlOTlmMDIyZDAxZjllYjkxM2FmNjI2YjQ2OWY2MzhhNDhhZTUwN2Y3MmFlZGFkNzc2ZTYifQ"
         },
         {
@@ -127,7 +127,7 @@
       "statement": "MixingJob은 referenceAssetId·targetAssetId뿐 아니라 songAnalysisId·catalogPosition·catalogRevision·scoringVersion·recommendedShift를 생성 시점 값으로 저장해 참조 대상을 스냅샷으로 고정하고, 새 요청은 접수 시점의 카탈로그 revision·entry position·target asset 일치를 재검증해 불일치하면 MIXING_RECOMMENDATION_STALE로 거절한다.",
       "evidence": [
         {
-          "resource": "repo://prisma/schema.prisma#L576-L627",
+          "resource": "repo://prisma/schema.prisma#L597-L648",
           "version": "repo-lines-v1:sha256:a749be8dde8bf3407afa6b4d9ccb9bc8d2ac6de43a052065779a203310b76f9e:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3MTViNDIwOWYyYmFmNWY3MTk3NDE4NGI2OWI0Y2UxYzhlYjI0NGVhNjdlMWNhZjVkNWZmNzhmMzRlNzU3NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJlMWMzMDcxMDU4YzJlZmY4Y2NhYzEyODEzOThmY2U3MGUxYzZhMDM5YzlmZTQzOWJjYjk5YTNkYWJmY2YzODUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI3YjI5ZjdmYjg0OTVmMWZhNjNlMjUzZmYzNDZiMzdhMWI2MWQ4MDUxNjM4NjdkYTQ2NTA0MWIyZDhjNDcyMWYifQ"
         },
         {
@@ -138,18 +138,18 @@
     },
     {
       "id": "claim_f6426d6e0a7e4d7586dcb1db8e66d8b5",
-      "statement": "MixingJob·VocalProfileAnalysisJob·SongAnalysisJob은 같은 이름의 점유·재시도 컬럼을 공유한다: attempts(claim마다 +1, 기본 0), maxAttempts(기본 3, 생성 시 환경 변수 값으로 덮어씀), nextAttemptAt(후보 선정 시각), leaseOwner/leaseExpiresAt/heartbeatAt(NULL 허용, 만료된 진행 중 행은 회수 대상), deadlineAt(claim 시 COALESCE(startedAt, now)에 작업별 간격을 더해 한 번만 채움), errorCode/errorDetail/retryable, startedAt/completedAt.",
+      "statement": "MixingJob·VocalProfileAnalysisJob·SongAnalysisJob은 같은 이름의 점유·재시도 컬럼을 공유한다: attempts(기본 0, claim마다 +1), maxAttempts(기본 3, MixingJob과 VocalProfileAnalysisJob은 생성 시 환경 변수 상한값으로 덮어씀), nextAttemptAt(후보 선정 시각), leaseOwner/leaseExpiresAt/heartbeatAt(NULL 허용, 만료된 진행 중 행은 회수 대상), deadlineAt(claim 시 COALESCE(startedAt, now)에 작업별 간격을 더해 한 번만 채움), errorCode/errorDetail/retryable, startedAt/completedAt.",
       "evidence": [
         {
           "resource": "repo://prisma/schema.prisma#L285-L314",
           "version": "repo-lines-v1:sha256:d28280c3e0275cd7ebf072b07dc9a8a425c21886a8610a37b4c99f544fa2c9e2:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3NTBlYjBmYWRjZjUzZDI1ODZmNjFiZjBiMTBiZDg2N2RiNjA3MDA4NmYzMTc3Yjg4MTVjNjdkOGFlYmI3ZDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjViMmFkODU3NmU3MGU3MmVkNjQ2YTJlNjhlYzMxNmUxZjZhMzU0NTg2NjU4NGNmYTViODc2ZTVlYmM0ZDFlODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4NTU1NTM0N2MyZmIwYTA0OTA2YTI2NDBmMjFhOTU5NDliZDk4MjgzMzc4OGVkNDEwNmNjYTI0MjE0MjVjNTIifQ"
         },
         {
-          "resource": "repo://prisma/schema.prisma#L540-L574",
-          "version": "repo-lines-v1:sha256:fbeafad44c72679a7c91b3ef6ebefde61bcff4015f4c15ac046731f2347047d7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ2ZDE1NDdkNmFjODE2YzJhZDk5ZDJlNzEzNDcxNTNlY2Q4ZmE1ZmQwOWU2N2E3YmFjZmMzYWM4Y2NmOGY0NzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBlODI5NzRkOGVkNWM3NjlmNmJlM2EzN2FiYTI1YjhlZmUzMmUwNGQ1NzcwOTVjM2U3M2ZhNzNkYjlkY2E5OTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE0OWI4MDc3MDNjZTQ1OWQxYzYzMmMxNzhjOTVhYTQwZWE3OTk0NmNhN2IzZWIyMTczYjIwZGY1OWUyNGJiNWUifQ"
+          "resource": "repo://prisma/schema.prisma#L560-L595",
+          "version": "repo-lines-v1:sha256:fa7d44a197f8f80c0d415ae641eaf8ae8b81dc9aed0587864a479af15e268c9f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ2ZDE1NDdkNmFjODE2YzJhZDk5ZDJlNzEzNDcxNTNlY2Q4ZmE1ZmQwOWU2N2E3YmFjZmMzYWM4Y2NmOGY0NzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBlODI5NzRkOGVkNWM3NjlmNmJlM2EzN2FiYTI1YjhlZmUzMmUwNGQ1NzcwOTVjM2U3M2ZhNzNkYjlkY2E5OTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE0OWI4MDc3MDNjZTQ1OWQxYzYzMmMxNzhjOTVhYTQwZWE3OTk0NmNhN2IzZWIyMTczYjIwZGY1OWUyNGJiNWUifQ"
         },
         {
-          "resource": "repo://prisma/schema.prisma#L576-L627",
+          "resource": "repo://prisma/schema.prisma#L597-L648",
           "version": "repo-lines-v1:sha256:a749be8dde8bf3407afa6b4d9ccb9bc8d2ac6de43a052065779a203310b76f9e:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3MTViNDIwOWYyYmFmNWY3MTk3NDE4NGI2OWI0Y2UxYzhlYjI0NGVhNjdlMWNhZjVkNWZmNzhmMzRlNzU3NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJlMWMzMDcxMDU4YzJlZmY4Y2NhYzEyODEzOThmY2U3MGUxYzZhMDM5YzlmZTQzOWJjYjk5YTNkYWJmY2YzODUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI3YjI5ZjdmYjg0OTVmMWZhNjNlMjUzZmYzNDZiMzdhMWI2MWQ4MDUxNjM4NjdkYTQ2NTA0MWIyZDhjNDcyMWYifQ"
         },
         {
@@ -162,10 +162,14 @@
         },
         {
           "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L47-L83",
-          "version": "repo-lines-v1:sha256:d6f844d2f3788cd6fce3536de6f0d29c2e5df235197831def5772310390e3645:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEwODQ3ZTE4MzNiZjRjMzQwYTgwM2QwNDIxMjMzNDhlOTRhZjQ1YWNiN2JkYTIxNmQ3MjM0NzI3NmVlZTdhYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3ZGE0MDBlM2IzODVlYzg1NGI5OGZkNGZiOGE1MTRmYmJiZTk2ZWFjZDAyMjViYzQ2YjRmMmQ2MWE4NDk4YmUifQ"
+          "version": "repo-lines-v1:sha256:a707322ef3b84c4cc50b3a4b557fff16144ec9f4053fcdcd2e93ea0412e9ed55:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1Y2NhZjBhZjk4ZDA1NDU2YTZiY2Y5OWQ5MTVlODBlYTdkYmJjYjQ5NDc0MDgxMTE3ODU0NDFmYWM4NThhOGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViMDNhN2Y4ZTQyZWM5Y2FkOWYwZWY1MTM0MWQxNDZkMDJhOTJiMzQzMGNkYWMyMzRkOWM1MGRiYzg3OTMyNjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU5NmE3YjQzODY5OGRhMmQyNDdhNDVmYTZkYjk0OTE2YjAxMTZlNTQ2MTY2OGU2NTlhZjIwZmVkODYyNDc3MGYifQ"
         },
         {
-          "resource": "repo://src/shared/config/server-env.ts#L34-L52",
+          "resource": "repo://src/features/create-mixing/api/mixing-queue.ts#L131-L131",
+          "version": "repo-lines-v1:sha256:8946f71b92ecd83cb0ae70389b2889f1ea4b886a7acba87b1b0ba0b896c37300:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODk0NmY3MWI5MmVjZDgzY2IwYWU3MDM4OWIyODg5ZjFlYTRiODg2YTdhY2JhODdiMWIwYmEwYjg5NmMzNzMwMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODk0NmY3MWI5MmVjZDgzY2IwYWU3MDM4OWIyODg5ZjFlYTRiODg2YTdhY2JhODdiMWIwYmEwYjg5NmMzNzMwMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWM3MTU4ZDFhMTI2MjkwYWVmNjdkZWVkZTU0ZDkxMjE4ZGVkN2E4ZWNiNGYxMzNiNDEwYzI1MGUwZTQ3MjgwNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjMzMjM5NDUwYzE4NDkzYzJjYzUzZTg5YjQwMzMxY2UyZTI0NzFkYTU4NDY4NTllZjUyY2RlYjhlNWRkMDdlOSJ9"
+        },
+        {
+          "resource": "repo://src/shared/config/server-env.ts#L38-L56",
           "version": "repo-lines-v1:sha256:767965b85bf32230e1092a3dfb2164398026aedde16c29a8dbc65e0c6c0954ed:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjZjc2OWQ5MDkxMDdjMmMzNmNkMGNmY2U0MjQzODZlNzc3ZThkNTljNTA1ZjFkM2UxZjM2ZjBlMjBjMTk4YWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNkMjEyODM2ODM3YzAzZTVmZjIwMzhiZGM1MDUzNjY3YTk4NDIxNjQyMzFlYWFmYmE2NTI4NTgxMWYwNTk3NTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIwNDYxYmYxNjY0YjM2ZDc1MTg4OTliMTllODQ1Y2U4OGM0NTVkZjRjNDk1Y2I5Y2E1OTkwZWYwZjRlZGNhNGIifQ"
         }
       ]
@@ -231,7 +235,7 @@
       "statement": "MediaOperation.status와 ExternalJobReconciliation.status는 문자열 컬럼이라 DB enum 검증이 없다: 업로드 의도는 UPLOADING → STORED, 정리 의도는 PROCESSING → COMPLETED 또는 RECOVER/UNRESOLVED로 진행하고 운영자 해소 시 RESOLVED_BY_OPERATOR가 되며, 외부 작업 정리 레코드는 PENDING에서 CLEANED·UNRESOLVED·RESOLVED_{outcome}으로 바뀐다.",
       "evidence": [
         {
-          "resource": "repo://prisma/schema.prisma#L629-L677",
+          "resource": "repo://prisma/schema.prisma#L650-L698",
           "version": "repo-lines-v1:sha256:5ccfedcd4fec7312763006cd21e6ef27864afa33a582e05d8a6d234ff205a1c0:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhODM3NTJmMDZiN2ZkNGIzYWRhNTkwNTI3ZGE5OGU4YTlhZTg5ZWM1ZmU0ODQ5YzBiM2NmOWE1NzY2MjM5ZmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY5ZDZkM2Y3YTRjNTFiZTZhOWNmMmU5Y2NmMDFlNTA5Yzg5NmQxMzBjNDYxOTVkN2VkMjZmNThlZDIyYWFhYTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
@@ -265,19 +269,19 @@
           "version": "repo-lines-v1:sha256:331a5dfcd4befde5d0ff44a63a02140f8cd8ac9b305abb92ac503a4148eae586:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3NTBlYjBmYWRjZjUzZDI1ODZmNjFiZjBiMTBiZDg2N2RiNjA3MDA4NmYzMTc3Yjg4MTVjNjdkOGFlYmI3ZDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlMzU2YWYxMmJlMDNiYTQ4NDViNzMwMGJlYWJmYjY4MzBkOTY5MDY5MmZjZjRkNzhlNjg4MjgzOWI2NzE0YjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjViMmFkODU3NmU3MGU3MmVkNjQ2YTJlNjhlYzMxNmUxZjZhMzU0NTg2NjU4NGNmYTViODc2ZTVlYmM0ZDFlODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk1OGE5NjZlOGIxZjRmMjQwYjkyYjgzNTMwNjkwNmYxMzA3NDc2NGY5MzdiZmE3YTkwY2Q3NDUyZmJhYmZhYzMifQ"
         },
         {
-          "resource": "repo://prisma/schema.prisma#L499-L538",
+          "resource": "repo://prisma/schema.prisma#L519-L558",
           "version": "repo-lines-v1:sha256:fb6a72da9567a0e34e0089b78fd222604fd7e0202eaedf801809c6d50801848f:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmZWM2ZmI5NDgwY2JmNzk2OWRlZTRkODE0MDM2NDgwODgwYzY1Nzc3YzEzYjhjMDYxZWFiYTQ0YmQxMmNmMTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ2OWY4MmQ0NWE5NDRjZDk4OTg2NzkyMzg5Mzk2MDY4ZGRmYTM0MWFjZGRkZWVhN2Y1ZTA5OTEwZTZhMTE1NzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYxZWYzOGRjNmZiNmFkZWQ4Zjg0ZGI3YWI2NTZlNjU2YjVmYTA0MmJlZjZmOTNhNGU4OGIwMTU0M2UwMzRhMzEifQ"
         },
         {
-          "resource": "repo://prisma/schema.prisma#L571-L573",
+          "resource": "repo://prisma/schema.prisma#L592-L594",
           "version": "repo-lines-v1:sha256:b847c1462a6abb09e5407a1946ad304c74b126218cf8e6c36314642b5ba39c13:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTNiMDY3OTM2NzY4NzBjYmQxYTkzYTVkYzdiZTkyNTc5MTU5ZDVkOWMxZjRlNjI0ZWQzNWY2ODYyZjlhNDRjMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGJjMzI1ZjU4ZjE3MDliOGNlMjJmMzFiYWE0YjUxZDFkYjRjNWE1OGE1MjBlYWMwYzdlY2QyZjg5MTI4ZGQxNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWY4OWIwMDQ4MDA2Yjg1ZTRiNGU0MTFlMGFmY2ExYzJkZGI3YjM4NjdlZTRhZGFjMDJiZDRiZDRmMGY5Y2Y0ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTk2MWI4ZTdmNzFiZjA0NmJjNDkzMTgyMmI0Yzc2ZWFiZjc5MTkwZjgwZjg4MDVlNjkyNzg4YWVkYzRlOWExNSJ9"
         },
         {
-          "resource": "repo://prisma/schema.prisma#L620-L622",
+          "resource": "repo://prisma/schema.prisma#L641-L643",
           "version": "repo-lines-v1:sha256:b847c1462a6abb09e5407a1946ad304c74b126218cf8e6c36314642b5ba39c13:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTNiMDY3OTM2NzY4NzBjYmQxYTkzYTVkYzdiZTkyNTc5MTU5ZDVkOWMxZjRlNjI0ZWQzNWY2ODYyZjlhNDRjMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGJjMzI1ZjU4ZjE3MDliOGNlMjJmMzFiYWE0YjUxZDFkYjRjNWE1OGE1MjBlYWMwYzdlY2QyZjg5MTI4ZGQxNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTMyZWQ3NWI3YmFhZWQzYjRjNGY4MzcwOTY5MWE5OWVmZjM2MWQ0MjViZjRmZDhkNWViODRlNjA0MTY1ZjQ3OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTZmYjNjMmQ5YzUxYTY0ZDY0MDA2MDNjYzA2OTRlNzNmMzQwYmYxMTEzNTk5OWYwNTc5Yjk0OTJmOWFkYTUyMCJ9"
         },
         {
-          "resource": "repo://prisma/schema.prisma#L653-L677",
+          "resource": "repo://prisma/schema.prisma#L674-L698",
           "version": "repo-lines-v1:sha256:af0db5ec8825f4d431df0e7f3d8f4e7723839d92a0d416d519d2d03b67537d0f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjOWUxYjUxYmEyYTllMDRlNzBkOGQ0OGFmYWVmNDg0NzczNzRjZDRkNjI2NTAxY2E4NmVjOWQwNzI3ZDc5MTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBhNzlhMjU0NTY1NmRmMWUzYjIzZmYxMmQyOTVmMzM2OGQxMDMzNzMwNzEyN2M4YTI1Y2IwOWRjMmU2YTMxYTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
@@ -291,7 +295,7 @@
       "statement": "티켓 지갑은 @@id([userId, kind])로 사용자·종류별 잔액 한 행을 유지하고 TicketLedger가 kind·type·amount·balanceAfter·actorUserId·작업 FK를 남기며, 원장과 작업 행의 refundState가 환불 상태를 구분한다. 임계 상태 알림은 Notification.dedupeKey unique로 중복 생성을 막는다.",
       "evidence": [
         {
-          "resource": "repo://prisma/schema.prisma#L487-L538",
+          "resource": "repo://prisma/schema.prisma#L507-L558",
           "version": "repo-lines-v1:sha256:1074cd293ddcf5dde2f01bf11288bc18e6274c55c41dc3a590499076585b34d7:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3YWE5MzFhMjYwMzg4MTA4ZGEwNDFlYzI2MWFiYzMzZjFlNTMxNmYzN2ZmMWMxOWYxMTlhOTNmNTc5OWUyZDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUxNTE4YzM2OTgwNjU4NjdjYjFkNTk2ZGYxODdjMTQzZTdjMzZiNzA2ZTQ1ZjYxOWJjZjE0YmE5ZDk4MmQ3NmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYxZWYzOGRjNmZiNmFkZWQ4Zjg0ZGI3YWI2NTZlNjU2YjVmYTA0MmJlZjZmOTNhNGU4OGIwMTU0M2UwMzRhMzEifQ"
         },
         {
@@ -299,7 +303,7 @@
           "version": "repo-lines-v1:sha256:37b0a48488675156542cd5fb81fdc3a27c0b5be0a18e36a1c9533010aaa65821:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhZTA0ZTA4YmJkMjQ2MDMxMmE0ZDYyNDhlZjM5MGZlMTA3ZDhiZDBiNjQ3NzA5MDFmMTU4MTQyMTRmMTJlMWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE3NGVlOGE4ZDFhYTg0NTM5MWJjNjc5ZWI3MGNlN2Y0NmEzY2Q2ZmIyZDE2ZmNjYTY3ZmExNzhmNGY4YzFlMGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU1YmYwZWQ0Nzc2YTMzYzRlNjg5YWY0YTU5NDUxNjdhYzFkZTgwOGU2ZmRhYTgwZTQyMDUwNWZhMWM5Yzc0ODIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYzY2Y3ZmEzOTY1ZTkwNmIyMjhkY2JhNjkzNzc3OGFmZDNiOWQzMzdlNDM2Nzk5NTljM2QzNmQ5MGFlZjY1M2EifQ"
         },
         {
-          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L225-L252",
+          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L255-L282",
           "version": "repo-lines-v1:sha256:6483fd352f75ba01d6be2817ee7e277ad37cf90b727a79148d7505b064f44d55:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5ZDY1NjI4MmY3ZTNmMGRmZTVmMTg4NjYxM2M2MzlhNTRiYWUwMGNmZmRhOTJhOTQ1MDJmMjQyNjRiYmYzYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIzOTRiZTBjNDBmYzQ4NmE5ZTM0ZjI4MDcxMjYwMDFiZTk2OWRkZjQ2ODFmNDMwYTI4M2IwM2ZiMWVmMmQ4MGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBjMDI1NzhmZTRkYjBkMTllNGIxOGY5OWMzMjg3MDZmYmNmMjQ4NzkzMmQ0NmMzNDQ1ZDQwMTNlYWNiMTM3M2IifQ"
         }
       ]
@@ -321,10 +325,130 @@
           "version": "repo-lines-v1:sha256:687ef716ee4b6abf422ff2708c0e2d987afafb5397e16003f4dde136f603b43f:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2MmRiNGI0MGVjMTVjYjk4YzU0MmRiZDI5NzgyOWM0ZWFmM2RmNjY2ZTgyNmE1ZTk4MmI2MTVkZGZjODk4NGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRhOWMwMjc2OWY3NGFhYTA3ZmEwNzVmYjFlMjczYTRiYmRjYTliMjhhYmM2ZTQyY2ZiZmE0Mzg4OTI0M2U5ZTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
+    },
+    {
+      "id": "claim_16e2c5b18f954b03b0dce964f0216c8f",
+      "statement": "User.isGuest는 기본값 false인 불리언이고, GuestAnalysisTrial은 게스트 User 1:1(userId unique, ON DELETE CASCADE)과 저장한 회원(claimedByUserId, SET NULL), VocalProfileAnalysisJob(jobId unique, SET NULL)을 잇는 행이며 tokenHash·userId·jobId unique와 @@index([claimedAt, expiresAt])를 갖고 상태 enum 없이 consumedAt·expiresAt·claimedAt 시각으로 상태를 계산한다. tokenHash에는 쿠키 토큰의 SHA-256 해시만 저장해 DB 값만으로는 인증할 수 없다.",
+      "evidence": [
+        {
+          "resource": "repo://prisma/migrations/20261029000000_guest_analysis_trial/migration.sql#L1-L38",
+          "version": "repo-lines-v1:sha256:b40dff0618755a3af3ff5d43e430d4ba64ee02e48356bbbcda0df1cb1b008b60:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2OTg5NGY5NzNjMmViNGMwNTYyNzc0YjhjOTg3NjcwNTVjYWIzNDRkMzg5ZGQxOGFjNDU0N2ZiNTM3OTI1MjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIzOTUxMmM2ZjU4NWFjMDc4MDA0YmMwMzM3YzEyNzk5ZGRhMmFiYjE4NTI2ZWFmMDk0NmFjZGI2Yjg0Yjc5ZWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIifQ"
+        },
+        {
+          "resource": "repo://prisma/schema.prisma#L348-L390",
+          "version": "repo-lines-v1:sha256:8cb6284b2f440c3d26f114e10a30bee8a9caba57c362b205ee0cf66e63109aa1:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmZWZhYjU4N2YyODJlMWM3NTlhODMwOWViNzZlOTMxZWUxNTU5NDFlMWZiMTM1MTY0NzkzOWE4NjE5Y2M1MGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFmNGQ3MWQ3ZDViZDcyNTM4NGIyYWMyZWExNzllYjI2MjNiNGFjYjBkNzFjNDEyZDVjNmI3YmYxZTBkZDI0MTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4MzFhYjg5ZWFiMmFhNjNkNDdlZTVhNGQxZGIwZDc3YTgxMzY3Y2Q2ZTFmNTA0MmNmMDk5NzNhMTY4ZWQ0MjgifQ"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/api/trial.ts#L7-L47",
+          "version": "repo-lines-v1:sha256:5e80745bf6375a4f68368f0cb3cea7a533e40226493e07686bc9782a5e54f42b:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRkZmUyNjNjZWQyYjU4YjU1MTU1MjI0NjkxN2M0YzJkNzJiMjE4YTUwMDA2ZGUyN2Y4OTQxMmE5ZGM4N2RhMWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE1ZmQ4MjI1YTYwOWVjYTMzZGZmOGFhOGJkMjE1YjRjMGM0MWZkZDBlYjQxNGY3ZGJmMTkyZjk5ZmJmZDYxMTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI1NmM1YmE3MDVjZmNkZTk5NWNiNjhjMGU0MmZiYThkODk4MmY3NDQxZmI4OGZjNDY4MmI0NDZhNWI5OGViOGMifQ"
+        },
+        {
+          "resource": "repo://tests/guest-analysis.integration.ts#L8-L35",
+          "version": "repo-lines-v1:sha256:4b87ba505b0baa16c0908fc410839bad7039672354e3919b27807e2f8c8a4d4f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZlYTZiNGYyNWZmNmUyOTlhNWRhNTRkMTMxMWJmOGE5YmFmMzJkYjliYjZmZDdlMmU5OTFlZWMxMDhmMDc5ZDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0ZGI0NWUwYmUzMTgwNTYwY2UyNDY2MmNlNTM2ZWJmMmRiYmJkZTRjODgyOTY3YWRhNTY0MTFlNzgzZGE2ZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYwMTFkNjM0ZGJkYTRkYmZkZjkwMTE0MzQ3NGY2MWViNmUwNmQxZjZlZjhkNTNjYWY0NDExMTQ1NjFiYWFkNWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_928c1c9b61bb4995b2a64ae103697c0b",
+      "statement": "보컬 분석 워커의 성공·실패 확정 트랜잭션은 markGuestAnalysisTerminal로 trial을 닫는다. userId·jobId가 일치하고 아직 저장되지 않은(claimedAt IS NULL) 행에만 적용되고, 성공이면 consumedAt을 채우며 두 경우 모두 expiresAt을 GUEST_RESULT_RETENTION_MS(24시간) 뒤로 미루고, 게스트 trial이면 회원 알림을 만들지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L122-L124",
+          "version": "repo-lines-v1:sha256:58bc5dad189e4487405e0f94b181a405de76146e40a45396dd595c19953172bd:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2EwMTQ4YWU2MGUyN2ViNWVkNTNiYWI2OGZiNmNiNjUzZjY5Y2QyYWY4ZTZjNzkxYzAyMmVmODM3MjFjYTc5MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTY3MGRiNThmNDBkZWU3N2Y2YWY3MDM2YTQ2ZTZjNmJiYjcyNjg1ZDJiYWVkZDczYmFjMDJmYTQwNjhkNTZjNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzhmMDNhZDlhNTJjYmQ2MGFmZTZkZTczYmI4MDViMDUxOTBlZWI3MTMyMTA4MzliYjYzNjNhMTBjODc5M2M1NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWZiNjMyMDdmYzgyMzE1NjRkOGNjNjFmMGU4ZDBiNjdkOWRhOGIxYjIyNDAyOTVlMjBmZjFiYWNmNjJjZTdhZiJ9"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L220-L221",
+          "version": "repo-lines-v1:sha256:0109647f52c25fa0301c2d0c5f431d01f205a2012e0e4326ad21572745b364da:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2EyMjNjZDY4NDIxM2UyYzQ0NmFmMzZjMjU0YWIwNmJhZDg5N2NhY2Q0OWY2NmMxYTQxMDk1N2JmNDBkZGJhNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMThkYTMwODk0N2U0ZDllZDI0OGI2ZDI4ZDZkNmViNTAwMzA1ZTA1YTM2OTExYTkwYzZkNzBkMTNlNzMxZTJiZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTM0M2ZkN2Q0MDk0MDMxNjE4Nzc0NzQ4ZWRjM2VhMWNiZjAzYTU4ZjMxODBmM2MxZDFiMWQ3NjdjZDIzNGZiNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWZiNjMyMDdmYzgyMzE1NjRkOGNjNjFmMGU4ZDBiNjdkOWRhOGIxYjIyNDAyOTVlMjBmZjFiYWNmNjJjZTdhZiJ9"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/api/lifecycle.ts#L43-L55",
+          "version": "repo-lines-v1:sha256:112e6b00535fb482321d2f6f11ecdb6eb095bf2bfd0a1d170376c55d9ccaaa25:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmYTA4Y2I5Y2NhNDAxZmUxZmQ4Zjc1YmQ2MWYyNTk3YWY4NmU4Mzg2ZjAxZTIzNjAwMDgzMTlmZjM1ZGZiNjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFkNzk1MzdkMjkzMmQ3M2NmNjA3MDFhZDcxOWZmNzRkM2RkOGI2NTFmMGNiYjQyZTU3NTA1N2Q5M2M5MGIwYmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2NGJhMTg0NjdmODQxODA1YjEzNjE0ZjAzNTdlMmZhOTQ4MWVhZTdhZmVhNzcwOGFhNTE5NDcyMTAwZDg3N2IifQ"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/model/contract.ts#L1-L7",
+          "version": "repo-lines-v1:sha256:cbd1ac5e32847b03bd8a9ba27e1e694186e25da4613f5dbab7649de58ac7da36:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTRkOWVmNDRmYjkyYzRhZjQxN2YwOWE2ZTFmZTE3YWE4NDI0MGU5NGZhMTBjZWRmZTRkZmViMGI0NTBiNDhmZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWM4NjE3MzkzYWU1NzY2YWRmZDhjN2U4YTFhNDI4NjcwYzA3ZGRiM2I0ZWZjMzM5NTljZjM0ZGI0ZDEwYzlhNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWExZDFhNjMzOTAyMjljNzk4MzQ3ZTgzYTA0MDU0NDFjOTQwMDAzNTI4NGFkMTY4YzFiZjZjZGYxZDcwYTM3MCJ9"
+        },
+        {
+          "resource": "repo://tests/guest-analysis.integration.ts#L241-L257",
+          "version": "repo-lines-v1:sha256:69f2e4d2dcc0443cb5053ecbafe34609cb128c511f5c289b81aa72d35c32e021:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhmYTY2NjUwMDg4NWFhMGZlNjEzY2I3ZGE0YWM1NmYyNWUwMGRiMjhjMGY0NDIyYTA1YTQ5NDViMzcxYTg1NzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1N2MyZTEzMDQ0ZWRhNDVkMzQ4MjZkMDhiNzljOGI2NzNmNmZjODBmNDk0MWE4YzU3OGYwZTgyZWRhMTY3NWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhmNThlMDM4MzZkMTkzMGU0MzdlOGQ2MmY1ZTkzYjU4YjdhMGU2NTNmYTM3MmUyNjVhYzAwZjJlMTU3M2Q4ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNmYWE2NDZlOTdlNGZlNDdhZTcyZDBjMGJlNTQ5ZTI1ZTBlMjFhODAwMDNjZThkMTVjZTVhZjA1MzE0NjQ1NGUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_dde07f1fecc44b4bb4d9931938656235",
+      "statement": "claimGuestAnalysis는 trial 행을 FOR UPDATE로 잠그고 회원이 게스트면 MEMBER_REQUIRED(401)로 거절하며, 저장 시 프로필의 userId·profileNumber·displayName과 작업의 userId·idempotencyKey(guest-claim:{trialId}:{jobId}), 원본·합성 미디어 자산과 MediaOperation의 userId를 회원으로 옮기고 claimedByUserId·claimedAt을 채우고 expiresAt을 NULL로 비운다. 반복 저장은 같은 profileId를 돌려주고 다른 회원은 GUEST_TRIAL_ALREADY_SAVED(403)를 받는다.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/guest-analysis/api/lifecycle.ts#L57-L112",
+          "version": "repo-lines-v1:sha256:9fb57da581510c5cbb5046dadc8b537c54bf6acd877e82a920fbdd8e47f18cfa:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5OTBlYjc4YjhlYzU3NzFlOTcxM2YzNmQyYzU3MjJlMmNmZDA4ZWRmZTE2MTBlNzNiNzFmZTExZDBkYmM2YjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViMGNmYzlhYTY3OTZkZjk5OTliNGRhZjZhZmY4NTg0NTIwMmIyNTQ3NWRlMzJlYTM2NmNiZjQyZjU2MGE4MjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVmNzgyMzdlMjAwZTgxYWE5ZGQwZjBlY2VhMGY0NzNlMzg1MGExODNlNDNiZTgzMDcyMzJiNTNhYzNlZjM4ZGEifQ"
+        },
+        {
+          "resource": "repo://tests/guest-analysis.integration.ts#L315-L336",
+          "version": "repo-lines-v1:sha256:bd6000ef2a21a0738177ad265ea5dd8f6bc4d4028cc502a5283b3f9e26fee71f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkOTg5NmY3NDMzZjIyYTAzMGFjMjAyYTc0ZmZkN2ViODY0MTJmODg0YTU0ODY3OTQ2ZjNmODY2NzFjMDkzYjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4MmY2NjRmMjQzZWJkZTY5ODUzNWFmODg5ZTNlMWI2YTFkNWMyNDhhNGRkNzhkNGRhNzI0ZDdmYjYyZWMwMDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMyZmM1ZTMwNjM0MmFlNGRkNTY1NDg5NDQ2NDg3MTc4ZjhjNDllNTEyZWY0NzBjYzY2YzZhNmYwNDkzZGY4ZDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI3MjVkNThiMjZmMGEwN2RjYzgwYWViMDk3MmQwYjY1N2M5OGIzZTM4YTMyNDkwYzEyZWYwZTcwNmNjM2Y0OTYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b30203a37e4a4aa28df5ddfcd5976ec9",
+      "statement": "cleanupExpiredGuestAnalysis는 claimedAt IS NULL이고 expiresAt <= now인 trial만 FOR UPDATE SKIP LOCKED로 하나씩 잡아 프로필과 recording을 지우고 남은 미디어 자산 삭제를 예약한 뒤 expiresAt을 NULL로 되돌린다. claimedAt이 채워진 trial은 대상이 아니라 회원이 저장한 프로필은 만료 정리 후에도 남는다.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/guest-analysis/api/lifecycle.ts#L114-L158",
+          "version": "repo-lines-v1:sha256:f1b6a90ccf00941800ca5bae416475a995b112efcede227034598bd569dbe50a:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwMDVjMmE2NDU1YzZkYzJkNTVmODk4NzBkY2YzMjMzNmU4ZDc3MmY4OGE3NzMyOWI2NDZiNTRlMjRmMjAzODgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://tests/guest-analysis.integration.ts#L337-L373",
+          "version": "repo-lines-v1:sha256:a72b39e2648c42ca68488b9ff6c44726e615ea52974a0e661052d02496d05333:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4YWNhZDYxZWY4MmZmYmMwNzJjMDA0YTczNWE4MGM1NmY5YjRkZTZlMGFmM2UyMTU2OWRhMWUxMTZjOGM1ZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEyNDNlOGEwYzIxOGViYTMzYTRmNjcwYzZlYWI0ZTZiMzZlMjUwMDIwNDNiNzQ3YjBhMThiMDE3NmJkY2U4NzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNiOGIwMjgzNDhkMGUxMDNlYmE2MmMwNGIxZmZiYTk4NDU4ZDY0MGVjM2Y4ZTgzNTM5NGYwYWQ5NjU4YjFkZTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkzMDlhM2M0NzY1YjdmNDZjODA1ZjdhYjIwMWQ4OThiYmNjM2NhOWU2Y2E2NTBkMjAxYzdiZmE3MTUyMmZmNTkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5b6bed223eef4b7c99a0ed6458c66399",
+      "statement": "User.isGuest는 정식 회원 전용 경계로도 동작한다. 게스트는 지갑 대신 trial 정책으로 분석을 접수하고 티켓 지갑·원장 행을 만들지 않으며, 관리자 티켓 조정 대상에서 제외되고 회원 목록·회원 수 조회에서 빠지고 게스트 수는 GuestAnalysisTrial 개수로 세며, 게스트 쿠키로 AI 믹싱을 요청하면 401이다.",
+      "evidence": [
+        {
+          "resource": "repo://src/features/analyze-vocal-profile/api/analysis-queue.ts#L100-L128",
+          "version": "repo-lines-v1:sha256:dde85e4f521df43831936ca775ad1a8076c0a61bd2a94d7184b478dface15bfa:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4NmY3OTRhOTQwMjA4N2YzZmJhNjEzMTI5ZWMxOGQwZTVmZDJmODRhM2NjNWQ0YTVhMjE0Y2NkNTI3MTM2ODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5NGZjMGMxNzNkMWVjM2ZjNTAxZDdkZmE5Mjg1NTAxYzUyN2NmYjQ3MTI1ODNkYTNjYzM2MTgwNTY2YjRiZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNiYThmZTBhYjVlYjJjYmUxYWJmNTUwM2RjNmRhYTI4MWY1OWMwYzc4MTIxMjNjYjBjNDQ1YWQ0YzVjZjkwZGEifQ"
+        },
+        {
+          "resource": "repo://src/features/authentication/api/analysis-actor.ts#L7-L13",
+          "version": "repo-lines-v1:sha256:85e97b28f604d8c7019beefae0d9cc3807fceb700481a7c97b9412fce2ec243e:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTM4MTYyNjgyMzY1ZWJhZTc3ZTdmNjM5YjcyMTMxZTE5NWQ1Zjc1MDUxMWQ5MzUzMjI1NjI2Mzc2YmY2Y2U3ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjY0YjYyNTc4YzY3OWUxZTAxNzJiMzliMjZjNjA1ZTRmOTY3OTZlZTEwYzA3NzJmOTY4NmMyMWZjMmM1ZjViYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODBlNTc3MWFkMThmYmQ4N2U2NTU0NjkzNjA5MDE4MmIxYzhlMmUzMDg4MmM5MTBjNmJmZjNiOGU2OWI0ZmY1YiJ9"
+        },
+        {
+          "resource": "repo://src/features/inspect-admin-operations/api/admin-service.ts#L16-L20",
+          "version": "repo-lines-v1:sha256:d8f274c77e7ca5918688cc5db1cedea4a8b18cf9554a6447e74d24887c924b4b:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmJhZDI4N2JlOWQyY2EyYmEyNTFkMWJmNzcwOGUwM2E4MjgxMTIwNTc3OTRkMjY5ZTFjYWRhYjk3ZTEyYjcyMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDAzODU5NjgzZThmY2E1MjA4OTMyZDEzZmM2ODJmZTBkMTc2MjExZjFmY2M2ZmMwNzVlMWJjOTRjNzE0MzU0MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTBkZmI0MjNmN2JkYTNkY2UxZGVlODE2NWZhZjZiM2E4OGJlYTU5MTllNmQyNzQ3MDEyNWZiNmI4NWZhYzM1YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTMyNjU2ZGY2NGNmMmU4NjM0YjBiM2EyMDkyMGY2MTM3OTg4Mjg0MmFkMWQ2NjBhZDkzNThkYWMzNDdmM2VmMyJ9"
+        },
+        {
+          "resource": "repo://src/features/manage-tickets/api/adjust-user-tickets.ts#L22-L23",
+          "version": "repo-lines-v1:sha256:40ea0d2d7b1dd4534fd96a3e4a000e9c6324a27a6bfa138ace162185d2f9a77a:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDc5MzhiMzQ5MjQxNWE2NjI1N2I1NWY3OGVhZDRkYzU4YjU4ZTBkOTdjNGQyNjRmZGQ1MTI3N2Q3YTM4MDY4ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTY3NDY0YWJhZDM2NTAzYmE1YzVjYjE4YTk5YTQwZWJiYzc5MDBjY2MyNzQyZmVlMWIxYzQ2NGRkZGQ0MGI3MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGYyZTI5MWMxNTBiZGUxNDRkMGJlOTYwOTViNzM4MTQ2YWU1ZDBjOTMwN2M5MTVlNWU3ZjEzNzdhOTdmMTAzYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWNiN2U0ZjFhYzdiNjZiYzQ5YWJjYzliZDJlZDZmZjZkMDUyMzIxMzdmMTY4OWE5NDNjMjU3YzZlZGQwZTkxYiJ9"
+        },
+        {
+          "resource": "repo://tests/guest-analysis.integration.ts#L25-L30",
+          "version": "repo-lines-v1:sha256:337c3196b2c70845f6e989af701e5e9b19aec5a59c16eb8b03c425d1d9ec0ab9:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzk0MjU2Njc1ODhmOTVjZjYxOTQzN2Y3OWVkMjk5YWI5M2E4MjJjMzM1YjZiYmY0MDU5ZjQ4NGViNmFmNGE5ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjM1MDU4N2YzOWFhYmIyZDk4ZjQ0ODY3Y2QxZGY2MjQ4MjU5YTYxMTU1YmFlNDFkMjM2OTBmNGIzNDU3YTU0NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDg5OWFmNDhlZDFhNjRjNDQ5YTY1YjhiYWJkYTUxNGFjY2E2ZTNjNTM3OTMyZTMxNWJkYzI4MmY3MzU1M2IzNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWZhMThkMzczZjFiODQxYjFhM2E5NGY2ZjhkNzMwOWRiYjIzMWZlNTcyNDMwYzUxYjAwZmZlOWRkZmI5NDVhMSJ9"
+        },
+        {
+          "resource": "repo://tests/guest-analysis.integration.ts#L407-L413",
+          "version": "repo-lines-v1:sha256:7841849c6a0bb75f88f37135bf8d21a68bec20d93ac4c724b7a52d9fca53bc4e:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWE1NTFjODYyZTQ0MDRiNTkxOTM2NjIwZTBkMTk1NDdiOGFiZWY3Y2FhNDJhMGI0YTA2OTk3ZDA2ZjBjM2M5YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmVmNjkwMDdhN2U3NWNjZGIyYzE5ZWZhOWQ5NWM0M2JmNzg3ZjMzYTJiOWM4MjY1YzRhNWNlNjQyZmU2ZGJlYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2Y3YWVlNjhkMWY0N2RmN2M1YmJiNzM0OTBhMGY0M2E3ZmVkM2ViMWQ3NmNlZTEzNDc5YjU3OTI1YmEyYWRiMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDY5MjRiYTM3NmI2NzRiOGE0YTQ1MTBhMjI5ZWRlNDUyNjVlZDI2Y2MxMjFlMDdjMzFmMjY2M2Q3ZDZhOWYyYSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e28a009cea6e433abb1b591270d90d26",
+      "statement": "프로필 저장은 번호 배정과 같은 트랜잭션에서 실행되므로 저장이 실패하면 User.nextVocalProfileNumber도 이전 값으로 돌아가고, 합성 레퍼런스 업로드만 실패하면 프로필은 synthesisReferenceAssetId 없이 저장되며 번호는 소비된 채 남는다.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/vocal-profile/api/persistence.ts#L221-L251",
+          "version": "repo-lines-v1:sha256:9090fdb7169520e8cc7fe92cfc4e15b0d418bfea7c0975c4314794241f76bd2c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxMDMxZmZkYTI3YzA2Mzk2M2EyYmI2OWZhMTFhN2I2NTcyZDZjOTdmMWNjMThkZTMxYTk1MDQwMGVjMDU1ODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE5ZmEwODMwOGM4MTYxMWFmMTdmNGY4MjJjNzFhMWIzNDcwYmFlOGFhYzFiYmQ0YzAwYWRhMDBhM2FhMWU3N2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVlZmI0YWEzZDVmM2U0ZTNhN2E5ZWQ0NzVmZDY1ZDk0Y2JlZDFkMjg5ZGQ2Mzk2ZGJjYWQwMzZkMmJmNDYwMzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNjNjM0NjhhYzhhY2I0M2MxYTgzMjJkYmM2NzFkMDllNTlhZmE1ZTM4ZDYxMmU4MGRjNDJlZGYyNzcyYzY2N2IifQ"
+        },
+        {
+          "resource": "repo://tests/vocal-profile-persistence.integration.ts#L156-L189",
+          "version": "repo-lines-v1:sha256:0473b39d657dbd88cc872554ec01207f90e3c065ac51386958ca0cdad4e48886:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjZmE2MjY0NjgwNTYyN2IyYTY5MDk2OGMwZDM2MmFlNTQyZjUyOGQ2Njg2MTRlYjE0OTgwZGVhMzljYzhiMmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBkNWI3OGIwYTBlMTdjOWNjZDJmMjAzOWVkNWM1YWU0OGM4ZWUyMGU1YTNjOGFhYzQzM2JjMjY3YmZiOTRiZTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI2MTMxNjg3NTliMWYyNjA3NjU2MDUzZDc4MmRkN2NkNGQxMzAyNDE1OGExNWRlNTM5NTIwYzA0ZDk3ZDk3YjIifQ"
+        }
+      ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.5.2",
-    "at": "2026-09-18T16:47:52.081Z"
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-30T13:29:10.337Z"
   }
 }

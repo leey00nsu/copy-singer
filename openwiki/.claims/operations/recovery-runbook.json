@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:add5c7d6ec7243e3f843401655b40c0cb0e0dca8b18125199cc3d13a946f28ba",
+  "pageVersion": "sha256:a2a7dd8f981b04c4991737068432e968c2a2069161a52fc2ca338e98d844d9a2",
   "claims": [
     {
       "id": "claim_3bca11ebfd2a49e6a2f500df468ed89f",
-      "statement": "운영자 복구 명령은 package.json의 `jobs:reconcile`, `media:reconcile`, `tickets:recover-signup` 스크립트가 각각 scripts/reconcile-external-job.ts, scripts/reconcile-media.ts, scripts/recover-signup-grant.ts를 실행해 운영자가 자동 경로가 풀지 못한 행을 해소하는 절차를 제공한다.",
+      "statement": "운영자 복구 명령은 package.json의 `tickets:recover-signup`, `media:reconcile`, `jobs:reconcile` 스크립트가 각각 scripts/recover-signup-grant.ts, scripts/reconcile-media.ts, scripts/reconcile-external-job.ts를 실행해 운영자가 자동 경로가 풀지 못한 행을 해소하는 절차를 제공한다.",
       "evidence": [
         {
-          "resource": "repo://package.json#L70-L73",
-          "version": "repo-lines-v1:sha256:4141553e72e01c541324eb09b3013fd3e955413cd50d60422c3afd589dc3cb81:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE3Mzg5N2E1NDExY2FlNzlmZjE3NDVlYzA1MjMyMzVhODc5NmQ3ZDAwNjZlMDVlMGEwYmQ3MTJlOWFhNDFmOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTllNzdlNTZmYmNmZjVlMWQ5ZjU4ZDM3NWNhNDM1NWY5ZGM2MmVmMGJjMWMxMmRhN2VmMTE4ZmZmZGEwYzEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDAzZDg2NWY0Yzc5MmI3OGVmZmMxNzU1M2ZlNmY1NjI2YzVlOGQxZmE1NmRhNDYzOWUxNWJiOWNhYjU2MDNlMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDU0ZjBiZjRjNTdiMDI2ZTFiNjlhYzk1NzBlMjNlZTI1OTY3YTgwOTI0MmJjMWZmMWU3YzYzYTg2ZmM1ZGYzYSJ9"
+          "resource": "repo://package.json#L72-L74",
+          "version": "repo-lines-v1:sha256:2549fd94746c0ef9dc2c86a5346e052a87b3d51e3434342025df311688d4c5f5:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmYyNjU0NGIwNGFiZjVmNzgzYTk3ZTJlNDk0MjY0MmQyZjU5NGNlODdiOWM0YjI1MmVkYjJlZGUzMmQwMzU2OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODVhNDRmOTY3YmJiYjY0YjM3ZmUyZTE5NzZhMDFjMjE0OTM0MGEyZTdjNDRjZDJiZjVmMTZhMjMxYTc5ZTM4NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTlkNjM5NzNmOTA5YzM5ZmE1MWUxYmMwMWFlMDBlNjMzNGU0YWU1NDFjZjQ2NDQzN2RlYzZiYzc0ZjIyN2E4OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmVjYWY3ZTE4NjdhZWNmYTA5NDQ2NWEyMTVmMjJlOTVmYjBiZTJkM2RlNWRiODkyZDI0ZmE2MzJhNDI1NDYxNiJ9"
         },
         {
           "resource": "repo://scripts/reconcile-external-job.ts#L5-L85",
@@ -348,15 +348,19 @@
     },
     {
       "id": "claim_4a2eb13cc7fb4258bbb77c1b9d0f5896",
-      "statement": "복구 경로는 pnpm run test:readiness에 포함된 통합 테스트가 고정한다. tests/worker-recovery.integration.ts는 만료된 lease 작업을 재점유하면 FAILED로 수렴하고 이전 소유자의 확정 시도가 LEASE_LOST로 막히는지를, tests/media-recovery.integration.ts는 외부 파일 id를 확인하지 못한 MediaOperation 행의 UNRESOLVED 잔류와 MEDIA_ASSET_IN_USE 삭제 거부를, tests/signup-recovery.integration.ts는 dry-run의 WOULD_GRANT 결과와 intent 미생성, apply: true 동시 두 번의 GRANTED/NOOP 분기, 기록된 금액과 다른 amount의 conflicts 거부를 확인한다.",
+      "statement": "복구 경로는 `pnpm run test:readiness`에 포함된 통합 테스트가 고정한다. 다만 이 테스트들은 복구 CLI 스크립트를 직접 실행하지 않고 스크립트가 전제하는 서비스 함수와 상태를 다루므로, 인자 파싱과 출력 형식은 스크립트 본문으로만 확인할 수 있다. tests/worker-recovery.integration.ts는 만료된 lease 작업을 재점유하면 FAILED로 수렴하고 이전 소유자의 확정 시도가 LEASE_LOST로 막히는지를, tests/media-recovery.integration.ts는 외부 파일 id를 확인하지 못한 MediaOperation 행의 UNRESOLVED 잔류와 MEDIA_ASSET_IN_USE 삭제 거부를, tests/signup-recovery.integration.ts는 dry-run의 WOULD_GRANT 결과와 intent 미생성, apply: true 동시 두 번의 GRANTED/NOOP 분기, 기록된 금액과 다른 amount의 conflicts 거부를 확인한다.",
       "evidence": [
         {
-          "resource": "repo://package.json#L70-L70",
-          "version": "repo-lines-v1:sha256:ea73897a5411cae79ff1745ec0523235a8796d7d0066e05e0a0bd712e9aa41f8:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE3Mzg5N2E1NDExY2FlNzlmZjE3NDVlYzA1MjMyMzVhODc5NmQ3ZDAwNjZlMDVlMGEwYmQ3MTJlOWFhNDFmOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE3Mzg5N2E1NDExY2FlNzlmZjE3NDVlYzA1MjMyMzVhODc5NmQ3ZDAwNjZlMDVlMGEwYmQ3MTJlOWFhNDFmOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDAzZDg2NWY0Yzc5MmI3OGVmZmMxNzU1M2ZlNmY1NjI2YzVlOGQxZmE1NmRhNDYzOWUxNWJiOWNhYjU2MDNlMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODIzNjQ4MmM4ZDI3N2MyOGUzMjdjNjNkYjdiMjU2M2Q3Y2ZlNjI1ODQzNjA0ZDM2NmFkYzUzOTkwNzU5OTA4NSJ9"
+          "resource": "repo://package.json#L71-L71",
+          "version": "repo-lines-v1:sha256:ea73897a5411cae79ff1745ec0523235a8796d7d0066e05e0a0bd712e9aa41f8:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE3Mzg5N2E1NDExY2FlNzlmZjE3NDVlYzA1MjMyMzVhODc5NmQ3ZDAwNjZlMDVlMGEwYmQ3MTJlOWFhNDFmOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE3Mzg5N2E1NDExY2FlNzlmZjE3NDVlYzA1MjMyMzVhODc5NmQ3ZDAwNjZlMDVlMGEwYmQ3MTJlOWFhNDFmOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjYwOGNlZTQ1ZGQ3MmU1ZTFlNGE4MDZlZTgxMmZiYjk3ZDRjNjdmYTEzZmY5NjI4MjA3Mzc1OGFlN2Y5MGQ1OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjU0OWZkOTQ3NDZjMGVmOWRjMmM4NmE1MzQ2ZTA1MmE4N2IzZDUxZTM0MzQzNDIwMjVkZjMxMTY4OGQ0YzVmNSJ9"
         },
         {
           "resource": "repo://tests/media-recovery.integration.ts#L68-L73",
           "version": "repo-lines-v1:sha256:f337203d41f596639fe246fecefc20250ddd59b4e181b4b1141d4791892b1ebb:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTFhZTI3YjdhYTdlNDE0N2RjOTI3ZTI1MGJhZTdiYTYxNTI4Mzg0MWMzYzlkNjE5OTg5OTNmYTQyYTY3MDY5MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDAxOGRhNzA2ZjQ3M2U5OTZkOTE1M2ZmZTZhMTJlNzViMzY3NTg1MjYzYTVkZDViMzQ0OTFlZTI0ODYzNmRhZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjNhNDU4OGZiYjRjNzNjYjkzOWRhMTA3MDBhNzJmZTE3YzhiNWQyZjFiNGU3MjczZTg4ZmRiZDUxYmIzNjQ1YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTVmMDE5MmEwNDEyMGZmOGM4YzI1NjU3YjU4YmU3OGIwMzM0OWViNDI1NTI2ZjEyZmZmYzViYzk1NGIwZDk5MCJ9"
+        },
+        {
+          "resource": "repo://tests/media-recovery.integration.ts#L8-L11",
+          "version": "repo-lines-v1:sha256:2a5ecb30e5f14c0d68dc00979d3df660f019c0b7de56dcec1c2d4533da0b63ea:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGY2NjM4ZTNiZTc0NjIxNWEyZDQ5OTdhZWU3NTQ1OThkZmEyNWUxMzE3ZjI4MDkwYWQxZmYwNTM3M2JkYjU0YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTVlZjAxYmMwOGRiYzNiNjNlNGU3NWVhM2QyNmE1Yjk0MTg5MTg3N2UyN2FkODkxMzI5Yzg0MTFkN2Q4ZGM0ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDk4ODJhOTc1NDMwY2U1YmEwNzAzZjQ5NDliYzkxMWViYjhjZTNkMzk3NjFjNzI3YzU1ZTM3NTY0NjU0ZmI0MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzk3NDBlMzZlNjI1ODMwMjFhYjEyZTBiZGNkNjBhYzk4NzI2ZTE0ODEwNWM3MmY5ZDA2MzBhNTA4YmNiOWM1NiJ9"
         },
         {
           "resource": "repo://tests/media-recovery.integration.ts#L89-L92",
@@ -365,6 +369,10 @@
         {
           "resource": "repo://tests/signup-recovery.integration.ts#L47-L96",
           "version": "repo-lines-v1:sha256:dacc5682994d8fdad4218b95869658b5e7d0f6e075f1388ca4622a0cecffd681:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAwOGE4ZDhjZDE5NzUyZjk5MmFjZDBhNDc5Nzc4YWE3ZDY4ZDQ1ZjI2NTQzZjY2YmY4M2MzNjJlM2ZlNWZlM2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc3YjNjNGVkOWE2MjI1YjQ2NWU0ZTg4ODA2Y2VmMjI0NWI0ZGQ4MjRjOWE4MWQ0YjU3ZjBmNDEwN2Q3MWFkMWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNlZTQ3YTBkNjFiYWRhNmJmOWViNWYzMjE4ODA1YzFiZTE3NjU5NDA2YjUzZDhmMDNhNDVmNzE5MjllYjg2YWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIwMjVkOTAwODZhY2NmOGI2ZWNiOGU4ZDhiMDczMDE2MWY3Yzg3OGQ2ZTM2ODU3ZWM3MGNjNmI4NGQ3MzVmYjgifQ"
+        },
+        {
+          "resource": "repo://tests/signup-recovery.integration.ts#L9-L11",
+          "version": "repo-lines-v1:sha256:f200aaa2c329dd0c3d8fa0e8150b1840df4c440ecd52b91c520525e68d58862d:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjBmNzQyNDIyMDAxNTNlZTNmYzExMGQ2ZWQxN2NmODhiZmJlNDA2OTE3NzNkZmY0OTYxMTBhY2NiMWJjMTE3NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTVlZjAxYmMwOGRiYzNiNjNlNGU3NWVhM2QyNmE1Yjk0MTg5MTg3N2UyN2FkODkxMzI5Yzg0MTFkN2Q4ZGM0ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTI5MTk2ZTg4ZTJhNGM0MmY5NjdhYzcwYjNiZTJjZTFlODJjZjQwM2U4NGJmMjg4NGVlZTcyMjVmZjExYjk3NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjMwOGJiZDViYjcwNWI2ZjA4MmI3NWJjOWJjNTViNWZmMDk1MzhhZDM3MDhiZGUyYmNhNzBkM2M1MmYwMzgzZiJ9"
         },
         {
           "resource": "repo://tests/worker-recovery.integration.ts#L112-L134",
@@ -391,8 +399,8 @@
       "statement": "`pnpm run tickets:recover-signup`에는 `jobs:reconcile`·`media:reconcile`과 달리 대상 사용자를 훑어보는 조회 모드가 없어서, `--user`·`--kind`·`--amount`·`--operator`·`--reason`을 모두 주지 않으면 Required 오류로 멈추고 지급 대상 사용자를 이 명령만으로 열거할 수는 없다.",
       "evidence": [
         {
-          "resource": "repo://package.json#L71-L71",
-          "version": "repo-lines-v1:sha256:6f26544b04abf5f783a97e2e4942642d2f594ce87b9c4b252edb2ede32d03568:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmYyNjU0NGIwNGFiZjVmNzgzYTk3ZTJlNDk0MjY0MmQyZjU5NGNlODdiOWM0YjI1MmVkYjJlZGUzMmQwMzU2OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmYyNjU0NGIwNGFiZjVmNzgzYTk3ZTJlNDk0MjY0MmQyZjU5NGNlODdiOWM0YjI1MmVkYjJlZGUzMmQwMzU2OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODdjMzQ1M2NjNzAyM2JjZTc3Mjc3ZDViYzA0NTAzZWQ1OTZlNjhhZTEyZDhiODZkYTFmNDI5NTlkOWJhZmFiYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmVjYzc5OTFmYzZkYjM1NTNlMGEyNTRjNWMyNzEwYjUwNGIyZjgxZjE3NTYzYzIzMGUxYmZmNGQ2NGFhZjM3ZCJ9"
+          "resource": "repo://package.json#L72-L72",
+          "version": "repo-lines-v1:sha256:6f26544b04abf5f783a97e2e4942642d2f594ce87b9c4b252edb2ede32d03568:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmYyNjU0NGIwNGFiZjVmNzgzYTk3ZTJlNDk0MjY0MmQyZjU5NGNlODdiOWM0YjI1MmVkYjJlZGUzMmQwMzU2OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmYyNjU0NGIwNGFiZjVmNzgzYTk3ZTJlNDk0MjY0MmQyZjU5NGNlODdiOWM0YjI1MmVkYjJlZGUzMmQwMzU2OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTlkNjM5NzNmOTA5YzM5ZmE1MWUxYmMwMWFlMDBlNjMzNGU0YWU1NDFjZjQ2NDQzN2RlYzZiYzc0ZjIyN2E4OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjdkNzljNjIwMjBmYTJhYjk4Y2EzMDFlMzBhYjZlZWUwNzk4NTE1YjA2NTcxZWM4ZjM3YjM3ZmVjNDdiY2EzNSJ9"
         },
         {
           "resource": "repo://scripts/recover-signup-grant.ts#L16-L22",
@@ -457,10 +465,56 @@
           "version": "repo-lines-v1:sha256:b4710e5d6f6b79ed7f340d96f7f89e2a1ad37fde0dd7f33939152ab2ae688a3a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4YzcxNWM1ZjZlYWFlOGMwMjI4MDkwNjA2NmUwOWU4N2EwMTQ2MDgyODQ1YjUxN2E5N2E2YWUyNTNmZjQ1YjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwYWNkZTNmYWFkYWY2NTQyNmU1YzdkODZjZDM5NWE2NTdkZjY1ZjEyYWU5NTY5YzczZmE3NmVhYjNhMzU0M2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc0NmRjNzM3NWRmZmM1MTQzYzM2NmJkZWMzMzVlYTkyMzFiZmZiNjUzZjExZTMzNzU0MTE0MGM5Y2YzMjFlYzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI1M2YyNTViYTIwYzJiYzg1MWU5ZTZkOWEyODZjMjJlNzEyNzMxYmY3NzVhMTYxNWZlYmZmMzUwNDRkZmRhYWMifQ"
         }
       ]
+    },
+    {
+      "id": "claim_af0a60bd21c14200a49d5f066cf2f2e1",
+      "statement": "미디어 정리 워커는 외부 파일 id가 없는 의도를 PROVIDER_IDENTITY_UNKNOWN으로, 외부 삭제 호출이 반복 실패해 attempts가 10 이상이 된 의도를 lastError = MEDIA_CLEANUP_FAILED로 UNRESOLVED에 남기므로, media:reconcile 조회 결과의 lastError만으로도 운영자가 개입해야 하는 이유를 구분할 수 있다.",
+      "evidence": [
+        {
+          "resource": "repo://src/shared/media/operations.ts#L130-L135",
+          "version": "repo-lines-v1:sha256:509539547a222ff7d4384e010696ef6e60f8f761e69748f8bc2364d652f4a7a8:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDFlNGYxNGIxZWM2ZTNkZDVkOTIzMWVjYWI0NzNkY2IzZmI1NmEyZWMyNjMzODEwMTc0ODAwOTI2MGFmZTE5MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGZhYzRlNDM2MzBhYmY2OGMzYTRhNzU3M2ZkNGM0MzAwOGJhNzk4ZGQ3NmMzNzU5ZWVlZjUzZTZjZmY4ZDJlNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWJhZTdlZDVmNTVhMGZiMmE2M2JmNWE4MWYwMjNjYzdiZDRjZTg4YTg0NGMzZWRhNTllM2RmMGI2ZmM1YzVlNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjk5MGM4YzQwNDNjNzkxOGU3YzJlNzcwYmI4ODg0MzUxYTllMzM5OTJjNDAwYjNmZmY3OTk4ZTg2MGE5Y2UwYiJ9"
+        },
+        {
+          "resource": "repo://src/shared/media/operations.ts#L166-L177",
+          "version": "repo-lines-v1:sha256:c67e889a22e9fd29ff1cdfce5a21fd59f26f48bfbe87c93fae42181e7a7bfe07:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzODIxZDRhM2Q0ODc0YzE1MTY3MzI4MTlhNjJhMjk4YjRjOTU1N2JiNjQzNTQxYjQxNzNjODUxNTVkZWY5YmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNiMzc1ZTAyYWM2NTg4NjBjMzYwMDY0YzIzNjlmMzlkMDljZDM0NTcyMDg3ZTMyM2EyYjMzMWM5NDhmZWM2MjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjllOGI2ZWRmODJhYzk2ZjZhOTYyYTU1YmI3MGY5OWYzNTdhOGM4NGE2NjU5MWFmODdhYzIxZWE3NDcwMjBjYzIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_60a2429f645b456b83d1242bfc0ce2ef",
+      "statement": "체험 분석 결과 만료 정리는 운영자 스크립트가 아니라 보컬 프로필 분석 워커가 처리한다. 0번 레인은 약 5초 간격으로 cleanupExpiredGuestAnalysis와 processOneMediaCleanup을 차례로 호출하고, 만료된 GuestAnalysisTrial 정리가 진행 중인 분석 작업 때문에 GUEST_ANALYSIS_PROCESSING으로 거부되면 그 반복 전체가 실패해 미디어 정리 호출까지 건너뛴 뒤 백오프를 두고 다시 시도한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/runner.ts#L22-L47",
+          "version": "repo-lines-v1:sha256:ec5b38747eebb4d0f73427860ab38792ef1c8d6002ef660c9784506bc3fd40ba:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzZTdiNGMyZTk0YTAyYzU4MGY4NTQxMWI4YTQ5OTAyNzI3N2E5NTFjMDUwODkzMTY1YzVkYzdjNTQ2Y2Q3ODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNjJmNjBkODU5MGE1NzljZjQ2ZjhkNjczNzhjNGM1NzJiOTYyY2VjY2RiOTBjN2E1ZjdiNDJiOTYwNzgyYTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdlZWQ5MjJmNjNjYWY1YTQzOWIxMjhjZDg2YmJmN2VmY2ZiNDkwMTlmYjcwNjg2ZDNhMzhlODcyNjYyMzU2MDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk3ZDg2MzJlNTRlOTI5OGFiYjk1ODcyN2UyZDUxNDA4YWJhZjEzNjYwMzUzNzkxMDE0MGFiZjY1YjMwYWI2MTMifQ"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/api/lifecycle.ts#L114-L118",
+          "version": "repo-lines-v1:sha256:631d3991463c0fcdd94fcb5e625d744557cc37f16f2ae06d2aed3488117a5869:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTAwNWMyYTY0NTVjNmRjMmQ1NWY4OTg3MGRjZjMyMzM2ZThkNzcyZjg4YTc3MzI5YjY0NmI1NGUyNGYyMDM4OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzA4NWJmMDIwMGVlMTE4NDMxZDUwYTNiNTJjZGE5YjhkZWUxM2VjNjI4NTljYWFlNDE4OWI3ZThhZmI3NTRjNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmQwZjJkM2EzYWFkYTI3NTg2NDU3OGQwYTQzOTE1NjM4ZDU0M2ZlY2EyYzk0ODU4ZGI5NDEyMTFlODZjZWYyYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2ZkYTRhZDVkNmYyNWNhZDg2NWM3ZmY1ZTUwYWExMWNlMWEwMzU2OGVjYzI3ZGI2YTA5ZDg2OTJiMjRjMmFmZiJ9"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/api/lifecycle.ts#L144-L158",
+          "version": "repo-lines-v1:sha256:5dd54dd91d12880dee75b7893782e80b7c2a8e37531173e7ba235e547f9f9adf:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxNTEzOWUzNTIzNWQ5NGE3NTc4MmU2N2ZiMGIwNzRkNGI0NTUyMGQ1ZGY1ZjU5NDE3NjRkNWI0NmVjZTE1ODAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c36123e873014715b934b3e1647dc427",
+      "statement": "`tickets:recover-signup` 스크립트는 `--amount` 문자열을 `Number()`로 변환해 recoverSignupGrant에 넘기므로, 숫자가 아니거나 안전한 정수가 아니거나 0..1,000,000 범위를 벗어난 값은 스크립트가 아니라 서비스의 `An explicit valid ticket kind and amount (0..1000000) are required.` 오류로 끝나고 지급은 일어나지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/recover-signup-grant.ts#L26-L35",
+          "version": "repo-lines-v1:sha256:49576e964d0e700f6cbd1f1d116020ff6e31ea0f3873a319bbc0b3964a461c4e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmNWFhMTYyNzg1YzhiZDY2ZTgyMmEyMWQwOGIwODI4MzQwNjgyZDA1MWFhYzIzZWE3ZDJmM2I4MjZlMGU4MDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZWYwMWJjMDhkYmMzYjYzZTRlNzVlYTNkMjZhNWI5NDE4OTE4NzdlMjdhZDg5MTMyOWM4NDExZDdkOGRjNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZmN2Q0ZWQwYmNkMDE2OTIyOGFkZTAzNGM4MTlkNzE3MzA3YWVmMjM1MWMzMmQwOTQ0NmIyM2MyMWFiM2ZiNzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY5NjhjNzE3Yjc2NTkzMjg4ODk2NjA0Y2E5Y2EzYjdlOTZlOTJhZWQyMTU4MDkzZjZkYjcwNWM1MTYxNDhlOTkifQ"
+        },
+        {
+          "resource": "repo://src/entities/ticket/api/ticket-service.ts#L189-L196",
+          "version": "repo-lines-v1:sha256:4a25bfaf6810c175f8553abe06f04ed0db90471dcb066989d38a0d74df26d926:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjg3NjUzNzFhZWExY2M3ZDQ2ZWM2ZWZjY2JiZTllOWU3M2M5MTg5NGYwZDA2YzcxZjEyNWFjOGJlMjU1YjdiYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGUwYTdhMzY5MjZkM2NjMjJjOWRiNjgzZjM3YTZmYTM4Yzg2N2RmMDliMzgwMDNhMmE2N2Y0YmIwZTk2ZDViZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2I3OTY1YmE4OWE4OGQ4YjdiMGM4ZmE2MzlkZDE5MmZhYTg1N2Q4N2I5NGU5ODVmYzAyZDFkZGFhMTM2MmZhZCJ9"
+        }
+      ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.5.2",
-    "at": "2026-09-25T04:42:33.305Z"
+    "by": "openwiki/0.7.2",
+    "at": "2026-11-01T16:00:39.866Z"
   }
 }

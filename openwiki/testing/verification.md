@@ -1,7 +1,7 @@
 ---
 type: how-to
 title: 변경 검증 경로
-description: 바꾼 범위에 따라 어떤 검사 명령을 어떤 순서로 돌릴지 고르는 표와, 도메인 단위·PostgreSQL 통합·MSW 계약·Storybook 브라우저·Playwright E2E(end-to-end)·k6 부하 계층이 각각 무엇을 증명하고 무엇을 증명하지 않는지 정리한 문서예요.
+description: 바꾼 범위에 따라 어떤 검사 명령을 어떤 순서로 돌릴지 고르는 표와, 도메인 단위·PostgreSQL 통합·MSW 계약·Storybook 브라우저·비회원 체험·온보딩·Knowledge 디스패처·Playwright E2E(end-to-end)·k6 부하 계층이 각각 무엇을 증명하고 무엇을 증명하지 않는지 정리한 문서예요.
 tags: [verification, testing, e2e, storybook, how-to]
 sources:
   - id: openwiki-source-3dc25b286bcb30bfd66698fa
@@ -12,10 +12,16 @@ sources:
     resource: repo://.husky/pre-commit
   - id: openwiki-source-59f729b67c0a733dbed55b7f
     resource: repo://biome.json
+  - id: openwiki-source-c39ec033bc09bb24305f83ea
+    resource: repo://ops/knowledge-dispatcher/dispatch.mjs
   - id: openwiki-source-5b54a58d1b51cd490b0e7162
     resource: repo://package.json
   - id: openwiki-source-4f3988e202f12e92ef48fe9e
     resource: repo://scripts/load/readiness.k6.js
+  - id: openwiki-source-40f066ec25259d78385397d2
+    resource: repo://src/shared/db/prisma.ts
+  - id: openwiki-source-7b8bab3a74638762a776ccbf
+    resource: repo://src/shared/lib/admission/guest-quota.ts
   - id: openwiki-source-ca359893ccdffc6465b65b58
     resource: repo://steiger.config.ts
   - id: openwiki-source-49d0a0faa921fcf2e45ba42a
@@ -32,6 +38,14 @@ sources:
     resource: repo://tests/e2e/TESTING.md
   - id: openwiki-source-cdaeb36cd3badac987c47a00
     resource: repo://tests/fsd-architecture-boundaries.test.ts
+  - id: openwiki-source-f187e9347d1ed9ca588011ed
+    resource: repo://tests/guest-analysis-navigation.test.ts
+  - id: openwiki-source-071f4a4b333e88f0debb3068
+    resource: repo://tests/guest-analysis-quota.test.ts
+  - id: openwiki-source-f2067e3b1f1b17bd52d88731
+    resource: repo://tests/guest-analysis-ui.test.tsx
+  - id: openwiki-source-8133b36f4de23f03ce979d19
+    resource: repo://tests/guest-analysis.integration.ts
   - id: openwiki-source-50cc6587e7c3bed5110734ce
     resource: repo://tests/knowledge-dispatcher.test.mjs
   - id: openwiki-source-10c6a88a3297ea68ebdbf439
@@ -42,17 +56,19 @@ sources:
     resource: repo://tests/msw/handlers.ts
   - id: openwiki-source-5cd61f3caaf2b973c6ed5203
     resource: repo://tests/msw/server.ts
+  - id: openwiki-source-504355c3e8dbf87c0aeea17a
+    resource: repo://tests/new-user-onboarding.integration.ts
   - id: openwiki-source-5b5f7a2bf648dd7d69385229
     resource: repo://tests/vocal-profile-persistence.integration.ts
   - id: openwiki-source-fbadcd8591b65031efaaedce
     resource: repo://vitest.config.ts
-generated: { by: "openwiki/0.5.2", at: "2026-09-26T16:30:19.500Z" }
+generated: { by: "openwiki/0.7.2", at: "2026-11-01T16:00:39.866Z" }
 verified:
-  - by: openwiki/0.5.2
-    at: 2026-09-26T16:30:19.500Z
+  - by: openwiki/0.7.2
+    at: 2026-11-01T16:00:39.866Z
 ---
 
-바꾼 파일이 어느 계층에 닿는지 정한 뒤 아래 표에서 그 줄의 명령만 먼저 돌리면 돼요. 표에 적힌 명령은 [package.json](repo://package.json#L9-L73)에 정의된 script 중에서 고르고, k6 행만 예외로 k6 런타임에서 직접 실행해요. script로 돌지 않는 검사는 뒤의 "커밋 훅과 CI가 대신 돌려 주는 범위"에서 따로 짚어요.
+바꾼 파일이 어느 계층에 닿는지 정한 뒤 아래 표에서 그 줄의 명령만 먼저 돌리면 돼요. 표에 적힌 명령은 [package.json](repo://package.json#L9-L75)에 정의된 script 중에서 고르고, k6 부하 harness만 예외로 k6 런타임에서 직접 실행해요. `pnpm test` 사슬이 돌려 주지 않는 script와, 같은 사슬·CI가 대신 돌려 주지 않는 범위는 뒤 절에서 따로 짚어요.
 
 ## 바꾼 범위에 먼저 돌릴 명령
 
@@ -66,13 +82,16 @@ verified:
 | story의 server import, Storybook 도구 의존성 | `pnpm run test:process-scripts` | 같은 경계 규칙을 [공용 UI와 Storybook 경계](../architecture/shared-ui-and-storybook.md)가 설명해요 |
 | FSD(Feature-Sliced Design) 계층 경계·slice public API | `pnpm run check:architecture` | 계층 의존 방향은 [시스템 지도와 경계](../architecture/system-map.md)를 보세요 |
 | 관리자 API·커스텀 믹싱 | `pnpm run test:admin`, `pnpm run test:query` | 관리자 경계는 [관리자 콘솔과 커스텀 믹싱](../operations/admin-console.md)에 있어요 |
+| 비회원 체험 쿼터·로그인 복귀 경로·체험 화면 분기·체험 통합 | `pnpm run test:guest-analysis` | 쿼터·복귀 경로·체험 UI 세 파일은 DB 없이 돌고, 마지막 체험 통합 파일만 실제 PostgreSQL을 써요. 이 파일은 다른 `*.integration.ts`처럼 건너뛰지 않고 `DATABASE_URL`이 없으면 실패해요. 체험 상태와 소유권 규칙은 [비회원 체험 분석 흐름](../workflows/guest-analysis-trial.md)이 소유해요 |
+| 신규 사용자 온보딩(migration backfill·완료 route·스냅샷 멱등성) | `pnpm run test:onboarding` | migration SQL만 읽는 첫 test는 DB 없이 통과하고, 완료 스냅샷·멱등성을 보는 세 번째 test는 `DATABASE_URL`이 없으면 `DATABASE_URL is not configured`로 스스로 건너뛰어요. 다만 미인증 401을 보는 두 번째 test는 route를 동적 import하는데 그 경로가 Prisma client를 모듈 로드 시점에 만들기 때문에, `DATABASE_URL`이 비어 있으면 `DATABASE_URL is required to create the Prisma client.`로 실패해요([tests/new-user-onboarding.integration.ts](repo://tests/new-user-onboarding.integration.ts#L19-L31), [src/shared/db/prisma.ts](repo://src/shared/db/prisma.ts#L11-L16)) |
+| Knowledge 디스패처의 사이클·중복 판정 | `pnpm run test:openwiki` | GitHub Actions API를 실제로 호출하지 않고 `request` 함수를 바꿔 끼우므로, 실제 디스패치 성공과 권한 오류는 확인하지 않아요. 판정 규칙 자체는 [Knowledge 생성과 CI 자동화](../operations/knowledge-automation.md)가 소유해요 |
 | 로그인부터 재생·삭제까지의 사용자 여정 | `pnpm run test:e2e` | 이전 revision과 비교하려면 `pnpm run test:e2e:compare <revision>`을 써요 |
 | 여러 영역을 함께 건드림, 커밋 직전 | `pnpm test` | production build부터 readiness까지 순차 실행해요 |
 | 정적 품질만 확인 | `pnpm run check` | Biome, ESLint, typecheck와 `check:architecture`를 함께 돌려요. 도메인·통합·브라우저 테스트는 여기에 없어요 |
 
 실행 전에 두 가지를 준비하세요. PostgreSQL 통합 검사는 `DATABASE_URL`이 필요하고, E2E(end-to-end) 검사는 macOS 또는 Linux에서 Node.js 22 이상, 프로젝트 pnpm 버전, 실행 중인 Docker, ffmpeg, Chromium이 필요해요([tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L5-L7)). 커밋할 때는 [.husky/pre-commit](repo://.husky/pre-commit#L1-L1)이 `pnpm run check:staged`를 대신 실행하지만, 그 훅은 포맷과 lint만 보니 표의 검사는 커밋 전에 직접 돌리세요.
 
-`pnpm test`는 `pnpm run build`가 통과해야 다음 단계로 넘어가는 `&&` 사슬이에요. `pnpm run test:brand-icons` 뒤에 보컬·추천·믹싱·관리자·query script들이 이어지고, 마지막은 `pnpm run test:architecture-boundaries` → `pnpm run test:storybook --run` → `pnpm run test:readiness` 순서예요([package.json](repo://package.json#L23-L23)). 이 사슬에는 `steiger ./src`가 없으니 steiger 규칙까지 확인하려면 `pnpm run check:architecture`를 따로 돌리세요. 브라우저 E2E는 여기 포함되지 않으니 `pnpm run test:e2e`를 따로 돌려야 해요([package.json](repo://package.json#L24-L24)).
+`pnpm test`는 `pnpm run build`가 통과해야 다음 단계로 넘어가는 `&&` 사슬이에요. `pnpm run test:brand-icons` 뒤에 보컬·추천·믹싱·관리자·query script들이 이어지고, 마지막은 `pnpm run test:architecture-boundaries` → `pnpm run test:storybook --run` → `pnpm run test:guest-analysis` → `pnpm run test:readiness` 순서예요([package.json](repo://package.json#L23-L23)). 이 사슬에는 `steiger ./src`가 없으니 steiger 규칙까지 확인하려면 `pnpm run check:architecture`를 따로 돌리세요. `pnpm run test:onboarding`과 `pnpm run test:openwiki`도 이 사슬에 없어요([package.json](repo://package.json#L58-L65)). 브라우저 E2E는 여기 포함되지 않으니 `pnpm run test:e2e`를 따로 돌려야 해요([package.json](repo://package.json#L24-L24)).
 
 ```mermaid
 flowchart TD
@@ -82,29 +101,39 @@ flowchart TD
     D -- "예" --> E["pnpm run test:readiness"]
     D -- "아니오" --> F{"공용 UI나 story인가"}
     F -- "예" --> G["pnpm run test:storybook --run"]
-    F -- "아니오" --> H{"계층 경계나 API 계약인가"}
+    F -- "아니오" --> M{"비회원 체험 계약인가"}
+    M -- "예" --> N["pnpm run test:guest-analysis"]
+    M -- "아니오" --> P{"온보딩이나 Knowledge 디스패처인가"}
+    P -- "예" --> Q["pnpm run test:onboarding 또는 pnpm run test:openwiki"]
+    P -- "아니오" --> H{"계층 경계나 API 계약인가"}
     H -- "예" --> I["pnpm run check:architecture 또는 pnpm run test:query"]
     H -- "아니오" --> J["pnpm run check"]
     C --> K["여러 영역이면 pnpm test"]
     E --> K
     G --> K
+    N --> K
+    Q --> S["pnpm test 사슬에 없으니 직접 실행"]
+    S --> L
     I --> K
     J --> K
     K --> L["사용자 여정까지 필요하면 pnpm run test:e2e"]
 ```
 
-변경 범위에서 시작해 커밋 직전 전체 회귀와 브라우저 여정으로 이어지는 선택 흐름이에요.
+변경 범위에서 시작해 커밋 직전 전체 회귀와 브라우저 여정으로 이어지는 선택 흐름이에요. 온보딩과 Knowledge 디스패처 검사는 `pnpm test` 사슬에 없으므로 전체 회귀를 돌려도 자동으로 실행되지 않아요.
 
 ## 검사 계층이 증명하는 것과 증명하지 않는 것
 
 | 계층 | 실행 명령 | 확인하는 것 | 이 계층이 증명하지 않는 것 |
 | --- | --- | --- | --- |
 | 도메인 단위 테스트 | 해당 `pnpm run test:*` script | 외부 의존 없이 계산·표시 계약을 고정해요([tests/key-fit-scoring.test.ts](repo://tests/key-fit-scoring.test.ts#L1-L14)) | DB 저장, HTTP 래퍼, 브라우저 렌더, 외부 서비스 응답 |
-| PostgreSQL 통합 테스트 | `pnpm run test:readiness`, `pnpm run test:mixing:db`, `pnpm run test:tickets`, `pnpm run test:media` 등 | 실제 PostgreSQL에서 트랜잭션·상태 전이·실패 창을 확인해요([tests/mixing-queue.integration.ts](repo://tests/mixing-queue.integration.ts#L7-L11)) | `DATABASE_URL`이 없으면 각 파일이 `DATABASE_URL is not configured`로 스스로 건너뛰므로, 초록불이 DB 동작을 확인했다는 뜻이 아니에요. 브라우저·워커 프로세스·외부 서비스 응답도 아니에요 |
+| PostgreSQL 통합 테스트 | `pnpm run test:readiness`, `pnpm run test:mixing:db`, `pnpm run test:tickets`, `pnpm run test:media` 등 | 실제 PostgreSQL에서 트랜잭션·상태 전이·실패 창을 확인해요([tests/mixing-queue.integration.ts](repo://tests/mixing-queue.integration.ts#L7-L11)) | `DATABASE_URL`이 없으면 대부분의 파일이 `DATABASE_URL is not configured`로 스스로 건너뛰므로, 초록불이 DB 동작을 확인했다는 뜻이 아니에요. 브라우저·워커 프로세스·외부 서비스 응답도 아니에요 |
 | MSW(Mock Service Worker) fixture 기반 API 계약·쿼리 테스트 | `pnpm run test:query` | 클라이언트 Zod 스키마, 오류 분류, 재시도·폴링 판단을 fixture로 확인해요([tests/api-contracts.test.ts](repo://tests/api-contracts.test.ts#L34-L52), [tests/msw-query.test.ts](repo://tests/msw-query.test.ts#L37-L69)) | MSW 부분은 fixture를 돌려주므로 실제 Route Handler 응답 형식과 네트워크 실패는 확인하지 않아요. 등록하지 않은 요청은 `onUnhandledRequest: "error"`로 즉시 실패해요([tests/msw-query.test.ts](repo://tests/msw-query.test.ts#L33-L33)) |
 | Storybook 브라우저 검사 | `pnpm run test:storybook --run` | headless chromium에서 story의 `play` assertion과 접근성 검사를 돌려요([vitest.config.ts](repo://vitest.config.ts#L38-L54)) | 서버 데이터·인증·DB 경로는 확인하지 않아요. story가 등록한 MSW 응답만 봐요 |
+| 비회원 체험 검사 | `pnpm run test:guest-analysis` | 쿼터 계산(동시 예약 10건, 한국 시각 자정 초기화), 로그인 복귀 경로의 허용 목록, 체험 화면 분기, 실제 DB에서의 체험 신원·job·만료 정리를 확인해요([tests/guest-analysis-quota.test.ts](repo://tests/guest-analysis-quota.test.ts#L6-L41), [tests/guest-analysis.integration.ts](repo://tests/guest-analysis.integration.ts#L8-L36)) | 앞 세 파일은 DB·브라우저 없이 도는 단위·정적 렌더 검사라 실제 화면 상호작용과 세션 쿠키 동작을 확인하지 않아요. 통합 파일은 `DATABASE_URL`이 없어도 건너뛰지 않고, 테스트 안에서 DB 모듈을 동적 import하다가 `DATABASE_URL is required to create the Prisma client.` 오류로 실패해요([src/shared/db/prisma.ts](repo://src/shared/db/prisma.ts#L11-L16)). 쿼터가 웹 프로세스 메모리 카운터라 여러 프로세스 합산은 증명하지 않아요([src/shared/lib/admission/guest-quota.ts](repo://src/shared/lib/admission/guest-quota.ts#L6-L16)) |
+| 신규 사용자 온보딩 검사 | `pnpm run test:onboarding` | `onboardingCompletedAt` migration이 기존 사용자만 backfill하고 새 계정에는 default를 두지 않는지, 완료 route가 미인증 요청을 401 `UNAUTHENTICATED`로 거절하는지, 그리고 DB가 있으면 완료가 계정 소유·멱등인지 확인해요([tests/new-user-onboarding.integration.ts](repo://tests/new-user-onboarding.integration.ts#L8-L31)) | 세 번째 test는 `DATABASE_URL`이 없으면 `DATABASE_URL is not configured`로 스스로 건너뛰지만, 두 번째 test가 route를 동적 import할 때 그 경로가 Prisma client를 모듈 평가 시점에 만들기 때문에 `DATABASE_URL`이 비어 있으면 `DATABASE_URL is required to create the Prisma client.` 오류로 실패해요([tests/new-user-onboarding.integration.ts](repo://tests/new-user-onboarding.integration.ts#L19-L31), [src/shared/db/prisma.ts](repo://src/shared/db/prisma.ts#L11-L31)). 브라우저 다이얼로그 상호작용도 이 검사의 범위가 아니에요 |
+| Knowledge 디스패처 테스트 | `pnpm run test:openwiki` | 서울 시각 자정 기준 사이클·due 판정, 이미 실행 중이거나 같은 사이클이 디스패치된 경우의 중복 방지, HTTP 204 빈 응답 처리, 실패 시 `HTTP 503` 오류 전파를 확인해요([tests/knowledge-dispatcher.test.mjs](repo://tests/knowledge-dispatcher.test.mjs#L8-L103)) | `request` 함수를 테스트가 바꿔 끼우므로 실제 GitHub Actions API 호출·권한·rate limit은 확인하지 않아요. 워크플로가 문서를 생성·게시하는지도 이 검사의 범위가 아니에요 |
 | Playwright E2E | `pnpm run test:e2e` | 실제 Chromium → Next.js production server → 제품 API → PostgreSQL → 워커를 지나는 사용자 계약을 확인해요([tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L19-L26)) | 실제 Google 로그인, 실제 Modal GPU·Leemage 장애, 여러 브라우저·기기, 네트워크 품질, 실제 부하, 관리자 카탈로그 편집·커스텀 믹싱, 모든 파일 형식([tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L28-L30)) |
-| k6 부하 harness | `package.json` script에 없어요. k6 런타임에서 [scripts/load/readiness.k6.js](repo://scripts/load/readiness.k6.js)를 직접 실행해요 | 격리된 localhost 대상에 200 또는 명시적 429·503만 통과로 세고, check 성공률 99%와 p95 지연 2000ms 미만을 threshold로 둬요([scripts/load/readiness.k6.js](repo://scripts/load/readiness.k6.js#L16-L58)) | 기능 정확성과 데이터 정합성. `pnpm test`의 단계 목록([package.json](repo://package.json#L23-L23))에도, tracked 워크플로의 두 작업 단계([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L23-L474))에도 묶여 있지 않아요 |
+| k6 부하 harness | `package.json` script에 없어요. k6 런타임에서 [scripts/load/readiness.k6.js](repo://scripts/load/readiness.k6.js)를 직접 실행해요 | 격리된 localhost 대상에 200 또는 명시적 429·503만 통과로 세고, check 성공률 99%와 p95 지연 2000ms 미만을 threshold로 둬요([scripts/load/readiness.k6.js](repo://scripts/load/readiness.k6.js#L16-L58)) | 기능 정확성과 데이터 정합성. `pnpm test`의 단계 목록([package.json](repo://package.json#L23-L23))에도, tracked 워크플로의 어느 단계([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml))에도 묶여 있지 않아요 |
 
 증명하지 않는 범위를 문장으로 가장 분명하게 적어 둔 곳은 E2E 문서예요. 같은 fixture와 같은 assertion으로 baseline과 candidate를 실행했을 때 "두 실행의 모든 assertion이 통과했다는 것은 이 계약의 회귀가 관찰되지 않았다는 뜻이며, 전체 서비스의 100% 동등성을 증명하지 않는다"고 밝혀요([tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L28-L28)).
 
@@ -116,10 +145,14 @@ flowchart TD
 | `pnpm run test:query` | `client-server-state-query.test.ts`, `api-contracts.test.ts`, `msw-query.test.ts`, `conversion-stream-upload.test.ts`, `admin-custom-mixing.integration.ts`, `bounded-multipart.test.ts` |
 | `pnpm run check:architecture` | `steiger ./src`와 `fsd-architecture-boundaries.test.ts` |
 | `pnpm run test:process-scripts` | `process-scripts.test.ts`, `storybook-production-boundary.test.ts` |
+| `pnpm run test:admin` | `admin-ui.test.tsx`, `admin-navigation.test.ts`, `admin-song-catalog-ui.test.tsx`를 먼저 돌고, `--conditions react-server`로 `admin-operations.integration.ts`를 이어서 돌아요 |
+| `pnpm run test:guest-analysis` | `guest-analysis-quota.test.ts`, `guest-analysis-navigation.test.ts`, `guest-analysis-ui.test.tsx`를 먼저 돌고, `--test-concurrency=1`로 `guest-analysis.integration.ts`를 이어서 돌아요 |
+| `pnpm run test:onboarding` | `new-user-onboarding.integration.ts` 한 파일에 test 세 개가 들어 있어요. migration SQL 검사, 완료 route의 미인증 401 검사, 계정 소유·멱등성 검사이고 이 중 `DATABASE_URL`을 직접 확인해 스스로 건너뛰는 것은 세 번째예요 |
+| `pnpm run test:openwiki` | `node --test`로 `knowledge-dispatcher.test.mjs` 한 파일만 돌아요 |
 | `pnpm run test:storybook --run` | `vitest --project storybook`가 찾는 story 파일 전체 |
 | `pnpm run test:e2e` | `run.mjs`가 세우는 suite, 즉 `journeys.spec.mjs`, `provider.mjs`, `seed.ts`, `playwright.config.mjs`, `deny-external.mjs` |
 
-`pnpm run test:readiness`는 `--test-concurrency=1`로 파일을 하나씩 실행한 뒤 Python 계약 검사를 붙여요([package.json](repo://package.json#L70-L70)). 그래서 PostgreSQL을 공유하는 복구 시나리오가 서로 간섭하지 않아요. `pnpm run check:architecture`는 steiger 검사 뒤 FSD 경계 테스트를 실행하고, 그 테스트는 실제 `src/` 트리에서 public API 위반, client/server 위반, root App adapter 위반이 모두 비어 있는지 확인해요([package.json](repo://package.json#L31-L31), [tests/fsd-architecture-boundaries.test.ts](repo://tests/fsd-architecture-boundaries.test.ts#L381-L386)). steiger 설정에는 소수의 파일별 예외가 있으니, 새 코드를 그 목록에 추가하기 전에 왜 예외인지 먼저 읽으세요([steiger.config.ts](repo://steiger.config.ts#L4-L66)).
+`pnpm run test:readiness`는 `--test-concurrency=1`로 파일을 하나씩 실행한 뒤 Python 계약 검사를 붙여요([package.json](repo://package.json#L71-L71)). 그래서 PostgreSQL을 공유하는 복구 시나리오가 서로 간섭하지 않아요. `pnpm run test:guest-analysis`도 같은 방식으로, 쿼터·복귀 경로·체험 UI 세 파일을 먼저 돌린 뒤 `--test-concurrency=1`로 통합 파일 하나를 실행해요([package.json](repo://package.json#L75-L75)). `pnpm run check:architecture`는 steiger 검사 뒤 FSD 경계 테스트를 실행하고, 그 테스트는 실제 `src/` 트리에서 public API 위반, client/server 위반, root App adapter 위반이 모두 비어 있는지 확인해요([package.json](repo://package.json#L31-L31), [tests/fsd-architecture-boundaries.test.ts](repo://tests/fsd-architecture-boundaries.test.ts#L381-L386)). steiger 설정에는 소수의 파일별 예외가 있으니, 새 코드를 그 목록에 추가하기 전에 왜 예외인지 먼저 읽으세요([steiger.config.ts](repo://steiger.config.ts)).
 
 `pnpm run test:e2e`는 suite 파일만 돌리는 게 아니에요. runner가 target마다 `prisma migrate deploy`, `prisma generate`, `tests/e2e/seed.ts`, `pnpm run build`를 거친 뒤 Next.js production server와 `mixing`·`vocal-profile-analysis` 워커를 띄우고 나서 Playwright를 실행해요([tests/e2e/run.mjs](repo://tests/e2e/run.mjs#L198-L246), [tests/e2e/run.mjs](repo://tests/e2e/run.mjs#L230-L237)). 그래서 제품 build나 워커 시작 코드가 깨지면 첫 시나리오에 닿기 전에 이미 실패해요.
 
@@ -127,11 +160,11 @@ flowchart TD
 
 커밋 훅이 실행하는 것은 staged 파일 대상 Biome 검사 하나예요. `pnpm run check:staged`는 `biome check --staged --no-errors-on-unmatched`이므로 포맷과 lint만 보고, typecheck나 테스트는 돌리지 않아요([package.json](repo://package.json#L30-L30), [biome.json](repo://biome.json#L9-L22)).
 
-CI 쪽은 범위가 더 좁아요. 이번 생성 입력에서 `.github/workflows/` 아래 tracked 상태로 확인되는 워크플로는 Knowledge 문서를 만드는 `lee-spec-kit-knowledge.yml` 하나뿐이에요. 이 파일에는 두 작업이 있고, 문서를 생성하는 `knowledge` 작업은 [.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L23-L27)에 정의되며 OpenWiki 설치와 생성 단계가 [같은 파일](repo://.github/workflows/lee-spec-kit-knowledge.yml#L35-L71)에 이어져요. `pull_request`에서 도는 `verify-knowledge-pr` 작업은 생성 문서 PR의 변경 범위와 완료 메타데이터만 검사해요([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L411-L474)).
+CI 쪽은 범위가 더 좁아요. 이번 생성 입력에서 `.github/workflows/` 아래 tracked 상태로 확인되는 워크플로는 Knowledge 문서를 만드는 `lee-spec-kit-knowledge.yml` 하나뿐이에요. 이 파일에는 두 작업이 있고, 문서를 생성하는 `knowledge` 작업은 `workflow_dispatch`에서만 돌며([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L21-L26)) OpenWiki 설치 단계([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L42-L43))와 생성 단계([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L63-L75))가 이어져요. `pull_request`에서 도는 `verify-knowledge-pr` 작업은 Knowledge 브랜치에서 온 PR만 checkout해 생성 문서의 변경 범위와 `openwiki/.last-update.json`의 완료 메타데이터를 검사하고, 그 밖의 PR은 `Accept unrelated pull requests` 단계에서 통과시켜요([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L485-L548)).
 
-그래서 어느 작업에도 `pnpm test`·`pnpm run check`·`pnpm run test:e2e`를 실행하는 단계가 없어요. 표의 검사는 워크플로가 대신 돌려 주지 않으니 커밋 전에 직접 실행하세요. 이 워크플로의 트리거·게이트·PR 승격 규칙은 [Knowledge 생성과 CI 자동화](../operations/knowledge-automation.md)가 소유해요.
+그래서 어느 작업에도 `pnpm test`·`pnpm run check`·`pnpm run test:e2e`를 실행하는 단계가 없어요. 이 워크플로가 실행하는 명령은 npm 전역 설치, `git`·`gh` 조작, OpenWiki CLI와 그 observer 스크립트뿐이고 `pnpm`은 파일 어디에도 나오지 않아요([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml)). 표의 검사는 워크플로가 대신 돌려 주지 않으니 커밋 전에 직접 실행하세요. 이 워크플로의 트리거·게이트·PR 승격 규칙은 [Knowledge 생성과 CI 자동화](../operations/knowledge-automation.md)가 소유해요.
 
-`package.json` script로 돌지 않는 검사도 있어요. `ops/knowledge-dispatcher/`의 디스패치 판정을 고정하는 [tests/knowledge-dispatcher.test.mjs](repo://tests/knowledge-dispatcher.test.mjs#L8-L104)는 `package.json`의 어떤 script에도 묶여 있지 않아요([package.json](repo://package.json#L9-L73)). 디스패처를 바꿨다면 이 변경 범위 테스트를 커밋 전에 직접 돌려야 하지만, 그 실행 명령을 정해 둔 script는 이번 생성 입력에서 확인하지 못했어요.
+`package.json` script로 돌지 않는 검사는 이제 k6 부하 harness 정도예요. 디스패처 판정을 고정하는 [tests/knowledge-dispatcher.test.mjs](repo://tests/knowledge-dispatcher.test.mjs#L1-L104)는 `pnpm run test:openwiki`가 `node --test`로 실행하므로 위 표에 행이 있어요([package.json](repo://package.json#L58-L58)). 다만 그 script는 `pnpm test` 사슬에도, `pnpm run check`에도 들어 있지 않으니 디스패처를 바꿨다면 이 명령을 직접 돌리세요([package.json](repo://package.json#L23-L23), [package.json](repo://package.json#L34-L34), [package.json](repo://package.json#L58-L58)). `pnpm run test:onboarding`도 사슬 밖에 있어요. 이 파일은 `DATABASE_URL`이 없으면 세 번째 test를 건너뛰고 두 번째 test는 Prisma client 생성 오류로 실패하므로, 초록불만 보고 온보딩 DB 동작을 확인했다고 판단하지 마세요([package.json](repo://package.json#L65-L65), [tests/new-user-onboarding.integration.ts](repo://tests/new-user-onboarding.integration.ts#L19-L37)).
 
 Browser E2E도 예외가 아니에요. 운영 배포는 Coolify의 기존 자동 배포를 쓰고, Browser E2E는 GitHub Actions 배포 게이트로 실행하지 않아요. 배포 전이거나 회귀 확인이 필요할 때 운영자가 macOS 또는 Linux에서 Node.js 22 이상, 프로젝트 pnpm 버전, 실행 중인 Docker, ffmpeg, Chromium을 준비하고 `pnpm install --frozen-lockfile`, `pnpm exec playwright install chromium`, `pnpm run test:e2e`를 직접 돌려요([tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L5-L15), [tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L40-L40)).
 
@@ -173,4 +206,5 @@ runner는 target마다 앞의 로그 네 개를 빈 파일로 새로 만들고 �
 - 운영 중 실패를 해소하는 명령은 [복구 스크립트 운영 절차](../operations/recovery-runbook.md)에 있어요.
 - 검사 대상이 되는 환경 변수와 기본값은 [환경 변수와 런타임 한도](../operations/configuration.md)를 보세요.
 - 공용 UI·story 규칙과 개발 전용 경계는 [공용 UI와 Storybook 경계](../architecture/shared-ui-and-storybook.md)에 있어요.
+- 비회원 체험의 쿼터·결과 저장·만료 규칙은 [비회원 체험 분석 흐름](../workflows/guest-analysis-trial.md)이 소유해요.
 - 어떤 문서를 어떤 순서로 읽을지는 [코드베이스 시작 지도](../quickstart.md)가 안내해요.

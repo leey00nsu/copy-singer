@@ -3,22 +3,25 @@ type: explanation
 title: 곡 카탈로그 등록과 공개
 description: 관리자가 DRAFT 곡과 원곡 자산을 등록하고 원곡 분석을 거쳐 추천 가능한 공개 상태로 만드는 절차를 설명해요. 준비 조건 판정, 분석 계약, 스냅샷 내보내기·가져오기 규칙까지 다뤄요.
 tags: [song-catalog, publish, lifecycle, song-analysis, snapshot, explanation]
-verified:
-  - by: openwiki/0.5.2
-    at: 2026-09-18T16:47:52.081Z
 sources:
   - id: openwiki-source-5b54a58d1b51cd490b0e7162
     resource: repo://package.json
   - id: openwiki-source-2798a6200ef792b731721034
     resource: repo://prisma/schema.prisma
+  - id: openwiki-source-932d9872d5647bdfeb9f5cd7
+    resource: repo://scripts/song-analysis-worker.ts
   - id: openwiki-source-3460c20009a880b8ab0783e5
     resource: repo://scripts/verify-database-song-catalog.ts
   - id: openwiki-source-acc6b3204f13e64fec0a24b9
     resource: repo://src/_app/api-routes/admin/catalog/catalog-route.ts
   - id: openwiki-source-d60ddd26d4892c6f45e33e0a
     resource: repo://src/_app/api-routes/admin/catalog/publish-route.ts
+  - id: openwiki-source-9e8a0aed489d44bc2fbea993
+    resource: repo://src/_app/background-jobs/song-analysis/runner.ts
   - id: openwiki-source-c4cc90d48cd4c0306be7e0c0
     resource: repo://src/_app/background-jobs/song-analysis/worker.ts
+  - id: openwiki-source-89c0d7f328174751a26ad7f5
+    resource: repo://src/entities/recommendation/lib/song-catalog/target-assets.ts
   - id: openwiki-source-99eb096d7b352b1ff8e2f742
     resource: repo://src/entities/song-catalog/api/catalog-import.ts
   - id: openwiki-source-eb3d61d7e6a4647651cc0369
@@ -47,9 +50,14 @@ sources:
     resource: repo://tests/admin-song-catalog.integration.ts
   - id: openwiki-source-23107bbf1d3c12b1e7de84d3
     resource: repo://tests/catalog-snapshot.integration.ts
+  - id: openwiki-source-52390daa8cb0afc771977ac4
+    resource: repo://tests/catalog-target-assets.integration.ts
   - id: openwiki-source-249f5aec0954c413fd6ca6e0
     resource: repo://tests/song-analysis-queue.integration.ts
-generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:47:52.081Z" }
+generated: { by: "openwiki/0.7.2", at: "2026-11-01T16:00:39.866Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-11-01T16:00:39.866Z
 ---
 
 # 곡 카탈로그 등록과 공개
@@ -183,6 +191,10 @@ stateDiagram-v2
 
 원곡 파일 업로드 규칙은 [uploadAdminCatalogTarget](repo://src/features/manage-song-catalog/api/target-assets.ts#L17-L66)에 있어요. 지원 대상 오디오 형식만 받고, 49,000,000 bytes를 넘으면 `PAYLOAD_TOO_LARGE` 413이에요. 같은 출처·같은 `sha256`의 `READY` 자산이 이미 있으면 업로드를 건너뛰고 그 행을 재사용해요. 같은 파일을 두 번 올려도 외부 저장소 호출이 한 번만 일어나는지가 변경 범위 테스트로 확인돼요([tests/admin-song-catalog.integration.ts](repo://tests/admin-song-catalog.integration.ts#L115-L120)). 자산 행과 외부 bytes의 대응은 [미디어 저장과 정리 의도](../operations/media-storage.md)가 설명해요.
 
+관리자 API 대신 스테이징 디렉터리의 파일로 원곡 자산을 붙이는 경로도 있어요. [importCatalogTargetAsset](repo://src/entities/recommendation/lib/song-catalog/target-assets.ts#L176-L273)은 그 순위 항목의 `activeSourceId`가 가리키는 출처가 `READY`일 때만 진행하므로, 활성 출처가 이미 정해진 곡에서 원곡 파일을 바꿀 때 써요([target-assets.ts](repo://src/entities/recommendation/lib/song-catalog/target-assets.ts#L38-L55)).
+
+이 경로는 업로드 트랜잭션에서 `Song.targetAssetId`만 새 자산으로 바꾸고 `Song.lifecycleStatus`와 `CatalogEntry.status`는 그대로 둬요([target-assets.ts](repo://src/entities/recommendation/lib/song-catalog/target-assets.ts#L226-L252)). 그래서 자산을 붙인 뒤에도 공개 호출은 따로 해야 해요. 곡의 현재 자산이 같은 `sha256`·`sourceId`·`sourceVideoId`이면 업로드를 건너뛰고 `skipped: true`를 돌려줘요([tests/catalog-target-assets.integration.ts](repo://tests/catalog-target-assets.integration.ts#L89-L92)).
+
 ### 원곡 자산을 교체해도 남는 것
 
 공개로 `targetAssetId`가 다른 행으로 바뀌면 이전 자산의 삭제를 시도해요([admin-service.ts](repo://src/features/manage-song-catalog/api/admin-service.ts#L273-L274)). 이때 [scheduleAssetDeletion](repo://src/shared/media/operations.ts#L63-L111)이 그 자산을 참조하는 진행 중 `SongAnalysisJob`, `Song.targetAssetId`, `MixingJob.targetAssetId`를 확인하고, 참조가 하나라도 있으면 삭제를 거부해요. [cleanupUnreferencedCatalogTarget](repo://src/features/manage-song-catalog/api/target-assets.ts#L68-L81)은 이 거부를 오류로 올리지 않고 `false`로 돌려줘요.
@@ -231,9 +243,14 @@ stateDiagram-v2
 
 | 명령 | 확인하는 것 |
 | --- | --- |
-| `pnpm run test:admin` | 관리자 화면과 관리자 작업 통합 흐름([package.json](repo://package.json#L69-L69)) |
-| `pnpm run test:song-analysis-queue` | Modal adapter 계약, 점유·lease·재시도, 공개와 멱등성([package.json](repo://package.json#L51-L51), [admin-song-catalog.integration.ts](repo://tests/admin-song-catalog.integration.ts#L23-L194)) |
+| `pnpm run test:song-analysis-queue` | Modal adapter 계약, 점유·lease·재시도, 관리자 원곡 업로드와 공개·멱등성([package.json](repo://package.json#L51-L51), [admin-song-catalog.integration.ts](repo://tests/admin-song-catalog.integration.ts#L23-L194)) |
+| `pnpm run test:admin` | 관리자 화면과 관리자 작업 통합 흐름([package.json](repo://package.json#L70-L70)) |
+| `pnpm run test:catalog-targets` | 스테이징 파일에서 만든 원곡 자산의 업로드 1회와 `Song.targetAssetId` 연결, 같은 `sha256` 재처리 시 건너뛰기([package.json](repo://package.json#L46-L46), [catalog-target-assets.integration.ts](repo://tests/catalog-target-assets.integration.ts#L69-L92)) |
 | `pnpm run catalog:db:verify` | 공개 카탈로그가 준비 조건을 모두 만족하는지([scripts/verify-database-song-catalog.ts](repo://scripts/verify-database-song-catalog.ts#L5-L13)) |
+
+원곡 자산을 붙이는 경로는 두 가지예요. 관리자 API 업로드는 `test:song-analysis-queue`가 확인하고, 스테이징 디렉터리의 파일을 읽어 자산을 만드는 `importCatalogTargetAsset`은 `test:catalog-targets`가 확인해요. 데이터베이스를 쓰는 시나리오는 `DATABASE_URL`이 없으면 스스로 건너뛰어요([catalog-target-assets.integration.ts](repo://tests/catalog-target-assets.integration.ts#L10-L14), [admin-song-catalog.integration.ts](repo://tests/admin-song-catalog.integration.ts#L23-L24)).
+
+준비 조건 판정 규칙만 바꿨다면 `tsx --test tests/song-catalog-domain.test.ts`로 먼저 확인하세요. 이 파일은 데이터베이스를 쓰지 않고 `sourceId` 불일치와 `DRAFT` 곡의 이유 코드를 확인해요([song-catalog-domain.test.ts](repo://tests/song-catalog-domain.test.ts#L22-L61)). `package.json` 스크립트에는 연결되어 있지 않아요([package.json](repo://package.json#L9-L76)).
 
 스냅샷 계약은 [catalog-snapshot.integration.ts](repo://tests/catalog-snapshot.integration.ts#L8-L96)가 직접 검증해요. 이 파일은 내보내기 필터, 가져오기 멱등성, 중복 거부, `revision` 하향 방지를 확인하지만 `package.json` 스크립트에는 연결되어 있지 않으므로 `node --conditions react-server --import tsx --test tests/catalog-snapshot.integration.ts`로 직접 실행하세요.
 

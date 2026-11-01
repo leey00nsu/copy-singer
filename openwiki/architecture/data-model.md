@@ -1,11 +1,8 @@
 ---
 type: reference
 title: 데이터 모델과 수명 주기 상태
-description: Prisma 스키마에서 각 행의 소유 관계, 핵심 unique/index, 상태 enum과 전이를 정리한 참조 문서예요. 스키마를 읽거나 migration을 추가할 때 확인하세요.
-tags: [prisma, database, schema, lifecycle, reference]
-verified:
-  - by: openwiki/0.5.2
-    at: 2026-09-18T16:47:52.081Z
+description: Prisma 스키마에서 각 행의 소유 관계, 핵심 unique/index, 상태 enum과 비회원 체험 trial 제약을 정리한 참조 문서예요. 스키마를 읽거나 migration을 추가할 때 확인하세요.
+tags: [prisma, database, schema, lifecycle, guest-trial, reference]
 sources:
   - id: openwiki-source-ea70eb6c045047448e446296
     resource: repo://.gitignore
@@ -17,6 +14,8 @@ sources:
     resource: repo://prisma/migrations/20260811120000_vocal_profile_identity/migration.sql
   - id: openwiki-source-2a41b81a47a23d147e72d05b
     resource: repo://prisma/migrations/20260913010000_production_readiness_core/migration.sql
+  - id: openwiki-source-220a1f5c18290679a3951e23
+    resource: repo://prisma/migrations/20261029000000_guest_analysis_trial/migration.sql
   - id: openwiki-source-de14ae907b85d4bbf155311a
     resource: repo://prisma/migrations/migration_lock.toml
   - id: openwiki-source-2798a6200ef792b731721034
@@ -35,6 +34,12 @@ sources:
     resource: repo://src/_app/background-jobs/song-analysis/worker.ts
   - id: openwiki-source-da8b10d1e5d758ab0e1c7582
     resource: repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts
+  - id: openwiki-source-37055abf050f6159b42c001a
+    resource: repo://src/entities/guest-analysis/api/lifecycle.ts
+  - id: openwiki-source-07cb359a0eaaf05133895441
+    resource: repo://src/entities/guest-analysis/api/trial.ts
+  - id: openwiki-source-4c121aeea18cb3bf3d1c99d1
+    resource: repo://src/entities/guest-analysis/model/contract.ts
   - id: openwiki-source-dcbc6d51cb37a5fff81cb37e
     resource: repo://src/entities/mixing-job/api/deletion.ts
   - id: openwiki-source-3568e4d30000a244be8ea9b3
@@ -51,10 +56,18 @@ sources:
     resource: repo://src/entities/vocal-profile/api/history.ts
   - id: openwiki-source-c5c93b4b4dcdabfe0bc775b2
     resource: repo://src/entities/vocal-profile/api/persistence.ts
+  - id: openwiki-source-75ca813b5b73760aa12fda93
+    resource: repo://src/features/analyze-vocal-profile/api/analysis-queue.ts
+  - id: openwiki-source-033e8130910426b3729c16b5
+    resource: repo://src/features/authentication/api/analysis-actor.ts
   - id: openwiki-source-e666cd046fb06fe25b657e92
     resource: repo://src/features/create-mixing/api/mixing-queue.ts
+  - id: openwiki-source-84f3d3f78f8f2c5ec2344815
+    resource: repo://src/features/inspect-admin-operations/api/admin-service.ts
   - id: openwiki-source-26761d8fa761d0fa825881ae
     resource: repo://src/features/manage-song-catalog/api/admin-service.ts
+  - id: openwiki-source-27431e6737394d4d64414718
+    resource: repo://src/features/manage-tickets/api/adjust-user-tickets.ts
   - id: openwiki-source-200291f8a1aaa391d1b68ec4
     resource: repo://src/shared/config/server-env.ts
   - id: openwiki-source-e56e5f34073bf65dbc02775e
@@ -65,10 +78,17 @@ sources:
     resource: repo://src/shared/media/operations.ts
   - id: openwiki-source-ca359893ccdffc6465b65b58
     resource: repo://steiger.config.ts
-generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:47:52.081Z" }
+  - id: openwiki-source-8133b36f4de23f03ce979d19
+    resource: repo://tests/guest-analysis.integration.ts
+  - id: openwiki-source-5b5f7a2bf648dd7d69385229
+    resource: repo://tests/vocal-profile-persistence.integration.ts
+generated: { by: "openwiki/0.7.2", at: "2026-10-30T13:29:10.337Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-30T13:29:10.337Z
 ---
 
-Prisma 스키마는 PostgreSQL에 저장되는 모든 행의 소유 관계와 상태를 정의해요. 스키마 파일은 [prisma/schema.prisma](repo://prisma/schema.prisma#L1-L8) 하나이고, 생성된 client는 손으로 쓰지 않는 코드예요. 이 페이지는 "이 행은 누구 것이고, 어떤 값이 가능한가"를 확인할 때 쓰는 조회용 문서예요. 작업 점유·재시도 절차는 [Job 큐와 lease 복구 계약](../operations/job-processing.md)이 소유하니 여기서는 컬럼의 의미만 다뤄요.
+Prisma 스키마는 PostgreSQL에 저장되는 모든 행의 소유 관계와 상태를 정의해요. 스키마 파일은 [prisma/schema.prisma](repo://prisma/schema.prisma#L1-L8) 하나이고, 생성된 client는 손으로 쓰지 않는 코드예요. 이 페이지는 "이 행은 누구 것이고, 어떤 값이 가능한가"를 확인할 때 쓰는 조회용 문서예요. 작업 점유·재시도 절차는 [Job 큐와 lease 복구 계약](../operations/job-processing.md)이, 비회원 체험의 상태 전이는 [비회원 체험 분석 흐름](../workflows/guest-analysis-trial.md)이 소유하니 여기서는 컬럼의 의미와 제약만 다뤄요.
 
 ## 먼저 알아둘 스키마 계약
 
@@ -91,6 +111,8 @@ Prisma 스키마는 PostgreSQL에 저장되는 모든 행의 소유 관계와 �
 
 | 모델 | 소유·관계 | 핵심 unique / index | 상태 필드 |
 | --- | --- | --- | --- |
+| `User` | 모든 도메인 행의 소유자예요. `VocalProfile[]`·`MediaAsset[]`·`MixingJob[]`·`VocalProfileAnalysisJob[]`·`TicketWallet[]`·`TicketLedger[]`·`Notification[]`를 거느리고, `GuestAnalysisTrial`은 소유 trial 1개(`GuestTrialOwner`)와 저장한 trial 여러 개(`GuestTrialClaimant`)로 연결돼요 | `email` unique(`id`가 PK) | `isGuest`(기본 `false`), `nextVocalProfileNumber`(기본 `1`) |
+| `GuestAnalysisTrial` | 게스트 `User` 1:1(`userId` unique, `Cascade`), 저장한 회원 `User?`(`claimedByUserId`, `SetNull`), `VocalProfileAnalysisJob?`(`jobId` unique, `SetNull`) | `tokenHash`·`userId`·`jobId` unique, `@@index([claimedAt, expiresAt])` | enum 없음(`consumedAt`·`expiresAt`·`claimedAt` 시각으로 계산) |
 | `Recording` | `VocalProfile[]`의 분석 근거, `MediaAsset`과 1:1(`mediaAssetId` unique, `onDelete: SetNull`) | `mediaAssetId` unique, `@@index([kind, status])`, `@@index([expiresAt])` | `RecordingKind`, `RecordingStatus`(기본 `PENDING`), `expiresAt` |
 | `VocalProfile` | `Recording` N:1(`Restrict`), `User?` N:1(`SetNull`), `MediaAsset?`(`synthesisReferenceAssetId` unique, `SetNull`), `Song?` 1:1, `MixingJob[]`, `VocalProfileAnalysisJob?` | `@@unique([recordingId, analyzer, analyzerVersion])`, `@@unique([userId, profileNumber])` | `sourceType`(`USER`/`SONG`), 상태 enum 없음(수치 + `analyzer`/`analyzerVersion`) |
 | `Song` | `SongSource[]`, `SongAnalysis[]`(`Restrict`), `CatalogEntry[]`, `MixingJob[]`; `activeSourceId`·`currentAnalysisId`·`vocalProfileId`·`targetAssetId`가 각각 unique optional 포인터 | `@@unique([title, artist])`, `@@index([lifecycleStatus, createdAt])` | `lifecycleStatus`(`DRAFT`/`ACTIVE`/`ARCHIVED`), `analysisStatus`(`PENDING`/`READY`/`FAILED`) |
@@ -103,12 +125,12 @@ Prisma 스키마는 PostgreSQL에 저장되는 모든 행의 소유 관계와 �
 | `MediaOperation` | 외부 저장소 작업 의도; `User`/`assetId`는 문자열 참조만 하고 FK가 없어요 | `@@index([status, nextAttemptAt])`, `@@index([assetId])` | `operation`(`UPLOAD`/`DELETE`), `status` 문자열(기본 `PENDING`) |
 | `TicketWallet` / `TicketLedger` | 지갑은 `@@id([userId, kind])`; 원장은 `User` N:1(`Cascade`), `actorUserId`(`SetNull`), `mixingJobId`·`vocalProfileAnalysisJobId`(`SetNull`) | `idempotencyKey` unique, `@@index([userId, kind, createdAt])` | `kind`, `type`, 작업 행의 `refundState` |
 | `Notification` | `User` N:1(`Cascade`) | `dedupeKey` unique, `@@index([userId, readAt, createdAt])` | `type`, `readAt` |
-| `VocalProfileAnalysisJob` | `User` N:1(`Cascade`), `MediaAsset?`(`sourceAssetId`, `SetNull`), `VocalProfile?`(`vocalProfileId` unique, `SetNull`) | `recordingId` unique, `@@unique([userId, idempotencyKey])` | `VocalProfileAnalysisJobStatus`(기본 `PENDING`), `refundState`(기본 `NONE`) |
+| `VocalProfileAnalysisJob` | `User` N:1(`Cascade`), `MediaAsset?`(`sourceAssetId`, `SetNull`), `VocalProfile?`(`vocalProfileId` unique, `SetNull`), `GuestAnalysisTrial?` 1:1 역참조 | `recordingId` unique, `@@unique([userId, idempotencyKey])` | `VocalProfileAnalysisJobStatus`(기본 `PENDING`), `refundState`(기본 `NONE`) |
 | `MixingJob` | `User`(`Cascade`)는 소유, `VocalProfile`·`Song`·`SongAnalysis`·`referenceAsset`·`targetAsset`은 `Restrict`, `resultAsset`은 `SetNull` | `@@unique([userId, idempotencyKey])`, `@@index([status, nextAttemptAt, leaseExpiresAt, createdAt])`, `@@index([vocalProfileId, songAnalysisId, createdAt])` | `MixingJobStatus`(기본 `PENDING`), `refundState` |
 | `ExternalJobReconciliation` | `jobType`/`jobId` 문자열로 외부 작업 정리 대상을 가리켜요(FK 없음) | `@@unique([jobType, jobId])`, `@@index([status, createdAt])` | `status` 문자열(기본 `PENDING`) |
 | `SignupGrantIntent` | `@@id([userId, kind])`, `User` FK 없음 | `@@id([userId, kind])` | 없음(금액과 사유만 기록) |
 
-행 정의는 [prisma/schema.prisma](repo://prisma/schema.prisma#L130-L186)에서 시작해 [Notification](repo://prisma/schema.prisma#L523-L538)과 [Job 3종](repo://prisma/schema.prisma#L540-L627), 그리고 [독립 의도 3종](repo://prisma/schema.prisma#L629-L677)까지 이어져요.
+`User`와 비회원 체험 행은 [prisma/schema.prisma](repo://prisma/schema.prisma#L348-L390)에 있고, 나머지 행 정의는 [Recording](repo://prisma/schema.prisma#L130-L186)에서 시작해 [Notification](repo://prisma/schema.prisma#L543-L558)과 [Job 3종](repo://prisma/schema.prisma#L560-L648), 그리고 [독립 의도 3종](repo://prisma/schema.prisma#L650-L698)까지 이어져요.
 
 ```mermaid
 erDiagram
@@ -116,6 +138,9 @@ erDiagram
   User ||--o{ MixingJob : "요청"
   User ||--o{ MediaAsset : "소유"
   User ||--o{ TicketWallet : "지갑"
+  User ||--o| GuestAnalysisTrial : "체험 소유"
+  User |o--o{ GuestAnalysisTrial : "체험 저장"
+  GuestAnalysisTrial |o--o| VocalProfileAnalysisJob : "체험 작업"
   Recording ||--o{ VocalProfile : "분석 근거"
   MediaAsset |o--o| Recording : "원본 bytes"
   MediaAsset |o--o| VocalProfile : "합성 레퍼런스"
@@ -139,7 +164,7 @@ erDiagram
 
 `VocalProfile`의 unique는 `recordingId` 단독이 아니라 `@@unique([recordingId, analyzer, analyzerVersion])`이에요([prisma/schema.prisma](repo://prisma/schema.prisma#L151-L186)). 그래서 같은 녹음에 분석기나 분석기 버전이 다른 프로필이 여러 개 붙을 수 있고, 같은 분석기·같은 버전으로 다시 분석하면 기존 행과 충돌해요. `VocalProfileAnalysisJob`은 `vocalProfileId`가 unique라 프로필 하나당 성공 결과 하나만 연결돼요.
 
-`Recording`과 `VocalProfileAnalysisJob.recordingId` 사이에는 FK가 없어요([prisma/schema.prisma](repo://prisma/schema.prisma#L540-L574)). 워커가 `VocalProfileAnalysisJob.recordingId`와 같은 id로 `Recording` 행을 직접 만들고 프로필을 연결하는 방식이라([src/entities/vocal-profile/api/persistence.ts](repo://src/entities/vocal-profile/api/persistence.ts#L232-L245)), 두 행의 연결은 id 규약으로 유지돼요. 이 저장 순서는 [보컬 프로필 분석 흐름](../workflows/vocal-profile-analysis.md)에서 더 자세히 다뤄요.
+`Recording`과 `VocalProfileAnalysisJob.recordingId` 사이에는 FK가 없어요([prisma/schema.prisma](repo://prisma/schema.prisma#L560-L595)). 워커가 `VocalProfileAnalysisJob.recordingId`와 같은 id로 `Recording` 행을 직접 만들고 프로필을 연결하는 방식이라([src/entities/vocal-profile/api/persistence.ts](repo://src/entities/vocal-profile/api/persistence.ts#L232-L245)), 두 행의 연결은 id 규약으로 유지돼요. 이 저장 순서는 [보컬 프로필 분석 흐름](../workflows/vocal-profile-analysis.md)에서 더 자세히 다뤄요.
 
 ### VocalProfile 번호는 USER 프로필에만 붙어요
 
@@ -147,9 +172,11 @@ erDiagram
 
 `userId`는 nullable이라 곡 쪽 프로필(`sourceType = 'SONG'`)은 사용자 없이 존재할 수 있어요. 실제로 seed fixture도 `SONG` 프로필을 `userId` 없이 만들고 `Song.vocalProfileId`로 연결해요([prisma/seed.ts](repo://prisma/seed.ts#L87-L123)). 사용자 화면 조회는 `sourceType: "USER"`를 항상 조건에 넣어요([src/entities/vocal-profile/api/history.ts](repo://src/entities/vocal-profile/api/history.ts#L56-L64)).
 
+번호 배정과 프로필 저장은 한 트랜잭션이라 저장이 실패하면 `nextVocalProfileNumber`도 되돌아가요. 반대로 합성 레퍼런스 업로드만 실패하면 프로필은 저장되고 `synthesisReferenceAssetId`가 `null`로 남으며, 저장 자체가 실패하면 `nextVocalProfileNumber`는 이전 값 그대로예요([vocal-profile-persistence.integration.ts](repo://tests/vocal-profile-persistence.integration.ts#L156-L189)).
+
 ### 출처 하나에 원곡 자산이 여러 개이고, 현재 자산은 Song이 가리켜요
 
-`CatalogTargetAsset.sourceId`는 optional이라 자산이 어느 출처에도 묶이지 않을 수 있고(import 시에는 채워요), `SongSource` 하나에 자산이 여러 개 쌓일 수 있어요([prisma/schema.prisma](repo://prisma/schema.prisma#L218-L239), [prisma/schema.prisma](repo://prisma/schema.prisma#L446-L471)). "지금 쓸 자산"은 `Song.targetAssetId`(unique optional)가 가리켜요. 그래서 자산을 교체해도 이전 행은 남고, 공개된 출처를 바꾸면 이전에 READY였던 다른 출처가 `SUPERSEDED`로 내려가요([src/features/manage-song-catalog/api/admin-service.ts](repo://src/features/manage-song-catalog/api/admin-service.ts#L229-L276)).
+`CatalogTargetAsset.sourceId`는 optional이라 자산이 어느 출처에도 묶이지 않을 수 있고(import 시에는 채워요), `SongSource` 하나에 자산이 여러 개 쌓일 수 있어요([prisma/schema.prisma](repo://prisma/schema.prisma#L218-L239), [prisma/schema.prisma](repo://prisma/schema.prisma#L466-L491)). "지금 쓸 자산"은 `Song.targetAssetId`(unique optional)가 가리켜요. 그래서 자산을 교체해도 이전 행은 남고, 공개된 출처를 바꾸면 이전에 READY였던 다른 출처가 `SUPERSEDED`로 내려가요([src/features/manage-song-catalog/api/admin-service.ts](repo://src/features/manage-song-catalog/api/admin-service.ts#L229-L276)).
 
 준비 여부는 이 포인터들이 서로 맞는지로 판정해요. [catalogReadiness](repo://src/entities/song-catalog/lib/readiness.ts#L5-L45)는 `lifecycleStatus === "ACTIVE"`, active source의 `READY`, 현재 분석의 `READY` + `cleanupConfirmed`, 타깃 자산의 `READY`, 그리고 `currentAnalysis.sourceId`·`targetAsset.sourceId`가 `activeSourceId`와 같은지를 검사해요. 조건이 어긋나면 `ANALYSIS_SOURCE_MISMATCH`, `TARGET_SOURCE_MISMATCH` 같은 이유 코드를 돌려줘요. 곡을 공개 상태로 만드는 절차는 [곡 카탈로그 등록과 공개](../workflows/song-catalog-lifecycle.md)가 소유해요.
 
@@ -159,9 +186,9 @@ erDiagram
 
 | 컬럼 | 무엇을 고정하는지 | 근거 |
 | --- | --- | --- |
-| `referenceAssetId` | `MixingReference` FK(`onDelete: Restrict`)로 고정한 믹싱 레퍼런스 `MediaAsset`이에요. | [schema.prisma](repo://prisma/schema.prisma#L582) |
-| `targetAssetId` | `MixingTarget` FK(`onDelete: Restrict`)로 고정한 원곡 타깃 `CatalogTargetAsset`이에요. | [schema.prisma](repo://prisma/schema.prisma#L583) |
-| `songAnalysisId` | 작업을 만들 때 쓴 `SongAnalysis` 행을 `Restrict` FK로 계속 가리켜요. | [schema.prisma](repo://prisma/schema.prisma#L581) |
+| `referenceAssetId` | `MixingReference` FK(`onDelete: Restrict`)로 고정한 믹싱 레퍼런스 `MediaAsset`이에요. | [schema.prisma](repo://prisma/schema.prisma#L603) |
+| `targetAssetId` | `MixingTarget` FK(`onDelete: Restrict`)로 고정한 원곡 타깃 `CatalogTargetAsset`이에요. | [schema.prisma](repo://prisma/schema.prisma#L604) |
+| `songAnalysisId` | 작업을 만들 때 쓴 `SongAnalysis` 행을 `Restrict` FK로 계속 가리켜요. | [schema.prisma](repo://prisma/schema.prisma#L602) |
 | `catalogPosition` | 생성 시점에 추천된 카탈로그 항목의 위치(`item.catalogOrder`)예요. | [mixing-queue.ts](repo://src/features/create-mixing/api/mixing-queue.ts#L125) |
 | `catalogRevision` | 추천을 계산한 카탈로그 개정 번호(`result.catalogRevision`)예요. | [mixing-queue.ts](repo://src/features/create-mixing/api/mixing-queue.ts#L127) |
 | `scoringVersion` | 추천 점수의 기준 버전(`result.scoringVersion`)이에요. | [mixing-queue.ts](repo://src/features/create-mixing/api/mixing-queue.ts#L128) |
@@ -169,15 +196,50 @@ erDiagram
 
 나중에 카탈로그가 바뀌어도 이미 만들어진 작업은 당시 근거를 그대로 유지해요. 대신 새 요청은 접수 시점에 현재 값과 비교해서 불일치하면 `MIXING_RECOMMENDATION_STALE`로 거절해요([src/features/create-mixing/api/mixing-queue.ts](repo://src/features/create-mixing/api/mixing-queue.ts#L81-L101)). 참조 자산 선택 규칙과 전체 흐름은 [AI 믹싱 작업 흐름](../workflows/ai-mixing.md)에 있어요.
 
+## 비회원 체험 행
+
+비회원 체험은 `GuestAnalysisTrial` 한 행이 게스트 `User`와 `VocalProfileAnalysisJob`을 잇는 구조예요. `User.isGuest`는 기본값 `false`인 불리언이고, 게스트 계정은 `createGuestTrial`이 `isGuest: true`로 만들면서 같은 트랜잭션에서 trial 행을 붙여요([trial.ts](repo://src/entities/guest-analysis/api/trial.ts#L30-L43)). 상태(`available`·`used`·`full`·`processing`)와 전이 순서는 [비회원 체험 분석 흐름](../workflows/guest-analysis-trial.md)이 소유하니, 여기서는 컬럼·제약·삭제 동작만 확인하세요.
+
+| 필드 | 정의 | 의미와 제약 |
+| --- | --- | --- |
+| `tokenHash` | `TEXT NOT NULL`, unique | 쿠키 `copy-singer.guest-trial` 값의 SHA-256 해시예요. 원문 토큰은 저장하지 않아서 DB를 읽어도 그대로 인증에 쓸 수 없어요([trial.ts](repo://src/entities/guest-analysis/api/trial.ts#L7-L28)). |
+| `userId` | `TEXT NOT NULL`, unique, FK `User` `ON DELETE CASCADE` | 체험을 소유한 게스트 계정이에요. 사용자당 행이 하나라 같은 쿠키로 다시 요청하면 새 trial을 만들지 않아요([guest-analysis.integration.ts](repo://tests/guest-analysis.integration.ts#L47-L60)). |
+| `jobId` | `UUID NULL`, unique, FK `VocalProfileAnalysisJob` `ON DELETE SET NULL` | 게스트가 접수한 분석 작업이에요. 접수 트랜잭션이 이 값을 채우고 `expiresAt`을 `NULL`로 되돌려요([analysis-queue.ts](repo://src/features/analyze-vocal-profile/api/analysis-queue.ts#L196-L200)). |
+| `consumedAt` | `TIMESTAMP(3) NULL` | 분석이 성공해 체험을 소진한 시각이에요. 실패로 끝난 시도는 이 값을 채우지 않아요. |
+| `expiresAt` | `TIMESTAMP(3) NULL` | 결과 열람과 정리 기준 시각이에요. `NULL`은 만료 예약이 없다는 뜻이고, 열람은 `claimedAt`이 비어 있고 이 값이 미래일 때만 통과해요([trial.ts](repo://src/entities/guest-analysis/api/trial.ts#L45-L47)). |
+| `claimedAt` / `claimedByUserId` | `TIMESTAMP(3) NULL` / `TEXT NULL`, FK `User` `ON DELETE SET NULL` | 정식 회원이 결과를 저장한 시각과 그 회원이에요. |
+
+`GuestAnalysisTrial`에는 상태 enum이 없어요. 대신 세 시각 컬럼을 조합해 상태를 계산하고, unique 제약 세 개가 "브라우저 하나에 trial 하나, trial 하나에 작업 하나"를 DB에서 보장해요([migration.sql](repo://prisma/migrations/20261029000000_guest_analysis_trial/migration.sql#L19-L29)). 같은 migration이 `@@index([claimedAt, expiresAt])`를 추가했고, 만료 정리 조회와 관리자 목록 필터가 모두 이 두 컬럼을 조건으로 써요([lifecycle.ts](repo://src/entities/guest-analysis/api/lifecycle.ts#L144-L149), [admin-service.ts](repo://src/features/inspect-admin-operations/api/admin-service.ts#L92-L96)).
+
+FK마다 삭제 동작이 달라요. `userId`만 `CASCADE`이고 `claimedByUserId`·`jobId`는 `SET NULL`이라, 게스트 계정을 지우면 trial도 함께 사라지지만 회원이나 분석 작업을 지우면 trial 행은 남고 참조만 비어요([migration.sql](repo://prisma/migrations/20261029000000_guest_analysis_trial/migration.sql#L31-L38)). `claimedAt`이 채워진 행은 참조가 비어도 "이미 사용된 체험"으로 남아요.
+
+종료 시각은 워커가 기록해요. `markGuestAnalysisTerminal`은 `userId`·`jobId`가 맞고 아직 저장되지 않은(`claimedAt IS NULL`) 행에만 적용되며, 성공이면 `consumedAt`을 현재 시각으로 채우고 실패면 비워 둬요. 두 경우 모두 `expiresAt`을 `GUEST_RESULT_RETENTION_MS`(24시간) 뒤로 미뤄요([lifecycle.ts](repo://src/entities/guest-analysis/api/lifecycle.ts#L43-L55), [contract.ts](repo://src/entities/guest-analysis/model/contract.ts#L1-L7)). 호출 위치는 보컬 분석 워커의 성공 확정([성공 경로](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L122-L124))과 실패 확정([실패 경로](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L220-L221))이고, 게스트에게는 회원 알림을 만들지 않아요. 변경 범위 테스트도 실패 직후 `consumedAt`이 `null`이고 성공 후 `expiresAt - consumedAt`이 86,400,000ms인지 확인해요([guest-analysis.integration.ts](repo://tests/guest-analysis.integration.ts#L241-L257)).
+
+저장(claim)은 trial 행을 `FOR UPDATE`로 잠근 뒤 진행해요. 회원이 게스트면 `MEMBER_REQUIRED`로 거절하고, 아직 저장되지 않은 trial이면 프로필의 `userId`·`profileNumber`·`displayName`을 회원 기준으로 다시 쓰고 작업의 `userId`를 회원으로 바꾸며 `idempotencyKey`를 `guest-claim:{trialId}:{jobId}`로 교체해요. 원본 녹음·합성 레퍼런스 `MediaAsset`과 관련 `MediaOperation`의 `userId`도 함께 옮기고, 마지막에 `claimedByUserId`·`claimedAt`을 채우고 `expiresAt`을 `NULL`로 비워요([lifecycle.ts](repo://src/entities/guest-analysis/api/lifecycle.ts#L57-L112)). 같은 trial에 다시 저장하면 같은 `profileId`가 돌아오고, 다른 회원이 저장하면 `GUEST_TRIAL_ALREADY_SAVED`(403)예요([guest-analysis.integration.ts](repo://tests/guest-analysis.integration.ts#L315-L336)).
+
+만료 정리는 `claimedAt IS NULL`이고 `expiresAt <= now`인 행을 `ORDER BY expiresAt FOR UPDATE SKIP LOCKED`로 하나씩 잡아요. `purgeGuestResult`가 프로필·recording을 지우고 남은 미디어 자산에 삭제를 예약한 뒤 `expiresAt`을 `NULL`로 되돌려요([lifecycle.ts](repo://src/entities/guest-analysis/api/lifecycle.ts#L114-L158)). `claimedAt`이 채워진 행은 대상이 아니라서 회원이 저장한 프로필은 정리 후에도 남아요([guest-analysis.integration.ts](repo://tests/guest-analysis.integration.ts#L337-L338)). 사용자가 저장하지 않은 결과를 직접 지울 때도 같은 함수를 써서 trial은 남기고 결과만 지워요([lifecycle.ts](repo://src/entities/guest-analysis/api/lifecycle.ts#L134-L142)).
+
+`isGuest`는 정식 회원 전용 기능의 경계로도 쓰여요.
+
+| 위치 | `isGuest` 효과 |
+| --- | --- |
+| 분석 접수·조회 | 게스트면 지갑 대신 trial 정책을 돌려주고, 같은 작업 재조회는 `canReadGuestResource`가 만료 여부를 검사해요([analysis-queue.ts](repo://src/features/analyze-vocal-profile/api/analysis-queue.ts#L100-L128)). |
+| 티켓 | 게스트는 지갑·원장 행을 만들지 않고, 관리자 티켓 조정에서도 제외돼요([guest-analysis.integration.ts](repo://tests/guest-analysis.integration.ts#L25-L30), [adjust-user-tickets.ts](repo://src/features/manage-tickets/api/adjust-user-tickets.ts#L22-L23)). |
+| 저장(claim) | 저장을 요청한 회원이 게스트면 `MEMBER_REQUIRED`(401)예요([lifecycle.ts](repo://src/entities/guest-analysis/api/lifecycle.ts#L63-L64)). |
+| 관리자 화면 | 회원 목록·회원 수는 `isGuest: false`, 게스트 수는 trial 개수로 세요([admin-service.ts](repo://src/features/inspect-admin-operations/api/admin-service.ts#L16-L58)). |
+| AI 믹싱 | 게스트 쿠키로 믹싱을 요청하면 401이에요([guest-analysis.integration.ts](repo://tests/guest-analysis.integration.ts#L407-L413)). |
+
+`isGuest`를 `false`로 되돌리는 쓰기 경로는 찾지 못했어요. 체험 결과는 게스트 계정을 회원으로 승격하지 않고, 저장 시 프로필·작업·자산의 `userId`를 이미 로그인한 회원으로 옮기는 방식이에요. 증명 판정은 `getAnalysisActor`가 trial을 `{ userId, guest: true }`로 바꿔 주고 `requireApiSession`은 이를 통과시키지 않아요([analysis-actor.ts](repo://src/features/authentication/api/analysis-actor.ts#L7-L13)). 어떤 증명이 어떤 요청을 통과시키는지는 [인증과 소유권 경계](../integrations/auth-and-ownership.md)가 정리해요.
+
 ## Job 계열 공통 컬럼
 
-`MixingJob`, `VocalProfileAnalysisJob`, `SongAnalysisJob`은 같은 이름의 점유·재시도 컬럼을 공유해요([prisma/schema.prisma](repo://prisma/schema.prisma#L285-L314), [prisma/schema.prisma](repo://prisma/schema.prisma#L540-L574), [prisma/schema.prisma](repo://prisma/schema.prisma#L576-L627)). 조회·전이 알고리즘은 [Job 큐와 lease 복구 계약](../operations/job-processing.md)으로 보내고, 여기서는 컬럼 의미만 정리해요.
+`MixingJob`, `VocalProfileAnalysisJob`, `SongAnalysisJob`은 같은 이름의 점유·재시도 컬럼을 공유해요([prisma/schema.prisma](repo://prisma/schema.prisma#L285-L314), [prisma/schema.prisma](repo://prisma/schema.prisma#L560-L595), [prisma/schema.prisma](repo://prisma/schema.prisma#L597-L648)). 조회·전이 알고리즘은 [Job 큐와 lease 복구 계약](../operations/job-processing.md)으로 보내고, 여기서는 컬럼 의미만 정리해요.
 
 | 컬럼 | 기본값 | 의미 |
 | --- | --- | --- |
 | `status` | `PENDING` | 작업의 공개 상태. `PREPARING`·`SUBMITTED`는 `MixingJob`에만 있어요. |
 | `attempts` | `0` | 점유(claim)할 때마다 1 증가해요. `maxAttempts`와 비교해 재시도 여부를 판단해요. |
-| `maxAttempts` | `3` | 재시도 상한. `MixingJob`은 `mixingMaxAttempts()`, 보컬 분석은 `vocalProfileAnalysisMaxAttempts()`로 생성 시 덮어써요([src/shared/config/server-env.ts](repo://src/shared/config/server-env.ts#L34-L52)). |
+| `maxAttempts` | `3` | 재시도 상한. `MixingJob`은 `mixingMaxAttempts()`, 보컬 분석은 `vocalProfileAnalysisMaxAttempts()`로 생성 시 덮어써요([src/shared/config/server-env.ts](repo://src/shared/config/server-env.ts#L38-L56)). |
 | `nextAttemptAt` | `now()` | 후보 선정 조건이에요. 이 시각이 지나야 다시 점유될 수 있어요. |
 | `leaseOwner` / `leaseExpiresAt` | `NULL` | 점유자와 점유 만료 시각. 만료된 진행 중 행은 다른 워커가 회수해요. |
 | `heartbeatAt` | `NULL` | 마지막으로 점유를 갱신한 시각이에요. |
@@ -211,7 +273,7 @@ erDiagram
 | `MixingJobStatus` | `PENDING`, `PREPARING`, `SUBMITTED`, `PROCESSING`, `SUCCEEDED`, `FAILED`, `CANCELED` | 기본 `PENDING`. 점유 시 `PENDING` → `PREPARING`, poll 중 `SUBMITTED`/`PROCESSING`, 성공 시 `SUCCEEDED`, 실패 시 `FAILED`예요. 재시도는 접수 전이면 `PENDING`, 접수 후면 `SUBMITTED`로 돌아가요([src/_app/background-jobs/mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L212-L249)). |
 | `VocalProfileAnalysisJobStatus` | `PENDING`, `PROCESSING`, `SUCCEEDED`, `FAILED` | 기본 `PENDING`. 재시도 시 `PENDING`, 실패 확정 시 `FAILED`예요. |
 | `TicketRefundState` | `NONE`, `REQUIRED`, `REFUNDED` | 기본 `NONE`. 실패 확정 시 `REQUIRED`, 환불 트랜잭션이 성공하면 `REFUNDED`가 돼요([src/_app/background-jobs/mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L156-L172)). |
-| `NotificationType` | `TICKET_CREDIT`, `VOCAL_PROFILE_SUCCEEDED`, `VOCAL_PROFILE_FAILED`, `MIXING_SUCCEEDED`, `MIXING_FAILED` | 작업을 종료 확정하는 같은 트랜잭션에서 알림을 만들어요. `dedupeKey` unique가 중복 알림을 막아요([prisma/schema.prisma](repo://prisma/schema.prisma#L523-L538)). |
+| `NotificationType` | `TICKET_CREDIT`, `VOCAL_PROFILE_SUCCEEDED`, `VOCAL_PROFILE_FAILED`, `MIXING_SUCCEEDED`, `MIXING_FAILED` | 작업을 종료 확정하는 같은 트랜잭션에서 알림을 만들어요. `dedupeKey` unique가 중복 알림을 막아요([prisma/schema.prisma](repo://prisma/schema.prisma#L543-L558)). |
 
 `MixingJobStatus.CANCELED`는 값이 정의돼 있고 종료 상태 필터·표시·필터 매핑에서 참조되지만([src/entities/mixing-job/api/deletion.ts](repo://src/entities/mixing-job/api/deletion.ts#L7-L27), [src/entities/mixing-job/api/history.ts](repo://src/entities/mixing-job/api/history.ts#L93-L101)), 이 값을 쓰는 쓰기 경로는 현재 코드에서 찾지 못했어요. 취소를 만들려면 새 경로가 필요하다는 뜻이에요.
 
@@ -223,12 +285,13 @@ erDiagram
 
 | 제약 | 막는 중복 | 근거 |
 | --- | --- | --- |
-| `@@unique([userId, idempotencyKey])` | 같은 사용자가 같은 요청 키로 작업을 두 번 만드는 것 | [MixingJob](repo://prisma/schema.prisma#L620-L622), [VocalProfileAnalysisJob](repo://prisma/schema.prisma#L571-L573) |
+| `@@unique([userId, idempotencyKey])` | 같은 사용자가 같은 요청 키로 작업을 두 번 만드는 것 | [MixingJob](repo://prisma/schema.prisma#L641), [VocalProfileAnalysisJob](repo://prisma/schema.prisma#L592) |
 | `idempotencyKey` unique | 곡 분석 작업, 관리자의 곡 등록 요청 | [SongAnalysisJob](repo://prisma/schema.prisma#L285-L296) |
-| `TicketLedger.idempotencyKey` unique | 티켓 차감·환불·지급의 이중 반영 | [prisma/schema.prisma](repo://prisma/schema.prisma#L499-L521) |
-| `Notification.dedupeKey` unique | 같은 사건에 대한 알림 중복 생성 | [prisma/schema.prisma](repo://prisma/schema.prisma#L523-L538) |
+| `GuestAnalysisTrial`의 `tokenHash`·`userId`·`jobId` unique | 브라우저당 체험 하나, 체험당 분석 작업 하나 | [migration.sql](repo://prisma/migrations/20261029000000_guest_analysis_trial/migration.sql#L19-L29) |
+| `TicketLedger.idempotencyKey` unique | 티켓 차감·환불·지급의 이중 반영 | [prisma/schema.prisma](repo://prisma/schema.prisma#L519-L541) |
+| `Notification.dedupeKey` unique | 같은 사건에 대한 알림 중복 생성 | [prisma/schema.prisma](repo://prisma/schema.prisma#L543-L558) |
 | `SignupGrantIntent` `@@id([userId, kind])` | 가입 지급 금액의 재산정 | [src/entities/ticket/api/ticket-service.ts](repo://src/entities/ticket/api/ticket-service.ts#L145-L179) |
-| `ExternalJobReconciliation @@unique([jobType, jobId])` | 같은 작업의 정리 레코드 중복 | [prisma/schema.prisma](repo://prisma/schema.prisma#L664-L677) |
+| `ExternalJobReconciliation @@unique([jobType, jobId])` | 같은 작업의 정리 레코드 중복 | [prisma/schema.prisma](repo://prisma/schema.prisma#L685-L698) |
 
 티켓 지갑은 `@@id([userId, kind])`로 사용자·종류별 잔액 한 행을 유지하고, 원장 행이 `balanceAfter`와 `actorUserId`를 남겨요. 원장 불변식은 [티켓 원장과 멱등성](../concepts/ticket-ledger.md)이 자세히 다뤄요.
 

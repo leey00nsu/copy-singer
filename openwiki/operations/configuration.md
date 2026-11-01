@@ -1,11 +1,8 @@
 ---
 type: reference
 title: 환경 변수와 런타임 한도
-description: 서버·워커·미디어·Modal·인증 동작을 바꾸는 환경 변수의 이름, 기본값, 허용 범위와 적용 지점을 정리한 참조 문서예요.
+description: 서버·워커·미디어·Modal·인증·비회원 체험 동작을 바꾸는 환경 변수의 이름, 기본값, 허용 범위와 적용 지점을 정리한 참조 문서예요.
 tags: [configuration, environment-variables, runtime-limits, operations]
-verified:
-  - by: openwiki/0.5.2
-    at: 2026-09-18T16:47:52.081Z
 sources:
   - id: openwiki-source-ea70eb6c045047448e446296
     resource: repo://.gitignore
@@ -23,6 +20,10 @@ sources:
     resource: repo://scripts/verify-database.ts
   - id: openwiki-source-3e61fbe0b48f056b7e7ac181
     resource: repo://scripts/verify-feature-config.ts
+  - id: openwiki-source-d2f7c12bb94f4e7eae6c4e75
+    resource: repo://src/_app/api-routes/guest-analysis/guest-analysis-route.ts
+  - id: openwiki-source-cbf25751da575c9067e72947
+    resource: repo://src/_app/api-routes/vocal-profiles/vocal-profile-analysis-jobs-route.ts
   - id: openwiki-source-b721cf0434c59714ccd05e3d
     resource: repo://src/_app/background-jobs/mixing/reconciliation.ts
   - id: openwiki-source-e746e2d352e86c69ac1ad6c4
@@ -35,6 +36,8 @@ sources:
     resource: repo://src/entities/ticket/api/ticket-service.ts
   - id: openwiki-source-9894762239bb4877ee0b6946
     resource: repo://src/entities/vocal-profile/api/analyzer/modal-adapter.ts
+  - id: openwiki-source-75ca813b5b73760aa12fda93
+    resource: repo://src/features/analyze-vocal-profile/api/analysis-queue.ts
   - id: openwiki-source-33698fca33e5d94297cf4721
     resource: repo://src/features/authentication/api/auth.ts
   - id: openwiki-source-c8233de0c3af4a698eef4b76
@@ -65,7 +68,12 @@ sources:
     resource: repo://src/shared/lib/runtime/limits.ts
   - id: openwiki-source-e1e6dda5f5d6b99d3fdb4420
     resource: repo://src/shared/media/client.ts
-generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:47:52.081Z" }
+  - id: openwiki-source-8133b36f4de23f03ce979d19
+    resource: repo://tests/guest-analysis.integration.ts
+generated: { by: "openwiki/0.7.2", at: "2026-10-30T13:29:10.337Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-30T10:43:12.272Z
 ---
 
 # 환경 변수와 런타임 한도
@@ -74,7 +82,7 @@ generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:47:52.081Z" }
 
 ## 설정을 읽는 파일과 시점
 
-숫자 설정은 두 곳에서 읽어요. 서버·워커 동작과 티켓 값은 [src/shared/config/server-env.ts](repo://src/shared/config/server-env.ts#L3-L74)가, DB·HTTP·FFmpeg 자원 예산은 [src/shared/lib/runtime/limits.ts](repo://src/shared/lib/runtime/limits.ts#L10-L19)가 정의해요. 두 모듈 모두 값을 호출 시점에 읽으므로, 함수가 실행될 때의 `process.env`가 기준이 돼요.
+숫자 설정은 두 곳에서 읽어요. 서버·워커 동작, 티켓 값, 비회원 체험 일일 한도는 [src/shared/config/server-env.ts](repo://src/shared/config/server-env.ts#L3-L78)가, DB·HTTP·FFmpeg 자원 예산은 [src/shared/lib/runtime/limits.ts](repo://src/shared/lib/runtime/limits.ts#L10-L19)가 정의해요. 서버 코드는 이 모듈들을 [src/shared/config/index.server.ts](repo://src/shared/config/index.server.ts#L1-L3) 배럴로 가져오고, 두 모듈 모두 값을 호출 시점에 읽으므로 함수가 실행될 때의 `process.env`가 기준이 돼요.
 
 워커 스크립트·검증 스크립트·테스트와 Prisma CLI는 dotenv로 `.env.local`과 `.env`를 이 순서로 로드해요([prisma.config.ts](repo://prisma.config.ts#L1-L14), [scripts/mixing-worker.ts](repo://scripts/mixing-worker.ts#L1-L5)). 로드된 값이 없으면 위 두 모듈의 기본값이 쓰여요.
 
@@ -95,7 +103,19 @@ generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:47:52.081Z" }
 | `MIXING_TICKET_COST` | 1 | 0–1,000 | [server-env.ts](repo://src/shared/config/server-env.ts#L22-L24) |
 | `VOCAL_PROFILE_ANALYSIS_TICKET_COST` | 1 | 0–1,000 | [server-env.ts](repo://src/shared/config/server-env.ts#L26-L28) |
 
-가입 지급액은 최초 지급 시점에 `SignupGrantIntent` 행으로 고정돼요. 그래서 나중에 이 변수를 바꿔도 이미 가입한 사용자의 복구 금액은 달라지지 않아요([ticket-service.ts](repo://src/entities/ticket/api/ticket-service.ts#L145-L179)). 비용 값은 작업 행의 `ticketCost`와 청구 금액을 만드는 데 함께 쓰여요([mixing-queue.ts](repo://src/features/create-mixing/api/mixing-queue.ts#L38-L38), [analysis-queue.ts](repo://src/features/analyze-vocal-profile/api/analysis-queue.ts#L131-L159)).
+가입 지급액은 최초 지급 시점에 `SignupGrantIntent` 행으로 고정돼요. 그래서 나중에 이 변수를 바꿔도 이미 가입한 사용자의 복구 금액은 달라지지 않아요([ticket-service.ts](repo://src/entities/ticket/api/ticket-service.ts#L145-L179)). 비용 값은 작업 행의 `ticketCost`와 청구 금액을 만드는 데 함께 쓰여요([mixing-queue.ts](repo://src/features/create-mixing/api/mixing-queue.ts#L38-L38), [analysis-queue.ts](repo://src/features/analyze-vocal-profile/api/analysis-queue.ts#L169-L210)).
+
+## 비회원 체험 일일 한도
+
+비회원 체험은 티켓 대신 하루 단위 총량으로 막아요. 이 값은 `0`까지 허용되므로 `0`으로 두면 신규 체험 시작이 전부 거절돼요.
+
+| 변수 | 기본값 | 허용 범위 | 적용 지점 |
+| --- | --- | --- | --- |
+| `GUEST_ANALYSIS_DAILY_LIMIT` | 10 | 0–10,000 | [server-env.ts](repo://src/shared/config/server-env.ts#L30-L32) |
+
+한도 판정은 새 체험을 만들 때와 비회원 분석 접수 직전에 실행되고, 소진되면 `GUEST_ANALYSIS_DAILY_LIMIT` 429로 거절해요([guest-analysis-route.ts](repo://src/_app/api-routes/guest-analysis/guest-analysis-route.ts#L28-L29), [vocal-profile-analysis-jobs-route.ts](repo://src/_app/api-routes/vocal-profiles/vocal-profile-analysis-jobs-route.ts#L79-L104), [analysis-queue.ts](repo://src/features/analyze-vocal-profile/api/analysis-queue.ts#L106-L155)). 비회원 접수는 본문을 읽기 전에 이 검사에서 끝나요([tests/guest-analysis.integration.ts](repo://tests/guest-analysis.integration.ts#L381-L406)). `0`으로 막아도 체험 정책 조회는 `full` 상태로 응답하고, 이미 저장된 체험 결과로 만든 추천 조회는 계속 200으로 동작해요([tests/guest-analysis.integration.ts](repo://tests/guest-analysis.integration.ts#L407-L413), [tests/guest-analysis.integration.ts](repo://tests/guest-analysis.integration.ts#L511-L527)).
+
+이 한도가 웹 프로세스 메모리 카운터라 워커와 공유되지 않고 Asia/Seoul 자정·프로세스 재시작에 초기화된다는 제약은 [비회원 체험 분석 흐름](../workflows/guest-analysis-trial.md)이 소유해요([guest-quota.ts](repo://src/shared/lib/admission/guest-quota.ts#L3-L16), [tests/guest-analysis-quota.test.ts](repo://tests/guest-analysis-quota.test.ts#L23-L41)).
 
 ## 워커 동시성·시도·lease·poll
 
@@ -103,20 +123,20 @@ generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:47:52.081Z" }
 
 | 변수 | 기본값 | 허용 범위 | 적용 지점 |
 | --- | --- | --- | --- |
-| `MIXING_WORKER_CONCURRENCY` | 1 | 1–32 | [server-env.ts](repo://src/shared/config/server-env.ts#L30-L32) |
-| `MIXING_MAX_ATTEMPTS` | 3 | 1–20 | [server-env.ts](repo://src/shared/config/server-env.ts#L34-L36) |
-| `MIXING_LEASE_SECONDS` | 120 | 30–3,600 | [server-env.ts](repo://src/shared/config/server-env.ts#L38-L40) |
-| `MIXING_POLL_INTERVAL_MS` | 5,000 | 100–60,000 | [server-env.ts](repo://src/shared/config/server-env.ts#L42-L44) |
-| `VOCAL_PROFILE_ANALYSIS_WORKER_CONCURRENCY` | 1 | 1–16 | [server-env.ts](repo://src/shared/config/server-env.ts#L46-L48) |
-| `VOCAL_PROFILE_ANALYSIS_MAX_ATTEMPTS` | 3 | 1–10 | [server-env.ts](repo://src/shared/config/server-env.ts#L50-L52) |
-| `VOCAL_PROFILE_ANALYSIS_LEASE_SECONDS` | 300 | 180–3,600 | [server-env.ts](repo://src/shared/config/server-env.ts#L54-L56) |
-| `SONG_ANALYSIS_WORKER_CONCURRENCY` | 1 | 1–8 | [server-env.ts](repo://src/shared/config/server-env.ts#L58-L60) |
-| `SONG_ANALYSIS_LEASE_SECONDS` | 300 | 180–3,600 | [server-env.ts](repo://src/shared/config/server-env.ts#L62-L64) |
-| `SONG_ANALYSIS_POLL_INTERVAL_MS` | 2,500 | 250–30,000 | [server-env.ts](repo://src/shared/config/server-env.ts#L66-L68) |
+| `MIXING_WORKER_CONCURRENCY` | 1 | 1–32 | [server-env.ts](repo://src/shared/config/server-env.ts#L34-L36) |
+| `MIXING_MAX_ATTEMPTS` | 3 | 1–20 | [server-env.ts](repo://src/shared/config/server-env.ts#L38-L40) |
+| `MIXING_LEASE_SECONDS` | 120 | 30–3,600 | [server-env.ts](repo://src/shared/config/server-env.ts#L42-L44) |
+| `MIXING_POLL_INTERVAL_MS` | 5,000 | 100–60,000 | [server-env.ts](repo://src/shared/config/server-env.ts#L46-L48) |
+| `VOCAL_PROFILE_ANALYSIS_WORKER_CONCURRENCY` | 1 | 1–16 | [server-env.ts](repo://src/shared/config/server-env.ts#L50-L52) |
+| `VOCAL_PROFILE_ANALYSIS_MAX_ATTEMPTS` | 3 | 1–10 | [server-env.ts](repo://src/shared/config/server-env.ts#L54-L56) |
+| `VOCAL_PROFILE_ANALYSIS_LEASE_SECONDS` | 300 | 180–3,600 | [server-env.ts](repo://src/shared/config/server-env.ts#L58-L60) |
+| `SONG_ANALYSIS_WORKER_CONCURRENCY` | 1 | 1–8 | [server-env.ts](repo://src/shared/config/server-env.ts#L62-L64) |
+| `SONG_ANALYSIS_LEASE_SECONDS` | 300 | 180–3,600 | [server-env.ts](repo://src/shared/config/server-env.ts#L66-L68) |
+| `SONG_ANALYSIS_POLL_INTERVAL_MS` | 2,500 | 250–30,000 | [server-env.ts](repo://src/shared/config/server-env.ts#L70-L72) |
 
-곡 분석에는 최대 시도 변수가 없어요. `SongAnalysisJob.maxAttempts`는 Prisma 스키마 기본값 `3`을 그대로 써요([schema.prisma](repo://prisma/schema.prisma#L285-L294)). 믹싱과 보컬 분석은 작업을 만들 때 위 변수 값을 행에 복사해요([mixing-queue.ts](repo://src/features/create-mixing/api/mixing-queue.ts#L117-L133), [analysis-queue.ts](repo://src/features/analyze-vocal-profile/api/analysis-queue.ts#L149-L159)).
+곡 분석에는 최대 시도 변수가 없어요. `SongAnalysisJob.maxAttempts`는 Prisma 스키마 기본값 `3`을 그대로 써요([schema.prisma](repo://prisma/schema.prisma#L285-L294)). 믹싱과 보컬 분석은 작업을 만들 때 위 변수 값을 행에 복사해요([mixing-queue.ts](repo://src/features/create-mixing/api/mixing-queue.ts#L117-L133), [analysis-queue.ts](repo://src/features/analyze-vocal-profile/api/analysis-queue.ts#L185-L195)).
 
-lease 초는 작업을 점유할 때의 `leaseExpiresAt`과 처리 중 lease 갱신에 함께 쓰여요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L97-L99), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L247-L253)). poll 간격은 Modal에 상태를 다시 물어보기 전 대기 시간이에요([song-analysis/worker.ts](repo://src/_app/background-jobs/song-analysis/worker.ts#L208-L216), [mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L293-L299)). lease 갱신 주기와 재시도 백오프 같은 알고리즘 자체는 [Job 큐와 lease 복구 계약](job-processing.md)이 설명해요.
+lease 초는 작업을 점유할 때의 `leaseExpiresAt`과 처리 중 lease 갱신에 함께 쓰여요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L97-L99), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L252-L258)). poll 간격은 Modal에 상태를 다시 물어보기 전 대기 시간이에요([song-analysis/worker.ts](repo://src/_app/background-jobs/song-analysis/worker.ts#L208-L216), [mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L293-L299)). lease 갱신 주기와 재시도 백오프 같은 알고리즘 자체는 [Job 큐와 lease 복구 계약](job-processing.md)이 설명해요.
 
 ## 큐 용량과 업로드 동시성
 
@@ -160,10 +180,10 @@ lease 초는 작업을 점유할 때의 `leaseExpiresAt`과 처리 중 lease 갱
 | --- | --- | --- | --- |
 | 믹싱 워커, 관리자 커스텀 믹싱, 외부 작업 정리 | `MODAL_API_URL` | `MODAL_API_KEY` | `MODAL_NOT_CONFIGURED`, 관리자 경로는 503([worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L79-L86), [modal.ts](repo://src/features/admin-custom-mixing/api/modal.ts#L9-L13)) |
 | 보컬 프로필 분석 | `VOCAL_PROFILE_MODAL_URL` | `VOCAL_PROFILE_MODAL_API_KEY` → 없으면 `MODAL_API_KEY` | `ANALYZER_NOT_CONFIGURED` 503([modal-adapter.ts](repo://src/entities/vocal-profile/api/analyzer/modal-adapter.ts#L34-L46)) |
-| 곡 카탈로그 분석 | `SONG_ANALYSIS_MODAL_URL` | `SONG_ANALYSIS_MODAL_API_KEY` → 없으면 `MODAL_API_KEY` | `ANALYZER_NOT_CONFIGURED`([server-env.ts](repo://src/shared/config/server-env.ts#L70-L74), [song-analysis/worker.ts](repo://src/_app/background-jobs/song-analysis/worker.ts#L147-L151)) |
+| 곡 카탈로그 분석 | `SONG_ANALYSIS_MODAL_URL` | `SONG_ANALYSIS_MODAL_API_KEY` → 없으면 `MODAL_API_KEY` | `ANALYZER_NOT_CONFIGURED`([server-env.ts](repo://src/shared/config/server-env.ts#L74-L78), [song-analysis/worker.ts](repo://src/_app/background-jobs/song-analysis/worker.ts#L147-L151)) |
 | Leemage 미디어 저장 | `LEEMAGE_BASE_URL`(기본값 `https://leemage.leey00nsu.com/api/v1`) | `LEEMAGE_API_KEY`, `LEEMAGE_PROJECT_ID` | `LeemageError`를 던지고 업로드를 시작하지 않아요([client.ts](repo://src/shared/media/client.ts#L34-L46)) |
 
-Modal URL 변수와 `LEEMAGE_BASE_URL`은 모두 값 끝의 `/`를 잘라내요. 그래서 `https://example.com/api/`와 `https://example.com/api`가 같은 주소가 돼요([worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L79-L86), [server-env.ts](repo://src/shared/config/server-env.ts#L70-L74), [modal-adapter.ts](repo://src/entities/vocal-profile/api/analyzer/modal-adapter.ts#L34-L46), [client.ts](repo://src/shared/media/client.ts#L40-L46)).
+Modal URL 변수와 `LEEMAGE_BASE_URL`은 모두 값 끝의 `/`를 잘라내요. 그래서 `https://example.com/api/`와 `https://example.com/api`가 같은 주소가 돼요([worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L79-L86), [server-env.ts](repo://src/shared/config/server-env.ts#L74-L78), [modal-adapter.ts](repo://src/entities/vocal-profile/api/analyzer/modal-adapter.ts#L34-L46), [client.ts](repo://src/shared/media/client.ts#L40-L46)).
 
 필수 변수를 한 번에 확인하려면 `pnpm run verify:feature-config`를 실행하세요. 이 명령이 검사하는 이름은 아래 일곱 개예요([scripts/verify-feature-config.ts](repo://scripts/verify-feature-config.ts#L5-L21)).
 
@@ -224,7 +244,7 @@ IP 신뢰를 끈 기본 구성에서는 IP 단위 버킷이 항상 건너뛰어�
 
 ## .env 파일과 ignore 경계
 
-`.gitignore`는 `.env*`를 제외하고([.gitignore](repo://.gitignore#L37-L38)), OpenWiki 생성 입력을 정하는 `.openwikiignore`도 `.env`와 `.env.*`를 제외해요. 그래서 실제 환경 파일의 내용은 이 문서의 근거가 될 수 없고, 어떤 변수가 어느 파일에서 읽히는지만 적을 수 있어요.
+`.gitignore`는 `.env*`를 제외하고([.gitignore](repo://.gitignore#L37-L38)), OpenWiki 생성 입력을 정하는 [.openwikiignore](repo://.openwikiignore#L3-L4)도 `.env`와 `.env.*`를 제외해요. 그래서 실제 환경 파일의 내용은 이 문서의 근거가 될 수 없고, 어떤 변수가 어느 파일에서 읽히는지만 적을 수 있어요.
 
 `README.md`와 [tests/process-scripts.test.ts](repo://tests/process-scripts.test.ts#L13-L19)는 `.env.example`을 참조하지만, 이 파일은 `.env.*` 제외 규칙 때문에 생성 입력에서 보이지 않았어요. 그래서 여기서는 내용을 옮기지 않고, 추적되는 코드와 설정 파일에서 읽히는 변수 이름만 정리했어요.
 
@@ -232,6 +252,7 @@ IP 신뢰를 끈 기본 구성에서는 IP 단위 버킷이 항상 건너뛰어�
 
 - 값의 의미가 아니라 절차가 필요하면 [로컬 실행과 배포](local-runtime.md)를 보세요.
 - 값을 바꾼 뒤 어떤 검사를 돌릴지 고르려면 [변경 검증 경로](../testing/verification.md)를 보세요.
+- 비회원 체험의 일일 카운터 수명과 상태 전이는 [비회원 체험 분석 흐름](../workflows/guest-analysis-trial.md)에 있어요.
 - lease·재시도·terminal 확정 규칙은 [Job 큐와 lease 복구 계약](job-processing.md)에 있어요.
 - 업로드 자산과 정리 intent는 [미디어 저장과 정리 의도](media-storage.md)가 설명해요.
 - Modal 서비스의 배포 단위와 endpoint는 [Modal 분석·믹싱 서비스](../integrations/modal-services.md)에 있어요.

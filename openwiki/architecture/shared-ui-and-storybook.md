@@ -1,12 +1,11 @@
 ---
-type: "참조"
-title: "Shared ui and storybook"
-description: "공용 UI 컴포넌트를 `src/shared/ui/`에 둘지 slice의 `ui` segment에 둘지 판단하는 기준, slice 밖에서 통과하는 public API, story 파일 배치와 Storybook 실행 환경, MSW(Mock Service Worker) fixture 재사용 방법, 그리고 Storybook 개발 전용 경계를 검사하는 조건과 명령을 정리한 참조 문서예요."
-tags: [architecture, storybook, shared-ui, fsd, msw, reference]
-openwiki_generated: true
+type: how-to
+title: 공용 UI와 Storybook 경계
+description: 공용 UI 컴포넌트와 story, MSW handler를 어디에 만들고 어떤 명령으로 검사하는지 안내해요. `src/shared/ui`와 slice `ui` segment의 배치 기준, story 파일 위치와 실행 환경, `save-trial`·`admin-tables` story의 fixture와 라우터 mock 방식, 개발 전용 경계 검사를 다뤄요.
+tags: [architecture, storybook, shared-ui, fsd, msw, how-to]
 verified:
-  - by: openwiki/0.5.2
-    at: 2026-09-18T16:47:52.081Z
+  - by: openwiki/0.7.2
+    at: 2026-11-01T16:00:39.866Z
 sources:
   - id: openwiki-source-808b9ff10fba3d7819aa09ab
     resource: repo://.storybook/main.ts
@@ -18,8 +17,16 @@ sources:
     resource: repo://package.json
   - id: openwiki-source-35cfb94022aa3d154a8651a9
     resource: repo://src/_app/providers/query-provider.tsx
-  - id: openwiki-source-1bd9182239534afc68f91117
-    resource: repo://src/_pages/admin/ui/admin-page.tsx
+  - id: openwiki-source-eeb729358a782de0c236cc21
+    resource: repo://src/_pages/admin/ui/admin-audience-tabs.tsx
+  - id: openwiki-source-0db23d0c92e1202288ff853a
+    resource: repo://src/_pages/admin/ui/admin-mixing-job-details.tsx
+  - id: openwiki-source-78a13860ab3efd5e08c925b4
+    resource: repo://src/_pages/admin/ui/admin-tables.stories.tsx
+  - id: openwiki-source-2d0d24949831a51c657a4b72
+    resource: repo://src/_pages/profile/ui/save-trial.stories.tsx
+  - id: openwiki-source-70dfad7f35959563e4e52e03
+    resource: repo://src/_pages/profile/ui/save-trial.tsx
   - id: openwiki-source-f7e7ae3b57968136591c7619
     resource: repo://src/entities/mixing-job/api/client.ts
   - id: openwiki-source-1050c6ce9340050c6bb46443
@@ -30,6 +37,8 @@ sources:
     resource: repo://src/entities/mixing-job/ui/mixing-status-badge.tsx
   - id: openwiki-source-58a8a871d850efd2a40ff12e
     resource: repo://src/entities/recommendation/lib/ranking.ts
+  - id: openwiki-source-d5808b2179adde8d75a3e711
+    resource: repo://src/features/authentication/ui/user-menu.tsx
   - id: openwiki-source-74b9baaa604c7abdd41aa8d6
     resource: repo://src/shared/config/catalog.ts
   - id: openwiki-source-6a025adcee93c124a64273a1
@@ -40,6 +49,8 @@ sources:
     resource: repo://src/shared/ui/skeleton/skeletons.stories.tsx
   - id: openwiki-source-573e2d2be4e008eb908731bf
     resource: repo://src/shared/ui/voice-orb/voice-orb.tsx
+  - id: openwiki-source-ac192087e0aa21231a1df53a
+    resource: repo://src/widgets/library/ui/library-tabs.tsx
   - id: openwiki-source-9c4f72e43c9d0d9dd63dc04e
     resource: repo://src/widgets/library/ui/mixing-library.stories.tsx
   - id: openwiki-source-30f1b618b61c35b0dec74cf1
@@ -60,11 +71,10 @@ sources:
     resource: repo://tests/voice-orb-shader.test.ts
   - id: openwiki-source-fbadcd8591b65031efaaedce
     resource: repo://vitest.config.ts
-generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:47:52.081Z" }
+generated: { by: "openwiki/0.7.2", at: "2026-11-01T16:00:39.866Z" }
 ---
 
-
-공용 UI 컴포넌트나 story를 건드릴 때는 어디에 둘지 정하고, 같은 자리에 story를 쓰고, 아래 명령을 돌리면 돼요. 순서는 배치 → story → fixture → 검사예요.
+공용 UI 컴포넌트를 새로 만들거나 story·MSW(Mock Service Worker) handler를 추가할 때, 어디에 둘지 정하고 어떤 명령으로 검사할지까지 한 번에 정리해요. 순서는 배치 → story → fixture와 라우터 mock → 검사예요. 새 story를 쓸 때 참고할 실제 예시는 [체험 결과 저장 story](repo://src/_pages/profile/ui/save-trial.stories.tsx#L11-L19)와 [관리자 표 story](repo://src/_pages/admin/ui/admin-tables.stories.tsx#L43-L74)예요.
 
 ## 컴포넌트를 둘 위치 정하기
 
@@ -98,7 +108,7 @@ meta는 `@storybook/nextjs-vite`의 `Meta`·`StoryObj`로 타입을 맞추고 de
 | `title` 접두사 | 위치 | 예 |
 | --- | --- | --- |
 | `Shared UI/...`, `Shared/Motion/...` | `src/shared/ui/**` | [src/shared/ui/button/button.stories.tsx](repo://src/shared/ui/button/button.stories.tsx#L6-L23), [src/shared/ui/voice-orb/voice-orb.stories.tsx](repo://src/shared/ui/voice-orb/voice-orb.stories.tsx#L6-L25) |
-| `Entities/...`, `Features/...`, `Widgets/...`, `Pages/...` | 각 layer slice의 `ui/` | [src/widgets/library/ui/mixing-library.stories.tsx](repo://src/widgets/library/ui/mixing-library.stories.tsx#L9-L31) |
+| `Entities/...`, `Features/...`, `Widgets/...`, `Pages/...` | 각 layer slice의 `ui/` | [src/widgets/library/ui/mixing-library.stories.tsx](repo://src/widgets/library/ui/mixing-library.stories.tsx#L9-L31), [src/_pages/profile/ui/save-trial.stories.tsx](repo://src/_pages/profile/ui/save-trial.stories.tsx#L11-L12) |
 | `App/...` | `src/_app/**` | [src/_app/layout/product-route-states.stories.tsx](repo://src/_app/layout/product-route-states.stories.tsx#L7-L16) |
 
 `title` 접두사는 관례이고 검사로 강제되지 않아요. 반대로 story 파일 자체는 `src` 트리에 있으므로 FSD 경계 테스트가 수집하는 소스에 포함돼요. 테스트는 `app`, `src`, `scripts`만 스캔하니, story가 `tests/msw/handlers.ts` 같은 `tests/` 파일을 상대 경로로 import하는 것은 계층 위반으로 잡히지 않아요([tests/fsd-architecture-boundaries.test.ts](repo://tests/fsd-architecture-boundaries.test.ts#L95-L113)).
@@ -121,9 +131,9 @@ story를 실행하는 설정은 `.storybook/`과 `vitest.config.ts` 두 곳에 �
 | 스타일 | `../src/_app/styles/globals.css`를 import해 제품 토큰을 그대로 써요 | [.storybook/preview.tsx](repo://.storybook/preview.tsx#L10-L10) |
 | 레이아웃 | 기본값은 `layout: "centered"`, 전체 화면이 필요하면 story에서 `fullscreen`으로 덮어써요 | [.storybook/preview.tsx](repo://.storybook/preview.tsx#L44-L44), [mixing-library.stories.tsx](repo://src/widgets/library/ui/mixing-library.stories.tsx#L16-L18) |
 
-테스트 실행기는 `vitest.config.ts`의 `storybook` project예요. provider는 `@vitest/browser-playwright`, instance는 headless `chromium` 하나이고, plugin은 `storybookTest({ configDir: ".storybook" })`으로 `.storybook`을 읽어요([vitest.config.ts](repo://vitest.config.ts#L4-L6), [vitest.config.ts](repo://vitest.config.ts#L38-L54)). 명령은 두 가지예요. 브라우저에서 직접 확인하려면 `pnpm run storybook`(port 6006), 검사처럼 한 번에 돌리려면 `pnpm run test:storybook --run`을 쓰세요([package.json](repo://package.json#L12-L13), [package.json](repo://package.json#L59-L59)).
+테스트 실행기는 `vitest.config.ts`의 `storybook` project예요. provider는 `@vitest/browser-playwright`, instance는 headless `chromium` 하나이고, plugin은 `storybookTest({ configDir: ".storybook" })`으로 `.storybook`을 읽어요([vitest.config.ts](repo://vitest.config.ts#L4-L6), [vitest.config.ts](repo://vitest.config.ts#L38-L54)). 명령은 두 가지예요. 브라우저에서 직접 확인하려면 `pnpm run storybook`(port 6006), 검사처럼 한 번에 돌리려면 `pnpm run test:storybook --run`을 쓰세요([package.json](repo://package.json#L12-L12), [package.json](repo://package.json#L60-L60)).
 
-## MSW fixture를 재사용하기
+## MSW handler와 fixture 재사용하기
 
 story가 API 응답을 필요로 하면 이미 있는 handler를 재사용하세요. 공용 handler와 fixture는 [tests/msw/handlers.ts](repo://tests/msw/handlers.ts#L19-L35)와 [tests/msw/fixtures.ts](repo://tests/msw/fixtures.ts#L7-L14)에 모여 있고, story는 `beforeEach({ msw })`에서 그 handler를 등록해요([src/widgets/library/ui/mixing-library.stories.tsx](repo://src/widgets/library/ui/mixing-library.stories.tsx#L4-L31)).
 
@@ -134,6 +144,16 @@ beforeEach({ msw }) {
 ```
 
 공용 handler가 없는 응답은 story 안에서 `msw`의 `http.get`·`http.post`로 직접 만들어요. `vocal-profile-library.stories.tsx`가 분석 작업 응답을 그렇게 정의하고 필요한 story에서만 등록해요([src/widgets/library/ui/vocal-profile-library.stories.tsx](repo://src/widgets/library/ui/vocal-profile-library.stories.tsx#L70-L72), [src/widgets/library/ui/vocal-profile-library.stories.tsx](repo://src/widgets/library/ui/vocal-profile-library.stories.tsx#L140-L147)). 여러 story가 같은 응답을 필요로 하게 되면 그때 handler를 `tests/msw/handlers.ts`로 올리세요.
+
+화면이 마운트되자마자 호출하는 엔드포인트는 story마다가 아니라 `meta.beforeEach`에 handler를 두세요. [save-trial.stories.tsx](repo://src/_pages/profile/ui/save-trial.stories.tsx#L11-L19)가 `/api/guest-analysis/claim` 성공 응답을 meta에 등록하는데, [SaveTrial](repo://src/_pages/profile/ui/save-trial.tsx#L18-L34)이 첫 렌더 뒤 한 번 claim을 요청하고 성공하면 `router.replace`로 이동하기 때문이에요.
+
+```tsx
+beforeEach({ msw }) {
+  msw.use(http.post("*/api/guest-analysis/claim", () => HttpResponse.json({ profileId })));
+}
+```
+
+한 story에서만 실패를 재현하려면 그 story의 `beforeEach`에서 같은 경로 handler를 다시 등록해요. `RetryKeepsSelectedSong`은 첫 호출에 `GUEST_RESULT_SAVE_FAILED`와 503을, 다음 호출에 성공 payload를 돌려주고, `play`에서 "다시 저장하기" 버튼을 눌러 이동이 이뤄지는지 확인해요([save-trial.stories.tsx](repo://src/_pages/profile/ui/save-trial.stories.tsx#L37-L51)).
 
 ```mermaid
 flowchart TD
@@ -146,9 +166,15 @@ flowchart TD
 
 story 하나가 서버 응답을 받아 화면을 그리는 경로예요.
 
-가로채기를 담당하는 서비스 워커 스크립트는 `.storybook/public/mockServiceWorker.js`에 있어요. 이 위치는 `.storybook/main.ts`의 `staticDirs: ["./public"]`이 정적 자산으로 서빙하고, `package.json`의 `msw.workerDirectory`가 같은 경로를 가리켜요([.storybook/main.ts](repo://.storybook/main.ts#L10-L10), [package.json](repo://package.json#L142-L146)). 생성·벤더 성격의 파일이니 내용을 옮겨 적거나 고치지 말고 위치와 역할만 기억하세요.
+가로채기를 담당하는 서비스 워커 스크립트는 `.storybook/public/mockServiceWorker.js`에 있어요. 이 위치는 `.storybook/main.ts`의 `staticDirs: ["./public"]`이 정적 자산으로 서빙하고, `package.json`의 `msw.workerDirectory`가 같은 경로를 가리켜요([.storybook/main.ts](repo://.storybook/main.ts#L10-L10), [package.json](repo://package.json#L144-L148)). 생성·벤더 성격의 파일이니 내용을 옮겨 적거나 고치지 말고 위치와 역할만 기억하세요.
 
 story와 MSW fixture가 확인하는 것은 story가 등록한 응답뿐이에요. 서버 데이터, 인증, DB 경로는 이 방식으로 증명되지 않으니, 그 범위가 궁금하면 [storybook fixture가 덮는 브라우저 검사 계층](../testing/verification.md)을 보세요. 쿼리 캐시 키와 재시도 판단은 [브라우저 상태와 API 오류 계약](client-data-flow.md)이 소유해요.
+
+## story에서 라우터 이동 단언하기
+
+Next.js 라우터를 띄우지 않아도 `@storybook/nextjs-vite/navigation.mock`의 `getRouter()`로 이동 호출을 단언할 수 있어요. 이 mock은 `replace`·`push`에 전달된 인자를 기록하므로 `toHaveBeenCalledWith`로 목적지까지 비교해요. `SelectedSong`은 저장 성공 뒤 `replace`가 화면이 계산한 목적지로 호출됐고 `push`는 호출되지 않았는지 확인해요([save-trial.stories.tsx](repo://src/_pages/profile/ui/save-trial.stories.tsx#L23-L28)).
+
+데이터를 prop으로 받는 표는 MSW 없이도 story를 만들 수 있어요. [src/_pages/admin/ui/admin-tables.stories.tsx](repo://src/_pages/admin/ui/admin-tables.stories.tsx#L11-L74)는 회원·체험·믹싱 행 데이터를 파일 안에서 만들어 넘기고, `AdminNavigation`과 `AdminAudienceTabs`를 조합해 실제 관리자 화면 배치를 재현해요. 탭 클릭은 `getRouter().push`가 `/admin?audience=guests`와 `{ scroll: false }`로 호출됐는지로 확인해요. 믹싱 작업 상세는 `Sheet`가 `document.body`에 그리는 dialog라서 `within(document.body)`로 찾아 `MODAL_JOB_FAILED` 문구와 다운로드 링크 부재를 확인해요([admin-tables.stories.tsx](repo://src/_pages/admin/ui/admin-tables.stories.tsx#L126-L155)).
 
 ## Storybook은 개발 전용이어야 해요
 
@@ -167,13 +193,15 @@ Storybook 도구와 MSW(Mock Service Worker) 워커가 제품 빌드에 섞이�
 
 Base UI 컨트롤의 `render` prop에 Next.js `Link`를 넘겨 링크처럼 쓰는 경우에는 `nativeButton={false}`를 함께 붙이세요. 붙이지 않으면 컨트롤이 `button` 시맨틱을 유지해 접근성 트리와 링크 동작이 어긋나요.
 
-이 규칙은 [tests/base-ui-link-button.test.ts](repo://tests/base-ui-link-button.test.ts#L41-L68)가 `app/`과 `src/`의 `.tsx` 파일을 TypeScript AST로 훑어 강제해요. `Button`, `DropdownMenuItem`, `TabsTrigger`가 `render={<Link ... />}`를 쓰는데 `nativeButton={false}`가 없으면 그 파일과 컨트롤 이름을 담아 실패하고, 현재 검증 대상이 10개 이상인지도 확인해요. 직접 돌려보려면 `pnpm run test:base-ui`를 쓰세요([package.json](repo://package.json#L55-L55)).
+`Button`·`DropdownMenuItem`·`TabsTrigger`가 모두 같은 규칙을 따라요. `Link`는 `next/link`에서, `Button`은 `@/shared/ui/button`에서 가져오고, 아래는 [save-trial.tsx](repo://src/_pages/profile/ui/save-trial.tsx#L64-L66)의 실제 사용 예예요.
 
 ```tsx
-<Button nativeButton={false} render={<Link href="/admin/songs" />} size="sm">
+<Button nativeButton={false} render={<Link href="/library?tab=profiles" />} variant="outline">
 ```
 
-[src/_pages/admin/ui/admin-page.tsx](repo://src/_pages/admin/ui/admin-page.tsx#L110-L128)의 실제 사용 예예요.
+메뉴 항목과 탭도 같은 방식이에요. [user-menu.tsx](repo://src/features/authentication/ui/user-menu.tsx#L123-L130)는 `DropdownMenuItem`을, [library-tabs.tsx](repo://src/widgets/library/ui/library-tabs.tsx#L11-L26)는 `TabsTrigger`를 `Link`로 렌더링하면서 둘 다 `nativeButton={false}`를 선언해요.
+
+이 규칙은 [tests/base-ui-link-button.test.ts](repo://tests/base-ui-link-button.test.ts#L41-L68)가 `app/`과 `src/`의 `.tsx` 파일을 TypeScript AST로 훑어 강제해요. 세 컨트롤 중 하나가 `render={<Link ... />}`를 쓰는데 `nativeButton={false}`가 없으면 그 파일과 컨트롤 이름을 담아 실패하고, 검사한 컨트롤이 10개 이상인지도 확인해요. 직접 돌려보려면 `pnpm run test:base-ui`를 쓰세요([package.json](repo://package.json#L55-L55)).
 
 ## 변경 후 돌릴 명령
 
@@ -187,7 +215,7 @@ Base UI 컨트롤의 `render` prop에 Next.js `Link`를 넘겨 링크처럼 쓰�
 
 공용 컴포넌트는 대개 여러 화면에 닿으니, 마지막에는 `pnpm test`로 전체 회귀를 한 번 돌리는 편이 안전해요. `pnpm test`의 단계 목록에는 `pnpm run test:storybook --run`도 들어 있어요([package.json](repo://package.json#L23-L23)). 각 명령이 묶고 있는 파일 목록과 검사 계층별 증명 범위는 [변경 검증 경로](../testing/verification.md)에 정리돼 있어요.
 
-GLSL 셰이더처럼 `play`로 확인하기 어려운 구현 세부는 소스 문자열을 검사하는 별도 테스트가 있어요. [tests/voice-orb-shader.test.ts](repo://tests/voice-orb-shader.test.ts#L16-L45)가 `src/shared/ui/voice-orb/voice-orb.tsx`의 셰이더 함수와 premultiplied alpha 설정을 정규식으로 고정해요. 다만 이 파일은 `package.json`의 어떤 script에도 묶여 있지 않아서 `pnpm test`가 대신 돌려주지 않아요. 셰이더를 고쳤다면 이 테스트도 직접 실행하세요.
+GLSL 셰이더처럼 `play`로 확인하기 어려운 구현 세부는 소스 문자열을 검사하는 별도 테스트가 있어요. [tests/voice-orb-shader.test.ts](repo://tests/voice-orb-shader.test.ts#L16-L68)가 `src/shared/ui/voice-orb/voice-orb.tsx`의 `smoothMax3` 셰이더 함수, `premultipliedAlpha: true` 설정과 premultiplied 출력, 폴백 CSS 그라디언트를 정규식으로 고정해요([voice-orb.tsx](repo://src/shared/ui/voice-orb/voice-orb.tsx#L191-L195)). 다만 이 파일은 `package.json`의 어떤 script에도 묶여 있지 않아서 `pnpm test`가 대신 돌려주지 않아요([package.json](repo://package.json#L9-L76)). 셰이더를 고쳤다면 이 테스트도 직접 실행하세요.
 
 ## 변경 전 체크리스트
 
@@ -196,6 +224,8 @@ GLSL 셰이더처럼 `play`로 확인하기 어려운 구현 세부는 소스 �
 - [ ] 새 공통 variant나 상태를 추가했다면 story에 그 조합이 있어요.
 - [ ] 접근성 위반이 story 테스트를 실패시키므로 `role`·accessible name·`aria-busy` 같은 상태를 story에서 확인했어요.
 - [ ] 서버 응답이 필요하면 `tests/msw/handlers.ts`의 handler를 재사용하고, story 전용 응답만 story 안에서 정의했어요.
+- [ ] 마운트 직후 요청하는 화면이면 handler를 `meta.beforeEach`에 두었어요.
+- [ ] 라우터 이동을 단언하면 `getRouter()`의 `replace`·`push` 인자로 확인했어요.
 - [ ] story가 위 'Storybook은 개발 전용이어야 해요' 절의 조건 표에 있는 금지 import에 해당하지 않아요.
 - [ ] Base UI 컨트롤을 `Link`로 렌더링하면 `nativeButton={false}`를 붙였어요.
 - [ ] Storybook 전용 패키지를 `dependencies`로 올리거나 `build`·`start` script에 storybook을 섞지 않았어요.

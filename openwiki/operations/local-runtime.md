@@ -1,11 +1,8 @@
 ---
 type: how-to
 title: 로컬 실행과 배포
-description: 저장소를 처음 받은 개발자가 의존성을 설치하고 로컬 PostgreSQL과 웹·세 워커를 띄운 다음 Modal 분석 서비스를 배포하고 production으로 실행하는 명령 순서를 정리한 절차 문서예요. 설정 파일 준비와 설정·성능 확인 명령도 함께 다뤄요.
+description: 저장소를 처음 받은 개발자가 의존성을 설치하고 로컬 PostgreSQL과 웹·세 워커를 띄운 다음 Modal 분석 서비스를 배포하고 production으로 실행하는 명령 순서를 정리한 절차 문서예요. migration 적용 범위와 설정·성능 확인 명령도 함께 다뤄요.
 tags: [local-development, deployment, modal, operations, how-to]
-verified:
-  - by: openwiki/0.5.0
-    at: 2026-09-18T12:47:40.181Z
 sources:
   - id: openwiki-source-ea70eb6c045047448e446296
     resource: repo://.gitignore
@@ -13,6 +10,8 @@ sources:
     resource: repo://docker-compose.yml
   - id: openwiki-source-5b54a58d1b51cd490b0e7162
     resource: repo://package.json
+  - id: openwiki-source-220a1f5c18290679a3951e23
+    resource: repo://prisma/migrations/20261029000000_guest_analysis_trial/migration.sql
   - id: openwiki-source-2798a6200ef792b731721034
     resource: repo://prisma/schema.prisma
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
@@ -35,7 +34,10 @@ sources:
     resource: repo://src/entities/song-catalog/api/catalog-snapshot.ts
   - id: openwiki-source-8b825c1fe06f865eec32c966
     resource: repo://tests/process-scripts.test.ts
-generated: { by: "openwiki/0.5.2", at: "2026-09-18T14:16:55.963Z" }
+generated: { by: "openwiki/0.7.2", at: "2026-10-30T13:29:10.337Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-30T10:43:12.272Z
 ---
 
 아래 여섯 단계를 순서대로 실행하면 `http://localhost:3000`에서 웹이 뜨고, 믹싱·보컬 프로필 분석·곡 분석 워커가 같은 프로세스 묶음으로 함께 돌아요([README.md](repo://README.md#L54-L70)). 다만 두 분석 워커와 믹싱 워커는 로컬 라이브러리가 아니라 배포된 Modal 서비스를 호출하니, 작업을 실제로 처리하려면 [분석 서비스를 배포해요](#분석-서비스를-배포해요) 절에서 URL과 서버 전용 키를 준비하세요. 저장소 전체 구조와 FSD(Feature-Sliced Design) 계층은 [시스템 지도와 경계](../architecture/system-map.md)를 보세요.
@@ -45,7 +47,7 @@ generated: { by: "openwiki/0.5.2", at: "2026-09-18T14:16:55.963Z" }
 1. `pnpm install --frozen-lockfile` — lockfile에 고정된 의존성을 설치해요. `package.json`의 `engines`가 Node.js 22.13.0 이상을, `packageManager`가 pnpm 11.9.0을 요구해요([package.json](repo://package.json#L5-L8)).
 2. 로컬 설정 파일 준비 — `.env.local`을 만들고 아래 [설정 파일에 채울 이름](#설정-파일에-채울-이름)의 값을 넣어요. Prisma CLI와 워커가 이 파일을 읽어요.
 3. `docker compose up -d` — 로컬 PostgreSQL 컨테이너를 띄워요.
-4. `pnpm run db:migrate:deploy` — `prisma/migrations/`에 추적된 migration을 적용해 스키마를 만들어요([package.json](repo://package.json#L38-L38)).
+4. `pnpm run db:migrate:deploy` — `prisma/migrations/`에 추적된 migration을 모두 적용해 스키마를 만들어요([package.json](repo://package.json#L38-L38)). 적용 목록에는 `User.isGuest` 컬럼과 `GuestAnalysisTrial` 테이블을 추가하는 `20261029000000_guest_analysis_trial`도 들어 있어요([migration.sql](repo://prisma/migrations/20261029000000_guest_analysis_trial/migration.sql#L1-L17)). 덕분에 로컬 DB를 새로 만들어도 이 명령 하나로 체험 기능의 스키마까지 준비돼요. 그 스키마를 쓰는 체험 흐름은 [비회원 체험 분석 흐름](../workflows/guest-analysis-trial.md)이 소유해요.
 5. `pnpm run db:generate` — Prisma client를 생성해요. 생성 위치가 커밋 대상이 아니므로 새로 받은 작업 디렉터리에서는 이 단계를 건너뛸 수 없어요.
 6. `pnpm dev` — Next.js 개발 서버와 워커 세 개를 함께 시작해요.
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:bdafc10cad88710baf542f7f3ef3d034b622197d1cc50d60d9e8009213ed8c16",
+  "pageVersion": "sha256:81d95d2c1e4ece2ff821c0ea457d430c34dae57f31d370d5967ae3b977012bc7",
   "claims": [
     {
       "id": "claim_2f126148a1304743b587c3563a1380f3",
@@ -11,7 +11,7 @@
           "version": "repo-lines-v1:sha256:99b430974ae364872f4a489ca39815ab589e81e889ee2daddaaa845769b868ac:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmQ5NzNlZmRmMzVhMmJiMDczZGRlMTE5MDc1NGViNjlmZDE4NDY2ZTE0ZjhiZWU3MGJkYzdhMmUyMjQxNTEwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2RjMjAyZTk4M2YyMDE2OGE4ZWU2MmYwOGFlMDQyYTRlMTFhY2RkYTdkYWQwZmZlMDJkNmNmOWFkYjU5OGI2ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWU2ZjIwZTUwY2Q1MDliMGIyNmU3MDlhNmViZmY5ZWYzY2Y4MmQyOTY5YzcxYWEzMTk5OGM2OWMwOGFjMTQ4ZSJ9"
         },
         {
-          "resource": "repo://prisma/schema.prisma#L523-L538",
+          "resource": "repo://prisma/schema.prisma#L543-L558",
           "version": "repo-lines-v1:sha256:ce6006f41cab22083740a376440ec5ce2e77328bc56d66f20f810b406020d4ea:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlZjY2YjhlN2U0MDc0MTA2MDU5NmUwNzRlMWJiMDljZDQ3MWNjZGMxZDIwOWI2MTQ5Yzk2MWRjYmRmOWM3ZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1YzA4YmRkZTVkN2NkZGNmYWNmYzcxNmQ3YjRhNjk0NmUwNDQ3OWIwYTMxZDExYjIyMGZjZDM2Njc2MjI0ZGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYxZWYzOGRjNmZiNmFkZWQ4Zjg0ZGI3YWI2NTZlNjU2YjVmYTA0MmJlZjZmOTNhNGU4OGIwMTU0M2UwMzRhMzEifQ"
         }
       ]
@@ -57,26 +57,34 @@
           "version": "repo-lines-v1:sha256:332778a837e37ab1d381a7a4c54dc46de03ef7a39a7a933922bbfbb9f2ff310e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkZGI4YjYzNmFhZjRmODY2YjVkNmM2NjFiMjI4ZjVmMGUzZjFmNWUzZWRmZTA1ZmRiNGMyZGFjNzRlMDhjYjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzYjA1OTc4OTYyMWM0YjJhYTk2NTk3ZGJkNTQ0MWY1MjEwNmU0OWY1YmZiN2FiZjVlNzdjODlhNDQ0M2VjMDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYwODdiN2E5MmQ4NTU0MDg5NjAzZjk2Y2YyOWQ4NTFmNjY1MDNmOTE1OTI4ZmFlMTg0YTk5MjM3NTFiMDU5MjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5M2NmNmQxMDg3Mzc3MjM4Yjk3MGU1ZjhlMWJjZmY4YmFiMTE0N2M0Y2MxYTQzMjA2ZWRiOGRmOTlmNjllM2UifQ"
         },
         {
-          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L122-L133",
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L125-L136",
           "version": "repo-lines-v1:sha256:1fa82cdbf0301a49b5937482f78fae3d4628722be87b781c510b4d0720cf5aca:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlMmUxZTRmNGI2MGUyZTUwM2YxNzg3NTVmMzMzMjFjNmYwM2FhNTRiNzU0ZTUyZmU4M2QxZDU1M2RlZjVlZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFlYWZjMWYyNWE3ZmI1YjJmYzc5YTVkNGM4ZjFkZjJiOTIxMjNjZDQ1YjAzNzM0NzA3N2Y2NWYzNDdlYzAwZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ0Mjk4NzlmNjFkOTgzOGI5ODg2OTc3ZDk1ZmRkYmMyYTI0MDdiMTU0NzI1YmZkNmU3NzVjOWQ3MWY1MjBjMDkifQ"
         },
         {
-          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L217-L228",
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L222-L233",
           "version": "repo-lines-v1:sha256:bc1a1cc5ea6a772836fcce24cd693d70a962fd922f4bb5cba01c0e5d66dbc616:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlMmUxZTRmNGI2MGUyZTUwM2YxNzg3NTVmMzMzMjFjNmYwM2FhNTRiNzU0ZTUyZmU4M2QxZDU1M2RlZjVlZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEzNDNmZDdkNDA5NDAzMTYxODc3NDc0OGVkYzNlYTFjYmYwM2E1OGYzMTgwZjNjMWQxYjFkNzY3Y2QyMzRmYjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ0ODMyNDA3NTdmY2Y4NDU4MmY3Mjk2OTI2ZmE4MTIzMmVjNGQ2OWUyNzk2NDFhMDg4ZDhmZjBkMjY4NGM3MmYifQ"
         }
       ]
     },
     {
       "id": "claim_2a84c6033e814f16841457fd907c1a7e",
-      "statement": "네 개의 작업 알림은 `SUCCEEDED`나 `FAILED`를 쓰는 같은 트랜잭션 안에서 만들어져요. 그래서 알림만 남고 상태가 그대로이거나 상태만 바뀌고 알림이 빠진 커밋이 생길 수 없어요.",
+      "statement": "네 개의 작업 알림은 `SUCCEEDED`나 `FAILED`를 쓰는 같은 트랜잭션 안에서 만들어져요. 그래서 알림을 남기는 확정에서는 알림만 남고 상태가 그대로이거나 상태만 바뀌고 알림이 빠진 커밋이 생기지 않아요.",
       "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L251-L289",
+          "version": "repo-lines-v1:sha256:c07858cf3b8ada174c987a6a52cf8a846cbbcc2b10a6c11d20219dfba0cfe3f1:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0ZmJjYzRiNDI5MTg3NzlmMmVmOGU4NGVlZjNlZWFmYzI2YmE5ZjU4MjhiYTA2NzgzNzM0NTIyZTJhMDM3NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2ZTUxZTBkMDA4ZjE2YzdhMmI3MDAyZThiYzQ2NTQ4N2FlMmY1YTMzYjA4ZjczZjUzNWQwMGJmMjhiODdmZTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhlOWNlYjRkMjI5YWE1OTNiZWQzOTFjZWFmNmU3N2RmZGM2MmRiYzIxYTA1NTRhZTk5NTM3NTU5YjRhMzY2NDkifQ"
+        },
         {
           "resource": "repo://src/_app/background-jobs/mixing/worker.ts#L509-L535",
           "version": "repo-lines-v1:sha256:f2e14804bc9d5a3281f8774b616fa61e2bfdfbac94f427500a341b1fde473bd1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhMDZlOTlmMGZhNTFlZDRjZjk2OTA0ZTE5NGRjNjdkM2VmZTFlZTM0MDg1ZjBkZGQ1ZTM5NDEyYmVjMGU5MjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhMzdlM2MwOTQxZDE1NzdjMDM5OGUzYjY3ODRlZjNiM2YwMTI4OGJjZGVjOWE0YmJhMWFiZmFhNzQwYWI2ZjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwZDY3M2Q3MjFmODljMTY3NjkzZWMwNzhmYTNmZGFmMWMwNTI5ZjZjNzYyOWE0OTYzZjk2OTEwZDM0ZWNhZWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgwMjUzYzRlNWJjZmZmNmI4MDBlN2JhYTkxZGIzNDIxZDc0YTczYzExOTIwZGE5MjZmZTEyYjFlYjFmZjViNzEifQ"
         },
         {
-          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L101-L136",
-          "version": "repo-lines-v1:sha256:d5516cec190051fa7e0dff6a996191ac1cfed9a9413c3842611e84885e47fe98:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhZGE3Njc3ODlmNzAwYjQ1NzQ3MWNiYTlhOGU3YzhiNjY5YzgxM2RlOWYzNzYyOGM5MGE0ODliODhhYjcwOTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2OGY2MTlkNjBiZDI3YmM5MzQ3YjFkZWMxOTBkYjAxYjRiZjNiNGRlZTNkODIxMjQ1YTg4NTU1NDk0MWMyYmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE2OWM5NDA0ZWU4MjdmYjc4ZjM2ZTUzYzVkMmQ3NzBmNWM0MTA2N2YwNDllNDE5YmZjNWRiZmVhODk0NjA1ODgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM1YjQ4ZGRkOGQxMmVjZDNiOTkwYzRkMzE5YTEwMzIwNzlmMWY1MzdjYmMxMmViZmVhNDQ5ZjQ1NzEzNjUwZmMifQ"
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L101-L137",
+          "version": "repo-lines-v1:sha256:a5d7cf9590adecfb4b56ba6c1536bb8ed41155c2a564180cf9953ead8e54eb41:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjQ3MmRlNzk2NDNhOTQyMTQ1ZjMzNjg0ZmYxNGFhY2QyYWVjOWNmY2YyMmFkYzYwNjgwN2IwYTRkNzk4NzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgwOTQ4Mzk5ZmViNzhlMmYzZDM1ZGE1MDlkOGY5MmVkMGFjYjQxZjc5NGQyM2MzNzY5N2I1NTJkNjljZTQzNWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIyZTEwMzdhZTgzYzk0ZGJlZWYzOTM0OGQzNjFiZTA1NDkzZTU1MzM0NDgyNTk4MzdmMDhhM2NmNjg2YWI1ZDkifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L203-L234",
+          "version": "repo-lines-v1:sha256:55e2b31933c2ae566e5c6f1cc5106f01c397d41b063a034a10e6edadf0475d17:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0ZmJjYzRiNDI5MTg3NzlmMmVmOGU4NGVlZjNlZWFmYzI2YmE5ZjU4MjhiYTA2NzgzNzM0NTIyZTJhMDM3NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2ZTUxZTBkMDA4ZjE2YzdhMmI3MDAyZThiYzQ2NTQ4N2FlMmY1YTMzYjA4ZjczZjUzNWQwMGJmMjhiODdmZTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVhYTA4M2U5YmVjMzdiZDhjODcwODEyYjkyYTM5NjdlZDQ3OGQwYTIwOWVjZWEwYWQ2ZmI1MDE0MTU1YWM5OTEifQ"
         }
       ]
     },
@@ -113,7 +121,7 @@
       "statement": "티켓 지급 알림만 작업 확정 트랜잭션 밖에서 만들어져요. `adjustUserTickets`는 `applyTicketChange`로 원장 행을 확정한 뒤 `amount > 0`일 때만 `TICKET_CREDIT` 알림을 만들고, `dedupeKey`가 `ticket-ledger:{ledger.id}`, `href`가 `/account`예요. 차감 조정(`amount < 0`)은 알림을 만들지 않아요.",
       "evidence": [
         {
-          "resource": "repo://src/features/manage-tickets/api/adjust-user-tickets.ts#L21-L42",
+          "resource": "repo://src/features/manage-tickets/api/adjust-user-tickets.ts#L24-L45",
           "version": "repo-lines-v1:sha256:99caff3f82340d2ed1a8bd9d460cf8c8bb399172c39581111acfea82ec9059e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjZjQ5ZTgyZjk2ZjU3YTU3ZDgzZjFkOWY1NDcxYjVmYWYzOGZjZGFjM2NjNDJkNjM1YjQwODgxZjI4OTdiOTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwM2M2NGEyOTMyNzdlMjA3YzFmOTg1MmNmMDYzYmU4YmE3YWY5ZjZkNWYzNGIyMjBjNzAyYWZjZmQyZmFkZWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRmMmUyOTFjMTUwYmRlMTQ0ZDBiZTk2MDk1YjczODE0NmFlNWQwYzkzMDdjOTE1ZTVlN2YxMzc3YTk3ZjEwM2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
         },
         {
@@ -131,7 +139,7 @@
           "version": "repo-lines-v1:sha256:d4ebca97890dc72706b5ec865d99a758739161086d5fc2830d9bafb0988de34e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwZWQ1YWFmYTVjMTFkNGNlOThmMWZkZTk1NWI4MGRhYjVjZDljMmE2NzI2MmQzY2U0ZTQ5YWQ5Mzc4MzBkODgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQxYzYzMDgwMzNmMTkwYzMxZTI3ZTkzOGJhN2MxYzU1MzBhYTJlZTNhODFjOWU2NTdiMTZjNjY5YTA1M2EzMWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEyYzM5MzM2MmYyOGY2NjUzNTExYjkyYmI3ZmE5OWFjNjFiOWEwYjk4Y2Q0MjRkMjRlZjYxMmIwOTI2YmFjOWMifQ"
         },
         {
-          "resource": "repo://src/features/manage-tickets/api/adjust-user-tickets.ts#L21-L42",
+          "resource": "repo://src/features/manage-tickets/api/adjust-user-tickets.ts#L24-L45",
           "version": "repo-lines-v1:sha256:99caff3f82340d2ed1a8bd9d460cf8c8bb399172c39581111acfea82ec9059e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjZjQ5ZTgyZjk2ZjU3YTU3ZDgzZjFkOWY1NDcxYjVmYWYzOGZjZGFjM2NjNDJkNjM1YjQwODgxZjI4OTdiOTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwM2M2NGEyOTMyNzdlMjA3YzFmOTg1MmNmMDYzYmU4YmE3YWY5ZjZkNWYzNGIyMjBjNzAyYWZjZmQyZmFkZWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRmMmUyOTFjMTUwYmRlMTQ0ZDBiZTk2MDk1YjczODE0NmFlNWQwYzkzMDdjOTE1ZTVlN2YxMzc3YTk3ZjEwM2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
         },
         {
@@ -252,11 +260,15 @@
     },
     {
       "id": "claim_e2c38d55d276499382562f3a627710ca",
-      "statement": "두 변경 범위 테스트 파일이 알림 계약을 지켜요. `tests/notification-service.integration.ts`는 중복 삽입·페이지 잘림·`unreadOnly` 필터·`read-all` 응답·소유권 범위·`href` 검증을, `tests/notification-routes.integration.ts`는 세션 사용자 목록 범위·404·401을 확인해요. 두 파일 모두 `DATABASE_URL`이 없으면 스스로 건너뛰고, 현재 `package.json`의 어떤 스크립트도 이 두 파일을 직접 지정하지 않아요.",
+      "statement": "두 변경 범위 테스트 파일이 알림 계약을 지켜요. `tests/notification-service.integration.ts`는 중복 삽입·페이지 잘림·`unreadOnly` 필터·`read-all` 응답·소유권 범위·`href` 검증을, `tests/notification-routes.integration.ts`는 세션 사용자 목록 범위·404·401을 확인해요. 두 파일 모두 `DATABASE_URL`이 없으면 스스로 건너뛰고, 현재 `package.json`의 `scripts` 블록(L9-L76) 전체에 이 두 파일을 직접 지정하는 항목이 없어서 `pnpm test` 사슬로도 실행되지 않아요.",
       "evidence": [
         {
           "resource": "repo://package.json#L23-L23",
-          "version": "repo-lines-v1:sha256:efa74bba998a388fc9e8f38633ae8cbf9238b3e5ae3455221884364b19e7ed72:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWZhNzRiYmE5OThhMzg4ZmM5ZThmMzg2MzNhZThjYmY5MjM4YjNlNWFlMzQ1NTIyMTg4NDM2NGIxOWU3ZWQ3MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWZhNzRiYmE5OThhMzg4ZmM5ZThmMzg2MzNhZThjYmY5MjM4YjNlNWFlMzQ1NTIyMTg4NDM2NGIxOWU3ZWQ3MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjAzYTNjZTVlM2YwN2M3ZTg1NDZkNDYxMTY3ZTEwYjk2ZDVhYzUwOWQ1ZDdkNmZjZTc4OWJjNDI1MWI4ZmMxNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWM1MDM1MmQ5YjhmNGY3OGE2OTI3NzgxOWU0NDIzMTcwNTcyNTE0YTUzNmIzZjI0YTY3OGJkYTk0ODM5MDZmNCJ9"
+          "version": "repo-lines-v1:sha256:a0030c66741224958a640b971c4f738e9eeb55534d1a6e82d0b2706e8db66a16:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTAwMzBjNjY3NDEyMjQ5NThhNjQwYjk3MWM0ZjczOGU5ZWViNTU1MzRkMWE2ZTgyZDBiMjcwNmU4ZGI2NmExNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTAwMzBjNjY3NDEyMjQ5NThhNjQwYjk3MWM0ZjczOGU5ZWViNTU1MzRkMWE2ZTgyZDBiMjcwNmU4ZGI2NmExNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjAzYTNjZTVlM2YwN2M3ZTg1NDZkNDYxMTY3ZTEwYjk2ZDVhYzUwOWQ1ZDdkNmZjZTc4OWJjNDI1MWI4ZmMxNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWM1MDM1MmQ5YjhmNGY3OGE2OTI3NzgxOWU0NDIzMTcwNTcyNTE0YTUzNmIzZjI0YTY3OGJkYTk0ODM5MDZmNCJ9"
+        },
+        {
+          "resource": "repo://package.json#L9-L76",
+          "version": "repo-lines-v1:sha256:c861917c86df54704c7fcd161375c52e31172874a21349e55609db1e07555e8d:eyJzZWxlY3RlZExpbmVDb3VudCI6NjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0ODMzZDU5NDljMDNhNDBjYTk1MjQ5MTYxMGE2NjU5NjQ0YjNhYTQ2NjM2MmY3OTkwMjBkYmYxOTgxNTQ3ZGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyNzAxMTI4NzM1MDNhMDc0OGU1ZWY0MGViOWZlZTUyYTZjNmRiNTdhNzMzMTI1ZjQ5NDhkMThmNGNjMTdiNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZjYzU4YzQwMmIzMDI3MDY5MWJjNDJmZjlhN2I1OTNhZTFlMTNjMzIzNWMxYTYyMDcxOTZjZTgzNjBjZWY5MTAifQ"
         },
         {
           "resource": "repo://tests/notification-routes.integration.ts#L7-L118",
@@ -267,10 +279,54 @@
           "version": "repo-lines-v1:sha256:4b1249e61739e5cd66af2abfbcaf4e9b6b0a309d2806f0dc176f837e5d125ff3:eyJzZWxlY3RlZExpbmVDb3VudCI6ODEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3NmI5OTcwYjUyZTZiYTJkNmRjZTIxNTY5YjNlMTg2YzViZTE5ZWNiMzY5YzJmNjQzYmYwNWU0N2VlNmYzYjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0ZGI0NWUwYmUzMTgwNTYwY2UyNDY2MmNlNTM2ZWJmMmRiYmJkZTRjODgyOTY3YWRhNTY0MTFlNzgzZGE2ZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
         }
       ]
+    },
+    {
+      "id": "claim_d533d22c89de41dea850936677b5be35",
+      "statement": "체험 trial로 접수된 보컬 분석은 성공·실패 확정 모두에서 사용자 알림을 남기지 않아요. `markSucceeded`와 `releaseFailure`는 종료 상태를 쓰는 같은 트랜잭션 안에서 `markGuestAnalysisTerminal`을 먼저 호출하고, `userId`·`jobId`가 그 작업과 같고 `claimedAt`이 비어 있는 trial 행을 하나라도 갱신하면 `createNotification` 전에 반환해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L122-L123",
+          "version": "repo-lines-v1:sha256:ec36cb1d4fa7d2c41951fcdd43e576cf0d49141d8e0008788cbb0a696a6520be:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2EwMTQ4YWU2MGUyN2ViNWVkNTNiYWI2OGZiNmNiNjUzZjY5Y2QyYWY4ZTZjNzkxYzAyMmVmODM3MjFjYTc5MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMThkYTMwODk0N2U0ZDllZDI0OGI2ZDI4ZDZkNmViNTAwMzA1ZTA1YTM2OTExYTkwYzZkNzBkMTNlNzMxZTJiZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzhmMDNhZDlhNTJjYmQ2MGFmZTZkZTczYmI4MDViMDUxOTBlZWI3MTMyMTA4MzliYjYzNjNhMTBjODc5M2M1NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmY5MGU3ZTUwMzhlZDcxZTdjZjYxMThkN2E2NjlhNzRkMTA1YjM3YmRlMzQ4YTk2YmM2NjQ2MTJkYTcyY2UxOCJ9"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L220-L221",
+          "version": "repo-lines-v1:sha256:0109647f52c25fa0301c2d0c5f431d01f205a2012e0e4326ad21572745b364da:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2EyMjNjZDY4NDIxM2UyYzQ0NmFmMzZjMjU0YWIwNmJhZDg5N2NhY2Q0OWY2NmMxYTQxMDk1N2JmNDBkZGJhNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMThkYTMwODk0N2U0ZDllZDI0OGI2ZDI4ZDZkNmViNTAwMzA1ZTA1YTM2OTExYTkwYzZkNzBkMTNlNzMxZTJiZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTM0M2ZkN2Q0MDk0MDMxNjE4Nzc0NzQ4ZWRjM2VhMWNiZjAzYTU4ZjMxODBmM2MxZDFiMWQ3NjdjZDIzNGZiNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWZiNjMyMDdmYzgyMzE1NjRkOGNjNjFmMGU4ZDBiNjdkOWRhOGIxYjIyNDAyOTVlMjBmZjFiYWNmNjJjZTdhZiJ9"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/api/lifecycle.ts#L43-L55",
+          "version": "repo-lines-v1:sha256:112e6b00535fb482321d2f6f11ecdb6eb095bf2bfd0a1d170376c55d9ccaaa25:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmYTA4Y2I5Y2NhNDAxZmUxZmQ4Zjc1YmQ2MWYyNTk3YWY4NmU4Mzg2ZjAxZTIzNjAwMDgzMTlmZjM1ZGZiNjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFkNzk1MzdkMjkzMmQ3M2NmNjA3MDFhZDcxOWZmNzRkM2RkOGI2NTFmMGNiYjQyZTU3NTA1N2Q5M2M5MGIwYmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2NGJhMTg0NjdmODQxODA1YjEzNjE0ZjAzNTdlMmZhOTQ4MWVhZTdhZmVhNzcwOGFhNTE5NDcyMTAwZDg3N2IifQ"
+        },
+        {
+          "resource": "repo://tests/guest-analysis.integration.ts#L253-L258",
+          "version": "repo-lines-v1:sha256:9cc5bc32e99ee97637b24c7f7ee95cda8d4263f13c63712662dc0dd7793cadf2:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzU0OGEwNTYwZjkzODEzZjI1ZGE3OWFhYWI5MmY3MGIwNGE5NjYwN2I0MjgwMDIxMTI4NDcwN2E4YTU2MTNiZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTg2ZTQzNDdjZjAxMjkwZDlkZDEzMmJjNjczMDIxNWQ0OThlOWI1MzhlOWYzMTNlNmIyY2E5ZjQwOWJmYmVhMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzUyMDNhNTdlMWY0OWZiNWFiYjc5YTFhOTVhNGRlMjY3ZDQ4YzIyMWQ5ODM1ZmY4MWI2N2UwM2JkMzY5ZmE0ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzkxYjMyNDYzNWYwMDhiYzRiNWEyMzA5ZjUwZDVkZmFhNDJkOTMxYTQwZGMyODNmMDNlMGMwYWRhNWJiMDExNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1da46984e74146459bace64998015d0b",
+      "statement": "새 알림 종류를 추가하려면 `prisma/schema.prisma`의 `NotificationType` enum과 API 계약의 `NOTIFICATION_TYPES` 목록, 화면의 아이콘·배지 매핑을 함께 갱신해야 해요. `Notification.dedupeKey`는 전역 unique이므로 새 사건에는 그 사건을 유일하게 만드는 키 문자열만 정하면 돼요.",
+      "evidence": [
+        {
+          "resource": "repo://prisma/schema.prisma#L122-L128",
+          "version": "repo-lines-v1:sha256:99b430974ae364872f4a489ca39815ab589e81e889ee2daddaaa845769b868ac:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmQ5NzNlZmRmMzVhMmJiMDczZGRlMTE5MDc1NGViNjlmZDE4NDY2ZTE0ZjhiZWU3MGJkYzdhMmUyMjQxNTEwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2RjMjAyZTk4M2YyMDE2OGE4ZWU2MmYwOGFlMDQyYTRlMTFhY2RkYTdkYWQwZmZlMDJkNmNmOWFkYjU5OGI2ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWU2ZjIwZTUwY2Q1MDliMGIyNmU3MDlhNmViZmY5ZWYzY2Y4MmQyOTY5YzcxYWEzMTk5OGM2OWMwOGFjMTQ4ZSJ9"
+        },
+        {
+          "resource": "repo://prisma/schema.prisma#L543-L558",
+          "version": "repo-lines-v1:sha256:ce6006f41cab22083740a376440ec5ce2e77328bc56d66f20f810b406020d4ea:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlZjY2YjhlN2U0MDc0MTA2MDU5NmUwNzRlMWJiMDljZDQ3MWNjZGMxZDIwOWI2MTQ5Yzk2MWRjYmRmOWM3ZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1YzA4YmRkZTVkN2NkZGNmYWNmYzcxNmQ3YjRhNjk0NmUwNDQ3OWIwYTMxZDExYjIyMGZjZDM2Njc2MjI0ZGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYxZWYzOGRjNmZiNmFkZWQ4Zjg0ZGI3YWI2NTZlNjU2YjVmYTA0MmJlZjZmOTNhNGU4OGIwMTU0M2UwMzRhMzEifQ"
+        },
+        {
+          "resource": "repo://src/entities/notification/model/contract.ts#L4-L12",
+          "version": "repo-lines-v1:sha256:5dbb62a9e8be90a33646dbe004dca7f4c34c7219cb894785de5a856b6c837c28:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjUwMGY2NjA2NjY3M2VhOGNiN2U3NjA4ZjdiYjcyNzM3ZDc2NDJkNThkZGM1MDE0NmUzNDUyOGU1ZDcwMTQ4YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGNlODAwN2VlNjc4MjViOTZmZWU1MmFkOWEzMGQ5OWUyOWJhM2U2NjEzNzE3NzJkOTlkNzY4MGExYTc4ZWE4MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGM2ZTY0NGYzZTM3ZTc3YWEwMjRkY2VkZDUyMzMxNWI4NjM0N2FjZWNlYWQ0N2RiY2RjMmU0ZWU4MGZhZWNlZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODM5YzIyYWRlY2MxNzBlNmIxMzk0NGQ5MmMzNzFiODU0MjdlYmM1YTNmNjNhODc1M2FlZWRmMjFkYjc0NTAxNyJ9"
+        },
+        {
+          "resource": "repo://src/entities/notification/ui/notification-item-content.tsx#L4-L17",
+          "version": "repo-lines-v1:sha256:60b96d01e13a51b8ffd897aed37c0007e4023fbf8c7ce991ed6c635d60cd4311:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZDljMjUxNzQ3MmVkMmVjYjY0MjFjYmNjZWQ5YjUxZjNiMGJhNWMyMTFmMWNmYWY2ZGJlOGQ3ODMzZjQ1MDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE3NGVlOGE4ZDFhYTg0NTM5MWJjNjc5ZWI3MGNlN2Y0NmEzY2Q2ZmIyZDE2ZmNjYTY3ZmExNzhmNGY4YzFlMGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg0ZTVjMmQxM2Y2YWYzOTVhMjJhNDI3ZWIzNDk1ODk1MWI0MzQxZTE2NTI5YzA3MGNjNzg1YTE4YmZlMzNlZDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzNzE5YzVhNmJiNGRiODg4OWExMDhhOWNlYTIwYmE3ZjMyOWY1ZjhlZjYxNTliMTMyNTliZDhhM2NlMmFiMzEifQ"
+        }
+      ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.5.2",
-    "at": "2026-09-18T16:47:52.081Z"
+    "by": "openwiki/0.7.2",
+    "at": "2026-11-01T16:00:39.866Z"
   }
 }

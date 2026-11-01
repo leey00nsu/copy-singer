@@ -1,7 +1,7 @@
 ---
 type: explanation
 title: 코드베이스 시작 지도
-description: 저장소를 처음 여는 개발자가 바꾸려는 대상에 따라 어떤 문서를 어떤 순서로 읽을지 고르는 라우터 문서예요. 목적별 표가 저장소 구조·Knowledge 생성 자동화·로컬 실행·변경 검증·도메인 흐름 문서로 이어주고, 웹과 세 워커가 함께 도는 구조, 요청 경로와 작업 경로의 분리, Browser E2E가 로컬 검증이라는 점을 안내해요.
+description: 저장소를 처음 여는 개발자가 바꾸려는 대상에 따라 어떤 문서를 어떤 순서로 읽을지 고르는 라우터 문서예요. 목적별 표가 저장소 구조·로컬 실행·요청 경로·보컬 분석·비회원 체험·추천·믹싱·운영·검증 문서로 이어주고, `pnpm test` 사슬 밖에 있는 `pnpm run test:openwiki`·`pnpm run test:onboarding` 진입점, 웹과 세 워커가 함께 도는 구조, 요청 경로와 작업 경로의 분리, Browser E2E가 로컬 검증이라는 점을 안내해요.
 tags: [quickstart, navigation, onboarding, explanation]
 sources:
   - id: openwiki-source-3dc25b286bcb30bfd66698fa
@@ -12,6 +12,8 @@ sources:
     resource: repo://docs/README.md
   - id: openwiki-source-5b54a58d1b51cd490b0e7162
     resource: repo://package.json
+  - id: openwiki-source-220a1f5c18290679a3951e23
+    resource: repo://prisma/migrations/20261029000000_guest_analysis_trial/migration.sql
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
   - id: openwiki-source-904d8953f6839fec7c58c800
@@ -22,30 +24,35 @@ sources:
     resource: repo://scripts/vocal-profile-analysis-worker.ts
   - id: openwiki-source-79a7413d1517d8cc7fef6fee
     resource: repo://src/_app/api-routes/admission.ts
+  - id: openwiki-source-d2f7c12bb94f4e7eae6c4e75
+    resource: repo://src/_app/api-routes/guest-analysis/guest-analysis-route.ts
+  - id: openwiki-source-4c121aeea18cb3bf3d1c99d1
+    resource: repo://src/entities/guest-analysis/model/contract.ts
   - id: openwiki-source-806f57d316f1c56c707b410a
     resource: repo://tests/e2e/TESTING.md
   - id: openwiki-source-8b825c1fe06f865eec32c966
     resource: repo://tests/process-scripts.test.ts
-generated: { by: "openwiki/0.5.2", at: "2026-09-25T04:42:33.305Z" }
+generated: { by: "openwiki/0.7.2", at: "2026-11-01T16:00:39.866Z" }
 verified:
-  - by: openwiki/0.5.2
-    at: 2026-09-25T04:42:33.305Z
+  - by: openwiki/0.7.2
+    at: 2026-11-01T16:00:39.866Z
 ---
 
 바꾸려는 대상이 이미 정해져 있다면 아래 표에서 그 줄만 따라가세요. 목표가 아직 없다면 저장소 전체 구조를 다루는 [시스템 지도와 경계](architecture/system-map.md)부터 읽고, 나머지 줄은 필요해질 때 다시 찾아오면 돼요.
 
 ## 바꾸려는 목표별로 읽을 문서
 
-표의 왼쪽 열은 바꾸려는 대상, 오른쪽 열은 그 대상을 다루는 문서 순서예요.
+표의 왼쪽 열은 바꾸려는 대상, 오른쪽 열은 그 대상을 다루는 문서 순서예요. 구조와 실행 방법을 먼저 확인한 뒤, 내 변경이 닿는 요청 경로와 도메인 흐름으로 내려가는 순서로 배치했어요.
 
 | 바꾸려는 목표 | 읽을 문서 순서 |
 | --- | --- |
-| 로컬 실행과 배포 | [로컬 실행과 배포](operations/local-runtime.md) → [환경 변수와 런타임 한도](operations/configuration.md) |
 | 저장소 구조 파악, 새 코드를 둘 자리 | [시스템 지도와 경계](architecture/system-map.md) → [데이터 모델과 수명 주기 상태](architecture/data-model.md) |
-| 공용 UI 컴포넌트·Storybook story 추가와 수정 | [공용 UI와 Storybook 경계](architecture/shared-ui-and-storybook.md) → [시스템 지도와 경계](architecture/system-map.md) |
+| 로컬 실행과 배포 | [로컬 실행과 배포](operations/local-runtime.md) → [환경 변수와 런타임 한도](operations/configuration.md) |
 | 브라우저 요청 경로와 접근 제어 | [HTTP API 표면과 요청 접수 규칙](architecture/http-api-surface.md) → [인증과 소유권 경계](integrations/auth-and-ownership.md) |
 | 화면 데이터 로딩과 오류 재시도 | [브라우저 상태와 API 오류 계약](architecture/client-data-flow.md) → [HTTP API 표면과 요청 접수 규칙](architecture/http-api-surface.md) |
+| 공용 UI 컴포넌트·Storybook story 추가와 수정 | [공용 UI와 Storybook 경계](architecture/shared-ui-and-storybook.md) → [시스템 지도와 경계](architecture/system-map.md) |
 | 업로드한 목소리 분석 흐름 | [보컬 프로필 분석 흐름](workflows/vocal-profile-analysis.md) → [Modal 서비스와 외부 계약](integrations/modal-services.md) |
+| 비회원 체험 분석과 1회 무료 체험·결과 저장 | [비회원 체험 분석 흐름](workflows/guest-analysis-trial.md) → [인증과 소유권 경계](integrations/auth-and-ownership.md) → [데이터 모델과 수명 주기 상태](architecture/data-model.md) |
 | 추천 점수와 추천 키 계산 | [추천과 키 적합도 계산](workflows/recommendation-and-key-fit.md) |
 | AI 믹싱 접수와 결과 저장 | [AI 믹싱 작업 흐름](workflows/ai-mixing.md) → [티켓 원장과 멱등성](concepts/ticket-ledger.md) |
 | 곡 카탈로그 등록과 공개 | [곡 카탈로그 등록과 공개](workflows/song-catalog-lifecycle.md) |
@@ -54,9 +61,11 @@ verified:
 | 작업 큐 실패와 운영 복구 | [Job 큐와 lease 복구 계약](operations/job-processing.md) → [복구 스크립트 운영 절차](operations/recovery-runbook.md) |
 | 오디오 파일 저장과 정리 | [미디어 저장과 정리 의도](operations/media-storage.md) |
 | Knowledge 문서 생성·갱신 자동화 | [Knowledge 생성과 CI 자동화](operations/knowledge-automation.md) → [시스템 지도와 경계](architecture/system-map.md) |
+| Knowledge 디스패처 판정 변경과 검사(`pnpm run test:openwiki`) | [Knowledge 생성과 CI 자동화](operations/knowledge-automation.md) → [변경 검증 경로](testing/verification.md) |
+| 신규 사용자 온보딩 완료 처리와 검사(`pnpm run test:onboarding`) | [변경 검증 경로](testing/verification.md) → [인증과 소유권 경계](integrations/auth-and-ownership.md) |
 | 변경 검증 명령과 대응 테스트 | [변경 검증 경로](testing/verification.md) → [환경 변수와 런타임 한도](operations/configuration.md) |
 
-표의 첫 번째 문서가 그 목표의 입구예요. 화살표 뒤 문서는 앞 문서가 설명한 상태나 용어를 전제로 하니, 처음에는 순서대로 읽으세요.
+표의 첫 번째 문서가 그 목표의 입구예요. 화살표 뒤 문서는 앞 문서가 설명한 상태나 용어를 전제로 하니, 처음에는 순서대로 읽으세요. Knowledge 디스패처와 신규 사용자 온보딩은 검사 명령이 `pnpm test` 사슬 밖에 있어서 표에 따로 넣었어요. 두 명령의 실행 조건은 아래 검증 절에서 확인하세요.
 
 두 가지는 자주 헷갈리니 입구를 기억해 두세요. 새 코드를 어느 디렉터리에 둘지 정하는 일은 [시스템 지도와 경계](architecture/system-map.md)가, 여러 화면이 함께 쓰는 UI 컴포넌트와 story를 어디에 두고 무엇으로 검증할지는 [공용 UI와 Storybook 경계](architecture/shared-ui-and-storybook.md)가 답해요.
 
@@ -81,11 +90,19 @@ verified:
 
 브라우저는 자기 서버의 경로만 호출해요. 짧은 읽기·쓰기는 Next.js 서버가 그 자리에서 처리하고, 오래 걸리는 분석·믹싱은 PostgreSQL에 작업 행으로 접수한 뒤 독립 워커가 이어받아 Modal을 호출해요([docs/prd/system-architecture.md](repo://docs/prd/system-architecture.md#L29-L45)). 그래서 자격 증명이 필요한 외부 API를 브라우저에 노출할 필요가 없어요.
 
-`app/api/**/route.ts`로 들어오는 요청은 공통 래퍼를 먼저 지나요. [admission.ts](repo://src/_app/api-routes/admission.ts#L11-L33)의 `withApiAdmission`이 IP 버킷, 세션 확인, 사용자 그룹별 요청 제한, multipart 업로드 슬롯을 handler 호출 전에 적용해요. 판정 기준과 예외는 [HTTP API 표면과 요청 접수 규칙](architecture/http-api-surface.md)과 [인증과 소유권 경계](integrations/auth-and-ownership.md)에서 확인하세요.
+`app/api/**/route.ts`로 들어오는 요청은 공통 래퍼를 먼저 지나요. [admission.ts](repo://src/_app/api-routes/admission.ts#L11-L39)의 `withApiAdmission`이 IP 버킷, 세션 확인, 사용자 그룹별 요청 제한, multipart 업로드 슬롯을 handler 호출 전에 적용해요. 판정 기준과 예외는 [HTTP API 표면과 요청 접수 규칙](architecture/http-api-surface.md)과 [인증과 소유권 경계](integrations/auth-and-ownership.md)에서 확인하세요.
+
+세션이 없는 요청이 모두 통과하는 건 아니에요. 래퍼에 `allowGuest`를 넘긴 경로만 체험 쿠키 증명으로 actor를 만들고, `allowPublic`을 넘긴 경로만 actor 없이 통과하며, 둘 다 없으면 401로 끊겨요([admission.ts](repo://src/_app/api-routes/admission.ts#L20-L22)). 어느 경로가 그 옵션을 쓰는지는 [HTTP API 표면과 요청 접수 규칙](architecture/http-api-surface.md)이 정리해요.
+
+비회원 체험은 별도 신원으로 증명해요. 체험 시작 경로인 `POST /api/guest-analysis`는 이 래퍼를 쓰지 않고 같은 출처 검사와 자체 버킷으로 처리하며([guest-analysis-route.ts](repo://src/_app/api-routes/guest-analysis/guest-analysis-route.ts#L19-L30)), 쿠키 이름 `copy-singer.guest-trial`과 365일 쿠키 수명, 24시간 결과 보관 기간은 [contract.ts](repo://src/entities/guest-analysis/model/contract.ts#L1-L3)가 정해요. 서버는 쿠키 원문 대신 토큰의 SHA-256 해시를 unique로 저장하므로, `GuestAnalysisTrial` 한 행이 체험 하나의 소유자·작업·소비·만료 시각을 모두 들고 있어요([migration.sql](repo://prisma/migrations/20261029000000_guest_analysis_trial/migration.sql#L4-L29)). 상태를 계산하는 규칙과 저장·만료 정리는 [비회원 체험 분석 흐름](workflows/guest-analysis-trial.md)이 소유하니, 체험을 바꿀 때는 그 페이지를 먼저 읽으세요.
 
 ## 검증은 직접 돌리고, CI는 Knowledge 문서만 검사해요
 
-이번 생성 입력에서 `.github/workflows/` 아래 tracked 파일로 확인되는 워크플로는 Knowledge 생성·검증용 [lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L1-L27) 하나예요. 그 `knowledge` 작업은 OpenWiki 문서 생성을 돌리고, `pull_request`에서 도는 `verify-knowledge-pr` 작업은 Knowledge 브랜치 PR의 변경 범위와 완료 메타데이터만 검사해요. 그래서 `pnpm test`, `pnpm run check`, `pnpm run test:e2e` 같은 검사는 어느 워크플로 단계에도 묶여 있지 않고 커밋 전에 직접 돌려야 해요([package.json](repo://package.json#L23-L34)). 워크플로의 트리거·게이트·PR 판정 규칙은 [Knowledge 생성과 CI 자동화](operations/knowledge-automation.md)가 소유해요.
+이번 생성 입력에서 `.github/workflows/` 아래 tracked 파일로 확인되는 워크플로는 Knowledge 생성·검증용 [lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L1-L27) 하나예요. 그 `knowledge` 작업은 OpenWiki 문서 생성을 돌리고, `pull_request`에서 도는 `verify-knowledge-pr` 작업은 Knowledge 브랜치 PR의 변경 범위와 완료 메타데이터만 검사해요([.github/workflows/lee-spec-kit-knowledge.yml](repo://.github/workflows/lee-spec-kit-knowledge.yml#L485-L548)). 그래서 `pnpm test`, `pnpm run check`, `pnpm run test:e2e` 같은 검사는 어느 워크플로 단계에도 묶여 있지 않고 커밋 전에 직접 돌려야 해요([package.json](repo://package.json#L23-L34)). 워크플로의 트리거·게이트·PR 판정 규칙은 [Knowledge 생성과 CI 자동화](operations/knowledge-automation.md)가 소유해요.
+
+`pnpm test`는 `pnpm run build` 뒤에 영역별 script를 잇고, 마지막에 `pnpm run test:guest-analysis`와 `pnpm run test:readiness`를 실행해요([package.json](repo://package.json#L23-L23)). 그래서 비회원 체험을 바꿨다면 이 사슬 하나로 체험 검사까지 돌아요. 다만 어떤 검사가 DB와 브라우저를 준비해야 하고 무엇까지 증명하는지는 [변경 검증 경로](testing/verification.md)가 정리해요.
+
+전체 회귀를 돌려도 사슬에 들어오지 않는 검사가 둘 있어요. `pnpm run test:openwiki`는 `tests/knowledge-dispatcher.test.mjs` 한 파일을 `node --test`로 돌려 디스패처의 사이클·중복 판정을 확인하고, `pnpm run test:onboarding`은 `tests/new-user-onboarding.integration.ts`로 온보딩 migration·완료 route·멱등성을 확인해요([package.json](repo://package.json#L58-L65)). 두 script 모두 `pnpm test`와 `pnpm run check`에 없으니, 디스패처나 온보딩을 바꿨다면 해당 명령을 따로 실행하세요. 두 검사가 각각 무엇까지 증명하는지와 DB 준비 조건은 [변경 검증 경로](testing/verification.md)의 표에서 확인할 수 있어요.
 
 Browser E2E(Playwright journey suite)도 GitHub Actions 배포 게이트가 아니에요. 운영 배포는 Coolify의 기존 자동 배포를 쓰고, 배포 전이거나 회귀 확인이 필요할 때 운영자가 macOS 또는 Linux에서 Node.js 22 이상, 프로젝트 pnpm 버전, 실행 중인 Docker, ffmpeg, Chromium을 준비하고 `pnpm install --frozen-lockfile`, `pnpm exec playwright install chromium`, `pnpm run test:e2e`를 직접 실행해요([tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L5-L15), [tests/e2e/TESTING.md](repo://tests/e2e/TESTING.md#L40-L40)).
 

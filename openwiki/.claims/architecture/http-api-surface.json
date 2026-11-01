@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:5d9e4f48eb355435e103ab6851404b86f4fc17077a058e0c1e5f352e54868228",
+  "pageVersion": "sha256:ef2069fdfd753a562304b88531540f81c57139f70819b7358a13414d0efc45b2",
   "claims": [
     {
       "id": "claim_23fa90e651cc4322a6be023c0ab8ffc3",
@@ -52,11 +52,11 @@
     },
     {
       "id": "claim_ec6d44a462974971ae63b575e2078d6a",
-      "statement": "withApiAdmission은 handler 호출 전에 신뢰 IP 버킷 → 세션 확인(없으면 401) → 경로·메서드 기반 사용자 그룹 버킷 → multipart 업로드 슬롯 순서로 검사하고, finally에서 슬롯을 해제해요.",
+      "statement": "withApiAdmission은 handler 호출 전에 신뢰 IP 버킷 → 세션 확인(`allowGuest`면 체험 actor 조회) → actor도 없고 `allowPublic`도 아니면 401 → actor 또는 `public:` 키의 그룹 버킷 → multipart 업로드 슬롯 순서로 검사하고, finally에서 슬롯을 해제해요.",
       "evidence": [
         {
-          "resource": "repo://src/_app/api-routes/admission.ts#L11-L33",
-          "version": "repo-lines-v1:sha256:e8e1f93ff57bc58b80f479f41e4a9e1d49073ebcd36503c669479bd143d20d4a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ZjY0Y2I4M2JmNWMxZDJkYTAyNzgxZDMxNGYzNmEwNGFlM2I1NmNlYjcwNzhlMmRmYmVmZWNjZjBlMDI1YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhMjI1YjkyYTAwNGZiMjczMzlmOWJmYTdmN2RkMjI3MTAzZWY5YjA4MDdlMTVjMjU1YTk4ODMwNWM1YTVlMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1N2VmZmM4NDhmNjQ5ZGRmMDEzODZlZjc2YjM5NzMyZWQ3ODBkMzUzZmMyMDZjMGM0M2U0OTg4NTc0YTNiZWUifQ"
+          "resource": "repo://src/_app/api-routes/admission.ts#L11-L38",
+          "version": "repo-lines-v1:sha256:c5abbfd90dce0a8b027e47fa22405c4db0fd6c5f891e9e5ab45e1a857fafa1b2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ZjY0Y2I4M2JmNWMxZDJkYTAyNzgxZDMxNGYzNmEwNGFlM2I1NmNlYjcwNzhlMmRmYmVmZWNjZjBlMDI1YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhMjI1YjkyYTAwNGZiMjczMzlmOWJmYTdmN2RkMjI3MTAzZWY5YjA4MDdlMTVjMjU1YTk4ODMwNWM1YTVlMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2NjgwZjY3NDUzOGJlNWU2NmQwMjk3MjgzMDg4NTI4ZTRlYWM2MWMyMmFjYjRlNGNiZWU4ZTUxYjMzYjY5Y2YifQ"
         }
       ]
     },
@@ -75,11 +75,11 @@
       "statement": "IP 버킷은 신뢰 IP당 600/120으로 적용되고, withAuthAdmission 경로의 인증 버킷은 IP 또는 untrusted-ingress 키로 120/30으로 적용돼요.",
       "evidence": [
         {
-          "resource": "repo://src/_app/api-routes/admission.ts#L17-L18",
+          "resource": "repo://src/_app/api-routes/admission.ts#L18-L19",
           "version": "repo-lines-v1:sha256:2126ca2570a425ea7cb2c846a5f26bc047ffb200d144d43e97b530009523c471:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMThjY2ViMjBiMmEyOTQ2ZjVlMTBmN2EyOWM5ZTU1NmFhYzliYjZlNzQ5ZjU1N2Q0Mzk5ZTg4OTk5ODY1MTU5ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTI4ZjQ3MmQ0YTNiZjVlYmJmODE3OGU5NDY4YTY5M2FiNmYwOGRiZDMwNTExMmE0ZTM2NmQwN2M5MTdmMDcwZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTRkYzc3NzkzMWEyOWI5NzhmZmFiZTMyZWZiYjc0MTRlMzlmNTliNjA4MDU1MmM1MWJmOTJlZWE2YzRhN2FmNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmJiYjRiODY3NGQ2MDFiOGFjZjJlODE0MWVkOTYwZDdkY2U3MjllMjNmYmNmMTY1YTMyMjEyNWVhYjIzZTFlYyJ9"
         },
         {
-          "resource": "repo://src/_app/api-routes/admission.ts#L35-L45",
+          "resource": "repo://src/_app/api-routes/admission.ts#L41-L51",
           "version": "repo-lines-v1:sha256:8e6f0ece30d70add2bde54c9fa396b300a602c40a810cc3bc7c0f6d40ad6a608:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxOTViM2UwZmMxM2U0YjgyZjRiNTU3NmE3YTMxYWRlY2M4MjM1MzY1MzAzMThiYjdjMjc5NGQzZjM0ZjM0MTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
         }
       ]
@@ -180,19 +180,31 @@
     },
     {
       "id": "claim_4650fe8dc6d84ae89cdb3bbc0b4835f3",
-      "statement": "오류 응답에는 { error: { code, message, retryable } } 형태와 { reasonCode, detail, retryable } 형태가 있어요. 분석 접수 계열 handler는 reasonCode 평면형을 쓰고, 믹싱·알림·추천·관리자 catalog·티켓 조정 handler는 error 객체를 써요.",
+      "statement": "오류 응답 봉투는 네 형태예요. 세션 401·관리자 403·믹싱·알림·추천·관리자 catalog·티켓 조정·프로필 오디오 404는 `{ error: { code, message, retryable? } }`를, 분석 접수 계열·프로필 상세·분석 작업 상세·비회원 체험 route는 `{ reasonCode, detail, retryable }`를, admin custom-mixing은 `{ detail }`만을 쓰고, admission 429·503은 `error` 객체와 최상위 `reasonCode`·`retryable`을 함께 담아요.",
       "evidence": [
         {
           "resource": "repo://src/_app/api-routes/admin/catalog/http.ts#L34-L48",
           "version": "repo-lines-v1:sha256:6dcdc1c581b7df57120ce023aa7e44e1239c3b54b06b9fc55251247cc513d10e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5MmI0NDZiODVlNTc3NjZiZTM4ZmE5NTA0NWZhNTM4MzEwZTkxZThjMTcyMDNhMDVmZWE1OTYwNzQ4NzY0M2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzM2EwZDYzNDRjNzYyZDFhYWVjNTkzNWJlMTcyYTE1NDBhMzdjYzZiNWI5Njc0MDRlOWEwNWY4MjBhNmMxNGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5NGZjMGMxNzNkMWVjM2ZjNTAxZDdkZmE5Mjg1NTAxYzUyN2NmYjQ3MTI1ODNkYTNjYzM2MTgwNTY2YjRiZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
         },
         {
-          "resource": "repo://src/_app/api-routes/mixing-jobs/mixing-job-detail-route.ts#L16-L46",
-          "version": "repo-lines-v1:sha256:0087e388e588b9a7485652b7904081023a14ef1dff0ab6da65b02d0e54e163b1:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkNDZmOTQ2ZWZmZmE4OTBjZmFiYjU3NjhkMWRlMzA3MzNiOWQ2NmI3MTFjZDM0MDk0OTUzMzQ4NjI0ZTFlMGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5YzJjN2Y3YzliMjIyMzU3MWMyM2U4MDMxNDkwODBlM2VmYmI1MGY1Y2M4MTM3OTAyM2I1YTdjMTA4NTM2NmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzMjRmYTkzYTQwOGVlZGFhYzRjNGRjOTcxYzBkZDQ2NTllNGI2YjMyOWFmMDMxN2Q5ODA3NzU1NTE3MTEzZTcifQ"
+          "resource": "repo://src/_app/api-routes/admin/custom-mixing/custom-mixing-route.ts#L14-L20",
+          "version": "repo-lines-v1:sha256:54a48e67d71229de652f72748923ba4584421d208369b973ba9032bbb6c7b121:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTIzZDI1ZmU0NTlkYzEzZTc0MGYxZTg2MzgyYTU5ZWE2ZGMzZDVjYjQzZTFmMGZhOTY3Nzk4NDQzOTZmYTRjNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTYzOWI3OWMwZmZkMzE0NzA3NjdhNGE5Y2U3YjNhMzM1OGM0MmZhNzIyOGYyYzA3NWU3NTMzMjNjZjk2OTFmYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTdkZmY0ZDcyYTc1NDVhMDUxYmI3MTZlYTBmNjllODgxYzljOTk2OGY2YWVmYmMxMTc3NTdjZDRmMWRiMGNmNCJ9"
         },
         {
-          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-analysis-jobs-route.ts#L24-L69",
-          "version": "repo-lines-v1:sha256:5511a0ee8ee7ed00dba8ec68155b324f13912a93cf93002970170bf8c54565d9:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4ODFhODRlMmI2NjJhZGYwYjFlYTU2NDkzZjNhY2M0ZWFiZDU3OWNiNDc2OTQ2NTE1OGUwOTZjMjNhMDVkMDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIwY2RhMGJkODMyMjQ0MDVlMWVhZTFlNjkzZjNlYzU1ODI5OWE5MTVhNjA5NzM4YWNmNGFmMjc3ODU1OTZhYzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA4ZWM4NzY5MmZhNzNkZTk3MWY2NDRkMmZjNjM2Y2EzMGVlNGMyNzYzMjQwMDJlNDkzMmQ3YjIxNWIyZjMyMGMifQ"
+          "resource": "repo://src/_app/api-routes/guest-analysis/guest-analysis-route.ts#L19-L44",
+          "version": "repo-lines-v1:sha256:f9f1001970f61f9383f2fe19fa6c23da50d36c57bf890e16c310f20099556dc3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMzI3MTM1MDI5NzgwNjMxYzhhMWEzMDYyNjM0M2Y5YzA1NmE1YTMyNDA5ZWEyNGJmYzM3YWRjZGExNGQ5OTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEwMjJjMjNkYzE2OTJiY2Y2M2ZlMzg2NjU2MjFjODgyMjVkZmYwZjRmNDllMDA5ZDg3Yjk4YWJhYTNmOTYwMDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/mixing-jobs/mixing-job-detail-route.ts#L11-L14",
+          "version": "repo-lines-v1:sha256:09fed757d5a58717dac97709407f7ddd7bc96e41e9b30f2e1496990e626499c6:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjZmNWJlNDFjZWQ2ZGMyNzI2YThlODJjYzIwMjk4MDU4NDY4MjA1NjU4Yjc2NGI0ZWI4ODI4YTk3Mjc3NzUyZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2Y2Y2ZjODVmZWRlZDNiZTFkZGI4NGFmZWYwZDZmNzU1ZmJmMmQ5MDhmZDdlMzgwMzdkYTg2MThlYWY2OWVhNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmMxYTM3NjQwMTZkYTI4MTUyNTNlNTM2ZWIwZGJlYjNhZjgxYmQxMjdiM2JkNTIwNGFhNGJlN2I4MGM1ODJlNyJ9"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-analysis-jobs-route.ts#L26-L73",
+          "version": "repo-lines-v1:sha256:e53b7deef65d0021cba19859b2e56f50bf402efdb32a23344cc7dd2401b8eb38:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4ODFhODRlMmI2NjJhZGYwYjFlYTU2NDkzZjNhY2M0ZWFiZDU3OWNiNDc2OTQ2NTE1OGUwOTZjMjNhMDVkMDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3NzVmZDY4ZDJlNTZjYTMzMGEyNGQwZDI5Y2RlNDIzYzEwYmNjNGE1OWMwZGY0ZDQ2ZDkzNjY3NmU0NTBjMTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3NTJkOGJkMDhkZDQxYzA0YzU0M2VmZDNhNjc1N2JkMGY5OWRiYjJkMDU5YmZiZGFjN2E0ODU0YmNkNDQ1NGUifQ"
+        },
+        {
+          "resource": "repo://src/shared/lib/admission/limiter.ts#L70-L79",
+          "version": "repo-lines-v1:sha256:162a2a78f2169cfd58fd05482213dfe7b7a8c61d9e8d07bf541881976ef0e355:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjMzQ4YjQ5Y2FjNWQ1OWRjNTJmNmYyMjg4NWYyZGRhYmFiMmExNmM4ZmVhZjlmODU2NGU0NzBkNGViMWYzYTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk0OTYzYThlMWMwOWFjNGQ5MmVlOThmMjUwMzgwZDUxMzNiNTc1MDhmYjkzYjQ4NzU1YzEyNTc1M2NhZjhkN2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -243,10 +255,140 @@
           "version": "repo-lines-v1:sha256:27d470c522e48c9a7c245372c7d2e47cdaba492fdefd25b7835cd03390a439e5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyZWIwMTM1YzcwZTY5YzliZGZkZDkyYTMyYTFhNTVjOTdhMWRjNzYyNmMyMTg4ZGJiODQ1Y2IwYmU0NDBjYjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1MmE4ZGMzNzA2YzEwZjRjODcwMzk2MTYwYzI4YTgxN2Y2YTQ5Zjg2NjA5OGJiMmIyNzllNGJmZDNkOTEzMDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkwMGIyMWQ0ZGM5MTI2MjA3ZmYzNTZlZjE4ODhhNDFjMzA2MDM4Y2YwNzgzM2JlM2ZlYWVmNjBkZTQyZmUwZGYifQ"
         }
       ]
+    },
+    {
+      "id": "claim_7b250ab7a8874be482a9bd5ce76ed3c4",
+      "statement": "`withApiAdmission`의 `allowGuest`는 세션이 없을 때 체험 쿠키로 actor를 채워 `user:` 그룹 버킷과 체험 `userId` 업로드 슬롯을 쓰게 하고, `allowPublic`은 actor가 없어도 401로 끊지 않고 `public:${ip ?? \"untrusted-ingress\"}` 키로 버킷만 적용해요. 두 옵션을 함께 켠 곳은 `/api/vocal-profile-analysis-jobs` GET 한 곳뿐이에요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/admission.ts#L20-L31",
+          "version": "repo-lines-v1:sha256:0129d926dbbab811610c8d83655602fa946ac9d4e26a4ba6a6144b27c48942d2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5NGMwMTU3NTdkMWUxZjYwNTFhMGE3MjMxNmZhY2QzOGIwZWM0MjBlOGU4M2E4NDVjODIzZGNhNmEwNzE4ZWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmYzhiZjM5MDdjODdmNTkxODA4YjUwYmE2NTA0OTlmNTYxNWFmNTkwMDg4Yzk0YjFkZjM0NDRhMzIzZmQ5N2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVlYzk1YmE3NzJhYzU3NGM3YWNjYTUwMjdkNzdiZTI2MmQ3MDkxOGQ5ZjY3NmI0ZjYzYmQ5ZWNhNTBmMThmZTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYxNmQ1NzI2ZjZhNWM2MWQ4Njg0YmE4MmE0OGQ3NTE5NWNkZjEwZGMyZjkwNzE3ZWFkYTA5MDNlYjE0YjEzZDIifQ"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-analysis-jobs-route.ts#L160-L162",
+          "version": "repo-lines-v1:sha256:ca12cbdf58a7e0d7ebc4a634d5148e3d49f476d62cdbebfc87f62105503d4cbc:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDdmYTNhZDc2NTFjNzA5YTUyZTY4OTM1YWNlZWZkOWZhNjMwMDkxZTQ2ZjllMTk4NDA1OTY3MDZmNzRhOTQzZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGJiZjgwZWRkYjMyM2ExODRiYzE4MDllYzg4ZmMzMjQ1YTgxNTIwMjlkNDJiNjUzMmU0NjQ2NmY2MTdiODIzNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmI1ODBlOTY0ZjgzYTQ3M2Y0M2Q0NDM4NDYyOTQ5ZDY4YjU2MDBmZGE3ODdmMTYzNzQ1ZDAwZGU4OWNiZjM2YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/features/authentication/api/analysis-actor.ts#L7-L13",
+          "version": "repo-lines-v1:sha256:85e97b28f604d8c7019beefae0d9cc3807fceb700481a7c97b9412fce2ec243e:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTM4MTYyNjgyMzY1ZWJhZTc3ZTdmNjM5YjcyMTMxZTE5NWQ1Zjc1MDUxMWQ5MzUzMjI1NjI2Mzc2YmY2Y2U3ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjY0YjYyNTc4YzY3OWUxZTAxNzJiMzliMjZjNjA1ZTRmOTY3OTZlZTEwYzA3NzJmOTY4NmMyMWZjMmM1ZjViYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODBlNTc3MWFkMThmYmQ4N2U2NTU0NjkzNjA5MDE4MmIxYzhlMmUzMDg4MmM5MTBjNmJmZjNiOGU2OWI0ZmY1YiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_8b70a2224caf40a2b83369eacbab2fac",
+      "statement": "`/api/guest-analysis` POST는 `withApiAdmission`을 쓰지 않고 자체 게이트를 가져요. 같은 출처 검사 뒤 `guest-start:${ip ?? \"untrusted-ingress\"}` 버킷 6/3을 소비하고, 세션이 있으면 `{ status: \"member\" }`, 이미 체험 기록이 있으면 `{ status: \"ready\" }`를 반환하며, 새 체험을 만들 때는 프로세스 메모리 일일 한도를 확인해 초과 시 `admissionResponse` 429를 돌려줘요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/guest-analysis/guest-analysis-route.ts#L19-L44",
+          "version": "repo-lines-v1:sha256:f9f1001970f61f9383f2fe19fa6c23da50d36c57bf890e16c310f20099556dc3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMzI3MTM1MDI5NzgwNjMxYzhhMWEzMDYyNjM0M2Y5YzA1NmE1YTMyNDA5ZWEyNGJmYzM3YWRjZGExNGQ5OTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEwMjJjMjNkYzE2OTJiY2Y2M2ZlMzg2NjU2MjFjODgyMjVkZmYwZjRmNDllMDA5ZDg3Yjk4YWJhYTNmOTYwMDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/shared/config/server-env.ts#L30-L32",
+          "version": "repo-lines-v1:sha256:ac9680070b4f2dab87cb0a4f737e9390003027f5f9136c8061159828b8063535:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjJhNDllOGYwZGNjNzQyMzJjMTBmZjVmOWRlZTYzNDljZjJlMjRkZWZlYWM4ZTA2ZGQ3MjIxNTZmZjZiMjM4MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDE2MjI4YzNjYTEzMzRjOWFmMDE1N2MzMTY0ZWU4NDUyMzQyMjdhNmE5M2QyZGU3MzM3OGMwNDc0N2NmZTM5YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWUyODE1MDFiNzA4MDFkMzM4NGMyZTkyYmE2ZGRlNDFkZmQwZGY2NDRhMDMyZDVmYzMxZjU1MzQwMTE1YzQ5ZCJ9"
+        },
+        {
+          "resource": "repo://src/shared/lib/admission/guest-quota.ts#L18-L39",
+          "version": "repo-lines-v1:sha256:3c28974fe9dbd525eb04b9d529dcac10762d99c7428175a8ae69213ad941efe7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2YzQ1MmIzMjRkMDEyZTYxZjBkNzQwNjA2NWI0NmMzMTY4ZWM3ZGQ1NmZhMTUwYWI2MzFmNDJlMDc0M2Q1YmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjllMzY5YTg0MDY5ZGEyMjMwZGZlYjVkM2JkNzQwMDg5YjIyN2FjZTA4ODZjN2M0MTBhMTA5OThhZTI0MmQxYTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYzNjYzNmI4NWM4N2I3NmJmMTY3NDcwNjA2MTRhMmY1YThiNTM2OTdhYTBiOWI3YThmMjJjZTNmMDFhNjE3OTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0f29e28bdbb94a4d8bec45aa7f532600",
+      "statement": "`requireSameOrigin`은 `Origin`이 `BETTER_AUTH_URL ?? request.url`의 origin과 같고 `Sec-Fetch-Site`가 `cross-site`가 아닐 때만 통과시키며, 실패하면 `{ reasonCode: \"INVALID_ORIGIN\" }` 403을 반환해요. 이 검사는 비회원 체험 두 route에서만 쓰여요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/guest-analysis/guest-analysis-claim-route.ts#L6-L8",
+          "version": "repo-lines-v1:sha256:55ee6c34cc7e3789960bd6cf597cd760935f62dd7a94b5315797d0ae84c22b13:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTNkOTQ5YWU1OWYyMTliMTc3NWNiMzFiYzFjNzhkNDAwZmE5NjgxNGVmNjUwNWZjNGFkZjA2M2EzZWI2MzM4NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTYyOWJhNGVhYmUxZWU0NGRlYzljYzZiNzQ4Yjc2ZGFmYWM2NGZjNDM5ODhlM2Y1MzlkODFjYTY5NjZmZGJmYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzJmODkwY2Y4NmIyZGY0ZGY2OTRhMDhhOGM2MTA5NGRiMThmMDA4NGY1ZjkyN2U0MmM3YmZiYmQ4MzdhYzRmZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGViNDFiYTM5NWY5YTFhZDZkYTk1NTYxYTNkYzQ4MWNjODUwMjMzN2FiMTc1YjE0MWFiMTIxZWQ1OGZlNzZjOSJ9"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/guest-analysis/guest-analysis-route.ts#L13-L17",
+          "version": "repo-lines-v1:sha256:e984e741f2eaf634522003c2f0465ab52523e571cd07970c94b0a4022ad18eb5:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYThkMDBkNDRmY2QyNjNlODBkYmQyYzcxZDkzMTMyOGQ3MWNmMDJmZGNhMThhNjhmMzZlYjMzM2Y3MmU1MTU5ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDZiNDNmMWY0ZDE4ZDQ4ZmRjMjJmNzY4YjJlNGVlNDFiYzkxOWQ3YjJjMjgxMTAyYTVkMWE3NTQ0YTIzYWY0ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDc4YmFmYzk3MmVhNDI2YjlmYTcwNThhMWJlNmZmNjJhOWZlMmM0MjExNTRiYThkOTViYzNmYTcyYzRmNDU0YSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_2ce011bbc6f5412fa3ca81d47bb4b536",
+      "statement": "멱등 키 검사는 래퍼가 아니라 handler가 해요. 분석 작업 접수와 `/api/vocal-profiles` POST는 `Idempotency-Key` 헤더를 trim해 1~200자로 검증하고 multipart 본문을 읽기 전에 `preflightVocalProfileAnalysis`로 기존 작업을 찾으며, 믹싱 접수와 관리자 티켓 조정은 JSON 본문의 `idempotencyKey`를 요구해요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/admin/ticket-adjustments-route.ts#L7-L16",
+          "version": "repo-lines-v1:sha256:576c5ab78903d24056c10a5dbad65e26c58fa65ba359a0cabeb69b123971c603:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFjMmFhMzBmNjc4YjZmNTljOTFmYTQ5YzA4Yzc3YzdjZjk5OWMzNWQ0YWEyM2M5ZTRkZGQ2MjI2ZTk2OTFkYzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM4OTA0NjEzNWNjM2Y4OGViZjZjMGM5N2ZmMTE4ZWM2YTRlMjY2MjUxMDc1YTg3MjlmOTcxNGI5YTMzMDJhOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQwMjhiNDI1YmNjNzNiODhlNzUzMTc2MDM5ZTk5YWZhYjgyNmRkZjNjNDE4MzgyMTU5NzQ1YjQ1MmFhNTc0NmMifQ"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/mixing-jobs/mixing-jobs-route.ts#L27-L43",
+          "version": "repo-lines-v1:sha256:87c6a87db7b95f094bc06931736509e92275fd5bb6c55e3ff99ee81e3c4dc437:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzZDk0OWFlNTlmMjE5YjE3NzVjYjMxYmMxYzc4ZDQwMGZhOTY4MTRlZjY1MDVmYzRhZGYwNjNhM2ViNjMzODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyZDExY2FmNDNlOTdlZjM2OWU2YmVlZDFhMjY4YmQwNTgzOGYyOWI5ZGQyNTRiZjY5YmE2NDg4NDE0NzIzNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE2NWZkYWMwNGVkYTMzYTk1MzQ1YzM3YTNiZjAxZDJkYWI4Y2I1YTQzZDcxZmVhNjNhOTU0ODJjOTc2Y2QwN2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJjNDE5NWU4YzU1NzcxZDUyM2Y0OGMyZmE0NzRkOTI1MjY3N2ViZmU4NjU2NDE3ZDQ5ZWQ5NDVlOTY3ODMwNmIifQ"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-analysis-jobs-route.ts#L99-L137",
+          "version": "repo-lines-v1:sha256:51f33c1ec9911c2421eb103f7b1447026cd6105b0eb09e6095e0ac0676eb9f34:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhkYzk4YTRiY2U2NzQyOWRjMjU1NDAyN2Q3NWYzOTYxODZiMGY0YjY2MGU5MTQyZjg0OGMxYzU1NzU4MzNiYzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxOWZlNzdhYTZjYmY5YzFmOTY1NGFlYjkxMGUxYWY2MTBhMjAxNDIzNjJiOGUzZDQxYmMyYmIwMzg5NWIyZGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRiZmYxMThjMjk1NTcyYzhmNzA0Mjg1NDBmY2JhMmRhZmMyZGNlMWFjYzk3Nzc0NzliYzViOTFjMDI2MjU0MTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkMjNhMWY1ZDQ1NDU0OTY2YjQ0ODg5MWNmZjU3OGRkMGZhMzY3NDI4MThjNmQwYzQ3MjYxNzY4YzFhMTk5ZmYifQ"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profiles-route.ts#L63-L75",
+          "version": "repo-lines-v1:sha256:bbd671d97d2a2bdfa620323cd4ed2ecdd5ed069b5dffc44c896fd511a73f1d99:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzZDk0OWFlNTlmMjE5YjE3NzVjYjMxYmMxYzc4ZDQwMGZhOTY4MTRlZjY1MDVmYzRhZGYwNjNhM2ViNjMzODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiMWVmODc2MGE2ZWJkODczMmM1N2RmODJiMzNjYzFjOTcyMjA5ZjQwYmU4NTkzMTU4NGQzNzlkYjFjZGI0ZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5NGZjMGMxNzNkMWVjM2ZjNTAxZDdkZmE5Mjg1NTAxYzUyN2NmYjQ3MTI1ODNkYTNjYzM2MTgwNTY2YjRiZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA3ODhhYjhjMTdjMTU0MDE1MGZhZTEzYzQ3ZDMzYTZiZTkwYzhlNDUyZjhiMjhlY2IyMmI5MTFkYjg5MTI1YzIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f9ce9c52a84d42d8b8cb3d59cd748ab2",
+      "statement": "multipart 본문 초과는 route 계열마다 다른 상태 코드로 변환돼요. 분석 접수는 `PAYLOAD_TOO_LARGE` 413, 관리자 catalog 음원은 `SongCatalogAdminError(\"PAYLOAD_TOO_LARGE\", ..., 413)`, 스냅샷 import는 `SNAPSHOT_TOO_LARGE` 400, admin custom-mixing은 `detail`만 있는 400이에요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/admin/catalog/http.ts#L13-L22",
+          "version": "repo-lines-v1:sha256:a3f071545dc2020e57ec6659a600db7a970b641529885672d9fcccc78073e34e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlMzhhNzI3ZjM0OWU4YzBhZTY4N2Y2YmFjMDUzMmEwZmY3ZGE0Zjc1NTQ2NDFlZTFlMDg5YTcyM2IzMjJkNDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIwY2RhMGJkODMyMjQ0MDVlMWVhZTFlNjkzZjNlYzU1ODI5OWE5MTVhNjA5NzM4YWNmNGFmMjc3ODU1OTZhYzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZlMzg4YmUzMDk1MjEyZjExOTkxMTE3MGFiN2FhNTc3NzdjYTE4NGQwOTQ1YWEyMzcxYWVlZGE0ZTQzYmUxYTUifQ"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/admin/catalog/import-route.ts#L18-L39",
+          "version": "repo-lines-v1:sha256:0cf61ffe40009725df5f40438dd270e7d9588d5d2e0ff5fd47f3642c55a0324f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY0N2RjZWQxNDdiN2Y1YmYyMGZiNzA2N2Q2NWE4YjM1OWIxNzk3ZDlmNDM1MTIyMmJkNzE5MDhiYWNjMTAwMjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhlNTE0ZWM3MDcwMzJmYmQyOWRjODcxZGM3NjAwZWI4NjJkN2I2MTljMzg0YjJiMmU5NDFjNTYyZTM3N2QwZWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzM2M2N2VkM2M2YjU1ZDdmZGQ2NmY1NzQyMjllYTZmMWUzZjhmMjQ5N2NjZDgzOWM1MTc2MDEyNGNhODAzMGEifQ"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/admin/custom-mixing/custom-mixing-route.ts#L29-L37",
+          "version": "repo-lines-v1:sha256:26efa747369df2cd66cbd937b3cbe131a4f6ecadaf47fc260b7be0945a3fee3e:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjhlZWRlMDYyMTZjNmRmYzZmZDA4ZTQzMDMyYjMxOTA4MWE5YWNkNzliNTZkYzVlOTM0YTQwYWE3ZGQxMTllYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2MwMDI2Mjk3ZmZiOWE1MjI2ZTQxZGM1NDAzN2QzZWY5NDcyYjg3ZWVjOTZkOWQyMDVjODM5YjE0OTRlMDllYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODNhMWM5ZjVhYjY4NTgwNzg3OTViNTRmNzlkNDI4MWY2NzllNTZmZGJmNzdjNTM4YWM1MzE2MzY0YjA1OWYxYiJ9"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-analysis-jobs-route.ts#L119-L128",
+          "version": "repo-lines-v1:sha256:bb93cf5828cafec09544eb5b996514b677d8f25c95b760b7c6cebd00fbe2c849:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4ZWVkZTA2MjE2YzZkZmM2ZmQwOGU0MzAzMmIzMTkwODFhOWFjZDc5YjU2ZGM1ZTkzNGE0MGFhN2RkMTE5ZWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyYTFkM2I4ZjgxMmJmODljY2JkNGU2YWY4YmQ3MDQ1ZjIzZmY2NmVhYzczMjRkNmY4OWE0NTVjMzUzNGVjMWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA2ODcwN2JlMGVmNDYzMTZlNWQ1MWM0ZjQ5NWUwODM3YzFkYmZjMTcxMjk2MTgwZTcwNmFkZDMyM2EzOWU4YTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bdb5f381d0c54bf4a111737f50bbfdf2",
+      "statement": "현재 `app/api/**/route.ts`는 37개이고 그중 31개가 `export const runtime = \"nodejs\"`를 선언해요. 선언이 없는 6개는 `app/api/admin/custom-mixing/` 아래 4개와 비회원 체험 2개(`app/api/guest-analysis/route.ts`, `app/api/guest-analysis/claim/route.ts`)이고, 37개 모두 `@/_app/api-routes/**` re-export만 담아요.",
+      "evidence": [
+        {
+          "resource": "repo://app/api/admin/custom-mixing/route.ts#L1-L1",
+          "version": "repo-lines-v1:sha256:4e94a5fa198e7c63acd009b3a54e5ea72c4df6ac02f106e82c714ac5ff63ab5f:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGU5NGE1ZmExOThlN2M2M2FjZDAwOWIzYTU0ZTVlYTcyYzRkZjZhYzAyZjEwNmU4MmM3MTRhYzVmZjYzYWI1ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGU5NGE1ZmExOThlN2M2M2FjZDAwOWIzYTU0ZTVlYTcyYzRkZjZhYzAyZjEwNmU4MmM3MTRhYzVmZjYzYWI1ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://app/api/guest-analysis/claim/route.ts#L1-L1",
+          "version": "repo-lines-v1:sha256:e97d1a778a637454cbaef94fd97a6eec95e18e07e60e37e47ce6e1960837c4c7:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTk3ZDFhNzc4YTYzNzQ1NGNiYWVmOTRmZDk3YTZlZWM5NWUxOGUwN2U2MGUzN2U0N2NlNmUxOTYwODM3YzRjNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTk3ZDFhNzc4YTYzNzQ1NGNiYWVmOTRmZDk3YTZlZWM5NWUxOGUwN2U2MGUzN2U0N2NlNmUxOTYwODM3YzRjNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://app/api/guest-analysis/route.ts#L1-L1",
+          "version": "repo-lines-v1:sha256:ef4a3f738d179be9ea325b20a18eb0a10fae6ea3dbe6e6ffb7b250acec35a8cb:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWY0YTNmNzM4ZDE3OWJlOWVhMzI1YjIwYTE4ZWIwYTEwZmFlNmVhM2RiZTZlNmZmYjdiMjUwYWNlYzM1YThjYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWY0YTNmNzM4ZDE3OWJlOWVhMzI1YjIwYTE4ZWIwYTEwZmFlNmVhM2RiZTZlNmZmYjdiMjUwYWNlYzM1YThjYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://app/api/vocal-profile-analysis-jobs/route.ts#L1-L6",
+          "version": "repo-lines-v1:sha256:bb2e1c632028197778ccccf37e46997898c4b7f04391f300e5ed6a4b7f3f4193:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjUwYmU5ZjIzN2U3MmRiYTc5NmU5Nzk5NDc4ZmE1NDgyMTNhMmNmOTNkYTBmODIzZjUxMmUzN2YxOTMwNDI1ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDI3YzcwZWQ2NmE3ZDY0YTBhOWMyZWYyNDBhMmEyNTcxNjBkNzhjZjM1MDE0MzM5NWY3ZjViZDA5ZTFhOTcxMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1e08f48b76a44180a714251d14d026af",
+      "statement": "분석 접수 계열의 `enqueueError`는 실패 원인을 `reasonCode` 평면형 상태 코드로 나눠요. `INVALID_IDEMPOTENCY_KEY`·`INVALID_UPLOAD` 400, `INSUFFICIENT_ANALYSIS_TICKETS` 402, `PAYLOAD_TOO_LARGE` 413, `UNSUPPORTED_AUDIO` 415, `ANALYSIS_BUSY` 429(`Retry-After: 10`), `ANALYSIS_ENQUEUE_FAILED` 503이고, `GuestAnalysisError`는 자기 `status`와 `code`로 그대로 나가요.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-analysis-jobs-route.ts#L26-L73",
+          "version": "repo-lines-v1:sha256:e53b7deef65d0021cba19859b2e56f50bf402efdb32a23344cc7dd2401b8eb38:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4ODFhODRlMmI2NjJhZGYwYjFlYTU2NDkzZjNhY2M0ZWFiZDU3OWNiNDc2OTQ2NTE1OGUwOTZjMjNhMDVkMDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3NzVmZDY4ZDJlNTZjYTMzMGEyNGQwZDI5Y2RlNDIzYzEwYmNjNGE1OWMwZGY0ZDQ2ZDkzNjY3NmU0NTBjMTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3NTJkOGJkMDhkZDQxYzA0YzU0M2VmZDNhNjc1N2JkMGY5OWRiYjJkMDU5YmZiZGFjN2E0ODU0YmNkNDQ1NGUifQ"
+        },
+        {
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profiles-route.ts#L26-L61",
+          "version": "repo-lines-v1:sha256:f9ebfc8c93b0cef4900ef601e8e0268f78d1990f672d23888dbf6b7d3946e653:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4ODFhODRlMmI2NjJhZGYwYjFlYTU2NDkzZjNhY2M0ZWFiZDU3OWNiNDc2OTQ2NTE1OGUwOTZjMjNhMDVkMDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5NGZjMGMxNzNkMWVjM2ZjNTAxZDdkZmE5Mjg1NTAxYzUyN2NmYjQ3MTI1ODNkYTNjYzM2MTgwNTY2YjRiZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3MGY4Njk5NjAxMTI2YTk4MTY2YjA5NjQ5ZGM2ZjFjYTU0N2M2NzU3MzE4ZWVlYzAxMGNmZmNiZjM3MDAyZDcifQ"
+        }
+      ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.5.2",
-    "at": "2026-09-18T16:47:52.081Z"
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-30T10:43:12.272Z"
   }
 }

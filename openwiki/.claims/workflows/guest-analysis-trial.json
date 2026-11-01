@@ -1,0 +1,244 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:b615184cf7b220c0fc14841aa0554b6375da13bf39267435fec422c5335cac26",
+  "claims": [
+    {
+      "id": "claim_cb2600e641174bdf8dc678198101eb42",
+      "statement": "비회원 체험은 브라우저 쿠키 `copy-singer.guest-trial`의 43자 base64url 토큰을 SHA-256 해시한 `tokenHash`로만 조회되고, `createGuestTrial`은 `isGuest: true`인 게스트 `User`와 `GuestAnalysisTrial` 행을 함께 만들기 때문에 DB 해시를 쿠키에 넣어도 trial이 열리지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/guest-analysis/api/trial.ts#L7-L43",
+          "version": "repo-lines-v1:sha256:65ccf8cfcd20dbd5e8146a54947fc6cb43cf0da327a191bbaa879cbd3e9401c6:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRkZmUyNjNjZWQyYjU4YjU1MTU1MjI0NjkxN2M0YzJkNzJiMjE4YTUwMDA2ZGUyN2Y4OTQxMmE5ZGM4N2RhMWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE1ZmQ4MjI1YTYwOWVjYTMzZGZmOGFhOGJkMjE1YjRjMGM0MWZkZDBlYjQxNGY3ZGJmMTkyZjk5ZmJmZDYxMTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk1YjYxNjYzNTAxNmVhOTljNjZjN2Q0OTdiZTA4YWJkMDQ2NjZiNDgzOGY5YzIzNDczYzY0YTA0NTQzYTFjYjUifQ"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/model/contract.ts#L1-L3",
+          "version": "repo-lines-v1:sha256:9e22199fbbbc7763cea2f6f8b9c88f0212559fd64ea1d0c00e4282fa656e7972:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTRkOWVmNDRmYjkyYzRhZjQxN2YwOWE2ZTFmZTE3YWE4NDI0MGU5NGZhMTBjZWRmZTRkZmViMGI0NTBiNDhmZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzQ0ZTE1YmY0NGZlZjcwMTE2NjBmMDUyMGU3NDQ3OTU2MzAzZWNlYmQ5M2JkYjZkNzU2OTdkMTc1ZTg2YjNkNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTliZDBmOGFhMDc4YjZjNDAwZWY1MzQwMjViNjY2ZjJjNjQzMWRiZWQyMWRiYTVkYmM3NWE1NDQ0MzA3Yzc2YyJ9"
+        },
+        {
+          "resource": "repo://tests/guest-analysis.integration.ts#L8-L36",
+          "version": "repo-lines-v1:sha256:2e230c932d10a1aa53ee28289b8d92f86024e18e7d02fa919a15f74ac2ffc981:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZlYTZiNGYyNWZmNmUyOTlhNWRhNTRkMTMxMWJmOGE5YmFmMzJkYjliYjZmZDdlMmU5OTFlZWMxMDhmMDc5ZDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0ZGI0NWUwYmUzMTgwNTYwY2UyNDY2MmNlNTM2ZWJmMmRiYmJkZTRjODgyOTY3YWRhNTY0MTFlNzgzZGE2ZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAxYWZlNWI3NDQyNDkwYjVhMDBlN2Y5YThkNTk5Y2QwNDZhYmZmZDJmYWM4MGMwYmEyMGU4ZmMxYjRhYWI0NzcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4d57d0aad58d45378ec2b1806c1ad928",
+      "statement": "`POST /api/guest-analysis`는 같은 출처 검사를 통과한 요청에 대해 세션 보유 시 `member`, 기존 trial 보유 시 새 행 없이 `ready`, 그 밖의 경우 쿼터 확인 뒤 새 trial 발급으로 갈라지며, `ready`는 새 분석을 받을 수 있다는 뜻이 아니다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/guest-analysis/guest-analysis-route.ts#L13-L44",
+          "version": "repo-lines-v1:sha256:e653262c177c587fadae99f3e6904183e2c4f4dc2fa6d696520b2ea824168211:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4ZDAwZDQ0ZmNkMjYzZTgwZGJkMmM3MWQ5MzEzMjhkNzFjZjAyZmRjYTE4YTY4ZjM2ZWIzMzNmNzJlNTE1OWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA2YjQzZjFmNGQxOGQ0OGZkYzIyZjc2OGIyZTRlZTQxYmM5MTlkN2IyYzI4MTEwMmE1ZDFhNzU0NGEyM2FmNGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/features/analyze-vocal-profile/api/client.ts#L61-L79",
+          "version": "repo-lines-v1:sha256:d5b29c7eb1ba5b17509256ec16d2820828ec85d838e43f3f100268b59f997b2c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY0MWE1MmY3ZGI2Zjc3MDkzZGMyMzEyODllNzlhZjBmNDZjM2QyZjAxNDQ3YjZmYmFiODY4ZGZjNTljYmRlOWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNiNDM1ZTcxNTg5YmFiZDhlYjhlNTc0NWZlMTgzOGYwMWUyYjRjNWIzNmJiNTk3NzIxOGZmNmUwNzgyN2MzZTAifQ"
+        },
+        {
+          "resource": "repo://src/features/authentication/api/analysis-actor.ts#L6-L13",
+          "version": "repo-lines-v1:sha256:6d5116bef467b3bd98f373ae80750da36847d23732ae8f095662cb88f72caf3c:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDdhNTEzNTE2NGY1ZmNjMGI5MDBjOGQ3MjEzMzhlYTFmNGE3ZDNkYmRkYzE4ODcxZGM1YTAyMzJkMzUxMzE3YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjk1MmY0NjYwNGUwNDM5ZDI0ODBmY2E3NjZlMGNjNTBhY2M4OWYxNGIwMzFiMTI2NzAwMzUyYjI4ODA1MDc5YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODBlNTc3MWFkMThmYmQ4N2U2NTU0NjkzNjA5MDE4MmIxYzhlMmUzMDg4MmM5MTBjNmJmZjNiOGU2OWI0ZmY1YiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f39ccd0e1a774703bb816b2f573fd334",
+      "statement": "`GuestAnalysisTrial`에는 상태 열이 없어 `guestAnalysisPolicy`가 `used` → `processing` → `available` → `full` 우선순위로 `consumedAt`·`claimedAt`·연결 작업 상태·쿼터 여유를 조합해 상태를 계산하고, `profileId`는 `guestTrialIsReadable`이 참일 때만 채운다.",
+      "evidence": [
+        {
+          "resource": "repo://prisma/migrations/20261029000000_guest_analysis_trial/migration.sql#L19-L29",
+          "version": "repo-lines-v1:sha256:c441ed34aad2e4934412351acc68871b851aa3097eb08819e573559f8a3c2498:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1N2ZjZDNlYTUyOTM1MjY1NDIxODFhN2U4ZGM1Yzg1NjkyMmEyNWFlNGEyODg2ZmZjZjZlOTRlOGIyODM2OWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyNDg5MTVlNjlhYmU5NDM4OTlkZjk3ODIwMDliMzljYjhiODIzMjI4NTE0YWE4YmVjMzFkNjgzZjg2OWFkN2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY0NDhkNzRlMzI5MTZjMzE5M2Q3MDFlYjhjZGIwMzI1MWUzODExZjY1NmRjMWEzZTQ2YmVhMmQzYTNmNTBkNWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZlMjgyNDYyZDEzZjljMWRhNGI2ZDIzYWY3YzEzYmFlNWY4NjgxOGI2NTk1ZjUzODhkZGMzYzhmM2FiYTlkMWUifQ"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/api/lifecycle.ts#L19-L32",
+          "version": "repo-lines-v1:sha256:63cf4827e98c1979cd409a38d09a338f60cdc8d4d1716ccb7736f26f7501b298:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwODliMjhkMDFiMDkzNmM5MTI3ODllMzNhNmYxNDFjZGIyNzA2ZGI2NGRlZTRhYjQwODQwODA5Y2U1ZjQxODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ3ZjRiMmQ3MTI5ZmU2OTM5YmVhZTFmMGVhNjg1ZTI1MGJiYjhiZDI3ZTE1ZGE0NGNhOWJiZDQ2YzAzZDk3MmEifQ"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/api/trial.ts#L45-L47",
+          "version": "repo-lines-v1:sha256:29e1d7a5b7b237b8fc95b5244205cd0c508e42a56b49b08c7ccaf893a5e4e817:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTgyNGZlZjdkNjE3MTU2MzJiM2I0MzZlMDcxNWZhY2M5ZDU1MTNiYWQ1OTE0MTA1MjY3MGJkN2FmMWFiNjc4MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWU2MzliOTQyNzhhMzhkNDU2MWM3OWY1MmQzOWFkNWEyNTg4NjIxYmI3N2FmMTE0OTFhNDkwMGJkOTA0M2E0MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjU2YzViYTcwNWNmY2RlOTk1Y2I2OGMwZTQyZmJhOGQ4OTgyZjc0NDFmYjg4ZmM0NjgyYjQ0NmE1Yjk4ZWI4YyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_693aeeca2f1148a28c0cb2817d65cd96",
+      "statement": "`GuestAnalysisQuota`는 Asia/Seoul 자정 경계의 `{ day, used }` 메모리 카운터이며 `globalThis`로 같은 프로세스 안에서만 공유되므로 웹 인스턴스나 워커 프로세스 사이에서는 공유되지 않는 근사 상한이고, `commit`과 `release`는 한 번만 정산된다.",
+      "evidence": [
+        {
+          "resource": "repo://src/shared/config/server-env.ts#L30-L32",
+          "version": "repo-lines-v1:sha256:ac9680070b4f2dab87cb0a4f737e9390003027f5f9136c8061159828b8063535:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjJhNDllOGYwZGNjNzQyMzJjMTBmZjVmOWRlZTYzNDljZjJlMjRkZWZlYWM4ZTA2ZGQ3MjIxNTZmZjZiMjM4MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDE2MjI4YzNjYTEzMzRjOWFmMDE1N2MzMTY0ZWU4NDUyMzQyMjdhNmE5M2QyZGU3MzM3OGMwNDc0N2NmZTM5YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWUyODE1MDFiNzA4MDFkMzM4NGMyZTkyYmE2ZGRlNDFkZmQwZGY2NDRhMDMyZDVmYzMxZjU1MzQwMTE1YzQ5ZCJ9"
+        },
+        {
+          "resource": "repo://src/shared/lib/admission/guest-quota.ts#L3-L45",
+          "version": "repo-lines-v1:sha256:80b17229c3b0b58d567cbaa647c7ba6ca7527b4ee04b58ae0ed950db7b425beb:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI2Y2EzZGFmZjE5MGY2NjAxZTI0ODFjZDU1YjYwYjA2MWM1OTNlMDdmM2Y1NTRjNjk3YTRlNDkwMWQ1NWUxN2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5NzNmMzg0NGJmZTdjNTI5YmNlZmYzNjYxZDBlMTRjZDY2MDZmYWM2ZmM0OGU1OGE0NjM0Y2JiZTUzMDYzM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUwODRmMjJkMzM5ZDNmNzA4N2JlNDYxZjk4MjQ2YmZjZTRhNWNmYmZjNTk2MDQzNzE1ZmY0NmVlYjgyMjMwZDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://tests/guest-analysis-quota.test.ts#L6-L41",
+          "version": "repo-lines-v1:sha256:162749970b9927ecf60d8ae747c73e4b14abd7ab3a12ca86e4f16dee4a85d7fb:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUxYTNiNmQxM2NiNzk4MGVhMDBhMzAwNzE4NTA3ZTdmNTVmOTkwNzUxZGRkZWE2OWRmMzhmNDlkODk2NWEyODgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcwY2YxMzU4NzYyNWJhZmU1YzZiNGVkMTk3ZmI2YWQzYjJjMDExMTU0NjhlY2IwNDAxOWUyZTE2MTI1MDMyMGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e95dd6839a584b638d8f7da86ac28f7b",
+      "statement": "비회원 분석 접수는 본문을 읽기 전에 쿼터 슬롯을 예약하고 작업 행이 커밋됐을 때만 `commit`하므로, 영속 작업 생성 전 실패는 예약을 반환하지만 작업 행이 생긴 뒤의 실패는 그 날 사용량을 유지한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-analysis-jobs-route.ts#L96-L111",
+          "version": "repo-lines-v1:sha256:19510e74ad0e64fa504c5c5c57c07c13e47870d06ead3aec2c385d30cb11125a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzZDk0OWFlNTlmMjE5YjE3NzVjYjMxYmMxYzc4ZDQwMGZhOTY4MTRlZjY1MDVmYzRhZGYwNjNhM2ViNjMzODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhhZjZmZTBjYThhMzhmZDA2MTcwODhhMDdiNmY2NThkN2NmYWRlM2UyOThjMGI1M2E1Zjk2YTg5NDdjODQ0NWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMwNTU1YzViMGMyZDQ1YmI4OTBlM2I1ZmQ1ZWM2YjJiMmVmYzE2OGUyZTI1ZjI0ZGFkNTFiMTg2Mzg1OTBhOTIifQ"
+        },
+        {
+          "resource": "repo://src/features/analyze-vocal-profile/api/analysis-queue.ts#L119-L237",
+          "version": "repo-lines-v1:sha256:d31171074bceeabe50f9f0a20f9bac6488d8c3a34a8c34fee65e0fa25e55f629:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE5LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI5ZmI1NmM3ODE0NmVkZjhhOTJmZDE0NGEzNDA1NGQ4MDhlN2RmNWRmNjZiNjNkNTljY2FmNmE2YmE4MTcwOGJjIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI5MjA0MGUwOTVhOTRlMmFkYTc0ZTQyMWYzNzE4NzUxYTkxYTgxMGJmZDY2ZjQ4ZjRlOTM5YzdiNzQ4MGViNjcwIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJjNjdhZTJiNmIxNDhhNDVkMjNkMTA3ZjYwMGIwNTY4YWI4MGYxYzhjODNlODgxNjhmNzQxMThiYWNlNDcxZjI5In0"
+        },
+        {
+          "resource": "repo://tests/guest-analysis.integration.ts#L419-L457",
+          "version": "repo-lines-v1:sha256:7e78a247fcbcd5ddbdd8d71a5fe1d238465d13f03caa55bfc4ee9bf910c1ff83:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFjMWI1YjQ0NDkxYzQ0ZWEwNDhmNjYxMzZhNmMxN2NmY2JhYTRmNzgyNzJjYjY0MDg5MWVkNGVkN2U4NTFiNzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkOTgzNTQ5OWU1YmE5MWY4NzI2N2M5NTJiNzhlYWVkZDZjNDY2Zjk1YjY4ODFiMDdiNDZjY2FlYzBjZGYxNDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI3ZDY0MTk2ZjQ4OGNiZmU2MTQ3ODQ5Y2Y5YWUyNTE1Mjk1NzgyNzY0NTdkNzQ3YTFlNDBjMWY4MzIwNmNkMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZkNTEwZjIxMGExNTFhOGIyYmFmOGFhMWNjODZmY2VjN2I1MTVmZmZhYjFlODkxODRhMWE5YjdhOWNjMjg5MmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e3b08dd913be4bcd91a3149896f88f27",
+      "statement": "`markGuestAnalysisTerminal`은 `userId`·`jobId`가 맞고 `claimedAt`이 빈 trial에만 적용되어 성공이면 `consumedAt`을 채우고 성패와 무관하게 `expiresAt`을 24시간 뒤로 옮기며, trial을 갱신했으면 알림 생성 전에 반환해 체험 계정에는 분석 알림이 쌓이지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L122-L136",
+          "version": "repo-lines-v1:sha256:5d4bb69e8e5d88de5dff2e2042e97a24f02cc2b1f3f3f6355d29f3669953e83e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhMDE0OGFlNjBlMjdlYjVlZDUzYmFiNjhmYjZjYjY1M2Y2OWNkMmFmOGU2Yzc5MWMwMjJlZjgzNzIxY2E3OTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM4ZjAzYWQ5YTUyY2JkNjBhZmU2ZGU3M2JiODA1YjA1MTkwZWViNzEzMjEwODM5YmI2MzYzYTEwYzg3OTNjNTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ0Mjk4NzlmNjFkOTgzOGI5ODg2OTc3ZDk1ZmRkYmMyYTI0MDdiMTU0NzI1YmZkNmU3NzVjOWQ3MWY1MjBjMDkifQ"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L218-L222",
+          "version": "repo-lines-v1:sha256:45ccb05d10f2f89267d9b4c0acf03833aee940e89323f289dc63190a357278a7:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjJkMTFjYWY0M2U5N2VmMzY5ZTZiZWVkMWEyNjhiZDA1ODM4ZjI5YjlkZDI1NGJmNjliYTY0ODg0MTQ3MjM0YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGUyZTFlNGY0YjYwZTJlNTAzZjE3ODc1NWYzMzMyMWM2ZjAzYWE1NGI3NTRlNTJmZTgzZDFkNTUzZGVmNWVlZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjAxYzAxMzAxNjYzNzdlZWZiZTNkYjk4OGU1MzMyMTVhMDQyMDEyOTViMDY0M2Y0ZjMxM2FiZWE2MDFmZTFmZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTJiMTMzMGFkMjA2MWFmNGRmOGQxN2NiM2FmYzA0M2QwNTRmNGY0ZTY1Y2Y0MmU1N2JkNjNiOGNkNzE1MzQzMSJ9"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/api/lifecycle.ts#L43-L55",
+          "version": "repo-lines-v1:sha256:112e6b00535fb482321d2f6f11ecdb6eb095bf2bfd0a1d170376c55d9ccaaa25:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmYTA4Y2I5Y2NhNDAxZmUxZmQ4Zjc1YmQ2MWYyNTk3YWY4NmU4Mzg2ZjAxZTIzNjAwMDgzMTlmZjM1ZGZiNjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFkNzk1MzdkMjkzMmQ3M2NmNjA3MDFhZDcxOWZmNzRkM2RkOGI2NTFmMGNiYjQyZTU3NTA1N2Q5M2M5MGIwYmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2NGJhMTg0NjdmODQxODA1YjEzNjE0ZjAzNTdlMmZhOTQ4MWVhZTdhZmVhNzcwOGFhNTE5NDcyMTAwZDg3N2IifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_074ab3a7c47342ce84d3c0c99cc7bed7",
+      "statement": "결과 저장 API는 `allowGuest` 없이 세션을 요구하면서 handler에서 체험 쿠키도 함께 읽어야 하고, 이미 저장된 trial에 대한 반복 저장은 새 프로필을 만들지 않고 같은 `profileId`를 돌려주며 다른 회원의 저장 시도는 403으로 거절한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/guest-analysis/guest-analysis-claim-route.ts#L6-L27",
+          "version": "repo-lines-v1:sha256:123ea1e75a66c106a56b7c15ad61b4681cc22ed9c66444602beb68be2bdc2e19:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzZDk0OWFlNTlmMjE5YjE3NzVjYjMxYmMxYzc4ZDQwMGZhOTY4MTRlZjY1MDVmYzRhZGYwNjNhM2ViNjMzODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkOTMyMzQ5ZDUxNTg4NWM5NTIxNmIzMGJhZWE2YWU5NDJkNzdkNWUxY2Y0MGUzYjIwNzEyYTdmOGNjOTY5YWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMyZjg5MGNmODZiMmRmNGRmNjk0YTA4YThjNjEwOTRkYjE4ZjAwODRmNWY5MjdlNDJjN2JmYmJkODM3YWM0ZmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/api/lifecycle.ts#L57-L112",
+          "version": "repo-lines-v1:sha256:9fb57da581510c5cbb5046dadc8b537c54bf6acd877e82a920fbdd8e47f18cfa:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5OTBlYjc4YjhlYzU3NzFlOTcxM2YzNmQyYzU3MjJlMmNmZDA4ZWRmZTE2MTBlNzNiNzFmZTExZDBkYmM2YjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViMGNmYzlhYTY3OTZkZjk5OTliNGRhZjZhZmY4NTg0NTIwMmIyNTQ3NWRlMzJlYTM2NmNiZjQyZjU2MGE4MjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVmNzgyMzdlMjAwZTgxYWE5ZGQwZjBlY2VhMGY0NzNlMzg1MGExODNlNDNiZTgzMDcyMzJiNTNhYzNlZjM4ZGEifQ"
+        },
+        {
+          "resource": "repo://tests/guest-analysis.integration.ts#L316-L336",
+          "version": "repo-lines-v1:sha256:ce490346ecb4a56d3fb8946ad2ebba4a3b4e229e8192660b7ed58e3f8cc2c377:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5NzhhNTcwMGJhMTAzNjBjNWM2MTEzMTA3MTI1YTUxY2E3MDk2YTFkMjQ0ZDVlYzUxYzA3N2M1NjUxZDJhYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4MmY2NjRmMjQzZWJkZTY5ODUzNWFmODg5ZTNlMWI2YTFkNWMyNDhhNGRkNzhkNGRhNzI0ZDdmYjYyZWMwMDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVlMjJkN2ZlOWRmZGJlNzEyYTI0OWI5ZGJlODUyZTg4MWQxYjMyMDU1MjU2MWMyYTU0ZTA2ZDY3Mzg4ZDNiZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI3MjVkNThiMjZmMGEwN2RjYzgwYWViMDk3MmQwYjY1N2M5OGIzZTM4YTMyNDkwYzEyZWYwZTcwNmNjM2Y0OTYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2972687c92d04c89972aef0776c71179",
+      "statement": "`claimGuestAnalysis`는 한 트랜잭션에서 프로필·분석 작업·`MediaAsset`·`MediaOperation`의 `userId`를 회원으로 옮기고 작업 키를 `guest-claim:{trialId}:{jobId}`로 바꾼 뒤 trial에 `claimedByUserId`·`claimedAt`을 채우므로, 중간에 실패하면 소유권이 하나도 넘어가지 않고 원본이 게스트 소유로 남아 다시 저장할 수 있다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_pages/profile/ui/save-trial.tsx#L36-L67",
+          "version": "repo-lines-v1:sha256:82f9a8400dba34c3beb639540af3e120cbaf117e65d1483e1fa24f2733fc53ac:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiOTBlNThhNjYxMjgyNjdiMTg5OGU2ZGU1ZWNmNjVhYzhkNzc5YmE3OGY2NmQzYzdmNTcxMzJiMzdkOWI5ZWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAyNzlkMDkyYmRmMzNmZDU2YzA5ZjE5MmJkNmQxZDAzZjhkZWEwM2U0YWNmZjcxMWQ3MjliMWZiMGYyZjI2NGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEzY2NiZjk3NWIwYmFmNjcxZGNmNjc4N2JhNDViMDU4NmNhY2I4YzU5MGZmYjgwMDFmYzY0ZjAyMjdmYmRjNzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEwMDVhMTdmYjY4YWZjY2MyZTViOTNhYTkyMThmZjlmNTc3ZjQyZjE5Nzk2M2Q2MDMxMTI2MDcyNjU2NDg0NDMifQ"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/api/lifecycle.ts#L84-L111",
+          "version": "repo-lines-v1:sha256:6f05f3b468f4ec5b71fd3c98b231c27c6c4e63936f2924a85c5e52666374ea03:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwNTE1YjEwMTgxOGQ0NWE5NTEzYzM3NWY5MzE4NGYxMzI5ZWJiYmE2Mzg4NjQzMTI4MWEyMWMyZGU2MTk0MTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmZjBkM2Q4OTIyZTc1YjYzYjcxNTVjYzA3Y2ZlODk5Y2VhMzkxMGI0YTkzN2U2OGNkMGQ1NjVjM2EzY2YxZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU5YmU2OWI0MjA3ZGY2YTMzNTJkZDdjMzk0OWM5Yzc4OWFjZTA0ZTZhZjg0YzMwMzkwYjA3OWQyMGNiOTQ3MmUifQ"
+        },
+        {
+          "resource": "repo://tests/guest-analysis.integration.ts#L292-L299",
+          "version": "repo-lines-v1:sha256:c019150a042208633daa2d7ad30894cdbced5a87acae82c257577dccfad41041:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjcyOWZjNWJlYTcxY2MzMzFkMjA3ZjNlMmY4ZmNhYWY4OTAxZDcwMzg2MzVhMjc2NjU4ZTBkYzFjMWMxNTVjMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmVmNjkwMDdhN2U3NWNjZGIyYzE5ZWZhOWQ5NWM0M2JmNzg3ZjMzYTJiOWM4MjY1YzRhNWNlNjQyZmU2ZGJlYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjQwOWE1ODYxZTY2ZGNkMDg1YTExOTc0ZDYwYzc0MDRmNmQzMjU0ZTFjMzZlM2EzMTIwNjJjOWNlM2M5MDQ0NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTA5ZDUxNGY0YmViMmU0NDk4ODg5N2UwYmFlYzRmN2JmOWZmMjI2MjhhNmNkM2NiZmU1NmZiMTgyZTE0ZDhjZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_8d02d41a5f654b64923878b87a400d27",
+      "statement": "저장 후 복귀 경로는 `guestRecommendationReturn`이 `/recommendations/{profileId}` 또는 `/recommendations/{profileId}/songs/{곡 UUID}`만 허용하고 나머지를 `/vocal-profiles/{profileId}`로 떨어뜨려 외부 URL·재귀 저장 화면·인코딩·경로 이동·CRLF 우회를 막고, 저장 화면이 응답 `profileId`로 같은 검사를 한 번 더 수행한다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_pages/profile/ui/save-trial.tsx#L18-L34",
+          "version": "repo-lines-v1:sha256:d63117dd88e90acf51c46d8f4245de0c7083dbd10d9cc6133851f58c6d86a03b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEwODI4NWE5YTA5OTBkNzQ4NmZjOWIxYzQ5ZTM2ZGM4ZWQwOWE5NzM4ZGU4YTY5MTg2ZGJhMjU0OWU1NTAyMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlZjAyMDY4MWMzNGYzOWQ5N2IzZTAxZTk3MTNiMWIwOTVkNDk5ZDI3MTBiMzIwNjY5ZjZmNzNlMjMxM2VjOGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMyYzRkMTMyNmI4MmIwYmFhZDNhZGE4OThjYzcxYmQ5ZTg1ZjJiZWViZDU4ODNhMTRmZjE0ZjNmNDA3MmU2NjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM4N2Q3MjJiMWQ4MDk4OTFhZWU0OWJhYmRhYWRhNTM4NTE1MzY1MmZkZWQ3NWRlNDc4ZDk2MTNiY2I5NWFhMTcifQ"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/model/navigation.ts#L1-L19",
+          "version": "repo-lines-v1:sha256:136c88081dfd5895ee81f7249d8a92038776c3f63bc7d91f1000adef446c6ebf:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjViYmFlZTJmNDUxODBlYTE4MjAwMzQyM2UxN2RlMGQ1YjNlODg1YzdkMGU5OWZkZGYxOWRlMzA5YTE2Zjg4YTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://tests/guest-analysis-navigation.test.ts#L8-L38",
+          "version": "repo-lines-v1:sha256:5efd34c9ad6171095f5b0c95e4517c29a859a5e96fb8479b1663b9f008be7598:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiZjk5NzY5OGZmZWM1ZDcxMGZmYmYxZDc3OGExYTBhNTYxYjIxZTk1N2Q4MjQzNGE0NWYwNmE2NTQyN2QxNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVhMmNiN2UzNjVkYTExMTVmOWU5Y2E0YWRhODMyMTkwMTlhYzVkMTBjNjQ4N2ZiZWM1MzkyMGJjNjcwYzBiNjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_113432ea8df34847880af755895a0ec8",
+      "statement": "만료 정리는 보컬 분석 워커 러너의 레인 0이 5초 간격으로 호출하는 `cleanupExpiredGuestAnalysis`가 `claimedAt IS NULL AND expiresAt <= now` 행을 `FOR UPDATE SKIP LOCKED LIMIT 1`로 한 건씩 집어 `purgeGuestResult`로 처리하는 방식이고, 저장된 trial은 `claimedAt` 때문에 후보에서 빠진다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/background-jobs/vocal-profile-analysis/runner.ts#L22-L35",
+          "version": "repo-lines-v1:sha256:e7fd1b9d00367387821ad6ce67954a677600abb5dd8759f3f6e1cc65155c613d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzZTdiNGMyZTk0YTAyYzU4MGY4NTQxMWI4YTQ5OTAyNzI3N2E5NTFjMDUwODkzMTY1YzVkYzdjNTQ2Y2Q3ODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiOTJmNmM1NWVjZTYxZjI2Njc0N2U1ZWJlYmVkOWZlMDUyMzRlZjYyMWY4NDMxZWU3NDE1YmYyNGVhY2ViN2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdlZWQ5MjJmNjNjYWY1YTQzOWIxMjhjZDg2YmJmN2VmY2ZiNDkwMTlmYjcwNjg2ZDNhMzhlODcyNjYyMzU2MDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUxNmRlYTJkYzVkNDc0NzNkNWMxOTYyNTUxNTcxNDYwNTEyOTQxYzRjYTg2ZDU4OGMwNjk1ZGIyMTRmNzE5OGQifQ"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/api/lifecycle.ts#L144-L158",
+          "version": "repo-lines-v1:sha256:5dd54dd91d12880dee75b7893782e80b7c2a8e37531173e7ba235e547f9f9adf:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxNTEzOWUzNTIzNWQ5NGE3NTc4MmU2N2ZiMGIwNzRkNGI0NTUyMGQ1ZGY1ZjU5NDE3NjRkNWI0NmVjZTE1ODAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://tests/guest-analysis.integration.ts#L336-L338",
+          "version": "repo-lines-v1:sha256:d533b0f93de1d5be8d129df033c7a8b566715a7b08093fe7f2d236d982dc6a29:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjgyZjY2NGYyNDNlYmRlNjk4NTM1YWY4ODllM2UxYjZhMWQ1YzI0OGE0ZGQ3OGQ0ZGE3MjRkN2ZiNjJlYzAwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2RhNWZmMmEwNDFhODIwNTZkZGYwZTA3MGY0ZDkxYTIzNGQ5NGU1NjMxOWYyOTE3NDc4YTUzYzFhMDk3YmE3YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2Q5YjFmOTkyN2Y3NzA4ZTZmMDExMjQwZTEyNWQ2MjYzMDhlYjVjNzIyMjA2NWEyNjg4Njc1NzJkYzZmODliYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTBiMjI1ZTNmOTBmMGYxNmNiYzkzMWI2MTMwZGUwMDEzMGVjNWJkMTY2ZTc2MDFmYTU2MjRkNDY2OTI4MmQxNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f04a688a619b4dcdbd49d72f5a27a59e",
+      "statement": "`purgeGuestResult`는 진행 중 작업이 있으면 `GUEST_ANALYSIS_PROCESSING`으로 멈추고 프로필·녹음을 지운 뒤 작업의 `sourceAssetId`를 비우고 남은 자산마다 `scheduleAssetDeletion`을 호출해 기존 삭제 예약 경로를 재사용하며, `consumedAt`은 지우지 않고 `expiresAt`만 `null`로 되돌린다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-detail-route.ts#L68-L82",
+          "version": "repo-lines-v1:sha256:3e5bcd948d55b529c2042a06596a818872191be436e06836bdcc9d0a39790cc1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkNDZmOTQ2ZWZmZmE4OTBjZmFiYjU3NjhkMWRlMzA3MzNiOWQ2NmI3MTFjZDM0MDk0OTUzMzQ4NjI0ZTFlMGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU2NTE2MjEwODhiMmU5ODgxNTBiNTczMjRmMjlhNzliOTQzM2E1ZGM3Y2NkMTE4NjlhMGM3M2NjZTM4NzI3ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3YmIxNDQyMGVjMDIwYTJjNzBkM2M2ZmRmYmI0MDY5N2RmN2NhM2M2ODNiYWUyZjgwNGM3ZTQ5ZGM1M2ZiN2MifQ"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/api/lifecycle.ts#L114-L132",
+          "version": "repo-lines-v1:sha256:8edc4313a832478558c7df3f849652109bee648667719b8639b5b3249929881b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwMDVjMmE2NDU1YzZkYzJkNTVmODk4NzBkY2YzMjMzNmU4ZDc3MmY4OGE3NzMyOWI2NDZiNTRlMjRmMjAzODgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBhNjJiN2Y3MmRmNzZmYzZjMTY0MjRlZDNiYTE3YWJlYjgxOTE5MmYzZjY2N2M1MzJjOWViNjRiMjM2OTZjZTkifQ"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/api/lifecycle.ts#L134-L142",
+          "version": "repo-lines-v1:sha256:c610ce599b890057a7712b557bb7ad46dba4506f1a2c4b7dcfa4188606985fbe:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2EwMDc0ZDQ3YmEwZTk5ZDdiZGY2OTM1ZDcwZGM3NDcyNzI5OWRkZDhjOWY1ZjYzNmU0YWI1YjFiYTg0ZDU2YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2U2Y2UwOGRiZGExN2RjNWQ2ZDE1ZjQxNmRiYmRlOTI3MzJkNDU5NTIzNDJhMTFiNTc3YzlhYTA3MDJhNTBjNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDIxMTgyNjc4MjU0MWM4MjE5OTQzMWY3OWE1ZTVkMzcwNzIwYWZiMmUyZGUxOWJiZDZiNjRmYmUzMGMxZTVmZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_3a4cd2cc47124173b6024782d07a422b",
+      "statement": "체험 결과 열람은 `canReadGuestResource`가 trial의 읽기 가능 여부와 `jobId` 또는 `job.vocalProfileId` 일치를 확인하는 방식으로 제한되고, 체험 사용자는 자기 결과를 직접 삭제해 `202`와 `mediaCleanupPending: true`를 받지만 무료 분석 기회는 복구되지 않는다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/vocal-profiles/vocal-profile-detail-route.ts#L68-L82",
+          "version": "repo-lines-v1:sha256:3e5bcd948d55b529c2042a06596a818872191be436e06836bdcc9d0a39790cc1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkNDZmOTQ2ZWZmZmE4OTBjZmFiYjU3NjhkMWRlMzA3MzNiOWQ2NmI3MTFjZDM0MDk0OTUzMzQ4NjI0ZTFlMGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU2NTE2MjEwODhiMmU5ODgxNTBiNTczMjRmMjlhNzliOTQzM2E1ZGM3Y2NkMTE4NjlhMGM3M2NjZTM4NzI3ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3YmIxNDQyMGVjMDIwYTJjNzBkM2M2ZmRmYmI0MDY5N2RmN2NhM2M2ODNiYWUyZjgwNGM3ZTQ5ZGM1M2ZiN2MifQ"
+        },
+        {
+          "resource": "repo://src/entities/guest-analysis/api/trial.ts#L49-L56",
+          "version": "repo-lines-v1:sha256:eff7d0bed279b002d0026b4e54214a62b40acdef96f19c7e63f3da7bf96148d3:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2VjNGMyNjk3YTE2NDU2N2Q2Nzc3YjQ3M2E1ZjA1MDM5NmVhNjgyOGEzOWMyMzYyYTZiMDIwY2JlNDE4MjE5ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzk4MDZmYTdhNTczMjBkNzE1M2JiNDRkMWRkZGU1ZGI5YjhiOTZlYjFjMmYwMzk2ZjE3MzU5ZTg1Mjc4YzQ3MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://tests/guest-analysis.integration.ts#L344-L379",
+          "version": "repo-lines-v1:sha256:fcc7688a5ed695c6edcc6bbf2b1c99da38124ded3e6dd2f86a892e1fca449ba5:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdkYWM4ZTAyM2YwYTY5MDk1MGJkNGNhZGNiZTZjN2JkYTUwMjdlZjE0NjgyYzY1OWU1MzFlNjhkOTBjOTkwNmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkOTgzNTQ5OWU1YmE5MWY4NzI2N2M5NTJiNzhlYWVkZDZjNDY2Zjk1YjY4ODFiMDdiNDZjY2FlYzBjZGYxNDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI3ZDY0MTk2ZjQ4OGNiZmU2MTQ3ODQ5Y2Y5YWUyNTE1Mjk1NzgyNzY0NTdkNzQ3YTFlNDBjMWY4MzIwNmNkMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVmOGZlZTRhMjE4MDM2M2Y5YzZiZWMyMzg4MDQwNmYyMmQxNDAzMTVhNjIyMTg2Y2NiZGJlYzE1Y2NmOTAxYzEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_17de6cb05c344af3989a2e80ea64a055",
+      "statement": "체험 사용자는 만료 전까지 추천 조회를 할 수 있지만 AI 믹싱 접수는 정식 회원 전용이라 401로 거절되고, 화면은 티켓 확인 버튼 대신 로그인·저장 링크를 보여 준다.",
+      "evidence": [
+        {
+          "resource": "repo://src/_app/api-routes/recommendations/recommendation-detail-route.ts#L22-L38",
+          "version": "repo-lines-v1:sha256:bd654eba21c3a2415dcff6414bf545820ed03d40a82079abe9efd1190d1ffd4c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlMDZiNzQ3MDEwODNhNzgxYWMyYWUzMjZkZjdjNTljNDFlMDU5ZmE1YTJhZjQ1NGNiNDNiNDJmOWMyYzc1NTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzZDJmNTM3MDdkNTA0OWIzNmQzZTcyZjllZDY1YTNkMzQ5NjY2OGRhN2IzZmE5ZjM2MzlmNzBhZjU2ZjhhMmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5NGZjMGMxNzNkMWVjM2ZjNTAxZDdkZmE5Mjg1NTAxYzUyN2NmYjQ3MTI1ODNkYTNjYzM2MTgwNTY2YjRiZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/features/create-mixing/ui/recommendation-mixing-action.tsx#L38-L57",
+          "version": "repo-lines-v1:sha256:982e8c5febb958d448b2fdb5916b7af4930b992375557b8206b853d3db842045:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2ODcwZTI2MDhjNjdiMzQ2ZjFjNzM0MWFkMjg1OTRhM2RiODRlOWYyZGIwNTVmZmRmYzc1NDJlYTJlNjVkODgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmYjg0NzcxNDQ3ZGZmZWE4ODBjNGQ2ZmMxMjJlNWRkYTYzODRiYTY3ZjUwODdiMzRkNjllYjk0ZTExOWNjNGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3ZjVkZjYyNmY0MmE3Njk0ZDk0ZDg2YzQyMGY3MDYwZDk5MjJhMTkzZWEzZjhjMzJmNzk3M2MxNWFhZmY1YTkifQ"
+        },
+        {
+          "resource": "repo://tests/guest-analysis.integration.ts#L489-L584",
+          "version": "repo-lines-v1:sha256:c68ea78e4b374109c99a645be9381dbf0d3bc5fbc4e644ab4858464132f096f6:eyJzZWxlY3RlZExpbmVDb3VudCI6OTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmMzY2ZDg3ZTMyYmQ5YjhiYTBiYzZmNjAwYTFjNjcxMTM1YmUxNWVlMzBjNmRiYjg2NWM5YTA4MjU0YTE5ZDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlZjY5MDA3YTdlNzVjY2RiMmMxOWVmYTlkOTVjNDNiZjc4N2YzM2EyYjljODI2NWM0YTVjZTY0MmZlNmRiZWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI3ZDY0MTk2ZjQ4OGNiZmU2MTQ3ODQ5Y2Y5YWUyNTE1Mjk1NzgyNzY0NTdkNzQ3YTFlNDBjMWY4MzIwNmNkMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhNWQyODQ1ZTdhNGUxM2E1OTcyZDc0N2RkMTA2ZDBlN2VhNzVhODI4OTNlNTVlNGZlNjJjNWJlYjM2MTAyMDQifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-30T13:29:10.337Z"
+  }
+}

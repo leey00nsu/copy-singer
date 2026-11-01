@@ -1,11 +1,8 @@
 ---
 type: reference
 title: Job 큐와 lease 복구 계약
-description: PostgreSQL 작업 행을 세 워커가 어떻게 점유하고, lease와 deadline을 어떻게 검증하며, 재시도·종료 상태 확정·외부 작업 정리를 어떤 규칙으로 처리하는지 정리한 참조 문서예요.
+description: PostgreSQL 작업 행을 세 워커가 어떻게 점유하고, lease와 deadline을 어떻게 검증하며, 재시도·종료 상태 확정·외부 작업 정리와 유휴 반복의 정리 단계를 어떤 규칙으로 처리하는지 정리한 참조 문서예요.
 tags: [jobs, queue, lease, deadline, retry, worker, recovery, reference]
-verified:
-  - by: openwiki/0.5.2
-    at: 2026-09-18T16:47:52.081Z
 sources:
   - id: openwiki-source-5b54a58d1b51cd490b0e7162
     resource: repo://package.json
@@ -43,9 +40,14 @@ sources:
     resource: repo://tests/admission.integration.ts
   - id: openwiki-source-79036b766628c5e1448deb01
     resource: repo://tests/runtime-timeouts.test.ts
+  - id: openwiki-source-28adc6ef840aa586dc1aceef
+    resource: repo://tests/vocal-profile-analysis-queue.integration.ts
   - id: openwiki-source-d6b6d9cc70a3fbd449772f18
     resource: repo://tests/worker-recovery.integration.ts
-generated: { by: "openwiki/0.5.2", at: "2026-09-18T16:47:52.081Z" }
+generated: { by: "openwiki/0.7.2", at: "2026-11-01T16:00:39.866Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-11-01T16:00:39.866Z
 ---
 
 # Job 큐와 lease 복구 계약
@@ -78,7 +80,7 @@ stateDiagram-v2
 
 ## 점유 쿼리 규칙
 
-세 워커의 점유 함수는 같은 모양이에요. CTE로 후보 한 행을 고르면서 `ORDER BY "createdAt" ASC`와 `FOR UPDATE SKIP LOCKED LIMIT 1`을 걸고, 같은 문장에서 그 행을 `UPDATE ... RETURNING`으로 갱신해요. 후보 선택과 소유권 기록이 한 문장 안에서 끝나므로, 동시에 도는 다른 워커는 잠긴 행을 건너뛰고 다음 후보를 봐요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L97-L136), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L47-L83), [song-analysis/worker.ts](repo://src/_app/background-jobs/song-analysis/worker.ts#L33-L64)).
+세 워커의 점유 함수는 같은 모양이에요. CTE로 후보 한 행을 고르면서 `ORDER BY "createdAt" ASC`와 `FOR UPDATE SKIP LOCKED LIMIT 1`을 걸고, 같은 문장에서 그 행을 `UPDATE ... RETURNING`으로 갱신해요. 후보 선택과 소유권 기록이 한 문장 안에서 끝나므로, 동시에 도는 다른 워커는 잠긴 행을 건너뛰고 다음 후보를 봐요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L97-L136), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L48-L84), [song-analysis/worker.ts](repo://src/_app/background-jobs/song-analysis/worker.ts#L33-L64)).
 
 | 항목 | `MixingJob` | `VocalProfileAnalysisJob` | `SongAnalysisJob` |
 | --- | --- | --- | --- |
@@ -133,14 +135,14 @@ lease 객체를 만들기 전에 `startJobLease`는 `fenceJob`을 `allowDeadline
 | --- | --- | --- |
 | 접수 시도 표시 | `false` | deadline이 지난 작업은 외부 접수를 시작하지 않아요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L371-L377), [song-analysis/worker.ts](repo://src/_app/background-jobs/song-analysis/worker.ts#L171-L177)) |
 | 성공 확정 | `false` | 결과 저장과 함께 deadline까지 살아 있어야 해요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L507-L535), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L101-L137), [song-analysis/worker.ts](repo://src/_app/background-jobs/song-analysis/worker.ts#L223-L313)) |
-| 실패 확정 | `true` | 예산이 끝난 작업도 `FAILED`로 마감할 수 있어요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L251-L276), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L200-L215), [song-analysis/worker.ts](repo://src/_app/background-jobs/song-analysis/worker.ts#L78-L112)) |
-| 이미 저장된 보컬 프로필 복구 | `true` | 이전 워커가 프로필을 저장한 뒤 죽었다면 deadline이 지나도 `SUCCEEDED`로 맞춰요([vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L94-L102)) |
+| 실패 확정 | `true` | 예산이 끝난 작업도 `FAILED`로 마감할 수 있어요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L251-L276), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L203-L219), [song-analysis/worker.ts](repo://src/_app/background-jobs/song-analysis/worker.ts#L78-L112)) |
+| 이미 저장된 보컬 프로필 복구 | `true` | 이전 워커가 프로필을 저장한 뒤 죽었다면 deadline이 지나도 `SUCCEEDED`로 맞춰요([vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L95-L103)) |
 
-`JobDeadlineError`(메시지 `JOB_DEADLINE_EXCEEDED`)는 예산 초과를 뜻해요. 발생 지점은 세 가지예요. deadline 타이머가 controller를 중단할 때, `lease.check()`를 불렀을 때 `Date.now() >= deadline`일 때, 그리고 워커가 처리를 시작하기 전에 확인하는 예산 검사예요. 예산 검사는 `attempts > maxAttempts`를 보고, 믹싱과 곡 분석은 외부 job id를 받지 못한 채 접수를 시도한 지 300초가 넘은 경우도 포함해요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L312-L318), [song-analysis/worker.ts](repo://src/_app/background-jobs/song-analysis/worker.ts#L141-L146), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L264-L265)).
+`JobDeadlineError`(메시지 `JOB_DEADLINE_EXCEEDED`)는 예산 초과를 뜻해요. 발생 지점은 세 가지예요. deadline 타이머가 controller를 중단할 때, `lease.check()`를 불렀을 때 `Date.now() >= deadline`일 때, 그리고 워커가 처리를 시작하기 전에 확인하는 예산 검사예요. 예산 검사는 `attempts > maxAttempts`를 보고, 믹싱과 곡 분석은 외부 job id를 받지 못한 채 접수를 시도한 지 300초가 넘은 경우도 포함해요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L312-L318), [song-analysis/worker.ts](repo://src/_app/background-jobs/song-analysis/worker.ts#L141-L146), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L269-L270)).
 
-두 오류의 처리 방향은 반대예요. `LeaseLostError`는 소유권을 잃었다는 뜻이므로 실패 확정 자체를 시도하지 않아요. 세 워커 모두 `error instanceof LeaseLostError` 또는 `lease.signal.reason instanceof LeaseLostError`이면 실패 확정을 건너뛰고 조용히 반복을 끝내요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L545-L560), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L324-L341), [song-analysis/worker.ts](repo://src/_app/background-jobs/song-analysis/worker.ts#L314-L324)). 내 lease가 만료된 사이 다른 워커가 그 행을 가져갔을 수 있으므로, 남의 작업에 `FAILED`를 덮어쓰지 않으려는 규칙이에요. 반대로 `JobDeadlineError`는 내 lease가 아직 유효한 채 예산만 끝난 상태이므로 `FAILED` 확정으로 이어가요.
+두 오류의 처리 방향은 반대예요. `LeaseLostError`는 소유권을 잃었다는 뜻이므로 실패 확정 자체를 시도하지 않아요. 세 워커 모두 `error instanceof LeaseLostError` 또는 `lease.signal.reason instanceof LeaseLostError`이면 실패 확정을 건너뛰고 조용히 반복을 끝내요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L545-L560), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L329-L346), [song-analysis/worker.ts](repo://src/_app/background-jobs/song-analysis/worker.ts#L314-L324)). 내 lease가 만료된 사이 다른 워커가 그 행을 가져갔을 수 있으므로, 남의 작업에 `FAILED`를 덮어쓰지 않으려는 규칙이에요. 반대로 `JobDeadlineError`는 내 lease가 아직 유효한 채 예산만 끝난 상태이므로 `FAILED` 확정으로 이어가요.
 
-재시도로 풀어줄 때는 fenceJob 대신 같은 조건을 `WHERE` 절에 넣은 조건부 `UPDATE`를 써요. `leaseOwner`와 `leaseExpiresAt > clock_timestamp()` 조건이 붙어 있어서, 그 사이 lease를 잃은 워커의 갱신은 0행이 되고 상태가 바뀌지 않아요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L216-L247), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L184-L196)).
+재시도로 풀어줄 때는 fenceJob 대신 같은 조건을 `WHERE` 절에 넣은 조건부 `UPDATE`를 써요. `leaseOwner`와 `leaseExpiresAt > clock_timestamp()` 조건이 붙어 있어서, 그 사이 lease를 잃은 워커의 갱신은 0행이 되고 상태가 바뀌지 않아요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L216-L247), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L187-L199)).
 
 ## 재시도 정책
 
@@ -160,7 +162,7 @@ lease 객체를 만들기 전에 `startJobLease`는 `fenceJob`을 `allowDeadline
 | 보컬 프로필 분석 | `JOB_DEADLINE_EXCEEDED` | `false` | `AnalyzerClientError`·`VocalProfilePersistenceError`면 그 오류의 `reasonCode`·`retryable`이고, `"ANALYZER_SOURCE_MISMATCH"` 메시지면 `ANALYZER_SOURCE_MISMATCH`에 `false`, 그 밖에는 `ANALYSIS_WORKER_FAILED`에 `true`예요 |
 | 곡 분석 | `SONG_ANALYSIS_WORKER_FAILED` | `true` | `SongAnalyzerError`면 그 오류의 `reasonCode`·`retryable`이고, 그 밖에도 `SONG_ANALYSIS_WORKER_FAILED`에 `true`예요 |
 
-곡 분석은 `JobDeadlineError`를 `SongAnalyzerError`로 분류하지 않아서, 예산 초과가 `retryable: true`로 기록되는 유일한 경우예요. 세 워커 모두 재시도 여부는 그 자리에서 던져진 오류와 `attempts`로 정하고 행의 `retryable`을 다시 읽지 않으니, 저장된 `retryable`만 보고 재시도 가능 여부를 판단하지 마세요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L174-L185), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L27-L45), [song-analysis/worker.ts](repo://src/_app/background-jobs/song-analysis/worker.ts#L66-L77)).
+곡 분석은 `JobDeadlineError`를 `SongAnalyzerError`로 분류하지 않아서, 예산 초과가 `retryable: true`로 기록되는 유일한 경우예요. 세 워커 모두 재시도 여부는 그 자리에서 던져진 오류와 `attempts`로 정하고 행의 `retryable`을 다시 읽지 않으니, 저장된 `retryable`만 보고 재시도 가능 여부를 판단하지 마세요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L174-L185), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L28-L45), [song-analysis/worker.ts](repo://src/_app/background-jobs/song-analysis/worker.ts#L66-L77)).
 
 믹싱에서 "접수 흔적을 확인하지 못한" 경우는 외부 제출을 시도했다는 표시는 있는데 외부 job id가 없는 상태예요. 이때는 오류 자체가 retryable이 아니어도 재시도 대상이 돼요. 접수 전이면 `PENDING`, 접수 후면 `SUBMITTED`로 되돌리고 lease를 비워요. 접수를 시도했는데 job id도 없고 재시도도 못 하면 `errorCode`는 `MODAL_SUBMISSION_UNCONFIRMED`로 남아요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L209-L276)). 접수 확실성 규칙의 배경은 [AI 믹싱 작업 흐름](../workflows/ai-mixing.md)이 설명해요.
 
@@ -168,13 +170,13 @@ lease 객체를 만들기 전에 `startJobLease`는 `fenceJob`을 `allowDeadline
 
 ## 종료 상태 확정과 알림
 
-`SUCCEEDED`나 `FAILED`를 쓰는 트랜잭션에는 같은 문장 안에서 알림 생성도 들어가요. 믹싱은 성공·실패 확정에서, 보컬 프로필 분석도 성공·실패 확정에서 알림을 함께 만들고, 곡 분석 확정에는 사용자 알림이 붙지 않아요. 그래서 상태만 바뀌고 알림이 빠지거나 알림만 남고 상태가 그대로인 커밋이 생길 수 없어요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L277-L288), [mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L507-L535), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L122-L133), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L217-L228), [song-analysis/worker.ts](repo://src/_app/background-jobs/song-analysis/worker.ts#L224-L313)).
+`SUCCEEDED`나 `FAILED`를 쓰는 트랜잭션에는 같은 문장 안에서 알림 생성도 들어가요. 믹싱은 성공·실패 확정에서, 보컬 프로필 분석도 성공·실패 확정에서 알림을 함께 만들고, 곡 분석 확정에는 사용자 알림이 붙지 않아요. 그래서 상태만 바뀌고 알림이 빠지거나 알림만 남고 상태가 그대로인 커밋이 생길 수 없어요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L277-L288), [mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L507-L535), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L122-L136), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L220-L233), [song-analysis/worker.ts](repo://src/_app/background-jobs/song-analysis/worker.ts#L224-L313)).
 
 각 확정이 만드는 알림의 `type`과 `dedupeKey`, 문구, 그리고 `createNotification`이 같은 키의 재실행을 처리하는 방식은 [알림과 중복 방지](../concepts/notifications.md)가 소유해요. 이 페이지는 알림 생성이 종료 확정 트랜잭션 안에 있다는 결합만 다뤄요.
 
-보컬 분석은 실패 확정 트랜잭션에서 `sourceAssetId`를 비우고 그 자산의 삭제를 예약해요. 믹싱은 결과 자산을 저장한 뒤 확정 트랜잭션이 실패하면 그 자산을 폐기하고 오류를 다시 던져요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L499-L539), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L200-L216)).
+보컬 분석은 실패 확정 트랜잭션에서 `sourceAssetId`를 비우고 그 자산의 삭제를 예약해요. 믹싱은 결과 자산을 저장한 뒤 확정 트랜잭션이 실패하면 그 자산을 폐기하고 오류를 다시 던져요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L499-L539), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L203-L219)).
 
-티켓을 쓴 작업이 실패 확정되면 `refundState`가 `REQUIRED`가 되고, `REFUNDED`로 바꾸는 환불은 확정 트랜잭션 밖에서 고정된 idempotency key로 실행돼요. 믹싱은 `mixing:refund:{jobId}`, 보컬 분석은 `vocal-analysis-refund:{jobId}`예요. 그래서 확정과 환불 사이에서 프로세스가 죽어도 `refundState: "REQUIRED"` 행이 남아 다음 반복에서 다시 처리돼요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L156-L172), [mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L563-L571), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L139-L168)). 한 가지 차이가 있어요. 믹싱은 접수 흔적이 있을 때 `refundState`를 `NONE`으로 두어 환불을 보류하지만, 보컬 분석은 접수 개념이 없어 `ticketCost > 0`이면 환불 대상으로 표시해요. 원장 규칙 자체는 [티켓 원장과 멱등성](../concepts/ticket-ledger.md)이 소유해요.
+티켓을 쓴 작업이 실패 확정되면 `refundState`가 `REQUIRED`가 되고, `REFUNDED`로 바꾸는 환불은 확정 트랜잭션 밖에서 고정된 idempotency key로 실행돼요. 믹싱은 `mixing:refund:{jobId}`, 보컬 분석은 `vocal-analysis-refund:{jobId}`예요. 그래서 확정과 환불 사이에서 프로세스가 죽어도 `refundState: "REQUIRED"` 행이 남아 다음 반복에서 다시 처리돼요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L156-L172), [mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L563-L571), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L142-L171)). 한 가지 차이가 있어요. 믹싱은 접수 흔적이 있을 때 `refundState`를 `NONE`으로 두어 환불을 보류하지만, 보컬 분석은 접수 개념이 없어 `ticketCost > 0`이면 환불 대상으로 표시해요. 원장 규칙 자체는 [티켓 원장과 멱등성](../concepts/ticket-ledger.md)이 소유해요.
 
 ## 종료 이후 외부 작업 정리
 
@@ -208,7 +210,19 @@ lease 객체를 만들기 전에 `startJobLease`는 `fenceJob`을 `allowDeadline
 
 레인마다 owner 문자열이 달라서, 같은 프로세스의 두 레인이 같은 작업을 동시에 점유할 수 없어요.
 
-믹싱 러너의 한 반복은 작업 점유 전에 환불 재처리, 외부 작업 정리, 미디어 정리 하나를 순서대로 실행해요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L573-L581)). 보컬 러너는 반복마다 `reconcileRequiredVocalProfileAnalysisRefunds(10)`을 먼저 실행해요. 그래서 정리 작업은 큐가 비어 있어도 계속 진행돼요.
+### 점유 전에 도는 정리 단계
+
+작업 점유보다 먼저 실행되는 정리 단계가 있어요. 그래서 큐가 비어 있는 동안에도 환불 재처리, 외부 작업 정리, 삭제 예약된 미디어 처리가 계속 진행돼요.
+
+| 실행 지점 | 주기 | 순서대로 하는 일 |
+| --- | --- | --- |
+| 믹싱 반복(`runMixingWorkerOnce`) | 레인마다 매 반복 | `reconcileRequiredRefunds()` → `reconcileExternalJobs()` → `processOneMediaCleanup()` |
+| 보컬 분석 레인 0 | 5초에 한 번 | `cleanupExpiredGuestAnalysis()` → `processOneMediaCleanup()` |
+| 보컬 분석의 모든 레인 | 레인마다 매 반복 | `reconcileRequiredVocalProfileAnalysisRefunds(10)` |
+
+믹싱의 세 단계는 `runMixingWorkerOnce` 안에 있어서 어떤 레인이든 점유 전에 이 순서를 그대로 실행해요([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L573-L581)). 환불 재처리는 `refundState = "REQUIRED"`인 작업을 `updatedAt` 오름차순으로 최대 10건 골라 고정 idempotency key로 환불하고([mixing/worker.ts](repo://src/_app/background-jobs/mixing/worker.ts#L156-L172), [vocal-profile-analysis/worker.ts](repo://src/_app/background-jobs/vocal-profile-analysis/worker.ts#L162-L171)), 외부 작업 정리는 앞의 "종료 이후 외부 작업 정리" 절이 정한 대상 선정 규칙을 따라요.
+
+보컬 분석 러너는 레인 0에서만 `cleanupExpiredGuestAnalysis()`와 `processOneMediaCleanup()`을 실행하고, 실행 뒤 다음 정리 시각을 5초 뒤로 미뤄요. 이 시각은 0에서 시작하므로 첫 반복에서 바로 돌아요([vocal-profile-analysis/runner.ts](repo://src/_app/background-jobs/vocal-profile-analysis/runner.ts#L22-L35)). 별도 스케줄러가 없어 만료된 비회원 체험 결과 정리가 이 유휴 반복에 얹혀 있고, 만료 판정과 상태 전이는 [비회원 체험 분석 흐름](../workflows/guest-analysis-trial.md)이 소유해요([lifecycle.ts](repo://src/entities/guest-analysis/api/lifecycle.ts#L144-L158)). 정리 단계가 던진 예외는 점유 단계의 예외와 똑같이 그 반복의 실패로 처리돼요.
 
 ## 큐 용량과 접수 직렬화
 
@@ -228,17 +242,28 @@ SELECT pg_advisory_xact_lock(hashtextextended('copy-singer:admission:MIXING', 0)
 
 `SONG` 접수만 소유자 수를 항상 `FALSE`로 세요. 그래서 `SONG_USER_QUEUE_CAPACITY` 값과 무관하게 사용자별 한도가 걸리지 않고 전역 한도만 적용돼요.
 
-advisory lock은 큐 종류별로 다르므로 `VOCAL` 접수와 `MIXING` 접수는 서로 기다리지 않아요. 큐 종류가 같으면 접수와 관리자 재시도가 같은 lock을 공유해요([admin-service.ts](repo://src/features/manage-song-catalog/api/admin-service.ts#L199-L204)). 믹싱과 보컬 분석 접수는 `Serializable` 격리 수준으로 실행하고, 스냅샷·쓰기 충돌이면 최대 3회까지 다시 시도해요([mixing-queue.ts](repo://src/features/create-mixing/api/mixing-queue.ts#L40-L44), [mixing-queue.ts](repo://src/features/create-mixing/api/mixing-queue.ts#L147-L150), [analysis-queue.ts](repo://src/features/analyze-vocal-profile/api/analysis-queue.ts#L133-L137), [analysis-queue.ts](repo://src/features/analyze-vocal-profile/api/analysis-queue.ts#L173-L174), [analysis-queue.ts](repo://src/features/analyze-vocal-profile/api/analysis-queue.ts#L177-L179)).
+advisory lock은 큐 종류별로 다르므로 `VOCAL` 접수와 `MIXING` 접수는 서로 기다리지 않아요. 큐 종류가 같으면 접수와 관리자 재시도가 같은 lock을 공유해요([admin-service.ts](repo://src/features/manage-song-catalog/api/admin-service.ts#L199-L204)).
+
+믹싱과 보컬 분석 접수 트랜잭션은 둘 다 `Serializable` 격리 수준으로 열고, 충돌하면 최대 3번째 시도까지 다시 실행해요. 재시도를 세는 조건은 두 접수가 조금 달라요.
+
+| 접수 함수 | 격리 수준 | 재시도 횟수 | 충돌로 보는 오류 |
+| --- | --- | --- | --- |
+| `enqueueMixingJob` | `Serializable` | `attempt < 3` 루프, 충돌 시 최대 2회 재시도 | `P2034`, 또는 메시지가 정확히 `TransactionWriteConflict`([mixing-queue.ts](repo://src/features/create-mixing/api/mixing-queue.ts#L16-L18)) |
+| `enqueueVocalProfileAnalysis` | `Serializable` | `attempt < 3` 루프, 충돌 시 최대 2회 재시도 | `P2034`, 또는 메시지에 `TransactionWriteConflict`·`write conflict`·`deadlock`이 포함([analysis-queue.ts](repo://src/features/analyze-vocal-profile/api/analysis-queue.ts#L93-L98)) |
+
+두 함수 모두 3번째 시도까지 실패하면 각자의 접수 오류(`MIXING_ENQUEUE_FAILED` 503, `ANALYSIS_ENQUEUE_FAILED`)로 끝나요. 그래서 호출자는 같은 요청 키로 다시 시도할 수 있어요([mixing-queue.ts](repo://src/features/create-mixing/api/mixing-queue.ts#L147-L164), [analysis-queue.ts](repo://src/features/analyze-vocal-profile/api/analysis-queue.ts#L170-L230)).
 
 ## 이 계약을 확인하는 테스트
 
-점유·복구 규칙을 바꾸면 아래 테스트가 먼저 깨져요. 모두 `pnpm run test:readiness`가 `--test-concurrency=1`로 함께 실행해요([package.json](repo://package.json#L70)).
+점유·복구 규칙을 바꾸면 아래 테스트가 먼저 깨져요. `tests/worker-recovery.integration.ts`·`tests/admission.integration.ts`·`tests/runtime-timeouts.test.ts`는 `pnpm run test:readiness`가 `--test-concurrency=1`로 함께 실행하고([package.json](repo://package.json#L71)), `tests/vocal-profile-analysis-queue.integration.ts`는 `pnpm run test:vocal-profile-analysis-queue`로 따로 실행해요([package.json](repo://package.json#L50)).
 
 | 확인 대상 | 파일과 관찰 내용 |
 | --- | --- |
 | 만료된 lease 회수와 확정 | [tests/worker-recovery.integration.ts](repo://tests/worker-recovery.integration.ts#L112-L134) — 세 테이블에서 만료된 lease를 재점유하고, 이전 owner의 `fenceJob`은 `LEASE_LOST`로 거부하며, 예산이 끝난 작업은 `FAILED`로 수렴해 다시 점유되지 않아요 |
 | 외부 정리 순서 | [tests/worker-recovery.integration.ts](repo://tests/worker-recovery.integration.ts#L136-L172) — 진행 중인 작업 20건보다 고아 `PENDING` 행이 먼저 `UNRESOLVED`로 처리돼요 |
 | 저장된 프로필 복구와 heartbeat | [tests/worker-recovery.integration.ts](repo://tests/worker-recovery.integration.ts#L184-L230) — deadline이 지난 작업이 `SUCCEEDED`로 복구되고, owner가 바뀌면 `lease.signal`이 중단돼요 |
+| 보컬 분석 lease 회수 | [tests/vocal-profile-analysis-queue.integration.ts](repo://tests/vocal-profile-analysis-queue.integration.ts#L413-L434) — 살아 있는 lease는 다른 owner의 점유를 막고, `leaseExpiresAt`을 과거로 밀면 다른 owner가 점유하며 `attempts`가 2가 돼요 |
+| 재시도와 종료 실패의 자원 처리 | [tests/vocal-profile-analysis-queue.integration.ts](repo://tests/vocal-profile-analysis-queue.integration.ts#L484-L589) — 일시적 분석기 실패는 원본을 남긴 채 `PENDING`으로 돌아가고 알림을 만들지 않으며, 종료 실패는 `sourceAssetId`를 비우고 자산을 삭제하고 티켓을 한 번 환불해요 |
 | 접수 직렬화 | [tests/admission.integration.ts](repo://tests/admission.integration.ts#L7-L39) — `VOCAL_QUEUE_CAPACITY=2`에서 동시 접수 8건 중 정확히 2건만 생성되고, 실패는 모두 `AdmissionError`이며 티켓 원장은 0건이에요 |
 | deadline 전파와 설정 검증 | [tests/runtime-timeouts.test.ts](repo://tests/runtime-timeouts.test.ts#L7-L42) — `withDeadline`과 `boundedFetch`가 응답 본문까지 중단하고, 범위 밖 정수 설정은 예외가 돼요 |
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:592b3a184db429b3f256b0301652018cc3e00b3f0896b632009ea2fa86edcbad",
+  "pageVersion": "sha256:eb5a21d5b1e543e384de547f5f8465a262ad05f25094eb63c6d17d58547f9a95",
   "claims": [
     {
       "id": "claim_bf6ca86fd8084185aa3b066ef4fe1d77",
@@ -171,10 +171,24 @@
           "version": "repo-lines-v1:sha256:65e976bed6457591f7544d558848746433678fe9d29e9addb11f77d2c446d3ba:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjg0MTQ4ODIzZWQ5NjgyNzQ0NTBkZmIwZWEzNjM1ODRhNjBiMDE5ODVlNGMzNjZhNGFjNjUxZmY0NzQ0NTRhMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDhkMWZlZTIzYjhjYTFjMjZkYzg4N2ZkMzViMDQ4NDE2NzkxODE3ODUzZGYwNjc2YmU5YjlkYTk4YjJiODk2NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjRkYjQ1ZTBiZTMxODA1NjBjZTI0NjYyY2U1MzZlYmYyZGJiYmRlNGM4ODI5NjdhZGE1NjQxMWU3ODNkYTZkZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWVhMjA2ODkxZDNiOWIzODMzNWU5ZTZhYWEzMzA2ZTEwZDJlYTRiOGM4MWY3ZjQzZmI5YWNlOWRkNDEwZWQzMCJ9"
         }
       ]
+    },
+    {
+      "id": "claim_c8ab9e8a93a147808806028f7caf178b",
+      "statement": "`pnpm run db:migrate:deploy`가 적용하는 추적된 migration 목록에는 `User.isGuest` 컬럼과 `GuestAnalysisTrial` 테이블을 추가하는 `20261029000000_guest_analysis_trial`이 포함되므로, 새 로컬 DB도 이 한 명령으로 비회원 체험 기능의 스키마까지 준비된다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L38-L38",
+          "version": "repo-lines-v1:sha256:0cdb9a85950920c98b23e148a59b8dffe62d7b63f5ede4b611d03088690a662c:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGNkYjlhODU5NTA5MjBjOThiMjNlMTQ4YTU5YjhkZmZlNjJkN2I2M2Y1ZWRlNGI2MTFkMDMwODg2OTBhNjYyYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGNkYjlhODU5NTA5MjBjOThiMjNlMTQ4YTU5YjhkZmZlNjJkN2I2M2Y1ZWRlNGI2MTFkMDMwODg2OTBhNjYyYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWMwYzRiOTk1ZjdiYTM4NDIzNDRmZGViYzVhNjY4OWYzZTJlNTQ4NWU0ODUzYmJhOWI5NDFlMjkyY2RhNmJmNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjIxODFkZTk1OTA5ZGE0Y2ZhZmQ1MDNmNTFiZGExZTJhY2VjODU1ZjczMTI5NTY4YmVmYzk5N2FlMmNmNzRiZiJ9"
+        },
+        {
+          "resource": "repo://prisma/migrations/20261029000000_guest_analysis_trial/migration.sql#L1-L17",
+          "version": "repo-lines-v1:sha256:1034a8ca9b3062a97d523f5d14fcdfe9ee80db58872b074e92d09741181988f7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2OTg5NGY5NzNjMmViNGMwNTYyNzc0YjhjOTg3NjcwNTVjYWIzNDRkMzg5ZGQxOGFjNDU0N2ZiNTM3OTI1MjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5OTY3ZWMxZWQzODM2ZjhlYjE3YWZmMTcyYjViZmVmN2RlNjA0ODVhNDM5YzZjYTExYzU5MWUxNzU1NzM5YWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkwYjhlYWVkMjI0NDcwN2NiMjNiODc0NjcxOTczN2U3NjNmZDI0YWFjYjYzZWU2NDUzZTkzY2M3ODBkZjUxZjgifQ"
+        }
+      ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.5.0",
-    "at": "2026-09-18T12:47:40.181Z"
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-30T10:43:12.272Z"
   }
 }

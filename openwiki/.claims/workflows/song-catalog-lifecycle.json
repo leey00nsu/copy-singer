@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:494be104df5823a45a6693ce7853ff8272c83e3559205dd7cc54a4d98bb579af",
+  "pageVersion": "sha256:d0daebac02d3cd68e56472b59031839c784b39a7bc4a8b6b06670c2a9fd5dbcb",
   "claims": [
     {
       "id": "claim_397130702b0e4f73bb542e5ecee114bc",
@@ -296,23 +296,39 @@
     },
     {
       "id": "claim_6fed55c266bf4652850d8acc3cf7c215",
-      "statement": "곡 카탈로그 등록·공개 절차의 변경 범위 테스트는 `pnpm run test:song-analysis-queue`가 Modal adapter 계약과 `admin-song-catalog.integration.ts`의 공개·멱등성 시나리오를, `pnpm run test:admin`이 관리자 화면 통합 흐름을, `pnpm run catalog:db:verify`가 공개 카탈로그 준비 상태를 확인한다. 스냅샷 통합 테스트 `tests/catalog-snapshot.integration.ts`는 `package.json` 스크립트에 연결되어 있지 않다.",
+      "statement": "곡 카탈로그 등록·공개 절차의 변경 범위 테스트는 `pnpm run test:song-analysis-queue`가 Modal adapter 계약과 `admin-song-catalog.integration.ts`의 업로드·공개·멱등성 시나리오를, `pnpm run test:admin`이 관리자 화면 통합 흐름을, `pnpm run test:catalog-targets`가 스테이징 파일에서 자산을 만들어 `Song.targetAssetId`에 연결하는 경로와 같은 `sha256` 재처리 시 건너뛰기를, `pnpm run catalog:db:verify`가 공개 카탈로그 준비 상태를 확인한다. 데이터베이스를 쓰는 시나리오는 `DATABASE_URL`이 없으면 스스로 건너뛰고, `tests/song-catalog-domain.test.ts`와 `tests/catalog-snapshot.integration.ts`는 현재 `package.json`의 `scripts` 블록 어디에도 지정되어 있지 않아 직접 실행해야 한다.",
       "evidence": [
         {
           "resource": "repo://package.json#L42-L42",
           "version": "repo-lines-v1:sha256:f5eaa8053fc4c7c6fcbf243504f76f9b4243212db1da17d276e18d37d799b432:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjVlYWE4MDUzZmM0YzdjNmZjYmYyNDM1MDRmNzZmOWI0MjQzMjEyZGIxZGExN2QyNzZlMThkMzdkNzk5YjQzMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjVlYWE4MDUzZmM0YzdjNmZjYmYyNDM1MDRmNzZmOWI0MjQzMjEyZGIxZGExN2QyNzZlMThkMzdkNzk5YjQzMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjIxODFkZTk1OTA5ZGE0Y2ZhZmQ1MDNmNTFiZGExZTJhY2VjODU1ZjczMTI5NTY4YmVmYzk5N2FlMmNmNzRiZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDkyMjA1ODVmNDJkNjU2YWFjMzhjY2E1Y2Y3YzljYTk4MzczNjFkMWY1MDFkYTJhNjU3YjM2Mzc5YTUwMThmZCJ9"
         },
         {
+          "resource": "repo://package.json#L46-L46",
+          "version": "repo-lines-v1:sha256:e087bf7ea850b846a18a500a615e3324cd12c49eb6057ed3d467063f0187d5da:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTA4N2JmN2VhODUwYjg0NmExOGE1MDBhNjE1ZTMzMjRjZDEyYzQ5ZWI2MDU3ZWQzZDQ2NzA2M2YwMTg3ZDVkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTA4N2JmN2VhODUwYjg0NmExOGE1MDBhNjE1ZTMzMjRjZDEyYzQ5ZWI2MDU3ZWQzZDQ2NzA2M2YwMTg3ZDVkYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDkyMjA1ODVmNDJkNjU2YWFjMzhjY2E1Y2Y3YzljYTk4MzczNjFkMWY1MDFkYTJhNjU3YjM2Mzc5YTUwMThmZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzQ1MWZhMGE4Y2E2NTllZTFiZmQ3YTUxNDBlNDFiNmZjMTljMGE1OWNhZTI0ODdmY2M5ZmJkZGNhMzIzODZmNiJ9"
+        },
+        {
           "resource": "repo://package.json#L51-L51",
           "version": "repo-lines-v1:sha256:38b9ec32458beb4ff1775452acfcf1120f45a4a23a1b7a01c1854c3bc7f07c1b:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzhiOWVjMzI0NThiZWI0ZmYxNzc1NDUyYWNmY2YxMTIwZjQ1YTRhMjNhMWI3YTAxYzE4NTRjM2JjN2YwN2MxYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzhiOWVjMzI0NThiZWI0ZmYxNzc1NDUyYWNmY2YxMTIwZjQ1YTRhMjNhMWI3YTAxYzE4NTRjM2JjN2YwN2MxYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjJmZWFhMjJlM2QwNmJjYmJjOGU1MjIyNjRkMzQ0NDE1MTk5M2Q4OWUxY2U2ZjM5ZjJlNjhiMzJmMGVjZWJhYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTYwYjA0MmIxYWY1YjU5OWJkMjdhM2RhNGQ3YTk2M2QwOTM1ZWU0ZTdhNTRiZmIwOGE4YmM1MmY4MjYwNTU5NyJ9"
         },
         {
-          "resource": "repo://package.json#L69-L69",
-          "version": "repo-lines-v1:sha256:d86ae4382a7cf9dbc40f02bc6f5985b0324bde76ef193c0b88f2a780fe1f2cd2:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDg2YWU0MzgyYTdjZjlkYmM0MGYwMmJjNmY1OTg1YjAzMjRiZGU3NmVmMTkzYzBiODhmMmE3ODBmZTFmMmNkMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDg2YWU0MzgyYTdjZjlkYmM0MGYwMmJjNmY1OTg1YjAzMjRiZGU3NmVmMTkzYzBiODhmMmE3ODBmZTFmMmNkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmI2NDk5ODEwMTQxNDc1MjNjNTZlMjRhMWY3MTNhMjJjNTZkOTUzMmM1YWY4ZTlmNGZjMDI0NmViNThhYmMwMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2U3ZmY0M2IzMjc2MmJlNzcwMzljYzU4NTViZDU0Y2I3ZDM4ZDg0ZmI0ZTM4ZjA5ZTFlMTgxNWU4MTE3ZTE4MiJ9"
+          "resource": "repo://package.json#L70-L70",
+          "version": "repo-lines-v1:sha256:23fe60f9ddb4a8ee16ca9e6193d1aeb2725bd76d48c6180cf427b3348b266629:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjNmZTYwZjlkZGI0YThlZTE2Y2E5ZTYxOTNkMWFlYjI3MjViZDc2ZDQ4YzYxODBjZjQyN2IzMzQ4YjI2NjYyOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjNmZTYwZjlkZGI0YThlZTE2Y2E5ZTYxOTNkMWFlYjI3MjViZDc2ZDQ4YzYxODBjZjQyN2IzMzQ4YjI2NjYyOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmI2NDk5ODEwMTQxNDc1MjNjNTZlMjRhMWY3MTNhMjJjNTZkOTUzMmM1YWY4ZTlmNGZjMDI0NmViNThhYmMwMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2U3ZmY0M2IzMjc2MmJlNzcwMzljYzU4NTViZDU0Y2I3ZDM4ZDg0ZmI0ZTM4ZjA5ZTFlMTgxNWU4MTE3ZTE4MiJ9"
+        },
+        {
+          "resource": "repo://package.json#L9-L76",
+          "version": "repo-lines-v1:sha256:c861917c86df54704c7fcd161375c52e31172874a21349e55609db1e07555e8d:eyJzZWxlY3RlZExpbmVDb3VudCI6NjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0ODMzZDU5NDljMDNhNDBjYTk1MjQ5MTYxMGE2NjU5NjQ0YjNhYTQ2NjM2MmY3OTkwMjBkYmYxOTgxNTQ3ZGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyNzAxMTI4NzM1MDNhMDc0OGU1ZWY0MGViOWZlZTUyYTZjNmRiNTdhNzMzMTI1ZjQ5NDhkMThmNGNjMTdiNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZjYzU4YzQwMmIzMDI3MDY5MWJjNDJmZjlhN2I1OTNhZTFlMTNjMzIzNWMxYTYyMDcxOTZjZTgzNjBjZWY5MTAifQ"
         },
         {
           "resource": "repo://tests/admin-song-catalog.integration.ts#L23-L194",
           "version": "repo-lines-v1:sha256:46ce689bc0292cc357712337764193e1ae2770b9936abd2e08702bbffeca49a5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIxZWRlNmIxNDhlZjI4MzQ4ZjQ4NzNkYTQwZWVmMTMxYTQxMmFlMWI5YmYwYmJiZjExMWFhYTY0MTNjNTM5NDQ4IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNmY1YjQwYjE1ODQ1N2QxNzg2NGYyMTc5MDc4NmRkNWEyZWNkYjY0YjY2YTY1MWY3ODhkNGUyNWNkMzMwM2QyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlYjFlYTE1YTBmN2IxZDc3NDFjMDkyZGU4MDJkMzlmZGE0NDM0ZWNmMDVmOTQzNThjNmYzNjljYTkxMTZlMjJmIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIxNTljNzMxYWM1YjgwYzc0YjZhNjQ4ZmZhZGZmZWQxYThkYjMyYWVhNzc3MDAzYWNkNzNhNWUyNzhhYTEyMThhIn0"
+        },
+        {
+          "resource": "repo://tests/catalog-target-assets.integration.ts#L10-L14",
+          "version": "repo-lines-v1:sha256:8adefccbe70131f7e5b4ab9fd13c47c29a8ce8d53fdb0bfda4070de3affc0a2f:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDUyMGY0ZThhYjcxMzk1NTIxMmRmNjczYzViYTI5NTU5NzkyNGZiNzRhOTNmNTAwNTk2ZGE3ZjBlNzUzNmQyOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjRkYjQ1ZTBiZTMxODA1NjBjZTI0NjYyY2U1MzZlYmYyZGJiYmRlNGM4ODI5NjdhZGE1NjQxMWU3ODNkYTZkZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTliNDIzN2VhMzNhMGE1OTdjNzdiMTRjNmZlMTJkZmZhMTMyNTQ3ZmZhOTA2NjE4YjY4ZjI4ZWVhNzVkMGY2YyJ9"
+        },
+        {
+          "resource": "repo://tests/catalog-target-assets.integration.ts#L69-L92",
+          "version": "repo-lines-v1:sha256:13eeed7f774489fe870fb6012fa871abd00f097ebe58bd35fa057a3949f85904:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2MTIyMzYwZDA2ZDkwMjA3MTEwNjA4YjllZDUzODI2MWFiNDhiMjk0MGE0ODc0NjBiYzU5NzE5OTcwYzQ5OTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjllZDgwYWRjMTdkOWEyNGJhYjQ5OGE0ODU1OTNkNTc4ZThkNmFjZTFhMTBlMzI5YjM5NjkzMjFiMWZkY2NmNjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcwNDEwMGMxZmFhNmUzYzM4NzZhMDUzMDBiNzQxNThjMjI2NDUxMGEwNzRiZDNjNzY5ZjZhYzViOWYxN2ExZmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY5YmU2YjM2NDU3ZDFmYjQyM2E2MWQ1ZjkzNjliNmIwYTI2OGRhNjY3Njg4NmI1ZDJkM2EwYjVlZjQxYTdkYTkifQ"
         }
       ]
     },
@@ -341,10 +357,46 @@
           "version": "repo-lines-v1:sha256:a44a5a60e1e52ee0533ea5f1f624cc7121dc994248079ab6671d43b89b855294:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYyZmRkYzZlOGE1MmUwZjY3Y2Q5OWFlNTZhNjliYTgyYTY5N2EwOWY4NDM0N2I1MjViNjk2MzZiZmViNTNkZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExMTBmMmJmMmZhMjZkMWFjOTdlNGE5NGUzNTY4M2QxYjUxYjQ1MGE0NDYyN2MzYmU0MzY1MmE5NDczOWVkZTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3NTk1M2RkYmVmYjljZDgwYWIwODI3NDZiODNkYWEwNjgyOWQyY2I1ZmU3ZmQ2Y2UxYjc1MjcxZWNjM2I2ZWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkzMjlhNTlmN2Q4MGM5NDQ1ZTllZWVjNzgxM2MyYjUyOTBkYWUyMTFhYjM5MDI3NDRjMzk3NTYyOTc2MjdkODUifQ"
         }
       ]
+    },
+    {
+      "id": "claim_c642acd833064e75985335aefb7b1e0e",
+      "statement": "관리자 API 업로드 외에 스테이징 디렉터리의 파일로 원곡 자산을 붙이는 `importCatalogTargetAsset` 경로가 있으며, 이 함수는 그 순위 항목의 `activeSourceId`가 가리키는 출처가 `READY`일 때만 진행하고 업로드 트랜잭션에서 `Song.targetAssetId`만 새 자산으로 바꾼다. `Song.lifecycleStatus`와 `CatalogEntry.status`는 바꾸지 않으므로 자산을 붙인 뒤에도 공개 호출이 따로 필요하고, 곡의 현재 자산이 같은 `sha256`·`sourceId`·`sourceVideoId`이면 업로드를 건너뛰고 `skipped: true`를 돌려준다.",
+      "evidence": [
+        {
+          "resource": "repo://src/entities/recommendation/lib/song-catalog/target-assets.ts#L176-L252",
+          "version": "repo-lines-v1:sha256:430337421b0b9b10889677b7de05752065a625672116788d22ae8a1c6999126a:eyJzZWxlY3RlZExpbmVDb3VudCI6NzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiMTlkMzIyMmI0MzMzMDg1Njc2Y2JkMzA0NDkxNmQ3YzM0YzI4ZjQ1MTQ2MjEwOTMyNjkxMWM3MDA2NmRmNmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZWYwMWJjMDhkYmMzYjYzZTRlNzVlYTNkMjZhNWI5NDE4OTE4NzdlMjdhZDg5MTMyOWM4NDExZDdkOGRjNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEyZjVmNzJmNDQwYzAwM2I5OTI0NzQ2ZDVjZWNjNzM0NDc4ZjA3NTE2MzAxOWJiYzFkZjg3ZDJhNWUyZjk3OGEifQ"
+        },
+        {
+          "resource": "repo://src/entities/recommendation/lib/song-catalog/target-assets.ts#L38-L55",
+          "version": "repo-lines-v1:sha256:9537dfed973397acfcfaf6a4ddb8367efbddbbe7bfb52a7a7ff70b9d451e9c14:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkYzA5ZmQ1ODU0N2JjNTc5NDFlNzM0MjFmZDUxZTY4OWRjYjY2ZjZkNWEzNzU5YzZhNzMyY2E4NmFkNDI1MDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc3OTMzOTMwYTcyMjVkOTNkNWQwYmU2OWRhOWM3YWY2NzEzNWJhYzBjNTIxMzk0M2EyYzY1ZGZkNzdmYzQwZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQyN2RjOGU4MWFhNmI5ZWE2ZWQ0ZGI0OTBiZWQ5ZThlNDJkMWNjMDM1ZjY1OWE4OTc1MTU0YzAxOTE3ZmY4ZWEifQ"
+        },
+        {
+          "resource": "repo://tests/catalog-target-assets.integration.ts#L69-L92",
+          "version": "repo-lines-v1:sha256:13eeed7f774489fe870fb6012fa871abd00f097ebe58bd35fa057a3949f85904:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2MTIyMzYwZDA2ZDkwMjA3MTEwNjA4YjllZDUzODI2MWFiNDhiMjk0MGE0ODc0NjBiYzU5NzE5OTcwYzQ5OTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjllZDgwYWRjMTdkOWEyNGJhYjQ5OGE0ODU1OTNkNTc4ZThkNmFjZTFhMTBlMzI5YjM5NjkzMjFiMWZkY2NmNjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcwNDEwMGMxZmFhNmUzYzM4NzZhMDUzMDBiNzQxNThjMjI2NDUxMGEwNzRiZDNjNzY5ZjZhYzViOWYxN2ExZmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY5YmU2YjM2NDU3ZDFmYjQyM2E2MWQ1ZjkzNjliNmIwYTI2OGRhNjY3Njg4NmI1ZDJkM2EwYjVlZjQxYTdkYTkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_12e5d77676d6401ebffb4bbf0667543e",
+      "statement": "`pnpm run worker:song-analysis`는 환경 변수를 읽는 짧은 entrypoint `scripts/song-analysis-worker.ts`를 실행하고, 이 파일이 `runSongAnalysisWorker`를 호출한다. 그 실행 함수는 `songAnalysisWorkerConcurrency()` 수만큼 lane을 띄워 각 lane이 lease owner를 하나씩 갖고 점유·처리를 반복하며, SIGINT·SIGTERM을 받으면 정지하고 한 iteration이 실패하면 최대 30초 상한의 지수 backoff로 다시 시도한다.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L21-L21",
+          "version": "repo-lines-v1:sha256:28638e3e23fcf77df7897331095ad5c8cae4e50901874c9227e04ad159a145cd:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjg2MzhlM2UyM2ZjZjc3ZGY3ODk3MzMxMDk1YWQ1YzhjYWU0ZTUwOTAxODc0YzkyMjdlMDRhZDE1OWExNDVjZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjg2MzhlM2UyM2ZjZjc3ZGY3ODk3MzMxMDk1YWQ1YzhjYWU0ZTUwOTAxODc0YzkyMjdlMDRhZDE1OWExNDVjZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmRlOGU0NDkyMmZlZTM4NGI0MmVhYjkwNjI4NTBiNzM5NmU2NzdjMWNhNmM4YzY5MTQ4M2RhNmU1NGZmNzVlYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDdmMzM4MjkwZTE5ODFlYjA1MjNjODk3N2ZlMWQ2ZThjNDRjZGRiZWM3MDM2ZGY2MzYxY2Y2NTI0NGI0ZDhiNCJ9"
+        },
+        {
+          "resource": "repo://scripts/song-analysis-worker.ts#L1-L6",
+          "version": "repo-lines-v1:sha256:7aeda58a7dc0023b2038b33f683003b787bb771ee685d3278ca2f6808687cb5d:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjc5YjA3NzI2YzdlMDA3NTkxYTZmZGY2OTMyMzUzZTAyM2E1MjI2MDcwMzIwMTJmYmJkMjI0ZGVkYmVmOTJkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDBjMmQzMjk2YjkxNTg3ZmQ2MzM5ZmVlOGJlNTM2NDZiOGJhMjcwYzQ0ZWRmZDAyZDQ2ZjY3NGRjODE4YWU2NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/_app/background-jobs/song-analysis/runner.ts#L11-L45",
+          "version": "repo-lines-v1:sha256:7cfeb384048a20e177a763aa3518bf7098715ff10c7700c3e27ab824915b4816:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjNmQxZGM2MWNlMmNlNDQ3Y2ZiZWVlYmQ4N2FlOTYwNmUyYzM4MGFmMWI0OTRjZTZjYTczMTc4ODVhMDkwYmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1NmJhOWNiYjIwMWZmNWNmOGVhOWQ2ZTAzOGUxYmFmOTVmNzdiZDgxNmVjMDgyMGNkNzMyYzE4ODg0MWU3ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.5.2",
-    "at": "2026-09-18T16:47:52.081Z"
+    "by": "openwiki/0.7.2",
+    "at": "2026-11-01T16:00:39.866Z"
   }
 }
